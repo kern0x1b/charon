@@ -86,10 +86,36 @@ work established, all of it measured and all of it re-usable, is this:
   A pure imaginary value is a nonzero value: `sparse_get_vector_nonzero_count_double_complex` over
   `{0, 2, 0, 4i, 5, 0}` answers 3, and `sparse_pack_vector_double_complex` over it answers the three
   entries at columns 1, 3 and 4 with the right values.
-- What is still red, and is what a next session starts from: the two complex triangular solves (16
-  failures between them), the complex matrix-vector product (8), the complex pack (6), the complex matrix
-  norms (5), the complex vector norm for the two names the host does not answer as the two-norm (3), one
-  extraction of a batch, and one outer product.
+- **The host's own Accelerate answers the complex products and the complex solves with uninitialised
+  memory**, so there is no oracle there and the port is not held to those numbers. Measured: for
+  `y = alpha * op(A) * x + y` on the 3x3 `[[1+i,0,2],[0,3i,0],[4-i,0,0]]` with `x = (1, 2i, 4 - i)` and
+  `y` of ones it answers `131072.0318 - 8192.0059i, 32, 2i`, and the 8192.0059i is the same in the
+  transposed case, whose arguments differ; the correct answer by the header's arithmetic is
+  `11 + 8i, -5 - 6i, 6 + 3i`. For the complex triangular solves of the lower `[[2+i,0,0],[1,3,0],[0,0,4i]]`
+  it answers `0.0000 + 0.0006i, 0, 2i` where the correct answer is `0.5, 0.1 - 0.0333i, 0.5`, and 2048.0005
+  appears in the matrix form.
+- **The oracle used instead**: the complex arithmetic is the real arithmetic with a pair of reals for a
+  value, and the real half is held against the host, so the port's complex answer on a matrix whose
+  imaginary parts are zero must equal the port's own real answer on the same matrix. The run script
+  compiles the real half a second time under the prefix `charon_half_` for exactly this. The norms, the
+  trace, the shapes, the insertions, the extractions, the utilities and the refusals are still compared
+  against the host directly, because the host answers those.
+- **Where the complex half stands: 184 checks pass and 22 fail**, down from 158 and 41. The vector norms,
+  the pack, the matrix elementwise and operator norms and the shapes are green against the host. What
+  remains, as the next session's list:
+  - **the complex matrix-vector product (4 oracle cases)**: the values are right and the addresses are
+    not. For the 3x3 `[[1,0,2],[0,0,0],[4,0,0]]` with `x = (1,2,4)`, `alpha = 1` and `y` of ones the port
+    answers `6, 5, 1` where both the arithmetic and the port's own real half give `10, 1, 5`, so one call
+    lands one element off. The `cblas_caxpy` sequence the port builds is correct run by hand on the same
+    three values — three calls giving `2 1 1`, then `10 1 1`, then `10 1 5` — so the defect is in the
+    port's loop, not in the BLAS. The next step is to print `i`, `k`, `re`, `im`, `from` and `to` inside
+    `CharonComplexVectorProduct` for that one case.
+  - **the two complex triangular solves (16 oracle cases)** and **one batch extraction** and **one outer
+    product** on the host.
+  - One thing already found and fixed by the oracle work: `cblas_caxpy` and its sisters address their
+    vectors in units of a complex value, and every offset in this family is in complex units, so the
+    pointers have to be complex-typed. Casting to `float *` and adding the offset counts floats, which
+    is what the first version did.
 
 The port's own BLAS is not the obstacle: the ladder puts `cblas_caxpy`, `cblas_ccopy`, `cblas_zaxpy`,
 `cblas_zcopy`, `cblas_cgemv`, `cblas_zgemv`, `cblas_cgemm`, `cblas_cherk`, `cblas_ctrsm`, `cblas_cscal` and
@@ -266,6 +292,42 @@ in the differential, which checks the port against the header's rule for exactly
      after `entries(3), entries(0), col(0,{5,6} at {0,2}), row(0,{7,8} at {1,2}), col(0,{9} at {3})`, which
      is what the port gives for the same sequence on its own matrix. The cause inside the host was not
      pinned down and is not claimed here.
+
+## The gates, and what they say
+
+Both ends of the ladder, on the tree this page describes, at base `68befaca`:
+
+```
+build-gate.lua 6.1.3
+  imports: every non-weak import of the armv7 slices of 28 binaries resolves against 158520 exports
+  …/libAccelerateBackports.dylib
+  0 error: lines, no "registry does not describe what the backports carry:"
+
+build-gate.lua 4.3
+  imports: every non-weak import of the armv7 slices of 28 binaries resolves against 85386 exports; 4 weak
+  imports it does not export, each named in a warning above
+  …/libAccelerateBackports.dylib
+  0 error: lines, no "registry does not describe what the backports carry:"
+```
+
+The four weak imports 4.3 does not export are `_OBJC_CLASS_$_UIActivityViewController` in
+`libSafariServicesBackports.dylib` and `_OBJC_CLASS_$_NSByteCountFormatter`,
+`_OBJC_CLASS_$_NSMutableOrderedSet`, `_OBJC_CLASS_$_NSTextContainer` in `libUIKitBackports.dylib` — none of
+them an Accelerate name, and none of the 35 `cblas_*`/LAPACK names this port imports, which the ladder
+puts at 4.0 in the table above. That is the whole of the 4.3 gate's finding.
+
+```
+tools/release-split.lua <gate-3>/build/objects/Accelerate
+  release-split: clean, every object file's symbols first-appear in one release (6 files, 87 symbols, 47
+  releases checked)
+  SparseBLAS9.o        67 symbols, all 9.0
+  SparseProduct10.o     2 symbols, both 10.0.1
+```
+
+Two notes the tool prints and the reading depends on: no release is held between 12.0 and 16.0 and none
+between 16.0 and 18.0, so a 16.0 or an 18.0 in that output means "after the previous rung and by this
+one", not a measured first release. And a category has no `nm`-visible symbols, so a clean run says
+nothing about any category file — there is none here.
 
 ## What has not been run
 
