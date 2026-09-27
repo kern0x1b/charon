@@ -2,312 +2,22 @@
  "framework": "CoreML",
  "entries": [
   {
-   "api": "MLDictionaryConstraint",
+   "api": "MLModelCollection",
    "kind": "class",
-   "introduced": "11.0",
+   "introduced": "14.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
+   "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
    "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
    "source": "SDK 16.4, CoreML"
   },
   {
-   "api": "MLDictionaryFeatureProvider",
+   "api": "MLModelCollectionEntry",
    "kind": "class",
-   "introduced": "11.0",
+   "introduced": "14.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, CoreML"
-  },
-  {
-   "api": "MLFeatureDescription",
-   "kind": "class",
-   "introduced": "11.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, CoreML"
-  },
-  {
-   "api": "MLFeatureProvider",
-   "kind": "protocol",
-   "introduced": "11.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the protocol arrived in iOS 11, and nothing in iOS 6 sends or asks for what it declares",
-   "effect": "the protocol is not there: NSProtocolFromString answers nil",
-   "source": "SDK 16.4, CoreML"
-  },
-  {
-   "api": "MLImageConstraint",
-   "kind": "class",
-   "introduced": "11.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, CoreML"
-  },
-  {
-   "api": "MLModel",
-   "kind": "class",
-   "introduced": "11.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, CoreML"
-  },
-  {
-   "api": "MLModelAuthorKey",
-   "kind": "constant",
-   "introduced": "11.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, CoreML"
-  },
-  {
-   "api": "MLModelCreatorDefinedKey",
-   "kind": "constant",
-   "introduced": "11.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, CoreML"
-  },
-  {
-   "api": "MLModelDescription",
-   "kind": "class",
-   "introduced": "11.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, CoreML"
-  },
-  {
-   "api": "MLModelDescriptionKey",
-   "kind": "constant",
-   "introduced": "11.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, CoreML"
-  },
-  {
-   "api": "MLModelErrorDomain",
-   "kind": "constant",
-   "introduced": "11.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, CoreML"
-  },
-  {
-   "api": "MLModelLicenseKey",
-   "kind": "constant",
-   "introduced": "11.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, CoreML"
-  },
-  {
-   "api": "MLModelVersionStringKey",
-   "kind": "constant",
-   "introduced": "11.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, CoreML"
-  },
-  {
-   "api": "MLMultiArrayConstraint",
-   "kind": "class",
-   "introduced": "11.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, CoreML"
-  },
-  {
-   "api": "MLPredictionOptions",
-   "kind": "class",
-   "introduced": "11.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, CoreML"
-  },
-  {
-   "api": "MLCustomLayer",
-   "kind": "protocol",
-   "introduced": "11.2",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the protocol arrived in iOS 11, and nothing in iOS 6 sends or asks for what it declares",
-   "effect": "the protocol is not there: NSProtocolFromString answers nil",
-   "source": "SDK 16.4, CoreML"
-  },
-  {
-   "api": "MLArrayBatchProvider",
-   "kind": "class",
-   "introduced": "12.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, CoreML"
-  },
-  {
-   "api": "MLBatchProvider",
-   "kind": "protocol",
-   "introduced": "12.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the protocol arrived in iOS 12, and nothing in iOS 6 sends or asks for what it declares",
-   "effect": "the protocol is not there: NSProtocolFromString answers nil",
-   "source": "SDK 16.4, CoreML"
-  },
-  {
-   "api": "MLCustomModel",
-   "kind": "protocol",
-   "introduced": "12.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the protocol arrived in iOS 12, and nothing in iOS 6 sends or asks for what it declares",
-   "effect": "the protocol is not there: NSProtocolFromString answers nil",
-   "source": "SDK 16.4, CoreML"
-  },
-  {
-   "api": "MLImageSize",
-   "kind": "class",
-   "introduced": "12.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, CoreML"
-  },
-  {
-   "api": "MLImageSizeConstraint",
-   "kind": "class",
-   "introduced": "12.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, CoreML"
-  },
-  {
-   "api": "MLModelConfiguration",
-   "kind": "class",
-   "introduced": "12.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, CoreML"
-  },
-  {
-   "api": "MLMultiArrayShapeConstraint",
-   "kind": "class",
-   "introduced": "12.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, CoreML"
-  },
-  {
-   "api": "MLSequenceConstraint",
-   "kind": "class",
-   "introduced": "12.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, CoreML"
-  },
-  {
-   "api": "MLFeatureValueImageOptionCropAndScale",
-   "kind": "constant",
-   "introduced": "13.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, CoreML"
-  },
-  {
-   "api": "MLFeatureValueImageOptionCropRect",
-   "kind": "constant",
-   "introduced": "13.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, CoreML"
-  },
-  {
-   "api": "MLKey",
-   "kind": "class",
-   "introduced": "13.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, CoreML"
-  },
-  {
-   "api": "MLMetricKey",
-   "kind": "class",
-   "introduced": "13.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, CoreML"
-  },
-  {
-   "api": "MLNumericConstraint",
-   "kind": "class",
-   "introduced": "13.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, CoreML"
-  },
-  {
-   "api": "MLParameterDescription",
-   "kind": "class",
-   "introduced": "13.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, CoreML"
-  },
-  {
-   "api": "MLParameterKey",
-   "kind": "class",
-   "introduced": "13.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
+   "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
    "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
    "source": "SDK 16.4, CoreML"
   },
@@ -352,26 +62,6 @@
    "source": "SDK 16.4, CoreML"
   },
   {
-   "api": "MLWritable",
-   "kind": "protocol",
-   "introduced": "13.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the protocol arrived in iOS 13, and nothing in iOS 6 sends or asks for what it declares",
-   "effect": "the protocol is not there: NSProtocolFromString answers nil",
-   "source": "SDK 16.4, CoreML"
-  },
-  {
-   "api": "MLModelCollection",
-   "kind": "class",
-   "introduced": "14.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, CoreML"
-  },
-  {
    "api": "MLModelCollectionDidChangeNotification",
    "kind": "constant",
    "introduced": "14.0",
@@ -382,23 +72,223 @@
    "source": "SDK 16.4, CoreML"
   },
   {
-   "api": "MLModelCollectionEntry",
-   "kind": "class",
-   "introduced": "14.0",
+   "api": "+[MLKey new]",
+   "kind": "method",
+   "introduced": "13.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, CoreML"
+   "reason": "Apple's own header declares it NS_UNAVAILABLE: a key, a model asset and an image constraint have no public initialiser, because a model builds them and an application only reads them",
+   "effect": "the method is not there, which is what NS_UNAVAILABLE means: an application compiled against Core ML's own header cannot send it, and one that sends it by name gets doesNotRecognizeSelector",
+   "source": "SDK 16.4, CoreML (the headers this package is built against)"
   },
   {
-   "api": "MLModelAsset",
-   "kind": "class",
+   "api": "+[MLMetricKey new]",
+   "kind": "method",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "Apple's own header declares it NS_UNAVAILABLE: a key, a model asset and an image constraint have no public initialiser, because a model builds them and an application only reads them",
+   "effect": "the method is not there, which is what NS_UNAVAILABLE means: an application compiled against Core ML's own header cannot send it, and one that sends it by name gets doesNotRecognizeSelector",
+   "source": "SDK 16.4, CoreML (the headers this package is built against)"
+  },
+  {
+   "api": "+[MLModelAsset new]",
+   "kind": "method",
    "introduced": "16.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+   "reason": "Apple's own header declares it NS_UNAVAILABLE: a key, a model asset and an image constraint have no public initialiser, because a model builds them and an application only reads them",
+   "effect": "the method is not there, which is what NS_UNAVAILABLE means: an application compiled against Core ML's own header cannot send it, and one that sends it by name gets doesNotRecognizeSelector",
+   "source": "SDK 16.4, CoreML (the headers this package is built against)"
+  },
+  {
+   "api": "+[MLParameterKey new]",
+   "kind": "method",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "Apple's own header declares it NS_UNAVAILABLE: a key, a model asset and an image constraint have no public initialiser, because a model builds them and an application only reads them",
+   "effect": "the method is not there, which is what NS_UNAVAILABLE means: an application compiled against Core ML's own header cannot send it, and one that sends it by name gets doesNotRecognizeSelector",
+   "source": "SDK 16.4, CoreML (the headers this package is built against)"
+  },
+  {
+   "api": "-[MLImageConstraint init]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "Apple's own header declares it NS_UNAVAILABLE: a key, a model asset and an image constraint have no public initialiser, because a model builds them and an application only reads them",
+   "effect": "the method is not there, which is what NS_UNAVAILABLE means: an application compiled against Core ML's own header cannot send it, and one that sends it by name gets doesNotRecognizeSelector",
+   "source": "SDK 16.4, CoreML (the headers this package is built against)"
+  },
+  {
+   "api": "-[MLKey init]",
+   "kind": "method",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "Apple's own header declares it NS_UNAVAILABLE: a key, a model asset and an image constraint have no public initialiser, because a model builds them and an application only reads them",
+   "effect": "the method is not there, which is what NS_UNAVAILABLE means: an application compiled against Core ML's own header cannot send it, and one that sends it by name gets doesNotRecognizeSelector",
+   "source": "SDK 16.4, CoreML (the headers this package is built against)"
+  },
+  {
+   "api": "-[MLMetricKey init]",
+   "kind": "method",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "Apple's own header declares it NS_UNAVAILABLE: a key, a model asset and an image constraint have no public initialiser, because a model builds them and an application only reads them",
+   "effect": "the method is not there, which is what NS_UNAVAILABLE means: an application compiled against Core ML's own header cannot send it, and one that sends it by name gets doesNotRecognizeSelector",
+   "source": "SDK 16.4, CoreML (the headers this package is built against)"
+  },
+  {
+   "api": "-[MLModel newState]",
+   "kind": "method",
+   "introduced": "18.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "a state is a recurrent model's own carry between one call and the next, and a recurrent model is one whose specification carries the recurrent layers, which the interpreter refuses by name (facts/CoreML/CoreML.md)",
+   "effect": "the method is not there: the selector is not sent at all",
+   "source": "SDK 16.4, CoreML (the headers this package is built against)"
+  },
+  {
+   "api": "-[MLModel predictionFromFeatures:usingState:error:]",
+   "kind": "method",
+   "introduced": "18.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "a state is a recurrent model's own carry between one call and the next, and a recurrent model is one whose specification carries the recurrent layers, which the interpreter refuses by name (facts/CoreML/CoreML.md)",
+   "effect": "the method is not there: the selector is not sent at all",
+   "source": "SDK 16.4, CoreML (the headers this package is built against)"
+  },
+  {
+   "api": "-[MLModel predictionFromFeatures:usingState:options:completionHandler:]",
+   "kind": "method",
+   "introduced": "18.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "a state is a recurrent model's own carry between one call and the next, and a recurrent model is one whose specification carries the recurrent layers, which the interpreter refuses by name (facts/CoreML/CoreML.md)",
+   "effect": "the method is not there: the selector is not sent at all",
+   "source": "SDK 16.4, CoreML (the headers this package is built against)"
+  },
+  {
+   "api": "-[MLModel predictionFromFeatures:usingState:options:error:]",
+   "kind": "method",
+   "introduced": "18.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "a state is a recurrent model's own carry between one call and the next, and a recurrent model is one whose specification carries the recurrent layers, which the interpreter refuses by name (facts/CoreML/CoreML.md)",
+   "effect": "the method is not there: the selector is not sent at all",
+   "source": "SDK 16.4, CoreML (the headers this package is built against)"
+  },
+  {
+   "api": "-[MLModelAsset init]",
+   "kind": "method",
+   "introduced": "16.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "Apple's own header declares it NS_UNAVAILABLE: a key, a model asset and an image constraint have no public initialiser, because a model builds them and an application only reads them",
+   "effect": "the method is not there, which is what NS_UNAVAILABLE means: an application compiled against Core ML's own header cannot send it, and one that sends it by name gets doesNotRecognizeSelector",
+   "source": "SDK 16.4, CoreML (the headers this package is built against)"
+  },
+  {
+   "api": "-[MLParameterKey init]",
+   "kind": "method",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "Apple's own header declares it NS_UNAVAILABLE: a key, a model asset and an image constraint have no public initialiser, because a model builds them and an application only reads them",
+   "effect": "the method is not there, which is what NS_UNAVAILABLE means: an application compiled against Core ML's own header cannot send it, and one that sends it by name gets doesNotRecognizeSelector",
+   "source": "SDK 16.4, CoreML (the headers this package is built against)"
+  },
+  {
+   "api": "MLFeatureDescription.stateConstraint",
+   "kind": "property",
+   "introduced": "18.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "the state constraint is a constraint on a state feature, and a state feature is a recurrent model's own carry between calls; this port reads no recurrent model, so there is no state to constrain",
+   "effect": "the property is not there: the selector is not sent at all",
+   "source": "SDK 16.4, CoreML (the headers this package is built against)"
+  },
+  {
+   "api": "MLModel.availableComputeDevices",
+   "kind": "property",
+   "introduced": "17.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "the set is the compute units a model may run on -- a CPU, a GPU, a neural engine -- and this release has one of them: iOS 6 has no Metal driver and no neural engine at all, so the enumeration of compute devices is a family of its own and is not carried here",
+   "effect": "the property is not there: the selector is not sent at all",
+   "source": "SDK 16.4, CoreML (the headers this package is built against)"
+  },
+  {
+   "api": "MLModelConfiguration.functionName",
+   "kind": "property",
+   "introduced": "18.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "the name is the entry point of a model of a program -- the mlProgram form -- and this port refuses that form by name: it reads the neural network, the tree ensemble, the GLM and the preprocessing models, and no other",
+   "effect": "the property is not there: the selector is not sent at all",
+   "source": "SDK 16.4, CoreML (the headers this package is built against)"
+  },
+  {
+   "api": "MLModelConfiguration.optimizationHints",
+   "kind": "property",
+   "introduced": "17.4",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "the hints are advice to the compiler that turns a model into weights for a particular device, and this port compiles no model: it reads a container and runs it, so there is nothing for a hint to advise",
+   "effect": "the property is not there: the selector is not sent at all",
+   "source": "SDK 16.4, CoreML (the headers this package is built against)"
+  },
+  {
+   "api": "MLModelDescription.stateDescriptionsByName",
+   "kind": "property",
+   "introduced": "18.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "a model that carries a state declares it as a feature of its own, and this port reads no model that does: the recurrent layers are refused by name (facts/CoreML/CoreML.md)",
+   "effect": "the property is not there: the selector is not sent at all",
+   "source": "SDK 16.4, CoreML (the headers this package is built against)"
+  },
+  {
+   "api": "MLBatchProvider",
+   "kind": "protocol",
+   "introduced": "12.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "the protocol arrived in iOS 12, and nothing in iOS 6 sends or asks for what it declares",
+   "effect": "the protocol is not there: NSProtocolFromString answers nil",
+   "source": "SDK 16.4, CoreML"
+  },
+  {
+   "api": "MLCustomLayer",
+   "kind": "protocol",
+   "introduced": "11.2",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "the protocol arrived in iOS 11, and nothing in iOS 6 sends or asks for what it declares",
+   "effect": "the protocol is not there: NSProtocolFromString answers nil",
+   "source": "SDK 16.4, CoreML"
+  },
+  {
+   "api": "MLCustomModel",
+   "kind": "protocol",
+   "introduced": "12.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "the protocol arrived in iOS 12, and nothing in iOS 6 sends or asks for what it declares",
+   "effect": "the protocol is not there: NSProtocolFromString answers nil",
+   "source": "SDK 16.4, CoreML"
+  },
+  {
+   "api": "MLWritable",
+   "kind": "protocol",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "the protocol arrived in iOS 13, and nothing in iOS 6 sends or asks for what it declares",
+   "effect": "the protocol is not there: NSProtocolFromString answers nil",
    "source": "SDK 16.4, CoreML"
   }
  ]

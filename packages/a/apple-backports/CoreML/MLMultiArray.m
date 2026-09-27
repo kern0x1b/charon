@@ -63,13 +63,13 @@
     }
     if (!charon_ml_shape_from_array(shape, dimensions, CHARON_ML_MAX_RANK, &rank) ||
         charon_ml_count_of_shape(dimensions, rank) == 0) {
-        charon_ml_error(error, CHARON_ML_ERROR_INVALID_PARAMETER,
+        charon_ml_error(error, CHARON_ML_ERROR_GENERIC,
                         @"the shape of a multi array must be one to eight dimensions of a positive length");
         return nil;
     }
     _array = charon_ml_array_alloc(charon_ml_type_of_array(dataType), dimensions, rank);
     if (_array.data == NULL) {
-        charon_ml_error(error, CHARON_ML_ERROR_INVALID_PARAMETER,
+        charon_ml_error(error, CHARON_ML_ERROR_GENERIC,
                         @"the multi array of that shape and type has no room for it on this device");
         return nil;
     }
@@ -133,7 +133,7 @@
         return nil;
     }
     if (!charon_ml_shape_from_array(strides, dimensions, CHARON_ML_MAX_RANK, &rank)) {
-        charon_ml_error(error, CHARON_ML_ERROR_INVALID_PARAMETER,
+        charon_ml_error(error, CHARON_ML_ERROR_GENERIC,
                         @"the strides of a multi array are one number per dimension of its shape");
         return nil;
     }

@@ -1,0 +1,23 @@
+{
+ "framework": "CoreML",
+ "entries": [
+  {
+   "api": "-[MLModel predictionFromFeatures:completionHandler:]",
+   "kind": "method",
+   "introduced": "17.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tools/coreml/check-host.sh"
+  },
+  {
+   "api": "-[MLModel predictionFromFeatures:options:completionHandler:]",
+   "kind": "method",
+   "introduced": "17.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tools/coreml/check-host.sh"
+  }
+ ]
+}

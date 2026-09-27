@@ -133,7 +133,13 @@ end
 local KEYS, SYMBOLS = {}, {}
 
 local function internal_symbol(name)
-    if name:startswith("_OBJC_IVAR_$_") or name:find("$shim", 1, true) then
+    -- A protocol object is registered by the image that carries it, through __objc_protolist, and
+    -- is found at run time by name through objc_getProtocol -- so a program links no symbol to
+    -- reach one and does not need the library to export it. Apple's own frameworks keep their
+    -- protocols local for that reason, and this library does the same: an exported
+    -- _OBJC_PROTOCOL_$_X would put a name in the library's exports that is not an API, which the
+    -- registry check reads as a symbol with no entry.
+    if name:startswith("_OBJC_IVAR_$_") or name:startswith("_OBJC_PROTOCOL_$_") or name:find("$shim", 1, true) then
         return true
     end
     local bare = name:match("^_OBJC_%u*CLASS_%$_(.+)$") or name:match("^_(.+)$") or name

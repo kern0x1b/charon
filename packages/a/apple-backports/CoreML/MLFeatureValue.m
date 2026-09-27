@@ -152,7 +152,7 @@
     MLFeatureValue *value;
     __block BOOL ok = YES;
     if (dictionary == nil) {
-        charon_ml_error(error, CHARON_ML_ERROR_INVALID_PARAMETER, @"a dictionary feature value needs a dictionary");
+        charon_ml_error(error, CHARON_ML_ERROR_FEATURE_TYPE, @"a dictionary feature value needs a dictionary");
         return nil;
     }
     value = [self valueOfKind:CHARON_ML_VALUE_DICTIONARY];
@@ -174,7 +174,7 @@
     }];
     if (!ok) {
         charon_ml_value_free(&value->_value);
-        charon_ml_error(error, CHARON_ML_ERROR_INVALID_PARAMETER,
+        charon_ml_error(error, CHARON_ML_ERROR_FEATURE_TYPE,
                         @"a dictionary feature value takes string keys and number values");
         return nil;
     }
@@ -206,6 +206,28 @@
         value->_type = type;
     }
     return value;
+}
+
+/* A value out of one the interpreter produced. The C's value moves into the object rather than
+ * being copied: the interpreter built it for this answer and gives up owning it, and a copy
+ * would be a second buffer holding the same numbers while the first was leaked or freed twice.
+ * The type is the model's own -- what the description of that output names -- and not the C's
+ * kind, because a number the model declared as a whole number is a whole number to a caller
+ * even though both kinds are the same struct in the C. */
++ (instancetype)charon_featureValueWithOwned:(charon_ml_value *)value type:(MLFeatureType)type
+{
+    MLFeatureValue *feature = [[MLFeatureValue alloc] init];
+    if (feature == nil) {
+        charon_ml_value_free(value);
+        return nil;
+    }
+    feature->_value = *value;
+    memset(value, 0, sizeof *value);
+    feature->_type = type;
+    if (feature->_value.kind == CHARON_ML_VALUE_ARRAY) {
+        feature->_multiArray = [[MLMultiArray alloc] initWithWindowOf:feature->_value.array];
+    }
+    return feature;
 }
 
 #pragma mark - reading the value

@@ -116,7 +116,7 @@ Each of these is refused with a line naming the layer, not approximated:
 
 ## The Objective-C surface this group carries
 
-Three classes, and what an application can do with them:
+Eight classes from the previous delivery, and what an application can do with them:
 
 - **`MLMultiArray`** — a typed, strided array of numbers. Every element type the specification
   names, its three initialisers (a shape, a shape with strides, and a caller's buffer with the
@@ -133,14 +133,72 @@ Three classes, and what an application can do with them:
 an application that writes through the array it handed over sees the change in the model, which
 is what passing an `MLMultiArray` to a model means.
 
+### The model surface, and the two protocols it needs
+
+The second delivery carries the surface an application hands a model through: what the model says
+about itself, what it takes, what it answers, and the two ways a caller gives it values.
+
+- **`MLFeatureDescription`** and the eight constraints Core ML declares around it --
+  `MLMultiArrayConstraint`, `MLMultiArrayShapeConstraint`, `MLImageConstraint`,
+  `MLImageSizeConstraint`, `MLImageSize`, `MLDictionaryConstraint`, `MLSequenceConstraint` and
+  `MLNumericConstraint`. Every one is built from the specification's own fields: a feature's name,
+  kind, optionality, element type, shape, size range, the set of shapes or of sizes, and a
+  sequence's element kind and count range. `-isAllowedValue:` is the model's own check, written out
+  rule by rule above.
+- **`MLDictionaryFeatureProvider`** and **`MLArrayBatchProvider`**, with the two protocols
+  `MLFeatureProvider` and `MLBatchProvider` between them.
+- **`MLModel`**, **`MLModelDescription`**, **`MLModelConfiguration`**, **`MLPredictionOptions`**
+  and **`MLModelAsset`**: load from a URL or from bytes, predict from one provider or from a
+  batch, answer the description, the metadata, the class labels and the parameters the container
+  carries, take the options of one run, and compile.
+- **`MLKey`**, **`MLParameterKey`**, **`MLMetricKey`** and **`MLParameterDescription`**: the keys
+  a model's parameters and metrics are named by, and what one parameter is.
+- **The eight exported strings**: `MLModelErrorDomain` and the five metadata keys, the two image
+  option keys. Their values were read out of a real Core ML on this host, and the domain is
+  `com.apple.CoreML` -- not the framework's name.
+
+Four things in that surface are worth writing down, because the obvious reading of each is wrong:
+
+- **The Core ML error codes are not consecutive.** `MLModelError` skips 2, and the numbers are
+  `Generic` 0, `FeatureType` 1, `IO` 3, `CustomLayer` 4, `CustomModel` 5, `Update` 6,
+  `Parameters` 7, `DecryptionKeyFetch` 8, `Decryption` 9, `ModelCollection` 10. The bridge's own
+  defines were wrong until they were read out of a real framework: a load that fails is `IO`, a
+  value of the wrong type for a feature is `FeatureType`, a parameter the model does not have is
+  `Parameters`, and a model this port cannot run is `Generic`, because none of the others
+  describes it.
+- **A protocol has to be a definition, not a declaration.** A class that conforms to
+  `MLFeatureProvider` names a protocol object at run time, and on a release with no Core ML there
+  is nothing to define it but this port. A protocol the compiler has already seen declared is a
+  *reference*, so `MLFeatureProvider.m` declares both protocols before it imports Core ML's
+  header, and the conforming classes are in the same file because a protocol nothing in a
+  translation unit uses is dropped from it. The objects are then hidden at the link, the way
+  Apple's own frameworks keep theirs, since a program reaches a protocol by name and not by
+  symbol.
+- **`MLMultiArrayConstraint.dataType` is zero when the model names no element type.** Core ML's
+  enumeration has no case for "none": every case of it is a real width, so zero is unambiguous
+  and a constraint that carries it accepts the array whatever its element type is.
+- **`+[MLModel compileModelAtURL:error:]` answers a URL, not a model.** It writes the
+  specification's own message into a bundle of the shape a compiled model has, under a name of its
+  own in the temporary directory, and answers where it put it. A bundle written this way is read
+  and run by this port; Apple's own compiled storage form is private and is not read, as above.
+
 ## What this group does not carry, and why
 
 The rest of Core ML's Objective-C surface is **not** in this delivery:
 
-- **`MLModel`, `MLModelDescription`, `MLFeatureDescription` and the eight constraint classes.**
-  The interpreter is there and measured; the classes that hand it to an application are the next
-  piece of work. They are `absent` in the registry with that reason, and the reason is a
-  statement about this delivery and not about the port: the C they would call is finished.
+- **The state API of iOS 18** -- `-[MLModel newState]`, the three predictions that take a state,
+  `MLFeatureDescription.stateConstraint` and `MLModelDescription.stateDescriptionsByName`. A state
+  is a recurrent model's own carry between calls, and the recurrent layers that would carry it are
+  refused by name above, so there is no state for any of them to answer about.
+- **`MLModel.availableComputeDevices`** and the compute-device family of iOS 17. The set names the
+  units a model may run on, and this release has one of them: no Metal driver on iOS 6 and no
+  neural engine at all.
+- **`MLModelConfiguration.optimizationHints`** and **`MLModelConfiguration.functionName`**: advice
+  to a compiler, and the entry point of a model of a program. This port compiles no model -- it
+  reads a container and runs it -- and refuses the `mlProgram` form by name.
+- **The initialisers Core ML declares `NS_UNAVAILABLE`**: a key, a model asset and an image
+  constraint have none, because a model builds them and an application only reads them. Not
+  implementing one is what `NS_UNAVAILABLE` means.
 - **The image constructors** (`+featureValueWithCGImage:`, `+featureValueWithImageAtURL:` and
   their variants). `+featureValueWithPixelBuffer:` is carried and takes a 32-bit BGRA or ARGB
   buffer; a CGImage or a URL is a decode that belongs with the image handling, and the port
