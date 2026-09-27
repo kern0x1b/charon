@@ -79,10 +79,16 @@ The release's map view cannot rotate or pitch. `MKMapCamera` therefore stores th
 pitch and derives everything else from the release's own projection: `centerCoordinateDistance`
 and the deprecated `altitude` are two names for one number (the eye ratio MapKit's own camera
 keeps, 1.5), and `-setCamera:animated:` turns a camera into the region the release's map view can
-actually show. `+cameraLookingAtMapItem:forViewSize:allowPitch:` needs a coordinate for the map
-item, and iOS 6's `MKMapItem` is a name and an address with no place at all -- the placemark
-arrived in iOS 9 -- so where the release has none the camera frames the whole world, which is what
-fits in the view, and says so in the registry.
+actually show. `+cameraLookingAtMapItem:forViewSize:allowPitch:` needs a coordinate for the map item, and
+the release's own `MKMapItem` has one: `-placemark`, `-initWithPlacemark:` and
+`-setPlacemark:` are in the armv7 cache of 6.1.3 (measured with `apple.objc.inventory`), so a map
+item from the release's own search, or from the geocoding below, carries the coordinate the camera
+frames. A map item with no placemark has none, and the camera then frames the whole world, which is
+what fits in the view, and the registry says so.
+
+> An earlier version of this file said the opposite -- that iOS 6's `MKMapItem` is a name and an
+> address with no place. That was wrong, and the measurement that corrected it is the same inventory
+> run: the release has the placemark and has never had `+mapItemWithName:address:` or `-address`.
 
 The map configurations are value objects: the elevation style, the emphasis style, the point of
 interest filter and showsTraffic are stored, copied, compared and archived, and the
@@ -179,10 +185,13 @@ Measured, not assumed, and it changes the shape of the work:
   `MKLocalSearch`: the release's own class answers, against Apple's own service, which is the best
   possible answer. Only `MKLocalSearchCompleter` (7.0) and `MKLocalSearchCompletion` (9.3) are
   missing, and the completer is a different problem again.
-- **`CLGeocoder` is on the release** (5.0), with `-geocodeAddressString:completionHandler:` and
-  `-reverseGeocodeLocation:completionHandler:` in the 6.1.3 cache. So `MKGeocodingRequest` and
-  `MKReverseGeocodingRequest` are built on the release's own geocoder, against Apple's own service,
-  and are not an external routing service at all.
+- **`CLGeocoder` is on the release** (5.0), with `-geocodeAddressString:completionHandler:`,
+  `-geocodeAddressString:inRegion:completionHandler:`, `-geocodeAddressDictionary:completionHandler:`
+  and `-reverseGeocodeLocation:completionHandler:` in the 6.1.3 cache, together with a `CLPlacemark`
+  carrying the whole address vocabulary. So `MKGeocodingRequest` and `MKReverseGeocodingRequest` are
+  built on the release's own geocoder, against Apple's own service, and are not an external service
+  at all. The map items they answer with are the release's own `MKMapItem`, built through the
+  release's own `-initWithPlacemark:` and `-setName:`.
 - **`MKDirections` (7.0) and `MKDirectionsResponse` have no release counterpart at all**, so those
   are the ones that need an open provider, and the delivery has to name it.
 
@@ -205,3 +214,59 @@ Measured, not assumed, and it changes the shape of the work:
 - The generated call test calls every implemented method on the emulator at 6.1.3, which is the
   only check that touches the parts a host cannot answer for: the drawing (the renderers are asked
   to draw into a bitmap context) and the delegate bridge.
+
+## The services, written
+
+Three of the four are over something the release already has; one is the only place in this library
+that reaches outside Apple.
+
+**`MKLocalSearchCompleter` (7.0) and `MKLocalSearchCompletion` (9.3), over the release's own
+`MKLocalSearch`.** Measured: `MKLocalSearch`, `MKLocalSearchRequest` and `MKLocalSearchResponse` are
+first exported at 6.1, and the release's own request carries `-naturalLanguageQuery` and `-region`
+while its own `MKLocalSearch` carries `-initWithRequest:`, `-startWithCompletionHandler:`, `-cancel`
+and `-isSearching`. So every search behind a completion here is **Apple's own search, running on the
+release**. What the release has no answer for, and what this file is, is the debounce (0.35 s),
+the cancellation, the result list, the `MKMapItem` to completion mapping with the header's own
+`NSValue`-wrapped highlight ranges, and the SDK's own `-completerDidUpdateResults:`.
+
+**`MKGeocodingRequest`, `MKReverseGeocodingRequest`, `MKAddress` and `MKAddressRepresentations`
+(26.0), over the release's own `CLGeocoder`.** Measured: `CLGeocoder` is first exported at 5.0 and
+the 6.1.3 cache holds `-geocodeAddressString:completionHandler:`,
+`-geocodeAddressString:inRegion:completionHandler:`, `-geocodeAddressDictionary:completionHandler:`,
+`-reverseGeocodeLocation:completionHandler:` and `-cancelGeocode`, together with a `CLPlacemark`
+carrying the whole address vocabulary. So the geocoding is **Apple's own geocoder on the release**,
+and no external service is involved.
+
+The one thing this measurement corrected, and it corrects an earlier claim in this file: the
+release's `MKMapItem` **does** carry a placemark. `apple.objc.inventory` on the 6.1.3 cache shows
+`-initWithPlacemark:`, `-placemark`, `-setPlacemark:`, `-setName:`, `+mapItemWithDictionary:` and
+`-placeID`, and it has **never** had `-address` or `+mapItemWithName:address:` (both measured absent
+by selector string). So the geocoding wrappers build the release's own `MKMapItem` around the
+release's own `MKPlacemark`, made from the geocoder's coordinate and address dictionary, and
+`+[MKMapCamera cameraLookingAtMapItem:forViewSize:allowPitch:]` frames that placemark's coordinate.
+
+**`MKLookAround*` (16.0): the wall, and Apple's own answer for it.** Look Around is Apple's own
+street-level imagery, served by Apple's own service. There is no public web API for it, no open
+equivalent, and nothing on this device that holds a panorama. So the six classes exist, every one of
+them answers the way Apple answers where it has no coverage -- a `nil` with `MKErrorDomain` code 1
+and the reason in the description -- and the two things a caller can check really are checked:
+`+[MKLookAroundSceneRequest isAvailable]` says NO, and the view controller is a real view controller
+whose delegate gets the header's own update and dismissal messages. Nothing is fabricated and no
+panorama is invented.
+
+**`MKDirections`, `MKDirectionsRequest`, `MKDirectionsResponse`, `MKRoute`, `MKRouteStep` and
+`MKETAResponse` (7.0), over OSRM.** This is **the one family in this library that reaches outside
+Apple**, and the provider is named here and in the source:
+
+> routing provider **OSRM**, the Open Source Routing Machine, at
+> `https://router.project-osrm.org` (`/route/v1/{driving,foot,bike}/...`, `overview=full`,
+> `geometries=polyline`, `steps=true`, `alternatives=true`), BSD-2-Clause.
+> The base URL is read from the `MKCHARON_OSRM_BASE` environment variable when a program sets one,
+> and defaults to the address above.
+
+The transport is the device's own: an `NSURLConnection` over HTTPS, which on iOS 6 is the release's
+own CFNetwork and the release's own TLS. The engine's polyline6 encoding is decoded with the
+release's own base64 into the release's own `MKPolyline`, so the route is drawn by the release's own
+renderer out of the release's own geometry; the distance and the duration are the engine's own, and
+the ETA is the request's departure date plus the engine's duration. `MKDirectionsTransportTypeTransit`
+has no OSRM profile and is answered with the walking one, which the registry says it is.

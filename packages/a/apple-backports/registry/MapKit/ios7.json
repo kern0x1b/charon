@@ -51,10 +51,10 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the member of a class the release has no answer for at all, so it is carried with the class and behaves as the SDK's own header says",
-      "effect": "the centre, the distance (and the deprecated altitude, which is the same number from the other end), the heading and the pitch, all four factory methods, -copyWithZone: and the archiving, every number derived from the release's own projection",
+      "reason": "the release's own MKMapItem carries a placemark -- -placemark and -initWithPlacemark: are in the armv7 cache of 6.1.3 (measured with apple.objc.inventory) -- so a map item from the release's own search has the coordinate to frame",
+      "effect": "the camera frames the map item's own placemark coordinate at a span that fits the view, pitched when the caller allows it; a map item with no placemark has no coordinate and the camera frames the whole world, which is what fits",
       "facts": "facts/MapKit/MapKit.md",
-      "source": "the SDK 16.4 header, and the release's own projection and geometry functions, measured in the armv7 cache of 6.1.3"
+      "source": "the armv7 dyld shared cache of 6.1.3, measured with apple.objc.inventory: MKMapItem carries -placemark, -initWithPlacemark:, -setPlacemark: and -setName:, and has no -address and no +mapItemWithName:address:"
     },
     {
       "api": "+[MKMapCamera camera]",
@@ -90,6 +90,50 @@
       "source": "the SDK 16.4 header, and the release's own projection and geometry functions, measured in the armv7 cache of 6.1.3"
     },
     {
+      "api": "-[MKDirections calculateDirectionsWithCompletionHandler:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the member of a class the release has no answer for, so it is carried with the class",
+      "effect": "-calculateDirectionsWithCompletionHandler: and -calculateETAWithCompletionHandler: ask OSRM over HTTPS through the device's own CFNetwork, off the caller's thread and answered on the main queue; -cancel is real",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder: MKDirections, MKDirectionsResponse, MKRoute, MKRouteStep and MKETAResponse are all first exported at 7.0"
+    },
+    {
+      "api": "-[MKDirections calculateETAWithCompletionHandler:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the member of a class the release has no answer for, so it is carried with the class",
+      "effect": "-calculateDirectionsWithCompletionHandler: and -calculateETAWithCompletionHandler: ask OSRM over HTTPS through the device's own CFNetwork, off the caller's thread and answered on the main queue; -cancel is real",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder: MKDirections, MKDirectionsResponse, MKRoute, MKRouteStep and MKETAResponse are all first exported at 7.0"
+    },
+    {
+      "api": "-[MKDirections cancel]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the member of a class the release has no answer for, so it is carried with the class",
+      "effect": "-calculateDirectionsWithCompletionHandler: and -calculateETAWithCompletionHandler: ask OSRM over HTTPS through the device's own CFNetwork, off the caller's thread and answered on the main queue; -cancel is real",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder: MKDirections, MKDirectionsResponse, MKRoute, MKRouteStep and MKETAResponse are all first exported at 7.0"
+    },
+    {
+      "api": "-[MKDirections initWithRequest:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the member of a class the release has no answer for, so it is carried with the class",
+      "effect": "-calculateDirectionsWithCompletionHandler: and -calculateETAWithCompletionHandler: ask OSRM over HTTPS through the device's own CFNetwork, off the caller's thread and answered on the main queue; -cancel is real",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder: MKDirections, MKDirectionsResponse, MKRoute, MKRouteStep and MKETAResponse are all first exported at 7.0"
+    },
+    {
       "api": "-[MKDistanceFormatter distanceFromString:]",
       "kind": "method",
       "introduced": "7.0",
@@ -110,6 +154,17 @@
       "effect": "-stringFromDistance: in the reader's measure and the requested style (the locale's own measurement system when units are default, metric, imperial, or imperial with yards) and -distanceFromString: the exact opposite, with the documented negative answer for a string it cannot read",
       "facts": "facts/MapKit/MapKit.md",
       "source": "the SDK 16.4 header, and the release's own projection and geometry functions, measured in the armv7 cache of 6.1.3"
+    },
+    {
+      "api": "-[MKLocalSearchCompleter cancel]",
+      "kind": "method",
+      "introduced": "9.3",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the member of a class the release has no answer for, so it is carried with the class",
+      "effect": "a keystroke's pause (0.35s) then the release's own -startWithCompletionHandler:, one completion per map item with the header's own NSValue-wrapped highlight ranges, -cancel real, and the SDK's own -completerDidUpdateResults: sent to the delegate",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder: MKLocalSearch carries -initWithRequest:, -startWithCompletionHandler:, -cancel and -isSearching; MKLocalSearchRequest carries -naturalLanguageQuery and -region"
     },
     {
       "api": "-[MKMapSnapshot pointForCoordinate:]",
@@ -552,6 +607,72 @@
       "source": "the SDK 16.4 header, and the release's own projection and geometry functions, measured in the armv7 cache of 6.1.3"
     },
     {
+      "api": "MKDirections",
+      "kind": "class",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the release has no directions service of any kind and Apple's map service has no public web API, so this is the one family here that reaches outside Apple",
+      "effect": "-calculateDirectionsWithCompletionHandler: and -calculateETAWithCompletionHandler: ask OSRM over HTTPS through the device's own CFNetwork, off the caller's thread and answered on the main queue; -cancel is real",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder: MKDirections, MKDirectionsResponse, MKRoute, MKRouteStep and MKETAResponse are all first exported at 7.0"
+    },
+    {
+      "api": "MKDirections.calculating",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the member of a class the release has no answer for, so it is carried with the class",
+      "effect": "-calculateDirectionsWithCompletionHandler: and -calculateETAWithCompletionHandler: ask OSRM over HTTPS through the device's own CFNetwork, off the caller's thread and answered on the main queue; -cancel is real",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder: MKDirections, MKDirectionsResponse, MKRoute, MKRouteStep and MKETAResponse are all first exported at 7.0"
+    },
+    {
+      "api": "MKDirectionsResponse",
+      "kind": "class",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "as MKDirections",
+      "effect": "the routes OSRM gave, with the request's own source and destination",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder"
+    },
+    {
+      "api": "MKDirectionsResponse.destination",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the member of a class the release has no answer for, so it is carried with the class",
+      "effect": "the routes OSRM gave, with the request's own source and destination",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder"
+    },
+    {
+      "api": "MKDirectionsResponse.routes",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the member of a class the release has no answer for, so it is carried with the class",
+      "effect": "the routes OSRM gave, with the request's own source and destination",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder"
+    },
+    {
+      "api": "MKDirectionsResponse.source",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the member of a class the release has no answer for, so it is carried with the class",
+      "effect": "the routes OSRM gave, with the request's own source and destination",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder"
+    },
+    {
       "api": "MKDistanceFormatter",
       "kind": "class",
       "introduced": "7.0",
@@ -596,6 +717,94 @@
       "source": "the SDK 16.4 header, and the release's own projection and geometry functions, measured in the armv7 cache of 6.1.3"
     },
     {
+      "api": "MKETAResponse",
+      "kind": "class",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "as MKDirections",
+      "effect": "the departure the request asked for, the arrival that follows from the engine's duration, the time itself, the distance, the destination, the source and the transport type",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder; the routing provider is OSRM"
+    },
+    {
+      "api": "MKETAResponse.destination",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the member of a class the release has no answer for, so it is carried with the class",
+      "effect": "the departure the request asked for, the arrival that follows from the engine's duration, the time itself, the distance, the destination, the source and the transport type",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder; the routing provider is OSRM"
+    },
+    {
+      "api": "MKETAResponse.distance",
+      "kind": "property",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the member of a class the release has no answer for, so it is carried with the class",
+      "effect": "the departure the request asked for, the arrival that follows from the engine's duration, the time itself, the distance, the destination, the source and the transport type",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder; the routing provider is OSRM"
+    },
+    {
+      "api": "MKETAResponse.expectedArrivalDate",
+      "kind": "property",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the member of a class the release has no answer for, so it is carried with the class",
+      "effect": "the departure the request asked for, the arrival that follows from the engine's duration, the time itself, the distance, the destination, the source and the transport type",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder; the routing provider is OSRM"
+    },
+    {
+      "api": "MKETAResponse.expectedDepartureDate",
+      "kind": "property",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the member of a class the release has no answer for, so it is carried with the class",
+      "effect": "the departure the request asked for, the arrival that follows from the engine's duration, the time itself, the distance, the destination, the source and the transport type",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder; the routing provider is OSRM"
+    },
+    {
+      "api": "MKETAResponse.expectedTravelTime",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the member of a class the release has no answer for, so it is carried with the class",
+      "effect": "the departure the request asked for, the arrival that follows from the engine's duration, the time itself, the distance, the destination, the source and the transport type",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder; the routing provider is OSRM"
+    },
+    {
+      "api": "MKETAResponse.source",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the member of a class the release has no answer for, so it is carried with the class",
+      "effect": "the departure the request asked for, the arrival that follows from the engine's duration, the time itself, the distance, the destination, the source and the transport type",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder; the routing provider is OSRM"
+    },
+    {
+      "api": "MKETAResponse.transportType",
+      "kind": "property",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the member of a class the release has no answer for, so it is carried with the class",
+      "effect": "the departure the request asked for, the arrival that follows from the engine's duration, the time itself, the distance, the destination, the source and the transport type",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder; the routing provider is OSRM"
+    },
+    {
       "api": "MKGeodesicPolyline",
       "kind": "class",
       "introduced": "7.0",
@@ -638,6 +847,127 @@
       "effect": "the symbol holds \"MKLaunchOptionsDirectionsModeDefault\", the value the host's own MapKit gave for it",
       "facts": "facts/MapKit/MapKit.md",
       "source": "macOS 27.0 (build 26A428), MapKit.framework, read through the extern its own SDK header declares; tests/backports/host/mapkit-constants compares every one of them on every run and fails the moment the host's framework disagrees or does not export the name"
+    },
+    {
+      "api": "MKLocalSearchCompleter",
+      "kind": "class",
+      "introduced": "9.3",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the release has MKLocalSearch, MKLocalSearchRequest and MKLocalSearchResponse at 6.1 and its own request carries -naturalLanguageQuery and -region, so the search behind every completion here is Apple's own search running on the release; what the release has no answer for is the debounce, the cancellation, the result list and the delegate message",
+      "effect": "a keystroke's pause (0.35s) then the release's own -startWithCompletionHandler:, one completion per map item with the header's own NSValue-wrapped highlight ranges, -cancel real, and the SDK's own -completerDidUpdateResults: sent to the delegate",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder: MKLocalSearch carries -initWithRequest:, -startWithCompletionHandler:, -cancel and -isSearching; MKLocalSearchRequest carries -naturalLanguageQuery and -region"
+    },
+    {
+      "api": "MKLocalSearchCompleter.addressFilter",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the member of a class the release has no answer for, so it is carried with the class",
+      "effect": "a keystroke's pause (0.35s) then the release's own -startWithCompletionHandler:, one completion per map item with the header's own NSValue-wrapped highlight ranges, -cancel real, and the SDK's own -completerDidUpdateResults: sent to the delegate",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder: MKLocalSearch carries -initWithRequest:, -startWithCompletionHandler:, -cancel and -isSearching; MKLocalSearchRequest carries -naturalLanguageQuery and -region"
+    },
+    {
+      "api": "MKLocalSearchCompleter.delegate",
+      "kind": "property",
+      "introduced": "9.3",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the member of a class the release has no answer for, so it is carried with the class",
+      "effect": "a keystroke's pause (0.35s) then the release's own -startWithCompletionHandler:, one completion per map item with the header's own NSValue-wrapped highlight ranges, -cancel real, and the SDK's own -completerDidUpdateResults: sent to the delegate",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder: MKLocalSearch carries -initWithRequest:, -startWithCompletionHandler:, -cancel and -isSearching; MKLocalSearchRequest carries -naturalLanguageQuery and -region"
+    },
+    {
+      "api": "MKLocalSearchCompleter.filterType",
+      "kind": "property",
+      "introduced": "9.3",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the member of a class the release has no answer for, so it is carried with the class",
+      "effect": "a keystroke's pause (0.35s) then the release's own -startWithCompletionHandler:, one completion per map item with the header's own NSValue-wrapped highlight ranges, -cancel real, and the SDK's own -completerDidUpdateResults: sent to the delegate",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder: MKLocalSearch carries -initWithRequest:, -startWithCompletionHandler:, -cancel and -isSearching; MKLocalSearchRequest carries -naturalLanguageQuery and -region"
+    },
+    {
+      "api": "MKLocalSearchCompleter.pointOfInterestFilter",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the member of a class the release has no answer for, so it is carried with the class",
+      "effect": "a keystroke's pause (0.35s) then the release's own -startWithCompletionHandler:, one completion per map item with the header's own NSValue-wrapped highlight ranges, -cancel real, and the SDK's own -completerDidUpdateResults: sent to the delegate",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder: MKLocalSearch carries -initWithRequest:, -startWithCompletionHandler:, -cancel and -isSearching; MKLocalSearchRequest carries -naturalLanguageQuery and -region"
+    },
+    {
+      "api": "MKLocalSearchCompleter.queryFragment",
+      "kind": "property",
+      "introduced": "9.3",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the member of a class the release has no answer for, so it is carried with the class",
+      "effect": "a keystroke's pause (0.35s) then the release's own -startWithCompletionHandler:, one completion per map item with the header's own NSValue-wrapped highlight ranges, -cancel real, and the SDK's own -completerDidUpdateResults: sent to the delegate",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder: MKLocalSearch carries -initWithRequest:, -startWithCompletionHandler:, -cancel and -isSearching; MKLocalSearchRequest carries -naturalLanguageQuery and -region"
+    },
+    {
+      "api": "MKLocalSearchCompleter.region",
+      "kind": "property",
+      "introduced": "9.3",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the member of a class the release has no answer for, so it is carried with the class",
+      "effect": "a keystroke's pause (0.35s) then the release's own -startWithCompletionHandler:, one completion per map item with the header's own NSValue-wrapped highlight ranges, -cancel real, and the SDK's own -completerDidUpdateResults: sent to the delegate",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder: MKLocalSearch carries -initWithRequest:, -startWithCompletionHandler:, -cancel and -isSearching; MKLocalSearchRequest carries -naturalLanguageQuery and -region"
+    },
+    {
+      "api": "MKLocalSearchCompleter.regionPriority",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the member of a class the release has no answer for, so it is carried with the class",
+      "effect": "a keystroke's pause (0.35s) then the release's own -startWithCompletionHandler:, one completion per map item with the header's own NSValue-wrapped highlight ranges, -cancel real, and the SDK's own -completerDidUpdateResults: sent to the delegate",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder: MKLocalSearch carries -initWithRequest:, -startWithCompletionHandler:, -cancel and -isSearching; MKLocalSearchRequest carries -naturalLanguageQuery and -region"
+    },
+    {
+      "api": "MKLocalSearchCompleter.resultTypes",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the member of a class the release has no answer for, so it is carried with the class",
+      "effect": "a keystroke's pause (0.35s) then the release's own -startWithCompletionHandler:, one completion per map item with the header's own NSValue-wrapped highlight ranges, -cancel real, and the SDK's own -completerDidUpdateResults: sent to the delegate",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder: MKLocalSearch carries -initWithRequest:, -startWithCompletionHandler:, -cancel and -isSearching; MKLocalSearchRequest carries -naturalLanguageQuery and -region"
+    },
+    {
+      "api": "MKLocalSearchCompleter.results",
+      "kind": "property",
+      "introduced": "9.3",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the member of a class the release has no answer for, so it is carried with the class",
+      "effect": "a keystroke's pause (0.35s) then the release's own -startWithCompletionHandler:, one completion per map item with the header's own NSValue-wrapped highlight ranges, -cancel real, and the SDK's own -completerDidUpdateResults: sent to the delegate",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder: MKLocalSearch carries -initWithRequest:, -startWithCompletionHandler:, -cancel and -isSearching; MKLocalSearchRequest carries -naturalLanguageQuery and -region"
+    },
+    {
+      "api": "MKLocalSearchCompleter.searching",
+      "kind": "property",
+      "introduced": "9.3",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the member of a class the release has no answer for, so it is carried with the class",
+      "effect": "a keystroke's pause (0.35s) then the release's own -startWithCompletionHandler:, one completion per map item with the header's own NSValue-wrapped highlight ranges, -cancel real, and the SDK's own -completerDidUpdateResults: sent to the delegate",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder: MKLocalSearch carries -initWithRequest:, -startWithCompletionHandler:, -cancel and -isSearching; MKLocalSearchRequest carries -naturalLanguageQuery and -region"
     },
     {
       "api": "MKMapCamera",
@@ -2189,6 +2519,182 @@
       "effect": "the polyline's points as a stroked path, and strokeStart/strokeEnd as the fractions of the line's point count the stroke runs over",
       "facts": "facts/MapKit/MapKit.md",
       "source": "the SDK 16.4 header, and the release's own projection and geometry functions, measured in the armv7 cache of 6.1.3"
+    },
+    {
+      "api": "MKRoute",
+      "kind": "class",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "as MKDirections",
+      "effect": "the route's polyline out of the release's own MKPolyline over the engine's own polyline6 encoding, its steps, the engine's distance and duration, and the header's own toll and highway flags (the engine says neither, so both are NO)",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder; the routing provider is OSRM, the Open Source Routing Machine, at https://router.project-osrm.org (BSD-2-Clause), named in the source and in the facts"
+    },
+    {
+      "api": "MKRoute.advisoryNotices",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the member of a class the release has no answer for, so it is carried with the class",
+      "effect": "the route's polyline out of the release's own MKPolyline over the engine's own polyline6 encoding, its steps, the engine's distance and duration, and the header's own toll and highway flags (the engine says neither, so both are NO)",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder; the routing provider is OSRM, the Open Source Routing Machine, at https://router.project-osrm.org (BSD-2-Clause), named in the source and in the facts"
+    },
+    {
+      "api": "MKRoute.distance",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the member of a class the release has no answer for, so it is carried with the class",
+      "effect": "the route's polyline out of the release's own MKPolyline over the engine's own polyline6 encoding, its steps, the engine's distance and duration, and the header's own toll and highway flags (the engine says neither, so both are NO)",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder; the routing provider is OSRM, the Open Source Routing Machine, at https://router.project-osrm.org (BSD-2-Clause), named in the source and in the facts"
+    },
+    {
+      "api": "MKRoute.expectedTravelTime",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the member of a class the release has no answer for, so it is carried with the class",
+      "effect": "the route's polyline out of the release's own MKPolyline over the engine's own polyline6 encoding, its steps, the engine's distance and duration, and the header's own toll and highway flags (the engine says neither, so both are NO)",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder; the routing provider is OSRM, the Open Source Routing Machine, at https://router.project-osrm.org (BSD-2-Clause), named in the source and in the facts"
+    },
+    {
+      "api": "MKRoute.hasHighways",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the member of a class the release has no answer for, so it is carried with the class",
+      "effect": "the route's polyline out of the release's own MKPolyline over the engine's own polyline6 encoding, its steps, the engine's distance and duration, and the header's own toll and highway flags (the engine says neither, so both are NO)",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder; the routing provider is OSRM, the Open Source Routing Machine, at https://router.project-osrm.org (BSD-2-Clause), named in the source and in the facts"
+    },
+    {
+      "api": "MKRoute.hasTolls",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the member of a class the release has no answer for, so it is carried with the class",
+      "effect": "the route's polyline out of the release's own MKPolyline over the engine's own polyline6 encoding, its steps, the engine's distance and duration, and the header's own toll and highway flags (the engine says neither, so both are NO)",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder; the routing provider is OSRM, the Open Source Routing Machine, at https://router.project-osrm.org (BSD-2-Clause), named in the source and in the facts"
+    },
+    {
+      "api": "MKRoute.name",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the member of a class the release has no answer for, so it is carried with the class",
+      "effect": "the route's polyline out of the release's own MKPolyline over the engine's own polyline6 encoding, its steps, the engine's distance and duration, and the header's own toll and highway flags (the engine says neither, so both are NO)",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder; the routing provider is OSRM, the Open Source Routing Machine, at https://router.project-osrm.org (BSD-2-Clause), named in the source and in the facts"
+    },
+    {
+      "api": "MKRoute.polyline",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the member of a class the release has no answer for, so it is carried with the class",
+      "effect": "the route's polyline out of the release's own MKPolyline over the engine's own polyline6 encoding, its steps, the engine's distance and duration, and the header's own toll and highway flags (the engine says neither, so both are NO)",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder; the routing provider is OSRM, the Open Source Routing Machine, at https://router.project-osrm.org (BSD-2-Clause), named in the source and in the facts"
+    },
+    {
+      "api": "MKRoute.steps",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the member of a class the release has no answer for, so it is carried with the class",
+      "effect": "the route's polyline out of the release's own MKPolyline over the engine's own polyline6 encoding, its steps, the engine's distance and duration, and the header's own toll and highway flags (the engine says neither, so both are NO)",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder; the routing provider is OSRM, the Open Source Routing Machine, at https://router.project-osrm.org (BSD-2-Clause), named in the source and in the facts"
+    },
+    {
+      "api": "MKRoute.transportType",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the member of a class the release has no answer for, so it is carried with the class",
+      "effect": "the route's polyline out of the release's own MKPolyline over the engine's own polyline6 encoding, its steps, the engine's distance and duration, and the header's own toll and highway flags (the engine says neither, so both are NO)",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder; the routing provider is OSRM, the Open Source Routing Machine, at https://router.project-osrm.org (BSD-2-Clause), named in the source and in the facts"
+    },
+    {
+      "api": "MKRouteStep",
+      "kind": "class",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "as MKDirections",
+      "effect": "the step's polyline, the engine's own name and manoeuvre as the notice, the transport type, and the step's own distance out of its own geometry and the release's own metres per map point",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder; the routing provider is OSRM"
+    },
+    {
+      "api": "MKRouteStep.distance",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the member of a class the release has no answer for, so it is carried with the class",
+      "effect": "the step's polyline, the engine's own name and manoeuvre as the notice, the transport type, and the step's own distance out of its own geometry and the release's own metres per map point",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder; the routing provider is OSRM"
+    },
+    {
+      "api": "MKRouteStep.instructions",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the member of a class the release has no answer for, so it is carried with the class",
+      "effect": "the step's polyline, the engine's own name and manoeuvre as the notice, the transport type, and the step's own distance out of its own geometry and the release's own metres per map point",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder; the routing provider is OSRM"
+    },
+    {
+      "api": "MKRouteStep.notice",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the member of a class the release has no answer for, so it is carried with the class",
+      "effect": "the step's polyline, the engine's own name and manoeuvre as the notice, the transport type, and the step's own distance out of its own geometry and the release's own metres per map point",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder; the routing provider is OSRM"
+    },
+    {
+      "api": "MKRouteStep.polyline",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the member of a class the release has no answer for, so it is carried with the class",
+      "effect": "the step's polyline, the engine's own name and manoeuvre as the notice, the transport type, and the step's own distance out of its own geometry and the release's own metres per map point",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder; the routing provider is OSRM"
+    },
+    {
+      "api": "MKRouteStep.transportType",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the member of a class the release has no answer for, so it is carried with the class",
+      "effect": "the step's polyline, the engine's own name and manoeuvre as the notice, the transport type, and the step's own distance out of its own geometry and the release's own metres per map point",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder; the routing provider is OSRM"
     },
     {
       "api": "MKScaleView",

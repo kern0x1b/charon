@@ -67,6 +67,36 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readwrite) id <MKOverlay> overlay;
 @end
 
+// MKAddressFilter, the iOS 18 filter of an address, declared here under Apple's own name and defined
+// in MKAddressFilter18.m, which is the object of its own release. Its option bits are the header's
+// own: the parts of an address a filter can name.
+typedef NS_OPTIONS(NSUInteger, MKAddressFilterOption) {
+    MKAddressFilterOptionCountry          = 1 << 0,
+    MKAddressFilterOptionPostalCode       = 1 << 1,
+    MKAddressFilterOptionLocality         = 1 << 2,
+    MKAddressFilterOptionSubLocality      = 1 << 3,
+    MKAddressFilterOptionAdministrativeArea = 1 << 4,
+    MKAddressFilterOptionSubAdministrativeArea = 1 << 5,
+};
+
+@interface MKAddressFilter : NSObject
++ (instancetype)filterIncludingAll;
++ (instancetype)filterExcludingAll;
+- (instancetype)initIncludingOptions:(MKAddressFilterOption)options;
+- (instancetype)initExcludingOptions:(MKAddressFilterOption)options;
+- (BOOL)includesOptions:(MKAddressFilterOption)options;
+- (BOOL)excludesOptions:(MKAddressFilterOption)options;
+@end
+
+// MKLocalSearchCompleter's two iOS 18 properties, which the 16.4 header does not declare: how hard
+// the region the completer searches in matters, and which parts of an address it is about. Declared
+// and not implemented here; they are a category of the SDK's own class and are implemented as one,
+// in the completer's own object.
+@interface MKLocalSearchCompleter (CharonPriority)
+@property (nonatomic, assign) NSInteger regionPriority;
+@property (nonatomic, copy) MKAddressFilter *addressFilter;
+@end
+
 // The rose's heading, which is this port's own: the header's MKCompassButton has a mapView and a
 // visibility and nothing that says which way the map is facing. Declared and not implemented here,
 // so the map view can set the rose as it turns.

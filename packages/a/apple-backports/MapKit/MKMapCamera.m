@@ -76,17 +76,19 @@ static const double CharonMapCameraEyeRatio = 1.5;
                             forViewSize:(CGSize)viewSize
                              allowPitch:(BOOL)allowPitch
 {
-    // A map item carries its place only where the release's own MKMapItem does: iOS 9 gave it a
-    // placemark, and on a release without one there is no coordinate here to frame, and the honest
-    // answer is then the whole world, which is what fits in the view at this size.
+    // The release's own map item carries a placemark: -placemark is in the armv7 cache of 6.1.3
+    // (measured with apple.objc.inventory), so a map item made by the release's own search, or by
+    // this port's geocoding, has the coordinate to frame. A map item with no placemark has none, and
+    // the honest answer then is the whole world, which is what fits in the view at this size.
     CLLocationCoordinate2D centre = CLLocationCoordinate2DMake(0.0, 0.0);
     double span = 360.0;
     id item = mapItem;
     if (item && [item respondsToSelector:@selector(placemark)]) {
-        CLLocation *(*placemark)(id, SEL) = (CLLocation *(*)(id, SEL))objc_msgSend;
-        CLLocation *place = placemark(item, @selector(placemark));
+        id (*placemark)(id, SEL) = (id (*)(id, SEL))objc_msgSend;
+        id place = placemark(item, @selector(placemark));
+        CLLocationCoordinate2D (*coordinate)(id, SEL) = (CLLocationCoordinate2D (*)(id, SEL))objc_msgSend;
         if (place) {
-            centre = place.coordinate;
+            centre = coordinate(place, @selector(coordinate));
             span = 0.02;
         }
     }
