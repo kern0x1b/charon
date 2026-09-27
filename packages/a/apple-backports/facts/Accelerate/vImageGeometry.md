@@ -361,3 +361,40 @@ shear - the same trap the ten-bit Y'CbCr path was. What the port *can* answer to
 the exact-copy case: a unit-scale filter with no slope and no translate, which is what the twenty-four
 `rotate90`-style measurements reduce to.
 
+## The kernel sweep: the weights are measured, and they are not a normalised Lanczos
+
+One source row, one pixel at a time set to full scale and every other pixel zero, so the destination *is*
+that pixel's weight; the pixel's position, the filter's scale and the shear's `xTranslate` swept. The whole
+table is in `.agent-work/runs/geo/kernel-weights.txt`, and the probe that builds it is
+`probe-kernel.m`.
+
+At **scale 1.0**, where the reported extent is 3, and a shear of slope zero:
+
+| xTranslate | the non-zero weights, in tap order |
+| --- | --- |
+| 0.00 | `1.0000` |
+| 0.25 | `0.0301  0.2710  0.8927` |
+| 0.50 | `0.0244  0.6114` |
+| 0.75 | `0.0074  0.2710  0.8927` |
+| 1.00 | `1.0000` |
+
+**These do not sum to one and they are not symmetric, so they are not `sinc(x)*sinc(x/a)` normalised per
+phase**, which is what a Lanczos3 fit would have to produce: at u = 0.5 a normalised Lanczos3 is symmetric
+about the sample, and the measured pair is 0.0244 against 0.6114. They sum to 1.1938, 0.6358, 1.2012 and
+1.0000. So either the shear contributes something of its own beyond the kernel - and it does have a
+`shearSlope` and a per-axis scale, either of which could - or the kernel is not Lanczos.
+
+That is a real finding and it is checkable rather than arguable, because the whole point of sweeping with a
+**slope of zero** was to make the mapped position land exactly on a source pixel, so the weights would be the
+kernel's alone. They are not, so the sweep has not separated the kernel from the shear yet. The next
+measurement is the one that does: **hold the filter's scale at 1 and vary only `xTranslate` in steps of 1/64
+rather than 1/4**, so the phase curve is dense enough to fit and a second sine is distinguishable from a
+first; and **sweep `shearSlope` as well**, since a slope of zero and a slope of one with the same translate
+differ by the shear's own contribution alone.
+
+The two published facts fit what has been measured and no more: the default kernel is Lanczos3 and Lanczos5
+under `kvImageHighQualityResampling`, and the support is scaled by 1/scale when downsampling. The extents are
+exactly that - 12, 6, 4, 3 for scales 0.25, 0.5, 0.75, 1.0, and constant at 3 from a scale of one upwards -
+so the support and the two constructors are settled and publishable. The coefficient curve is not, and until
+it is, a port that answered a rescaling shear would be guessing.
+
