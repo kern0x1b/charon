@@ -51,34 +51,35 @@ that never tracks looks like; nothing above is a claim that it works.
    the next frame. Found by the differential: 0 points and 0 planes, which is what a tracker that
    never matches a point looks like.
 
-### Two bugs in the test surface, and one of them was instructive
+### The open failure, narrowed
 
-The first surface was a **hash of the world position**, which is the wrong scene for this test and
-the reason the pick found nothing. A hash has a large gradient energy but almost none of it across
-both directions at once, and the Shi-Tomasi score takes the *smaller* of the two eigenvalues of the
-structure tensor, so it rejects a stripe however strong the stripe is. The tracker was right and the
-test was wrong. Replacing it with three sines of the world coordinates - a surface with real
-two-dimensional structure - is what a corner detector is looking for.
+**The corner pick returns nothing from the second frame on, whatever the frame contains.** Measured,
+not assumed:
 
-The frequencies then had to be reconciled with the sampling, and **that reconciliation is not
-finished**. Measured on the same 160x120 frame with the same score and the same threshold of 40:
+| the surface | positions above the score threshold |
+| --- | --- |
+| a hash of the world position, 7 to 13 per metre | 3 |
+| three sines at 20 to 30 per metre | 694 in the *worst* frame of the driven path |
+| three sines at 90 to 140 per metre | 936 from the origin, 0 from the second frame on, aliased |
 
-| spatial frequency of the surface | positions above the threshold | best score |
-| --- | --- | --- |
-| 7 to 13 per metre | 3 | 49.8 |
-| 90 to 140 per metre, camera at the origin | 936 | 47818.7 |
-| 90 to 140, camera on the driven path | **0 from the second frame on** | — |
+The middle row is the one that settles it: a surface that carries hundreds of corners in every
+frame, measured on the very frames the tracker is handed, and the pick still returns nothing. So the
+surface is not the cause, and neither is the threshold.
 
-The last row is the open problem, and it is a property of the *harness*: at 2 m those frequencies
-project to roughly ten cycles per pixel, so a turn of 5.73 degrees a step walks the sampling
-straight through the aliasing, and a scene that is well sampled from the origin is not well sampled
-from a turned camera. The frame the tracker reads has a mean squared gradient of 5849 - the texture is
-there - and the same loop in the same function scores every position below the threshold. The fix is
-a surface band-limited to what the camera can actually see at that distance, which is a property of
-the test and not of the tracker.
+The localisation, as measured:
 
-**ARKit is therefore not deliverable yet.** The classes, the configurations, the `isSupported`
-answers and the frame, anchor, hit-test and raycast plumbing are carried and the six files compile
-for armv7 / iOS 6.1.3 with no diagnostic. A session would start, report frames, and carry no points.
-Nothing in the registry claims otherwise, and the next thing to do is the corner pick: finish
-calibrating this harness, then read out the pose error it is built to measure.
+- the luma the tracker has read has a mean squared gradient of 5849 on frame 2 - the texture is
+  there, and the first frame's identical loop found 895 positions above the threshold;
+- the same loop, in the same function, on the next frame, scores every position below it;
+- the frame-processing entry point is handed a `CVPixelBuffer` the harness writes and the tracker
+  reads through its own stride and format logic.
+
+So: the read is right, the scene is right, the score and the threshold are right, and the pick
+stops finding anything after the first frame. That points at the pick's per-call state - the grid's
+`best`/`bestX`/`bestY`, and the `_luma` size it derives its cells from - rather than at the maths of
+the score, and that is where the next reading goes.
+
+**ARKit is not deliverable yet.** The classes, the configurations, the `isSupported` answers and
+the frame, anchor, hit-test and raycast plumbing are carried, and the six files compile for
+armv7 / iOS 6.1.3 with no diagnostic. A session would start, report frames, and carry no points.
+Nothing in the registry claims otherwise.

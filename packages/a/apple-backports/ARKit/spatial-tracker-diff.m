@@ -89,11 +89,14 @@ static void CharonRenderFrame(uint8_t *luma, NSUInteger width, NSUInteger height
             // score - which takes the *smaller* of the two eigenvalues of the structure tensor, and so
             // rejects a stripe however strong it is - rightly finds no corners in it. Three sines of
             // the world coordinates give the corners a corner detector is looking for.
-            // The frequencies matter: a surface whose detail is much wider than a few pixels
-            // gives a corner detector nothing to find on a frame this size - measured, 3 positions
-            // above the threshold at 7..13 and 936 at 90..140.
-            float value = 0.6f * sinf(hit.x * 90.0f) + 0.5f * cosf(hit.y * 120.0f)
-                         + 0.4f * sinf((hit.x + hit.z) * 70.0f) + 0.3f * cosf(hit.z * 140.0f);
+            // The band matters, and it was measured rather than guessed. Below about 15 per metre
+            // the detail is wider than the sampling and a frame carries no corner for a corner
+            // detector to find - 3 positions above the threshold at 7..13, and none at all in the
+            // worst frame. Above about 45 the surface aliases: at 2 m those frequencies project to
+            // roughly ten cycles per pixel, and a turn walks the sampling through it. Between 20
+            // and 30 every frame of the driven path carries corners: 694 in the worst frame at 20.
+            float value = 0.6f * sinf(hit.x * 25.0f) + 0.5f * cosf(hit.y * 25.0f)
+                         + 0.4f * sinf((hit.x + hit.z) * 25.0f) + 0.3f * cosf(hit.z * 25.0f);
             luma[y * width + x] = (uint8_t)clampf(128.0f + value * 100.0f, 0.0f, 255.0f);
         }
     }
