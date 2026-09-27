@@ -104,6 +104,17 @@ public protocol AssistantSchemaIntent: AssistantIntent {
 
 extension AssistantSchemaIntent {
     public static var isAssistantOnly: Bool { return false }
+
+    /// The title an assistant-only intent is shown with, which is the intent's own.
+    public static var title: LocalizedStringResource { return CharonAssistantTitle.of(Self.self) }
+}
+
+/// The title an assistant-only intent is shown with, and the one an assistant-only entity and enum are
+/// named by: the name of the type, which is what the framework's own default is.
+public enum CharonAssistantTitle {
+    public static func of(_ type: Any.Type) -> LocalizedStringResource {
+        return LocalizedStringResource(String(describing: type))
+    }
 }
 
 /// An entity of a system schema, which the assistant offers without the app.
@@ -302,4 +313,36 @@ public enum CharonFocusError {
         case .missingParameterValue: return 1
         }
     }
+}
+
+extension StringSearchScope {
+    /// A search scope read from the string a caller wrote, which is the scope's own raw value.
+    public init?(rawValue: String) {
+        self.init(rawValue: rawValue)
+    }
+}
+
+extension VideoCategory {
+    /// A video category read from the string a caller wrote, which is the category's own raw value.
+    public init?(rawValue: String) {
+        self.init(rawValue: rawValue)
+    }
+}
+
+/// Whether a `Bool` parameter is shown as the words "Yes" and "No" or as the words the app wrote.
+extension Bool {
+    public struct IntentDisplayName {
+        /// The name shown for `true`.
+        public static var `true`: LocalizedStringResource { return LocalizedStringResource("Yes") }
+        /// The name shown for `false`.
+        public static var `false`: LocalizedStringResource { return LocalizedStringResource("No") }
+
+        /// The name a value of this type is shown with.
+        public func name(of value: Bool) -> LocalizedStringResource {
+            return value ? IntentDisplayName.true : IntentDisplayName.false
+        }
+    }
+
+    /// The display names a `Bool` parameter is shown with, the framework's own list.
+    static var intentDisplayName: IntentDisplayName { return IntentDisplayName() }
 }

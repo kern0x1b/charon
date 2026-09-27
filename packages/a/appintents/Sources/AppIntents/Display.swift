@@ -18,6 +18,16 @@ public protocol TypeDisplayRepresentable {
 /// A value that names itself for one instance.
 public protocol InstanceDisplayRepresentable: CustomLocalizedStringResourceConvertible {
     var displayRepresentation: DisplayRepresentation { get }
+
+    /// A value that names itself is its own string, which is what the framework's own default is: the
+    /// title of the display representation.
+    var localizedStringResource: LocalizedStringResource { get }
+}
+
+extension InstanceDisplayRepresentable {
+    public var localizedStringResource: LocalizedStringResource {
+        return LocalizedStringResource(displayRepresentation.title)
+    }
 }
 
 /// A type whose every case names itself.

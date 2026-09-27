@@ -11,6 +11,9 @@ public protocol AppEntity: AppValue, DisplayRepresentable, Identifiable
     where ValueType == Self, ID: EntityIdentifierConvertible {
     /// The query that finds the entity when a caller names it, which is the entity's own query.
     associatedtype DefaultQuery: EntityQuery where DefaultQuery.Entity == Self
+
+    /// The property of an entity an intent is asked about, which is a parameter of the entity.
+    typealias Property = EntityProperty<Self>
 }
 
 /// An enum: a closed set of cases the app names, which a parameter carries.
@@ -129,6 +132,12 @@ public struct _RawRepresentableStringQuery<Entity>: EntityStringQuery
         return identifiers.compactMap { identifier in
             Entity(rawValue: CharonBox.box(identifier))
         }
+    }
+
+    /// The entity whose own value is the identifier the caller gave, which is what a raw-representable
+    /// entity's own case is.
+    public static func entity(for identifier: Entity.ID) -> Entity? {
+        return Entity(rawValue: identifier)
     }
 
     public func results() async throws -> [Entity] {

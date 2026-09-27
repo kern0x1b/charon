@@ -35,8 +35,45 @@ package("appintents")
         local sdk = toolchain:config("sdkdir")
         local swiftdir = path.join(package:installdir("lib"), "swift", "iphoneos")
         local objects = path.absolute("objects")
+        local probe_dir = path.absolute("probe")
         os.mkdir(objects)
         os.mkdir(swiftdir)
+        os.mkdir(probe_dir)
+
+        -- The Foundation types AppIntents' API is written in that this runtime may not have yet. Each is
+        -- measured, not assumed: a probe that uses the type the way the conformance does compiles only
+        -- when the runtime has it and is available at the port's release, and only then is the block
+        -- of Gated.swift that conforms it compiled into the module. What is left out is printed, so a
+        -- row that is missing is never mistaken for one that is placed.
+        local defs = {}
+        for _, probe in ipairs({
+            {flag = "CHARON_APPINTENTS_ATTRIBUTED_STRING", name = "AttributedString",
+             body = "import Foundation\npublic func probe() -> AttributedString { return AttributedString(\"x\") }"},
+            {flag = "CHARON_APPINTENTS_MEASUREMENT", name = "Measurement",
+             body = "import Foundation\npublic func probe() -> Measurement { return Measurement(value: 1, unit: UnitLength.meters) }"},
+            {flag = "CHARON_APPINTENTS_RECURRENCE_RULE", name = "Calendar.RecurrenceRule",
+             body = "import Foundation\npublic func probe() -> Calendar.RecurrenceRule { return Calendar.RecurrenceRule(weekOfMonth: 1, weekOfYear: 2, month: 3, dayOfWeek: 4) }"},
+        }) do
+            local source = path.join(probe_dir, "probe.swift")
+            io.writefile(source, probe.body)
+            local ok = try {function ()
+                os.vrunv(swiftc, table.join(swift.runtime_flags({
+                    architecture = package:arch(), deployment = minimum, sdk = sdk,
+                    resources = path.join(runtime:installdir(), "lib", "swift"),
+                    plugins = table.wrap((runtime:envs() or {}).SWIFT_PLUGIN_PATH)[1],
+                    module = "CharonAppIntentsProbe", optimize = "none", prefix_map = os.curdir() .. "=/appintents"}),
+                    {"-I", path.join(runtime:installdir(), "lib", "swift", "iphoneos"), "-typecheck", source})
+                return true
+            end}
+            os.tryrm(source)
+            if ok then
+                table.insert(defs, "-D" .. probe.flag)
+                print("%s: the runtime has %s, its conformance is in the module", package:name(), probe.name)
+            else
+                print("%s: the runtime has no %s at this release, its rows are left out of the module",
+                      package:name(), probe.name)
+            end
+        end
 
         -- One module, as Styx's Combine is one module: the whole framework in a single compile, so a
         -- declaration of one file sees every other. Availability checking stays on; what the port's
@@ -48,12 +85,13 @@ package("appintents")
             resources = path.join(runtime:installdir(), "lib", "swift"),
             plugins = table.wrap((runtime:envs() or {}).SWIFT_PLUGIN_PATH)[1],
             module = "AppIntents", optimize = "fastest", prefix_map = os.curdir() .. "=/appintents"}),
-            {"-I", swiftdir, "-emit-module", "-emit-module-path",
+            defs, {"-I", swiftdir, "-emit-module", "-emit-module-path",
              path.join(module, package:arch() .. "-apple-ios.swiftmodule"), "-c"},
             os.files(path.join("Sources", "AppIntents", "**.swift")), {"-o", path.join(objects, "AppIntents.o")})
         os.vrunv(swiftc, argv)
         os.vrunv(toolchain:tool("ar"), {"-rcs", path.join(package:installdir("lib"), "libAppIntents.a"), path.join(objects, "AppIntents.o")})
 
+        os.tryrm(probe_dir)
         package:setenv("CHARON_SWIFT_MODULES", swiftdir)
         os.cp(path.join(os.scriptdir(), "..", "..", "..", "LICENSE"), path.join(package:installdir("licenses")))
         os.cp("README.md", package:installdir("share"))
