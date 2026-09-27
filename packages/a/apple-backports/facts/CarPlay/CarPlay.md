@@ -185,6 +185,13 @@ operations, sends the delegate the four template lifecycle messages, and answers
 with **this device's own screen trait collection**, because the car is this device. `prefersDarkUser
 UserInterfaceStyle` is `inert`: the release has no dark mode, and there is nothing for it to change.
 
+**`CPWindow.mapButtonSafeAreaLayoutGuide` is `absent`, and the gate is why.** A layout guide is
+iOS 9 and this release has none: `apple.objc.inventory` finds no `-mapButtonSafeAreaLayoutGuide` on
+the release's `CPWindow`, and the gate's own imports stage named `_OBJC_CLASS_$_UILayoutGuide` as
+the one symbol `libCarPlayBackports.dylib` imported that the device's iOS 6.1.3 does not export. The
+map template's own buttons are therefore laid out inside the map view's own insets, and the
+registry row says so in those words.
+
 **The wall, per class, as `absent` (7 of them):** `CPTemplateApplicationScene` (13.0),
 `CPTemplateApplicationDashboardScene` (13.4), `CPTemplateApplicationInstrumentClusterScene` (15.4),
 `CPNavigationSession`, `CPSessionConfiguration`, `CPVoiceControlState` and `CPVoiceControlTemplate`.

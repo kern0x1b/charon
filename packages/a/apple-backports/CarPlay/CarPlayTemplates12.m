@@ -42,7 +42,6 @@ static CGRect CharonAspectFit(CGSize size, CGRect rect)
 // ============================ the window ============================
 
 @implementation CPWindow {
-    UILayoutGuide *_mapButtonSafeArea;
     __weak id _templateApplicationScene;
 }
 
@@ -53,20 +52,6 @@ static CGRect CharonAspectFit(CGSize size, CGRect rect)
         self.backgroundColor = [UIColor blackColor];
     }
     return self;
-}
-
-// The header's own map button safe area: the map buttons of a map template are laid out inside it,
-// and on this port it is a real layout guide with a real rect, so the buttons a template puts over
-// its map are constrained by the same guide a car's would be.
-- (UILayoutGuide *)mapButtonSafeAreaLayoutGuide
-{
-    if (!_mapButtonSafeArea) {
-        // A real layout guide, and the map buttons of a map template are added to it, which is what a
-        // layout guide is for. The release's own UILayoutGuide has no frame of its own -- the frame
-        // layout introduced came in iOS 11 -- so nothing is set here that the release cannot honour.
-        _mapButtonSafeArea = [[UILayoutGuide alloc] init];
-    }
-    return _mapButtonSafeArea;
 }
 
 // The scene this window belongs to. There is no car, so there is no scene: the getter is nil, which

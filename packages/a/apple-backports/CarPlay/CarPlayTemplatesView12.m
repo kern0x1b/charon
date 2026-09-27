@@ -857,11 +857,13 @@
     _charon_map_buttons = [[CharonMapButtons alloc] initWithFrame:CGRectMake(0.0, 460.0, 1024.0, 120.0)];
     _charon_map_buttons.charon_buttons = _mapButtons;
     _charon_map_buttons.backgroundColor = [UIColor clearColor];
-    // The window's own map button safe area, which is where the buttons go.
-    CPWindow *window = (CPWindow *)controller.contentWindow;
-    if (window) {
-        [_charon_map_buttons addLayoutGuide:window.mapButtonSafeAreaLayoutGuide];
-    }
+    // The map buttons sit inside the map view's own insets, which is what the window's
+    // mapButtonSafeAreaLayoutGuide is for on a release that has layout guides. UILayoutGuide is
+    // iOS 9 and the release has none (measured: -mapButtonSafeAreaLayoutGuide is absent from the
+    // armv7 cache of 6.1.3, and the gate named _OBJC_CLASS_$_UILayoutGuide as the one import the
+    // device's iOS does not export), so the property is registered absent and the inset is this
+    // port's own.
+    _charon_map_buttons.frame = CGRectMake(0.0, 440.0, 1024.0, 140.0);
     [_mapView addSubview:_charon_map_buttons];
     _charon_bar = [[CharonCarPlayBar alloc] initWithFrame:CGRectMake(0.0, 0.0, 176.0, 44.0)];
     _charon_bar.charon_buttons = self.barButtons;
