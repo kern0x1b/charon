@@ -2,6 +2,86 @@
   "framework": "UIKit",
   "entries": [
     {
+      "api": "-[UICollectionViewTransitionLayout initWithCurrentLayout:nextLayout:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "a transition layout holding the two layouts as they are given and a progress of 0",
+      "facts": "facts/UIKit/CollectionViewTransition.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/collectiontransition (transition.currentLayoutIsFrom, transition.nextLayoutIsTo, transition.progressAtStart)"
+    },
+    {
+      "api": "-[UICollectionViewTransitionLayout init]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "a transition layout with no layout on either side of it and a progress of 0; it has nothing to draw until it is given a pair",
+      "facts": "facts/UIKit/CollectionViewTransition.md",
+      "source": "the header of SDK 26.2, where init is the designated initializer of the superclass and this class's own initializer takes the two layouts"
+    },
+    {
+      "api": "-[UICollectionViewTransitionLayout initWithCoder:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "reads back the two layouts and the progress, under the keys currentLayout, nextLayout and transitionProgress; the header names no keys and an application never codes a transition layout, so these are the port's own",
+      "facts": "facts/UIKit/CollectionViewTransition.md",
+      "source": "the header of SDK 26.2, which names no coding keys for this class"
+    },
+    {
+      "api": "-[UICollectionViewTransitionLayout updateValue:forAnimatedKey:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "moves the progress to the value given and lays out again, so every element the transition draws moves with it",
+      "facts": "facts/UIKit/CollectionViewTransition.md",
+      "source": "the header of SDK 26.2; the host's own answers are recorded for the progress itself in tests/backports/host/collectiontransition"
+    },
+    {
+      "api": "-[UICollectionViewTransitionLayout valueForAnimatedKey:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the progress the transition is at",
+      "facts": "facts/UIKit/CollectionViewTransition.md",
+      "source": "the header of SDK 26.2; the host's own answers are recorded for the progress itself in tests/backports/host/collectiontransition"
+    },
+    {
+      "api": "UICollectionViewTransitionLayout.currentLayout",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the layout the transition is coming from, as it was given",
+      "facts": "facts/UIKit/CollectionViewTransition.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/collectiontransition (transition.currentLayoutIsFrom)"
+    },
+    {
+      "api": "UICollectionViewTransitionLayout.nextLayout",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the layout the transition is going to, as it was given",
+      "facts": "facts/UIKit/CollectionViewTransition.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/collectiontransition (transition.nextLayoutIsTo)"
+    },
+    {
+      "api": "UICollectionViewTransitionLayout.transitionProgress",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "how far the transition is between the two layouts; the caller's own number, held as given and bounded nowhere, and setting it lays out again; it survives finalizeLayoutTransition",
+      "facts": "facts/UIKit/CollectionViewTransition.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/collectiontransition (transition.progressSet, transition.progressAboveOne, transition.progressBelowZero, transition.progressAfterFinalize)"
+    },
+    {
       "api": "-[UICollectionViewLayout targetContentOffsetForProposedContentOffset:]",
       "kind": "method",
       "introduced": "7.0",

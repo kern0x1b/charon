@@ -2,6 +2,7 @@
 
 #pragma clang diagnostic ignored "-Wobjc-designated-initializers"
 #pragma clang diagnostic ignored "-Wobjc-property-implementation"
+#pragma clang diagnostic ignored "-Wincomplete-implementation"
 
 // The layout a collection view holds while it transitions between two layouts: every element it
 // draws is the element of the layout it is coming from and the element of the layout it is going
@@ -15,6 +16,8 @@
 @end
 
 @implementation CharonTransitionPair
+@synthesize from = _from;
+@synthesize to = _to;
 @end
 
 @implementation UICollectionViewTransitionLayout {
@@ -58,6 +61,12 @@ static UICollectionViewLayoutAttributes *CharonBlend(UICollectionViewLayoutAttri
     return attributes;
 }
 
+// The keys a transition layout is coded under. The header names none, and a transition layout is
+// never coded by an application, so these are the port's own and named after the properties.
+static NSString *const CharonCurrentLayoutKey = @"currentLayout";
+static NSString *const CharonNextLayoutKey = @"nextLayout";
+static NSString *const CharonTransitionProgressKey = @"transitionProgress";
+
 - (instancetype)initWithCurrentLayout:(UICollectionViewLayout *)currentLayout nextLayout:(UICollectionViewLayout *)nextLayout
 {
     if ((self = [super init])) {
@@ -65,6 +74,30 @@ static UICollectionViewLayoutAttributes *CharonBlend(UICollectionViewLayoutAttri
         _nextLayout = nextLayout;
     }
     return self;
+}
+
+// A transition layout with no layout on either side of it: the two are what it interpolates
+// between, so with none it has nothing to draw until it is given a pair.
+- (instancetype)init
+{
+    return [self initWithCurrentLayout:nil nextLayout:nil];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    if ((self = [super init])) {
+        _currentLayout = [coder decodeObjectForKey:CharonCurrentLayoutKey];
+        _nextLayout = [coder decodeObjectForKey:CharonNextLayoutKey];
+        _transitionProgress = (CGFloat)[coder decodeDoubleForKey:CharonTransitionProgressKey];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    [coder encodeObject:_currentLayout forKey:CharonCurrentLayoutKey];
+    [coder encodeObject:_nextLayout forKey:CharonNextLayoutKey];
+    [coder encodeDouble:_transitionProgress forKey:CharonTransitionProgressKey];
 }
 
 - (UICollectionViewLayout *)currentLayout
