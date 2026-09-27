@@ -12,6 +12,11 @@ public struct IntentItem<Value> where Value: _IntentValue {
     public let subtitle: LocalizedStringResource?
     public let image: DisplayRepresentation.Image?
 
+    /// The builder of a list of items, which is what a result's collection is written with. It is the
+    /// framework's own builder, reached through the file-scope one the initializers name: a nested
+    /// builder of a generic type cannot be named as an attribute without its arguments.
+    public typealias Builder = IntentItemBuilder<Value>
+
     public init(_ value: Value.ValueType) {
         self.value = value
         self.title = LocalizedStringResource(CharonIntentItemText.write(value))
@@ -57,16 +62,19 @@ enum CharonIntentItemText {
 }
 
 /// A list of items a result hands back, or a list of them in sections.
-public struct IntentItemCollection<Result>: ResultsCollection where Result: _IntentValue {
-    public typealias Section = IntentItemSection<Result>
+public struct IntentItemCollection<Item>: ResultsCollection where Item: _IntentValue {
+    public typealias Result = Item
+
+
+    public typealias Section = IntentItemSection<Item>
 
     public let promptLabel: LocalizedStringResource?
     public let usesIndexedCollation: Bool
-    public let items: [Result.ValueType]
-    public let sections: [IntentItemSection<Result>]
+    public let items: [Item.ValueType]
+    public let sections: [IntentItemSection<Item>]
 
     public init(promptLabel: LocalizedStringResource? = nil, usesIndexedCollation: Bool = false,
-                @IntentItemBuilder<Result> items: () -> [IntentItem<Result>]) {
+                items: () -> [IntentItem<Item>]) {
         self.promptLabel = promptLabel
         self.usesIndexedCollation = usesIndexedCollation
         self.items = items().map { $0.value }
@@ -74,7 +82,7 @@ public struct IntentItemCollection<Result>: ResultsCollection where Result: _Int
     }
 
     public init(promptLabel: LocalizedStringResource? = nil, usesIndexedCollation: Bool = false,
-                items: [Result.ValueType]) {
+                items: [Item.ValueType]) {
         self.promptLabel = promptLabel
         self.usesIndexedCollation = usesIndexedCollation
         self.items = items
@@ -82,7 +90,7 @@ public struct IntentItemCollection<Result>: ResultsCollection where Result: _Int
     }
 
     public init(promptLabel: LocalizedStringResource? = nil, usesIndexedCollation: Bool = false,
-                sections: [IntentItemSection<Result>]) {
+                sections: [IntentItemSection<Item>]) {
         self.promptLabel = promptLabel
         self.usesIndexedCollation = usesIndexedCollation
         self.items = sections.flatMap { $0.items }
@@ -90,19 +98,19 @@ public struct IntentItemCollection<Result>: ResultsCollection where Result: _Int
     }
 
     /// A list with nothing in it, which is what a result with nothing to show returns.
-    public static var empty: IntentItemCollection<Result> {
+    public static var empty: IntentItemCollection<Item> {
         return IntentItemCollection(promptLabel: nil, usesIndexedCollation: false, items: [])
     }
 }
 
 /// A section of a list of items a result hands back.
-public struct IntentItemSection<Result> where Result: _IntentValue {
+public struct IntentItemSection<Item> where Item: _IntentValue {
     public let title: LocalizedStringResource?
     public let subtitle: LocalizedStringResource?
     public let image: DisplayRepresentation.Image?
-    public let items: [Result.ValueType]
+    public let items: [Item.ValueType]
 
-    public init(_ title: LocalizedStringResource, @IntentItemBuilder<Result> items: () -> [IntentItem<Result>]) {
+    public init(_ title: LocalizedStringResource, items: () -> [IntentItem<Item>]) {
         self.title = title
         self.subtitle = nil
         self.image = nil
@@ -111,28 +119,28 @@ public struct IntentItemSection<Result> where Result: _IntentValue {
 
     public init(_ title: LocalizedStringResource, subtitle: LocalizedStringResource? = nil,
                 image: DisplayRepresentation.Image? = nil,
-                @IntentItemBuilder<Result> items: () -> [IntentItem<Result>]) {
+                items: () -> [IntentItem<Item>]) {
         self.title = title
         self.subtitle = subtitle
         self.image = image
         self.items = items().map { $0.value }
     }
 
-    public init(_ title: LocalizedStringResource, items: [Result.ValueType]) {
+    public init(_ title: LocalizedStringResource, items: [Item.ValueType]) {
         self.title = title
         self.subtitle = nil
         self.image = nil
         self.items = items
     }
 
-    public init(items: [Result.ValueType]) {
+    public init(items: [Item.ValueType]) {
         self.title = nil
         self.subtitle = nil
         self.image = nil
         self.items = items
     }
 
-    public init(title: LocalizedStringResource, items: [Result.ValueType]) {
+    public init(title: LocalizedStringResource, items: [Item.ValueType]) {
         self.title = title
         self.subtitle = nil
         self.image = nil
@@ -208,6 +216,9 @@ public struct IntentFile: Hashable, Sendable {
         return IntentFile(data: (try? data()) ?? Data(), filename: filename, type: contentType)
     }
 
+    /// The file the intent hands on, written by the caller's own handler into a file the framework
+    /// names. The row the framework's own declaration carries is `file(contentType:)`, so the
+    /// destination and the handler are the ones a caller passes after it.
     public static func file(contentType: String, destinationDirectory: URL? = nil,
                             fileHandler: (URL) throws -> Void) -> IntentFile {
         let directory = destinationDirectory ?? URL(fileURLWithPath: NSTemporaryDirectory())
@@ -555,4 +566,18 @@ public struct IntentCurrencyAmount: Equatable, Hashable, Sendable, DisplayRepres
     public typealias Specification = EmptyResolverSpecification<IntentCurrencyAmount>
 
     public static var defaultResolverSpecification: Specification { return Specification() }
+}
+
+/// The builder of a list of sections, which is what a collection is written with.
+@resultBuilder
+public enum IntentItemSectionBuilder<Item> where Item: _IntentValue {
+    public static func buildBlock() -> [IntentItemSection<Item>] { return [] }
+
+    public static func buildBlock(_ section: IntentItemSection<Item>) -> [IntentItemSection<Item>] {
+        return [section]
+    }
+
+    public static func buildExpression(_ expression: IntentItemSection<Item>) -> IntentItemSection<Item> {
+        return expression
+    }
 }
