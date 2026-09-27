@@ -25,23 +25,23 @@ typedef struct {
     uint32_t limb[BN_LIMBS];
 } BigNum;
 
-static inline void bn_zero(BigNum *out)
+static inline void charon_bn_zero(BigNum *out)
 {
     memset(out->limb, 0, sizeof(out->limb));
 }
 
-static inline void bn_set_u32(BigNum *out, uint32_t value)
+static inline void charon_bn_set_u32(BigNum *out, uint32_t value)
 {
-    bn_zero(out);
+    charon_bn_zero(out);
     out->limb[0] = value;
 }
 
-// Little-endian bytes in, little-endian bytes out; bn_from_bytes accepts a shorter array than the
-// width and zero-pads, and bn_to_bytes always writes exactly `length` bytes, zero-padded above.
-void bn_from_bytes(BigNum *out, const uint8_t *bytes, size_t length);
-void bn_to_bytes(uint8_t *bytes, size_t length, const BigNum *value);
+// Little-endian bytes in, little-endian bytes out; charon_bn_from_bytes accepts a shorter array than the
+// width and zero-pads, and charon_bn_to_bytes always writes exactly `length` bytes, zero-padded above.
+void charon_bn_from_bytes(BigNum *out, const uint8_t *bytes, size_t length);
+void charon_bn_to_bytes(uint8_t *bytes, size_t length, const BigNum *value);
 
-static inline int bn_cmp(const BigNum *left, const BigNum *right)
+static inline int charon_bn_cmp(const BigNum *left, const BigNum *right)
 {
     for (int index = BN_LIMBS - 1; index >= 0; --index) {
         if (left->limb[index] != right->limb[index])
@@ -50,7 +50,7 @@ static inline int bn_cmp(const BigNum *left, const BigNum *right)
     return 0;
 }
 
-static inline int bn_is_zero(const BigNum *value)
+static inline int charon_bn_is_zero(const BigNum *value)
 {
     for (int index = 0; index < BN_LIMBS; ++index) {
         if (value->limb[index])
@@ -59,13 +59,13 @@ static inline int bn_is_zero(const BigNum *value)
     return 1;
 }
 
-static inline int bn_is_odd(const BigNum *value)
+static inline int charon_bn_is_odd(const BigNum *value)
 {
     return value->limb[0] & 1;
 }
 
 // The index of the highest set bit plus one, so 0 for zero.
-static inline int bn_bits(const BigNum *value)
+static inline int charon_bn_bits(const BigNum *value)
 {
     for (int index = BN_LIMBS - 1; index >= 0; --index) {
         if (value->limb[index]) {
@@ -81,16 +81,16 @@ static inline int bn_bits(const BigNum *value)
     return 0;
 }
 
-// The number of bytes bn_to_bytes needs for this value, and the constant-time comparison HAP's
+// The number of bytes charon_bn_to_bytes needs for this value, and the constant-time comparison HAP's
 // MAC and key checks are written with.
-size_t bn_byte_length(const BigNum *value);
-int bn_equal_bytes(const BigNum *left, const uint8_t *right, size_t length);
+size_t charon_bn_byte_length(const BigNum *value);
+int charon_bn_equal_bytes(const BigNum *left, const uint8_t *right, size_t length);
 
 // out = left + right. The carry out of the top limb is returned so a caller working in a field
 // that cannot overflow can say so; a caller that cannot is the caller's error, not a silent wrap.
-uint32_t bn_add(BigNum *out, const BigNum *left, const BigNum *right);
+uint32_t charon_bn_add(BigNum *out, const BigNum *left, const BigNum *right);
 // out = left - right, which must not be negative.
-void bn_sub(BigNum *out, const BigNum *left, const BigNum *right);
+void charon_bn_sub(BigNum *out, const BigNum *left, const BigNum *right);
 
 // The Montgomery form of a modulus: R^2 mod n, and n' = -n^-1 mod 2^32, both precomputed once and
 // then reused by every multiplication in that modulus.
@@ -101,20 +101,20 @@ typedef struct {
     int limbs;          // how many limbs the modulus actually occupies, so the loops are that long
 } BigNumMont;
 
-void bn_mont_prepare(BigNumMont *mont, const BigNum *modulus);
+void charon_bn_mont_prepare(BigNumMont *mont, const BigNum *modulus);
 // out = (left * right * R^-1) mod n, the Montgomery product.
-void bn_mont_mul(const BigNumMont *mont, BigNum *out, const BigNum *left, const BigNum *right);
+void charon_bn_mont_mul(const BigNumMont *mont, BigNum *out, const BigNum *left, const BigNum *right);
 // out = value converted out of Montgomery form, i.e. value * R^-1 mod n.
-void bn_mont_reduce(const BigNumMont *mont, BigNum *out, const BigNum *value);
+void charon_bn_mont_reduce(const BigNumMont *mont, BigNum *out, const BigNum *value);
 // out = value^exponent mod n, through Montgomery form, for any odd modulus.
-void bn_mont_pow(const BigNumMont *mont, BigNum *out, const BigNum *value, const BigNum *exponent);
+void charon_bn_mont_pow(const BigNumMont *mont, BigNum *out, const BigNum *value, const BigNum *exponent);
 // out = value^exponent mod n where the exponent is a small integer, the shape SRP's `g` needs.
-void bn_mont_pow_small(const BigNumMont *mont, BigNum *out, const BigNum *value, uint32_t exponent);
+void charon_bn_mont_pow_small(const BigNumMont *mont, BigNum *out, const BigNum *value, uint32_t exponent);
 // out = (left + right) mod n.
-void bn_mont_add(const BigNumMont *mont, BigNum *out, const BigNum *left, const BigNum *right);
+void charon_bn_mont_add(const BigNumMont *mont, BigNum *out, const BigNum *left, const BigNum *right);
 // out = (left - right) mod n.
-void bn_mont_sub(const BigNumMont *mont, BigNum *out, const BigNum *left, const BigNum *right);
+void charon_bn_mont_sub(const BigNumMont *mont, BigNum *out, const BigNum *left, const BigNum *right);
 // out = (left^2) mod n in the field sense, i.e. the Montgomery product of left with itself.
-void bn_mont_square(const BigNumMont *mont, BigNum *out, const BigNum *left);
+void charon_bn_mont_square(const BigNumMont *mont, BigNum *out, const BigNum *left);
 
 #endif
