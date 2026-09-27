@@ -1,0 +1,125 @@
+{
+  "framework": "UIKit",
+  "entries": [
+    {
+      "api": "-[UICollectionViewLayout targetContentOffsetForProposedContentOffset:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the content offset asked for is the content offset given, so a layout that does not answer it comes to rest where the collection view proposed; a layout that wants another overrides this",
+      "facts": "facts/UIKit/CollectionViewTransition.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/collectiontransition (targetContentOffset, targetContentOffsetZero)"
+    },
+    {
+      "api": "-[UICollectionViewLayout prepareForTransitionToLayout:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "asked of the layout the collection view is leaving, before the transition layout goes in its place, and answered here by doing nothing, which is what a layout that has not overridden it does; a layout that snapshots its own state for the transition overrides this",
+      "facts": "facts/UIKit/CollectionViewTransition.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/collectiontransition (prepareAndFinalizeLeaveContentSize)"
+    },
+    {
+      "api": "-[UICollectionViewLayout prepareForTransitionFromLayout:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "asked of the layout the collection view is going to, before the transition layout goes in place of the old one, and answered here by doing nothing, which is what a layout that has not overridden it does; a layout that snapshots its own state for the transition overrides this",
+      "facts": "facts/UIKit/CollectionViewTransition.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/collectiontransition (prepareAndFinalizeLeaveContentSize)"
+    },
+    {
+      "api": "-[UICollectionViewLayout finalizeLayoutTransition]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "asked of both layouts once the animation block is done, and answered here by doing nothing, which is what a layout that has not overridden it does; a layout that clears what it snapshotted for the transition overrides this",
+      "facts": "facts/UIKit/CollectionViewTransition.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/collectiontransition (prepareAndFinalizeLeaveContentSize, transition.progressAfterFinalize)"
+    },
+    {
+      "api": "-[UICollectionViewLayout indexPathsToDeleteForSupplementaryViewOfKind:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "an empty array: the base layout draws no supplementary view of that kind, so a transition takes none of them away; a layout that draws headers or footers answers this with the ones the other layout does not have",
+      "facts": "facts/UIKit/CollectionViewTransition.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/collectiontransition (the twelve element cases, which answer 0 on the base layout and on a flow layout in a live collection view with no supplementary views registered)"
+    },
+    {
+      "api": "-[UICollectionViewLayout indexPathsToInsertForSupplementaryViewOfKind:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "an empty array: the base layout draws no supplementary view of that kind, so a transition adds none of them; a layout that draws headers or footers answers this with the ones the other layout does not have",
+      "facts": "facts/UIKit/CollectionViewTransition.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/collectiontransition (the twelve element cases)"
+    },
+    {
+      "api": "-[UICollectionViewLayout indexPathsToDeleteForDecorationViewOfKind:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "an empty array: the base layout draws no decoration view of that kind, so a transition takes none of them away; a layout that draws decoration views answers this with the ones the other layout does not have",
+      "facts": "facts/UIKit/CollectionViewTransition.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/collectiontransition (the twelve element cases)"
+    },
+    {
+      "api": "-[UICollectionViewLayout indexPathsToInsertForDecorationViewOfKind:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "an empty array: the base layout draws no decoration view of that kind, so a transition adds none of them; a layout that draws decoration views answers this with the ones the other layout does not have",
+      "facts": "facts/UIKit/CollectionViewTransition.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/collectiontransition (the twelve element cases)"
+    },
+    {
+      "api": "-[UICollectionView startInteractiveTransitionToCollectionViewLayout:completion:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "tells the layout in place that it is to be left and the layout given that it is to be entered, puts a transition layout holding the two in place of the old one, and hands that layout back for the caller to move; nil for no layout, for the layout already in place, and while a transition is already running, rather than a second transition contradicting the first",
+      "facts": "facts/UIKit/CollectionViewTransition.md",
+      "source": "the header of SDK 26.2 for the two-argument completion; the driven transition is checked by tests/backports/device/collectiontransition on hardware, because a UIKit app launched by xmake emulate never reaches didFinishLaunchingWithOptions"
+    },
+    {
+      "api": "-[UICollectionView finishInteractiveTransition]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "moves the progress to the end of the transition over the animation, leaves the collection view holding the layout it was going to, tells both layouts the transition is done, and hands the completion a completed and a finished; nothing when no transition is running",
+      "facts": "facts/UIKit/CollectionViewTransition.md",
+      "source": "the header of SDK 26.2 for the two-argument completion; the driven transition is checked by tests/backports/device/collectiontransition on hardware"
+    },
+    {
+      "api": "-[UICollectionView cancelInteractiveTransition]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "moves the progress back to where the transition started, leaves the collection view holding the layout it came from, tells both layouts the transition is done, and hands the completion a completion that did not complete and a finished; nothing when no transition is running",
+      "facts": "facts/UIKit/CollectionViewTransition.md",
+      "source": "the header of SDK 26.2 for the two-argument completion; the driven transition is checked by tests/backports/device/collectiontransition on hardware"
+    },
+    {
+      "api": "-[UICollectionView setCollectionViewLayout:animated:completion:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "with an animation, the transition to the layout asked for run to its end, the block here handed a finished where the interactive completion is handed a completed and a finished; without one, or with a transition already running, the layout is put in place at once and the block is handed a finished",
+      "facts": "facts/UIKit/CollectionViewTransition.md",
+      "source": "the header of SDK 26.2, where this block is void (^)(BOOL) and the interactive one is void (^)(BOOL, BOOL); the driven transition is checked by tests/backports/device/collectiontransition on hardware"
+    }
+  ]
+}

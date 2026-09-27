@@ -72,11 +72,10 @@
       "kind": "class",
       "introduced": "7.0",
       "minimum": "6.0",
-      "status": "inert",
-      "reason": "the release's collection view has no layout to layout transition, so it never makes a transition layout or drives its progress",
-      "effect": "the class keeps the two layouts and a progress an application sets, and answers 0 for every animated key; it lays out nothing itself, so an application that makes one gets a layout with no attributes",
-      "facts": "facts/UIKit/UIPress.md",
-      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/presses; the header of SDK 16.4"
+      "status": "implemented",
+      "effect": "the layout a collection view holds while it moves between two layouts: every element it draws is the element of the layout it comes from and the element of the layout it goes to, placed and sized and faded at the progress between them; the progress is the caller's own number and is held as given, and the animated keys read and move that same progress",
+      "facts": "facts/UIKit/CollectionViewTransition.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/collectiontransition (the transition.progress cases); the driven transition is checked by tests/backports/device/collectiontransition on hardware"
     },
     {
       "api": "UIPress.key",

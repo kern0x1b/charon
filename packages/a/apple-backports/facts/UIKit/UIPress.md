@@ -20,12 +20,10 @@ event, so both classes only exist.
 
 ## UICollectionViewTransitionLayout, iOS 7.0
 
-The layout a collection view puts in place while it animates from one layout to another, with the two layouts and a
-progress from 0 to 1. The release's collection view has no such animation, so it never makes one.
+The layout a collection view puts in place while it moves from one layout to another, with the two layouts and the
+progress between them. The release's collection view lays out through the invalidation context but has no such
+animation, so the port drives the transition itself; see [CollectionViewTransition.md](CollectionViewTransition.md),
+which carries the whole of it. What is left here is what the release alone decides.
 
 - `-initWithCurrentLayout:nextLayout:` keeps the two layouts as they are given; the progress is 0 and can be set.
 - The superclass is `UICollectionViewLayout`.
-- `-updateValue:forAnimatedKey:` and `-valueForAnimatedKey:` keep nothing outside a running transition: the host answers 0
-  after an update, and so does the port.
-- The layout produces no attributes of its own on the release: the host interpolates between the two layouts, the port
-  does not.
