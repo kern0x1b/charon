@@ -1,0 +1,4 @@
+# Run output, not source: the logs the emulator run leaves (configure, install, run, guest) and the
+# heavy.sh wrapper log. facts/AVFAudio/AVAudioUnitSampler.md pastes the verdict; nothing here is tracked.
+run/
+background.log
