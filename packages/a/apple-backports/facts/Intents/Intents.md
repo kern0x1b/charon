@@ -73,11 +73,12 @@ Ten classes are hand written in `CharonIntents100.m`; the other 104 of the 10.0.
   three ways of being made are therefore all there is to implement, and each one really
   obtains what it says. `imageNamed:` resolves the name in the app's own asset catalogue
   through UIKit, which is where the catalogue lives on every release this port covers.
-  `systemImageNamed:` is registered **absent**, not implemented: the system images are SF
-  Symbols, they arrived with iOS 13, and no release this package covers has a set of them, so
-  there is no API on this release that could be asked for one. The answer would be no image —
-  which is what `imageNamed:` gives for a name the app has none of — but a member whose behaviour
-  does not exist is written down as absent rather than as a body that returns nil. `imageWithURL:` reads the URL and answers no image for a URL it cannot read, which is the
+  `systemImageNamed:` is **not carried at all**, and its registry entry says so: the system
+  images are SF Symbols, they arrived with iOS 13, and no release this package covers has a set
+  of them, so there is no API on this release that could be asked for one and no behaviour to
+  implement. A body that returned nil would be answered by the class and would be a claim this
+  port cannot make, so the class has no such method, `respondsToSelector:` answers no, and the
+  header's own availability mark (iOS 14) is still on it, so a port cannot call it either. `imageWithURL:` reads the URL and answers no image for a URL it cannot read, which is the
   header's own `nullable` on that method.
 * **`INPreferences`** answers `INSiriAuthorizationStatusRestricted` for
   `siriAuthorizationStatus`, which is the header's own wording for a system where Siri

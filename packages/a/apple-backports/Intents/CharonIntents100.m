@@ -60,14 +60,6 @@
     return [self charon_imageWithName:name data:data width:image.size.width height:image.size.height];
 }
 
-+ (instancetype)systemImageNamed:(NSString *)systemImageName
-{
-    // The system images are SF Symbols, which arrived with iOS 13, and this release carries no
-    // set of them: the answer for a name the system has no symbol for is no image, which is
-    // what the class's own imageNamed: answers for a name the app has none of.
-    return nil;
-}
-
 + (instancetype)imageWithImageData:(NSData *)imageData
 {
     if (!imageData) {
