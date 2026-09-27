@@ -13,7 +13,7 @@ function failures(opt)
     end
     local root = path.join(os.tmpdir(), "lift_overlay_test")
     local folder = path.join("System", "Library", "Frameworks", "Fix.framework", "Headers")
-    local function lifted(lines, registry)
+    local function lifted(lines, registry, expected)
         os.tryrm(root)
         local sdk = path.join(root, "sdk")
         -- the macros in a header of their own, as the SDK has them: the location of a use that names a file only where it differs from the last
@@ -34,7 +34,7 @@ function failures(opt)
         local result, failure
         try {function ()
             result = lift.lift({clang = opt.clang, swiftc = path.join(opt.swift, "bin", "swiftc"), sdk = sdk, triple = "armv7-apple-ios6.1.3",
-                                minimum = "6.1.3", registry = root, outputdir = path.join(root, "out"), expected = false})
+                                minimum = "6.1.3", registry = root, outputdir = path.join(root, "out"), expected = expected or false})
         end, catch {function (why) failure = tostring(why) end}}
         return result, failure
     end
@@ -61,6 +61,26 @@ function failures(opt)
     expect("a method spelled Class.selector: is refused by name", failure and failure:find("FixView.draw: is a method not spelled", 1, true) ~= nil, true)
     result, failure = lifted({"@interface FixView : NSObject", "- (void)draw:(int)value API_AVAILABLE(ios(9.0));", "@end"}, {["-[FixView draw:]"] = "implemented"})
     expect("the same method spelled -[Class selector:] is lifted", failure, nil)
+    -- what the lift leaves alone is compared with the set measured for the SDK: the exact set passes, a set with a line more or a line less, or none, fails naming it
+    local header = {"void FixOwnLift(void) API_AVAILABLE(ios(9.0));"}
+    local registry = {FixOwnLift = "implemented", FixNowhere = "implemented"}
+    local measured = ""
+    result, failure = lifted(header, registry)
+    expect("a lift with expected = false", failure, nil)
+    measured = io.readfile(path.join(root, "out", "left-alone.txt"))
+    expect("what it leaves alone has the name no header declares", measured:find("unmatched\tFixNowhere\tfunction\n", 1, true) ~= nil, true)
+    local function against(expected)
+        local _, why = lifted(header, registry, expected)
+        return why
+    end
+    expect("the exact set passes", against("# a comment\n" .. measured), nil)
+    local none = against("")
+    expect("no set fails naming the name and saying there is none", none and none:find("new: unmatched FixNowhere function", 1, true) ~= nil and none:find("no set is measured", 1, true) ~= nil, true)
+    local more = against(measured .. "unmatched\tFixGone\tfunction\n")
+    expect("a set with a name that is gone fails naming it", more and more:find("no longer found: unmatched FixGone function", 1, true) ~= nil and more:find("no set is measured", 1, true) == nil, true)
+    local less = against("unmatched\tFixOther\tfunction\n")
+    expect("a set of another name fails with both", less and less:find("new: unmatched FixNowhere function", 1, true) ~= nil and less:find("no longer found: unmatched FixOther function", 1, true) ~= nil, true)
+
     -- a framework with no umbrella header that keeps generations of its API in folders (OpenGLES's ES1, ES2, ES3): the newest is read, and a
     -- name only it declares is lowered there; the older one is not read, so a name in it is left alone, and its copy is not written
     os.tryrm(root)

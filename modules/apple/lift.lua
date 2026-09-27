@@ -2077,8 +2077,13 @@ function lift(opt)
     if opt.expected then
         local differing = differences(left, opt.expected)
         if #differing > 0 then
-            raise("what the lift leaves alone is not the set measured for this SDK (%d differences; left-alone.txt in the output has what was found): %s",
-                  #differing, table.concat(differing, "; "))
+            -- a set with no line at all is the one of an SDK nobody measured (the recipe gives "" for a file that is not there)
+            local measured = false
+            for line in opt.expected:gmatch("[^\n]+") do
+                measured = measured or not line:startswith("#")
+            end
+            raise("what the lift leaves alone is not the set measured for this SDK (%s%d differences; left-alone.txt in the output has what was found): %s",
+                  measured and "" or "no set is measured for it, ", #differing, table.concat(differing, "; "))
         end
     end
     local classes, rest, kinds = split_unmatched(unmatched, listed)

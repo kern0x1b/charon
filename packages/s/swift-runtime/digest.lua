@@ -1,3 +1,3 @@
 -- Written by tools/recipe-digests.lua; a test compares it with the sources. It is what the recipe's build hash takes of
 -- its own Lua, and it does not change when only a comment or the layout does.
-swift_runtime_sources_digest = "28b48d56f12e4bb54eef4ad626665587"
+swift_runtime_sources_digest = "9c27537c55274b75b394862373298cbc"
