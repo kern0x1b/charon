@@ -11,8 +11,11 @@
 #import "CharonAccessibility.h"
 
 // What the tables do not cover becomes a space, and this is how many characters that was, so a
-// caller can tell a total translation from a partial one instead of reading the input back.
-@interface AXBrailleTranslationResult (CharonUnmapped)
+// caller can tell a total translation from a partial one instead of reading the input back. It is
+// a class extension and not a category on purpose: the host differential renames the class on the
+// command line, and an extension follows the class through the rename where a category's
+// declaration and the class's own implementation do not.
+@interface AXBrailleTranslationResult ()
 
 - (NSUInteger)charon_unmappedCount;
 
