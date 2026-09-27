@@ -424,7 +424,25 @@ local function queue_step(emulator, folder, opt, found)
     local work = path.join(folder, "queue")
     local envs = {XMAKE_GLOBALDIR = path.join(work, "store"), CHARON_HOME = path.join(work, "home")}
     os.mkdir(work)
+    -- The install must land in the store named by XMAKE_GLOBALDIR and nowhere else: on xmake 3.1.1 an addon
+    -- installed into the machine's own store becomes the active one for every project on it
+    -- (charon/AGENTS.md, the trap the coordinator reserves). Measured 2026-09-28 around this step: the listing
+    -- of ~/.xmake/addons and addons.conf are byte for byte what they were, and no addons.conf.bak-* appears.
+    local shared = path.join(os.getenv("HOME"), ".xmake", "addons")
+    local before = os.exists(shared) and os.files(shared) or {}
     os.iorunv("xmake", {"addon", "--install", "-y", path.absolute(path.join(opt.modules, ".."))}, {curdir = work, envs = envs})
+    if os.isdir(shared) then
+        for _, name in ipairs(os.files(shared)) do
+            if not table.contains(before, name) then
+                table.insert(found, "emulator_test's own xmake addon --install added " .. name .. " to the machine's own ~/.xmake/addons, and on xmake 3.1.1 that makes it the active addon for every project")
+            end
+        end
+    end
+    -- where it landed: the private store is the whole point, so where the install went is the measurement
+    local landed = os.files(path.join(work, "store"))
+    if #landed == 0 and not os.isdir(path.join(work, "store")) then
+        table.insert(found, "emulator_test's xmake addon --install left no store of its own under " .. work .. ", so where it installed is not what XMAKE_GLOBALDIR says")
+    end
     -- A queue that already holds a slot passes it down and runs the command
     -- itself, and both ways have to answer with the status of what they ran.
     for _, held in ipairs({"", "1"}) do
