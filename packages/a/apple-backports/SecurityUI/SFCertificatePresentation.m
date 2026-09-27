@@ -12,6 +12,13 @@
 @property (nonatomic, copy) NSArray<NSString *> *lines;
 @property (nonatomic, strong) NSURL *helpURL;
 @property (nonatomic, copy) void (^dismissHandler)(void);
+
+// The trust's own content, read with the Security calls this release already carries. A NULL trust
+// is what a caller that reached the unavailable -init holds, and then there is nothing to describe,
+// so the sheet shows its title and message alone. It is a class method of the controller that draws
+// the lines rather than a function of the file, so that what a sheet shows and what a test can ask
+// for are one call and not two that agree by accident.
++ (NSArray<NSString *> *)linesForTrust:(SecTrustRef)trust;
 @end
 
 @implementation CharonCertificateSheetController {
@@ -95,13 +102,7 @@
         [application openURL:self.helpURL];
 }
 
-@end
-
-// The trust's own content, read with the Security calls this release already carries. A NULL trust
-// is what a caller that reached the unavailable -init holds, and then there is nothing to describe,
-// so the sheet shows its title and message alone.
-
-static NSArray<NSString *> *CharonCertificateLines(SecTrustRef trust)
++ (NSArray<NSString *> *)linesForTrust:(SecTrustRef)trust
 {
     if (!trust)
         return @[];
@@ -137,6 +138,11 @@ static NSArray<NSString *> *CharonCertificateLines(SecTrustRef trust)
         }
     }
 
+#ifndef CHARON_HOST_DIFFERENTIAL
+    // macCatalyst has no SecTrustCopyProperties - the call is API_UNAVAILABLE there, not deprecated -
+    // so a host build cannot compile this line, and the host is the oracle for the other two lines of a
+    // sheet. The lines it contributes are the trust's own dates and policy, and the device test
+    // (tests/backports/emulate) is what covers them; see facts/SecurityUI/SFCertificatePresentation.md.
     NSArray *properties = (__bridge_transfer NSArray *)SecTrustCopyProperties(trust);
     for (NSDictionary *property in properties) {
         NSString *label = property[@"label"];
@@ -144,8 +150,11 @@ static NSArray<NSString *> *CharonCertificateLines(SecTrustRef trust)
         if ([label isKindOfClass:[NSString class]] && value && value != [NSNull null])
             [lines addObject:[NSString stringWithFormat:@"%@: %@", label, value]];
     }
+#endif
     return lines;
 }
+
+@end
 
 @interface SFCertificatePresentation ()
 @property (nonatomic, weak) UIViewController *presentation;
@@ -164,7 +173,11 @@ static NSArray<NSString *> *CharonCertificateLines(SecTrustRef trust)
 - (instancetype)initWithTrust:(SecTrustRef)trust
 {
     if ((self = [super init])) {
-        _trust = (SecTrustRef)CFRetain(trust);
+        // Retained only when there is something to retain: CFRetain(NULL) traps, and the header's
+        // unavailable -init below is the one caller that passes NULL. Found by the host differential's
+        // sheet.trustOfUnavailableInit case, which trapped before this guard.
+        if (trust)
+            _trust = (SecTrustRef)CFRetain(trust);
     }
     return self;
 }
@@ -198,7 +211,7 @@ static NSArray<NSString *> *CharonCertificateLines(SecTrustRef trust)
     CharonCertificateSheetController *sheet = [[CharonCertificateSheetController alloc] init];
     sheet.sheetTitle = self.title;
     sheet.sheetMessage = self.message;
-    sheet.lines = CharonCertificateLines(self.trust);
+    sheet.lines = [[CharonCertificateSheetController class] linesForTrust:self.trust];
     sheet.helpURL = self.helpURL;
     sheet.dismissHandler = dismissHandler;
     sheet.modalPresentationStyle = UIModalPresentationFormSheet;

@@ -37,8 +37,25 @@ default: `initWithTrust:NULL`. A presentation with no trust is a real, usable ob
 it shows what it was given, and it dismisses - and it claims nothing about a certificate it does not
 have.
 
-## Not measured against a host
+## The host differential, and the two lines it cannot reach
 
-`SFCertificatePresentation` is iOS 18.4 and the host's own UIKit has no such class, so there is no
-differential for it; the emulation of the sheet is the device call test, listed in the delivery as
-not run. What is measured is the release's surface the sheet is built from, above.
+`tests/backports/host/certificatepresentation` builds a real `SecTrustRef` on the host out of two
+embedded certificates - a leaf for "Charon Backports" and the test CA that issued it, both written out
+as DER so the chain is the same on every machine - and requires the port's sheet to say what the host's
+own Security says about it: the same subject summary, the same chain line for the certificate behind
+the leaf, the same wording for the same `SecTrustResultType`, and no line at all for the NULL trust the
+header's unavailable `-init` holds. `title`, `message` and `helpURL` are read back through the port's
+own accessors, and three mutations of the line-building - a different certificate, a different verdict,
+an unmarked chain line - must each change a record or the run fails.
+
+What the host cannot answer is `SecTrustCopyProperties`: it is `API_UNAVAILABLE(maccatalyst)`, not
+deprecated, so a host build cannot even compile the call, and the `SecTrustCopyProperties` lines are
+behind `#ifndef CHARON_HOST_DIFFERENTIAL` in the armv7 build and in no other. Those lines are the
+trust's own dates and policy, and the emulator is what covers them. The host has no
+`SFCertificatePresentation` of its own in this SDK either, so the oracle is the trust and not the
+system's sheet - which is the same shape the port's `Security/SecTrustEvaluateWithError.m` is in.
+
+The differential found one real defect the delivery had shipped: `-initWithTrust:` called
+`CFRetain(trust)` unconditionally, and the `-init` the header marks unavailable passes NULL, so the one
+caller the header says not to write trapped. The retain is now guarded, and the case that traps on it
+(`sheet.trustOfUnavailableInit`) is in the suite.
