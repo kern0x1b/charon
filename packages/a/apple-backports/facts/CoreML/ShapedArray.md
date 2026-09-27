@@ -58,6 +58,26 @@ the enumeration and the enumeration needs no code, and every other CoreML type t
 — `MLModel`, `MLMultiArray` itself, `MLFeatureValue` — is a class with methods, which is the
 CoreML package's work and is not begun here.
 
+## What this module is over, and what it is not waiting for
+
+The overlay is a module **named `CoreML`**, in `packages/c/createml/files/CoreML/`, and it sits over
+`0b610213`'s Objective-C CoreML: the one declaration it needs from it is `MLMultiArrayDataType`, which
+is header-only, and the class that gives the family its name — `MLMultiArray` — is theirs and is not
+touched here.
+
+**It needs no symbol from their library, and that is why it builds now.** The overlay's
+`MLShapedArrayScalar` returns an enumeration *value*; returning it links nothing. So the module
+compiles and links before their package is merged and compiles and links unchanged after, and
+`packages/c/createml/xmake.lua` does **not** declare a dependency on `charon@apple-backports`'s
+`coreml` config — declaring one against a config that does not exist in main yet would make this
+package unresolvable, which is waiting by the back door.
+
+What their merge *does* change is nothing here and one thing in the registry: their `coreml` config
+brings `libCoreMLBackports.dylib` and the `MLMultiArray` class, and the rows this series marks
+`absent` stay `absent` until their own registry entries land. The two series touch
+`registry/CoreML/` and nothing else, and the coordinator has told them this file's names so neither
+writes them twice.
+
 ## What a caller can and cannot do with it
 
 A caller can name a scalar type's `multiArrayDataType` and can build an `MLShapedArray` of that scalar
