@@ -2092,9 +2092,12 @@ function lift(opt)
             classes = classes, undeclared = undeclared, types = lowered_types, kept_types = kept_types}
 end
 
--- What the lift leaves alone, one line each, sorted: `class<TAB>name<TAB>` for an implemented class no header declares,
--- `unmatched<TAB>name<TAB>kind` for another name the search found no declaration of (kind as the registry gives it, or
--- "function or constant"), `undeclared<TAB>member<TAB>how` for a registered member whose owner reaches none.
+-- What the lift leaves alone, one line each, sorted: `class<TAB>name<TAB>` for an implemented class the search found no declaration of,
+-- `unmatched<TAB>name<TAB>kind` for another name it found none of (kind as the registry gives it, or "function or constant"),
+-- `undeclared<TAB>member<TAB>how` for a registered member whose owner reaches none. These are names the lift did not reach: a
+-- name no header declares (a private class, a compiler-rt intrinsic, a later SDK's API), or one whose header it does not read. A
+-- set measured for an SDK holds what was found, and is no proof that the SDK declares none of them: each line has to be a name
+-- no header declares, or be told apart (a registry spelling lift() reads, a folder of headers it reads) when it is a defect.
 function left_alone(unmatched, undeclared, listed)
     local lines = {}
     local classes, rest, kinds = split_unmatched(unmatched, listed)

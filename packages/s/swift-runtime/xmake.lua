@@ -348,7 +348,7 @@ package("swift-runtime")
                                       minimum = minimum, registry = backported:installdir("share"),
                                       outputdir = path.join(package:installdir("share"), "lift"),
                                       expected = os.isfile(measured) and io.readfile(measured) or ""})
-            print("lifted %d marks in %d headers for %d implemented API; left alone: %d classes no header declares, %d other names no header declares, %d members no class reaches a declaration of (share/lift/left-alone.txt)",
+            print("lifted %d marks in %d headers for %d implemented API; left alone: %d classes, %d other names the lift found no declaration of, %d members no class reaches a declaration of (share/lift/left-alone.txt)",
                   result.lifted, result.headers, result.implemented, #result.classes, #result.unmatched, #result.undeclared)
             lifted = {"-vfsoverlay", result.vfs}
             package:setenv("CHARON_SWIFT_LIFTED_HEADERS", result.vfs)
