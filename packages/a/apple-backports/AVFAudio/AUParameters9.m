@@ -1,4 +1,4 @@
-#import "CharonAUParameter.h"
+#import "CharonAUAudioUnit.h"
 
 @implementation AUParameterNode {
 @protected

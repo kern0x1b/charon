@@ -1,7 +1,34 @@
 #import "CharonAVFAudio.h"
 #import <AudioUnit/AudioUnit.h>
+#import <AudioToolbox/AUAudioUnit.h>
+
+// Shared private plumbing for the AudioUnit.framework classes this folder carries: AUParameterNode
+// with its group, tree and leaf, AUAudioUnitBus and AUAudioUnitBusArray, AUAudioUnitPreset and
+// AUAudioUnit itself.
+//
+// The release has no AudioUnit.framework: on iOS 6.1.3 the whole AudioUnit C API and the whole
+// AUGraph API live in AudioToolbox, and they are there in full - AudioComponentInstanceNew for the
+// unit, AudioUnitGetProperty/SetProperty for every property, AudioUnitRender for the input a render
+// block pulls, AudioUnitScheduleParameters for a scheduled value, and NewAUGraph/AUGraphOpen/
+// AUGraphAddNode/AUGraphNodeInfo/AUGraphInitialize for a graph. So the classes below are built
+// directly on those. Nothing here is a translation of Apple's, because there is nothing on this
+// release to translate.
+//
+// The AUAudioUnit the modern headers name is a handle of the AudioUnit.framework of iOS 9, and its C
+// entry points (AUAudioUnitInitialize, AUAudioUnitRender, AUAudioUnitGetClass) are not exported by
+// iOS 6.1.3. The unit this port holds and hands out is therefore the v2 AudioUnit every release
+// carries, reached through the same mechanism a v2 host of that release used: a render callback
+// installed with kAudioUnitProperty_SetRenderCallback, and AudioUnitRender to pull.
 
 NS_ASSUME_NONNULL_BEGIN
+
+// The address of a parameter is its three v2 coordinates packed into one word, from the top down:
+// identifier, then scope, then element. The header's AUParameterAddress, and the packing both ways
+// is this file's because both sides of it are here.
+static inline AUParameterAddress CharonAddress(AudioUnitParameterID identifier, AudioUnitScope scope, AudioUnitElement element)
+{
+    return ((AUParameterAddress)identifier << 32) | ((AUParameterAddress)scope << 16) | (AUParameterAddress)element;
+}
 
 // AudioUnitParameterInfo is the v2 wire format a real unit answers kAudioUnitProperty_ParameterInfo
 // in. SDK 26.2 no longer declares it - its AudioUnitProperties.h names the property and its value
@@ -21,27 +48,6 @@ struct CharonAudioUnitParameterInfo {
     AudioUnitParameterOptions flags;
 };
 typedef struct CharonAudioUnitParameterInfo CharonAudioUnitParameterInfo;
-
-// Shared private plumbing for the AudioUnit.framework classes this folder carries: AUParameterNode
-// and its group, tree and leaf, AUAudioUnitBus and AUAudioUnitBusArray, AUAudioUnitPreset and
-// AUAudioUnit itself.
-//
-// The release has no AudioUnit.framework: on iOS 6.1.3 the whole AudioUnit C API - AudioComponent
-// discovery, AudioUnitSetProperty/GetProperty/GetPropertyInfo, AudioUnitRender, AudioUnitInitialize,
-// AudioUnitReset, AudioUnitScheduleParameters - and the whole AUGraph API live in AudioToolbox, which
-// is where they are measured to be. So the classes below are built directly on those: a real
-// AudioComponentInstanceNew for the unit, a real AudioUnitSetProperty for every property, a real
-// AudioUnitRender for the input the render block pulls, and a real
-// AudioUnitGetPropertyInfo(kAudioUnitProperty_ParameterInfo) walk for the parameter tree. Nothing
-// here is a translation of Apple's, because there is nothing on this release to translate.
-
-// The address of a parameter is its three v2 coordinates packed into one word, from the top down:
-// identifier, then scope, then element. The header's AUParameterAddress, and the packing both ways
-// is this file's because both sides of it are here.
-static inline AUParameterAddress CharonAddress(AudioUnitParameterID identifier, AudioUnitScope scope, AudioUnitElement element)
-{
-    return ((AUParameterAddress)identifier << 32) | ((AUParameterAddress)scope << 16) | (AUParameterAddress)element;
-}
 
 // What one parameter of a real unit is, as that unit describes it. The AUParameter is the header's
 // value object; this is what it holds, and the AudioUnit behind it is the unit the value is read
@@ -78,9 +84,7 @@ static inline AUParameterAddress CharonAddress(AudioUnitParameterID identifier, 
 @synthesize owner = _owner;
 @end
 
-// The tree a real unit publishes, built by asking that unit. The walk is AudioUnitGetPropertyInfo
-// with kAudioUnitProperty_ParameterInfo, and every range, unit, flag and name below is that call's
-// answer - not a table the port chose.
+// The tree a real unit publishes, built by asking that unit.
 @interface AUParameterTree (CharonImpl)
 - (instancetype _Nonnull)initWithCharonChildren:(NSArray<AUParameterNode *> *_Nonnull)children;
 @end
@@ -101,19 +105,12 @@ static inline AUParameterAddress CharonAddress(AudioUnitParameterID identifier, 
             automate:(BOOL)automate;
 @end
 
-// The real AudioUnit of an AUAudioUnit. The C type AudioToolbox calls AUAudioUnit arrived with the
-// AudioUnit.framework of iOS 9 and is not exported by iOS 6.1.3, so the unit this port holds and
-// hands out is the v2 AudioUnit every release carries, and the parameter tree reads and writes that.
-@interface AUAudioUnit (CharonImpl)
-@property (nonatomic, readonly) AudioUnit audioUnit;
-@end
-
-// The parent link and the key path of a node: the key path is the identifiers of a node's parents
+// The parent link and the names of a node: the key path is the identifiers of a node's parents
 // joined with periods, which is what the header says a key path is.
 @interface AUParameterNode (CharonImpl)
-- (void)charon_setParent:(AUParameterNode *)parent keyPath:(NSString *)keyPath;
-- (void)charon_setDisplayName:(NSString *)displayName;
-- (void)charon_setIdentifier:(NSString *)identifier;
+- (void)charon_setParent:(AUParameterNode *_Nullable)parent keyPath:(NSString *_Nonnull)keyPath;
+- (void)charon_setDisplayName:(NSString *_Nonnull)displayName;
+- (void)charon_setIdentifier:(NSString *_Nonnull)identifier;
 - (NSArray<NSValue *> *_Nonnull)charon_observerTokens;
 - (void)charon_addAutomationObserver:(id _Nonnull)observer;
 - (void)charon_notifyValue:(AUValue)value atAddress:(AUParameterAddress)address;
@@ -121,9 +118,39 @@ static inline AUParameterAddress CharonAddress(AudioUnitParameterID identifier, 
 - (void)charon_notifyAutomation:(NSInteger)count events:(const AUParameterAutomationEvent *_Nonnull)events;
 @end
 
-@class AUAudioUnit;
-@class AUParameterTree;
+// The real AudioUnit of an AUAudioUnit, and the bus the port builds around one of its elements.
+@interface AUAudioUnit (CharonImpl)
+@property (nonatomic, readonly) AudioUnit audioUnit;
+@end
+
+@interface AUAudioUnitBus (CharonImpl)
+- (instancetype _Nonnull)initWithCharonOwner:(AUAudioUnit *_Nonnull)owner
+                                       type:(AUAudioUnitBusType)type
+                                      index:(NSUInteger)index;
+@end
+
+@interface AUAudioUnitPreset (CharonImpl)
+- (instancetype _Nonnull)initWithNumber:(NSInteger)number name:(NSString *_Nonnull)name;
+@end
+
+// The one call the release's render callback makes. It is on a category of AUAudioUnit so that the
+// C shim in CharonAUAudioUnitCommon.c can reach it: the shim is a C function and a C function cannot
+// send a message to a method a category declared in a header the shim does not see.
+@interface AUAudioUnit (CharonRender)
+- (OSStatus)charon_renderWithActionFlags:(AudioUnitRenderActionFlags *_Nullable)actionFlags
+                               timestamp:(const AudioTimeStamp *_Nullable)timestamp
+                              frameCount:(UInt32)frameCount
+                                     bus:(UInt32)bus
+                                     data:(AudioBufferList *_Nullable)data;
+@end
 
 AUParameterTree *_Nullable CharonBuildParameterTree(AUAudioUnit *_Nonnull owner);
+
+// The C shim the release's AudioUnit calls for audio. Defined in CharonAUAudioUnitCommon.c, which
+// exports no API symbol of its own, because a C function shared between backport files is undefined
+// in the bands that leave one of them out (charon/AGENTS.md).
+extern OSStatus CharonAURenderInput(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags,
+                                    const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber,
+                                    UInt32 inNumberFrames, AudioBufferList *ioData);
 
 NS_ASSUME_NONNULL_END

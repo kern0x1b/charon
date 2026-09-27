@@ -1,4 +1,4 @@
-#import "CharonAUParameter.h"
+#import "CharonAUAudioUnit.h"
 
 // The two iOS 10.0 members of the parameter surface, in a category of their own: an object is
 // carried from one release on (modules/apple/backports.lua, minimums()), so the automation observer
