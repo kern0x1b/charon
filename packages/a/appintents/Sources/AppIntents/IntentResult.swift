@@ -475,7 +475,7 @@ public struct IntentDialog: ExpressibleByStringInterpolation, Sendable {
     }
 
     public init(stringInterpolation: StringInterpolation) {
-        self.init(stringInterpolation.value)
+        self = stringInterpolation.value
     }
 
     public typealias StringLiteralType = String

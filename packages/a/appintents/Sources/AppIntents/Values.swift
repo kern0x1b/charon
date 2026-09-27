@@ -92,6 +92,18 @@ public struct IntentParameterContext<Value>: AnyIntentValue, @unchecked Sendable
         case integer(IntentParameter<Int>.IntControlStyle)
         case double(IntentParameter<Double>.DoubleControlStyle)
 
+        /// The style as the parameter's own `controlStyle` reads it back, whichever of the two kinds
+        /// of style it is.
+        public init(any style: (any Hashable)?) {
+            if let style = style as? IntentParameter<Int>.IntControlStyle {
+                self = .integer(style)
+            } else if let style = style as? IntentParameter<Double>.DoubleControlStyle {
+                self = .double(style)
+            } else {
+                self = .double(.stepper)
+            }
+        }
+
         /// The style as the parameter's own `controlStyle` reads it back, whatever the value's type.
         public var anyHashable: (any Hashable)? {
             switch self {

@@ -74,8 +74,8 @@ extension EntityIdentifier: _IntentValue {
 
 /// The query that finds an entity by the identifiers the caller gave, and offers the ones it suggests.
 public protocol EntityQuery: DynamicOptionsProvider, PersistentlyIdentifiable, Sendable {
-    associatedtype Entity: AppEntity = Result.Result.ValueType where Entity == Result.Result
-    associatedtype Result = [Entity]
+    associatedtype Entity: AppEntity
+    associatedtype Result: ResultsCollection where Result.Result == Entity
     init()
     func entities(for identifiers: [Entity.ID]) async throws -> [Entity]
     func suggestedEntities() async throws -> Result
@@ -119,12 +119,20 @@ public struct _RawRepresentableStringQuery<Entity>: EntityStringQuery
         return identifiers.compactMap { Entity(rawValue: $0) }
     }
 
+    public func results() async throws -> [Entity] {
+        return try await suggestedEntities()
+    }
+
+    public func defaultResult() async throws -> [Entity] {
+        return try await results()
+    }
+
     public func entities(matching string: String) async throws -> [Entity] {
         return [Entity(rawValue: Entity.RawValue(string)) as? Entity].compactMap { $0 }
     }
 
     public func suggestedEntities() async throws -> [Entity] {
-        return Entity.allIntentValues
+        return []
     }
 }
 
@@ -151,17 +159,25 @@ public struct _TransientAppEntityQuery<Entity>: EntityQuery where Entity: Transi
         self.entity = nil
     }
 
-    init(entity: Entity) {
+    public init(entity: Entity) {
         self.entity = entity
     }
 
     public func entities(for identifiers: [Entity.ID]) async throws -> [Entity] {
         return entity.map { [$0] } ?? []
     }
+
+    public func results() async throws -> [Entity] {
+        return try await entities(for: [])
+    }
+
+    public func defaultResult() async throws -> [Entity] {
+        return try await results()
+    }
 }
 
 /// An entity that stands for one thing only, so that a query can answer "the" entity without a list.
-public protocol UniqueAppEntity: AppEntity where DefaultQuery: UniqueAppEntityQuery {
+public protocol UniqueAppEntity: AppEntity where Self.DefaultQuery: UniqueAppEntityQuery {
     var id: String { get }
     var displayRepresentation: DisplayRepresentation { get }
 }
@@ -206,6 +222,10 @@ public struct UniqueAppEntityProvider<Entity>: UniqueAppEntityQuery where Entity
     }
 
     public func uniqueEntity() async throws -> Entity? { return stored }
+
+    public func results() async throws -> Entity { return try await uniqueEntity() ?? CharonBox.box(0) }
+
+    public func defaultResult() async throws -> Entity { return try await results() }
 }
 
 /// An entity the index knows, which is what a Spotlight search result is made of.
@@ -291,6 +311,8 @@ public struct FileEntityIdentifier: Hashable, Sendable, Codable {
         hasher.combine(draftIdentifier)
     }
 }
+
+extension FileEntityIdentifier: EntityIdentifierConvertible {}
 
 extension FileEntityIdentifier: _IntentValue {
     public typealias ValueType = FileEntityIdentifier

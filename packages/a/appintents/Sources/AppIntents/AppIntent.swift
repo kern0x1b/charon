@@ -429,8 +429,8 @@ extension AppIntent {
     }
 
     /// Call the intent the way Shortcuts calls it: run it, donate the run, and hand back the value.
-    public func callAsFunction(donate donateOnCompletion: Bool = true) async throws -> PerformResult.Value
-        where PerformResult: ReturnsValue, PerformResult.Value == IntentResultContainer<PerformResult.Value, Never, Never, Never> {
+    public func callAsFunction(donate donateOnCompletion: Bool = true) async throws -> PerformResult.Value?
+        where PerformResult: ReturnsValue {
         let result = try await perform()
         if donateOnCompletion {
             _ = try? await donate(result: result)
@@ -439,7 +439,8 @@ extension AppIntent {
     }
 
     /// Call the intent the way Shortcuts calls it, when it returns no value.
-    public func callAsFunction(donate donateOnCompletion: Bool = true) async throws where PerformResult.Value == Never {
+    public func callAsFunction(donate donateOnCompletion: Bool = true) async throws where PerformResult: OpensIntent,
+                                                                           PerformResult.Value == Never {
         let result = try await perform()
         if donateOnCompletion {
             _ = try? await donate(result: result)
