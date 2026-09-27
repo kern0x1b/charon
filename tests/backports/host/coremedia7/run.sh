@@ -14,11 +14,12 @@ renames="$renames -DCMSampleBufferCallBlockForEachSample=CharonHostCMSampleBuffe
 renames="$renames -DCMSampleBufferCreateWithMakeDataReadyHandler=CharonHostCMSampleBufferCreateWithMakeDataReadyHandler"
 renames="$renames -DCMSampleBufferCreateForImageBufferWithMakeDataReadyHandler=CharonHostCMSampleBufferCreateForImageBufferWithMakeDataReadyHandler"
 renames="$renames -DCMAudioSampleBufferCreateWithPacketDescriptionsAndMakeDataReadyHandler=CharonHostCMAudioSampleBufferCreateWithPacketDescriptionsAndMakeDataReadyHandler"
-for object in CMTime71 CMSampleBuffer7 CMSampleBuffer8 CMSampleBuffer9 CMSampleBuffer11 CMSampleBuffer12 CMSampleBuffer13 CMSampleBuffer15 CMSampleBuffer16; do
-    [ -f "$AV/$object.m" ] || continue
-    xcrun clang -fobjc-arc $quiet $renames -c "$AV/$object.m" -o "$BUILD/$object.o"
+renames="$renames $(cat "$here/formatdescription-renames.txt")"
+for object in "$AV"/*.m; do
+    case "$(basename "$object")" in CMFormatDescription*|CMTime71*|CMSampleBuffer*) ;; *) continue ;; esac
+    xcrun clang -fobjc-arc $quiet $renames -c "$object" -o "$BUILD/$(basename "$object" .m).o"
 done
-for test in timeratio pcmdata createready; do
+for test in timeratio pcmdata createready constants; do
     [ -f "$here/$test.m" ] || continue
     xcrun clang -fobjc-arc $quiet "$here/$test.m" "$BUILD"/*.o -framework CoreMedia -framework CoreVideo -framework AudioToolbox -framework Foundation -o "$BUILD/$test"
     "$BUILD/$test"

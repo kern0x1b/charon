@@ -43,7 +43,9 @@ freshly made UUIDs in its header on every run.
                                 over 700k answers, CMSampleBufferCopyPCMDataIntoAudioBufferList over 90k, and the ready-creating
                                 and per-sample sample buffers over 143. Each must be the same wherever the claim in
                                 registry/CoreMedia/ios7.json and ios8.json holds, and the corners outside it are measured
-                                against the exact value and written down in facts/CoreMedia/
+                                against the exact value and written down in facts/CoreMedia/; and constants.m holds 74 of
+                                CMFormatDescription.h's 75 CFString keys to the host's own bytes
+                                (facts/CoreMedia/FormatDescriptionConstants.md)
     sh host/gamecontroller/run.sh   the port of the GameController model against the host's GameController, 8576 lines
     sh host/alert/run.sh
     sh host/layout/run.sh
