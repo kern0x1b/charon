@@ -126,7 +126,7 @@ static inline vImage_Error CharonShearReady(const vImage_Buffer *src, const vIma
                                             const CharonResampleFilter *filter, vImagePixelCount offsetX,
                                             vImagePixelCount offsetY, double slope)
 {
-    if (!src || !dest || !filter)
+    if (!src || !dest || !filter || filter->magic != CharonResampleMagic)
         return kvImageNullPointerArgument;
     if (offsetX > src->width)
         return kvImageInvalidOffset_X;
@@ -163,71 +163,66 @@ static inline vImage_Error CharonShearRun(const vImage_Buffer *src, const vImage
     int fill = (flags & kvImageBackgroundColorFill) ? 1 : 0;
     (void)slope;
 
+    // The two axes are kept apart on purpose, because they are different and mixing them is what read past
+    // the caller's buffer. `at` is the position ALONG the shear and is bounded by srcAlong - the width for
+    // a horizontal shear, the HEIGHT for a vertical one. `row` is the position ACROSS the shear and is
+    // bounded by srcCross, the other extent. The ADDRESS is the only place the two swap: it is always
+    // `data + ROW * rowBytes + COL * pixelBytes`, with ROW the across value and the along value the other
+    // way round according to the axis. Clamping the across value against srcCross and then multiplying it
+    // by rowBytes is the bug AddressSanitizer named at CharonShear.h:225 - for the vertical shear srcCross
+    // is the width, so a "row" clamped to srcCross - 1 was 8, and 8 * 36 is 288 bytes into a 180-byte image.
+    const size_t pixelBytes = CharonBytesPerPixel(type);
+#define CHARON_SHEAR_AT(img, along_, cross_) \
+    ((uint8_t *)(img)->data + (size_t)(horizontal ? (cross_) : (along_)) * (img)->rowBytes \
+     + (size_t)(horizontal ? (along_) : (cross_)) * pixelBytes)
+
     for (vImagePixelCount cross = 0; cross < dstCross; cross++) {
         long sourceCross = (long)cross0 + (long)cross;
         if (sourceCross >= (long)srcCross && fill) {
-            uint8_t *whole = (uint8_t *)dest->data + (size_t)cross * dest->rowBytes;
-            for (vImagePixelCount along = 0; along < dstAlong; along++)
+            for (vImagePixelCount along = 0; along < dstAlong; along++) {
+                uint8_t *whole = CHARON_SHEAR_AT(dest, along, cross);
                 for (unsigned channel = 0; channel < channels; channel++)
-                    CharonChannelPut(whole, along, channel, backColor[channel], type);
+                    CharonChannelPut(whole, 0, channel, backColor[channel], type);
+            }
             continue;
         }
         if (sourceCross >= (long)srcCross)
             sourceCross = srcCross ? (long)srcCross - 1 : 0;
-        const uint8_t *in = (const uint8_t *)src->data + (size_t)sourceCross * src->rowBytes;
-        uint8_t *out = (uint8_t *)dest->data + (size_t)cross * dest->rowBytes;
 
         for (vImagePixelCount along = 0; along < dstAlong; along++) {
-            // The tap walk. A shear is a one-dimensional resample ALONG THE DIRECTION OF THE SHEAR: a tap
-            // one step along it is one column across AND `slope` rows down, so the kernel's taps are
-            //
-            //     (x + k, dy + slope * k)
-            //
-            // and not a row of them. That is what the cross-row blends are - at a slope of 1 one
-            // destination pixel's seven taps land in seven rows, and at a whole-pixel phase the only non-zero
-            // weight is the centre one, so the whole-pixel answers are exact while the phases between them
-            // blend two rows. A row-tap walk is that engine with the slope zero and is wrong at every other
-            // slope, which is what the differential was saying.
-            double centre = (double)along0 + (double)along + translate;
+            // The tap walk, with the tap's offset measured from the CENTRE and not from the first tap. The
+            // centre tap is k = extent, so an offset of `k` from the first tap put the centre
+            // `slope * extent` rows from its own row, which made the shear drift; and the row is the
+            // DESTINATION's own row plus that offset, which is the piece an earlier version dropped.
+            double centre = ((double)along0 + (double)along + translate) / scale;
             int base = (int)floor(centre);
             CharonResampleWeights(centre, base, extent, filter->lobes, filter->scale, weights);
             long first = (long)base - (long)extent;
             for (unsigned channel = 0; channel < channels; channel++) {
                 double sum = 0.0;
-                int any = 0;
                 for (int k = 0; k < taps; k++) {
-                    long column = first + k;
-                    long row = (long)cross0 + (long)cross + (long)(slope * (double)k);
-                    // The two edges are two rules, and both are measured, and the first is the one that
-                    // a whole-pixel case cannot see.
-                    //
-                    // A tap whose COLUMN is outside the picture is replaced by the BACKCOLOR, keeping its
-                    // weight - not dropped. A source that is constant at 1.0 with a backColor of -1 makes the
-                    // answer `2w - 1`, so a host answer of -0.000 is a substituted backColor with a
-                    // NEGATIVE Lanczos lobe in it and 1.223 is one with a positive overshoot. At a
-                    // whole-pixel phase the out-of-range lobes are exactly zero, so dropping and
-                    // substituting are indistinguishable there, which is why an earlier reading of a
-                    // whole-pixel grid said "dropped" and was wrong.
-                    //
-                    // A tap whose ROW is outside - and only the shear direction moves the row, one per
-                    // tap - is CLAMPED to the edge row, weight intact, with no renormalisation, so the edge
-                    // row is counted twice. That is the 5558 and 55579.2 fingerprint: a value above the
-                    // source's own maximum, which no convex combination produces, and which the guard-page
-                    // run shows came from inside the caller's allocation.
-                    if (column < 0 || column >= (long)srcAlong) {
+                    long at = first + k;
+                    long row = (long)floor(slope * ((double)at - centre) + 0.5);
+                    // A tap outside ALONG the shear is replaced by the BACKCOLOR with its weight kept, not
+                    // dropped: a source constant at 1.0 with a backColor of -1 makes the answer `2w - 1`,
+                    // and the system answers -0.000 and 1.223, which are weights and not gaps. At a
+                    // whole-pixel phase the out-of-range lobes are exactly zero, so the two cannot be
+                    // told apart there.
+                    if (at < 0 || at >= (long)srcAlong) {
                         sum += weights[k] * backColor[channel];
-                        any = 1;
                         continue;
                     }
+                    // A tap outside ACROSS the shear is clamped to the edge, weight intact and with no
+                    // renormalisation: that is the 5558 and 55579.2 overshoot, a value above the source's
+                    // own maximum, which no convex combination produces.
                     if (row < 0) row = 0;
                     if (row >= (long)srcCross) row = srcCross ? (long)srcCross - 1 : 0;
-                    const uint8_t *tap = (const uint8_t *)src->data + (size_t)row * src->rowBytes;
-                    sum += weights[k] * CharonChannelAt(tap, (vImagePixelCount)column, channel, type);
-                    any = 1;
+                    sum += weights[k] * CharonChannelAt(CHARON_SHEAR_AT(src, at, row), 0, channel, type);
                 }
-                CharonChannelPut(out, along, channel, any ? sum : backColor[channel], type);
+                CharonChannelPut(CHARON_SHEAR_AT(dest, along, cross), 0, channel, sum, type);
             }
         }
     }
+#undef CHARON_SHEAR_AT
     return kvImageNoError;
 }
