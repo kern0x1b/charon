@@ -14,9 +14,10 @@ deliveries:
   the manager with a real subscriber list and a real payload store, and the two extended-launch
   measurements, which are real measurements of a real interval.
 - **A member whose promise is "the system did something" needs the release's machinery, and without it
-  is not carried at all.** Three rows: `+[MXMetricManager makeLogHandleWithCategory:]` (it returns an
-  `os_log_t`, and the logging subsystem it names arrived in iOS 10), `_MXSignpostMetricsSnapshot()`
-  (the signpost subsystem it snapshots arrived in iOS 12), and nothing else.
+  is not carried at all.** Two rows of the 209, and no more:
+  `+[MXMetricManager makeLogHandleWithCategory:]` (it returns an `os_log_t`, and the logging subsystem
+  it names arrived in iOS 10) and `_MXSignpostMetricsSnapshot()` (the signpost subsystem it snapshots
+  arrived in iOS 12).
 
 Nothing here answers a zero for a measurement it did not take. A property reads nil until something
 puts a value in it, and a nil property is left out of the dictionary entirely rather than written as
@@ -102,6 +103,13 @@ break is the price of carrying a class whose header the build's SDK has not got,
 `CharonSecurityUI.h`, `CharonAVAudioBuffer.h` and `CharonCallKit.h` already pay.
 
 ## Not measured, and the four warnings
+
+**The registry's own first answer for one row was wrong and is corrected here.** A first pass of the
+header walk missed `MXMetricPayload.diskSpaceUsageMetrics` - its declaration wraps across a line, and the
+walk stopped at the first newline - and wrote that row as `absent` with the reason "no property of that
+name is declared on the class the SDK 26.2 headers give it". The header does declare it, the port
+carries it, and the entry is now `implemented`; the error is worth recording because a registry entry and
+the tree have to agree, and the gate is what says when they do not.
 
 **No host differential.** There is no MetricKit in the host's `iOSSupport` (measured: the directory has
 128 frameworks and MetricKit is not among them), and a differential would have no system implementation
