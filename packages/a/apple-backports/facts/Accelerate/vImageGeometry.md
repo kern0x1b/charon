@@ -536,3 +536,33 @@ column per row, and the sign and the half pixel follow from the same three cases
 with.
 
 The vertical shear is the transpose of that, on the same evidence.
+
+## The shears: written, and the differential is red on the edge
+
+Thirty-six functions over four bands - 8 at 7.0, 4 at 8.0, 6 at 10.0, 18 at 15.0 - and
+`tests/backports/host/shear` holds the engine against the host's own
+`vImageHorizontalShear_PlanarF` and `vImageVerticalShear_PlanarF` over four filter scales, six translates and
+both edging modes. PlanarF is the vehicle and not a delivered function: it is in 6.1.3 already and the corpus
+does not carry it, so what is compared is the port's engine over a float channel against the system's.
+
+**Red, and the failures are one case.** They are all the **first sample of a row where the kernel overhangs
+the left edge**, and all of them differ by exactly the gap between the backColor and the source value - 2.25
+on a channel whose range is −2 to +2 with a backColor of 0.25 - which is the signature of the port writing
+the backColor where the system writes a source pixel.
+
+An earlier version of the loop discarded the whole sample the moment any tap fell outside the source. That
+is wrong, and the system says so: at an integer mapped position the out-of-range lobes of a Lanczos kernel
+are *exactly zero*, so the destination's first column is the source's first column. The loop now skips an
+out-of-range tap and keeps the inside ones, and takes the backColor only when **no** tap is inside. That is
+the correct rule and it is what the header's "the edge pixels of the source are extended" describes for
+`kvImageEdgeExtend`, where the tap is pulled back to the edge pixel instead of dropped.
+
+The remaining failures are the same case in a different guise, and the loop as committed still gets it wrong
+for at least the destination-wider-than-source and downscale cases. One defect, named: the interaction of
+`first = base - extent` with a destination that is wider than the source, where the kernel runs off the
+**right** edge and the sample is taken from taps that are all inside but sum to less than one - and the
+system renormalises over the inside taps where this port does not. That is the measurement the next run
+settles: a source narrower than the destination, and the weights of the surviving taps divided by their sum.
+
+Not committed as working, and not claimed to be: the code is committed because it is the engine the
+remaining work is one defect deep, and the check that says so is committed with it.
