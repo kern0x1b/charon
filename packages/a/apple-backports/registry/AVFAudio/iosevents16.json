@@ -5,7 +5,7 @@
       "api": "AVMusicEvent",
       "kind": "class",
       "introduced": "16.0",
-      "minimum": "16.0",
+      "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/AVFAudio/AVMusicEvent.md",
       "source": "AVFAudio of the arm64e shared cache of iOS 18.0 and SDK 26.2, AVFAudio; the C base read from the real armv7 6.1.3 cache with dyld.load (AudioToolbox exports the whole AudioComponent and AudioUnit family and the whole AUGraph family, CoreAudio the whole AudioObject family)"
@@ -14,7 +14,7 @@
       "api": "AVMusicUserEvent",
       "kind": "class",
       "introduced": "16.0",
-      "minimum": "16.0",
+      "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/AVFAudio/AVMusicEvent.md",
       "source": "AVFAudio of the arm64e shared cache of iOS 18.0 and SDK 26.2, AVFAudio; the C base read from the real armv7 6.1.3 cache with dyld.load (AudioToolbox exports the whole AudioComponent and AudioUnit family and the whole AUGraph family, CoreAudio the whole AudioObject family)"
@@ -23,7 +23,7 @@
       "api": "AVParameterEvent",
       "kind": "class",
       "introduced": "16.0",
-      "minimum": "16.0",
+      "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/AVFAudio/AVMusicEvent.md",
       "source": "AVFAudio of the arm64e shared cache of iOS 18.0 and SDK 26.2, AVFAudio; the C base read from the real armv7 6.1.3 cache with dyld.load (AudioToolbox exports the whole AudioComponent and AudioUnit family and the whole AUGraph family, CoreAudio the whole AudioObject family)"
@@ -32,7 +32,7 @@
       "api": "-[AVMusicUserEvent initWithData:]",
       "kind": "method",
       "introduced": "16.0",
-      "minimum": "16.0",
+      "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/AVFAudio/AVFAudioStrings.md",
       "source": "AVFAudio of the arm64e shared cache of iOS 18.0 and SDK 26.2, AVFAudio; the C base read from the real armv7 6.1.3 cache with dyld.load (AudioToolbox exports the whole AudioComponent and AudioUnit family and the whole AUGraph family, CoreAudio the whole AudioObject family)"
@@ -41,7 +41,7 @@
       "api": "-[AVParameterEvent initWithParameterID:scope:element:value:]",
       "kind": "method",
       "introduced": "16.0",
-      "minimum": "16.0",
+      "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/AVFAudio/AVFAudioStrings.md",
       "source": "AVFAudio of the arm64e shared cache of iOS 18.0 and SDK 26.2, AVFAudio; the C base read from the real armv7 6.1.3 cache with dyld.load (AudioToolbox exports the whole AudioComponent and AudioUnit family and the whole AUGraph family, CoreAudio the whole AudioObject family)"
@@ -50,7 +50,7 @@
       "api": "AVMusicUserEvent.sizeInBytes",
       "kind": "property",
       "introduced": "16.0",
-      "minimum": "16.0",
+      "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/AVFAudio/AVMusicEvent.md",
       "source": "AVFAudio of the arm64e shared cache of iOS 18.0 and SDK 26.2, AVFAudio; the C base read from the real armv7 6.1.3 cache with dyld.load (AudioToolbox exports the whole AudioComponent and AudioUnit family and the whole AUGraph family, CoreAudio the whole AudioObject family)"
@@ -59,7 +59,7 @@
       "api": "AVParameterEvent.element",
       "kind": "property",
       "introduced": "16.0",
-      "minimum": "16.0",
+      "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/AVFAudio/AVMusicEvent.md",
       "source": "AVFAudio of the arm64e shared cache of iOS 18.0 and SDK 26.2, AVFAudio; the C base read from the real armv7 6.1.3 cache with dyld.load (AudioToolbox exports the whole AudioComponent and AudioUnit family and the whole AUGraph family, CoreAudio the whole AudioObject family)"
@@ -68,7 +68,7 @@
       "api": "AVParameterEvent.parameterID",
       "kind": "property",
       "introduced": "16.0",
-      "minimum": "16.0",
+      "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/AVFAudio/AVMusicEvent.md",
       "source": "AVFAudio of the arm64e shared cache of iOS 18.0 and SDK 26.2, AVFAudio; the C base read from the real armv7 6.1.3 cache with dyld.load (AudioToolbox exports the whole AudioComponent and AudioUnit family and the whole AUGraph family, CoreAudio the whole AudioObject family)"
@@ -77,7 +77,7 @@
       "api": "AVParameterEvent.scope",
       "kind": "property",
       "introduced": "16.0",
-      "minimum": "16.0",
+      "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/AVFAudio/AVMusicEvent.md",
       "source": "AVFAudio of the arm64e shared cache of iOS 18.0 and SDK 26.2, AVFAudio; the C base read from the real armv7 6.1.3 cache with dyld.load (AudioToolbox exports the whole AudioComponent and AudioUnit family and the whole AUGraph family, CoreAudio the whole AudioObject family)"
@@ -86,7 +86,7 @@
       "api": "AVParameterEvent.value",
       "kind": "property",
       "introduced": "16.0",
-      "minimum": "16.0",
+      "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/AVFAudio/AVMusicEvent.md",
       "source": "AVFAudio of the arm64e shared cache of iOS 18.0 and SDK 26.2, AVFAudio; the C base read from the real armv7 6.1.3 cache with dyld.load (AudioToolbox exports the whole AudioComponent and AudioUnit family and the whole AUGraph family, CoreAudio the whole AudioObject family)"
