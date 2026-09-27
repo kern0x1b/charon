@@ -452,6 +452,9 @@ static void charon_dump(CharonNWConnection *connection, const char *where)
 {
     if (!getenv("CHARON_TRACE_CONNECTION"))
         return;
+    /* dispatch_source_get_data is NOT the descriptor: measured, a source created over a socket's fd
+       answers 0 for it, so this column is the source's own data and not its target, and the only way
+       to see which descriptor a source is over is the one the caller gave it. */
     uintptr_t read_data = connection->_readSource ? dispatch_source_get_data(connection->_readSource) : 0;
     fprintf(stderr, "[charon] %s fd=%d state=%d queue=%p readSource=%p over=%d writeSource=%p over=%d writing=%d "
                     "started=%d cancelled=%d datagram=%d secure=%d sends=%lu receives=%lu\n",
