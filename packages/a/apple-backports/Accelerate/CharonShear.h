@@ -47,10 +47,13 @@ static inline unsigned CharonChannels(enum CharonPixelType type)
 static inline size_t CharonBytesPerPixel(enum CharonPixelType type)
 {
     switch (type) {
-    case CharonARGB16U: case CharonARGB16S: case CharonARGB16F: case CharonARGBFFFF: return 8;
-    case CharonPlanar16U: case CharonPlanar16S: case CharonPlanar16F: case CharonPlanarF: return 2;
+    case CharonARGB16U: case CharonARGB16S: case CharonARGB16F: return 8;
+    case CharonARGBFFFF: return 16;
+    case CharonPlanar16U: case CharonPlanar16S: case CharonPlanar16F: return 2;
+    case CharonPlanarF: return 4;
     case CharonCbCr8: return 2;
-    case CharonCbCr16U: case CharonCbCr16S: case CharonCbCr16F: case CharonCbCrF: return 4;
+    case CharonCbCr16U: case CharonCbCr16S: case CharonCbCr16F: return 4;
+    case CharonCbCrF: return 8;
     case CharonXRGB2101010W: return 4;
     default: return 1;
     }
@@ -202,7 +205,7 @@ static inline vImage_Error CharonShearRun(const vImage_Buffer *src, const vImage
                 double sum = 0.0;
                 for (int k = 0; k < taps; k++) {
                     long at = first + k;
-                    long row = (long)floor(slope * ((double)at - centre) + 0.5);
+                    long row = sourceCross + (long)floor(slope * ((double)at - centre) + 0.5);
                     // A tap outside ALONG the shear is replaced by the BACKCOLOR with its weight kept, not
                     // dropped: a source constant at 1.0 with a backColor of -1 makes the answer `2w - 1`,
                     // and the system answers -0.000 and 1.223, which are weights and not gaps. At a
