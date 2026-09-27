@@ -29,46 +29,38 @@ channels), and `XRGB2101010W` (one 32-bit word, X:R:G:B ten bits each). Half pre
 both ways, `XRGB2101010W` needs its own unpack and repack, and the two signed types need a clamp to
 `int16_t` - none of which exists in the package yet.
 
-## The three things that have to be measured before the engine can be written
+## What the probe has measured
 
-**1. The resampling filter the shears take is an object, and it is a corpus row of its own.** The
-`ResamplingFilter` parameter of all 24 shears is `void *`; `vImage_Types.h` says it "is created with
-`vImageNewResamplingFilter` or `vImageNewResamplingFilterForFunctionUsingBuffer`" and holds "precalculated
-filter coefficients". The corpus asks for `vImageNewResamplingFilterForFunctionUsingBuffer` and for
-`vImageGetResamplingFilterExtent`, and both are in this family's scope. So the shears cannot be written
-before the filter is: their whole resampling behaviour is a function of the filter the caller hands them,
-and **a NULL filter crashes the host** (measured: `probe-map.m` dies with SIGSEGV on the first shear call
-with `filter = 0`). What has to be settled is the layout the port gives its own filter - it is opaque, so
-the port's - and what the default filter is when a caller makes one with a kernel of its own.
+`probe-map.m` now runs. The first version of it segfaulted on every function that takes a `backColor`,
+because a `Pixel_ARGB_16U` parameter is an array and `0` for one decays to a **NULL pointer**, which the host
+dereferences; and on the ones that need an edging mode, because the header is right that the results are
+"unpredictable" without one. With a real black pixel and `kvImageBackgroundColorFill` the whole probe runs.
+Over a 5x5 `ARGB16U` source whose every pixel carries a distinct value, with nearest-neighbour sampling
+where that is available:
 
-**2. The edging mode is not optional, and the header says the results are undefined without it.** Every
-geometry function documents "Acceptable flags are `kvImageEdgeExtend`, `kvImageBackgroundColorFill`,
-`kvImageDoNotTile`, `kvImageNoFlags`" and, for the shears, "Only one of `kvImageEdgeExtend` or
-`kvImageBackgroundColorFill` may be used. If none is used then the edging mode is undefined and the results
-may be unpredictable." Measured the hard way: `probe-map.m` calling `vImageScale_ARGB16U` with
-`kvImageNoFlags` and a distinct value in every source pixel **also dies with SIGSEGV**. The engine therefore
-has to answer for `kvImageEdgeExtend` and `kvImageBackgroundColorFill` and refuse, or define, the rest -
-and which it does has to be the system's, measured.
+| call | the destination grid | what it says |
+| --- | --- | --- |
+| `vImageScale_ARGB16U` at equal sizes | the source, in order | a pixel maps to itself, and the scale factor is `src.width / dest.width` |
+| `vImageHorizontalReflect_ARGB16U` | each row reversed | **mirrors left to right** |
+| `vImageVerticalReflect_ARGB16U` | the rows in reverse order | **mirrors top to bottom** |
+| `vImageRotate_ARGB16U` at 0 | the source, in order | the identity at 0 |
+| `vImageRotate_ARGB16U` at pi/2 | interpolated, not nearest | the default interpolation is **linear**; `kvImageInterpolationNearest` is 0 and so cannot be the default, which is `kvImageInterpolationLinear` at 1 |
+| `vImageAffineWarp_ARGB16U` with `{1,0,0,1,0,0}` | the source, in order | the struct is `{a, b, c, d, tx, ty}` and **its identity is `{1,0,0,1,0,0}`** - `{1,0,0,0,1,0}` is singular and answers the backColor everywhere |
+| the same with `{1,0,0,1,2,0}` | the source moved two columns **left** | the matrix maps **destination to source**: `sx = a*dx + c*dy + tx`, so a positive `tx` pulls the source left |
+| the same with `{0,1,-1,0,0,0}` | the backColor everywhere | a non-singular matrix that answers the backColor for all twenty-five pixels, which pins the system's convention and not the header's |
+| `vImageAffineWarpD_ARGB16U` with the identity | the source, in order | the double-precision struct has the same six fields and the same identity |
+| `vImageAffineWarpCG_ARGB16U` with a translation of 2 | the source moved two columns left | the CG variant agrees with the vImage one on a translation, and on the `{0,1,-1,0,0,0}` case |
+| `vImageGetPerspectiveWarp` + `vImagePerspectiveWarp_ARGB16U`, four corners moved +2 in x | the source moved two columns left | the generator and the warp compose to the same destination-to-source mapping the affine case gives |
+| `vImageRotate90_ARGB16U` with `rotationConstant` 0 | the source, in order | |
+| with 1 | the source **transposed** - row 0 is the source's last column | 1 is a quarter turn |
+| with 2 | `src(N-1-r, N-1-c)` | a half turn |
+| with 3 | the same as 2 on a square | the four constants cannot be told apart on a square picture, so the mapping needs a non-square one before it can be written down |
 
-**3. The coordinate convention of each mapping, which the header does not write out.** For the affine and
-projective warps the transform is given and the inverse has to be built; for scale, rotate, shear, rotate90
-and the two reflects vImage builds the mapping itself and does not publish it. The probe is written and
-compiled - `probe-map.m` in this file's run directory, a 5x5 `ARGB16U` source with a distinct value in every
-pixel, one call per operation, nearest interpolation, dumping the destination grid - and it is what settles
-each of them. It does not run yet, because the flags and the filter are the two things above. The five
-shapes it has to answer for, and the questions each raises:
-
-| operation | the question |
-| --- | --- |
-| `vImageScale_*` | does a destination pixel's centre map to `(dx + 0.5) * srcWidth / destWidth - 0.5`, and which way round |
-| `vImageRotate_ARGB16U` | the rotation is about which point, and is the angle clockwise or anticlockwise |
-| `vImageRotate90_*` | which of the four `rotationConstant` values is which quarter turn, and is the destination transposed or rotated |
-| `vImageHorizontalReflect_*` / `vImageVerticalReflect_*` | which axis each mirrors - the header's own names are the first thing to check against the system |
-| `vImageAffineWarp*_*` | the matrix is applied forwards or inverted, and the CG variant's row-vector convention |
-
-`vImageGetPerspectiveWarp` is the one mapping whose input is explicit - four source points to four
-destination points, filling the ten coefficients of `vImage_PerpsectiveTransform` - and the header publishes
-neither the solve nor the layout, so it is measured by feeding it point sets whose answer is known.
+**And the two that are still open.** The `rotationConstant` values need a picture that is not square - on a
+5x5 the 90 and 270 degree cases give the same grid, so which of them is which is unmeasured. And the
+`{0,1,-1,0,0,0}` case says the system's affine convention is not the one the header's field names suggest,
+because a matrix of determinant 1 answers the backColor for every pixel of the destination; the port cannot
+reproduce that from the header and has to be told the convention by a further measurement.
 
 ## What is not written
 
