@@ -848,3 +848,28 @@ destination must be a byte-for-byte copy of the source and no resampling happens
 a channel whose range is -2 to +2 is the whole channel, so the engine is wrong where it has nothing to
 resample. That is a bug in the committed tap loop and not a divergence to pin, and it is the next thing to
 find. The 36 registry entries stay **out**.
+
+## ASan on the identity: silent, and the identity is off by one ROW
+
+An AddressSanitizer and UndefinedBehaviorSanitizer build of the **horizontal** identity case alone -
+`CharonShearRun(..., CharonPlanarF, /*horizontal*/ YES, 0.0, 0.0, 0, 0, backColor, kvImageBackgroundColorFill)`
+over a 9x5 `PlanarF` buffer, `clang -g -O0 -fsanitize=address,undefined -fno-omit-frame-pointer`
+(`.agent-work/runs/asan/ident.m`) - is **silent on both**, and answers:
+
+    err 0
+      -2.0000  -0.0870   1.8261  -0.2609   1.6522  -0.4348   1.4783  -0.6087   1.3043
+       0.4348  -1.6522   0.2609  -1.8261   0.0870  -2.0000  -0.0870   1.8261  -1.2609
+      -1.1304   0.7826  -1.3043   0.6087  -1.4783   0.4348  -1.6522   0.2609  -1.8261
+       1.3043  -0.7826   1.1304  -0.9565   0.9565  -1.1304   0.7826  -1.3043   0.6087
+      -0.2609   1.6522  -0.4348   1.4783  -0.6087   1.3043  -0.7826   1.1304  -0.9565
+
+which is the source **shifted down by one row** - destination row 0 is the source's row 1, and the last row
+wraps - with every sample of a row exact. So there is no out-of-bounds access on this path at all, the
+`1e19` differences the differential reports on the *horizontal* cases come from somewhere else in the run,
+and the identity's own defect is a **one-row off-by-one in the row mapping**, visible here without any
+instrument: `row = cross0 + cross + slope * k` reads one row further down than `out = dest->data +
+cross * dest->rowBytes` writes.
+
+The coordinator's ASan trace - `CharonShear.h:225`, `row` clamped to `srcCross - 1` where `srcCross` is the
+*width* for the vertical shear and so used as a row index - is the **vertical** one and remains real. The two
+axes are separate defects and the horizontal one is a mapping, not a memory error.
