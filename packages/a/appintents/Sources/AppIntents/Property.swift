@@ -47,7 +47,7 @@ public struct EntityProperty<Value>: @unchecked Sendable where Value: _IntentVal
     public init() {
         self.value = nil
         self.indexingKey = ""
-        self.title = LocalizedStringResource("")
+        self.title = CharonLocalized.resource("")
         self.isOptional = true
         self.identifier = ""
         self.modifiers = []
@@ -59,7 +59,7 @@ public struct EntityProperty<Value>: @unchecked Sendable where Value: _IntentVal
     public init(title: LocalizedStringResource) {
         self.init()
         self.title = title
-        self.indexingKey = title.localizedString()
+        self.indexingKey = CharonLocalized.string(of: title)
         self.isOptional = false
     }
 
@@ -237,14 +237,14 @@ public struct EntityProperty<Value>: @unchecked Sendable where Value: _IntentVal
     public init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.init(identifier: try container.decode(String.self, forKey: .identifier))
-        if let title = try container.decodeIfPresent(String.self, forKey: .title) { self.title = LocalizedStringResource(title) }
+        if let title = try container.decodeIfPresent(String.self, forKey: .title) { self.title = CharonLocalized.resource(title) }
         if let key = try container.decodeIfPresent(String.self, forKey: .indexingKey) { self.indexingKey = key }
     }
 
     public func encode(to encoder: any Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(identifier, forKey: .identifier)
-        try container.encode(title.localizedString(), forKey: .title)
+        try container.encode(CharonLocalized.string(of: title), forKey: .title)
         try container.encode(indexingKey, forKey: .indexingKey)
     }
 
@@ -257,7 +257,7 @@ public struct EntityProperty<Value>: @unchecked Sendable where Value: _IntentVal
 
 extension EntityProperty: CustomStringConvertible {
     /// The property's name as the index and a search result show it.
-    public var description: String { return title.localizedString() }
+    public var description: String { return CharonLocalized.string(of: title) }
 }
 
 /// What a property of an entity may and may not do, added in iOS 26.

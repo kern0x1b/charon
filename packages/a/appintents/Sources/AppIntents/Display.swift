@@ -26,7 +26,7 @@ public protocol InstanceDisplayRepresentable: CustomLocalizedStringResourceConve
 
 extension InstanceDisplayRepresentable {
     public var localizedStringResource: LocalizedStringResource {
-        return LocalizedStringResource(displayRepresentation.title)
+        return CharonLocalized.resource(displayRepresentation.title)
     }
 }
 
@@ -78,16 +78,16 @@ public struct DisplayRepresentation: ExpressibleByStringLiteral, Equatable {
     public let synonyms: [String]
 
     public init(title: LocalizedStringResource, subtitle: LocalizedStringResource? = nil, image: Image? = nil) {
-        self.title = title.localizedString()
-        self.subtitle = subtitle?.localizedString()
+        self.title = CharonLocalized.string(of: title)
+        self.subtitle = subtitle.map { CharonLocalized.string(of: $0) }
         self.image = image
         self.synonyms = []
     }
 
     public init(title: LocalizedStringResource, subtitle: LocalizedStringResource? = nil, image: Image? = nil,
                 synonyms: [String]) {
-        self.title = title.localizedString()
-        self.subtitle = subtitle?.localizedString()
+        self.title = CharonLocalized.string(of: title)
+        self.subtitle = subtitle.map { CharonLocalized.string(of: $0) }
         self.image = image
         self.synonyms = synonyms
     }
@@ -191,8 +191,9 @@ public struct DisplayRepresentation: ExpressibleByStringLiteral, Equatable {
         }
 
         /// The name of a system image, when the picture is one, which is what the release's own image
-        /// lookup takes.
-        public var systemName: String? { return data.flatMap { String(data: $0, encoding: .utf8) } }
+        /// lookup takes. The framework's own `Image` keeps the name in its data and offers no
+        /// accessor for it, so this is the module's own read of its own bytes.
+        var systemName: String? { return data.flatMap { String(data: $0, encoding: .utf8) } }
 
         public init(from decoder: any Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -243,11 +244,11 @@ extension TypeDisplayRepresentable {
 extension CaseDisplayRepresentable {
     /// A case names itself by the name of the case, which is what the framework's own default is.
     public var localizedStringResource: LocalizedStringResource {
-        return LocalizedStringResource(String(describing: self))
+        return CharonLocalized.resource(String(describing: self))
     }
 
     /// What every case of a type shows, which is the case's own name unless it says otherwise.
     public static var caseDisplayRepresentations: [DisplayRepresentation] {
-        return allCases.map { DisplayRepresentation(title: LocalizedStringResource(String(describing: $0))) }
+        return allCases.map { DisplayRepresentation(title: CharonLocalized.resource(String(describing: $0))) }
     }
 }

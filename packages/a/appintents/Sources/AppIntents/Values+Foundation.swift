@@ -184,8 +184,6 @@ extension String: _IntentValue {
         return Specification([IdentityResolver()])
     }
 
-    /// The string a shortcut writes a string parameter as, which is the string itself.
-    public var urlRepresentationParameter: String { return self }
 }
 
 extension Int: _IntentValue, RangeComparableProperty {
@@ -197,8 +195,6 @@ extension Int: _IntentValue, RangeComparableProperty {
         return Specification([IntResolver()])
     }
 
-    /// The string a shortcut writes an integer parameter as, which is the release's own number.
-    public var urlRepresentationParameter: Int { return self }
     /// The string an entity identifier of this type is written as, which is the release's own number.
     public static var entityIdentifierString: String { return String(0) }
     /// The entity identifier of a value of this type, which is the value written as a string.
@@ -253,8 +249,6 @@ extension URL: _IntentValue, @unchecked Sendable {
         return Specification([URLFromStringResolver()])
     }
 
-    /// The string a shortcut writes a URL parameter as, from iOS 18, which is the URL's own string.
-    public var urlRepresentationParameter: String { return absoluteString }
 }
 
 extension UUID: _IntentValue {
@@ -399,12 +393,12 @@ public enum CharonIntentValueParser {
         case is Float.Type: return Float(text) as? T
         case is Bool.Type:
             return CharonRun.await { try await BoolFromStringResolver().resolve(from: text,
-                context: IntentParameterContext(title: LocalizedStringResource(""))) } as? T
+                context: IntentParameterContext(title: CharonLocalized.resource(""))) } as? T
         case is URL.Type: return URL(string: text) as? T
         case is UUID.Type: return UUID(uuidString: text) as? T
         case is Date.Type:
             return CharonRun.await { try await DateResolver().resolve(from: text,
-                                                                        context: IntentParameterContext(title: LocalizedStringResource(""))) } as? T
+                                                                        context: IntentParameterContext(title: CharonLocalized.resource(""))) } as? T
         case is Bool.Type: return nil
         default: return nil
         }

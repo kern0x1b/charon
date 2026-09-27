@@ -19,7 +19,7 @@ public struct IntentItem<Value> where Value: _IntentValue {
 
     public init(_ value: Value.ValueType) {
         self.value = value
-        self.title = LocalizedStringResource(CharonIntentItemText.write(value))
+        self.title = CharonLocalized.resource(CharonIntentItemText.write(value))
         self.subtitle = nil
         self.image = nil
     }
@@ -33,7 +33,7 @@ public struct IntentItem<Value> where Value: _IntentValue {
     }
 
     /// What the item is described as, which is its own string.
-    public var description: String { return title.localizedString() }
+    public var description: String { return CharonLocalized.string(of: title) }
 
     /// The builder of a list of items, which is what a result's collection is written with.
 }
@@ -55,7 +55,7 @@ enum CharonIntentItemText {
     static func write(_ value: Any) -> String {
         if let describable = value as? CustomStringConvertible { return describable.description }
         if let localized = value as? any CustomLocalizedStringResourceConvertible {
-            return localized.localizedStringResource.localizedString()
+            return CharonLocalized.string(of: localized.localizedStringResource)
         }
         return String(describing: value)
     }
@@ -148,7 +148,7 @@ public struct IntentItemSection<Item> where Item: _IntentValue {
     }
 
     /// What the section is described as, which is its own title.
-    public var description: String { return title?.localizedString() ?? "" }
+    public var description: String { return title.map { CharonLocalized.string(of: $0) } ?? "" }
 
 }
 
@@ -281,7 +281,7 @@ extension IntentFile: DisplayRepresentable, _IntentValue {
         return DisplayRepresentation(title: title)
     }
 
-    public var title: LocalizedStringResource { return LocalizedStringResource(filename) }
+    public var title: LocalizedStringResource { return CharonLocalized.resource(filename) }
 
     public var localizedStringResource: LocalizedStringResource { return title }
 }
@@ -464,7 +464,7 @@ public struct IntentPerson: Hashable, Sendable, DisplayRepresentable, _IntentVal
     }
 
     public var title: LocalizedStringResource {
-        return LocalizedStringResource(handle?.applicationDefined ?? name.rawValue)
+        return CharonLocalized.resource(handle?.applicationDefined ?? name.rawValue)
     }
 
     public var localizedStringResource: LocalizedStringResource { return title }
@@ -517,7 +517,7 @@ public struct IntentPaymentMethod: Sendable, DisplayRepresentable, _IntentValue 
         return DisplayRepresentation(title: title, image: icon)
     }
 
-    public var title: LocalizedStringResource { return LocalizedStringResource(name) }
+    public var title: LocalizedStringResource { return CharonLocalized.resource(name) }
 
     public var localizedStringResource: LocalizedStringResource { return title }
 
@@ -557,7 +557,7 @@ public struct IntentCurrencyAmount: Equatable, Hashable, Sendable, DisplayRepres
         return DisplayRepresentation(title: title)
     }
 
-    public var title: LocalizedStringResource { return LocalizedStringResource(currencyCode) }
+    public var title: LocalizedStringResource { return CharonLocalized.resource(currencyCode) }
 
     public var localizedStringResource: LocalizedStringResource { return title }
 

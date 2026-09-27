@@ -22,16 +22,18 @@ public protocol AppEnum: AppValue, StaticDisplayRepresentable, RawRepresentable 
 /// A value that can be written as the string an entity identifier is, which is what the framework
 /// needs to key an entity, a donation and a search result by the same value.
 public protocol EntityIdentifierConvertible {
-    static func entityIdentifier(for value: Self) -> EntityIdentifier
-    static var entityIdentifierString: String { get }
+    /// The string this value is keyed by, which is the value itself written out.
+    var entityIdentifierString: String { get }
+    /// The value the string names, or nothing when the string is not one of them.
+    static func entityIdentifier(for entityIdentifierString: String) -> Self?
 }
 
 extension EntityIdentifierConvertible where Self: LosslessStringConvertible {
-    public static func entityIdentifier(for value: Self) -> EntityIdentifier {
-        return EntityIdentifier(for: value)
-    }
+    public var entityIdentifierString: String { return description }
 
-    public static var entityIdentifierString: String { return "" }
+    public static func entityIdentifier(for entityIdentifierString: String) -> Self? {
+        return Self(entityIdentifierString)
+    }
 }
 
 /// The identifier of an entity: the string the entity is keyed by, and the type of entity it names.
@@ -341,15 +343,29 @@ public struct FileEntityIdentifier: Hashable, Sendable, Codable {
     /// The file the identifier names, when it names a file.
     public var file: URL? { return fileURL }
 
-    /// The identifier as the framework's own `EntityIdentifierConvertible` writes it.
-    public var identifierString: String { return fileURL?.path ?? draftIdentifier }
+    /// The identifier as the framework's own `EntityIdentifierConvertible` writes it: the path of the
+    /// file, or the identifier of the draft.
+    public var entityIdentifierString: String { return fileURL?.path ?? draftIdentifier }
 
-    public static var entityIdentifierString: String {
-        return FileEntityIdentifier(fileURL: URL(fileURLWithPath: "/")).identifierString
+    /// The identifier as a string, which is what the framework's own `entityIdentifierString` names.
+    public var identifierString: String { return entityIdentifierString }
+
+    public static func entityIdentifier(for entityIdentifierString: String) -> FileEntityIdentifier? {
+        if entityIdentifierString.hasPrefix("draft:") {
+            return FileEntityIdentifier(draftIdentifier: String(entityIdentifierString.dropFirst("draft:".count)))
+        }
+        return FileEntityIdentifier(fileURL: URL(fileURLWithPath: entityIdentifierString))
     }
 
-    public static func entityIdentifier(for value: FileEntityIdentifier) -> EntityIdentifier {
-        return EntityIdentifier(for: value.identifierString)
+    /// The file an identifier names, which is what the framework's own `file(url:)` factory makes.
+    public static func file(url: URL) -> FileEntityIdentifier {
+        return FileEntityIdentifier(fileURL: url)
+    }
+
+    /// A draft of a file that is not written yet, which is what the framework's own `draft(identifier:)`
+    /// factory makes.
+    public static func draft(identifier: String) -> FileEntityIdentifier {
+        return FileEntityIdentifier(draftIdentifier: identifier)
     }
 
     public init(from decoder: any Decoder) throws {

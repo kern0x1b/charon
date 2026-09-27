@@ -250,7 +250,7 @@ public struct EmptySnippetIntent: SnippetIntent {
 
     public init() {}
 
-    public static var title: LocalizedStringResource { return LocalizedStringResource("Empty") }
+    public static var title: LocalizedStringResource { return CharonLocalized.resource("Empty") }
     public static var isDiscoverable: Bool { return false }
     public static var parameterSummary: SummaryContent { return SummaryContent("") }
 
@@ -344,7 +344,7 @@ public struct AppIntentError: Error {
 extension AppIntentError: CustomStringConvertible {
     public var description: String {
         guard let title = parameterTitle else { return "AppIntentError" }
-        return "AppIntentError: \(title.localizedString())"
+        return "AppIntentError: \(CharonLocalized.string(of: title))"
     }
 }
 
@@ -373,7 +373,7 @@ public struct ConfirmationActionName: Sendable {
     public static func custom(acceptLabel: LocalizedStringResource, acceptAlternatives: [LocalizedStringResource] = [],
                               denyLabel: LocalizedStringResource, denyAlternatives: [LocalizedStringResource] = [],
                               destructive: Bool = false) -> ConfirmationActionName {
-        return ConfirmationActionName("custom:\(acceptLabel.localizedString())|\(denyLabel.localizedString())|\(destructive)")
+        return ConfirmationActionName("custom:\(CharonLocalized.string(of: acceptLabel))|\(CharonLocalized.string(of: denyLabel))|\(destructive)")
     }
 
     public static var add: ConfirmationActionName { return ConfirmationActionName("add") }
@@ -495,7 +495,7 @@ public struct IntentDialog: ExpressibleByStringInterpolation, Sendable {
 
         public init(literalCapacity: Int, interpolationCount: Int) {
             literal.reserveCapacity(literalCapacity)
-            value = IntentDialog(LocalizedStringResource(""))
+            value = IntentDialog(CharonLocalized.resource(""))
         }
 
         public mutating func appendLiteral(_ literal: String) {
@@ -504,12 +504,12 @@ public struct IntentDialog: ExpressibleByStringInterpolation, Sendable {
         }
 
         public mutating func appendInterpolation(_ resource: LocalizedStringResource) {
-            literal += resource.localizedString()
+            literal += CharonLocalized.string(of: resource)
             flush()
         }
 
         public mutating func appendInterpolation(_ value: any CustomLocalizedStringResourceConvertible) {
-            literal += value.localizedStringResource.localizedString()
+            literal += CharonLocalized.string(of: value.localizedStringResource)
             flush()
         }
 
@@ -519,11 +519,20 @@ public struct IntentDialog: ExpressibleByStringInterpolation, Sendable {
         public mutating func appendInterpolation<T>(_ value: T) { appendInterpolation(resource(value)) }
 
         private func resource<T>(_ value: T) -> LocalizedStringResource {
-            return LocalizedStringResource(String(describing: value), defaultValue: String(describing: value))
+            let text = String(describing: value)
+            #if CHARON_APPINTENTS_CARRIES_LOCALIZED_STRING
+            return LocalizedStringResource(stringLiteral: text)
+            #else
+            return CharonLocalized.resource(text, defaultValue: text)
+            #endif
         }
 
         private mutating func flush() {
-            value = IntentDialog(LocalizedStringResource(literal, defaultValue: literal))
+            #if CHARON_APPINTENTS_CARRIES_LOCALIZED_STRING
+            value = IntentDialog(LocalizedStringResource(stringLiteral: literal))
+            #else
+            value = IntentDialog(CharonLocalized.resource(literal, defaultValue: literal))
+            #endif
         }
     }
 }

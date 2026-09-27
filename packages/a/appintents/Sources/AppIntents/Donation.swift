@@ -199,7 +199,7 @@ final class IntentDonationStore {
 enum CharonIntentResultText {
     static func write(_ result: some IntentResult) -> String? {
         if let dialog = result as? IntentResultContainer<Never, Never, Never, IntentDialog> {
-            return dialog.dialog?.full.localizedString()
+            return dialog.dialog.map { CharonLocalized.string(of: $0.full) }
         }
         return nil
     }

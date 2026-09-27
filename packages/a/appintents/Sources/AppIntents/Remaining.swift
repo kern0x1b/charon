@@ -113,7 +113,7 @@ extension AssistantSchemaIntent {
 /// named by: the name of the type, which is what the framework's own default is.
 public enum CharonAssistantTitle {
     public static func of(_ type: Any.Type) -> LocalizedStringResource {
-        return LocalizedStringResource(String(describing: type))
+        return CharonLocalized.resource(String(describing: type))
     }
 }
 
@@ -260,13 +260,19 @@ extension CharonRun {
 // MARK: - The string forms of the release's own types
 
 extension String {
-    /// The entity identifier of a string, which is the string itself: a string is its own key.
-    public static func entityIdentifier(for value: String) -> EntityIdentifier {
-        return EntityIdentifier(for: value, identifier: value)
-    }
+    /// The string a shortcut writes a string parameter as, from iOS 18, which is the string itself.
+    public var urlRepresentationParameter: String { return self }
+}
 
-    /// The string an entity identifier of this type is written as, which is the string itself.
-    public static var entityIdentifierString: String { return "" }
+extension Int {
+    /// The string a shortcut writes an integer parameter as, from iOS 18, which is the release's own
+    /// number.
+    public var urlRepresentationParameter: Int { return self }
+}
+
+extension URL {
+    /// The string a shortcut writes a URL parameter as, from iOS 18, which is the URL's own string.
+    public var urlRepresentationParameter: String { return absoluteString }
 }
 
 extension IntentWidgetFamily {

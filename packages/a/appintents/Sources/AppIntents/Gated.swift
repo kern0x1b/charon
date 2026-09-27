@@ -26,11 +26,11 @@ extension CLPlacemark: DisplayRepresentable, _IntentValue {
     }
 
     public var displayRepresentation: DisplayRepresentation {
-        return DisplayRepresentation(title: LocalizedStringResource(name ?? "Location"))
+        return DisplayRepresentation(title: CharonLocalized.resource(name ?? "Location"))
     }
 
     public var localizedStringResource: LocalizedStringResource {
-        return LocalizedStringResource(name ?? "Location")
+        return CharonLocalized.resource(name ?? "Location")
     }
 }
 

@@ -545,7 +545,7 @@ public enum StringSearchScope: String, AppEnum {
     }
 
     public static var caseDisplayRepresentations: [DisplayRepresentation] {
-        return allCases.map { DisplayRepresentation(title: LocalizedStringResource($0.rawValue)) }
+        return allCases.map { DisplayRepresentation(title: CharonLocalized.resource($0.rawValue)) }
     }
 }
 
@@ -576,7 +576,7 @@ public enum VideoCategory: String, AppEnum {
     }
 
     public static var caseDisplayRepresentations: [DisplayRepresentation] {
-        return allCases.map { DisplayRepresentation(title: LocalizedStringResource($0.rawValue)) }
+        return allCases.map { DisplayRepresentation(title: CharonLocalized.resource($0.rawValue)) }
     }
 }
 
