@@ -459,11 +459,10 @@ static MDLMesh *CharonMDLBuildMesh(CharonMDLSourceMesh *mesh, id<MDLMeshBufferAl
                                          submeshes:@[submesh]];
 }
 
-// The Wavefront object: the vertices, the normals and the texture coordinates it lists, and the
-// faces that name them. A face corner names a position, and may name a normal and a texture
-// coordinate with it; corners that name the same three of them are one vertex of the mesh, so the
-// file's own sharing of its vertices is the sharing the mesh has. "o" and "g" open a new object and
-// "usemtl" a new material, and each object becomes one mesh.
+// The Wavefront object: one mesh for the file, with a submesh for every group and material it names,
+// and the vertices and normals and texture coordinates shared between them the way the file shares
+// them. A face of n corners is n - 2 triangles fanned from its first corner, and a corner that names
+// the same position, normal and texture coordinate as another is the same vertex of the mesh.
 static void CharonMDLReadOBJ(NSData *data, NSMutableArray<MDLObject *> *objects, id<MDLMeshBufferAllocator> allocator)
 {
     NSString *text = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
@@ -472,13 +471,16 @@ static void CharonMDLReadOBJ(NSData *data, NSMutableArray<MDLObject *> *objects,
     vector_float3 *positions = NULL, *normals = NULL;
     vector_float2 *uvs = NULL;
     NSUInteger positionCount = 0, normalCount = 0, uvCount = 0, capacity = 0;
-    // The corners each object has already made a vertex for, so the file's own sharing survives.
+    CharonMDLSourceMesh mesh;
+    memset(&mesh, 0, sizeof mesh);
+    // The vertices the file's own corners have already made, and the submeshes the faces have been
+    // put into, each a name, a material and the range of indices it owns.
     NSMutableArray<NSArray<NSNumber *> *> *corners = [NSMutableArray array];
-    CharonMDLSourceMesh *meshes = NULL, current;
-    NSUInteger meshCount = 0, meshCapacity = 0;
-    NSMutableArray<NSString *> *names = [NSMutableArray array];
+    NSMutableArray<NSString *> *submeshNames = [NSMutableArray array];
+    NSMutableArray<NSString *> *submeshMaterials = [NSMutableArray array];
+    NSMutableArray<NSNumber *> *submeshFirst = [NSMutableArray array];
+    NSMutableArray<NSNumber *> *submeshCount = [NSMutableArray array];
     NSInteger at = -1;
-    memset(&current, 0, sizeof current);
     for (NSString *raw in [text componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]]) {
         NSString *line = [raw stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
         if (line.length < 2 || [line hasPrefix:@"#"])
@@ -504,64 +506,83 @@ static void CharonMDLReadOBJ(NSData *data, NSMutableArray<MDLObject *> *objects,
             }
         } else if ([key isEqualToString:@"o"] || [key isEqualToString:@"g"]) {
             NSString *name = words.count > 1 ? [[words subarrayWithRange:NSMakeRange(1, words.count - 1)] componentsJoinedByString:@" "] : @"";
-            NSInteger found = (NSInteger)[names indexOfObject:name];
-            if (found == (NSInteger)NSNotFound) {
-                if (meshCount == meshCapacity) {
-                    meshCapacity = meshCapacity ? meshCapacity * 2 : 8;
-                    meshes = realloc(meshes, meshCapacity * sizeof(CharonMDLSourceMesh));
-                }
-                memset(&meshes[meshCount], 0, sizeof(CharonMDLSourceMesh));
-                meshes[meshCount].group = (int)meshCount;
-                meshes[meshCount].material = -1;
-                [names addObject:name];
-                [corners addObject:[NSMutableArray array]];
-                found = (NSInteger)meshCount++;
+            [submeshNames addObject:name];
+            [submeshMaterials addObject:@""];
+            [submeshFirst addObject:@(mesh.indexCount)];
+            [submeshCount addObject:@0];
+            at = (NSInteger)submeshNames.count - 1;
+        } else if ([key isEqualToString:@"usemtl"] && at >= 0 && words.count > 1) {
+            submeshMaterials[at] = words[1];
+        } else if ([key isEqualToString:@"f"]) {
+            // A face with no group before it belongs to a submesh of its own, named as the file names
+            // no one: that is what a file that opens with a face and no "o" means.
+            if (at < 0) {
+                [submeshNames addObject:@""];
+                [submeshMaterials addObject:@""];
+                [submeshFirst addObject:@(mesh.indexCount)];
+                [submeshCount addObject:@0];
+                at = 0;
             }
-            at = found;
-            memset(&current, 0, sizeof current);
-        } else if ([key isEqualToString:@"usemtl"]) {
-            (void)words;
-        } else if ([key isEqualToString:@"f"] && at >= 0) {
-            CharonMDLSourceMesh *mesh = meshes + at;
-            NSMutableArray *shared = corners[at];
-            // A face of n corners is n - 2 triangles, fanned from its first corner.
-            for (NSUInteger corner = 2; corner < words.count - 1; corner++)
+            NSUInteger before = mesh.indexCount;
+            for (NSUInteger cornerIndex = 2; cornerIndex < words.count - 1; cornerIndex++)
                 for (int part = 0; part < 3; part++) {
-                    NSString *token = words[1 + (part == 0 ? 0 : (part == 1 ? corner - 1 : corner))];
+                    NSString *token = words[1 + (part == 0 ? 0 : (part == 1 ? cornerIndex - 1 : cornerIndex))];
                     NSArray<NSString *> *parts = [token componentsSeparatedByString:@"/"];
-                    NSUInteger positionAt, normalAt = 0, uvAt = 0;
-                    BOOL hasPosition = parts.count > 0 && CharonMDLFaceIndex(parts[0].integerValue, positionCount, &positionAt);
-                    if (parts.count > 1 && parts[1].length)
-                        hasPosition = hasPosition && CharonMDLFaceIndex(parts[1].integerValue, normalCount, &normalAt);
-                    if (parts.count > 2 && parts[2].length)
-                        hasPosition = hasPosition && CharonMDLFaceIndex(parts[2].integerValue, uvCount, &uvAt);
-                    if (!hasPosition)
+                    // A corner that names no normal or no coordinate says so, because "none" and "the
+                    // first one" are different corners: the fifth vertex of a lid is not the first
+                    // corner of the face below it.
+                    NSUInteger positionAt = 0, normalAt = 0, uvAt = 0;
+                    BOOL named = parts.count > 0 && CharonMDLFaceIndex(parts[0].integerValue, positionCount, &positionAt);
+                    BOOL hasNormal = named && parts.count > 1 && parts[1].length &&
+                                     CharonMDLFaceIndex(parts[1].integerValue, normalCount, &normalAt);
+                    BOOL hasUV = named && parts.count > 2 && parts[2].length &&
+                                 CharonMDLFaceIndex(parts[2].integerValue, uvCount, &uvAt);
+                    if (!named)
                         continue;
-                    NSArray<NSNumber *> *corner3 = @[@(positionAt), @(normalAt), @(uvAt)];
-                    NSUInteger found = [shared indexOfObject:corner3];
+                    NSArray<NSNumber *> *corner = @[@(positionAt), @(hasNormal ? normalAt + 1 : 0), @(hasUV ? uvAt + 1 : 0)];
+                    NSUInteger found = [corners indexOfObject:corner];
                     if (found == NSNotFound) {
-                        [shared addObject:corner3];
-                        CharonMDLSourceVertexAdd(mesh, positions[positionAt], normalCount ? normals[normalAt] : (vector_float3){0, 0, 0},
-                                                 uvCount ? uvs[uvAt] : (vector_float2){0, 0}, normalCount != 0, uvCount != 0);
-                        found = mesh->vertexCount - 1;
+                        [corners addObject:corner];
+                        CharonMDLSourceVertexAdd(&mesh, positions[positionAt],
+                                                 hasNormal ? normals[normalAt] : (vector_float3){0, 0, 0},
+                                                 hasUV ? uvs[uvAt] : (vector_float2){0, 0}, hasNormal, hasUV);
+                        found = mesh.vertexCount - 1;
                     }
-                    CharonMDLSourceIndexAdd(mesh, (uint32_t)found);
+                    CharonMDLSourceIndexAdd(&mesh, (uint32_t)found);
                 }
+            submeshCount[at] = @(mesh.indexCount - before);
         }
     }
-    for (NSUInteger k = 0; k < meshCount; k++) {
-        MDLMesh *built = CharonMDLBuildMesh(meshes + k, allocator, names[k]);
+    if (mesh.vertexCount && mesh.indexCount) {
+        MDLMesh *built = CharonMDLBuildMesh(&mesh, allocator, submeshNames.firstObject);
         if (built) {
-            built.name = names[k];
+            NSString *first = submeshNames.firstObject, *firstMaterial = submeshMaterials.firstObject;
+            built.name = firstMaterial.length ? [NSString stringWithFormat:@"%@_%@", first, firstMaterial] : first;
+            // One submesh for every group and material the file names, over the indices that belong to
+            // it, each with a material of the name the file gave it.
+            [built.submeshes removeAllObjects];
+            for (NSUInteger k = 0; k < submeshNames.count; k++) {
+                NSUInteger first = [submeshFirst[k] unsignedIntegerValue], count = [submeshCount[k] unsignedIntegerValue];
+                if (!count)
+                    continue;
+                NSString *name = submeshNames[k], *material = submeshMaterials[k];
+                MDLMaterial *mat = [[MDLMaterial alloc] initWithName:material
+                                                  scatteringFunction:[[MDLPhysicallyPlausibleScatteringFunction alloc] init]];
+                MDLSubmesh *submesh = [[MDLSubmesh alloc] initWithName:material.length ? material : name
+                                                             indexBuffer:built.submeshes.firstObject.indexBuffer
+                                                              indexCount:count
+                                                               indexType:MDLIndexBitDepthUInt32
+                                                            geometryType:MDLGeometryTypeTriangles
+                                                                material:mat];
+                [built.submeshes addObject:submesh];
+            }
             [objects addObject:built];
         }
-        CharonMDLSourceMeshFree(meshes + k);
     }
-    free(meshes);
+    CharonMDLSourceMeshFree(&mesh);
     free(positions);
     free(normals);
     free(uvs);
-    (void)current;
 }
 
 // The Stanford polygon file, in its ASCII form and in its binary little-endian form. The header says
