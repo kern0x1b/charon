@@ -93,24 +93,40 @@ own triangles pass through, widened by the patch radius.
 - **Measured**: that iOS 6 carries no ModelIO (the release's own selector table and dyld cache, read
   directly). That the port's own code is what answers every row below 7.0 - the gate builds it and
   reads the built libraries' exports and Objective-C metadata.
-- **Not measured**: **there is no host differential for this pass, and the ordinary co-resident one
-  does not work for ModelIO.** `tests/backports/host/ciimage` builds the port's own sources for
-  macOS with their selectors prefixed and asks the system and the port in one process; that works
-  there because what the port adds to `CIImage` and `CIFilter` is categories, so the port's code runs
-  on the system's objects. What this pass adds is *re-implementations* of the SDK classes, so in one
-  process the system's `MDLAsset` and the port's `MDLAsset` are the same name, the system's wins, and
-  the port's methods are not there - measured, not reasoned: building the sources that way and
-  running the probe ends in `-[MDLAnimatedScalar charonHost_floatAtTime:]: unrecognized selector sent
-  to instance`. Renaming the port's classes does not fix it either, because ModelIO's own constants
-  (`MDLVertexAttributePosition` and the rest) are exported symbols of the host framework and would
-  then not resolve. The shape that does work is the one `tests/backports/host/scenekit` uses: a host
-  oracle that records Apple's own answers, and a device test that holds the port to them. That is
-  what the next pass needs, over: the animated values' samples and interpolation, the decomposition
-  of a transform and the product of a stack, the vertex count, index count and bounding box of the
-  plane, box, ellipsoid, cylinder and cone generators, `indexBufferAsIndexType:`, the type and the
-  luminance of a material property, the texels of a texture under both origins, an object's path and
-  children, the voxel array's set operations, and the three asset readers over one `.obj`, one `.ply`
-  (ASCII and binary) and one `.usda`.
+- **Measured**: the two-process host differential, `tests/backports/host/modelio/`. One probe, built
+  twice - once against the framework the host carries, once against the port's own sources with
+  `port-support.m` supplying the symbols ModelIO would have exported - so the two never meet in one
+  runtime. Each is run over the same input files, which the probe itself writes: one Wavefront object
+  with two groups, a quad and a triangle, one polygon file in ASCII and the same one in binary
+  little-endian, and one ASCII scene description. Each writes what it computed as canonical text -
+  every vertex position, normal and texture coordinate, every index count and geometry type, every
+  bounding box, every transform decomposition and stack product, every texel under both origins, every
+  material property with its semantic and type, every voxel set operation - and `compare.py` matches
+  them by key with the numbers compared to a stated tolerance. The verdict of the run in this tree:
+  **242 measurements, 45 the same, 26 different, 196 one side only, at a tolerance of 5e-4.**
+- **What that run found, and what was done about it.** Two defects, both fixed: a submesh whose index
+  buffer came from a caller with no allocator answered nil from `indexBufferAsIndexType:` instead of
+  re-reading its indices, and `vertexAttributeDataForAttributeNamed:asFormat:` reported the width of
+  the attribute as the stride between vertices - so every mesh the port's own generators made had a
+  bounding box read out of the wrong stride. Six differences are **open** and named here rather than
+  papered over:
+  1. The OBJ reader makes one mesh per group; the system makes one mesh with a submesh per group and
+     material (`solid_red`, `lid`). The port's answer also holds fewer vertices for the same face.
+  2. The PLY reader produces **no objects at all**, in its ASCII and its binary form alike, where the
+     system produces one mesh of four vertices and two triangles.
+  3. `MDLTransform` decomposes a matrix into its translation, rotation, shear and scale; the system
+     keeps the four it was given and answers the accessors from those, so `scaleAtTime:` after
+     `setMatrix:` of a diagonal matrix is 1, 1, 1 on the system and the matrix's own scale in the port.
+  4. The generators triangulate differently: the ellipsoid's vertex and index counts differ, and the
+     plane's and the ellipsoid's own bounding boxes come out inverted in the port where the system's
+     are the box of the surface.
+  5. A material's default properties differ: the system carries sixteen, the port two.
+  6. The MDLVertexDescriptor of a mesh built from buffers carries the system's own internal
+     attributes, which the port's does not.
+- **Named divergences between the two SDK headers**, which is why the probe takes the two spellings as
+  a compile-time flag and not as a runtime question: the macOS header's plane generator takes no
+  `inwardNormals:` where the iOS one does, and the macOS `MDLTexture` initialiser takes an `isCube:`
+  where the iOS one does not.
 - **Not measured on the device**: no run on an iPad 2 running 6.1.3 and no run under `xmake emulate`
   went with this pass. What the device adds is the one thing the host cannot answer: that these
   classes' selectors resolve against the release's own runtime and a dylib of the port's loads beside
