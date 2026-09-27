@@ -44,15 +44,35 @@ creator at the readiness asked for and, when it was not ready, run the handler o
 and answer the handler's own status; a failure releases the buffer and leaves the out parameter null,
 which is what the host does.
 
-The limit is real and is written down rather than papered over: on this release the handler runs at
-creation, not when the application later calls `CMSampleBufferMakeDataReady`, because a system
-`CMSampleBuffer` has nowhere to keep a block and the band machinery cannot redefine
-`CMSampleBufferMakeDataReady` (the release exports it, so an object carrying that name would be
-re-exported rather than kept). For a buffer built from a `CMBlockBuffer` that already holds its bytes -
-which is what the parameter is for - the data is ready at creation, so the handler runs at the only
-moment the data is ready. An application that builds a buffer over an *empty* block and expects the
-handler to run later will find the handler already run and the buffer still not ready unless the handler
-made it ready itself, which is the handler's own contract.
+**The handler runs inside the creator, before it returns, where the release runs it at
+`CMSampleBufferMakeDataReady`.** That is the limit, and it is written down rather than papered over.
+
+## What the host does, measured
+
+- The handler has **not** run when `CMSampleBufferCreateWithMakeDataReadyHandler` returns
+  (`create 0, data ready 0, ran 0`); it runs on the next `CMSampleBufferMakeDataReady`
+  (`0, data ready 1, ran 1`). With `dataReady` YES it never runs, and `MakeDataReady` does not call it.
+- A handler returning non-zero gives `MakeDataReady -12345`, and the buffer stays not ready but valid.
+- A marker object captured by the handler is **never** deallocated on this machine: not after
+  `MakeDataReady`, not after `CMSampleBufferInvalidate`, not after `CFRelease`. The host does not release
+  the block with the buffer.
+
+## The wall is not a wall, and what is left of it
+
+This release's `CMSampleBufferCreate` takes a `makeDataReadyCallback` and a `makeDataReadyRefcon` at
+`ios(4.0)`, and `CMSampleBufferSetInvalidateCallback` is public at `ios(4.0)` too - the same declaration
+`CMSampleBufferSetInvalidateHandler` has in 8.0, with a C callback where that one has a block. So the
+release can call the handler itself, at the moment the application asks, with a copied block as the
+refcon and a C trampoline in front of it; the argument order of the invalidation setter was measured
+rather than assumed, because with the callback third instead of second it stores the refcon as the
+function pointer and the process dies inside `CMSampleBufferInvalidate`.
+
+The implementation is not in the tree. It was written, it **crashes the host test with SIGBUS**, and it
+was reverted rather than delivered: freeing the copied block after the first make-data-ready call and
+also from the invalidation hook means a holder one path frees is handed to the other, because the
+release does not clear the invalidation callback when the trampoline has run. The live-holder table
+that fixes it was the last thing written and is not verified. So this entry stays open, and the registry
+says why in one clause rather than leaving the timing to be inferred.
 
 ## `CMAudioSampleBufferCreateReadyWithPacketDescriptions` (8.0)
 
