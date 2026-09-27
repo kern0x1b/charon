@@ -146,13 +146,34 @@ def keywords(selector):
     return selector.split(":")[:-1] if ":" in selector else []
 
 
+def enumeration_parameter(node):
+    """Whether a parameter is an enumeration, which the AST tells by its sugar.
+
+    A parameter declared as an NS_ENUM typedef has no pointer in its qualType and desugars to an
+    integer, and that is the shape of every enumeration in the framework: the harness can see it
+    without a table, and it has to, because 0 is the one value these APIs refuse - the system
+    re-forms a success carrying it as a notRequired - so a harness that always passed 0 could not
+    tell a resolved value from a refused one.
+    """
+    qual = (node.get("type") or {}).get("qualType") or ""
+    desugared = (node.get("type") or {}).get("desugaredQualType") or ""
+    if "*" in qual or qual in SCALARS or qual.startswith("instancetype"):
+        return False
+    return desugared in ("int", "long", "long long", "NSInteger", "NSUInteger", "unsigned",
+                         "short", "unsigned short", "char", "unsigned char")
+
+
 def selector_arguments(method):
     """The neutral value of each parameter, in the selector's own order."""
     arguments, declarations = [], []
     parameters = parameters_of(method)
     for index in range(len(keywords(method.get("name") or ""))):
-        kind, _ = parameters[index] if index < len(parameters) else ("id", "value")
-        value, needed = neutral(kind)
+        kind, _ = parameters[index] if index < len(parameters) else ({}, "value")
+        value, needed = neutral((kind.get("type") or {}).get("qualType") or "id")
+        if enumeration_parameter(parameters[index][0] if index < len(parameters) else {}):
+            # A non-zero value for an enumeration: 0 is what the system re-forms, so 0 would
+            # make a real resolution and a refused one look the same.
+            value, needed = "1", []
         arguments.append(value)
         declarations.extend(needed)
     return arguments, declarations

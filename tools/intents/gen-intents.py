@@ -231,7 +231,8 @@ NEUTRAL_ENUMERATIONS = {
 
 
 def neutral_enumeration(name):
-    """Whether a success of this type carries nothing to say, which the host re-forms."""
+    """The enumerations the host's rule was measured over, kept for the record and for the
+    differential's label - the *value* decides, not membership of this list."""
     return name in NEUTRAL_ENUMERATIONS
 
 
@@ -886,17 +887,19 @@ def factory(interface, method, resolution):
         value = "[NSNumber numberWith%s:%s]" % ({"char": "Char", "unsigned char": "UnsignedChar",
                                                  "long long": "LongLong"}.get(spelled(kind), "Integer"), name)
     if SUCCESS.match(selector) or selector == SUCCESS_VALUE:
-        # The host re-forms a success whose value is the "nothing to say" case of its own
-        # enumeration into a notRequired and says so in its log (observed on the host's own
-        # Intents, 2026-09-27), so this answers the same thing for the same reason.
-        status = ("CharonIntentsResolutionNotRequired"
-                  if neutral_enumeration(base_type(kind))
-                  else "CharonIntentsResolutionSuccess")
+        # The host's own rule, measured on its framework with objc_msgSend over every
+        # enum-typed success factory: a success whose value is the enumeration's **zero** case
+        # says nothing, and the system re-forms it as a notRequired; any other value is a value
+        # the caller resolved, and the host leaves it a success. Seventeen enumerations measured,
+        # and the decision is the value's, not the declared type's - a factory that answered
+        # notRequired for every value of its type would throw away every real resolution.
         return ["+ (%s)%s" % (returns, interface.spelled_selector(method)), "{",
-                "    // A type whose zero case says nothing carries a success that says nothing,",
-                "    // which is what notRequired means; the host re-forms it the same way.",
-                "    return [self charon_resolutionWithStatus:%s"
-                % status,
+                "    // The host re-forms a success carrying the zero case of its type as a",
+                "    // notRequired - a success with nothing to say - and leaves any other value a",
+                "    // success (measured on the host's own Intents, 17 enumerations).",
+                "    return [self charon_resolutionWithStatus:%s == 0 ? CharonIntentsResolutionNotRequired"
+                % name,
+                "                                                : CharonIntentsResolutionSuccess",
                 " resolvedValue:%s valuesToDisambiguate:nil valueToConfirm:nil];" % value, "}"]
     if DISAMBIGUATION.match(selector) or selector == DISAMBIGUATION_VALUE:
         return ["+ (%s)%s" % (returns, interface.spelled_selector(method)), "{",

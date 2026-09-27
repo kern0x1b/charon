@@ -29,6 +29,10 @@ extern void charon_intents_decode(id object, NSCoder *coder);
 // pointer by copy, and a value type by its bytes.
 extern void charon_intents_copy(id copy, id object);
 
+// What the copy decides for one ivar of a class, as 1 for copy and 0 for share. Exposed for the
+// test that checks the decision, which is tests/backports/callgen/ownership-test.m.
+extern int charon_copy_is_copy_for_testing(Class owner, const char *ivar);
+
 // The superclass's own -init, made explicitly. A class whose header marks its own -init
 // unavailable - which most Intents classes do - cannot spell [super init] in a file that reads
 // that header, and the superclass's -init is the only initialiser an archive of such a class

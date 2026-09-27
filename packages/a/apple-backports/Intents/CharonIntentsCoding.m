@@ -52,7 +52,10 @@ static BOOL charon_intents_ivar_is_copy(Class owner, const char *name)
         // The type field is everything up to the first comma: no type encoding holds one.
         const char *flags = strchr(attributes, ',');
         const char *ivar = strstr(attributes, ",V_");
-        if (!flags || !ivar || strcmp(ivar + 3, name) != 0) {
+        // The two spellings of one name: a property's V_ field carries the ivar name without its
+        // leading underscore, and ivar_getName() carries it with. Comparing them as they are
+        // never matches, which is how this walk became dead code and every ivar a copy.
+        if (!flags || !ivar || strcmp(ivar + 3, name + 1) != 0) {
             continue;
         }
         found = YES;
@@ -144,6 +147,14 @@ static int charon_intents_kind(Ivar ivar, NSUInteger *size)
     }
     NSGetSizeAndAlignment(encoding, size, NULL);
     return CharonIntentsValue;
+}
+
+// What charon_intents_ivar_is_copy answers for one ivar, exposed so a test can check the
+// decision without a copy: tests/backports/callgen/ownership-test.m is that test, and it is the
+// negative control for the guard that matches a property to its backing ivar.
+int charon_copy_is_copy_for_testing(Class owner, const char *ivar)
+{
+    return charon_intents_ivar_is_copy(owner, ivar) ? 1 : 0;
 }
 
 void charon_intents_encode(id object, NSCoder *coder)
