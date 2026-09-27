@@ -58,3 +58,31 @@ the module name is normalised. What it changed:
    type it does not have cannot arise — a rule it cannot compare answers `false` instead. Both are
    declared because the framework declares them, so a port that catches one compiles; they are not
    raised here, and that is the whole of the difference.
+
+## The subset conditions' two builders, and what the 73 remaining rows are
+
+`build_largestSubset` and `build_smallestSubset` took a third `_ count: Int` argument the interface
+does not have: both are two-argument there (`TipKit-ios.swiftinterface:180,191`), and the count is
+not an argument of the condition at all — `Foundation.Predicate`'s `largestSubset` takes the other
+side of the comparison, and the interface's `LargestSubset` has no count member either. The port now
+reads the count the way the framework does: the condition takes the `DonationFilter` the rule wrote on
+the other side (`input.value` is how many, `input.op` is which way) and the key path to group by, and
+`CharonDonationCompare` — which already compares numerically — answers it. That is what moved
+TipKit from 245 to **247 of 321 placed**.
+
+**What the remaining 73 rows are** (`.agent-work/handoffs/2026-09-28-ledger-swift-digester-naming.md`,
+classifier `.agent-work/host/classify.py`, run against the digester's own dump):
+
+| how the digester prints it | rows | whose work it is |
+| --- | --- | --- |
+| printed, under another name | **59** | the ledger's matcher: `==(a:b:)`→`==(_:_:)`, `init?(coder:)`→`init(coder:)`, `subscript(keyPath:)`→`subscript(_:)`, `~=`, and the eight `Tips.GroupBuilder.*` members a result-builder type never gets |
+| owner not printed at all | 12 | the cross-module gap (both other modules were on `-I`): `Parameter(_:)` and `Rule(_:_:)`'s neighbours |
+| member not printed | 1 | `TipUIPopoverViewController.popoverPresentationController` — UIKit's property is iOS 8, and 6.1.3's `UIViewController` has no such selector to override |
+| bare row, no owner | 3 | `Rule(_:_:)` and `Parameter(_:)` are `@freestanding(expression)`/`@attached` **macros** from Apple's `TipKitMacros` plugin (`TipKit-ios.swiftinterface:336`, and the `Parameter` macro beside it) |
+
+So the real gap for this band is **14 rows**, and 13 of them are the `SwiftUI.View` modifiers
+(`View.popoverTip(_:arrowEdge:action:)` and its two siblings, `tipImageStyle` ×3, `tipViewStyle`,
+`tipAnchor`, `tipBackground`, `tipBackgroundInteraction`, `tipCornerRadius`, `tipImageSize`), which
+are the SwiftUI band's: this module draws its popover in `UIView` and `UIViewController` instead, as
+`facts/TipKit/Rendering.md` says at the top. Counting the four normalisations the ledger can make,
+this module is at **247 + 59 = 306 of 321**.

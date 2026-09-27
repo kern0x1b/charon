@@ -34,6 +34,8 @@ public struct TipKitError: Error, LocalizedError, Hashable {
 
     let code: Code
 
+    public static func == (a: TipKitError, b: TipKitError) -> Bool { return a.code == b.code }
+
     public var description: String { code.name }
 
     public var errorDescription: String? { code.name }

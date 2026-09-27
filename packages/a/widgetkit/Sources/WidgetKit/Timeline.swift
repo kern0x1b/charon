@@ -101,8 +101,14 @@ public struct TimelineProviderContext {
         /// The drawing the system asked for, by the name it knows the variant by.
         public subscript(dynamicMember variant: String) -> Bool { return true }
         /// The drawing at a key path into the widget's own environment.
-        public subscript<Value>(keyPath: KeyPath<EnvironmentVariants, Value>) -> Value {
-            fatalError("the environment variants are the system's own; a value at \\(keyPath) is not one of them")
+        ///
+        /// The interface takes a key path into `SwiftUI.EnvironmentValues` and answers `[T]?`
+        /// (`WidgetKit-ios.swiftinterface:1719`): the values are the *system's* own, so the honest
+        /// answer for one this release has no record of is none. The framework's spelling needs
+        /// SwiftUI's `EnvironmentValues`, which is another band's, so the key path is taken over
+        /// this type and the answer stays optional, as the framework's is.
+        public subscript<Value>(keyPath: KeyPath<EnvironmentVariants, Value>) -> Value? {
+            return nil
         }
     }
 }

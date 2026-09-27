@@ -56,3 +56,22 @@ own notes already record for `AlertConfiguration.title` and
 `WidgetInfo.widgetConfigurationIntent(of:)`: a member typed with another module's type is not
 reported even with that module on the digester's `-I`. `IntentTimelineProvider` was counted as
 placed before only because it was an empty refinement, with no member of its own to drop.
+
+## The 95 rows, classified against the digester's own dump
+
+`.agent-work/host/classify.py` reads the `-dump-sdk` dump of the built module and
+`.agent-work/runs/kits/WidgetKit-missing.tsv` and sorts every row; the writeup for the ledger band is
+`.agent-work/handoffs/2026-09-28-ledger-swift-digester-naming.md`. Of the 95:
+
+| how the digester prints it | rows | whose work it is |
+| --- | --- | --- |
+| printed, under another name | **38** | the ledger's matcher: `==(a:b:)`→`==(_:_:)`, `init?(coder:)`→`init(coder:)`, `subscript(keyPath:)`→`subscript(_:)` |
+| owner not printed at all | 22 | the cross-module gap, with *both* other modules on `-I`: the `ActivityAttributes` family (`ActivityConfiguration`, `ActivityViewContext`, `ActivityConfiguration.init(for:content:dynamicIsland:)`, `ActivityAttributes.previewContext(_:isStale:viewKind:)`, `DynamicIslandExpandedRegion.init(_:priority:content:)`, `Image.widgetAccentedRenderingMode(_:)`, the `EnvironmentValues.activity*` rows) and the `AppIntents` family (`AppIntentConfiguration`, `IntentConfiguration`, `AppIntentControlConfiguration`, `AppIntentRecommendation`, both intent-provider protocols) |
+| member not printed | 23 | the eight `Preview(...)` rows (macros from Apple's `PreviewsMacros` plugin), the `EnvironmentValues.*` rows that need `SwiftUI.EnvironmentValues`, `StaticControlConfiguration.init(kind:content:)`, and `TimelineProviderContext.EnvironmentVariants.subscript(keyPath:)` |
+| bare row, no owner | 12 | the same `Preview` macros seen from the other side, and the top-level `Preview` initialisers |
+
+**One of the 23 was real and is fixed.** `TimelineProviderContext.EnvironmentVariants`'s key-path
+subscript returned `fatalError` — a crash in a library a port links, for a value the system owns. The
+framework's own subscript is optional (`[T]?`, `WidgetKit-ios.swiftinterface:1719`), so the honest
+answer for a variant this release has no record of is none, and the port now returns `nil` instead of
+trapping. It still does not count as placed, because the digester prints it as `subscript(_:)`.

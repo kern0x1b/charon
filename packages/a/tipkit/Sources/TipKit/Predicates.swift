@@ -82,32 +82,39 @@ public enum PredicateExpressions {
         }
     }
 
-    /// Whether more donations than the rule names were made, grouped by a value.
+    /// Whether the donations, grouped by a value, are as many as the rule's other side says.
+    ///
+    /// How many is not an argument of its own: it is the comparison the rule wrote on the other side
+    /// of the condition, which is the `DonationFilter` this takes, so `#Predicate`-shaped code says
+    /// "at least three" and this reads that. The interface's builders are two-argument
+    /// (`TipKit-ios.swiftinterface:180,191`), and this is the shape that keeps them so.
     public struct LargestSubset: EventPredicateExpression {
         public typealias Output = Bool
 
-        /// The event the condition is about.
-        public let eventID: String
+        /// The comparison that says how many are wanted.
+        public let input: DonationFilter
         /// The name the donations are grouped by.
         public let keyPath: String
-        /// How many are wanted.
-        public let count: Int
 
-        public func evaluate(_ input: any Tips.RuleInput) -> Bool {
-            return CharonDonationSubset.groups(input.donations, eventID: eventID, keyPath: keyPath).count >= count
+        public func evaluate(_ donations: any Tips.RuleInput) -> Bool {
+            let groups = CharonDonationSubset.groups(donations.donations, eventID: input.eventID, keyPath: keyPath).count
+            return CharonDonationCompare.compare(String(groups), input.value, input.op)
         }
     }
 
-    /// Whether fewer donations than the rule names were made, grouped by a value.
+    /// Whether the donations, grouped by a value, are as few as the rule's other side says. The
+    /// mirror of `LargestSubset`, and read the same way.
     public struct SmallestSubset: EventPredicateExpression {
         public typealias Output = Bool
 
-        public let eventID: String
+        /// The comparison that says how many are wanted.
+        public let input: DonationFilter
+        /// The name the donations are grouped by.
         public let keyPath: String
-        public let count: Int
 
-        public func evaluate(_ input: any Tips.RuleInput) -> Bool {
-            return CharonDonationSubset.groups(input.donations, eventID: eventID, keyPath: keyPath).count <= count
+        public func evaluate(_ donations: any Tips.RuleInput) -> Bool {
+            let groups = CharonDonationSubset.groups(donations.donations, eventID: input.eventID, keyPath: keyPath).count
+            return CharonDonationCompare.compare(String(groups), input.value, input.op)
         }
     }
 
@@ -121,14 +128,12 @@ public enum PredicateExpressions {
         return DonatedWithin(eventID: eventID, timeRange: timeRange)
     }
 
-    public static func build_largestSubset(_ eventID: String, groupedBy keyPath: String,
-                                           _ count: Int) -> LargestSubset {
-        return LargestSubset(eventID: eventID, keyPath: keyPath, count: count)
+    public static func build_largestSubset(_ input: DonationFilter, groupedBy keyPath: String) -> LargestSubset {
+        return LargestSubset(input: input, keyPath: keyPath)
     }
 
-    public static func build_smallestSubset(_ eventID: String, groupedBy keyPath: String,
-                                            _ count: Int) -> SmallestSubset {
-        return SmallestSubset(eventID: eventID, keyPath: keyPath, count: count)
+    public static func build_smallestSubset(_ input: DonationFilter, groupedBy keyPath: String) -> SmallestSubset {
+        return SmallestSubset(input: input, keyPath: keyPath)
     }
 }
 
