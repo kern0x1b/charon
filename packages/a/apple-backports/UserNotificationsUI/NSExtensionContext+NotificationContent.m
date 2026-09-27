@@ -10,6 +10,11 @@
 // The actions an extension wants offered are the extension's own, and the port keeps them and hands
 // them back as they are set: an extension that set none reads an empty array rather than nil.
 
+// The header declares five members of this category and the port carries one of them: the four the
+// release cannot act on are registry entries with status absent, and their selectors are the point at
+// which the compiler's -Wincomplete-implementation would otherwise fire on every build.
+#pragma clang diagnostic ignored "-Wincomplete-implementation"
+
 @implementation NSExtensionContext (UNNotificationContentExtension)
 
 @dynamic notificationActions;
