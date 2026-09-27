@@ -116,12 +116,18 @@ public protocol EntityQueryComparatorProtocol {}
 
 /// Whether the value is equal to the one the caller gave.
 public final class EqualToComparator<PropertyType, ComparatorMappingType>: EntityQueryComparatorProtocol
-    where PropertyType: _IntentValue, PropertyType: Sendable, ComparatorMappingType: Any {    public let value: PropertyType
+    where PropertyType: _IntentValue, PropertyType: Sendable, ComparatorMappingType: Any {    /// The value the caller compares with. A comparator declared with a mapping alone has none: the
+    /// query reads the property and compares that, which is what the framework's own declaration
+    /// means by a comparator with no value.
+    public let value: PropertyType?
     public let comparatorMapping: (any Sendable)?
 
+    /// A comparator declared with a mapping but no value: the mapping is held, and the value the
+    /// query compares with is whatever the mapping gives the property's own value. There is no value
+    /// to compare before the query runs, which is what the framework's own declaration means by it.
     public init(mappingTransform: @escaping (PropertyType) -> PropertyType) {
         self.comparatorMapping = nil
-        self.value = mappingTransform(CharonBox.box(0))
+        self.value = nil
     }
 
     public init<Value>(value: Value, mappingTransform: @escaping (Value) -> PropertyType) {
@@ -133,12 +139,18 @@ public final class EqualToComparator<PropertyType, ComparatorMappingType>: Entit
 /// Whether the value is not equal to the one the caller gave.
 public final class NotEqualToComparator<PropertyType, ComparatorMappingType>: EntityQueryComparatorProtocol
     where PropertyType: _IntentValue, PropertyType: Sendable, ComparatorMappingType: Any {
-    public let value: PropertyType
+    /// The value the caller compares with. A comparator declared with a mapping alone has none: the
+    /// query reads the property and compares that, which is what the framework's own declaration
+    /// means by a comparator with no value.
+    public let value: PropertyType?
     public let comparatorMapping: (any Sendable)?
 
+    /// A comparator declared with a mapping but no value: the mapping is held, and the value the
+    /// query compares with is whatever the mapping gives the property's own value. There is no value
+    /// to compare before the query runs, which is what the framework's own declaration means by it.
     public init(mappingTransform: @escaping (PropertyType) -> PropertyType) {
         self.comparatorMapping = nil
-        self.value = mappingTransform(CharonBox.box(0))
+        self.value = nil
     }
 
     public init<Value>(value: Value, mappingTransform: @escaping (Value) -> PropertyType) {
@@ -150,12 +162,18 @@ public final class NotEqualToComparator<PropertyType, ComparatorMappingType>: En
 /// Whether the value is above the one the caller gave.
 public final class GreaterThanComparator<PropertyType, ComparatorMappingType>: EntityQueryComparatorProtocol
     where PropertyType: _IntentValue, PropertyType: Sendable, ComparatorMappingType: Any {
-    public let value: PropertyType
+    /// The value the caller compares with. A comparator declared with a mapping alone has none: the
+    /// query reads the property and compares that, which is what the framework's own declaration
+    /// means by a comparator with no value.
+    public let value: PropertyType?
     public let comparatorMapping: (any Sendable)?
 
+    /// A comparator declared with a mapping but no value: the mapping is held, and the value the
+    /// query compares with is whatever the mapping gives the property's own value. There is no value
+    /// to compare before the query runs, which is what the framework's own declaration means by it.
     public init(mappingTransform: @escaping (PropertyType) -> PropertyType) {
         self.comparatorMapping = nil
-        self.value = mappingTransform(CharonBox.box(0))
+        self.value = nil
     }
 
     public init<Value>(value: Value, mappingTransform: @escaping (Value) -> PropertyType) {
@@ -167,12 +185,18 @@ public final class GreaterThanComparator<PropertyType, ComparatorMappingType>: E
 /// Whether the value is above or equal to the one the caller gave.
 public final class GreaterThanOrEqualToComparator<PropertyType, ComparatorMappingType>: EntityQueryComparatorProtocol
     where PropertyType: _IntentValue, PropertyType: Sendable, ComparatorMappingType: Any {
-    public let value: PropertyType
+    /// The value the caller compares with. A comparator declared with a mapping alone has none: the
+    /// query reads the property and compares that, which is what the framework's own declaration
+    /// means by a comparator with no value.
+    public let value: PropertyType?
     public let comparatorMapping: (any Sendable)?
 
+    /// A comparator declared with a mapping but no value: the mapping is held, and the value the
+    /// query compares with is whatever the mapping gives the property's own value. There is no value
+    /// to compare before the query runs, which is what the framework's own declaration means by it.
     public init(mappingTransform: @escaping (PropertyType) -> PropertyType) {
         self.comparatorMapping = nil
-        self.value = mappingTransform(CharonBox.box(0))
+        self.value = nil
     }
 
     public init<Value>(value: Value, mappingTransform: @escaping (Value) -> PropertyType) {
@@ -184,12 +208,18 @@ public final class GreaterThanOrEqualToComparator<PropertyType, ComparatorMappin
 /// Whether the value is below the one the caller gave.
 public final class LessThanComparator<PropertyType, ComparatorMappingType>: EntityQueryComparatorProtocol
     where PropertyType: _IntentValue, PropertyType: Sendable, ComparatorMappingType: Any {
-    public let value: PropertyType
+    /// The value the caller compares with. A comparator declared with a mapping alone has none: the
+    /// query reads the property and compares that, which is what the framework's own declaration
+    /// means by a comparator with no value.
+    public let value: PropertyType?
     public let comparatorMapping: (any Sendable)?
 
+    /// A comparator declared with a mapping but no value: the mapping is held, and the value the
+    /// query compares with is whatever the mapping gives the property's own value. There is no value
+    /// to compare before the query runs, which is what the framework's own declaration means by it.
     public init(mappingTransform: @escaping (PropertyType) -> PropertyType) {
         self.comparatorMapping = nil
-        self.value = mappingTransform(CharonBox.box(0))
+        self.value = nil
     }
 
     public init<Value>(value: Value, mappingTransform: @escaping (Value) -> PropertyType) {
@@ -201,12 +231,18 @@ public final class LessThanComparator<PropertyType, ComparatorMappingType>: Enti
 /// Whether the value is below or equal to the one the caller gave.
 public final class LessThanOrEqualToComparator<PropertyType, ComparatorMappingType>: EntityQueryComparatorProtocol
     where PropertyType: _IntentValue, PropertyType: Sendable, ComparatorMappingType: Any {
-    public let value: PropertyType
+    /// The value the caller compares with. A comparator declared with a mapping alone has none: the
+    /// query reads the property and compares that, which is what the framework's own declaration
+    /// means by a comparator with no value.
+    public let value: PropertyType?
     public let comparatorMapping: (any Sendable)?
 
+    /// A comparator declared with a mapping but no value: the mapping is held, and the value the
+    /// query compares with is whatever the mapping gives the property's own value. There is no value
+    /// to compare before the query runs, which is what the framework's own declaration means by it.
     public init(mappingTransform: @escaping (PropertyType) -> PropertyType) {
         self.comparatorMapping = nil
-        self.value = mappingTransform(CharonBox.box(0))
+        self.value = nil
     }
 
     public init<Value>(value: Value, mappingTransform: @escaping (Value) -> PropertyType) {
@@ -232,12 +268,18 @@ public final class IsBetweenComparator<InputType, ComparatorMappingType>: Entity
 /// Whether the string contains, or begins with, or ends with, the one the caller gave.
 public final class ContainsComparator<PropertyType, ComparatorMappingType>: EntityQueryComparatorProtocol
     where PropertyType: _IntentValue, PropertyType: Sendable, ComparatorMappingType: Any {
-    public let value: PropertyType
+    /// The value the caller compares with. A comparator declared with a mapping alone has none: the
+    /// query reads the property and compares that, which is what the framework's own declaration
+    /// means by a comparator with no value.
+    public let value: PropertyType?
     public let comparatorMapping: (any Sendable)?
 
+    /// A comparator declared with a mapping but no value: the mapping is held, and the value the
+    /// query compares with is whatever the mapping gives the property's own value. There is no value
+    /// to compare before the query runs, which is what the framework's own declaration means by it.
     public init(mappingTransform: @escaping (PropertyType) -> PropertyType) {
         self.comparatorMapping = nil
-        self.value = mappingTransform(CharonBox.box(0))
+        self.value = nil
     }
 
     public init<Value>(value: Value, mappingTransform: @escaping (Value) -> PropertyType) {
@@ -249,12 +291,18 @@ public final class ContainsComparator<PropertyType, ComparatorMappingType>: Enti
 /// Whether the string begins with the one the caller gave.
 public final class HasPrefixComparator<PropertyType, ComparatorMappingType>: EntityQueryComparatorProtocol
     where PropertyType: _IntentValue, PropertyType: Sendable, ComparatorMappingType: Any {
-    public let value: PropertyType
+    /// The value the caller compares with. A comparator declared with a mapping alone has none: the
+    /// query reads the property and compares that, which is what the framework's own declaration
+    /// means by a comparator with no value.
+    public let value: PropertyType?
     public let comparatorMapping: (any Sendable)?
 
+    /// A comparator declared with a mapping but no value: the mapping is held, and the value the
+    /// query compares with is whatever the mapping gives the property's own value. There is no value
+    /// to compare before the query runs, which is what the framework's own declaration means by it.
     public init(mappingTransform: @escaping (PropertyType) -> PropertyType) {
         self.comparatorMapping = nil
-        self.value = mappingTransform(CharonBox.box(0))
+        self.value = nil
     }
 
     public init<Value>(value: Value, mappingTransform: @escaping (Value) -> PropertyType) {
@@ -266,12 +314,18 @@ public final class HasPrefixComparator<PropertyType, ComparatorMappingType>: Ent
 /// Whether the string ends with the one the caller gave.
 public final class HasSuffixComparator<PropertyType, ComparatorMappingType>: EntityQueryComparatorProtocol
     where PropertyType: _IntentValue, PropertyType: Sendable, ComparatorMappingType: Any {
-    public let value: PropertyType
+    /// The value the caller compares with. A comparator declared with a mapping alone has none: the
+    /// query reads the property and compares that, which is what the framework's own declaration
+    /// means by a comparator with no value.
+    public let value: PropertyType?
     public let comparatorMapping: (any Sendable)?
 
+    /// A comparator declared with a mapping but no value: the mapping is held, and the value the
+    /// query compares with is whatever the mapping gives the property's own value. There is no value
+    /// to compare before the query runs, which is what the framework's own declaration means by it.
     public init(mappingTransform: @escaping (PropertyType) -> PropertyType) {
         self.comparatorMapping = nil
-        self.value = mappingTransform(CharonBox.box(0))
+        self.value = nil
     }
 
     public init<Value>(value: Value, mappingTransform: @escaping (Value) -> PropertyType) {
@@ -303,13 +357,9 @@ public struct EntityQueryProperty<Entity, ComparatorMappingType> where Entity: A
     let comparators: QueryComparators
 
     public init(_ property: EntityProperty<Entity>, _ comparators: QueryComparators) {
-        self.entityProvider = { CharonBox.box(0) }
-        self.comparators = comparators
-    }
-
-    public init(_ property: EntityProperty<Entity>, entityProvider: @escaping () -> Entity,
-                _ comparators: QueryComparators) {
-        self.entityProvider = entityProvider
+        self.entityProvider = {
+            CharonUnset.fatal("an entity-property query that names no provider has no entity to read")
+        }
         self.comparators = comparators
     }
 }
@@ -527,5 +577,15 @@ public enum VideoCategory: String, AppEnum {
 
     public static var caseDisplayRepresentations: [DisplayRepresentation] {
         return allCases.map { DisplayRepresentation(title: LocalizedStringResource($0.rawValue)) }
+    }
+}
+
+/// A value the framework has not got, read where the declaration needs one. There is no honest zero
+/// for an arbitrary type - `unsafeBitCast` would be a lie the caller reads as data - so the read
+/// stops here with the declaration's own name in the message, which is what the framework's own
+/// `fatalError("Do not reference schema types directly")` does.
+public enum CharonUnset {
+    public static func fatal(_ what: String) -> Never {
+        fatalError("AppIntents: \(what)")
     }
 }

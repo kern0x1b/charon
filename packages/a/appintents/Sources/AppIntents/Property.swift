@@ -7,8 +7,21 @@ import Foundation
 /// query reads the parameter the wrapper holds.
 @propertyWrapper
 public struct EntityProperty<Value>: @unchecked Sendable where Value: _IntentValue {
-    /// The value the property holds, and the name the index knows it by.
-    public var wrappedValue: Value
+    /// The value the property holds. A property the app has not given a value for holds none, and
+    /// reading it stops with the property's own name, which is what the framework's own property
+    /// wrapper does: a query that needs the value reads it through the getter the app gave.
+    public var wrappedValue: Value {
+        get {
+            guard let held = value else {
+                CharonUnset.fatal("the property \(indexingKey) holds no value")
+            }
+            return held
+        }
+        set {
+            value = newValue
+            valueSet = true
+        }
+    }
     public var projectedValue: EntityProperty<Value> { return self }
 
     /// The name the property is indexed and searched under.
@@ -28,8 +41,11 @@ public struct EntityProperty<Value>: @unchecked Sendable where Value: _IntentVal
     /// The setter the property is written with.
     public var setter: ((Value) async -> Void)?
 
+    private var value: Value?
+    private var valueSet = false
+
     public init() {
-        self.wrappedValue = CharonEmptyValue() as! Value
+        self.value = nil
         self.indexingKey = ""
         self.title = LocalizedStringResource("")
         self.isOptional = true
@@ -46,6 +62,9 @@ public struct EntityProperty<Value>: @unchecked Sendable where Value: _IntentVal
         self.indexingKey = title.localizedString()
         self.isOptional = false
     }
+
+    /// Whether the property holds a value, which is what an index asks before it reads one.
+    public var hasValue: Bool { return value != nil }
 
     public init(title: LocalizedStringResource, indexingKey: String) {
         self.init(title: title)

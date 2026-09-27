@@ -129,9 +129,7 @@ public struct _RawRepresentableStringQuery<Entity>: EntityStringQuery
     public init() {}
 
     public func entities(for identifiers: [Entity.ID]) async throws -> [Entity] {
-        return identifiers.compactMap { identifier in
-            Entity(rawValue: CharonBox.box(identifier))
-        }
+        return identifiers.compactMap { identifier in Entity(rawValue: identifier) }
     }
 
     /// The entity whose own value is the identifier the caller gave, which is what a raw-representable
@@ -280,7 +278,12 @@ public struct UniqueAppEntityProvider<Entity>: UniqueAppEntityQuery where Entity
         return stored
     }
 
-    public func results() async throws -> Entity { return try await uniqueEntity() ?? CharonBox.box(0) }
+    public func results() async throws -> Entity {
+        guard let entity = try await uniqueEntity() else {
+            CharonUnset.fatal("a unique-entity provider with no entity has no result")
+        }
+        return entity
+    }
 
     public func defaultResult() async throws -> Entity { return try await results() }
 }

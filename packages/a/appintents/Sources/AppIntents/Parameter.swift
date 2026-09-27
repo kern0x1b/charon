@@ -50,8 +50,16 @@ public final class IntentParameter<Value>: @unchecked Sendable where Value: _Int
 
     /// The value the caller gave, when there is one.
     public var wrappedValue: Value {
-        get { value }
-        set { value = newValue }
+        get {
+            guard let held = value else {
+                CharonUnset.fatal("a parameter read before the framework filled it in")
+            }
+            return held
+        }
+        set {
+            value = newValue
+            valueSet = true
+        }
     }
 
     /// The parameter itself, which is what a projection of the intent reads.
@@ -68,10 +76,10 @@ public final class IntentParameter<Value>: @unchecked Sendable where Value: _Int
 
     /// The storage, and the value on top of it.
     private var storageValue: Storage
-    private var value: Value
+    private var value: Value?
     private let resolversValue: (any ResolverSpecification)?
 
-    init(storage: Storage, value: Value, default defaultValue: Value.UnwrappedType? = nil,
+    init(storage: Storage, value: Value? = nil, default defaultValue: Value.UnwrappedType? = nil,
          resolvers: (any ResolverSpecification)? = nil) {
         self.storageValue = storage
         self.value = value
@@ -137,7 +145,7 @@ public final class IntentParameter<Value>: @unchecked Sendable where Value: _Int
         merged.supportsNegativeNumbers = supportsNegativeNumbers
         merged.optionsProvider = optionsProvider
         merged.query = query
-        self.init(storage: merged, value: CharonIntentValueBox.make(), default: defaultValue, resolvers: resolvers)
+        self.init(storage: merged, default: defaultValue, resolvers: resolvers)
     }
 
     /// The whole of the parameter, as the framework's own storage, and the value that was read.
@@ -170,7 +178,7 @@ public final class IntentParameter<Value>: @unchecked Sendable where Value: _Int
     public var supportsNegativeNumbers: Bool? { return storageValue.supportsNegativeNumbers }
     public var optionsProvider: (any DynamicOptionsProvider)? { return storageValue.optionsProvider }
     public var query: (any EntityStringQuery)? { return storageValue.query }
-    public var valueState: ValueState { return valueSet ? .set(value) : .unset }
+    public var valueState: ValueState { return valueSet ? .set(wrappedValue) : .unset }
 
     private var valueSet = false
 
@@ -187,7 +195,7 @@ public final class IntentParameter<Value>: @unchecked Sendable where Value: _Int
     /// caller already has, or the error the framework reports for a parameter with no value.
     public func requestValue(_ dialog: IntentDialog? = nil) async throws -> Value {
         guard valueSet else { throw needsValueError(dialog) }
-        return value
+        return wrappedValue
     }
 
     /// Ask the caller to choose between the values that are not told apart by the parameter.
@@ -195,7 +203,7 @@ public final class IntentParameter<Value>: @unchecked Sendable where Value: _Int
                                       dialog: IntentDialog? = nil) async throws -> Value {
         guard !itemsToDisambiguate.isEmpty else { throw needsValueError(dialog) }
         guard valueSet else { throw needsDisambiguationError(among: itemsToDisambiguate, dialog: dialog) }
-        return value
+        return wrappedValue
     }
 
     /// Ask the caller to confirm one value before the intent acts on it.
@@ -819,10 +827,4 @@ extension IntentParameter {
     }
 }
 
-/// The value a parameter holds before the framework fills it in, read out of an erased box so that the
-/// parameter class needs no `Value` conformance beyond what it already has.
-enum CharonIntentValueBox {
-    static func make<Value: _IntentValue & Sendable>() -> Value {
-        return CharonBox.box(0)
-    }
-}
+

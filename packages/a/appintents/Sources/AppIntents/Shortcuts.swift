@@ -61,7 +61,10 @@ public struct AppShortcutParameterPresentation<Intent, Value, Parameter, Paramet
     public init(for summary: AppShortcutParameterPresentationSummary<Intent, Value, Parameter, ParameterKeyPath>,
                 @AppShortcutParameterPresentationTitleBuilder<Intent, Value, Parameter, ParameterKeyPath>
                 _: () -> AppShortcutParameterPresentationTitle<Intent, Value, Parameter, ParameterKeyPath>) {
-        self.keyPath = summary.keyPath
+        guard let keyPath = summary.keyPath else {
+            CharonUnset.fatal("a parameter presentation is made for the parameter its summary names")
+        }
+        self.keyPath = keyPath
     }
 }
 
@@ -69,7 +72,7 @@ public struct AppShortcutParameterPresentation<Intent, Value, Parameter, Paramet
 public struct AppShortcutParameterPresentationSummary<Intent, Value, Parameter, ParameterKeyPath>
     where Intent: AppIntent, Value: _IntentValue, Value: Sendable,
           Parameter: IntentParameter<Value>, ParameterKeyPath: KeyPath<Intent, Parameter> {
-    public let keyPath: ParameterKeyPath
+    public let keyPath: ParameterKeyPath?
     public let table: String?
 
     public init(_ summary: AppShortcutParameterPresentationSummaryString<Intent, Value, Parameter, ParameterKeyPath>,
@@ -84,11 +87,18 @@ public struct AppShortcutParameterPresentationSummaryString<Intent, Value, Param
     : ExpressibleByStringInterpolation
     where Intent: AppIntent, Value: _IntentValue, Value: Sendable,
           Parameter: IntentParameter<Value>, ParameterKeyPath: KeyPath<Intent, Parameter> {
-    public let keyPath: ParameterKeyPath
+    /// The parameter this string is about, when the app named one. A plain string names none, which
+    /// is the framework's own reading of a literal summary: it is the text and nothing else.
+    public let keyPath: ParameterKeyPath?
     public let text: String
 
     public init(_ text: String) {
-        self.keyPath = CharonBox.box(0)
+        self.keyPath = nil
+        self.text = text
+    }
+
+    public init(_ text: String, for keyPath: ParameterKeyPath) {
+        self.keyPath = keyPath
         self.text = text
     }
 
@@ -149,7 +159,7 @@ extension AppShortcutParameterPresentationTitleBuilder {
 public struct AppShortcutParameterPresentationTitle<Intent, Value, Parameter, ParameterKeyPath>
     where Intent: AppIntent, Value: _IntentValue, Value: Sendable,
           Parameter: IntentParameter<Value>, ParameterKeyPath: KeyPath<Intent, Parameter> {
-    public let keyPath: ParameterKeyPath
+    public let keyPath: ParameterKeyPath?
     public let specific: String
     public let generic: String
 
@@ -166,11 +176,18 @@ public struct AppShortcutParameterPresentationTitleString<Intent, Value, Paramet
     : ExpressibleByStringInterpolation
     where Intent: AppIntent, Value: _IntentValue, Value: Sendable,
           Parameter: IntentParameter<Value>, ParameterKeyPath: KeyPath<Intent, Parameter> {
-    public let keyPath: ParameterKeyPath
+    /// The parameter this string is about, when the app named one. A plain string names none, which
+    /// is the framework's own reading of a literal summary: it is the text and nothing else.
+    public let keyPath: ParameterKeyPath?
     public let text: String
 
     public init(_ text: String) {
-        self.keyPath = CharonBox.box(0)
+        self.keyPath = nil
+        self.text = text
+    }
+
+    public init(_ text: String, for keyPath: ParameterKeyPath) {
+        self.keyPath = keyPath
         self.text = text
     }
 

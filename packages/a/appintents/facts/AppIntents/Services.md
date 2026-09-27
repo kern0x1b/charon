@@ -50,3 +50,21 @@ system intent is its name, whether or not the app behind it is installed. The sy
 Photos, Safari, Files) are not on these releases, so what a schema names is not there - the schema is,
 and the run behind it is the app's own to provide. That is the framework's own answer as well: a
 schema of an intent whose app is absent is still its name.
+
+## Where the module stops, and why
+
+A Swift value of an arbitrary type has no honest zero, so where a declaration needs a value it has
+not got, the read stops with a message that names what was read and where. That is the framework's own
+answer at the same places - `AssistantSchema` reads
+`fatalError("Do not reference schema types directly")`, `Never` is uninhabited, a parameter and a
+property are made by their initializers, and a control's `perform()` returns nothing. The module does
+the same and says more:
+
+| where | the read that stops | why there is no value |
+| --- | --- | --- |
+| `AppDependency.wrappedValue` | the dependency that was never added to the `AppDependencyManager` | the manager holds what the app put there, and a key it never got has nothing to read |
+| `IntentParameter.wrappedValue` | a parameter before the framework filled it in | the value is the caller's; the framework's own `requestValue` is the read that asks |
+| `EntityProperty.wrappedValue` | a property the app gave no value for | the value is the entity's; the getter the app gave is the read |
+| a comparator declared with a mapping and no value | its `value` | there is nothing to compare before the query runs, which is what the framework's own declaration means by it |
+| `EntityQueryProperty` declared with no provider | its `entityProvider` | the query reads the entity through the provider it was given |
+| `CharonURL.placeholder` | a URL string that is not one | a URL is not a string every time, and a caller that writes a broken one gets the scheme's own empty URL rather than a crash |

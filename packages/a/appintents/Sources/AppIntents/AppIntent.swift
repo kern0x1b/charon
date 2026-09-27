@@ -103,10 +103,9 @@ public final class AppDependencyManager {
         lock.lock()
         defer { lock.unlock() }
         guard let found = storage[key] as? Dependency else {
-            // A key of a dependency that was never set holds the zero of its type, which is what a
-            // default-initialized property would give; `dependency(for:)` is the call that hears
-            // about the miss instead.
-            return CharonBox.box(0)
+            // The framework's own answer for a dependency that was never added is the same: there is
+            // no value of an arbitrary type to make up, so the read stops and says which key.
+            CharonUnset.fatal("the dependency \(key) was never added")
         }
         return found
     }
@@ -120,13 +119,6 @@ public final class AppDependencyManager {
             throw Error.incorrectDependencyType(key: key, expected: String(describing: Dependency.self))
         }
         return typed
-    }
-}
-
-/// Reading a value of an erased type back into the type a caller wants.
-public enum CharonBox {
-    public static func box<T>(_ value: Any) -> T {
-        return (value as? T) ?? (unsafeBitCast(0, to: T.self))
     }
 }
 
