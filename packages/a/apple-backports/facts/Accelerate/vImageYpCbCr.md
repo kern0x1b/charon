@@ -1,82 +1,116 @@
-# The 420 Y'CbCr conversions of vImage, iOS 8
+# The Y'CbCr conversions of vImage, iOS 8.0
 
-iOS 8 made vImage's Y'CbCr conversions public. A program that names them and runs on iOS 6 does not start: the imports
-are strong, and dyld stops at load. The armv7 cache of iOS 6.1.3 exports 235 `vImage` names against the 580 of iOS
-12.0, and not one `kvImage` matrix among them, so the matrices and the conversions this file carries are the port's own
-arithmetic over buffers, not a call into the release.
+The whole of Conversion.h's Y'CbCr surface: the two generators, and all thirty conversions between the
+thirteen Y'CbCr shapes and the three ARGB types - 4:2:2 in three byte layouts and one 16-bit, 4:2:0 in two
+plane layouts, 4:4:4 in five byte layouts and one 16-bit, the 10-bit v410 and v210, both directions. The
+first delivery of this file carried four of them, the two 4:2:0 8-bit pairs; this one carries the other
+twenty-eight, so the family is the header's whole of it.
 
-Read from: the arm64 shared cache of iOS 12.0, where each matrix's exported pointer was followed and its floats read;
-`Conversion.h` and `vImage_Types.h` of SDK 16.4, which write the per-pixel arithmetic of every one of these conversions
-out in full; the host's own Accelerate, dumped for the layout of the opaque structures and compared against this file
-byte for byte in `tests/backports/host/ypcbcr`.
+iOS 8 made vImage's Y'CbCr conversions public. A program that names them and runs on iOS 6 does not start:
+the imports are strong, and dyld stops at load. The armv7 cache of iOS 6.1.3 exports 235 `vImage` names
+against the 580 of iOS 12.0, and not one `kvImage` matrix among them, so the matrices and the conversions
+this file carries are the port's own arithmetic over buffers, not a call into the release.
 
-## The matrices
-
-Four constants, each a pointer to a small struct of floats:
-
-| constant | coefficients |
-| --- | --- |
-| `kvImage_YpCbCrToARGBMatrix_ITU_R_601_4` | 1, 1.40199995, -0.714136302, -0.344136298, 1.77199996 |
-| `kvImage_YpCbCrToARGBMatrix_ITU_R_709_2` | 1, 1.57480001, -0.46812427, -0.187324271, 1.8556 |
-| `kvImage_ARGBToYpCbCrMatrix_ITU_R_601_4` | 0.298999995, 0.587000012, 0.114, -0.168735892, -0.331264108, 0.5, -0.418687582, -0.0813124105 |
-| `kvImage_ARGBToYpCbCrMatrix_ITU_R_709_2` | 0.212599993, 0.715200007, 0.0722000003, -0.114572108, -0.385427892, 0.5, -0.454152912, -0.0458470918 |
-
-The differential compares each of the four against the host's own, field by field. The 601 matrix for the forward
-direction has no caller in the corpus; it is carried anyway, because it is one line of data the host agrees with and a
-caller that generates a 601 conversion would otherwise follow a null pointer.
+Read from: `Conversion.h` and `vImage_Types.h` of SDK 16.5, whose per-pixel text writes out the arithmetic of
+every one of these conversions and whose generator documentation gives the table of which Y'CbCr type pairs
+with which ARGB type; the host's own Accelerate, compared byte for byte in `tests/backports/host/ypcbcr8`
+over both matrices, the four pixel ranges of `vImage_YpCbCrPixelRange`'s own documentation at each of the
+three bit depths, four permutation maps and four picture sizes.
 
 ## The opaque conversion
 
-`vImage_YpCbCrToARGB` and `vImage_ARGBToYpCbCr` are 128 opaque bytes. The host fills the first of them with a tag, the
-eight fields of the pixel range as `int32`, and then the matrix as it was given, unscaled - which the dump in
-`tests/backports/host/ypcbcr` reads out. The port keeps its own layout: a tag of its own, the matrix as given, the two
-scales the pixel range gives, the two biases and the four clamps. Nothing outside this package reads those bytes, and
-the conversions refuse a structure whose tag is not theirs, so a structure made by one release's library is never read
-by another's.
+`vImage_YpCbCrToARGB` and `vImage_ARGBToYpCbCr` are 128 opaque bytes each, and the host fills the first of
+them with a tag, the eight fields of the pixel range as `int32_t`, and then the matrix as it was given,
+unscaled - which the dump in `tests/backports/host/ypcbcr` reads out. The port keeps its own layout: a tag
+of its own, the matrix as given, the two scales the pixel range and the destination's own full scale give,
+the two biases and the four clamps. The scales are where the bit depth lives. The header's own per-pixel
+text writes
+
+    R = CLAMP(0, ROUND_TO_NEAREST_INTEGER((Yp0 - Yp_bias) * Yp + (Cr0 - CbCr_bias) * Cr_R), max)
+
+with `Yp` and `Cr_R` already carrying the range - which is where the generator puts it. The port keeps the
+two apart, because the same matrix has to serve an 8-bit, a 16-bit and a Q12 destination, and the difference
+between those three is one multiply on the scale rather than three copies of the matrix. A conversion
+whose tag is not the port's is refused with `kvImageNullPointerArgument` rather than read, which is what
+keeps one release's library and another's from reading each other's bytes.
 
 ## The arithmetic
 
-The header states it in full, and the port does what it states. For Y'CbCr to ARGB, each of Y', Cb and Cr is first
-clamped to the range's own limits, then
+The header states it in full, and the port does what it states, in `CharonYpCbCr.h`, which is shared by
+all thirty. On the way out of a Y'CbCr buffer the luma and the chroma each go into the sum whole, the three
+per-channel sums follow, and each rounds once to the destination's own full scale and clamps to 0 and to
+that scale. On the way back the luma and chroma of a colour are the header's three dot products, the chroma
+of a shared sample the mean of the block's own dot products, and each channel rounds once and clamps to the
+pixel range's own limits. A block at the right or bottom edge of an odd-sized picture averages the pixels it
+has, which is what the header's pseudo-code does when it adds up what is there.
 
-    R = round((Y' - Yp_bias) * 255/(YpRangeMax - Yp_bias) * Yp + (Cr - CbCr_bias) * 255/(2*(CbCrRangeMax - CbCr_bias)) * Cr_R)
+Three things the header's text does not say, each measured rather than assumed, and each of which a single
+value would have hidden:
 
-clamped to 0 to 255, and G and B likewise; the alpha is the byte the caller gives; the permutation map moves the four
-bytes on the way out. For ARGB to Y'CbCr the luma is the dot product of the three channels with the first row of the
-matrix, scaled by (YpRangeMax - Yp_bias)/255 and offset by the bias; the chroma of a two by two block is the mean of
-the same dot product over its four pixels, which is what the header's pseudo-code adds up and divides by four, and what
-chroma sited at the centre means. A block at the right or bottom edge of an odd-sized picture averages the pixels it
-has.
+- **The luma and chroma of a shared sample are averaged before the scale, not after.** CharonYpCbCr.h keeps
+  the raw dot products in `charon_ypcbcr_chroma_of` for exactly this: summing answers that already carry the
+  scale and the bias applies both a second time. Measured, on a 16-bit source, a Cb of 34331 where the system
+  answers 34555.
+- **The Y'CbCr input is not clamped to the pixel range.** With the video range clamped to [16,235] for luma
+  and [16,240] for chroma, the system turns a luma of 255 into a green of 125 and one of 235 into 120, so
+  the value goes into the sum whole and the only clamp is the output's - which is the `CLAMP(0, ...)` the
+  header's own per-pixel text writes. The four limits are still taken from the caller's range and kept in
+  the conversion, because a caller may read them back; nothing in these conversions reads them.
+- **The AA8 shape's alpha is one byte to a pixel, not two bytes to a pair.** A plane of ten, twenty, thirty
+  ... over an eight-pixel row puts 10, 20, 30 ... into the eight pixels' alpha channels one for one, and a
+  plane narrower than the image is refused with `kvImageRoiLargerThanInputBuffer`. The header's own
+  pseudo-code writes two alpha bytes and advances by two, which is a plane half as wide - so the header's
+  text and the system's behaviour disagree here, and the port follows the system, which is the one a caller
+  of the system has to match.
 
-## The one byte of difference, measured
+## The last bit
 
-The system does this in fixed point; the port does it in `float` and rounds once at the end. The two disagree by
-exactly one on 4262 of 457920 bytes - 0.93 per cent - over four pixel ranges (video range clamped and unclamped, full
-range clamped and wide open), both matrices, four picture sizes including a two by two and an odd 34 by 18, and four
-permutations. No byte ever differs by more than one, in either direction, in any of the six conversions. The port's
-answer is the correctly rounded one: where they differ, the exact value lies between 0.487 and 0.498 above the integer
-below it and the system rounds it up. The header promises results that are "faithfully rounded", which is what both
-answers are, and the differential asserts the bound of one rather than equality.
+The system does this in fixed point; the port does it in `float` and rounds once at the end. Over the whole
+family - thirty conversions, both matrices, four pixel ranges at each of three bit depths, four permutation
+maps, four picture sizes from 2x2 to 34x18 - **623 616 samples were compared and 1 828 of them differ, 0.29
+per cent, and none by more than one.** The header promises results that are "faithfully rounded", which both
+answers are, so the differential asserts the bound of one rather than equality.
 
-A single channel makes this plain. With the 601 matrix and video range, a picture of pure blue at 5 writes 17 on the
-host where the exact answer is 16.4895, and at 148 writes 31 where the exact answer is 30.4901; the port writes 16 and
-30. No arrangement of a fixed scale and a fixed rounding reproduces the host's answers, so the difference is inside its
-own pipeline and not a coefficient the port could copy.
+## The Q12 source: where the system stops following the header
+
+The two functions whose *source* is a Q12 buffer - `vImageConvert_ARGB16Q12To444CrYpCb10` and
+`vImageConvert_ARGB16Q12To422CrYpCbYpCbYpCbYpCrYpCrYp10` - are the one place where the system's answers do
+not come out of the header's formula, and the measurement is on both sides:
+
+- A **zero** Q12 pixel comes back from the system as a luma of **258** in a ten-bit word, where the header's
+  formula gives the bias, 64. A luma sweep shows the system's luma rising by 0.257 a unit where the formula
+  rises by `R_Yp * 876/4096` = 0.064, and the chroma rising and falling on a scale of 0.875 where the formula
+  gives 0.219.
+- A channel that runs past 1023 **wraps to zero** rather than stopping there: over a sweep of red from 0 to
+  4096 the system's Yp goes 258, 321, 389, ... 977, then **17** at 3072, and its Cb goes 988, 948, 912, ...
+  420, monotonically, straight through the ten-bit boundary. That is neither the header's `CLAMP` nor the
+  pixel range's own limits, and it is not a rounding.
+
+So on 11 200 words of these two conversions the two answers differ on **95.71 per cent**, and the port
+answers the header. The differential is explicit about it: for these two it checks the port against the
+header's formula written out a third time and independently in the test, and counts the system's divergence
+instead of asserting it. The 16-bit source path of the same family, `vImageConvert_ARGB16UTo*`, follows the
+formula and matches the system on every sample of the run.
 
 ## What it refuses
 
-The port converts the 420 8-bit types the corpus asks for: `kvImage420Yp8_Cb8_Cr8` and `kvImage420Yp8_CbCr8`, to and
-from `kvImageARGB8888`. Every other pair is refused by the generators with `kvImageUnsupportedConversion`, the code the
-header names for a conversion vImage has not got. This is a stated difference from the system, which carries more: the
-differential checks both sides of it, that the system converts `kvImage444CrYpCb10` and that the port says it does not.
-A permutation map that is not a permutation of 0 to 3 is `kvImageInvalidParameter`; a destination bigger than the
-source is `kvImageRoiLargerThanInputBuffer`; a flag outside the set the header names is `kvImageUnknownFlagsBit`; and a
-conversion structure the port did not make is `kvImageNullPointerArgument` rather than a read of someone else's bytes.
+The refusals are the system's own, and the differential holds the codes to the system's. A destination
+larger than the source is `kvImageRoiLargerThanInputBuffer`; a flag outside `kvImageDoNotTile` and
+`kvImagePrintDiagnosticsToConsole` is `kvImageUnknownFlagsBit`; a conversion structure the port did not make
+is `kvImageNullPointerArgument`; a pair the system does not convert is `kvImageUnsupportedConversion`, and
+the support table is measured in both directions - the system pairs an 8-bit type with `kvImageARGB8888`
+and `kvImageARGB16Q12`, a 10-bit type with the same two, a 16-bit type with `kvImageARGB8888` and
+`kvImageARGB16U`, and in the other direction every type with `kvImageARGB8888`, the 16-bit ones with
+`kvImageARGB16U` and the rest with `kvImageARGB16Q12`. The pixel range's own depth does not enter into it:
+the system answers the same for an 8-bit, a 10-bit and a 16-bit range on every pair.
 
-## What is not carried yet
+One refusal is the port's and not the system's: a permutation map that is not a permutation of 0 to 3. The
+system **accepts** a map that repeats a channel, and answers `kvImageNoError`; it rejects a map that names a
+channel past the third with `kvImageInvalidParameter`. The port refuses both with
+`kvImageInvalidParameter`, because a map naming channel 9 is a read of four bytes of a four-byte array and a
+port cannot do that. The differential prints both answers rather than asserting either.
 
-The corpus asks for 21 vImage names and this file carries ten of them, the ten the live port's own modules read.
-`vImageBuffer_Init`, `vImageBuffer_InitWithCGImage` and `vImageCreateCGImageFromBuffer` were already carried for iOS 7.
-`vImageConvert_RGB565toBGRA8888`, `vImageConvert_BGRA8888toRGB565`, `vImageConvert_ARGB16UtoRGB16U`,
-`vImageConvert_ARGBFFFFtoRGBFFF`, `vImageScale_ARGB16U`, `vImageScale_Planar16U`, `vImageConvert_AnyToAny` and
-`vImageConverter_CreateWithCGImageFormat` are the rest, each with one caller, and each still absent.
+## What is not carried
+
+Nothing of this family. Every name Conversion.h declares for Y'CbCr is here; the four the first delivery
+carried are the 4:2:0 8-bit pair and are counted in the same table.
