@@ -188,6 +188,33 @@ def spelled(qual):
     return text
 
 
+# A class that must be an object file of its own, with the measurement that says why.
+#
+# INPaymentMethodResolutionResult is the one class of its group that a release *below* the group's
+# own already exports: the armv7s cache of iOS 10.3.4 has it, the arm64e cache of 16.0 has it, and
+# the 94 classes beside it in IN16_0.m it does not. One object that defines both is what
+# modules/apple/backports.lua's band() refuses - "an object carries API that arrived in one
+# release, so split it" - and it refused it in the armv7 band at 10.3.4 while the 6.1.3 gate, which
+# links the deployment band alone, did not. A one-class object is consistent in every band: the
+# release that has it re-exports the object, and every release that does not keeps it.
+#
+# Measured, not guessed: tools/intents/measure-group.lua walks the group's own release cache and
+# the one below and names the classes the two disagree about. The 16.0 group against the 10.3.4
+# armv7s cache names exactly this one.
+ALONE_REASON = """
+%(name)s is an object file of its own because a release below this group's own already
+exports it: the armv7s cache of iOS %(below)s has it, and the caches of this group's own
+release do not have the classes it would share an object with. One object that defines
+both is what the band check refuses, and a one-class object is consistent in every band:
+the release that has it re-exports the object, and every release that does not keeps it.
+The measurement is tools/intents/measure-group.lua, and the reason is the comment above
+ALONE in the generator that wrote this file.
+"""
+
+ALONE = {
+    "INPaymentMethodResolutionResult": "10.3",
+}
+
 # A member whose body is a derivation the header describes rather than a store, written here with
 # the header's own words for what it builds: a generated body could only put the parameter under
 # a name of the generator's making, which is not a member of the class.
@@ -942,6 +969,9 @@ def main():
         return 1
 
     generated = [name for name in names if name not in HAND_WRITTEN]
+    alone = [(name, ALONE[name]) for name in generated if name in ALONE]
+    if alone:
+        generated = [name for name in generated if name not in ALONE]
     banner_text = banner(options.out.rsplit("/", 1)[-1], len(generated), options.release, 0)
     out = [banner_text]
     answered, deferred = {}, 0
@@ -958,6 +988,25 @@ def main():
         if line == "" and squeezed and squeezed[-1] == "":
             continue
         squeezed.append(line)
+    if alone:
+        # One file per class that must be alone, named for the release below the group's own that
+        # already exports it, so the name says which band re-exports the object and which keeps it.
+        for name, below in alone:
+            path = options.out.rsplit("/", 1)[0] + "/" + name + below + ".m"
+            interface = interfaces[name]
+            body, report = render(interface, protocols, carried, intents, interfaces, forward)
+            text = [banner(path.rsplit("/", 1)[-1], 1, options.release, len(report["dynamic"]))]
+            # The file says why it is alone, in a comment the compiler reads as a comment: a
+            # line that starts with a hash at column zero is a preprocessing directive, and the
+            # lines below are prose about the band check.
+            for line in (ALONE_REASON % {"name": name, "below": below}).split("\n"):
+                text.append("//  " + line)
+            text.append("")
+            text.extend(body)
+            with open(path, "w") as handle:
+                handle.write("\n".join(text).rstrip("\n") + "\n")
+            print("%s: %s alone, %d members" % (path, name, len(report["methods"]) + len(report["properties"])))
+            answered[name] = report
     with open(options.out, "w") as handle:
         handle.write("\n".join(squeezed).rstrip("\n") + "\n")
     if options.report:

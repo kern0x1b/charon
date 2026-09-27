@@ -225,6 +225,22 @@ SDK does not declare at all, and **only** for those — a class both SDKs declar
 port's own, because that is the declaration the implementation compiles against and the newer one
 names members (`INRelevantShortcut`, `INVoiceShortcut`) the port's headers do not.
 
+### One class of the 16.0 group is an object file of its own
+
+`INPaymentMethodResolutionResult` is in `INPaymentMethodResolutionResult10.3.m`, not in
+`IN16_0.m`, and the reason is measured. The **armv7s cache of iOS 10.3.4 already exports it**,
+while the caches of the 16.0 group's own release do not have the 94 classes it would have shared
+an object with (`tools/intents/measure-group.lua`, which walks the release below the group's own
+and names the classes it exports: 1 of 95, this one). One object that defines both is what
+`modules/apple/backports.lua`'s `band()` refuses — "an object carries API that arrived in one
+release, so split it" — and it refused it in the **armv7 band at 10.3.4** while the 6.1.3 gate,
+which links the deployment band alone, did not. A one-class object is consistent in every band:
+the release that has it re-exports the object, and every release that does not keeps it.
+
+**The lesson, for every framework in this push:** the gate is a deployment-band check and the
+package build is the per-band one. `xmake emulate install` stages every band and is what finds
+this; `build-gate.lua` alone would not.
+
 `INObjectCollection -initWithItems:` is the one member of the 16.0 group whose body is a
 derivation rather than a store, and it is hand written in the generator with the header's own
 words: `allItems` is the items, `sections` is them under one untitled section, and collation is
