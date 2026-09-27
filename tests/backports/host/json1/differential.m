@@ -178,6 +178,86 @@ int main(void)
                  NSJSONReadingJSON5Allowed | NSJSONReadingTopLevelDictionaryAssumed, YES);
     }
 
+    // A key the object already carries: the host reads the first value and keeps it, and says so for a first value
+    // that is null, false, 0 or the empty string, so this is a test for the key and not for the value.
+    for (NSString *t in @[@"{\"a\":1,\"a\":2}", @"{\"a\":1,\"a\":2,\"a\":3}", @"{\"b\":0,\"a\":1,\"b\":2}",
+                          @"{\"a\":{\"b\":1,\"b\":2}}", @"{\"\":1,\"\":2}", @"{\"a\":null,\"a\":1}",
+                          @"{\"a\":[1],\"a\":[2]}", @"{\"a\":1,\"a\":false}", @"{\"a\":{\"x\":1},\"a\":1}",
+                          @"{\"a\":false,\"a\":1}", @"{\"a\":0,\"a\":1}", @"{\"a\":\"\",\"a\":\"x\"}",
+                          @"{\"a\":1.0,\"a\":2.0}", @"{\"a\":true,\"a\":false}", @"{\"a\":1,\"a\":null}",
+                          @"[{\"a\":1,\"a\":2}]", @"{\"a\":[{\"b\":1,\"b\":2},{\"c\":1,\"c\":2}]}"])
+    {
+        sameRead([@"repeat opt 0 " stringByAppendingString:t], text(t), 0, YES);
+        sameRead([@"repeat fragments " stringByAppendingString:t], text(t), NSJSONReadingFragmentsAllowed, YES);
+        sameRead([@"repeat mutable " stringByAppendingString:t], text(t), NSJSONReadingMutableContainers, YES);
+        sameRead([@"repeat leaves " stringByAppendingString:t], text(t), NSJSONReadingMutableLeaves, YES);
+        sameRead([@"repeat json5 " stringByAppendingString:t], text(t), NSJSONReadingJSON5Allowed, YES);
+    }
+    for (NSString *t in @[@"{a:1,a:2}", @"{a:1, a:2}", @"{'a':1,a:2}", @"{a:1,a:2,a:3}"]) {
+        sameRead([@"repeat json5 " stringByAppendingString:t], text(t), NSJSONReadingJSON5Allowed, YES);
+    }
+
+    // The exponent field is a field and not a value: three digits are read under any sign, four are read only without
+    // one, and five or more are refused however small the value. The overflow of the value is a separate matter and
+    // both sides already hold it (1e309 is refused, 1e-309 is a 0).
+    for (NSString *field in @[@"e0", @"e1", @"e9", @"e99", @"e300", @"e308", @"e309", @"e999",
+                              @"e-0", @"e-1", @"e-9", @"e-99", @"e-300", @"e-308", @"e-309", @"e-999", @"e-400",
+                              @"e+0", @"e+1", @"e+9", @"e+99", @"e+300", @"e+309", @"e+999",
+                              @"e0000", @"e0001", @"e0009", @"e0010", @"e0099", @"e0100", @"e0123", @"e0200", @"e0300",
+                              @"e0308", @"e0309", @"e0400", @"e0001", @"e0011", @"e0099", @"e0101", @"e0110", @"e0123",
+                              @"e-0000", @"e-0001", @"e-0010", @"e-0100", @"e-0300", @"e-0309",
+                              @"e+0000", @"e+0001", @"e+0010", @"e+0100", @"e+0309",
+                              @"e00000", @"e000000", @"e0000000", @"e00000000", @"e000000000", @"e0000000000",
+                              @"e-00000", @"e+00000", @"E1", @"E0001", @"E00000", @"E-1", @"E+1"])
+    {
+        for (NSString *mantissa in @[@"1", @"1.5", @"0", @"0.0", @"0.00001", @"12345", @"10", @"-1"]) {
+            NSString *t = [NSString stringWithFormat:@"[%@%@]", mantissa, field];
+            sameRead([@"exponent " stringByAppendingString:t], text(t), NSJSONReadingFragmentsAllowed, YES);
+        }
+        for (NSString *tail in @[@"e1", @".5", @",", @"x", @"e00000e1"]) {
+            NSString *t = [NSString stringWithFormat:@"[1%@%@]", field, tail];
+            sameRead([@"exponent tail " stringByAppendingString:t], text(t), NSJSONReadingFragmentsAllowed, YES);
+        }
+        NSString *top = [NSString stringWithFormat:@"1%@", field];
+        sameRead([@"exponent top " stringByAppendingString:top], text(top), NSJSONReadingFragmentsAllowed, YES);
+        sameRead([@"exponent opt 0 " stringByAppendingString:top], text(top), 0, YES);
+    }
+
+    // A JSON5 container whose only content is a comment is the empty container: the emptiness test has to skip
+    // comments the way the rest of the reader does, not whitespace alone.
+    for (NSString *t in @[@"[/*c*/]", @"{/*c*/}", @"[ //c\n]", @"{ //c\n}", @"[/****/]", @"[/*a*//*b*/]",
+                          @"[/*c*/\n]", @"{/*c*/\n}", @"[/*c*/1]", @"{/*c*/\"a\":1}", @"[/**/]",
+                          @"/*c*/[1]", @"[/*c*/*/]", @"{/*a*/ /*b*/}"])
+    {
+        sameRead([@"comment only json5 " stringByAppendingString:t], text(t), NSJSONReadingJSON5Allowed, YES);
+        sameRead([@"comment only opt 0 " stringByAppendingString:t], text(t), 0, YES);
+    }
+    for (NSString *t in @[@"/*c*/", @"//c\n", @"[/*c*/]", @"/*c*/ ", @"/*a*//*b*/"]) {
+        sameRead([@"comment only body " stringByAppendingString:t], text(t),
+                 NSJSONReadingJSON5Allowed | NSJSONReadingTopLevelDictionaryAssumed, YES);
+        sameRead([@"comment only body alone " stringByAppendingString:t], text(t), NSJSONReadingTopLevelDictionaryAssumed, YES);
+    }
+    // The one divergence the facts name, pinned rather than passed over: a body of an assumed top level object whose
+    // key is followed by "=" and not by ":" is where the port and the host part company, and both answers are held
+    // here so that a change in either is a failure. Both refuse, so no caller reads a different value.
+    for (NSString *t in @[@"a=1", @"a=1;b=2", @"a=\"x\"", @"/*c*/a=1", @"//c\na=1"]) {
+        NSData *data = text(t);
+        NSError *ours = nil, *theirs = nil;
+        id mine = [CharonHostNSJSONSerialization JSONObjectWithData:data
+                                                             options:NSJSONReadingJSON5Allowed | NSJSONReadingTopLevelDictionaryAssumed
+                                                               error:&ours];
+        id host = [NSJSONSerialization JSONObjectWithData:data
+                                                  options:NSJSONReadingJSON5Allowed | NSJSONReadingTopLevelDictionaryAssumed
+                                                    error:&theirs];
+        NSString *what = [NSString stringWithFormat:@"declared divergence %@", t];
+        expect(mine == nil && host == nil
+                   && [ours.userInfo[NSDebugDescriptionErrorKey] hasPrefix:@"No value for key in object"]
+                   && [theirs.userInfo[NSDebugDescriptionErrorKey] hasPrefix:@"Unterminated string"]
+                   && ours.code == theirs.code, what,
+               [NSString stringWithFormat:@"ours %@ / %@, host %@ / %@", mine,
+                ours.userInfo[NSDebugDescriptionErrorKey], host, theirs.userInfo[NSDebugDescriptionErrorKey]]);
+    }
+
     // how deep a container may be: the wording and the verdict are compared, the position is not (see run.sh)
     for (int n = 510; n <= 515; n++) {
         NSMutableString *open = [NSMutableString string], *empty = [NSMutableString string], *full = [NSMutableString string];
@@ -250,7 +330,12 @@ int main(void)
                          [NSArray array], [NSDictionary dictionary],
                          [NSArray arrayWithObject:[NSArray array]],
                          [NSArray arrayWithObject:[NSDictionary dictionary]],
-                         @[@[], @{}], @{@"a": [NSArray array]}, @{@"a": [NSDictionary dictionary]}];
+                         @[@[], @{}], @{@"a": [NSArray array]}, @{@"a": [NSDictionary dictionary]},
+                         @[[NSDecimalNumber notANumber]], @{@"k": [NSDecimalNumber notANumber]},
+                         @[@[[NSDecimalNumber notANumber]]],
+                         [NSDecimalNumber notANumber],
+                         [NSDecimalNumber decimalNumberWithMantissa:1 exponent:400 isNegative:NO],
+                         [NSDecimalNumber decimalNumberWithMantissa:1 exponent:-400 isNegative:NO]];
     for (id v in written) {
         for (NSNumber *opt in @[@(0), @(NSJSONWritingPrettyPrinted), @(NSJSONWritingSortedKeys),
                                 @(NSJSONWritingSortedKeys | NSJSONWritingPrettyPrinted),
@@ -296,7 +381,9 @@ int main(void)
 
     // the exceptions a write raises
     for (id v in @[@"str", @1, [NSNull null], [NSDictionary dictionaryWithObject:@2 forKey:@1], @[@(INFINITY)],
-                   @[@(-INFINITY)], @[@(NAN)], [NSObject new], @[@[@[@(INFINITY)]]], @[[NSDictionary dictionaryWithObject:@2 forKey:@1]]]) {
+                   @[@(-INFINITY)], @[@(NAN)], [NSObject new], @[@[@[@(INFINITY)]]], @[[NSDictionary dictionaryWithObject:@2 forKey:@1]],
+                   @[[NSDecimalNumber notANumber]], @{@"k": [NSDecimalNumber notANumber]},
+                   @[@[[NSDecimalNumber notANumber]]], [NSDecimalNumber notANumber]]) {
         NSString *what = [NSString stringWithFormat:@"throw %@", v];
         NSString *ourName = nil, *ourReason = nil, *theirName = nil, *theirReason = nil;
         @try { [CharonHostNSJSONSerialization dataWithJSONObject:v options:NSJSONWritingFragmentsAllowed error:NULL]; }

@@ -121,6 +121,43 @@ static const NSUInteger CharonJSONTopLevelDictionaryAssumed = 1UL << 4; // NSJSO
     return 0;
 }
 
+/* The character at an offset with the whitespace and, under JSON5, the comments skipped as well, which is what tells an
+   empty container from one that has content: a bracket pair holding nothing but a block or a line comment is the empty
+   container of the host's JSON5, measured for both spellings and for two comments in a row, and the whitespace-only
+   skipper reads the slash of the comment as content. Nothing is moved and no failure is raised: this only looks, and a
+   comment that runs to the end of the text leaves the slash as the character, which is the character the caller then
+   refuses in its own words. */
+- (unichar)peekAfterSpaceAndComments:(NSUInteger)offset
+{
+    NSUInteger at = self.position + offset;
+    if (!self.json5)
+        return [self peekAfterSpace:offset];
+    for (;;) {
+        while (at < self.length) {
+            unichar c = self.buffer[at];
+            if (c == ' ' || c == '\t' || c == '\n' || c == '\r') { at++; continue; }
+            break;
+        }
+        if (at + 1 >= self.length || self.buffer[at] != '/')
+            return at < self.length ? self.buffer[at] : 0;
+        if (self.buffer[at + 1] == '/') {
+            while (at < self.length && self.buffer[at] != '\n')
+                at++;
+            continue;
+        }
+        if (self.buffer[at + 1] == '*') {
+            NSUInteger scan = at + 2;
+            while (scan + 1 < self.length && !(self.buffer[scan] == '*' && self.buffer[scan + 1] == '/'))
+                scan++;
+            if (scan + 1 >= self.length)
+                return self.buffer[at];
+            at = scan + 2;
+            continue;
+        }
+        return self.buffer[at];
+    }
+}
+
 - (void)fail:(NSString *)reason
 {
     [self fail:reason at:self.position];
@@ -265,7 +302,7 @@ static const NSUInteger CharonJSONTopLevelDictionaryAssumed = 1UL << 4; // NSJSO
     BOOL body = self.inBody;
     self.inBody = NO;
     NSUInteger counted = self.depth;
-    BOOL empty = !body && [self peekAfterSpace:1] == '}';
+    BOOL empty = !body && [self peekAfterSpaceAndComments:1] == '}';
     NSMutableDictionary *dict = [NSMutableDictionary new];
     if (empty) {
         [self advance]; // '{'
@@ -326,7 +363,12 @@ static const NSUInteger CharonJSONTopLevelDictionaryAssumed = 1UL << 4; // NSJSO
         [self advance];
         id value = [self parseValue];
         if (self.error) { self.depth = counted; return nil; }
-        dict[key] = value;
+        // A key the object already carries keeps the value it has: the host reads a repeated key once and keeps
+        // the first (measured for {"a":1,"a":2}, {"a":1,"a":2,"a":3}, {"b":0,"a":1,"b":2} and a nested
+        // {"a":{"b":1,"b":2}}, and for a first value that is null, false, 0 or "", so this is a test for the key
+        // and not for the value).
+        if ([dict objectForKey:key] == nil)
+            dict[key] = value;
         hadMember = YES;
         [self skipWhitespaceAndComments];
         if (self.error) { self.depth = counted; return nil; }
@@ -356,7 +398,7 @@ static const NSUInteger CharonJSONTopLevelDictionaryAssumed = 1UL << 4; // NSJSO
 - (id)parseArray
 {
     NSUInteger counted = self.depth;
-    BOOL empty = [self peekAfterSpace:1] == ']';
+    BOOL empty = [self peekAfterSpaceAndComments:1] == ']';
     NSMutableArray *array = [NSMutableArray new];
     if (empty) {
         [self advance]; // '['
@@ -532,9 +574,12 @@ static const NSUInteger CharonJSONTopLevelDictionaryAssumed = 1UL << 4; // NSJSO
 // or an exponent becomes a double when it has 17 or fewer significant digits (the digits of the int and fraction parts,
 // a lone leading "0" not counted), else an NSDecimalNumber - measured at the exact boundary, 17 stays a double and 18
 // becomes an NSDecimalNumber. Three rules about the magnitude are the host's own and not the RFC's: a leading zero
-// followed by a digit is refused, an exponent field of more than three digits is refused however small its value
-// (1e-999 is a 0, 1e-0999 is refused), and a positive exponent that overflows a double is refused while a negative one
-// is not (-1e400 is a -inf).
+// followed by a digit is refused; the exponent field is a field and not a value, and it is refused when it carries
+// five digits or more however small its value (1e00000 is a 1 and is refused, 1e0000000 is a 1 and is refused) and
+// when it carries four digits with a sign (1e-0001 is a 0.1 and is refused, 1e+0000 is a 1 and is refused), while
+// four digits without a sign are read whatever they say (1e0001 is a 10, 1e0123 is a 1e+123) and three digits are read
+// under any sign; and a positive exponent that overflows a double is refused while a negative one is not (-1e400 is
+// a -inf, 1e400 is refused).
 - (id)parseNumber
 {
     NSUInteger numberStart = self.position;
@@ -599,7 +644,7 @@ static const NSUInteger CharonJSONTopLevelDictionaryAssumed = 1UL << 4; // NSJSO
                      at:self.position];
             return nil;
         }
-        if (digits > 3 && value != 0) { [self fail:@"Number wound up as NaN" at:numberStart]; return nil; }
+        if (digits >= 5 || (digits == 4 && signed_)) { [self fail:@"Number wound up as NaN" at:numberStart]; return nil; }
     }
     NSString *literal = [NSString stringWithCharacters:self.buffer + numberStart length:self.position - numberStart];
     if (!isFractional) {
@@ -781,7 +826,15 @@ static void CharonJSONWriteValue(id obj, NSMutableString *out, NSJSONWritingOpti
 {
     if (obj == nil || [obj isKindOfClass:[NSNull class]]) { [out appendString:@"null"]; return; }
     if ([obj isKindOfClass:[NSNumber class]]) {
-        if (!(CFGetTypeID((CFTypeRef)obj) == CFBooleanGetTypeID()) && ![obj isKindOfClass:[NSDecimalNumber class]]) {
+        if ([obj isKindOfClass:[NSDecimalNumber class]]) {
+            // A decimal that is not a number is refused, and the host words it its own way and not the double path's
+            // (measured: "NaN number in JSON write" where a double is "Invalid number value (NaN) in JSON write"), for
+            // the value in an array, under a key, pretty printed, nested and at the top under
+            // NSJSONWritingFragmentsAllowed alike. +isValidJSONObject: already answers NO for the object.
+            NSDecimal decimal = [obj decimalValue];
+            if (NSDecimalIsNotANumber(&decimal))
+                [NSException raise:NSInvalidArgumentException format:@"NaN number in JSON write"];
+        } else if (CFGetTypeID((CFTypeRef)obj) != CFBooleanGetTypeID()) {
             const char *type = ((NSNumber *)obj).objCType;
             if (strcmp(type, @encode(double)) == 0 || strcmp(type, @encode(float)) == 0) {
                 double v = ((NSNumber *)obj).doubleValue;

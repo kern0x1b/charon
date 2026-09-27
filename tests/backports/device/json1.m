@@ -117,6 +117,28 @@ int main(void)
         } @catch (NSException *exception) {
             CHECK([[exception.reason description] rangeOfString:@"number value"].location != NSNotFound, "an infinity says so");
         }
+        // A decimal that is not a number is refused the same way and with its own wording, which is not the double
+        // path's: the host says "NaN number in JSON write" where an infinity says "Invalid number value ...".
+        NSDecimalNumber *notANumberDecimal = [NSDecimalNumber notANumber];
+        CHECK(![NSJSONSerialization isValidJSONObject:@[notANumberDecimal]], "a decimal that is not a number is not valid");
+        for (NSNumber *shape in @[@0, @1, @2, @3, @4]) {
+            id object = nil;
+            NSJSONWritingOptions options = 0;
+            switch (shape.integerValue) {
+                case 0: object = @[notANumberDecimal]; break;
+                case 1: object = @{@"k": notANumberDecimal}; break;
+                case 2: object = @[notANumberDecimal]; options = NSJSONWritingPrettyPrinted; break;
+                case 3: object = notANumberDecimal; options = kWriteFragments; break;
+                default: object = @[@[notANumberDecimal]]; break;
+            }
+            NSString *what = [NSString stringWithFormat:@"a decimal that is not a number raises in shape %@", shape];
+            @try {
+                [NSJSONSerialization dataWithJSONObject:object options:options error:NULL];
+                CHECK(NO, [what UTF8String]);
+            } @catch (NSException *exception) {
+                CHECK([[exception.reason description] isEqualToString:@"NaN number in JSON write"], [what UTF8String]);
+            }
+        }
 
         // +JSONObjectWithData:options:error:
         CHECK_EQUAL([NSJSONSerialization JSONObjectWithData:compact options:0 error:&error], object, "the round trip");
@@ -158,6 +180,37 @@ int main(void)
             NSData *plain = [wide_text dataUsingEncoding:(NSStringEncoding)encoding.unsignedIntegerValue];
             CHECK_EQUAL([NSJSONSerialization JSONObjectWithData:plain options:0 error:NULL], wide, "a wide encoding is read");
         }
+
+        // a key an object already carries is read once, and the value it already holds is the one that stays
+        CHECK_EQUAL([NSJSONSerialization JSONObjectWithData:utf8(@"{\"a\":1,\"a\":2}") options:0 error:NULL], @{@"a": @1},
+                    "a repeated key keeps the first value");
+        CHECK_EQUAL([NSJSONSerialization JSONObjectWithData:utf8(@"{\"a\":1,\"a\":2,\"a\":3}") options:0 error:NULL], @{@"a": @1},
+                    "and the first of three");
+        CHECK_EQUAL([NSJSONSerialization JSONObjectWithData:utf8(@"{\"b\":0,\"a\":1,\"b\":2}") options:0 error:NULL],
+                    (@{@"a": @1, @"b": @0}), "and a first value that is zero is kept over a later one");
+        CHECK_EQUAL([NSJSONSerialization JSONObjectWithData:utf8(@"{\"a\":{\"b\":1,\"b\":2}}") options:0 error:NULL],
+                    (@{@"a": @{@"b": @1}}), "and a nested one");
+        // the exponent field is a field: three digits under any sign, four without one, five never
+        CHECK_EQUAL([NSJSONSerialization JSONObjectWithData:utf8(@"[1e0001]") options:kFragments error:NULL], @[@10],
+                    "a four digit exponent without a sign is read");
+        CHECK_EQUAL([NSJSONSerialization JSONObjectWithData:utf8(@"[1e0100]") options:kFragments error:NULL], @[@1e100],
+                    "and carries its value");
+        CHECK([NSJSONSerialization JSONObjectWithData:utf8(@"[1e00000]") options:kFragments error:NULL] == nil,
+              "a five digit exponent is refused however small its value");
+        CHECK([NSJSONSerialization JSONObjectWithData:utf8(@"[1e-0001]") options:kFragments error:NULL] == nil,
+              "a four digit exponent with a sign is refused");
+        CHECK_EQUAL([NSJSONSerialization JSONObjectWithData:utf8(@"[1e-1]") options:kFragments error:NULL], @[@0.1],
+                    "a one digit exponent with a sign is read");
+        // a JSON5 container whose only content is a comment is the empty container
+        for (NSNumber *shape in @[@"[/*c*/]", @"{/*c*/}", @"[/****/]", @"[/*a*//*b*/]"]) {
+            NSString *what = [NSString stringWithFormat:@"a JSON5 container holding only a comment is empty: %@", shape];
+            CHECK([NSJSONSerialization JSONObjectWithData:utf8([shape description]) options:kJSON5 error:NULL] != nil,
+                  [what UTF8String]);
+        }
+        CHECK_EQUAL([NSJSONSerialization JSONObjectWithData:utf8(@"[//c\n]") options:kJSON5 error:NULL], @[],
+                    "and with a line comment");
+        CHECK([NSJSONSerialization JSONObjectWithData:utf8(@"[/*c*/]") options:0 error:NULL] == nil,
+              "and only under the JSON5 option");
 
         // the errors a read gives
         NSArray *refused = @[@"", @"nul", @"[1 2]", @"{\"a\"}", @"{\"a\":1", @"[01]"];

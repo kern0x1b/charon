@@ -89,10 +89,17 @@ is an `NSDecimalNumber`.
 Three rules about the magnitude are the host's own and not the RFC's:
 
 - a leading `0` followed by a digit is refused (`Number with leading zero`),
-- an exponent field of **more than three digits** is refused however small its value —
-  `1e-999` is a `0`, `1e-0999` is refused, `1e0000` is a `1` and `1e-0001` is refused,
+- the **exponent field is a field and not a value**, and the host holds it to its length and its
+  sign and not to what it says. Three digits are read under any sign (`1e1`, `1e-1`, `1e+1`,
+  `1e308`, `1e-999` is a `0`). Four digits are read only without a sign (`1e0000` is a `1`,
+  `1e0001` is a `10`, `1e0123` is a `1e+123`, and `1e-0001`, which is a `0.1`, and `1e+0000`,
+  which is a `1`, are both refused with `Number wound up as NaN` at the number). Five digits or
+  more are refused however small the value: `1e00000` is a `1` and is refused, and so is
+  `1e000000` and `1e-00000`,
 - a positive exponent that overflows a double is refused while a negative one is not:
-  `1e309` is refused, `-1e400` is a `-inf`.
+  `1e309` is refused, `1e999` is refused and `1e0400` is refused, where `1e0308` is read and
+  `1e-999` is a `0` and `-1e400` is a `-inf`. This is the value and not the field, and it is
+  why `1e1234` and `1e0999` are refused with four digits where `1e0123` is read.
 
 ## `NSJSONReadingJSON5Allowed`
 
@@ -102,6 +109,12 @@ ECMAScript `IdentifierName`, which nothing measured reaches), `//` and `/* */` c
 a leading `+`, a leading `.`, a trailing `.`, `0x` integers, and `NaN`, `Infinity` and
 `-Infinity`. `\0` is refused under it as `Unsupported escaped null` and is an invalid
 escape without it.
+
+A container whose only content is a comment is the **empty** container, not a failure: a bracket
+pair holding nothing but a block comment, two block comments in a row, or a line comment and a
+newline all read as empty, and a brace pair likewise, and so does the body of an assumed
+top-level dictionary whose whole text is a comment. This is the one place the emptiness test has
+to skip comments the way the rest of the reader does rather than whitespace alone.
 
 Two of the host's own answers are quirks reproduced as they are, because a caller can
 read them:
@@ -113,6 +126,22 @@ read them:
 - the body of a top-level dictionary reads an **unquoted** key with nothing after it as a
   string that never closed: `Unterminated string` at the key's first character, where a
   quoted key is the end of the text.
+
+## A key an object already carries
+
+A repeated key is read **once**: the first value is the one the object holds, and the rest of the
+occurrences are read and thrown away. Measured for `{"a":1,"a":2}` (a `1`), `{"a":1,"a":2,"a":3}`
+(a `1`), `{"b":0,"a":1,"b":2}` (`b` is a `0` and `a` is a `1`), a nested `{"a":{"b":1,"b":2}}`
+(`b` is a `1`) and `{"":1,"":2}` (the key is the empty string and its value is a `1`).
+
+The test is for the key and not for the value, because the host keeps a first value that is
+falsy: `{"a":null,"a":1}` holds the null, `{"a":false,"a":1}` holds a `0`, `{"a":0,"a":1}` holds
+a `0` and `{"a":"","a":"x"}` holds the empty string. The same holds under
+`NSJSONReadingFragmentsAllowed`, `NSJSONReadingMutableContainers`, `NSJSONReadingMutableLeaves`
+and `NSJSONReadingJSON5Allowed`, where a bare key repeats the same way (`{a:1,a:2}` holds a
+`1`). Nothing is refused and no position is reported: the same text simply reads as a different
+object than it would where the class is the release's own, which is why the rule is here rather
+than left out.
 
 ## `NSJSONReadingTopLevelDictionaryAssumed`
 
@@ -142,7 +171,13 @@ same 513 ending in a `[1]` are refused with `Too many nested arrays or dictionar
 - With it, the order is `-localizedStandardCompare:`, as the section below describes.
 - A double or a float is written with `%.17g`: `0.1` is `0.10000000000000001`, `(float)0.1`
   is `0.10000000149011612`, `1e30` is `1e+30`, `1e-7` is `9.9999999999999995e-08`.
-- An `NSDecimalNumber` is written as its own description.
+- An `NSDecimalNumber` is written as its own description. One that is **not a number is
+  refused**, with the host's own wording for that path and not the double path's: it raises
+  `NaN number in JSON write` where a `double` NaN raises `Invalid number value (NaN) in JSON
+  write`, and it raises for the value in an array, under a key, pretty printed, nested and at
+  the top under `NSJSONWritingFragmentsAllowed` alike. An `NSDecimalNumber` has no infinity, so
+  there is no second case on this path. `+isValidJSONObject:` answers NO for such an object
+  before the write is ever attempted, on both sides, so the two agree.
 - `/` is escaped unless `NSJSONWritingWithoutEscapingSlashes`; `"`, `\`, `\n`, `\r`,
   `\t`, `\b`, `\f` always, and any other character below `0x20` as `\u00xx`. `0x7F` is
   not escaped.
@@ -183,11 +218,15 @@ Two measured answers of the host, named so they are not mistaken for agreement:
   reports an internal offset of its scanner (513 where this file reports 512, 2565 where
   it reports 2560); the wording and whether the refusal happens at all are reproduced and
   compared.
-- Two answers of the host's top-level-dictionary key scanner, read off inputs the
-  differential does not assert: a body key followed by `=` (`a=1;b=2`, `a="x"`) is
-  `Unterminated string` at the key's first character, and a normal object key followed by
-  `=` under JSON5 (`{a=1}`) is `Unterminated string` at the `=`. This file reads the `=`
-  as a missing colon instead (`No value for key in object`).
+- Two answers of the host's top-level-dictionary key scanner, where a body key is followed by
+  `=` and not by `:`: the host reads it as `Unterminated string` at the key's first character
+  and this file reads the `=` as a missing colon instead (`No value for key in object`). Both
+  answers are now **asserted** rather than merely described: `tests/backports/host/json1` holds
+  the port's wording and the host's, and the error code, for `a=1`, `a=1;b=2`, `a="x"`,
+  `/*c*/a=1` and `//c\na=1` under `NSJSONReadingJSON5Allowed | NSJSONReadingTopLevelDictionaryAssumed`,
+  so a change in either is a failure of the differential and not a silent drift. Both sides
+  refuse, so no caller reads a different value. Without the JSON5 option the two agree exactly
+  (`No string key for value in object` at column 0), and that is compared.
 
 ## The writing option of iOS 11.0
 
