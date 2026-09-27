@@ -25,9 +25,11 @@
 #import <Network/Network.h>
 
 #include <netdb.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <string.h>
 #include <unistd.h>
 
 /* The SDK's two sentinels, which on a release with no Network bind as the null: a caller passes
@@ -36,9 +38,12 @@
    pointer. Each is given here as the empty block it is documented to behave as, so the pointer the
    caller passes is a real one and the comparison means what it says on a release whose own Network
    is not there to define them. */
-const nw_parameters_configure_protocol_block_t _nw_parameters_configure_protocol_default_configuration = ^{
-};
-const nw_parameters_configure_protocol_block_t _nw_parameters_configure_protocol_disable = ^{
+const nw_parameters_configure_protocol_block_t _nw_parameters_configure_protocol_default_configuration =
+    ^(nw_protocol_options_t options) {
+        (void)options;
+    };
+const nw_parameters_configure_protocol_block_t _nw_parameters_configure_protocol_disable = ^(nw_protocol_options_t options) {
+    (void)options;
 };
 
 @interface CharonNWEndpoint : NSObject <OS_nw_endpoint>
@@ -143,19 +148,27 @@ const char *nw_endpoint_get_hostname(nw_endpoint_t endpoint)
     return endpoint ? ((CharonNWEndpoint *)endpoint)->_hostname.UTF8String : NULL;
 }
 
-const char *nw_endpoint_get_port(nw_endpoint_t endpoint)
+uint16_t nw_endpoint_get_port(nw_endpoint_t endpoint)
 {
-    return endpoint ? ((CharonNWEndpoint *)endpoint)->_port.UTF8String : NULL;
+    /* Host byte order, as the header says, and 0 for an endpoint of another type or with no port. */
+    CharonNWEndpoint *host = (CharonNWEndpoint *)endpoint;
+    if (!host || host->_type != nw_endpoint_type_host || !host->_port.length)
+        return 0;
+    long value = strtol(host->_port.UTF8String, NULL, 10);
+    return (value > 0 && value <= UINT16_MAX) ? (uint16_t)value : 0;
 }
 
-nw_parameters_t nw_parameters_create_secure_udp(nw_protocol_options_t udp_options,
+nw_parameters_t nw_parameters_create_secure_udp(nw_parameters_configure_protocol_block_t configure_dtls,
                                                 nw_parameters_configure_protocol_block_t configure_udp)
 {
-    /* The configure block runs exactly once, with the options it was handed. The SDK's two
-       sentinels are, on this release, the empty blocks above, so a caller that passes either gets
-       the empty block run - which is what passing it means. */
+    /* A caller's configure block runs exactly once, with the options of its own protocol. The SDK's
+       two sentinels are, on this release, the empty blocks above, so a caller that passes either gets
+       the empty block run - which is what passing it means. The DTLS block runs first, as the two
+       protocol stacks are built in that order. */
+    if (configure_dtls)
+        configure_dtls(NULL);
     if (configure_udp)
-        configure_udp(udp_options);
+        configure_udp(NULL);
     CharonNWParameters *parameters = [[CharonNWParameters alloc] init];
     parameters->_secure = YES;
     return parameters;

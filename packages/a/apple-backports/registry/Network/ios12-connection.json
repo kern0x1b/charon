@@ -117,8 +117,8 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the port is kept as it was given, and the string lives as long as the endpoint does",
-      "effect": "the port the endpoint was made with, or NULL when it was made without one",
+      "reason": "the port is kept as it was given, and the header answers it in host byte order as a number, with 0 for an endpoint that is not a host or address endpoint or has no port",
+      "effect": "the port the endpoint was made with, as a number in host byte order, or 0",
       "facts": "facts/Network/NWConnection.md",
       "source": "the SDK 16.4 header of Network (endpoint.h)"
     },
@@ -139,8 +139,8 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the parameters carry what the connection has to open, which here is a datagram socket; the configure block is a caller's own block and is run once with the options it was handed",
-      "effect": "parameters for a datagram connection, with the caller's configure block run exactly once",
+      "reason": "the parameters carry what the connection has to open, which here is a datagram socket; each of the caller's two configure blocks is run exactly once, DTLS first, and the SDK's two sentinels are the empty blocks below so a caller that passes either gets the empty block run",
+      "effect": "parameters for a datagram connection, with each of the caller's configure blocks run exactly once",
       "facts": "facts/Network/NWConnection.md",
       "source": "the SDK 16.4 header of Network (parameters.h), and the port's own use of it in the Matter framework's device browser (src/darwin/Framework/CHIP/MTRDeviceConnectivityMonitor.mm at connectedhomeip v1.6.1.0)"
     },

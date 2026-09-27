@@ -13,6 +13,9 @@ package("matter")
     add_patches("v1.6.1.0", "patches/clock-alignment.patch")
 
     add_deps("charon@apple-compat", {alias = "apple-compat"})
+    add_deps("charon@apple-backports", {alias = "backports", configs = {network = true}})
+    add_deps("charon@ld64", {alias = "ld64"})
+    add_deps("charon@libcxx", {alias = "libcxx"})
     add_deps("gn 20211117", {alias = "gn"})
 
     -- The submodules //src/lib:lib reads, at the commits the tag pins (read from the tag's own git objects, with
@@ -120,11 +123,71 @@ package("matter")
         os.vrunv(path.join(package:dep("gn"):installdir("bin"), "gn"),
                  {"--root=" .. path.absolute(os.curdir()), "gen", out, "--args=" .. table.concat(args, " ")})
         os.vrunv("ninja", {"-C", out, "src/lib:lib"})
-
         os.cp(path.join(out, "lib", "libCHIP.a"), package:installdir("lib"))
-        package:add("links", "CHIP")
+
+        -- Stage 2: the framework's own Objective-C++ wrapper, compiled and linked as libMatterBackports.dylib.
+        -- Its sources name each other as <Matter/...>, which is the framework's own include layout, so the headers
+        -- are gathered into one Matter directory first - the same directory a port will import them from, and the
+        -- one installed below.
+        local framework = path.join(os.curdir(), "src", "darwin", "Framework", "CHIP")
+        local headers = path.join(out, "include", "Matter")
+        os.mkdir(headers)
+        for _, header in ipairs(os.files(path.join(framework, "**", "*.h"))) do
+            os.cp(header, headers)
+        end
+        for _, header in ipairs(os.files(path.join(framework, "*.h"))) do
+            os.cp(header, headers)
+        end
+        local search = table.join({path.join(out, "include"), framework, path.join(framework, "zap-generated"),
+                                  path.join(framework, "ServerEndpoint"), path.join(framework, "XPC Protocol"),
+                                  path.join(os.curdir(), "src"), path.join(os.curdir(), "src", "include"),
+                                  path.join(os.curdir(), "zzz_generated"), path.join(os.curdir(), "zzz_generated", "app-common"),
+                                  path.join(os.curdir(), "third_party", "nlassert", "repo", "include"),
+                                  path.join(os.curdir(), "third_party", "nlio", "repo", "include")},
+                                 {path.join(package:dep("libcxx"):installdir("include"), "c++", "v1")})
+        local wrapper = table.join(compiled, {"-fobjc-arc", "-fno-c++-static-destructors", "-fmacro-prefix-map=" .. framework .. "/=",
+                                             "-DCHIP_HAVE_CONFIG_H=1", "-DCHIP_CONFIG_SKIP_APP_SPECIFIC_GENERATED_HEADER_INCLUDES=1",
+                                             "-DCHIP_CONFIG_GLOBALS_NO_DESTRUCT=1"})
+        local objects = {}
+        for _, source in ipairs(os.files(path.join(framework, "**", "*.mm"))) do
+            -- The object keeps the source's own place under the framework: two directories hold sources of the same
+            -- name (MTRCommandTimedCheck.mm is in CHIP/ and in CHIP/zap-generated/), and one flat name for both
+            -- would be one object written twice.
+            local object = path.absolute(path.join("framework", path.relative(source, framework) .. ".o"))
+            os.mkdir(path.directory(object))
+            local arguments = table.join(wrapper, {"-I" .. path.join(out, "gen", "include")})
+            for _, directory in ipairs(search) do
+                table.insert(arguments, "-I" .. directory)
+            end
+            os.vrunv(assert(toolchain:tool("mxx"), "the apple-ios toolchain names no Objective-C++ compiler for " .. package:arch()),
+                     table.join(arguments, {"-c", source, "-o", object}))
+            table.insert(objects, object)
+        end
+        assert(#objects > 0, "the framework at " .. framework .. " has no Objective-C++ source")
+
+        local libcxx = package:dep("libcxx"):installdir("lib")
+        -- The framework's device browser asks Network for a connection (MTRDeviceConnectivityMonitor.mm), and iOS 6
+        -- has no Network.framework, so the nw_* calls come from the backport that carries them over BSD sockets.
+        local backports = package:dep("backports"):installdir("lib")
+        local output = path.join(package:installdir("lib"), "libMatterBackports.dylib")
+        os.vrunv(assert(toolchain:tool("mxx"), "the apple-ios toolchain names no Objective-C++ compiler for " .. package:arch()),
+                 table.join(flags, {"-fuse-ld=" .. path.join(package:dep("ld64"):installdir("bin"), "ld"),
+                                    "-dynamiclib", "-install_name", "/usr/lib/charon/org.charon.apple-backports/libMatterBackports.dylib",
+                                    "-o", output, path.join(out, "lib", "libCHIP.a")}, objects,
+                           {"-L" .. backports, "-lNetworkBackports", "-lFoundationBackports",
+                            "-L" .. libcxx, "-lc++abi", "-lc++",
+                            path.join(package:dep("apple-compat"):installdir("lib"), "libapple-compat.a"),
+                            "-framework", "Foundation", "-framework", "Security", "-framework", "CoreData",
+                            "-framework", "CoreBluetooth",
+                            "-Wl,-rpath," .. libcxx, "-Wl,-rpath,@loader_path"}))
+
+        os.vcp(headers, path.join(package:installdir("include"), "Matter"))
+        os.mkdir(path.join(package:installdir("include"), "Matter", "Modules"))
+        os.cp(path.join(framework, "Matter.modulemap"), path.join(package:installdir("include"), "Matter", "Modules", "module.modulemap"))
+        package:add("links", "Matter")
     end)
 
     on_test(function (package)
         assert(os.isfile(path.join(package:installdir("lib"), "libCHIP.a")))
+        assert(os.isfile(path.join(package:installdir("lib"), "libMatterBackports.dylib")))
     end)
