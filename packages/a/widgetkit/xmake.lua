@@ -76,3 +76,7 @@ package("widgetkit")
         os.cp(path.join(os.scriptdir(), "..", "..", "..", "LICENSE"), path.join(package:installdir("licenses")))
         os.cp("README.md", path.join(package:installdir("share")))
     end)
+
+-- The two modules this one is written in terms of are linked by whatever uses it, so a port that
+-- imports WidgetKit carries the AppIntents and ActivityKit archives with it; `links` names this
+-- module's own archive and the two dependencies' names theirs.
