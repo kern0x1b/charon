@@ -56,6 +56,12 @@ static NSString *const CharonSenderParticipantKey = @"org.charon.apple-backports
     return self;
 }
 
+// The one answer in this class that is not a value the caller gave. The header defines pending as a
+// message that has not been sent, and nothing in the port sends one: a message leaves through
+// -[MSConversation insertMessage:completionHandler:], and this release has no conversation, no iMessage
+// service and no Messages extension host to insert it into. So YES is the true answer for a message the
+// port holds - it is unsent, and it cannot be otherwise - rather than a flag kept for a reader that
+// never comes. The day a conversation is carried, this is the line that has to change with it.
 - (BOOL)isPending
 {
     return YES;
