@@ -15,7 +15,7 @@ package("matter")
     add_deps("charon@apple-compat", {alias = "apple-compat"})
     -- The backports the process carries are a project decision (includes/apple-ios/xmake.lua's apple_backports):
     -- this package needs network, and swift-runtime's lift needs coredata, and one package has one set of configs.
-    add_deps("charon@apple-backports", {alias = "backports"})
+    add_deps("charon@apple-backports", {alias = "backports", configs = {network = true}})
     -- The lifted headers, from the one lift the workspace builds: what the backports implement of later releases is
     -- available from this release's own, which is what a port compiles against. The framework's Darwin platform asks
     -- os_signpost_* of iOS 12, which apple-compat now provides, and without the lift its declaration is still marked
