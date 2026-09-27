@@ -1,0 +1,114 @@
+# The LinearAlgebra objects of vecLib, iOS 8.0
+
+`vecLib/LinearAlgebra/*.h` is a second face on the BLAS and LAPACK the release already carries: an object is a matrix, a vector or a
+splat, and every operation on one is a product, a norm or a solve. iOS 6.1.3 has none of the forty-two entry points
+(`la_solve()` and the other forty-one all arrived in 8.0), and the release ships everything they are made of: measured from the
+release's own armv7 caches, iOS 4.3, 5.1.1, 6.0, 6.1.3, 7.0, 7.1.2 and 8.0 all export `cblas_sgemm`, `cblas_dgemm`, `sgetrf_`,
+`sgetrs_`, `dgetrf_` and `dgetrs_`, and 6.1.3's vecLib carries 148 `cblas_*` names and 290 trailing-underscore LAPACK ones beside
+its 415 vDSP and 235 vImage. So no BLAS is built here: every product below is a call into `cblas_sgemm` / `cblas_dgemm` and every
+solve into the release's `sgetrf_` / `sgetrs_` / `dgetrf_` / `dgetrs_`, in the objects' own scalar type, which is where the release's
+own LinearAlgebra gets its arithmetic from too.
+
+Source: the host's own Accelerate, held against the port for every case below by `tests/backports/host/linearalgebra`, which runs
+the port's `LinearAlgebra8.m` and the host's Accelerate over the same inputs and compares the statuses, the shapes and the elements;
+the header of iOS 16.4 for the declarations and the spelling of the forty-two names.
+
+## What the object is
+
+One flat object, and it is the host's own shape: a splat and a vector both answer `OS_la_object` for `-class` (measured), so the
+kind, the dimensions, the scalar type, the status, the attributes and either one value or one row-major block of `rows * cols`
+elements are one structure rather than a class per kind. `rows` and `cols` are 0 for a splat, for an object that carries an error
+and for a dimension that is zero.
+
+The two shapes the release's own `vecLib/LinearAlgebra/object.h` gives `la_object_t`, both from the same source:
+
+- at iOS 6.1.3 and above it is an Objective-C type (`OS_OBJECT_DECL(la_object)` needs only `__OBJC__` and a deployment target of
+  6.0 or more), retained with `[object retain]`;
+- below 6.0 - the 4.3 band - it is the incomplete `struct la_s *` that `la_retain()` and `la_release()` count.
+
+The 6.1.3 band therefore counts through the runtime, which is the count `[object retain]` moves, and the 4.3 band through a field of
+its own; both export `_la_retain` and `_la_release`, which iOS 8.0's own libLinearAlgebra does as well (measured: all forty-two
+`la_*` names, `la_retain` and `la_release` among them, are in the 8.0 cache beside the twenty-six other names of the library).
+
+## What was measured
+
+Statuses: `LA_SUCCESS` is 0, `LA_WARNING_POORLY_CONDITIONED` 1000, `LA_INTERNAL_ERROR` -1000, `LA_INVALID_PARAMETER_ERROR` -1001,
+`LA_DIMENSION_MISMATCH_ERROR` -1002, `LA_PRECISION_MISMATCH_ERROR` -1003, `LA_SINGULAR_ERROR` -1004, `LA_SLICE_OUT_OF_BOUNDS_ERROR`
+-1005 (`vecLib/LinearAlgebra/base.h`).
+
+The order two operands are refused in, which the measurements fix and which the code follows: a parent's own status travels on
+first, then the two scalar types, then the shapes. A float and a double splat added together answer `LA_PRECISION_MISMATCH_ERROR`
+where two splats of one type answer `LA_INVALID_PARAMETER_ERROR`, so the type is decided before the shape.
+
+`la_status(NULL)` is `LA_INVALID_PARAMETER_ERROR`; `la_matrix_rows(NULL)`, `la_matrix_cols(NULL)` and `la_vector_length(NULL)` are 0.
+
+Storage: `la_matrix_from_float_buffer(buffer, rows, cols, row_stride, hint, attributes)` reads row-major, element (i, j) at
+`buffer[i * row_stride + j]`, and `la_matrix_to_float_buffer(buffer, row_stride, matrix)` writes it back the same way; a double object
+in a float buffer and the other way round answer `LA_PRECISION_MISMATCH_ERROR` and write nothing, and so does an object that carries
+an error, which has no scalar type of its own to match. The column-major recipe the header gives - pass the counts the other way
+round, then transpose - is what the host does, measured on a 3x2 and a 2x3. `la_matrix_from_float_buffer_nocopy` and its double
+sibling take the block over and give it to the caller's deallocator when the object goes; a `row_stride` wider than the row count
+means the block is padded and cannot be the object's storage, so the object keeps its own copy and hands the block straight back.
+
+`la_vector_length` is `cols` for a 1 x n vector and `rows` for everything else, a matrix with both dimensions above one included: a
+2x3 answers 2, a 3x2 answers 3, a 4x4 answers 4, a splat and an error object answer 0. `la_vector_slice` and
+`la_splat_from_vector_element` take that length, and both refuse a matrix with both dimensions above one with
+`LA_INVALID_PARAMETER_ERROR` and a slice that reaches outside the object with `LA_SLICE_OUT_OF_BOUNDS_ERROR`.
+
+The norms are over every element of the object, a matrix included, and are L1, L2 and L-infinity as the header names them: a
+4x4 holding 0...15 answers 35.2136 for L2, and [-1, 2, -3] answers 6, 3.74166 and 3. `la_norm_as_float` of a double object answers
+NaN and `la_norm_as_double` of a float object answers NaN, in both directions, and so does a splat, an error object and a norm the
+library does not have. `la_normalized_vector` divides by the norm, so a zero vector comes back as it was with `LA_SUCCESS` and a norm
+of 0, and a norm the library does not have answers `LA_INVALID_PARAMETER_ERROR`.
+
+Products and sums, all measured: `la_sum`, `la_difference` and `la_elementwise_product` want the same shape, a splat stands for the
+other operand's whole shape, two splats answer `LA_INVALID_PARAMETER_ERROR` and two different shapes `LA_DIMENSION_MISMATCH_ERROR`.
+`la_inner_product` wants two vectors of one length, or one of them a splat, and answers a 1x1. `la_outer_product` wants two vectors
+and refuses a splat with `LA_INVALID_PARAMETER_ERROR` and a matrix with both dimensions above one with
+`LA_DIMENSION_MISMATCH_ERROR`; the answer is length(left) x length(right), row by row from the left. `la_matrix_product` answers
+rows(left) x cols(right) and `LA_DIMENSION_MISMATCH_ERROR` when cols(left) is not rows(right). `la_transpose` answers cols x rows
+and takes a vector, a 6x1 becoming a 1x6.
+
+`la_solve` wants a square A and a right-hand side of n rows whose width is the number of solutions: a vector of length n and a matrix
+of n x k both answer n x 1 and n x k, and anything else answers `LA_DIMENSION_MISMATCH_ERROR` (a 3x2 A with a 3x1 right-hand side
+answers -1002, measured). It is an LU factorisation with partial pivoting in the object's own scalar type, through the release's
+`sgetrf_`/`sgetrs_` and `dgetrf_`/`dgetrs_`. A float object is answered in float: the host answers 0.0909090787 and 0.636363685 for
+[[4,1],[1,3]] against [1,2], and the release's own LAPACK answers 0.0909090936 and 0.636363626 - the same two numbers to the six
+significant digits the float type has.
+
+`la_identity_matrix` answers `LA_INVALID_PARAMETER_ERROR` for a scalar type that is neither `LA_SCALAR_TYPE_FLOAT` nor
+`LA_SCALAR_TYPE_DOUBLE`, and a size of 0 answers a 0x0 object with `LA_SUCCESS`. `la_vector_from_matrix_row` and
+`la_vector_from_matrix_col` answer `LA_INVALID_PARAMETER_ERROR` for a row or column the matrix does not have, and
+`la_diagonal_matrix_from_vector` takes a vector only, making a matrix of `length + |diagonal|` with element i at (i + diagonal, i) -
+a diagonal of 9 on a vector of 6 answers 15 x 15 with `LA_SUCCESS` rather than an error.
+
+The attributes are carried and inherited: a result takes the inclusive-or of the attributes of what it was made from, which is what
+`vecLib/LinearAlgebra/object.h` says. The one attribute the library has, `LA_ATTRIBUTE_ENABLE_LOGGING`, changes no answer and prints
+nothing for any operation measured on the host, so it is stored and inherited and nothing more.
+
+## Where the host answers differently from the header
+
+Three places, all measured, all recorded here rather than papered over:
+
+- `la_vector_length` of a matrix with both dimensions above one is the number of rows, where
+  `vecLib/LinearAlgebra/vector.h` says zero. The port answers as the host does.
+- A splat in a matrix product is 1 x cols on the left of the product and rows x 1 on the right, where the table in
+  `vecLib/LinearAlgebra/splat.h` has the two the other way round: `la_matrix_product(splat(3), [[1,2],[3,4]])` answers 1x2
+  [12 18] and `la_matrix_product([[1,2],[3,4]], splat(3))` answers 2x1 [9 21], measured. The port follows the measurement.
+- `la_splat_from_vector_element` with an index below zero: the host answers `LA_SUCCESS` and a value read from before its own buffer,
+  which is not an answer that can be reproduced without reading outside the object. The port answers
+  `LA_DIMENSION_MISMATCH_ERROR`, the same as for an index one past the end.
+
+Two more where the host answers something the header does not describe, reproduced because a caller sees it:
+`la_solve` of a matrix with an exactly zero pivot comes back as zeros with `LA_SUCCESS`, where
+`vecLib/LinearAlgebra/linear_systems.h` says `LA_SINGULAR_ERROR`; and a right-hand side of a shape `la_solve` does not take is
+`LA_DIMENSION_MISMATCH_ERROR` where the header says a non-square matrix is answered with a least-squares solution - measured on a
+3x2 and a 2x3 A, both -1002.
+
+## What is reasoned rather than measured
+
+`la_normalized_vector` of an object whose scalar type does not match the norm's own is reasoned to answer
+`LA_PRECISION_MISMATCH_ERROR`, the answer every other operation gives for that mismatch; the host was not asked, because the norm
+functions take no scalar type of their own and so the case cannot be posed through them. `la_vector_to_float_buffer` of a splat is
+reasoned to answer `LA_INVALID_PARAMETER_ERROR`, the answer the header gives for anything that is not a vector or a matrix, on the
+same grounds.
