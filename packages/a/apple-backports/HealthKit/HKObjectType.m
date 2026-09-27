@@ -147,6 +147,14 @@
 #pragma mark - HKSampleType
 
 @implementation HKSampleType
+// iOS 13.0 added the two restricted-duration readers and their two flags, and iOS 15.0 added
+// -allowsRecalibrationForEstimates. This delivery carries the 9.3 group, so all five are @dynamic and
+// no accessor is emitted for any of them.
+@dynamic isMaximumDurationRestricted;
+@dynamic maximumAllowedDuration;
+@dynamic isMinimumDurationRestricted;
+@dynamic minimumAllowedDuration;
+@dynamic allowsRecalibrationForEstimates;
 @end
 
 #pragma mark - HKCharacteristicType

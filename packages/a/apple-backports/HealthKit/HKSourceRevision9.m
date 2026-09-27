@@ -9,6 +9,11 @@
     HKSource *_source;
     NSString *_version;
 }
+// iOS 11.0 added -productType and -operatingSystemVersion, and this delivery carries the 9.0 group,
+// so both are @dynamic and the compiler emits no accessor for either.
+@dynamic productType;
+@dynamic operatingSystemVersion;
+
 
 + (BOOL)supportsSecureCoding
 {
@@ -88,6 +93,10 @@
 @implementation HKDeletedObject {
     NSUUID *_UUID;
 }
+// iOS 11.0 added -metadata, and this delivery carries the 9.0 group, so the member is @dynamic and
+// the compiler emits no accessor for it.
+@dynamic metadata;
+
 
 + (BOOL)supportsSecureCoding
 {

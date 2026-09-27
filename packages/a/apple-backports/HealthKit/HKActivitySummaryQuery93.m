@@ -23,7 +23,7 @@
                    resultsHandler:(void (^)(HKActivitySummaryQuery *query, NSArray<HKActivitySummary *> *_Nullable activitySummaries,
                                             NSError *_Nullable error))handler
 {
-    HKActivitySummaryQuery *query = [super initWithObjectType:[HKObjectType activitySummaryType]];
+    HKActivitySummaryQuery *query = [super charon_initWithObjectType:[HKObjectType activitySummaryType]];
     if (query) {
         [query charon_setPredicate:predicate];
         query->_charonResultsHandler = [handler copy];

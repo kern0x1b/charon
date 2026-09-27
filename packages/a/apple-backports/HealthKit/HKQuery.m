@@ -71,10 +71,10 @@ static NSString *CharonHKOperatorSpelling(NSPredicateOperatorType type)
 
 - (instancetype)initWithSampleType:(nullable HKSampleType *)sampleType
 {
-    return [self initWithObjectType:sampleType];
+    return [self charon_initWithObjectType:sampleType];
 }
 
-- (instancetype)initWithObjectType:(nullable HKObjectType *)objectType
+- (instancetype)charon_initWithObjectType:(nullable HKObjectType *)objectType
 {
     HKQuery *fresh = [super init];
     if (fresh)

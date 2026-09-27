@@ -27,6 +27,18 @@
     NSDateComponents *_dateComponents;
 }
 
+// The ring members of the releases after 9.3, which this delivery does not carry: @dynamic, so no
+// accessor is emitted and the selector is not in the built library. They are 14.0's
+// -activityMoveMode, -appleMoveTime and -appleMoveTimeGoal, 16.0's -exerciseTimeGoal and
+// -standHoursGoal; the group of each release answers them there. 18.0's -paused is of a release
+// later than the header this library is compiled against, so it is not declared there and nothing
+// is synthesised for it.
+@dynamic activityMoveMode;
+@dynamic appleMoveTime;
+@dynamic appleMoveTimeGoal;
+@dynamic exerciseTimeGoal;
+@dynamic standHoursGoal;
+
 + (BOOL)supportsSecureCoding
 {
     return YES;

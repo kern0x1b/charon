@@ -18,7 +18,8 @@ cache of iOS 8.0 was extracted with `modules/apple/dyld.lua`'s `extract()` and e
 constant followed through its entry in that image's symbol table to the `__cfstring` it points at.
 110 of the 120 names the image exports are declared by the SDK headers, and those 110 are what
 `HKConstants8.m` carries; the other ten are Apple's private entitlement names. The reader is
-`.agent-work/runs/api-kits/cfconst32.py` and its output `.agent-work/runs/api-kits/hk8.0.constvalues`.
+`tools/cfconst/cache32.py`, in the repository, and the 64-bit reader for a shared cache is
+`tools/cfconst.py`.
 Two controls: `HKQuantityTypeIdentifierStepCount` and `HKErrorDomain` are read out as real strings,
 and a name no image exports reports that instead of a value.
 

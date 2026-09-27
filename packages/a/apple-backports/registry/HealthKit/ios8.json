@@ -1548,7 +1548,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "categorySampleWithType:value:startDate:endDate:, of HKCategorySample",
+      "effect": "a category sample of the type given, with the value given, over the period given; the factory raises for a type that is not a category type, as the release's own validation does",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -1559,7 +1559,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "categorySampleWithType:value:startDate:endDate:metadata:, of HKCategorySample",
+      "effect": "a category sample of the type given, with the value given, over the period given; the factory raises for a type that is not a category type, as the release's own validation does",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -1570,7 +1570,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "correlationWithType:startDate:endDate:objects:, of HKCorrelation",
+      "effect": "a correlation of the type given over the period given, holding the samples given, grouped by the type of each",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -1581,7 +1581,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "correlationWithType:startDate:endDate:objects:metadata:, of HKCorrelation",
+      "effect": "a correlation of the type given over the period given, holding the samples given, grouped by the type of each",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -1592,7 +1592,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "isHealthDataAvailable, of HKHealthStore",
+      "effect": "what the store answers out of its own database, on the queue the caller is given or the main queue",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -1603,7 +1603,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "categoryTypeForIdentifier:, of HKObjectType",
+      "effect": "a type of the identifier given, or nil for an identifier of a kind this class method does not own",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -1614,7 +1614,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "characteristicTypeForIdentifier:, of HKObjectType",
+      "effect": "a type of the identifier given, or nil for an identifier of a kind this class method does not own",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -1625,7 +1625,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "correlationTypeForIdentifier:, of HKObjectType",
+      "effect": "a type of the identifier given, or nil for an identifier of a kind this class method does not own",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -1636,7 +1636,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "quantityTypeForIdentifier:, of HKObjectType",
+      "effect": "a type of the identifier given, or nil for an identifier of a kind this class method does not own",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -1647,7 +1647,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "workoutType, of HKObjectType",
+      "effect": "a type of the identifier given, or nil for an identifier of a kind this class method does not own",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -1658,7 +1658,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "quantityWithUnit:doubleValue:, of HKQuantity",
+      "effect": "a quantity in the unit given with the value given; the value converts to another unit of the same dimension and raises for one that is not",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -1669,7 +1669,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "quantitySampleWithType:quantity:startDate:endDate:, of HKQuantitySample",
+      "effect": "a quantity sample of the type given, with the quantity given, over the period given; the factory raises for a type that is not a quantity type and for a quantity the type cannot hold, as the release does",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -1680,7 +1680,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "quantitySampleWithType:quantity:startDate:endDate:metadata:, of HKQuantitySample",
+      "effect": "a quantity sample of the type given, with the quantity given, over the period given; the factory raises for a type that is not a quantity type and for a quantity the type cannot hold, as the release does",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -1691,7 +1691,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "predicateForCategorySamplesEqualToValues:, of HKQuery",
+      "effect": "a real NSPredicate over a real key path of the samples it selects, which the release's own NSPredicate then decides over the objects the store read back",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -1702,7 +1702,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "predicateForCategorySamplesWithOperatorType:value:, of HKQuery",
+      "effect": "a real NSPredicate over a real key path of the samples it selects, which the release's own NSPredicate then decides over the objects the store read back",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -1713,7 +1713,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "predicateForObjectWithUUID:, of HKQuery",
+      "effect": "a real NSPredicate over a real key path of the samples it selects, which the release's own NSPredicate then decides over the objects the store read back",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -1724,7 +1724,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "predicateForObjectsFromSource:, of HKQuery",
+      "effect": "a real NSPredicate over a real key path of the samples it selects, which the release's own NSPredicate then decides over the objects the store read back",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -1735,7 +1735,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "predicateForObjectsFromSources:, of HKQuery",
+      "effect": "a real NSPredicate over a real key path of the samples it selects, which the release's own NSPredicate then decides over the objects the store read back",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -1746,7 +1746,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "predicateForObjectsFromWorkout:, of HKQuery",
+      "effect": "a real NSPredicate over a real key path of the samples it selects, which the release's own NSPredicate then decides over the objects the store read back",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -1757,7 +1757,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "predicateForObjectsWithMetadataKey:, of HKQuery",
+      "effect": "a real NSPredicate over a real key path of the samples it selects, which the release's own NSPredicate then decides over the objects the store read back",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -1768,7 +1768,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "predicateForObjectsWithMetadataKey:allowedValues:, of HKQuery",
+      "effect": "a real NSPredicate over a real key path of the samples it selects, which the release's own NSPredicate then decides over the objects the store read back",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -1779,7 +1779,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "predicateForObjectsWithMetadataKey:operatorType:value:, of HKQuery",
+      "effect": "a real NSPredicate over a real key path of the samples it selects, which the release's own NSPredicate then decides over the objects the store read back",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -1790,7 +1790,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "predicateForObjectsWithNoCorrelation, of HKQuery",
+      "effect": "a real NSPredicate over a real key path of the samples it selects, which the release's own NSPredicate then decides over the objects the store read back",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -1801,7 +1801,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "predicateForObjectsWithUUIDs:, of HKQuery",
+      "effect": "a real NSPredicate over a real key path of the samples it selects, which the release's own NSPredicate then decides over the objects the store read back",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -1812,7 +1812,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "predicateForQuantitySamplesWithOperatorType:quantity:, of HKQuery",
+      "effect": "a real NSPredicate over a real key path of the samples it selects, which the release's own NSPredicate then decides over the objects the store read back",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -1823,7 +1823,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "predicateForSamplesWithStartDate:endDate:options:, of HKQuery",
+      "effect": "a real NSPredicate over a real key path of the samples it selects, which the release's own NSPredicate then decides over the objects the store read back",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -1878,7 +1878,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "predicateForWorkoutsWithOperatorType:duration:, of HKQuery",
+      "effect": "a real NSPredicate over a real key path of the samples it selects, which the release's own NSPredicate then decides over the objects the store read back",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -1889,7 +1889,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "predicateForWorkoutsWithOperatorType:totalDistance:, of HKQuery",
+      "effect": "a real NSPredicate over a real key path of the samples it selects, which the release's own NSPredicate then decides over the objects the store read back",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -1900,7 +1900,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "predicateForWorkoutsWithOperatorType:totalEnergyBurned:, of HKQuery",
+      "effect": "a real NSPredicate over a real key path of the samples it selects, which the release's own NSPredicate then decides over the objects the store read back",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -1911,7 +1911,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "predicateForWorkoutsWithWorkoutActivityType:, of HKQuery",
+      "effect": "a real NSPredicate over a real key path of the samples it selects, which the release's own NSPredicate then decides over the objects the store read back",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -1922,7 +1922,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "defaultSource, of HKSource",
+      "effect": "a source with the two names given, kept as they were given",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -1933,7 +1933,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "atmosphereUnit, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -1944,7 +1944,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "calorieUnit, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -1955,7 +1955,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "centimeterOfWaterUnit, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -1966,7 +1966,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "countUnit, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -1977,7 +1977,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "dayUnit, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -1988,7 +1988,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "degreeCelsiusUnit, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -1999,7 +1999,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "degreeFahrenheitUnit, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2010,7 +2010,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "energyFormatterUnitFromUnit:, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2021,7 +2021,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "fluidOunceImperialUnit, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2032,7 +2032,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "fluidOunceUSUnit, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2043,7 +2043,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "footUnit, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2054,7 +2054,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "gramUnitWithMetricPrefix:, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2065,7 +2065,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "gramUnit, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2076,7 +2076,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "hourUnit, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2087,7 +2087,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "inchUnit, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2098,7 +2098,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "jouleUnitWithMetricPrefix:, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2109,7 +2109,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "jouleUnit, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2120,7 +2120,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "kelvinUnit, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2131,7 +2131,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "kilocalorieUnit, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2142,7 +2142,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "lengthFormatterUnitFromUnit:, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2153,7 +2153,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "literUnitWithMetricPrefix:, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2164,7 +2164,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "literUnit, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2175,7 +2175,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "massFormatterUnitFromUnit:, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2186,7 +2186,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "meterUnitWithMetricPrefix:, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2197,7 +2197,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "meterUnit, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2208,7 +2208,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "mileUnit, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2219,7 +2219,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "millimeterOfMercuryUnit, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2230,7 +2230,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "minuteUnit, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2241,7 +2241,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "moleUnitWithMetricPrefix:molarMass:, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2252,7 +2252,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "moleUnitWithMolarMass:, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2263,7 +2263,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "ounceUnit, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2274,7 +2274,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "pascalUnitWithMetricPrefix:, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2285,7 +2285,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "pascalUnit, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2296,7 +2296,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "percentUnit, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2307,7 +2307,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "pintImperialUnit, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2318,7 +2318,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "pintUSUnit, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2329,7 +2329,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "poundUnit, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2340,7 +2340,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "secondUnitWithMetricPrefix:, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2351,7 +2351,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "secondUnit, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2362,7 +2362,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "siemenUnitWithMetricPrefix:, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2373,7 +2373,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "siemenUnit, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2384,7 +2384,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "stoneUnit, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2395,7 +2395,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "unitFromEnergyFormatterUnit:, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2406,7 +2406,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "unitFromLengthFormatterUnit:, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2417,7 +2417,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "unitFromMassFormatterUnit:, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2428,7 +2428,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "unitFromString:, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2439,7 +2439,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "workoutWithActivityType:startDate:endDate:, of HKWorkout",
+      "effect": "a workout of the activity type given over the period given, with the events, the energy and the distance given",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2450,7 +2450,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "workoutWithActivityType:startDate:endDate:duration:totalEnergyBurned:totalDistance:metadata:, of HKWorkout",
+      "effect": "a workout of the activity type given over the period given, with the events, the energy and the distance given",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2461,7 +2461,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "workoutWithActivityType:startDate:endDate:workoutEvents:totalEnergyBurned:totalDistance:metadata:, of HKWorkout",
+      "effect": "a workout of the activity type given over the period given, with the events, the energy and the distance given",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2472,7 +2472,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "workoutEventWithType:date:, of HKWorkoutEvent",
+      "effect": "a workout event of the type given at the date given",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2483,7 +2483,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "initWithType:predicate:anchor:limit:completionHandler:, of HKAnchoredObjectQuery",
+      "effect": "a query of what changed after an anchor, answered with the objects written since it, the deleted objects, and the anchor past them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2505,7 +2505,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "objectsForType:, of HKCorrelation",
+      "effect": "a correlation of the type given over the period given, holding the samples given, grouped by the type of each",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2516,7 +2516,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "initWithType:predicate:samplePredicates:completion:, of HKCorrelationQuery",
+      "effect": "a query of the correlations of one type, answered with the correlations the store holds",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2527,7 +2527,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "addSamples:toWorkout:completion:, of HKHealthStore",
+      "effect": "what the store answers out of its own database, on the queue the caller is given or the main queue",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2538,7 +2538,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "authorizationStatusForType:, of HKHealthStore",
+      "effect": "what the store answers out of its own database, on the queue the caller is given or the main queue",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2549,7 +2549,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "biologicalSexWithError:, of HKHealthStore",
+      "effect": "what the store answers out of its own database, on the queue the caller is given or the main queue",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2560,7 +2560,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "bloodTypeWithError:, of HKHealthStore",
+      "effect": "what the store answers out of its own database, on the queue the caller is given or the main queue",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2571,7 +2571,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "dateOfBirthWithError:, of HKHealthStore",
+      "effect": "what the store answers out of its own database, on the queue the caller is given or the main queue",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2582,7 +2582,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "deleteObject:withCompletion:, of HKHealthStore",
+      "effect": "what the store answers out of its own database, on the queue the caller is given or the main queue",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2593,7 +2593,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "disableAllBackgroundDeliveryWithCompletion:, of HKHealthStore",
+      "effect": "what the store answers out of its own database, on the queue the caller is given or the main queue",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2604,7 +2604,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "disableBackgroundDeliveryForType:withCompletion:, of HKHealthStore",
+      "effect": "what the store answers out of its own database, on the queue the caller is given or the main queue",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2615,7 +2615,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "enableBackgroundDeliveryForType:frequency:withCompletion:, of HKHealthStore",
+      "effect": "what the store answers out of its own database, on the queue the caller is given or the main queue",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2637,7 +2637,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "executeQuery:, of HKHealthStore",
+      "effect": "what the store answers out of its own database, on the queue the caller is given or the main queue",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2659,7 +2659,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "requestAuthorizationToShareTypes:readTypes:completion:, of HKHealthStore",
+      "effect": "what the store answers out of its own database, on the queue the caller is given or the main queue",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2681,7 +2681,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "saveObject:withCompletion:, of HKHealthStore",
+      "effect": "what the store answers out of its own database, on the queue the caller is given or the main queue",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2692,7 +2692,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "saveObjects:withCompletion:, of HKHealthStore",
+      "effect": "what the store answers out of its own database, on the queue the caller is given or the main queue",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2714,7 +2714,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "stopQuery:, of HKHealthStore",
+      "effect": "what the store answers out of its own database, on the queue the caller is given or the main queue",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2747,7 +2747,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "initWithSampleType:predicate:updateHandler:, of HKObserverQuery",
+      "effect": "a query answered when the store changes rather than at once, with the anchor the store's own write sequence has reached",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2758,7 +2758,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "compare:, of HKQuantity",
+      "effect": "a quantity in the unit given with the value given; the value converts to another unit of the same dimension and raises for one that is not",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2769,7 +2769,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "doubleValueForUnit:, of HKQuantity",
+      "effect": "a quantity in the unit given with the value given; the value converts to another unit of the same dimension and raises for one that is not",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2791,7 +2791,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "isCompatibleWithUnit:, of HKQuantity",
+      "effect": "a quantity in the unit given with the value given; the value converts to another unit of the same dimension and raises for one that is not",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2802,7 +2802,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "isCompatibleWithUnit:, of HKQuantityType",
+      "effect": "whether the given unit is of the dimension the SDK's own table of the type's unit names, and NO for a type that table counts in a string no unit can be made of",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2813,7 +2813,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "init, of HKQuery",
+      "effect": "a real NSPredicate over a real key path of the samples it selects, which the release's own NSPredicate then decides over the objects the store read back",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2824,7 +2824,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "initWithSampleType:predicate:limit:sortDescriptors:resultsHandler:, of HKSampleQuery",
+      "effect": "a query of the samples of one type, answered in batches with the handler's last flag set on the final one",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2846,7 +2846,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "initWithSampleType:samplePredicate:completionHandler:, of HKSourceQuery",
+      "effect": "a query of the sources of one type, answered once with the sources the store holds a sample of that type from",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2857,7 +2857,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "averageQuantityForSource:, of HKStatistics",
+      "effect": "the statistics of the samples given, each aggregate taken in the type's own unit, and only the ones the options asked for",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2868,7 +2868,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "averageQuantity, of HKStatistics",
+      "effect": "the statistics of the samples given, each aggregate taken in the type's own unit, and only the ones the options asked for",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2890,7 +2890,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "maximumQuantityForSource:, of HKStatistics",
+      "effect": "the statistics of the samples given, each aggregate taken in the type's own unit, and only the ones the options asked for",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2901,7 +2901,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "maximumQuantity, of HKStatistics",
+      "effect": "the statistics of the samples given, each aggregate taken in the type's own unit, and only the ones the options asked for",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2912,7 +2912,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "minimumQuantityForSource:, of HKStatistics",
+      "effect": "the statistics of the samples given, each aggregate taken in the type's own unit, and only the ones the options asked for",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2923,7 +2923,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "minimumQuantity, of HKStatistics",
+      "effect": "the statistics of the samples given, each aggregate taken in the type's own unit, and only the ones the options asked for",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2934,7 +2934,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "sumQuantityForSource:, of HKStatistics",
+      "effect": "the statistics of the samples given, each aggregate taken in the type's own unit, and only the ones the options asked for",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2945,7 +2945,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "sumQuantity, of HKStatistics",
+      "effect": "the statistics of the samples given, each aggregate taken in the type's own unit, and only the ones the options asked for",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2956,7 +2956,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "enumerateStatisticsFromDate:toDate:withBlock:, of HKStatisticsCollection",
+      "effect": "the statistics of the intervals between the anchor and the last sample, one per interval whether or not anything was saved in it",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2978,7 +2978,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "sources, of HKStatisticsCollection",
+      "effect": "the statistics of the intervals between the anchor and the last sample, one per interval whether or not anything was saved in it",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -2989,7 +2989,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "statisticsForDate:, of HKStatisticsCollection",
+      "effect": "the statistics of the intervals between the anchor and the last sample, one per interval whether or not anything was saved in it",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -3000,7 +3000,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "statistics, of HKStatisticsCollection",
+      "effect": "the statistics of the intervals between the anchor and the last sample, one per interval whether or not anything was saved in it",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -3011,7 +3011,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "initWithQuantityType:quantitySamplePredicate:options:anchorDate:intervalComponents:, of HKStatisticsCollectionQuery",
+      "effect": "a query of the statistics of one quantity type over the intervals between an anchor date and the samples, answered once with the collection and then with each change while it runs",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -3022,7 +3022,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "initWithQuantityType:quantitySamplePredicate:options:completionHandler:, of HKStatisticsQuery",
+      "effect": "a query of the statistics of one quantity type, answered once with the statistics of the samples the store holds",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -3033,7 +3033,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "init, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -3044,7 +3044,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "isNull, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -3055,7 +3055,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "reciprocalUnit, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -3066,7 +3066,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "unitDividedByUnit:, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -3077,7 +3077,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "unitMultipliedByUnit:, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },
@@ -3088,7 +3088,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole",
-      "effect": "unitRaisedToPower:, of HKUnit",
+      "effect": "a unit of the dimension and the name the header's factory writes, from the port's own table of the unit names and the international factors behind them",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
     },

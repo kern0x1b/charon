@@ -55,7 +55,10 @@
 // How far this store's own write sequence has been answered. A position in the store is what the
 // release's anchor is as well, and it is what lets an anchored query be asked again and be answered
 // with only what came after it.
-- (NSInteger)sequence
+// The position, under the port's own name: no SDK header of any release declares -sequence on
+// HKQueryAnchor, and the release's own anchor is an opaque value, so the number this class keeps is
+// the port's and is named as the port's.
+- (NSInteger)charon_sequence
 {
     return _sequence;
 }
@@ -75,7 +78,7 @@
         return YES;
     if (![other isKindOfClass:[HKQueryAnchor class]])
         return NO;
-    return _sequence == ((HKQueryAnchor *)other).sequence;
+    return _sequence == ((HKQueryAnchor *)other).charon_sequence;
 }
 
 - (NSUInteger)hash

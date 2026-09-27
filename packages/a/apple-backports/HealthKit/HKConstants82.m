@@ -2,7 +2,7 @@
 //
 // Every value below was read out of a release's own image, not assumed: the image was extracted with
 // modules/apple/dyld.lua's extract() and each constant followed through its entry in that image's
-// symbol table to the __cfstring it points at. The reader is .agent-work/runs/api-kits/cfconst32.py.
+// symbol table to the __cfstring it points at. The reader is tools/cfconst/cache32.py.
 //
 // HKPredicateKeyPathDateComponents is here and not in the group of 9.3, and that is a measurement
 // rather than a reading of the header: the SDK header this library is compiled against dates it 9.3, and

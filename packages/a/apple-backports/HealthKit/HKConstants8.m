@@ -4,7 +4,7 @@
 // extracted with modules/apple/dyld.lua's extract() and each constant followed through its entry in
 // the image's own symbol table to the __cfstring that entry points at, so what is written here is
 // the string that release held (~/.charon/dyld/8.0/dyld_shared_cache_armv7, HealthKit.framework).
-// The reader is .agent-work/runs/api-kits/cfconst32.py and its output hk8.0.constvalues. A name
+// The reader is tools/cfconst/cache32.py and its output hk8.0.constvalues. A name
 // iOS 8.0 exported that the SDK headers do not declare is Apple's private and is not here; a name
 // the SDK declares that iOS 8.0 did not have came later and is carried in the group of its own
 // release. The declaration of each is the SDK's own.

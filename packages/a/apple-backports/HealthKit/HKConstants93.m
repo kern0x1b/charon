@@ -4,7 +4,7 @@
 // modules/apple/dyld.lua's extract() and each constant followed through its entry in the image's own
 // symbol table to the __cfstring it points at. This is the exercise-time type the ring's exercise
 // ring is counted in, and it is the one constant the release of 9.3 added. The reader is
-// .agent-work/runs/api-kits/cfconst32.py.
+// tools/cfconst/cache32.py, in the repository.
 //
 // HKPredicateKeyPathDateComponents - the path the two activity-summary predicates are built over -
 // is NOT here and the reason is worth a line: the SDK header this library is compiled against dates it

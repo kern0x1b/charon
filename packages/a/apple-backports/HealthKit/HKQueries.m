@@ -197,12 +197,12 @@
     return _intervalComponents;
 }
 
-- (nullable HKStatisticsCollection *)statisticsCollection
+- (nullable HKStatisticsCollection *)charon_statisticsCollection
 {
     return _statisticsCollection;
 }
 
-- (void)setStatisticsCollection:(nullable HKStatisticsCollection *)statisticsCollection
+- (void)charon_setStatisticsCollection:(nullable HKStatisticsCollection *)statisticsCollection
 {
     _statisticsCollection = statisticsCollection;
 }
@@ -212,7 +212,7 @@
     return _lastAnchor;
 }
 
-- (void)setLastAnchor:(nullable NSDate *)lastAnchor
+- (void)charon_setLastAnchor:(nullable NSDate *)lastAnchor
 {
     _lastAnchor = [lastAnchor copy];
 }
@@ -516,7 +516,7 @@
 {
     CharonHKStore *store = [CharonHKStore sharedStore];
     NSError *error = nil;
-    NSInteger from = _anchor ? _anchor.sequence : 0;
+    NSInteger from = _anchor ? _anchor.charon_sequence : 0;
     NSArray *added = [store objectsOfType:self.sampleType
                                 predicate:self.charon_predicate
                                 startDate:nil

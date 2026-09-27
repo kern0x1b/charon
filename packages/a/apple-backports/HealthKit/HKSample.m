@@ -9,6 +9,11 @@
     NSDate *_startDate;
     NSDate *_endDate;
 }
+// iOS 14.3 added -hasUndeterminedDuration, and this delivery carries the 9.3 group, so the member is
+// @dynamic: the compiler emits no accessor for it, the selector is not in the built library, and
+// -respondsToSelector: answers NO for it rather than a NO that looks like an answer.
+@dynamic hasUndeterminedDuration;
+
 
 + (BOOL)supportsSecureCoding
 {

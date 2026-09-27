@@ -3,7 +3,7 @@
 // Every value below was read out of the armv7 shared cache of iOS 9.0, not assumed: the image was extracted with
 // modules/apple/dyld.lua's extract() and each constant followed through its entry in the image's own
 // symbol table to the __cfstring it points at, so what is written here is the string that release
-// held. The reader is .agent-work/runs/api-kits/cfconst32.py and its output hk9.0.constvalues.
+// held. The reader is tools/cfconst/cache32.py.
 //
 // The declaration of each is the SDK's own.
 

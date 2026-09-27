@@ -361,9 +361,6 @@ static const NSUInteger CharonHKUnitTableCount = sizeof(CharonHKUnitTable) / siz
 // `s`, a milligram is `mg` and not `g`, so a product of a minute and a kilogram writes the two names
 // and not the two bases. The host keeps the same - `count/min` and `mg/dL` come back as they went in.
 @property (readwrite, copy) NSDictionary<NSString *, NSString *> *charon_names;
-// The string the unit writes, which for a mole carries the molar mass and for the rest is the
-// header's own name.
-@property (readwrite, copy) NSString *unitString;
 @end
 
 @implementation HKUnit
@@ -936,11 +933,6 @@ static NSString *CharonHKStringForDimensions(NSArray *bases, NSDictionary *power
     return [self charon_namedUnit:@"mmHg"];
 }
 
-+ (instancetype)inchesOfMercuryUnit
-{
-    return [self charon_namedUnit:@"inHg"];
-}
-
 + (instancetype)centimeterOfWaterUnit
 {
     return [self charon_namedUnit:@"cmAq"];
@@ -949,11 +941,6 @@ static NSString *CharonHKStringForDimensions(NSArray *bases, NSDictionary *power
 + (instancetype)atmosphereUnit
 {
     return [self charon_namedUnit:@"atm"];
-}
-
-+ (instancetype)decibelAWeightedSoundPressureLevelUnit
-{
-    return [self charon_namedUnit:@"dBASPL"];
 }
 
 + (instancetype)secondUnit
@@ -1001,16 +988,6 @@ static NSString *CharonHKStringForDimensions(NSArray *bases, NSDictionary *power
     return [self charon_namedUnit:@"kcal"];
 }
 
-+ (instancetype)smallCalorieUnit
-{
-    return [self charon_namedUnit:@"cal"];
-}
-
-+ (instancetype)largeCalorieUnit
-{
-    return [self charon_namedUnit:@"Cal"];
-}
-
 + (instancetype)calorieUnit
 {
     return [self charon_namedUnit:@"cal"];
@@ -1046,11 +1023,6 @@ static NSString *CharonHKStringForDimensions(NSArray *bases, NSDictionary *power
     return [self charon_prefixedUnitForDimension:CharonHKDimensionConductance prefix:prefix];
 }
 
-+ (instancetype)internationalUnit
-{
-    return [self charon_namedUnit:@"IU"];
-}
-
 + (instancetype)countUnit
 {
     return [self charon_namedUnit:@"count"];
@@ -1059,58 +1031,6 @@ static NSString *CharonHKStringForDimensions(NSArray *bases, NSDictionary *power
 + (instancetype)percentUnit
 {
     return [self charon_namedUnit:@"%"];
-}
-
-+ (instancetype)hertzUnit
-{
-    return [self charon_namedUnit:@"Hz"];
-}
-
-+ (instancetype)hertzUnitWithMetricPrefix:(HKMetricPrefix)prefix
-{
-    double factor = 1.0;
-    if (!CharonHKPrefixFactor(prefix, &factor))
-        return nil;
-    return [self charon_unitOfDimension:-1 string:[CharonHKPrefixName(prefix) stringByAppendingString:@"Hz"]
-                                factor:factor offset:0.0];
-}
-
-+ (instancetype)voltUnit
-{
-    return [self charon_namedUnit:@"V"];
-}
-
-+ (instancetype)voltUnitWithMetricPrefix:(HKMetricPrefix)prefix
-{
-    double factor = 1.0;
-    if (!CharonHKPrefixFactor(prefix, &factor))
-        return nil;
-    return [self charon_unitOfDimension:-1 string:[CharonHKPrefixName(prefix) stringByAppendingString:@"V"]
-                                factor:factor offset:0.0];
-}
-
-+ (instancetype)wattUnit
-{
-    return [self charon_namedUnit:@"W"];
-}
-
-+ (instancetype)wattUnitWithMetricPrefix:(HKMetricPrefix)prefix
-{
-    double factor = 1.0;
-    if (!CharonHKPrefixFactor(prefix, &factor))
-        return nil;
-    return [self charon_unitOfDimension:-1 string:[CharonHKPrefixName(prefix) stringByAppendingString:@"W"]
-                                factor:factor offset:0.0];
-}
-
-+ (instancetype)decibelHearingLevelUnit
-{
-    return [self charon_namedUnit:@"dBHL"];
-}
-
-+ (instancetype)appleEffortScoreUnit
-{
-    return [self charon_namedUnit:@"appleEffortScore"];
 }
 
 + (instancetype)unitFromMassFormatterUnit:(NSMassFormatterUnit)massFormatterUnit

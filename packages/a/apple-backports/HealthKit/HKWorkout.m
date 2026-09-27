@@ -8,6 +8,11 @@
     HKWorkoutEventType _type;
     NSDate *_date;
 }
+// -dateInterval of 11.0 and -metadata of 10.0 are of the releases after 8.0, which this delivery does
+// not carry, so both are @dynamic and no accessor is emitted for either.
+@dynamic dateInterval;
+@dynamic metadata;
+
 
 + (BOOL)supportsSecureCoding
 {
@@ -83,6 +88,14 @@
     // plus it.
     NSTimeInterval _duration;
 }
+// The members of the releases after 8.0 that this delivery does not carry: -totalSwimmingStrokeCount of
+// 10.0, -totalFlightsClimbed of 11.0 and -allStatistics of 16.0. All three are @dynamic, so no
+// accessor is emitted and the selector is not in the built library.
+@dynamic totalSwimmingStrokeCount;
+@dynamic totalFlightsClimbed;
+@dynamic allStatistics;
+@dynamic workoutActivities;
+
 
 + (BOOL)supportsSecureCoding
 {

@@ -5,8 +5,8 @@
 // the maximum and the mean are taken in one unit - the type's own - so that the answers do not depend
 // on the unit each sample was saved in, and the quantity that is handed back carries that unit for
 // the caller to convert. The per-source answers are computed over the samples of that source alone,
-// which is what HKStatisticsOptionSeparateBySource asks for and what -sumQuantityForSource: and its
-// neighbours return.
+// which is what HKStatisticsOptionSeparateBySource asks for, and what the four per-source readers
+// below answer under the port's own names.
 
 #import <HealthKit/HealthKit.h>
 
@@ -23,7 +23,8 @@
     HKQuantity *_averageQuantity;
     // bundle identifier -> the four quantities of that source's own samples
     NSMutableDictionary<NSString *, NSDictionary *> *_bySource;
-    // bundle identifier -> the HKSource it came from, so that sources and sourcesBySource agree
+    // bundle identifier -> the HKSource it came from, so that -sources and the per-source answers
+    // agree on which sources there are
     NSMutableDictionary<NSString *, HKSource *> *_sourcesByIdentifier;
 }
 
@@ -193,7 +194,10 @@
     return _quantityType;
 }
 
-- (NSUInteger)dataCount
+// No SDK header declares -dataCount on HKStatistics, in 26.2 or in 16.4, and the 8.0 image has no
+// such selector: it is Apple's own private member and this port does not answer it. The count is kept
+// in the archive and the port's own caller reads it through -charon_count.
+- (NSUInteger)charon_count
 {
     return _dataCount;
 }
@@ -244,26 +248,8 @@
     return _bySource[source.bundleIdentifier ?: @""][@"average"];
 }
 
-- (nullable NSArray<HKQuantity *> *)sumQuantityBySource
-{
-    return [self charon_valuesForKey:@"sum"];
-}
-
-- (nullable NSArray<HKQuantity *> *)minimumQuantityBySource
-{
-    return [self charon_valuesForKey:@"min"];
-}
-
-- (nullable NSArray<HKQuantity *> *)maximumQuantityBySource
-{
-    return [self charon_valuesForKey:@"max"];
-}
-
-- (nullable NSArray<HKQuantity *> *)averageQuantityBySource
-{
-    return [self charon_valuesForKey:@"average"];
-}
-
+// What the port's own caller asks the per-source answers for, under the prefix: no SDK header declares
+// the four *QuantityBySource readers, so the port does not answer them under their own names.
 - (nullable NSArray<HKQuantity *> *)charon_valuesForKey:(NSString *)key
 {
     NSMutableArray *values = [NSMutableArray array];
@@ -398,11 +384,9 @@
     return _intervalComponents;
 }
 
-- (NSDateComponents *)intervalComponentsSinceAnchor
-{
-    return _intervalComponents;
-}
-
+// No SDK header declares -intervalComponentsSinceAnchor on HKStatisticsCollection, in 26.2 or in 16.4,
+// and the 8.0 image has no such selector: it is Apple's own, and this port does not answer it. The
+// interval is -intervalComponents, and the port's own anchor arithmetic reads the same storage.
 // The statistics of the interval a date falls in. An interval the store holds no sample of is an
 // interval all the same, and its statistics are an object with a count of zero and no quantity, which
 // is what the release answers for an interval nothing was saved in.

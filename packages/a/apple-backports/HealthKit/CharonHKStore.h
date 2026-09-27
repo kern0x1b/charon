@@ -242,6 +242,10 @@ extern Class _Nullable CharonHKClassForTypeKind(NSInteger kind);
 @property (nonatomic) NSUInteger charon_limit;
 // The handler of the iOS 9.0 initialiser, which is a different selector and a different shape from the
 // one of iOS 8.0: an object anchor in, the deletions as objects out.
+- (nullable NSDate *)charon_lastAnchor;
+- (void)charon_setLastAnchor:(nullable NSDate *)lastAnchor;
+- (nullable HKStatisticsCollection *)charon_statisticsCollection;
+- (void)charon_setStatisticsCollection:(nullable HKStatisticsCollection *)statisticsCollection;
 - (void)charon_setResultsHandler:(void (^)(HKAnchoredObjectQuery *query, NSArray<HKSample *> *_Nullable sampleObjects,
                                            NSArray<HKDeletedObject *> *_Nullable deletedObjects, HKQueryAnchor *_Nullable newAnchor,
                                            NSError *_Nullable error))handler;
@@ -272,7 +276,7 @@ extern Class _Nullable CharonHKClassForTypeKind(NSInteger kind);
 
 @interface HKQuery (CharonInternal)
 - (instancetype)initWithSampleType:(nullable HKSampleType *)sampleType;
-- (instancetype)initWithObjectType:(nullable HKObjectType *)objectType;
+- (instancetype)charon_initWithObjectType:(nullable HKObjectType *)objectType;
 - (nullable NSPredicate *)charon_predicate;
 - (nullable HKObjectType *)charon_objectType;
 - (void)charon_setPredicate:(nullable NSPredicate *)predicate;
@@ -342,7 +346,7 @@ extern Class _Nullable CharonHKClassForTypeKind(NSInteger kind);
 
 @interface HKQueryAnchor (CharonInternal)
 + (instancetype)charon_anchorWithSequence:(NSInteger)sequence;
-- (NSInteger)sequence;
+- (NSInteger)charon_sequence;
 @end
 
 // The error this framework answers with: of HKErrorDomain, with the release's own code, and the

@@ -51,7 +51,7 @@
 {
     HKAnchoredObjectQuery *query = [self initWithType:type
                                             predicate:predicate
-                                               anchor:(NSUInteger)(anchor ? anchor.sequence : 0)
+                                               anchor:(NSUInteger)(anchor ? anchor.charon_sequence : 0)
                                                 limit:limit
                                      completionHandler:nil];
     if (!query)

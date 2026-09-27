@@ -89,6 +89,10 @@
 @implementation HKQuantitySample {
     HKQuantity *_quantity;
 }
+// iOS 12.0 added -count, and this delivery carries the 9.3 group, so the member is @dynamic and no
+// accessor is emitted for it.
+@dynamic count;
+
 
 + (BOOL)supportsSecureCoding
 {
@@ -185,6 +189,8 @@
     HKCorrelationType *_correlationType;
     NSMutableDictionary<NSString *, NSMutableArray<HKObject *> *> *_byType;
 }
+// No member of a later release on this class.
+
 
 + (BOOL)supportsSecureCoding
 {

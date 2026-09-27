@@ -358,14 +358,8 @@ static CharonHKPrefixedFactory CharonHKPortPrefixed(NSUInteger index)
         return ^id(NSInteger p) { return [CharonHostHKUnit secondUnitWithMetricPrefix:(HKMetricPrefix)p]; };
     case 5:
         return ^id(NSInteger p) { return [CharonHostHKUnit jouleUnitWithMetricPrefix:(HKMetricPrefix)p]; };
-    case 6:
-        return ^id(NSInteger p) { return [CharonHostHKUnit siemenUnitWithMetricPrefix:(HKMetricPrefix)p]; };
-    case 7:
-        return ^id(NSInteger p) { return [CharonHostHKUnit hertzUnitWithMetricPrefix:(HKMetricPrefix)p]; };
-    case 8:
-        return ^id(NSInteger p) { return [CharonHostHKUnit voltUnitWithMetricPrefix:(HKMetricPrefix)p]; };
     default:
-        return ^id(NSInteger p) { return [CharonHostHKUnit wattUnitWithMetricPrefix:(HKMetricPrefix)p]; };
+        return ^id(NSInteger p) { return [CharonHostHKUnit siemenUnitWithMetricPrefix:(HKMetricPrefix)p]; };
     }
 }
 
@@ -384,24 +378,22 @@ static CharonHKPrefixedFactory CharonHKSystemPrefixed(NSUInteger index)
         return ^id(NSInteger p) { return [HKUnit secondUnitWithMetricPrefix:(HKMetricPrefix)p]; };
     case 5:
         return ^id(NSInteger p) { return [HKUnit jouleUnitWithMetricPrefix:(HKMetricPrefix)p]; };
-    case 6:
-        return ^id(NSInteger p) { return [HKUnit siemenUnitWithMetricPrefix:(HKMetricPrefix)p]; };
-    case 7:
-        return ^id(NSInteger p) { return [HKUnit hertzUnitWithMetricPrefix:(HKMetricPrefix)p]; };
-    case 8:
-        return ^id(NSInteger p) { return [HKUnit voltUnitWithMetricPrefix:(HKMetricPrefix)p]; };
     default:
-        return ^id(NSInteger p) { return [HKUnit wattUnitWithMetricPrefix:(HKMetricPrefix)p]; };
+        return ^id(NSInteger p) { return [HKUnit siemenUnitWithMetricPrefix:(HKMetricPrefix)p]; };
     }
 }
 
 static void CharonHKPrefixedFactories(void)
 {
+    // The seven prefixed factories of the iOS 8.0 surface, which is the surface this library carries.
+    // The header's later ones - hertzUnitWithMetricPrefix: of 13.0, voltUnitWithMetricPrefix: of 14.0
+    // and wattUnitWithMetricPrefix: of 16.0 - are asked for in the group of their own release, and
+    // asking the host for them here would compare a unit this library does not yet make with one it
+    // does.
     NSArray *factories = @[ @"gramUnitWithMetricPrefix:", @"meterUnitWithMetricPrefix:",
                             @"literUnitWithMetricPrefix:", @"pascalUnitWithMetricPrefix:",
                             @"secondUnitWithMetricPrefix:", @"jouleUnitWithMetricPrefix:",
-                            @"siemenUnitWithMetricPrefix:", @"hertzUnitWithMetricPrefix:",
-                            @"voltUnitWithMetricPrefix:", @"wattUnitWithMetricPrefix:" ];
+                            @"siemenUnitWithMetricPrefix:" ];
     for (NSInteger prefix = HKMetricPrefixNone; prefix <= HKMetricPrefixTera; prefix++) {
         for (NSUInteger index = 0; index < factories.count; index++) {
             NSString *label = [NSString stringWithFormat:@"%@ prefix %ld", factories[index], (long)prefix];
@@ -432,13 +424,12 @@ static void CharonHKPrefixedFactories(void)
     NSArray *plain = @[ @"gramUnit", @"ounceUnit", @"poundUnit", @"stoneUnit", @"meterUnit", @"inchUnit",
                         @"footUnit", @"yardUnit", @"mileUnit", @"literUnit", @"fluidOunceUSUnit",
                         @"fluidOunceImperialUnit", @"pintUSUnit", @"pintImperialUnit", @"cupUSUnit",
-                        @"cupImperialUnit", @"pascalUnit", @"millimeterOfMercuryUnit", @"inchesOfMercuryUnit",
-                        @"centimeterOfWaterUnit", @"atmosphereUnit", @"decibelAWeightedSoundPressureLevelUnit",
+                        @"cupImperialUnit", @"pascalUnit", @"millimeterOfMercuryUnit",
+                        @"centimeterOfWaterUnit", @"atmosphereUnit",
                         @"secondUnit", @"milliseconds", @"minuteUnit", @"hourUnit", @"dayUnit", @"jouleUnit",
-                        @"kilojoulesUnit", @"kilocalorieUnit", @"smallCalorieUnit", @"largeCalorieUnit",
-                        @"calorieUnit", @"degreeCelsiusUnit", @"degreeFahrenheitUnit", @"kelvinUnit",
-                        @"siemenUnit", @"internationalUnit", @"countUnit", @"percentUnit", @"hertzUnit",
-                        @"voltUnit", @"wattUnit", @"decibelHearingLevelUnit", @"appleEffortScoreUnit" ];
+                        @"kilocalorieUnit", @"calorieUnit", @"degreeCelsiusUnit",
+                        @"degreeFahrenheitUnit", @"kelvinUnit", @"siemenUnit", @"countUnit",
+                        @"percentUnit" ];
     for (NSString *name in plain) {
         SEL chosen = NSSelectorFromString(name);
         BOOL theirsHas = [HKUnit respondsToSelector:chosen];
