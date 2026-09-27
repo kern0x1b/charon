@@ -96,7 +96,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the member of a class the release has no answer for, so it is carried with the class",
-      "effect": "-calculateDirectionsWithCompletionHandler: and -calculateETAWithCompletionHandler: ask OSRM over HTTPS through the device's own CFNetwork, off the caller's thread and answered on the main queue; -cancel is real",
+      "effect": "-calculateDirectionsWithCompletionHandler: and -calculateETAWithCompletionHandler: ask OSRM over HTTPS through the device's own CFNetwork, off the caller's thread and answered on the main queue; -cancel is real; a transit leg is refused with Apple's own MKErrorDirectionsNotFound (MKErrorDomain code 4), because the routing provider has no transit profile and a walking route is not a transit route",
       "facts": "facts/MapKit/MapKit.md",
       "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder: MKDirections, MKDirectionsResponse, MKRoute, MKRouteStep and MKETAResponse are all first exported at 7.0"
     },
@@ -613,7 +613,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the release has no directions service of any kind and Apple's map service has no public web API, so this is the one family here that reaches outside Apple",
-      "effect": "-calculateDirectionsWithCompletionHandler: and -calculateETAWithCompletionHandler: ask OSRM over HTTPS through the device's own CFNetwork, off the caller's thread and answered on the main queue; -cancel is real",
+      "effect": "-calculateDirectionsWithCompletionHandler: and -calculateETAWithCompletionHandler: ask OSRM over HTTPS through the device's own CFNetwork, off the caller's thread and answered on the main queue; -cancel is real; a transit leg is refused with Apple's own MKErrorDirectionsNotFound (MKErrorDomain code 4), because the routing provider has no transit profile and a walking route is not a transit route",
       "facts": "facts/MapKit/MapKit.md",
       "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and apple.dyld's first_releases over the held cache ladder: MKDirections, MKDirectionsResponse, MKRoute, MKRouteStep and MKETAResponse are all first exported at 7.0"
     },

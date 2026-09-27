@@ -232,7 +232,7 @@ static NSString *const MKCharonOSRMProfileCycling = @"bike";
     NSURL *url = [self charon_routeURL];
     if (!url) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            completionHandler(nil, [self charon_errorWithReason:@"MKDirectionsRequest has no source and destination, so there is nothing to route"]);
+            completionHandler(nil, [self charon_error]);
         });
         return;
     }
@@ -279,7 +279,7 @@ static NSString *const MKCharonOSRMProfileCycling = @"bike";
     NSURL *url = [self charon_routeURL];
     if (!url) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            completionHandler(nil, [self charon_errorWithReason:@"MKDirectionsRequest has no source and destination, so there is no arrival to calculate"]);
+            completionHandler(nil, [self charon_error]);
         });
         return;
     }
@@ -358,9 +358,12 @@ static NSString *const MKCharonOSRMProfileCycling = @"bike";
         case MKDirectionsTransportTypeCycling:
             return MKCharonOSRMProfileCycling;
         case MKDirectionsTransportTypeTransit:
-            // OSRM has no transit profile; the engine's own answer for what a public router can do
-            // with a public transport leg is the walking one, and the registry says what it is.
-            return MKCharonOSRMProfileWalking;
+            // A transit leg is not a walking leg, and OSRM has no transit profile, so there is no
+            // answer to give: the request is refused with Apple's own MKErrorDirectionsNotFound,
+            // which is what Apple answers where it has no transit data. The walking profile is
+            // never substituted, because a route on foot is a different route and a program would
+            // not be able to tell.
+            return nil;
         default:
             return @"driving";
     }
@@ -442,6 +445,22 @@ static NSString *const MKCharonOSRMProfileCycling = @"bike";
     MKPolyline *line = [MKPolyline polylineWithCoordinates:coordinates count:count];
     free(coordinates);
     return line;
+}
+
+// The error a request that has no answer carries: Apple's own MKErrorDomain and Apple's own
+// MKErrorDirectionsNotFound (code 4 in the SDK's own MKErrorCode), which is what Apple answers where
+// it has no route and not another. Charon's own, so it carries no API.
+- (NSError *)charon_error
+{
+    NSString *reason = nil;
+    if ((NSInteger)_request.transportType == 4) {
+        reason = @"a transit route: the routing provider has no transit profile, and a walking route is not a transit route, so there is no answer to give";
+    } else if (!_request.source || !_request.destination) {
+        reason = @"the request has no source and destination, so there is nothing to route";
+    } else {
+        reason = @"the routing provider answered no route";
+    }
+    return [NSError errorWithDomain:@"MKErrorDomain" code:4 userInfo:@{NSLocalizedDescriptionKey: reason}];
 }
 
 - (NSError *)charon_errorWithReason:(NSString *)reason
