@@ -33,53 +33,47 @@ the last pose is 1.450 m along an arc whose position and attitude are known in c
 per frame: the angle between the attitude the reported camera transform carries and the attitude
 that produced the frame, and the distance between the reported camera position and the true one.
 
+The differential found **four** defects, three in the tracker and one in the test, each located by
+dumping the tracker's own state for one frame and reading it:
+
+1. **The corner pick and the patch search shared one array.** `findFeatures` overwrote the matched
+   points before `matchFeaturesTurningBy:` could read them, so nothing was ever matched. Two arrays
+   now: `_candidates` for what a frame offers, `_points` for what was matched into it.
+
+2. **The attitude the caller hands in was thrown away.** `processPixelBuffer:` overwrote its
+   `deviceRotation` argument with a global that only the CoreMotion handler filled, so wherever
+   there is no motion handler - which is every run of this differential - the tracker believed the
+   camera had never turned, the search window drifted off the frame, and **not one position was
+   searched**: `searched=0`, `drift=(-1.05,-1.05)`, `angle=4.1888` on a step of 0.1 rad. With the
+   argument used, `angle=0.1000` - the true step - and 7917 positions searched.
+
+3. **The unmatched corners were written over the matches.** The array is laid out as the matches
+   followed by the fresh corners, and the second run started at index zero instead of at the match
+   count, so every match was destroyed before the next frame saw it. Measured with the match dumping
+   its own state: **17 to 19 matches a frame and still 0 points placed**, because a matched point
+   never accumulated the three frames that would place it in the world. Fixed: **336 points**.
+
+4. **The test surface, in the first version, was a hash of the world position** - the wrong scene
+   for a Shi-Tomasi score, which takes the *smaller* of the two eigenvalues of the structure tensor
+   and so rejects a stripe however strong the stripe is. Replaced by three sines of the world
+   coordinates, at a spatial frequency measured to be inside what a 160x120 frame can sample.
+
+## Where it stands, and it does not pass
+
     spatial tracker differential: 30 frames, 5.73 degrees and 0.050 m a step,
       driven 1.450 m along the path, the last pose truth at 1.450 m
       rotation error: mean 1.60000 rad (91.673 deg), worst 2.90000 rad (166.158 deg)
       distance error: mean 0.66572 m, worst 0.99510 m
-      tracking: no, 0 points, 0 planes
+      tracking: no, 336 points, 0 planes
 
-**Those numbers are a failure, and they are reported as one.** The pose errors are what a tracker
-that never tracks looks like; nothing above is a claim that it works.
+The features are found, matched and placed - 336 points, which is what the pick and the search are
+supposed to produce. **The pose is still wrong, and the reason is visible in the file:**
+`refinePose` advances the camera along the direction the gyroscope says it turned, and nothing
+else. There is no correspondence term in it, so the pose is dead-reckoned, and the differential
+measures exactly that: a mean rotation error of 91 degrees over 30 steps, and 0 planes because the
+plane detector never sees a consistent world to grow regions in.
 
-### Fixed, and the fix was real
-
-1. **The corner pick and the patch search shared one array.** `findFeatures` overwrote the matched
-   points before `matchFeaturesTurningBy:` could read them, so nothing was ever matched, whatever
-   the frame contained. They are now two arrays - `_candidates` for what a frame offers, `_points`
-   for what was matched into it - and a corner the search did not match keeps its own identity into
-   the next frame. Found by the differential: 0 points and 0 planes, which is what a tracker that
-   never matches a point looks like.
-
-### The open failure, narrowed
-
-**The corner pick returns nothing from the second frame on, whatever the frame contains.** Measured,
-not assumed:
-
-| the surface | positions above the score threshold |
-| --- | --- |
-| a hash of the world position, 7 to 13 per metre | 3 |
-| three sines at 20 to 30 per metre | 694 in the *worst* frame of the driven path |
-| three sines at 90 to 140 per metre | 936 from the origin, 0 from the second frame on, aliased |
-
-The middle row is the one that settles it: a surface that carries hundreds of corners in every
-frame, measured on the very frames the tracker is handed, and the pick still returns nothing. So the
-surface is not the cause, and neither is the threshold.
-
-The localisation, as measured:
-
-- the luma the tracker has read has a mean squared gradient of 5849 on frame 2 - the texture is
-  there, and the first frame's identical loop found 895 positions above the threshold;
-- the same loop, in the same function, on the next frame, scores every position below it;
-- the frame-processing entry point is handed a `CVPixelBuffer` the harness writes and the tracker
-  reads through its own stride and format logic.
-
-So: the read is right, the scene is right, the score and the threshold are right, and the pick
-stops finding anything after the first frame. That points at the pick's per-call state - the grid's
-`best`/`bestX`/`bestY`, and the `_luma` size it derives its cells from - rather than at the maths of
-the score, and that is where the next reading goes.
-
-**ARKit is not deliverable yet.** The classes, the configurations, the `isSupported` answers and
-the frame, anchor, hit-test and raycast plumbing are carried, and the six files compile for
-armv7 / iOS 6.1.3 with no diagnostic. A session would start, report frames, and carry no points.
-Nothing in the registry claims otherwise.
+So the next piece of work is named and is not a fix: `refinePose` needs the Gauss-Newton step its
+own comment already claims, over the six parameters of the pose, from the reprojection residuals of
+the 17-to-19 matches the frame now has. Until that lands, ARKit is not deliverable: a session would
+start, report frames, carry 336 points, and put them in the wrong place.

@@ -67,15 +67,6 @@ static inline simd_float3 CharonNormalized(simd_float3 v)
     return length > 1e-8f ? v / length : (simd_float3){0, 0, 0};
 }
 
-/// The attitude the motion handler last delivered, which the frame is processed against.
-static simd_quatf CharonLastDeviceRotation = { 1, 0, 0, 0 };
-
-static void CharonSetLastDeviceRotation(id owner, simd_quatf rotation)
-{
-    (void)owner;
-    CharonLastDeviceRotation = rotation;
-}
-
 /// Hamilton's product of two quaternions whose real part is last, which is the layout the C
 /// structure has: the imaginary part in `x`, `y` and `z`, the real part in `w`.
 static simd_float4 CharonQuaternionProduct(simd_float4 lhs, simd_float4 rhs)
@@ -109,6 +100,7 @@ static simd_quatf CharonRotationBetween(simd_quatf from, simd_quatf to)
     NSOperationQueue *_motionQueue;
 #endif
     BOOL _running;
+    simd_quatf _lastDeviceRotation;
 
     // The world: the points the tracker has placed, and the planes it has found in them.
     NSMutableData *_worldPoints;
@@ -199,6 +191,13 @@ static simd_quatf CharonRotationBetween(simd_quatf from, simd_quatf to)
 
 #pragma mark - Starting and stopping
 
+/// The gyroscope's latest reading, which the next frame is processed against. The session's motion
+/// handler calls this; a caller that drives the tracker itself passes the attitude directly.
+- (void)setLastDeviceRotation:(simd_quatf)rotation
+{
+    _lastDeviceRotation = rotation;
+}
+
 - (BOOL)startWithError:(NSError **)error
 {
     if (_running)
@@ -276,7 +275,7 @@ static simd_quatf CharonRotationBetween(simd_quatf from, simd_quatf to)
         (void)motionError;
         if (motion) {
             CMQuaternion q = motion.attitude.quaternion;
-            CharonSetLastDeviceRotation(self, simd_quaternion((float)q.x, (float)q.y, (float)q.z, (float)q.w));
+            [self setLastDeviceRotation:simd_quaternion((float)q.x, (float)q.y, (float)q.z, (float)q.w)];
         }
     }];
 
@@ -331,7 +330,9 @@ static simd_quatf CharonRotationBetween(simd_quatf from, simd_quatf to)
         _cameraTransform = matrix_identity_float4x4;
         _havePose = YES;
     }
-    deviceRotation = simd_normalize(CharonLastDeviceRotation);
+    // The attitude this frame is given, which is the gyroscope's last reading, and the one the
+    // tracker believed last time: the difference between them is how far the camera has turned.
+    deviceRotation = simd_normalize(deviceRotation);
     simd_quatf turn = CharonRotationBetween(_lastRotation, deviceRotation);
 
     [self findFeatures];
@@ -561,7 +562,7 @@ static uint32_t CharonPatchCost(const uint8_t *luma, NSUInteger width, NSUIntege
         if (bestX == NSNotFound)
             continue;
         uint32_t ceiling = (uint32_t)((2 * radius * 2 + 1) * (2 * radius * 2 + 1) * 60);
-        if (bestCost > ceiling)
+        if (bestX == NSNotFound || bestCost > ceiling)
             continue;
 
         // Keep the match only if no earlier point already claimed it, so a point cannot be counted
@@ -652,12 +653,16 @@ static uint32_t CharonPatchCost(const uint8_t *luma, NSUInteger width, NSUIntege
     if (count) {
         [_worldPoints appendBytes:carried length:count * sizeof(CharonARPoint)];
     }
-    // A corner the search did not match keeps its own identity and is matched into the next frame,
-    // so a feature that is momentarily too plain comes back rather than being lost.
-    for (i = 0; i < _candidateCount && count < 4096; i++) {
-        _points[count++] = _candidates[i];
+    // The array holds the matches followed by the corners the search did not match, and the second
+    // run starts where the first ended: written from zero it overwrote every match, so a matched point
+    // never accumulated the frames that would have placed it in the world. Measured - 17 to 19 matches
+    // a frame and still 0 points placed, 0 planes, a mean rotation error of 91 degrees.
+    NSUInteger total = matched;
+    for (i = 0; i < _candidateCount && total < 4096; i++) {
+        _points[total++] = _candidates[i];
     }
     free(carried);
+    _pointCount = total;
 }
 
 - (void)rememberFrame

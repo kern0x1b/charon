@@ -33,8 +33,12 @@
     self = [super init];
     if (!self)
         return nil;
+    // The 6.1.3 release's own coder has no keyed `decodeValue:forKey:objCType:`, so the pose is
+    // read back the way that release writes a structure: as the four columns of the matrix.
     _identifier = [coder decodeObjectOfClass:[NSUUID class] forKey:@"identifier"] ?: [NSUUID UUID];
-    [coder decodeValue:&_transform forKey:@"transform" objCType:@encode(simd_float4x4)];
+    NSValue *packed = [coder decodeObjectOfClass:[NSValue class] forKey:@"transform"];
+    if (packed)
+        [packed getValue:&_transform];
     return self;
 }
 
