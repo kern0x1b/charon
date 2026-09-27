@@ -68,11 +68,32 @@ nothing to the `UITargetedPreview` the tree already carries beyond the retargeti
 declare. Three more entries another band held `absent` for the same soft reason as the previews have
 moved to `implemented`.
 
-## Not yet built in this family
+## The coordinators, the drop items and the placeholders
 
-The table and collection drag and drop delegates and coordinators (`UICollectionViewDragDelegate`,
-`UICollectionViewDropDelegate`, `UITableViewDragDelegate`, `UITableViewDropDelegate`, the two drop
-coordinators, the drop items, proposals with an intent and the placeholders). Two things in the tree
-need correcting as part of it and are recorded here so they are not lost: `-[UICollectionView
-hasActiveDrag]` and `-[UICollectionView hasActiveDrop]` answer a constant `NO` today, which is a
-silent fake, and become real answers once there is a session to report.
+The coordinators, the drop items, the placeholder contexts and the four delegate protocols are
+**protocols in the header, not classes**, so the port supplies the objects that answer them: the
+release has none, because it has no drop. Where an item would land comes from the release's own
+`indexPathForItemAtPoint:` and `indexPathForRowAtPoint:`, and the size its preview is drawn at from
+the layout that gives the item it would land on — nothing here invents a position.
+
+A placeholder is where an item will be once the data source has been told about it: the index path it
+stands at, the cell it is drawn with, and a block that hands that cell over, which is how a delegate
+draws a cell for a row that does not exist yet. A drop placeholder is the same thing plus the
+parameters its preview is built from.
+
+## The two silent fakes are now real
+
+`-[UICollectionView hasActiveDrag]`, `-[UICollectionView hasActiveDrop]` and their table view twins
+answered a constant `NO` while the registry called them implemented. They answer from the sessions
+that now exist: a view has an active drag when one of its drag interactions is carrying something, and
+an active drop when a session of its own is under the finger. Both change with the drag, which is what
+makes them worth having.
+
+## What this family does not yet do
+
+The delegate **questions** are carried and the view asks the ones it can (`charon_dropItemsAtPoint:
+session:` finds the items under a point for a drop delegate). The rest — the drag delegate's
+`itemsForBeginningDragSession:` being routed from a view's own long press, and the drop coordinator
+objects that answer `dropItem:toItemAtIndexPath:` and its three siblings — are not built. The
+coordinator protocol is carried and its objects are the next piece of this family, not a separate
+one.

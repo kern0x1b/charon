@@ -280,6 +280,266 @@
    "effect": "whether more than one drop may be under this view at once, NO in an interaction made by hand",
    "facts": "facts/UIKit/DragAndDrop.md",
    "source": "the header of SDK 26.2 for what each type declares; the release's own UILongPressGestureRecognizer and UIPanGestureRecognizer, which are the gestures a drag is made of; the port's own sessions, which have no counterpart on the release because it has no drag service"
+  },
+  {
+   "api": "UICollectionViewDropCoordinator",
+   "kind": "protocol",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "carried, and answered by the port's own objects: the release has no collection view drag or drop at all, so everything that conforms to this is the port's",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each protocol declares; the release's own indexPathForItemAtPoint: and indexPathForRowAtPoint: for where an item would land, and its layout for the size it would be drawn at; the port's own sessions, which have no counterpart on the release because it has no drag"
+  },
+  {
+   "api": "UITableViewDropCoordinator",
+   "kind": "protocol",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "carried, and answered by the port's own objects: the release has no table view drag or drop at all, so everything that conforms to this is the port's",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each protocol declares; the release's own indexPathForItemAtPoint: and indexPathForRowAtPoint: for where an item would land, and its layout for the size it would be drawn at; the port's own sessions, which have no counterpart on the release because it has no drag"
+  },
+  {
+   "api": "UICollectionViewDropItem",
+   "kind": "protocol",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "carried, and answered by the port's own objects: the release has no collection view drag or drop at all, so everything that conforms to this is the port's",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each protocol declares; the release's own indexPathForItemAtPoint: and indexPathForRowAtPoint: for where an item would land, and its layout for the size it would be drawn at; the port's own sessions, which have no counterpart on the release because it has no drag"
+  },
+  {
+   "api": "UITableViewDropItem",
+   "kind": "protocol",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "carried, and answered by the port's own objects: the release has no table view drag or drop at all, so everything that conforms to this is the port's",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each protocol declares; the release's own indexPathForItemAtPoint: and indexPathForRowAtPoint: for where an item would land, and its layout for the size it would be drawn at; the port's own sessions, which have no counterpart on the release because it has no drag"
+  },
+  {
+   "api": "UICollectionViewDropPlaceholderContext",
+   "kind": "protocol",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "carried, and answered by the port's own objects: the release has no collection view drag or drop at all, so everything that conforms to this is the port's",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each protocol declares; the release's own indexPathForItemAtPoint: and indexPathForRowAtPoint: for where an item would land, and its layout for the size it would be drawn at; the port's own sessions, which have no counterpart on the release because it has no drag"
+  },
+  {
+   "api": "UITableViewDropPlaceholderContext",
+   "kind": "protocol",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "carried, and answered by the port's own objects: the release has no table view drag or drop at all, so everything that conforms to this is the port's",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each protocol declares; the release's own indexPathForItemAtPoint: and indexPathForRowAtPoint: for where an item would land, and its layout for the size it would be drawn at; the port's own sessions, which have no counterpart on the release because it has no drag"
+  },
+  {
+   "api": "UICollectionViewDragDelegate",
+   "kind": "protocol",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "carried, and answered by the port's own objects: the release has no collection view drag or drop at all, so everything that conforms to this is the port's",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each protocol declares; the release's own indexPathForItemAtPoint: and indexPathForRowAtPoint: for where an item would land, and its layout for the size it would be drawn at; the port's own sessions, which have no counterpart on the release because it has no drag"
+  },
+  {
+   "api": "UICollectionViewDropDelegate",
+   "kind": "protocol",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "carried, and answered by the port's own objects: the release has no collection view drag or drop at all, so everything that conforms to this is the port's",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each protocol declares; the release's own indexPathForItemAtPoint: and indexPathForRowAtPoint: for where an item would land, and its layout for the size it would be drawn at; the port's own sessions, which have no counterpart on the release because it has no drag"
+  },
+  {
+   "api": "UITableViewDragDelegate",
+   "kind": "protocol",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "carried, and answered by the port's own objects: the release has no table view drag or drop at all, so everything that conforms to this is the port's",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each protocol declares; the release's own indexPathForItemAtPoint: and indexPathForRowAtPoint: for where an item would land, and its layout for the size it would be drawn at; the port's own sessions, which have no counterpart on the release because it has no drag"
+  },
+  {
+   "api": "UITableViewDropDelegate",
+   "kind": "protocol",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "carried, and answered by the port's own objects: the release has no table view drag or drop at all, so everything that conforms to this is the port's",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each protocol declares; the release's own indexPathForItemAtPoint: and indexPathForRowAtPoint: for where an item would land, and its layout for the size it would be drawn at; the port's own sessions, which have no counterpart on the release because it has no drag"
+  },
+  {
+   "api": "UICollectionViewDropItem.dragItem",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the item being dropped, as the session carries it",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each protocol declares; the release's own indexPathForItemAtPoint: and indexPathForRowAtPoint: for where an item would land, and its layout for the size it would be drawn at; the port's own sessions, which have no counterpart on the release because it has no drag"
+  },
+  {
+   "api": "UICollectionViewDropItem.sourceIndexPath",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "where that item was before the drag, and nil when it came from somewhere else",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each protocol declares; the release's own indexPathForItemAtPoint: and indexPathForRowAtPoint: for where an item would land, and its layout for the size it would be drawn at; the port's own sessions, which have no counterpart on the release because it has no drag"
+  },
+  {
+   "api": "UICollectionViewDropItem.previewSize",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the size the item's preview is drawn at, which is the size the layout gives the item it would land on",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each protocol declares; the release's own indexPathForItemAtPoint: and indexPathForRowAtPoint: for where an item would land, and its layout for the size it would be drawn at; the port's own sessions, which have no counterpart on the release because it has no drag"
+  },
+  {
+   "api": "UITableViewDropItem.dragItem",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the item being dropped, as the session carries it",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each protocol declares; the release's own indexPathForItemAtPoint: and indexPathForRowAtPoint: for where an item would land, and its layout for the size it would be drawn at; the port's own sessions, which have no counterpart on the release because it has no drag"
+  },
+  {
+   "api": "UITableViewDropItem.sourceIndexPath",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "where that item was before the drag, and nil when it came from somewhere else",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each protocol declares; the release's own indexPathForItemAtPoint: and indexPathForRowAtPoint: for where an item would land, and its layout for the size it would be drawn at; the port's own sessions, which have no counterpart on the release because it has no drag"
+  },
+  {
+   "api": "UITableViewDropItem.previewSize",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the size the item's preview is drawn at, which is the width of the table and its row height",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each protocol declares; the release's own indexPathForItemAtPoint: and indexPathForRowAtPoint: for where an item would land, and its layout for the size it would be drawn at; the port's own sessions, which have no counterpart on the release because it has no drag"
+  },
+  {
+   "api": "UICollectionViewDropProposal.intent",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "where in the collection view the drop would put the item: into a section, at an index path, or wherever the delegate means by unspecified",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each protocol declares; the release's own indexPathForItemAtPoint: and indexPathForRowAtPoint: for where an item would land, and its layout for the size it would be drawn at; the port's own sessions, which have no counterpart on the release because it has no drag"
+  },
+  {
+   "api": "UITableViewDropProposal.intent",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "where in the table view the drop would put the row: into a section, at an index path, or unspecified",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each protocol declares; the release's own indexPathForItemAtPoint: and indexPathForRowAtPoint: for where an item would land, and its layout for the size it would be drawn at; the port's own sessions, which have no counterpart on the release because it has no drag"
+  },
+  {
+   "api": "-[UICollectionViewDropProposal initWithDropOperation:intent:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a proposal for that operation and that intent",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each protocol declares; the release's own indexPathForItemAtPoint: and indexPathForRowAtPoint: for where an item would land, and its layout for the size it would be drawn at; the port's own sessions, which have no counterpart on the release because it has no drag"
+  },
+  {
+   "api": "-[UITableViewDropProposal initWithDropOperation:intent:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a proposal for that operation and that intent",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each protocol declares; the release's own indexPathForItemAtPoint: and indexPathForRowAtPoint: for where an item would land, and its layout for the size it would be drawn at; the port's own sessions, which have no counterpart on the release because it has no drag"
+  },
+  {
+   "api": "-[UICollectionViewPlaceholder initWithInsertionIndexPath:reuseIdentifier:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "where an item will be once the data source has been told about it: the index path it stands at and the cell it is drawn with",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each protocol declares; the release's own indexPathForItemAtPoint: and indexPathForRowAtPoint: for where an item would land, and its layout for the size it would be drawn at; the port's own sessions, which have no counterpart on the release because it has no drag"
+  },
+  {
+   "api": "-[UITableViewPlaceholder initWithInsertionIndexPath:reuseIdentifier:rowHeight:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the same for a table, with the height the row will be drawn at",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each protocol declares; the release's own indexPathForItemAtPoint: and indexPathForRowAtPoint: for where an item would land, and its layout for the size it would be drawn at; the port's own sessions, which have no counterpart on the release because it has no drag"
+  },
+  {
+   "api": "UICollectionViewPlaceholder.cellUpdateHandler",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a block that is given the cell the placeholder is standing in, which is how a delegate draws a cell for a row that does not exist yet",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each protocol declares; the release's own indexPathForItemAtPoint: and indexPathForRowAtPoint: for where an item would land, and its layout for the size it would be drawn at; the port's own sessions, which have no counterpart on the release because it has no drag"
+  },
+  {
+   "api": "UITableViewPlaceholder.cellUpdateHandler",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the same for a table's cell",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each protocol declares; the release's own indexPathForItemAtPoint: and indexPathForRowAtPoint: for where an item would land, and its layout for the size it would be drawn at; the port's own sessions, which have no counterpart on the release because it has no drag"
+  },
+  {
+   "api": "UICollectionViewDropPlaceholder.previewParametersProvider",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a block that is given the placeholder's cell and gives the preview parameters its preview is built from",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each protocol declares; the release's own indexPathForItemAtPoint: and indexPathForRowAtPoint: for where an item would land, and its layout for the size it would be drawn at; the port's own sessions, which have no counterpart on the release because it has no drag"
+  },
+  {
+   "api": "UITableViewDropPlaceholder.previewParametersProvider",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the same for a table's placeholder",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each protocol declares; the release's own indexPathForItemAtPoint: and indexPathForRowAtPoint: for where an item would land, and its layout for the size it would be drawn at; the port's own sessions, which have no counterpart on the release because it has no drag"
   }
  ]
 }
