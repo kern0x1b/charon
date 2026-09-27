@@ -106,6 +106,78 @@ static void report(NSString *key, ACCUMULATOR *accumulator)
     put_pixels([key stringByAppendingString:@" pixels"], render(image));
 }
 
+// A representation, measured as the bytes and as what is in them: the length and checksum of the
+// data, and the size, the format and four pixels of the image those bytes decode to. A file that is
+// the same picture written the same way is the same data; a file that is a different picture is not.
+static void put_representation(NSString *key, NSData *data)
+{
+    if (!data) {
+        put(@"%@ none", key);
+        return;
+    }
+    put_bytes(key, data);
+    CGImageSourceRef source = CGImageSourceCreateWithData((__bridge CFDataRef)data, NULL);
+    if (!source) {
+        put(@"%@ undecodable", key);
+        return;
+    }
+    CGImageRef image = CGImageSourceCreateImageAtIndex(source, 0, NULL);
+    put(@"%@ type %@ size %zu %zu bits %zu %zu", key,
+        (__bridge NSString *)CGImageSourceGetType(source), image ? CGImageGetWidth(image) : 0,
+        image ? CGImageGetHeight(image) : 0, image ? CGImageGetBitsPerComponent(image) : 0,
+        image ? CGImageGetBitsPerPixel(image) : 0);
+    NSMutableData *rgba = nil;
+    if (image) {
+        rgba = [NSMutableData dataWithLength:CGImageGetWidth(image) * CGImageGetHeight(image) * 4];
+        CGColorSpaceRef space = CGColorSpaceCreateDeviceRGB();
+        CGContextRef context = CGBitmapContextCreate(rgba.mutableBytes, CGImageGetWidth(image), CGImageGetHeight(image), 8,
+                                                     CGImageGetWidth(image) * 4, space,
+                                                     (CGBitmapInfo)kCGImageAlphaPremultipliedLast);
+        CGContextDrawImage(context, CGRectMake(0, 0, CGImageGetWidth(image), CGImageGetHeight(image)), image);
+        CGContextRelease(context);
+        CGColorSpaceRelease(space);
+        CGImageRelease(image);
+    }
+    CFRelease(source);
+    put_bytes([key stringByAppendingString:@" decoded"], rgba);
+    put_pixels([key stringByAppendingString:@" decoded"], rgba);
+}
+
+static void reportRepresentations(void)
+{
+    CIImage *image = [[[CIImage alloc] initWithColor:[[CIColor alloc] initWithRed:0.2 green:0.7 blue:0.4 alpha:1]]
+        imageByCroppingToRect:CGRectMake(0, 0, 6, 4)];
+    CIContext *context = [CIContext contextWithOptions:@{kCIContextWorkingColorSpace: [NSNull null]}];
+    const CIFormat formats[3] = {kCIFormatRGBA8, kCIFormatL8, kCIFormatRGBAf};
+    const char *names[3] = {"rgba8", "l8", "rgbaf"};
+    for (int f = 0; f < 3; f++) {
+        NSString *key = [NSString stringWithFormat:@"repr %s png", names[f]];
+        put_representation(key, [context PNGRepresentationOfImage:image format:formats[f] colorSpace:NULL options:@{}]);
+        put_representation([key stringByAppendingString:@" tiff"],
+                           [context TIFFRepresentationOfImage:image format:formats[f] colorSpace:NULL options:@{}]);
+    }
+    put_representation(@"repr jpeg", [context JPEGRepresentationOfImage:image colorSpace:NULL options:@{}]);
+    // The CGImage the deferred form gives, measured as the same picture.
+    CGImageRef made = [context createCGImage:image fromRect:image.extent format:kCIFormatRGBA8 colorSpace:NULL
+                                 deferred:NO];
+    if (made) {
+        put(@"repr cgimage %zu %zu %zu %zu", CGImageGetWidth(made), CGImageGetHeight(made),
+            CGImageGetBitsPerComponent(made), CGImageGetBitsPerPixel(made));
+        CGImageRelease(made);
+    } else {
+        put(@"repr cgimage none");
+    }
+    // And what a file of the same bytes holds, which is the write form's whole difference.
+    NSString *path = [NSTemporaryDirectory() stringByAppendingPathComponent:@"charon-ci-repr.png"];
+    NSURL *url = [NSURL fileURLWithPath:path];
+    NSError *error = nil;
+    BOOL written = [context writePNGRepresentationOfImage:image toURL:url format:kCIFormatRGBA8 colorSpace:NULL
+                                                  options:@{} error:&error];
+    put(@"repr write png %d", written);
+    put_bytes(@"repr write png file", [NSData dataWithContentsOfURL:url]);
+    [[NSFileManager defaultManager] removeItemAtURL:url error:NULL];
+}
+
 // A colour, measured as the numbers the colour object holds and as the bytes an image of that colour
 // renders to. The named colours and the two spellings of the colour-space initialisers are asked with
 // the same components, so a conversion that is not the system's shows up as a different pixel.
@@ -236,6 +308,7 @@ int main(void)
         [spaced setImage:field(extent)];
         report(@"spaced", spaced);
         reportColors();
+        reportRepresentations();
         reportShapes();
     }
     return 0;

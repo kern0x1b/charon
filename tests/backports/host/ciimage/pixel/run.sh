@@ -19,6 +19,11 @@ mkdir -p "$BUILD/host" "$BUILD/port"
 # the header, so the two always agree.
 sed -e 's/CIImageAccumulator/CharonCIImageAccumulator/g' -e 's/CharonCharon/Charon/g' "$GRAPHICS/CIImageAccumulator9.m" > "$BUILD/port/CIImageAccumulator.m"
 sed -e 's/CIFilterShape/CharonCIFilterShape/g' -e 's/CharonCharon/Charon/g' "$GRAPHICS/CIFilterShape9.m" > "$BUILD/port/CIFilterShape.m"
+# The colour-space and the representation methods are categories on classes the framework already has,
+# so the port's copies attach to the framework's objects and need no rename: two processes, one set of
+# objects each, and the two never meet.
+cp "$GRAPHICS/CIColor10.m" "$BUILD/port/CIColor.m"
+cp "$GRAPHICS/CIContextRepresentations10.m" "$BUILD/port/CIContextRepresentations.m"
 sed -e 's/\bCIImageAccumulator\b/CharonCIImageAccumulator/g' -e 's/\bCIFilterShape\b/CharonCIFilterShape/g' -e 's/CharonCharon/Charon/g' "$here/port-support.h" > "$BUILD/port/declarations.h"
 
 # The system answers: the probe alone, against the framework the host carries.
