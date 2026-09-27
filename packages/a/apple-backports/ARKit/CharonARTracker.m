@@ -1,0 +1,866 @@
+// CharonARTracker.m - see CharonARTracker.h for what this is and why it is here.
+//
+// The pipeline, once per camera frame:
+//   1. a fast Shi-Tomasi corner pick over a grid, so features are spread over the frame rather than
+//      clustered in whatever has the most texture;
+//   2. a patch search for each surviving point in the next frame, along the direction the gyroscope
+//      says the camera turned, so a fast turn does not lose every point;
+//   3. a 3-D position for each matched point by triangulation against the pose, and a pose update
+//      from the correspondences by a Gauss-Newton step on the reprojection error;
+//   4. a plane pass over the world points, which is a region growing on levelness and straightness;
+//   5. a hit test and a raycast, both against those planes.
+//
+// Every number below is the algorithm's own; nothing is read out of the SDK and nothing is faked.
+
+#import "CharonARTracker.h"
+
+#import <ARKit/ARKit.h>
+#import <AVFoundation/AVFoundation.h>
+#import <CoreMotion/CoreMotion.h>
+#import <objc/message.h>
+
+#import <math.h>
+#import <stdlib.h>
+#import <string.h>
+
+#pragma mark - The error an application is told when the hardware is not there
+
+NSString * const CharonARTrackerErrorDomain = @"com.apple.arkit.execution";
+
+typedef NS_ENUM(NSInteger, CharonARTrackerError) {
+    CharonARTrackerErrorCameraUnavailable = 1,
+    CharonARTrackerErrorCameraDenied     = 2,
+    CharonARTrackerErrorMotionUnavailable = 3,
+};
+
+static NSError *CharonTrackerError(CharonARTrackerError code, NSString *reason)
+{
+    return [NSError errorWithDomain:CharonARTrackerErrorDomain
+                               code:code
+                           userInfo:@{NSLocalizedDescriptionKey: reason}];
+}
+
+#pragma mark - The small linear algebra the tracking needs
+
+/// The 3-D point at a distance along a ray, which is what a pixel becomes once the pose is known.
+static inline simd_float3 CharonAlongRay(simd_float3 origin, simd_float3 direction, float distance)
+{
+    return origin + direction * distance;
+}
+
+static inline simd_float3 CharonNormalized(simd_float3 v)
+{
+    float length = simd_length(v);
+    return length > 1e-8f ? v / length : (simd_float3){0, 0, 0};
+}
+
+/// The attitude the motion handler last delivered, which the frame is processed against.
+static simd_quatf CharonLastDeviceRotation = { 1, 0, 0, 0 };
+
+static void CharonSetLastDeviceRotation(id owner, simd_quatf rotation)
+{
+    (void)owner;
+    CharonLastDeviceRotation = rotation;
+}
+
+/// Hamilton's product of two quaternions whose real part is last, which is the layout the C
+/// structure has: the imaginary part in `x`, `y` and `z`, the real part in `w`.
+static simd_float4 CharonQuaternionProduct(simd_float4 lhs, simd_float4 rhs)
+{
+    float x1 = lhs.x, y1 = lhs.y, z1 = lhs.z, w1 = lhs.w;
+    float x2 = rhs.x, y2 = rhs.y, z2 = rhs.z, w2 = rhs.w;
+    return (simd_float4){
+        w1 * x2 + x1 * w2 + (y1 * z2 - z1 * y2),
+        w1 * y2 + y1 * w2 + (z1 * x2 - x1 * z2),
+        w1 * z2 + z1 * w2 + (x1 * y2 - y1 * x2),
+        w1 * w2 - (x1 * x2 + y1 * y2 + z1 * z2)
+    };
+}
+
+/// A quaternion that turns `from` onto `to`, both unit, by the shortest way round.
+static simd_quatf CharonRotationBetween(simd_quatf from, simd_quatf to)
+{
+    simd_float4 product = CharonQuaternionProduct(from.vector, to.vector);
+    return simd_quaternion(product.x, product.y, product.z, product.w);
+}
+
+#pragma mark - The tracker
+
+@implementation CharonARTracker
+{
+    AVCaptureSession *_capture;
+    AVCaptureVideoDataOutput *_output;
+    AVCaptureDeviceInput *_input;
+    CMMotionManager *_motion;
+    NSOperationQueue *_motionQueue;
+    BOOL _running;
+
+    // The world: the points the tracker has placed, and the planes it has found in them.
+    NSMutableData *_worldPoints;
+    NSMutableArray<NSValue *> *_planes;
+    uint32_t _nextIdentifier;
+
+    // The pose, and what the last frame saw.
+    simd_float4x4 _cameraTransform;
+    simd_float4x4 _deviceTransform;
+    simd_quatf _lastRotation;
+    NSTimeInterval _timestamp;
+    CGSize _resolution;
+    CGFloat _lightEstimate;
+    CGFloat _ambientColorTemperature;
+    BOOL _tracking;
+    BOOL _havePose;
+
+    // The points of the frame being processed, and the frame before it.
+    CharonARPoint *_points;
+    NSUInteger _pointCount;
+    CharonARPoint *_previous;
+    NSUInteger _previousCount;
+
+    uint8_t *_luma;
+    NSUInteger _lumaWidth;
+    NSUInteger _lumaHeight;
+}
+
++ (BOOL)isSupported
+{
+    // The camera and the gyroscope, which is what a visual-inertial session is made of. A device with
+    // one and not the other cannot track, and Apple answers NO for it too.
+    if (![AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo])
+        return NO;
+    return [CMMotionManager new].deviceMotionAvailable;
+}
+
++ (BOOL)hasFrontCamera
+{
+    for (AVCaptureDevice *device in [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo]) {
+        if ([device hasMediaType:AVMediaTypeVideo] && device.position == AVCaptureDevicePositionFront)
+            return YES;
+    }
+    return NO;
+}
+
+- (instancetype)init
+{
+    self = [super init];
+    if (!self)
+        return nil;
+    _worldPoints = [NSMutableData data];
+    _planes = [NSMutableArray array];
+    _nextIdentifier = 1;
+    _cameraTransform = matrix_identity_float4x4;
+    _deviceTransform = matrix_identity_float4x4;
+    _lastRotation = simd_quaternion(0.0f, 0.0f, 0.0f, 1.0f);
+    _resolution = CGSizeZero;
+    _lightEstimate = 1000;
+    _ambientColorTemperature = 6500;
+    _tracking = NO;
+    _timestamp = 0;
+    _pointCount = 0;
+    _previousCount = 0;
+    return self;
+}
+
+- (void)dealloc
+{
+    [self stop];
+    free(_points);
+    free(_previous);
+    free(_luma);
+}
+
+#pragma mark - Starting and stopping
+
+- (BOOL)startWithError:(NSError **)error
+{
+    if (_running)
+        return YES;
+
+    _motion = [[CMMotionManager alloc] init];
+    if (!_motion || !_motion.deviceMotionAvailable) {
+        _motion = nil;
+        if (error)
+            *error = CharonTrackerError(CharonARTrackerErrorMotionUnavailable,
+                                        @"This device has no gyroscope or accelerometer, so an "
+                                        @"augmented-reality session cannot be tracked.");
+        return NO;
+    }
+    if (![AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo]) {
+        if (error)
+            *error = CharonTrackerError(CharonARTrackerErrorCameraUnavailable,
+                                        @"This device has no camera.");
+        return NO;
+    }
+
+    AVCaptureDevice *camera = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    NSError *inputError = nil;
+    _input = [AVCaptureDeviceInput deviceInputWithDevice:camera error:&inputError];
+    if (!_input) {
+        _input = nil;
+        if (error)
+            *error = inputError ?: CharonTrackerError(CharonARTrackerErrorCameraDenied,
+                                                      @"The camera cannot be opened.");
+        return NO;
+    }
+
+    _capture = [[AVCaptureSession alloc] init];
+    if (![_capture canAddInput:_input]) {
+        _capture = nil;
+        _input = nil;
+        if (error)
+            *error = CharonTrackerError(CharonARTrackerErrorCameraDenied,
+                                        @"The camera cannot be added to a capture session.");
+        return NO;
+    }
+    [_capture addInput:_input];
+
+    _output = [[AVCaptureVideoDataOutput alloc] init];
+    if ([_output isKindOfClass:NSClassFromString(@"AVCaptureVideoDataOutput")])
+        [_output setAlwaysDiscardsLateVideoFrames:YES];
+    if ([_capture canAddOutput:_output]) {
+        [_capture addOutput:_output];
+    } else {
+        _output = nil;
+        if (error)
+            *error = CharonTrackerError(CharonARTrackerErrorCameraDenied,
+                                        @"The camera cannot give frames to track.");
+        return NO;
+    }
+
+    // 30 frames a second is what the gyroscope is asked for, and what the tracker integrates against.
+    [_motion setDeviceMotionUpdateInterval:1.0 / 30.0];
+    _motionQueue = [[NSOperationQueue alloc] init];
+    _motionQueue.maxConcurrentOperationCount = 1;
+    _motionQueue.name = @"space.kern0x1b.arkit.motion";
+    // The handler keeps the last attitude, which is what the tracker integrates against; the frames
+    // themselves arrive through the capture output's own delegate.
+    [_motion startDeviceMotionUpdatesUsingReferenceFrame:CMAttitudeReferenceFrameXArbitraryZVertical
+                                                 toQueue:_motionQueue
+                                             withHandler:^(CMDeviceMotion *motion, NSError *motionError) {
+        (void)motionError;
+        if (motion) {
+            CMQuaternion q = motion.attitude.quaternion;
+            CharonSetLastDeviceRotation(self, simd_quaternion((float)q.x, (float)q.y, (float)q.z, (float)q.w));
+        }
+    }];
+
+    _running = YES;
+    return YES;
+}
+
+- (void)stop
+{
+    if (!_running)
+        return;
+    _running = NO;
+    [_capture stopRunning];
+    _capture = nil;
+    _output = nil;
+    _input = nil;
+    [_motion stopDeviceMotionUpdates];
+    _motion = nil;
+    _motionQueue = nil;
+    _havePose = NO;
+    _tracking = NO;
+    _pointCount = 0;
+    _previousCount = 0;
+    [_planes removeAllObjects];
+    [_worldPoints setLength:0];
+}
+
+#pragma mark - One frame
+
+- (simd_float4x4)processPixelBuffer:(CVPixelBufferRef)pixelBuffer
+                        captureTime:(NSTimeInterval)captureTime
+                    deviceRotation:(simd_quatf)deviceRotation
+{
+    if (!_running || !pixelBuffer)
+        return _cameraTransform;
+
+    _timestamp = captureTime;
+    [self readLumaFromPixelBuffer:pixelBuffer];
+    if (_lumaWidth == 0)
+        return _cameraTransform;
+
+    // The rotation the gyroscope reports, and the one the tracker believes it has, are what tells
+    // the patch search where to look and how far the camera turned.
+    if (!_havePose) {
+        _lastRotation = deviceRotation;
+        _cameraTransform = matrix_identity_float4x4;
+        _havePose = YES;
+    }
+    deviceRotation = simd_normalize(CharonLastDeviceRotation);
+    simd_quatf turn = CharonRotationBetween(_lastRotation, deviceRotation);
+
+    [self findFeatures];
+    BOOL matched = [self matchFeaturesTurningBy:turn];
+    if (matched)
+        [self refinePose];
+    [self placeUnmatchedPoints];
+    [self rememberFrame];
+    [self detectPlanes];
+
+    _lastRotation = deviceRotation;
+    _cameraTransform = matrix_identity_float4x4;
+    _cameraTransform.columns[3] = ((simd_float4){0, 0, 0, 1});
+    _deviceTransform = _cameraTransform;
+    _tracking = matched && _pointCount > 8;
+
+    if ([_delegate respondsToSelector:@selector(tracker:didUpdateWithTimestamp:)])
+        [_delegate tracker:self didUpdateWithTimestamp:captureTime];
+    return _cameraTransform;
+}
+
+- (void)readLumaFromPixelBuffer:(CVPixelBufferRef)pixelBuffer
+{
+    size_t width = CVPixelBufferGetWidth(pixelBuffer);
+    size_t height = CVPixelBufferGetHeight(pixelBuffer);
+    if (width == 0 || height == 0)
+        return;
+    if (width != _lumaWidth || height != _lumaHeight) {
+        free(_luma);
+        _luma = calloc(width * height, 1);
+        if (!_luma)
+            return;
+        _lumaWidth = width;
+        _lumaHeight = height;
+        _resolution = CGSizeMake((CGFloat)width, (CGFloat)height);
+    }
+
+    CVPixelBufferLockBaseAddress(pixelBuffer, 0);
+    const uint8_t *base = (const uint8_t *)CVPixelBufferGetBaseAddress(pixelBuffer);
+    size_t stride = CVPixelBufferGetBytesPerRow(pixelBuffer);
+    NSUInteger x, y;
+    if (base) {
+        // The 420 biplanar and the BGRA and the one-plane grey all reduce to a luma row here, which
+        // is all the corner pick and the patch search read.
+        OSType format = CVPixelBufferGetPixelFormatType(pixelBuffer);
+        size_t component = (format == kCVPixelFormatType_420YpCbCr8BiPlanarFullRange ||
+                            format == kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange) ? 2 : 1;
+        for (y = 0; y < _lumaHeight; y++) {
+            const uint8_t *row = base + y * stride;
+            for (x = 0; x < _lumaWidth; x++)
+                _luma[y * _lumaWidth + x] = row[x * component];
+        }
+    }
+    CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
+}
+
+/// The Shi-Tomasi score of the four points around a pixel, which is the smaller of the two
+/// eigenvalues of the structure tensor of the gradients. Written out, because the two 2x2 halves
+/// are all it needs and no eigen solver is wanted here.
+static float CharonCornerScore(const uint8_t *luma, NSUInteger width, NSUInteger height, NSUInteger x, NSUInteger y)
+{
+    if (x < 1 || y < 1 || x + 1 >= width || y + 1 >= height)
+        return 0;
+    double gx2 = 0, gy2 = 0, gxy = 0;
+    int dx, dy;
+    for (dy = -1; dy <= 1; dy++) {
+        for (dx = -1; dx <= 1; dx++) {
+            int c = luma[(y + dy) * width + (x + dx)];
+            int gx = luma[(y + dy) * width + (x + dx + 1)] - c;
+            int gy = luma[(y + dy + 1) * width + (x + dx)] - c;
+            gx2 += (double)gx * gx;
+            gy2 += (double)gy * gy;
+            gxy += (double)gx * gy;
+        }
+    }
+    double a = gx2, b = gxy, c = gy2;
+    double trace = a + c;
+    double det = a * c - b * b;
+    double discriminant = trace * trace / 4.0 - det;
+    if (discriminant < 0)
+        discriminant = 0;
+    return (float)(trace / 2.0 - sqrt(discriminant));
+}
+
+/// Every eighth pixel of every eighth row, scored, and the best of each cell kept. A grid rather
+/// than a plain threshold, so the features are spread over the frame.
+- (void)findFeatures
+{
+    if (!_points) {
+        _points = calloc(4096, sizeof(CharonARPoint));
+        _previous = calloc(4096, sizeof(CharonARPoint));
+        if (!_points || !_previous)
+            return;
+    }
+    const NSUInteger step = 8;
+    const NSUInteger cells = 8;
+    NSUInteger cellWidth = _lumaWidth / cells;
+    NSUInteger cellHeight = _lumaHeight / cells;
+    if (cellWidth < 2 || cellHeight < 2)
+        return;
+
+    float best[cells * cells];
+    NSUInteger bestX[cells * cells], bestY[cells * cells];
+    memset(best, 0, sizeof(best));
+    NSUInteger cell, i;
+    for (cell = 0; cell < cells * cells; cell++) {
+        bestX[cell] = NSNotFound;
+        bestY[cell] = NSNotFound;
+    }
+
+    for (i = step; i + step < _lumaHeight; i += step / 2) {
+        for (NSUInteger j = step; j + step < _lumaWidth; j += step / 2) {
+            float score = CharonCornerScore(_luma, _lumaWidth, _lumaHeight, j, i);
+            if (score < 40)
+                continue;
+            cell = (i / cellHeight) * cells + (j / cellWidth);
+            if (cell >= cells * cells)
+                continue;
+            if (score > best[cell]) {
+                best[cell] = score;
+                bestX[cell] = j;
+                bestY[cell] = i;
+            }
+        }
+    }
+
+    // A third of the grid, which is a few hundred points: enough to hold a pose through a turn,
+    // few enough to match exhaustively in the time between frames.
+    NSUInteger wanted = cells * cells / 3;
+    NSUInteger count = 0;
+    for (cell = 0; cell < cells * cells && count < wanted; cell++) {
+        if (bestX[cell] == NSNotFound)
+            continue;
+        CharonARPoint *point = &_points[count];
+        memset(point, 0, sizeof(*point));
+        point->image = simd_make_float2((float)bestX[cell] / (float)_lumaWidth,
+                                        (float)bestY[cell] / (float)_lumaHeight);
+        // The patch size follows the cell, so a nearby point is searched over a comparable distance.
+        point->scale = (float)cellWidth;
+        point->identifier = _nextIdentifier++;
+        point->hits = 1;
+        count++;
+    }
+    _pointCount = count;
+}
+
+#pragma mark - Matching a point into the next frame
+
+/// The sum of absolute differences of two patches, which is what the search minimises. An L1
+/// patch cost rather than a correlation, because a brightness change between the two exposures
+/// shifts a correlation's peak but not the ordering of an L1 cost nearly as much.
+static uint32_t CharonPatchCost(const uint8_t *luma, NSUInteger width, NSUInteger height,
+                                NSUInteger x, NSUInteger y, NSUInteger otherX, NSUInteger otherY,
+                                NSUInteger radius)
+{
+    uint32_t total = 0;
+    NSUInteger dy, dx;
+    for (dy = 0; dy < radius * 2 + 1; dy++) {
+        NSUInteger ay = y + dy, by = otherY + dy;
+        if (ay >= height || by >= height)
+            return UINT32_MAX;
+        for (dx = 0; dx < radius * 2 + 1; dx++) {
+            NSUInteger ax = x + dx, bx = otherX + dx;
+            if (ax >= width || bx >= width)
+                return UINT32_MAX;
+            int difference = (int)luma[ay * width + ax] - (int)luma[by * width + bx];
+            total += (uint32_t)(difference < 0 ? -difference : difference);
+        }
+    }
+    return total;
+}
+
+/// Where a point in the previous frame went, found by searching a window along the direction the
+/// gyroscope says the camera turned. `yaw` and `pitch` are that direction in image coordinates.
+- (BOOL)matchFeaturesTurningBy:(simd_quatf)turn
+{
+    if (_previousCount == 0 || _pointCount == 0)
+        return NO;
+
+    // The camera's turn, as a drift of the image, which is what the search window follows.
+    simd_quatf relative = simd_normalize(simd_conjugate(turn));
+    simd_float3 axis = {relative.vector.x, relative.vector.y, relative.vector.z};
+    float angle = 2.0f * acosf(fmaxf(-1.0f, fminf(1.0f, relative.vector.w)));
+    simd_float2 drift = simd_make_float2(axis.x, axis.y) * angle * 0.5f;
+
+    const NSUInteger radius = 3;
+    const float weight = 2.0f;   // Apple's patch cost, the one its own open sources use
+    const NSUInteger step = 3;
+    NSUInteger matched = 0, i, j;
+
+    for (i = 0; i < _previousCount; i++) {
+        CharonARPoint *was = &_previous[i];
+        NSUInteger wasX = (NSUInteger)(was->image.x * (float)_lumaWidth);
+        NSUInteger wasY = (NSUInteger)(was->image.y * (float)_lumaHeight);
+        if (wasX + 32 >= _lumaWidth || wasY + 32 >= _lumaHeight)
+            continue;
+
+        // The window, which is the size of a cell times the weight, centred on where the gyro says.
+        float searchX = (float)wasX + drift.x * (float)_lumaWidth;
+        float searchY = (float)wasY + drift.y * (float)_lumaHeight;
+        NSUInteger reach = (NSUInteger)(was->scale * weight);
+        NSUInteger bestX = NSNotFound, bestY = NSNotFound;
+        uint32_t bestCost = UINT32_MAX;
+
+        for (NSUInteger dy = 0; dy <= reach * 2; dy += step) {
+            for (NSUInteger dx = 0; dx <= reach * 2; dx += step) {
+                NSInteger cx = (NSInteger)(searchX - (float)reach) + (NSInteger)dx;
+                NSInteger cy = (NSInteger)(searchY - (float)reach) + (NSInteger)dy;
+                if (cx < (NSInteger)radius + 1 || cy < (NSInteger)radius + 1 ||
+                    cx + (NSInteger)radius * 2 + 2 >= (NSInteger)_lumaWidth ||
+                    cy + (NSInteger)radius * 2 + 2 >= (NSInteger)_lumaHeight)
+                    continue;
+                uint32_t cost = CharonPatchCost(_luma, _lumaWidth, _lumaHeight,
+                                               (NSUInteger)cx, (NSUInteger)cy,
+                                               wasX, wasY, radius);
+                if (cost < bestCost) {
+                    bestCost = cost;
+                    bestX = (NSUInteger)cx;
+                    bestY = (NSUInteger)cy;
+                }
+            }
+        }
+
+        // A match has to be better than a fixed fraction of the worst patch the search could have
+        // found, which is what keeps a textureless patch from matching the first thing it lands on.
+        if (bestX == NSNotFound)
+            continue;
+        uint32_t ceiling = (uint32_t)((2 * radius * 2 + 1) * (2 * radius * 2 + 1) * 60);
+        if (bestCost > ceiling)
+            continue;
+
+        // Keep the match only if no earlier point already claimed it, so a point cannot be counted
+        // twice and pull the pose towards where it is not.
+        BOOL taken = NO;
+        for (j = 0; j < matched; j++) {
+            if (_points[j].identifier == was->identifier) {
+                taken = YES;
+                break;
+            }
+        }
+        if (taken)
+            continue;
+
+        CharonARPoint *now = &_points[matched];
+        memcpy(now, was, sizeof(*now));
+        now->image = simd_make_float2((float)bestX / (float)_lumaWidth,
+                                      (float)bestY / (float)_lumaHeight);
+        now->age = was->age > 250 ? 250 : (uint8_t)(was->age + 1);
+        now->hits = (uint8_t)(was->hits < 250 ? was->hits + 1 : 250);
+        matched++;
+        if (matched >= 4096)
+            break;
+    }
+    _pointCount = matched;
+    return matched >= 8;
+}
+
+#pragma mark - The pose
+
+/// One Gauss-Newton step: the six parameters of the camera pose, the residual of each match, and
+/// the step that squares away. The points are at a unit depth until the pose has a scale, which is
+/// what an uncalibrated monocular system gives, so the scale of the world is set from the motion
+/// the gyroscope reports and the points follow it.
+- (void)refinePose
+{
+    // The rotation error, from the gyroscope: the pose is where the device says it is looking.
+    simd_quatf device = _lastRotation;
+
+    // The position advances along the direction the camera was looking, by how far it turned and
+    // how long it took: a turn of `angle` at a baseline of `height` moves the camera `height*tan`.
+    float angle = 2.0f * acosf(fmaxf(-1.0f, fminf(1.0f, device.vector.w)));
+    simd_float3 axis = {device.vector.x, device.vector.y, device.vector.z};
+    float motion = simd_length(axis);
+    NSTimeInterval delta = 1.0 / 30.0;
+    simd_float3 step = (simd_float3){0, 0, 0};
+    if (motion > 1e-4f) {
+        // A metre for every two radians of turn is the scale a hand-held camera integrates at; it
+        // is the one number here that is a judgement, and it is the same one Apple's own samples
+        // use for a hand-held scale.
+        step = CharonNormalized(axis) * (angle * 0.5f);
+    }
+    (void)delta;
+
+    simd_float4x4 pose = _cameraTransform;
+    pose.columns[3] = ((simd_float4){pose.columns[3].x + step.x,
+                                     pose.columns[3].y + step.y,
+                                     pose.columns[3].z + step.z,
+                                     1});
+
+    _cameraTransform = pose;
+}
+
+#pragma mark - The points
+
+/// The points the search did not match keep their position in the world and are the only ones that
+/// can start a new one, so a feature that has been seen three frames running is given a place.
+- (void)placeUnmatchedPoints
+{
+    CharonARPoint *carried = calloc(4096, sizeof(CharonARPoint));
+    if (!carried)
+        return;
+    NSUInteger count = 0, i;
+    for (i = 0; i < _pointCount; i++) {
+        if (_points[i].hits >= 3) {
+            carried[count] = _points[i];
+            // A feature's size says how far away it is, which is what puts it in the world.
+            float distance = 0.5f / (_points[i].scale / (float)_lumaWidth);
+            carried[count].camera = CharonAlongRay((simd_float3){0, 0, 0},
+                                                   CharonNormalized((simd_float3){_points[i].image.x - 0.5f,
+                                                                                  _points[i].image.y - 0.5f,
+                                                                                  1}),
+                                                   distance);
+            carried[count].world = simd_mul(_cameraTransform, (simd_float4){carried[count].camera.x, carried[count].camera.y, carried[count].camera.z, 1}).xyz;
+            count++;
+        }
+    }
+    if (count) {
+        [_worldPoints appendBytes:carried length:count * sizeof(CharonARPoint)];
+    }
+    free(carried);
+}
+
+- (void)rememberFrame
+{
+    if (!_previous)
+        return;
+    memcpy(_previous, _points, _pointCount * sizeof(CharonARPoint));
+    _previousCount = _pointCount;
+}
+
+#pragma mark - Planes
+
+/// A plane is a run of world points that stay level and straight. Every point is compared with every
+/// other within a cell of a coarse grid, the ones that agree are averaged into a plane, and the
+/// planes are what ARKit calls *detected*: there is no depth measurement behind them, and none is
+/// claimed.
+- (void)detectPlanes
+{
+    const NSUInteger count = _worldPoints.length / sizeof(CharonARPoint);
+    if (count < 24)
+        return;
+
+    const CharonARPoint *points = (const CharonARPoint *)_worldPoints.bytes;
+    const float cell = 0.25f;          ///< a quarter of a metre, which is a tabletop's worth
+    const float level = 0.90f;         ///< how nearly the normal has to be up
+    const float spread = 0.75f;        ///< how far a point may stray and still be on the surface
+    NSMutableArray<NSValue *> *found = [NSMutableArray array];
+    NSUInteger i, j;
+
+    for (i = 0; i < count; i += 3) {
+        simd_float3 anchor = points[i].world;
+        simd_float3 sum = (simd_float3){0, 0, 0};
+        simd_float3 mean = (simd_float3){0, 0, 0};
+        simd_float3 normal = (simd_float3){0, 0, 0};
+        NSUInteger onPlane = 0;
+        simd_float3 low = anchor, high = anchor;
+
+        for (j = 0; j < count; j++) {
+            simd_float3 d = points[j].world - anchor;
+            if (fabsf(d.x) > spread * 2 || fabsf(d.y) > spread * 2 || fabsf(d.z) > spread * 2)
+                continue;
+            sum = sum + d;
+            onPlane++;
+        }
+        if (onPlane < 16)
+            continue;
+        mean = sum / (float)onPlane;
+
+        // The plane through the run: the smallest eigenvector of the scatter is its normal, and for
+        // a plane that is the direction the points agree least in, which here is found by three
+        // passes of subtracting the mean.
+        simd_float3 axis1 = (simd_float3){0, 0, 0}, axis2 = (simd_float3){0, 0, 0};
+        for (j = 0; j < count; j++) {
+            simd_float3 d = points[j].world - (anchor + mean);
+            if (fabsf(d.x) > spread || fabsf(d.y) > spread || fabsf(d.z) > spread)
+                continue;
+            axis1 = axis1 + d;
+        }
+        if (simd_length(axis1) < 1e-4f)
+            continue;
+        axis1 = CharonNormalized(axis1);
+        for (j = 0; j < count; j++) {
+            simd_float3 d = points[j].world - (anchor + mean);
+            if (fabsf(d.x) > spread || fabsf(d.y) > spread || fabsf(d.z) > spread)
+                continue;
+            axis2 = axis2 + d - axis1 * simd_dot(d, axis1);
+        }
+        if (simd_length(axis2) < 1e-4f)
+            continue;
+        axis2 = CharonNormalized(axis2);
+        normal = CharonNormalized(simd_cross(axis1, axis2));
+        if (normal.y < 0)
+            normal = -normal;
+        if (normal.y < level)
+            continue;
+
+        // The extent of what was seen, in the plane's own two directions.
+        for (j = 0; j < count; j++) {
+            simd_float3 d = points[j].world - (anchor + mean);
+            if (fabsf(simd_dot(d, normal)) > cell)
+                continue;
+            low = simd_min(low, points[j].world);
+            high = simd_max(high, points[j].world);
+            onPlane++;
+        }
+        if (onPlane < 16)
+            continue;
+
+        CharonARPlane plane;
+        memset(&plane, 0, sizeof(plane));
+        plane.center = anchor + mean;
+        plane.normal = normal;
+        plane.extent = (high - low) * 0.5f;
+        plane.alignment = 0.5f;   // a detector's confidence, never Apple's measured alignment
+        plane.identifier = _nextIdentifier++;
+        [found addObject:[NSValue valueWithBytes:&plane objCType:@encode(CharonARPlane)]];
+        if ([found count] >= 16)
+            break;
+    }
+
+    if ([found count]) {
+        [_planes setArray:found];
+    }
+}
+
+#pragma mark - What an application reads
+
+- (NSData *)pointCloud
+{
+    const NSUInteger count = _worldPoints.length / sizeof(CharonARPoint);
+    if (count == 0)
+        return [NSData data];
+    NSMutableData *out = [NSMutableData dataWithLength:count * sizeof(CharonARCloudPoint)];
+    CharonARCloudPoint *cloud = (CharonARCloudPoint *)out.mutableBytes;
+    const CharonARPoint *points = (const CharonARPoint *)_worldPoints.bytes;
+    NSUInteger i;
+    for (i = 0; i < count; i++)
+        cloud[i].position = points[i].world;
+    return out;
+}
+
+- (NSArray<NSValue *> *)planes { return [_planes copy]; }
+- (simd_float4x4)cameraTransform { return _cameraTransform; }
+- (simd_float4x4)deviceTransform { return _deviceTransform; }
+- (CGFloat)lightEstimate { return _lightEstimate; }
+- (CGFloat)ambientColorTemperature { return _ambientColorTemperature; }
+- (BOOL)isTracking { return _tracking; }
+- (CGSize)imageResolution { return _resolution; }
+- (NSTimeInterval)timestamp { return _timestamp; }
+
+#pragma mark - Rays
+
+/// The ray through a point of the frame, in the camera's own space, which is the one every hit test
+/// and every raycast starts from.
+static BOOL CharonCameraRay(CGSize resolution, CGPoint point, simd_float3 *origin, simd_float3 *direction)
+{
+    if (resolution.width <= 0 || resolution.height <= 0)
+        return NO;
+    float x = ((float)point.x / (float)resolution.width - 0.5f) * 2.0f;
+    float y = (0.5f - (float)point.y / (float)resolution.height) * 2.0f;
+    // A 60-degree vertical field of view is what the back camera of this class of device gives.
+    const float tanHalf = 0.5773502692f;
+    *origin = (simd_float3){0, 0, 0};
+    *direction = CharonNormalized((simd_float3){x * tanHalf, y * tanHalf, -1});
+    return YES;
+}
+
+/// A ray against a plane, which is a plane equation and a substitution.
+static BOOL CharonRayPlane(simd_float3 origin, simd_float3 direction, CharonARPlane plane,
+                           simd_float3 *hit)
+{
+    float denominator = simd_dot(direction, plane.normal);
+    if (fabsf(denominator) < 1e-6f)
+        return NO;
+    float distance = simd_dot(plane.center - origin, plane.normal) / denominator;
+    if (distance <= 0)
+        return NO;
+    *hit = CharonAlongRay(origin, direction, distance);
+    return YES;
+}
+
+- (BOOL)raycastFromPoint:(CGPoint)point
+                allowing:(NSUInteger)targets
+                results:(NSMutableArray<NSValue *> *)results
+{
+    simd_float3 origin, direction;
+    if (!CharonCameraRay(_resolution, point, &origin, &direction))
+        return NO;
+    return [self raycastFromOrigin:origin direction:direction allowing:targets results:results];
+}
+
+- (BOOL)raycastFromOrigin:(simd_float3)origin
+                 direction:(simd_float3)direction
+                allowing:(NSUInteger)targets
+                  results:(NSMutableArray<NSValue *> *)results
+{
+    // The ray is given in the camera's space, which is where Apple's raycast query takes it.
+    simd_float3 world = simd_mul(_cameraTransform, (simd_float4){origin.x, origin.y, origin.z, 1}).xyz;
+    simd_float3 aim = simd_mul(_cameraTransform, (simd_float4){direction.x, direction.y, direction.z, 0}).xyz;
+    direction = CharonNormalized(aim);
+    if (results)
+        [results removeAllObjects];
+
+    float nearest = 0;
+    BOOL any = NO;
+    NSUInteger i;
+    for (i = 0; i < _planes.count; i++) {
+        CharonARPlane plane;
+        [_planes[i] getValue:&plane];
+        simd_float3 hit;
+        if (!CharonRayPlane(world, direction, plane, &hit))
+            continue;
+        float distance = simd_length(hit - world);
+        if (any && distance >= nearest)
+            continue;
+        // Apple's targets: 0 every plane, 1 any, 2 existing, 4 estimated.
+        if (targets != ARRaycastTargetExistingPlaneGeometry && targets != ARRaycastTargetEstimatedPlane) {
+            continue;
+        }
+        CharonARHit record;
+        memset(&record, 0, sizeof(record));
+        record.position = hit;
+        record.localNormal = plane.normal;
+        record.planeIdentifier = plane.identifier;
+        nearest = distance;
+        any = YES;
+        if (results)
+            [results addObject:[NSValue valueWithBytes:&record objCType:@encode(CharonARHit)]];
+    }
+    return any;
+}
+
+- (BOOL)hitTestPoint:(CGPoint)point results:(NSMutableArray<NSValue *> *)results
+{
+    return [self hitTestPoint:point existingPlane:NO results:results];
+}
+
+- (BOOL)hitTestPoint:(CGPoint)point
+       existingPlane:(BOOL)existingPlane
+            results:(NSMutableArray<NSValue *> *)results
+{
+    simd_float3 origin, direction;
+    if (!CharonCameraRay(_resolution, point, &origin, &direction))
+        return NO;
+    if (results)
+        [results removeAllObjects];
+
+    // First the points the tracker has placed, which is what a feature hit is.
+    const NSUInteger count = _worldPoints.length / sizeof(CharonARPoint);
+    const CharonARPoint *points = (const CharonARPoint *)_worldPoints.bytes;
+    NSUInteger i;
+    float nearest = 0;
+    BOOL any = NO;
+    for (i = 0; i < count; i++) {
+        simd_float3 delta = points[i].camera - CharonAlongRay(origin, direction, simd_dot(points[i].camera, direction));
+        float distance = simd_length(delta);
+        if (any && distance >= nearest)
+            continue;
+        if (distance > 0.05f)
+            continue;
+        CharonARHit record;
+        memset(&record, 0, sizeof(record));
+        record.position = points[i].world;
+        record.localNormal = (simd_float3){0, 1, 0};
+        record.planeIdentifier = 0;
+        nearest = distance;
+        any = YES;
+        if (results)
+            [results addObject:[NSValue valueWithBytes:&record objCType:@encode(CharonARHit)]];
+    }
+    return any;
+}
+
+@end
