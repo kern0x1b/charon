@@ -281,6 +281,13 @@ package("swift-runtime")
             "-DSwiftCore_ENABLE_STRICT_AVAILABILITY=OFF", "-DSwiftCore_ENABLE_LIBRARY_EVOLUTION=" .. (package:config("library_evolution") and "ON" or "OFF"),
             no_interface,
             "-DSwiftCore_ENABLE_OBJC_INTEROP=ON", "-DSwiftCore_ENABLE_TYPE_PRINTING=ON", "-DSwiftCore_ENABLE_REFLECTION=ON",
+            -- SIMD2/3/4/8/16 and the concrete vector operations. Swift's DefaultSettings.cmake only defaults
+            -- SwiftCore_ENABLE_VECTOR_TYPES on for Windows and for the Apple vendor cache, which this build does
+            -- not use, so it is off here and the standard library this runtime installs has no vector types at
+            -- all: `SIMD4<Float>` is "cannot find type in scope", and with it the whole `simd` module is empty,
+            -- because the Clang importer maps a `__ext_vector_type__` typedef of the simd headers onto the
+            -- standard library's SIMD type rather than declaring one of its own.
+            "-DSwiftCore_ENABLE_VECTOR_TYPES=ON",
             "-DSwiftCore_INSTALL_NESTED_SUBDIR=OFF"})
 
         -- A resource directory the compiler accepts: its own shims and clang headers beside the runtime built here, under
