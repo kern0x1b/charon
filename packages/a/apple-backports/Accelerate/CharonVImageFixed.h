@@ -1,3 +1,9 @@
+// The Accelerate conversion band carries this header and measured the scalar fixed-point mappings against
+// the host. The vImage geometry band needs the two half-precision conversions out of it -
+// `charon_float_to_half` and `charon_half_to_float` - and takes a copy with this credit rather than a
+// dependency across two bands, because a shared header is a build-time coupling between bands that one
+// band's split would break. The measurements, the tables and the rest of the file are the conversion band's.
+//
 // The scalar fixed-point conversions of vImage: eight of iOS 7.0's, in Accelerate/vImageFixedPoint7.m, and
 // iOS 10.0's two in Accelerate/vImageFixedPoint10.m beside them.
 //
