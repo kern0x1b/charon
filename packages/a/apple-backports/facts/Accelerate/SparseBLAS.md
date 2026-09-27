@@ -110,14 +110,31 @@ work established, all of it measured and all of it re-usable, is this:
   (`d00 = 2 + i`), a complex right-hand side, a complex alpha, a complex off-diagonal and the transpose
   — all six answer `SPARSE_SUCCESS`. So the `-1000` the differential saw was not the host refusing an
   argument, and that is a defect in the differential's cases, not in either library.
-- **The port's complex triangular solve is wrong for a complex right-hand side.** For a real
-  lower-triangular `T = [[2,0,0],[1,3,0],[0,0,4]]`, a real `alpha` of 1 and `b = (2, 5i, 4)`, the host
-  answers the substitution and the port answers `0.8 - 0.4i` for `x0` where the substitution gives
-  `(2/2, (5i - 2)/3, 4/4) = (1, -0.66667 + 1.66667i, 1)`. The values are wrong, not the status, and the
-  input that shows it is the smallest one there is. This is where the next session starts: the alpha
-  scaling and the pivot division in `CharonComplexTriangular` are right by inspection, so the suspect
-  is the entry walk — it is the real half's rule with `backwards` for the triangle, and the real half is
-  green on exactly that rule.
+- **RETRACTED AGAIN, and this one is the "named defect" I reported last turn: the port's complex
+  triangular solve is NOT wrong.** Measured in isolation, the port and the host agree to the last bit on
+  every case, and agree with the substitution:
+
+  | T | b | alpha | transpose | the port | the host | the substitution |
+  | --- | --- | --- | --- | --- | --- | --- |
+  | `[[2,0,0],[1,3,0],[0,0,4]]` | `(2, 5i, 4)` | 1 | no | `1, -0.33333 + 1.66667i, 1` | the same | the same |
+  | the same | the same | 1 | yes | `1 - 0.83333i, 1.66667i, 1` | the same | the same |
+  | `[[2+i,0,0],[1,3,0],[0,0,4+i]]` | `(2, 5, 4)` | 1 | no | `0.8 - 0.4i, 1.4 + 0.13333i, 0.94118 - 0.23529i` | the same | `2/(2+i) = 0.8 - 0.4i`, and `4/(4+i) = 16/17 - 4i/17` |
+
+  The `0.8 - 0.4i` I reported as the port being wrong is the **correct** answer for
+  `[[2+i,0,0],[1,3,0],[0,0,4+i]]`, and the `1` I set against it was the arithmetic of a *different*,
+  real, matrix. I compared a complex matrix's answer with a real matrix's arithmetic.
+
+- **Where that leaves the complex half, and why I stopped chasing it through the differential.** The two
+  families I was asked to close — the matrix-vector product and the triangular solves — are measured
+  **correct against the host**, in isolation, on both transposes and several alphas. The twenty-odd
+  remaining failures all come from `host/differential.m`, which is my own scaffolding and which my
+  scripted edits damaged repeatedly over three turns: the declaration block, the `void *` call sites and
+  several conditions were mangled and repaired by pattern, and I cannot now vouch for a case that file
+  reports. The operator-two norm, the one batch extraction and the one outer product are the only
+  findings that still stand, and even those are unconfirmed outside that file.
+- So the next step is not a fix in the port: it is to **rewrite the complex differential from scratch**,
+  as a new file rather than another repair, and re-measure against it. Nothing about the port's
+  behaviour should be concluded from the current one.
   - One thing already found and fixed by the oracle work: `cblas_caxpy` and its sisters address their
     vectors in units of a complex value, and every offset in this family is in complex units, so the
     pointers have to be complex-typed. Casting to `float *` and adding the offset counts floats, which
