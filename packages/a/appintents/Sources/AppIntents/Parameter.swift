@@ -832,11 +832,13 @@ public final class IntentParameter<Value>: @unchecked Sendable where Value: _Int
     }
 
 extension IntentParameter {
-    /// A parameter is made by one of the initializers above, never by itself: the framework's own
-    /// declaration is unavailable for the same reason.
-    @available(*, unavailable, message: "A parameter is made by one of the initializers, not by itself")
+    /// A parameter with nothing set on it: no title, no default and no value, which is what an
+    /// intent declares for a parameter it fills in later or does not ask about at all. The
+    /// framework names this initialiser of its own and leaves it available, so this one is too: an
+    /// optional parameter with an empty title, which is the state every other initialiser in this
+    /// type starts from, and the state a caller that never fills it in is left in.
     public convenience init() {
-        fatalError("IntentParameter is created by its initializers")
+        self.init(storage: Storage(title: CharonLocalized.resource(""), isOptional: true))
     }
 }
 
