@@ -24,9 +24,12 @@ fi
 prefixer="$here/../prefix_selectors.py"
 
 carried() {
-    # $1: an object file. yes when it defines a method in a Charon category: that is the only kind of method whose
-    # name can collide with the host's, because a method of the port's own class cannot - the class is renamed.
-    nm "$1" | grep -qE '[-+]\[[A-Za-z0-9_]+\(Charon[A-Za-z0-9_]*\) [A-Za-z0-9_:]+'
+    # $1: every object of the group. The selectors the port's Charon categories carry, in the whole group and not
+    # per file: a file that sends one of them without defining it - NSOrderedSet+Difference.m sending
+    # -charon_differenceFromArray:... to an NSArray, which NSArray+Difference.m defines - needs the rename as
+    # much as the file that defines it, and a send left unrenamed is an unrecognized selector at run time.
+    nm $1 | sed -n 's/.*[-+]\[[A-Za-z_]*(\(Charon[A-Za-z0-9_]*\)) \([A-Za-z_][A-Za-z0-9_:]*\)\]$/\2/p' | sort -u > "$build/$name.carried"
+    [ -s "$build/$name.carried" ]
 }
 
 build() {
@@ -47,18 +50,23 @@ build() {
         objects="$objects $build/plain/$name-$(basename "$file").o"
     done
     renames "$objects" > "$build/$name.flags"
+    carried "$objects" || : > "$build/$name.carried"
+    [ -s "$build/$name.carried" ] || printf 'note %s carries no selector a category adds\n' "$name"
     mkdir -p "$build/rewritten/$name" "$build/$name"
     printf '#import <UIKit/UIKit.h>\n' > "$build/$name.declarations.h"
-    built=""
+    # Every file of a group that carries a selector is rewritten, and all of them before any is compiled: a file
+    # sends a selector another file defines (NSOrderedSet+Difference.m sends -charon_differenceFromArray:... to
+    # an NSArray), and a send is invisible in nm, so nothing here can tell which files send what - only the
+    # rewrite can, and it either renames every carried send or fails with the file and line it cannot place.
     for file in $files; do
-        base=$(basename "$file").o
-        source=$build/rewritten/$name/${base%.o}
+        base=$(basename "$file")
+        source=$build/rewritten/$name/$base
         # a rewritten file sits outside the source tree, so the headers it imports by name are reached by path
-        if carried "$build/plain/$name-$base"; then
+        if [ -s "$build/$name.carried" ]; then
             if ! python3 "$prefixer" "$sources/$file" "$source" charonHost \
                 --declarations="$build/$name.declarations.h" $flags -I"$sources" -I"$(dirname "$sources/$file")" \
                 -target arm64-apple-ios15.0-macabi -isysroot "$sdk" -iframework "$sdk/System/iOSSupport/System/Library/Frameworks" \
-                -- "$build/plain/$name-$base"; then
+                -- $objects; then
                 printf 'FAIL %s: %s cannot be rewritten\n' "$name" "$file"
                 status=1
                 return 1
@@ -66,6 +74,11 @@ build() {
         else
             cp "$sources/$file" "$source"
         fi
+    done
+    built=""
+    for file in $files; do
+        base=$(basename "$file").o
+        source=$build/rewritten/$name/${base%.o}
         if ! xcrun clang $target $flags -I"$sources" -I"$(dirname "$sources/$file")" \
             -include "$build/$name.declarations.h" $(cat "$build/$name.flags") -c "$source" -o "$build/$name/$base"; then
             printf 'FAIL %s: the rewritten %s does not compile\n' "$name" "$file"

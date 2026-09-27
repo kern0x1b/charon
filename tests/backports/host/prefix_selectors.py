@@ -115,11 +115,14 @@ class Rewriter:
             return None, None
         inner = node["inner"][0]
         qualified = bare(inner["type"]["qualType"])
-        if qualified in ("instancetype", "id") and context:
+        if qualified in ("instancetype", "id"):
+            # an id-typed receiver names no class: only self, and only inside a method, is placeable. Outside
+            # one - in a C function - even self is not, and a receiver left as the type name would be silently
+            # skipped, which is how a send ends up unrenamed and unrecognized at run time.
             target = inner
-            while target.get("kind") == "ImplicitCastExpr" and target.get("inner"):
+            while target.get("kind") in ("ImplicitCastExpr", "CStyleCastExpr") and target.get("inner"):
                 target = target["inner"][0]
-            if target.get("kind") == "DeclRefExpr" and target.get("referencedDecl", {}).get("name") == "self":
+            if context and target.get("kind") == "DeclRefExpr" and target.get("referencedDecl", {}).get("name") == "self":
                 return ("+" if context[0] == "+" else "-"), context[1]
             if target.get("kind") == "ObjCMessageExpr" and target.get("selector") == "alloc":
                 owner = self.receiver_class(target, context)[1]
@@ -136,12 +139,22 @@ class Rewriter:
             return
         if not isinstance(node, dict):
             return
+        # A node from an included header carries offsets into that header, which mean nothing in this source:
+        # every offset here indexes this file's text. Such a node and everything under it is left alone.
+        if "includedFrom" in node.get("range", {}).get("begin", {}):
+            return
         kind = node.get("kind")
-        if kind == "ObjCCategoryImplDecl":
+        if kind in ("ObjCCategoryImplDecl", "ObjCCategoryDecl"):
             owner = node.get("interface", {}).get("name")
             for item in node.get("inner", []):
                 self.walk(item, ("-", owner))
             return
+        if kind == "ObjCSelectorExpr" and node.get("selector"):
+            # @selector(aCarriedSelector:) names the same method the definition declares, and the port's own
+            # code hands it to a runtime that sends it, so it has to move with the definition
+            begin = node.get("range", {}).get("begin", {}).get("offset")
+            if begin is not None and any(entry[2] == node["selector"] for entry in self.carried):
+                self.inserts.add(self.source.index("(", begin) + 1)
         if kind == "ObjCMethodDecl" and context and node.get("range", {}).get("begin", {}).get("offset") is not None:
             sign = "-" if node.get("instance", True) else "+"
             if (sign, context[1], node["name"]) in self.carried:
