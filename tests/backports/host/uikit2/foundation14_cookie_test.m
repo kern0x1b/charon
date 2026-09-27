@@ -38,7 +38,7 @@ int main(int argc, char **argv)
             if (next() % 3 == 0)
                 properties[NSHTTPCookieSecure] = @"TRUE";
             NSHTTPCookie *system = [NSHTTPCookie cookieWithProperties:properties];
-            NSHTTPCookie *port = ((id (*)(id, SEL, id, id))objc_msgSend)([NSHTTPCookie class], NSSelectorFromString(@"charon_cookieWithProperties:original:"), properties, ^NSHTTPCookie *(NSDictionary *plain) {
+            NSHTTPCookie *port = ((id (*)(id, SEL, id, id))objc_msgSend)([NSHTTPCookie class], NSSelectorFromString(@"charonHostCharon_cookieWithProperties:original:"), properties, ^NSHTTPCookie *(NSDictionary *plain) {
                 return [NSHTTPCookie cookieWithProperties:plain];
             });
             NSString *a = describe(port ? @[port] : @[], YES), *b = describe(system ? @[system] : @[], NO);
@@ -69,7 +69,7 @@ int main(int argc, char **argv)
             NSDictionary *fields = @{next() % 4 ? @"Set-Cookie" : @"set-cookie": [parts componentsJoinedByString:@", "]};
             NSURL *URL = [NSURL URLWithString:@"http://x.com/"];
             NSArray *system = [NSHTTPCookie cookiesWithResponseHeaderFields:fields forURL:URL];
-            NSArray *port = ((id (*)(id, SEL, id, id, id))objc_msgSend)([NSHTTPCookie class], NSSelectorFromString(@"charon_cookiesWithHeaderFields:forURL:original:"), fields, URL, ^NSArray *{
+            NSArray *port = ((id (*)(id, SEL, id, id, id))objc_msgSend)([NSHTTPCookie class], NSSelectorFromString(@"charonHostCharon_cookiesWithHeaderFields:forURL:original:"), fields, URL, ^NSArray *{
                 return [NSHTTPCookie cookiesWithResponseHeaderFields:fields forURL:URL];
             });
             NSString *a = describe(port, YES), *b = describe(system, NO);
