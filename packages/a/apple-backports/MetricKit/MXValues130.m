@@ -120,6 +120,9 @@ CHARON_SCALAR_PROPERTY(pid_t, pid)
 CHARON_VALUE_PROPERTY(NSString *, bundleIdentifier)
 
 @end
+@implementation MXMetric
+@end
+
 @implementation MXMetricPayload
 @dynamic latestApplicationVersion, includesMultipleApplicationVersions, timeStampBegin, timeStampEnd, cpuMetrics, gpuMetrics, cellularConditionMetrics, applicationTimeMetrics, locationActivityMetrics, networkTransferMetrics, applicationLaunchMetrics, applicationResponsivenessMetrics, diskIOMetrics, memoryMetrics, displayMetrics, animationMetrics, applicationExitMetrics, signpostMetrics, metaData;
 
