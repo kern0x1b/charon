@@ -825,6 +825,17 @@
       "effect": "the CFStringRef ParametricImmersive, the bytes the host hands out",
       "facts": "facts/CoreMedia/FormatDescriptionConstants.md",
       "source": "read out of the host's own CoreMedia, one constant at a time, by CFStringGetCString on the value it exports; held to it by tests/backports/host/coremedia7/constants.m"
+    },
+    {
+      "api": "CMVideoFormatDescriptionGetHEVCParameterSetAtIndex()",
+      "kind": "function",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 6 has the HEVC video format description and the hvcC record, and only lacks the function that reads the parameter sets out of it; the record to read is the one of a real x265 stream, kept in the work area",
+      "effect": "walks the hvcC record the release already stores - 23 bytes of fixed part with numOfArrays at byte 22, then per array a type byte and a 16-bit count of NAL units, then per NAL unit a 16-bit length and those bytes - and answers the NAL unit at the index with no length prefix, the number of NAL units the record's array headers declare, and the NAL unit length header from lengthSizeMinusOne + 1; a record it cannot finish, an index past the end of one, and a record whose configurationVersion is not 1 are kCMFormatDescriptionError_MalformedRecord (-12712), a missing or non-HEVC description kCMFormatDescriptionError_InvalidParameter (-12710) with no out-parameter written at all, and a call that asks for neither the pointer nor the size is answered 0 whatever index it is given",
+      "facts": "facts/CoreMedia/HEVCParameterSets.md",
+      "source": "the host's own CoreMedia, held over 7544 answers by tests/backports/host/coremedia7/hevcreader.m under AddressSanitizer: the real x265 hvcC, every one of its 2428 truncations, 64 single-byte flips, a flip of byte 0 and of byte 12, a null description and a JPEG one"
     }
   ]
 }

@@ -14,6 +14,7 @@ renames="$renames -DCMSampleBufferCallBlockForEachSample=CharonHostCMSampleBuffe
 renames="$renames -DCMSampleBufferCreateWithMakeDataReadyHandler=CharonHostCMSampleBufferCreateWithMakeDataReadyHandler"
 renames="$renames -DCMSampleBufferCreateForImageBufferWithMakeDataReadyHandler=CharonHostCMSampleBufferCreateForImageBufferWithMakeDataReadyHandler"
 renames="$renames -DCMAudioSampleBufferCreateWithPacketDescriptionsAndMakeDataReadyHandler=CharonHostCMAudioSampleBufferCreateWithPacketDescriptionsAndMakeDataReadyHandler"
+renames="$renames -DCMVideoFormatDescriptionGetHEVCParameterSetAtIndex=CharonHostCMVideoFormatDescriptionGetHEVCParameterSetAtIndex"
 renames="$renames $(cat "$here/formatdescription-renames.txt")"
 for object in "$AV"/*.m; do
     case "$(basename "$object")" in CMFormatDescription*|CMTime71*|CMSampleBuffer*) ;; *) continue ;; esac
@@ -24,3 +25,13 @@ for test in timeratio pcmdata createready constants; do
     xcrun clang -fobjc-arc $quiet "$here/$test.m" "$BUILD"/*.o -framework CoreMedia -framework CoreVideo -framework AudioToolbox -framework Foundation -o "$BUILD/$test"
     "$BUILD/$test"
 done
+# The HEVC reader is held against a real hvcC: the record of an x265 stream the work area keeps, every
+# truncation of it, and single-byte flips of it. Under AddressSanitizer, because a reader that walks off
+# the end of a record is exactly the bug this test is for.
+hvc="$here/../../../.agent-work/plan-and-analysis/coremedia-avf/hvcC-x265.bin"
+[ -f "$hvc" ] || hvc="$here/../../../../.agent-work/plan-and-analysis/coremedia-avf/hvcC-x265.bin"
+if [ -f "$hvc" ]; then
+    xcrun clang -fobjc-arc -w -fsanitize=address -g $quiet "$here/hevcreader.m" "$BUILD/CMFormatDescription11.o" \
+        -framework CoreMedia -framework CoreVideo -framework Foundation -o "$BUILD/hevcreader"
+    "$BUILD/hevcreader" "$hvc"
+fi
