@@ -246,10 +246,243 @@
       "kind": "class",
       "introduced": "15.0",
       "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSPresentationIntent.md",
+      "source": "SDK 26.2 headers; the host's own NSPresentationIntent, through tests/backports/host/presentationintent"
+    },
+    {
+      "api": "+[NSPresentationIntent blockQuoteIntentWithIdentity:nestedInsideIntent:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSPresentationIntent.md",
+      "source": "SDK 26.2 headers; the host's own NSPresentationIntent, through tests/backports/host/presentationintent"
+    },
+    {
+      "api": "+[NSPresentationIntent codeBlockIntentWithIdentity:languageHint:nestedInsideIntent:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSPresentationIntent.md",
+      "source": "SDK 26.2 headers; the host's own NSPresentationIntent, through tests/backports/host/presentationintent"
+    },
+    {
+      "api": "+[NSPresentationIntent headerIntentWithIdentity:level:nestedInsideIntent:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSPresentationIntent.md",
+      "source": "SDK 26.2 headers; the host's own NSPresentationIntent, through tests/backports/host/presentationintent"
+    },
+    {
+      "api": "+[NSPresentationIntent listItemIntentWithIdentity:ordinal:nestedInsideIntent:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSPresentationIntent.md",
+      "source": "SDK 26.2 headers; the host's own NSPresentationIntent, through tests/backports/host/presentationintent"
+    },
+    {
+      "api": "+[NSPresentationIntent orderedListIntentWithIdentity:nestedInsideIntent:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSPresentationIntent.md",
+      "source": "SDK 26.2 headers; the host's own NSPresentationIntent, through tests/backports/host/presentationintent"
+    },
+    {
+      "api": "+[NSPresentationIntent paragraphIntentWithIdentity:nestedInsideIntent:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSPresentationIntent.md",
+      "source": "SDK 26.2 headers; the host's own NSPresentationIntent, through tests/backports/host/presentationintent"
+    },
+    {
+      "api": "+[NSPresentationIntent tableCellIntentWithIdentity:column:nestedInsideIntent:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSPresentationIntent.md",
+      "source": "SDK 26.2 headers; the host's own NSPresentationIntent, through tests/backports/host/presentationintent"
+    },
+    {
+      "api": "+[NSPresentationIntent tableHeaderRowIntentWithIdentity:nestedInsideIntent:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSPresentationIntent.md",
+      "source": "SDK 26.2 headers; the host's own NSPresentationIntent, through tests/backports/host/presentationintent"
+    },
+    {
+      "api": "+[NSPresentationIntent tableIntentWithIdentity:columnCount:alignments:nestedInsideIntent:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSPresentationIntent.md",
+      "source": "SDK 26.2 headers; the host's own NSPresentationIntent, through tests/backports/host/presentationintent"
+    },
+    {
+      "api": "+[NSPresentationIntent tableRowIntentWithIdentity:row:nestedInsideIntent:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSPresentationIntent.md",
+      "source": "SDK 26.2 headers; the host's own NSPresentationIntent, through tests/backports/host/presentationintent"
+    },
+    {
+      "api": "+[NSPresentationIntent thematicBreakIntentWithIdentity:nestedInsideIntent:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSPresentationIntent.md",
+      "source": "SDK 26.2 headers; the host's own NSPresentationIntent, through tests/backports/host/presentationintent"
+    },
+    {
+      "api": "+[NSPresentationIntent unorderedListIntentWithIdentity:nestedInsideIntent:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSPresentationIntent.md",
+      "source": "SDK 26.2 headers; the host's own NSPresentationIntent, through tests/backports/host/presentationintent"
+    },
+    {
+      "api": "-[NSPresentationIntent isEquivalentToPresentationIntent:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSPresentationIntent.md",
+      "source": "SDK 26.2 headers; the host's own NSPresentationIntent, through tests/backports/host/presentationintent"
+    },
+    {
+      "api": "NSPresentationIntent.column",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSPresentationIntent.md",
+      "source": "SDK 26.2 headers; the host's own NSPresentationIntent, through tests/backports/host/presentationintent"
+    },
+    {
+      "api": "NSPresentationIntent.columnAlignments",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSPresentationIntent.md",
+      "source": "SDK 26.2 headers; the host's own NSPresentationIntent, through tests/backports/host/presentationintent"
+    },
+    {
+      "api": "NSPresentationIntent.columnCount",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSPresentationIntent.md",
+      "source": "SDK 26.2 headers; the host's own NSPresentationIntent, through tests/backports/host/presentationintent"
+    },
+    {
+      "api": "NSPresentationIntent.headerLevel",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSPresentationIntent.md",
+      "source": "SDK 26.2 headers; the host's own NSPresentationIntent, through tests/backports/host/presentationintent"
+    },
+    {
+      "api": "NSPresentationIntent.identity",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSPresentationIntent.md",
+      "source": "SDK 26.2 headers; the host's own NSPresentationIntent, through tests/backports/host/presentationintent"
+    },
+    {
+      "api": "NSPresentationIntent.indentationLevel",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSPresentationIntent.md",
+      "source": "SDK 26.2 headers; the host's own NSPresentationIntent, through tests/backports/host/presentationintent"
+    },
+    {
+      "api": "NSPresentationIntent.intentKind",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSPresentationIntent.md",
+      "source": "SDK 26.2 headers; the host's own NSPresentationIntent, through tests/backports/host/presentationintent"
+    },
+    {
+      "api": "NSPresentationIntent.languageHint",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSPresentationIntent.md",
+      "source": "SDK 26.2 headers; the host's own NSPresentationIntent, through tests/backports/host/presentationintent"
+    },
+    {
+      "api": "NSPresentationIntent.ordinal",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSPresentationIntent.md",
+      "source": "SDK 26.2 headers; the host's own NSPresentationIntent, through tests/backports/host/presentationintent"
+    },
+    {
+      "api": "NSPresentationIntent.parentIntent",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSPresentationIntent.md",
+      "source": "SDK 26.2 headers; the host's own NSPresentationIntent, through tests/backports/host/presentationintent"
+    },
+    {
+      "api": "NSPresentationIntent.row",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSPresentationIntent.md",
+      "source": "SDK 26.2 headers; the host's own NSPresentationIntent, through tests/backports/host/presentationintent"
+    },
+    {
+      "api": "+[NSPresentationIntent new]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Foundation"
+      "reason": "the SDK's own header marks -init and +new NS_UNAVAILABLE on this class, so the compiler refuses the call",
+      "effect": "the method is not there: respondsToSelector: answers honestly and an unchecked call raises"
+    },
+    {
+      "api": "-[NSPresentationIntent init]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the SDK's own header marks -init and +new NS_UNAVAILABLE on this class, so the compiler refuses the call",
+      "effect": "the method is not there: respondsToSelector: answers honestly and an unchecked call raises"
     },
     {
       "api": "NSPresentationIntentAttributeName",
