@@ -1,12 +1,17 @@
-# Four pixel conversions of vImage, iOS 7
+# The pixel conversions of vImage, iOS 7.0 and 8.0
 
-Four names the corpus asks for that iOS 6.1.3 does not export: `vImageConvert_RGB565toBGRA8888`,
-`vImageConvert_BGRA8888toRGB565`, `vImageConvert_ARGB16UtoRGB16U` and `vImageConvert_ARGBFFFFtoRGBFFF`. iOS 6 has
-`vImageConvert_RGB565toARGB8888` and `vImageConvert_ARGB8888toRGB565` from iPhone OS 5 but neither of the BGRA pair,
-and neither of the two that drop an alpha channel.
+Sixteen names: the four the first delivery carried - `vImageConvert_RGB565toBGRA8888`,
+`vImageConvert_BGRA8888toRGB565`, `vImageConvert_ARGB16UtoRGB16U` and `vImageConvert_ARGBFFFFtoRGBFFF` - and the twelve
+added since, which are the whole of the 5/6/5, 5/5/5/1 and 1/5/5/5 shapes: `vImageConvert_RGB565toRGBA8888`,
+`vImageConvert_RGBA5551toRGBA8888`, `vImageConvert_RGBA8888toRGB565`, `vImageConvert_RGBA8888toRGBA5551` at 7.0, and
+`vImageConvert_RGB565toRGB888`, `vImageConvert_ARGB1555toRGB565`, `vImageConvert_RGB565toARGB1555`,
+`vImageConvert_RGB565toRGBA5551` and `vImageConvert_RGBA5551toRGB565` at 8.0. The two that drop an alpha channel were the
+first four; iOS 6 has `vImageConvert_RGB565toARGB8888` and `vImageConvert_ARGB8888toRGB565` from iPhone OS 5 but neither of
+the BGRA pair, and neither of the two that drop an alpha channel.
 
-Read from: `Conversion.h` of SDK 16.4, which writes the arithmetic of all four out; the host's own Accelerate, compared
-byte for byte in `tests/backports/host/ypcbcr`; the armv7 cache of iOS 6.1.3 for what the release exports.
+Read from: `Conversion.h` of SDK 16.4, which writes the arithmetic of the two words out; the host's own Accelerate, compared byte
+for byte in `tests/backports/host/vimagepixels` over the corners of each word; the release's own armv7 caches for which release
+first exports each name.
 
 ## The arithmetic
 
@@ -29,6 +34,24 @@ other three down, which the header says works in place, so the port moves rather
 
 Unlike the Y'CbCr conversions beside them, these four agree with the system on every byte: the differential's count of
 bytes that differ did not move by one when they were added to it. There is no floating point in them to differ in.
+
+## The shapes, and what the header gives for each
+
+`Conversion.h` writes the arithmetic of a 5/6/5 word and of a 5/5/5/1 word out, and they are the same rule both ways: a channel
+goes up to eight bits with `(bits * 255 + half) / max` and comes down with `(bits * max + 127) / 255`, where `max` is 31 for five
+bits and 63 for six. A one-bit alpha is that bit times 255 going up and `(bits + 127) / 255` coming down, which is 0 or 1.
+
+For the conversions **between** a 5/6/5 word and a 1/5/5/5 or 5/5/5/1 word the header gives no formula at all - it says only
+"first at high bitdepth, then convert to lower bitdepth" - and that composition is what the four below are, and it is **not** a
+bit shift: the green of a 5/6/5 word is six bits and of the other two five, so going up from 1555 the green goes through a
+five-bit expansion and coming down it goes through a six-bit narrowing (and the other way round for 565 to 5551). Measured
+against the host over the corners of each word, all four agree with it byte for byte.
+
+**Two of them take a dither.** `vImageConvert_RGB565toARGB1555` and `vImageConvert_RGB565toRGBA5551` have an `int dither`
+parameter between the destination and the flags, and this port records it and answers for a dither of zero, which is what the
+differential asks. A non-zero dither is the one case in this family that cannot be reproduced here: the dither is a noise source
+that no published header carries, and the host's is the only oracle there is for it. The same is true of the twelve
+`*_dithered` conversions of the wider family, which is why they are not in this group.
 
 ## The refusals
 
