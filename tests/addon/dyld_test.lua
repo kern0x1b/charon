@@ -52,6 +52,10 @@ local function moved_framework_step(dyld, folder, found)
     local public = "/System/Library/Frameworks/IOSurface.framework/IOSurface"
     local file = cache(path.join(folder, "moved"), "armv7", {"_IOSurfaceCreate"}, private)
     local cacheobj = dyld.load(file)
+    -- the cache must not hold the SDK's own name, or the answer would say nothing about the move
+    if cacheobj.libraries[public] then
+        table.insert(found, "the cache built for the moved-framework check holds " .. public .. " itself, so what exported_by answers proves nothing")
+    end
     if not dyld.exported_by(cacheobj, public, "_IOSurfaceCreate") then
         table.insert(found, "a cache that holds IOSurface under PrivateFrameworks does not answer for the SDK's Frameworks name, so _IOSurfaceCreate reads as arriving at 11.0 instead of 3.0")
     end
@@ -66,8 +70,8 @@ end
 
 function failures(opt)
     local dyld = import("apple.dyld", {rootdir = opt.modules, anonymous = true})
-    moved_framework_step(dyld, fixtures.scratch(), found)
     local found = {}
+    moved_framework_step(dyld, fixtures.scratch(), found)
     local folder = fixtures.scratch()
     local armv7 = cache(path.join(folder, "dyld_shared_cache_armv7"), "armv7", "_exported")
     io.writefile(path.join(folder, "libSystem.tbd"), fixtures.system_stub("dyld_stub_binder, _exported, _nested, ___divti3, _arrived, _objc_storeStrong"))
