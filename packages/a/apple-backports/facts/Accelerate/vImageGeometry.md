@@ -683,3 +683,31 @@ What is left is to find which taps the system clamps and which it drops - the tw
 and one measurement separates them: a picture where the *last* row is a ramp and the *first* column is a
 constant, so the row edge and the column edge have different values and a single destination pixel's answer
 says which was treated how.
+
+## Both edges CLAMP: the two-edge grid derives the rule
+
+A source whose **interior** is a known ramp in both axes, whose **first column** carries `9000 + row*1000`
+and whose **last row** carries `50000 + column` - both wildly unlike their neighbours, so a destination
+pixel near one edge and far from the other says which rule was applied to it. Measured over slopes 0 to 3 and
+translates of +0.5 and −0.5, and the answer is the same at every slope:
+
+- **a left-edge destination pixel reads column 0's own value.** At a slope of 0 and a translate of 0.5, row 0
+  column 0 answers **5491.0**, and the measured half-pixel weights predict `0.61141 * 9000 + 0.02446 * 101 =
+  5501.5` - the edge element read at both the centre and the clamped neighbour. At a slope of 1 the same pixel
+  answers **9000.0** exactly, column 0's value.
+- **a bottom-edge destination pixel reads the last row's own value**, and the answer **overshoots the source
+  maximum**: at a slope of 0, row 5 column 8 answers **55579.2** where that row is `50008`. No convex
+  combination of a source topping out at 50008 produces it; the edge row read at both the centre and the
+  clamped neighbour does.
+
+**So both edges clamp, and neither drops.** It is one rule, not two: a tap outside the picture lands on the
+edge element with its weight intact, and the weights are **not** renormalised over the survivors - which is
+the header's own `kvImageEdgeExtend`, and the only rule consistent with the guard-page result that the system
+reads nothing outside the caller's buffer.
+
+**What is left, and it is one question.** A clamp-everywhere run breaks the **in-row** cases at a translate of
++1 and -1 by about 3.8, where the system plainly does something else: the *centre* tap is outside the picture
+there, and a clamped centre is not the same as a clamped flank. The question the grid still has to answer is
+whether a tap whose **own position** is outside the picture is clamped like any other, or dropped while only
+the ones past it are clamped. One case separates them: a destination pixel whose centre is half a pixel left
+of the source, where clamping the centre reads column 0 with the full centre weight and dropping it does not.
