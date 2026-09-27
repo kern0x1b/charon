@@ -198,19 +198,26 @@ static inline vImage_Error CharonShearRun(const vImage_Buffer *src, const vImage
                 for (int k = 0; k < taps; k++) {
                     long column = first + k;
                     long row = (long)cross0 + (long)cross + (long)(slope * (double)k);
-                    if (column < 0 || column >= (long)srcAlong || row < 0 || row >= (long)srcCross) {
-                        // A tap outside the picture contributes nothing and the sample is still the sum of
-                        // the taps inside: at a whole-pixel phase the out-of-range lobes of a Lanczos kernel
-                        // are exactly zero, so the destination's first column IS the source's first column.
-                        // Under kvImageEdgeExtend the tap is pulled back to the edge pixel instead, which is
-                        // the header's own "the edge pixels of the source are extended".
+                    // The two edges are two rules, and both are measured.
+                    //
+                    // A tap whose COLUMN is outside is DROPPED. A translate of +0.5's first column
+                    // answers one weight of column 0 and nothing else, where a clamped neighbour would have
+                    // added its 0.02446 of the same column; and the position itself is never clamped - a
+                    // translate of -1's first column answers the source's SECOND column.
+                    //
+                    // A tap whose ROW is outside - and only the shear direction moves the row, one per tap -
+                    // is CLAMPED to the edge row with its weight intact and the weights are NOT
+                    // renormalised, so the edge row is counted twice. That is the 5558 and 55579.2
+                    // fingerprint: a value above the source's own maximum, which no convex combination
+                    // produces, and which the guard-page run shows came from inside the caller's allocation.
+                    if (column < 0 || column >= (long)srcAlong) {
                         if (!extend)
                             continue;
                         if (column < 0) column = 0;
                         if (column >= (long)srcAlong) column = srcAlong ? (long)srcAlong - 1 : 0;
-                        if (row < 0) row = 0;
-                        if (row >= (long)srcCross) row = srcCross ? (long)srcCross - 1 : 0;
                     }
+                    if (row < 0) row = 0;
+                    if (row >= (long)srcCross) row = srcCross ? (long)srcCross - 1 : 0;
                     const uint8_t *tap = (const uint8_t *)src->data + (size_t)row * src->rowBytes;
                     sum += weights[k] * CharonChannelAt(tap, (vImagePixelCount)column, channel, type);
                     any = 1;

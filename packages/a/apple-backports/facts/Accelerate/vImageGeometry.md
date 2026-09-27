@@ -789,3 +789,33 @@ slope, and a bug anywhere else.
 The port's `CharonShearRun` needs one change: when a tap's **row** is outside the picture, clamp it to the
 edge row and keep its weight; when its **column** is outside, drop it as now. That is a two-line difference
 in the tap loop and it is the whole of the remaining work on this family.
+
+## The two-rule change is in, and the failures are NOT the bottom edge
+
+`CharonShearRun`'s tap loop now drops a tap whose **column** is outside and clamps a tap whose **row** is
+outside, with its weight intact. The shear differential over 212 cases:
+
+    212 checks, 101 failures, the widest sample difference 3.96584 of a 0..1 channel
+
+and the failures are **in the in-row cases at a whole-pixel translate**, not at the bottom edge:
+
+    translate 0   34 failures      translate -0.5   2
+    translate 1   34 failures      translate 0.5    2
+    translate -1  29 failures      translate 2.5    0
+
+with the differences at **row 0 and row 1 of every case** and a magnitude of 2 to 3.8 on a channel whose
+range is -2 to +2 - which is the whole channel, not a rounding. So the position and tap handling at a
+non-zero translate is wrong, the same place it was before this change, and the bottom edge is now *cleaner*
+rather than being the only thing left.
+
+**Concretely, what the two disagree about.** At a translate of +1 the system answers the **backColor** for the
+first two destination columns, while the port answers source pixels there: the port puts the mapped position
+at `dx - xTranslate`, finds the taps for columns 1 and 2 inside the picture and uses them, and the system
+treats a sample whose kernel reaches left of the picture as wholly outside. At a translate of +0.5, by
+contrast, the system answered 5491.0 - one weight of column 0 and nothing else - so it does not wholly
+back-colour there. Those two cannot both come from one rule, and the half-pixel case that separates them is
+the same `dx - xTranslate` the port already has.
+
+So the remaining difference is the **in-row** position rule at a whole-pixel translate, not the shear
+direction and not the bottom edge, and it is a bug in the committed engine rather than a divergence to pin.
+The 36 registry entries stay **out** until the differential is green.
