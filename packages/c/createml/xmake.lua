@@ -1,14 +1,18 @@
 package("createml")
     set_homepage("https://github.com/kern0x1b/charon")
-    set_description("CreateML and CreateMLComponents for the port's armv7 releases: on-device training of the tabular regressors and classifiers, over the device's own BLAS and LAPACK. Three Swift modules - CreateMLComponents, CreateML, and the TabularData the tabular API is written against - built against the charon@swift-runtime a port carries, so a program writes `import CreateML`. The linear algebra is the Accelerate of the release: cblas_dgemm, cblas_dsyrk, cblas_dgemv, cblas_ddot, dgesv_ and dpotrf_ are the armv7 dyld cache's own symbols from 4.3 up, and the package adds no matrix code of its own. The .mlmodel export is declared and refuses; the specification writer belongs to the CoreML package")
+    set_description("CreateML and CreateMLComponents for the port's armv7 releases: on-device training of the tabular regressors and classifiers, over the device's own BLAS and LAPACK. The Swift modules - CoreML, the shaped-array overlay CreateML's linear models are constrained to; CreateMLComponents; and CreateML - built against the charon@swift-runtime a port carries, so a program writes `import CreateML`. The linear algebra is the Accelerate of the release: cblas_dgemm, cblas_dsyrk, cblas_dgemv, cblas_ddot, dgesv_ and dpotrf_ are the armv7 dyld cache's own symbols from 4.3 up, and the package adds no matrix code of its own. The .mlmodel export is declared and refuses; the specification writer belongs to the CoreML package")
     set_license("Apache-2.0")
     set_policy("package.strict_compatibility", true)
 
-    -- Two Swift modules that share nothing, in one package, because they are two halves of one API:
-    -- `CreateMLComponents` has the estimators and `CreateML` the `MLDataTable` and the high-level
-    -- types, and CreateML's own surface imports CreateMLComponents. Splitting them into two packages
-    -- would make every consumer depend on both to get either.
-    local modules = {"CreateMLComponents", "CreateML"}
+    -- Three Swift modules, in dependency order, in one package, because they are three layers of one
+    -- API: `CoreML` is the shaped-array overlay, `CreateMLComponents` the estimators, and `CreateML`
+    -- the `MLDataTable` and the high-level types. The order is the build order, not a preference.
+    -- Splitting them into three packages would make every consumer depend on all three to get any.
+    --
+    -- `CoreML` shares its name with the framework, which is the point: a caller writes `import
+    -- CoreML` and gets the overlay. charon's swift-runtime already does this for Foundation, UIKit
+    -- and CoreData, so the name is the mechanism and not a trick.
+    local modules = {"CoreML", "CreateMLComponents", "CreateML"}
     local libraries = {"CreateMLComponents", "CreateML"}
 
     add_configs("shared", {description = "Compile against a shared swift-runtime and its packaged libc++, for a port that requires them so.", default = false, type = "boolean"})
@@ -61,10 +65,17 @@ package("createml")
             table.insert(sources, path.join(package:scriptdir(), "files", module, "*.swift"))
         end
 
-        -- One module at a time, in dependency order: CreateMLComponents first, because CreateML
-        -- imports it. Availability checking stays on - nothing is built behind an
-        -- `-disable-availability-checking` - and the whole compile is one `-wmo` unit per module, the
-        -- way the runtime's own overlays are built.
+        -- One module at a time, in the order above: CoreML first, because the shaped-array
+        -- overlay is what CreateMLComponents's linear models are constrained to, and
+        -- CreateMLComponents before CreateML, because CreateML imports it. Availability checking stays
+        -- on - nothing is built behind an `-disable-availability-checking` - and the whole compile is
+        -- one `-wmo` unit per module, the way the runtime's own overlays are built.
+        --
+        -- The `CoreML` module needs the *lifted* headers: the SDK marks `MLMultiArrayDataType` and
+        -- the rest of `MLMultiArray.h` `ios(11.0)` and the port's release has no CoreML, so
+        -- `registry/CoreML/createml-shapedarray.json` lowers it. Without the lift in force this
+        -- compile fails with "only available in iOS 11.0 or newer", which is the whole reason that
+        -- registry entry exists.
         for index, module in ipairs(modules) do
             local folder = path.join(install, module .. ".swiftmodule")
             os.mkdir(folder)

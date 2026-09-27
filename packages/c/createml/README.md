@@ -5,13 +5,14 @@ Three Swift modules, built for armv7 by `packages/c/createml/xmake.lua` against 
 
 | Module | Holds |
 | --- | --- |
-| `TabularData` | the `DataFrame` the tabular API is written against — not built yet, see below |
-| `CreateMLComponents` | the estimator types and the arithmetic under them |
-| `CreateML` | `MLDataTable`, `MLDataColumn` and the six tabular estimators |
+| `CoreML` | the shaped-array overlay: `MLShapedArray`, `MLShapedArraySlice`, `MLShapedArrayScalar` |
+| `CreateMLComponents` | the estimator types, the kernel layer, and the arithmetic under them |
+| `CreateML` | `MLDataTable`, `MLDataColumn`, and the six tabular estimators |
+| `TabularData` | the `DataFrame` the tabular API is written against — **not built yet** |
 
-**What is not here yet**, and is absent rather than stubbed: `DataFrame` and the CoreML
-`MLShapedArray` overlay, the linear and logistic models that are constrained to `MLShapedArrayScalar`,
-the tabular transformers (the scalers, the encoders, the imputers, the column selector, the
+**What is not here yet**, and is absent rather than stubbed: `DataFrame`, the linear and logistic
+models that are constrained to `MLShapedArrayScalar` (the overlay they need is here; the models are
+not), the tabular transformers (the scalers, the encoders, the imputers, the column selector, the
 preprocessing wrappers), and the `.mlmodel` export. `write(to:)` is declared on all six estimators and
 **throws** `MLCreateErrorCode.cannotWriteModel`: the specification writer belongs to the CoreML
 package, and a table that wrote a file with the right extension and bytes no Core ML can read would be
