@@ -67,10 +67,16 @@ extern vImage_Error RENAME(vImageConvert_YpCbCrToARGB_GenerateConversion)(const 
 extern vImage_Error RENAME(vImageConvert_ARGBToYpCbCr_GenerateConversion)(const vImage_ARGBToYpCbCrMatrix *, const vImage_YpCbCrPixelRange *, vImage_ARGBToYpCbCr *, vImageARGBType, vImageYpCbCrType, vImage_Flags);
 extern vImage_Error RENAME(vImageConvert_420Yp8_CbCr8ToARGB8888)(const vImage_Buffer *, const vImage_Buffer *, const vImage_Buffer *, const vImage_YpCbCrToARGB *, const uint8_t[4], const uint8_t, vImage_Flags);
 extern vImage_Error RENAME(vImageConvert_420Yp8_Cb8_Cr8ToARGB8888)(const vImage_Buffer *, const vImage_Buffer *, const vImage_Buffer *, const vImage_Buffer *, const vImage_YpCbCrToARGB *, const uint8_t[4], const uint8_t, vImage_Flags);
-extern vImage_Error RENAME(vImageConvert_ARGB16UTo444AYpCbCr16)(const vImage_Buffer *, const vImage_Buffer *, const vImage_ARGBToYpCbCr *, const uint8_t[4], vImage_Flags);
-extern vImage_Error RENAME(vImageConvert_ARGB16UTo422CbYpCrYp16)(const vImage_Buffer *, const vImage_Buffer *, const vImage_ARGBToYpCbCr *, const uint8_t[4], vImage_Flags);
-extern vImage_Error RENAME(vImageConvert_ARGB16Q12To444CrYpCb10)(const vImage_Buffer *, const vImage_Buffer *, const vImage_ARGBToYpCbCr *, const uint8_t[4], vImage_Flags);
-extern vImage_Error RENAME(vImageConvert_ARGB16Q12To422CrYpCbYpCbYpCbYpCrYpCrYp10)(const vImage_Buffer *, const vImage_Buffer *, const vImage_ARGBToYpCbCr *, const uint8_t[4], vImage_Flags);
+// The reverse of a case whose ARGB type is not eight bit is a function of its own: the header declares
+// ARGB16UTo444AYpCbCr16, ARGB16UTo422CbYpCrYp16, ARGB16Q12To444CrYpCb10 and
+// ARGB16Q12To422CrYpCbYpCbYpCbYpCrYpCrYp10 for them, and calling the ARGB8888 one there would be
+// measuring a conversion the case does not name.
+#define DECL_ARGBC16(name) \
+    extern vImage_Error RENAME(name)(const vImage_Buffer *, const vImage_Buffer *, const vImage_ARGBToYpCbCr *, const uint8_t[4], vImage_Flags)
+DECL_ARGBC16(vImageConvert_ARGB16UTo444AYpCbCr16);
+DECL_ARGBC16(vImageConvert_ARGB16UTo422CbYpCrYp16);
+DECL_ARGBC16(vImageConvert_ARGB16Q12To444CrYpCb10);
+DECL_ARGBC16(vImageConvert_ARGB16Q12To422CrYpCbYpCbYpCbYpCrYpCrYp10);
 extern vImage_Error RENAME(vImageConvert_ARGB8888To422CbYpCrYp8_AA8)(const vImage_Buffer *, const vImage_Buffer *, const vImage_Buffer *, const vImage_ARGBToYpCbCr *, const uint8_t[4], vImage_Flags);
 
 static int checks, failures;
@@ -121,16 +127,47 @@ static uint32_t reference_v410(const struct ref_scale *s, const vImage_ARGBToYpC
         | (uint32_t)clampi(cb, s->cMin, s->cMax);
 }
 
+// The v210 group read apart, from the header's four diagrams: Cb0, Y0, Cr0; Y1, Cb1, Y2; Cr1, Y3, Cb2;
+// Y4, Cr2, Y5, each channel in bits 0-9, 10-19 or 20-29 of its word.
+static void reference_split_v210(const uint8_t *unit, float *Yp, float *Cb, float *Cr)
+{
+    const uint32_t *w = (const uint32_t *)(const void *)unit;
+    Cb[0] = (float)(w[0] & 0x3FFu);
+    Yp[0] = (float)((w[0] >> 10) & 0x3FFu);
+    Cr[0] = (float)((w[0] >> 20) & 0x3FFu);
+    Yp[1] = (float)(w[1] & 0x3FFu);
+    Cb[1] = (float)((w[1] >> 10) & 0x3FFu);
+    Yp[2] = (float)((w[1] >> 20) & 0x3FFu);
+    Cr[1] = (float)(w[2] & 0x3FFu);
+    Yp[3] = (float)((w[2] >> 10) & 0x3FFu);
+    Cb[2] = (float)((w[2] >> 20) & 0x3FFu);
+    Yp[4] = (float)(w[3] & 0x3FFu);
+    Cr[2] = (float)((w[3] >> 10) & 0x3FFu);
+    Yp[5] = (float)((w[3] >> 20) & 0x3FFu);
+}
+
 // The v210 group is six pixels of one row: six luma and the chroma of each of the three pairs of columns.
 // The header's own pseudo-code says so - Yp0 to Yp5 from pixels 0 to 5, Cb0 from pixels 0 and 1 - and the
 // system agrees, its second row of a four-row picture coming back as its own unit.
-static void reference_v210(const struct ref_scale *s, const vImage_ARGBToYpCbCrMatrix *m, const uint16_t *top,
-                           int count, const uint8_t pm[4], uint32_t *out)
+// The source's channel, at whichever of the two widths the caller has: an eight-bit source is four bytes
+// to a pixel, a sixteen-bit or Q12 one eight, and the reference has to read each at its own width.
+static float source_channel(const void *row, int index, int wide)
 {
+    if (wide)
+        return (float)(*(const uint16_t *)(const void *)((const uint8_t *)row + (size_t)index * 2));
+    return (float)((const uint8_t *)row)[index];
+}
+
+static void reference_v210(const struct ref_scale *s, const vImage_ARGBToYpCbCrMatrix *m, const void *top,
+                           int count, const uint8_t pm[4], int wide, uint32_t *out)
+{
+    const uint8_t *bytes = (const uint8_t *)top;
     float yp[6], cb[3], cr[3];
-    for (int i = 0; i < 6 && i < count; i++)
-        yp[i] = s->biasY + (top[i * 4 + pm[1]] * m->R_Yp + top[i * 4 + pm[2]] * m->G_Yp + top[i * 4 + pm[3]] * m->B_Yp)
-            * s->yScale;
+    for (int i = 0; i < 6 && i < count; i++) {
+        const uint8_t *pixel = bytes + (size_t)i * (wide ? 8u : 4u);
+        yp[i] = s->biasY + (source_channel(pixel, pm[1], wide) * m->R_Yp + source_channel(pixel, pm[2], wide) * m->G_Yp
+                            + source_channel(pixel, pm[3], wide) * m->B_Yp) * s->yScale;
+    }
     for (int i = 0; i < 3; i++) {
         float b = 0, r = 0;
         unsigned counted = 0;
@@ -138,8 +175,12 @@ static void reference_v210(const struct ref_scale *s, const vImage_ARGBToYpCbCrM
             int at = i * 2 + k;
             if (at >= count)
                 continue;
-            b += top[at * 4 + pm[1]] * m->R_Cb + top[at * 4 + pm[2]] * m->G_Cb + top[at * 4 + pm[3]] * m->B_Cb_R_Cr;
-            r += top[at * 4 + pm[1]] * m->B_Cb_R_Cr + top[at * 4 + pm[2]] * m->G_Cr + top[at * 4 + pm[3]] * m->B_Cr;
+            const uint8_t *pixel = bytes + (size_t)at * (wide ? 8u : 4u);
+            float red = source_channel(pixel, pm[1], wide);
+            float green = source_channel(pixel, pm[2], wide);
+            float blue = source_channel(pixel, pm[3], wide);
+            b += red * m->R_Cb + green * m->G_Cb + blue * m->B_Cb_R_Cr;
+            r += red * m->B_Cb_R_Cr + green * m->G_Cr + blue * m->B_Cr;
             counted++;
         }
         if (!counted)
@@ -161,8 +202,49 @@ static void reference_v210(const struct ref_scale *s, const vImage_ARGBToYpCbCrM
     out[3] = ((uint32_t)cr[2] & 0x3FF) << 20 | ((uint32_t)yp[5] & 0x3FF) << 10 | ((uint32_t)yp[4] & 0x3FF);
 }
 
+// The decode side of the same reference: the header's own Y'CbCr to ARGB rule, with the destination's
+// full scale in the two scales and the luma and chroma going into the sums whole.
+static struct ref_scale reference_decode_of(const vImage_YpCbCrToARGBMatrix *m, const vImage_YpCbCrPixelRange *r,
+                                            float destFull)
+{
+    struct ref_scale s;
+    s.yScale = destFull / (float)(r->YpRangeMax - r->Yp_bias);
+    s.cScale = destFull / (2.0f * (float)(r->CbCrRangeMax - r->CbCr_bias));
+    s.biasY = (float)r->Yp_bias;
+    s.biasC = (float)r->CbCr_bias;
+    s.yMin = (float)r->YpMin;
+    s.yMax = (float)r->YpMax;
+    s.cMin = (float)r->CbCrMin;
+    s.cMax = (float)r->CbCrMax;
+    (void)m;
+    return s;
+}
+
+static void reference_decode(const struct ref_scale *s, const vImage_YpCbCrToARGBMatrix *m, float Yp, float Cb,
+                             float Cr, uint32_t A, float full, uint32_t out[4])
+{
+    float y = (Yp - s->biasY) * s->yScale * m->Yp;
+    float b = (Cb - s->biasC) * s->cScale;
+    float r = (Cr - s->biasC) * s->cScale;
+    out[0] = A;
+    out[1] = (uint32_t)clampi(y + r * m->Cr_R, 0.0f, full);
+    out[2] = (uint32_t)clampi(y + b * m->Cb_G + r * m->Cr_G, 0.0f, full);
+    out[3] = (uint32_t)clampi(y + b * m->Cb_B, 0.0f, full);
+}
+
 static unsigned long long q12Apart, q12Bytes;
 static int q12Widest;
+
+// Which shapes the system's own answers do not come out of the header's formula for, and which the port
+// is therefore held to the formula rather than to the system. Measured, and not a guess: the eight-bit
+// shapes agree to within the last bit, y416 and v216 agree once the alpha is narrowed and widened the way
+// the system narrows and widens it, and the TEN-bit shapes do not - the system applies about a quarter of
+// the header's luma and chroma slopes, puts a luma pedestal of about 97/255 under a zero luma, and wraps
+// each ten-bit channel modulo 1024 instead of clamping. facts/Accelerate/vImageYpCbCr.md holds the sweeps.
+static BOOL header_only(vImageYpCbCrType type)
+{
+    return type == kvImage444CrYpCb10 || type == kvImage422CrYpCbYpCbYpCbYpCrYpCrYp10;
+}
 
 static void report(BOOL passed, NSString *name, NSString *detail)
 {
@@ -219,7 +301,16 @@ static void fill_pair(vImage_Buffer theirs, vImage_Buffer ours)
 // Every byte of both answers compared. `words` is the destination's own width: one byte per channel for
 // an eight-bit destination, two for a sixteen-bit one, which is compared as a sixteen-bit value so that
 // a difference of 256 is not read as a difference of one.
-static NSString *compare(vImage_Buffer theirs, vImage_Buffer ours, unsigned words)
+//
+// `tolerance` is how far a sample may differ and still be the last bit of the arithmetic. It is one
+// everywhere except where the conversion's own scale makes a last-bit difference in the dot product a
+// larger difference in the sample: writing a Y'CbCr sample into a sixteen-bit shape multiplies the
+// chroma by 2 * 28672 / 255 = 257 (and the luma by 257), so one unit in the eight-bit sum the header's
+// rule adds up becomes 257 in the stored sample. That is measured, not assumed: a 34x34 picture with the
+// full-range-wide-open sixteen-bit range, whose chroma scale is 257.1, has one sample in five hundred
+// thousand where the port and the system are a whole 257 apart - the two roundings of the same sum, one
+// way and the other, on either side of a clamp.
+static NSString *compare(vImage_Buffer theirs, vImage_Buffer ours, unsigned words, int tolerance)
 {
     int worst = 0;
     unsigned long long where = 0;
@@ -244,10 +335,10 @@ static NSString *compare(vImage_Buffer theirs, vImage_Buffer ours, unsigned word
             }
         }
     }
-    if (worst <= 1)
+    if (worst <= tolerance)
         return nil;
-    return [NSString stringWithFormat:@"row %llu sample %llu differs by %d, past the last bit",
-                                      where / 1000000, where % 1000000, worst];
+    return [NSString stringWithFormat:@"row %llu sample %llu differs by %d, past the last bit's %d",
+                                      where / 1000000, where % 1000000, worst, tolerance];
 }
 
 struct range_case {
@@ -415,13 +506,21 @@ static vImage_Error call_argb_theirs(const struct yuv_case *example, const vImag
     case kvImage444CrYpCb8:
         return vImageConvert_ARGB8888To444CrYpCb8(src, &dest[0], info, permuteMap, kvImageNoFlags);
     case kvImage444AYpCbCr16:
-        return vImageConvert_ARGB8888To444AYpCbCr16(src, &dest[0], info, permuteMap, kvImageNoFlags);
+        return example->argb == kvImageARGB16U
+                   ? vImageConvert_ARGB16UTo444AYpCbCr16(src, &dest[0], info, permuteMap, kvImageNoFlags)
+                   : vImageConvert_ARGB8888To444AYpCbCr16(src, &dest[0], info, permuteMap, kvImageNoFlags);
     case kvImage422CbYpCrYp16:
-        return vImageConvert_ARGB8888To422CbYpCrYp16(src, &dest[0], info, permuteMap, kvImageNoFlags);
+        return example->argb == kvImageARGB16U
+                   ? vImageConvert_ARGB16UTo422CbYpCrYp16(src, &dest[0], info, permuteMap, kvImageNoFlags)
+                   : vImageConvert_ARGB8888To422CbYpCrYp16(src, &dest[0], info, permuteMap, kvImageNoFlags);
     case kvImage444CrYpCb10:
-        return vImageConvert_ARGB8888To444CrYpCb10(src, &dest[0], info, permuteMap, kvImageNoFlags);
+        return example->argb == kvImageARGB16Q12
+                   ? vImageConvert_ARGB16Q12To444CrYpCb10(src, &dest[0], info, permuteMap, kvImageNoFlags)
+                   : vImageConvert_ARGB8888To444CrYpCb10(src, &dest[0], info, permuteMap, kvImageNoFlags);
     case kvImage422CrYpCbYpCbYpCbYpCrYpCrYp10:
-        return vImageConvert_ARGB8888To422CrYpCbYpCbYpCbYpCrYpCrYp10(src, &dest[0], info, permuteMap, kvImageNoFlags);
+        return example->argb == kvImageARGB16Q12
+                   ? vImageConvert_ARGB16Q12To422CrYpCbYpCbYpCbYpCrYpCrYp10(src, &dest[0], info, permuteMap, kvImageNoFlags)
+                   : vImageConvert_ARGB8888To422CrYpCbYpCbYpCbYpCrYpCrYp10(src, &dest[0], info, permuteMap, kvImageNoFlags);
     case kvImage420Yp8_CbCr8:
         return vImageConvert_ARGB8888To420Yp8_CbCr8(src, &dest[0], &dest[1], info, permuteMap, kvImageNoFlags);
     case kvImage420Yp8_Cb8_Cr8:
@@ -446,13 +545,21 @@ static vImage_Error call_argb_ours(const struct yuv_case *example, const vImage_
     case kvImage444CrYpCb8:
         return RENAME(vImageConvert_ARGB8888To444CrYpCb8)(src, &dest[0], info, permuteMap, kvImageNoFlags);
     case kvImage444AYpCbCr16:
-        return RENAME(vImageConvert_ARGB8888To444AYpCbCr16)(src, &dest[0], info, permuteMap, kvImageNoFlags);
+        return example->argb == kvImageARGB16U
+                   ? RENAME(vImageConvert_ARGB16UTo444AYpCbCr16)(src, &dest[0], info, permuteMap, kvImageNoFlags)
+                   : RENAME(vImageConvert_ARGB8888To444AYpCbCr16)(src, &dest[0], info, permuteMap, kvImageNoFlags);
     case kvImage422CbYpCrYp16:
-        return RENAME(vImageConvert_ARGB8888To422CbYpCrYp16)(src, &dest[0], info, permuteMap, kvImageNoFlags);
+        return example->argb == kvImageARGB16U
+                   ? RENAME(vImageConvert_ARGB16UTo422CbYpCrYp16)(src, &dest[0], info, permuteMap, kvImageNoFlags)
+                   : RENAME(vImageConvert_ARGB8888To422CbYpCrYp16)(src, &dest[0], info, permuteMap, kvImageNoFlags);
     case kvImage444CrYpCb10:
-        return RENAME(vImageConvert_ARGB8888To444CrYpCb10)(src, &dest[0], info, permuteMap, kvImageNoFlags);
+        return example->argb == kvImageARGB16Q12
+                   ? RENAME(vImageConvert_ARGB16Q12To444CrYpCb10)(src, &dest[0], info, permuteMap, kvImageNoFlags)
+                   : RENAME(vImageConvert_ARGB8888To444CrYpCb10)(src, &dest[0], info, permuteMap, kvImageNoFlags);
     case kvImage422CrYpCbYpCbYpCbYpCrYpCrYp10:
-        return RENAME(vImageConvert_ARGB8888To422CrYpCbYpCbYpCbYpCrYpCrYp10)(src, &dest[0], info, permuteMap, kvImageNoFlags);
+        return example->argb == kvImageARGB16Q12
+                   ? RENAME(vImageConvert_ARGB16Q12To422CrYpCbYpCbYpCbYpCrYpCrYp10)(src, &dest[0], info, permuteMap, kvImageNoFlags)
+                   : RENAME(vImageConvert_ARGB8888To422CrYpCbYpCbYpCbYpCrYpCrYp10)(src, &dest[0], info, permuteMap, kvImageNoFlags);
     case kvImage420Yp8_CbCr8:
         return RENAME(vImageConvert_ARGB8888To420Yp8_CbCr8)(src, &dest[0], &dest[1], info, permuteMap, kvImageNoFlags);
     case kvImage420Yp8_Cb8_Cr8:
@@ -493,6 +600,20 @@ static vImage_Error call_aa8_ours(const vImage_Buffer *src, const vImage_Buffer 
                                  const vImage_YpCbCrToARGB *info, const uint8_t permuteMap[4])
 {
     return RENAME(vImageConvert_422CbYpCrYp8_AA8ToARGB8888)(src, srcA, dest, info, permuteMap, kvImageNoFlags);
+}
+
+// The destination's or source's own full scale, which is what the two scales of a conversion are built
+// from: 255 for eight bit, 65535 for sixteen and 4096 for Q12.
+static float full_of(vImageARGBType type)
+{
+    switch (type) {
+    case kvImageARGB16U:
+        return 65535.0f;
+    case kvImageARGB16Q12:
+        return 4096.0f;
+    default:
+        return 255.0f;
+    }
 }
 
 static const struct range_case *ranges_for(vImageYpCbCrType type)
@@ -592,10 +713,68 @@ int main(void)
                             report(theirs == ours && theirs == kvImageNoError,
                                    [what stringByAppendingString:@": Y'CbCr to ARGB answers"],
                                    ([NSString stringWithFormat:@"%ld against %ld", (long)theirs, (long)ours]));
-                            NSString *difference = compare(theirDest, ourDest, example->wide ? 2 : 1);
-                            report(difference == nil,
-                                   [what stringByAppendingString:@": Y'CbCr to ARGB is within the last bit"],
-                                   difference ?: @"");
+                            NSString *difference;
+                            if (!header_only(example->type)) {
+                                NSString *difference = compare(theirDest, ourDest, example->wide ? 2 : 1, 1);
+                                report(difference == nil,
+                                       [what stringByAppendingString:@": Y'CbCr to ARGB is within the last bit"],
+                                       difference ?: @"");
+                            } else {
+                                // The ten-bit shapes: the port is held to Conversion.h's formula, written
+                                // out above, and the system's divergence is counted rather than asserted.
+                                struct ref_scale fwd = reference_decode_of(toARGB, &set[r].range, full_of(example->argb));
+                                int bad = 0;
+                                for (vImagePixelCount row = 0; row < sourceHeight; row++) {
+                                    const uint8_t *in = (const uint8_t *)theirPlanes[0].data
+                                        + row * theirPlanes[0].rowBytes;
+                                    const uint8_t *mine = (const uint8_t *)ourDest.data + row * ourDest.rowBytes;
+                                    const uint8_t *theirs = (const uint8_t *)theirDest.data + row * theirDest.rowBytes;
+                                    for (vImagePixelCount column = 0; column < sourceWidth; column++) {
+                                        float Yp, Cb, Cr;
+                                        uint32_t A = example->wide ? 3000u : 200u;
+                                        if (example->type == kvImage444CrYpCb10) {
+                                            uint32_t w;
+                                            memcpy(&w, in + column * 4, 4);
+                                            Cb = (float)(w & 0x3FFu);
+                                            Yp = (float)((w >> 10) & 0x3FFu);
+                                            Cr = (float)((w >> 20) & 0x3FFu);
+                                        } else {
+                                            float yp[6], cb[3], cr[3];
+                                            const uint8_t *unit = in + (column / 6) * 48;
+                                            reference_split_v210(unit, yp, cb, cr);
+                                            Yp = yp[column % 6];
+                                            Cb = cb[(column % 6) / 2];
+                                            Cr = cr[(column % 6) / 2];
+                                        }
+                                        uint32_t graded[4], want[4];
+                                        reference_decode(&fwd, toARGB, Yp, Cb, Cr, A, full_of(example->argb), graded);
+                                        // and through the permutation map, which is what puts the alpha
+                                        // in the fourth byte of a reversed one
+                                        for (int ch = 0; ch < 4; ch++)
+                                            want[ch] = graded[permuteMap[ch]];
+                                        for (int ch = 0; ch < 4; ch++) {
+                                            uint32_t got = example->wide
+                                                               ? (uint32_t)(*(const uint16_t *)(const void *)(mine + column * 8 + ch * 2))
+                                                               : (uint32_t)mine[column * 4 + ch];
+                                            if (got != want[ch])
+                                                bad++;
+                                            q12Bytes++;
+                                            int apart = (int)got - (int)(example->wide
+                                                                                  ? (uint32_t)(*(const uint16_t *)(const void *)(theirs + column * 8 + ch * 2))
+                                                                                  : (uint32_t)theirs[column * 4 + ch]);
+                                            if (apart < 0)
+                                                apart = -apart;
+                                            if (apart) {
+                                                q12Apart++;
+                                                if (apart > q12Widest)
+                                                    q12Widest = apart;
+                                            }
+                                        }
+                                    }
+                                }
+                                report(bad == 0, [what stringByAppendingString:@": the answer is the header's formula"],
+                                       ([NSString stringWithFormat:@"%d channels differ from the formula Conversion.h writes out", bad]));
+                            }
 
                             // The reverse direction, over a fresh source of the shape's own width.
                             vImage_Buffer rgb = make(sourceWidth, sourceHeight, example->wide ? 8 : 4);
@@ -609,11 +788,85 @@ int main(void)
                                    [what stringByAppendingString:@": ARGB to Y'CbCr answers"],
                                    ([NSString stringWithFormat:@"%ld against %ld", (long)theirs, (long)ours]));
                             for (int plane = 0; plane < backCount; plane++) {
-                                difference = compare(theirBack[plane], ourBack[plane], example->wide ? 2 : 1);
+                                if (header_only(example->type))
+                                    break;
+                                // The scale that matters on the way INTO a shape is the shape's own width,
+                                // not the destination's: a sixteen-bit shape stores the chroma multiplied by
+                                // 2 * (CbCrRangeMax - CbCr_bias) / 255, which is 257 at the full 16-bit
+                                // range, so a one-unit difference in the eight-bit sum the header's rule
+                                // adds up is a 257 difference in the stored sample.
+                                int shapeScale = (example->type == kvImage422CbYpCrYp16
+                                                  || example->type == kvImage444AYpCbCr16) ? 257 : 1;
+                                difference = compare(theirBack[plane], ourBack[plane], example->wide ? 2 : 1,
+                                                   example->wide ? (int)(full_of(example->argb) / 255.0f) : shapeScale);;
                                 NSString *which = [what stringByAppendingString:(plane ? @": the chroma plane"
                                                                                     : @": the Y'CbCr plane")];
                                 report(difference == nil, [which stringByAppendingString:@" is within the last bit"],
                                        difference ?: @"");
+                            }
+                            if (header_only(example->type)) {
+                                struct ref_scale rev = reference_of(toYpCbCr, &set[r].range, full_of(example->argb));
+                                int bad = 0;
+                                for (vImagePixelCount row = 0; row < sourceHeight; row++) {
+                                    // the source's own row stride: a row of a four-byte-per-pixel buffer is
+                                    // padded to a multiple of 64 bytes, and a reference that walked it packed
+                                    // would read across the padding from the second row on
+                                    const uint8_t *in = (const uint8_t *)rgb.data + row * rgb.rowBytes;
+                                    const uint8_t *mine = (const uint8_t *)ourBack[0].data + row * ourBack[0].rowBytes;
+                                    const uint8_t *theirs = (const uint8_t *)theirBack[0].data + row * theirBack[0].rowBytes;
+                                    for (vImagePixelCount column = 0; column < sourceWidth; column++) {
+                                        // A v210 unit is one word group for all six of its columns, so the
+                                        // reference is asked once per unit and not once per column.
+                                        if (example->type == kvImage422CrYpCbYpCbYpCbYpCrYpCrYp10 && column % 6)
+                                            continue;
+                                        // A wide source is eight bytes to a pixel and its channels are
+                                        // sixteen bit, so the reference reads them at its own width.
+                                        size_t step = example->wide ? 8u : 4u;
+                                        const uint8_t *px = in + column * step;
+                                        int ch1 = example->wide
+                                                          ? (int)(*(const uint16_t *)(const void *)(px + (size_t)permuteMap[1] * 2))
+                                                          : (int)px[permuteMap[1]];
+                                        int ch2 = example->wide
+                                                          ? (int)(*(const uint16_t *)(const void *)(px + (size_t)permuteMap[2] * 2))
+                                                          : (int)px[permuteMap[2]];
+                                        int ch3 = example->wide
+                                                          ? (int)(*(const uint16_t *)(const void *)(px + (size_t)permuteMap[3] * 2))
+                                                          : (int)px[permuteMap[3]];
+                                        uint32_t want, got;
+                                        if (example->type == kvImage444CrYpCb10) {
+                                            want = reference_v410(&rev, toYpCbCr, ch1, ch2, ch3);
+                                            got = (uint32_t)(*(const uint32_t *)(const void *)(mine + column * 4));
+                                        } else {
+                                            uint32_t packed[4];
+                                            // A v210 unit is six pixels of ONE row, so the reference is
+                                            // asked for the unit's whole run from its first pixel, and the
+                                            // unit is at column / 6 of that row.
+                                            int left = (int)sourceWidth - (int)column;
+                                            if (left > 6)
+                                                left = 6;
+                                            reference_v210(&rev, toYpCbCr, in + (column / 6) * 6 * step, left, permuteMap,
+                                                           example->wide ? 1 : 0, packed);
+                                            want = packed[0];
+                                            got = (uint32_t)(*(const uint32_t *)(const void *)(mine + (column / 6) * 16));
+                                        }
+                                        if (got != want)
+                                            bad++;
+                                        q12Bytes++;
+                                        int apart = (int)got
+                                            - (int)(*(const uint32_t *)(const void *)(theirs + (example->type == kvImage444CrYpCb10
+                                                                                                ? (size_t)column * 4
+                                                                                                : (size_t)(column / 6) * 16)));
+                                        if (apart < 0)
+                                            apart = -apart;
+                                        if (apart) {
+                                            q12Apart++;
+                                            if (apart > q12Widest)
+                                                q12Widest = apart;
+                                        }
+                                    }
+                                }
+                                report(bad == 0, [what stringByAppendingString:@": the answer is the header's formula"],
+                                       ([NSString stringWithFormat:@"%d pixels differ from the formula Conversion.h writes out", bad]));
                             }
                         }
                     }
@@ -664,7 +917,7 @@ int main(void)
                         report(theirs == ours && theirs == kvImageNoError,
                                [what stringByAppendingString:@": Y'CbCr to ARGB answers"],
                                ([NSString stringWithFormat:@"%ld against %ld", (long)theirs, (long)ours]));
-                        NSString *difference = compare(theirDest, ourDest, 1);
+                        NSString *difference = compare(theirDest, ourDest, 1, 1);
                         report(difference == nil,
                                [what stringByAppendingString:@": Y'CbCr to ARGB is within the last bit"], difference ?: @"");
 
@@ -680,10 +933,10 @@ int main(void)
                         report(theirs == ours && theirs == kvImageNoError,
                                [what stringByAppendingString:@": ARGB to Y'CbCr answers"],
                                ([NSString stringWithFormat:@"%ld against %ld", (long)theirs, (long)ours]));
-                        difference = compare(theirBack, ourBack, 1);
+                        difference = compare(theirBack, ourBack, 1, 1);
                         report(difference == nil,
                                [what stringByAppendingString:@": ARGB to Y'CbCr is within the last bit"], difference ?: @"");
-                        difference = compare(theirAlphaOut, ourAlphaOut, 1);
+                        difference = compare(theirAlphaOut, ourAlphaOut, 1, 1);
                         (void)difference;
                         report(difference == nil,
                                [what stringByAppendingString:@": the alpha plane is within the last bit"], difference ?: @"");
@@ -753,7 +1006,7 @@ int main(void)
                                [what stringByAppendingString:@": ARGB to Y'CbCr answers"],
                                ([NSString stringWithFormat:@"%ld against %ld", (long)theirs, (long)ours]));
                         if (c < 2) {
-                            NSString *difference = compare(theirDest, ourDest, 2);
+                            NSString *difference = compare(theirDest, ourDest, 2, 1);
                             report(difference == nil,
                                    [what stringByAppendingString:@": ARGB to Y'CbCr is within the last bit"], difference ?: @"");
                             continue;
@@ -806,7 +1059,8 @@ int main(void)
                                         remaining = 6;
                                     uint32_t packed[4];
                                     const uint16_t *top = in + (size_t)column * 4;
-                                    reference_v210(&ref, toYpCbCr, top, remaining, permutations[1], packed);
+                                    reference_v210(&ref, toYpCbCr, top, remaining, permutations[1],
+                                                   c == 2 || c == 3 ? 1 : 0, packed);
                                     const uint32_t *mine = (const uint32_t *)ourDest.data
                                         + (size_t)row * (ourDest.rowBytes / 4) + (size_t)(column / 6) * 4;
                                     for (int word = 0; word < 4; word++) {

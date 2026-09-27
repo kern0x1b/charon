@@ -144,7 +144,7 @@ vImage_Error vImageConvert_ARGBToYpCbCr_GenerateConversion(const vImage_ARGBToYp
 //   across     luma samples that share one chroma sample, left to right
 //   down       luma samples that share one chroma sample, top to bottom
 //   group      luma samples one unit of the layout holds, which is the width the shape divides by
-//   rows       rows one unit of the layout stands for
+//   alphaWords words the shape's own alpha channel takes, where only y416's is sixteen bit wide
 // ---------------------------------------------------------------------------------------------
 
 enum {
@@ -163,7 +163,7 @@ typedef struct CharonYUVLayout {
     unsigned across;
     unsigned down;
     unsigned group;
-    unsigned rows;
+    unsigned alphaWords;
 } CharonYUVLayout;
 
 // `rows` is one for every shape: a v210 unit is SIX samples of ONE row and not a block of two rows, which
@@ -178,7 +178,7 @@ static const CharonYUVLayout charon_yuv_layouts[] = {
     [CharonYUV444AYpCbCr8]   = {1, 1, 1, 1},
     [CharonYUV444CbYpCrA8]   = {1, 1, 1, 1},
     [CharonYUV444CrYpCb8]    = {1, 1, 1, 1},
-    [CharonYUV444AYpCbCr16]  = {1, 1, 1, 1},
+    [CharonYUV444AYpCbCr16]  = {1, 1, 1, 2},
     [CharonYUV422CbYpCrYp16] = {2, 1, 2, 1},
     [CharonYUV444CrYpCb10]   = {1, 1, 1, 1},
     [CharonYUV422v210]       = {2, 1, 6, 1}
@@ -237,7 +237,7 @@ static inline void charon_v210_join(uint32_t *words, const uint32_t *Yp, const u
 // One luma sample's Yp, Cb, Cr and alpha, read out of a source of the given layout. The chroma comes from
 // the sample the layout shares: for 4:2:2 the pair to the left, for 4:4:4 the pixel itself, and for v210
 // the six-pixel unit it belongs to.
-static void charon_yuv_read(int layout, const uint8_t *row, vImagePixelCount column, uint8_t alpha,
+static void charon_yuv_read(int layout, const uint8_t *row, vImagePixelCount column, uint32_t alpha,
                             BOOL hasAlphaArgument, float *Yp, float *Cb, float *Cr, uint32_t *A)
 {
     switch (layout) {
@@ -297,11 +297,16 @@ static void charon_yuv_read(int layout, const uint8_t *row, vImagePixelCount col
         break;
     }
     case CharonYUV422v210: {
+        // A unit is six pixels of forty-eight bytes, so the unit is at column / 6 of the row and the index
+        // inside it is the column modulo six: reading the arrays at the column itself walks off the end of
+        // all three from the seventh column on, and reading the unit at the row's start makes every
+        // sixth column the first unit's.
         float yp[6], cb[3], cr[3];
-        charon_v210_split((const uint32_t *)(const void *)row, yp, cb, cr);
-        *Yp = yp[column];
-        *Cb = cb[column / 2];
-        *Cr = cr[column / 2];
+        unsigned at = (unsigned)column % 6u;
+        charon_v210_split((const uint32_t *)(const void *)(row + (column / 6) * 48), yp, cb, cr);
+        *Yp = yp[at];
+        *Cb = cb[at / 2u];
+        *Cr = cr[at / 2u];
         *A = hasAlphaArgument ? alpha : 0;
         break;
     }
@@ -371,9 +376,15 @@ static vImage_Error charon_yuv_to_argb(int layout, float destFull, const vImage_
         for (vImagePixelCount column = 0; column < width; column++) {
             float Yp, Cb, Cr;
             uint32_t A = 0;
-            charon_yuv_read(layout, in, column, (uint8_t)alpha, hasAlphaArgument, &Yp, &Cb, &Cr, &A);
+            charon_yuv_read(layout, in, column, alpha, hasAlphaArgument, &Yp, &Cb, &Cr, &A);
             if (alphaRow)
                 A = alphaRow[column];
+            // A shape whose own alpha is sixteen bit wide and an eight-bit destination narrow it the way
+            // Conversion.h narrows a sixteen-bit channel to eight: (bits * 255 + 32767) / 65535. Measured
+            // over seventeen values, and it is a rounding rule and not a shift: 255 gives 1 and 511 gives 2,
+            // where a shift gives 0 and 1. A sixteen-bit destination takes the value as it stands.
+            if (shape->alphaWords == 2 && destFull == 255.0f)
+                A = (A * 255u + 32767u) / 65535u;
             if (destFull == 255.0f) {
                 charon_argb_store8(conversion, Yp, Cb, Cr, A, permuteMap, out8 + column * 4);
             } else {
@@ -390,7 +401,7 @@ static vImage_Error charon_yuv_to_argb(int layout, float destFull, const vImage_
     {                                                                                                          \
         if (flags & ~charon_vimage_conversion_flags)                                                           \
             return kvImageUnknownFlagsBit;                                                                     \
-        return charon_yuv_to_argb(layout, full, src, dest, info, permuteMap, alpha, hasAlpha, NULL);            \
+        return charon_yuv_to_argb(layout, full, src, dest, info, permuteMap, (uint32_t)alpha, hasAlpha, NULL);   \
     }
 
 // Four of the eleven interleaved Y'CbCr-to-ARGB conversions take no alpha argument at all: the shape
@@ -705,12 +716,17 @@ static vImage_Error charon_argb_to_yuv(int layout, int words, const vImage_Buffe
                 out[column * 3 + 1] = (uint8_t)luma;
                 out[column * 3 + 2] = (uint8_t)Cb;
                 break;
-            case CharonYUV444AYpCbCr16:
-                wide[column * 4] = (uint16_t)charon_alpha_of(words, src, row, column, permuteMap);
+            case CharonYUV444AYpCbCr16: {
+                // An eight-bit source's alpha widened into the sixteen-bit shape by 257, which is the
+                // reverse of the narrowing above and what the system does: 32 becomes 8224, 128 becomes
+                // 32896 and 255 becomes 65535.
+                uint32_t source = charon_alpha_of(words, src, row, column, permuteMap);
+                wide[column * 4] = (uint16_t)(words == 1 ? source * 257u : source);
                 wide[column * 4 + 1] = (uint16_t)luma;
                 wide[column * 4 + 2] = (uint16_t)Cb;
                 wide[column * 4 + 3] = (uint16_t)Cr;
                 break;
+            }
             case CharonYUV422CbYpCrYp16: {
                 uint16_t *pair = wide + (column / 2) * 4;
                 pair[column & 1 ? 3 : 1] = (uint16_t)luma;

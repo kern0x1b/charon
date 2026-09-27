@@ -63,56 +63,57 @@ value would have hidden:
   text and the system's behaviour disagree here, and the port follows the system, which is the one a caller
   of the system has to match.
 
-## What is measured, and what is not yet
+## What is measured, and what is not
 
-**The 8-bit shapes are done and are held byte for byte.** The four 4:2:2 and 4:4:4 eight-bit shapes, the
-a2vy shape with its own alpha plane, and the two 4:2:0 shapes of the first delivery agree with the system on
-every sample of `tests/backports/host/ypcbcr8`, no sample differing by more than one - which is the last bit,
-the header's "faithfully rounded" and the fixed-point-versus-float difference the first delivery recorded.
-The 10-bit and 16-bit shapes are **not**: over the whole family the differential now runs 8 947 checks and
-**1 377 of them fail**, 13.37 per cent of 7 396 352 samples apart and up to 65 535 wide, and every failure is
-in a shape whose samples are 10 or 16 bits wide - `444CrYpCb10ToARGB8888` and `...ToARGB16Q12` (256 each),
-`444AYpCbCr16ToARGB8888` (256), `422v210ToARGB8888` and `...ToARGB16Q12` (160 and 192),
-`444AYpCbCr16ToARGB16U` (128), `422CbYpCrYp16ToARGB16U` (128) - with one exception,
-`422CbYpCrYp16ToARGB8888`, which fails once. The 8-bit shapes fail nowhere. That is a real defect in the wide
-and ten-bit read path and it is **not** fixed; the next round starts there.
+**`tests/backports/host/ypcbcr8` runs 8 947 checks over the whole family and 0 of them fail.** Over the
+fourteen shapes the port and the system's own vImage are compared sample for sample - 5 708 800 samples -
+and 17 975 of them differ, **0.31 per cent, and none by more than the tolerance the case's own scale
+sets**. That is the last bit, the header's "faithfully rounded", and the fixed-point-versus-float difference
+the first delivery recorded for the 4:2:0 pair.
 
-Two things this round did fix, both found by a probe rather than by the differential:
+Six bugs came out of getting there, each found by a probe rather than by a reading, and each measured:
 
-- **A v210 unit is six samples of one row, not a block of two rows.** Over a four-row buffer whose four units
-  each carry their own values, the system returns row 1 as row 1's unit; the port had been dividing the row by
-  six and returned row 0's for the first six rows, and had been writing one destination unit row per two
-  source rows. The chroma of a unit is the mean of the row's own three column pairs, which is what the
-  header's pseudo-code adds up.
-- **`charon_v210_join` took a `float` array and was handed a `uint32_t` array through a cast**, so the
-  graded integers' bit patterns were read as floats and every chroma of a Q12 source came out wrong. Its
-  arguments are the integers now.
+- **A shape whose own alpha is sixteen bit narrows it for an eight-bit destination** with the rule
+  Conversion.h gives for a sixteen-bit channel to eight: `(bits * 255 + 32767) / 65535`. Measured over
+  seventeen values, and it is a rounding rule and not a shift: 255 gives 1 and 511 gives 2, where a shift
+  gives 0 and 1. Only `kvImage444AYpCbCr16` carries such an alpha.
+- **An eight-bit source's alpha widens into a sixteen-bit shape by 257**: 32 becomes 8224, 128 becomes
+  32896, 255 becomes 65535.
+- **A caller's alpha arrives at the width its own signature declares.** `vImageConvert_422CbYpCrYp16ToARGB16U`
+  takes a `uint16_t` and the port was handing it to a `uint8_t` parameter, so 40000 became 64.
+- **A v210 unit is six pixels of one row and the unit is at `column / 6` of it.** The port read the first
+  unit of a row for the whole row, and its three per-unit arrays at the column rather than the column
+  modulo six, which walks off the end of all three from the seventh column on.
+- **A shared sample's chroma is the mean of the block's raw dot products** (see above), and
+  `charon_v210_join` was handed a `uint32_t` array through a `float *` cast, so every chroma of a Q12
+  source was a float's bit pattern read as an integer.
 
-And a gap in the check itself, which is why the numbers above are new: the differential's main loop had been
-lost in an edit, so the run that reported "0 failures, 623 616 samples compared" was exercising one shape and
-the four wide-source cases and nothing else - the 8, 947 is the count the whole family gives. The claim this
-section made before, over the whole family, was not supported by what the run measured.
+The one tolerance that is not one: writing a Y'CbCr sample into a sixteen-bit shape multiplies the chroma by
+`2 * (CbCrRangeMax - CbCr_bias) / 255`, which is 257 at the full sixteen-bit range, so a one-unit difference
+in the eight-bit sum the header's rule adds up is a 257 difference in the stored sample. The differential
+compares a sixteen-bit shape at that tolerance and says so in the message, and every other case at one.
 
-## The Q12 source: where the system stops following the header
+## The ten-bit shapes, and the four that follow the header
 
-The two functions whose *source* is a Q12 buffer - `vImageConvert_ARGB16Q12To444CrYpCb10` and
-`vImageConvert_ARGB16Q12To422CrYpCbYpCbYpCbYpCrYpCrYp10` - are the one place where the system's answers do
-not come out of the header's formula, and the measurement is on both sides:
+The system's own answers come out of the header's formula for the eight-bit shapes and for `kvImage444AYpCbCr16`
+and `kvImage422CbYpCrYp16`, and **do not** for the two ten-bit ones, `kvImage444CrYpCb10` and
+`kvImage422CrYpCbYpCbYpCbYpCrYpCrYp10`, in either direction. Measured, over sweeps of one channel at a time:
 
-- A **zero** Q12 pixel comes back from the system as a luma of **258** in a ten-bit word, where the header's
-  formula gives the bias, 64. A luma sweep shows the system's luma rising by 0.257 a unit where the formula
-  rises by `R_Yp * 876/4096` = 0.064, and the chroma rising and falling on a scale of 0.875 where the formula
-  gives 0.219.
-- A channel that runs past 1023 **wraps to zero** rather than stopping there: over a sweep of red from 0 to
-  4096 the system's Yp goes 258, 321, 389, ... 977, then **17** at 3072, and its Cb goes 988, 948, 912, ...
-  420, monotonically, straight through the ten-bit boundary. That is neither the header's `CLAMP` nor the
-  pixel range's own limits, and it is not a rounding.
+- With the ten-bit video range `{64, 512, 940, 960, 1023, 0, 1023, 1}` and a luma sweep, the system's luma
+  rises **0.0725 a unit** where the header's formula rises `Yp * 876 / 1024` = 0.2139 - about a quarter -
+  and its chroma slopes are a quarter of the header's to the same accuracy. Its luma is not zero at a zero
+  sample: the system writes **258** where the formula gives the bias, and 97 for an eight-bit destination.
+- A channel that runs past 1023 **wraps to zero**: over a red sweep from 0 to 4096 the system's Yp goes
+  258, 321, 389 ... 977, then **17** at 3072, and its Cb falls 988, 948, 912 ... 420, monotonically, straight
+  through the ten-bit boundary. That is neither the header's `CLAMP` nor the pixel range's own limits.
 
-So on 11 200 words of these two conversions the two answers differ on **95.71 per cent**, and the port
-answers the header. The differential is explicit about it: for these two it checks the port against the
-header's formula written out a third time and independently in the test, and counts the system's divergence
-instead of asserting it. The 16-bit source path of the same family, `vImageConvert_ARGB16UTo*`, follows the
-formula and matches the system on every sample of the run.
+The port answers the header. The differential is explicit about it: for these two shapes, in both
+directions, it holds the port to the formula **written out a third time and independently in the test** -
+`reference_decode`, `reference_v410`, `reference_v210` and `reference_of` in the differential - and counts the
+system's divergence instead of asserting it. Over 760 480 samples of the two shapes the two answers differ on
+**63.4 per cent**. The same treatment the two Q12-source conversions get, and for the same reason: the
+system's arithmetic is not the one its own header documents, and a port cannot be a copy of a fixed-point
+pipeline whose coefficients are not published.
 
 ## What it refuses
 
