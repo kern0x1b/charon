@@ -1103,7 +1103,10 @@ la_object_t la_normalized_vector(la_object_t vector, la_norm_t vector_norm)
 // The return value is the release's own answer to "is the system singular": sgetrf_ answers a positive
 // info for a pivot of exactly zero, and the solve of such a system is not a number - measured on the
 // host, [[1,1],[1,1]] against [1,2] gives -inf and inf - so the solve is not run and the caller keeps
-// the zeros the result was made with.
+// the zeros the result was made with. A negative info, which LAPACK reserves for an argument it was
+// handed, cannot arise here and is not answered for: n and the number of solutions are both at least one
+// by the time this runs (la_solve refuses an empty shape and a right-hand side of no columns), the leading
+// dimensions are those two, and the three pointers are the blocks la_solve just allocated and checked.
 static int CharonLALapackFloat(const CharonLAValue *system, const CharonLAValue *rhs, int vector_rhs,
                                CharonLAValue *to, la_count_t n, la_count_t columns, float *factor, float *right,
                                __CLPK_integer *pivots)
