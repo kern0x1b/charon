@@ -209,9 +209,11 @@
         return nil;
     }
     /* The sequence is held, not flattened: it is an ordered list of numbers or of strings with
-     * no shape of its own, and the value keeps it as it was given. */
+     * no shape of its own, and the value keeps it as it was given. The value's own type stays the
+     * sequence type, which is what a caller switches on -- the sequence's type is the kind of its
+     * *elements*, and a value whose type read 1 here would be an int64 value to everything that
+     * asks, and a value holding three numbers is not one. */
     value->_value.kind = CHARON_ML_VALUE_SEQUENCE;
-    value->_type = sequence.type;
     value->_sequence = sequence;
     return value;
 }
@@ -424,22 +426,118 @@
     return YES;
 }
 
+/* What a value is archived as, and what it is built back from.
+ *
+ * Every kind of value is written under a key of its own and read back from the same one, and the
+ * kind is written beside them: a value of a real type that is *undefined* and a value of that type
+ * that holds something are different facts, and the type alone cannot tell them apart -- which is
+ * why the previous round trip lost the array and came back with an empty string where the archive
+ * had written one.
+ *
+ * The keys are this port's own. An archive written by Apple's Core ML is a private format this
+ * port does not read, and the other way round; what a caller may do is write with one and read with
+ * the other on the same release, which is what tests/backports/host/coreml checks for every kind of
+ * value, against the framework's own round trip.
+ */
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     NSNumber *type = [coder decodeObjectOfClass:[NSNumber class] forKey:@"type"];
+    NSNumber *kind = [coder decodeObjectOfClass:[NSNumber class] forKey:@"kind"];
     self = [super init];
     if (self == nil) {
         return nil;
     }
+    if (type == nil) {
+        /* An archive that carries no type is not a value. A coder that handed back a value of the
+         * invalid type holding nothing would be a thing this port makes of an object it cannot
+         * convert, and not a thing a half-written archive means. */
+        return nil;
+    }
     _type = (MLFeatureType)type.integerValue;
+    switch ((charon_ml_value_kind)kind.integerValue) {
+    case CHARON_ML_VALUE_NUMBER:
+        _value = charon_ml_value_number([[coder decodeObjectOfClass:[NSNumber class]
+                                                          forKey:@"number"] doubleValue]);
+        break;
+    case CHARON_ML_VALUE_STRING: {
+        NSString *text = [coder decodeObjectOfClass:[NSString class] forKey:@"string"];
+        if (text == nil) {
+            return nil;
+        }
+        _value = charon_ml_value_string_copy(text.UTF8String, strlen(text.UTF8String));
+        break;
+    }
+    case CHARON_ML_VALUE_ARRAY: {
+        MLMultiArray *array = [coder decodeObjectOfClass:[MLMultiArray class] forKey:@"array"];
+        if (array == nil) {
+            return nil;
+        }
+        _value = charon_ml_value_array(*[array charonArray]);
+        _value.array.owns_data = 0;
+        _multiArray = array;
+        break;
+    }
+    case CHARON_ML_VALUE_DICTIONARY: {
+        NSDictionary *pairs = [coder decodeObjectOfClasses:[NSSet setWithObjects:[NSDictionary class],
+                                                                          [NSString class], [NSNumber class], nil]
+                                                 forKey:@"dictionary"];
+        if (pairs == nil) {
+            return nil;
+        }
+        _value = charon_ml_value_dictionary();
+        _given = pairs;
+        {
+            NSEnumerator *keys = [pairs keyEnumerator];
+            id key;
+            while ((key = [keys nextObject]) != nil) {
+                charon_ml_dictionary_put(&_value, [key UTF8String], [pairs[key] doubleValue]);
+            }
+        }
+        break;
+    }
+    case CHARON_ML_VALUE_SEQUENCE: {
+        MLSequence *sequence = [coder decodeObjectOfClass:[MLSequence class] forKey:@"sequence"];
+        if (sequence == nil) {
+            return nil;
+        }
+        _value.kind = CHARON_ML_VALUE_SEQUENCE;
+        _sequence = sequence;
+        break;
+    }
+    default:
+        /* An image value's numbers are its pixel buffer's, and a pixel buffer is not something a
+         * secure archive carries, so an image comes back of the image type and undefined. An
+         * undefined value of any type comes back as it was, which is the difference the kind
+         * records and the type alone could not. */
+        _value.kind = CHARON_ML_VALUE_NONE;
+        break;
+    }
     return self;
 }
 
 - (void)encodeWithCoder:(NSCoder *)coder
 {
     [coder encodeObject:@(_type) forKey:@"type"];
-    [coder encodeObject:self.stringValue forKey:@"string"];
-    [coder encodeObject:self.multiArrayValue forKey:@"array"];
+    [coder encodeObject:@(_value.kind) forKey:@"kind"];
+    switch (_value.kind) {
+    case CHARON_ML_VALUE_NUMBER:
+        [coder encodeObject:@(_value.number) forKey:@"number"];
+        break;
+    case CHARON_ML_VALUE_STRING:
+        [coder encodeObject:self.stringValue forKey:@"string"];
+        break;
+    case CHARON_ML_VALUE_ARRAY:
+        [coder encodeObject:self.multiArrayValue forKey:@"array"];
+        break;
+    case CHARON_ML_VALUE_DICTIONARY:
+        [coder encodeObject:self.dictionaryValue forKey:@"dictionary"];
+        break;
+    case CHARON_ML_VALUE_SEQUENCE:
+        [coder encodeObject:self.sequenceValue forKey:@"sequence"];
+        break;
+    default:
+        break;
+    }
 }
 
 @end

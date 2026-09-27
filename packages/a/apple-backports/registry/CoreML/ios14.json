@@ -7,6 +7,7 @@
    "introduced": "14.0",
    "minimum": "6.0",
    "status": "implemented",
+   "reason": "a model read from a container or from bytes: the factories, the predictions, the description, the parameters and the compilation",
    "facts": "facts/CoreML/CoreML.md",
    "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tests/backports/host/coreml/run.sh"
   },
@@ -16,6 +17,7 @@
    "introduced": "14.0",
    "minimum": "6.0",
    "status": "implemented",
+   "reason": "a model's own description: its inputs and outputs, the two names a classifier answers under, its metadata, its class labels and its parameters",
    "facts": "facts/CoreML/CoreML.md",
    "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tests/backports/host/coreml/run.sh"
   }

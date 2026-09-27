@@ -58,6 +58,11 @@ COREML_RECORDS="$build/port.json" "$build/port/run" "$models"
 
 # 3. the comparison: every key must be in both files, and must hold the same value, except the
 #    numbers of the prediction of a container that is a recorded divergence.
+# Two kinds of difference are recorded rather than failed, and each is a measurement rather than
+# a tolerance: the numbers of nn_image's prediction (facts/CoreML/CoreML.md) and the archive round
+# trip of a multi array value, where the framework Apple ships *raises* on a secure unarchive
+# because its own MLMultiArray archive is not secure-decodable, and this port's is -- so the port
+# brings the array back and Apple does not. Both are printed by name below.
 COREML_DIVERGENT=${COREML_DIVERGENT:-nn_image} python3 - "$build/system.json" "$build/port.json" <<'PY'
 import json, os, sys
 system, port = json.load(open(sys.argv[1])), json.load(open(sys.argv[2]))
@@ -91,7 +96,8 @@ def numeric(key, want, got):
 
 informational, hard = [], []
 for key, want, got in differences:
-    recorded = key.startswith("value/") and divergent and ("/" + divergent + "/") in key
+    recorded = ((key.startswith("value/") and divergent and ("/" + divergent + "/") in key)
+                or key.startswith("archive/array/"))
     if recorded:
         informational.append((key, want, got))
     elif key.startswith("value/") and numeric(key, want, got):
@@ -108,6 +114,10 @@ for key, want, got in informational:
     print("divergent (recorded):", key)
     print("  system", want[:200])
     print("  port  ", got[:200])
+if [key for key, want, got in informational if key.startswith("archive/array/")]:
+    print("divergent (recorded): the archive round trip of a multi array value -- the framework "
+          "raises NSInvalidUnarchiveOperationException on a secure unarchive of one, because its own "
+          "MLMultiArray archive is not secure-decodable; this port's is, so the array comes back")
 print("compared %d keys, %d differ, %d missing, %d recorded divergences" %
       (len(set(system) | set(port)), len(hard), len(missing), len(informational)))
 if hard or missing:
@@ -170,6 +180,9 @@ mutant MLFeatureValue.m "    if (_value.kind != CHARON_ML_VALUE_STRING) {
     }" "    if (_value.kind == CHARON_ML_VALUE_NONE) {
         return nil;
     }"
+mutant MLFeatureValue.m "        _value = charon_ml_value_string_copy(text.UTF8String, strlen(text.UTF8String));" "        _value = charon_ml_value_string_copy(\"\", 0);"
+mutant MLFeatureValue.m "    [coder encodeObject:self.multiArrayValue forKey:@\"array\"];" "    [coder encodeObject:nil forKey:@\"array\"];"
+mutant MLFeatureValue.m "        _multiArray = array;" "        _multiArray = nil;"
 mutant MLConstants.m '@"com.apple.CoreML"' '@"CoreML"'
 echo "mutants surviving: $survived"
 [ "$survived" -eq 0 ]

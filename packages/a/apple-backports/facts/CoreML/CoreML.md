@@ -119,6 +119,12 @@ came out of it, and each is now what the framework does:
 - **The metadata of a model that names none has all five keys**, the four named ones as empty strings
   and the creator-defined map as an empty dictionary. A caller can tell a model with no author from
   a model whose metadata is not there.
+- **A sequence feature value is of the sequence type, not of its elements' type.** Measured: a value
+  built over `+sequenceWithInt64Array:` reports 7 (Sequence) on a release with Core ML, and the
+  sequence's own `type` is the kind of its elements, which is a different question.
+- **`+[MLFeatureValue featureValueWithSequence:]` is the one constructor that was reporting the
+  sequence's element type**, and so reported a value holding three numbers as an int64 value -- fixed,
+  and the case that found it is in the differential.
 
 Two more, from the same records:
 
@@ -133,6 +139,27 @@ And one that is a property of this host rather than of Core ML, which the check 
 to compile it. So the system run of the differential compiles each container with the framework's
 own compiler and loads the bundle, and the port reads the same container uncompiled: two frameworks,
 one model, in the two forms each of them reads.
+
+## The archive round trip, and where it is better than the framework
+
+`NSSecureCoding` is carried by MLFeatureValue, MLMultiArray and MLSequence, and the round trip is
+a case in the differential: a value of every kind is archived, read back, and compared field by
+field with what went in. **The review of the value types found the first version losing the value** --
+the writer wrote the array and the string and the reader read the type alone -- and it is now
+written and read whole, with the kind beside the type because a value of a real type that is
+undefined and a value of that type that holds something are different facts.
+
+One difference from the framework is recorded rather than matched, and it is a difference in the
+port's favour. **Archiving a value over a multi array and reading it back with
+`+[NSKeyedUnarchiver unarchiveObjectWithData:]` raises on Apple's Core ML** --
+`NSInvalidUnarchiveOperationException: This method only supports secure coding` -- because
+Core ML's own `MLMultiArray` archive is decoded through a non-secure collection path. This port's
+`MLMultiArray` archive is secure-decodable, so the array comes back. Nothing is lost either way and
+no application can depend on the raise, so the port does the round trip; the difference is named in
+`tests/backports/host/coreml/run.sh` next to the check that prints it.
+
+An **image** feature value does not round trip on either: a pixel buffer is not something a secure
+archive carries, so the value comes back of the image type and undefined, and the facts say so.
 
 ## What the port does not do at all
 

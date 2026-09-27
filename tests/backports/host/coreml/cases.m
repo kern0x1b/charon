@@ -450,6 +450,76 @@ static void constants(CoreMLRecorder record)
     }
 }
 
+/* The archive round trip, for every kind of value there is: written, read back, and compared with
+ * what went in. An archive that loses a value is a coder advertised and not delivered, and this is
+ * the case that catches it -- the review of the value types found one, where the writer wrote the
+ * array and the string and the reader read the type alone. */
+static void round_trips(CoreMLRecorder record)
+{
+    NSDictionary *pairs = @{ @"one" : @1.5, @"two" : @2.5 };
+    NSArray *shape = @[ @2, @2 ];
+    NSArray<NSValue *> *values = @[
+        [MLFeatureValue featureValueWithInt64:42],
+        [MLFeatureValue featureValueWithDouble:3.5],
+        [MLFeatureValue featureValueWithString:@"a string of some length"],
+        [MLFeatureValue featureValueWithMultiArray:[[MLMultiArray alloc] initWithShape:shape
+                                                                                  dataType:MLMultiArrayDataTypeFloat32
+                                                                                     error:NULL]],
+        [MLFeatureValue featureValueWithDictionary:pairs error:NULL],
+        [MLFeatureValue featureValueWithSequence:[MLSequence sequenceWithInt64Array:@[ @1, @2, @3 ]]],
+        [MLFeatureValue undefinedFeatureValueWithType:MLFeatureTypeDouble],
+    ];
+    NSArray<NSString *> *names = @[ @"int64", @"double", @"string", @"array", @"dictionary", @"sequence",
+                                     @"undefined" ];
+    NSUInteger index;
+    for (index = 0; index < values.count; index++) {
+        MLFeatureValue *before = values[index];
+        NSData *archive = nil;
+        MLFeatureValue *after = nil;
+        NSString *key = [NSString stringWithFormat:@"archive/%@", names[index]];
+        @try {
+            archive = [NSKeyedArchiver archivedDataWithRootObject:before];
+            after = [NSKeyedUnarchiver unarchiveObjectWithData:archive];
+        } @catch (NSException *raised) {
+            /* Every key is still written, with the raise as its value: the two records then have
+             * the same keys and the comparison shows where they differ rather than reporting half
+             * of them missing, and the reason is in the value. */
+            NSArray *rest = @[ @"type", @"undefined", @"int64", @"double", @"string", @"array",
+                                @"dictionary", @"sequence", @"equal" ];
+            NSUInteger each;
+            for (each = 0; each < rest.count; each++) {
+                record([key stringByAppendingFormat:@"/%@", rest[each]],
+                       [NSString stringWithFormat:@"raised %@", raised.name]);
+            }
+            continue;
+        }
+        record([key stringByAppendingString:@"/type"],
+               [NSString stringWithFormat:@"%ld -> %ld", (long)before.type, (long)after.type]);
+        record([key stringByAppendingString:@"/undefined"],
+               [NSString stringWithFormat:@"%@ -> %@", before.isUndefined ? @"YES" : @"NO",
+                                        after.isUndefined ? @"YES" : @"NO"]);
+        record([key stringByAppendingString:@"/int64"],
+               [NSString stringWithFormat:@"%lld -> %lld", (long long)before.int64Value, (long long)after.int64Value]);
+        record([key stringByAppendingString:@"/double"],
+               [NSString stringWithFormat:@"%.6f -> %.6f", before.doubleValue, after.doubleValue]);
+        record([key stringByAppendingString:@"/string"],
+               [NSString stringWithFormat:@"%@ -> %@", before.stringValue ?: @"(nil)", after.stringValue ?: @"(nil)"]);
+        record([key stringByAppendingString:@"/array"],
+               [NSString stringWithFormat:@"%@ -> %@",
+                                        before.multiArrayValue ? numbers(before.multiArrayValue.shape) : @"(nil)",
+                                        after.multiArrayValue ? numbers(after.multiArrayValue.shape) : @"(nil)"]);
+        record([key stringByAppendingString:@"/dictionary"],
+               [NSString stringWithFormat:@"%lu -> %lu", (unsigned long)before.dictionaryValue.count,
+                                        (unsigned long)after.dictionaryValue.count]);
+        record([key stringByAppendingString:@"/sequence"],
+               [NSString stringWithFormat:@"%@ -> %@",
+                                        before.sequenceValue ? numbers(before.sequenceValue.int64Values) : @"(nil)",
+                                        after.sequenceValue ? numbers(after.sequenceValue.int64Values) : @"(nil)"]);
+        record([key stringByAppendingString:@"/equal"],
+               [before isEqualToFeatureValue:after] ? @"YES" : @"NO");
+    }
+}
+
 void coreml_run(NSString *models, CoreMLRecorder record)
 {
     NSFileManager *files = [NSFileManager defaultManager];
@@ -539,6 +609,7 @@ void coreml_run(NSString *models, CoreMLRecorder record)
         none = [MLModel modelWithContentsOfURL:nil error:&absent];
         record(@"model/no-url", none == nil ? error_of(absent) : @"not nil");
     }
+    round_trips(record);
     providers(record);
     keys(record);
     constants(record);
