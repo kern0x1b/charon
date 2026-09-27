@@ -93,12 +93,24 @@ What misled the earlier reading is the half-pixel itself. For that matrix `sx = 
 right* of where a whole-pixel reading would put it. That is the shift, and it is arithmetic, not a
 different convention.
 
-**One case still discriminates.** A translation, `{1, 0, 0, 1, 2, 0}`, comes back as the source moved two
-columns left, and the direct form above predicts `sx = dx + 2.5` and so a sample of `dx + 3` - three columns
-left - where the system gives two. The inverse form with no half-pixel reproduces the translation exactly.
-The quarter turn and the translation therefore want *opposite* forms of the same matrix, and only one more
-case - a matrix where the two forms differ in both axes, over several `tx` and `ty` - tells them apart. That
-is a single probe, and it is what stands between here and the 24 affine functions.
+**What is still open, and why it is a confound rather than a puzzle.** The quarter turn and a translation
+disagree about the form: the quarter turn is reproduced exactly by the direct form with half-pixel centres,
+and the translation `{1,0,0,1,2,0}` comes back as the source moved two columns left, which the *inverse*
+form with whole-pixel centres reproduces exactly and the direct form does not (it predicts three).
+
+The obvious next step is a matrix where the two forms differ in both axes, and five were run -
+`{2,1,1,2,3,1}`, `{2,1,1,2,0,0}`, `{2,1,1,2,0,2}`, `{2,1,1,2,2,0}` and `{0.5,0.25,0.75,2,0,0}` - and
+**none of them matches any of the sixteen variants.** The reason is in the search itself: it predicts a
+*source pixel*, and for the quarter turn and the translation the mapped position lands on one, so the two
+cases that "match" are the two where that is true. For a general matrix the mapped position is between
+pixels, and the system **interpolates** - the header's default is `kvImageInterpolationLinear`, which is
+what the earlier pi/2 rotation measurement showed - so the destination holds a blend that no nearest-pixel
+rule can predict.
+
+So the mapping for a general matrix is not contradicted by those five; it is simply not tested, because the
+search cannot see a blend. The fix is one change to `probe-halfpixel.m`: predict the *interpolated* value -
+the two nearest source pixels and the weight the mapped fraction gives - instead of the nearest pixel, and
+the same sixteen variants decide it. That is the last measurement the affine family needs.
 
 **`vImageRotate90`'s `rotationConstant` is the four quarter turns, and the whole difficulty was the shape of
 the destination my first probe handed it.** A quarter turn of a WxH picture is a HxW picture; my first probe
@@ -127,10 +139,10 @@ a background row or column at the far end. That is the centring, not a subsample
 
 `rotate90` is settled above. One measurement is left, and it is small:
 
-- **The affine form.** A matrix where the direct and inverse forms differ in both axes - `{2, 1, 1, 2, 3, 1}`
-  is enough - over a picture with distinct values, and the destination-to-source pairs read off the grid
-  directly. `probe-halfpixel.m` already has the sixteen-variant search; one more case in its table settles
-  which form is the rule, and the half-pixel question with it.
+- **The affine form, with the search predicting a blend.** Change `probe-halfpixel.m`'s `try_rule` to return
+  the linearly interpolated value at `(sx, sy)` rather than the nearest source pixel, and re-run the five
+  general matrices. Nearest-pixel prediction is what made the quarter turn and the translation look like
+  agreement, and it is what makes the general matrices look like disagreement.
 ## The two convention probes, run: what they showed
 
 `probe-convention.m` asks the two questions that were open. Both answers are in, both are about the system
@@ -155,12 +167,24 @@ What misled the earlier reading is the half-pixel itself. For that matrix `sx = 
 right* of where a whole-pixel reading would put it. That is the shift, and it is arithmetic, not a
 different convention.
 
-**One case still discriminates.** A translation, `{1, 0, 0, 1, 2, 0}`, comes back as the source moved two
-columns left, and the direct form above predicts `sx = dx + 2.5` and so a sample of `dx + 3` - three columns
-left - where the system gives two. The inverse form with no half-pixel reproduces the translation exactly.
-The quarter turn and the translation therefore want *opposite* forms of the same matrix, and only one more
-case - a matrix where the two forms differ in both axes, over several `tx` and `ty` - tells them apart. That
-is a single probe, and it is what stands between here and the 24 affine functions.
+**What is still open, and why it is a confound rather than a puzzle.** The quarter turn and a translation
+disagree about the form: the quarter turn is reproduced exactly by the direct form with half-pixel centres,
+and the translation `{1,0,0,1,2,0}` comes back as the source moved two columns left, which the *inverse*
+form with whole-pixel centres reproduces exactly and the direct form does not (it predicts three).
+
+The obvious next step is a matrix where the two forms differ in both axes, and five were run -
+`{2,1,1,2,3,1}`, `{2,1,1,2,0,0}`, `{2,1,1,2,0,2}`, `{2,1,1,2,2,0}` and `{0.5,0.25,0.75,2,0,0}` - and
+**none of them matches any of the sixteen variants.** The reason is in the search itself: it predicts a
+*source pixel*, and for the quarter turn and the translation the mapped position lands on one, so the two
+cases that "match" are the two where that is true. For a general matrix the mapped position is between
+pixels, and the system **interpolates** - the header's default is `kvImageInterpolationLinear`, which is
+what the earlier pi/2 rotation measurement showed - so the destination holds a blend that no nearest-pixel
+rule can predict.
+
+So the mapping for a general matrix is not contradicted by those five; it is simply not tested, because the
+search cannot see a blend. The fix is one change to `probe-halfpixel.m`: predict the *interpolated* value -
+the two nearest source pixels and the weight the mapped fraction gives - instead of the nearest pixel, and
+the same sixteen variants decide it. That is the last measurement the affine family needs.
 
 **`vImageRotate90_ARGB16U`'s `rotationConstant` is not a fixed mapping: it depends on the picture's shape.**
 Over a 5x5 the four constants gave the identity, a transpose, a half turn, and a half turn again. Over a 4x3 -
@@ -187,10 +211,10 @@ square-only reading would be wrong on every non-square picture, which is most pi
 
 `rotate90` is settled above. One measurement is left, and it is small:
 
-- **The affine form.** A matrix where the direct and inverse forms differ in both axes - `{2, 1, 1, 2, 3, 1}`
-  is enough - over a picture with distinct values, and the destination-to-source pairs read off the grid
-  directly. `probe-halfpixel.m` already has the sixteen-variant search; one more case in its table settles
-  which form is the rule, and the half-pixel question with it.
+- **The affine form, with the search predicting a blend.** Change `probe-halfpixel.m`'s `try_rule` to return
+  the linearly interpolated value at `(sx, sy)` rather than the nearest source pixel, and re-run the five
+  general matrices. Nearest-pixel prediction is what made the quarter turn and the translation look like
+  agreement, and it is what makes the general matrices look like disagreement.
 
 ## The `rotate90` shape sweep, tabulated
 
