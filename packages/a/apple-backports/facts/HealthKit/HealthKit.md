@@ -184,6 +184,29 @@ extracted from a shared cache reads a class's category method lists and not the 
 public method of a release looks absent. The SDK header and its availability annotations are the
 authority for what a release has; the image is the authority for the values a constant holds.
 
+## The header decides whether a method exists; the image supplies only a value
+
+The SDK headers are the authority on what an API is, and a release image is the authority on the value
+a constant holds. `tools/cfconst/declarations.py Class.member…` says what the iOS 26.2 headers declare
+and with which `API_AVAILABLE`, and it is what settled every one of these:
+
+| member | the header says |
+| --- | --- |
+| the eight `-init` of `HKObject`, `HKObjectType`, `HKQuantity`, `HKSource`, `HKStatistics`, `HKStatisticsCollection`, `HKCategorySample`, `HKWorkoutEvent` | `- (instancetype)init NS_UNAVAILABLE;` in each of their headers, so a caller cannot call it and the release declares none of its own |
+| `-startWorkoutSession:`, `-endWorkoutSession:`, `-pauseWorkoutSession:`, `-resumeWorkoutSession:` | each carries `API_UNAVAILABLE(ios, …)`; they are the watchOS surface of the class |
+| `+predicateForStatesOfMindWithAssociation:` and its three siblings | declared in the 26.2 header inside `@interface HKQuery (HKStateOfMind)`, with **no** `API_AVAILABLE` on the method or the category, so the row took the class's version - the corpus's `via=class-floor`. The type of each argument, `HKStateOfMindAssociation` and its two siblings, is of iOS 18, and the HealthKit image of the armv7 shared cache holds no such selector, in 8.0, 8.2, 9.0 or 9.3. So they are 18.0's, and they are `absent` here with the group that has them named |
+| `+workoutWithActivityType:startDate:endDate:duration:totalEnergyBurned:totalDistance:metadata:` | declared, as `@method` and as the definition; the six-argument form beside it is one argument short and **no header declares it**, so it is gone |
+| `-[HKStatisticsCollectionQuery initWithQuantityType:quantitySamplePredicate:options:anchorDate:intervalComponents:]` | declared with exactly those five arguments; the seven-argument form with `initialResultsHandler:` is in **no** header and in none of the three images, so it is gone and the handler comes through the `initialResultsHandler` property, which is declared |
+| `-[HKStatisticsCollection statistics]`, `-sources` | declared in the 16.4 header inside `@interface HKStatisticsCollection`, and the 8.0 image's list of that class does not hold them: the header is the authority on the method, so both are carried, and the image's disagreement is this row's business |
+| `-[HKCategorySample categoryType]` | declared as a property, unannotated, so 8.0's; it was neither carried nor registered and now is both |
+
+Four more the corpus does not list at all, which the headers do declare and this library answers:
+`+[HKUnit kilojoulesUnit]`, `+[HKUnit milliseconds]`, `-[HKStatisticsCollection anchorDate]` and
+`-[HKStatisticsCollection intervalComponents]`. The corpus attaches the last two to
+`HKStatisticsCollectionQuery` by `via=container` and misses the collection's own. They are real 8.0 API
+that the port answers, and a row the corpus does not carry needs no registry entry; R4 constrains the
+other direction, a registered name no header declares, and none of the 407 is such a name.
+
 ## The device run
 
 None yet. Everything above is a read of a release image, a release cache, the SDK headers and the
