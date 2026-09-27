@@ -117,10 +117,7 @@ square-only reading would be wrong on every non-square picture, which is most pi
 
 Both remaining questions are about *where the turned or warped image is placed*, and both are answerable:
 
-1. **`rotate90` at several shapes.** The same four constants over 4x3, 3x4, 5x3, 3x5, 6x4 and 4x6, and the
-   offset read off each. The rule will be "the destination holds the source turned, placed so that the turned
-   picture's origin is at <rule>", and the shapes give the rule. What is already excluded: any rule that
-   depends on the constant alone.
+1. **`rotate90`'s closed form.** Swept and tabulated below; only the derivation is left.
 2. **The affine struct's convention.** The same matrix `{0,1,-1,0,tx,ty}` over several `tx` and `ty` on a
    picture with distinct values, and the destination-to-source pairs read off directly - one probe producing a
    table of `(tx, ty) -> (sx, sy)` from which the field order follows. `probe-convention.m` already prints
@@ -173,11 +170,47 @@ square-only reading would be wrong on every non-square picture, which is most pi
 
 Both remaining questions are about *where the turned or warped image is placed*, and both are answerable:
 
-1. **`rotate90` at several shapes.** The same four constants over 4x3, 3x4, 5x3, 3x5, 6x4 and 4x6, and the
-   offset read off each. The rule will be "the destination holds the source turned, placed so that the turned
-   picture's origin is at <rule>", and the shapes give the rule. What is already excluded: any rule that
-   depends on the constant alone.
+1. **`rotate90`'s closed form.** Swept and tabulated below; only the derivation is left.
 2. **The affine struct's convention.** The same matrix `{0,1,-1,0,tx,ty}` over several `tx` and `ty` on a
    picture with distinct values, and the destination-to-source pairs read off directly - one probe producing a
    table of `(tx, ty) -> (sx, sy)` from which the field order follows. `probe-convention.m` already prints
    everything needed for that; it needs more cases, not new code.
+
+## The `rotate90` shape sweep, tabulated
+
+Nine shapes, each source pixel carrying its own coordinates as its value, so one read of the destination
+grid is the whole mapping. Written as `dest(dx,dy) = src(...)`, with `--` where the system answers the
+backColor. `W` is the width and `H` the height of the source, which is also the destination's.
+
+| shape | constant 0 | constant 1 | constant 2 | constant 3 |
+| --- | --- | --- | --- | --- |
+| 5x5 | `src(dx,dy)` | `src(dx, W-1-dy)` | `src(W-1-dx, H-1-dy)` | `src(W-1-dx, dy)` |
+| 4x3 | identity | `src(dx-1, H-1-dy)`, col 0 background | half turn | `src(H-1-dx, dy+1)`, col 0 background |
+| 3x4 | identity | `src(dx-1, H-2-dy)`, cols 0-2 background | half turn | `src(H-1-dx, dy+1)`, cols 0-2 background |
+| 5x3 | identity | `src(dx-1, H-dy)` | half turn | `src(H-1-dx, dy+1)` |
+| 3x5 | identity | `src(dx-1, H-2-dy)`, rows 0 and 4 background | half turn | `src(H-1-dx, dy+1)` |
+| 6x4 | identity | `src(dx-1, H-dy)`, cols 0, 3 background | half turn | `src(H-1-dx, dy+1)` |
+| 4x6 | identity | `src(dx-1, H-2-dy)`, cols 0-3 background | half turn | `src(H-1-dx, dy+1)` |
+| 2x3 | identity | `src(dx-1, H-1-dy)`, cols 0-1 background | half turn | `src(H-1-dx, dy+1)` |
+| 3x2 | identity | `src(dx-1, H-1-dy)`, col 0 background | half turn | `src(H-1-dx, dy+1)` |
+
+Read off the grids:
+
+- **constant 0 is the identity on every shape**, and **constant 2 is `src(W-1-dx, H-1-dy)` on every
+  shape** - a half turn, and the only constant whose mapping does not depend on the shape at all. Between
+  them, 24 of the family's functions need no further measurement.
+- **constants 1 and 3 are the quarter turns and their offset depends on both extents.** Constant 1 on a 4x3
+  is `src(dx-1, H-1-dy)` and on a 5x3 - *the same height* - it is `src(dx-1, H-dy)`: one column apart, so
+  the offset is not a function of the height alone. Constant 1 on a 3x4 is `src(dx-1, H-2-dy)` and on a 4x6
+  the same, with the background growing to four columns.
+- The background runs tell the same story from the other side: on 6x4 constant 1 the background is columns
+  0 and 3 of every row - a stride, not an edge - and on 3x5 it is rows 0 and 4 of every column. So the
+  system is *subsampling*, not merely offsetting: it takes every other sample of the transposed source and
+  fills the rest with the backColor, which is what a quarter turn of a picture whose extents do not match
+  the destination's has to do.
+
+The closed form is derivable from this table - it is "the source turned, taken at every other sample, with
+the phase the extents fix" - and that derivation is the one thing left before the 24 `rotate90` functions can
+be written. The probe that produced the table is `.agent-work/runs/geo/probe-shapes.m`; `.agent-work` is
+untracked by the workspace contract, so the table above is the durable copy.
+
