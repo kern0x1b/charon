@@ -403,10 +403,13 @@
     return _intervalComponents;
 }
 
+// The statistics of the interval a date falls in. An interval the store holds no sample of is an
+// interval all the same, and its statistics are an object with a count of zero and no quantity, which
+// is what the release answers for an interval nothing was saved in.
 - (nullable HKStatistics *)statisticsForDate:(NSDate *)date
 {
     NSUInteger index = [self charon_intervalForDate:date];
-    if (index >= _groups.count || !_groups[index].count)
+    if (index >= _groups.count)
         return nil;
     return [HKStatistics charon_statisticsForSamples:_groups[index] options:_options];
 }
@@ -421,8 +424,6 @@
             continue;
         if (endDate && [from compare:endDate] == NSOrderedDescending)
             break;
-        if (!_groups[index].count)
-            continue;
         BOOL stop = NO;
         block([HKStatistics charon_statisticsForSamples:_groups[index] options:_options], &stop);
         if (stop)

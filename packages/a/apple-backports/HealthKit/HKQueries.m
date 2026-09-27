@@ -395,25 +395,22 @@
     [[CharonHKStore sharedStore] removeObserver:self];
 }
 
+// The handler is called with the anchor the store's own write sequence has reached, and with a
+// completion the application calls when it has caught up. This store has no work left once its
+// handler has returned - the change it is reporting has already been written - so the completion is
+// called when the handler returns, and an application that never calls it has still been told, which
+// is what the completion is for and not a way to stop the next change from coming.
 - (void)charon_storeDidChange:(NSArray<NSUUID *> *)identifiers
 {
     CharonHKStore *store = [CharonHKStore sharedStore];
     NSInteger sequence = store.highestSequence;
     HKQueryAnchor *anchor = [HKQueryAnchor charon_anchorWithSequence:sequence];
-    __block BOOL answered = NO;
+    _anchor = anchor;
     [self charon_perform:^{
         if (self->_updateHandler)
             self->_updateHandler(self, anchor, ^{
-                @synchronized(self) {
-                    answered = YES;
-                }
             }, nil);
     }];
-    // The handler's completion is the release's signal that the application has caught up; this
-    // store has no work left to do when it is called, so it is called once the handler has run.
-    @synchronized(self) {
-        _anchor = anchor;
-    }
 }
 
 @end
