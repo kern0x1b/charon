@@ -186,6 +186,15 @@ public struct MeshDescriptor: MeshBufferContainer {
         materials = .allFaces(0)
         buffers = [:]
     }
+
+    /// How many materials the faces ask for: one for every face, and as many as the highest
+    /// index the faces name when each of them names its own.
+    public var expectedMaterialCount: Int {
+        switch materials {
+        case .allFaces: return 1
+        case .perFace(let faces): return Int(faces.max() ?? 0) + 1
+        }
+    }
 }
 
 // MARK: - The mesh
@@ -202,12 +211,7 @@ open class MeshResource {
 
     /// How many materials the mesh's faces ask for. Measured on the host: a generated box asks
     /// for one.
-    public var expectedMaterialCount: Int {
-        switch descriptor.materials {
-        case .allFaces: return 1
-        case .perFace(let faces): return Int(faces.max() ?? 0) + 1
-        }
-    }
+    public var expectedMaterialCount: Int { descriptor.expectedMaterialCount }
 
     /// The box the mesh fills, from its positions.
     public var bounds: BoundingBox {

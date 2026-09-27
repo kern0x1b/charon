@@ -1,3 +1,5 @@
+import("core.base.json")
+
 package("swift-runtime")
     set_homepage("https://www.swift.org")
     set_description("The Swift runtime an iOS older than Swift itself does not ship: the standard library, concurrency, synchronization, regular expressions and observation, built for the port's architecture and oldest release from the sources of the swift package")
@@ -78,7 +80,7 @@ package("swift-runtime")
     -- The sources of an overlay this tree holds rather than the release's, the same way: a
     -- changed one is a different runtime. The simd module's own source is the SDK's interface,
     -- read at install time, and what the patches beside it make of it is hashed with them.
-    for _, held in ipairs({"files/RealityFoundation"}) do
+    for _, held in ipairs({"files/RealityFoundation", "files/SceneKit"}) do
         for _, file in ipairs(os.files(path.join(os.scriptdir(), held, "**"))) do
             table.insert(digests, path.relative(file, path.join(os.scriptdir(), held)) .. "=" .. hash.sha256(file))
         end
@@ -393,6 +395,7 @@ package("swift-runtime")
             local flags = table.join({"-target", triple, "-resource-dir", resources, "-module-name", name,
                                       "-parse-as-library", "-swift-version", "5", "-O", "-wmo",
                                       "-Xfrontend", "-disable-implicit-string-processing-module-import"}, use_ld,
+                                     opt and opt.extra_flags or {},
                                      (opt and opt.concurrency) and {} or {"-Xfrontend", "-disable-implicit-concurrency-module-import"},
                                      runtime_flags, swift.availability(source),
                                      -- the lifted headers only where the backports are linked: an overlay that does not
@@ -653,6 +656,31 @@ package("swift-runtime")
         -- The overlays above are built before this and read the SDK's simd headers, which is
         -- what they have always read; only a port that imports simd needs the module.
 
+        -- SceneKit's apinote in the SDK carries two top-level `Protocols:` keys, and a YAML
+        -- mapping cannot, so Swift's importer refuses the whole module for every target
+        -- (measured 2026-09-27 against this SDK: "duplicated mapping key 'Protocols'" then
+        -- "could not build Objective-C module 'SceneKit'"). Clang accepts the file, which is
+        -- why the backports' own Objective-C sources build. The merge is local: the two lists
+        -- become one, and a clang VFS overlay points the SDK's copy at the merged one for the
+        -- one compile below. No other package's build hash moves, and no other compile of this
+        -- one sees it.
+        local scn_overlay = {}
+        local scn_headers = path.join(toolchain:config("sdkdir"), "System", "Library", "Frameworks", "SceneKit.framework", "Headers")
+        local scn_apinote = path.join(scn_headers, "SceneKit.apinotes")
+        if os.isfile(scn_apinote) then
+            local scn = path.absolute("scenekit")
+            os.mkdir(scn)
+            local merged = path.join(scn, "SceneKit.apinotes")
+            os.vrunv("python3", {path.join(package:scriptdir(), "files", "SceneKit", "merge-apinotes.py"),
+                                 scn_apinote, merged})
+            local overlay = path.join(scn, "overlay.yaml")
+            io.writefile(overlay, table.concat({
+                '{"version":0,"case-sensitive":"false","roots":[{"type":"directory","name":', json_encode(scn_headers),
+                ',"contents":[{"type":"file","name":"SceneKit.apinotes","external-contents":', json_encode(merged), '}]}]}'
+            }))
+            scn_overlay = {"-Xcc", "-ivfsoverlay", "-Xcc", overlay}
+        end
+
         -- RealityFoundation: the scene graph an AR application is built out of, a module no
         -- release before iOS 13 carries and this tree holds the sources of. It sits on the simd
         -- module above, and on the QuartzCore overlay for CATransform3D; nothing here reaches a
@@ -667,8 +695,8 @@ package("swift-runtime")
         end
         assert(#reality_sources > 0, "the RealityFoundation sources are missing from the package")
         build_overlay("RealityFoundation", reality_sources,
-                      table.join(foundation_links, {"-lswiftQuartzCore", "-framework", "QuartzCore"}),
-                      nil, {backports = {}})
+                      table.join(foundation_links, {"-lswiftQuartzCore", "-framework", "QuartzCore", "-framework", "SceneKit"}),
+                      nil, {backports = {}, extra_flags = scn_overlay})
 
         -- The supplemental libraries, each its own project, against the standard library built above.
         for _, library in ipairs({"Synchronization", "Observation", "StringProcessing"}) do
