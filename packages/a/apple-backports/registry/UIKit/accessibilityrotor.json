@@ -174,7 +174,7 @@
   {
    "api": "UIAccessibilityIsAssistiveTouchRunning()",
    "kind": "function",
-   "introduced": "10.0",
+   "introduced": "10.0.1",
    "minimum": "6.0",
    "status": "implemented",
    "effect": "NO: the release carries no AssistiveTouch state to read, measured on its own cache where the only AssistiveTouch names are AssistiveTouchCustomGestureCreation and AssistiveTouchPID, neither of which is a state, and it exposes no notification the state changes through. This is the answer a device with AssistiveTouch off gives, and it is the seam the whole push allows rather than a guess",
@@ -184,7 +184,7 @@
   {
    "api": "UIAccessibilityHearingDevicePairedEar()",
    "kind": "function",
-   "introduced": "10.0",
+   "introduced": "10.0.1",
    "minimum": "6.0",
    "status": "implemented",
    "effect": "UIAccessibilityHearingDeviceEarNone: this device has no paired hearing device, so there is no ear, which is the answer the release documents for no device",

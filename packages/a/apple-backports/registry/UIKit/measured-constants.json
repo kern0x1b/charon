@@ -4,7 +4,7 @@
   {
    "api": "NSTextListMarkerBox",
    "kind": "constant",
-   "introduced": "7.0",
+   "introduced": "11.0",
    "minimum": "6.0",
    "status": "implemented",
    "effect": "the string '{box}', as the release's own constant holds it",
@@ -14,7 +14,7 @@
   {
    "api": "NSTextListMarkerCheck",
    "kind": "constant",
-   "introduced": "7.0",
+   "introduced": "11.0",
    "minimum": "6.0",
    "status": "implemented",
    "effect": "the string '{check}', as the release's own constant holds it",
@@ -24,7 +24,7 @@
   {
    "api": "NSTextListMarkerCircle",
    "kind": "constant",
-   "introduced": "7.0",
+   "introduced": "11.0",
    "minimum": "6.0",
    "status": "implemented",
    "effect": "the string '{circle}', as the release's own constant holds it",
@@ -34,7 +34,7 @@
   {
    "api": "NSTextListMarkerDecimal",
    "kind": "constant",
-   "introduced": "7.0",
+   "introduced": "11.0",
    "minimum": "6.0",
    "status": "implemented",
    "effect": "the string '{decimal}', as the release's own constant holds it",
@@ -44,7 +44,7 @@
   {
    "api": "NSTextListMarkerDiamond",
    "kind": "constant",
-   "introduced": "7.0",
+   "introduced": "11.0",
    "minimum": "6.0",
    "status": "implemented",
    "effect": "the string '{diamond}', as the release's own constant holds it",
@@ -54,7 +54,7 @@
   {
    "api": "NSTextListMarkerDisc",
    "kind": "constant",
-   "introduced": "7.0",
+   "introduced": "11.0",
    "minimum": "6.0",
    "status": "implemented",
    "effect": "the string '{disc}', as the release's own constant holds it",
@@ -64,7 +64,7 @@
   {
    "api": "NSTextListMarkerHyphen",
    "kind": "constant",
-   "introduced": "7.0",
+   "introduced": "11.0",
    "minimum": "6.0",
    "status": "implemented",
    "effect": "the string '{hyphen}', as the release's own constant holds it",
@@ -74,7 +74,7 @@
   {
    "api": "NSTextListMarkerLowercaseAlpha",
    "kind": "constant",
-   "introduced": "7.0",
+   "introduced": "11.0",
    "minimum": "6.0",
    "status": "implemented",
    "effect": "the string '{lower-alpha}', as the release's own constant holds it",
@@ -84,7 +84,7 @@
   {
    "api": "NSTextListMarkerLowercaseHexadecimal",
    "kind": "constant",
-   "introduced": "7.0",
+   "introduced": "11.0",
    "minimum": "6.0",
    "status": "implemented",
    "effect": "the string '{lower-hexadecimal}', as the release's own constant holds it",
@@ -94,7 +94,7 @@
   {
    "api": "NSTextListMarkerLowercaseLatin",
    "kind": "constant",
-   "introduced": "7.0",
+   "introduced": "11.0",
    "minimum": "6.0",
    "status": "implemented",
    "effect": "the string '{lower-latin}', as the release's own constant holds it",
@@ -104,7 +104,7 @@
   {
    "api": "NSTextListMarkerLowercaseRoman",
    "kind": "constant",
-   "introduced": "7.0",
+   "introduced": "11.0",
    "minimum": "6.0",
    "status": "implemented",
    "effect": "the string '{lower-roman}', as the release's own constant holds it",
@@ -114,7 +114,7 @@
   {
    "api": "NSTextListMarkerOctal",
    "kind": "constant",
-   "introduced": "7.0",
+   "introduced": "11.0",
    "minimum": "6.0",
    "status": "implemented",
    "effect": "the string '{octal}', as the release's own constant holds it",
@@ -124,7 +124,7 @@
   {
    "api": "NSTextListMarkerSquare",
    "kind": "constant",
-   "introduced": "7.0",
+   "introduced": "11.0",
    "minimum": "6.0",
    "status": "implemented",
    "effect": "the string '{square}', as the release's own constant holds it",
@@ -134,7 +134,7 @@
   {
    "api": "NSTextListMarkerUppercaseAlpha",
    "kind": "constant",
-   "introduced": "7.0",
+   "introduced": "11.0",
    "minimum": "6.0",
    "status": "implemented",
    "effect": "the string '{upper-alpha}', as the release's own constant holds it",
@@ -144,7 +144,7 @@
   {
    "api": "NSTextListMarkerUppercaseHexadecimal",
    "kind": "constant",
-   "introduced": "7.0",
+   "introduced": "11.0",
    "minimum": "6.0",
    "status": "implemented",
    "effect": "the string '{upper-hexadecimal}', as the release's own constant holds it",
@@ -154,7 +154,7 @@
   {
    "api": "NSTextListMarkerUppercaseLatin",
    "kind": "constant",
-   "introduced": "7.0",
+   "introduced": "11.0",
    "minimum": "6.0",
    "status": "implemented",
    "effect": "the string '{upper-latin}', as the release's own constant holds it",
@@ -164,7 +164,7 @@
   {
    "api": "NSTextListMarkerUppercaseRoman",
    "kind": "constant",
-   "introduced": "7.0",
+   "introduced": "11.0",
    "minimum": "6.0",
    "status": "implemented",
    "effect": "the string '{upper-roman}', as the release's own constant holds it",

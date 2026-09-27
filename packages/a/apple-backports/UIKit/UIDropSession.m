@@ -28,6 +28,7 @@
 @synthesize localContext = _localContext;
 @synthesize location = _location;
 @synthesize interaction = _interaction;
+@synthesize allowsMoveOperation = _allowsMoveOperation;
 
 - (instancetype)initWithItems:(NSArray<UIDragItem *> *)items interaction:(UIDragInteraction *)interaction
 {
@@ -76,14 +77,16 @@
 @end
 
 @implementation CharonDropSession
-@synthesize dragSession = _dragSession;
 @synthesize progress = _progress;
+@synthesize progressIndicatorStyle = _progressIndicatorStyle;
+@synthesize dragSession = _dragSession;
 @synthesize interaction = _interaction;
 
 - (instancetype)initWithDragSession:(CharonDragSession *)dragSession interaction:(UIDropInteraction *)interaction
 {
     if ((self = [super init])) {
         _dragSession = dragSession;
+        _items = dragSession.items;
         _interaction = interaction;
         // A progress with one unit per item, which is what a drop of a handful of items measures.
         _progress = [NSProgress progressWithTotalUnitCount:dragSession.items.count];
@@ -91,10 +94,9 @@
     return self;
 }
 
-- (NSArray<UIDragItem *> *)items
-{
-    return _dragSession.items;
-}
+// The items of the drag session, held here as well so a drop answers for what it was given even if
+// the drag session is gone by the time the delegate is asked.
+@synthesize items = _items;
 
 - (CGPoint)locationInView:(UIView *)view
 {
@@ -141,55 +143,6 @@
 {
     // A drop inside the application is always the local session: there is no other one to be had.
     return _dragSession;
-}
-
-@end
-
-@implementation UIDropProposal {
-@private
-    UIDropOperation _operation;
-    BOOL _precise;
-    BOOL _prefersFullSizePreview;
-}
-
-- (instancetype)initWithDropOperation:(UIDropOperation)operation
-{
-    if ((self = [super init]))
-        _operation = operation;
-    return self;
-}
-
-- (UIDropOperation)operation
-{
-    return _operation;
-}
-
-- (BOOL)isPrecise
-{
-    return _precise;
-}
-
-- (void)setPrecise:(BOOL)precise
-{
-    _precise = precise;
-}
-
-- (BOOL)prefersFullSizePreview
-{
-    return _prefersFullSizePreview;
-}
-
-- (void)setPrefersFullSizePreview:(BOOL)prefersFullSizePreview
-{
-    _prefersFullSizePreview = prefersFullSizePreview;
-}
-
-- (id)copyWithZone:(NSZone *)zone
-{
-    UIDropProposal *copy = [[[self class] allocWithZone:zone] initWithDropOperation:_operation];
-    copy.precise = _precise;
-    copy.prefersFullSizePreview = _prefersFullSizePreview;
-    return copy;
 }
 
 @end

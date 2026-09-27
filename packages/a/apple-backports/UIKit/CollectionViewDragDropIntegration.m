@@ -47,8 +47,7 @@
     for (id<UIInteraction> interaction in self.interactions) {
         if (![interaction isKindOfClass:[UIDropInteraction class]])
             continue;
-        CharonDropSession *session = ((UIDropInteraction *)interaction).currentDrop;
-        if (session)
+        if (((UIDropInteraction *)interaction).currentDrop)
             return YES;
     }
     return NO;
@@ -113,8 +112,7 @@
     for (id<UIInteraction> interaction in self.interactions) {
         if (![interaction isKindOfClass:[UIDropInteraction class]])
             continue;
-        CharonDropSession *session = ((UIDropInteraction *)interaction).currentDrop;
-        if (session)
+        if (((UIDropInteraction *)interaction).currentDrop)
             return YES;
     }
     return NO;

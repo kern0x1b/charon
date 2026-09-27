@@ -132,56 +132,6 @@
    "source": "the header of SDK 26.2 for what each type is and what it is a subclass of; the tree's own UIPreviewTarget and UITargetedPreview, which the drag's target and preview build on and do not duplicate; the host's own UIKit under Mac Catalyst for the answers that are observable there"
   },
   {
-   "api": "UIDropProposal",
-   "kind": "class",
-   "introduced": "11.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "effect": "what a drop proposes: the operation it would do, whether it is precise, and whether it wants the full size preview; copied when it is copied",
-   "facts": "facts/UIKit/DragAndDrop.md",
-   "source": "the header of SDK 26.2 for what each type declares; the release's own UILongPressGestureRecognizer and UIPanGestureRecognizer, which are the gestures a drag is made of; the port's own sessions, which have no counterpart on the release because it has no drag service"
-  },
-  {
-   "api": "-[UIDropProposal initWithDropOperation:]",
-   "kind": "method",
-   "introduced": "11.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "effect": "a proposal for that operation, which is the designated way to make one",
-   "facts": "facts/UIKit/DragAndDrop.md",
-   "source": "the header of SDK 26.2 for what each type declares; the release's own UILongPressGestureRecognizer and UIPanGestureRecognizer, which are the gestures a drag is made of; the port's own sessions, which have no counterpart on the release because it has no drag service"
-  },
-  {
-   "api": "UIDropProposal.operation",
-   "kind": "property",
-   "introduced": "11.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "effect": "the operation this proposal would do, as it was given",
-   "facts": "facts/UIKit/DragAndDrop.md",
-   "source": "the header of SDK 26.2 for what each type declares; the release's own UILongPressGestureRecognizer and UIPanGestureRecognizer, which are the gestures a drag is made of; the port's own sessions, which have no counterpart on the release because it has no drag service"
-  },
-  {
-   "api": "UIDropProposal.precise",
-   "kind": "property",
-   "introduced": "11.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "effect": "whether the drop is exactly where the finger is rather than over a target that accepted it, NO in a proposal made by hand",
-   "facts": "facts/UIKit/DragAndDrop.md",
-   "source": "the header of SDK 26.2 for what each type declares; the release's own UILongPressGestureRecognizer and UIPanGestureRecognizer, which are the gestures a drag is made of; the port's own sessions, which have no counterpart on the release because it has no drag service"
-  },
-  {
-   "api": "UIDropProposal.prefersFullSizePreview",
-   "kind": "property",
-   "introduced": "11.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "effect": "whether the drop is shown with the whole of the item rather than a crop of it, NO in a proposal made by hand",
-   "facts": "facts/UIKit/DragAndDrop.md",
-   "source": "the header of SDK 26.2 for what each type declares; the release's own UILongPressGestureRecognizer and UIPanGestureRecognizer, which are the gestures a drag is made of; the port's own sessions, which have no counterpart on the release because it has no drag service"
-  },
-  {
    "api": "UIDragInteraction",
    "kind": "class",
    "introduced": "11.0",
@@ -238,46 +188,6 @@
    "minimum": "6.0",
    "status": "implemented",
    "effect": "whether the lift's gesture may be recognised at the same time as another, NO in an interaction made by hand",
-   "facts": "facts/UIKit/DragAndDrop.md",
-   "source": "the header of SDK 26.2 for what each type declares; the release's own UILongPressGestureRecognizer and UIPanGestureRecognizer, which are the gestures a drag is made of; the port's own sessions, which have no counterpart on the release because it has no drag service"
-  },
-  {
-   "api": "UIDropInteraction",
-   "kind": "class",
-   "introduced": "11.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "effect": "the interaction a view has that receives a drop: it is registered with the drags the application has, and a drag that is let go over it asks it whether it will have the session",
-   "facts": "facts/UIKit/DragAndDrop.md",
-   "source": "the header of SDK 26.2 for what each type declares; the release's own UILongPressGestureRecognizer and UIPanGestureRecognizer, which are the gestures a drag is made of; the port's own sessions, which have no counterpart on the release because it has no drag service"
-  },
-  {
-   "api": "-[UIDropInteraction initWithDelegate:]",
-   "kind": "method",
-   "introduced": "11.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "effect": "a drop interaction for that delegate, registered with every drag interaction in the application's windows so a drag knows where it may be let go",
-   "facts": "facts/UIKit/DragAndDrop.md",
-   "source": "the header of SDK 26.2 for what each type declares; the release's own UILongPressGestureRecognizer and UIPanGestureRecognizer, which are the gestures a drag is made of; the port's own sessions, which have no counterpart on the release because it has no drag service"
-  },
-  {
-   "api": "UIDropInteraction.delegate",
-   "kind": "property",
-   "introduced": "11.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "effect": "who is asked whether the session will be handled, what to propose and to perform the drop, held weakly as the header says",
-   "facts": "facts/UIKit/DragAndDrop.md",
-   "source": "the header of SDK 26.2 for what each type declares; the release's own UILongPressGestureRecognizer and UIPanGestureRecognizer, which are the gestures a drag is made of; the port's own sessions, which have no counterpart on the release because it has no drag service"
-  },
-  {
-   "api": "UIDropInteraction.allowsSimultaneousDropSessions",
-   "kind": "property",
-   "introduced": "11.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "effect": "whether more than one drop may be under this view at once, NO in an interaction made by hand",
    "facts": "facts/UIKit/DragAndDrop.md",
    "source": "the header of SDK 26.2 for what each type declares; the release's own UILongPressGestureRecognizer and UIPanGestureRecognizer, which are the gestures a drag is made of; the port's own sessions, which have no counterpart on the release because it has no drag service"
   },
@@ -540,6 +450,86 @@
    "effect": "the same for a table's placeholder",
    "facts": "facts/UIKit/DragAndDrop.md",
    "source": "the header of SDK 26.2 for what each protocol declares; the release's own indexPathForItemAtPoint: and indexPathForRowAtPoint: for where an item would land, and its layout for the size it would be drawn at; the port's own sessions, which have no counterpart on the release because it has no drag"
+  },
+  {
+   "api": "UIDropInteraction",
+   "kind": "class",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the drop target a %s registers with a drag; the tree's own file builds it and the port asks it whether it will have a session",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each type is; the tree's own UIDropInteraction.m, UIDropProposal.m and UIDropCoordinators.m build them, and the port's drag and drop uses them"
+  },
+  {
+   "api": "UIDropProposal",
+   "kind": "class",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "what a drop proposes: the operation, whether it is precise, and whether it wants the full size preview",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each type is; the tree's own UIDropInteraction.m, UIDropProposal.m and UIDropCoordinators.m build them, and the port's drag and drop uses them"
+  },
+  {
+   "api": "UICollectionViewPlaceholder",
+   "kind": "class",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "where an item will be in a collection view once the data source has been told, and the cell it is drawn with",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each type is; the tree's own UIDropInteraction.m, UIDropProposal.m and UIDropCoordinators.m build them, and the port's drag and drop uses them"
+  },
+  {
+   "api": "UICollectionViewDropPlaceholder",
+   "kind": "class",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a placeholder that is also a drop target, with the parameters its preview is built from",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each type is; the tree's own UIDropInteraction.m, UIDropProposal.m and UIDropCoordinators.m build them, and the port's drag and drop uses them"
+  },
+  {
+   "api": "UICollectionViewDropProposal",
+   "kind": "class",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a drop proposal that also says where the item would land",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each type is; the tree's own UIDropInteraction.m, UIDropProposal.m and UIDropCoordinators.m build them, and the port's drag and drop uses them"
+  },
+  {
+   "api": "UITableViewPlaceholder",
+   "kind": "class",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "where a row will be once the data source has been told, with the height it is drawn at",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each type is; the tree's own UIDropInteraction.m, UIDropProposal.m and UIDropCoordinators.m build them, and the port's drag and drop uses them"
+  },
+  {
+   "api": "UITableViewDropPlaceholder",
+   "kind": "class",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a table placeholder that is also a drop target",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each type is; the tree's own UIDropInteraction.m, UIDropProposal.m and UIDropCoordinators.m build them, and the port's drag and drop uses them"
+  },
+  {
+   "api": "UITableViewDropProposal",
+   "kind": "class",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a drop proposal that also says where the row would land",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each type is; the tree's own UIDropInteraction.m, UIDropProposal.m and UIDropCoordinators.m build them, and the port's drag and drop uses them"
   }
  ]
 }
