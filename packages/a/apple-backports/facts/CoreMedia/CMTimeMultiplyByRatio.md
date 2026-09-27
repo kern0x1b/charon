@@ -31,19 +31,22 @@ product of a 64-bit value and a 32-bit multiplier.
 ## The claim, and what was measured against it
 
 `tests/backports/host/coremedia7` runs the port's function and the host's own side by side over a
-grid of 22 values (0, +-1, +-2, +-3, 5, 7, -7, 10, 100, 1000, 48000, -48000, 1000000007,
--1000000007, 2147483647, -2147483648, 4294967296, 600000000000, 123456789012345) x 27 timescales
-(1, 2, 3, 4, 5, 6, 7, 10, 24, 25, 30, 48, 60, 100, 300, 441, 480, 600, 1000, 30000, 44100, 48000,
-90000, 100000000, 1000000000, 1073741824, 2147483647) x 20 multipliers x 20 divisors, each also
+grid of 32 values, which includes 2^60, 2^61, 2^62, 1e18, both `int64` bounds and the largest value the
+port answers, and 10^12; x 32 timescales, which include 0, -1, -2, -1000 and -48000; x 29 multipliers
+and 29 divisors, which include 8, 16, 20, 1000000000 and both `int32` bounds. Every case is asked again
 with `kCMTimeFlags_HasBeenRounded` set, with a non-zero epoch, and for the five special times.
 
-- **673 871 answers are the same**, including every degenerate rule above.
+- **2 094 716 answers are the same**, including every degenerate rule above.
 - **0 differ where a `CMTime` can hold the exact rational.** That is the claim the registry entry
-  makes, and the test fails if one ever does.
-- 40 929 fall outside the claim, where no `CMTime` holds the exact rational: the value overflows
-  64 bits, or `timescale * divisor` is not a legal `CMTimeScale` (a reduced divisor of 2147483648,
-  or a product above `INT32_MAX`). There the port answers the exact value at 1000000000 and the
-  host answers its own; 29 214 of the 40 929 are within a microsecond of each other.
+  makes, and the test fails if one ever does. The claim boundary in the test forms the product in
+  128 bits, not in 64, so it cannot repeat the implementation's arithmetic: an earlier version of it
+  multiplied in `int64_t` and so agreed with a wrapped numerator on both sides, which is what
+  `coordination/reviews/2026-09-27-api-coremedia-time-1.md` finding B caught.
+- 493 041 fall outside the claim, where no `CMTime` holds the exact rational. 365 340 of them answer
+  the host's own status and value; the rest are the two corners below.
+
+The same two probes the review kept (`coordination/reviews/probes/2026-09-27-coremedia-ratio-big.m`
+and `-bounds.m`), built against this file the way `run.sh` builds it, report **0 differing rows**.
 
 ## Where the host leaves the documentation, and the port does not
 
@@ -51,23 +54,33 @@ In that corner Apple's implementation truncates the *value* against the input ti
 multiplies, so it loses the answer entirely for a value smaller than its own timescale. Measured
 on the host:
 
+Where the exact numerator is past an `int64`, the host reduces numerator and denominator by their
+greatest common divisor until the value fits, and only when that runs out does it truncate the value
+against the input timescale and answer at timescale 1. Both are measured, and both are what the port
+does:
+
 | input | exact | host | port |
 | --- | --- | --- | --- |
-| `-1/2147483647 * 65536 / 3` | -1.0173e-5 s | `0/1000000000` | `-10173/1000000000` |
-| `123456789012345/2147483647 * -44100 / 30000` | -84508.8996 s | `-84508899567956/1000000000` | `-338035598271817/1000000000` |
-| `9223372036854775807/3 * 1 / 1` | 3074457345618258602.33 s | `3074457345618258602/1` | `9223372036854775807/3` |
-| `4611686018427387903/1 * 3 / 2` | 6917529027641081854.5 s | `6917529027641081855/1` | `6917529027641081854/2` |
+| `4611686018427387904/1073741824 * 3 / 1` | 12884901888 s | `12884901888/1` | `12884901888/1` |
+| `6148914691236517205/1000000000 * 3 / 1` | 18446744073.71 s | `3689348814741910323/200000000` | `3689348814741910323/200000000` |
+| `9223372036854775807/3 * 1 / 1` | 3074457345618258602.33 s | `3074457345618258602/1` | `3074457345618258602/1` |
+| `4611686018427387903/1 * 3 / 2` | 6917529027641081854.5 s | `6917529027641081855/1` | `6917529027641081855/1` |
+| `4611686018427387904/1 * 4 / 1` | 1.8446744e19 s | `+inf` | `+inf` |
 
-The last two are the documented rule read the other way round: the documentation says the exact
-rational is preserved "if possible without overflow" and that otherwise "a new timescale will be
-chosen so as to minimize the rounding error" - the exact rational is the representation with no
-rounding error at all, so keeping it is the choice that minimises the error. The port keeps it.
-The first two are the host losing the value; there is no representation of them that is both
-exact and a `CMTime`, and the port answers the value the input describes.
+The first two are the reduction, the last three the truncation, and the fourth is a rounded quotient:
+the host rounds half away from zero there and so does the port.
 
-A CMTime value of exactly `INT64_MIN` or `INT64_MAX` is never answered by the host: it reports the
-infinity of the sign instead. The port reports the infinity too, for both bounds, which is why the
-domain test in the implementation rejects a magnitude of `2^63 - 1` as well as `2^63`.
+**The two `int64` bounds.** The host answers an infinity for a result of `INT64_MIN` *or* `INT64_MAX`:
+`INT64_MIN/1 * 1 / 1` and `INT64_MAX/1 * 1 / 1` are `-inf` and `+inf`, and `INT64_MAX/1 * 3 / 2` is
+`+inf`. So a value a `CMTime` cannot hold is an infinity, and the port's domain test stops at `2^63 - 2`
+- the largest magnitude the host does answer, `4611686018427387903 * 2`, comes out as
+`9223372036854775806/1`. The port answers the infinity for both bounds too.
+
+**A negative timescale is legal.** `CMTIME_IS_VALID` is only the `kCMTimeFlags_Valid` bit, so
+`{1000, -1, Valid, 0}` is a time any caller may hold, and the host multiplies through and normalises
+the sign into the value: `1000/-1 * 3 / 2` is `-3000/2`, `1000/-48000 * 7 / 3` is `-7000/144000`, and
+`5/0 * 1 / 3` is `5/0` - with a zero timescale the host never divides at all, so the divisor is dropped
+and only the multiplier applies. The port normalises a negative denominator the same way.
 
 ## The source
 

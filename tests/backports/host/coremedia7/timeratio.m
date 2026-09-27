@@ -29,6 +29,8 @@ static int representable(int64_t value, int32_t timescale, int32_t multiplier, i
         return 1;
     if (value == 0)
         return 1;
+    if (timescale <= 0)
+        return 0;
     uint32_t left = (uint32_t)(multiplier < 0 ? -(int64_t)multiplier : multiplier);
     uint32_t right = (uint32_t)(divisor < 0 ? -(int64_t)divisor : divisor);
     uint32_t walk = left, common = right;
@@ -39,10 +41,11 @@ static int representable(int64_t value, int32_t timescale, int32_t multiplier, i
     }
     left /= walk;
     right /= walk;
-    int64_t magnitude = (value < 0 ? -value : value) * (int64_t)left;
+    // The product is formed in 128 bits, the width the claim is about: the implementation builds it in
+    // 96 and this must not ask a question in 64.
+    __int128 product = (__int128)(value < 0 ? -(__int128)value : (__int128)value) * (__int128)left;
     int64_t denominator = (int64_t)timescale * (int64_t)right;
-    return magnitude < 0x8000000000000000ll && magnitude > -0x8000000000000000ll &&
-           denominator > 0 && denominator <= 0x7FFFFFFFu;
+    return product <= (__int128)0x7FFFFFFFFFFFFFFELL && denominator > 0 && denominator <= 0x7FFFFFFFu;
 }
 
 static double exact_seconds(int64_t value, int32_t timescale, int32_t multiplier, int32_t divisor)
@@ -79,10 +82,14 @@ int main(void)
 {
     @autoreleasepool {
         static const int64_t values[] = {0, 1, -1, 2, -2, 3, -3, 5, 7, -7, 10, 100, 1000, 48000, -48000, 1000000007LL,
-                                         -1000000007LL, 2147483647LL, -2147483648LL, 4294967296LL, 600000000000LL, 123456789012345LL};
-        static const int32_t scales[] = {1, 2, 3, 4, 5, 6, 7, 10, 24, 25, 30, 48, 60, 100, 300, 441, 480, 600,
-                                         1000, 30000, 44100, 48000, 90000, 100000000, 1000000000, 1073741824, 2147483647};
-        static const int32_t factors[] = {0, 1, -1, 2, -2, 3, -3, 4, 5, 6, 7, -7, 10, -10, 100, 1000, 65536, 30000, 44100, -44100};
+                                         -1000000007LL, 2147483647LL, -2147483648LL, 4294967296LL, 600000000000LL, 123456789012345LL,
+                                         1000000000000000000LL, -1000000000000000000LL, 1152921504606846976LL, 2305843009213693952LL,
+                                         4611686018427387904LL, -4611686018427387904LL, 9223372036854775806LL, -9223372036854775806LL,
+                                         9223372036854775807LL, -9223372036854775807LL - 1};
+        static const int32_t scales[] = {0, 1, -1, 2, -2, 3, 4, 5, 6, 7, 10, 24, 25, 30, 48, 60, 100, 300, 441, 480, 600,
+                                         1000, -1000, 30000, 44100, 48000, 90000, 100000000, -48000, 1000000000, 1073741824, 2147483647};
+        static const int32_t factors[] = {0, 1, -1, 2, -2, 3, -3, 4, 5, 6, 7, -7, 8, -8, 10, -10, 16, -16, 20, -20, 100, 1000, 65536,
+                                         30000, 44100, -44100, 1000000000, 2147483647, -2147483647 - 1};
         for (size_t v = 0; v < sizeof values / sizeof *values; v++)
             for (size_t s = 0; s < sizeof scales / sizeof *scales; s++)
                 for (size_t m = 0; m < sizeof factors / sizeof *factors; m++)
