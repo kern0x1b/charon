@@ -119,7 +119,11 @@ package("apple-backports")
                         cc = assert(toolchain:tool("cc"), "the apple-ios toolchain names no compiler for " .. package:arch()),
                         ld = assert(linker, "the apple-ios toolchain names no ld64 for " .. package:arch()), libraries = libraries,
                         archives = {box2d = {linkdir = package:dep("box2d"):installdir("lib"), link = "Box2D", includedir = package:dep("box2d"):installdir("include")}}}
-        backports.build(table.join(common, {cache = cache, builddir = path.absolute("link"), outputdir = package:installdir("lib")}))
+        -- width = 1: on_install runs inside a job of xmake's own, and a job runner started from
+        -- inside one never returns - the compiles all finish and the install then hangs there for
+        -- good, measured on both a shared scheduler and an isolated one. What a package build wins
+        -- on instead is the compiler cache, which backports.compile() finds on its own.
+        backports.build(table.join(common, {cache = cache, builddir = path.absolute("link"), outputdir = package:installdir("lib"), width = 1}))
         local released
         for version in io.readfile(path.join(package:scriptdir(), "..", "..", "..", "addons", "c", "charon", "xmake.lua")):gmatch('add_versions%("v(%d[%d%.]*)"') do
             if not released or dyld.compare_versions(version, released) > 0 then

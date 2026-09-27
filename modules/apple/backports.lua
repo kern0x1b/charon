@@ -216,6 +216,41 @@ function compile(opt, source, object)
     os.vrunv(wrapper and program and (wrapper .. " " .. program) or program, arguments)
 end
 
+-- How many units this build may compile at once. Nothing here decides it, because only the caller
+-- knows whether a build of its kind may start a job runner: heavy.sh exports FLEET_HEAVY_CPUS for
+-- the builds that may - a gate, release-split, the canon build, all of which run from `xmake lua`
+-- and are not themselves inside a job - and packages/a/apple-backports/xmake.lua passes 1 for the
+-- one that may not. A package's on_install runs inside a job of xmake's own, and a job runner
+-- started from inside one never returns: measured, the compiles all finish and then the run hangs
+-- there for good, with or without isolate. The cache is what a package build wins on instead.
+local function width(opt)
+    if opt.width then
+        return opt.width
+    end
+    return math.max(1, tonumber(os.getenv("FLEET_HEAVY_CPUS") or "") or 1)
+end
+
+-- The units of a build, compiled. A backport unit is independent of every other one: what it
+-- compiles is decided before any of them run, and the objects are only read afterwards, by the
+-- link and by the checks that read symbols out of them. So they are handed to the same job runner
+-- xmake builds its own targets with, which is what makes the count above a bound rather than a
+-- hope - and which re-raises what a unit printed, so a unit that does not compile still fails the
+-- build exactly as it did one at a time. Only the compiles run in parallel: the order the objects
+-- are numbered in, which the link reads them in, is built before this and never touched here.
+local function compile_all(opt, jobs)
+    local count = width(opt)
+    if count <= 1 or #jobs < 2 then
+        for _, job in ipairs(jobs) do
+            compile(job.opt, job.source, job.object)
+        end
+        return
+    end
+    import("async.runjobs")("backports", function (index)
+        local job = jobs[index]
+        compile(job.opt, job.source, job.object)
+    end, {comax = count, total = #jobs})
+end
+
 local function sections_of(file)
     local names = {}
     for _, image in ipairs(macho.images(macho.read(file))) do
@@ -284,6 +319,7 @@ local function compiled(opt)
     compile(opt, path.join(opt.root, "attach.c"), attach)
     local placed = floors(opt)
     local objects, origins, minimums = {}, {}, {}
+    local pending = {}
     for _, library in ipairs(LIBRARIES) do
         objects[library.name] = {}
         for _, source in ipairs(sources(opt.root, library)) do
@@ -294,12 +330,13 @@ local function compiled(opt)
             else
                 object = path.join(opt.builddir, "objects", library.folder, path.basename(source) .. ".o")
                 os.mkdir(path.directory(object))
-                compile(opt, source, object)
+                table.insert(pending, {opt = opt, source = source, object = object})
             end
             table.insert(objects[library.name], object)
             origins[object] = source
         end
     end
+    compile_all(opt, pending)
     return attach, objects, origins, minimums
 end
 
@@ -1142,7 +1179,13 @@ function build(opt)
     opt = table.join(opt, {triple = opt.architecture .. "-apple-ios" .. opt.deployment})
     local attach, objects, origins, minimums = compiled(opt)
     opt = table.join(opt, {origins = origins, minimums = minimums})
+    local compiled_at = os.mclock()
+    local measured = 0
+    for _, library in ipairs(LIBRARIES) do
+        measured = measured + (objects[library.name] and #objects[library.name] or 0)
+    end
     check_releases(opt, objects, origins)
+    local checked_at = os.mclock()
     local built = {}
     for _, library in ipairs(LIBRARIES) do
         if not opt.libraries or table.contains(opt.libraries, library.name) then
@@ -1150,6 +1193,7 @@ function build(opt)
                                      {cache = opt.cache, release = opt.deployment}))
         end
     end
+    local linked_at = os.mclock()
     dyld.check(opt.cache, built)
     check_categories(release, release_inventory(opt.cache), built, opt.architecture, opt.deployment)
     if #built == #LIBRARIES then
@@ -1159,6 +1203,9 @@ function build(opt)
             cprint("${color.warning}note:${clear} %d of the registry's entries name no file of facts yet", undocumented)
         end
     end
+    print(string.format("build: %s compiled %d objects in %.1fs, measured their releases in %.1fs, linked %d libraries in %.1fs, checked in %.1fs",
+                        opt.deployment, measured, (compiled_at - compiling) / 1000, (checked_at - compiled_at) / 1000,
+                        #built, (linked_at - checked_at) / 1000, (os.mclock() - linked_at) / 1000))
     return built
 end
 
@@ -1212,16 +1259,17 @@ function floors(opt)
     local function at(release)
         return table.join(opt, {deployment = release, triple = opt.architecture .. "-apple-ios" .. release})
     end
-    local objects, origins = {}, {}
+    local objects, origins, pending = {}, {}, {}
     for _, library in ipairs(LIBRARIES) do
         for _, source in ipairs(sources(opt.root, library)) do
             local object = path.join(opt.builddir, "objects-" .. top, library.folder, path.basename(source) .. ".o")
             os.mkdir(path.directory(object))
-            compile(at(top), source, object)
+            table.insert(pending, {opt = at(top), source = source, object = object})
             table.insert(objects, object)
             origins[object] = source
         end
     end
+    compile_all(opt, pending)
     local found, problems, unreached, inherited = minimums(listed(opt.root), objects, opt.architecture, opt.deployment)
     if #problems > 0 then
         raise("%d objects cannot be placed by their registry minimum above iOS %s:\n  %s", #problems, opt.deployment, table.concat(problems, "\n  "))
@@ -1245,7 +1293,7 @@ function floors(opt)
         cprint("${color.warning}note:${clear} %d objects carry no API the registry can place and no other object names them, so every band from iOS %s keeps them: %s",
                #named, opt.deployment, table.concat(named, " "))
     end
-    local placed = {}
+    local placed, pending = {}, {}
     for _, object in ipairs(objects) do
         local minimum = found[object]
         if minimum and dyld.compare_versions(minimum, opt.deployment) > 0 then
@@ -1253,11 +1301,12 @@ function floors(opt)
             if minimum ~= top then
                 object = path.join(opt.builddir, "objects-" .. minimum, path.filename(path.directory(object)), path.filename(object))
                 os.mkdir(path.directory(object))
-                compile(at(minimum), source, object)
+                table.insert(pending, {opt = at(minimum), source = source, object = object})
             end
             placed[source] = {minimum = minimum, object = object}
         end
     end
+    compile_all(opt, pending)
     return placed
 end
 
