@@ -100,8 +100,8 @@ static BOOL CharonCIEncodedFormat(CIFormat format, CFStringRef *type, CIFormat *
 - (NSData *)charon_representationOfImage:(CIImage *)image format:(CIFormat)format colorSpace:(CGColorSpaceRef)colorSpace
                                       type:(CFStringRef)type
 {
-    OSType fileType;
-    CIFormat rendered;
+    CFStringRef fileType = NULL;
+    CIFormat rendered = kCIFormatRGBA8;
     if (!CharonCIEncodedFormat(format, &fileType, &rendered))
         return nil;
     if (CFEqual(type, kUTTypeJPEG)) {
