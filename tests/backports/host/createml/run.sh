@@ -110,7 +110,16 @@ xcrun swiftc -swift-version 5 -O -I "$out/modules" \
     -framework Accelerate -framework Foundation -framework CoreFoundation \
     -o "$out/transformers"
 
+# The metrics family, which the host has as `ClassificationMetrics` in its own CreateMLComponents,
+# so it is a straight differential: the same pairs into both objects, every count and score compared.
+xcrun swiftc -swift-version 5 -O -I "$out/modules" \
+    "$here/metrics/main.swift" "$out/cmc.o" "$out/coreml.o" \
+    -framework Accelerate -framework Foundation -framework CoreFoundation \
+    -framework CreateMLComponents \
+    -o "$out/metrics"
+
 "$out/differential"
 "$out/tabularframe"
 "$out/linearmodels"
 "$out/transformers"
+"$out/metrics"
