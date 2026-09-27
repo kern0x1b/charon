@@ -89,7 +89,7 @@
     _interaction = interaction;
     _hostedViewContext = context;
     _interactiveBehavior = interactiveBehavior;
-    NSSet *carried = [self charon_parametersOfInteraction:interaction];
+    NSSet *carried = [NSSet setWithArray:[self charon_parametersOfInteraction:interaction]];
     NSMutableSet *applicable = [NSMutableSet set];
     for (INParameter *parameter in parameters) {
         if ([carried containsObject:parameter]) {
