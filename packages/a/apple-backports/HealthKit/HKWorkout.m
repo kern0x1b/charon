@@ -111,6 +111,26 @@
                                 metadata:nil];
 }
 
+// The form with a metadata dictionary. A workout made with a duration ends at the start plus that
+// duration, which is what the header says the duration is; the form that takes both dates and that the
+// form above takes a duration both keep the dates they are given.
++ (instancetype)workoutWithActivityType:(HKWorkoutActivityType)activityType
+                              startDate:(NSDate *)startDate
+                                endDate:(NSDate *)endDate
+                               duration:(NSTimeInterval)duration
+                        totalEnergyBurned:(nullable HKQuantity *)totalEnergyBurned
+                          totalDistance:(nullable HKQuantity *)totalDistance
+                               metadata:(nullable NSDictionary *)metadata
+{
+    return [self workoutWithActivityType:activityType
+                               startDate:startDate
+                                 endDate:[startDate dateByAddingTimeInterval:duration]
+                            workoutEvents:@[]
+                         totalEnergyBurned:totalEnergyBurned
+                           totalDistance:totalDistance
+                                metadata:metadata];
+}
+
 + (instancetype)workoutWithActivityType:(HKWorkoutActivityType)activityType
                               startDate:(NSDate *)startDate
                                 endDate:(NSDate *)endDate

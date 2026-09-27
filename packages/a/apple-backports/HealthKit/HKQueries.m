@@ -151,12 +151,14 @@
     void (^_statisticsUpdateHandler)(HKStatisticsCollection *_Nullable, NSError *_Nullable);
 }
 
+// The form of iOS 8.0: a type, a predicate, the options, the anchor and the interval, and the handler
+// set on the property afterwards. -init is NS_UNAVAILABLE on this class, so these two are the only
+// ways the release makes one, and the one below is this one with the handler in the same call.
 - (instancetype)initWithQuantityType:(HKQuantityType *)quantityType
                 quantitySamplePredicate:(nullable NSPredicate *)quantitySamplePredicate
                              options:(HKStatisticsOptions)options
                           anchorDate:(NSDate *)anchorDate
                   intervalComponents:(NSDateComponents *)intervalComponents
-                 initialResultsHandler:(void (^)(HKStatisticsCollection *_Nullable results, NSError *_Nullable error))initialResultsHandler
 {
     self = [super initWithSampleType:quantityType];
     if (self) {
@@ -164,8 +166,24 @@
         _options = options;
         _anchorDate = [anchorDate copy];
         _intervalComponents = [intervalComponents copy];
-        _initialResultsHandler = [initialResultsHandler copy];
     }
+    return self;
+}
+
+- (instancetype)initWithQuantityType:(HKQuantityType *)quantityType
+                quantitySamplePredicate:(nullable NSPredicate *)quantitySamplePredicate
+                             options:(HKStatisticsOptions)options
+                          anchorDate:(NSDate *)anchorDate
+                  intervalComponents:(NSDateComponents *)intervalComponents
+                 initialResultsHandler:(void (^)(HKStatisticsCollection *_Nullable results, NSError *_Nullable error))initialResultsHandler
+{
+    self = [self initWithQuantityType:quantityType
+              quantitySamplePredicate:quantitySamplePredicate
+                                  options:options
+                               anchorDate:anchorDate
+                       intervalComponents:intervalComponents];
+    if (self)
+        _initialResultsHandler = [initialResultsHandler copy];
     return self;
 }
 

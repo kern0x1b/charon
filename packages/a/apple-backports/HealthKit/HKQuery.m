@@ -199,21 +199,6 @@ static NSString *CharonHKOperatorSpelling(NSPredicateOperatorType type)
     return [NSPredicate predicateWithFormat:@"%K IN %@", HKPredicateKeyPathCategoryValue, values];
 }
 
-+ (NSPredicate *)predicateForStatesOfMindWithValence:(double)valence operatorType:(NSPredicateOperatorType)type
-{
-    return [NSPredicate predicateWithFormat:@"valence %@ %f", CharonHKOperatorSpelling(type), valence];
-}
-
-+ (NSPredicate *)predicateForStatesOfMindWithKind:(NSInteger)kind
-{
-    return [NSPredicate predicateWithFormat:@"kind == %ld", (long)kind];
-}
-
-+ (NSPredicate *)predicateForStatesOfMindWithLabel:(NSString *)label
-{
-    return [NSPredicate predicateWithFormat:@"label == %@", label];
-}
-
 + (NSPredicate *)predicateForSamplesWithStartDate:(NSDate *)startDate endDate:(NSDate *)endDate options:(HKQueryOptions)options
 {
     if (!startDate && !endDate)

@@ -414,6 +414,28 @@
     return [HKStatistics charon_statisticsForSamples:_groups[index] options:_options];
 }
 
+// Every interval's statistics, in the order the collection holds them. An interval the store holds no
+// sample of is an interval all the same and its statistics are an object with a count of zero, so the
+// array has one entry per interval and not one per interval that has something in it.
+- (NSArray<HKStatistics *> *)statistics
+{
+    NSMutableArray *all = [NSMutableArray arrayWithCapacity:_groups.count];
+    for (NSArray *group in _groups)
+        [all addObject:[HKStatistics charon_statisticsForSamples:group options:_options]];
+    return all;
+}
+
+// The sources the samples behind the intervals came from, over the whole collection, in the order the
+// store met them.
+- (NSSet<HKSource *> *)sources
+{
+    NSMutableSet *found = [NSMutableSet set];
+    for (NSArray *group in _groups)
+        for (id sample in group)
+            [found addObject:[(HKObject *)sample source]];
+    return found;
+}
+
 - (void)enumerateStatisticsFromDate:(NSDate *)startDate
                              toDate:(NSDate *)endDate
                            withBlock:(void (^)(HKStatistics *result, BOOL *stop))block

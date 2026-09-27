@@ -152,6 +152,37 @@ protocols - are the lift's: an `NS_ENUM` case, a typedef, a struct and a protoco
 declaration, and no symbol is emitted for any of them, so they are not rows this port carries and
 carry no registry entry.
 
+## Sixteen rows of the iOS 8.0 corpus this group does not carry
+
+The corpus dates a row from the SDK header's own annotation, and that annotation is wrong in three
+ways. Each of these is registered `absent` with the reason, so a reader of the registry is told the
+method is not there rather than finding it in the corpus and wondering:
+
+- **eight `-init` methods** — `-[HKCategorySample init]`, `-[HKObject init]`, `-[HKObjectType init]`,
+  `-[HKQuantity init]`, `-[HKSource init]`, `-[HKStatistics init]`, `-[HKStatisticsCollection init]` and
+  `-[HKWorkoutEvent init]`. The header marks `-init` unavailable for each of those classes, so a caller
+  cannot call it and the release declares none of its own. `-[HKUnit init]` and `-[HKQuery init]` are
+  *available* in the header and are carried.
+- **the four workout-session methods of `HKHealthStore`** — `startWorkoutSession:`, `endWorkoutSession:`,
+  `pauseWorkoutSession:` and `resumeWorkoutSession:`. The header marks them unavailable on iOS: they are
+  the watchOS surface of the class, and the watch application and app extensions both arrived after this
+  release.
+- **the four states-of-mind predicates of `HKQuery`** — `predicateForStatesOfMindWithValence:operatorType:`,
+  `predicateForStatesOfMindWithKind:`, `predicateForStatesOfMindWithLabel:` and
+  `predicateForStatesOfMindWithAssociation:`. The header leaves them unannotated, so the corpus gave them
+  the version of the class they sit in (its `via=class-floor`). They are not 8.0 API: the HealthKit image
+  of the armv7 shared cache holds no such selector, and neither do the images of 8.2, 9.0 and 9.3, and
+  the type of each argument — `HKStateOfMindAssociation` and its two siblings — is of iOS 18. They were
+  carried here for a while and are removed; the group of 18.0 answers them.
+
+The check that finds these, and that a later session should run before each delivery, is
+`.agent-work/runs/api-kits/api-check.py`: every registered row against the set of names the gate's own
+`backports.surface()` reads out of the built dylib. It reads the *built* library, so it sees what this
+port carries; the *release's* image cannot answer it, because `objc.binary_inventory` on an image
+extracted from a shared cache reads a class's category method lists and not the class's own, so a
+public method of a release looks absent. The SDK header and its availability annotations are the
+authority for what a release has; the image is the authority for the values a constant holds.
+
 ## The device run
 
 None yet. Everything above is a read of a release image, a release cache, the SDK headers and the
