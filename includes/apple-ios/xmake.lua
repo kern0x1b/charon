@@ -18,6 +18,21 @@ add_requires("charon@firmware-tools", {alias = "firmware-tools"})
 add_requireconfs("**.m4", {system = false})
 add_requireconfs("**.pkgconf", {system = false})
 
+-- Which charon@apple-backports libraries a process carries, as a comma-separated list of its configs. It is a project
+-- decision because more than one dependency asks for it and each names only its own: charon@swift-runtime's lift
+-- lowers the headers of what the backports implement, so a program compiled against those headers has to carry
+-- coredata (and uikit for an application), and a package built over them asks for more of its own - charon@matter
+-- needs network, because the Matter framework's device browser calls nw_*. One package with one set of configs, so
+-- the union is said once here and every dependency, swift-runtime included, takes it.
+local carried = get_config("apple_backports")
+if carried then
+    local configs = {}
+    for _, name in ipairs(carried:split(",")) do
+        configs[name] = true
+    end
+    add_requireconfs("**.apple-backports", {override = true, configs = configs})
+end
+
 local minimum = get_config("apple_minimum")
 
 -- The slice of a universal target is built for the release its architecture first runs, where apple_minimum is older and
