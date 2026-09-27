@@ -103,6 +103,14 @@ xcrun swiftc -swift-version 5 -O -I "$out/modules" \
     -framework CreateMLComponents -framework TabularData \
     -o "$out/linearmodels"
 
+# The transformers, over the port's own table: the host's are declared against a DataFrame and a
+# shaped array spelled differently, so these are held to the arithmetic they are named for.
+xcrun swiftc -swift-version 5 -O -I "$out/modules" \
+    "$here/transformers/main.swift" "$out/cmc.o" "$out/coreml.o" \
+    -framework Accelerate -framework Foundation -framework CoreFoundation \
+    -o "$out/transformers"
+
 "$out/differential"
 "$out/tabularframe"
 "$out/linearmodels"
+"$out/transformers"

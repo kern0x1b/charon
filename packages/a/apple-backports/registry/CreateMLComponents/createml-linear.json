@@ -1,0 +1,115 @@
+{
+    "framework": "CreateMLComponents",
+    "entries": [
+        {
+            "api": "LinearRegressor",
+            "kind": "class",
+            "introduced": "15.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "a regressor fitted by least squares with a ridge penalty, over the release's own BLAS and LAPACK. The L1 penalty it also declares is REFUSED with an error rather than ignored, and the iteration schedule it also declares is carried and not used because the direct solve returns the minimum an iterative scheme converges to",
+            "effect": "the fitted model, or LinearModelError.l1PenaltyNotImplemented when an L1 penalty was asked for",
+            "facts": "facts/CreateML/LinearModels.md",
+            "source": "the SDK 26.2 CreateMLComponents.swiftinterface for the declarations and the configuration's members; the fit is checked against a closed form by tests/backports/host/createml/linearmodels, 34 checks"
+        },
+        {
+            "api": "LinearRegressorModel",
+            "kind": "class",
+            "introduced": "15.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "the fitted coefficients, the intercept first, and a prediction that is the intercept and the dot product of the features and the weights. A prediction of a different width is refused by name: a dot product of two vectors of different lengths is a truncation or an out-of-bounds read, and a caller who got a number back would believe a prediction about a model they do not hold",
+            "effect": "the prediction, or LinearModelError.shapeMismatch naming both widths",
+            "facts": "facts/CreateML/LinearModels.md",
+            "source": "the SDK 26.2 CreateMLComponents.swiftinterface; the refusals are this port's and the reasons are in the facts"
+        },
+        {
+            "api": "LogisticRegressionClassifier",
+            "kind": "class",
+            "introduced": "15.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "a classifier fitted one class at a time, one-against-the-rest, each by the same ridge fit, with the probabilities from the logistic link over the class scores",
+            "effect": "the fitted model, or LinearModelError.l1PenaltyNotImplemented when an L1 penalty was asked for",
+            "facts": "facts/CreateML/LinearModels.md",
+            "source": "the SDK 26.2 CreateMLComponents.swiftinterface; one-against-the-rest is this port's and the reason is in the facts"
+        },
+        {
+            "api": "LogisticRegressionClassifierModel",
+            "kind": "class",
+            "introduced": "15.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "the per-class coefficients in class-major order, an intercept per class and then one weight per class per feature, and the class distribution a prediction answers. featureCount is (coefficients.count - 1) / classes, because a two-class model over one feature has three coefficients and calling that two features refuses every prediction of it",
+            "effect": "the label, and the probability of every class",
+            "facts": "facts/CreateML/LinearModels.md",
+            "source": "the SDK 26.2 CreateMLComponents.swiftinterface; the layout and the division are checked by tests/backports/host/createml/linearmodels"
+        },
+        {
+            "api": "ClassificationDistribution",
+            "kind": "class",
+            "introduced": "15.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "a label and the model's probability for every class. The probabilities sum to one and the label is the most probable one, both checked",
+            "effect": "the label, and the probabilities",
+            "facts": "facts/CreateML/LinearModels.md",
+            "source": "the SDK 26.2 CreateMLComponents.swiftinterface"
+        },
+        {
+            "api": "Regressor",
+            "kind": "protocol",
+            "introduced": "15.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "something that takes a feature vector and answers a number, for one input or a sequence of them. A classifier is NOT a regressor: its output is a distribution and not a number, and a protocol that covered both would say the wrong thing about half of them",
+            "effect": "the predictions, in the order the inputs were given",
+            "facts": "facts/CreateML/LinearModels.md",
+            "source": "the SDK 26.2 CreateMLComponents.swiftinterface for the Regressor protocol; the split from Classifier is this port's"
+        },
+        {
+            "api": "Classifier",
+            "kind": "protocol",
+            "introduced": "15.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "something that takes a feature vector and answers a label with its distribution",
+            "effect": "the distributions, in the order the inputs were given",
+            "facts": "facts/CreateML/LinearModels.md",
+            "source": "the SDK 26.2 CreateMLComponents.swiftinterface for the Classifier protocol"
+        },
+        {
+            "api": "AnnotatedFeature",
+            "kind": "class",
+            "introduced": "15.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "a feature vector and the target that goes with it, as a NAMED type rather than a tuple: the two fitted(to:) overloads are told apart by their argument type, and a tuple is not one - with a tuple the compiler resolves the closure before it knows which overload is meant",
+            "effect": "the feature, and its target",
+            "facts": "facts/CreateML/LinearModels.md",
+            "source": "the SDK 26.2 CreateMLComponents.swiftinterface"
+        },
+        {
+            "api": "AnnotatedPrediction",
+            "kind": "class",
+            "introduced": "15.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "a prediction and the target it was made against, which is what an evaluation reads",
+            "effect": "the prediction, and the target",
+            "facts": "facts/CreateML/LinearModels.md",
+            "source": "the SDK 26.2 CreateMLComponents.swiftinterface"
+        },
+        {
+            "api": "LinearModelError",
+            "kind": "class",
+            "introduced": "15.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "why a linear model could not answer: a width it was not fitted for, too few rows, a design with no answer, or an L1 penalty this build does not fit. Each names the numbers involved, because a refusal that does not say which is a refusal a caller has to guess about",
+            "effect": "the reason, in the framework's own words",
+            "facts": "facts/CreateML/LinearModels.md",
+            "source": "this port's; each case and its reason is in the facts"
+        }
+    ]
+}
