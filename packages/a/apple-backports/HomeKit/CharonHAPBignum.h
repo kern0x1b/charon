@@ -41,6 +41,20 @@ static inline void charon_bn_set_u32(BigNum *out, uint32_t value)
 void charon_bn_from_bytes(BigNum *out, const uint8_t *bytes, size_t length);
 void charon_bn_to_bytes(uint8_t *bytes, size_t length, const BigNum *value);
 
+// The same, in the byte order a protocol writes. The two above are little-endian, which is the limb
+// order the arithmetic wants and is not the order anything on the wire is in: a group prime, a
+// verifier and a proof are all big-endian, and reading one as little-endian yields a different number
+// that still computes, so the failure shows up as a wrong answer rather than as an error. RFC 5054's
+// own test vector is what found this.
+//
+// The reader takes a value of any width, and writes the value's own minimal big-endian representation
+// into the first bytes of the buffer with the rest zeroed -- which is the representation the protocol's
+// own vectors are printed in. Padding a narrow value out to a wider field is NOT this function's job:
+// PAD(x) is a step of the protocol, applied where a hash takes it, and doing it in the writer is what
+// makes a narrow value land in the wrong end of its field.
+void charon_bn_from_bytes_be(BigNum *out, const uint8_t *bytes, size_t length);
+void charon_bn_to_bytes_be(uint8_t *bytes, size_t length, const BigNum *value);
+
 static inline int charon_bn_cmp(const BigNum *left, const BigNum *right)
 {
     for (int index = BN_LIMBS - 1; index >= 0; --index) {

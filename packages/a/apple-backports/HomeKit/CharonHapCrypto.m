@@ -78,6 +78,22 @@ void charon_hap_sha512(uint8_t out[64], const uint8_t *data, size_t length)
     CC_SHA512(data, (CC_LONG)length, out);
 }
 
+void charon_hap_sha1(uint8_t out[20], const uint8_t *data, size_t length)
+{
+    CC_SHA1(data, (CC_LONG)length, out);
+}
+
+void charon_hap_hmac_sha1(uint8_t out[20], const uint8_t *key, size_t keyLength, const uint8_t *data, size_t length)
+{
+    CCHmac(kCCHmacAlgSHA1, key, keyLength, data, length, out);
+}
+
+static void hash_sha1(uint8_t *out, const uint8_t *data, size_t length) { charon_hap_sha1(out, data, length); }
+static void hash_sha512(uint8_t *out, const uint8_t *data, size_t length) { charon_hap_sha512(out, data, length); }
+
+const CharonHapHash charon_hap_sha1_hash = { hash_sha1, 20 };
+const CharonHapHash charon_hap_sha512_hash = { hash_sha512, 64 };
+
 void charon_hap_sha256(uint8_t out[32], const uint8_t *data, size_t length)
 {
     CC_SHA256(data, (CC_LONG)length, out);

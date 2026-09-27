@@ -49,6 +49,19 @@ int  charon_hap_open(uint8_t *plain, const uint8_t *cipher, const uint8_t tag[16
 // session keys with. CommonCrypto has all of them on this release; the wrappers are here so that the
 // transport's own code reads as HAP's derivation and not as a call into a hash library.
 void charon_hap_sha512(uint8_t out[64], const uint8_t *data, size_t length);
+// SHA-1, which SRP-6a in RFC 5054's own test vector is defined over and which HAP does not use: it is
+// here so the vector can be run against the same code rather than a second copy of it. CommonCrypto
+// has it on this release and it is the only place in the package that asks for it.
+void charon_hap_sha1(uint8_t out[20], const uint8_t *data, size_t length);
+void charon_hap_hmac_sha1(uint8_t out[20], const uint8_t *key, size_t keyLength, const uint8_t *data, size_t length);
+// Which hash the SRP code runs over, so one implementation serves HAP's SHA-512 and the RFC's SHA-1.
+typedef struct {
+    void (*hash)(uint8_t *out, const uint8_t *data, size_t length);
+    size_t length;   // 20 for SHA-1, 64 for SHA-512
+} CharonHapHash;
+
+extern const CharonHapHash charon_hap_sha1_hash;    // RFC 5054's test vector
+extern const CharonHapHash charon_hap_sha512_hash;  // what HAP's pair-setup runs over
 void charon_hap_sha256(uint8_t out[32], const uint8_t *data, size_t length);
 void charon_hap_hmac_sha512(uint8_t out[64], const uint8_t *key, size_t keyLength, const uint8_t *data, size_t length);
 void charon_hap_hmac_sha256(uint8_t out[32], const uint8_t *key, size_t keyLength, const uint8_t *data, size_t length);

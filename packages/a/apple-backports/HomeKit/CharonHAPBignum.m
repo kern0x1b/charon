@@ -11,6 +11,31 @@ void charon_bn_from_bytes(BigNum *out, const uint8_t *bytes, size_t length)
     }
 }
 
+void charon_bn_from_bytes_be(BigNum *out, const uint8_t *bytes, size_t length)
+{
+    charon_bn_zero(out);
+    for (size_t index = 0; index < length; ++index) {
+        size_t position = length - 1 - index;
+        size_t limb = position / 4;
+        if (limb >= BN_LIMBS)
+            break;
+        out->limb[limb] |= (uint32_t)bytes[index] << (8 * (position % 4));
+    }
+}
+
+void charon_bn_to_bytes_be(uint8_t *bytes, size_t length, const BigNum *value)
+{
+    // The value's own bytes, minimal length, at the front; the rest of the buffer zeroed.
+    memset(bytes, 0, length);
+    size_t needed = charon_bn_byte_length(value);
+    if (!needed || needed > length)
+        needed = needed ? length : 0;
+    for (size_t index = 0; index < needed; ++index) {
+        size_t position = needed - 1 - index;
+        bytes[index] = (uint8_t)(value->limb[position / 4] >> (8 * (position % 4)));
+    }
+}
+
 void charon_bn_to_bytes(uint8_t *bytes, size_t length, const BigNum *value)
 {
     for (size_t index = 0; index < length; ++index) {
