@@ -144,3 +144,31 @@ NSString *const kCIImageProviderTileSize = @"tile_size";
 NSString *const kCIImageProviderUserInfo = @"user_info";
 NSString *const kCIContextWorkingFormat = @"working_format";
 NSString *const kCISamplerWrapMode = @"wrap_mode";
+
+// The pixel formats CoreImage renders to, as the four-character codes the framework exports them
+// under. They are not enum cases: the header declares each as an exported constant, so an application
+// that names one needs the symbol and iOS 6 does not export it. Every value is the one the host's own
+// symbol holds, read by tests/backports/host/ciimage/constvalues.m.
+CIFormat kCIFormatA8 = 257;
+CIFormat kCIFormatLA8 = 260;
+CIFormat kCIFormatR8 = 261;
+CIFormat kCIFormatA16 = 1793;
+CIFormat kCIFormatL16 = 1795;
+CIFormat kCIFormatLA16 = 1796;
+CIFormat kCIFormatR16 = 1797;
+CIFormat kCIFormatRG16 = 1798;
+CIFormat kCIFormatRGBA16 = 1800;
+CIFormat kCIFormatAh = 2049;
+CIFormat kCIFormatLh = 2051;
+CIFormat kCIFormatLAh = 2052;
+CIFormat kCIFormatRh = 2053;
+CIFormat kCIFormatRGh = 2054;
+CIFormat kCIFormatAf = 2305;
+CIFormat kCIFormatLf = 2307;
+CIFormat kCIFormatLAf = 2308;
+CIFormat kCIFormatRf = 2309;
+CIFormat kCIFormatRGf = 2310;
+CIFormat kCIFormatRGBAf = 2312;
+
+// Not carried here, because the 16.4 header does not declare them and this port is written against
+// it: kCIFormatRGB10, kCIFormatRGBX16, kCIFormatRGBXf, kCIFormatRGBXh. They arrived in iOS 14.2 and 17.0, and their values are in the run named above.
