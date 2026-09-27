@@ -352,6 +352,32 @@ between 16.0 and 18.0, so a 16.0 or an 18.0 in that output means "after the prev
 one", not a measured first release. And a category has no `nm`-visible symbols, so a clean run says
 nothing about any category file — there is none here.
 
+## The complex half's new differential
+
+`…/.agent-work/wip/sparsecomplex/host/differential-complex.m`, written from scratch, and the old one is
+gone. What is different about it:
+
+- **The cases are a table.** One `Case` row per case — the operation, the shape, the alpha, the
+  transpose, the order, the leading dimensions, the strides, the norm, the expected status and a note —
+  and **one loop** over that table. The only place a case is read is the switch, which is the operation's
+  own signature; there is no per-case code.
+- **The two sides are two libraries.** The port is built as `libComplexPort.dylib` (the complex family
+  plus the real half that owns the `void *` entry points a complex matrix answers) and `dlopen`ed
+  `RTLD_LOCAL | RTLD_FIRST`, reached by `dlsym` on that handle. So nothing of the port's can interpose
+  the host's, and the host's Accelerate is the one the process already has. There is no `-D` renaming
+  anywhere in it.
+- **A refused case runs the host in a child**, because the host does not always refuse what the port
+  refuses (measured: an unnamed transpose goes into `cblas_cgemv`, which ends the process). The same
+  switch serves both sides through one `side` variable, so there is still one loop and one switch.
+- **Where the host cannot be read back** — an outer product with an alpha of zero, which the host has not
+  materialised and whose second row extraction takes the process — the case compares the status and
+  the nonzero count instead of the elements, and says so in its output.
+
+State: **20 cases pass, 2 fail** — `a dense product [order 101, alpha 1]` and `[order 101, alpha 2]`,
+the row-major complex dense product. The column-major ones pass, and every gemv, every triangular
+solve, every trace and every norm passes. Those two are the next thing to look at, and they are a
+statement about the row-major `ldb` handling of the complex dense product only.
+
 ## What has not been run
 
 `tests/backports/device/sparseblas.m` calls all sixty-nine entry points on the device against the answers
