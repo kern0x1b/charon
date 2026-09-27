@@ -2,6 +2,16 @@
   "framework": "Network",
   "entries": [
     {
+      "api": "kNWErrorDomainWiFiAware",
+      "kind": "constant",
+      "introduced": "26.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the CoreFoundation error domain of a Wi-Fi Aware error, which is what an nw_error_t of that domain is over",
+      "facts": "facts/Network/NWObjects.md",
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), a program printing what each exported symbol holds: NSPOSIXErrorDomain, kNWErrorDomainDNS, NSOSStatusErrorDomain, kNWErrorDomainWiFiAware and UINT32_MAX (4294967295) - measured, and written down in facts/Network/NWObjects.md"
+    },
+    {
       "api": "nw_parameters_get_allow_ultra_constrained()",
       "kind": "function",
       "introduced": "26.0",

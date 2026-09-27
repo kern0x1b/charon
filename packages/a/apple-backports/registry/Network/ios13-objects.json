@@ -2,6 +2,16 @@
   "framework": "Network",
   "entries": [
     {
+      "api": "_nw_data_transfer_report_all_paths",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the path index that stands for every path of a connection in a data transfer report's accessors",
+      "facts": "facts/Network/NWObjects.md",
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), a program printing what each exported symbol holds: NSPOSIXErrorDomain, kNWErrorDomainDNS, NSOSStatusErrorDomain, kNWErrorDomainWiFiAware and UINT32_MAX (4294967295) - measured, and written down in facts/Network/NWObjects.md"
+    },
+    {
       "api": "nw_advertise_descriptor_copy_txt_record_object()",
       "kind": "function",
       "introduced": "13.0",

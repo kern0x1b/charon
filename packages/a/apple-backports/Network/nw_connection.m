@@ -37,6 +37,7 @@
 #import "CharonNWSupport.h"
 
 #include <errno.h>
+#include <mach/mach_time.h>
 #include <stdio.h>
 #include <netdb.h>
 #include <netinet/in.h>
@@ -190,7 +191,8 @@ static void charon_readable(CharonNWConnection *connection);
 static void charon_report_state(CharonNWConnection *connection, nw_connection_state_t state, CharonNWError *error)
 {
     if (getenv("CHARON_TRACE_CONNECTION"))
-        fprintf(stderr, "[charon] state fd=%d -> %d error=%d/%d\n", connection->_socket, state,
+        fprintf(stderr, "[%8llu] port: state fd=%d -> %d error=%d/%d\n",
+                (unsigned long long)(mach_absolute_time() / 1000000), connection->_socket, state,
                 error ? error->_domain : 0, error ? error->_code : 0);
     @synchronized(connection) {
         if (connection->_cancelled && state != nw_connection_state_cancelled)
@@ -447,7 +449,16 @@ static void charon_deliver_received(CharonNWConnection *connection)
    descriptor the sources are over, the sources themselves and whether each is live, the queue they
    and every handler are on, and the state the connection is in. Printed for both paths - a connection
    of the program's own and one a listener handed over - because that is how the difference between
-   them was found (CHARON_TRACE_CONNECTION=1 in the environment). */
+   them was found (CHARON_TRACE_CONNECTION=1 in the environment).
+ *
+ * What the trace showed for a connection a listener handed over, and what it did not settle: the
+ * connection reaches `ready` on both sides, the host's own send reports success, the read and the
+ * write sources never fire, and - the anomaly this is for - the descriptor the accept produced is
+ * not the one the connection holds when its engine runs, with a gap of exactly one on every
+ * connection. The descriptors themselves are as they are made: the read source is over
+ * `connection->_socket` and resumed, the write source is suspended until there is something to write,
+ * and the accepted socket is made non-blocking. So the gap is where to look next, and
+ * `tests/backports/host/network-listener` fails on it rather than around it. */
 static void charon_dump(CharonNWConnection *connection, const char *where)
 {
     if (!getenv("CHARON_TRACE_CONNECTION"))
@@ -760,7 +771,16 @@ void CharonNWConnectionAttach(nw_connection_t value, int handle, BOOL connected)
 {
     if (getenv("CHARON_TRACE_CONNECTION")) {
         CharonNWConnection *attached = (CharonNWConnection *)value;
-        fprintf(stderr, "[charon] attach fd=%d connected=%d queue=%p datagram=%d secure=%d\n", handle, connected,
+        /* the port the other end connected from, which is what identifies this connection: two
+           connections of one program are told apart by nothing else */
+        unsigned peer_port = 0;
+        struct sockaddr_storage peer;
+        socklen_t peer_length = sizeof peer;
+        memset(&peer, 0, sizeof peer);
+        if (getpeername(handle, (struct sockaddr *)&peer, &peer_length) == 0)
+            peer_port = charon_nw_sockaddr_port((const struct sockaddr *)&peer);
+        fprintf(stderr, "[%8llu] port: attached fd=%d peerPort=%u connected=%d queue=%p datagram=%d secure=%d\n",
+                (unsigned long long)(mach_absolute_time() / 1000000), handle, peer_port, connected,
                 attached ? (__bridge void *)attached->_queue : NULL, attached ? attached->_isDatagram : 0,
                 attached ? attached->_secure : 0);
     }

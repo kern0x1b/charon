@@ -2,6 +2,36 @@
   "framework": "Network",
   "entries": [
     {
+      "api": "kNWErrorDomainDNS",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the CoreFoundation error domain of a DNS error, which is what an nw_error_t of that domain is over",
+      "facts": "facts/Network/NWObjects.md",
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), a program printing what each exported symbol holds: NSPOSIXErrorDomain, kNWErrorDomainDNS, NSOSStatusErrorDomain, kNWErrorDomainWiFiAware and UINT32_MAX (4294967295) - measured, and written down in facts/Network/NWObjects.md"
+    },
+    {
+      "api": "kNWErrorDomainPOSIX",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the CoreFoundation error domain of a POSIX error, which is what an nw_error_t of that domain is over",
+      "facts": "facts/Network/NWObjects.md",
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), a program printing what each exported symbol holds: NSPOSIXErrorDomain, kNWErrorDomainDNS, NSOSStatusErrorDomain, kNWErrorDomainWiFiAware and UINT32_MAX (4294967295) - measured, and written down in facts/Network/NWObjects.md"
+    },
+    {
+      "api": "kNWErrorDomainTLS",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the CoreFoundation error domain of a TLS error, which is what an nw_error_t of that domain is over",
+      "facts": "facts/Network/NWObjects.md",
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), a program printing what each exported symbol holds: NSPOSIXErrorDomain, kNWErrorDomainDNS, NSOSStatusErrorDomain, kNWErrorDomainWiFiAware and UINT32_MAX (4294967295) - measured, and written down in facts/Network/NWObjects.md"
+    },
+    {
       "api": "nw_advertise_descriptor_create_bonjour_service()",
       "kind": "function",
       "introduced": "12.0",

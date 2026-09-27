@@ -24,6 +24,8 @@
 #import <netinet/in.h>
 #import <string.h>
 #import <sys/socket.h>
+#import <mach/mach_time.h>
+#include <stdio.h>
 #import <unistd.h>
 #import "check.h"
 
@@ -60,6 +62,16 @@ static NSData *bytes_of(dispatch_data_t payload)
         });
     }
     return bytes;
+}
+
+/* How many connections the listener has handed over so far. */
+static NSUInteger accepted_count(NSMutableArray *connections)
+{
+    NSUInteger count;
+    @synchronized(connections) {
+        count = connections.count;
+    }
+    return count;
 }
 
 static int failures;
@@ -104,16 +116,26 @@ int main(void)
             if (state == 4)
                 cancelled = 1;
         });
+        /* Every connection the listener hands over is held and read, and the assertions are about one:
+           the first, which is the host's own connect attempt. A later accept is a retry, and a test
+           that asserts on whichever arrived last is asserting about a socket nobody is talking to. */
+        NSMutableArray *every = [NSMutableArray array];
         __block nw_connection_t accepted = nil;
+        __block NSUInteger accepts = 0;
         __block NSMutableData *up = [NSMutableData data];
         P(nw_listener_set_new_connection_handler)(listener, ^(nw_connection_t connection) {
-            accepted = connection;
             /* a program gives the connection it has been handed a queue of its own, not the
                listener's: the engines of many connections would then share one serial queue */
             P(nw_connection_set_queue)(connection, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
+            @synchronized(every) {
+                [every addObject:(id)connection];
+                accepts++;
+            }
             P(nw_connection_receive_message)(connection, ^(dispatch_data_t content, nw_content_context_t context,
                                                      bool is_complete, nw_error_t error) {
-                [up appendData:bytes_of(content)];
+                @synchronized(up) {
+                    [up appendData:bytes_of(content)];
+                }
             });
         });
         P(nw_listener_start)(listener);
@@ -129,10 +151,11 @@ int main(void)
         __block int host_ready = 0;
         __block NSMutableData *down = [NSMutableData data];
         nw_connection_set_state_changed_handler(host_side, ^(nw_connection_state_t state, nw_error_t error) {
-            /* what the host's own Network says about every connection the port's listener made it: with
-               nw_error_get_error_code in the line, the reason it keeps retrying is named rather than
-               guessed at */
-            printf("  host: state=%d error=%d/%d\n", state, nw_error_get_error_domain(error), nw_error_get_error_code(error));
+            /* every transition of the host's own connection, in the one trace the port's is in, with the
+               error the state carries: that is what says whether the host is retrying and why */
+            fprintf(stderr, "[%8llu] host: state=%d error=%d/%d\n",
+                    (unsigned long long)(mach_absolute_time() / 1000000), state, nw_error_get_error_domain(error),
+                    nw_error_get_error_code(error));
             if (state != nw_connection_state_ready || host_ready)
                 return;
             host_ready = 1;
@@ -140,10 +163,8 @@ int main(void)
                                                          bool is_complete, nw_error_t error) {
                 [down appendData:bytes_of(content)];
             });
-            /* the send waits for the port's listener to have handed the connection over, which is what
-               a program does when it is waiting for a peer: sending into a connection that is not up
-               yet is an error, and the test wants the bytes to cross once both ends are */
-            while (!accepted)
+            /* the send waits for the one connection this is about - the first accept - to be in hand */
+            while (accepted_count(every) == 0)
                 usleep(20000);
             nw_connection_send(host_side, dispatch_data_create("down", 4, NULL, DISPATCH_DATA_DESTRUCTOR_DEFAULT),
                                nw_content_context_create("listener test"), true, ^(nw_error_t error) {
