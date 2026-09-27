@@ -38,6 +38,16 @@
     BOOL _enabled;
 }
 
+// Written out rather than synthesized: the package build treats an unsynthesized property here as an
+// error, and a synthesised one would be silent about which ivar it means.
+@synthesize session = _session;
+@synthesize preview = _preview;
+@synthesize lift = _lift;
+@synthesize carry = _carry;
+@synthesize dropTargets = _dropTargets;
+@synthesize currentDrop = _currentDrop;
+@synthesize liftPoint = _liftPoint;
+
 - (instancetype)initWithDelegate:(id<UIDragInteractionDelegate>)delegate
 {
     if ((self = [super init])) {
@@ -323,6 +333,8 @@
     __weak id<UIDropInteractionDelegate> _delegate;
     BOOL _allowsSimultaneousDropSessions;
 }
+
+@synthesize accept = _accept;
 
 - (instancetype)initWithDelegate:(id<UIDropInteractionDelegate>)delegate
 {
