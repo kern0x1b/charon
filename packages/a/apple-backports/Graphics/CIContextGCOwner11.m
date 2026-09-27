@@ -31,15 +31,17 @@
 
 - (instancetype)initWithContext:(CIContext *)context cgContext:(CGContextRef)cgctx options:(NSDictionary *)options
 {
-    // A real CIContext of the release's own, made the release's way; what is added here is the
-    // surface to draw into and the options, which the release has nowhere to keep.
-    if ((self = [context initWithOptions:options.count ? options : @{
+    // This is a CIContext, made by CIContext's own designated initialiser with the options the caller
+    // gave, so everything CIContext does is the release's and only the drawing surface and the two
+    // properties are added. (The `context` parameter is the caller's business, not ours: it was there
+    // because this used to re-initialise itself out of a context made elsewhere, which assigned a
+    // CIContext to a CharonGOCtxContext and the gate caught it.)
+    (void)context;
+    if ((self = [super initWithOptions:options.count ? options : @{
         kCIContextWorkingColorSpace: [NSNull null]
-    }]))
-        ;
-    if (!_cgctx && cgctx) {
+    }])) {
         _cgctx = cgctx;
-        _options = options;
+        _options = options ?: @{};
     }
     return self;
 }
@@ -82,8 +84,7 @@
 
 + (instancetype)contextWithCGContext:(CGContextRef)cgctx options:(NSDictionary *)options
 {
-    CIContext *inner = options.count ? [self contextWithOptions:options] : [self context];
-    return [[CharonCtxContext alloc] initWithContext:inner cgContext:cgctx options:options ?: @{}];
+    return [[CharonCtxContext alloc] initWithContext:nil cgContext:cgctx options:options ?: @{}];
 }
 
 @end
