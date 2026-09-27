@@ -49,3 +49,26 @@ that method answers the data, upload and download tasks and no stream task. The 
 port's own: it opens the pair when it is resumed, reads and writes on the resuming thread's run loop,
 and calls the delegate. Carrying the stream task inside the session's own implementation, so that
 `-getTasksWithCompletionHandler:` and `-invalidateAndCancel` see it, is the change that closes this.
+
+## A known open defect: this object mixes two releases
+
+`xmake l tools/release-split.lua <objects>` over the compiled objects of this delivery says, with its
+own words:
+
+    release-split: 1 file(s) mix more than one release's symbols: NSURLSessionStreamTask9.o
+    NSURLSessionStreamTask9.o  MIXED-RELEASES  9.0,none
+
+The two are `_OBJC_CLASS_$_NSURLSessionStreamTask`, which a release exports from **9.0**, and
+`_OBJC_CLASS_$_CharonStreamTaskState`, which **no release exports at all** because it is this port's
+own. The registry is right about the first (`maximum: 8.4.1`, so the object leaves the band before
+9.0) and the second has no entry because it is not an API.
+
+The fix the tool wants is one object per release group, which for this file means moving
+`CharonStreamTaskState` into an object of its own. Splitting it that way was attempted and the split
+object did not compile (`unknown type name 'NSURLSessionStreamTaskState'` from the task file, with the
+declaration visibly present), and the cause was not found before the round ended. So the defect is
+recorded here instead of being quietly left: **the gate will name this file**, and the fix is to move
+the state class to its own file and declare it through a local `CharonStreamTaskState.h`.
+
+The other twenty objects of this delivery pass the same check: the run names one file and it is this
+one.
