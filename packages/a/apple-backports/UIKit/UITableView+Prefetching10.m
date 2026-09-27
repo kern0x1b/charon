@@ -18,6 +18,15 @@ static const NSInteger CharonTablePrefetchDistance = 3;
 - (void)charon_prefetchRows;
 @end
 
+// The three estimated-height questions, which are how far away a row is before it has been drawn. The
+// port asks them where it needs that distance, which is deciding how many rows are about to come on
+// screen; without them the candidates are a fixed number of rows either side, which is a guess.
+@interface UITableView (CharonEstimatedHeights7)
+- (CGFloat)charon_estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath;
+- (CGFloat)charon_estimatedHeightForHeaderInSection:(NSInteger)section;
+- (CGFloat)charon_estimatedHeightForFooterInSection:(NSInteger)section;
+@end
+
 @interface CharonTablePrefetchInstaller : NSObject
 @end
 
@@ -56,11 +65,20 @@ static const NSInteger CharonTablePrefetchDistance = 3;
     NSArray<NSIndexPath *> *visible = self.indexPathsForVisibleRows;
     if (!visible.count)
         return @[];
+    // How many rows are about to appear is decided by how tall they are, and the delegate's
+    // estimated heights are how far away a row is before it is drawn, so the distance in rows comes
+    // from those rather than from a fixed number.
+    CGFloat rowHeight = [self charon_estimatedHeightForRowAtIndexPath:visible.firstObject];
+    if (rowHeight <= 0)
+        rowHeight = self.rowHeight;
+    CGFloat ahead = self.bounds.size.height;
+    NSInteger reach = rowHeight > 0 ? (NSInteger)ceil(ahead / rowHeight) : CharonTablePrefetchDistance;
+    reach = MAX(1, MIN(reach, 20));
     NSMutableArray<NSIndexPath *> *candidates = [NSMutableArray array];
     NSMutableSet<NSNumber *> *seen = [NSMutableSet set];
     NSMutableDictionary<NSNumber *, NSNumber *> *distance = [NSMutableDictionary dictionary];
     for (NSIndexPath *path in visible) {
-        for (NSInteger step = 1; step <= CharonTablePrefetchDistance; step++) {
+        for (NSInteger step = 1; step <= reach; step++) {
             for (NSInteger direction = -1; direction <= 1; direction += 2) {
                 NSInteger row = path.row + direction * step;
                 if (row < 0 || row >= [self numberOfRowsInSection:path.section])

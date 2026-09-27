@@ -6,7 +6,8 @@ static const char uikitscroll_expectations[] =
     "ntationDefault\":\"other\",\"nav.delegateSupportedOrientationsDefault\":\"other\",\"nav.hidesBarsOnSwipeAfterClear\":\"no\",\"nav.hidesBarsOnSwipeAfterSet\":\"yes\",\"nav.hides"
     "BarsOnSwipeDefault\":\"no\",\"nav.hidesBarsOnTapAfterSet\":\"yes\",\"nav.hidesBarsOnTapDefault\":\"no\",\"nav.hidesBarsWhenKeyboardAppearsDefault\":\"no\",\"nav.hidesBarsWhenVe"
     "rticallyCompactDefault\":\"no\",\"nav.swipeGestureEnabled\":\"yes\",\"nav.swipeGestureKind.diverges\":\"_UIBarPanGestureRecognizer\",\"nav.swipeIsThePopGesture\":\"different\""
-    ",\"nav.swipeRecogniserIsStable\":\"same\",\"nav.tapGestureKind.diverges\":\"_UIBarTapGestureRecognizer\",\"table.cellLayoutMarginsFollowReadableWidth\":\"no\",\"table.follow"
-    "sReadableAfterSet\":\"yes\",\"table.remembersLastFocusedIndexPath\":\"no\",\"table.sectionIndexBackgroundColor\":\"nil\",\"table.sectionIndexColorAfterSet\":\"set\",\"table.sep"
-    "aratorEffect\":\"nil\",\"table.separatorInset\":\"{0, 16, 0, 0}\",\"table.separatorInsetAfterSet\":\"{1, 2, 3, 4}\"}"
+    ",\"nav.swipeRecogniserIsStable\":\"same\",\"nav.tapGestureKind.diverges\":\"_UIBarTapGestureRecognizer\",\"screen.scale\":\"2\",\"table.cellLayoutMarginsFollowReadableWidth\""
+    ":\"no\",\"table.followsReadableAfterSet\":\"yes\",\"table.layoutMargins\":\"{8, 8, 8, 8}\",\"table.remembersLastFocusedIndexPath\":\"no\",\"table.sectionIndexBackgroundColor\":"
+    "\"nil\",\"table.sectionIndexColorAfterSet\":\"set\",\"table.separatorColorDefault\":\"set\",\"table.separatorEffect\":\"nil\",\"table.separatorInset\":\"{0, 16, 0, 0}\",\"table.se"
+    "paratorInsetAfterSet\":\"{1, 2, 3, 4}\",\"table.separatorStyleDefault\":\"1\"}"
 ;

@@ -40,27 +40,49 @@ The keyboard is observed with `addObserver:selector:name:object:` and unobserved
 stops the bar moving and the observer does not hold the controller. The first attempt used blocks
 that were never removed and captured the controller strongly.
 
-## What this family still owes, measured
+## The separators, and how the port draws an inset one
 
-The two scroll views and their layouts and this navigation controller are **52 rows** after groups
-1–3, of which **~38 are implementable**. Seven are the focus engine and are family 3 by the
-coordinator's ruling; five belong to iOS 11 drag and drop; two are the protocol-measurement artefact
-the ledger has when it never inspects a protocol. The rest, not yet built and measured for here:
+The release draws a table's separator inside the cell's own drawing and offers no way to move it. It
+does, however, draw **none at all** when the table's `separatorStyle` is `None` — the release's own
+answer for a table with no separator. So the port takes the separator over the release's way round:
+when a table or a cell asks for anything that is not the default, the port sets that style to `None`
+for that table only, remembering what it was, and draws the separator in a view of its own inside each
+cell at the inset that was asked for, in the table's own `separatorColor` and `separatorStyle`.
+`cellLayoutMarginsFollowReadableWidth` insets that view by the table's own `layoutMargins`, and
+`separatorEffect` goes behind the line rather than replacing it. Putting every value back at its
+default gives the release its separator back, so **a table with nothing set looks exactly as it did**.
 
-- `UITableView`: `separatorInset` (**default {0, 16, 0, 0}**, not zero), `sectionIndexBackgroundColor`
-  (default nil), `separatorEffect` (default nil), `cellLayoutMarginsFollowReadableWidth` (default no);
-- `UITableViewCell.separatorInset` (**default {0, 8, 0, 8}**);
-- `UICollectionViewLayoutAttributes.bounds` — a real property beside `frame`, and the host answers
-  that setting `frame` leaves the bounds' **origin** at zero and changes only its size;
-- `UICollectionViewFlowLayout.sectionHeadersPinToVisibleBounds` and `sectionFootersPinToVisibleBounds`,
-  both default **no**;
-- `UICollectionViewController`: `collectionViewLayout`, `useLayoutToLayoutNavigationTransitions`
-  (default no), `installsStandardGestureForInteractiveMovement` (default **yes**);
-- the delegate questions `UICollectionViewDelegate` and `UITableViewDelegate` that the port must
-  call: `willDisplayCell:forItemAtIndexPath:`, `willDisplaySupplementaryView:forElementKind:atIndexPath:`,
-  `targetContentOffsetForProposedContentOffset:`, and the three estimated-height questions;
-- `UINavigationControllerDelegate`'s two orientation questions, whose defaults with no delegate are
-  neither portrait nor all, as the host answers.
+The geometry is the host's, measured, not chosen: the style default is `1` (SingleLine), the colour
+default is set, the table's `layoutMargins` are `{8, 8, 8, 8}` and the screen's scale is 2. The
+insets are the host's too — the table's is `{0, 16, 0, 0}` and a cell's own is `{0, 8, 0, 8}`, so a
+port starting either at zero would put every separator in the wrong place. The **line height** is the
+release's own one-point separator, which is what iOS 6.1.3 draws; the host draws a hairline, and the
+host's height is not what this port copies, because the port is drawing for the release, not for the
+host.
 
-All of these are recorded in `tests/backports/device/uikitscroll-expectations.h` and are measured;
-none of them is guessed.
+The double-line style is reached by the value it had, not by a name: the lifted header is SDK 26.2,
+which removed `UITableViewCellSeparatorStyleDoubleLine` in iOS 13, so an application compiled against
+these headers cannot ask for it either.
+
+## The delegate questions the release never asks
+
+`UICollectionViewDelegate`'s two `willDisplay…` questions and the three estimated-height questions on
+`UITableViewDelegate` are asked by the release on no code path, so an application that implemented
+them was never called. Now:
+
+- the two `willDisplay…` questions are asked from the layout pass that puts an element on screen,
+  **once per element** — remembered, so a layout pass that runs again for the same cell does not ask
+  a second time, which a delegate that configures a cell as it arrives would notice;
+- the three estimated heights are asked where the port genuinely needs the distance: deciding how many
+  rows are about to come on screen in `UITableView+Prefetching10.m`, which until now used a fixed
+  three rows either side. That use is real and the answers change the geometry.
+
+**What the port cannot give:** the release's own scrolling does not consult the estimated heights, so
+they inform this port's decisions and not the release's scroll indicator. There is no public seam
+for the release's estimation, and this is recorded rather than papered over.
+
+## Still not built in this family
+
+`UICollectionView.prefetchDataSource` and `prefetchingEnabled` and the two prefetching protocols'
+methods are built (group 3). Remaining and measured: the two `UINavigationControllerDelegate`
+orientation questions, whose defaults with no delegate are neither portrait nor all.

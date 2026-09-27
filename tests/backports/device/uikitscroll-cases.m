@@ -96,6 +96,14 @@ void uikitscroll_run(UiKitScrollRecorder record)
     record(@"collectionController.installsStandardGestureForInteractiveMovementDefault",
            controller.installsStandardGestureForInteractiveMovement ? @"yes" : @"no");
 
+    // The geometry the port needs before it can draw a separator itself: the style and colour the
+    // release would have used, the scale a hairline is measured in, and the readable width the flag
+    // is about. Every default is recorded rather than assumed.
+    record(@"table.separatorStyleDefault", [NSString stringWithFormat:@"%ld", (long)table.separatorStyle]);
+    record(@"table.separatorColorDefault", table.separatorColor ? @"set" : @"nil");
+    record(@"screen.scale", [NSString stringWithFormat:@"%g", [UIScreen mainScreen].scale]);
+    record(@"table.layoutMargins", NSStringFromUIEdgeInsets(table.layoutMargins));
+
     // A navigation controller's delegate questions, which are the release's to answer and the
     // delegate's to override.
     id<UiKitScrollNavDelegateQuestions> questions = (id<UiKitScrollNavDelegateQuestions>)navigation.delegate;
