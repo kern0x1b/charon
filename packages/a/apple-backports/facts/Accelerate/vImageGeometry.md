@@ -513,11 +513,18 @@ and column it read, over an 8x4 with a scale-1 filter and `kvImageBackgroundColo
 So **a positive translate pulls the source left**, `sx = dx - xTranslate`, the same direction the affine's
 `tx` pulls left and the opposite of the reading a caller might expect from the name.
 
-**And the first column is the backColor at a translate of zero**, which is the half pixel: with no translate
-the mapped position of `dx = 0` is half a pixel to the *left* of the source's first column, so the kernel
-hangs over the edge and `kvImageBackgroundColorFill` back-colours it. At a translate of 1 the first *two*
-columns are back-coloured, at -1 the last one is. That is the `+ 1/2 ... - 1/2` in the suggested form and it
-is confirmed.
+**The half pixel is NOT there, and the last commit's claim about it was an artefact of this probe.** With the
+`+ 1` in the value - so that no source value is zero and a genuine read of source column 0 cannot be mistaken
+for the backColor - a slope of 0 and a translate of 0 reads
+
+    dy=0   0,0  0,1  0,2  0,3  0,4  0,5  0,6  0,7
+    dy=1   1,0  1,1  1,2  1,3  1,4  1,5  1,6  1,7
+
+with **no backColor anywhere**, so the mapped position of `dx = 0` is the source's first column and not half a
+pixel to its left. The `--` this probe printed at that pixel before was the source value 0 being read and
+scored as background. `sx = dx - xTranslate`, `sy = dy`, and the suggested form's `+ 1/2 ... - 1/2` is not what
+the system does - which is worth having measured, because the form is a plausible thing to have implemented
+and it would be wrong on every pixel of every shear.
 
 **The slope term is not read off, and the reason is a flaw in this probe, not in the system.** The probe
 writes a source value of `0` for row 0 column 0 and prints anything at or below 0.6 as `--`, so a genuine
