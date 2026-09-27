@@ -200,6 +200,16 @@ extern Class _Nullable CharonHKClassForTypeKind(NSInteger kind);
 @end
 
 
+@interface HKWorkout (CharonInternal)
+- (instancetype)charon_initWithType:(HKObjectType *)type
+                           metadata:(nullable NSDictionary *)metadata
+                          startDate:(NSDate *)startDate
+                            endDate:(NSDate *)endDate
+                           duration:(NSTimeInterval)duration;
+- (void)charon_setWorkoutActivityType:(HKWorkoutActivityType)activityType;
+- (void)charon_setTotalEnergyBurned:(nullable HKQuantity *)energy totalDistance:(nullable HKQuantity *)distance;
+@end
+
 @interface HKCorrelation (CharonInternal)
 - (NSArray<HKObject *> *)charon_allObjects;
 - (NSSet<HKObject *> *)charon_allObjectsSet;

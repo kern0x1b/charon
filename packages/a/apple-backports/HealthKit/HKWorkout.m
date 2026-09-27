@@ -75,11 +75,33 @@
     HKQuantity *_totalEnergyBurned;
     HKQuantity *_totalDistance;
     NSArray<HKWorkoutEvent *> *_workoutEvents;
+    // The workout's own length, kept rather than worked out from the two dates. The header has a
+    // factory that takes a duration and two that take the dates, and -duration is the number the
+    // factory was given: a workout that is an hour long is an hour long, and the dates are where it
+    // starts and ends. A workout made with both dates takes the difference of them, which is what
+    // those two dates say; a workout made with a duration takes that duration, and ends at the start
+    // plus it.
+    NSTimeInterval _duration;
 }
 
 + (BOOL)supportsSecureCoding
 {
     return YES;
+}
+
+- (instancetype)charon_initWithType:(HKObjectType *)type
+                           metadata:(nullable NSDictionary *)metadata
+                          startDate:(NSDate *)startDate
+                            endDate:(NSDate *)endDate
+                           duration:(NSTimeInterval)duration
+{
+    HKWorkout *workout = [super charon_initWithType:(HKSampleType *)type
+                                          metadata:metadata
+                                         startDate:startDate
+                                           endDate:endDate];
+    if (workout)
+        workout->_duration = duration;
+    return workout;
 }
 
 + (instancetype)workoutWithActivityType:(HKWorkoutActivityType)activityType
@@ -89,31 +111,16 @@
     HKWorkout *workout = [[HKWorkout alloc] charon_initWithType:[HKObjectType workoutType]
                                                        metadata:nil
                                                       startDate:startDate
-                                                        endDate:endDate];
+                                                        endDate:endDate
+                                                       duration:[endDate timeIntervalSinceDate:startDate]];
     if (workout)
         workout->_workoutActivityType = activityType;
     return workout;
 }
 
-+ (instancetype)workoutWithActivityType:(HKWorkoutActivityType)activityType
-                              startDate:(NSDate *)startDate
-                                endDate:(NSDate *)endDate
-                               duration:(NSTimeInterval)duration
-                        totalEnergyBurned:(nullable HKQuantity *)totalEnergyBurned
-                          totalDistance:(nullable HKQuantity *)totalDistance
-{
-    return [self workoutWithActivityType:activityType
-                               startDate:startDate
-                                 endDate:endDate
-                            workoutEvents:@[]
-                         totalEnergyBurned:totalEnergyBurned
-                           totalDistance:totalDistance
-                                metadata:nil];
-}
-
-// The form with a metadata dictionary. A workout made with a duration ends at the start plus that
-// duration, which is what the header says the duration is; the form that takes both dates and that the
-// form above takes a duration both keep the dates they are given.
+// The release's own form: a duration, and the dates it gives. The end date is the start plus the
+// duration, so that a caller that passes both a start and a length gets a workout of that length, and
+// -duration answers the length and not the difference of two dates the port guessed.
 + (instancetype)workoutWithActivityType:(HKWorkoutActivityType)activityType
                               startDate:(NSDate *)startDate
                                 endDate:(NSDate *)endDate
@@ -122,13 +129,17 @@
                           totalDistance:(nullable HKQuantity *)totalDistance
                                metadata:(nullable NSDictionary *)metadata
 {
-    return [self workoutWithActivityType:activityType
-                               startDate:startDate
-                                 endDate:[startDate dateByAddingTimeInterval:duration]
-                            workoutEvents:@[]
-                         totalEnergyBurned:totalEnergyBurned
-                           totalDistance:totalDistance
-                                metadata:metadata];
+    HKWorkout *workout = [[HKWorkout alloc] charon_initWithType:[HKObjectType workoutType]
+                                                       metadata:metadata
+                                                      startDate:startDate
+                                                        endDate:[startDate dateByAddingTimeInterval:duration]
+                                                       duration:duration];
+    if (workout) {
+        workout->_workoutActivityType = activityType;
+        workout->_totalEnergyBurned = (HKQuantity *)[totalEnergyBurned copy];
+        workout->_totalDistance = (HKQuantity *)[totalDistance copy];
+    }
+    return workout;
 }
 
 + (instancetype)workoutWithActivityType:(HKWorkoutActivityType)activityType
@@ -139,51 +150,18 @@
                       totalDistance:(nullable HKQuantity *)totalDistance
                              metadata:(nullable NSDictionary *)metadata
 {
-    HKWorkout *made = [[HKWorkout alloc] charon_initWithType:[HKObjectType workoutType]
-                                                    metadata:metadata
-                                                   startDate:startDate
-                                                     endDate:endDate];
-    if (!made)
-        return nil;
-    made->_workoutActivityType = activityType;
-    made->_workoutEvents = [workoutEvents copy] ?: @[];
-    made->_totalEnergyBurned = (HKQuantity *)[totalEnergyBurned copy];
-    made->_totalDistance = (HKQuantity *)[totalDistance copy];
-    return made;
-}
-
-- (instancetype)initWithCoder:(NSCoder *)coder
-{
-    self = [super initWithCoder:coder];
-    if (self) {
-        _workoutActivityType = (HKWorkoutActivityType)[coder decodeIntegerForKey:@"workoutActivityType"];
-        _totalEnergyBurned = [[coder decodeObjectOfClass:[HKQuantity class] forKey:@"totalEnergyBurned"] copy];
-        _totalDistance = [[coder decodeObjectOfClass:[HKQuantity class] forKey:@"totalDistance"] copy];
-        _workoutEvents = [[coder decodeObjectOfClasses:[NSSet setWithObjects:[NSArray class], [HKWorkoutEvent class], nil]
-                                               forKey:@"workoutEvents"] copy] ?: @[];
+    HKWorkout *workout = [[HKWorkout alloc] charon_initWithType:[HKObjectType workoutType]
+                                                       metadata:metadata
+                                                      startDate:startDate
+                                                        endDate:endDate
+                                                       duration:[endDate timeIntervalSinceDate:startDate]];
+    if (workout) {
+        workout->_workoutActivityType = activityType;
+        workout->_workoutEvents = [workoutEvents copy] ?: @[];
+        workout->_totalEnergyBurned = (HKQuantity *)[totalEnergyBurned copy];
+        workout->_totalDistance = (HKQuantity *)[totalDistance copy];
     }
-    return self;
-}
-
-- (void)encodeWithCoder:(NSCoder *)coder
-{
-    [super encodeWithCoder:coder];
-    [coder encodeInteger:(NSInteger)_workoutActivityType forKey:@"workoutActivityType"];
-    [coder encodeObject:_totalEnergyBurned forKey:@"totalEnergyBurned"];
-    [coder encodeObject:_totalDistance forKey:@"totalDistance"];
-    [coder encodeObject:_workoutEvents forKey:@"workoutEvents"];
-}
-
-- (instancetype)charon_copyForStore
-{
-    HKWorkout *copy = [super charon_copyForStore];
-    if (copy) {
-        copy->_workoutActivityType = _workoutActivityType;
-        copy->_totalEnergyBurned = [_totalEnergyBurned copy];
-        copy->_totalDistance = [_totalDistance copy];
-        copy->_workoutEvents = [_workoutEvents copy];
-    }
-    return copy;
+    return workout;
 }
 
 - (HKWorkoutActivityType)workoutActivityType
@@ -191,9 +169,23 @@
     return _workoutActivityType;
 }
 
+// What the port's own files set, for the release's factory that takes a device: the activity type
+// and the two totals are the release's own properties and the constructor above does not take them,
+// so a factory outside this file sets them here rather than reaching for an ivar it cannot name.
+- (void)charon_setWorkoutActivityType:(HKWorkoutActivityType)activityType
+{
+    _workoutActivityType = activityType;
+}
+
+- (void)charon_setTotalEnergyBurned:(nullable HKQuantity *)energy totalDistance:(nullable HKQuantity *)distance
+{
+    _totalEnergyBurned = (HKQuantity *)[energy copy];
+    _totalDistance = (HKQuantity *)[distance copy];
+}
+
 - (NSTimeInterval)duration
 {
-    return [self.endDate timeIntervalSinceDate:self.startDate];
+    return _duration;
 }
 
 - (nullable HKQuantity *)totalEnergyBurned

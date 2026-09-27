@@ -136,17 +136,20 @@
                                  device:(nullable HKDevice *)device
                                metadata:(nullable NSDictionary *)metadata
 {
-    // A workout made with a duration ends at the start plus that duration, which is what the header
-    // says the duration is; the form that takes both dates keeps the end date it was given instead.
-    NSDate *end = [startDate dateByAddingTimeInterval:duration];
-    HKWorkout *workout = [self workoutWithActivityType:activityType
-                                              startDate:startDate
-                                                endDate:end
-                                          workoutEvents:@[]
-                                     totalEnergyBurned:totalEnergyBurned
-                                       totalDistance:totalDistance
-                                              metadata:metadata];
-    [workout charon_setDevice:device];
+    // The form with a device is the release's own form plus a device, so it keeps what the form
+    // without one keeps: a duration given here is the duration the workout has, and it ends at the
+    // start plus that duration. It goes through the constructor that stores the duration, not through
+    // the two-dates one, so that -duration answers the number the caller passed.
+    HKWorkout *workout = [[HKWorkout alloc] charon_initWithType:[HKObjectType workoutType]
+                                                           metadata:metadata
+                                                          startDate:startDate
+                                                            endDate:[startDate dateByAddingTimeInterval:duration]
+                                                           duration:duration];
+    if (workout) {
+        [workout charon_setDevice:device];
+        [workout charon_setWorkoutActivityType:activityType];
+        [workout charon_setTotalEnergyBurned:totalEnergyBurned totalDistance:totalDistance];
+    }
     return workout;
 }
 

@@ -127,15 +127,22 @@
 
 // What an app extension calls to have its parent application put up the authorization sheet. This
 // release has no app extensions - they arrived in iOS 8 - so nothing can call this, and the header
-// marks the method unavailable to an extension besides. The method is here and answers, because the
-// store it would record into is the parent process's own store and the answer would be the same one
-// the parent records for itself; the sheet itself is the same seam as everywhere else in this library.
+// marks the method unavailable to an extension besides.
+//
+// The method is here, and it records: the request goes through the store's own
+// recordAuthorizationToShare:read:error: with the empty sets, which is the record the parent's own
+// -requestAuthorizationToShareTypes:readTypes:completion: makes, so that a later read is refused with
+// HKErrorAuthorizationDenied and the sentence above is one the store keeps rather than one the log
+// tells. The sheet itself - the part a user would answer - is the same seam as everywhere else in
+// this library and is not claimed for.
 - (void)handleAuthorizationForExtensionWithCompletion:(void (^)(BOOL success, NSError *_Nullable error))completion
 {
     if (!completion)
         return;
+    NSError *error = nil;
+    BOOL ok = [[CharonHKStore sharedStore] recordAuthorizationToShare:[NSSet set] read:[NSSet set] error:&error];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        completion(YES, nil);
+        completion(ok, ok ? nil : error);
     });
 }
 

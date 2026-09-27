@@ -344,18 +344,23 @@ static const NSUInteger CharonHKUnitTableCount = sizeof(CharonHKUnitTable) / siz
 #pragma mark - The unit
 
 @interface HKUnit ()
-// The factor of the whole product: a value in this unit times it, plus the offset, is the value in
-// the base of every dimension the unit carries.
-@property (readwrite) double scale;
-@property (readwrite) double offset;
+// The port's own storage, under the prefix the rest of this library uses, so that no selector the
+// SDK's headers do not declare is exported on HKUnit itself: -charon_scale, -charon_offset,
+// -charon_bases, -charon_powers and -charon_names, with their five setters.
+//
+// charon_scale is the factor of the whole product, so that a value in this unit times it, plus the
+// offset, is the value in the base of every dimension the unit carries, and charon_offset is the
+// additive one only a temperature has.
+@property (readwrite) double charon_scale;
+@property (readwrite) double charon_offset;
 // The dimensions the unit has, each named by the base unit of that dimension, so that two units of one
 // dimension compare equal and a unit of a product does not.
-@property (readwrite, copy) NSArray<NSString *> *bases;
-@property (readwrite, copy) NSDictionary<NSString *, NSNumber *> *powers;
+@property (readwrite, copy) NSArray<NSString *> *charon_bases;
+@property (readwrite, copy) NSDictionary<NSString *, NSNumber *> *charon_powers;
 // The name each dimension is written with, which is not always its base: a minute is `min` and not
 // `s`, a milligram is `mg` and not `g`, so a product of a minute and a kilogram writes the two names
 // and not the two bases. The host keeps the same - `count/min` and `mg/dL` come back as they went in.
-@property (readwrite, copy) NSDictionary<NSString *, NSString *> *names;
+@property (readwrite, copy) NSDictionary<NSString *, NSString *> *charon_names;
 // The string the unit writes, which for a mole carries the molar mass and for the rest is the
 // header's own name.
 @property (readwrite, copy) NSString *unitString;
@@ -365,11 +370,11 @@ static const NSUInteger CharonHKUnitTableCount = sizeof(CharonHKUnitTable) / siz
 // The strict check the build runs asks for every property a class extension redeclares to be
 // synthesized explicitly, so that a property and the ivar behind it cannot drift apart by accident.
 @synthesize unitString = _unitString;
-@synthesize scale = _scale;
-@synthesize offset = _offset;
-@synthesize bases = _bases;
-@synthesize powers = _powers;
-@synthesize names = _names;
+@synthesize charon_scale = _scale;
+@synthesize charon_offset = _offset;
+@synthesize charon_bases = _bases;
+@synthesize charon_powers = _powers;
+@synthesize charon_names = _names;
 
 + (BOOL)supportsSecureCoding
 {
@@ -600,20 +605,20 @@ static const NSUInteger CharonHKUnitTableCount = sizeof(CharonHKUnitTable) / siz
         HKUnit *one = [self charon_namedUnit:name];
         if (!one)
             return nil;
-        for (NSString *base in one.bases) {
-            NSInteger power = [powers[base] integerValue] + [one.powers[base] integerValue] * sign;
+        for (NSString *base in one.charon_bases) {
+            NSInteger power = [powers[base] integerValue] + [one.charon_powers[base] integerValue] * sign;
             if (!power) {
                 [powers removeObjectForKey:base];
                 [names removeObjectForKey:base];
                 [bases removeObject:base];
             } else {
                 powers[base] = @(power);
-                names[base] = one.names[base];
+                names[base] = one.charon_names[base];
                 if (![bases containsObject:base])
                     [bases addObject:base];
             }
         }
-        scale *= sign > 0 ? one.scale : (one.scale == 0.0 ? 1.0 : 1.0 / one.scale);
+        scale *= sign > 0 ? one.charon_scale : (one.charon_scale == 0.0 ? 1.0 : 1.0 / one.charon_scale);
     }
     if (!bases.count)
         return nil;
@@ -666,8 +671,8 @@ static NSString *CharonHKStringForDimensions(NSArray *bases, NSDictionary *power
     NSMutableDictionary *powers = [_powers mutableCopy];
     NSMutableDictionary *names = [_names mutableCopy];
     NSMutableArray *bases = [NSMutableArray arrayWithArray:_bases];
-    for (NSString *base in ((HKUnit *)unit).bases) {
-        NSInteger power = [powers[base] integerValue] + [((HKUnit *)unit).powers[base] integerValue];
+    for (NSString *base in ((HKUnit *)unit).charon_bases) {
+        NSInteger power = [powers[base] integerValue] + [((HKUnit *)unit).charon_powers[base] integerValue];
         if (!power) {
             [powers removeObjectForKey:base];
             [names removeObjectForKey:base];
@@ -676,7 +681,7 @@ static NSString *CharonHKStringForDimensions(NSArray *bases, NSDictionary *power
             powers[base] = @(power);
             // The name a dimension is written with is the one it was last introduced under, which is
             // what the host writes too: a minute divided by a kilogram writes `min` and `kg`.
-            names[base] = ((HKUnit *)unit).names[base] ?: _names[base];
+            names[base] = ((HKUnit *)unit).charon_names[base] ?: _names[base];
             if (![bases containsObject:base])
                 [bases addObject:base];
         }
@@ -688,7 +693,7 @@ static NSString *CharonHKStringForDimensions(NSArray *bases, NSDictionary *power
     // The bases are written in the order the two units were given in, which is the order the host
     // writes them in and the one `mL/min·kg` and `kcal/hr·kg` show.
     return [HKUnit charon_unitWithString:CharonHKStringForDimensions(bases, powers, names)
-                                   scale:_scale * ((HKUnit *)unit).scale
+                                   scale:_scale * ((HKUnit *)unit).charon_scale
                                   offset:0.0
                                    bases:bases
                                   powers:powers
@@ -766,13 +771,13 @@ static NSString *CharonHKStringForDimensions(NSArray *bases, NSDictionary *power
     // The offset is not part of it: a degree Celsius and a kelvin are one dimension, and the offset is
     // what converts between them. Only the dimensions and their powers decide, which is what the host
     // does as well - it answers a Celsius compatible with a kelvin.
-    NSArray *mine = _bases, *theirs = ((HKUnit *)unit).bases;
+    NSArray *mine = _bases, *theirs = ((HKUnit *)unit).charon_bases;
     if (mine.count != theirs.count)
         return NO;
     for (NSUInteger index = 0; index < mine.count; index++) {
         if (![mine[index] isEqualToString:theirs[index]])
             return NO;
-        if ([_powers[mine[index]] integerValue] != [((HKUnit *)unit).powers[theirs[index]] integerValue])
+        if ([_powers[mine[index]] integerValue] != [((HKUnit *)unit).charon_powers[theirs[index]] integerValue])
             return NO;
     }
     return YES;
@@ -802,7 +807,7 @@ static NSString *CharonHKStringForDimensions(NSArray *bases, NSDictionary *power
 - (double)charon_value:(double)value inUnit:(HKUnit *)unit
 {
     double base = (value + _offset) * _scale;
-    return base / (unit.scale == 0.0 ? 1.0 : unit.scale) - unit.offset;
+    return base / (unit.charon_scale == 0.0 ? 1.0 : unit.charon_scale) - unit.charon_offset;
 }
 
 #pragma mark The factory methods of the header
