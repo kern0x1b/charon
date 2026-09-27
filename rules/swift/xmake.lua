@@ -57,8 +57,9 @@ rule("swift")
             target:data_set("swift.objectfile", objectfile)
             table.insert(target:objectfiles(), objectfile)
         end
-        -- The program names the build of the runtime it was compiled against, and the link fails against any other: the
-        -- libraries are built without library evolution, so two builds of them do not answer for each other.
+        -- The program names the build of the runtime it was compiled against, and the link fails against any other: by
+        -- default the libraries are built without library evolution, so two builds of them do not answer for each other, and a
+        -- build with the library_evolution config is a build of its own, named by its own mark.
         local package = target:pkg("swift-runtime")
         if package then
             local mark = table.wrap((package:envs() or {}).CHARON_SWIFT_RUNTIME_MARK)[1]

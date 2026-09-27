@@ -88,11 +88,12 @@ package("swift-runtime")
     -- against an SDK's Swift standard library (a released application, lifted for a release that lacks it) binds to those and
     -- to no others. What is built for a program of this port's own stays without: its layouts are fixed and its classes need
     -- no metadata update from the Objective-C runtime.
-    add_configs("library_evolution", {description = "Build the standard library, the runtime and concurrency with library evolution, for programs compiled by an SDK's Swift that bind to its resilient symbols.", default = false, type = "boolean"})
+    add_configs("library_evolution", {description = "Build the standard library, the runtime and concurrency with library evolution, for programs compiled by an SDK's Swift that bind to its resilient symbols. Writes no .swiftinterface, and an arm64 install stops after Darwin (the SDK has the other overlays); another build of its own, named by its own mark.", default = false, type = "boolean"})
 
     -- The runtime as a package of its own, /usr/lib/charon/org.charon.swift-runtime-<build>, that programs depend on and
-    -- share, instead of libraries each of them carries. The build is part of the name: with no library evolution a program
-    -- runs only against the build it was compiled with (see the mark).
+    -- share, instead of libraries each of them carries. The build is part of the name: a program runs only against the build it was
+    -- compiled with (see the mark): without library evolution because no other build answers for it, with it because the
+    -- mark says so all the same.
     add_configs("shared", {description = "Install the libraries under absolute install names and write a Debian package that holds them, which the programs built against this runtime depend on instead of carrying the libraries.", default = false, type = "boolean"})
 
     on_load("iphoneos", function (package)

@@ -569,8 +569,9 @@ Objective-C, giving up the Foundation bridges, or be adapted to that older
 runtime. Embedded Swift registers nothing with Objective-C and is not bound by
 this floor.
 
-The runtime is built without library evolution, and that is a decision with
-consequences worth knowing. A resilient layout makes a client's class need the
+The runtime is built without library evolution unless its `library_evolution`
+config asks for it (below), and that is a decision with consequences worth
+knowing. A resilient layout makes a client's class need the
 metadata update of iOS 12's Objective-C runtime (`_objc_realizeClassFromSwift`),
 and the runtime stops with "class ... does not have a fragile layout" where that
 is missing; a runtime that ships with the program needs no ABI stability anyway.
@@ -582,6 +583,28 @@ contract. libswiftCore carries a mark naming the build it is, which a port links
 against by name, so a program built against one build cannot be linked against
 another; the package's own test links a program both ways and expects the second
 to fail.
+
+`library_evolution=true` is the other build: the standard library, the runtime and
+concurrency the way Apple builds them, with resilient layouts and the symbols that
+keep their ABI. It exists for a program that an SDK's Swift compiled and that binds
+to those symbols by name (an Xcode-built demo needs `$sSQ2eeoiySbx_xtFZTq`, the
+resilient `Equatable` operator), such as what the recompiler lifts; a port of this
+repository's own does not want it, for the reason above. Three things about it.
+It is part of the build hash, so it is a different package from the default one, with
+its own shared-runtime name, and the mark still names the build: a program is linked
+against exactly the runtime it was compiled with in both configs. It writes no
+`.swiftinterface`: the compiler compiles an interface it emits again to check it, and
+one built for this release cannot pass (the availability macros are all "always
+available", as the runtime ships with the program, and the compiler holds
+`InlineArray`'s value generic to iOS 26 and Observation's concurrency to iOS 13), while
+the only readers of an interface are clients built by another compiler than the one
+that built the runtime, which no port here is; a client reads the binary module. And an
+arm64 install stops after Darwin: the overlays past it the SDK has for arm64, and
+building this runtime's own beside the SDK's stops on QuartzCore (the SDK's Foundation
+interface puts `CGFloat` in CoreFoundation, the overlay built here in CoreGraphics), so
+an arm64 consumer expecting `libswiftFoundation` from this package finds none and takes
+the SDK's; armv7 installs every overlay. Measured through the recipe: arm64 and armv7
+install with it, armv7 without it.
 
 A Swift library is a package the same way: it requires `charon@swift-runtime`,
 compiles its modules with the runtime's compiler and flags, installs them as

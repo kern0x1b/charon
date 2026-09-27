@@ -5,8 +5,9 @@ import("dyld")
 local ADDON = path.join(os.scriptdir(), "..", "..", "addons", "c", "charon", "xmake.lua")
 
 -- A runtime that programs share instead of carrying: its libraries live in /usr/lib/charon/<package> under absolute
--- install names, and a package of its own holds them. The libraries are built without library evolution, so the package
--- and its folder are named after the build (see charon@swift-runtime), and a program depends on exactly that one.
+-- install names, and a package of its own holds them. The package and its folder are named after the build (see charon@swift-runtime),
+-- and a program depends on exactly that one: by default the libraries are built without library evolution, so two builds do not
+-- answer for each other, and with the library_evolution config, which is a build of its own, the mark still names it.
 
 -- The packages of the shared runtime: the C++ runtime, the Swift libraries, and the ones that pull UIKit in. Each is named
 -- after the build it holds, and each names the ones it needs by exact version.
@@ -90,7 +91,7 @@ function write(opt)
             "Name: " .. described.title,
             "Architecture: iphoneos-arm",
             "Section: System",
-            "Description: " .. described.description .. " in " .. entry.folder .. "; a runtime built without library evolution cannot be replaced by another build"
+            "Description: " .. described.description .. " in " .. entry.folder .. "; the runtime is named after the build that holds it (by default without library evolution) and cannot be replaced by another build"
         }, "\n") .. "\n")
         -- The package holds its own folder and nothing of the others'.
         local tree = path.join(opt.workdir, described.name .. "-tree")
