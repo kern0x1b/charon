@@ -1,0 +1,105 @@
+{
+ "framework": "UIKit",
+ "entries": [
+  {
+   "api": "UICollectionView.prefetchDataSource",
+   "kind": "property",
+   "introduced": "10.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "who to ask for items before they are asked for as cells, held weakly as the header says, and nil until it is set",
+   "facts": "facts/UIKit/Prefetching.md",
+   "source": "the host's own UIKit under Mac Catalyst (macOS 27.0) for the defaults a fresh view answers, and the header of SDK 26.2 for what the data source is asked; the prefetching inside a live view is device-unverified, see the facts"
+  },
+  {
+   "api": "UICollectionView.prefetchingEnabled",
+   "kind": "property",
+   "introduced": "10.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "whether the view asks at all: NO in a view made by hand, as the host answers, and nothing is asked until it is on and a data source is set",
+   "facts": "facts/UIKit/Prefetching.md",
+   "source": "the host's own UIKit under Mac Catalyst (macOS 27.0) for the defaults a fresh view answers, and the header of SDK 26.2 for what the data source is asked; the prefetching inside a live view is device-unverified, see the facts"
+  },
+  {
+   "api": "-[UICollectionViewDataSourcePrefetching collectionView:prefetchItemsAtIndexPaths:]",
+   "kind": "method",
+   "introduced": "10.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "asked for the items just past what is on screen, nearest first, which is the order the header asks them in, and only for the ones not asked for already",
+   "facts": "facts/UIKit/Prefetching.md",
+   "source": "the header of SDK 26.2 for the order and the argument; the port's own call site is in UICollectionView+Prefetching10.m"
+  },
+  {
+   "api": "-[UICollectionViewDataSourcePrefetching collectionView:cancelPrefetchingForItemsAtIndexPaths:]",
+   "kind": "method",
+   "introduced": "10.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "asked to call off the items that were candidates and are not any more, so a data source fetching images stops fetching the ones scrolled past",
+   "facts": "facts/UIKit/Prefetching.md",
+   "source": "the header of SDK 26.2 for the argument; the port's own call site is in UICollectionView+Prefetching10.m"
+  },
+  {
+   "api": "UITableView.prefetchDataSource",
+   "kind": "property",
+   "introduced": "10.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "who to ask for rows before they are asked for as cells, held the way the tree holds a weak sender, and nil until it is set",
+   "facts": "facts/UIKit/Prefetching.md",
+   "source": "the host's own UIKit under Mac Catalyst (macOS 27.0) for the defaults a fresh view answers, and the header of SDK 26.2 for what the data source is asked; the prefetching inside a live view is device-unverified, see the facts"
+  },
+  {
+   "api": "-[UITableViewDataSourcePrefetching tableView:prefetchRowsAtIndexPaths:]",
+   "kind": "method",
+   "introduced": "10.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "asked for the rows just past what is on screen, nearest first, and only for the ones not asked for already",
+   "facts": "facts/UIKit/Prefetching.md",
+   "source": "the header of SDK 26.2 for the order and the argument; the port's own call site is in UITableView+Prefetching10.m"
+  },
+  {
+   "api": "-[UITableViewDataSourcePrefetching tableView:cancelPrefetchingForRowsAtIndexPaths:]",
+   "kind": "method",
+   "introduced": "10.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "asked to call off the rows that were candidates and are not any more",
+   "facts": "facts/UIKit/Prefetching.md",
+   "source": "the header of SDK 26.2 for the argument; the port's own call site is in UITableView+Prefetching10.m"
+  },
+  {
+   "api": "-[UICollectionView indexPathsForVisibleSupplementaryElementsOfKind:]",
+   "kind": "method",
+   "introduced": "9.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the index paths of the supplementary views of that kind on screen, empty when the layout draws none of that kind in the visible rect",
+   "facts": "facts/UIKit/CollectionViewSupplementary.md",
+   "source": "the host's own UIKit under Mac Catalyst (macOS 27.0) for the defaults a fresh view answers, and the header of SDK 26.2 for what the data source is asked; the prefetching inside a live view is device-unverified, see the facts"
+  },
+  {
+   "api": "-[UICollectionView visibleSupplementaryViewsOfKind:]",
+   "kind": "method",
+   "introduced": "9.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the supplementary views of that kind on screen, in the order the layout draws them",
+   "facts": "facts/UIKit/CollectionViewSupplementary.md",
+   "source": "the host's own UIKit under Mac Catalyst (macOS 27.0) for the defaults a fresh view answers, and the header of SDK 26.2 for what the data source is asked; the prefetching inside a live view is device-unverified, see the facts"
+  },
+  {
+   "api": "-[UICollectionView supplementaryViewForElementKind:atIndexPath:]",
+   "kind": "method",
+   "introduced": "9.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the supplementary view of that kind at that index path, and nil when the layout draws none there, which is what the host answers for an index path no layout draws one at",
+   "facts": "facts/UIKit/CollectionViewSupplementary.md",
+   "source": "the host's own UIKit under Mac Catalyst (macOS 27.0) for the defaults a fresh view answers, and the header of SDK 26.2 for what the data source is asked; the prefetching inside a live view is device-unverified, see the facts"
+  }
+ ]
+}
