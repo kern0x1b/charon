@@ -1814,24 +1814,23 @@
    "source": "UIKit of iOS 11.0 and 12.0 arm64 (the accessors of both insets, -setScrollIndicatorInsets: and -_effectiveVerticalScrollIndicatorInsets read at their addresses) and the host's UIKit through Mac Catalyst, tests/backports/host/traits11, and tests/backports/device/uikit12.m on an iPad 2 on iOS 6.1.3"
   },
   {
-   "api": "UIGuidedAccessConfigureAccessibilityFeatures()",
-   "kind": "function",
-   "introduced": "12.2",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "Guided Access of this release has no configuration an application can change",
-   "effect": "the function is not there: a weak reference to it is NULL",
-   "source": "the SDK 16.4 headers"
+    "api": "UIGuidedAccessConfigureAccessibilityFeatures()",
+    "kind": "function",
+    "introduced": "12.2",
+    "minimum": "6.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/UIGuidedAccessFeatures12.md",
+    "effect": "the completion is called with success NO and an NSError in UIGuidedAccessErrorDomain carrying UIGuidedAccessErrorPermissionDenied, the case the header gives for exactly this: a configuration change requested by an application that is not locked into Single App Mode through a configuration profile (SDK 26.2, UIGuidedAccess.h:17-19)",
+    "source": "UIKit/UIKitConstants160.m; the SDK 26.2 header states the case, and the error domain's value was read out of the 16.0 and the 18.0 cache, which agree"
   },
   {
-   "api": "UIGuidedAccessErrorDomain",
-   "kind": "constant",
-   "introduced": "12.2",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "no error is made without the function that would fail",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "the SDK 16.4 headers"
+    "api": "UIGuidedAccessErrorDomain",
+    "kind": "constant",
+    "introduced": "12.2",
+    "minimum": "6.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/UIKitConstants160.md",
+    "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
   },
   {
    "api": "UIInteraction",

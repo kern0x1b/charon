@@ -392,54 +392,49 @@
    "source": "read out of a real dyld shared cache with tools/cfconst.py (the host's own UIKit (the cache that holds the release's value could not be read for this one)), and read again out of the host's own UIKit under Mac Catalyst (macOS 27.0); the two agree on every one both could give, held by tests/backports/host/uikitconst"
   },
   {
-   "api": "UIFocusDidUpdateNotification",
-   "kind": "constant",
-   "introduced": "11.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "effect": "the name the focus system posts when focus has moved, which nothing on this release posts: the release has no focus engine, and a name an observer can still match on is right even when nothing sends it",
-   "facts": "facts/UIKit/ExportedConstants.md",
-   "source": "read out of a real dyld shared cache with tools/cfconst.py, and read again out of the host's own UIKit under Mac Catalyst (macOS 27.0); the two agree on every one both could give, held by tests/backports/host/uikitconst"
+    "api": "UIFocusDidUpdateNotification",
+    "kind": "constant",
+    "introduced": "11.0",
+    "minimum": "6.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/UIKitConstants110.md",
+    "source": "the value read out of the UIKit cache of iOS 11.0, the oldest held release that exports the symbol (/System/Library/Frameworks/UIKit.framework/UIKit)"
   },
   {
-   "api": "UIFocusMovementDidFailNotification",
-   "kind": "constant",
-   "introduced": "11.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "effect": "the name the focus system posts when a movement failed, which nothing on this release posts, for the same reason",
-   "facts": "facts/UIKit/ExportedConstants.md",
-   "source": "read out of a real dyld shared cache with tools/cfconst.py, and read again out of the host's own UIKit under Mac Catalyst (macOS 27.0); the two agree on every one both could give, held by tests/backports/host/uikitconst"
+    "api": "UIFocusMovementDidFailNotification",
+    "kind": "constant",
+    "introduced": "11.0",
+    "minimum": "6.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/UIKitConstants110.md",
+    "source": "the value read out of the UIKit cache of iOS 11.0, the oldest held release that exports the symbol (/System/Library/Frameworks/UIKit.framework/UIKit)"
   },
   {
-   "api": "UIFocusUpdateContextKey",
-   "kind": "constant",
-   "introduced": "11.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "effect": "the user-info key a focus notification carries the update's context under, which nothing on this release sends",
-   "facts": "facts/UIKit/ExportedConstants.md",
-   "source": "read out of a real dyld shared cache with tools/cfconst.py, and read again out of the host's own UIKit under Mac Catalyst (macOS 27.0); the two agree on every one both could give, held by tests/backports/host/uikitconst"
+    "api": "UIFocusUpdateContextKey",
+    "kind": "constant",
+    "introduced": "11.0",
+    "minimum": "6.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/UIKitConstants110.md",
+    "source": "the value read out of the UIKit cache of iOS 11.0, the oldest held release that exports the symbol (/System/Library/Frameworks/UIKit.framework/UIKit)"
   },
   {
-   "api": "UIFocusUpdateAnimationCoordinatorKey",
-   "kind": "constant",
-   "introduced": "11.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "effect": "the user-info key a focus notification carries the animation coordinator under, which nothing on this release sends",
-   "facts": "facts/UIKit/ExportedConstants.md",
-   "source": "read out of a real dyld shared cache with tools/cfconst.py, and read again out of the host's own UIKit under Mac Catalyst (macOS 27.0); the two agree on every one both could give, held by tests/backports/host/uikitconst"
+    "api": "UIFocusUpdateAnimationCoordinatorKey",
+    "kind": "constant",
+    "introduced": "11.0",
+    "minimum": "6.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/UIKitConstants110.md",
+    "source": "the value read out of the UIKit cache of iOS 11.0, the oldest held release that exports the symbol (/System/Library/Frameworks/UIKit.framework/UIKit)"
   },
   {
-   "api": "UIDocumentBrowserErrorDomain",
-   "kind": "constant",
-   "introduced": "11.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "effect": "the domain a document browser error is made in, which nothing on this release makes: the document browser is not carried",
-   "facts": "facts/UIKit/ExportedConstants.md",
-   "source": "read out of a real dyld shared cache with tools/cfconst.py, and read again out of the host's own UIKit under Mac Catalyst (macOS 27.0); the two agree on every one both could give, held by tests/backports/host/uikitconst"
+    "api": "UIDocumentBrowserErrorDomain",
+    "kind": "constant",
+    "introduced": "11.0",
+    "minimum": "6.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/UIKitConstants110.md",
+    "source": "the value read out of the DocumentManager cache of iOS 11.0, the oldest held release that exports the symbol (/System/Library/Frameworks/UIKit.framework/Frameworks/DocumentManager.framework/DocumentManager)"
   }
  ]
 }

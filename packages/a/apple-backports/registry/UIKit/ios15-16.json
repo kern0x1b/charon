@@ -594,10 +594,9 @@
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "posted when an attribute Text Kit 2 cannot lay out is added to its storage; the port carries no Text Kit 2 (NSTextLayoutManager and NSTextContentStorage absent), so there is no storage to post it",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIKitConstants160.md",
+      "source": "the value read out of the UIFoundation cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIFoundation.framework/UIFoundation)"
     },
     {
       "api": "NSTextElement",
@@ -764,50 +763,45 @@
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "names the paste action of the system's edit menu, to find it in a UIMenuBuilder; the release's text views build their edit menu with UIMenuController, which holds no actions with identifiers (facts/UIKit/UITextInputEditMenu16.md), so nothing carries the name - no demand",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIKitConstants160.md",
+      "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
     },
     {
       "api": "UIActionPasteAndGo",
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "names the paste-and-go action of the system's edit menu, to find it in a UIMenuBuilder; the release's text views build their edit menu with UIMenuController, which holds no actions with identifiers (facts/UIKit/UITextInputEditMenu16.md), so nothing carries the name - no demand",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIKitConstants160.md",
+      "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
     },
     {
       "api": "UIActionPasteAndMatchStyle",
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "names the paste-and-match-style action of the system's edit menu, to find it in a UIMenuBuilder; the release's text views build their edit menu with UIMenuController, which holds no actions with identifiers (facts/UIKit/UITextInputEditMenu16.md), so nothing carries the name - no demand",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIKitConstants160.md",
+      "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
     },
     {
       "api": "UIActionPasteAndSearch",
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "names the paste-and-search action of the system's edit menu, to find it in a UIMenuBuilder; the release's text views build their edit menu with UIMenuController, which holds no actions with identifiers (facts/UIKit/UITextInputEditMenu16.md), so nothing carries the name - no demand",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIKitConstants160.md",
+      "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
     },
     {
       "api": "UIActivityItemsConfigurationMetadataKeyLinkPresentationMetadata",
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the metadata key under which an items configuration hands over an LPLinkMetadata; the port carries UIActivityItemsConfiguration (ios13rest.json) but no LinkPresentation framework, so there is no metadata of that kind to hand over - no demand",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIKitConstants160.md",
+      "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
     },
     {
       "api": "UIActivityItemsConfigurationProviding",
@@ -1004,10 +998,10 @@
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value that asks a list for its default header padding; follows UICollectionLayoutListConfiguration.headerTopPadding, not carried (see its row)",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIKitConstants1001.md",
+      "source": "the value read out of the UIKit cache of iOS 10.0.1, the oldest held release that exports the symbol (/System/Library/Frameworks/UIKit.framework/UIKit)",
+      "note": "CGFLOAT_MAX: the read is DBL_MAX, which is CGFLOAT_MAX on the 64-bit ABI the read was made on, and FLT_MAX on the port's own 32-bit ABI"
     },
     {
       "api": "UIColor.systemCyanColor",
@@ -1124,10 +1118,9 @@
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the input of a key command for the delete key; the port carries the other key inputs of that kind (UIKeyInputUpArrow and the rest, facts/UIKit/KeyboardAndAccessibility.md), and whether the release's hardware keyboard handling delivers delete to a key command is what would need measuring - not built for lack of demand, not a wall",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIKitConstants160.md",
+      "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
     },
     {
       "api": "UIKeyboardLayoutGuide",
@@ -1184,80 +1177,72 @@
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a name for a calendar event in detectPatternsForPatterns:, which is inert here because the release has no classifier for what a pasteboard holds (facts/UIKit/UIRestAbsent.md); the port defines the iOS 14 names (UIPasteboardDetectionPatternProbableWebURL and the rest) and could define this one the same way, but nothing would ever detect it - no demand",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIKitConstants160.md",
+      "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
     },
     {
       "api": "UIPasteboardDetectionPatternEmailAddress",
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a name for an email address in detectPatternsForPatterns:, which is inert here because the release has no classifier for what a pasteboard holds (facts/UIKit/UIRestAbsent.md); the port defines the iOS 14 names (UIPasteboardDetectionPatternProbableWebURL and the rest) and could define this one the same way, but nothing would ever detect it - no demand",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIKitConstants160.md",
+      "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
     },
     {
       "api": "UIPasteboardDetectionPatternFlightNumber",
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a name for a flight number in detectPatternsForPatterns:, which is inert here because the release has no classifier for what a pasteboard holds (facts/UIKit/UIRestAbsent.md); the port defines the iOS 14 names (UIPasteboardDetectionPatternProbableWebURL and the rest) and could define this one the same way, but nothing would ever detect it - no demand",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIKitConstants160.md",
+      "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
     },
     {
       "api": "UIPasteboardDetectionPatternLink",
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a name for a link in detectPatternsForPatterns:, which is inert here because the release has no classifier for what a pasteboard holds (facts/UIKit/UIRestAbsent.md); the port defines the iOS 14 names (UIPasteboardDetectionPatternProbableWebURL and the rest) and could define this one the same way, but nothing would ever detect it - no demand",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIKitConstants160.md",
+      "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
     },
     {
       "api": "UIPasteboardDetectionPatternMoneyAmount",
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a name for an amount of money in detectPatternsForPatterns:, which is inert here because the release has no classifier for what a pasteboard holds (facts/UIKit/UIRestAbsent.md); the port defines the iOS 14 names (UIPasteboardDetectionPatternProbableWebURL and the rest) and could define this one the same way, but nothing would ever detect it - no demand",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIKitConstants160.md",
+      "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
     },
     {
       "api": "UIPasteboardDetectionPatternPhoneNumber",
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a name for a phone number in detectPatternsForPatterns:, which is inert here because the release has no classifier for what a pasteboard holds (facts/UIKit/UIRestAbsent.md); the port defines the iOS 14 names (UIPasteboardDetectionPatternProbableWebURL and the rest) and could define this one the same way, but nothing would ever detect it - no demand",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIKitConstants160.md",
+      "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
     },
     {
       "api": "UIPasteboardDetectionPatternPostalAddress",
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a name for a postal address in detectPatternsForPatterns:, which is inert here because the release has no classifier for what a pasteboard holds (facts/UIKit/UIRestAbsent.md); the port defines the iOS 14 names (UIPasteboardDetectionPatternProbableWebURL and the rest) and could define this one the same way, but nothing would ever detect it - no demand",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIKitConstants160.md",
+      "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
     },
     {
       "api": "UIPasteboardDetectionPatternShipmentTrackingNumber",
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a name for a shipment tracking number in detectPatternsForPatterns:, which is inert here because the release has no classifier for what a pasteboard holds (facts/UIKit/UIRestAbsent.md); the port defines the iOS 14 names (UIPasteboardDetectionPatternProbableWebURL and the rest) and could define this one the same way, but nothing would ever detect it - no demand",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIKitConstants160.md",
+      "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
     },
     {
       "api": "UIPointerAccessory",
@@ -1274,80 +1259,72 @@
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a position of a pointer accessory, below of the pointer; the port draws no pointer and carries no UIPointerAccessory (facts/UIKit/UIPointerStyle.md), so nothing would be placed there",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIKitConstants160.md",
+      "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
     },
     {
       "api": "UIPointerAccessoryPositionBottomLeft",
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a position of a pointer accessory, below and to the left of the pointer; the port draws no pointer and carries no UIPointerAccessory (facts/UIKit/UIPointerStyle.md), so nothing would be placed there",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIKitConstants160.md",
+      "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
     },
     {
       "api": "UIPointerAccessoryPositionBottomRight",
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a position of a pointer accessory, below and to the right of the pointer; the port draws no pointer and carries no UIPointerAccessory (facts/UIKit/UIPointerStyle.md), so nothing would be placed there",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIKitConstants160.md",
+      "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
     },
     {
       "api": "UIPointerAccessoryPositionLeft",
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a position of a pointer accessory, to the left of the pointer; the port draws no pointer and carries no UIPointerAccessory (facts/UIKit/UIPointerStyle.md), so nothing would be placed there",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIKitConstants160.md",
+      "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
     },
     {
       "api": "UIPointerAccessoryPositionRight",
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a position of a pointer accessory, to the right of the pointer; the port draws no pointer and carries no UIPointerAccessory (facts/UIKit/UIPointerStyle.md), so nothing would be placed there",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIKitConstants160.md",
+      "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
     },
     {
       "api": "UIPointerAccessoryPositionTop",
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a position of a pointer accessory, above of the pointer; the port draws no pointer and carries no UIPointerAccessory (facts/UIKit/UIPointerStyle.md), so nothing would be placed there",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIKitConstants160.md",
+      "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
     },
     {
       "api": "UIPointerAccessoryPositionTopLeft",
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a position of a pointer accessory, above and to the left of the pointer; the port draws no pointer and carries no UIPointerAccessory (facts/UIKit/UIPointerStyle.md), so nothing would be placed there",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIKitConstants160.md",
+      "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
     },
     {
       "api": "UIPointerAccessoryPositionTopRight",
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a position of a pointer accessory, above and to the right of the pointer; the port draws no pointer and carries no UIPointerAccessory (facts/UIKit/UIPointerStyle.md), so nothing would be placed there",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIKitConstants160.md",
+      "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
     },
     {
       "api": "UIPointerStyle.accessories",
@@ -1534,30 +1511,27 @@
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a hint to autofill that a field takes a date and time; the port carries the other content types, their strings read from a release's cache (facts/UIKit/UITextContentType.md), and textContentType is inert since iOS 6 has no autofill - this constant could be read and carried the same way, not built for lack of demand, not a wall",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIKitConstants160.md",
+      "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
     },
     {
       "api": "UITextContentTypeFlightNumber",
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a hint to autofill that a field takes a flight number; the port carries the other content types, their strings read from a release's cache (facts/UIKit/UITextContentType.md), and textContentType is inert since iOS 6 has no autofill - this constant could be read and carried the same way, not built for lack of demand, not a wall",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIKitConstants160.md",
+      "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
     },
     {
       "api": "UITextContentTypeShipmentTrackingNumber",
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a hint to autofill that a field takes a shipment tracking number; the port carries the other content types, their strings read from a release's cache (facts/UIKit/UITextContentType.md), and textContentType is inert since iOS 6 has no autofill - this constant could be read and carried the same way, not built for lack of demand, not a wall",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIKitConstants160.md",
+      "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
     },
     {
       "api": "UITextField.interactionState",
@@ -1794,10 +1768,9 @@
       "kind": "constant",
       "introduced": "15.4",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the activity that starts SharePlay, which shares an activity over a FaceTime call through Apple's Group Activities service; the release has neither the service nor the activity, a wall at that service",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIKitConstants160.md",
+      "source": "the value read out of the ShareSheet cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/ShareSheet.framework/ShareSheet)"
     },
     {
       "api": "UIActivityViewController.allowsProminentActivity",
@@ -2465,20 +2438,18 @@
       "kind": "constant",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the activity that copies the link of a document shared for collaboration through iCloud; the release has no such sharing service and the share sheet no such activity, a wall at that service",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIKitConstants160.md",
+      "source": "the value read out of the ShareSheet cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/ShareSheet.framework/ShareSheet)"
     },
     {
       "api": "UIActivityTypeCollaborationInviteWithLink",
       "kind": "constant",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the activity that invites people to a document shared for collaboration through iCloud; the release has no such sharing service and the share sheet no such activity, a wall at that service",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIKitConstants160.md",
+      "source": "the value read out of the ShareSheet cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/ShareSheet.framework/ShareSheet)"
     },
     {
       "api": "UIAlertController.severity",

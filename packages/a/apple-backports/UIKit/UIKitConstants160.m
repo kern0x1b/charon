@@ -1,0 +1,46 @@
+// The UIKit constants first exported by iOS 16.0
+// (facts/UIKit/UIKitConstants160.md).
+//
+// One object carries one release: every symbol here is first exported by the oldest
+// held release that has it, so a band from 16.0 on re-exports the release's own and the
+// bands below keep this one.
+//
+// Every value below was read out of a real dyld shared cache, /System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore,
+// never from a header and never from a host framework.
+
+#import <UIKit/UIKit.h>
+
+NSNotificationName NSTextContentStorageUnsupportedAttributeAddedNotification = @"NSTextContentStorageUnsupportedAttributeAddedNotification";
+const UIActionIdentifier UIActionPaste = @"com.apple.action.paste";
+const UIActionIdentifier UIActionPasteAndGo = @"com.apple.action.pasteAndGo";
+const UIActionIdentifier UIActionPasteAndMatchStyle = @"com.apple.action.pasteAndMatchStyle";
+const UIActionIdentifier UIActionPasteAndSearch = @"com.apple.action.pasteAndSearch";
+const UIActivityItemsConfigurationMetadataKey UIActivityItemsConfigurationMetadataKeyLinkPresentationMetadata = @"linkPresentationMetadata";
+const UIActivityType UIActivityTypeCollaborationCopyLink = @"com.apple.UIKit.activity.CollaborationCopyLink";
+const UIActivityType UIActivityTypeCollaborationInviteWithLink = @"com.apple.UIKit.activity.CollaborationInviteWithLink";
+const UIActivityType UIActivityTypeSharePlay = @"com.apple.UIKit.activity.SharePlay";
+const UIApplicationLaunchOptionsKey UIApplicationLaunchOptionsEventAttributionKey = @"UIApplicationLaunchOptionsEventAttributionKey";
+const UIApplicationOpenExternalURLOptionsKey UIApplicationOpenExternalURLOptionsEventAttributionKey = @"UIApplicationOpenExternalURLOptionsEventAttributionKey";
+const UIApplicationOpenURLOptionsKey UIApplicationOpenURLOptionsEventAttributionKey = @"UIApplicationOpenURLOptionsEventAttributionKey";
+const NSErrorDomain UIGuidedAccessErrorDomain = @"UIGuidedAccessErrorDomain";
+NSString *const UIKeyInputDelete = @".";
+const NSDirectionalEdgeInsets UIListSeparatorAutomaticInsets = {top = 0.0, leading = CGFLOAT_MAX, bottom = 0.0, trailing = CGFLOAT_MAX};
+const UIPasteboardDetectionPattern UIPasteboardDetectionPatternCalendarEvent = @"com.apple.uikit.pasteboard-detection-pattern.dd.event";
+const UIPasteboardDetectionPattern UIPasteboardDetectionPatternEmailAddress = @"com.apple.uikit.pasteboard-detection-pattern.dd.email";
+const UIPasteboardDetectionPattern UIPasteboardDetectionPatternFlightNumber = @"com.apple.uikit.pasteboard-detection-pattern.dd.flight";
+const UIPasteboardDetectionPattern UIPasteboardDetectionPatternLink = @"com.apple.uikit.pasteboard-detection-pattern.dd.link";
+const UIPasteboardDetectionPattern UIPasteboardDetectionPatternMoneyAmount = @"com.apple.uikit.pasteboard-detection-pattern.dd.money";
+const UIPasteboardDetectionPattern UIPasteboardDetectionPatternPhoneNumber = @"com.apple.uikit.pasteboard-detection-pattern.dd.phone";
+const UIPasteboardDetectionPattern UIPasteboardDetectionPatternPostalAddress = @"com.apple.uikit.pasteboard-detection-pattern.dd.address";
+const UIPasteboardDetectionPattern UIPasteboardDetectionPatternShipmentTrackingNumber = @"com.apple.uikit.pasteboard-detection-pattern.dd.shipment";
+const UIPointerAccessoryPosition UIPointerAccessoryPositionBottom = {offset = 14.0, angle = 3.141592653589793};
+const UIPointerAccessoryPosition UIPointerAccessoryPositionBottomLeft = {offset = 14.0, angle = 3.9269908169872414};
+const UIPointerAccessoryPosition UIPointerAccessoryPositionBottomRight = {offset = 14.0, angle = 2.356194490192345};
+const UIPointerAccessoryPosition UIPointerAccessoryPositionLeft = {offset = 14.0, angle = 4.71238898038469};
+const UIPointerAccessoryPosition UIPointerAccessoryPositionRight = {offset = 14.0, angle = 1.5707963267948966};
+const UIPointerAccessoryPosition UIPointerAccessoryPositionTop = {offset = 14.0, angle = 0.0};
+const UIPointerAccessoryPosition UIPointerAccessoryPositionTopLeft = {offset = 14.0, angle = 5.497787143782138};
+const UIPointerAccessoryPosition UIPointerAccessoryPositionTopRight = {offset = 14.0, angle = 0.7853981633974483};
+const UITextContentType UITextContentTypeDateTime = @"date-time";
+const UITextContentType UITextContentTypeFlightNumber = @"flight-number";
+const UITextContentType UITextContentTypeShipmentTrackingNumber = @"shipment-tracking-number";

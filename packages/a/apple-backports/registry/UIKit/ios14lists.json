@@ -694,25 +694,31 @@
       "api": "UIConfigurationColorTransformerGrayscale",
       "kind": "constant",
       "introduced": "14.0",
-      "status": "absent",
-      "reason": "the transformers of the system are not read in this window",
-      "effect": "the symbol is not there; a configuration takes a transformer of the application's own"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIConfigurationColorTransformers14.md",
+      "effect": "a real grayscale conversion through CoreGraphics' own match into the device gray space, alpha kept, for a colour that has no components to match the colour unchanged",
+      "source": "the SDK 26.2 header's own description of each transform; the release holds a block (its own code) at the symbol, so there is no value to read and the behaviour is implemented in UIKit/UIConfigurationColorTransformers14.m"
     },
     {
       "api": "UIConfigurationColorTransformerMonochromeTint",
       "kind": "constant",
       "introduced": "14.0",
-      "status": "absent",
-      "reason": "the transformers of the system are not read in this window",
-      "effect": "the symbol is not there; a configuration takes a transformer of the application's own"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIConfigurationColorTransformers14.md",
+      "effect": "the grayscale of the input, which is monochrome and accent-independent - the two properties the header names, and the difference from PreferredTint is that the accent colour does not reach it",
+      "source": "the SDK 26.2 header's own description of each transform; the release holds a block (its own code) at the symbol, so there is no value to read and the behaviour is implemented in UIKit/UIConfigurationColorTransformers14.m"
     },
     {
       "api": "UIConfigurationColorTransformerPreferredTint",
       "kind": "constant",
       "introduced": "14.0",
-      "status": "absent",
-      "reason": "the transformers of the system are not read in this window",
-      "effect": "the symbol is not there; a configuration takes a transformer of the application's own"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIConfigurationColorTransformers14.md",
+      "effect": "the original colour, which is the header's own third case: \"On platforms without a system accent color: Returns the original color\", and the system accent colour is iOS 15's",
+      "source": "the SDK 26.2 header's own description of each transform; the release holds a block (its own code) at the symbol, so there is no value to read and the behaviour is implemented in UIKit/UIConfigurationColorTransformers14.m"
     },
     {
       "api": "-[UICollectionView beginInteractiveMovementForItemAtIndexPath:]",
