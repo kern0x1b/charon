@@ -1244,20 +1244,17 @@ nw_protocol_metadata_t nw_connection_copy_protocol_metadata(nw_connection_t conn
     return NULL;
 }
 
-/* The report of what establishing this connection took, read on the queue it is asked on. The report
-   is the connection's own: the time from its first start to the state it reached, the attempts before
-   it, the protocols of its stack and the addresses it tried. */
-void nw_connection_access_establishment_report(nw_connection_t connection, dispatch_queue_t queue,
-                                               nw_establishment_report_access_block_t access_block)
+/* The report of what establishing this connection took, and the report of what it has moved since.
+   Both are the connection's own measurements, read back through the accessors of NWObjects.md: the
+   times from its first start to the state it reached, the attempts before it, the protocols of its
+   stack and the address it settled on; and the bytes the program sent and received, the bytes the
+   transport moved, and the round trip times the kernel's own TCP_CONNECTION_INFO holds. */
+
+nw_establishment_report_t CharonNWConnectionEstablishmentReport(nw_connection_t connection)
 {
     CharonNWConnection *self = (CharonNWConnection *)connection;
     if (!self)
-        return;
-    if (!access_block) {
-        if (self->_report)
-            self->_report = nil;
-        return;
-    }
+        return NULL;
     CharonNWEstablishmentReport *report = [[CharonNWEstablishmentReport alloc] init];
     report->_protocols = [NSMutableArray array];
     report->_protocolHandshakeMilliseconds = [NSMutableArray array];
@@ -1267,14 +1264,12 @@ void nw_connection_access_establishment_report(nw_connection_t connection, dispa
     report->_durationMilliseconds = self->_startedAtMilliseconds
         ? charon_nw_uptime_milliseconds() - self->_startedAtMilliseconds : 0;
     report->_previousAttemptCount = self->_attempts;
-    if (self->_isDatagram) {
-        [report->_protocols addObject:(CharonNWProtocolDefinition *)nw_protocol_copy_udp_definition()];
-    } else {
+    [report->_protocols addObject:(CharonNWProtocolDefinition *)nw_protocol_copy_udp_definition()];
+    if (!self->_isDatagram)
         [report->_protocols addObject:(CharonNWProtocolDefinition *)nw_protocol_copy_tcp_definition()];
-    }
-    [report->_protocols addObject:(CharonNWProtocolDefinition *)nw_protocol_copy_ip_definition()];
     if (self->_secure)
         [report->_protocols addObject:(CharonNWProtocolDefinition *)nw_protocol_copy_tls_definition()];
+    [report->_protocols addObject:(CharonNWProtocolDefinition *)nw_protocol_copy_ip_definition()];
     while (report->_protocolHandshakeMilliseconds.count < report->_protocols.count) {
         [report->_protocolHandshakeMilliseconds addObject:@(0)];
         [report->_protocolHandshakeRTTMilliseconds addObject:@(0)];
@@ -1292,18 +1287,10 @@ void nw_connection_access_establishment_report(nw_connection_t connection, dispa
         resolution->_preferred = self->_currentEndpoint;
         [report->_resolutionReports addObject:resolution];
     }
-    self->_report = report;
-    dispatch_async(queue ?: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        access_block((nw_establishment_report_t)report);
-    });
+    return report;
 }
 
-/* A report of what this connection has moved since the report was made. The numbers are the
-   connection's own counters and the kernel's own measurements of the socket: the bytes the program
-   sent and received, the bytes the transport moved, and the three round trip times TCP_CONNECTION_INFO
-   holds - which a kernel older than that option answers nothing to, and then the report says 0 for a
-   measurement this release cannot take. */
-nw_data_transfer_report_t nw_connection_create_new_data_transfer_report(nw_connection_t connection)
+nw_data_transfer_report_t CharonNWConnectionDataTransferReport(nw_connection_t connection)
 {
     CharonNWConnection *self = (CharonNWConnection *)connection;
     if (!self)
