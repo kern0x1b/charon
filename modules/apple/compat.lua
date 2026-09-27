@@ -49,7 +49,11 @@ ARRIVED = {
     dispatch_queue_attr_make_initially_inactive = {iOS = "10.0", Macos = "10.12", tvOS = "10.0", watchOS = "3.0"},
     dispatch_queue_attr_make_with_autorelease_frequency = {iOS = "10.0", Macos = "10.12", tvOS = "10.0", watchOS = "3.0"},
     dispatch_queue_attr_make_with_qos_class = {iOS = "8.0", Macos = "10.10", tvOS = "9.0", watchOS = "2.0"},
-    dispatch_queue_get_qos_class = {iOS = "8.0", Macos = "10.10", tvOS = "9.0", watchOS = "2.0"}
+    dispatch_queue_get_qos_class = {iOS = "8.0", Macos = "10.10", tvOS = "9.0", watchOS = "2.0"},
+    os_signpost_enabled = {iOS = "12.0", Macos = "10.14", tvOS = "12.0", watchOS = "5.0"},
+    os_signpost_id_generate = {iOS = "12.0", Macos = "10.14", tvOS = "12.0", watchOS = "5.0"},
+    os_signpost_id_make_with_pointer = {iOS = "12.0", Macos = "10.14", tvOS = "12.0", watchOS = "5.0"},
+    _os_signpost_emit_with_name_impl = {iOS = "12.0", Macos = "10.14", tvOS = "12.0", watchOS = "5.0"}
 }
 
 -- Calls whose state every image in a process shares: a lock one image takes and another releases waits and wakes through one

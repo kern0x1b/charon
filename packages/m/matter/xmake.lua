@@ -13,7 +13,14 @@ package("matter")
     add_patches("v1.6.1.0", "patches/clock-alignment.patch")
 
     add_deps("charon@apple-compat", {alias = "apple-compat"})
-    add_deps("charon@apple-backports", {alias = "backports", configs = {network = true}})
+    -- The backports the process carries are a project decision (includes/apple-ios/xmake.lua's apple_backports):
+    -- this package needs network, and swift-runtime's lift needs coredata, and one package has one set of configs.
+    add_deps("charon@apple-backports", {alias = "backports"})
+    -- The lifted headers, from the one lift the workspace builds: what the backports implement of later releases is
+    -- available from this release's own, which is what a port compiles against. The framework's Darwin platform asks
+    -- os_signpost_* of iOS 12, which apple-compat now provides, and without the lift its declaration is still marked
+    -- unavailable at this release and clang refuses the call.
+    add_deps("charon@swift-runtime", {alias = "swift-runtime", configs = {backports = true}})
     add_deps("charon@ld64", {alias = "ld64"})
     add_deps("charon@libcxx", {alias = "libcxx"})
     add_deps("gn 20211117", {alias = "gn"})
@@ -33,12 +40,26 @@ package("matter")
     -- GN's spelling of each architecture the port builds.
     local cpus = {armv7 = "arm", armv7s = "arm", arm64 = "arm64"}
 
+    -- What the runtime's lift wrote, as a VFS overlay the compiler reads its headers through: the same flag
+    -- rules/swift gives a port's own Swift, for the same reason and with the same file.
+    local function lifted(package)
+        local runtime = package:dep("swift-runtime")
+        if not runtime then
+            return {}
+        end
+        local overlay = table.wrap((runtime:envs() or {}).CHARON_SWIFT_LIFTED_HEADERS)[1]
+        if not overlay then
+            raise("charon@swift-runtime at %s names no lifted headers; it was built without the backports, reinstall it", runtime:installdir())
+        end
+        return {"-ivfsoverlay", overlay}
+    end
+
     on_install("iphoneos", function (package)
         local modules = path.join(package:scriptdir(), "..", "..", "..", "modules")
         local toolchain = import("apple.cmake", {rootdir = modules, anonymous = true}).toolchain(package)
         local sdk = assert(toolchain:config("sdkdir"), "the apple-ios toolchain names no SDK")
         local minimum = assert(toolchain:config("deployment"), "the apple-ios toolchain names no minimum release")
-        local cpu = assert(cpus[package:arch()], "Matter builds armv7, armv7s and arm64, not " .. package:arch())
+        local cpu = assert(cpus[package:arch()], "Matter builds armv7, armv7s and arm64, not %s", package:arch())
 
         -- The flags, taken from the toolchain rather than written out here, the way modules/apple/cmake.lua takes them:
         -- the release's own triple, sysroot and deployment target, and its own emulated-TLS flag, which is what an
@@ -49,11 +70,11 @@ package("matter")
         -- used, which is every build on this port - the port compiles against a current SDK for a release far older -
         -- and GN compiles the tree with -Werror, so the warning would stop the build over the port's own arrangement.
         local compiled = table.join(flags, toolchain:config("emulated_tls") and {"-femulated-tls"} or {},
-                                    {"-Wno-incompatible-sysroot"})
+                                    {"-Wno-incompatible-sysroot"}, lifted(package))
 
         for _, name in ipairs(table.orderkeys(submodules)) do
             os.vrunv("git", {"submodule", "update", "--init", "--depth", "1", name})
-            assert(os.isdir(path.join(os.curdir(), name)), "the submodule " .. name .. " is not there after git checked it out")
+            assert(os.isdir(path.join(os.curdir(), name)), "the submodule %s is not there after git checked it out", name)
         end
 
         -- //build_overrides/pigweed.gni imports //build_overrides/pigweed_environment.gni, a file upstream's bootstrap
@@ -89,8 +110,8 @@ package("matter")
             'custom_toolchain="custom"',
             'target_os="ios"',
             'target_cpu="' .. cpu .. '"',
-            "target_cc=" .. string.format("%q", assert(toolchain:tool("cc"), "the apple-ios toolchain names no compiler for " .. package:arch())),
-            "target_cxx=" .. string.format("%q", assert(toolchain:tool("cxx"), "the apple-ios toolchain names no C++ compiler for " .. package:arch())),
+            "target_cc=" .. string.format("%q", assert(toolchain:tool("cc"), "the apple-ios toolchain names no compiler for %s", package:arch())),
+            "target_cxx=" .. string.format("%q", assert(toolchain:tool("cxx"), "the apple-ios toolchain names no C++ compiler for %s", package:arch())),
             "target_ar=" .. string.format("%q", assert(toolchain:tool("ar"), "the apple-ios toolchain names no archiver")),
             "target_cflags=[" .. quoted(compiled) .. "]",
             "target_cflags_c=[]",
@@ -130,47 +151,81 @@ package("matter")
         -- are gathered into one Matter directory first - the same directory a port will import them from, and the
         -- one installed below.
         local framework = path.join(os.curdir(), "src", "darwin", "Framework", "CHIP")
-        local headers = path.join(out, "include", "Matter")
-        os.mkdir(headers)
-        for _, header in ipairs(os.files(path.join(framework, "**", "*.h"))) do
-            os.cp(header, headers)
+        -- The framework's headers and sources are in four directories, and its sources name a header two ways:
+        -- "MTRFoo.h", which is the including file's own directory, and <Matter/MTRFoo.h>, which is the framework's
+        -- public include layout. None of the headers has an include guard, so a header reached under two names is read
+        -- twice and every class in it is defined twice - which is what the first build of this said. The two names have
+        -- to be one file, and a quoted include always resolves against the including file's own directory first, so
+        -- the sources are staged into one directory named Matter and compiled from inside it: there, "MTRFoo.h" and
+        -- <Matter/MTRFoo.h> are the same path. The files are the framework's own, byte for byte.
+        local staged = path.join(out, "framework", "Matter")
+        os.mkdir(staged)
+        local flat, sources = {}, {}
+        for _, directory in ipairs({framework, path.join(framework, "zap-generated"), path.join(framework, "ServerEndpoint"),
+                                    path.join(framework, "XPC Protocol")}) do
+            for _, kind in ipairs({"*.h", "*.mm"}) do
+                for _, file in ipairs(os.files(path.join(directory, kind))) do
+                    local name = path.filename(file)
+                    assert(flat[name] == nil, "the framework carries %s twice, in %s and in %s", name, flat[name], file)
+                    flat[name] = file
+                    if name:endswith(".mm") then
+                        table.insert(sources, name)
+                    end
+                end
+            end
         end
-        for _, header in ipairs(os.files(path.join(framework, "*.h"))) do
-            os.cp(header, headers)
+        table.sort(sources)
+        local names = {}
+        for name in pairs(flat) do
+            table.insert(names, name)
+            os.cp(flat[name], path.join(staged, name))
         end
-        local search = table.join({path.join(out, "include"), framework, path.join(framework, "zap-generated"),
-                                  path.join(framework, "ServerEndpoint"), path.join(framework, "XPC Protocol"),
-                                  path.join(os.curdir(), "src"), path.join(os.curdir(), "src", "include"),
-                                  path.join(os.curdir(), "zzz_generated"), path.join(os.curdir(), "zzz_generated", "app-common"),
-                                  path.join(os.curdir(), "third_party", "nlassert", "repo", "include"),
-                                  path.join(os.curdir(), "third_party", "nlio", "repo", "include")},
-                                 {path.join(package:dep("libcxx"):installdir("include"), "c++", "v1")})
-        local wrapper = table.join(compiled, {"-fobjc-arc", "-fno-c++-static-destructors", "-fmacro-prefix-map=" .. framework .. "/=",
+        table.sort(names)
+        assert(#sources > 0, "the framework at %s has no Objective-C++ source", framework)
+
+        local search = {path.join(out, "framework"), path.join(out, "gen", "include"),
+                        path.join(os.curdir(), "src"), path.join(os.curdir(), "src", "include"),
+                        path.join(os.curdir(), "zzz_generated"), path.join(os.curdir(), "zzz_generated", "app-common"),
+                        path.join(os.curdir(), "third_party", "nlassert", "repo", "include"),
+                        path.join(os.curdir(), "third_party", "nlio", "repo", "include")}
+        -- -nostdinc++ with the port's own libc++ headers: the SDK carries the libc++ of iOS 6 in usr/include, which
+        -- the SDK's own headers reach (usr/include/assert.h:44 pulls in c++/v1/stdlib.h), and those are written for the
+        -- older compiler and break on this one - _LIBCPP_INLINE_VISIBILITY is a macro this compiler does not define.
+        local wrapper = table.join(compiled, {"-fobjc-arc", "-fno-c++-static-destructors",
+                                             "-fmacro-prefix-map=" .. staged .. "/=",
+                                             "-nostdinc++", "-isystem", path.join(package:dep("libcxx"):installdir("include"), "c++", "v1"),
                                              "-DCHIP_HAVE_CONFIG_H=1", "-DCHIP_CONFIG_SKIP_APP_SPECIFIC_GENERATED_HEADER_INCLUDES=1",
                                              "-DCHIP_CONFIG_GLOBALS_NO_DESTRUCT=1"})
         local objects = {}
-        for _, source in ipairs(os.files(path.join(framework, "**", "*.mm"))) do
-            -- The object keeps the source's own place under the framework: two directories hold sources of the same
-            -- name (MTRCommandTimedCheck.mm is in CHIP/ and in CHIP/zap-generated/), and one flat name for both
-            -- would be one object written twice.
-            local object = path.absolute(path.join("framework", path.relative(source, framework) .. ".o"))
+        for _, name in ipairs(sources) do
+            local object = path.absolute(path.join("framework", name .. ".o"))
             os.mkdir(path.directory(object))
-            local arguments = table.join(wrapper, {"-I" .. path.join(out, "gen", "include")})
+            local arguments = table.join(wrapper, {"-I" .. staged})
             for _, directory in ipairs(search) do
                 table.insert(arguments, "-I" .. directory)
             end
-            os.vrunv(assert(toolchain:tool("mxx"), "the apple-ios toolchain names no Objective-C++ compiler for " .. package:arch()),
-                     table.join(arguments, {"-c", source, "-o", object}))
+            os.vrunv(assert(toolchain:tool("mxx"), "the apple-ios toolchain names no Objective-C++ compiler for %s", package:arch()),
+                     table.join(arguments, {"-c", path.join(staged, name), "-o", object}))
             table.insert(objects, object)
         end
-        assert(#objects > 0, "the framework at " .. framework .. " has no Objective-C++ source")
+
+        -- The install carries the framework's headers, flattened as <Matter/...> names them.
+        local installed = path.join(package:installdir("include"), "Matter")
+        os.mkdir(installed)
+        for _, name in ipairs(names) do
+            if name:endswith(".h") then
+                os.cp(flat[name], installed)
+            end
+        end
+        os.mkdir(path.join(installed, "Modules"))
+        os.cp(path.join(framework, "Matter.modulemap"), path.join(installed, "Modules", "module.modulemap"))
 
         local libcxx = package:dep("libcxx"):installdir("lib")
         -- The framework's device browser asks Network for a connection (MTRDeviceConnectivityMonitor.mm), and iOS 6
         -- has no Network.framework, so the nw_* calls come from the backport that carries them over BSD sockets.
         local backports = package:dep("backports"):installdir("lib")
         local output = path.join(package:installdir("lib"), "libMatterBackports.dylib")
-        os.vrunv(assert(toolchain:tool("mxx"), "the apple-ios toolchain names no Objective-C++ compiler for " .. package:arch()),
+        os.vrunv(assert(toolchain:tool("mxx"), "the apple-ios toolchain names no Objective-C++ compiler for %s", package:arch()),
                  table.join(flags, {"-fuse-ld=" .. path.join(package:dep("ld64"):installdir("bin"), "ld"),
                                     "-dynamiclib", "-install_name", "/usr/lib/charon/org.charon.apple-backports/libMatterBackports.dylib",
                                     "-o", output, path.join(out, "lib", "libCHIP.a")}, objects,
@@ -181,9 +236,6 @@ package("matter")
                             "-framework", "CoreBluetooth",
                             "-Wl,-rpath," .. libcxx, "-Wl,-rpath,@loader_path"}))
 
-        os.vcp(headers, path.join(package:installdir("include"), "Matter"))
-        os.mkdir(path.join(package:installdir("include"), "Matter", "Modules"))
-        os.cp(path.join(framework, "Matter.modulemap"), path.join(package:installdir("include"), "Matter", "Modules", "module.modulemap"))
         package:add("links", "Matter")
     end)
 
