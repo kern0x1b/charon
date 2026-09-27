@@ -145,3 +145,31 @@ translation of the same input is right.
 Not run: not on the device, not in the emulator, not through the generated call test. Every entry
 here is **device-unverified**, and the package build that checks every band is what the delivery
 report quotes.
+
+## What the braille comparison measured, and the defect it found
+
+`tests/backports/accessibility/braille-differential.sh` builds **two programs and diffs them**,
+because one binary cannot hold both implementations: the system's three braille classes and the
+port's have the same names, and renaming either renames the system's declaration.
+
+The port's forward translation is the standard's, measured:
+
+    abcxyz        ⠁⠃⠉⠭⠽⠵
+    ABC           ⡀⠁⡀⡀⠃⠉
+    123           ⠼⠃⠉⠙
+    0123456789    ⠼⠁⠃⠉⠙⠑⠋⠛⠓⠊⠚
+    ,;:.-!?       ⠂⠆⠒⠲⠤⠖⠦
+    Hello, World! 42.  ⡀⠓⠑⠇⠇⠕⠂⠀⡀⠺⠕⠗⠇⠙⠖⠀⠼⠑⠉⠲
+
+The capital sign is doubled for the run after the first capital, and the number sign is written
+once for a run of digits, which is the standard's own rule for both.
+
+**The host answers (nil) for every case.** Its `AXBrailleTranslator` returns nil when it is given
+a table with no provider's data behind it, which is what a table built through
+`-[AXBrailleTable initWithIdentifier:]` is. So on this host **the system is not an oracle for a
+hand-built table**: the comparison's finding is that the oracle is unavailable here, not that the
+two implementations agree. A host with an installed braille provider is where that finishes.
+
+**One defect the comparison found, and this delivery does not fix:** the back-translation's number
+sign does not keep its scope across a run of digits, so `123` comes back `2cd` where the standard
+says `123`. The forward translation of the same input is right.
