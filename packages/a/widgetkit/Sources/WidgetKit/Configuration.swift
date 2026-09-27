@@ -60,12 +60,13 @@ extension Widget {
     public static func main() -> [WidgetInfo] { return CharonWidgetRegistry.shared.configurations() }
 }
 
-/// The handler a widget's app installs to be told when its push token changes.
-public final class WidgetPushHandler {
-    public init() {}
-
-    /// The system calls this when the push tokens of the named widgets have changed.
-    public func pushTokensDidChange(widgets: [WidgetInfo]) {}
+/// The handler a widget's app installs to be told when the push tokens the system mints for its
+/// widgets change. A push-to-start widget is woken by a push carrying the token the system gave it,
+/// so an app whose token changed has to be told which of its widgets it belongs to.
+public protocol WidgetPushHandler {
+    init()
+    /// The system calls this when the push token of one of the named widgets has changed.
+    func pushTokenDidChange(_ pushInfo: WidgetPushInfo, widgets: [WidgetInfo])
 }
 
 /// The bundle of widgets an app offers, which the framework's own gallery reads.

@@ -34,16 +34,72 @@ extension TimelineProvider {
 }
 
 /// The provider a widget configured by an app intent is asked through.
-public protocol AppIntentTimelineProvider: TimelineProvider where Entry: TimelineEntry & _IntentValueRepresentable {}
+///
+/// A provider of this kind is asked for the timeline *asynchronously*, with the configuration the
+/// widget is drawn with passed in, so the system is never kept waiting on a completion handler: the
+/// entries a widget of this kind offers the system come from `recommendations()`.
+public protocol AppIntentTimelineProvider {
+    /// The entry the widget shows, which is the provider's own type.
+    associatedtype Entry: TimelineEntry
+    /// The configuration the widget is drawn with, which is the app intent itself.
+    associatedtype Intent: WidgetConfigurationIntent
+    /// What the system tells the provider about the widget it is drawing.
+    typealias Context = TimelineProviderContext
+
+    /// The entry shown before the provider has answered, which is the provider's own.
+    func placeholder(in context: Context) -> Entry
+    /// The one entry the widget shows right now.
+    func snapshot(for configuration: Intent, in context: Context) async -> Entry
+    /// The entries the widget shows from now on, and when it is asked again.
+    func timeline(for configuration: Intent, in context: Context) async -> Timeline<Entry>
+    /// The configurations the system may offer the owner to switch the widget to.
+    func recommendations() -> [AppIntentRecommendation<Intent>]
+    /// How the system should weigh this widget against the others, which the owner may not change.
+    func relevance() async -> WidgetRelevance<Intent>
+}
+
+extension AppIntentTimelineProvider {
+    /// A provider that names no relevance is weighed automatically, which is the framework's default
+    /// for this provider.
+    public func relevance() async -> WidgetRelevance<Intent> { return WidgetRelevance(.automatic) }
+
+    /// A provider that names no recommendation has none, which is the framework's default for this
+    /// provider.
+    public func recommendations() -> [AppIntentRecommendation<Intent>] { return [] }
+}
 
 /// The provider a widget configured by an `INIntent` is asked through.
 /// The same, with the system telling the provider about the intent instance the widget is configured
-/// with: a provider of this kind is asked through its own context.
-public protocol IntentTimelineProvider: TimelineProvider where Entry: TimelineEntry {
+/// with: a provider of this kind is asked through its own context, and through a completion handler,
+/// because the intent arrives from the system's own store rather than from the app.
+public protocol IntentTimelineProvider {
     /// The entry the widget shows, which is the provider's own type.
     associatedtype Entry: TimelineEntry
-    /// The intent instance the widget is drawn with, which the configuration holds.
-    var intent: (any AppIntent)? { get }
+    /// The intent instance the widget is drawn with, which the configuration holds. The interface
+    /// names `Intents.INIntent` here, the Objective-C framework, which is another band's and which
+    /// these releases do not have; this one is written in terms of the app intent the port's own
+    /// `IntentConfiguration` takes. `facts/WidgetKit/Providers.md` records it.
+    associatedtype Intent: AppIntent
+    /// What the system tells the provider about the widget it is drawing.
+    typealias Context = TimelineProviderContext
+
+    /// The configurations the system may offer the owner to switch the widget to.
+    func recommendations() -> [IntentRecommendation<Intent>]
+    /// The entry shown before the provider has answered, which is the provider's own.
+    func placeholder(in context: Context) -> Entry
+    /// The one entry the widget shows right now, which the provider answers through `completion`.
+    func getSnapshot(for configuration: Intent, in context: Context, completion: @escaping (Entry) -> Void)
+    /// The entries the widget shows from now on, and when it is asked again, which the provider
+    /// answers through `completion`.
+    func getTimeline(for configuration: Intent, in context: Context, completion: @escaping (Timeline<Entry>) -> Void)
+    /// How the system should weigh this widget against the others, which the owner may not change.
+    func relevance() async -> WidgetRelevance<Intent>
+}
+
+extension IntentTimelineProvider {
+    /// A provider that names no relevance is weighed automatically, which is the framework's default
+    /// for this provider.
+    public func relevance() async -> WidgetRelevance<Intent> { return WidgetRelevance(.automatic) }
 }
 
 /// The entries a widget offers the system to pick from, which is what a relevance provider returns.
