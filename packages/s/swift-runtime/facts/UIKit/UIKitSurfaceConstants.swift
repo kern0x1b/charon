@@ -178,69 +178,6 @@ public enum CharonUITabBarController {
         public enum ScrollTarget {
             case footer
             case header
-            case tab(UITab)
-        }
-    }
-}
-
-public enum CharonUITabSidebarItem {
-    public enum Content {
-        case action(UIAction)
-        case tab(UITab)
-    }
-}
-
-public enum CharonUITextFormattingViewController {
-    public enum ChangeValue {
-        case bold(Bool)
-        case decreaseFontSize
-        case decreaseIndentation
-        case font(UIFont)
-        case fontSize(Double)
-        case formattingStyle(String)
-        case highlight(CharonUITextFormattingViewController.Highlight)
-        case increaseFontSize
-        case increaseIndentation
-        case italic(Bool)
-        case lineHeightPointSize(Double)
-        case strikethrough(Bool)
-        case textAlignment(CharonUITextFormattingViewController.TextAlignment)
-        case textColor(UIColor)
-        case textList(CharonUITextFormattingViewController.TextList)
-        case undefined
-        case underline(Bool)
-    }
-    public enum Highlight {
-        case blue
-        case `default`
-        case mint
-        case orange
-        case pink
-        case purple
-    }
-    public enum TextAlignment {
-        case center
-        case justified
-        case natural
-    }
-    public enum TextList {
-        case decimal
-        case disc
-        case hyphen
-        case other
-    }
-}
-
-public enum CharonUITextItem {
-    public enum Content {
-        case link(URL)
-        case tag(String)
-        case textAttachment(NSTextAttachment)
-    }
-    public enum MenuConfiguration {
-        public enum Preview {
-            case `default`
-            case view(CharonUIView)
         }
     }
 }
@@ -260,27 +197,6 @@ extension UIButton {
 }
 extension UITabBarController {
     public typealias Sidebar = CharonUITabBarController.Sidebar
-}
-extension UITabSidebarItem {
-    public typealias Content = CharonUITabSidebarItem.Content
-}
-extension UITextFormattingViewController {
-    public typealias ChangeValue = CharonUITextFormattingViewController.ChangeValue
-}
-extension UITextFormattingViewController {
-    public typealias Highlight = CharonUITextFormattingViewController.Highlight
-}
-extension UITextFormattingViewController {
-    public typealias TextAlignment = CharonUITextFormattingViewController.TextAlignment
-}
-extension UITextFormattingViewController {
-    public typealias TextList = CharonUITextFormattingViewController.TextList
-}
-extension UITextItem {
-    public typealias Content = CharonUITextItem.Content
-}
-extension UITextItem {
-    public typealias MenuConfiguration = CharonUITextItem.MenuConfiguration
 }
 extension UIView {
     public typealias LayoutRegion = CharonUIView.LayoutRegion

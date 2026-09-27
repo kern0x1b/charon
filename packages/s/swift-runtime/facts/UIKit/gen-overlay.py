@@ -260,6 +260,17 @@ def main():
     for name, cases in PAYLOAD_TYPES.items():
         rows.extend({"lang": "swift", "kind": "constant", "api": "%s.%s" % (name, case)} for case in cases)
     GIVEN_CASES = {name: cases for name, cases in PAYLOAD_TYPES.items()}
+    # The rows that spell their names through a class the registry carries as `absent`
+    # (registry/UIKit/ios17-18.json): UITab, UITabSidebarItem, UITextFormattingViewController and
+    # UITextItem. Their namespaces cannot be declared - there is no class to nest a type in, and a
+    # typealias on a class that does not exist does not compile - so they are left out of the
+    # overlay until the UIKit bands carry those classes, and the typecheck counts them as waiting.
+    WAITING_ROOTS = ("UITabSidebarItem", "UITextFormattingViewController", "UITextItem")
+    WAITING_PAYLOADS = {"UITabBarController.Sidebar.ScrollTarget.tab": "UITab"}
+    if os.environ.get("UIKIT_INCLUDE_WAITING") != "1":
+        waiting = {r["api"] for r in rows
+                   if r["api"].split(".")[0] in WAITING_ROOTS or r["api"] in WAITING_PAYLOADS}
+        rows = [r for r in rows if r["api"] not in waiting]
     types = {}
     for row in rows:
         types.setdefault(row["api"].rsplit(".", 1)[0], []).append(row["api"].rsplit(".", 1)[1])

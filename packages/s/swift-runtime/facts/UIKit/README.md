@@ -72,6 +72,62 @@ declaration is wrong.
 | `UITextItem.MenuConfiguration.Preview.default` | `UITextItem.MenuConfiguration` |
 | `UITextItem.MenuConfiguration.Preview.view` | `UITextItem.MenuConfiguration` |
 
+## The 86 that resolve, and the one class standing between them and 86/86
+
+The overlay, with the 25 waiting rows' namespaces left out, is 38 enumerations, 87 case
+declarations and 5 typealiases, and the typecheck over the 86 rows that are not waiting reports
+exactly one error:
+
+```
+$ for f in /tmp/n86/*.swift; do packages/s/swift-runtime/facts/UIKit/tc.sh "$f" 2>&1 | grep "error:"; done \
+    | sed 's/.*error: //' | sort | uniq -c
+    688 'UITargetedPreview' is only available in iOS 13.0 or newer
+```
+
+688 is 86 files naming the same four `UIPointerEffect` cases. `UIAction` and `NSTextAttachment`
+already lower in the headers this typecheck reads; `UITargetedPreview` does not, and
+`registry/UIKit/ios13menus.json` carries it as `implemented` - the headers were lifted when the
+`swift-runtime` install this typecheck takes its resource directory from was built, so a fresh lift
+over this tree's registry lowers it. The count against those fresh lifted headers is what
+`lift-remeasure.sh` (or `fast_lift2.lua`, the recipe it uses) is for, and it is queued.
+## The rows that wait for their class
+
+These 25 rows spell their names through a class the port's registry carries as `absent`
+(`registry/UIKit/ios17-18.json`: `UITab`, `UITabSidebarItem`, `UITextFormattingViewController`
+and `UITextItem`), so the overlay cannot declare the name they ask for: the enclosing class is
+not there to nest a type in, and a typealias on a class that does not exist does not compile.
+They are registered `absent` for that reason until the UIKit bands carry those classes, and the
+typecheck counts them as such: each is a row whose name is unreachable, not a row whose
+declaration is wrong.
+
+| row | the class it waits for |
+| --- | --- |
+| `UITabBarController.Sidebar.ScrollTarget.tab` | `UITab` |
+| `UITabSidebarItem.Content.action` | `UITabSidebarItem.Content` |
+| `UITabSidebarItem.Content.tab` | `UITabSidebarItem.Content` |
+| `UITextFormattingViewController.ChangeValue.bold` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.decreaseFontSize` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.decreaseIndentation` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.font` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.fontSize` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.formattingStyle` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.highlight` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.increaseFontSize` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.increaseIndentation` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.italic` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.lineHeightPointSize` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.strikethrough` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.textAlignment` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.textColor` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.textList` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.undefined` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.underline` | `UITextFormattingViewController.ChangeValue` |
+| `UITextItem.Content.link` | `UITextItem.Content` |
+| `UITextItem.Content.tag` | `UITextItem.Content` |
+| `UITextItem.Content.textAttachment` | `UITextItem.Content` |
+| `UITextItem.MenuConfiguration.Preview.default` | `UITextItem.MenuConfiguration` |
+| `UITextItem.MenuConfiguration.Preview.view` | `UITextItem.MenuConfiguration` |
+
 ## The other 86
 
 The remaining rows resolve once the lift lowers the availability of the SDK classes the surface
