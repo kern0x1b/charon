@@ -22,6 +22,59 @@ constant followed through its entry in that image's symbol table to the `__cfstr
 Two controls: `HKQuantityTypeIdentifierStepCount` and `HKErrorDomain` are read out as real strings,
 and a name no image exports reports that instead of a value.
 
+**The unit arithmetic is the host's, measured.** `tests/backports/host/healthkit/` asks the
+system's own HealthKit and this library the same questions in one process: every unit string, the
+factor of every one of them against the base of its dimension, both directions of every conversion at
+eight values, the compatibility of every pair, the four arithmetic operations, every prefixed factory at
+every prefix of the header's enum, every plain factory, and every one of the 120 quantity types with
+its aggregation. **5554 comparisons, 0 differences**, and three mutants of the port are run through it
+and none survives, so a pass is a pass.
+
+It is what corrected the units, and every correction is in `HKUnit.m` with the measurement beside it:
+
+- the **micro prefix is `mc`**, and neither `u` nor U+03BC is one - the host raises "Unable to parse
+  factorization string" for `ug` and for `μg` alike, and `+gramUnitWithMetricPrefix:HKMetricPrefixMicro`
+  answers `mcg`. A prefix goes in front of the base unit's own name, so a milli-pascal is `mPa` and a
+  mega-litre is `ML`. The earlier reading inferred an ASCII `u` from the absence of U+03BC in an iOS 8.0
+  image, which was an argument from silence and was wrong: that image never held a micro-prefixed unit
+  string at all.
+- **`%` is not a dimension of its own**: the host converts a percent into a count, so `count` is the
+  base of both. `IU`, `appleEffortScore`, `dBASPL`, `Hz`, `dBHL`, `V` and `W` each are one.
+- a **molar unit** is a mole with the molar mass as its factor: `mol<12>` is 12 g a mole, `mmol<12>` is
+  0.012 g, and the two are compatible - the host answers six for one `mol<12>` in `mol<2>`.
+- the three pressure factors are the host's own to the last bit: the millimetre of mercury as
+  133.32236842105263 Pa, the centimetre of water as 98.06649606299213 Pa, the inch of mercury as
+  3386.38816 Pa. The exact 1/760 atm and the exact 1/760 inHg, which the first table carried, are not
+  what the host uses.
+- a **product** is written with U+00B7 between its factors, a power with `^` and a quotient with one
+  solidus and no parentheses; a `*` reads as the same separator and two soliduses are refused.
+- a **string it cannot parse raises** rather than answering nil, which is what its nonnull return and
+  its own message say; the empty string is the null unit rather than a refusal.
+- a **temperature is not refused** in the arithmetic: the host makes `degC·m`, `1/degC` and `degC^2`,
+  and `(degC·m)/degC` comes back as `m`, so a product carries no offset and two temperatures cancel.
+- an **offset is not part of compatibility**: a degree Celsius and a kelvin are one dimension.
+- `HKQuantityTypeIdentifierUVExposure` is the only line of the SDK header whose unit field is empty,
+  and the host answers `count` and `%` for it, so its row carries `count` and the generator that writes
+  the table says why.
+
+**Two differences the host differential declares**, both in `run.sh` with the reason.
+
+1. `HKQuantityAggregationStyle` has **two** cases in the header this library is compiled against -
+   cumulative and discrete arithmetic - and the header whose comment the type table is read from names
+   five. The host answers the three later ones with a case of its own, so for ten types its
+   `aggregationStyle` is a number a caller of this library has no case for. They are
+   `AtrialFibrillationBurden`, `CyclingCadence`, `CyclingPower`, `CyclingSpeed`, `HeartRate`,
+   `RestingHeartRate` and `WalkingHeartRateAverage` (the host says 2), and `EnvironmentalAudioExposure`,
+   `EnvironmentalSoundReduction` and `HeadphoneAudioExposure` (the host says 3). This library answers
+   the one discrete style it has; the type, its unit and its factor are the same, and the
+   cumulative-or-discrete property - the one the contract has - is compared for every type.
+2. The **order of the factors of a product**. The host writes a product in an order of its own - it
+   answers `J/m·s·kg` for `J/(m*kg*s)`, for `J/(s*kg*m)` and for `J/(m*s*kg)` alike - and the public
+   API does not say what that order is. This library writes the factors in the order they were given.
+   The test compares the factors as a set, and everything else about a product: which units it accepts,
+   and the number it converts to and from.
+
+
 **The unit strings are the release's too.** The image's own string pool holds the units it stored
 per type, beside the type names: `count`, `%`, `m`, `kg`, `count/s`, `kcal`, `mg/dL`, `mmHg`, `g`,
 `S`, `degC`, `L/min`. `mg/dL` is the direct evidence that a metric prefix is spelled in ASCII
