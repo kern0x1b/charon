@@ -8,7 +8,7 @@
 //
 //  Every method the header declares here has a body that stores or returns the class's own
 //  state, the coding and copying helpers walk the whole ivar chain so a subclass keeps its
-//  parent's state, and 16 member(s) whose type is a class of a later group are
+//  parent's state, and 0 member(s) whose type is a class of a later group are
 //  left dynamic and answered in registry/Intents instead of with nil.
 //
 //  The classes whose behaviour is more than storage are hand written in
@@ -164,9 +164,29 @@
 
 @implementation INAddTasksTargetTaskListResolutionResult
 
+- (instancetype)initWithTaskListResolutionResult:(INTaskListResolutionResult *)taskListResolutionResult
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonIntentsCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [INTaskListResolutionResult class]))) {
+        [self charon_adoptResolutionOf:taskListResolutionResult];
+    }
+    return self;
+}
+
 @end
 
 @implementation INAddTasksTemporalEventTriggerResolutionResult
+
+- (instancetype)initWithTemporalEventTriggerResolutionResult:(INTemporalEventTriggerResolutionResult *)temporalEventTriggerResolutionResult
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonIntentsCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [INTemporalEventTriggerResolutionResult class]))) {
+        [self charon_adoptResolutionOf:temporalEventTriggerResolutionResult];
+    }
+    return self;
+}
 
 + (instancetype)unsupportedForReason:(INAddTasksTemporalEventTriggerUnsupportedReason)reason
 {
@@ -476,11 +496,12 @@
 
 @interface INBoatTrip ()
 {
-    CLPlacemark * _arrivalBoatTerminalLocation;  // arrivalBoatTerminalLocation
-    NSString *    _boatName;  // boatName
-    NSString *    _boatNumber;  // boatNumber
-    CLPlacemark * _departureBoatTerminalLocation;  // departureBoatTerminalLocation
-    NSString *    _provider;  // provider
+    CLPlacemark *           _arrivalBoatTerminalLocation;  // arrivalBoatTerminalLocation
+    NSString *              _boatName;  // boatName
+    NSString *              _boatNumber;  // boatNumber
+    CLPlacemark *           _departureBoatTerminalLocation;  // departureBoatTerminalLocation
+    NSString *              _provider;  // provider
+    INDateComponentsRange * _tripDuration;  // tripDuration
 }
 @end
 
@@ -490,7 +511,22 @@
     @synthesize boatNumber = _boatNumber;
     @synthesize departureBoatTerminalLocation = _departureBoatTerminalLocation;
     @synthesize provider = _provider;
-    @dynamic tripDuration;  // a class of a later group: see registry/Intents
+    @synthesize tripDuration = _tripDuration;
+
+- (instancetype)initWithProvider:(NSString *)provider boatName:(NSString *)boatName boatNumber:(NSString *)boatNumber tripDuration:(INDateComponentsRange *)tripDuration departureBoatTerminalLocation:(CLPlacemark *)departureBoatTerminalLocation arrivalBoatTerminalLocation:(CLPlacemark *)arrivalBoatTerminalLocation
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonIntentsCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [NSObject class]))) {
+        _arrivalBoatTerminalLocation = [arrivalBoatTerminalLocation copy];
+        _boatName = [boatName copy];
+        _boatNumber = [boatNumber copy];
+        _departureBoatTerminalLocation = [departureBoatTerminalLocation copy];
+        _provider = [provider copy];
+        _tripDuration = [tripDuration copy];
+    }
+    return self;
+}
 
 + (BOOL)supportsSecureCoding
 {
@@ -561,13 +597,14 @@
 
 @interface INBusTrip ()
 {
-    CLPlacemark * _arrivalBusStopLocation;  // arrivalBusStopLocation
-    NSString *    _arrivalPlatform;  // arrivalPlatform
-    NSString *    _busName;  // busName
-    NSString *    _busNumber;  // busNumber
-    CLPlacemark * _departureBusStopLocation;  // departureBusStopLocation
-    NSString *    _departurePlatform;  // departurePlatform
-    NSString *    _provider;  // provider
+    CLPlacemark *           _arrivalBusStopLocation;  // arrivalBusStopLocation
+    NSString *              _arrivalPlatform;  // arrivalPlatform
+    NSString *              _busName;  // busName
+    NSString *              _busNumber;  // busNumber
+    CLPlacemark *           _departureBusStopLocation;  // departureBusStopLocation
+    NSString *              _departurePlatform;  // departurePlatform
+    NSString *              _provider;  // provider
+    INDateComponentsRange * _tripDuration;  // tripDuration
 }
 @end
 
@@ -579,7 +616,24 @@
     @synthesize departureBusStopLocation = _departureBusStopLocation;
     @synthesize departurePlatform = _departurePlatform;
     @synthesize provider = _provider;
-    @dynamic tripDuration;  // a class of a later group: see registry/Intents
+    @synthesize tripDuration = _tripDuration;
+
+- (instancetype)initWithProvider:(NSString *)provider busName:(NSString *)busName busNumber:(NSString *)busNumber tripDuration:(INDateComponentsRange *)tripDuration departureBusStopLocation:(CLPlacemark *)departureBusStopLocation departurePlatform:(NSString *)departurePlatform arrivalBusStopLocation:(CLPlacemark *)arrivalBusStopLocation arrivalPlatform:(NSString *)arrivalPlatform
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonIntentsCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [NSObject class]))) {
+        _arrivalBusStopLocation = [arrivalBusStopLocation copy];
+        _arrivalPlatform = [arrivalPlatform copy];
+        _busName = [busName copy];
+        _busNumber = [busNumber copy];
+        _departureBusStopLocation = [departureBusStopLocation copy];
+        _departurePlatform = [departurePlatform copy];
+        _provider = [provider copy];
+        _tripDuration = [tripDuration copy];
+    }
+    return self;
+}
 
 + (BOOL)supportsSecureCoding
 {
@@ -613,7 +667,10 @@
 
 + (instancetype)successWithResolvedCallCapability:(INCallCapability)resolvedCallCapability
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedCallCapability] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[NSNumber numberWithInteger:resolvedCallCapability] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)confirmationRequiredWithCallCapabilityToConfirm:(INCallCapability)callCapabilityToConfirm
@@ -730,7 +787,10 @@
 
 + (instancetype)successWithResolvedCallRecord:(INCallRecord *)resolvedCallRecord
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[resolvedCallRecord copy] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[resolvedCallRecord copy] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)disambiguationWithCallRecordsToDisambiguate:(NSArray<INCallRecord *> *)callRecordsToDisambiguate
@@ -866,14 +926,25 @@
 @interface INDeleteTasksIntent ()
 {
     NSNumber *          _all;  // all
+    INTaskList *        _taskList;  // taskList
     NSArray<INTask *> * _tasks;  // tasks
 }
 @end
 
 @implementation INDeleteTasksIntent
     @synthesize all = _all;
+    @synthesize taskList = _taskList;
     @synthesize tasks = _tasks;
-    @dynamic taskList;  // a class of a later group: see registry/Intents
+
+- (instancetype)initWithTaskList:(INTaskList *)taskList tasks:(NSArray<INTask *> *)tasks all:(NSNumber *)all
+{
+    if ((self = [super init])) {
+        _all = [all copy];
+        _taskList = [taskList copy];
+        _tasks = [tasks copy];
+    }
+    return self;
+}
 
 + (BOOL)supportsSecureCoding
 {
@@ -958,6 +1029,16 @@
 
 @implementation INDeleteTasksTaskListResolutionResult
 
+- (instancetype)initWithTaskListResolutionResult:(INTaskListResolutionResult *)taskListResolutionResult
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonIntentsCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [INTaskListResolutionResult class]))) {
+        [self charon_adoptResolutionOf:taskListResolutionResult];
+    }
+    return self;
+}
+
 + (instancetype)unsupportedForReason:(INDeleteTasksTaskListUnsupportedReason)reason
 {
     return [self charon_resolutionWithStatus:CharonIntentsResolutionUnsupported resolvedValue:nil valuesToDisambiguate:nil valueToConfirm:nil unsupportedReason:reason];
@@ -966,6 +1047,16 @@
 @end
 
 @implementation INDeleteTasksTaskResolutionResult
+
+- (instancetype)initWithTaskResolutionResult:(INTaskResolutionResult *)taskResolutionResult
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonIntentsCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [INTaskResolutionResult class]))) {
+        [self charon_adoptResolutionOf:taskResolutionResult];
+    }
+    return self;
+}
 
 + (instancetype)unsupportedForReason:(INDeleteTasksTaskUnsupportedReason)reason
 {
@@ -978,7 +1069,10 @@
 
 + (instancetype)successWithResolvedEnergy:(NSMeasurement<NSUnitEnergy *> *)resolvedEnergy
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[resolvedEnergy copy] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[resolvedEnergy copy] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)disambiguationWithEnergyToDisambiguate:(NSArray<NSMeasurement<NSUnitEnergy *> *> *)energyToDisambiguate
@@ -997,7 +1091,10 @@
 
 + (instancetype)successWithResolvedValue:(NSInteger)resolvedValue
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:(NSInteger)resolvedValue] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[NSNumber numberWithInteger:(NSInteger)resolvedValue] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)confirmationRequiredWithValueToConfirm:(NSInteger)valueToConfirm
@@ -1057,7 +1154,10 @@
 
 + (instancetype)successWithResolvedFile:(INFile *)resolvedFile
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[resolvedFile copy] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[resolvedFile copy] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)disambiguationWithFilesToDisambiguate:(NSArray<INFile *> *)filesToDisambiguate
@@ -1074,20 +1174,37 @@
 
 @interface INFlight ()
 {
-    INAirline *     _airline;  // airline
-    INAirportGate * _arrivalAirportGate;  // arrivalAirportGate
-    INAirportGate * _departureAirportGate;  // departureAirportGate
-    NSString *      _flightNumber;  // flightNumber
+    INAirline *             _airline;  // airline
+    INAirportGate *         _arrivalAirportGate;  // arrivalAirportGate
+    INDateComponentsRange * _boardingTime;  // boardingTime
+    INAirportGate *         _departureAirportGate;  // departureAirportGate
+    INDateComponentsRange * _flightDuration;  // flightDuration
+    NSString *              _flightNumber;  // flightNumber
 }
 @end
 
 @implementation INFlight
     @synthesize airline = _airline;
     @synthesize arrivalAirportGate = _arrivalAirportGate;
+    @synthesize boardingTime = _boardingTime;
     @synthesize departureAirportGate = _departureAirportGate;
+    @synthesize flightDuration = _flightDuration;
     @synthesize flightNumber = _flightNumber;
-    @dynamic boardingTime;  // a class of a later group: see registry/Intents
-    @dynamic flightDuration;  // a class of a later group: see registry/Intents
+
+- (instancetype)initWithAirline:(INAirline *)airline flightNumber:(NSString *)flightNumber boardingTime:(INDateComponentsRange *)boardingTime flightDuration:(INDateComponentsRange *)flightDuration departureAirportGate:(INAirportGate *)departureAirportGate arrivalAirportGate:(INAirportGate *)arrivalAirportGate
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonIntentsCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [NSObject class]))) {
+        _airline = [airline copy];
+        _arrivalAirportGate = [arrivalAirportGate copy];
+        _boardingTime = [boardingTime copy];
+        _departureAirportGate = [departureAirportGate copy];
+        _flightDuration = [flightDuration copy];
+        _flightNumber = [flightNumber copy];
+    }
+    return self;
+}
 
 + (BOOL)supportsSecureCoding
 {
@@ -1218,13 +1335,23 @@
 
 @interface INGetReservationDetailsIntent ()
 {
+    INSpeakableString *            _reservationContainerReference;  // reservationContainerReference
     NSArray<INSpeakableString *> * _reservationItemReferences;  // reservationItemReferences
 }
 @end
 
 @implementation INGetReservationDetailsIntent
+    @synthesize reservationContainerReference = _reservationContainerReference;
     @synthesize reservationItemReferences = _reservationItemReferences;
-    @dynamic reservationContainerReference;  // a class of a later group: see registry/Intents
+
+- (instancetype)initWithReservationContainerReference:(INSpeakableString *)reservationContainerReference reservationItemReferences:(NSArray<INSpeakableString *> *)reservationItemReferences
+{
+    if ((self = [super init])) {
+        _reservationContainerReference = [reservationContainerReference copy];
+        _reservationItemReferences = [reservationItemReferences copy];
+    }
+    return self;
+}
 
 + (BOOL)supportsSecureCoding
 {
@@ -1432,7 +1559,10 @@
 
 + (instancetype)successWithResolvedLength:(NSMeasurement<NSUnitLength *> *)resolvedLength
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[resolvedLength copy] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[resolvedLength copy] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)disambiguationWithLengthsToDisambiguate:(NSArray<NSMeasurement<NSUnitLength *> *> *)lengthsToDisambiguate
@@ -1532,9 +1662,10 @@
 
 @interface INLodgingReservation ()
 {
-    CLPlacemark * _lodgingBusinessLocation;  // lodgingBusinessLocation
-    NSNumber *    _numberOfAdults;  // numberOfAdults
-    NSNumber *    _numberOfChildren;  // numberOfChildren
+    CLPlacemark *           _lodgingBusinessLocation;  // lodgingBusinessLocation
+    NSNumber *              _numberOfAdults;  // numberOfAdults
+    NSNumber *              _numberOfChildren;  // numberOfChildren
+    INDateComponentsRange * _reservationDuration;  // reservationDuration
 }
 @end
 
@@ -1542,7 +1673,7 @@
     @synthesize lodgingBusinessLocation = _lodgingBusinessLocation;
     @synthesize numberOfAdults = _numberOfAdults;
     @synthesize numberOfChildren = _numberOfChildren;
-    @dynamic reservationDuration;  // a class of a later group: see registry/Intents
+    @synthesize reservationDuration = _reservationDuration;
 
 + (BOOL)supportsSecureCoding
 {
@@ -1576,7 +1707,10 @@
 
 + (instancetype)successWithResolvedMass:(NSMeasurement<NSUnitMass *> *)resolvedMass
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[resolvedMass copy] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[resolvedMass copy] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)disambiguationWithMassToDisambiguate:(NSArray<NSMeasurement<NSUnitMass *> *> *)massToDisambiguate
@@ -1595,7 +1729,10 @@
 
 + (instancetype)successWithResolvedMediaAffinityType:(INMediaAffinityType)resolvedMediaAffinityType
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedMediaAffinityType] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionNotRequired
+ resolvedValue:[NSNumber numberWithInteger:resolvedMediaAffinityType] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)confirmationRequiredWithMediaAffinityTypeToConfirm:(INMediaAffinityType)mediaAffinityTypeToConfirm
@@ -1648,7 +1785,10 @@
 
 + (instancetype)successWithResolvedMediaDestination:(INMediaDestination *)resolvedMediaDestination
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[resolvedMediaDestination copy] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[resolvedMediaDestination copy] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)disambiguationWithMediaDestinationsToDisambiguate:(NSArray<INMediaDestination *> *)mediaDestinationsToDisambiguate
@@ -1667,7 +1807,10 @@
 
 + (instancetype)successWithResolvedMediaItem:(INMediaItem *)resolvedMediaItem
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[resolvedMediaItem copy] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[resolvedMediaItem copy] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)disambiguationWithMediaItemsToDisambiguate:(NSArray<INMediaItem *> *)mediaItemsToDisambiguate
@@ -1684,16 +1827,17 @@
 
 @interface INMediaSearch ()
 {
-    NSArray<NSString *> * _activityNames;  // activityNames
-    NSString *            _albumName;  // albumName
-    NSString *            _artistName;  // artistName
-    NSArray<NSString *> * _genreNames;  // genreNames
-    NSString *            _mediaIdentifier;  // mediaIdentifier
-    NSString *            _mediaName;  // mediaName
-    INMediaItemType       _mediaType;  // mediaType
-    NSArray<NSString *> * _moodNames;  // moodNames
-    INMediaReference      _reference;  // reference
-    INMediaSortOrder      _sortOrder;  // sortOrder
+    NSArray<NSString *> *   _activityNames;  // activityNames
+    NSString *              _albumName;  // albumName
+    NSString *              _artistName;  // artistName
+    NSArray<NSString *> *   _genreNames;  // genreNames
+    NSString *              _mediaIdentifier;  // mediaIdentifier
+    NSString *              _mediaName;  // mediaName
+    INMediaItemType         _mediaType;  // mediaType
+    NSArray<NSString *> *   _moodNames;  // moodNames
+    INMediaReference        _reference;  // reference
+    INDateComponentsRange * _releaseDate;  // releaseDate
+    INMediaSortOrder        _sortOrder;  // sortOrder
 }
 @end
 
@@ -1706,8 +1850,27 @@
     @synthesize mediaType = _mediaType;
     @synthesize moodNames = _moodNames;
     @synthesize reference = _reference;
+    @synthesize releaseDate = _releaseDate;
     @synthesize sortOrder = _sortOrder;
-    @dynamic releaseDate;  // a class of a later group: see registry/Intents
+
+- (instancetype)initWithMediaType:(INMediaItemType)mediaType sortOrder:(INMediaSortOrder)sortOrder mediaName:(NSString *)mediaName artistName:(NSString *)artistName albumName:(NSString *)albumName genreNames:(NSArray<NSString *> *)genreNames moodNames:(NSArray<NSString *> *)moodNames releaseDate:(INDateComponentsRange *)releaseDate reference:(INMediaReference)reference mediaIdentifier:(NSString *)mediaIdentifier
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonIntentsCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [NSObject class]))) {
+        _albumName = [albumName copy];
+        _artistName = [artistName copy];
+        _genreNames = [genreNames copy];
+        _mediaIdentifier = [mediaIdentifier copy];
+        _mediaName = [mediaName copy];
+        _mediaType = mediaType;
+        _moodNames = [moodNames copy];
+        _reference = reference;
+        _releaseDate = [releaseDate copy];
+        _sortOrder = sortOrder;
+    }
+    return self;
+}
 
 + (BOOL)supportsSecureCoding
 {
@@ -1864,7 +2027,10 @@
 
 + (instancetype)successWithResolvedObject:(INObject *)resolvedObject
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[resolvedObject copy] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[resolvedObject copy] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)disambiguationWithObjectsToDisambiguate:(NSArray<INObject *> *)objectsToDisambiguate
@@ -1933,7 +2099,10 @@
 
 + (instancetype)successWithResolvedOutgoingMessageType:(INOutgoingMessageType)resolvedOutgoingMessageType
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedOutgoingMessageType] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[NSNumber numberWithInteger:resolvedOutgoingMessageType] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)confirmationRequiredWithOutgoingMessageTypeToConfirm:(INOutgoingMessageType)outgoingMessageTypeToConfirm
@@ -1964,6 +2133,16 @@
 
 @implementation INPlayMediaPlaybackSpeedResolutionResult
 
+- (instancetype)initWithDoubleResolutionResult:(INDoubleResolutionResult *)doubleResolutionResult
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonIntentsCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [INDoubleResolutionResult class]))) {
+        [self charon_adoptResolutionOf:doubleResolutionResult];
+    }
+    return self;
+}
+
 + (instancetype)unsupportedForReason:(INPlayMediaPlaybackSpeedUnsupportedReason)reason
 {
     return [self charon_resolutionWithStatus:CharonIntentsResolutionUnsupported resolvedValue:nil valuesToDisambiguate:nil valueToConfirm:nil unsupportedReason:reason];
@@ -1975,7 +2154,10 @@
 
 + (instancetype)successWithResolvedPlaybackQueueLocation:(INPlaybackQueueLocation)resolvedPlaybackQueueLocation
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedPlaybackQueueLocation] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[NSNumber numberWithInteger:resolvedPlaybackQueueLocation] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)confirmationRequiredWithPlaybackQueueLocationToConfirm:(INPlaybackQueueLocation)playbackQueueLocationToConfirm
@@ -1989,7 +2171,10 @@
 
 + (instancetype)successWithResolvedPlaybackRepeatMode:(INPlaybackRepeatMode)resolvedPlaybackRepeatMode
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedPlaybackRepeatMode] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[NSNumber numberWithInteger:resolvedPlaybackRepeatMode] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)confirmationRequiredWithPlaybackRepeatModeToConfirm:(INPlaybackRepeatMode)playbackRepeatModeToConfirm
@@ -2060,9 +2245,10 @@
 
 @interface INRentalCarReservation ()
 {
-    CLPlacemark * _dropOffLocation;  // dropOffLocation
-    CLPlacemark * _pickupLocation;  // pickupLocation
-    INRentalCar * _rentalCar;  // rentalCar
+    CLPlacemark *           _dropOffLocation;  // dropOffLocation
+    CLPlacemark *           _pickupLocation;  // pickupLocation
+    INRentalCar *           _rentalCar;  // rentalCar
+    INDateComponentsRange * _rentalDuration;  // rentalDuration
 }
 @end
 
@@ -2070,7 +2256,7 @@
     @synthesize dropOffLocation = _dropOffLocation;
     @synthesize pickupLocation = _pickupLocation;
     @synthesize rentalCar = _rentalCar;
-    @dynamic rentalDuration;  // a class of a later group: see registry/Intents
+    @synthesize rentalDuration = _rentalDuration;
 
 + (BOOL)supportsSecureCoding
 {
@@ -2105,6 +2291,7 @@
     NSURL *                          _URL;  // URL
     NSArray<INReservationAction *> * _actions;  // actions
     NSDate *                         _bookingTime;  // bookingTime
+    INSpeakableString *              _itemReference;  // itemReference
     NSString *                       _reservationHolderName;  // reservationHolderName
     NSString *                       _reservationNumber;  // reservationNumber
     INReservationStatus              _reservationStatus;  // reservationStatus
@@ -2115,10 +2302,10 @@
     @synthesize URL = _URL;
     @synthesize actions = _actions;
     @synthesize bookingTime = _bookingTime;
+    @synthesize itemReference = _itemReference;
     @synthesize reservationHolderName = _reservationHolderName;
     @synthesize reservationNumber = _reservationNumber;
     @synthesize reservationStatus = _reservationStatus;
-    @dynamic itemReference;  // a class of a later group: see registry/Intents
 
 + (BOOL)supportsSecureCoding
 {
@@ -2152,13 +2339,26 @@
 {
     INReservationActionType _type;  // type
     NSUserActivity *        _userActivity;  // userActivity
+    INDateComponentsRange * _validDuration;  // validDuration
 }
 @end
 
 @implementation INReservationAction
     @synthesize type = _type;
     @synthesize userActivity = _userActivity;
-    @dynamic validDuration;  // a class of a later group: see registry/Intents
+    @synthesize validDuration = _validDuration;
+
+- (instancetype)initWithType:(INReservationActionType)type validDuration:(INDateComponentsRange *)validDuration userActivity:(NSUserActivity *)userActivity
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonIntentsCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [NSObject class]))) {
+        _type = type;
+        _userActivity = [userActivity copy];
+        _validDuration = [validDuration copy];
+    }
+    return self;
+}
 
 + (BOOL)supportsSecureCoding
 {
@@ -2190,15 +2390,16 @@
 
 @interface INRestaurantReservation ()
 {
-    NSNumber *    _partySize;  // partySize
-    CLPlacemark * _restaurantLocation;  // restaurantLocation
+    NSNumber *              _partySize;  // partySize
+    INDateComponentsRange * _reservationDuration;  // reservationDuration
+    CLPlacemark *           _restaurantLocation;  // restaurantLocation
 }
 @end
 
 @implementation INRestaurantReservation
     @synthesize partySize = _partySize;
+    @synthesize reservationDuration = _reservationDuration;
     @synthesize restaurantLocation = _restaurantLocation;
-    @dynamic reservationDuration;  // a class of a later group: see registry/Intents
 
 + (BOOL)supportsSecureCoding
 {
@@ -2480,6 +2681,16 @@
 
 @implementation INSetTaskAttributeTemporalEventTriggerResolutionResult
 
+- (instancetype)initWithTemporalEventTriggerResolutionResult:(INTemporalEventTriggerResolutionResult *)temporalEventTriggerResolutionResult
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonIntentsCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [INTemporalEventTriggerResolutionResult class]))) {
+        [self charon_adoptResolutionOf:temporalEventTriggerResolutionResult];
+    }
+    return self;
+}
+
 + (instancetype)unsupportedForReason:(INSetTaskAttributeTemporalEventTriggerUnsupportedReason)reason
 {
     return [self charon_resolutionWithStatus:CharonIntentsResolutionUnsupported resolvedValue:nil valuesToDisambiguate:nil valueToConfirm:nil unsupportedReason:reason];
@@ -2580,15 +2791,26 @@
 
 @interface INSnoozeTasksIntent ()
 {
-    NSNumber *          _all;  // all
-    NSArray<INTask *> * _tasks;  // tasks
+    NSNumber *              _all;  // all
+    INDateComponentsRange * _nextTriggerTime;  // nextTriggerTime
+    NSArray<INTask *> *     _tasks;  // tasks
 }
 @end
 
 @implementation INSnoozeTasksIntent
     @synthesize all = _all;
+    @synthesize nextTriggerTime = _nextTriggerTime;
     @synthesize tasks = _tasks;
-    @dynamic nextTriggerTime;  // a class of a later group: see registry/Intents
+
+- (instancetype)initWithTasks:(NSArray<INTask *> *)tasks nextTriggerTime:(INDateComponentsRange *)nextTriggerTime all:(NSNumber *)all
+{
+    if ((self = [super init])) {
+        _all = [all copy];
+        _nextTriggerTime = [nextTriggerTime copy];
+        _tasks = [tasks copy];
+    }
+    return self;
+}
 
 + (BOOL)supportsSecureCoding
 {
@@ -2673,6 +2895,16 @@
 
 @implementation INSnoozeTasksTaskResolutionResult
 
+- (instancetype)initWithTaskResolutionResult:(INTaskResolutionResult *)taskResolutionResult
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonIntentsCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [INTaskResolutionResult class]))) {
+        [self charon_adoptResolutionOf:taskResolutionResult];
+    }
+    return self;
+}
+
 + (instancetype)unsupportedForReason:(INSnoozeTasksTaskUnsupportedReason)reason
 {
     return [self charon_resolutionWithStatus:CharonIntentsResolutionUnsupported resolvedValue:nil valuesToDisambiguate:nil valueToConfirm:nil unsupportedReason:reason];
@@ -2684,7 +2916,10 @@
 
 + (instancetype)successWithResolvedSpeed:(NSMeasurement<NSUnitSpeed *> *)resolvedSpeed
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[resolvedSpeed copy] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[resolvedSpeed copy] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)disambiguationWithSpeedToDisambiguate:(NSArray<NSMeasurement<NSUnitSpeed *> *> *)speedToDisambiguate
@@ -2739,6 +2974,16 @@
 
 @implementation INStartCallContactResolutionResult
 
+- (instancetype)initWithPersonResolutionResult:(INPersonResolutionResult *)personResolutionResult
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonIntentsCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [INPersonResolutionResult class]))) {
+        [self charon_adoptResolutionOf:personResolutionResult];
+    }
+    return self;
+}
+
 + (instancetype)unsupportedForReason:(INStartCallContactUnsupportedReason)reason
 {
     return [self charon_resolutionWithStatus:CharonIntentsResolutionUnsupported resolvedValue:nil valuesToDisambiguate:nil valueToConfirm:nil unsupportedReason:reason];
@@ -2751,6 +2996,7 @@
     INCallAudioRoute      _audioRoute;  // audioRoute
     INCallCapability      _callCapability;  // callCapability
     INCallRecordFilter *  _callRecordFilter;  // callRecordFilter
+    INCallRecord *        _callRecordToCallBack;  // callRecordToCallBack
     NSArray<INPerson *> * _contacts;  // contacts
     INCallDestinationType _destinationType;  // destinationType
     INCallRecordType      _recordTypeForRedialing;  // recordTypeForRedialing
@@ -2761,9 +3007,22 @@
     @synthesize audioRoute = _audioRoute;
     @synthesize callCapability = _callCapability;
     @synthesize callRecordFilter = _callRecordFilter;
+    @synthesize callRecordToCallBack = _callRecordToCallBack;
     @synthesize contacts = _contacts;
     @synthesize destinationType = _destinationType;
-    @dynamic callRecordToCallBack;  // a class of a later group: see registry/Intents
+
+- (instancetype)initWithCallRecordFilter:(INCallRecordFilter *)callRecordFilter callRecordToCallBack:(INCallRecord *)callRecordToCallBack audioRoute:(INCallAudioRoute)audioRoute destinationType:(INCallDestinationType)destinationType contacts:(NSArray<INPerson *> *)contacts callCapability:(INCallCapability)callCapability
+{
+    if ((self = [super init])) {
+        _audioRoute = audioRoute;
+        _callCapability = callCapability;
+        _callRecordFilter = [callRecordFilter copy];
+        _callRecordToCallBack = [callRecordToCallBack copy];
+        _contacts = [contacts copy];
+        _destinationType = destinationType;
+    }
+    return self;
+}
 
 - (instancetype)initWithAudioRoute:(INCallAudioRoute)audioRoute destinationType:(INCallDestinationType)destinationType contacts:(NSArray<INPerson *> *)contacts recordTypeForRedialing:(INCallRecordType)recordTypeForRedialing callCapability:(INCallCapability)callCapability
 {
@@ -2864,7 +3123,10 @@
 
 + (instancetype)successWithResolvedTaskPriority:(INTaskPriority)resolvedTaskPriority
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedTaskPriority] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionNotRequired
+ resolvedValue:[NSNumber numberWithInteger:resolvedTaskPriority] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)confirmationRequiredWithTaskPriorityToConfirm:(INTaskPriority)taskPriorityToConfirm
@@ -2878,7 +3140,10 @@
 
 + (instancetype)successWithResolvedTemporalEventTriggerTypeOptions:(INTemporalEventTriggerTypeOptions)resolvedTemporalEventTriggerTypeOptions
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedTemporalEventTriggerTypeOptions] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionNotRequired
+ resolvedValue:[NSNumber numberWithInteger:resolvedTemporalEventTriggerTypeOptions] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)confirmationRequiredWithTemporalEventTriggerTypeOptionsToConfirm:(INTemporalEventTriggerTypeOptions)temporalEventTriggerTypeOptionsToConfirm
@@ -2891,6 +3156,7 @@
 @interface INTicketedEvent ()
 {
     INTicketedEventCategory _category;  // category
+    INDateComponentsRange * _eventDuration;  // eventDuration
     CLPlacemark *           _location;  // location
     NSString *              _name;  // name
 }
@@ -2898,9 +3164,22 @@
 
 @implementation INTicketedEvent
     @synthesize category = _category;
+    @synthesize eventDuration = _eventDuration;
     @synthesize location = _location;
     @synthesize name = _name;
-    @dynamic eventDuration;  // a class of a later group: see registry/Intents
+
+- (instancetype)initWithCategory:(INTicketedEventCategory)category name:(NSString *)name eventDuration:(INDateComponentsRange *)eventDuration location:(CLPlacemark *)location
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonIntentsCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [NSObject class]))) {
+        _category = category;
+        _eventDuration = [eventDuration copy];
+        _location = [location copy];
+        _name = [name copy];
+    }
+    return self;
+}
 
 + (BOOL)supportsSecureCoding
 {
@@ -3010,13 +3289,14 @@
 
 @interface INTrainTrip ()
 {
-    NSString *    _arrivalPlatform;  // arrivalPlatform
-    CLPlacemark * _arrivalStationLocation;  // arrivalStationLocation
-    NSString *    _departurePlatform;  // departurePlatform
-    CLPlacemark * _departureStationLocation;  // departureStationLocation
-    NSString *    _provider;  // provider
-    NSString *    _trainName;  // trainName
-    NSString *    _trainNumber;  // trainNumber
+    NSString *              _arrivalPlatform;  // arrivalPlatform
+    CLPlacemark *           _arrivalStationLocation;  // arrivalStationLocation
+    NSString *              _departurePlatform;  // departurePlatform
+    CLPlacemark *           _departureStationLocation;  // departureStationLocation
+    NSString *              _provider;  // provider
+    NSString *              _trainName;  // trainName
+    NSString *              _trainNumber;  // trainNumber
+    INDateComponentsRange * _tripDuration;  // tripDuration
 }
 @end
 
@@ -3028,7 +3308,24 @@
     @synthesize provider = _provider;
     @synthesize trainName = _trainName;
     @synthesize trainNumber = _trainNumber;
-    @dynamic tripDuration;  // a class of a later group: see registry/Intents
+    @synthesize tripDuration = _tripDuration;
+
+- (instancetype)initWithProvider:(NSString *)provider trainName:(NSString *)trainName trainNumber:(NSString *)trainNumber tripDuration:(INDateComponentsRange *)tripDuration departureStationLocation:(CLPlacemark *)departureStationLocation departurePlatform:(NSString *)departurePlatform arrivalStationLocation:(CLPlacemark *)arrivalStationLocation arrivalPlatform:(NSString *)arrivalPlatform
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonIntentsCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [NSObject class]))) {
+        _arrivalPlatform = [arrivalPlatform copy];
+        _arrivalStationLocation = [arrivalStationLocation copy];
+        _departurePlatform = [departurePlatform copy];
+        _departureStationLocation = [departureStationLocation copy];
+        _provider = [provider copy];
+        _trainName = [trainName copy];
+        _trainNumber = [trainNumber copy];
+        _tripDuration = [tripDuration copy];
+    }
+    return self;
+}
 
 + (BOOL)supportsSecureCoding
 {
@@ -3062,7 +3359,10 @@
 
 + (instancetype)successWithResolvedURL:(NSURL *)resolvedURL
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[resolvedURL copy] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[resolvedURL copy] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)disambiguationWithURLsToDisambiguate:(NSArray<NSURL *> *)urlsToDisambiguate
@@ -3311,7 +3611,10 @@
 
 + (instancetype)successWithResolvedVolume:(NSMeasurement<NSUnitVolume *> *)resolvedVolume
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[resolvedVolume copy] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[resolvedVolume copy] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)disambiguationWithVolumeToDisambiguate:(NSArray<NSMeasurement<NSUnitVolume *> *> *)volumeToDisambiguate

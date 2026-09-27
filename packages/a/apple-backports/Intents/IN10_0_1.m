@@ -178,7 +178,10 @@
 
 + (instancetype)successWithResolvedValue:(BOOL)resolvedValue
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:@(resolvedValue) valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:@(resolvedValue) valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)confirmationRequiredWithValueToConfirm:(NSNumber *)valueToConfirm
@@ -192,7 +195,10 @@
 
 + (instancetype)successWithResolvedCallRecordType:(INCallRecordType)resolvedCallRecordType
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedCallRecordType] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionNotRequired
+ resolvedValue:[NSNumber numberWithInteger:resolvedCallRecordType] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)confirmationRequiredWithCallRecordTypeToConfirm:(INCallRecordType)callRecordTypeToConfirm
@@ -297,12 +303,18 @@
 
 + (instancetype)successWithResolvedCarAirCirculationMode:(INCarAirCirculationMode)resolvedCarAirCirculationMode
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedCarAirCirculationMode] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[NSNumber numberWithInteger:resolvedCarAirCirculationMode] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)successWithResolvedValue:(INCarAirCirculationMode)resolvedValue
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedValue] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[NSNumber numberWithInteger:resolvedValue] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)confirmationRequiredWithCarAirCirculationModeToConfirm:(INCarAirCirculationMode)carAirCirculationModeToConfirm
@@ -321,12 +333,18 @@
 
 + (instancetype)successWithResolvedCarAudioSource:(INCarAudioSource)resolvedCarAudioSource
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedCarAudioSource] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionNotRequired
+ resolvedValue:[NSNumber numberWithInteger:resolvedCarAudioSource] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)successWithResolvedValue:(INCarAudioSource)resolvedValue
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedValue] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionNotRequired
+ resolvedValue:[NSNumber numberWithInteger:resolvedValue] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)confirmationRequiredWithCarAudioSourceToConfirm:(INCarAudioSource)carAudioSourceToConfirm
@@ -345,12 +363,18 @@
 
 + (instancetype)successWithResolvedCarDefroster:(INCarDefroster)resolvedCarDefroster
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedCarDefroster] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionNotRequired
+ resolvedValue:[NSNumber numberWithInteger:resolvedCarDefroster] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)successWithResolvedValue:(INCarDefroster)resolvedValue
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedValue] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionNotRequired
+ resolvedValue:[NSNumber numberWithInteger:resolvedValue] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)confirmationRequiredWithCarDefrosterToConfirm:(INCarDefroster)carDefrosterToConfirm
@@ -369,12 +393,18 @@
 
 + (instancetype)successWithResolvedCarSeat:(INCarSeat)resolvedCarSeat
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedCarSeat] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionNotRequired
+ resolvedValue:[NSNumber numberWithInteger:resolvedCarSeat] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)successWithResolvedValue:(INCarSeat)resolvedValue
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedValue] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionNotRequired
+ resolvedValue:[NSNumber numberWithInteger:resolvedValue] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)confirmationRequiredWithCarSeatToConfirm:(INCarSeat)carSeatToConfirm
@@ -443,7 +473,10 @@
 
 + (instancetype)successWithResolvedCurrencyAmount:(INCurrencyAmount *)resolvedCurrencyAmount
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[resolvedCurrencyAmount copy] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[resolvedCurrencyAmount copy] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)disambiguationWithCurrencyAmountsToDisambiguate:(NSArray<INCurrencyAmount *> *)currencyAmountsToDisambiguate
@@ -526,7 +559,10 @@
 
 + (instancetype)successWithResolvedDateComponentsRange:(INDateComponentsRange *)resolvedDateComponentsRange
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[resolvedDateComponentsRange copy] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[resolvedDateComponentsRange copy] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)disambiguationWithDateComponentsRangesToDisambiguate:(NSArray<INDateComponentsRange *> *)dateComponentsRangesToDisambiguate
@@ -545,7 +581,10 @@
 
 + (instancetype)successWithResolvedDateComponents:(NSDateComponents *)resolvedDateComponents
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[resolvedDateComponents copy] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[resolvedDateComponents copy] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)disambiguationWithDateComponentsToDisambiguate:(NSArray<NSDateComponents *> *)dateComponentsToDisambiguate
@@ -564,7 +603,10 @@
 
 + (instancetype)successWithResolvedValue:(double)resolvedValue
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithDouble:(double)resolvedValue] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[NSNumber numberWithDouble:(double)resolvedValue] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)confirmationRequiredWithValueToConfirm:(NSNumber *)valueToConfirm
@@ -1237,7 +1279,10 @@
 
 + (instancetype)successWithResolvedValue:(NSInteger)resolvedValue
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:(NSInteger)resolvedValue] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[NSNumber numberWithInteger:(NSInteger)resolvedValue] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)confirmationRequiredWithValueToConfirm:(NSNumber *)valueToConfirm
@@ -1545,12 +1590,18 @@
 
 + (instancetype)successWithResolvedMessageAttributeOptions:(INMessageAttributeOptions)resolvedMessageAttributeOptions
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedMessageAttributeOptions] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[NSNumber numberWithInteger:resolvedMessageAttributeOptions] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)successWithResolvedValue:(INMessageAttributeOptions)resolvedValue
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedValue] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[NSNumber numberWithInteger:resolvedValue] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)confirmationRequiredWithMessageAttributeOptionsToConfirm:(INMessageAttributeOptions)messageAttributeOptionsToConfirm
@@ -1569,12 +1620,18 @@
 
 + (instancetype)successWithResolvedMessageAttribute:(INMessageAttribute)resolvedMessageAttribute
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedMessageAttribute] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[NSNumber numberWithInteger:resolvedMessageAttribute] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)successWithResolvedValue:(INMessageAttribute)resolvedValue
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedValue] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[NSNumber numberWithInteger:resolvedValue] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)confirmationRequiredWithMessageAttributeToConfirm:(INMessageAttribute)messageAttributeToConfirm
@@ -2057,7 +2114,10 @@
 
 + (instancetype)successWithResolvedPerson:(INPerson *)resolvedPerson
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[resolvedPerson copy] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[resolvedPerson copy] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)disambiguationWithPeopleToDisambiguate:(NSArray<INPerson *> *)peopleToDisambiguate
@@ -2076,7 +2136,10 @@
 
 + (instancetype)successWithResolvedPlacemark:(CLPlacemark *)resolvedPlacemark
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[resolvedPlacemark copy] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[resolvedPlacemark copy] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)disambiguationWithPlacemarksToDisambiguate:(NSArray<CLPlacemark *> *)placemarksToDisambiguate
@@ -2182,12 +2245,18 @@
 
 + (instancetype)successWithResolvedRadioType:(INRadioType)resolvedRadioType
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedRadioType] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionNotRequired
+ resolvedValue:[NSNumber numberWithInteger:resolvedRadioType] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)successWithResolvedValue:(INRadioType)resolvedValue
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedValue] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionNotRequired
+ resolvedValue:[NSNumber numberWithInteger:resolvedValue] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)confirmationRequiredWithRadioTypeToConfirm:(INRadioType)radioTypeToConfirm
@@ -2206,12 +2275,18 @@
 
 + (instancetype)successWithResolvedRelativeReference:(INRelativeReference)resolvedRelativeReference
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedRelativeReference] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionNotRequired
+ resolvedValue:[NSNumber numberWithInteger:resolvedRelativeReference] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)successWithResolvedValue:(INRelativeReference)resolvedValue
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedValue] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionNotRequired
+ resolvedValue:[NSNumber numberWithInteger:resolvedValue] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)confirmationRequiredWithRelativeReferenceToConfirm:(INRelativeReference)relativeReferenceToConfirm
@@ -2230,12 +2305,18 @@
 
 + (instancetype)successWithResolvedRelativeSetting:(INRelativeSetting)resolvedRelativeSetting
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedRelativeSetting] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionNotRequired
+ resolvedValue:[NSNumber numberWithInteger:resolvedRelativeSetting] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)successWithResolvedValue:(INRelativeSetting)resolvedValue
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedValue] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionNotRequired
+ resolvedValue:[NSNumber numberWithInteger:resolvedValue] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)confirmationRequiredWithRelativeSettingToConfirm:(INRelativeSetting)relativeSettingToConfirm
@@ -2572,15 +2653,6 @@
     _phoneNumber = [phoneNumber copy];
 }
 
-- (instancetype)initWithNameComponents:(NSPersonNameComponents *)nameComponents phoneNumber:(NSString *)phoneNumber emailAddress:(NSString *)emailAddress
-{
-    if ((self = [super initWithPersonHandle:nil nameComponents:nameComponents displayName:nil image:nil contactIdentifier:nil customIdentifier:nil isMe:NO])) {
-        _emailAddress = [emailAddress copy];
-        _phoneNumber = [phoneNumber copy];
-    }
-    return self;
-}
-
 + (BOOL)supportsSecureCoding
 {
     return YES;
@@ -2702,7 +2774,10 @@
 
 + (instancetype)successWithResolvedRestaurantGuest:(INRestaurantGuest *)resolvedRestaurantGuest
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[resolvedRestaurantGuest copy] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[resolvedRestaurantGuest copy] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)disambiguationWithRestaurantGuestsToDisambiguate:(NSArray<INRestaurantGuest *> *)restaurantGuestsToDisambiguate
@@ -2985,7 +3060,10 @@
 
 + (instancetype)successWithResolvedRestaurant:(INRestaurant *)resolvedRestaurant
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[resolvedRestaurant copy] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[resolvedRestaurant copy] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)disambiguationWithRestaurantsToDisambiguate:(NSArray<INRestaurant *> *)restaurantsToDisambiguate
@@ -3101,42 +3179,6 @@
 @implementation INRideDriver
     @synthesize phoneNumber = _phoneNumber;
     @synthesize rating = _rating;
-
-- (instancetype)initWithPhoneNumber:(NSString *)phoneNumber nameComponents:(NSPersonNameComponents *)nameComponents displayName:(NSString *)displayName image:(INImage *)image rating:(NSString *)rating
-{
-    if ((self = [super initWithPersonHandle:nil nameComponents:nameComponents displayName:displayName image:image contactIdentifier:nil customIdentifier:nil isMe:NO])) {
-        _phoneNumber = [phoneNumber copy];
-        _rating = [rating copy];
-    }
-    return self;
-}
-
-- (instancetype)initWithPersonHandle:(INPersonHandle *)personHandle nameComponents:(NSPersonNameComponents *)nameComponents displayName:(NSString *)displayName image:(INImage *)image rating:(NSString *)rating phoneNumber:(NSString *)phoneNumber
-{
-    if ((self = [super initWithPersonHandle:personHandle nameComponents:nameComponents displayName:displayName image:image contactIdentifier:nil customIdentifier:nil isMe:NO])) {
-        _phoneNumber = [phoneNumber copy];
-        _rating = [rating copy];
-    }
-    return self;
-}
-
-- (instancetype)initWithHandle:(NSString *)handle displayName:(NSString *)displayName image:(INImage *)image rating:(NSString *)rating phoneNumber:(NSString *)phoneNumber
-{
-    if ((self = [super initWithPersonHandle:nil nameComponents:nil displayName:displayName image:image contactIdentifier:nil customIdentifier:nil isMe:NO])) {
-        _phoneNumber = [phoneNumber copy];
-        _rating = [rating copy];
-    }
-    return self;
-}
-
-- (instancetype)initWithHandle:(NSString *)handle nameComponents:(NSPersonNameComponents *)nameComponents image:(INImage *)image rating:(NSString *)rating phoneNumber:(NSString *)phoneNumber
-{
-    if ((self = [super initWithPersonHandle:nil nameComponents:nameComponents displayName:nil image:image contactIdentifier:nil customIdentifier:nil isMe:NO])) {
-        _phoneNumber = [phoneNumber copy];
-        _rating = [rating copy];
-    }
-    return self;
-}
 
 + (BOOL)supportsSecureCoding
 {
@@ -5254,7 +5296,10 @@
 
 + (instancetype)successWithResolvedString:(INSpeakableString *)resolvedString
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[resolvedString copy] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[resolvedString copy] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)disambiguationWithStringsToDisambiguate:(NSArray<INSpeakableString *> *)stringsToDisambiguate
@@ -5689,7 +5734,10 @@
 
 + (instancetype)successWithResolvedString:(NSString *)resolvedString
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[resolvedString copy] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[resolvedString copy] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)disambiguationWithStringsToDisambiguate:(NSArray<NSString *> *)stringsToDisambiguate
@@ -5708,7 +5756,10 @@
 
 + (instancetype)successWithResolvedTemperature:(NSMeasurement<NSUnitTemperature *> *)resolvedTemperature
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[resolvedTemperature copy] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[resolvedTemperature copy] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)disambiguationWithTemperaturesToDisambiguate:(NSArray<NSMeasurement<NSUnitTemperature *> *> *)temperaturesToDisambiguate
@@ -5776,12 +5827,18 @@
 
 + (instancetype)successWithResolvedWorkoutGoalUnitType:(INWorkoutGoalUnitType)resolvedWorkoutGoalUnitType
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedWorkoutGoalUnitType] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionNotRequired
+ resolvedValue:[NSNumber numberWithInteger:resolvedWorkoutGoalUnitType] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)successWithResolvedValue:(INWorkoutGoalUnitType)resolvedValue
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedValue] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionNotRequired
+ resolvedValue:[NSNumber numberWithInteger:resolvedValue] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)confirmationRequiredWithWorkoutGoalUnitTypeToConfirm:(INWorkoutGoalUnitType)workoutGoalUnitTypeToConfirm
@@ -5800,12 +5857,18 @@
 
 + (instancetype)successWithResolvedWorkoutLocationType:(INWorkoutLocationType)resolvedWorkoutLocationType
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedWorkoutLocationType] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionNotRequired
+ resolvedValue:[NSNumber numberWithInteger:resolvedWorkoutLocationType] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)successWithResolvedValue:(INWorkoutLocationType)resolvedValue
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedValue] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionNotRequired
+ resolvedValue:[NSNumber numberWithInteger:resolvedValue] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)confirmationRequiredWithWorkoutLocationTypeToConfirm:(INWorkoutLocationType)workoutLocationTypeToConfirm

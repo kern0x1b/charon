@@ -8,7 +8,7 @@
 //
 //  Every method the header declares here has a body that stores or returns the class's own
 //  state, the coding and copying helpers walk the whole ivar chain so a subclass keeps its
-//  parent's state, and 4 member(s) whose type is a class of a later group are
+//  parent's state, and 0 member(s) whose type is a class of a later group are
 //  left dynamic and answered in registry/Intents instead of with nil.
 //
 //  The classes whose behaviour is more than storage are hand written in
@@ -126,15 +126,21 @@
 
 @interface INDefaultCardTemplate ()
 {
+    INImage *  _image;  // image
     NSString * _subtitle;  // subtitle
     NSString * _title;  // title
 }
 @end
 
 @implementation INDefaultCardTemplate
+    @synthesize image = _image;
     @synthesize subtitle = _subtitle;
     @synthesize title = _title;
-    @dynamic image;  // a class of a later group: see registry/Intents
+
+- (void)setImage:(INImage *)image
+{
+    _image = [image copy];
+}
 
 - (void)setSubtitle:(NSString *)subtitle
 {
@@ -234,6 +240,7 @@
 @interface INMediaItem ()
 {
     NSString *      _artist;  // artist
+    INImage *       _artwork;  // artwork
     NSString *      _identifier;  // identifier
     NSString *      _title;  // title
     INMediaItemType _type;  // type
@@ -242,10 +249,37 @@
 
 @implementation INMediaItem
     @synthesize artist = _artist;
+    @synthesize artwork = _artwork;
     @synthesize identifier = _identifier;
     @synthesize title = _title;
     @synthesize type = _type;
-    @dynamic artwork;  // a class of a later group: see registry/Intents
+
+- (instancetype)initWithIdentifier:(NSString *)identifier title:(NSString *)title type:(INMediaItemType)type artwork:(INImage *)artwork artist:(NSString *)artist
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonIntentsCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [NSObject class]))) {
+        _artist = [artist copy];
+        _artwork = [artwork copy];
+        _identifier = [identifier copy];
+        _title = [title copy];
+        _type = type;
+    }
+    return self;
+}
+
+- (instancetype)initWithIdentifier:(NSString *)identifier title:(NSString *)title type:(INMediaItemType)type artwork:(INImage *)artwork
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonIntentsCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [NSObject class]))) {
+        _artwork = [artwork copy];
+        _identifier = [identifier copy];
+        _title = [title copy];
+        _type = type;
+    }
+    return self;
+}
 
 + (BOOL)supportsSecureCoding
 {
@@ -358,6 +392,7 @@
 @interface INObject ()
 {
     NSArray<INSpeakableString *> * _alternativeSpeakableMatches;  // alternativeSpeakableMatches
+    INImage *                      _displayImage;  // displayImage
     NSString *                     _displayString;  // displayString
     NSString *                     _identifier;  // identifier
     NSString *                     _pronunciationHint;  // pronunciationHint
@@ -369,17 +404,22 @@
 
 @implementation INObject
     @synthesize alternativeSpeakableMatches = _alternativeSpeakableMatches;
+    @synthesize displayImage = _displayImage;
     @synthesize displayString = _displayString;
     @synthesize identifier = _identifier;
     @synthesize pronunciationHint = _pronunciationHint;
     @synthesize subtitleString = _subtitleString;
     @synthesize spokenPhrase = _spokenPhrase;
     @synthesize vocabularyIdentifier = _vocabularyIdentifier;
-    @dynamic displayImage;  // a class of a later group: see registry/Intents
 
 - (void)setAlternativeSpeakableMatches:(NSArray<INSpeakableString *> *)alternativeSpeakableMatches
 {
     _alternativeSpeakableMatches = alternativeSpeakableMatches;
+}
+
+- (void)setDisplayImage:(INImage *)displayImage
+{
+    _displayImage = displayImage;
 }
 
 - (void)setSubtitleString:(NSString *)subtitleString
@@ -416,6 +456,33 @@
     if ((self = charon_intents_super_init(self, [NSObject class]))) {
         _displayString = [displayString copy];
         _identifier = [identifier copy];
+    }
+    return self;
+}
+
+- (instancetype)initWithIdentifier:(NSString *)identifier displayString:(NSString *)displayString subtitleString:(NSString *)subtitleString displayImage:(INImage *)displayImage
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonIntentsCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [NSObject class]))) {
+        _displayImage = [displayImage copy];
+        _displayString = [displayString copy];
+        _identifier = [identifier copy];
+        _subtitleString = [subtitleString copy];
+    }
+    return self;
+}
+
+- (instancetype)initWithIdentifier:(NSString *)identifier displayString:(NSString *)displayString pronunciationHint:(NSString *)pronunciationHint subtitleString:(NSString *)subtitleString displayImage:(INImage *)displayImage
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonIntentsCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [NSObject class]))) {
+        _displayImage = [displayImage copy];
+        _displayString = [displayString copy];
+        _identifier = [identifier copy];
+        _pronunciationHint = [pronunciationHint copy];
+        _subtitleString = [subtitleString copy];
     }
     return self;
 }
@@ -686,13 +753,24 @@
 
 @interface INShortcut ()
 {
+    INIntent *       _intent;  // intent
     NSUserActivity * _userActivity;  // userActivity
 }
 @end
 
 @implementation INShortcut
+    @synthesize intent = _intent;
     @synthesize userActivity = _userActivity;
-    @dynamic intent;  // a class of a later group: see registry/Intents
+
+- (instancetype)initWithIntent:(INIntent *)intent
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonIntentsCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [NSObject class]))) {
+        _intent = [intent copy];
+    }
+    return self;
+}
 
 - (instancetype)initWithUserActivity:(NSUserActivity *)userActivity
 {
@@ -736,7 +814,10 @@
 
 + (instancetype)successWithResolvedTimeInterval:(NSTimeInterval)resolvedTimeInterval
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithDouble:(double)resolvedTimeInterval] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[NSNumber numberWithDouble:(double)resolvedTimeInterval] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)confirmationRequiredWithTimeIntervalToConfirm:(NSTimeInterval)timeIntervalToConfirm

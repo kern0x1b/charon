@@ -147,16 +147,54 @@ each read off the header of iPhoneOS 16.4:
   price.
 * `INPerson`'s `contactSuggestion` is declared `getter=isContactSuggestion`, so the initialiser
   that spells its parameter `isContactSuggestion:` is matched through the getter's own name.
-The copy in `CharonIntentsCoding.m` reads the property an ivar belongs to and honours its
-declared ownership — a property declared `copy` gets one of its own, a property declared
-`strong` shares the original's — because copying where the header says retain would be a
-different answer from the one the header gives.
+The copy in `CharonIntentsCoding.m` reads the property an ivar belongs to through the `V_` field
+of its own attributes — the way the runtime pairs them, so a property whose ivar is not spelled
+after it is still found — and then reads the ownership out of the **field list** that follows the
+type field, one character at a time, skipping the `G…`/`S…`/`V…` payloads. A property is copied
+exactly when `C` is among those flags, and `&` (retain), `W` (weak) and their absence (assign) mean
+it is not. Measured with the port's own compiler for `armv7-apple-ios6.1.3`:
+
+| header | attributes | copied |
+|---|---|---|
+| `strong`, `retain` | `T@"X",&,N,V_p` | no — the ownership is `&` |
+| `copy` | `T@"X",C,N,V_p` | yes |
+| `assign` | `T@"X",N,V_p` | no |
+| `weak` | `T@"X",W,N,V_p` | no |
+| `readonly, strong` | `T@"X",R,&,N,V_p` | no — `R` is *readonly* |
+| `getter=isFoo` | `T@"X",&,N,GisFoo,V_p` | no — `G` starts a payload |
+
+Searching the string instead would read the `C` of **`INCar`**, the `S` of `NSString` and the `R`
+of a readonly, which is how three `strong` properties of the 10.0.1 group were being copied.
+
+### A success that says nothing is a notRequired
+
+The host's own framework logs, for a success whose value is the "nothing to say" case of its
+enumeration, `Success resolution with INCarSignalOptionsUnknown will be reformed to notRequired.`
+(observed on the host's own Intents, 2026-09-27, and for nine enumerations: `INCarSignalOptions`,
+`INTaskStatus`, `INRadioType`, `INRelativeReference`, `INRelativeSetting`, `INTaskPriority`,
+`INVisualCodeType`, `INWorkoutGoalUnitType`, `INWorkoutLocationType`). A success that says nothing
+is a success with nothing to say, which is what `notRequired` means, so the generated
+`+successWithResolved…:` of a result of one of those enumerations builds a **notRequired** for its
+zero case and a success for any other. The list is `NEUTRAL_ENUMERATIONS` in the generator, and it
+is the host's own list of what it reform, not a guess about which enums have a zero case.
 
 * A subclass initialiser that keeps a value its superclass declares **read-only**
   (`INRestaurantGuest`'s `nameComponents`, which is `INPerson`'s) calls the superclass's own
-  designated initialiser, with the value it has and `nil` or `0` for the arguments it does not:
-  a subclass initialiser that does not offer them has no values for them. That is also what
-  Apple's class does, and it is why those arguments are nil on the result.
+  designated initialiser, with the value it has and `nil` or `0` for the arguments the header
+  marks `nullable`. For the six nullable arguments that is the only value a subclass initialiser
+  can have, and the result holds nil for them.
+* **The one exception is measured, not assumed.** `INPerson`'s designated initialiser takes
+  `personHandle` *nonnull* (`INPerson.h:27`, inside `NS_ASSUME_NONNULL_BEGIN`, and the only
+  parameter of the five that is not marked `nullable`), and nothing in the SDK's own headers says
+  where a subclass would get one. The generator therefore **refuses to chain** and those four
+  initialisers — `INRestaurantGuest`'s and its three siblings' — are left unimplemented, with
+  their own registry entries saying so. It does not claim Apple's class does the same, and it
+  does not pass nil to a parameter the SDK forbids: a call the header rules out is not a way to
+  make an initialiser fit.
+* The same refusal covers a class whose superclass declares a value read-only and offers **no
+  designated initialiser at all** to put it in (`INBoatReservation`'s `itemReference`, which is
+  `INReservation`'s): there is no chain to make, and a body would have to store the value in this
+  class's own copy of a property it does not own.
 
 ### The groups above iOS 10.3 and what places them
 

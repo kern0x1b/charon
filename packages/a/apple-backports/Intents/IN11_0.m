@@ -8,7 +8,7 @@
 //
 //  Every method the header declares here has a body that stores or returns the class's own
 //  state, the coding and copying helpers walk the whole ivar chain so a subclass keeps its
-//  parent's state, and 28 member(s) whose type is a class of a later group are
+//  parent's state, and 0 member(s) whose type is a class of a later group are
 //  left dynamic and answered in registry/Intents instead of with nil.
 //
 //  The classes whose behaviour is more than storage are hand written in
@@ -31,12 +31,18 @@
 
 + (instancetype)successWithResolvedAccountType:(INAccountType)resolvedAccountType
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedAccountType] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[NSNumber numberWithInteger:resolvedAccountType] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)successWithResolvedValue:(INAccountType)resolvedValue
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedValue] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[NSNumber numberWithInteger:resolvedValue] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)confirmationRequiredWithAccountTypeToConfirm:(INAccountType)accountTypeToConfirm
@@ -347,7 +353,10 @@
 
 + (instancetype)successWithResolvedBalanceType:(INBalanceType)resolvedBalanceType
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedBalanceType] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[NSNumber numberWithInteger:resolvedBalanceType] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)confirmationRequiredWithBalanceTypeToConfirm:(INBalanceType)balanceTypeToConfirm
@@ -361,7 +370,10 @@
 
 + (instancetype)successWithResolvedCallDestinationType:(INCallDestinationType)resolvedCallDestinationType
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedCallDestinationType] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionNotRequired
+ resolvedValue:[NSNumber numberWithInteger:resolvedCallDestinationType] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)confirmationRequiredWithCallDestinationTypeToConfirm:(INCallDestinationType)callDestinationTypeToConfirm
@@ -376,6 +388,7 @@
     INCallCapability      _callCapability;  // callCapability
     NSNumber *            _callDuration;  // callDuration
     INCallRecordType      _callRecordType;  // callRecordType
+    INPerson *            _caller;  // caller
     NSDate *              _dateCreated;  // dateCreated
     NSString *            _identifier;  // identifier
     NSNumber *            _isCallerIdBlocked;  // isCallerIdBlocked
@@ -445,6 +458,39 @@
     return self;
 }
 
+- (instancetype)initWithIdentifier:(NSString *)identifier dateCreated:(NSDate *)dateCreated caller:(INPerson *)caller callRecordType:(INCallRecordType)callRecordType callCapability:(INCallCapability)callCapability callDuration:(NSNumber *)callDuration unseen:(NSNumber *)unseen
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonIntentsCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [NSObject class]))) {
+        _callCapability = callCapability;
+        _callDuration = [callDuration copy];
+        _callRecordType = callRecordType;
+        _caller = [caller copy];
+        _dateCreated = [dateCreated copy];
+        _identifier = [identifier copy];
+        _unseen = [unseen copy];
+    }
+    return self;
+}
+
+- (instancetype)initWithIdentifier:(NSString *)identifier dateCreated:(NSDate *)dateCreated caller:(INPerson *)caller callRecordType:(INCallRecordType)callRecordType callCapability:(INCallCapability)callCapability callDuration:(NSNumber *)callDuration unseen:(NSNumber *)unseen numberOfCalls:(NSNumber *)numberOfCalls
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonIntentsCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [NSObject class]))) {
+        _callCapability = callCapability;
+        _callDuration = [callDuration copy];
+        _callRecordType = callRecordType;
+        _caller = [caller copy];
+        _dateCreated = [dateCreated copy];
+        _identifier = [identifier copy];
+        _numberOfCalls = [numberOfCalls copy];
+        _unseen = [unseen copy];
+    }
+    return self;
+}
+
 + (BOOL)supportsSecureCoding
 {
     return YES;
@@ -473,11 +519,23 @@
 
 @end
 
+@implementation INCallRecord (CharonINCallRecordDeprecated)
+
+- (INPerson *)caller
+{
+    return _caller;
+}
+
+@end
+
 @implementation INCallRecordTypeOptionsResolutionResult
 
 + (instancetype)successWithResolvedCallRecordTypeOptions:(INCallRecordTypeOptions)resolvedCallRecordTypeOptions
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedCallRecordTypeOptions] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionNotRequired
+ resolvedValue:[NSNumber numberWithInteger:resolvedCallRecordTypeOptions] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)confirmationRequiredWithCallRecordTypeOptionsToConfirm:(INCallRecordTypeOptions)callRecordTypeOptionsToConfirm
@@ -536,15 +594,21 @@
 
 @interface INCancelRideIntentResponse ()
 {
+    INCurrencyAmount *             _cancellationFee;  // cancellationFee
     NSDateComponents *             _cancellationFeeThreshold;  // cancellationFeeThreshold
     INCancelRideIntentResponseCode _code;  // code
 }
 @end
 
 @implementation INCancelRideIntentResponse
+    @synthesize cancellationFee = _cancellationFee;
     @synthesize cancellationFeeThreshold = _cancellationFeeThreshold;
     @synthesize code = _code;
-    @dynamic cancellationFee;  // a class of a later group: see registry/Intents
+
+- (void)setCancellationFee:(INCurrencyAmount *)cancellationFee
+{
+    _cancellationFee = [cancellationFee copy];
+}
 
 - (void)setCancellationFeeThreshold:(NSDateComponents *)cancellationFeeThreshold
 {
@@ -592,14 +656,26 @@
 
 @interface INCreateNoteIntent ()
 {
-    INNoteContent * _content;  // content
+    INNoteContent *     _content;  // content
+    INSpeakableString * _groupName;  // groupName
+    INSpeakableString * _title;  // title
 }
 @end
 
 @implementation INCreateNoteIntent
     @synthesize content = _content;
-    @dynamic groupName;  // a class of a later group: see registry/Intents
-    @dynamic title;  // a class of a later group: see registry/Intents
+    @synthesize groupName = _groupName;
+    @synthesize title = _title;
+
+- (instancetype)initWithTitle:(INSpeakableString *)title content:(INNoteContent *)content groupName:(INSpeakableString *)groupName
+{
+    if ((self = [super init])) {
+        _content = [content copy];
+        _groupName = [groupName copy];
+        _title = [title copy];
+    }
+    return self;
+}
 
 + (BOOL)supportsSecureCoding
 {
@@ -684,14 +760,26 @@
 
 @interface INCreateTaskListIntent ()
 {
+    INSpeakableString *            _groupName;  // groupName
     NSArray<INSpeakableString *> * _taskTitles;  // taskTitles
+    INSpeakableString *            _title;  // title
 }
 @end
 
 @implementation INCreateTaskListIntent
+    @synthesize groupName = _groupName;
     @synthesize taskTitles = _taskTitles;
-    @dynamic groupName;  // a class of a later group: see registry/Intents
-    @dynamic title;  // a class of a later group: see registry/Intents
+    @synthesize title = _title;
+
+- (instancetype)initWithTitle:(INSpeakableString *)title taskTitles:(NSArray<INSpeakableString *> *)taskTitles groupName:(INSpeakableString *)groupName
+{
+    if ((self = [super init])) {
+        _groupName = [groupName copy];
+        _taskTitles = [taskTitles copy];
+        _title = [title copy];
+    }
+    return self;
+}
 
 + (BOOL)supportsSecureCoding
 {
@@ -778,7 +866,10 @@
 
 + (instancetype)successWithResolvedDateSearchType:(INDateSearchType)resolvedDateSearchType
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedDateSearchType] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionNotRequired
+ resolvedValue:[NSNumber numberWithInteger:resolvedDateSearchType] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)confirmationRequiredWithDateSearchTypeToConfirm:(INDateSearchType)dateSearchTypeToConfirm
@@ -834,12 +925,18 @@
 @interface INGetVisualCodeIntentResponse ()
 {
     INGetVisualCodeIntentResponseCode _code;  // code
+    INImage *                         _visualCodeImage;  // visualCodeImage
 }
 @end
 
 @implementation INGetVisualCodeIntentResponse
     @synthesize code = _code;
-    @dynamic visualCodeImage;  // a class of a later group: see registry/Intents
+    @synthesize visualCodeImage = _visualCodeImage;
+
+- (void)setVisualCodeImage:(INImage *)visualCodeImage
+{
+    _visualCodeImage = [visualCodeImage copy];
+}
 
 - (instancetype)initWithCode:(INGetVisualCodeIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
@@ -880,8 +977,22 @@
 
 @end
 
+@interface INImageNoteContent ()
+{
+    INImage * _image;  // image
+}
+@end
+
 @implementation INImageNoteContent
-    @dynamic image;  // a class of a later group: see registry/Intents
+    @synthesize image = _image;
+
+- (instancetype)initWithImage:(INImage *)image
+{
+    if ((self = [super init])) {
+        _image = [image copy];
+    }
+    return self;
+}
 
 + (BOOL)supportsSecureCoding
 {
@@ -913,7 +1024,10 @@
 
 + (instancetype)successWithResolvedLocationSearchType:(INLocationSearchType)resolvedLocationSearchType
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedLocationSearchType] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionNotRequired
+ resolvedValue:[NSNumber numberWithInteger:resolvedLocationSearchType] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)confirmationRequiredWithLocationSearchTypeToConfirm:(INLocationSearchType)locationSearchTypeToConfirm
@@ -927,18 +1041,33 @@
 {
     NSArray<INNoteContent *> * _contents;  // contents
     NSDateComponents *         _createdDateComponents;  // createdDateComponents
+    INSpeakableString *        _groupName;  // groupName
     NSString *                 _identifier;  // identifier
     NSDateComponents *         _modifiedDateComponents;  // modifiedDateComponents
+    INSpeakableString *        _title;  // title
 }
 @end
 
 @implementation INNote
     @synthesize contents = _contents;
     @synthesize createdDateComponents = _createdDateComponents;
+    @synthesize groupName = _groupName;
     @synthesize identifier = _identifier;
     @synthesize modifiedDateComponents = _modifiedDateComponents;
-    @dynamic groupName;  // a class of a later group: see registry/Intents
-    @dynamic title;  // a class of a later group: see registry/Intents
+    @synthesize title = _title;
+
+- (instancetype)initWithTitle:(INSpeakableString *)title contents:(NSArray<INNoteContent *> *)contents groupName:(INSpeakableString *)groupName createdDateComponents:(NSDateComponents *)createdDateComponents modifiedDateComponents:(NSDateComponents *)modifiedDateComponents identifier:(NSString *)identifier
+{
+    if ((self = [super init])) {
+        _contents = [contents copy];
+        _createdDateComponents = [createdDateComponents copy];
+        _groupName = [groupName copy];
+        _identifier = [identifier copy];
+        _modifiedDateComponents = [modifiedDateComponents copy];
+        _title = [title copy];
+    }
+    return self;
+}
 
 + (BOOL)supportsSecureCoding
 {
@@ -998,7 +1127,10 @@
 
 + (instancetype)successWithResolvedNoteContent:(INNoteContent *)resolvedNoteContent
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[resolvedNoteContent copy] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[resolvedNoteContent copy] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)disambiguationWithNoteContentsToDisambiguate:(NSArray<INNoteContent *> *)noteContentsToDisambiguate
@@ -1017,7 +1149,10 @@
 
 + (instancetype)successWithResolvedNoteContentType:(INNoteContentType)resolvedNoteContentType
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedNoteContentType] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionNotRequired
+ resolvedValue:[NSNumber numberWithInteger:resolvedNoteContentType] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)confirmationRequiredWithNoteContentTypeToConfirm:(INNoteContentType)noteContentTypeToConfirm
@@ -1031,7 +1166,10 @@
 
 + (instancetype)successWithResolvedNote:(INNote *)resolvedNote
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[resolvedNote copy] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[resolvedNote copy] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)disambiguationWithNotesToDisambiguate:(NSArray<INNote *> *)notesToDisambiguate
@@ -1050,7 +1188,10 @@
 
 + (instancetype)successWithResolvedNotebookItemType:(INNotebookItemType)resolvedNotebookItemType
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedNotebookItemType] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[NSNumber numberWithInteger:resolvedNotebookItemType] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)disambiguationWithNotebookItemTypesToDisambiguate:(NSArray<NSNumber *> *)notebookItemTypesToDisambiguate
@@ -1131,6 +1272,16 @@
 
 @implementation INRequestPaymentCurrencyAmountResolutionResult
 
+- (instancetype)initWithCurrencyAmountResolutionResult:(INCurrencyAmountResolutionResult *)currencyAmountResolutionResult
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonIntentsCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [INCurrencyAmountResolutionResult class]))) {
+        [self charon_adoptResolutionOf:currencyAmountResolutionResult];
+    }
+    return self;
+}
+
 + (instancetype)unsupportedForReason:(INRequestPaymentCurrencyAmountUnsupportedReason)reason
 {
     return [self charon_resolutionWithStatus:CharonIntentsResolutionUnsupported resolvedValue:nil valuesToDisambiguate:nil valueToConfirm:nil unsupportedReason:reason];
@@ -1139,6 +1290,16 @@
 @end
 
 @implementation INRequestPaymentPayerResolutionResult
+
+- (instancetype)initWithPersonResolutionResult:(INPersonResolutionResult *)personResolutionResult
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonIntentsCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [INPersonResolutionResult class]))) {
+        [self charon_adoptResolutionOf:personResolutionResult];
+    }
+    return self;
+}
 
 + (instancetype)unsupportedForReason:(INRequestPaymentPayerUnsupportedReason)reason
 {
@@ -1149,16 +1310,29 @@
 
 @interface INSearchForAccountsIntent ()
 {
-    INAccountType _accountType;  // accountType
-    INBalanceType _requestedBalanceType;  // requestedBalanceType
+    INSpeakableString * _accountNickname;  // accountNickname
+    INAccountType       _accountType;  // accountType
+    INSpeakableString * _organizationName;  // organizationName
+    INBalanceType       _requestedBalanceType;  // requestedBalanceType
 }
 @end
 
 @implementation INSearchForAccountsIntent
+    @synthesize accountNickname = _accountNickname;
     @synthesize accountType = _accountType;
+    @synthesize organizationName = _organizationName;
     @synthesize requestedBalanceType = _requestedBalanceType;
-    @dynamic accountNickname;  // a class of a later group: see registry/Intents
-    @dynamic organizationName;  // a class of a later group: see registry/Intents
+
+- (instancetype)initWithAccountNickname:(INSpeakableString *)accountNickname accountType:(INAccountType)accountType organizationName:(INSpeakableString *)organizationName requestedBalanceType:(INBalanceType)requestedBalanceType
+{
+    if ((self = [super init])) {
+        _accountNickname = [accountNickname copy];
+        _accountType = accountType;
+        _organizationName = [organizationName copy];
+        _requestedBalanceType = requestedBalanceType;
+    }
+    return self;
+}
 
 + (BOOL)supportsSecureCoding
 {
@@ -1245,6 +1419,7 @@
 {
     NSString *                        _content;  // content
     INDateSearchType                  _dateSearchType;  // dateSearchType
+    INDateComponentsRange *           _dateTime;  // dateTime
     INNotebookItemType                _itemType;  // itemType
     CLPlacemark *                     _location;  // location
     INLocationSearchType              _locationSearchType;  // locationSearchType
@@ -1252,12 +1427,14 @@
     INTaskStatus                      _status;  // status
     INTaskPriority                    _taskPriority;  // taskPriority
     INTemporalEventTriggerTypeOptions _temporalEventTriggerTypes;  // temporalEventTriggerTypes
+    INSpeakableString *               _title;  // title
 }
 @end
 
 @implementation INSearchForNotebookItemsIntent
     @synthesize content = _content;
     @synthesize dateSearchType = _dateSearchType;
+    @synthesize dateTime = _dateTime;
     @synthesize itemType = _itemType;
     @synthesize location = _location;
     @synthesize locationSearchType = _locationSearchType;
@@ -1265,8 +1442,56 @@
     @synthesize status = _status;
     @synthesize taskPriority = _taskPriority;
     @synthesize temporalEventTriggerTypes = _temporalEventTriggerTypes;
-    @dynamic dateTime;  // a class of a later group: see registry/Intents
-    @dynamic title;  // a class of a later group: see registry/Intents
+    @synthesize title = _title;
+
+- (instancetype)initWithTitle:(INSpeakableString *)title content:(NSString *)content itemType:(INNotebookItemType)itemType status:(INTaskStatus)status location:(CLPlacemark *)location locationSearchType:(INLocationSearchType)locationSearchType dateTime:(INDateComponentsRange *)dateTime dateSearchType:(INDateSearchType)dateSearchType temporalEventTriggerTypes:(INTemporalEventTriggerTypeOptions)temporalEventTriggerTypes taskPriority:(INTaskPriority)taskPriority notebookItemIdentifier:(NSString *)notebookItemIdentifier
+{
+    if ((self = [super init])) {
+        _content = [content copy];
+        _dateSearchType = dateSearchType;
+        _dateTime = [dateTime copy];
+        _itemType = itemType;
+        _location = [location copy];
+        _locationSearchType = locationSearchType;
+        _notebookItemIdentifier = [notebookItemIdentifier copy];
+        _status = status;
+        _taskPriority = taskPriority;
+        _temporalEventTriggerTypes = temporalEventTriggerTypes;
+        _title = [title copy];
+    }
+    return self;
+}
+
+- (instancetype)initWithTitle:(INSpeakableString *)title content:(NSString *)content itemType:(INNotebookItemType)itemType status:(INTaskStatus)status location:(CLPlacemark *)location locationSearchType:(INLocationSearchType)locationSearchType dateTime:(INDateComponentsRange *)dateTime dateSearchType:(INDateSearchType)dateSearchType
+{
+    if ((self = [super init])) {
+        _content = [content copy];
+        _dateSearchType = dateSearchType;
+        _dateTime = [dateTime copy];
+        _itemType = itemType;
+        _location = [location copy];
+        _locationSearchType = locationSearchType;
+        _status = status;
+        _title = [title copy];
+    }
+    return self;
+}
+
+- (instancetype)initWithTitle:(INSpeakableString *)title content:(NSString *)content itemType:(INNotebookItemType)itemType status:(INTaskStatus)status location:(CLPlacemark *)location locationSearchType:(INLocationSearchType)locationSearchType dateTime:(INDateComponentsRange *)dateTime dateSearchType:(INDateSearchType)dateSearchType notebookItemIdentifier:(NSString *)notebookItemIdentifier
+{
+    if ((self = [super init])) {
+        _content = [content copy];
+        _dateSearchType = dateSearchType;
+        _dateTime = [dateTime copy];
+        _itemType = itemType;
+        _location = [location copy];
+        _locationSearchType = locationSearchType;
+        _notebookItemIdentifier = [notebookItemIdentifier copy];
+        _status = status;
+        _title = [title copy];
+    }
+    return self;
+}
 
 + (BOOL)supportsSecureCoding
 {
@@ -1372,6 +1597,16 @@
 
 @implementation INSendMessageRecipientResolutionResult
 
+- (instancetype)initWithPersonResolutionResult:(INPersonResolutionResult *)personResolutionResult
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonIntentsCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [INPersonResolutionResult class]))) {
+        [self charon_adoptResolutionOf:personResolutionResult];
+    }
+    return self;
+}
+
 + (instancetype)unsupportedForReason:(INSendMessageRecipientUnsupportedReason)reason
 {
     return [self charon_resolutionWithStatus:CharonIntentsResolutionUnsupported resolvedValue:nil valuesToDisambiguate:nil valueToConfirm:nil unsupportedReason:reason];
@@ -1380,6 +1615,16 @@
 @end
 
 @implementation INSendPaymentCurrencyAmountResolutionResult
+
+- (instancetype)initWithCurrencyAmountResolutionResult:(INCurrencyAmountResolutionResult *)currencyAmountResolutionResult
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonIntentsCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [INCurrencyAmountResolutionResult class]))) {
+        [self charon_adoptResolutionOf:currencyAmountResolutionResult];
+    }
+    return self;
+}
 
 + (instancetype)unsupportedForReason:(INSendPaymentCurrencyAmountUnsupportedReason)reason
 {
@@ -1390,6 +1635,16 @@
 
 @implementation INSendPaymentPayeeResolutionResult
 
+- (instancetype)initWithPersonResolutionResult:(INPersonResolutionResult *)personResolutionResult
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonIntentsCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [INPersonResolutionResult class]))) {
+        [self charon_adoptResolutionOf:personResolutionResult];
+    }
+    return self;
+}
+
 + (instancetype)unsupportedForReason:(INSendPaymentPayeeUnsupportedReason)reason
 {
     return [self charon_resolutionWithStatus:CharonIntentsResolutionUnsupported resolvedValue:nil valuesToDisambiguate:nil valueToConfirm:nil unsupportedReason:reason];
@@ -1399,19 +1654,25 @@
 
 @interface INSendRideFeedbackIntent ()
 {
-    NSNumber * _rating;  // rating
-    NSString * _rideIdentifier;  // rideIdentifier
+    NSNumber *         _rating;  // rating
+    NSString *         _rideIdentifier;  // rideIdentifier
+    INCurrencyAmount * _tip;  // tip
 }
 @end
 
 @implementation INSendRideFeedbackIntent
     @synthesize rating = _rating;
     @synthesize rideIdentifier = _rideIdentifier;
-    @dynamic tip;  // a class of a later group: see registry/Intents
+    @synthesize tip = _tip;
 
 - (void)setRating:(NSNumber *)rating
 {
     _rating = [rating copy];
+}
+
+- (void)setTip:(INCurrencyAmount *)tip
+{
+    _tip = [tip copy];
 }
 
 - (instancetype)initWithRideIdentifier:(NSString *)rideIdentifier
@@ -1506,6 +1767,7 @@
     INSpatialEventTrigger *  _spatialEventTrigger;  // spatialEventTrigger
     INTaskStatus             _status;  // status
     INTask *                 _targetTask;  // targetTask
+    INSpeakableString *      _taskTitle;  // taskTitle
     INTemporalEventTrigger * _temporalEventTrigger;  // temporalEventTrigger
 }
 @end
@@ -1515,8 +1777,21 @@
     @synthesize spatialEventTrigger = _spatialEventTrigger;
     @synthesize status = _status;
     @synthesize targetTask = _targetTask;
+    @synthesize taskTitle = _taskTitle;
     @synthesize temporalEventTrigger = _temporalEventTrigger;
-    @dynamic taskTitle;  // a class of a later group: see registry/Intents
+
+- (instancetype)initWithTargetTask:(INTask *)targetTask taskTitle:(INSpeakableString *)taskTitle status:(INTaskStatus)status priority:(INTaskPriority)priority spatialEventTrigger:(INSpatialEventTrigger *)spatialEventTrigger temporalEventTrigger:(INTemporalEventTrigger *)temporalEventTrigger
+{
+    if ((self = [super init])) {
+        _priority = priority;
+        _spatialEventTrigger = [spatialEventTrigger copy];
+        _status = status;
+        _targetTask = [targetTask copy];
+        _taskTitle = [taskTitle copy];
+        _temporalEventTrigger = [temporalEventTrigger copy];
+    }
+    return self;
+}
 
 - (instancetype)initWithTargetTask:(INTask *)targetTask status:(INTaskStatus)status spatialEventTrigger:(INSpatialEventTrigger *)spatialEventTrigger temporalEventTrigger:(INTemporalEventTrigger *)temporalEventTrigger
 {
@@ -1660,7 +1935,10 @@
 
 + (instancetype)successWithResolvedSpatialEventTrigger:(INSpatialEventTrigger *)resolvedSpatialEventTrigger
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[resolvedSpatialEventTrigger copy] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[resolvedSpatialEventTrigger copy] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)disambiguationWithSpatialEventTriggersToDisambiguate:(NSArray<INSpatialEventTrigger *> *)spatialEventTriggersToDisambiguate
@@ -1685,6 +1963,7 @@
     INTaskStatus             _status;  // status
     INTaskType               _taskType;  // taskType
     INTemporalEventTrigger * _temporalEventTrigger;  // temporalEventTrigger
+    INSpeakableString *      _title;  // title
 }
 @end
 
@@ -1697,7 +1976,38 @@
     @synthesize status = _status;
     @synthesize taskType = _taskType;
     @synthesize temporalEventTrigger = _temporalEventTrigger;
-    @dynamic title;  // a class of a later group: see registry/Intents
+    @synthesize title = _title;
+
+- (instancetype)initWithTitle:(INSpeakableString *)title status:(INTaskStatus)status taskType:(INTaskType)taskType spatialEventTrigger:(INSpatialEventTrigger *)spatialEventTrigger temporalEventTrigger:(INTemporalEventTrigger *)temporalEventTrigger createdDateComponents:(NSDateComponents *)createdDateComponents modifiedDateComponents:(NSDateComponents *)modifiedDateComponents identifier:(NSString *)identifier priority:(INTaskPriority)priority
+{
+    if ((self = [super init])) {
+        _createdDateComponents = [createdDateComponents copy];
+        _identifier = [identifier copy];
+        _modifiedDateComponents = [modifiedDateComponents copy];
+        _priority = priority;
+        _spatialEventTrigger = [spatialEventTrigger copy];
+        _status = status;
+        _taskType = taskType;
+        _temporalEventTrigger = [temporalEventTrigger copy];
+        _title = [title copy];
+    }
+    return self;
+}
+
+- (instancetype)initWithTitle:(INSpeakableString *)title status:(INTaskStatus)status taskType:(INTaskType)taskType spatialEventTrigger:(INSpatialEventTrigger *)spatialEventTrigger temporalEventTrigger:(INTemporalEventTrigger *)temporalEventTrigger createdDateComponents:(NSDateComponents *)createdDateComponents modifiedDateComponents:(NSDateComponents *)modifiedDateComponents identifier:(NSString *)identifier
+{
+    if ((self = [super init])) {
+        _createdDateComponents = [createdDateComponents copy];
+        _identifier = [identifier copy];
+        _modifiedDateComponents = [modifiedDateComponents copy];
+        _spatialEventTrigger = [spatialEventTrigger copy];
+        _status = status;
+        _taskType = taskType;
+        _temporalEventTrigger = [temporalEventTrigger copy];
+        _title = [title copy];
+    }
+    return self;
+}
 
 + (BOOL)supportsSecureCoding
 {
@@ -1728,19 +2038,34 @@
 @interface INTaskList ()
 {
     NSDateComponents *  _createdDateComponents;  // createdDateComponents
+    INSpeakableString * _groupName;  // groupName
     NSString *          _identifier;  // identifier
     NSDateComponents *  _modifiedDateComponents;  // modifiedDateComponents
     NSArray<INTask *> * _tasks;  // tasks
+    INSpeakableString * _title;  // title
 }
 @end
 
 @implementation INTaskList
     @synthesize createdDateComponents = _createdDateComponents;
+    @synthesize groupName = _groupName;
     @synthesize identifier = _identifier;
     @synthesize modifiedDateComponents = _modifiedDateComponents;
     @synthesize tasks = _tasks;
-    @dynamic groupName;  // a class of a later group: see registry/Intents
-    @dynamic title;  // a class of a later group: see registry/Intents
+    @synthesize title = _title;
+
+- (instancetype)initWithTitle:(INSpeakableString *)title tasks:(NSArray<INTask *> *)tasks groupName:(INSpeakableString *)groupName createdDateComponents:(NSDateComponents *)createdDateComponents modifiedDateComponents:(NSDateComponents *)modifiedDateComponents identifier:(NSString *)identifier
+{
+    if ((self = [super init])) {
+        _createdDateComponents = [createdDateComponents copy];
+        _groupName = [groupName copy];
+        _identifier = [identifier copy];
+        _modifiedDateComponents = [modifiedDateComponents copy];
+        _tasks = [tasks copy];
+        _title = [title copy];
+    }
+    return self;
+}
 
 + (BOOL)supportsSecureCoding
 {
@@ -1772,7 +2097,10 @@
 
 + (instancetype)successWithResolvedTaskList:(INTaskList *)resolvedTaskList
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[resolvedTaskList copy] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[resolvedTaskList copy] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)disambiguationWithTaskListsToDisambiguate:(NSArray<INTaskList *> *)taskListsToDisambiguate
@@ -1791,7 +2119,10 @@
 
 + (instancetype)successWithResolvedTask:(INTask *)resolvedTask
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[resolvedTask copy] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[resolvedTask copy] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)disambiguationWithTasksToDisambiguate:(NSArray<INTask *> *)tasksToDisambiguate
@@ -1810,7 +2141,10 @@
 
 + (instancetype)successWithResolvedTaskStatus:(INTaskStatus)resolvedTaskStatus
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedTaskStatus] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionNotRequired
+ resolvedValue:[NSNumber numberWithInteger:resolvedTaskStatus] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)confirmationRequiredWithTaskStatusToConfirm:(INTaskStatus)taskStatusToConfirm
@@ -1820,8 +2154,22 @@
 
 @end
 
+@interface INTemporalEventTrigger ()
+{
+    INDateComponentsRange * _dateComponentsRange;  // dateComponentsRange
+}
+@end
+
 @implementation INTemporalEventTrigger
-    @dynamic dateComponentsRange;  // a class of a later group: see registry/Intents
+    @synthesize dateComponentsRange = _dateComponentsRange;
+
+- (instancetype)initWithDateComponentsRange:(INDateComponentsRange *)dateComponentsRange
+{
+    if ((self = [super init])) {
+        _dateComponentsRange = [dateComponentsRange copy];
+    }
+    return self;
+}
 
 + (BOOL)supportsSecureCoding
 {
@@ -1853,7 +2201,10 @@
 
 + (instancetype)successWithResolvedTemporalEventTrigger:(INTemporalEventTrigger *)resolvedTemporalEventTrigger
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[resolvedTemporalEventTrigger copy] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[resolvedTemporalEventTrigger copy] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)disambiguationWithTemporalEventTriggersToDisambiguate:(NSArray<INTemporalEventTrigger *> *)temporalEventTriggersToDisambiguate
@@ -1913,16 +2264,32 @@
 
 @interface INTransferMoneyIntent ()
 {
-    NSString * _transactionNote;  // transactionNote
+    INPaymentAccount *      _fromAccount;  // fromAccount
+    INPaymentAccount *      _toAccount;  // toAccount
+    INPaymentAmount *       _transactionAmount;  // transactionAmount
+    NSString *              _transactionNote;  // transactionNote
+    INDateComponentsRange * _transactionScheduledDate;  // transactionScheduledDate
 }
 @end
 
 @implementation INTransferMoneyIntent
+    @synthesize fromAccount = _fromAccount;
+    @synthesize toAccount = _toAccount;
+    @synthesize transactionAmount = _transactionAmount;
     @synthesize transactionNote = _transactionNote;
-    @dynamic fromAccount;  // a class of a later group: see registry/Intents
-    @dynamic toAccount;  // a class of a later group: see registry/Intents
-    @dynamic transactionAmount;  // a class of a later group: see registry/Intents
-    @dynamic transactionScheduledDate;  // a class of a later group: see registry/Intents
+    @synthesize transactionScheduledDate = _transactionScheduledDate;
+
+- (instancetype)initWithFromAccount:(INPaymentAccount *)fromAccount toAccount:(INPaymentAccount *)toAccount transactionAmount:(INPaymentAmount *)transactionAmount transactionScheduledDate:(INDateComponentsRange *)transactionScheduledDate transactionNote:(NSString *)transactionNote
+{
+    if ((self = [super init])) {
+        _fromAccount = [fromAccount copy];
+        _toAccount = [toAccount copy];
+        _transactionAmount = [transactionAmount copy];
+        _transactionNote = [transactionNote copy];
+        _transactionScheduledDate = [transactionScheduledDate copy];
+    }
+    return self;
+}
 
 + (BOOL)supportsSecureCoding
 {
@@ -1953,22 +2320,52 @@
 @interface INTransferMoneyIntentResponse ()
 {
     INTransferMoneyIntentResponseCode _code;  // code
+    INPaymentAccount *                _fromAccount;  // fromAccount
+    INPaymentAccount *                _toAccount;  // toAccount
+    INPaymentAmount *                 _transactionAmount;  // transactionAmount
     NSString *                        _transactionNote;  // transactionNote
+    INDateComponentsRange *           _transactionScheduledDate;  // transactionScheduledDate
+    INCurrencyAmount *                _transferFee;  // transferFee
 }
 @end
 
 @implementation INTransferMoneyIntentResponse
     @synthesize code = _code;
+    @synthesize fromAccount = _fromAccount;
+    @synthesize toAccount = _toAccount;
+    @synthesize transactionAmount = _transactionAmount;
     @synthesize transactionNote = _transactionNote;
-    @dynamic fromAccount;  // a class of a later group: see registry/Intents
-    @dynamic toAccount;  // a class of a later group: see registry/Intents
-    @dynamic transactionAmount;  // a class of a later group: see registry/Intents
-    @dynamic transactionScheduledDate;  // a class of a later group: see registry/Intents
-    @dynamic transferFee;  // a class of a later group: see registry/Intents
+    @synthesize transactionScheduledDate = _transactionScheduledDate;
+    @synthesize transferFee = _transferFee;
+
+- (void)setFromAccount:(INPaymentAccount *)fromAccount
+{
+    _fromAccount = [fromAccount copy];
+}
+
+- (void)setToAccount:(INPaymentAccount *)toAccount
+{
+    _toAccount = [toAccount copy];
+}
+
+- (void)setTransactionAmount:(INPaymentAmount *)transactionAmount
+{
+    _transactionAmount = [transactionAmount copy];
+}
 
 - (void)setTransactionNote:(NSString *)transactionNote
 {
     _transactionNote = [transactionNote copy];
+}
+
+- (void)setTransactionScheduledDate:(INDateComponentsRange *)transactionScheduledDate
+{
+    _transactionScheduledDate = [transactionScheduledDate copy];
+}
+
+- (void)setTransferFee:(INCurrencyAmount *)transferFee
+{
+    _transferFee = [transferFee copy];
 }
 
 - (instancetype)initWithCode:(INTransferMoneyIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
@@ -2014,7 +2411,10 @@
 
 + (instancetype)successWithResolvedVisualCodeType:(INVisualCodeType)resolvedVisualCodeType
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedVisualCodeType] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionNotRequired
+ resolvedValue:[NSNumber numberWithInteger:resolvedVisualCodeType] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)confirmationRequiredWithVisualCodeTypeToConfirm:(INVisualCodeType)visualCodeTypeToConfirm

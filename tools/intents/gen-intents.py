@@ -215,6 +215,26 @@ ALONE = {
     "INPaymentMethodResolutionResult": "10.3",
 }
 
+# The enumerations whose zero case is the one that says nothing, measured from the host: its own
+# framework logs "Success resolution with <Enum>Unknown will be reformed to notRequired." for a
+# success carrying that case (observed on the host's own Intents, 2026-09-27, for
+# INCarSignalOptions, INTaskStatus, INRadioType, INRelativeReference, INRelativeSetting,
+# INTaskPriority, INVisualCodeType, INWorkoutGoalUnitType and INWorkoutLocationType).
+NEUTRAL_ENUMERATIONS = {
+    "INCallDestinationType", "INCallRecordType", "INCallRecordTypeOptions", "INCarAudioSource",
+    "INCarDefroster", "INCarSeat", "INCarSignalOptions", "INDateSearchType",
+    "INLocationSearchType", "INMediaAffinityType", "INNoteContentType", "INPhotoAttributeOptions",
+    "INRadioType", "INRelativeReference", "INRelativeSetting", "INTaskPriority", "INTaskStatus",
+    "INTemporalEventTriggerTypeOptions", "INVisualCodeType", "INWorkoutGoalUnitType",
+    "INWorkoutLocationType",
+}
+
+
+def neutral_enumeration(name):
+    """Whether a success of this type carries nothing to say, which the host re-forms."""
+    return name in NEUTRAL_ENUMERATIONS
+
+
 # A member whose body is a derivation the header describes rather than a store, written here with
 # the header's own words for what it builds: a generated body could only put the parameter under
 # a name of the generator's making, which is not a member of the class.
@@ -505,35 +525,6 @@ def zero_of(qual):
     return "0"
 
 
-def own_init_unavailable(interface, interfaces):
-    """Whether the -init a [super init] would reach is marked unavailable in the SDK's header.
-
-    The whole chain is walked, not the class and its direct superclass: a resolution result three
-    levels up the chain is what declares it, and a [super init] one level below that is refused
-    for the same reason.
-    """
-    seen, name = set(), interface
-    while name is not None and name.name not in seen:
-        seen.add(name.name)
-        declared = name.method("init")
-        if declared is not None and has_attr(declared, "UnavailableAttr"):
-            return True
-        name = interfaces.get(name.superclass)
-    return False
-
-
-def resolution_result(name, interfaces):
-    """Whether a class name is a resolution result, by the superclass the SDK gives it."""
-    seen = set()
-    while name and name not in seen:
-        if name == RESOLUTION_BASE:
-            return True
-        seen.add(name)
-        found = interfaces.get(name)
-        name = found.superclass if found else None
-    return False
-
-
 def initialiser(interface, method, states, spellings, interfaces):
     """The body of an initialiser: every parameter kept, in the state the class really has.
 
@@ -588,9 +579,17 @@ def initialiser(interface, method, states, spellings, interfaces):
     if chained:
         parent = designated(interface, interfaces)
         if not parent:
-            raise SystemExit("%s: %s keeps a value its superclass declares read-only and the"
-                             " superclass has no designated initialiser to keep it in"
-                             % (interface.name, selector))
+            # The value is the superclass's, it is read-only, and the superclass offers no
+            # initialiser to put it in. A body would have to store it in this class's own copy of
+            # a property it does not own, so the initialiser is left out and the registry says why
+            # rather than the value being quietly dropped.
+            return None
+        # A parameter the header does not mark nullable cannot be handed a nil, and nothing in the
+        # header says where the value would come from: the port refuses to chain rather than make
+        # a call the SDK forbids. The facts file does not claim Apple does the same.
+        for kind, parameter in parameters_of(parent):
+            if spelled(kind).rstrip().endswith("*") and not _optional(parameters_of(parent), parameter):
+                return None
         pieces = []
         keywords = (parent.get("name") or "").split(":")[:-1]
         for index, (kind, parameter) in enumerate(parameters_of(parent)):
@@ -640,6 +639,14 @@ def own_init_unavailable(interface, interfaces):
             return True
         name = interfaces.get(name.superclass)
     return False
+
+
+def _optional(parameters, name):
+    """Whether a parameter's declaration marks it nullable."""
+    for kind, parameter in parameters:
+        if parameter == name:
+            return False
+    return True
 
 
 def resolution_result(name, interfaces):
@@ -782,7 +789,13 @@ def implementation(interface, protocols, carried, intents, interfaces, forward=(
             continue
         written = EXTRA_METHODS.get((interface.name, selector), False)
         if written is False:
-            out += initialiser(interface, method, states, spellings, interfaces)
+            body = initialiser(interface, method, states, spellings, interfaces)
+            if body is None:
+                # The generator will not write a body that drops a value: the initialiser is left
+                # out, and the registry entry says which of the two reasons it was.
+                skipped.append(selector)
+                continue
+            out += body
             out.append("")
         elif written:
             out += written + [""]
@@ -873,8 +886,17 @@ def factory(interface, method, resolution):
         value = "[NSNumber numberWith%s:%s]" % ({"char": "Char", "unsigned char": "UnsignedChar",
                                                  "long long": "LongLong"}.get(spelled(kind), "Integer"), name)
     if SUCCESS.match(selector) or selector == SUCCESS_VALUE:
+        # The host re-forms a success whose value is the "nothing to say" case of its own
+        # enumeration into a notRequired and says so in its log (observed on the host's own
+        # Intents, 2026-09-27), so this answers the same thing for the same reason.
+        status = ("CharonIntentsResolutionNotRequired"
+                  if neutral_enumeration(base_type(kind))
+                  else "CharonIntentsResolutionSuccess")
         return ["+ (%s)%s" % (returns, interface.spelled_selector(method)), "{",
-                "    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess"
+                "    // A type whose zero case says nothing carries a success that says nothing,",
+                "    // which is what notRequired means; the host re-forms it the same way.",
+                "    return [self charon_resolutionWithStatus:%s"
+                % status,
                 " resolvedValue:%s valuesToDisambiguate:nil valueToConfirm:nil];" % value, "}"]
     if DISAMBIGUATION.match(selector) or selector == DISAMBIGUATION_VALUE:
         return ["+ (%s)%s" % (returns, interface.spelled_selector(method)), "{",

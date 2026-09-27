@@ -12,7 +12,6 @@
 #import <string.h>
 
 #import <CoreLocation/CoreLocation.h>
-#import <string.h>
 
 #import <objc/message.h>
 #import <objc/runtime.h>
@@ -23,29 +22,58 @@
 // answer from the one the header gives.
 //
 // The two are matched the way the runtime pairs them and not by name: a property's attributes end
-// in its backing ivar (T@"NSString",C,N,V_name), and a property whose ivar is not spelled after
-// it would be missed by any name comparison - which is how a lookup by the ivar's own name, with
-// its leading underscore, found nothing at all and made every object ivar a copy.
+// in its backing ivar (T@"NSString",C,N,V_name), and a property whose ivar is not spelled after it
+// would be missed by any name comparison - which is how a lookup by the ivar's own name, with its
+// leading underscore, found nothing at all and made every object ivar a copy.
+//
+// The ownership is then read out of the **field list**, which is a comma-separated set of flags
+// after the type field. It is not read by searching the string: the type field is the class's own
+// name, so the C of "INCar" and the S of "NSString" are inside it, R is *readonly* and S is a
+// custom setter's name, and the only characters that mean ownership are the flags themselves - C
+// for copy, & for retain, W for weak, and nothing at all for assign.
+//
+// Measured with the port's own compiler, armv7-apple-ios6.1.3:
+//   strong / retain   T@"X",&,N,V_p        copy iff C is absent
+//   copy              T@"X",C,N,V_p
+//   assign            T@"X",N,V_p
+//   weak              T@"X",W,N,V_p
+//   readonly, strong  T@"X",R,&,N,V_p     R is readonly; & is the ownership
+//   getter=isFoo      T@"X",&,N,GisFoo,V_p  the G payload runs to the next comma
 static BOOL charon_intents_ivar_is_copy(Class owner, const char *name)
 {
     unsigned count = 0;
     objc_property_t *properties = class_copyPropertyList(owner, &count);
-    BOOL copy = YES;
-    for (unsigned index = 0; index < count; index++) {
+    BOOL copy = YES, found = NO;
+    for (unsigned index = 0; index < count && !found; index++) {
         const char *attributes = property_getAttributes(properties[index]);
-        const char *ivar = attributes ? strstr(attributes, ",V_") : NULL;
-        if (!ivar) {
+        if (!attributes) {
             continue;
         }
-        if (strcmp(ivar + 3, name) != 0) {
+        // The type field is everything up to the first comma: no type encoding holds one.
+        const char *flags = strchr(attributes, ',');
+        const char *ivar = strstr(attributes, ",V_");
+        if (!flags || !ivar || strcmp(ivar + 3, name) != 0) {
             continue;
         }
-        // C is copy; R is retain and S is strong, and both share the original's object. An
-        // attribute list with neither of the three is a property of some other ownership, and
-        // copying is the reading that cannot let the two objects share anything mutable.
-        copy = strchr(attributes, 'C') != NULL || (strchr(attributes, 'R') == NULL &&
-                                                   strchr(attributes, 'S') == NULL);
-        break;
+        found = YES;
+        copy = NO;
+        for (flags++; flags < ivar; flags++) {
+            if (*flags == ',') {
+                continue;               // the next field's first character
+            }
+            if (*flags == 'G' || *flags == 'S' || *flags == 'V') {
+                // A payload: the getter's, the setter's or the ivar's name, which runs to the
+                // next comma and is not a flag of its own.
+                while (*flags && *flags != ',') {
+                    flags++;
+                }
+                flags--;
+                continue;
+            }
+            if (*flags == 'C') {
+                copy = YES;
+            }
+        }
     }
     free(properties);
     return copy;

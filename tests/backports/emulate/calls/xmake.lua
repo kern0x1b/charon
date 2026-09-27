@@ -9,6 +9,10 @@ set_version("0.0.1")
 -- waiver below is the same one the display probe carries, and for the same reason.
 local root = os.getenv("CHARCALLS_ROOT") or path.join(os.scriptdir(), "../../../..")
 add_repositories("charon " .. root)
+-- The addon the machine's store holds and names active (~/.xmake/addons/addons.conf,
+-- active = "v0.8.13"), so a resolve finds it already installed and moves nothing: naming a tag
+-- the store has never installed makes xmake install one, and installing an addon moves the
+-- machine's active version for every band (coordination/crutches.md, the xmake addon lock).
 add_addons("charon v0.8.13")
 set_config("apple_minimum", os.getenv("CHARCALLS_MINIMUM") or "6.1.3")
 local package = os.getenv("CHARCALLS_PACKAGE") ~= "0"

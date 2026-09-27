@@ -44,8 +44,12 @@ xmake emulate -r "$minimum" install >"$out/install.log" 2>&1 || {
     tail -20 "$out/install.log" >&2
     exit 1
 }
+# The command is where the port's daemon rule installs it: /usr/libexec/<name>, which is what
+# the tree's other emulator checks run (tests/backports/device/display-probe/run.sh runs
+# /usr/libexec/display-probe). An install that does not put the binary there is
+# `fail(spawn error 2)`, and it is the install that is wrong, not the release.
 CHARCALLS_ROOT=$root CHARCALLS_MINIMUM=$minimum CHARCALLS_GENERATED=$generated \
-CHARCALLS_PACKAGE=$package xmake emulate -r "$minimum" run /usr/bin/charoncalls \
+CHARCALLS_PACKAGE=$package xmake emulate -r "$minimum" run /usr/libexec/charoncalls \
     port "$out/calls.log" >"$out/run.log" 2>&1 || echo "the port run has findings; $out/calls.log is what it found" >&2
 xmake emulate -r "$minimum" log >"$out/emulate.log" 2>&1 || true
 echo "port digest: $out/calls.log"

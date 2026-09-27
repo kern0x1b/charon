@@ -142,7 +142,7 @@ package("apple-backports")
                                      package:config("usernotificationsui") and {"UserNotificationsUIBackports"} or {},
                                      package:config("notificationcenter") and {"NotificationCenterBackports"} or {},
                                      package:config("avkit") and {"AVKitBackports"} or {},
-                                     package:config("intents") and {"IntentsBackports"} or {},
+                                     (package:config("intents") or package:config("intentsui")) and {"IntentsBackports"} or {},
                                      package:config("intentsui") and {"IntentsUIBackports"} or {},
                                      package:config("mapkit") and {"MapKitBackports"} or {},
                                      package:config("passkit") and {"PassKitBackports"} or {},

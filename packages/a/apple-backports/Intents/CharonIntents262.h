@@ -2,9 +2,18 @@
 //  CharonIntents262.h
 //  Intents
 //
-//  The nine declarations the port's own SDK (iPhoneOS 16.4) does not have, taken from the headers
-//  of iPhoneOS 26.2 word for word in their contract: the seven classes, the two enumerations two
-//  of them are typed by, and the two response codes the two responses are typed by.
+//  The thirteen declarations the port's own SDK (iPhoneOS 16.4) does not have, taken from the
+//  headers of iPhoneOS 26.2 word for word in their contract:
+//
+//      7 classes    INMessageLinkMetadata, INUnsendMessagesIntent,
+//                    INUnsendMessagesIntentResponse, INEditMessageIntent,
+//                    INEditMessageIntentResponse, INMessageReaction, INSticker
+//      4 enums      INUnsendMessagesIntentResponseCode, INEditMessageIntentResponseCode,
+//                    INMessageReactionType, INStickerType
+//      2 protocols  INUnsendMessagesIntentHandling, INEditMessageIntentHandling
+//
+//  Seven classes, four enumerations and two protocols: thirteen, counted because a count that
+//  is wrong is a claim somebody relies on.
 //
 //  This is what a backport writes for API newer than the SDK it compiles against. The port
 //  builds against iPhoneOS 16.4 (the toolchain's charon@iphoneos-sdk), and these names first

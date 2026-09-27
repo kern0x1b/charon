@@ -8,7 +8,7 @@
 //
 //  Every method the header declares here has a body that stores or returns the class's own
 //  state, the coding and copying helpers walk the whole ivar chain so a subclass keeps its
-//  parent's state, and 17 member(s) whose type is a class of a later group are
+//  parent's state, and 0 member(s) whose type is a class of a later group are
 //  left dynamic and answered in registry/Intents instead of with nil.
 //
 //  The classes whose behaviour is more than storage are hand written in
@@ -29,13 +29,23 @@
 
 @interface INActivateCarSignalIntent ()
 {
-    INCarSignalOptions _signals;  // signals
+    INSpeakableString * _carName;  // carName
+    INCarSignalOptions  _signals;  // signals
 }
 @end
 
 @implementation INActivateCarSignalIntent
+    @synthesize carName = _carName;
     @synthesize signals = _signals;
-    @dynamic carName;  // a class of a later group: see registry/Intents
+
+- (instancetype)initWithCarName:(INSpeakableString *)carName signals:(INCarSignalOptions)signals
+{
+    if ((self = [super init])) {
+        _carName = [carName copy];
+        _signals = signals;
+    }
+    return self;
+}
 
 + (BOOL)supportsSecureCoding
 {
@@ -120,23 +130,31 @@
 
 @interface INBillDetails ()
 {
+    INCurrencyAmount * _amountDue;  // amountDue
     INBillPayee *      _billPayee;  // billPayee
     INBillType         _billType;  // billType
     NSDateComponents * _dueDate;  // dueDate
+    INCurrencyAmount * _lateFee;  // lateFee
+    INCurrencyAmount * _minimumDue;  // minimumDue
     NSDateComponents * _paymentDate;  // paymentDate
     INPaymentStatus    _paymentStatus;  // paymentStatus
 }
 @end
 
 @implementation INBillDetails
+    @synthesize amountDue = _amountDue;
     @synthesize billPayee = _billPayee;
     @synthesize billType = _billType;
     @synthesize dueDate = _dueDate;
+    @synthesize lateFee = _lateFee;
+    @synthesize minimumDue = _minimumDue;
     @synthesize paymentDate = _paymentDate;
     @synthesize paymentStatus = _paymentStatus;
-    @dynamic amountDue;  // a class of a later group: see registry/Intents
-    @dynamic lateFee;  // a class of a later group: see registry/Intents
-    @dynamic minimumDue;  // a class of a later group: see registry/Intents
+
+- (void)setAmountDue:(INCurrencyAmount *)amountDue
+{
+    _amountDue = [amountDue copy];
+}
 
 - (void)setBillPayee:(INBillPayee *)billPayee
 {
@@ -153,6 +171,16 @@
     _dueDate = [dueDate copy];
 }
 
+- (void)setLateFee:(INCurrencyAmount *)lateFee
+{
+    _lateFee = [lateFee copy];
+}
+
+- (void)setMinimumDue:(INCurrencyAmount *)minimumDue
+{
+    _minimumDue = [minimumDue copy];
+}
+
 - (void)setPaymentDate:(NSDateComponents *)paymentDate
 {
     _paymentDate = [paymentDate copy];
@@ -161,6 +189,23 @@
 - (void)setPaymentStatus:(INPaymentStatus)paymentStatus
 {
     _paymentStatus = paymentStatus;
+}
+
+- (instancetype)initWithBillType:(INBillType)billType paymentStatus:(INPaymentStatus)paymentStatus billPayee:(INBillPayee *)billPayee amountDue:(INCurrencyAmount *)amountDue minimumDue:(INCurrencyAmount *)minimumDue lateFee:(INCurrencyAmount *)lateFee dueDate:(NSDateComponents *)dueDate paymentDate:(NSDateComponents *)paymentDate
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonIntentsCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [NSObject class]))) {
+        _amountDue = [amountDue copy];
+        _billPayee = [billPayee copy];
+        _billType = billType;
+        _dueDate = [dueDate copy];
+        _lateFee = [lateFee copy];
+        _minimumDue = [minimumDue copy];
+        _paymentDate = [paymentDate copy];
+        _paymentStatus = paymentStatus;
+    }
+    return self;
 }
 
 + (BOOL)supportsSecureCoding
@@ -193,14 +238,28 @@
 
 @interface INBillPayee ()
 {
-    NSString * _accountNumber;  // accountNumber
+    NSString *          _accountNumber;  // accountNumber
+    INSpeakableString * _nickname;  // nickname
+    INSpeakableString * _organizationName;  // organizationName
 }
 @end
 
 @implementation INBillPayee
     @synthesize accountNumber = _accountNumber;
-    @dynamic nickname;  // a class of a later group: see registry/Intents
-    @dynamic organizationName;  // a class of a later group: see registry/Intents
+    @synthesize nickname = _nickname;
+    @synthesize organizationName = _organizationName;
+
+- (instancetype)initWithNickname:(INSpeakableString *)nickname number:(NSString *)number organizationName:(INSpeakableString *)organizationName
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonIntentsCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [NSObject class]))) {
+        _accountNumber = [number copy];
+        _nickname = [nickname copy];
+        _organizationName = [organizationName copy];
+    }
+    return self;
+}
 
 + (BOOL)supportsSecureCoding
 {
@@ -234,7 +293,10 @@
 
 + (instancetype)successWithResolvedBillPayee:(INBillPayee *)resolvedBillPayee
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[resolvedBillPayee copy] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[resolvedBillPayee copy] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)disambiguationWithBillPayeesToDisambiguate:(NSArray<INBillPayee *> *)billPayeesToDisambiguate
@@ -253,12 +315,18 @@
 
 + (instancetype)successWithResolvedBillType:(INBillType)resolvedBillType
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedBillType] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[NSNumber numberWithInteger:resolvedBillType] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)successWithResolvedValue:(INBillType)resolvedValue
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedValue] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[NSNumber numberWithInteger:resolvedValue] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)confirmationRequiredWithBillTypeToConfirm:(INBillType)billTypeToConfirm
@@ -277,12 +345,18 @@
 
 + (instancetype)successWithResolvedCarSignalOptions:(INCarSignalOptions)resolvedCarSignalOptions
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedCarSignalOptions] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionNotRequired
+ resolvedValue:[NSNumber numberWithInteger:resolvedCarSignalOptions] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)successWithResolvedValue:(INCarSignalOptions)resolvedValue
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedValue] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionNotRequired
+ resolvedValue:[NSNumber numberWithInteger:resolvedValue] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)confirmationRequiredWithCarSignalOptionsToConfirm:(INCarSignalOptions)carSignalOptionsToConfirm
@@ -297,8 +371,22 @@
 
 @end
 
+@interface INGetCarLockStatusIntent ()
+{
+    INSpeakableString * _carName;  // carName
+}
+@end
+
 @implementation INGetCarLockStatusIntent
-    @dynamic carName;  // a class of a later group: see registry/Intents
+    @synthesize carName = _carName;
+
+- (instancetype)initWithCarName:(INSpeakableString *)carName
+{
+    if ((self = [super init])) {
+        _carName = [carName copy];
+    }
+    return self;
+}
 
 + (BOOL)supportsSecureCoding
 {
@@ -381,8 +469,22 @@
 
 @end
 
+@interface INGetCarPowerLevelStatusIntent ()
+{
+    INSpeakableString * _carName;  // carName
+}
+@end
+
 @implementation INGetCarPowerLevelStatusIntent
-    @dynamic carName;  // a class of a later group: see registry/Intents
+    @synthesize carName = _carName;
+
+- (instancetype)initWithCarName:(INSpeakableString *)carName
+{
+    if ((self = [super init])) {
+        _carName = [carName copy];
+    }
+    return self;
+}
 
 + (BOOL)supportsSecureCoding
 {
@@ -586,22 +688,38 @@
 
 @interface INPayBillIntent ()
 {
-    INBillPayee *      _billPayee;  // billPayee
-    INBillType         _billType;  // billType
-    INPaymentAccount * _fromAccount;  // fromAccount
-    INPaymentAmount *  _transactionAmount;  // transactionAmount
-    NSString *         _transactionNote;  // transactionNote
+    INBillPayee *           _billPayee;  // billPayee
+    INBillType              _billType;  // billType
+    INDateComponentsRange * _dueDate;  // dueDate
+    INPaymentAccount *      _fromAccount;  // fromAccount
+    INPaymentAmount *       _transactionAmount;  // transactionAmount
+    NSString *              _transactionNote;  // transactionNote
+    INDateComponentsRange * _transactionScheduledDate;  // transactionScheduledDate
 }
 @end
 
 @implementation INPayBillIntent
     @synthesize billPayee = _billPayee;
     @synthesize billType = _billType;
+    @synthesize dueDate = _dueDate;
     @synthesize fromAccount = _fromAccount;
     @synthesize transactionAmount = _transactionAmount;
     @synthesize transactionNote = _transactionNote;
-    @dynamic dueDate;  // a class of a later group: see registry/Intents
-    @dynamic transactionScheduledDate;  // a class of a later group: see registry/Intents
+    @synthesize transactionScheduledDate = _transactionScheduledDate;
+
+- (instancetype)initWithBillPayee:(INBillPayee *)billPayee fromAccount:(INPaymentAccount *)fromAccount transactionAmount:(INPaymentAmount *)transactionAmount transactionScheduledDate:(INDateComponentsRange *)transactionScheduledDate transactionNote:(NSString *)transactionNote billType:(INBillType)billType dueDate:(INDateComponentsRange *)dueDate
+{
+    if ((self = [super init])) {
+        _billPayee = [billPayee copy];
+        _billType = billType;
+        _dueDate = [dueDate copy];
+        _fromAccount = [fromAccount copy];
+        _transactionAmount = [transactionAmount copy];
+        _transactionNote = [transactionNote copy];
+        _transactionScheduledDate = [transactionScheduledDate copy];
+    }
+    return self;
+}
 
 + (BOOL)supportsSecureCoding
 {
@@ -636,6 +754,7 @@
     INPaymentAccount *          _fromAccount;  // fromAccount
     INPaymentAmount *           _transactionAmount;  // transactionAmount
     NSString *                  _transactionNote;  // transactionNote
+    INDateComponentsRange *     _transactionScheduledDate;  // transactionScheduledDate
 }
 @end
 
@@ -645,7 +764,7 @@
     @synthesize fromAccount = _fromAccount;
     @synthesize transactionAmount = _transactionAmount;
     @synthesize transactionNote = _transactionNote;
-    @dynamic transactionScheduledDate;  // a class of a later group: see registry/Intents
+    @synthesize transactionScheduledDate = _transactionScheduledDate;
 
 - (void)setBillDetails:(INBillDetails *)billDetails
 {
@@ -665,6 +784,11 @@
 - (void)setTransactionNote:(NSString *)transactionNote
 {
     _transactionNote = [transactionNote copy];
+}
+
+- (void)setTransactionScheduledDate:(INDateComponentsRange *)transactionScheduledDate
+{
+    _transactionScheduledDate = [transactionScheduledDate copy];
 }
 
 - (instancetype)initWithCode:(INPayBillIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
@@ -708,10 +832,12 @@
 
 @interface INPaymentAccount ()
 {
-    NSString *        _accountNumber;  // accountNumber
-    INAccountType     _accountType;  // accountType
-    INBalanceAmount * _balance;  // balance
-    INBalanceAmount * _secondaryBalance;  // secondaryBalance
+    NSString *          _accountNumber;  // accountNumber
+    INAccountType       _accountType;  // accountType
+    INBalanceAmount *   _balance;  // balance
+    INSpeakableString * _nickname;  // nickname
+    INSpeakableString * _organizationName;  // organizationName
+    INBalanceAmount *   _secondaryBalance;  // secondaryBalance
 }
 @end
 
@@ -719,9 +845,37 @@
     @synthesize accountNumber = _accountNumber;
     @synthesize accountType = _accountType;
     @synthesize balance = _balance;
+    @synthesize nickname = _nickname;
+    @synthesize organizationName = _organizationName;
     @synthesize secondaryBalance = _secondaryBalance;
-    @dynamic nickname;  // a class of a later group: see registry/Intents
-    @dynamic organizationName;  // a class of a later group: see registry/Intents
+
+- (instancetype)initWithNickname:(INSpeakableString *)nickname number:(NSString *)number accountType:(INAccountType)accountType organizationName:(INSpeakableString *)organizationName balance:(INBalanceAmount *)balance secondaryBalance:(INBalanceAmount *)secondaryBalance
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonIntentsCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [NSObject class]))) {
+        _accountNumber = [number copy];
+        _accountType = accountType;
+        _balance = [balance copy];
+        _nickname = [nickname copy];
+        _organizationName = [organizationName copy];
+        _secondaryBalance = [secondaryBalance copy];
+    }
+    return self;
+}
+
+- (instancetype)initWithNickname:(INSpeakableString *)nickname number:(NSString *)number accountType:(INAccountType)accountType organizationName:(INSpeakableString *)organizationName
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonIntentsCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [NSObject class]))) {
+        _accountNumber = [number copy];
+        _accountType = accountType;
+        _nickname = [nickname copy];
+        _organizationName = [organizationName copy];
+    }
+    return self;
+}
 
 + (BOOL)supportsSecureCoding
 {
@@ -755,7 +909,10 @@
 
 + (instancetype)successWithResolvedPaymentAccount:(INPaymentAccount *)resolvedPaymentAccount
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[resolvedPaymentAccount copy] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[resolvedPaymentAccount copy] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)disambiguationWithPaymentAccountsToDisambiguate:(NSArray<INPaymentAccount *> *)paymentAccountsToDisambiguate
@@ -772,13 +929,25 @@
 
 @interface INPaymentAmount ()
 {
-    INAmountType _amountType;  // amountType
+    INCurrencyAmount * _amount;  // amount
+    INAmountType       _amountType;  // amountType
 }
 @end
 
 @implementation INPaymentAmount
+    @synthesize amount = _amount;
     @synthesize amountType = _amountType;
-    @dynamic amount;  // a class of a later group: see registry/Intents
+
+- (instancetype)initWithAmountType:(INAmountType)amountType amount:(INCurrencyAmount *)amount
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonIntentsCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [NSObject class]))) {
+        _amount = [amount copy];
+        _amountType = amountType;
+    }
+    return self;
+}
 
 + (BOOL)supportsSecureCoding
 {
@@ -812,7 +981,10 @@
 
 + (instancetype)successWithResolvedPaymentAmount:(INPaymentAmount *)resolvedPaymentAmount
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[resolvedPaymentAmount copy] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[resolvedPaymentAmount copy] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)disambiguationWithPaymentAmountsToDisambiguate:(NSArray<INPaymentAmount *> *)paymentAmountsToDisambiguate
@@ -831,12 +1003,18 @@
 
 + (instancetype)successWithResolvedPaymentStatus:(INPaymentStatus)resolvedPaymentStatus
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedPaymentStatus] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[NSNumber numberWithInteger:resolvedPaymentStatus] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)successWithResolvedValue:(INPaymentStatus)resolvedValue
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[NSNumber numberWithInteger:resolvedValue] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[NSNumber numberWithInteger:resolvedValue] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)confirmationRequiredWithPaymentStatusToConfirm:(INPaymentStatus)paymentStatusToConfirm
@@ -853,18 +1031,32 @@
 
 @interface INSearchForBillsIntent ()
 {
-    INBillPayee *   _billPayee;  // billPayee
-    INBillType      _billType;  // billType
-    INPaymentStatus _status;  // status
+    INBillPayee *           _billPayee;  // billPayee
+    INBillType              _billType;  // billType
+    INDateComponentsRange * _dueDateRange;  // dueDateRange
+    INDateComponentsRange * _paymentDateRange;  // paymentDateRange
+    INPaymentStatus         _status;  // status
 }
 @end
 
 @implementation INSearchForBillsIntent
     @synthesize billPayee = _billPayee;
     @synthesize billType = _billType;
+    @synthesize dueDateRange = _dueDateRange;
+    @synthesize paymentDateRange = _paymentDateRange;
     @synthesize status = _status;
-    @dynamic dueDateRange;  // a class of a later group: see registry/Intents
-    @dynamic paymentDateRange;  // a class of a later group: see registry/Intents
+
+- (instancetype)initWithBillPayee:(INBillPayee *)billPayee paymentDateRange:(INDateComponentsRange *)paymentDateRange billType:(INBillType)billType status:(INPaymentStatus)status dueDateRange:(INDateComponentsRange *)dueDateRange
+{
+    if ((self = [super init])) {
+        _billPayee = [billPayee copy];
+        _billType = billType;
+        _dueDateRange = [dueDateRange copy];
+        _paymentDateRange = [paymentDateRange copy];
+        _status = status;
+    }
+    return self;
+}
 
 + (BOOL)supportsSecureCoding
 {
@@ -949,13 +1141,23 @@
 
 @interface INSetCarLockStatusIntent ()
 {
-    NSNumber * _locked;  // locked
+    INSpeakableString * _carName;  // carName
+    NSNumber *          _locked;  // locked
 }
 @end
 
 @implementation INSetCarLockStatusIntent
+    @synthesize carName = _carName;
     @synthesize locked = _locked;
-    @dynamic carName;  // a class of a later group: see registry/Intents
+
+- (instancetype)initWithLocked:(NSNumber *)locked carName:(INSpeakableString *)carName
+{
+    if ((self = [super init])) {
+        _carName = [carName copy];
+        _locked = [locked copy];
+    }
+    return self;
+}
 
 + (BOOL)supportsSecureCoding
 {

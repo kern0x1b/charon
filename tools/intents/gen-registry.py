@@ -207,8 +207,9 @@ def main():
     parser.add_argument("--facts", required=True)
     parser.add_argument("--release", required=True)
     parser.add_argument("--framework", default="Intents")
-    parser.add_argument("--classes", required=True,
-                        help="a file of the class names this group carries, one per line")
+    parser.add_argument("--classes", required=True, nargs="+",
+                        help="the class names this file carries, one per line, one file per group "
+                             "that shares it (the two 10.x groups share ios10.json)")
     parser.add_argument("--hand-written", default="CharonIntents100.m",
                         help="the file this group's hand written classes are in")
     parser.add_argument("--no-protocols", action="store_true",
@@ -234,7 +235,9 @@ def main():
     carried = sorted(set(answered) | HAND_WRITTEN)
     # Only the classes of this group are this file's business: a class of another group of the
     # same delivery is that group's entry, and a member of one of those is skipped with it.
-    group = {line.strip() for line in open(options.classes) if line.strip()}
+    group = set()
+    for path in options.classes:
+        group |= {line.strip() for line in open(path) if line.strip()}
 
     # What the hand written classes answer, read back out of the same text the compiler
     # compiled: a hand written class is no less checked than a generated one, so it goes through
@@ -352,7 +355,6 @@ def main():
                                           "the header does declare", options.facts))
                     missing["init"] += 1
                     continue
-                spelling = api.replace(" ", ".selector.", 1)
                 entries.append(absent(api, "method", intro,
                                       "an initialiser that takes a value of a class this delivery "
                                       "does not carry is not given a body, because a body that "

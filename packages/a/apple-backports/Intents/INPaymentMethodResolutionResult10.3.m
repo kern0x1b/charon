@@ -40,7 +40,10 @@
 
 + (instancetype)successWithResolvedPaymentMethod:(INPaymentMethod *)resolvedPaymentMethod
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess resolvedValue:[resolvedPaymentMethod copy] valuesToDisambiguate:nil valueToConfirm:nil];
+    // A type whose zero case says nothing carries a success that says nothing,
+    // which is what notRequired means; the host re-forms it the same way.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+ resolvedValue:[resolvedPaymentMethod copy] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
 + (instancetype)disambiguationWithPaymentMethodsToDisambiguate:(NSArray<INPaymentMethod *> *)paymentMethodsToDisambiguate
