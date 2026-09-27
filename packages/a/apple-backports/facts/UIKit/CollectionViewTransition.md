@@ -63,6 +63,19 @@ because it is the layout that reads it: the release animates no layout property,
 only set the number would leave every cell where it was. `UICollectionView+InteractiveMovement.m`
 drives its movement the same way.
 
+**The pacing is the port's own and is not a claim about Apple's.** No API here returns a duration
+and none of these methods takes one, so the 0.35 s a transition runs for and the 1/60 s the
+progress is moved at are this port's choices, written down so nobody reads them as measured. What
+*is* measured is every answer an application can see: the hooks' return values and the progress
+semantics, in the table above. If a device run later shows Apple's own pacing differing, the two
+constants are where it goes.
+
+A layout asked for while a transition is still running is neither dropped nor put in place under
+the running one: the change waits for that transition to settle and is applied when it does, and
+the block is handed its `finished` after the collection view really is holding the layout that was
+asked for. Setting it eagerly would let the running transition's timer put its own layout back
+over the new one a frame later, which is the kind of quiet wrong answer this port must not give.
+
 ## The two completion blocks are not the same block
 
 `UICollectionViewLayoutInteractiveTransitionCompletion` is `void (^)(BOOL completed, BOOL finished)`

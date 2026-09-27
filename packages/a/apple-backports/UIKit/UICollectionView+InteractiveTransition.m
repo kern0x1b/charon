@@ -24,6 +24,10 @@ static const NSTimeInterval CharonTransitionDuration = 0.35;
 @property (nonatomic) BOOL finishing;
 @property (nonatomic, strong) NSTimer *timer;
 @property (nonatomic, strong) NSDate *began;
+// A layout asked for while this transition was still running. The transition is not dropped and
+// not raced: the change waits for it to settle, so the timer cannot put the layout it is heading
+// for back over the one that was asked for in the meantime.
+@property (nonatomic, strong) UICollectionViewLayout *pending;
 @end
 
 @implementation CharonLayoutTransition
@@ -37,6 +41,7 @@ static const NSTimeInterval CharonTransitionDuration = 0.35;
 @synthesize finishing = _finishing;
 @synthesize timer = _timer;
 @synthesize began = _began;
+@synthesize pending = _pending;
 
 // The progress is moved here rather than inside a UIView animation block, because it is the
 // layout that reads it: the release animates no layout property, and a block that only set the
@@ -56,12 +61,18 @@ static const NSTimeInterval CharonTransitionDuration = 0.35;
     UICollectionViewLayout *settled = span >= 0 ? _to : _from;
     BOOL finished = span >= 0;
     view.collectionViewLayout = settled;
+    UICollectionViewLayout *pending = _pending;
+    _pending = nil;
+    if (pending)
+        view.collectionViewLayout = pending;
     objc_setAssociatedObject(view, &CharonTransitionKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     // The transition layout passes the message on to both the layout it came from and the one it
     // went to, so the layout that is settled is told through it and not a second time.
     [_layout finalizeLayoutTransition];
     UICollectionViewLayoutInteractiveTransitionCompletion completion = _completion;
     _completion = nil;
+    // The completion is handed after the layout is the one the caller asked for, so a block that
+    // reads the collection view's layout sees what it was promised.
     if (completion)
         completion(finished, YES);
 }
@@ -141,10 +152,28 @@ static const NSTimeInterval CharonTransitionDuration = 0.35;
     // Without an animation there is nothing to drive a progress for, so the layout is simply put
     // in place; with one, this is the transition run to its end. This block is handed a finished
     // alone, where the interactive one is handed a completed and a finished, so it is wrapped.
-    if (!animated || [self charon_layoutTransition]) {
+    if (!animated) {
         self.collectionViewLayout = layout;
         if (completion)
             completion(YES);
+        return;
+    }
+    CharonLayoutTransition *running = [self charon_layoutTransition];
+    if (running) {
+        // A transition is already under way. It is not dropped and the layout is not put in place
+        // under it: the change is held until that transition settles, and the block is handed a
+        // finished once the collection view really is holding the layout that was asked for.
+        UICollectionViewLayout *waiting = layout;
+        void (^wrapped)(BOOL) = completion;
+        running.pending = waiting;
+        if (wrapped) {
+            UICollectionViewLayoutInteractiveTransitionCompletion previous = running.completion;
+            running.completion = ^(BOOL completed, BOOL finished) {
+                if (previous)
+                    previous(completed, finished);
+                wrapped(YES);
+            };
+        }
         return;
     }
     UICollectionViewTransitionLayout *transition =
