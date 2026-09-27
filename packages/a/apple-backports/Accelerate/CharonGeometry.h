@@ -90,14 +90,18 @@ static inline vImage_Error charon_turn_run(const vImage_Buffer *src, const vImag
     int quarter = (rotationConstant == 1 || rotationConstant == 3);
     vImagePixelCount turnedWidth = quarter ? height : width;
     vImagePixelCount turnedHeight = quarter ? width : height;
-    // Truncated toward zero, which is what the mismatched-destination cases with an EVEN difference want -
-    // 6x4 into 6x4 under constant 1, 5x3 into 5x3, 4x6: the differential passes every one of them here. It
-    // is not the rule for an ODD difference - every shape whose two extents differ by an odd number fails,
-    // 2x3, 3x2, 3x4, 4x3 and 6x5, and flooring the half pixel does not fix them either, so the half pixel
-    // is not being rounded at all. What the system does with a half pixel is the one measurement this
-    // family still needs, and facts/Accelerate/vImageGeometry.md names it.
-    long offsetX = ((long)dest->width - (long)turnedWidth) / 2;
-    long offsetY = ((long)dest->height - (long)turnedHeight) / 2;
+    // ROUNDED HALF UP, which is the rule the measurements give and which neither C's truncation toward
+    // zero nor a floor is: a 2x3 source into a 2x3 destination under constant 1 is a turned picture three
+    // wide by two tall in a two-by-three frame, and the system puts it at offset (0, 1) - half a pixel down
+    // and not half a pixel up. A 6x5 into 6x5 under constant 1 is a turned 5x6 in a six-by-five frame and
+    // the system puts it at (1, 0) - half a pixel across. Both are `(destination - turned) / 2` rounded to
+    // the nearer integer with a half going up, and the differential's twenty mismatched shapes are what fixes
+    // the direction: truncating fails every shape whose two extents differ by an odd number and passes
+    // every one whose difference is even, which is the signature of exactly this half.
+    long differenceX = (long)dest->width - (long)turnedWidth;
+    long differenceY = (long)dest->height - (long)turnedHeight;
+    long offsetX = differenceX >= 0 ? (differenceX + 1) / 2 : differenceX / 2;
+    long offsetY = differenceY >= 0 ? (differenceY + 1) / 2 : differenceY / 2;
     int extend = (flags & kvImageEdgeExtend) ? 1 : 0;
     for (vImagePixelCount dy = 0; dy < dest->height; dy++) {
         uint8_t *out = (uint8_t *)dest->data + (size_t)dy * dest->rowBytes;
