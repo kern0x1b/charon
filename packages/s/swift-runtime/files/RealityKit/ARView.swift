@@ -143,6 +143,9 @@ open class ARView: RealityViewBase {
     /// How many frames the view has drawn, which is what a test reads to know the loop ran.
     public private(set) var frameCount: Int = 0
 
+    /// The environment the view shows the scene in, which a caller sets.
+    public var environment = Environment()
+
     // MARK: The loop
 
     #if canImport(UIKit)
@@ -426,5 +429,98 @@ extension ARView {
     /// session leaves the scene as it is.
     public func __syncAnchors() {
         scene.syncAnchors(with: session)
+    }
+}
+
+// MARK: - The environment the scene is shown in
+
+/// What a view shows around and lights the scene with.
+///
+/// A new view's environment, measured on the host 2026-09-27 (macOS 26.5, arm64): a white
+/// background, an image-based light with no resource and an intensity exponent of zero, and no
+/// reverb at all.
+extension ARView {
+    public final class Environment {
+        public var background: Background
+        public var lighting: Lighting
+        public var reverb: Reverb
+
+        public init(background: Background = .color(.white), lighting: Lighting = Lighting(),
+                    reverb: Reverb = .noReverb) {
+            self.background = background
+            self.lighting = lighting
+            self.reverb = reverb
+        }
+    }
+}
+
+extension ARView.Environment {
+    /// What is behind the scene.
+    public struct Background {
+        /// The value a background carries: a colour, the camera's own feed, or a skybox.
+        public enum Value {
+            case color(UIColor)
+            case cameraFeed
+            case skybox(EnvironmentResource?)
+        }
+
+        public var value: Value
+
+        public init(value: Value) { self.value = value }
+
+        /// A plain colour behind the scene.
+        public static func color(_ color: UIColor) -> Background { Background(value: .color(color)) }
+        /// What the camera sees, which is what an AR view shows.
+        public static func cameraFeed(exposureCompensation: Float = 0) -> Background {
+            Background(value: .cameraFeed)
+        }
+        /// A captured environment, or nothing for the one the view has of its own.
+        public static func skybox(_ resource: EnvironmentResource?) -> Background {
+            Background(value: .skybox(resource))
+        }
+    }
+
+    /// The light the scene is lit by: how bright, how warm, and from what.
+    public struct Lighting {
+        /// The resource an environment's light is measured from, and the exponent its intensity
+        /// is raised to. Measured on the host, 2026-09-27: a new view's light has no resource
+        /// and an intensity exponent of 0.
+        public struct ImageBasedLight {
+            public var resource: EnvironmentResource?
+            public var intensityExponent: Float
+            public init(resource: EnvironmentResource? = nil, intensityExponent: Float = 0) {
+                self.resource = resource
+                self.intensityExponent = intensityExponent
+            }
+        }
+
+        public var intensity: Float
+        public var temperature: Float
+        public var resource: ImageBasedLight
+
+        public init(intensity: Float = 1000, temperature: Float = 6500,
+                    resource: EnvironmentResource? = nil) {
+            self.intensity = intensity
+            self.temperature = temperature
+            self.resource = ImageBasedLight(resource: resource)
+        }
+    }
+
+    /// How a scene sounds where it is: not at all, or as one of the rooms.
+    public enum Reverb: Equatable {
+        /// No room: what a new view's environment has, measured on the host 2026-09-27.
+        case noReverb
+        /// One of the rooms, by name.
+        case preset(Preset)
+
+        /// The rooms a scene can sound like.
+        public enum Preset: Equatable {
+            case smallRoom
+            case mediumRoom
+            case largeRoom
+            case mediumHall
+            case largeHall
+            case cathedral
+        }
     }
 }
