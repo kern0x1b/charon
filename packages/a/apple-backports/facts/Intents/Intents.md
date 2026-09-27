@@ -73,9 +73,11 @@ Ten classes are hand written in `CharonIntents100.m`; the other 104 of the 10.0.
   three ways of being made are therefore all there is to implement, and each one really
   obtains what it says. `imageNamed:` resolves the name in the app's own asset catalogue
   through UIKit, which is where the catalogue lives on every release this port covers.
-  `systemImageNamed:` answers no image, because the system images are SF Symbols and this
-  release has no set of them — the same answer `imageNamed:` gives for a name the app has none
-  of. `imageWithURL:` reads the URL and answers no image for a URL it cannot read, which is the
+  `systemImageNamed:` is registered **absent**, not implemented: the system images are SF
+  Symbols, they arrived with iOS 13, and no release this package covers has a set of them, so
+  there is no API on this release that could be asked for one. The answer would be no image —
+  which is what `imageNamed:` gives for a name the app has none of — but a member whose behaviour
+  does not exist is written down as absent rather than as a body that returns nil. `imageWithURL:` reads the URL and answers no image for a URL it cannot read, which is the
   header's own `nullable` on that method.
 * **`INPreferences`** answers `INSiriAuthorizationStatusRestricted` for
   `siriAuthorizationStatus`, which is the header's own wording for a system where Siri
@@ -117,6 +119,11 @@ each read off the header of iPhoneOS 16.4:
   price.
 * `INPerson`'s `contactSuggestion` is declared `getter=isContactSuggestion`, so the initialiser
   that spells its parameter `isContactSuggestion:` is matched through the getter's own name.
+The copy in `CharonIntentsCoding.m` reads the property an ivar belongs to and honours its
+declared ownership — a property declared `copy` gets one of its own, a property declared
+`strong` shares the original's — because copying where the header says retain would be a
+different answer from the one the header gives.
+
 * A subclass initialiser that keeps a value its superclass declares **read-only**
   (`INRestaurantGuest`'s `nameComponents`, which is `INPerson`'s) calls the superclass's own
   designated initialiser, with the value it has and `nil` or `0` for the arguments it does not:

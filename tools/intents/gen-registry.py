@@ -137,6 +137,18 @@ LATER_GROUP = "a class of a group of this delivery that is not in this one"
 # The one file the hand written classes are in, read to find what they answer.
 HAND_WRITTEN_SOURCE = "CharonIntents100.m"
 
+# The one member a hand written class of this delivery does not answer, and why. SF Symbols
+# arrived with iOS 13: this release has no set of them, there is no API on it that could be asked
+# for one, and the answer for a name the system has no symbol for is no image - which is what the
+# class's own imageNamed: answers for a name the app has none of. The entry says absent rather
+# than implemented, so that nothing claims the framework's behaviour where there is none.
+NOT_ANSWERED = {
+    "+[INImage systemImageNamed:]":
+        "the SF Symbols this names arrived with iOS 13, and no release this package covers has "
+        "them: there is no API on this release that could be asked for one, and the header's own "
+        "imageNamed: answers no image for a name the app has none of",
+}
+
 SOURCE = ("the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the "
           "release each object file is carried from (tools/intents/measure-intents.lua)")
 
@@ -287,6 +299,10 @@ def main():
                     missing["dynamic"] += 1
                     continue
             if kind == "method":
+                if api in NOT_ANSWERED:
+                    entries.append(absent(api, "method", intro, NOT_ANSWERED[api], options.facts))
+                    missing["not answered"] += 1
+                    continue
                 if api in report["methods"]:
                     entries.append(implemented(api, "method", intro, owner, options.facts))
                     continue

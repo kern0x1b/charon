@@ -847,10 +847,11 @@ typedef NS_ENUM(NSInteger, CharonIntentsRideOutcome) {
 
 - (id)parameterValueForParameter:(NSString *)parameterName
 {
-    // The value the interaction's intent carries for a parameter of that name, read out of the
-    // intent's own state through the runtime: the intent is a data class whose properties are the
-    // parameters it resolves, and a name the intent does not have is a name with no value.
-    if (!parameterName) {
+    // The value the interaction's intent carries for a parameter of that name: the intent is a
+    // data class whose properties are the parameters it resolves, and a name the intent does not
+    // have is a name with no value. The accessor is asked for first, because a key-value lookup
+    // of a name the object has no accessor for raises, and an API must not crash its caller.
+    if (!parameterName || ![_intent respondsToSelector:NSSelectorFromString(parameterName)]) {
         return nil;
     }
     id value = [_intent valueForKey:parameterName];

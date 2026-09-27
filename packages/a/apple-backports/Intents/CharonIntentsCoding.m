@@ -10,8 +10,28 @@
 #import "CharonIntentsCoding.h"
 
 #import <CoreLocation/CoreLocation.h>
+#import <string.h>
+
 #import <objc/message.h>
 #import <objc/runtime.h>
+
+// Whether the property an ivar belongs to is declared copy, which the copy below has to honour:
+// a property declared strong shares its object with the original and a property declared copy owns
+// one of its own, and a copy that turned the first into the second would be a different answer
+// from the one the header gives. Read from the property's own attributes, so a property the class
+// does not declare (a protocol's, a category's) falls back to the safe reading of copying.
+static BOOL charon_intents_is_copy(Class owner, const char *name)
+{
+    objc_property_t property = class_getProperty(owner, name);
+    if (!property) {
+        return YES;
+    }
+    const char *attributes = property_getAttributes(property);
+    if (!attributes) {
+        return YES;
+    }
+    return strchr(attributes, 'C') != NULL || strchr(attributes, 'R') == NULL;
+}
 
 id charon_intents_super_init(id object, Class superclass)
 {
@@ -138,10 +158,13 @@ void charon_intents_copy(id copy, id object)
             NSUInteger size = 0;
             int kind = charon_intents_kind(ivars[index], &size);
             if (kind == CharonIntentsObject) {
-                // The copy owns what it is handed: an object property is copied, which is what
-                // one declared copy means, so the two objects share nothing mutable.
+                // The copy owns what it is handed the way the property says: a property declared
+                // copy gets one of its own, and a property declared strong or retain shares the
+                // original's, so the two objects share nothing the header says they should.
                 id value = object_getIvar(object, ivars[index]);
-                object_setIvar(copy, ivars[index], [value respondsToSelector:@selector(copy)] ? [value copy] : value);
+                id owned = (value && charon_intents_is_copy(owner, ivar_getName(ivars[index])) &&
+                            [value respondsToSelector:@selector(copy)]) ? [value copy] : value;
+                object_setIvar(copy, ivars[index], owned);
             } else if (kind == CharonIntentsValue && size > 0) {
                 NSUInteger offset = ivar_getOffset(ivars[index]);
                 memcpy((char *)(__bridge void *)copy + offset,
