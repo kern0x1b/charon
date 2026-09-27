@@ -373,10 +373,27 @@ gone. What is different about it:
   materialised and whose second row extraction takes the process — the case compares the status and
   the nonzero count instead of the elements, and says so in its output.
 
-State: **20 cases pass, 2 fail** — `a dense product [order 101, alpha 1]` and `[order 101, alpha 2]`,
-the row-major complex dense product. The column-major ones pass, and every gemv, every triangular
-solve, every trace and every norm passes. Those two are the next thing to look at, and they are a
-statement about the row-major `ldb` handling of the complex dense product only.
+State: **20 cases pass, 2 fail**, and the two open items are named here so the next session starts at
+them rather than looking for them.
+
+1. **`a dense product [order 101, alpha 1]` and `[order 101, alpha 2]`** — the row-major complex dense
+   product. The column-major ones pass, and every gemv, every triangular solve, every trace and every
+   norm passes. **The `ldb` hypothesis is not confirmed and the port is not fixed.** The two lines it
+   names are `sparse_dimension bStep = order == CblasRowMajor ? 1 : ldb;` and
+   `cblas_ccopy((int)n, (const float complex *)B + from, (int)bStep, ...)`, and by inspection they are
+   right for both layouts: for a row-major B the step along a row of B is 1 and the offset is
+   `c * ldb`, and for a column-major one they are `ldb` and `c`. The detail string the case prints is
+   truncated to `status `, so which element differs is **not** yet known, and that is what has to come
+   first: the buffer is 2048 bytes and the `used` offset into it is coming back from a `snprintf` that
+   has been handed a stale length.
+2. **`an outer product [two nonzeros of y]` hangs the run on the host side.** The case is reached — the
+   line before the hang is `# case: an outer product [two nonzeros of y]` — and the process does not come
+   back, so it is inside the host's `sparse_outer_product_dense_float_complex`, its
+   `sparse_get_matrix_nonzero_count`, or its `sparse_extract_sparse_row_float_complex` on the matrix it
+   just built. The alpha-zero case is already handled by comparing the count instead of the elements
+   (measured: the host has not materialised that one), so this is the case where it HAS materialised it
+   and the read still does not return. Until that is settled, the outer product's elements are not
+   compared at all.
 
 ## What has not been run
 
