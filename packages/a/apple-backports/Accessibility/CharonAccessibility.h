@@ -16,7 +16,20 @@
 //
 
 #import <Foundation/Foundation.h>
+// A build that has no Accessibility framework - the host half of the braille differential, which
+// compiles the three braille classes against nothing but Foundation - must not pull the system's
+// header in: it declares the same three names this header transcribes, and two declarations of
+// one class is a build that cannot be trusted.
+#ifndef CHARON_BRAILLE_ONLY
 #import <Accessibility/Accessibility.h>
+#endif
+
+// AX_EXTERN is the framework's own spelling of a symbol's visibility, defined in the framework's
+// AXFoundation.h. A build without the framework - the port half of the braille differential -
+// needs the same meaning, and `extern` is what the macro expands to there.
+#ifndef AX_EXTERN
+#define AX_EXTERN extern
+#endif
 
 NS_ASSUME_NONNULL_BEGIN
 
