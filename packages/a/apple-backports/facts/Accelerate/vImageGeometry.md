@@ -751,3 +751,41 @@ signature, a value above the source maximum, is a row counted twice. The one cas
 row's taps are read once" from "the last row is repeated to fill the walk" is a slope of 1 with a **tall**
 source, where the walk never runs out: if the answer is the exact source value at a whole-pixel phase, the walk
 is read once, and if it is anything else the last row is repeated.
+
+## The tall source rules out "the walk is filled by repeating the last row" - and the two edges are two rules
+
+A slope of 1 over sources **tall enough that the diagonal walk never runs out of rows inside the kernel** -
+9x12 and 9x20, the same two-edge source, whole-pixel answers counted by matching them against a value the
+source actually holds:
+
+    9x12  slope 1  translate 0    3 whole-pixel answers, 2 above the source's maximum, 103 other
+    9x12  slope 0  translate 0  108 whole-pixel answers, 0 above the source's maximum,   0 other
+    9x20  slope 1  translate 0    6 whole-pixel answers, 2 above the source's maximum, 172 other
+    9x20  slope 1  translate 0.5 36 whole-pixel answers, 0 above the source's maximum, 144 other
+    9x6   slope 1  translate 0    2 whole-pixel answers, 2 above the source's maximum,  50 other
+
+**A tall source still has the two overshooting answers**, so the walk is not being filled by repeating the
+last row, and the cause is not running out of rows. The overshooting cells are all in the *last row*, whose
+values are the 50000s: at 9x6 the row is `dy=5  ... 33560.3 53670.0 49122.1 50003.5 50004.5 50005.5 48783.4
+55579.2`, and 55579.2 is 0.61141 of 50008 plus 0.5 of 50008 - **the last row read twice, with total weight
+1.111**, which is a clamped tap whose weight was not renormalised away.
+
+So the two edges really are two rules, and which is which is settled by the half-pixel cases rather than the
+whole-pixel ones:
+
+- **along the row**, where the diagonal does not move, an out-of-picture tap is **DROPPED** - a translate of
+  +0.5's first column answers 5491.0, one weight of column 0 and nothing else, and a translate of -1's first
+  column answers 101.0, which is the source's *second* column, so the position is `dx - xTranslate` with no
+  clamping of its own.
+- **along the shear**, where the taps step down a row each, a tap past the last row is **CLAMPED to it with
+  its weight intact and no renormalisation** - the 5558 and 55579.2 fingerprints, which no convex combination
+  of the source produces and which the guard page shows came from inside the caller's allocation.
+
+**That is what the port has to implement, and it does not yet.** The committed engine drops at both edges, so
+its bottom-edge cells differ from the system's by exactly the overshoot, and its in-row cells are already
+right - which is the shape the coordinator described: differences only in the bottom-edge cells at a non-zero
+slope, and a bug anywhere else.
+
+The port's `CharonShearRun` needs one change: when a tap's **row** is outside the picture, clamp it to the
+edge row and keep its weight; when its **column** is outside, drop it as now. That is a two-line difference
+in the tap loop and it is the whole of the remaining work on this family.
