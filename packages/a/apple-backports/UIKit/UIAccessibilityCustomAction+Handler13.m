@@ -11,7 +11,9 @@ static const char charon_handler_key;
 - (instancetype)initWithName:(NSString *)name actionHandler:(UIAccessibilityCustomActionHandler)actionHandler
 {
     if ((self = [self initWithName:name target:nil selector:NULL]))
-        self.actionHandler = actionHandler;
+        [self setActionHandler:actionHandler];   // a send, not a dot-syntax write: a write is renamed by the
+    // property name it reads, and a category on a host class has both the accessor and the setter renamed,
+    // so only a send keeps the two the same name
     return self;
 }
 
