@@ -1,4 +1,5 @@
 #import "CharonAVFAudio.h"
+#import "CharonAVFAudioNew.h"
 
 // AVAudioSessionCapability and AVAudioSessionPortExtensionBluetoothMicrophone of iOS 26.
 //

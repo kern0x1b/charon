@@ -52,6 +52,10 @@ typedef struct CharonAudioUnitParameterInfo CharonAudioUnitParameterInfo;
 // What one parameter of a real unit is, as that unit describes it. The AUParameter is the header's
 // value object; this is what it holds, and the AudioUnit behind it is the unit the value is read
 // from and written to.
+// The implementation is in CharonAVFAudioCommon.m, with an explicit @synthesize for each property:
+// this class is one the package defines, the build compiles with
+// -Werror=objc-missing-property-synthesis, and an @implementation in a header is emitted by every
+// source that imports it - a duplicate _OBJC_CLASS_$_CharonAUParameterImpl per object at link.
 @interface CharonAUParameterImpl : NSObject
 @property (nonatomic, copy) NSString *name;
 @property (nonatomic) AudioUnitParameterID identifier;
@@ -67,22 +71,6 @@ typedef struct CharonAudioUnitParameterInfo CharonAudioUnitParameterInfo;
 @property (nonatomic, weak, nullable) AUAudioUnit *owner;
 @end
 
-@implementation CharonAUParameterImpl
-// Explicit synthesis for every one of them: this class is one the package defines rather than a
-// release's, and the build compiles with -Werror=objc-missing-property-synthesis.
-@synthesize name = _name;
-@synthesize identifier = _identifier;
-@synthesize scope = _scope;
-@synthesize element = _element;
-@synthesize minValue = _minValue;
-@synthesize maxValue = _maxValue;
-@synthesize unit = _unit;
-@synthesize flags = _flags;
-@synthesize unitName = _unitName;
-@synthesize valueStrings = _valueStrings;
-@synthesize dependentParameters = _dependentParameters;
-@synthesize owner = _owner;
-@end
 
 // The tree a real unit publishes, built by asking that unit.
 @interface AUParameterTree (CharonImpl)

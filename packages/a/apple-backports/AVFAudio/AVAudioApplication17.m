@@ -1,4 +1,5 @@
 #import "CharonAVFAudio.h"
+#import "CharonAVFAudioNew.h"
 #import <objc/message.h>
 
 // AVAudioApplication of iOS 17 and the continuity-microphone port type that came with it.

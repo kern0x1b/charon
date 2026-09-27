@@ -1,4 +1,5 @@
 #import "CharonAVFAudio.h"
+#import "CharonAUAudioUnit.h"
 
 // The channel count of a layout tag and the canonical tag of a channel count. The release is the
 // authority for both - AudioFormatGetProperty(kAudioFormatProperty_ChannelLayoutForTag) and
@@ -93,3 +94,25 @@ AudioChannelLayoutTag CharonTagForChannelCount(AVAudioChannelCount channels)
     }
     return kAudioChannelLayoutTag_UseChannelDescriptions;
 }
+
+// CharonAUParameterImpl is declared in CharonAUAudioUnit.h and defined here, once. The @synthesize
+// of every property is explicit because the class is one this package defines and the build treats an
+// auto-synthesised property as an error; a helper file exports no API symbol of its own, and every name
+// here is Charon-prefixed, so it exports none.
+@implementation CharonAUParameterImpl
+// Explicit synthesis for every one of them: this class is one the package defines rather than a
+// release's, and the build compiles with -Werror=objc-missing-property-synthesis.
+@synthesize name = _name;
+@synthesize identifier = _identifier;
+@synthesize scope = _scope;
+@synthesize element = _element;
+@synthesize minValue = _minValue;
+@synthesize maxValue = _maxValue;
+@synthesize unit = _unit;
+@synthesize flags = _flags;
+@synthesize unitName = _unitName;
+@synthesize valueStrings = _valueStrings;
+@synthesize dependentParameters = _dependentParameters;
+@synthesize owner = _owner;
+@end
+
