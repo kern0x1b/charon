@@ -30,12 +30,24 @@ for dirpath, _, names in os.walk(root):
         path = os.path.join(dirpath, name)
         text = open(path).read()
         # The whole word, not the import line: the port's sources qualify their own types with the
-        # module's name, and a half-renamed copy would not compile.
+        # module's name, and a half-renamed copy would not compile. The `CoreML` import goes the same
+        # way, and it has to: the linear models are written against the port's own shaped-array
+        # overlay, and a copy left importing the host's `CoreML` would fit over the host's
+        # `MLShapedArray` and the comparison would be of the host against itself.
         assert "PortCreateMLComponents" not in text, path
-        open(path, "w").write(re.sub(r"\bCreateMLComponents\b", "PortCreateMLComponents", text))
+        assert "PortCoreML" not in text, path
+        text = re.sub(r"\bCreateMLComponents\b", "PortCreateMLComponents", text)
+        if os.path.basename(dirpath) == "CoreML":
+            # The overlay's own sources keep `import CoreML`: it is the self-import the module makes
+            # when the header has already given it what it needs, and rewriting it here would leave
+            # the module importing a name of its own and seeing nothing.
+            open(path, "w").write(text)
+            continue
+        text = re.sub(r"^import CoreML$", "import PortCoreML", text, flags=re.M)
+        open(path, "w").write(text)
 PY
 
-xcrun swiftc -swift-version 5 -wmo -O \
+xcrun swiftc -swift-version 5 -wmo -parse-as-library -O \
     -module-name PortTabularData \
     -emit-module -emit-module-path "$out/modules/PortTabularData.swiftmodule" \
     -c -o "$out/tab.o" "$out"/files/TabularData/*.swift
@@ -43,17 +55,29 @@ xcrun swiftc -swift-version 5 -wmo -O \
 # The TabularData module first: it declares no import of itself, so the module name is the only
 # thing that changes and -module-name does it. Apple's TabularData and the port's are then two
 # modules declaring the same type names, and the second differential holds both in one process.
-xcrun swiftc -swift-version 5 -wmo -O \
+xcrun swiftc -swift-version 5 -wmo -parse-as-library -O \
     -module-name PortTabularData \
     -emit-module -emit-module-path "$out/modules/PortTabularData.swiftmodule" \
     -c -o "$out/tab.o" "$out"/files/TabularData/*.swift
 
-xcrun swiftc -swift-version 5 -wmo -O \
+# The CoreML overlay under a name of its own, so the host's `CoreML` and the port's are two modules
+# declaring the same type names and the comparison holds both in one process.
+# The header is what gives the module the framework's declarations, exactly as the package's own
+# build does: the module is named `CoreML` and so is the SDK's clang module, and two modules cannot
+# share a name. `-import-objc-header` puts the header's declarations in the module directly.
+xcrun swiftc -swift-version 5 -wmo -parse-as-library -O \
+    -module-name PortCoreML \
+    -import-objc-header "$out"/files/CoreML/CharonCoreML.h \
+    -emit-module -emit-module-path "$out/modules/PortCoreML.swiftmodule" \
+    -c -o "$out/coreml.o" "$out"/files/CoreML/ShapedArray.swift
+
+xcrun swiftc -swift-version 5 -wmo -parse-as-library -O \
     -module-name PortCreateMLComponents \
+    -I "$out/modules" \
     -emit-module -emit-module-path "$out/modules/PortCreateMLComponents.swiftmodule" \
     -c -o "$out/cmc.o" "$out"/files/CreateMLComponents/*.swift
 
-xcrun swiftc -swift-version 5 -wmo -O \
+xcrun swiftc -swift-version 5 -wmo -parse-as-library -O \
     -module-name PortCreateML \
     -I "$out/modules" \
     -emit-module -emit-module-path "$out/modules/PortCreateML.swiftmodule" \
@@ -62,7 +86,7 @@ xcrun swiftc -swift-version 5 -wmo -O \
 # The two port modules are linked as the objects just built, with the modules beside them, so the
 # differential sees one binary holding Apple's CreateML and the port's under different names.
 xcrun swiftc -swift-version 5 -O -I "$out/modules" \
-    "$here/differential.swift" "$out/cmc.o" "$out/cml.o" "$out/tab.o" \
+    "$here/differential.swift" "$out/cmc.o" "$out/cml.o" "$out/tab.o" "$out/coreml.o" \
     -framework Accelerate -framework Foundation -framework CoreFoundation -framework CreateML \
     -o "$out/differential"
 
@@ -71,5 +95,14 @@ xcrun swiftc -swift-version 5 -O -I "$out/modules" \
     -framework Foundation \
     -o "$out/tabularframe"
 
+# The linear models, in their own file named main.swift because the host's `fitted` is async and a
+# top-level `await` is only allowed there.
+xcrun swiftc -swift-version 5 -O -I "$out/modules" \
+    "$here/linearmodels/main.swift" "$out/cmc.o" "$out/coreml.o" \
+    -framework Accelerate -framework Foundation -framework CoreFoundation \
+    -framework CreateMLComponents -framework TabularData \
+    -o "$out/linearmodels"
+
 "$out/differential"
 "$out/tabularframe"
+"$out/linearmodels"

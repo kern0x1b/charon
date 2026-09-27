@@ -59,11 +59,17 @@ public struct MLShapedArray<Scalar: MLShapedArrayScalar>: @unchecked Sendable {
     /// The strides a shape of this shape has, in elements: the last dimension is 1 and each one
     /// before it is the product of the ones after it.
     public static func strides(for shape: [Int]) -> [Int] {
+        // Walking the dimensions backwards, and **past** zero: `stride(from: n-1, to: 0, by: -1)`
+        // stops before it reaches 0 and so never sets the outermost dimension's stride, which left
+        // every two-dimensional array with strides `[1, 1]` and a row read that was the wrong
+        // element. The host differential is what named it, on a 2x3 array.
         var strides = [Int](repeating: 1, count: shape.count)
         var running = 1
-        for dimension in stride(from: shape.count - 1, to: 0, by: -1) {
+        var dimension = shape.count - 1
+        while dimension >= 0 {
             strides[dimension] = running
             running *= max(0, shape[dimension])
+            dimension -= 1
         }
         return strides
     }
@@ -122,7 +128,7 @@ public struct MLShapedArray<Scalar: MLShapedArrayScalar>: @unchecked Sendable {
     }
 
     /// The scalar at one index per dimension.
-    public subscript(indices: Int...) -> Scalar {
+    public subscript(indices indices: Int...) -> Scalar {
         get { scalars[flat(indices)] }
         set { scalars[flat(indices)] = newValue }
     }
@@ -153,12 +159,12 @@ public struct MLShapedArray<Scalar: MLShapedArrayScalar>: @unchecked Sendable {
 
     /// A slice of the scalars in a range, as an array of one dimension — the `rows[start...]` of a
     /// feature matrix.
-    public subscript(sliceRange: Range<Int>) -> MLShapedArraySlice<Scalar> {
+    public subscript(slice sliceRange: Range<Int>) -> MLShapedArraySlice<Scalar> {
         MLShapedArraySlice(array: Array(scalars[sliceRange]), shape: [sliceRange.count], strides: [1])
     }
 
     /// A slice along one dimension, keeping the rest: `array[1, 0..<columns]` is the second row.
-    public subscript(dimension: Int, sliceRange: Range<Int>) -> MLShapedArraySlice<Scalar> {
+    public subscript(dimension: Int, slice sliceRange: Range<Int>) -> MLShapedArraySlice<Scalar> {
         guard dimension < shape.count else {
             preconditionFailure("this array is " + String(shape.count) + "-dimensional")
         }

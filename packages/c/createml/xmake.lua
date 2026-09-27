@@ -81,15 +81,22 @@ package("createml")
         for index, module in ipairs(modules) do
             local folder = path.join(install, module .. ".swiftmodule")
             os.mkdir(folder)
+            -- The `CoreML` module is named after the framework and so is the SDK's CoreML as a clang
+            -- module; two modules cannot share a name, and the Swift one wins. The header beside it
+            -- includes the framework's and is imported into the module, which is how the overlay sees
+            -- `MLMultiArrayDataType` at all — the same route charon's swift-runtime takes for
+            -- `Foundation`, `UIKit` and `CoreData`.
+            local header = module == "CoreML"
+                          and {"-import-objc-header", path.join(package:scriptdir(), "files", "CoreML", "CharonCoreML.h")}
+                          or nil
             local argv = table.join(swift.runtime_flags({
                 architecture = package:arch(), deployment = minimum, sdk = sdk,
                 resources = path.join(runtime:installdir(), "lib", "swift"),
                 plugins = table.wrap((runtime:envs() or {}).SWIFT_PLUGIN_PATH)[1],
                 module = module, optimize = "fastest", prefix_map = os.curdir() .. "=/createml"}),
-                {"-I", install, "-emit-module", "-emit-module-path",
+                header or {}, {"-I", install, "-emit-module", "-emit-module-path",
                  path.join(folder, package:arch() .. "-apple-ios.swiftmodule"), "-c"},
-                table.unpack(index > 1 and {os.files(sources[index])} or os.files(sources[1], sources[2])),
-                {"-o", path.join(objects, module .. ".o")})
+                os.files(sources[index]), {"-o", path.join(objects, module .. ".o")})
             os.vrunv(swiftc, argv)
             -- A static archive rather than a dylib: the code is Swift with no ABI stability, it is
             -- linked into the program that uses it, and a dylib would be one more load command for
