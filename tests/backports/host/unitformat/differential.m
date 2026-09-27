@@ -444,39 +444,51 @@ int main(void)
                 }
             }
 
-            // A value on each side of every switch the system has, to the last bit, so a
-            // threshold that is one double out shows up here and not on a device.
+            // Every switch the system has, held to the last bit: each stored threshold itself, the
+            // double below it and the double above it, and the same three on the other side of zero.
+            // The stored threshold is the pivot where it is one double past the reciprocal of its own
+            // figure, which is how the metric tables hold a value that is exactly one (a metre is
+            // written "1,000 mm"), so a threshold that moved one double up would otherwise be blind
+            // here: comparing only v and the double below it fed neither the stored threshold nor the
+            // one above it.
             {
-                const double pivots[] = {0.3048, 0.9144, 0.01, 1.0, 1000.0, 4184.0, 0.453592, 1.0 / 1.0936,
-                                         1.0 / 3.28084, 1.0 / 0.00062137, 0.0283495, 1.0 / 2.2046226218, 4.184, 6.35029};
+                // The port's own thresholds, read out of the helper so the two cannot drift apart.
+                const double pivots[] = {0.30479999024640036, 0.91441111923921015, 1609.3470878864448,
+                                         0.010000000000000002, 1.0000000000000002, 1000.0000000000001,
+                                         0.4535923700100355, 1.0000000000000002, 1000.0000000000001,
+                                         4184.0000000000009, 6.35029, 0.0283495, 0.01, 1.0, 1000.0, 4184.0};
                 for (NSUInteger index = 0; index < sizeof(pivots) / sizeof(*pivots); index++) {
                     for (int side = -1; side <= 1; side += 2) {
                         double v = pivots[index] * side;
                         double below = nextafter(v, side < 0 ? -INFINITY : INFINITY);
+                        double above = nextafter(v, side < 0 ? -INFINITY : INFINITY);
                         CharonHostLengthFormatter *ourLength = [[CharonHostLengthFormatter alloc] init];
                         NSLengthFormatter *theirLength = [[NSLengthFormatter alloc] init];
                         expect(charon_written_agrees([ourLength stringFromMeters:v], [theirLength stringFromMeters:v])
-                                   && charon_written_agrees([ourLength stringFromMeters:below], [theirLength stringFromMeters:below]),
+                                   && charon_written_agrees([ourLength stringFromMeters:below], [theirLength stringFromMeters:below])
+                                   && charon_written_agrees([ourLength stringFromMeters:above], [theirLength stringFromMeters:above]),
                                @"length at a switch",
-                               [NSString stringWithFormat:@"%g ours \"%@\"/\"%@\" host \"%@\"/\"%@\"", v,
-                                [ourLength stringFromMeters:v], [ourLength stringFromMeters:below],
-                                [theirLength stringFromMeters:v], [theirLength stringFromMeters:below]]);
+                               [NSString stringWithFormat:@"%g ours \"%@\"/\"%@\"/\"%@\" host \"%@\"/\"%@\"/\"%@\"", v,
+                                [ourLength stringFromMeters:v], [ourLength stringFromMeters:below], [ourLength stringFromMeters:above],
+                                [theirLength stringFromMeters:v], [theirLength stringFromMeters:below], [theirLength stringFromMeters:above]]);
                         CharonHostMassFormatter *ourMass = [[CharonHostMassFormatter alloc] init];
                         NSMassFormatter *theirMass = [[NSMassFormatter alloc] init];
                         expect(charon_written_agrees([ourMass stringFromKilograms:v], [theirMass stringFromKilograms:v])
-                                   && charon_written_agrees([ourMass stringFromKilograms:below], [theirMass stringFromKilograms:below]),
+                                   && charon_written_agrees([ourMass stringFromKilograms:below], [theirMass stringFromKilograms:below])
+                                   && charon_written_agrees([ourMass stringFromKilograms:above], [theirMass stringFromKilograms:above]),
                                @"mass at a switch",
-                               [NSString stringWithFormat:@"%g ours \"%@\"/\"%@\" host \"%@\"/\"%@\"", v,
-                                [ourMass stringFromKilograms:v], [ourMass stringFromKilograms:below],
-                                [theirMass stringFromKilograms:v], [theirMass stringFromKilograms:below]]);
+                               [NSString stringWithFormat:@"%g ours \"%@\"/\"%@\"/\"%@\" host \"%@\"/\"%@\"/\"%@\"", v,
+                                [ourMass stringFromKilograms:v], [ourMass stringFromKilograms:below], [ourMass stringFromKilograms:above],
+                                [theirMass stringFromKilograms:v], [theirMass stringFromKilograms:below], [theirMass stringFromKilograms:above]]);
                         CharonHostEnergyFormatter *ourEnergy = [[CharonHostEnergyFormatter alloc] init];
                         NSEnergyFormatter *theirEnergy = [[NSEnergyFormatter alloc] init];
                         expect(charon_written_agrees([ourEnergy stringFromJoules:v], [theirEnergy stringFromJoules:v])
-                                   && charon_written_agrees([ourEnergy stringFromJoules:below], [theirEnergy stringFromJoules:below]),
+                                   && charon_written_agrees([ourEnergy stringFromJoules:below], [theirEnergy stringFromJoules:below])
+                                   && charon_written_agrees([ourEnergy stringFromJoules:above], [theirEnergy stringFromJoules:above]),
                                @"energy at a switch",
-                               [NSString stringWithFormat:@"%g ours \"%@\"/\"%@\" host \"%@\"/\"%@\"", v,
-                                [ourEnergy stringFromJoules:v], [ourEnergy stringFromJoules:below],
-                                [theirEnergy stringFromJoules:v], [theirEnergy stringFromJoules:below]]);
+                               [NSString stringWithFormat:@"%g ours \"%@\"/\"%@\"/\"%@\" host \"%@\"/\"%@\"/\"%@\"", v,
+                                [ourEnergy stringFromJoules:v], [ourEnergy stringFromJoules:below], [ourEnergy stringFromJoules:above],
+                                [theirEnergy stringFromJoules:v], [theirEnergy stringFromJoules:below], [theirEnergy stringFromJoules:above]]);
                     }
                 }
             }

@@ -143,14 +143,26 @@ static const NSUInteger CharonJSONTopLevelDictionaryAssumed = 1UL << 4; // NSJSO
         if (self.buffer[at + 1] == '/') {
             while (at < self.length && self.buffer[at] != '\n')
                 at++;
+            if (at >= self.length) {
+                // A line comment that runs to the end of the text leaves nothing for the container to
+                // close: the host refuses the text where the comment is inside one, and reads a body
+                // that is nothing but a comment as the empty object (measured for "{//c}" and for "/*c",
+                // "//c" and "//" on their own).
+                if (!self.inBody)
+                    [self fail:@"Unexpected end of file" at:self.length];
+                return 0;
+            }
             continue;
         }
         if (self.buffer[at + 1] == '*') {
             NSUInteger scan = at + 2;
             while (scan + 1 < self.length && !(self.buffer[scan] == '*' && self.buffer[scan + 1] == '/'))
                 scan++;
-            if (scan + 1 >= self.length)
-                return self.buffer[at];
+            if (scan + 1 >= self.length) {
+                if (!self.inBody)
+                    [self fail:@"Unterminated block comment" at:self.length];
+                return 0;
+            }
             at = scan + 2;
             continue;
         }
@@ -363,11 +375,14 @@ static const NSUInteger CharonJSONTopLevelDictionaryAssumed = 1UL << 4; // NSJSO
         [self advance];
         id value = [self parseValue];
         if (self.error) { self.depth = counted; return nil; }
-        // A key the object already carries keeps the value it has: the host reads a repeated key once and keeps
-        // the first (measured for {"a":1,"a":2}, {"a":1,"a":2,"a":3}, {"b":0,"a":1,"b":2} and a nested
-        // {"a":{"b":1,"b":2}}, and for a first value that is null, false, 0 or "", so this is a test for the key
-        // and not for the value).
-        if ([dict objectForKey:key] == nil)
+        // A repeated key is read twice and which of the two values the object holds follows the container
+        // and not the option: an immutable object keeps the first (measured for {"a":1,"a":2},
+        // {"a":1,"a":2,"a":3}, {"b":0,"a":1,"b":2}, a nested {"a":{"b":1,"b":2}}, and for a first value that is
+        // null, false, 0 or "", so the test is for the key and not for the value) and a mutable one keeps
+        // the last, which is what an ordinary dictionary assignment does. The regime is therefore the bit
+        // this object was made under - NSJSONReadingMutableLeaves keeps the first, because the dictionary
+        // is immutable, and JSON5 on its own keeps it too.
+        if ((self.options & NSJSONReadingMutableContainers) || [dict objectForKey:key] == nil)
             dict[key] = value;
         hadMember = YES;
         [self skipWhitespaceAndComments];
@@ -487,8 +502,17 @@ static const NSUInteger CharonJSONTopLevelDictionaryAssumed = 1UL << 4; // NSJSO
             case 't': [out appendString:@"\t"]; [self advance]; break;
             case '0': if (!self.json5) { [self fail:@"Invalid escape sequence" at:escape]; return nil; }
                        [self fail:@"Unsupported escaped null" at:escape]; return nil;
-            case '\n': if (!self.json5) { [self fail:@"Invalid escape sequence" at:escape]; return nil; }
-                       [self advance]; break; // a backslash before a newline continues the line (json5 only)
+            case '\n': case '\r':
+                // A backslash before a line terminator continues the line under JSON5, and the
+                // terminator stays in the string: the host reads "a\<newline>b" as the three
+                // characters a, newline, b, and not as "ab" (measured), and a CR and a CRLF pair both
+                // come out as the one newline.
+                if (!self.json5) { [self fail:@"Invalid escape sequence" at:escape]; return nil; }
+                [self advance];
+                if (self.buffer[self.position - 1] == '\r' && self.position < self.length && self.buffer[self.position] == '\n')
+                    [self advance];
+                [out appendString:@"\n"];
+                break;
             case 'x': {
                 if (!self.json5) { [self fail:@"Invalid escape sequence" at:escape]; return nil; }
                 [self advance];
@@ -506,6 +530,10 @@ static const NSUInteger CharonJSONTopLevelDictionaryAssumed = 1UL << 4; // NSJSO
                 [self advance];
                 unichar u1 = [self readHex4];
                 if (self.error) return nil;
+                // A null spelled as a unicode escape is refused under JSON5, as a null spelled "\0" and
+                // "\x00" are, and with the wording of its own: "Unsupported escaped (unicode) null",
+                // against "Unsupported escaped null" and "Unsupported escaped (hex) null" (measured).
+                if (u1 == 0 && self.json5) { [self fail:@"Unsupported escaped (unicode) null" at:escape]; return nil; }
                 if (u1 >= 0xD800 && u1 <= 0xDBFF) {
                     if (self.position + 1 >= self.length || self.buffer[self.position] != '\\' || self.buffer[self.position + 1] != 'u') {
                         [self fail:@"Unexpected end of file during string parse (expected low-surrogate code point but did not find one)." at:escape];

@@ -29,6 +29,11 @@ local PROGRAMS = {
     -- the release), which the backports carry below iOS 5.0 and the release itself from there, so nothing is waived.
     progress = {extra = {"progress-cases.m"}},
     json1 = {},
+    -- unitfmt.m calls the three measurement formatters of iOS 8.0, which the package carries from 6.0, over their own units and
+    -- their own flags in all three unit styles. It asserts no wording: the number is written through the release's own
+    -- NSNumberFormatter and the system of units is read from the release's own locale, so what it holds is that every method
+    -- answers on the device (tests/backports/host/unitformat holds the wording, on the host).
+    unitfmt = {},
 }
 for name, program in pairs(PROGRAMS) do
     target(name)

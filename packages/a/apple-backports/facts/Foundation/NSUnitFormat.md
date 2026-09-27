@@ -9,6 +9,17 @@ port by `tests/backports/host/unitformat`, which runs the two in one process ove
 compares two answers for one input; the armv7 caches under `$HOME/.charon/dyld/<release>/` for
 whether the release could have answered anything itself.
 
+**device-unverified.** The wording of every answer, every threshold and every name is measured on
+the host. What is **not** verified on a device is the part a host differential cannot see: the number
+is written through the **release's** own `NSNumberFormatter` and the system of units is read from the
+**release's** own locale, so the digits, the grouping, the decimal mark and which of the three
+systems a value is written in are the device's. `tests/backports/device/unitfmt.m` calls every
+implemented method of the three classes on the release it runs on, in all three unit styles, over
+each class's own units and flags, and holds that every one of them answers and that the documented
+parse returns NO with both out-parameters untouched. **Its run is pending**: it is wired into
+`tests/backports/device/below6/xmake.lua` and has not been on a device, so no claim is made here
+about what the device answers, only about what the port asks it.
+
 ## Why the names are carried and the rest is asked of the release
 
 The three classes arrived in iOS 8.0 and no release the port carries has them. The question is

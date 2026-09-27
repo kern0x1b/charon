@@ -74,10 +74,20 @@ static void sameReadIn(NSString *what, NSData *data, NSJSONReadingOptions opt, B
         theirs = withoutIndex(theirs);
     }
     NSString *ourReason = reason(ours), *theirReason = reason(theirs);
+    // The two sides are compared on the reason where they refused and on the value where they read,
+    // and neither comparison may be skipped for the other: returning as soon as either side had an
+    // answer made every comparison below unreachable in the one case where a value exists - a read-side
+    // change that is not also a round-trip write case, a repeated key keeping the other value, an
+    // integer coming back as a decimal, a container coming back mutable unasked, was green.
     expect((ourReason == nil) == (theirReason == nil), what,
            [NSString stringWithFormat:@"ours %@, host %@", ourReason ?: @"ok", theirReason ?: @"ok"]);
-    if (ourReason == nil || theirReason == nil)
+    if (ourReason == nil && theirReason == nil)
+        goto read;
+    if ((ourReason == nil) != (theirReason == nil)) {
+        expect(NO, what, [NSString stringWithFormat:@"one side read it and the other did not: ours %@, host %@",
+                          ourReason ?: @"ok", theirReason ?: @"ok"]);
         return;
+    }
     if ([ourReason isEqualToString:theirReason]) {
         if (comparePosition)
             expect([position(ours) isEqualToString:position(theirs)], what,
@@ -86,6 +96,9 @@ static void sameReadIn(NSString *what, NSData *data, NSJSONReadingOptions opt, B
         expect(NO, what, [NSString stringWithFormat:@"ours %@, host %@", ourReason, theirReason]);
         return;
     }
+    expect((mine == nil) == (ourReason != nil), what, @"a result that is not the failure the reason says");
+    return;
+read:
     expect((mine == nil) == (ourReason != nil), what, @"a result that is not the failure the reason says");
     if (mine == nil || host == nil)
         return;

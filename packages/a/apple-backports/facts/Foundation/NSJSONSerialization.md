@@ -103,7 +103,10 @@ Three rules about the magnitude are the host's own and not the RFC's:
 
 ## `NSJSONReadingJSON5Allowed`
 
-Adds: single-quoted strings and the `\'` escape, `\xHH`, `\` before a newline, bare
+Adds: single-quoted strings and the `\'` escape, `\xHH`, a `\` before a line terminator (which
+stays in the string: `a\<newline>b` is the three characters `a`, newline, `b`, and a CR or a CRLF
+pair both come out as the one newline), the refusal of a null spelled `\u0000` as
+`Unsupported escaped (unicode) null`, bare
 identifier keys (a letter, `_` or `$`, then letters, digits, `_` or `$` — not the fuller
 ECMAScript `IdentifierName`, which nothing measured reaches), `//` and `/* */` comments,
 a leading `+`, a leading `.`, a trailing `.`, `0x` integers, and `NaN`, `Infinity` and
@@ -129,19 +132,23 @@ read them:
 
 ## A key an object already carries
 
-A repeated key is read **once**: the first value is the one the object holds, and the rest of the
-occurrences are read and thrown away. Measured for `{"a":1,"a":2}` (a `1`), `{"a":1,"a":2,"a":3}`
-(a `1`), `{"b":0,"a":1,"b":2}` (`b` is a `0` and `a` is a `1`), a nested `{"a":{"b":1,"b":2}}`
-(`b` is a `1`) and `{"":1,"":2}` (the key is the empty string and its value is a `1`).
+A repeated key is read twice, and **which of the two values the object holds follows the container
+and not the option**: an immutable object keeps the **first** and a mutable one keeps the **last**,
+which is what an ordinary dictionary assignment does.
 
-The test is for the key and not for the value, because the host keeps a first value that is
-falsy: `{"a":null,"a":1}` holds the null, `{"a":false,"a":1}` holds a `0`, `{"a":0,"a":1}` holds
-a `0` and `{"a":"","a":"x"}` holds the empty string. The same holds under
-`NSJSONReadingFragmentsAllowed`, `NSJSONReadingMutableContainers`, `NSJSONReadingMutableLeaves`
-and `NSJSONReadingJSON5Allowed`, where a bare key repeats the same way (`{a:1,a:2}` holds a
-`1`). Nothing is refused and no position is reported: the same text simply reads as a different
-object than it would where the class is the release's own, which is why the rule is here rather
-than left out.
+Measured for `{"a":1,"a":2}`, `{"a":1,"a":2,"a":3}` and `{"b":0,"a":1,"b":2}`: the first value under
+options 0, `NSJSONReadingFragmentsAllowed`, `NSJSONReadingMutableLeaves`,
+`NSJSONReadingMutableContainers|NSJSONReadingMutableLeaves` and `NSJSONReadingJSON5Allowed`, and the
+last under `NSJSONReadingMutableContainers` and JSON5 with it. The regime is the **dictionary's**
+mutability, so `NSJSONReadingMutableLeaves` keeps the first — the leaves are mutable and the
+containers are not — while a nested `{"a":{"b":1,"b":2}}` under `NSJSONReadingMutableContainers` keeps
+the last, because that inner dictionary is mutable.
+
+The test for an immutable object is for the key and not for the value, because the host keeps a
+first value that is falsy: `{"a":null,"a":1}` holds the null, `{"a":false,"a":1}` holds a `0`,
+`{"a":0,"a":1}` holds a `0` and `{"a":"","a":"x"}` holds the empty string. Nothing is refused and no
+position is reported: the same text simply reads as a different object than it would where the class
+is the release's own, which is why the rule is here rather than left out.
 
 ## `NSJSONReadingTopLevelDictionaryAssumed`
 
@@ -218,6 +225,13 @@ Two measured answers of the host, named so they are not mistaken for agreement:
   reports an internal offset of its scanner (513 where this file reports 512, 2565 where
   it reports 2560); the wording and whether the refusal happens at all are reproduced and
   compared.
+- **A comment that runs to the end of the text.** Under JSON5 `{//c}` is `Unexpected end of file` at
+  the end of the text, and a top-level dictionary assumed whose whole body is an unterminated block
+  comment is the **empty object and** `Unterminated block comment` at the end — a value and an
+  error together. The first is reproduced. The second is not: the reader's error slot means failure
+  everywhere else in it, so it cannot carry a value and an error at once, and this file answers the
+  empty object with no error. Both answers are asserted in `tests/backports/host/json1` for
+  `{//c}`, `{/*c`, `/*c` and `/*`.
 - Two answers of the host's top-level-dictionary key scanner, where a body key is followed by
   `=` and not by `:`: the host reads it as `Unterminated string` at the key's first character
   and this file reads the `=` as a missing colon instead (`No value for key in object`). Both
