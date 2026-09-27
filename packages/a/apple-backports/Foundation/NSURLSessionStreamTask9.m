@@ -33,6 +33,12 @@ static char CharonStreamTaskStateKey;
 
 @implementation NSURLSessionStreamTask
 
+/* The port's own build refuses an implicitly synthesised property (-Wobjc-missing-property-synthesis),
+   so each one is synthesised here by name rather than left to the compiler. */
+@synthesize session = _session;
+@synthesize hostName = _hostName;
+@synthesize hostPort = _hostPort;
+
 - (instancetype)init
 {
     if ((self = [super init])) {
