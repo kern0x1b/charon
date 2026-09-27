@@ -93,26 +93,6 @@
       "source": "the SDK 16.4 headers of AuthenticationServices"
     },
     {
-      "api": "ASCredentialIdentityStoreErrorDomain",
-      "kind": "constant",
-      "introduced": "12.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "it names the errors of the credential provider, which is absent",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "the SDK 16.4 headers of AuthenticationServices"
-    },
-    {
-      "api": "ASExtensionErrorDomain",
-      "kind": "constant",
-      "introduced": "12.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "it names the errors of the credential provider, which is absent",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "the SDK 16.4 headers of AuthenticationServices"
-    },
-    {
       "api": "ASWebAuthenticationSession.presentationContextProvider",
       "kind": "property",
       "introduced": "13.0",
