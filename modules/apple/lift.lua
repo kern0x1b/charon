@@ -37,14 +37,31 @@ local function objects(text)
     return json.decode("[" .. text:gsub("\n}\n{", "\n},\n{") .. "]")
 end
 
+-- What a framework with no umbrella header keeps in folders below Headers: OpenGLES's ES1, ES2 and ES3, each the whole of one generation of
+-- the API (ES3/gl.h declares what ES2/gl.h does, and 25 more that the backports carry). The newest is read, which declares what the older ones
+-- do; the three together only redeclare, and each name would be found three times.
+local function generation_headers(sdk, framework)
+    local folder = path.join(sdk, "System", "Library", "Frameworks", framework .. ".framework", "Headers")
+    local files = {}
+    if not os.isfile(path.join(folder, framework .. ".h")) then
+        local generations = os.dirs(path.join(folder, "*"))
+        table.sort(generations)
+        if #generations > 0 then
+            files = os.files(path.join(generations[#generations], "*.h"))
+            table.sort(files)
+        end
+    end
+    return files
+end
+
 -- A framework's headers: its umbrella header where it has one, every header it has where it does not (CoreTelephony,
--- OpenGLES).
+-- OpenGLES, whose newest generation is read as well).
 local function framework_headers(sdk, framework)
     local folder = path.join(sdk, "System", "Library", "Frameworks", framework .. ".framework", "Headers")
     local umbrella = path.join(folder, framework .. ".h")
     local files = os.isfile(umbrella) and {umbrella} or os.files(path.join(folder, "*.h"))
     table.sort(files)
-    return files
+    return table.join(files, generation_headers(sdk, framework))
 end
 
 -- The public headers of the SDK's usr/include that bring in what charon@apple-compat carries: every file that names a
@@ -224,8 +241,9 @@ local function dumper(opt, frameworks, headers)
     local umbrella = path.join(opt.outputdir, "umbrella.m")
     local lines = {}
     for _, framework in ipairs(frameworks) do
+        local folder = path.join(opt.sdk, "System", "Library", "Frameworks", framework .. ".framework", "Headers")
         for _, header in ipairs(framework_headers(opt.sdk, framework)) do
-            table.insert(lines, string.format("#import <%s/%s>", framework, path.filename(header)))
+            table.insert(lines, string.format("#import <%s/%s>", framework, path.relative(header, folder)))
         end
     end
     for _, header in ipairs(headers) do
@@ -809,7 +827,7 @@ end
 local function header_files(sdk, frameworks)
     local files = {}
     for _, framework in ipairs(frameworks) do
-        table.join2(files, os.files(path.join(sdk, "System", "Library", "Frameworks", framework .. ".framework", "Headers", "*.h")))
+        table.join2(files, os.files(path.join(sdk, "System", "Library", "Frameworks", framework .. ".framework", "Headers", "*.h")), generation_headers(sdk, framework))
     end
     table.join2(files, os.files(path.join(sdk, "usr", "include", "**.h")))
     return files

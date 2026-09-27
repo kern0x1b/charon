@@ -61,6 +61,32 @@ function failures(opt)
     expect("a method spelled Class.selector: is refused by name", failure and failure:find("FixView.draw: is a method not spelled", 1, true) ~= nil, true)
     result, failure = lifted({"@interface FixView : NSObject", "- (void)draw:(int)value API_AVAILABLE(ios(9.0));", "@end"}, {["-[FixView draw:]"] = "implemented"})
     expect("the same method spelled -[Class selector:] is lifted", failure, nil)
+    -- a framework with no umbrella header that keeps generations of its API in folders (OpenGLES's ES1, ES2, ES3): the newest is read, and a
+    -- name only it declares is lowered there; the older one is not read, so a name in it is left alone, and its copy is not written
+    os.tryrm(root)
+    local other = path.join(root, "sdk", "System", "Library", "Frameworks", "Other.framework", "Headers")
+    io.writefile(path.join(other, "Avail.h"), "#define ios(version) ios, introduced=version\n#define API_AVAILABLE(...) __attribute__((availability(__VA_ARGS__)))\n")
+    io.writefile(path.join(other, "Top.h"), "@protocol NSObject @end\n@protocol NSCopying @end\n__attribute__((objc_root_class)) @interface NSObject <NSObject> @end\nvoid FixTop(void);\n")
+    io.writefile(path.join(other, "G2", "gl.h"), '#include <Other/Avail.h>\nvoid FixGenTwo(void) API_AVAILABLE(ios(9.0));\n')
+    io.writefile(path.join(other, "G3", "gl.h"), '#include <Other/Avail.h>\nvoid FixGenThree(void) API_AVAILABLE(ios(9.0));\n')
+    io.writefile(path.join(root, "registry", "Other.json"), '[{"api": "FixGenThree", "kind": "function", "introduced": "9.0", "minimum": "6.0", "status": "implemented"},' ..
+                 '{"api": "FixGenTwo", "kind": "function", "introduced": "9.0", "minimum": "6.0", "status": "implemented"}]')
+    local generations, failure
+    try {function ()
+        generations = lift.lift({clang = opt.clang, swiftc = path.join(opt.swift, "bin", "swiftc"), sdk = path.join(root, "sdk"), triple = "armv7-apple-ios6.1.3",
+                                 minimum = "6.1.3", registry = root, outputdir = path.join(root, "out"), expected = false})
+    end, catch {function (why) failure = tostring(why) end}}
+    expect("a lift of a framework with generations of its API: " .. tostring(failure), failure, nil)
+    local copy = path.join(root, "out", "headers", "System", "Library", "Frameworks", "Other.framework", "Headers", "G3", "gl.h")
+    expect("the newest generation's header is lowered", os.isfile(copy) and io.readfile(copy):find("ios(6.1.3)", 1, true) ~= nil, true)
+    expect("the older generation's is not read", os.isfile(path.join(root, "out", "headers", "System", "Library", "Frameworks", "Other.framework", "Headers", "G2", "gl.h")), false)
+    local left = {}
+    for _, name in ipairs(generations and generations.unmatched or {}) do
+        if name:find("^Fix") then
+            table.insert(left, name)
+        end
+    end
+    expect("what only the older declares is left alone", table.concat(left, ","), "FixGenTwo")
     os.tryrm(root)
     return found
 end
