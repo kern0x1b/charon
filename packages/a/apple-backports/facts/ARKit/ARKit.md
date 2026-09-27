@@ -133,3 +133,49 @@ cube map of the light around a point, built from the frames. The geo family, `AR
 
 `ARSCNView` and `ARSKView` are not absent: they are carried over this tree's SceneKit and SpriteKit
 backports, and belong to that library's registry.
+
+## What the gate's compiler still asks for, named
+
+The full gate builds with `-Werror`, and two of its warnings are not warnings: a class the SDK
+declares must **implement every accessor its header declares**, and a protocol it adopts must have
+every method. `swiftc -c` without those flags is not the same check, and the six files compile
+clean under it and do not under the gate's.
+
+This is the list the gate's own compiler names, and it is the whole of what stands between the
+library and a green build. Every entry is one of three things, and which is decided by the hardware:
+
+**Answerable from this device — implement.** `ARConfiguration`'s `supportedVideoFormats`,
+`videoFormat`, `lightEstimationEnabled`, `providesAudioData`, `worldAlignment`, `videoHDRAllowed`,
+`frameSemantics`, `supportsFrameSemantics:`, `configurableCaptureDeviceForPrimaryCamera`,
+`recommendedVideoFormatFor4KResolution`, `recommendedVideoFormatForHighResolutionFrameCapturing`,
+`copyWithZone:`; each subclass's `init` and `new` and `autoFocusEnabled`; `ARWorldTrackingConfiguration`'s
+`planeDetection` and `environmentTexturing`; `ARSession`'s `setWorldOrigin:`, `raycast:`,
+`trackedRaycast:updateHandler:`, `ARFrame`'s `projectionMatrixForOrientation:viewportSize:zNear:zFar:`,
+`projectPoint:orientation:viewportSize:`, `hitTest:types:`, `raycastQueryFromPoint:allowingTarget:alignment:`,
+`displayTransformForOrientation:viewportSize:`, `viewMatrixForOrientation:`, `copyWithZone:`;
+`ARAnchor`'s `supportsSecureCoding`, `initWithCoder:`, `encodeWithCoder:`; `ARPlaneGeometry`'s
+`alignment`, `center`, `extent`; `ARPlaneAnchor`'s plane-value initialiser; `ARRaycastQuery`'s
+`initWithOrigin:direction:allowingTarget:alignment:`.
+
+**Answers the hardware, and is `@dynamic`.** Every setting that needs a sensor this device has not:
+`ARWorldTrackingConfiguration`'s `initialWorldMap`, `detectionImages`, `detectionObjects`,
+`wantsHDREnvironmentTextures`, `automaticImageScaleEstimationEnabled`, `maximumNumberOfTrackedImages`,
+`collaborationEnabled`, `userFaceTrackingEnabled`, `appClipCodeTrackingEnabled`, `sceneReconstruction`,
+`supportsUserFaceTracking`, `supportsAppClipCodeTracking`, `supportsSceneReconstruction:`;
+`ARBodyTrackingConfiguration`'s the same set and `automaticSkeletonScaleEstimationEnabled`;
+`ARFaceTrackingConfiguration`'s `supportedNumberOfTrackedFaces`, `maximumNumberOfTrackedFaces`,
+`supportsWorldTracking`, `worldTrackingEnabled`; `ARPlaneAnchor`'s `classification`,
+`classificationStatus`, `isClassificationSupported`, `classificationSupported`.
+
+**Reports through its own argument rather than answering.** `ARSession`'s
+`getCurrentWorldMapWithCompletionHandler:` (a world map is scene reconstruction, and there is no
+depth sensor), `captureHighResolutionFrameWithCompletion:` (a depth-capable frame the camera cannot
+give), `createReferenceObjectWithTransform:center:extent:completionHandler:` (object scanning reads a
+mesh from depth), `getGeoLocationForPoint:completionHandler:` (a geo anchor is not carried yet),
+`updateWithCollaborationData:` (shared anchors are not carried yet).
+
+`ARPlaneGeometry`'s `vertices`, `textureCoordinates` and `triangleIndices` are the one place the two
+spellings meet: the C surface declares them as pointers and the Swift surface, which the header
+refines, as arrays. A plane that has only been **detected** has no mesh, so the C answer is a null
+pointer with a count of zero and the Swift answer an empty array, and both are the truth rather than
+a fabricated mesh.

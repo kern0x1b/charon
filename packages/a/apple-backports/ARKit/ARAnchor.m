@@ -18,6 +18,26 @@
     simd_float4x4 _transform;
 }
 
+/// The header declares an anchor secure-coding, and an anchor is a name, a pose and nothing else, so
+/// the two are all there is to encode.
++ (BOOL)supportsSecureCoding { return YES; }
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    [coder encodeObject:_identifier forKey:@"identifier"];
+    [coder encodeObject:[NSValue valueWithBytes:&_transform objCType:@encode(simd_float4x4)] forKey:@"transform"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    self = [super init];
+    if (!self)
+        return nil;
+    _identifier = [coder decodeObjectOfClass:[NSUUID class] forKey:@"identifier"] ?: [NSUUID UUID];
+    [coder decodeValue:&_transform forKey:@"transform" objCType:@encode(simd_float4x4)];
+    return self;
+}
+
 @synthesize identifier = _identifier;
 
 - (instancetype)initWithIdentifier:(NSUUID *)identifier transform:(simd_float4x4)transform

@@ -11,6 +11,10 @@
 #import "CharonARTracker.h"
 #import "CharonARKitPrivate.h"
 
+// The hit-test types arrived with iOS 11.3 and the raycast with iOS 13, both after the release's own
+// ARKit; the backport carries them with the header's own guard.
+#pragma clang diagnostic ignored "-Wunguarded-availability-new"
+
 @interface ARSession () <CharonARTrackerDelegate>
 @end
 
