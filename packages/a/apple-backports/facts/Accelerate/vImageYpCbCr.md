@@ -93,27 +93,43 @@ The one tolerance that is not one: writing a Y'CbCr sample into a sixteen-bit sh
 in the eight-bit sum the header's rule adds up is a 257 difference in the stored sample. The differential
 compares a sixteen-bit shape at that tolerance and says so in the message, and every other case at one.
 
-## The ten-bit shapes, and the four that follow the header
+## The ten-bit shapes: measured, and not a layout
 
-The system's own answers come out of the header's formula for the eight-bit shapes and for `kvImage444AYpCbCr16`
-and `kvImage422CbYpCrYp16`, and **do not** for the two ten-bit ones, `kvImage444CrYpCb10` and
-`kvImage422CrYpCbYpCbYpCbYpCrYpCrYp10`, in either direction. Measured, over sweeps of one channel at a time:
+The first reading of this was that the system's ten-bit paths read the channels from the wrong bit
+positions, because the luma moved a third of the distance the header's formula gives. **A bit-by-bit
+measurement refutes that**: `probe-bits.m` sets one source bit of a v410 word at a time and records which
+destination bits move, and the answer is exactly the header's drawing. Cb, in bits 0-9, moves the green and
+nothing else - `Cb_G` is the only non-zero coefficient it has. Cr, in bits 20-29, moves the red and the green
+- `Cr_R` and `Cr_G`. Yp, in bits 10-19, moves the green and the blue - `Yp_G` and `Yp_B`, the red already
+clamped to zero at every input tried. Three fields, three coefficient rows, no cross-talk.
 
-- With the ten-bit video range `{64, 512, 940, 960, 1023, 0, 1023, 1}` and a luma sweep, the system's luma
-  rises **0.0725 a unit** where the header's formula rises `Yp * 876 / 1024` = 0.2139 - about a quarter -
-  and its chroma slopes are a quarter of the header's to the same accuracy. Its luma is not zero at a zero
-  sample: the system writes **258** where the formula gives the bias, and 97 for an eight-bit destination.
-- A channel that runs past 1023 **wraps to zero**: over a red sweep from 0 to 4096 the system's Yp goes
-  258, 321, 389 ... 977, then **17** at 3072, and its Cb falls 988, 948, 912 ... 420, monotonically, straight
-  through the ten-bit boundary. That is neither the header's `CLAMP` nor the pixel range's own limits.
+Each field's own sweep is smooth and monotonic over the whole 0 to 1023, so nothing is being mis-shifted
+either. What differs is the **scale**, and it is a scale inside the system's ten-bit code path:
 
-The port answers the header. The differential is explicit about it: for these two shapes, in both
-directions, it holds the port to the formula **written out a third time and independently in the test** -
-`reference_decode`, `reference_v410`, `reference_v210` and `reference_of` in the differential - and counts the
-system's divergence instead of asserting it. Over 760 480 samples of the two shapes the two answers differ on
-**63.4 per cent**. The same treatment the two Q12-source conversions get, and for the same reason: the
-system's arithmetic is not the one its own header documents, and a port cannot be a copy of a fixed-point
-pipeline whose coefficients are not published.
+| sweep | header, with the caller's ten-bit range | system | ratio |
+| --- | --- | --- | --- |
+| luma, `G` per unit of Yp | 0.2911 | 0.0728 | 1/4.00 |
+| `G` per unit of Cb | −0.0979 | −0.0244 | 1/4.01 |
+| `G` per unit of Cr | −0.2032 | −0.0502 | 1/4.05 |
+| `B` per unit of Cb, at the full range | 0.2208 | 0.1263 | 1/1.75 |
+
+and the system's luma slope is the **same 0.0728 for every pixel range the caller passes** - the ten-bit
+video range and the full range both give it - where the header's is `255 / (YpRangeMax − Yp_bias)` and so
+differs between them. Its *base* is the header's: the value at a zero sample is 136 with the ten-bit video
+range and 0 with the full range, and the header's own value at a zero sample is 135.575 and 0.
+
+So the system's ten-bit path starts from the header's answer at a zero sample and adds a fraction of the
+deviation, and the fraction is a quarter for the luma and the green chroma and about one for the blue
+chroma - **not one constant**, so it is not a scale this port can write down, and a port that guessed one
+would be wrong on every pixel of the two shapes. It is the system's ten-bit fixed-point pipeline, whose
+coefficients are not published, and the only honest answer is Conversion.h's formula with the difference
+measured: **63.4 per cent of 760 480 samples**, every one of them in one of the two ten-bit shapes.
+
+The differential is explicit about it. For those two shapes, in both directions, it holds the port to the
+formula **written out a third time and independently in the test** - `reference_decode`, `reference_v410`,
+`reference_v210` and `reference_of` in the differential - and counts the system's divergence rather than
+asserting it. The other twelve shapes are compared against the system itself, and agree to within the last
+bit.
 
 ## What it refuses
 
