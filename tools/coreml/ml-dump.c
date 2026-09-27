@@ -117,7 +117,7 @@ static void print_repeated(const charon_ml_node *node, const char *name, size_t 
         if (index > 0) {
             fputs(", ", stdout);
         }
-        print_value(charon_ml_at_field(node, name, index));
+        print_value(charon_ml_node_at_field(node, name, index));
     }
     fputs("]\n", stdout);
 }
@@ -203,7 +203,7 @@ static void print_feature(const charon_ml_node *model, const char *which, const 
     list = charon_ml_get(description, which);
     total = charon_ml_count(list);
     for (index = 0; index < total; index++) {
-        const charon_ml_node *feature = charon_ml_at_field(description, which, index);
+        const charon_ml_node *feature = charon_ml_node_at_field(description, which, index);
         const char *name = charon_ml_text(charon_ml_get(feature, "name"), text, sizeof text);
         if (name != NULL && strcmp(name, wanted) == 0) {
             char line[4096];

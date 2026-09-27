@@ -8,9 +8,11 @@
 #define CHARON_ML_SCHEMA_H
 
 /* What a field's value is. The numbers are the generator's, not protobuf's: this is the
- * decoder's own switch, and the wire type a kind is written with is in the table beside it. */
+ * decoder's own switch, and the wire type a kind is written with is in the table beside it.
+ * The names are prefixed FIELD rather than KIND so that this and the model kind of
+ * CharonMLModel.h -- both "kinds", both zero meaning none -- cannot collide. */
 enum {
-    CHARON_ML_KIND_NONE = 0,
+    CHARON_ML_FIELD_NONE = 0,
     CHARON_ML_KIND_DOUBLE,
     CHARON_ML_KIND_FLOAT,
     CHARON_ML_KIND_INT64,

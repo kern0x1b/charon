@@ -166,7 +166,7 @@ static int read_value(wire *w, charon_ml_node *out, const charon_ml_field *field
         out->value.text.length = length;
         return 1;
     }
-    if (field->element != CHARON_ML_KIND_NONE) {
+    if (field->element != CHARON_ML_FIELD_NONE) {
         charon_ml_field element = *field;
         wire run;
         charon_ml_node *nodes;
@@ -189,7 +189,7 @@ static int read_value(wire *w, charon_ml_node *out, const charon_ml_field *field
         }
         /* The element of a run is read at its own width, which is not the run's: the run
          * arrives length-delimited and each element inside it is a bare value. */
-        element.element = CHARON_ML_KIND_NONE;
+        element.element = CHARON_ML_FIELD_NONE;
         element.flags &= ~(unsigned)CHARON_ML_REPEATED;
         element.wire = width == 0 ? CHARON_ML_WIRE_VARINT
                                   : (width == 8 ? CHARON_ML_WIRE_64 : CHARON_ML_WIRE_32);
@@ -319,7 +319,7 @@ static int read_message(wire *w, charon_ml_node *out, const charon_ml_message *m
             w->failed = 1;
             break;
         }
-        if ((field->flags & CHARON_ML_REPEATED) == 0 || field->element == CHARON_ML_KIND_NONE) {
+        if ((field->flags & CHARON_ML_REPEATED) == 0 || field->element == CHARON_ML_FIELD_NONE) {
             count++;
             continue;
         }
@@ -425,6 +425,16 @@ const charon_ml_node *charon_ml_at(const charon_ml_node *node, size_t index)
     return &node->value.list.nodes[index];
 }
 
+int charon_ml_int_at(const charon_ml_node *node, const char *name, size_t index, int fallback)
+{
+    return charon_ml_int(charon_ml_node_at_field(node, name, index), fallback);
+}
+
+double charon_ml_double_at(const charon_ml_node *node, const char *name, size_t index, double fallback)
+{
+    return charon_ml_double(charon_ml_node_at_field(node, name, index), fallback);
+}
+
 size_t charon_ml_count_field(const charon_ml_node *node, const char *name)
 {
     size_t index, found = 0;
@@ -437,7 +447,7 @@ size_t charon_ml_count_field(const charon_ml_node *node, const char *name)
     return found;
 }
 
-const charon_ml_node *charon_ml_at_field(const charon_ml_node *node, const char *name, size_t index)
+const charon_ml_node *charon_ml_node_at_field(const charon_ml_node *node, const char *name, size_t index)
 {
     size_t at, found = 0;
     for (at = 0; at < charon_ml_count(node); at++) {
@@ -497,7 +507,7 @@ int charon_ml_int(const charon_ml_node *node, int64_t fallback)
     if (node == NULL) {
         return (int)fallback;
     }
-    switch (node->field != NULL ? node->field->kind : CHARON_ML_KIND_NONE) {
+    switch (node->field != NULL ? node->field->kind : CHARON_ML_FIELD_NONE) {
     case CHARON_ML_KIND_DOUBLE:
     case CHARON_ML_KIND_FLOAT:
         return (int)node->value.number;
@@ -507,7 +517,7 @@ int charon_ml_int(const charon_ml_node *node, int64_t fallback)
     case CHARON_ML_KIND_FIXED32:
     case CHARON_ML_KIND_BOOL:
         return (int)node->value.unsigned_integer;
-    case CHARON_ML_KIND_NONE:
+    case CHARON_ML_FIELD_NONE:
         return (int)fallback; /* a submessage is not a number: the caller asked wrongly */
     default:
         return (int)node->value.integer;
@@ -519,7 +529,7 @@ double charon_ml_double(const charon_ml_node *node, double fallback)
     if (node == NULL) {
         return fallback;
     }
-    switch (node->field != NULL ? node->field->kind : CHARON_ML_KIND_NONE) {
+    switch (node->field != NULL ? node->field->kind : CHARON_ML_FIELD_NONE) {
     case CHARON_ML_KIND_DOUBLE:
     case CHARON_ML_KIND_FLOAT:
         return node->value.number;
@@ -529,7 +539,7 @@ double charon_ml_double(const charon_ml_node *node, double fallback)
     case CHARON_ML_KIND_FIXED32:
     case CHARON_ML_KIND_BOOL:
         return (double)node->value.unsigned_integer;
-    case CHARON_ML_KIND_NONE:
+    case CHARON_ML_FIELD_NONE:
         return fallback;
     default:
         return (double)node->value.integer;

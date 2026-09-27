@@ -51,7 +51,12 @@ int charon_ml_read(charon_ml_node *out, const void *bytes, size_t length, const 
 
 void charon_ml_free(charon_ml_node *node);
 
-/* The first value of a repeated field, or NULL. `index` picks among the entries. */
+/* The children of a message, and a submessage reached by one of its fields.
+ *
+ * These two are for messages only. A repeated field of a message is not a message and has no
+ * children: its entries are siblings in the parent's list, which is what count_field and
+ * at_field below reach. Reading a repeated field as though it were a message counts the whole
+ * parent, and the mistake is silent, so the two are kept apart on purpose. */
 const charon_ml_node *charon_ml_at(const charon_ml_node *node, size_t index);
 size_t charon_ml_count(const charon_ml_node *node);
 
@@ -59,7 +64,12 @@ size_t charon_ml_count(const charon_ml_node *node);
  * packed run and a repeated field written one entry at a time are the same shape here, because
  * the reader flattens the run as it reads it. */
 size_t charon_ml_count_field(const charon_ml_node *node, const char *name);
-const charon_ml_node *charon_ml_at_field(const charon_ml_node *node, const char *name, size_t index);
+const charon_ml_node *charon_ml_node_at_field(const charon_ml_node *node, const char *name, size_t index);
+
+/* The `index`th value of a repeated field as a number, which is what a shape, a stride, a
+ * threshold or a weight vector is read through. `fallback` is what an absent field gives. */
+int charon_ml_int_at(const charon_ml_node *node, const char *name, size_t index, int fallback);
+double charon_ml_double_at(const charon_ml_node *node, const char *name, size_t index, double fallback);
 
 /* The one value of a singular field of `name` in `node`, or NULL when it is not there. A
  * singular field that appears more than once in the wire takes the last one, which is what
