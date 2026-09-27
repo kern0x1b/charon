@@ -13,6 +13,10 @@
 // checklist names are declared: a type's `==`, its `hash(into:)`, its `init(rawValue:)` and the
 // types its payloads point at are other rows of the surface.
 
+import CoreGraphics
+import Foundation
+import UIKit
+
 public enum CharonUIButton {
     public enum Configuration {
         public enum CornerStyle {
@@ -52,7 +56,7 @@ public enum CharonUIButton {
 public enum CharonUICellAccessory {
     public enum AccessoryType {
         case checkmark
-        case customView(UIView)
+        case customView(CharonUIView)
         case delete
         case detail
         case disclosureIndicator
@@ -70,7 +74,7 @@ public enum CharonUICellAccessory {
     }
     public enum LayoutDimension {
         case actual
-        case custom(CoreFoundation.CGFloat)
+        case custom(CGFloat)
         case standard
     }
     public enum OutlineDisclosureOptions {
@@ -81,8 +85,8 @@ public enum CharonUICellAccessory {
         }
     }
     public enum Placement {
-        case leading(displayed: UIKit.UICellAccessory.DisplayedState = .always, at: UIKit.UICellAccessory.Placement.Position = { $0.count })
-        case trailing(displayed: UIKit.UICellAccessory.DisplayedState = .always, at: UIKit.UICellAccessory.Placement.Position = { _ in 0 })
+        case leading(displayed: CharonUICellAccessory.DisplayedState = .always, at: CharonUICellAccessory.Placement.Position = { $0.count })
+        case trailing(displayed: CharonUICellAccessory.DisplayedState = .always, at: CharonUICellAccessory.Placement.Position = { _ in 0 })
     }
 }
 
@@ -118,6 +122,7 @@ public enum CharonUICollectionLayoutListConfiguration {
     }
 }
 
+@available(iOS 17.0, *)
 public enum CharonUIContentUnavailableConfiguration {
     public enum Alignment {
         case center
@@ -152,7 +157,7 @@ public enum CharonUIListSeparatorConfiguration {
 public enum CharonUIPointerEffect {
     case automatic(_: UITargetedPreview)
     case highlight(_: UITargetedPreview)
-    case hover(_: UITargetedPreview, preferredTintMode: UIKit.UIPointerEffect.TintMode = .overlay, prefersShadow: Swift.Bool = false, prefersScaledContent: Swift.Bool = true)
+    case hover(_: UITargetedPreview, preferredTintMode: CharonUIPointerEffect.TintMode = .overlay, prefersShadow: Bool = false, prefersScaledContent: Bool = true)
     case lift(_: UITargetedPreview)
     public enum TintMode {
         case none
@@ -162,10 +167,10 @@ public enum CharonUIPointerEffect {
 }
 
 public enum CharonUIPointerShape {
-    case horizontalBeam(length: CoreFoundation.CGFloat)
+    case horizontalBeam(length: CGFloat)
     case path(_: UIBezierPath)
-    case roundedRect(_: CoreFoundation.CGRect, radius: CoreFoundation.CGFloat = UIPointerShape.defaultCornerRadius)
-    case verticalBeam(length: CoreFoundation.CGFloat)
+    case roundedRect(_: CGRect, radius: CGFloat = CharonUIPointerShape.defaultCornerRadius)
+    case verticalBeam(length: CGFloat)
 }
 
 public enum CharonUITabBarController {
@@ -178,6 +183,7 @@ public enum CharonUITabBarController {
     }
 }
 
+@available(iOS 18.0, *)
 public enum CharonUITabSidebarItem {
     public enum Content {
         case action(UIAction)
@@ -187,36 +193,37 @@ public enum CharonUITabSidebarItem {
 
 public enum CharonUITextFormattingViewController {
     public enum ChangeValue {
-        case bold(Swift.Bool)
+        case bold(Bool)
         case decreaseFontSize
         case decreaseIndentation
         case font(UIFont)
-        case fontSize(Swift.Double)
-        case formattingStyle(Swift.String)
-        case highlight(UITextFormattingViewController.Highlight?)
+        case fontSize(Double)
+        case formattingStyle(String)
+        case highlight(CharonUITextFormattingViewController.Highlight)
         case increaseFontSize
         case increaseIndentation
-        case italic(Swift.Bool)
-        case lineHeightPointSize(Swift.Double)
-        case strikethrough(Swift.Bool)
-        case textAlignment(UITextFormattingViewController.TextAlignment)
+        case italic(Bool)
+        case lineHeightPointSize(Double)
+        case strikethrough(Bool)
+        case textAlignment(CharonUITextFormattingViewController.TextAlignment)
         case textColor(UIColor)
-        case textList(UITextFormattingViewController.TextList?)
+        case textList(CharonUITextFormattingViewController.TextList)
         case undefined
-        case underline(Swift.Bool)
+        case underline(Bool)
     }
 }
 
+@available(iOS 17.0, *)
 public enum CharonUITextItem {
     public enum Content {
-        case link(Foundation.URL)
-        case tag(Swift.String)
+        case link(URL)
+        case tag(String)
         case textAttachment(NSTextAttachment)
     }
     public enum MenuConfiguration {
         public enum Preview {
             case `default`
-            case view(UIView)
+            case view(CharonUIView)
         }
     }
 }
@@ -232,59 +239,50 @@ public enum CharonUIView {
 
 
 extension UIButton {
-    public typealias Configuration = CharonUIButton
+    public typealias Configuration = CharonUIButton.Configuration
 }
-extension CharonUIButton {
-    public typealias CornerStyle = CharonUIButtonConfiguration.Configuration
+extension CharonUIButton.Configuration {
+    public typealias CornerStyle = CharonUIButton.Configuration.CornerStyle
 }
-extension UIButton {
-    public typealias Configuration = CharonUIButton
+extension CharonUIButton.Configuration {
+    public typealias Indicator = CharonUIButton.Configuration.Indicator
 }
-extension CharonUIButton {
-    public typealias Indicator = CharonUIButtonConfiguration.Configuration
+extension CharonUIButton.Configuration {
+    public typealias MacIdiomStyle = CharonUIButton.Configuration.MacIdiomStyle
 }
-extension UIButton {
-    public typealias Configuration = CharonUIButton
+extension CharonUIButton.Configuration {
+    public typealias Size = CharonUIButton.Configuration.Size
 }
-extension CharonUIButton {
-    public typealias MacIdiomStyle = CharonUIButtonConfiguration.Configuration
-}
-extension UIButton {
-    public typealias Configuration = CharonUIButton
-}
-extension CharonUIButton {
-    public typealias Size = CharonUIButtonConfiguration.Configuration
-}
-extension UIButton {
-    public typealias Configuration = CharonUIButton
-}
-extension CharonUIButton {
-    public typealias TitleAlignment = CharonUIButtonConfiguration.Configuration
+extension CharonUIButton.Configuration {
+    public typealias TitleAlignment = CharonUIButton.Configuration.TitleAlignment
 }
 extension UITabBarController {
-    public typealias Sidebar = CharonUITabBarController
+    public typealias Sidebar = CharonUITabBarController.Sidebar
 }
-extension CharonUITabBarController {
-    public typealias ScrollTarget = CharonUITabBarControllerSidebar.Sidebar
+extension CharonUITabBarController.Sidebar {
+    public typealias ScrollTarget = CharonUITabBarController.Sidebar.ScrollTarget
 }
+@available(iOS 18.0, *)
 extension UITabSidebarItem {
-    public typealias Content = CharonUITabSidebarItem
+    public typealias Content = CharonUITabSidebarItem.Content
 }
 extension UITextFormattingViewController {
-    public typealias ChangeValue = CharonUITextFormattingViewController
+    public typealias ChangeValue = CharonUITextFormattingViewController.ChangeValue
 }
+@available(iOS 17.0, *)
 extension UITextItem {
-    public typealias Content = CharonUITextItem
+    public typealias Content = CharonUITextItem.Content
 }
+@available(iOS 17.0, *)
 extension UITextItem {
-    public typealias MenuConfiguration = CharonUITextItem
+    public typealias MenuConfiguration = CharonUITextItem.MenuConfiguration
 }
-extension CharonUITextItem {
-    public typealias Preview = CharonUITextItemMenuConfiguration.MenuConfiguration
+extension CharonUITextItem.MenuConfiguration {
+    public typealias Preview = CharonUITextItem.MenuConfiguration.Preview
 }
 extension UIView {
-    public typealias LayoutRegion = CharonUIView
+    public typealias LayoutRegion = CharonUIView.LayoutRegion
 }
-extension CharonUIView {
-    public typealias AdaptivityAxis = CharonUIViewLayoutRegion.LayoutRegion
+extension CharonUIView.LayoutRegion {
+    public typealias AdaptivityAxis = CharonUIView.LayoutRegion.AdaptivityAxis
 }

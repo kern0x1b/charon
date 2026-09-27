@@ -1,16 +1,19 @@
 #!/bin/sh
-# swiftc -typecheck for one file at armv7-apple-ios6.1.3, with the port's own flags: the 26.2 SDK
-# under the lift's vfs overlay, the swift-runtime's armv7 swiftmodules and its shim modulemap, and
-# the toolchain's own clang include so stdarg.h resolves. Every path from the environment, so the
+# swiftc -typecheck for one file at armv7-apple-ios6.1.3, with the port's own flags.
+#
+# The resource directory is an installed charon@swift-runtime's own lib/swift, which is where the
+# armv7 standard library, the swiftmodules the port's overlays are built against and the toolchain's
+# clang include (so stdarg.h resolves) all live. The SDK is the real 26.2 under the lift's vfs
+# overlay, and the swiftmodules come from the same install. Every path from the environment, so this
 # file carries none of this machine's.
-: "${CHARON_SWIFT_RUNTIME:?the installed charon@swift-runtime}"
+: "${CHARON_SWIFT_RUNTIME:?an installed charon@swift-runtime}"
 : "${CHARON_SWIFTC:?the swift compiler}"
 : "${CHARON_SDK26:?the 26.2 SDK}"
-: "${CHARON_LIFT_VFS:?the lift's vfs.yaml}"
-: "${CHARON_SWIFT_CLANG_INCLUDE:?the toolchain's clang include}"
+: "${CHARON_LIFT_VFS:?the lift vfs.yaml}"
+RES="$CHARON_SWIFT_RUNTIME/lib/swift"
 exec "$CHARON_SWIFTC" -typecheck -target armv7-apple-ios6.1.3 -sdk "$CHARON_SDK26" \
-  -resource-dir "$(dirname "$(dirname "$CHARON_SWIFTC")")" \
-  -I "$CHARON_SWIFT_RUNTIME/lib/swift/iphoneos" \
-  -Xcc "-fmodule-map-file=$CHARON_SWIFT_RUNTIME/lib/swift/shims/module.modulemap" \
+  -resource-dir "$RES" \
+  -I "$RES/iphoneos" \
+  -Xcc "-fmodule-map-file=$RES/shims/module.modulemap" \
   -Xcc -ivfsoverlay -Xcc "$CHARON_LIFT_VFS" \
-  -Xcc -I -Xcc "$CHARON_SWIFT_CLANG_INCLUDE" "$@"
+  "$@"

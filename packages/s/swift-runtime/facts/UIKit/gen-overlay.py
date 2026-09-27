@@ -26,6 +26,31 @@ import os
 # carries no path of this machine.
 INTERFACE = os.environ["UIKIT_SWIFTINTERFACE"]
 HERE = os.environ["UIKIT_CHECKLIST_DIR"]
+# The interface spells a payload with the module it came from (`CoreFoundation.CGFloat`,
+# `Swift.String`, `UIKit.UICellAccessory.DisplayedState`). Inside the overlay the module is
+# imported, so the qualification is dropped, and the types that are ours keep the namespace this
+# file gives them.
+QUALIFIERS = (("CoreFoundation.", ""), ("Foundation.", ""), ("Swift.", ""), ("UIKit.", ""))
+
+
+def spell_type(text, ours):
+    if not text:
+        return ""
+    body = text[1:-1] if text.startswith("(") and text.endswith(")") else text
+    for prefix, replacement in QUALIFIERS:
+        body = body.replace(prefix, replacement)
+    for name in sorted(ours, key=len, reverse=True):
+        body = re.sub(r"(?<![\w.])%s(?![\w])" % re.escape(name), "Charon" + name, body)
+    body = body.replace("UITextItem.Content", "CharonUITextItem.Content")
+    if body.endswith("?"):
+        body = body[:-1]
+    return "(" + body + ")" if text.startswith("(") and text.endswith(")") and not body.endswith("?") else body
+
+
+# Types the SDK marks unavailable below the port's own release: the overlay declares them with the
+# SDK's own floor, which is the Swift counterpart of the `needs=lift` the Objective-C rows carry.
+UNAVAILABLE_TYPES = {"UITextItem": "17.0", "UITabSidebarItem": "18.0", "UIContentUnavailableConfiguration": "17.0"}
+
 SWIFT_KEYWORDS = {"default", "Type", "Protocol", "Self", "super", "nil", "true", "false", "let",
                   "var", "func", "class", "enum", "struct", "case", "where", "in", "is", "as"}
 
@@ -203,6 +228,10 @@ def main():
     for row in rows:
         types.setdefault(row["api"].rsplit(".", 1)[0], []).append(row["api"].rsplit(".", 1)[1])
 
+    ours = set()
+    for swift_type in types:
+        for part in swift_type.split("."):
+            ours.add(part)
     out = ["""// The UIKit types and cases of the SDK 26.2 Swift surface that the port's UIKit overlay does
 // not carry, from the surface's own checklist (`coordination/corpus/ledger/UIKit.tsv`).
 //
@@ -217,8 +246,12 @@ def main():
 // `UIKit.framework/Modules/UIKit.swiftmodule/arm64e-apple-ios.swiftinterface`. Only the cases this
 // checklist names are declared: a type's `==`, its `hash(into:)`, its `init(rawValue:)` and the
 // types its payloads point at are other rows of the surface.
+
+import CoreGraphics
+import Foundation
+import UIKit
 """]
-    aliases, unresolved, leaf_cases = [], [], {}
+    aliases, alias_seen, unresolved, leaf_cases = [], set(), [], {}
     for swift_type in sorted(types):
         wanted = types[swift_type]
         parts = swift_type.split(".")
@@ -232,11 +265,15 @@ def main():
         if chain and root not in ABSENT_ROOTS:
             # One typealias per level, each naming the namespace type nested at that level.
             for depth, level in enumerate(chain):
-                owner = root if depth == 0 else "Charon" + "".join(
-                    q[:1].upper() + q[1:] for q in parts[:depth]) + "".join(
-                    "." + q[:1].upper() + q[1:] for q in parts[1:depth])
-                target = "Charon" + "".join(q[:1].upper() + q[1:] for q in parts[:depth + 1]) + "".join(
-                    "." + q[:1].upper() + q[1:] for q in parts[1:depth + 1])
+                def cap(q):
+                    return q[:1].upper() + q[1:]
+                owner = root if depth == 0 else "Charon" + ".".join(cap(q) for q in parts[:depth + 1])
+                target = "Charon" + ".".join(cap(q) for q in parts[:depth + 2])
+                if owner in UNAVAILABLE_TYPES:
+                    aliases.append("@available(iOS %s, *)" % UNAVAILABLE_TYPES[owner])
+                if (owner, level) in alias_seen:
+                    continue
+                alias_seen.add((owner, level))
                 aliases.append("extension %s {" % owner)
                 aliases.append("    public typealias %s = %s" % (level, target))
                 aliases.append("}")
@@ -256,22 +293,16 @@ def main():
     def emit(node, path, depth):
         name = path[-1] if depth else "Charon" + path[-1]
         pad = "    " * depth
+        if path[-1] in UNAVAILABLE_TYPES:
+            out.append("%s@available(iOS %s, *)" % (pad, UNAVAILABLE_TYPES[path[-1]]))
         out.append("%spublic enum %s {" % (pad, name))
         if node["cases"] is not None:
             for case in sorted(node["cases"]):
-                out.append("%s    case %s%s" % (pad, spell(case), node["cases"][case]))
+                out.append("%s    case %s%s" % (pad, spell(case), spell_type(node["cases"][case], ours)))
         for part in sorted(node):
             if part == "cases":
                 continue
-            out.append("%s    public enum %s {" % (pad, part))
-            if node[part]["cases"] is not None:
-                for case in sorted(node[part]["cases"]):
-                    out.append("%s        case %s%s" % (pad, spell(case), node[part]["cases"][case]))
-            for inner in sorted(node[part]):
-                if inner == "cases":
-                    continue
-                emit(node[part][inner], path + [part, inner], depth + 2)
-            out.append("%s    }" % pad)
+            emit(node[part], path + [part], depth + 1)
         out.append("%s}" % pad)
 
     for root in sorted(tree):
