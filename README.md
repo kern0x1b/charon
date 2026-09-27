@@ -334,7 +334,12 @@ locked, `launch` unlocks it over Shade's control channel. Then it has Shade
 `settle` and, once the screen has not changed for 60 display periods of guest
 time, writes a snapshot, `app-0.png`, into the run folder; then it takes each
 step given after the bundle identifier - `tap X Y`, `drag X1 Y1 X2 Y2` in points,
-`home` - settles and takes a snapshot after each, and quits. It prints the application's output and the snapshots, and fails naming
+`home` - settles and takes a snapshot after each, and quits. One step is the
+driver's own and is not sent to Shade: `until-exit` holds the guest until the
+application has ended, so a port whose application produces its result over time
+is given the time to produce it, then settles and takes one more frame; the
+verdict says in `held` whether the application's own end or the run's budget came
+first. It prints the application's output and the snapshots, and fails naming
 SpringBoard's refusal, the signal or status the application ended with, or that
 its process never started; `log` prints the output again and `shot` the last
 frame. The guest has no network unless `-n` or a target's

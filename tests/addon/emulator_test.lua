@@ -820,13 +820,13 @@ local function registration_step(emulator, debian, folder, found)
 end
 
 local function launch_step(emulator, folder, found)
-    local steps = emulator.parse_steps({"tap", "160", "260", "home", "drag", "1", "2", "3", "4"})
-    if table.concat(steps, ";") ~= "tap 160 260;home;drag 1 2 3 4" then
-        table.insert(found, "launch's steps are read as tap X Y, home and drag X1 Y1 X2 Y2, read " .. table.concat(steps, ";"))
+    local steps = emulator.parse_steps({"tap", "160", "260", "home", "drag", "1", "2", "3", "4", "until-exit"})
+    if table.concat(steps, ";") ~= "tap 160 260;home;drag 1 2 3 4;until-exit" then
+        table.insert(found, "launch's steps are read as tap X Y, home, drag X1 Y1 X2 Y2 and until-exit, read " .. table.concat(steps, ";"))
     end
     for _, words in ipairs({{"tap", "1"}, {"swipe", "1", "2"}, {"tap", "x", "2"}}) do
         if not fixtures.refusal(function () emulator.parse_steps(words) end) then
-            table.insert(found, "a step that is not tap X Y, drag X1 Y1 X2 Y2 or home must be refused: " .. table.concat(words, " "))
+            table.insert(found, "a step that is not tap X Y, drag X1 Y1 X2 Y2, home or until-exit must be refused: " .. table.concat(words, " "))
         end
     end
     local command = table.concat(emulator.launch_command("org.example.probe", 90), " ")
@@ -939,6 +939,50 @@ local function launch_step(emulator, folder, found)
     state.programs, state.exits = {["90"] = "/Applications/Probe.app/Probe"}, {["90"] = {status = 0, signal = 11}}
     if not tick(state) or driver.failure ~= "exited" or driver.exit.signal ~= 11 then
         table.insert(found, "an application that dies ends the run with its signal")
+    end
+
+    -- until-exit holds the guest instead of asking the emulator for anything, and lets go on the
+    -- application's own end or on the run's budget, whichever comes first, saying which.
+    local function held(steps)
+        os.tryrm(results)
+        os.mkdir(results)
+        local sent, driver = {}, emulator.launch_driver({results = results, run = "/run",
+                                                           application = "/Applications/Probe.app", steps = steps})
+        local function tick(state)
+            return driver.stop(state, function (command) table.insert(sent, command) end)
+        end
+        json.savefile(path.join(results, "verdict.json"), {test = {spawned = 1, exit = 0}})
+        local state = {ready = true, programs = {["90"] = "/Applications/Probe.app/Probe"}}
+        tick(state)
+        state.transition = 1
+        tick(state)
+        state.stable = {[1] = true}
+        tick(state)
+        tick(state)
+        state.snapshots = {["/run/app-0.png"] = true}
+        tick(state)
+        return driver, sent, tick, state
+    end
+    local driver, sent, tick, state = held({"until-exit"})
+    if #sent ~= 2 or sent[2] ~= "snapshot /run/app-0.png" then
+        table.insert(found, "the snapshot before until-exit is taken as any other, sent " .. table.concat(sent, ";"))
+    end
+    state.exits = {["90"] = {status = 0, signal = 0}}
+    if tick(state) or driver.failure then
+        table.insert(found, "an application that ends while until-exit holds is not a failure, " .. tostring(driver.failure))
+    end
+    if driver.held ~= "exited" or sent[3] ~= "settle" then
+        table.insert(found, "until-exit settles once the application has ended, held " .. tostring(driver.held) .. ", sent " .. table.concat(sent, ";"))
+    end
+    driver, sent, tick, state = held({"until-exit"})
+    io.writefile(path.join(results, "verdict.json"), '{"test":{"spawned":1,"exit":1}}')
+    tick(state)
+    if driver.held ~= "deadline" or sent[3] ~= "settle" then
+        table.insert(found, "until-exit settles on the run's budget too, and says the budget was what ran out, held " .. tostring(driver.held))
+    end
+    driver, sent, tick, state = held({})
+    if tick(state) ~= true then
+        table.insert(found, "a launch with no step after the first snapshot is done")
     end
 end
 

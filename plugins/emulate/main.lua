@@ -216,6 +216,7 @@ local function launch(ctx, identifier, steps)
     end
     local result = {identifier = identifier, application = application, shots = driver.shots, failure = driver.failure,
                     exit = driver.exit, pid = driver.application and driver.application.pid, unlocks = driver.unlocks,
+                    held = driver.held,
                     reason = booted.reason, seconds = booted.seconds, scale = booted.scale,
                     stdout = path.join(folder, "results", "app.stdout"), stderr = path.join(folder, "results", "app.stderr")}
     json.savefile(path.join(folder, "verdict.json"), result)
@@ -257,6 +258,9 @@ local function launch(ctx, identifier, steps)
               booted.reason, where, #steps, booted.log)
     end
     cprint("${bright green}launched${clear} %s as pid %s %s, %d snapshot(s)", identifier, driver.application.pid, where, #driver.shots)
+    if driver.held == "deadline" then
+        cprint("${bright yellow}held${clear} until the run's own budget was spent, not until %s ended: it was still running, and the last frame is the one it was on", identifier)
+    end
 end
 
 local function log(ctx, text)

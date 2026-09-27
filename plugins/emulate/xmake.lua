@@ -16,6 +16,6 @@ task("emulate")
             {nil, "scale", "kv", nil, "How many host seconds one guest second takes, so the guest's own watchdogs and RPC deadlines see an emulator that is slower than the device (default: 10)."},
             {},
             {nil, "action", "v", nil, "install, run, launch, debug, log, shot or clean."},
-            {nil, "arguments", "vs", nil, "The command run or debug executes; the bundle identifier launch starts, then its steps (tap X Y, drag X1 Y1 X2 Y2, home, in points); the text log filters on; or the file shot writes."}
+            {nil, "arguments", "vs", nil, "The command run or debug executes; the bundle identifier launch starts, then its steps (tap X Y, drag X1 Y1 X2 Y2, home, until-exit; in points); the text log filters on; or the file shot writes."}
         }
     }

@@ -931,14 +931,17 @@ end
 
 -- The steps launch takes after the application is up, each followed by a
 -- snapshot once the screen settles: the word and how many numbers follow it.
+-- until-exit is the one step the emulator is not asked for: it is the driver's own, and holds the
+-- guest until the application has ended, so a port whose application produces its result over
+-- time is given the time to produce it and the frame kept is the one it ended on.
 function parse_steps(words)
-    local arity = {tap = 2, drag = 4, home = 0}
+    local arity = {tap = 2, drag = 4, home = 0, ["until-exit"] = 0}
     local steps, index = {}, 1
     while index <= #words do
         local verb = words[index]
         local count = arity[verb]
         if not count then
-            raise("launch takes the steps tap X Y, drag X1 Y1 X2 Y2 and home after the bundle identifier, and not %s", verb)
+            raise("launch takes the steps tap X Y, drag X1 Y1 X2 Y2, home and until-exit after the bundle identifier, and not %s", verb)
         end
         local step = {verb}
         for offset = 1, count do
@@ -958,10 +961,12 @@ end
 -- unlocks the screen while charon-sblaunch says screen=locked, one unlock at a
 -- time; once the launch is done and the application frontmost, it has the
 -- emulator settle and takes a snapshot when the screen has stopped changing,
--- then takes each step, settles and takes a snapshot after it. Settling is
--- the emulator's own measure, in guest time: [transition] settle id=N, then
--- internal-stable id=N. The driver keeps where it ended in shots, failure,
--- exit and application.
+-- then takes each step, settles and takes a snapshot after it. A step of
+-- until-exit holds instead of sending anything: it waits for the application to
+-- end, and for the run's own budget to be spent if it never does, and says in
+-- held which of the two happened. Settling is the emulator's own measure, in
+-- guest time: [transition] settle id=N, then internal-stable id=N. The driver
+-- keeps where it ended in shots, failure, exit, held and application.
 function launch_driver(opt)
     local driver = {phase = "launching", shots = {}, step = 0, unlocks = 0}
     local function settle(state, send)
@@ -978,7 +983,9 @@ function launch_driver(opt)
             end
         end
         local exited = driver.application and (state.exits or {})[driver.application.pid]
-        if exited then
+        -- An application that ends is the run's failure, unless the run asked for it with until-exit:
+        -- then its ending is what the run was waiting for, and the holding step says so.
+        if exited and driver.phase ~= "holding" then
             driver.failure, driver.exit = "exited", exited
             return true
         end
@@ -1022,8 +1029,22 @@ function launch_driver(opt)
                 if not step then
                     return true
                 end
+                if step == "until-exit" then
+                    driver.phase = "holding"
+                    return false
+                end
                 send(step)
                 driver.phase, driver.after = "stepping", state.transition or 0
+            end
+        elseif driver.phase == "holding" then
+            -- The application's own end, or the run's budget spent: the runner writes its verdict when
+            -- it ends charon-sblaunch at the deadline, and that is the last the guest is given.
+            if driver.application and (state.exits or {})[driver.application.pid] then
+                driver.held = "exited"
+                settle(state, send)
+            elseif os.isfile(path.join(opt.results, "verdict.json")) then
+                driver.held = "deadline"
+                settle(state, send)
             end
         elseif driver.phase == "stepping" then
             if (state.transition or 0) > driver.after then
