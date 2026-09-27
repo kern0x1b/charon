@@ -305,17 +305,64 @@ public final class AudioEngine {
         engine.attach(environment)
     }
 
+    /// The samples a resource is played from, and the format they are in. A caller that has a
+    /// file reads it into a buffer of its own format; this is what a generated sound is.
+    public static func __tone(hz: Float, seconds: Double, format: AVAudioFormat) -> AVAudioPCMBuffer? {
+        let count = AVAudioFrameCount(seconds * format.sampleRate)
+        guard let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: count),
+              let channel = buffer.floatChannelData else { return nil }
+        buffer.frameLength = count
+        for frame in 0..<Int(count) {
+            channel[0][frame] = Float(sin(2.0 * Double.pi * Double(hz) * Double(frame) / format.sampleRate))
+        }
+        return buffer
+    }
+
     /// The format the graph runs at, which the engine needs before it is started.
     public var format: AVAudioFormat?
 
-    /// Builds the graph for a format and starts it. A device with no audio - the emulator, or
-    /// a machine with no output - reports the failure rather than pretending to play.
-    public func start(format: AVAudioFormat) throws {
+    /// Builds the graph for a format and starts it.
+    ///
+    /// The order is the engine's, not the reader's: manual rendering mode is set while the
+    /// engine is still stopped, the nodes are connected after it, and only then is it started.
+    /// Set after a start, or with a format already on the output, the engine refuses with
+    /// `com.apple.coreaudio.avfaudio -80801` - measured on this host, 2026-09-27, before and
+    /// after the order was changed.
+    ///
+    /// A device with no audio - the emulator, or a machine with no output - reports the failure
+    /// rather than pretending to play.
+    public func start(format: AVAudioFormat, offline: Bool = false,
+                      maximumFrameCount: AVAudioFrameCount = 4096) throws {
+        // Manual rendering mode is set first and while the engine is still stopped; the
+        // connections come after it, and the start after that. Measured on the host, 2026-09-27:
+        // the other order is refused with com.apple.coreaudio.avfaudio -80801, and this one
+        // renders.
+        if offline {
+            try engine.enableManualRenderingMode(.offline, format: format, maximumFrameCount: maximumFrameCount)
+        }
         self.format = format
-        engine.attach(environment)
         engine.connect(environment, to: engine.mainMixerNode, format: format)
         try engine.start()
         started = true
+    }
+
+    /// The format the engine renders with once it is in manual rendering mode, which is the one a
+    /// buffer has to be in for the engine to accept it.
+    public var renderingFormat: AVAudioFormat { engine.manualRenderingFormat }
+
+    /// Renders the graph with no output device in it, which is how the engine is checked
+    /// without one, and answers the samples it produced.
+    public func renderOffline(_ frames: AVAudioFrameCount) throws -> [Float] {
+        var rendered: [Float] = []
+        while rendered.count < Int(frames) {
+            let wanted = AVAudioFrameCount(Int(frames) - rendered.count)
+            guard let scratch = AVAudioPCMBuffer(pcmFormat: engine.manualRenderingFormat,
+                                                 frameCapacity: max(wanted, 1)) else { break }
+            let status = try engine.renderOffline(wanted, to: scratch)
+            guard status == .success, scratch.frameLength > 0, let data = scratch.floatChannelData else { break }
+            for frame in 0..<Int(scratch.frameLength) { rendered.append(data[0][frame]) }
+        }
+        return rendered
     }
 
     public func stop() {
@@ -327,20 +374,24 @@ public final class AudioEngine {
     public func play(_ resource: AudioResource, on entity: Entity, buffer: AVAudioPCMBuffer) -> AudioPlaybackController {
         let player = AVAudioPlayerNode()
         engine.attach(player)
-        // The player is connected with the *buffer's* format, which is what the node will then
-        // accept; a graph that is not started has no format of its own to connect with.
+        // The graph has one format, and a source is converted into it: the engine refuses a
+        // connection whose format the destination does not take (com.apple.coreaudio.avfaudio
+        // -10874), and a mono sound has to reach a stereo environment node somehow.
+        let graphFormat = format ?? buffer.format
+        let playable = __reConvert(buffer, to: graphFormat)
         if resource.inputMode != .nonSpatial {
-            engine.connect(player, to: environment, format: buffer.format)
+            engine.connect(player, to: environment, format: playable.format)
         } else {
-            engine.connect(player, to: engine.mainMixerNode, format: buffer.format)
+            engine.connect(player, to: engine.mainMixerNode, format: playable.format)
         }
         let controller = AudioPlaybackController(entity: entity, resource: resource,
                                                engine: engine, environment: environment)
         controller.player = player
-        controller.buffer = buffer
-        controller.format = buffer.format
-        controller.duration = buffer.frameLength > 0
-            ? Double(buffer.frameLength) / buffer.format.sampleRate : 0
+        controller.buffer = playable
+        controller.options = []
+        controller.format = playable.format
+        controller.duration = playable.frameLength > 0
+            ? Double(playable.frameLength) / playable.format.sampleRate : 0
         controllers[ObjectIdentifier(controller)] = controller
         if let format {
             __place(controller, on: entity)
@@ -383,6 +434,29 @@ public final class AudioEngine {
 @MainActor
 private func __rePoint(_ vector: SIMD4<Float>) -> SIMD3<Float> {
     SIMD3<Float>(vector.x, vector.y, vector.z)
+}
+
+/// A buffer in the format the graph runs at: the same samples when the two agree, one channel
+/// copied to each when the graph is wider, and the channels averaged when it is narrower.
+@MainActor
+private func __reConvert(_ buffer: AVAudioPCMBuffer, to format: AVAudioFormat) -> AVAudioPCMBuffer {
+    guard let source = buffer.floatChannelData, buffer.format.channelCount != format.channelCount,
+          let target = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: buffer.frameLength),
+          let out = target.floatChannelData else { return buffer }
+    target.frameLength = buffer.frameLength
+    let from = Int(buffer.format.channelCount), to = Int(format.channelCount)
+    for frame in 0..<Int(buffer.frameLength) {
+        for channel in 0..<to {
+            if from == 1 {
+                out[channel][frame] = source[0][frame]
+            } else {
+                var total: Float = 0
+                for read in 0..<from { total += source[read][frame] }
+                out[channel][frame] = total / Float(from)
+            }
+        }
+    }
+    return target
 }
 
 /// The 3D point the audio engine places a node at, which is a C struct of three coordinates
