@@ -10,15 +10,12 @@
 #import <Foundation/Foundation.h>
 #import <CoreImage/CoreImage.h>
 
-// The accumulator of the port, under the name the port's build gives it. The framework's own
-// CIImageAccumulator is in the process as well and is never asked: the two never meet in one object.
-#ifdef CHARON_PORT_ACCUMULATOR
-#define ACCUMULATOR CharonCIImageAccumulator
-#define ACCUMULATOR_NAME "port"
-#else
-#define ACCUMULATOR CIImageAccumulator
-#define ACCUMULATOR_NAME "host"
-#endif
+#import "port-support.h"
+
+// The port's classes under the names its build gives them, and the framework's own where there is no
+// port class at all: the framework's are in the same process and are never asked, so the two processes
+// each answer for one set of objects and the two sets never meet.
+#define ACCUMULATOR PORT_ACCUMULATOR
 
 // One colour space for the whole probe, made once and kept: a space made and released around every
 // render is a thing to get wrong, and nothing here is measured through one.
@@ -109,10 +106,51 @@ static void report(NSString *key, ACCUMULATOR *accumulator)
     put_pixels([key stringByAppendingString:@" pixels"], render(image));
 }
 
+// A filter shape, measured as a shape and as the region a render comes back over: the shape's own
+// extent, and the extent and the bytes of an image cropped to it, which is the shape doing the job a
+// caller asks of it.
+static void put_shape(NSString *key, PORT_SHAPE *shape)
+{
+    if (!shape) {
+        put(@"%@ none", key);
+        return;
+    }
+    put_box(key, shape.extent);
+    CGRect whole = CGRectIntegral(shape.extent);
+    CIImage *image = [[CIImage alloc] initWithColor:[[CIColor alloc] initWithRed:0.25 green:0.5 blue:0.75 alpha:1]];
+    image = [image imageByCroppingToRect:shape.extent];
+    put_box([key stringByAppendingString:@" cropped"], image.extent);
+    put_bytes([key stringByAppendingString:@" cropped pixels"], render(image));
+}
+
+static void reportShapes(void)
+{
+    static const CGRect rects[3] = {{0, 0, 10, 10}, {5, 5, 10, 10}, {-4, 2, 3.5, 6.25}};
+    for (int a = 0; a < 3; a++)
+        for (int b = 0; b < 3; b++) {
+            NSString *key = [NSString stringWithFormat:@"shape %d %d", a, b];
+            PORT_SHAPE *left = [PORT_SHAPE shapeWithRect:rects[a]], *right = [PORT_SHAPE shapeWithRect:rects[b]];
+            put_shape([key stringByAppendingString:@" left"], left);
+            put_shape([key stringByAppendingString:@" union"], [left unionWith:right]);
+            put_shape([key stringByAppendingString:@" unionRect"], [left unionWithRect:rects[b]]);
+            put_shape([key stringByAppendingString:@" intersect"], [left intersectWith:right]);
+            put_shape([key stringByAppendingString:@" intersectRect"], [left intersectWithRect:rects[b]]);
+        }
+    PORT_SHAPE *shape = [PORT_SHAPE shapeWithRect:rects[0]];
+    put_shape(@"shape inset 1 2", [shape insetByX:1 Y:2]);
+    put_shape(@"shape inset -3 4", [shape insetByX:-3 Y:4]);
+    put_shape(@"shape moved", [shape transformBy:CGAffineTransformMakeTranslation(4, -6) interior:NO]);
+    put_shape(@"shape moved interior", [shape transformBy:CGAffineTransformMakeTranslation(4, -6) interior:YES]);
+    put_shape(@"shape turned", [shape transformBy:CGAffineTransformMakeRotation(0.6) interior:NO]);
+    put_shape(@"shape turned interior", [shape transformBy:CGAffineTransformMakeRotation(0.6) interior:YES]);
+    put_shape(@"shape scaled", [shape transformBy:CGAffineTransformMakeScale(2, 0.5) interior:NO]);
+    put_shape(@"shape scaled interior", [shape transformBy:CGAffineTransformMakeScale(2, 0.5) interior:YES]);
+}
+
 int main(void)
 {
     @autoreleasepool {
-        put(@"probe %s", ACCUMULATOR_NAME);
+        put(@"probe %s", PORT_NAME);
         CGRect extent = CGRectMake(0, 0, 8, 4);
 
         // The two formats an accumulator is asked for most, and the two that disagree on the order of
@@ -152,6 +190,7 @@ int main(void)
                                                           colorSpace:probeSpace()];
         [spaced setImage:field(extent)];
         report(@"spaced", spaced);
+        reportShapes();
     }
     return 0;
 }

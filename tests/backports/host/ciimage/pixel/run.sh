@@ -15,7 +15,11 @@ BUILD=${BUILD:-$(mktemp -d)}
 quiet="-Wno-nonnull -Wno-deprecated-declarations -Wno-unguarded-availability-new -Wno-objc-protocol-method-implementation -Wno-nullability-completeness -Wno-availability -Wno-objc-missing-property-synthesis -Wno-incomplete-implementation"
 rm -rf "$BUILD"
 mkdir -p "$BUILD/host" "$BUILD/port"
-printf '#import <CoreImage/CoreImage.h>\n@interface CharonCIImageAccumulator : NSObject\n+ (instancetype)imageAccumulatorWithExtent:(CGRect)extent format:(CIFormat)format;\n+ (instancetype)imageAccumulatorWithExtent:(CGRect)extent format:(CIFormat)format colorSpace:(CGColorSpaceRef)colorSpace;\n- (CIImage *)image;\n- (void)setImage:(CIImage *)image;\n- (void)setImage:(CIImage *)image dirtyRect:(CGRect)dirtyRect;\n- (void)clear;\n@property (nonatomic, readonly) CGRect extent;\n@property (nonatomic, readonly) CIFormat format;\n@end\n' > "$BUILD/port/declarations.h"
+# The port's classes under the names its build gives them; the sed below renames both the sources and
+# the header, so the two always agree.
+sed -e 's/CIImageAccumulator/CharonCIImageAccumulator/g' -e 's/CharonCharon/Charon/g' "$GRAPHICS/CIImageAccumulator9.m" > "$BUILD/port/CIImageAccumulator.m"
+sed -e 's/CIFilterShape/CharonCIFilterShape/g' -e 's/CharonCharon/Charon/g' "$GRAPHICS/CIFilterShape9.m" > "$BUILD/port/CIFilterShape.m"
+sed -e 's/\bCIImageAccumulator\b/CharonCIImageAccumulator/g' -e 's/\bCIFilterShape\b/CharonCIFilterShape/g' -e 's/CharonCharon/Charon/g' "$here/port-support.h" > "$BUILD/port/declarations.h"
 
 # The system answers: the probe alone, against the framework the host carries.
 xcrun clang -fobjc-arc $quiet "$here/probe.m" -framework CoreImage -framework CoreGraphics -framework ImageIO -framework Foundation -o "$BUILD/host/probe"
@@ -23,7 +27,7 @@ xcrun clang -fobjc-arc $quiet "$here/probe.m" -framework CoreImage -framework Co
 # The port answers: the same probe, the port's own accumulator under its own name, and the framework
 # for everything the accumulator is built out of.
 sed 's/CIImageAccumulator/CharonCIImageAccumulator/g' "$GRAPHICS/CIImageAccumulator9.m" > "$BUILD/port/CIImageAccumulator.m"
-xcrun clang -fobjc-arc $quiet -include "$BUILD/port/declarations.h" -c "$BUILD/port/CIImageAccumulator.m" -o "$BUILD/port/accumulator.o"
+xcrun clang -fobjc-arc $quiet -DCHARON_PORT -include "$BUILD/port/declarations.h" -c "$BUILD/port/CIImageAccumulator.m" -o "$BUILD/port/accumulator.o"
 xcrun clang -fobjc-arc $quiet -DCHARON_PORT_ACCUMULATOR=1 -include "$BUILD/port/declarations.h" -c "$here/probe.m" -o "$BUILD/port/probe.o"
 xcrun clang -fobjc-arc $quiet "$BUILD/port/probe.o" "$BUILD/port/accumulator.o" -framework CoreImage -framework CoreGraphics -framework ImageIO -framework Foundation -o "$BUILD/port/probe"
 
