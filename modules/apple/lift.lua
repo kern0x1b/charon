@@ -17,6 +17,7 @@
 -- every implemented API the SDK declares answers the lowered release, and nothing that is not implemented moved.
 
 import("core.base.json")
+import("async.runjobs")
 import("dyld")
 import("backports")
 import("compat")
@@ -31,33 +32,9 @@ end
 
 -- The top-level objects of a JSON dump, which clang writes one after another.
 local function objects(text)
-    local found, depth, start, quoted, escaped = {}, 0, nil, false, false
-    for index = 1, #text do
-        local char = text:sub(index, index)
-        if quoted then
-            if escaped then
-                escaped = false
-            elseif char == "\\" then
-                escaped = true
-            elseif char == '"' then
-                quoted = false
-            end
-        elseif char == '"' then
-            quoted = true
-        elseif char == "{" then
-            if depth == 0 then
-                start = index
-            end
-            depth = depth + 1
-        elseif char == "}" then
-            depth = depth - 1
-            if depth == 0 and start then
-                table.insert(found, json.decode(text:sub(start, index)))
-                start = nil
-            end
-        end
-    end
-    return found
+    -- clang writes each top-level declaration as one object whose braces stand at the start of a line (everything nested
+    -- is indented, and a newline inside a string is escaped): the objects are split there and decoded at once.
+    return json.decode("[" .. text:gsub("\n}\n{", "\n},\n{") .. "]")
 end
 
 -- A framework's headers: its umbrella header where it has one, every header it has where it does not (CoreTelephony,
@@ -211,6 +188,38 @@ function listing_sections(listing)
     return sections
 end
 
+-- The names split into runs of the sorted list that share a prefix of at least GROUP_PREFIX characters, at most GROUP_SIZE to a
+-- run: {prefix = the prefix all of a run's names share, names = them}. A name that shares none with its neighbours is a run of its own.
+-- Six characters keep a group to one family of an SDK (the 2807 functions, constants and types of the registry make 458 groups; a prefix
+-- of "NS" or "UI" would be most of Foundation and UIKit in one dump), and forty bound what one dump holds.
+local GROUP_PREFIX, GROUP_SIZE = 6, 40
+function name_groups(names)
+    local sorted = table.join(names)
+    table.sort(sorted)
+    local groups, current, prefix = {}, {}, nil
+    for _, name in ipairs(sorted) do
+        local shared = 0
+        if prefix then
+            while shared < math.min(#prefix, #name) and prefix:byte(shared + 1) == name:byte(shared + 1) do
+                shared = shared + 1
+            end
+        end
+        if prefix and shared >= GROUP_PREFIX and #current < GROUP_SIZE then
+            table.insert(current, name)
+            prefix = prefix:sub(1, shared)
+        else
+            if prefix then
+                table.insert(groups, {prefix = prefix, names = current})
+            end
+            current, prefix = {name}, name
+        end
+    end
+    if prefix then
+        table.insert(groups, {prefix = prefix, names = current})
+    end
+    return groups
+end
+
 local function dumper(opt, frameworks, headers)
     local umbrella = path.join(opt.outputdir, "umbrella.m")
     local lines = {}
@@ -223,17 +232,17 @@ local function dumper(opt, frameworks, headers)
         table.insert(lines, string.format("#include <%s>", header))
     end
     io.writefile(umbrella, table.concat(lines, "\n") .. "\n")
-    local cache = {}
-    return function (filter, vfs)
-        local key = filter .. "|" .. (vfs or "")
-        if cache[key] then
-            return cache[key]
-        end
-        local arguments = {"-target", opt.triple, "-isysroot", opt.sdk, "-Wno-incompatible-sysroot", "-fsyntax-only",
-                           "-x", "objective-c", umbrella, "-Xclang", "-ast-dump-filter=" .. filter}
+    -- What a query on the umbrella runs: the parse of all of it, most of what one costs. (Read back precompiled it gives
+    -- less: an @interface's members and categories are loaded lazily and not all dumped.)
+    local function base(vfs)
+        local arguments = {"-target", opt.triple, "-isysroot", opt.sdk, "-Wno-incompatible-sysroot", "-fsyntax-only", "-x", "objective-c", umbrella}
         if vfs then
             table.join2(arguments, {"-ivfsoverlay", vfs})
         end
+        return arguments
+    end
+    local function query(filter, vfs)
+        local arguments = table.join(base(vfs), {"-Xclang", "-ast-dump-filter=" .. filter})
         local text = os.iorunv(opt.clang, table.join(arguments, {"-Xclang", "-ast-dump=json"}))
         if not text then
             raise("clang gave no dump for the filter %s", filter)
@@ -254,9 +263,113 @@ local function dumper(opt, frameworks, headers)
                 node._typedefs = sections[index].typedefs
             end
         end
-        cache[key] = found
         return found
-    end, umbrella
+    end
+    local cache, alone = {}, {}
+    local function dump(filter, vfs)
+        local key = filter .. "|" .. (vfs or "")
+        if not cache[key] then
+            table.insert(alone, key)
+            cache[key] = query(filter, vfs)
+        end
+        return cache[key]
+    end
+    -- What a declaration's subtree names, all in one string: a name a filter finds only below a declaration that does not match
+    -- itself.
+    local function nested_names(node)
+        local names = {}
+        local function walk(item)
+            if type(item) == "table" then
+                if type(item.name) == "string" then
+                    table.insert(names, item.name)
+                end
+                for _, value in pairs(item) do
+                    walk(value)
+                end
+            end
+        end
+        for _, child in ipairs(node.inner or {}) do
+            walk(child)
+        end
+        return table.concat(names, "\0")
+    end
+    -- The queries a loop is about to make, asked at once and in parallel: what the loop then reads is the answer it would have had,
+    -- from the cache. Names that are one identifier (a function, a constant, a type) are asked for by the prefix a group of them
+    -- shares, one query for the group: clang prints, for a filter, the outermost declarations whose qualified name contains it,
+    -- so what a name's own query prints is those of the group's that contain the name - unless the name is found only below a
+    -- declaration of the group that does not contain it, and then it is asked for on its own. What is asked one at a time is
+    -- kept in `alone`, to see what a loop still lacks a prefetch for.
+    local function prefetch(filters, vfs)
+        local missing, seen, plain, names = {}, {}, {}, {}
+        for _, filter in ipairs(filters) do
+            local key = filter .. "|" .. (vfs or "")
+            if not cache[key] and not seen[key] then
+                seen[key] = true
+                table.insert(filter:find("^[%a_][%w_]*$") and names or plain, filter)
+            end
+        end
+        local jobs = {}
+        for _, filter in ipairs(plain) do
+            table.insert(jobs, {filter = filter})
+        end
+        for _, group in ipairs(name_groups(names)) do
+            if opt.grouped == false then
+                for _, name in ipairs(group.names) do
+                    table.insert(jobs, {filter = name})
+                end
+            else
+                table.insert(jobs, {filter = group.prefix, names = #group.names > 1 and group.names or nil})
+            end
+        end
+        local answers = {}
+        local function ask(wanted)
+            runjobs("dump", function (index)
+                answers[index] = query(wanted[index].filter, vfs)
+            end, {total = #wanted, comax = opt.jobs or 8})  -- 96 queries: 71 s one at a time, 12.7 s at 8, 11.6 s at 10 (12 cores)
+        end
+        ask(jobs)
+        local again = {}
+        for index, job in ipairs(jobs) do
+            local answer = answers[index]
+            local reliable = true
+            for _, node in ipairs(answer) do
+                reliable = reliable and node._qualified ~= nil
+            end
+            if not job.names then
+                cache[job.filter .. "|" .. (vfs or "")] = answer
+            elseif not reliable then
+                for _, name in ipairs(job.names) do
+                    table.insert(again, {filter = name})
+                end
+            else
+                local below = {}
+                for _, name in ipairs(job.names) do
+                    local found, hidden = {}, false
+                    for position, node in ipairs(answer) do
+                        if node._qualified:find(name, 1, true) then
+                            table.insert(found, node)
+                        else
+                            below[position] = below[position] or nested_names(node)
+                            hidden = hidden or below[position]:find(name, 1, true) ~= nil
+                        end
+                    end
+                    if hidden then
+                        table.insert(again, {filter = name})
+                    else
+                        cache[name .. "|" .. (vfs or "")] = found
+                    end
+                end
+            end
+        end
+        if #again > 0 then
+            answers = {}
+            ask(again)
+            for index, job in ipairs(again) do
+                cache[job.filter .. "|" .. (vfs or "")] = answers[index]
+            end
+        end
+    end
+    return dump, umbrella, prefetch, alone
 end
 
 -- Which receivers conform to which protocols, as clang answers it: a receiver converts to id<P> without a diagnostic
@@ -1038,7 +1151,8 @@ function statement_words(code, position)
 end
 
 -- lift(opt): opt.clang, opt.swiftc (the Swift compiler whose importer reads the result), opt.sdk, opt.triple, opt.minimum,
--- opt.registry (the folder holding registry/), opt.outputdir.
+-- opt.registry (the folder holding registry/), opt.outputdir; opt.jobs, the compiler runs at once (8), and opt.grouped = false, which
+-- asks for every name on its own, not by the prefix a group of them shares (the reference the grouping is checked against).
 -- Answers the VFS overlay to hand the compiler and what was done; raises when either check finds a difference.
 function lift(opt)
     os.tryrm(opt.outputdir)
@@ -1054,7 +1168,7 @@ function lift(opt)
         table.insert(symbols, entry.api)
     end
     local system = system_headers(opt.sdk, symbols, function (name) return stands_alone(opt, name) end)
-    local dump, umbrella = dumper(opt, frameworks, system)
+    local dump, umbrella, prefetch, alone = dumper(opt, frameworks, system)
     local conforms = conformer(opt, umbrella)
     local languages = languages_of(opt)
     local expand = expander(opt, header_files(opt.sdk, frameworks), languages)
@@ -1074,19 +1188,22 @@ function lift(opt)
     table.sort(entries, function (a, b) return a.api < b.api end)
 
     local supers = {}
+    local function superclass(name)
+        if supers[name] == nil then
+            supers[name] = false
+            for _, node in ipairs(dump(name)) do
+                if node.kind == "ObjCInterfaceDecl" and node.name == name and node.super then
+                    supers[name] = node.super.name
+                end
+            end
+        end
+        return supers[name] or nil
+    end
     local function superclasses(name)
         local chain, seen = {}, {}
         while name and not seen[name] do
             seen[name] = true
-            if supers[name] == nil then
-                supers[name] = false
-                for _, node in ipairs(dump(name)) do
-                    if node.kind == "ObjCInterfaceDecl" and node.name == name and node.super then
-                        supers[name] = node.super.name
-                    end
-                end
-            end
-            name = supers[name] or nil
+            name = superclass(name)
             if name then
                 table.insert(chain, name)
             end
@@ -1115,6 +1232,11 @@ function lift(opt)
             edits[mark.file][at] = edit
         end
     end
+    local filters = {}
+    for _, entry in ipairs(entries) do
+        table.insert(filters, filter_of(entry))
+    end
+    prefetch(filters)
     for _, entry in ipairs(entries) do
         local target = opt.minimum
         if entry.minimum and later(entry.minimum, target) then
@@ -1180,6 +1302,11 @@ function lift(opt)
     -- the release the SDK gives it - Swift then answers the property from the lowered release and refuses the setter
     -- below the SDK's, as it does for any setter declared apart from its property.
     local setters, unwritable = {}, {}
+    local kept_filters = {}
+    for api in pairs(kept) do
+        table.insert(kept_filters, filter_of(listed[api]))
+    end
+    prefetch(kept_filters)
     for api in pairs(kept) do
         local member = member_api(api)
         if member and member.selector and member.selector:find(":$") then
@@ -1225,6 +1352,30 @@ function lift(opt)
     end
     -- per member: the declarations a use of its owner reaches, those of protocols still to be asked about, and where else
     local pending, questions = {}, {}
+    do
+        -- the owners of what is unmatched, the selectors asked for, and the superclasses a level at a time
+        local wave, asked, reached = {}, {}, {}
+        for _, api in ipairs(unmatched) do
+            local member = member_api(api:gsub("%(%)$", ""))
+            if member then
+                table.insert(wave, member.owner)
+                table.insert(asked, member.selector or member.property)
+            end
+        end
+        prefetch(asked)
+        while #wave > 0 do
+            prefetch(wave)
+            local up = {}
+            for _, name in ipairs(wave) do
+                local above = superclass(name)
+                if above and not reached[above] then
+                    reached[above] = true
+                    table.insert(up, above)
+                end
+            end
+            wave = up
+        end
+    end
     for _, api in ipairs(unmatched) do
         local member = member_api(api:gsub("%(%)$", ""))
         if member then
@@ -1353,6 +1504,7 @@ function lift(opt)
             end
         end
     end
+    prefetch(table.orderkeys(members))
     for _, owner in ipairs(table.orderkeys(members)) do
         -- dump(owner) answers one entry per file that names the class, most a forward declaration (@class UIView;); the
         -- class's own @interface is the entry that carries its members, and they go in before its @end. Not into a
@@ -1444,15 +1596,20 @@ function lift(opt)
     local followed = {}
     local pending = table.keys(named)
     while #pending > 0 do
-        local name = table.remove(pending)
-        if not followed[name] then
-            followed[name] = true
-            for _, node in ipairs(dump(name)) do
-                if node.kind == "TypedefDecl" and node.name == name then
-                    for _, further in ipairs(node._typedefs or {}) do
-                        if not named[further] then
-                            named[further] = true
-                            table.insert(pending, further)
+        -- a wave: what the types just reached name in turn is asked for once they are all in
+        prefetch(pending)
+        local wave = pending
+        pending = {}
+        for _, name in ipairs(wave) do
+            if not followed[name] then
+                followed[name] = true
+                for _, node in ipairs(dump(name)) do
+                    if node.kind == "TypedefDecl" and node.name == name then
+                        for _, further in ipairs(node._typedefs or {}) do
+                            if not named[further] then
+                                named[further] = true
+                                table.insert(pending, further)
+                            end
                         end
                     end
                 end
@@ -1619,6 +1776,7 @@ function lift(opt)
     end
     local names = table.keys(named)
     table.sort(names)
+    prefetch(names)
     for _, name in ipairs(names) do
         local declared = {}
         for _, node in ipairs(dump(name)) do
@@ -1787,6 +1945,19 @@ function lift(opt)
     -- Both ways: what is implemented answers the lowered release, and nothing else moved. A use no one text can stand
     -- for in every language fails by its own name, whatever else it would have shown.
     local failures = table.join(refusals, unwritable, unreachable)
+    local lifted_filters = {}
+    for name in pairs(lowered_types) do
+        table.insert(lifted_filters, name)
+    end
+    for _, entry in ipairs(entries) do
+        if targets[entry.api] then
+            table.insert(lifted_filters, filter_of(entry))
+        end
+    end
+    for api in pairs(kept) do
+        table.insert(lifted_filters, filter_of(listed[api]))
+    end
+    prefetch(lifted_filters, vfs)
     for name, target in pairs(lowered_types) do
         for _, node in ipairs(latest(dump(name, vfs))) do
             if (node.kind == "TypedefDecl" or node.kind == "EnumDecl" or node.kind == "RecordDecl") and (node.name or node._qualified) == name then
@@ -1870,7 +2041,8 @@ function lift(opt)
         end
     end
     local classes, rest, kinds = split_unmatched(unmatched, listed)
-    return {vfs = vfs, lifted = lifted, headers = #sorted_files, implemented = #entries, unmatched = rest, kinds = kinds,
+    -- `alone`: the queries asked one at a time, which no loop asked for ahead of itself
+    return {alone = alone, vfs = vfs, lifted = lifted, headers = #sorted_files, implemented = #entries, unmatched = rest, kinds = kinds,
             classes = classes, undeclared = undeclared, types = lowered_types, kept_types = kept_types}
 end
 

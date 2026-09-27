@@ -440,5 +440,26 @@ function failures(opt)
     -- and a lift that found only that fails against a measured set without it, by its name
     expect_equal(found, "a class no header declares, not measured", named(lift.differences(lift.left_alone({"CharonNoSuchClassAnywhere"}, {},
                  {CharonNoSuchClassAnywhere = {kind = "class"}}), "")), "new: class CharonNoSuchClassAnywhere ")
+
+    -- names are asked for in groups of the sorted list that share six characters, at most forty to a group, the prefix all of them share
+    local function grouped(names)
+        local text = {}
+        for _, group in ipairs(lift.name_groups(names)) do
+            table.insert(text, group.prefix .. "=" .. table.concat(group.names, ","))
+        end
+        return table.concat(text, " ")
+    end
+    expect_equal(found, "names grouped by their shared prefix", grouped({"GCInputButtonB", "GCInputButtonA", "CGPath", "CGContextFillRect", "CGContext", "Ab"}),
+                 "Ab=Ab CGContext=CGContext,CGContextFillRect CGPath=CGPath GCInputButton=GCInputButtonA,GCInputButtonB")
+    expect_equal(found, "five shared characters are not enough", grouped({"UIViewA", "UIViewB", "UIVieX"}), "UIVieX=UIVieX UIView=UIViewA,UIViewB")
+    local many = {}
+    for index = 1, 41 do
+        table.insert(many, string.format("NSAllocate%02d", index))
+    end
+    local sizes = {}
+    for _, group in ipairs(lift.name_groups(many)) do
+        table.insert(sizes, group.prefix .. "=" .. #group.names)
+    end
+    expect_equal(found, "at most forty names to a group", table.concat(sizes, " "), "NSAllocate=40 NSAllocate41=1")
     return found
 end
