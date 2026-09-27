@@ -10,7 +10,7 @@
 # (default: "screen" "screen view" "screen window" "screen turn"; a mode may be named twice, to see whether a run repeats). Each mode is a run of its own, since a display link that
 # faults ends the process. DISPLAYPROBE_BUILD is where the builds and the logs go (default a directory of the system temp path);
 # copy what a fact cites out of it before it is wiped.
-# It needs the addon v0.8.10 in the shared xmake store and the firmware of the release, as any port does.
+# It needs the addon v0.8.11 in the shared xmake store and the firmware of the release, as any port does.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 export DISPLAYPROBE_ROOT=$(cd "$here/../../../.." && pwd)

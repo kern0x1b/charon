@@ -4,7 +4,7 @@ set_version("0.1.0")
 -- Traps: a working copy is never installed as the addon).
 local root = os.getenv("DISPLAYPROBE_ROOT") or path.join(os.scriptdir(), "../../../..")
 add_repositories("charon " .. root)
-add_addons("charon v0.8.10")
+add_addons("charon v0.8.11")
 -- The two things the probe is built to vary: the minimum OS of the binary, and whether charon@apple-backports is linked.
 local minimum = os.getenv("DISPLAYPROBE_MINIMUM") or "4.3"
 local package = os.getenv("DISPLAYPROBE_PACKAGE") == "1"

@@ -4,7 +4,7 @@
 # that refuses a weak reference as the weak side of each table, whose outcome on 5.0 and later must be 6.0's. One heavy job
 # (a build and an emulated boot a release, and one a case of the refusal), so run it in a slot of the machine:
 #     $HOME/Git/projects/ios/coordination/heavy.sh sh tests/backports/host/maptable6/emulate.sh
-# MAPTABLE6_ROUNDS=n sets the rounds of the two-thread check (default 20000). It needs the addon v0.8.10 in the shared xmake store, as any port does, and the firmware of the releases named below.
+# MAPTABLE6_ROUNDS=n sets the rounds of the two-thread check (default 20000). It needs the addon v0.8.11 in the shared xmake store, as any port does, and the firmware of the releases named below.
 # MAPTABLE6_PORT names the port's source, for control.sh, which builds a port with its native path taken out.
 # Leaves the logs in $MAPTABLE6_BUILD/<release>.log and exits 1 on a failed check or an answer that is not 6.0's.
 set -eu

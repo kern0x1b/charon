@@ -3,7 +3,7 @@ set_version("0.0.1")
 -- The addon as a port pins it, from the tag already in the store: a working copy of this repository is never installed as
 -- the addon (charon/AGENTS.md, Traps), and the sources under test are named by path below.
 add_repositories("charon https://github.com/kern0x1b/charon.git charon-repo-0.8.10")
-add_addons("charon v0.8.10")
+add_addons("charon v0.8.11")
 set_config("apple_minimum", "4.3")
 includes("@addon/charon/apple-ios")
 includes("@addon/charon/emulate")
