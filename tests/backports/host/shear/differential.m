@@ -116,20 +116,19 @@ int main(void)
         vImage_Buffer source = make(8, 4), dest = make(8, 4);
         CharonResampleFilter ours;
         CharonResampleFilterInit(&ours, 1.0f, kvImageBackgroundColorFill);
-        vImage_Error a = CharonShearRun(&source, &dest, &ours, CharonPlanarF, YES, 0.0, 1.0, 0, 0, NULL,
-                                        kvImageBackgroundColorFill);
+        vImage_Error a = CharonShearReady(&source, &dest, &ours, 0, 0, 1.0);
         report(a == kvImageInvalidParameter, @"a non-zero shearSlope is refused rather than answered",
                ([NSString stringWithFormat:@"the port answers %ld", (long)a]));
-        a = CharonShearRun(&source, &dest, NULL, CharonPlanarF, YES, 0.0, 0.0, 0, 0, NULL, kvImageBackgroundColorFill);
+        a = CharonShearReady(&source, &dest, NULL, 0, 0, 0.0);
         report(a == kvImageNullPointerArgument, @"a NULL filter is refused",
                ([NSString stringWithFormat:@"the port answers %ld", (long)a]));
-        a = CharonShearRun(&source, &dest, &ours, CharonPlanarF, YES, 0.0, 0.0, 99, 0, NULL, kvImageBackgroundColorFill);
+        a = CharonShearReady(&source, &dest, &ours, 99, 0, 0.0);
         report(a == kvImageInvalidOffset_X, @"a region origin outside the source is refused",
                ([NSString stringWithFormat:@"the port answers %ld", (long)a]));
         // and a filter the port did not write
         CharonResampleFilter impostor;
         memset(&impostor, 0, sizeof impostor);
-        a = CharonShearRun(&source, &dest, &impostor, CharonPlanarF, YES, 0.0, 0.0, 0, 0, NULL, kvImageBackgroundColorFill);
+        a = CharonShearReady(&source, &dest, &impostor, 0, 0, 0.0);
         report(a == kvImageNullPointerArgument, @"a filter without the port's tag is refused",
                ([NSString stringWithFormat:@"the port answers %ld", (long)a]));
 
