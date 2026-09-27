@@ -366,6 +366,56 @@ static void reportObjectAndVoxels(void)
     put_bytes(@"voxel indices", [host voxelIndices]);
 }
 
+// The sharing rule of a generator, read off the counts: the vertex count and the index count of the
+// same surface with its segments varied say where a vertex is shared and where one is not, and the
+// box says the surface itself did not change.
+static void reportSharing(void)
+{
+    static const NSUInteger radial[] = {3, 4, 6, 8, 12};
+    static const NSUInteger vertical[] = {1, 2, 3, 6};
+    for (size_t r = 0; r < sizeof radial / sizeof *radial; r++)
+        for (size_t v = 0; v < sizeof vertical / sizeof *vertical; v++) {
+            MDLMesh *ball = [MDLMesh newEllipsoidWithRadii:(vector_float3){1, 1, 1} radialSegments:radial[r]
+                                               verticalSegments:vertical[v] geometryType:MDLGeometryTypeTriangles
+                                               inwardNormals:NO hemisphere:NO allocator:nil];
+            put(@"share ellipsoid r%lu v%lu vertices %lu indices %lu", (unsigned long)radial[r], (unsigned long)vertical[v],
+                (unsigned long)ball.vertexCount, (unsigned long)ball.submeshes.firstObject.indexCount);
+        }
+    for (size_t r = 0; r < sizeof radial / sizeof *radial; r++)
+        for (size_t v = 0; v < 2; v++) {
+            MDLMesh *tube = [MDLMesh newCylinderWithHeight:2 radii:(vector_float2){1, 1} radialSegments:radial[r]
+                                            verticalSegments:vertical[v] + 1 geometryType:MDLGeometryTypeTriangles
+                                            inwardNormals:NO allocator:nil];
+            put(@"share cylinder r%lu v%lu vertices %lu indices %lu", (unsigned long)radial[r], (unsigned long)(vertical[v] + 1),
+                (unsigned long)tube.vertexCount, (unsigned long)tube.submeshes.firstObject.indexCount);
+            MDLMesh *box = [MDLMesh newBoxWithDimensions:(vector_float3){2, 2, 2} segments:(vector_uint3){radial[r], vertical[v], 1}
+                                             geometryType:MDLGeometryTypeTriangles inwardNormals:NO allocator:nil];
+            put(@"share box r%lu v%lu vertices %lu indices %lu", (unsigned long)radial[r], (unsigned long)vertical[v],
+                (unsigned long)box.vertexCount, (unsigned long)box.submeshes.firstObject.indexCount);
+        }
+}
+
+// The extent of a voxel's division, read off arrays of a known size: the count of the voxels, the
+// extent the array reports, and what the box and the voxel size were.
+static void reportVoxelRules(void)
+{
+    for (int along = 1; along <= 4; along++)
+        for (int voxel = 1; voxel <= 2; voxel++) {
+            MDLAxisAlignedBoundingBox box = {{along * voxel, along * voxel, along * voxel}, {0, 0, 0}};
+            NSMutableData *field = [NSMutableData dataWithLength:(NSUInteger)(along * along * along)];
+            @try {
+                MDLVoxelArray *array = [[MDLVoxelArray alloc] initWithData:field boundingBox:box voxelExtent:(float)voxel];
+                MDLVoxelIndexExtent extent = array.voxelIndexExtent;
+                put(@"voxrule %ld voxels of %d data %lu extent %ld %ld %ld to %ld %ld %ld", (long)along, voxel,
+                    (unsigned long)field.length, (long)extent.minimumExtent.x, (long)extent.minimumExtent.y,
+                    (long)extent.minimumExtent.z, (long)extent.maximumExtent.x, (long)extent.maximumExtent.y,
+                    (long)extent.maximumExtent.z);
+            } @catch (NSException *exception) {
+                put(@"voxrule %ld voxels of %d refused %@", (long)along, voxel, exception.reason);
+            }
+        }
+}
+
 int main(int argc, const char **argv)
 {
     @autoreleasepool {
@@ -392,6 +442,8 @@ int main(int argc, const char **argv)
         guard(@"submesh", ^{ reportSubmesh(); });
         guard(@"texture", ^{ reportTexture(); });
         guard(@"object", ^{ reportObjectAndVoxels(); });
+        guard(@"sharing", ^{ reportSharing(); });
+        guard(@"voxrule", ^{ reportVoxelRules(); });
     }
     return 0;
 }

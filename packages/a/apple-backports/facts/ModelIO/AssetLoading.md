@@ -138,20 +138,33 @@ own triangles pass through, widened by the patch radius.
      zero and a minimum of minus one, and that is what the port answers.
   10. The names an operation of a transform stack answers were left in a record that retained nothing,
       so they dangled. The stack owns the names now.
-- **Still different, six measurements, with both answers beside them.**
-  1. **The generators' tessellation.** The ellipsoid of eight radial and six vertical segments is 72
-     vertices and 288 indices on the system and 63 and 288 in the port; the cylinder is 47 and 162
-     there and 29 and 144 here. The index count of the ellipsoid is the same, so the *surface* is the
-     same and the two differ only in where a vertex is shared. Which of the many valid tessellations
-     Apple picks is not something the header states.
-  2. **The descriptor of a mesh built from buffers.** The probe counts 31 attributes on the system and
-     one in the port: Apple's mesh carries its own internal attributes, which are not a thing a port
-     can read and has not been carried.
-  3. **The voxel array's index extent.** Both sides count two voxels out of the same data and both put
-     the point (0.9, 0.6, 0.4) at voxel (1, 1, 0) with the centre of (1, 1, 1) at 0.75 - but the
-     system derives the extent of the division as 1, 1, 0 out of eight bytes and the port as 2, 2, 2
-     out of the box and the voxel size. The union of two such arrays therefore counts two in the port
-     and three on the system, and the difference follows.
+- **The sharing rule of a generator, read off the counts.** The probe now asks the system for the
+  vertex and index counts of the same surfaces over twenty sizes - an ellipsoid at five radial and four
+  vertical segment counts, a cylinder and a box at two of each - and the rule is in the numbers. For
+  the **ellipsoid the port now matches the system exactly at every one of the twenty sizes, vertices
+  and indices alike**: the system has four rings of vertices for two rings of quads, five for three and
+  eight for six, with the index count of the quads alone, so each pole is a ring of its own and the
+  ring past the last ring of quads repeats it. That is what the port emits now.
+- **A method the build did not have at all.** The same run found
+  `+[MDLMesh newBoxWithDimensions:segments:geometryType:inwardNormals:allocator:]` answering
+  *unrecognized selector* on the port while the system answers it: it is in the ledger and it was
+  missing from what the port carries. It is there now, over the box the extent form already builds.
+- **Still different, four measurements, with both answers beside them.**
+  1. **The cylinder's sharing, and a crash.** The system builds the cylinder of eight radial and two
+     vertical segments as 47 vertices and 162 indices; the port's first attempt gives 14 and 54, and on
+     the **second** cylinder the probe takes an exception and the rest of the sharing table is lost. So
+     the cylinder's vertex sharing is still wrong, and something in it throws when a second one is
+     built. That is a new defect this measurement found and this pass did not fix.
+  2. **The descriptor of a mesh built from buffers.** 31 attributes on the system, one in the port:
+     Apple's own internal attributes, which are not a thing a port can read.
+  3. **The voxel array's index extent**, and the rule behind it. The probe now builds arrays of 1, 8, 27
+     and 64 bytes over boxes of one, two, three and four voxels a side at a voxel size of one and two.
+     The system answers `INT_MAX, INT_MAX, INT_MAX` to `-INT_MAX` for the arrays of one and eight bytes
+     and `0 0 0` to `0 0 0` for the arrays of 27 and 64, and it answers the same for the same inputs on
+     every run, so it is not uninitialised memory - it is a fixed answer that carries no information
+     about the division. The port derives the extent from the box and the voxel size, which is the
+     documented way to get one, and the two are a named difference rather than a rule to copy.
+  4. **The union of two such arrays**, and the difference and the index bytes, all following from (3).
 - **The 24 measurements one side has and the other does not, named.** Six are the OBJ submesh lines the
   group model now accounts for - the host names a submesh `solid_red` where the port names the two
   `red` and `lid`, and the host's first submesh holds six indices where the port's holds its own
