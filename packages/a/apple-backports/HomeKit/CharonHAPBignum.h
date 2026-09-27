@@ -6,6 +6,14 @@
 // Every function here is the port's own name, so no symbol in these files is API and every band
 // keeps them: they are the substrate the transport is written on, not a row of the surface.
 //
+// **What is checked, and what is not.** A modular exponentiation over two full-width operands is
+// checked against an independent implementation, 32 to 3072 bits, by a program that is NOT yet in the
+// repository -- the check is written (tests/backports/host/hapcrypto/bignum.c and run-bignum.sh) and the
+// reader in it does not yet answer the cases, so nothing in tests/ covers this file. A narrow operand
+// against a full-width one, which is the shape SRP-6a makes, **does not agree** with an independent
+// implementation and the cause is not known. Anything built on this file must be treated as carrying
+// that, and facts/HomeKit/CharonHapCrypto.md records the measurement and what has been ruled out.
+//
 // What the layer does not do is carry a sign or a carry out: an add that overflows the width and a
 // subtract that underflows are programming errors, and each one is caught by the caller against the
 // width it knows it is working in (HMRegister() and friends below).
