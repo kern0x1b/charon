@@ -105,3 +105,59 @@ work rather than CarPlay's, so it belongs in whichever band owns Foundation, and
 link `FoundationBackports` for it. Everything else in the 12.0 template family has no such question --
 the list, grid, map and now-playing templates, the interface controller, the window and the alert
 actions are all writable against the release and against UIKit.
+
+## What is carried, and what is the wall
+
+Seventeen classes, in three objects by the release that first exports them (12.0 twice, 16.0 once), and
+eight classes `absent` at the seam. The seventeen:
+
+| object | classes |
+| --- | --- |
+| 12.0 | `CPWindow`, `CPTemplate`, `CPBarButton`, `CPGridButton`, `CPMapButton`, `CPTravelEstimates`, `CPManeuver`, `CPAlertAction`, `CPNavigationAlert` |
+| 12.0 | `CPListItem`, `CPListSection`, `CPListTemplate`, `CPGridTemplate`, `CPMapTemplate`, `CPInterfaceController` |
+| 16.0 | `CPButton`, `CPTextButton` |
+
+**The buttons are NSObjects, and the templates draw them.** That is the SDK's own shape -- `CPButton`,
+`CPBarButton`, `CPGridButton`, `CPMapButton` and `CPTextButton` are all `NSObject` subclasses in the
+16.4 headers, and none of them is a view. So each carries a `charon_drawInRect:` (and `alpha:` where it
+is drawn in a bar), and each template asks its buttons to draw themselves: the list and grid and map
+templates put the bar buttons in a bar the template owns, the grid template asks each grid button to
+draw into the collection view cell it is in, and the map template asks each map button to draw over
+its map inside the window's own `mapButtonSafeAreaLayoutGuide`. Each button's own handler is called
+when the drawn mark is tapped. The header's own rule that a navigation bar shows at most two leading
+buttons is honoured by the bar.
+
+**`CPTravelEstimates` takes the port's own `NSMeasurement`.** `libFoundationBackports` carries
+`NSUnit`, `NSUnitLength` and `NSMeasurement` (all three registered `implemented`, `minimum: "6.0"`, with
+real implementations: the unit ladder, the linear and reciprocal converters, the measurement and its
+arithmetic), which is exactly what the release lacking them is for. `CPTravelEstimates` is the member
+that needs them, and it gets a real `NSMeasurement<NSUnitLength *> *` back.
+
+**The map template uses the release's own map.** `CPMapTemplate`'s view controller is the release's
+`MKMapView` -- the only map this port has -- with this port's own renderers on it, the map buttons over
+it, and the navigation alert drawn as a guidance card out of its own title and subtitle variants. The
+car-specific part of a map template (the car's own map rendering, the vehicle status, the car's input)
+is the wall and is the registry's.
+
+**`CPInterfaceController` owns a `CPWindow` of the port's own** -- a car's window is a window, and on
+this port it is a window the application owns. It keeps the root template, the tab templates and the
+pushed stack, implements the header's own completion forms and its deprecated forms of the six
+operations, sends the delegate the four template lifecycle messages, and answers `carTraitCollection`
+with **this device's own screen trait collection**, because the car is this device. `prefersDarkUser
+UserInterfaceStyle` is `inert`: the release has no dark mode, and there is nothing for it to change.
+
+**The wall, per class, as `absent`:** `CPTemplateApplicationScene` (13.0),
+`CPTemplateApplicationDashboardScene` (13.4), `CPTemplateApplicationInstrumentClusterScene` (15.4),
+`CPNavigationSession`, `CPSessionConfiguration`, `CPRouteChoice`, `CPVoiceControlState` and
+`CPVoiceControlTemplate`. Each one's own reason is in its entry, and `NSClassFromString` answers nil
+for all of them, which is what `absent` means.
+
+## What is not carried, and why that is not `absent`
+
+The other 49 classes of the corpus -- `CPNowPlayingTemplate` and the now-playing buttons, `CPTabBarTemplate`,
+`CPInformationTemplate`, `CPContactTemplate`, `CPSearchTemplate`, `CPActionSheetTemplate`,
+`CPAlertTemplate`, `CPTrip`, `CPSearchTemplateDelegate` and the rest -- have **no registry entry at
+all**, on purpose. They are not `absent`: they draw in-app like the seventeen do, and nothing about
+them needs a car, so calling them absent would be a false claim. They are simply not written yet, and
+the ledger's rows for them stay `missing`, which is the honest state. They are the next CarPlay round,
+and they follow the shapes read here.
