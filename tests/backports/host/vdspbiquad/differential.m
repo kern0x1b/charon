@@ -561,6 +561,59 @@ int main(void)
                        agreed ? "" : detail);
                 charon_host_vDSP_biquadm_DestroySetup(a);
                 vDSP_biquadm_DestroySetup(b);
+
+        // A window that names channels the setup does not have. The header forbids it; the release answers
+        // it anyway, and what it answers is that the cells the window does cover change and the rest of the
+        // setup is left alone (the review measured a two-section four-channel setup with a (2, 2) window at
+        // (1, 2): the host answers 0 for the channels the window names and does not crash, where the port
+        // answered 2 4 6 8 and 3 6 9 12 having written into cells 10 and 11 of an eight-cell block).
+        // CharonBiquadCellOf answers NULL for a channel the setup has not and the setters write nothing for
+        // one, which is the same answer without writing past the block.
+        //
+        // **The host cannot be asked about this shape**: with a two-by-two setup and a (1, 4) window at
+        // (0, 2) it answers the setter and then stops the process inside the next vDSP_biquadm, so the case
+        // below asserts the port's own answer - the one the review's measurement gives - rather than
+        // comparing against a host that cannot be asked. It has teeth without AddressSanitizer, which the
+        // armv7 bands do not have, because the window is placed so that an unclamped index lands on a cell the
+        // setup *does* have: a channel past the setup's own count at a section that exists indexes the next
+        // section's first cells, and those two are read back through the channels that own them. With the guard
+        // the second section keeps what CreateSetup gave it and the answers are 70 and 160; without it the
+        // second section takes the window's last two blocks and the answers are 63 and 80.
+        {
+            double coeffs[5 * 2 * 2];
+            double values[5 * 1 * 4];
+            memset(coeffs, 0, sizeof coeffs);
+            // section 0 over channels 0 and 1 is a gain of 1 and 2, section 1 over the same channels 10 and 20,
+            // so a channel's answer is the product of its two b0s and every cell is distinct
+            coeffs[0] = 1.0;
+            coeffs[5] = 2.0;
+            coeffs[10] = 10.0;
+            coeffs[15] = 20.0;
+            for (int at = 0; at < 5 * 1 * 4; at++) {
+                values[at] = 7.0 + (double)at;    // four distinct blocks, of which the last two name no channel
+            }
+            vDSP_biquadm_Setup setup = charon_host_vDSP_biquadm_CreateSetup(coeffs, 2, 2);
+            charon_host_vDSP_biquadm_SetCoefficientsDouble(setup, values, 0, 1, 1, 4);
+            {
+                // A setup of two channels is called with two pointers, one per channel, which is the shape
+                // every case here uses.
+                float in[2] = {1.0f, 1.0f};
+                float out[2] = {0.0f, 0.0f};
+                const float *x[2] = {&in[0], &in[1]};
+                float *y[2] = {&out[0], &out[1]};
+                charon_host_vDSP_biquadm(setup, x, 1, y, 1, 1);
+                int agreed = fabs((double)out[0] - 10.0) <= kBiquadTolerance &&
+                             fabs((double)out[1] - 140.0) <= kBiquadTolerance;
+                snprintf(detail, sizeof detail,
+                         "channel 0 answers %.10g and channel 1 %.10g, where the window's first block (7) reaches the "
+                         "one cell it covers and the three after it reach none, so the two cells of the second "
+                         "section stay at 10 and 20", (double)out[0], (double)out[1]);
+                report(agreed, "vDSP_biquadm_SetCoefficients over a window past the setup's own channels: the covered "
+                               "cells change and the rest are left alone",
+                       agreed ? "" : detail);
+            }
+            charon_host_vDSP_biquadm_DestroySetup(setup);
+        }
             }
             // SetTargets on a float setup: the interpolation, with the parameters the facts name.
             {
