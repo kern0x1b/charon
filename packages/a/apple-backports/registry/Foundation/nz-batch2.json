@@ -707,6 +707,16 @@
       "status": "absent",
       "reason": "the connection belongs to the release's NSXPCCoder, which is created by the system's own XPC machinery and keeps it in an ivar no public API returns",
       "effect": "the accessor is not there: respondsToSelector: answers honestly and an unchecked call raises"
+    },
+    {
+      "api": "+[NSOrthography defaultOrthographyForLanguage:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "maximum": "8.4.1",
+      "status": "absent",
+      "reason": "an orthography is a language's scripts and variants, and 6.1.3's Foundation has no NSOrthography to build one from: the release's own selector table ($HOME/.charon/dyld/6.1.3/selectors_armv7.txt) carries neither defaultOrthographyForLanguage: nor orthographyWithLanguage:, and the linguistic tagger's tables behind NSLinguisticTagger are the only language data there, which are not a mapping of a language to its scripts",
+      "effect": "the method is not there: respondsToSelector: answers honestly and an unchecked call raises"
     }
   ]
 }

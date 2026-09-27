@@ -48,3 +48,17 @@ coder and keeps the connection in an ivar no public API returns.
 6.1.3 has no entry point to list or clear. The two delegate methods are what a continuation calls:
 there is no `-continueUserActivity:` to be called from, and no
 `-becomeCurrentWithInputStream:outputStream:` to hand out a stream, so they have no caller.
+
+## The default orthography of a language (1 row)
+
+`+[NSOrthography defaultOrthographyForLanguage:]` answers the orthography of a language, which is that
+language's scripts and its variants. iOS 6.1.3's Foundation has no `NSOrthography` to build one
+from: the release's own selector table (`$HOME/.charon/dyld/6.1.3/selectors_armv7.txt`) carries
+neither `defaultOrthographyForLanguage:` nor `orthographyWithLanguage:`, and the only language data on
+that release is behind `NSLinguisticTagger`, which is a tagger's tables rather than a mapping of a
+language to its scripts.
+
+So the row is decided rather than carried on a guess at a factory that may not be there. Carrying it
+means writing the mapping itself -- a language's scripts and variants, per locale -- which is the same
+data the person name formatter's templates need, and belongs in that round rather than in a
+one-row patch.
