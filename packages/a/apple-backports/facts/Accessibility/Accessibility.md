@@ -81,6 +81,24 @@ three kinds of row, and all three are counted here rather than written as claims
    calls the header's own, and the compiler writes the call into the
   application.
 
+## What the registry holds, and the rows it cannot
+
+**114 entries** are written, of the 361 rows the corpus names. The rest are three kinds of row,
+and all three are counted here rather than written as claims nothing checks:
+
+* **36 rows are Swift-only spellings** - the Swift face of an Objective-C initialiser
+  (`AXDataPoint.init(x:y:additionalValues:label:)`), a Swift getter label
+  (`AXBrailleTranslationResult.inputIndex(forResultIndex:)`), and the whole `AttributeScopes` and
+  `AttributeDynamicLookup` surface, whose owners are nested Swift types. The registry's check
+  accepts three spellings for a method and one for a property and refuses all of these; the
+  accessibility of an attribute is reached through the Objective-C half.
+* **4 names the corpus gives twice** - a generic class's property once per instantiation
+  (`AXChartDescriptor.additionalAxes`, `.xAxis`, `AXNumericDataAxisDescriptor.gridlinePositions`,
+  `AXBrailleTable.language`) - and two entries may not share a name.
+* **The C API rows** (13 `AX*` functions) get no entries: a header's own function is what
+  `registry/README.md` calls the header's own, and the compiler writes the call into the
+  application.
+
 ## What is not carried, and why each
 
 247 of the 270 entries are `absent`, and the reasons are in three buckets rather than one excuse:
