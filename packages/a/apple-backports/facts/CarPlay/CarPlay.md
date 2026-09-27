@@ -115,7 +115,28 @@ eight classes `absent` at the seam. The seventeen:
 | --- | --- |
 | 12.0 | `CPWindow`, `CPTemplate`, `CPBarButton`, `CPGridButton`, `CPMapButton`, `CPTravelEstimates`, `CPManeuver`, `CPAlertAction`, `CPNavigationAlert` |
 | 12.0 | `CPListItem`, `CPListSection`, `CPListTemplate`, `CPGridTemplate`, `CPMapTemplate`, `CPInterfaceController` |
+| 12.0 | `CPActionSheetTemplate`, `CPAlertTemplate`, `CPImageSet`, `CPSearchTemplate`, `CPTrip`, `CPRouteChoice`, `CPTripPreviewTextConfiguration` |
 | 16.0 | `CPButton`, `CPTextButton` |
+
+That is 26 classes. The remaining 24 of the corpus, and the objects they go in, measured:
+
+| object | classes |
+| --- | --- |
+| 14.0 | `CPContactCallButton`, `CPContactDirectionsButton`, `CPContactMessageButton`, `CPMessageListItemLeadingConfiguration`, `CPMessageListItemTrailingConfiguration`, `CPNowPlayingAddToLibraryButton`, `CPNowPlayingImageButton`, `CPNowPlayingMoreButton`, `CPNowPlayingPlaybackRateButton`, `CPNowPlayingRepeatButton`, `CPNowPlayingShuffleButton` -- none of them is in the SDK 16.4 headers, so the registry's `introduced` is what places them |
+| 15.0 | `CPAssistantCellConfiguration` |
+| 16.0 | `CPContact`, `CPContactTemplate`, `CPDashboardButton`, `CPDashboardController`, `CPInformationItem`, `CPInformationRatingItem`, `CPInformationTemplate`, `CPInstrumentClusterController`, `CPListImageRowItem`, `CPMessageComposeBarButton`, `CPMessageListItem`, `CPNowPlayingButton`, `CPNowPlayingTemplate`, `CPPointOfInterest`, `CPPointOfInterestTemplate`, `CPTabBarTemplate` -- all in the 16.4 headers, all first exported at 16.0 |
+| 17.4 | `CPLane`, `CPLaneGuidance`, `CPRouteInformation` |
+| 18.0 | `CPNowPlayingMode`, `CPNowPlayingModeSports`, `CPNowPlayingSportsClock`, `CPNowPlayingSportsEventStatus`, `CPNowPlayingSportsTeam`, `CPNowPlayingSportsTeamLogo` -- members of `CPNowPlayingTemplate`, so a category on the 16.0 class in the 18.0 object |
+| 26.0 | `CPListImageRowItemElement` and its five subclasses, `CPMessageGridItemConfiguration` |
+
+## `CPTemplate.title` is not a name this port carries
+
+Measured against the SDK 26.2 the port does not compile against but does target: 26.2's
+`CPTemplate.h` mentions "the template's title" in a `@note` and **declares no such property**, and the
+templates that do have one -- `CPListTemplate`, `CPGridTemplate`, `CPMapTemplate` -- declare `title` on
+themselves. An earlier version of this library gave `CPTemplate` a `title`; that name no header
+declares, so it is removed (rule R4, and the lift sets that go with a registered name), and the tab's
+own name is now `tabTitle`, which the header does declare.
 
 **The buttons are NSObjects, and the templates draw them.** That is the SDK's own shape -- `CPButton`,
 `CPBarButton`, `CPGridButton`, `CPMapButton` and `CPTextButton` are all `NSObject` subclasses in the

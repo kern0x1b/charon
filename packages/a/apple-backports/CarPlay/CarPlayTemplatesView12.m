@@ -50,6 +50,13 @@
 + (instancetype)sourceForTemplate:(CPGridTemplate *)template;
 @end
 
+// The interface controller this port is currently pushing through, so a template that has to
+// dismiss itself can ask the one that presented it. Charon's own, so it carries no API.
+@interface CharonCarPlayInterface : NSObject
++ (instancetype)current;
+@property (nonatomic, weak) CPInterfaceController *controller;
+@end
+
 // The map template's own map buttons, drawn over its map, inside the window's own safe area.
 @interface CharonMapButtons : UIView
 @property (nonatomic, copy) NSArray<CPMapButton *> *charon_buttons;
@@ -958,6 +965,7 @@
         [self templateWillDisappear:below animated:animated];
     }
     [_stack addObject:templateToPush];
+    [CharonCarPlayInterface current].controller = self;
     [self charon_showTop];
     [self templateWillAppear:templateToPush animated:animated];
     [self templateDidAppear:templateToPush animated:animated];

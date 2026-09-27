@@ -86,13 +86,11 @@ static CGRect CharonAspectFit(CGSize size, CGRect rect)
 
 // ============================ the template ============================
 
-// The title of the screen itself, which the 16.4 header does not declare and the 26.2 one does: a
-// template is a screen and a screen has a name, and the tab inherits it when there is no tab title.
-// A class extension and not a category, so its accessors are the class's own.
-
-@interface CPTemplate ()
-@property (nullable, nonatomic, copy) NSString *title;
-@end
+// CPTemplate has NO title, and that is measured rather than assumed: the 26.2 SDK's own
+// CPTemplate.h mentions "the template's title" in a note and declares no such property, and the
+// templates that do have one -- CPListTemplate, CPGridTemplate, CPMapTemplate -- declare it on
+// themselves. So a name no header declares is not carried here (rule R4, and the lift sets that go
+// with it); the tab's own name is this template's tabTitle, which is the header's own.
 
 @implementation CPTemplate {
     id _userInfo;
@@ -100,7 +98,6 @@ static CGRect CharonAspectFit(CGSize size, CGRect rect)
     UIImage *_tabImage;
     UITabBarSystemItem _tabSystemItem;
     BOOL _showsTabBadge;
-    NSString *_title;
     __weak CPInterfaceController *_charonController;
 }
 
@@ -109,7 +106,6 @@ static CGRect CharonAspectFit(CGSize size, CGRect rect)
 @synthesize tabImage = _tabImage;
 @synthesize tabSystemItem = _tabSystemItem;
 @synthesize showsTabBadge = _showsTabBadge;
-@synthesize title = _title;
 
 - (instancetype)init
 {
@@ -164,7 +160,6 @@ static CGRect CharonAspectFit(CGSize size, CGRect rect)
 
 - (void)encodeWithCoder:(NSCoder *)coder
 {
-    [coder encodeObject:_title forKey:@"CPTitle"];
     [coder encodeObject:_tabTitle forKey:@"CPTabTitle"];
     [coder encodeInteger:(NSInteger)_tabSystemItem forKey:@"CPTabSystemItem"];
     [coder encodeBool:_showsTabBadge forKey:@"CPShowsTabBadge"];
@@ -174,7 +169,6 @@ static CGRect CharonAspectFit(CGSize size, CGRect rect)
 {
     self = [super init];
     if (self) {
-        _title = [coder decodeObjectForKey:@"CPTitle"];
         _tabTitle = [coder decodeObjectForKey:@"CPTabTitle"];
         _tabSystemItem = (UITabBarSystemItem)[coder decodeIntegerForKey:@"CPTabSystemItem"];
         _showsTabBadge = [coder decodeBoolForKey:@"CPShowsTabBadge"];
