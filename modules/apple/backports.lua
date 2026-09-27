@@ -62,6 +62,12 @@ LIBRARIES = {
     -- shortcut, so it is a library of its own: a port that only donates interactions never draws
     -- one, and a daemon has no UIKit in its process to begin with. It needs the Intents classes
     -- the controllers hold, and it draws with UIKit.
+    -- Accessibility arrived with iOS 3, so the release already has libAccessibility.dylib and its
+    -- C API; what it does not have is the Objective-C classes the SDK of 26.2 declares on top of
+    -- it, and this library is those. The release carries none of the 30 (measured against the
+    -- 6.1.3 armv7 cache, with a control), so every band builds it whole and nothing in it is a
+    -- class of its own that the release would answer.
+    {name = "AccessibilityBackports", folder = "Accessibility", frameworks = {"Accessibility", "Foundation", "CoreGraphics"}, libraries = {"FoundationBackports"}},
     {name = "IntentsUIBackports", folder = "IntentsUI", frameworks = {"IntentsUI", "Intents", "UIKit", "Foundation", "CoreGraphics"}, libraries = {"FoundationBackports", "IntentsBackports"}}
 }
 
