@@ -276,13 +276,18 @@ int main(int argc, char **argv)
 
         // the scaled multiply-multiply-add, the two dot products and the distance
         {
-            const double a[4] = {1, 2, 3, 4}, b[2] = {2.0, 0.0}, c[4] = {10, 20, 30, 40}, d[4] = {0.5, 0.5, 0.5, 0.5};
+            // B and D are both scalars, and this case has to be able to tell that from reading them as
+            // vectors: with a constant D either reading gives the same answer, so B and D are both
+            // non-uniform here and the expected answer is the one both scalars give.
+            const double a[4] = {1, 2, 3, 4}, b[4] = {2.0, 7.0, 7.0, 7.0}, c[4] = {10, 20, 30, 40},
+                         d[4] = {0.5, 99, 99, 99};
             const double want[4] = {7, 14, 21, 28};
             double out[8];
             for (int at = 0; at < 8; at++)
                 out[at] = kFillD;
             vDSP_vsmsmaD(a, 1, b, c, 1, d, out, 1, 4);
-            CHECK(sameDoubles(out, want, 4), "vDSP_vsmsmaD is A * B[0] + C * D, with B a scalar at B[0]");
+            CHECK(sameDoubles(out, want, 4),
+                  "vDSP_vsmsmaD is A * B[0] + C * D[0], with B and D each a scalar at its own [0]");
             const double a0[4] = {1, 2, 3, 4}, a1[4] = {1, 0, 0, 1}, bb[4] = {5, 6, 7, 8};
             double c0 = 0.0, c1 = 0.0;
             vDSP_dotpr2D(a0, 1, a1, 1, bb, 1, &c0, &c1, 4);

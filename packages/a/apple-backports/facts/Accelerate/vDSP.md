@@ -31,6 +31,22 @@ and generated per scalar type in `Accelerate/CharonVDSPKernel.c`, so the two pre
 apart. That file exports nothing: the names a caller reaches are the twenty-two above, and a name beginning with `charon_`
 is the port's own and is not weighed against a release (modules/apple/backports.lua, `internal_symbol`).
 
+## The twenty-two, each against the header's own formula
+
+Every one of the twenty-two entry points in this group was read against the map block vDSP.h prints under its
+declaration, formula by formula, and the port now answers all twenty-two of them. One did not, and the audit is
+what found it: `vDSP_vsmsmaD` had `C[n] * D[n]` where the map block says `C[n] * D[0]`. The other stride-less
+parameter in the group, `B` in the four 24-bit scaling forms, is read at `[0]` in all four, and the ramps, the add
+and subtract, the sliding window, the two dot products, the distance and the four split-complex products agree
+with their map blocks as they stand.
+
+Two comments in Apple's own header are transposed, which is worth knowing before the next reader trusts one of
+them: the block above `vDSP_vsmfix24` says "24-bit **unsigned** integer" and the one above `vDSP_vsmfixu24` says
+"24-bit integer", while the declarations say `vDSP_int24 *C` and `vDSP_uint24 *C` respectively. The declarations
+are the API and the host agrees with them (measured: `vDSP_vsmfix24` clamps to [-8388608, 8388607] and
+`vDSP_vsmfixu24` to [0, 16777215]), so the port follows the declarations and the two comment blocks are each one
+function out of step - the same offset-by-one that the ramps' `*Start` and `vDSP_vaddsub`'s second output sit in.
+
 ## What was measured
 
 **The 24-bit readers.** A value is three bytes least significant first. The signed reader sign-extends from bit 23 and the
@@ -66,10 +82,15 @@ form walks one ramp across two inputs and leaves the start the same way; measure
 answers 10 15 24 37 54 in both. The `add` forms accumulate into the buffer the caller named: into one already holding
 1 6 15 28 45 with a start of 1 and a step of 2, `vDSP_vrampmuladdD` answers 2 12 30 56 90.
 
-**`vDSP_vsmsmaD`'s B is a scalar too.** It has no stride, so `B[0]` is the whole of it and
-`E[n] = A[n] * B[0] + C[n] * D[n]`. Over A = [1,2,3,4], B[0] = 2, C = [10,20,30,40] and D = 0.5 the host answers
-7 14 21 28, which is A * 2 + C * 0.5 and not `A * B + C * D` with B read as an array (that would be 7 16 27 40). The
-single-precision `vDSP_vsmsma` of iOS 4.0 is on the release already.
+**`vDSP_vsmsmaD`'s B and D are both scalars.** Neither has a stride parameter, which is the header saying that
+one element is the whole of it, and its own pseudocode prints `E[n] = A[n]*B[0] + C[n]*D[0]`. Measured with an
+operand that tells the two readings apart: over A = [1,2,3,4], B = [2,7,7,7], C = [10,20,30,40] and
+D = [0.5,99,99,99] the host answers **7 14 21 28**, which is A * 2 + C * 0.5. Reading either operand as a vector
+would answer 7 16 27 40 for B and 7 1994 2991 3988 for D, and the one element each the header tells a caller to
+pass would be read out of bounds - measured, the port's answer was -19753076 at element 1 where the host says 14.
+A constant D cannot see this at all, which is why the differential uses a D that is not constant and a second
+case with the one element the header prescribes. The single-precision `vDSP_vsmsma` of iOS 6.0 is on the
+release already.
 
 **The sliding window maximum runs forward from n.** `vDSP_vswmax`'s header says `C[n]` is the greatest of the
 `WindowLength` elements of A that *begin* at n, and says what the buffers must hold: **A must contain N + WindowLength - 1

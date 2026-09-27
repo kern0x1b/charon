@@ -112,16 +112,19 @@ CHARON_VDSP_RAMP(double, D)
 CHARON_VDSP_SLIDING_WINDOW_MAXIMUM(float, )
 CHARON_VDSP_SLIDING_WINDOW_MAXIMUM(double, D)
 
-// E = A * B[0] + C * D: the single-precision vDSP_vsmsma of iOS 4.0 is on the release already, and this is
-// its double form. B has no stride, so B[0] is the whole of it, as the host's answer says: over
-// A = [1,2,3,4], B[0] = 2, C = [10,20,30,40] and D = 0.5 it answers 7 14 21 28, which is A * 2 + C * 0.5
-// and not A * B + C * D elementwise with B read as an array (facts/Accelerate/vDSP.md).
+// E[n] = A[n] * B[0] + C[n] * D[0]: the single-precision vDSP_vsmsma of iOS 6.0 is on the release already,
+// and this is its double form. B and D are both scalars - neither has a stride parameter, which is the
+// header saying that one element is the whole of it, and its own pseudocode prints B[0] and D[0]. The
+// host's answers say the same, and say it for a D that is not constant, which is the case a constant D
+// cannot: over A = [1,2,3,4], B = [2,7,7,7], C = [10,20,30,40] and D = [0.5,99,99,99] the host answers
+// 7 14 21 28, which is A * 2 + C * 0.5. Reading D as a vector would answer 7 1994 2991 3988, and the
+// one-element D the header tells a caller to pass would be read out of bounds (facts/Accelerate/vDSP.md).
 void vDSP_vsmsmaD(const double *__A, vDSP_Stride __IA, const double *__B, const double *__C, vDSP_Stride __IC,
                   const double *__D, double *__E, vDSP_Stride __IE, vDSP_Length __N)
 {
-    double scale = __B[0];
+    double scale = __B[0], weight = __D[0];
     for (vDSP_Length n = 0; n < __N; n++) {
-        __E[n * __IE] = __A[n * __IA] * scale + __C[n * __IC] * __D[n * __IA];
+        __E[n * __IE] = __A[n * __IA] * scale + __C[n * __IC] * weight;
     }
 }
 

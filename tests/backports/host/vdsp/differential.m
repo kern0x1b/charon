@@ -524,17 +524,48 @@ int main(void)
         }
     }
 
-    // the scaled multiply-multiply-add, the two dot products and the distance
+    // The scaled multiply-multiply-add, the two dot products and the distance.
+    //
+    // B and D are both scalars, and a differential can only see that with an input that tells the two
+    // readings apart: with a constant D, D[0] and D[n] are the same number and any reading of D passes.
+    // So B and D are both non-uniform here, and a second case passes the one element each that the header
+    // tells a caller to pass - which is the case a vector reading also gets wrong, and gets wrong by
+    // reading past the end of the caller's own buffer.
     {
-        const double a[4] = {1, 2, 3, 4}, c[4] = {10, 20, 30, 40}, d[4] = {0.5, 0.5, 0.5, 0.5};
-        const double b[2] = {2.0, 0.0};
+        const double a[4] = {1, 2, 3, 4}, c[4] = {10, 20, 30, 40};
+        const double d[4] = {0.5, 99, 99, 99};
+        const double b[4] = {2.0, 7.0, 7.0, 7.0};
         double me[BUFFER_SLOTS], te[BUFFER_SLOTS];
         for (int at = 0; at < BUFFER_SLOTS; at++) {
             me[at] = te[at] = kFillD;
         }
         charon_host_vDSP_vsmsmaD(a, 1, b, c, 1, d, me, 1, 4);
         vDSP_vsmsmaD(a, 1, b, c, 1, d, te, 1, 4);
-        same_doubles("vDSP_vsmsmaD with a scale of 2", me, te, BUFFER_SLOTS);
+        same_doubles("vDSP_vsmsmaD with a D that is not constant", me, te, BUFFER_SLOTS);
+        {
+            // The one element B and D the header asks for, each in a buffer with a guard element on
+            // each side. Reading D[1..3] as a vector then takes whatever the guard holds, which is
+            // visible in the compared output rather than in the guard itself - a read does not change
+            // what it reads - and the guard elements are checked after the call for the other half of
+            // it, which is that neither side writes to an operand it was given.
+            double lone_b[4], lone_d[4];
+            for (int at = 0; at < 4; at++) {
+                lone_b[at] = lone_d[at] = kFillD;
+            }
+            lone_b[1] = 2.0;
+            lone_d[1] = 0.5;
+            for (int at = 0; at < BUFFER_SLOTS; at++) {
+                me[at] = te[at] = kFillD;
+            }
+            charon_host_vDSP_vsmsmaD(a, 1, lone_b + 1, c, 1, lone_d + 1, me, 1, 4);
+            vDSP_vsmsmaD(a, 1, lone_b + 1, c, 1, lone_d + 1, te, 1, 4);
+            same_doubles("vDSP_vsmsmaD with the one element B and D the header asks for", me, te, BUFFER_SLOTS);
+            int guards_agree = lone_b[0] == kFillD && lone_b[2] == kFillD && lone_d[0] == kFillD && lone_d[2] == kFillD;
+            snprintf(detail, sizeof detail, "the guard elements are %g %g %g %g, the fill is %g", lone_b[0], lone_b[2],
+                     lone_d[0], lone_d[2], kFillD);
+            report(guards_agree, "vDSP_vsmsmaD writes to neither B nor D, and the guards are still the fill",
+                   detail);
+        }
         {
             const double a0[4] = {1, 2, 3, 4}, a1[4] = {1, 0, 0, 1}, bb[4] = {5, 6, 7, 8};
             double my0 = 0.0, my1 = 0.0, their0 = 0.0, their1 = 0.0;
