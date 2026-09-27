@@ -2302,9 +2302,29 @@
    "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompare, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
   },
   {
+   "api": "MLCComparisonOperationDebugDescription()",
+   "kind": "function",
+   "introduced": "14.5",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the string the framework gives for the case it is given, and nil for a value that is not a case",
+   "facts": "facts/MLCompute/Values.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompare, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
    "api": "MLCConvolutionTypeDebugDescription()",
    "kind": "function",
    "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the string the framework gives for the case it is given, and nil for a value that is not a case",
+   "facts": "facts/MLCompute/Values.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompare, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCGradientClippingTypeDebugDescription()",
+   "kind": "function",
+   "introduced": "15.0",
    "minimum": "4.3",
    "status": "implemented",
    "effect": "the string the framework gives for the case it is given, and nil for a value that is not a case",
@@ -2353,6 +2373,16 @@
   },
   {
    "api": "MLCPoolingTypeDebugDescription()",
+   "kind": "function",
+   "introduced": "14.0",
+   "minimum": "4.3",
+   "status": "implemented",
+   "effect": "the string the framework gives for the case it is given, and nil for a value that is not a case",
+   "facts": "facts/MLCompute/Values.md",
+   "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompare, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
+  },
+  {
+   "api": "MLCReductionTypeDebugDescription()",
    "kind": "function",
    "introduced": "14.0",
    "minimum": "4.3",
