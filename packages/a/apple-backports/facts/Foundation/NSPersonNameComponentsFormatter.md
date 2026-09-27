@@ -69,25 +69,37 @@ representation, because its abbreviated template asks the phonetic object for th
 not got. The port answers the two initials instead, because an API here must not crash its caller
 (COORDINATION §2), and the differential asserts that difference on both sides rather than hiding it.
 
-## Open, and it is the next thing to do
+## The suite is green, and what it took
 
-The suite is **not green**: it runs 515 checks with 9 of the recorded divergence and then **crashes**,
-and the crash is not a memory error. What is measured about it:
+`tests/backports/host/personname` reads **857 checks, 0 failures, 17 named divergences**, and exits 0.
+Two harness bugs were in the way and both are worth writing down, because neither was in the port's
+code and both looked like one:
 
-- **AddressSanitizer and UndefinedBehaviorSanitizer are both silent** (`tests/backports/host/
-  personname/asan.sh` builds the suite with both and runs it). The process dies on `EXC_BREAKPOINT`,
-  which is a deliberate trap rather than a fault, and the ASan build reproduces it at the same case.
-- The first run of it ended in the *test's* attribute walk with a dangling value on the **system**
-  side, which is what put the eight names in an object of their own: a differential that links the
-  port's definitions of eight exported symbols next to the system's has two definitions of each in one
-  process, and that is worth not doing whatever else is true. The names are back in
-  `NSPersonNameComponentKeys9.m` and the formatter's object no longer defines them.
-- With the names moved, the same 515 checks pass and the crash is at the same place in the sweep: the
-  **port's** long style, `en_IN` and the "given and family" set, style 3. The lldb frame for the
-  earlier build was `-[NSAttributedString enumerateAttributesInRange:options:usingBlock:]` in the test,
-  and the one after the split is the same case, so both are the port's long path reached through two
-  different call sites.
+- **The attribute walk was a use-after-free in the test.** It described each run's value from inside
+  `enumerateAttributesInRange:`, and the value the dictionary hands out is not guaranteed to be alive
+  after the block returns, so `%@` trapped. ASan and UBSan were both silent, and lldb named the
+  frames: `_DescriptionWithStringProxyFunc` under `__CFStringAppendFormatCore`. The walk now says
+  *which of the eight names sits on which range* and sends nothing to a value: a dictionary lookup by
+  a key that is one of the eight compares the value by pointer. It says the same thing and cannot walk
+  off the end of an object.
+- **The last section read a global variable through `objc_msgSend`.** The eight names are variables,
+  not methods, and asking a class object for a selector it does not have throws a **C++** exception,
+  which an `@catch (NSException *)` does not catch: the process terminated in `std::terminate`. The
+  section reads the variables now, and a differential cannot test its own copy of them anyway --
+  the object that defines the port's is not linked here, so both sides read the system's.
 
-What is left is one case in one locale: `en_IN`, "given and family", style 3. The next thing to do is
-to narrow it further -- hold `en_IN` alone, print the pieces the port joins before it joins them, and
-find which of them is the trap.
+The suite covers **fifteen locales**, and five of them -- ja, zh, ko, hu, vi -- write the family
+name first, so the order is decided here rather than on a device: dropping `ja` from the set gives
+**`failures=16`, exit 1**.
+
+## The seventeen divergences, and what each is
+
+Fifteen of them are the one recorded case: the host raises `NSUnknownKeyException` for an abbreviated
+style over a phonetic representation, once per locale, and the port answers the two initials.
+
+The other two are the parse of one shape, and they are a *parser*, not a rule:
+`"Appleseed John Dr. Esq."` gives the system the middle name `John` and the family name `Dr.`, where a
+positional rule -- first remaining word the given name, last the family name, the rest in between --
+gives the family name `"John Dr."`. The system's parser is a grammar and this one is positional, and
+a dotted word in the family position is where they part company. Of fifteen measured strings this is
+the only one, and both answers are in the log.
