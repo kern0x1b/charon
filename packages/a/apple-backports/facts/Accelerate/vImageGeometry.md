@@ -455,3 +455,42 @@ So the family has what it needs to write the filter object and the twenty-four s
 the support rule and the per-phase normalised weights, each with a measurement behind it.
 
 
+
+## The filter is a caller-allocated buffer, and that is what unblocks the shears
+
+I was about to record the shears as blocked on "the filter object belongs to the release and its layout is
+unpublished", and the header says otherwise. `Geometry.h` on
+`vImageNewResamplingFilterForFunctionUsingBuffer`:
+
+> This function writes the kernel values into a preallocated kernel buffer that you provide. This function
+> writes the kernel values into a preallocated kernel buffer that you provide. The kernel buffer should be at
+> least the size of the kernel data, which is given by `vImageGetResamplingKernelSize`.
+
+and on the other two:
+
+> `vImageNewResamplingFilter` and `vImageDestroyResamplingFilter` are **merely convenience functions** to
+> make the common case of the default resampling filter into a heap allocated buffer easier for you.
+
+So a `ResamplingFilter` is **not an opaque object the port has to invent a peer for**. It is a buffer **the
+caller allocates**, whose size `vImageGetResamplingFilterSize` reports, and which the release's own
+constructor - `vImageNewResamplingFilterForFunctionUsingBuffer`, at **iOS 5.0**, so present in 6.1.3 - fills
+with the kernel's values by evaluating a caller-supplied `y = f(x)`. The kernel function's own signature is
+published: `void (*)(const float *xArray, float *yArray, unsigned long count, void *userData)`.
+
+That changes the shears from blocked to measurable. A caller's filter is a buffer of kernel values the
+release wrote, and what the port needs to read it is **the arrangement of those values in the buffer** -
+which is a host measurement, not a reverse-engineering project: construct a filter of a known scale on the
+host, dump the buffer, and the arrangement is the pattern in the bytes. `vImageGetResamplingFilterSize(scale,
+flags)` gives the length to expect, so the measurement is self-checking: the bytes that vary with the scale
+are the kernel, and the ones that do not are the header.
+
+It also means the kernel the port evaluates and the kernel the release evaluated are the *same function* -
+whatever `sinc(x)*sinc(x/3)` is doing, the release evaluated it and wrote the result down - so the port does
+not have to reproduce the release's arithmetic to agree with it. It has to read the numbers the release
+wrote. That is a much smaller and more robust thing to get right, and it is why the residual in the phase
+table stops mattering: the port can take the weights from the filter rather than compute them.
+
+So the shears' engine is: take the filter's buffer, read its scale and its per-phase weights, and resample
+with them; and the one measurement left is the buffer's arrangement. The twenty-four functions the corpus
+wants for the four shear spellings and the eleven pixel types, and the one `vImageGetResamplingFilterExtent`
+that has to read the same buffer, all follow from it.
