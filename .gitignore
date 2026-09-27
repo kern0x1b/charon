@@ -13,3 +13,4 @@ device.*.env
 # Local screenshots may show device content
 **/shots/
 *-shots/
+tests/backports/emulate/calls/xmake-addons.lock
