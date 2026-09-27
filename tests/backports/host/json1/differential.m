@@ -267,6 +267,18 @@ int main(void)
 
     // A JSON5 container whose only content is a comment is the empty container: the emptiness test has to skip
     // comments the way the rest of the reader does, not whitespace alone.
+    // A backslash before a line terminator, the one rule whose shape depends on what follows it: a lone
+    // CR and a lone LF are one newline each, a CRLF pair is one while anything follows it and two where
+    // it ends the string, and without JSON5 the pair is a continuation whose LF is then refused as the
+    // unescaped control character it is (measured on both sides).
+    for (NSString *t in @[@"[\"a\\\r\nb\"]", @"[\"a\\\r\n\"]", @"[\"\\\r\n\"]", @"[\"\\\r\nb\"]",
+                          @"[\"a\\\rb\"]", @"[\"a\\\r\"]", @"[\"\\\rb\"]", @"[\"\\\r\"]",
+                          @"[\"a\\\nb\"]", @"[\"a\\\n\"]", @"[\"\\\n\"]", @"[\"a\\\r\nbb\"]",
+                          @"[\"\\\r\n\",\"x\"]", @"[\"a\\\r\n\",1]"])
+    {
+        sameRead([@"crlf json5 " stringByAppendingString:t], text(t), NSJSONReadingJSON5Allowed, YES);
+        sameRead([@"crlf opt 0 " stringByAppendingString:t], text(t), 0, YES);
+    }
     for (NSString *t in @[@"[/*c*/]", @"{/*c*/}", @"[ //c\n]", @"{ //c\n}", @"[/****/]", @"[/*a*//*b*/]",
                           @"[/*c*/\n]", @"{/*c*/\n}", @"[/*c*/1]", @"{/*c*/\"a\":1}", @"[/**/]",
                           @"/*c*/[1]", @"[/*c*/*/]", @"{/*a*/ /*b*/}"])

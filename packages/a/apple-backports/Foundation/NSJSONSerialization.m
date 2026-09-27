@@ -523,12 +523,12 @@ static const NSUInteger CharonJSONTopLevelDictionaryAssumed = 1UL << 4; // NSJSO
             case '\r': {
                 // A backslash before a line terminator continues the line, and the terminator stays in
                 // the string: the host reads "a\<newline>b" as the three characters a, newline, b and
-                // not as "ab" (measured). A CR and a LF make **two** newlines where the pair is CRLF -
-                // the host reads "\<CR><LF>" as a newline and a newline - while a lone CR and a lone LF
-                // make one each. Without JSON5 the pair is still read as a continuation and the LF that
-                // follows it is then refused as the unescaped control character it is, which is what the
-                // host answers for "a\<CR><LF>b"; a lone CR with nothing after it is an invalid escape
-                // at the backslash, as a lone LF is.
+                // not as "ab" (measured). A lone CR and a lone LF are one newline each whatever
+                // follows them, and a CRLF pair is one as well unless the pair ends the string, where
+                // it is two. Without JSON5 the pair is still read as a continuation and the LF that
+                // follows it is then refused as the unescaped control character it is, which is what
+                // the host answers for "a\<CR><LF>b"; a lone CR with nothing after it is an invalid
+                // escape at the backslash, as a lone LF is.
                 if (!self.json5) {
                     if (self.position + 1 >= self.length || self.buffer[self.position + 1] != '\n') {
                         [self fail:@"Invalid escape sequence" at:escape];
@@ -539,9 +539,18 @@ static const NSUInteger CharonJSONTopLevelDictionaryAssumed = 1UL << 4; // NSJSO
                 }
                 [self advance];
                 [out appendString:@"\n"];
+                // A CRLF pair is one newline unless the pair ends the string, where the host writes
+                // two: "a\<CR><LF>b" is a, newline, b and "a\<CR><LF>" is a, newline, newline, while a
+                // lone CR and a lone LF are one each whatever follows them (measured). So the second
+                // newline is the LF's alone, and only when nothing is left in the string after it.
                 if (self.position < self.length && self.buffer[self.position] == '\n') {
+                    // The LF is always part of the pair and always consumed; whether it is also a
+                    // newline of its own is the question.
                     [self advance];
-                    [out appendString:@"\n"];
+                    if (self.position < self.length && self.buffer[self.position] == '"')
+                        [out appendString:@"\n"];
+                    else if (self.json5 && self.position < self.length && self.buffer[self.position] == '\'')
+                        [out appendString:@"\n"];
                 }
                 break;
             }
