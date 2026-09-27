@@ -198,23 +198,26 @@ static inline vImage_Error CharonShearRun(const vImage_Buffer *src, const vImage
                 for (int k = 0; k < taps; k++) {
                     long column = first + k;
                     long row = (long)cross0 + (long)cross + (long)(slope * (double)k);
-                    // The two edges are two rules, and both are measured.
+                    // The two edges are two rules, and both are measured, and the first is the one that
+                    // a whole-pixel case cannot see.
                     //
-                    // A tap whose COLUMN is outside is DROPPED. A translate of +0.5's first column
-                    // answers one weight of column 0 and nothing else, where a clamped neighbour would have
-                    // added its 0.02446 of the same column; and the position itself is never clamped - a
-                    // translate of -1's first column answers the source's SECOND column.
+                    // A tap whose COLUMN is outside the picture is replaced by the BACKCOLOR, keeping its
+                    // weight - not dropped. A source that is constant at 1.0 with a backColor of -1 makes the
+                    // answer `2w - 1`, so a host answer of -0.000 is a substituted backColor with a
+                    // NEGATIVE Lanczos lobe in it and 1.223 is one with a positive overshoot. At a
+                    // whole-pixel phase the out-of-range lobes are exactly zero, so dropping and
+                    // substituting are indistinguishable there, which is why an earlier reading of a
+                    // whole-pixel grid said "dropped" and was wrong.
                     //
-                    // A tap whose ROW is outside - and only the shear direction moves the row, one per tap -
-                    // is CLAMPED to the edge row with its weight intact and the weights are NOT
-                    // renormalised, so the edge row is counted twice. That is the 5558 and 55579.2
-                    // fingerprint: a value above the source's own maximum, which no convex combination
-                    // produces, and which the guard-page run shows came from inside the caller's allocation.
+                    // A tap whose ROW is outside - and only the shear direction moves the row, one per
+                    // tap - is CLAMPED to the edge row, weight intact, with no renormalisation, so the edge
+                    // row is counted twice. That is the 5558 and 55579.2 fingerprint: a value above the
+                    // source's own maximum, which no convex combination produces, and which the guard-page
+                    // run shows came from inside the caller's allocation.
                     if (column < 0 || column >= (long)srcAlong) {
-                        if (!extend)
-                            continue;
-                        if (column < 0) column = 0;
-                        if (column >= (long)srcAlong) column = srcAlong ? (long)srcAlong - 1 : 0;
+                        sum += weights[k] * backColor[channel];
+                        any = 1;
+                        continue;
                     }
                     if (row < 0) row = 0;
                     if (row >= (long)srcCross) row = srcCross ? (long)srcCross - 1 : 0;

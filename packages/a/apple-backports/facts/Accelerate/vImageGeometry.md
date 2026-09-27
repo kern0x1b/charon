@@ -818,4 +818,33 @@ the same `dx - xTranslate` the port already has.
 
 So the remaining difference is the **in-row** position rule at a whole-pixel translate, not the shear
 direction and not the bottom edge, and it is a bug in the committed engine rather than a divergence to pin.
-The 36 registry entries stay **out** until the differential is green.
+
+## The constant-source table: the in-row rule is the BACKCOLOR, not a drop
+
+A source constant at 1.0, a backColor of -1, a scale-1 filter, slope 0, over a nine-wide picture - so the
+answer reads the applied weight sum directly, `2w - 1`, and no reasoning about the kernel is needed:
+
+| translate | dx=0 | dx=6 | dx=7 | dx=8 |
+| --- | --- | --- | --- | --- |
+| -2.0 | 1.000 | 1.000 | **-1.000** | **-1.000** |
+| -1.5 | 0.951 | 0.951 | **-0.000** | **-1.223** |
+| -1.0 | 1.000 | 1.000 | 1.000 | **-1.000** |
+| -0.5 | **1.223** | 1.000 | 0.951 | 1.223 |
+| 0.0 | 1.000 | 1.000 | 1.000 | 1.000 |
+
+`-0.000` and `1.223` are **weights**, not dropped taps: a substituted backColor with a negative Lanczos
+lobe and one with a positive overshoot. So an out-of-picture tap is **replaced by the backColor, keeping its
+weight** - which is `kvImageBackgroundColorFill` read literally, and is not a drop at all. At a whole-pixel
+phase the out-of-range lobes are exactly zero, so dropping and substituting are indistinguishable there, and
+that is why a whole-pixel grid read as "dropped" and misled this twice.
+
+Implemented, and the differential is still red:
+
+    212 checks, 100 failures, the widest sample difference 5.8997e+35 of a 0..1 channel
+    FAIL vShear 9x5 into 9x5 translate 0 scale 1 flags 0x4: row 1 sample 5 differs by 2
+
+**And the remaining failure is the IDENTITY** - slope 0, a translate of 0, a scale of 1, where the
+destination must be a byte-for-byte copy of the source and no resampling happens at all. A difference of 2 on
+a channel whose range is -2 to +2 is the whole channel, so the engine is wrong where it has nothing to
+resample. That is a bug in the committed tap loop and not a divergence to pin, and it is the next thing to
+find. The 36 registry entries stay **out**.
