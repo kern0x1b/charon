@@ -12,8 +12,39 @@
  */
 #import <CoreML/CoreML.h>
 
+#import <stdarg.h>
+#import <string.h>
+
 #import "check.h"
 #import "coreml-models.h"
+
+/* The two prediction forms iOS 17 added, declared here because the SDK this port is built against
+ * is 16.4 and has not got them: the declarations are Core ML's own, from its 17.0 header, and a
+ * test that wants to call a method the port carries has to name it the way a caller compiled
+ * against that header would. The port defines both, which is what the registry claims. */
+/* MLFeatureValue's own subscripting, also iOS 17's: an MLFeatureValue indexes as a flat array of
+ * its own numbers, so a caller reads a multi array's elements through the value it was given. */
+@interface MLFeatureValue (CharonSeventeen)
+- (NSNumber *)objectAtIndexedSubscript:(NSInteger)index;
+@end
+
+@interface MLModelAsset (CharonEighteen)
++ (instancetype)modelAssetWithSpecificationData:(NSData *)specificationData
+                                    blobMapping:(NSDictionary<NSURL *, NSData *> *)blobMapping
+                                          error:(NSError **)error;
+- (void)functionNamesWithCompletionHandler:(void (^)(NSArray<NSString *> *, NSError *))handler;
+- (void)modelDescriptionWithCompletionHandler:(void (^)(MLModelDescription *, NSError *))handler;
+- (void)modelDescriptionOfFunctionNamed:(NSString *)functionName
+                      completionHandler:(void (^)(MLModelDescription *, NSError *))handler;
+@end
+
+@interface MLModel (CharonSeventeen)
+- (void)predictionFromFeatures:(id<MLFeatureProvider>)input
+             completionHandler:(void (^)(id<MLFeatureProvider>, NSError *))handler;
+- (void)predictionFromFeatures:(id<MLFeatureProvider>)input
+                      options:(MLPredictionOptions *)options
+            completionHandler:(void (^)(id<MLFeatureProvider>, NSError *))handler;
+@end
 
 /* A model written out of the embedded bytes and read back through the public API, so the test goes
  * through the same path an application does: a file on disk, then +modelWithContentsOfURL:. */
@@ -27,6 +58,20 @@ static MLModel *model_from(NSString *label, const unsigned char *bytes, unsigned
         return nil;
     }
     return [MLModel modelWithContentsOfURL:[NSURL fileURLWithPath:path] error:error];
+}
+
+/* A check's name, built into a C buffer: printf has no %@, so the format is read as an NSString
+ * literal and the arguments are formatted by Foundation before the bytes are copied. Every check in
+ * this file is named the same way, so a failure line says which model and which feature. */
+static void charon_label(char *into, size_t size, NSString *format, ...)
+{
+    va_list arguments;
+    NSString *text;
+    va_start(arguments, format);
+    text = [[NSString alloc] initWithFormat:format arguments:arguments];
+    va_end(arguments);
+    strncpy(into, text.UTF8String, size - 1);
+    into[size - 1] = 0;
 }
 
 /* A value for one input, filled with a pattern that depends only on where each element sits, so
@@ -84,8 +129,14 @@ static void check_value_types(void)
     CHECK_EQUAL(@(MLFeatureTypeDouble), @(undefined.type), "an undefined value keeps the type it was given");
     CHECK(undefined.isUndefined, "an undefined value says so");
     CHECK(!int64.isUndefined, "a value that holds something does not");
-    CHECK_EQUAL(@(2ul), @([MLSequence sequenceWithInt64Array:@[ @1, @2 ]].int64Values.count), "a sequence keeps its elements");
-    CHECK_EQUAL(@"a", [[MLSequence sequenceWithStringArray:@[ @"a", @"b" ]] stringValues][1], "a string sequence keeps its strings");
+    {
+        /* The literals are hoisted out of the macro: a comma inside an array literal is a comma as
+         * far as the preprocessor is concerned, and CHECK_EQUAL is a macro. */
+        MLSequence *two = [MLSequence sequenceWithInt64Array:@[ @1, @2 ]];
+        MLSequence *words = [MLSequence sequenceWithStringArray:@[ @"a", @"b" ]];
+        CHECK_EQUAL(@(2ul), @(two.int64Values.count), "a sequence keeps its elements");
+        CHECK_EQUAL(@"b", [words stringValues][1], "a string sequence keeps its strings");
+    }
     CHECK(sequence.type == MLFeatureTypeInt64, "a sequence of numbers is of the int64 element type");
     CHECK([MLFeatureValue featureValueWithInt64:3] != nil, "featureValueWithInt64 builds");
     CHECK([MLFeatureValue featureValueWithSequence:nil] == nil, "a sequence of nil builds nothing");
@@ -101,7 +152,8 @@ static void check_value_types(void)
 static void check_arrays(void)
 {
     NSError *failure = nil;
-    MLMultiArray *array = [[MLMultiArray alloc] initWithShape:@[ @2, @3 ]
+    NSArray *two_by_three = @[ @2, @3 ];
+    MLMultiArray *array = [[MLMultiArray alloc] initWithShape:two_by_three
                                                      dataType:MLMultiArrayDataTypeFloat32
                                                         error:&failure];
     MLMultiArray *read;
@@ -110,17 +162,35 @@ static void check_arrays(void)
     CHECK_EQUAL(@6, @(array.dataType), "it is of the element type it was asked for");
     [array setObject:@1.5 atIndexedSubscript:4];
     CHECK_EQUAL(@1.5, [array objectAtIndexedSubscript:4], "an element written is an element read");
-    CHECK_EQUAL(@1.5, [array objectForKeyedSubscript:@[ @1, @1 ]], "the same element by position");
-    read = [[MLMultiArray alloc] initWithShape:@[ @2, @3 ] dataType:MLMultiArrayDataTypeFloat32 error:&failure];
+    {
+        NSArray *position = @[ @1, @1 ];
+        CHECK_EQUAL(@1.5, [array objectForKeyedSubscript:position], "the same element by position");
+    }
+    read = [[MLMultiArray alloc] initWithShape:two_by_three dataType:MLMultiArrayDataTypeFloat32 error:&failure];
     [read setObject:@2.5 atIndexedSubscript:4];
     CHECK_EQUAL(@2.5, [read objectAtIndexedSubscript:4], "a second array keeps its own numbers");
     CHECK([array isKindOfClass:[MLMultiArray class]], "a multi array is a multi array");
+    /* The two byte handlers, which are how Core ML asks a caller to read an array without the
+     * deprecated dataPointer: the buffer is the array's own and is only valid inside the block. */
     {
-        MLMultiArray *strided = [[MLMultiArray alloc] initWithShape:@[ @2, @3 ]
-                                                            dataType:MLMultiArrayDataTypeDouble
-                                                               strides:@[ @3, @1 ]];
-        CHECK(strided != nil, "a strided multi array builds");
-        CHECK_EQUAL(@(6), @(strided.count), "the strides do not change the count");
+        __block const void *seen = NULL;
+        __block NSInteger size = 0;
+        [read getBytesWithHandler:^(const void *bytes, NSInteger length) {
+            seen = bytes;
+            size = length;
+        }];
+        CHECK(seen == read.dataPointer, "getBytesWithHandler hands over the array's own buffer");
+        CHECK_EQUAL(@(24), @(size), "and its length in bytes: six doubles");
+        {
+            __block void *mutableSeen = NULL;
+            [read getMutableBytesWithHandler:^(void *bytes, NSInteger length, NSArray<NSNumber *> *strides) {
+                mutableSeen = bytes;
+                ((double *)bytes)[0] = 7.5;
+                CHECK_EQUAL(@(3), @(strides.count), "the mutable handler hands over the strides");
+            }];
+            CHECK(mutableSeen == seen, "the mutable handler hands over the same buffer");
+            CHECK_EQUAL(@7.5, [read objectAtIndexedSubscript:0], "and a write through it is a write to the array");
+        }
     }
     {
         /* An MLFeatureValue over an array is a window on the array's own buffer: a write through
@@ -136,9 +206,9 @@ static void check_arrays(void)
 static void check_providers(void)
 {
     NSError *failure = nil;
+    NSDictionary *given = @{ @"a" : @1.5, @"b" : @"two", @"c" : @3 };
     MLDictionaryFeatureProvider *provider =
-        [[MLDictionaryFeatureProvider alloc] initWithDictionary:@{ @"a" : @1.5, @"b" : @"two", @"c" : @3 }
-                                                          error:&failure];
+        [[MLDictionaryFeatureProvider alloc] initWithDictionary:given error:&failure];
     CHECK(provider != nil, "a provider is made from a dictionary");
     CHECK_EQUAL(@(3ul), @(provider.featureNames.count), "it holds a name for each value");
     CHECK_EQUAL(@1.5, @([provider featureValueForName:@"a"].doubleValue), "a value comes back by name");
@@ -161,20 +231,21 @@ static void check_providers(void)
     CHECK([[MLDictionaryFeatureProvider alloc] initWithDictionary:@{} error:&failure] != nil,
           "a provider of nothing builds");
     {
-        MLArrayBatchProvider *batch = [[MLArrayBatchProvider alloc] initWithFeatureProviderArray:
-                                                                  @[ provider, provider ]];
+        NSArray *two = @[ provider, provider ];
+        MLArrayBatchProvider *batch = [[MLArrayBatchProvider alloc] initWithFeatureProviderArray:two];
         CHECK_EQUAL(@(2), @(batch.count), "a batch counts its providers");
         CHECK([batch featuresAtIndex:1] == provider, "a provider comes back by index");
         CHECK_EQUAL(@(2ul), @(batch.array.count), "the array behind it holds both");
     }
     {
-        MLArrayBatchProvider *batch = [[MLArrayBatchProvider alloc] initWithDictionary:@{ @"x" : @[ @1.0, @2.0 ] }
+        NSDictionary *columns = @{ @"x" : @[ @1.0, @2.0 ] };
+        MLArrayBatchProvider *batch = [[MLArrayBatchProvider alloc] initWithDictionary:columns
                                                                                  error:&failure];
         CHECK_EQUAL(@(2), @(batch.count), "a batch from a dictionary of arrays has one per element");
         CHECK_EQUAL(@1.0, @([[batch featuresAtIndex:0] featureValueForName:@"x"].doubleValue), "the first is the first");
         CHECK_EQUAL(@2.0, @([[batch featuresAtIndex:1] featureValueForName:@"x"].doubleValue), "the second is the second");
-        CHECK([[MLArrayBatchProvider alloc] initWithDictionary:@{ @"x" : @[ @1.0 ], @"y" : @[ @1.0, @2.0 ] }
-                                                         error:&failure] == nil,
+        NSDictionary *ragged = @{ @"x" : @[ @1.0 ], @"y" : @[ @1.0, @2.0 ] };
+        CHECK([[MLArrayBatchProvider alloc] initWithDictionary:ragged error:&failure] == nil,
               "a batch whose features are not of one length is refused");
     }
 }
@@ -204,12 +275,17 @@ static void check_keys(void)
         CHECK_EQUAL(key.scope, back.scope, "with its scope");
     }
     {
-        MLNumericConstraint *constraint = [[MLNumericConstraint alloc] initWithMinNumber:@0.0
-                                                                                maxNumber:@1.0
-                                                                       enumeratedNumbers:nil];
-        CHECK_EQUAL(@0.0, constraint.minNumber, "a numeric constraint has a least value");
-        CHECK_EQUAL(@1.0, constraint.maxNumber, "and a most");
-        CHECK(constraint.enumeratedNumbers == nil, "and no set of values when it names none");
+        /* MLNumericConstraint is not built here: it is a class of the port's own with no public
+         * initialiser of Core ML's, and the only thing that makes one is a model's parameter
+         * description -- and this port reads no updatable model, so there is none to ask. The host
+         * differential builds it, because it compiles the port's own sources and can reach the
+         * initialiser; facts/CoreML/CoreML.md says why the class is here at all. */
+        CHECK([MLNumericConstraint class] != nil, "the numeric constraint class is there");
+        CHECK([MLNumericConstraint instancesRespondToSelector:@selector(minNumber)],
+              "and answers a least value");
+        CHECK([MLNumericConstraint instancesRespondToSelector:@selector(maxNumber)], "and a most");
+        CHECK([MLNumericConstraint instancesRespondToSelector:@selector(enumeratedNumbers)],
+              "and the set of values a model may allow");
     }
 }
 
@@ -226,7 +302,7 @@ static void check_configuration(void)
     CHECK_EQUAL(@"a name", configuration.modelDisplayName, "a display name is kept");
     configuration.parameters = @{ MLParameterKey.momentum : @0.5 };
     CHECK_EQUAL(@(1ul), @(configuration.parameters.count), "a parameter is kept");
-    CHECK_EQUAL(@([configuration copy].computeUnits), @(configuration.computeUnits), "a copy keeps the units");
+    CHECK_EQUAL(@([[configuration copy] computeUnits]), @(configuration.computeUnits), "a copy keeps the units");
     CHECK([[configuration copy] isEqual:configuration], "and is equal to what it was copied from");
     {
         NSData *archive = [NSKeyedArchiver archivedDataWithRootObject:configuration];
@@ -273,15 +349,15 @@ static void check_model(const charon_ml_embedded_model *embedded, int index)
         MLFeatureDescription *described = description.inputDescriptionsByName[name];
         MLFeatureValue *value = value_for(described);
         char constraint[80];
-        snprintf(constraint, sizeof constraint, "%s: %@ is described", embedded->name, name);
+        charon_label(constraint, sizeof constraint, @"%s: %@ is described", embedded->name, name);
         charon_check(described.name != nil, constraint, @"(no name)");
-        snprintf(constraint, sizeof constraint, "%s: %@ answers its type", embedded->name, name);
+        charon_label(constraint, sizeof constraint, @"%s: %@ answers its type", embedded->name, name);
         charon_check(described.type != MLFeatureTypeInvalid, constraint, @"the invalid type");
-        snprintf(constraint, sizeof constraint, "%s: %@ optional is a flag", embedded->name, name);
+        charon_label(constraint, sizeof constraint, @"%s: %@ optional is a flag", embedded->name, name);
         charon_check(described.isOptional == NO || described.isOptional == YES, constraint, @"not a flag");
-        snprintf(constraint, sizeof constraint, "%s: %@ copies", embedded->name, name);
+        charon_label(constraint, sizeof constraint, @"%s: %@ copies", embedded->name, name);
         charon_check([[described copy] isEqual:described], constraint, @"a copy differs");
-        snprintf(constraint, sizeof constraint, "%s: %@ survives an archive", embedded->name, name);
+        charon_label(constraint, sizeof constraint, @"%s: %@ survives an archive", embedded->name, name);
         {
             NSData *archive = [NSKeyedArchiver archivedDataWithRootObject:described];
             MLFeatureDescription *back = [NSKeyedUnarchiver unarchiveObjectWithData:archive];
@@ -289,14 +365,14 @@ static void check_model(const charon_ml_embedded_model *embedded, int index)
         }
         if (described.type == MLFeatureTypeMultiArray) {
             MLMultiArrayConstraint *array = described.multiArrayConstraint;
-            snprintf(constraint, sizeof constraint, "%s: %@ has a multi array constraint", embedded->name, name);
+            charon_label(constraint, sizeof constraint, @"%s: %@ has a multi array constraint", embedded->name, name);
             charon_check(array != nil, constraint, @"(none)");
-            snprintf(constraint, sizeof constraint, "%s: %@ is allowed its own value", embedded->name, name);
+            charon_label(constraint, sizeof constraint, @"%s: %@ is allowed its own value", embedded->name, name);
             charon_check(value == nil || [described isAllowedValue:value], constraint, @"refused its own value");
-            snprintf(constraint, sizeof constraint, "%s: %@ is not allowed a string", embedded->name, name);
+            charon_label(constraint, sizeof constraint, @"%s: %@ is not allowed a string", embedded->name, name);
             charon_check(![described isAllowedValue:[MLFeatureValue featureValueWithString:@"x"]], constraint,
                          @"allowed a string");
-            snprintf(constraint, sizeof constraint, "%s: %@ is not allowed an undefined value", embedded->name, name);
+            charon_label(constraint, sizeof constraint, @"%s: %@ is not allowed an undefined value", embedded->name, name);
             charon_check(![described isAllowedValue:[MLFeatureValue undefinedFeatureValueWithType:described.type]],
                          constraint, @"allowed an undefined value");
         }
@@ -317,21 +393,24 @@ static void check_model(const charon_ml_embedded_model *embedded, int index)
             names = [answer.featureNames objectEnumerator];
             while ((name = [names nextObject]) != nil) {
                 MLFeatureValue *value = [answer featureValueForName:name];
-                snprintf(prediction, sizeof prediction, "%s: %@ is answered", embedded->name, name);
+                charon_label(prediction, sizeof prediction, @"%s: %@ is answered", embedded->name, name);
                 charon_check(value != nil, prediction, @"(nil)");
                 if (value == nil) {
                     continue;
                 }
-                snprintf(prediction, sizeof prediction, "%s: %@ is not undefined", embedded->name, name);
+                charon_label(prediction, sizeof prediction, @"%s: %@ is not undefined", embedded->name, name);
                 charon_check(!value.isUndefined, prediction, @"undefined");
                 if (value.multiArrayValue != nil) {
                     MLMultiArray *array = value.multiArrayValue;
-                    snprintf(prediction, sizeof prediction, "%s: %@ has room", embedded->name, name);
+                    charon_label(prediction, sizeof prediction, @"%s: %@ has room", embedded->name, name);
                     charon_check(array.count > 0, prediction, @"an empty array");
-                    [array setObject:@[ value objectAtIndexedSubscript:0 ] atIndexedSubscript:0];
+                    {
+                        NSNumber *first = [(MLFeatureValue *)value objectAtIndexedSubscript:0];
+                        [array setObject:first atIndexedSubscript:0];
+                    }
                 }
                 if (value.dictionaryValue.count > 0) {
-                    snprintf(prediction, sizeof prediction, "%s: %@ has scores", embedded->name, name);
+                    charon_label(prediction, sizeof prediction, @"%s: %@ has scores", embedded->name, name);
                     charon_check(value.dictionaryValue.count > 0, prediction, @"none");
                 }
             }

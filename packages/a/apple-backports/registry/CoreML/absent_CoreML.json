@@ -72,6 +72,86 @@
    "source": "SDK 16.4, CoreML"
   },
   {
+   "api": "+[MLFeatureValue featureValueWithCGImage:constraint:options:error:]",
+   "kind": "method",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "a CoreGraphics image is not a pixel buffer: these constructors are where Core ML turns one into the other, scaling and cropping it to the size a model asks for and taking an orientation, and this port does not carry that conversion -- so a model of the port's own takes its images as the pixel buffers +featureValueWithPixelBuffer: builds, and nothing here answers an image it did not convert",
+   "effect": "the method is not there: the selector is not sent at all",
+   "source": "SDK 16.4, CoreML"
+  },
+  {
+   "api": "+[MLFeatureValue featureValueWithCGImage:orientation:constraint:options:error:]",
+   "kind": "method",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "a CoreGraphics image is not a pixel buffer: these constructors are where Core ML turns one into the other, scaling and cropping it to the size a model asks for and taking an orientation, and this port does not carry that conversion -- so a model of the port's own takes its images as the pixel buffers +featureValueWithPixelBuffer: builds, and nothing here answers an image it did not convert",
+   "effect": "the method is not there: the selector is not sent at all",
+   "source": "SDK 16.4, CoreML"
+  },
+  {
+   "api": "+[MLFeatureValue featureValueWithCGImage:orientation:pixelsWide:pixelsHigh:pixelFormatType:options:error:]",
+   "kind": "method",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "a CoreGraphics image is not a pixel buffer: these constructors are where Core ML turns one into the other, scaling and cropping it to the size a model asks for and taking an orientation, and this port does not carry that conversion -- so a model of the port's own takes its images as the pixel buffers +featureValueWithPixelBuffer: builds, and nothing here answers an image it did not convert",
+   "effect": "the method is not there: the selector is not sent at all",
+   "source": "SDK 16.4, CoreML"
+  },
+  {
+   "api": "+[MLFeatureValue featureValueWithCGImage:pixelsWide:pixelsHigh:pixelFormatType:options:error:]",
+   "kind": "method",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "a CoreGraphics image is not a pixel buffer: these constructors are where Core ML turns one into the other, scaling and cropping it to the size a model asks for and taking an orientation, and this port does not carry that conversion -- so a model of the port's own takes its images as the pixel buffers +featureValueWithPixelBuffer: builds, and nothing here answers an image it did not convert",
+   "effect": "the method is not there: the selector is not sent at all",
+   "source": "SDK 16.4, CoreML"
+  },
+  {
+   "api": "+[MLFeatureValue featureValueWithImageAtURL:constraint:options:error:]",
+   "kind": "method",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "a CoreGraphics image is not a pixel buffer: these constructors are where Core ML turns one into the other, scaling and cropping it to the size a model asks for and taking an orientation, and this port does not carry that conversion -- so a model of the port's own takes its images as the pixel buffers +featureValueWithPixelBuffer: builds, and nothing here answers an image it did not convert",
+   "effect": "the method is not there: the selector is not sent at all",
+   "source": "SDK 16.4, CoreML"
+  },
+  {
+   "api": "+[MLFeatureValue featureValueWithImageAtURL:orientation:constraint:options:error:]",
+   "kind": "method",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "a CoreGraphics image is not a pixel buffer: these constructors are where Core ML turns one into the other, scaling and cropping it to the size a model asks for and taking an orientation, and this port does not carry that conversion -- so a model of the port's own takes its images as the pixel buffers +featureValueWithPixelBuffer: builds, and nothing here answers an image it did not convert",
+   "effect": "the method is not there: the selector is not sent at all",
+   "source": "SDK 16.4, CoreML"
+  },
+  {
+   "api": "+[MLFeatureValue featureValueWithImageAtURL:orientation:pixelsWide:pixelsHigh:pixelFormatType:options:error:]",
+   "kind": "method",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "a CoreGraphics image is not a pixel buffer: these constructors are where Core ML turns one into the other, scaling and cropping it to the size a model asks for and taking an orientation, and this port does not carry that conversion -- so a model of the port's own takes its images as the pixel buffers +featureValueWithPixelBuffer: builds, and nothing here answers an image it did not convert",
+   "effect": "the method is not there: the selector is not sent at all",
+   "source": "SDK 16.4, CoreML"
+  },
+  {
+   "api": "+[MLFeatureValue featureValueWithImageAtURL:pixelsWide:pixelsHigh:pixelFormatType:options:error:]",
+   "kind": "method",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "a CoreGraphics image is not a pixel buffer: these constructors are where Core ML turns one into the other, scaling and cropping it to the size a model asks for and taking an orientation, and this port does not carry that conversion -- so a model of the port's own takes its images as the pixel buffers +featureValueWithPixelBuffer: builds, and nothing here answers an image it did not convert",
+   "effect": "the method is not there: the selector is not sent at all",
+   "source": "SDK 16.4, CoreML"
+  },
+  {
    "api": "+[MLKey new]",
    "kind": "method",
    "introduced": "13.0",
@@ -190,6 +270,16 @@
    "reason": "Apple's own header declares it NS_UNAVAILABLE: a key, a model asset and an image constraint have no public initialiser, because a model builds them and an application only reads them",
    "effect": "the method is not there, which is what NS_UNAVAILABLE means: an application compiled against Core ML's own header cannot send it, and one that sends it by name gets doesNotRecognizeSelector",
    "source": "SDK 16.4, CoreML (the headers this package is built against)"
+  },
+  {
+   "api": "-[MLMultiArray transferToMultiArray:]",
+   "kind": "method",
+   "introduced": "18.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "the method is declared in a Core ML header newer than the one this port is built against (the SDK is 16.4 and the method arrived in iOS 18), so its contract is not in the tree to read: a method whose semantics are a guess is worse than one that is not there, and nothing in this port calls it",
+   "effect": "the method is not there: the selector is not sent at all",
+   "source": "SDK 16.4, CoreML (which has not got it); SDK 26.2 (which has)"
   },
   {
    "api": "-[MLParameterKey init]",
