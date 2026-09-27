@@ -100,9 +100,13 @@ work established, all of it measured and all of it re-usable, is this:
   compiles the real half a second time under the prefix `charon_half_` for exactly this. The norms, the
   trace, the shapes, the insertions, the extractions, the utilities and the refusals are still compared
   against the host directly, because the host answers those.
-- **Where the complex half stands: 184 checks pass and 22 fail**, down from 158 and 41. The vector norms,
-  the pack, the matrix elementwise and operator norms and the shapes are green against the host. What
-  remains, as the next session's list:
+- **Where the complex half stands: 199 checks pass and 23 fail**, out of 222, up from 158 and 41. Closed
+  since: every vector norm, the pack, the matrix elementwise norms, the shapes, the block forms, the
+  batch insertions and the untyped entry points, and two real defects found on the way — the dense form
+  `cblas_cherk` takes was allocated at half the size it was written through, which took the process down
+  in the operator-norm case, and the operator infinity norm was reading the diagonal of each row instead
+  of the row's own stored entries, answering 1 where the host answers 11. What remains, as the next
+  session's list:
   - **the complex matrix-vector product (4 oracle cases)**: the values are right and the addresses are
     not. For the 3x3 `[[1,0,2],[0,0,0],[4,0,0]]` with `x = (1,2,4)`, `alpha = 1` and `y` of ones the port
     answers `6, 5, 1` where both the arithmetic and the port's own real half give `10, 1, 5`, so one call
@@ -110,8 +114,13 @@ work established, all of it measured and all of it re-usable, is this:
     three values — three calls giving `2 1 1`, then `10 1 1`, then `10 1 5` — so the defect is in the
     port's loop, not in the BLAS. The next step is to print `i`, `k`, `re`, `im`, `from` and `to` inside
     `CharonComplexVectorProduct` for that one case.
-  - **the two complex triangular solves (16 oracle cases)** and **one batch extraction** and **one outer
-    product** on the host.
+  - **the two complex triangular solves (16 oracle cases)**, and **one batch extraction** and **one
+    outer product** compared against the host.
+  - **the operator-two norm (1 case)**: for `[[-1, 2 + i, -3i], [4, 0, -5 + 2i]]` the port answers 3.87298
+    and the host 7.31108, and the largest singular value by the header's own arithmetic is 6.5724 — the
+    exact value of `A' A`'s largest eigenvalue is sqrt(43.19). So the host's complex operator-two norm is
+    a third formula again, and the port's is not yet right either. This one case needs its own
+    measurement, the way the vector norms did.
   - One thing already found and fixed by the oracle work: `cblas_caxpy` and its sisters address their
     vectors in units of a complex value, and every offset in this family is in complex units, so the
     pointers have to be complex-typed. Casting to `float *` and adding the offset counts floats, which
