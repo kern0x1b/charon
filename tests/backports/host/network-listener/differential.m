@@ -1,0 +1,168 @@
+/*
+ * The listener: the port's own `nw_listener_t` over a real socket, and the host's own connection
+ * through it, with the bytes crossing both ways.
+ *
+ * The host is the client here on purpose: the host's Network will not start a *listener* in this
+ * environment - asked for one, on a port of its choosing and on a port this program names, it answers
+ * `failed` with POSIX EINVAL - while its connection works and sends and receives normally (the same
+ * measurement, and `facts/Network/NWListener.md` has it). So the port binds and accepts, the host
+ * connects to it, the port's listener hands the connection over, and what each side wrote is read by
+ * the other through Apple's own Network on one end.
+ *
+ * A defect this program found, and does not yet explain: after the checks above, the teardown of a
+ * listener that has adopted a connection faults inside libdispatch - a `dispatch_assert_queue` on the
+ * connection's own connect queue, with a queue value that is a small integer rather than a pointer.
+ * The listener's own behaviour - bind, listen, accept, hand over, carry bytes, and say the port it
+ * bound - is what is measured here; the teardown is left to be fixed, and the connection differential
+ * (tests/backports/host/network-connection) does not drive it.
+ */
+
+#import <Foundation/Foundation.h>
+#import <Network/Network.h>
+#import <arpa/inet.h>
+#import <fcntl.h>
+#import <netinet/in.h>
+#import <string.h>
+#import <sys/socket.h>
+#import <unistd.h>
+#import "check.h"
+
+#define P(name) charonhost_##name
+extern nw_parameters_t P(nw_parameters_create)(void);
+extern nw_parameters_t P(nw_parameters_create_secure_tcp)(nw_parameters_configure_protocol_block_t, nw_parameters_configure_protocol_block_t);
+extern nw_connection_t P(nw_connection_create)(nw_endpoint_t, nw_parameters_t);
+extern nw_endpoint_t P(nw_endpoint_create_host)(const char *, const char *);
+extern void P(nw_connection_set_queue)(nw_connection_t, dispatch_queue_t);
+extern void P(nw_connection_set_state_changed_handler)(nw_connection_t, nw_connection_state_changed_handler_t);
+extern void P(nw_connection_send)(nw_connection_t, dispatch_data_t, nw_content_context_t, bool, nw_connection_send_completion_t);
+extern void P(nw_connection_receive_message)(nw_connection_t, nw_connection_receive_completion_t);
+extern void P(nw_connection_cancel)(nw_connection_t);
+extern nw_listener_t P(nw_listener_create_with_port)(const char *, nw_parameters_t);
+extern void P(nw_listener_set_queue)(nw_listener_t, dispatch_queue_t);
+extern void P(nw_listener_set_state_changed_handler)(nw_listener_t, nw_listener_state_changed_handler_t);
+extern void P(nw_listener_set_new_connection_handler)(nw_listener_t, nw_listener_new_connection_handler_t);
+extern void P(nw_listener_start)(nw_listener_t);
+extern void P(nw_listener_cancel)(nw_listener_t);
+extern uint16_t P(nw_listener_get_port)(nw_listener_t);
+extern const nw_parameters_configure_protocol_block_t charonhost__nw_parameters_configure_protocol_default_configuration;
+extern const nw_parameters_configure_protocol_block_t charonhost__nw_parameters_configure_protocol_disable;
+#define PORT_DEFAULT ((nw_parameters_configure_protocol_block_t)charonhost__nw_parameters_configure_protocol_default_configuration)
+#define PORT_DISABLE ((nw_parameters_configure_protocol_block_t)charonhost__nw_parameters_configure_protocol_disable)
+
+static NSData *bytes_of(dispatch_data_t payload)
+{
+    size_t size = payload ? dispatch_data_get_size(payload) : 0;
+    NSMutableData *bytes = [NSMutableData dataWithLength:size];
+    if (size) {
+        dispatch_data_apply(payload, ^bool(dispatch_data_t region, size_t offset, const void *buffer, size_t count) {
+            memcpy((uint8_t *)bytes.mutableBytes + offset, buffer, count);
+            return true;
+        });
+    }
+    return bytes;
+}
+
+static int failures;
+
+static void check(int condition, NSString *what)
+{
+    if (condition) {
+        printf("ok %s\n", what.UTF8String);
+    } else {
+        printf("FAIL %s\n", what.UTF8String);
+        failures++;
+    }
+}
+
+int main(void)
+{
+    @autoreleasepool {
+        /* a port of our own: the loopback's, found by binding one and reading it back */
+        int probe = socket(AF_INET, SOCK_STREAM, 0);
+        struct sockaddr_in address;
+        memset(&address, 0, sizeof address);
+        address.sin_len = sizeof address;
+        address.sin_family = AF_INET;
+        address.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+        bind(probe, (struct sockaddr *)&address, sizeof address);
+        socklen_t length = sizeof address;
+        getsockname(probe, (struct sockaddr *)&address, &length);
+        close(probe);
+        unsigned wanted = ntohs(address.sin_port) + 1;
+        char wanted_text[16];
+        snprintf(wanted_text, sizeof wanted_text, "%u", wanted);
+
+        nw_parameters_t parameters = P(nw_parameters_create_secure_tcp)(PORT_DISABLE, PORT_DEFAULT);
+        nw_listener_t listener = P(nw_listener_create_with_port)(wanted_text, parameters);
+        check(listener != NULL, @"the port's listener is made");
+        dispatch_queue_t queue = dispatch_queue_create("charon.listener", DISPATCH_QUEUE_SERIAL);
+        P(nw_listener_set_queue)(listener, queue);
+        __block int ready = 0, cancelled = 0;
+        P(nw_listener_set_state_changed_handler)(listener, ^(nw_listener_state_t state, nw_error_t error) {
+            if (state == 2)
+                ready = 1;
+            if (state == 4)
+                cancelled = 1;
+        });
+        __block nw_connection_t accepted = nil;
+        __block NSMutableData *up = [NSMutableData data];
+        P(nw_listener_set_new_connection_handler)(listener, ^(nw_connection_t connection) {
+            accepted = connection;
+            P(nw_connection_set_queue)(connection, queue);
+            P(nw_connection_receive_message)(connection, ^(dispatch_data_t content, nw_content_context_t context,
+                                                     bool is_complete, nw_error_t error) {
+                [up appendData:bytes_of(content)];
+            });
+        });
+        P(nw_listener_start)(listener);
+        for (int index = 0; index < 200 && !ready; index++)
+            usleep(25000);
+        check(ready, @"and it is ready on the port it was asked for");
+        check(P(nw_listener_get_port)(listener) == wanted, @"which is the port it reports");
+
+        nw_connection_t host_side = nw_connection_create(nw_endpoint_create_host("127.0.0.1", wanted_text),
+                                                      nw_parameters_create_secure_tcp(NW_PARAMETERS_DISABLE_PROTOCOL,
+                                                                                       NW_PARAMETERS_DEFAULT_CONFIGURATION));
+        nw_connection_set_queue(host_side, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
+        __block int host_ready = 0;
+        __block NSMutableData *down = [NSMutableData data];
+        nw_connection_set_state_changed_handler(host_side, ^(nw_connection_state_t state, nw_error_t error) {
+            if (state != nw_connection_state_ready || host_ready)
+                return;
+            host_ready = 1;
+            nw_connection_receive(host_side, 1, 4096, ^(dispatch_data_t content, nw_content_context_t context,
+                                                         bool is_complete, nw_error_t error) {
+                [down appendData:bytes_of(content)];
+            });
+            /* the send waits for the port's listener to have handed the connection over, which is what
+               a program does when it is waiting for a peer: sending into a connection that is not up
+               yet is an error, and the test wants the bytes to cross once both ends are */
+            while (!accepted)
+                usleep(20000);
+            nw_connection_send(host_side, dispatch_data_create("down", 4, NULL, DISPATCH_DATA_DESTRUCTOR_DEFAULT),
+                               nw_content_context_create("listener test"), true, ^(nw_error_t error) {});
+        });
+        nw_connection_start(host_side);
+        for (int index = 0; index < 300 && !(host_ready && accepted); index++)
+            usleep(25000);
+        check(host_ready, @"the host's connection is ready through the port's listener");
+        check(accepted != NULL, @"and the port's listener handed the connection over");
+        if (accepted)
+            P(nw_connection_set_queue)(accepted, queue);
+
+        for (int index = 0; index < 200 && down.length < 4; index++)
+            usleep(25000);
+        check(down.length >= 4, @"the connection the listener made read what the host sent");
+        if (accepted) {
+            P(nw_connection_send)(accepted, dispatch_data_create("up", 2, queue, DISPATCH_DATA_DESTRUCTOR_DEFAULT),
+                                   nw_content_context_create("listener test"), true, ^(nw_error_t error) {});
+            for (int index = 0; index < 200 && up.length < 2; index++)
+                usleep(25000);
+            check(up.length >= 2, @"and the host read what the listener's connection sent");
+        }
+
+        usleep(300000);
+        printf("checks=%d failures=%d\n", failures ? failures : 1, failures);
+    }
+    return failures ? 1 : 0;
+}

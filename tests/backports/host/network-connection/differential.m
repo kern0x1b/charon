@@ -43,6 +43,14 @@ extern uint32_t P(nw_connection_get_maximum_datagram_size)(nw_connection_t);
 extern char *P(nw_connection_copy_description)(nw_connection_t);
 extern nw_protocol_metadata_t P(nw_connection_copy_protocol_metadata)(nw_connection_t, nw_protocol_definition_t);
 extern bool P(nw_protocol_metadata_is_tcp)(nw_protocol_metadata_t);
+extern nw_listener_t P(nw_listener_create_with_port)(const char *, nw_parameters_t);
+extern nw_listener_t P(nw_listener_create)(nw_parameters_t);
+extern void P(nw_listener_set_queue)(nw_listener_t, dispatch_queue_t);
+extern void P(nw_listener_set_state_changed_handler)(nw_listener_t, nw_listener_state_changed_handler_t);
+extern void P(nw_listener_set_new_connection_handler)(nw_listener_t, nw_listener_new_connection_handler_t);
+extern void P(nw_listener_start)(nw_listener_t);
+extern void P(nw_listener_cancel)(nw_listener_t);
+extern uint16_t P(nw_listener_get_port)(nw_listener_t);
 extern nw_data_transfer_report_t P(nw_connection_create_new_data_transfer_report)(nw_connection_t);
 extern nw_data_transfer_report_state_t P(nw_data_transfer_report_get_state)(nw_data_transfer_report_t);
 extern void P(nw_data_transfer_report_collect)(nw_data_transfer_report_t, dispatch_queue_t, nw_data_transfer_report_collect_block_t);
@@ -138,6 +146,14 @@ static NSData *bytes_of(dispatch_data_t payload, size_t *length)
     if (length)
         *length = size;
     return bytes;
+}
+
+/* The port of a port number, as the text an endpoint of a host and a port wants. */
+static const char *port_text_of(uint16_t port)
+{
+    static char text[16];
+    snprintf(text, sizeof text, "%u", port);
+    return text;
 }
 
 int main(void)
@@ -316,6 +332,9 @@ int main(void)
         close(first);
         close(second);
         close(peer.listener);
+        /* A last look: a cancelled connection's handler runs on the queue the connection was given,
+           and that queue outlives main, so nothing is touched after this point. */
+        usleep(300000);
         printf("checks=%d failures=%d\n", charon_checks, charon_failures);
     }
     return charon_failures ? 1 : 0;

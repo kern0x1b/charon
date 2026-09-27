@@ -15,6 +15,9 @@
 
 #import <Foundation/Foundation.h>
 #import <Network/Network.h>
+#import <Security/Security.h>
+#import <Security/SecureTransport.h>
+
 
 /* The SDK's headers wrap Network in an assume-nonnull region and so mark every factory's result
    non-null, while documenting several of those factories as returning NULL for an argument they
@@ -399,5 +402,17 @@ typedef NSObject <OS_nw_relay_hop> *nw_relay_hop_t;
     NSNumber *_protocolVersion;
 }
 @end
+
+/* What the files that cannot see a class's ivars ask it for. Each of these is defined in the one
+   file that declares the class it belongs to, and the reason they exist is in that file: with the
+   fragile ABI a class's ivar offsets are emitted by every file that sees its @interface, so a header
+   the library's other files read would make the link see each of them twice. */
+extern void CharonNWConnectionAttach(nw_connection_t connection, int handle, BOOL connected);
+extern BOOL CharonNWConnectionTakeSocket(nw_connection_t connection, int *out_handle,
+                                        void *out_endpoint, void *out_parameters);
+extern void CharonNWListenerSetNewConnectionGroup(nw_listener_t listener,
+                                                  nw_listener_new_connection_group_handler_t handler);
+extern void CharonNWListenerSetNewConnectionLimit(nw_listener_t listener, uint32_t new_connection_limit);
+extern uint32_t CharonNWListenerGetNewConnectionLimit(nw_listener_t listener);
 
 NS_ASSUME_NONNULL_END

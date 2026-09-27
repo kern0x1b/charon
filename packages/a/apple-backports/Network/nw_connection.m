@@ -66,6 +66,50 @@ extern SSLContextRef SSLContextCreate(CFAllocatorRef allocator, SSLProtocolSide 
 enum { nw_connection_state_setup = 0 };
 
 /* One piece of content on its way out, and one receive waiting for one. */
+/* The class, its state and its implementation are in this one file, and nowhere else: with the fragile
+   ABI a class's ivar offsets are emitted by every file that sees its @interface, so a header that
+   every file of the library read would make the link see each of them twice. The files that need a
+   connection - the listener, which builds one per accepted socket - ask for what they need through the
+   two C functions at the end of this file. */
+@interface CharonNWConnection : NSObject <OS_nw_connection> {
+@public
+    CharonNWEndpoint *_endpoint;
+    CharonNWParameters *_parameters;
+    dispatch_queue_t _queue;
+    dispatch_queue_t _connectQueue;
+    nw_connection_state_changed_handler_t _state;
+    nw_connection_path_event_handler_t _path;
+    nw_connection_boolean_event_handler_t _viability;
+    nw_connection_boolean_event_handler_t _betterPath;
+    nw_connection_state_t _value;
+    nw_path_t _currentPath;
+    nw_path_monitor_t _monitor;
+    CharonNWEndpoint *_currentEndpoint;
+    BOOL _started, _cancelled, _finished, _secure, _viable, _viableKnown, _connecting;
+    int _socket;
+    SSLContextRef _ssl;
+    dispatch_source_t _readSource;
+    dispatch_source_t _writeSource;
+    BOOL _readingSource, _handshaking;
+    NSMutableArray *_sends;
+    NSMutableArray *_receives;
+    NSMutableData *_pendingWrite;
+    NSMutableData *_pendingRead;
+    uint64_t _sentBytes, _receivedBytes;
+    uint64_t _startedAtMilliseconds;
+    uint32_t _attempts;
+    BOOL _isDatagram;
+    CharonNWProtocolMetadata *_ipMetadata;
+    CharonNWProtocolMetadata *_transportMetadata;
+    CharonNWProtocolMetadata *_secureMetadata;
+    CharonNWFramer *_framer;
+    id _lastFramerMessage;
+}
+@end
+
+@implementation CharonNWConnection
+@end
+
 @interface CharonNWSend : NSObject {
 @public
     NSData *_content;
@@ -87,48 +131,7 @@ enum { nw_connection_state_setup = 0 };
 @implementation CharonNWReceive
 @end
 
-@interface CharonNWConnection : NSObject <OS_nw_connection> {
-@public
-    CharonNWEndpoint *_endpoint;
-    CharonNWParameters *_parameters;
-    dispatch_queue_t _queue;
-    dispatch_queue_t _connectQueue;
-    nw_connection_state_changed_handler_t _state;
-    nw_connection_path_event_handler_t _path;
-    nw_connection_boolean_event_handler_t _viability;
-    nw_connection_boolean_event_handler_t _betterPath;
-    nw_connection_state_t _value;
-    nw_path_t _currentPath;
-    nw_path_monitor_t _monitor;
-    CharonNWEndpoint *_currentEndpoint;
-
-    BOOL _started, _cancelled, _finished, _secure, _viable, _viableKnown, _triedEveryAddress;
-    int _socket;
-    SSLContextRef _ssl;
-    dispatch_source_t _readSource;
-    dispatch_source_t _writeSource;
-    BOOL _readingSource, _handshaking;
-
-    NSMutableArray *_sends;
-    NSMutableArray *_receives;
-    NSMutableData *_pendingWrite;
-    NSMutableData *_pendingRead;
-    uint64_t _sentBytes, _receivedBytes;
-    uint64_t _startedAtMilliseconds;
-    uint32_t _attempts;
-    BOOL _isDatagram;
-    CharonNWProtocolMetadata *_ipMetadata;
-    CharonNWProtocolMetadata *_transportMetadata;
-    CharonNWProtocolMetadata *_secureMetadata;
-    CharonNWEstablishmentReport *_report;
-    CharonNWFramer *_framer;
-    id _lastFramerMessage;
-    BOOL _connecting;
-}
-@end
-
-@implementation CharonNWConnection
-@end
+/* The class is in CharonNW.h: a listener builds one of these per accepted socket. */
 
 /* ---------------------------------------------------------------- the stack, read once */
 
@@ -720,6 +723,52 @@ static void charon_connect_finished(CharonNWConnection *connection)
         return;
     }
     charon_ready(connection);
+}
+
+/* Take a socket that is already connected - one an accept produced - as this connection's own. The
+   engine is the same from here on: the sources, the path, the protocols and the state machine are
+   made exactly as they are for a connection that connected itself. */
+void CharonNWConnectionAttach(nw_connection_t value, int handle, BOOL connected)
+{
+    /* Taking the socket is all this does. The engine is not started here: the connection is started
+       after it is given its queue, by whoever made it - a listener's new-connection handler, or a
+       program - and `nw_connection_start` is what knows it is already connected. */
+    CharonNWConnection *connection = (CharonNWConnection *)value;
+    (void)connected;
+    if (!connection || handle < 0)
+        return;
+    @synchronized(connection) {
+        if (connection->_cancelled)
+            return;
+        connection->_socket = handle;
+        connection->_currentEndpoint = connection->_endpoint;
+    }
+    charon_nw_set_nonblocking(handle);
+    CharonNWParameters *parameters = connection->_parameters;
+    connection->_isDatagram = charon_is_datagram(parameters);
+    connection->_secure = charon_is_secure(parameters);
+}
+
+/* Hand a connection's socket to whoever asks for it - a listener, which becomes a listener of it -
+   and say what the connection was made of. FALSE for a connection with no socket, which is a
+   connection that was cancelled or never started. */
+BOOL CharonNWConnectionTakeSocket(nw_connection_t value, int *out_handle, void *out_endpoint, void *out_parameters)
+{
+    CharonNWConnection *connection = (CharonNWConnection *)value;
+    if (!connection)
+        return NO;
+    @synchronized(connection) {
+        if (connection->_socket < 0)
+            return NO;
+        if (out_handle)
+            *out_handle = connection->_socket;
+        if (out_endpoint)
+            *(CharonNWEndpoint * _Nonnull __unsafe_unretained *)out_endpoint = connection->_currentEndpoint;
+        if (out_parameters)
+            *(nw_parameters_t __unsafe_unretained *)out_parameters = connection->_parameters;
+        connection->_socket = -1;
+    }
+    return YES;
 }
 
 /* What a connection is ready: the socket is connected, the path is being watched, the sources are
