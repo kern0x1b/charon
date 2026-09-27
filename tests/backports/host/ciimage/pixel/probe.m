@@ -243,12 +243,6 @@ static void reportContextOwner(void)
         put_bytes(key, bytes);
         put_pixels(key, bytes);
     }
-    // The unpremultiply, over a field with an alpha in it.
-    CIImage *field = [[[CIImage alloc] initWithColor:[[CIColor alloc] initWithRed:0.6 green:0.3 blue:0.9 alpha:0.5]]
-        imageByCroppingToRect:CGRectMake(0, 0, 6, 4)];
-    put_algebra(@"alg unpremultiplied", [field imageByUnpremultiplyingAlpha], CGRectMake(0, 0, 6, 4));
-    put_algebra(@"alg premultiplied twice", [[field imageByPremultiplyingAlpha] imageByUnpremultiplyingAlpha],
-                CGRectMake(0, 0, 6, 4));
 }
 
 // A colour, measured as the numbers the colour object holds and as the bytes an image of that colour

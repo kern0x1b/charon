@@ -17,8 +17,10 @@
     // The release's own gaussian blur, with the sigma the caller gives.
     CIFilter *blur = [CIFilter filterWithName:@"CIGaussianBlur"];
     [blur setValue:self forKey:kCIInputImageKey];
-    [blur setValue:@(sigma) forKey:@"inputRadius"];
-    [blur setValue:@(0) forKey:@"inputAngle"];
+    // Only the radius: the filter has no angle on the system this is written against, and setting a key
+    // a filter does not have raises rather than doing nothing.
+    if ([blur respondsToSelector:NSSelectorFromString(@"setInputRadius:")])
+        [blur setValue:@(sigma) forKey:@"inputRadius"];
     return blur.outputImage ?: self;
 }
 
