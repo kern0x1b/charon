@@ -94,6 +94,13 @@ the same superclass, the same selectors, the same property types, no ivars, and 
 annotations. The five gap properties are implemented in categories, because a property a category
 declares is implemented in a category.
 
+`CharonMetricKit.h` redeclares those three classes **for the lowered SDK this package builds against
+and nothing else**: compiled against the real 26.2 headers it collides with them, exactly as
+`CharonSecurityUI.h` collides with `SecurityUI`'s own `SFCertificatePresentation`. The package only ever
+compiles against the lowered SDK, so nothing in a build sees it; a header a future SDK change would
+break is the price of carrying a class whose header the build's SDK has not got, and it is the price
+`CharonSecurityUI.h`, `CharonAVAudioBuffer.h` and `CharonCallKit.h` already pay.
+
 ## Not measured, and the four warnings
 
 **No host differential.** There is no MetricKit in the host's `iOSSupport` (measured: the directory has
