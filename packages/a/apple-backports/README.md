@@ -668,6 +668,15 @@ the path when it starts and when it changes, on the queue it was given, and says
 satisfiable, the interface (`en0`, or cellular and expensive) and the addresses. Connections and the rest of Network are
 not carried. See `facts/Network/NWPathMonitor.md`.
 
+`libNetworkBackports.dylib`, built with the `network` config, carries the connection of Network: `nw_endpoint_create_host`
+and its three calls, `nw_parameters_create_secure_udp`, `nw_connection_create` and its queue, path, viability, start and
+cancel, over a real BSD datagram socket - the host is resolved with `getaddrinfo`, the socket is opened and connected,
+and viable means the kernel has a route to that address and the path above is satisfied. It reports its path through
+the path monitor the Foundation library carries, and it defines the SDK's two sentinel blocks, which a release with no
+Network binds as the null, as the empty blocks they are documented to be. The stream parameters factories and the
+connection's data calls are absent rather than faked. It is what the Matter framework's device browser needs, and its
+own use of Network is exactly this. See `facts/Network/NWConnection.md`.
+
 ### Not carried, and why
 
 Nothing here is a quiet stub. Where the behaviour cannot be produced, the API
