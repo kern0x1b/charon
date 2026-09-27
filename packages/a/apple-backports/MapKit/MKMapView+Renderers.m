@@ -19,6 +19,9 @@
 #import "CharonMapKit.h"
 
 @interface MKMapView (CharonRenderers)
+- (CLLocationDirection)charon_heading;
+- (CGFloat)charon_pitch;
+- (void)charon_setHeading:(CLLocationDirection)heading pitch:(CGFloat)pitch;
 - (MKOverlayRenderer *)charon_defaultRendererForOverlay:(id <MKOverlay>)overlay;
 - (NSArray *)charon_overlaysInLevel:(MKOverlayLevel)level;
 - (void)charon_placeOverlays:(NSArray *)overlays atLevel:(MKOverlayLevel)level;
@@ -199,6 +202,9 @@
     if (!camera) {
         return;
     }
+    // The heading and the pitch of a camera are the turn of the map and the angle of its plane, and
+    // the turn is this port's own transform; the rest of the camera is the release's own region.
+    [self charon_setHeading:camera.heading pitch:camera.pitch];
     if (animated) {
         [UIView beginAnimations:nil context:nil];
     }
@@ -234,8 +240,10 @@
 {
     MKMapCamera *camera = [MKMapCamera camera];
     camera.centerCoordinate = self.centerCoordinate;
-    camera.heading = 0.0;
-    camera.pitch = 0.0;
+    // The heading and the pitch are this port's own transform on the release's pixels, so they are
+    // read back out of it and not invented here.
+    camera.heading = [self charon_heading];
+    camera.pitch = [self charon_pitch];
     // The distance the map view's own region stands for, through the release's own projection.
     MKMapRect rect = [CharonMapKit charon_mapRectForRegion:self.region];
     double metresPerMapPoint = MKMetersPerMapPointAtLatitude(self.centerCoordinate.latitude);

@@ -91,6 +91,101 @@ interest filter and showsTraffic are stored, copied, compared and archived, and 
 release whose map has no features has none for it, so its own parts answer as they are and its
 coordinate is the invalid one until a map answers for it.
 
+## The constants, and where their values come from
+
+Every MapKit constant this port carries is read out of **macOS 27.0 (build 26A428)'s own
+`MapKit.framework`**: a generated probe declares each name as the extern its own SDK header declares,
+links against that framework and prints what the symbol holds. All 81 answer, and
+`tests/backports/host/mapkit-constants` compares the port's value with the host's on every run, for
+every name, generated from the port's own constant files so the probe cannot fall behind the tree. A
+name the host's framework does not export is a link error in the probe, so "this port invented it"
+cannot pass quietly.
+
+Two are cross-checked against a different release of Apple's own and they agree, which is what makes
+the host reading more than one machine's opinion:
+
+| constant | macOS 27 image | an iOS cache |
+| --- | --- | --- |
+| `MKMapCameraZoomDefault` | `-1` | `-1.0`, the eight bytes at the address `_MKMapCameraZoomDefault` has in the MapKit image `dyld.extract` took of the arm64e dyld shared cache of 18.0 |
+| `MKMapItemTypeIdentifier` | `com.apple.mapkit.map-item` | the same, read with `tools/cfconst.py` out of the arm64 cache of 12.0 |
+
+The seventy-three `MKPointOfInterestCategory*` values are Apple's own `MKPOICategory*` strings
+(`MKPointOfInterestCategoryCafe` is `MKPOICategoryCafe`), which is why a filter built against them is
+a filter Apple's own map understands. The constants sit in five object files, one per release that
+first exports them, measured through `apple.dyld`'s `first_releases`: 7.1, 9.0, 11.0, 16.0 and 18.0.
+
+## The thirteen properties the release's map view has no answer for
+
+Measured with `apple.objc.inventory` against the armv7 dyld shared cache of 6.1.3: the release's
+`MKMapView` has 228 public instance methods, and its map surface is a region
+(`-setRegion:animated:`, `-setCenterCoordinate:animated:`, `-visibleMapRect`, `-mapRectThatFits:`,
+`-regionThatFits:`, `-convertCoordinate:toPointToView:`), a map type (`-mapType`), the user location
+(`-userTrackingMode`, `-setUserTrackingMode:animated:`, `-showsUserLocation`) and the overlays. Its
+own `-_rotationState`, `-canRotateForHeading` and `-setShouldRotateForHeading:` are the private
+machinery that turns the map to follow the compass; that is not a public rotation and is not used.
+
+So the map stays the release's and the newer API is put on top of it:
+
+- **`rotateEnabled`, `pitchEnabled` and the camera's heading and pitch** are a transform on the
+  release's own layer: a turn about the vertical for the heading, and for the pitch a projection of
+  a plane at the eye distance a camera of that distance keeps, turned by the pitch. A real
+  `UIRotationGestureRecognizer` on the map view drives the turn and is refused while `rotateEnabled`
+  is NO. The annotation views are asked for through the release's own public `-viewForAnnotation:`
+  and given the inverse of the turn, so a pin stands up on a rotated map. This is a projection of a
+  plane, not the release's own three-dimensional camera, and the difference is the difference between
+  rotating a picture of a map and having a camera above one.
+- **`showsCompass`** puts this port's own `MKCompassButton` on the map view, drawn at the map's own
+  turn, with `-compassVisibility` as the header documents it (adaptive hides it when the map is
+  already facing north) and a tap that animates the map back to north through the release's own
+  `-setRegion:animated:`.
+- **`showsScale`** puts the `MKScaleView` on the map view; its bar is drawn from the release's own
+  `visibleMapRect` and the release's own `MKMetersPerMapPointAtLatitude`.
+- **`showsUserTrackingButton`** puts the `MKUserTrackingButton` on the map view, and that button
+  drives the release's own `-setUserTrackingMode:animated:`, so following the user is the release's
+  mechanism and not a copy of it.
+- **`cameraBoundary`, `cameraZoomRange` and their two setters** narrow every region this port puts on
+  the map: the boundary to the boundary's own region (through the release's own
+  `MKCoordinateRegionForMapRect`), the zoom range to its distance in metres against the map view's
+  own visible rect. A nil boundary is the whole world. What they do *not* do is constrain the
+  release's own panning, which is the release's own gesture: the boundary is the camera's, and on
+  this port the camera is what this port sets.
+- **`preferredConfiguration`** is the release's own map type in the iOS 16 spelling: reading it back
+  gives a standard, hybrid or imagery configuration standing for the map that is on screen, and
+  setting one sets the map type the release's own map draws. The rest of a configuration -- the
+  elevation style, the emphasis style, the point of interest filter, `showsTraffic` -- has no
+  counterpart in a map type and is stored and given back.
+
+And the four that cannot be done for any reason other than that the release's map draws one fixed
+tile style, which is `inert` and not `implemented`:
+
+| property | why, measured |
+| --- | --- |
+| `showsTraffic` | the release's map has no traffic layer to draw or not draw, and no `showsTraffic` in its 228 public methods |
+| `showsBuildings` | the release's map draws its buildings inside its own vector tiles; there is no way to ask it for a style without them |
+| `showsPointsOfInterest` | the same, for its points of interest |
+| `pointOfInterestFilter` | the release's map takes no filter, so there is nothing for one to act on |
+
+`selectableMapFeatures` and `pitchButtonVisibility` are `inert` for the same reason: the release's
+map view has no selection of its own and no pitch button. All six store and read back, and say so
+once in the log the first time they are used, which is what the registry README asks of an `inert`
+entry.
+
+## The services, and what the release already has
+
+Measured, not assumed, and it changes the shape of the work:
+
+- **`MKLocalSearch`, `MKLocalSearchRequest` and `MKLocalSearchResponse` are on the release** --
+  `apple.dyld`'s `first_releases` puts all three at 6.1. So there is nothing to backport for
+  `MKLocalSearch`: the release's own class answers, against Apple's own service, which is the best
+  possible answer. Only `MKLocalSearchCompleter` (7.0) and `MKLocalSearchCompletion` (9.3) are
+  missing, and the completer is a different problem again.
+- **`CLGeocoder` is on the release** (5.0), with `-geocodeAddressString:completionHandler:` and
+  `-reverseGeocodeLocation:completionHandler:` in the 6.1.3 cache. So `MKGeocodingRequest` and
+  `MKReverseGeocodingRequest` are built on the release's own geocoder, against Apple's own service,
+  and are not an external routing service at all.
+- **`MKDirections` (7.0) and `MKDirectionsResponse` have no release counterpart at all**, so those
+  are the ones that need an open provider, and the delivery has to name it.
+
 ## The numbers that were read, not chosen
 
 - `MKMapCameraZoomDefault` is `-1.0`, read out of the MapKit image `dyld.extract` took of the

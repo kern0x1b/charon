@@ -21,13 +21,6 @@
 // the three concrete subclasses. The three of them are initialised from it here, which is the one
 // place the marking is in the way of the port's own work, and the marking is not the port's to lift.
 
-// The default centre-coordinate distance of a zoom range's unbounded end, read out of the arm64e dyld
-// shared cache of 18.0 through the symbol (tools/cfconst.py cannot read an arm64e cache, which is
-// stored as a header file plus numbered sub-caches, so the eight bytes at the symbol's own address
-// were read out of the image dyld.extract took of that cache's MapKit). It is -1.0, which says the
-// end is not bounded rather than that it is a distance of minus one metre.
-const CLLocationDistance MKMapCameraZoomDefault = -1.0;
-
 @implementation MKMapConfiguration
 
 @synthesize elevationStyle = _elevationStyle;

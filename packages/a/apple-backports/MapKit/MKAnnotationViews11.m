@@ -14,14 +14,11 @@
 #import <objc/message.h>
 #import "CharonMapKit.h"
 
-// The identifiers the map view asks for when the program has registered no class of its own. The
-// release's own MKMapView has no reuse at all, so these are the names the header declares and the
-// map view here registers its own marker and its own cluster under.
-MK_EXTERN NSString *const MKMapViewDefaultAnnotationViewReuseIdentifier;
-MK_EXTERN NSString *const MKMapViewDefaultClusterAnnotationViewReuseIdentifier;
-
-NSString *const MKMapViewDefaultAnnotationViewReuseIdentifier = @"MKMapViewDefaultAnnotationViewReuseIdentifier";
-NSString *const MKMapViewDefaultClusterAnnotationViewReuseIdentifier = @"MKMapViewDefaultClusterAnnotationViewReuseIdentifier";
+// The identifiers the map view asks for when the program has registered no class of its own are
+// MKMapViewDefaultAnnotationViewReuseIdentifier and MKMapViewDefaultClusterAnnotationViewReuseIdentifier,
+// carried in MKMapItemNames11.m: iOS 11 brought them and the other iOS 11 constants of MapKit, and an
+// object carries the API of one release. The release's own MKMapView has no reuse at all, so the map
+// view here answers those two identifiers with its own marker.
 
 @implementation MKMarkerAnnotationView {
     UIColor *_markerTintColor;

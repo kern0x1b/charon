@@ -726,17 +726,6 @@
       "effect": "the colours and locations the caller gave, painted along the line from its first point to its last by clipping to the stroked path and drawing a linear gradient, and -setColors:atLocations:",
       "facts": "facts/MapKit/MapKit.md",
       "source": "the SDK 16.4 header, and the release's own projection and geometry functions, measured in the armv7 cache of 6.1.3"
-    },
-    {
-      "api": "MKMapCameraZoomDefault",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the end of a zoom range that the range does not bound, which is a value and not a distance",
-      "effect": "MKMapCameraZoomRange's one-sided initialisers leave the other end at this and the getter gives it back unchanged; -initWithMinCenterCoordinateDistance:maxCenterCoordinateDistance: refuses a range whose two ends cross",
-      "facts": "facts/MapKit/MapKit.md",
-      "source": "read out of the MapKit image dyld.extract took of the arm64e dyld shared cache of 18.0: the eight bytes at the address the symbol _MKMapCameraZoomDefault has in that image, which are -1.0"
     }
   ]
 }

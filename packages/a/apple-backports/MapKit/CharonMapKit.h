@@ -67,6 +67,13 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readwrite) id <MKOverlay> overlay;
 @end
 
+// The rose's heading, which is this port's own: the header's MKCompassButton has a mapView and a
+// visibility and nothing that says which way the map is facing. Declared and not implemented here,
+// so the map view can set the rose as it turns.
+@interface MKCompassButton (CharonCompass)
+- (void)setCompassHeading:(CLLocationDirection)heading;
+@end
+
 @interface MKOverlayPathRenderer (CharonDrawing)
 - (CGFloat)charon_lineWidthAtZoomScale:(MKZoomScale)zoomScale;
 @end
