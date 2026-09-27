@@ -51,4 +51,33 @@ AudioChannelLayoutTag CharonTagForChannelCount(AVAudioChannelCount channels);
 - (NSArray<AVAudioUnitComponent *> *)charon_allComponents;
 @end
 
+// The AVAudioNode hooks libAVFoundationBackports carries, with the signatures its own
+// CharonAVAudioEngine.h gives them: set the node's engine, AUNode and AudioUnit, and its schedule queue.
+@interface AVAudioNode (CharonAVFAudioImpl)
+- (void)charon_setEngine:(nullable AVAudioEngine *)engine auNode:(AUNode)node audioUnit:(nullable AudioUnit)unit;
+- (NSMutableArray *_Nonnull)charon_queue;
+@end
+
+// The environment node's own plumbing. AVAudioEnvironmentNode carries a graph of its own - the
+// release's kAudioUnitSubType_SpatialMixer (which the SDK renames from the deprecated
+// kAudioUnitSubType_AU3DMixerEmbedded, same value, iOS 2.0) terminated into a generic output - so that
+// it can be rendered offline without an engine, which is what makes its own output measurable.
+@interface AVAudioEnvironmentNode (CharonImpl)
+// Render the node's output by hand, the way AudioUnitRender pulls an output unit, and write the frames
+// into buffer.
+- (OSStatus)charon_renderOfflineToBuffer:(AudioBufferList *)buffer frames:(AVAudioFrameCount)frames;
+- (void)charon_applyEnvironmentParameters;
+@end
+
+// The two parameter classes of the environment, and the node they belong to. They are the header's own
+// value objects; the node is what they apply to.
+@interface AVAudioEnvironmentDistanceAttenuationParameters (CharonImpl)
+- (instancetype)initWithCharonOwner:(AVAudioEnvironmentNode *)owner;
+- (float)charon_gainForDistance:(float)distance;
+@end
+
+@interface AVAudioEnvironmentReverbParameters (CharonImpl)
+- (instancetype)initWithCharonOwner:(AVAudioEnvironmentNode *)owner;
+@end
+
 NS_ASSUME_NONNULL_END
