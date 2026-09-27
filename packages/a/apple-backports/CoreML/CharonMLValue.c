@@ -6,8 +6,6 @@
 #include <string.h>
 #include <string.h>
 
-#define MAX_RANK 8
-
 char *charon_ml_strndup(const char *bytes, size_t length)
 {
     /* The value reader's own copy of a string, for a dictionary's keys and a classifier's
@@ -70,6 +68,8 @@ const char *charon_ml_value_name(charon_ml_value_kind kind)
         return "a dictionary";
     case CHARON_ML_VALUE_ARRAY:
         return "an array";
+    case CHARON_ML_VALUE_SEQUENCE:
+        return "a sequence";
     default:
         return "no value";
     }
@@ -79,7 +79,7 @@ int charon_ml_count_of_shape(const int64_t *shape, int rank)
 {
     int index;
     int64_t count = 1;
-    if (rank < 0 || rank > MAX_RANK) {
+    if (rank < 0 || rank > CHARON_ML_MAX_RANK) {
         return 0;
     }
     for (index = 0; index < rank; index++) {
@@ -112,8 +112,8 @@ charon_ml_array charon_ml_array_make(int data_type, const int64_t *shape, int ra
     memset(&array, 0, sizeof array);
     array.data_type = data_type;
     array.rank = rank;
-    if (rank > MAX_RANK) {
-        array.rank = MAX_RANK;
+    if (rank > CHARON_ML_MAX_RANK) {
+        array.rank = CHARON_ML_MAX_RANK;
     }
     memcpy(array.shape, shape, (size_t)array.rank * sizeof *shape);
     strides_of(shape, rank, array.strides);
@@ -151,8 +151,8 @@ void charon_ml_array_free(charon_ml_array *array)
 charon_ml_array charon_ml_array_subview(const charon_ml_array *array, const int64_t *shape, int rank, int64_t at)
 {
     charon_ml_array view = *array;
-    if (rank > MAX_RANK) {
-        rank = MAX_RANK;
+    if (rank > CHARON_ML_MAX_RANK) {
+        rank = CHARON_ML_MAX_RANK;
     }
     view.rank = rank;
     memcpy(view.shape, shape, (size_t)rank * sizeof *shape);

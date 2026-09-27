@@ -13,7 +13,7 @@
 
 #include "CharonMLValue.h"
 
-#define CHARON_ML_MAX_RANK 5
+
 
 typedef struct {
     int rank;

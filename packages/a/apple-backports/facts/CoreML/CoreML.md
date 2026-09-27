@@ -113,3 +113,39 @@ Each of these is refused with a line naming the layer, not approximated:
 | `tools/coreml/make-models.py` | the containers, and the host's own answers for them |
 | `tools/coreml/ml-dump.c`, `tools/coreml/predict-main.c` | the two harnesses the checks drive |
 | `tools/coreml/check-reader.sh`, `tools/coreml/check-predict.sh` | the two checks |
+
+## The Objective-C surface this group carries
+
+Three classes, and what an application can do with them:
+
+- **`MLMultiArray`** — a typed, strided array of numbers. Every element type the specification
+  names, its three initialisers (a shape, a shape with strides, and a caller's buffer with the
+  block that gives it back), the deprecated `dataPointer`, the two addressing forms the
+  specification declares (a linear index and an array of numbers), `NSSecureCoding`, and
+  `+multiArrayByConcatenatingMultiArrays:alongAxis:dataType:`.
+- **`MLFeatureValue`** — one value of one feature: every constructor the specification declares
+  that this port can build, every accessor, `isEqualToFeatureValue:`, `NSCopying` and
+  `NSSecureCoding`.
+- **`MLSequence`** — an ordered list of numbers or of strings, which is what a Core ML sequence
+  is, with the three constructors and the two accessors the specification declares.
+
+`MLFeatureValue`'s array is a window on the `MLMultiArray`'s own buffer rather than a copy, so
+an application that writes through the array it handed over sees the change in the model, which
+is what passing an `MLMultiArray` to a model means.
+
+## What this group does not carry, and why
+
+The rest of Core ML's Objective-C surface is **not** in this delivery:
+
+- **`MLModel`, `MLModelDescription`, `MLFeatureDescription` and the eight constraint classes.**
+  The interpreter is there and measured; the classes that hand it to an application are the next
+  piece of work. They are `absent` in the registry with that reason, and the reason is a
+  statement about this delivery and not about the port: the C they would call is finished.
+- **The image constructors** (`+featureValueWithCGImage:`, `+featureValueWithImageAtURL:` and
+  their variants). `+featureValueWithPixelBuffer:` is carried and takes a 32-bit BGRA or ARGB
+  buffer; a CGImage or a URL is a decode that belongs with the image handling, and the port
+  answers the undefined value of the image type rather than an image it did not decode.
+- **The compute-plan, the update-task, the model-structure and the custom-model classes**, and
+  the kinds of model the interpreter refuses: support vector machines, k-nearest neighbours,
+  item similarity, MIL (`mlProgram`) models, linked and custom models. Each is refused by name
+  in `facts/CoreML/CoreML.md`.

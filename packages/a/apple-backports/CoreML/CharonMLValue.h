@@ -12,6 +12,11 @@
 #include <stddef.h>
 #include <stdint.h>
 
+/* The most dimensions an array has. The value reader, the tensor reader and the
+ * Objective-C surface all bound their shape by it, and it is declared here so there is one
+ * number rather than three that have to agree. */
+#define CHARON_ML_MAX_RANK 8
+
 /* The array element types, by the numbers the CoreML specification gives them. They are not
  * 1, 2, 3: the specification writes each as a bit field, and a container carries those
  * numbers on the wire, so they are named here rather than renumbered. */
@@ -30,7 +35,8 @@ typedef enum {
     CHARON_ML_VALUE_STRING,
     CHARON_ML_VALUE_IMAGE,
     CHARON_ML_VALUE_DICTIONARY,
-    CHARON_ML_VALUE_ARRAY
+    CHARON_ML_VALUE_ARRAY,
+    CHARON_ML_VALUE_SEQUENCE
 } charon_ml_value_kind;
 
 /* A dimension's size, or that the specification's "flexible" is: an upper bound of -1 in a
@@ -40,8 +46,8 @@ typedef enum {
 typedef struct {
     int data_type;      /* one of CHARON_ML_ARRAY_* */
     int rank;
-    int64_t shape[8];   /* CHARON_ML_FLEXIBLE for a dimension of no fixed length */
-    int64_t strides[8]; /* in elements, so a sub-array is a window and not a copy */
+    int64_t shape[CHARON_ML_MAX_RANK];   /* CHARON_ML_FLEXIBLE for a dimension of no fixed length */
+    int64_t strides[CHARON_ML_MAX_RANK]; /* in elements, so a sub-array is a window and not a copy */
     size_t count;       /* the elements this window covers, product of the shape */
     void *data;
     int owns_data;      /* whether freeing the value frees the data */

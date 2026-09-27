@@ -1,0 +1,401 @@
+{
+ "framework": "CoreML",
+ "entries": [
+  {
+   "api": "MLMultiArray",
+   "kind": "class",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  },
+  {
+   "api": "MLFeatureValue",
+   "kind": "class",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  },
+  {
+   "api": "MLSequence",
+   "kind": "class",
+   "introduced": "12.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  },
+  {
+   "api": "+[MLMultiArray multiArrayByConcatenatingMultiArrays:alongAxis:dataType:]",
+   "kind": "method",
+   "introduced": "14.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  },
+  {
+   "api": "-[MLMultiArray getBytesWithHandler:]",
+   "kind": "method",
+   "introduced": "15.4",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  },
+  {
+   "api": "-[MLMultiArray getMutableBytesWithHandler:]",
+   "kind": "method",
+   "introduced": "15.4",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  },
+  {
+   "api": "-[MLMultiArray initWithDataPointer:shape:dataType:strides:deallocator:error:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  },
+  {
+   "api": "-[MLMultiArray initWithPixelBuffer:shape:]",
+   "kind": "method",
+   "introduced": "16.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  },
+  {
+   "api": "-[MLMultiArray initWithShape:dataType:error:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  },
+  {
+   "api": "-[MLMultiArray initWithShape:dataType:strides:]",
+   "kind": "method",
+   "introduced": "18.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  },
+  {
+   "api": "-[MLMultiArray objectAtIndexedSubscript:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  },
+  {
+   "api": "-[MLMultiArray objectForKeyedSubscript:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  },
+  {
+   "api": "-[MLMultiArray setObject:atIndexedSubscript:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  },
+  {
+   "api": "-[MLMultiArray setObject:forKeyedSubscript:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  },
+  {
+   "api": "+[MLFeatureValue featureValueWithDictionary:error:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  },
+  {
+   "api": "+[MLFeatureValue featureValueWithDouble:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  },
+  {
+   "api": "+[MLFeatureValue featureValueWithInt64:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  },
+  {
+   "api": "+[MLFeatureValue featureValueWithMultiArray:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  },
+  {
+   "api": "+[MLFeatureValue featureValueWithPixelBuffer:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  },
+  {
+   "api": "+[MLFeatureValue featureValueWithSequence:]",
+   "kind": "method",
+   "introduced": "12.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  },
+  {
+   "api": "+[MLFeatureValue featureValueWithString:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  },
+  {
+   "api": "+[MLFeatureValue undefinedFeatureValueWithType:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  },
+  {
+   "api": "-[MLFeatureValue isEqualToFeatureValue:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  },
+  {
+   "api": "+[MLSequence emptySequenceWithType:]",
+   "kind": "method",
+   "introduced": "12.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  },
+  {
+   "api": "+[MLSequence sequenceWithInt64Array:]",
+   "kind": "method",
+   "introduced": "12.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  },
+  {
+   "api": "+[MLSequence sequenceWithStringArray:]",
+   "kind": "method",
+   "introduced": "12.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  },
+  {
+   "api": "MLFeatureValue.type",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  },
+  {
+   "api": "MLFeatureValue.undefined",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  },
+  {
+   "api": "MLFeatureValue.int64Value",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  },
+  {
+   "api": "MLFeatureValue.doubleValue",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  },
+  {
+   "api": "MLFeatureValue.stringValue",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  },
+  {
+   "api": "MLFeatureValue.multiArrayValue",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  },
+  {
+   "api": "MLFeatureValue.dictionaryValue",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  },
+  {
+   "api": "MLFeatureValue.imageBufferValue",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  },
+  {
+   "api": "MLFeatureValue.sequenceValue",
+   "kind": "property",
+   "introduced": "12.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  },
+  {
+   "api": "MLMultiArray.dataPointer",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  },
+  {
+   "api": "MLMultiArray.dataType",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  },
+  {
+   "api": "MLMultiArray.shape",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  },
+  {
+   "api": "MLMultiArray.strides",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  },
+  {
+   "api": "MLMultiArray.count",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  },
+  {
+   "api": "MLMultiArray.pixelBuffer",
+   "kind": "property",
+   "introduced": "16.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  },
+  {
+   "api": "MLSequence.type",
+   "kind": "property",
+   "introduced": "12.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  },
+  {
+   "api": "MLSequence.stringValues",
+   "kind": "property",
+   "introduced": "12.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  },
+  {
+   "api": "MLSequence.int64Values",
+   "kind": "property",
+   "introduced": "12.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host"
+  }
+ ]
+}
