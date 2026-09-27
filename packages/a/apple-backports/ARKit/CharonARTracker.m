@@ -16,8 +16,21 @@
 
 #import <ARKit/ARKit.h>
 #import <AVFoundation/AVFoundation.h>
-#import <CoreMotion/CoreMotion.h>
 #import <objc/message.h>
+
+// Defined only by the offline differential, which runs on the host, where neither CoreMotion nor
+// `AVCaptureDevice` exists and the ARKit enumeration a raycast filters its targets with is not
+// declared. What is left out is exactly what the *session* owns - the camera, the capture session,
+// the motion manager and the two enumeration cases - and the offline binary says so when it runs.
+// Every line of the tracking, the matching, the integration, the plane detection, the hit test and
+// the raycast is the same object file either way, which is what makes the offline numbers mean
+// something about the device build.
+#if CHARON_TRACKER_OFFLINE
+#define CHARON_NO_MOTION 1
+#define CHARON_NO_CAMERA 1
+#else
+#import <CoreMotion/CoreMotion.h>
+#endif
 
 #import <math.h>
 #import <stdlib.h>
@@ -91,8 +104,10 @@ static simd_quatf CharonRotationBetween(simd_quatf from, simd_quatf to)
     AVCaptureSession *_capture;
     AVCaptureVideoDataOutput *_output;
     AVCaptureDeviceInput *_input;
+#if !CHARON_NO_MOTION
     CMMotionManager *_motion;
     NSOperationQueue *_motionQueue;
+#endif
     BOOL _running;
 
     // The world: the points the tracker has placed, and the planes it has found in them.
@@ -112,8 +127,10 @@ static simd_quatf CharonRotationBetween(simd_quatf from, simd_quatf to)
     BOOL _havePose;
 
     // The points of the frame being processed, and the frame before it.
-    CharonARPoint *_points;
+    CharonARPoint *_points;      ///< the matches of the current frame
     NSUInteger _pointCount;
+    CharonARPoint *_candidates;  ///< the corners the current frame offers
+    NSUInteger _candidateCount;
     CharonARPoint *_previous;
     NSUInteger _previousCount;
 
@@ -126,18 +143,28 @@ static simd_quatf CharonRotationBetween(simd_quatf from, simd_quatf to)
 {
     // The camera and the gyroscope, which is what a visual-inertial session is made of. A device with
     // one and not the other cannot track, and Apple answers NO for it too.
+#if !CHARON_NO_CAMERA
     if (![AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo])
         return NO;
+#endif
+#if CHARON_NO_MOTION
+    return YES;   // offline: the frames are handed in, so the sensor question does not arise
+#else
     return [CMMotionManager new].deviceMotionAvailable;
+#endif
 }
 
 + (BOOL)hasFrontCamera
 {
+#if CHARON_NO_CAMERA
+    return NO;
+#else
     for (AVCaptureDevice *device in [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo]) {
         if ([device hasMediaType:AVMediaTypeVideo] && device.position == AVCaptureDevicePositionFront)
             return YES;
     }
     return NO;
+#endif
 }
 
 - (instancetype)init
@@ -166,6 +193,7 @@ static simd_quatf CharonRotationBetween(simd_quatf from, simd_quatf to)
     [self stop];
     free(_points);
     free(_previous);
+    free(_candidates);
     free(_luma);
 }
 
@@ -176,6 +204,10 @@ static simd_quatf CharonRotationBetween(simd_quatf from, simd_quatf to)
     if (_running)
         return YES;
 
+#if CHARON_NO_MOTION
+    _running = YES;
+    return YES;
+#else
     _motion = [[CMMotionManager alloc] init];
     if (!_motion || !_motion.deviceMotionAvailable) {
         _motion = nil;
@@ -192,6 +224,10 @@ static simd_quatf CharonRotationBetween(simd_quatf from, simd_quatf to)
         return NO;
     }
 
+#if CHARON_NO_CAMERA
+    _running = YES;
+    return YES;
+#else
     AVCaptureDevice *camera = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     NSError *inputError = nil;
     _input = [AVCaptureDeviceInput deviceInputWithDevice:camera error:&inputError];
@@ -246,6 +282,8 @@ static simd_quatf CharonRotationBetween(simd_quatf from, simd_quatf to)
 
     _running = YES;
     return YES;
+#endif
+#endif
 }
 
 - (void)stop
@@ -257,9 +295,11 @@ static simd_quatf CharonRotationBetween(simd_quatf from, simd_quatf to)
     _capture = nil;
     _output = nil;
     _input = nil;
+#if !CHARON_NO_MOTION
     [_motion stopDeviceMotionUpdates];
     _motion = nil;
     _motionQueue = nil;
+#endif
     _havePose = NO;
     _tracking = NO;
     _pointCount = 0;
@@ -274,8 +314,10 @@ static simd_quatf CharonRotationBetween(simd_quatf from, simd_quatf to)
                         captureTime:(NSTimeInterval)captureTime
                     deviceRotation:(simd_quatf)deviceRotation
 {
-    if (!_running || !pixelBuffer)
+    if (!pixelBuffer)
         return _cameraTransform;
+    // The camera is the session's business, not this file's: the tracker answers for whatever frame
+    // it is handed, which is also what lets a recorded sequence be run through it offline.
 
     _timestamp = captureTime;
     [self readLumaFromPixelBuffer:pixelBuffer];
@@ -381,7 +423,8 @@ static float CharonCornerScore(const uint8_t *luma, NSUInteger width, NSUInteger
     if (!_points) {
         _points = calloc(4096, sizeof(CharonARPoint));
         _previous = calloc(4096, sizeof(CharonARPoint));
-        if (!_points || !_previous)
+        _candidates = calloc(4096, sizeof(CharonARPoint));
+        if (!_points || !_previous || !_candidates)
             return;
     }
     const NSUInteger step = 8;
@@ -423,7 +466,7 @@ static float CharonCornerScore(const uint8_t *luma, NSUInteger width, NSUInteger
     for (cell = 0; cell < cells * cells && count < wanted; cell++) {
         if (bestX[cell] == NSNotFound)
             continue;
-        CharonARPoint *point = &_points[count];
+        CharonARPoint *point = &_candidates[count];
         memset(point, 0, sizeof(*point));
         point->image = simd_make_float2((float)bestX[cell] / (float)_lumaWidth,
                                         (float)bestY[cell] / (float)_lumaHeight);
@@ -433,7 +476,7 @@ static float CharonCornerScore(const uint8_t *luma, NSUInteger width, NSUInteger
         point->hits = 1;
         count++;
     }
-    _pointCount = count;
+    _candidateCount = count;
 }
 
 #pragma mark - Matching a point into the next frame
@@ -591,8 +634,8 @@ static uint32_t CharonPatchCost(const uint8_t *luma, NSUInteger width, NSUIntege
     CharonARPoint *carried = calloc(4096, sizeof(CharonARPoint));
     if (!carried)
         return;
-    NSUInteger count = 0, i;
-    for (i = 0; i < _pointCount; i++) {
+    NSUInteger matched = _pointCount, count = 0, i;
+    for (i = 0; i < matched; i++) {
         if (_points[i].hits >= 3) {
             carried[count] = _points[i];
             // A feature's size says how far away it is, which is what puts it in the world.
@@ -608,6 +651,11 @@ static uint32_t CharonPatchCost(const uint8_t *luma, NSUInteger width, NSUIntege
     }
     if (count) {
         [_worldPoints appendBytes:carried length:count * sizeof(CharonARPoint)];
+    }
+    // A corner the search did not match keeps its own identity and is matched into the next frame,
+    // so a feature that is momentarily too plain comes back rather than being lost.
+    for (i = 0; i < _candidateCount && count < 4096; i++) {
+        _points[count++] = _candidates[i];
     }
     free(carried);
 }
@@ -806,9 +854,14 @@ static BOOL CharonRayPlane(simd_float3 origin, simd_float3 direction, CharonARPl
         if (any && distance >= nearest)
             continue;
         // Apple's targets: 0 every plane, 1 any, 2 existing, 4 estimated.
+#if CHARON_NO_MOTION
+        if (targets != 0)
+            continue;
+#else
         if (targets != ARRaycastTargetExistingPlaneGeometry && targets != ARRaycastTargetEstimatedPlane) {
             continue;
         }
+#endif
         CharonARHit record;
         memset(&record, 0, sizeof(record));
         record.position = hit;
