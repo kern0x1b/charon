@@ -234,8 +234,9 @@ The 16.0 and 18.0 groups are also the ones that are only reachable on **arm64**:
 runs past 10.3.4, so for the armv7 band they are carried by the last band and cost nothing, and
 for arm64 they need the band caches the arm64 plan names. Neither is measured here.
 
-IntentsUI (58 rows) and AppIntents (2323 rows, a `swift-runtime` deliverable) are not in this
-delivery; see the delivery's report.
+IntentsUI (58 rows, 43 of them entries, 15 absent with a reason each) is a library of its own,
+`libIntentsUIBackports.dylib` over UIKit, and is in `facts/IntentsUI/IntentsUI.md`. AppIntents
+(2323 rows) is a `swift-runtime` deliverable and is not here.
 
 ## What is not measured here
 

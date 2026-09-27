@@ -1,0 +1,425 @@
+{
+  "framework": "IntentsUI",
+  "entries": [
+    {
+      "api": "INUIAddVoiceShortcutButton",
+      "kind": "class",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/IntentsUI/IntentsUI.md",
+      "reason": "hand written in packages/a/apple-backports/IntentsUI/CharonIntentsUI120.m: a real UIKit class that draws itself and keeps the state the header declares",
+      "effect": "every member the header declares has a body; what each answers and where the system's own flow is refused is in facts/IntentsUI/IntentsUI.md",
+      "source": "the header of iPhoneOS 16.4"
+    },
+    {
+      "api": "INUIAddVoiceShortcutViewController",
+      "kind": "class",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/IntentsUI/IntentsUI.md",
+      "reason": "hand written in packages/a/apple-backports/IntentsUI/CharonIntentsUI120.m: a real UIKit class that draws itself and keeps the state the header declares",
+      "effect": "every member the header declares has a body; what each answers and where the system's own flow is refused is in facts/IntentsUI/IntentsUI.md",
+      "source": "the header of iPhoneOS 16.4"
+    },
+    {
+      "api": "INUIEditVoiceShortcutViewController",
+      "kind": "class",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/IntentsUI/IntentsUI.md",
+      "reason": "hand written in packages/a/apple-backports/IntentsUI/CharonIntentsUI120.m: a real UIKit class that draws itself and keeps the state the header declares",
+      "effect": "every member the header declares has a body; what each answers and where the system's own flow is refused is in facts/IntentsUI/IntentsUI.md",
+      "source": "the header of iPhoneOS 16.4"
+    },
+    {
+      "api": "+[INImage imageSizeForIntentResponse:]",
+      "kind": "method",
+      "introduced": "10.0",
+      "status": "absent",
+      "reason": "IntentsUI's category on INImage resolves a UIImage or a CGImage into an Intents image, which needs UIImage's own PNG encoder and the response's own image; it is a later piece of this framework, so the selectors are absent rather than answered with a value that looks like an image and is not - the class the category names is the one the port carries",
+      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/IntentsUI/IntentsUI.md"
+    },
+    {
+      "api": "+[INImage imageWithCGImage:]",
+      "kind": "method",
+      "introduced": "10.0",
+      "status": "absent",
+      "reason": "IntentsUI's category on INImage resolves a UIImage or a CGImage into an Intents image, which needs UIImage's own PNG encoder and the response's own image; it is a later piece of this framework, so the selectors are absent rather than answered with a value that looks like an image and is not - the class the category names is the one the port carries",
+      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/IntentsUI/IntentsUI.md"
+    },
+    {
+      "api": "+[INImage imageWithUIImage:]",
+      "kind": "method",
+      "introduced": "10.0",
+      "status": "absent",
+      "reason": "IntentsUI's category on INImage resolves a UIImage or a CGImage into an Intents image, which needs UIImage's own PNG encoder and the response's own image; it is a later piece of this framework, so the selectors are absent rather than answered with a value that looks like an image and is not - the class the category names is the one the port carries",
+      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/IntentsUI/IntentsUI.md"
+    },
+    {
+      "api": "-[INImage fetchUIImageWithCompletion:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "IntentsUI's category on INImage resolves a UIImage or a CGImage into an Intents image, which needs UIImage's own PNG encoder and the response's own image; it is a later piece of this framework, so the selectors are absent rather than answered with a value that looks like an image and is not - the class the category names is the one the port carries",
+      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/IntentsUI/IntentsUI.md"
+    },
+    {
+      "api": "-[INUIAddVoiceShortcutButton initWithFrame:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "the header marks the initialiser unavailable, so a port cannot call it",
+      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/IntentsUI/IntentsUI.md"
+    },
+    {
+      "api": "-[INUIAddVoiceShortcutButton initWithStyle:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "the header of iPhoneOS 16.4",
+      "reason": "answered by the class's own @implementation in CharonIntentsUI120.m",
+      "facts": "facts/IntentsUI/IntentsUI.md"
+    },
+    {
+      "api": "-[INUIAddVoiceShortcutButton init]",
+      "kind": "method",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "the header marks the initialiser unavailable, so a port cannot call it",
+      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/IntentsUI/IntentsUI.md"
+    },
+    {
+      "api": "-[INUIAddVoiceShortcutButton setStyle:]",
+      "kind": "method",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "the header of iPhoneOS 16.4",
+      "reason": "answered by the class's own @implementation in CharonIntentsUI120.m",
+      "facts": "facts/IntentsUI/IntentsUI.md"
+    },
+    {
+      "api": "-[INUIAddVoiceShortcutButtonDelegate presentAddVoiceShortcutViewController:forAddVoiceShortcutButton:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "the header of iPhoneOS 16.4",
+      "reason": "a method of a protocol the SDK declares: the class that answers it is the application's, and the declaration is what this package carries",
+      "facts": "facts/IntentsUI/IntentsUI.md"
+    },
+    {
+      "api": "-[INUIAddVoiceShortcutButtonDelegate presentEditVoiceShortcutViewController:forAddVoiceShortcutButton:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "the header of iPhoneOS 16.4",
+      "reason": "a method of a protocol the SDK declares: the class that answers it is the application's, and the declaration is what this package carries",
+      "facts": "facts/IntentsUI/IntentsUI.md"
+    },
+    {
+      "api": "-[INUIAddVoiceShortcutViewController initWithNibName:bundle:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "the header marks the initialiser unavailable, so a port cannot call it",
+      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/IntentsUI/IntentsUI.md"
+    },
+    {
+      "api": "-[INUIAddVoiceShortcutViewController initWithShortcut:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "the header of iPhoneOS 16.4",
+      "reason": "answered by the class's own @implementation in CharonIntentsUI120.m",
+      "facts": "facts/IntentsUI/IntentsUI.md"
+    },
+    {
+      "api": "-[INUIAddVoiceShortcutViewController init]",
+      "kind": "method",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "the header marks the initialiser unavailable, so a port cannot call it",
+      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/IntentsUI/IntentsUI.md"
+    },
+    {
+      "api": "-[INUIAddVoiceShortcutViewControllerDelegate addVoiceShortcutViewController:didFinishWithVoiceShortcut:error:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "the header of iPhoneOS 16.4",
+      "reason": "a method of a protocol the SDK declares: the class that answers it is the application's, and the declaration is what this package carries",
+      "facts": "facts/IntentsUI/IntentsUI.md"
+    },
+    {
+      "api": "-[INUIAddVoiceShortcutViewControllerDelegate addVoiceShortcutViewControllerDidCancel:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "the header of iPhoneOS 16.4",
+      "reason": "a method of a protocol the SDK declares: the class that answers it is the application's, and the declaration is what this package carries",
+      "facts": "facts/IntentsUI/IntentsUI.md"
+    },
+    {
+      "api": "-[INUIEditVoiceShortcutViewController initWithNibName:bundle:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "the header marks the initialiser unavailable, so a port cannot call it",
+      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/IntentsUI/IntentsUI.md"
+    },
+    {
+      "api": "-[INUIEditVoiceShortcutViewController initWithVoiceShortcut:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "the header of iPhoneOS 16.4",
+      "reason": "answered by the class's own @implementation in CharonIntentsUI120.m",
+      "facts": "facts/IntentsUI/IntentsUI.md"
+    },
+    {
+      "api": "-[INUIEditVoiceShortcutViewController init]",
+      "kind": "method",
+      "introduced": "12.0",
+      "status": "absent",
+      "reason": "the header marks the initialiser unavailable, so a port cannot call it",
+      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/IntentsUI/IntentsUI.md"
+    },
+    {
+      "api": "-[INUIEditVoiceShortcutViewControllerDelegate editVoiceShortcutViewController:didDeleteVoiceShortcutWithIdentifier:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "the header of iPhoneOS 16.4",
+      "reason": "a method of a protocol the SDK declares: the class that answers it is the application's, and the declaration is what this package carries",
+      "facts": "facts/IntentsUI/IntentsUI.md"
+    },
+    {
+      "api": "-[INUIEditVoiceShortcutViewControllerDelegate editVoiceShortcutViewController:didUpdateVoiceShortcut:error:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "the header of iPhoneOS 16.4",
+      "reason": "a method of a protocol the SDK declares: the class that answers it is the application's, and the declaration is what this package carries",
+      "facts": "facts/IntentsUI/IntentsUI.md"
+    },
+    {
+      "api": "-[INUIEditVoiceShortcutViewControllerDelegate editVoiceShortcutViewControllerDidCancel:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "the header of iPhoneOS 16.4",
+      "reason": "a method of a protocol the SDK declares: the class that answers it is the application's, and the declaration is what this package carries",
+      "facts": "facts/IntentsUI/IntentsUI.md"
+    },
+    {
+      "api": "-[INUIHostedViewControlling configureViewForParameters:ofInteraction:interactiveBehavior:context:completion:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "the header of iPhoneOS 16.4",
+      "reason": "a method of a protocol the SDK declares: the class that answers it is the application's, and the declaration is what this package carries",
+      "facts": "facts/IntentsUI/IntentsUI.md"
+    },
+    {
+      "api": "-[INUIHostedViewControlling configureWithInteraction:context:completion:]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "the header of iPhoneOS 16.4",
+      "reason": "a method of a protocol the SDK declares: the class that answers it is the application's, and the declaration is what this package carries",
+      "facts": "facts/IntentsUI/IntentsUI.md"
+    },
+    {
+      "api": "-[NSExtensionContext interfaceParametersDescription]",
+      "kind": "method",
+      "introduced": "11.0",
+      "status": "absent",
+      "reason": "NSExtensionContext arrived with iOS 8 and this release runs no extension host at all, so the category the header declares cannot be attached to a class that is not there",
+      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/IntentsUI/IntentsUI.md"
+    },
+    {
+      "api": "INUIAddVoiceShortcutButton.cornerRadius",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "the header of iPhoneOS 16.4",
+      "reason": "synthesised in the class's own @implementation over the ivar it declares, written out so the claim is in the file",
+      "facts": "facts/IntentsUI/IntentsUI.md"
+    },
+    {
+      "api": "INUIAddVoiceShortcutButton.delegate",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "the header of iPhoneOS 16.4",
+      "reason": "synthesised in the class's own @implementation over the ivar it declares, written out so the claim is in the file",
+      "facts": "facts/IntentsUI/IntentsUI.md"
+    },
+    {
+      "api": "INUIAddVoiceShortcutButton.shortcut",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "the header of iPhoneOS 16.4",
+      "reason": "synthesised in the class's own @implementation over the ivar it declares, written out so the claim is in the file",
+      "facts": "facts/IntentsUI/IntentsUI.md"
+    },
+    {
+      "api": "INUIAddVoiceShortcutButton.style",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "the header of iPhoneOS 16.4",
+      "reason": "synthesised in the class's own @implementation over the ivar it declares, written out so the claim is in the file",
+      "facts": "facts/IntentsUI/IntentsUI.md"
+    },
+    {
+      "api": "INUIAddVoiceShortcutViewController.delegate",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "the header of iPhoneOS 16.4",
+      "reason": "synthesised in the class's own @implementation over the ivar it declares, written out so the claim is in the file",
+      "facts": "facts/IntentsUI/IntentsUI.md"
+    },
+    {
+      "api": "INUIEditVoiceShortcutViewController.delegate",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "the header of iPhoneOS 16.4",
+      "reason": "synthesised in the class's own @implementation over the ivar it declares, written out so the claim is in the file",
+      "facts": "facts/IntentsUI/IntentsUI.md"
+    },
+    {
+      "api": "INUIHostedViewSiriProviding.displaysMap",
+      "kind": "property",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "the header of iPhoneOS 16.4",
+      "reason": "a property of a protocol the SDK declares: the class that answers it is the application's, and the declaration is what this package carries",
+      "facts": "facts/IntentsUI/IntentsUI.md"
+    },
+    {
+      "api": "INUIHostedViewSiriProviding.displaysMessage",
+      "kind": "property",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "the header of iPhoneOS 16.4",
+      "reason": "a property of a protocol the SDK declares: the class that answers it is the application's, and the declaration is what this package carries",
+      "facts": "facts/IntentsUI/IntentsUI.md"
+    },
+    {
+      "api": "INUIHostedViewSiriProviding.displaysPaymentTransaction",
+      "kind": "property",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "the header of iPhoneOS 16.4",
+      "reason": "a property of a protocol the SDK declares: the class that answers it is the application's, and the declaration is what this package carries",
+      "facts": "facts/IntentsUI/IntentsUI.md"
+    },
+    {
+      "api": "NSExtensionContext.hostedViewMaximumAllowedSize",
+      "kind": "property",
+      "introduced": "10.0",
+      "status": "absent",
+      "reason": "NSExtensionContext arrived with iOS 8 and this release runs no extension host at all, so the category the header declares cannot be attached to a class that is not there",
+      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/IntentsUI/IntentsUI.md"
+    },
+    {
+      "api": "NSExtensionContext.hostedViewMinimumAllowedSize",
+      "kind": "property",
+      "introduced": "10.0",
+      "status": "absent",
+      "reason": "NSExtensionContext arrived with iOS 8 and this release runs no extension host at all, so the category the header declares cannot be attached to a class that is not there",
+      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/IntentsUI/IntentsUI.md"
+    },
+    {
+      "api": "INUIAddVoiceShortcutButtonDelegate",
+      "kind": "protocol",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/IntentsUI/IntentsUI.md",
+      "reason": "the protocol is the SDK's own declaration and its members are answered by the conforming class, which is the application's",
+      "source": "the header of iPhoneOS 16.4"
+    },
+    {
+      "api": "INUIAddVoiceShortcutViewControllerDelegate",
+      "kind": "protocol",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/IntentsUI/IntentsUI.md",
+      "reason": "the protocol is the SDK's own declaration and its members are answered by the conforming class, which is the application's",
+      "source": "the header of iPhoneOS 16.4"
+    },
+    {
+      "api": "INUIEditVoiceShortcutViewControllerDelegate",
+      "kind": "protocol",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/IntentsUI/IntentsUI.md",
+      "reason": "the protocol is the SDK's own declaration and its members are answered by the conforming class, which is the application's",
+      "source": "the header of iPhoneOS 16.4"
+    },
+    {
+      "api": "INUIHostedViewControlling",
+      "kind": "protocol",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/IntentsUI/IntentsUI.md",
+      "reason": "the protocol is the SDK's own declaration and its members are answered by the conforming class, which is the application's",
+      "source": "the header of iPhoneOS 16.4"
+    },
+    {
+      "api": "INUIHostedViewSiriProviding",
+      "kind": "protocol",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/IntentsUI/IntentsUI.md",
+      "reason": "the protocol is the SDK's own declaration and its members are answered by the conforming class, which is the application's",
+      "source": "the header of iPhoneOS 16.4"
+    }
+  ]
+}
