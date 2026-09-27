@@ -150,7 +150,7 @@ import Foundation
 /// An entity that is anchored to a target in the world, and that a scene roots.
 @MainActor
 open class AnchorEntity: Entity, HasAnchoring {
-    internal override init(_coreEntity: __EntityRef) {
+    public required init(_coreEntity: __EntityRef) {
         super.init(_coreEntity: _coreEntity)
     }
 

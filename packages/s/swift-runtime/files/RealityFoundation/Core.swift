@@ -234,9 +234,14 @@ public struct __AABBRef {
         components[registration(of: componentType).identifier] != nil
     }
 
-    /// The number of components of this node that are of a type other than `Transform`, which
-    /// every node carries: `isActive` and the hierarchy are answered from those.
-    var componentCount: Int { components.count }
+    /// The number of components of this node, not counting its transform: the transform is the
+    /// node's own scale-rotation-translation, which the component set reads and writes rather
+    /// than stores among the others.
+    var componentCount: Int {
+        var count = components.count
+        if components[registration(of: Transform.self).identifier] != nil { count -= 1 }
+        return count
+    }
 
     /// The topmost node of the hierarchy this one is in, itself when it has no parent.
     var root: __REEntity {

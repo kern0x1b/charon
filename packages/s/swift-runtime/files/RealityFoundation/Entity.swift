@@ -55,9 +55,14 @@ open class Entity: HasHierarchy, HasTransform, HasSynchronization, Sendable {
         coreEntity.wrapper = self
     }
 
-    /// The initializer the entity's own storage is made through; `Entity._(_:)` is the spelling
-    /// the scene graph uses when it hands back a node it already holds.
-    internal init(_coreEntity: __EntityRef) {
+    /// The initializer an entity's own storage is made through, which the scene graph uses when
+    /// it hands back a node it already holds and `clone(recursive:)` uses to make the copy.
+    ///
+    /// It is `required` so that a copy of a subclass is a subclass: a subclass with no
+    /// designated initializer of its own inherits it, and one that has declares its own
+    /// `required` initializer here and forwards to this one, which is what a copy of its own
+    /// type has to do.
+    public required init(_coreEntity: __EntityRef) {
         coreEntity = _coreEntity.node
         if coreEntity.wrapper == nil { coreEntity.wrapper = self }
     }
@@ -119,17 +124,13 @@ open class Entity: HasHierarchy, HasTransform, HasSynchronization, Sendable {
     /// A copy of this entity, and with `recursive` of everything below it. The copy has its own
     /// storage: a later change to either is not a change to the other.
     ///
-    /// The copy is an `Entity`, or an `AnchorEntity` when this one is an anchor. A subclass
-    /// with state of its own overrides this to make a copy of its own type, and copies what
-    /// that state holds in `didClone(from:)`.
+    /// The copy is made through this type's own `init(_coreEntity:)`, so a subclass's copy is a
+    /// subclass; a subclass that also holds state of its own copies that state in
+    /// `didClone(from:)`, which is called on the copy with this entity.
     @discardableResult
     public func clone(recursive: Bool) -> Self {
         let copied = coreEntity.clone(recursive: recursive)
-        let made: Entity = copied.isAnchored ? AnchorEntity(_coreEntity: __EntityRef(copied))
-                                             : Entity(_coreEntity: __EntityRef(copied))
-        guard let wanted = made as? Self else {
-            preconditionFailure("RealityFoundation: \(type(of: self)).clone(recursive:) made a \(type(of: made)); a subclass with state of its own overrides clone(recursive:) to make a copy of its own type")
-        }
+        let wanted = Self(_coreEntity: __EntityRef(copied))
         wanted.didClone(from: self)
         return wanted
     }
@@ -191,13 +192,14 @@ extension Entity {
             coreEntity.removeComponent(of: componentType)
         }
 
-        /// Removes every component the entity carries, `Transform` among them: an entity whose
-        /// transform is taken out of its own storage keeps the transform it had.
+        /// Removes every component the entity carries. The entity's transform is not one of
+        /// them: the SDK keeps it beside the component set, in the entity's own scale-rotation-
+        /// translation, and this set reads and writes that. An entity keeps the transform it had.
         public func removeAll() {
-            coreEntity.transform = Transform()
             coreEntity.components.removeAll()
         }
 
+        /// The number of components the entity carries, not counting its transform.
         public var count: Int { coreEntity.componentCount }
     }
 }
@@ -538,11 +540,9 @@ extension HasTransform {
         let up = simd_normalize(upVector)
         let right = simd_cross(up, forward)
         let corrected = simd_cross(forward, right)
-        let basis = simd_float3x3(columns: (right, corrected, forward))
         setTransformMatrix(float4x4(SIMD4<Float>(right, 0), SIMD4<Float>(corrected, 0),
                                      SIMD4<Float>(forward, 0), SIMD4<Float>(position, 1)),
                            relativeTo: referenceEntity)
-        _ = basis
     }
 
     public func move(to transform: Transform, relativeTo referenceEntity: Entity?) {
