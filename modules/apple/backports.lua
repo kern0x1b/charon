@@ -57,7 +57,7 @@ LIBRARIES = {
     -- covers carries it: every band builds this library whole. It links UIKit because an Intents
     -- image is the application's own image and UIKit is where the asset catalogue is on every
     -- release below, and CoreLocation because INPlacemarkResolutionResult resolves a CLPlacemark.
-    {name = "IntentsBackports", folder = "Intents", frameworks = {"Intents", "UIKit", "CoreLocation", "Foundation"}, libraries = {"FoundationBackports"}},
+    {name = "IntentsBackports", folder = "Intents", frameworks = {"Intents", "UIKit", "CoreLocation", "Foundation"}, libraries = {"FoundationBackports"}, archives = {{name = "charon-coding", c = true}}},
     -- IntentsUI is the button and the two controllers an application shows to add or edit a
     -- shortcut, so it is a library of its own: a port that only donates interactions never draws
     -- one, and a daemon has no UIKit in its process to begin with. It needs the Intents classes
@@ -67,7 +67,7 @@ LIBRARIES = {
     -- it, and this library is those. The release carries none of the 30 (measured against the
     -- 6.1.3 armv7 cache, with a control), so every band builds it whole and nothing in it is a
     -- class of its own that the release would answer.
-    {name = "AccessibilityBackports", folder = "Accessibility", frameworks = {"Accessibility", "Foundation", "CoreGraphics"}, libraries = {"FoundationBackports"}},
+    {name = "AccessibilityBackports", folder = "Accessibility", frameworks = {"Accessibility", "Foundation", "CoreGraphics"}, libraries = {"FoundationBackports"}, archives = {{name = "charon-coding", c = true}}},
     {name = "IntentsUIBackports", folder = "IntentsUI", frameworks = {"IntentsUI", "Intents", "UIKit", "Foundation", "CoreGraphics"}, libraries = {"FoundationBackports", "IntentsBackports"}}
 }
 
@@ -209,9 +209,11 @@ function compile(opt, source, object)
     end
     if source:endswith(".mm") then
         table.join2(arguments, {"-fno-rtti", "-fvisibility-inlines-hidden"})
-        for _, name in ipairs(table.orderkeys(opt.archives or {})) do
-            table.insert(arguments, "-I" .. opt.archives[name].includedir)
-        end
+    end
+    -- Every archive's headers, for every file: an archive whose API is C is used by C files, and
+    -- before this its headers reached a .mm only.
+    for _, name in ipairs(table.orderkeys(opt.archives or {})) do
+        table.insert(arguments, "-I" .. opt.archives[name].includedir)
     end
     local program, arguments = clang(opt, table.join(arguments, {"-c", source, "-o", object}), objective_c)
     -- Through the cache, which is apple.cache: it puts the compiler in as the wrapper's first
@@ -583,13 +585,30 @@ local function link(opt, library, attach, objects, releases, outputdir, checked)
     for _, object in ipairs(kept) do
         cxx = cxx or opt.origins[object]:endswith(".mm")
     end
-    for _, name in ipairs(cxx and library.archives or {}) do
-        local archive = opt.archives and opt.archives[name]
-        if not archive then
-            raise("%s links the static library of the package %s, and the build was given none: pass archives = {%s = {linkdir = ..., link = ..., includedir = ...}}, from the package's installdir",
-                  library.name, name, name)
+    -- An archive entry says what language it is, so an archive whose API is C is linked into
+    -- every band of a library that keeps any object at all. Before this, the list was one of
+    -- strings and every archive in it was taken to be C++, which linked a C helper only where a
+    -- .mm object survived - and the C++ archives are the only ones that rule is right for. A
+    -- library that keeps no C++ object in any band could not have a C helper at all, which is
+    -- what charon-coding exists for: the coding and copying the Intents, IntentsUI and
+    -- Accessibility classes share, which no two of those libraries can borrow from each other
+    -- because internal_symbol() hides a helper out of every dylib.
+    --
+    -- The change is in the machinery, not in one framework, and tests/addon/archive_language_test.lua
+    -- is its check: it fails on any library whose archives cannot be reached by a band that keeps
+    -- no C++ object.
+    for _, wanted in ipairs(library.archives or {}) do
+        if type(wanted) == "string" then
+            wanted = {name = wanted}
         end
-        table.insert(arguments, path.join(archive.linkdir, "lib" .. archive.link .. ".a"))
+        if wanted.c or cxx then
+            local archive = opt.archives and opt.archives[wanted.name]
+            if not archive then
+                raise("%s links the static library of the package %s, and the build was given none: pass archives = {%s = {linkdir = ..., link = ..., includedir = ...}}, from the package's installdir",
+                      library.name, wanted.name, wanted.name)
+            end
+            table.insert(arguments, path.join(archive.linkdir, "lib" .. archive.link .. ".a"))
+        end
     end
     if cxx then
         table.join2(arguments, cxx_runtime(opt, library, releases, path.join(opt.builddir, "stubs", path.filename(outputdir), library.name)))

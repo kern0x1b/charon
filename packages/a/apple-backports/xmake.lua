@@ -5,6 +5,7 @@ package("apple-backports")
     set_policy("package.strict_compatibility", true)
 
     add_deps("charon@firmware-tools", {alias = "firmware-tools"})
+    add_deps("charon@charon-coding", {alias = "charon-coding"})
     add_deps("charon@ldid 2.1.5-procursus7+23.gaf86971", {alias = "ldid"})
     add_deps("charon@box2d 2.2.1", {alias = "box2d"})
 
@@ -153,7 +154,8 @@ package("apple-backports")
         local common = {root = package:scriptdir(), architecture = package:arch(), deployment = deployment, sdkdir = toolchain:config("sdkdir"),
                         cc = assert(toolchain:tool("cc"), "the apple-ios toolchain names no compiler for " .. package:arch()),
                         ld = assert(linker, "the apple-ios toolchain names no ld64 for " .. package:arch()), libraries = libraries,
-                        archives = {box2d = {linkdir = package:dep("box2d"):installdir("lib"), link = "Box2D", includedir = package:dep("box2d"):installdir("include")}}}
+                        archives = {box2d = {linkdir = package:dep("box2d"):installdir("lib"), link = "Box2D", includedir = package:dep("box2d"):installdir("include")},
+                                    "charon-coding" = {linkdir = package:dep("charon-coding"):installdir("lib"), link = "charon-coding", includedir = package:dep("charon-coding"):installdir("include")}}}
         -- no width here on purpose: on_install runs inside a job of xmake's own, and
         -- backports.lua's width() sees that and compiles one unit at a time, for this call and for
         -- write_deb() below, without either of them having to remember
