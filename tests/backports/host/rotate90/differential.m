@@ -147,8 +147,10 @@ int main(void)
             one(@"Planar16F", w, h, h, w, 2, 3, kvImageDoNotTile);
         }
 
-        // The refusals, which are the release's own: a constant outside the four, a flag outside the set
-        // the header lists for these functions, and a NULL buffer.
+        // The refusals. A constant outside the four the header names, and a NULL buffer. There is no flag
+        // check on either side, and the run below is why: the system answers kvImageNoError for every one
+        // of the thirty-two bits, so a port that refused one would be refusing something the system never
+        // refuses.
         vImage_Buffer source = make(4, 4, 8), dest = make(4, 4, 8);
         Pixel_ARGB_16U black = {0, 0, 0, 0xffff};
         for (unsigned bad = 4; bad < 8; bad++) {
@@ -159,18 +161,29 @@ int main(void)
         }
         vImage_Error theirs = vImageRotate90_ARGB16U(&source, &dest, 0, black, (vImage_Flags)0x40000000);
         vImage_Error ours = RENAME(vImageRotate90_ARGB16U)(&source, &dest, 0, black, (vImage_Flags)0x40000000);
-        report(theirs == ours, @"a flag the header does not list is refused alike",
+        report(theirs == ours, @"a flag the header does not list is answered, not refused",
                ([NSString stringWithFormat:@"the system answers %ld, the port %ld", (long)theirs, (long)ours]));
         theirs = vImageRotate90_ARGB16U(NULL, &dest, 0, black, kvImageBackgroundColorFill);
         ours = RENAME(vImageRotate90_ARGB16U)(NULL, &dest, 0, black, kvImageBackgroundColorFill);
         report(theirs == ours, @"a NULL source is refused alike",
                ([NSString stringWithFormat:@"the system answers %ld, the port %ld", (long)theirs, (long)ours]));
 
-        // GetTempBufferSize is NOT in the set the header lists for these functions, and the system agrees.
         theirs = vImageRotate90_ARGB16U(&source, &dest, 0, black, kvImageGetTempBufferSize);
         ours = RENAME(vImageRotate90_ARGB16U)(&source, &dest, 0, black, kvImageGetTempBufferSize);
-        report(theirs == ours, @"kvImageGetTempBufferSize, which the header does not list here, is refused alike",
+        report(theirs == ours, @"kvImageGetTempBufferSize, which the header does not list here, is answered",
                ([NSString stringWithFormat:@"the system answers %ld, the port %ld", (long)theirs, (long)ours]));
+        // every bit on its own, which is the measurement the port's missing flag check rests on
+        for (int bit = 0; bit < 32; bit++) {
+            vImage_Flags flag = (vImage_Flags)(1u << bit);
+            vImage_Error a = vImageRotate90_ARGB16U(&source, &dest, 1, black, flag);
+            vImage_Error b = RENAME(vImageRotate90_ARGB16U)(&source, &dest, 1, black, flag);
+            if (a != b) {
+                report(NO, ([NSString stringWithFormat:@"flag bit %d is answered alike", bit]),
+                       ([NSString stringWithFormat:@"the system answers %ld, the port %ld", (long)a, (long)b]));
+                break;
+            }
+        }
+        report(YES, @"every one of the thirty-two flag bits is answered alike", @"");
 
         printf("\n%d checks, %d failures\n", checks, failures);
     }

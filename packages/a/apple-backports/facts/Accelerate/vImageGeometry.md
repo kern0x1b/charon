@@ -280,33 +280,45 @@ That also settles what the corpus's five `rotate90` functions need: `vImageRotat
 `vImageRotate90_Planar16F` at 15.0 - the loop above over their pixel type, the three half-precision ones
 using the two conversions now in the tree from the conversion band.
 
-## The five `rotate90` functions: written, and the differential is red
+## The five `rotate90` functions: written, and where the differential stands
 
 `Accelerate/vImageGeometry7.m` and `Accelerate/vImageGeometry15.m` carry the five functions the corpus asks
-for, over the mapping table above, and `tests/backports/host/rotate90` holds them against the host's own
-over twelve shapes and both destination shapes for each. **The differential runs 655 checks and 208 of them
-fail**, and the failures are all one bug: the *axis assignment* inside `charon_turn`.
+for - `vImageRotate90_ARGB16U` and `vImageRotate90_ARGB16S` at 7.0, and `vImageRotate90_ARGB16F`,
+`vImageRotate90_CbCr16F` and `vImageRotate90_Planar16F` at 15.0 - over the mapping table above, and
+`tests/backports/host/rotate90` holds them against the host's own over **twelve shapes and both destination
+shapes for each**. The run is **656 checks, 60 failures**, and the 60 are one case.
 
-The eight measured shapes agreed, and the differential reaches twelve - and the four it adds, 7x1, 1x7, 1x1
-and the degenerate single-row and single-column cases, are where it breaks. A quarter turn's mapping mixes
-the two axes: for constant 1 the first component of the source coordinate comes from the destination's
-*column* and the second from its *row*, and `charon_turn` then range-tests the first against the source's
-**width** and the second against its **height**. For a source whose two extents differ, that test is applied
-to the wrong axis - for a 7x1 source the second component is a *column* index and is tested against a height
-of one - so the port answers the backColor where the system answers a source pixel. Where the two extents
-happen to agree, or where the sample lands inside either way, the bug is invisible, which is exactly why the
-eight-shape probe missed it and a twelfth shape caught it.
+**Every destination the constant wants passes, and all sixty failures are a destination of the other shape.**
+Counted by shape, that is 0 failures where the destination is the size the constant wants and 60 where it is
+not, over twenty shapes.
 
-Two things are already known from the same run and are recorded here rather than fixed blind:
+What the differential found and what it fixed:
 
-- **The flag set is wider than the header's.** The system **accepts** `0x40000000` and
-  `kvImageGetTempBufferSize` for these functions, answering `kvImageNoError` where the port answers
-  `kvImageUnknownFlagsBit`. The header's list for the geometry functions is `kvImageEdgeExtend`,
-  `kvImageBackgroundColorFill`, `kvImageDoNotTile` and `kvImageNoFlags`, and the port implements that list.
-  Per COORDINATION §5 the system wins, so the accepted set has to be measured rather than taken from the
-  header - one loop over the flag bits settles it.
-- **`kvImageEdgeExtend` agrees with the port** on the twelve shapes it was tried on, which is the one flag
-  the header describes and the port implements by clamping to the source's edge.
+- **The axis.** A quarter turn's mapping mixes the two axes - for constant 1 the destination's column
+  becomes the source's *row* - and `charon_turn` first built the coordinate in (x, y) and range-tested the
+  first component against the source's width, which is the wrong axis whenever the two extents differ. The
+  coordinate is now built in the source's own (row, column) and tested there. 208 failures to 132.
+- **The flags.** There is no flag check at all: every one of the thirty-two bits, passed on its own to
+  `vImageRotate90_ARGB16U`, comes back `kvImageNoError` from the system, including `0x40000000` and
+  `kvImageGetTempBufferSize`. The header lists four flags for the geometry functions and it is tempting to
+  refuse the rest, but the system refuses none of them and per COORDINATION section 5 the system wins, so the
+  port refuses nothing on a flag. 132 to 60.
+- **The centring.** A mismatched destination is not an error: the system turns the picture and centres it in
+  the frame it was given, so the offset is `(destination minus turned) / 2` and a destination pixel outside
+  the turned picture is the backColor. That fixed 72 of the 132.
 
-So the family is written, the check is written, and the check is red on a named bug with a named cause. That
-is the state to pick up, and it is further along than not having written either.
+**What is left is the half pixel.** Every remaining failure is at a shape whose two extents differ by an
+**odd** number - 2x3, 3x2, 3x4, 4x3, 6x5 - and every mismatched shape with an **even** difference (6x4 into
+6x4 under constant 1, 5x3 into 5x3, 4x6) passes with the offset truncated toward zero. Flooring the half
+pixel instead changes nothing, so the system is not rounding it: a half pixel of a turned picture that does
+not fit its frame is not being shown at all, and the one measurement that settles it is a 2x3 source into a
+2x3 destination under constant 1, where the turned picture is three wide by two tall in a two-by-two frame -
+one half pixel wider and one half pixel taller - and the system back-colours the top row and the right
+column. Reading the six answers off that one grid gives the rule.
+
+`kvImageEdgeExtend` agrees with the port on all twelve shapes, which is the one flag the header describes:
+the turned picture is pulled back inside the frame rather than back-coloured.
+
+So the five functions are written, the check is written, and the check is red on **one case** - a destination
+of a shape the constant does not want - with the parity of that case's failure measured and its cause
+narrowed to a single 2x3 grid.
