@@ -22,6 +22,7 @@
     MLMultiArray *_multiArray; /* the MLMultiArray over _value, built once and kept */
     MLSequence *_sequence;     /* the sequence over _value, built once and kept */
     CVPixelBufferRef _pixelBuffer;
+    NSDictionary *_given;   /* the dictionary a dictionary value was built from, as it was given */
 }
 - (charon_ml_value *)charonValue;
 @end
@@ -44,22 +45,25 @@
 
 #pragma mark - the constructors
 
-/* One constructor for each of the specification's own cases, all of them the same thing: a
- * value of a kind holding one thing. */
-+ (instancetype)valueOfKind:(charon_ml_value_kind)kind
+/* One constructor for each of the specification's own cases, all of them the same thing: a value
+ * of a kind holding one thing. The type is the constructor's to say rather than the kind's,
+ * because the C holds a number as one kind whatever it is: an int64 and a double are the same four
+ * kinds of value in the interpreter, and a caller asking `type` has to be told which one it is
+ * looking at, or a model that wants a whole number would be handed a real and neither would know. */
++ (instancetype)valueOfKind:(charon_ml_value_kind)kind type:(MLFeatureType)type
 {
     MLFeatureValue *value = [[MLFeatureValue alloc] init];
     if (value == nil) {
         return nil;
     }
-    value->_type = charon_ml_feature_type_of(kind);
+    value->_type = type;
     value->_value.kind = kind;
     return value;
 }
 
 + (instancetype)featureValueWithInt64:(int64_t)number
 {
-    MLFeatureValue *value = [self valueOfKind:CHARON_ML_VALUE_NUMBER];
+    MLFeatureValue *value = [self valueOfKind:CHARON_ML_VALUE_NUMBER type:MLFeatureTypeInt64];
     if (value != nil) {
         value->_value = charon_ml_value_number((double)number);
     }
@@ -68,7 +72,7 @@
 
 + (instancetype)featureValueWithDouble:(double)number
 {
-    MLFeatureValue *value = [self valueOfKind:CHARON_ML_VALUE_NUMBER];
+    MLFeatureValue *value = [self valueOfKind:CHARON_ML_VALUE_NUMBER type:MLFeatureTypeDouble];
     if (value != nil) {
         value->_value = charon_ml_value_number(number);
     }
@@ -77,7 +81,7 @@
 
 + (instancetype)featureValueWithString:(NSString *)string
 {
-    MLFeatureValue *value = [self valueOfKind:CHARON_ML_VALUE_STRING];
+    MLFeatureValue *value = [self valueOfKind:CHARON_ML_VALUE_STRING type:MLFeatureTypeString];
     if (value != nil) {
         /* The bytes are the value's own: a string an application holds after the prediction
          * has gone has to still be there, and a view of a buffer that did not is not. */
@@ -93,7 +97,7 @@
     if (array == nil) {
         return nil;
     }
-    value = [self valueOfKind:CHARON_ML_VALUE_ARRAY];
+    value = [self valueOfKind:CHARON_ML_VALUE_ARRAY type:MLFeatureTypeMultiArray];
     if (value == nil) {
         return nil;
     }
@@ -135,7 +139,7 @@
         CVPixelBufferUnlockBaseAddress(buffer, 0);
         return [self undefinedFeatureValueWithType:MLFeatureTypeImage];
     }
-    value = [self valueOfKind:CHARON_ML_VALUE_IMAGE];
+    value = [self valueOfKind:CHARON_ML_VALUE_IMAGE type:MLFeatureTypeImage];
     if (value == nil) {
         CVPixelBufferUnlockBaseAddress(buffer, 0);
         return nil;
@@ -146,37 +150,50 @@
     return value;
 }
 
+/* A dictionary of a feature value. Core ML keeps the objects it is handed rather than a copy of
+ * them, and it refuses nothing: a dictionary whose values are not numbers, or are not values at
+ * all, becomes a dictionary value whose `dictionaryValue` answers exactly what was given. Only the
+ * numbers go into the C, because only numbers are what the interpreter reads out of a dictionary
+ * feature -- a classifier's probabilities -- and a value that is not a number is a caller's own
+ * object that belongs to the caller. So the error is left alone: there is no failure here to
+ * report, and an error an application had to clear before it could use its own dictionary would be
+ * one it has no way to satisfy. */
 + (instancetype)featureValueWithDictionary:(NSDictionary<id, NSNumber *> *)dictionary
                                      error:(NSError **)error
 {
     MLFeatureValue *value;
-    __block BOOL ok = YES;
+    NSEnumerator *keys;
+    id key;
     if (dictionary == nil) {
         charon_ml_error(error, CHARON_ML_ERROR_FEATURE_TYPE, @"a dictionary feature value needs a dictionary");
         return nil;
     }
-    value = [self valueOfKind:CHARON_ML_VALUE_DICTIONARY];
+    value = [self valueOfKind:CHARON_ML_VALUE_DICTIONARY type:MLFeatureTypeDictionary];
     if (value == nil) {
         return nil;
     }
     value->_value = charon_ml_value_dictionary();
-    /* Every key has to be a string and every value a number: a dictionary whose keys are
-     * anything else cannot be looked up by name, and one whose values are not numbers has no
-     * score behind it. Both are refused rather than half-built. */
-    [dictionary enumerateKeysAndObjectsUsingBlock:^(id key, NSNumber *number, __unused BOOL *stop) {
-        if (![key isKindOfClass:[NSString class]] || ![number isKindOfClass:[NSNumber class]]) {
-            ok = NO;
-            return;
+    keys = [dictionary keyEnumerator];
+    while ((key = [keys nextObject]) != nil) {
+        id entry = [dictionary objectForKey:key];
+        if ([key isKindOfClass:[NSString class]] && [entry isKindOfClass:[NSNumber class]]) {
+            charon_ml_dictionary_put(&value->_value, [key UTF8String], [entry doubleValue]);
         }
-        if (!charon_ml_dictionary_put(&value->_value, [key UTF8String], number.doubleValue)) {
-            ok = NO;
-        }
-    }];
-    if (!ok) {
-        charon_ml_value_free(&value->_value);
-        charon_ml_error(error, CHARON_ML_ERROR_FEATURE_TYPE,
-                        @"a dictionary feature value takes string keys and number values");
-        return nil;
+    }
+    value->_given = dictionary;
+    return value;
+}
+
+/* A value of the invalid type, which is what an object a feature value cannot be made of becomes.
+ * It is not an undefined value: an undefined value is one a caller left out on purpose and keeps
+ * the type it was given, while this one holds nothing and says its type is the invalid one, so a
+ * caller reading `type` can tell the two apart -- which is the whole of what a caller holding an
+ * object it cannot convert has to go on. */
++ (instancetype)charon_featureValueOfInvalidType
+{
+    MLFeatureValue *value = [self valueOfKind:CHARON_ML_VALUE_NUMBER type:MLFeatureTypeInvalid];
+    if (value != nil) {
+        value->_value = charon_ml_value_number(0.0);
     }
     return value;
 }
@@ -187,7 +204,7 @@
     if (sequence == nil) {
         return nil;
     }
-    value = [self valueOfKind:CHARON_ML_VALUE_SEQUENCE];
+    value = [self valueOfKind:CHARON_ML_VALUE_SEQUENCE type:MLFeatureTypeSequence];
     if (value == nil) {
         return nil;
     }
@@ -201,10 +218,7 @@
 
 + (instancetype)undefinedFeatureValueWithType:(MLFeatureType)type
 {
-    MLFeatureValue *value = [self valueOfKind:CHARON_ML_VALUE_NONE];
-    if (value != nil) {
-        value->_type = type;
-    }
+    MLFeatureValue *value = [self valueOfKind:CHARON_ML_VALUE_NONE type:type];
     return value;
 }
 
@@ -242,35 +256,36 @@
     return _value.kind == CHARON_ML_VALUE_NONE;
 }
 
-/* The numeric forms. A value that is not a number answers zero, which is what a number read
- * out of a value of another kind is on a release that has Core ML: the accessor's contract is
- * to answer a number, and `type` is what says which kind it really is. */
+/* The numeric forms, each for the type it names and zero for every other. Measured against a real
+ * Core ML: `int64Value` of a double value is 0 and `doubleValue` of a whole number is 0, not the
+ * number the value holds. The two are separate types, not two spellings of one, and the accessors
+ * are how a caller tells which it has -- reading the wrong one and getting the right number back
+ * would hide a mistake in the model or in the caller, which is the one thing these accessors are
+ * there to catch. */
 - (int64_t)int64Value
 {
-    if (_value.kind == CHARON_ML_VALUE_NUMBER) {
-        return (int64_t)_value.number;
+    if (_type != MLFeatureTypeInt64 || _value.kind != CHARON_ML_VALUE_NUMBER) {
+        return 0;
     }
-    if (_value.kind == CHARON_ML_VALUE_ARRAY && _value.array.count > 0) {
-        return (int64_t)charon_ml_array_get(&_value.array, 0);
-    }
-    return 0;
+    return (int64_t)_value.number;
 }
 
 - (double)doubleValue
 {
-    if (_value.kind == CHARON_ML_VALUE_NUMBER) {
-        return _value.number;
+    if (_type != MLFeatureTypeDouble || _value.kind != CHARON_ML_VALUE_NUMBER) {
+        return 0.0;
     }
-    if (_value.kind == CHARON_ML_VALUE_ARRAY && _value.array.count > 0) {
-        return charon_ml_array_get(&_value.array, 0);
-    }
-    return 0.0;
+    return _value.number;
 }
 
+/* The forms that answer an object: nil for a value that is not of that type, which is what a
+ * release that has Core ML answers and what an application written against it tests for. A value
+ * that holds a string does not answer an empty string to a caller asking for an array, because
+ * "not an array" and "an array of no strings" are different facts. */
 - (NSString *)stringValue
 {
     if (_value.kind != CHARON_ML_VALUE_STRING) {
-        return @"";
+        return nil;
     }
     return [[NSString alloc] initWithBytes:_value.string.bytes
                                     length:_value.string.length
@@ -290,17 +305,26 @@
     return _multiArray;
 }
 
+/* The dictionary, as the caller gave it where the value was built from one: Core ML keeps the
+ * objects it was handed rather than a copy of them, so a value made of a dictionary of numbers
+ * answers that dictionary and one made of anything else answers whatever else it holds. A value
+ * that is not a dictionary answers nil. */
 - (NSDictionary<id, NSNumber *> *)dictionaryValue
 {
-    NSMutableDictionary *out = [NSMutableDictionary dictionaryWithCapacity:_value.dictionary.count];
     size_t index;
     if (_value.kind != CHARON_ML_VALUE_DICTIONARY) {
+        return nil;
+    }
+    if (_given != nil) {
+        return _given;
+    }
+    {
+        NSMutableDictionary *out = [NSMutableDictionary dictionaryWithCapacity:_value.dictionary.count];
+        for (index = 0; index < _value.dictionary.count; index++) {
+            out[@(_value.dictionary.keys[index])] = @(_value.dictionary.values[index]);
+        }
         return out;
     }
-    for (index = 0; index < _value.dictionary.count; index++) {
-        out[@(_value.dictionary.keys[index])] = @(_value.dictionary.values[index]);
-    }
-    return out;
 }
 
 - (CVPixelBufferRef)imageBufferValue

@@ -86,6 +86,54 @@ Each of these is refused with a line naming the layer, not approximated:
   is not in the set, because the runtime refuses a rank-3 input to a convolution ("expects
   rank at least 4") and a rank-5 one as a network input.
 
+## What the host differential found, and what it changed
+
+`tests/backports/host/coreml` records what a real Core ML answers for the same containers -- every
+description, every constraint, `-isAllowedValue:` over a battery of values, the providers, the keys,
+the options, the constants and a prediction per model -- and holds the port's own classes, compiled
+under names of their own, to that record: **609 keys, none differing, five recorded divergences**,
+and fifteen mutants of the port, none of which survives. Nine things the obvious reading gets wrong
+came out of it, and each is now what the framework does:
+
+- **A feature that fixes its shape has a shape constraint, of the *enumerated* kind.** Not none, and
+  not a range: the enumerated kind with that one shape in it, and the size ranges filled in as well,
+  one per dimension, each of length one. A caller therefore always gets a constraint, and a value of
+  a shape that is not one of the shapes is refused rather than waved through.
+- **`int64Value` of a double value is 0 and `doubleValue` of a whole number is 0.** The two are
+  separate types and not two spellings of one; the accessors are how a caller tells which it has.
+- **`stringValue` of a value that is not a string is nil, and so is `dictionaryValue` of one that is
+  not a dictionary.** "Not an array" and "an array of no strings" are different facts.
+- **An NSNumber is a whole number or a real by its own `objCType`:** `@3` is an Int64 value and
+  `@3.0` is a Double value. A model that counts what it is given and one that multiplies it are told
+  apart by that.
+- **An NSArray handed to a feature provider becomes a sequence**, not a multi array: a sequence is
+  what the specification types an input as when the model gives it no shape, and a bare array has
+  none.
+- **An object that cannot be a feature value at all -- an NSObject, an NSData, an NSURL -- becomes a
+  value of the invalid type, and nothing is refused.** The provider is still made, and the caller can
+  hand over the rest of its dictionary.
+- **A dictionary handed to a feature provider may be nil, and the provider is made anyway**, with no
+  names and no values.
+- **`+featureValueWithDictionary:` keeps the objects it is given** rather than a copy of the numbers
+  among them, and refuses nothing.
+- **The metadata of a model that names none has all five keys**, the four named ones as empty strings
+  and the creator-defined map as an empty dictionary. A caller can tell a model with no author from
+  a model whose metadata is not there.
+
+Two more, from the same records:
+
+- **The metadata, the class labels and the parameters of a model with none are empty, not nil** --
+  except the two names a classifier answers under, which are nil when the model is not a classifier.
+- **An answer takes the shape the model declared for it**, not the shape the layers happened to
+  produce: a network whose layers leave a rank of one answers the 1x1x2 its description names, when
+  the two hold the same number of elements.
+
+And one that is a property of this host rather than of Core ML, which the check has to know about:
+**this host's Core ML no longer reads an uncompiled `.mlmodel`** -- handed one it answers nil and says
+to compile it. So the system run of the differential compiles each container with the framework's
+own compiler and loads the bundle, and the port reads the same container uncompiled: two frameworks,
+one model, in the two forms each of them reads.
+
 ## What the port does not do at all
 
 - **A compiled `.mlmodelc` bundle.** The bundle's `coremldata.bin` is Apple's compiled storage

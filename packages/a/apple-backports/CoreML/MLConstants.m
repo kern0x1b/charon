@@ -29,10 +29,3 @@ MLModelMetadataKey const MLModelLicenseKey = @"MLModelLicenseKey";
 MLModelMetadataKey const MLModelDescriptionKey = @"MLModelDescriptionKey";
 MLModelMetadataKey const MLModelVersionStringKey = @"MLModelVersionStringKey";
 MLModelMetadataKey const MLModelCreatorDefinedKey = @"MLModelCreatorDefinedKey";
-
-/* The two keys of the image options dictionary, which is what an application passes to
- * +featureValueWithCGImage:options: to say how an image that is not the size a model wants is
- * to be brought to it. They are keys of a dictionary, and the option each names is spelled as
- * its own name. */
-NSString *const MLFeatureValueImageOptionCropRect = @"MLFeatureValueImageOptionCropRect";
-NSString *const MLFeatureValueImageOptionCropAndScale = @"MLFeatureValueImageOptionCropAndScale";

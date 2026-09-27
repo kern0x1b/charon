@@ -49,23 +49,38 @@
 #include "CharonMLBridge.h"
 #include "CharonMLInternal.h"
 
+
 @implementation MLDictionaryFeatureProvider {
     NSDictionary<NSString *, MLFeatureValue *> *_dictionary;
 }
 
-/* One value out of a caller's dictionary, as the value of a feature. What can be converted is
- * what Core ML documents: a value that already is one, a number, a string, a multi array, a
- * dictionary of numbers, and a sequence. Anything else cannot be represented as a feature value
- * -- there is no kind of feature value it would be -- so it is refused rather than turned into
- * a string of its description, which is what an application that printed it would have got and
- * what a model would then fail to read with no explanation. */
-static MLFeatureValue *charon_ml_value_of_object(id object, NSError **error)
+/* One value out of a caller's dictionary, as the value of a feature, and what it is for each kind of
+ * object -- all of it measured against a real Core ML, because every one of these is a decision a
+ * caller can see:
+ *
+ *   - a value that already is one is kept as it is;
+ *   - an NSNumber is a whole number or a real by its own objCType, so @3 is an Int64 value and @3.0
+ *     is a Double value. A model that counts what it is given and one that multiplies it are told
+ *     apart by that, and a caller who wrote @3 meant a whole number;
+ *   - a string, a multi array and a sequence are values of their own kinds;
+ *   - an NSArray is a sequence, not a multi array: a sequence is the list Core ML types an input as
+ *     when the model has no shape to give it, and a bare array of numbers has no shape either;
+ *   - a dictionary is a dictionary value, whose numbers the interpreter can read;
+ *   - anything else -- an NSObject, an NSData, an NSURL, a date -- becomes a value of the invalid
+ *     type, and nothing is refused: there is no kind of feature value such an object could be, and
+ *     a provider that refused to be made would leave the caller with no way to hand over the rest.
+ */
+static MLFeatureValue *charon_ml_value_of_object(id object)
 {
     if ([object isKindOfClass:[MLFeatureValue class]]) {
         return object;
     }
     if ([object isKindOfClass:[NSNumber class]]) {
-        return [MLFeatureValue featureValueWithDouble:[object doubleValue]];
+        const char *encoded = [(NSNumber *)object objCType];
+        if (encoded != NULL && (strcmp(encoded, @encode(float)) == 0 || strcmp(encoded, @encode(double)) == 0)) {
+            return [MLFeatureValue featureValueWithDouble:[object doubleValue]];
+        }
+        return [MLFeatureValue featureValueWithInt64:[object longLongValue]];
     }
     if ([object isKindOfClass:[NSString class]]) {
         return [MLFeatureValue featureValueWithString:object];
@@ -77,11 +92,28 @@ static MLFeatureValue *charon_ml_value_of_object(id object, NSError **error)
         return [MLFeatureValue featureValueWithSequence:object];
     }
     if ([object isKindOfClass:[NSDictionary class]]) {
-        return [MLFeatureValue featureValueWithDictionary:object error:error];
+        return [MLFeatureValue featureValueWithDictionary:object error:NULL];
     }
-    charon_ml_error(error, CHARON_ML_ERROR_FEATURE_TYPE,
-                    @"a feature value cannot be made out of an object of that class");
-    return nil;
+    if ([object isKindOfClass:[NSArray class]]) {
+        /* A list of strings is a list of strings; anything else is a list of numbers, and an
+         * element that is neither is read as the zero it is not, which is what a list of numbers
+         * with something else in it means to a model that multiplies what it is given. */
+        NSArray *list = object;
+        BOOL strings = list.count > 0;
+        NSUInteger index;
+        NSMutableArray<NSNumber *> *numbers = [NSMutableArray arrayWithCapacity:list.count];
+        for (index = 0; index < list.count; index++) {
+            id element = list[index];
+            if (![element isKindOfClass:[NSString class]]) {
+                strings = NO;
+            }
+            [numbers addObject:@([element isKindOfClass:[NSNumber class]] ? [element doubleValue] : 0.0)];
+        }
+        return [MLFeatureValue featureValueWithSequence:strings
+                                                            ? [MLSequence sequenceWithStringArray:list]
+                                                            : [MLSequence sequenceWithInt64Array:numbers]];
+    }
+    return [MLFeatureValue charon_featureValueOfInvalidType];
 }
 
 - (instancetype)initWithDictionary:(NSDictionary<NSString *, id> *)dictionary error:(NSError **)error
@@ -94,25 +126,16 @@ static MLFeatureValue *charon_ml_value_of_object(id object, NSError **error)
         return nil;
     }
     if (dictionary == nil) {
-        charon_ml_error(error, CHARON_ML_ERROR_FEATURE_TYPE,
-                        @"a feature provider is made from a dictionary, and there was none");
-        return nil;
+        /* A provider of nothing is a provider: Core ML answers one, with no names and no values,
+         * and a caller that passes nil by mistake gets the empty provider rather than a failure it
+         * has no way to have meant. */
+        _dictionary = @{};
+        return self;
     }
     converted = [NSMutableDictionary dictionaryWithCapacity:dictionary.count];
     names = [dictionary keyEnumerator];
     while ((name = [names nextObject]) != nil) {
-        MLFeatureValue *value = charon_ml_value_of_object([dictionary objectForKey:name], error);
-        if (value == nil) {
-            /* The name is in the message, because a caller with fifty features and one that will
-             * not convert needs to know which one, and "a value could not be made" does not. */
-            if (error != NULL && *error != nil) {
-                NSString *reason = [*error localizedDescription];
-                charon_ml_error(error, [*error code],
-                                [NSString stringWithFormat:@"the value of '%@' is not one: %@", name, reason]);
-            }
-            return nil;
-        }
-        converted[name] = value;
+        converted[name] = charon_ml_value_of_object([dictionary objectForKey:name]);
     }
     _dictionary = converted;
     return self;
@@ -175,106 +198,6 @@ static MLFeatureValue *charon_ml_value_of_object(id object, NSError **error)
                                     count:(NSUInteger)length
 {
     return [_dictionary.allKeys countByEnumeratingWithState:state objects:buffer count:length];
-}
-
-@end
-
-@implementation MLArrayBatchProvider {
-    NSArray<id<MLFeatureProvider>> *_array;
-}
-
-- (instancetype)initWithFeatureProviderArray:(NSArray<id<MLFeatureProvider>> *)array
-{
-    self = [super init];
-    if (self != nil) {
-        _array = array != nil ? [array copy] : @[];
-    }
-    return self;
-}
-
-/* A dictionary of names to arrays is the other shape a batch arrives in: one array per feature,
- * each of the same length, which is the form a caller has when its inputs came out of a table
- * or a file of columns. The providers are then built by index across the arrays, so element
- * zero of every array is the first input and the names stay the names. The arrays have to be of
- * one length, because a batch of inputs that is not a rectangle is not a batch, and a caller
- * that is refused here is told which name is short rather than being answered a prediction for
- * an input that was never complete. */
-- (instancetype)initWithDictionary:(NSDictionary<NSString *, NSArray *> *)dictionary error:(NSError **)error
-{
-    NSMutableArray<id<MLFeatureProvider>> *providers;
-    NSUInteger count = 0, index;
-    NSEnumerator *names;
-    id name;
-    self = [super init];
-    if (self == nil) {
-        return nil;
-    }
-    if (dictionary == nil) {
-        charon_ml_error(error, CHARON_ML_ERROR_FEATURE_TYPE,
-                        @"a batch provider is made from a dictionary, and there was none");
-        return nil;
-    }
-    for (name in dictionary) {
-        if (![dictionary[name] isKindOfClass:[NSArray class]]) {
-            charon_ml_error(error, CHARON_ML_ERROR_FEATURE_TYPE,
-                            [NSString stringWithFormat:@"the values of '%@' are not an array", name]);
-            return nil;
-        }
-        if (count == 0) {
-            count = [dictionary[name] count];
-        } else if ([dictionary[name] count] != count) {
-            charon_ml_error(error, CHARON_ML_ERROR_FEATURE_TYPE,
-                            [NSString stringWithFormat:@"the values of '%@' are %lu of %lu, and every "
-                                                       @"feature of a batch has to be of one length",
-                                                       name, (unsigned long)[dictionary[name] count],
-                                                       (unsigned long)count]);
-            return nil;
-        }
-    }
-    providers = [NSMutableArray arrayWithCapacity:count];
-    for (index = 0; index < count; index++) {
-        NSMutableDictionary *one = [NSMutableDictionary dictionaryWithCapacity:dictionary.count];
-        names = [dictionary keyEnumerator];
-        while ((name = [names nextObject]) != nil) {
-            one[name] = [dictionary[name] objectAtIndex:index];
-        }
-        {
-            MLDictionaryFeatureProvider *provider =
-                [[MLDictionaryFeatureProvider alloc] initWithDictionary:one error:error];
-            if (provider == nil) {
-                return nil;
-            }
-            [providers addObject:provider];
-        }
-    }
-    _array = providers;
-    return self;
-}
-
-- (NSArray<id<MLFeatureProvider>> *)array
-{
-    return _array;
-}
-
-- (NSInteger)count
-{
-    return (NSInteger)_array.count;
-}
-
-- (id<MLFeatureProvider>)featuresAtIndex:(NSInteger)index
-{
-    /* Out of range is nil rather than a crash or an exception: the protocol says a provider at
-     * an index, and a caller walking a count it just read is not making a mistake the framework
-     * should stop the program over. */
-    if (index < 0 || (NSUInteger)index >= _array.count) {
-        return nil;
-    }
-    return _array[(NSUInteger)index];
-}
-
-- (NSString *)description
-{
-    return [NSString stringWithFormat:@"<MLArrayBatchProvider %lu providers>", (unsigned long)_array.count];
 }
 
 @end

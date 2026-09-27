@@ -24,6 +24,7 @@
 
 /* --- the description ------------------------------------------------------------------------- */
 
+
 @implementation MLModelDescription {
     NSDictionary<NSString *, MLFeatureDescription *> *_inputs;
     NSDictionary<NSString *, MLFeatureDescription *> *_outputs;
@@ -67,27 +68,22 @@
             training[@(model->training_inputs[index].name)] = described;
         }
     }
-    /* The metadata is the specification's own message, and each of the four named entries is
-     * there or absent -- a model that names no author has no author, and the key is not
-     * answered with an empty string, because "no author" and "an author who wrote nothing" are
-     * different facts and a caller showing the author has to be able to tell them apart. */
-    if (model->author != NULL) {
-        metadata[MLModelAuthorKey] = @(model->author);
-    }
-    if (model->license != NULL) {
-        metadata[MLModelLicenseKey] = @(model->license);
-    }
-    if (model->short_description != NULL) {
-        metadata[MLModelDescriptionKey] = @(model->short_description);
-    }
-    if (model->version != NULL) {
-        metadata[MLModelVersionStringKey] = @(model->version);
-    }
-    if (model->user_defined_count > 0) {
+    /* The metadata is the specification's own message, and all five of Core ML's own keys are
+     * always there: measured against a real Core ML, a model that names no author at all answers
+     * an empty string for the author rather than nil, and an empty dictionary for the map of
+     * whatever else its author put in. A caller reading the metadata of a model that has none
+     * therefore gets a dictionary with five entries whose values are empty, which is what a caller
+     * can tell apart from a model whose metadata is not there at all. */
+    metadata[MLModelAuthorKey] = model->author != NULL ? @(model->author) : @"";
+    metadata[MLModelLicenseKey] = model->license != NULL ? @(model->license) : @"";
+    metadata[MLModelDescriptionKey] = model->short_description != NULL ? @(model->short_description) : @"";
+    metadata[MLModelVersionStringKey] = model->version != NULL ? @(model->version) : @"";
+    {
         NSMutableDictionary *own = [NSMutableDictionary dictionary];
         for (index = 0; index < model->user_defined_count; index++) {
             if (model->user_defined_keys[index] != NULL) {
-                own[@(model->user_defined_keys[index])] = @(model->user_defined_values[index] ?: "");
+                own[@(model->user_defined_keys[index])] =
+                    model->user_defined_values[index] != NULL ? @(model->user_defined_values[index]) : @"";
             }
         }
         metadata[MLModelCreatorDefinedKey] = own;
@@ -285,128 +281,6 @@
 
 /* --- the configuration ------------------------------------------------------------------------ */
 
-@implementation MLModelConfiguration {
-    MLComputeUnits _computeUnits;
-    BOOL _allowLowPrecisionAccumulationOnGPU;
-    id _preferredMetalDevice;
-    NSDictionary<MLParameterKey *, id> *_parameters;
-    NSString *_modelDisplayName;
-}
-
-- (instancetype)init
-{
-    self = [super init];
-    if (self != nil) {
-        /* The units a model runs on are the caller's to choose and the port's to answer, and the
-         * answer is the choice: this release has one unit a Core ML model can run on, the CPU,
-         * and a configuration that says otherwise is not wrong -- it is a request the run
-         * honours by running on that same CPU, which is what the release's own hardware leaves
-         * it. The default is All, as Core ML's own default is, and a caller who wants the CPU
-         * named says CPUOnly. */
-        _computeUnits = MLComputeUnitsAll;
-    }
-    return self;
-}
-
-- (MLComputeUnits)computeUnits
-{
-    return _computeUnits;
-}
-
-- (void)setComputeUnits:(MLComputeUnits)computeUnits
-{
-    _computeUnits = computeUnits;
-}
-
-- (BOOL)allowLowPrecisionAccumulationOnGPU
-{
-    return _allowLowPrecisionAccumulationOnGPU;
-}
-
-- (void)setAllowLowPrecisionAccumulationOnGPU:(BOOL)allow
-{
-    _allowLowPrecisionAccumulationOnGPU = allow;
-}
-
-- (id<MTLDevice>)preferredMetalDevice
-{
-    return _preferredMetalDevice;
-}
-
-- (void)setPreferredMetalDevice:(id<MTLDevice>)device
-{
-    /* Kept as the caller gave it and handed back as it is, which is what a configuration is: the
-     * setting an application made, readable by the application that made it. A Core ML model
-     * here runs on the CPU, so nothing in a prediction reads it -- a caller that wanted the
-     * device to be used would be asking for a Core ML compute engine on a release that has no
-     * Metal driver at all, and that is said in the facts rather than pretended at here. */
-    _preferredMetalDevice = device;
-}
-
-- (NSDictionary<MLParameterKey *, id> *)parameters
-{
-    return _parameters;
-}
-
-- (void)setParameters:(NSDictionary<MLParameterKey *, id> *)parameters
-{
-    _parameters = [parameters copy];
-}
-
-- (NSString *)modelDisplayName
-{
-    return _modelDisplayName;
-}
-
-- (void)setModelDisplayName:(NSString *)modelDisplayName
-{
-    _modelDisplayName = [modelDisplayName copy];
-}
-
-- (id)copyWithZone:(NSZone *)zone
-{
-    MLModelConfiguration *copy = [[MLModelConfiguration allocWithZone:zone] init];
-    if (copy == nil) {
-        return nil;
-    }
-    copy->_computeUnits = _computeUnits;
-    copy->_allowLowPrecisionAccumulationOnGPU = _allowLowPrecisionAccumulationOnGPU;
-    copy->_preferredMetalDevice = _preferredMetalDevice;
-    copy->_parameters = [_parameters copy];
-    copy->_modelDisplayName = [_modelDisplayName copy];
-    return copy;
-}
-
-+ (BOOL)supportsSecureCoding
-{
-    return YES;
-}
-
-- (instancetype)initWithCoder:(NSCoder *)coder
-{
-    self = [self init];
-    if (self != nil) {
-        _computeUnits = (MLComputeUnits)[coder decodeIntegerForKey:@"computeUnits"];
-        _allowLowPrecisionAccumulationOnGPU = [coder decodeBoolForKey:@"allowLowPrecisionAccumulationOnGPU"];
-        _parameters = [coder decodeObjectOfClasses:[NSSet setWithObjects:[NSDictionary class],
-                                                                          [MLParameterKey class], nil]
-                                           forKey:@"parameters"];
-        _modelDisplayName = [coder decodeObjectOfClass:[NSString class] forKey:@"modelDisplayName"];
-    }
-    return self;
-}
-
-- (void)encodeWithCoder:(NSCoder *)coder
-{
-    [coder encodeInteger:(NSInteger)_computeUnits forKey:@"computeUnits"];
-    [coder encodeBool:_allowLowPrecisionAccumulationOnGPU forKey:@"allowLowPrecisionAccumulationOnGPU"];
-    [coder encodeObject:_parameters forKey:@"parameters"];
-    [coder encodeObject:_modelDisplayName forKey:@"modelDisplayName"];
-}
-
-@end
-
-/* --- the options for one prediction ------------------------------------------------------------ */
 
 @implementation MLPredictionOptions {
     BOOL _usesCPUOnly;
@@ -417,9 +291,12 @@
 {
     self = [super init];
     if (self != nil) {
-        /* Core ML's own default for a fresh options object is NO: the model is run where it
-         * chooses to run it, which on a release with one unit is that unit. */
+        /* Core ML's own defaults for a fresh options object, both measured: NO for the CPU-only
+         * flag, because the model is run where it chooses to run and a release with one unit is
+         * that unit, and an empty dictionary for the backings -- not nil, so a caller that adds
+         * one to it does not have to make it first. */
         _usesCPUOnly = NO;
+        _outputBackings = @{};
     }
     return self;
 }
@@ -454,6 +331,7 @@
 
 /* --- a model built in memory -------------------------------------------------------------------- */
 
+
 @implementation MLModelAsset {
     NSData *_specification;
 }
@@ -465,7 +343,7 @@
         return nil;
     }
     if (specificationData.length == 0) {
-        charon_ml_error(error, CHARON_ML_ERROR_IO, @"there were no specification bytes to make a model of");
+        charon_ml_error(error, CHARON_ML_ERROR_GENERIC, @"there were no specification bytes to make a model of");
         return nil;
     }
     /* The data is kept, and it is a copy of the caller's own: an asset outlives the data it was
@@ -478,7 +356,7 @@
         char message[512];
         if (!charon_ml_model_read_data(&probe, specificationData.bytes, specificationData.length, message,
                                        sizeof message)) {
-            charon_ml_error(error, CHARON_ML_ERROR_IO, @(message));
+            charon_ml_error(error, CHARON_ML_ERROR_GENERIC, @(message));
             return nil;
         }
         charon_ml_model_release(&probe);
@@ -499,7 +377,7 @@
     if (blobMapping.count == 0) {
         return [self modelAssetWithSpecificationData:specificationData error:error];
     }
-    charon_ml_error(error, CHARON_ML_ERROR_IO,
+    charon_ml_error(error, CHARON_ML_ERROR_GENERIC,
                     @"this model keeps its weights in blob files, which are the mlProgram form of a model and "
                     @"are not read by this port; the model is refused rather than run without its weights");
     return nil;
@@ -509,7 +387,7 @@
 {
     NSData *container;
     if (compiledModelURL == nil || !compiledModelURL.isFileURL) {
-        charon_ml_error(error, CHARON_ML_ERROR_IO, @"a model asset is read from a file's URL");
+        charon_ml_error(error, CHARON_ML_ERROR_GENERIC, @"a model asset is read from a file's URL");
         return nil;
     }
     /* A compiled model is a bundle and its container is the coremldata.bin inside it, which is
@@ -523,7 +401,7 @@
             container = [NSData dataWithContentsOfFile:inside];
         } else if ([[NSFileManager defaultManager] fileExistsAtPath:compiledModelURL.path isDirectory:&directory] &&
                    directory) {
-            charon_ml_error(error, CHARON_ML_ERROR_IO,
+            charon_ml_error(error, CHARON_ML_ERROR_GENERIC,
                             [NSString stringWithFormat:@"the bundle at %@ holds no coremldata.bin, which is "
                                                        @"where a compiled model keeps its program", compiledModelURL.path]);
             return nil;
@@ -532,7 +410,7 @@
         }
     }
     if (container.length == 0) {
-        charon_ml_error(error, CHARON_ML_ERROR_IO,
+        charon_ml_error(error, CHARON_ML_ERROR_GENERIC,
                         [NSString stringWithFormat:@"the model at %@ could not be read", compiledModelURL.path]);
         return nil;
     }
@@ -584,7 +462,7 @@
     NSMutableArray<NSString *> *names;
     size_t index;
     if (!charon_ml_model_read_data(&read, _specification.bytes, _specification.length, message, sizeof message)) {
-        charon_ml_error(error, CHARON_ML_ERROR_IO, @(message));
+        charon_ml_error(error, CHARON_ML_ERROR_GENERIC, @(message));
         return nil;
     }
     names = [NSMutableArray arrayWithCapacity:read.function_count];
@@ -609,7 +487,7 @@
     const charon_ml_function *function = NULL;
     MLModelDescription *description;
     if (!charon_ml_model_read_data(&read, _specification.bytes, _specification.length, message, sizeof message)) {
-        charon_ml_error(error, CHARON_ML_ERROR_IO, @(message));
+        charon_ml_error(error, CHARON_ML_ERROR_GENERIC, @(message));
         return nil;
     }
     if (functionName != nil) {
@@ -623,7 +501,7 @@
                 }
             }
             charon_ml_model_release(&read);
-            charon_ml_error(error, CHARON_ML_ERROR_IO,
+            charon_ml_error(error, CHARON_ML_ERROR_GENERIC,
                             [NSString stringWithFormat:@"this model has no function called '%@'; it has %@",
                                                        functionName, [named componentsJoinedByString:@", "]]);
             return nil;
@@ -648,6 +526,7 @@
 @end
 
 /* --- the model --------------------------------------------------------------------------------- */
+
 
 @implementation MLModel {
     charon_ml_model _model;
@@ -691,7 +570,7 @@
         held = charon_ml_value_owned_copy([value charonValue]);
         if (!charon_ml_features_put(&inputs, [name UTF8String], held)) {
             charon_ml_features_release(&inputs);
-            charon_ml_error(error, CHARON_ML_ERROR_IO,
+            charon_ml_error(error, CHARON_ML_ERROR_GENERIC,
                             [NSString stringWithFormat:@"there is no room for a feature named '%@'", name]);
             return nil;
         }
@@ -909,12 +788,15 @@
         return nil;
     }
     if (url == nil || !url.isFileURL) {
+        /* The one I/O case a load has: measured against a real Core ML, which answers IO -- and
+         * only IO -- for a URL that is not a file's. A file that is not there, and a file that is
+         * not a model, are the generic case, which is what the same framework answers for those. */
         charon_ml_error(error, CHARON_ML_ERROR_IO,
                         @"a model is read from a file, and the URL given is not a file's");
         return nil;
     }
     if (!charon_ml_model_read(&_model, url.fileSystemRepresentation, message, sizeof message)) {
-        charon_ml_error(error, CHARON_ML_ERROR_IO, @(message));
+        charon_ml_error(error, CHARON_ML_ERROR_GENERIC, @(message));
         return nil;
     }
     _url = [url copy];
@@ -958,7 +840,7 @@
         NSError *failure = nil;
         MLModel *model = nil;
         if (asset == nil) {
-            charon_ml_error(&failure, CHARON_ML_ERROR_IO, @"there was no model asset to load");
+            charon_ml_error(&failure, CHARON_ML_ERROR_GENERIC, @"there was no model asset to load");
         } else {
             model = [[MLModel alloc] charon_initWithContentsOfAsset:asset configuration:configuration error:&failure];
         }
@@ -980,7 +862,7 @@
     }
     if (!charon_ml_model_read_data(&_model, asset.charon_specificationData.bytes, asset.charon_specificationData.length,
                                    message, sizeof message)) {
-        charon_ml_error(error, CHARON_ML_ERROR_IO, @(message));
+        charon_ml_error(error, CHARON_ML_ERROR_GENERIC, @(message));
         return nil;
     }
     _configuration = configuration != nil ? configuration : [[MLModelConfiguration alloc] init];
@@ -1009,7 +891,7 @@
     NSString *directory;
     NSFileManager *files = [NSFileManager defaultManager];
     if (container.length == 0) {
-        charon_ml_error(error, CHARON_ML_ERROR_IO,
+        charon_ml_error(error, CHARON_ML_ERROR_GENERIC,
                         [NSString stringWithFormat:@"the model at %@ could not be read", modelURL.path]);
         return nil;
     }
@@ -1025,7 +907,7 @@
     if (![files createDirectoryAtPath:directory withIntermediateDirectories:YES attributes:nil error:NULL] ||
         ![[container copy] writeToFile:[directory stringByAppendingPathComponent:@"coremldata.bin"]
                            atomically:YES]) {
-        charon_ml_error(error, CHARON_ML_ERROR_IO,
+        charon_ml_error(error, CHARON_ML_ERROR_GENERIC,
                         [NSString stringWithFormat:@"the bundle at %@ could not be written", directory]);
         return nil;
     }
@@ -1035,7 +917,7 @@
 + (NSURL *)compileModelAtURL:(NSURL *)modelURL error:(NSError **)error
 {
     if (modelURL == nil || !modelURL.isFileURL) {
-        charon_ml_error(error, CHARON_ML_ERROR_IO, @"a model is compiled from a file's URL");
+        charon_ml_error(error, CHARON_ML_ERROR_GENERIC, @"a model is compiled from a file's URL");
         return nil;
     }
     return [self charon_compiledModelAtURL:modelURL error:error];

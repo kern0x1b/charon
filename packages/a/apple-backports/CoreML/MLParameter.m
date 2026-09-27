@@ -94,41 +94,26 @@
     [coder encodeObject:_scope forKey:@"scope"];
 }
 
-/* The one factory both sets of keys are built from. It is on MLKey rather than on
- * MLParameterKey because a metric key is a key too: each class property below asks for its own
- * name and gets an object of its own class back, which is what a caller comparing the key it read
- * from the model with the key it holds has to see. */
+/* The one factory both sets of keys are built from. It is on MLKey rather than on MLParameterKey
+ * because a metric key is a key too: each class property below asks for its own name and gets an
+ * object of its own class back.
+ *
+ * A new object every time, which is what a real Core ML answers -- measured: two reads of
+ * MLParameterKey.learningRate are two objects that are equal, not one object. A caller compares keys
+ * with isEqual: and hashes them into a dictionary, both of which work by name, and one written to
+ * expect identity would be holding an assumption a release does not make. */
 + (instancetype)charon_keyNamed:(NSString *)name
 {
-    static NSMutableDictionary<NSString *, id> *made = nil;
-    id key;
     if (name == nil) {
         return nil;
     }
-    /* One key per name, kept for the life of the process. A key is compared by identity as well
-     * as by name -- a caller may put one in a set and look for it again -- and building a second
-     * one for the same name would make those two answers differ. The names are few and fixed,
-     * so the table is bounded by the specification's own list. */
-    if (made == nil) {
-        made = [NSMutableDictionary dictionary];
-    }
-    @synchronized(made) {
-        key = made[name];
-        if (key == nil) {
-            key = [[[self class] alloc] charon_initWithName:name scope:nil];
-            if (key != nil) {
-                made[name] = key;
-            }
-        }
-    }
-    return key;
+    return [[[self class] alloc] charon_initWithName:name scope:nil];
 }
 
 @end
 
-/* The parameter keys, each one built once and handed out again every time, so that the key an
- * application reads from the class and the key a model's description holds are the same object.
- * Their names are the specification's own, one for each parameter a model may be updated by. */
+/* The parameter keys, one for each parameter a model may be updated by, named as the
+ * specification's own update parameters name them. */
 @implementation MLParameterKey
 
 + (MLParameterKey *)learningRate

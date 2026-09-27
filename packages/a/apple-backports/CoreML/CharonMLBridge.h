@@ -79,7 +79,10 @@ static inline NSError *charon_ml_error(NSError **out, NSInteger code, NSString *
 
 static inline NSError *charon_ml_model_error(NSError **out, NSString *message)
 {
-    return charon_ml_error(out, CHARON_ML_ERROR_IO, message);
+    /* A model that will not load is MLModelErrorGeneric, not IO: measured against a real Core ML,
+     * which answers 0 both for a file that is not there and for a file that is not a model. The
+     * documentation of IO names a missing file, and the framework does not use it there. */
+    return charon_ml_error(out, CHARON_ML_ERROR_GENERIC, message);
 }
 
 /* The C's own feature kinds, and Core ML's, which are two enumerations of the same list. The

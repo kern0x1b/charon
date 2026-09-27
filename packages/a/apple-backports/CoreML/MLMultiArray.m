@@ -61,11 +61,28 @@
     if (self == nil) {
         return nil;
     }
-    if (!charon_ml_shape_from_array(shape, dimensions, CHARON_ML_MAX_RANK, &rank) ||
-        charon_ml_count_of_shape(dimensions, rank) == 0) {
+    if (!charon_ml_shape_from_array(shape, dimensions, CHARON_ML_MAX_RANK, &rank)) {
         charon_ml_error(error, CHARON_ML_ERROR_GENERIC,
-                        @"the shape of a multi array must be one to eight dimensions of a positive length");
+                        @"the shape of a multi array is one number per dimension, and there are more than eight");
         return nil;
+    }
+    {
+        /* Measured against a real Core ML: an empty shape is a single element -- there is no
+         * dimension to multiply, so what is left is the one scalar -- and a dimension of zero is an
+         * array of no elements rather than a failure. Only a negative length is refused, because
+         * there is no such thing as an array of less than nothing. */
+        int axis;
+        for (axis = 0; axis < rank; axis++) {
+            if (dimensions[axis] < 0) {
+                charon_ml_error(error, CHARON_ML_ERROR_GENERIC,
+                                @"a dimension of a multi array cannot be of negative length");
+                return nil;
+            }
+        }
+        if (rank == 0) {
+            dimensions[0] = 1;
+            rank = 1;
+        }
     }
     _array = charon_ml_array_alloc(charon_ml_type_of_array(dataType), dimensions, rank);
     if (_array.data == NULL) {

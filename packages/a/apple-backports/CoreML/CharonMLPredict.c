@@ -337,6 +337,40 @@ static void apply_glm_transform(int transform, double *values, size_t count)
  * output. Both are written, and a description that names an output which is neither of those
  * is answered with the numbers too, so a caller that asked for the scores by their own name
  * finds them. */
+/* The feature of the model a name belongs to, or NULL when it names none: an answer takes the
+ * shape of the feature it answers, and a name the model does not declare has no shape to take. */
+static const charon_ml_feature *model_feature_named(const charon_ml_model *model, const char *name)
+{
+    size_t index;
+    if (model == NULL || name == NULL) {
+        return NULL;
+    }
+    for (index = 0; index < model->output_count; index++) {
+        if (model->outputs[index].name != NULL && strcmp(model->outputs[index].name, name) == 0) {
+            return &model->outputs[index];
+        }
+    }
+    return NULL;
+}
+
+/* The shape an answer of `count` numbers has for a feature the model describes.
+ *
+ * The numbers are the same however they are shaped, but the shape is part of what the model said
+ * and part of what a caller reads: a caller that asked for an output of shape 1x1x2 and is handed
+ * a flat vector of two has to unwrap it, and one that is handed 1x1x2 where the model named 2 has to
+ * guess. So the declared shape is used whenever its element count is the count of numbers there
+ * are -- which is the only case where the two can both be true -- and the flat shape otherwise. */
+static int answer_shape(const charon_ml_feature *described, size_t count, int64_t *shape)
+{
+    if (described != NULL && described->rank > 0 && described->rank <= CHARON_ML_MAX_RANK &&
+        charon_ml_count_of_shape(described->shape, described->rank) == (int64_t)count) {
+        memcpy(shape, described->shape, sizeof(int64_t) * (size_t)described->rank);
+        return described->rank;
+    }
+    shape[0] = (int64_t)count;
+    return 1;
+}
+
 static int answer_with_scores(const charon_ml_model *model, const double *scores, size_t count,
                               charon_ml_features *outputs, char *error, size_t error_size)
 {
@@ -347,7 +381,8 @@ static int answer_with_scores(const charon_ml_model *model, const double *scores
 
     if (!classifier) {
         const char *name = model->output_count > 0 ? model->outputs[0].name : NULL;
-        int64_t shape[1];
+        int64_t shape[CHARON_ML_MAX_RANK];
+        int rank;
         charon_ml_array array;
         if (name == NULL) {
             snprintf(error, error_size, "the model has no output to answer in");
@@ -363,8 +398,8 @@ static int answer_with_scores(const charon_ml_model *model, const double *scores
             }
             return 1;
         }
-        shape[0] = (int64_t)count;
-        array = charon_ml_array_alloc(CHARON_ML_ARRAY_DOUBLE, shape, 1);
+        rank = answer_shape(model->output_count > 0 ? &model->outputs[0] : NULL, count, shape);
+        array = charon_ml_array_alloc(CHARON_ML_ARRAY_DOUBLE, shape, rank);
         for (index = 0; index < count; index++) {
             charon_ml_array_set(&array, (int64_t)index, scores[index]);
         }
@@ -432,7 +467,8 @@ static int answer_with_scores(const charon_ml_model *model, const double *scores
     for (index = 0; index < model->output_count; index++) {
         const char *name = model->outputs[index].name;
         const charon_ml_feature *described = &model->outputs[index];
-        int64_t shape[1];
+        int64_t shape[CHARON_ML_MAX_RANK];
+        int rank;
         charon_ml_array array;
         size_t which;
         if (name == NULL) {
@@ -448,8 +484,8 @@ static int answer_with_scores(const charon_ml_model *model, const double *scores
         if (described->type != CHARON_ML_FEATURE_MULTI_ARRAY && described->type != CHARON_ML_FEATURE_DICTIONARY) {
             continue;
         }
-        shape[0] = (int64_t)count;
-        array = charon_ml_array_alloc(CHARON_ML_ARRAY_DOUBLE, shape, 1);
+        rank = answer_shape(described, count, shape);
+        array = charon_ml_array_alloc(CHARON_ML_ARRAY_DOUBLE, shape, rank);
         for (which = 0; which < count; which++) {
             charon_ml_array_set(&array, (int64_t)which, scores[which]);
         }
@@ -681,7 +717,8 @@ static int run_preprocessing(const charon_ml_model *model, const charon_ml_node 
     double *numbers = NULL;
     size_t count = 0, index;
     const char *output_name = model->output_count > 0 ? model->outputs[0].name : NULL;
-    int64_t shape[1];
+    int64_t shape[CHARON_ML_MAX_RANK];
+    int rank;
     charon_ml_array array;
 
     if (!inputs_as_vector(model, values, &numbers, &count, error, error_size)) {
@@ -776,8 +813,8 @@ static int run_preprocessing(const charon_ml_model *model, const charon_ml_node 
         snprintf(error, error_size, "the model has no output to answer in");
         return 0;
     }
-    shape[0] = (int64_t)count;
-    array = charon_ml_array_alloc(CHARON_ML_ARRAY_DOUBLE, shape, 1);
+    rank = answer_shape(model->output_count > 0 ? &model->outputs[0] : NULL, count, shape);
+    array = charon_ml_array_alloc(CHARON_ML_ARRAY_DOUBLE, shape, rank);
     for (index = 0; index < count; index++) {
         charon_ml_array_set(&array, (int64_t)index, numbers[index]);
     }
@@ -917,10 +954,10 @@ static int run_neural_network(const charon_ml_node *kind_node, const charon_ml_m
         /* The scores are answered under their own name first, so a description that names them
          * is answered from the number the network produced, and the label is read off them. */
         if (score_name != NULL) {
-            int64_t shape[1];
+            int64_t shape[CHARON_ML_MAX_RANK];
+            int rank = answer_shape(model_feature_named(model, score_name), scores->count, shape);
             charon_ml_array array;
-            shape[0] = (int64_t)scores->count;
-            array = charon_ml_array_alloc(CHARON_ML_ARRAY_DOUBLE, shape, 1);
+            array = charon_ml_array_alloc(CHARON_ML_ARRAY_DOUBLE, shape, rank);
             for (index = 0; index < scores->count; index++) {
                 charon_ml_array_set(&array, (int64_t)index, numbers[index]);
             }
@@ -939,10 +976,29 @@ static int run_neural_network(const charon_ml_node *kind_node, const charon_ml_m
     for (index = 0; index < model->output_count; index++) {
         const char *name = model->outputs[index].name;
         charon_ml_tensor *tensor = name != NULL ? charon_ml_bindings_find(&bindings, name) : NULL;
+        charon_ml_value value;
         if (tensor == NULL || tensor->data == NULL) {
             continue;
         }
-        if (!charon_ml_features_put(values, name, charon_ml_tensor_to_value(tensor, CHARON_ML_ARRAY_FLOAT32))) {
+        value = charon_ml_tensor_to_value(tensor, CHARON_ML_ARRAY_FLOAT32);
+        /* The tensor carries the shape the layers produced, which is not always the shape the
+         * model declared: a layer that squeezes or flattens leaves a rank the description does not
+         * name. The declared shape is the one an application reads and the one it built its input
+         * for, so where the two hold the same number of elements the declared one is answered. */
+        if (model->outputs[index].rank > 0 &&
+            charon_ml_count_of_shape(model->outputs[index].shape, model->outputs[index].rank) ==
+                (int64_t)value.array.count) {
+            charon_ml_array reshaped =
+                charon_ml_array_alloc(value.array.data_type, model->outputs[index].shape,
+                                      model->outputs[index].rank);
+            size_t element;
+            for (element = 0; element < reshaped.count && element < value.array.count; element++) {
+                charon_ml_array_set(&reshaped, (int64_t)element, charon_ml_array_get(&value.array, (int64_t)element));
+            }
+            charon_ml_value_free(&value);
+            value = charon_ml_value_array(reshaped);
+        }
+        if (!charon_ml_features_put(values, name, value)) {
             charon_ml_bindings_release(&bindings);
             snprintf(error, error_size, "the model's answers have no room for '%s'", name);
             return 0;

@@ -27,6 +27,13 @@
 
 /* The description of one feature of the model the reader read: the reader's own struct, which
  * the description copies and outlives. */
+/* A value of the invalid type: what an object that cannot be a feature value becomes. Not an
+ * undefined value -- that one is a value the caller left out on purpose and keeps the type it was
+ * given -- but a value that holds nothing and says its type is the invalid one. */
+@interface MLFeatureValue (CharonInvalid)
++ (instancetype)charon_featureValueOfInvalidType;
+@end
+
 @interface MLFeatureDescription (CharonRead)
 - (instancetype)charon_initWithFeature:(const charon_ml_feature *)feature;
 - (instancetype)charon_initWithName:(NSString *)name type:(MLFeatureType)type optional:(BOOL)optional;
