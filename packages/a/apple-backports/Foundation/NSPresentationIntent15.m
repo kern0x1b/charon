@@ -26,6 +26,20 @@
 @end
 
 @implementation CharonPresentationIntentState
+
+/* The port's own build refuses an implicitly synthesised property (-Wobjc-missing-property-synthesis),
+   so each one is synthesised here by name rather than left to the compiler. */
+@synthesize intentKind = _intentKind;
+@synthesize identity = _identity;
+@synthesize parentIntent = _parentIntent;
+@synthesize ordinal = _ordinal;
+@synthesize columnCount = _columnCount;
+@synthesize columnAlignments = _columnAlignments;
+@synthesize headerLevel = _headerLevel;
+@synthesize column = _column;
+@synthesize row = _row;
+@synthesize languageHint = _languageHint;
+
 @end
 
 static char CharonPresentationIntentStateKey;
