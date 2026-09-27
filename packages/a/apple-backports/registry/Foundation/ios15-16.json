@@ -485,16 +485,6 @@
       "effect": "the method is not there: respondsToSelector: answers honestly and an unchecked call raises"
     },
     {
-      "api": "NSURLRequest.attribution",
-      "kind": "property",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSURLRequest a property like it: it arrived in iOS 15",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, Foundation"
-    },
-    {
       "api": "NSURLSessionTask.delegate",
       "kind": "property",
       "introduced": "15.0",

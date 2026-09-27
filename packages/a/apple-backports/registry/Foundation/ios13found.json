@@ -326,17 +326,6 @@
       "source": "RFC 6455 and the public headers of the SDK, held by the device test tests/backports/device/foundation14.m against a local server"
     },
     {
-      "api": "-[NSXPCConnection scheduleSendBarrierBlock:]",
-      "kind": "method",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "an iOS 6 application cannot bundle an XPC service, and the connection needs launchd to hand out the endpoint, which the release does not do for applications",
-      "effect": "the class is not declared, and no name of it is exported",
-      "facts": "facts/Foundation/NSXPC.md",
-      "source": "the public headers of the SDK"
-    },
-    {
       "api": "-[NSXPCInterface XPCTypeForSelector:argumentIndex:ofReply:]",
       "kind": "method",
       "introduced": "13.0",

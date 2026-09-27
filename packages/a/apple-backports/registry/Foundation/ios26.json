@@ -22,16 +22,6 @@
       "source": "SDK 26.5, Mac Catalyst, Foundation"
     },
     {
-      "api": "NSURLRequest.cookiePartitionIdentifier",
-      "kind": "property",
-      "introduced": "18.2",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSURLRequest a property like it: it arrived in iOS 18",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 26.5, Mac Catalyst, Foundation"
-    },
-    {
       "api": "-[NSBundle localizedStringForKey:value:table:localizations:]",
       "kind": "method",
       "introduced": "18.4",
@@ -278,26 +268,6 @@
       "minimum": "6.0",
       "status": "absent",
       "reason": "neither iOS 6 nor the backports give NSMutableURLRequest a property like it: it arrived in iOS 26",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 26.5, Mac Catalyst, Foundation"
-    },
-    {
-      "api": "NSProcessInfo.iOSAppOnVision",
-      "kind": "property",
-      "introduced": "26.1",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSProcessInfo a property like it: it arrived in iOS 26",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 26.5, Mac Catalyst, Foundation"
-    },
-    {
-      "api": "NSURLRequest.allowsUltraConstrainedNetworkAccess",
-      "kind": "property",
-      "introduced": "26.1",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSURLRequest a property like it: it arrived in iOS 26",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 26.5, Mac Catalyst, Foundation"
     },

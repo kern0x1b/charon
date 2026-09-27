@@ -79,16 +79,6 @@
       "source": "SDK 16.4, NSUserActivity.h"
     },
     {
-      "api": "NSUserActivity.persistentIdentifier",
-      "kind": "property",
-      "introduced": "12.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the store of saved activities is kept by a system daemon iOS 6 does not run",
-      "effect": "the property is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, NSUserActivity.h"
-    },
-    {
       "api": "-[NSUserActivity deleteSavedUserActivitiesWithPersistentIdentifiers:completionHandler:]",
       "kind": "method",
       "introduced": "12.0",

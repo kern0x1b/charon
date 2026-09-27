@@ -12,16 +12,6 @@
       "source": "SDK 26, Mac Catalyst, Foundation"
     },
     {
-      "api": "NSURLRequest.requiresDNSSECValidation",
-      "kind": "property",
-      "introduced": "16.1",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSURLRequest a property like it: it arrived in iOS 16",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 26, Mac Catalyst, Foundation"
-    },
-    {
       "api": "+[NSAttributedString localizedAttributedStringWithFormat:context:]",
       "kind": "method",
       "introduced": "17.0",
@@ -42,26 +32,6 @@
       "source": "SDK 26, Mac Catalyst, Foundation"
     },
     {
-      "api": "+[NSURL URLWithString:encodingInvalidCharacters:]",
-      "kind": "method",
-      "introduced": "17.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSURL a method like it: it arrived in iOS 17",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 26, Mac Catalyst, Foundation"
-    },
-    {
-      "api": "+[NSURLComponents componentsWithString:encodingInvalidCharacters:]",
-      "kind": "method",
-      "introduced": "17.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSURLComponents a method like it: it arrived in iOS 17",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 26, Mac Catalyst, Foundation"
-    },
-    {
       "api": "-[NSAttributedString initWithFormat:options:locale:context:]",
       "kind": "method",
       "introduced": "17.0",
@@ -78,26 +48,6 @@
       "minimum": "6.0",
       "status": "absent",
       "reason": "neither iOS 6 nor the backports give NSAttributedString a method like it: it arrived in iOS 17",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 26, Mac Catalyst, Foundation"
-    },
-    {
-      "api": "-[NSURL initWithString:encodingInvalidCharacters:]",
-      "kind": "method",
-      "introduced": "17.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSURL a method like it: it arrived in iOS 17",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 26, Mac Catalyst, Foundation"
-    },
-    {
-      "api": "-[NSURLComponents initWithString:encodingInvalidCharacters:]",
-      "kind": "method",
-      "introduced": "17.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSURLComponents a method like it: it arrived in iOS 17",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 26, Mac Catalyst, Foundation"
     },
@@ -232,16 +182,6 @@
       "source": "SDK 26, Mac Catalyst, Foundation"
     },
     {
-      "api": "NSTermOfAddress",
-      "kind": "class",
-      "introduced": "17.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 26, Mac Catalyst, Foundation"
-    },
-    {
       "api": "NSURLSessionUploadTaskResumeData",
       "kind": "constant",
       "introduced": "17.0",
@@ -262,26 +202,6 @@
       "source": "SDK 26, Mac Catalyst, Foundation"
     },
     {
-      "api": "NSUndoManager.redoCount",
-      "kind": "property",
-      "introduced": "17.4",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSUndoManager a property like it: it arrived in iOS 17",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 26, Mac Catalyst, Foundation"
-    },
-    {
-      "api": "NSUndoManager.undoCount",
-      "kind": "property",
-      "introduced": "17.4",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSUndoManager a property like it: it arrived in iOS 17",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 26, Mac Catalyst, Foundation"
-    },
-    {
       "api": "-[NSObject setSharedObservers:]",
       "kind": "method",
       "introduced": "18.0",
@@ -292,27 +212,7 @@
       "source": "SDK 26, Mac Catalyst, Foundation"
     },
     {
-      "api": "-[NSUndoManager redoActionUserInfoValueForKey:]",
-      "kind": "method",
-      "introduced": "18.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSUndoManager a method like it: it arrived in iOS 18",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 26, Mac Catalyst, Foundation"
-    },
-    {
       "api": "-[NSUndoManager setActionUserInfoValue:forKey:]",
-      "kind": "method",
-      "introduced": "18.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSUndoManager a method like it: it arrived in iOS 18",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 26, Mac Catalyst, Foundation"
-    },
-    {
-      "api": "-[NSUndoManager undoActionUserInfoValueForKey:]",
       "kind": "method",
       "introduced": "18.0",
       "minimum": "6.0",
@@ -378,26 +278,6 @@
       "minimum": "6.0",
       "status": "absent",
       "reason": "neither iOS 6 nor the backports give NSMutableURLRequest a property like it: it arrived in iOS 18",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 26, Mac Catalyst, Foundation"
-    },
-    {
-      "api": "NSNumberFormatter.minimumGroupingDigits",
-      "kind": "property",
-      "introduced": "18.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSNumberFormatter a property like it: it arrived in iOS 18",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 26, Mac Catalyst, Foundation"
-    },
-    {
-      "api": "NSURLRequest.allowsPersistentDNS",
-      "kind": "property",
-      "introduced": "18.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSURLRequest a property like it: it arrived in iOS 18",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 26, Mac Catalyst, Foundation"
     }
