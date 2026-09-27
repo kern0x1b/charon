@@ -13,6 +13,10 @@
 // and unavailability annotations, which the compiler would refuse against this deployment target and
 // which mean nothing in a translation unit that is not the application's.
 //
+// +new is not declared here: the real header marks it unavailable, and the answer the port gives for
+// an unavailable +new is NSObject's own, which is alloc and -init, so the class inherits it rather
+// than declaring a method nothing implements.
+//
 // This is the same arrangement the port already uses where the SDK it builds against has no header:
 // AVFoundation/CharonAVAudioBuffer.h redeclares AVAudioPCMBuffer, and CallKit/CharonCallKit.h
 // redeclares the CXCallAction family.
@@ -23,7 +27,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithTrust:(SecTrustRef)trust;
 - (instancetype)init;
-+ (instancetype)new;
 
 - (void)presentSheetInViewController:(UIViewController *)viewController dismissHandler:(nullable void (^)(void))dismissHandler;
 - (void)dismissSheet;
