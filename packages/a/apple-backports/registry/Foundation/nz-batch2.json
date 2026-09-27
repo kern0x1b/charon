@@ -498,25 +498,7 @@
       "source": "SDK 26.2 headers; the host's own Foundation, through the differential and the readings named in the facts file"
     },
     {
-      "api": "NSProgress.indeterminate",
-      "kind": "property",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Foundation/NSProgressState.md",
-      "source": "SDK 26.2 headers; the host's own Foundation, through the differential and the readings named in the facts file"
-    },
-    {
       "api": "NSProgress.localizedAdditionalDescription",
-      "kind": "property",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Foundation/NSProgressState.md",
-      "source": "SDK 26.2 headers; the host's own Foundation, through the differential and the readings named in the facts file"
-    },
-    {
-      "api": "NSProgress.paused",
       "kind": "property",
       "introduced": "7.0",
       "minimum": "6.0",
