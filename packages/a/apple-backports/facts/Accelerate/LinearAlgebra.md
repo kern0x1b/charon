@@ -7,8 +7,10 @@ release's own armv7 caches, iOS 4.3, 5.1.1, 6.0, 6.1.3, 7.0, 7.1.2 and 8.0 all e
 `sgetrs_`, `dgetrf_` and `dgetrs_`, and 6.1.3's vecLib carries 148 `cblas_*` names and 290 trailing-underscore LAPACK ones beside
 its 415 vDSP and 235 vImage. So no BLAS is built here: every product below is a call into `cblas_sgemm` / `cblas_dgemm` and every
 solve into the release's `sgetrf_` / `sgetrs_` / `dgetrf_` / `dgetrs_`, in the objects' own scalar type, which is where the release's
-own LinearAlgebra gets its arithmetic from too. There is no `cblas_sgesv` to reach for instead: the release's CBLAS has 148 names
-and none of them is a general solve (measured at 7.1.2 and 8.0), which is why the two LAPACK pairs are the way in.
+own LinearAlgebra gets its arithmetic from too. That the two gates confirm at both ends of the ladder: the built library's four
+LAPACK imports resolve against 6.1.3's 158 520 exports and against 4.3's 85 386, so the release has them on the oldest band this
+port supports as well as on the newest. There is no `cblas_sgesv` to reach for instead: the release's CBLAS has 148 names and
+none of them is a general solve (measured at 7.1.2 and 8.0), which is why the two LAPACK pairs are the way in.
 
 Source: the host's own Accelerate, held against the port for every case below by `tests/backports/host/linearalgebra`, which runs
 the port's `LinearAlgebra8.m` and the host's Accelerate over the same inputs and compares the statuses, the shapes and the elements;
