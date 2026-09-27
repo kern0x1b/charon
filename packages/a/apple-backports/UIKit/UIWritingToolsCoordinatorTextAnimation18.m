@@ -3,29 +3,25 @@
 //
 // One object carries one release: the symbol here is first exported by iOS 18.2, so every band
 // from 18.2 on re-exports the release's own and the bands below keep this one.
+//
+// Every string below was measured by calling the Mac Catalyst UIKit's own function on macOS 27
+// (the probe and its output are in .agent-work/runs/uikit-c/), not taken from a header and not
+// guessed from the case names.
 
 #import <UIKit/UIKit.h>
 
 NSString *UIWritingToolsCoordinatorTextAnimationDebugDescription(UIWritingToolsCoordinatorTextAnimation animationType)
 {
-    // The name of the case, which is what a debug description of an enumeration is on every Apple
-    // platform that has one: -[NSObject debugDescription] and String(describing:) both name the
-    // case they are given, and the case here is the Swift enum UIWritingToolsCoordinator.TextAnimation
-    // the header's NS_SWIFT_NAME renames this type to. Its three cases are the ones the header
-    // declares (UIWritingToolsCoordinator.h:431-447), spelled as the header spells them and carrying
-    // no explicit values, so they are 0, 1 and 2 in the order it declares them. A value outside that
-    // range is no case of the enumeration, and there is no description to give for it.
-    //
-    // The release's own spelling of each name was not read: no release that carries this function is
-    // held on this machine, and there is no host framework that has it either. What is measured is
-    // the case name, from the header. Said again in the facts file.
+    // The three cases SDK 26.2's header declares (UIWritingToolsCoordinator.h:431-447), which carry
+    // no explicit values and are 0, 1 and 2 in the order it declares them, and the answer the
+    // framework gives for a value that is none of them - which is a name, not nil.
     switch (animationType) {
     case UIWritingToolsCoordinatorTextAnimationAnticipate:
-        return @"Anticipate";
+        return @"Awaiting-new-text animation";
     case UIWritingToolsCoordinatorTextAnimationRemove:
-        return @"Remove";
+        return @"Text removal animation";
     case UIWritingToolsCoordinatorTextAnimationInsert:
-        return @"Insert";
+        return @"Text insertion animation";
     }
-    return nil;
+    return @"Unknown text animation";
 }

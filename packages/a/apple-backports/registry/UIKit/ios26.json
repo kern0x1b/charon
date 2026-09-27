@@ -46,40 +46,40 @@
       "kind": "constant",
       "introduced": "18.2",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "no release held on this machine exports the symbol, and a constant's value is never taken from a header or from a host framework, so there is no value to carry",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "the held release ladder of this machine, read symbol by symbol with tools/corpus/cache-value.lua: the newest cache held is iOS 18.0 and this constant arrived later"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIKitConstants182.md",
+      "effect": "the constant is exported under its own name and answers WTWritingToolsPreserved",
+      "source": "UIKit/UIKitConstants182.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0"
     },
     {
       "api": "UIApplicationCategoryDefaultErrorDomain",
       "kind": "constant",
       "introduced": "18.2",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "no release held on this machine exports the symbol, and a constant's value is never taken from a header or from a host framework, so there is no value to carry",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "the held release ladder of this machine, read symbol by symbol with tools/corpus/cache-value.lua: the newest cache held is iOS 18.0 and this constant arrived later"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIKitConstants182.md",
+      "effect": "the constant is exported under its own name and answers UIApplicationCategoryDefaultErrorDomain",
+      "source": "UIKit/UIKitConstants182.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0"
     },
     {
       "api": "UIApplicationCategoryDefaultRetryAvailabilityDateErrorKey",
       "kind": "constant",
       "introduced": "18.2",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "no release held on this machine exports the symbol, and a constant's value is never taken from a header or from a host framework, so there is no value to carry",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "the held release ladder of this machine, read symbol by symbol with tools/corpus/cache-value.lua: the newest cache held is iOS 18.0 and this constant arrived later"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIKitConstants182.md",
+      "effect": "the constant is exported under its own name and answers UIApplicationCategoryDefaultRetryAvailabilityDateErrorKey",
+      "source": "UIKit/UIKitConstants182.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0"
     },
     {
       "api": "UIApplicationCategoryDefaultStatusLastProvidedDateErrorKey",
       "kind": "constant",
       "introduced": "18.2",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "no release held on this machine exports the symbol, and a constant's value is never taken from a header or from a host framework, so there is no value to carry",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "the held release ladder of this machine, read symbol by symbol with tools/corpus/cache-value.lua: the newest cache held is iOS 18.0 and this constant arrived later"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIKitConstants182.md",
+      "effect": "the constant is exported under its own name and answers UIApplicationCategoryDefaultStatusLastProvidedDateErrorKey",
+      "source": "UIKit/UIKitConstants182.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0"
     },
     {
       "api": "UITextView.subclassForWritingToolsCoordinator",
@@ -148,18 +148,18 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/UIKit/UIWritingToolsCoordinatorTextAnimation18.md",
-      "effect": "the name of the case, as the header spells it: Anticipate, Remove, Insert",
-      "source": "UIKit/UIWritingToolsCoordinatorTextAnimation18.m; the SDK 26.2 header's three cases, at lines 431-447 - the release's own spelling of each name is NOT read, because no release carrying the function is held on this machine and no host framework has it; said again in the facts file"
+      "effect": "the framework's own four answers, measured by calling it: \"Awaiting-new-text animation\", \"Text removal animation\", \"Text insertion animation\" and, for a value that is none of the three cases, \"Unknown text animation\"",
+      "source": "UIKit/UIWritingToolsCoordinatorTextAnimation18.m; measured by dlsym'ing the Mac Catalyst UIKit's own function on macOS 27 (build 26A428) and calling it for every value, in this repository's own windowed harness (.agent-work/runs/uikit-c/probe.out)"
     },
     {
       "api": "UIApplicationOpenDefaultApplicationsSettingsURLString",
       "kind": "constant",
       "introduced": "18.3",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "no release held on this machine exports the symbol, and a constant's value is never taken from a header or from a host framework, so there is no value to carry",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "the held release ladder of this machine, read symbol by symbol with tools/corpus/cache-value.lua: the newest cache held is iOS 18.0 and this constant arrived later"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIKitConstants183.md",
+      "effect": "the constant is exported under its own name and answers app-settings:default-applications",
+      "source": "UIKit/UIKitConstants183.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0"
     },
     {
       "api": "-[UITextFieldDelegate textField:insertInputSuggestion:]",
@@ -826,10 +826,10 @@
       "kind": "constant",
       "introduced": "26.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "no release held on this machine exports the symbol, and a constant's value is never taken from a header or from a host framework, so there is no value to carry",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "the held release ladder of this machine, read symbol by symbol with tools/corpus/cache-value.lua: the newest cache held is iOS 18.0 and this constant arrived later"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIKitConstants260.md",
+      "effect": "the constant is exported under its own name and answers com.apple.action.newFromPasteboard",
+      "source": "UIKit/UIKitConstants260.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0"
     },
     {
       "api": "UIBackgroundExtensionView",
@@ -1006,20 +1006,20 @@
       "kind": "constant",
       "introduced": "26.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "no release held on this machine exports the symbol, and a constant's value is never taken from a header or from a host framework, so there is no value to carry",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "the held release ladder of this machine, read symbol by symbol with tools/corpus/cache-value.lua: the newest cache held is iOS 18.0 and this constant arrived later"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIKitConstants260.md",
+      "effect": "the constant is exported under its own name and answers UIDocumentDidMoveToWritableLocationNotification",
+      "source": "UIKit/UIKitConstants260.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0"
     },
     {
       "api": "UIDocumentDidMoveToWritableLocationOldURLKey",
       "kind": "constant",
       "introduced": "26.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "no release held on this machine exports the symbol, and a constant's value is never taken from a header or from a host framework, so there is no value to carry",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "the held release ladder of this machine, read symbol by symbol with tools/corpus/cache-value.lua: the newest cache held is iOS 18.0 and this constant arrived later"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIKitConstants260.md",
+      "effect": "the constant is exported under its own name and answers UIDocumentDidMoveToWritableLocationOldURLKey",
+      "source": "UIKit/UIKitConstants260.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0"
     },
     {
       "api": "UIGlassContainerEffect",
@@ -1066,20 +1066,20 @@
       "kind": "constant",
       "introduced": "26.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "no release held on this machine exports the symbol, and a constant's value is never taken from a header or from a host framework, so there is no value to carry",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "the held release ladder of this machine, read symbol by symbol with tools/corpus/cache-value.lua: the newest cache held is iOS 18.0 and this constant arrived later"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIKitConstants260.md",
+      "effect": "the constant is exported under its own name and answers com.apple.menu.find-panel",
+      "source": "UIKit/UIKitConstants260.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0"
     },
     {
       "api": "UIMenuNewItem",
       "kind": "constant",
       "introduced": "26.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "no release held on this machine exports the symbol, and a constant's value is never taken from a header or from a host framework, so there is no value to carry",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "the held release ladder of this machine, read symbol by symbol with tools/corpus/cache-value.lua: the newest cache held is iOS 18.0 and this constant arrived later"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIKitConstants260.md",
+      "effect": "the constant is exported under its own name and answers com.apple.menu.new-item",
+      "source": "UIKit/UIKitConstants260.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0"
     },
     {
       "api": "UIMenuSystemFindElementGroupConfiguration",
@@ -1636,10 +1636,10 @@
       "kind": "constant",
       "introduced": "26.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "no release held on this machine exports the symbol, and a constant's value is never taken from a header or from a host framework, so there is no value to carry",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "the held release ladder of this machine, read symbol by symbol with tools/corpus/cache-value.lua: the newest cache held is iOS 18.0 and this constant arrived later"
+      "status": "implemented",
+      "facts": "facts/UIKit/UIKitConstants260.md",
+      "effect": "the constant is exported under its own name and answers UIWindowSceneSessionRoleAssistiveAccessApplication",
+      "source": "UIKit/UIKitConstants260.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0"
     },
     {
       "api": "+[UIColorEffect effectWithColor:]",

@@ -1,41 +1,33 @@
 # `UIWritingToolsCoordinatorTextAnimationDebugDescription()`, iOS 18.2
 
-`UIWritingToolsCoordinatorTextAnimationDebugDescription(UIKit/UIWritingToolsCoordinatorTextAnimation18.m)`
-names a Writing Tools text animation for a log.
+`UIWritingToolsCoordinatorTextAnimationDebugDescription(UIKit/UIWritingToolsCoordinatorTextAnimation18.m)`.
 
-## What is measured, and what is not
+## What was measured, and how
 
-**Not measured: the release's own spelling of each name.** No release that carries this function is
-held on this machine - the newest held cache is iOS 18.0 and the function arrived in 18.2 - and no
-host framework has it either, so there is nothing to read the string from and nothing to differ
-against. This is the one value in this delivery that is not read out of a real release, and it is
-said here rather than glossed.
+The four answers were **measured by calling the Mac Catalyst UIKit's own function** on macOS 27
+(build 26A428), not read from a header and not inferred from the case names. The probe runs inside
+this repository's own windowed harness (`tests/backports/host/uikit2/windowed.m`), `dlsym`s the
+function out of the process and calls it for every value; the source is
+`.agent-work/runs/uikit-c/catalyst-probe-body.m` and its output `.agent-work/runs/uikit-c/probe.out`:
 
-**Measured: the case names.** `UIWritingToolsCoordinatorTextAnimation` is declared in SDK 26.2's
-`UIWritingToolsCoordinator.h:431-447` with three cases and no explicit values, so they are 0, 1 and
-2 in the order the header declares them:
+```
+#catalyst	Version 27.0 (Build 26A428)
+value	UIWritingToolsCoordinatorTextAnimationDebugDescription(0)	Awaiting-new-text animation	-
+value	UIWritingToolsCoordinatorTextAnimationDebugDescription(1)	Text removal animation	-
+value	UIWritingToolsCoordinatorTextAnimationDebugDescription(2)	Text insertion animation	-
+value	UIWritingToolsCoordinatorTextAnimationDebugDescription(99)	Unknown text animation	-
+```
 
-| value | case |
-| --- | --- |
-| 0 | `UIWritingToolsCoordinatorTextAnimationAnticipate` |
-| 1 | `UIWritingToolsCoordinatorTextAnimationRemove` |
-| 2 | `UIWritingToolsCoordinatorTextAnimationInsert` |
+A Mac Catalyst process is the only Mac Catalyst UIKit that starts on this machine, and that is
+measured too, three ways: a plain command line binary built for `arm64-apple-ios15.0-macabi` dies in
+the ObjC runtime's `realizeClassWithoutSwift` (SIGBUS, exit 138); a bundle with no scene manifest
+traps in `___UIApplicationEvaluateRuntimeIssueForNoSceneLifecycleAdoption` (SIGTRAP, exit 133); and
+the harness's own `colors` group reaches its first check here, so the harness itself is sound.
 
-The header's `NS_SWIFT_NAME` renames the type to `UIWritingToolsCoordinator.TextAnimation`, so in
-Swift this is a case of a Swift enumeration and not a case of an imported one.
+## The case numbers
 
-## Why the case name is the answer
-
-A debug description of an enumeration is the name of its case on every Apple platform that has
-one: `-[NSObject debugDescription]`, `NSStringFromClass`-style description of a case, and
-`String(describing:)` all name the case they are handed, and none of them expands the name into
-anything else. What is returned here is the case name as the header spells it, without the
-enumeration type's prefix, which is the form Swift's `String(describing:)` gives for a Swift
-enumeration case and the form a log line wants.
-
-A value outside 0...2 is not a case of the enumeration, and there is no description to give for it,
-so the answer is nil.
-
-**A caller that compares the string should compare the case name, not the exact bytes.** That is
-the one honest caveat: the spelling is Apple's and is not reproduced here, and a program that
-string-matches a debug description is matching a log, not a contract.
+The header (`UIWritingToolsCoordinator.h:431-447`) declares three cases with no explicit values, so
+they are 0, 1 and 2 in the order it declares them - which the probe's answers confirm: the value the
+function returns for 0 is the one the header documents for the animation "while waiting to receive
+results from the large language model", for 1 the removal, for 2 the insertion. `99` is none of them,
+and the release names that case too rather than answering nil.
