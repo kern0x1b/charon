@@ -219,7 +219,7 @@
         _charon_renderObservers = CFArrayCreateMutable(NULL, 0, &kCFTypeArrayCallBacks);
     }
     CFArrayAppendValue(_charon_renderObservers, (__bridge const void *)observer);
-    _charon_renderObserverSnapshot = CFArrayCopy(NULL, _charon_renderObservers);
+    _charon_renderObserverSnapshot = CFArrayCreateCopy(NULL, _charon_renderObservers);
     return (NSInteger)(uintptr_t)(__bridge const void *)observer;
 }
 
@@ -236,7 +236,7 @@
             break;
         }
     }
-    _charon_renderObserverSnapshot = CFArrayCopy(NULL, _charon_renderObservers);
+    _charon_renderObserverSnapshot = CFArrayCreateCopy(NULL, _charon_renderObservers);
 }
 
 - (OSStatus)charon_renderWithActionFlags:(AudioUnitRenderActionFlags *)actionFlags
