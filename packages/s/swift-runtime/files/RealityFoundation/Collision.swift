@@ -288,3 +288,9 @@ extension HasCollision {
         }
     }
 }
+
+@MainActor
+extension __REEntity {
+    /// The box the node fills, counting its own unit cube and everything below it.
+    public var visualBounds: BoundingBox { boundingBox(recursive: true, excludeInactive: false) }
+}

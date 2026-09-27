@@ -621,3 +621,52 @@ extension ShapeResource {
                   offsetTranslation: box.center)
     }
 }
+
+// MARK: - The model and the anchor
+
+@MainActor
+extension HasModel {
+    /// The box the model fills, in the entity's own coordinates: every part's box, grown.
+    public var visualBounds: BoundingBox {
+        let parts = coreEntity.component(of: ModelComponent.self)?.model.parts ?? []
+        guard !parts.isEmpty else { return coreEntity.boundingBox(recursive: true, excludeInactive: false) }
+        var box = BoundingBox()
+        for part in parts {
+            box.extend(with: part.boundingBox.min)
+            box.extend(with: part.boundingBox.max)
+        }
+        return box
+    }
+
+    /// The model's own mesh, when it is a single part, and nil when it is a real model.
+    public var mesh: MeshResource? {
+        guard let model = coreEntity.component(of: ModelComponent.self) else { return nil }
+        return model.model.parts.count == 1 ? model.model.parts[0].mesh : nil
+    }
+
+    /// The names of the model's parts, in order.
+    public var partNames: [String] {
+        coreEntity.component(of: ModelComponent.self)?.model.parts.map { $0.name } ?? []
+    }
+}
+
+@MainActor
+extension HasAnchoring {
+    /// Whether this entity is an anchor that is still tracked: an anchor to the world or to a
+    /// plane is not a thing a session tracks, and says so.
+    public var isAnchorTracked: Bool {
+        get { coreEntity.isTracked }
+        set { coreEntity.isTracked = newValue }
+    }
+
+    /// Where the anchor's target is, as a transform, and nil for a target that is not a pose -
+    /// a named target, a plane, a face or a body. The system's own `GeometricPin.position` is
+    /// optional for the same reason.
+    public var anchorPosition: Transform? {
+        switch coreEntity.anchoring.target {
+        case .world(let pose): return Transform(matrix: pose)
+        case .anchor: return coreEntity.transform
+        default: return nil
+        }
+    }
+}
