@@ -1,7 +1,9 @@
 import json
+import os
 import re
 import subprocess
 import sys
+import hashlib
 
 
 def documents(text):
@@ -104,6 +106,7 @@ class Rewriter:
         self.superclasses = superclasses
         self.inserts = set()
         self.unresolved = []
+        self.candidates = []
         self.signatures = []
 
     def owns(self, kind, receiver, selector):
@@ -193,7 +196,14 @@ class Rewriter:
                     inner = node["inner"][0]["range"]["end"]
                     self.inserts.add(self.keyword_after(inner["offset"] + inner["tokLen"]))
             elif sign and not receiver and any(entry[2] == selector for entry in self.carried):
-                self.unresolved.append((node["range"]["begin"]["offset"], selector))
+                # A receiver of no class: the send may still be the port's own method, which the host's class
+                # of that name does not answer. Whether the host declares the selector at all decides, and
+                # that is asked of the headers below rather than guessed from the superclass chain - a host
+                # subclass instance reaches the owner in the chain and would be renamed wrongly.
+                inner = node["inner"][0]["range"] if node.get("inner") else None
+                keyword = self.keyword_after(inner["end"]["offset"] + inner["end"]["tokLen"]) if inner else None
+                if keyword is not None:
+                    self.candidates.append((keyword, selector))
         if kind == "ObjCPropertyRefExpr" and node.get("property", {}).get("name"):
             name = node["property"]["name"]
             accessors = []
@@ -209,6 +219,9 @@ class Rewriter:
                 # asks for -setFoo: under the property name -charonHostFoo:, and one identifier cannot stand
                 # for both. That is reported rather than half done; such a write has to be spelled out as a send.
                 if node.get("isMessagingSetter"):
+                    # A write cannot be renamed at all: clang derives the setter from the property name it
+                    # reads, so `self.foo = x` asks for -setFoo: under the name -charonHostFoo:, and one
+                    # identifier cannot be both. Spelling the write out as a send is the only way.
                     self.unresolved.append((node["range"]["end"]["offset"], "a write to %s through dot syntax" % name))
                 else:
                     self.inserts.add(node["range"]["end"]["offset"])
@@ -223,6 +236,57 @@ class Rewriter:
             renamed = prefixed(keyword, prefix)
             text = text[:offset] + renamed + text[offset + len(keyword):]
         return text
+
+
+def host_owners(selectors, source, flags):
+    """(owner, selector) for every declaration of these selectors in the headers the source includes - the
+    host's own, and the port's, since both are in the same tree. One clang run, filtered to the selectors in
+    question, and cached by their names under $CHARON_HOME/cache: the answer is a property of the SDK, not of
+    the file, and a group asks about the same handful of selectors in every one of its files."""
+    key = hashlib.sha256(",".join(sorted(selectors)).encode()).hexdigest()[:16]
+    folder = os.path.join(os.getenv("CHARON_HOME", os.path.join(os.getenv("HOME"), ".charon")), "cache")
+    cached = os.path.join(folder, "prefix-selector-owners-" + key + ".json")
+    if os.path.isfile(cached):
+        with open(cached) as stream:
+            return json.load(stream)
+    dump = subprocess.run(["xcrun", "clang", *flags, "-fsyntax-only", "-w", "-Xclang", "-ast-dump=json",
+                           "-Xclang", "-ast-dump-filter=" + ",".join(sorted(selectors)), source],
+                          capture_output=True, text=True)
+    owners = []
+    for node in documents(dump.stdout):
+        collect(node, None, owners)
+    if not os.path.isdir(folder):
+        os.makedirs(folder)
+    with open(cached, "w") as stream:
+        json.dump(owners, stream)
+    return owners
+
+
+def collect(node, owner, owners):
+    """Every (owner, selector) the tree declares, walking into interfaces, categories and properties."""
+    if isinstance(node, list):
+        for item in node:
+            collect(item, owner, owners)
+        return
+    if not isinstance(node, dict):
+        return
+    kind = node.get("kind")
+    if kind in ("ObjCInterfaceDecl", "ObjCCategoryDecl", "ObjCImplementationDecl", "ObjCCategoryImplDecl"):
+        named = node.get("interface", {}).get("name") or node.get("name")
+        if kind in ("ObjCCategoryDecl", "ObjCCategoryImplDecl"):
+            named = node.get("interface", {}).get("name") or node.get("name")
+        for item in node.get("inner", []):
+            collect(item, named, owners)
+        return
+    if kind == "ObjCMethodDecl" and owner and node.get("name"):
+        owners.append([owner, node["name"]])
+    if kind == "ObjCPropertyDecl" and owner and node.get("name"):
+        name = node["name"]
+        owners.append([owner, name])
+        owners.append([owner, "set" + name[0].upper() + name[1:] + ":"])
+    for value in node.values():
+        if isinstance(value, (list, dict)):
+            collect(value, owner, owners)
 
 
 def main():
@@ -240,6 +304,25 @@ def main():
     rewriter = Rewriter(source, carried, superclasses)
     for document in documents(dump):
         rewriter.walk(document, None)
+    if rewriter.candidates:
+        wanted = {selector for _, selector in rewriter.candidates}
+        declared = host_owners(wanted, source_path, flags)
+        owners = {}
+        for owner, selector in declared:
+            owners.setdefault(selector, set()).add(owner)
+        port = {entry[2] for entry in carried}
+        for offset, selector in sorted(set(rewriter.candidates)):
+            others = owners.get(selector, set())
+            # the port alone defines it: no header in the SDK declares this selector, and the class that does
+            # define it here is the one the category adds it to - a host class of the same name answering would
+            # be the host's own method, and renaming the send would call that instead
+            ours = {owner for _, owner, named in carried if named == selector}
+            if selector not in port or (others - ours):
+                # the host declares it, or the port does not define it here: the send stays as it is written
+                rewriter.unresolved.append((offset, "%s, which the host's %s declares"
+                                             % (selector, ", ".join(sorted(others)) or "headers")))
+            else:
+                rewriter.inserts.add(offset)
     for offset, selector in sorted(set(rewriter.unresolved)):
         line = source.count("\n", 0, offset) + 1
         print("%s:%d: a carried selector the rewrite cannot rename: %s" % (source_path, line, selector), file=sys.stderr)

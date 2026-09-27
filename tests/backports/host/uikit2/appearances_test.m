@@ -8,11 +8,11 @@
 
 
 @interface UINavigationBar (CharonAppearanceRefresh)
-- (void)charon_refreshForced:(BOOL)force;
+- (void)charonHostCharon_refreshForced:(BOOL)force;
 @end
 
 @interface UITabBar (CharonAppearanceRefresh)
-- (void)charon_refreshForced:(BOOL)force;
+- (void)charonHostCharon_refreshForced:(BOOL)force;
 @end
 
 @interface UINavigationBar (CharonHostAppearances)
@@ -577,7 +577,7 @@ static void check_application(void)
     [itemGreen configureWithOpaqueBackground];
     [itemGreen setBackgroundColor:[UIColor greenColor]];
     [second charonHostSetStandardAppearance:itemGreen];
-    [navigation charon_refreshForced:NO];
+    [navigation charonHostCharon_refreshForced:NO];
     charon_check([pixel([navigation backgroundImageForBarMetrics:UIBarMetricsDefault]) hasPrefix:@"0 255 0 255"], "the appearance of the top item is the bar's", pixel([navigation backgroundImageForBarMetrics:UIBarMetricsDefault]));
     [[second charonHostStandardAppearance] setBackgroundColor:[UIColor purpleColor]];
     settle();
@@ -589,7 +589,7 @@ static void check_application(void)
     charon_check([pixel([navigation backgroundImageForBarMetrics:UIBarMetricsDefault]) hasPrefix:@"255 128 0 255"], "the scroll edge appearance of the top item comes before its standard one at the edge", pixel([navigation backgroundImageForBarMetrics:UIBarMetricsDefault]));
     [second charonHostSetScrollEdgeAppearance:nil];
     [navigation popNavigationItemAnimated:NO];
-    [navigation charon_refreshForced:NO];
+    [navigation charonHostCharon_refreshForced:NO];
     charon_check([pixel([navigation backgroundImageForBarMetrics:UIBarMetricsDefault]) hasPrefix:@"0 0 255 255"], "popping the item returns the bar to its own appearance", pixel([navigation backgroundImageForBarMetrics:UIBarMetricsDefault]));
     [first charonHostSetStandardAppearance:itemGreen];
     charon_check([pixel([navigation backgroundImageForBarMetrics:UIBarMetricsDefault]) hasPrefix:@"0 255 0 255"], "setting the appearance of the top item applies it at once", pixel([navigation backgroundImageForBarMetrics:UIBarMetricsDefault]));
@@ -607,10 +607,10 @@ static void check_application(void)
     [itemTabs charonHostSetStandardAppearance:tabOwn];
     [tabTwo charonHostSetStandardAppearance:tabItemApp];
     itemTabs.selectedItem = tabOne;
-    [itemTabs charon_refreshForced:NO];
+    [itemTabs charonHostCharon_refreshForced:NO];
     charon_check([pixel(itemTabs.backgroundImage) hasPrefix:@"255 0 0 255"], "a tab bar with an item that has no appearance keeps its own", pixel(itemTabs.backgroundImage));
     itemTabs.selectedItem = tabTwo;
-    [itemTabs charon_refreshForced:NO];
+    [itemTabs charonHostCharon_refreshForced:NO];
     charon_check([pixel(itemTabs.backgroundImage) hasPrefix:@"0 255 0 255"], "the appearance of the selected tab item is the bar's", pixel(itemTabs.backgroundImage));
 
     id transparent = make_kind(@"UINavigationBarAppearance", YES);
