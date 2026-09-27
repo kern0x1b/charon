@@ -618,94 +618,6 @@
       "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
     },
     {
-      "api": "-[CPListItem initWithText:detailText:]",
-      "kind": "method",
-      "introduced": "12.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says",
-      "effect": "a row conforming to CPSelectableListItem, with the header's own three initialisers, the accessory rule (an accessory image sets the accessory type to none), the class property maximumImageSize, and the row's own handler called with the item and a completion when the row is chosen",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
-    },
-    {
-      "api": "-[CPListItem initWithText:detailText:image:]",
-      "kind": "method",
-      "introduced": "12.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says",
-      "effect": "a row conforming to CPSelectableListItem, with the header's own three initialisers, the accessory rule (an accessory image sets the accessory type to none), the class property maximumImageSize, and the row's own handler called with the item and a completion when the row is chosen",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
-    },
-    {
-      "api": "-[CPListItem initWithText:detailText:image:accessoryImage:accessoryType:]",
-      "kind": "method",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says",
-      "effect": "a row conforming to CPSelectableListItem, with the header's own three initialisers, the accessory rule (an accessory image sets the accessory type to none), the class property maximumImageSize, and the row's own handler called with the item and a completion when the row is chosen",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
-    },
-    {
-      "api": "-[CPListItem initWithText:detailText:image:showsDisclosureIndicator:]",
-      "kind": "method",
-      "introduced": "12.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says",
-      "effect": "a row conforming to CPSelectableListItem, with the header's own three initialisers, the accessory rule (an accessory image sets the accessory type to none), the class property maximumImageSize, and the row's own handler called with the item and a completion when the row is chosen",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
-    },
-    {
-      "api": "-[CPListItem setAccessoryImage:]",
-      "kind": "method",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says",
-      "effect": "a row conforming to CPSelectableListItem, with the header's own three initialisers, the accessory rule (an accessory image sets the accessory type to none), the class property maximumImageSize, and the row's own handler called with the item and a completion when the row is chosen",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
-    },
-    {
-      "api": "-[CPListItem setDetailText:]",
-      "kind": "method",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says",
-      "effect": "a row conforming to CPSelectableListItem, with the header's own three initialisers, the accessory rule (an accessory image sets the accessory type to none), the class property maximumImageSize, and the row's own handler called with the item and a completion when the row is chosen",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
-    },
-    {
-      "api": "-[CPListItem setImage:]",
-      "kind": "method",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says",
-      "effect": "a row conforming to CPSelectableListItem, with the header's own three initialisers, the accessory rule (an accessory image sets the accessory type to none), the class property maximumImageSize, and the row's own handler called with the item and a completion when the row is chosen",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
-    },
-    {
-      "api": "-[CPListItem setText:]",
-      "kind": "method",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says",
-      "effect": "a row conforming to CPSelectableListItem, with the header's own three initialisers, the accessory rule (an accessory image sets the accessory type to none), the class property maximumImageSize, and the row's own handler called with the item and a completion when the row is chosen",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
-    },
-    {
       "api": "-[CPListSection indexOfItem:]",
       "kind": "method",
       "introduced": "12.0",
@@ -1740,169 +1652,15 @@
       "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name -- except the NAME CPListItem, which another class in the release already carries -- and apple.dyld's first_releases over the held cache ladder; the release's own CPListItem measured with apple.objc.inventory on the same cache"
     },
     {
-      "api": "CPListItem.accessoryImage",
-      "kind": "property",
+      "api": "CPListItem",
+      "kind": "class",
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says",
-      "effect": "a row conforming to CPSelectableListItem, with the header's own three initialisers, the accessory rule (an accessory image sets the accessory type to none), the class property maximumImageSize, and the row's own handler called with the item and a completion when the row is chosen",
+      "reason": "the release carries a class of ANOTHER framework under this name -- measured, its own eleven methods are -addParagraph:, -paragraphAtIndex:, -paragraphCount, -list, -number, -setList: and -setNumber:, with no text, no image and no handler -- so the name is an ALIAS through charon_alias.h",
+      "effect": "the name is an alias of CharonCPListItem, which the library's loader makes a subclass of the release's own class, and a category on the name in this image is merged into that subclass: a row a program builds with -initWithText:detailText:image:accessoryImage:accessoryType: is that subclass, carries the header's own three initialisers and its own handler called when the row is chosen, and a subclass the program writes of CPListItem inherits the release's class and is laid out after it. The members are the alias's class's members, not members this package adds, so the registry carries the class and not them",
       "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
-    },
-    {
-      "api": "CPListItem.accessoryType",
-      "kind": "property",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says",
-      "effect": "a row conforming to CPSelectableListItem, with the header's own three initialisers, the accessory rule (an accessory image sets the accessory type to none), the class property maximumImageSize, and the row's own handler called with the item and a completion when the row is chosen",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
-    },
-    {
-      "api": "CPListItem.detailText",
-      "kind": "property",
-      "introduced": "12.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says",
-      "effect": "a row conforming to CPSelectableListItem, with the header's own three initialisers, the accessory rule (an accessory image sets the accessory type to none), the class property maximumImageSize, and the row's own handler called with the item and a completion when the row is chosen",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
-    },
-    {
-      "api": "CPListItem.enabled",
-      "kind": "property",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says",
-      "effect": "a row conforming to CPSelectableListItem, with the header's own three initialisers, the accessory rule (an accessory image sets the accessory type to none), the class property maximumImageSize, and the row's own handler called with the item and a completion when the row is chosen",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
-    },
-    {
-      "api": "CPListItem.explicitContent",
-      "kind": "property",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says",
-      "effect": "a row conforming to CPSelectableListItem, with the header's own three initialisers, the accessory rule (an accessory image sets the accessory type to none), the class property maximumImageSize, and the row's own handler called with the item and a completion when the row is chosen",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
-    },
-    {
-      "api": "CPListItem.handler",
-      "kind": "property",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says",
-      "effect": "a row conforming to CPSelectableListItem, with the header's own three initialisers, the accessory rule (an accessory image sets the accessory type to none), the class property maximumImageSize, and the row's own handler called with the item and a completion when the row is chosen",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
-    },
-    {
-      "api": "CPListItem.image",
-      "kind": "property",
-      "introduced": "12.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says",
-      "effect": "a row conforming to CPSelectableListItem, with the header's own three initialisers, the accessory rule (an accessory image sets the accessory type to none), the class property maximumImageSize, and the row's own handler called with the item and a completion when the row is chosen",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
-    },
-    {
-      "api": "CPListItem.maximumImageSize",
-      "kind": "property",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says",
-      "effect": "a row conforming to CPSelectableListItem, with the header's own three initialisers, the accessory rule (an accessory image sets the accessory type to none), the class property maximumImageSize, and the row's own handler called with the item and a completion when the row is chosen",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
-    },
-    {
-      "api": "CPListItem.playbackProgress",
-      "kind": "property",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says",
-      "effect": "a row conforming to CPSelectableListItem, with the header's own three initialisers, the accessory rule (an accessory image sets the accessory type to none), the class property maximumImageSize, and the row's own handler called with the item and a completion when the row is chosen",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
-    },
-    {
-      "api": "CPListItem.playing",
-      "kind": "property",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says",
-      "effect": "a row conforming to CPSelectableListItem, with the header's own three initialisers, the accessory rule (an accessory image sets the accessory type to none), the class property maximumImageSize, and the row's own handler called with the item and a completion when the row is chosen",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
-    },
-    {
-      "api": "CPListItem.playingIndicatorLocation",
-      "kind": "property",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says",
-      "effect": "a row conforming to CPSelectableListItem, with the header's own three initialisers, the accessory rule (an accessory image sets the accessory type to none), the class property maximumImageSize, and the row's own handler called with the item and a completion when the row is chosen",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
-    },
-    {
-      "api": "CPListItem.showsDisclosureIndicator",
-      "kind": "property",
-      "introduced": "12.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says",
-      "effect": "a row conforming to CPSelectableListItem, with the header's own three initialisers, the accessory rule (an accessory image sets the accessory type to none), the class property maximumImageSize, and the row's own handler called with the item and a completion when the row is chosen",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
-    },
-    {
-      "api": "CPListItem.showsExplicitLabel",
-      "kind": "property",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says",
-      "effect": "a row conforming to CPSelectableListItem, with the header's own three initialisers, the accessory rule (an accessory image sets the accessory type to none), the class property maximumImageSize, and the row's own handler called with the item and a completion when the row is chosen",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
-    },
-    {
-      "api": "CPListItem.text",
-      "kind": "property",
-      "introduced": "12.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says",
-      "effect": "a row conforming to CPSelectableListItem, with the header's own three initialisers, the accessory rule (an accessory image sets the accessory type to none), the class property maximumImageSize, and the row's own handler called with the item and a completion when the row is chosen",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
-    },
-    {
-      "api": "CPListItem.userInfo",
-      "kind": "property",
-      "introduced": "12.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says",
-      "effect": "a row conforming to CPSelectableListItem, with the header's own three initialisers, the accessory rule (an accessory image sets the accessory type to none), the class property maximumImageSize, and the row's own handler called with the item and a completion when the row is chosen",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3 for the release's own CPListItem, and apple.dyld's first_releases for the release that first exports Apple's"
     },
     {
       "api": "CPListSection",
@@ -3344,17 +3102,6 @@
       "effect": "the property is not there: respondsToSelector: answers NO, which is what a release with no layout guides answers, and the map template's own buttons are laid out inside the map view's own insets instead",
       "facts": "facts/CarPlay/CarPlay.md",
       "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, and the gate's own imports stage naming _OBJC_CLASS_$_UILayoutGuide"
-    },
-    {
-      "api": "CPWindow.mapButtonSafeAreaLayoutGuide",
-      "kind": "property",
-      "introduced": "12.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "a layout guide is iOS 9 and this release has none",
-      "effect": "the property is not there: respondsToSelector: answers NO",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "the gate's own imports stage"
     },
     {
       "api": "CPWindow.templateApplicationScene",
