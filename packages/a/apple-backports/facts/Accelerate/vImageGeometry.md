@@ -254,3 +254,28 @@ the phase the extents fix" - and that derivation is the one thing left before th
 be written. The probe that produced the table is `.agent-work/runs/geo/probe-shapes.m`; `.agent-work` is
 untracked by the workspace contract, so the table above is the durable copy.
 
+
+## The destination shape each constant wants, and the last gap closed
+
+A half turn keeps a picture's shape and a quarter turn does not, so the destination is `W x H` for constants
+0 and 2 and `H x W` for 1 and 3 - and the transposed-destination probe had passed `H x W` for all four,
+which is why constant 2's rows there were the system centring a picture that does not fit. Measured both ways
+over eight shapes (6x4, 4x6, 4x3, 5x3, 5x5, 2x3, 3x2, 6x5):
+
+| constant | the destination it wants | the mapping, `W` the source's width, `H` its height |
+| --- | --- | --- |
+| 0 | `W x H` | `src(dx, dy)` |
+| 1 | `H x W` | `src(dy, W-1-dx)` |
+| 2 | `W x H` | `src(W-1-dx, H-1-dy)` |
+| 3 | `H x W` | `src(dy, H-1-dx)` |
+
+With the destination the constant wants, **every cell of every grid is a source pixel on every one of the
+eight shapes** - no background, no interpolation. With the other one the same formula runs and the samples
+that fall outside the source are the backColor. So the implementation is one formula per constant and a
+range test, and **no shape test at all** - and the caller who passes the wrong destination is answered by the
+same code rather than by a special case.
+
+That also settles what the corpus's five `rotate90` functions need: `vImageRotate90_ARGB16S` and
+`vImageRotate90_ARGB16U` at 7.0, and `vImageRotate90_ARGB16F`, `vImageRotate90_CbCr16F` and
+`vImageRotate90_Planar16F` at 15.0 - the loop above over their pixel type, the three half-precision ones
+using the two conversions now in the tree from the conversion band.
