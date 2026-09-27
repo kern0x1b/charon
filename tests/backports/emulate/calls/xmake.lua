@@ -20,7 +20,7 @@ includes("@addon/charon/emulate")
 set_defaultplat("iphoneos")
 set_defaultarchs("iphoneos|armv7")
 
-local calls = os.getenv("CHARCALLS_GENERATED") or path.join(root, "tests/backports/callgen/generated")
+local calls = os.getenv("CHARCALLS_GENERATED") or path.join(root, "tests/backports/emulate/calls/.agent-work/generated")
 
 target("charoncalls")
     add_rules("@addon/charon/daemon")
