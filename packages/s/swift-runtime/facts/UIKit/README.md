@@ -33,38 +33,49 @@ CornerStyle` is the nested Swift name the SDK's overlay gives it. So:
 `UIKit.framework/Modules/UIKit.swiftmodule/arm64e-apple-ios.swiftinterface`, and prints the file
 above. The case names and their payloads are the SDK's own, not typed by hand.
 
-**State: 111/111 names resolve; the typecheck's last 30 errors are one lift change.**
 
-`tc.sh` takes its resource directory from an installed `charon@swift-runtime`'s own `lib/swift`
-(where the armv7 standard library, the armv7 swiftmodules and the toolchain's clang include are),
-the SDK is the real 26.2 under the lift's `vfs.yaml`, and each of the 111 names is typechecked in
-its own file against the overlay. Measured:
+## The rows that wait for their class
 
-```
-$ for f in /tmp/n111/*.swift; do packages/s/swift-runtime/facts/UIKit/tc.sh "$f" 2>&1 | grep "error:"; done \
-    | sed 's/.*error: //' | grep -v "is only available in iOS" | sort | uniq -c
-(no output)
-```
+These 25 rows spell their names through a class the port's registry carries as `absent`
+(`registry/UIKit/ios17-18.json`: `UITab`, `UITabSidebarItem`, `UITextFormattingViewController`
+and `UITextItem`), so the overlay cannot declare the name they ask for: the enclosing class is
+not there to nest a type in, and a typealias on a class that does not exist does not compile.
+They are registered `absent` for that reason until the UIKit bands carry those classes, and the
+typecheck counts them as such: each is a row whose name is unreachable, not a row whose
+declaration is wrong.
 
-**Every error the typecheck still reports is the availability gate on seven SDK classes the surface
-spells these names through** - not one is a naming, nesting, payload or redeclaration error:
+| row | the class it waits for |
+| --- | --- |
+| `UITabBarController.Sidebar.ScrollTarget.tab` | `UITab` |
+| `UITabSidebarItem.Content.action` | `UITabSidebarItem.Content` |
+| `UITabSidebarItem.Content.tab` | `UITabSidebarItem.Content` |
+| `UITextFormattingViewController.ChangeValue.bold` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.decreaseFontSize` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.decreaseIndentation` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.font` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.fontSize` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.formattingStyle` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.highlight` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.increaseFontSize` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.increaseIndentation` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.italic` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.lineHeightPointSize` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.strikethrough` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.textAlignment` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.textColor` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.textList` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.undefined` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.underline` | `UITextFormattingViewController.ChangeValue` |
+| `UITextItem.Content.link` | `UITextItem.Content` |
+| `UITextItem.Content.tag` | `UITextItem.Content` |
+| `UITextItem.Content.textAttachment` | `UITextItem.Content` |
+| `UITextItem.MenuConfiguration.Preview.default` | `UITextItem.MenuConfiguration` |
+| `UITextItem.MenuConfiguration.Preview.view` | `UITextItem.MenuConfiguration` |
 
-| errors | class | its floor |
-| --- | --- | --- |
-| 8 | `UITextFormattingViewController` | 18.0 |
-| 8 | `UITargetedPreview` | 13.0 |
-| 4 | `UITextItem` | 17.0 |
-| 4 | `UITab` | 18.0 |
-| 2 | `UITabSidebarItem` | 18.0 |
-| 2 | `UIAction` | 13.0 |
-| 2 | `NSTextAttachment` | 7.0 |
+## The other 86
 
-That gate is `charon`'s, and it is the same gate the Objective-C rows of this checklist already
-carry as `needs=lift`: the surface spells `UITabSidebarItem.Content` through a class the port's
-release does not have, and the lift lowers the headers' availability for the Objective-C side. The
-overlay's own types are declared **unconditionally** - that is the Swift counterpart, and the
-reason a name the surface spells at 6.1.3 can be named at 6.1.3 - so what is left is the lift
-lowering these seven classes' availability, after which the typecheck is 111/111.
-
-The file: 49 enumerations, 115 case declarations (the 111 rows and the three payload types of
-`ChangeValue` that the cases name), 9 typealiases, and `swiftc -parse` clean.
+The remaining rows resolve once the lift lowers the availability of the SDK classes the surface
+spells them through, which it does for a class the registry carries as `implemented` - `UIAction` and
+`UITargetedPreview` are, in `registry/UIKit/ios13menus.json`. The lifted headers a typecheck reads
+were made when a `swift-runtime` install was built, so a fresh lift over this tree's registry is
+what the count below is measured against.
