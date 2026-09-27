@@ -91,7 +91,30 @@ invisible to `CMSampleBufferGetSampleAttachmentsArray`, which is the call an app
 sample buffer's attachments actually makes. A key beginning with `Charon` cannot collide with an Apple
 one.
 
-**What is still missing, and it is a trap, not a lifetime.** The attachment design was written and it
+**The CFType holder works, and it settles one more thing.** With the holder as a `CFType` rather than an
+Objective-C object - registered under the private name `CharonMakeDataReadyHolder`, with a copy
+function that is the identity, a release that frees the block and the holder, and the pointer's own
+address as its hash - the port's creators build and run: `create 0`, the buffer not ready, and the block
+run exactly once. **The bridged Objective-C refcon was what the release would not accept**; a CFType
+refcon it takes.
+
+And the release's own behaviour is then visible, measured, and it is not the host's:
+
+| | system | port |
+| --- | --- | --- |
+| after the creator | `create 0, ran 0, ready 0` | `create 0, ran 1, ready 0` |
+| after `CMSampleBufferMakeDataReady` | `0, ran 1, ready 1` | `-12733, ran 1, ready 0` |
+
+**This release's `CMSampleBufferCreate` calls its makeDataReadyCallback while it creates the buffer when
+the buffer is not created data-ready.** That is the release's own behaviour for the `ios(4.0)` callback -
+and the host does not do it, because the host's `CMSampleBuffer` has a slot for the block that it arms
+itself and runs the handler at the application's `CMSampleBufferMakeDataReady`. So the handler still
+runs inside the creator, but now the release makes the call rather than the port, the block is the
+buffer's, and a second `CMSampleBufferMakeDataReady` answers `kCMSampleBufferError_BufferNotReady`
+because the release has already run it. The trampoline returns the block's own status unchanged, and the
+port adds nothing to it.
+
+**What is still missing, and it is a timing, not a lifetime.** The attachment design was written and it
 **traps the host test (SIGTRAP) on the port side of the first make-data-ready case**, where the system
 side of the *same* case passes (`create 0, ran 0` then `MakeDataReady 0, ran 1, ready 1`). The earlier
 attempt, which freed the copied block on whichever of the trampoline and the invalidation hook fired
