@@ -18,7 +18,10 @@ package("swift-runtime")
     local libraries = {"swiftCore", "swiftSwiftOnoneSupport", "swift_Concurrency", "swiftDarwin", "swiftObjectiveC", "swiftDispatch",
                        "swiftCoreFoundation", "swiftCoreGraphics", "swiftFoundation", "swiftQuartzCore", "swiftUIKit", "swiftCoreData",
                        "swiftSynchronization",
-                       "swift_RegexParser", "swift_StringProcessing", "swiftRegexBuilder", "swiftObservation"}
+                       "swift_RegexParser", "swift_StringProcessing", "swiftRegexBuilder", "swiftObservation",
+                       -- The Swift half of simd, and the scene graph on top of it: a port that
+                       -- imports either links the library the module records.
+                       "swiftsimd", "swiftRealityFoundation"}
 
     -- What every image of the runtime and of the port renames, because the release the port is built for either does not
     -- have the call or gives it a narrower meaning.
@@ -71,6 +74,14 @@ package("swift-runtime")
     local digests = {"sources=" .. swift_runtime_sources_digest}
     for _, patch in ipairs(os.files(path.join(os.scriptdir(), "patches", "**.patch"))) do
         table.insert(digests, path.relative(patch, path.join(os.scriptdir(), "patches")) .. "=" .. hash.sha256(patch))
+    end
+    -- The sources of an overlay this tree holds rather than the release's, the same way: a
+    -- changed one is a different runtime. The simd module's own source is the SDK's interface,
+    -- read at install time, and what the patches beside it make of it is hashed with them.
+    for _, held in ipairs({"files/RealityFoundation"}) do
+        for _, file in ipairs(os.files(path.join(os.scriptdir(), held, "**"))) do
+            table.insert(digests, path.relative(file, path.join(os.scriptdir(), held)) .. "=" .. hash.sha256(file))
+        end
     end
     table.sort(digests)
     add_configs("recipe", {description = "The digest of this recipe and the changes it makes to the runtime's sources, so a changed flag or patch is a different runtime.", default = hash.strhash128(table.concat(digests, ";")), type = "string", readonly = true})
@@ -598,6 +609,58 @@ package("swift-runtime")
                           table.join(foundation_links, {"-framework", "CoreData"}), {conformances},
                           {backports = {"FoundationBackports", "CoreDataBackports"}})
         end
+
+        -- simd: the Swift half of the module, which the SDK carries for arm64 only. A port
+        -- compiled for armv7 finds the C half of simd in the SDK's own headers and no Swift
+        -- half at all, so `float4x4` and `simd_quatf` are missing names and everything written
+        -- against them fails to compile. The SDK ships the module as a textual interface for
+        -- one architecture; it is the release's own source, and the patches beside it fill in
+        -- the bodies the dump leaves out, which is all that is missing for another
+        -- architecture. The module shadows the C one by its layout, `<name>.swiftmodule/<triple>`.
+        local simd = path.absolute("simd")
+        os.mkdir(simd)
+        local simd_module = os.files(path.join(toolchain:config("sdkdir"), "usr", "lib", "swift", "simd.swiftmodule", "*-apple-ios.swiftinterface"))
+        assert(#simd_module > 0, "the SDK at %s carries no simd.swiftmodule; the Swift half of simd cannot be built",
+               toolchain:config("sdkdir"))
+        -- arm64 first: the interface the module itself was dumped for.
+        table.sort(simd_module, function (a, b) return path.basename(a) < path.basename(b) end)
+        os.vcp(simd_module[1], path.join(simd, "simd.swift"))
+        local simd_text = {}
+        for line in io.readfile(path.join(simd, "simd.swift")):gmatch("[^\n]+") do
+            if not line:startswith("// swift-") and not line:startswith("// swift-module-flags-ignorable") then
+                table.insert(simd_text, line)
+            end
+        end
+        io.writefile(path.join(simd, "simd.swift"), table.concat(simd_text, "\n") .. "\n")
+        local simd_patches = os.files(path.join(os.scriptdir(), "patches", "simd", "*.patch"))
+        table.sort(simd_patches)
+        for _, patch in ipairs(simd_patches) do
+            os.vrunv("patch", {"-p1", "-i", patch}, {curdir = simd})
+        end
+        -- The C half of simd is what this module sits on: `@_exported import simd` inside it
+        -- is the C module of the same name, and the swiftmodule's own name is what a port's
+        -- `import simd` finds first.
+        local simd_links = {"-lswiftDarwin", "-lswiftObjectiveC", "-framework", "Foundation", "-framework", "CoreFoundation"}
+        build_overlay("simd", {path.join(simd, "simd.swift")}, simd_links, nil, {backports = {}})
+        -- The overlays above are built before this and read the SDK's simd headers, which is
+        -- what they have always read; only a port that imports simd needs the module.
+
+        -- RealityFoundation: the scene graph an AR application is built out of, a module no
+        -- release before iOS 13 carries and this tree holds the sources of. It sits on the simd
+        -- module above, and on the QuartzCore overlay for CATransform3D; nothing here reaches a
+        -- framework the release lacks, and the transform maths is the release's own simd.
+        local reality = path.absolute("realityfoundation")
+        os.mkdir(reality)
+        local reality_sources = {}
+        for _, file in ipairs(os.files(path.join(package:scriptdir(), "files", "RealityFoundation", "*.swift"))) do
+            local output = path.join(reality, path.filename(file))
+            os.cp(file, output)
+            table.insert(reality_sources, output)
+        end
+        assert(#reality_sources > 0, "the RealityFoundation sources are missing from the package")
+        build_overlay("RealityFoundation", reality_sources,
+                      table.join(foundation_links, {"-lswiftQuartzCore", "-framework", "QuartzCore"}),
+                      nil, {backports = {}})
 
         -- The supplemental libraries, each its own project, against the standard library built above.
         for _, library in ipairs({"Synchronization", "Observation", "StringProcessing"}) do
