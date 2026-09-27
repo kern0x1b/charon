@@ -1,0 +1,167 @@
+// tabularframe.swift — the port's `DataFrame`, on its own terms.
+//
+// This is **not** a differential against the host's `TabularData`. It could not be one yet: Apple's
+// columns are collections and the port's are not, because a user-defined collection conformance does
+// not compile with this toolchain at all (measured on the port's compiler and the host's, with a
+// fifteen-line non-generic conformance as the witness — see `facts/TabularData/Columns.md`), and the
+// two APIs therefore differ at the type level in a way a single comparison cannot span. So this test
+// holds the port's frame to the *rules* the framework's own documentation states, and the host
+// comparison of the values stays a separate piece of work rather than a pretend.
+//
+// Every number here is the port's own, and each check says which rule it is holding the frame to.
+import Foundation
+import PortTabularData
+
+var checks = 0
+var failures = 0
+
+func check(_ what: String, _ equal: Bool, _ detail: @autoclosure () -> String = "") {
+    checks += 1
+    if !equal {
+        failures += 1
+        print("FAIL \(what)\(detail().isEmpty ? "" : ": \(detail())")")
+    }
+}
+
+func checkEqual<T: Equatable>(_ what: String, _ a: T, _ b: T) {
+    check(what, a == b, "the port answers \(a)")
+}
+
+// A frame built the way a caller builds one: a column at a time.
+var frame = PortTabularData.DataFrame()
+frame.append(column: PortTabularData.Column<Int>(name: "id", [1, 2, 3, 4, 5, 6]))
+frame.append(column: PortTabularData.Column<String>(name: "city",
+                                                      ["berlin", "paris", "berlin", "madrid", "paris", "berlin"]))
+frame.append(column: PortTabularData.Column<Double>(name: "price", [100, 140, 95, 175, 130, 110]))
+
+// The shape: both numbers of it, because a caller checking a frame wants to know that its columns
+// agree on a height *and* how many there are.
+checkEqual("the shape's rows", frame.shape.rows, 6)
+checkEqual("the shape's columns", frame.shape.columns, 3)
+checkEqual("the row count", frame.count, 6)
+checkEqual("the column names, in the order they were added", frame.columnNames, ["id", "city", "price"])
+check("a frame whose columns agree on a height is valid", frame.isValid)
+check("a frame is not empty", !frame.isEmpty)
+
+// A typed column, by its identifier and by name with its type: the two ways a caller asks.
+let price = PortTabularData.ColumnID<Double>("price", Double.self)
+let city = PortTabularData.ColumnID<String>("city", String.self)
+checkEqual("a typed column by ColumnID", frame[price].values, [100, 140, 95, 175, 130, 110])
+checkEqual("a typed column by name and type", frame["price", Double.self]?.values ?? [], [100, 140, 95, 175, 130, 110])
+checkEqual("a category column by ColumnID", frame[city].values.count, 6)
+
+// A column read as a type it is not: nil, and not a column of zeroes. A category column given away
+// as numbers is the failure this avoids.
+check("a column read as the wrong type is nil", frame["city", Double.self] == nil)
+check("containsColumn with the wrong type is false", !frame.containsColumn("city", Double.self))
+check("containsColumn with its own type is true", frame.containsColumn("price", Double.self))
+
+// A column that is not there: nil through the subscript, and the dynamic member lookup answers an
+// empty column rather than one with invented values in it.
+check("a column that is not there is nil", frame["nope"] == nil)
+check("the position of a column that is not there is nil", frame.indexOfColumn("nope") == nil)
+checkEqual("the dynamic member lookup of a column that is not there has no values", frame.nope.count, 0)
+checkEqual("the dynamic member lookup of a column that is there is the column", frame.price.count, 6)
+checkEqual("the position of a column by name", frame.indexOfColumn("city"), 1)
+
+// A row, read three ways.
+checkEqual("a row's count", frame.rowSequence.count, 6)
+checkEqual("a row by name", "\(frame.rowSequence[0]["city"]!)", "berlin")
+checkEqual("a row by ColumnID", frame.rowSequence[0][price]!, 100.0)
+checkEqual("a row by name and type", frame.rowSequence[3]["price", Double.self]!, 175.0)
+check("a row out of range answers nil", frame.rowSequence[99]["city"] == nil)
+checkEqual("a row as a column of one row per column", frame.rowSequence[0].asColumn.count,
+           frame.shape.columns)
+
+// The projections: the column names, the row counts, and the values that come back.
+checkEqual("selecting one column", frame.selecting(columnNames: "price").columnNames, ["price"])
+checkEqual("selecting two columns, in the order named",
+           frame.selecting(columnNames: "city", "id").columnNames, ["city", "id"])
+checkEqual("dropping a column", frame.dropping("city").columnNames, ["id", "price"])
+checkEqual("the prefix's row count", frame.prefix(2).shape.rows, 2)
+checkEqual("the suffix's row count", frame.suffix(2).shape.rows, 2)
+checkEqual("the prefix's values", frame.prefix(3)[price].values, [100, 140, 95])
+checkEqual("the suffix's values", frame.suffix(3)[price].values, [175, 130, 110])
+checkEqual("a slice's own frame, copied out", frame.prefix(3).frame[price].values, [100, 140, 95])
+checkEqual("a slice's column names", frame.prefix(2).columnNames, ["id", "city", "price"])
+
+// A filter, three ways: on the row, on a column by name, and on a `ColumnID`.
+checkEqual("a filter on the row", frame.filter { ($0[price] ?? 0) > 100 }[price].values, [140, 175, 130, 110])
+checkEqual("a filter on a column by name",
+           frame.filter(on: "price", Double.self) { ($0 ?? 0) > 100 }[price].values, [140, 175, 130, 110])
+checkEqual("a filter on a ColumnID",
+           frame.filter(on: price) { ($0 ?? 0) > 100 }[price].values, [140, 175, 130, 110])
+checkEqual("a filter on a category", frame.filter(on: city) { $0 == "berlin" }[price].values,
+           [100, 95, 110])
+checkEqual("a filter that keeps everything", frame.filter { _ in true }[price].values.count, 6)
+checkEqual("a filter that keeps nothing", frame.filter { _ in false }[price].values.count, 0)
+
+// Rows taken by index: a projection, so the order asked for is the order given and a repeat is kept.
+checkEqual("rows taken by index", frame.rows([5, 0, 5, 2])[price].values, [110, 100, 110, 95])
+checkEqual("a discontiguous slice's count", frame.rows([0, 2, 4])[price].count, 3)
+
+// Adding a column of a name that is there replaces it — a frame is keyed by name, because two
+// columns of one name is a frame with a column no caller can choose.
+frame.append(column: PortTabularData.Column<Int>(name: "id", [9, 9, 9, 9, 9, 9]))
+checkEqual("adding a column of a name that is there replaces it", frame[PortTabularData.ColumnID<Int>("id", Int.self)].values,
+           [9, 9, 9, 9, 9, 9])
+checkEqual("it did not add a column", frame.shape.columns, 3)
+
+// A frame whose columns disagree on a height: invalid, with the heights named, and not padded.
+var ragged = PortTabularData.DataFrame()
+ragged.append(column: PortTabularData.Column<Int>(name: "a", [1, 2, 3]))
+ragged.append(column: PortTabularData.Column<Int>(name: "b", [1, 2]))
+check("a frame of columns of different heights is invalid", !ragged.isValid)
+check("it says which heights",
+      ragged.error?.description.contains("2, 3") == true,
+      "the port answers \(ragged.error?.description ?? "no error")")
+checkEqual("it did not pad the short column", ragged["b"]!.count, 2)
+ragged.append(column: PortTabularData.Column<Int>(name: "b", [1, 2, 3]))
+check("making the heights agree makes it valid", ragged.isValid)
+ragged.removeColumn("a")
+checkEqual("removing a column leaves the rest", ragged.columnNames, ["b"])
+
+// A column on its own, and its slice: the collection-shaped members, spelled as members.
+let column = PortTabularData.Column<Int>(name: "n", [5, 1, 4, 2, 3])
+checkEqual("a column's count", column.count, 5)
+check("a column is not empty", !column.isEmpty)
+checkEqual("a column's start and end index", column.startIndex..<column.endIndex, 0..<5)
+checkEqual("a column's index(after:)", column.index(after: 2), 3)
+checkEqual("a column's index(before:)", column.index(before: 2), 1)
+checkEqual("a column subscripted by position", column[position: 3], 2)
+var writable = column
+writable[position: 3] = 20
+checkEqual("a column written through its position subscript", writable.values, [5, 1, 4, 20, 3])
+checkEqual("a column mapped", writable.map { $0 * 2 }.values, [10, 2, 8, 40, 6])
+checkEqual("a column mapped keeps its name", writable.map { $0 * 2 }.name, "n")
+checkEqual("a column compact-mapped", writable.compactMap { $0 > 3 ? $0 : nil }.values, [5, 4, 20])
+checkEqual("a column filtered", writable.filter { $0 > 3 }.values, [5, 4, 20])
+checkEqual("a column's slice", writable[bounds: 1..<4].values, [1, 4, 20])
+checkEqual("a slice's range", writable[bounds: 1..<4].range, 1..<4)
+checkEqual("a slice's name is its column's", writable[bounds: 1..<4].name, "n")
+checkEqual("a slice of a slice", writable[bounds: 1..<4][bounds: 0..<2].values, [1, 4])
+checkEqual("a column of a repeating value", PortTabularData.Column<Int>(repeating: 7, count: 4).values,
+           [7, 7, 7, 7])
+checkEqual("a column built from a sequence", PortTabularData.Column<Int>([1, 2, 3], name: "s").values, [1, 2, 3])
+checkEqual("a column's name survives a map", writable.map { $0 }.name, "n")
+
+// An erased column, and the type it says it has.
+let erased = PortTabularData.AnyColumn(PortTabularData.Column<Double>(name: "d", [1.5, 2.5]))
+checkEqual("an erased column's count", erased.count, 2)
+checkEqual("an erased column's values as its own type", erased.values(as: Double.self) ?? [], [1.5, 2.5])
+check("an erased column read as another type is nil", erased.values(as: String.self) == nil)
+// The erased column's own type. A metatype is compared by its printed name here rather than by
+// `==`, because `Any.Type` has no equality this compiler will compare a metatype through, and the
+// printed name is what a caller reads in a log anyway.
+// The metatype of a value read out of `[Any]` prints as `Optional(Swift.Double)` and the metatype
+// expression `Optional<Double>.self` prints as `Optional<Double>`: two spellings of the same type,
+// so the check names the spelling the metatype actually has rather than the one written by hand.
+checkEqual("an erased column's own type is the type of its values",
+           String(describing: erased.elementType), "Optional(Swift.Double)")
+// A column of mixed kinds has no type, and answers nil rather than the first kind it found.
+let mixed = PortTabularData.AnyColumn(PortTabularData.Column<Any>(name: "m", [1, "two"]))
+check("an erased column of mixed kinds has no type", mixed.elementType == nil,
+      "the port answers \(String(describing: mixed.elementType))")
+
+print("\(checks) checks, \(failures) failures")
+exit(failures == 0 ? 0 : 1)

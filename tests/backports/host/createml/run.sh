@@ -36,6 +36,19 @@ for dirpath, _, names in os.walk(root):
 PY
 
 xcrun swiftc -swift-version 5 -wmo -O \
+    -module-name PortTabularData \
+    -emit-module -emit-module-path "$out/modules/PortTabularData.swiftmodule" \
+    -c -o "$out/tab.o" "$out"/files/TabularData/*.swift
+
+# The TabularData module first: it declares no import of itself, so the module name is the only
+# thing that changes and -module-name does it. Apple's TabularData and the port's are then two
+# modules declaring the same type names, and the second differential holds both in one process.
+xcrun swiftc -swift-version 5 -wmo -O \
+    -module-name PortTabularData \
+    -emit-module -emit-module-path "$out/modules/PortTabularData.swiftmodule" \
+    -c -o "$out/tab.o" "$out"/files/TabularData/*.swift
+
+xcrun swiftc -swift-version 5 -wmo -O \
     -module-name PortCreateMLComponents \
     -emit-module -emit-module-path "$out/modules/PortCreateMLComponents.swiftmodule" \
     -c -o "$out/cmc.o" "$out"/files/CreateMLComponents/*.swift
@@ -49,8 +62,14 @@ xcrun swiftc -swift-version 5 -wmo -O \
 # The two port modules are linked as the objects just built, with the modules beside them, so the
 # differential sees one binary holding Apple's CreateML and the port's under different names.
 xcrun swiftc -swift-version 5 -O -I "$out/modules" \
-    "$here/differential.swift" "$out/cmc.o" "$out/cml.o" \
+    "$here/differential.swift" "$out/cmc.o" "$out/cml.o" "$out/tab.o" \
     -framework Accelerate -framework Foundation -framework CoreFoundation -framework CreateML \
     -o "$out/differential"
 
+xcrun swiftc -swift-version 5 -O -I "$out/modules" \
+    "$here/tabularframe.swift" "$out/tab.o" \
+    -framework Foundation \
+    -o "$out/tabularframe"
+
 "$out/differential"
+"$out/tabularframe"

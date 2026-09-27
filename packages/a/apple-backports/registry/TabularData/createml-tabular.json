@@ -1,0 +1,225 @@
+{
+    "framework": "TabularData",
+    "entries": [
+        {
+            "api": "DataFrame",
+            "kind": "class",
+            "introduced": "15.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "the frame itself: named columns, a row count, a shape as a labelled pair, a row read by name or by ColumnID, and the projections. The collection conformances its columns would inherit are NOT carried, because a user-defined collection conformance does not compile with the port's Swift 6.4 at all \u2014 measured on the port's compiler at -target armv7-apple-ios6.0 and on the host's, with a fifteen-line non-generic conformance as the witness; Array, in the same standard library, conforms without trouble. The columns carry the collection's members as members instead, spelled with the labels the requirement has",
+            "effect": "a frame is a list of named columns keyed by name and a row count; adding a column of a name that is there replaces it, and a frame whose columns disagree on a height is invalid and says which heights rather than padding the short column",
+            "facts": "facts/TabularData/Columns.md",
+            "source": "the iOS 26.2 SDK's TabularData.swiftinterface, read for the declarations; the compilation failure measured on the port's own swiftc and on the host's; the behaviour checked by tests/backports/host/createml/tabularframe.swift, 70 checks"
+        },
+        {
+            "api": "DataFrame.shape",
+            "kind": "property",
+            "introduced": "15.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "a labelled pair, as the framework spells it, and not a row count: a caller checking a frame wants to know that its columns agree on a height and how many there are, and one number cannot say both",
+            "effect": "the frame's rows and its columns",
+            "facts": "facts/TabularData/Columns.md",
+            "source": "the iOS 26.2 SDK's TabularData.swiftinterface"
+        },
+        {
+            "api": "DataFrame.columns",
+            "kind": "property",
+            "introduced": "15.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "the frame's columns as AnyColumn, in the order they were added and not alphabetically: a table written with its target last keeps its target last, and a frame's equality and its description both depend on the order",
+            "effect": "the columns, in order",
+            "facts": "facts/TabularData/Columns.md",
+            "source": "the iOS 26.2 SDK's TabularData.swiftinterface"
+        },
+        {
+            "api": "DataFrame.columnNames",
+            "kind": "property",
+            "introduced": "15.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "the names of the frame's columns, in the frame's own order",
+            "effect": "the names, in order",
+            "facts": "facts/TabularData/Columns.md",
+            "source": "the iOS 26.2 SDK's TabularData.swiftinterface"
+        },
+        {
+            "api": "DataFrame.error",
+            "kind": "property",
+            "introduced": "15.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "why a frame has no rows: columns of different lengths have no rows in common, so the frame has none at all. It says which heights rather than padding the short column, which would be a table of invented data",
+            "effect": "nil, or the heights that disagree",
+            "facts": "facts/TabularData/Columns.md",
+            "source": "the iOS 26.2 SDK's TabularData.swiftinterface, and the framework's own documented refusal of columns of different heights"
+        },
+        {
+            "api": "DataFrame.isValid",
+            "kind": "property",
+            "introduced": "15.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "whether the frame's columns agree on a height, which is the one thing that decides whether it has rows",
+            "effect": "NO when the columns disagree",
+            "facts": "facts/TabularData/Columns.md",
+            "source": "the iOS 26.2 SDK's TabularData.swiftinterface"
+        },
+        {
+            "api": "DataFrame.indexOfColumn(_:)",
+            "kind": "method",
+            "introduced": "15.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "a position, not a subscript, so a caller can ask for a column's place without a column in hand; nil for a column that is not there",
+            "effect": "the column's position, or nil",
+            "facts": "facts/TabularData/Columns.md",
+            "source": "the iOS 26.2 SDK's TabularData.swiftinterface"
+        },
+        {
+            "api": "DataFrame.selecting(columnNames:)",
+            "kind": "method",
+            "introduced": "15.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "a projection is a projection: a column that is not there is simply not in the result, because a projection cannot invent a column",
+            "effect": "a frame of the named columns, in the order named",
+            "facts": "facts/TabularData/Columns.md",
+            "source": "the iOS 26.2 SDK's TabularData.swiftinterface"
+        },
+        {
+            "api": "DataFrame.prefix(_:)",
+            "kind": "method",
+            "introduced": "15.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "the frame's first rows, as a slice that keeps the base and the range rather than copying the columns; a frame of a million rows is shown, not printed",
+            "effect": "a slice of the first rows",
+            "facts": "facts/TabularData/Columns.md",
+            "source": "the iOS 26.2 SDK's TabularData.swiftinterface"
+        },
+        {
+            "api": "DataFrame.suffix(_:)",
+            "kind": "method",
+            "introduced": "15.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "the frame's last rows, for the same reason as prefix",
+            "effect": "a slice of the last rows",
+            "facts": "facts/TabularData/Columns.md",
+            "source": "the iOS 26.2 SDK's TabularData.swiftinterface"
+        },
+        {
+            "api": "DataFrame.filter(_:)",
+            "kind": "method",
+            "introduced": "15.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "a filter is a projection of the rows and not a reordering of them: the rows come back in the frame's own order and a repeat is kept",
+            "effect": "a frame of the rows that pass",
+            "facts": "facts/TabularData/Columns.md",
+            "source": "the iOS 26.2 SDK's TabularData.swiftinterface"
+        },
+        {
+            "api": "DataFrame.Row",
+            "kind": "class",
+            "introduced": "15.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "one row of a frame, read by name or by ColumnID; a row out of range answers nil rather than trapping, because the one case where a frame is already invalid should be a readable error and not a crash",
+            "effect": "the row's value for a column, or nil",
+            "facts": "facts/TabularData/Columns.md",
+            "source": "the iOS 26.2 SDK's TabularData.swiftinterface"
+        },
+        {
+            "api": "DataFrame.Rows",
+            "kind": "class",
+            "introduced": "15.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "the frame's rows in order, with count, startIndex, endIndex, index(after:) and a subscript by position. Not a collection conformance \u2014 see DataFrame",
+            "effect": "the rows, in order",
+            "facts": "facts/TabularData/Columns.md",
+            "source": "the iOS 26.2 SDK's TabularData.swiftinterface, and the compilation failure measured on both compilers"
+        },
+        {
+            "api": "DataFrame.Slice",
+            "kind": "class",
+            "introduced": "15.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "a run of a frame's rows that keeps the base and the range rather than copying the columns; .frame copies the rows out, because a slice is a view and a frame owns its columns",
+            "effect": "a slice, and the frame it copies out",
+            "facts": "facts/TabularData/Columns.md",
+            "source": "the iOS 26.2 SDK's TabularData.swiftinterface"
+        },
+        {
+            "api": "ColumnID",
+            "kind": "class",
+            "introduced": "15.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "a column's name and the type of its values, which is how a caller asks a frame for a column and gets a typed one back",
+            "effect": "the name, and the type it was made with",
+            "facts": "facts/TabularData/Columns.md",
+            "source": "the iOS 26.2 SDK's TabularData.swiftinterface"
+        },
+        {
+            "api": "ColumnProtocol",
+            "kind": "protocol",
+            "introduced": "15.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "declared with its primary associated type, its count, its isEmpty and its name, and WITHOUT the BidirectionalCollection inheritance the framework's own declaration has. The inheritance is the part this toolchain will not accept: a conforming type cannot satisfy a collection requirement here, and a protocol that inherits it is unusable. The members are all here and the conformance is what is absent",
+            "effect": "the name, the count and whether it is empty",
+            "facts": "facts/TabularData/Columns.md",
+            "source": "the iOS 26.2 SDK's TabularData.swiftinterface for the declaration; the divergence measured on both compilers and recorded with the witness"
+        },
+        {
+            "api": "Column",
+            "kind": "class",
+            "introduced": "15.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "a named column of values of one type, with the collection's members as members \u2014 count, isEmpty, startIndex, endIndex, index(after:), index(before:), subscript(position:) and subscript(bounds:) \u2014 and without a collection conformance, which does not compile here",
+            "effect": "the values, by position, in a range, or the whole column",
+            "facts": "facts/TabularData/Columns.md",
+            "source": "the iOS 26.2 SDK's TabularData.swiftinterface for the shape; the conformance failure measured on both compilers"
+        },
+        {
+            "api": "ColumnSlice",
+            "kind": "class",
+            "introduced": "15.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "a contiguous run of a column's rows, holding the column by value and a range into it. Its subscript is READ-ONLY and that is the point: a write through it would land in that copy and the frame would keep the old value, so a subscript a caller can write and that does nothing is worse than one they cannot",
+            "effect": "the values in the range, read",
+            "facts": "facts/TabularData/Columns.md",
+            "source": "the iOS 26.2 SDK's TabularData.swiftinterface for the shape; the read-only decision is this port's and the reason is in facts"
+        },
+        {
+            "api": "DiscontiguousColumnSlice",
+            "kind": "class",
+            "introduced": "15.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "rows taken from more than one place \u2014 a filtered frame, a sorted one, rows named by index \u2014 which is what a caller has after anything but a straight range. Like the slice it is read-only, for the same reason",
+            "effect": "the values at the named rows, read",
+            "facts": "facts/TabularData/Columns.md",
+            "source": "the iOS 26.2 SDK's TabularData.swiftinterface for the shape"
+        },
+        {
+            "api": "AnyColumn",
+            "kind": "class",
+            "introduced": "15.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "a column whose element type the frame does not commit to, which is what frame[\"price\"] gives when the caller has not asked for a type. Read as a type it is not, it answers nil and not a column of zeroes: a category column given away as numbers is the failure that avoids",
+            "effect": "the values as the type the caller names, or nil",
+            "facts": "facts/TabularData/Columns.md",
+            "source": "the iOS 26.2 SDK's TabularData.swiftinterface for the shape"
+        }
+    ]
+}

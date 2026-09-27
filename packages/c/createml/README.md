@@ -5,12 +5,18 @@ Three Swift modules, built for armv7 by `packages/c/createml/xmake.lua` against 
 
 | Module | Holds |
 | --- | --- |
+| `TabularData` | `DataFrame`, `ColumnID`, `Column`, `ColumnSlice`, `DiscontiguousColumnSlice`, `AnyColumn` |
 | `CoreML` | the shaped-array overlay: `MLShapedArray`, `MLShapedArraySlice`, `MLShapedArrayScalar` |
 | `CreateMLComponents` | the estimator types, the kernel layer, and the arithmetic under them |
 | `CreateML` | `MLDataTable`, `MLDataColumn`, and the six tabular estimators |
-| `TabularData` | the `DataFrame` the tabular API is written against — **not built yet** |
 
-**What is not here yet**, and is absent rather than stubbed: `DataFrame`, the linear and logistic
+**A note on `TabularData`:** its columns carry the collection's members as *members* and do not
+conform to a collection — a user-defined collection conformance does not compile with the port's
+Swift 6.4 at all, measured on both compilers. `facts/TabularData/Columns.md` has the witness and
+`registry/TabularData/createml-tabular.json` records the divergence per member.
+
+**What is not here yet**, and is absent rather than stubbed: the `DataFrame` CSV/JSON readers and
+writers and its summaries and groupings, the linear and logistic
 models that are constrained to `MLShapedArrayScalar` (the overlay they need is here; the models are
 not), the tabular transformers (the scalers, the encoders, the imputers, the column selector, the
 preprocessing wrappers), and the `.mlmodel` export. `write(to:)` is declared on all six estimators and

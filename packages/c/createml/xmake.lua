@@ -4,15 +4,17 @@ package("createml")
     set_license("Apache-2.0")
     set_policy("package.strict_compatibility", true)
 
-    -- Three Swift modules, in dependency order, in one package, because they are three layers of one
-    -- API: `CoreML` is the shaped-array overlay, `CreateMLComponents` the estimators, and `CreateML`
-    -- the `MLDataTable` and the high-level types. The order is the build order, not a preference.
-    -- Splitting them into three packages would make every consumer depend on all three to get any.
+    -- Four Swift modules, in dependency order, in one package, because they are four layers of one
+    -- API: `TabularData` is the frame the tabular API is written against, `CoreML` the shaped-array
+    -- overlay, `CreateMLComponents` the estimators, and `CreateML` the `MLDataTable` and the
+    -- high-level types. The order is the build order and not a preference: `CreateMLComponents`
+    -- imports the two under it. Splitting them into four packages would make every consumer depend
+    -- on all four to get any one of them.
     --
     -- `CoreML` shares its name with the framework, which is the point: a caller writes `import
     -- CoreML` and gets the overlay. charon's swift-runtime already does this for Foundation, UIKit
     -- and CoreData, so the name is the mechanism and not a trick.
-    local modules = {"CoreML", "CreateMLComponents", "CreateML"}
+    local modules = {"TabularData", "CoreML", "CreateMLComponents", "CreateML"}
     local libraries = {"CreateMLComponents", "CreateML"}
 
     add_configs("shared", {description = "Compile against a shared swift-runtime and its packaged libc++, for a port that requires them so.", default = false, type = "boolean"})
