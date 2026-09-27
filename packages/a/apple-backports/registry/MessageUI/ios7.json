@@ -129,6 +129,17 @@
       "effect": "calls the completion handler with NO on the calling thread, and says so once in the log the first time it is called",
       "facts": "facts/MessageUI/MessageUI.md",
       "source": "the header of MFMailComposeViewController.h in SDK 26.2"
+    },
+    {
+      "api": "MFMessageComposeViewController.message",
+      "kind": "property",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "Apple's own abstract for it is one line - 'This property sets the initial interactive message' - so it is a value property: the message given is the message read back, and the message itself is a class the port now carries (registry/Messages/ios10.json)",
+      "effect": "copied in and copied out. Reading it before anything was set answers a fresh MSMessage carrying the body the release's own composer holds, not nil. What the release cannot do is make that message interactive: iOS 6.1.3's Messages sends a text message and has no iMessage, no interactive bubble and no URL payload, and the release's own MFMessageComposeViewController has no notion of a message at all (measured in its armv7 6.1.3 ObjC metadata), so the session, URL, layout and captions travel with the message and are never drawn; the same truth +canSendSubject and +canSendAttachments report",
+      "facts": "facts/MessageUI/MessageUI.md",
+      "source": "the header of MFMessageComposeViewController.h in SDK 26.2 for the contract; the port's own MSMessage (registry/Messages/ios10.json); the release's own armv7 6.1.3 ObjC metadata for the composer, which has no message surface"
     }
   ]
 }

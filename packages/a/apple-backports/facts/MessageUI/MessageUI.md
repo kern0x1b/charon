@@ -83,16 +83,20 @@ composer of this release has a view to insert one into. `NSItemProvider` itself 
 carries it (`registry/Foundation/base.json`, `facts/Foundation/NSItemProvider.md`) - so the argument
 is a real object; there is simply nowhere to put it.
 
-## The one row of this framework that is not here
+## `message`, and the class it needed
 
-`MFMessageComposeViewController.message` is not implemented by this delivery. Its contract is a round
-trip: setting it copies an `MSMessage`'s recipients, subject, body, attachments and URL into the
-composer's own fields, and reading it builds an `MSMessage` back out of what the user has typed.
-`MSMessage` is a class of the **Messages** framework and the port does not carry it yet
-(`coordination/corpus/ledger/Messages.tsv`: `MSMessage` and its 19 sibling rows are all `missing`),
-so there is no message to copy from or build. Writing a property that stores the value without
-applying it is exactly the silent fake `COORDINATION.md` §2 forbids, so the row stays open and comes
-back with the Messages framework that owns the class.
+`MFMessageComposeViewController.message` was the one row of this framework that could not be answered
+while `MSMessage` was a row of the *Messages* framework the port did not carry: its contract is a value
+property, and the value is an `MSMessage`. The Messages delivery carries the four classes that value
+needs - `MSMessage`, `MSMessageLayout`, `MSMessageTemplateLayout`, `MSSession` - so the row is
+answered now (`registry/Messages/ios10.json`, `facts/Messages/MSMessage.md`): copied in, copied out,
+and a fresh message carrying the composer's own body when none was set.
+
+What it is not is *interactive*. iOS 6.1.3's Messages sends a text message and has no iMessage, no
+interactive bubble and no URL payload, and the release's own `MFMessageComposeViewController` has no
+notion of a message at all - measured in its armv7 6.1.3 ObjC metadata. So the message's session, URL,
+layout and captions travel with it and are never drawn. That is the same answer `+canSendSubject` and
+`+canSendAttachments` give, and for the same measured reason.
 
 ## Not measured against a host
 
