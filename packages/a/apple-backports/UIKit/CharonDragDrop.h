@@ -13,4 +13,7 @@
 
 CharonDragDropBox *charon_drag_drop_box(id object);
 BOOL charon_drag_interaction_enabled(id object);
+// The class's own default, supplied by the drag and drop object: this header is included by files
+// carried from every band, so it must not name an iOS 11 class itself.
+void charon_set_drag_interaction_enabled_default(BOOL enabled);
 void charon_set_drag_interaction_enabled(id object, BOOL enabled);
