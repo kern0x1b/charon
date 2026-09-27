@@ -144,12 +144,14 @@ int main(void)
                 @selector(annotatedStringFromPersonNameComponents:), components);
             compare([NSString stringWithFormat:@"the annotated text in %@", identifier], systemRuns.string, ourRuns.string);
             NSMutableString *systemDescription = [NSMutableString string], *ourDescription = [NSMutableString string];
-            void (^runs)(NSAttributedString *, NSMutableString *) = ^(NSAttributedString *string, NSMutableString *out) {
+            void (^runs)(NSAttributedString *, NSMutableString *) =
+            ^(NSAttributedString *string, NSMutableString *out) {
                 [string enumerateAttributesInRange:NSMakeRange(0, string.length) options:0
                                          usingBlock:^(NSDictionary *attributes, NSRange range, BOOL *stop) {
-                    for (NSString *key in attributes)
+                    for (NSString *key in attributes) {
                         [out appendFormat:@"[%lu,%lu) %s=%@ ", (unsigned long)range.location, (unsigned long)range.length,
                          key.UTF8String, [[attributes[key] description] UTF8String]];
+                    }
                 }];
             };
             runs(systemRuns, systemDescription);

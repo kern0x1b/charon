@@ -1,4 +1,5 @@
 #import <Foundation/Foundation.h>
+#import "NSPersonNameComponentKeys.h"
 #import <objc/runtime.h>
 
 /* The person name components formatter, iOS 9.0: a name put together out of its parts, in the
@@ -25,15 +26,6 @@
    header illustrates `short` with "C Darwin" and `abbreviated` with "CRD", and the host answers the
    nickname alone for `short` and the two initials of the given and the family name for `abbreviated`.
    Both are in facts/Foundation/NSPersonNameComponentsFormatter.md with the cases. */
-
-NSString * const NSPersonNameComponentKey = @"NSPersonNameComponentKey";
-NSString * const NSPersonNameComponentGivenName = @"givenName";
-NSString * const NSPersonNameComponentFamilyName = @"familyName";
-NSString * const NSPersonNameComponentMiddleName = @"middleName";
-NSString * const NSPersonNameComponentPrefix = @"namePrefix";
-NSString * const NSPersonNameComponentSuffix = @"nameSuffix";
-NSString * const NSPersonNameComponentNickname = @"nickname";
-NSString * const NSPersonNameComponentDelimiter = @"delimiter";
 
 static char CharonPersonNameStyleKey;
 static char CharonPersonNamePhoneticKey;

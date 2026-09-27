@@ -71,8 +71,23 @@ not got. The port answers the two initials instead, because an API here must not
 
 ## Open, and it is the next thing to do
 
-The suite is **not green**: it runs 515 checks with 9 of the recorded divergence and then **crashes**
-partway through the locale sweep, at `en_IN` and the "given and family" set, on style 3 or 4. The cause
-was not found before this round ended. So the styles, the annotation and the parse above are measured
-and held, the eight names are held, and the crash is what stands between this and a green suite --
-which is also why the commit that carries it says so.
+The suite is **not green**: it runs 515 checks with 9 of the recorded divergence and then **crashes**,
+and the crash is not a memory error. What is measured about it:
+
+- **AddressSanitizer and UndefinedBehaviorSanitizer are both silent** (`tests/backports/host/
+  personname/asan.sh` builds the suite with both and runs it). The process dies on `EXC_BREAKPOINT`,
+  which is a deliberate trap rather than a fault, and the ASan build reproduces it at the same case.
+- The first run of it ended in the *test's* attribute walk with a dangling value on the **system**
+  side, which is what put the eight names in an object of their own: a differential that links the
+  port's definitions of eight exported symbols next to the system's has two definitions of each in one
+  process, and that is worth not doing whatever else is true. The names are back in
+  `NSPersonNameComponentKeys9.m` and the formatter's object no longer defines them.
+- With the names moved, the same 515 checks pass and the crash is at the same place in the sweep: the
+  **port's** long style, `en_IN` and the "given and family" set, style 3. The lldb frame for the
+  earlier build was `-[NSAttributedString enumerateAttributesInRange:options:usingBlock:]` in the test,
+  and the one after the split is the same case, so both are the port's long path reached through two
+  different call sites.
+
+What is left is one case in one locale: `en_IN`, "given and family", style 3. The next thing to do is
+to narrow it further -- hold `en_IN` alone, print the pieces the port joins before it joins them, and
+find which of them is the trap.
