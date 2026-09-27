@@ -1,6 +1,7 @@
 #import <CoreImage/CoreImage.h>
 #import <CoreVideo/CoreVideo.h>
 #import <string.h>
+#import <CoreGraphics/CoreGraphics.h>
 
 #pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
 
@@ -14,6 +15,9 @@
     CGRect _extent;
     CIFormat _format;
     NSInteger _rowBytes;
+    // A strong reference, as every other object here: the port is built with ARC, which manages this
+    // itself. Retaining it by hand on the way in and releasing it on the way out is releasing it
+    // twice, which is what a caller saw.
     CGColorSpaceRef _colorSpace;
     CIContext *_context;
 }
@@ -52,10 +56,13 @@ static BOOL CharonCIAccumulatorIsBlueFirst(CIFormat format)
 
 - (instancetype)initWithExtent:(CGRect)extent format:(CIFormat)format colorSpace:(CGColorSpaceRef)colorSpace
 {
+    format = CharonCIAccumulatorStoredFormat();
     if ((self = [super init])) {
-        _extent = CGRectIntegral(extent);
+        // The extent is the caller's, whole pixels or not: the host answers the extent it was given,
+        // and integralising it here is a different answer.
+        _extent = extent;
         _format = format;
-        _colorSpace = colorSpace ? (CGColorSpaceRef)CFRetain(colorSpace) : NULL;
+        _colorSpace = colorSpace;
         _rowBytes = (NSInteger)(_extent.size.width * CharonCIAccumulatorBytesPerPixel(format));
         _pixels = [NSMutableData dataWithLength:(NSUInteger)(_rowBytes * _extent.size.height)];
     }
@@ -64,7 +71,6 @@ static BOOL CharonCIAccumulatorIsBlueFirst(CIFormat format)
 
 - (void)dealloc
 {
-    CFRelease(_colorSpace);
 }
 
 + (CIImageAccumulator *)imageAccumulatorWithExtent:(CGRect)extent format:(CIFormat)format
@@ -78,21 +84,41 @@ static BOOL CharonCIAccumulatorIsBlueFirst(CIFormat format)
     return [[CIImageAccumulator alloc] initWithExtent:extent format:format colorSpace:colorSpace];
 }
 
+// What an accumulator actually holds, whatever it was asked for: the host answers BGRA for an RGBA8
+// request and for a BGRA8 one alike, so the bytes are in that order and the format says so.
+static CIFormat CharonCIAccumulatorStoredFormat(void)
+{
+    return kCIFormatBGRA8;
+}
+
 // The image is a view of the accumulator's own bytes, so what was set into them is what comes out,
 // and setting it again changes the same bytes the image reads. iOS 6 has no image over bytes, so the
 // image is made through a bitmap context over the same memory: the same pixels, the same origin.
 - (CIImage *)image
 {
-    if (!_rowBytes || _extent.size.width <= 0 || _extent.size.height <= 0)
+    CGRect whole = CGRectIntegral(_extent);
+    if (!_rowBytes || whole.size.width <= 0 || whole.size.height <= 0)
         return nil;
+    // The image is the whole pixels at the origin, which is what the host answers for an extent that
+    // does not start there and is not a whole number of pixels wide.
+    _rowBytes = (NSInteger)(whole.size.width * 4);
     CGColorSpaceRef space = _colorSpace ?: CGColorSpaceCreateDeviceRGB();
-    CGContextRef context = CGBitmapContextCreate(_pixels.mutableBytes, (size_t)_extent.size.width, (size_t)_extent.size.height, 8,
+    CGContextRef context = CGBitmapContextCreate(_pixels.mutableBytes, (size_t)whole.size.width, (size_t)whole.size.height, 8,
                                                  (size_t)_rowBytes, space, (CGBitmapInfo)kCGImageAlphaPremultipliedLast);
-    CGContextFlush(context);
-    CGContextRelease(context);
+    CIImage *image = nil;
+    if (context) {
+        // The image is taken out of the context before the context is let go of: they own the same
+        // memory, and reading one after releasing the other reads freed memory.
+        CGImageRef made = CGBitmapContextCreateImage(context);
+        CGContextRelease(context);
+        if (made) {
+            image = [CIImage imageWithCGImage:made];
+            CGImageRelease(made);
+        }
+    }
     if (!_colorSpace)
         CGColorSpaceRelease(space);
-    return [CIImage imageWithCGImage:CGBitmapContextCreateImage(context) ?: NULL];
+    return image;
 }
 
 // A context that renders into the accumulator, made once: a context is an expensive thing and the
@@ -104,7 +130,7 @@ static BOOL CharonCIAccumulatorIsBlueFirst(CIFormat format)
         options[kCIContextWorkingColorSpace] = [NSNull null];
         options[kCIContextOutputPremultiplied] = @NO;
         if (_colorSpace)
-            [options setObject:(__bridge id)_colorSpace forKey:kCIContextWorkingColorSpace];
+            options[kCIContextWorkingColorSpace] = (__bridge id)_colorSpace;
         _context = [CIContext contextWithOptions:options];
     }
     return _context;

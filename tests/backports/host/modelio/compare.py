@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
-# compare.py HOST PORT [TOLERANCE] : the two probes' answers, line by line, by key.
+# compare.py HOST PORT [TOLERANCE] [LABEL] : the two probes' answers, line by line, by key.
 # A key is everything up to the first number in a line, so "box vertices 9" and "box vertices 12" are
 # the same measurement. Numbers are compared to a tolerance, so a value the two round differently is
 # not a difference. A key one side has and the other does not is reported on its own line: that is a
 # measurement the host cannot be asked, not a disagreement.
 import re, sys
 
+# compare.py HOST PORT [TOLERANCE] [LABEL] : the two probes' answers, line by line, by key.
 host_path, port_path = sys.argv[1], sys.argv[2]
 tolerance = float(sys.argv[3]) if len(sys.argv) > 3 else 0.0
+label = sys.argv[4] if len(sys.argv) > 4 else 'modelio'
 
 KEY = re.compile(r'^(.*?)(-?\d+(?:\.\d+)?(?:[eE][-+]?\d+)?)(\s|$)')
 
@@ -51,6 +53,6 @@ for key, (value, line) in port.items():
     if key not in host:
         only += 1
         print('only the port answers: %s' % line)
-print('modelio: %d measurements, %d the same, %d different, %d one side only (tolerance %g)'
-      % (len(host), same, different, only, tolerance))
+print('%s: %d measurements, %d the same, %d different, %d one side only (tolerance %g)'
+      % (label, len(host), same, different, only, tolerance))
 sys.exit(0 if different == 0 else 1)
