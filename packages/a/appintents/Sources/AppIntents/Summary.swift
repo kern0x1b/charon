@@ -39,181 +39,93 @@ public struct IntentParameterSummary<Intent: AppIntent>: ParameterSummary {
 
     /// The key paths of an intent's parameters, so that a summary can name them by type.
     @resultBuilder
-    public enum ParameterKeyPathsBuilder {}
-
-    public init(@ParameterSummaryBuilder<Intent> build: () -> Void) {
-        _ = build()
-        self.summary = Intent.persistentIdentifier
+    public enum ParameterKeyPathsBuilder {
+        public static func buildBlock() {}
     }
 
-    public init(@ParameterKeyPathsBuilder build: () -> Void) {
-        _ = build()
+    public init(@ParameterSummaryBuilder<Intent> _: () -> Void) {
         self.summary = Intent.persistentIdentifier
     }
 }
 
 /// The builder of a summary that is written as code rather than as a sentence.
 @resultBuilder
-public enum ParameterSummaryBuilder<Intent: AppIntent> {}
+public enum ParameterSummaryBuilder<Intent: AppIntent> {
+    public static func buildBlock() {}
+}
 
 extension ParameterSummaryBuilder {
     public static func buildBlock<S>(_ summary: S) -> S where S: ParameterSummary { return summary }
     public static func buildExpression<S>(_ expression: S) -> S where S: ParameterSummary { return expression }
 }
 
-/// The builder of a collection of the parameter presentations of an options collection.
+/// The builder of a collection of the options a shortcut's tile offers, the framework's own
+/// `buildBlock` overloads, one per arity.
 @resultBuilder
 public enum AppShortcutOptionsCollectionSpecificationBuilder<Value: _IntentValue & Sendable> {}
 
 extension AppShortcutOptionsCollectionSpecificationBuilder {
-    public static func buildBlock(_ item: some AppShortcutOptionsCollectionProtocol) -> [any AppShortcutOptionsCollectionProtocol] {
-        return [item]
+    public static func buildBlock(_ a1: any AppShortcutOptionsCollectionProtocol) -> [any AppShortcutOptionsCollectionProtocol] {
+        return [a1]
     }
 
-    public static func buildBlock(_ a: some AppShortcutOptionsCollectionProtocol,
-                                  _ b: some AppShortcutOptionsCollectionProtocol) -> [any AppShortcutOptionsCollectionProtocol] {
-        return [a, b]
+    public static func buildBlock(_ a1: any AppShortcutOptionsCollectionProtocol, _ a2: any AppShortcutOptionsCollectionProtocol) -> [any AppShortcutOptionsCollectionProtocol] {
+        return [a1, a2]
     }
 
-    public static func buildBlock(_ a: some AppShortcutOptionsCollectionProtocol,
-                                  _ b: some AppShortcutOptionsCollectionProtocol,
-                                  _ c: some AppShortcutOptionsCollectionProtocol) -> [any AppShortcutOptionsCollectionProtocol] {
-        return [a, b, c]
+    public static func buildBlock(_ a1: any AppShortcutOptionsCollectionProtocol, _ a2: any AppShortcutOptionsCollectionProtocol, _ a3: any AppShortcutOptionsCollectionProtocol) -> [any AppShortcutOptionsCollectionProtocol] {
+        return [a1, a2, a3]
     }
 
-    public static func buildBlock(_ a: some AppShortcutOptionsCollectionProtocol,
-                                  _ b: some AppShortcutOptionsCollectionProtocol,
-                                  _ c: some AppShortcutOptionsCollectionProtocol,
-                                  _ d: some AppShortcutOptionsCollectionProtocol) -> [any AppShortcutOptionsCollectionProtocol] {
-        return [a, b, c, d]
+    public static func buildBlock(_ a1: any AppShortcutOptionsCollectionProtocol, _ a2: any AppShortcutOptionsCollectionProtocol, _ a3: any AppShortcutOptionsCollectionProtocol, _ a4: any AppShortcutOptionsCollectionProtocol) -> [any AppShortcutOptionsCollectionProtocol] {
+        return [a1, a2, a3, a4]
     }
 
-    public static func buildBlock(_ a: some AppShortcutOptionsCollectionProtocol,
-                                  _ b: some AppShortcutOptionsCollectionProtocol,
-                                  _ c: some AppShortcutOptionsCollectionProtocol,
-                                  _ d: some AppShortcutOptionsCollectionProtocol,
-                                  _ e: some AppShortcutOptionsCollectionProtocol) -> [any AppShortcutOptionsCollectionProtocol] {
-        return [a, b, c, d, e]
+    public static func buildBlock(_ a1: any AppShortcutOptionsCollectionProtocol, _ a2: any AppShortcutOptionsCollectionProtocol, _ a3: any AppShortcutOptionsCollectionProtocol, _ a4: any AppShortcutOptionsCollectionProtocol, _ a5: any AppShortcutOptionsCollectionProtocol) -> [any AppShortcutOptionsCollectionProtocol] {
+        return [a1, a2, a3, a4, a5]
     }
 
-    public static func buildBlock(_ a: some AppShortcutOptionsCollectionProtocol,
-                                  _ b: some AppShortcutOptionsCollectionProtocol,
-                                  _ c: some AppShortcutOptionsCollectionProtocol,
-                                  _ d: some AppShortcutOptionsCollectionProtocol,
-                                  _ e: some AppShortcutOptionsCollectionProtocol,
-                                  _ f: some AppShortcutOptionsCollectionProtocol) -> [any AppShortcutOptionsCollectionProtocol] {
-        return [a, b, c, d, e, f]
+    public static func buildBlock(_ a1: any AppShortcutOptionsCollectionProtocol, _ a2: any AppShortcutOptionsCollectionProtocol, _ a3: any AppShortcutOptionsCollectionProtocol, _ a4: any AppShortcutOptionsCollectionProtocol, _ a5: any AppShortcutOptionsCollectionProtocol, _ a6: any AppShortcutOptionsCollectionProtocol) -> [any AppShortcutOptionsCollectionProtocol] {
+        return [a1, a2, a3, a4, a5, a6]
     }
 
-    public static func buildBlock(_ a: some AppShortcutOptionsCollectionProtocol,
-                                  _ b: some AppShortcutOptionsCollectionProtocol,
-                                  _ c: some AppShortcutOptionsCollectionProtocol,
-                                  _ d: some AppShortcutOptionsCollectionProtocol,
-                                  _ e: some AppShortcutOptionsCollectionProtocol,
-                                  _ f: some AppShortcutOptionsCollectionProtocol,
-                                  _ g: some AppShortcutOptionsCollectionProtocol) -> [any AppShortcutOptionsCollectionProtocol] {
-        return [a, b, c, d, e, f, g]
+    public static func buildBlock(_ a1: any AppShortcutOptionsCollectionProtocol, _ a2: any AppShortcutOptionsCollectionProtocol, _ a3: any AppShortcutOptionsCollectionProtocol, _ a4: any AppShortcutOptionsCollectionProtocol, _ a5: any AppShortcutOptionsCollectionProtocol, _ a6: any AppShortcutOptionsCollectionProtocol, _ a7: any AppShortcutOptionsCollectionProtocol) -> [any AppShortcutOptionsCollectionProtocol] {
+        return [a1, a2, a3, a4, a5, a6, a7]
     }
 
-    public static func buildBlock(_ a: some AppShortcutOptionsCollectionProtocol,
-                                  _ b: some AppShortcutOptionsCollectionProtocol,
-                                  _ c: some AppShortcutOptionsCollectionProtocol,
-                                  _ d: some AppShortcutOptionsCollectionProtocol,
-                                  _ e: some AppShortcutOptionsCollectionProtocol,
-                                  _ f: some AppShortcutOptionsCollectionProtocol,
-                                  _ g: some AppShortcutOptionsCollectionProtocol,
-                                  _ h: some AppShortcutOptionsCollectionProtocol) -> [any AppShortcutOptionsCollectionProtocol] {
-        return [a, b, c, d, e, f, g, h]
+    public static func buildBlock(_ a1: any AppShortcutOptionsCollectionProtocol, _ a2: any AppShortcutOptionsCollectionProtocol, _ a3: any AppShortcutOptionsCollectionProtocol, _ a4: any AppShortcutOptionsCollectionProtocol, _ a5: any AppShortcutOptionsCollectionProtocol, _ a6: any AppShortcutOptionsCollectionProtocol, _ a7: any AppShortcutOptionsCollectionProtocol, _ a8: any AppShortcutOptionsCollectionProtocol) -> [any AppShortcutOptionsCollectionProtocol] {
+        return [a1, a2, a3, a4, a5, a6, a7, a8]
     }
 
-    public static func buildBlock(_ a: some AppShortcutOptionsCollectionProtocol,
-                                  _ b: some AppShortcutOptionsCollectionProtocol,
-                                  _ c: some AppShortcutOptionsCollectionProtocol,
-                                  _ d: some AppShortcutOptionsCollectionProtocol,
-                                  _ e: some AppShortcutOptionsCollectionProtocol,
-                                  _ f: some AppShortcutOptionsCollectionProtocol,
-                                  _ g: some AppShortcutOptionsCollectionProtocol,
-                                  _ h: some AppShortcutOptionsCollectionProtocol,
-                                  _ i: some AppShortcutOptionsCollectionProtocol) -> [any AppShortcutOptionsCollectionProtocol] {
-        return [a, b, c, d, e, f, g, h, i]
+    public static func buildBlock(_ a1: any AppShortcutOptionsCollectionProtocol, _ a2: any AppShortcutOptionsCollectionProtocol, _ a3: any AppShortcutOptionsCollectionProtocol, _ a4: any AppShortcutOptionsCollectionProtocol, _ a5: any AppShortcutOptionsCollectionProtocol, _ a6: any AppShortcutOptionsCollectionProtocol, _ a7: any AppShortcutOptionsCollectionProtocol, _ a8: any AppShortcutOptionsCollectionProtocol, _ a9: any AppShortcutOptionsCollectionProtocol) -> [any AppShortcutOptionsCollectionProtocol] {
+        return [a1, a2, a3, a4, a5, a6, a7, a8, a9]
     }
 
-    public static func buildBlock(_ a: some AppShortcutOptionsCollectionProtocol,
-                                  _ b: some AppShortcutOptionsCollectionProtocol,
-                                  _ c: some AppShortcutOptionsCollectionProtocol,
-                                  _ d: some AppShortcutOptionsCollectionProtocol,
-                                  _ e: some AppShortcutOptionsCollectionProtocol,
-                                  _ f: some AppShortcutOptionsCollectionProtocol,
-                                  _ g: some AppShortcutOptionsCollectionProtocol,
-                                  _ h: some AppShortcutOptionsCollectionProtocol,
-                                  _ i: some AppShortcutOptionsCollectionProtocol,
-                                  _ j: some AppShortcutOptionsCollectionProtocol) -> [any AppShortcutOptionsCollectionProtocol] {
-        return [a, b, c, d, e, f, g, h, i, j]
+    public static func buildBlock(_ a1: any AppShortcutOptionsCollectionProtocol, _ a2: any AppShortcutOptionsCollectionProtocol, _ a3: any AppShortcutOptionsCollectionProtocol, _ a4: any AppShortcutOptionsCollectionProtocol, _ a5: any AppShortcutOptionsCollectionProtocol, _ a6: any AppShortcutOptionsCollectionProtocol, _ a7: any AppShortcutOptionsCollectionProtocol, _ a8: any AppShortcutOptionsCollectionProtocol, _ a9: any AppShortcutOptionsCollectionProtocol, _ a10: any AppShortcutOptionsCollectionProtocol) -> [any AppShortcutOptionsCollectionProtocol] {
+        return [a1, a2, a3, a4, a5, a6, a7, a8, a9, a10]
     }
 
-    public static func buildBlock(_ a: some AppShortcutOptionsCollectionProtocol,
-                                  _ b: some AppShortcutOptionsCollectionProtocol,
-                                  _ c: some AppShortcutOptionsCollectionProtocol,
-                                  _ d: some AppShortcutOptionsCollectionProtocol,
-                                  _ e: some AppShortcutOptionsCollectionProtocol,
-                                  _ f: some AppShortcutOptionsCollectionProtocol,
-                                  _ g: some AppShortcutOptionsCollectionProtocol,
-                                  _ h: some AppShortcutOptionsCollectionProtocol,
-                                  _ i: some AppShortcutOptionsCollectionProtocol,
-                                  _ j: some AppShortcutOptionsCollectionProtocol,
-                                  _ k: some AppShortcutOptionsCollectionProtocol) -> [any AppShortcutOptionsCollectionProtocol] {
-        return [a, b, c, d, e, f, g, h, i, j, k]
+    public static func buildBlock(_ a1: any AppShortcutOptionsCollectionProtocol, _ a2: any AppShortcutOptionsCollectionProtocol, _ a3: any AppShortcutOptionsCollectionProtocol, _ a4: any AppShortcutOptionsCollectionProtocol, _ a5: any AppShortcutOptionsCollectionProtocol, _ a6: any AppShortcutOptionsCollectionProtocol, _ a7: any AppShortcutOptionsCollectionProtocol, _ a8: any AppShortcutOptionsCollectionProtocol, _ a9: any AppShortcutOptionsCollectionProtocol, _ a10: any AppShortcutOptionsCollectionProtocol, _ a11: any AppShortcutOptionsCollectionProtocol) -> [any AppShortcutOptionsCollectionProtocol] {
+        return [a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11]
     }
 
-    public static func buildBlock(_ a: some AppShortcutOptionsCollectionProtocol,
-                                  _ b: some AppShortcutOptionsCollectionProtocol,
-                                  _ c: some AppShortcutOptionsCollectionProtocol,
-                                  _ d: some AppShortcutOptionsCollectionProtocol,
-                                  _ e: some AppShortcutOptionsCollectionProtocol,
-                                  _ f: some AppShortcutOptionsCollectionProtocol,
-                                  _ g: some AppShortcutOptionsCollectionProtocol,
-                                  _ h: some AppShortcutOptionsCollectionProtocol,
-                                  _ i: some AppShortcutOptionsCollectionProtocol,
-                                  _ j: some AppShortcutOptionsCollectionProtocol,
-                                  _ k: some AppShortcutOptionsCollectionProtocol,
-                                  _ l: some AppShortcutOptionsCollectionProtocol) -> [any AppShortcutOptionsCollectionProtocol] {
-        return [a, b, c, d, e, f, g, h, i, j, k, l]
+    public static func buildBlock(_ a1: any AppShortcutOptionsCollectionProtocol, _ a2: any AppShortcutOptionsCollectionProtocol, _ a3: any AppShortcutOptionsCollectionProtocol, _ a4: any AppShortcutOptionsCollectionProtocol, _ a5: any AppShortcutOptionsCollectionProtocol, _ a6: any AppShortcutOptionsCollectionProtocol, _ a7: any AppShortcutOptionsCollectionProtocol, _ a8: any AppShortcutOptionsCollectionProtocol, _ a9: any AppShortcutOptionsCollectionProtocol, _ a10: any AppShortcutOptionsCollectionProtocol, _ a11: any AppShortcutOptionsCollectionProtocol, _ a12: any AppShortcutOptionsCollectionProtocol) -> [any AppShortcutOptionsCollectionProtocol] {
+        return [a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12]
     }
 
-    public static func buildBlock(_ a: some AppShortcutOptionsCollectionProtocol,
-                                  _ b: some AppShortcutOptionsCollectionProtocol,
-                                  _ c: some AppShortcutOptionsCollectionProtocol,
-                                  _ d: some AppShortcutOptionsCollectionProtocol,
-                                  _ e: some AppShortcutOptionsCollectionProtocol,
-                                  _ f: some AppShortcutOptionsCollectionProtocol,
-                                  _ g: some AppShortcutOptionsCollectionProtocol,
-                                  _ h: some AppShortcutOptionsCollectionProtocol,
-                                  _ i: some AppShortcutOptionsCollectionProtocol,
-                                  _ j: some AppShortcutOptionsCollectionProtocol,
-                                  _ k: some AppShortcutOptionsCollectionProtocol,
-                                  _ l: some AppShortcutOptionsCollectionProtocol,
-                                  _ m: some AppShortcutOptionsCollectionProtocol) -> [any AppShortcutOptionsCollectionProtocol] {
-        return [a, b, c, d, e, f, g, h, i, j, k, l, m]
+    public static func buildBlock(_ a1: any AppShortcutOptionsCollectionProtocol, _ a2: any AppShortcutOptionsCollectionProtocol, _ a3: any AppShortcutOptionsCollectionProtocol, _ a4: any AppShortcutOptionsCollectionProtocol, _ a5: any AppShortcutOptionsCollectionProtocol, _ a6: any AppShortcutOptionsCollectionProtocol, _ a7: any AppShortcutOptionsCollectionProtocol, _ a8: any AppShortcutOptionsCollectionProtocol, _ a9: any AppShortcutOptionsCollectionProtocol, _ a10: any AppShortcutOptionsCollectionProtocol, _ a11: any AppShortcutOptionsCollectionProtocol, _ a12: any AppShortcutOptionsCollectionProtocol, _ a13: any AppShortcutOptionsCollectionProtocol) -> [any AppShortcutOptionsCollectionProtocol] {
+        return [a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13]
     }
 
-    public static func buildBlock(_ a: some AppShortcutOptionsCollectionProtocol,
-                                  _ b: some AppShortcutOptionsCollectionProtocol,
-                                  _ c: some AppShortcutOptionsCollectionProtocol,
-                                  _ d: some AppShortcutOptionsCollectionProtocol,
-                                  _ e: some AppShortcutOptionsCollectionProtocol,
-                                  _ f: some AppShortcutOptionsCollectionProtocol,
-                                  _ g: some AppShortcutOptionsCollectionProtocol,
-                                  _ h: some AppShortcutOptionsCollectionProtocol,
-                                  _ i: some AppShortcutOptionsCollectionProtocol,
-                                  _ j: some AppShortcutOptionsCollectionProtocol,
-                                  _ k: some AppShortcutOptionsCollectionProtocol,
-                                  _ l: some AppShortcutOptionsCollectionProtocol,
-                                  _ m: some AppShortcutOptionsCollectionProtocol,
-                                  _ n: some AppShortcutOptionsCollectionProtocol) -> [any AppShortcutOptionsCollectionProtocol] {
-        return [a, b, c, d, e, f, g, h, i, j, k, l, m, n]
+    public static func buildBlock(_ a1: any AppShortcutOptionsCollectionProtocol, _ a2: any AppShortcutOptionsCollectionProtocol, _ a3: any AppShortcutOptionsCollectionProtocol, _ a4: any AppShortcutOptionsCollectionProtocol, _ a5: any AppShortcutOptionsCollectionProtocol, _ a6: any AppShortcutOptionsCollectionProtocol, _ a7: any AppShortcutOptionsCollectionProtocol, _ a8: any AppShortcutOptionsCollectionProtocol, _ a9: any AppShortcutOptionsCollectionProtocol, _ a10: any AppShortcutOptionsCollectionProtocol, _ a11: any AppShortcutOptionsCollectionProtocol, _ a12: any AppShortcutOptionsCollectionProtocol, _ a13: any AppShortcutOptionsCollectionProtocol, _ a14: any AppShortcutOptionsCollectionProtocol) -> [any AppShortcutOptionsCollectionProtocol] {
+        return [a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14]
     }
+
+    public static func buildBlock(_ a1: any AppShortcutOptionsCollectionProtocol, _ a2: any AppShortcutOptionsCollectionProtocol, _ a3: any AppShortcutOptionsCollectionProtocol, _ a4: any AppShortcutOptionsCollectionProtocol, _ a5: any AppShortcutOptionsCollectionProtocol, _ a6: any AppShortcutOptionsCollectionProtocol, _ a7: any AppShortcutOptionsCollectionProtocol, _ a8: any AppShortcutOptionsCollectionProtocol, _ a9: any AppShortcutOptionsCollectionProtocol, _ a10: any AppShortcutOptionsCollectionProtocol, _ a11: any AppShortcutOptionsCollectionProtocol, _ a12: any AppShortcutOptionsCollectionProtocol, _ a13: any AppShortcutOptionsCollectionProtocol, _ a14: any AppShortcutOptionsCollectionProtocol, _ a15: any AppShortcutOptionsCollectionProtocol) -> [any AppShortcutOptionsCollectionProtocol] {
+        return [a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15]
+    }
+
 }
-
 /// A summary that is one case of a value, with what it says in that case.
 public struct ParameterSummaryCaseCondition<Intent, Value, Summary>: _ParameterSummarySwitchCase
     where Intent: AppIntent, Value: _IntentValue, Summary: ParameterSummary {
@@ -276,8 +188,6 @@ public struct ParameterSummarySwitchCondition<Intent, Value, CaseCondition>: Par
     /// The widget families a switch's cases are chosen for.
     public enum WidgetFamily: Hashable {
         case widgetFamily
-
-        public static var widgetFamily: WidgetFamily { return .widgetFamily }
     }
 }
 

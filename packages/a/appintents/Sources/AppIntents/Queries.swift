@@ -75,12 +75,12 @@ public enum EntityQueryComparatorMode {
 /// The comparison of a property of an entity with a value, which is what an entity-property query
 /// filters with. Each of the framework's own comparators is the comparison it names.
 public class EntityQueryComparator<Property, PropertyType, InputType, ComparatorMappingType>
-    where Property: EntityProperty<PropertyType>, PropertyType: _IntentValue, PropertyType: Sendable {
+    where PropertyType: _IntentValue, PropertyType: Sendable {
     /// The property compared, and the value it is compared to.
     public let property: Property
     public let value: InputType
     /// Whether the mapping the app gave its own input goes through the framework's own value.
-    public let comparatorMapping: ComparatorMappingType
+    public let comparatorMapping: (any Sendable)?
 
     public init(property: Property, value: InputType, comparatorMapping: ComparatorMappingType) {
         self.property = property
@@ -91,7 +91,7 @@ public class EntityQueryComparator<Property, PropertyType, InputType, Comparator
 
 /// The comparison of a property of an entity with a value, without the property's own type.
 public struct AnyEntityQueryComparator<Entity, Subject, Property, PropertyType, ComparatorMappingType>
-    where Property: EntityProperty<PropertyType>, PropertyType: _IntentValue, PropertyType: Sendable {
+    where PropertyType: _IntentValue, PropertyType: Sendable {
     public let comparator: EntityQueryComparator<Property, PropertyType, Subject, ComparatorMappingType>
 
     public init(_ comparator: EntityQueryComparator<Property, PropertyType, Subject, ComparatorMappingType>) {
@@ -116,114 +116,114 @@ public protocol EntityQueryComparatorProtocol {}
 
 /// Whether the value is equal to the one the caller gave.
 public final class EqualToComparator<PropertyType, ComparatorMappingType>: EntityQueryComparatorProtocol
-    where PropertyType: _IntentValue, PropertyType: Sendable {
-    public let value: PropertyType
-    public let comparatorMapping: ComparatorMappingType
+    where PropertyType: _IntentValue, PropertyType: Sendable, ComparatorMappingType: Any {    public let value: PropertyType
+    public let comparatorMapping: (any Sendable)?
 
     public init(mappingTransform: @escaping (PropertyType) -> PropertyType) {
-        self.comparatorMapping = ComparatorMappingType()
+        self.comparatorMapping = nil
         self.value = mappingTransform(CharonBox.box(0))
     }
 
     public init<Value>(value: Value, mappingTransform: @escaping (Value) -> PropertyType) {
-        self.comparatorMapping = ComparatorMappingType()
+        self.comparatorMapping = nil
         self.value = mappingTransform(value)
     }
 }
 
 /// Whether the value is not equal to the one the caller gave.
 public final class NotEqualToComparator<PropertyType, ComparatorMappingType>: EntityQueryComparatorProtocol
-    where PropertyType: _IntentValue, PropertyType: Sendable {
+    where PropertyType: _IntentValue, PropertyType: Sendable, ComparatorMappingType: Any {
     public let value: PropertyType
-    public let comparatorMapping: ComparatorMappingType
+    public let comparatorMapping: (any Sendable)?
 
     public init(mappingTransform: @escaping (PropertyType) -> PropertyType) {
-        self.comparatorMapping = ComparatorMappingType()
+        self.comparatorMapping = nil
         self.value = mappingTransform(CharonBox.box(0))
     }
 
     public init<Value>(value: Value, mappingTransform: @escaping (Value) -> PropertyType) {
-        self.comparatorMapping = ComparatorMappingType()
+        self.comparatorMapping = nil
         self.value = mappingTransform(value)
     }
 }
 
 /// Whether the value is above the one the caller gave.
 public final class GreaterThanComparator<PropertyType, ComparatorMappingType>: EntityQueryComparatorProtocol
-    where PropertyType: _IntentValue, PropertyType: Sendable {
+    where PropertyType: _IntentValue, PropertyType: Sendable, ComparatorMappingType: Any {
     public let value: PropertyType
-    public let comparatorMapping: ComparatorMappingType
+    public let comparatorMapping: (any Sendable)?
 
     public init(mappingTransform: @escaping (PropertyType) -> PropertyType) {
-        self.comparatorMapping = ComparatorMappingType()
+        self.comparatorMapping = nil
         self.value = mappingTransform(CharonBox.box(0))
     }
 
     public init<Value>(value: Value, mappingTransform: @escaping (Value) -> PropertyType) {
-        self.comparatorMapping = ComparatorMappingType()
+        self.comparatorMapping = nil
         self.value = mappingTransform(value)
     }
 }
 
 /// Whether the value is above or equal to the one the caller gave.
 public final class GreaterThanOrEqualToComparator<PropertyType, ComparatorMappingType>: EntityQueryComparatorProtocol
-    where PropertyType: _IntentValue, PropertyType: Sendable {
+    where PropertyType: _IntentValue, PropertyType: Sendable, ComparatorMappingType: Any {
     public let value: PropertyType
-    public let comparatorMapping: ComparatorMappingType
+    public let comparatorMapping: (any Sendable)?
 
     public init(mappingTransform: @escaping (PropertyType) -> PropertyType) {
-        self.comparatorMapping = ComparatorMappingType()
+        self.comparatorMapping = nil
         self.value = mappingTransform(CharonBox.box(0))
     }
 
     public init<Value>(value: Value, mappingTransform: @escaping (Value) -> PropertyType) {
-        self.comparatorMapping = ComparatorMappingType()
+        self.comparatorMapping = nil
         self.value = mappingTransform(value)
     }
 }
 
 /// Whether the value is below the one the caller gave.
 public final class LessThanComparator<PropertyType, ComparatorMappingType>: EntityQueryComparatorProtocol
-    where PropertyType: _IntentValue, PropertyType: Sendable {
+    where PropertyType: _IntentValue, PropertyType: Sendable, ComparatorMappingType: Any {
     public let value: PropertyType
-    public let comparatorMapping: ComparatorMappingType
+    public let comparatorMapping: (any Sendable)?
 
     public init(mappingTransform: @escaping (PropertyType) -> PropertyType) {
-        self.comparatorMapping = ComparatorMappingType()
+        self.comparatorMapping = nil
         self.value = mappingTransform(CharonBox.box(0))
     }
 
     public init<Value>(value: Value, mappingTransform: @escaping (Value) -> PropertyType) {
-        self.comparatorMapping = ComparatorMappingType()
+        self.comparatorMapping = nil
         self.value = mappingTransform(value)
     }
 }
 
 /// Whether the value is below or equal to the one the caller gave.
 public final class LessThanOrEqualToComparator<PropertyType, ComparatorMappingType>: EntityQueryComparatorProtocol
-    where PropertyType: _IntentValue, PropertyType: Sendable {
+    where PropertyType: _IntentValue, PropertyType: Sendable, ComparatorMappingType: Any {
     public let value: PropertyType
-    public let comparatorMapping: ComparatorMappingType
+    public let comparatorMapping: (any Sendable)?
 
     public init(mappingTransform: @escaping (PropertyType) -> PropertyType) {
-        self.comparatorMapping = ComparatorMappingType()
+        self.comparatorMapping = nil
         self.value = mappingTransform(CharonBox.box(0))
     }
 
     public init<Value>(value: Value, mappingTransform: @escaping (Value) -> PropertyType) {
-        self.comparatorMapping = ComparatorMappingType()
+        self.comparatorMapping = nil
         self.value = mappingTransform(value)
     }
 }
 
 /// Whether the value is between two values.
-public final class IsBetweenComparator<InputType, ComparatorMappingType>: EntityQueryComparatorProtocol {
+public final class IsBetweenComparator<InputType, ComparatorMappingType>: EntityQueryComparatorProtocol
+    where ComparatorMappingType: Any {
     public let lowerBound: InputType
     public let upperBound: InputType
-    public let comparatorMapping: ComparatorMappingType
+    public let comparatorMapping: (any Sendable)?
 
     public init(lowerBound: InputType, upperBound: InputType) {
-        self.comparatorMapping = ComparatorMappingType()
+        self.comparatorMapping = nil
         self.lowerBound = lowerBound
         self.upperBound = upperBound
     }
@@ -231,51 +231,51 @@ public final class IsBetweenComparator<InputType, ComparatorMappingType>: Entity
 
 /// Whether the string contains, or begins with, or ends with, the one the caller gave.
 public final class ContainsComparator<PropertyType, ComparatorMappingType>: EntityQueryComparatorProtocol
-    where PropertyType: _IntentValue, PropertyType: Sendable {
+    where PropertyType: _IntentValue, PropertyType: Sendable, ComparatorMappingType: Any {
     public let value: PropertyType
-    public let comparatorMapping: ComparatorMappingType
+    public let comparatorMapping: (any Sendable)?
 
     public init(mappingTransform: @escaping (PropertyType) -> PropertyType) {
-        self.comparatorMapping = ComparatorMappingType()
+        self.comparatorMapping = nil
         self.value = mappingTransform(CharonBox.box(0))
     }
 
     public init<Value>(value: Value, mappingTransform: @escaping (Value) -> PropertyType) {
-        self.comparatorMapping = ComparatorMappingType()
+        self.comparatorMapping = nil
         self.value = mappingTransform(value)
     }
 }
 
 /// Whether the string begins with the one the caller gave.
 public final class HasPrefixComparator<PropertyType, ComparatorMappingType>: EntityQueryComparatorProtocol
-    where PropertyType: _IntentValue, PropertyType: Sendable {
+    where PropertyType: _IntentValue, PropertyType: Sendable, ComparatorMappingType: Any {
     public let value: PropertyType
-    public let comparatorMapping: ComparatorMappingType
+    public let comparatorMapping: (any Sendable)?
 
     public init(mappingTransform: @escaping (PropertyType) -> PropertyType) {
-        self.comparatorMapping = ComparatorMappingType()
+        self.comparatorMapping = nil
         self.value = mappingTransform(CharonBox.box(0))
     }
 
     public init<Value>(value: Value, mappingTransform: @escaping (Value) -> PropertyType) {
-        self.comparatorMapping = ComparatorMappingType()
+        self.comparatorMapping = nil
         self.value = mappingTransform(value)
     }
 }
 
 /// Whether the string ends with the one the caller gave.
 public final class HasSuffixComparator<PropertyType, ComparatorMappingType>: EntityQueryComparatorProtocol
-    where PropertyType: _IntentValue, PropertyType: Sendable {
+    where PropertyType: _IntentValue, PropertyType: Sendable, ComparatorMappingType: Any {
     public let value: PropertyType
-    public let comparatorMapping: ComparatorMappingType
+    public let comparatorMapping: (any Sendable)?
 
     public init(mappingTransform: @escaping (PropertyType) -> PropertyType) {
-        self.comparatorMapping = ComparatorMappingType()
+        self.comparatorMapping = nil
         self.value = mappingTransform(CharonBox.box(0))
     }
 
     public init<Value>(value: Value, mappingTransform: @escaping (Value) -> PropertyType) {
-        self.comparatorMapping = ComparatorMappingType()
+        self.comparatorMapping = nil
         self.value = mappingTransform(value)
     }
 }
@@ -291,6 +291,10 @@ public struct EntityQueryPropertyDeclaration<Entity, ComparatorMappingType> wher
     }
 }
 
+/// The property an entity-property query filters on, over the type of the property's value: the
+/// property itself is a parameter of that value, which is what the app writes it as.
+public typealias EntityQueryPropertyValue<Entity> = Entity
+
 /// A property an entity-property query filters on, and the value the caller is compared with.
 public struct EntityQueryProperty<Entity, ComparatorMappingType> where Entity: AppEntity {
     public typealias QueryComparators = [any EntityQueryComparatorProtocol]
@@ -298,12 +302,12 @@ public struct EntityQueryProperty<Entity, ComparatorMappingType> where Entity: A
     let entityProvider: () -> Entity
     let comparators: QueryComparators
 
-    public init(_ property: EntityProperty<Entity.ID>, _ comparators: QueryComparators) {
+    public init(_ property: EntityProperty<Entity>, _ comparators: QueryComparators) {
         self.entityProvider = { CharonBox.box(0) }
         self.comparators = comparators
     }
 
-    public init(_ property: EntityProperty<Entity.ID>, entityProvider: @escaping () -> Entity,
+    public init(_ property: EntityProperty<Entity>, entityProvider: @escaping () -> Entity,
                 _ comparators: QueryComparators) {
         self.entityProvider = entityProvider
         self.comparators = comparators
@@ -345,9 +349,12 @@ public protocol EntityPropertyQuery: EntityQuery {
     associatedtype QueryProperties
     associatedtype Sort
     associatedtype SizableByProperty
-    associatedtype SortableBy: EntityQuerySortableByProperty
+    associatedtype SortableBy
     associatedtype ComparatorMode = EntityQueryComparatorMode
     associatedtype SortingOptions
+
+    /// The comparators a caller filters with, which are the framework's own comparator types.
+    associatedtype QueryComparators = [any EntityQueryComparatorProtocol]
 
     var properties: QueryProperties { get }
     var sortingOptions: SortingOptions { get }
@@ -490,6 +497,22 @@ public enum StringSearchScope: String, AppEnum {
     public static var caseDisplayRepresentations: [DisplayRepresentation] {
         return allCases.map { DisplayRepresentation(title: LocalizedStringResource($0.rawValue)) }
     }
+}
+
+extension VideoCategory: _IntentValue {
+    public typealias ValueType = VideoCategory
+    public typealias UnwrappedType = VideoCategory
+    public typealias Specification = EmptyResolverSpecification<VideoCategory>
+
+    public static var defaultResolverSpecification: Specification { return Specification() }
+}
+
+extension StringSearchScope: _IntentValue {
+    public typealias ValueType = StringSearchScope
+    public typealias UnwrappedType = StringSearchScope
+    public typealias Specification = EmptyResolverSpecification<StringSearchScope>
+
+    public static var defaultResolverSpecification: Specification { return Specification() }
 }
 
 /// What kind of video a caller searches for or plays.

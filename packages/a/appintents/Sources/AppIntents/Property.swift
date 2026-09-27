@@ -95,12 +95,6 @@ public struct EntityProperty<Value>: @unchecked Sendable where Value: _IntentVal
         self.indexingKey = customIndexingKey
     }
 
-    public init(identifier: String, title: LocalizedStringResource, customIndexingKey: String,
-                indexingKey: String) {
-        self.init(identifier: identifier, title: title)
-        self.indexingKey = indexingKey
-    }
-
     public init(identifier: String, title: LocalizedStringResource, customIndexingKey: String, indexingKey: String) {
         self.init(identifier: identifier, title: title)
         self.indexingKey = indexingKey

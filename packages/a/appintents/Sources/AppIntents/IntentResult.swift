@@ -119,7 +119,7 @@ extension IntentResult {
 
     public static func result(opensIntent: some AppIntent, dialog: IntentDialog) -> Self
         where Self == IntentResultContainer<Never, Never, Never, IntentDialog> {
-        return IntentResultContainer(opensIntent: nil, dialog: dialog)
+        return IntentResultContainer(dialog: dialog)
     }
 
     public static func result(snippetIntent: some SnippetIntent = EmptySnippetIntent()) -> Self
@@ -142,7 +142,7 @@ extension IntentResult {
     public static func result<Value>(value: Value, opensIntent: some AppIntent, dialog: IntentDialog,
                                       snippetIntent: some SnippetIntent = EmptySnippetIntent()) -> Self
         where Self == IntentResultContainer<Value, Never, _SnippetIntentContainer, IntentDialog>, Value: _IntentValue {
-        return IntentResultContainer(value: value, opensIntent: opensIntent, dialog: dialog,
+        return IntentResultContainer(value: value, dialog: dialog,
                                      snippet: _SnippetIntentContainer(intent: snippetIntent))
     }
 
@@ -156,14 +156,13 @@ extension IntentResult {
     public static func result(opensIntent: some AppIntent,
                               snippetIntent: some SnippetIntent = EmptySnippetIntent()) -> Self
         where Self == IntentResultContainer<Never, Never, _SnippetIntentContainer, Never> {
-        return IntentResultContainer(opensIntent: opensIntent, snippet: _SnippetIntentContainer(intent: snippetIntent))
+        return IntentResultContainer(snippet: _SnippetIntentContainer(intent: snippetIntent))
     }
 
     public static func result(opensIntent: some AppIntent, dialog: IntentDialog,
                               snippetIntent: some SnippetIntent = EmptySnippetIntent()) -> Self
         where Self == IntentResultContainer<Never, Never, _SnippetIntentContainer, IntentDialog> {
-        return IntentResultContainer(opensIntent: opensIntent, dialog: dialog,
-                                     snippet: _SnippetIntentContainer(intent: snippetIntent))
+        return IntentResultContainer(dialog: dialog, snippet: _SnippetIntentContainer(intent: snippetIntent))
     }
 
     public static func result(dialog: IntentDialog, snippetIntent: some SnippetIntent = EmptySnippetIntent()) -> Self
@@ -247,16 +246,20 @@ public protocol SnippetIntent: AppIntent where PerformResult: ShowsSnippetView {
 public struct EmptySnippetIntent: SnippetIntent {
     public typealias PerformResult = IntentResultContainer<Never, Never, _SnippetViewContainer, Never>
     public typealias SummaryContent = IntentParameterSummary<EmptySnippetIntent>
+    public typealias Dependency = Never
 
     public init() {}
 
     public static var title: LocalizedStringResource { return LocalizedStringResource("Empty") }
     public static var isDiscoverable: Bool { return false }
-    public static var parameterSummary: some ParameterSummary { return Summary("") }
+    public static var parameterSummary: SummaryContent { return SummaryContent("") }
 
     public func perform() async throws -> PerformResult {
-        return .result()
+        return IntentResultContainer()
     }
+
+    /// An empty snippet has nothing to load again.
+    public func reload() async {}
 }
 
 /// The bridge that loads the app's own view of a snippet. The framework's own bridge is a SwiftUI

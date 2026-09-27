@@ -71,11 +71,12 @@ public final class IntentParameter<Value>: @unchecked Sendable where Value: _Int
     private var value: Value
     private let resolversValue: (any ResolverSpecification)?
 
-    init(storage: Storage, value: Value? = nil, resolvers: (any ResolverSpecification)? = nil) {
+    init(storage: Storage, value: Value, default defaultValue: Value.UnwrappedType? = nil,
+         resolvers: (any ResolverSpecification)? = nil) {
         self.storageValue = storage
-        self.value = value ?? CharonIntentValueBox.make()
+        self.value = value
         self.resolversValue = resolvers
-        self.defaultValue = nil
+        self.defaultValue = defaultValue
         self.title = storage.title
     }
 
@@ -90,7 +91,7 @@ public final class IntentParameter<Value>: @unchecked Sendable where Value: _Int
     // The declarations each of the initializers below stores into. They are the parameter's own
     // metadata, and every initializer writes through the same ones.
     private convenience init(storage: Storage, description: LocalizedStringResource? = nil,
-                             default: Value.UnwrappedType? = nil,
+                             default defaultValue: Value.UnwrappedType? = nil,
                              controlStyle: (any Hashable)? = nil,
                              inclusiveRange: AnyRange? = nil,
                              currencyCodes: [String] = [],
@@ -136,8 +137,7 @@ public final class IntentParameter<Value>: @unchecked Sendable where Value: _Int
         merged.supportsNegativeNumbers = supportsNegativeNumbers
         merged.optionsProvider = optionsProvider
         merged.query = query
-        let unwrapped: Value.UnwrappedType? = default
-        self.init(storage: merged, value: CharonIntentValueBox.make(), default: unwrapped, resolvers: resolvers)
+        self.init(storage: merged, value: CharonIntentValueBox.make(), default: defaultValue, resolvers: resolvers)
     }
 
     /// The whole of the parameter, as the framework's own storage, and the value that was read.

@@ -7,7 +7,11 @@
 import Foundation
 
 /// An entity: a thing the app can be asked about, which a parameter carries and a query finds.
-public protocol AppEntity: AppValue, DisplayRepresentable, Identifiable where ValueType == Self, ID: EntityIdentifierConvertible {}
+public protocol AppEntity: AppValue, DisplayRepresentable, Identifiable
+    where ValueType == Self, ID: EntityIdentifierConvertible {
+    /// The query that finds the entity when a caller names it, which is the entity's own query.
+    associatedtype DefaultQuery: EntityQuery where DefaultQuery.Entity == Self
+}
 
 /// An enum: a closed set of cases the app names, which a parameter carries.
 public protocol AppEnum: AppValue, StaticDisplayRepresentable, RawRepresentable where RawValue: LosslessStringConvertible {}
@@ -24,7 +28,7 @@ extension EntityIdentifierConvertible where Self: LosslessStringConvertible {
         return EntityIdentifier(for: value)
     }
 
-    public static var entityIdentifierString: String { return Self("").description }
+    public static var entityIdentifierString: String { return "" }
 }
 
 /// The identifier of an entity: the string the entity is keyed by, and the type of entity it names.
@@ -113,10 +117,18 @@ public protocol EntityStringQuery: EntityQuery {
 /// A query of a type whose raw value is its own identifier, which is what an `AppEnum` needs.
 public struct _RawRepresentableStringQuery<Entity>: EntityStringQuery
     where Entity: AppEntity, Entity: RawRepresentable, Entity.ID == Entity.RawValue {
+    public typealias Result = [Entity]
+    public typealias DefaultValue = [Entity].Result
+    public typealias Item = Entity
+    public typealias ItemCollection = [Entity]
+    public typealias ItemSection = [Entity]
+
     public init() {}
 
-    public func entities(for identifiers: [Entity.RawValue]) async throws -> [Entity] {
-        return identifiers.compactMap { Entity(rawValue: $0) }
+    public func entities(for identifiers: [Entity.ID]) async throws -> [Entity] {
+        return identifiers.compactMap { identifier in
+            Entity(rawValue: CharonBox.box(identifier))
+        }
     }
 
     public func results() async throws -> [Entity] {
@@ -128,7 +140,11 @@ public struct _RawRepresentableStringQuery<Entity>: EntityStringQuery
     }
 
     public func entities(matching string: String) async throws -> [Entity] {
-        return [Entity(rawValue: Entity.RawValue(string)) as? Entity].compactMap { $0 }
+        guard let raw: Entity.RawValue = CharonIntentValueParser.parse(string, as: Entity.RawValue.self) else {
+            return []
+        }
+        let one: Entity? = Entity(rawValue: raw)
+        return one.map { [$0] } ?? []
     }
 
     public func suggestedEntities() async throws -> [Entity] {
@@ -142,7 +158,7 @@ public protocol TransientAppEntity: AppEntity {}
 extension TransientAppEntity {
     public init() {}
 
-    public var id: String { return CharonNames.simple(Self.self) }
+    public var id: String { return String(describing: Self.self) }
 
     /// A transient entity is found by asking for it, which is what its own query does.
     public static var defaultQuery: _TransientAppEntityQuery<Self> { return _TransientAppEntityQuery() }
@@ -152,6 +168,10 @@ extension TransientAppEntity {
 public struct _TransientAppEntityQuery<Entity>: EntityQuery where Entity: TransientAppEntity {
     public typealias Result = [Entity]
     public typealias Entity = Entity
+    public typealias DefaultValue = [Entity].Result
+    public typealias Item = Entity
+    public typealias ItemCollection = [Entity]
+    public typealias ItemSection = [Entity]
 
     private let entity: Entity?
 
@@ -177,7 +197,7 @@ public struct _TransientAppEntityQuery<Entity>: EntityQuery where Entity: Transi
 }
 
 /// An entity that stands for one thing only, so that a query can answer "the" entity without a list.
-public protocol UniqueAppEntity: AppEntity where DefaultQuery: UniqueAppEntityQuery {
+public protocol UniqueAppEntity: AppEntity where Self.DefaultQuery: UniqueAppEntityQuery {
     var id: String { get }
     var displayRepresentation: DisplayRepresentation { get }
 }
@@ -204,12 +224,15 @@ extension UniqueAppEntityQuery {
 
 /// The provider of a unique entity, which is a query that holds one value.
 public struct UniqueAppEntityProvider<Entity>: UniqueAppEntityQuery where Entity: UniqueAppEntity {
-    public typealias Result = Entity
+    public typealias Result = [Entity]
     public typealias Entity = Entity
     public typealias Unique = Entity
 
     /// The value a provider of a unique entity starts from, which is the entity itself.
-    public typealias DefaultValue = Entity
+    public typealias DefaultValue = [Entity].Result
+    public typealias Item = Entity
+    public typealias ItemCollection = [Entity]
+    public typealias ItemSection = [Entity]
 
     private let stored: Entity?
 
@@ -221,7 +244,17 @@ public struct UniqueAppEntityProvider<Entity>: UniqueAppEntityQuery where Entity
         self.stored = entity
     }
 
-    public func uniqueEntity() async throws -> Entity? { return stored }
+    public init(_ provider: @escaping @Sendable () async throws -> Entity) {
+        self.stored = nil
+        self.provider = provider
+    }
+
+    private let provider: (@Sendable () async throws -> Entity)?
+
+    public func uniqueEntity() async throws -> Entity? {
+        if let provider = provider { return try await provider() }
+        return stored
+    }
 
     public func results() async throws -> Entity { return try await uniqueEntity() ?? CharonBox.box(0) }
 
@@ -244,7 +277,7 @@ extension IndexedEntity {
 }
 
 /// A file, which is an entity whose identifier is the file itself.
-public protocol FileEntity: AppEntity where ID == FileEntityIdentifier {
+public protocol FileEntity: AppEntity where Self.ID == FileEntityIdentifier {
     /// The content types the file may have, added in iOS 18.
     static var supportedContentTypes: [String] { get }
 }
@@ -276,10 +309,14 @@ public struct FileEntityIdentifier: Hashable, Sendable, Codable {
     public var file: URL? { return fileURL }
 
     /// The identifier as the framework's own `EntityIdentifierConvertible` writes it.
-    public var entityIdentifierString: String { return fileURL?.path ?? draftIdentifier }
+    public var identifierString: String { return fileURL?.path ?? draftIdentifier }
+
+    public static var entityIdentifierString: String {
+        return FileEntityIdentifier(fileURL: URL(fileURLWithPath: "/")).identifierString
+    }
 
     public static func entityIdentifier(for value: FileEntityIdentifier) -> EntityIdentifier {
-        return EntityIdentifier(for: value.entityIdentifierString)
+        return EntityIdentifier(for: value.identifierString)
     }
 
     public init(from decoder: any Decoder) throws {

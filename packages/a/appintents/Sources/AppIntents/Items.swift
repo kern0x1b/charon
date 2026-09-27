@@ -31,16 +31,18 @@ public struct IntentItem<Value> where Value: _IntentValue {
     public var description: String { return title.localizedString() }
 
     /// The builder of a list of items, which is what a result's collection is written with.
-    @resultBuilder
-    public enum Builder {
-        public static func buildBlock() -> [IntentItem<Value>] { return [] }
+}
 
-        public static func buildBlock(_ item: IntentItem<Value>) -> [IntentItem<Value>] { return [item] }
+/// The builder of a list of items, which is what a result's collection is written with.
+@resultBuilder
+public enum IntentItemBuilder<Value> where Value: _IntentValue {
+    public static func buildBlock() -> [IntentItem<Value>] { return [] }
 
-        public static func buildExpression(_ expression: IntentItem<Value>) -> IntentItem<Value> { return expression }
+    public static func buildBlock(_ item: IntentItem<Value>) -> [IntentItem<Value>] { return [item] }
 
-        public static func buildArray(_ items: [IntentItem<Value>]) -> [IntentItem<Value>] { return items }
-    }
+    public static func buildExpression(_ expression: IntentItem<Value>) -> IntentItem<Value> { return expression }
+
+    public static func buildArray(_ items: [IntentItem<Value>]) -> [IntentItem<Value>] { return items }
 }
 
 /// Writing a value as the text a title is made of, which is what the release's own description gives.
@@ -64,7 +66,7 @@ public struct IntentItemCollection<Result>: ResultsCollection where Result: _Int
     public let sections: [IntentItemSection<Result>]
 
     public init(promptLabel: LocalizedStringResource? = nil, usesIndexedCollation: Bool = false,
-                @IntentItem.Builder<Result> items: () -> [IntentItem<Result>]) {
+                @IntentItemBuilder<Result> items: () -> [IntentItem<Result>]) {
         self.promptLabel = promptLabel
         self.usesIndexedCollation = usesIndexedCollation
         self.items = items().map { $0.value }
@@ -100,7 +102,7 @@ public struct IntentItemSection<Result> where Result: _IntentValue {
     public let image: DisplayRepresentation.Image?
     public let items: [Result.ValueType]
 
-    public init(_ title: LocalizedStringResource, @IntentItem.Builder<Result> items: () -> [IntentItem<Result>]) {
+    public init(_ title: LocalizedStringResource, @IntentItemBuilder<Result> items: () -> [IntentItem<Result>]) {
         self.title = title
         self.subtitle = nil
         self.image = nil
@@ -109,7 +111,7 @@ public struct IntentItemSection<Result> where Result: _IntentValue {
 
     public init(_ title: LocalizedStringResource, subtitle: LocalizedStringResource? = nil,
                 image: DisplayRepresentation.Image? = nil,
-                @IntentItem.Builder<Result> items: () -> [IntentItem<Result>]) {
+                @IntentItemBuilder<Result> items: () -> [IntentItem<Result>]) {
         self.title = title
         self.subtitle = subtitle
         self.image = image
@@ -140,15 +142,6 @@ public struct IntentItemSection<Result> where Result: _IntentValue {
     /// What the section is described as, which is its own title.
     public var description: String { return title?.localizedString() ?? "" }
 
-    /// The builder of a section's items, which is what a section is written with.
-    @resultBuilder
-    public enum Builder {
-        public static func buildBlock() -> [IntentItemSection] { return [] }
-
-        public static func buildBlock(_ section: IntentItemSection) -> [IntentItemSection] { return [section] }
-
-        public static func buildExpression(_ expression: IntentItemSection) -> IntentItemSection { return expression }
-    }
 }
 
 /// A file a result hands back or an intent asks for: the bytes, or a file, with the name and the
@@ -274,8 +267,12 @@ extension IntentFile: DisplayRepresentable, _IntentValue {
     }
 
     public var displayRepresentation: DisplayRepresentation {
-        return DisplayRepresentation(title: LocalizedStringResource(filename))
+        return DisplayRepresentation(title: title)
     }
+
+    public var title: LocalizedStringResource { return LocalizedStringResource(filename) }
+
+    public var localizedStringResource: LocalizedStringResource { return title }
 }
 
 /// A person a parameter carries: a name, a handle, and what the app knows about the person.
@@ -452,9 +449,14 @@ public struct IntentPerson: Hashable, Sendable, DisplayRepresentable, _IntentVal
     }
 
     public var displayRepresentation: DisplayRepresentation {
-        return DisplayRepresentation(title: LocalizedStringResource(handle?.applicationDefined ?? name.rawValue),
-                                      image: image)
+        return DisplayRepresentation(title: title, image: image)
     }
+
+    public var title: LocalizedStringResource {
+        return LocalizedStringResource(handle?.applicationDefined ?? name.rawValue)
+    }
+
+    public var localizedStringResource: LocalizedStringResource { return title }
 
     public typealias ValueType = IntentPerson
     public typealias UnwrappedType = IntentPerson
@@ -501,8 +503,12 @@ public struct IntentPaymentMethod: Sendable, DisplayRepresentable, _IntentValue 
     }
 
     public var displayRepresentation: DisplayRepresentation {
-        return DisplayRepresentation(title: LocalizedStringResource(name), image: icon)
+        return DisplayRepresentation(title: title, image: icon)
     }
+
+    public var title: LocalizedStringResource { return LocalizedStringResource(name) }
+
+    public var localizedStringResource: LocalizedStringResource { return title }
 
     public typealias ValueType = IntentPaymentMethod
     public typealias UnwrappedType = IntentPaymentMethod
@@ -537,8 +543,12 @@ public struct IntentCurrencyAmount: Equatable, Hashable, Sendable, DisplayRepres
     }
 
     public var displayRepresentation: DisplayRepresentation {
-        return DisplayRepresentation(title: LocalizedStringResource(currencyCode))
+        return DisplayRepresentation(title: title)
     }
+
+    public var title: LocalizedStringResource { return LocalizedStringResource(currencyCode) }
+
+    public var localizedStringResource: LocalizedStringResource { return title }
 
     public typealias ValueType = IntentCurrencyAmount
     public typealias UnwrappedType = IntentCurrencyAmount

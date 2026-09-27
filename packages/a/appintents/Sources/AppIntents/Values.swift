@@ -450,22 +450,6 @@ public struct DoubleFromIntResolver: RangeCheckingResolver {
     public func hash(into hasher: inout Hasher) {}
 }
 
-/// Reads a `String` into an `AttributedString`, for the parameter that carries styled text.
-public struct AttributedStringFromStringResolver: Resolver {
-    public typealias Input = String
-    public typealias Output = AttributedString
-
-    public init() {}
-
-    public func resolve(from input: String, context: IntentParameterContext<AttributedString>) async throws -> AttributedString? {
-        return AttributedString(input)
-    }
-
-    public static func == (a: AttributedStringFromStringResolver, b: AttributedStringFromStringResolver) -> Bool { return true }
-
-    public func hash(into hasher: inout Hasher) {}
-}
-
 /// Reads the term of a `StringSearchCriteria` out of the string a parameter carries.
 public struct StringSearchCriteriaFromStringResolverSpecificification: Resolver {
     public typealias Input = String
@@ -534,14 +518,12 @@ public extension String {
 
 /// A list of values is the collection a query offers and a list parameter carries, which is what
 /// `ResultsCollection` needs of it.
-extension Array: ResultsCollection where Element: _IntentValue {
-    public static var empty: [Element.ValueType] { return [] }
+extension Array: ResultsCollection where Element: _IntentValue, Element == Element.ValueType {
+    public typealias Result = Element
+
+    public static var empty: [Element] { return [] }
     public var promptLabel: LocalizedStringResource? { return nil }
     public var usesIndexedCollation: Bool { return false }
-    public var items: [Element.ValueType] { return self.map { $0.valueType } }
+    public var items: [Result.ValueType] { return self }
 }
 
-extension Array {
-    /// The value the framework hands to `perform()`, which is the value the type unwraps to.
-    public var valueType: Element.ValueType { return CharonBox.box(self) }
-}
