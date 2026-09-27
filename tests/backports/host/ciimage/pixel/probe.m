@@ -234,7 +234,7 @@ static void reportContextOwner(void)
         CGContextRef cgctx = CGBitmapContextCreate(bytes.mutableBytes, 8, 6, 8, 32, space,
                                                    (CGBitmapInfo)kCGImageAlphaPremultipliedLast);
         NSDictionary *given = withSpace ? @{kCIContextWorkingColorSpace: (__bridge id)space} : options;
-        CIContext *context = [CIContext contextWithCGContext:cgctx options:given];
+        CIContext *context = [PORT_CONTEXT contextWithCGContext:cgctx options:given];
         put(@"%@ working format %ld", key, (long)context.workingFormat);
         put(@"%@ working space %@", key, context.workingColorSpace ? @"one" : @"none");
         [context drawImage:image inRect:CGRectMake(0, 0, 8, 6) fromRect:image.extent];
@@ -339,6 +339,9 @@ static void reportShapes(void)
 
 int main(void)
 {
+    // Unbuffered: a probe that loses everything it printed when it dies cannot say where it died,
+    // which is the one thing a probe is for.
+    setvbuf(stdout, NULL, _IONBF, 0);
     @autoreleasepool {
         put(@"probe %s", PORT_NAME);
         CGRect extent = CGRectMake(0, 0, 8, 4);

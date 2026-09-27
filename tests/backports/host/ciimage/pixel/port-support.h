@@ -29,12 +29,22 @@
 @property (nonatomic, readonly) CGRect extent;
 @end
 
+@interface CharonGGCtxContext : CIContext
+- (instancetype)initWithContext:(CIContext *)context cgContext:(CGContextRef)cgctx options:(NSDictionary *)options;
+- (CGContextRef)charon_drawingContext;
+@property (nonatomic, readonly) CGColorSpaceRef workingColorSpace;
+@property (nonatomic, readonly) CIFormat workingFormat;
+- (void)drawImage:(CIImage *)image inRect:(CGRect)inRect fromRect:(CGRect)fromRect;
+@end
+
 #define PORT_ACCUMULATOR CharonCIImageAccumulator
 #define PORT_SHAPE CharonCIFilterShape
+#define PORT_CONTEXT CharonGGCtxContext
 #define PORT_NAME "port"
 #else
 #define PORT_ACCUMULATOR CIImageAccumulator
 #define PORT_SHAPE CIFilterShape
+#define PORT_CONTEXT CIContext
 #define PORT_NAME "host"
 
 // Nothing to declare for the framework's own shape: its header carries every selector, with the

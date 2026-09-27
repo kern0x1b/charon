@@ -25,23 +25,53 @@ sed -e 's/CIFilterShape/CharonCIFilterShape/g' -e 's/CharonCharon/Charon/g' "$GR
 cp "$GRAPHICS/CIColor10.m" "$BUILD/port/CIColor.m"
 cp "$GRAPHICS/CIContextRepresentations10.m" "$BUILD/port/CIContextRepresentations.m"
 cp "$GRAPHICS/CIImageAlgebra10.m" "$BUILD/port/CIImageAlgebra.m"
-cp "$GRAPHICS/CIContextGCOwner11.m" "$BUILD/port/CIContextGCOwner.m"
-cp "$GRAPHICS/CIContextDrawInto11.m" "$BUILD/port/CIContextDrawInto.m"
+sed -e 's/CharonGOCtxContext/CharonGGCtxContext/g' -e 's/CharonCharon/Charon/g' "$GRAPHICS/CIContextGCOwner11.m" > "$BUILD/port/CIContextGCOwner.m"
 cp "$GRAPHICS/CIImageCPUKernel11.m" "$BUILD/port/CIImageCPUKernel.m"
-sed -e 's/\bCIImageAccumulator\b/CharonCIImageAccumulator/g' -e 's/\bCIFilterShape\b/CharonCIFilterShape/g' -e 's/CharonCharon/Charon/g' "$here/port-support.h" > "$BUILD/port/declarations.h"
+# The port's classes, under names of their own. The renamed support header is what the probe imports,
+# so it goes where the import finds it and the include path is given - not -include, which would put a
+# second copy of the same declarations in front of it.
+sed -e 's/\bCIImageAccumulator\b/CharonCIImageAccumulator/g' -e 's/\bCIFilterShape\b/CharonCIFilterShape/g' -e 's/\bCharonGOCtxContext\b/CharonGGCtxContext/g' -e 's/CharonCharon/Charon/g' "$here/port-support.h" > "$BUILD/port/port-support.h"
+sed -e 's/CIImageAccumulator/CharonCIImageAccumulator/g' -e 's/CharonCharon/Charon/g' "$GRAPHICS/CIImageAccumulator9.m" > "$BUILD/port/CIImageAccumulator.m"
+sed -e 's/CIFilterShape/CharonCIFilterShape/g' -e 's/CharonCharon/Charon/g' "$GRAPHICS/CIFilterShape9.m" > "$BUILD/port/CIFilterShape.m"
+# The colour-space and the representation methods, the drawing, the kernel and the algebra are
+# categories on classes the framework already has, so the port's copies attach to the framework's
+# objects and need no rename: two processes, one set of objects each, and the two never meet.
+cp "$GRAPHICS/CIColor10.m" "$BUILD/port/CIColor.m"
+cp "$GRAPHICS/CIContextRepresentations10.m" "$BUILD/port/CIContextRepresentations.m"
+cp "$GRAPHICS/CIImageAlgebra10.m" "$BUILD/port/CIImageAlgebra.m"
+sed -e 's/CharonGOCtxContext/CharonGGCtxContext/g' -e 's/CharonCharon/Charon/g' "$GRAPHICS/CIContextGCOwner11.m" > "$BUILD/port/CIContextGCOwner.m"
+cp "$GRAPHICS/CIImageCPUKernel11.m" "$BUILD/port/CIImageCPUKernel.m"
 
 # The system answers: the probe alone, against the framework the host carries.
-xcrun clang -fobjc-arc $quiet "$here/probe.m" -framework CoreImage -framework CoreGraphics -framework ImageIO -framework Foundation -o "$BUILD/host/probe"
+xcrun clang -fobjc-arc $quiet "${CH_PROBE:-$here/probe.m}" -framework CoreImage -framework CoreGraphics -framework ImageIO -framework Foundation -o "$BUILD/host/probe"
 
-# The port answers: the same probe, the port's own accumulator under its own name, and the framework
-# for everything the accumulator is built out of.
-sed 's/CIImageAccumulator/CharonCIImageAccumulator/g' "$GRAPHICS/CIImageAccumulator9.m" > "$BUILD/port/CIImageAccumulator.m"
-xcrun clang -fobjc-arc $quiet -DCHARON_PORT -include "$BUILD/port/declarations.h" -c "$BUILD/port/CIImageAccumulator.m" -o "$BUILD/port/accumulator.o"
-xcrun clang -fobjc-arc $quiet -DCHARON_PORT_ACCUMULATOR=1 -include "$BUILD/port/declarations.h" -c "$here/probe.m" -o "$BUILD/port/probe.o"
-xcrun clang -fobjc-arc $quiet "$BUILD/port/probe.o" "$BUILD/port/accumulator.o" -framework CoreImage -framework CoreGraphics -framework ImageIO -framework Foundation -o "$BUILD/port/probe"
+# The port answers: the same probe, built with the macro the support header actually tests, so it is
+# the port's classes it asks and it says so.
+objects=""
+for piece in CIImageAccumulator CIFilterShape CIColor CIContextRepresentations CIImageAlgebra \
+            CIContextGCOwner CIImageCPUKernel; do
+    # The port's classes are declared in the renamed support header, so their own sources see their
+    # own names; CIContextGCOwner declares its class itself and is given the header only for the rest.
+    if [ "$piece" = CIContextGCOwner ]; then
+        xcrun clang -fobjc-arc $quiet -DCHARON_PORT -c "$BUILD/port/$piece.m" -o "$BUILD/port/$piece.o"
+    else
+        xcrun clang -fobjc-arc $quiet -DCHARON_PORT -include "$BUILD/port/port-support.h" -c "$BUILD/port/$piece.m" -o "$BUILD/port/$piece.o"
+    fi
+    objects="$objects $BUILD/port/$piece.o"
+done
+xcrun clang -fobjc-arc $quiet -DCHARON_PORT -I"$BUILD/port" -c "${CH_PROBE:-$here/probe.m}" -o "$BUILD/port/probe.o"
+xcrun clang -fobjc-arc $quiet "$BUILD/port/probe.o" $objects -framework CoreImage -framework CoreGraphics \
+    -framework ImageIO -framework CoreServices -framework Foundation -o "$BUILD/port/probe"
 
 "$BUILD/host/probe" > "$BUILD/host/answers.txt"
 "$BUILD/port/probe" > "$BUILD/port/answers.txt"
+# The port process must be asking the port's classes. If it is asking the framework's, the two answers
+# would be identical whatever the port does, and every line below would be the framework measured
+# against itself.
+if [ "$(head -1 "$BUILD/port/answers.txt")" != "probe port" ]; then
+    echo "the port probe is not the port: it says '$(head -1 "$BUILD/port/answers.txt")'"
+    exit 2
+fi
 python3 "$here/../../modelio/compare.py" "$BUILD/host/answers.txt" "$BUILD/port/answers.txt" "$TOLERANCE" ciimage
 status=$?
 echo "answers: $BUILD/host/answers.txt $BUILD/port/answers.txt"

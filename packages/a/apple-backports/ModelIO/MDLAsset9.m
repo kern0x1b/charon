@@ -758,7 +758,17 @@ static void CharonMDLReadPLY(NSData *data, NSMutableArray<MDLObject *> *objects,
     if (ascii) {
         NSString *rest = [[NSString alloc] initWithData:[data subdataWithRange:NSMakeRange(bodyStart, data.length - bodyStart)]
                                              encoding:NSUTF8StringEncoding];
-        NSArray<NSString *> *body = [rest componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        // The body is read a line at a time and a "#" line is skipped, because a comment after
+        // end_header is what real writers emit and reading the tokens flat ate every word of it as a
+        // coordinate, so the whole of the file after the first comment was consumed as geometry and
+        // the asset came back empty with no error anywhere.
+        NSMutableArray<NSString *> *body = [NSMutableArray array];
+        for (NSString *line in [rest componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]]) {
+            NSString *trimmed = [line stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+            if (!trimmed.length || [trimmed hasPrefix:@"#"])
+                continue;
+            [body addObjectsFromArray:[trimmed componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]];
+        }
         NSUInteger at = 0;
         for (NSUInteger e = 0; e < elements.count; e++) {
             NSArray *properties = elementProperties[e];
@@ -965,8 +975,11 @@ static void CharonMDLReadUSDA(NSData *data, NSMutableArray<MDLObject *> *objects
         mesh.vertexCount = vertexCount;
         mesh.vertexCapacity = vertexCount;
         NSArray<NSString *> *counts = [countArray componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        // The indices are a bracketed run of numbers, so they are tokenised here the way the counts
+        // above are: a for..in over the string itself sends countByEnumeratingWithState: to an NSString,
+        // which does not answer it, and every measurement after that one was lost.
         NSMutableArray<NSNumber *> *indices = [NSMutableArray array];
-        for (NSString *word in indexArray) {
+        for (NSString *word in [indexArray componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]) {
             NSString *number = [word stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@",()"]];
             if (number.length)
                 [indices addObject:@(number.integerValue)];

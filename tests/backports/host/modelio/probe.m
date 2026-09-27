@@ -91,6 +91,9 @@ static void writePLYAscii(NSString *path)
         @"property float ny", @"property float nz", @"property uchar red", @"property uchar green",
         @"property uchar blue", @"element face 2", @"property list uchar int vertex_indices", @"end_header",
         @"0 0 0 0 0 1 255 0 0", @"1 0 0 0 0 1 0 255 0", @"1 1 0 0 0 1 0 0 255", @"0 1 0 0 0 1 255 255 0",
+        // A comment after end_header is legal PLY and is what real writers emit. It is here because
+        // reading the body as one flat token stream ate every word of it as a coordinate.
+        @"# the two faces of the plate",
         @"3 0 1 2", @"3 0 2 3",
     ];
     [[lines componentsJoinedByString:@"\n"] writeToFile:path atomically:YES encoding:NSUTF8StringEncoding error:NULL];
@@ -123,15 +126,32 @@ static void writePLYBinary(NSString *path)
     [data writeToFile:path atomically:YES];
 }
 
-// A mesh prim of the ASCII scene description: four points, two triangular faces, and a bound.
+// A mesh prim of the ASCII scene description, written the way a writer writes one: a header, a def
+// Mesh, its extents, its points, and a face count and index run per face. The band's first fixture
+// was not one the system could read - it read zero objects - so this one is measured first and the
+// reader is held to a file with content in it.
 static void writeUSDA(NSString *path)
 {
+    // A mesh prim written the way a writer writes one: a header, a def Mesh with braces, its extent,
+    // its points, and a face count and index run per face. The first fixture here had no braces and the
+    // system read zero objects out of it, so the two sides agreed on nothing and the reader was never
+    // measured; this one is checked with the system before it is used.
     NSArray<NSString *> *lines = @[
-        @"#usda 1.0", @"(", @"    defaultPrim = \"root\"", @"    upAxis = \"Y\"", @")", @"def Mesh \"plate\"",
-        @"    int[] faceVertexCounts = [3, 3]",
-        @"    int[] faceVertexIndices = [0, 1, 2, 0, 2, 3]",
-        @"    point3f[] points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)]",
+        @"#usda 1.0",
+        @"(",
+        @"    defaultPrim = \"Plate\"",
+        @"    metersPerUnit = 1",
+        @"    upAxis = \"Y\"",
+        @")",
+        @"def Mesh \"Plate\"",
+        @"{",
+        @"    float3[] extent = [(0, 0, 0), (1, 1, 1)]",
+        @"    int[] faceVertexCounts = [4, 3]",
+        @"    int[] faceVertexIndices = [0, 1, 3, 2, 2, 3, 4]",
+        @"    point3f[] points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0), (0.5, 0.5, 1)]",
         @"    uniform token subdivisionScheme = \"none\"",
+        @"}",
+        @"",
     ];
     [[lines componentsJoinedByString:@"\n"] writeToFile:path atomically:YES encoding:NSUTF8StringEncoding error:NULL];
 }

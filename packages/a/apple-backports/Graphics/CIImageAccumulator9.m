@@ -2,6 +2,10 @@
 #import <CoreVideo/CoreVideo.h>
 #import <string.h>
 #import <CoreGraphics/CoreGraphics.h>
+#import <objc/runtime.h>
+
+// The key the bitmap context is kept under, on the image that looks at its memory.
+static const void *kCharonCIAccumulatorBufferKey = &kCharonCIAccumulatorBufferKey;
 
 #pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
 
@@ -15,6 +19,7 @@
     CGRect _extent;
     CIFormat _format;
     NSInteger _rowBytes;
+    NSUInteger _pixelWidth, _pixelHeight;
     // A strong reference, as every other object here: the port is built with ARC, which manages this
     // itself. Retaining it by hand on the way in and releasing it on the way out is releasing it
     // twice, which is what a caller saw.
@@ -63,8 +68,14 @@ static BOOL CharonCIAccumulatorIsBlueFirst(CIFormat format)
         _extent = extent;
         _format = format;
         _colorSpace = colorSpace;
-        _rowBytes = (NSInteger)(_extent.size.width * CharonCIAccumulatorBytesPerPixel(format));
-        _pixels = [NSMutableData dataWithLength:(NSUInteger)(_rowBytes * _extent.size.height)];
+        // The buffer is the whole pixels of the extent and nothing else: an extent of 5.5 wide is five
+        // pixels across, which is what the system answers, and sizing the row by the caller's own
+        // fractional width gave a row of twenty-two bytes over a buffer of seventy-seven, and the image
+        // read out of it ran off the end.
+        _pixelWidth = (NSUInteger)floor(extent.size.width);
+        _pixelHeight = (NSUInteger)floor(extent.size.height);
+        _rowBytes = (NSInteger)(_pixelWidth * CharonCIAccumulatorBytesPerPixel(format));
+        _pixels = [NSMutableData dataWithLength:(NSUInteger)(_rowBytes * _pixelHeight)];
     }
     return self;
 }
@@ -96,25 +107,27 @@ static CIFormat CharonCIAccumulatorStoredFormat(void)
 // image is made through a bitmap context over the same memory: the same pixels, the same origin.
 - (CIImage *)image
 {
-    CGRect whole = CGRectIntegral(_extent);
-    if (!_rowBytes || whole.size.width <= 0 || whole.size.height <= 0)
-        return nil;
-    // The image is the whole pixels at the origin, which is what the host answers for an extent that
+    // The image is the whole pixels at the origin, which is what the system answers for an extent that
     // does not start there and is not a whole number of pixels wide.
-    _rowBytes = (NSInteger)(whole.size.width * 4);
+    if (!_pixelWidth || !_pixelHeight)
+        return nil;
+    CGRect whole = CGRectMake(0, 0, (CGFloat)_pixelWidth, (CGFloat)_pixelHeight);
     CGColorSpaceRef space = _colorSpace ?: CGColorSpaceCreateDeviceRGB();
-    CGContextRef context = CGBitmapContextCreate(_pixels.mutableBytes, (size_t)whole.size.width, (size_t)whole.size.height, 8,
+    CGContextRef context = CGBitmapContextCreate(_pixels.mutableBytes, _pixelWidth, _pixelHeight, 8,
                                                  (size_t)_rowBytes, space, (CGBitmapInfo)kCGImageAlphaPremultipliedLast);
     CIImage *image = nil;
     if (context) {
-        // The image is taken out of the context before the context is let go of: they own the same
-        // memory, and reading one after releasing the other reads freed memory.
         CGImageRef made = CGBitmapContextCreateImage(context);
-        CGContextRelease(context);
         if (made) {
             image = [CIImage imageWithCGImage:made];
             CGImageRelease(made);
+            // The image looks at the context's memory, so the context has to live as long as the image
+            // does - and it is the accumulator's own buffer, which is the point: what is set into the
+            // accumulator after this is what the image a caller already holds reads. Releasing the
+            // context here left the image pointing at freed memory, and the renderer died on it.
+            objc_setAssociatedObject(image, kCharonCIAccumulatorBufferKey, (__bridge id)context, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         }
+        CGContextRelease(context);
     }
     if (!_colorSpace)
         CGColorSpaceRelease(space);

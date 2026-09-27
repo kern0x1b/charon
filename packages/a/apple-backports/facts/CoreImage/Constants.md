@@ -1,7 +1,7 @@
 # CoreImage's constant names, carried for iOS 6
 
-**136 of the 160** constant rows the ledger lists as missing, measured 2026-09-27: every one of them
-except the 24 `kCIFormat*`.
+**156 of the 160** constant rows the ledger lists as missing, measured 2026-09-27: 136 names that are
+strings and the 20 `kCIFormat*` that the 16.4 header declares as exported constants.
 
 ## What these are
 
@@ -22,24 +22,24 @@ run resolves 65 names to 65 distinct strings that match the spelling of the name
 
 ## How all 136 were read
 
-`tests/backports/host/ciimage/constvalues.m` is generated from the ledger's own list of the 160 rows
+`tests/backports/host/ciimage/constvalues.m` is generated from the ledger's own list of the rows
 and references each name **strongly**, so a name the host does not declare is a link error and the
 run cannot pass over it; the names that fail to link are the ones the host does not have, and they
 are dropped and the run repeated until it links. Every name that links prints the string its own
-exported symbol holds. **136 carried, 0 differing from the host.** That includes the iOS 11 to 26
+exported symbol holds. **136 strings carried, 0 differing from the host**, plus the 20 formats, whose values are read the same way. That includes the iOS 11 to 26
 names - `kCIDynamicRange*`, `kCIImageContentHeadroom`, the `kCIImageAuxiliary*` and
 `kCIImageRepresentation*` families, the iOS 13 and 26 `kCIInput*` - because macOS 27's CoreImage
 exports them, and the values are the strings Apple's own symbols hold.
 
-## The 24 rows that are not carried, and why
+## The four rows that are not carried, and why
 
-`kCIFormat*` is **not a string constant**: the header declares it as `const CIFormat`, an `int`, and
-the probe's own compile said so - `redeclaration of 'kCIFormatA16' with a different type: 'NSString
-*const' vs 'const CIFormat'`. They are enum-shaped header values, the whole of which is the
-`CIFormat` enum, and the lift lowers an enum when the availability is lowered. The ledger lists them
-as `missing` only because it found no runtime symbol for them, which is what a header-only row looks
-like. They are not carried as strings, because a string there would be a value of the wrong type -
-and they are not a gap in this pass either, because there is nothing at run time to carry.
+`kCIFormatRGB10`, `kCIFormatRGBX16`, `kCIFormatRGBXf` and `kCIFormatRGBXh` arrived in iOS 17.0 and
+14.2, and the 16.4 header this port is written against does not declare them, so they are named in
+`CIConstants10.m` with their measured values beside them rather than smuggled in under a header that
+has not got them. The other twenty are carried as `CIFormat`, with the value each one holds - which
+is a four-character code, `kCIFormatA8` being 257, and that is not an enum case: the header declares
+each as an exported constant, so an application that names one needs the symbol and iOS 6 does not
+export it.
 
 ## The control
 
