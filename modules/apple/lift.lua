@@ -1184,8 +1184,27 @@ function lift(opt)
     if #incomplete > 0 then
         raise("the backports registry is incomplete: %s", table.concat(incomplete, "; "))
     end
-    -- the frameworks read: every one the registry has a file for
-    local frameworks = registered
+    -- The frameworks read: every one the registry has a file for, and opt.frameworks on top of them.
+    --
+    -- The registry names the frameworks a backport implements something in, which is 48 of the 298
+    -- the SDK's surface covers, so a header-only API - one that needs no backport, only its
+    -- availability lowered so a translation unit naming it compiles for 6.1.3 - in any other
+    -- framework is not read at all, and cannot become reachable however long the registry's own
+    -- frameworks take. The extra list is the surface's frameworks, and it is passed in rather than
+    -- discovered here for two reasons: what the surface covers is not this repository's business,
+    -- and a default that changed the frameworks read would change the committed set on every run
+    -- without anyone asking. With no list the lift reads exactly what it read before.
+    --
+    -- A framework the SDK has no headers for contributes nothing and is not an error: os.files and
+    -- framework_headers() both answer an empty list for it, which is how a Swift-only framework in
+    -- the surface is carried here.
+    local frameworks = table.unique(table.join(registered, opt.frameworks or {}))
+    table.sort(frameworks)
+    if opt.frameworks and #opt.frameworks > 0 then
+        local read, asked = #frameworks, #opt.frameworks
+        printf("lift: reading %d frameworks - %d the registry names and %d more from the caller's list\n",
+               read, read - asked, asked)
+    end
     local symbols = {}
     for _, entry in ipairs(system_entries()) do
         table.insert(symbols, entry.api)
