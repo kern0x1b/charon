@@ -66,6 +66,11 @@ static vector_float3 CharonMDLRotationAngles(matrix_float4x4 rotation)
     if ((self = [super init])) {
         _samples = [[MDLAnimatedMatrix4x4 alloc] init];
         _resetsTransform = resetsTransform;
+        // The four components a new transform has: nothing moved, nothing turned, and a scale of one.
+        _translation = (vector_float3){0, 0, 0};
+        _rotation = (vector_float3){0, 0, 0};
+        _shear = (vector_float3){0, 0, 0};
+        _scale = (vector_float3){1, 1, 1};
         [self setMatrix:matrix forTime:0];
     }
     return self;
@@ -123,7 +128,7 @@ static vector_float3 CharonMDLRotationAngles(matrix_float4x4 rotation)
 {
     [_samples setFloat4x4:matrix atTime:time];
     if (time <= 0)
-        [self decompose];
+        _matrix = matrix;
 }
 
 - (matrix_float4x4)localTransformAtTime:(NSTimeInterval)time
@@ -156,10 +161,12 @@ static vector_float3 CharonMDLRotationAngles(matrix_float4x4 rotation)
     return _samples.keyTimes;
 }
 
+// The accessors answer the four components the transform was given, not a reading of the matrix: a
+// matrix set outright leaves them where they were, which is what the system answers and what a
+// caller that sets a rotation and reads a scale is entitled to.
 - (vector_float3)translationAtTime:(NSTimeInterval)time
 {
-    vector_float4 translation = [_samples float4x4AtTime:time].columns[3];
-    return (vector_float3){translation.x, translation.y, translation.z};
+    return _translation;
 }
 
 - (matrix_float4x4)rotationMatrixAtTime:(NSTimeInterval)time
@@ -177,37 +184,25 @@ static vector_float3 CharonMDLRotationAngles(matrix_float4x4 rotation)
 
 - (vector_float3)rotationAtTime:(NSTimeInterval)time
 {
-    return CharonMDLRotationAngles([self rotationMatrixAtTime:time]);
+    return _rotation;
 }
 
 - (vector_float3)scaleAtTime:(NSTimeInterval)time
 {
-    matrix_float4x4 matrix = [_samples float4x4AtTime:time];
-    return (vector_float3){simd_length(matrix.columns[0]), simd_length(matrix.columns[1]), simd_length(matrix.columns[2])};
+    return _scale;
 }
 
 - (vector_float3)shearAtTime:(NSTimeInterval)time
 {
-    matrix_float4x4 matrix = [_samples float4x4AtTime:time];
-    vector_float3 scale = [self scaleAtTime:time];
-    vector_float3 shear = {0, 0, 0};
-    if (scale.x)
-        shear.x = matrix.columns[1].x / scale.x;
-    if (scale.y && matrix.columns[1].x)
-        shear.y = matrix.columns[2].x / (scale.x * matrix.columns[1].x / scale.y);
-    if (scale.z)
-        shear.z = matrix.columns[2].y / scale.z;
-    return shear;
+    return _shear;
 }
 
-// The four accessors read the matrix; the four setters and the matrix setter write it back.
-- (void)decompose
+// One of the four components changed: the matrix at time zero is composed from the four again, so a
+// caller that sets a translation and reads the matrix sees it move.
+- (void)charon_recompose
 {
-    _matrix = [_samples float4x4AtTime:0];
-    _translation = [self translationAtTime:0];
-    _scale = [self scaleAtTime:0];
-    _shear = [self shearAtTime:0];
-    _rotation = [self rotationAtTime:0];
+    _matrix = [self matrixForTranslation:_translation rotation:_rotation shear:_shear scale:_scale];
+    [_samples setFloat4x4:_matrix atTime:0];
 }
 
 - (void)setMatrix:(matrix_float4x4)matrix
@@ -228,6 +223,7 @@ static vector_float3 CharonMDLRotationAngles(matrix_float4x4 rotation)
 
 - (void)setTranslation:(vector_float3)translation forTime:(NSTimeInterval)time
 {
+    _translation = translation;
     [self setMatrix:[self matrixForTranslation:translation rotation:[self rotationAtTime:time] shear:[self shearAtTime:time]
                                          scale:[self scaleAtTime:time]]
              forTime:time];
@@ -235,6 +231,7 @@ static vector_float3 CharonMDLRotationAngles(matrix_float4x4 rotation)
 
 - (void)setRotation:(vector_float3)rotation forTime:(NSTimeInterval)time
 {
+    _rotation = rotation;
     [self setMatrix:[self matrixForTranslation:[self translationAtTime:time] rotation:rotation shear:[self shearAtTime:time]
                                          scale:[self scaleAtTime:time]]
              forTime:time];
@@ -242,6 +239,7 @@ static vector_float3 CharonMDLRotationAngles(matrix_float4x4 rotation)
 
 - (void)setShear:(vector_float3)shear forTime:(NSTimeInterval)time
 {
+    _shear = shear;
     [self setMatrix:[self matrixForTranslation:[self translationAtTime:time] rotation:[self rotationAtTime:time] shear:shear
                                          scale:[self scaleAtTime:time]]
              forTime:time];
@@ -249,6 +247,7 @@ static vector_float3 CharonMDLRotationAngles(matrix_float4x4 rotation)
 
 - (void)setScale:(vector_float3)scale forTime:(NSTimeInterval)time
 {
+    _scale = scale;
     [self setMatrix:[self matrixForTranslation:[self translationAtTime:time] rotation:[self rotationAtTime:time]
                                          shear:[self shearAtTime:time] scale:scale]
              forTime:time];

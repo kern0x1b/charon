@@ -176,10 +176,11 @@ static void CharonMDLBounds(MDLAxisAlignedBoundingBox *box, vector_float3 point)
             [parts addObject:part];
     if (!parts.count)
         return self;
-    if (![parts[0] isEqualToString:self.name])
-        return nil;
+    // The path is the one the object's own `path` prints, read from the receiver: the receiver is where
+    // the walk starts, so the first name is one of its children and not its own. That is what the
+    // system answers: /root/child is not under root, and /child is.
     MDLObject *at = self;
-    for (NSUInteger k = 1; k < parts.count; k++) {
+    for (NSUInteger k = 0; k < parts.count; k++) {
         MDLObject *next = nil;
         for (MDLObject *child in at.children.objects)
             if ([child.name isEqualToString:parts[k]]) {
@@ -228,9 +229,11 @@ static void CharonMDLBounds(MDLAxisAlignedBoundingBox *box, vector_float3 point)
             CharonMDLBounds(&result, transformed.xyz);
         }
     }
+    // Nothing contributed a box: the answer is the box no point is in, which is a maximum of zero and
+    // a minimum of minus one, as the system's own empty box is.
     if (result.minBounds[0] > result.maxBounds[0]) {
         result.minBounds = (vector_float3){0, 0, 0};
-        result.maxBounds = (vector_float3){0, 0, 0};
+        result.maxBounds = (vector_float3){-1, -1, -1};
     }
     return result;
 }

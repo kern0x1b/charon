@@ -104,54 +104,71 @@ own triangles pass through, widened by the patch radius.
   material property with its semantic and type, every voxel set operation - and `compare.py` matches
   them by key with the numbers compared to a stated tolerance. The verdict of the run in this tree:
   **242 measurements, 45 the same, 26 different, 196 one side only, at a tolerance of 5e-4.**
-- **What that run found.** The first run read **242 measurements, 45 the same, 26 different, 196 one
-  side only**. Two defects it found are fixed: a submesh whose index buffer came from a caller with
-  no allocator answered nil from `indexBufferAsIndexType:` instead of re-reading its indices, and
-  `vertexAttributeDataForAttributeNamed:asFormat:` reported the width of the attribute as the stride
-  between vertices. Closing the PLY reader and the material's defaults took the same run to **139 the
-  same, 24 different, 111 one side only** - a third of the one-sided lines gone, and every one of the
-  sixteen material properties now read identically on both sides.
-- **Fixed in this pass.**
-  1. The PLY reader produced **no objects at all**. Two causes: a header line is `element vertex 4`,
-     three words, and the parse asked for more than three, so no element was ever registered; and the
-     properties of an element were appended to an immutable empty array, which raised
-     `-[__NSArray0 addObject:]` and took the whole asset section of the probe with it. The ASCII form
-     now reads the same four vertices and two triangles the system does, out of the same header and
-     the same body.
-  2. A material carried two properties where the framework carries sixteen, because it took only the
-     base colour and the roughness of its scattering function. It now takes **every** property of the
-     function it was made with, with the values the host gives them by default: roughness 0.9, sheen
-     0.05, no anisotropy, both indices of refraction 1, ambient occlusion 0 and its scale 1, the
-     colours white where the framework's default is a white and black where it is a black.
-- **Still open, with both answers beside them.**
-  1. `MDLMesh.boundingBox` answers the inverted box - `-inf -inf -inf / inf inf inf` - on **every**
-     mesh the port makes, its own generators included, where the system answers the box of the
-     surface. The per-vertex reads of the same attribute through the same call are correct, so the
-     fault is in the box and not in the attribute data; it is not yet located.
-  2. The **binary** PLY form still produces no objects where the ASCII one now does; the binary branch
-     of the reader is not yet working.
-  3. The OBJ reader makes one mesh per group; the system makes one mesh with a submesh per group and
-     material (`solid_red`, `lid`), and holds five vertices where the port holds two for the same
-     face.
-  4. `MDLTransform` decomposes a matrix into its translation, rotation, shear and scale; the system
-     keeps the four it was given, so `scaleAtTime:` after `setMatrix:` of a diagonal matrix is
-     1, 1, 1 there and the matrix's own scale here.
-  5. The generators triangulate differently - the ellipsoid 63 vertices here against 72 there, the
-     cylinder 29 against 47 - and the plane's own box is `0 0 -inf / 0 0 inf` here against
-     `-1 0 -1 / 1 0 1` there.
-  6. A mesh built from buffers carries the system's own internal descriptor attributes - the probe
-     counts 31 - and the port's descriptor carries only the one it was given.
-  7. `MDLObject.objectAtPath:` finds the child on the system and not in the port: the path
-     `/root/child` is a name Apple resolves and a convention the port guessed.
-  8. An asset's objects take the **file's own name** on the system (`tri`, `tribin`) and none in the
-     port, and a loaded material is `red` or `PLY Material` there and the group name here.
-- **The 111 lines one side has and the other does not, named.** 96 of them are the per-vertex lines
-  of a mesh the two sides built with a different number of vertices, so they follow the vertex counts
-  above and are not a separate finding. The rest are the submesh-per-group-and-material lines the OBJ
-  model above accounts for, the `v3 uv` and the material property lines of the same, and the four
-  `plate` lines: the ASCII scene description is read by the port into a mesh the system also reads, and
-  the one-sided lines there are the name and the material the two give it. **No one-sided line is a
-  port feature the port has and the system lacks.**
+- **What that run found, and what came of it.** The first run read **242 measurements, 45 the same, 26
+  different, 196 one side only**. The tree now reads **248 measurements, 232 the same, 6 different, 24
+  one side only** - 248 because the probe itself was wrong about the box it handed the voxel array and
+  that measurement was added once the box was written the way the struct declares it. Every step of
+  that was a defect the run found, and every defect is below.
+- **Fixed, each found by the run.**
+  1. `simd_min` and `simd_max` take a three-element vector and hand the vector straight back on this
+     target, so every box grown with them stayed the box it started from. The two ends of a box are
+     now taken a component at a time, in one place.
+  2. `MDLAxisAlignedBoundingBox` declares **maxBounds first**, so the empty box written as
+     `{{+inf}, {-inf}}` put +inf in maxBounds and -inf in minBounds: a box that starts unbounded. It is
+     written from outside in now, and the emptiness test that follows it is a test.
+  3. The generators wrote their descriptor's attribute offsets as 12 and 24 - the width of the three
+     used lanes of a `vector_float3` - while `sizeof(vector_float3)` is 16, so every normal and every
+     texture coordinate was read out of the middle of a position. All four generators' boxes now equal
+     the system's.
+  4. `MDLMesh` and `MDLVoxelArray` answered the union of their children's boxes, which for an object
+     with no children is the zero box; they answer their own box now.
+  5. The binary PLY branch decoded the whole file as text, and the body of a binary file is not text,
+     so it came back nil and read nothing. The header is found in the bytes and decoded on its own.
+  6. The Wavefront reader made a mesh per group; it makes one mesh for the file with a submesh per
+     group and material, named as the file names them, with the vertices shared across the whole file.
+     A corner that names no normal or no coordinate says so, rather than saying "the first one" - the
+     fifth vertex of a lid is not the first corner of the face below it. Five vertices where there were
+     two, and the same five the system has.
+  7. `MDLTransform` decomposed a matrix into its four components; the system keeps the four it was
+     given, and answers its accessors from those. A matrix set outright now leaves them where they
+     were.
+  8. `objectAtPath:` read the first name of the path as the receiver's own; the path is relative to
+     the receiver, and the system answers `/root/child` as nil and `/child` as the child.
+  9. A node with no box of its own answered the zero box; the system's own empty box is a maximum of
+     zero and a minimum of minus one, and that is what the port answers.
+  10. The names an operation of a transform stack answers were left in a record that retained nothing,
+      so they dangled. The stack owns the names now.
+- **Still different, six measurements, with both answers beside them.**
+  1. **The generators' tessellation.** The ellipsoid of eight radial and six vertical segments is 72
+     vertices and 288 indices on the system and 63 and 288 in the port; the cylinder is 47 and 162
+     there and 29 and 144 here. The index count of the ellipsoid is the same, so the *surface* is the
+     same and the two differ only in where a vertex is shared. Which of the many valid tessellations
+     Apple picks is not something the header states.
+  2. **The descriptor of a mesh built from buffers.** The probe counts 31 attributes on the system and
+     one in the port: Apple's mesh carries its own internal attributes, which are not a thing a port
+     can read and has not been carried.
+  3. **The voxel array's index extent.** Both sides count two voxels out of the same data and both put
+     the point (0.9, 0.6, 0.4) at voxel (1, 1, 0) with the centre of (1, 1, 1) at 0.75 - but the
+     system derives the extent of the division as 1, 1, 0 out of eight bytes and the port as 2, 2, 2
+     out of the box and the voxel size. The union of two such arrays therefore counts two in the port
+     and three on the system, and the difference follows.
+- **The 24 measurements one side has and the other does not, named.** Six are the OBJ submesh lines the
+  group model now accounts for - the host names a submesh `solid_red` where the port names the two
+  `red` and `lid`, and the host's first submesh holds six indices where the port's holds its own
+  range. Nine are the `tri` and `tribin` name and material lines: the system takes a mesh's name from
+  its file's stem (`tri`, `tribin`) and names a material a polygon file names nothing `PLY Material`,
+  and the port takes neither from the file. Six are the `specular value` line of a material: the
+  system carries `specular` as a float and the port as a colour in the older scattering function and as
+  a float in the physically plausible one, so the two disagree on the property of the material a
+  loaded mesh is given. The last three are the tessellation counts above. **None is a port feature
+  the system lacks.**
+- **Not measured on the device**: no run on an iPad 2 running 6.1.3 and no run under `xmake emulate`
+  went with this pass. What the device adds is the one thing the host cannot answer: that these
+  classes' selectors resolve against the release's own runtime and a dylib of the port's loads beside
+  them.
+- **Reasoned, not measured**: the black-body curve of a colour-temperature swatch, the value noise
+  and cellular noise fields, and the cone's slope normal.
+
 - **Named divergences between the two SDK headers**, which is why the probe takes the two spellings as
   a compile-time flag and not as a runtime question: the macOS header's plane generator takes no
   `inwardNormals:` where the iOS one does, and the macOS `MDLTexture` initialiser takes an `isCube:`

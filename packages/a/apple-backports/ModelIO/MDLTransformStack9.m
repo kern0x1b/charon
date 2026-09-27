@@ -695,6 +695,10 @@ static matrix_double4x4 CharonMDLQuaternionMatrix(simd_quatd rotation)
 @implementation MDLTransformStack {
     NSMutableArray<id<MDLTransformOp>> *_ops;
     NSMutableDictionary<NSString *, MDLAnimatedValue *> *_values;
+    // The names the operations' records point at. A record holds the name without retaining it, so
+    // the stack is what keeps the string alive, and a name is still there when the operation is asked
+    // for it.
+    NSMutableArray<NSString *> *_names;
     BOOL _resetsTransform;
 }
 
@@ -705,6 +709,7 @@ static matrix_double4x4 CharonMDLQuaternionMatrix(simd_quatd rotation)
     if ((self = [super init])) {
         _ops = [[NSMutableArray alloc] init];
         _values = [[NSMutableDictionary alloc] init];
+        _names = [[NSMutableArray alloc] init];
         _resetsTransform = YES;
     }
     return self;
@@ -732,7 +737,8 @@ static matrix_double4x4 CharonMDLQuaternionMatrix(simd_quatd rotation)
 - (void)charon_addOp:(id<CharonMDLTransformOpRecord>)op named:(NSString *)name inverse:(bool)inverse
 {
     CharonMDLOpRecord *record = [op charon_record];
-    record->name = [name copy];
+    [_names addObject:name];
+    record->name = [_names lastObject];
     record->inverse = inverse;
     [_ops addObject:op];
     [_values setObject:[op charon_value] forKey:name];

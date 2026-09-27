@@ -34,7 +34,12 @@ for key, (value, line) in host.items():
         print('only the system answers: %s' % line)
         continue
     other = port[key][1]
-    if value is not None:
+    if value is None:
+        # A line with no number in it is a name or a set of names: the text is the measurement.
+        if line == other:
+            same += 1
+            continue
+    else:
         a, b = numbers(value), numbers(port[key][0] if port[key][0] is not None else '')
         if len(a) == len(b) and all(abs(x - y) <= tolerance for x, y in zip(a, b)):
             same += 1

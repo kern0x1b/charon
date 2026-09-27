@@ -333,7 +333,9 @@ static void reportObjectAndVoxels(void)
     put(@"object at path %d", [root objectAtPath:@"/root/child"] == child);
     put_box(@"object", [root boundingBoxAtTime:0]);
 
-    MDLAxisAlignedBoundingBox box = {{0, 0, 0}, {1, 1, 1}};
+    // maxBounds first, as the struct declares it: a box of the unit cube is a maximum of one and a
+    // minimum of zero, and written the other way round the framework rightly refuses it.
+    MDLAxisAlignedBoundingBox box = {{1, 1, 1}, {0, 0, 0}};
     // The signed shell field of a 4x4x4 division, all of it empty: one byte per voxel, as the header
     // says the data is.
     NSMutableData *empty = [NSMutableData dataWithLength:2 * 2 * 2];
