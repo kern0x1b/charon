@@ -27,7 +27,6 @@ package("appintents")
     -- port carries it, and the source tree it was built from otherwise, so the overlay is the same
     -- whether the package is installed or worked on in place.
     local function opt_backports_registry(package)
-        local carried = package:orderdeps and nil or nil
         for _, dep in ipairs(package:orderdeps() or {}) do
             if dep:name() == "apple-backports" then
                 return path.join(dep:installdir("share"))
@@ -84,6 +83,39 @@ package("appintents")
             table.insert(defs, "-DCHARON_APPINTENTS_LIFTED_HEADERS")
         end
 
+        -- `LocalizedStringResource`: this module carries the type when the runtime's Foundation has
+        -- not got it, and leaves it out when the platform brings its own. Which is which is measured
+        -- with a probe, not assumed, and the file is taken out of the source list either way - two
+        -- types of one name in one image is not something a caller could use.
+        local sources, carries = {}, false
+        for _, file in ipairs(os.files(path.join("Sources", "AppIntents", "**.swift"))) do
+            if path.filename(file) ~= "LocalizedStringResource.swift" then
+                table.insert(sources, file)
+            end
+        end
+        local platform_resource = path.join(probe_dir, "localized.swift")
+        io.writefile(platform_resource, "import Foundation\npublic func probe() -> LocalizedStringResource { return LocalizedStringResource(\"\") }")
+        local has = try {function ()
+            os.vrunv(swiftc, table.join(swift.runtime_flags({
+                architecture = package:arch(), deployment = minimum, sdk = sdk,
+                resources = path.join(runtime:installdir(), "lib", "swift"),
+                plugins = table.wrap((runtime:envs() or {}).SWIFT_PLUGIN_PATH)[1],
+                module = "CharonAppIntentsProbe", optimize = "none", prefix_map = os.curdir() .. "=/appintents"}),
+                {"-I", path.join(runtime:installdir(), "lib", "swift", "iphoneos"), "-typecheck", platform_resource}))
+            return true
+        end}
+        os.tryrm(platform_resource)
+        if has then
+            carries = true
+            table.insert(defs, "-DCHARON_APPINTENTS_CARRIES_LOCALIZED_STRING")
+            print("%s: this runtime's Foundation has LocalizedStringResource, the module uses the platform's and carries none",
+                  package:name())
+        else
+            table.insert(sources, path.join("Sources", "AppIntents", "LocalizedStringResource.swift"))
+            print("%s: this runtime's Foundation has no LocalizedStringResource, the module carries it (AppIntents' whole API is written in it)",
+                  package:name())
+        end
+
         -- The Foundation types AppIntents' API is written in that this runtime may not have yet. Each is
         -- measured, not assumed: a probe that uses the type the way the conformance does compiles only
         -- when the runtime has it and is available at the port's release, and only then is the block
@@ -138,7 +170,7 @@ package("appintents")
             module = "AppIntents", optimize = "fastest", prefix_map = os.curdir() .. "=/appintents"}),
             defs, overlay_flags, {"-I", swiftdir, "-emit-module", "-emit-module-path",
              path.join(module, package:arch() .. "-apple-ios.swiftmodule"), "-c"},
-            os.files(path.join("Sources", "AppIntents", "**.swift")), {"-o", path.join(objects, "AppIntents.o")})
+            sources, {"-o", path.join(objects, "AppIntents.o")})
         os.vrunv(swiftc, argv)
         os.vrunv(toolchain:tool("ar"), {"-rcs", path.join(package:installdir("lib"), "libAppIntents.a"), path.join(objects, "AppIntents.o")})
 
