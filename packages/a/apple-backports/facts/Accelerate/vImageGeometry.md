@@ -313,3 +313,51 @@ Four things the differential found on the way there, each measured and each in t
 the source are extended", and the turned picture is pulled back inside the frame rather than back-coloured.
 
 So the family is five functions, one loop and a table, and a check that says so.
+
+## The resampling filter, and what the shears need from it
+
+`ResamplingFilter` is a `void *` and opaque, and `vImage_Types.h` says it "holds precalculated filter
+coefficients for a resampling filter, such as a Lanczos or Gaussian resampling filter". So the port's filter
+object is its own layout, and what it has to hold is a **scale** and the kernel that scale implies - there
+is nothing else a caller can put in one, since the only two constructors take a scale (or a scale and a
+function of the caller's) and nothing reads the bytes.
+
+**What `vImageNewResamplingFilter(scale, flags)` answers, measured over thirteen scales from 0.25 to 2.0:**
+a filter is made for every positive scale, and `vImageGetResamplingFilterExtent` on it is
+
+| scale | 0.25 | 0.5 | 0.75 | 1.0 | 1.25 | 1.5 | 1.75 | 2.0 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| extent | 12 | 6 | 4 | 3 | 3 | 3 | 3 | 3 |
+
+so the kernel's support is **at least three pixels at every scale**, it grows as the scale shrinks, and it
+stops growing at three from a scale of one upwards. That is a real, publishable measurement and it is what
+the port's `vImageGetResamplingFilterExtent` has to answer.
+
+**What the shears do with one**, over a 5x5 `ARGB16U` source with a distinct value in every pixel and a
+backColor of zero:
+
+- a filter of scale 1.0 with `xTranslate` 0 and `shearSlope` 0 is an **exact copy**, so a unit-scale filter is
+  a kernel that does not move anything;
+- `xTranslate` of 1 shifts the source **one column left** and leaves the vacated column as the backColor, so
+  the shear is **destination to source** like the affine, and a positive translate pulls the source left;
+- `shearSlope` of 1 answers **interpolated** values - 5, 7, 17, 10, 23, 12, 28, 15, 34, 31, 37, none of which
+  is a source value - so a shear resamples linearly, and a filter of scale 2.0 or 0.5 with no slope at all
+  resamples too;
+- `vImageVerticalShear_ARGB16U` behaves the same way with the axes the other way round.
+
+**So the shears need the kernel's coefficients, and that is the next measurement.** They are not published:
+the header says the filter holds "precalculated filter coefficients" and nothing about what they are, and
+they are a function of both the scale and the fractional part of the mapped position. Reading them off is
+straightforward now that the convention is known - the shear is destination to source, a unit-scale filter
+with no slope is an exact copy, and the interpolated answers above are the kernel's weights showing through.
+For a shear of slope 0 the mapped position is exactly a source pixel, so a filter of scale *s* and a
+destination of a different width puts the kernel's weights on the table directly, and sweeping the scale in
+steps of 1/N and the translate through a whole pixel gives the whole kernel at that scale. From the extent
+table the kernel is at least three taps wide, so the sweep has to read three at a time.
+
+Until that is measured the port cannot answer a shear that rescales or shears, and a port that answered one
+with the header's "faithfully rounded" arithmetic and a guessed kernel would be wrong on every pixel of every
+shear - the same trap the ten-bit Y'CbCr path was. What the port *can* answer today, and has measured, is
+the exact-copy case: a unit-scale filter with no slope and no translate, which is what the twenty-four
+`rotate90`-style measurements reduce to.
+
