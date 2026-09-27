@@ -33,29 +33,52 @@ the last pose is 1.450 m along an arc whose position and attitude are known in c
 per frame: the angle between the attitude the reported camera transform carries and the attitude
 that produced the frame, and the distance between the reported camera position and the true one.
 
-**It found a real bug, and then it failed to pass.**
-
     spatial tracker differential: 30 frames, 5.73 degrees and 0.050 m a step,
       driven 1.450 m along the path, the last pose truth at 1.450 m
       rotation error: mean 1.60000 rad (91.673 deg), worst 2.90000 rad (166.158 deg)
       distance error: mean 0.66572 m, worst 0.99510 m
       tracking: no, 0 points, 0 planes
 
-1. **Fixed: the corner pick and the patch search shared one array.** `findFeatures` overwrote the
-   matched points before `matchFeaturesTurningBy:` could read them, so nothing was ever matched.
-   They are now two arrays — `_candidates` for what a frame offers and `_points` for what was
-   matched into it — and a corner the search did not match keeps its own identity for the next
-   frame. That is `CharonARTracker.m`'s two-array structure.
+**Those numbers are a failure, and they are reported as one.** The pose errors are what a tracker
+that never tracks looks like; nothing above is a claim that it works.
 
-2. **Open, and it is why the numbers above are the ones they are: the corner pick returns nothing
-   from the second frame on.** Measured, not assumed: 21 candidates on the first frame and **0** on
-   every frame after it, while the luma the tracker has read has a mean squared gradient of 5849 and
-   the first frame's identical loop found 895 positions above the score threshold. So the frame is
-   read and the texture is there, and the same loop in the same function on the next frame scores
-   every position below the threshold. Not yet located, and not worked around.
+### Fixed, and the fix was real
 
-**ARKit is therefore not deliverable yet.** The classes, the configurations and the `isSupported`
-answers are carried and the files compile; the tracking behind them does not run, and the honest
-statement is that a session would start, report frames, and carry no points. Everything the
-registry says about the classes is true; nothing it says is a claim that tracking works, and the
-next thing to do is the corner pick.
+1. **The corner pick and the patch search shared one array.** `findFeatures` overwrote the matched
+   points before `matchFeaturesTurningBy:` could read them, so nothing was ever matched, whatever
+   the frame contained. They are now two arrays - `_candidates` for what a frame offers, `_points`
+   for what was matched into it - and a corner the search did not match keeps its own identity into
+   the next frame. Found by the differential: 0 points and 0 planes, which is what a tracker that
+   never matches a point looks like.
+
+### Two bugs in the test surface, and one of them was instructive
+
+The first surface was a **hash of the world position**, which is the wrong scene for this test and
+the reason the pick found nothing. A hash has a large gradient energy but almost none of it across
+both directions at once, and the Shi-Tomasi score takes the *smaller* of the two eigenvalues of the
+structure tensor, so it rejects a stripe however strong the stripe is. The tracker was right and the
+test was wrong. Replacing it with three sines of the world coordinates - a surface with real
+two-dimensional structure - is what a corner detector is looking for.
+
+The frequencies then had to be reconciled with the sampling, and **that reconciliation is not
+finished**. Measured on the same 160x120 frame with the same score and the same threshold of 40:
+
+| spatial frequency of the surface | positions above the threshold | best score |
+| --- | --- | --- |
+| 7 to 13 per metre | 3 | 49.8 |
+| 90 to 140 per metre, camera at the origin | 936 | 47818.7 |
+| 90 to 140, camera on the driven path | **0 from the second frame on** | — |
+
+The last row is the open problem, and it is a property of the *harness*: at 2 m those frequencies
+project to roughly ten cycles per pixel, so a turn of 5.73 degrees a step walks the sampling
+straight through the aliasing, and a scene that is well sampled from the origin is not well sampled
+from a turned camera. The frame the tracker reads has a mean squared gradient of 5849 - the texture is
+there - and the same loop in the same function scores every position below the threshold. The fix is
+a surface band-limited to what the camera can actually see at that distance, which is a property of
+the test and not of the tracker.
+
+**ARKit is therefore not deliverable yet.** The classes, the configurations, the `isSupported`
+answers and the frame, anchor, hit-test and raycast plumbing are carried and the six files compile
+for armv7 / iOS 6.1.3 with no diagnostic. A session would start, report frames, and carry no points.
+Nothing in the registry claims otherwise, and the next thing to do is the corner pick: finish
+calibrating this harness, then read out the pose error it is built to measure.

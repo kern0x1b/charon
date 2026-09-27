@@ -49,6 +49,11 @@ static CharonTruth CharonTruthAt(int i, float stepAngle, float stepLength)
 }
 
 /// A vector turned by a quaternion, the same three cross products the tracker uses.
+static float clampf(float value, float low, float high)
+{
+    return value < low ? low : (value > high ? high : value);
+}
+
 static simd_float3 CharonRotated(simd_float3 v, simd_quatf q)
 {
     simd_float3 u = (simd_float3){q.vector.x, q.vector.y, q.vector.z};
@@ -78,10 +83,18 @@ static void CharonRenderFrame(uint8_t *luma, NSUInteger width, NSUInteger height
             simd_float3 turned = CharonRotated(direction, attitude);
             float distance = 2.0f / (turned.z < -0.01f ? -turned.z : 0.01f);
             simd_float3 hit = turned * distance + truth.translation;
-            uint32_t hash = (uint32_t)(int32_t)(hit.x * 37.0f) * 2654435761u
-                          ^ (uint32_t)(int32_t)(hit.z * 41.0f) * 2654435761u;
-            hash ^= hash >> 15;
-            luma[y * width + x] = (uint8_t)(hash & 0xff);
+            // A surface with real two-dimensional structure. A hash of the world position is the
+            // wrong scene for this test and the first version of this file used one: a hash has a large
+            // gradient energy but almost none of it across both directions at once, so the Shi-Tomasi
+            // score - which takes the *smaller* of the two eigenvalues of the structure tensor, and so
+            // rejects a stripe however strong it is - rightly finds no corners in it. Three sines of
+            // the world coordinates give the corners a corner detector is looking for.
+            // The frequencies matter: a surface whose detail is much wider than a few pixels
+            // gives a corner detector nothing to find on a frame this size - measured, 3 positions
+            // above the threshold at 7..13 and 936 at 90..140.
+            float value = 0.6f * sinf(hit.x * 90.0f) + 0.5f * cosf(hit.y * 120.0f)
+                         + 0.4f * sinf((hit.x + hit.z) * 70.0f) + 0.3f * cosf(hit.z * 140.0f);
+            luma[y * width + x] = (uint8_t)clampf(128.0f + value * 100.0f, 0.0f, 255.0f);
         }
     }
 }
