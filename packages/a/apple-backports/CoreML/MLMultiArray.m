@@ -254,6 +254,45 @@
     return @(charon_ml_array_get(&_array, (int64_t)idx));
 }
 
+/* The two ways Core ML asks a caller to read an array's bytes without the deprecated
+ * `dataPointer`: the block is handed the buffer and the length in bytes, and the buffer is only
+ * valid for as long as the block runs. Both answer the array's own buffer rather than a copy, so a
+ * caller that writes through the mutable one writes the array -- and, for an array over a pixel
+ * buffer, the buffer is locked for the length of the block, which is what Core ML's own
+ * documentation asks of a caller doing that. */
+- (void)getBytesWithHandler:(void (NS_NOESCAPE ^)(const void *bytes, NSInteger size))handler
+{
+    BOOL locked = NO;
+    if (handler == nil) {
+        return;
+    }
+    if (_pixelBuffer != NULL) {
+        locked = CVPixelBufferLockBaseAddress(_pixelBuffer, kCVPixelBufferLock_ReadOnly) == kCVReturnSuccess;
+    }
+    handler(_array.data, (NSInteger)(_array.count * charon_ml_type_size(_array.data_type)));
+    if (locked) {
+        CVPixelBufferUnlockBaseAddress(_pixelBuffer, kCVPixelBufferLock_ReadOnly);
+    }
+}
+
+- (void)getMutableBytesWithHandler:(void (NS_NOESCAPE ^)(void *bytes, NSInteger size, NSArray<NSNumber *> *strides))handler
+{
+    BOOL locked = NO;
+    if (handler == nil) {
+        return;
+    }
+    if (_pixelBuffer != NULL) {
+        locked = CVPixelBufferLockBaseAddress(_pixelBuffer, 0) == kCVReturnSuccess;
+    }
+    /* The strides go with the buffer because the framework may hand over a different backing store
+     * with different ones: a caller indexing with the strides it read from the property would read
+     * the wrong elements. The port's buffer is the array's own, so they are the array's own. */
+    handler(_array.data, (NSInteger)(_array.count * charon_ml_type_size(_array.data_type)), self.strides);
+    if (locked) {
+        CVPixelBufferUnlockBaseAddress(_pixelBuffer, 0);
+    }
+}
+
 - (void)setObject:(NSNumber *)object atIndexedSubscript:(NSInteger)idx
 {
     if (object == nil || idx < 0 || (size_t)idx >= _array.count) {

@@ -8,7 +8,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/CoreML/CoreML.md",
-   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tools/coreml/check-host.sh"
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tests/backports/host/coreml/run.sh"
   },
   {
    "api": "MLImageSize",
@@ -17,7 +17,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/CoreML/CoreML.md",
-   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tools/coreml/check-host.sh"
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tests/backports/host/coreml/run.sh"
   },
   {
    "api": "MLImageSizeConstraint",
@@ -26,7 +26,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/CoreML/CoreML.md",
-   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tools/coreml/check-host.sh"
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tests/backports/host/coreml/run.sh"
   },
   {
    "api": "MLModelConfiguration",
@@ -35,7 +35,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/CoreML/CoreML.md",
-   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tools/coreml/check-host.sh"
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tests/backports/host/coreml/run.sh"
   },
   {
    "api": "MLMultiArrayShapeConstraint",
@@ -44,7 +44,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/CoreML/CoreML.md",
-   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tools/coreml/check-host.sh"
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tests/backports/host/coreml/run.sh"
   },
   {
    "api": "MLSequenceConstraint",
@@ -53,7 +53,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/CoreML/CoreML.md",
-   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tools/coreml/check-host.sh"
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tests/backports/host/coreml/run.sh"
   },
   {
    "api": "+[MLModel modelWithContentsOfURL:configuration:error:]",
@@ -62,7 +62,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/CoreML/CoreML.md",
-   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tools/coreml/check-host.sh"
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tests/backports/host/coreml/run.sh"
   },
   {
    "api": "-[MLArrayBatchProvider initWithDictionary:error:]",
@@ -71,7 +71,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/CoreML/CoreML.md",
-   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tools/coreml/check-host.sh"
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tests/backports/host/coreml/run.sh"
   },
   {
    "api": "-[MLArrayBatchProvider initWithFeatureProviderArray:]",
@@ -80,7 +80,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/CoreML/CoreML.md",
-   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tools/coreml/check-host.sh"
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tests/backports/host/coreml/run.sh"
   },
   {
    "api": "-[MLModel predictionsFromBatch:error:]",
@@ -89,7 +89,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/CoreML/CoreML.md",
-   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tools/coreml/check-host.sh"
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tests/backports/host/coreml/run.sh"
   },
   {
    "api": "-[MLModel predictionsFromBatch:options:error:]",
@@ -98,7 +98,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/CoreML/CoreML.md",
-   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tools/coreml/check-host.sh"
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tests/backports/host/coreml/run.sh"
   },
   {
    "api": "MLArrayBatchProvider.array",
@@ -107,7 +107,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/CoreML/CoreML.md",
-   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tools/coreml/check-host.sh"
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tests/backports/host/coreml/run.sh"
   },
   {
    "api": "MLFeatureDescription.sequenceConstraint",
@@ -116,7 +116,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/CoreML/CoreML.md",
-   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tools/coreml/check-host.sh"
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tests/backports/host/coreml/run.sh"
   },
   {
    "api": "MLImageConstraint.sizeConstraint",
@@ -125,7 +125,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/CoreML/CoreML.md",
-   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tools/coreml/check-host.sh"
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tests/backports/host/coreml/run.sh"
   },
   {
    "api": "MLImageSize.pixelsHigh",
@@ -134,7 +134,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/CoreML/CoreML.md",
-   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tools/coreml/check-host.sh"
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tests/backports/host/coreml/run.sh"
   },
   {
    "api": "MLImageSize.pixelsWide",
@@ -143,7 +143,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/CoreML/CoreML.md",
-   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tools/coreml/check-host.sh"
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tests/backports/host/coreml/run.sh"
   },
   {
    "api": "MLImageSizeConstraint.enumeratedImageSizes",
@@ -152,7 +152,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/CoreML/CoreML.md",
-   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tools/coreml/check-host.sh"
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tests/backports/host/coreml/run.sh"
   },
   {
    "api": "MLImageSizeConstraint.pixelsHighRange",
@@ -161,7 +161,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/CoreML/CoreML.md",
-   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tools/coreml/check-host.sh"
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tests/backports/host/coreml/run.sh"
   },
   {
    "api": "MLImageSizeConstraint.pixelsWideRange",
@@ -170,7 +170,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/CoreML/CoreML.md",
-   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tools/coreml/check-host.sh"
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tests/backports/host/coreml/run.sh"
   },
   {
    "api": "MLImageSizeConstraint.type",
@@ -179,7 +179,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/CoreML/CoreML.md",
-   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tools/coreml/check-host.sh"
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tests/backports/host/coreml/run.sh"
   },
   {
    "api": "MLModel.configuration",
@@ -188,7 +188,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/CoreML/CoreML.md",
-   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tools/coreml/check-host.sh"
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tests/backports/host/coreml/run.sh"
   },
   {
    "api": "MLModelConfiguration.computeUnits",
@@ -197,7 +197,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/CoreML/CoreML.md",
-   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tools/coreml/check-host.sh"
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tests/backports/host/coreml/run.sh"
   },
   {
    "api": "MLMultiArrayConstraint.shapeConstraint",
@@ -206,7 +206,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/CoreML/CoreML.md",
-   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tools/coreml/check-host.sh"
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tests/backports/host/coreml/run.sh"
   },
   {
    "api": "MLMultiArrayShapeConstraint.enumeratedShapes",
@@ -215,7 +215,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/CoreML/CoreML.md",
-   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tools/coreml/check-host.sh"
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tests/backports/host/coreml/run.sh"
   },
   {
    "api": "MLMultiArrayShapeConstraint.sizeRangeForDimension",
@@ -224,7 +224,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/CoreML/CoreML.md",
-   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tools/coreml/check-host.sh"
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tests/backports/host/coreml/run.sh"
   },
   {
    "api": "MLMultiArrayShapeConstraint.type",
@@ -233,7 +233,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/CoreML/CoreML.md",
-   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tools/coreml/check-host.sh"
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tests/backports/host/coreml/run.sh"
   },
   {
    "api": "MLSequenceConstraint.countRange",
@@ -242,7 +242,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/CoreML/CoreML.md",
-   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tools/coreml/check-host.sh"
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tests/backports/host/coreml/run.sh"
   },
   {
    "api": "MLSequenceConstraint.valueDescription",
@@ -251,7 +251,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/CoreML/CoreML.md",
-   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tools/coreml/check-host.sh"
+   "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tests/backports/host/coreml/run.sh"
   }
  ]
 }

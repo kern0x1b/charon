@@ -8,7 +8,8 @@
  * Every value below was read out of a real Core ML on the host, through the framework's own
  * exported symbols, rather than written out from the name: the names are the specification's own
  * and give no hint of the value, and the error domain in particular is not the framework's name.
- * `tools/coreml/check-host.sh` records them again on every run and fails if one changes.
+ * tests/backports/host/coreml/run.sh records them again on every run -- under its own `const/` keys
+ * -- and fails if one of them ever differs.
  */
 #import <Foundation/Foundation.h>
 
