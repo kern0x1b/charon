@@ -10,8 +10,9 @@
 // (display-probe.m; its measurements are in facts/UIKit/UIDynamicAnimator.md M3). No public call says beforehand whether the
 // link call will fault; what the process can be asked is `[UIScreen screens]`, which agrees with the link's outcome at every point
 // measured, and which is a property of the process, not of the release: on 4.3 it was empty in every probe run (a view, a window, a
-// run loop turn, 30 s of them), and this program, which links the backports built for its release, finds one screen on 5.1.1, 6.0 and 6.1.3
-// (the same probe with no backports library finds none on 6.0, so a screen here is not the release's). With no screen the
+// run loop turn, 30 s of them), and this program, which links the backports built at the release's minimum (`apple_minimum` set to the release), finds one screen on 5.1.1, 6.0
+// and 6.1.3 (the same probe with no backports library finds none on 6.0, so a screen here is not the release's; whether the libraries' or the
+// binary's minimum OS is what changes it is not separated, M3). With no screen the
 // animators are kept from starting a link, the changes are made and the wake checks are skipped with a line each; the lifetimes,
 // which are about the observers and not the wake, run whole. The last line counts the checks that failed and those skipped: the run's
 // verdict (`pass`) is the exit status, which a skip leaves at 0.

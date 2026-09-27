@@ -74,8 +74,8 @@ static void fault(int signal_number, siginfo_t *info, void *context)
 // What the process's display is, by the public routes and the private one for comparison, then one display link (last: it may fault).
 static void report_and_link(BOOL screen)
 {
-    UIScreen *main = [UIScreen mainScreen];
-    printf("UIScreen mainScreen: %s\n", main ? [[main description] UTF8String] : "nil");
+    UIScreen *mainScreen = [UIScreen mainScreen];
+    printf("UIScreen mainScreen: %s\n", mainScreen ? [[mainScreen description] UTF8String] : "nil");
     printf("UIScreen screens: count %lu\n", (unsigned long)[[UIScreen screens] count]);
     Class display = NSClassFromString(@"CADisplay");
     id mainDisplay = [display respondsToSelector:@selector(mainDisplay)] ? [display performSelector:@selector(mainDisplay)] : nil;
@@ -91,7 +91,7 @@ static void report_and_link(BOOL screen)
     sigaction(SIGBUS, &action, NULL);
 
     Ticker *ticker = [Ticker new];
-    CADisplayLink *link = screen ? [main displayLinkWithTarget:ticker selector:@selector(tick:)]
+    CADisplayLink *link = screen ? [mainScreen displayLinkWithTarget:ticker selector:@selector(tick:)]
                                  : [CADisplayLink displayLinkWithTarget:ticker selector:@selector(tick:)];
     printf("display link: %s\n", link ? "an object" : "nil");
 }
