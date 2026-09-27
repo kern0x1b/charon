@@ -96,6 +96,7 @@ LIBRARIES = {
     -- and nothing else - it adds no C entry point and holds no .mm object, so it needs no
     -- archive.
     {name = "VideoToolboxBackports", folder = "VideoToolbox", frameworks = {"VideoToolbox", "CoreMedia", "CoreVideo", "CoreFoundation", "Foundation"}, libraries = {"FoundationBackports"}},
+    {name = "ModelIOBackports", folder = "ModelIO", frameworks = {"ModelIO", "CoreGraphics", "ImageIO", "MobileCoreServices", "Foundation"}, libraries = {"FoundationBackports", "MetalKitBackports"}},
 }
 PACKAGE = "org.charon.apple-backports"
 INSTALL_FOLDER = "/usr/lib/charon/" .. PACKAGE
