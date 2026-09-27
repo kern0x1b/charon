@@ -1,0 +1,45 @@
+{
+  "framework": "NotificationCenter",
+  "entries": [
+    {
+      "api": "NCWidgetProviding",
+      "kind": "protocol",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the port carries no class that conforms to it: a Today widget is the application's own view controller, and a class that declares the conformance emits the protocol in its own translation unit, so nothing is missing from a process that has one",
+      "effect": "not in the backports: NSProtocolFromString(\"NCWidgetProviding\") answers nil in a process with no conforming class",
+      "source": "the header of NCWidgetProviding.h in SDK 26.2; the release runs no widget host at all"
+    },
+    {
+      "api": "-[NCWidgetProviding widgetPerformUpdateWithCompletionHandler:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "it is the system asking the widget to refresh, and this release's system never asks, because it has no Notification Center and no widget host",
+      "effect": "nothing in the port calls it, so its completion handler is never run and no NCUpdateResult is ever passed to it",
+      "source": "the header of NCWidgetProviding.h in SDK 26.2"
+    },
+    {
+      "api": "-[NCWidgetProviding widgetActiveDisplayModeDidChange:withMaximumSize:]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the other message of the same pair, sent when a widget is shown at another mode, and the same wall: no widget is ever shown, so there is no mode to change and no maximum size to pass",
+      "effect": "nothing in the port calls it",
+      "source": "the header of NCWidgetProviding.h in SDK 26.2"
+    },
+    {
+      "api": "-[NCWidgetProviding widgetMarginInsetsForProposedMarginInsets:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "maximum": "10.0",
+      "status": "absent",
+      "reason": "the Notification Center asked the widget for the insets it would use, and the release's Notification Center does not exist; the header itself stops calling it on widgets linked against iOS 10 and later",
+      "effect": "nothing in the port calls it, so the insets the widget would have used are never asked for",
+      "source": "the header of NCWidgetProviding.h in SDK 26.2 (API_DEPRECATED ios(8.0, 10.0))"
+    }
+  ]
+}

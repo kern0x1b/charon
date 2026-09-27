@@ -1,0 +1,60 @@
+{
+  "framework": "UserNotificationsUI",
+  "entries": [
+    {
+      "api": "NSExtensionContext.notificationActions",
+      "kind": "property",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the array is the extension's own and the extension owns it: the port's NSExtensionContext already keeps state of its own, as registry/Foundation/ios8extensioncontext.json records",
+      "effect": "copied in and copied out, and an extension that set none reads an empty array rather than nil; the system that would draw those actions in the notification, and the response that would come back through -didReceiveNotificationResponse:completionHandler:, belong to the extension host this release does not run",
+      "facts": "facts/UserNotificationsUI/UserNotificationsUI.md",
+      "source": "the header of UNNotificationContentExtension.h in SDK 26.2; the release has no app extensions at all, read from the port's own facts/Foundation/NSExtensionContext.md"
+    },
+    {
+      "api": "-[NSExtensionContext performNotificationDefaultAction]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the action belongs to a notification the system delivered to an extension, and iOS 6 delivers no notification to an extension: there is no notification and no action to perform",
+      "effect": "does nothing, and says so once in the log the first time it is called - the same answer the port's NSExtensionContext already gives for completing a request, cancelling one and opening a URL",
+      "facts": "facts/UserNotificationsUI/UserNotificationsUI.md",
+      "source": "the header of UNNotificationContentExtension.h in SDK 26.2; facts/Foundation/NSExtensionContext.md"
+    },
+    {
+      "api": "-[NSExtensionContext dismissNotificationContentExtension]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "there is no content extension to dismiss: the release runs no extension host, and the port's NSExtensionContext holds no presented controller either",
+      "effect": "does nothing, and says so once in the log the first time it is called",
+      "facts": "facts/UserNotificationsUI/UserNotificationsUI.md",
+      "source": "the header of UNNotificationContentExtension.h in SDK 26.2; facts/Foundation/NSExtensionContext.md"
+    },
+    {
+      "api": "-[NSExtensionContext mediaPlayingStarted]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "it tells the system the extension's media has started, so the system can put playback controls in the notification and stop the sound with it; this release's system takes no playback controls in a notification, and there is no notification to take them in",
+      "effect": "the started state is kept on the context, and nothing is shown for it; says so once in the log the first time it is called",
+      "facts": "facts/UserNotificationsUI/UserNotificationsUI.md",
+      "source": "the header of UNNotificationContentExtension.h in SDK 26.2"
+    },
+    {
+      "api": "-[NSExtensionContext mediaPlayingPaused]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the other half of the same message, and the same wall: what it would stop is a sound this release's system never started for a notification",
+      "effect": "the paused state is kept on the context, and nothing is stopped for it; says so once in the log the first time it is called",
+      "facts": "facts/UserNotificationsUI/UserNotificationsUI.md",
+      "source": "the header of UNNotificationContentExtension.h in SDK 26.2"
+    }
+  ]
+}

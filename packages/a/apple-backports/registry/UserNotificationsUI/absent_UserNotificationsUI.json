@@ -1,0 +1,85 @@
+{
+  "framework": "UserNotificationsUI",
+  "entries": [
+    {
+      "api": "UNNotificationContentExtension",
+      "kind": "protocol",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the port carries no class that conforms to it: the content extension is the application's own view controller, and a class that declares the conformance emits the protocol in its own translation unit",
+      "effect": "not in the backports: NSProtocolFromString(\"UNNotificationContentExtension\") answers nil in a process with no conforming class, and a process with one answers its own",
+      "source": "the header of UNNotificationContentExtension.h in SDK 26.2; the release runs no extension host at all"
+    },
+    {
+      "api": "-[UNNotificationContentExtension didReceiveNotification:]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "it is a message the system sends to the extension's own view controller, and this release's system sends no notification to any extension",
+      "effect": "nothing in the port calls it; an extension that implements it is never called, and no notification is ever handed to it",
+      "source": "the header of UNNotificationContentExtension.h in SDK 26.2"
+    },
+    {
+      "api": "-[UNNotificationContentExtension didReceiveNotificationResponse:completionHandler:]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the same message with the response the user chose, and the same wall: the release draws no notification, offers no action and returns no response",
+      "effect": "nothing in the port calls it, so its completion handler is never run",
+      "source": "the header of UNNotificationContentExtension.h in SDK 26.2"
+    },
+    {
+      "api": "-[UNNotificationContentExtension mediaPlay]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "it is the extension telling its own player to start, through the extension context; the port's -mediaPlayingStarted exists for the other direction and answers as recorded there, and this one is the application's own player being called by the application's own code",
+      "effect": "nothing in the port calls it; an extension that wires it to its player still works, because the call never passes through the backports",
+      "source": "the header of UNNotificationContentExtension.h in SDK 26.2"
+    },
+    {
+      "api": "-[UNNotificationContentExtension mediaPause]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the other half of the same pair, for the same reason",
+      "effect": "nothing in the port calls it",
+      "source": "the header of UNNotificationContentExtension.h in SDK 26.2"
+    },
+    {
+      "api": "UNNotificationContentExtension.mediaPlayPauseButtonType",
+      "kind": "property",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "it is the extension's own answer about the button it draws; the port draws no button and asks no extension about one",
+      "effect": "nothing in the port reads it; the protocol itself is not carried, so there is no accessor to call",
+      "source": "the header of UNNotificationContentExtension.h in SDK 26.2"
+    },
+    {
+      "api": "UNNotificationContentExtension.mediaPlayPauseButtonFrame",
+      "kind": "property",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the frame of the button the extension itself places, in the extension's own view; no host ever asks for it and no button is ever placed by the port",
+      "effect": "nothing in the port reads it",
+      "source": "the header of UNNotificationContentExtension.h in SDK 26.2"
+    },
+    {
+      "api": "UNNotificationContentExtension.mediaPlayPauseButtonTintColor",
+      "kind": "property",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the tint of that same button, for the same reason",
+      "effect": "nothing in the port reads it",
+      "source": "the header of UNNotificationContentExtension.h in SDK 26.2"
+    }
+  ]
+}

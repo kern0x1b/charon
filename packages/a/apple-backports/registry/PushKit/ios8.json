@@ -66,6 +66,47 @@
       "effect": "answers \"PKPushTypeFileProvider\", never delivered",
       "facts": "facts/PushKit/PushKit.md",
       "source": "the constant's own name, unverified against the shared cache; see facts/PushKit/PushKit.md"
+    },
+    {
+      "api": "-[PKPushRegistry init]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the header marks -init unavailable and names -initWithQueue: as the designated initialiser, with nil documented to mean the main queue, so a registry made any other way is a registry on the main queue",
+      "effect": "returns -initWithQueue:nil, so [[PKPushRegistry alloc] init] gives the same registry the header's own nil describes: a real one, registered in the live set, delivering on the main queue",
+      "facts": "facts/PushKit/PushKit.md",
+      "source": "the header of PKPushRegistry.h in SDK 26.2 for the contract (-init NS_UNAVAILABLE, -initWithQueue: NS_DESIGNATED_INITIALIZER with nil documented as the main queue); the same answer the port gives +[UICollectionViewDiffableDataSource new], whose -init the header also marks unavailable"
+    },
+    {
+      "api": "PKPushRegistryDelegate",
+      "kind": "protocol",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the port carries no class that conforms to it: the delegate is the application's own object, and a class that declares the conformance emits the protocol in its own translation unit, so nothing is missing from a process that has one",
+      "effect": "the protocol is not in the backports: NSProtocolFromString(\"PKPushRegistryDelegate\") answers nil in a process that has no conforming class, and a process that has one answers the object's own",
+      "source": "the header of PKPushRegistry.h in SDK 26.2; the release's own armv7 6.1.3 cache has no push surface to deliver anything to (apsd wakes no application for any push), read by objc.binary_inventory"
+    },
+    {
+      "api": "-[PKPushRegistryDelegate pushRegistry:didReceiveIncomingPushWithPayload:forType:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "it would have to be a message the port sends, and there is no path that sends it: apsd on iOS 6.1.3 wakes no application for any push, VoIP or otherwise, and only Apple's own service issues a VoIP push, so no payload ever reaches a registry",
+      "effect": "no code path in the port calls this; a delegate that implements it is simply never called, as on a device whose push service delivers nothing to it",
+      "source": "the header of PKPushRegistry.h in SDK 26.2 (deprecated in iOS 11 in favour of the completion-handler form); facts/PushKit/PushKit.md, which already records the same seam for PKPushPayload"
+    },
+    {
+      "api": "-[PKPushRegistryDelegate pushRegistry:didReceiveIncomingPushWithPayload:forType:withCompletionHandler:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the same seam as the form without the completion handler: apsd on iOS 6.1.3 wakes no application for a VoIP push, and only Apple's own service sends one, so the port has no payload to hand over and no completion to run",
+      "effect": "no code path in the port calls this; a delegate that implements it is never called, and its completion handler is never run, because there was no push to complete",
+      "source": "the header of PKPushRegistry.h in SDK 26.2; facts/PushKit/PushKit.md"
     }
   ]
 }
