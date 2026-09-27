@@ -1,0 +1,308 @@
+{
+  "framework": "AVFAudio",
+  "entries": [
+    {
+      "api": "-[AVAudioEnvironmentDistanceAttenuationParameters distanceAttenuationModel]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFAudio/AVAudioEnvironmentNode.md",
+      "source": "SDK 16.4 and 26.2 AVFAudio AVAudioEnvironmentNode.h and AVAudioTypes.h, over the release's own 3D mixer: kAudioUnitSubType_SpatialMixer (the SDK's name for the release's kAudioUnitSubType_AU3DMixerEmbedded, same value, iOS 2.0) with the k3DMixerParam_* set in the release's own AudioToolbox AudioUnitParameters.h, and the release's whole AUGraph and AudioUnit families, measured on the real armv7 6.1.3 cache with dyld.load"
+    },
+    {
+      "api": "-[AVAudioEnvironmentDistanceAttenuationParameters maximumDistance]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFAudio/AVAudioEnvironmentNode.md",
+      "source": "SDK 16.4 and 26.2 AVFAudio AVAudioEnvironmentNode.h and AVAudioTypes.h, over the release's own 3D mixer: kAudioUnitSubType_SpatialMixer (the SDK's name for the release's kAudioUnitSubType_AU3DMixerEmbedded, same value, iOS 2.0) with the k3DMixerParam_* set in the release's own AudioToolbox AudioUnitParameters.h, and the release's whole AUGraph and AudioUnit families, measured on the real armv7 6.1.3 cache with dyld.load"
+    },
+    {
+      "api": "-[AVAudioEnvironmentDistanceAttenuationParameters referenceDistance]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFAudio/AVAudioEnvironmentNode.md",
+      "source": "SDK 16.4 and 26.2 AVFAudio AVAudioEnvironmentNode.h and AVAudioTypes.h, over the release's own 3D mixer: kAudioUnitSubType_SpatialMixer (the SDK's name for the release's kAudioUnitSubType_AU3DMixerEmbedded, same value, iOS 2.0) with the k3DMixerParam_* set in the release's own AudioToolbox AudioUnitParameters.h, and the release's whole AUGraph and AudioUnit families, measured on the real armv7 6.1.3 cache with dyld.load"
+    },
+    {
+      "api": "-[AVAudioEnvironmentDistanceAttenuationParameters rolloffFactor]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFAudio/AVAudioEnvironmentNode.md",
+      "source": "SDK 16.4 and 26.2 AVFAudio AVAudioEnvironmentNode.h and AVAudioTypes.h, over the release's own 3D mixer: kAudioUnitSubType_SpatialMixer (the SDK's name for the release's kAudioUnitSubType_AU3DMixerEmbedded, same value, iOS 2.0) with the k3DMixerParam_* set in the release's own AudioToolbox AudioUnitParameters.h, and the release's whole AUGraph and AudioUnit families, measured on the real armv7 6.1.3 cache with dyld.load"
+    },
+    {
+      "api": "-[AVAudioEnvironmentDistanceAttenuationParameters setDistanceAttenuationModel:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFAudio/AVAudioEnvironmentNode.md",
+      "source": "SDK 16.4 and 26.2 AVFAudio AVAudioEnvironmentNode.h and AVAudioTypes.h, over the release's own 3D mixer: kAudioUnitSubType_SpatialMixer (the SDK's name for the release's kAudioUnitSubType_AU3DMixerEmbedded, same value, iOS 2.0) with the k3DMixerParam_* set in the release's own AudioToolbox AudioUnitParameters.h, and the release's whole AUGraph and AudioUnit families, measured on the real armv7 6.1.3 cache with dyld.load"
+    },
+    {
+      "api": "-[AVAudioEnvironmentDistanceAttenuationParameters setMaximumDistance:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFAudio/AVAudioEnvironmentNode.md",
+      "source": "SDK 16.4 and 26.2 AVFAudio AVAudioEnvironmentNode.h and AVAudioTypes.h, over the release's own 3D mixer: kAudioUnitSubType_SpatialMixer (the SDK's name for the release's kAudioUnitSubType_AU3DMixerEmbedded, same value, iOS 2.0) with the k3DMixerParam_* set in the release's own AudioToolbox AudioUnitParameters.h, and the release's whole AUGraph and AudioUnit families, measured on the real armv7 6.1.3 cache with dyld.load"
+    },
+    {
+      "api": "-[AVAudioEnvironmentDistanceAttenuationParameters setReferenceDistance:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFAudio/AVAudioEnvironmentNode.md",
+      "source": "SDK 16.4 and 26.2 AVFAudio AVAudioEnvironmentNode.h and AVAudioTypes.h, over the release's own 3D mixer: kAudioUnitSubType_SpatialMixer (the SDK's name for the release's kAudioUnitSubType_AU3DMixerEmbedded, same value, iOS 2.0) with the k3DMixerParam_* set in the release's own AudioToolbox AudioUnitParameters.h, and the release's whole AUGraph and AudioUnit families, measured on the real armv7 6.1.3 cache with dyld.load"
+    },
+    {
+      "api": "-[AVAudioEnvironmentDistanceAttenuationParameters setRolloffFactor:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFAudio/AVAudioEnvironmentNode.md",
+      "source": "SDK 16.4 and 26.2 AVFAudio AVAudioEnvironmentNode.h and AVAudioTypes.h, over the release's own 3D mixer: kAudioUnitSubType_SpatialMixer (the SDK's name for the release's kAudioUnitSubType_AU3DMixerEmbedded, same value, iOS 2.0) with the k3DMixerParam_* set in the release's own AudioToolbox AudioUnitParameters.h, and the release's whole AUGraph and AudioUnit families, measured on the real armv7 6.1.3 cache with dyld.load"
+    },
+    {
+      "api": "-[AVAudioEnvironmentNode applicableRenderingAlgorithms]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFAudio/AVAudioEnvironmentNode.md",
+      "source": "SDK 16.4 and 26.2 AVFAudio AVAudioEnvironmentNode.h and AVAudioTypes.h, over the release's own 3D mixer: kAudioUnitSubType_SpatialMixer (the SDK's name for the release's kAudioUnitSubType_AU3DMixerEmbedded, same value, iOS 2.0) with the k3DMixerParam_* set in the release's own AudioToolbox AudioUnitParameters.h, and the release's whole AUGraph and AudioUnit families, measured on the real armv7 6.1.3 cache with dyld.load"
+    },
+    {
+      "api": "-[AVAudioEnvironmentNode distanceAttenuationParameters]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFAudio/AVAudioEnvironmentNode.md",
+      "source": "SDK 16.4 and 26.2 AVFAudio AVAudioEnvironmentNode.h and AVAudioTypes.h, over the release's own 3D mixer: kAudioUnitSubType_SpatialMixer (the SDK's name for the release's kAudioUnitSubType_AU3DMixerEmbedded, same value, iOS 2.0) with the k3DMixerParam_* set in the release's own AudioToolbox AudioUnitParameters.h, and the release's whole AUGraph and AudioUnit families, measured on the real armv7 6.1.3 cache with dyld.load"
+    },
+    {
+      "api": "-[AVAudioEnvironmentNode init]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFAudio/AVAudioEnvironmentNode.md",
+      "source": "SDK 16.4 and 26.2 AVFAudio AVAudioEnvironmentNode.h and AVAudioTypes.h, over the release's own 3D mixer: kAudioUnitSubType_SpatialMixer (the SDK's name for the release's kAudioUnitSubType_AU3DMixerEmbedded, same value, iOS 2.0) with the k3DMixerParam_* set in the release's own AudioToolbox AudioUnitParameters.h, and the release's whole AUGraph and AudioUnit families, measured on the real armv7 6.1.3 cache with dyld.load"
+    },
+    {
+      "api": "-[AVAudioEnvironmentNode listenerAngularOrientation]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFAudio/AVAudioEnvironmentNode.md",
+      "source": "SDK 16.4 and 26.2 AVFAudio AVAudioEnvironmentNode.h and AVAudioTypes.h, over the release's own 3D mixer: kAudioUnitSubType_SpatialMixer (the SDK's name for the release's kAudioUnitSubType_AU3DMixerEmbedded, same value, iOS 2.0) with the k3DMixerParam_* set in the release's own AudioToolbox AudioUnitParameters.h, and the release's whole AUGraph and AudioUnit families, measured on the real armv7 6.1.3 cache with dyld.load"
+    },
+    {
+      "api": "-[AVAudioEnvironmentNode listenerPosition]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFAudio/AVAudioEnvironmentNode.md",
+      "source": "SDK 16.4 and 26.2 AVFAudio AVAudioEnvironmentNode.h and AVAudioTypes.h, over the release's own 3D mixer: kAudioUnitSubType_SpatialMixer (the SDK's name for the release's kAudioUnitSubType_AU3DMixerEmbedded, same value, iOS 2.0) with the k3DMixerParam_* set in the release's own AudioToolbox AudioUnitParameters.h, and the release's whole AUGraph and AudioUnit families, measured on the real armv7 6.1.3 cache with dyld.load"
+    },
+    {
+      "api": "-[AVAudioEnvironmentNode listenerVectorOrientation]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFAudio/AVAudioEnvironmentNode.md",
+      "source": "SDK 16.4 and 26.2 AVFAudio AVAudioEnvironmentNode.h and AVAudioTypes.h, over the release's own 3D mixer: kAudioUnitSubType_SpatialMixer (the SDK's name for the release's kAudioUnitSubType_AU3DMixerEmbedded, same value, iOS 2.0) with the k3DMixerParam_* set in the release's own AudioToolbox AudioUnitParameters.h, and the release's whole AUGraph and AudioUnit families, measured on the real armv7 6.1.3 cache with dyld.load"
+    },
+    {
+      "api": "-[AVAudioEnvironmentNode nextAvailableInputBus]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFAudio/AVAudioEnvironmentNode.md",
+      "source": "SDK 16.4 and 26.2 AVFAudio AVAudioEnvironmentNode.h and AVAudioTypes.h, over the release's own 3D mixer: kAudioUnitSubType_SpatialMixer (the SDK's name for the release's kAudioUnitSubType_AU3DMixerEmbedded, same value, iOS 2.0) with the k3DMixerParam_* set in the release's own AudioToolbox AudioUnitParameters.h, and the release's whole AUGraph and AudioUnit families, measured on the real armv7 6.1.3 cache with dyld.load"
+    },
+    {
+      "api": "-[AVAudioEnvironmentNode outputType]",
+      "kind": "method",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "facts": "facts/AVFAudio/AVAudioEnvironmentNode.md",
+      "source": "SDK 16.4 and 26.2 AVFAudio AVAudioEnvironmentNode.h and AVAudioTypes.h, over the release's own 3D mixer: kAudioUnitSubType_SpatialMixer (the SDK's name for the release's kAudioUnitSubType_AU3DMixerEmbedded, same value, iOS 2.0) with the k3DMixerParam_* set in the release's own AudioToolbox AudioUnitParameters.h, and the release's whole AUGraph and AudioUnit families, measured on the real armv7 6.1.3 cache with dyld.load",
+      "effect": "AVAudioEnvironmentOutputTypeAuto, the header's own first case, for a device with no named output",
+      "reason": "the mixer's output is a single bus and the release names no output device behind it"
+    },
+    {
+      "api": "-[AVAudioEnvironmentNode outputVolume]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFAudio/AVAudioEnvironmentNode.md",
+      "source": "SDK 16.4 and 26.2 AVFAudio AVAudioEnvironmentNode.h and AVAudioTypes.h, over the release's own 3D mixer: kAudioUnitSubType_SpatialMixer (the SDK's name for the release's kAudioUnitSubType_AU3DMixerEmbedded, same value, iOS 2.0) with the k3DMixerParam_* set in the release's own AudioToolbox AudioUnitParameters.h, and the release's whole AUGraph and AudioUnit families, measured on the real armv7 6.1.3 cache with dyld.load"
+    },
+    {
+      "api": "-[AVAudioEnvironmentNode renderingAlgorithm]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFAudio/AVAudioEnvironmentNode.md",
+      "source": "SDK 16.4 and 26.2 AVFAudio AVAudioEnvironmentNode.h and AVAudioTypes.h, over the release's own 3D mixer: kAudioUnitSubType_SpatialMixer (the SDK's name for the release's kAudioUnitSubType_AU3DMixerEmbedded, same value, iOS 2.0) with the k3DMixerParam_* set in the release's own AudioToolbox AudioUnitParameters.h, and the release's whole AUGraph and AudioUnit families, measured on the real armv7 6.1.3 cache with dyld.load"
+    },
+    {
+      "api": "-[AVAudioEnvironmentNode reverbParameters]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFAudio/AVAudioEnvironmentNode.md",
+      "source": "SDK 16.4 and 26.2 AVFAudio AVAudioEnvironmentNode.h and AVAudioTypes.h, over the release's own 3D mixer: kAudioUnitSubType_SpatialMixer (the SDK's name for the release's kAudioUnitSubType_AU3DMixerEmbedded, same value, iOS 2.0) with the k3DMixerParam_* set in the release's own AudioToolbox AudioUnitParameters.h, and the release's whole AUGraph and AudioUnit families, measured on the real armv7 6.1.3 cache with dyld.load"
+    },
+    {
+      "api": "-[AVAudioEnvironmentNode setListenerAngularOrientation:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFAudio/AVAudioEnvironmentNode.md",
+      "source": "SDK 16.4 and 26.2 AVFAudio AVAudioEnvironmentNode.h and AVAudioTypes.h, over the release's own 3D mixer: kAudioUnitSubType_SpatialMixer (the SDK's name for the release's kAudioUnitSubType_AU3DMixerEmbedded, same value, iOS 2.0) with the k3DMixerParam_* set in the release's own AudioToolbox AudioUnitParameters.h, and the release's whole AUGraph and AudioUnit families, measured on the real armv7 6.1.3 cache with dyld.load"
+    },
+    {
+      "api": "-[AVAudioEnvironmentNode setListenerPosition:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFAudio/AVAudioEnvironmentNode.md",
+      "source": "SDK 16.4 and 26.2 AVFAudio AVAudioEnvironmentNode.h and AVAudioTypes.h, over the release's own 3D mixer: kAudioUnitSubType_SpatialMixer (the SDK's name for the release's kAudioUnitSubType_AU3DMixerEmbedded, same value, iOS 2.0) with the k3DMixerParam_* set in the release's own AudioToolbox AudioUnitParameters.h, and the release's whole AUGraph and AudioUnit families, measured on the real armv7 6.1.3 cache with dyld.load"
+    },
+    {
+      "api": "-[AVAudioEnvironmentNode setListenerVectorOrientation:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFAudio/AVAudioEnvironmentNode.md",
+      "source": "SDK 16.4 and 26.2 AVFAudio AVAudioEnvironmentNode.h and AVAudioTypes.h, over the release's own 3D mixer: kAudioUnitSubType_SpatialMixer (the SDK's name for the release's kAudioUnitSubType_AU3DMixerEmbedded, same value, iOS 2.0) with the k3DMixerParam_* set in the release's own AudioToolbox AudioUnitParameters.h, and the release's whole AUGraph and AudioUnit families, measured on the real armv7 6.1.3 cache with dyld.load"
+    },
+    {
+      "api": "-[AVAudioEnvironmentNode setOutputVolume:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFAudio/AVAudioEnvironmentNode.md",
+      "source": "SDK 16.4 and 26.2 AVFAudio AVAudioEnvironmentNode.h and AVAudioTypes.h, over the release's own 3D mixer: kAudioUnitSubType_SpatialMixer (the SDK's name for the release's kAudioUnitSubType_AU3DMixerEmbedded, same value, iOS 2.0) with the k3DMixerParam_* set in the release's own AudioToolbox AudioUnitParameters.h, and the release's whole AUGraph and AudioUnit families, measured on the real armv7 6.1.3 cache with dyld.load"
+    },
+    {
+      "api": "-[AVAudioEnvironmentNode setRenderingAlgorithm:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFAudio/AVAudioEnvironmentNode.md",
+      "source": "SDK 16.4 and 26.2 AVFAudio AVAudioEnvironmentNode.h and AVAudioTypes.h, over the release's own 3D mixer: kAudioUnitSubType_SpatialMixer (the SDK's name for the release's kAudioUnitSubType_AU3DMixerEmbedded, same value, iOS 2.0) with the k3DMixerParam_* set in the release's own AudioToolbox AudioUnitParameters.h, and the release's whole AUGraph and AudioUnit families, measured on the real armv7 6.1.3 cache with dyld.load"
+    },
+    {
+      "api": "-[AVAudioEnvironmentReverbParameters enable]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFAudio/AVAudioEnvironmentNode.md",
+      "source": "SDK 16.4 and 26.2 AVFAudio AVAudioEnvironmentNode.h and AVAudioTypes.h, over the release's own 3D mixer: kAudioUnitSubType_SpatialMixer (the SDK's name for the release's kAudioUnitSubType_AU3DMixerEmbedded, same value, iOS 2.0) with the k3DMixerParam_* set in the release's own AudioToolbox AudioUnitParameters.h, and the release's whole AUGraph and AudioUnit families, measured on the real armv7 6.1.3 cache with dyld.load"
+    },
+    {
+      "api": "-[AVAudioEnvironmentReverbParameters filterParameters]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "facts": "facts/AVFAudio/AVAudioEnvironmentNode.md",
+      "source": "SDK 16.4 and 26.2 AVFAudio AVAudioEnvironmentNode.h and AVAudioTypes.h, over the release's own 3D mixer: kAudioUnitSubType_SpatialMixer (the SDK's name for the release's kAudioUnitSubType_AU3DMixerEmbedded, same value, iOS 2.0) with the k3DMixerParam_* set in the release's own AudioToolbox AudioUnitParameters.h, and the release's whole AUGraph and AudioUnit families, measured on the real armv7 6.1.3 cache with dyld.load",
+      "effect": "AVAudioEnvironmentOutputTypeAuto, the header's own first case, for a device with no named output",
+      "reason": "the mixer's output is a single bus and the release names no output device behind it"
+    },
+    {
+      "api": "-[AVAudioEnvironmentReverbParameters level]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFAudio/AVAudioEnvironmentNode.md",
+      "source": "SDK 16.4 and 26.2 AVFAudio AVAudioEnvironmentNode.h and AVAudioTypes.h, over the release's own 3D mixer: kAudioUnitSubType_SpatialMixer (the SDK's name for the release's kAudioUnitSubType_AU3DMixerEmbedded, same value, iOS 2.0) with the k3DMixerParam_* set in the release's own AudioToolbox AudioUnitParameters.h, and the release's whole AUGraph and AudioUnit families, measured on the real armv7 6.1.3 cache with dyld.load"
+    },
+    {
+      "api": "-[AVAudioEnvironmentReverbParameters loadFactoryPreset:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "facts": "facts/AVFAudio/AVAudioEnvironmentNode.md",
+      "source": "SDK 16.4 and 26.2 AVFAudio AVAudioEnvironmentNode.h and AVAudioTypes.h, over the release's own 3D mixer: kAudioUnitSubType_SpatialMixer (the SDK's name for the release's kAudioUnitSubType_AU3DMixerEmbedded, same value, iOS 2.0) with the k3DMixerParam_* set in the release's own AudioToolbox AudioUnitParameters.h, and the release's whole AUGraph and AudioUnit families, measured on the real armv7 6.1.3 cache with dyld.load",
+      "effect": "kept and read back; the mixer of this release has no factory presets and no preset parameter",
+      "reason": "measured against the release's own k3DMixerParam_ set and its AVFAudio docs; see the facts file"
+    },
+    {
+      "api": "-[AVAudioEnvironmentReverbParameters setEnable:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFAudio/AVAudioEnvironmentNode.md",
+      "source": "SDK 16.4 and 26.2 AVFAudio AVAudioEnvironmentNode.h and AVAudioTypes.h, over the release's own 3D mixer: kAudioUnitSubType_SpatialMixer (the SDK's name for the release's kAudioUnitSubType_AU3DMixerEmbedded, same value, iOS 2.0) with the k3DMixerParam_* set in the release's own AudioToolbox AudioUnitParameters.h, and the release's whole AUGraph and AudioUnit families, measured on the real armv7 6.1.3 cache with dyld.load"
+    },
+    {
+      "api": "-[AVAudioEnvironmentReverbParameters setLevel:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFAudio/AVAudioEnvironmentNode.md",
+      "source": "SDK 16.4 and 26.2 AVFAudio AVAudioEnvironmentNode.h and AVAudioTypes.h, over the release's own 3D mixer: kAudioUnitSubType_SpatialMixer (the SDK's name for the release's kAudioUnitSubType_AU3DMixerEmbedded, same value, iOS 2.0) with the k3DMixerParam_* set in the release's own AudioToolbox AudioUnitParameters.h, and the release's whole AUGraph and AudioUnit families, measured on the real armv7 6.1.3 cache with dyld.load"
+    },
+    {
+      "api": "AVAudioEnvironmentDistanceAttenuationParameters",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFAudio/AVAudioEnvironmentNode.md",
+      "source": "SDK 16.4 and 26.2 AVFAudio AVAudioEnvironmentNode.h and AVAudioTypes.h, over the release's own 3D mixer: kAudioUnitSubType_SpatialMixer (the SDK's name for the release's kAudioUnitSubType_AU3DMixerEmbedded, same value, iOS 2.0) with the k3DMixerParam_* set in the release's own AudioToolbox AudioUnitParameters.h, and the release's whole AUGraph and AudioUnit families, measured on the real armv7 6.1.3 cache with dyld.load"
+    },
+    {
+      "api": "AVAudioEnvironmentNode",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFAudio/AVAudioEnvironmentNode.md",
+      "source": "SDK 16.4 and 26.2 AVFAudio AVAudioEnvironmentNode.h and AVAudioTypes.h, over the release's own 3D mixer: kAudioUnitSubType_SpatialMixer (the SDK's name for the release's kAudioUnitSubType_AU3DMixerEmbedded, same value, iOS 2.0) with the k3DMixerParam_* set in the release's own AudioToolbox AudioUnitParameters.h, and the release's whole AUGraph and AudioUnit families, measured on the real armv7 6.1.3 cache with dyld.load"
+    },
+    {
+      "api": "AVAudioEnvironmentReverbParameters",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFAudio/AVAudioEnvironmentNode.md",
+      "source": "SDK 16.4 and 26.2 AVFAudio AVAudioEnvironmentNode.h and AVAudioTypes.h, over the release's own 3D mixer: kAudioUnitSubType_SpatialMixer (the SDK's name for the release's kAudioUnitSubType_AU3DMixerEmbedded, same value, iOS 2.0) with the k3DMixerParam_* set in the release's own AudioToolbox AudioUnitParameters.h, and the release's whole AUGraph and AudioUnit families, measured on the real armv7 6.1.3 cache with dyld.load"
+    }
+  ]
+}
