@@ -635,12 +635,6 @@ public struct IntentDeprecation<ReplacementIntent: AppIntent> {
     }
 }
 
-/// An intent that opens another app.
-public protocol OpenIntent: SystemIntent {
-    associatedtype Target: AppEntity
-    static var target: Target.Type { get }
-}
-
 /// An intent the app can undo.
 public protocol UndoableIntent: SystemIntent {
     var undoManager: CharonUndoManager { get }

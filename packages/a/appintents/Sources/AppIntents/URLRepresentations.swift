@@ -242,6 +242,16 @@ public enum CharonURL {
     /// The URL a caller gets when the string it wrote is not one, which never traps.
     public static let placeholder = URL(string: "\(scheme)://")!
 
+    /// The handler that opens a URL. There is no LaunchServices on these releases to ask, so this is
+    /// the port's own seam: a caller that wants a URL opened installs it, and one that does not gets
+    /// the open recorded and nothing else.
+    public static var handler: ((URL) -> Bool)?
+
+    /// Open a URL, which is what `OpenURLIntent.perform()` does.
+    public static func open(_ url: URL) {
+        _ = handler?(url)
+    }
+
     /// The identifier a URL of the module's own form names, which is the path with the scheme taken
     /// off and the literal parts dropped.
     public static func identifier(from url: URL) -> String {
