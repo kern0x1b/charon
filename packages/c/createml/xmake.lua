@@ -73,11 +73,16 @@ package("createml")
         -- on - nothing is built behind an `-disable-availability-checking` - and the whole compile is
         -- one `-wmo` unit per module, the way the runtime's own overlays are built.
         --
-        -- The `CoreML` module needs the *lifted* headers: the SDK marks `MLMultiArrayDataType` and
-        -- the rest of `MLMultiArray.h` `ios(11.0)` and the port's release has no CoreML, so
-        -- `registry/CoreML/createml-shapedarray.json` lowers it. Without the lift in force this
-        -- compile fails with "only available in iOS 11.0 or newer", which is the whole reason that
-        -- registry entry exists.
+        -- The `CoreML` module needs the *lifted* headers, and not only its own umbrella. The SDK
+        -- marks `MLMultiArrayDataType` and the rest of `MLMultiArray.h` `ios(11.0)` and the port's
+        -- release has no CoreML, so `registry/CoreML/createml-shapedarray.json` lowers it — and a
+        -- lowered availability only reaches a compile through the VFS overlay the lift wrote, which
+        -- the runtime that was built with the backports hands on in `CHARON_SWIFT_LIFTED_HEADERS`.
+        -- Without it the compile fails with "cannot find type 'MLMultiArrayDataType' in scope", which
+        -- is what the first build of this package did, and which is the whole reason that registry
+        -- entry exists.
+        local lifted = table.wrap((runtime:envs() or {}).CHARON_SWIFT_LIFTED_HEADERS)
+        local overlay = #lifted > 0 and {"-vfsoverlay", table.concat(lifted, path.envsep())} or {}
         for index, module in ipairs(modules) do
             local folder = path.join(install, module .. ".swiftmodule")
             os.mkdir(folder)
@@ -94,7 +99,7 @@ package("createml")
                 resources = path.join(runtime:installdir(), "lib", "swift"),
                 plugins = table.wrap((runtime:envs() or {}).SWIFT_PLUGIN_PATH)[1],
                 module = module, optimize = "fastest", prefix_map = os.curdir() .. "=/createml"}),
-                header or {}, {"-I", install, "-emit-module", "-emit-module-path",
+                header or {}, overlay, {"-I", install, "-emit-module", "-emit-module-path",
                  path.join(folder, package:arch() .. "-apple-ios.swiftmodule"), "-c"},
                 os.files(sources[index]), {"-o", path.join(objects, module .. ".o")})
             os.vrunv(swiftc, argv)
