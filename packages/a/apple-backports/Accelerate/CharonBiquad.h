@@ -32,7 +32,7 @@ typedef struct CharonBiquadCell {
     double threshold;   // its interp_threshold
     double state[2];    // the transposed direct form II state, s1 and s2
     int active;         // SetActiveFilters, 1 until a call says otherwise
-    int interpolates;   // 1 for a float setup, 0 for a double one: see CharonBiquadApproachesTarget
+    int interpolates;   // 1 for a float setup, whose coefficients approach their targets, 0 for a double one
 } CharonBiquadCell;
 
 // What the two setups have in common, and what each of them spells with its own struct.
