@@ -191,19 +191,20 @@ package("matter")
         -- -nostdinc++ with the port's own libc++ headers: the SDK carries the libc++ of iOS 6 in usr/include, which
         -- the SDK's own headers reach (usr/include/assert.h:44 pulls in c++/v1/stdlib.h), and those are written for the
         -- older compiler and break on this one - _LIBCPP_INLINE_VISIBILITY is a macro this compiler does not define.
-        -- -Wno-unguarded-availability-new, and this is not a loosened tolerance but a change of subject. The framework's
-        -- own headers mark a member with the iOS release Matter shipped it in - MTRAttributePath's label and
-        -- auxiliaryType are iOS 17, its readPathsSupported and simultaneousWritesSupported iOS 18 - and this library
-        -- *is* the Matter framework, so a member of it is carried by this library whatever release Apple shipped it in,
-        -- and the mark does not describe this release's answer. What it must still catch is a call to the *SDK's* own
-        -- newer API, and the link is where that is decided: an SDK function this release does not have is not in this
-        -- release's library, so clang cannot link the call, and the dylib that links is the one the port ships. The
-        -- registry says which rows this library carries, and the lift lowers the SDK's headers for what the backports
-        -- implement; neither of those reaches the framework's own headers, which is why the mark is answered here.
+        -- The framework's own build configuration, from src/darwin/Framework/Configs/Project.xcconfig:4, which is
+        -- "MTR_NO_AVAILABILITY=1 MTR_ENABLE_PROVISIONAL=1 MTR_ENABLE_UNSTABLE_API=1". MTR_NO_AVAILABILITY makes
+        -- MTR_AVAILABLE expand to nothing, and MTR_ENABLE_PROVISIONAL is what makes MTR_PROVISIONALLY_AVAILABLE the
+        -- plain export instead of NS_UNAVAILABLE - which is the first thing a build of the framework has to have:
+        -- without it every member zap-generated of a newer Matter release (MTRAttributePath's label and auxiliaryType,
+        -- MTRDataTypeSemanticTagStruct in full) is declared NS_UNAVAILABLE by MTRDefines.h:75, and its own use of it is
+        -- a hard error that no warning flag turns into a warning. These are the framework's own three switches, not
+        -- this recipe's judgement: the same project compiles its own availability tests with
+        -- "-UMTR_NO_AVAILABILITY -Wno-unguarded-availability-new", so the marks are off for the framework and on
+        -- where they are the thing under test.
         local wrapper = table.join(compiled, {"-fobjc-arc", "-fno-c++-static-destructors",
                                              "-fmacro-prefix-map=" .. staged .. "/=",
                                              "-nostdinc++", "-isystem", path.join(package:dep("libcxx"):installdir("include"), "c++", "v1"),
-                                             "-Wno-unguarded-availability-new",
+                                             "-DMTR_NO_AVAILABILITY=1", "-DMTR_ENABLE_PROVISIONAL=1", "-DMTR_ENABLE_UNSTABLE_API=1",
                                              "-DCHIP_HAVE_CONFIG_H=1", "-DCHIP_CONFIG_SKIP_APP_SPECIFIC_GENERATED_HEADER_INCLUDES=1",
                                              "-DCHIP_CONFIG_GLOBALS_NO_DESTRUCT=1"})
         local objects = {}

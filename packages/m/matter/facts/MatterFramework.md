@@ -71,22 +71,30 @@ commission, pair and subscribe need a device and a daemon, and this host has nei
 emulator call test, which calls every method the port's library carries and requires that none of them crashes - not
 by a differential, because there is nothing on the other side to be differential against.
 
-## The framework's own availability marks
+## The framework's own availability switches
 
-The framework's headers mark a member with the iOS release Matter shipped it in - `MTRAttributePath`'s `label` and
-`auxiliaryType` are iOS 17, its `readPathsSupported` and `simultaneousWritesSupported` iOS 18,
-`MTRDataTypeSemanticTagStruct.mfgCode` iOS 17 - and the first build of the wrapper refused every one of them as
-unavailable at 6.1.3. This library *is* the Matter framework: a member of it is carried by this library whatever release
-Apple shipped it in, so the mark does not describe this release's answer. The wrapper is therefore compiled with
-`-Wno-unguarded-availability-new`, and what it must still catch is a call to the **SDK's** own newer API - which the
-link decides, because an SDK function this release does not have is not in this release's library and clang cannot
-link the call. The registry says which rows this library carries, and the lift lowers the SDK's headers for what the
-backports implement; neither reaches the framework's own headers, which is why the mark is answered in the recipe.
+The framework's headers mark a member with the iOS release Matter shipped it in, and a member of a *newer* Matter
+release is worse than marked: `MTRDefines.h:75` makes `MTR_PROVISIONALLY_AVAILABLE` expand to `NS_UNAVAILABLE`
+unless `MTR_ENABLE_PROVISIONAL` is set. The first build of the wrapper therefore refused `MTRDataTypeSemanticTagStruct`
+and its `mfgCode`, `MTRAttributePath`'s `label` and `auxiliaryType`, its `readPathsSupported` and
+`simultaneousWritesSupported` - and as *explicitly* unavailable, which is a hard error, not a warning any `-Wno-` flag
+turns off.
 
-The follow-up this leaves, said rather than hidden: the principled shape is for the lift to lower the framework's own
-headers the way it lowers the SDK's, from the matter package's registry, instead of the recipe answering the mark at
-the compile. That is a change to `modules/apple/lift.lua` and a registry of 24 647 rows, and it is the next step
-rather than this one.
+The framework's own build says what to do, in `src/darwin/Framework/Configs/Project.xcconfig:4`:
+
+    GCC_PREPROCESSOR_DEFINITIONS = $(inherited) MTR_NO_AVAILABILITY=1 MTR_ENABLE_PROVISIONAL=1 MTR_ENABLE_UNSTABLE_API=1
+
+All three are now the recipe's flags, which is the whole answer: the framework compiles itself with the availability
+marks off and with the provisional and unstable API on, because it is the thing that ships them. The same project
+compiles its own availability tests (`MTRAvailabilityTests.m`) with `-UMTR_NO_AVAILABILITY
+-Wno-unguarded-availability-new`, so the marks are off for the framework and on exactly where they are the thing
+under test. That is upstream's own arrangement, read from its own build, and this recipe adds no judgement of its own.
+
+**What my first attempt got wrong, since it is the kind of thing worth recording:** I reached for
+`-Wno-unguarded-availability-new` and reasoned that the link would still catch an SDK call the release lacks. It does
+catch that, and it was still the wrong fix: the marks in question are `NS_UNAVAILABLE`, which is a hard error and not
+the diagnostic that flag names, so the build failed with the very same six diagnostics. The right answer was three lines
+of the framework's own xcconfig, which I had not read yet.
 
 ## What the port's release does not have, and what the build does about it
 
