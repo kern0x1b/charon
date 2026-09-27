@@ -61,6 +61,11 @@ public struct ActivityContent<State>: Sendable where State: Decodable, State: En
     /// How relevant this activity is against the others, from 0 to 1.
     public let relevanceScore: Double
 
+    /// What is shown for the content, the way the framework's own printed form reads it.
+    public var description: String {
+        return "ActivityContent(state: \(state), staleDate: \(staleDate.map { "\($0)" } ?? "nil"), relevanceScore: \(relevanceScore))"
+    }
+
     public init(state: State, staleDate: Date?, relevanceScore: Double = 0.0) {
         self.state = state
         self.staleDate = staleDate
@@ -109,6 +114,7 @@ public struct AlertConfiguration: Equatable, Sendable {
 
     public var title: LocalizedStringResource
     public var body: LocalizedStringResource
+
     public var sound: AlertSound
 
     public init(title: LocalizedStringResource, body: LocalizedStringResource, sound: AlertSound) {
@@ -167,6 +173,9 @@ public enum ActivityAuthorizationError: Error, CustomNSError, LocalizedError, Ha
     case malformedActivityIdentifier
     /// The request is missing the content the activity needs.
     case nilContent
+    /// The system would not reconnect to the activity, which it says when the app asks again for an
+    /// activity it already has and the daemon will not hand back.
+    case reconnectNotPermitted
 
     public static var errorDomain: String { return "ActivityKit.ActivityAuthorizationError" }
 
@@ -184,6 +193,7 @@ public enum ActivityAuthorizationError: Error, CustomNSError, LocalizedError, Ha
         case .unentitled: return 10
         case .malformedActivityIdentifier: return 11
         case .nilContent: return 12
+        case .reconnectNotPermitted: return 13
         }
     }
 
@@ -201,6 +211,7 @@ public enum ActivityAuthorizationError: Error, CustomNSError, LocalizedError, Ha
         case .unentitled: return "The app is not entitled to Live Activities."
         case .malformedActivityIdentifier: return "The activity's identifier is not one the system issued."
         case .nilContent: return "The activity has no content."
+        case .reconnectNotPermitted: return "The system will not reconnect to the activity."
         }
     }
 
