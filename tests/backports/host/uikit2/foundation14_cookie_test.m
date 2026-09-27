@@ -19,7 +19,7 @@ static NSString *describe(NSArray *cookies, BOOL port)
 {
     NSMutableString *text = [NSMutableString string];
     for (NSHTTPCookie *cookie in cookies) {
-        NSDictionary *properties = port ? ((id (*)(id, SEL, id))objc_msgSend)(cookie, NSSelectorFromString(@"charon_properties:"), cookie.properties) : cookie.properties;
+        NSDictionary *properties = port ? ((id (*)(id, SEL, id))objc_msgSend)(cookie, NSSelectorFromString(@"charonHostCharon_properties:"), cookie.properties) : cookie.properties;
         [text appendFormat:@"[%@=%@ %@ %@ %@] ", cookie.name, cookie.value, policy_of(cookie, port), properties[@"SameSite"], cookie.path];
     }
     return text;
