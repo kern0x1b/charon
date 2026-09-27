@@ -1954,8 +1954,34 @@ function lift(opt)
             table.insert(lifted_filters, filter_of(entry))
         end
     end
+    -- A kept entry is asked over the overlay only where the overlay can move what it answers: the overlay changes a mark only
+    -- where the lift edited one (edits, regional), and adds declarations only to the classes it redeclares members on (a member of
+    -- such a class may match one). Where none of the marks of the entry's declarations is at an edited place, what it answers is what
+    -- it answered before. `skipped` counts those, in the result.
+    -- (A declaration lowered through a region is given its own raw attribute in the overlay, and clang leaves the file out of the location of
+    -- an attribute written in the file it printed last, so marks() sees none over the overlay: the `regional` clause guards a change the
+    -- check could not see either way, and no fixture can make it fail.)
+    local function edited(mark)
+        return edits[mark.file] and (edits[mark.file][mark.line .. ":" .. mark.col] or mark.declaration and (regional[mark.file] or {})[mark.declaration])
+    end
+    local before, touched, skipped = {}, {}, 0
     for api in pairs(kept) do
-        table.insert(lifted_filters, filter_of(listed[api]))
+        local entry = listed[api]
+        local member = member_api(api:gsub("%(%)$", ""))
+        touched[api] = member and members[member.owner] ~= nil
+        for _, node in ipairs(dump(filter_of(entry))) do
+            if matches(entry, node) then
+                for _, mark in ipairs(marks(node)) do
+                    before[api] = (not before[api] or later(before[api], mark.introduced)) and mark.introduced or before[api]
+                    touched[api] = touched[api] or edited(mark) and true
+                end
+            end
+        end
+        if touched[api] then
+            table.insert(lifted_filters, filter_of(entry))
+        else
+            skipped = skipped + 1
+        end
     end
     prefetch(lifted_filters, vfs)
     for name, target in pairs(lowered_types) do
@@ -1986,23 +2012,16 @@ function lift(opt)
     end
     for api in pairs(kept) do
         local entry = listed[api]
-        local before, after
-        for _, node in ipairs(dump(filter_of(entry))) do
-            if matches(entry, node) then
-                for _, mark in ipairs(marks(node)) do
-                    before = (not before or later(before, mark.introduced)) and mark.introduced or before
-                end
-            end
-        end
-        for _, node in ipairs(dump(filter_of(entry), vfs)) do
+        local after
+        for _, node in ipairs(touched[api] and dump(filter_of(entry), vfs) or {}) do
             if matches(entry, node) then
                 for _, mark in ipairs(marks(node)) do
                     after = (not after or later(after, mark.introduced)) and mark.introduced or after
                 end
             end
         end
-        if before and after and later(before, after) then
-            table.insert(failures, string.format("%s is %s and was lowered from iOS %s to %s", api, entry.status, before, after))
+        if before[api] and after and later(before[api], after) then
+            table.insert(failures, string.format("%s is %s and was lowered from iOS %s to %s", api, entry.status, before[api], after))
         end
     end
     if #failures > 0 then
@@ -2041,8 +2060,8 @@ function lift(opt)
         end
     end
     local classes, rest, kinds = split_unmatched(unmatched, listed)
-    -- `alone`: the queries asked one at a time, which no loop asked for ahead of itself
-    return {alone = alone, vfs = vfs, lifted = lifted, headers = #sorted_files, implemented = #entries, unmatched = rest, kinds = kinds,
+    -- `alone`: the queries asked one at a time, which no loop asked for ahead of itself; `skipped`: the kept entries not asked over the overlay
+    return {alone = alone, skipped = skipped, vfs = vfs, lifted = lifted, headers = #sorted_files, implemented = #entries, unmatched = rest, kinds = kinds,
             classes = classes, undeclared = undeclared, types = lowered_types, kept_types = kept_types}
 end
 
