@@ -398,3 +398,40 @@ exactly that - 12, 6, 4, 3 for scales 0.25, 0.5, 0.75, 1.0, and constant at 3 fr
 so the support and the two constructors are settled and publishable. The coefficient curve is not, and until
 it is, a port that answered a rescaling shear would be guessing.
 
+## The kernel on a float shear: the clipping explanation confirmed
+
+The `ARGB16U` sweep was clipped and that is why its weights neither summed to one nor stayed symmetric:
+`ARGB16U` is **unsigned**, so every negative lobe of the kernel clamped to zero and the rest saturated.
+Redone on `vImageHorizontalShear_PlanarF` - a float channel, nothing to clamp - with a background of 0.5 and
+a delta of 1.0, so a negative weight shows as a value *below* 0.5, the answers are completely different:
+
+| xTranslate | the `ARGB16U` weights, clipped | the `PlanarF` weights |
+| --- | --- | --- |
+| 0.125 | - | `0.97265  0.12065  -0.03060  0.00184` |
+| 0.250 | - | `0.27101  -0.06800  0.00738` |
+| 0.500 | `0.0244  0.6114` | `0.61141  -0.13587  0.02446` |
+
+They are **symmetric about the sample, carry the negative lobes, and sum to exactly 1.000000** - which is
+what a normalised interpolation kernel is and is what the integer sweep could not show. So the clipping
+diagnosis is right, and the integer types' weights in the first table are the float kernel's weights after
+clamping and saturating, not the kernel.
+
+Two runs give the sum and each weight without assuming normalisation: every pixel at the background `B`
+gives `dest0 = B * sum(w)`, and one pixel at `D` with the rest at `B` gives
+`dest_p = B * sum(w) + (D - B) * w_p`, so `w_p = (dest_p - dest0) / (D - B)`. Both are in
+`probe-kernelf.m`, and the raw answers are in `kernel-float.txt`.
+
+**The Lanczos fit is not yet established, and the fault is in the probe's indexing rather than in the
+system.** `probe-kernelfit.m` prints each weight beside `sinc(x)*sinc(x/a)` at the tap's distance, which
+removes the guesswork - and it shows the same tap carrying the same weight at two different destinations,
+which a convolution cannot do. So the tap index that sweep reports is not the destination-independent one
+the fit needs, and until that is right the residuals are meaningless: the fit prints ~1.0, which is a
+misalignment, not a disagreement with Lanczos. The weights themselves are good - symmetric, normalised, with
+the lobes - and what is needed is the *destination-to-source* direction of the shear's mapping read off a
+single unambiguous case, after which `L(x) = sinc(x)*sinc(x/3)` at the distance and `a = 3` against `a = 5` is
+one comparison per phase.
+
+That is the state: the kernel is measured and its nature settled - a normalised symmetric interpolation
+kernel with negative lobes, on floats, with the support the documented Lanczos support predicts from the
+extent table - and the identification of which Lanczos is one indexing fix away.
+
