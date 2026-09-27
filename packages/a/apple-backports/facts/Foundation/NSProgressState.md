@@ -12,9 +12,23 @@ for the device run).
 The header: `-isIndeterminate` returns YES when the total or the completed count is **less than
 zero**, and NO when both are zero, in which case `-fractionCompleted` is 1.0. The host answers **YES**
 for both zero (measured: a fresh `NSProgress` with no units answers YES, and one with 10 of 10 units
-answers NO), so the rule the port follows is the measured one: a total of zero or less, or a negative
-completed count. Where the header and the host disagree, the host is followed, and the divergence is
-here rather than hidden.
+answers NO). So the port follows the host, and the rule is the one measured over seven pairs rather
+than the one guessed first:
+
+| total | completed | the host | the port |
+| --- | --- | --- | --- |
+| 0 | 0 | YES | YES |
+| 0 | 1 | **NO** | NO |
+| 10 | 5 | NO | NO |
+| 10 | 10 | NO | NO |
+| 100 | 1 | NO | NO |
+| -1 | 0 | YES | YES |
+| 10 | -1 | YES | YES |
+
+A negative total, a negative completed count, or both counts zero. The first version of this said "a
+total of zero or less", which answers YES for the second row where the host answers NO; the
+differential found it. Where the header and the host disagree, the host is followed, and the divergence
+is here rather than hidden.
 
 `-pause` and `-resume` set and clear the flag; the file `NSProgress+Additions.m` has the two handlers
 the header describes, and this file has the flag they set.

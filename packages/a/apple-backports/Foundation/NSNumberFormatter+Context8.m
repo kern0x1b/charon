@@ -40,7 +40,7 @@ static NSString *charon_grouped(NSString *text, NSUInteger minimum)
             [out insertString:[NSString stringWithFormat:@"%C", character] atIndex:0];
             continue;
         }
-        if (run)
+        if (run >= minimum && run)
             [out insertString:separator atIndex:0];
         run = 0;
         [out insertString:[NSString stringWithFormat:@"%C", character] atIndex:0];

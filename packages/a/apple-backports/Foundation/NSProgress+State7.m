@@ -21,7 +21,11 @@ static char CharonProgressResumingKey;
 
 - (BOOL)isIndeterminate
 {
-    return self.totalUnitCount <= 0 || self.completedUnitCount < 0;
+    /* Measured over the seven pairs the differential holds: a negative total, a negative completed
+       count, or both counts zero. A total of zero with work already done is not indeterminate, which
+       a total of zero on its own would wrongly say. */
+    return self.totalUnitCount < 0 || self.completedUnitCount < 0 ||
+           (self.totalUnitCount == 0 && self.completedUnitCount == 0);
 }
 
 - (BOOL)isPaused
