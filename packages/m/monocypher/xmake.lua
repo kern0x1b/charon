@@ -1,9 +1,13 @@
 package("monocypher")
     set_homepage("https://monocypher.org")
-    set_description("Monocypher 4.0.2, the curves and the AEAD HAP pairs with: X25519, Ed25519 and ChaCha20-Poly1305 (the IETF construction, which is the one HAP's session keys use) and BLAKE2b for the key derivation, unmodified, as a static library whose every symbol is hidden, for the image that links it in")
+    set_description("Monocypher 4.0.2, the curves and the AEAD HAP pairs with: X25519, Ed25519 and ChaCha20-Poly1305 (the IETF construction, which is the one HAP's session keys use) and the hash the key derivation is built on, unmodified, as a static library whose every symbol is hidden, for the image that links it in")
     set_license("BSD-2-Clause OR CC0-1.0")
     set_policy("package.strict_compatibility", true)
 
+    -- The sources come from Monocypher's own tarball, not from a copy in this tree: xmake builds a
+    -- package in its own source directory, which does not hold a vendored file, and a recipe that
+    -- compiled beside itself failed the gate with "no such file or directory: 'monocypher.c'". The
+    -- sha256 below pins the tarball, so the bytes are the release the description names.
     add_urls("https://monocypher.org/download/monocypher-$(version).tar.gz")
     add_versions("4.0.2", "38d07179738c0c90677dba3ceb7a7b8496bcfea758ba1a53e803fed30ae0879c")
     add_links("Monocypher")
@@ -11,32 +15,44 @@ package("monocypher")
     add_configs("recipe", {description = "The digest of this recipe, so a changed flag is a different library.", default = hash.strhash128(hash.sha256(path.join(os.scriptdir(), "xmake.lua"))), type = "string", readonly = true})
 
     -- Hidden, for the reason Box2D's recipe gives: libHomeKitBackports.dylib exports what HomeKit
-    -- does, and nothing a second copy of Monocypher in the process could bind to. The sources are
-    -- vendored rather than fetched, so the tree carries exactly the 4.0.2 release this recipe names
-    -- -- Monocypher's own site is where the tarball is taken from when the package is built fresh, and
-    -- the vendored copy is what the digest below pins.
+    -- does, and nothing a second copy of Monocypher in the process could bind to. The two sources the
+    -- tarball ships under src/, and the optional Ed25519 under src/optional/, are laid out side by side
+    -- in the build directory because monocypher-ed25519.c includes "monocypher.h" and the release
+    -- keeps them in different folders.
     local FLAGS = {"-Os", "-fvisibility=hidden", "-fvisibility-inlines-hidden", "-DCONFIG_64_BITS"}
 
     on_install("iphoneos", function (package)
         local toolchain = assert(package:toolchains(), "monocypher is built with the apple-ios toolchain")[1]
         toolchain:load()
+        -- xmake strips the tarball's top folder, so what the release ships as
+        -- monocypher-$(version)/src/monocypher.c is at src/monocypher.c here. Naming the release folder
+        -- is what the gate reported: "cannot copy file monocypher-4.0.2/src/monocypher.c, file not
+        -- found!".
+        local staged = path.join("build", "src")
+        os.mkdir(staged)
+        for _, name in ipairs({"monocypher.c", "monocypher.h", "optional/monocypher-ed25519.c", "optional/monocypher-ed25519.h"}) do
+            os.cp(path.join("src", name), path.join(staged, path.filename(name)))
+        end
         local target = {"-target", package:arch() .. "-apple-ios", "-miphoneos-version-min=" .. toolchain:config("deployment"),
-                        "-isysroot", toolchain:config("sdkdir"), "-I" .. os.curdir()}
+                        "-isysroot", toolchain:config("sdkdir"), "-I" .. staged}
         local objects = {}
         for _, source in ipairs({"monocypher.c", "monocypher-ed25519.c"}) do
             local object = path.absolute(path.join("objects", source:gsub("%.c$", ".o")))
             os.mkdir(path.directory(object))
-            os.vrunv(toolchain:tool("cc"), table.join(target, FLAGS, {"-c", source, "-o", object}))
+            os.vrunv(toolchain:tool("cc"), table.join(target, FLAGS, {"-c", path.join(staged, source), "-o", object}))
             table.insert(objects, object)
         end
         os.vrunv("xcrun", table.join({"libtool", "-static", "-o", path.join(package:installdir("lib"), "libMonocypher.a")}, objects))
+        os.mkdir(package:installdir("include", "monocypher"))
         for _, header in ipairs({"monocypher.h", "monocypher-ed25519.h"}) do
-            os.vcp(header, path.join(package:installdir("include"), "monocypher/") .. path.filename(header))
+            os.vcp(path.join(staged, header), path.join(package:installdir("include"), "monocypher", header))
         end
-        os.vcp("LICENCE.md", package:installdir("licenses"))
+        os.mkdir(package:installdir("licenses"))
+        os.vcp("LICENCE.md", path.join(package:installdir("licenses"), "LICENCE.md"))
     end)
 
     on_test(function (package)
         assert(os.isfile(path.join(package:installdir("lib"), "libMonocypher.a")))
         assert(os.isfile(path.join(package:installdir("include"), "monocypher", "monocypher.h")))
+        assert(os.isfile(path.join(package:installdir("licenses"), "LICENCE.md")))
     end)

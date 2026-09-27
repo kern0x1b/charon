@@ -72,11 +72,6 @@
     _charon_delegate = delegate;
 }
 
-- (HMHome *)home
-{
-    return _charon_homeIdentifier ? CharonHomeKitHome(_charon_homeIdentifier) : nil;
-}
-
 - (NSString *)manufacturer
 {
     return CharonHomeKitStringField(CharonHomeKitRecord(@"accessories", _charon_identifier), @"manufacturer", @"");
@@ -147,24 +142,6 @@
     NSMutableArray *found = [NSMutableArray array];
     for (NSString *identifier in CharonHomeKitStringListField(CharonHomeKitRecord(@"accessories", _charon_identifier), @"services"))
         [found addObject:CharonHomeKitService(identifier, _charon_identifier)];
-    return found;
-}
-
-- (NSArray<HMAccessoryProfile *> *)profiles
-{
-    NSMutableArray *found = [NSMutableArray array];
-    for (NSString *identifier in CharonHomeKitStringListField(CharonHomeKitRecord(@"accessories", _charon_identifier), @"profiles"))
-        [found addObject:CharonHomeKitAccessoryProfile(identifier, _charon_identifier)];
-    return found;
-}
-
-- (NSArray<HMCameraProfile *> *)cameraProfiles
-{
-    NSMutableArray *found = [NSMutableArray array];
-    for (HMAccessoryProfile *profile in self.profiles) {
-        if ([profile isKindOfClass:[HMCameraProfile class]])
-            [found addObject:(HMCameraProfile *)profile];
-    }
     return found;
 }
 
