@@ -605,3 +605,40 @@ at a non-zero slope are irregular: the port's row-taps are not the system's diag
 So the three items are: the left edge and the renormalisation over the surviving taps, both one-dimensional and
 both in the committed loop, and the slope, which needs the tap walk to become `(x + k, dy + slope * k)`. The
 first two are arithmetic in what is committed; the third is the loop's tap geometry.
+
+## The bottom edge: the system reads past the picture, and that is the blocker
+
+Every source **row** carrying one constant, `row * 1000 + 1`, so an answer reads back as
+`1000 * (the weighted mean row the taps landed on) + 1`, and with the weights summing to one the mean row
+names exactly which rows the kernel read. A 9x6 picture, a scale-1 filter, `kvImageBackgroundColorFill`, at a
+slope of 1, the mean source row at each destination column:
+
+    dy=0   --  --  -- -0.000  -- -0.000  0.000 -0.000 -0.000
+    dy=1   --  --  0.024  --  0.500  1.111  0.976  1.000  1.000
+    dy=2   --  0.048  --  1.000  2.223  1.951  2.000  2.000  2.000
+    dy=3   0.073  --  1.500  3.334  2.927  3.000  3.000  3.000  3.000
+    dy=4   --  2.000  4.446  3.902  4.000  4.000  4.000  4.000  3.902
+    dy=5   2.500  5.557  4.878  5.000  5.000  5.000  5.000  4.878  5.557
+
+The last row is the answer. Its mean row is **5.557** at two columns and **4.878** at two more - and a mean row
+*greater* than 5 cannot come from rows 0 to 5, whatever the weights are, because the largest value in the
+source is 5001. `0.557` is `(1 - 0.443) * 6 + 0.443 * 5`, so a tap read **row 6**, which does not exist. The
+same holds at a slope of 2, where `dy=5` reads a mean of 5.000 at every column but the top rows are entirely
+backColor, and at a slope of -1 the mirror at the top.
+
+So the system does **not** drop, clamp or back-colour a diagonal tap that leaves the picture along the shear: it
+reads it. That answers the three-way question, and it is a blocker rather than a rule, because the tap's address
+is outside the caller's `vImage_Buffer`. A port that reproduced the answers would have to read past the buffer
+the caller handed it - which is a wild read dressed as a conversion, and the one thing this family has refused
+four times now. The three candidates are therefore all wrong, and the fourth possibility - that the system
+reads past because the caller's buffer happened to have more behind it - is not something a port may rely on.
+
+**What follows.** The shears are right where the diagonal stays inside the picture, which is most of a shear and
+all of every slope-0 case the port ships. At the edge they are not, and the honest answer there is to refuse the
+call rather than to read past the caller's buffer - which is a narrower refusal than the one the last two
+commits carried, because it is only the picture's last few rows or columns at a non-zero slope. The
+`kvImageBackgroundColorFill` mode is where it shows, because that is the mode whose name promises the edge is
+filled rather than read.
+
+So: the 36 functions stay **out** of the registry, and what is left is one decision - refuse the edge, or
+reproduce a wild read - and a coordinator's ruling on which. Everything upstream of it is measured and written.
