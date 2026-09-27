@@ -294,9 +294,11 @@ open class Scene {
     /// A reference to this scene's state.
     public var __coreScene: __SceneRef { __SceneRef(coreScene) }
 
-    let coreScene: __REScene
+    /// The scene's state. A renderer in another module - RealityKit's own view - reads and
+    /// steps it, so it is public rather than internal.
+    public let coreScene: __REScene
 
-    internal init(_coreScene: __SceneRef) {
+    public init(_coreScene: __SceneRef) {
         coreScene = _coreScene.scene
         if coreScene.wrapper == nil { coreScene.wrapper = self }
     }

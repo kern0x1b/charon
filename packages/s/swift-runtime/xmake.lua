@@ -23,7 +23,7 @@ package("swift-runtime")
                        "swift_RegexParser", "swift_StringProcessing", "swiftRegexBuilder", "swiftObservation",
                        -- The Swift half of simd, and the scene graph on top of it: a port that
                        -- imports either links the library the module records.
-                       "swiftsimd", "swiftRealityFoundation"}
+                       "swiftsimd", "swiftRealityFoundation", "swiftRealityKit"}
 
     -- What every image of the runtime and of the port renames, because the release the port is built for either does not
     -- have the call or gives it a narrower meaning.
@@ -80,7 +80,7 @@ package("swift-runtime")
     -- The sources of an overlay this tree holds rather than the release's, the same way: a
     -- changed one is a different runtime. The simd module's own source is the SDK's interface,
     -- read at install time, and what the patches beside it make of it is hashed with them.
-    for _, held in ipairs({"files/RealityFoundation", "files/SceneKit"}) do
+    for _, held in ipairs({"files/RealityFoundation", "files/RealityKit", "files/SceneKit"}) do
         for _, file in ipairs(os.files(path.join(os.scriptdir(), held, "**"))) do
             table.insert(digests, path.relative(file, path.join(os.scriptdir(), held)) .. "=" .. hash.sha256(file))
         end
@@ -696,6 +696,24 @@ package("swift-runtime")
         assert(#reality_sources > 0, "the RealityFoundation sources are missing from the package")
         build_overlay("RealityFoundation", reality_sources,
                       table.join(foundation_links, {"-lswiftQuartzCore", "-framework", "QuartzCore", "-framework", "SceneKit"}),
+                      nil, {backports = {}, extra_flags = scn_overlay})
+
+        -- RealityKit: the view a program is shown in, hosting an SCNView over the bridge above
+        -- and stepping the simulation once a frame. It sits on the RealityFoundation module
+        -- built just above, and on the same SceneKit apinote fix, which it needs for the same
+        -- reason: SceneKit's own headers, and ARKit's through them.
+        local realitykit = path.absolute("realitykit")
+        os.mkdir(realitykit)
+        local realitykit_sources = {}
+        for _, file in ipairs(os.files(path.join(package:scriptdir(), "files", "RealityKit", "*.swift"))) do
+            local output = path.join(realitykit, path.filename(file))
+            os.cp(file, output)
+            table.insert(realitykit_sources, output)
+        end
+        assert(#realitykit_sources > 0, "the RealityKit sources are missing from the package")
+        build_overlay("RealityKit", realitykit_sources,
+                      table.join(foundation_links, {"-lswiftQuartzCore", "-lswiftRealityFoundation",
+                                                    "-framework", "QuartzCore", "-framework", "SceneKit", "-framework", "UIKit"}),
                       nil, {backports = {}, extra_flags = scn_overlay})
 
         -- The supplemental libraries, each its own project, against the standard library built above.
