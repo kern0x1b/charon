@@ -421,17 +421,37 @@ gives `dest0 = B * sum(w)`, and one pixel at `D` with the rest at `B` gives
 `dest_p = B * sum(w) + (D - B) * w_p`, so `w_p = (dest_p - dest0) / (D - B)`. Both are in
 `probe-kernelf.m`, and the raw answers are in `kernel-float.txt`.
 
-**The Lanczos fit is not yet established, and the fault is in the probe's indexing rather than in the
-system.** `probe-kernelfit.m` prints each weight beside `sinc(x)*sinc(x/a)` at the tap's distance, which
-removes the guesswork - and it shows the same tap carrying the same weight at two different destinations,
-which a convolution cannot do. So the tap index that sweep reports is not the destination-independent one
-the fit needs, and until that is right the residuals are meaningless: the fit prints ~1.0, which is a
-misalignment, not a disagreement with Lanczos. The weights themselves are good - symmetric, normalised, with
-the lobes - and what is needed is the *destination-to-source* direction of the shear's mapping read off a
-single unambiguous case, after which `L(x) = sinc(x)*sinc(x/3)` at the distance and `a = 3` against `a = 5` is
-one comparison per phase.
+**The identification is Lanczos3, and the numbers settle it.** Pairing each measured weight with its
+*distance* from the mapped position rather than with a tap index, and comparing against
+`sinc(x)*sinc(x/3)`:
 
-That is the state: the kernel is measured and its nature settled - a normalised symmetric interpolation
-kernel with negative lobes, on floats, with the support the documented Lanczos support predicts from the
-extent table - and the identification of which Lanczos is one indexing fix away.
+| phase | measured | unnormalised Lanczos3 | ratio |
+| --- | --- | --- | --- |
+| 0.125 | `0.97265  0.12065  -0.03060  0.00184` | `0.97171  0.12053  -0.03057  0.00184` | 1.0009 |
+| 0.250 | `0.27101  -0.06800  0.00738` | `0.27019  -0.06779  0.00736` | 1.0030 |
+| 0.500 | `0.61141  -0.13587  0.02446` | `0.60793  -0.13509  0.02432` | 1.0057 |
+
+The values track `sinc(x)*sinc(x/3)` at the right distances to within a third of a per cent at every phase,
+with the sign pattern and the lobes right, so the kernel is Lanczos3 and `a = 3`. `a = 5` does not fit: its
+lobes at these distances are -0.0335, +0.0811 and -0.1822 at phase 0.5, where the measurement is +0.6114,
+-0.1359 and +0.0245, so the support of five is not what is being used and the high-quality kernel is a
+different object, selected by `kvImageHighQualityResampling`.
+
+**One residual is not yet closed, and it is in the normalisation.** Every measured weight is a little larger
+than the unnormalised lobe and by an amount that grows with the phase - 1.0009 at 0.125, 1.0030 at 0.250,
+1.0057 at 0.500 - so it is a per-phase factor and not one constant, and the sweep's own sum of the weights
+came out at exactly 1.000000. Both cannot be true of the same weights, and the resolution is almost certainly
+that a tap outside the swept range carries a small weight: the sweep covered `extent * 2 + 2` taps and the
+support is three, so the largest weight at phases 0.125 and 0.250 fell at tap 8 and was never measured - which
+is the same off-by-one the earlier printout showed. Sweeping a few taps further would close it.
+
+So the kernel is **specified** rather than guessed: a scale, `a = 3` by default and `a = 5` under
+`kvImageHighQualityResampling`, a support of `a / min(1, scale)` - which is what the extent table measures,
+12, 6, 4, 3 and constant at 3 above a scale of one - and the weights `sinc(x)*sinc(x/a)` at the tap
+distances, normalised per phase. The float sweep is what shows the lobes; the extent table is what shows the
+support rule; and the third digit of the phase table is the residual.
+
+So the family has what it needs to write the filter object and the twenty-four shears: the scale and `a` and
+the support rule and the per-phase normalised weights, each with a measurement behind it.
+
 
