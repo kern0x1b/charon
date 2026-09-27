@@ -23,6 +23,15 @@ fi
 . "$here/renames.sh"
 prefixer="$here/../prefix_selectors.py"
 
+defines_what_it_calls() {
+    # $1: the test's binary, rest: the port's objects. A renamed selector the test names and no object
+    # defines is a link-time no-op and an unrecognized selector when the test reaches it, which nothing in
+    # the gate sees; check-private-selectors.py is the check, and it runs over what this group just built.
+    if ! python3 "$here/../check-private-selectors.py" "$@"; then
+        status=1
+    fi
+}
+
 carried() {
     # $1: every object of the group. The selectors the port's Charon categories carry, in the whole group and not
     # per file: a file that sends one of them without defining it - NSOrderedSet+Difference.m sending
@@ -95,6 +104,7 @@ group() {
     build "$name" "$2" || return 0
     test=$3
     xcrun clang $target -fobjc-arc -Wall -I"$harness" "$here/$test" "$harness/check.m" $built $frameworks -o "$build/$name-test"
+    defines_what_it_calls "$build/$name-test" $built
     if "$build/$name-test" > "$build/$name.log" 2>&1; then result=0; else result=$?; fi
     grep -v '^ok ' "$build/$name.log" || true
     echo "$name: exit=$result log=$build/$name.log"
@@ -112,6 +122,7 @@ windowed() {
     xcrun clang $target -fobjc-arc -Wall -I"$harness" "$here/windowed.m" "$here/$test" "$harness/check.m" $built $frameworks -o "$bundle/Contents/MacOS/app"
     cp "$here/windowed.plist" "$bundle/Contents/Info.plist"
     codesign -s - --force "$bundle" > /dev/null 2>&1
+    defines_what_it_calls "$bundle/Contents/MacOS/app" $built
     if "$bundle/Contents/MacOS/app" > "$build/$name.log" 2>&1; then result=0; else result=$?; fi
     grep -v '^ok ' "$build/$name.log" | grep -a 'FAIL\|checks=\|info' || true
     echo "$name: exit=$result log=$build/$name.log"
