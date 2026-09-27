@@ -68,9 +68,7 @@ open class EntityRotationGestureRecognizer: UIRotationGestureRecognizer, EntityG
     }
 
     open override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        // The recognizer's own rotation is about z, which is the screen's axis; the entity is
-        // turned about the axis the gesture is read on, which is the camera's.
-        entity.orientation = simd_quatf(angle: Float(rotation), axis: SIMD3<Float>(0, 0, 1)) * initialOrientation
+        EntityGesture.rotate(entity, from: initialOrientation, by: Float(rotation))
     }
 
     public var recognizer: UIGestureRecognizer { self }
@@ -94,10 +92,37 @@ open class EntityScaleGestureRecognizer: UIPinchGestureRecognizer, EntityGesture
     }
 
     open override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        let factor = Float(scale)
-        entity.scale = initialScale * SIMD3<Float>(repeating: factor)
+        EntityGesture.scale(entity, from: initialScale, by: Float(scale))
     }
 
     public var recognizer: UIGestureRecognizer { self }
 }
 #endif
+
+// MARK: - The gesture arithmetic
+
+/// What a gesture does to an entity, as a function of its own value.
+///
+/// The three are kept apart from their recognizers so that the arithmetic can be asked
+/// without a touch, which is what the host differential does: a recognizer calls these with what
+/// its own gesture reports, and nothing else.
+@MainActor
+public enum EntityGesture {
+    /// Moves an entity by a drag, in the view's own units, without moving it in depth.
+    public static func translate(_ entity: Entity, from initial: SIMD3<Float>,
+                                 by delta: SIMD2<Float>) {
+        entity.position = initial + SIMD3<Float>(x: delta.x, y: delta.y, z: 0)
+    }
+
+    /// Turns an entity about the screen's own axis, which is the camera's z, from where it was
+    /// when the gesture began.
+    public static func rotate(_ entity: Entity, from initial: simd_quatf, by radians: Float) {
+        entity.orientation = simd_quatf(angle: radians, axis: SIMD3<Float>(0, 0, 1)) * initial
+    }
+
+    /// Scales an entity by a pinch, about the scale it had when the gesture began, so that a
+    /// pinch out and back leaves it where it was.
+    public static func scale(_ entity: Entity, from initial: SIMD3<Float>, by factor: Float) {
+        entity.scale = initial * SIMD3<Float>(repeating: factor)
+    }
+}

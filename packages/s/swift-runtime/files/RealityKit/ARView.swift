@@ -59,6 +59,10 @@ open class ARView: RealityViewBase {
     }
 
     /// What the renderer draws.
+    /// What the renderer draws. The seven options are the ones the SDK names, each the effect
+    /// its declaration documents; they are iOS only, so the host could not be asked what a new
+    /// view's are the way the environment's were (measured 2026-09-27, MacOSX26.5: ARView has no
+    /// `renderOptions` there), and the defaults below are the header's.
     public struct RenderOptions: OptionSet {
         public let rawValue: UInt
         public init(rawValue: UInt) { self.rawValue = rawValue }
@@ -86,6 +90,31 @@ open class ARView: RealityViewBase {
     }
 
     /// Called as each frame is drawn.
+    /// A frame the renderer is about to draw, and what it is drawing into: the device, the
+    /// command buffer the frame is recorded into, the colour and depth it reads, the texture
+    /// it writes, the camera's projection, and the time.
+    public struct PostProcessContext {
+        public let device: Any?
+        public let commandBuffer: Any?
+        public let sourceColorTexture: Any?
+        public let sourceDepthTexture: Any?
+        public let targetColorTexture: Any?
+        public let projection: float4x4
+        public let time: TimeInterval
+
+        public init(_ device: Any?, _ commandBuffer: Any?, _ sourceColorTexture: Any?,
+                    _ sourceDepthTexture: Any?, _ targetColorTexture: Any?, _ projection: float4x4,
+                    _ time: TimeInterval) {
+            self.device = device
+            self.commandBuffer = commandBuffer
+            self.sourceColorTexture = sourceColorTexture
+            self.sourceDepthTexture = sourceDepthTexture
+            self.targetColorTexture = targetColorTexture
+            self.projection = projection
+            self.time = time
+        }
+    }
+
     public struct RenderCallbacks {
         public var willRenderFrame: () -> Void
         public var didRenderFrame: () -> Void
