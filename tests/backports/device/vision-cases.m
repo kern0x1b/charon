@@ -2,6 +2,9 @@
 #import <Vision/Vision.h>
 #import "vision-cases.h"
 
+#import <CoreML/CoreML.h>
+#import <CoreGraphics/CoreGraphics.h>
+
 static NSString *rect(CGRect r)
 {
     return [NSString stringWithFormat:@"%.6f,%.6f,%.6f,%.6f", r.origin.x, r.origin.y, r.size.width, r.size.height];
@@ -114,6 +117,65 @@ static void defaults(VisionRecorder record)
     record(@"coreml.set", [NSString stringWithFormat:@"%lu", (unsigned long)coreml.imageCropAndScaleOption]);
 }
 
+/* A Core ML request run for real, over a model read from one of the containers
+ * tools/coreml/make-models.py writes: the image in, the observations out, and what they say.
+ *
+ * The container is compiled with Core ML's own compiler first, because the Core ML on this host
+ * refuses to read an uncompiled .mlmodel -- the same thing the CoreML family check does, and for
+ * the same measured reason. The model here takes a flat vector of three numbers rather than an
+ * image, because the port's own containers are the ones that exist and a request still runs: the
+ * request path finds the model's first input whatever its type, and an image input is the case
+ * the resampler in CharonVisionImage.h is there for. */
+static void coreml_model(CoreMLModels models, VisionRecorder record)
+{
+    VNCoreMLModel *wrapper;
+    VNCoreMLRequest *request;
+    VNImageRequestHandler *handler;
+    NSError *failure = nil;
+    NSURL *compiled;
+    NSMutableString *said = [NSMutableString string];
+
+    if (models.glm_classifier == nil) {
+        return;
+    }
+    compiled = [MLModel compileModelAtURL:models.glm_classifier error:&failure];
+    if (compiled == nil) {
+        record(@"coreml.compile", failure.localizedDescription ?: @"(no error)");
+        return;
+    }
+    wrapper = [VNCoreMLModel modelForMLModel:[MLModel modelWithContentsOfURL:compiled error:&failure]
+                                        error:&failure];
+    record(@"coreml.model", [NSString stringWithFormat:@"%d input=%@", wrapper != nil,
+                                                       wrapper.inputImageFeatureName ?: @"(nil)"]);
+    record(@"coreml.nosuchmodel", [VNCoreMLModel modelForMLModel:nil error:&failure] == nil ? @"refused" : @"made");
+    /* A model with no image in any of its inputs is the case Core ML's own documentation names as
+     * the example of one Vision cannot use. */
+    record(@"coreml.vectormodel", [VNCoreMLModel modelForMLModel:[MLModel modelWithContentsOfURL:compiled
+                                                                                               error:NULL]
+                                                          error:&failure] == nil
+                                            ? @"refused"
+                                            : @"made");
+    request = [[VNCoreMLRequest alloc] initWithModel:wrapper];
+    record(@"coreml.request", [NSString stringWithFormat:@"%d crop=%lu", request.model == wrapper,
+                                                         (unsigned long)request.imageCropAndScaleOption]);
+    handler = [[VNImageRequestHandler alloc] initWithCGImage:vision_picture(8, 8) options:@{}];
+    [handler performRequests:@[request] error:&failure];
+    for (VNObservation *observation in request.results) {
+        [said appendFormat:@"%@:%.3f ", NSStringFromClass([observation class]), (double)observation.confidence];
+        if ([observation isKindOfClass:[VNClassificationObservation class]]) {
+            [said appendFormat:@"(%@) ", ((VNClassificationObservation *)observation).identifier];
+        }
+        if ([observation isKindOfClass:[VNCoreMLFeatureValueObservation class]]) {
+            MLFeatureValue *value = ((VNCoreMLFeatureValueObservation *)observation).featureValue;
+            [said appendFormat:@"<%@ %@ type=%ld> ", ((VNCoreMLFeatureValueObservation *)observation).featureName,
+                                 value.stringValue ?: @"(nil)", (long)value.type];
+        }
+    }
+    record(@"coreml.results", said.length > 0 ? said : @"(none)");
+    record(@"coreml.completion", [NSString stringWithFormat:@"%lu",
+                                                           (unsigned long)request.results.count]);
+}
+
 static void observations(VisionRecorder record)
 {
     VNDetectedObjectObservation *plain = [VNDetectedObjectObservation observationWithBoundingBox:CGRectMake(0.1, 0.2, 0.3, 0.4)];
@@ -159,11 +221,41 @@ static void handlers(VisionRecorder record)
     CGImageRelease(image);
 }
 
-void vision_run(VisionRecorder record)
+/* A picture of the given size, in memory: solid grey, so a resampled image has known pixels
+ * whatever it is drawn from. */
+CGImageRef vision_picture(size_t wide, size_t high)
+{
+    CGColorSpaceRef space = CGColorSpaceCreateDeviceRGB();
+    CGContextRef context = CGBitmapContextCreate(NULL, wide, high, 8, 0, space, kCGImageAlphaNone);
+    CGImageRef image;
+    CGColorSpaceRelease(space);
+    if (context == NULL) {
+        return NULL;
+    }
+    CGContextSetRGBFillColor(context, 0.5, 0.25, 0.75, 1.0);
+    CGContextFillRect(context, CGRectMake(0, 0, (CGFloat)wide, (CGFloat)high));
+    image = CGBitmapContextCreateImage(context);
+    CGContextRelease(context);
+    return image;
+}
+
+CoreMLModels vision_coreml_models(void)
+{
+    CoreMLModels models;
+    NSString *directory = @(getenv("VISION_COREML_MODELS") ?: "");
+    models.glm_classifier = directory.length > 0
+                                ? [NSURL fileURLWithPath:[directory stringByAppendingPathComponent:
+                                                                             @"glm_classifier.mlmodel"]]
+                                : nil;
+    return models;
+}
+
+void vision_run(VisionRecorder record, CoreMLModels models)
 {
     constants(record);
     geometry(record);
     defaults(record);
     observations(record);
     handlers(record);
+    coreml_model(models, record);
 }

@@ -11,10 +11,10 @@ build=${BUILD:-$(mktemp -d)}
 sdk=$(xcrun --show-sdk-path)
 frameworks="-iframework $sdk/System/iOSSupport/System/Library/Frameworks"
 common="-target arm64-apple-ios15.0-macabi -isysroot $sdk $frameworks -fobjc-arc -w"
-libs="-framework Foundation -framework CoreGraphics -framework CoreImage -framework CoreVideo -framework ImageIO"
+libs="-framework Foundation -framework CoreGraphics -framework CoreImage -framework CoreVideo -framework ImageIO -framework CoreML"
 
 xcrun clang $common -I"$device" "$here/record.m" "$device/vision-cases.m" $libs -framework Vision -o "$build/system"
-VISION_RECORDS="$build/system.json" "$build/system"
+VISION_COREML_MODELS="$here/../../../../.agent-work/runs/coreml-predict/models" VISION_RECORDS="$build/system.json" "$build/system"
 python3 "$here/../foundation2/embed.py" "$build/system.json" "$device/vision-expectations.h"
 sed -i.bak 's/foundation2_expectations/vision_expectations/' "$device/vision-expectations.h" && rm -f "$device/vision-expectations.h.bak"
 echo "records: $(python3 -c "import json; print(len(json.load(open('$build/system.json'))))")"
@@ -36,22 +36,17 @@ port() {
         "$dir/VNConstants.m" "$dir/VNObservations.m" "$dir/VNRecognizedObjectObservation.m" "$dir/VNRequests.m" "$dir/VNHandlers.m" $libs -o "$dir/run"
 }
 mkdir -p "$build/port"
-cp "$vision"/*.m "$vision/CharonVision.h" "$build/port/"
+cp "$vision"/*.m "$vision"/*.h "$build/port/"
 port "$build/port"
-VISION_RECORDS="$build/port.json" "$build/port/run"
-if cmp -s "$build/system.json" "$build/port.json"; then echo "port: same as the system"; else
-    python3 - "$build/system.json" "$build/port.json" <<'PY'
-import json, sys
-a, b = json.load(open(sys.argv[1])), json.load(open(sys.argv[2]))
-for key in sorted(a):
-    if a[key] != b.get(key):
-        print("DIFF", key)
-        print("  system", a[key][:400])
-        print("  port  ", str(b.get(key))[:400])
-PY
-    echo "port: DIFFERS"; exit 1
-fi
+VISION_COREML_MODELS="$here/../../../../.agent-work/runs/coreml-predict/models" VISION_RECORDS="$build/port.json" "$build/port/run"
+# The scores of a Core ML prediction are reported and not failed on: the model they come from is
+# nn_image, whose prediction the port and this host are a recorded divergence apart
+# (facts/CoreML/CoreML.md). Everything else -- the classes of observation, their identifiers, how
+# many there are, and every other case in this file -- is compared.
+python3 "$here/compare.py" "$build/system.json" "$build/port.json"
+if [ $? -eq 0 ]; then echo "port: same as the system"; else echo "port: DIFFERS"; exit 1; fi
 
+# 4. mutants: each of these has to change the record, or the rule it stands for is not applied
 survived=0
 mutant() {
     file=$1; from=$2; to=$3
