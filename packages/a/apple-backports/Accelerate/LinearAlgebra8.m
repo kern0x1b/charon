@@ -284,15 +284,39 @@ la_object_t la_matrix_from_double_buffer_nocopy(double *buffer, la_count_t matri
                                     matrix_hint, deallocator, attributes);
 }
 
-// Storing an object out. The scalar type has to be the buffer's: a float object in a double buffer
-// answers LA_PRECISION_MISMATCH_ERROR and writes nothing, which is what the host does in both
-// directions (measured) and also what it does for an object that carries an error, since such an
-// object has no scalar type of its own to match.
+// What the four stores answer for an object they cannot store, before the buffer is touched at all. One
+// order explains all sixteen measured answers: the scalar type is asked first, then the shape.
+//
+//   - An object that carries an error has no scalar type of its own to match, so the type is what
+//     answers and all four refuse LA_PRECISION_MISMATCH_ERROR.
+//   - A splat has a scalar type, so one of the buffer's own type gets as far as the shape and is refused
+//     LA_INVALID_PARAMETER_ERROR - a splat has no shape to store, which is the answer the header gives
+//     for anything that is not a vector or a matrix - while a splat of the other type never gets that
+//     far and answers LA_PRECISION_MISMATCH_ERROR.
+//   - A matrix of the wrong scalar type answers LA_PRECISION_MISMATCH_ERROR.
+//
+// All measured on the host, both splats and both kinds of error object in all four stores; the buffer is
+// left alone in every case (facts/Accelerate/LinearAlgebra.md).
+static la_status_t CharonLAStoreRefused(const CharonLAValue *value, la_scalar_type_t scalar_type)
+{
+    if (!value || value->kind != CharonLAArray) {
+        if (value && value->kind == CharonLASplat && value->scalar_type == scalar_type) {
+            return LA_INVALID_PARAMETER_ERROR;
+        }
+        return LA_PRECISION_MISMATCH_ERROR;
+    }
+    return value->scalar_type == scalar_type ? LA_SUCCESS : LA_PRECISION_MISMATCH_ERROR;
+}
+
+// Storing an object out, the writing half of the four. Every caller has asked CharonLAStoreRefused first,
+// so the object here is an array of the buffer's own scalar type and nothing can refuse it but a NULL
+// buffer - which the header declares as not allowed, and which the host therefore cannot be asked about,
+// so it answers the precision mismatch an object of no such type would.
 static la_status_t CharonLAStore(la_scalar_type_t scalar_type, la_count_t stride, la_object_t object, void *buffer)
 {
     const CharonLAValue *value = CHARON_LA_VALUE(object);
     la_count_t count, width;
-    if (!value || value->kind != CharonLAArray || value->scalar_type != scalar_type || !buffer) {
+    if (!buffer) {
         return LA_PRECISION_MISMATCH_ERROR;
     }
     count = value->rows * value->cols;
@@ -312,8 +336,9 @@ static la_status_t CharonLAStore(la_scalar_type_t scalar_type, la_count_t stride
 la_status_t la_vector_to_float_buffer(float *buffer, la_index_t buffer_stride, la_object_t vector)
 {
     const CharonLAValue *value = CHARON_LA_VALUE(vector);
-    if (!value || value->kind != CharonLAArray) {
-        return LA_PRECISION_MISMATCH_ERROR;
+    la_status_t refused = CharonLAStoreRefused(value, LA_SCALAR_TYPE_FLOAT);
+    if (refused != LA_SUCCESS) {
+        return refused;
     }
     if (value->rows != 1 && value->cols != 1) {
         return LA_INVALID_PARAMETER_ERROR;
@@ -324,8 +349,9 @@ la_status_t la_vector_to_float_buffer(float *buffer, la_index_t buffer_stride, l
 la_status_t la_vector_to_double_buffer(double *buffer, la_index_t buffer_stride, la_object_t vector)
 {
     const CharonLAValue *value = CHARON_LA_VALUE(vector);
-    if (!value || value->kind != CharonLAArray) {
-        return LA_PRECISION_MISMATCH_ERROR;
+    la_status_t refused = CharonLAStoreRefused(value, LA_SCALAR_TYPE_DOUBLE);
+    if (refused != LA_SUCCESS) {
+        return refused;
     }
     if (value->rows != 1 && value->cols != 1) {
         return LA_INVALID_PARAMETER_ERROR;
@@ -335,18 +361,18 @@ la_status_t la_vector_to_double_buffer(double *buffer, la_index_t buffer_stride,
 
 la_status_t la_matrix_to_float_buffer(float *buffer, la_count_t buffer_row_stride, la_object_t matrix)
 {
-    const CharonLAValue *value = CHARON_LA_VALUE(matrix);
-    if (!value || value->kind != CharonLAArray) {
-        return LA_PRECISION_MISMATCH_ERROR;
+    la_status_t refused = CharonLAStoreRefused(CHARON_LA_VALUE(matrix), LA_SCALAR_TYPE_FLOAT);
+    if (refused != LA_SUCCESS) {
+        return refused;
     }
     return CharonLAStore(LA_SCALAR_TYPE_FLOAT, buffer_row_stride, matrix, buffer);
 }
 
 la_status_t la_matrix_to_double_buffer(double *buffer, la_count_t buffer_row_stride, la_object_t matrix)
 {
-    const CharonLAValue *value = CHARON_LA_VALUE(matrix);
-    if (!value || value->kind != CharonLAArray) {
-        return LA_PRECISION_MISMATCH_ERROR;
+    la_status_t refused = CharonLAStoreRefused(CHARON_LA_VALUE(matrix), LA_SCALAR_TYPE_DOUBLE);
+    if (refused != LA_SUCCESS) {
+        return refused;
     }
     return CharonLAStore(LA_SCALAR_TYPE_DOUBLE, buffer_row_stride, matrix, buffer);
 }

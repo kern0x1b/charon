@@ -134,6 +134,33 @@ int main(int argc, char **argv)
               "an object carrying an error has no scalar type to match a buffer");
         double readd[4] = {0};
         CHECK(la_matrix_to_double_buffer(readd, 2, d1) == LA_SUCCESS && readd[3] == 4.5, "a double 2x2 is stored");
+        // The sixteen refusals in full, which the host differential asks case by case: the scalar type
+        // first and then the shape, so a splat of the buffer's own type is refused for having no shape
+        // and a splat of the other type for its precision, while an object carrying an error has no
+        // scalar type of its own and is refused for the precision in all four
+        // (facts/Accelerate/LinearAlgebra.md).
+        {
+            la_object_t dsplat = la_splat_from_double(3.0, LA_DEFAULT_ATTRIBUTES);
+            la_object_t objects[4] = {splat, dsplat, empty, la_matrix_slice(m1, 0, 0, 1, 1, 9, 9)};
+            for (int at = 0; at < 4; at++) {
+                // the two statuses a store of a splat can answer: the shape for a splat of the buffer's
+                // own scalar type, the precision for one of the other, and the precision for an object
+                // carrying an error whatever the buffer is.
+                la_status_t into_float = at == 0 ? LA_INVALID_PARAMETER_ERROR : LA_PRECISION_MISMATCH_ERROR;
+                la_status_t into_double = at == 1 ? LA_INVALID_PARAMETER_ERROR : LA_PRECISION_MISMATCH_ERROR;
+                float untouched = read[0];
+                double untouchedd = readd[0];
+                CHECK(la_vector_to_float_buffer(read, 1, objects[at]) == into_float,
+                      "la_vector_to_float_buffer of a splat, of another splat and of two error objects");
+                CHECK(la_vector_to_double_buffer(readd, 1, objects[at]) == into_double,
+                      "la_vector_to_double_buffer of a splat, of another splat and of two error objects");
+                CHECK(la_matrix_to_float_buffer(read, 2, objects[at]) == into_float,
+                      "la_matrix_to_float_buffer of a splat, of another splat and of two error objects");
+                CHECK(la_matrix_to_double_buffer(readd, 2, objects[at]) == into_double,
+                      "la_matrix_to_double_buffer of a splat, of another splat and of two error objects");
+                CHECK(read[0] == untouched && readd[0] == untouchedd, "and every refusal left the buffer alone");
+            }
+        }
 
         // the two constructors that take a buffer over, which the host differential cannot exercise - a
         // block it hands away is a block the caller may never touch again - so the device run is where

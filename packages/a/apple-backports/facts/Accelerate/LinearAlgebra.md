@@ -47,6 +47,22 @@ Storage: `la_matrix_from_float_buffer(buffer, rows, cols, row_stride, hint, attr
 `buffer[i * row_stride + j]`, and `la_matrix_to_float_buffer(buffer, row_stride, matrix)` writes it back the same way; a double object
 in a float buffer and the other way round answer `LA_PRECISION_MISMATCH_ERROR` and write nothing.
 
+What the four stores answer for the two kinds of object that are not a matrix at all is one order - the scalar type first, then the
+shape - and it accounts for all sixteen measured answers, with the buffer left alone in every one of them (each case is asked by
+`tests/backports/host/linearalgebra`, and the sixteen are also in the device run):
+
+| object | `*_to_float_buffer` | `*_to_double_buffer` |
+| --- | --- | --- |
+| a float splat | `LA_INVALID_PARAMETER_ERROR` | `LA_PRECISION_MISMATCH_ERROR` |
+| a double splat | `LA_PRECISION_MISMATCH_ERROR` | `LA_INVALID_PARAMETER_ERROR` |
+| an object carrying an error, of either status | `LA_PRECISION_MISMATCH_ERROR` | `LA_PRECISION_MISMATCH_ERROR` |
+
+A splat has a scalar type, so one of the buffer's own type gets as far as the shape and is refused for having no shape to store -
+`LA_INVALID_PARAMETER_ERROR`, the answer the header gives for anything that is not a vector or a matrix - while a splat of the other
+type never gets that far. An object that carries an error has no scalar type of its own to match, so the type is what answers, in all
+four. (The host prints a line of its own for each refusal, "operator vector to float buffer does not support splat" and the like; that
+is its diagnostics and not an answer a caller reads.)
+
 The column-major recipe the header gives - pass the counts the other way round, then transpose - is what the host does, measured on
 a 3x2 and a 2x3. `la_matrix_from_float_buffer_nocopy` and its double sibling take the block over and give it to the caller's
 deallocator when the object goes; a `row_stride` wider than the row count means the block is padded and cannot be the object's
@@ -129,7 +145,7 @@ double the two agree exactly, which is the same statement one precision up. A to
 asserting that two independent summations of the same terms produce the same bits, which is not true of
 any BLAS on any processor and is not what this port is claiming. Everything else - every status, every
 shape, every element of a sum, a difference, a slice, a transpose and a norm - is compared with no
-tolerance at all, and a solve whose terms are exact is compared with no tolerance either.
+tolerance at all, and the sixteen refusals of the table above are compared as a status and as a buffer.
 
 ## What has not been run
 

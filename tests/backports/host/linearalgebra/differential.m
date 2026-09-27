@@ -336,6 +336,56 @@ int main(void)
         b = la_vector_to_float_buffer(theirs, 1, theirs_float(four, 2, 2));
         report(a == b, "la_vector_to_float_buffer of a 2x2", "");
     }
+    {
+        // The sixteen refusals: each of the four stores of a float splat, a double splat and an object
+        // carrying an error, in both scalar types. The host's order is the scalar type first and then
+        // the shape, so a splat of the buffer's own type is refused for having no shape
+        // (LA_INVALID_PARAMETER_ERROR) and a splat of the other type for its precision
+        // (LA_PRECISION_MISMATCH_ERROR), while an object carrying an error has no scalar type of its own
+        // and is refused for the precision in all four. The buffer is compared as well as the status, so
+        // a refusal that wrote something would be a difference (facts/Accelerate/LinearAlgebra.md).
+        la_object_t mine_splat = charon_host_la_splat_from_float(3.0f, LA_DEFAULT_ATTRIBUTES);
+        la_object_t theirs_splat = la_splat_from_float(3.0f, LA_DEFAULT_ATTRIBUTES);
+        la_object_t mine_double_splat = charon_host_la_splat_from_double(3.0, LA_DEFAULT_ATTRIBUTES);
+        la_object_t theirs_double_splat = la_splat_from_double(3.0, LA_DEFAULT_ATTRIBUTES);
+        la_object_t mine_failed = charon_host_la_matrix_slice(m1, 0, 0, 1, 1, 9, 9);
+        la_object_t theirs_failed = la_matrix_slice(n1, 0, 0, 1, 1, 9, 9);
+        struct {
+            const char *what;
+            la_object_t mine;
+            la_object_t theirs;
+        } refused[4] = {
+            {"a float splat", mine_splat, theirs_splat},
+            {"a double splat", mine_double_splat, theirs_double_splat},
+            {"an object carrying an error", mine_failed, theirs_failed},
+            {"an object made of an empty shape", bad_mine, bad_theirs},
+        };
+        for (int at = 0; at < 4; at++) {
+            char label[96];
+            float mf[4] = {7, 7, 7, 7}, tf[4] = {7, 7, 7, 7};
+            double md[4] = {7, 7, 7, 7}, td[4] = {7, 7, 7, 7};
+            la_status_t m = charon_host_la_vector_to_float_buffer(mf, 1, refused[at].mine);
+            la_status_t t = la_vector_to_float_buffer(tf, 1, refused[at].theirs);
+            snprintf(detail, sizeof detail, "the port says %ld, the host says %ld", (long)m, (long)t);
+            snprintf(label, sizeof label, "la_vector_to_float_buffer of %s", refused[at].what);
+            report(m == t && memcmp(mf, tf, sizeof mf) == 0, label, m == t ? "" : detail);
+            m = charon_host_la_vector_to_double_buffer(md, 1, refused[at].mine);
+            t = la_vector_to_double_buffer(td, 1, refused[at].theirs);
+            snprintf(detail, sizeof detail, "the port says %ld, the host says %ld", (long)m, (long)t);
+            snprintf(label, sizeof label, "la_vector_to_double_buffer of %s", refused[at].what);
+            report(m == t && memcmp(md, td, sizeof md) == 0, label, m == t ? "" : detail);
+            m = charon_host_la_matrix_to_float_buffer(mf, 2, refused[at].mine);
+            t = la_matrix_to_float_buffer(tf, 2, refused[at].theirs);
+            snprintf(detail, sizeof detail, "the port says %ld, the host says %ld", (long)m, (long)t);
+            snprintf(label, sizeof label, "la_matrix_to_float_buffer of %s", refused[at].what);
+            report(m == t && memcmp(mf, tf, sizeof mf) == 0, label, m == t ? "" : detail);
+            m = charon_host_la_matrix_to_double_buffer(md, 2, refused[at].mine);
+            t = la_matrix_to_double_buffer(td, 2, refused[at].theirs);
+            snprintf(detail, sizeof detail, "the port says %ld, the host says %ld", (long)m, (long)t);
+            snprintf(label, sizeof label, "la_matrix_to_double_buffer of %s", refused[at].what);
+            report(m == t && memcmp(md, td, sizeof md) == 0, label, m == t ? "" : detail);
+        }
+    }
 
     // slices
     same("la_vector_slice(v6, 1, 2, 3)", charon_host_la_vector_slice(v6, 1, 2, 3), la_vector_slice(t6, 1, 2, 3), EXACT);
