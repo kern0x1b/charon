@@ -103,13 +103,6 @@
     [self deleteObjects:object ? @[object] : @[] withCompletion:completion];
 }
 
-- (void)deleteObjects:(NSArray<HKObject *> *)objects withCompletion:(void (^)(BOOL success, NSError *_Nullable error))completion
-{
-    NSError *error = nil;
-    BOOL ok = [[CharonHKStore sharedStore] deleteObjects:objects ?: @[] error:&error];
-    [self charon_complete:completion ok:ok error:error];
-}
-
 - (void)charon_complete:(void (^)(BOOL, NSError *))completion ok:(BOOL)ok error:(NSError *)error
 {
     if (!completion)

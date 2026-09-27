@@ -576,7 +576,7 @@ typedef NS_ENUM(NSUInteger, CharonHKAuthorizationBits) {
                                              @([(HKSample *)object endDate].timeIntervalSince1970),
                                              [(HKObject *)object source].bundleIdentifier ?: @"",
                                              [(HKObject *)object source].name ?: @"",
-                                             [NSNull null],
+                                             [HKSource charon_processVersion] ?: [NSNull null],
                                              @(sequence), @([[NSDate date] timeIntervalSince1970]),
                                              [storable charon_storeArchive]]
                                      error:inner])
@@ -723,6 +723,20 @@ typedef NS_ENUM(NSUInteger, CharonHKAuthorizationBits) {
     return row;
 }
 
+// The source revision and the device a read object is given, from the row it was read from: the
+// revision is the source the object was saved with and the version the process was at when it saved it,
+// which is what the header says a retrieved object's sourceRevision is, and the device is the one the
+// sample named.
+- (void)charon_annotate:(id)object source:(CharonHKRow *)row
+{
+    if (![object respondsToSelector:@selector(charon_setSourceRevision:device:)])
+        return;
+    HKSourceRevision *revision = [[HKSourceRevision alloc] charon_initWithSource:[HKSource charon_sourceWithName:row.sourceName
+                                                                                          bundleIdentifier:row.sourceBundle]
+                                                                        version:row.sourceVersion];
+    [object charon_setSourceRevision:revision device:nil];
+}
+
 // The correlation or the workout a sample belongs to, filled in from the table that records it, so
 // that a predicate built with HKPredicateKeyPathCorrelation or HKPredicateKeyPathWorkout walks a
 // real relationship over the objects the store read back.
@@ -794,6 +808,7 @@ typedef NS_ENUM(NSUInteger, CharonHKAuthorizationBits) {
             if (!object)
                 continue;
             [self charon_linkMembershipOf:object uuid:row.uuid.UUIDString];
+            [self charon_annotate:object source:row];
             if (predicate && ![predicate evaluateWithObject:object])
                 continue;
             [objects addObject:object];
@@ -854,6 +869,14 @@ typedef NS_ENUM(NSUInteger, CharonHKAuthorizationBits) {
         [_lock unlock];
     }
     return sequence;
+}
+
+- (nullable NSArray *)deletedObjectsSinceSequence:(NSInteger)sequence
+{
+    NSMutableArray *deleted = [NSMutableArray array];
+    for (NSUUID *uuid in [self deletedUUIDsSinceSequence:sequence])
+        [deleted addObject:[[HKDeletedObject alloc] charon_initWithUUID:uuid]];
+    return deleted;
 }
 
 - (NSArray *)deletedUUIDsSinceSequence:(NSInteger)sequence

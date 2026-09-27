@@ -9,6 +9,11 @@
     HKSource *_source;
     NSDictionary *_metadata;
     HKCorrelation *_correlation;
+    // iOS 9.0 added a device and a source revision to every object. The storage is here, beside the
+    // facts of iOS 8.0, and the two properties that read them are in HKObject9.m - reached through
+    // the four methods below, because another file may not name an ivar of a class it does not define.
+    HKSourceRevision *_storedSourceRevision;
+    HKDevice *_storedDevice;
 }
 
 + (BOOL)supportsSecureCoding
@@ -82,6 +87,29 @@
 - (void)charon_setCorrelation:(nullable HKCorrelation *)correlation
 {
     _correlation = correlation;
+}
+
+// The device a sample names, set by the factory of iOS 9.0 that takes one and read back by -device.
+- (void)charon_setDevice:(nullable HKDevice *)device
+{
+    _storedDevice = device;
+}
+
+- (nullable HKDevice *)charon_storedDevice
+{
+    return _storedDevice;
+}
+
+// The source revision the store read this object back with: nil where the object was made in memory
+// and never written, which is what -sourceRevision then answers for.
+- (nullable HKSourceRevision *)charon_storedSourceRevision
+{
+    return _storedSourceRevision;
+}
+
+- (void)charon_setStoredSourceRevision:(nullable HKSourceRevision *)revision
+{
+    _storedSourceRevision = revision;
 }
 
 #pragma mark - The store

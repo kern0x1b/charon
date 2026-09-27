@@ -417,61 +417,114 @@
 
 #pragma mark - HKAnchoredObjectQuery
 
+@interface HKAnchoredObjectQuery ()
+@property (nonatomic) NSUInteger charon_limit;
+@end
+
 @implementation HKAnchoredObjectQuery {
     HKQueryAnchor *_anchor;
-    NSUInteger _limit;
-    void (^_resultsHandler)(NSArray<HKObject *> *, NSUInteger, HKQueryAnchor *_Nullable, NSError *_Nullable);
+    void (^_resultsHandler)(HKAnchoredObjectQuery *query, NSArray<HKSample *> *_Nullable results, NSUInteger newAnchor,
+                            NSError *_Nullable error);
+    // The handler of the initialiser of iOS 9.0, which is a different selector and a different shape
+    // from the one of iOS 8.0: an object anchor in, the deletions as objects out.
+    void (^_charonResultsHandler9)(HKAnchoredObjectQuery *query, NSArray<HKSample *> *_Nullable sampleObjects,
+                                   NSArray<HKDeletedObject *> *_Nullable deletedObjects, HKQueryAnchor *_Nullable newAnchor,
+                                   NSError *_Nullable error);
 }
+@synthesize charon_limit = _charonLimit;
 
+// The form of iOS 8.0, whose anchor is the integer an earlier query answered with rather than an
+// object, and whose handler is told the new anchor as that same integer. iOS 9.0 made the anchor an
+// object and the handler take the deletions as HKDeletedObject instances, and +[HKQueryAnchor
+// anchorFromValue:] is how an integer of this form is carried across to that one.
 - (instancetype)initWithType:(HKSampleType *)type
                    predicate:(nullable NSPredicate *)predicate
-                      anchor:(nullable HKQueryAnchor *)anchor
+                      anchor:(NSUInteger)anchor
                        limit:(NSUInteger)limit
-          completionHandler:(void (^)(NSArray<HKObject *> *_Nullable added, NSUInteger deleted, HKQueryAnchor *_Nullable anchor, NSError *_Nullable error))completionHandler
+           completionHandler:(void (^)(HKAnchoredObjectQuery *query, NSArray<HKSample *> *_Nullable results,
+                                       NSUInteger newAnchor, NSError *_Nullable error))completionHandler
 {
-    self = [super initWithSampleType:type];
-    if (self) {
-        _anchor = (HKQueryAnchor *)[anchor copy];
-        _limit = limit;
-        _resultsHandler = [completionHandler copy];
-        [self charon_setPredicate:predicate];
+    HKAnchoredObjectQuery *fresh = [super initWithSampleType:type];
+    if (fresh) {
+        [fresh charon_setPredicate:predicate];
+        fresh->_anchor = [HKQueryAnchor anchorFromValue:anchor];
+        fresh.charon_limit = limit;
+        fresh->_resultsHandler = [completionHandler copy];
+        fresh.charon_stopsAfterResults = YES;
     }
-    return self;
+    return fresh;
 }
 
-- (nullable HKQueryAnchor *)anchor
+// The form of iOS 9.0, with an object anchor and a handler that takes the deletions as the deleted
+// objects themselves. With no update handler set the query answers once and stops itself, which is
+// what the header says it does; with one it keeps running and is told of every change the store makes.
+- (void)charon_setResultsHandler:(void (^)(HKAnchoredObjectQuery *query, NSArray<HKSample *> *_Nullable sampleObjects,
+                                           NSArray<HKDeletedObject *> *_Nullable deletedObjects, HKQueryAnchor *_Nullable newAnchor,
+                                           NSError *_Nullable error))handler
 {
-    return _anchor;
+    _resultsHandler = nil;
+    _charonResultsHandler9 = [handler copy];
+}
+
+// The form of iOS 9.0: with an update handler the query keeps running and is answered with every
+// change the store makes while it runs, and with none it answers once and stops itself. That is the
+// difference the header draws between the two initialisers, and it is what the store is asked for.
+- (void)charon_storeDidChange:(NSArray<NSUUID *> *)identifiers
+{
+    void (^update)(HKAnchoredObjectQuery *, NSArray<HKSample *> *_Nullable, NSArray<HKDeletedObject *> *_Nullable,
+                   HKQueryAnchor *_Nullable, NSError *_Nullable) = self.charon_updateHandler;
+    if (!update)
+        return;
+    CharonHKStore *store = [CharonHKStore sharedStore];
+    NSError *error = nil;
+    NSArray *added = [store objectsWithUUIDs:identifiers ofType:self.sampleType error:&error];
+    if (!added)
+        return;
+    HKQueryAnchor *anchor = [HKQueryAnchor charon_anchorWithSequence:store.highestSequence];
+    [self charon_perform:^{
+        update(self, added, nil, anchor, nil);
+    }];
 }
 
 - (void)charon_run
 {
     CharonHKStore *store = [CharonHKStore sharedStore];
     NSError *error = nil;
-    NSInteger from = _anchor ? (NSInteger)_anchor.sequence : 0;
+    NSInteger from = _anchor ? _anchor.sequence : 0;
     NSArray *added = [store objectsOfType:self.sampleType
                                 predicate:self.charon_predicate
                                 startDate:nil
                                   endDate:nil
                         strictStartDate:NO
                           strictEndDate:NO
-                                 limit:_limit
+                                 limit:self.charon_limit
                          sortDescriptors:nil
                            fromSequence:from
                                   error:&error];
-    NSArray *deleted = [store deletedUUIDsSinceSequence:from];
-    HKQueryAnchor *anchor = [HKQueryAnchor charon_anchorWithSequence:store.highestSequence];
     if (!added) {
         [self charon_perform:^{
             if (self->_resultsHandler)
-                self->_resultsHandler(@[], 0, nil, error);
+                self->_resultsHandler(self, @[], 0, error);
+            else if (self->_charonResultsHandler9)
+                self->_charonResultsHandler9(self, @[], @[], nil, error);
         }];
         return;
     }
+    NSArray *deleted = [store deletedObjectsSinceSequence:from];
+    HKQueryAnchor *anchor = [HKQueryAnchor charon_anchorWithSequence:store.highestSequence];
     [self charon_perform:^{
-        if (self->_resultsHandler)
-            self->_resultsHandler(added, deleted.count, anchor, nil);
+        if (self->_resultsHandler) {
+            self->_resultsHandler(self, added, (NSUInteger)deleted.count, error);
+        } else if (self->_charonResultsHandler9) {
+            self->_charonResultsHandler9(self, added, deleted, anchor, error);
+        }
     }];
+}
+
+- (void)charon_stop
+{
+    _charonResultsHandler9 = nil;
+    _resultsHandler = nil;
 }
 
 @end

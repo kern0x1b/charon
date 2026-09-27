@@ -1,0 +1,181 @@
+// HKDevice: the device a piece of health data came from, and HKSourceRevision: which revision of
+// which source wrote it. Both arrived in iOS 9.0, so both are files of their own.
+
+#import <UIKit/UIKit.h>
+#import <HealthKit/HealthKit.h>
+
+#import "CharonHKStore.h"
+
+@implementation HKDevice {
+    NSString *_name;
+    NSString *_manufacturer;
+    NSString *_model;
+    NSString *_hardwareVersion;
+    NSString *_firmwareVersion;
+    NSString *_softwareVersion;
+    NSString *_localIdentifier;
+    NSString *_UDIDeviceIdentifier;
+}
+
++ (BOOL)supportsSecureCoding
+{
+    return YES;
+}
+
+- (instancetype)initWithName:(nullable NSString *)name
+                manufacturer:(nullable NSString *)manufacturer
+                       model:(nullable NSString *)model
+             hardwareVersion:(nullable NSString *)hardwareVersion
+             firmwareVersion:(nullable NSString *)firmwareVersion
+             softwareVersion:(nullable NSString *)softwareVersion
+             localIdentifier:(nullable NSString *)localIdentifier
+         UDIDeviceIdentifier:(nullable NSString *)UDIDeviceIdentifier
+{
+    // Every one of the eight is optional, and the header says so: a device is whatever the caller
+    // knows of it, and a nil stays a nil rather than becoming an empty string, because a caller that
+    // asks for the firmware of a device that never gave one must be able to tell it from one that gave
+    // an empty one.
+    HKDevice *device = [super init];
+    if (device) {
+        device->_name = [name copy];
+        device->_manufacturer = [manufacturer copy];
+        device->_model = [model copy];
+        device->_hardwareVersion = [hardwareVersion copy];
+        device->_firmwareVersion = [firmwareVersion copy];
+        device->_softwareVersion = [softwareVersion copy];
+        device->_localIdentifier = [localIdentifier copy];
+        device->_UDIDeviceIdentifier = [UDIDeviceIdentifier copy];
+    }
+    return device;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    return [self initWithName:[coder decodeObjectOfClass:[NSString class] forKey:@"name"]
+                manufacturer:[coder decodeObjectOfClass:[NSString class] forKey:@"manufacturer"]
+                       model:[coder decodeObjectOfClass:[NSString class] forKey:@"model"]
+             hardwareVersion:[coder decodeObjectOfClass:[NSString class] forKey:@"hardwareVersion"]
+             firmwareVersion:[coder decodeObjectOfClass:[NSString class] forKey:@"firmwareVersion"]
+             softwareVersion:[coder decodeObjectOfClass:[NSString class] forKey:@"softwareVersion"]
+             localIdentifier:[coder decodeObjectOfClass:[NSString class] forKey:@"localIdentifier"]
+         UDIDeviceIdentifier:[coder decodeObjectOfClass:[NSString class] forKey:@"UDIDeviceIdentifier"]];
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    [coder encodeObject:_name forKey:@"name"];
+    [coder encodeObject:_manufacturer forKey:@"manufacturer"];
+    [coder encodeObject:_model forKey:@"model"];
+    [coder encodeObject:_hardwareVersion forKey:@"hardwareVersion"];
+    [coder encodeObject:_firmwareVersion forKey:@"firmwareVersion"];
+    [coder encodeObject:_softwareVersion forKey:@"softwareVersion"];
+    [coder encodeObject:_localIdentifier forKey:@"localIdentifier"];
+    [coder encodeObject:_UDIDeviceIdentifier forKey:@"UDIDeviceIdentifier"];
+}
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    return [[HKDevice alloc] initWithName:_name
+                             manufacturer:_manufacturer
+                                    model:_model
+                          hardwareVersion:_hardwareVersion
+                          firmwareVersion:_firmwareVersion
+                          softwareVersion:_softwareVersion
+                          localIdentifier:_localIdentifier
+                      UDIDeviceIdentifier:_UDIDeviceIdentifier];
+}
+
+// The device this process runs on. The release answers the host's own name, model and system version
+// here, and the release's own UIDevice is where those three are, so they are read from it rather than
+// from a table of this port's own. The four the header leaves optional and the release itself has no
+// value for on a host device - the hardware and firmware revisions and the two identifiers, which are
+// a paired accessory's - stay nil, which is what the release answers for them.
++ (HKDevice *)localDevice
+{
+    static HKDevice *device;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        UIDevice *host = [UIDevice currentDevice];
+        device = [[HKDevice alloc] initWithName:host.name
+                                   manufacturer:@"Apple"
+                                          model:host.model
+                                hardwareVersion:nil
+                                firmwareVersion:nil
+                                softwareVersion:host.systemVersion
+                                localIdentifier:nil
+                            UDIDeviceIdentifier:nil];
+    });
+    return device;
+}
+
+- (nullable NSString *)name
+{
+    return _name;
+}
+
+- (nullable NSString *)manufacturer
+{
+    return _manufacturer;
+}
+
+- (nullable NSString *)model
+{
+    return _model;
+}
+
+- (nullable NSString *)hardwareVersion
+{
+    return _hardwareVersion;
+}
+
+- (nullable NSString *)firmwareVersion
+{
+    return _firmwareVersion;
+}
+
+- (nullable NSString *)softwareVersion
+{
+    return _softwareVersion;
+}
+
+- (nullable NSString *)localIdentifier
+{
+    return _localIdentifier;
+}
+
+- (nullable NSString *)UDIDeviceIdentifier
+{
+    return _UDIDeviceIdentifier;
+}
+
+- (BOOL)isEqual:(id)other
+{
+    if (self == other)
+        return YES;
+    if (![other isKindOfClass:[HKDevice class]])
+        return NO;
+    HKDevice *that = other;
+    return [self charon_isSameString:_name to:that.name] && [self charon_isSameString:_manufacturer to:that.manufacturer]
+           && [self charon_isSameString:_model to:that.model] && [self charon_isSameString:_hardwareVersion to:that.hardwareVersion]
+           && [self charon_isSameString:_firmwareVersion to:that.firmwareVersion]
+           && [self charon_isSameString:_softwareVersion to:that.softwareVersion]
+           && [self charon_isSameString:_localIdentifier to:that.localIdentifier]
+           && [self charon_isSameString:_UDIDeviceIdentifier to:that.UDIDeviceIdentifier];
+}
+
+- (BOOL)charon_isSameString:(nullable NSString *)mine to:(nullable NSString *)theirs
+{
+    return mine == theirs || [mine isEqualToString:theirs];
+}
+
+- (NSUInteger)hash
+{
+    return _name.hash ^ _model.hash ^ _localIdentifier.hash ^ _UDIDeviceIdentifier.hash;
+}
+
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"HKDevice[%@ %@ %@]", _name, _manufacturer, _model];
+}
+
+@end

@@ -40,7 +40,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)openWithError:(NSError **)error;
 
 // Every object the process saves is written under the type it names, so that a query can be narrowed
-// by type and by date before anything is unarchived.
+// by type and by date before anything is unarchived. A row also carries the source revision the
+// process wrote it under, which is the process's own CFBundleVersion, and the device the sample names,
+// so that -sourceRevision and -device read back what was saved.
 - (BOOL)declareType:(HKObjectType *)type error:(NSError **)error;
 - (nullable HKObjectType *)typeWithIdentifier:(NSString *)identifier;
 
@@ -77,6 +79,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (nullable NSArray *)objectsWithUUIDs:(NSArray<NSUUID *> *)uuids ofType:(HKObjectType *)type error:(NSError **)error;
 - (NSInteger)highestSequence;
 - (NSArray *)deletedUUIDsSinceSequence:(NSInteger)sequence;
+// The objects deleted after a position, as the HKDeletedObject instances an anchored query of iOS 9
+// answers with. The store's own deleted table is where they come from.
+- (nullable NSArray *)deletedObjectsSinceSequence:(NSInteger)sequence;
 
 // Every source the store holds a sample from, and the order the owner set for a type.
 - (NSArray *)allSources;
@@ -158,11 +163,21 @@ extern Class _Nullable CharonHKClassForTypeKind(NSInteger kind);
 // The private surface of the classes of this framework that another of them needs. Declared here and
 // implemented in each class's own @implementation, so that none of it is a selector this port adds
 // to somebody else's class and none of it needs a category.
+@interface HKObject (CharonIOS9)
+- (nullable HKSourceRevision *)sourceRevision;
+- (nullable HKDevice *)device;
+- (void)charon_setSourceRevision:(nullable HKSourceRevision *)revision device:(nullable HKDevice *)device;
+@end
+
 @interface HKObject (CharonInternal)
 - (instancetype)charon_initWithUUID:(NSUUID *)uuid source:(HKSource *)source metadata:(NSDictionary *)metadata;
 - (instancetype)charon_copyForStore;
 - (nullable HKCorrelation *)charon_correlation;
 - (void)charon_setCorrelation:(nullable HKCorrelation *)correlation;
+- (void)charon_setDevice:(nullable HKDevice *)device;
+- (nullable HKDevice *)charon_storedDevice;
+- (nullable HKSourceRevision *)charon_storedSourceRevision;
+- (void)charon_setStoredSourceRevision:(nullable HKSourceRevision *)revision;
 - (instancetype)charon_objectWithCoder:(NSCoder *)coder;
 @end
 
@@ -194,6 +209,31 @@ extern Class _Nullable CharonHKClassForTypeKind(NSInteger kind);
 + (instancetype)charon_prefixedUnitForDimension:(NSInteger)dimension prefix:(HKMetricPrefix)prefix;
 @end
 
+// What the iOS 9.0 form of an anchored query needs from the query of iOS 8.0 underneath it, which is
+// not in a header of its own: the two handlers, and whether the query stops itself once the results
+// handler has run or keeps running to be told with the update handler.
+@interface HKAnchoredObjectQuery (CharonInternal)
+@property (nonatomic, copy, nullable) void (^charon_updateHandler)(HKAnchoredObjectQuery *query,
+                                                                    NSArray<HKSample *> *_Nullable added,
+                                                                    NSArray<HKDeletedObject *> *_Nullable deleted,
+                                                                    HKQueryAnchor *_Nullable anchor,
+                                                                    NSError *_Nullable error);
+@property (nonatomic) BOOL charon_stopsAfterResults;
+@property (nonatomic) NSUInteger charon_limit;
+// The handler of the iOS 9.0 initialiser, which is a different selector and a different shape from the
+// one of iOS 8.0: an object anchor in, the deletions as objects out.
+- (void)charon_setResultsHandler:(void (^)(HKAnchoredObjectQuery *query, NSArray<HKSample *> *_Nullable sampleObjects,
+                                           NSArray<HKDeletedObject *> *_Nullable deletedObjects, HKQueryAnchor *_Nullable newAnchor,
+                                           NSError *_Nullable error))handler;
+- (void)charon_storeDidChange:(NSArray<NSUUID *> *)identifiers;
+@end
+
+@interface HKHealthStore (CharonInternal)
+- (void)charon_complete:(nullable void (^)(BOOL success, NSError *_Nullable error))completion
+                     ok:(BOOL)ok
+                  error:(nullable NSError *)error;
+@end
+
 @interface HKQuery (CharonInternal)
 - (instancetype)initWithSampleType:(nullable HKSampleType *)sampleType;
 - (nullable NSPredicate *)charon_predicate;
@@ -220,6 +260,38 @@ extern Class _Nullable CharonHKClassForTypeKind(NSInteger kind);
 
 @interface HKSource (CharonInternal)
 + (instancetype)charon_sourceWithName:(NSString *)name bundleIdentifier:(NSString *)bundleIdentifier;
+// The process's own version, out of its Info.plist, which is what the source revision of everything it
+// saves carries; nil where the plist names none, which is what the release's own is.
++ (nullable NSString *)charon_processVersion;
+@end
+
+@interface HKDevice (CharonInternal)
++ (instancetype)charon_deviceWithName:(nullable NSString *)name
+                        manufacturer:(nullable NSString *)manufacturer
+                               model:(nullable NSString *)model
+                     hardwareVersion:(nullable NSString *)hardwareVersion
+                     firmwareVersion:(nullable NSString *)firmwareVersion
+                     softwareVersion:(nullable NSString *)softwareVersion
+                     localIdentifier:(nullable NSString *)localIdentifier
+                 UDIDeviceIdentifier:(nullable NSString *)UDIDeviceIdentifier;
+@end
+
+@interface HKSourceRevision (CharonInternal)
+- (instancetype)charon_initWithSource:(HKSource *)source version:(nullable NSString *)version;
+@end
+
+@interface HKDeletedObject (CharonInternal)
+- (instancetype)charon_initWithUUID:(NSUUID *)uuid;
+@end
+
+@interface HKFitzpatrickSkinTypeObject (CharonInternal)
++ (instancetype)charon_fitzpatrickSkinTypeObject:(HKFitzpatrickSkinType)skinType;
+@end
+
+@interface HKObject (CharonIOS9)
+- (nullable HKSourceRevision *)sourceRevision;
+- (nullable HKDevice *)device;
+- (void)charon_setSourceRevision:(nullable HKSourceRevision *)revision device:(nullable HKDevice *)device;
 @end
 
 @interface HKBiologicalSexObject (CharonInternal)

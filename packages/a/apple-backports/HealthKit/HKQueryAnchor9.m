@@ -2,6 +2,12 @@
 //
 // The class arrived in iOS 9.0, so it is a file of its own: one object carries the API of one
 // release (COORDINATION section 5, "one release per object file, or check_registry fails").
+//
+// An anchor is the store's own write sequence. The release's anchor is an opaque value the caller
+// keeps and hands back, and +anchorFromValue: is how it makes one of those from a value it was given -
+// a value a caller persisted between launches, in the archive of a previous one. This port's value is
+// the sequence, as a number, which is what the store keeps its own anchors in and what a caller
+// persists the same way.
 
 #import <HealthKit/HealthKit.h>
 
@@ -23,12 +29,17 @@
     return anchor;
 }
 
+- (instancetype)init
+{
+    return [super init];
+}
+
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
-    self = [super init];
-    if (self)
-        _sequence = [coder decodeIntForKey:@"sequence"];
-    return self;
+    HKQueryAnchor *anchor = [super init];
+    if (anchor)
+        anchor->_sequence = [coder decodeIntForKey:@"sequence"];
+    return anchor;
 }
 
 - (void)encodeWithCoder:(NSCoder *)coder
@@ -47,6 +58,15 @@
 - (NSInteger)sequence
 {
     return _sequence;
+}
+
+// An anchor from the integer a caller obtained from the pre-9.0 form of HKAnchoredObjectQuery. That
+// integer was a position in the health store, and this port's anchor is a position in its store, so
+// handing one back here positions the query where the value it was taken from left off: the same
+// number, the same meaning, which is what the release's own method is for.
++ (instancetype)anchorFromValue:(NSUInteger)value
+{
+    return [self charon_anchorWithSequence:(NSInteger)value];
 }
 
 - (BOOL)isEqual:(id)other
