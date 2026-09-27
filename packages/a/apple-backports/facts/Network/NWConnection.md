@@ -58,3 +58,63 @@ caller passes is a real one and the comparison means what it says.
 - Listeners, browsers, endpoints of a service or a Unix path, groups, the content and framer contexts, and every
   `nw_protocol_options` call: none of them is carried. Network has 1 649 rows in the SDK 26.2 surface; this file and
   the path monitor carry the 35 of them the port's own code reaches.
+
+## The transport, measured against the host's own Network
+
+`tests/backports/host/network-connection`, 24 checks, the port's `nw_connection_t` and the host's
+`nw_connection_t` both connected to one loopback peer, which relays what one writes to the other. Every
+byte the port sends is therefore read by Apple's own Network and every byte Apple's own Network sends
+is read by the port, over a real socket on each side:
+
+- a TCP connection of the port reaches `ready` over the loopback, as the host's does, and the two reach
+  it through the same states;
+- the port's `nw_connection_send` completion reports no error, the peer read the bytes, and the host's
+  own Network read them **through the port's socket**;
+- what the host's Network sends comes back through the port's `nw_connection_receive`, in the order it
+  was written;
+- the largest datagram the connection's path carries is the same number on both sides - 16344 over the
+  loopback, where the port had to look at *this* connection's own interface rather than the device's
+  first one (it said 1460 until it did, which is the general path's interface and not the connection's);
+- the description has the shape Apple's own has, naming the connection, the peer and the transport;
+- each side has the metadata of the transport it is carrying and none of a protocol it is not;
+- a refused connection fails on both sides with the same domain of error and the same code (the POSIX
+  one the kernel gave), and a datagram connection reaches `ready` where nothing is listening, on both
+  sides.
+
+Four scenarios are **not** compared there and are said so in the test: a data transfer report and its
+collect, cancelling, the refused connection and the datagram one each need the port's own objects
+through the port's own accessors - a report of the port read by the host's accessor reads Apple's layout
+of a port object - so they are port-only checks, and they are what the emulator run at 6.1.3
+(`tests/backports/device`) is for. The report's numbers are the connection's own counters and the
+kernel's own `TCP_CONNECTION_INFO` (`charon_nw_tcp_round_trips`), which is what the accessors in
+`NWObjects.md` read.
+
+## What the release's own TLS is, and how the connection uses it
+
+Measured out of the iOS 6.1.3 cache, the TLS this port builds on is `SSLContextCreate` (the name from
+iOS 7 on, `SSLCreateContext`, is **not** exported by that release), with `SSLSetIOFuncs`,
+`SSLSetPeerDomainName`, `SSLSetCertificate`, `SSLSetSessionOption`, `SSLHandshake`, `SSLRead`, `SSLWrite`
+and `SSLClose` all there. The connection drives them from its own two dispatch sources, so the
+handshake and the data travel over one engine, and the port declares `SSLContextCreate` itself because
+the SDK it compiles against has only the newer name. There is no `SSLGetServerTrust` on this release,
+so the evaluation of the server's chain is the system's own, and a program that wants a policy of its
+own asks to break on server auth with `SSLSetSessionOption`, which is here.
+
+**No TLS 1.2 and no TLS 1.3 on this release** - which is the whole of why there is no QUIC transport:
+QUIC's handshake *is* a TLS 1.3 handshake (RFC 9001 §4.2), and this release has neither. That is the
+concrete blocker on the 43 QUIC transport-dependent rows, and the QUIC options and metadata of
+`NWQUIC.md` are the configuration of a protocol the release cannot speak at all.
+
+## Two things this environment shows about the engine, measured
+
+- **A write dispatch source over a socket does not fire on this host** (a two-line program: a socket
+  connected and accepted, a `DISPATCH_SOURCE_TYPE_WRITE` source over it, no event - measured). The
+  engine therefore does not wait for writability to connect: the one call that has to wait, the
+  `connect`, runs on a queue of its own and the socket is blocking for exactly that call and
+  non-blocking from then on. That is the native arrangement for a release with no writability signal
+  worth having, and it keeps the connection's own queue - which carries every handler - free.
+- **The host's own Network will not start a listener in this environment**: asked for one on a port of
+  its choosing and on a port the test names, it answers `failed` with POSIX `EINVAL`, while its
+  *connection* works and sends and receives normally (the same measurement). That is why the peer of
+  this differential is a plain BSD listener in the test program, and why the port's own listener - which
+  is `nw_listener_*`, not in this delivery - has to be measured on the emulator rather than here.

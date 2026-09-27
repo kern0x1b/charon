@@ -10,7 +10,10 @@
 #include <netinet/in.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <dispatch/dispatch.h>
+#include <fcntl.h>
 #include <string.h>
+#include <netinet/tcp.h>
 #include <sys/un.h>
 #include <time.h>
 #include <unistd.h>
@@ -327,4 +330,106 @@ int64_t charon_nw_integer(CFDictionaryRef values, const char *key, int64_t fallb
     if (!CFNumberGetValue((CFNumberRef)held, kCFNumberSInt64Type, &value))
         return fallback;
     return value;
+}
+
+int charon_nw_socket(int family, int type, int protocol)
+{
+    int handle = socket(family, type, protocol);
+    if (handle < 0)
+        return -1;
+    int flags = fcntl(handle, F_GETFL, 0);
+    if (flags < 0 || fcntl(handle, F_SETFL, flags | O_NONBLOCK) < 0) {
+        int saved = errno;
+        close(handle);
+        errno = saved;
+        return -1;
+    }
+    int on = 1;
+    setsockopt(handle, SOL_SOCKET, SO_NOSIGPIPE, &on, sizeof on);
+    return handle;
+}
+
+int charon_nw_blocking_socket(int family, int type, int protocol)
+{
+    int handle = socket(family, type, protocol);
+    if (handle < 0)
+        return -1;
+    int on = 1;
+    setsockopt(handle, SOL_SOCKET, SO_NOSIGPIPE, &on, sizeof on);
+    return handle;
+}
+
+bool charon_nw_set_nonblocking(int handle)
+{
+    int flags = fcntl(handle, F_GETFL, 0);
+    if (flags < 0)
+        return false;
+    return fcntl(handle, F_SETFL, flags | O_NONBLOCK) == 0;
+}
+
+dispatch_source_t charon_nw_read_source(int handle, dispatch_queue_t queue)
+{
+    dispatch_source_t source = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, (uintptr_t)handle, 0, queue);
+    if (!source)
+        return NULL;
+    dispatch_source_set_cancel_handler(source, ^{
+        close(handle);
+    });
+    dispatch_resume(source);
+    return source;
+}
+
+dispatch_source_t charon_nw_write_source(int handle, dispatch_queue_t queue)
+{
+    dispatch_source_t source = dispatch_source_create(DISPATCH_SOURCE_TYPE_WRITE, (uintptr_t)handle, 0, queue);
+    if (!source)
+        return NULL;
+    /* A write source over a socket is always ready, so it is kept suspended until there is something
+       to write; resumed it fires, suspended it does not. */
+    dispatch_suspend(source);
+    return source;
+}
+
+uint32_t charon_nw_available_send_buffer(int handle)
+{
+    int value = 0;
+    socklen_t length = sizeof value;
+    if (getsockopt(handle, SOL_SOCKET, SO_SNDBUF, &value, &length) != 0 || value < 0)
+        return 0;
+    /* What the kernel holds for the socket, which is twice what it lets a program fill, is the room
+       the transport has; half of what the kernel reports is that room. */
+    return (uint32_t)(value / 2);
+}
+
+uint32_t charon_nw_available_receive_buffer(int handle)
+{
+    int value = 0;
+    socklen_t length = sizeof value;
+    if (getsockopt(handle, SOL_SOCKET, SO_RCVBUF, &value, &length) != 0 || value < 0)
+        return 0;
+    return (uint32_t)(value / 2);
+}
+
+bool charon_nw_tcp_round_trips(int handle, uint64_t *smoothed, uint64_t *minimum, uint64_t *variance)
+{
+#ifdef TCP_CONNECTION_INFO
+    struct tcp_connection_info info;
+    memset(&info, 0, sizeof info);
+    socklen_t length = sizeof info;
+    if (getsockopt(handle, IPPROTO_TCP, TCP_CONNECTION_INFO, &info, &length) != 0)
+        return false;
+    if (smoothed)
+        *smoothed = info.tcpi_srtt;
+    if (minimum)
+        *minimum = info.tcpi_rttcur;
+    if (variance)
+        *variance = info.tcpi_rttvar;
+    return true;
+#else
+    (void)handle;
+    (void)smoothed;
+    (void)minimum;
+    (void)variance;
+    return false;
+#endif
 }

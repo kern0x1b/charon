@@ -70,3 +70,32 @@ void charon_nw_set_integer(CFMutableDictionaryRef values, const char *key, int64
 int64_t charon_nw_integer(CFDictionaryRef values, const char *key, int64_t fallback);
 
 #endif
+
+/* A socket of that kind, already close-on-exec and non-blocking: the port's own sockets are driven by
+   dispatch sources, which ask for the non-blocking kind, and a signal from a closed socket must not
+   kill the process (Darwin has no MSG_NOSIGNAL, so SO_NOSIGPIPE is the way). -1 with errno set on
+   failure, as socket() itself answers. */
+int charon_nw_socket(int family, int type, int protocol);
+
+/* A socket of that kind, close-on-exec and *blocking*, for the one call that has to wait: the
+   connect of a connection, which runs on a queue of its own so that nothing else waits with it. After
+   it has answered, charon_nw_set_nonblocking() makes it what the two dispatch sources need. */
+int charon_nw_blocking_socket(int family, int type, int protocol);
+bool charon_nw_set_nonblocking(int handle);
+
+/* The two dispatch sources a socket's traffic is read on, on the queue given, each asking for that
+   socket's descriptor only. Sources over a descriptor are created disabled and resumed here, so a
+   caller that wants to add its own handler first can. */
+dispatch_source_t charon_nw_read_source(int handle, dispatch_queue_t queue);
+dispatch_source_t charon_nw_write_source(int handle, dispatch_queue_t queue);
+
+/* The kernel's buffer sizes for that socket, for the data transfer report's available-buffer
+   accessors, which are the room the transport has rather than the room the program asked for. */
+uint32_t charon_nw_available_send_buffer(int handle);
+uint32_t charon_nw_available_receive_buffer(int handle);
+
+/* The round trip times the kernel has measured for that TCP connection, in milliseconds, through the
+   TCP_CONNECTION_INFO the SDK declares. false for a kernel that has no such option, which is what a
+   report says then: a measurement the port could not take. */
+bool charon_nw_tcp_round_trips(int handle, uint64_t *smoothed, uint64_t *minimum, uint64_t *variance);
+

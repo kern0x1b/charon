@@ -52,6 +52,136 @@
       "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
     },
     {
+      "api": "nw_connection_batch()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "holds the connection's state still while a block changes it",
+      "facts": "facts/Network/NWConnection.md",
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428) and the port's connection over a real loopback socket pair, both connections to one peer, each reading what the other wrote (tests/backports/host/network-connection, 24 checks)"
+    },
+    {
+      "api": "nw_connection_cancel_current_endpoint()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "gives up the endpoint the connection is on, and tries the next",
+      "facts": "facts/Network/NWConnection.md",
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428) and the port's connection over a real loopback socket pair, both connections to one peer, each reading what the other wrote (tests/backports/host/network-connection, 24 checks)"
+    },
+    {
+      "api": "nw_connection_copy_current_path()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the path the connection is on",
+      "facts": "facts/Network/NWConnection.md",
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428) and the port's connection over a real loopback socket pair, both connections to one peer, each reading what the other wrote (tests/backports/host/network-connection, 24 checks)"
+    },
+    {
+      "api": "nw_connection_copy_description()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "a description of the connection, as text the caller frees",
+      "facts": "facts/Network/NWConnection.md",
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428) and the port's connection over a real loopback socket pair, both connections to one peer, each reading what the other wrote (tests/backports/host/network-connection, 24 checks)"
+    },
+    {
+      "api": "nw_connection_copy_protocol_metadata()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "what a protocol of the connection says about it",
+      "facts": "facts/Network/NWConnection.md",
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428) and the port's connection over a real loopback socket pair, both connections to one peer, each reading what the other wrote (tests/backports/host/network-connection, 24 checks)"
+    },
+    {
+      "api": "nw_connection_force_cancel()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "cancels at once, on the caller's own queue",
+      "facts": "facts/Network/NWConnection.md",
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428) and the port's connection over a real loopback socket pair, both connections to one peer, each reading what the other wrote (tests/backports/host/network-connection, 24 checks)"
+    },
+    {
+      "api": "nw_connection_get_maximum_datagram_size()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the largest datagram the path of the connection can carry",
+      "facts": "facts/Network/NWConnection.md",
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428) and the port's connection over a real loopback socket pair, both connections to one peer, each reading what the other wrote (tests/backports/host/network-connection, 24 checks)"
+    },
+    {
+      "api": "nw_connection_receive()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "takes what arrived within those bounds and calls the completion with it",
+      "facts": "facts/Network/NWConnection.md",
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428) and the port's connection over a real loopback socket pair, both connections to one peer, each reading what the other wrote (tests/backports/host/network-connection, 24 checks)"
+    },
+    {
+      "api": "nw_connection_receive_message()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "one whole message, with the connection's own bounds",
+      "facts": "facts/Network/NWConnection.md",
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428) and the port's connection over a real loopback socket pair, both connections to one peer, each reading what the other wrote (tests/backports/host/network-connection, 24 checks)"
+    },
+    {
+      "api": "nw_connection_restart()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "starts the connection over, as another attempt",
+      "facts": "facts/Network/NWConnection.md",
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428) and the port's connection over a real loopback socket pair, both connections to one peer, each reading what the other wrote (tests/backports/host/network-connection, 24 checks)"
+    },
+    {
+      "api": "nw_connection_send()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "sends content with the context that describes it, and calls the completion when it is on the wire",
+      "facts": "facts/Network/NWConnection.md",
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428) and the port's connection over a real loopback socket pair, both connections to one peer, each reading what the other wrote (tests/backports/host/network-connection, 24 checks)"
+    },
+    {
+      "api": "nw_connection_set_better_path_available_handler()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the block called when a better path is there for the connection",
+      "facts": "facts/Network/NWConnection.md",
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428) and the port's connection over a real loopback socket pair, both connections to one peer, each reading what the other wrote (tests/backports/host/network-connection, 24 checks)"
+    },
+    {
+      "api": "nw_connection_set_state_changed_handler()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the block called with every state the connection reaches",
+      "facts": "facts/Network/NWConnection.md",
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428) and the port's connection over a real loopback socket pair, both connections to one peer, each reading what the other wrote (tests/backports/host/network-connection, 24 checks)"
+    },
+    {
       "api": "nw_content_context_copy_antecedent()",
       "kind": "function",
       "introduced": "12.0",

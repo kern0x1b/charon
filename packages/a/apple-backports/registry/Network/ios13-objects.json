@@ -62,6 +62,26 @@
       "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
     },
     {
+      "api": "nw_connection_access_establishment_report()",
+      "kind": "function",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the report of what establishing the connection took",
+      "facts": "facts/Network/NWConnection.md",
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428) and the port's connection over a real loopback socket pair, both connections to one peer, each reading what the other wrote (tests/backports/host/network-connection, 24 checks)"
+    },
+    {
+      "api": "nw_connection_create_new_data_transfer_report()",
+      "kind": "function",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "a report of what the connection has moved since",
+      "facts": "facts/Network/NWConnection.md",
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428) and the port's connection over a real loopback socket pair, both connections to one peer, each reading what the other wrote (tests/backports/host/network-connection, 24 checks)"
+    },
+    {
       "api": "nw_data_transfer_report_collect()",
       "kind": "function",
       "introduced": "13.0",
