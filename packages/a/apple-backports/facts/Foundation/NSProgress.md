@@ -80,7 +80,15 @@ tolerances for the three read-case divergences above and for the handler dispatc
 own oracle in the absence of a device one, same as `tests/backports/host/foundation2` already is for the
 categories. Checked on the emulator against the release's own class: `tests/backports/device/progress.m` and
 `progress-cases.m` (already written for the release, unchanged) through `tests/backports/device/below6/`, on
-4.3 and 5.0 against 6.0's own answers.
+5.0 against 6.0's own answers (63/0, 12/0). 4.3 is not checked there yet, honestly, not a pass reported as one:
+`device/progress.m` decodes its own expectations file with `NSJSONSerialization`, which the backports do not
+carry below iOS 6.0 until that class's own turn (the next single-reference class after this one), so the
+program's own harness-only JSON decode is weak-imported and NULL at 4.3 and the run is a silent 0/0, waived in
+`tests/backports/device/below6/xmake.lua` for that reason and no other. Nothing of `NSProgress` under test is
+reached at 4.3 by this program at all, below or above the waiver; the 4.3 build of `Foundation/NSProgress.m`
+itself is the same compiled object 5.0 uses (band() places both at the same object, one band point apart) and
+the host differential above, neither of which is a device measurement. Once `NSJSONSerialization` is carried
+below 6.0, this run becomes real and this paragraph is to be corrected again.
 
 Where a handler is called differs in timing, not effect: iOS 6's `-cancel`/`-pause` call the handler
 synchronously, at the call itself; the host's newest Foundation dispatches it asynchronously (read in
