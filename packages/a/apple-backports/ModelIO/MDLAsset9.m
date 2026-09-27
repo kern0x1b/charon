@@ -762,7 +762,7 @@ static void CharonMDLReadPLY(NSData *data, NSMutableArray<MDLObject *> *objects,
         // end_header is what real writers emit and reading the tokens flat ate every word of it as a
         // coordinate, so the whole of the file after the first comment was consumed as geometry and
         // the asset came back empty with no error anywhere.
-        NSMutableArray<NSString *> *body = [NSMutableArray array];
+        NSMutableArray *body = [NSMutableArray array];
         for (NSString *line in [rest componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]]) {
             NSString *trimmed = [line stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
             if (!trimmed.length || [trimmed hasPrefix:@"#"])
