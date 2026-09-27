@@ -26,9 +26,9 @@ set_defaultarchs("iphoneos|armv7")
 local PROGRAMS = {
     nsuuid = {},
     -- progress.m decodes its own expectations file with NSJSONSerialization (device/progress.m, unchanged, written for
-    -- the release), which the backports do not yet carry below iOS 6 (a class of its own, still to come); the waiver is for
-    -- that harness-only use, not for anything of NSProgress under test here.
-    progress = {extra = {"progress-cases.m"}, waiver = "device/progress.m decodes its own expectations file with NSJSONSerialization, which the backports do not carry below iOS 6 yet; nothing of NSProgress reaches it"},
+    -- the release), which the backports carry below iOS 5.0 and the release itself from there, so nothing is waived.
+    progress = {extra = {"progress-cases.m"}},
+    json1 = {},
 }
 for name, program in pairs(PROGRAMS) do
     target(name)
