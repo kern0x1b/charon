@@ -25,8 +25,8 @@ public struct OpenURLIntent: SystemIntent, URLRepresentableIntent {
     /// The intent's own projection of its URL, which is the property wrapper a caller reads.
     public var urlParameter: IntentParameter<URL> {
         let title = LocalizedStringResource("URL")
-        let parameter = IntentParameter<URL>(description: title, requestValueDialog: nil,
-                                              inputConnectionBehavior: .default)
+        let parameter = IntentParameter<URL>(title: title, description: nil, requestValueDialog: nil,
+                                             inputConnectionBehavior: InputConnectionBehavior.default)
         parameter.setValue(url)
         return parameter
     }
