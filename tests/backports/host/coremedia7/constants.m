@@ -20,11 +20,11 @@ static void compare(const char *name, CFStringRef port, CFStringRef system)
     }
 }
 
+extern const CFStringRef CharonHost_kCMMetadataFormatDescriptionKey_SetupData;
 extern const CFStringRef CharonHost_kCMFormatDescriptionExtension_ContentLightLevelInfo;
 extern const CFStringRef CharonHost_kCMFormatDescriptionExtension_MasteringDisplayColorVolume;
 extern const CFStringRef CharonHost_kCMFormatDescriptionTransferFunction_ITU_R_2100_HLG;
 extern const CFStringRef CharonHost_kCMFormatDescriptionTransferFunction_SMPTE_ST_2084_PQ;
-extern const CFStringRef CharonHost_kCMFormatDescriptionExtension_AlternativeTransferCharacteristics;
 extern const CFStringRef CharonHost_kCMFormatDescriptionTransferFunction_Linear;
 extern const CFStringRef CharonHost_kCMFormatDescriptionAlphaChannelMode_PremultipliedAlpha;
 extern const CFStringRef CharonHost_kCMFormatDescriptionAlphaChannelMode_StraightAlpha;
@@ -36,6 +36,7 @@ extern const CFStringRef CharonHost_kCMFormatDescriptionExtension_ProtectedConte
 extern const CFStringRef CharonHost_kCMFormatDescriptionExtension_AmbientViewingEnvironment;
 extern const CFStringRef CharonHost_kCMFormatDescriptionExtension_BitsPerComponent;
 extern const CFStringRef CharonHost_kCMFormatDescriptionExtension_HorizontalFieldOfView;
+extern const CFStringRef CharonHost_kCMFormatDescriptionExtension_AlternativeTransferCharacteristics;
 extern const CFStringRef CharonHost_kCMFormatDescriptionExtension_ContentColorVolume;
 extern const CFStringRef CharonHost_kCMFormatDescriptionExtension_HasAdditionalViews;
 extern const CFStringRef CharonHost_kCMFormatDescriptionExtension_HasLeftStereoEyeView;
@@ -89,7 +90,6 @@ extern const CFStringRef CharonHost_kCMFormatDescriptionColorPrimaries_ITU_R_202
 extern const CFStringRef CharonHost_kCMFormatDescriptionColorPrimaries_P3_D65;
 extern const CFStringRef CharonHost_kCMFormatDescriptionTransferFunction_ITU_R_2020;
 extern const CFStringRef CharonHost_kCMFormatDescriptionYCbCrMatrix_ITU_R_2020;
-extern const CFStringRef CharonHost_kCMMetadataFormatDescriptionKey_SetupData;
 extern const CFStringRef CharonHost_kCMMetadataFormatDescriptionKey_StructuralDependency;
 extern const CFStringRef CharonHost_kCMMetadataFormatDescriptionMetadataSpecificationKey_SetupData;
 extern const CFStringRef CharonHost_kCMMetadataFormatDescriptionMetadataSpecificationKey_StructuralDependency;
@@ -98,11 +98,11 @@ extern const CFStringRef CharonHost_kCMMetadataFormatDescription_StructuralDepen
 int main(void)
 {
     @autoreleasepool {
+        compare("kCMMetadataFormatDescriptionKey_SetupData", CharonHost_kCMMetadataFormatDescriptionKey_SetupData, kCMMetadataFormatDescriptionKey_SetupData);
         compare("kCMFormatDescriptionExtension_ContentLightLevelInfo", CharonHost_kCMFormatDescriptionExtension_ContentLightLevelInfo, kCMFormatDescriptionExtension_ContentLightLevelInfo);
         compare("kCMFormatDescriptionExtension_MasteringDisplayColorVolume", CharonHost_kCMFormatDescriptionExtension_MasteringDisplayColorVolume, kCMFormatDescriptionExtension_MasteringDisplayColorVolume);
         compare("kCMFormatDescriptionTransferFunction_ITU_R_2100_HLG", CharonHost_kCMFormatDescriptionTransferFunction_ITU_R_2100_HLG, kCMFormatDescriptionTransferFunction_ITU_R_2100_HLG);
         compare("kCMFormatDescriptionTransferFunction_SMPTE_ST_2084_PQ", CharonHost_kCMFormatDescriptionTransferFunction_SMPTE_ST_2084_PQ, kCMFormatDescriptionTransferFunction_SMPTE_ST_2084_PQ);
-        compare("kCMFormatDescriptionExtension_AlternativeTransferCharacteristics", CharonHost_kCMFormatDescriptionExtension_AlternativeTransferCharacteristics, kCMFormatDescriptionExtension_AlternativeTransferCharacteristics);
         compare("kCMFormatDescriptionTransferFunction_Linear", CharonHost_kCMFormatDescriptionTransferFunction_Linear, kCMFormatDescriptionTransferFunction_Linear);
         compare("kCMFormatDescriptionAlphaChannelMode_PremultipliedAlpha", CharonHost_kCMFormatDescriptionAlphaChannelMode_PremultipliedAlpha, kCMFormatDescriptionAlphaChannelMode_PremultipliedAlpha);
         compare("kCMFormatDescriptionAlphaChannelMode_StraightAlpha", CharonHost_kCMFormatDescriptionAlphaChannelMode_StraightAlpha, kCMFormatDescriptionAlphaChannelMode_StraightAlpha);
@@ -114,6 +114,7 @@ int main(void)
         compare("kCMFormatDescriptionExtension_AmbientViewingEnvironment", CharonHost_kCMFormatDescriptionExtension_AmbientViewingEnvironment, kCMFormatDescriptionExtension_AmbientViewingEnvironment);
         compare("kCMFormatDescriptionExtension_BitsPerComponent", CharonHost_kCMFormatDescriptionExtension_BitsPerComponent, kCMFormatDescriptionExtension_BitsPerComponent);
         compare("kCMFormatDescriptionExtension_HorizontalFieldOfView", CharonHost_kCMFormatDescriptionExtension_HorizontalFieldOfView, kCMFormatDescriptionExtension_HorizontalFieldOfView);
+        compare("kCMFormatDescriptionExtension_AlternativeTransferCharacteristics", CharonHost_kCMFormatDescriptionExtension_AlternativeTransferCharacteristics, kCMFormatDescriptionExtension_AlternativeTransferCharacteristics);
         compare("kCMFormatDescriptionExtension_ContentColorVolume", CharonHost_kCMFormatDescriptionExtension_ContentColorVolume, kCMFormatDescriptionExtension_ContentColorVolume);
         compare("kCMFormatDescriptionExtension_HasAdditionalViews", CharonHost_kCMFormatDescriptionExtension_HasAdditionalViews, kCMFormatDescriptionExtension_HasAdditionalViews);
         compare("kCMFormatDescriptionExtension_HasLeftStereoEyeView", CharonHost_kCMFormatDescriptionExtension_HasLeftStereoEyeView, kCMFormatDescriptionExtension_HasLeftStereoEyeView);
@@ -167,7 +168,6 @@ int main(void)
         compare("kCMFormatDescriptionColorPrimaries_P3_D65", CharonHost_kCMFormatDescriptionColorPrimaries_P3_D65, kCMFormatDescriptionColorPrimaries_P3_D65);
         compare("kCMFormatDescriptionTransferFunction_ITU_R_2020", CharonHost_kCMFormatDescriptionTransferFunction_ITU_R_2020, kCMFormatDescriptionTransferFunction_ITU_R_2020);
         compare("kCMFormatDescriptionYCbCrMatrix_ITU_R_2020", CharonHost_kCMFormatDescriptionYCbCrMatrix_ITU_R_2020, kCMFormatDescriptionYCbCrMatrix_ITU_R_2020);
-        compare("kCMMetadataFormatDescriptionKey_SetupData", CharonHost_kCMMetadataFormatDescriptionKey_SetupData, kCMMetadataFormatDescriptionKey_SetupData);
         compare("kCMMetadataFormatDescriptionKey_StructuralDependency", CharonHost_kCMMetadataFormatDescriptionKey_StructuralDependency, kCMMetadataFormatDescriptionKey_StructuralDependency);
         compare("kCMMetadataFormatDescriptionMetadataSpecificationKey_SetupData", CharonHost_kCMMetadataFormatDescriptionMetadataSpecificationKey_SetupData, kCMMetadataFormatDescriptionMetadataSpecificationKey_SetupData);
         compare("kCMMetadataFormatDescriptionMetadataSpecificationKey_StructuralDependency", CharonHost_kCMMetadataFormatDescriptionMetadataSpecificationKey_StructuralDependency, kCMMetadataFormatDescriptionMetadataSpecificationKey_StructuralDependency);

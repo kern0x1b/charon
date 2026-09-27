@@ -128,6 +128,17 @@ harness. The port's own build is unaffected: the 12 objects compile clean agains
 | `kCMMetadataFormatDescriptionMetadataSpecificationKey_StructuralDependency` | `StructuralDependency` |
 | `kCMMetadataFormatDescription_StructuralDependencyKey_DependencyIsInvalidFlag` | `StructuralDependencyIsInvalidFlag` |
 
-One object per release, so each band drops what it already has: `CMFormatDescription80.m` (7),
-`90.m` (10), `100.m` (1), `110.m` (4), `120.m` (2), `130.m` (6), `140.m` (1), `150.m` (3), `170.m` (9),
-`172.m` (2), `180.m` (7), `260.m` (23).
+One object per release, so each band drops what it already has, and **the release is the one the armv7
+cache ladder measures, not the one the SDK's availability gives** - where the two disagree the ladder
+wins, because that is what the band machinery uses. Three names disagree:
+`kCMFormatDescriptionExtension_AlternativeTransferCharacteristics` is `ios(12.0)` in the header and
+first exported at 16.0, and `kCMMetadataFormatDescriptionKey_SetupData` and
+`kCMMetadataFormatDescriptionMetadataSpecificationKey_SetupData` are `ios(9.0)` and first exported at
+10.0.1. Each therefore has its own object, `CMFormatDescription160.m` and `CMFormatDescription1001.m`,
+which is what `tools/release-split.lua` requires - "an object carries API that arrived in one release".
+The registry's `introduced` keeps the SDK's number, as the registry convention says, and
+`16.0` on the ladder is an upper bound: nothing is held between 12.0 and 16.0, so it means "after 12.0,
+by 16.0" and never a measured 13.0-15.x.
+
+`CMFormatDescription80.m` (7), `90.m` (9), `100.m` (1), `1001.m` (1), `110.m` (4), `120.m` (1),
+`130.m` (6), `140.m` (1), `150.m` (3), `160.m` (1), `170.m` (9), `172.m` (2), `180.m` (7), `260.m` (23).
