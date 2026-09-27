@@ -49,11 +49,53 @@ Three things follow, and the last one is the load-bearing one:
    measurement needs: "no release exports it" means nothing unless the same walk finds the symbols it is
    known to export, and this walk finds thirty-five.
 
-The 58 `_complex` variants are in no release's cache at all, which is why they are not in this delivery:
-the header that declares them is iOS 18.5 and later, and this port does not have that SDK, so their
-declarations would have to be written rather than read. They are listed here as the next piece of this
-family with that reason attached, and the coordinator should decide whether an 18.x SDK is fetched for
-them or whether the rows wait.
+### The 58 `_complex` variants: measured, and NOT yet carried
+
+The iOS 26.2 SDK this port has, at `$HOME/Git/projects/ios/charon/.agent-work/sdk-26.2/iPhoneOS26.2.sdk`,
+declares all fifty-eight in its own `Sparse/BLAS.h`, and `Sparse/Types.h` adds the two matrix types
+`sparse_matrix_float_complex` and `sparse_matrix_double_complex`. The declarations are the sixty-nine
+beside them with `_Complex` substituted, and a transcription of them, the two matrix types completed with
+the same body the real ones have, and an implementation of all fifty-eight are written and held in this
+worktree's `.agent-work/wip/sparsecomplex/` — `SparseComplex18.m` (1 700 lines), `CharonSparseComplex.h`
+(the fifty-eight declarations) and `host/differential.m`, the host differential.
+
+**They are not in this delivery, because their host differential is red**: 158 checks pass and 41 fail.
+A library whose own check is red is not "implemented", and the rules do not allow it to be. What the
+work established, all of it measured and all of it re-usable, is this:
+
+- **The host's own Accelerate carries all fifty-eight.** Measured with `dlsym` over the fifty-one names
+  asked there: fifty-one present, none absent. So the whole complex half can be held against the host,
+  half by half, and there is no oracle missing.
+- **The ladder puts all fifty-eight at no release at all**, not even at 18.0 (in the table above), so
+  they are one release class and would be one object file.
+- **A value of exactly zero is not stored in the complex half, and is stored in the real half.**
+  Measured: a batch of five distinct entries of which one is exactly zero leaves a real matrix's nonzero
+  count at 5 and a complex one's at 4. So the complex half leaves a zero value out of the structure
+  entirely, and an overwrite with zero leaves it out too. The real half keeps it (measured: an entry of
+  `0.0` inserted into an empty matrix leaves its count at 1). This one rule fixed five of the failures.
+- **The three complex vector norms are not the moduli-based ones the real half uses.** Measured, on
+  `{1, 0, 3 - i}` at columns `{0, 2, 3}` with `nz = 3`, the one, two and infinity norms answer
+  **5, 3.31662 and 3.16228**, and on a single value `{3 - i}` they answer **4, 3.16228 and 3.16228**:
+
+  | norm | the host's answer | the reading |
+  | --- | --- | --- |
+  | `SPARSE_NORM_ONE` | 5, and 4 for one value | the sum over the values of `\|re\| + \|im\|` — `1+0+3+1` and `3+1` |
+  | `SPARSE_NORM_TWO` | 3.31662, and 3.16228 | the root sum of the squared moduli — `sqrt(1+0+9+1)` and `sqrt(9+1)` |
+  | `SPARSE_NORM_INF` | 3.16228, and 3.16228 | the same root sum of squares, **not** the largest modulus, which would be 3 for that one value |
+
+  A pure imaginary value is a nonzero value: `sparse_get_vector_nonzero_count_double_complex` over
+  `{0, 2, 0, 4i, 5, 0}` answers 3, and `sparse_pack_vector_double_complex` over it answers the three
+  entries at columns 1, 3 and 4 with the right values.
+- What is still red, and is what a next session starts from: the two complex triangular solves (16
+  failures between them), the complex matrix-vector product (8), the complex pack (6), the complex matrix
+  norms (5), the complex vector norm for the two names the host does not answer as the two-norm (3), one
+  extraction of a batch, and one outer product.
+
+The port's own BLAS is not the obstacle: the ladder puts `cblas_caxpy`, `cblas_ccopy`, `cblas_zaxpy`,
+`cblas_zcopy`, `cblas_cgemv`, `cblas_zgemv`, `cblas_cgemm`, `cblas_cherk`, `cblas_ctrsm`, `cblas_cscal` and
+`cblas_zscal` at 4.0, and `ssyev_`/`dsyev_` at 4.0, while `cblas_cger`, `cblas_zger`, `cblas_cdotu`,
+`cblas_cdotc` and `cblas_zdotu` are exported by **no release at all** — which is why the rank-one update
+in both halves is an axpy and the inner product in both is a loop.
 
 ## What the arithmetic is made of
 

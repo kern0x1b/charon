@@ -586,18 +586,24 @@ static sparse_status CharonSparseSetProperty(void *matrix, uint32_t magic, spars
 
 sparse_status sparse_set_matrix_property(void *A, sparse_matrix_property pname)
 {
-    // The entry point takes the matrix untyped, so a matrix of either scalar type answers here: what
-    // the property is does not depend on the values, and the host's own answers are the same for a
-    // float and a double matrix.
+    // The entry point takes the matrix untyped, so a matrix of any of the four scalar types answers
+    // here: what a property is does not depend on the values, and the host's own answers are the same
+    // for a float and a double matrix.
     if (CharonSparseIsFloat(A)) {
         return CharonSparseSetProperty(A, CHARON_SPARSE_MAGIC_FLOAT, pname);
     }
-    return CharonSparseSetProperty(A, CHARON_SPARSE_MAGIC_DOUBLE, pname);
+    if (CharonSparseIsDouble(A)) {
+        return CharonSparseSetProperty(A, CHARON_SPARSE_MAGIC_DOUBLE, pname);
+    }
+    if (CharonSparseIsFloatComplex(A)) {
+        return CharonSparseSetProperty(A, CHARON_SPARSE_MAGIC_FLOAT_COMPLEX, pname);
+    }
+    return CharonSparseSetProperty(A, CHARON_SPARSE_MAGIC_DOUBLE_COMPLEX, pname);
 }
 
 long sparse_get_matrix_property(void *A, sparse_matrix_property pname)
 {
-    if (CharonSparseIsFloat(A) || CharonSparseIsDouble(A)) {
+    if (CharonSparseIsAny(A)) {
         // The name when every bit it has is set, and 0 when any of them is not. Measured on the host:
         // a matrix carrying SPARSE_UPPER_TRIANGULAR and SPARSE_LOWER_TRIANGULAR reads 1, 2 and 3 for
         // those three names and 0 for SPARSE_UPPER_SYMMETRIC and SPARSE_LOWER_SYMMETRIC; a matrix given
@@ -610,22 +616,22 @@ long sparse_get_matrix_property(void *A, sparse_matrix_property pname)
 
 sparse_dimension sparse_get_matrix_number_of_rows(void *A)
 {
-    return (CharonSparseIsFloat(A) || CharonSparseIsDouble(A)) ? ((struct sparse_m_float *)A)->rows : 0;
+    return (CharonSparseIsAny(A)) ? ((struct sparse_m_float *)A)->rows : 0;
 }
 
 sparse_dimension sparse_get_matrix_number_of_columns(void *A)
 {
-    return (CharonSparseIsFloat(A) || CharonSparseIsDouble(A)) ? ((struct sparse_m_float *)A)->columns : 0;
+    return (CharonSparseIsAny(A)) ? ((struct sparse_m_float *)A)->columns : 0;
 }
 
 long sparse_get_matrix_nonzero_count(void *A)
 {
-    return (CharonSparseIsFloat(A) || CharonSparseIsDouble(A)) ? ((struct sparse_m_float *)A)->nonzero : 0;
+    return (CharonSparseIsAny(A)) ? ((struct sparse_m_float *)A)->nonzero : 0;
 }
 
 long sparse_get_matrix_nonzero_count_for_row(void *A, sparse_index i)
 {
-    if (!CharonSparseIsFloat(A) && !CharonSparseIsDouble(A)) {
+    if (!CharonSparseIsAny(A)) {
         return 0;
     }
     const struct sparse_m_float *asFloat = (const struct sparse_m_float *)A;
@@ -634,7 +640,7 @@ long sparse_get_matrix_nonzero_count_for_row(void *A, sparse_index i)
 
 long sparse_get_matrix_nonzero_count_for_column(void *A, sparse_index j)
 {
-    if (!CharonSparseIsFloat(A) && !CharonSparseIsDouble(A)) {
+    if (!CharonSparseIsAny(A)) {
         return 0;
     }
     const struct sparse_m_float *asFloat = (const struct sparse_m_float *)A;
@@ -653,7 +659,7 @@ long sparse_get_matrix_nonzero_count_for_column(void *A, sparse_index j)
 
 long sparse_get_block_dimension_for_row(void *A, sparse_index i)
 {
-    if (!CharonSparseIsFloat(A) && !CharonSparseIsDouble(A)) {
+    if (!CharonSparseIsAny(A)) {
         return 0;
     }
     const struct sparse_m_float *asFloat = (const struct sparse_m_float *)A;
@@ -665,7 +671,7 @@ long sparse_get_block_dimension_for_row(void *A, sparse_index i)
 
 long sparse_get_block_dimension_for_col(void *A, sparse_index j)
 {
-    if (!CharonSparseIsFloat(A) && !CharonSparseIsDouble(A)) {
+    if (!CharonSparseIsAny(A)) {
         return 0;
     }
     const struct sparse_m_float *asFloat = (const struct sparse_m_float *)A;
@@ -681,19 +687,15 @@ long sparse_get_block_dimension_for_col(void *A, sparse_index j)
 // not one is SPARSE_ILLEGAL_PARAMETER.
 sparse_status sparse_commit(void *A)
 {
-    return (CharonSparseIsFloat(A) || CharonSparseIsDouble(A)) ? SPARSE_SUCCESS : SPARSE_ILLEGAL_PARAMETER;
+    return (CharonSparseIsAny(A)) ? SPARSE_SUCCESS : SPARSE_ILLEGAL_PARAMETER;
 }
 
 sparse_status sparse_matrix_destroy(void *A)
 {
-    struct sparse_m_float *asFloat = NULL;
-    if (CharonSparseIsFloat(A)) {
-        asFloat = (struct sparse_m_float *)A;
-    } else if (CharonSparseIsDouble(A)) {
-        asFloat = (struct sparse_m_float *)A;
-    } else {
+    if (!CharonSparseIsAny(A)) {
         return SPARSE_ILLEGAL_PARAMETER;
     }
+    struct sparse_m_float *asFloat = (struct sparse_m_float *)A;
     for (sparse_dimension i = 0; i < asFloat->rows; i++) {
         free(asFloat->row[i].column);
         free(asFloat->row[i].value);

@@ -53,6 +53,18 @@ struct sparse_m_double {
     CHARON_SPARSE_MATRIX_BODY
 };
 
+// The two complex matrix types of Sparse/Types.h carry the same body, so that one row, one search and
+// one growth serve all four, and so that the entry points the header takes a void * matrix for - the
+// counts, the block dimensions, the properties, the commit and the destroy - accept a complex matrix on
+// the same terms as a real one. Their magic words are the two below and say which of the four it is.
+struct sparse_m_float_complex {
+    CHARON_SPARSE_MATRIX_BODY
+};
+
+struct sparse_m_double_complex {
+    CHARON_SPARSE_MATRIX_BODY
+};
+
 // The four bytes every matrix of ours begins with, one per scalar type. A pointer handed to one of
 // these entry points that does not begin with them is not a matrix this port made - a stale pointer,
 // a foreign object, or a matrix already destroyed - and is answered with the status the header names
@@ -60,6 +72,8 @@ struct sparse_m_double {
 // measured on the host for every entry point of the family that checks.
 #define CHARON_SPARSE_MAGIC_FLOAT 0x53504630u
 #define CHARON_SPARSE_MAGIC_DOUBLE 0x53504644u
+#define CHARON_SPARSE_MAGIC_FLOAT_COMPLEX 0x53504643u
+#define CHARON_SPARSE_MAGIC_DOUBLE_COMPLEX 0x53504645u
 
 static inline int CharonSparseIsMatrix(const void *matrix, uint32_t magic)
 {
@@ -74,6 +88,25 @@ static inline int CharonSparseIsFloat(const void *matrix)
 static inline int CharonSparseIsDouble(const void *matrix)
 {
     return CharonSparseIsMatrix(matrix, CHARON_SPARSE_MAGIC_DOUBLE);
+}
+
+static inline int CharonSparseIsFloatComplex(const void *matrix)
+{
+    return CharonSparseIsMatrix(matrix, CHARON_SPARSE_MAGIC_FLOAT_COMPLEX);
+}
+
+static inline int CharonSparseIsDoubleComplex(const void *matrix)
+{
+    return CharonSparseIsMatrix(matrix, CHARON_SPARSE_MAGIC_DOUBLE_COMPLEX);
+}
+
+// Any of the four. The entry points the header takes a void * matrix for answer on a matrix of any of
+// them, because what they report - a count, a shape, a property, the commit, the destroy - does not
+// depend on the type of the values.
+static inline int CharonSparseIsAny(const void *matrix)
+{
+    return CharonSparseIsFloat(matrix) || CharonSparseIsDouble(matrix) || CharonSparseIsFloatComplex(matrix) ||
+           CharonSparseIsDoubleComplex(matrix);
 }
 
 // The element of a dense matrix in the caller's own layout, so one loop covers both orders: a
@@ -156,6 +189,9 @@ static inline sparse_status CharonSparsePut(CharonSparseRow *row, sparse_index c
     row->count++;
     return SPARSE_SUCCESS;
 }
+
+// The same, for a value that is a pair of reals: the complex half of the family writes through this
+// and reads back through CharonComplexElementAt, so one row carries all four scalar types.
 
 // A[i, j], read: the stored value, or zero for a column the row does not hold. A matrix of this
 // library treats a column it has nothing for as a zero, which is what every operation below relies
