@@ -13,10 +13,14 @@
 -- be reached that way: a band keeps the library's objects, so the link must keep the library's
 -- archives too, whatever language the band's objects are written in.
 
-import("backports")
-
 function main()
     local root = os.scriptdir() .. "/../.."
+    -- Loaded the way backports_test.lua loads it: as a module of the repository's own modules
+    -- folder.
+    local backports = import("apple.backports", {rootdir = path.join(root, "modules"),
+                                                anonymous = true})
+    -- The module lives beside this file, under the repository's modules/ folder, which the
+    -- import above finds only when the test is run from the checkout the light guard runs.
     local failures = {}
     for _, library in ipairs(backports.libraries()) do
         local entries = library.archives or {}
@@ -26,14 +30,17 @@ function main()
             for _, source in ipairs(os.files(path.join(folder, "*.mm"))) do
                 cxx = true
             end
-            for _, entry in ipairs(entries) do
-                local wanted = type(entry) == "string" and {name = entry} or entry
-                if not wanted.c and not cxx then
+            for _, wanted in ipairs(entries) do
+                local marked = false
+                for _, name in ipairs(library.c_archives or {}) do
+                    if name == wanted then marked = true end
+                end
+                if not marked and not cxx then
                     table.insert(failures, string.format(
                         "%s links the archive %s and keeps no .mm object in any band, so link()'s "
                         .. "cxx rule would drop it from every band; an archive whose API is C says "
-                        .. "c = true",
-                        library.name, tostring(wanted.name)))
+                        .. "c_archives",
+                        library.name, tostring(wanted)))
                 end
             end
         end
