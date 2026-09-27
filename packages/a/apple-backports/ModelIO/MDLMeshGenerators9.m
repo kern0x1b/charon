@@ -47,9 +47,9 @@ typedef struct {
     MDLVertexAttribute *position = [[MDLVertexAttribute alloc] initWithName:MDLVertexAttributePosition format:MDLVertexFormatFloat3
                                                                        offset:0 bufferIndex:0];
     MDLVertexAttribute *normal = [[MDLVertexAttribute alloc] initWithName:MDLVertexAttributeNormal format:MDLVertexFormatFloat3
-                                                                     offset:12 bufferIndex:0];
+                                                                     offset:sizeof(vector_float3) bufferIndex:0];
     MDLVertexAttribute *uv = [[MDLVertexAttribute alloc] initWithName:MDLVertexAttributeTextureCoordinate format:MDLVertexFormatFloat2
-                                                                offset:24 bufferIndex:0];
+                                                                offset:sizeof(vector_float3) * 2 bufferIndex:0];
     [descriptor addOrReplaceAttribute:position];
     [descriptor addOrReplaceAttribute:normal];
     [descriptor addOrReplaceAttribute:uv];

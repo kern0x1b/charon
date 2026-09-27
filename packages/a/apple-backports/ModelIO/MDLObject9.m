@@ -13,6 +13,21 @@
 // answers to, and children. Everything the port places in a scene - a mesh, a voxel array, a light, a
 // camera - is one of these. iOS 6 has no ModelIO at all, so the whole of it is the port's own.
 
+// The two ends of a box, a component at a time. simd_min and simd_max take a three-element vector and
+// give the vector straight back on this target - measured, not read - so a box built with them keeps
+// the inverted box it started from. Every box the port answers goes through these two.
+static void CharonMDLBounds(MDLAxisAlignedBoundingBox *box, vector_float3 point)
+{
+    float low[3], high[3], p[3];
+    low[0] = box->minBounds.x, low[1] = box->minBounds.y, low[2] = box->minBounds.z;
+    high[0] = box->maxBounds.x, high[1] = box->maxBounds.y, high[2] = box->maxBounds.z;
+    p[0] = point.x, p[1] = point.y, p[2] = point.z;
+    box->minBounds = (vector_float3){low[0] < p[0] ? low[0] : p[0], low[1] < p[1] ? low[1] : p[1],
+                                    low[2] < p[2] ? low[2] : p[2]};
+    box->maxBounds = (vector_float3){high[0] > p[0] ? high[0] : p[0], high[1] > p[1] ? high[1] : p[1],
+                                    high[2] > p[2] ? high[2] : p[2]};
+}
+
 @implementation MDLObject {
     NSMutableArray<id<MDLComponent>> *_components;
     __unsafe_unretained MDLObject *_parent;
@@ -198,7 +213,7 @@
 // space by the transform of the whole chain above it. A node with no children has no box of its own.
 - (MDLAxisAlignedBoundingBox)boundingBoxAtTime:(NSTimeInterval)time
 {
-    MDLAxisAlignedBoundingBox result = {{INFINITY, INFINITY, INFINITY}, {-INFINITY, -INFINITY, -INFINITY}};
+    MDLAxisAlignedBoundingBox result = {{-INFINITY, -INFINITY, -INFINITY}, {INFINITY, INFINITY, INFINITY}};
     for (MDLObject *child in self.children.objects) {
         if (child.hidden)
             continue;
@@ -210,8 +225,7 @@
             vector_float3 point = {(corner & 1) ? box.maxBounds.x : box.minBounds.x, (corner & 2) ? box.maxBounds.y : box.minBounds.y,
                                    (corner & 4) ? box.maxBounds.z : box.minBounds.z};
             vector_float4 transformed = simd_mul(global, (vector_float4){point.x, point.y, point.z, 1});
-            result.minBounds = simd_min(result.minBounds, transformed.xyz);
-            result.maxBounds = simd_max(result.maxBounds, transformed.xyz);
+            CharonMDLBounds(&result, transformed.xyz);
         }
     }
     if (result.minBounds[0] > result.maxBounds[0]) {

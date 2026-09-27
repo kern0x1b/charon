@@ -88,6 +88,13 @@ static NSUInteger CharonMDLVoxelCount(MDLVoxelIndex minimum, MDLVoxelIndex maxim
 {
 }
 
+// A voxel array's own box is the box its voxels are in, for the same reason a mesh's is the box of
+// its geometry rather than the union of its children's.
+- (MDLAxisAlignedBoundingBox)boundingBoxAtTime:(NSTimeInterval)time
+{
+    return self.boundingBox;
+}
+
 - (NSUInteger)count
 {
     return _filled.count;

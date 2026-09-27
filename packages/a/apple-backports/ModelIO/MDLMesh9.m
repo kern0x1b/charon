@@ -34,6 +34,21 @@ static NSUInteger CharonMDLVertexComponentSize(MDLVertexFormat format)
     }
 }
 
+// The two ends of a box, a component at a time. simd_min and simd_max take a three-element vector and
+// give the vector straight back on this target - measured, not read - so a box built with them keeps
+// the inverted box it started from. Every box the port answers goes through these two.
+static void CharonMDLBounds(MDLAxisAlignedBoundingBox *box, vector_float3 point)
+{
+    float low[3], high[3], p[3];
+    low[0] = box->minBounds.x, low[1] = box->minBounds.y, low[2] = box->minBounds.z;
+    high[0] = box->maxBounds.x, high[1] = box->maxBounds.y, high[2] = box->maxBounds.z;
+    p[0] = point.x, p[1] = point.y, p[2] = point.z;
+    box->minBounds = (vector_float3){low[0] < p[0] ? low[0] : p[0], low[1] < p[1] ? low[1] : p[1],
+                                    low[2] < p[2] ? low[2] : p[2]};
+    box->maxBounds = (vector_float3){high[0] > p[0] ? high[0] : p[0], high[1] > p[1] ? high[1] : p[1],
+                                    high[2] > p[2] ? high[2] : p[2]};
+}
+
 @implementation MDLVertexAttributeData {
     MDLMeshBufferMap *_map;
     void *_dataStart;
@@ -123,14 +138,21 @@ static NSUInteger CharonMDLVertexComponentSize(MDLVertexFormat format)
         return nil;
     NSUInteger from = CharonMDLVertexComponentSize(attribute.format) * (attribute.format & 0x1F);
     NSUInteger to = CharonMDLVertexComponentSize(format) * (format & 0x1F);
+    if (!layoutStride)
+        return nil;
     MDLVertexAttributeData *data = [[MDLVertexAttributeData alloc] init];
     data.format = format;
-    data.stride = to ? to : layoutStride;
     if (format == attribute.format) {
+        // The attribute's own bytes in the buffer's own layout: the step from one vertex to the next
+        // is the stride of the buffer, not the width of the attribute inside one vertex.
         data.map = map;
+        data.stride = layoutStride;
         data.dataStart = base + attribute.offset;
         return data;
     }
+    // A different format is a new, packed buffer of the same vertices, so the step there is the width
+    // the new format gives the attribute.
+    data.stride = to;
     // A different format is a new buffer of the same vertices, read one component at a time and
     // written at the width the new format gives that component.
     NSMutableData *out = [NSMutableData dataWithLength:_vertexCount * data.stride];
@@ -174,14 +196,15 @@ static NSUInteger CharonMDLVertexComponentSize(MDLVertexFormat format)
 
 - (MDLAxisAlignedBoundingBox)boundingBox
 {
-    MDLAxisAlignedBoundingBox box = {{INFINITY, INFINITY, INFINITY}, {-INFINITY, -INFINITY, -INFINITY}};
+    // The empty box, from outside in. MDLAxisAlignedBoundingBox declares maxBounds first, so this is
+    // max at the top: written the other way round it is a box that starts unbounded and never closes.
+    MDLAxisAlignedBoundingBox box = {{-INFINITY, -INFINITY, -INFINITY}, {INFINITY, INFINITY, INFINITY}};
     MDLVertexAttributeData *positions = [self vertexAttributeDataForAttributeNamed:MDLVertexAttributePosition
                                                                         asFormat:MDLVertexFormatFloat3];
     if (positions) {
         for (NSUInteger vertex = 0; vertex < _vertexCount; vertex++) {
             vector_float3 position = *(vector_float3 *)((uint8_t *)positions.dataStart + vertex * positions.stride);
-            box.minBounds = simd_min(box.minBounds, position);
-            box.maxBounds = simd_max(box.maxBounds, position);
+            CharonMDLBounds(&box, position);
         }
     }
     if (box.minBounds[0] > box.maxBounds[0]) {
@@ -189,6 +212,13 @@ static NSUInteger CharonMDLVertexComponentSize(MDLVertexFormat format)
         box.maxBounds = (vector_float3){0, 0, 0};
     }
     return box;
+}
+
+// A mesh's own box is the box of its geometry, not the union of its children: a node with no children
+// has the box of what it draws.
+- (MDLAxisAlignedBoundingBox)boundingBoxAtTime:(NSTimeInterval)time
+{
+    return self.boundingBox;
 }
 
 - (void)addAttributeWithName:(NSString *)name format:(MDLVertexFormat)format

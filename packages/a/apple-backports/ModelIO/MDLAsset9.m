@@ -17,6 +17,21 @@
 @property (nonatomic, retain) id<MDLAssetResolver> resolver;
 @end
 
+// The two ends of a box, a component at a time. simd_min and simd_max take a three-element vector and
+// give the vector straight back on this target - measured, not read - so a box built with them keeps
+// the inverted box it started from. Every box the port answers goes through these two.
+static void CharonMDLBounds(MDLAxisAlignedBoundingBox *box, vector_float3 point)
+{
+    float low[3], high[3], p[3];
+    low[0] = box->minBounds.x, low[1] = box->minBounds.y, low[2] = box->minBounds.z;
+    high[0] = box->maxBounds.x, high[1] = box->maxBounds.y, high[2] = box->maxBounds.z;
+    p[0] = point.x, p[1] = point.y, p[2] = point.z;
+    box->minBounds = (vector_float3){low[0] < p[0] ? low[0] : p[0], low[1] < p[1] ? low[1] : p[1],
+                                    low[2] < p[2] ? low[2] : p[2]};
+    box->maxBounds = (vector_float3){high[0] > p[0] ? high[0] : p[0], high[1] > p[1] ? high[1] : p[1],
+                                    high[2] > p[2] ? high[2] : p[2]};
+}
+
 @implementation CharonMDLLoadedScene
 
 - (instancetype)init
@@ -156,11 +171,13 @@
 
 - (MDLAxisAlignedBoundingBox)boundingBoxAtTime:(NSTimeInterval)time
 {
-    MDLAxisAlignedBoundingBox box = {{INFINITY, INFINITY, INFINITY}, {-INFINITY, -INFINITY, -INFINITY}};
+    // The empty box, from outside in. MDLAxisAlignedBoundingBox declares maxBounds first, so this is
+    // max at the top: written the other way round it is a box that starts unbounded and never closes.
+    MDLAxisAlignedBoundingBox box = {{-INFINITY, -INFINITY, -INFINITY}, {INFINITY, INFINITY, INFINITY}};
     for (MDLObject *object in _objects) {
         MDLAxisAlignedBoundingBox own = [object boundingBoxAtTime:time];
-        box.minBounds = simd_min(box.minBounds, own.minBounds);
-        box.maxBounds = simd_max(box.maxBounds, own.maxBounds);
+        CharonMDLBounds(&box, own.minBounds);
+        CharonMDLBounds(&box, own.maxBounds);
     }
     if (box.minBounds[0] > box.maxBounds[0]) {
         box.minBounds = (vector_float3){0, 0, 0};
@@ -657,13 +674,22 @@ static int CharonMDLPLYKind(NSString *type, NSString *name)
 
 static void CharonMDLReadPLY(NSData *data, NSMutableArray<MDLObject *> *objects, id<MDLMeshBufferAllocator> allocator)
 {
-    NSString *text = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    if (!text)
+    // Only the header is text; the body of a binary file is not text at all, so the header is found in
+    // the bytes and decoded on its own rather than the whole file being decoded and coming back nil.
+    const uint8_t *bytes = data.bytes;
+    static const char marker[] = "end_header";
+    NSUInteger headerEnd = NSNotFound;
+    for (NSUInteger k = 0; k + sizeof marker - 1 <= data.length; k++)
+        if (!memcmp(bytes + k, marker, sizeof marker - 1)) {
+            headerEnd = k;
+            break;
+        }
+    if (headerEnd == NSNotFound)
         return;
-    NSRange header = [text rangeOfString:@"end_header"];
-    if (header.location == NSNotFound)
+    NSString *header = [[NSString alloc] initWithBytes:bytes length:headerEnd encoding:NSUTF8StringEncoding];
+    if (!header)
         return;
-    NSArray<NSString *> *lines = [[text substringToIndex:header.location] componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+    NSArray<NSString *> *lines = [header componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
     NSString *format = @"";
     NSMutableArray<NSString *> *elements = [NSMutableArray array];
     NSMutableArray<NSNumber *> *elementCounts = [NSMutableArray array];
@@ -705,9 +731,13 @@ static void CharonMDLReadPLY(NSData *data, NSMutableArray<MDLObject *> *objects,
     BOOL swap = [format isEqualToString:@"binary_big_endian"];
     CharonMDLSourceMesh mesh;
     memset(&mesh, 0, sizeof mesh);
+    NSUInteger bodyStart = headerEnd + sizeof marker - 1;
+    while (bodyStart < data.length && (bytes[bodyStart] == '\n' || bytes[bodyStart] == '\r'))
+        bodyStart++;
     if (ascii) {
-        NSArray<NSString *> *body = [[text substringFromIndex:NSMaxRange(header)]
-            componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        NSString *rest = [[NSString alloc] initWithData:[data subdataWithRange:NSMakeRange(bodyStart, data.length - bodyStart)]
+                                             encoding:NSUTF8StringEncoding];
+        NSArray<NSString *> *body = [rest componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
         NSUInteger at = 0;
         for (NSUInteger e = 0; e < elements.count; e++) {
             NSArray *properties = elementProperties[e];
@@ -768,8 +798,7 @@ static void CharonMDLReadPLY(NSData *data, NSMutableArray<MDLObject *> *objects,
             }
         }
     } else {
-        const uint8_t *bytes = data.bytes;
-        NSUInteger offset = (NSMaxRange(header) + 1 > data.length) ? data.length : NSMaxRange(header) + 1;
+        NSUInteger offset = bodyStart;
         for (NSUInteger e = 0; e < elements.count; e++) {
             NSArray *properties = elementProperties[e];
             NSUInteger count = [elementCounts[e] unsignedIntegerValue];
