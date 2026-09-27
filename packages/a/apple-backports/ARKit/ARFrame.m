@@ -263,7 +263,7 @@ static NSArray<ARHitTestResult *> *CharonHitTest(CharonARTracker *tracker, simd_
 
 - (simd_float4x4)viewMatrixForOrientation:(UIInterfaceOrientation)orientation
 {
-    return simd_inverse(_transform);
+    return CharonInverse(_transform);
 }
 
 - (NSArray<ARHitTestResult *> *)hitTest:(CGPoint)point types:(ARHitTestResultType)types
@@ -466,7 +466,7 @@ static NSArray<ARHitTestResult *> *CharonHitTest(CharonARTracker *tracker, simd_
 
 - (simd_float4x4)viewMatrixForOrientation:(UIInterfaceOrientation)orientation
 {
-    return simd_inverse(_camera.transform);
+    return CharonInverse(_camera.transform);
 }
 
 - (CGAffineTransform)displayTransformForOrientation:(UIInterfaceOrientation)orientation

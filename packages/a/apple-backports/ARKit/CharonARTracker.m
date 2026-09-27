@@ -143,6 +143,52 @@ static simd_float4x4 CharonPoseIncrement(simd_float3 w, simd_float3 t)
     return increment;
 }
 
+/// A matrix turned around, on this release's terms.
+///
+/// `simd_inverse` is not usable here: on this clang it compiles to a call to `_invert_f4`, which the
+/// libSystem of iOS 6.1.3 does not export, so a dylib that calls it is refused at the gate with the
+/// import unresolvable against the device. This is Gauss-Jordan elimination on the augmented matrix,
+/// the same elimination the six-parameter solve does over sixteen unknowns. A matrix with dependent
+/// rows has no turn-around, and there the identity is returned, which leaves a pose where it was.
+static simd_float4x4 simd_matrix_inverse_local(simd_float4x4 m)
+{
+    float a[4][8];
+    for (int row = 0; row < 4; row++) {
+        for (int column = 0; column < 4; column++)
+            a[row][column] = m.columns[column][row];
+        for (int column = 0; column < 4; column++)
+            a[row][4 + column] = (row == column) ? 1.0f : 0.0f;
+    }
+    for (int column = 0; column < 4; column++) {
+        int pivot = column;
+        for (int row = column + 1; row < 4; row++)
+            if (fabsf(a[row][column]) > fabsf(a[pivot][column]))
+                pivot = row;
+        if (fabsf(a[pivot][column]) < 1e-12f)
+            return matrix_identity_float4x4;
+        if (pivot != column)
+            for (int k = 0; k < 8; k++) {
+                float swap = a[column][k];
+                a[column][k] = a[pivot][k];
+                a[pivot][k] = swap;
+            }
+        for (int row = 0; row < 4; row++) {
+            if (row == column)
+                continue;
+            float factor = a[row][column] / a[column][column];
+            for (int k = 0; k < 8; k++)
+                a[row][k] -= factor * a[column][k];
+        }
+    }
+    simd_float4x4 inverse = matrix_identity_float4x4;
+    for (int column = 0; column < 4; column++) {
+        float scale = 1.0f / a[column][column];
+        for (int row = 0; row < 4; row++)
+            inverse.columns[column][row] = a[row][4 + column] * scale;
+    }
+    return inverse;
+}
+
 /// Where a world point lands in the picture, in the frame's own pixels.
 ///
 /// The pose is the camera's in the world - that is the transform a landmark is placed with - so
@@ -155,7 +201,7 @@ static simd_float4x4 CharonPoseIncrement(simd_float3 w, simd_float3 t)
 static BOOL CharonProject(simd_float4x4 pose, simd_float3x3 intrinsics, simd_float3 world,
                           simd_float2 *pixel)
 {
-    simd_float4 camera = simd_mul(simd_inverse(pose), simd_make_float4(world.x, world.y, world.z, 1));
+    simd_float4 camera = simd_mul(simd_matrix_inverse_local(pose), simd_make_float4(world.x, world.y, world.z, 1));
     if (camera.z <= 1e-4f)
         return NO;
     float depth = camera.z;

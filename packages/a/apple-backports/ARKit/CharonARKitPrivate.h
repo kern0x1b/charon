@@ -4,6 +4,7 @@
 
 #import <ARKit/ARKit.h>
 #import <simd/simd.h>
+#import <math.h>
 
 #import "CharonARTracker.h"
 
@@ -31,6 +32,65 @@ static BOOL CharonDecodeStruct(NSCoder *coder, NSString *key, void *bytes, size_
         return NO;
     memcpy(bytes, decoded, size);
     return YES;
+}
+
+/// A matrix turned around, by Gauss-Jordan elimination on the augmented matrix.
+///
+/// `simd_inverse` is not usable here: on this clang it compiles to a call to `_invert_f4`, which the
+/// libSystem of iOS 6.1.3 does not export, so a dylib that calls it is refused at the gate with the
+/// import unresolvable against the device. The same elimination the six-parameter solve does, over
+/// sixteen unknowns, is written out here instead.
+///
+/// A matrix with no turn-around is one whose rows are dependent, and there is no inverse to return;
+/// NO is answered and the caller keeps what it had, which for a pose that can only mean a degenerate
+/// frame, and for a projection that can only mean a viewport of no size.
+static inline BOOL CharonInvert4x4(simd_float4x4 m, simd_float4x4 *out)
+{
+    float a[4][8];
+    for (int row = 0; row < 4; row++) {
+        for (int column = 0; column < 4; column++)
+            a[row][column] = m.columns[column][row];
+        for (int column = 0; column < 4; column++)
+            a[row][4 + column] = (row == column) ? 1.0f : 0.0f;
+    }
+    for (int column = 0; column < 4; column++) {
+        int pivot = column;
+        for (int row = column + 1; row < 4; row++)
+            if (fabsf(a[row][column]) > fabsf(a[pivot][column]))
+                pivot = row;
+        if (fabsf(a[pivot][column]) < 1e-12f)
+            return NO;
+        if (pivot != column)
+            for (int k = 0; k < 8; k++) {
+                float swap = a[column][k];
+                a[column][k] = a[pivot][k];
+                a[pivot][k] = swap;
+            }
+        for (int row = 0; row < 4; row++) {
+            if (row == column)
+                continue;
+            float factor = a[row][column] / a[column][column];
+            for (int k = 0; k < 8; k++)
+                a[row][k] -= factor * a[column][k];
+        }
+    }
+    for (int column = 0; column < 4; column++) {
+        float inverse = 1.0f / a[column][column];
+        for (int row = 0; row < 4; row++)
+            out->columns[column][row] = a[row][4 + column] * inverse;
+    }
+    return YES;
+}
+
+/// `simd_inverse` with the degenerate case answered rather than left to whatever the libSystem of the
+/// release happens to do: a matrix that cannot be turned around comes back as the identity, which
+/// projects a frame to the middle of its picture and leaves a pose where it was.
+static inline simd_float4x4 CharonInverse(simd_float4x4 m)
+{
+    simd_float4x4 inverse = matrix_identity_float4x4;
+    if (!CharonInvert4x4(m, &inverse))
+        return matrix_identity_float4x4;
+    return inverse;
 }
 
 @interface ARConfiguration (CharonPrivate)
