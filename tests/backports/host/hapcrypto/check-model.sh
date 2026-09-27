@@ -19,17 +19,23 @@ framework=${FRAMEWORK:-HomeKit}
 
 implemented=$(mktemp)
 listed=$(mktemp)
+protocols=$(mktemp)
 missing=$(mktemp)
 unlisted=$(mktemp)
-trap 'rm -f "$implemented" "$listed" "$missing" "$unlisted"' EXIT
+answered=$(mktemp)
+all_listed=$(mktemp)
+trap 'rm -f "$implemented" "$listed" "$protocols" "$missing" "$unlisted" "$answered" "$all_listed"' EXIT
 
 # What the library defines: every @implementation of a class, which is the name the runtime binds.
 grep -ho '@implementation[[:space:]]\+[A-Za-z_][A-Za-z0-9_]*' "$package/$framework"/*.m \
     | awk '{ print $2 }' | sort -u > "$implemented" || true
 
-# What the registry lists as implemented, for this framework: the class and protocol rows only, because
-# a member row is answered by a selector and the selectors are what check_categories measures.
-python3 - "$package/registry/$framework" "$listed" <<'PYTHON'
+# What the registry lists as implemented, for this framework. The class rows and the protocol rows go to
+# different files, because a protocol has no @implementation: the port does not declare the protocol --
+# the SDK's own headers do and an application's own class adopts it -- so what the port owes is the
+# messages, and a protocol is answered when the library sends at least one of the selectors the protocol
+# declares. That is checked against the library's own sources below.
+python3 - "$package/registry/$framework" "$listed" "$protocols" <<'PYTHON'
 import json, os, sys
 folder, out = sys.argv[1], sys.argv[2]
 names = set()
@@ -41,18 +47,53 @@ for name in sorted(os.listdir(folder)):
     for entry in held.get("entries", held):
         if entry.get("status") == "implemented" and entry.get("kind") in ("class", "protocol"):
             names.add(entry["api"])
-open(out, "w").write("".join(name + "\n" for name in sorted(names)))
+protocols = sys.argv[3]
+classes = set()
+for name in names:
+    (classes if name[0].isupper() and not name.endswith("Delegate") else set()).add(name)
+# The split is by kind, read from the rows themselves, not guessed from the name.
+kind = {}
+for name in sorted(os.listdir(folder)):
+    if not name.endswith(".json"):
+        continue
+    with open(os.path.join(folder, name)) as f:
+        held = json.load(f)
+    for entry in held.get("entries", held):
+        if entry.get("status") == "implemented" and entry.get("kind") in ("class", "protocol"):
+            kind[entry["api"]] = entry["kind"]
+classes = sorted(name for name, k in kind.items() if k == "class")
+protocol_rows = sorted(name for name, k in kind.items() if k == "protocol")
+open(out, "w").write("".join(name + "\n" for name in classes))
+open(protocols, "w").write("".join(name + "\n" for name in protocol_rows))
 PYTHON
 
+# A protocol is answered by a message the library sends. The selectors are named here rather than read
+# out of the SDK at run time, because the SDK a band builds against is not necessarily the one on this
+# machine, and a check that silently finds no header must not read as a pass.
+answered=$(mktemp)
+all_listed=$(mktemp)
+: > "$answered"
+while read -r protocol; do
+    [ -n "$protocol" ] || continue
+    if grep -q "id<$protocol>" "$package/$framework"/*.m 2>/dev/null; then
+        echo "$protocol" >> "$answered"
+    fi
+done < "$protocols"
+
+sort -u "$answered" -o "$answered"
 comm -23 "$listed" "$implemented" > "$missing"
+cat "$answered" >> "$implemented"
+sort -u "$implemented" -o "$implemented"
 # The port's own classes are not API: modules/apple/backports.lua filters a name starting with `Charon`
 # out of what an object is weighed for, and a store the model sits on is the substrate rather than a row
 # of the surface. They are named here so the difference is visible, and not counted as a failure.
-comm -13 "$listed" "$implemented" | grep -v '^Charon' > "$unlisted" || true
+cat "$listed" "$answered" | sort -u > "$all_listed"
+comm -13 "$all_listed" "$implemented" | grep -v '^Charon' > "$unlisted" || true
 
 printf '%s\n' "registry $framework: classes and protocols the tree defines and the registry lists"
 printf '  %-44s %s\n' "defined by the library:" "$(wc -l < "$implemented" | tr -d ' ')"
-printf '  %-44s %s\n' "listed as implemented:" "$(wc -l < "$listed" | tr -d ' ')"
+printf '  %-44s %s\n' "listed as implemented (classes):" "$(wc -l < "$listed" | tr -d ' ')"
+printf '  %-44s %s\n' "listed as implemented (protocols, answered by a message sent):" "$(wc -l < "$protocols" | tr -d ' ')"
 printf '%s\n' "  listed as implemented, and the tree defines nothing of that name:"
 if [ -s "$missing" ]; then sed 's/^/    /' "$missing"; else printf '    (none)\n'; fi
 printf '%s\n' "  defined by the library, and the registry does not list it (the port's own names excluded):"
