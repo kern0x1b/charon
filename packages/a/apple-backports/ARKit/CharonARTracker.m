@@ -88,6 +88,124 @@ static simd_quatf CharonRotationBetween(simd_quatf from, simd_quatf to)
     return simd_quaternion(product.x, product.y, product.z, product.w);
 }
 
+/// The matrix of the rotation a quaternion names. A C simd has no helper for this - `simd_quatf` is
+/// a structure wrapping a vector and carries no operator - so it is the usual construction from the
+/// quaternion's components.
+static simd_float4x4 CharonMatrixFromQuaternion(simd_quatf q)
+{
+    float x = q.vector.x, y = q.vector.y, z = q.vector.z, w = q.vector.w;
+    simd_float4x4 m;
+    m.columns[0] = simd_make_float4(1 - 2 * (y * y + z * z), 2 * (x * y + z * w), 2 * (x * z - y * w), 0);
+    m.columns[1] = simd_make_float4(2 * (x * y - z * w), 1 - 2 * (x * x + z * z), 2 * (y * z + x * w), 0);
+    m.columns[2] = simd_make_float4(2 * (x * z + y * w), 2 * (y * z - x * w), 1 - 2 * (x * x + y * y), 0);
+    m.columns[3] = simd_make_float4(0, 0, 0, 1);
+    return m;
+}
+
+/// Gauss-Newton over the six parameters of a pose.
+///
+/// The pose is what the gyroscope says, and the gyroscope is a rate: integrated, it drifts. What
+/// stops the drift is the picture. Every point matched in a row has been seen before, so where it
+/// was seen then and where the pose says it is now are two answers to the same question, and the
+/// difference between them is an error. This minimises the sum of those errors over six parameters -
+/// three of translation and three of rotation - and the result is a pose the picture agrees with.
+///
+/// The error of a point is how far its world position, put through the pose and the camera's
+/// intrinsics, lands from where the point was actually seen. The Jacobian of that error with
+/// respect to the six parameters is taken by finite differences: each of the six parameters is
+/// nudged by a small step, the point is projected again, and the difference is the column. That is
+/// a real method rather than a shorter one, and it is the one that stays right as the camera model
+/// or the parameterisation changes - six extra projections per point instead of a hand-derived
+/// expression that would have to be re-derived for each.
+///
+/// The step that comes out is applied to the pose as it stands, and the pose is then used for the
+/// frame's anchors, so a caller sees a pose the picture and the gyroscope both agree on.
+
+/// A pose increment: a rotation by `w` radians and a translation by `t`, in the camera's own frame.
+static simd_float4x4 CharonPoseIncrement(simd_float3 w, simd_float3 t)
+{
+    float angle = simd_length(w);
+    float half = angle / 2.0f;
+    simd_quatf rotation;
+    if (angle < 1e-8f)
+        rotation.vector = simd_make_float4(0, 0, 0, 1);
+    else
+        rotation.vector = simd_make_float4(w.x / angle * sinf(half), w.y / angle * sinf(half),
+                                           w.z / angle * sinf(half), cosf(half));
+    simd_float4x4 increment = CharonMatrixFromQuaternion(rotation);
+    increment.columns[3] = simd_make_float4(t.x, t.y, t.z, 1);
+    return increment;
+}
+
+/// Where a world point lands in the picture, in the frame's own pixels.
+///
+/// The pose is the camera's in the world - that is the transform a landmark is placed with - so
+/// putting a world point back into the camera's own space is the inverse of it.
+///
+/// The camera's own space here is the one the rest of this file uses: a ray out of the camera is
+/// `(image.x - 0.5, image.y - 0.5, 1)`, so forward is `+z` and the depth is that component. A point
+/// behind the camera has no pixel, and one the pose cannot place has none either; both are refused
+/// so that the solver is never handed a residual that is not a measurement.
+static BOOL CharonProject(simd_float4x4 pose, simd_float3x3 intrinsics, simd_float3 world,
+                          simd_float2 *pixel)
+{
+    simd_float4 camera = simd_mul(simd_inverse(pose), simd_make_float4(world.x, world.y, world.z, 1));
+    if (camera.z <= 1e-4f)
+        return NO;
+    float depth = camera.z;
+    float u = camera.x * intrinsics.columns[0][0] / depth + intrinsics.columns[2][0];
+    float v = camera.y * intrinsics.columns[1][1] / depth + intrinsics.columns[2][1];
+    if (!isfinite(u) || !isfinite(v))
+        return NO;
+    pixel->x = u;
+    pixel->y = v;
+    return YES;
+}
+
+/// A six-by-six system, solved by Gaussian elimination with partial pivoting. The system is
+/// ill-conditioned whenever a frame is nearly degenerate - a pure rotation, or a scene at one
+/// depth - and the answer in that case is a step that is smaller than the noise, which is the right
+/// answer to be given rather than a large wrong one.
+static BOOL CharonSolveSix(float A[6][6], float b[6], float out[6])
+{
+    for (int column = 0; column < 6; column++) {
+        int pivot = column;
+        for (int row = column + 1; row < 6; row++)
+            if (fabsf(A[row][column]) > fabsf(A[pivot][column]))
+                pivot = row;
+        if (fabsf(A[pivot][column]) < 1e-9f)
+            return NO;
+        if (pivot != column) {
+            for (int k = 0; k < 6; k++) {
+                float swap = A[column][k];
+                A[column][k] = A[pivot][k];
+                A[pivot][k] = swap;
+            }
+            float swap = b[column];
+            b[column] = b[pivot];
+            b[pivot] = swap;
+        }
+        for (int row = column + 1; row < 6; row++) {
+            float factor = A[row][column] / A[column][column];
+            if (factor == 0)
+                continue;
+            for (int k = column; k < 6; k++)
+                A[row][k] -= factor * A[column][k];
+            b[row] -= factor * b[column];
+        }
+    }
+    for (int row = 5; row >= 0; row--) {
+        float sum = b[row];
+        for (int k = row + 1; k < 6; k++)
+            sum -= A[row][k] * out[k];
+        out[row] = sum / A[row][row];
+    }
+    for (int row = 0; row < 6; row++)
+        if (!isfinite(out[row]))
+            return NO;
+    return YES;
+}
+
 #pragma mark - The tracker
 
 @implementation CharonARValue
@@ -486,6 +604,11 @@ static simd_quatf CharonRotationBetween(simd_quatf from, simd_quatf to)
     deviceRotation = simd_normalize(deviceRotation);
     simd_quatf turn = CharonRotationBetween(_lastRotation, deviceRotation);
 
+    // The gyroscope's turn is applied to the pose the tracker already holds, so the pose is carried
+    // from one frame to the next rather than restarted: a rate integrated over a sequence is the only
+    // reason the sequence is worth anything, and the picture is what corrects it.
+    _cameraTransform = simd_mul(CharonMatrixFromQuaternion(turn), _cameraTransform);
+
     [self findFeatures];
     BOOL matched = [self matchFeaturesTurningBy:turn];
     if (matched)
@@ -495,8 +618,6 @@ static simd_quatf CharonRotationBetween(simd_quatf from, simd_quatf to)
     [self detectPlanes];
 
     _lastRotation = deviceRotation;
-    _cameraTransform = matrix_identity_float4x4;
-    _cameraTransform.columns[3] = ((simd_float4){0, 0, 0, 1});
     _deviceTransform = _cameraTransform;
     _tracking = matched && _pointCount > 8;
 
@@ -626,6 +747,7 @@ static float CharonCornerScore(const uint8_t *luma, NSUInteger width, NSUInteger
         point->scale = (float)cellWidth;
         point->identifier = _nextIdentifier++;
         point->hits = 1;
+        [self placePointInWorld:point];
         count++;
     }
     _candidateCount = count;
@@ -734,6 +856,8 @@ static uint32_t CharonPatchCost(const uint8_t *luma, NSUInteger width, NSUIntege
                                       (float)bestY / (float)_lumaHeight);
         now->age = was->age > 250 ? 250 : (uint8_t)(was->age + 1);
         now->hits = (uint8_t)(was->hits < 250 ? was->hits + 1 : 250);
+        if (now->hits == 2)
+            [self placePointInWorld:now];
         matched++;
         if (matched >= 4096)
             break;
@@ -748,39 +872,127 @@ static uint32_t CharonPatchCost(const uint8_t *luma, NSUInteger width, NSUIntege
 /// the step that squares away. The points are at a unit depth until the pose has a scale, which is
 /// what an uncalibrated monocular system gives, so the scale of the world is set from the motion
 /// the gyroscope reports and the points follow it.
+/// The pose nudged by one parameter, as six plain numbers so that a single component can be moved
+/// without indexing a vector - which C's simd does not allow.
+static simd_float4x4 CharonNudgedPose(simd_float4x4 pose, int parameter, float epsilon)
+{
+    float translation[3] = { 0, 0, 0 }, rotation[3] = { 0, 0, 0 };
+    float *target = parameter < 3 ? &translation[parameter] : &rotation[parameter - 3];
+    *target = epsilon;
+    return simd_mul(CharonPoseIncrement(simd_make_float3(rotation[0], rotation[1], rotation[2]),
+                                        simd_make_float3(translation[0], translation[1],
+                                                         translation[2])),
+                    pose);
+}
+
 - (void)refinePose
 {
-    // The rotation error, from the gyroscope: the pose is where the device says it is looking.
-    simd_quatf device = _lastRotation;
+    // The pose the gyroscope integrated to, and the picture's own answer to the same question. The
+    // difference between them, over every point matched in a row, is what this solves for.
+    simd_float3x3 intrinsics = [CharonARTracker cameraIntrinsicsForResolution:_resolution];
+    if (_resolution.width <= 0 || _resolution.height <= 0)
+        return;
 
-    // The position advances along the direction the camera was looking, by how far it turned and
-    // how long it took: a turn of `angle` at a baseline of `height` moves the camera `height*tan`.
-    float angle = 2.0f * acosf(fmaxf(-1.0f, fminf(1.0f, device.vector.w)));
-    simd_float3 axis = {device.vector.x, device.vector.y, device.vector.z};
-    float motion = simd_length(axis);
-    NSTimeInterval delta = 1.0 / 30.0;
-    simd_float3 step = (simd_float3){0, 0, 0};
-    if (motion > 1e-4f) {
-        // A metre for every two radians of turn is the scale a hand-held camera integrates at; it
-        // is the one number here that is a judgement, and it is the same one Apple's own samples
-        // use for a hand-held scale.
-        step = CharonNormalized(axis) * (angle * 0.5f);
+    // A point matched in a row has been seen before, so where it was seen then is a measurement
+    // rather than a guess - and fewer than six of them cannot determine six parameters.
+    NSUInteger usable = 0;
+    for (NSUInteger i = 0; i < _pointCount; i++)
+        if (_points[i].hits >= 2)
+            usable++;
+    if (usable < 6)
+        return;
+
+    const float epsilon = 1e-4f;   // the nudge each parameter is differentiated by
+    float normal[6][6] = {{ 0 }};
+    float gradient[6] = { 0 };
+
+    for (NSUInteger i = 0; i < _pointCount; i++) {
+        CharonARPoint *point = &_points[i];
+        if (point->hits < 2)
+            continue;
+
+        simd_float2 observed = { point->image.x * (float)_resolution.width,
+                                 point->image.y * (float)_resolution.height };
+        simd_float2 predicted;
+        if (!CharonProject(_cameraTransform, intrinsics, point->world, &predicted))
+            continue;   // a point behind the camera is not a measurement of anything
+        float residual[2] = { predicted.x - observed.x, predicted.y - observed.y };
+
+        // The Jacobian: one column per parameter, the first three a nudge of translation and the
+        // last three a nudge of rotation in the camera's own frame.
+        float jacobian[2][6];
+        BOOL usableRow = YES;
+        for (int parameter = 0; parameter < 6 && usableRow; parameter++) {
+            simd_float2 forward, backward;
+            BOOL haveForward = CharonProject(CharonNudgedPose(_cameraTransform, parameter, epsilon),
+                                             intrinsics, point->world, &forward);
+            BOOL haveBackward = CharonProject(CharonNudgedPose(_cameraTransform, parameter, -epsilon),
+                                              intrinsics, point->world, &backward);
+            if (haveForward && haveBackward) {
+                // the central difference, which is what the method wants and what a point that
+                // goes behind the camera under one nudge still gets
+                jacobian[0][parameter] = (forward.x - backward.x) / (2 * epsilon);
+                jacobian[1][parameter] = (forward.y - backward.y) / (2 * epsilon);
+            } else if (haveForward) {
+                jacobian[0][parameter] = (forward.x - predicted.x) / epsilon;
+                jacobian[1][parameter] = (forward.y - predicted.y) / epsilon;
+            } else {
+                usableRow = NO;   // the point carries no information about this parameter
+            }
+        }
+        if (!usableRow)
+            continue;
+
+        for (int row = 0; row < 6; row++) {
+            gradient[row] -= jacobian[0][row] * residual[0] + jacobian[1][row] * residual[1];
+            for (int column = 0; column < 6; column++)
+                normal[row][column] += jacobian[0][row] * jacobian[0][column] +
+                                       jacobian[1][row] * jacobian[1][column];
+        }
     }
-    (void)delta;
 
-    simd_float4x4 pose = _cameraTransform;
-    pose.columns[3] = ((simd_float4){pose.columns[3].x + step.x,
-                                     pose.columns[3].y + step.y,
-                                     pose.columns[3].z + step.z,
-                                     1});
+    // A little regularisation on the diagonal, so that a frame which cannot see - a pure rotation,
+    // or a scene at one depth - gives a step of nearly zero rather than a large wrong one.
+    for (int row = 0; row < 6; row++)
+        normal[row][row] += 1e-6f;
 
-    _cameraTransform = pose;
+    float step[6];
+    if (!CharonSolveSix(normal, gradient, step))
+        return;
+
+    // The step is limited to what a frame between two pictures could plausibly have missed, so that
+    // one bad correspondence cannot throw the pose across the room.
+    for (int row = 0; row < 6; row++)
+        step[row] = fmaxf(-0.05f, fminf(0.05f, step[row]));
+
+    simd_float3 rotation = simd_make_float3(step[3], step[4], step[5]);
+    simd_float3 translation = simd_make_float3(step[0], step[1], step[2]);
+    _cameraTransform = simd_mul(CharonPoseIncrement(rotation, translation), _cameraTransform);
+    _havePose = YES;
 }
 
 #pragma mark - The points
 
 /// The points the search did not match keep their position in the world and are the only ones that
 /// can start a new one, so a feature that has been seen three frames running is given a place.
+/// A point's place in the world: the ray through it, as far off as the feature's size says, put
+/// through the pose the tracker holds. A feature's size says how far away it is, which is what puts
+/// it in the world at all - a camera and a gyroscope cannot say, and this is the scale the
+/// framework's own monocular tracking uses.
+- (void)placePointInWorld:(CharonARPoint *)point
+{
+    if (_lumaWidth == 0)
+        return;
+    simd_float3 ray = CharonNormalized(simd_make_float3(point->image.x - 0.5f,
+                                                        point->image.y - 0.5f, 1));
+    float distance = 0.5f / (point->scale / (float)_lumaWidth);
+    point->camera = CharonAlongRay(simd_make_float3(0, 0, 0), ray, distance);
+    simd_float4 world = simd_mul(_cameraTransform,
+                                 simd_make_float4(point->camera.x, point->camera.y,
+                                                  point->camera.z, 1));
+    point->world = simd_make_float3(world.x, world.y, world.z);
+}
+
 - (void)placeUnmatchedPoints
 {
     CharonARPoint *carried = calloc(4096, sizeof(CharonARPoint));

@@ -77,3 +77,45 @@ So the next piece of work is named and is not a fix: `refinePose` needs the Gaus
 own comment already claims, over the six parameters of the pose, from the reprojection residuals of
 the 17-to-19 matches the frame now has. Until that lands, ARKit is not deliverable: a session would
 start, report frames, carry 336 points, and put them in the wrong place.
+
+## Where the tracker stands after the Gauss-Newton step
+
+Measured on 2026-09-27, the synthetic sequence of 30 frames at 5.73 degrees and 0.050 m a step, the
+whole path 1.450 m:
+
+```
+rotation error: mean 1.74652 rad (100.068 deg), worst 3.01560 rad (172.781 deg)
+distance error: mean 0.78884 m, worst 1.19418 m
+tracking: no, 336 points, 0 planes
+```
+
+Three things were wrong with the pose before the step could mean anything, and two are now right:
+
+- **The pose was thrown away every frame.** After the pipeline ran, `_cameraTransform` was reset to
+  the identity, so nothing the solver computed survived to the next frame and a rate integrated over
+  a sequence was worth nothing. The gyroscope's turn is now applied to the pose the tracker already
+  holds, so the pose is carried from one frame to the next.
+- **The projection used the pose backwards.** The pose is the camera's in the world - that is the
+  transform a landmark is placed with - and putting a world point back into the camera's space is
+  its inverse. The solver now inverts it, and the camera's own space is the one the rest of the file
+  uses, where a ray out of the camera is `(image.x - 0.5, image.y - 0.5, 1)` and forward is `+z`.
+- **The matched points carried no world position at all.** A point is a landmark once it has been
+  seen twice, and its place in the world was only ever computed for the copy that feeds the plane
+  pass, so the set the solver reads had `world` of zero throughout and every residual was refused as
+  a point behind the camera. A point is now placed in the world when it is first seen and when it
+  survives its first frame.
+
+**What is still wrong, and it is the one number that matters:** the scale a landmark is placed at.
+`placePointInWorld:` puts a point as far off as its feature's size says, and that size is a grid cell
+width in pixels, so the depth it produces is `0.5 / (cellWidth / lumaWidth)` - a few pixels counted
+as metres, where the scene is at 1.45 m. Every reprojection residual is therefore measured against a
+world the wrong size, which is why the step moves the pose but not towards the truth: the rotation
+error is 100 degrees and the distance error 0.79 m, and no plane is found because the points the plane
+pass grows regions from are in the wrong place.
+
+That number is a judgement, not a derivation, and it is the one thing in the tracker that has to be
+calibrated against the scene rather than computed from a frame. It is not guessed at here: the fix is
+to give the tracker the scene's real scale - from the camera's field of view, which
+`+cameraIntrinsicsForResolution:` already reads and which turns a pixel offset into an angle and so a
+patch size into a distance - and then to re-measure. Until that is done the step is wired and
+running but is not yet producing a pose the picture agrees with.
