@@ -25,7 +25,7 @@ python3 "$root/tools/coreml/embed-models.py" "$models" "$root/tests/backports/de
 
 rm -rf "$build"
 mkdir -p "$build"
-cp "$here/emulate/xmake.lua" "$build/"
+cp "$here/emulate/xmake.lua" "$here/emulate/control" "$build/"
 cd "$build"
 xmake f -p iphoneos -a armv7 -y > configure.log 2>&1
 xmake build -y > build.log 2>&1 || { echo "the build failed:"; tail -20 build.log; exit 1; }

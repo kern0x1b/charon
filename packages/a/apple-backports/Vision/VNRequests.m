@@ -83,6 +83,13 @@ static NSArray<NSNumber *> *charon_vision_revisions(Class cls)
     _revision = revision;
 }
 
+/* The results a request answers with. Vision's own request path fills this in; there is no public
+ * setter, and an application reads the results rather than writing them. */
+- (void)charon_setResults:(NSArray *)results
+{
+    _results = [results copy];
+}
+
 - (NSArray *)results
 {
     return _results;
@@ -208,13 +215,89 @@ static NSArray<NSNumber *> *charon_vision_revisions(Class cls)
 @implementation VNDetectHorizonRequest
 @end
 
-@implementation VNCoreMLModel
-+ (instancetype)modelForMLModel:(MLModel *)model error:(NSError **)error
+/* A model prepared for use with VNCoreMLRequests, which is a Core ML model Vision can hand an
+ * image to.
+ *
+ * The wrapper exists because Vision needs three things a bare MLModel does not give it: a check
+ * that the model takes an image at all, the name of the input to put the image under, and room
+ * for the other inputs a model with more than one needs. All three are answered from the model's
+ * own description -- read out of the Core ML specification's fields by the CoreML backport -- so a
+ * model Vision cannot run is refused here, by name, before a request is ever made. */
+@implementation VNCoreMLModel {
+    MLModel *_model;
+    NSString *_inputImageFeatureName;
+    id<MLFeatureProvider> _featureProvider;
+}
+
+/* The model as Core ML has it. Vision's own request path needs it; nothing outside this file
+ * should, which is why the name is this port's own. */
+- (MLModel *)charon_coreml_model
 {
-    if (error)
-        *error = charon_vision_error(VNErrorInvalidModel, @"Core ML is not available on this release");
+    return _model;
+}
+
+/* The name of the input the image goes under: the one Vision chose, or the one the caller named,
+ * or the first input of the image type in the model's own description. */
+- (NSString *)charon_coreml_image_feature
+{
+    if (_inputImageFeatureName != nil) {
+        return _inputImageFeatureName;
+    }
+    NSDictionary<NSString *, MLFeatureDescription *> *inputs = _model.modelDescription.inputDescriptionsByName;
+    NSEnumerator *names = [inputs keyEnumerator];
+    NSString *name;
+    while ((name = [names nextObject]) != nil) {
+        if (inputs[name].type == MLFeatureTypeImage) {
+            return name;
+        }
+    }
     return nil;
 }
+
++ (instancetype)modelForMLModel:(MLModel *)model error:(NSError **)error
+{
+    VNCoreMLModel *wrapper;
+    if (model == nil) {
+        if (error)
+            *error = charon_vision_error(VNErrorInvalidModel, @"there is no Core ML model to prepare");
+        return nil;
+    }
+    wrapper = [[VNCoreMLModel alloc] init];
+    if (wrapper == nil) {
+        return nil;
+    }
+    wrapper->_model = model;
+    if ([wrapper charon_coreml_image_feature] == nil) {
+        /* The case Core ML's own documentation names as an example of a model Vision cannot use:
+         * a model that takes no image as any of its inputs. */
+        if (error)
+            *error = charon_vision_error(VNErrorInvalidModel,
+                                         @"the model does not have an input feature of type image");
+        return nil;
+    }
+    return wrapper;
+}
+
+- (NSString *)inputImageFeatureName
+{
+    return [self charon_coreml_image_feature];
+}
+
+- (void)setInputImageFeatureName:(NSString *)inputImageFeatureName
+{
+    _inputImageFeatureName = [inputImageFeatureName copy];
+}
+
+- (id<MLFeatureProvider>)featureProvider
+{
+    return _featureProvider;
+}
+
+- (void)setFeatureProvider:(id<MLFeatureProvider>)featureProvider
+{
+    _featureProvider = featureProvider;
+}
+
 @end
 
 @implementation VNCoreMLRequest {

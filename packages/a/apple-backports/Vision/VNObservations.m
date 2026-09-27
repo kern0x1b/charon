@@ -93,6 +93,26 @@ static void charon_vision_decode(id object, NSCoder *coder)
     return _requestRevision;
 }
 
+/* How sure the observation is. Every observation this port makes starts at one -- an observation
+ * that is a fact rather than a detection, such as a Core ML answer, is as sure as it can be --
+ * and a detection sets its own. */
+/* The observation's own identity, which a caller uses to tell one observation from another of the
+ * same request. Every observation is made with one, so it is never nil. */
+- (NSUUID *)uuid
+{
+    return _uuid;
+}
+
+- (float)confidence
+{
+    return _confidence;
+}
+
+- (void)setConfidence:(float)confidence
+{
+    _confidence = confidence;
+}
+
 - (id)copyWithZone:(NSZone *)zone
 {
     return charon_vision_clone(self, zone);
@@ -154,15 +174,74 @@ static void charon_vision_decode(id object, NSCoder *coder)
 @implementation VNClassificationObservation {
     NSString *_identifier;
 }
+
+/* A classification: the label the model gave and how sure it was. Vision builds these from a
+ * Core ML classifier's label and probability outputs, and from nothing else -- a model that
+ * answers with a dictionary of classes is the case this is for. */
+- (instancetype)charon_initWithIdentifier:(NSString *)identifier confidence:(float)confidence
+{
+    VNClassificationObservation *built = [super init];
+    if (built != nil) {
+        built->_identifier = [identifier copy];
+        built.confidence = confidence;
+    }
+    return built;
+}
+
+- (NSString *)identifier
+{
+    return _identifier;
+}
 @end
 
 @implementation VNCoreMLFeatureValueObservation {
     MLFeatureValue *_featureValue;
+    NSString *_featureName;
+}
+
+/* One feature of a model's answer, held whole: whatever kind of value it is -- a number, a
+ * string, a dictionary of scores, an array -- so a caller reads the answer the model gave rather
+ * than a shape of it. */
+- (instancetype)charon_initWithFeatureValue:(MLFeatureValue *)featureValue featureName:(NSString *)featureName
+{
+    VNCoreMLFeatureValueObservation *built = [super init];
+    if (built != nil) {
+        built->_featureValue = featureValue;
+        built->_featureName = [featureName copy];
+    }
+    return built;
+}
+
+- (MLFeatureValue *)featureValue
+{
+    return _featureValue;
+}
+
+- (NSString *)featureName
+{
+    return _featureName;
 }
 @end
 
 @implementation VNPixelBufferObservation {
     CVPixelBufferRef _pixelBuffer;
+    NSString *_featureName;
+}
+
+/* An image a model answered with, under the name of the output it came from. */
+- (instancetype)charon_initWithPixelBuffer:(CVPixelBufferRef)pixelBuffer featureName:(NSString *)featureName
+{
+    VNPixelBufferObservation *built = [super init];
+    if (built != nil) {
+        built->_pixelBuffer = (CVPixelBufferRef)CVPixelBufferRetain(pixelBuffer);
+        built->_featureName = [featureName copy];
+    }
+    return built;
+}
+
+- (NSString *)featureName
+{
+    return _featureName;
 }
 
 - (CVPixelBufferRef)pixelBuffer
