@@ -85,13 +85,19 @@ stores the name as the string, and comparisons in the framework use pointer iden
 literal. The port stores what the release stores, and the length field agreeing with the bytes is the
 check that this is a real value and not a misread.
 
-## What the three iOS 26.2 constants are
+## The three iOS 26.2 constants of AuthenticationServices
 
 `ASGeneratedPasswordKindStrong`, `ASGeneratedPasswordKindAlphanumeric` and
-`ASGeneratedPasswordKindPassphrase` are declared in AuthenticationServices and arrived in iOS 26.2,
-which no firmware this machine holds ships. There is therefore **no release to read them from**, and
-the port does not invent one: it is reported as not carried, in
-`registry/AuthenticationServices/ios26.json`, with the reason that no release exists to read.
+`ASGeneratedPasswordKindPassphrase` arrived in iOS 26.2, which no firmware this machine holds — and no
+dyld cache on it — ships. The host's own **macOS 27.0** does carry them, though, and they were read
+out of its `AuthenticationServices.framework` with `dlsym`: the symbol's own pointer, then the
+`__CFConstantString`'s `char *` at +16 and its length at +24, with the bytes at that address agreeing
+with the length in all three (`STRONG`, 6 of 6; `ALPHANUMERIC`, 12 of 12; `PASSPHRASE`, 10 of 10).
+
+So the earlier answer here — that there was nothing to read them from and the port would not invent
+them — was right about not inventing them and wrong about there being nothing to read. The three are
+carried, with the value the host's own framework gives, in
+`facts/AuthenticationServices/ASConstants.md`.
 
 ## What this does not cover
 
