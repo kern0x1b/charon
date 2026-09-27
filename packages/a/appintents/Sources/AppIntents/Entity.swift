@@ -156,7 +156,13 @@ public struct _RawRepresentableStringQuery<Entity>: EntityStringQuery
 public protocol TransientAppEntity: AppEntity {}
 
 extension TransientAppEntity {
-    public init() {}
+    /// A transient entity is made by the app as the caller speaks, not by the framework: the
+    /// declaration exists so that an entity type of the app's own can spell it, and the framework's own
+    /// is unavailable for the same reason.
+    @available(*, unavailable, message: "A transient entity is made by the app, not by the framework")
+    public init() {
+        fatalError("a transient entity is made by the app")
+    }
 
     public var id: String { return String(describing: Self.self) }
 
@@ -174,13 +180,21 @@ public struct _TransientAppEntityQuery<Entity>: EntityQuery where Entity: Transi
     public typealias ItemSection = [Entity]
 
     private let entity: Entity?
+    private let provider: (() async -> [Entity])?
 
     public init() {
         self.entity = nil
+        self.provider = nil
     }
 
     public init(entity: Entity) {
         self.entity = entity
+        self.provider = nil
+    }
+
+    public init(provider: @escaping () async -> [Entity]) {
+        self.entity = nil
+        self.provider = provider
     }
 
     public func entities(for identifiers: [Entity.ID]) async throws -> [Entity] {
@@ -235,21 +249,22 @@ public struct UniqueAppEntityProvider<Entity>: UniqueAppEntityQuery where Entity
     public typealias ItemSection = [Entity]
 
     private let stored: Entity?
+    private let provider: (@Sendable () async throws -> Entity)?
 
     public init() {
         self.stored = nil
+        self.provider = nil
     }
 
     public init(_ entity: Entity) {
         self.stored = entity
+        self.provider = nil
     }
 
     public init(_ provider: @escaping @Sendable () async throws -> Entity) {
         self.stored = nil
         self.provider = provider
     }
-
-    private let provider: (@Sendable () async throws -> Entity)?
 
     public func uniqueEntity() async throws -> Entity? {
         if let provider = provider { return try await provider() }

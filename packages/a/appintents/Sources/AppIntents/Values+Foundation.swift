@@ -459,7 +459,12 @@ extension Never: AppIntent {
     public typealias SummaryContent = NeverSummary
     public typealias Dependency = Never
 
-    public init() {}
+    /// `Never` is the value an intent result carries when the app returned nothing, and the intent
+    /// that runs nothing. There is no value of this type to make, so a call traps: the framework's own
+    /// `init()` is the declaration this satisfies.
+    public init() {
+        fatalError("Never has no value to make")
+    }
 
     public func perform() async throws -> PerformResult { fatalError("Never does nothing") }
 
