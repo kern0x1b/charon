@@ -494,3 +494,38 @@ So the shears' engine is: take the filter's buffer, read its scale and its per-p
 with them; and the one measurement left is the buffer's arrangement. The twenty-four functions the corpus
 wants for the four shear spellings and the eleven pixel types, and the one `vImageGetResamplingFilterExtent`
 that has to read the same buffer, all follow from it.
+
+## The shear's mapping, read off a PlanarF grid - and the half pixel
+
+A horizontal shear has **no cross-axis term**: every destination row reads the *same* source row, and the row
+index only shifts the x offset. That is the correction, and it is right - what I had written multiplied the
+slope into a row index, which is not a shear at all.
+
+A source carrying `row * 1000 + column` in each value, so a destination pixel's answer names the source row
+and column it read, over an 8x4 with a scale-1 filter and `kvImageBackgroundColorFill`:
+
+| case | the destination row 0 reads |
+| --- | --- |
+| slope 0, translate 0 | `--  0,1  0,2  0,3  0,4  0,5  0,6  0,7` |
+| slope 0, translate 1 | `--  --  0,1  0,2  0,3  0,4  0,5  0,6` |
+| slope 0, translate -1 | `0,1  0,2  0,3  0,4  0,5  0,6  0,7  --` |
+
+So **a positive translate pulls the source left**, `sx = dx - xTranslate`, the same direction the affine's
+`tx` pulls left and the opposite of the reading a caller might expect from the name.
+
+**And the first column is the backColor at a translate of zero**, which is the half pixel: with no translate
+the mapped position of `dx = 0` is half a pixel to the *left* of the source's first column, so the kernel
+hangs over the edge and `kvImageBackgroundColorFill` back-colours it. At a translate of 1 the first *two*
+columns are back-coloured, at -1 the last one is. That is the `+ 1/2 ... - 1/2` in the suggested form and it
+is confirmed.
+
+**The slope term is not read off, and the reason is a flaw in this probe, not in the system.** The probe
+writes a source value of `0` for row 0 column 0 and prints anything at or below 0.6 as `--`, so a genuine
+read of source column 0 is indistinguishable from the backColor. Every row above is a case where the values
+involved are large enough to be unambiguous, and the slope rows are full of 0s and near-0s and are therefore
+**not trustworthy as they stand**. One rerun with the value `row * 1000 + column + 1`, so no source value is
+zero, reads the slope term off: with slope 1 the destination column's source column is offset by a whole
+column per row, and the sign and the half pixel follow from the same three cases the table above is read
+with.
+
+The vertical shear is the transpose of that, on the same evidence.
