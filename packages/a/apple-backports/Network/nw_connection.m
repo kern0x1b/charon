@@ -23,6 +23,7 @@
 
 #import <Foundation/Foundation.h>
 #import <Network/Network.h>
+#import "CharonNW.h"
 
 #include <netdb.h>
 #include <stdint.h>
@@ -31,40 +32,6 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
-
-/* The SDK's two sentinels, which on a release with no Network bind as the null: a caller passes
-   NW_PARAMETERS_DEFAULT_CONFIGURATION to mean "the defaults" and NW_PARAMETERS_DISABLE_PROTOCOL to
-   mean "this protocol is not part of the stack", and every factory that takes them compares them by
-   pointer. Each is given here as the empty block it is documented to behave as, so the pointer the
-   caller passes is a real one and the comparison means what it says on a release whose own Network
-   is not there to define them. */
-const nw_parameters_configure_protocol_block_t _nw_parameters_configure_protocol_default_configuration =
-    ^(nw_protocol_options_t options) {
-        (void)options;
-    };
-const nw_parameters_configure_protocol_block_t _nw_parameters_configure_protocol_disable = ^(nw_protocol_options_t options) {
-    (void)options;
-};
-
-@interface CharonNWEndpoint : NSObject <OS_nw_endpoint>
-@end
-
-@implementation CharonNWEndpoint {
-@public
-    nw_endpoint_type_t _type;
-    NSString *_hostname;
-    NSString *_port;
-}
-@end
-
-@interface CharonNWParameters : NSObject <OS_nw_parameters>
-@end
-
-@implementation CharonNWParameters {
-@public
-    BOOL _secure;
-}
-@end
 
 @interface CharonNWConnection : NSObject <OS_nw_connection>
 @end
@@ -125,53 +92,6 @@ static void CharonNWReport(CharonNWConnection *connection, nw_path_t path, BOOL 
             connection->_viability(viable);
         }
     });
-}
-
-nw_endpoint_t nw_endpoint_create_host(const char *hostname, const char *port)
-{
-    if (!hostname || !*hostname)
-        return nil;
-    CharonNWEndpoint *endpoint = [[CharonNWEndpoint alloc] init];
-    endpoint->_type = nw_endpoint_type_host;
-    endpoint->_hostname = @(hostname);
-    endpoint->_port = port ? @(port) : nil;
-    return endpoint;
-}
-
-nw_endpoint_type_t nw_endpoint_get_type(nw_endpoint_t endpoint)
-{
-    return endpoint ? ((CharonNWEndpoint *)endpoint)->_type : nw_endpoint_type_invalid;
-}
-
-const char *nw_endpoint_get_hostname(nw_endpoint_t endpoint)
-{
-    return endpoint ? ((CharonNWEndpoint *)endpoint)->_hostname.UTF8String : NULL;
-}
-
-uint16_t nw_endpoint_get_port(nw_endpoint_t endpoint)
-{
-    /* Host byte order, as the header says, and 0 for an endpoint of another type or with no port. */
-    CharonNWEndpoint *host = (CharonNWEndpoint *)endpoint;
-    if (!host || host->_type != nw_endpoint_type_host || !host->_port.length)
-        return 0;
-    long value = strtol(host->_port.UTF8String, NULL, 10);
-    return (value > 0 && value <= UINT16_MAX) ? (uint16_t)value : 0;
-}
-
-nw_parameters_t nw_parameters_create_secure_udp(nw_parameters_configure_protocol_block_t configure_dtls,
-                                                nw_parameters_configure_protocol_block_t configure_udp)
-{
-    /* A caller's configure block runs exactly once, with the options of its own protocol. The SDK's
-       two sentinels are, on this release, the empty blocks above, so a caller that passes either gets
-       the empty block run - which is what passing it means. The DTLS block runs first, as the two
-       protocol stacks are built in that order. */
-    if (configure_dtls)
-        configure_dtls(NULL);
-    if (configure_udp)
-        configure_udp(NULL);
-    CharonNWParameters *parameters = [[CharonNWParameters alloc] init];
-    parameters->_secure = YES;
-    return parameters;
 }
 
 nw_connection_t nw_connection_create(nw_endpoint_t endpoint, nw_parameters_t parameters)

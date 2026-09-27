@@ -4,6 +4,7 @@
 #import <arpa/inet.h>
 #import <ifaddrs.h>
 #import <net/if.h>
+#import "CharonNWPathMonitor.h"
 #import <dlfcn.h>
 #import <netinet/in.h>
 #import <resolv.h>
@@ -12,15 +13,13 @@
 @interface CharonNWInterface : NSObject <OS_nw_interface>
 @end
 
+
 @implementation CharonNWInterface {
 @public
     NSString *_name;
     uint32_t _index;
     nw_interface_type_t _type;
 }
-@end
-
-@interface CharonNWPath : NSObject <OS_nw_path>
 @end
 
 @implementation CharonNWPath {
@@ -31,20 +30,7 @@
 }
 @end
 
-@interface CharonNWPathMonitor : NSObject <OS_nw_path_monitor>
-@end
-
-@implementation CharonNWPathMonitor {
-@public
-    nw_interface_type_t _required;
-    dispatch_queue_t _queue;
-    nw_path_monitor_update_handler_t _update;
-    nw_path_monitor_cancel_handler_t _cancel;
-    SCNetworkReachabilityRef _reachability;
-    CharonNWPath *_last;
-    BOOL _started, _cancelled;
-    int _generation;
-}
+@implementation CharonNWPathMonitor
 @end
 
 static nw_interface_type_t charon_type_of(const char *name)
@@ -121,6 +107,10 @@ static CharonNWPath *charon_path(SCNetworkReachabilityRef reachability, CharonNW
             if (!item->ifa_addr || !(item->ifa_flags & IFF_UP) || !(item->ifa_flags & IFF_RUNNING))
                 continue;
             nw_interface_type_t type = charon_type_of(item->ifa_name);
+            for (NSNumber *prohibited in monitor->_prohibitedTypes) {
+                if ((nw_interface_type_t)prohibited.unsignedIntegerValue == type)
+                    goto next;
+            }
             BOOL wanted = monitor->_required == nw_interface_type_other ? type != nw_interface_type_loopback && type != nw_interface_type_other && (type == nw_interface_type_cellular) == cellular : type == monitor->_required;
             if (monitor->_required == nw_interface_type_other && !reachable)
                 wanted = NO;
@@ -138,6 +128,7 @@ static CharonNWPath *charon_path(SCNetworkReachabilityRef reachability, CharonNW
                 [seen addObject:@(item->ifa_name)];
                 [interfaces addObject:charon_interface(item->ifa_name, type)];
             }
+        next:;
         }
         freeifaddrs(list);
     }
@@ -157,6 +148,7 @@ nw_path_monitor_t nw_path_monitor_create(void)
 {
     CharonNWPathMonitor *monitor = [[CharonNWPathMonitor alloc] init];
     monitor->_required = nw_interface_type_other;
+    monitor->_prohibitedTypes = [NSMutableArray array];
     return monitor;
 }
 
