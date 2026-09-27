@@ -26,28 +26,50 @@ int main(int argc, char **argv)
     for (index = 1; index < argc; index++) {
         if (strcmp(argv[index], "--kind") == 0) {
             want_kind = 1;
-        } else if (strcmp(argv[index], "--set") == 0) {
+        } else if (strcmp(argv[index], "--set") == 0 || strcmp(argv[index], "--setr") == 0) {
+            /* --set gives a flat vector of n values; --setr gives a shape followed by the count
+             * and the values, for the model whose input is a channels-first array. */
+            int ranked = strcmp(argv[index], "--setr") == 0;
             const char *name;
             long count, at;
             float *data;
-            int64_t shape[1];
+            int64_t shape[8];
+            int rank = 0, dimension = 0;
             charon_ml_array array;
             if (index + 2 >= argc) {
-                fprintf(stderr, "--set takes a name and a count\n");
+                fprintf(stderr, "%s takes a name and a count\n", argv[index]);
                 return 2;
             }
             name = argv[++index];
+            if (ranked) {
+                char *spec = argv[++index];
+                char *part = strtok(spec, "x");
+                while (part != NULL && dimension < 8) {
+                    shape[dimension++] = (int64_t)strtoll(part, NULL, 10);
+                    part = strtok(NULL, "x");
+                }
+                rank = dimension;
+                if (rank < 1) {
+                    fprintf(stderr, "--setr %s has no shape\n", name);
+                    return 2;
+                }
+            } else {
+                shape[0] = 0;
+                rank = 1;
+            }
             count = strtol(argv[++index], NULL, 10);
             if (count < 1 || index + count >= argc) {
-                fprintf(stderr, "--set %s wants %ld values\n", name, count);
+                fprintf(stderr, "%s %s wants %ld values\n", argv[index - 1], name, count);
                 return 2;
+            }
+            if (!ranked) {
+                shape[0] = count;
             }
             data = (float *)malloc((size_t)count * sizeof *data);
             for (at = 0; at < count; at++) {
                 data[at] = (float)strtod(argv[++index], NULL);
             }
-            shape[0] = count;
-            array = charon_ml_array_alloc(CHARON_ML_ARRAY_FLOAT32, shape, 1);
+            array = charon_ml_array_alloc(CHARON_ML_ARRAY_FLOAT32, shape, rank);
             for (at = 0; at < count; at++) {
                 charon_ml_array_set(&array, at, data[at]);
             }
@@ -61,7 +83,9 @@ int main(int argc, char **argv)
         }
     }
     if (path == NULL) {
-        fprintf(stderr, "usage: ml-predict [--kind] <model> [--set <name> <count> <value> ...]\n");
+            fprintf(stderr,
+                "usage: ml-predict [--kind] <model> [--set <name> <count> <value> ...]\n"
+                "                  [--setr <name> <dxd..> <count> <value> ...]\n");
         return 2;
     }
     if (!charon_ml_model_read(&model, path, error, sizeof error)) {

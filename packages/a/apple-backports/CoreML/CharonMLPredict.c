@@ -602,7 +602,10 @@ static int run_glm(const charon_ml_node *kind_node, const charon_ml_model *model
     size_t offsets = charon_ml_count_field(kind_node, "offset");
     size_t index, at, classes;
     int classifier = charon_ml_kind_is_classifier(model->kind);
-    int reference_class = charon_ml_int(charon_ml_get(kind_node, "classEncoding"), 1) == 0;
+    /* The encoding's own first case is ReferenceClass and a field set to it is not written at
+     * all, so absent and ReferenceClass are the same value here: reading the absent one as
+     * OneVsRest is what a converter's default would be, and it is not the specification's. */
+    int reference_class = charon_ml_int(charon_ml_get(kind_node, "classEncoding"), 0) == 0;
 
     if (!inputs_as_vector(model, values, &features, &feature_count, error, error_size)) {
         return 0;
@@ -633,16 +636,34 @@ static int run_glm(const charon_ml_node *kind_node, const charon_ml_model *model
             scores[index] = total;
         }
     }
-    if (classifier && reference_class && vectors > 0) {
-        double total = 0.0;
-        for (index = 1; index < vectors; index++) {
-            total += scores[index];
-        }
-        if (classes > 0) {
-            scores[0] = total;
-        }
-    }
     free(features);
+    if (classifier && reference_class) {
+        /* The reference class has no weight vector of its own: it is the one every other
+         * class is measured against, and it scores zero. The vectors then fill the classes
+         * after it in order. Measured against coremltools' own runtime over four inputs of a
+         * two-vector, three-class model: softmax over (0, v0.x + o0, v1.x + o1) is that
+         * runtime's answer to the last digit, and the sum of what it answers is one.
+         *
+         * The score the reference class is given is the zero above, and the answer is a
+         * softmax over the whole set -- not the per-class logistic the post-evaluation
+         * transform names, which on these inputs gives (0.5, 0.525, 0.475) and would not sum
+         * to one. That is what was measured, and it is what is written here. */
+        double *shifted = (double *)calloc(classes, sizeof *shifted);
+        int answered;
+        if (shifted == NULL) {
+            free(scores);
+            return 0;
+        }
+        for (index = 1; index < classes && index - 1 < vectors; index++) {
+            shifted[index] = scores[index - 1];
+        }
+        shifted[0] = 0.0;
+        free(scores);
+        softmax_over(shifted, classes);
+        answered = answer_with_scores(model, shifted, classes, outputs, error, error_size);
+        free(shifted);
+        return answered;
+    }
     apply_glm_transform(charon_ml_int(charon_ml_get(kind_node, "postEvaluationTransform"), 0), scores, classes);
     {
         int answered = answer_with_scores(model, scores, classes, outputs, error, error_size);
@@ -801,6 +822,56 @@ static int run_neural_network(const charon_ml_node *kind_node, const charon_ml_m
             return 0;
         }
     }
+    {
+        /* The network's own preprocessing, which runs before its first layer: the scale and the
+         * per-channel bias an image's pixels are put through, or a mean to take off them. It is
+         * named per feature, and a network that names none has none. */
+        size_t steps = charon_ml_count_field(kind_node, "preprocessing"), step;
+        for (step = 0; step < steps; step++) {
+            const charon_ml_node *step_node = charon_ml_node_at_field(kind_node, "preprocessing", step);
+            const charon_ml_node *scaler = charon_ml_get(step_node, "scaler");
+            const charon_ml_node *mean = charon_ml_get(step_node, "meanImage");
+            char feature[256];
+            charon_ml_tensor *value;
+            if (charon_ml_text(charon_ml_get(step_node, "featureName"), feature, sizeof feature) == NULL) {
+                continue;
+            }
+            value = charon_ml_bindings_find(&bindings, feature);
+            if (value == NULL || value->data == NULL) {
+                continue;
+            }
+            if (scaler != NULL) {
+                double scale = charon_ml_number_of(scaler, "channelScale", 1.0);
+                double red = charon_ml_number_of(scaler, "redBias", 0.0);
+                double green = charon_ml_number_of(scaler, "greenBias", 0.0);
+                double blue = charon_ml_number_of(scaler, "blueBias", 0.0);
+                double gray = charon_ml_number_of(scaler, "grayBias", 0.0);
+                int64_t area = 1, channel;
+                int axis;
+                for (axis = 1; axis < value->rank; axis++) {
+                    area *= value->shape[axis];
+                }
+                for (channel = 0; channel < value->shape[0]; channel++) {
+                    /* The bias is named for the colour the channel is: the first is red, the
+                     * second green and the third blue, and a one-channel value is gray. */
+                    double add = value->shape[0] == 1 ? gray
+                                   : value->shape[0] == 2 ? (channel == 0 ? red : green)
+                                   : (channel == 0 ? red : (channel == 1 ? green : blue));
+                    int64_t at;
+                    for (at = 0; at < area; at++) {
+                        double pixel = value->data[channel * area + at];
+                        value->data[channel * area + at] = (float)(pixel * scale + add);
+                    }
+                }
+            } else if (mean != NULL) {
+                const charon_ml_node *channels = charon_ml_get(mean, "meanImage");
+                size_t at, count = charon_ml_count(channels);
+                for (at = 0; at < count && at < value->count; at++) {
+                    value->data[at] = (float)((double)value->data[at] - charon_ml_double(charon_ml_at(channels, at), 0.0));
+                }
+            }
+        }
+    }
     for (index = 0; index < total; index++) {
         if (!charon_ml_run_layer(charon_ml_node_at_field(kind_node, "layers", index), &bindings, error,
                                  error_size)) {
@@ -816,9 +887,14 @@ static int run_neural_network(const charon_ml_node *kind_node, const charon_ml_m
             score_name = model->predicted_probabilities_name;
         }
         if (scores == NULL) {
+            /* The scores are the one output that holds one number per class. A network that
+             * ends in a global pool leaves them as an array of channels by one by one, which
+             * is one number per class written in three dimensions, so a candidate is judged by
+             * how many values it has and not by its rank. */
             for (index = 0; index < model->output_count; index++) {
                 charon_ml_tensor *candidate = charon_ml_bindings_find(&bindings, model->outputs[index].name);
-                if (candidate != NULL && candidate->rank == 1 && candidate->count > 1) {
+                if (candidate != NULL && candidate->data != NULL && candidate->count > 1 &&
+                    (model->class_label_count == 0 || candidate->count == model->class_label_count)) {
                     scores = candidate;
                     score_name = model->outputs[index].name;
                     break;
