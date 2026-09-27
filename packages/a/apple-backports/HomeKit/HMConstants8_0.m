@@ -1,9 +1,13 @@
 // The HomeKit string constants of iOS 8.0. Every value here was read out of a real
 // HomeKit.framework (12.0, 16.0, 18.0) with the project's own dyld cache reader: the symbol's own
-// pointer resolved through that cache's slide info, then the __CFConstantString's char* and
-// its length, with the bytes read at that address agreeing with the length in every one of them.
-// One release's API per object file, which is what the band machinery needs: nothing here arrived
-// in any release but this one.
+// pointer resolved through that cache's slide information, then the __CFConstantString's
+// char* and its length, with the bytes read at that address agreeing with the length in
+// every one of them.
+//
+// The release in the file's name is the one tools/release-split.lua measures as the first
+// that exports these symbols, not the one the 26.2 header annotates: for 63 of the framework's
+// constants the two differ, the header is the later of the two, and the band machinery places an
+// object by the measurement. facts/HomeKit/HMConstants.md lists every divergence.
 #import <Foundation/Foundation.h>
 
 NSString *const HMCharacteristicMetadataFormatArray = @"array";
@@ -34,8 +38,6 @@ NSString *const HMCharacteristicTypeCurrentHeatingCooling = @"0000000F-0000-1000
 NSString *const HMCharacteristicTypeCurrentLockMechanismState = @"0000001D-0000-1000-8000-0026BB765291";
 NSString *const HMCharacteristicTypeCurrentRelativeHumidity = @"00000010-0000-1000-8000-0026BB765291";
 NSString *const HMCharacteristicTypeCurrentTemperature = @"00000011-0000-1000-8000-0026BB765291";
-NSString *const HMCharacteristicTypeFirmwareVersion = @"00000052-0000-1000-8000-0026BB765291";
-NSString *const HMCharacteristicTypeHardwareVersion = @"00000053-0000-1000-8000-0026BB765291";
 NSString *const HMCharacteristicTypeHeatingThreshold = @"00000012-0000-1000-8000-0026BB765291";
 NSString *const HMCharacteristicTypeHue = @"00000013-0000-1000-8000-0026BB765291";
 NSString *const HMCharacteristicTypeIdentify = @"00000014-0000-1000-8000-0026BB765291";
@@ -68,7 +70,9 @@ NSString *const HMServiceTypeGarageDoorOpener = @"00000041-0000-1000-8000-0026BB
 NSString *const HMServiceTypeLightbulb = @"00000043-0000-1000-8000-0026BB765291";
 NSString *const HMServiceTypeLockManagement = @"00000044-0000-1000-8000-0026BB765291";
 NSString *const HMServiceTypeLockMechanism = @"00000045-0000-1000-8000-0026BB765291";
+NSString *const HMServiceTypeMicrophone = @"00000112-0000-1000-8000-0026BB765291";
 NSString *const HMServiceTypeOutlet = @"00000047-0000-1000-8000-0026BB765291";
+NSString *const HMServiceTypeSpeaker = @"00000113-0000-1000-8000-0026BB765291";
 NSString *const HMServiceTypeSwitch = @"00000049-0000-1000-8000-0026BB765291";
 NSString *const HMServiceTypeThermostat = @"0000004A-0000-1000-8000-0026BB765291";
 NSString *const HMUserFailedAccessoriesKey = @"HMUserFailedAccessoriesKey";

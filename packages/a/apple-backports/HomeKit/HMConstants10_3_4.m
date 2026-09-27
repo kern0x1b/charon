@@ -1,4 +1,4 @@
-// The HomeKit string constants of iOS 9.3. Every value here was read out of a real
+// The HomeKit string constants of iOS 10.3.4. Every value here was read out of a real
 // HomeKit.framework (12.0, 16.0, 18.0) with the project's own dyld cache reader: the symbol's own
 // pointer resolved through that cache's slide information, then the __CFConstantString's
 // char* and its length, with the bytes read at that address agreeing with the length in
@@ -10,6 +10,4 @@
 // object by the measurement. facts/HomeKit/HMConstants.md lists every divergence.
 #import <Foundation/Foundation.h>
 
-NSString *const HMAccessoryCategoryTypeRangeExtender = @"8E33483E-2102-4BFE-9295-0A187D114188";
-NSString *const HMCharacteristicMetadataUnitsLux = @"lux";
-NSString *const HMCharacteristicPropertyHidden = @"HMCharacteristicPropertyHidden";
+NSString *const HMCharacteristicTypeColorTemperature = @"000000CE-0000-1000-8000-0026BB765291";

@@ -1,14 +1,19 @@
-// The HomeKit string constants of iOS 11.2. Every value here was read out of a real
+// The HomeKit string constants of iOS 12.0. Every value here was read out of a real
 // HomeKit.framework (12.0, 16.0, 18.0) with the project's own dyld cache reader: the symbol's own
-// pointer resolved through that cache's slide info, then the __CFConstantString's char* and
-// its length, with the bytes read at that address agreeing with the length in every one of them.
-// One release's API per object file, which is what the band machinery needs: nothing here arrived
-// in any release but this one.
+// pointer resolved through that cache's slide information, then the __CFConstantString's
+// char* and its length, with the bytes read at that address agreeing with the length in
+// every one of them.
+//
+// The release in the file's name is the one tools/release-split.lua measures as the first
+// that exports these symbols, not the one the 26.2 header annotates: for 63 of the framework's
+// constants the two differ, the header is the later of the two, and the band machinery places an
+// object by the measurement. facts/HomeKit/HMConstants.md lists every divergence.
 #import <Foundation/Foundation.h>
 
 NSString *const HMAccessoryCategoryTypeFaucet = @"43CE6F7E-F7E8-44B4-80CE-5786F6E6CD47";
 NSString *const HMAccessoryCategoryTypeShowerHead = @"39D2A5B4-F9A6-43F6-90E7-0019F0C0E99F";
 NSString *const HMAccessoryCategoryTypeSprinkler = @"94D3FBD5-0A74-4EE4-BE1A-C97E82ADFA33";
+NSString *const HMCharacteristicTypeActiveIdentifier = @"000000E7-0000-1000-8000-0026BB765291";
 NSString *const HMCharacteristicTypeInUse = @"000000D2-0000-1000-8000-0026BB765291";
 NSString *const HMCharacteristicTypeIsConfigured = @"000000D6-0000-1000-8000-0026BB765291";
 NSString *const HMCharacteristicTypeProgramMode = @"000000D1-0000-1000-8000-0026BB765291";

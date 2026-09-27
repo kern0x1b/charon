@@ -44,6 +44,32 @@ The later value is what the port carries, for the same reason the rest of the su
 recorded here rather than dropped, because it is what a release this port runs on would have paired
 against, and the difference is a fact about the protocol rather than about the reader.
 
+## Where the header's availability is later than the release that exports it
+
+The files are named for the release `tools/release-split.lua` **measures** as the first that exports
+each symbol, because that is what the band machinery places an object by, and not for the release the
+26.2 header annotates. For 63 of the 255 the two differ, and in every case the header is the later of
+the two: a release already exported the symbol before the SDK says it arrived. The measurement is what
+the band needs, so the port follows the measurement and records the difference here, which is what
+COORDINATION.md's "the header can be wrong" is about. What is carried is the value every one of these
+releases agrees on, so the choice of file changes which release carries the symbol, never its value.
+
+| the header says | the release first exporting it | how many |
+| --- | --- | --- |
+| 10.0 | 8.0 | 2 |
+| 8.0 | 9.0 | 2 |
+| 10.0 | 10.0.1 | 21 |
+| 18.0 | 10.0.1 | 1 |
+| 11.0 | 10.3.4 | 1 |
+| 18.0 | 11.0 | 2 |
+| 11.2 | 12.0 | 12 |
+| 18.0 | 12.0 | 1 |
+| 18.0 | 16.0 | 21 |
+
+The full list, one name per row, is in the delivery report; the two that change a band boundary by
+more than a patch release are `HMServiceTypeMicrophone` and `HMServiceTypeSpeaker`, whose values also
+changed, above.
+
 ## Where the release itself holds a placeholder
 
 Eleven of the values are the symbol's own name, and that is Apple's, measured in all three caches:
