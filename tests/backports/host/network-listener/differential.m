@@ -108,7 +108,9 @@ int main(void)
         __block NSMutableData *up = [NSMutableData data];
         P(nw_listener_set_new_connection_handler)(listener, ^(nw_connection_t connection) {
             accepted = connection;
-            P(nw_connection_set_queue)(connection, queue);
+            /* a program gives the connection it has been handed a queue of its own, not the
+               listener's: the engines of many connections would then share one serial queue */
+            P(nw_connection_set_queue)(connection, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
             P(nw_connection_receive_message)(connection, ^(dispatch_data_t content, nw_content_context_t context,
                                                      bool is_complete, nw_error_t error) {
                 [up appendData:bytes_of(content)];
@@ -127,6 +129,10 @@ int main(void)
         __block int host_ready = 0;
         __block NSMutableData *down = [NSMutableData data];
         nw_connection_set_state_changed_handler(host_side, ^(nw_connection_state_t state, nw_error_t error) {
+            /* what the host's own Network says about every connection the port's listener made it: with
+               nw_error_get_error_code in the line, the reason it keeps retrying is named rather than
+               guessed at */
+            printf("  host: state=%d error=%d/%d\n", state, nw_error_get_error_domain(error), nw_error_get_error_code(error));
             if (state != nw_connection_state_ready || host_ready)
                 return;
             host_ready = 1;
@@ -140,21 +146,22 @@ int main(void)
             while (!accepted)
                 usleep(20000);
             nw_connection_send(host_side, dispatch_data_create("down", 4, NULL, DISPATCH_DATA_DESTRUCTOR_DEFAULT),
-                               nw_content_context_create("listener test"), true, ^(nw_error_t error) {});
+                               nw_content_context_create("listener test"), true, ^(nw_error_t error) {
+                printf("  host: the send reported %d\n", nw_error_get_error_code(error));
+            });
         });
         nw_connection_start(host_side);
         for (int index = 0; index < 300 && !(host_ready && accepted); index++)
             usleep(25000);
         check(host_ready, @"the host's connection is ready through the port's listener");
         check(accepted != NULL, @"and the port's listener handed the connection over");
-        if (accepted)
-            P(nw_connection_set_queue)(accepted, queue);
+
 
         for (int index = 0; index < 200 && down.length < 4; index++)
             usleep(25000);
         check(down.length >= 4, @"the connection the listener made read what the host sent");
         if (accepted) {
-            P(nw_connection_send)(accepted, dispatch_data_create("up", 2, queue, DISPATCH_DATA_DESTRUCTOR_DEFAULT),
+            P(nw_connection_send)(accepted, dispatch_data_create("up", 2, NULL, DISPATCH_DATA_DESTRUCTOR_DEFAULT),
                                    nw_content_context_create("listener test"), true, ^(nw_error_t error) {});
             for (int index = 0; index < 200 && up.length < 2; index++)
                 usleep(25000);

@@ -414,5 +414,6 @@ extern void CharonNWListenerSetNewConnectionGroup(nw_listener_t listener,
                                                   nw_listener_new_connection_group_handler_t handler);
 extern void CharonNWListenerSetNewConnectionLimit(nw_listener_t listener, uint32_t new_connection_limit);
 extern uint32_t CharonNWListenerGetNewConnectionLimit(nw_listener_t listener);
+extern BOOL CharonNWConnectionHasQueue(nw_connection_t connection);
 
 NS_ASSUME_NONNULL_END

@@ -149,7 +149,8 @@ static void charon_listener_adopt(CharonNWListener *listener, int handle)
        forgets one. Then the handler, and then the start: a connection that can reach `ready` with no
        handler on it would be handed to nobody. */
     __weak CharonNWListener *weak = listener;
-    nw_connection_set_queue(connection, listener->_queue);
+    if (!CharonNWConnectionHasQueue(connection))
+        nw_connection_set_queue(connection, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
     nw_connection_set_state_changed_handler(connection, ^(nw_connection_state_t state, nw_error_t error) {
         CharonNWListener *strong = weak;
         if (state != nw_connection_state_ready || !strong || !strong->_newConnection)
@@ -159,9 +160,16 @@ static void charon_listener_adopt(CharonNWListener *listener, int handle)
     nw_connection_start(connection);
 }
 
+/* How many connections one read of the listening socket may produce. A listener that accepts until the
+   kernel says "nothing more" starves everything else on its own queue - and the engines of the
+   connections it has just accepted are on that queue - so a burst is taken a batch at a time and the
+   rest is left to the next event, which the kernel sends because the listening socket is still
+   readable. */
+#define CHARON_LISTENER_BATCH 16
+
 static void charon_listener_accept(CharonNWListener *listener)
 {
-    for (;;) {
+    for (int taken = 0; taken < CHARON_LISTENER_BATCH; taken++) {
         int handle = accept(listener->_socket, NULL, NULL);
         if (handle < 0) {
             if (errno == EAGAIN || errno == EWOULDBLOCK || errno == EINTR)

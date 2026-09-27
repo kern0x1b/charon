@@ -37,6 +37,7 @@
 #import "CharonNWSupport.h"
 
 #include <errno.h>
+#include <stdio.h>
 #include <netdb.h>
 #include <netinet/in.h>
 #include <ifaddrs.h>
@@ -188,6 +189,9 @@ static void charon_readable(CharonNWConnection *connection);
 
 static void charon_report_state(CharonNWConnection *connection, nw_connection_state_t state, CharonNWError *error)
 {
+    if (getenv("CHARON_TRACE_CONNECTION"))
+        fprintf(stderr, "[charon] state fd=%d -> %d error=%d/%d\n", connection->_socket, state,
+                error ? error->_domain : 0, error ? error->_code : 0);
     @synchronized(connection) {
         if (connection->_cancelled && state != nw_connection_state_cancelled)
             return;
@@ -439,8 +443,28 @@ static void charon_deliver_received(CharonNWConnection *connection)
     }
 }
 
+/* What decides whether this connection can move a byte at all, at the moment it tries: the
+   descriptor the sources are over, the sources themselves and whether each is live, the queue they
+   and every handler are on, and the state the connection is in. Printed for both paths - a connection
+   of the program's own and one a listener handed over - because that is how the difference between
+   them was found (CHARON_TRACE_CONNECTION=1 in the environment). */
+static void charon_dump(CharonNWConnection *connection, const char *where)
+{
+    if (!getenv("CHARON_TRACE_CONNECTION"))
+        return;
+    uintptr_t read_data = connection->_readSource ? dispatch_source_get_data(connection->_readSource) : 0;
+    fprintf(stderr, "[charon] %s fd=%d state=%d queue=%p readSource=%p over=%d writeSource=%p over=%d writing=%d "
+                    "started=%d cancelled=%d datagram=%d secure=%d sends=%lu receives=%lu\n",
+            where, connection->_socket, connection->_value, (__bridge void *)connection->_queue,
+            (__bridge void *)connection->_readSource, (int)read_data, (__bridge void *)connection->_writeSource,
+            connection->_writeSource ? (int)dispatch_source_get_data(connection->_writeSource) : 0,
+            connection->_readingSource, connection->_started, connection->_cancelled, connection->_isDatagram,
+            connection->_secure, (unsigned long)connection->_sends.count, (unsigned long)connection->_receives.count);
+}
+
 static void charon_flush(CharonNWConnection *connection)
 {
+    charon_dump(connection, "flush");
     /* What SecureTransport could not take yet goes first, then what the program handed to send. */
     while (connection->_pendingWrite.length) {
         size_t length = connection->_pendingWrite.length;
@@ -546,6 +570,7 @@ static void charon_tls_pump(CharonNWConnection *connection)
 
 static void charon_readable(CharonNWConnection *connection)
 {
+    charon_dump(connection, "read");
     uint8_t buffer[16384];
     while (YES) {
         ssize_t got = read(connection->_socket, buffer, sizeof buffer);
@@ -730,6 +755,12 @@ static void charon_connect_finished(CharonNWConnection *connection)
    made exactly as they are for a connection that connected itself. */
 void CharonNWConnectionAttach(nw_connection_t value, int handle, BOOL connected)
 {
+    if (getenv("CHARON_TRACE_CONNECTION")) {
+        CharonNWConnection *attached = (CharonNWConnection *)value;
+        fprintf(stderr, "[charon] attach fd=%d connected=%d queue=%p datagram=%d secure=%d\n", handle, connected,
+                attached ? (__bridge void *)attached->_queue : NULL, attached ? attached->_isDatagram : 0,
+                attached ? attached->_secure : 0);
+    }
     /* Taking the socket is all this does. The engine is not started here: the connection is started
        after it is given its queue, by whoever made it - a listener's new-connection handler, or a
        program - and `nw_connection_start` is what knows it is already connected. */
@@ -747,6 +778,13 @@ void CharonNWConnectionAttach(nw_connection_t value, int handle, BOOL connected)
     CharonNWParameters *parameters = connection->_parameters;
     connection->_isDatagram = charon_is_datagram(parameters);
     connection->_secure = charon_is_secure(parameters);
+}
+
+/* Whether a program has already given this connection a queue, which is what a listener asks before it
+   starts one: a connection with no queue does nothing at all when it is started. */
+BOOL CharonNWConnectionHasQueue(nw_connection_t value)
+{
+    return ((CharonNWConnection *)value)->_queue != NULL;
 }
 
 /* Hand a connection's socket to whoever asks for it - a listener, which becomes a listener of it -
