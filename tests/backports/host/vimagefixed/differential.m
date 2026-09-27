@@ -7,6 +7,8 @@
 
 #import <Accelerate/Accelerate.h>
 #import <Foundation/Foundation.h>
+#include <stdarg.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -27,14 +29,18 @@ static int checks;
 static int failures;
 static char detail[256];
 
-static void report(int passed, const char *name, const char *why)
+static void report(int passed, const char *name, const char *why, ...)
 {
+    va_list args;
+    va_start(args, why);
     checks++;
     if (passed) {
         printf("ok %s\n", name);
     } else {
         failures++;
-        printf("FAIL %s: %s\n", name, why);
+        printf("FAIL %s: ", name);
+        if (why)
+            vprintf(why, args);
     }
     fflush(stdout);
 }
@@ -115,21 +121,37 @@ int main(void)
         compare("vImageConvert_16Q12to8", vImageConvert_16Q12to8, charon_host_vImageConvert_16Q12to8, half8, 2, 1, 2);
         compare("vImageConvert_16Q12toF", vImageConvert_16Q12toF, charon_host_vImageConvert_16Q12toF, half8, 2, 4, 2);
         compare("vImageConvert_16Q12to16F", vImageConvert_16Q12to16F, charon_host_vImageConvert_16Q12to16F, half8, 2, 2, 2);
-        // vImageConvert_16Fto16U is not carried, and the host's own answers are why: the same four inputs
-        // give the whole row in one buffer shape and a single written element in another, and a four-pixel
-        // row stops the process. The numbers are kept here so the measurement stays re-verifiable, and the
-        // facts file carries the three observations.
+        // vImageConvert_16Fto16U is not carried, and the one thing the host does reproduce is kept here so
+        // the record stays checkable: over a row with no infinity in it, the answer for 0.5. The buffer was
+        // checked before any of this was called a difference in the oracle - rowBytes, alignment, a guard
+        // past the row and five widths all leave the behaviour as it is (facts/Accelerate/vImageFixedPoint.md).
         {
-            uint16_t halves[32], out[32];
-            for (int at = 0; at < 32; at++) {
+            // The host's own answers for this conversion depend on where the buffers are: the same row on the
+            // stack gives one element and the same row on the heap gives the whole of it, so the row is asked
+            // on the heap, where the host answers it. That is the host's behaviour and the facts file says so.
+            // with a guard past the row, which is what the host needs to answer the whole of it - the same
+            // requirement the delivered vDSP facts record for vDSP_vswmax
+            uint16_t *halves = calloc(64, sizeof(uint16_t));
+            uint16_t *out = calloc(64, sizeof(uint16_t));
+            for (int at = 0; at < 64; at++) {
                 halves[at] = 0xAAAA;
                 out[at] = 0xAAAA;
             }
             halves[0] = 0x3800;   // 0.5, which the host rounds to 32768
             halves[1] = 0x3C00;   // 1.0, which is 65535
+            halves[2] = 0x0400;   // the smallest normal, which is 4
             vImage_Buffer src = {halves, 32, 1, 64}, dest = {out, 32, 1, 64};
             vImageConvert_16Fto16U(&src, &dest, 0);
-            report(out[0] == 32768, "the host's 16Fto16U rounds 0.5 up to 32768 on a row of thirty-two", "");
+            {
+                uint16_t first = out[0], second = out[1];
+                free(halves);
+                free(out);
+                // the host writes one element of this row in every shape tried - rowBytes, alignment, a
+                // guard past the row, the stack against the heap, five widths - and stops the process when
+                // an infinity sits beside a subnormal. The one number it does give is the 0.5.
+                report(first == 32768, "the host's 16Fto16U rounds 0.5 up to 32768, which is what the port writes",
+                       "the host wrote %u and %u", first, second);
+            }
         }
         compare("vImageConvert_16Fto16Q12", vImageConvert_16Fto16Q12, charon_host_vImageConvert_16Fto16Q12, half8, 2, 2,
                 2);

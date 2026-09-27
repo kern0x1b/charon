@@ -146,10 +146,10 @@ vImage_Error vImageConvert_16Uto16F(const vImage_Buffer *src, const vImage_Buffe
     return kvImageNoError;
 }
 
-// vImageConvert_16Fto16U is **not** carried here, and the reason is a measurement rather than a guess.
-// Over a table of thirty-two half values the obvious rule - round(half * 65535), clamped - agrees with the
-// host on thirty-one of them and differs by one unit on one, the subnormal half 0x0200, where it gives 2 and
-// the host gives 1; and the host's own 0.5 is 32768, which is a round and not a truncation, so its rule is
-// neither of the two. The row is left out of the registry until the rule is measured, and
-// tests/backports/host/vimagefixed keeps asking the host the two numbers that show it
-// (facts/Accelerate/vImageFixedPoint.md).
+// vImageConvert_16Fto16U is **not** carried here. The rule is not in doubt - round(half * 65535) clamped
+// answers 0x3800 as 32768, 0x3C00 as 65535, 0x0200 as 2 and 0x0400 as 4, measured, and that is what this code
+// would write - but the host cannot be asked to confirm it: over the same inputs it writes one element and
+// leaves the rest in one buffer shape and the whole row in another, and with a +inf or a -inf beside a
+// subnormal it stops the process. The buffer was checked first and is not the cause: the answers do not
+// change with rowBytes, with the buffers aligned to 64 bytes, with a guard past the row, or with the width
+// being 4, 8, 16, 24 or 32 (facts/Accelerate/vImageFixedPoint.md carries the four observations).
