@@ -125,6 +125,50 @@ local function driver(opt, arguments)
     return "xcrun", table.join({"clang"}, arguments)
 end
 
+-- The compiler cache a compile runs through, or nil where there is none to run through.
+--
+-- ccache keys a result on the preprocessed source and on the compiler, not on where the source
+-- sits, as long as the tree the worktrees live in is CCACHE_BASEDIR and the working directory is
+-- not part of the key (hash_dir = false): the path of a backport source is then the same relative
+-- path out of every worktree, so the objects a band did not touch are the objects it does not
+-- compile. That is what the cache is for here - a round touches a handful of frameworks and the
+-- machine compiles all ~960 of them again from nothing.
+--
+-- Nothing of the compile moves into ccache: the same clang runs, with the same arguments, in the
+-- same order, and what the cache hands back is the object file the compiler wrote. On a miss
+-- ccache runs the compiler and stores its output; on a hit it writes that same file back. A
+-- cached build therefore links and installs byte for byte what an uncached one produces, which
+-- is the only claim worth making about a compiler cache: the measured check for it is the built
+-- libraries against an uncached build, not the hit rate.
+--
+-- CCACHE_DISABLE takes the cache out again, for a build that has to show its own work; CCACHE
+-- names the program to use where it is not on the path. xmake 3.1.1 has no os.which, so the path
+-- is walked here rather than left to a program that may or may not be found at run time. The
+-- answer is kept: a build compiles ~960 units and the path does not change under it.
+local cached_program
+
+local function cache()
+    if os.getenv("CCACHE_DISABLE") then
+        return nil
+    end
+    if cached_program then
+        return cached_program
+    end
+    local given = os.getenv("CCACHE")
+    if given and given ~= "" then
+        cached_program = given
+    else
+        for _, folder in ipairs((os.getenv("PATH") or ""):split(path.envsep())) do
+            local found = path.join(folder, "ccache")
+            if os.isexec(found) then
+                cached_program = found
+                break
+            end
+        end
+    end
+    return cached_program
+end
+
 local function clang(opt, arguments, objective_c)
     local given = {"-target", opt.triple, "-isysroot", opt.sdkdir}
     if objective_c then
@@ -164,7 +208,12 @@ function compile(opt, source, object)
             table.insert(arguments, "-I" .. opt.archives[name].includedir)
         end
     end
-    os.vrunv(clang(opt, table.join(arguments, {"-c", source, "-o", object}), objective_c))
+    local program, arguments = clang(opt, table.join(arguments, {"-c", source, "-o", object}), objective_c)
+    local wrapper = cache()
+    -- one string, because that is what os.execv takes a program that carries its own arguments
+    -- as (xmake/core/base/os.lua, os.execv splits a name it cannot execute itself). The link
+    -- below goes through driver() and no cache: a cache holds compilations, not links.
+    os.vrunv(wrapper and program and (wrapper .. " " .. program) or program, arguments)
 end
 
 local function sections_of(file)

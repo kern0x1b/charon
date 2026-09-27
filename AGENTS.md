@@ -161,6 +161,17 @@ Each entry: wrong pattern → right pattern → the mechanical reason.
   already has is left out of that band, so the call is `Undefined symbols` in later bands only —
   `backports-gate` links one band and passes; only the all-band build of `canon-install` shows it.
 
+- **The compiler cache behind a backports build.** Wrong: reading a hit rate as proof the build is
+  the same, or setting `CCACHE_BASEDIR`/`hash_dir` for one run by hand. Right: gate through
+  `coordination/heavy.sh`, which exports the policy, and compare the built libraries against an
+  uncached build. Reason: ccache is only transparent where its key is — with `CCACHE_BASEDIR` at
+  `$HOME/Git/projects/ios` and `hash_dir = false` the key is the relative path, the preprocessed
+  source and the compiler, so every worktree shares one cache; without them the key carries each
+  worktree's absolute path and every band builds alone with a cache that only ever misses. What
+  ccache replays is the object the compiler wrote, so identity is a measurement (the libraries
+  against an uncached build), not something the hit rate can show.
+  `CCACHE_DISABLE=1` takes it out for a build that has to show its own work.
+
 - **A working copy installed as the addon.** Wrong: a scratch project with `add_addons("charon")`
   whose `add_repositories` points at a worktree or a clone, run against the shared `~/.xmake`.
   Right: check a package or a module through `coordination/build-gate.lua`'s checkout argument, or
