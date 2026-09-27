@@ -1,0 +1,5 @@
+{
+    "framework": "Spatial",
+    "entries": [],
+    "note": "The value types are the ARKit band's build (e1986da0), not this one's: Spatial sits behind the lift, and a Swift module of another band's package is not this package's record. Its rows are in the corpus ledger, and its own facts file names the measurements."
+}

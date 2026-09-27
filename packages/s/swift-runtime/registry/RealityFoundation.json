@@ -1,0 +1,655 @@
+{
+    "framework": "RealityFoundation",
+    "entries": [
+        {
+            "api": "AnchorEntity",
+            "kind": "class",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "AnimationPlaybackController",
+            "kind": "class",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "AnimationResource",
+            "kind": "class",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "AudioFileResource",
+            "kind": "class",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "AudioPlaybackController",
+            "kind": "class",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "AudioResource",
+            "kind": "class",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "Entity",
+            "kind": "class",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "EnvironmentResource",
+            "kind": "class",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "MeshResource",
+            "kind": "class",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "ModelEntity",
+            "kind": "class",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "PhysicsMaterialResource",
+            "kind": "class",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "Scene",
+            "kind": "class",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "ShapeResource",
+            "kind": "class",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "TextureResource",
+            "kind": "class",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "AnimationRepeatMode",
+            "kind": "enum",
+            "introduced": "15.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "CollisionCastQueryType",
+            "kind": "enum",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "CollisionEvents",
+            "kind": "enum",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "MeshBuffers",
+            "kind": "enum",
+            "introduced": "15.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "PhysicsBodyMode",
+            "kind": "enum",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "AnimatableData",
+            "kind": "protocol",
+            "introduced": "15.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "AnimationDefinition",
+            "kind": "protocol",
+            "introduced": "15.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "HasAnchoring",
+            "kind": "protocol",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "HasCollision",
+            "kind": "protocol",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "HasHierarchy",
+            "kind": "protocol",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "HasModel",
+            "kind": "protocol",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "HasPhysics",
+            "kind": "protocol",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "HasPhysicsBody",
+            "kind": "protocol",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "HasPhysicsMotion",
+            "kind": "protocol",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "HasSynchronization",
+            "kind": "protocol",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "HasTransform",
+            "kind": "protocol",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "Material",
+            "kind": "protocol",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "MeshBufferContainer",
+            "kind": "protocol",
+            "introduced": "15.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "PhysicsJoint",
+            "kind": "protocol",
+            "introduced": "18.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "Resource",
+            "kind": "protocol",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "AnchoringComponent",
+            "kind": "struct",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "AnimationFillMode",
+            "kind": "struct",
+            "introduced": "15.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "AnimationTimingFunction",
+            "kind": "struct",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "AnyMeshBuffer",
+            "kind": "struct",
+            "introduced": "15.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "BoundingBox",
+            "kind": "struct",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "CollisionCastHit",
+            "kind": "struct",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "CollisionComponent",
+            "kind": "struct",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "CollisionFilter",
+            "kind": "struct",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "CollisionGroup",
+            "kind": "struct",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "EntityQuery",
+            "kind": "struct",
+            "introduced": "15.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "FromToByAnimation",
+            "kind": "struct",
+            "introduced": "15.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "GeometricPin",
+            "kind": "struct",
+            "introduced": "18.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "MeshBuffer",
+            "kind": "struct",
+            "introduced": "15.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "MeshDescriptor",
+            "kind": "struct",
+            "introduced": "15.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "ModelComponent",
+            "kind": "struct",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "OcclusionMaterial",
+            "kind": "struct",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "PhysicallyBasedMaterial",
+            "kind": "struct",
+            "introduced": "15.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "PhysicsBodyComponent",
+            "kind": "struct",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "PhysicsDistanceJoint",
+            "kind": "struct",
+            "introduced": "18.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "PhysicsFixedJoint",
+            "kind": "struct",
+            "introduced": "18.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "PhysicsJoints",
+            "kind": "struct",
+            "introduced": "18.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "PhysicsJointsComponent",
+            "kind": "struct",
+            "introduced": "18.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "PhysicsMassProperties",
+            "kind": "struct",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "PhysicsMotionComponent",
+            "kind": "struct",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "QueryPredicate",
+            "kind": "struct",
+            "introduced": "15.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "QueryResult",
+            "kind": "struct",
+            "introduced": "15.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "SimpleMaterial",
+            "kind": "struct",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "SynchronizationComponent",
+            "kind": "struct",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "Transform",
+            "kind": "struct",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "UnlitMaterial",
+            "kind": "struct",
+            "introduced": "13.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "VideoMaterial",
+            "kind": "struct",
+            "introduced": "14.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in .agent-work/rf-host-check/main.swift, 271 checks, and the SDK interface each declaration was read from"
+        }
+    ]
+}
