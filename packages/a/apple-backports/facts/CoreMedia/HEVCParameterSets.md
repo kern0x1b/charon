@@ -47,3 +47,13 @@ out-pointers to the sentinel `(const uint8_t *)0x1`, which is fine while a reade
 and the `-12710` path does not, by the rule above, so the test's own `memcmp` read from address 1. The
 sentinel is now `NULL` and the byte comparison only runs when the reader returned 0 and really wrote a
 pointer.
+
+## Reuse
+
+Searched: none, and the search is named so it can be repeated. The 2026-09-28 rule's upstream table has
+no CoreMedia row and Apple's CoreMedia is not open-sourced, so there is no reference reader to take.
+The one external thing this family touched is a **byte record**, `hvcC-x265.bin`: the `hvcC` box of a
+stream `ffmpeg` encoded with `libx265`, from the three-frame `testsrc` pattern. That is a data record
+from a media file, not libx265's code, so the GPL "read only" rule is not in play; ffmpeg and libx265
+were run, not read. Every behaviour in the two HEVC functions is measured against the host's own
+CoreMedia, 7544 answers, none different.

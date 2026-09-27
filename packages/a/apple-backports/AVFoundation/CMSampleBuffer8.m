@@ -81,7 +81,7 @@ OSStatus CMAudioSampleBufferCreateReadyWithPacketDescriptions(CFAllocatorRef all
         return kCMSampleBufferError_RequiredParameterMissing;
     // One timing entry and one size entry, the "every sample is the same" form Apple's own header
     // describes: with two packets the host answers one entry of 1024/44100 at the presentation timestamp
-    // it was given, and one size (measured over 227 answers).
+    // it was given, and one size (measured over 239 answers).
     size_t *sizes = calloc(1, sizeof *sizes);
     CMSampleTimingInfo *timings = calloc(1, sizeof *timings);
     if (!sizes || !timings) {
@@ -99,7 +99,7 @@ OSStatus CMAudioSampleBufferCreateReadyWithPacketDescriptions(CFAllocatorRef all
     size_t sizeEntries = size || fixedBytes ? 1 : 0;
     if (sizeEntries)
         sizes[0] = size;
-    // Measured against the host over 227 answers: zero samples is kCMSampleBufferError_InvalidEntryCount,
+    // Measured against the host over 239 answers: zero samples is kCMSampleBufferError_InvalidEntryCount,
     // a presentation timestamp that is not numeric is kCMSampleBufferError_SampleTimingInfoInvalid, and with
     // no packet descriptions the size of a packet has to come from the stream - a format with no
     // mBytesPerFrame and no bit depth, AAC for one, is kCMSampleBufferError_RequiredParameterMissing.

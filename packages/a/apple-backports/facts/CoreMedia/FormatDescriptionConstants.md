@@ -142,3 +142,12 @@ by 16.0" and never a measured 13.0-15.x.
 
 `CMFormatDescription80.m` (7), `90.m` (9), `100.m` (1), `1001.m` (1), `110.m` (4), `120.m` (1),
 `130.m` (6), `140.m` (1), `150.m` (3), `160.m` (1), `170.m` (9), `172.m` (2), `180.m` (7), `260.m` (23).
+
+## Reuse
+
+Searched: none of them, and the search is named so it can be repeated. The 2026-09-28 rule's upstream
+table has no CoreMedia row; Apple's CoreMedia is not open-sourced, so there is no reference
+implementation to take; WinObjC, Chameleon, OpenCombine and swift-corelibs-foundation do not carry
+CMTag, CMTagCollection or CMTaggedBufferGroup. Every value in this family is the host's own bytes read
+out of its CoreMedia, not anyone's implementation. FFmpeg's libavformat/libavcodec and GStreamer are
+LGPL and were not read.

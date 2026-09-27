@@ -33,13 +33,14 @@ xcrun clang -dynamiclib -fobjc-arc $quiet -I"$AV" -framework Foundation -framewo
 xcrun clang -fobjc-arc $quiet "$here/tagcollectionimage.m" -framework CoreMedia -framework CoreVideo -framework Foundation \
     -o "$BUILD/tagcollectionimage"
 "$BUILD/tagcollectionimage" "$BUILD/libCharonCMTag.dylib"
-# The HEVC reader is held against a real hvcC: the record of an x265 stream the work area keeps, every
-# truncation of it, and single-byte flips of it. Under AddressSanitizer, because a reader that walks off
-# the end of a record is exactly the bug this test is for.
-hvc="$here/../../../.agent-work/plan-and-analysis/coremedia-avf/hvcC-x265.bin"
-[ -f "$hvc" ] || hvc="$here/../../../../.agent-work/plan-and-analysis/coremedia-avf/hvcC-x265.bin"
-if [ -f "$hvc" ]; then
-    xcrun clang -fobjc-arc -w -fsanitize=address -g $quiet "$here/hevcreader.m" "$BUILD/CMFormatDescription11.o" \
-        -framework CoreMedia -framework CoreVideo -framework Foundation -o "$BUILD/hevcreader"
-    "$BUILD/hevcreader" "$hvc"
+# The HEVC reader is held against a real hvcC - the record of an ffmpeg/libx265 stream, committed here
+# beside the test that reads it - every truncation of it, and single-byte flips of it. Under
+# AddressSanitizer, because a reader that walks off the end of a record is exactly the bug this is for.
+hvc="$here/hvcC-x265.bin"
+if [ ! -f "$hvc" ]; then
+    echo "note: the HEVC oracle $hvc is missing, so CMVideoFormatDescriptionGetHEVCParameterSetAtIndex is unchecked"
+    exit 1
 fi
+xcrun clang -fobjc-arc -w -fsanitize=address -g $quiet "$here/hevcreader.m" "$BUILD/CMFormatDescription11.o" \
+    -framework CoreMedia -framework CoreVideo -framework Foundation -o "$BUILD/hevcreader"
+"$BUILD/hevcreader" "$hvc"

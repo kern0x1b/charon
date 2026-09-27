@@ -41,9 +41,9 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the block-taking form of CMSampleBufferCreate arrived at 12.2; iOS 6's CMSampleBuffer is a system object with nowhere to keep a block",
-      "effect": "hands the release's own CMSampleBufferCreate the block as a makeDataReadyCallback and a CFType holder as its refcon, so the release makes the call and the block is released with the buffer's attachments however the buffer ends; the handler runs during this call, before it returns, because this release's CMSampleBufferCreate calls its makeDataReadyCallback while creating a buffer that is not created data-ready (measured: the host runs it at CMSampleBufferMakeDataReady instead, and a second MakeDataReady here answers kCMSampleBufferError_BufferNotReady because the release has already run it); the trampoline returns the block's own status unchanged",
+      "effect": "builds the buffer with the release's own CMSampleBufferCreate at the readiness asked for and, when it was not ready, runs the handler over the finished buffer, answering the handler's own status; the handler runs during this call, before it returns, and the port does not register it with the release, so a second CMSampleBufferMakeDataReady is the release's own and does not run it again",
       "facts": "facts/CoreMedia/SampleBufferCreateReady.md",
-      "source": "the host's own CoreMedia, which the port is held against case by case by tests/backports/host/coremedia7; iOS 6.0's own 37 CMSampleBuffer exports, read from the symbol table of the iOS 6 armv7 shared cache"
+      "source": "the host's own CoreMedia, held case by case over 239 answers by tests/backports/host/coremedia7/createready.m: 179 inside the claim with none different, 60 outside it with 58 the same"
     },
     {
       "api": "CMSampleBufferCreateForImageBufferWithMakeDataReadyHandler()",
@@ -52,9 +52,9 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the block-taking form of CMSampleBufferCreateForImageBuffer arrived at 12.2; iOS 6's CMSampleBuffer is a system object with nowhere to keep a block",
-      "effect": "hands the release's own CMSampleBufferCreate the block as a makeDataReadyCallback and a CFType holder as its refcon, so the release makes the call and the block is released with the buffer's attachments however the buffer ends; the handler runs during this call, before it returns, because this release's CMSampleBufferCreate calls its makeDataReadyCallback while creating a buffer that is not created data-ready (measured: the host runs it at CMSampleBufferMakeDataReady instead, and a second MakeDataReady here answers kCMSampleBufferError_BufferNotReady because the release has already run it); the trampoline returns the block's own status unchanged",
+      "effect": "builds the buffer with the release's own CMSampleBufferCreate at the readiness asked for and, when it was not ready, runs the handler over the finished buffer, answering the handler's own status; the handler runs during this call, before it returns, and the port does not register it with the release, so a second CMSampleBufferMakeDataReady is the release's own and does not run it again",
       "facts": "facts/CoreMedia/SampleBufferCreateReady.md",
-      "source": "the host's own CoreMedia, which the port is held against case by case by tests/backports/host/coremedia7; iOS 6.0's own 37 CMSampleBuffer exports, read from the symbol table of the iOS 6 armv7 shared cache"
+      "source": "the host's own CoreMedia, held case by case over 239 answers by tests/backports/host/coremedia7/createready.m: 179 inside the claim with none different, 60 outside it with 58 the same"
     },
     {
       "api": "kCMSampleBufferAttachmentKey_ForceKeyFrame",

@@ -253,6 +253,17 @@
       "effect": "kCMTagCollectionError_TagNotFound when it does not hold it",
       "facts": "facts/CoreMedia/TagCollection.md",
       "source": "the host's own CoreMedia, held over 208 answers by tests/backports/host/coremedia7/tagcollectionimage.m, which builds the port's file as its own image and reaches each name through dlopen(RTLD_LOCAL | RTLD_FIRST)"
+    },
+    {
+      "api": "kCMTagInvalid",
+      "kind": "constant",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "CMTag arrived at iOS 17 and the SDK the toolchain resolves is 16.4, where none of CMTag, CMTagCollection or CMTaggedBufferGroup exists; CharonCMTag26.h transcribes 26.2's own declaration",
+      "effect": "the CMTag of no category, no data type and no value - the zero quadruple - which CMTagIsValid rejects and the host's CMTagCollectionAddTag accepts and carries nothing",
+      "facts": "facts/CoreMedia/TagCollection.md",
+      "source": "read out of the host's own CoreMedia, and held to it by tests/backports/host/coremedia7/tagcollectionimage.m, whose AddTag invalid case compares the host's answer with the port's"
     }
   ]
 }
