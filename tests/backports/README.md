@@ -45,7 +45,10 @@ freshly made UUIDs in its header on every run.
                                 registry/CoreMedia/ios7.json and ios8.json holds, and the corners outside it are measured
                                 against the exact value and written down in facts/CoreMedia/; and constants.m holds 74 of
                                 CMFormatDescription.h's 75 CFString keys to the host's own bytes
-                                (facts/CoreMedia/FormatDescriptionConstants.md)
+                                (facts/CoreMedia/FormatDescriptionConstants.md); and tagcollectionimage.m holds
+                                CMTagCollection's 23 functions to the host's own, the port's file built as its own
+                                image and reached through dlopen, 208 answers, none different
+                                (facts/CoreMedia/TagCollection.md)
     sh host/gamecontroller/run.sh   the port of the GameController model against the host's GameController, 8576 lines
     sh host/alert/run.sh
     sh host/layout/run.sh

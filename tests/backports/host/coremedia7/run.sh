@@ -25,6 +25,14 @@ for test in timeratio pcmdata createready constants; do
     xcrun clang -fobjc-arc $quiet "$here/$test.m" "$BUILD"/*.o -framework CoreMedia -framework CoreVideo -framework AudioToolbox -framework Foundation -o "$BUILD/$test"
     "$BUILD/$test"
 done
+# The CMTagCollection family: the port's file as its own image, so its names are reached through
+# dlopen(RTLD_LOCAL | RTLD_FIRST) while the probe's own calls reach the host's CoreMedia. No renaming,
+# no -D, and no system header is touched.
+xcrun clang -dynamiclib -fobjc-arc $quiet -I"$AV" -framework Foundation -framework CoreMedia -framework CoreVideo \
+    -o "$BUILD/libCharonCMTag.dylib" "$AV/CMTagCollection17.m"
+xcrun clang -fobjc-arc $quiet "$here/tagcollectionimage.m" -framework CoreMedia -framework CoreVideo -framework Foundation \
+    -o "$BUILD/tagcollectionimage"
+"$BUILD/tagcollectionimage" "$BUILD/libCharonCMTag.dylib"
 # The HEVC reader is held against a real hvcC: the record of an x265 stream the work area keeps, every
 # truncation of it, and single-byte flips of it. Under AddressSanitizer, because a reader that walks off
 # the end of a record is exactly the bug this test is for.
