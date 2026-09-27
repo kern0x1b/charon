@@ -18,38 +18,45 @@
 static char CharonNumberFormatterContextKey;
 static char CharonNumberFormatterGroupingKey;
 
-static NSString *charon_grouped(NSString *text, NSUInteger minimum)
+/* The minimum grouping digits are ICU's rule, and it is all or nothing: the integer part is grouped
+   at all when it has at least `grouping size + minimum` digits, and then every separator the release
+   wrote stays. Which is what the host answers, measured over five numbers, five thresholds and three
+   locales by tests/backports/host/foundationbatch: 1,234 is four digits and is not grouped at a
+   minimum of two (4 < 3 + 2), while 1,234,567 is seven digits and keeps both of its separators at
+   every threshold (7 >= 3 + 4 at four). The grouping size is the release's own, three, which is what
+   the separators it wrote show. */
+/* The digits of the integer part, which is everything before the locale's own decimal separator --
+   and not before a grouping separator, which is part of the integer part too. */
+static NSUInteger charon_integer_digits(NSString *text, NSString *decimal)
 {
-    /* The release's formatter has already grouped by its own rule. What the minimum asks for on top of
-       that is which of the separators it wrote belong to a group long enough: a separator whose group
-       is shorter than the minimum is taken off, and none is ever added, because a number the release
-       wrote without a separator has no group to decide about. A separator is a character with digits
-       on both sides of it -- so a sign, which has none before it, and a point, which the locale put
-       there, are copied as they are. */
     NSCharacterSet *digits = [NSCharacterSet decimalDigitCharacterSet];
-    NSMutableString *out = [NSMutableString stringWithCapacity:text.length];
-    NSUInteger run = 0;
-    for (NSUInteger index = 0; index < text.length; index++) {
-        unichar character = [text characterAtIndex:index];
-        if ([digits characterIsMember:character]) {
-            run++;
-            [out appendFormat:@"%C", character];
-            continue;
-        }
-        /* A grouping separator always has whole groups of three after it; the locale's own decimal
-           separator has one digit after it, and a sign has no digits before it, so neither of those
-           is mistaken for one. */
-        NSUInteger after = 0;
-        while (index + 1 + after < text.length && [digits characterIsMember:[text characterAtIndex:index + 1 + after]])
-            after++;
-        if (run > 0 && after > 0 && (after % 3) == 0 && run < minimum) {
-            run = 0;
-            continue; /* a separator whose group is too short to keep one */
-        }
-        run = 0;
-        [out appendFormat:@"%C", character];
-    }
-    return out;
+    NSString *integer = text;
+    NSRange point = decimal.length ? [text rangeOfString:decimal] : NSMakeRange(NSNotFound, 0);
+    if (point.location != NSNotFound)
+        integer = [text substringToIndex:point.location];
+    NSUInteger seen = 0;
+    for (NSUInteger index = 0; index < integer.length; index++)
+        if ([digits characterIsMember:[integer characterAtIndex:index]])
+            seen++;
+    return seen;
+}
+
+static NSString *charon_grouped(NSString *text, NSLocale *locale, NSUInteger minimum)
+{
+    NSString *decimal = locale.decimalSeparator;
+    if (charon_integer_digits(text, decimal) >= 3 + minimum)
+        return text; /* enough digits for every group, so every separator the release wrote stays */
+    /* Not enough digits to group at all, so the release's grouping separators come off. Which
+       character those are is the locale's own answer rather than a guess: en_US groups with a comma
+       and de_DE with a full stop, and a full stop is also the decimal separator in de_DE, so the two
+       cannot be told apart by looking at the number. */
+    NSString *grouping = locale.groupingSeparator;
+    if (!grouping.length)
+        return text;
+    NSArray *parts = [text componentsSeparatedByString:grouping];
+    if (parts.count < 2)
+        return text;
+    return [parts componentsJoinedByString:@""];
 }
 
 /* The release's own formatting, reached the way the runtime reaches a superclass's implementation: a
@@ -60,7 +67,20 @@ static NSString *charon_release_string(NSNumberFormatter *formatter, NSNumber *n
     return ((NSString * (*)(struct objc_super *, SEL, id))objc_msgSendSuper)(&super, @selector(stringFromNumber:), number);
 }
 
+
+
+@interface NSNumberFormatter (CharonGrouping)
+/* The locale whose separators the grouping reads, read by name so that the selector rewriter can
+   rename it: a category cannot reach a method through dot syntax when the method is renamed. */
+- (NSLocale *)charon_groupingLocale;
+@end
+
 @implementation NSNumberFormatter (CharonContext)
+
+- (NSLocale *)charon_groupingLocale
+{
+    return self.locale ?: [NSLocale currentLocale];
+}
 
 - (NSFormattingContext)formattingContext
 {
@@ -95,7 +115,7 @@ static NSString *charon_release_string(NSNumberFormatter *formatter, NSNumber *n
     NSString *text = charon_release_string(self, number);
     if (!text)
         return text;
-    return charon_grouped(text, [self charon_numberFormatterMinimumGroupingDigits]);
+    return charon_grouped(text, [self charon_groupingLocale], [self charon_numberFormatterMinimumGroupingDigits]);
 }
 
 @end

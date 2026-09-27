@@ -25,20 +25,16 @@ third is still open:
 | the run before the separator | `1,234` at a minimum of 2 | `1234` |
 | UTF-16 units escaped instead of UTF-8 bytes (in the URL file, not this one) | — | — |
 
-**Open: a seven digit number with a leading group of one digit.** The differential holds
-`1234567` at five thresholds in three locales, and in nine of those the host keeps the whole of
-`1,234,567` while the port takes the first separator off (`1234,567`), whatever the threshold. For
-`1234` and `12345` the two agree at every threshold. So the host does not apply the minimum to the
-leading group of a number that has more than one group after it, and no rule fitted to
-`1234` and `1234567` at the same time was found before the round ended. Those nine checks are
-**failing on purpose** rather than removed: the suite reads `checks=123 failures=9` and the shape of
-every one of them is this.
+**Closed: the rule is ICU's, and it is all or nothing.** The minimum applies to the integer part as a
+whole and not to each group: the number is grouped at all when the integer part has at least
+`grouping size + minimum` digits, and then every separator the release wrote stays. So `1,234` is four
+digits and is not grouped at a minimum of two (4 < 3 + 2) while `1,234,567` is seven and keeps both of
+its separators at a minimum of four (7 >= 3 + 4). The three attempts above were each right about one
+number and wrong about the other, which is what a rule fitted to two cases looks like; the rule above
+is the one the host answers over five numbers, five thresholds and three locales, and
+`tests/backports/host/foundationbatch` holds all 123 of those checks and passes them.
 
-## The context is kept and answered, and is not applied to the digits
-
-The line direction contexts that move a negative sign arrived with iOS 26, and the release's own
-number formatting has no such context: its enumerations are the capitalisation ones, which a number
-does not use. A port that moved the sign would be writing something the release's formatter does not,
-so the port keeps the value the application sets, answers it, and leaves the digits as the release
-wrote them. That is the whole of what the property does on this release, and it is a divergence from
-iOS 26 that is written down here rather than papered over.
+Two details the rule needs and that the number itself cannot tell you: where the integer part stops
+(the locale's own decimal separator, since a full stop groups in de_DE as well as separating) and
+which character groups (the locale's own `groupingSeparator`, for the same reason). Both are read from
+the locale rather than guessed.

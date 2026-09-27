@@ -250,6 +250,24 @@ static void term_and_activity(void)
     CHECK_EQUAL(activity.persistentIdentifier, @"an-identifier", "and so is the identifier");
 }
 
+static void orthographies(void)
+{
+    for (NSString *language in @[@"de", @"en", @"ja", @"zh", @"ar", @"ru"]) {
+        NSOrthography *orthography = ((id (*)(id, SEL, id))objc_msgSend)([NSOrthography class],
+                                NSSelectorFromString(@"defaultOrthographyForLanguage:"), language);
+        CHECK(orthography != nil, ([[NSString stringWithFormat:@"the default orthography of %@", language] UTF8String]));
+        if (!orthography)
+            continue;
+        NSArray *scripts = ((id (*)(id, SEL))objc_msgSend)(orthography, NSSelectorFromString(@"allScripts"));
+        CHECK(scripts.count > 0, ([[NSString stringWithFormat:@"%@ has a script, the release's ICU naming it",
+                                    language] UTF8String]));
+        CHECK_EQUAL(((NSString * (*)(id, SEL))objc_msgSend)(orthography, NSSelectorFromString(@"dominantLanguage")),
+                    language, ([[NSString stringWithFormat:@"%@ is its own dominant language", language] UTF8String]));
+    }
+    CHECK(((id (*)(id, SEL, id))objc_msgSend)([NSOrthography class],
+          NSSelectorFromString(@"defaultOrthographyForLanguage:"), @"") == nil, "an empty language has none");
+}
+
 static void absences(void)
 {
     CHECK(NSClassFromString(@"NSKeyValueSharedObservers") == Nil, "no shared observers class is invented");
@@ -283,6 +301,7 @@ int main(int argc, char **argv)
         cache_and_credentials();
         parser_operation_platform();
         term_and_activity();
+        orthographies();
         absences();
         printf("checks=%d failures=%d\n", charon_checks, charon_failures);
         return charon_failures;

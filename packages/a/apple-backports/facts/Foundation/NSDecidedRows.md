@@ -49,16 +49,11 @@ coder and keeps the connection in an ivar no public API returns.
 there is no `-continueUserActivity:` to be called from, and no
 `-becomeCurrentWithInputStream:outputStream:` to hand out a stream, so they have no caller.
 
-## The default orthography of a language (1 row)
+## Fourteen rows, and one that is not
 
-`+[NSOrthography defaultOrthographyForLanguage:]` answers the orthography of a language, which is that
-language's scripts and its variants. iOS 6.1.3's Foundation has no `NSOrthography` to build one
-from: the release's own selector table (`$HOME/.charon/dyld/6.1.3/selectors_armv7.txt`) carries
-neither `defaultOrthographyForLanguage:` nor `orthographyWithLanguage:`, and the only language data on
-that release is behind `NSLinguisticTagger`, which is a tagger's tables rather than a mapping of a
-language to its scripts.
-
-So the row is decided rather than carried on a guess at a factory that may not be there. Carrying it
-means writing the mapping itself -- a language's scripts and variants, per locale -- which is the same
-data the person name formatter's templates need, and belongs in that round rather than in a
-one-row patch.
+`+[NSOrthography defaultOrthographyForLanguage:]` was in this file as a decision: 6.1.3's selector table
+carries neither it nor `orthographyWithLanguage:`, so there seemed to be no way to name a language's
+script. That was a wall that was not there -- the release's own `libicucore` exports
+`uloc_addLikelySubtags`, which is the same CLDR likely-subtags data, and the row is carried in
+`NSOrthographyDefault.md`. A selector table says which selectors a release has; it does not say what
+the release can compute, and here it could.
