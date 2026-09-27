@@ -20,30 +20,34 @@ static char CharonNumberFormatterGroupingKey;
 
 static NSString *charon_grouped(NSString *text, NSUInteger minimum)
 {
-    /* Read from the back, so a group of digits is known before the separator that follows it is
-       written or taken off. The release's own separator is the first character that is not a digit. */
+    /* The release's formatter has already grouped by its own rule. What the minimum asks for on top of
+       that is which of the separators it wrote belong to a group long enough: a separator whose group
+       is shorter than the minimum is taken off, and none is ever added, because a number the release
+       wrote without a separator has no group to decide about. A separator is a character with digits
+       on both sides of it -- so a sign, which has none before it, and a point, which the locale put
+       there, are copied as they are. */
     NSCharacterSet *digits = [NSCharacterSet decimalDigitCharacterSet];
-    NSString *separator = nil;
-    for (NSUInteger index = 0; index < text.length && !separator; index++) {
-        unichar character = [text characterAtIndex:index];
-        if (![digits characterIsMember:character])
-            separator = [text substringWithRange:NSMakeRange(index, 1)];
-    }
-    if (!separator)
-        return text;
     NSMutableString *out = [NSMutableString stringWithCapacity:text.length];
     NSUInteger run = 0;
-    for (NSUInteger index = text.length; index-- > 0;) {
+    for (NSUInteger index = 0; index < text.length; index++) {
         unichar character = [text characterAtIndex:index];
         if ([digits characterIsMember:character]) {
             run++;
-            [out insertString:[NSString stringWithFormat:@"%C", character] atIndex:0];
+            [out appendFormat:@"%C", character];
             continue;
         }
-        if (run >= minimum && run)
-            [out insertString:separator atIndex:0];
+        /* A grouping separator always has whole groups of three after it; the locale's own decimal
+           separator has one digit after it, and a sign has no digits before it, so neither of those
+           is mistaken for one. */
+        NSUInteger after = 0;
+        while (index + 1 + after < text.length && [digits characterIsMember:[text characterAtIndex:index + 1 + after]])
+            after++;
+        if (run > 0 && after > 0 && (after % 3) == 0 && run < minimum) {
+            run = 0;
+            continue; /* a separator whose group is too short to keep one */
+        }
         run = 0;
-        [out insertString:[NSString stringWithFormat:@"%C", character] atIndex:0];
+        [out appendFormat:@"%C", character];
     }
     return out;
 }

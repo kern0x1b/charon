@@ -11,10 +11,28 @@ so a group of digits is known before the separator that follows it is written or
 a separator only for a group of at least the number asked for. With the host's own default of 1,
 `1.234` keeps its separator; asking for 2 takes it off a three digit group.
 
-The first version of the walk wrote a separator in front of every run, which for a minimum of 0 turned
-`1,234` into `1,,234` and `-1,234.5` into `--1,-234.-5`; the differential over three locales, five
-thresholds and five numbers found it, and the condition is now "at least the minimum **and** a group
-of digits". A sign is a group like any other and is held to the same rule.
+The walk only ever **removes** a separator the release wrote; it never adds one, because a number the
+release wrote without a separator has no group to decide about. A separator is recognised by the
+whole groups of three after it, so the locale's own decimal separator (one digit after it) and a sign
+(no digits before it) are copied as they are.
+
+`tests/backports/host/foundationbatch` found three wrong rules here, one after another, and the
+third is still open:
+
+| what the walk did | what it wrote | the host writes |
+| --- | --- | --- |
+| a separator in front of every run | `1,,234` and `--1,-234.-5` at a minimum of 0 | `1,234` and `-1,234.5` |
+| the run before the separator | `1,234` at a minimum of 2 | `1234` |
+| UTF-16 units escaped instead of UTF-8 bytes (in the URL file, not this one) | — | — |
+
+**Open: a seven digit number with a leading group of one digit.** The differential holds
+`1234567` at five thresholds in three locales, and in nine of those the host keeps the whole of
+`1,234,567` while the port takes the first separator off (`1234,567`), whatever the threshold. For
+`1234` and `12345` the two agree at every threshold. So the host does not apply the minimum to the
+leading group of a number that has more than one group after it, and no rule fitted to
+`1234` and `1234567` at the same time was found before the round ended. Those nine checks are
+**failing on purpose** rather than removed: the suite reads `checks=123 failures=9` and the shape of
+every one of them is this.
 
 ## The context is kept and answered, and is not applied to the digits
 

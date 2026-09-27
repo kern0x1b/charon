@@ -7,9 +7,18 @@ Source: the SDK 26.2 headers; the host's own `NSURL` and `NSURLComponents` (meas
 With `encodingInvalidCharacters:NO` a character a URL cannot carry makes the whole read answer nil
 (measured: `+[NSURL URLWithString:@"https://example.com/a b" encodingInvalidCharacters:NO]` is nil, and
 so is the components spelling of the same string). With YES the character is written as a percent
-escape, and the port uses the release's own URL grammar to decide which characters those are --
-unreserved characters and the delimiters a URL is made of stay as they are, everything else becomes
-`%XX` in upper case, which is what the host writes for a space (`https://example.com/a%20b`).
+escape, which is what the host writes for a space (`https://example.com/a%20b`).
+
+Three rules the differential corrected here, each of them measured against the host over seven strings:
+
+- **The check is made before the release is asked.** The release's own `+URLWithString:` takes a
+  string with a space in it and percent-escapes what it can, so passing the string through answered a
+  URL where the modern API with the flag off answers nil. The port now answers nil for a string
+  carrying anything outside RFC 3986's unreserved and reserved sets.
+- **The readable set is RFC 3986's, not a Foundation URL set.** `URLUserAllowedCharacterSet` leaves
+  `/`, `?`, `#` and `:` out, so `https://example.com/` was being refused with the flag off.
+- **A percent escape is two hex digits of a byte, so the escape is written from the string's UTF-8
+  bytes.** Escaping the UTF-16 unit wrote `%FC` for `ü` where the host writes `%C3%BC`.
 
 `NSURLComponents.encodedHost` is the host as a URL writes it, which is not what the `host` property
 reads: a host that arrived with a percent escape reads back decoded and keeps the escape
