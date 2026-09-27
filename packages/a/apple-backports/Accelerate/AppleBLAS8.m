@@ -1,7 +1,8 @@
 // appleblas_sgeadd and appleblas_dgeadd, Apple's extension to the CBLAS interface of iOS 8:
 // C = alpha * op(A) + beta * op(B) for matrices m x n, with either operand optionally transposed.
 //
-// The computation is the release's own cblas_sgeadd / cblas_dgeadd where the release has them. The
+// The computation is the release's own appleblas_sgeadd / appleblas_dgeadd where the release has
+// them (10.3.4 and above, measured from their own caches; no release names a cblas_*geadd at all). The
 // extended-precision geadd is the one operation CBLAS 3.x does not have and the release's vecLib
 // carries no entry point for it, so it is written here over the same element access CBLAS itself
 // uses, in the caller's own layout. Every band this port supports exports the CBLAS beside it

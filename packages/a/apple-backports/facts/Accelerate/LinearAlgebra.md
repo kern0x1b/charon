@@ -7,7 +7,8 @@ release's own armv7 caches, iOS 4.3, 5.1.1, 6.0, 6.1.3, 7.0, 7.1.2 and 8.0 all e
 `sgetrs_`, `dgetrf_` and `dgetrs_`, and 6.1.3's vecLib carries 148 `cblas_*` names and 290 trailing-underscore LAPACK ones beside
 its 415 vDSP and 235 vImage. So no BLAS is built here: every product below is a call into `cblas_sgemm` / `cblas_dgemm` and every
 solve into the release's `sgetrf_` / `sgetrs_` / `dgetrf_` / `dgetrs_`, in the objects' own scalar type, which is where the release's
-own LinearAlgebra gets its arithmetic from too.
+own LinearAlgebra gets its arithmetic from too. There is no `cblas_sgesv` to reach for instead: the release's CBLAS has 148 names
+and none of them is a general solve (measured at 7.1.2 and 8.0), which is why the two LAPACK pairs are the way in.
 
 Source: the host's own Accelerate, held against the port for every case below by `tests/backports/host/linearalgebra`, which runs
 the port's `LinearAlgebra8.m` and the host's Accelerate over the same inputs and compares the statuses, the shapes and the elements;
@@ -44,11 +45,12 @@ where two splats of one type answer `LA_INVALID_PARAMETER_ERROR`, so the type is
 
 Storage: `la_matrix_from_float_buffer(buffer, rows, cols, row_stride, hint, attributes)` reads row-major, element (i, j) at
 `buffer[i * row_stride + j]`, and `la_matrix_to_float_buffer(buffer, row_stride, matrix)` writes it back the same way; a double object
-in a float buffer and the other way round answer `LA_PRECISION_MISMATCH_ERROR` and write nothing, and so does an object that carries
-an error, which has no scalar type of its own to match. The column-major recipe the header gives - pass the counts the other way
-round, then transpose - is what the host does, measured on a 3x2 and a 2x3. `la_matrix_from_float_buffer_nocopy` and its double
-sibling take the block over and give it to the caller's deallocator when the object goes; a `row_stride` wider than the row count
-means the block is padded and cannot be the object's storage, so the object keeps its own copy and hands the block straight back.
+in a float buffer and the other way round answer `LA_PRECISION_MISMATCH_ERROR` and write nothing.
+
+The column-major recipe the header gives - pass the counts the other way round, then transpose - is what the host does, measured on
+a 3x2 and a 2x3. `la_matrix_from_float_buffer_nocopy` and its double sibling take the block over and give it to the caller's
+deallocator when the object goes; a `row_stride` wider than the row count means the block is padded and cannot be the object's
+storage, so the object keeps its own copy and hands the block straight back.
 
 `la_vector_length` is `cols` for a 1 x n vector and `rows` for everything else, a matrix with both dimensions above one included: a
 2x3 answers 2, a 3x2 answers 3, a 4x4 answers 4, a splat and an error object answer 0. `la_vector_slice` and
@@ -71,10 +73,19 @@ and takes a vector, a 6x1 becoming a 1x6.
 
 `la_solve` wants a square A and a right-hand side of n rows whose width is the number of solutions: a vector of length n and a matrix
 of n x k both answer n x 1 and n x k, and anything else answers `LA_DIMENSION_MISMATCH_ERROR` (a 3x2 A with a 3x1 right-hand side
-answers -1002, measured). It is an LU factorisation with partial pivoting in the object's own scalar type, through the release's
-`sgetrf_`/`sgetrs_` and `dgetrf_`/`dgetrs_`. A float object is answered in float: the host answers 0.0909090787 and 0.636363685 for
-[[4,1],[1,3]] against [1,2], and the release's own LAPACK answers 0.0909090936 and 0.636363626 - the same two numbers to the six
-significant digits the float type has.
+answers -1002, measured). It is `sgetrf_` and `sgetrs_` for a float object and `dgetrf_` and `dgetrs_` for a double one, on a
+column-major copy of the system in the layout `clapack.h` declares - LAPACK is column-major and the objects are row-major, which is
+the one transposition a C caller of it makes - and the answer is read back out of the right-hand side block, all n columns at once
+so a matrix right-hand side is one `sgetrs_` and not k of them. A float object is answered in float, because the call is in float: the
+port answers 0.09090909362 and 0.6363636255 for [[4,1],[1,3]] against [1,2] where the host's own `la_solve` answers 0.09090907872 and
+0.636363685 - the same two numbers to the six significant digits the float type has, and the last place apart is the difference
+between the release's LAPACK and the host's own solver.
+
+What the release's LAPACK stores is the reference layout, and that is worth saying because it was in doubt: `sgetrf_` of [[4,1],[1,3]]
+gives the block `4 0.25 1 2.75`, which is the reference column-major packed LU - L(2,1) = 0.25, then U(1,1) = 4, U(1,2) = 1, U(2,2)
+= 2.75 - and `sgetrs_` of that with 'N' then answers 1/11 and 7/11 to eight places. `sgetrf_` is also what recognises the singular
+case: it answers a positive info for a pivot of exactly zero (2, for [[1,1],[1,1]]), and `sgetrs_` of such a system is not a number
+(-inf and inf for that one), which is why the solve is not run at all when the factorisation says the system is singular.
 
 `la_identity_matrix` answers `LA_INVALID_PARAMETER_ERROR` for a scalar type that is neither `LA_SCALAR_TYPE_FLOAT` nor
 `LA_SCALAR_TYPE_DOUBLE`, and a size of 0 answers a 0x0 object with `LA_SUCCESS`. `la_vector_from_matrix_row` and
@@ -109,14 +120,16 @@ Two more where the host answers something the header does not describe, reproduc
 
 `tests/backports/host/linearalgebra` compares a status, a shape and every element exactly, with one
 exception: a product and a solve are compared to 1e-5 of the value, relative. That is not a widened
-expectation - it is the precision of the type. The two sides sum the same terms in a different order,
-and the host's own answers for the two systems the cases use differ from the port's in the last place a
-float has: 0.0909090787 against 0.0909090936, and 0.636363685 against 0.636363626 (both measured, both
-roundings of 1/11 and 7/11). A tolerance of zero would be asserting that two independent summations of
-the same terms produce the same bits, which is not true of any BLAS on any processor and is not what
-this port is claiming. Everything else - every status, every shape, every element of a sum, a
-difference, a product, a slice, a transpose, a norm and a solve whose terms are exact - is compared
-with no tolerance at all.
+expectation - it is the precision of the type. The two sides sum the same terms in a different order
+and factorise with a different solver, and their answers for the systems the cases use differ in the
+last place a float has: for [[4,1],[1,3]] against [1,2] the port answers 0.09090909362 and 0.6363636255
+where the host's own `la_solve` answers 0.09090907872 and 0.636363685 (both measured, both roundings of
+1/11 and 7/11), and for a 3x3 the port answers -0.05882352591 where the host says -0.05882355571. In
+double the two agree exactly, which is the same statement one precision up. A tolerance of zero would be
+asserting that two independent summations of the same terms produce the same bits, which is not true of
+any BLAS on any processor and is not what this port is claiming. Everything else - every status, every
+shape, every element of a sum, a difference, a slice, a transpose and a norm - is compared with no
+tolerance at all, and a solve whose terms are exact is compared with no tolerance either.
 
 ## What has not been run
 
@@ -132,8 +145,11 @@ floor the port's own contract asks for and not the bar.
 
 ## What is reasoned rather than measured
 
-`la_normalized_vector` of an object whose scalar type does not match the norm's own is reasoned to answer
-`LA_PRECISION_MISMATCH_ERROR`, the answer every other operation gives for that mismatch; the host was not asked, because the norm
-functions take no scalar type of their own and so the case cannot be posed through them. `la_vector_to_float_buffer` of a splat is
-reasoned to answer `LA_INVALID_PARAMETER_ERROR`, the answer the header gives for anything that is not a vector or a matrix, on the
-same grounds.
+`la_normalized_vector` is asked of both scalar types and both answer: a float object of [3,4] normalises to 3/7 and 4/7 and a double
+object of the same two numbers to the same, with `LA_SUCCESS` in every case and for each of the three norms (measured). The one case
+this page does not carry is the one the norm functions cannot be asked for at all - they take no scalar type of their own, so there is
+no way to pose a mismatch through them - and the port answers it by using the object's own scalar type, which is what those
+measurements show the host doing.
+
+Everything else on this page is a measurement, including the sixteen store refusals above, which an earlier version of this file
+carried as reasoning instead.

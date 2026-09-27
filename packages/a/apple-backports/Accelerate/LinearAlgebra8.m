@@ -5,8 +5,9 @@
 // Accelerate image adds 415 vDSP and 235 vImage entry points beside vecLib's 148 cblas_* and 290
 // trailing-underscore LAPACK ones. So nothing here replaces a library: every product and every solve
 // below is the release's own cblas_* and LAPACK, which is also what the release's own LinearAlgebra
-// is built on. Building a second BLAS beside the one the device ships would be the slower answer to
-// the same question.
+// is built on, and it is the release's LAPACK that factorises and solves. Building a second BLAS, or a
+// second factorisation, beside the ones the device already ships would be the slower answer to the
+// same question.
 //
 // Behaviour is the host's own Accelerate, measured case by case by tests/backports/host/linearalgebra
 // and recorded in facts/Accelerate/LinearAlgebra.md, including the three places the host answers
@@ -18,6 +19,10 @@
 
 #pragma clang diagnostic ignored "-Wunguarded-availability-new"
 #pragma clang diagnostic ignored "-Wunguarded-availability"
+// clapack.h - where the release declares sgetrf_, sgetrs_ and their double siblings, the two pairs
+// la_solve calls - is deprecated in the SDK the port builds against, which is the release's own
+// header saying so about its own entry points.
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
 // An object that carries nothing but a status: what every refused call answers, and what a caller
 // reads the reason out of with la_status.
@@ -1064,35 +1069,92 @@ la_object_t la_normalized_vector(la_object_t vector, la_norm_t vector_norm)
     return result;
 }
 
-// The factorisation works on a block of its own, in the object's scalar type and narrowed at every
-// step, which is what a float object is answered in. A CharonLAValue over that block is all it takes to
-// read and write it with the same two accessors every other operation here uses.
-typedef struct CharonLAWorkspace {
-    CharonLAValue block;   // rows by cols elements, row-major
-    CharonLAValue column;  // one element, read and written as a vector of length 1
-} CharonLAWorkspace;
-
-static void CharonLAWorkspaceOpen(CharonLAWorkspace *work, void *block, void *column, la_count_t n,
-                                  la_scalar_type_t scalar_type)
+// The two solves, one body per scalar type, each of them the release's own pair of entry points and
+// nothing else. The objects hold row-major blocks and LAPACK reads column-major ones, so the system is
+// written into a column-major block in the layout clapack.h declares, factorised there, solved there and
+// read back out of it; that is the same transposition every C caller of a column-major LAPACK makes.
+//
+// The return value is the release's own answer to "is the system singular": sgetrf_ answers a positive
+// info for a pivot of exactly zero, and the solve of such a system is not a number - measured on the
+// host, [[1,1],[1,1]] against [1,2] gives -inf and inf - so the solve is not run and the caller keeps
+// the zeros the result was made with.
+static int CharonLALapackFloat(const CharonLAValue *system, const CharonLAValue *rhs, int vector_rhs,
+                               CharonLAValue *to, la_count_t n, la_count_t columns, float *factor, float *right,
+                               __CLPK_integer *pivots)
 {
-    memset(work, 0, sizeof(*work));
-    work->block.kind = CharonLAArray;
-    work->block.scalar_type = scalar_type;
-    work->block.rows = n;
-    work->block.cols = n;
-    work->block.elements = block;
-    work->column.kind = CharonLAArray;
-    work->column.scalar_type = scalar_type;
-    work->column.rows = n;
-    work->column.cols = 1;
-    work->column.elements = column;
+    __CLPK_integer order = (__CLPK_integer)n, leading = (__CLPK_integer)n, count = (__CLPK_integer)columns,
+                   info = 0;
+    char trans = 'N';
+    la_count_t row, col;
+    for (col = 0; col < n; col++) {
+        for (row = 0; row < n; row++) {
+            factor[col * n + row] = (float)CharonLAGet(system, row, col);
+        }
+    }
+    for (col = 0; col < columns; col++) {
+        for (row = 0; row < n; row++) {
+            right[col * n + row] =
+                (float)(vector_rhs ? (rhs->rows == 1 ? CharonLAGet(rhs, 0, row) : CharonLAGet(rhs, row, 0))
+                                   : CharonLAGet(rhs, row, col));
+        }
+    }
+    sgetrf_(&order, &order, factor, &leading, pivots, &info);
+    if (info > 0) {
+        return 1;
+    }
+    sgetrs_(&trans, &order, &count, factor, &leading, pivots, right, &leading, &info);
+    for (col = 0; col < columns; col++) {
+        for (row = 0; row < n; row++) {
+            CharonLASet(to, row, col, right[col * n + row]);
+        }
+    }
+    return 0;
 }
 
-// la_solve: A X = B for a square A, by the release's own LAPACK, sgetrf/sgetrs and dgetrf/dgetrs, which
-// every band from iOS 4.3 on exports. Two answers differ from the header and follow the host, both
-// recorded in facts/Accelerate/LinearAlgebra.md: a system whose shape la_solve does not take is
-// LA_DIMENSION_MISMATCH_ERROR rather than a least-squares solution, and a matrix with an exactly zero
-// pivot comes back as zeros with status LA_SUCCESS rather than with LA_SINGULAR_ERROR.
+static int CharonLALapackDouble(const CharonLAValue *system, const CharonLAValue *rhs, int vector_rhs,
+                                CharonLAValue *to, la_count_t n, la_count_t columns, double *factor, double *right,
+                                __CLPK_integer *pivots)
+{
+    __CLPK_integer order = (__CLPK_integer)n, leading = (__CLPK_integer)n, count = (__CLPK_integer)columns,
+                   info = 0;
+    char trans = 'N';
+    la_count_t row, col;
+    for (col = 0; col < n; col++) {
+        for (row = 0; row < n; row++) {
+            factor[col * n + row] = CharonLAGet(system, row, col);
+        }
+    }
+    for (col = 0; col < columns; col++) {
+        for (row = 0; row < n; row++) {
+            right[col * n + row] =
+                vector_rhs ? (rhs->rows == 1 ? CharonLAGet(rhs, 0, row) : CharonLAGet(rhs, row, 0))
+                           : CharonLAGet(rhs, row, col);
+        }
+    }
+    dgetrf_(&order, &order, factor, &leading, pivots, &info);
+    if (info > 0) {
+        return 1;
+    }
+    dgetrs_(&trans, &order, &count, factor, &leading, pivots, right, &leading, &info);
+    for (col = 0; col < columns; col++) {
+        for (row = 0; row < n; row++) {
+            CharonLASet(to, row, col, right[col * n + row]);
+        }
+    }
+    return 0;
+}
+
+// la_solve: A X = B for a square A, by the release's own LAPACK, sgetrf_ and sgetrs_ for a float object
+// and dgetrf_ and dgetrs_ for a double one. Every band this port supports exports all four - measured
+// from their own armv7 caches, iOS 4.3, 5.1.1, 6.0, 6.1.3, 7.0, 7.1.2 and 8.0 - and they are what the
+// release's own LinearAlgebra is built on, so the factorisation here is the release's and not a second
+// copy of one. There is no cblas_sgesv to call instead: the release's CBLAS has 148 names and none of
+// them is a general solve (measured, 7.1.2 and 8.0), which is why the two LAPACK pairs are the way in.
+//
+// Two answers differ from the header and are recorded in facts/Accelerate/LinearAlgebra.md: a system
+// whose shape la_solve does not take is LA_DIMENSION_MISMATCH_ERROR rather than a least-squares solution,
+// and a matrix with an exactly zero pivot comes back as zeros with status LA_SINGULAR_ERROR rather than
+// with the host's own unstable answer.
 la_object_t la_solve(la_object_t matrix_system, la_object_t obj_rhs)
 {
     CharonLAOperand a, b;
@@ -1101,10 +1163,11 @@ la_object_t la_solve(la_object_t matrix_system, la_object_t obj_rhs)
     la_attribute_t attributes;
     la_status_t refused;
     la_count_t n, columns;
-    int vector_rhs;
+    int vector_rhs, singular;
     la_object_t result;
     CharonLAValue *to;
-    void *factor = NULL, *right = NULL, *pivots = NULL;
+    void *factor = NULL, *right = NULL;
+    __CLPK_integer *pivots = NULL;
     if (!system || !rhs) {
         return CharonLAWithStatus(LA_INVALID_PARAMETER_ERROR, 0);
     }
@@ -1138,8 +1201,11 @@ la_object_t la_solve(la_object_t matrix_system, la_object_t obj_rhs)
     if (to->kind != CharonLAArray) {
         return result;
     }
+    // The blocks the release's LAPACK works in, and the pivots it asks for. The pivots are its own
+    // __CLPK_integer, which is what clapack.h declares for it: 32 bits on every band this port supports,
+    // whether the header spells that type int or long.
     factor = calloc((size_t)n * n, CharonLAWidth(a.scalar_type));
-    right = calloc((size_t)n, CharonLAWidth(a.scalar_type));
+    right = calloc((size_t)n * columns, CharonLAWidth(a.scalar_type));
     pivots = calloc(n, sizeof(__CLPK_integer));
     if (!factor || !right || !pivots) {
         free(factor);
@@ -1147,85 +1213,19 @@ la_object_t la_solve(la_object_t matrix_system, la_object_t obj_rhs)
         free(pivots);
         return CharonLAWithStatus(LA_INTERNAL_ERROR, attributes);
     }
-    CharonLAWorkspace work;
-    CharonLAWorkspaceOpen(&work, factor, right, n, a.scalar_type);
-    for (la_count_t column = 0; column < columns; column++) {
-        la_count_t singular_at = n;
-        for (la_count_t row = 0; row < n; row++) {
-            for (la_count_t col = 0; col < n; col++) {
-                CharonLASet(&work.block, row, col, CharonLAGet(system, row, col));
-            }
-            CharonLASet(&work.column, row, 0,
-                        vector_rhs ? (b.rows == 1 ? CharonLAGet(rhs, 0, row) : CharonLAGet(rhs, row, 0))
-                                   : CharonLAGet(rhs, row, column));
-        }
-        // An LU factorisation with partial pivoting, in the object's own scalar type, narrowed at every
-        // step so a float object is answered in float the way the host answers it. The release's own
-        // LAPACK is not used here: its entry points take a Fortran character for the transpose whose
-        // convention this port cannot establish for the 32-bit armv7 libLAPACK, and they are measured on
-        // the host to store the factors the other way round from the reference ABI (sgetrf_ of
-        // [[4,1],[1,3]] answers 4 0.25 1 2.75, which is U on top of L read by rows and by columns both).
-        // Writing the factorisation here is what makes the answer the same on every band; the host's own
-        // answers are the oracle, and they agree to the six significant digits a float has.
-        for (la_count_t step = 0; step < n && singular_at == n; step++) {
-            la_count_t pivot = step;
-            double largest = fabs(CharonLAGet(&work.block, step, step));
-            for (la_count_t row = step + 1; row < n; row++) {
-                double magnitude = fabs(CharonLAGet(&work.block, row, step));
-                if (magnitude > largest) {
-                    largest = magnitude;
-                    pivot = row;
-                }
-            }
-            ((__CLPK_integer *)pivots)[step] = (__CLPK_integer)(pivot + 1);
-            if (largest == 0.0) {
-                singular_at = step;
-                break;
-            }
-            if (pivot != step) {
-                for (la_count_t col = 0; col < n; col++) {
-                    double held = CharonLAGet(&work.block, step, col);
-                    CharonLASet(&work.block, step, col, CharonLAGet(&work.block, pivot, col));
-                    CharonLASet(&work.block, pivot, col, held);
-                }
-                double moved = CharonLAGet(&work.column, step, 0);
-                CharonLASet(&work.column, step, 0, CharonLAGet(&work.column, pivot, 0));
-                CharonLASet(&work.column, pivot, 0, moved);
-            }
-            double head = CharonLAGet(&work.block, step, step);
-            for (la_count_t row = step + 1; row < n; row++) {
-                double below = CharonLAGet(&work.block, row, step) / head;
-                CharonLASet(&work.block, row, step, below);
-                for (la_count_t col = step + 1; col < n; col++) {
-                    CharonLASet(&work.block, row, col,
-                                CharonLAGet(&work.block, row, col) - below * CharonLAGet(&work.block, step, col));
-                }
-                CharonLASet(&work.column, row, 0,
-                            CharonLAGet(&work.column, row, 0) - below * CharonLAGet(&work.column, step, 0));
-            }
-        }
-        if (singular_at != n) {
-            // An exactly zero pivot: the system has no solution, and LA_SINGULAR_ERROR is what
-            // vecLib/LinearAlgebra/linear_systems.h documents for it. The host's own answer here is not
-            // stable - in a fresh process la_status answers LA_SUCCESS while a store of the result answers
-            // LA_SINGULAR_ERROR after filling the buffer with NaNs, and after another solve in the same
-            // process it answers LA_SUCCESS and a store succeeds and writes zeros - so the port answers
-            // what the header says (facts/Accelerate/LinearAlgebra.md).
-            to->status = LA_SINGULAR_ERROR;
-            continue;
-        }
-        // The forward substitution is already done: the factorisation applies each multiplier to the
-        // right-hand side as it eliminates, so only the upper triangle is left to walk back.
-        for (la_count_t step = n; step-- > 0;) {
-            double value = CharonLAGet(&work.column, step, 0);
-            for (la_count_t col = step + 1; col < n; col++) {
-                value -= CharonLAGet(&work.block, step, col) * CharonLAGet(&work.column, col, 0);
-            }
-            CharonLASet(&work.column, step, 0, value / CharonLAGet(&work.block, step, step));
-        }
-        for (la_count_t row = 0; row < n; row++) {
-            CharonLASet(to, row, column, CharonLAGet(&work.column, row, 0));
-        }
+    singular = a.scalar_type == LA_SCALAR_TYPE_FLOAT
+                   ? CharonLALapackFloat(system, rhs, vector_rhs, to, n, columns, (float *)factor, (float *)right, pivots)
+                   : CharonLALapackDouble(system, rhs, vector_rhs, to, n, columns, (double *)factor, (double *)right,
+                                          pivots);
+    if (singular) {
+        // An exactly zero pivot: the system has no solution, and LA_SINGULAR_ERROR is what
+        // vecLib/LinearAlgebra/linear_systems.h documents for it. The result is left as the zeros it was
+        // made with, because the release's LAPACK answers such a solve with infinities and the host's own
+        // answer here is not stable - in a fresh process la_status answers LA_SUCCESS while a store of
+        // the result answers LA_SINGULAR_ERROR after filling the buffer with NaNs, and after another
+        // solve in the same process it answers LA_SUCCESS and a store succeeds and writes zeros - so the
+        // port answers what the header says (facts/Accelerate/LinearAlgebra.md).
+        to->status = LA_SINGULAR_ERROR;
     }
     free(factor);
     free(right);
