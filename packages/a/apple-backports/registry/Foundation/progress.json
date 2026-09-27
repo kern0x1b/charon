@@ -133,14 +133,6 @@
       "source": "the host's Foundation, and Foundation of iOS 6.0 and 6.1.3 read on the emulator and two devices; carried below 6.0 by Foundation/NSProgress.m, matching the release's own answer (not-a-number for a zero total), not the newest release's (0)"
     },
     {
-      "api": "-[NSProgress isIndeterminate]",
-      "kind": "method",
-      "introduced": "6.0",
-      "status": "implemented",
-      "facts": "facts/Foundation/NSProgress.md",
-      "source": "the host's Foundation, and Foundation of iOS 6.0 and 6.1.3 read on the emulator and two devices; carried below 6.0 by Foundation/NSProgress.m, matching the release's own answer (only a negative total is indeterminate), not the newest release's"
-    },
-    {
       "api": "-[NSProgress setCancellationHandler:]",
       "kind": "method",
       "introduced": "6.0",

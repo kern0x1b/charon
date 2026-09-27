@@ -127,9 +127,11 @@
       "introduced": "9.0",
       "minimum": "6.0",
       "maximum": "8.4.1",
-      "status": "implemented",
+      "status": "absent",
       "facts": "facts/Foundation/NSURLSessionStreamTask.md",
-      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua; the device call test tests/backports/device/foundation15batch.m"
+      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua; the device call test tests/backports/device/foundation15batch.m",
+      "reason": "the port makes this call on the session's delegate; the method itself is the application's and the port defines none, so what is carried is the call and not an implementation of the selector. The call is in facts/Foundation/NSURLSessionStreamTask.md and on the device",
+      "effect": "the method is the delegate's own, so a subclass of the protocol implements it and the port's library carries no such selector"
     },
     {
       "api": "-[NSURLSessionStreamDelegate URLSession:betterRouteDiscoveredForStreamTask:]",
@@ -137,9 +139,11 @@
       "introduced": "9.0",
       "minimum": "6.0",
       "maximum": "8.4.1",
-      "status": "implemented",
+      "status": "absent",
       "facts": "facts/Foundation/NSURLSessionStreamTask.md",
-      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua; the device call test tests/backports/device/foundation15batch.m"
+      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua; the device call test tests/backports/device/foundation15batch.m",
+      "reason": "the port makes this call on the session's delegate; the method itself is the application's and the port defines none, so what is carried is the call and not an implementation of the selector. The call is in facts/Foundation/NSURLSessionStreamTask.md and on the device",
+      "effect": "the method is the delegate's own, so a subclass of the protocol implements it and the port's library carries no such selector"
     },
     {
       "api": "-[NSURLSessionStreamDelegate URLSession:readClosedForStreamTask:]",
@@ -147,9 +151,11 @@
       "introduced": "9.0",
       "minimum": "6.0",
       "maximum": "8.4.1",
-      "status": "implemented",
+      "status": "absent",
       "facts": "facts/Foundation/NSURLSessionStreamTask.md",
-      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua; the device call test tests/backports/device/foundation15batch.m"
+      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua; the device call test tests/backports/device/foundation15batch.m",
+      "reason": "the port makes this call on the session's delegate; the method itself is the application's and the port defines none, so what is carried is the call and not an implementation of the selector. The call is in facts/Foundation/NSURLSessionStreamTask.md and on the device",
+      "effect": "the method is the delegate's own, so a subclass of the protocol implements it and the port's library carries no such selector"
     },
     {
       "api": "-[NSURLSessionStreamDelegate URLSession:writeClosedForStreamTask:]",
@@ -157,9 +163,11 @@
       "introduced": "9.0",
       "minimum": "6.0",
       "maximum": "8.4.1",
-      "status": "implemented",
+      "status": "absent",
       "facts": "facts/Foundation/NSURLSessionStreamTask.md",
-      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua; the device call test tests/backports/device/foundation15batch.m"
+      "source": "SDK 26.2 headers; the release's own CFStream socket pair, measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua; the device call test tests/backports/device/foundation15batch.m",
+      "reason": "the port makes this call on the session's delegate; the method itself is the application's and the port defines none, so what is carried is the call and not an implementation of the selector. The call is in facts/Foundation/NSURLSessionStreamTask.md and on the device",
+      "effect": "the method is the delegate's own, so a subclass of the protocol implements it and the port's library carries no such selector"
     },
     {
       "api": "+[NSURLSessionStreamTask new]",

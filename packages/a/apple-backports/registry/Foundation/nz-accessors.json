@@ -62,14 +62,14 @@
       "source": "SDK 26.2 headers; the host's own Foundation through tests/backports/host/foundationbatch, and tests/backports/device/foundation15batch.m on the device"
     },
     {
-      "api": "-[NSURLCredentialStorage removeCredential:forProtectionSpace:options:task:]",
+      "api": "-[NSURLCredentialStorage removeCredential:forProtectionSpace:task:]",
       "kind": "method",
       "introduced": "8.0",
       "minimum": "6.0",
       "maximum": "8.3",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLCacheAndCredentials.md",
-      "source": "SDK 26.2 headers; the host's own Foundation through tests/backports/host/foundationbatch, and tests/backports/device/foundation15batch.m on the device"
+      "source": "SDK 26.2 headers; tests/backports/device/foundation15batch.m on the device"
     }
   ]
 }
