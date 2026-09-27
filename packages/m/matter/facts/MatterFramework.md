@@ -38,6 +38,39 @@ repository's reader can walk: `objc.binary_inventory` finds no classes in it, th
 built here from source. The class and function counts could be had from its exports, which is where the first run of
 this measurement came from; the members could not be had at all until the framework was loaded instead.
 
+## Behaviour, held to the host
+
+`tests/backports/host/matter/pure.m` is one program with no device on the other end, written so it compiles against
+the host's own `Matter.framework` and against `libMatterBackports.dylib` alike, printing one `name<TAB>answer` per
+line; `tools/matter-pure-diff.lua` reads the two files and names every line that differs. What it covers is the part of
+the three areas a program meets first that needs no device: the setup payload built from a passcode and a discriminator
+and read back, the manual-entry parser over the code the framework itself wrote out of that payload, the onboarding
+parser over its base38 form, a payload and a code that are not ones, the commissioning parameters' own defaults, and
+`MTRDeviceControllerStorageClasses()`. 38 questions, and the host answers all 38.
+
+What that run measured, and what the port has to reproduce:
+
+- `manualEntryCode` for the standard payload of passcode 20202021 and discriminator 3840 is **34970112332** - the
+  framework's own encoder does not put the discriminator there: parsing that code back gives discriminator **15**, and
+  `hasShortDiscriminator` YES. So the eleven digits are a code whose discriminator is not the one the payload names,
+  and the round trip is not an identity. This is the kind of answer a differential exists for.
+- `+isValidSetupPasscode:` answers **true for 1234** as well as for 20202021, so it is not a length check.
+- The onboarding payload `MT:Y.K90SO527JA0648G00` is vendorID 65521, productID **32768**, passcode 20202021 and
+  discriminator **3839**, not the 32770 and 3840 a reading of the documentation suggests; `initWithPayload:` on a
+  string that is not a payload answers nil.
+- A manual code of one digit and a code that is not a payload both answer `MTRErrorDomain error 4`, the failure
+  answer and not a crash - the half of a differential that only runs would never see.
+- The controller names eight storage classes, of which the framework's own are the first three.
+
+**What the host cannot be held for, and why.** The name-to-id and id-to-name mappings of the iOS surface
+(`MTRClusterNameForID`, `MTRAttributeNameForID`, `MTRRequestCommandNameForID`, `MTRResponseCommandNameForID`,
+`MTREventNameForID`) are **not declared by the host's public headers at all** - macOS's Matter.framework ships 62 public
+headers and none of them declares a name mapping - so there is no host answer to compare a port answer with, and
+saying the host agrees would be a fiction. `MTRBaseDevice`'s read, write and subscribe and `MTRDeviceController`'s
+commission, pair and subscribe need a device and a daemon, and this host has neither. Those are covered by the
+emulator call test, which calls every method the port's library carries and requires that none of them crashes - not
+by a differential, because there is nothing on the other side to be differential against.
+
 ## What the port's release does not have, and what the build does about it
 
 - **Signposts.** The framework's device browser, `MTRDeviceConnectivityMonitor.mm`, watches a peer's reachability

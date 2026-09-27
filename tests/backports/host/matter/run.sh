@@ -37,8 +37,21 @@ if [ "$methods" -lt 1000 ] || [ "$functions" -lt 8 ]; then
     exit 1
 fi
 
+# The behaviour half: the parts of commissioning and the controller that need no device, run against the host's own
+# framework, so the port's answers to the same questions can be held to it. It prints one "name<TAB>answer" per line.
+xcrun clang -fobjc-arc -Wall -Wno-deprecated-declarations -o "$build/pure" "$here/pure.m" -framework Matter -framework Foundation
+"$build/pure" > "$build/pure.log" 2>&1
+answers=$(grep -c "	" "$build/pure.log" || true)
+if [ "$answers" -lt 20 ]; then
+    echo "FAIL the host's framework answered $answers questions of the port's differential" >&2
+    head -3 "$build/pure.log" >&2
+    exit 1
+fi
+cp "$build/pure.log" "${out%.tsv}-pure.txt"
+
 cp "$build/log" "$out"
 echo "ok the host's Matter.framework carries $methods methods, $properties properties, $adoptions protocol adoptions"
 echo "ok and $functions of the $(
     count "^function	") function rows of the SDK 26.2 surface"
+echo "ok and it answered $answers of the port's questions (pure.txt)"
 echo "wrote $out"
