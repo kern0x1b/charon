@@ -82,7 +82,7 @@ open class Entity: HasHierarchy, HasTransform, HasSynchronization, Sendable {
 
     public var components: Entity.ComponentSet {
         get { Entity.ComponentSet(coreEntity) }
-        set { coreEntity.components = newValue.coreEntity.components }
+        set { coreEntity.components = newValue.coreEntity.components; coreEntity.transform = newValue.coreEntity.transform }
     }
 
     /// The scene this entity belongs to, or nil when nothing roots it in a scene.
@@ -156,23 +156,19 @@ extension Entity {
 
         public subscript<T>(componentType: T.Type) -> T? where T: Component {
             get { coreEntity.component(of: componentType) }
-            set {
-                if let newValue {
-                    coreEntity.setComponent(newValue)
-                } else {
-                    coreEntity.removeComponent(of: componentType)
-                }
-            }
+            set { setOrRemove(newValue, of: componentType) }
         }
 
         public subscript(componentType: any Component.Type) -> (any Component)? {
             get { coreEntity.component(of: componentType) }
-            set {
-                if let newValue {
-                    coreEntity.setComponent(newValue)
-                } else {
-                    coreEntity.removeComponent(of: componentType)
-                }
+            set { setOrRemove(newValue, of: componentType) }
+        }
+
+        private func setOrRemove(_ newValue: (any Component)?, of componentType: any Component.Type) {
+            if let newValue {
+                coreEntity.setComponentAny(newValue)
+            } else {
+                coreEntity.removeComponent(of: componentType)
             }
         }
 
@@ -181,7 +177,7 @@ extension Entity {
         }
 
         public func set(_ components: [any Component]) {
-            for component in components { coreEntity.setComponent(component) }
+            for component in components { coreEntity.setComponentAny(component) }
         }
 
         public func has(_ componentType: any Component.Type) -> Bool {
@@ -192,14 +188,14 @@ extension Entity {
             coreEntity.removeComponent(of: componentType)
         }
 
-        /// Removes every component the entity carries. The entity's transform is not one of
-        /// them: the SDK keeps it beside the component set, in the entity's own scale-rotation-
-        /// translation, and this set reads and writes that. An entity keeps the transform it had.
+        /// Removes every component the entity carries, the transform among them. Measured on
+        /// the host (2026-09-27): a new entity reports two components, and after this it
+        /// reports none.
         public func removeAll() {
-            coreEntity.components.removeAll()
+            coreEntity.removeAllComponents()
         }
 
-        /// The number of components the entity carries, not counting its transform.
+        /// The number of components the entity carries, the transform among them.
         public var count: Int { coreEntity.componentCount }
     }
 }
@@ -345,9 +341,15 @@ extension Entity: Hashable {
 }
 
 extension Entity: CustomDebugStringConvertible {
-    /// The entity's type and name, which is what a debugger shows for one in a hierarchy.
+    /// The entity, its components and everything below it, as a tree.
+    ///
+    /// Measured on the host (2026-09-27, arm64-apple-macos14, MacOSX26.5.sdk) for a new entity
+    /// named `box`: `▿ 'box' : Entity` on the first line, then `  ⟐ Transform` and
+    /// `  ⟐ SynchronizationComponent`; and for an entity with one child, `▿ 'parent' : Entity,
+    /// children: 1`, its own two components, and the child at the same two-space indent with
+    /// its own components two further in.
     public var debugDescription: String {
-        "\(type(of: self))(\(name))"
+        coreEntity.debugDescription(typeName: String(describing: type(of: self)))
     }
 }
 
@@ -509,14 +511,16 @@ extension HasTransform {
 
     public func convert(position: SIMD3<Float>, to referenceEntity: Entity?) -> SIMD3<Float> {
         guard let referenceEntity else { return __reApply(coreEntity.transformMatrixInHierarchy, position, asPoint: true) }
-        // A position given in this entity's coordinates, read in the reference's.
-        let matrix = referenceEntity.coreEntity.transformMatrix(relativeTo: coreEntity)
+        // A position given in this entity's own coordinates, read in the reference's. Measured
+        // on the host (2026-09-27): a child at (1, 0, 0) of a parent at (0, 2, 0) answers
+        // (1, 0, 0) for the origin and (2, 0, 0) for (1, 0, 0).
+        let matrix = coreEntity.transformMatrix(relativeTo: referenceEntity.coreEntity)
         return __reApply(matrix, position, asPoint: true)
     }
 
     public func convert(direction: SIMD3<Float>, to referenceEntity: Entity?) -> SIMD3<Float> {
         guard let referenceEntity else { return __reApply(coreEntity.transformMatrixInHierarchy, direction, asPoint: false) }
-        let matrix = referenceEntity.coreEntity.transformMatrix(relativeTo: coreEntity)
+        let matrix = coreEntity.transformMatrix(relativeTo: referenceEntity.coreEntity)
         return __reApply(matrix, direction, asPoint: false)
     }
 
@@ -526,7 +530,7 @@ extension HasTransform {
 
     public func convert(transform: Transform, to referenceEntity: Entity?) -> Transform {
         guard let referenceEntity else { return transform }
-        let matrix = referenceEntity.coreEntity.transformMatrix(relativeTo: coreEntity)
+        let matrix = coreEntity.transformMatrix(relativeTo: referenceEntity.coreEntity)
         return Transform(matrix: matrix * transform.matrix)
     }
 
@@ -573,8 +577,10 @@ extension __REEntity {
         for (_, component) in components {
             // Every component is a value, and a value type's copy is the value itself; a
             // component holding a reference (a mesh, an animation) is shared until the types
-            // that own those come with their own round.
-            copy.setComponentClone(component)
+            // that own those come with their own round. The transform is already copied above,
+            // and the node's own is the one that counts.
+            if component is Transform { continue }
+            copy.putComponent(component)
         }
         if recursive {
             for child in children { copy.adopt(child.clone(recursive: true), preservingWorldTransform: false) }
@@ -582,14 +588,4 @@ extension __REEntity {
         return copy
     }
 
-    /// Puts a component into this node's storage without going through its protocol, which is
-    /// what a clone needs: the value it has is the value to keep.
-    func setComponentClone(_ component: Any) {
-        if let transform = component as? Transform {
-            self.transform = transform
-            return
-        }
-        let type = type(of: component)
-        components[registration(of: type).identifier] = component
-    }
 }

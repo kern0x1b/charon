@@ -94,14 +94,23 @@ extension Component {
     }
 
     /// The transform of an entity rotated by `pitch` about its x axis, by `yaw` about its y
-    /// axis and by `roll` about its z axis, in that order: the rotation is the product
-    /// `Ry(yaw) * Rx(pitch) * Rz(roll)`, which is the order the SDK's header names.
+    /// axis and by `roll` about its z axis, in that order: the rotation is the quaternion
+    /// product `qy(yaw) * qx(pitch) * qz(roll)`, whose matrix is `Ry(yaw) * Rx(pitch) * Rz(roll)`.
+    ///
+    /// Measured, not assumed (2026-09-27, host, arm64-apple-macos14 against the Command Line
+    /// Tools' MacOSX26.5 SDK, which carries RealityKit): the system's own answers for
+    /// `Transform(pitch: 0.3, yaw: 0.5, roll: 0.7)` is
+    /// `SIMD4<Float>(0.21989578, 0.18014587, 0.2937772, 0.91262716)` and for
+    /// `(1.1, -0.4, 2.2)` is `SIMD4<Float>(0.08141868, -0.53336304, 0.7917335, 0.28644878)`.
+    /// This expression agrees with both to 1e-16, and with the three single-axis cases
+    /// (`pi/2` about each axis in turn, the identity). The SDK's header spells the same order
+    /// through `simd_quatf(eulerAngles:order: .yxz)`, which is not in the simd module either
+    /// SDK carries, so the composition is written out here.
     public init(pitch x: Float = 0, yaw y: Float = 0, roll z: Float = 0) {
         let halfPitch = x / 2, halfYaw = y / 2, halfRoll = z / 2
-        let sy = Darwin.sin(halfYaw), cy = Darwin.cos(halfYaw)
         let sp = Darwin.sin(halfPitch), cp = Darwin.cos(halfPitch)
+        let sy = Darwin.sin(halfYaw), cy = Darwin.cos(halfYaw)
         let sr = Darwin.sin(halfRoll), cr = Darwin.cos(halfRoll)
-        // Ry(yaw) * Rx(pitch) * Rz(roll), the product of the three half-angle rotations.
         self.init(scale: .one,
                   rotation: simd_quatf(ix: cr * cy * sp + sr * cp * sy,
                                        iy: cr * cp * sy - sr * cy * sp,

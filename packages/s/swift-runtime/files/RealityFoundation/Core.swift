@@ -48,6 +48,7 @@ public final class __REComponentRegistry {
 
     private var registered: [ObjectIdentifier: __REComponentType] = [:]
     private var counter: UInt64 = 0
+    private var synchronizationCounter: UInt64 = 0
     private let lock = NSLock()
 
     public init() {}
@@ -81,6 +82,16 @@ public final class __REComponentRegistry {
         defer { lock.unlock() }
         counter += 1
         return counter
+    }
+
+    /// The number a new `SynchronizationComponent` takes. It is not an entity's identifier: a
+    /// session agrees on one number for the entity across devices, and every component a
+    /// program makes is a different one.
+    public func nextSynchronizationIdentifier() -> UInt64 {
+        lock.lock()
+        defer { lock.unlock() }
+        synchronizationCounter += 1
+        return synchronizationCounter
     }
 }
 
@@ -187,9 +198,11 @@ public struct __AABBRef {
     public let identifier: UInt64
     public var name: String
     public var transform: Transform
-    /// The components, by their registration: an entity carries at most one of a type, and
-    /// setting a second replaces the first, which is what `components.subscript` documents.
-    public var components: [ObjectIdentifier: Any] = [:]
+    /// The components, by their registration and in the order they were added: an entity
+    /// carries at most one of a type, and setting a second replaces the first, which is what
+    /// `components.subscript` documents. The order is what the debugger's tree prints, and the
+    /// system's own prints a new entity's transform before its synchronization component.
+    var components: [(key: ObjectIdentifier, value: Any)] = []
     public var children: [__REEntity] = []
     public weak var parent: __REEntity?
     /// Set on a root entity when it is added to a scene; an entity reads it by walking up.
@@ -203,6 +216,10 @@ public struct __AABBRef {
         self.identifier = __REComponentRegistry.shared.nextEntityIdentifier()
         self.name = name
         self.transform = Transform()
+        // Measured on the host (2026-09-27, arm64-apple-macos14, MacOSX26.5.sdk): a new
+        // `Entity()` carries two components, and a debugger prints them as this pair.
+        self.setComponent(Transform())
+        self.setComponent(SynchronizationComponent())
     }
 
     /// The wrapper of this node, made on the first use.
@@ -219,29 +236,68 @@ public struct __AABBRef {
     }
 
     func component<T>(of componentType: T.Type) -> T? where T: Component {
-        components[registration(of: componentType).identifier] as? T
+        // The node's own scale-rotation-translation is the transform, whether or not the set
+        // still holds the mirror of it: `position`, `orientation` and the hierarchy read the
+        // node, and a set that answered a second value would be a second transform.
+        if componentType == Transform.self { return transform as! T }
+        return stored(of: componentType) as? T
     }
 
     func setComponent<T>(_ component: T) where T: Component {
-        components[registration(of: T.self).identifier] = component
+        setComponentAny(component)
+    }
+
+    /// The same, for a component the caller holds as an existential.
+    func setComponentAny(_ component: any Component) {
+        let key = registration(of: Swift.type(of: component)).identifier
+        if let at = components.firstIndex(where: { $0.key == key }) {
+            components[at] = (key, component)
+        } else {
+            components.append((key, component))
+        }
+        if let transform = component as? Transform { self.transform = transform }
+    }
+
+    /// Puts a component into this node's storage without going through its protocol, which is
+    /// what a clone needs: the value it has is the value to keep.
+    func putComponent(_ component: Any) {
+        let key = registration(of: Swift.type(of: component)).identifier
+        if let at = components.firstIndex(where: { $0.key == key }) {
+            components[at] = (key, component)
+        } else {
+            components.append((key, component))
+        }
+    }
+
+    /// The value the set holds for a component type, and nil for one it does not hold.
+    func stored(of componentType: Any.Type) -> Any? {
+        let key = registration(of: componentType).identifier
+        return components.first { $0.key == key }?.value
     }
 
     func removeComponent(of componentType: Any.Type) {
-        components.removeValue(forKey: registration(of: componentType).identifier)
+        let key = registration(of: componentType).identifier
+        components.removeAll { $0.key == key }
+        // A transform taken out of the set is not the node's transform any more; the node keeps
+        // the transform it had, which is what the system answers for it too.
     }
 
+    /// Removes every component, the transform among them, as `ComponentSet.removeAll()` does.
+    func removeAllComponents() {
+        components.removeAll()
+        transform = Transform()
+    }
+
+    /// Whether the set holds a component of the type. A new entity's transform is in the set, as
+    /// the system's own is; taking it out takes it out of the count too, and the node keeps the
+    /// transform it had.
     func hasComponent(of componentType: Any.Type) -> Bool {
-        components[registration(of: componentType).identifier] != nil
+        stored(of: componentType) != nil
     }
 
-    /// The number of components of this node, not counting its transform: the transform is the
-    /// node's own scale-rotation-translation, which the component set reads and writes rather
-    /// than stores among the others.
-    var componentCount: Int {
-        var count = components.count
-        if components[registration(of: Transform.self).identifier] != nil { count -= 1 }
-        return count
-    }
+    /// The number of components of this node, the transform and the synchronization component
+    /// among them: the system's own new entity reports two.
+    var componentCount: Int { components.count }
 
     /// The topmost node of the hierarchy this one is in, itself when it has no parent.
     var root: __REEntity {
@@ -265,8 +321,17 @@ public struct __AABBRef {
     /// Whether the node is rooted in a scene and enabled all the way up.
     var isActive: Bool { sceneOfRoot != nil && isEnabledInHierarchy }
 
-    /// Whether this node is an anchor, which is what `isAnchored` asks.
-    var isAnchored: Bool { hasComponent(of: AnchoringComponent.self) }
+    /// Whether this node is one of a scene's anchors, or is below one. Measured on the host
+    /// (2026-09-27): a detached `AnchorEntity` says false, the same entity once it is added to
+    /// a scene says true, and so does a child of it.
+    var isAnchored: Bool {
+        var node: __REEntity? = self
+        while let current = node {
+            if let scene = current.scene, scene.anchors.contains(where: { $0 === current }) { return true }
+            node = current.parent
+        }
+        return false
+    }
 
     /// Add `child` to this node, taking it from the parent it has, which is what `addChild`
     /// documents: an entity has one parent, and adding it to a second one moves it.
@@ -358,6 +423,28 @@ public struct __AABBRef {
     public func firstNode(named name: String) -> __REEntity? {
         subtree.first { $0.name == name }
     }
+
+    /// This node, its components and its subtree, in the tree the system's own debugger prints.
+    /// Measured on the host, 2026-09-27: `▿ 'name' : TypeName` with `, children: N` when the
+    /// node has children, then a line per component with `⟐`, then a line per child, each two
+    /// spaces further in than its parent.
+    public func debugDescription(typeName: String) -> String {
+        debugDescription(typeName: typeName, indent: 0)
+    }
+
+    /// The same, with every line moved `indent` spaces to the right.
+    public func debugDescription(typeName: String, indent: Int) -> String {
+        let pad = String(repeating: " ", count: indent)
+        let inner = pad + "  "
+        var lines = ["\(pad)▿ '\(name)' : \(typeName)\(children.isEmpty ? "" : ", children: \(children.count)")"]
+        for name in components.map({ String(reflecting: type(of: $0.value)).components(separatedBy: ".").last ?? "" }) {
+            lines.append("\(inner)⟐ \(name)")
+        }
+        for child in children {
+            lines.append(child.debugDescription(typeName: typeName, indent: indent + 2))
+        }
+        return lines.joined(separator: "\n")
+    }
 }
 
 /// The size a component type's value occupies, which the type itself reports. A type that is
@@ -445,7 +532,7 @@ public struct __EntityRef: Equatable {
     }
 
     public func node(withIdentifier identifier: UInt64) -> __REEntity? {
-        nodes.first { $0.identifier == identifier }
+        (anchors + anchors.flatMap { $0.subtree.dropFirst() }).first { $0.identifier == identifier }
     }
 
     /// The `Scene` that wraps this state, made on the first use and kept, so that the same

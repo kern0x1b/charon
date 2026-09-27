@@ -194,6 +194,95 @@ open class AnchorEntity: Entity, HasAnchoring {
     }
 }
 
+// MARK: - SynchronizationComponent
+
+/// A component every entity carries, and the one a synchronizing session owns: the identifier
+/// its participants agree on and who among them may change it.
+@frozen public struct SynchronizationComponent: Component, Equatable {
+    /// Whether the ownership of the entity's synchronized state moves on its own or only when a
+    /// participant asks for it.
+    public enum OwnershipTransferMode: Hashable {
+        case autoAccept
+        case manual
+    }
+
+    /// How a request for ownership ended.
+    public enum OwnershipTransferCompletionResult: Hashable {
+        case granted
+        case timedOut
+    }
+
+    /// The number the participants agree on.
+    public let identifier: UInt64
+    /// Whether this participant may change the synchronized state.
+    public var isOwner: Bool
+    public var ownershipTransferMode: OwnershipTransferMode
+
+    public init() {
+        identifier = __REComponentRegistry.shared.nextSynchronizationIdentifier()
+        isOwner = true
+        ownershipTransferMode = .autoAccept
+    }
+
+    public init(identifier: UInt64, isOwner: Bool = true, ownershipTransferMode: OwnershipTransferMode = .autoAccept) {
+        self.identifier = identifier
+        self.isOwner = isOwner
+        self.ownershipTransferMode = ownershipTransferMode
+    }
+
+    public static func == (a: SynchronizationComponent, b: SynchronizationComponent) -> Bool {
+        a.identifier == b.identifier && a.isOwner == b.isOwner && a.ownershipTransferMode == b.ownershipTransferMode
+    }
+}
+
+@MainActor
+extension HasSynchronization {
+    /// The component that carries this entity's synchronized state, which every entity has.
+    public var synchronization: SynchronizationComponent? {
+        get { coreEntity.component(of: SynchronizationComponent.self) }
+        set {
+            if let newValue {
+                coreEntity.setComponent(newValue)
+            } else {
+                coreEntity.removeComponent(of: SynchronizationComponent.self)
+            }
+        }
+    }
+
+    /// Whether this participant may change the entity's synchronized state.
+    public var isOwner: Bool {
+        synchronization?.isOwner ?? false
+    }
+
+    /// Asks for the ownership of the entity's synchronized state, answering when the request
+    /// ended.
+    ///
+    /// Nothing on this device arbitrates between participants: a session does, and this port
+    /// carries no session. A request made by a participant that already owns the state is
+    /// granted at once, which is what the single-participant case is, and anything else times
+    /// out rather than inventing an answer.
+    public func requestOwnership(timeout: TimeInterval = 15,
+                                 _ callback: @escaping (SynchronizationComponent.OwnershipTransferCompletionResult) -> Void) {
+        guard var component = synchronization else {
+            callback(.timedOut)
+            return
+        }
+        guard component.isOwner || component.ownershipTransferMode == .autoAccept else {
+            callback(.timedOut)
+            return
+        }
+        component.isOwner = true
+        synchronization = component
+        callback(.granted)
+    }
+
+    /// Runs `changes` with the entity's synchronized state held, so that a session sends the
+    /// change as one update. With no session there is nothing to hold, and the changes run.
+    public func withUnsynchronized(_ changes: () -> Void) {
+        changes()
+    }
+}
+
 // MARK: - Scene
 
 /// A container for the entities of a world, and the anchors they are rooted in.
@@ -359,7 +448,10 @@ extension Scene {
 }
 
 extension Scene.AnchorCollection: CustomStringConvertible {
+    /// The anchors' own trees, one after another between brackets. Measured on the host
+    /// (2026-09-27): two anchors print as `[` then the first anchor's `debugDescription`, then
+    /// `,` and a line break and the second's, then a line break and `]`.
     public var description: String {
-        "[\(map { $0.name }.joined(separator: ", "))]"
+        "[" + map { $0.debugDescription }.joined(separator: ",\n") + "\n]"
     }
 }
