@@ -30,3 +30,9 @@
 }
 
 @end
+// The class itself. Apple's headers declare MXMetric with no properties of its own - a metric's values
+// are its subclass's - and everything it promises is the two representations, the archiving and the
+// store, which the CharonMetricValue category beside this file carries. What is here is the class, so
+// that _OBJC_CLASS_$_MXMetric exists and the leaf metrics that inherit it have a superclass to point at.
+@implementation MXMetric
+@end
