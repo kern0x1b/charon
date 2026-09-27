@@ -3,6 +3,7 @@ import os
 import re
 import subprocess
 import sys
+import tempfile
 import hashlib
 
 
@@ -238,27 +239,44 @@ class Rewriter:
         return text
 
 
-def host_owners(selectors, source, flags):
-    """(owner, selector) for every declaration of these selectors in the headers the source includes - the
-    host's own, and the port's, since both are in the same tree. One clang run, filtered to the selectors in
-    question, and cached by their names under $CHARON_HOME/cache: the answer is a property of the SDK, not of
-    the file, and a group asks about the same handful of selectors in every one of its files."""
-    key = hashlib.sha256(",".join(sorted(selectors)).encode()).hexdigest()[:16]
+def sdk_key(flags):
+    """What the declarations below belong to: the SDK the sources are compiled against."""
+    for index, flag in enumerate(flags):
+        if flag == "-isysroot" and index + 1 < len(flags):
+            return flags[index + 1]
+    return ""
+
+
+def sdk_owners(flags):
+    """selector -> the classes that declare it, for everything UIKit and Foundation declare.
+
+    One empty translation unit per SDK, imported and dumped whole, because -ast-dump-filter applies to the
+    top-level declaration and so never reaches the method declarations inside a host's @interface. The map is a
+    property of the SDK and not of the file, so it is built once and cached by the SDK's own path; a group
+    then only looks a selector up."""
+    key = hashlib.sha256(sdk_key(flags).encode()).hexdigest()[:16]
     folder = os.path.join(os.getenv("CHARON_HOME", os.path.join(os.getenv("HOME"), ".charon")), "cache")
-    cached = os.path.join(folder, "prefix-selector-owners-" + key + ".json")
+    cached = os.path.join(folder, "sdk-objc-owners-" + key + ".json")
     if os.path.isfile(cached):
         with open(cached) as stream:
-            return json.load(stream)
-    dump = subprocess.run(["xcrun", "clang", *flags, "-fsyntax-only", "-w", "-Xclang", "-ast-dump=json",
-                           "-Xclang", "-ast-dump-filter=" + ",".join(sorted(selectors)), source],
-                          capture_output=True, text=True)
-    owners = []
-    for node in documents(dump.stdout):
-        collect(node, None, owners)
+            return {name: set(owners) for name, owners in json.load(stream).items()}
+    with tempfile.TemporaryDirectory() as work:
+        empty = os.path.join(work, "sdk.m")
+        with open(empty, "w") as stream:
+            stream.write("#import <UIKit/UIKit.h>\n#import <Foundation/Foundation.h>\n")
+        dump = subprocess.run(["xcrun", "clang", *flags, "-fsyntax-only", "-w", "-Xclang", "-ast-dump=json", empty],
+                              capture_output=True, text=True)
+    owners = {}
+    for document in documents(dump.stdout):
+        collect(document, None, owners)
+    if not owners:
+        print("%s: the SDK's own declarations could not be read; %s says why" % (sdk_key(flags), dump.stderr.strip()[:200]),
+              file=sys.stderr)
+        sys.exit(1)
     if not os.path.isdir(folder):
         os.makedirs(folder)
     with open(cached, "w") as stream:
-        json.dump(owners, stream)
+        json.dump({name: sorted(classes) for name, classes in owners.items()}, stream)
     return owners
 
 
@@ -271,19 +289,18 @@ def collect(node, owner, owners):
     if not isinstance(node, dict):
         return
     kind = node.get("kind")
-    if kind in ("ObjCInterfaceDecl", "ObjCCategoryDecl", "ObjCImplementationDecl", "ObjCCategoryImplDecl"):
+    if kind in ("ObjCInterfaceDecl", "ObjCCategoryDecl", "ObjCImplementationDecl", "ObjCCategoryImplDecl",
+                "ObjCProtocolDecl"):
         named = node.get("interface", {}).get("name") or node.get("name")
-        if kind in ("ObjCCategoryDecl", "ObjCCategoryImplDecl"):
-            named = node.get("interface", {}).get("name") or node.get("name")
         for item in node.get("inner", []):
             collect(item, named, owners)
         return
     if kind == "ObjCMethodDecl" and owner and node.get("name"):
-        owners.append([owner, node["name"]])
+        owners.setdefault(node["name"], set()).add(owner)
     if kind == "ObjCPropertyDecl" and owner and node.get("name"):
         name = node["name"]
-        owners.append([owner, name])
-        owners.append([owner, "set" + name[0].upper() + name[1:] + ":"])
+        owners.setdefault(name, set()).add(owner)
+        owners.setdefault("set" + name[0].upper() + name[1:] + ":", set()).add(owner)
     for value in node.values():
         if isinstance(value, (list, dict)):
             collect(value, owner, owners)
@@ -306,13 +323,11 @@ def main():
         rewriter.walk(document, None)
     if rewriter.candidates:
         wanted = {selector for _, selector in rewriter.candidates}
-        declared = host_owners(wanted, source_path, flags)
-        owners = {}
-        for owner, selector in declared:
-            owners.setdefault(selector, set()).add(owner)
+        owners = sdk_owners(flags)
+        wanted.discard("")
         port = {entry[2] for entry in carried}
         for offset, selector in sorted(set(rewriter.candidates)):
-            others = owners.get(selector, set())
+            others = owners.get(selector) or set()
             # the port alone defines it: no header in the SDK declares this selector, and the class that does
             # define it here is the one the category adds it to - a host class of the same name answering would
             # be the host's own method, and renaming the send would call that instead
