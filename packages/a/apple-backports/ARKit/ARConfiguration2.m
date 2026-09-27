@@ -47,7 +47,6 @@
 
 + (instancetype)new { return [[self alloc] init]; }
 
-
 + (BOOL)supportsUserFaceTracking { return NO; }
 + (BOOL)supportsAppClipCodeTracking { return NO; }
 
@@ -86,7 +85,6 @@
 @dynamic appClipCodeTrackingEnabled;
 @dynamic sceneReconstruction;
 
-
 + (BOOL)isSupported
 {
     // A world-tracking session is a camera and a gyroscope, which is what this device has.
@@ -105,7 +103,6 @@
 
 + (instancetype)new { return [[self alloc] init]; }
 
-
 - (BOOL)isAutoFocusEnabled { return YES; }
 - (void)setAutoFocusEnabled:(BOOL)autoFocusEnabled { (void)autoFocusEnabled; }
 
@@ -114,120 +111,6 @@
     // The gyroscope alone, which is the one sensor this class needs and the one it was named for.
     Class manager = NSClassFromString(@"CMMotionManager");
     return [manager isAvailable];
-}
-
-@end
-
-@implementation ARPositionalTrackingConfiguration
-{
-    ARPlaneDetection _planeDetection;
-}
-
-- (instancetype)init
-{
-    self = [super initCharonCommon];
-    if (self)
-        _planeDetection = ARPlaneDetectionHorizontal;
-    return self;
-}
-
-+ (instancetype)new { return [[self alloc] init]; }
-
-
-- (BOOL)isAutoFocusEnabled { return YES; }
-- (void)setAutoFocusEnabled:(BOOL)autoFocusEnabled { (void)autoFocusEnabled; }
-
-- (ARPlaneDetection)planeDetection { return _planeDetection; }
-- (void)setPlaneDetection:(ARPlaneDetection)planeDetection { _planeDetection = planeDetection; }
-
-
-@dynamic initialWorldMap;
-
-+ (BOOL)isSupported
-{
-    // A tracked image and a place to put it: the camera, and a location service.
-    if (![CharonARTracker isSupported])
-        return NO;
-    return [CLLocationManager class] != nil;
-}
-
-@end
-
-@implementation ARImageTrackingConfiguration
-{
-    NSInteger _maximumNumberOfTrackedImages;
-}
-
-- (instancetype)init
-{
-    self = [super initCharonCommon];
-    return self;
-}
-
-+ (instancetype)new { return [[self alloc] init]; }
-
-
-- (BOOL)isAutoFocusEnabled { return YES; }
-- (void)setAutoFocusEnabled:(BOOL)autoFocusEnabled { (void)autoFocusEnabled; }
-
-- (NSInteger)maximumNumberOfTrackedImages { return _maximumNumberOfTrackedImages; }
-- (void)setMaximumNumberOfTrackedImages:(NSInteger)maximumNumberOfTrackedImages {
-    _maximumNumberOfTrackedImages = maximumNumberOfTrackedImages;
-}
-
-@dynamic trackingImages;
-
-
-+ (BOOL)isSupported
-{
-    // A tracked image is found in the camera's frames and needs no depth sensor.
-    return [CharonARTracker isSupported];
-}
-
-@end
-
-@implementation ARBodyTrackingConfiguration
-{
-    ARPlaneDetection _planeDetection;
-    AREnvironmentTexturing _environmentTexturing;
-}
-
-- (instancetype)init
-{
-    self = [super initCharonCommon];
-    if (self)
-        _planeDetection = ARPlaneDetectionHorizontal;
-    return self;
-}
-
-+ (instancetype)new { return [[self alloc] init]; }
-
-
-+ (BOOL)supportsAppClipCodeTracking { return NO; }
-
-- (BOOL)isAutoFocusEnabled { return YES; }
-- (void)setAutoFocusEnabled:(BOOL)autoFocusEnabled { (void)autoFocusEnabled; }
-
-- (ARPlaneDetection)planeDetection { return _planeDetection; }
-- (void)setPlaneDetection:(ARPlaneDetection)planeDetection { _planeDetection = planeDetection; }
-
-- (AREnvironmentTexturing)environmentTexturing { return _environmentTexturing; }
-- (void)setEnvironmentTexturing:(AREnvironmentTexturing)environmentTexturing { _environmentTexturing = environmentTexturing; }
-
-@dynamic initialWorldMap;
-@dynamic detectionImages;
-@dynamic wantsHDREnvironmentTextures;
-@dynamic automaticImageScaleEstimationEnabled;
-@dynamic automaticSkeletonScaleEstimationEnabled;
-@dynamic maximumNumberOfTrackedImages;
-@dynamic appClipCodeTrackingEnabled;
-
-
-+ (BOOL)isSupported
-{
-    // A body is a pose estimated from the camera's own frames, which needs no sensor of its own, and
-    // the front camera. This device has a front camera, so the answer is what the hardware gives.
-    return [CharonARTracker hasFrontCamera];
 }
 
 @end
@@ -242,7 +125,6 @@
 
 + (instancetype)new { return [[self alloc] init]; }
 
-
 + (NSInteger)supportedNumberOfTrackedFaces { return 0; }
 + (BOOL)supportsWorldTracking { return NO; }
 
@@ -255,43 +137,10 @@
 - (BOOL)isWorldTrackingEnabled { return NO; }
 - (void)setWorldTrackingEnabled:(BOOL)worldTrackingEnabled { (void)worldTrackingEnabled; }
 
-
 + (BOOL)isSupported
 {
     // A face is measured by a depth sensor across the face, and this device has none: no TrueDepth, and
     // no LiDAR either. Apple answers NO for a device without the sensor, and so does this.
-    return NO;
-}
-
-@end
-
-@implementation ARObjectScanningConfiguration
-{
-    ARPlaneDetection _planeDetection;
-}
-
-- (instancetype)init
-{
-    self = [super initCharonCommon];
-    if (self)
-        _planeDetection = ARPlaneDetectionHorizontal;
-    return self;
-}
-
-+ (instancetype)new { return [[self alloc] init]; }
-
-
-- (BOOL)isAutoFocusEnabled { return YES; }
-- (void)setAutoFocusEnabled:(BOOL)autoFocusEnabled { (void)autoFocusEnabled; }
-
-- (ARPlaneDetection)planeDetection { return _planeDetection; }
-- (void)setPlaneDetection:(ARPlaneDetection)planeDetection { _planeDetection = planeDetection; }
-
-
-+ (BOOL)isSupported
-{
-    // Object scanning reads a mesh out of the depth the camera sees; without a depth sensor there is
-    // no mesh to read, and the framework is right to say so.
     return NO;
 }
 

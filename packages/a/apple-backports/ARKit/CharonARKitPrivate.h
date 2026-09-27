@@ -9,6 +9,30 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// A plane is a quad, so its geometry is four corners and the six indices that join them.
+enum { kPlaneQuadCorners = 4, kPlaneQuadTriangles = 6 };
+
+/// A struct across a keyed coder.
+///
+/// The anchored values here are structs of SIMD vectors, and `@encode` cannot describe one, so the
+/// bytes go across as bytes. The keyed pair is `encodeBytes:length:forKey:` and
+/// `decodeBytesForKey:returnedLength:`, and the length is checked on the way back because a coder
+/// that holds fewer bytes than the struct needs is a different class's archive, not this one's.
+static void CharonEncodeStruct(NSCoder *coder, NSString *key, const void *bytes, size_t size)
+{
+    [coder encodeBytes:(const uint8_t *)bytes length:size forKey:key];
+}
+
+static BOOL CharonDecodeStruct(NSCoder *coder, NSString *key, void *bytes, size_t size)
+{
+    NSUInteger length = 0;
+    const uint8_t *decoded = [coder decodeBytesForKey:key returnedLength:&length];
+    if (!decoded || length < size)
+        return NO;
+    memcpy(bytes, decoded, size);
+    return YES;
+}
+
 @interface ARConfiguration (CharonPrivate)
 /// The base class's own initialiser under a name a subclass can call. The SDK marks `-init`
 /// unavailable on `ARConfiguration` because the class is abstract, and an unavailable method is

@@ -18,7 +18,6 @@
 #import <SceneKit/SceneKit.h>
 
 NSString * const ARErrorDomain = @"com.apple.arkit.error";
-NSString * const ARReferenceObjectArchiveExtension = @"arobject";
 
 const SCNDebugOptions ARSCNDebugOptionShowFeaturePoints = (1 << 0);
 const SCNDebugOptions ARSCNDebugOptionShowWorldOrigin = (1 << 1);
@@ -76,15 +75,3 @@ ARBlendShapeLocation const ARBlendShapeLocationMouthUpperUpLeft = @"mouthUpperUp
 ARBlendShapeLocation const ARBlendShapeLocationMouthUpperUpRight = @"mouthUpperUpRight";
 ARBlendShapeLocation const ARBlendShapeLocationNoseSneerLeft = @"noseSneerLeft";
 ARBlendShapeLocation const ARBlendShapeLocationNoseSneerRight = @"noseSneerRight";
-ARBlendShapeLocation const ARBlendShapeLocationTongueOut = @"tongueOut";
-
-#pragma mark - The body's joints
-
-NSString * const ARSkeletonJointNameRoot = @"root";
-NSString * const ARSkeletonJointNameHead = @"head";
-NSString * const ARSkeletonJointNameLeftShoulder = @"left_shoulder";
-NSString * const ARSkeletonJointNameRightShoulder = @"right_shoulder";
-NSString * const ARSkeletonJointNameLeftHand = @"left_hand";
-NSString * const ARSkeletonJointNameRightHand = @"right_hand";
-NSString * const ARSkeletonJointNameLeftFoot = @"left_foot";
-NSString * const ARSkeletonJointNameRightFoot = @"right_foot";
