@@ -57,48 +57,73 @@ extension Read {
         for name in columnNames {
             let type = table.columnTypes[name]?.description ?? "none"
             kinds[name] = type
-            if let column = table[name]?.ints { integers[name] = column.map { $0 ?? .min } }
-            if let column = table[name]?.doubles { doubles[name] = column.map { $0 ?? .nan } }
-            if let column = table[name]?.strings { strings[name] = column.map { $0 ?? "<missing>" } }
+            if let column = table[name]?.ints { integers[name] = column.values.map { $0 } }
+            if let column = table[name]?.doubles { doubles[name] = column.values.map { $0 } }
+            if let column = table[name]?.strings { strings[name] = column.values.map { $0 } }
         }
     }
 
     /// The host's table, read. A cell the host holds as a missing value is written as the same
     /// sentinel the port's reader writes, so a missing value is compared to a missing value.
     init(host table: CreateML.MLDataTable) {
-        columnNames = table.columnNames
+        // The host's `columnNames` is its own collection type rather than an array, and its typed
+        // accessors are non-optional, so both are taken apart here and nowhere else.
+        columnNames = Array(table.columnNames)
         for name in columnNames {
             kinds[name] = table.columnTypes[name]?.description ?? "none"
-            integers[name] = table[name]!.ints.map { $0 ?? Int.min }
-            doubles[name] = table[name]!.doubles.map { $0 ?? .nan }
-            strings[name] = table[name]!.strings.map { $0 ?? "<missing>" }
+            integers[name] = hostIntegers(table, name)
+            doubles[name] = hostDoubles(table, name)
+            strings[name] = hostStrings(table, name)
         }
     }
 }
 
 /// A column of doubles out of either framework's table, with a missing value as a NaN.
+/// The sentinel a missing value is written as on both sides: a NaN in a numeric column and a
+/// bracketed word in a string one, so a missing value is compared to a missing value and never to a
+/// number or a word the other side happened to read.
+private let missing = "\u{0}missing"
+
 func portDoubles(_ table: PortCreateML.MLDataTable, _ name: String) -> [Double] {
-    table[name]?.doubles?.map { $0 ?? .nan } ?? []
+    guard let column = table[name]?.doubles else { return [] }
+    var out = [Double]()
+    for index in 0..<column.count { out.append(column[index] ?? .nan) }
+    return out
 }
 
 func hostDoubles(_ table: CreateML.MLDataTable, _ name: String) -> [Double] {
-    table[name]!.doubles.map { $0 ?? .nan }
+    guard let column = table[name].doubles else { return [] }
+    var out = [Double]()
+    for index in 0..<column.count { out.append(column[index] ?? .nan) }
+    return out
 }
 
 func portIntegers(_ table: PortCreateML.MLDataTable, _ name: String) -> [Int] {
-    table[name]?.ints?.map { $0 ?? Int.min } ?? []
+    guard let column = table[name]?.ints else { return [] }
+    var out = [Int]()
+    for index in 0..<column.count { out.append(column[index] ?? Int.min) }
+    return out
 }
 
 func hostIntegers(_ table: CreateML.MLDataTable, _ name: String) -> [Int] {
-    table[name]!.ints.map { $0 ?? Int.min }
+    guard let column = table[name].ints else { return [] }
+    var out = [Int]()
+    for index in 0..<column.count { out.append(column[index] ?? Int.min) }
+    return out
 }
 
 func portStrings(_ table: PortCreateML.MLDataTable, _ name: String) -> [String] {
-    table[name]?.strings?.map { $0 ?? "<missing>" } ?? []
+    guard let column = table[name]?.strings else { return [] }
+    var out = [String]()
+    for index in 0..<column.count { out.append(column[index] ?? missing) }
+    return out
 }
 
 func hostStrings(_ table: CreateML.MLDataTable, _ name: String) -> [String] {
-    table[name]!.strings.map { $0 ?? "<missing>" }
+    guard let column = table[name].strings else { return [] }
+    var out = [String]()
+    for index in 0..<column.count { out.append(column[index] ?? missing) }
+    return out
 }
 
 /// A summary of a numeric column, from either framework, with the value and whether it could be
@@ -114,7 +139,8 @@ func portSummary(_ table: PortCreateML.MLDataTable, _ name: String,
 
 func hostSummary(_ table: CreateML.MLDataTable, _ name: String,
                  _ read: (CreateML.MLDataColumn<Double>) -> Double?) -> Summary {
-    let value = read(table[name]!.doubles)
+    guard let column = table[name].doubles else { return Summary(value: .nan, valid: false) }
+    let value = read(column)
     return Summary(value: value ?? .nan, valid: value != nil)
 }
 
@@ -393,11 +419,11 @@ do {
     let hostForest = try CreateML.MLRandomForestRegressor(
         trainingData: try CreateML.MLDataTable(contentsOf: url), targetColumn: "target",
         featureColumns: ["junk", "x"],
-        parameters: CreateML.MLRandomForestRegressor.ModelParameters(numberOfTrees: 20, seed: 7))
+        parameters: CreateML.MLRandomForestRegressor.ModelParameters(maxIterations: 20, randomSeed: 7))
     let portForest = try PortCreateML.MLRandomForestRegressor(
         trainingData: try PortCreateML.MLDataTable(contentsOf: url), targetColumn: "target",
         featureColumns: ["junk", "x"],
-        parameters: .init(numberOfTrees: 20, seed: 7))
+        parameters: PortCreateML.MLRandomForestRegressor.ModelParameters(maxIterations: 20, randomSeed: 7))
     check("the port's forest finds the step as the host's does",
           portForest.trainingMetrics.rootMeanSquaredError < 1.0
               && hostForest.trainingMetrics.rootMeanSquaredError < 1.0
@@ -407,11 +433,11 @@ do {
     let hostBoosted = try CreateML.MLBoostedTreeRegressor(
         trainingData: try CreateML.MLDataTable(contentsOf: url), targetColumn: "target",
         featureColumns: ["junk", "x"],
-        parameters: CreateML.MLBoostedTreeRegressor.ModelParameters(numberOfTrees: 20, seed: 7))
+        parameters: CreateML.MLBoostedTreeRegressor.ModelParameters(maxIterations: 20, randomSeed: 7))
     let portBoosted = try PortCreateML.MLBoostedTreeRegressor(
         trainingData: try PortCreateML.MLDataTable(contentsOf: url), targetColumn: "target",
         featureColumns: ["junk", "x"],
-        parameters: .init(numberOfTrees: 20, seed: 7))
+        parameters: PortCreateML.MLBoostedTreeRegressor.ModelParameters(maxIterations: 20, randomSeed: 7))
     check("the port's boosted trees find the step as the host's does",
           portBoosted.trainingMetrics.rootMeanSquaredError < 1.0
               && hostBoosted.trainingMetrics.rootMeanSquaredError < 1.0
@@ -442,7 +468,7 @@ do {
     let portForestClassifier = try PortCreateML.MLRandomForestClassifier(
         trainingData: try PortCreateML.MLDataTable(contentsOf: labelledURL), targetColumn: "target",
         featureColumns: ["x"],
-        parameters: PortCreateML.MLRandomForestClassifier.ModelParameters(numberOfTrees: 20, seed: 7))
+        parameters: PortCreateML.MLRandomForestClassifier.ModelParameters(maxIterations: 20, randomSeed: 7))
     checkClose("the classification error of a random-forest classifier",
                portForestClassifier.trainingMetrics.classificationError,
                hostClassifier.trainingMetrics.classificationError, 0.05)
@@ -467,26 +493,26 @@ typealias MLCreateErrorAlias = PortCreateML.MLCreateError
 // MARK: - The kernel layer
 
 do {
-    let portA = PortCreateMLComponents.RowMatrix(values: [2, 0, 0, 3], rows: 2, columns: 2)
-    let portB = PortCreateMLComponents.RowMatrix(values: [1, 2, 3, 4], rows: 2, columns: 2)
+    let portA = PortCreateMLComponents.RowMatrix([2, 0, 0, 3], rows: 2, columns: 2)
+    let portB = PortCreateMLComponents.RowMatrix([1, 2, 3, 4], rows: 2, columns: 2)
     let portProduct = portA.multiplied(by: portB)
     checkEqual("a 2x2 product, row 0", portProduct.contiguousRow(0), [8.0, 4.0])
     checkEqual("a 2x2 product, row 1", portProduct.contiguousRow(1), [9.0, 12.0])
 
-    var system = PortCreateMLComponents.RowMatrix(values: [3, 1, 1, 2], rows: 2, columns: 2)
+    var system = PortCreateMLComponents.RowMatrix([3, 1, 1, 2], rows: 2, columns: 2)
     var right = [9.0, 8.0]
     checkEqual("a 2x2 LU solve reports no error",
                PortCreateMLComponents.RowMatrix.solve(&system, rightHandSides: &right), 0)
     checkClose("a 2x2 LU solve, x", right[0], 2, 1e-9)
     checkClose("a 2x2 LU solve, y", right[1], 3, 1e-9)
 
-    var singular = PortCreateMLComponents.RowMatrix(values: [1, 2, 2, 4], rows: 2, columns: 2)
+    var singular = PortCreateMLComponents.RowMatrix([1, 2, 2, 4], rows: 2, columns: 2)
     var ignored = [1.0, 1.0]
     let singularInfo = PortCreateMLComponents.RowMatrix.solve(&singular, rightHandSides: &ignored)
     check("a singular system is reported, not answered", singularInfo != 0,
           "LAPACK's own info came back as \(singularInfo)")
 
-    var normal = PortCreateMLComponents.RowMatrix(values: [2, 0, 0, 3], rows: 2, columns: 2)
+    var normal = PortCreateMLComponents.RowMatrix([2, 0, 0, 3], rows: 2, columns: 2)
     checkEqual("a Cholesky factor of a positive definite matrix reports no error",
                PortCreateMLComponents.RowMatrix.cholesky(&normal), 0)
     checkClose("a Cholesky factor, the lower triangle's off-diagonal", normal[1, 0], 0, 1e-12)
@@ -502,7 +528,7 @@ do {
 
     // The ridge least-squares fit, against the closed form of a one-column fit: with a single
     // feature the ridge solution is (x'x + p)^-1 x'y, which can be written down.
-    let design = PortCreateMLComponents.RowMatrix(values: [1, 2, 3, 4], rows: 4, columns: 1)
+    let design = PortCreateMLComponents.RowMatrix([1, 2, 3, 4], rows: 4, columns: 1)
     let (solution, info) = PortCreateMLComponents.RowMatrix.ridgeLeastSquares(
         design: design, targets: [2, 4, 6, 8], penalty: 0)
     checkEqual("a one-column ridge fit reports no error", info, 0)

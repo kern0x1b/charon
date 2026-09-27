@@ -217,7 +217,13 @@ public struct SplitSide {
         guard let order = labelOrder else {
             guard count > 1 else { return 0 }
             let n = Double(count)
-            let spread = (total * total / n - totalSquares) / (n - 1)
+            // `(sum of squares) - (sum)^2/n`, over `n - 1`: the unbiased variance, rearranged so
+            // that a running count, sum and sum-of-squares can produce it in constant time. The two
+            // terms are subtracted in this order because the first is the larger of the two for any
+            // column that has spread at all, and the difference is then clamped at zero — a sum of
+            // accumulated doubles can land a hair under the true variance, and a negative impurity
+            // would make every later split on the column look worthless.
+            let spread = (totalSquares - total * total / n) / (n - 1)
             return spread > 0 ? spread : 0
         }
         guard count > 0 else { return 1 }

@@ -603,16 +603,22 @@ extension MLDataColumn where Element: MLDataValueConvertible {
         return best
     }
 
-    /// The unbiased standard deviation: the sum of the squared deviations over `n - 1`, and nil for
+    /// The standard deviation of the column: the sum of the squared deviations over `n`, and nil for
     /// a column of one value, which has no spread to speak of.
+    ///
+    /// Over `n` and not over `n - 1`, which is a *measured* choice and not a slip. The host's own
+    /// `stdev()` on the eight prices of the differential answers 36.5718; the unbiased form answers
+    /// 39.0969, and the difference is a factor of `sqrt(8/7)`. The framework divides by the number of
+    /// values it was given, so this does too — a column of a training table is the whole population
+    /// the model will see of that feature, not a sample drawn from a larger one.
     public func stdev() -> Double? {
-        guard values.count > 1, let mean = mean() else { return nil }
+        guard !values.isEmpty, let mean = mean() else { return nil }
         var total = 0.0
         for value in values {
             guard let double = value.dataValue.doubleValue else { return nil }
             total += (double - mean) * (double - mean)
         }
-        return (total / Double(values.count - 1)).squareRoot()
+        return (total / Double(values.count)).squareRoot()
     }
 
     /// The name the release deprecated in favour of `stdev()`, kept because the surface has both and
@@ -623,4 +629,27 @@ extension MLDataColumn where Element: MLDataValueConvertible {
 extension MLDataColumn where Element: Comparable {
     public func min() -> Element? { values.min() }
     public func max() -> Element? { values.max() }
+}
+
+/// A typed column's own slice: the elements in a range of the column's rows, under the column's name.
+public struct MLDataColumnSlice<Element>: RandomAccessCollection {
+    public let name: String
+    public let elements: [Element]
+    public typealias Index = Int
+    public typealias Indices = Range<Int>
+    public typealias SubSequence = Slice<MLDataColumnSlice<Element>>
+    public typealias Iterator = IndexingIterator<MLDataColumnSlice<Element>>
+
+    public init(name: String, elements: [Element]) {
+        self.name = name
+        self.elements = elements
+    }
+
+    public var startIndex: Int { 0 }
+    public var endIndex: Int { elements.count }
+    public func index(after i: Int) -> Int { i + 1 }
+    public subscript(index: Int) -> Element { elements[index] }
+
+    /// The slice as a column of its own, so a caller can keep reading it as a column.
+    public var column: MLDataColumn<Element> { MLDataColumn(elements, name: name) }
 }

@@ -40,15 +40,19 @@ public enum MLDataValue: Equatable, Hashable, CustomStringConvertible, CustomDeb
         case sequence = 5
         case dictionary = 6
 
+        /// The kind's own name, spelled as the framework spells it: the *type* names, capitalised,
+        /// and not the case names. Read out of the host's own answers by the differential
+        /// (`tests/backports/host/createml`), which is the only thing that can settle it — a reader
+        /// sees "int" and "Int" in a log and cannot tell which one the framework prints.
         public var description: String {
             switch self {
-            case .invalid: return "invalid"
-            case .int: return "int"
-            case .double: return "double"
-            case .string: return "string"
-            case .multiArray: return "multiArray"
-            case .sequence: return "sequence"
-            case .dictionary: return "dictionary"
+            case .invalid: return "Invalid"
+            case .int: return "Int"
+            case .double: return "Double"
+            case .string: return "String"
+            case .multiArray: return "MultiArray"
+            case .sequence: return "Sequence"
+            case .dictionary: return "Dictionary"
             }
         }
     }
