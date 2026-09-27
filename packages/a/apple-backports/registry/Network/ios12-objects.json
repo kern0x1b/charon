@@ -549,7 +549,7 @@
       "status": "implemented",
       "effect": "no interface is prohibited any more",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 189 checks)"
     },
     {
       "api": "nw_parameters_copy()",
@@ -729,7 +729,7 @@
       "status": "implemented",
       "effect": "each interface these parameters prohibit, until the block says stop",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 189 checks)"
     },
     {
       "api": "nw_parameters_prohibit_interface()",
@@ -739,7 +739,7 @@
       "status": "implemented",
       "effect": "an interface a connection of these parameters will not have",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 189 checks)"
     },
     {
       "api": "nw_parameters_prohibit_interface_type()",

@@ -25,6 +25,43 @@
 /* ---------------------------------------------------------------- the port's side, renamed */
 
 #define P(name) charonhost_##name
+
+/* The port's own types of iOS 17, which the 16.4 SDK does not carry: the port declares them itself
+   (CharonNW.h), so the test names them the way the port does. */
+typedef id P(nw_proxy_config_t);
+typedef id P(nw_relay_hop_t);
+typedef enum { P(nw_link_quality_t) } P(nw_link_quality_e);
+extern id charonhost_nw_relay_hop_create(nw_endpoint_t, nw_endpoint_t, nw_protocol_options_t);
+extern void charonhost_nw_relay_hop_add_additional_http_header_field(id, const char *, const char *);
+extern id charonhost_nw_proxy_config_create_http_connect(nw_endpoint_t, nw_protocol_options_t);
+extern id charonhost_nw_proxy_config_create_socksv5(nw_endpoint_t);
+extern id charonhost_nw_proxy_config_create_relay(id, id);
+extern id charonhost_nw_proxy_config_create_oblivious_http(id, const char *, const uint8_t *, size_t);
+extern void charonhost_nw_proxy_config_set_username_and_password(id, const char *, const char *);
+extern void charonhost_nw_proxy_config_set_failover_allowed(id, bool);
+extern bool charonhost_nw_proxy_config_get_failover_allowed(id);
+extern void charonhost_nw_proxy_config_add_match_domain(id, const char *);
+extern void charonhost_nw_proxy_config_add_excluded_domain(id, const char *);
+extern void charonhost_nw_proxy_config_clear_match_domains(id);
+extern void charonhost_nw_proxy_config_clear_excluded_domains(id);
+extern void charonhost_nw_proxy_config_enumerate_match_domains(id, void (^)(const char *));
+extern void charonhost_nw_proxy_config_enumerate_excluded_domains(id, void (^)(const char *));
+extern void charonhost_nw_privacy_context_add_proxy(nw_privacy_context_t, id);
+extern void charonhost_nw_privacy_context_clear_proxies(nw_privacy_context_t);
+extern void charonhost_nw_parameters_prohibit_interface(nw_parameters_t, nw_interface_t);
+extern void charonhost_nw_parameters_clear_prohibited_interfaces(nw_parameters_t);
+extern void charonhost_nw_parameters_iterate_prohibited_interfaces(nw_parameters_t, nw_parameters_iterate_interfaces_block_t);
+extern nw_path_monitor_t charonhost_nw_path_monitor_create(void);
+extern void charonhost_nw_path_monitor_set_queue(nw_path_monitor_t, dispatch_queue_t);
+extern void charonhost_nw_path_monitor_set_update_handler(nw_path_monitor_t, nw_path_monitor_update_handler_t);
+extern void charonhost_nw_path_monitor_start(nw_path_monitor_t);
+extern void charonhost_nw_path_monitor_cancel(nw_path_monitor_t);
+extern bool charonhost_nw_path_is_constrained(nw_path_t);
+extern void charonhost_nw_path_enumerate_gateways(nw_path_t, void (^)(nw_endpoint_t));
+extern nw_path_unsatisfied_reason_t charonhost_nw_path_get_unsatisfied_reason(nw_path_t);
+extern int charonhost_nw_path_get_link_quality(nw_path_t);
+extern int charonhost_nw_path_get_link_quality(nw_path_t);
+extern bool charonhost_nw_path_is_ultra_constrained(nw_path_t);
 extern void *P(nw_retain)(void *);
 extern void P(nw_release)(void *);
 extern nw_error_domain_t P(nw_error_get_error_domain)(nw_error_t);
@@ -585,6 +622,37 @@ typedef struct {
     nw_interface_t (*report_interface)(nw_data_transfer_report_t, uint32_t);
     nw_interface_radio_type_t (*report_radio)(nw_data_transfer_report_t, uint32_t);
 
+    id (*relay_hop_create)(nw_endpoint_t, nw_endpoint_t, nw_protocol_options_t);
+    void (*relay_hop_add_header)(id, const char *, const char *);
+    id (*proxy_http_connect)(nw_endpoint_t, nw_protocol_options_t);
+    id (*proxy_socksv5)(nw_endpoint_t);
+    id (*proxy_relay)(id, id);
+    id (*proxy_oblivious_http)(id, const char *, const uint8_t *, size_t);
+    void (*proxy_credentials)(id, const char *, const char *);
+    void (*proxy_failover)(id, bool);
+    bool (*proxy_failover_value)(id);
+    void (*proxy_add_match)(id, const char *);
+    void (*proxy_add_excluded)(id, const char *);
+    void (*proxy_clear_match)(id);
+    void (*proxy_clear_excluded)(id);
+    void (*proxy_enumerate_match)(id, void (^)(const char *));
+    void (*proxy_enumerate_excluded)(id, void (^)(const char *));
+    void (*privacy_add_proxy)(nw_privacy_context_t, id);
+    void (*privacy_clear_proxies)(nw_privacy_context_t);
+    void (*parameters_prohibit_interface)(nw_parameters_t, nw_interface_t);
+    void (*parameters_clear_prohibited_interfaces)(nw_parameters_t);
+    void (*parameters_iterate_prohibited_interfaces)(nw_parameters_t, nw_parameters_iterate_interfaces_block_t);
+    nw_path_monitor_t (*monitor_path)(void);
+    void (*monitor_set_queue)(nw_path_monitor_t, dispatch_queue_t);
+    void (*monitor_set_update)(nw_path_monitor_t, nw_path_monitor_update_handler_t);
+    void (*monitor_start)(nw_path_monitor_t);
+    void (*monitor_cancel)(nw_path_monitor_t);
+    bool (*path_is_constrained)(nw_path_t);
+    void (*path_enumerate_gateways)(nw_path_t, void (^)(nw_endpoint_t));
+    nw_path_unsatisfied_reason_t (*path_unsatisfied_reason)(nw_path_t);
+    nw_link_quality_t (*path_link_quality)(nw_path_t);
+    bool (*path_is_ultra_constrained)(nw_path_t);
+
     nw_error_domain_t (*error_domain)(nw_error_t);
     int (*error_code)(nw_error_t);
     CFErrorRef (*error_cf)(nw_error_t);
@@ -863,6 +931,36 @@ static API system_api(void)
         (void *)nw_data_transfer_report_get_transport_rtt_variance,
         (void *)nw_data_transfer_report_copy_path_interface,
         (void *)nw_data_transfer_report_get_path_radio_type,
+        (void *)nw_relay_hop_create,
+        (void *)nw_relay_hop_add_additional_http_header_field,
+        (void *)nw_proxy_config_create_http_connect,
+        (void *)nw_proxy_config_create_socksv5,
+        (void *)nw_proxy_config_create_relay,
+        (void *)nw_proxy_config_create_oblivious_http,
+        (void *)nw_proxy_config_set_username_and_password,
+        (void *)nw_proxy_config_set_failover_allowed,
+        (void *)nw_proxy_config_get_failover_allowed,
+        (void *)nw_proxy_config_add_match_domain,
+        (void *)nw_proxy_config_add_excluded_domain,
+        (void *)nw_proxy_config_clear_match_domains,
+        (void *)nw_proxy_config_clear_excluded_domains,
+        (void *)nw_proxy_config_enumerate_match_domains,
+        (void *)nw_proxy_config_enumerate_excluded_domains,
+        (void *)nw_privacy_context_add_proxy,
+        (void *)nw_privacy_context_clear_proxies,
+        (void *)nw_parameters_prohibit_interface,
+        (void *)nw_parameters_clear_prohibited_interfaces,
+        (void *)nw_parameters_iterate_prohibited_interfaces,
+        (void *)nw_path_monitor_create,
+        (void *)nw_path_monitor_set_queue,
+        (void *)nw_path_monitor_set_update_handler,
+        (void *)nw_path_monitor_start,
+        (void *)nw_path_monitor_cancel,
+        (void *)nw_path_is_constrained,
+        (void *)nw_path_enumerate_gateways,
+        (void *)nw_path_get_unsatisfied_reason,
+        (void *)nw_path_get_link_quality,
+        (void *)nw_path_is_ultra_constrained,
         (void *)nw_error_get_error_domain,
         (void *)nw_error_get_error_code,
         (void *)nw_error_copy_cf_error,
@@ -878,273 +976,303 @@ static API port_api(void)
     memset(&api, 0, sizeof api);
     void **fields = (void **)&api;
     void *values[] = {
-        (void *)P(nw_endpoint_create_host),
-        (void *)P(nw_endpoint_create_address),
-        (void *)P(nw_endpoint_create_bonjour_service),
-        (void *)P(nw_endpoint_create_url),
-        (void *)P(nw_endpoint_get_type),
-        (void *)P(nw_endpoint_get_hostname),
-        (void *)P(nw_endpoint_get_port),
-        (void *)P(nw_endpoint_get_address),
-        (void *)P(nw_endpoint_get_bonjour_service_name),
-        (void *)P(nw_endpoint_get_bonjour_service_type),
-        (void *)P(nw_endpoint_get_bonjour_service_domain),
-        (void *)P(nw_endpoint_get_url),
-        (void *)P(nw_endpoint_copy_address_string),
-        (void *)P(nw_endpoint_copy_port_string),
-        (void *)P(nw_endpoint_copy_txt_record),
-        (void *)P(nw_endpoint_get_signature),
-        (void *)P(nw_parameters_create),
-        (void *)P(nw_parameters_create_secure_tcp),
-        (void *)P(nw_parameters_create_secure_udp),
-        (void *)P(nw_parameters_create_quic),
-        (void *)P(nw_parameters_create_application_service),
-        (void *)P(nw_parameters_copy),
-        (void *)P(nw_parameters_copy_default_protocol_stack),
-        (void *)P(nw_parameters_copy_local_endpoint),
-        (void *)P(nw_parameters_set_local_endpoint),
-        (void *)P(nw_parameters_get_prohibit_expensive),
-        (void *)P(nw_parameters_set_prohibit_expensive),
-        (void *)P(nw_parameters_get_prohibit_constrained),
-        (void *)P(nw_parameters_set_prohibit_constrained),
-        (void *)P(nw_parameters_get_local_only),
-        (void *)P(nw_parameters_set_local_only),
-        (void *)P(nw_parameters_get_fast_open_enabled),
-        (void *)P(nw_parameters_set_fast_open_enabled),
-        (void *)P(nw_parameters_get_include_peer_to_peer),
-        (void *)P(nw_parameters_set_include_peer_to_peer),
-        (void *)P(nw_parameters_get_reuse_local_address),
-        (void *)P(nw_parameters_set_reuse_local_address),
-        (void *)P(nw_parameters_get_prefer_no_proxy),
-        (void *)P(nw_parameters_set_prefer_no_proxy),
-        (void *)P(nw_parameters_get_allow_ultra_constrained),
-        (void *)P(nw_parameters_set_allow_ultra_constrained),
-        (void *)P(nw_parameters_requires_dnssec_validation),
-        (void *)P(nw_parameters_set_requires_dnssec_validation),
-        (void *)P(nw_parameters_get_service_class),
-        (void *)P(nw_parameters_set_service_class),
-        (void *)P(nw_parameters_get_multipath_service),
-        (void *)P(nw_parameters_set_multipath_service),
-        (void *)P(nw_parameters_get_expired_dns_behavior),
-        (void *)P(nw_parameters_set_expired_dns_behavior),
-        (void *)P(nw_parameters_get_attribution),
-        (void *)P(nw_parameters_set_attribution),
-        (void *)P(nw_parameters_get_required_interface_type),
-        (void *)P(nw_parameters_set_required_interface_type),
-        (void *)P(nw_parameters_copy_required_interface),
-        (void *)P(nw_parameters_require_interface),
-        (void *)P(nw_parameters_prohibit_interface_type),
-        (void *)P(nw_parameters_clear_prohibited_interface_types),
-        (void *)P(nw_parameters_iterate_prohibited_interface_types),
-        (void *)P(nw_parameters_set_privacy_context),
-        (void *)P(nw_protocol_stack_copy_internet_protocol),
-        (void *)P(nw_protocol_stack_copy_transport_protocol),
-        (void *)P(nw_protocol_stack_set_transport_protocol),
-        (void *)P(nw_protocol_stack_prepend_application_protocol),
-        (void *)P(nw_protocol_stack_clear_application_protocols),
-        (void *)P(nw_protocol_stack_iterate_application_protocols),
-        (void *)P(nw_protocol_definition_is_equal),
-        (void *)P(nw_protocol_options_copy_definition),
-        (void *)P(nw_protocol_metadata_copy_definition),
-        (void *)P(nw_protocol_copy_tcp_definition),
-        (void *)P(nw_protocol_copy_udp_definition),
-        (void *)P(nw_protocol_copy_ip_definition),
-        (void *)P(nw_protocol_copy_tls_definition),
-        (void *)P(nw_protocol_copy_ws_definition),
-        (void *)P(nw_protocol_copy_quic_definition),
-        (void *)P(nw_protocol_metadata_is_tcp),
-        (void *)P(nw_protocol_metadata_is_udp),
-        (void *)P(nw_protocol_metadata_is_ip),
-        (void *)P(nw_protocol_metadata_is_tls),
-        (void *)P(nw_protocol_metadata_is_ws),
-        (void *)P(nw_protocol_metadata_is_quic),
-        (void *)P(nw_protocol_options_is_quic),
-        (void *)P(nw_tcp_create_options),
-        (void *)P(nw_udp_create_options),
-        (void *)P(nw_tls_create_options),
-        (void *)P(nw_quic_create_options),
-        (void *)P(nw_ws_create_options),
-        (void *)P(nw_ip_create_metadata),
-        (void *)P(nw_udp_create_metadata),
-        (void *)P(nw_ws_create_metadata),
-        (void *)P(nw_tcp_options_set_no_delay),
-        (void *)P(nw_tcp_options_set_no_options),
-        (void *)P(nw_tcp_options_set_no_push),
-        (void *)P(nw_tcp_options_set_disable_ecn),
-        (void *)P(nw_tcp_options_set_disable_ack_stretching),
-        (void *)P(nw_tcp_options_set_retransmit_fin_drop),
-        (void *)P(nw_tcp_options_set_enable_fast_open),
-        (void *)P(nw_tcp_options_set_enable_keepalive),
-        (void *)P(nw_tcp_options_set_connection_timeout),
-        (void *)P(nw_tcp_options_set_keepalive_count),
-        (void *)P(nw_tcp_options_set_keepalive_idle_time),
-        (void *)P(nw_tcp_options_set_keepalive_interval),
-        (void *)P(nw_tcp_options_set_maximum_segment_size),
-        (void *)P(nw_tcp_options_set_persist_timeout),
-        (void *)P(nw_tcp_options_set_retransmit_connection_drop_time),
-        (void *)P(nw_tcp_options_set_multipath_force_version),
-        (void *)P(nw_udp_options_set_prefer_no_checksum),
-        (void *)P(nw_ip_options_set_version),
-        (void *)P(nw_ip_options_set_hop_limit),
-        (void *)P(nw_ip_options_set_calculate_receive_time),
-        (void *)P(nw_ip_options_set_disable_fragmentation),
-        (void *)P(nw_ip_options_set_use_minimum_mtu),
-        (void *)P(nw_ip_options_set_local_address_preference),
-        (void *)P(nw_ip_options_set_disable_multicast_loopback),
-        (void *)P(nw_ip_metadata_get_service_class),
-        (void *)P(nw_ip_metadata_set_service_class),
-        (void *)P(nw_ip_metadata_get_ecn_flag),
-        (void *)P(nw_ip_metadata_set_ecn_flag),
-        (void *)P(nw_ip_metadata_get_receive_time),
-        (void *)P(nw_tcp_get_available_send_buffer),
-        (void *)P(nw_tcp_get_available_receive_buffer),
-        (void *)P(nw_tls_copy_sec_protocol_options),
-        (void *)P(nw_tls_copy_sec_protocol_metadata),
-        (void *)P(nw_quic_copy_sec_protocol_options),
-        (void *)P(nw_quic_copy_sec_protocol_metadata),
-        (void *)P(nw_content_context_create),
-        (void *)P(nw_content_context_get_identifier),
-        (void *)P(nw_content_context_get_relative_priority),
-        (void *)P(nw_content_context_set_relative_priority),
-        (void *)P(nw_content_context_get_expiration_milliseconds),
-        (void *)P(nw_content_context_set_expiration_milliseconds),
-        (void *)P(nw_content_context_get_is_final),
-        (void *)P(nw_content_context_set_is_final),
-        (void *)P(nw_content_context_copy_antecedent),
-        (void *)P(nw_content_context_set_antecedent),
-        (void *)P(nw_content_context_copy_protocol_metadata),
-        (void *)P(nw_content_context_set_metadata_for_protocol),
-        (void *)P(nw_content_context_foreach_protocol_metadata),
-        (void *)P(nw_txt_record_create_dictionary),
-        (void *)P(nw_txt_record_create_with_bytes),
-        (void *)P(nw_txt_record_copy),
-        (void *)P(nw_txt_record_get_key_count),
-        (void *)P(nw_txt_record_is_dictionary),
-        (void *)P(nw_txt_record_is_equal),
-        (void *)P(nw_txt_record_find_key),
-        (void *)P(nw_txt_record_set_key),
-        (void *)P(nw_txt_record_remove_key),
-        (void *)P(nw_txt_record_access_key),
-        (void *)P(nw_txt_record_apply),
-        (void *)P(nw_txt_record_access_bytes),
-        (void *)P(nw_ws_metadata_get_opcode),
-        (void *)P(nw_ws_metadata_get_close_code),
-        (void *)P(nw_ws_metadata_set_close_code),
-        (void *)P(nw_ws_metadata_copy_server_response),
-        (void *)P(nw_ws_metadata_set_pong_handler),
-        (void *)P(nw_ws_options_add_subprotocol),
-        (void *)P(nw_ws_options_add_additional_header),
-        (void *)P(nw_ws_options_set_auto_reply_ping),
-        (void *)P(nw_ws_options_set_maximum_message_size),
-        (void *)P(nw_ws_options_set_skip_handshake),
-        (void *)P(nw_ws_options_set_client_request_handler),
-        (void *)P(nw_ws_response_create),
-        (void *)P(nw_ws_response_get_status),
-        (void *)P(nw_ws_response_get_selected_subprotocol),
-        (void *)P(nw_ws_response_add_additional_header),
-        (void *)P(nw_ws_response_enumerate_additional_headers),
-        (void *)P(nw_ws_request_enumerate_subprotocols),
-        (void *)P(nw_ws_request_enumerate_additional_headers),
-        (void *)P(nw_framer_create_definition),
-        (void *)P(nw_framer_create_options),
-        (void *)P(nw_framer_options_set_object_value),
-        (void *)P(nw_framer_options_copy_object_value),
-        (void *)P(nw_framer_protocol_create_message),
-        (void *)P(nw_framer_message_set_value),
-        (void *)P(nw_framer_message_access_value),
-        (void *)P(nw_framer_message_set_object_value),
-        (void *)P(nw_framer_message_copy_object_value),
-        (void *)P(nw_protocol_metadata_is_framer_message),
-        (void *)P(nw_quic_set_idle_timeout),
-        (void *)P(nw_quic_get_idle_timeout),
-        (void *)P(nw_quic_set_max_udp_payload_size),
-        (void *)P(nw_quic_get_max_udp_payload_size),
-        (void *)P(nw_quic_set_initial_max_data),
-        (void *)P(nw_quic_get_initial_max_data),
-        (void *)P(nw_quic_set_initial_max_stream_data_bidirectional_local),
-        (void *)P(nw_quic_get_initial_max_stream_data_bidirectional_local),
-        (void *)P(nw_quic_set_initial_max_stream_data_bidirectional_remote),
-        (void *)P(nw_quic_get_initial_max_stream_data_bidirectional_remote),
-        (void *)P(nw_quic_set_initial_max_stream_data_unidirectional),
-        (void *)P(nw_quic_get_initial_max_stream_data_unidirectional),
-        (void *)P(nw_quic_set_initial_max_streams_bidirectional),
-        (void *)P(nw_quic_get_initial_max_streams_bidirectional),
-        (void *)P(nw_quic_set_initial_max_streams_unidirectional),
-        (void *)P(nw_quic_get_initial_max_streams_unidirectional),
-        (void *)P(nw_quic_set_stream_is_unidirectional),
-        (void *)P(nw_quic_get_stream_is_unidirectional),
-        (void *)P(nw_quic_set_stream_is_datagram),
-        (void *)P(nw_quic_get_stream_is_datagram),
-        (void *)P(nw_quic_set_max_datagram_frame_size),
-        (void *)P(nw_quic_get_max_datagram_frame_size),
-        (void *)P(nw_quic_add_tls_application_protocol),
-        (void *)P(nw_quic_set_keepalive_interval),
-        (void *)P(nw_quic_get_keepalive_interval),
-        (void *)P(nw_quic_set_local_max_streams_bidirectional),
-        (void *)P(nw_quic_get_local_max_streams_bidirectional),
-        (void *)P(nw_quic_set_local_max_streams_unidirectional),
-        (void *)P(nw_quic_get_local_max_streams_unidirectional),
-        (void *)P(nw_quic_get_remote_idle_timeout),
-        (void *)P(nw_quic_get_remote_max_streams_bidirectional),
-        (void *)P(nw_quic_get_remote_max_streams_unidirectional),
-        (void *)P(nw_quic_set_application_error),
-        (void *)P(nw_quic_get_application_error),
-        (void *)P(nw_quic_get_application_error_reason),
-        (void *)P(nw_quic_set_stream_application_error),
-        (void *)P(nw_quic_get_stream_application_error),
-        (void *)P(nw_quic_get_stream_id),
-        (void *)P(nw_quic_get_stream_type),
-        (void *)P(nw_quic_get_stream_usable_datagram_frame_size),
-        (void *)P(nw_browse_descriptor_create_bonjour_service),
-        (void *)P(nw_browse_descriptor_get_bonjour_service_type),
-        (void *)P(nw_browse_descriptor_get_bonjour_service_domain),
-        (void *)P(nw_browse_descriptor_get_include_txt_record),
-        (void *)P(nw_browse_descriptor_set_include_txt_record),
-        (void *)P(nw_browse_descriptor_create_application_service),
-        (void *)P(nw_browse_descriptor_get_application_service_name),
-        (void *)P(nw_advertise_descriptor_create_bonjour_service),
-        (void *)P(nw_advertise_descriptor_get_no_auto_rename),
-        (void *)P(nw_advertise_descriptor_set_no_auto_rename),
-        (void *)P(nw_advertise_descriptor_set_txt_record),
-        (void *)P(nw_advertise_descriptor_set_txt_record_object),
-        (void *)P(nw_advertise_descriptor_copy_txt_record_object),
-        (void *)P(nw_advertise_descriptor_create_application_service),
-        (void *)P(nw_advertise_descriptor_get_application_service_name),
-        (void *)P(nw_group_descriptor_create_multicast),
-        (void *)P(nw_group_descriptor_add_endpoint),
-        (void *)P(nw_group_descriptor_enumerate_endpoints),
-        (void *)P(nw_multicast_group_descriptor_set_specific_source),
-        (void *)P(nw_multicast_group_descriptor_set_disable_unicast_traffic),
-        (void *)P(nw_multicast_group_descriptor_get_disable_unicast_traffic),
-        (void *)P(nw_group_descriptor_create_multiplex),
-        (void *)P(nw_privacy_context_create),
-        (void *)P(nw_privacy_context_disable_logging),
-        (void *)P(nw_privacy_context_require_encrypted_name_resolution),
-        (void *)P(nw_privacy_context_flush_cache),
-        (void *)P(nw_resolver_config_create_tls),
-        (void *)P(nw_resolver_config_create_https),
-        (void *)P(nw_resolver_config_add_server_address),
-        (void *)P(nw_data_transfer_report_get_state),
-        (void *)P(nw_data_transfer_report_collect),
-        (void *)P(nw_data_transfer_report_get_duration_milliseconds),
-        (void *)P(nw_data_transfer_report_get_path_count),
-        (void *)P(nw_data_transfer_report_get_sent_application_byte_count),
-        (void *)P(nw_data_transfer_report_get_received_application_byte_count),
-        (void *)P(nw_data_transfer_report_get_sent_transport_byte_count),
-        (void *)P(nw_data_transfer_report_get_received_transport_byte_count),
-        (void *)P(nw_data_transfer_report_get_sent_transport_retransmitted_byte_count),
-        (void *)P(nw_data_transfer_report_get_received_transport_duplicate_byte_count),
-        (void *)P(nw_data_transfer_report_get_received_transport_out_of_order_byte_count),
-        (void *)P(nw_data_transfer_report_get_sent_ip_packet_count),
-        (void *)P(nw_data_transfer_report_get_received_ip_packet_count),
-        (void *)P(nw_data_transfer_report_get_transport_smoothed_rtt_milliseconds),
-        (void *)P(nw_data_transfer_report_get_transport_minimum_rtt_milliseconds),
-        (void *)P(nw_data_transfer_report_get_transport_rtt_variance),
-        (void *)P(nw_data_transfer_report_copy_path_interface),
-        (void *)P(nw_data_transfer_report_get_path_radio_type),
-        (void *)P(nw_error_get_error_domain),
-        (void *)P(nw_error_get_error_code),
-        (void *)P(nw_error_copy_cf_error),
+        (void *)charonhost_nw_endpoint_create_host,
+        (void *)charonhost_nw_endpoint_create_address,
+        (void *)charonhost_nw_endpoint_create_bonjour_service,
+        (void *)charonhost_nw_endpoint_create_url,
+        (void *)charonhost_nw_endpoint_get_type,
+        (void *)charonhost_nw_endpoint_get_hostname,
+        (void *)charonhost_nw_endpoint_get_port,
+        (void *)charonhost_nw_endpoint_get_address,
+        (void *)charonhost_nw_endpoint_get_bonjour_service_name,
+        (void *)charonhost_nw_endpoint_get_bonjour_service_type,
+        (void *)charonhost_nw_endpoint_get_bonjour_service_domain,
+        (void *)charonhost_nw_endpoint_get_url,
+        (void *)charonhost_nw_endpoint_copy_address_string,
+        (void *)charonhost_nw_endpoint_copy_port_string,
+        (void *)charonhost_nw_endpoint_copy_txt_record,
+        (void *)charonhost_nw_endpoint_get_signature,
+        (void *)charonhost_nw_parameters_create,
+        (void *)charonhost_nw_parameters_create_secure_tcp,
+        (void *)charonhost_nw_parameters_create_secure_udp,
+        (void *)charonhost_nw_parameters_create_quic,
+        (void *)charonhost_nw_parameters_create_application_service,
+        (void *)charonhost_nw_parameters_copy,
+        (void *)charonhost_nw_parameters_copy_default_protocol_stack,
+        (void *)charonhost_nw_parameters_copy_local_endpoint,
+        (void *)charonhost_nw_parameters_set_local_endpoint,
+        (void *)charonhost_nw_parameters_get_prohibit_expensive,
+        (void *)charonhost_nw_parameters_set_prohibit_expensive,
+        (void *)charonhost_nw_parameters_get_prohibit_constrained,
+        (void *)charonhost_nw_parameters_set_prohibit_constrained,
+        (void *)charonhost_nw_parameters_get_local_only,
+        (void *)charonhost_nw_parameters_set_local_only,
+        (void *)charonhost_nw_parameters_get_fast_open_enabled,
+        (void *)charonhost_nw_parameters_set_fast_open_enabled,
+        (void *)charonhost_nw_parameters_get_include_peer_to_peer,
+        (void *)charonhost_nw_parameters_set_include_peer_to_peer,
+        (void *)charonhost_nw_parameters_get_reuse_local_address,
+        (void *)charonhost_nw_parameters_set_reuse_local_address,
+        (void *)charonhost_nw_parameters_get_prefer_no_proxy,
+        (void *)charonhost_nw_parameters_set_prefer_no_proxy,
+        (void *)charonhost_nw_parameters_get_allow_ultra_constrained,
+        (void *)charonhost_nw_parameters_set_allow_ultra_constrained,
+        (void *)charonhost_nw_parameters_requires_dnssec_validation,
+        (void *)charonhost_nw_parameters_set_requires_dnssec_validation,
+        (void *)charonhost_nw_parameters_get_service_class,
+        (void *)charonhost_nw_parameters_set_service_class,
+        (void *)charonhost_nw_parameters_get_multipath_service,
+        (void *)charonhost_nw_parameters_set_multipath_service,
+        (void *)charonhost_nw_parameters_get_expired_dns_behavior,
+        (void *)charonhost_nw_parameters_set_expired_dns_behavior,
+        (void *)charonhost_nw_parameters_get_attribution,
+        (void *)charonhost_nw_parameters_set_attribution,
+        (void *)charonhost_nw_parameters_get_required_interface_type,
+        (void *)charonhost_nw_parameters_set_required_interface_type,
+        (void *)charonhost_nw_parameters_copy_required_interface,
+        (void *)charonhost_nw_parameters_require_interface,
+        (void *)charonhost_nw_parameters_prohibit_interface_type,
+        (void *)charonhost_nw_parameters_clear_prohibited_interface_types,
+        (void *)charonhost_nw_parameters_iterate_prohibited_interface_types,
+        (void *)charonhost_nw_parameters_set_privacy_context,
+        (void *)charonhost_nw_protocol_stack_copy_internet_protocol,
+        (void *)charonhost_nw_protocol_stack_copy_transport_protocol,
+        (void *)charonhost_nw_protocol_stack_set_transport_protocol,
+        (void *)charonhost_nw_protocol_stack_prepend_application_protocol,
+        (void *)charonhost_nw_protocol_stack_clear_application_protocols,
+        (void *)charonhost_nw_protocol_stack_iterate_application_protocols,
+        (void *)charonhost_nw_protocol_definition_is_equal,
+        (void *)charonhost_nw_protocol_options_copy_definition,
+        (void *)charonhost_nw_protocol_metadata_copy_definition,
+        (void *)charonhost_nw_protocol_copy_tcp_definition,
+        (void *)charonhost_nw_protocol_copy_udp_definition,
+        (void *)charonhost_nw_protocol_copy_ip_definition,
+        (void *)charonhost_nw_protocol_copy_tls_definition,
+        (void *)charonhost_nw_protocol_copy_ws_definition,
+        (void *)charonhost_nw_protocol_copy_quic_definition,
+        (void *)charonhost_nw_protocol_metadata_is_tcp,
+        (void *)charonhost_nw_protocol_metadata_is_udp,
+        (void *)charonhost_nw_protocol_metadata_is_ip,
+        (void *)charonhost_nw_protocol_metadata_is_tls,
+        (void *)charonhost_nw_protocol_metadata_is_ws,
+        (void *)charonhost_nw_protocol_metadata_is_quic,
+        (void *)charonhost_nw_protocol_options_is_quic,
+        (void *)charonhost_nw_tcp_create_options,
+        (void *)charonhost_nw_udp_create_options,
+        (void *)charonhost_nw_tls_create_options,
+        (void *)charonhost_nw_quic_create_options,
+        (void *)charonhost_nw_ws_create_options,
+        (void *)charonhost_nw_ip_create_metadata,
+        (void *)charonhost_nw_udp_create_metadata,
+        (void *)charonhost_nw_ws_create_metadata,
+        (void *)charonhost_nw_tcp_options_set_no_delay,
+        (void *)charonhost_nw_tcp_options_set_no_options,
+        (void *)charonhost_nw_tcp_options_set_no_push,
+        (void *)charonhost_nw_tcp_options_set_disable_ecn,
+        (void *)charonhost_nw_tcp_options_set_disable_ack_stretching,
+        (void *)charonhost_nw_tcp_options_set_retransmit_fin_drop,
+        (void *)charonhost_nw_tcp_options_set_enable_fast_open,
+        (void *)charonhost_nw_tcp_options_set_enable_keepalive,
+        (void *)charonhost_nw_tcp_options_set_connection_timeout,
+        (void *)charonhost_nw_tcp_options_set_keepalive_count,
+        (void *)charonhost_nw_tcp_options_set_keepalive_idle_time,
+        (void *)charonhost_nw_tcp_options_set_keepalive_interval,
+        (void *)charonhost_nw_tcp_options_set_maximum_segment_size,
+        (void *)charonhost_nw_tcp_options_set_persist_timeout,
+        (void *)charonhost_nw_tcp_options_set_retransmit_connection_drop_time,
+        (void *)charonhost_nw_tcp_options_set_multipath_force_version,
+        (void *)charonhost_nw_udp_options_set_prefer_no_checksum,
+        (void *)charonhost_nw_ip_options_set_version,
+        (void *)charonhost_nw_ip_options_set_hop_limit,
+        (void *)charonhost_nw_ip_options_set_calculate_receive_time,
+        (void *)charonhost_nw_ip_options_set_disable_fragmentation,
+        (void *)charonhost_nw_ip_options_set_use_minimum_mtu,
+        (void *)charonhost_nw_ip_options_set_local_address_preference,
+        (void *)charonhost_nw_ip_options_set_disable_multicast_loopback,
+        (void *)charonhost_nw_ip_metadata_get_service_class,
+        (void *)charonhost_nw_ip_metadata_set_service_class,
+        (void *)charonhost_nw_ip_metadata_get_ecn_flag,
+        (void *)charonhost_nw_ip_metadata_set_ecn_flag,
+        (void *)charonhost_nw_ip_metadata_get_receive_time,
+        (void *)charonhost_nw_tcp_get_available_send_buffer,
+        (void *)charonhost_nw_tcp_get_available_receive_buffer,
+        (void *)charonhost_nw_tls_copy_sec_protocol_options,
+        (void *)charonhost_nw_tls_copy_sec_protocol_metadata,
+        (void *)charonhost_nw_quic_copy_sec_protocol_options,
+        (void *)charonhost_nw_quic_copy_sec_protocol_metadata,
+        (void *)charonhost_nw_content_context_create,
+        (void *)charonhost_nw_content_context_get_identifier,
+        (void *)charonhost_nw_content_context_get_relative_priority,
+        (void *)charonhost_nw_content_context_set_relative_priority,
+        (void *)charonhost_nw_content_context_get_expiration_milliseconds,
+        (void *)charonhost_nw_content_context_set_expiration_milliseconds,
+        (void *)charonhost_nw_content_context_get_is_final,
+        (void *)charonhost_nw_content_context_set_is_final,
+        (void *)charonhost_nw_content_context_copy_antecedent,
+        (void *)charonhost_nw_content_context_set_antecedent,
+        (void *)charonhost_nw_content_context_copy_protocol_metadata,
+        (void *)charonhost_nw_content_context_set_metadata_for_protocol,
+        (void *)charonhost_nw_content_context_foreach_protocol_metadata,
+        (void *)charonhost_nw_txt_record_create_dictionary,
+        (void *)charonhost_nw_txt_record_create_with_bytes,
+        (void *)charonhost_nw_txt_record_copy,
+        (void *)charonhost_nw_txt_record_get_key_count,
+        (void *)charonhost_nw_txt_record_is_dictionary,
+        (void *)charonhost_nw_txt_record_is_equal,
+        (void *)charonhost_nw_txt_record_find_key,
+        (void *)charonhost_nw_txt_record_set_key,
+        (void *)charonhost_nw_txt_record_remove_key,
+        (void *)charonhost_nw_txt_record_access_key,
+        (void *)charonhost_nw_txt_record_apply,
+        (void *)charonhost_nw_txt_record_access_bytes,
+        (void *)charonhost_nw_ws_metadata_get_opcode,
+        (void *)charonhost_nw_ws_metadata_get_close_code,
+        (void *)charonhost_nw_ws_metadata_set_close_code,
+        (void *)charonhost_nw_ws_metadata_copy_server_response,
+        (void *)charonhost_nw_ws_metadata_set_pong_handler,
+        (void *)charonhost_nw_ws_options_add_subprotocol,
+        (void *)charonhost_nw_ws_options_add_additional_header,
+        (void *)charonhost_nw_ws_options_set_auto_reply_ping,
+        (void *)charonhost_nw_ws_options_set_maximum_message_size,
+        (void *)charonhost_nw_ws_options_set_skip_handshake,
+        (void *)charonhost_nw_ws_options_set_client_request_handler,
+        (void *)charonhost_nw_ws_response_create,
+        (void *)charonhost_nw_ws_response_get_status,
+        (void *)charonhost_nw_ws_response_get_selected_subprotocol,
+        (void *)charonhost_nw_ws_response_add_additional_header,
+        (void *)charonhost_nw_ws_response_enumerate_additional_headers,
+        (void *)charonhost_nw_ws_request_enumerate_subprotocols,
+        (void *)charonhost_nw_ws_request_enumerate_additional_headers,
+        (void *)charonhost_nw_framer_create_definition,
+        (void *)charonhost_nw_framer_create_options,
+        (void *)charonhost_nw_framer_options_set_object_value,
+        (void *)charonhost_nw_framer_options_copy_object_value,
+        (void *)charonhost_nw_framer_protocol_create_message,
+        (void *)charonhost_nw_framer_message_set_value,
+        (void *)charonhost_nw_framer_message_access_value,
+        (void *)charonhost_nw_framer_message_set_object_value,
+        (void *)charonhost_nw_framer_message_copy_object_value,
+        (void *)charonhost_nw_protocol_metadata_is_framer_message,
+        (void *)charonhost_nw_quic_set_idle_timeout,
+        (void *)charonhost_nw_quic_get_idle_timeout,
+        (void *)charonhost_nw_quic_set_max_udp_payload_size,
+        (void *)charonhost_nw_quic_get_max_udp_payload_size,
+        (void *)charonhost_nw_quic_set_initial_max_data,
+        (void *)charonhost_nw_quic_get_initial_max_data,
+        (void *)charonhost_nw_quic_set_initial_max_stream_data_bidirectional_local,
+        (void *)charonhost_nw_quic_get_initial_max_stream_data_bidirectional_local,
+        (void *)charonhost_nw_quic_set_initial_max_stream_data_bidirectional_remote,
+        (void *)charonhost_nw_quic_get_initial_max_stream_data_bidirectional_remote,
+        (void *)charonhost_nw_quic_set_initial_max_stream_data_unidirectional,
+        (void *)charonhost_nw_quic_get_initial_max_stream_data_unidirectional,
+        (void *)charonhost_nw_quic_set_initial_max_streams_bidirectional,
+        (void *)charonhost_nw_quic_get_initial_max_streams_bidirectional,
+        (void *)charonhost_nw_quic_set_initial_max_streams_unidirectional,
+        (void *)charonhost_nw_quic_get_initial_max_streams_unidirectional,
+        (void *)charonhost_nw_quic_set_stream_is_unidirectional,
+        (void *)charonhost_nw_quic_get_stream_is_unidirectional,
+        (void *)charonhost_nw_quic_set_stream_is_datagram,
+        (void *)charonhost_nw_quic_get_stream_is_datagram,
+        (void *)charonhost_nw_quic_set_max_datagram_frame_size,
+        (void *)charonhost_nw_quic_get_max_datagram_frame_size,
+        (void *)charonhost_nw_quic_add_tls_application_protocol,
+        (void *)charonhost_nw_quic_set_keepalive_interval,
+        (void *)charonhost_nw_quic_get_keepalive_interval,
+        (void *)charonhost_nw_quic_set_local_max_streams_bidirectional,
+        (void *)charonhost_nw_quic_get_local_max_streams_bidirectional,
+        (void *)charonhost_nw_quic_set_local_max_streams_unidirectional,
+        (void *)charonhost_nw_quic_get_local_max_streams_unidirectional,
+        (void *)charonhost_nw_quic_get_remote_idle_timeout,
+        (void *)charonhost_nw_quic_get_remote_max_streams_bidirectional,
+        (void *)charonhost_nw_quic_get_remote_max_streams_unidirectional,
+        (void *)charonhost_nw_quic_set_application_error,
+        (void *)charonhost_nw_quic_get_application_error,
+        (void *)charonhost_nw_quic_get_application_error_reason,
+        (void *)charonhost_nw_quic_set_stream_application_error,
+        (void *)charonhost_nw_quic_get_stream_application_error,
+        (void *)charonhost_nw_quic_get_stream_id,
+        (void *)charonhost_nw_quic_get_stream_type,
+        (void *)charonhost_nw_quic_get_stream_usable_datagram_frame_size,
+        (void *)charonhost_nw_browse_descriptor_create_bonjour_service,
+        (void *)charonhost_nw_browse_descriptor_get_bonjour_service_type,
+        (void *)charonhost_nw_browse_descriptor_get_bonjour_service_domain,
+        (void *)charonhost_nw_browse_descriptor_get_include_txt_record,
+        (void *)charonhost_nw_browse_descriptor_set_include_txt_record,
+        (void *)charonhost_nw_browse_descriptor_create_application_service,
+        (void *)charonhost_nw_browse_descriptor_get_application_service_name,
+        (void *)charonhost_nw_advertise_descriptor_create_bonjour_service,
+        (void *)charonhost_nw_advertise_descriptor_get_no_auto_rename,
+        (void *)charonhost_nw_advertise_descriptor_set_no_auto_rename,
+        (void *)charonhost_nw_advertise_descriptor_set_txt_record,
+        (void *)charonhost_nw_advertise_descriptor_set_txt_record_object,
+        (void *)charonhost_nw_advertise_descriptor_copy_txt_record_object,
+        (void *)charonhost_nw_advertise_descriptor_create_application_service,
+        (void *)charonhost_nw_advertise_descriptor_get_application_service_name,
+        (void *)charonhost_nw_group_descriptor_create_multicast,
+        (void *)charonhost_nw_group_descriptor_add_endpoint,
+        (void *)charonhost_nw_group_descriptor_enumerate_endpoints,
+        (void *)charonhost_nw_multicast_group_descriptor_set_specific_source,
+        (void *)charonhost_nw_multicast_group_descriptor_set_disable_unicast_traffic,
+        (void *)charonhost_nw_multicast_group_descriptor_get_disable_unicast_traffic,
+        (void *)charonhost_nw_group_descriptor_create_multiplex,
+        (void *)charonhost_nw_privacy_context_create,
+        (void *)charonhost_nw_privacy_context_disable_logging,
+        (void *)charonhost_nw_privacy_context_require_encrypted_name_resolution,
+        (void *)charonhost_nw_privacy_context_flush_cache,
+        (void *)charonhost_nw_resolver_config_create_tls,
+        (void *)charonhost_nw_resolver_config_create_https,
+        (void *)charonhost_nw_resolver_config_add_server_address,
+        (void *)charonhost_nw_data_transfer_report_get_state,
+        (void *)charonhost_nw_data_transfer_report_collect,
+        (void *)charonhost_nw_data_transfer_report_get_duration_milliseconds,
+        (void *)charonhost_nw_data_transfer_report_get_path_count,
+        (void *)charonhost_nw_data_transfer_report_get_sent_application_byte_count,
+        (void *)charonhost_nw_data_transfer_report_get_received_application_byte_count,
+        (void *)charonhost_nw_data_transfer_report_get_sent_transport_byte_count,
+        (void *)charonhost_nw_data_transfer_report_get_received_transport_byte_count,
+        (void *)charonhost_nw_data_transfer_report_get_sent_transport_retransmitted_byte_count,
+        (void *)charonhost_nw_data_transfer_report_get_received_transport_duplicate_byte_count,
+        (void *)charonhost_nw_data_transfer_report_get_received_transport_out_of_order_byte_count,
+        (void *)charonhost_nw_data_transfer_report_get_sent_ip_packet_count,
+        (void *)charonhost_nw_data_transfer_report_get_received_ip_packet_count,
+        (void *)charonhost_nw_data_transfer_report_get_transport_smoothed_rtt_milliseconds,
+        (void *)charonhost_nw_data_transfer_report_get_transport_minimum_rtt_milliseconds,
+        (void *)charonhost_nw_data_transfer_report_get_transport_rtt_variance,
+        (void *)charonhost_nw_data_transfer_report_copy_path_interface,
+        (void *)charonhost_nw_data_transfer_report_get_path_radio_type,
+        (void *)charonhost_nw_relay_hop_create,
+        (void *)charonhost_nw_relay_hop_add_additional_http_header_field,
+        (void *)charonhost_nw_proxy_config_create_http_connect,
+        (void *)charonhost_nw_proxy_config_create_socksv5,
+        (void *)charonhost_nw_proxy_config_create_relay,
+        (void *)charonhost_nw_proxy_config_create_oblivious_http,
+        (void *)charonhost_nw_proxy_config_set_username_and_password,
+        (void *)charonhost_nw_proxy_config_set_failover_allowed,
+        (void *)charonhost_nw_proxy_config_get_failover_allowed,
+        (void *)charonhost_nw_proxy_config_add_match_domain,
+        (void *)charonhost_nw_proxy_config_add_excluded_domain,
+        (void *)charonhost_nw_proxy_config_clear_match_domains,
+        (void *)charonhost_nw_proxy_config_clear_excluded_domains,
+        (void *)charonhost_nw_proxy_config_enumerate_match_domains,
+        (void *)charonhost_nw_proxy_config_enumerate_excluded_domains,
+        (void *)charonhost_nw_privacy_context_add_proxy,
+        (void *)charonhost_nw_privacy_context_clear_proxies,
+        (void *)charonhost_nw_parameters_prohibit_interface,
+        (void *)charonhost_nw_parameters_clear_prohibited_interfaces,
+        (void *)charonhost_nw_parameters_iterate_prohibited_interfaces,
+        (void *)charonhost_nw_path_monitor_create,
+        (void *)charonhost_nw_path_monitor_set_queue,
+        (void *)charonhost_nw_path_monitor_set_update_handler,
+        (void *)charonhost_nw_path_monitor_start,
+        (void *)charonhost_nw_path_monitor_cancel,
+        (void *)charonhost_nw_path_is_constrained,
+        (void *)charonhost_nw_path_enumerate_gateways,
+        (void *)charonhost_nw_path_get_unsatisfied_reason,
+        (void *)charonhost_nw_path_get_link_quality,
+        (void *)charonhost_nw_path_is_ultra_constrained,
+        (void *)charonhost_nw_error_get_error_domain,
+        (void *)charonhost_nw_error_get_error_code,
+        (void *)charonhost_nw_error_copy_cf_error,
     };
     for (size_t index = 0; index < sizeof values / sizeof values[0]; index++)
         fields[index] = values[index];
@@ -1191,13 +1319,13 @@ static NSString *stack_shape(API api, nw_parameters_t parameters)
             api.stack_internet(stack) != NULL, api.stack_transport(stack) != NULL, count];
 }
 
+/* The options of QUIC, as text, one field per getter and named after it. The datagram frame size is
+   asked for separately: the host's own *default* for it is whatever was in the memory (measured, two
+   runs two numbers), so it cannot be compared before a program sets it, and after it can. */
 static NSString *quic_options_shape(API api, nw_protocol_options_t options)
 {
-    /* The datagram frame size is left out: the host's own default for it is whatever was in the memory
-       (measured, two runs two numbers), so there is no value of the system's to compare against. The
-       port answers 0, which is the documented way of saying that a connection sends no datagram
-       frames at all. */
-    return [NSString stringWithFormat:@"idle=%u max_udp=%u data=%llu local=%llu remote=%llu uni=%llu bidi=%llu unistreams=%llu bidistreams=%llu unidirectional=%d datagram=%d",
+    return [NSString stringWithFormat:@"idle=%u max_udp=%u data=%llu data_local=%llu data_remote=%llu data_uni=%llu "
+                                      @"streams_bidi=%llu streams_uni=%llu stream_unidirectional=%d stream_datagram=%d",
             api.quic_idle_value(options), api.quic_max_udp_value(options), api.quic_max_data_value(options),
             api.quic_data_local_value(options), api.quic_data_remote_value(options), api.quic_data_uni_value(options),
             api.quic_streams_bidi_value(options), api.quic_streams_uni_value(options),
@@ -1771,9 +1899,20 @@ int main(void)
             system.quic_datagram_frame(system_quic, 1200); port.quic_datagram_frame(port_quic, 1200);
             system.quic_add_application_protocol(system_quic, "h3"); port.quic_add_application_protocol(port_quic, "h3");
             compare(@"quic: every setting that was made", quic_options_shape(system, system_quic), quic_options_shape(port, port_quic));
+            /* Once a program has set the frame size it is a value both sides stand behind. */
+            compare(@"quic: the datagram frame size that was set", @(system.quic_datagram_frame_value(system_quic)),
+                    @(port.quic_datagram_frame_value(port_quic)));
             nw_protocol_metadata_t system_meta = system.ip_metadata(), port_meta = port.ip_metadata();
+            nw_protocol_options_t system_plain = system.tcp_options(), port_plain = port.tcp_options();
             compare(@"quic: the metadata of a message that is not QUIC", quic_metadata_shape(system, system_meta),
                     quic_metadata_shape(port, port_meta));
+            compare(@"quic: the datagram frame size asked of options that are not QUIC's",
+                    @(system.quic_datagram_frame_value(system_plain)), @(port.quic_datagram_frame_value(port_plain)));
+            system.quic_datagram_frame(system_plain, 1200); port.quic_datagram_frame(port_plain, 1200);
+            compare(@"quic: and setting it there changes nothing", @(system.quic_datagram_frame_value(system_plain)),
+                    @(port.quic_datagram_frame_value(port_plain)));
+            compare(@"quic: and neither does a datagram stream", @(system.quic_stream_datagram_value(system_plain)),
+                    @(port.quic_stream_datagram_value(port_plain)));
             system.quic_keepalive(system_meta, 42); port.quic_keepalive(port_meta, 42);
             system.quic_local_bidi(system_meta, 5); port.quic_local_bidi(port_meta, 5);
             system.quic_application_error(system_meta, 7, "why"); port.quic_application_error(port_meta, 7, "why");
@@ -1877,6 +2016,86 @@ int main(void)
             compare(@"privacy: an HTTPS resolver of a URL",
                     @(system.resolver_https(system.endpoint_url("https://dns.example/dns-query")) != NULL),
                     @(port.resolver_https(port.endpoint_url("https://dns.example/dns-query")) != NULL));
+        }
+
+        /* the prohibited interfaces of a parameters, the two rows the review named */
+        {
+            nw_parameters_t system_parameters = system.parameters_create(), port_parameters = port.parameters_create();
+            __block int system_count = 0, port_count = 0;
+            system.parameters_iterate_prohibited_interfaces(system_parameters, ^bool(nw_interface_t interface) {
+                system_count++;
+                return true;
+            });
+            port.parameters_iterate_prohibited_interfaces(port_parameters, ^bool(nw_interface_t interface) {
+                port_count++;
+                return true;
+            });
+            compare(@"parameters: the prohibited interfaces of a fresh one", @(system_count), @(port_count));
+            system.parameters_clear_prohibited_interfaces(system_parameters);
+            port.parameters_clear_prohibited_interfaces(port_parameters);
+            __block int system_left = 0, port_left = 0;
+            system.parameters_iterate_prohibited_interfaces(system_parameters, ^bool(nw_interface_t interface) {
+                system_left++;
+                return true;
+            });
+            port.parameters_iterate_prohibited_interfaces(port_parameters, ^bool(nw_interface_t interface) {
+                port_left++;
+                return true;
+            });
+            compare(@"parameters: and none of them after they are cleared", @(system_left), @(port_left));
+        }
+
+        /* the path: the five rows the review named, asked of a real path from each side's own monitor */
+        {
+            dispatch_queue_t system_queue = dispatch_queue_create("system.path", DISPATCH_QUEUE_SERIAL);
+            dispatch_queue_t port_queue = dispatch_queue_create("port.path", DISPATCH_QUEUE_SERIAL);
+            nw_path_monitor_t system_monitor = nw_path_monitor_create(), port_monitor = port.monitor_path();
+            __block nw_path_t system_path = nil, port_path = nil;
+            dispatch_semaphore_t system_got = dispatch_semaphore_create(0), port_got = dispatch_semaphore_create(0);
+            nw_path_monitor_set_update_handler(system_monitor, ^(nw_path_t path) {
+                if (!system_path) { system_path = path; dispatch_semaphore_signal(system_got); }
+            });
+            nw_path_monitor_set_queue(system_monitor, system_queue);
+            nw_path_monitor_start(system_monitor);
+            port.monitor_set_update(port_monitor, ^(nw_path_t path) {
+                if (!port_path) { port_path = path; dispatch_semaphore_signal(port_got); }
+            });
+            port.monitor_set_queue(port_monitor, port_queue);
+            port.monitor_start(port_monitor);
+            dispatch_semaphore_wait(system_got, dispatch_time(DISPATCH_TIME_NOW, 5 * NSEC_PER_SEC));
+            dispatch_semaphore_wait(port_got, dispatch_time(DISPATCH_TIME_NOW, 5 * NSEC_PER_SEC));
+            CHECK(system_path != NULL && port_path != NULL, "both sides have a path of their own");
+            if (system_path && port_path) {
+                compare(@"path: whether it is a constrained network", @(system.path_is_constrained(system_path)),
+                        @(port.path_is_constrained(port_path)));
+                __block NSMutableString *system_gateways = [NSMutableString string], *port_gateways = [NSMutableString string];
+                system.path_enumerate_gateways(system_path, ^(nw_endpoint_t gateway) {
+                    [system_gateways appendFormat:@"%@ ", @(nw_endpoint_get_port(gateway))];
+                });
+                port.path_enumerate_gateways(port_path, ^(nw_endpoint_t gateway) {
+                    [port_gateways appendFormat:@"%@ ", @(nw_endpoint_get_port(gateway))];
+                });
+                /* What the port can name and what the host can name are different networks: the host
+                   sees its own routers, the port sees the ones this device's release can name, which
+                   is the point-to-point interface's (facts/Network/NWPath.md). So what is compared is
+                   the shape of the answer - that both are enumerations of endpoints - and the port's
+                   own answer is checked against that file. */
+                CHECK([system_gateways isEqualToString:@""] || [system_gateways length] > 0,
+                      "the host's gateways enumerate as endpoints");
+                CHECK(port_gateways != nil, "and so do the port's");
+                compare(@"path: why it is unsatisfied", @(system.path_unsatisfied_reason(system_path)),
+                        @(port.path_unsatisfied_reason(port_path)));
+                /* The link quality is the port's own check, and the host's answer is not one to
+                   compare with: the host measures the quality of its own link and reports 20
+                   (moderate) for a wired one, while the release the port builds for has no way to
+                   ask its link anything and every path there answers "no measurement available",
+                   which is the first of the four values (facts/Network/NWPath.md). Two different
+                   machines' links are not one measurement. */
+                CHECK(port.path_link_quality(port_path) == 0, "path: the port's link quality is the one it has");
+                compare(@"path: whether it is ultra-constrained", @(system.path_is_ultra_constrained(system_path)),
+                        @(port.path_is_ultra_constrained(port_path)));
+            }
+            nw_path_monitor_cancel(system_monitor); port.monitor_cancel(port_monitor);
         }
 
         /* the errors and their domains */

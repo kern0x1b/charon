@@ -83,6 +83,28 @@ These are the answers a program can see that the header alone would not have giv
   what the header says a report that is not collected answers. The connection writes its counters into
   the report when it hands it out, so the numbers appear when it is collected and do not change after.
 
+## What each row was measured against, and the rows a comparison cannot be made for
+
+Every entry's `source` names what was done for that row, and the families where a comparison with the
+host is not what happened say so in their own words rather than in a note elsewhere:
+
+- **The proxy configuration, the relay hops and the privacy context's proxies (19 rows)** are the port's
+  own checks, `tests/backports/host/network-proxy`, 20 checks, every call of the family. They are not a
+  host differential because the host's own Network cannot be driven through this family in this
+  build: it answers the five factories - each of which logs its own refusal for a missing argument and
+  carries on - and then traps with `EXC_BREAKPOINT` inside `objc_opt_respondsToSelector`, at two
+  different points of a run, so it is not one bad argument. Two of the rows, the two domain
+  enumerators, are called by the test that adds and clears a domain and stop short of the enumerators:
+  the same sequence in a program that links the same objects does not trap, so the trap is in how that
+  harness reaches them - measured, not diagnosed, and the rows say so.
+- **The path (5 rows)** are compared over a real path of each side's own monitor, both started and both
+  paths read. The gateways' *enumeration* is the port's own shape, because what each side can name is
+  its own network - the host names its own routers, the port names the ones this release's ioctl can -
+  and the link quality is the port's own check, because two different machines' links are not one
+  measurement (`NWPath.md`).
+- **The framer's engine and the two reports** are the connection's, and are compared in
+  `tests/backports/host/network-connection` over a real loopback pair (`NWConnection.md`).
+
 ## Where the port answers for itself, and says so
 
 - **`nw_content_context_create(NULL)` traps on the host** (measured: the process dies of an
@@ -146,7 +168,9 @@ could not take, and that is the whole of the gap.
 ## What the port has no transport for, and what that means for these calls
 
 Three of the protocols these objects configure have no transport in this port: **QUIC**, **WebSocket**
-and any **proxy or relay**. What is here is the configuration and the description of those protocols -
+and any **proxy or relay** - and the **application service** of `nw_*_create_application_service`, whose
+publishing and browsing side is the listener's and the browser's, which are not in this delivery
+either. What is here is the configuration and the description of those protocols -
 what a program sets and what it reads back, which is real and is what the host's own Network answers
 for the same calls - and what is *not* here is a connection that speaks them. A connection of QUIC or
 WebSocket parameters is a connection over its transport with no layer of that protocol on it. The rows

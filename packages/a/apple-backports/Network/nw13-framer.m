@@ -28,8 +28,11 @@ nw_protocol_definition_t nw_framer_create_definition(const char *identifier, uin
     if (!identifier || !*identifier)
         return NULL;
     CharonNWProtocolDefinition *definition = [[CharonNWProtocolDefinition alloc] init];
-    /* A framer is named by the program that writes it, and the flags are what it was created with,
-       so two definitions of the same name and flags are the same protocol and compare equal. */
+    /* A framer is named by the program that writes it, and it is made afresh every time: the start
+       handler it was given is what makes it that program's protocol, so two definitions of one name
+       and one set of flags are two protocols and do not compare equal. The host's own Network answers
+       the same (tests/backports/host/network-objects), and nw_protocol_definition_is_equal is where
+       that is decided. */
     definition->_family = @(identifier);
     definition->_identifier = @(identifier);
     definition->_flags = flags;

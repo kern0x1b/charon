@@ -99,7 +99,7 @@
       "status": "implemented",
       "effect": "the credentials a proxy is asked with",
       "facts": "facts/Network/NWProxy.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the port's own checks in tests/backports/host/network-proxy (20 checks): every call of the family is asked what its effect says it answers. It is not a host differential, and the reason is measured - the host's own Network cannot be driven through this family in this build: it answers the five factories and then traps with EXC_BREAKPOINT inside objc_opt_respondsToSelector at two different points of a run"
     },
     {
       "api": "nw_quic_get_max_datagram_frame_size()",

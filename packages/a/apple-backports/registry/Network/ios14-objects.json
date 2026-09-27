@@ -99,7 +99,7 @@
       "status": "implemented",
       "effect": "why a path is unsatisfied, which this release does not say",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework asked the same question of a real path of the port's own monitor, both monitors started and both paths read (tests/backports/host/network-objects, 189 checks; the gateways' enumeration is the port's own shape because what each side can name is its own network - facts/Network/NWPath.md)"
     },
     {
       "api": "nw_path_monitor_prohibit_interface_type()",

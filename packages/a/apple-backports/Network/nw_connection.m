@@ -177,6 +177,7 @@ static void charon_handshake(CharonNWConnection *connection);
 static void charon_flush(CharonNWConnection *connection);
 static void charon_connect_finished(CharonNWConnection *connection);
 static void charon_install_sources(CharonNWConnection *connection);
+static BOOL charon_take_connected_socket(CharonNWConnection *connection, int handle, CharonNWEndpoint *endpoint);
 static void charon_stop(CharonNWConnection *connection, nw_connection_state_t state, CharonNWError *error);
 static void charon_readable(CharonNWConnection *connection);
 
@@ -598,21 +599,23 @@ static void charon_watch_path(CharonNWConnection *connection)
         return;
     connection->_monitor = monitor;
     nw_path_monitor_set_queue(monitor, connection->_queue);
+    __weak CharonNWConnection *weak = connection;
     nw_path_monitor_set_update_handler(monitor, ^(nw_path_t path) {
-        if (connection->_cancelled)
+        CharonNWConnection *self = weak;
+        if (!self || self->_cancelled)
             return;
-        connection->_currentPath = path;
+        self->_currentPath = path;
         /* Viable means the kernel has a route to the address and the path is satisfied. For a
            datagram socket connect() sends nothing - it binds the default peer and returns as soon as
            the kernel has a route - so this never claims the peer answered. */
         BOOL satisfied = nw_path_get_status(path) == nw_path_status_satisfied;
-        if (connection->_path)
-            connection->_path(path);
-        if (!connection->_viableKnown || connection->_viable != satisfied) {
-            connection->_viable = satisfied;
-            connection->_viableKnown = YES;
-            if (connection->_viability)
-                connection->_viability(satisfied);
+        if (self->_path)
+            self->_path(path);
+        if (!self->_viableKnown || self->_viable != satisfied) {
+            self->_viable = satisfied;
+            self->_viableKnown = YES;
+            if (self->_viability)
+                self->_viability(satisfied);
         }
     });
     nw_path_monitor_start(monitor);
@@ -650,9 +653,10 @@ static void charon_install_sources(CharonNWConnection *connection)
        nothing to read, and the read source would fire for a hangup the kernel has not decided on yet. */
     connection->_readSource = connection->_connecting ? NULL : charon_nw_read_source(connection->_socket, connection->_queue);
     if (connection->_readSource) {
-        __block CharonNWConnection *self = connection;
+        __weak CharonNWConnection *weak = connection;
         dispatch_source_set_event_handler(connection->_readSource, ^{
-            if (self->_cancelled)
+            CharonNWConnection *self = weak;
+            if (!self || self->_cancelled)
                 return;
             if (self->_ssl && self->_handshaking) {
                 charon_handshake(self);
@@ -672,9 +676,10 @@ static void charon_install_sources(CharonNWConnection *connection)
     }
     connection->_writeSource = charon_nw_write_source(connection->_socket, connection->_queue);
     if (connection->_writeSource) {
-        __block CharonNWConnection *self = connection;
+        __weak CharonNWConnection *weak = connection;
         dispatch_source_set_event_handler(connection->_writeSource, ^{
-            if (self->_cancelled)
+            CharonNWConnection *self = weak;
+            if (!self || self->_cancelled)
                 return;
             if (self->_connecting) {
                 charon_connect_finished(self);
@@ -773,6 +778,21 @@ static void charon_ready(CharonNWConnection *connection)
     charon_report_state(connection, nw_connection_state_ready, nil);
 }
 
+/* Take a socket the connect has just made, under the same lock nw_connection_cancel takes: false
+   when the connection was cancelled while the connect ran, and then the caller closes the handle and
+   nothing else happens for a connection nobody wants. */
+static BOOL charon_take_connected_socket(CharonNWConnection *connection, int handle, CharonNWEndpoint *endpoint)
+{
+    @synchronized(connection) {
+        if (connection->_cancelled)
+            return NO;
+        connection->_socket = handle;
+        connection->_currentEndpoint = endpoint;
+        charon_nw_set_nonblocking(handle);
+        return YES;
+    }
+}
+
 static void charon_open(CharonNWConnection *connection)
 {
     CharonNWConnection *self = connection;
@@ -809,9 +829,14 @@ static void charon_open(CharonNWConnection *connection)
             connection->_socket = handle;
             charon_apply_options(connection);
             if (connect(handle, entry->ai_addr, entry->ai_addrlen) == 0) {
-                connection->_currentEndpoint = endpoint;
                 freeaddrinfo(list);
-                charon_nw_set_nonblocking(handle);
+                /* The connect ran on a queue of its own, so a cancel may have landed while it did: the
+                   handle and the endpoint are taken under the lock the cancel takes, and a connection
+                   cancelled in the meantime closes what it made instead of handing it to the sources. */
+                if (!charon_take_connected_socket(self, handle, endpoint)) {
+                    close(handle);
+                    return;
+                }
                 dispatch_async(connection->_queue, ^{
                     charon_install_sources(self);
                     charon_ready(self);
@@ -843,8 +868,10 @@ static void charon_open(CharonNWConnection *connection)
             close(handle);
             connection->_socket = -1;
         } else {
-            connection->_currentEndpoint = endpoint;
-            charon_nw_set_nonblocking(handle);
+            if (!charon_take_connected_socket(self, handle, endpoint)) {
+                close(handle);
+                return;
+            }
             dispatch_async(connection->_queue, ^{
                 charon_install_sources(self);
                 charon_ready(self);
@@ -892,6 +919,14 @@ static void charon_stop(CharonNWConnection *connection, nw_connection_state_t st
         nw_path_monitor_cancel(connection->_monitor);
         connection->_monitor = nil;
     }
+    /* The handlers go with the connection: a handler that outlived it would be a block the program
+       cannot release, and the header says no handler is called after a cancel, which is what letting
+       them go makes true of the objects too. */
+    connection->_path = nil;
+    connection->_viability = nil;
+    connection->_betterPath = nil;
+    connection->_state = nil;
+
     /* Every receive and every send still waiting is answered, so no program waits for ever. */
     for (CharonNWReceive *receive in [connection->_receives copy]) {
         [connection->_receives removeObject:receive];

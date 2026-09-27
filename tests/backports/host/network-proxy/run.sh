@@ -12,7 +12,7 @@ set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 BACKPORTS=${BACKPORTS:-$here/../../../../packages/a/apple-backports}
 harness=${NETWORK_HARNESS:-$here/../../device}
-build=${NETWORK_BUILD:-${TMPDIR:-/tmp}/charon-network-objects}
+build=${NETWORK_BUILD:-${TMPDIR:-/tmp}/charon-network-proxy}
 # The port's path monitor lives in the Foundation library, so the objects under test are this
 # library's files and the two of the path monitor's - the same sources the real build compiles into
 # the two libraries.
