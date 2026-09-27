@@ -86,41 +86,38 @@ work established, all of it measured and all of it re-usable, is this:
   A pure imaginary value is a nonzero value: `sparse_get_vector_nonzero_count_double_complex` over
   `{0, 2, 0, 4i, 5, 0}` answers 3, and `sparse_pack_vector_double_complex` over it answers the three
   entries at columns 1, 3 and 4 with the right values.
-- **The host's own Accelerate answers the complex products and the complex solves with uninitialised
-  memory**, so there is no oracle there and the port is not held to those numbers. Measured: for
-  `y = alpha * op(A) * x + y` on the 3x3 `[[1+i,0,2],[0,3i,0],[4-i,0,0]]` with `x = (1, 2i, 4 - i)` and
-  `y` of ones it answers `131072.0318 - 8192.0059i, 32, 2i`, and the 8192.0059i is the same in the
-  transposed case, whose arguments differ; the correct answer by the header's arithmetic is
-  `11 + 8i, -5 - 6i, 6 + 3i`. For the complex triangular solves of the lower `[[2+i,0,0],[1,3,0],[0,0,4i]]`
-  it answers `0.0000 + 0.0006i, 0, 2i` where the correct answer is `0.5, 0.1 - 0.0333i, 0.5`, and 2048.0005
-  appears in the matrix form.
-- **The oracle used instead**: the complex arithmetic is the real arithmetic with a pair of reals for a
-  value, and the real half is held against the host, so the port's complex answer on a matrix whose
-  imaginary parts are zero must equal the port's own real answer on the same matrix. The run script
-  compiles the real half a second time under the prefix `charon_half_` for exactly this. The norms, the
-  trace, the shapes, the insertions, the extractions, the utilities and the refusals are still compared
-  against the host directly, because the host answers those.
-- **Where the complex half stands: 199 checks pass and 23 fail**, out of 222, up from 158 and 41. Closed
-  since: every vector norm, the pack, the matrix elementwise norms, the shapes, the block forms, the
-  batch insertions and the untyped entry points, and two real defects found on the way — the dense form
-  `cblas_cherk` takes was allocated at half the size it was written through, which took the process down
-  in the operator-norm case, and the operator infinity norm was reading the diagonal of each row instead
-  of the row's own stored entries, answering 1 where the host answers 11. What remains, as the next
-  session's list:
-  - **the complex matrix-vector product (4 oracle cases)**: the values are right and the addresses are
-    not. For the 3x3 `[[1,0,2],[0,0,0],[4,0,0]]` with `x = (1,2,4)`, `alpha = 1` and `y` of ones the port
-    answers `6, 5, 1` where both the arithmetic and the port's own real half give `10, 1, 5`, so one call
-    lands one element off. The `cblas_caxpy` sequence the port builds is correct run by hand on the same
-    three values — three calls giving `2 1 1`, then `10 1 1`, then `10 1 5` — so the defect is in the
-    port's loop, not in the BLAS. The next step is to print `i`, `k`, `re`, `im`, `from` and `to` inside
-    `CharonComplexVectorProduct` for that one case.
-  - **the two complex triangular solves (16 oracle cases)**, and **one batch extraction** and **one
-    outer product** compared against the host.
-  - **the operator-two norm (1 case)**: for `[[-1, 2 + i, -3i], [4, 0, -5 + 2i]]` the port answers 3.87298
-    and the host 7.31108, and the largest singular value by the header's own arithmetic is 6.5724 — the
-    exact value of `A' A`'s largest eigenvalue is sqrt(43.19). So the host's complex operator-two norm is
-    a third formula again, and the port's is not yet right either. This one case needs its own
-    measurement, the way the vector norms did.
+- **RETRACTED, and this is the correction that matters: the host does NOT answer the complex products
+  and the complex solves with uninitialised memory.** That was over-general, and it came from my own
+  probe using a **complex alpha**. With a real alpha the host and the port agree to the last bit:
+
+  | case | the port | the host |
+  | --- | --- | --- |
+  | `y = 1 * op(A) * x + y`, `A = [[1,0,2],[0,0,0],[4,0,0]]`, `x = (1,2,4)`, `y` of ones | `10 1 1` | `10 1 1` |
+  | the same transposed | `18 1 3` | `18 1 3` |
+  | `alpha = 2`, not transposed | `19 45 1` | `19 45 1` |
+  | `alpha = 2`, transposed | `3 13 21` | `3 13 21` |
+  | `C = 1 * A * B + C`, `A = [[1,0,2],[0,3i,4]]`, `B = {1,2,9,9,3,4,9,9,5,6,9,9}` with `ldb = 3` | `26 27 70 52` | `26 27 70 52` |
+  | the same with `alpha = 2` | `45 47 133 97` | `45 47 133 97` |
+  | the complex triangular solve of a real `b` against `[[2,0,0],[1,3,0],[0,0,4i]]`, both transposes, `alpha` 1 and 2 | `1 1.33333 1`, `0.5 0.66667 0.5`, `0.16667 1.66667 1`, `0.08333 0.83333 0.5` | the same four |
+
+  So **the host is the oracle for the complex products and the solves**, the earlier "uninitialised
+  memory" claim does not stand, and the port's complex matrix-vector product and its complex dense
+  product are CORRECT — the `i, k, re, im, from, to` printout for the transposed case reads
+  `i=0 k=0 re=1 im=0 from=0 to=0`, `i=0 k=2 re=4 im=0 from=2 to=0`, `i=2 k=0 re=2 im=0 from=0 to=2`, and
+  the answer is `18 1 3`. The oracle the last commit described (the port's own real half under a second
+  prefix) is withdrawn: it was reporting the port wrong and is not an oracle for these families.
+- **What the host accepts for the complex triangular solve, measured**: a matrix with a complex entry
+  (`d00 = 2 + i`), a complex right-hand side, a complex alpha, a complex off-diagonal and the transpose
+  — all six answer `SPARSE_SUCCESS`. So the `-1000` the differential saw was not the host refusing an
+  argument, and that is a defect in the differential's cases, not in either library.
+- **The port's complex triangular solve is wrong for a complex right-hand side.** For a real
+  lower-triangular `T = [[2,0,0],[1,3,0],[0,0,4]]`, a real `alpha` of 1 and `b = (2, 5i, 4)`, the host
+  answers the substitution and the port answers `0.8 - 0.4i` for `x0` where the substitution gives
+  `(2/2, (5i - 2)/3, 4/4) = (1, -0.66667 + 1.66667i, 1)`. The values are wrong, not the status, and the
+  input that shows it is the smallest one there is. This is where the next session starts: the alpha
+  scaling and the pivot division in `CharonComplexTriangular` are right by inspection, so the suspect
+  is the entry walk — it is the real half's rule with `backwards` for the triangle, and the real half is
+  green on exactly that rule.
   - One thing already found and fixed by the oracle work: `cblas_caxpy` and its sisters address their
     vectors in units of a complex value, and every offset in this family is in complex units, so the
     pointers have to be complex-typed. Casting to `float *` and adding the offset counts floats, which
