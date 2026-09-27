@@ -305,6 +305,11 @@ package("swift-runtime")
 
         -- The C library's overlay, which the SDK has only as an interface for another architecture. It is built the way the
         -- release that still carried it did: the generated sources, the platform sources and the error types.
+        local platform_patches = os.files(path.join(package:scriptdir(), "patches", "platform", "*.patch"))
+        table.sort(platform_patches)
+        for _, patch in ipairs(platform_patches) do
+            os.vrunv("patch", {"-p1", "-i", patch}, {curdir = path.absolute("platform")})
+        end
         local platform_source = path.join(path.absolute("platform"), "stdlib", "public", "Platform")
         local generated = path.absolute(path.join("build", "overlay"))
         os.mkdir(generated)
