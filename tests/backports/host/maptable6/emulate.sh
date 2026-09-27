@@ -45,7 +45,8 @@ for release in $releases; do
     fi
 done
 # A class that refuses a weak reference, as the weak side: 6.0 aborts, and so must the port wherever it forms the runtime's
-# weak reference (5.0 and later). 4.3 has only the watch and holds the entry: its outcome must be "held, count 1, lookup found". A
+# weak reference (5.0 and later). 4.3 has only the watch and holds the entry: its outcome must be "held, count 1, lookup found"
+# (6.0 holds it too where the refusing class is on the strong side). A
 # run that ends is one that aborted or held, so the line each leaves is what is compared, without addresses.
 outcome() {
     sed 's/\x1b\[[0-9;]*m//g' "$1" | grep '^outcome ' | head -1 | sed -E 's/objc\[[0-9]+\]: //; s/\(0x[0-9a-f]+\)//'
@@ -66,10 +67,14 @@ for release in $releases; do
         expected=$(outcome "refuse-6.0-theirs-$variant-$side.log" | sed 's/^outcome theirs /outcome port /')
         answered=$(outcome "refuse-$release-port-$variant-$side.log")
         if [ "$release" = 4.3 ]; then
-            # The watch alone holds the entry where 6.0 aborts: the divergence the facts state, so it is held to that line.
+            # The watch alone holds the entry: the divergence the facts state where 6.0 aborts (the weak side), so it is held to
+            # that line; a strong side is held by 6.0 as well, and the line says which of the two it is by 6.0's own answer.
             held="outcome port $variant $side: held, count 1, lookup found"
             if [ "$answered" = "$held" ]; then
-                echo "$release: $answered (the watch alone: held, where 6.0 aborts)"
+                if [ "$expected" = "$held" ]; then note="as 6.0 does"
+                elif [ -n "$expected" ]; then note="the watch alone: held, where 6.0 aborts"
+                else note="6.0 not run, so not compared"; fi
+                echo "$release: $answered ($note)"
             else
                 echo "$release: not the watch's hold: wanted '$held', got '$answered'"
                 failed=1
