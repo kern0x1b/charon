@@ -72,6 +72,66 @@ declaration is wrong.
 | `UITextItem.MenuConfiguration.Preview.default` | `UITextItem.MenuConfiguration` |
 | `UITextItem.MenuConfiguration.Preview.view` | `UITextItem.MenuConfiguration` |
 
+## The 86 that resolve: 0 error lines
+
+Against a lift made from **this tree's registry** (`fast_lift2.lua` over
+`packages/a/apple-backports`, output `.agent-work/runs/uikit-c/lift2/`, the recipe
+`lift-remeasure.sh` uses), the typecheck over the 86 rows that are not waiting is clean:
+
+```
+$ export CHARON_LIFT_VFS=$PWD/.agent-work/runs/uikit-c/lift2/vfs.yaml
+$ n=0; for f in /tmp/n86/*.swift; do c=$(packages/s/swift-runtime/facts/UIKit/tc.sh "$f" 2>&1 | grep -c "error:"); n=$((n+c)); done
+$ echo "files: $(ls /tmp/n86/*.swift | wc -l)   total error lines: $n"
+files: 86   total error lines: 0
+```
+
+The headers that earlier reported `'UITargetedPreview' is only available in iOS 13.0 or newer` were
+lifted when the `swift-runtime` install this typecheck takes its resource directory from was built.
+A fresh lift over this registry lowers it, because the registry carries it `implemented`
+(`registry/UIKit/ios13menus.json`), and the class's availability is the only thing that was left.
+
+The overlay: 38 enumerations, 86 case declarations, 5 typealiases, declared unconditionally - the
+Swift counterpart of the lift lowering the headers' availability, and the reason a name the surface
+spells at 6.1.3 can be named at 6.1.3.
+
+## The rows that wait for their class
+
+These 25 rows spell their names through a class the port's registry carries as `absent`
+(`registry/UIKit/ios17-18.json`: `UITab`, `UITabSidebarItem`, `UITextFormattingViewController`
+and `UITextItem`), so the overlay cannot declare the name they ask for: the enclosing class is
+not there to nest a type in, and a typealias on a class that does not exist does not compile.
+They are registered `absent` for that reason until the UIKit bands carry those classes, and the
+typecheck counts them as such: each is a row whose name is unreachable, not a row whose
+declaration is wrong.
+
+| row | the class it waits for |
+| --- | --- |
+| `UITabBarController.Sidebar.ScrollTarget.tab` | `UITab` |
+| `UITabSidebarItem.Content.action` | `UITabSidebarItem.Content` |
+| `UITabSidebarItem.Content.tab` | `UITabSidebarItem.Content` |
+| `UITextFormattingViewController.ChangeValue.bold` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.decreaseFontSize` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.decreaseIndentation` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.font` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.fontSize` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.formattingStyle` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.highlight` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.increaseFontSize` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.increaseIndentation` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.italic` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.lineHeightPointSize` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.strikethrough` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.textAlignment` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.textColor` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.textList` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.undefined` | `UITextFormattingViewController.ChangeValue` |
+| `UITextFormattingViewController.ChangeValue.underline` | `UITextFormattingViewController.ChangeValue` |
+| `UITextItem.Content.link` | `UITextItem.Content` |
+| `UITextItem.Content.tag` | `UITextItem.Content` |
+| `UITextItem.Content.textAttachment` | `UITextItem.Content` |
+| `UITextItem.MenuConfiguration.Preview.default` | `UITextItem.MenuConfiguration` |
+| `UITextItem.MenuConfiguration.Preview.view` | `UITextItem.MenuConfiguration` |
+
 ## The 86 that resolve, and the one class standing between them and 86/86
 
 The overlay, with the 25 waiting rows' namespaces left out, is 38 enumerations, 87 case
