@@ -345,6 +345,63 @@ int main(void)
             vDSP_biquadm_DestroySetupD(host_one);
             vDSP_biquadm_DestroySetupD(host_two);
         }
+        // 5b. The cascade of a SetTargets walk, which is the case a single-section check cannot see: the
+        // first section's distance reaches the threshold a sample before the second's, and the release
+        // holds it until the second lands too. These are the review's eleven cases, unchanged - a rate of
+        // 0.25, 0.5 and 0.75, a threshold of 0.1 to 0.5, and two targets that never land on a round
+        // number - and each is asked of both sides and compared element by element.
+        {
+            static const struct {
+                double a0, t0, a1, t1;
+                float rate, threshold;
+                const char *what;
+            } cases[] = {
+                {2, 4, 5, 10, 0.5f, 0.1f, "a cascade at a rate of 0.5 and a threshold of 0.1"},
+                {2, 4, 5, 10, 0.5f, 0.2f, "a cascade at a rate of 0.5 and a threshold of 0.2"},
+                {2, 4, 5, 10, 0.5f, 0.24f, "a cascade just under the threshold"},
+                {2, 4, 5, 10, 0.5f, 0.25f, "a cascade at the threshold itself"},
+                {2, 4, 5, 10, 0.5f, 0.26f, "a cascade just over the threshold"},
+                {2, 4, 5, 10, 0.5f, 0.3f, "a cascade at a rate of 0.5 and a threshold of 0.3"},
+                {2, 4, 5, 10, 0.5f, 0.5f, "a cascade at a threshold above every distance"},
+                {2, 4.5, 5, 10, 0.5f, 0.25f, "a cascade whose targets never land on a round number"},
+                {2, 4, 5, 11, 0.5f, 0.25f, "a cascade with one target that never lands on one"},
+                {2, 4, 5, 10, 0.25f, 0.25f, "a cascade at a rate of 0.25"},
+                {2, 4, 5, 10, 0.75f, 0.25f, "a cascade at a rate of 0.75, where neither section lands in eight samples"},
+            };
+            for (unsigned at = 0; at < sizeof cases / sizeof *cases; at++) {
+                double coeffs[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+                float targets[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+                coeffs[0] = cases[at].a0;
+                coeffs[5] = cases[at].a1;
+                targets[0] = (float)cases[at].t0;
+                targets[5] = (float)cases[at].t1;
+                vDSP_biquadm_Setup mine = charon_host_vDSP_biquadm_CreateSetup(coeffs, 2, 1);
+                vDSP_biquadm_Setup theirs = vDSP_biquadm_CreateSetup(coeffs, 2, 1);
+                charon_host_vDSP_biquadm_SetTargetsSingle(mine, targets, cases[at].rate, cases[at].threshold, 0, 0, 2, 1);
+                vDSP_biquadm_SetTargetsSingle(theirs, targets, cases[at].rate, cases[at].threshold, 0, 0, 2, 1);
+                float mine_out[8] = {0}, their_out[8] = {0}, in[8];
+                for (int sample = 0; sample < 8; sample++) {
+                    in[sample] = 1.0f;
+                }
+                const float *x[1] = {in};
+                float *my_y[1] = {mine_out}, *their_y[1] = {their_out};
+                charon_host_vDSP_biquadm(mine, x, 1, my_y, 1, 8);
+                vDSP_biquadm(theirs, x, 1, their_y, 1, 8);
+                int agreed = 1;
+                for (int sample = 0; sample < 8; sample++) {
+                    if (fabs((double)mine_out[sample] - (double)their_out[sample]) > kBiquadTolerance) {
+                        agreed = 0;
+                    }
+                }
+                snprintf(detail, sizeof detail, "the port answers %g %g %g %g %g %g and the host %g %g %g %g %g %g",
+                         (double)mine_out[0], (double)mine_out[1], (double)mine_out[2], (double)mine_out[3],
+                         (double)mine_out[4], (double)mine_out[5], (double)their_out[0], (double)their_out[1],
+                         (double)their_out[2], (double)their_out[3], (double)their_out[4], (double)their_out[5]);
+                report(agreed, cases[at].what, agreed ? "" : detail);
+                charon_host_vDSP_biquadm_DestroySetup(mine);
+                vDSP_biquadm_DestroySetup(theirs);
+            }
+        }
         // 6. the refused setup calls. The host cannot be asked about a NULL coefficient array: it reads
         //    through it and stops the process (measured - a NULL reaches a memmove inside the host's own
         //    CreateSetup), so those three are the port's answers alone and the facts file says so. The

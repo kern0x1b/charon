@@ -243,12 +243,10 @@ static inline void CharonBiquadSetCoefficientsFloat(void *setup, const float *va
 //     and change nothing, which is what `interpolates` records and what the registry entries for
 //     vDSP_biquadm_SetTargetsSingleD and vDSP_biquadm_SetTargetsDoubleD say (facts/Accelerate/vDSPBiquad.md).
 //
-// What is above is the *isolated* walk, one section, and it is what this answers for every number of
-// sections. A cascade of two or more walks differently - the snap lands a step later, so a two-section setup
-// whose sections go 2 -> 4 and 5 -> 10 answers 37.5 and 38.75 where the release answers 35.1562 and
-// 37.5391. That is measured, it is audible, and the rule behind it is not yet read off, so it is stated
-// rather than guessed at; the two-section case is in the differential and prints the divergence every run
-// (facts/Accelerate/vDSPBiquad.md).
+// A section on its own is this rule with nothing after it, which is the walk the single-section cases
+// measure; a cascade is what the reverse pass above is for, and without it a two-section setup whose
+// sections go 2 -> 4 and 5 -> 10 answers 37.5 and 38.75 where the release answers 35.1562 and 37.5391
+// (facts/Accelerate/vDSPBiquad.md has the eleven cases the rule is fitted over).
 static inline void CharonBiquadSetTargets(void *setup, const double *values, double rate, double threshold,
                                           vDSP_Length start_section, vDSP_Length start_channel, vDSP_Length sections,
                                           vDSP_Length channels)
@@ -339,16 +337,37 @@ static inline double CharonBiquadStep(CharonBiquadCell *cells, vDSP_Length chann
         sample = 0.0;
     }
     if (interpolate) {
-        for (vDSP_Length section = 0; section < section_count; section++) {
-            CharonBiquadCell *cell = &cells[section * channels];
+        // The snap travels backwards through the cascade. A section's coefficient lands on its target when
+        // what is left of the distance is at most interp_threshold **and every section after it has landed
+        // too**, which is what makes a cascade walk differently from a section on its own: the last section
+        // snaps as soon as its own distance is within the threshold, and one before it waits for that.
+        //
+        // Measured, and it is what fits all eleven of the review's cases (a rate of 0.25, 0.5 and 0.75, a
+        // threshold of 0.1 to 0.5, and two targets that never land on a round number). For instance with two
+        // sections going 2 -> 4 and 5 -> 10 at a rate of 0.5 and a threshold of 0.25, the host answers
+        // 10, 22.5, 30.625, 35.1562, 37.5391, 40, 40, 40: the first section's own distance reaches the
+        // threshold at the third sample but it waits, because the second section's does not, and the two land
+        // together at the fifth. A section on its own is this rule with nothing after it, which is the walk
+        // 2, 3, 3.5, 4 the one-section case measures (facts/Accelerate/vDSPBiquad.md).
+        int later_all_snapped = 1;
+        for (vDSP_Length at = section_count; at-- > 0;) {
+            CharonBiquadCell *cell = &cells[at * channels];
+            int snapped = 1;
             if (!cell->active) {
                 continue;
             }
             for (int k = 0; k < 5; k++) {
                 cell->coeff[k] += (cell->target[k] - cell->coeff[k]) * (1.0 - cell->rate);
-                if (fabs(cell->target[k] - cell->coeff[k]) <= cell->threshold) {
+                if (fabs(cell->target[k] - cell->coeff[k]) > cell->threshold) {
+                    snapped = 0;
+                }
+            }
+            if (snapped && later_all_snapped) {
+                for (int k = 0; k < 5; k++) {
                     cell->coeff[k] = cell->target[k];
                 }
+            } else {
+                later_all_snapped = 0;
             }
         }
     }

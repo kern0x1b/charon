@@ -92,32 +92,30 @@ handed a float array of 9 and a double array of 9, and each of them read its own
   `interp_rate` and `interp_threshold` of `vDSP_biquadm_SetTargetsSingleD` and `vDSP_biquadm_SetTargetsDoubleD` are recorded with the
   target and change no answer. That is a difference from the header's wording and the registry entries for those two functions say so.
 
-**What is not right yet, and it is the one thing on this page a caller can hear: the walk above is the
-*isolated* one, and a cascade of two or more sections walks differently.** Measured on this machine, over a
-two-section setup whose sections go 2 -> 4 and 5 -> 10 with a rate of 0.5 and a threshold of 0.25, the host answers
+**And the walk in a cascade is not the isolated one: the snap travels backwards through the sections.** A section's
+coefficient lands on its target when what is left of the distance is at most `interp_threshold` **and every section after it has
+landed as well**. So the last section lands as soon as its own distance is within the threshold and one before it waits for
+that, which is what a one-section measurement cannot see.
+
+Measured on this machine, over a two-section setup whose sections go 2 -> 4 and 5 -> 10 with a rate of 0.5 and a
+threshold of 0.25, the host answers
 
 ```
 10  22.5  30.625  35.1562  37.5391  40  40  40
 ```
 
-where this port answers 10, 22.5, 30.625, **37.5**, **38.75**, 40, 40, 40. The first two sections' products fix what the host's
-implied per-section b0 is: at the third sample 3.75 x 9.375 and at the fourth 3.875 x 9.6875, so the host's first section runs the
-geometric walk 2, 3, 3.5, 3.75, 3.875, 4 where in isolation it runs 2, 3, 3.5, **4**, 4 - **inside a cascade the snap lands one
-step later**, and it does the same for every threshold from 0.1 to 0.5 and every rate from 0.25 to 0.75. A two-section setup
-whose two walks are identical (both 1 -> 9) agrees with this port, which is why the single-section cases here never saw it.
+The first section's own distance reaches the threshold at the third sample - 0.25 from 4 - and it does *not* land there,
+because the second section's is still 0.625. The two land together at the fifth, where the first's is 0.125 and the second's
+0.15625. Without the deferral the same setup answers 10, 22.5, 30.625, **37.5**, **38.75**, 40 - 7% high at the peak of the
+transition, which is an audible level bump in the middle of a filter change.
 
-**The port therefore answers the isolated rule for every M, and for M >= 2 that is measurably not what the release answers** - 7%
-high at the peak of the transition, which is an audible level bump in the middle of a filter change. This is stated rather than
-papered over: the rule that governs the cascade is measured to *exist* and is not yet read off, and a guess at it would be a
-second wrong answer on top of a known one. What is needed to read it off is a probe that leaves one section inactive with the
-other present and reads that section's own b0 out of the answer; the two numbers above already pin it to "the isolated walk with the
-snap deferred", and the sweep over thresholds in the review's probe would confirm or correct that.
-
-`tests/backports/host/vdspbiquad` poses the two-section case beside the single-section ones and prints the
-divergence as a documented deviation, so it is re-measured on every run rather than assumed.
-
-A coefficient's target moves with it: `SetCoefficients` sets the target to the new coefficient, because a target is only elsewhere
-once a `SetTargets` says so, and a single-precision setup walks its coefficients toward their targets at every sample.
+The rule is fitted over eleven cases on the host - rates of 0.25, 0.5 and 0.75, thresholds from 0.1 to 0.5, and two
+targets chosen so the walk never lands on a round number - and the port answers every one of them element for element. The
+case that no rule of this shape gets right is a rate of 0.75, where neither section reaches its threshold inside eight
+samples and the answer is the plain geometric walk; that is one of the eleven. A section on its own is the same rule with
+nothing after it, which is the isolated walk the single-section cases measure, and a two-section setup whose two walks are
+identical agrees with any deferral - which is why the one-section checks here never saw this and why all eleven are now in
+`tests/backports/host/vdspbiquad`. Removing the deferral fails ten of that suite's checks.
 
 ## What the setup calls answer
 
