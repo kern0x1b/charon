@@ -36,7 +36,7 @@ static void CharonScreenPathElement(void *info, const CGPathElement *element)
         [context->converted addCurveToPoint:points[2] controlPoint1:points[0] controlPoint2:points[1]];
         break;
     case kCGPathElementCloseSubpath:
-        [context->converted closeSubpath];
+        [context->converted closePath];
         break;
     }
 }

@@ -17,6 +17,9 @@ path is read with `CGPathApply` and each of its points is put through
 is a new path built from those points. A view with no window answers with the path it was given, for
 the same reason and in the same way as its frame sibling.
 
+The closing element becomes `-closePath`, the only way `UIBezierPath` has of closing a
+subpath.
+
 `CGPathApply` reports every segment of a path as a cubic, since that is the only curve `CGPath`
 stores. A path built from a quad curve therefore comes back as the same curve written as a cubic,
 and a straight segment stays a line: the shape is preserved, and only its description changes. A
