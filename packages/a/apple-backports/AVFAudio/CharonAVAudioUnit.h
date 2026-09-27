@@ -26,6 +26,16 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)charon_applyPendingParameters;
 @end
 
+// AUAudioUnitMIDIInstrument is a generator - a music device is a source - so it is built the way the
+// generator family is built: the base class's own hook with the description the caller gave, defaulted
+// to the release's music-device type.
+@interface AVAudioUnitGenerator (CharonAVFAudioImpl)
+- (instancetype)initWithCharonComponentDescription:(AudioComponentDescription)description
+                                              name:(NSString *_Nullable)name
+                                  manufacturerName:(NSString *_Nullable)manufacturerName
+                                           version:(NSUInteger)version;
+@end
+
 // The description of one of the release's built-in units: the release's own type and subtype with
 // the Apple manufacturer code, which is the manufacturer the release's own units carry.
 static inline AudioComponentDescription CharonUnitDescription(OSType unitType, OSType subType)
