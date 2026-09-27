@@ -21,6 +21,9 @@
     NSMutableDictionary *_indicesBySubKeyPath;
 }
 
+@synthesize parameterClass = _parameterClass;
+@synthesize parameterKeyPath = _parameterKeyPath;
+
 + (instancetype)parameterForClass:(Class)aClass keyPath:(NSString *)keyPath
 {
     // The parameter is a class and a key path into it, and nothing else: that is what the header's

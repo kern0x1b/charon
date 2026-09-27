@@ -267,14 +267,16 @@ def main():
         report = generator.answer_of(block, name)
         for kind in ("properties", "dynamic", "methods"):
             answered[name][kind] |= set(report[kind])
-        # A property the header declares and the @implementation keeps in an ivar of the class's
-        # own is answered by the accessors the compiler synthesises for it from the header, so the
-        # ivar is what says the class carries it.
-        for ivar in re.findall(r"^\s+[\w ]+\*?\s*(_[A-Za-z_][\w_]*);", "\n".join(block), re.M):
-            answered[name]["properties"].add(ivar[1:])
         for method in list(answered[name]["methods"]):
             for spelling in generator_property_names(method):
                 answered[name]["properties"].add(spelling)
+
+    # A member of a hand written class is claimed only where the class's own @implementation
+    # shows the accessor or the @synthesize. modules/apple/backports.lua's check_registry marks a
+    # member built as soon as its owner class is exported, so a green gate says nothing about a
+    # member's own accessor, and an entry that claims one the file does not have is exactly the
+    # silent fake the rules forbid. This is the check that refuses to write it.
+    hand_written = {name for name in HAND_WRITTEN}
 
     entries, missing = [], collections.Counter()
     for row in load_corpus(options.corpus, options.framework):
@@ -323,8 +325,11 @@ def main():
         if owner is not None and owner in answered:
             report = answered[owner]
             if kind == "property":
-                if api.split(".")[1] in report["properties"]:
-                    entries.append(implemented(api, "property", intro, owner, options.facts))
+                spelled = api.split(".")[1]
+                if spelled in report["properties"]:
+                    entries.append(implemented(api, "property", intro, owner, options.facts,
+                                               where="%s's own @implementation synthesises it"
+                                                     % owner if owner in hand_written else None))
                     continue
                 if api.split(".")[1] in report["dynamic"]:
                     entries.append(absent(api, "property", intro, options.reason, options.facts))
@@ -336,7 +341,9 @@ def main():
                     missing["not answered"] += 1
                     continue
                 if api in report["methods"]:
-                    entries.append(implemented(api, "method", intro, owner, options.facts))
+                    entries.append(implemented(api, "method", intro, owner, options.facts,
+                                               where="%s's own @implementation answers it"
+                                                     % owner if owner in hand_written else None))
                     continue
                 if api.endswith("] init") or api == "-[%s init]" % owner:
                     entries.append(absent(api, "method", intro,
@@ -371,7 +378,15 @@ def main():
         # group of this same delivery, or a member the SDK's own header marks unavailable. It is
         # written as absent with that reason rather than left out, so that nothing is claimed in
         # one direction and missed in the other.
-        entries.append(absent(api, kind, intro, options.reason, options.facts))
+        reason = options.reason
+        if owner in hand_written:
+            # A member of a hand written class whose accessor the file does not show: the reason
+            # says so, and the count says how many, so a delivery cannot quietly claim one.
+            reason = ("this is a member of a hand written class and %s's @implementation shows no"
+                      " accessor of that name for it, so nothing in the package answers it; the"
+                      " header's declaration alone is not an implementation" % owner)
+            missing["hand written without an accessor"] += 1
+        entries.append(absent(api, kind, intro, reason, options.facts))
         missing["unanswered member"] += 1
 
     entries.sort(key=lambda entry: (entry["kind"], entry["api"]))
@@ -386,11 +401,11 @@ def main():
     return 0
 
 
-def implemented(api, kind, introduced, owner, facts):
+def implemented(api, kind, introduced, owner, facts, where=None):
     return {"api": api, "kind": kind, "introduced": introduced, "minimum": "6.0",
             "status": "implemented", "facts": facts,
-            "reason": "a member of %s, which the class's own generated implementation answers"
-                      % owner,
+            "reason": ("a member of %s, which %s" % (owner, where or
+                       "the class's own generated implementation answers")),
             "source": SOURCE}
 
 

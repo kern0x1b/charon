@@ -8,7 +8,7 @@
 //
 //  Every method the header declares here has a body that stores or returns the class's own
 //  state, the coding and copying helpers walk the whole ivar chain so a subclass keeps its
-//  parent's state, and 2 member(s) whose type is a class of a later group are
+//  parent's state, and 17 member(s) whose type is a class of a later group are
 //  left dynamic and answered in registry/Intents instead of with nil.
 //
 //  The classes whose behaviour is more than storage are hand written in
@@ -28,23 +28,13 @@
 
 @interface INActivateCarSignalIntent ()
 {
-    INSpeakableString * _carName;  // carName
-    INCarSignalOptions  _signals;  // signals
+    INCarSignalOptions _signals;  // signals
 }
 @end
 
 @implementation INActivateCarSignalIntent
-    @synthesize carName = _carName;
     @synthesize signals = _signals;
-
-- (instancetype)initWithCarName:(INSpeakableString *)carName signals:(INCarSignalOptions)signals
-{
-    if ((self = [super init])) {
-        _carName = [carName copy];
-        _signals = signals;
-    }
-    return self;
-}
+    @dynamic carName;  // a class of a later group: see registry/Intents
 
 + (BOOL)supportsSecureCoding
 {
@@ -129,31 +119,23 @@
 
 @interface INBillDetails ()
 {
-    INCurrencyAmount * _amountDue;  // amountDue
     INBillPayee *      _billPayee;  // billPayee
     INBillType         _billType;  // billType
     NSDateComponents * _dueDate;  // dueDate
-    INCurrencyAmount * _lateFee;  // lateFee
-    INCurrencyAmount * _minimumDue;  // minimumDue
     NSDateComponents * _paymentDate;  // paymentDate
     INPaymentStatus    _paymentStatus;  // paymentStatus
 }
 @end
 
 @implementation INBillDetails
-    @synthesize amountDue = _amountDue;
     @synthesize billPayee = _billPayee;
     @synthesize billType = _billType;
     @synthesize dueDate = _dueDate;
-    @synthesize lateFee = _lateFee;
-    @synthesize minimumDue = _minimumDue;
     @synthesize paymentDate = _paymentDate;
     @synthesize paymentStatus = _paymentStatus;
-
-- (void)setAmountDue:(INCurrencyAmount *)amountDue
-{
-    _amountDue = [amountDue copy];
-}
+    @dynamic amountDue;  // a class of a later group: see registry/Intents
+    @dynamic lateFee;  // a class of a later group: see registry/Intents
+    @dynamic minimumDue;  // a class of a later group: see registry/Intents
 
 - (void)setBillPayee:(INBillPayee *)billPayee
 {
@@ -170,16 +152,6 @@
     _dueDate = [dueDate copy];
 }
 
-- (void)setLateFee:(INCurrencyAmount *)lateFee
-{
-    _lateFee = [lateFee copy];
-}
-
-- (void)setMinimumDue:(INCurrencyAmount *)minimumDue
-{
-    _minimumDue = [minimumDue copy];
-}
-
 - (void)setPaymentDate:(NSDateComponents *)paymentDate
 {
     _paymentDate = [paymentDate copy];
@@ -188,23 +160,6 @@
 - (void)setPaymentStatus:(INPaymentStatus)paymentStatus
 {
     _paymentStatus = paymentStatus;
-}
-
-- (instancetype)initWithBillType:(INBillType)billType paymentStatus:(INPaymentStatus)paymentStatus billPayee:(INBillPayee *)billPayee amountDue:(INCurrencyAmount *)amountDue minimumDue:(INCurrencyAmount *)minimumDue lateFee:(INCurrencyAmount *)lateFee dueDate:(NSDateComponents *)dueDate paymentDate:(NSDateComponents *)paymentDate
-{
-    // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonIntentsCoding.h's one definition of it.
-    if ((self = charon_intents_super_init(self, [NSObject class]))) {
-        _amountDue = [amountDue copy];
-        _billPayee = [billPayee copy];
-        _billType = billType;
-        _dueDate = [dueDate copy];
-        _lateFee = [lateFee copy];
-        _minimumDue = [minimumDue copy];
-        _paymentDate = [paymentDate copy];
-        _paymentStatus = paymentStatus;
-    }
-    return self;
 }
 
 + (BOOL)supportsSecureCoding
@@ -237,28 +192,14 @@
 
 @interface INBillPayee ()
 {
-    NSString *          _accountNumber;  // accountNumber
-    INSpeakableString * _nickname;  // nickname
-    INSpeakableString * _organizationName;  // organizationName
+    NSString * _accountNumber;  // accountNumber
 }
 @end
 
 @implementation INBillPayee
     @synthesize accountNumber = _accountNumber;
-    @synthesize nickname = _nickname;
-    @synthesize organizationName = _organizationName;
-
-- (instancetype)initWithNickname:(INSpeakableString *)nickname number:(NSString *)number organizationName:(INSpeakableString *)organizationName
-{
-    // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonIntentsCoding.h's one definition of it.
-    if ((self = charon_intents_super_init(self, [NSObject class]))) {
-        _accountNumber = [number copy];
-        _nickname = [nickname copy];
-        _organizationName = [organizationName copy];
-    }
-    return self;
-}
+    @dynamic nickname;  // a class of a later group: see registry/Intents
+    @dynamic organizationName;  // a class of a later group: see registry/Intents
 
 + (BOOL)supportsSecureCoding
 {
@@ -355,22 +296,8 @@
 
 @end
 
-@interface INGetCarLockStatusIntent ()
-{
-    INSpeakableString * _carName;  // carName
-}
-@end
-
 @implementation INGetCarLockStatusIntent
-    @synthesize carName = _carName;
-
-- (instancetype)initWithCarName:(INSpeakableString *)carName
-{
-    if ((self = [super init])) {
-        _carName = [carName copy];
-    }
-    return self;
-}
+    @dynamic carName;  // a class of a later group: see registry/Intents
 
 + (BOOL)supportsSecureCoding
 {
@@ -453,22 +380,8 @@
 
 @end
 
-@interface INGetCarPowerLevelStatusIntent ()
-{
-    INSpeakableString * _carName;  // carName
-}
-@end
-
 @implementation INGetCarPowerLevelStatusIntent
-    @synthesize carName = _carName;
-
-- (instancetype)initWithCarName:(INSpeakableString *)carName
-{
-    if ((self = [super init])) {
-        _carName = [carName copy];
-    }
-    return self;
-}
+    @dynamic carName;  // a class of a later group: see registry/Intents
 
 + (BOOL)supportsSecureCoding
 {
@@ -672,38 +585,22 @@
 
 @interface INPayBillIntent ()
 {
-    INBillPayee *           _billPayee;  // billPayee
-    INBillType              _billType;  // billType
-    INDateComponentsRange * _dueDate;  // dueDate
-    INPaymentAccount *      _fromAccount;  // fromAccount
-    INPaymentAmount *       _transactionAmount;  // transactionAmount
-    NSString *              _transactionNote;  // transactionNote
-    INDateComponentsRange * _transactionScheduledDate;  // transactionScheduledDate
+    INBillPayee *      _billPayee;  // billPayee
+    INBillType         _billType;  // billType
+    INPaymentAccount * _fromAccount;  // fromAccount
+    INPaymentAmount *  _transactionAmount;  // transactionAmount
+    NSString *         _transactionNote;  // transactionNote
 }
 @end
 
 @implementation INPayBillIntent
     @synthesize billPayee = _billPayee;
     @synthesize billType = _billType;
-    @synthesize dueDate = _dueDate;
     @synthesize fromAccount = _fromAccount;
     @synthesize transactionAmount = _transactionAmount;
     @synthesize transactionNote = _transactionNote;
-    @synthesize transactionScheduledDate = _transactionScheduledDate;
-
-- (instancetype)initWithBillPayee:(INBillPayee *)billPayee fromAccount:(INPaymentAccount *)fromAccount transactionAmount:(INPaymentAmount *)transactionAmount transactionScheduledDate:(INDateComponentsRange *)transactionScheduledDate transactionNote:(NSString *)transactionNote billType:(INBillType)billType dueDate:(INDateComponentsRange *)dueDate
-{
-    if ((self = [super init])) {
-        _billPayee = [billPayee copy];
-        _billType = billType;
-        _dueDate = [dueDate copy];
-        _fromAccount = [fromAccount copy];
-        _transactionAmount = [transactionAmount copy];
-        _transactionNote = [transactionNote copy];
-        _transactionScheduledDate = [transactionScheduledDate copy];
-    }
-    return self;
-}
+    @dynamic dueDate;  // a class of a later group: see registry/Intents
+    @dynamic transactionScheduledDate;  // a class of a later group: see registry/Intents
 
 + (BOOL)supportsSecureCoding
 {
@@ -738,7 +635,6 @@
     INPaymentAccount *          _fromAccount;  // fromAccount
     INPaymentAmount *           _transactionAmount;  // transactionAmount
     NSString *                  _transactionNote;  // transactionNote
-    INDateComponentsRange *     _transactionScheduledDate;  // transactionScheduledDate
 }
 @end
 
@@ -748,7 +644,7 @@
     @synthesize fromAccount = _fromAccount;
     @synthesize transactionAmount = _transactionAmount;
     @synthesize transactionNote = _transactionNote;
-    @synthesize transactionScheduledDate = _transactionScheduledDate;
+    @dynamic transactionScheduledDate;  // a class of a later group: see registry/Intents
 
 - (void)setBillDetails:(INBillDetails *)billDetails
 {
@@ -768,11 +664,6 @@
 - (void)setTransactionNote:(NSString *)transactionNote
 {
     _transactionNote = [transactionNote copy];
-}
-
-- (void)setTransactionScheduledDate:(INDateComponentsRange *)transactionScheduledDate
-{
-    _transactionScheduledDate = [transactionScheduledDate copy];
 }
 
 - (instancetype)initWithCode:(INPayBillIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
@@ -816,33 +707,20 @@
 
 @interface INPaymentAccount ()
 {
-    NSString *          _accountNumber;  // accountNumber
-    INAccountType       _accountType;  // accountType
-    INSpeakableString * _nickname;  // nickname
-    INSpeakableString * _organizationName;  // organizationName
+    NSString *        _accountNumber;  // accountNumber
+    INAccountType     _accountType;  // accountType
+    INBalanceAmount * _balance;  // balance
+    INBalanceAmount * _secondaryBalance;  // secondaryBalance
 }
 @end
 
 @implementation INPaymentAccount
     @synthesize accountNumber = _accountNumber;
     @synthesize accountType = _accountType;
-    @synthesize nickname = _nickname;
-    @synthesize organizationName = _organizationName;
-    @dynamic balance;  // a class of a later group: see registry/Intents
-    @dynamic secondaryBalance;  // a class of a later group: see registry/Intents
-
-- (instancetype)initWithNickname:(INSpeakableString *)nickname number:(NSString *)number accountType:(INAccountType)accountType organizationName:(INSpeakableString *)organizationName
-{
-    // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonIntentsCoding.h's one definition of it.
-    if ((self = charon_intents_super_init(self, [NSObject class]))) {
-        _accountNumber = [number copy];
-        _accountType = accountType;
-        _nickname = [nickname copy];
-        _organizationName = [organizationName copy];
-    }
-    return self;
-}
+    @synthesize balance = _balance;
+    @synthesize secondaryBalance = _secondaryBalance;
+    @dynamic nickname;  // a class of a later group: see registry/Intents
+    @dynamic organizationName;  // a class of a later group: see registry/Intents
 
 + (BOOL)supportsSecureCoding
 {
@@ -893,25 +771,13 @@
 
 @interface INPaymentAmount ()
 {
-    INCurrencyAmount * _amount;  // amount
-    INAmountType       _amountType;  // amountType
+    INAmountType _amountType;  // amountType
 }
 @end
 
 @implementation INPaymentAmount
-    @synthesize amount = _amount;
     @synthesize amountType = _amountType;
-
-- (instancetype)initWithAmountType:(INAmountType)amountType amount:(INCurrencyAmount *)amount
-{
-    // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonIntentsCoding.h's one definition of it.
-    if ((self = charon_intents_super_init(self, [NSObject class]))) {
-        _amount = [amount copy];
-        _amountType = amountType;
-    }
-    return self;
-}
+    @dynamic amount;  // a class of a later group: see registry/Intents
 
 + (BOOL)supportsSecureCoding
 {
@@ -986,32 +852,18 @@
 
 @interface INSearchForBillsIntent ()
 {
-    INBillPayee *           _billPayee;  // billPayee
-    INBillType              _billType;  // billType
-    INDateComponentsRange * _dueDateRange;  // dueDateRange
-    INDateComponentsRange * _paymentDateRange;  // paymentDateRange
-    INPaymentStatus         _status;  // status
+    INBillPayee *   _billPayee;  // billPayee
+    INBillType      _billType;  // billType
+    INPaymentStatus _status;  // status
 }
 @end
 
 @implementation INSearchForBillsIntent
     @synthesize billPayee = _billPayee;
     @synthesize billType = _billType;
-    @synthesize dueDateRange = _dueDateRange;
-    @synthesize paymentDateRange = _paymentDateRange;
     @synthesize status = _status;
-
-- (instancetype)initWithBillPayee:(INBillPayee *)billPayee paymentDateRange:(INDateComponentsRange *)paymentDateRange billType:(INBillType)billType status:(INPaymentStatus)status dueDateRange:(INDateComponentsRange *)dueDateRange
-{
-    if ((self = [super init])) {
-        _billPayee = [billPayee copy];
-        _billType = billType;
-        _dueDateRange = [dueDateRange copy];
-        _paymentDateRange = [paymentDateRange copy];
-        _status = status;
-    }
-    return self;
-}
+    @dynamic dueDateRange;  // a class of a later group: see registry/Intents
+    @dynamic paymentDateRange;  // a class of a later group: see registry/Intents
 
 + (BOOL)supportsSecureCoding
 {
@@ -1096,23 +948,13 @@
 
 @interface INSetCarLockStatusIntent ()
 {
-    INSpeakableString * _carName;  // carName
-    NSNumber *          _locked;  // locked
+    NSNumber * _locked;  // locked
 }
 @end
 
 @implementation INSetCarLockStatusIntent
-    @synthesize carName = _carName;
     @synthesize locked = _locked;
-
-- (instancetype)initWithLocked:(NSNumber *)locked carName:(INSpeakableString *)carName
-{
-    if ((self = [super init])) {
-        _carName = [carName copy];
-        _locked = [locked copy];
-    }
-    return self;
-}
+    @dynamic carName;  // a class of a later group: see registry/Intents
 
 + (BOOL)supportsSecureCoding
 {

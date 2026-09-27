@@ -323,15 +323,17 @@ def collect(path):
     them as INPerson's properties, so they are folded into the class here. A category carries no
     class symbol of its own, so folding it in does not put two names in the same object file.
     """
-    interfaces, protocols, typedefs, categories = {}, {}, set(), {}
+    interfaces, protocols, typedefs, categories, forward = {}, {}, set(), {}, set()
     for node in top_level(path):
         kind, name = node.get("kind"), node.get("name")
         if not name:
             continue
         if kind in ("TypedefDecl", "EnumDecl"):
             typedefs.add(name)
-        elif kind == "ObjCInterfaceDecl" and (node.get("inner") or []):
-            if name not in interfaces or len(node["inner"]) > len(interfaces[name].node["inner"]):
+        elif kind == "ObjCInterfaceDecl":
+            if not (node.get("inner") or []):
+                forward.add(name)   # an @class declaration: no definition of it anywhere
+            elif name not in interfaces or len(node["inner"]) > len(interfaces[name].node["inner"]):
                 interfaces[name] = Interface(node)
         elif kind == "ObjCProtocolDecl":
             if name not in protocols or len(node.get("inner") or []) > len(protocols[name].get("inner") or []):
@@ -355,7 +357,7 @@ def collect(path):
                     interface.properties.append(member)
                 elif member.get("kind") == "ObjCMethodDecl":
                     interface.methods.append(member)
-    return interfaces, protocols, typedefs
+    return interfaces, protocols, typedefs, forward
 
 
 def property_names(members):
@@ -384,10 +386,26 @@ def required_properties(protocol):
             and not has_attr(member, "OptionalAttr")}
 
 
-def deferred_type(qual, known, carried):
-    """The Intents class a type names that this delivery does not carry."""
+# The frameworks the release itself carries, whose classes a backport may use. EventKit is not one
+# of them: libIntentsBackports does not link it, so a type of its name that the headers only
+# forward declare is a class this package does not carry.
+SYSTEM = re.compile(r"^(NS|CL|CF|CG|UI|WK|CA|AV|SK|MK|QL|AL|SCN|PH|MP)[A-Z]")
+
+def deferred_type(qual, known, carried, forward=()):
+    """The class a type names that this delivery does not carry.
+
+    Two ways a type names a class that is not here: an Intents class of a group this delivery
+    does not carry, and a class the SDK's headers only @class forward declare and no header of
+    the port's own SDK defines - INDateComponentsRange's EKRecurrenceRule, which is EventKit's
+    and which the Intents header of iPhoneOS 16.4 names where iPhoneOS 26.2 names an
+    INRecurrenceRule. A body that stored one would not compile against a forward declaration.
+    """
     name = base_type(qual)
-    return name if name in known and name not in carried else None
+    if name in known and name not in carried:
+        return name
+    if name in forward and name not in carried and not SYSTEM.match(name):
+        return name
+    return None
 
 
 def designated(interface, interfaces):
@@ -576,18 +594,18 @@ def resolution_result(name, interfaces):
     return False
 
 
-def render(interface, protocols, carried, intents, interfaces):
+def render(interface, protocols, carried, intents, interfaces, forward=()):
     """The @implementation of one generated class, and what it answers of the class's surface.
 
     The second value is what the registry is written from: the members with a body, the members
     left dynamic because their type is a class of a later group, and the initialisers left out
     for the same reason. Nothing here is claimed that the emitted code does not carry.
     """
-    out, report = implementation(interface, protocols, carried, intents, interfaces)
+    out, report = implementation(interface, protocols, carried, intents, interfaces, forward)
     return out, report or answer_of(out, interface.name)
 
 
-def implementation(interface, protocols, carried, intents, interfaces):
+def implementation(interface, protocols, carried, intents, interfaces, forward=()):
     resolution = resolution_result(interface.superclass, interfaces)
     conformed = conformed_by(interface, interfaces)
     own = {p.get("name"): p for p in interface.properties
@@ -609,8 +627,8 @@ def implementation(interface, protocols, carried, intents, interfaces):
     stored, synthesised, dynamic, setters, skipped, members = [], [], [], [], [], []
     for name, member in sorted(own.items()):
         kind = type_of(member)
-        if deferred_type(kind, intents, carried):
-            dynamic.append(name)
+        if deferred_type(kind, intents, carried, forward):
+            dynamic.append((name, member.get("category")))
             continue
         stored.append(("_" + name, spelled(kind), name))
         members.append((name, spelled(kind), member))
@@ -628,7 +646,7 @@ def implementation(interface, protocols, carried, intents, interfaces):
             continue
         for name, member in sorted(required_properties(protocol).items()):
             if member.get("class") or name in own or name in accessors or \
-                    deferred_type(type_of(member), intents, carried):
+                    deferred_type(type_of(member), intents, carried, forward):
                 continue
             kind = type_of(member)
             stored.append(("_" + name, spelled(kind), name))
@@ -658,13 +676,15 @@ def implementation(interface, protocols, carried, intents, interfaces):
         out.append("@end")
         out.append("")
     out += ["@implementation %s" % interface.name] + synthesised
-    for name in dynamic:
-        out.append("    @dynamic %s;  // a class of a later group: see registry/Intents" % name)
+    for name, category in dynamic:
+        if not category:
+            out.append("    @dynamic %s;  // a class of a later group: see registry/Intents" % name)
 
     if interface.name in HAND_WRITTEN:
         return out + ["", "@end", ""], None
 
     out.append("")
+    deferred_names = {name for name, _ in dynamic}
     states = {}
     for ivar, kind, name in stored:
         member = own.get(name)
@@ -686,7 +706,14 @@ def implementation(interface, protocols, carried, intents, interfaces):
             continue
         if re.match(r"^(initWithCoder:)$", selector):
             continue
-        if any(parameter in dynamic for _, parameter in parameters_of(method)):
+        # An initialiser is not given a body when it takes a value this delivery does not carry:
+        # one whose name is a member left dynamic, or one whose type is a class the headers only
+        # forward declare (INDateComponentsRange's initWithEKRecurrenceRule: takes EventKit's
+        # class, where the property of the same name takes the INRecurrenceRule of iOS 11). A body
+        # that dropped the value would answer with a class that looks filled and is not.
+        if any(parameter in deferred_names or
+               deferred_type(kind, intents, carried, forward)
+               for kind, parameter in parameters_of(method)):
             # An initialiser that takes a value this delivery does not carry cannot be given a
             # body without dropping that value, so it is left out and the registry says so; the
             # header's mark stays on it, so a port cannot call it and nothing crashes.
@@ -733,6 +760,9 @@ def implementation(interface, protocols, carried, intents, interfaces):
     # extension's ivars, which are declared in this same file.
     for category, found in sorted(by_category.items()):
         out.append("@implementation %s (Charon%s%s)" % (interface.name, interface.name, category))
+        for name, where in dynamic:
+            if where == category:
+                out.append("    @dynamic %s;  // a class of a later group: see registry/Intents" % name)
         for name, kind, member in sorted(found, key=lambda item: item[0]):
             getter = (member.get("getter") or {}).get("name") or name
             out += ["", "- (%s)%s" % (kind, getter), "{", "    return _%s;" % name, "}"]
@@ -842,7 +872,7 @@ def main():
     parser.add_argument("--report", help="a JSON file of what the emitted code answers")
     options = parser.parse_args()
 
-    interfaces, protocols, _ = collect(options.dump)
+    interfaces, protocols, _, forward = collect(options.dump)
     names = [line.strip() for line in open(options.classes) if line.strip()]
     carried = {line.strip() for line in open(options.carried) if line.strip()}
     intents = {line.strip() for line in open(options.intents) if line.strip()}
@@ -856,7 +886,7 @@ def main():
     answered, deferred = {}, 0
     for name in generated:
         interface = interfaces[name]
-        body, report = render(interface, protocols, carried, intents, interfaces)
+        body, report = render(interface, protocols, carried, intents, interfaces, forward)
         out.append("")
         out.extend(body)
         answered[name] = report

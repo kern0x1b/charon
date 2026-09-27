@@ -175,11 +175,21 @@ fetch for the points between them. That is not measured here: this package is ga
 and the caches an `arm64` band would need are not held. It is the first thing to settle before
 those groups can be called done for `arm64`.
 
-`INPaymentStatusResolutionResult` is the one place the header and the release caches disagree:
-the header's availability says iOS 10.0, and the armv7 caches of iOS 10.0.1 do not export it —
-it appears in 10.3. The caches decide which object file carries it (`IN10_3.m`), and the
-header's own annotation stays in its registry entry, because that is what an application
-compiling against the SDK is told.
+The header and the release caches disagree more than once, and the caches decide the object file
+every time:
+
+* `INPaymentStatusResolutionResult` — the header says iOS 10.0, the armv7 caches of 10.0.1 do not
+  export it, and it appears in 10.3. The header's own annotation stays in its registry entry,
+  because that is what an application compiling against the SDK is told.
+* `INCallRecordTypeResolutionResult` — the header says 11.0 and the 10.0.1 cache has it, so it
+  rides in `IN10_0_1.m` with the 10.0.1 group and not in `IN11_0.m`.
+* `INCallRecordResolutionResult` — the header says 16.2 and the 16.0 cache has it.
+
+A member whose type the SDK's headers only `@class` forward declare is treated like one of a later
+group: `INDateComponentsRange`'s `initWithEKRecurrenceRule:` takes **EventKit's** class, which
+this package does not link and which the Intents header of iPhoneOS 16.4 names where 26.2 names
+an `INRecurrenceRule`. That initialiser is not given a body and its entry says why; the property
+of the same name, whose type *is* carried, is implemented.
 
 ## The four, and what is not carried
 

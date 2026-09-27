@@ -9,6 +9,8 @@
 
 #import "CharonIntentsCoding.h"
 
+#import <string.h>
+
 #import <CoreLocation/CoreLocation.h>
 #import <string.h>
 
@@ -16,21 +18,37 @@
 #import <objc/runtime.h>
 
 // Whether the property an ivar belongs to is declared copy, which the copy below has to honour:
-// a property declared strong shares its object with the original and a property declared copy owns
-// one of its own, and a copy that turned the first into the second would be a different answer
-// from the one the header gives. Read from the property's own attributes, so a property the class
-// does not declare (a protocol's, a category's) falls back to the safe reading of copying.
-static BOOL charon_intents_is_copy(Class owner, const char *name)
+// a property declared copy owns one of its own object and a property declared strong or retain
+// shares the original's, and a copy that turned the first into the second would be a different
+// answer from the one the header gives.
+//
+// The two are matched the way the runtime pairs them and not by name: a property's attributes end
+// in its backing ivar (T@"NSString",C,N,V_name), and a property whose ivar is not spelled after
+// it would be missed by any name comparison - which is how a lookup by the ivar's own name, with
+// its leading underscore, found nothing at all and made every object ivar a copy.
+static BOOL charon_intents_ivar_is_copy(Class owner, const char *name)
 {
-    objc_property_t property = class_getProperty(owner, name);
-    if (!property) {
-        return YES;
+    unsigned count = 0;
+    objc_property_t *properties = class_copyPropertyList(owner, &count);
+    BOOL copy = YES;
+    for (unsigned index = 0; index < count; index++) {
+        const char *attributes = property_getAttributes(properties[index]);
+        const char *ivar = attributes ? strstr(attributes, ",V_") : NULL;
+        if (!ivar) {
+            continue;
+        }
+        if (strcmp(ivar + 3, name) != 0) {
+            continue;
+        }
+        // C is copy; R is retain and S is strong, and both share the original's object. An
+        // attribute list with neither of the three is a property of some other ownership, and
+        // copying is the reading that cannot let the two objects share anything mutable.
+        copy = strchr(attributes, 'C') != NULL || (strchr(attributes, 'R') == NULL &&
+                                                   strchr(attributes, 'S') == NULL);
+        break;
     }
-    const char *attributes = property_getAttributes(property);
-    if (!attributes) {
-        return YES;
-    }
-    return strchr(attributes, 'C') != NULL || strchr(attributes, 'R') == NULL;
+    free(properties);
+    return copy;
 }
 
 id charon_intents_super_init(id object, Class superclass)
@@ -162,7 +180,7 @@ void charon_intents_copy(id copy, id object)
                 // copy gets one of its own, and a property declared strong or retain shares the
                 // original's, so the two objects share nothing the header says they should.
                 id value = object_getIvar(object, ivars[index]);
-                id owned = (value && charon_intents_is_copy(owner, ivar_getName(ivars[index])) &&
+                id owned = (value && charon_intents_ivar_is_copy(owner, ivar_getName(ivars[index])) &&
                             [value respondsToSelector:@selector(copy)]) ? [value copy] : value;
                 object_setIvar(copy, ivars[index], owned);
             } else if (kind == CharonIntentsValue && size > 0) {

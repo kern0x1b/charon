@@ -68,6 +68,17 @@
       "effect": "every member the header declares has a body that stores or returns the class's own state; the object file is generated from the SDK's own declarations by tools/intents/gen-intents.py and this entry is written from what that generator emitted, read back out of the emitted text"
     },
     {
+      "api": "INBookRestaurantReservationIntent",
+      "kind": "class",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)",
+      "reason": "a data class of the framework: every property the SDK's header declares is kept in the class's own state with the ownership the header gives it, the initialisers the header declares keep every value they are given, NSSecureCoding and NSCopying carry the whole ivar chain, and a member whose type is a class of a later group has an entry of its own below that says so",
+      "effect": "every member the header declares has a body that stores or returns the class's own state; the object file is generated from the SDK's own declarations by tools/intents/gen-intents.py and this entry is written from what that generator emitted, read back out of the emitted text"
+    },
+    {
       "api": "INBookRestaurantReservationIntentResponse",
       "kind": "class",
       "introduced": "10.0",
@@ -82,6 +93,17 @@
       "api": "INBooleanResolutionResult",
       "kind": "class",
       "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)",
+      "reason": "a data class of the framework: every property the SDK's header declares is kept in the class's own state with the ownership the header gives it, the initialisers the header declares keep every value they are given, NSSecureCoding and NSCopying carry the whole ivar chain, and a member whose type is a class of a later group has an entry of its own below that says so",
+      "effect": "every member the header declares has a body that stores or returns the class's own state; the object file is generated from the SDK's own declarations by tools/intents/gen-intents.py and this entry is written from what that generator emitted, read back out of the emitted text"
+    },
+    {
+      "api": "INCallRecordTypeResolutionResult",
+      "kind": "class",
+      "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
@@ -1588,6 +1610,26 @@
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
+      "api": "+[INCallRecordTypeResolutionResult confirmationRequiredWithCallRecordTypeToConfirm:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INCallRecordTypeResolutionResult, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "+[INCallRecordTypeResolutionResult successWithResolvedCallRecordType:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INCallRecordTypeResolutionResult, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
       "api": "+[INCarAirCirculationModeResolutionResult confirmationRequiredWithCarAirCirculationModeToConfirm:]",
       "kind": "method",
       "introduced": "10.0",
@@ -1904,7 +1946,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INImage, which the class's own generated implementation answers",
+      "reason": "a member of INImage, which INImage's own @implementation answers it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -1914,7 +1956,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INImage, which the class's own generated implementation answers",
+      "reason": "a member of INImage, which INImage's own @implementation answers it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -1924,7 +1966,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INImage, which the class's own generated implementation answers",
+      "reason": "a member of INImage, which INImage's own @implementation answers it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -1934,7 +1976,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INImage, which the class's own generated implementation answers",
+      "reason": "a member of INImage, which INImage's own @implementation answers it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -1982,7 +2024,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INIntentResolutionResult, which the class's own generated implementation answers",
+      "reason": "a member of INIntentResolutionResult, which INIntentResolutionResult's own @implementation answers it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -1992,7 +2034,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INIntentResolutionResult, which the class's own generated implementation answers",
+      "reason": "a member of INIntentResolutionResult, which INIntentResolutionResult's own @implementation answers it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -2011,7 +2053,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INIntentResolutionResult, which the class's own generated implementation answers",
+      "reason": "a member of INIntentResolutionResult, which INIntentResolutionResult's own @implementation answers it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -2021,7 +2063,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INInteraction, which the class's own generated implementation answers",
+      "reason": "a member of INInteraction, which INInteraction's own @implementation answers it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -2031,7 +2073,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INInteraction, which the class's own generated implementation answers",
+      "reason": "a member of INInteraction, which INInteraction's own @implementation answers it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -2041,7 +2083,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INInteraction, which the class's own generated implementation answers",
+      "reason": "a member of INInteraction, which INInteraction's own @implementation answers it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -2191,7 +2233,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INPaymentMethod, which the class's own generated implementation answers",
+      "reason": "a member of INPaymentMethod, which INPaymentMethod's own @implementation answers it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -2301,7 +2343,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INPreferences, which the class's own generated implementation answers",
+      "reason": "a member of INPreferences, which INPreferences's own @implementation answers it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -2311,7 +2353,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INPreferences, which the class's own generated implementation answers",
+      "reason": "a member of INPreferences, which INPreferences's own @implementation answers it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -2321,7 +2363,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INPreferences, which the class's own generated implementation answers",
+      "reason": "a member of INPreferences, which INPreferences's own @implementation answers it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -2511,7 +2553,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INRideCompletionStatus, which the class's own generated implementation answers",
+      "reason": "a member of INRideCompletionStatus, which INRideCompletionStatus's own @implementation answers it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -2521,7 +2563,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INRideCompletionStatus, which the class's own generated implementation answers",
+      "reason": "a member of INRideCompletionStatus, which INRideCompletionStatus's own @implementation answers it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -2531,7 +2573,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INRideCompletionStatus, which the class's own generated implementation answers",
+      "reason": "a member of INRideCompletionStatus, which INRideCompletionStatus's own @implementation answers it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -2541,7 +2583,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INRideCompletionStatus, which the class's own generated implementation answers",
+      "reason": "a member of INRideCompletionStatus, which INRideCompletionStatus's own @implementation answers it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -2551,7 +2593,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INRideCompletionStatus, which the class's own generated implementation answers",
+      "reason": "a member of INRideCompletionStatus, which INRideCompletionStatus's own @implementation answers it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -2561,7 +2603,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INRideCompletionStatus, which the class's own generated implementation answers",
+      "reason": "a member of INRideCompletionStatus, which INRideCompletionStatus's own @implementation answers it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -2571,7 +2613,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INRideCompletionStatus, which the class's own generated implementation answers",
+      "reason": "a member of INRideCompletionStatus, which INRideCompletionStatus's own @implementation answers it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -2671,7 +2713,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INVocabulary, which the class's own generated implementation answers",
+      "reason": "a member of INVocabulary, which INVocabulary's own @implementation answers it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -2758,11 +2800,10 @@
       "api": "-[INActivateCarSignalIntent initWithCarName:signals:]",
       "kind": "method",
       "introduced": "10.3",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INActivateCarSignalIntent, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "-[INActivateCarSignalIntentResponse initWithCode:userActivity:]",
@@ -2787,11 +2828,10 @@
       "api": "-[INBillDetails initWithBillType:paymentStatus:billPayee:amountDue:minimumDue:lateFee:dueDate:paymentDate:]",
       "kind": "method",
       "introduced": "10.3",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INBillDetails, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "-[INBillDetails init]",
@@ -2806,11 +2846,10 @@
       "api": "-[INBillPayee initWithNickname:number:organizationName:]",
       "kind": "method",
       "introduced": "10.3",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INBillPayee, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "-[INBillPayee init]",
@@ -2820,6 +2859,16 @@
       "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
       "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/Intents/Intents.md"
+    },
+    {
+      "api": "-[INBookRestaurantReservationIntent initWithRestaurant:bookingDateComponents:partySize:bookingIdentifier:guest:selectedOffer:guestProvidedSpecialRequestText:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INBookRestaurantReservationIntent, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INBookRestaurantReservationIntentResponse initWithCode:userActivity:]",
@@ -2911,10 +2960,11 @@
       "api": "-[INDateComponentsRange initWithStartDateComponents:endDateComponents:recurrenceRule:]",
       "kind": "method",
       "introduced": "11.0",
-      "status": "absent",
-      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INDateComponentsRange, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INDateComponentsRange init]",
@@ -2998,11 +3048,10 @@
       "api": "-[INGetCarLockStatusIntent initWithCarName:]",
       "kind": "method",
       "introduced": "10.3",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INGetCarLockStatusIntent, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "-[INGetCarLockStatusIntentResponse initWithCode:userActivity:]",
@@ -3027,11 +3076,10 @@
       "api": "-[INGetCarPowerLevelStatusIntent initWithCarName:]",
       "kind": "method",
       "introduced": "10.3",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INGetCarPowerLevelStatusIntent, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "-[INGetCarPowerLevelStatusIntentResponse initWithCode:userActivity:]",
@@ -3117,7 +3165,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INIntent, which the class's own generated implementation answers",
+      "reason": "a member of INIntent, which INIntent's own @implementation answers it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -3127,7 +3175,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INIntent, which the class's own generated implementation answers",
+      "reason": "a member of INIntent, which INIntent's own @implementation answers it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -3137,7 +3185,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INIntent, which the class's own generated implementation answers",
+      "reason": "a member of INIntent, which INIntent's own @implementation answers it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -3156,7 +3204,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INInteraction, which the class's own generated implementation answers",
+      "reason": "a member of INInteraction, which INInteraction's own @implementation answers it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -3166,7 +3214,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INInteraction, which the class's own generated implementation answers",
+      "reason": "a member of INInteraction, which INInteraction's own @implementation answers it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -3185,7 +3233,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INInteraction, which the class's own generated implementation answers",
+      "reason": "a member of INInteraction, which INInteraction's own @implementation answers it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -3260,10 +3308,11 @@
       "api": "-[INMessage initWithIdentifier:conversationIdentifier:content:dateSent:sender:recipients:groupName:messageType:serviceName:audioMessageFile:]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "absent",
-      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INMessage, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INMessage initWithIdentifier:conversationIdentifier:content:dateSent:sender:recipients:groupName:serviceName:linkMetadata:]",
@@ -3353,11 +3402,10 @@
       "api": "-[INPayBillIntent initWithBillPayee:fromAccount:transactionAmount:transactionScheduledDate:transactionNote:billType:dueDate:]",
       "kind": "method",
       "introduced": "10.3",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INPayBillIntent, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "-[INPayBillIntentResponse initWithCode:userActivity:]",
@@ -3382,11 +3430,10 @@
       "api": "-[INPaymentAccount initWithNickname:number:accountType:organizationName:]",
       "kind": "method",
       "introduced": "10.3",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INPaymentAccount, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "-[INPaymentAccount initWithNickname:number:accountType:organizationName:balance:secondaryBalance:]",
@@ -3410,11 +3457,10 @@
       "api": "-[INPaymentAmount initWithAmountType:amount:]",
       "kind": "method",
       "introduced": "10.3",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INPaymentAmount, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "-[INPaymentAmount init]",
@@ -3432,7 +3478,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INPaymentMethod, which the class's own generated implementation answers",
+      "reason": "a member of INPaymentMethod, which INPaymentMethod's own @implementation answers it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -3985,11 +4031,10 @@
       "api": "-[INSearchForBillsIntent initWithBillPayee:paymentDateRange:billType:status:dueDateRange:]",
       "kind": "method",
       "introduced": "10.3",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INSearchForBillsIntent, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "-[INSearchForBillsIntentResponse initWithCode:userActivity:]",
@@ -4209,11 +4254,10 @@
       "api": "-[INSetCarLockStatusIntent initWithLocked:carName:]",
       "kind": "method",
       "introduced": "10.3",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INSetCarLockStatusIntent, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "-[INSetCarLockStatusIntentResponse initWithCode:userActivity:]",
@@ -4465,7 +4509,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INSpeakableString, which the class's own generated implementation answers",
+      "reason": "a member of INSpeakableString, which INSpeakableString's own @implementation answers it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -4475,7 +4519,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INSpeakableString, which the class's own generated implementation answers",
+      "reason": "a member of INSpeakableString, which INSpeakableString's own @implementation answers it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -4485,7 +4529,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INSpeakableString, which the class's own generated implementation answers",
+      "reason": "a member of INSpeakableString, which INSpeakableString's own @implementation answers it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -4640,7 +4684,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INVocabulary, which the class's own generated implementation answers",
+      "reason": "a member of INVocabulary, which INVocabulary's own @implementation answers it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -4650,7 +4694,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INVocabulary, which the class's own generated implementation answers",
+      "reason": "a member of INVocabulary, which INVocabulary's own @implementation answers it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -4660,18 +4704,17 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INVocabulary, which the class's own generated implementation answers",
+      "reason": "a member of INVocabulary, which INVocabulary's own @implementation answers it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "INActivateCarSignalIntent.carName",
       "kind": "property",
       "introduced": "10.3",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INActivateCarSignalIntent, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "INActivateCarSignalIntent.signals",
@@ -4707,11 +4750,10 @@
       "api": "INBillDetails.amountDue",
       "kind": "property",
       "introduced": "10.3",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INBillDetails, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "INBillDetails.billPayee",
@@ -4747,21 +4789,19 @@
       "api": "INBillDetails.lateFee",
       "kind": "property",
       "introduced": "10.3",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INBillDetails, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "INBillDetails.minimumDue",
       "kind": "property",
       "introduced": "10.3",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INBillDetails, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "INBillDetails.paymentDate",
@@ -4797,20 +4837,88 @@
       "api": "INBillPayee.nickname",
       "kind": "property",
       "introduced": "10.3",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INBillPayee, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "INBillPayee.organizationName",
       "kind": "property",
       "introduced": "10.3",
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
+    },
+    {
+      "api": "INBookRestaurantReservationIntent.bookingDateComponents",
+      "kind": "property",
+      "introduced": "10.0",
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INBillPayee, which the class's own generated implementation answers",
+      "reason": "a member of INBookRestaurantReservationIntent, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INBookRestaurantReservationIntent.bookingIdentifier",
+      "kind": "property",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INBookRestaurantReservationIntent, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INBookRestaurantReservationIntent.guest",
+      "kind": "property",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INBookRestaurantReservationIntent, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INBookRestaurantReservationIntent.guestProvidedSpecialRequestText",
+      "kind": "property",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INBookRestaurantReservationIntent, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INBookRestaurantReservationIntent.partySize",
+      "kind": "property",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INBookRestaurantReservationIntent, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INBookRestaurantReservationIntent.restaurant",
+      "kind": "property",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INBookRestaurantReservationIntent, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INBookRestaurantReservationIntent.selectedOffer",
+      "kind": "property",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INBookRestaurantReservationIntent, which the class's own generated implementation answers",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -4887,10 +4995,11 @@
       "api": "INDateComponentsRange.recurrenceRule",
       "kind": "property",
       "introduced": "11.0",
-      "status": "absent",
-      "reason": "the class this member's type names arrived with iOS 11 or later and is in a later group of this same delivery",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INDateComponentsRange, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "INDateComponentsRange.startDateComponents",
@@ -5106,11 +5215,10 @@
       "api": "INGetCarLockStatusIntent.carName",
       "kind": "property",
       "introduced": "10.3",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INGetCarLockStatusIntent, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "INGetCarLockStatusIntentResponse.code",
@@ -5136,11 +5244,10 @@
       "api": "INGetCarPowerLevelStatusIntent.carName",
       "kind": "property",
       "introduced": "10.3",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INGetCarPowerLevelStatusIntent, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "INGetCarPowerLevelStatusIntentResponse.activeConnector",
@@ -5447,7 +5554,7 @@
       "kind": "property",
       "introduced": "15.0",
       "status": "absent",
-      "reason": "the class this member's type names arrived with iOS 11 or later and is in a later group of this same delivery",
+      "reason": "the class this member's type names is in a later group of this same delivery",
       "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/Intents/Intents.md"
     },
@@ -5458,7 +5565,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INIntent, which the class's own generated implementation answers",
+      "reason": "a member of INIntent, which INIntent's own @implementation synthesises it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -5468,7 +5575,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INIntent, which the class's own generated implementation answers",
+      "reason": "a member of INIntent, which INIntent's own @implementation synthesises it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -5478,7 +5585,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INIntent, which the class's own generated implementation answers",
+      "reason": "a member of INIntent, which INIntent's own @implementation synthesises it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -5488,7 +5595,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INIntent, which the class's own generated implementation answers",
+      "reason": "a member of INIntent, which INIntent's own @implementation synthesises it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -5508,7 +5615,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INInteraction, which the class's own generated implementation answers",
+      "reason": "a member of INInteraction, which INInteraction's own @implementation synthesises it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -5518,7 +5625,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INInteraction, which the class's own generated implementation answers",
+      "reason": "a member of INInteraction, which INInteraction's own @implementation synthesises it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -5528,7 +5635,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INInteraction, which the class's own generated implementation answers",
+      "reason": "a member of INInteraction, which INInteraction's own @implementation synthesises it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -5538,7 +5645,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INInteraction, which the class's own generated implementation answers",
+      "reason": "a member of INInteraction, which INInteraction's own @implementation synthesises it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -5548,7 +5655,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INInteraction, which the class's own generated implementation answers",
+      "reason": "a member of INInteraction, which INInteraction's own @implementation synthesises it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -5558,7 +5665,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INInteraction, which the class's own generated implementation answers",
+      "reason": "a member of INInteraction, which INInteraction's own @implementation synthesises it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -5568,7 +5675,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INInteraction, which the class's own generated implementation answers",
+      "reason": "a member of INInteraction, which INInteraction's own @implementation synthesises it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -5636,7 +5743,7 @@
       "kind": "property",
       "introduced": "17.0",
       "status": "absent",
-      "reason": "the class this member's type names arrived with iOS 11 or later and is in a later group of this same delivery",
+      "reason": "the class this member's type names is in a later group of this same delivery",
       "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/Intents/Intents.md"
     },
@@ -5644,10 +5751,11 @@
       "api": "INMessage.audioMessageFile",
       "kind": "property",
       "introduced": "16.0",
-      "status": "absent",
-      "reason": "the class this member's type names arrived with iOS 11 or later and is in a later group of this same delivery",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INMessage, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "INMessage.content",
@@ -5704,7 +5812,7 @@
       "kind": "property",
       "introduced": "17.0",
       "status": "absent",
-      "reason": "the class this member's type names arrived with iOS 11 or later and is in a later group of this same delivery",
+      "reason": "the class this member's type names is in a later group of this same delivery",
       "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/Intents/Intents.md"
     },
@@ -5723,7 +5831,7 @@
       "kind": "property",
       "introduced": "17.0",
       "status": "absent",
-      "reason": "the class this member's type names arrived with iOS 11 or later and is in a later group of this same delivery",
+      "reason": "the class this member's type names is in a later group of this same delivery",
       "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/Intents/Intents.md"
     },
@@ -5732,7 +5840,7 @@
       "kind": "property",
       "introduced": "18.0",
       "status": "absent",
-      "reason": "the class this member's type names arrived with iOS 11 or later and is in a later group of this same delivery",
+      "reason": "the class this member's type names is in a later group of this same delivery",
       "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/Intents/Intents.md"
     },
@@ -5771,7 +5879,7 @@
       "kind": "property",
       "introduced": "18.0",
       "status": "absent",
-      "reason": "the class this member's type names arrived with iOS 11 or later and is in a later group of this same delivery",
+      "reason": "the class this member's type names is in a later group of this same delivery",
       "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/Intents/Intents.md"
     },
@@ -5819,11 +5927,10 @@
       "api": "INPayBillIntent.dueDate",
       "kind": "property",
       "introduced": "10.3",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INPayBillIntent, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "INPayBillIntent.fromAccount",
@@ -5859,11 +5966,10 @@
       "api": "INPayBillIntent.transactionScheduledDate",
       "kind": "property",
       "introduced": "10.3",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INPayBillIntent, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "INPayBillIntentResponse.billDetails",
@@ -5919,11 +6025,10 @@
       "api": "INPayBillIntentResponse.transactionScheduledDate",
       "kind": "property",
       "introduced": "10.3",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INPayBillIntentResponse, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "INPaymentAccount.accountNumber",
@@ -5949,25 +6054,34 @@
       "api": "INPaymentAccount.balance",
       "kind": "property",
       "introduced": "11.0",
-      "status": "absent",
-      "reason": "the class this member's type names arrived with iOS 11 or later and is in a later group of this same delivery",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INPaymentAccount, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "INPaymentAccount.nickname",
       "kind": "property",
       "introduced": "10.3",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INPaymentAccount, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "INPaymentAccount.organizationName",
       "kind": "property",
       "introduced": "10.3",
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
+    },
+    {
+      "api": "INPaymentAccount.secondaryBalance",
+      "kind": "property",
+      "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
@@ -5975,23 +6089,13 @@
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
-      "api": "INPaymentAccount.secondaryBalance",
-      "kind": "property",
-      "introduced": "11.0",
-      "status": "absent",
-      "reason": "the class this member's type names arrived with iOS 11 or later and is in a later group of this same delivery",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
-    },
-    {
       "api": "INPaymentAmount.amount",
       "kind": "property",
       "introduced": "10.3",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INPaymentAmount, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "INPaymentAmount.amountType",
@@ -6010,7 +6114,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INPaymentMethod, which the class's own generated implementation answers",
+      "reason": "a member of INPaymentMethod, which INPaymentMethod's own @implementation synthesises it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -6020,7 +6124,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INPaymentMethod, which the class's own generated implementation answers",
+      "reason": "a member of INPaymentMethod, which INPaymentMethod's own @implementation synthesises it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -6030,7 +6134,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INPaymentMethod, which the class's own generated implementation answers",
+      "reason": "a member of INPaymentMethod, which INPaymentMethod's own @implementation synthesises it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -6040,7 +6144,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INPaymentMethod, which the class's own generated implementation answers",
+      "reason": "a member of INPaymentMethod, which INPaymentMethod's own @implementation synthesises it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -6800,7 +6904,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INRideCompletionStatus, which the class's own generated implementation answers",
+      "reason": "a member of INRideCompletionStatus, which INRideCompletionStatus's own @implementation synthesises it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -6810,7 +6914,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INRideCompletionStatus, which the class's own generated implementation answers",
+      "reason": "a member of INRideCompletionStatus, which INRideCompletionStatus's own @implementation synthesises it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -6820,7 +6924,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INRideCompletionStatus, which the class's own generated implementation answers",
+      "reason": "a member of INRideCompletionStatus, which INRideCompletionStatus's own @implementation synthesises it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -6830,7 +6934,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INRideCompletionStatus, which the class's own generated implementation answers",
+      "reason": "a member of INRideCompletionStatus, which INRideCompletionStatus's own @implementation synthesises it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -6840,7 +6944,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INRideCompletionStatus, which the class's own generated implementation answers",
+      "reason": "a member of INRideCompletionStatus, which INRideCompletionStatus's own @implementation synthesises it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -6850,7 +6954,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INRideCompletionStatus, which the class's own generated implementation answers",
+      "reason": "a member of INRideCompletionStatus, which INRideCompletionStatus's own @implementation synthesises it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -6860,7 +6964,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INRideCompletionStatus, which the class's own generated implementation answers",
+      "reason": "a member of INRideCompletionStatus, which INRideCompletionStatus's own @implementation synthesises it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -6870,7 +6974,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INRideCompletionStatus, which the class's own generated implementation answers",
+      "reason": "a member of INRideCompletionStatus, which INRideCompletionStatus's own @implementation synthesises it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -7417,21 +7521,19 @@
       "api": "INSearchForBillsIntent.dueDateRange",
       "kind": "property",
       "introduced": "10.3",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INSearchForBillsIntent, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "INSearchForBillsIntent.paymentDateRange",
       "kind": "property",
       "introduced": "10.3",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INSearchForBillsIntent, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "INSearchForBillsIntent.status",
@@ -7977,11 +8079,10 @@
       "api": "INSetCarLockStatusIntent.carName",
       "kind": "property",
       "introduced": "10.3",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INSetCarLockStatusIntent, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "INSetCarLockStatusIntent.locked",

@@ -101,29 +101,7 @@
       "effect": "every member the header declares has a body that stores or returns the class's own state; the object file is generated from the SDK's own declarations by tools/intents/gen-intents.py and this entry is written from what that generator emitted, read back out of the emitted text"
     },
     {
-      "api": "INCallRecordResolutionResult",
-      "kind": "class",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)",
-      "reason": "a data class of the framework: every property the SDK's header declares is kept in the class's own state with the ownership the header gives it, the initialisers the header declares keep every value they are given, NSSecureCoding and NSCopying carry the whole ivar chain, and a member whose type is a class of a later group has an entry of its own below that says so",
-      "effect": "every member the header declares has a body that stores or returns the class's own state; the object file is generated from the SDK's own declarations by tools/intents/gen-intents.py and this entry is written from what that generator emitted, read back out of the emitted text"
-    },
-    {
       "api": "INCallRecordTypeOptionsResolutionResult",
-      "kind": "class",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)",
-      "reason": "a data class of the framework: every property the SDK's header declares is kept in the class's own state with the ownership the header gives it, the initialisers the header declares keep every value they are given, NSSecureCoding and NSCopying carry the whole ivar chain, and a member whose type is a class of a later group has an entry of its own below that says so",
-      "effect": "every member the header declares has a body that stores or returns the class's own state; the object file is generated from the SDK's own declarations by tools/intents/gen-intents.py and this entry is written from what that generator emitted, read back out of the emitted text"
-    },
-    {
-      "api": "INCallRecordTypeResolutionResult",
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
@@ -709,36 +687,6 @@
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
-      "api": "+[INCallRecordResolutionResult confirmationRequiredWithCallRecordToConfirm:]",
-      "kind": "method",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INCallRecordResolutionResult, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
-    },
-    {
-      "api": "+[INCallRecordResolutionResult disambiguationWithCallRecordsToDisambiguate:]",
-      "kind": "method",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INCallRecordResolutionResult, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
-    },
-    {
-      "api": "+[INCallRecordResolutionResult successWithResolvedCallRecord:]",
-      "kind": "method",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INCallRecordResolutionResult, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
-    },
-    {
       "api": "+[INCallRecordTypeOptionsResolutionResult confirmationRequiredWithCallRecordTypeOptionsToConfirm:]",
       "kind": "method",
       "introduced": "11.0",
@@ -756,26 +704,6 @@
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
       "reason": "a member of INCallRecordTypeOptionsResolutionResult, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
-    },
-    {
-      "api": "+[INCallRecordTypeResolutionResult confirmationRequiredWithCallRecordTypeToConfirm:]",
-      "kind": "method",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INCallRecordTypeResolutionResult, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
-    },
-    {
-      "api": "+[INCallRecordTypeResolutionResult successWithResolvedCallRecordType:]",
-      "kind": "method",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INCallRecordTypeResolutionResult, which the class's own generated implementation answers",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -935,7 +863,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INParameter, which the class's own generated implementation answers",
+      "reason": "a member of INParameter, which INParameter's own @implementation answers it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -1279,21 +1207,19 @@
       "api": "-[INCallRecord initWithIdentifier:dateCreated:caller:callRecordType:callCapability:callDuration:unseen:]",
       "kind": "method",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INCallRecord, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "-[INCallRecord initWithIdentifier:dateCreated:caller:callRecordType:callCapability:callDuration:unseen:numberOfCalls:]",
       "kind": "method",
       "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INCallRecord, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "-[INCallRecord init]",
@@ -1346,11 +1272,10 @@
       "api": "-[INCreateNoteIntent initWithTitle:content:groupName:]",
       "kind": "method",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INCreateNoteIntent, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "-[INCreateNoteIntentResponse initWithCode:userActivity:]",
@@ -1375,11 +1300,10 @@
       "api": "-[INCreateTaskListIntent initWithTitle:taskTitles:groupName:]",
       "kind": "method",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INCreateTaskListIntent, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "-[INCreateTaskListIntentResponse initWithCode:userActivity:]",
@@ -1433,21 +1357,19 @@
       "api": "-[INImageNoteContent initWithImage:]",
       "kind": "method",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INImageNoteContent, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "-[INNote initWithTitle:contents:groupName:createdDateComponents:modifiedDateComponents:identifier:]",
       "kind": "method",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INNote, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "-[INParameter indexForSubKeyPath:]",
@@ -1456,7 +1378,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INParameter, which the class's own generated implementation answers",
+      "reason": "a member of INParameter, which INParameter's own @implementation answers it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -1466,7 +1388,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INParameter, which the class's own generated implementation answers",
+      "reason": "a member of INParameter, which INParameter's own @implementation answers it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -1476,7 +1398,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INParameter, which the class's own generated implementation answers",
+      "reason": "a member of INParameter, which INParameter's own @implementation answers it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -1512,31 +1434,28 @@
       "api": "-[INRequestPaymentCurrencyAmountResolutionResult initWithCurrencyAmountResolutionResult:]",
       "kind": "method",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INRequestPaymentCurrencyAmountResolutionResult, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "-[INRequestPaymentPayerResolutionResult initWithPersonResolutionResult:]",
       "kind": "method",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INRequestPaymentPayerResolutionResult, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "-[INSearchForAccountsIntent initWithAccountNickname:accountType:organizationName:requestedBalanceType:]",
       "kind": "method",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INSearchForAccountsIntent, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "-[INSearchForAccountsIntentResponse initWithCode:userActivity:]",
@@ -1561,31 +1480,28 @@
       "api": "-[INSearchForNotebookItemsIntent initWithTitle:content:itemType:status:location:locationSearchType:dateTime:dateSearchType:]",
       "kind": "method",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INSearchForNotebookItemsIntent, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "-[INSearchForNotebookItemsIntent initWithTitle:content:itemType:status:location:locationSearchType:dateTime:dateSearchType:notebookItemIdentifier:]",
       "kind": "method",
       "introduced": "11.2",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INSearchForNotebookItemsIntent, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "-[INSearchForNotebookItemsIntent initWithTitle:content:itemType:status:location:locationSearchType:dateTime:dateSearchType:temporalEventTriggerTypes:taskPriority:notebookItemIdentifier:]",
       "kind": "method",
       "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INSearchForNotebookItemsIntent, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "-[INSearchForNotebookItemsIntentResponse initWithCode:userActivity:]",
@@ -1610,31 +1526,28 @@
       "api": "-[INSendMessageRecipientResolutionResult initWithPersonResolutionResult:]",
       "kind": "method",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INSendMessageRecipientResolutionResult, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "-[INSendPaymentCurrencyAmountResolutionResult initWithCurrencyAmountResolutionResult:]",
       "kind": "method",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INSendPaymentCurrencyAmountResolutionResult, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "-[INSendPaymentPayeeResolutionResult initWithPersonResolutionResult:]",
       "kind": "method",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INSendPaymentPayeeResolutionResult, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "-[INSendRideFeedbackIntent initWithRideIdentifier:]",
@@ -1688,11 +1601,10 @@
       "api": "-[INSetTaskAttributeIntent initWithTargetTask:taskTitle:status:priority:spatialEventTrigger:temporalEventTrigger:]",
       "kind": "method",
       "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INSetTaskAttributeIntent, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "-[INSetTaskAttributeIntentResponse initWithCode:userActivity:]",
@@ -1727,41 +1639,37 @@
       "api": "-[INTask initWithTitle:status:taskType:spatialEventTrigger:temporalEventTrigger:createdDateComponents:modifiedDateComponents:identifier:]",
       "kind": "method",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INTask, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "-[INTask initWithTitle:status:taskType:spatialEventTrigger:temporalEventTrigger:createdDateComponents:modifiedDateComponents:identifier:priority:]",
       "kind": "method",
       "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INTask, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "-[INTaskList initWithTitle:tasks:groupName:createdDateComponents:modifiedDateComponents:identifier:]",
       "kind": "method",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INTaskList, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "-[INTemporalEventTrigger initWithDateComponentsRange:]",
       "kind": "method",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INTemporalEventTrigger, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "-[INTextNoteContent initWithText:]",
@@ -1777,11 +1685,10 @@
       "api": "-[INTransferMoneyIntent initWithFromAccount:toAccount:transactionAmount:transactionScheduledDate:transactionNote:]",
       "kind": "method",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INTransferMoneyIntent, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "-[INTransferMoneyIntentResponse initWithCode:userActivity:]",
@@ -1986,11 +1893,10 @@
       "api": "INCallRecord.caller",
       "kind": "property",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INCallRecord, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "INCallRecord.dateCreated",
@@ -2066,11 +1972,10 @@
       "api": "INCancelRideIntentResponse.cancellationFee",
       "kind": "property",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INCancelRideIntentResponse, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "INCancelRideIntentResponse.cancellationFeeThreshold",
@@ -2106,21 +2011,19 @@
       "api": "INCreateNoteIntent.groupName",
       "kind": "property",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INCreateNoteIntent, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "INCreateNoteIntent.title",
       "kind": "property",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INCreateNoteIntent, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "INCreateNoteIntentResponse.code",
@@ -2146,11 +2049,10 @@
       "api": "INCreateTaskListIntent.groupName",
       "kind": "property",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INCreateTaskListIntent, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "INCreateTaskListIntent.taskTitles",
@@ -2166,11 +2068,10 @@
       "api": "INCreateTaskListIntent.title",
       "kind": "property",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INCreateTaskListIntent, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "INCreateTaskListIntentResponse.code",
@@ -2216,21 +2117,19 @@
       "api": "INGetVisualCodeIntentResponse.visualCodeImage",
       "kind": "property",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INGetVisualCodeIntentResponse, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "INImageNoteContent.image",
       "kind": "property",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INImageNoteContent, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "INNote.contents",
@@ -2256,11 +2155,10 @@
       "api": "INNote.groupName",
       "kind": "property",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INNote, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "INNote.identifier",
@@ -2286,11 +2184,10 @@
       "api": "INNote.title",
       "kind": "property",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INNote, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "INParameter.parameterClass",
@@ -2299,7 +2196,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INParameter, which the class's own generated implementation answers",
+      "reason": "a member of INParameter, which INParameter's own @implementation synthesises it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -2309,7 +2206,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INParameter, which the class's own generated implementation answers",
+      "reason": "a member of INParameter, which INParameter's own @implementation synthesises it",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -2346,11 +2243,10 @@
       "api": "INSearchForAccountsIntent.accountNickname",
       "kind": "property",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INSearchForAccountsIntent, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "INSearchForAccountsIntent.accountType",
@@ -2366,11 +2262,10 @@
       "api": "INSearchForAccountsIntent.organizationName",
       "kind": "property",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INSearchForAccountsIntent, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "INSearchForAccountsIntent.requestedBalanceType",
@@ -2426,11 +2321,10 @@
       "api": "INSearchForNotebookItemsIntent.dateTime",
       "kind": "property",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INSearchForNotebookItemsIntent, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "INSearchForNotebookItemsIntent.itemType",
@@ -2506,11 +2400,10 @@
       "api": "INSearchForNotebookItemsIntent.title",
       "kind": "property",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INSearchForNotebookItemsIntent, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "INSearchForNotebookItemsIntentResponse.code",
@@ -2586,11 +2479,10 @@
       "api": "INSendRideFeedbackIntent.tip",
       "kind": "property",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INSendRideFeedbackIntent, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "INSendRideFeedbackIntentResponse.code",
@@ -2646,11 +2538,10 @@
       "api": "INSetTaskAttributeIntent.taskTitle",
       "kind": "property",
       "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INSetTaskAttributeIntent, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "INSetTaskAttributeIntent.temporalEventTrigger",
@@ -2786,11 +2677,10 @@
       "api": "INTask.title",
       "kind": "property",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INTask, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "INTaskList.createdDateComponents",
@@ -2806,11 +2696,10 @@
       "api": "INTaskList.groupName",
       "kind": "property",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INTaskList, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "INTaskList.identifier",
@@ -2846,21 +2735,19 @@
       "api": "INTaskList.title",
       "kind": "property",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INTaskList, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "INTemporalEventTrigger.dateComponentsRange",
       "kind": "property",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INTemporalEventTrigger, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "INTextNoteContent.text",
@@ -2876,31 +2763,28 @@
       "api": "INTransferMoneyIntent.fromAccount",
       "kind": "property",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INTransferMoneyIntent, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "INTransferMoneyIntent.toAccount",
       "kind": "property",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INTransferMoneyIntent, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "INTransferMoneyIntent.transactionAmount",
       "kind": "property",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INTransferMoneyIntent, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "INTransferMoneyIntent.transactionNote",
@@ -2916,11 +2800,10 @@
       "api": "INTransferMoneyIntent.transactionScheduledDate",
       "kind": "property",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INTransferMoneyIntent, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "INTransferMoneyIntentResponse.code",
@@ -2936,31 +2819,28 @@
       "api": "INTransferMoneyIntentResponse.fromAccount",
       "kind": "property",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INTransferMoneyIntentResponse, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "INTransferMoneyIntentResponse.toAccount",
       "kind": "property",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INTransferMoneyIntentResponse, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "INTransferMoneyIntentResponse.transactionAmount",
       "kind": "property",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INTransferMoneyIntentResponse, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "INTransferMoneyIntentResponse.transactionNote",
@@ -2976,21 +2856,19 @@
       "api": "INTransferMoneyIntentResponse.transactionScheduledDate",
       "kind": "property",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INTransferMoneyIntentResponse, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "INTransferMoneyIntentResponse.transferFee",
       "kind": "property",
       "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "a member of INTransferMoneyIntentResponse, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "status": "absent",
+      "reason": "the class this member's type names is in a later group of this same delivery",
+      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "facts": "facts/Intents/Intents.md"
     }
   ]
 }

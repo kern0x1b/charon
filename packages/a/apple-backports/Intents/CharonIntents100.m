@@ -551,6 +551,11 @@
     INImage *_icon;
 }
 
+@synthesize type = _type;
+@synthesize name = _name;
+@synthesize identificationHint = _identificationHint;
+@synthesize icon = _icon;
+
 - (instancetype)initWithType:(INPaymentMethodType)type
                         name:(NSString *)name
           identificationHint:(NSString *)identificationHint
@@ -623,6 +628,9 @@ typedef NS_ENUM(NSInteger, CharonIntentsRideOutcome) {
     NSUserActivity *_completionUserActivity;
     NSSet *_defaultTippingOptions;
 }
+
+@synthesize completionUserActivity = _completionUserActivity;
+@synthesize defaultTippingOptions = _defaultTippingOptions;
 
 + (instancetype)charon_completionWithOutcome:(CharonIntentsRideOutcome)outcome
                                   outstanding:(BOOL)outstanding
@@ -838,6 +846,19 @@ typedef NS_ENUM(NSInteger, CharonIntentsRideOutcome) {
     NSString *_identifier;
     NSString *_groupIdentifier;
 }
+
+// The header declares these seven, and the ivars above are where the class keeps them; the
+// synthesised accessors are the ones the compiler would have made from the declarations, written
+// out so that a reader of this file - and the registry this file is measured into - can see that
+// each member has one. The three copy properties copy on the way in, which is what the header's
+// ownership means.
+@synthesize intent = _intent;
+@synthesize intentResponse = _intentResponse;
+@synthesize intentHandlingStatus = _intentHandlingStatus;
+@synthesize direction = _direction;
+@synthesize dateInterval = _dateInterval;
+@synthesize identifier = _identifier;
+@synthesize groupIdentifier = _groupIdentifier;
 
 - (instancetype)initWithIntent:(INIntent *)intent response:(INIntentResponse *)response
 {
