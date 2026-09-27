@@ -647,25 +647,7 @@ end
 -- Whether the library installed at install exports symbol in a loaded cache, itself or through a
 -- library it re-exports: what dyld binds a client's two-level import of symbol from install to.
 function exported_by(cache, install, symbol)
-    local function here(name) return cache.libraries[name] end
-    if exports_symbol(here, install, symbol, {}) then
-        return true
-    end
-    -- A framework moves between the two folders. IOSurface and VideoToolbox are under
-    -- /System/Library/Frameworks/ in the SDK's .tbd - the layout the SDK has had since 9.0 - and under
-    -- /System/Library/PrivateFrameworks/ on 6.1.3, and both are there on 4.3, so the name the SDK gives is
-    -- not a name those caches know: the lookup misses, the symbol reads as arriving with the first release
-    -- whose cache has it in the new place (_IOSurfaceCreate at 11.0 instead of 3.0, _VTCompressionSessionCreate
-    -- at 6.0 instead of 3.0), and the band that should carry it carries nothing. Ask the same framework in
-    -- the other folder before answering no.
-    local moved = install:gsub("^/System/Library/Frameworks/", "/System/Library/PrivateFrameworks/", 1)
-    if moved == install then
-        moved = install:gsub("^/System/Library/PrivateFrameworks/", "/System/Library/Frameworks/", 1)
-    end
-    if moved ~= install then
-        return exports_symbol(here, moved, symbol, {})
-    end
-    return false
+    return exports_symbol(function (name) return cache.libraries[name] end, install, symbol, {})
 end
 
 local OWNERS = {}
