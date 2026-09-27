@@ -27,3 +27,9 @@ which carries the whole of it. What is left here is what the release alone decid
 
 - `-initWithCurrentLayout:nextLayout:` keeps the two layouts as they are given; the progress is 0 and can be set.
 - The superclass is `UICollectionViewLayout`.
+- `-updateValue:forAnimatedKey:` and `-valueForAnimatedKey:` keep nothing outside a running transition: the host
+  answers 0 for every key, before and after an update, and the update moves nothing. The device case
+  `transition.set` in `presses-cases.m` records `progress=0.5 value=0.0 other=0.0` after setting the progress to 0.5
+  and updating a key to 0.7, and both the port and `presses-expectations.h` answer exactly that. The port's own
+  transition drives the progress through the `transitionProgress` property instead, so nothing in it needs the keys
+  to store.

@@ -65,4 +65,13 @@ void collectiontransition_run(CollectionTransitionRecorder record)
     transition.transitionProgress = 0.5;
     [transition finalizeLayoutTransition];
     record(@"transition.progressAfterFinalize", NSStringFromCGPoint(CGPointMake(transition.transitionProgress, 0)));
+
+    // The animated keys are the collection view's own bookkeeping while a transition runs, and
+    // outside one they keep nothing: an update moves nothing and every key answers 0. The same case
+    // is in tests/backports/device/presses-cases.m, and both are held to the same host.
+    transition.transitionProgress = 0.5;
+    [transition updateValue:0.7 forAnimatedKey:@"a"];
+    record(@"transition.animatedKeyAfterUpdate", NSStringFromCGPoint(CGPointMake([transition valueForAnimatedKey:@"a"], 0)));
+    record(@"transition.animatedKeyOther", NSStringFromCGPoint(CGPointMake([transition valueForAnimatedKey:@"b"], 0)));
+    record(@"transition.progressAfterAnimatedKeyUpdate", NSStringFromCGPoint(CGPointMake(transition.transitionProgress, 0)));
 }

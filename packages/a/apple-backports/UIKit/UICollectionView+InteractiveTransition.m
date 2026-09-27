@@ -13,6 +13,21 @@
 static const char CharonTransitionKey;
 static const NSTimeInterval CharonTransitionDuration = 0.35;
 
+// A layout asked for while this transition was still running, and the block waiting for it. The
+// transition is not dropped and not raced: each change waits its turn and is applied as the
+// transition settles, in the order it was asked for, so the timer cannot put the layout it is
+// heading for back over one that was asked for in the meantime, and no caller is told its layout is
+// in place when it is not.
+@interface CharonPendingLayout : NSObject
+@property (nonatomic, strong) UICollectionViewLayout *layout;
+@property (nonatomic, copy) void (^completion)(BOOL finished);
+@end
+
+@implementation CharonPendingLayout
+@synthesize layout = _layout;
+@synthesize completion = _completion;
+@end
+
 @interface CharonLayoutTransition : NSObject
 @property (nonatomic, strong) UICollectionViewTransitionLayout *layout;
 @property (nonatomic, strong) UICollectionViewLayout *from;
@@ -24,10 +39,7 @@ static const NSTimeInterval CharonTransitionDuration = 0.35;
 @property (nonatomic) BOOL finishing;
 @property (nonatomic, strong) NSTimer *timer;
 @property (nonatomic, strong) NSDate *began;
-// A layout asked for while this transition was still running. The transition is not dropped and
-// not raced: the change waits for it to settle, so the timer cannot put the layout it is heading
-// for back over the one that was asked for in the meantime.
-@property (nonatomic, strong) UICollectionViewLayout *pending;
+@property (nonatomic, strong) NSMutableArray<CharonPendingLayout *> *pending;
 @end
 
 @implementation CharonLayoutTransition
@@ -61,10 +73,16 @@ static const NSTimeInterval CharonTransitionDuration = 0.35;
     UICollectionViewLayout *settled = span >= 0 ? _to : _from;
     BOOL finished = span >= 0;
     view.collectionViewLayout = settled;
-    UICollectionViewLayout *pending = _pending;
-    _pending = nil;
-    if (pending)
-        view.collectionViewLayout = pending;
+    // Every layout asked for while the transition ran is installed in the order it was asked for,
+    // each one after the one before it, and each caller's block is handed its finished only once its
+    // own layout is the one the view is holding. A caller is never told a change happened that the
+    // next caller's change then undid.
+    for (CharonPendingLayout *waiting in _pending) {
+        view.collectionViewLayout = waiting.layout;
+        if (waiting.completion)
+            waiting.completion(YES);
+    }
+    [_pending removeAllObjects];
     objc_setAssociatedObject(view, &CharonTransitionKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     // The transition layout passes the message on to both the layout it came from and the one it
     // went to, so the layout that is settled is told through it and not a second time.
@@ -101,6 +119,7 @@ static const NSTimeInterval CharonTransitionDuration = 0.35;
     transition.completion = completion;
     transition.layout = [[UICollectionViewTransitionLayout alloc] initWithCurrentLayout:from nextLayout:layout];
     transition.start = transition.layout.transitionProgress;
+    transition.pending = [NSMutableArray array];
     objc_setAssociatedObject(self, &CharonTransitionKey, transition, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     // Both layouts are told before either is put in place, so a layout that snapshots its own
     // state for the transition has taken it before the collection view lays out against it.
@@ -161,19 +180,13 @@ static const NSTimeInterval CharonTransitionDuration = 0.35;
     CharonLayoutTransition *running = [self charon_layoutTransition];
     if (running) {
         // A transition is already under way. It is not dropped and the layout is not put in place
-        // under it: the change is held until that transition settles, and the block is handed a
-        // finished once the collection view really is holding the layout that was asked for.
-        UICollectionViewLayout *waiting = layout;
-        void (^wrapped)(BOOL) = completion;
-        running.pending = waiting;
-        if (wrapped) {
-            UICollectionViewLayoutInteractiveTransitionCompletion previous = running.completion;
-            running.completion = ^(BOOL completed, BOOL finished) {
-                if (previous)
-                    previous(completed, finished);
-                wrapped(YES);
-            };
-        }
+        // under it: the change joins the ones already waiting, in the order it was asked for, and the
+        // block is handed a finished once the collection view really is holding the layout it asked
+        // for. A second caller does not overwrite the first one's layout; both are installed.
+        CharonPendingLayout *waiting = [[CharonPendingLayout alloc] init];
+        waiting.layout = layout;
+        waiting.completion = completion;
+        [running.pending addObject:waiting];
         return;
     }
     UICollectionViewTransitionLayout *transition =

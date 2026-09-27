@@ -37,9 +37,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "implemented",
-      "effect": "moves the progress to the value given and lays out again, so every element the transition draws moves with it",
+      "effect": "moves nothing and keeps nothing: outside a running transition the animated keys are the collection view's own bookkeeping, and the host's answer is that an update changes nothing, which the device case transition.set records as progress=0.5 after an update to 0.7. The port's own transition drives the progress through the transitionProgress property",
       "facts": "facts/UIKit/CollectionViewTransition.md",
-      "source": "the header of SDK 26.2; the host's own answers are recorded for the progress itself in tests/backports/host/collectiontransition"
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/presses (the case transition.set) and tests/backports/host/collectiontransition (the transition.animatedKey and transition.progressAfterAnimatedKeyUpdate cases)"
     },
     {
       "api": "-[UICollectionViewTransitionLayout valueForAnimatedKey:]",
@@ -47,9 +47,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "implemented",
-      "effect": "the progress the transition is at",
+      "effect": "0 for every key: outside a running transition the host's own UIKit keeps nothing for the animated keys and answers 0, and so does the port. The progress itself is read through the transitionProgress property, which the port's transition drives",
       "facts": "facts/UIKit/CollectionViewTransition.md",
-      "source": "the header of SDK 26.2; the host's own answers are recorded for the progress itself in tests/backports/host/collectiontransition"
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/presses (the case transition.set) and tests/backports/host/collectiontransition (the transition.animatedKey cases)"
     },
     {
       "api": "UICollectionViewTransitionLayout.currentLayout",

@@ -33,8 +33,7 @@ Measured, and matched:
   nothing: they are the subclass's to answer, and on the host the base layout's answers leave the
   content size as it was.
 - The four element questions name no element on the base layout: each answers an **empty array**,
-  not nil, for a section header, a section footer and a decoration kind. A flow layout in a live
-  collection view with no supplementary views registered answers empty as well.
+  not nil, for a section header, a section footer and a decoration kind.
 - `UICollectionViewTransitionLayout` keeps the two layouts it was given, and its progress starts at 0.
 - **The progress is not bounded.** The host holds 2 when 2 is set and -1 when -1 is set, and
   `finalizeLayoutTransition` leaves the progress where the caller left it. The port was written to
@@ -71,10 +70,17 @@ semantics, in the table above. If a device run later shows Apple's own pacing di
 constants are where it goes.
 
 A layout asked for while a transition is still running is neither dropped nor put in place under
-the running one: the change waits for that transition to settle and is applied when it does, and
-the block is handed its `finished` after the collection view really is holding the layout that was
-asked for. Setting it eagerly would let the running transition's timer put its own layout back
-over the new one a frame later, which is the kind of quiet wrong answer this port must not give.
+the running one. Each such change joins the ones already waiting, **in the order it was asked for**,
+and each is installed as the transition settles, with its own caller's block handed a `finished` only
+once its own layout is the one the view is holding. One field would have been enough to be wrong
+here: a second caller overwrites the first, the first layout is never installed, and the first
+block is still handed `finished = YES` while the view holds the second layout. That was a real
+defect in the first version of this, caught in review; the queue is the fix.
+
+**Not measured, and not claimed:** whether a flow layout in a *live* collection view answers the four
+element questions with an empty array too. An earlier note here said so on the strength of an ad-hoc
+probe that nothing in the tree can re-run and that ended in a crash, so the sentence is gone rather
+than kept on a weak oracle. The base layout's answer is the one measured and held above.
 
 ## The reordering a layout does while an item is moved (iOS 9)
 

@@ -6,10 +6,11 @@
 
 // The layout a collection view holds while it transitions between two layouts: every element it
 // draws is the element of the layout it is coming from and the element of the layout it is going
-// to, placed at transitionProgress between the two. Apple's own answers, measured under Mac
-// Catalyst (macOS 27.0) with tests/backports/host/collectiontransition against this file:
-// valueForAnimatedKey: is the progress, updateValue:forAnimatedKey: moves it and lays out again,
-// and a cell that is only in one of the two layouts fades in or out across the transition.
+// to, placed at transitionProgress between the two. What the host answers is measured under Mac
+// Catalyst (macOS 27.0) with tests/backports/host/collectiontransition and
+// tests/backports/host/presses against this file: the progress is the caller's own number and is
+// bounded nowhere, the four element questions on the base layout name no element, and a cell that is
+// only in one of the two layouts fades in or out across the transition.
 @interface CharonTransitionPair : NSObject
 @property (nonatomic, strong) UICollectionViewLayoutAttributes *from;
 @property (nonatomic, strong) UICollectionViewLayoutAttributes *to;
@@ -80,7 +81,9 @@ static NSString *const CharonTransitionProgressKey = @"transitionProgress";
 // between, so with none it has nothing to draw until it is given a pair.
 - (instancetype)init
 {
-    return [self initWithCurrentLayout:nil nextLayout:nil];
+    if ((self = [super init]))
+        ;
+    return self;
 }
 
 - (instancetype)initWithCoder:(NSCoder *)coder
@@ -126,14 +129,22 @@ static NSString *const CharonTransitionProgressKey = @"transitionProgress";
     [self invalidateLayout];
 }
 
+// The animated keys are the collection view's own bookkeeping for the values it animates while a
+// transition is running, and outside a running transition they keep nothing: the host answers 0 for
+// every key, before and after an update, and the update moves nothing. Measured on the host and held
+// by tests/backports/host/presses (the case "transition.set"), whose committed expectation the
+// device test in the tree reads: progress 0.5, value 0.0, other 0.0.
+//
+// This port's transition drives the progress through the transitionProgress property instead, from
+// UICollectionView+InteractiveTransition.m, so nothing here needs the keys to store anything and
+// they are left answering as they do outside a transition.
 - (void)updateValue:(CGFloat)value forAnimatedKey:(NSString *)key
 {
-    self.transitionProgress = value;
 }
 
 - (CGFloat)valueForAnimatedKey:(NSString *)key
 {
-    return _transitionProgress;
+    return 0;
 }
 
 // The message a transition sends to both the layout it comes from and the one it goes to once the
