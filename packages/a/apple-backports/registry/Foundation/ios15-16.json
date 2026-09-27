@@ -523,16 +523,6 @@
       "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, Foundation"
-    },
-    {
-      "api": "NSURLSessionConfiguration.requiresDNSSECValidation",
-      "kind": "property",
-      "introduced": "16.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSURLSessionConfiguration a property like it: it arrived in iOS 16",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, Foundation"
     }
   ]
 }

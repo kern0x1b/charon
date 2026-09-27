@@ -52,16 +52,6 @@
       "source": "SDK 26.5, Mac Catalyst, Foundation"
     },
     {
-      "api": "NSURLSessionConfiguration.usesClassicLoadingMode",
-      "kind": "property",
-      "introduced": "18.4",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSURLSessionConfiguration a property like it: it arrived in iOS 18",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 26.5, Mac Catalyst, Foundation"
-    },
-    {
       "api": "-[NSFileManager fetchLatestRemoteVersionOfItemAtURL:completionHandler:]",
       "kind": "method",
       "introduced": "26.0",
@@ -232,16 +222,6 @@
       "source": "SDK 26.5, Mac Catalyst, Foundation"
     },
     {
-      "api": "NSURLSessionConfiguration.enablesEarlyData",
-      "kind": "property",
-      "introduced": "26.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSURLSessionConfiguration a property like it: it arrived in iOS 26",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 26.5, Mac Catalyst, Foundation"
-    },
-    {
       "api": "NSURLUbiquitousItemIsSyncPausedKey",
       "kind": "constant",
       "introduced": "26.0",
@@ -268,16 +248,6 @@
       "minimum": "6.0",
       "status": "absent",
       "reason": "neither iOS 6 nor the backports give NSMutableURLRequest a property like it: it arrived in iOS 26",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 26.5, Mac Catalyst, Foundation"
-    },
-    {
-      "api": "NSURLSessionConfiguration.allowsUltraConstrainedNetworkAccess",
-      "kind": "property",
-      "introduced": "26.1",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSURLSessionConfiguration a property like it: it arrived in iOS 26",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 26.5, Mac Catalyst, Foundation"
     },

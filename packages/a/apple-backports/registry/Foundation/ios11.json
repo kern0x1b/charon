@@ -60,16 +60,6 @@
       "source": "Foundation of iOS 11.0 arm64 at 0x181556f0c"
     },
     {
-      "api": "NSURLSessionConfiguration.multipathServiceType",
-      "kind": "property",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "multipath TCP needs support in the kernel, which iOS 6 does not have",
-      "effect": "the property is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, NSURLSession.h"
-    },
-    {
       "api": "NSUserActivity.eligibleForPrediction",
       "kind": "property",
       "introduced": "12.0",

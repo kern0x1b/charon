@@ -1,0 +1,275 @@
+{
+  "framework": "Foundation",
+  "entries": [
+    {
+      "api": "NSURLSessionTaskTransactionMetrics.countOfRequestBodyBytesSent",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "maximum": "12.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
+      "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0), which is the plain data holder this follows: the counts, the defaults, and the two body-byte fields being two fields. Read at https://raw.githubusercontent.com/apple/swift-corelibs-foundation/main/Sources/FoundationNetworking/URLSession/URLSessionTaskMetrics.swift and the port's own loader: the bytes of the body it sent and received, its per-host connection table, and the interface flags it already asks SystemConfiguration for"
+    },
+    {
+      "api": "NSURLSessionTaskTransactionMetrics.countOfRequestBodyBytesBeforeEncoding",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "maximum": "12.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
+      "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0), which is the plain data holder this follows: the counts, the defaults, and the two body-byte fields being two fields. Read at https://raw.githubusercontent.com/apple/swift-corelibs-foundation/main/Sources/FoundationNetworking/URLSession/URLSessionTaskMetrics.swift and the port's own loader: the bytes of the body it sent and received, its per-host connection table, and the interface flags it already asks SystemConfiguration for"
+    },
+    {
+      "api": "NSURLSessionTaskTransactionMetrics.countOfResponseBodyBytesReceived",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "maximum": "12.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
+      "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0), which is the plain data holder this follows: the counts, the defaults, and the two body-byte fields being two fields. Read at https://raw.githubusercontent.com/apple/swift-corelibs-foundation/main/Sources/FoundationNetworking/URLSession/URLSessionTaskMetrics.swift and the port's own loader: the bytes of the body it sent and received, its per-host connection table, and the interface flags it already asks SystemConfiguration for"
+    },
+    {
+      "api": "NSURLSessionTaskTransactionMetrics.countOfResponseBodyBytesAfterDecoding",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "maximum": "12.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
+      "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0), which is the plain data holder this follows: the counts, the defaults, and the two body-byte fields being two fields. Read at https://raw.githubusercontent.com/apple/swift-corelibs-foundation/main/Sources/FoundationNetworking/URLSession/URLSessionTaskMetrics.swift and the port's own loader: the bytes of the body it sent and received, its per-host connection table, and the interface flags it already asks SystemConfiguration for"
+    },
+    {
+      "api": "NSURLSessionTaskTransactionMetrics.cellular",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "maximum": "12.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
+      "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0), which is the plain data holder this follows: the counts, the defaults, and the two body-byte fields being two fields. Read at https://raw.githubusercontent.com/apple/swift-corelibs-foundation/main/Sources/FoundationNetworking/URLSession/URLSessionTaskMetrics.swift and the port's own loader: the bytes of the body it sent and received, its per-host connection table, and the interface flags it already asks SystemConfiguration for"
+    },
+    {
+      "api": "NSURLSessionTaskTransactionMetrics.expensive",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "maximum": "12.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
+      "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0), which is the plain data holder this follows: the counts, the defaults, and the two body-byte fields being two fields. Read at https://raw.githubusercontent.com/apple/swift-corelibs-foundation/main/Sources/FoundationNetworking/URLSession/URLSessionTaskMetrics.swift and the port's own loader: the bytes of the body it sent and received, its per-host connection table, and the interface flags it already asks SystemConfiguration for"
+    },
+    {
+      "api": "NSURLSessionTaskTransactionMetrics.constrained",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "maximum": "12.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
+      "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0), which is the plain data holder this follows: the counts, the defaults, and the two body-byte fields being two fields. Read at https://raw.githubusercontent.com/apple/swift-corelibs-foundation/main/Sources/FoundationNetworking/URLSession/URLSessionTaskMetrics.swift and the port's own loader: the bytes of the body it sent and received, its per-host connection table, and the interface flags it already asks SystemConfiguration for"
+    },
+    {
+      "api": "NSURLSessionTaskTransactionMetrics.multipath",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "maximum": "12.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
+      "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0), which is the plain data holder this follows: the counts, the defaults, and the two body-byte fields being two fields. Read at https://raw.githubusercontent.com/apple/swift-corelibs-foundation/main/Sources/FoundationNetworking/URLSession/URLSessionTaskMetrics.swift and the port's own loader: the bytes of the body it sent and received, its per-host connection table, and the interface flags it already asks SystemConfiguration for"
+    },
+    {
+      "api": "NSURLSessionTaskTransactionMetrics.proxyConnection",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "maximum": "12.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
+      "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0), which is the plain data holder this follows: the counts, the defaults, and the two body-byte fields being two fields. Read at https://raw.githubusercontent.com/apple/swift-corelibs-foundation/main/Sources/FoundationNetworking/URLSession/URLSessionTaskMetrics.swift and the port's own loader: the bytes of the body it sent and received, its per-host connection table, and the interface flags it already asks SystemConfiguration for"
+    },
+    {
+      "api": "NSURLSessionTaskTransactionMetrics.reusedConnection",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "maximum": "12.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
+      "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0), which is the plain data holder this follows: the counts, the defaults, and the two body-byte fields being two fields. Read at https://raw.githubusercontent.com/apple/swift-corelibs-foundation/main/Sources/FoundationNetworking/URLSession/URLSessionTaskMetrics.swift and the port's own loader: the bytes of the body it sent and received, its per-host connection table, and the interface flags it already asks SystemConfiguration for"
+    },
+    {
+      "api": "NSURLSessionTaskTransactionMetrics.domainResolutionProtocol",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "maximum": "12.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
+      "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0), which is the plain data holder this follows: the counts, the defaults, and the two body-byte fields being two fields. Read at https://raw.githubusercontent.com/apple/swift-corelibs-foundation/main/Sources/FoundationNetworking/URLSession/URLSessionTaskMetrics.swift and the port's own loader: the bytes of the body it sent and received, its per-host connection table, and the interface flags it already asks SystemConfiguration for"
+    },
+    {
+      "api": "NSURLSessionTaskTransactionMetrics.countOfRequestHeaderBytesSent",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "maximum": "12.0",
+      "status": "absent",
+      "reason": "the request header's bytes are not visible from here: the release's NSURLConnection takes a request and hands back a response, and nothing in between is the port's to count",
+      "effect": "the accessor is not there: respondsToSelector: answers honestly and an unchecked call raises"
+    },
+    {
+      "api": "NSURLSessionTaskTransactionMetrics.countOfResponseHeaderBytesReceived",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "maximum": "12.0",
+      "status": "absent",
+      "reason": "the same wall from the other side: the response header's bytes reach the release's parser and stop there",
+      "effect": "the accessor is not there: respondsToSelector: answers honestly and an unchecked call raises"
+    },
+    {
+      "api": "NSURLSessionTaskTransactionMetrics.localAddress",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "maximum": "12.0",
+      "status": "absent",
+      "reason": "the address is a property of the socket, and the release's connection keeps the socket to itself",
+      "effect": "the accessor is not there: respondsToSelector: answers honestly and an unchecked call raises"
+    },
+    {
+      "api": "NSURLSessionTaskTransactionMetrics.remoteAddress",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "maximum": "12.0",
+      "status": "absent",
+      "reason": "the same socket, and the same answer",
+      "effect": "the accessor is not there: respondsToSelector: answers honestly and an unchecked call raises"
+    },
+    {
+      "api": "NSURLSessionTaskTransactionMetrics.localPort",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "maximum": "12.0",
+      "status": "absent",
+      "reason": "the same socket, and the same answer",
+      "effect": "the accessor is not there: respondsToSelector: answers honestly and an unchecked call raises"
+    },
+    {
+      "api": "NSURLSessionTaskTransactionMetrics.remotePort",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "maximum": "12.0",
+      "status": "absent",
+      "reason": "the same socket, and the same answer",
+      "effect": "the accessor is not there: respondsToSelector: answers honestly and an unchecked call raises"
+    },
+    {
+      "api": "NSURLSessionTaskTransactionMetrics.negotiatedTLSProtocolVersion",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "maximum": "12.0",
+      "status": "absent",
+      "reason": "the negotiated version belongs to the TLS session the release's connection made; a port that negotiates its own is the stream task, and its metrics are its own",
+      "effect": "the accessor is not there: respondsToSelector: answers honestly and an unchecked call raises"
+    },
+    {
+      "api": "NSURLSessionTaskTransactionMetrics.negotiatedTLSCipherSuite",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "maximum": "12.0",
+      "status": "absent",
+      "reason": "the cipher suite is that same TLS session's, and is not reachable from here",
+      "effect": "the accessor is not there: respondsToSelector: answers honestly and an unchecked call raises"
+    },
+    {
+      "api": "NSURLSessionConfiguration.shouldUseExtendedBackgroundIdleMode",
+      "kind": "property",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "maximum": "8.4.1",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLSessionConfigurationFlags.md",
+      "source": "SDK 26.2 headers; tests/backports/device/foundation15batch.m on the device"
+    },
+    {
+      "api": "NSURLSessionConfiguration.TLSMaximumSupportedProtocolVersion",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "maximum": "9.3.6",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLSessionConfigurationFlags.md",
+      "source": "SDK 26.2 headers; tests/backports/device/foundation15batch.m on the device"
+    },
+    {
+      "api": "NSURLSessionConfiguration.TLSMinimumSupportedProtocolVersion",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "maximum": "9.3.6",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLSessionConfigurationFlags.md",
+      "source": "SDK 26.2 headers; tests/backports/device/foundation15batch.m on the device"
+    },
+    {
+      "api": "NSURLSessionConfiguration.requiresDNSSECValidation",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "maximum": "12.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLSessionConfigurationFlags.md",
+      "source": "SDK 26.2 headers; tests/backports/device/foundation15batch.m on the device"
+    },
+    {
+      "api": "NSURLSessionConfiguration.allowsUltraConstrainedNetworkAccess",
+      "kind": "property",
+      "introduced": "26.1",
+      "minimum": "6.0",
+      "maximum": "18.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLSessionConfigurationFlags.md",
+      "source": "SDK 26.2 headers; tests/backports/device/foundation15batch.m on the device"
+    },
+    {
+      "api": "NSURLSessionConfiguration.usesClassicLoadingMode",
+      "kind": "property",
+      "introduced": "18.4",
+      "minimum": "6.0",
+      "maximum": "16.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLSessionConfigurationFlags.md",
+      "source": "SDK 26.2 headers; tests/backports/device/foundation15batch.m on the device"
+    },
+    {
+      "api": "NSURLSessionConfiguration.enablesEarlyData",
+      "kind": "property",
+      "introduced": "26.0",
+      "minimum": "6.0",
+      "maximum": "16.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLSessionConfigurationFlags.md",
+      "source": "SDK 26.2 headers; tests/backports/device/foundation15batch.m on the device"
+    },
+    {
+      "api": "NSURLSessionConfiguration.multipathServiceType",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "maximum": "9.3.6",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLSessionConfigurationFlags.md",
+      "source": "SDK 26.2 headers; tests/backports/device/foundation15batch.m on the device"
+    }
+  ]
+}
