@@ -112,9 +112,7 @@
     NSMutableDictionary<NSNumber *, NSData *> *_capturedImages;
     NSDictionary<NSString *, id> *_worldMap;
     NSTimeInterval _timestamp;
-    CGFloat _lightEstimate;
-    ARLightEstimate *_lightEstimateObject;
-    CGFloat _ambientColorTemperature;
+    ARLightEstimate *_lightEstimate;
     BOOL _displayTransformApplied;
 }
     @synthesize timestamp = _timestamp;
@@ -140,9 +138,10 @@
     if (!self)
         return nil;
     _timestamp = timestamp;
-    _lightEstimate = lightEstimate;
-    _lightEstimateObject = [[ARLightEstimate alloc] initWithAmbientIntensity:lightEstimate ambientColorTemperature:temperature];
-    _ambientColorTemperature = temperature;
+    // The framework's estimate is an object carrying both numbers the tracker measured, and the
+    // frame hands out that object rather than the raw floats.
+    _lightEstimate = [[ARLightEstimate alloc] initWithAmbientIntensity:lightEstimate
+                                               ambientColorTemperature:temperature];
     _anchors = [NSMutableArray array];
     _capturedImages = [NSMutableDictionary dictionary];
     _camera = [[ARCamera alloc] initWithTransform:cameraTransform
@@ -190,12 +189,12 @@
     return NO;   // a frame from a run other than this one cannot be applied to this one
 }
 
-- (ARLightEstimate *)lightEstimate { return _lightEstimateObject; }
+- (ARLightEstimate *)lightEstimate { return _lightEstimate; }
 
 - (NSString *)description
 {
     return [NSString stringWithFormat:@"<ARFrame: %p; %lu anchors; %.0f lux>",
-            self, (unsigned long)_anchors.count, (double)_lightEstimate];
+            self, (unsigned long)_anchors.count, (double)_lightEstimate.ambientIntensity];
 }
 
 @end

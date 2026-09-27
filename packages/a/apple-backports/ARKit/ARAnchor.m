@@ -262,7 +262,7 @@ enum { kPlaneQuadCorners = 4, kPlaneQuadTriangles = 6 };
 
 @implementation ARPointCloud
 {
-    NSData *_points;
+    NSMutableData *_points;
     NSUInteger _count;
 }
     @synthesize count = _count;
@@ -305,10 +305,10 @@ enum { kPlaneQuadCorners = 4, kPlaneQuadTriangles = 6 };
 {
     simd_float3 _worldPosition;
     simd_float3 _localNormal;
-    NSUInteger _type;
+    ARHitTestResultType _type;
     ARPlaneAnchor *_planeAnchor;
     ARAnchor *_anchor;
-    NSUInteger _distance;
+    CGFloat _distance;
 }
     @synthesize type = _type;
     @synthesize distance = _distance;
@@ -346,7 +346,7 @@ enum { kPlaneQuadCorners = 4, kPlaneQuadTriangles = 6 };
 {
     simd_float3 _origin;
     simd_float3 _direction;
-    ARRaycastTarget _target;
+    ARRaycastTarget _target;   // read as the alignment the query is asking about
     ARRaycastTargetAlignment _targetAlignment;
     NSArray<ARRaycastQuery *> *_includedQueries;
 }
@@ -426,7 +426,7 @@ enum { kPlaneQuadCorners = 4, kPlaneQuadTriangles = 6 };
 
 @implementation ARTrackedRaycast
 {
-    NSArray<NSValue *> *_rawResults;
+    NSMutableArray<CharonARValue *> *_rawResults;
     NSInteger _state;
     NSUUID *_identifier;
 }
