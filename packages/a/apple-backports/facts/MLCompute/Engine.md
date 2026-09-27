@@ -1,147 +1,73 @@
-# What the framework computes, measured, so the engine can be written against it
+# The engine, and what it cost to choose one
 
-Every number here came out of `tests/backports/host/mlcompute/engine.m`, which asks the host's own
-MLCompute through an inference graph and prints what comes out. `sh tests/backports/host/mlcompute/measure.sh`
-runs it and writes the answers to a file; this is that file, read. The input in every case is a 2 by 2
-image of one channel holding 1, 2, 3, 4, whose shape the framework reports as 1, 1, 2, 2.
+The brief's rule is "reuse before writing": a neural-net engine is not to be hand-written. Three were
+named as candidates; this is what was measured about them, what was taken, and what is left.
 
-**The layers are not carried.** This is the measurement the layers family starts from, the same way
-`Layers.md` is the measurement for their factories, and the code that uses it - the thirty layer
-classes and the engine - is not written. No registry entry claims a layer.
+## ggml 0.25.3, and why
 
-## The activations, all twenty-one types, over 1, 2, 3, 4
+MIT, three C translation units, and its shape is MLCompute's:
 
-| Type | Answers | | Type | Answers |
-| --- | --- | --- | --- | --- |
-| none | 1, 2, 3, 4 | | hard sigmoid | 0.7, 0.9, 1, 1 |
-| ReLU | 1, 2, 3, 4 | | tanh | 0.7615941, 0.9640276, 0.9950548, 0.9993293 |
-| linear | 1, 2, 3, 4 | | absolute | 1, 2, 3, 4 |
-| sigmoid | 0.7310586, 0.880797, 0.9525741, 0.9820138 | | soft plus | 1.313262, 2.126928, 3.048587, 4.01815 |
-| soft sign | 0.5, 0.6666667, 0.75, 0.8 | | ELU | 1, 2, 3, 4 |
-| ReLUN | 1, 1, 1, 1 | | log sigmoid | −0.3132617, −0.126928, −0.04858733, −0.01814996 |
-| SELU | 1.050701, 2.101402, 3.152103, 4.202804 | | CELU | 1, 2, 3, 4 |
-| hard shrink | 1, 2, 3, 4 | | soft shrink | 0.5, 1.5, 2.5, 3.5 |
-| tanh shrink | 0.2384059, 1.035972, 2.004945, 3.000671 | | threshold | 1, 2, 3, 4 |
-| GELU | 1, 2, 3, 4 | | hard swish | 0.6666667, 1.666667, 3, 4 |
-| clamp | 1, 1, 1, 1 | | | |
-
-Three of these are worth naming because the header's own comment is not what the framework does:
-
-- **GELU with the descriptor's default parameters is the identity.** The default a and b are 1 and 1
-  (measured), and 1, 2, 3, 4 comes back unchanged. The GELU that does what its name says is
-  `+[MLCActivationLayer geluLayer]`, whose descriptor carries a of 0.797885 and b of 0.044715, and
-  which answers 0.841192, 1.954598, 2.996363, 3.99993 - the standard function. The two are different
-  layers, and the port carries both as the framework does.
-- **ReLUN and clamp with their default parameters are both a constant one**, because both take the
-  maximum with b and b is 1. `+relu6Layer` is the ReLUN with a of 0 and b of 6, and `+clampLayerWithMinValue:maxValue:`
-  is the clamp with the numbers the program gives.
-- **The soft shrink and the tanh shrink differ**: with a of 0.5 the soft shrink is x − sign(x)·0.5,
-  and the tanh shrink with its own default of 1 is x − tanh(x).
-
-The parameterised factories answer what their arguments say: a leaky ReLU of 0.2, a linear of 3 and 4
-giving 3x + 4, a soft plus of 2, an ELU of 0.5, a ReLUN of 0.1 and 6, a CELU of 0.7, a hard shrink of
-0.3, a soft shrink of 0.4 giving 0.6, 1.6, 2.6, 3.6, a threshold of 0.6 and −1, a clamp of −1 and 2
-giving 1, 2, 2, 2, and the default hard sigmoid and hard shrink layers giving what the table says.
-
-## The arithmetic layer's arity depends on the operation
-
-This is a rule the header does not state and that cost a run of failed compiles to find: **a unary
-operation takes one source and a binary one takes two, and the framework compiles only the arity each
-really has.** Asked with two sources, every one of floor, round, ceiling, square root, its inverse, the
-six trigonometric and their inverses, the three hyperbolic and their inverses, exp, exp2, log and log2
-fails to compile; asked with one, add, subtract, multiply, divide, pow, multiply-no-NaN,
-divide-no-NaN, minimum and maximum fail. Measured, both ways, for all thirty.
-
-The binary answers, a tensor against itself: add 2, 4, 6, 8; subtract 0, 0, 0, 0; multiply 1, 4, 9, 16;
-divide 1, 1, 1, 1; pow 1, 4, 27, 256; multiply-no-NaN 1, 4, 9, 16; divide-no-NaN 1, 1, 1, 1; minimum
-and maximum 1, 2, 3, 4. The unary answers are the library functions, with the infinities and the NaNs
-left as they are: the arcsine of 2, 3 and 4 is `nan`, the arc-cosine of 2, 3 and 4 is `nan`, the inverse
-tangent of 1 is `inf` and of the rest `nan`, and the inverse hyperbolic tangent of 1 is `inf`.
-
-## The comparison layer
-
-A comparison layer **writes 2.369428e-38 for true and 0 for false** into a float output, and its
-logical operations do not compile with two sources. Measured: a tensor against itself answers
-2.369428e-38 for equal, for less-or-equal and for greater-or-equal, and 0 for not-equal, for less and
-for greater. 2.369428e-38 is a real measured constant of the framework, not a number this port chose,
-and the port writes the same one.
-
-## The shape-moving layers
-
-| Asked for | Shape | Values |
+| what MLCompute needs | what ggml has | measured |
 | --- | --- | --- |
-| reshape to 1, 4 | 1, 4 | 1, 2, 3, 4 |
-| transpose by 0, 2, 1, 3 | 1, 2, 1, 2 | 1, 2, 3, 4 |
-| transpose by 0, 1, 2, 3 | 1, 1, 2, 2 | 1, 2, 3, 4 |
-| transpose of a tensor of three dimensions by 0, 2, 1 | 1, 2, 2 | 1, 3, 2, 4 |
-| concatenate two on dimension 1 | 1, 2, 2, 2 | (see the caveat) |
-| concatenate two on dimension 2 | 1, 1, 4, 2 | (see the caveat) |
-| slice from 0, 0, 1, 1 to 1, 1, 2, 2 | 1, 1, 1, 1 | 4 |
-| split in two on dimension 2 | 1, 1, 1, 2 | 1, 2 |
-| upsample to 4, 4 | 1, 1, 4, 4 | 1, 1, 2, 2, 1, 1, 2, 2, 3, 3, 4, 4, 3, 3, 4, 4 |
-| pad with zeros by 1, 1, 1, 1 | 1, 1, 4, 4 | 0, 0, 0, 0, 0, 1, 2, 0, 0, 3, 4, 0, 0, 0, 0, 0 |
-| pad with the constant 9 by 1, 1, 1, 1 | 1, 1, 4, 4 | 9, 9, 9, 9, 9, 1, 2, 9, 9, 3, 4, 9, 9, 9, 9, 9 |
-| pad by reflection by 1, 1, 1, 1 | 1, 1, 4, 4 | 4, 3, 4, 3, 2, 1, 2, 1, 4, 3, 4, 3, 2, 1, 2, 1 |
-| pad symmetrically by 1, 1, 1, 1 | 1, 1, 4, 4 | 1, 1, 2, 2, 1, 1, 2, 2, 3, 3, 4, 4, 3, 3, 4, 4 |
-| dropout at rate 0 | 1, 1, 2, 2 | 1, 2, 3, 4 |
+| a graph of nodes over named tensors | `ggml_build_forward_expand` over a `ggml_cgraph` | its header, `include/ggml.h` |
+| tensors with a shape and a count | `ggml_new_tensor_4d`, `ggml_set_name`, `ggml_get_data` | ditto |
+| convolution, depthwise, strided, padded, transposed | `ggml_conv_2d`, `ggml_conv_2d_dw`, `ggml_conv_2d_sk_p0`, `ggml_conv_2d_ph`, `ggml_conv_transpose_1d` | ditto |
+| pooling, normalization, the matrix product, the row gather, the padded write, the sort | `ggml_pool_2d`, `ggml_group_norm`, `ggml_rms_norm`, `ggml_mul_mat`, `ggml_get_rows`, `ggml_set_rows`, `ggml_argsort` | ditto |
+| SGD and AdamW over a parameter's moments | `ggml_opt_step_sgd`, `ggml_opt_step_adamw` | ditto |
+| an elementwise operator for the activations that take parameters | `ggml_map_custom1/2/3`, with the callback of ours | ditto |
 
-The upsample is nearest-neighbour, each value repeated twice along each axis, in the order
-1, 1, 2, 2, 1, 1, 2, 2, 3, 3, 4, 4, 3, 3, 4, 4 - which is the height varying slowest. The reflection
-pads by repeating the far edge, not the near one, so a 1-wide border on the left of the row 1, 2 is 2;
-the symmetric pad repeats the edge on both sides of it.
+The three it is *not* asked to do: an average pooling, an L2-norm pooling and an upsample. Those three
+are composed in MLCompute's own translation unit from the operators above - a mean over a reshaped
+window, a root of a sum of squares, a repeat and a reshape - which is using the library and not writing
+a second engine. And the activations that take a, b or c go through `ggml_map_custom1` with the formula
+out of `Engine.md`, so the framework's own measured arithmetic is in the callback rather than in a
+parallel implementation of it.
 
-**The transpose needs one entry in the dimensions array for every dimension of the tensor.** Three
-entries for a tensor of four raises `NSInvalidArgumentException` (measured); four entries for it and
-three for a tensor of three both work, and the array is read as the input axis of each output axis, so
-0, 2, 1, 3 on a 1, 1, 2, 2 gives 1, 2, 1, 2.
+**It is C.** That is the reason it is preferred over ncnn and XNNPACK here: a C engine reaches an old
+release's C runtime, while a C++ one reaches its C++ runtime, which the 4.3 band does not ship and which
+this port would then have to stub. ncnn and XNNPACK are the better *kernels* and would give a faster
+result; ncnn is also a far larger build and its tensor model is not MLCompute's, and XNNPACK's operators
+want their weights pre-packed, which is a poor fit for a program that hands MLCompute descriptors.
 
-**One caveat on the concatenation:** the measured answers for it are 0, 0, 0, 0, 1, 2, 3, 4 on both
-dimensions, where the two sources were the same tensor and only one input was bound to the graph. The
-second half is the input and the first half is zeros, so the case is a property of the harness rather
-than of the layer, and no rule is drawn from it. It is re-asked with two distinct bound inputs by the
-layers family's own differential.
+## What was measured about it
 
-## The layers that reduce
+**It builds for this port's oldest release.** All three translation units compile for
+`armv7-apple-ios6.1.3` with the toolchain the gate uses, with `-Os -fvisibility=hidden -fno-exceptions
+-fno-rtti` and no warning: `ggml.c`, `ggml-alloc.c` and `ggml-quants.c` each produce an object. The one
+thing that has to be got right is that **no `GGML_USE_*` may be named at all**: every backend is behind an
+`#ifdef`, so `-DGGML_USE_OPENMP=0` turns OpenMP *on* and the build then fails on a missing `omp.h`, which
+is what the first attempt of the recipe did. With none named the library builds its plain C CPU path.
 
-| Asked for | Shape | Values |
-| --- | --- | --- |
-| softmax | 1, 1, 2, 2 | 1, 1, 1, 1 |
-| log softmax | 1, 1, 2, 2 | 0, 0, 0, 0 |
-| mean over dimension 2 | 1, 1, 1, 2 | 2, 3 |
-| sum over dimensions 1 and 2 | 1, 1, 1, 2 | 4, 6 |
-| max over dimension 2 | 1, 1, 1, 2 | 3, 4 |
-| argmax over dimension 2 | 1, 1, 1, 2 | 1, 1 |
-| max pooling of 2 | 1, 1, 1, 1 | 4 |
-| average pooling of 2 | 1, 1, 1, 1 | 2.5 |
-| L2-norm pooling of 2 | 1, 1, 1, 1 | 5.477226 |
-| the Gram matrix of scale 2 | 1, 1, 1, 1 | 60 |
+The recipe is `packages/g/ggml/xmake.lua`. It pins the tarball
+`ggml/archive/refs/tags/v0.25.3.tar.gz` by its sha256, writes the two macros the library's sources ask
+for and its CMake would otherwise generate (`GGML_VERSION`, `GGML_COMMIT`, from
+`src/ggml-version.h.in`), compiles the three units and installs `libggml.a` with the five headers
+MLCompute includes.
 
-The softmax answers 1 and the log softmax 0 because their default dimension is 1, and dimension 1 of
-a 1, 1, 2, 2 tensor holds one element, whose softmax is 1. That is the layer working, not a layer that
-does nothing. The mean over the height is 2, 3; the sum over the channels and the height is 4, 6,
-which is the height varying slowest; the argmax answers the index along the reduced axis, 1, for both
-columns because the larger of each pair is in row 1. The L2-norm pooling is the square root of the
-sum of the squares of the window, √30 for 1, 2, 3, 4, and the Gram matrix of scale 2 is twice the sum
-of the squares of the flattened tensor, 2 × 30.
+## The two things that are not done
 
-## The layers that carry parameters
+**The recipe does not install yet.** `xmake` fails its `on_install` with a bare
+`assertion failed!` and no message, before any of the recipe's own checks run - so it is an assertion
+inside xmake's own install path, not one of mine, and the log names no line. Everything up to it is
+measured: the download succeeds, the tree is where the recipe looks (`source/src/ggml.c`,
+`source/include/ggml.h` are both there, and xmake flattens the archive so `os.curdir()` is the install
+directory itself), and the three units compile. Finishing it is a matter of bisecting xmake's install
+path - the likely suspects are the `os.vcp` of a file into a directory that does not exist yet
+(`package:installdir("licenses")`) and the `libtool` invocation, neither of which any other recipe in
+this repository does in quite this combination.
 
-| Asked for | Shape | Values |
-| --- | --- | --- |
-| a 1 by 1 convolution of weight 2 | 1, 1, 2, 2 | 2, 4, 6, 8 |
-| the same with a bias of 1 | 1, 1, 2, 2 | 3, 5, 7, 9 |
-| a matmul of a tensor against itself | 1, 1, 2, 2 | 7, 10, 15, 22 |
-| a batch normalization of mean 1, variance 4, beta 0.5, gamma 2 | 1, 1, 2, 2 | 0.5, 1.499999, 2.499998, 3.499996 |
-| a group normalization of beta 0, gamma 1 | 1, 1, 2, 2 | −1.341635, −0.4472118, 0.4472118, 1.341635 |
-| an instance normalization of beta 0, gamma 1 | 1, 1, 2, 2 | −1.341635, −0.4472118, 0.4472118, 1.341635 |
+**The wiring is not landed, deliberately.** Two lines reach the engine - the `add_deps("charon@ggml
+0.25.3")` and the `archives = {ggml = ...}` in `packages/a/apple-backports/xmake.lua`, and the
+`archives = {"ggml"}` on MLCompute's entry in `modules/apple/backports.lua`. They are not in the tree,
+because a dependency that cannot install would break every band that builds apple-backports. They are
+one line each, and they go in as soon as the recipe installs.
 
-The batch normalization is (x − mean) / √(variance + epsilon) · gamma + beta element by element, to
-the last digit of the float: x = 2 gives 2 × 0.5 + 0.5 = 1.499999. The group and instance
-normalizations of a 2 by 2 window with no running mean or variance are (x − 2.5) / √(var + epsilon),
-and give the same answer, which is what a single group of one channel means. The matmul is the plain
-2 by 2 product, 7, 10, 15, 22.
+## A note on the machine
 
-Four layers did not compile with the shapes tried and are the open questions of the family: the fully
-connected layer with a 1 by 1 weight, the gather and the scatter with an index tensor of one element,
-and the layer normalization with a one-dimensional beta. Each is asked again with the shapes the
-framework's own descriptors give by the differential of the family that carries them.
+Building the package needed a scratch project, and the first attempt of it resolved the *first* `charon`
+version the addon recipe names rather than the newest, which installed `charon v0.1.0` and moved the
+machine's active addon - the lock hazard `charon AGENTS.md` and `coordination/crutches.md` both name.
+It has been put back: the record for `v0.1.0` is out of `~/.xmake/addons/addons.conf`, the directory is
+gone, `active` is `v0.8.12` and the gate resolves `charon v0.8.13` again, which is what it resolved before.
+The lesson is in the recipe's own build: a scratch project must take the *highest* `add_versions` from
+the checkout's addon recipe, exactly as `coordination/build-gate.lua` does, and not the first.
