@@ -121,12 +121,11 @@ static uint32_t reference_v410(const struct ref_scale *s, const vImage_ARGBToYpC
         | (uint32_t)clampi(cb, s->cMin, s->cMax);
 }
 
-// The v210 group is six pixels of one row and six of the next: the luma of all twelve, and the chroma of
-// each of the three pairs of columns over BOTH rows, which is the two by two block the header's
-// pseudo-code adds up. `top` and `below` are the two rows' first pixels and `count` the columns in the
-// row, six or fewer at the right edge.
+// The v210 group is six pixels of one row: six luma and the chroma of each of the three pairs of columns.
+// The header's own pseudo-code says so - Yp0 to Yp5 from pixels 0 to 5, Cb0 from pixels 0 and 1 - and the
+// system agrees, its second row of a four-row picture coming back as its own unit.
 static void reference_v210(const struct ref_scale *s, const vImage_ARGBToYpCbCrMatrix *m, const uint16_t *top,
-                           const uint16_t *below, int count, const uint8_t pm[4], uint32_t *out)
+                           int count, const uint8_t pm[4], uint32_t *out)
 {
     float yp[6], cb[3], cr[3];
     for (int i = 0; i < 6 && i < count; i++)
@@ -140,12 +139,8 @@ static void reference_v210(const struct ref_scale *s, const vImage_ARGBToYpCbCrM
             if (at >= count)
                 continue;
             b += top[at * 4 + pm[1]] * m->R_Cb + top[at * 4 + pm[2]] * m->G_Cb + top[at * 4 + pm[3]] * m->B_Cb_R_Cr;
-            b += below[at * 4 + pm[1]] * m->R_Cb + below[at * 4 + pm[2]] * m->G_Cb
-                + below[at * 4 + pm[3]] * m->B_Cb_R_Cr;
             r += top[at * 4 + pm[1]] * m->B_Cb_R_Cr + top[at * 4 + pm[2]] * m->G_Cr + top[at * 4 + pm[3]] * m->B_Cr;
-            r += below[at * 4 + pm[1]] * m->B_Cb_R_Cr + below[at * 4 + pm[2]] * m->G_Cr
-                + below[at * 4 + pm[3]] * m->B_Cr;
-            counted += 2;
+            counted++;
         }
         if (!counted)
             counted = 1;
@@ -500,10 +495,132 @@ static vImage_Error call_aa8_ours(const vImage_Buffer *src, const vImage_Buffer 
     return RENAME(vImageConvert_422CbYpCrYp8_AA8ToARGB8888)(src, srcA, dest, info, permuteMap, kvImageNoFlags);
 }
 
+static const struct range_case *ranges_for(vImageYpCbCrType type)
+{
+    switch (type) {
+    case kvImage444CrYpCb10:
+    case kvImage422CrYpCbYpCbYpCbYpCrYpCrYp10:
+        return ranges10;
+    case kvImage422CbYpCrYp16:
+    case kvImage444AYpCbCr16:
+        return ranges16;
+    default:
+        return ranges8;
+    }
+}
+
+// The geometry each layout's own shape allows: a v210 unit is six samples of one row, so its width has
+// to be a whole number of units, and every other shape takes the picture as it is.
+static void forward_geometry(const struct yuv_case *example, vImagePixelCount width, vImagePixelCount height,
+                             vImagePixelCount *sourceWidth, vImagePixelCount *sourceHeight)
+{
+    if (example->unit == 6) {
+        *sourceWidth = (width / 6) * 6;
+        *sourceHeight = height;
+    } else {
+        *sourceWidth = width;
+        *sourceHeight = height;
+    }
+}
+
 int main(void)
 {
     setbuf(stdout, NULL);
     @autoreleasepool {
+        // The fifteen interleaved shapes of the table above, each both ways, over the two matrices, the
+        // four pixel ranges of its own bit depth, four permutation maps and four picture sizes.
+        for (int c = 0; c < YUV_CASES; c++) {
+            const struct yuv_case *example = &yuv_cases[c];
+            const struct range_case *set = ranges_for(example->type);
+            for (int matrix = 0; matrix < 2; matrix++) {
+                const vImage_YpCbCrToARGBMatrix *toARGB =
+                    matrix ? kvImage_YpCbCrToARGBMatrix_ITU_R_709_2 : kvImage_YpCbCrToARGBMatrix_ITU_R_601_4;
+                const vImage_ARGBToYpCbCrMatrix *toYpCbCr =
+                    matrix ? kvImage_ARGBToYpCbCrMatrix_ITU_R_709_2 : kvImage_ARGBToYpCbCrMatrix_ITU_R_601_4;
+                const vImage_YpCbCrToARGBMatrix *ourToARGB =
+                    matrix ? RENAME(kvImage_YpCbCrToARGBMatrix_ITU_R_709_2) : RENAME(kvImage_YpCbCrToARGBMatrix_ITU_R_601_4);
+                const vImage_ARGBToYpCbCrMatrix *ourToYpCbCr =
+                    matrix ? RENAME(kvImage_ARGBToYpCbCrMatrix_ITU_R_709_2) : RENAME(kvImage_ARGBToYpCbCrMatrix_ITU_R_601_4);
+                const char *matrixName = matrix ? "709" : "601";
+                for (int r = 0; r < 4; r++) {
+                    NSString *head = [NSString stringWithFormat:@"%s %s %s", example->name, matrixName, set[r].name];
+                    vImage_YpCbCrToARGB theirInfo, ourInfo;
+                    vImage_ARGBToYpCbCr theirForward, ourForward;
+                    // Each side is handed the conversion its OWN generator built: the port refuses a
+                    // structure that does not carry its tag and so does the system, and sharing one
+                    // between them would be measuring the tag rather than the conversion.
+                    vImage_Error a = vImageConvert_YpCbCrToARGB_GenerateConversion(toARGB, &set[r].range, &theirInfo,
+                                                                                 example->type, example->argb, kvImageNoFlags);
+                    vImage_Error b = RENAME(vImageConvert_YpCbCrToARGB_GenerateConversion)(ourToARGB, &set[r].range,
+                                                                                         &ourInfo, example->type,
+                                                                                         example->argb, kvImageNoFlags);
+                    report(a == b && a == kvImageNoError,
+                           [head stringByAppendingString:@": the forward conversion is generated"],
+                           ([NSString stringWithFormat:@"%ld against %ld", (long)a, (long)b]));
+                    a = vImageConvert_ARGBToYpCbCr_GenerateConversion(toYpCbCr, &set[r].range, &theirForward,
+                                                                       example->argb, example->type, kvImageNoFlags);
+                    b = RENAME(vImageConvert_ARGBToYpCbCr_GenerateConversion)(ourToYpCbCr, &set[r].range, &ourForward,
+                                                                             example->argb, example->type, kvImageNoFlags);
+                    report(a == b && a == kvImageNoError,
+                           [head stringByAppendingString:@": the reverse conversion is generated"],
+                           ([NSString stringWithFormat:@"%ld against %ld", (long)a, (long)b]));
+                    for (int s = 0; s < SIZES; s++) {
+                        vImagePixelCount width = sizes[s], height = sizes[s];
+                        vImagePixelCount sourceWidth, sourceHeight;
+                        forward_geometry(example, width, height, &sourceWidth, &sourceHeight);
+                        if (sourceWidth == 0 || sourceHeight == 0)
+                            continue;
+                        for (int p = 0; p < PERMUTES; p++) {
+                            const uint8_t *permuteMap = permutations[p];
+                            NSString *what = [NSString stringWithFormat:@"%@ %llux%llu permute %u%u%u%u", head,
+                                                              (unsigned long long)sourceWidth,
+                                                              (unsigned long long)sourceHeight, permuteMap[0],
+                                                              permuteMap[1], permuteMap[2], permuteMap[3]];
+
+                            // The two 4:2:0 shapes hand their own planes to the conversion, so each side
+                            // gets its own set - filled with the same bytes, or the comparison would be
+                            // reading two different pictures.
+                            vImage_Buffer theirPlanes[3] = {{0}}, ourPlanes[3] = {{0}};
+                            int count = plane_set(example->type, sourceWidth, sourceHeight, example->sourceBytes, theirPlanes);
+                            plane_set(example->type, sourceWidth, sourceHeight, example->sourceBytes, ourPlanes);
+                            for (int plane = 0; plane < count; plane++)
+                                fill_pair(theirPlanes[plane], ourPlanes[plane]);
+                            vImage_Buffer theirDest = make(sourceWidth, sourceHeight, example->destWords);
+                            vImage_Buffer ourDest = make(sourceWidth, sourceHeight, example->destWords);
+                            vImage_Error theirs = call_theirs(example, theirPlanes, &theirDest, &theirInfo, permuteMap, kvImageNoFlags);
+                            vImage_Error ours = call_ours(example, ourPlanes, &ourDest, &ourInfo, permuteMap, kvImageNoFlags);
+                            report(theirs == ours && theirs == kvImageNoError,
+                                   [what stringByAppendingString:@": Y'CbCr to ARGB answers"],
+                                   ([NSString stringWithFormat:@"%ld against %ld", (long)theirs, (long)ours]));
+                            NSString *difference = compare(theirDest, ourDest, example->wide ? 2 : 1);
+                            report(difference == nil,
+                                   [what stringByAppendingString:@": Y'CbCr to ARGB is within the last bit"],
+                                   difference ?: @"");
+
+                            // The reverse direction, over a fresh source of the shape's own width.
+                            vImage_Buffer rgb = make(sourceWidth, sourceHeight, example->wide ? 8 : 4);
+                            fill(rgb);
+                            vImage_Buffer theirBack[3] = {{0}}, ourBack[3] = {{0}};
+                            int backCount = plane_set(example->type, sourceWidth, sourceHeight, example->sourceBytes, theirBack);
+                            plane_set(example->type, sourceWidth, sourceHeight, example->sourceBytes, ourBack);
+                            theirs = call_argb_theirs(example, &rgb, theirBack, &theirForward, permuteMap);
+                            ours = call_argb_ours(example, &rgb, ourBack, &ourForward, permuteMap);
+                            report(theirs == ours && theirs == kvImageNoError,
+                                   [what stringByAppendingString:@": ARGB to Y'CbCr answers"],
+                                   ([NSString stringWithFormat:@"%ld against %ld", (long)theirs, (long)ours]));
+                            for (int plane = 0; plane < backCount; plane++) {
+                                difference = compare(theirBack[plane], ourBack[plane], example->wide ? 2 : 1);
+                                NSString *which = [what stringByAppendingString:(plane ? @": the chroma plane"
+                                                                                    : @": the Y'CbCr plane")];
+                                report(difference == nil, [which stringByAppendingString:@" is within the last bit"],
+                                       difference ?: @"");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         for (int matrix = 0; matrix < 2; matrix++) {
             const vImage_YpCbCrToARGBMatrix *toARGB =
                 matrix ? kvImage_YpCbCrToARGBMatrix_ITU_R_709_2 : kvImage_YpCbCrToARGBMatrix_ITU_R_601_4;
@@ -610,7 +727,7 @@ int main(void)
                            ([NSString stringWithFormat:@"%ld against %ld", (long)a, (long)b]));
                     for (int s = 0; s < SIZES; s++) {
                         vImagePixelCount width = sizes[s], height = sizes[s];
-                        if (c == 3 && (width % 6 || height % 2))
+                        if (c == 3 && width % 6)
                             continue;
                         vImage_Buffer source = make(width, height, 8);
                         fill(source);
@@ -679,19 +796,19 @@ int main(void)
                                             q12Widest = apart;
                                     }
                                 } else {
-                                    // The v210 unit is six pixels of this row and six of the next, so the
-                                    // reference is asked once per unit rather than once per pixel.
-                                    if (row % 2 || column % 6)
+                                    // The v210 unit is six pixels of THIS row - the header's own
+                                    // pseudo-code reads six and writes six, and the system's second row is
+                                    // its own unit - so the reference is asked once per unit of a row.
+                                    if (column % 6)
                                         continue;
                                     int remaining = (int)width - (int)column;
                                     if (remaining > 6)
                                         remaining = 6;
                                     uint32_t packed[4];
                                     const uint16_t *top = in + (size_t)column * 4;
-                                    const uint16_t *below = in + stride + (size_t)column * 4;
-                                    reference_v210(&ref, toYpCbCr, top, below, remaining, permutations[1], packed);
+                                    reference_v210(&ref, toYpCbCr, top, remaining, permutations[1], packed);
                                     const uint32_t *mine = (const uint32_t *)ourDest.data
-                                        + (size_t)(row / 2) * (ourDest.rowBytes / 4) + (size_t)(column / 6) * 4;
+                                        + (size_t)row * (ourDest.rowBytes / 4) + (size_t)(column / 6) * 4;
                                     for (int word = 0; word < 4; word++) {
                                         q12Bytes++;
                                         if (mine[word] != packed[word]) {

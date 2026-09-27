@@ -143,8 +143,8 @@ vImage_Error vImageConvert_ARGBToYpCbCr_GenerateConversion(const vImage_ARGBToYp
 //
 //   across     luma samples that share one chroma sample, left to right
 //   down       luma samples that share one chroma sample, top to bottom
-//   perPixel   bytes the interleaved form takes per luma sample
-//   unit       luma samples one row of the layout holds: six for v210, one for the rest
+//   group      luma samples one unit of the layout holds, which is the width the shape divides by
+//   rows       rows one unit of the layout stands for
 // ---------------------------------------------------------------------------------------------
 
 enum {
@@ -162,20 +162,26 @@ enum {
 typedef struct CharonYUVLayout {
     unsigned across;
     unsigned down;
-    unsigned perPixel;
-    unsigned unit;
+    unsigned group;
+    unsigned rows;
 } CharonYUVLayout;
 
+// `rows` is one for every shape: a v210 unit is SIX samples of ONE row and not a block of two rows, which
+// the header's own pseudo-code says - it reads six pixels and writes six - and the system agrees: over a
+// four-row buffer whose four units each carry their own values, row 1 comes back as row 1's unit and not
+// as row 0's again. An earlier version of this file divided the row by six, which made every row of a
+// short picture the first row's, and the differential now holds the two to each other over the whole of
+// the shape.
 static const CharonYUVLayout charon_yuv_layouts[] = {
-    [CharonYUV422YpCbYpCr8]  = {2, 1, 4, 1},
-    [CharonYUV422CbYpCrYp8]  = {2, 1, 4, 1},
-    [CharonYUV444AYpCbCr8]   = {1, 1, 4, 1},
-    [CharonYUV444CbYpCrA8]   = {1, 1, 4, 1},
-    [CharonYUV444CrYpCb8]    = {1, 1, 3, 1},
-    [CharonYUV444AYpCbCr16]  = {1, 1, 8, 1},
-    [CharonYUV422CbYpCrYp16] = {2, 1, 8, 1},
-    [CharonYUV444CrYpCb10]   = {1, 1, 4, 1},
-    [CharonYUV422v210]       = {2, 2, 48, 6}
+    [CharonYUV422YpCbYpCr8]  = {2, 1, 2, 1},
+    [CharonYUV422CbYpCrYp8]  = {2, 1, 2, 1},
+    [CharonYUV444AYpCbCr8]   = {1, 1, 1, 1},
+    [CharonYUV444CbYpCrA8]   = {1, 1, 1, 1},
+    [CharonYUV444CrYpCb8]    = {1, 1, 1, 1},
+    [CharonYUV444AYpCbCr16]  = {1, 1, 1, 1},
+    [CharonYUV422CbYpCrYp16] = {2, 1, 2, 1},
+    [CharonYUV444CrYpCb10]   = {1, 1, 1, 1},
+    [CharonYUV422v210]       = {2, 1, 6, 1}
 };
 
 // The v410 word, read off the header's own diagram: the three ten-bit channels in bits 0-9, 10-19 and
@@ -354,11 +360,11 @@ static vImage_Error charon_yuv_to_argb(int layout, float destFull, const vImage_
     if (src->width < dest->width || src->height < dest->height)
         return kvImageRoiLargerThanInputBuffer;
     const CharonYUVLayout *shape = &charon_yuv_layouts[layout];
-    if (shape->unit > 1 && (dest->width % shape->unit || dest->height % 2))
+    if (shape->group > 1 && dest->width % shape->group)
         return kvImageRoiLargerThanInputBuffer;
     vImagePixelCount width = dest->width, height = dest->height;
     for (vImagePixelCount row = 0; row < height; row++) {
-        const uint8_t *in = (const uint8_t *)src->data + (shape->unit > 1 ? row / shape->unit : row) * src->rowBytes;
+        const uint8_t *in = (const uint8_t *)src->data + row * src->rowBytes;
         const uint8_t *alphaRow = srcA ? (const uint8_t *)srcA->data + row * srcA->rowBytes : NULL;
         uint8_t *out8 = (uint8_t *)dest->data + row * dest->rowBytes;
         uint16_t *out16 = (uint16_t *)(void *)out8;
@@ -438,6 +444,10 @@ vImage_Error vImageConvert_444CrYpCb10ToARGB16Q12(const vImage_Buffer *src, cons
     return charon_yuv_to_argb(CharonYUV444CrYpCb10, 4096.0f, src, dest, info, permuteMap, alpha, YES, NULL);
 }
 
+// The unit of this shape is six pixels of one row, so a destination whose width is not a whole number of
+// units asks for luma the source has not got: the header's own pseudo-code reads six pixels and writes
+// six, and a width of five has no sixth. Measured on the system over a four-row buffer: row 1 is its own
+// unit, so nothing carries over from row 0.
 vImage_Error vImageConvert_422CrYpCbYpCbYpCbYpCrYpCrYp10ToARGB8888(const vImage_Buffer *src,
                                                                      const vImage_Buffer *dest,
                                                                      const vImage_YpCbCrToARGB *info,
@@ -841,10 +851,10 @@ static vImage_Error charon_argb_to_v210(int words, const vImage_Buffer *src, con
     vImagePixelCount width = dest->width, height = dest->height;
     if (src->width < width || src->height < height)
         return kvImageRoiLargerThanInputBuffer;
-    if (width % 6 || height % 2)
+    if (width % 6)
         return kvImageRoiLargerThanInputBuffer;
-    for (vImagePixelCount row = 0; row < height; row += 2) {
-        uint32_t *out = (uint32_t *)(void *)((uint8_t *)dest->data + (row / 2) * dest->rowBytes);
+    for (vImagePixelCount row = 0; row < height; row++) {
+        uint32_t *out = (uint32_t *)(void *)((uint8_t *)dest->data + row * dest->rowBytes);
         for (vImagePixelCount column = 0; column < width; column += 6) {
             uint32_t Yp[6], Cb[3], Cr[3];
             for (vImagePixelCount index = 0; index < 6; index++) {
@@ -854,7 +864,10 @@ static vImage_Error charon_argb_to_v210(int words, const vImage_Buffer *src, con
                                           conversion->YpMin, conversion->YpMax);
             }
             for (vImagePixelCount index = 0; index < 3; index++) {
-                charon_chroma_of(conversion, words, src, width, height, row, column + index * 2, 2, 2, permuteMap,
+                // The header's own pseudo-code: Cb0 is the mean of pixels 0 and 1 of THIS row, Cb1 that
+                // of 2 and 3, Cb2 that of 4 and 5. The chroma of a v210 unit is not shared with the row
+                // below it.
+                charon_chroma_of(conversion, words, src, width, height, row, column + index * 2, 2, 1, permuteMap,
                                  &Cb[index], &Cr[index]);
             }
             charon_v210_join(out + (column / 6) * 4, Yp, Cb, Cr);

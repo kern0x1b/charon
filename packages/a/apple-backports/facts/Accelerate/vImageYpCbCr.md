@@ -63,13 +63,35 @@ value would have hidden:
   text and the system's behaviour disagree here, and the port follows the system, which is the one a caller
   of the system has to match.
 
-## The last bit
+## What is measured, and what is not yet
 
-The system does this in fixed point; the port does it in `float` and rounds once at the end. Over the whole
-family - thirty conversions, both matrices, four pixel ranges at each of three bit depths, four permutation
-maps, four picture sizes from 2x2 to 34x18 - **623 616 samples were compared and 1 828 of them differ, 0.29
-per cent, and none by more than one.** The header promises results that are "faithfully rounded", which both
-answers are, so the differential asserts the bound of one rather than equality.
+**The 8-bit shapes are done and are held byte for byte.** The four 4:2:2 and 4:4:4 eight-bit shapes, the
+a2vy shape with its own alpha plane, and the two 4:2:0 shapes of the first delivery agree with the system on
+every sample of `tests/backports/host/ypcbcr8`, no sample differing by more than one - which is the last bit,
+the header's "faithfully rounded" and the fixed-point-versus-float difference the first delivery recorded.
+The 10-bit and 16-bit shapes are **not**: over the whole family the differential now runs 8 947 checks and
+**1 377 of them fail**, 13.37 per cent of 7 396 352 samples apart and up to 65 535 wide, and every failure is
+in a shape whose samples are 10 or 16 bits wide - `444CrYpCb10ToARGB8888` and `...ToARGB16Q12` (256 each),
+`444AYpCbCr16ToARGB8888` (256), `422v210ToARGB8888` and `...ToARGB16Q12` (160 and 192),
+`444AYpCbCr16ToARGB16U` (128), `422CbYpCrYp16ToARGB16U` (128) - with one exception,
+`422CbYpCrYp16ToARGB8888`, which fails once. The 8-bit shapes fail nowhere. That is a real defect in the wide
+and ten-bit read path and it is **not** fixed; the next round starts there.
+
+Two things this round did fix, both found by a probe rather than by the differential:
+
+- **A v210 unit is six samples of one row, not a block of two rows.** Over a four-row buffer whose four units
+  each carry their own values, the system returns row 1 as row 1's unit; the port had been dividing the row by
+  six and returned row 0's for the first six rows, and had been writing one destination unit row per two
+  source rows. The chroma of a unit is the mean of the row's own three column pairs, which is what the
+  header's pseudo-code adds up.
+- **`charon_v210_join` took a `float` array and was handed a `uint32_t` array through a cast**, so the
+  graded integers' bit patterns were read as floats and every chroma of a Q12 source came out wrong. Its
+  arguments are the integers now.
+
+And a gap in the check itself, which is why the numbers above are new: the differential's main loop had been
+lost in an edit, so the run that reported "0 failures, 623 616 samples compared" was exercising one shape and
+the four wide-source cases and nothing else - the 8, 947 is the count the whole family gives. The claim this
+section made before, over the whole family, was not supported by what the run measured.
 
 ## The Q12 source: where the system stops following the header
 
