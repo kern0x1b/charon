@@ -40,7 +40,12 @@ public struct MLDataTableParsingOptions {
                 doubleQuote: Bool = true,
                 quote: Character? = "\"",
                 skipInitialSpaces: Bool = false,
-                missingValues: Set<String> = ["", "NA", "N/A", "null", "NaN", "nan", "-"],
+                // No empty string, and the omission is measured rather than a slip: the host's own
+                // reader on a file whose second cell is empty gives that column the two *strings*
+                // `""` and `"x"` and `dropMissing()` keeps both rows. An empty cell in a CSV is a
+                // value the writer wrote, and the reader that invents a gap there is the reader
+                // that loses it.
+                missingValues: Set<String> = ["NA", "N/A", "null", "NaN", "nan", "-"],
                 lineTerminator: String = "\n",
                 selectColumns: [String]? = nil,
                 maxRows: Int? = nil,

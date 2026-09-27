@@ -198,12 +198,20 @@ public struct MLUntypedColumn: Equatable, CustomStringConvertible, CustomDebugSt
     }
 
     /// The column read as a type of its own, or nil when it holds something else.
+    ///
+    /// A *missing* cell becomes the type's own zero and a cell of another kind makes the whole
+    /// accessor answer nil. Both halves are measured: the host's `strings` on a column whose second
+    /// cell is `Missing` answers `["north", "", "", "south", ...]` — the gap reads as the empty
+    /// string — and its `ints` on a *string* column answers nil rather than a column of zeroes. A
+    /// reader that returned nil for the first case would make every join's other-side column
+    /// unreadable, and one that returned zeroes for the second would make a category column look
+    /// like a column of small numbers.
     public func column<T: MLDataValueConvertible>(type: T.Type) -> MLDataColumn<T>? {
+        if self.type != .invalid, self.type != T.dataValueType { return nil }
         var out = [T]()
         out.reserveCapacity(values.count)
         for value in values {
-            guard let converted = T(from: value) else { return nil }
-            out.append(converted)
+            out.append(T(from: value) ?? T())
         }
         return MLDataColumn(out, name: name)
     }
@@ -290,7 +298,12 @@ public struct MLUntypedColumn: Equatable, CustomStringConvertible, CustomDebugSt
         return values.count > 10 ? "\(shown), ... (\(values.count) values)" : shown
     }
 
-    public var debugDescription: String { "\(type.description)[\(count)]: \(description)" }
+    public var debugDescription: String {
+        // The kind's own name, through a local: `type.description` in this line reads as the
+        // *column's* description, which is a sentence about the values rather than a kind's name.
+        let kind = self.type
+        return "\(kind)[\(count)]: \(description)"
+    }
     public var customMirror: String { debugDescription }
     public var playgroundDescription: Any { debugDescription }
 }

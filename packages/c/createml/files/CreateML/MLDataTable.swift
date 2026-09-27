@@ -434,7 +434,9 @@ public struct MLDataTable {
         guard let mineKey = columns[key] else { throw MLDataTableError.noSuchColumn(key) }
         guard let theirsKey = other.columns[key] else { throw MLDataTableError.noSuchColumn(key) }
 
-        func unique(_ column: MLUntypedColumn) throws -> [MLDataValue: Int] {
+        // A key that appears twice on either side is refused: the join would have to invent a
+        // pairing, and the two rows it invented would be the ones a caller least expects to see.
+        func indexByKey(_ column: MLUntypedColumn) throws -> [MLDataValue: Int] {
             var seen = Set<MLDataValue>()
             var out = [MLDataValue: Int]()
             for (index, value) in column.values.enumerated() {
@@ -443,63 +445,69 @@ public struct MLDataTable {
             }
             return out
         }
-        let theirsByKey = try unique(theirsKey)
-        _ = try unique(mineKey)
+        let theirsByKey = try indexByKey(theirsKey)
+        _ = try indexByKey(mineKey)
 
-        let theirNames = other.columnNames.filter { $0 != key }
-        var keep = [Bool](repeating: true, count: count)
-        var paired = [Int?](repeating: nil, count: count)
+        // The join is decided once, here, as a list of row *pairs*: which of this table's rows
+        // survive, and which row of the other table each of them is paired with — or nil for a row
+        // that matched nothing. Every column of the result then walks that one list, which is what
+        // keeps the result's columns the same height as each other. Deriving a column's length from
+        // this table's own height and then filling only the rows that were kept leaves the result
+        // with this table's height and the other table's values in the wrong places, and that is
+        // what the host differential named on an inner and a right join.
+        struct Pair { var mine: Int?; var theirs: Int? }
+        var pairs = [Pair]()
         var theirRowsUsed = Set<Int>()
         for (index, value) in mineKey.values.enumerated() {
-            paired[index] = theirsByKey[value]
-            if let otherRow = theirsByKey[value] { theirRowsUsed.insert(otherRow) }
+            let otherRow = theirsByKey[value]
+            if type == .inner, otherRow == nil { continue }
+            pairs.append(Pair(mine: index, theirs: otherRow))
+            if let otherRow = otherRow { theirRowsUsed.insert(otherRow) }
         }
-        if type == .inner {
-            for (index, otherRow) in paired.enumerated() where otherRow == nil { keep[index] = false }
+        // `right` and `outer` then add the other table's rows that matched nothing, after this
+        // table's — which is the order the framework's own answers come in.
+        //
+        // `right` is *this* table's rows replaced by the other table's, not this table's rows with
+        // the other one's appended. Measured: joining eight rows against three whose keys all match,
+        // the host's `right` answers three rows and the host's `outer` answers eight, and a reading
+        // in which `right` appended the other table's unmatched rows would have answered eight for
+        // both. So `right` starts from the other table's rows, and this table's columns are filled
+        // in for the ones that matched.
+        if type == .right {
+            pairs.removeAll()
+            for otherRow in theirsKey.values.indices {
+                let mine = mineKey.values.firstIndex(of: theirsKey.values[otherRow])
+                pairs.append(Pair(mine: mine, theirs: otherRow))
+            }
+        } else if type == .outer {
+            for otherRow in theirsKey.values.indices where !theirRowsUsed.contains(otherRow) {
+                pairs.append(Pair(mine: nil, theirs: otherRow))
+            }
         }
 
-        // The unmatched rows of the other table, which only `right` and `outer` bring in.
-        let theirUnmatched = theirsKey.values.indices.filter { !theirRowsUsed.contains($0) }
-        let bringTheirUnmatched = type == .right || type == .outer
-        let width = count + (bringTheirUnmatched ? theirUnmatched.count : 0)
-
+        let theirNames = other.columnNames.filter { $0 != key }
         var out = MLDataTable()
         for name in columnNames {
             if name == key {
-                var values = [MLDataValue](repeating: .invalid, count: width)
-                var position = 0
-                for index in 0..<count where keep[index] {
-                    values[position] = mineKey.values[index]
-                    position += 1
-                }
-                if bringTheirUnmatched {
-                    for otherRow in theirUnmatched { values[position] = theirsKey.values[otherRow]; position += 1 }
-                }
-                out.addColumn(MLUntypedColumn(values, name: name), named: name)
+                // The key is the other table's value for a row that came from there, and this
+                // table's for a row that came from here: the two spell the same value, and taking
+                // this table's own for a row it does not have would put a missing value where the
+                // join has the answer.
+                out.addColumn(MLUntypedColumn(pairs.map { pair in
+                    if let theirs = pair.theirs { return theirsKey.values[theirs] }
+                    return mineKey.values[pair.mine ?? 0]
+                }, name: name), named: name)
             } else if let column = columns[name] {
-                var values = [MLDataValue](repeating: .invalid, count: width)
-                var position = 0
-                for index in 0..<count where keep[index] {
-                    values[position] = column.values[index]
-                    position += 1
-                }
-                if bringTheirUnmatched { position += theirUnmatched.count }
-                _ = position
-                out.addColumn(MLUntypedColumn(values, name: name), named: name)
+                out.addColumn(MLUntypedColumn(pairs.map { pair in
+                    pair.mine.map { column.values[$0] } ?? .invalid
+                }, name: name), named: name)
             }
         }
         for name in theirNames {
             guard let column = other.columns[name] else { continue }
-            var values = [MLDataValue](repeating: .invalid, count: width)
-            var position = 0
-            for index in 0..<count where keep[index] {
-                values[position] = paired[index].map { column.values[$0] } ?? .invalid
-                position += 1
-            }
-            if bringTheirUnmatched {
-                for otherRow in theirUnmatched { values[position] = column.values[otherRow]; position += 1 }
-            }
-            out.addColumn(MLUntypedColumn(values, name: name), named: name)
+            out.addColumn(MLUntypedColumn(pairs.map { pair in
+                pair.theirs.map { column.values[$0] } ?? .invalid
+            }, name: name), named: name)
         }
         return out
     }
