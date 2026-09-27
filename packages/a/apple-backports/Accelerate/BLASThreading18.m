@@ -11,6 +11,17 @@
 // iOS 18 and the build SDK is 16.4, so the enumeration and the two prototypes are declared here, as
 // the header declares them. The lift has to add the header for a program to name them
 // (facts/Accelerate/BLASThreading.md).
+//
+// What the model does is worth reading before anything is built on it: the two functions are a value kept
+// per thread, and nothing in the library reads it. The header calls the call "set the threading model to
+// use for the subsequent calls into BLAS and LAPACK", and this port does not do that - it cannot, and
+// neither does the host's own Accelerate, measured the same way: four threads inside cblas_sgemm leave
+// the process with as many threads under the single-threaded model as under the multi-threaded one, so
+// the setting does not bring the count down (facts/Accelerate/BLASThreading.md has the numbers). On the
+// release there is nothing to set either: BLASSetThreading and BLASGetThreading are in the 18.0 cache and
+// in none of 7.1.2, 8.0 and 16.0. So the setting is stored and read back, the two answers the
+// header gives are the two answers this gives, and the difference between that and the header's wording
+// is a documented one rather than a silent one.
 
 #include <pthread.h>
 

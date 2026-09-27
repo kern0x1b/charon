@@ -2,8 +2,10 @@
 
 `BLASSetThreading` and `BLASGetThreading`, with the enumeration `BLAS_THREADING_MULTI_THREADED`, `BLAS_THREADING_SINGLE_THREADED` and
 `BLAS_THREADING_MAX_OPTIONS`, arrived in iOS 18.0: the host's 18.0 cache names both functions, and no cache the port holds below it
-does. The values are 0, 1 and 2 - the first enumerator is 0 and the two that follow count on from it, which is the spelling in the
-header.
+does. The values are 0, 1 and 2, and they are read from the host's own `<vecLib/thread_api.h>` - `/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/vecLib.framework/Headers/thread_api.h` -
+where `BLAS_THREADING_MULTI_THREADED = 0` is the only enumerator with a value written and the two that follow count on from it, so
+`BLAS_THREADING_SINGLE_THREADED` is 1 and `BLAS_THREADING_MAX_OPTIONS` is 2. That header is not in the SDK the port builds against,
+which is why the numbers cannot be read out of the SDK either.
 
 The setting is per thread, held in thread-local storage, and a thread that has set none answers `BLAS_THREADING_MULTI_THREADED`,
 which is the value a thread starts with: Accelerate decides how many threads to use. Measured on the host, from a thread that has set
@@ -11,6 +13,29 @@ nothing: `BLASGetThreading()` answers 0, `BLASSetThreading(BLAS_THREADING_SINGLE
 answers 1, `BLASSetThreading(BLAS_THREADING_MULTI_THREADED)` answers 0 and `BLASGetThreading()` answers 0 again, and
 `BLASSetThreading(99)` answers -1 with `BLASGetThreading()` still answering 0 afterwards: a value the library does not have is refused
 and the setting is left as it was.
+
+## What the model does, and what it does not do
+
+The two functions are a value kept per thread, and that is all they are - here and on the host. The header describes more than that
+("Set the threading model to use for the subsequent calls into BLAS and LAPACK"), so the difference is stated here rather than left
+for a reader of the registry to conclude otherwise.
+
+Nothing reads the value. Measured on the host, with four threads inside `cblas_sgemm` and the thread count of the process sampled
+while they are: `BLAS_THREADING_MULTI_THREADED` gives 17 threads and `BLAS_THREADING_SINGLE_THREADED` gives 17. The count moves by
+one or two between runs of `tests/backports/host/blasthreading` with the load on the machine - 11 against 12, and 12 against 13 on
+two further runs - so what the measurement shows is that the single-threaded model does not bring the count down, which is the whole
+question. The host's setting is therefore as free of an effect on its own library as this port's is, and the port's answer is the
+host's answer in every case the differential can pose.
+
+Measured on the release, there is no model there for the call to set: `BLASSetThreading` and `BLASGetThreading` are in the 18.0 cache
+and in none of 7.1.2, 8.0 and 16.0, and no other entry point in those three names a BLAS threading model. What they do export is
+`SetvImageThreadCount`, which is vImage's own and says nothing about the BLAS - all three caches name it - and the API the port
+carries arrived in 18.0 along with the setting.
+
+The header's own words for a failure are worth holding on to: `BLASSetThreading` returns -1 for "Option is not supported on this
+platform". The port answers 0 and keeps the value for every model the enumeration has, which is what the host does on a platform that
+has them; that the release below 18.0 is given a 0 rather than that -1 is a consequence of the model being stored and read back
+faithfully rather than refused, and it is the same answer the host gives.
 
 ## The three enumerators are a header, not a symbol
 
