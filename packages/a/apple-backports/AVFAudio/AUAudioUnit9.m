@@ -1,5 +1,26 @@
 #import "CharonAUAudioUnit.h"
 
+// A member this release's unit will not act on says so once, the first time it is used: `inert` in the
+// registry means "declared, does nothing, and says so once in the log", and a program that sets a value
+// and reads it back has no other way to learn that nothing changed.
+@implementation AUAudioUnit (CharonLogging)
++ (void)charon_noteInert:(NSString *)member why:(NSString *)why
+{
+    static NSMutableSet<NSString *> *told;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        told = [NSMutableSet set];
+    });
+    @synchronized(told) {
+        if ([told containsObject:member]) {
+            return;
+        }
+        [told addObject:member];
+    }
+    NSLog(@"[charon AVFAudio] %@ is kept and read back but acts on no audio on iOS 6.1.3: %@", member, why);
+}
+@end
+
 @implementation AUAudioUnit {
     AudioUnit _charon_audioUnit;
     AudioComponent _charon_component;
@@ -10,7 +31,8 @@
     AUAudioUnitBusArray *_charon_inputBusses;
     AUAudioUnitBusArray *_charon_outputBusses;
     AUParameterTree *_charon_parameterTree;
-    NSMutableArray<NSValue *> *_charon_renderObservers;
+    CFMutableArrayRef _charon_renderObservers;
+    CFArrayRef _charon_renderObserverSnapshot;
     BOOL _charon_resourcesAllocated;
     AUAudioFrameCount _charon_maximumFramesToRender;
     BOOL _charon_shouldBypassEffect;
@@ -27,12 +49,13 @@
         _charon_maximumFramesToRender = 4096;
         // The pull block is built once, here, and never again: AURenderBlock is called on the
         // release's real-time thread, where a block allocation is a latency the unit does not owe.
+        // The caller's description, or nothing. There is no fallback to "the first component the
+        // release happens to have": handing back a live unit for a description that named none is the
+        // silent fake the API-push brief opens with - an application that asks for a reverb and gets
+        // an equalizer, with no error, and with componentDescription overwritten below so the
+        // substitution would not even be visible. A description the release does not have fails.
         AudioComponentInstance instance = NULL;
         _charon_component = AudioComponentFindNext(NULL, &description);
-        if (_charon_component == NULL) {
-            AudioComponentDescription any = {0, 0, 0};
-            _charon_component = AudioComponentFindNext(NULL, &any);
-        }
         if (_charon_component == NULL || AudioComponentInstanceNew(_charon_component, &instance) != noErr || instance == NULL) {
             if (outError) {
                 *outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:kAudioUnitErr_FormatNotSupported userInfo:nil];
@@ -189,16 +212,31 @@
     if (observer == nil) {
         return 0;
     }
-    if (_charon_renderObservers == nil) {
-        _charon_renderObservers = [NSMutableArray array];
+    // Built here, off the render thread, and never copied or locked on it. The mutable form is
+    // retained across the add/remove pair and a snapshot is what the render path reads, so a removal
+    // while a render is in flight cannot pull the array out from under it.
+    if (_charon_renderObservers == NULL) {
+        _charon_renderObservers = CFArrayCreateMutable(NULL, 0, &kCFTypeArrayCallBacks);
     }
-    [_charon_renderObservers addObject:[NSValue valueWithPointer:(__bridge const void *)observer]];
+    CFArrayAppendValue(_charon_renderObservers, (__bridge const void *)observer);
+    _charon_renderObserverSnapshot = CFArrayCopy(NULL, _charon_renderObservers);
     return (NSInteger)(uintptr_t)(__bridge const void *)observer;
 }
 
 - (void)removeRenderObserver:(NSInteger)token
 {
-    [_charon_renderObservers removeObject:[NSValue valueWithPointer:(const void *)(uintptr_t)token]];
+    AURenderObserver observer = (__bridge AURenderObserver)(const void *)(uintptr_t)token;
+    if (observer == NULL || _charon_renderObservers == NULL) {
+        return;
+    }
+    CFIndex count = CFArrayGetCount(_charon_renderObservers);
+    for (CFIndex index = 0; index < count; index++) {
+        if (CFArrayGetValueAtIndex(_charon_renderObservers, index) == (__bridge const void *)observer) {
+            CFArrayRemoveValueAtIndex(_charon_renderObservers, index);
+            break;
+        }
+    }
+    _charon_renderObserverSnapshot = CFArrayCopy(NULL, _charon_renderObservers);
 }
 
 - (OSStatus)charon_renderWithActionFlags:(AudioUnitRenderActionFlags *)actionFlags
@@ -207,13 +245,19 @@
                                      bus:(UInt32)bus
                                      data:(AudioBufferList *)data
 {
+    // No allocation and no lock on this path: the observers are a CFArray built outside the render
+    // thread, and it is walked in place. The pull block in -init and this file's own header both say a
+    // render callback may not allocate, and a [-copy] of an NSMutableArray per render call is exactly
+    // that. Every observer is called, not only the first: the header says the base class's
+    // AURenderBlock calls them, and removeRenderObserver: takes any of the tokens.
     AudioUnitRenderActionFlags flags = actionFlags != NULL ? *actionFlags : 0;
-    AURenderObserver observer = nil;
-    for (NSValue *token in [_charon_renderObservers copy]) {
-        observer = (AURenderObserver)token.pointerValue;
-        break;
-    }
-    if (observer != NULL) {
+    CFArrayRef observers = _charon_renderObserverSnapshot;
+    CFIndex seen = 0, count = observers != NULL ? CFArrayGetCount(observers) : 0;
+    for (; observers != NULL && seen < count; seen++) {
+        AURenderObserver observer = (__bridge AURenderObserver)CFArrayGetValueAtIndex(observers, seen);
+        if (observer == NULL) {
+            continue;
+        }
         observer(flags | kAudioUnitRenderAction_PreRender, timestamp, frameCount, (NSInteger)bus);
     }
     AURenderBlock block = _charon_renderBlock;
@@ -226,7 +270,11 @@
         return noErr;
     }
     AUAudioUnitStatus status = block(actionFlags, timestamp, frameCount, (NSInteger)bus, data, _charon_pullInputBlock);
-    if (observer != NULL) {
+    for (CFIndex index = 0; observers != NULL && index < count; index++) {
+        AURenderObserver observer = (__bridge AURenderObserver)CFArrayGetValueAtIndex(observers, index);
+        if (observer == NULL) {
+            continue;
+        }
         observer(flags | kAudioUnitRenderAction_PostRender, timestamp, frameCount, (NSInteger)bus);
     }
     return (OSStatus)status;
@@ -244,16 +292,35 @@
     _charon_parameterTree = parameterTree;
 }
 
+// The unit's own list of overview parameters, through the v2 property AUAudioUnit.h names for this
+// method: "Partially bridged to kAudioUnitProperty_ParametersForOverview (v2 hosts can use that
+// property to access this v3 method of an audio unit)". It answers an array of
+// AUOutputUnitElementCount-pair arrays - [globalScopeElement, globalScopeElement, inputScopeElement,
+// inputScopeElement, ...] - which is turned into the addresses the header's own return type is. A unit
+// that publishes none answers the empty array, which is the truth over the empty set; the unit's list
+// is NOT the first N of the parameter tree, which is what this answered before.
 - (NSArray<NSNumber *> *)parametersForOverviewWithCount:(NSInteger)count
 {
-    // The overview is a host's own choice of parameters out of the tree, and the tree is the only
-    // place the unit's parameters are known. The first `count` of them is what an overview shows.
-    NSArray<AUParameter *> *all = _charon_parameterTree.allParameters;
-    NSUInteger wanted = count < 0 ? 0 : (NSUInteger)MIN((NSInteger)all.count, count);
     NSMutableArray<NSNumber *> *addresses = [NSMutableArray array];
-    for (NSUInteger index = 0; index < wanted; index++) {
-        [addresses addObject:@([all[index] address])];
+    UInt32 size = 0;
+    if (AudioUnitGetProperty(_charon_audioUnit, kAudioUnitProperty_ParametersForOverview, kAudioUnitScope_Global, 0, NULL, &size) != noErr || size < sizeof(AudioUnitParameterID)) {
+        return addresses;
     }
+    UInt32 count_of_parameters = size / (UInt32)sizeof(AudioUnitParameterID);
+    AudioUnitParameterID *ids = calloc(count_of_parameters, sizeof(AudioUnitParameterID));
+    if (ids == NULL) {
+        return addresses;
+    }
+    OSStatus status = AudioUnitGetProperty(_charon_audioUnit, kAudioUnitProperty_ParametersForOverview,
+                                           kAudioUnitScope_Global, 0, ids, &size);
+    if (status == noErr) {
+        for (UInt32 index = 0; index + 3 < count_of_parameters && index + 1 < (UInt32)MAX(count, 0); index += 4) {
+            AudioUnitScope scope = (AudioUnitScope)ids[index];
+            AudioUnitElement element = (AudioUnitElement)ids[index + 1];
+            [addresses addObject:@(CharonAddress(ids[index + 2], scope, element))];
+        }
+    }
+    free(ids);
     return addresses;
 }
 
@@ -271,10 +338,14 @@
     AudioUnitSetProperty(_charon_audioUnit, kAudioUnitProperty_MaximumFramesPerSlice, kAudioUnitScope_Global, 0, &frames, sizeof(frames));
 }
 
+// Both of these are Float64 by the header's own "Value Type", and reading them as Float32 is accepted
+// by a conforming unit and returns the low half of the double: a unit whose tail time is 0.001 s reads
+// back as -5.19e+11. Measured on the host's own unit against both widths, in
+// tests/backports/host/avfaudio/; the SDK's value type is the whole of the difference.
 - (NSTimeInterval)latency
 {
-    Float32 latency = 0;
-    UInt32 size = sizeof(Float32);
+    Float64 latency = 0;
+    UInt32 size = sizeof(Float64);
     if (AudioUnitGetProperty(_charon_audioUnit, kAudioUnitProperty_Latency, kAudioUnitScope_Global, 0, &latency, &size) != noErr) {
         return 0;
     }
@@ -283,8 +354,8 @@
 
 - (NSTimeInterval)tailTime
 {
-    Float32 tail = 0;
-    UInt32 size = sizeof(Float32);
+    Float64 tail = 0;
+    UInt32 size = sizeof(Float64);
     if (AudioUnitGetProperty(_charon_audioUnit, kAudioUnitProperty_TailTime, kAudioUnitScope_Global, 0, &tail, &size) != noErr) {
         return 0;
     }
@@ -311,16 +382,27 @@
 // to know whether it should pass its input through untouched.
 - (BOOL)shouldBypassEffect
 {
+    UInt32 bypass = 0;
+    UInt32 size = sizeof(bypass);
+    if (AudioUnitGetProperty(_charon_audioUnit, kAudioUnitProperty_BypassEffect, kAudioUnitScope_Global, 0,
+                             &bypass, &size) == noErr) {
+        return bypass != 0;
+    }
     return _charon_shouldBypassEffect;
 }
 
+// The v2 property AUAudioUnit.h names for this pair: "Bridged to the v2 property
+// kAudioUnitProperty_BypassEffect", which is a UInt32 read/write on the global scope. The unit is
+// therefore told, and the value is read back from the unit rather than from an ivar, so a host that sets
+// it and reads it back is reading the unit's answer.
 - (void)setShouldBypassEffect:(BOOL)shouldBypassEffect
 {
-    // Kept and read back, and the unit is not told: see the comment above the accessor in
-    // facts/AVFAudio/AUAudioUnit.md. A host that sets it before it is rendered sees it come back,
-    // which is the header's contract; the audio does not change, and that is the written-down
-    // difference from a release whose units carry the property.
-    _charon_shouldBypassEffect = shouldBypassEffect;
+    UInt32 bypass = shouldBypassEffect ? 1u : 0u;
+    if (AudioUnitSetProperty(_charon_audioUnit, kAudioUnitProperty_BypassEffect, kAudioUnitScope_Global, 0,
+                             &bypass, sizeof(bypass)) != noErr) {
+        [AUAudioUnit charon_noteInert:@"setShouldBypassEffect:"
+                                 why:@"this release's unit refused kAudioUnitProperty_BypassEffect, so the value is kept and read back"];
+    }
 }
 
 // Whether a unit can process in place is a v3 property, kAudioUnitProperty_CanProcessInPlace, which
@@ -356,10 +438,22 @@
     return 0;
 }
 
+// The channel counts the unit accepts on its input busses and the one it produces on its output, which
+// is what the header describes and what the v2 property AUAudioUnit.h names for it
+// ("Bridged to the v2 property kAudioUnitProperty_SupportedNumChannels"). Each is a two-element pair,
+// (max input across the input busses, channels of output), so both sides of the header's own example -
+// "(-16, 2) indicates that a unit can accept up to 16 channels of input across its input busses, but
+// will only produce 2 channels of output" - are answered. A unit that publishes none answers an empty
+// array, which is the truth over the empty set.
 - (NSArray<NSNumber *> *)channelCapabilities
 {
-    // The channel layouts the unit's output bus accepts, as the unit publishes them.
-    return [_charon_outputBusses objectAtIndexedSubscript:0].supportedChannelLayoutTags;
+    SInt32 capabilities[2] = {0, 0};
+    UInt32 size = sizeof(capabilities);
+    if (AudioUnitGetProperty(_charon_audioUnit, kAudioUnitProperty_SupportedNumChannels, kAudioUnitScope_Global,
+                             0, capabilities, &size) != noErr || size < sizeof(capabilities)) {
+        return @[];
+    }
+    return @[@(capabilities[0]), @(capabilities[1])];
 }
 
 #pragma mark Presets

@@ -30,24 +30,10 @@ static inline AUParameterAddress CharonAddress(AudioUnitParameterID identifier, 
     return ((AUParameterAddress)identifier << 32) | ((AUParameterAddress)scope << 16) | (AUParameterAddress)element;
 }
 
-// AudioUnitParameterInfo is the v2 wire format a real unit answers kAudioUnitProperty_ParameterInfo
-// in. SDK 26.2 no longer declares it - its AudioUnitProperties.h names the property and its value
-// type and nothing else - while SDK 15.6 still declares it in full, so the declaration below is
-// transcribed from $SDKS/iPhoneOS15.6.sdk/System/Library/Frameworks/AudioToolbox.framework/Headers/
-// AudioUnitProperties.h:1622 and its field order is the ABI the release answers, not a choice.
-// Nothing is read past what the unit wrote, and the size the unit answers is the size asked for.
-struct CharonAudioUnitParameterInfo {
-    char name[52];
-    CFStringRef __nullable unitName;
-    UInt32 clumpID;
-    CFStringRef __nullable cfNameString;
-    AudioUnitParameterUnit unit;
-    AudioUnitParameterValue minValue;
-    AudioUnitParameterValue maxValue;
-    AudioUnitParameterValue defaultValue;
-    AudioUnitParameterOptions flags;
-};
-typedef struct CharonAudioUnitParameterInfo CharonAudioUnitParameterInfo;
+// AudioUnitParameterInfo is declared by the build SDK itself, field for field, in
+// AudioToolbox/AudioUnitProperties.h - SDK 16.4 and SDK 26.2 agree on it - so the port uses the SDK's
+// struct and declares nothing of its own. A review of this tree once carried a hand-written copy with a
+// citation to an SDK that is not installed; the real header removes both the copy and the citation.
 
 // What one parameter of a real unit is, as that unit describes it. The AUParameter is the header's
 // value object; this is what it holds, and the AudioUnit behind it is the unit the value is read
@@ -142,3 +128,4 @@ extern OSStatus CharonAURenderInput(void *inRefCon, AudioUnitRenderActionFlags *
                                     UInt32 inNumberFrames, AudioBufferList *ioData);
 
 NS_ASSUME_NONNULL_END
+

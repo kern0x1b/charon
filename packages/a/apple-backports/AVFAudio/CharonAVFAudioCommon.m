@@ -116,3 +116,19 @@ AudioChannelLayoutTag CharonTagForChannelCount(AVAudioChannelCount channels)
 @synthesize owner = _owner;
 @end
 
+
+// The four characters of a name the channel-layout property publishes, as the tag. The property's value
+// is an array of CFStrings and each is the name of a tag - "Mono", "Stereo", "Quadraphonic" - so the
+// four characters of the name are the tag itself. A name the release does not use is zero, which is
+// the tag for "none", and the caller leaves it out.
+AudioChannelLayoutTag CharonTagFromName(NSString *name)
+{
+    if (name.length < 4) {
+        return kAudioChannelLayoutTag_UseChannelDescriptions;
+    }
+    const char *characters = name.UTF8String;
+    if (characters == NULL) {
+        return kAudioChannelLayoutTag_UseChannelDescriptions;
+    }
+    return (AudioChannelLayoutTag)(characters[0] | (characters[1] << 8) | (characters[2] << 16) | (characters[3] << 24));
+}

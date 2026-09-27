@@ -223,7 +223,7 @@ AUParameterTree *CharonBuildParameterTree(AUAudioUnit *owner)
     // enumerated in facts/AVFAudio/AUAudioUnitParameter.md - so AudioUnitGetProperty is the only way
     // in, and it is the way a v2 host of that release did it.
     for (AudioUnitElement index = 0; index < 4096; index++) {
-        CharonAudioUnitParameterInfo info;
+        AudioUnitParameterInfo info;
         memset(&info, 0, sizeof(info));
         UInt32 size = (UInt32)sizeof(info);
         if (AudioUnitGetProperty(unit, kAudioUnitProperty_ParameterInfo, kAudioUnitScope_Global, index, &info, &size) != noErr || size < sizeof(info)) {

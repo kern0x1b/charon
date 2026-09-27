@@ -35,6 +35,7 @@ NS_ASSUME_NONNULL_BEGIN
 // kAudioFormatProperty_ChannelLayoutForTagAnswersFor on the current release.
 NSUInteger CharonChannelsForLayoutTag(AudioChannelLayoutTag tag);
 AudioChannelLayoutTag CharonTagForChannelCount(AVAudioChannelCount channels);
+AudioChannelLayoutTag CharonTagFromName(NSString *name);
 
 // The private initializer the manager below hands its own objects: an AVAudioUnitComponent over one
 // real AudioComponent. It is a genuine -init-family method (ARC requires the selector to begin with

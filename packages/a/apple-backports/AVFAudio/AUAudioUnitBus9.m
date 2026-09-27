@@ -94,28 +94,20 @@
     return tag != 0 ? @[@(tag)] : nil;
 }
 
+// Float64 by the header's own Value Type, for the same reason the unit's own latency is: read narrow
+// it is accepted and returns the low half of the double. See tests/backports/host/avfaudio/.
 - (NSTimeInterval)latency
 {
     if (_charon_owner == nil || _charon_owner.audioUnit == NULL) {
         return 0;
     }
-    Float32 latency = 0;
-    UInt32 size = sizeof(Float32);
+    Float64 latency = 0;
+    UInt32 size = sizeof(Float64);
     AudioUnitScope scope = _charon_type == AUAudioUnitBusTypeInput ? kAudioUnitScope_Input : kAudioUnitScope_Output;
     if (AudioUnitGetProperty(_charon_owner.audioUnit, kAudioUnitProperty_Latency, scope, (AudioUnitElement)_charon_index, &latency, &size) != noErr) {
         return 0;
     }
     return latency;
-}
-
-- (void)setLatency:(NSTimeInterval)latency
-{
-    if (_charon_owner == nil || _charon_owner.audioUnit == NULL) {
-        return;
-    }
-    Float32 value = (Float32)latency;
-    AudioUnitScope scope = _charon_type == AUAudioUnitBusTypeInput ? kAudioUnitScope_Input : kAudioUnitScope_Output;
-    AudioUnitSetProperty(_charon_owner.audioUnit, kAudioUnitProperty_Latency, scope, (AudioUnitElement)_charon_index, &value, sizeof(value));
 }
 
 // Whether the bus is active, which on a v2 unit is the input render callback being installed or not -

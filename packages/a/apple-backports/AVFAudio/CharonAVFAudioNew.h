@@ -37,10 +37,6 @@ typedef NS_ENUM(NSInteger, AVAudioApplicationMicrophoneInjectionPermission) {
     AVAudioApplicationMicrophoneInjectionPermissionGranted = 'grnt',
 };
 
-typedef NS_ENUM(NSInteger, AVAudioApplicationMicrophoneInjectionMode) {
-    AVAudioApplicationMicrophoneInjectionModeUnknown = 0,
-};
-
 @interface AVAudioApplication : NSObject
 @property (class, readonly) AVAudioApplication *sharedInstance;
 - (instancetype)init NS_UNAVAILABLE;
