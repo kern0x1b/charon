@@ -1,0 +1,393 @@
+// Entities and enums: what a parameter can carry that the app names, and the queries that find it.
+//
+// An `AppEntity` is a value the app can be asked about; an `AppEnum` is a closed set of cases. Both
+// are `Identifiable` and both are shown through their display representation. The queries are the
+// app's own: the framework calls `entities(for:)` and `suggestedEntities()` and the app answers.
+
+import Foundation
+
+/// An entity: a thing the app can be asked about, which a parameter carries and a query finds.
+public protocol AppEntity: AppValue, DisplayRepresentable, Identifiable where ValueType == Self, ID: EntityIdentifierConvertible {}
+
+/// An enum: a closed set of cases the app names, which a parameter carries.
+public protocol AppEnum: AppValue, StaticDisplayRepresentable, RawRepresentable where RawValue: LosslessStringConvertible {}
+
+/// A value that can be written as the string an entity identifier is, which is what the framework
+/// needs to key an entity, a donation and a search result by the same value.
+public protocol EntityIdentifierConvertible {
+    static func entityIdentifier(for value: Self) -> EntityIdentifier
+    static var entityIdentifierString: String { get }
+}
+
+extension EntityIdentifierConvertible where Self: LosslessStringConvertible {
+    public static func entityIdentifier(for value: Self) -> EntityIdentifier {
+        return EntityIdentifier(for: value)
+    }
+
+    public static var entityIdentifierString: String { return Self("").description }
+}
+
+/// The identifier of an entity: the string the entity is keyed by, and the type of entity it names.
+public struct EntityIdentifier: Hashable, Sendable, CustomStringConvertible {
+    /// The string the entity is keyed by.
+    public let identifier: String
+    /// The name of the type of entity it names, which is what tells two identifiers apart.
+    public let entityType: String
+
+    public init(for identifier: String) {
+        self.identifier = identifier
+        self.entityType = ""
+    }
+
+    public init<Identifier>(for value: Identifier, identifier: String) where Identifier: LosslessStringConvertible {
+        self.identifier = identifier
+        self.entityType = CharonNames.simple(Identifier.self)
+    }
+
+    /// An identifier read back from a resumed activity, which is the framework's own reading of the
+    /// string an activity carries; a string that is not an identifier is not one.
+    public init?(activityIdentifier: String) {
+        self.init(for: activityIdentifier)
+    }
+
+    /// The identifier of a value, when the value is one the framework can write.
+    public init<Identifier>(for value: Identifier) where Identifier: LosslessStringConvertible {
+        self.identifier = value.description
+        self.entityType = CharonNames.simple(Identifier.self)
+    }
+
+    public var description: String { return identifier }
+
+    /// The length an identifier of a file is limited to, which the framework's own limit is.
+    public var valueMaximumLength: Int? { return nil }
+
+    public static var defaultResolverSpecification: EmptyResolverSpecification<EntityIdentifier> {
+        return EmptyResolverSpecification()
+    }
+}
+
+extension EntityIdentifier: _IntentValue {
+    public typealias ValueType = EntityIdentifier
+    public typealias UnwrappedType = EntityIdentifier
+    public typealias Specification = EmptyResolverSpecification<EntityIdentifier>
+}
+
+/// The query that finds an entity by the identifiers the caller gave, and offers the ones it suggests.
+public protocol EntityQuery: DynamicOptionsProvider, PersistentlyIdentifiable, Sendable {
+    associatedtype Entity: AppEntity = Result.Result.ValueType where Entity == Result.Result
+    associatedtype Result = [Entity]
+    init()
+    func entities(for identifiers: [Entity.ID]) async throws -> [Entity]
+    func suggestedEntities() async throws -> Result
+}
+
+extension EntityQuery {
+    /// The entities the query suggests when the caller named none: every one the query has, which is
+    /// what the framework's own default is.
+    public func suggestedEntities() async throws -> Result {
+        return try await results()
+    }
+
+    /// The entities the query has, which is the list the caller chooses from.
+    public func results() async throws -> Result {
+        return try await suggestedEntities()
+    }
+}
+
+/// A query that can list every entity it has, which is what a picker of entities is built on.
+public protocol EnumerableEntityQuery: EntityQuery {
+    func allEntities() async throws -> Result
+    /// What the framework shows above the list, which is what the app wrote.
+    var findIntentDescription: IntentDescription? { get }
+}
+
+extension EnumerableEntityQuery {
+    public var findIntentDescription: IntentDescription? { return nil }
+}
+
+/// A query whose entities are found by a string the caller wrote.
+public protocol EntityStringQuery: EntityQuery {
+    func entities(matching string: String) async throws -> [Entity]
+}
+
+/// A query of a type whose raw value is its own identifier, which is what an `AppEnum` needs.
+public struct _RawRepresentableStringQuery<Entity>: EntityStringQuery
+    where Entity: AppEntity, Entity: RawRepresentable, Entity.ID == Entity.RawValue {
+    public init() {}
+
+    public func entities(for identifiers: [Entity.RawValue]) async throws -> [Entity] {
+        return identifiers.compactMap { Entity(rawValue: $0) }
+    }
+
+    public func entities(matching string: String) async throws -> [Entity] {
+        return [Entity(rawValue: Entity.RawValue(string)) as? Entity].compactMap { $0 }
+    }
+
+    public func suggestedEntities() async throws -> [Entity] {
+        return Entity.allIntentValues
+    }
+}
+
+/// An entity the app makes as the caller speaks, which is not stored and not indexed.
+public protocol TransientAppEntity: AppEntity {}
+
+extension TransientAppEntity {
+    public init() {}
+
+    public var id: String { return CharonNames.simple(Self.self) }
+
+    /// A transient entity is found by asking for it, which is what its own query does.
+    public static var defaultQuery: _TransientAppEntityQuery<Self> { return _TransientAppEntityQuery() }
+}
+
+/// The query of a transient entity: it holds one, and there is nothing to look up.
+public struct _TransientAppEntityQuery<Entity>: EntityQuery where Entity: TransientAppEntity {
+    public typealias Result = [Entity]
+    public typealias Entity = Entity
+
+    private let entity: Entity?
+
+    public init() {
+        self.entity = nil
+    }
+
+    init(entity: Entity) {
+        self.entity = entity
+    }
+
+    public func entities(for identifiers: [Entity.ID]) async throws -> [Entity] {
+        return entity.map { [$0] } ?? []
+    }
+}
+
+/// An entity that stands for one thing only, so that a query can answer "the" entity without a list.
+public protocol UniqueAppEntity: AppEntity where DefaultQuery: UniqueAppEntityQuery {
+    var id: String { get }
+    var displayRepresentation: DisplayRepresentation { get }
+}
+
+/// The query of a unique entity: the one entity, or none.
+public protocol UniqueAppEntityQuery: EnumerableEntityQuery where Entity: UniqueAppEntity {
+    func uniqueEntity() async throws -> Entity?
+}
+
+extension UniqueAppEntityQuery {
+    /// Every entity of a unique query is the one entity it holds.
+    public func allEntities() async throws -> [Entity] {
+        return try await uniqueEntity().map { [$0] } ?? []
+    }
+
+    public func entities(for identifiers: [Entity.ID]) async throws -> [Entity] {
+        return try await uniqueEntity().map { [$0] } ?? []
+    }
+
+    public func suggestedEntities() async throws -> [Entity] {
+        return try await uniqueEntity().map { [$0] } ?? []
+    }
+}
+
+/// The provider of a unique entity, which is a query that holds one value.
+public struct UniqueAppEntityProvider<Entity>: UniqueAppEntityQuery where Entity: UniqueAppEntity {
+    public typealias Result = Entity
+    public typealias Entity = Entity
+    public typealias Unique = Entity
+
+    /// The value a provider of a unique entity starts from, which is the entity itself.
+    public typealias DefaultValue = Entity
+
+    private let stored: Entity?
+
+    public init() {
+        self.stored = nil
+    }
+
+    public init(_ entity: Entity) {
+        self.stored = entity
+    }
+
+    public func uniqueEntity() async throws -> Entity? { return stored }
+}
+
+/// An entity the index knows, which is what a Spotlight search result is made of.
+public protocol IndexedEntity: AppEntity {
+    /// The attributes the index stores for the entity.
+    var attributeSet: CharonSpotlightAttributeSet { get }
+    /// The attributes the entity is indexed with when it names none.
+    static var defaultAttributeSet: CharonSpotlightAttributeSet { get }
+    /// Whether the entity is kept out of the index, added in iOS 18.4.
+    static var hideInSpotlight: Bool { get }
+}
+
+extension IndexedEntity {
+    public static var defaultAttributeSet: CharonSpotlightAttributeSet { return CharonSpotlightAttributeSet() }
+    public static var hideInSpotlight: Bool { return false }
+}
+
+/// A file, which is an entity whose identifier is the file itself.
+public protocol FileEntity: AppEntity where ID == FileEntityIdentifier {
+    /// The content types the file may have, added in iOS 18.
+    static var supportedContentTypes: [String] { get }
+}
+
+extension FileEntity {
+    public static var supportedContentTypes: [String] { return [] }
+}
+
+/// The identifier of a file entity: the file, or the draft of one that is not a file yet.
+public struct FileEntityIdentifier: Hashable, Sendable, Codable {
+    public let fileURL: URL?
+    /// The identifier of a draft, which is a file that is not written yet.
+    public let draftIdentifier: String
+
+    public init(fileURL: URL) {
+        self.fileURL = fileURL
+        self.draftIdentifier = ""
+    }
+
+    public init(draftIdentifier: String) {
+        self.fileURL = nil
+        self.draftIdentifier = draftIdentifier
+    }
+
+    /// Whether the identifier is a draft, which is a file that is not written yet.
+    public var isDraft: Bool { return fileURL == nil }
+
+    /// The file the identifier names, when it names a file.
+    public var file: URL? { return fileURL }
+
+    /// The identifier as the framework's own `EntityIdentifierConvertible` writes it.
+    public var entityIdentifierString: String { return fileURL?.path ?? draftIdentifier }
+
+    public static func entityIdentifier(for value: FileEntityIdentifier) -> EntityIdentifier {
+        return EntityIdentifier(for: value.entityIdentifierString)
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        if let path = try container.decodeIfPresent(String.self, forKey: .fileURL) {
+            self.init(fileURL: URL(fileURLWithPath: path))
+        } else {
+            self.init(draftIdentifier: try container.decode(String.self, forKey: .draftIdentifier))
+        }
+    }
+
+    public func encode(to encoder: any Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encodeIfPresent(fileURL?.path, forKey: .fileURL)
+        try container.encode(draftIdentifier, forKey: .draftIdentifier)
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case fileURL
+        case draftIdentifier
+    }
+
+    public static func == (a: FileEntityIdentifier, b: FileEntityIdentifier) -> Bool {
+        return a.fileURL == b.fileURL && a.draftIdentifier == b.draftIdentifier
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(fileURL)
+        hasher.combine(draftIdentifier)
+    }
+}
+
+extension FileEntityIdentifier: _IntentValue {
+    public typealias ValueType = FileEntityIdentifier
+    public typealias UnwrappedType = FileEntityIdentifier
+    public typealias Specification = EmptyResolverSpecification<FileEntityIdentifier>
+    public static var defaultResolverSpecification: Specification { return Specification() }
+}
+
+/// The attributes the index stores for an entity, which is the port's own store: the release runs
+/// no `CoreSpotlight`, and this is the record the port's own index keeps beside its journal.
+public struct CharonSpotlightAttributeSet: Codable, Hashable {
+    public var title: String
+    public var contentDescription: String?
+    public var contentType: String
+    public var keywords: [String]
+    /// The entity the record stands for, which is what `associateAppEntity` writes.
+    public var appEntityIdentifier: String?
+
+    public init(title: String = "", contentDescription: String? = nil, contentType: String = "",
+                keywords: [String] = [], appEntityIdentifier: String? = nil) {
+        self.title = title
+        self.contentDescription = contentDescription
+        self.contentType = contentType
+        self.keywords = keywords
+        self.appEntityIdentifier = appEntityIdentifier
+    }
+
+    public static func == (a: CharonSpotlightAttributeSet, b: CharonSpotlightAttributeSet) -> Bool {
+        return a.title == b.title && a.contentDescription == b.contentDescription
+            && a.contentType == b.contentType && a.keywords == b.keywords
+            && a.appEntityIdentifier == b.appEntityIdentifier
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(title)
+        hasher.combine(contentType)
+        hasher.combine(appEntityIdentifier)
+    }
+}
+
+/// A value whose options are asked of the app when the caller has to choose.
+public protocol DynamicOptionsProvider {
+    associatedtype Item: _IntentValue
+    associatedtype ItemCollection: ResultsCollection
+    associatedtype ItemSection: ResultsCollection
+    associatedtype DefaultValue: _IntentValue
+    func results() async throws -> ItemCollection
+    /// The options the provider offers when the caller has to choose.
+    func defaultResult() async throws -> ItemCollection
+}
+
+extension DynamicOptionsProvider {
+    public func defaultResult() async throws -> ItemCollection {
+        return try await results()
+    }
+}
+
+/// A collection of results the caller chooses from: a list, or a list in sections.
+public protocol ResultsCollection<Result> {
+    associatedtype Result: _IntentValue
+    /// What the framework shows above the list, which is what the app wrote.
+    var promptLabel: LocalizedStringResource? { get }
+    /// Whether the list is shown with the section index of the release's own table view.
+    var usesIndexedCollation: Bool { get }
+    /// The values the list carries.
+    var items: [Result.ValueType] { get }
+    /// A list with nothing in it.
+    static var empty: Self { get }
+}
+
+/// How many values a collection parameter may carry: exactly so many, or between so many.
+public struct IntentCollectionSize: ExpressibleByIntegerLiteral, Equatable {
+    public let min: Int
+    public let max: Int?
+
+    public init(exactly: Int) {
+        self.min = exactly
+        self.max = exactly
+    }
+
+    public init(min: Int, max: Int?) {
+        self.min = min
+        self.max = max
+    }
+
+    public init(integerLiteral value: Int) {
+        self.init(exactly: value)
+    }
+
+    public static func == (a: IntentCollectionSize, b: IntentCollectionSize) -> Bool {
+        return a.min == b.min && a.max == b.max
+    }
+}
+
+extension IntentCollectionSize: _IntentValue {
+    public typealias ValueType = IntentCollectionSize
+    public typealias UnwrappedType = IntentCollectionSize
+    public typealias Specification = EmptyResolverSpecification<IntentCollectionSize>
+    public static var defaultResolverSpecification: Specification { return Specification() }
+}
