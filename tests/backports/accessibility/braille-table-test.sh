@@ -23,7 +23,7 @@ xcrun clang -target arm64-apple-macos26.0 -isysroot "$(xcrun --show-sdk-path)" -
     -I"$root/packages/a/apple-backports/Intents" \
     "$here/braille-table-test.m" \
     "$root/packages/a/apple-backports/Accessibility/CharonBraille.m" \
-    "$root/packages/a/apple-backports/Intents/CharonIntentsCoding.m" \
+    "$root/packages/a/apple-backports/Foundation/CharonCoding.m" \
     -framework Foundation -framework CoreLocation -o "$build/table-test" 2>"$build/build.log" || {
         echo "the table test did not build; $build/build.log says why" >&2
         tail -20 "$build/build.log" >&2

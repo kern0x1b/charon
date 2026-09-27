@@ -13,7 +13,7 @@ build=${BUILD:-$(mktemp -d)}
 mkdir -p "$build"
 xcrun clang -target arm64-apple-macos26.0 -isysroot "$(xcrun --show-sdk-path)" -fobjc-arc -O0 -Wall \
     -I"$root/packages/a/apple-backports/Intents" \
-    "$here/ownership-test.m" "$root/packages/a/apple-backports/Intents/CharonIntentsCoding.m" \
+    "$here/ownership-test.m" "$root/packages/a/apple-backports/Foundation/CharonCoding.m" \
     -framework Foundation -framework CoreLocation -o "$build/ownership" 2>"$build/build.log" || {
         echo "the ownership test did not build; $build/build.log says why" >&2
         tail -20 "$build/build.log" >&2

@@ -16,7 +16,7 @@
 //
 
 #import <Intents/Intents.h>
-#import "CharonIntentsCoding.h"
+#import "../Foundation/CharonCoding.h"
 #import "CharonIntentsResolution.h"
 #import "CharonIntents262.h"
 
@@ -40,9 +40,11 @@
 
 + (instancetype)successWithResolvedPaymentMethod:(INPaymentMethod *)resolvedPaymentMethod
 {
-    // A type whose zero case says nothing carries a success that says nothing,
-    // which is what notRequired means; the host re-forms it the same way.
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionSuccess
+    // The host re-forms a success carrying the zero case of its type as a
+    // notRequired - a success with nothing to say - and leaves any other value a
+    // success (measured on the host's own Intents, 17 enumerations).
+    return [self charon_resolutionWithStatus:resolvedPaymentMethod == 0 ? CharonIntentsResolutionNotRequired
+                                                : CharonIntentsResolutionSuccess
  resolvedValue:[resolvedPaymentMethod copy] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 

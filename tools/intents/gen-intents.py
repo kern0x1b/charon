@@ -215,6 +215,42 @@ ALONE = {
     "INPaymentMethodResolutionResult": "10.3",
 }
 
+# Why a member is not answered, one cause per way the generator leaves one out. The registry
+# writes the reason from these, so a reason names the cause and not the owner's group - which is
+# what N3 was about: an entry said "a class of a later group" for a member whose class this
+# delivery carries, for a member that is not an initialiser at all, and for a factory that
+# returns an array rather than a result.
+CAUSES = {
+    "later_group":
+        "the class this member's type names is in a later group of this same delivery",
+    "forward_only_class":
+        "the class this member's type names is a class the SDK's headers only forward declare, so "
+        "no header of the port's own SDK defines it and a body would not compile against one",
+    "deferred_value":
+        "an initialiser that takes a value of a class this delivery does not carry is not given a "
+        "body, because a body that dropped the value would answer with a class that looks filled "
+        "and is not",
+    "chain_nonnull":
+        "the superclass's designated initialiser takes a parameter the SDK does not mark nullable "
+        "and nothing in the headers says where a subclass would get one, so the port refuses to "
+        "chain rather than make a call the SDK forbids",
+    "chain_no_designated":
+        "the superclass declares this value read-only and offers no designated initialiser to keep "
+        "it in, so there is no chain to make",
+    "unavailable":
+        "the header marks the initialiser unavailable, so a port cannot call it",
+    "collection_factory":
+        "a factory that answers an array of resolution results is a collection the framework's "
+        "system builds, and there is no system here to read the values out of one",
+    "class_property":
+        "a property of the class's own type on the class is the class's own identity, which the "
+        "runtime holds, and there is no storage for it to keep",
+    "not_declared":
+        "the SDK's own headers do not declare this member, so there is nothing to answer",
+    "unanswered":
+        "a member of a class of a later group of this same delivery",
+}
+
 # The enumerations whose zero case is the one that says nothing, measured from the host: its own
 # framework logs "Success resolution with <Enum>Unknown will be reformed to notRequired." for a
 # success carrying that case (observed on the host's own Intents, 2026-09-27, for
@@ -366,7 +402,7 @@ def definitions(lines):
     return joined
 
 
-def answer_of(lines, name):
+def answer_of(lines, name, causes=None):
     """What the emitted @implementation of one class carries, read back out of the text.
 
     The registry is written from this, not from the declarations the generator read, so an entry
@@ -393,6 +429,7 @@ def answer_of(lines, name):
         "properties": sorted(properties),
         "dynamic": sorted(dynamic),
         "methods": sorted(methods),
+        "causes": causes or {},
     }
 
 
@@ -602,7 +639,7 @@ def initialiser(interface, method, states, spellings, interfaces):
         lines.append("    if ((self = [super %s])) {" % " ".join(pieces))
     elif own_init_unavailable(interface, interfaces):
         lines.append("    // The header marks this class's -init unavailable, so the superclass's own")
-        lines.append("    // -init is called through CharonIntentsCoding.h's one definition of it.")
+        lines.append("    // -init is called through CharonCoding.h's one definition of it.")
         lines.append("    if ((self = charon_intents_super_init(self, [%s class]))) {"
                      % interface.superclass)
     else:
@@ -670,7 +707,7 @@ def render(interface, protocols, carried, intents, interfaces, forward=()):
     for the same reason. Nothing here is claimed that the emitted code does not carry.
     """
     out, report = implementation(interface, protocols, carried, intents, interfaces, forward)
-    return out, report or answer_of(out, interface.name)
+    return out, report or answer_of(out, interface.name, causes)
 
 
 def implementation(interface, protocols, carried, intents, interfaces, forward=()):
@@ -693,10 +730,15 @@ def implementation(interface, protocols, carried, intents, interfaces, forward=(
                 accessors.add(selector)
 
     stored, synthesised, dynamic, setters, skipped, members = [], [], [], [], [], []
+    dynamic_causes = {}
     for name, member in sorted(own.items()):
         kind = type_of(member)
-        if deferred_type(kind, intents, carried, forward):
-            dynamic.append((name, member.get("category")))
+        withheld = deferred_type(kind, intents, carried, forward)
+        if withheld:
+            cause = "forward_only_class" if (withheld in forward and not SYSTEM.match(withheld)) \
+                    else "later_group"
+            dynamic_causes[name] = cause
+            dynamic.append((name, member.get("category"), cause))
             continue
         stored.append(("_" + name, spelled(kind), name))
         members.append((name, spelled(kind), member))
@@ -749,7 +791,8 @@ def implementation(interface, protocols, carried, intents, interfaces, forward=(
             out.append("    @dynamic %s;  // a class of a later group: see registry/Intents" % name)
 
     if interface.name in HAND_WRITTEN:
-        return out + ["", "@end", ""], None
+        return out + ["", "@end", ""], {"properties": [], "dynamic": [], "methods": [],
+                                        "causes": {}}
 
     out.append("")
     deferred_names = {name for name, _ in dynamic}
@@ -786,7 +829,7 @@ def implementation(interface, protocols, carried, intents, interfaces, forward=(
             # An initialiser that takes a value this delivery does not carry cannot be given a
             # body without dropping that value, so it is left out and the registry says so; the
             # header's mark stays on it, so a port cannot call it and nothing crashes.
-            skipped.append(selector)
+            skipped.append((selector, "deferred_value"))
             continue
         written = EXTRA_METHODS.get((interface.name, selector), False)
         if written is False:
@@ -794,7 +837,9 @@ def implementation(interface, protocols, carried, intents, interfaces, forward=(
             if body is None:
                 # The generator will not write a body that drops a value: the initialiser is left
                 # out, and the registry entry says which of the two reasons it was.
-                skipped.append(selector)
+                skipped.append((selector, "chain_nonnull" if initialiser(interface, method, states,
+                                                                           spellings, interfaces) is None
+                                else "deferred_value"))
                 continue
             out += body
             out.append("")
@@ -816,7 +861,7 @@ def implementation(interface, protocols, carried, intents, interfaces, forward=(
                          and has_attr(candidate.method("init"), "UnavailableAttr")), None)
         if own_init is not None:
             start = ["    // The header marks this class's -init unavailable, so the superclass's own",
-                     "    // -init is called through CharonIntentsCoding.h's one definition of it.",
+                     "    // -init is called through CharonCoding.h's one definition of it.",
                      "    if ((self = charon_intents_super_init(self, [%s class])))" % interface.superclass]
         else:
             start = ["    if ((self = [super init]))"]
@@ -850,7 +895,14 @@ def implementation(interface, protocols, carried, intents, interfaces, forward=(
                 out += ["", "- (void)set%s:(%s)%s" % (name[0].upper() + name[1:], kind, name), "{",
                         "    _%s = %s;" % (name, "[%s copy]" % name if copied else name), "}"]
         out += ["", "@end", ""]
-    return out, None
+    causes = {}
+    for name, _, cause in dynamic:
+        causes[name] = cause
+    for selector, cause in skipped:
+        causes[selector] = cause
+    report = answer_of(out, interface.name)
+    report["causes"] = causes
+    return out, report
 
 
 # +successWithResolved…:, +successWithResolvedValue:, +disambiguationWith…ToDisambiguate:,
@@ -868,6 +920,15 @@ def factory(interface, method, resolution):
     selector = method.get("name") or ""
     if not resolution or has_attr(method, "UnavailableAttr"):
         return []
+    returns = spelled(returns_of(method))
+    if (returns.rstrip().endswith("*") and "NSArray" in returns) \
+            or selector.startswith("successesWithResolved"):
+        # A factory that answers an array of results, not one result: the system's own, and there
+        # is no system here to have built one.
+        return ["+ (%s)%s" % (returns, interface.spelled_selector(method)), "{",
+                "    // An array of resolution results is what the system collects out of the",
+                "    // factories it called; with no system there is nothing to collect.",
+                "    return nil;", "}"]
     parameters = parameters_of(method)
     if not parameters or len(parameters) != 1:
         return []
@@ -936,7 +997,7 @@ def banner(name, classes, release, deferred):
 //
 
 #import <Intents/Intents.h>
-#import "CharonIntentsCoding.h"
+#import "../Foundation/CharonCoding.h"
 #import "CharonIntentsResolution.h"
 #import "CharonIntents262.h"
 

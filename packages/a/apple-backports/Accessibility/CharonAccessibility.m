@@ -25,7 +25,7 @@
 
 #import "CharonAccessibility.h"
 
-#import "../Intents/CharonIntentsCoding.h"
+#import "../Foundation/CharonCoding.h"
 
 #pragma mark - AXRequest
 

@@ -16,7 +16,7 @@
 //
 
 #import <Intents/Intents.h>
-#import "CharonIntentsCoding.h"
+#import "../Foundation/CharonCoding.h"
 #import "CharonIntentsResolution.h"
 #import "CharonIntents262.h"
 
@@ -85,7 +85,7 @@
 - (instancetype)initWithCode:(INEditMessageIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonIntentsCoding.h's one definition of it.
+    // -init is called through CharonCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class]))) {
         _code = code;
     }
@@ -101,7 +101,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     // The header marks this class's -init unavailable, so the superclass's own
-    // -init is called through CharonIntentsCoding.h's one definition of it.
+    // -init is called through CharonCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [INIntentResponse class])))
         charon_intents_decode(self, coder);
     return self;

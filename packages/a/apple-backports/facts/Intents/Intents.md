@@ -147,7 +147,7 @@ each read off the header of iPhoneOS 16.4:
   price.
 * `INPerson`'s `contactSuggestion` is declared `getter=isContactSuggestion`, so the initialiser
   that spells its parameter `isContactSuggestion:` is matched through the getter's own name.
-The copy in `CharonIntentsCoding.m` reads the property an ivar belongs to through the `V_` field
+The copy in `Foundation/CharonCoding.m` reads the property an ivar belongs to through the `V_` field
 of its own attributes — the way the runtime pairs them, so a property whose ivar is not spelled
 after it is still found — and then reads the ownership out of the **field list** that follows the
 type field, one character at a time, skipping the `G…`/`S…`/`V…` payloads. A property is copied

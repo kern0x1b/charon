@@ -79,7 +79,7 @@ python3 "$here/gen-intents.py" --sdk "$PORT_SDK" --dump "$work/ast-port.json" \
 python3 "$here/gen-registry.py" --corpus "$CORPUS" --classes "$groups/10_0_1.txt" "$groups/10_3.txt" \
     --report "$work/report-10_0_1.json" --report "$work/report-10_3.json" \
     --out "$registry/ios10.json" --facts "$facts" --release 10.0.1 \
-    --reason "the class this member's type names is in a later group of this same delivery"
+        --reason "a class of a later group of this same delivery"
 for entry in 11_0:11.0:ios11 \
             12_0:12.0:ios12 \
             16_0:16.0:ios16 \
@@ -91,6 +91,6 @@ for entry in 11_0:11.0:ios11 \
     python3 "$here/gen-registry.py" --corpus "$CORPUS" --classes "$groups/$group.txt" \
         --report "$work/report-$group.json" --out "$registry/$file.json" --facts "$facts" \
         --release "$release" --no-protocols $extra \
-        --reason "the class this member's type names is in a later group of this same delivery"
+            --reason "a class of a later group of this same delivery"
 done
 echo "regenerated: $(ls "$classes"/IN*.m | wc -l) object files, $(ls "$registry"/ios*.json | wc -l) registry files"

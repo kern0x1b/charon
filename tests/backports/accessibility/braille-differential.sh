@@ -43,7 +43,7 @@ port_build() {
         -I"$root/packages/a/apple-backports/Intents" \
         "$here/braille-differential.m" \
         "$root/packages/a/apple-backports/Accessibility/CharonBraille.m" \
-        "$root/packages/a/apple-backports/Intents/CharonIntentsCoding.m" \
+        "$root/packages/a/apple-backports/Foundation/CharonCoding.m" \
         -I"$root/packages/a/apple-backports/Intents" \
         -framework Foundation -framework CoreLocation -o "$build/port" 2>>"$build/build.log" || return 1
 }
