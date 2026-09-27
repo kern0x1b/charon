@@ -1,23 +1,47 @@
 // HKUnit: what a quantity is counted in, and the arithmetic between units of one dimension.
 //
-// A unit here is a product of powers of the base units of its dimensions, plus the additive offset
-// that only a temperature has: a value in the unit comes to a value in the base as
-// (value + offset) * the product. So m/s is {m: 1, s: -1}, kcal/(kg*hr) is {J: 1, kg: -1, hr: -1},
-// and degF is 5/9 with an offset of 459.67, which is what makes it a temperature.
+// A unit here is a product of powers of the base units of its dimensions, a factor for the whole
+// product, and the additive offset that only a temperature has: a value in the unit comes to a value
+// in the base as (value + offset) * factor. So m/s is {m: 1, s: -1}, kg/m·s^2 is {kg: 1, m: -1,
+// s: -2}, and degF is 5/9 with an offset of 459.67, which is what makes it a temperature.
 //
-// The strings are the ones the header writes beside each factory method. The factors are the
-// international ones those names have: the inch as 0.0254 m, the foot as 0.3048 m, the mile as
-// 1609.344 m, the avoirdupois pound as 453.59237 g, the stone as 6350.29318 g, the US fluid ounce as
-// 0.0295735295625 L and the imperial one as 0.0284130625 L, the millimetre of mercury as
-// 133.322387415 Pa, the centimetre of water as 98.0665 Pa, the standard atmosphere as 101325 Pa, the
-// thermochemical calorie as 4.184 J and the large one as 4184 J.
+// Every string, every factor and the spelling of every product in this file is what the host's own
+// HealthKit answers, read by tests/backports/host/healthkit/run.sh, which asks the system and this
+// code the same questions in one process and fails on any difference. That is where these come from:
+//   - the micro prefix is `mc`, not `u` and not U+03BC: the host raises "Unable to parse
+//     factorization string" for `ug` and for `μg` alike, and `+gramUnitWithMetricPrefix:
+//     HKMetricPrefixMicro` answers `mcg`.
+//   - a prefix is put in front of the base unit's own name, so a milli-pascal is `mPa` and a
+//     mega-litre is `ML`, and the thirteen prefixes are the header's own cases.
+//   - `%` is not a dimension of its own: the host answers one for the conversion of a percent into a
+//     count. `count` is the base of both.
+//   - `IU` is a dimension of its own, and a molar unit is its own base with the molar mass as its
+//     factor: `mol<12>` is 12 g a mole, `mmol<12>` is 0.012 g, and the two are compatible, which the
+//     host confirms by answering six for one `mol<12>` in `mol<2>`.
+//   - a product is written with U+00B7 between its factors, a power with `^`, and a quotient with a
+//     solidus and no parentheses: `m·s`, `m^2`, `kg/m·s^2`, `mL/min·kg`, `1/s`. A `*` is read as the
+//     same separator a string is written with, and at most one solidus is read: `J/m/kg/s` raises.
+//   - a string the host cannot parse raises rather than answering nil, which is what its nonnull
+//     return and its own "Unable to parse factorization string" say. So does an empty one.
+//   - the litre's own name is the one letter whose case does not matter: `ml` and `ML` and `mL` are
+//     the millilitre, the megalitre and the millilitre, and `kg` and `Kg` and `KG` are the kilogram and
+//     two strings the host raises for.
+//   - `kWh` is not a unit: the host raises for it, and no factory method of the header makes one.
+//
+// The factors are the international ones behind the names: the inch as 0.0254 m, the foot as 0.3048 m,
+// the mile as 1609.344 m, the avoirdupois pound as 453.59237 g, the stone as 6350.29318 g, the US
+// fluid ounce as 0.0295735295625 L and the imperial one as 0.0284130625 L, the US cup as half a US
+// pint and the imperial cup as half an imperial pint, the millimetre of mercury as 133.322387415 Pa,
+// the centimetre of water as 98.0665 Pa, the standard atmosphere as 101325 Pa, the thermochemical
+// calorie as 4.184 J and the large one as 4184 J.
 
 #import <HealthKit/HealthKit.h>
 
 #import "CharonHKStore.h"
 #import "CharonHKTypes.h"
 
-// Every dimension the units of this framework has, and the unit it is expressed in.
+// Every dimension the units of this framework has, and the unit it is expressed in. A unit of another
+// dimension is not compatible with it, and a count is a count whatever the caller calls it.
 enum {
     CharonHKDimensionMass = 0,          // gram
     CharonHKDimensionLength,           // metre
@@ -27,11 +51,22 @@ enum {
     CharonHKDimensionEnergy,           // joule
     CharonHKDimensionTemperature,      // kelvin
     CharonHKDimensionConductance,      // siemens
-    CharonHKDimensionCount,            // a dimensionless count
-    CharonHKDimensionFraction,         // a dimensionless fraction, 0.0 to 1.0
+    CharonHKDimensionCount,            // a dimensionless count, which a percent is too
+    CharonHKDimensionMoles,            // a mole, whose molar mass is the factor of the unit
+    CharonHKDimensionInternationalUnit, // the international unit of a pharmacology
     CharonHKDimensionSoundLevel,       // a weighted sound pressure level, a level and not a pressure
+    CharonHKDimensionFrequency,         // a frequency
+    CharonHKDimensionHearingLevel,      // a hearing level
+    CharonHKDimensionPotential,         // an electric potential difference
+    CharonHKDimensionPower,             // a power
+    CharonHKDimensionEffortScore,       // the score an effort is measured in
     CharonHKDimensionCountOfDimensions,
 };
+
+// The middle dot a product is written with, and the carets and solidus the rest.
+static NSString *const CharonHKMultiply = @"·";  // U+00B7
+static NSString *const CharonHKDivide = @"/";
+static NSString *const CharonHKPower = @"^";
 
 static NSString *CharonHKBaseUnit(NSInteger dimension)
 {
@@ -52,12 +87,110 @@ static NSString *CharonHKBaseUnit(NSInteger dimension)
         return @"K";
     case CharonHKDimensionConductance:
         return @"S";
-    case CharonHKDimensionFraction:
-        return @"%";
+    case CharonHKDimensionMoles:
+        return @"mol";
+    case CharonHKDimensionInternationalUnit:
+        return @"IU";
     case CharonHKDimensionSoundLevel:
         return @"dBASPL";
+    case CharonHKDimensionFrequency:
+        return @"Hz";
+    case CharonHKDimensionHearingLevel:
+        return @"dBHL";
+    case CharonHKDimensionPotential:
+        return @"V";
+    case CharonHKDimensionPower:
+        return @"W";
+    case CharonHKDimensionEffortScore:
+        return @"appleEffortScore";
     default:
         return @"count";
+    }
+}
+
+// The thirteen prefixes of the header's own enum, in its order, spelled the way the host spells them.
+static NSString *CharonHKPrefixName(HKMetricPrefix prefix)
+{
+    switch (prefix) {
+    case HKMetricPrefixFemto:
+        return @"f";
+    case HKMetricPrefixPico:
+        return @"p";
+    case HKMetricPrefixNano:
+        return @"n";
+    case HKMetricPrefixMicro:
+        return @"mc";
+    case HKMetricPrefixMilli:
+        return @"m";
+    case HKMetricPrefixCenti:
+        return @"c";
+    case HKMetricPrefixDeci:
+        return @"d";
+    case HKMetricPrefixDeca:
+        return @"da";
+    case HKMetricPrefixHecto:
+        return @"h";
+    case HKMetricPrefixKilo:
+        return @"k";
+    case HKMetricPrefixMega:
+        return @"M";
+    case HKMetricPrefixGiga:
+        return @"G";
+    case HKMetricPrefixTera:
+        return @"T";
+    case HKMetricPrefixNone:
+    default:
+        return @"";
+    }
+}
+
+// The power of ten a prefix stands for, which is what the header's own comment gives for each.
+static BOOL CharonHKPrefixFactor(HKMetricPrefix prefix, double *factor)
+{
+    switch (prefix) {
+    case HKMetricPrefixFemto:
+        *factor = 1e-15;
+        return YES;
+    case HKMetricPrefixPico:
+        *factor = 1e-12;
+        return YES;
+    case HKMetricPrefixNano:
+        *factor = 1e-9;
+        return YES;
+    case HKMetricPrefixMicro:
+        *factor = 1e-6;
+        return YES;
+    case HKMetricPrefixMilli:
+        *factor = 1e-3;
+        return YES;
+    case HKMetricPrefixCenti:
+        *factor = 1e-2;
+        return YES;
+    case HKMetricPrefixDeci:
+        *factor = 1e-1;
+        return YES;
+    case HKMetricPrefixDeca:
+        *factor = 10.0;
+        return YES;
+    case HKMetricPrefixHecto:
+        *factor = 100.0;
+        return YES;
+    case HKMetricPrefixKilo:
+        *factor = 1e3;
+        return YES;
+    case HKMetricPrefixMega:
+        *factor = 1e6;
+        return YES;
+    case HKMetricPrefixGiga:
+        *factor = 1e9;
+        return YES;
+    case HKMetricPrefixTera:
+        *factor = 1e12;
+        return YES;
+    case HKMetricPrefixNone:
+    default:
+        *factor = 1.0;
+        return YES;
     }
 }
 
@@ -65,7 +198,7 @@ static NSString *CharonHKBaseUnit(NSInteger dimension)
 
 // One unit of the header's own: the string it writes, the dimension it is of and the factor it is
 // worth in that dimension's base. Read off the factory methods of HKUnit.h and the comments beside
-// them, the eight of iOS 8 that the header gives without an iOS version on them.
+// them, and held to the host's own answers by tests/backports/host/healthkit.
 typedef struct {
     __unsafe_unretained NSString *string;
     NSInteger dimension;
@@ -78,7 +211,7 @@ static const CharonHKUnitEntry CharonHKUnitTable[] = {
     {@"g", CharonHKDimensionMass, 1.0, 0.0},
     {@"kg", CharonHKDimensionMass, 1000.0, 0.0},
     {@"mg", CharonHKDimensionMass, 1e-3, 0.0},
-    {@"ug", CharonHKDimensionMass, 1e-6, 0.0},
+    {@"mcg", CharonHKDimensionMass, 1e-6, 0.0},
     {@"ng", CharonHKDimensionMass, 1e-9, 0.0},
     {@"pg", CharonHKDimensionMass, 1e-12, 0.0},
     {@"fg", CharonHKDimensionMass, 1e-15, 0.0},
@@ -90,7 +223,7 @@ static const CharonHKUnitEntry CharonHKUnitTable[] = {
     {@"km", CharonHKDimensionLength, 1000.0, 0.0},
     {@"cm", CharonHKDimensionLength, 1e-2, 0.0},
     {@"mm", CharonHKDimensionLength, 1e-3, 0.0},
-    {@"um", CharonHKDimensionLength, 1e-6, 0.0},
+    {@"mcm", CharonHKDimensionLength, 1e-6, 0.0},
     {@"nm", CharonHKDimensionLength, 1e-9, 0.0},
     {@"in", CharonHKDimensionLength, 0.0254, 0.0},
     {@"ft", CharonHKDimensionLength, 0.3048, 0.0},
@@ -99,7 +232,7 @@ static const CharonHKUnitEntry CharonHKUnitTable[] = {
     // volume, in litres
     {@"L", CharonHKDimensionVolume, 1.0, 0.0},
     {@"mL", CharonHKDimensionVolume, 1e-3, 0.0},
-    {@"uL", CharonHKDimensionVolume, 1e-6, 0.0},
+    {@"mcL", CharonHKDimensionVolume, 1e-6, 0.0},
     {@"nL", CharonHKDimensionVolume, 1e-9, 0.0},
     {@"pL", CharonHKDimensionVolume, 1e-12, 0.0},
     {@"fL", CharonHKDimensionVolume, 1e-15, 0.0},
@@ -119,15 +252,22 @@ static const CharonHKUnitEntry CharonHKUnitTable[] = {
     {@"hPa", CharonHKDimensionPressure, 100.0, 0.0},
     {@"daPa", CharonHKDimensionPressure, 10.0, 0.0},
     {@"MPa", CharonHKDimensionPressure, 1e6, 0.0},
-    {@"mmHg", CharonHKDimensionPressure, 133.322387415, 0.0},
-    {@"cmAq", CharonHKDimensionPressure, 98.0665, 0.0},
+    {@"mPa", CharonHKDimensionPressure, 1e-3, 0.0},
+    {@"mcPa", CharonHKDimensionPressure, 1e-6, 0.0},
+    {@"nPa", CharonHKDimensionPressure, 1e-9, 0.0},
+    {@"pPa", CharonHKDimensionPressure, 1e-12, 0.0},
+    {@"mmHg", CharonHKDimensionPressure, 133.32236842105263, 0.0},
+    {@"cmAq", CharonHKDimensionPressure, 98.06649606299213, 0.0},
     {@"atm", CharonHKDimensionPressure, 101325.0, 0.0},
-    {@"dBASPL", CharonHKDimensionSoundLevel, 1.0, 0.0},
+    {@"inHg", CharonHKDimensionPressure, 3386.38816, 0.0},
     // time, in seconds
     {@"s", CharonHKDimensionTime, 1.0, 0.0},
+    {@"ks", CharonHKDimensionTime, 1e3, 0.0},
+    {@"Ms", CharonHKDimensionTime, 1e6, 0.0},
     {@"ms", CharonHKDimensionTime, 1e-3, 0.0},
-    {@"us", CharonHKDimensionTime, 1e-6, 0.0},
+    {@"mcs", CharonHKDimensionTime, 1e-6, 0.0},
     {@"ns", CharonHKDimensionTime, 1e-9, 0.0},
+    {@"ps", CharonHKDimensionTime, 1e-12, 0.0},
     {@"min", CharonHKDimensionTime, 60.0, 0.0},
     {@"hr", CharonHKDimensionTime, 3600.0, 0.0},
     {@"d", CharonHKDimensionTime, 86400.0, 0.0},
@@ -138,60 +278,90 @@ static const CharonHKUnitEntry CharonHKUnitTable[] = {
     {@"cal", CharonHKDimensionEnergy, 4.184, 0.0},
     {@"kcal", CharonHKDimensionEnergy, 4184.0, 0.0},
     {@"Cal", CharonHKDimensionEnergy, 4184.0, 0.0},
-    {@"kWh", CharonHKDimensionEnergy, 3600000.0, 0.0},
     // temperature, in kelvin
     {@"K", CharonHKDimensionTemperature, 1.0, 0.0},
     {@"degC", CharonHKDimensionTemperature, 1.0, 273.15},
     {@"degF", CharonHKDimensionTemperature, 5.0 / 9.0, 459.67},
-    // electrical conductance, in siemens
+    // conductance, in siemens
     {@"S", CharonHKDimensionConductance, 1.0, 0.0},
+    {@"kS", CharonHKDimensionConductance, 1e3, 0.0},
+    {@"MS", CharonHKDimensionConductance, 1e6, 0.0},
     {@"mS", CharonHKDimensionConductance, 1e-3, 0.0},
-    {@"uS", CharonHKDimensionConductance, 1e-6, 0.0},
+    {@"mcS", CharonHKDimensionConductance, 1e-6, 0.0},
     {@"nS", CharonHKDimensionConductance, 1e-9, 0.0},
     {@"pS", CharonHKDimensionConductance, 1e-12, 0.0},
-    // dimensionless
+    // dimensionless: a count, and a percent, which is a count
     {@"count", CharonHKDimensionCount, 1.0, 0.0},
-    {@"%", CharonHKDimensionFraction, 1.0, 0.0},
+    {@"%", CharonHKDimensionCount, 1.0, 0.0},
+    // the international unit of a pharmacology, and a weighted sound pressure level
+    {@"IU", CharonHKDimensionInternationalUnit, 1.0, 0.0},
+    {@"dBASPL", CharonHKDimensionSoundLevel, 1.0, 0.0},
+    // and the ones the header adds in the releases after iOS 8, which the SDK's own table of the
+    // quantity types already names: a frequency, a hearing level, an electric potential difference
+    // and a power are each a dimension of their own, which the host confirms - none of them converts
+    // to a count. They are here because a type is counted in one of them and a type that accepts no
+    // unit accepts nothing.
+    {@"Hz", CharonHKDimensionFrequency, 1.0, 0.0},
+    {@"kHz", CharonHKDimensionFrequency, 1e3, 0.0},
+    {@"MHz", CharonHKDimensionFrequency, 1e6, 0.0},
+    {@"GHz", CharonHKDimensionFrequency, 1e9, 0.0},
+    {@"dBHL", CharonHKDimensionHearingLevel, 1.0, 0.0},
+    {@"V", CharonHKDimensionPotential, 1.0, 0.0},
+    {@"mV", CharonHKDimensionPotential, 1e-3, 0.0},
+    {@"kV", CharonHKDimensionPotential, 1e3, 0.0},
+    {@"W", CharonHKDimensionPower, 1.0, 0.0},
+    {@"mW", CharonHKDimensionPower, 1e-3, 0.0},
+    {@"kW", CharonHKDimensionPower, 1e3, 0.0},
+    {@"MW", CharonHKDimensionPower, 1e6, 0.0},
+    // and the score a workout's effort is measured in, which the host keeps as a dimension of its own
+    // - it is not a count and does not convert to one
+    {@"appleEffortScore", CharonHKDimensionEffortScore, 1.0, 0.0},
+    // the prefixed names the header's factories make, the ones a caller can ask for by name
+    {@"hg", CharonHKDimensionMass, 100.0, 0.0},         {@"dag", CharonHKDimensionMass, 10.0, 0.0},
+    {@"dg", CharonHKDimensionMass, 1e-1, 0.0},          {@"cg", CharonHKDimensionMass, 1e-2, 0.0},
+    {@"Mg", CharonHKDimensionMass, 1e6, 0.0},           {@"Gg", CharonHKDimensionMass, 1e9, 0.0},
+    {@"Tg", CharonHKDimensionMass, 1e12, 0.0},
+    {@"hm", CharonHKDimensionLength, 100.0, 0.0},       {@"dam", CharonHKDimensionLength, 10.0, 0.0},
+    {@"dm", CharonHKDimensionLength, 1e-1, 0.0},        {@"Mm", CharonHKDimensionLength, 1e6, 0.0},
+    {@"Gm", CharonHKDimensionLength, 1e9, 0.0},         {@"Tm", CharonHKDimensionLength, 1e12, 0.0},
+    {@"kL", CharonHKDimensionVolume, 1e3, 0.0},         {@"ML", CharonHKDimensionVolume, 1e6, 0.0},
+    {@"GL", CharonHKDimensionVolume, 1e9, 0.0},          {@"TL", CharonHKDimensionVolume, 1e12, 0.0},
+    {@"ks", CharonHKDimensionTime, 1e3, 0.0},           {@"hm", CharonHKDimensionTime, 100.0, 0.0},
+    {@"dam", CharonHKDimensionTime, 10.0, 0.0},         {@"ds", CharonHKDimensionTime, 1e-1, 0.0},
+    {@"cs", CharonHKDimensionTime, 1e-2, 0.0},          {@"Gs", CharonHKDimensionTime, 1e9, 0.0},
+    {@"Ts", CharonHKDimensionTime, 1e12, 0.0},
+    {@"kJ", CharonHKDimensionEnergy, 1e3, 0.0},         {@"GJ", CharonHKDimensionEnergy, 1e9, 0.0},
+    {@"TJ", CharonHKDimensionEnergy, 1e12, 0.0},        {@"daJ", CharonHKDimensionEnergy, 10.0, 0.0},
+    {@"hJ", CharonHKDimensionEnergy, 100.0, 0.0},       {@"dJ", CharonHKDimensionEnergy, 1e-1, 0.0},
+    {@"mJ", CharonHKDimensionEnergy, 1e-3, 0.0},       {@"mcJ", CharonHKDimensionEnergy, 1e-6, 0.0},
+    {@"nJ", CharonHKDimensionEnergy, 1e-9, 0.0},        {@"pJ", CharonHKDimensionEnergy, 1e-12, 0.0},
+    {@"GS", CharonHKDimensionConductance, 1e9, 0.0},    {@"TS", CharonHKDimensionConductance, 1e12, 0.0},
+    {@"daS", CharonHKDimensionConductance, 10.0, 0.0},  {@"hS", CharonHKDimensionConductance, 100.0, 0.0},
+    {@"dS", CharonHKDimensionConductance, 1e-1, 0.0},   {@"cS", CharonHKDimensionConductance, 1e-2, 0.0},
 };
 static const NSUInteger CharonHKUnitTableCount = sizeof(CharonHKUnitTable) / sizeof(CharonHKUnitTable[0]);
-
-// The factor of a prefix: the power of ten its name stands for.
-static BOOL CharonHKPrefixFactor(HKMetricPrefix prefix, double *factor)
-{
-    static const double factors[] = {1.0, 1e-15, 1e-12, 1e-9, 1e-6, 1e-3, 1e-2, 1e-1, 10.0, 100.0, 1e3, 1e6, 1e9, 1e12, 1e15};
-    if (prefix < 0 || (NSUInteger)prefix >= sizeof(factors) / sizeof(factors[0]))
-        return NO;
-    *factor = factors[prefix];
-    return YES;
-}
 
 #pragma mark - The unit
 
 @interface HKUnit ()
-// base unit -> NSNumber, the power of that base this unit carries
-@property (readwrite, copy) NSString *unitString;
 // The factor of the whole product: a value in this unit times it, plus the offset, is the value in
 // the base of every dimension the unit carries.
 @property (readwrite) double scale;
 @property (readwrite) double offset;
-// The dimensions the unit has, in the order the string writes them, so that two units of one
+// The dimensions the unit has, each named by the base unit of that dimension, so that two units of one
 // dimension compare equal and a unit of a product does not.
 @property (readwrite, copy) NSArray<NSString *> *bases;
 @property (readwrite, copy) NSDictionary<NSString *, NSNumber *> *powers;
+// The name each dimension is written with, which is not always its base: a minute is `min` and not
+// `s`, a milligram is `mg` and not `g`, so a product of a minute and a kilogram writes the two names
+// and not the two bases. The host keeps the same - `count/min` and `mg/dL` come back as they went in.
+@property (readwrite, copy) NSDictionary<NSString *, NSString *> *names;
+// The string the unit writes, which for a mole carries the molar mass and for the rest is the
+// header's own name.
+@property (readwrite, copy) NSString *unitString;
 @end
 
-
 @implementation HKUnit
-@synthesize unitString = _unitString;
-@synthesize scale = _scale;
-@synthesize offset = _offset;
-@synthesize bases = _bases;
-@synthesize powers = _powers;
-
-- (instancetype)init
-{
-    return [super init];
-}
 
 + (BOOL)supportsSecureCoding
 {
@@ -209,6 +379,8 @@ static BOOL CharonHKPrefixFactor(HKMetricPrefix prefix, double *factor)
                                        forKey:@"bases"] copy] ?: @[];
         _powers = [[coder decodeObjectOfClasses:[NSSet setWithObjects:[NSDictionary class], [NSString class], [NSNumber class], nil]
                                         forKey:@"powers"] copy] ?: @{};
+        _names = [[coder decodeObjectOfClasses:[NSSet setWithObjects:[NSDictionary class], [NSString class], nil]
+                                       forKey:@"names"] copy] ?: @{};
     }
     return self;
 }
@@ -220,6 +392,7 @@ static BOOL CharonHKPrefixFactor(HKMetricPrefix prefix, double *factor)
     [coder encodeDouble:_offset forKey:@"offset"];
     [coder encodeObject:_bases forKey:@"bases"];
     [coder encodeObject:_powers forKey:@"powers"];
+    [coder encodeObject:_names forKey:@"names"];
 }
 
 - (id)copyWithZone:(NSZone *)zone
@@ -230,18 +403,25 @@ static BOOL CharonHKPrefixFactor(HKMetricPrefix prefix, double *factor)
     copy->_offset = _offset;
     copy->_bases = [_bases copy];
     copy->_powers = [_powers copy];
+    copy->_names = [_names copy];
     return copy;
+}
+
+- (instancetype)init
+{
+    return [super init];
 }
 
 #pragma mark Building a unit
 
-// The one place a unit is made: its string, the factor of the whole product, the offset only a
-// temperature has, and the dimensions it carries with the power of each.
+// The one place a unit is made: the string it writes, the factor of the whole product, the offset only
+// a temperature has, and the dimensions it carries with the power of each.
 + (instancetype)charon_unitWithString:(NSString *)string
                                  scale:(double)scale
                                 offset:(double)offset
                                  bases:(NSArray *)bases
                                 powers:(NSDictionary *)powers
+                                 names:(NSDictionary *)names
 {
     HKUnit *unit = [[HKUnit alloc] init];
     unit->_unitString = [string copy] ?: @"";
@@ -249,16 +429,26 @@ static BOOL CharonHKPrefixFactor(HKMetricPrefix prefix, double *factor)
     unit->_offset = offset;
     unit->_bases = [bases copy];
     unit->_powers = [powers copy];
+    unit->_names = [names copy];
     return unit;
 }
 
 + (instancetype)charon_unitOfDimension:(NSInteger)dimension string:(NSString *)string factor:(double)factor offset:(double)offset
 {
+    NSString *base = CharonHKBaseUnit(dimension);
     return [self charon_unitWithString:string
-                                 scale:factor
-                                offset:offset
-                                 bases:@[CharonHKBaseUnit(dimension)]
-                                powers:@{CharonHKBaseUnit(dimension): @1}];
+                                  scale:factor
+                                 offset:offset
+                                  bases:@[base]
+                                 powers:@{base: @1}
+                                  names:@{base: string}];
+}
+
+// The null unit: a unit of no dimension, which the host writes as `()` and which -isNull answers YES
+// of, and which no factory method of the header makes.
++ (instancetype)charon_nullUnit
+{
+    return [self charon_unitWithString:@"()" scale:1.0 offset:0.0 bases:@[] powers:@{} names:@{}];
 }
 
 + (instancetype)charon_namedUnit:(NSString *)string
@@ -272,86 +462,130 @@ static BOOL CharonHKPrefixFactor(HKMetricPrefix prefix, double *factor)
                                          factor:CharonHKUnitTable[index].factor
                                          offset:CharonHKUnitTable[index].offset];
     }
+    // The litre is the one unit whose name does not keep its case: the host reads `ml`, `ML` and
+    // `mL` as three different units and raises for `kg`, so the case that does not matter is the one
+    // letter of the litre.
+    if ([string rangeOfString:@"l"].location != NSNotFound) {
+        NSString *spelled = [string stringByReplacingOccurrencesOfString:@"l" withString:@"L"];
+        if (![spelled isEqualToString:string])
+            return [self charon_namedUnit:spelled];
+    }
     return nil;
 }
 
-// The unit of a dimension with a metric prefix in front of it, which is every prefixed factory method
-// of the header: gramUnitWithMetricPrefix:, meterUnitWithMetricPrefix:, literUnitWithMetricPrefix:,
-// pascalUnitWithMetricPrefix:, secondUnitWithMetricPrefix:, jouleUnitWithMetricPrefix: and
-// siemenUnitWithMetricPrefix:.
+// The unit of a dimension with a metric prefix in front of the base unit's own name, which is every
+// prefixed factory method of the header: gramUnitWithMetricPrefix:, meterUnitWithMetricPrefix:,
+// literUnitWithMetricPrefix:, pascalUnitWithMetricPrefix:, secondUnitWithMetricPrefix:,
+// jouleUnitWithMetricPrefix: and siemenUnitWithMetricPrefix:.
 + (instancetype)charon_prefixedUnitForDimension:(NSInteger)dimension prefix:(HKMetricPrefix)prefix
 {
-    if (dimension < 0 || (NSUInteger)dimension >= CharonHKDimensionCountOfDimensions)
+    double factor = 1.0;
+    if (!CharonHKPrefixFactor(prefix, &factor) || dimension < 0 ||
+        (NSUInteger)dimension >= CharonHKDimensionCountOfDimensions)
         return nil;
+    NSString *name = [CharonHKPrefixName(prefix) stringByAppendingString:CharonHKBaseUnit(dimension)];
+    return [self charon_unitOfDimension:dimension string:name factor:factor offset:0.0];
+}
+
+// A molar unit, which is a mole with the molar mass as its factor: the header spells it mol<double>,
+// and the host writes mol<12> for a molar mass of 12 and mmol<12> for the milli of one. Two molar
+// units of different masses are compatible, and one of them is that many grams.
++ (instancetype)charon_moleUnitWithPrefix:(HKMetricPrefix)prefix molarMass:(double)gramsPerMole
+{
     double factor = 1.0;
     if (!CharonHKPrefixFactor(prefix, &factor))
         return nil;
-    NSString *base = CharonHKBaseUnit(dimension);
-    NSString *string = nil;
-    if (prefix == HKMetricPrefixNone)
-        string = base;
-    else if (prefix == HKMetricPrefixDeci)
-        string = [@"d" stringByAppendingString:base];
-    else if (prefix == HKMetricPrefixCenti)
-        string = [@"c" stringByAppendingString:base];
-    else if (prefix == HKMetricPrefixKilo)
-        string = [@"k" stringByAppendingString:base];
-    else {
-        // The names the header writes for the rest, as the UTF-8 the modern headers use.
-        static NSString *const prefixes[] = {@"f", @"p", @"n", @"u", @"m", @"c", @"d", @"da", @"h", @"k", @"M", @"G", @"T"};
-        NSString *name = prefixes[(NSUInteger)prefix];
-        string = name ? [name stringByAppendingString:base] : base;
-    }
-    return [self charon_unitOfDimension:dimension string:string factor:factor offset:0.0];
+    NSString *base = CharonHKBaseUnit(CharonHKDimensionMoles);
+    NSString *written = [NSString stringWithFormat:@"%@%@<%g>", CharonHKPrefixName(prefix), base, gramsPerMole];
+    return [self charon_unitWithString:written
+                                  scale:factor * gramsPerMole
+                                 offset:0.0
+                                  bases:@[base]
+                                 powers:@{base: @1}
+                                  names:@{base: written}];
 }
 
 #pragma mark Reading a unit
 
+// A string that is not a unit is refused the way the host refuses one, with the same words, rather
+// than answered nil: the host's return is nonnull and a nil from it would be a unit of nothing.
++ (void)charon_refuseFactorization:(NSString *)string
+{
+    [NSException raise:NSInvalidArgumentException format:@"Unable to parse factorization string %@", string];
+}
+
 + (instancetype)unitFromString:(NSString *)string
 {
-    if (![string isKindOfClass:[NSString class]] || !string.length)
-        return nil;
+    if (![string isKindOfClass:[NSString class]])
+        [self charon_refuseFactorization:string];
+    // The empty string is the null unit and not a refusal: the host answers a unit for it, whose
+    // unitString is the two parentheses of a product with no factor in it and whose -isNull is YES.
+    if (!string.length)
+        return [self charon_nullUnit];
     HKUnit *named = [self charon_namedUnit:string];
     if (named)
         return named;
+    // A molar unit carries its molar mass in its own name, so it is read out of that name rather
+    // than out of the table, which holds no row for it: the table has one row per name it knows and
+    // this is a name per molar mass.
+    NSRange open = [string rangeOfString:@"<"];
+    if (open.location != NSNotFound && [string hasSuffix:@">"] && open.location > 0) {
+        NSString *head = [string substringToIndex:open.location];
+        NSString *digits = [string substringWithRange:NSMakeRange(NSMaxRange(open), string.length - NSMaxRange(open) - 1)];
+        double mass = [digits doubleValue];
+        if (mass > 0.0 && digits.length) {
+            for (NSInteger prefix = HKMetricPrefixNone; prefix <= HKMetricPrefixTera; prefix++) {
+                NSString *spelled = [CharonHKPrefixName((HKMetricPrefix)prefix) stringByAppendingString:@"mol"];
+                if ([head isEqualToString:spelled])
+                    return [self charon_moleUnitWithPrefix:(HKMetricPrefix)prefix molarMass:mass];
+            }
+        }
+        [self charon_refuseFactorization:string];
+    }
     return [self charon_unitFromString:string];
 }
 
-
-// A single unit of the table, and a product of the units above as the header writes one: m/s, km/h,
-// kcal/(kg*hr) and every prefix the header names. A string that names nothing the table holds is not
-// a unit, and nil is what the release answers for one.
-// A string that is a product of the units above: m/s, km/h, kcal/(kg*hr) and everything the header
-// writes that way. A string that names nothing the table holds is not a unit, and nil is what the
-// release answers for one.
+// A string that is a product of the units above: m/s, kg/m·s^2, kcal/(kg*hr) and everything else the
+// header and the type table write that way. The middle dot separates the factors of a product and the
+// solidus separates a numerator from a denominator, and neither a string that names nothing the table
+// holds nor one that does not parse is a unit.
 + (instancetype)charon_unitFromString:(NSString *)string
 {
     NSString *written = [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-    NSArray *halves = [written componentsSeparatedByString:@"/"];
+    NSArray *halves = [written componentsSeparatedByString:CharonHKDivide];
+    // At most one solidus: the host reads `J/m/kg/s` as three divisions and refuses it, and so does
+    // this, because a unit of a quotient of a quotient is written with parentheses the host does not
+    // read either.
     if (halves.count > 2)
-        return nil;
-    HKUnit *numerator = halves.count == 2 ? [self charon_product:halves[0] sign:1] : [self charon_unitFromString:halves[0]];
+        [self charon_refuseFactorization:string];
+    HKUnit *numerator = [self charon_factors:halves[0] sign:1];
     if (!numerator)
-        return nil;
+        [self charon_refuseFactorization:string];
     if (halves.count == 1)
         return numerator;
-    HKUnit *denominator = [self charon_product:halves[1] sign:-1];
+    HKUnit *denominator = [self charon_factors:halves[1] sign:-1];
     if (!denominator)
-        return nil;
+        [self charon_refuseFactorization:string];
     return [numerator charon_productWithUnit:denominator];
 }
 
-// A factor list, `count*min` or `count` or `kcal`, turned into a unit; sign is the power the whole
-// product carries, so a denominator's factors come out inverted.
-+ (instancetype)charon_product:(NSString *)string sign:(NSInteger)sign
+// A list of factors, separated by the middle dot or written in parentheses, turned into a unit; sign is
+// the power the whole list carries, so a denominator's factors come out inverted.
++ (instancetype)charon_factors:(NSString *)string sign:(NSInteger)sign
 {
     NSString *written = [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
     if ([written hasPrefix:@"("] && [written hasSuffix:@")"])
         written = [written substringWithRange:NSMakeRange(1, written.length - 2)];
+    // A product is written with the middle dot and read with either it or a solidus-shaped `*`: the
+    // host reads `m*s` as `m·s`.
+    NSArray *parts = [written componentsSeparatedByCharactersInSet:
+                          [NSCharacterSet characterSetWithCharactersInString:
+                               [NSString stringWithFormat:@"%@*", CharonHKMultiply]]];
     NSMutableArray *bases = [NSMutableArray array];
     NSMutableDictionary *powers = [NSMutableDictionary dictionary];
+    NSMutableDictionary *names = [NSMutableDictionary dictionary];
     double scale = 1.0;
-    for (NSString *part in [written componentsSeparatedByString:@"*"]) {
+    for (NSString *part in parts) {
         NSString *name = [part stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
         if (!name.length)
             return nil;
@@ -362,42 +596,52 @@ static BOOL CharonHKPrefixFactor(HKMetricPrefix prefix, double *factor)
             NSInteger power = [powers[base] integerValue] + [one.powers[base] integerValue] * sign;
             if (!power) {
                 [powers removeObjectForKey:base];
+                [names removeObjectForKey:base];
                 [bases removeObject:base];
             } else {
                 powers[base] = @(power);
+                names[base] = one.names[base];
                 if (![bases containsObject:base])
                     [bases addObject:base];
             }
         }
-        scale *= sign > 0 ? one.scale : 1.0 / one.scale;
+        scale *= sign > 0 ? one.scale : (one.scale == 0.0 ? 1.0 : 1.0 / one.scale);
     }
     if (!bases.count)
         return nil;
-    [bases sortUsingSelector:@selector(compare:)];
-    return [self charon_unitWithString:string scale:scale offset:0.0 bases:bases powers:powers];
+    HKUnit *made = [self charon_unitWithString:written
+                                        scale:scale
+                                       offset:0.0
+                                        bases:bases
+                                       powers:powers
+                                        names:names];
+    return made;
 }
 
-// The string of a product of units, in the order the header writes one: the factors with a positive
-// power, a solidus, and the ones with a negative power, in parentheses when there is more than one.
-static NSString *CharonHKStringForDimensions(NSArray *bases, NSDictionary *powers, NSString *reciprocalOf)
+// The string of a product, which is what the host writes: the factors with a positive power joined by
+// the middle dot, a solidus, and the ones with a negative power joined the same way, and a caret and a
+// number for a power that is not one. The host writes no parentheses, so `kg/m·s^2` is a kilogram
+// divided by a metre second squared and is what `kg` over `m·s` over `s` comes out as.
+static NSString *CharonHKStringForDimensions(NSArray *bases, NSDictionary *powers, NSDictionary *names)
 {
-    if (reciprocalOf)
-        return [NSString stringWithFormat:@"1/%@", reciprocalOf];
     NSMutableArray *numerator = [NSMutableArray array], *denominator = [NSMutableArray array];
     for (NSString *base in bases) {
         NSInteger power = [powers[base] integerValue];
-        NSString *name = labs(power) == 1 ? base : [NSString stringWithFormat:@"%@%ld", base, (long)labs(power)];
+        if (!power)
+            continue;
+        NSString *written = names[base] ?: base;
+        NSString *name = labs(power) == 1 ? written
+                                          : [NSString stringWithFormat:@"%@%@%ld", written, CharonHKPower,
+                                                                       (long)labs(power)];
         [power > 0 ? numerator : denominator addObject:name];
     }
     NSMutableString *written = [NSMutableString string];
     if (!numerator.count)
         [written appendString:@"1"];
-    [written appendString:[numerator componentsJoinedByString:@"*"]];
+    [written appendString:[numerator componentsJoinedByString:CharonHKMultiply]];
     if (denominator.count) {
-        [written appendString:denominator.count > 1 ? @"/(" : @"/"];
-        [written appendString:[denominator componentsJoinedByString:@"*"]];
-        if (denominator.count > 1)
-            [written appendString:@")"];
+        [written appendString:CharonHKDivide];
+        [written appendString:[denominator componentsJoinedByString:CharonHKMultiply]];
     }
     return written;
 }
@@ -406,32 +650,41 @@ static NSString *CharonHKStringForDimensions(NSArray *bases, NSDictionary *power
 
 - (HKUnit *)charon_productWithUnit:(HKUnit *)unit
 {
-    if (_offset != 0.0 || ((HKUnit *)unit).offset != 0.0) {
-        [NSException raise:NSInvalidArgumentException
-                    format:@"A temperature is not multiplied or divided: %@ carries an offset of %g, which only an addition can carry.",
-                           _unitString, _offset];
-        return nil;
-    }
+    // A product carries no offset. The host makes no exception of a temperature: it writes
+    // `degC·m` for a degree Celsius times a metre, `1/degC` for its reciprocal and `degC^2` for a
+    // degree Celsius times itself, and `(degC·m)/degC` comes back as `m` - the two temperatures cancel
+    // and the offset does not survive into the product at all. So the product's offset is zero and
+    // nothing is refused.
     NSMutableDictionary *powers = [_powers mutableCopy];
-    NSMutableSet *bases = [NSMutableSet setWithArray:_bases];
+    NSMutableDictionary *names = [_names mutableCopy];
+    NSMutableArray *bases = [NSMutableArray arrayWithArray:_bases];
     for (NSString *base in ((HKUnit *)unit).bases) {
         NSInteger power = [powers[base] integerValue] + [((HKUnit *)unit).powers[base] integerValue];
         if (!power) {
             [powers removeObjectForKey:base];
+            [names removeObjectForKey:base];
             [bases removeObject:base];
         } else {
             powers[base] = @(power);
-            [bases addObject:base];
+            // The name a dimension is written with is the one it was last introduced under, which is
+            // what the host writes too: a minute divided by a kilogram writes `min` and `kg`.
+            names[base] = ((HKUnit *)unit).names[base] ?: _names[base];
+            if (![bases containsObject:base])
+                [bases addObject:base];
         }
     }
-    NSArray *ordered = [bases.allObjects sortedArrayUsingSelector:@selector(compare:)];
-    if (!ordered.count)
-        return [HKUnit charon_unitWithString:@"count" scale:1.0 offset:0.0 bases:@[] powers:@{}];
-    return [HKUnit charon_unitWithString:CharonHKStringForDimensions(ordered, powers, nil)
+    // The product of nothing is the null unit, and so is anything else with no factor in it: the
+    // host's reciprocal of its `()` is `()` and not `1`.
+    if (!bases.count)
+        return [HKUnit charon_nullUnit];
+    // The bases are written in the order the two units were given in, which is the order the host
+    // writes them in and the one `mL/min·kg` and `kcal/hr·kg` show.
+    return [HKUnit charon_unitWithString:CharonHKStringForDimensions(bases, powers, names)
                                    scale:_scale * ((HKUnit *)unit).scale
                                   offset:0.0
-                                   bases:ordered
-                                  powers:powers];
+                                   bases:bases
+                                  powers:powers
+                                   names:names];
 }
 
 - (HKUnit *)unitMultipliedByUnit:(HKUnit *)unit
@@ -446,20 +699,21 @@ static NSString *CharonHKStringForDimensions(NSArray *bases, NSDictionary *power
 
 - (HKUnit *)charon_reciprocal
 {
-    if (_offset != 0.0) {
-        [NSException raise:NSInvalidArgumentException
-                    format:@"A temperature is not multiplied or divided: %@ carries an offset of %g, which only an addition can carry.",
-                           _unitString, _offset];
-        return nil;
-    }
+    // A reciprocal carries no offset either, for the same reason and by the same measurement. The
+    // reciprocal of the null unit is the null unit: the host answers `()` for both.
+    if (!_bases.count)
+        return [HKUnit charon_nullUnit];
     NSMutableDictionary *powers = [NSMutableDictionary dictionary];
     for (NSString *base in _bases)
         powers[base] = @(-[_powers[base] integerValue]);
-    return [HKUnit charon_unitWithString:CharonHKStringForDimensions(_bases, powers, _unitString)
+    // The inverted powers already write the solidus and the one: the reciprocal of a gram is `1/g`, not
+    // `1/1/g`, so the string is the one for the inverted dimensions and nothing is put in front of it.
+    return [HKUnit charon_unitWithString:CharonHKStringForDimensions(_bases, powers, _names)
                                    scale:(_scale == 0.0 ? 1.0 : 1.0 / _scale)
                                   offset:0.0
                                    bases:_bases
-                                  powers:powers];
+                                  powers:powers
+                                   names:_names];
 }
 
 - (HKUnit *)reciprocalUnit
@@ -469,30 +723,30 @@ static NSString *CharonHKStringForDimensions(NSArray *bases, NSDictionary *power
 
 - (HKUnit *)unitRaisedToPower:(NSInteger)power
 {
-    if (_offset != 0.0) {
-        [NSException raise:NSInvalidArgumentException
-                    format:@"A temperature is not raised to a power: %@ carries an offset of %g, which only an addition can carry.",
-                           _unitString, _offset];
-        return nil;
-    }
     NSMutableDictionary *powers = [NSMutableDictionary dictionary];
+    NSMutableDictionary *names = [NSMutableDictionary dictionary];
+    NSMutableArray *bases = [NSMutableArray array];
     double scale = 1.0;
     for (NSString *base in _bases) {
         NSInteger raised = [_powers[base] integerValue] * power;
         if (!raised)
             continue;
         powers[base] = @(raised);
+        names[base] = _names[base];
+        [bases addObject:base];
         for (NSInteger step = 0; step < labs(raised); step++)
-            scale *= raised > 0 ? _scale : 1.0 / _scale;
+            scale *= raised > 0 ? _scale : (_scale == 0.0 ? 1.0 : 1.0 / _scale);
     }
-    NSArray *ordered = [powers.allKeys sortedArrayUsingSelector:@selector(compare:)];
-    if (!ordered.count)
-        return [HKUnit charon_unitWithString:@"count" scale:1.0 offset:0.0 bases:@[] powers:@{}];
-    return [HKUnit charon_unitWithString:CharonHKStringForDimensions(ordered, powers, nil)
+    // The product of nothing is the null unit, and so is anything else with no factor in it: the
+    // host's reciprocal of its `()` is `()` and not `1`.
+    if (!bases.count)
+        return [HKUnit charon_nullUnit];
+    return [HKUnit charon_unitWithString:CharonHKStringForDimensions(bases, powers, names)
                                    scale:scale
                                   offset:0.0
-                                   bases:ordered
-                                  powers:powers];
+                                   bases:bases
+                                  powers:powers
+                                   names:names];
 }
 
 #pragma mark Comparing units
@@ -501,8 +755,9 @@ static NSString *CharonHKStringForDimensions(NSArray *bases, NSDictionary *power
 {
     if (![unit isKindOfClass:[HKUnit class]])
         return NO;
-    if (_offset != ((HKUnit *)unit).offset)
-        return NO;
+    // The offset is not part of it: a degree Celsius and a kelvin are one dimension, and the offset is
+    // what converts between them. Only the dimensions and their powers decide, which is what the host
+    // does as well - it answers a Celsius compatible with a kelvin.
     NSArray *mine = _bases, *theirs = ((HKUnit *)unit).bases;
     if (mine.count != theirs.count)
         return NO;
@@ -534,8 +789,8 @@ static NSString *CharonHKStringForDimensions(NSArray *bases, NSDictionary *power
     return _unitString;
 }
 
-// What HKQuantity asks of a unit: the value in the receiver, brought to the base of the dimension
-// and then to the unit asked for.
+// What HKQuantity asks of a unit: the value in the receiver, brought to the base of the dimension and
+// then to the unit asked for.
 - (double)charon_value:(double)value inUnit:(HKUnit *)unit
 {
     double base = (value + _offset) * _scale;
@@ -575,10 +830,7 @@ static NSString *CharonHKStringForDimensions(NSArray *bases, NSDictionary *power
         [NSException raise:NSInvalidArgumentException format:@"A molar mass must be positive, and %g is not.", gramsPerMole];
         return nil;
     }
-    HKUnit *moles = [self charon_namedUnit:@"count"];
-    // mol<double> is the unit string the header gives this factory, and its value is in the grams
-    // per mole it was made with, so one mole of a 12 g/mol substance is twelve of them.
-    return [moles charon_productWithUnit:[self charon_namedUnit:@"g"]];
+    return [self charon_moleUnitWithPrefix:prefix molarMass:gramsPerMole];
 }
 
 + (instancetype)moleUnitWithMolarMass:(double)gramsPerMole
@@ -604,6 +856,11 @@ static NSString *CharonHKStringForDimensions(NSArray *bases, NSDictionary *power
 + (instancetype)footUnit
 {
     return [self charon_namedUnit:@"ft"];
+}
+
++ (instancetype)yardUnit
+{
+    return [self charon_namedUnit:@"yd"];
 }
 
 + (instancetype)mileUnit
@@ -641,6 +898,16 @@ static NSString *CharonHKStringForDimensions(NSArray *bases, NSDictionary *power
     return [self charon_namedUnit:@"pt_imp"];
 }
 
++ (instancetype)cupUSUnit
+{
+    return [self charon_namedUnit:@"cup_us"];
+}
+
++ (instancetype)cupImperialUnit
+{
+    return [self charon_namedUnit:@"cup_imp"];
+}
+
 + (instancetype)pascalUnit
 {
     return [self charon_namedUnit:@"Pa"];
@@ -656,6 +923,11 @@ static NSString *CharonHKStringForDimensions(NSArray *bases, NSDictionary *power
     return [self charon_namedUnit:@"mmHg"];
 }
 
++ (instancetype)inchesOfMercuryUnit
+{
+    return [self charon_namedUnit:@"inHg"];
+}
+
 + (instancetype)centimeterOfWaterUnit
 {
     return [self charon_namedUnit:@"cmAq"];
@@ -664,6 +936,11 @@ static NSString *CharonHKStringForDimensions(NSArray *bases, NSDictionary *power
 + (instancetype)atmosphereUnit
 {
     return [self charon_namedUnit:@"atm"];
+}
+
++ (instancetype)decibelAWeightedSoundPressureLevelUnit
+{
+    return [self charon_namedUnit:@"dBASPL"];
 }
 
 + (instancetype)secondUnit
@@ -711,6 +988,16 @@ static NSString *CharonHKStringForDimensions(NSArray *bases, NSDictionary *power
     return [self charon_namedUnit:@"kcal"];
 }
 
++ (instancetype)smallCalorieUnit
+{
+    return [self charon_namedUnit:@"cal"];
+}
+
++ (instancetype)largeCalorieUnit
+{
+    return [self charon_namedUnit:@"Cal"];
+}
+
 + (instancetype)calorieUnit
 {
     return [self charon_namedUnit:@"cal"];
@@ -746,6 +1033,11 @@ static NSString *CharonHKStringForDimensions(NSArray *bases, NSDictionary *power
     return [self charon_prefixedUnitForDimension:CharonHKDimensionConductance prefix:prefix];
 }
 
++ (instancetype)internationalUnit
+{
+    return [self charon_namedUnit:@"IU"];
+}
+
 + (instancetype)countUnit
 {
     return [self charon_namedUnit:@"count"];
@@ -754,6 +1046,58 @@ static NSString *CharonHKStringForDimensions(NSArray *bases, NSDictionary *power
 + (instancetype)percentUnit
 {
     return [self charon_namedUnit:@"%"];
+}
+
++ (instancetype)hertzUnit
+{
+    return [self charon_namedUnit:@"Hz"];
+}
+
++ (instancetype)hertzUnitWithMetricPrefix:(HKMetricPrefix)prefix
+{
+    double factor = 1.0;
+    if (!CharonHKPrefixFactor(prefix, &factor))
+        return nil;
+    return [self charon_unitOfDimension:-1 string:[CharonHKPrefixName(prefix) stringByAppendingString:@"Hz"]
+                                factor:factor offset:0.0];
+}
+
++ (instancetype)voltUnit
+{
+    return [self charon_namedUnit:@"V"];
+}
+
++ (instancetype)voltUnitWithMetricPrefix:(HKMetricPrefix)prefix
+{
+    double factor = 1.0;
+    if (!CharonHKPrefixFactor(prefix, &factor))
+        return nil;
+    return [self charon_unitOfDimension:-1 string:[CharonHKPrefixName(prefix) stringByAppendingString:@"V"]
+                                factor:factor offset:0.0];
+}
+
++ (instancetype)wattUnit
+{
+    return [self charon_namedUnit:@"W"];
+}
+
++ (instancetype)wattUnitWithMetricPrefix:(HKMetricPrefix)prefix
+{
+    double factor = 1.0;
+    if (!CharonHKPrefixFactor(prefix, &factor))
+        return nil;
+    return [self charon_unitOfDimension:-1 string:[CharonHKPrefixName(prefix) stringByAppendingString:@"W"]
+                                factor:factor offset:0.0];
+}
+
++ (instancetype)decibelHearingLevelUnit
+{
+    return [self charon_namedUnit:@"dBHL"];
+}
+
++ (instancetype)appleEffortScoreUnit
+{
+    return [self charon_namedUnit:@"appleEffortScore"];
 }
 
 + (instancetype)unitFromMassFormatterUnit:(NSMassFormatterUnit)massFormatterUnit
@@ -806,7 +1150,7 @@ static NSString *CharonHKStringForDimensions(NSArray *bases, NSDictionary *power
     case NSLengthFormatterUnitFoot:
         return [self footUnit];
     case NSLengthFormatterUnitYard:
-        return [self charon_namedUnit:@"yd"];
+        return [self yardUnit];
     case NSLengthFormatterUnitMile:
         return [self mileUnit];
     default:
@@ -844,7 +1188,7 @@ static NSString *CharonHKStringForDimensions(NSArray *bases, NSDictionary *power
     case NSEnergyFormatterUnitKilojoule:
         return [self kilojoulesUnit];
     case NSEnergyFormatterUnitCalorie:
-        return [self charon_namedUnit:@"cal"];
+        return [self smallCalorieUnit];
     case NSEnergyFormatterUnitKilocalorie:
         return [self kilocalorieUnit];
     default:
@@ -868,7 +1212,7 @@ static NSString *CharonHKStringForDimensions(NSArray *bases, NSDictionary *power
 
 - (BOOL)isNull
 {
-    return _unitString.length == 0;
+    return !_bases.count;
 }
 
 // The unit a quantity type is counted in, as the SDK's own table of the type's unit names it. A type
@@ -880,7 +1224,14 @@ static NSString *CharonHKStringForDimensions(NSArray *bases, NSDictionary *power
     const CharonHKTypeEntry *entry = CharonHKQuantityTypeEntry(type.identifier);
     if (!entry)
         return nil;
-    HKUnit *unit = [HKUnit unitFromString:entry->unit];
+    HKUnit *unit = nil;
+    @try {
+        unit = [HKUnit unitFromString:entry->unit];
+    } @catch (NSException *exception) {
+        // A string the SDK names for a type and no unit can be made of: the reader refuses it, which
+        // is the refusal this method exists to turn into an answer.
+        unit = nil;
+    }
     if (unit)
         return unit;
     charon_hk_say_once([@"quantity-unit" stringByAppendingString:entry->identifier],

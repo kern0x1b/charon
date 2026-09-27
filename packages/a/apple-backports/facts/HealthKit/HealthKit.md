@@ -101,8 +101,11 @@ carry no registry entry.
 
 ## The device run
 
-None yet. Everything above is a read of a release image, a release cache and the SDK headers, plus a
-compile of every file against `armv7-apple-ios6.1.3` and the SDK 16.4 the gate resolves. The
-behaviour of the store on a device - a sample saved by one launch and read by the next, a statistic
-over a set, a predicate that walks a correlation - is **device-unverified**, and the call test and
-the gate are what this delivery reports.
+None yet. Everything above is a read of a release image, a release cache, the SDK headers and the
+host's own HealthKit, plus a compile of every file against `armv7-apple-ios6.1.3` and the SDK 16.4 the
+gate resolves. What the host cannot be an oracle for is named rather than glossed: the store, the
+authorization and the queries, because a host keeps its data in a healthd behind an entitlement and
+this port's is a SQLite database of its own, so a differential over the two would compare two different
+programs. The behaviour of the store on a device - a sample saved by one launch and read by the next, a
+statistic over a set, a predicate that walks a correlation - is **device-unverified**, and the emulator
+call test is what this delivery still owes.

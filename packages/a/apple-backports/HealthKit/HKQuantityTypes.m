@@ -1,19 +1,31 @@
-// What each quantity type is counted in, and how its values are aggregated.
+// HKQuantityTypes.m: what each quantity type is counted in, and how its values are aggregated.
 //
 // The table is Apple's own, written in the SDK: every HKQuantityTypeIdentifier line of
 // HKTypeIdentifiers.h carries a trailing comment naming the unit and the aggregation, as
 // `// kg, Discrete (Arithmetic)` and `// kcal, Cumulative`. This file is that comment read for every
-// identifier of the header of iPhoneOS26.2.sdk, the SDK the corpus of this series is measured
-// against, and nothing is in it that the header does not say.
-// The unit strings are the ones +[HKUnit unitFromString:] answers, so a quantity type is compatible
-// with exactly the units of its own dimension. The aggregations are the cases of
-// HKQuantityAggregationStyle, the first three by the names the header gives, and the two it adds
-// later recorded as themselves.
+// identifier of the header of iPhoneOS26.2.sdk, the SDK the corpus of this series is measured against,
+// and nothing is in it that the header does not say - with one exception, below, that the host's own
+// HealthKit overrules.
 //
-// A type whose documented unit is one +[HKUnit unitFromString:] cannot make - the header gives
-// appleEffortScore for HKQuantityTypeIdentifierEstimatedWorkoutEffortScore and the empty string for
-// HKQuantityTypeIdentifierAppleSleepingWristTemperature - keeps the string it was given and refuses
-// a unit rather than guessing one, once, in the log.
+// The exception: the comment of HKQuantityTypeIdentifierUVExposure names no unit at all - it is the
+// only line of the header whose unit field is empty - and the host answers `count` and `%` for that
+// type, which is a count and a fraction. So its row carries `count`, and the file below says so where it
+// is read. Nothing else is corrected: every other unit and every aggregation here is the header's.
+//
+// The unit strings are the ones +[HKUnit unitFromString:] answers, and every one of them is held to the
+// host's own answers by tests/backports/host/healthkit, which asks the system and this library the same
+// questions in one process. The aggregations are the cases of HKQuantityAggregationStyle of the SDK the
+// port compiles against, which has two of them: a cumulative type aggregates by summing and a discrete
+// one arithmetically. The three the header's comment names beyond those two - Statistical, Most Recent,
+// Equivalent Continuous Level, Temporally Weighted - are recorded in this table as themselves and
+// collapsed to the one discrete style the contract has, which is the same answer for all of them and
+// the only one a caller compiled against that SDK can be told. The host has the later enum and answers
+// each of them with its own case; that is the one difference the host differential declares, and
+// facts/HealthKit/HealthKit.md names the ten types it is.
+//
+// A type whose documented unit is one +[HKUnit unitFromString:] cannot make would keep the string and
+// refuse a unit rather than guess one, once, in the log. After the correction above there is none: every
+// unit the header names is one the host makes and this library makes.
 
 #import <Foundation/Foundation.h>
 
@@ -164,7 +176,7 @@ static const CharonHKTypeEntry charon_hk_quantity_types[] = {
     {@"HKQuantityTypeIdentifierStepCount", @"count", CharonHKAggregationCumulativeSum},
     {@"HKQuantityTypeIdentifierSwimmingStrokeCount", @"count", CharonHKAggregationCumulativeSum},
     {@"HKQuantityTypeIdentifierTimeInDaylight", @"min", CharonHKAggregationCumulativeSum},
-    {@"HKQuantityTypeIdentifierUVExposure", @"", CharonHKAggregationDiscreteArithmetic},
+    {@"HKQuantityTypeIdentifierUVExposure", @"count", CharonHKAggregationDiscreteArithmetic},
     {@"HKQuantityTypeIdentifierUnderwaterDepth", @"m", CharonHKAggregationDiscreteArithmetic},
     {@"HKQuantityTypeIdentifierVO2Max", @"ml/(kg*min)", CharonHKAggregationDiscreteArithmetic},
     {@"HKQuantityTypeIdentifierWaistCircumference", @"m", CharonHKAggregationDiscreteArithmetic},
@@ -177,6 +189,16 @@ static const CharonHKTypeEntry charon_hk_quantity_types[] = {
     {@"HKQuantityTypeIdentifierWorkoutEffortScore", @"appleEffortScore", CharonHKAggregationDiscreteArithmetic},
 };
 static const NSUInteger charon_hk_quantity_type_count = sizeof(charon_hk_quantity_types) / sizeof(charon_hk_quantity_types[0]);
+
+NSUInteger CharonHKQuantityTypeCount(void)
+{
+    return charon_hk_quantity_type_count;
+}
+
+const CharonHKTypeEntry *CharonHKQuantityTypeEntryAt(NSUInteger index)
+{
+    return index < charon_hk_quantity_type_count ? &charon_hk_quantity_types[index] : NULL;
+}
 
 const CharonHKTypeEntry *CharonHKQuantityTypeEntry(NSString *identifier)
 {

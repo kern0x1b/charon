@@ -35,6 +35,10 @@ typedef struct {
 
 // The row of a quantity type identifier, or NULL for an identifier the SDK header names no unit for.
 extern const CharonHKTypeEntry *_Nullable CharonHKQuantityTypeEntry(NSString *identifier);
+// How many rows the table has, and the row at an index of it, so that a caller can be asked about
+// every identifier the SDK's own header names - the host differential is one such caller.
+extern NSUInteger CharonHKQuantityTypeCount(void);
+extern const CharonHKTypeEntry *_Nullable CharonHKQuantityTypeEntryAt(NSUInteger index);
 
 // The class a row of the store holds, from the kind its row records, and the class a type
 // identifier names, from the kind the store keeps for it. Both are answered by name and looked up,
