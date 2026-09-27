@@ -44,14 +44,24 @@ this measurement came from; the members could not be had at all until the framew
   app-layer C++ files its own Xcode target carries, read out of that target's Sources phase and not guessed. The
   objects are in the package's own source tree; `tools/matter-framework.sh` builds and links them there in minutes
   instead of a whole package resolve.
-- **The link fails in the linker, not in Matter**: `ld64 956.6` (charon's cctools-port) aborts with
+- **The link fails in the linker, not in Matter**: charon's `ld64 956.6` aborts with
   `Assertion failed: (it != _dylibToOrdinal.end()), function dylibToOrdinal, file OutputFile.cpp, line 5214` while
-  encoding the symbol table, and it does so only when the port's `libc++.1.dylib` and `libc++abi.1.dylib` are linked:
-  with `-L -l`, with their full paths, with and without `-rpath`, and with either or both. Without them the link runs
-  to completion and reports only the undefined C++ symbols it must be given. So every undefined symbol the framework
-  had is resolved - the codegen data model, the Ember attribute storage, the descriptor cluster's init and shutdown
-  callbacks - and what is left is a linker assertion on a C++ runtime that the port itself ships and that its own
-  swift-runtime libraries link the same way.
+  encoding the symbol table. Measured, in order:
+
+  | link | result |
+  | --- | --- |
+  | `libCHIP.a` alone, or with libc++, or with either backport, or with all three | links |
+  | the 123 objects, or any one group of them (the 100 MTR, the 6 codegen data model, the 17 server layer), or two groups | links |
+  | the 123 objects **and** `libCHIP.a` **and** libc++ **and** the two backports | asserts |
+
+  It is not the C++ runtime's install name: the packaged libcxx (`/usr/lib/charon/org.charon.libcxx-550adb3c/…`,
+  absolute install names, a Debian package) asserts, the `@rpath` one asserts, staged copies rewritten with
+  `install_name_tool -id` to absolute paths assert, and `-L -l` and full paths and with and without `-rpath` all assert.
+  It is not one object: **dropping any one of at least a dozen different objects makes it link** - the six codegen data
+  model objects, `MTRAsyncWorkQueue.mm`, `MTRCluster.mm`, `MTRDevice.mm`,
+  `MTRDeviceControllerDataStore.mm`, `MTRDeviceControllerXPCConnection.mm`, `MTROperationalCredentialsDelegate.mm`
+  among them - which is the signature of a defect in the linker rather than of any symbol in the input. `ld64` writes a
+  snapshot of the run next to the output on each abort, which is the artefact to read next.
 
 ## Behaviour, held to the host
 
