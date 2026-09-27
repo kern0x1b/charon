@@ -208,6 +208,11 @@ public struct __AABBRef {
     /// Set on a root entity when it is added to a scene; an entity reads it by walking up.
     public var scene: __REScene?
     public var isEnabled: Bool = true
+    /// Whether a session still sees this node's anchor target, which is nil for a node that is
+    /// not an anchor.
+    public var tracked: Bool?
+    /// The animations playing on this node, by their token.
+    public var animations: [UInt64: AnimationPlaybackController] = [:]
     /// The `Entity` that wraps this node, made on the first use and kept, so that `children`
     /// and `findEntity` hand back the same object for the same node.
     public var wrapper: Entity?

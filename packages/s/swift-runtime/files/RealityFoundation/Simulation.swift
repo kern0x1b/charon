@@ -346,16 +346,23 @@ extension __REScene {
     /// the remaining time is made up in whole steps, so that the result does not depend on how
     /// long the caller waited.
     public func __advancePhysics(deltaTime: TimeInterval) {
-        var remaining = Float(deltaTime)
-        while remaining > 0 {
-            __step(1.0 / 60.0)
-            remaining -= 1.0 / 60.0
+        // The number of whole steps is counted, not found by subtracting the step until nothing
+        // is left: a float subtraction runs the step once more than the time asked for, and one
+        // step too many is a visible difference in a falling body and in a repeating animation.
+        let step = 1.0 / 60.0
+        var count = deltaTime / TimeInterval(step)
+        count = count < 0 ? 0 : (count > 512 ? 512 : count)
+        for _ in 0..<Int(count.rounded(.down)) {
+            __step(Float(step))
         }
     }
 
     /// One step of the solver: the forces, then the velocities, then the positions, then the
     /// contacts and the events they raise.
     func __step(_ dt: Float) {
+        // The animations advance first, so that a body placed by an animation is in the world
+        // before the contacts are looked for.
+        nodes.forEach { $0.__advanceAnimations(TimeInterval(dt)) }
         var bodies = self.bodies
         guard !bodies.isEmpty else { return }
         let gravity = SIMD3<Float>(0, -9.81, 0)

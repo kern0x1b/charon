@@ -40,6 +40,10 @@ public protocol SessionProviding: AnyObject {
     var isSessionRunning: Bool { get set }
     /// The frame the session last delivered, in the world's coordinates.
     var sessionCameraTransform: Transform? { get }
+    /// The targets the session has found, by identifier. A session that reports none - one
+    /// that has not been bridged, or one with no ARKit camera behind it - reports an empty
+    /// table rather than failing.
+    func sessionAnchors() -> [UUID: any SessionAnchor]
 }
 
 // MARK: - ARView
@@ -244,6 +248,7 @@ open class ARView: RealityViewBase {
     /// a program with none calls it itself, which is how the host checks draw frames.
     public func __renderFrame(_ deltaTime: TimeInterval) {
         renderCallbacks.willRenderFrame()
+        __syncAnchors()
         scene.coreScene.__advancePhysics(deltaTime: deltaTime)
         scnView.scene = scene.scnScene
         frameCount += 1
@@ -353,3 +358,73 @@ private final class __DisplayLinkTarget: NSObject {
     }
 }
 #endif
+
+// MARK: - What a session sees
+
+/// One target a session has found in the world: an identifier, the pose it was seen at, and
+/// whether it is still there.
+///
+/// The SDK's own `ARAnchor` cannot be named here - ARKit is another band's module and its
+/// headers keep their iOS 11 marks until that band's lift lowers them - so the view reports what
+/// a session found through this, and the ARKit band bridges it in a line:
+///
+///     extension ARAnchor: RealityKit.SessionAnchor {}
+@MainActor
+public protocol SessionAnchor: AnyObject {
+    /// The identifier the session knows this target by, which is the one an anchoring component
+    /// names.
+    var anchorIdentifier: UUID { get }
+    /// Where the target was seen, in the world's coordinates.
+    var anchorTransform: Transform { get }
+    /// Whether the session still sees it.
+    var isAnchorTracked: Bool { get }
+}
+
+/// The anchors a session reports, or none: a session that has not been bridged to a camera has
+/// nothing to report, and says so with an empty table rather than failing.
+@MainActor
+public func __reSessionAnchors(of session: (any SessionProviding)?) -> [UUID: any SessionAnchor] {
+    session?.sessionAnchors() ?? [:]
+}
+
+@MainActor
+extension Scene {
+    /// Puts every anchor the session has found into the scene, and takes out the ones it no
+    /// longer sees. A view calls this once a frame; a program calls it when it wants the world
+    /// brought up to date.
+    ///
+    /// The anchors that are already in the scene and are still seen keep their identity, so a
+    /// program holding one does not lose it to a frame.
+    public func syncAnchors(with session: (any SessionProviding)?) {
+        guard let session else { return }
+        let seen = __reSessionAnchors(of: session)
+        for (identifier, anchor) in seen {
+            if let existing = coreScene.anchors.first(where: { node in
+                return node.anchoring.target == .anchor(identifier: identifier)
+            }) {
+                existing.transform = anchor.anchorTransform
+                existing.isTracked = anchor.isAnchorTracked
+                continue
+            }
+            let entity = AnchorEntity(world: .zero)
+            entity.name = "anchor-" + identifier.uuidString
+            entity.anchoring = AnchoringComponent(.anchor(identifier: identifier))
+            entity.transform = anchor.anchorTransform
+            entity.isTracked = anchor.isAnchorTracked
+            coreScene.add(anchor: entity.coreEntity)
+        }
+        for node in coreScene.anchors {
+            guard case .anchor(let identifier) = node.anchoring.target, seen[identifier] == nil else { continue }
+            coreScene.remove(anchor: node)
+        }
+    }
+}
+
+@MainActor
+extension ARView {
+    /// Brings the scene's anchors up to date with the session, once a frame. A view with no
+    /// session leaves the scene as it is.
+    public func __syncAnchors() {
+        scene.syncAnchors(with: session)
+    }
+}

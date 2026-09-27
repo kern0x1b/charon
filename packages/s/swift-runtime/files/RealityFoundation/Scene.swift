@@ -175,7 +175,14 @@ open class AnchorEntity: Entity, HasAnchoring {
     /// The identifier of the target in an AR session this entity is anchored to, when the
     /// device has a session that names one. A device without one answers nil, which is what a
     /// device with no ARSession of its own does.
-    public var anchorIdentifier: UUID? { nil }
+    public var anchorIdentifier: UUID? {
+        if case .anchor(let identifier) = anchoring.target { return identifier }
+        return nil
+    }
+
+    /// Whether a session still sees this anchor's target. An anchor to the world or to a plane
+    /// is not something a session tracks, and says so rather than claiming to.
+    public var isTracked: Bool = true
 
     public init(plane: AnchoringComponent.Target.Alignment,
                 classification: AnchoringComponent.Target.Classification,
@@ -455,5 +462,22 @@ extension Scene.AnchorCollection: CustomStringConvertible {
     /// `,` and a line break and the second's, then a line break and `]`.
     public var description: String {
         "[" + map { $0.debugDescription }.joined(separator: ",\n") + "\n]"
+    }
+}
+
+@MainActor
+extension __REEntity {
+    /// The component that says what this node is anchored to, which a renderer in another
+    /// module needs to tell one anchor's target from another's. A node with no component is
+    /// anchored to the world, which is what an anchor with nothing set means.
+    public var anchoring: AnchoringComponent {
+        component(of: AnchoringComponent.self)
+            ?? AnchoringComponent(.world(transform: float4x4(diagonal: SIMD4<Float>(1, 1, 1, 1))))
+    }
+
+    /// Whether a session still sees this node's target, and whether the node is one it tracks.
+    public var isTracked: Bool {
+        get { tracked ?? true }
+        set { tracked = newValue }
     }
 }
