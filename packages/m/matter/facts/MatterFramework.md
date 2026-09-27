@@ -7,26 +7,36 @@ Nothing here is re-typed; the classes are the Matter SDK's classes, and their be
 
 ## The surface, and what the host's own framework says about it
 
-Measured against macOS's own `Matter.framework` (`tools/matter-host-diff.lua`, the corpus's 24 647 rows against the
-exports of the host's binary, which is in its dyld shared cache and was written out with `dyld.extract`):
+Measured with `tools/matter-host-diff.lua`, which reads the host's half from a **live process that loaded the
+framework** (`tests/backports/host/matter/run.sh`: `objc_copyClassList`, `class_copyMethodList`,
+`class_copyPropertyList`, `class_copyProtocolList`, `protocol_copyMethodDescriptionList`, and the surface's function
+rows asked of the loaded image by `dlsym`) and the port's half from `libMatterBackports.dylib` with the same modules
+the gate's check reads a library with.
 
-| the host's framework carries | of the SDK 26.2 surface |
+| the host's `Matter.framework` carries | of the SDK 26.2 surface |
 | --- | --- |
 | 985 classes | 985 classes |
+| 13 184 methods | 14 014 methods |
+| 2650 properties | 2651 properties |
+| 11 protocols | 16 protocols |
 | 8 functions | 8 functions |
-| 41 constants | 6531 constants |
 
-Every class and every function of the SDK 26.2 surface is in the framework this machine's own macOS carries, so the
-port's target is the framework rather than the surface, and a build of connectedhomeip's framework is a build of that
-surface. The constants are not comparable this way and are not a difference: the Matter framework's constants are
-header-declared enumerations, which live in the importing program and are not symbols the library exports.
+Every class, every function, all but one property and 94% of the methods are in the framework this machine's own macOS
+carries. So the port's target is the framework rather than the surface, and a build of connectedhomeip's framework is a
+build of that surface. The 830 methods, 1 property and 5 protocols no host framework carries are named in
+`.agent-work/host/matter-host-diff.tsv`: they are rows of an SDK release whose framework is older than the SDK, and
+they are what the port's own library is compared against row by row.
 
-**What this differential does not cover, stated plainly:** the 14 014 methods, the 2651 properties, the 442 enum types
-and the 16 protocols of the surface. `objc.binary_inventory` finds no classes in the binary `dyld.extract` writes out
-of the host's cache - it finds all three classes of a library built on this machine from source - so the host's
-*selectors* cannot be read here, and a per-method host comparison is not something this run measured. It is the
-emulator call test that answers for the members: every method this library carries is called on the emulator at 6.1.3
-and must not crash. The export-level result above is what was measured, and it is what this file claims.
+**The two kinds the surface has and this comparison cannot have.** The 6531 constants are header-declared
+enumerations, so they live in the importing program and are not symbols either library exports; the 442 enum types are
+typedefs of the same kind, carried by the values the SDK names after them. Neither is a difference between the two
+sides, and neither is counted as one.
+
+**Why the host's half is a live process and not a file.** The host's framework is in its dyld shared cache and is not on
+disk, and a binary written out of that cache with `dyld.extract` does not carry the Objective-C metadata in a form this
+repository's reader can walk: `objc.binary_inventory` finds no classes in it, though it finds all three of a library
+built here from source. The class and function counts could be had from its exports, which is where the first run of
+this measurement came from; the members could not be had at all until the framework was loaded instead.
 
 ## What the port's release does not have, and what the build does about it
 

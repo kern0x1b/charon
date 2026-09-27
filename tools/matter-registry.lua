@@ -159,7 +159,9 @@ local function read_surface(corpus)
     local rows, order, seen = {}, {}, {}
     for line in io.lines(corpus) do
         local fields = {}
-        for field in (line .. "\t"):gmatch("([^\t]*)\t") do
+        -- io.lines keeps the trailing newline in this Lua, so it is taken off the line before it is split: a name that
+        -- ended in "\n" would match nothing, and the comparison would say "neither side carries it" for every row.
+        for field in (line:gsub("\n$", "") .. "\t"):gmatch("([^\t]*)\t") do
             table.insert(fields, field)
         end
         if fields[1] == FRAMEWORK and fields[4] and fields[4] ~= "" and fields[2] ~= "framework" then
@@ -200,7 +202,7 @@ function main(binary, corpus, outdir, facts, architecture)
     local families, carried, missing = {}, 0, {}
     for _, row in ipairs(rows) do
         local status
-        local class, selector = row.api:match("^([-+])\\[([%w_]+) (.+)%]$")
+        local class, selector = row.api:match("^([-+])%[([%w_]+) (.+)%]$")
         local owner, name = row.api:match("^([%u][%w_]*)%.(.+)$")
         if row.kind == "class" then
             status = found.classes[row.api]
