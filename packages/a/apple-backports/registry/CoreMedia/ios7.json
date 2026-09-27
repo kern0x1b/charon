@@ -22,6 +22,17 @@
       "effect": "builds the avcC record from the SPS, PPS and SPS extension units, reads the dimensions and the field count, chroma location, pixel aspect ratio, full range flag and colour description out of the sequence parameter set, and makes the description with CMVideoFormatDescriptionCreate; the error codes -12710, -12712 and -12714 fall where the host's do",
       "facts": "facts/CoreMedia/H264ParameterSets.md",
       "source": "the host's own CoreMedia and the parameter sets of the host's H.264 encoder, which the port is held against by tests/backports/host/coremedia; the armv7 cache ladder, which first exports the function at 7.0"
+    },
+    {
+      "api": "CMSampleBufferCopyPCMDataIntoAudioBufferList()",
+      "kind": "function",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 6 has 37 CMSampleBuffer functions and this is not one of them; the armv7 cache ladder first exports it at 7.0",
+      "effect": "copies PCM frames from a sample buffer into a destination AudioBufferList, asking the release for the source list and the release's own block buffer for the bytes, so the frame offset, the frame count and the bounds are the release's own; a non-audio format is kCMSampleBufferError_InvalidMediaTypeForOperation, audio that is not PCM is kCMSampleBufferError_InvalidSampleData, a buffer that is not ready or has been invalidated is kCMSampleBufferError_BufferNotReady, an offset at or past the end or a run past the end is kCMSampleBufferError_SampleIndexOutOfRange, and a destination whose buffers do not match the sample buffer's own is kCMSampleBufferError_RequiredParameterMissing",
+      "facts": "facts/CoreMedia/CMSampleBufferCopyPCMDataIntoAudioBufferList.md",
+      "source": "the host's own CoreMedia, which the port is held against case by case by tests/backports/host/coremedia7; iOS 6.0's own 37 CMSampleBuffer exports, read from the symbol table of the iOS 6 armv7 shared cache"
     }
   ]
 }

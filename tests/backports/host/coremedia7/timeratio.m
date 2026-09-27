@@ -4,7 +4,7 @@
 
 CMTime CharonHostCMTimeMultiplyByRatio(CMTime time, int32_t multiplier, int32_t divisor);
 
-static int identical, cornerSame, cornerWithinTolerance, different;
+static int identical, cornerSame, cornerWithinTolerance, cornerLost, different;
 
 static NSString *shown(CMTime time)
 {
@@ -71,9 +71,8 @@ static void compare(CMTime time, int32_t multiplier, int32_t divisor)
         fabs(CMTimeGetSeconds(system) - want) <= 1e-6 * (1 + fabs(want)) &&
         fabs(CMTimeGetSeconds(port) - want) <= 1e-6 * (1 + fabs(want)))
         cornerWithinTolerance++;
-    else if (different < 30)
-        printf("DIFFERENT outside the claim, %s * %d / %d (exact %.9g s):\n  system %s\n  port   %s\n",
-               shown(time).UTF8String, multiplier, divisor, want, shown(system).UTF8String, shown(port).UTF8String);
+    else
+        cornerLost++;
 }
 
 int main(void)
@@ -109,8 +108,8 @@ int main(void)
                 compare(kCMTimeIndefinite, factors[m], factors[d]);
                 compare(kCMTimeZero, factors[m], factors[d]);
             }
-        printf("%d the same, %d different inside the claim, %d outside it of which %d agree with the exact value\n",
-               identical, different, cornerSame, cornerWithinTolerance);
+        printf("%d the same, %d different inside the claim, %d outside it of which %d agree with the exact value and %d do not\n",
+               identical, different, cornerSame, cornerWithinTolerance, cornerLost);
     }
     return different != 0;
 }

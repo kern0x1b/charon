@@ -6,6 +6,20 @@ BUILD=${BUILD:-$(mktemp -d)}
 sdk=$(xcrun --show-sdk-path)
 quiet="-Wno-deprecated-declarations -Wno-unguarded-availability-new -Wno-availability"
 renames="-DCMTimeMultiplyByRatio=CharonHostCMTimeMultiplyByRatio"
-xcrun clang -fobjc-arc $quiet $renames -c "$AV/CMTime71.m" -o "$BUILD/port.o"
-xcrun clang -fobjc-arc $quiet "$here/timeratio.m" "$BUILD/port.o" -framework CoreMedia -framework CoreVideo -framework Foundation -o "$BUILD/timeratio"
-"$BUILD/timeratio"
+renames="$renames -DCMSampleBufferCopyPCMDataIntoAudioBufferList=CharonHostCMSampleBufferCopyPCMDataIntoAudioBufferList"
+renames="$renames -DCMSampleBufferCreateReady=CharonHostCMSampleBufferCreateReady"
+renames="$renames -DCMSampleBufferCreateReadyWithImageBuffer=CharonHostCMSampleBufferCreateReadyWithImageBuffer"
+renames="$renames -DCMAudioSampleBufferCreateReadyWithPacketDescriptions=CharonHostCMAudioSampleBufferCreateReadyWithPacketDescriptions"
+renames="$renames -DCMSampleBufferCallBlockForEachSample=CharonHostCMSampleBufferCallBlockForEachSample"
+renames="$renames -DCMSampleBufferCreateWithMakeDataReadyHandler=CharonHostCMSampleBufferCreateWithMakeDataReadyHandler"
+renames="$renames -DCMSampleBufferCreateForImageBufferWithMakeDataReadyHandler=CharonHostCMSampleBufferCreateForImageBufferWithMakeDataReadyHandler"
+renames="$renames -DCMAudioSampleBufferCreateWithPacketDescriptionsAndMakeDataReadyHandler=CharonHostCMAudioSampleBufferCreateWithPacketDescriptionsAndMakeDataReadyHandler"
+for object in CMTime71 CMSampleBuffer7 CMSampleBuffer8 CMSampleBuffer9 CMSampleBuffer11 CMSampleBuffer12 CMSampleBuffer13 CMSampleBuffer15 CMSampleBuffer16; do
+    [ -f "$AV/$object.m" ] || continue
+    xcrun clang -fobjc-arc $quiet $renames -c "$AV/$object.m" -o "$BUILD/$object.o"
+done
+for test in timeratio pcmdata createready; do
+    [ -f "$here/$test.m" ] || continue
+    xcrun clang -fobjc-arc $quiet "$here/$test.m" "$BUILD"/*.o -framework CoreMedia -framework CoreVideo -framework AudioToolbox -framework Foundation -o "$BUILD/$test"
+    "$BUILD/$test"
+done
