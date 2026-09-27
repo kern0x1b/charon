@@ -711,3 +711,43 @@ there, and a clamped centre is not the same as a clamped flank. The question the
 whether a tap whose **own position** is outside the picture is clamped like any other, or dropped while only
 the ones past it are clamped. One case separates them: a destination pixel whose centre is half a pixel left
 of the source, where clamping the centre reads column 0 with the full centre weight and dropping it does not.
+
+## The centre: DROPPED, and the position is not clamped either
+
+A destination pixel whose centre sits half a pixel **left** of the source - a translate of -0.5 with a scale-1
+filter, the same two-edge source, and both candidates compared against the measured value:
+
+| case | measured | clamped centre | dropped centre |
+| --- | --- | --- | --- |
+| slope 0, translate −0.5, row 0 | 5553.2 | 9000.0 | 220.1 |
+| slope 1, translate −0.5, row 0 | −1.0 (the backColor) | 9000.0 | 220.1 |
+| slope 0, translate −1, row 0 | **101.0** | 9000.0 | 220.1 |
+
+**Neither, and the third row says why.** At a translate of −1 the destination's first column answers
+**101.0**, which is `value_at(0, 1)` — the source's *second* column. So the mapping is
+
+    sx = dx - xTranslate
+
+with **no clamping of the position**: `dx = 0` and a translate of −1 name the source's column 1, not column 0.
+And a tap outside the picture is **dropped**, not clamped — at a translate of +0.5 the first column answers
+5491.0, which is one weight of 0.61141 times column 0's 9000 with nothing added, where a clamped neighbour
+would have added its 0.02446 of the same 9000 and given 5723.
+
+So the rule along the row is the one this port already implements: `sx = dx - xTranslate`, out-of-picture taps
+dropped, and `kvImageBackgroundColorFill` back-colouring a sample whose whole kernel is outside - which is
+what a slope of 1 and a translate of −0.5 answers at row 0, the backColor.
+
+**So the clamp-everywhere run was wrong on both edges, and the two-edge grid's "clamped" reading was
+over-interpreted**: a left-edge destination pixel reading column 0's value is what *dropping* produces at a
+whole-pixel phase too, because the out-of-range lobes are exactly zero there and the surviving centre tap is
+column 0. The grid separated the two at a *half*-pixel phase - where the system gave 5491, one weight of
+column 0 and nothing else - and that is the line that settles it.
+
+**What the 5558 still is.** The bottom-edge overshoot is real and still unexplained by any rule here: at a
+slope of 0, row 5 column 8 answers 55579.2 where that row is 50008, and the guard page says the value came
+from inside the allocation. With the row's taps now known to be *dropped*, the remaining candidate is that the
+diagonal walk at a slope of 1 re-reads the last row more than the tap count implies - the overshoot's
+signature, a value above the source maximum, is a row counted twice. The one case that separates "the last
+row's taps are read once" from "the last row is repeated to fill the walk" is a slope of 1 with a **tall**
+source, where the walk never runs out: if the answer is the exact source value at a whole-pixel phase, the walk
+is read once, and if it is anything else the last row is repeated.
