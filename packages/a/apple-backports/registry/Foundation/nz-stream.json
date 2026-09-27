@@ -177,9 +177,8 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "maximum": "8.3",
-      "status": "absent",
-      "reason": "the same deprecation, and the same reason: a stream task is a connection, and a connection is named",
-      "effect": "the method is not there: respondsToSelector: answers honestly and an unchecked call raises"
+      "status": "implemented",
+      "reason": "the SDK's own header deprecates -init and +new in favour of the two factories, and a deprecation is a warning rather than a refusal: the port answers -init, which is what the release's own -[NSURLSessionTask init] does"
     }
   ]
 }

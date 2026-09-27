@@ -4,6 +4,22 @@
 #import <objc/runtime.h>
 #include <unistd.h>
 
+/* The four callbacks of NSURLSessionStreamDelegate that this file makes. The protocol is declared
+   here, under the SDK's own spelling, so that the port's library carries it: the band machinery and
+   the registry check read a protocol's methods out of the image's Objective-C metadata, and a
+   protocol the port only *calls* through `id<...>` is not in that metadata. The methods themselves
+   are the application's, not the port's, which is why no one implements them here. */
+@protocol NSURLSessionStreamDelegate <NSObject>
+@optional
+- (void)URLSession:(NSURLSession *)session
+              streamTask:(NSURLSessionStreamTask *)streamTask
+    didBecomeInputStream:(NSInputStream *)inputStream
+            outputStream:(NSOutputStream *)outputStream;
+- (void)URLSession:(NSURLSession *)session betterRouteDiscoveredForStreamTask:(NSURLSessionStreamTask *)streamTask;
+- (void)URLSession:(NSURLSession *)session readClosedForStreamTask:(NSURLSessionStreamTask *)streamTask;
+- (void)URLSession:(NSURLSession *)session writeClosedForStreamTask:(NSURLSessionStreamTask *)streamTask;
+@end
+
 /* A session's stream task: a connection to a host and a port that the application reads and writes
    itself, rather than a request and a response.
 
