@@ -71,8 +71,12 @@ public final class IntentParameter<Value>: @unchecked Sendable where Value: _Int
     /// The title the framework shows for the parameter.
     public let title: LocalizedStringResource
 
-    /// Whether the parameter may have no value, which is what a parameter with no default says.
-    public var isOptional: Bool { get { storageValue.isOptional } }
+    /// Whether the parameter may have no value. Nothing a parameter is *declared* with sets this: it is
+    /// the framework that answers it, once it knows whether the value the caller gave may be missing.
+    /// Read before that - which is every read on a port, where the framework that would answer is the
+    /// caller - it is no, which is what the framework's own parameter answers (measured on the host for
+    /// a parameter with a title, with a default and with neither).
+    public var isOptional: Bool { return optional }
 
     /// The storage, and the value on top of it.
     private var storageValue: Storage
@@ -145,6 +149,8 @@ public final class IntentParameter<Value>: @unchecked Sendable where Value: _Int
         merged.supportsNegativeNumbers = supportsNegativeNumbers
         merged.optionsProvider = optionsProvider
         merged.query = query
+        // nothing a parameter is declared with makes it optional; that is the framework's answer, and
+        // the framework here is the caller that fills it (see `isOptional` and `setOptional`)
         self.init(storage: merged, default: defaultValue, resolvers: resolvers)
     }
 
@@ -181,11 +187,18 @@ public final class IntentParameter<Value>: @unchecked Sendable where Value: _Int
     public var valueState: ValueState { return valueSet ? .set(wrappedValue) : .unset }
 
     private var valueSet = false
+    private var optional = false
 
     /// The parameter the framework fills in before `perform()`, which is what an entity query reads.
     public func setValue(_ newValue: Value) {
         value = newValue
         valueSet = true
+    }
+
+    /// Whether the value the caller filled this parameter with may be missing, which is what the
+    /// framework reports as the parameter being optional.
+    public func setOptional(_ mayBeMissing: Bool) {
+        optional = mayBeMissing
     }
 
     // MARK: what a parameter asks of the caller

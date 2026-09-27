@@ -22,7 +22,7 @@ extension CLPlacemark: DisplayRepresentable, _IntentValue {
     public static var defaultResolverSpecification: Specification { return Specification() }
 
     public static var typeDisplayRepresentation: TypeDisplayRepresentation {
-        return TypeDisplayRepresentation(name: "Location")
+        return TypeDisplayRepresentation(name: CharonLocalized.resource("Location"))
     }
 
     public var displayRepresentation: DisplayRepresentation {

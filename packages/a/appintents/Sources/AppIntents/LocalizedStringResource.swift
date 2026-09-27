@@ -21,19 +21,20 @@ import Foundation
 /// `@unchecked Sendable` because the release's own `Locale` and `URL` are not `Sendable` in the
 /// port's Foundation; the value type holds no mutable state, which is what the conformance is for.
 public struct LocalizedStringResource: Hashable, Codable, CustomLocalizedStringResourceConvertible, @unchecked Sendable {
-    /// Where the string table is found.
-    public enum BundleDescription: Hashable, Codable {
-        /// The bundle of the running program (`Bundle.main`).
-        public static let main = BundleDescription.atURL(Bundle.main.bundleURL)
-        /// The bundle of the class that names it, as `Bundle(for:)` finds it.
-        public static func forClass(_ aClass: AnyClass) -> BundleDescription {
-            return BundleDescription.atURL(Bundle(for: aClass).bundleURL)
-        }
-        /// The bundle at a URL.
+    /// Where the string table is found, the framework's own three cases: the running program's
+    /// bundle, the bundle of a class, and the bundle at a URL.
+    public enum BundleDescription: Sendable {
+        case main
+        case forClass(AnyClass)
         case atURL(URL)
 
+        /// The bundle the case names, over the release's own `Bundle(for:)` and `Bundle(url:)`. The
+        /// framework's own `BundleDescription` is `Sendable` and nothing else - a class, a main bundle
+        /// and a URL are compared by the URL they name, which is what this does.
         public var url: URL {
             switch self {
+            case .main: return Bundle.main.bundleURL
+            case .forClass(let aClass): return Bundle(for: aClass).bundleURL
             case .atURL(let url): return url
             }
         }
@@ -43,21 +44,27 @@ public struct LocalizedStringResource: Hashable, Codable, CustomLocalizedStringR
 
     /// The key this resource names.
     public var key: String
-    /// The value to show when `key` is not in the table, when the caller gave one.
+    /// The value to show when `key` is not in the table, when the caller gave one. The framework
+    /// types it as `String.LocalizationValue`, which is a Foundation type this release's overlay
+    /// predates and the Foundation band carries; here it is the text itself.
     public var defaultValue: String?
     /// The name of the string table, `nil` for the table the key itself names.
     public var table: String?
-    /// The locale to look the key up for, `nil` for the locale of the program.
-    public var locale: Locale?
-    /// The bundle the table is in.
-    public var bundle: BundleDescription?
+    /// The locale to look the key up for, the program's own unless the caller named one.
+    public var locale: Locale
+    /// The bundle the table is in, the program's own unless the caller named one.
+    public var bundle: BundleDescription
 
     public init(key: String) {
         self.key = key
+        self.defaultValue = nil
+        self.table = nil
+        self.locale = .current
+        self.bundle = .main
     }
 
     public init(_ keyAndValue: String, defaultValue: String? = nil, table: String? = nil,
-                locale: Locale? = nil, bundle: BundleDescription? = nil, comment: Comment? = nil) {
+                locale: Locale = .current, bundle: BundleDescription = .main, comment: Comment? = nil) {
         self.key = keyAndValue
         self.defaultValue = defaultValue
         self.table = table
@@ -65,8 +72,8 @@ public struct LocalizedStringResource: Hashable, Codable, CustomLocalizedStringR
         self.bundle = bundle
     }
 
-    public init(_ keyAndValue: String, table: String? = nil, locale: Locale? = nil,
-                bundle: BundleDescription? = nil, comment: Comment? = nil) {
+    public init(_ keyAndValue: String, table: String? = nil, locale: Locale = .current,
+                bundle: BundleDescription = .main, comment: Comment? = nil) {
         self.init(keyAndValue, defaultValue: nil, table: table, locale: locale, bundle: bundle, comment: comment)
     }
 
@@ -76,6 +83,11 @@ public struct LocalizedStringResource: Hashable, Codable, CustomLocalizedStringR
 
     public init(stringInterpolation: StringInterpolation) {
         self = stringInterpolation.value
+    }
+
+    /// The framework's own convenience: a resource out of another one.
+    public init(localized resource: LocalizedStringResource) {
+        self = resource
     }
 
     /// The resource is its own localized string: what a `CustomLocalizedStringResourceConvertible`
@@ -95,7 +107,7 @@ public struct LocalizedStringResource: Hashable, Codable, CustomLocalizedStringR
 
     public static func == (lhs: LocalizedStringResource, rhs: LocalizedStringResource) -> Bool {
         return lhs.key == rhs.key && lhs.defaultValue == rhs.defaultValue && lhs.table == rhs.table
-            && lhs.locale == rhs.locale && lhs.bundle == rhs.bundle
+            && lhs.locale == rhs.locale && lhs.bundle.url == rhs.bundle.url
     }
 
     public func hash(into hasher: inout Hasher) {
@@ -103,7 +115,7 @@ public struct LocalizedStringResource: Hashable, Codable, CustomLocalizedStringR
         hasher.combine(defaultValue)
         hasher.combine(table)
         hasher.combine(locale)
-        hasher.combine(bundle)
+        hasher.combine(bundle.url)
     }
 
     public func encode(to encoder: any Encoder) throws {
@@ -111,8 +123,8 @@ public struct LocalizedStringResource: Hashable, Codable, CustomLocalizedStringR
         try container.encode(key, forKey: .key)
         try container.encodeIfPresent(defaultValue, forKey: .defaultValue)
         try container.encodeIfPresent(table, forKey: .table)
-        try container.encodeIfPresent(locale, forKey: .locale)
-        try container.encodeIfPresent(bundle, forKey: .bundle)
+        try container.encode(locale, forKey: .locale)
+        try container.encode(bundle.url, forKey: .bundle)
     }
 
     public init(from decoder: any Decoder) throws {
@@ -120,8 +132,8 @@ public struct LocalizedStringResource: Hashable, Codable, CustomLocalizedStringR
         self.init(try container.decode(String.self, forKey: .key))
         self.defaultValue = try container.decodeIfPresent(String.self, forKey: .defaultValue)
         self.table = try container.decodeIfPresent(String.self, forKey: .table)
-        self.locale = try container.decodeIfPresent(Locale.self, forKey: .locale)
-        self.bundle = try container.decodeIfPresent(BundleDescription.self, forKey: .bundle)
+        self.locale = try container.decode(Locale.self, forKey: .locale)
+        self.bundle = BundleDescription.atURL(try container.decode(URL.self, forKey: .bundle))
     }
 
     private enum CodingKeys: String, CodingKey {

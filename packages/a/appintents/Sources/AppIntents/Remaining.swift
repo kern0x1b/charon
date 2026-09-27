@@ -127,7 +127,7 @@ extension AssistantSchemaEntity {
     public static var isAssistantOnly: Bool { return false }
 
     public static var typeDisplayRepresentation: TypeDisplayRepresentation {
-        return TypeDisplayRepresentation(name: String(describing: Self.self))
+        return TypeDisplayRepresentation(name: CharonLocalized.resource(String(describing: Self.self)))
     }
 }
 
@@ -141,7 +141,7 @@ extension AssistantSchemaEnum {
     public static var isAssistantOnly: Bool { return false }
 
     public static var typeDisplayRepresentation: TypeDisplayRepresentation {
-        return TypeDisplayRepresentation(name: String(describing: Self.self))
+        return TypeDisplayRepresentation(name: CharonLocalized.resource(String(describing: Self.self)))
     }
 }
 

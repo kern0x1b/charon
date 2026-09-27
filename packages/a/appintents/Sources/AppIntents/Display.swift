@@ -26,7 +26,7 @@ public protocol InstanceDisplayRepresentable: CustomLocalizedStringResourceConve
 
 extension InstanceDisplayRepresentable {
     public var localizedStringResource: LocalizedStringResource {
-        return CharonLocalized.resource(displayRepresentation.title)
+        return displayRepresentation.title
     }
 }
 
@@ -39,68 +39,69 @@ public protocol CaseDisplayRepresentable: CustomLocalizedStringResourceConvertib
 /// A type that names itself the same way whatever it holds, as an enum does.
 public protocol StaticDisplayRepresentable: CaseDisplayRepresentable, TypeDisplayRepresentable {}
 
-/// How the name of a type is shown: the name, and how a number of that type is written.
+/// How the name of a type is shown: the name, and how a number of that type is written. Both are
+/// resources, which is what the framework declares: the name is looked up in a string table where one
+/// names it, and the numeric format is a format the app's own table holds.
 public struct TypeDisplayRepresentation: ExpressibleByStringLiteral {
-    public typealias NumericFormat = String
+    /// How a number of this type is written, which is a resource in the app's own table.
+    public typealias NumericFormat = LocalizedStringResource
 
-    public let name: String
-    public let numericFormat: NumericFormat?
+    public var name: LocalizedStringResource
+    public var numericFormat: LocalizedStringResource?
     /// The words that stand for the same type in another language, added in iOS 17.
-    public let synonyms: [String]
+    public var synonyms: [LocalizedStringResource]
 
-    public init(name: String, numericFormat: NumericFormat? = nil) {
+    public init(name: LocalizedStringResource, numericFormat: LocalizedStringResource? = nil) {
         self.name = name
         self.numericFormat = numericFormat
         self.synonyms = []
     }
 
-    public init(name: String, numericFormat: NumericFormat? = nil, synonyms: [String]) {
+    public init(name: LocalizedStringResource, numericFormat: LocalizedStringResource? = nil,
+                synonyms: [LocalizedStringResource] = []) {
         self.name = name
         self.numericFormat = numericFormat
         self.synonyms = synonyms
     }
 
-    public init(_ name: String) {
+    public init(_ name: LocalizedStringResource) {
         self.init(name: name)
     }
 
     public init(stringLiteral value: String) {
-        self.init(name: value)
+        self.init(name: CharonLocalized.resource(value))
     }
+
+    public typealias StringLiteralType = String
+    public typealias ExtendedGraphemeClusterLiteralType = String
+    public typealias UnicodeScalarLiteralType = String
 }
 
 /// How a value is shown: a title, a subtitle and a picture.
 public struct DisplayRepresentation: ExpressibleByStringLiteral, Equatable {
-    public let title: String
-    public let subtitle: String?
-    public let image: Image?
+    public var title: LocalizedStringResource
+    public var subtitle: LocalizedStringResource?
+    public var image: Image?
     /// The words that stand for the same value in another language, added in iOS 17.
-    public let synonyms: [String]
+    public var synonyms: [LocalizedStringResource]
 
     public init(title: LocalizedStringResource, subtitle: LocalizedStringResource? = nil, image: Image? = nil) {
-        self.title = CharonLocalized.string(of: title)
-        self.subtitle = subtitle.map { CharonLocalized.string(of: $0) }
-        self.image = image
-        self.synonyms = []
-    }
-
-    public init(title: LocalizedStringResource, subtitle: LocalizedStringResource? = nil, image: Image? = nil,
-                synonyms: [String]) {
-        self.title = CharonLocalized.string(of: title)
-        self.subtitle = subtitle.map { CharonLocalized.string(of: $0) }
-        self.image = image
-        self.synonyms = synonyms
-    }
-
-    public init(title: String, subtitle: String? = nil, image: Image? = nil) {
         self.title = title
         self.subtitle = subtitle
         self.image = image
         self.synonyms = []
     }
 
+    public init(title: LocalizedStringResource, subtitle: LocalizedStringResource? = nil, image: Image? = nil,
+                synonyms: [LocalizedStringResource] = []) {
+        self.title = title
+        self.subtitle = subtitle
+        self.image = image
+        self.synonyms = synonyms
+    }
+
     public init(stringLiteral value: String) {
-        self.init(title: value)
+        self.init(title: CharonLocalized.resource(value))
     }
 
     /// A picture of a value: its data, a named system image or a file, and how it is masked.
@@ -112,78 +113,81 @@ public struct DisplayRepresentation: ExpressibleByStringLiteral, Equatable {
         }
 
         /// The bytes of the picture, when the app gave them or named a system image.
-        public let data: Data?
+        // The framework's own `Image` exposes no stored property: what a caller has is the value it
+        // built, and what the framework does with it. These are the module's own storage, read by the
+        // framework through the properties it declares on the record, and by nothing else.
+        let data: Data?
         /// Whether the picture is a template, which is the release's own image rendering.
-        public let isTemplate: Bool
+        let isTemplate: Bool
         /// How the picture is masked.
-        public let displayStyle: DisplayStyle
+        let displayStyle: DisplayStyle
         /// The file the picture is in, when the picture is a file.
-        public let url: URL?
+        let url: URL?
         /// The width the picture is asked for, when the app named one.
-        public let width: Int?
+        let width: Int?
         /// The height the picture is asked for, when the app named one.
-        public let height: Int?
+        let height: Int?
 
-        public init(data: Data, isTemplate: Bool = true) {
+        public init(data: Data, isTemplate: Bool? = nil) {
             self.data = data
-            self.isTemplate = isTemplate
+            self.isTemplate = isTemplate ?? true
             self.displayStyle = .default
             self.url = nil
             self.width = nil
             self.height = nil
         }
 
-        public init(data: Data, isTemplate: Bool = true, displayStyle: DisplayStyle) {
+        public init(data: Data, isTemplate: Bool? = nil, displayStyle: DisplayStyle) {
             self.data = data
-            self.isTemplate = isTemplate
+            self.isTemplate = isTemplate ?? true
             self.displayStyle = displayStyle
             self.url = nil
             self.width = nil
             self.height = nil
         }
 
-        public init(named name: String, isTemplate: Bool = true) {
+        public init(named name: String, isTemplate: Bool? = nil) {
             self.init(data: Data(name.utf8), isTemplate: isTemplate)
         }
 
-        public init(named name: String, isTemplate: Bool = true, displayStyle: DisplayStyle) {
+        public init(named name: String, isTemplate: Bool? = nil, displayStyle: DisplayStyle) {
             self.init(data: Data(name.utf8), isTemplate: isTemplate, displayStyle: displayStyle)
         }
 
-        public init(systemName: String, isTemplate: Bool = true) {
+        public init(systemName: String, isTemplate: Bool? = nil) {
             self.init(data: Data(systemName.utf8), isTemplate: isTemplate)
         }
 
-        public init(url: URL, isTemplate: Bool = true) {
+        public init(url: URL, isTemplate: Bool? = nil) {
             self.data = nil
-            self.isTemplate = isTemplate
+            self.isTemplate = isTemplate ?? true
             self.displayStyle = .default
             self.url = url
             self.width = nil
             self.height = nil
         }
 
-        public init(url: URL, isTemplate: Bool = true, displayStyle: DisplayStyle) {
+        public init(url: URL, isTemplate: Bool? = nil, displayStyle: DisplayStyle) {
             self.data = nil
-            self.isTemplate = isTemplate
+            self.isTemplate = isTemplate ?? true
             self.displayStyle = displayStyle
             self.url = url
             self.width = nil
             self.height = nil
         }
 
-        public init(url: URL, width: Int, height: Int, isTemplate: Bool = true) {
+        public init(url: URL, width: Int, height: Int, isTemplate: Bool? = nil) {
             self.data = nil
-            self.isTemplate = isTemplate
+            self.isTemplate = isTemplate ?? true
             self.displayStyle = .default
             self.url = url
             self.width = width
             self.height = height
         }
 
-        public init(url: URL, width: Int, height: Int, isTemplate: Bool = true, displayStyle: DisplayStyle) {
+        public init(url: URL, width: Int, height: Int, isTemplate: Bool? = nil, displayStyle: DisplayStyle) {
             self.data = nil
-            self.isTemplate = isTemplate
+            self.isTemplate = isTemplate ?? true
             self.displayStyle = displayStyle
             self.url = url
             self.width = width
@@ -237,7 +241,7 @@ extension TypeDisplayRepresentable {
     /// A type names itself by its own name unless it says otherwise, which is what the framework's own
     /// default is.
     public static var typeDisplayRepresentation: TypeDisplayRepresentation {
-        return TypeDisplayRepresentation(name: CharonNames.simple(Self.self))
+        return TypeDisplayRepresentation(name: CharonLocalized.resource(CharonNames.simple(Self.self)))
     }
 }
 

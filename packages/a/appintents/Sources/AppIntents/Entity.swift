@@ -471,15 +471,18 @@ public protocol ResultsCollection {
 
 /// How many values a collection parameter may carry: exactly so many, or between so many.
 public struct IntentCollectionSize: ExpressibleByIntegerLiteral, Equatable {
-    public let min: Int
-    public let max: Int?
+    // The framework's own `IntentCollectionSize` exposes neither `min` nor `max` - measured on the
+    // host, where its printed form is `IntentCollectionSize(min: 3, max: 3)` and neither is a member -
+    // and its `max` is not optional: `init(exactly:)` sets both ends and `init(min:max:)` takes both.
+    let min: Int
+    let max: Int
 
     public init(exactly: Int) {
         self.min = exactly
         self.max = exactly
     }
 
-    public init(min: Int, max: Int?) {
+    public init(min: Int, max: Int) {
         self.min = min
         self.max = max
     }
@@ -490,6 +493,12 @@ public struct IntentCollectionSize: ExpressibleByIntegerLiteral, Equatable {
 
     public static func == (a: IntentCollectionSize, b: IntentCollectionSize) -> Bool {
         return a.min == b.min && a.max == b.max
+    }
+
+    /// How the size is written when it is printed, which is the release's own form (measured on the
+    /// host for both spellings: `IntentCollectionSize(min: 3, max: 3)` and `IntentCollectionSize(min: 1, max: 4)`).
+    public var description: String {
+        return "IntentCollectionSize(min: \(min), max: \(max))"
     }
 }
 

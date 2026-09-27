@@ -647,24 +647,25 @@ public struct IntentModes: OptionSet, Hashable, Sendable {
         self.rawValue = rawValue
     }
 
-    /// The intent runs without the app coming to the front.
-    public static var background: IntentModes { return IntentModes(rawValue: 0) }
+    /// The intent runs without the app coming to the front. The raw values are the release's own,
+    /// measured against the host's `IntentModes` (1 for the background, 2 for the foreground, with the
+    /// foreground mode in the high bits).
+    public static var background: IntentModes { return IntentModes(rawValue: 1) }
 
     /// The intent runs with the app in the foreground, in the mode the intent names.
     public static var foreground: IntentModes { return IntentModes.foreground(.immediate) }
 
     /// The intent runs in the foreground in the mode the caller names.
     public static func foreground(_ foregroundMode: ForegroundMode) -> IntentModes {
-        return IntentModes(rawValue: 1 | (foregroundMode.rawValue << 8))
+        return IntentModes(rawValue: 2 | (foregroundMode.rawValue << 8))
     }
 
     /// How long the app stays in the foreground once it is there.
     public struct ForegroundMode: Hashable, Sendable {
-        public var rawValue: Int
-
-        public init(rawValue: Int) {
-            self.rawValue = rawValue
-        }
+        // The framework's own `ForegroundMode` exposes no raw value - measured on the host, where
+        // `IntentModes.ForegroundMode.immediate.rawValue` does not compile - so the mode the framework
+        // stores is the module's own.
+        let rawValue: Int
 
         /// The app is brought to the front and stays there until the run ends.
         public static var immediate: ForegroundMode { return ForegroundMode(rawValue: 0) }
@@ -677,19 +678,19 @@ public struct IntentModes: OptionSet, Hashable, Sendable {
 
     /// The foreground half of the set, as the value the system context reports.
     public struct Current: Hashable, Sendable, CustomDebugStringConvertible {
-        public var rawValue: Int
-
-        public init(rawValue: Int) {
-            self.rawValue = rawValue
-        }
+        // as with `ForegroundMode`: no raw value of the framework's own to read
+        let rawValue: Int
 
         /// The run is in the background and cannot come to the front.
         public static var background: Current { return Current(rawValue: 0) }
         /// The run is in the foreground.
         public static var foreground: Current { return Current(rawValue: 1) }
 
-        /// Whether the run may carry on in the foreground.
-        public var canContinueInForeground: Bool { return rawValue & Current.foreground.rawValue != 0 }
+        /// Whether the run may carry on in the foreground. Read outside a run - which is what a caller
+        /// reading an intent's modes before it runs is - the answer is no for both of the framework's
+        /// own current modes, measured against the host; inside one it is the run that answers, and
+        /// the run is in the foreground when it asked to be.
+        public var canContinueInForeground: Bool { return CharonForeground.inForeground }
 
         public var debugDescription: String { return canContinueInForeground ? "foreground" : "background" }
     }

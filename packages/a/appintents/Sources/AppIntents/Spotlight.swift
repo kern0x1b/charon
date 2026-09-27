@@ -98,9 +98,11 @@ extension CSSearchableItemAttributeSet {
     /// reads to open the app that owns it. The content type is the one the port's index reads the
     /// record back by, and the title and description are the entity's own display representation.
     public func associateAppEntity<Entity>(_ appEntity: Entity, priority: Int = 0) where Entity: IndexedEntity {
-        title = appEntity.displayRepresentation.title
-        contentDescription = appEntity.displayRepresentation.subtitle
-        keywords = appEntity.displayRepresentation.synonyms
+        // the record's own fields are text, and a display representation holds resources: what the
+        // framework shows for a title is what the table has for it, or the default value the app wrote
+        title = CharonLocalized.string(of: appEntity.displayRepresentation.title)
+        contentDescription = appEntity.displayRepresentation.subtitle.map { CharonLocalized.string(of: $0) }
+        keywords = appEntity.displayRepresentation.synonyms.map { CharonLocalized.string(of: $0) }
         setValue(appEntity.id.entityIdentifierString, forKey: CharonAppEntityIdentifierAttribute)
     }
 

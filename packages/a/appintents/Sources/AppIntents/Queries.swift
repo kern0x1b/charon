@@ -541,7 +541,7 @@ public enum StringSearchScope: String, AppEnum {
     case freeformVideo
 
     public static var typeDisplayRepresentation: TypeDisplayRepresentation {
-        return TypeDisplayRepresentation(name: "Search Scope")
+        return TypeDisplayRepresentation(name: CharonLocalized.resource("Search Scope"))
     }
 
     public static var caseDisplayRepresentations: [DisplayRepresentation] {
@@ -572,7 +572,7 @@ public enum VideoCategory: String, AppEnum {
     case freeform
 
     public static var typeDisplayRepresentation: TypeDisplayRepresentation {
-        return TypeDisplayRepresentation(name: "Video Category")
+        return TypeDisplayRepresentation(name: CharonLocalized.resource("Video Category"))
     }
 
     public static var caseDisplayRepresentations: [DisplayRepresentation] {

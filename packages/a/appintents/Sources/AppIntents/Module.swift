@@ -42,11 +42,23 @@ enum CharonLocalized {
         #endif
     }
 
+    /// The bundle a resource's own `BundleDescription` names. Both the type this module carries and
+    /// the platform's are the same three cases, and each answers a `Bundle` here over the release's
+    /// own - the type carries no `url` of its own, which is what the host differential found.
+    private static func bundle(_ description: LocalizedStringResource.BundleDescription) -> Bundle? {
+        switch description {
+        case .main: return Bundle.main
+        case .forClass(let aClass): return Bundle(for: aClass)
+        case .atURL(let url): return Bundle(path: url.path)
+        @unknown default: return nil
+        }
+    }
+
     /// What the string table the resource names has for its key, over the release's own
     /// `Bundle.localizedString(forKey:value:table:)`, which answers with an empty string for a key it
     /// has no entry for.
     private static func table(_ resource: LocalizedStringResource) -> String? {
-        guard case .atURL(let url) = resource.bundle, let bundle = Bundle(path: url.path) else { return nil }
+        guard let bundle = bundle(resource.bundle) else { return nil }
         let name = resource.table ?? (bundle.localizedInfoDictionary?["CFBundleName"] as? String)
         guard let name = name else { return nil }
         let found: String = bundle.localizedString(forKey: resource.key, value: "", table: name)

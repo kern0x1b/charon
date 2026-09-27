@@ -357,7 +357,7 @@ final class RelevantIntentStore {
     func write(_ intents: [RelevantIntent]) {
         let entries: [[String: Any]] = intents.map { intent in
             return ["relevance": intent.relevance, "widgetKind": String(describing: intent.widgetKind),
-                    "displayName": intent.intent.displayRepresentation.title]
+                    "displayName": CharonLocalized.string(of: intent.intent.displayRepresentation.title)]
         }
         guard let data = try? PropertyListSerialization.data(fromPropertyList: entries, format: .xml, options: 0) else {
             return

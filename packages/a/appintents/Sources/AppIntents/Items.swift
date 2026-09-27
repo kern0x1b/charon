@@ -274,7 +274,7 @@ extension IntentFile: DisplayRepresentable, _IntentValue {
     public static var defaultResolverSpecification: Specification { return Specification() }
 
     public static var typeDisplayRepresentation: TypeDisplayRepresentation {
-        return TypeDisplayRepresentation(name: "File")
+        return TypeDisplayRepresentation(name: CharonLocalized.resource("File"))
     }
 
     public var displayRepresentation: DisplayRepresentation {
@@ -456,7 +456,7 @@ public struct IntentPerson: Hashable, Sendable, DisplayRepresentable, _IntentVal
     }
 
     public static var typeDisplayRepresentation: TypeDisplayRepresentation {
-        return TypeDisplayRepresentation(name: "Person")
+        return TypeDisplayRepresentation(name: CharonLocalized.resource("Person"))
     }
 
     public var displayRepresentation: DisplayRepresentation {
@@ -510,7 +510,7 @@ public struct IntentPaymentMethod: Sendable, DisplayRepresentable, _IntentValue 
     }
 
     public static var typeDisplayRepresentation: TypeDisplayRepresentation {
-        return TypeDisplayRepresentation(name: "Payment Method")
+        return TypeDisplayRepresentation(name: CharonLocalized.resource("Payment Method"))
     }
 
     public var displayRepresentation: DisplayRepresentation {
@@ -550,7 +550,7 @@ public struct IntentCurrencyAmount: Equatable, Hashable, Sendable, DisplayRepres
     }
 
     public static var typeDisplayRepresentation: TypeDisplayRepresentation {
-        return TypeDisplayRepresentation(name: "Currency Amount")
+        return TypeDisplayRepresentation(name: CharonLocalized.resource("Currency Amount"))
     }
 
     public var displayRepresentation: DisplayRepresentation {

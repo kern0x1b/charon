@@ -289,6 +289,14 @@ public struct AppIntentError: Error {
         case accountSetup
         case signin
         case confirmation
+
+        /// The text the framework's own error prints, measured against the host for `signin`.
+        public var errorDescription: String? {
+            switch self {
+            case .signin: return AppIntentError.preamble + "You need to be signed in to complete this action"
+            default: return nil
+            }
+        }
     }
 
     /// A permission the intent needs, which the user has to give.
@@ -299,6 +307,17 @@ public struct AppIntentError: Error {
         case location(precise: Bool)
         case photos
         case siri
+
+        /// The text the framework's own error prints, measured against the host for
+        /// `location(precise: true)`.
+        public var errorDescription: String? {
+            switch self {
+            case .location(let precise):
+                return AppIntentError.preamble + "Please grant " + (precise ? "Precise" : "Approximate") +
+                    " Location permission to the app"
+            default: return nil
+            }
+        }
     }
 
     /// Why the intent could not do what it was asked and asking again would not help.
@@ -310,10 +329,26 @@ public struct AppIntentError: Error {
         case partialFailure
         case unknown
         case unsupportedOnDevice
+
+        /// The text the framework's own error prints, measured against the host for the two cases
+        /// measured (`unknown`, `notAllowed`); the rest carry their own name until they are measured.
+        public var errorDescription: String? {
+            switch self {
+            case .unknown: return AppIntentError.preamble + "Something went wrong"
+            case .notAllowed: return AppIntentError.preamble + "This current action is not allowed"
+            default: return nil
+            }
+        }
     }
 
     /// What has to happen before the intent runs again, when the error is about one parameter.
     public var localizedStringResource: LocalizedStringResource? { return parameterTitle }
+
+    /// The text the framework's own errors carry, which is what a caller reads in a log. The four
+    /// sentences here are the ones measured against the host (`Unrecoverable.unknown` and
+    /// `.notAllowed`, `UserActionRequired.signin`, `PermissionRequired.location(precise: true)`); the
+    /// rest of the cases carry their own name until they are measured too.
+    public static let preamble = "AppIntent encountered the following predefined error: "
 
     /// The parameter the error is about, when the error is about one.
     public var parameterTitle: LocalizedStringResource?
@@ -341,10 +376,22 @@ public struct AppIntentError: Error {
     }
 }
 
+extension AppIntentError.UserActionRequired: CustomStringConvertible, LocalizedError {
+    public var description: String { return errorDescription ?? "UserActionRequired" }
+}
+
+extension AppIntentError.Unrecoverable: CustomStringConvertible, LocalizedError {
+    public var description: String { return errorDescription ?? "Unrecoverable" }
+}
+
+extension AppIntentError.PermissionRequired: CustomStringConvertible, LocalizedError {
+    public var description: String { return errorDescription ?? "PermissionRequired" }
+}
+
 extension AppIntentError: CustomStringConvertible {
     public var description: String {
-        guard let title = parameterTitle else { return "AppIntentError" }
-        return "AppIntentError: \(CharonLocalized.string(of: title))"
+        if let title = parameterTitle { return "AppIntentError: \(CharonLocalized.string(of: title))" }
+        return "AppIntent encountered an error."
     }
 }
 
@@ -444,10 +491,13 @@ public struct IntentChoiceOption: Equatable {
 /// What an intent says while it runs, or instead of a value: a line, a line and a supporting one, and
 /// from iOS 17.2 the system image shown beside them.
 public struct IntentDialog: ExpressibleByStringInterpolation, Sendable {
-    public let full: LocalizedStringResource
-    public let supporting: LocalizedStringResource?
+    // The framework declares no public property here, only the four initialisers below: what a caller
+    // has of a dialog is the resource it built and the text it resolves to. These are the module's own
+    // storage, and the port's own code is what reads them.
+    let full: LocalizedStringResource
+    let supporting: LocalizedStringResource?
     /// The system image shown beside the dialog, added in iOS 17.2.
-    public let systemImageName: String?
+    let systemImageName: String?
 
     public init(_ string: LocalizedStringResource) {
         self.full = string
