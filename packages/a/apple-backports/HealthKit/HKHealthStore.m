@@ -25,7 +25,7 @@
 #import <HealthKit/HealthKit.h>
 
 #import "CharonHKStore.h"
-#import "CharonSayOnce.h"
+#import "../CharonSayOnce.h"
 
 @implementation HKHealthStore {
     NSMutableSet<NSValue *> *_running;

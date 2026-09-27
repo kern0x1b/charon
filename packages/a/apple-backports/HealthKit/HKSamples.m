@@ -194,7 +194,7 @@
 + (instancetype)correlationWithType:(HKCorrelationType *)type
                                    startDate:(NSDate *)startDate
                                      endDate:(NSDate *)endDate
-                                     objects:(NSSet<HKObject *> *)objects
+                                     objects:(NSSet<HKSample *> *)objects
 {
     return [self correlationWithType:type startDate:startDate endDate:endDate objects:objects metadata:nil];
 }
@@ -202,7 +202,7 @@
 + (instancetype)correlationWithType:(HKCorrelationType *)type
                                    startDate:(NSDate *)startDate
                                      endDate:(NSDate *)endDate
-                                     objects:(NSSet<HKObject *> *)objects
+                                     objects:(NSSet<HKSample *> *)objects
                                     metadata:(nullable NSDictionary *)metadata
 {
     if (![type isKindOfClass:[HKCorrelationType class]]) {
@@ -222,7 +222,7 @@
     // The release keeps the objects grouped by the type they are of, in the order it was given them,
     // and a correlation holds one sample of each of the types its correlation type names; anything
     // else it was given is refused as the header's own validation refuses it.
-    for (HKObject *object in objects) {
+    for (HKSample *object in objects) {
         if (![object conformsToProtocol:@protocol(CharonHKStorable)])
             continue;
         NSString *identifier = [(id<CharonHKStorable>)object charon_storeTypeIdentifier];

@@ -22,7 +22,7 @@
 #import <sqlite3.h>
 
 #import "CharonHKStore.h"
-#import "CharonSayOnce.h"
+#import "../CharonSayOnce.h"
 
 #pragma mark - Errors
 
