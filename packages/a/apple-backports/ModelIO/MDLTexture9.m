@@ -126,9 +126,6 @@ static float CharonMDLChannelAt(const uint8_t *texels, NSInteger stride, NSInteg
 
 - (void)dealloc
 {
-    [_texels release];
-    [_name release];
-    [super dealloc];
 }
 
 // The texels of the whole texture, with the first row the top one or the bottom one, which is a flip
@@ -247,7 +244,7 @@ static float CharonMDLChannelAt(const uint8_t *texels, NSInteger stride, NSInteg
     NSString *path = [bundle pathForResource:[name stringByDeletingPathExtension] ofType:[name pathExtension]];
     if (!path)
         return nil;
-    return [[[MDLURLTexture alloc] initWithURL:[NSURL fileURLWithPath:path] name:name] autorelease];
+    return [[MDLURLTexture alloc] initWithURL:[NSURL fileURLWithPath:path] name:name];
 }
 
 + (instancetype)textureCubeWithImagesNamed:(NSArray<NSString *> *)names
@@ -268,8 +265,8 @@ static float CharonMDLChannelAt(const uint8_t *texels, NSInteger stride, NSInteg
         if (!face)
             return nil;
         if (!cube) {
-            cube = [[[MDLTexture alloc] initWithData:nil topLeftOrigin:NO name:names[0] dimensions:face.dimensions rowStride:0
-                                        channelCount:face.channelCount channelEncoding:face.channelEncoding] autorelease];
+            cube = [[MDLTexture alloc] initWithData:nil topLeftOrigin:NO name:names[0] dimensions:face.dimensions rowStride:0
+                                        channelCount:face.channelCount channelEncoding:face.channelEncoding];
             cube.isCube = YES;
         }
     }
@@ -370,7 +367,7 @@ static float CharonMDLChannelAt(const uint8_t *texels, NSInteger stride, NSInteg
     CGImageRelease(image);
     [self charon_setGeometry:(vector_int2){(int)width, (int)height} rowStride:(NSInteger)(width * components) channelCount:components];
     [self charon_setTexels:texels];
-    _URL = [URL retain];
+    _URL = URL;
     return self;
 }
 
@@ -382,15 +379,12 @@ static float CharonMDLChannelAt(const uint8_t *texels, NSInteger stride, NSInteg
 - (void)setURL:(NSURL *)URL
 {
     if (_URL != URL) {
-        [_URL release];
-        _URL = [URL retain];
+        _URL = URL;
     }
 }
 
 - (void)dealloc
 {
-    [_URL release];
-    [super dealloc];
 }
 
 @end
@@ -424,7 +418,6 @@ static float CharonMDLChannelAt(const uint8_t *texels, NSInteger stride, NSInteg
 {
     CGColorRelease(_color1);
     CGColorRelease(_color2);
-    [super dealloc];
 }
 
 - (CGColorRef)color1

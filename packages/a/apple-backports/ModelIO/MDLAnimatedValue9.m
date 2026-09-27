@@ -35,7 +35,6 @@ typedef struct {
 - (void)dealloc
 {
     free(self.charon_samples);
-    [super dealloc];
 }
 
 - (id)copyWithZone:(NSZone *)zone

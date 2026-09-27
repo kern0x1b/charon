@@ -131,8 +131,6 @@ static matrix_double4x4 CharonMDLQuaternionMatrix(simd_quatd rotation)
 
 - (void)dealloc
 {
-    [_value release];
-    [super dealloc];
 }
 
 - (CharonMDLOpRecord *)charon_record
@@ -148,7 +146,6 @@ static matrix_double4x4 CharonMDLQuaternionMatrix(simd_quatd rotation)
 - (void)charon_setAnimatedValue:(MDLAnimatedValue *)value
 {
     if (_value != value) {
-        [_value release];
         _value = (id)value;
     }
 }
@@ -206,8 +203,6 @@ static matrix_double4x4 CharonMDLQuaternionMatrix(simd_quatd rotation)
 
 - (void)dealloc
 {
-    [_value release];
-    [super dealloc];
 }
 
 - (CharonMDLOpRecord *)charon_record
@@ -223,7 +218,6 @@ static matrix_double4x4 CharonMDLQuaternionMatrix(simd_quatd rotation)
 - (void)charon_setAnimatedValue:(MDLAnimatedValue *)value
 {
     if (_value != value) {
-        [_value release];
         _value = (id)value;
     }
 }
@@ -280,8 +274,6 @@ static matrix_double4x4 CharonMDLQuaternionMatrix(simd_quatd rotation)
 
 - (void)dealloc
 {
-    [_value release];
-    [super dealloc];
 }
 
 - (CharonMDLOpRecord *)charon_record
@@ -297,7 +289,6 @@ static matrix_double4x4 CharonMDLQuaternionMatrix(simd_quatd rotation)
 - (void)charon_setAnimatedValue:(MDLAnimatedValue *)value
 {
     if (_value != value) {
-        [_value release];
         _value = (id)value;
     }
 }
@@ -354,8 +345,6 @@ static matrix_double4x4 CharonMDLQuaternionMatrix(simd_quatd rotation)
 
 - (void)dealloc
 {
-    [_value release];
-    [super dealloc];
 }
 
 - (CharonMDLOpRecord *)charon_record
@@ -371,7 +360,6 @@ static matrix_double4x4 CharonMDLQuaternionMatrix(simd_quatd rotation)
 - (void)charon_setAnimatedValue:(MDLAnimatedValue *)value
 {
     if (_value != value) {
-        [_value release];
         _value = (id)value;
     }
 }
@@ -391,8 +379,8 @@ static matrix_double4x4 CharonMDLQuaternionMatrix(simd_quatd rotation)
     [self charon_setAnimatedValue:[(MDLAnimatedValue *)(MDLAnimatedValue *)[(id)op animatedValue] copy]];
     _record.name = [op name];
     _record.inverse = [op IsInverseOp];
-    if ([op isKindOfClass:[MDLTransformRotateOp class]])
-        _order = [(MDLTransformRotateOp *)op charon_order];
+    if ([(id)op isKindOfClass:[MDLTransformRotateOp class]])
+        _order = [(MDLTransformRotateOp *)(id)op charon_order];
 }
 
 - (NSString *)name
@@ -439,8 +427,6 @@ static matrix_double4x4 CharonMDLQuaternionMatrix(simd_quatd rotation)
 
 - (void)dealloc
 {
-    [_value release];
-    [super dealloc];
 }
 
 - (CharonMDLOpRecord *)charon_record
@@ -456,7 +442,6 @@ static matrix_double4x4 CharonMDLQuaternionMatrix(simd_quatd rotation)
 - (void)charon_setAnimatedValue:(MDLAnimatedValue *)value
 {
     if (_value != value) {
-        [_value release];
         _value = (id)value;
     }
 }
@@ -512,8 +497,6 @@ static matrix_double4x4 CharonMDLQuaternionMatrix(simd_quatd rotation)
 
 - (void)dealloc
 {
-    [_value release];
-    [super dealloc];
 }
 
 - (CharonMDLOpRecord *)charon_record
@@ -529,7 +512,6 @@ static matrix_double4x4 CharonMDLQuaternionMatrix(simd_quatd rotation)
 - (void)charon_setAnimatedValue:(MDLAnimatedValue *)value
 {
     if (_value != value) {
-        [_value release];
         _value = (id)value;
     }
 }
@@ -585,8 +567,6 @@ static matrix_double4x4 CharonMDLQuaternionMatrix(simd_quatd rotation)
 
 - (void)dealloc
 {
-    [_value release];
-    [super dealloc];
 }
 
 - (CharonMDLOpRecord *)charon_record
@@ -602,7 +582,6 @@ static matrix_double4x4 CharonMDLQuaternionMatrix(simd_quatd rotation)
 - (void)charon_setAnimatedValue:(MDLAnimatedValue *)value
 {
     if (_value != value) {
-        [_value release];
         _value = (id)value;
     }
 }
@@ -656,8 +635,6 @@ static matrix_double4x4 CharonMDLQuaternionMatrix(simd_quatd rotation)
 
 - (void)dealloc
 {
-    [_value release];
-    [super dealloc];
 }
 
 - (CharonMDLOpRecord *)charon_record
@@ -673,7 +650,6 @@ static matrix_double4x4 CharonMDLQuaternionMatrix(simd_quatd rotation)
 - (void)charon_setAnimatedValue:(MDLAnimatedValue *)value
 {
     if (_value != value) {
-        [_value release];
         _value = (id)value;
     }
 }
@@ -736,16 +712,14 @@ static matrix_double4x4 CharonMDLQuaternionMatrix(simd_quatd rotation)
 
 - (void)dealloc
 {
-    [_ops release];
-    [_values release];
-    [super dealloc];
 }
 
 - (id)copyWithZone:(NSZone *)zone
 {
     MDLTransformStack *copy = [[[self class] allocWithZone:zone] init];
     for (id<MDLTransformOp> op in _ops) {
-        id<CharonMDLTransformOpRecord> duplicate = [[[op class] allocWithZone:zone] init];
+        Class kind = [(id)op class];
+        id<CharonMDLTransformOpRecord> duplicate = [[kind allocWithZone:zone] init];
         // The copy keeps the samples of the value, not an empty one of the same shape.
         [duplicate charon_takeOverFrom:op];
         [copy charon_addOp:duplicate named:op.name inverse:[op IsInverseOp]];
@@ -766,35 +740,35 @@ static matrix_double4x4 CharonMDLQuaternionMatrix(simd_quatd rotation)
 
 - (MDLTransformTranslateOp *)addTranslateOp:(NSString *)animatedValueName inverse:(bool)inverse
 {
-    MDLTransformTranslateOp *op = [[[MDLTransformTranslateOp alloc] init] autorelease];
+    MDLTransformTranslateOp *op = [[MDLTransformTranslateOp alloc] init];
     [self charon_addOp:op named:animatedValueName inverse:inverse];
     return op;
 }
 
 - (MDLTransformRotateXOp *)addRotateXOp:(NSString *)animatedValueName inverse:(bool)inverse
 {
-    MDLTransformRotateXOp *op = [[[MDLTransformRotateXOp alloc] init] autorelease];
+    MDLTransformRotateXOp *op = [[MDLTransformRotateXOp alloc] init];
     [self charon_addOp:op named:animatedValueName inverse:inverse];
     return op;
 }
 
 - (MDLTransformRotateYOp *)addRotateYOp:(NSString *)animatedValueName inverse:(bool)inverse
 {
-    MDLTransformRotateYOp *op = [[[MDLTransformRotateYOp alloc] init] autorelease];
+    MDLTransformRotateYOp *op = [[MDLTransformRotateYOp alloc] init];
     [self charon_addOp:op named:animatedValueName inverse:inverse];
     return op;
 }
 
 - (MDLTransformRotateZOp *)addRotateZOp:(NSString *)animatedValueName inverse:(bool)inverse
 {
-    MDLTransformRotateZOp *op = [[[MDLTransformRotateZOp alloc] init] autorelease];
+    MDLTransformRotateZOp *op = [[MDLTransformRotateZOp alloc] init];
     [self charon_addOp:op named:animatedValueName inverse:inverse];
     return op;
 }
 
 - (MDLTransformRotateOp *)addRotateOp:(NSString *)animatedValueName order:(MDLTransformOpRotationOrder)order inverse:(bool)inverse
 {
-    MDLTransformRotateOp *op = [[[MDLTransformRotateOp alloc] init] autorelease];
+    MDLTransformRotateOp *op = [[MDLTransformRotateOp alloc] init];
     [op charon_setOrder:order];
     [self charon_addOp:op named:animatedValueName inverse:inverse];
     return op;
@@ -802,21 +776,21 @@ static matrix_double4x4 CharonMDLQuaternionMatrix(simd_quatd rotation)
 
 - (MDLTransformScaleOp *)addScaleOp:(NSString *)animatedValueName inverse:(bool)inverse
 {
-    MDLTransformScaleOp *op = [[[MDLTransformScaleOp alloc] init] autorelease];
+    MDLTransformScaleOp *op = [[MDLTransformScaleOp alloc] init];
     [self charon_addOp:op named:animatedValueName inverse:inverse];
     return op;
 }
 
 - (MDLTransformMatrixOp *)addMatrixOp:(NSString *)animatedValueName inverse:(bool)inverse
 {
-    MDLTransformMatrixOp *op = [[[MDLTransformMatrixOp alloc] init] autorelease];
+    MDLTransformMatrixOp *op = [[MDLTransformMatrixOp alloc] init];
     [self charon_addOp:op named:animatedValueName inverse:inverse];
     return op;
 }
 
 - (MDLTransformOrientOp *)addOrientOp:(NSString *)animatedValueName inverse:(bool)inverse
 {
-    MDLTransformOrientOp *op = [[[MDLTransformOrientOp alloc] init] autorelease];
+    MDLTransformOrientOp *op = [[MDLTransformOrientOp alloc] init];
     [self charon_addOp:op named:animatedValueName inverse:inverse];
     return op;
 }
@@ -833,7 +807,7 @@ static matrix_double4x4 CharonMDLQuaternionMatrix(simd_quatd rotation)
 
 - (NSArray<id<MDLTransformOp>> *)transformOps
 {
-    return [[_ops copy] autorelease];
+    return [_ops copy];
 }
 
 - (matrix_double4x4)double4x4AtTime:(NSTimeInterval)time

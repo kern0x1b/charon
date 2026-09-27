@@ -73,8 +73,6 @@ static vector_float3 CharonMDLRotationAngles(matrix_float4x4 rotation)
 
 - (void)dealloc
 {
-    [_samples release];
-    [super dealloc];
 }
 
 - (instancetype)init

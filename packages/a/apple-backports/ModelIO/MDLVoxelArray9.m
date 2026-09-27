@@ -86,8 +86,6 @@ static NSUInteger CharonMDLVoxelCount(MDLVoxelIndex minimum, MDLVoxelIndex maxim
 
 - (void)dealloc
 {
-    [_filled release];
-    [super dealloc];
 }
 
 - (NSUInteger)count
@@ -233,8 +231,9 @@ static NSUInteger CharonMDLVoxelCount(MDLVoxelIndex minimum, MDLVoxelIndex maxim
         if (CharonMDLVoxelIndex(at, mine.minimumExtent, mine.maximumExtent, &linear))
             [theirs addIndex:linear];
     }
-    [_filled intersectIndexSet:theirs];
-    [theirs release];
+    for (NSUInteger linear = 0; linear < CharonMDLVoxelCount(mine.minimumExtent, mine.maximumExtent); linear++)
+        if ([_filled containsIndex:linear] && ![theirs containsIndex:linear])
+            [_filled removeIndex:linear];
 }
 
 - (void)differenceWithVoxels:(MDLVoxelArray *)voxels
@@ -292,8 +291,10 @@ static NSUInteger CharonMDLVoxelCount(MDLVoxelIndex minimum, MDLVoxelIndex maxim
     // negative one, which is the signed shell field: inside the shape, on it, and outside it.
     NSMutableIndexSet *shell = [[NSMutableIndexSet alloc] init];
     MDLVoxelIndexExtent extent = self.voxelIndexExtent;
-    for (NSUInteger k = 0; k < _filled.count; k++) {
-        MDLVoxelIndex at = [self charon_indexOfLinear:(NSUInteger)[_filled indexAtIndex:k]];
+    for (NSUInteger linear = 0; linear < CharonMDLVoxelCount(extent.minimumExtent, extent.maximumExtent); linear++) {
+        if (![_filled containsIndex:linear])
+            continue;
+        MDLVoxelIndex at = [self charon_indexOfLinear:linear];
         BOOL touching = NO;
         for (int dz = -1; dz <= 1 && !touching; dz++)
             for (int dy = -1; dy <= 1 && !touching; dy++)
@@ -310,8 +311,8 @@ static NSUInteger CharonMDLVoxelCount(MDLVoxelIndex minimum, MDLVoxelIndex maxim
         if (touching && CharonMDLVoxelIndex(at, extent.minimumExtent, extent.maximumExtent, &linear))
             [shell addIndex:linear];
     }
-    [_filled setIndexes:shell];
-    [shell release];
+    [_filled removeAllIndexes];
+    [_filled addIndexes:shell];
     _validSignedShellField = YES;
 }
 

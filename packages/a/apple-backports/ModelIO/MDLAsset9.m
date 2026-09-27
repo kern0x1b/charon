@@ -28,11 +28,12 @@
 
 - (void)dealloc
 {
-    [_objects release];
-    [_resolver release];
-    [super dealloc];
 }
 
+@end
+
+@interface MDLAsset (CharonReaders)
+- (void)charon_read;
 @end
 
 @implementation MDLAsset {
@@ -61,10 +62,9 @@
 - (instancetype)initWithURL:(NSURL *)URL vertexDescriptor:(MDLVertexDescriptor *)vertexDescriptor bufferAllocator:(id<MDLMeshBufferAllocator>)bufferAllocator
 {
     if ((self = [self initWithBufferAllocator:bufferAllocator])) {
-        [_descriptor release];
         _descriptor = [vertexDescriptor copy];
         if (URL) {
-            _URL = [URL retain];
+            _URL = URL;
             [self charon_read];
         }
     }
@@ -90,7 +90,7 @@
 {
     if ((self = [super init])) {
         _objects = [[NSMutableArray alloc] init];
-        _allocator = [bufferAllocator retain];
+        _allocator = bufferAllocator;
         _descriptor = [[MDLVertexDescriptor alloc] init];
         _frameInterval = 1 / 30.0;
     }
@@ -99,13 +99,6 @@
 
 - (void)dealloc
 {
-    [_objects release];
-    [_masters release];
-    [_originals release];
-    [_allocator release];
-    [_descriptor release];
-    [_URL release];
-    [super dealloc];
 }
 
 - (id)copyWithZone:(NSZone *)zone
@@ -274,8 +267,6 @@
 
 - (void)dealloc
 {
-    [_path release];
-    [super dealloc];
 }
 
 - (NSURL *)resolveAssetNamed:(NSString *)name
@@ -312,8 +303,6 @@
 
 - (void)dealloc
 {
-    [_path release];
-    [super dealloc];
 }
 
 // A bundle is a directory: the path given, or the main bundle's own resource directory.
@@ -333,10 +322,6 @@
     return resolved && [[NSFileManager defaultManager] fileExistsAtPath:resolved.path];
 }
 
-@end
-
-@interface MDLAsset (CharonReaders)
-- (void)charon_read;
 @end
 
 // What a reader builds: the meshes and their materials, with the geometry the file really holds. The
@@ -439,7 +424,7 @@ static MDLMesh *CharonMDLBuildMesh(CharonMDLSourceMesh *mesh, id<MDLMeshBufferAl
     [vertexBuffer fillData:vertices offset:0];
     [indexBuffer fillData:indices offset:0];
 
-    MDLVertexDescriptor *descriptor = [[[MDLVertexDescriptor alloc] init] autorelease];
+    MDLVertexDescriptor *descriptor = [[MDLVertexDescriptor alloc] init];
     [descriptor addOrReplaceAttribute:[[MDLVertexAttribute alloc] initWithName:MDLVertexAttributePosition format:MDLVertexFormatFloat3
                                                                               offset:0 bufferIndex:0]];
     [descriptor addOrReplaceAttribute:[[MDLVertexAttribute alloc] initWithName:MDLVertexAttributeNormal format:MDLVertexFormatFloat3
@@ -448,14 +433,13 @@ static MDLMesh *CharonMDLBuildMesh(CharonMDLSourceMesh *mesh, id<MDLMeshBufferAl
                                                                           format:MDLVertexFormatFloat2
                                                                           offset:sizeof(vector_float3) * 2 bufferIndex:0]];
     [descriptor.layouts addObject:[[MDLVertexBufferLayout alloc] initWithStride:stride]];
-    MDLMaterial *material = [[[MDLMaterial alloc] initWithName:name
-                                          scatteringFunction:[[[MDLPhysicallyPlausibleScatteringFunction alloc] init] autorelease]]
-        autorelease];
-    MDLSubmesh *submesh = [[[MDLSubmesh alloc] initWithName:name indexBuffer:indexBuffer indexCount:mesh->indexCount
+    MDLMaterial *material = [[MDLMaterial alloc] initWithName:name
+                                          scatteringFunction:[[MDLPhysicallyPlausibleScatteringFunction alloc] init]];
+    MDLSubmesh *submesh = [[MDLSubmesh alloc] initWithName:name indexBuffer:indexBuffer indexCount:mesh->indexCount
                                                    indexType:MDLIndexBitDepthUInt32 geometryType:MDLGeometryTypeTriangles
-                                                    material:material] autorelease];
-    return [[[MDLMesh alloc] initWithVertexBuffers:@[vertexBuffer] vertexCount:mesh->vertexCount descriptor:descriptor
-                                         submeshes:@[submesh]] autorelease];
+                                                    material:material];
+    return [[MDLMesh alloc] initWithVertexBuffers:@[vertexBuffer] vertexCount:mesh->vertexCount descriptor:descriptor
+                                         submeshes:@[submesh]];
 }
 
 // The Wavefront object: the vertices, the normals and the texture coordinates it lists, and the
@@ -465,7 +449,7 @@ static MDLMesh *CharonMDLBuildMesh(CharonMDLSourceMesh *mesh, id<MDLMeshBufferAl
 // "usemtl" a new material, and each object becomes one mesh.
 static void CharonMDLReadOBJ(NSData *data, NSMutableArray<MDLObject *> *objects, id<MDLMeshBufferAllocator> allocator)
 {
-    NSString *text = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
+    NSString *text = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     if (!text)
         return;
     vector_float3 *positions = NULL, *normals = NULL;
@@ -673,7 +657,7 @@ static int CharonMDLPLYKind(NSString *type, NSString *name)
 
 static void CharonMDLReadPLY(NSData *data, NSMutableArray<MDLObject *> *objects, id<MDLMeshBufferAllocator> allocator)
 {
-    NSString *text = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
+    NSString *text = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     if (!text)
         return;
     NSRange header = [text rangeOfString:@"end_header"];
@@ -707,7 +691,6 @@ static void CharonMDLReadPLY(NSData *data, NSMutableArray<MDLObject *> *objects,
                 property.kind = 1;
                 property.countKind = CharonMDLPLYKind(words[2], @"count");
                 property.valueKind = words.count > 4 ? CharonMDLPLYKind(words[3], words[4]) : 6;
-                [property.name getCString:property.name maxLength:sizeof property.name encoding:NSASCIIStringEncoding];
                 strncpy(property.name, words[4].UTF8String ?: "list", sizeof property.name - 1);
             } else if (words.count > 2) {
                 property.kind = 0;
@@ -881,7 +864,7 @@ static NSString *CharonMDLUSDAArray(NSString *text, NSString *after, NSString **
 
 static void CharonMDLReadUSDA(NSData *data, NSMutableArray<MDLObject *> *objects, id<MDLMeshBufferAllocator> allocator)
 {
-    NSString *text = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
+    NSString *text = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     if (!text)
         return;
     NSUInteger at = 0;

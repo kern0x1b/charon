@@ -49,12 +49,12 @@ static NSUInteger CharonMDLIndexSize(MDLIndexBitDepth depth)
 {
     if ((self = [super init])) {
         _name = [name copy];
-        _indexBuffer = [indexBuffer retain];
+        _indexBuffer = indexBuffer;
         _indexCount = indexCount;
         _indexType = indexType;
         _geometryType = geometryType;
-        _material = [material retain];
-        _topology = [topology retain];
+        _material = material;
+        _topology = topology;
     }
     return self;
 }
@@ -82,11 +82,6 @@ static NSUInteger CharonMDLIndexSize(MDLIndexBitDepth depth)
 
 - (void)dealloc
 {
-    [_indexBuffer release];
-    [_material release];
-    [_topology release];
-    [_name release];
-    [super dealloc];
 }
 
 - (id<MDLMeshBuffer>)indexBufferAsIndexType:(MDLIndexBitDepth)indexType
@@ -159,7 +154,7 @@ static NSUInteger CharonMDLIndexSize(MDLIndexBitDepth depth)
 - (instancetype)initWithSubmesh:(MDLSubmesh *)submesh
 {
     if ((self = [super init])) {
-        _faceTopology = [submesh.indexBuffer retain];
+        _faceTopology = submesh.indexBuffer;
         // The faces of a submesh are its faces, not its indices: three of a triangle, four of a
         // quad, and one index each for the topologies that are not made of faces.
         switch (submesh.geometryType) {
@@ -182,13 +177,6 @@ static NSUInteger CharonMDLIndexSize(MDLIndexBitDepth depth)
 
 - (void)dealloc
 {
-    [_faceTopology release];
-    [_vertexCreaseIndices release];
-    [_vertexCreases release];
-    [_edgeCreaseIndices release];
-    [_edgeCreases release];
-    [_holes release];
-    [super dealloc];
 }
 
 @end

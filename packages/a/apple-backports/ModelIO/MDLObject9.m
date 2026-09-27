@@ -35,17 +35,11 @@
 
 - (void)dealloc
 {
-    [_components release];
-    [_name release];
-    [_instance release];
-    [_children release];
-    [_transform release];
-    [super dealloc];
 }
 
 - (NSArray<id<MDLComponent>> *)components
 {
-    return [[_components copy] autorelease];
+    return [_components copy];
 }
 
 - (void)setComponent:(id<MDLComponent>)component forProtocol:(Protocol *)protocol
@@ -95,8 +89,7 @@
 - (void)setInstance:(MDLObject *)instance
 {
     if (_instance != instance) {
-        [_instance release];
-        _instance = [instance retain];
+        _instance = instance;
     }
 }
 
@@ -108,8 +101,7 @@
 - (void)setTransform:(id<MDLTransformComponent>)transform
 {
     if (_transform != transform) {
-        [_transform release];
-        _transform = [transform retain];
+        _transform = transform;
     }
 }
 
@@ -126,8 +118,7 @@
 - (void)setChildren:(id<MDLObjectContainerComponent>)children
 {
     if (_children != children) {
-        [_children release];
-        _children = [children retain];
+        _children = children;
     }
     // A container that is not the object's own one still makes its objects children of this object.
     if ([children isKindOfClass:[MDLObjectContainer class]])
@@ -245,8 +236,6 @@
 
 - (void)dealloc
 {
-    [_objects release];
-    [super dealloc];
 }
 
 - (void)addObject:(MDLObject *)object
@@ -280,7 +269,7 @@
 
 - (NSArray<MDLObject *> *)objects
 {
-    return [[_objects copy] autorelease];
+    return [_objects copy];
 }
 
 - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(id __unsafe_unretained [])buffer count:(NSUInteger)length

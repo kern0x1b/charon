@@ -25,8 +25,6 @@
 {
     if (_deallocator)
         _deallocator();
-    [_deallocator release];
-    [super dealloc];
 }
 
 - (void *)bytes
@@ -52,15 +50,12 @@
 {
     _capacity = capacity;
     if (_allocator != allocator) {
-        [_allocator release];
-        _allocator = [allocator retain];
+        _allocator = allocator;
     }
 }
 
 - (void)dealloc
 {
-    [_allocator release];
-    [super dealloc];
 }
 
 @end
@@ -90,10 +85,6 @@
 
 - (void)dealloc
 {
-    [_data release];
-    [_allocator release];
-    [_zone release];
-    [super dealloc];
 }
 
 - (NSData *)data
@@ -130,7 +121,7 @@
 
 - (MDLMeshBufferMap *)map
 {
-    return [[[MDLMeshBufferMap alloc] initWithBytes:_data.mutableBytes deallocator:nil] autorelease];
+    return [[MDLMeshBufferMap alloc] initWithBytes:_data.mutableBytes deallocator:nil];
 }
 
 - (id)copyWithZone:(NSZone *)zone
@@ -145,12 +136,10 @@
 - (void)charon_setAllocator:(id<MDLMeshBufferAllocator>)allocator zone:(id<MDLMeshBufferZone>)zone
 {
     if (_allocator != allocator) {
-        [_allocator release];
-        _allocator = [allocator retain];
+        _allocator = allocator;
     }
     if (_zone != zone) {
-        [_zone release];
-        _zone = [zone retain];
+        _zone = zone;
     }
 }
 
@@ -198,7 +187,7 @@
         return nil;
     if (zone && data.length > zone.capacity)
         return nil;
-    MDLMeshBufferData *buffer = [[[MDLMeshBufferData alloc] initWithType:type data:data] autorelease];
+    MDLMeshBufferData *buffer = [[MDLMeshBufferData alloc] initWithType:type data:data];
     [buffer charon_setAllocator:self zone:zone];
     return buffer;
 }

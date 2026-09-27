@@ -48,8 +48,6 @@ static NSUInteger CharonMDLVertexComponentSize(MDLVertexFormat format)
 
 - (void)dealloc
 {
-    [_map release];
-    [super dealloc];
 }
 
 @end
@@ -71,7 +69,7 @@ static NSUInteger CharonMDLVertexComponentSize(MDLVertexFormat format)
 - (instancetype)initWithBufferAllocator:(id<MDLMeshBufferAllocator>)bufferAllocator
 {
     if ((self = [super init])) {
-        _allocator = [bufferAllocator retain];
+        _allocator = bufferAllocator;
         _descriptor = [[MDLVertexDescriptor alloc] init];
         _vertexBuffers = [[NSArray alloc] init];
         _submeshes = [[NSMutableArray alloc] init];
@@ -81,11 +79,6 @@ static NSUInteger CharonMDLVertexComponentSize(MDLVertexFormat format)
 
 - (void)dealloc
 {
-    [_allocator release];
-    [_descriptor release];
-    [_vertexBuffers release];
-    [_submeshes release];
-    [super dealloc];
 }
 
 - (instancetype)initWithVertexBuffers:(NSArray<id<MDLMeshBuffer>> *)vertexBuffers
@@ -97,7 +90,6 @@ static NSUInteger CharonMDLVertexComponentSize(MDLVertexFormat format)
         _vertexBuffers = [vertexBuffers copy];
         _vertexCount = vertexCount;
         if (descriptor) {
-            [_descriptor release];
             _descriptor = [descriptor copy];
         }
         [_submeshes addObjectsFromArray:submeshes ?: @[]];
@@ -131,7 +123,7 @@ static NSUInteger CharonMDLVertexComponentSize(MDLVertexFormat format)
         return nil;
     NSUInteger from = CharonMDLVertexComponentSize(attribute.format) * (attribute.format & 0x1F);
     NSUInteger to = CharonMDLVertexComponentSize(format) * (format & 0x1F);
-    MDLVertexAttributeData *data = [[[MDLVertexAttributeData alloc] init] autorelease];
+    MDLVertexAttributeData *data = [[MDLVertexAttributeData alloc] init];
     data.format = format;
     data.stride = to ? to : layoutStride;
     if (format == attribute.format) {
@@ -169,7 +161,7 @@ static NSUInteger CharonMDLVertexComponentSize(MDLVertexFormat format)
             memcpy(target + component * CharonMDLVertexComponentSize(format), &value, CharonMDLVertexComponentSize(format));
         }
     }
-    data.map = [[[MDLMeshBufferMap alloc] initWithBytes:out.mutableBytes deallocator:nil] autorelease];
+    data.map = [[MDLMeshBufferMap alloc] initWithBytes:out.mutableBytes deallocator:nil];
     data.dataStart = out.mutableBytes;
     return data;
 }
@@ -203,7 +195,6 @@ static NSUInteger CharonMDLVertexComponentSize(MDLVertexFormat format)
 {
     MDLVertexAttribute *attribute = [[MDLVertexAttribute alloc] initWithName:name format:format offset:0 bufferIndex:0];
     [_descriptor addOrReplaceAttribute:attribute];
-    [attribute release];
 }
 
 // The data of a new attribute, laid out at the stride the caller gives and read at the format the
@@ -229,7 +220,6 @@ static NSUInteger CharonMDLVertexComponentSize(MDLVertexFormat format)
     MDLVertexAttribute *attribute = [[MDLVertexAttribute alloc] initWithName:name format:format offset:0 bufferIndex:index];
     attribute.time = time;
     [_descriptor addOrReplaceAttribute:attribute];
-    [attribute release];
 }
 
 - (void)addAttributeWithName:(NSString *)name

@@ -35,7 +35,7 @@ typedef struct {
                             geometryType:(MDLGeometryType)geometryType
                                    name:(NSString *)name
 {
-    id<MDLMeshBufferAllocator> allocator = self.allocator ?: [[[MDLMeshBufferDataAllocator alloc] init] autorelease];
+    id<MDLMeshBufferAllocator> allocator = self.allocator ?: [[MDLMeshBufferDataAllocator alloc] init];
     id<MDLMeshBuffer> vertexBuffer = [allocator newBuffer:vertices.length type:MDLMeshBufferTypeVertex];
     id<MDLMeshBuffer> indexBuffer = [allocator newBuffer:indices.length type:MDLMeshBufferTypeIndex];
     if (!vertexBuffer || !indexBuffer)
@@ -54,19 +54,13 @@ typedef struct {
     [descriptor addOrReplaceAttribute:normal];
     [descriptor addOrReplaceAttribute:uv];
     [descriptor.layouts addObject:[[MDLVertexBufferLayout alloc] initWithStride:sizeof(CharonMDLGeneratedVertex)]];
-    [position release];
-    [normal release];
-    [uv release];
 
-    MDLMaterial *material = [[[MDLMaterial alloc] initWithName:@""
-                                          scatteringFunction:[[[MDLPhysicallyPlausibleScatteringFunction alloc] init] autorelease]]
-        autorelease];
-    MDLSubmesh *submesh = [[[MDLSubmesh alloc] initWithName:name ?: @"" indexBuffer:indexBuffer indexCount:indexCount
-                                                    indexType:MDLIndexBitDepthUInt32 geometryType:geometryType material:material]
-        autorelease];
-    MDLMesh *mesh = [[[MDLMesh alloc] initWithVertexBuffers:@[vertexBuffer] vertexCount:vertexCount descriptor:descriptor
-                                                  submeshes:@[submesh]] autorelease];
-    [descriptor release];
+    MDLMaterial *material = [[MDLMaterial alloc] initWithName:@""
+                                          scatteringFunction:[[MDLPhysicallyPlausibleScatteringFunction alloc] init]];
+    MDLSubmesh *submesh = [[MDLSubmesh alloc] initWithName:name ?: @"" indexBuffer:indexBuffer indexCount:indexCount
+                                                    indexType:MDLIndexBitDepthUInt32 geometryType:geometryType material:material];
+    MDLMesh *mesh = [[MDLMesh alloc] initWithVertexBuffers:@[vertexBuffer] vertexCount:vertexCount descriptor:descriptor
+                                                  submeshes:@[submesh]];
     return mesh;
 }
 
@@ -161,7 +155,7 @@ static void CharonMDLBuilderFree(CharonMDLBuilder *builder)
         }
     NSUInteger vertexCount, indexCount;
     NSData *vertices = CharonMDLBuilderVertices(&builder, &vertexCount), *indices = CharonMDLBuilderIndices(&builder, &indexCount);
-    MDLMesh *mesh = [[[MDLMesh alloc] initWithBufferAllocator:allocator] autorelease];
+    MDLMesh *mesh = [[MDLMesh alloc] initWithBufferAllocator:allocator];
     mesh = [mesh charon_meshWithVertices:vertices vertexCount:vertexCount indices:indices indexCount:indexCount
                             geometryType:geometryType name:@"plane"];
     CharonMDLBuilderFree(&builder);
@@ -221,7 +215,7 @@ static void CharonMDLBuilderFree(CharonMDLBuilder *builder)
         }
     NSUInteger vertexCount, indexCount;
     NSData *vertices = CharonMDLBuilderVertices(&builder, &vertexCount), *indices = CharonMDLBuilderIndices(&builder, &indexCount);
-    MDLMesh *mesh = [[[MDLMesh alloc] initWithBufferAllocator:allocator] autorelease];
+    MDLMesh *mesh = [[MDLMesh alloc] initWithBufferAllocator:allocator];
     mesh = [mesh charon_meshWithVertices:vertices vertexCount:vertexCount indices:indices indexCount:indexCount
                             geometryType:geometryType name:@"ellipsoid"];
     CharonMDLBuilderFree(&builder);
@@ -284,7 +278,7 @@ static void CharonMDLBuilderFree(CharonMDLBuilder *builder)
     }
     NSUInteger vertexCount, indexCount;
     NSData *vertices = CharonMDLBuilderVertices(&builder, &vertexCount), *indices = CharonMDLBuilderIndices(&builder, &indexCount);
-    MDLMesh *mesh = [[[MDLMesh alloc] initWithBufferAllocator:allocator] autorelease];
+    MDLMesh *mesh = [[MDLMesh alloc] initWithBufferAllocator:allocator];
     mesh = [mesh charon_meshWithVertices:vertices vertexCount:vertexCount indices:indices indexCount:indexCount
                             geometryType:geometryType name:@"box"];
     CharonMDLBuilderFree(&builder);
@@ -298,7 +292,7 @@ static void CharonMDLBuilderFree(CharonMDLBuilder *builder)
                        inwardNormals:(BOOL)inwardNormals
                            allocator:(id<MDLMeshBufferAllocator>)allocator
 {
-    MDLMesh *mesh = [[[MDLMesh alloc] initWithBufferAllocator:allocator] autorelease];
+    MDLMesh *mesh = [[MDLMesh alloc] initWithBufferAllocator:allocator];
     return [mesh initBoxWithExtent:dimensions segments:segments inwardNormals:inwardNormals geometryType:geometryType allocator:allocator];
 }
 
@@ -361,7 +355,7 @@ static void CharonMDLTaperedTube(CharonMDLBuilder *builder, float lower, float u
                          inwardNormals, radii.y > 0, radii.x > 0);
     NSUInteger vertexCount, indexCount;
     NSData *vertices = CharonMDLBuilderVertices(&builder, &vertexCount), *indices = CharonMDLBuilderIndices(&builder, &indexCount);
-    MDLMesh *mesh = [[[MDLMesh alloc] initWithBufferAllocator:allocator] autorelease];
+    MDLMesh *mesh = [[MDLMesh alloc] initWithBufferAllocator:allocator];
     mesh = [mesh charon_meshWithVertices:vertices vertexCount:vertexCount indices:indices indexCount:indexCount
                             geometryType:geometryType name:@"cylinder"];
     CharonMDLBuilderFree(&builder);
@@ -381,7 +375,7 @@ static void CharonMDLTaperedTube(CharonMDLBuilder *builder, float lower, float u
                          MAX((NSUInteger)1, segments.y), inwardNormals, topCap, bottomCap);
     NSUInteger vertexCount, indexCount;
     NSData *vertices = CharonMDLBuilderVertices(&builder, &vertexCount), *indices = CharonMDLBuilderIndices(&builder, &indexCount);
-    MDLMesh *mesh = [[[MDLMesh alloc] initWithBufferAllocator:allocator] autorelease];
+    MDLMesh *mesh = [[MDLMesh alloc] initWithBufferAllocator:allocator];
     mesh = [mesh charon_meshWithVertices:vertices vertexCount:vertexCount indices:indices indexCount:indexCount
                             geometryType:geometryType name:@"cylinder"];
     CharonMDLBuilderFree(&builder);
@@ -430,7 +424,7 @@ static void CharonMDLTaperedTube(CharonMDLBuilder *builder, float lower, float u
     }
     NSUInteger vertexCount, indexCount;
     NSData *vertices = CharonMDLBuilderVertices(&builder, &vertexCount), *indices = CharonMDLBuilderIndices(&builder, &indexCount);
-    MDLMesh *mesh = [[[MDLMesh alloc] initWithBufferAllocator:allocator] autorelease];
+    MDLMesh *mesh = [[MDLMesh alloc] initWithBufferAllocator:allocator];
     mesh = [mesh charon_meshWithVertices:vertices vertexCount:vertexCount indices:indices indexCount:indexCount
                             geometryType:geometryType name:@"cone"];
     CharonMDLBuilderFree(&builder);

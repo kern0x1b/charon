@@ -1,4 +1,5 @@
 #import <ModelIO/ModelIO.h>
+#import <string.h>
 
 #pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
 
@@ -44,10 +45,6 @@
 
 - (void)dealloc
 {
-    [_texture release];
-    [_hardwareFilter release];
-    [_transform release];
-    [super dealloc];
 }
 
 @end
@@ -97,13 +94,21 @@
     } else if (CFGetTypeID((__bridge CFTypeRef)value) == CGColorGetTypeID()) {
         [self charon_setColor:(__bridge CGColorRef)value];
     } else if (strncmp([value objCType], @encode(vector_float2), strlen(@encode(vector_float2))) == 0) {
-        [self charon_setFloat2:*(vector_float2 *)&value];
+        vector_float2 typed;
+        memcpy(&typed, &value, sizeof typed);
+        [self charon_setFloat2:typed];
     } else if (strncmp([value objCType], @encode(vector_float3), strlen(@encode(vector_float3))) == 0) {
-        [self charon_setFloat3:*(vector_float3 *)&value];
+        vector_float3 typed;
+        memcpy(&typed, &value, sizeof typed);
+        [self charon_setFloat3:typed];
     } else if (strncmp([value objCType], @encode(vector_float4), strlen(@encode(vector_float4))) == 0) {
-        [self charon_setFloat4:*(vector_float4 *)&value];
+        vector_float4 typed;
+        memcpy(&typed, &value, sizeof typed);
+        [self charon_setFloat4:typed];
     } else if (strncmp([value objCType], @encode(matrix_float4x4), strlen(@encode(matrix_float4x4))) == 0) {
-        [self charon_setMatrix4x4:*(matrix_float4x4 *)&value];
+        matrix_float4x4 typed;
+        memcpy(&typed, &value, sizeof typed);
+        [self charon_setMatrix4x4:typed];
     } else if ([value isKindOfClass:[NSData class]]) {
         _type = MDLMaterialPropertyTypeBuffer;
     } else {
@@ -114,7 +119,6 @@
 - (void)charon_setString:(NSString *)value
 {
     if (_stringValue != value) {
-        [_stringValue release];
         _stringValue = [value copy];
     }
     _type = MDLMaterialPropertyTypeString;
@@ -123,8 +127,7 @@
 - (void)charon_setURL:(NSURL *)value
 {
     if (_URLValue != value) {
-        [_URLValue release];
-        _URLValue = [value retain];
+        _URLValue = value;
     }
     _type = MDLMaterialPropertyTypeURL;
 }
@@ -132,8 +135,7 @@
 - (void)charon_setTextureSampler:(MDLTextureSampler *)value
 {
     if (_textureSamplerValue != value) {
-        [_textureSamplerValue release];
-        _textureSamplerValue = [value retain];
+        _textureSamplerValue = value;
     }
     _type = MDLMaterialPropertyTypeTexture;
 }
@@ -190,12 +192,7 @@
 
 - (void)dealloc
 {
-    [_name release];
-    [_stringValue release];
-    [_URLValue release];
-    [_textureSamplerValue release];
     CGColorRelease(_color);
-    [super dealloc];
 }
 
 - (float)luminance
@@ -305,9 +302,6 @@
 
 - (void)dealloc
 {
-    [_name release];
-    [_properties release];
-    [super dealloc];
 }
 
 - (void)charon_add:(NSString *)name semantic:(MDLMaterialSemantic)semantic type:(MDLMaterialPropertyType)type
@@ -326,7 +320,7 @@
         default:
             break;
     }
-    MDLMaterialProperty *property = [[[MDLMaterialProperty alloc] initWithName:name semantic:semantic value:value] autorelease];
+    MDLMaterialProperty *property = [[MDLMaterialProperty alloc] initWithName:name semantic:semantic value:value];
     [_properties setObject:property forKey:name];
 }
 
@@ -482,7 +476,7 @@
         _properties = [[NSMutableArray alloc] init];
         _byName = [[NSMutableDictionary alloc] init];
         _bySemantic = [[NSMutableDictionary alloc] init];
-        _scatteringFunction = [scatteringFunction retain];
+        _scatteringFunction = scatteringFunction;
         _materialFace = MDLMaterialFaceFront;
         [self setProperty:[scatteringFunction baseColor]];
         if ([scatteringFunction isKindOfClass:[MDLPhysicallyPlausibleScatteringFunction class]])
@@ -493,13 +487,6 @@
 
 - (void)dealloc
 {
-    [_properties release];
-    [_byName release];
-    [_bySemantic release];
-    [_scatteringFunction release];
-    [_name release];
-    [_baseMaterial release];
-    [super dealloc];
 }
 
 - (MDLScatteringFunction *)scatteringFunction
@@ -605,8 +592,6 @@
 
 - (void)dealloc
 {
-    [_name release];
-    [super dealloc];
 }
 
 @end
@@ -633,11 +618,6 @@
 
 - (void)dealloc
 {
-    [_inputs release];
-    [_outputs release];
-    [_evaluationFunction release];
-    [_name release];
-    [super dealloc];
 }
 
 - (NSArray<MDLMaterialProperty *> *)inputs
@@ -658,7 +638,6 @@
 - (void)setEvaluationFunction:(void (^)(MDLMaterialPropertyNode *))evaluationFunction
 {
     if (_evaluationFunction != evaluationFunction) {
-        [_evaluationFunction release];
         _evaluationFunction = [evaluationFunction copy];
     }
 }
@@ -685,10 +664,6 @@
 
 - (void)dealloc
 {
-    [_nodes release];
-    [_connections release];
-    [_name release];
-    [super dealloc];
 }
 
 - (NSArray<MDLMaterialPropertyNode *> *)nodes
