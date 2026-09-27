@@ -121,6 +121,8 @@ static simd_quatf CharonRotationBetween(simd_quatf from, simd_quatf to)
 @implementation CharonARTracker
 {
     AVCaptureSession *_capture;
+    AVCaptureConnection *_connection;
+    AVCaptureVideoOrientation _videoOrientation;
     AVCaptureVideoDataOutput *_output;
     AVCaptureDeviceInput *_input;
 #if !CHARON_NO_MOTION
@@ -381,6 +383,56 @@ static simd_quatf CharonRotationBetween(simd_quatf from, simd_quatf to)
     _running = YES;
     return YES;
 #endif
+#endif
+}
+
+- (CVPixelBufferRef)copyHighResolutionImageWithError:(NSError **)error
+{
+#if CHARON_NO_CAMERA
+    if (error)
+        *error = [NSError errorWithDomain:@"space.kern0x1b.arkit" code:1
+                                 userInfo:@{ NSLocalizedDescriptionKey: @"no camera on this device" }];
+    return NULL;
+#else
+    // The still output is the camera's own, added to the session the stream is already running on, so
+    // the photograph is taken with the same optics and at the same moment as the frames around it.
+    if (!_capture) {
+        if (error)
+            *error = [NSError errorWithDomain:@"space.kern0x1b.arkit" code:2
+                                     userInfo:@{ NSLocalizedDescriptionKey: @"the session is not running" }];
+        return NULL;
+    }
+    // The still output of this release's AVFoundation takes the picture at the camera's own active
+    // format, which is the largest one the video output is configured for - there is no separate
+    // high-resolution setting to ask for on a release that has none.
+    AVCaptureStillImageOutput *still = [[AVCaptureStillImageOutput alloc] init];
+    if ([_capture canAddOutput:still])
+        [_capture addOutput:still];
+    AVCaptureConnection *connection = [still connectionWithMediaType:AVMediaTypeVideo];
+    if (connection.isVideoOrientationSupported)
+        connection.videoOrientation = _videoOrientation;
+
+    __block CVPixelBufferRef taken = NULL;
+    __block NSError *failure = nil;
+    dispatch_semaphore_t done = dispatch_semaphore_create(0);
+    [still captureStillImageAsynchronouslyFromConnection:connection
+                                        completionHandler:^(CMSampleBufferRef buffer, NSError *captureError) {
+        if (captureError || !buffer) {
+            failure = captureError;
+        } else {
+            CVImageBufferRef image = CMSampleBufferGetImageBuffer(buffer);
+            if (image)
+                taken = CVPixelBufferRetain(image);
+        }
+        dispatch_semaphore_signal(done);
+    }];
+    dispatch_semaphore_wait(done, DISPATCH_TIME_FOREVER);
+    [_capture removeOutput:still];
+    if (!taken && error)
+        *error = failure ?: [NSError errorWithDomain:@"space.kern0x1b.arkit" code:3
+                                             userInfo:@{ NSLocalizedDescriptionKey:
+                                                             @"the camera returned no picture" }];
+    return taken;
 #endif
 }
 

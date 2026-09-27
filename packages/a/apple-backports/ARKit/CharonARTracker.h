@@ -108,6 +108,16 @@ typedef struct {
 /// refused - the camera by the application's own authorisation, the gyroscope by hardware.
 - (BOOL)startWithError:(NSError **)error;
 
+/// A still photograph of the scene, at the largest size the primary camera's still output will give.
+///
+/// This is the same camera the session captures from, asked for a single frame rather than a
+/// stream, which is what a high-resolution frame is: the same optics, the same pose, the same
+/// moment. The still output of this release's AVFoundation takes the picture at the camera's own
+/// active format, so the size is whatever the video output was configured for and nothing larger is
+/// claimed. `error` is filled in and NULL answered when the output could not take the picture.
+- (nullable CVPixelBufferRef)copyHighResolutionImageWithError:(NSError **)error
+    CF_RETURNS_RETAINED;
+
 /// Stops both, and forgets the world.
 - (void)stop;
 

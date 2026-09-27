@@ -38,6 +38,7 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @interface ARPointCloud (CharonPrivate)
+/// Built from the tracker's own samples, which are the same three floats a point cloud is.
 - (instancetype)initWithPoints:(NSData *)points count:(NSUInteger)count;
 @end
 
@@ -47,6 +48,18 @@ NS_ASSUME_NONNULL_BEGIN
                     direction:(simd_float3)direction
              allowingTarget:(ARRaycastTarget)target
                     alignment:(ARRaycastTargetAlignment)alignment;
+@end
+
+@interface ARWorldMap (CharonPrivate)
+/// Built from the anchors a session is carrying and the points behind them.
+- (instancetype)initWithAnchors:(NSArray<ARAnchor *> *)anchors
+                   featurePoints:(nullable ARPointCloud *)featurePoints;
+@end
+
+@interface ARTrackedRaycast (CharonPrivate)
+/// The query a tracked raycast keeps casting, which the session needs in order to cast it again.
+@property (nonatomic, strong) ARRaycastQuery *query;
+- (instancetype)initWithQuery:(ARRaycastQuery *)query;
 @end
 
 @interface ARRaycastResult (CharonPrivate)
@@ -71,6 +84,11 @@ NS_ASSUME_NONNULL_BEGIN
 /// The session names an anchor the application adds, because a name is what the application then
 /// finds it by.
 @property (nonatomic, copy) NSUUID *identifier;
+
+/// The same anchor in a different world frame, which is what moving the world's origin does to
+/// everything in it. A copy is made because an anchor's own transform is readonly and the
+/// application placed it where it placed it.
+- (ARAnchor *)anchorByApplyingOrigin:(simd_float4x4)origin;
 @end
 
 NS_ASSUME_NONNULL_END

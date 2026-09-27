@@ -77,6 +77,13 @@ static BOOL CharonDecodeStruct(NSCoder *coder, NSString *key, void *bytes, size_
 
 /// The header declares an anchor secure-coding, and an anchor is a name, a pose and nothing else, so
 /// the two are all there is to encode.
+- (ARAnchor *)anchorByApplyingOrigin:(simd_float4x4)origin
+{
+    ARAnchor *moved = [[ARAnchor alloc] initWithName:_name transform:simd_mul(origin, _transform)];
+    moved->_identifier = _identifier;
+    return moved;
+}
+
 + (BOOL)supportsSecureCoding { return YES; }
 
 - (void)encodeWithCoder:(NSCoder *)coder
