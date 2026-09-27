@@ -145,10 +145,15 @@ own triangles pass through, widened by the patch radius.
   and indices alike**: the system has four rings of vertices for two rings of quads, five for three and
   eight for six, with the index count of the quads alone, so each pole is a ring of its own and the
   ring past the last ring of quads repeats it. That is what the port emits now.
-- **A method the build did not have at all.** The same run found
+- **Three methods the build did not have at all.** The same run found
   `+[MDLMesh newBoxWithDimensions:segments:geometryType:inwardNormals:allocator:]` answering
-  *unrecognized selector* on the port while the system answers it: it is in the ledger and it was
-  missing from what the port carries. It is there now, over the box the extent form already builds.
+  *unrecognized selector* on the port while the system answers it, and behind it
+  `-[MDLMesh initBoxWithExtent:segments:inwardNormals:geometryType:allocator:]` and
+  `-[MDLMesh initSphereWithExtent:segments:inwardNormals:geometryType:allocator:]`, all three in the
+  ledger and all three missing from what the port carries: they had been dropped from the file by an
+  earlier edit of mine that the compiler never saw fail, because a class method that calls a method
+  nobody declared still compiles. They are there now, and the box's counts match the system's at all ten
+  sizes.
 - **Still different, four measurements, with both answers beside them.**
   1. **The cylinder's sharing, and a crash.** The system builds the cylinder of eight radial and two
      vertical segments as 47 vertices and 162 indices; the port's first attempt gives 14 and 54, and on

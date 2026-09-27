@@ -232,6 +232,70 @@ static void CharonMDLBuilderFree(CharonMDLBuilder *builder)
     return mesh;
 }
 
+// The box of an extent, the form every other generator has: the same six faces, built once here and
+// reached from both the extent form and the dimensions form.
+- (instancetype)initBoxWithExtent:(vector_float3)extent
+                         segments:(vector_uint3)segments
+                    inwardNormals:(BOOL)inwardNormals
+                     geometryType:(MDLGeometryType)geometryType
+                        allocator:(id<MDLMeshBufferAllocator>)allocator
+{
+    CharonMDLBuilder builder = {0};
+    static const int normalAxis[6] = {0, 0, 1, 1, 2, 2};
+    static const int normalSign[6] = {1, -1, 1, -1, 1, -1};
+    static const int uAxis[6] = {1, 1, 2, 2, 0, 0};
+    static const int vAxis[6] = {2, 2, 0, 0, 1, 1};
+    for (int face = 0; face < 6; face++) {
+        NSUInteger first = builder.vertexCount;
+        int axis = normalAxis[face];
+        vector_float3 normal = {0, 0, 0};
+        normal[axis] = normalSign[face] * (inwardNormals ? -1 : 1);
+        NSUInteger u = MAX((NSUInteger)1, segments[uAxis[face]]);
+        NSUInteger v = MAX((NSUInteger)1, segments[vAxis[face]]);
+        for (NSUInteger row = 0; row <= v; row++)
+            for (NSUInteger column = 0; column <= u; column++) {
+                vector_float2 uv = {(float)column / (float)u, (float)row / (float)v};
+                vector_float3 position = {0, 0, 0};
+                position[axis] = normalSign[face] * extent[axis] * 0.5f;
+                position[uAxis[face]] = (uv.x - 0.5f) * extent[uAxis[face]];
+                position[vAxis[face]] = (uv.y - 0.5f) * extent[vAxis[face]];
+                CharonMDLBuilderVertex(&builder, position, normal, uv);
+            }
+        for (NSUInteger row = 0; row < v; row++)
+            for (NSUInteger column = 0; column < u; column++) {
+                uint32_t a = (uint32_t)(first + row * (u + 1) + column), b = a + 1, c = a + (uint32_t)(u + 1), d = c + 1;
+                CharonMDLBuilderIndex(&builder, a);
+                CharonMDLBuilderIndex(&builder, c);
+                CharonMDLBuilderIndex(&builder, d);
+                CharonMDLBuilderIndex(&builder, a);
+                CharonMDLBuilderIndex(&builder, d);
+                CharonMDLBuilderIndex(&builder, b);
+            }
+    }
+    NSUInteger vertexCount, indexCount;
+    NSData *vertices = CharonMDLBuilderVertices(&builder, &vertexCount), *indices = CharonMDLBuilderIndices(&builder, &indexCount);
+    MDLMesh *mesh = [[MDLMesh alloc] initWithBufferAllocator:allocator];
+    mesh = [mesh charon_meshWithVertices:vertices vertexCount:vertexCount indices:indices indexCount:indexCount
+                            geometryType:geometryType name:@"box"];
+    CharonMDLBuilderFree(&builder);
+    return [self initWithVertexBuffers:mesh.vertexBuffers vertexCount:mesh.vertexCount descriptor:mesh.vertexDescriptor
+                             submeshes:mesh.submeshes];
+}
+
+// The sphere of an extent, which is the ellipsoid of the half-extent on each axis.
+- (instancetype)initSphereWithExtent:(vector_float3)extent
+                            segments:(vector_uint2)segments
+                       inwardNormals:(BOOL)inwardNormals
+                        geometryType:(MDLGeometryType)geometryType
+                           allocator:(id<MDLMeshBufferAllocator>)allocator
+{
+    vector_float3 radii = {extent.x * 0.5f, extent.y * 0.5f, extent.z * 0.5f};
+    MDLMesh *mesh = [MDLMesh newEllipsoidWithRadii:radii radialSegments:segments.x verticalSegments:segments.y
+                                      geometryType:geometryType inwardNormals:inwardNormals hemisphere:NO allocator:allocator];
+    return [self initWithVertexBuffers:mesh.vertexBuffers vertexCount:mesh.vertexCount descriptor:mesh.vertexDescriptor
+                             submeshes:mesh.submeshes];
+}
+
 + (instancetype)newBoxWithDimensions:(vector_float3)dimensions
                             segments:(vector_uint3)segments
                         geometryType:(MDLGeometryType)geometryType
@@ -250,18 +314,25 @@ static void CharonMDLTaperedTube(CharonMDLBuilder *builder, float lower, float u
                                  NSUInteger up, BOOL inwardNormals, BOOL topCap, BOOL bottomCap)
 {
     float halfHeight = height * 0.5f;
-    for (NSUInteger row = 0; row <= up; row++) {
-        float v = (float)row / (float)up, y = (v - 0.5f) * height, radius = lower + (upper - lower) * v;
+    // The same sharing the ellipsoid has: one ring more than the number of rings of quads at each end,
+    // and one ring of quads more than the caller asked for. Fitted to the system's own counts over ten
+    // sizes, where rings = vertical + 3 and columns = radial + 1 give every one of them exactly.
+    NSUInteger rings = up + 3;
+    for (NSUInteger ring = 0; ring < rings; ring++) {
+        BOOL pole = ring == 0 || ring >= up + 1;
+        float v = (float)ring / (float)(up + 1), y = (v - 0.5f) * height, radius = lower + (upper - lower) * v;
         for (NSUInteger column = 0; column <= around; column++) {
             float u = (float)column / (float)around, theta = u * 2 * (float)M_PI;
             vector_float3 outward = {cosf(theta), 0, sinf(theta)};
             vector_float3 normal = inwardNormals ? (vector_float3){-outward.x, -outward.y, -outward.z} : outward;
+            if (pole)
+                normal = (vector_float3){0, y > 0 ? 1 : (y < 0 ? -1 : 0), 0};
             CharonMDLBuilderVertex(builder, (vector_float3){outward.x * radius, y, outward.z * radius}, normal, (vector_float2){u, v});
         }
     }
-    for (NSUInteger row = 0; row < up; row++)
+    for (NSUInteger ring = 0; ring < up + 1; ring++)
         for (NSUInteger column = 0; column < around; column++) {
-            uint32_t a = (uint32_t)(row * (around + 1) + column), b = a + 1, c = a + (uint32_t)(around + 1), d = c + 1;
+            uint32_t a = (uint32_t)(ring * (around + 1) + column), b = a + 1, c = a + (uint32_t)(around + 1), d = c + 1;
             CharonMDLBuilderIndex(builder, a);
             CharonMDLBuilderIndex(builder, c);
             CharonMDLBuilderIndex(builder, b);
@@ -269,8 +340,9 @@ static void CharonMDLTaperedTube(CharonMDLBuilder *builder, float lower, float u
             CharonMDLBuilderIndex(builder, c);
             CharonMDLBuilderIndex(builder, d);
         }
-    // A cap is a centre vertex on the axis and a fan of triangles over the ring at that end, so the
-    // cap's own normal is the axis and the ring's vertices are the ones the tube already laid down.
+    // A cap is a centre vertex on the axis and a fan of triangles over the ring at that end. The two
+    // centre vertices are what the vertex count is short of the rings by, and they are the two the
+    // system has.
     for (int end = 0; end < 2; end++) {
         if (end ? !topCap : !bottomCap)
             continue;
@@ -278,7 +350,7 @@ static void CharonMDLTaperedTube(CharonMDLBuilder *builder, float lower, float u
         vector_float3 normal = {0, inwardNormals ? -sign : sign, 0};
         uint32_t centre = (uint32_t)builder->vertexCount;
         CharonMDLBuilderVertex(builder, (vector_float3){0, sign * halfHeight, 0}, normal, (vector_float2){0.5f, 0.5f});
-        uint32_t ring = (uint32_t)(end ? up : 0) * (uint32_t)(around + 1);
+        uint32_t ring = (uint32_t)(end ? up + 1 : 0) * (uint32_t)(around + 1);
         for (NSUInteger column = 0; column < around; column++) {
             CharonMDLBuilderIndex(builder, ring + (uint32_t)column);
             CharonMDLBuilderIndex(builder, ring + (uint32_t)column + 1);
@@ -287,8 +359,6 @@ static void CharonMDLTaperedTube(CharonMDLBuilder *builder, float lower, float u
     }
 }
 
-// A tube of the given radii, of the height given, with the caps it is asked for: a ring of vertices at
-// each end and a fan of triangles for each cap.
 + (instancetype)newCylinderWithHeight:(float)height
                                 radii:(vector_float2)radii
                        radialSegments:(NSUInteger)radialSegments
