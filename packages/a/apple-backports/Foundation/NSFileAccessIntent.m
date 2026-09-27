@@ -7,49 +7,58 @@
 - (void)charon_setURL:(NSURL *)URL;
 @end
 
-@implementation NSFileAccessIntent
+@implementation NSFileAccessIntent {
+@private
+    // 16.4/16.5's own header still declares an ivar block of its own for this class (@private NSURL *_url;
+    // NSInteger _options; BOOL _isRead;) that 26.2's does not (see the const-qualify commit beside this one);
+    // naming ours the same as the header's would collide there ("instance variable is already declared").
+    // Prefixed instead, so this compiles unchanged whichever the SDK's own header carries.
+    NSURL *_charonURL;
+    NSInteger _charonOptions;
+    BOOL _charonIsRead;
+}
 
 + (instancetype)readingIntentWithURL:(NSURL *)url options:(NSFileCoordinatorReadingOptions)options
 {
     NSFileAccessIntent *intent = [[self alloc] init];
-    intent->_url = [url copy];
-    intent->_options = options;
-    intent->_isRead = YES;
+    intent->_charonURL = [url copy];
+    intent->_charonOptions = options;
+    intent->_charonIsRead = YES;
     return intent;
 }
 
 + (instancetype)writingIntentWithURL:(NSURL *)url options:(NSFileCoordinatorWritingOptions)options
 {
     NSFileAccessIntent *intent = [[self alloc] init];
-    intent->_url = [url copy];
-    intent->_options = options;
-    intent->_isRead = NO;
+    intent->_charonURL = [url copy];
+    intent->_charonOptions = options;
+    intent->_charonIsRead = NO;
     return intent;
 }
 
 - (NSURL *)URL
 {
-    return _url;
+    return _charonURL;
 }
 
 - (BOOL)charon_isRead
 {
-    return _isRead;
+    return _charonIsRead;
 }
 
 - (NSFileCoordinatorReadingOptions)charon_readingOptions
 {
-    return (NSFileCoordinatorReadingOptions)_options;
+    return (NSFileCoordinatorReadingOptions)_charonOptions;
 }
 
 - (NSFileCoordinatorWritingOptions)charon_writingOptions
 {
-    return (NSFileCoordinatorWritingOptions)_options;
+    return (NSFileCoordinatorWritingOptions)_charonOptions;
 }
 
 - (void)charon_setURL:(NSURL *)URL
 {
-    _url = [URL copy];
+    _charonURL = [URL copy];
 }
 
 @end

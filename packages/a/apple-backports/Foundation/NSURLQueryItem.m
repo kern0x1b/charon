@@ -1,6 +1,14 @@
 #import <Foundation/Foundation.h>
 
-@implementation NSURLQueryItem
+@implementation NSURLQueryItem {
+@private
+    // 16.4/16.5's own header still declares an ivar block of its own for this class (@private NSString *_name;
+    // NSString *_value;) that 26.2's does not; naming ours the same as the header's would collide there
+    // ("instance variable is already declared"). Prefixed instead, so this compiles unchanged whichever the
+    // SDK's own header carries.
+    NSString *_charonName;
+    NSString *_charonValue;
+}
 
 + (instancetype)queryItemWithName:(NSString *)name value:(NSString *)value
 {
@@ -20,8 +28,8 @@
 - (instancetype)initWithName:(NSString *)name value:(NSString *)value
 {
     if ((self = [super init])) {
-        _name = [name copy] ?: @"";
-        _value = [value copy];
+        _charonName = [name copy] ?: @"";
+        _charonValue = [value copy];
     }
     return self;
 }
@@ -35,23 +43,23 @@
 
 - (void)encodeWithCoder:(NSCoder *)coder
 {
-    [coder encodeObject:_name forKey:@"NS.name"];
-    [coder encodeObject:_value forKey:@"NS.value"];
+    [coder encodeObject:_charonName forKey:@"NS.name"];
+    [coder encodeObject:_charonValue forKey:@"NS.value"];
 }
 
 - (id)copyWithZone:(NSZone *)zone
 {
-    return [[[self class] alloc] initWithName:_name value:_value];
+    return [[[self class] alloc] initWithName:_charonName value:_charonValue];
 }
 
 - (NSString *)name
 {
-    return _name;
+    return _charonName;
 }
 
 - (NSString *)value
 {
-    return _value;
+    return _charonValue;
 }
 
 - (BOOL)isEqual:(id)object
@@ -61,17 +69,17 @@
     if (![object isKindOfClass:[NSURLQueryItem class]])
         return NO;
     NSURLQueryItem *other = object;
-    return (_name == other.name || [_name isEqualToString:other.name]) && (_value == other.value || [_value isEqualToString:other.value]);
+    return (_charonName == other.name || [_charonName isEqualToString:other.name]) && (_charonValue == other.value || [_charonValue isEqualToString:other.value]);
 }
 
 - (NSUInteger)hash
 {
-    return _name.hash ^ _value.hash;
+    return _charonName.hash ^ _charonValue.hash;
 }
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"<%@ %p> {name = %@, value = %@}", [self class], self, _name, _value];
+    return [NSString stringWithFormat:@"<%@ %p> {name = %@, value = %@}", [self class], self, _charonName, _charonValue];
 }
 
 @end
