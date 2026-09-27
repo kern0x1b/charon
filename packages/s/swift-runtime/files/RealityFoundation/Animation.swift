@@ -34,6 +34,13 @@ public struct AnimationTimingFunction: Hashable {
         self.parameters = parameters
     }
 
+    // The control points below are the documented ones - CoreAnimation's, which are also CSS's -
+    // because this SDK's `CAMediaTimingFunction` does not hand the Bezier's four control points
+    // out, so there is no system here to measure them against (measured 2026-09-27 on the host:
+    // `getControlPoint(at: 0)` answers [0, 0] for every function, and index 1 answers
+    // [0.42, 0] for easeIn, where the curve's first point is (0.42, 0)). The matrix and quaternion
+    // maths, by contrast, is the release's own simd, which this port's simd module is built from.
+
     /// Straight from the start to the end.
     public static let linear = AnimationTimingFunction(controlPoint1: SIMD2<Float>(1.0 / 3.0, 1.0 / 3.0),
                                                       controlPoint2: SIMD2<Float>(2.0 / 3.0, 2.0 / 3.0))
