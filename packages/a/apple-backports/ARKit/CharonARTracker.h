@@ -93,6 +93,15 @@ typedef struct {
 /// Every format the given camera can be configured to, as AVCaptureVideoDataOutput would list them.
 + (NSArray<AVCaptureDeviceFormat *> *)supportedCaptureFormatsForPosition:(AVCaptureDevicePosition)position;
 
+/// The camera's own intrinsics for a frame of the given size: the focal length in pixels and the
+/// principal point, in the order the framework's `simd_float3x3` puts them.
+///
+/// The camera states how wide it sees - `AVCaptureDeviceFormat`'s field of view - and the size of
+/// the frame says how many pixels that width is, which between them fix the focal length in pixels
+/// and the principal point. A camera that states no field of view has nothing to build them from,
+/// and the answer is the matrix of ones, which projects nothing to anywhere.
++ (simd_float3x3)cameraIntrinsicsForResolution:(CGSize)resolution;
+
 @property (nonatomic, weak, nullable) id<CharonARTrackerDelegate> delegate;
 
 /// Starts the camera and the gyroscope. `error` is filled in and NO answered when either is

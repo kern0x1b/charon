@@ -158,6 +158,32 @@ static simd_quatf CharonRotationBetween(simd_quatf from, simd_quatf to)
     NSUInteger _lumaWidth;
     NSUInteger _lumaHeight;
 }
+
++ (simd_float3x3)cameraIntrinsicsForResolution:(CGSize)resolution
+{
+#if CHARON_NO_CAMERA
+    return matrix_identity_float3x3;
+#else
+    // The camera states how wide it sees - `AVCaptureDeviceFormat`'s field of view, in degrees - and
+    // the frame says how many pixels that width is, which between them fix the focal length in
+    // pixels and the principal point. A camera that states no field of view has nothing to build them
+    // from, and the answer is the identity, which projects nothing to anywhere.
+    AVCaptureDevice *camera = [self captureDeviceForPosition:AVCaptureDevicePositionBack];
+    AVCaptureDeviceFormat *format = camera.activeFormat ?: camera.formats.firstObject;
+    CGFloat fieldOfView = format ? format.videoFieldOfView : 0;
+    if (resolution.width <= 0 || resolution.height <= 0 || fieldOfView <= 0)
+        return matrix_identity_float3x3;
+
+    CGFloat focalLength = (resolution.width / 2) / tanf((float)(fieldOfView * M_PI / 360.0));
+    // The principal point is the middle of the frame, which is where the optical axis lands.
+    simd_float3x3 intrinsics;
+    intrinsics.columns[0] = simd_make_float3(focalLength, 0, resolution.width / 2);
+    intrinsics.columns[1] = simd_make_float3(0, focalLength, resolution.height / 2);
+    intrinsics.columns[2] = simd_make_float3(0, 0, 1);
+    return intrinsics;
+#endif
+}
+
     @synthesize delegate = _delegate;
     @synthesize pointCloud = _pointCloud;
     @synthesize planes = _planes;

@@ -8,6 +8,7 @@
 #import <CoreLocation/CoreLocation.h>
 #import <CoreMotion/CoreMotion.h>
 
+#import "CharonARKitPrivate.h"
 #import "CharonARTracker.h"
 
 // As in ARConfiguration.m: the settings that arrived after the release's own ARKit are carried with
@@ -16,8 +17,11 @@
 
 // `ARConfiguration` is abstract and its initialiser is declared unavailable, which is the SDK telling a
 // caller not to build one; a subclass is exactly what is being built here, so the calls that chain
-// to it are the base class saying yes.
-#pragma clang diagnostic ignored "-Wunavailable-function"
+// to it are the base class saying yes. Because the base class names no designated initialiser that a
+// subclass can see - the one it has is private, and a category cannot mark a method designated -
+// every -init below is reported as a designated initialiser reaching a non-designated one. The chain
+// is the base class's own values and nothing else, so the check has nothing left to add here.
+#pragma clang diagnostic ignored "-Wobjc-designated-initializers"
 
 /// The auto focus every configuration that has a camera declares, and this camera has one.
 @interface ARConfiguration (CharonAutoFocus)
@@ -35,7 +39,7 @@
     // `ARConfiguration`'s own initialiser is declared unavailable because it is abstract, so a
     // subclass starts from NSObject and carries its own state; the header's default for a world
     // map is horizontal plane detection.
-    self = [self initCharonCommon];
+    self = [super initCharonCommon];
     if (self)
         _planeDetection = ARPlaneDetectionHorizontal;
     return self;
@@ -94,7 +98,7 @@
 
 - (instancetype)init
 {
-    self = [self initCharonCommon];
+    self = [super initCharonCommon];
     return self;
 }
 
@@ -118,7 +122,7 @@
 
 - (instancetype)init
 {
-    self = [self initCharonCommon];
+    self = [super initCharonCommon];
     if (self)
         _planeDetection = ARPlaneDetectionHorizontal;
     return self;
@@ -152,7 +156,7 @@
 
 - (instancetype)init
 {
-    self = [self initCharonCommon];
+    self = [super initCharonCommon];
     return self;
 }
 
@@ -185,7 +189,7 @@
 
 - (instancetype)init
 {
-    self = [self initCharonCommon];
+    self = [super initCharonCommon];
     if (self)
         _planeDetection = ARPlaneDetectionHorizontal;
     return self;
@@ -226,7 +230,7 @@
 
 - (instancetype)init
 {
-    self = [self initCharonCommon];
+    self = [super initCharonCommon];
     return self;
 }
 
@@ -261,7 +265,7 @@
 
 - (instancetype)init
 {
-    self = [self initCharonCommon];
+    self = [super initCharonCommon];
     if (self)
         _planeDetection = ARPlaneDetectionHorizontal;
     return self;

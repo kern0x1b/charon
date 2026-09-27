@@ -41,6 +41,14 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithPoints:(NSData *)points count:(NSUInteger)count;
 @end
 
+@interface ARRaycastQuery (CharonPrivate)
+/// Built from a ray in the world, which is what a caller asking for a raycast gives the framework.
+- (instancetype)initWithOrigin:(simd_float3)origin
+                    direction:(simd_float3)direction
+             allowingTarget:(ARRaycastTarget)target
+                    alignment:(ARRaycastTargetAlignment)alignment;
+@end
+
 @interface ARRaycastResult (CharonPrivate)
 - (instancetype)initWithHitValue:(CharonARValue *)value;
 @end
@@ -52,7 +60,8 @@ NS_ASSUME_NONNULL_BEGIN
                          imageResolution:(CGSize)resolution
                            lightEstimate:(CGFloat)lightEstimate
                 ambientColorTemperature:(CGFloat)ambientColorTemperature
-                               tracking:(BOOL)tracking;
+                               tracking:(BOOL)tracking
+                         hitTestTracker:(CharonARTracker *)hitTestTracker;
 
 /// Adds an anchor to this frame, which the session does once it has seen the world.
 - (void)addAnchor:(ARAnchor *)anchor;

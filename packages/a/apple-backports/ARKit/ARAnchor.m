@@ -13,6 +13,31 @@
 #import "CharonARTracker.h"
 #import "CharonARKitPrivate.h"
 
+// `-[ARAnchor initWithName:transform:]` and `name` are the 12.0 vocabulary; they are served here for
+// a runtime that predates them, and a caller reaching them is by definition on a release new enough.
+#pragma clang diagnostic ignored "-Wunguarded-availability-new"
+
+/// A struct across a keyed coder.
+///
+/// The anchored values here are structs of SIMD vectors, and `@encode` cannot describe one, so the
+/// bytes go across as bytes. The keyed pair is `encodeBytes:length:forKey:` and
+/// `decodeBytesForKey:returnedLength:`, and the length is checked on the way back because a coder
+/// that holds fewer bytes than the struct needs is a different class's archive, not this one's.
+static void CharonEncodeStruct(NSCoder *coder, NSString *key, const void *bytes, size_t size)
+{
+    [coder encodeBytes:(const uint8_t *)bytes length:size forKey:key];
+}
+
+static BOOL CharonDecodeStruct(NSCoder *coder, NSString *key, void *bytes, size_t size)
+{
+    NSUInteger length = 0;
+    const uint8_t *decoded = [coder decodeBytesForKey:key returnedLength:&length];
+    if (!decoded || length < size)
+        return NO;
+    memcpy(bytes, decoded, size);
+    return YES;
+}
+
 @implementation ARAnchor
 {
     simd_float4x4 _transform;
@@ -43,7 +68,11 @@
 
 - (id)copyWithZone:(NSZone *)zone
 {
-    return [[self class] allocWithZone:zone];
+    ARAnchor *copy = [[self class] allocWithZone:zone];
+    copy->_identifier = _identifier;
+    copy->_name = _name;
+    copy->_transform = _transform;
+    return copy;
 }
 
 /// The header declares an anchor secure-coding, and an anchor is a name, a pose and nothing else, so
@@ -53,9 +82,8 @@
 - (void)encodeWithCoder:(NSCoder *)coder
 {
     [coder encodeObject:_identifier forKey:@"identifier"];
-    // a matrix is a struct of vectors and `@encode` cannot describe one, so the sixteen floats go
-    // across as the bytes they are
-    [coder encodeBytes:&_transform length:sizeof _transform forKey:@"transform"];
+    [coder encodeObject:_name forKey:@"name"];
+    CharonEncodeStruct(coder, @"transform", &_transform, sizeof _transform);
 }
 
 - (instancetype)initWithCoder:(NSCoder *)coder
@@ -66,9 +94,8 @@
     // The 6.1.3 release's own coder has no keyed `decodeValue:forKey:objCType:`, so the pose is
     // read back the way that release writes a structure: as the four columns of the matrix.
     _identifier = [coder decodeObjectOfClass:[NSUUID class] forKey:@"identifier"] ?: [NSUUID UUID];
-    NSValue *packed = [coder decodeObjectOfClass:[NSValue class] forKey:@"transform"];
-    if (packed)
-        [packed getValue:&_transform];
+    _name = [coder decodeObjectOfClass:[NSString class] forKey:@"name"];
+    CharonDecodeStruct(coder, @"transform", &_transform, sizeof _transform);
     return self;
 }
 
@@ -200,6 +227,55 @@ enum { kPlaneQuadCorners = 4, kPlaneQuadTriangles = 6 };
 - (const int16_t *)triangleIndices { return _triangleIndices; }
 - (const simd_float3 *)boundaryVertices { return _boundaryVertices; }
 
++ (BOOL)supportsSecureCoding { return YES; }
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    [coder encodeInteger:(NSInteger)_vertexCount forKey:@"vertexCount"];
+    [coder encodeInteger:(NSInteger)_triangleCount forKey:@"triangleCount"];
+    CharonEncodeStruct(coder, @"vertices", _vertices, _vertexCount * sizeof * _vertices);
+    CharonEncodeStruct(coder, @"textureCoordinates", _textureCoordinates,
+                       _vertexCount * sizeof * _textureCoordinates);
+    CharonEncodeStruct(coder, @"triangleIndices", _triangleIndices,
+                       _triangleCount * sizeof * _triangleIndices);
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    self = [super init];
+    if (!self)
+        return nil;
+    _vertexCount = _textureCoordinateCount = _boundaryVertexCount =
+            (NSUInteger)[coder decodeIntegerForKey:@"vertexCount"];
+    _triangleCount = (NSUInteger)[coder decodeIntegerForKey:@"triangleCount"];
+    if (!_vertexCount || !_triangleCount)
+        return nil;
+    _vertices = malloc(_vertexCount * sizeof * _vertices);
+    _textureCoordinates = malloc(_vertexCount * sizeof * _textureCoordinates);
+    _triangleIndices = malloc(_triangleCount * sizeof * _triangleIndices);
+    _boundaryVertices = malloc(_vertexCount * sizeof * _boundaryVertices);
+    if (!_vertices || !_textureCoordinates || !_triangleIndices || !_boundaryVertices) {
+        free(_vertices);
+        free(_textureCoordinates);
+        free(_triangleIndices);
+        free(_boundaryVertices);
+        return nil;
+    }
+    if (!CharonDecodeStruct(coder, @"vertices", _vertices, _vertexCount * sizeof * _vertices) ||
+        !CharonDecodeStruct(coder, @"textureCoordinates", _textureCoordinates,
+                            _vertexCount * sizeof * _textureCoordinates) ||
+        !CharonDecodeStruct(coder, @"triangleIndices", _triangleIndices,
+                            _triangleCount * sizeof * _triangleIndices)) {
+        free(_vertices);
+        free(_textureCoordinates);
+        free(_triangleIndices);
+        free(_boundaryVertices);
+        return nil;
+    }
+    memcpy(_boundaryVertices, _vertices, _vertexCount * sizeof * _vertices);
+    return self;
+}
+
 @end
 
 // `ARPlaneAnchor.geometry` is declared by the 11.3 headers and is implemented here for a runtime
@@ -240,6 +316,44 @@ enum { kPlaneQuadCorners = 4, kPlaneQuadTriangles = 6 };
 - (simd_float3)center { return _center; }
 - (simd_float3)extent { return _extent; }
 
++ (BOOL)isClassificationSupported
+{
+    // A plane's classification - floor, wall, table, ceiling - is read out of a depth sensor's
+    // geometry, and this device has none, so a detector's plane is a plane and not one of those.
+    return NO;
+}
+
+- (ARPlaneClassificationStatus)classificationStatus
+{
+    return ARPlaneClassificationStatusUnknown;
+}
+
+- (ARPlaneClassification)classification
+{
+    return ARPlaneClassificationNone;
+}
+
++ (BOOL)supportsSecureCoding { return YES; }
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    [super encodeWithCoder:coder];
+    [coder encodeInteger:(NSInteger)_alignment forKey:@"alignment"];
+    CharonEncodeStruct(coder, @"center", &_center, sizeof _center);
+    CharonEncodeStruct(coder, @"extent", &_extent, sizeof _extent);
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    self = [super initWithCoder:coder];
+    if (!self)
+        return nil;
+    _alignment = (ARPlaneAnchorAlignment)[coder decodeIntegerForKey:@"alignment"];
+    CharonDecodeStruct(coder, @"center", &_center, sizeof _center);
+    CharonDecodeStruct(coder, @"extent", &_extent, sizeof _extent);
+    return self;
+}
+
 - (ARPlaneGeometry *)geometry
 {
     if (!_geometry) {
@@ -262,7 +376,7 @@ enum { kPlaneQuadCorners = 4, kPlaneQuadTriangles = 6 };
 
 @implementation ARPointCloud
 {
-    NSMutableData *_points;
+    simd_float3 *_points;
     NSUInteger _count;
 }
     @synthesize count = _count;
@@ -276,20 +390,54 @@ enum { kPlaneQuadCorners = 4, kPlaneQuadTriangles = 6 };
     self = [super init];
     if (!self)
         return nil;
-    _points = [points copy];
-    _count = count;
+    // the tracker's samples are the same three floats a point cloud is, so the buffer is copied into
+    // one this object owns and hands out in place
+    _count = MIN(count, points.length / sizeof(simd_float3));
+    _points = malloc(_count * sizeof * _points);
+    if (!_points)
+        return nil;
+    memcpy(_points, points.bytes, _count * sizeof * _points);
+    return self;
+}
+
+- (void)dealloc
+{
+    free(_points);
+}
+
++ (BOOL)supportsSecureCoding { return YES; }
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    [coder encodeInteger:(NSInteger)_count forKey:@"count"];
+    CharonEncodeStruct(coder, @"points", _points, _count * sizeof * _points);
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    self = [super init];
+    if (!self)
+        return nil;
+    _count = (NSUInteger)[coder decodeIntegerForKey:@"count"];
+    if (!_count)
+        return nil;
+    _points = malloc(_count * sizeof * _points);
+    if (!_points || !CharonDecodeStruct(coder, @"points", _points, _count * sizeof * _points)) {
+        free(_points);
+        _points = NULL;
+        _count = 0;
+        return nil;
+    }
     return self;
 }
 
 - (NSUInteger)count { return _count; }
 
-- (NSData *)points
+- (const simd_float3 *)points
 {
-    // The point cloud is handed out as an NSData of `ARPointCloud`'s own element, which is three
-    // floats: the world position of a point the tracker is following.
-    NSMutableData *out = [NSMutableData dataWithLength:_count * sizeof(CharonARCloudPoint)];
-    memcpy(out.mutableBytes, _points.bytes, MIN(out.length, _points.length));
-    return out;
+    // The framework hands out a pointer into a buffer it names itself, and a caller walks it with
+    // `count` beside it; the buffer lives as long as this object does.
+    return _points;
 }
 
 - (BOOL)identifier:(NSUInteger)identifier atIndex:(NSUInteger)index
@@ -332,13 +480,17 @@ enum { kPlaneQuadCorners = 4, kPlaneQuadTriangles = 6 };
     return self;
 }
 
-- (NSUInteger)type { return _type; }
-- (simd_float3)worldTransform { return _worldPosition; }
+- (ARHitTestResultType)type { return _type; }
+- (simd_float4x4)worldTransform
+{
+    // a hit's transform is a pose, and a pose of a point is the point with no rotation
+    return matrix_identity_float4x4;
+}
 - (simd_float3)localPosition { return _worldPosition; }
 - (simd_float3)localNormal { return _localNormal; }
 - (ARPlaneAnchor *)planeAnchor { return _planeAnchor; }
 - (ARAnchor *)anchor { return _anchor; }
-- (CGFloat)distance { return (CGFloat)_distance; }
+- (CGFloat)distance { return _distance; }
 
 @end
 
@@ -346,7 +498,7 @@ enum { kPlaneQuadCorners = 4, kPlaneQuadTriangles = 6 };
 {
     simd_float3 _origin;
     simd_float3 _direction;
-    ARRaycastTarget _target;   // read as the alignment the query is asking about
+    ARRaycastTarget _target;
     ARRaycastTargetAlignment _targetAlignment;
     NSArray<ARRaycastQuery *> *_includedQueries;
 }
@@ -360,13 +512,13 @@ enum { kPlaneQuadCorners = 4, kPlaneQuadTriangles = 6 };
 - (simd_float3)origin { return _origin; }
 - (simd_float3)direction { return _direction; }
 - (ARRaycastTarget)target { return _target; }
-- (ARRaycastTarget)targetAlignment { return _targetAlignment; }
+- (ARRaycastTargetAlignment)targetAlignment { return _targetAlignment; }
 - (NSArray<ARRaycastQuery *> *)includedQueries { return _includedQueries; }
 
 - (instancetype)initWithOrigin:(simd_float3)origin
                     direction:(simd_float3)direction
-               allowingTarget:(ARRaycastTarget)target
-                   alignment:(ARRaycastTargetAlignment)alignment
+             allowingTarget:(ARRaycastTarget)target
+                    alignment:(ARRaycastTargetAlignment)alignment
 {
     self = [super init];
     if (self) {
@@ -431,7 +583,7 @@ enum { kPlaneQuadCorners = 4, kPlaneQuadTriangles = 6 };
     NSUUID *_identifier;
 }
 
-- (instancetype)initWithResults:(NSArray<NSValue *> *)results
+- (instancetype)initWithResults:(NSArray<CharonARValue *> *)results
 {
     self = [super init];
     if (self) {
@@ -444,12 +596,21 @@ enum { kPlaneQuadCorners = 4, kPlaneQuadTriangles = 6 };
     return self;
 }
 
+- (void)stopTracking
+{
+    // Apple's rule, which this follows: a tracked raycast stops reporting once the camera has moved
+    // further than its own ray length, because past that the result no longer describes this frame.
+    // The caller says so, and the results go with it.
+    [_rawResults removeAllObjects];
+    _state = 2;   // ARRaycastStateStopped
+}
+
 - (NSUUID *)identifier { return _identifier; }
 - (NSInteger)state { return _state; }
 - (NSArray<ARRaycastResult *> *)results
 {
     NSMutableArray<ARRaycastResult *> *out = [NSMutableArray array];
-    for (NSValue *value in _rawResults)
+    for (CharonARValue *value in _rawResults)
         [out addObject:[[ARRaycastResult alloc] initWithHitValue:value]];
     return out;
 }
