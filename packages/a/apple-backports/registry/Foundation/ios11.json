@@ -510,16 +510,6 @@
       "source": "NSLinguisticTagger of iOS 12.0 arm64 read through disassembly, and the host's own tagger through the differential run of tests/backports/host/linguistic; on an iPad 2 running 6.1.3 through tests/backports/device/linguistic11.m"
     },
     {
-      "api": "+[NSOrthography defaultOrthographyForLanguage:]",
-      "kind": "method",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the answer is a table of about 250 languages with their scripts inside iOS 12; guessing an orthography for a language the table does not list would be a different answer",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "NSOrthography of iOS 12.0 arm64"
-    },
-    {
       "api": "-[NSItemProvider canLoadObjectOfClass:]",
       "kind": "method",
       "introduced": "11.0",
