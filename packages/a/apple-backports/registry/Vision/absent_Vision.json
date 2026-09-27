@@ -1362,16 +1362,6 @@
    "source": "SDK 16.4, Vision"
   },
   {
-   "api": "VNObservation.timeRange",
-   "kind": "property",
-   "introduced": "14.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the time range of an observation is where in a video it came from, which a handler given a single image or a single frame does not have; the timestamps a sequence request would give are not read from the media, and guessing a range of one frame would be a number a caller would act on",
-   "effect": "the property is not there: the selector is not sent at all",
-   "source": "SDK 16.4, Vision"
-  },
-  {
    "api": "VNRequestProgressProviding",
    "kind": "protocol",
    "introduced": "13.0",

@@ -40,8 +40,11 @@ LIBRARIES = {
     {name = "BackgroundTasksBackports", folder = "BackgroundTasks", frameworks = {"UIKit", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "PhotosBackports", folder = "Photos", frameworks = {"AssetsLibrary", "AVFoundation", "CoreLocation", "CoreGraphics", "ImageIO", "MobileCoreServices", "UIKit", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "GameControllerBackports", folder = "GameController", frameworks = {"UIKit", "Foundation"}, libraries = {"FoundationBackports"}},
-    {name = "VisionBackports", folder = "Vision", frameworks = {"CoreGraphics", "CoreImage", "CoreVideo", "Foundation"}, libraries = {"FoundationBackports"}},
+    -- Before Vision, because a library's libraries are linked before it (ld64 is given -l for
+    -- each with only the linking library's own directory on its search path), and Vision's Core ML
+    -- request is run on a real model: the framework for the headers, this library for the code.
     {name = "CoreMLBackports", folder = "CoreML", frameworks = {"CoreML", "CoreVideo", "Foundation"}, libraries = {"FoundationBackports"}},
+    {name = "VisionBackports", folder = "Vision", frameworks = {"CoreGraphics", "CoreImage", "CoreVideo", "CoreML", "Foundation"}, libraries = {"FoundationBackports", "CoreMLBackports"}},
     {name = "MetalBackports", folder = "Metal", frameworks = {"QuartzCore", "CoreGraphics", "OpenGLES", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "MetalKitBackports", folder = "MetalKit", frameworks = {"UIKit", "QuartzCore", "CoreGraphics", "OpenGLES", "Foundation"}, libraries = {"FoundationBackports", "MetalBackports"}},
     {name = "CoreTelephonyBackports", folder = "CoreTelephony", frameworks = {"CoreTelephony", "Foundation"}, libraries = {"FoundationBackports"}},

@@ -1,5 +1,10 @@
 /* The image a request handler holds, as a pixel buffer of the size a model's image input wants.
  *
+ * A header of static inline functions, and not a .m of its own, because two files of this library
+ * call them and a C function two files share has to live in a file that exports no symbol: a .m
+ * would put both in the dylib's exports, where the registry would owe an entry for a name Core ML
+ * does not declare. It is the same reason CharonMLBridge.h and CharonMLConstraints.h are headers.
+ *
  * Vision is where this belongs: a Core ML feature value takes a buffer, and turning what a handler
  * holds into one of the size the model asks for -- cropping, scaling, and the two ways a Core ML
  * image input says to do it -- is image handling, not model handling.
@@ -13,16 +18,17 @@
  *
  * A buffer that is already the size the model wants is handed on as it is, which is the case a
  * camera frame or a video frame is in and the one that costs nothing: the pixels are not touched
- * at all. A CGImage is drawn into a new buffer, because a feature value of the image type takes a
+ * at all. A CGImage is drawn into a buffer, because a feature value of the image type takes a
  * buffer and this port carries no image feature value that takes a CGImage (facts/CoreML/CoreML.md
  * says why).
  */
-#import "CharonVision.h"
+#ifndef CHARON_VISION_IMAGE_H
+#define CHARON_VISION_IMAGE_H
 
 #import <CoreGraphics/CoreGraphics.h>
 #import <CoreVideo/CoreVideo.h>
 
-static CVPixelBufferRef charon_vision_pixels(CVPixelBufferRef source, size_t wide, size_t high,
+static inline CVPixelBufferRef charon_vision_pixels(CVPixelBufferRef source, size_t wide, size_t high,
                                             VNImageCropAndScaleOption option)
 {
     CVPixelBufferRef buffer = NULL;
@@ -107,7 +113,7 @@ static CVPixelBufferRef charon_vision_pixels(CVPixelBufferRef source, size_t wid
  * handler becomes something a Core ML feature value of the image type can be built from: the
  * helper above resamples from a buffer, so a picture is drawn into one of its own size first and
  * both kinds of image go through one drawing path and one pair of crop-and-scale rules. */
-CVPixelBufferRef charon_vision_buffer_of_image(CGImageRef image)
+static inline CVPixelBufferRef charon_vision_buffer_of_image(CGImageRef image)
 {
     CVPixelBufferRef buffer = NULL;
     CGColorSpaceRef space;
@@ -144,3 +150,5 @@ CVPixelBufferRef charon_vision_buffer_of_image(CGImageRef image)
     CVPixelBufferUnlockBaseAddress(buffer, 0);
     return buffer;
 }
+
+#endif /* CHARON_VISION_IMAGE_H */

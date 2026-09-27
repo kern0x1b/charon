@@ -1,4 +1,5 @@
 #import "CharonVision.h"
+#import "CharonVisionImage.h"
 #import <ImageIO/ImageIO.h>
 
 /* The two things a request needs out of the model it was made with: the model, and the name of
@@ -31,14 +32,7 @@
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 #pragma clang diagnostic ignored "-Wobjc-designated-initializers"
 
-/* The image helper, in CharonVisionImage.m, and the two accessors VNCoreMLModel keeps for the
- * request path. All three are this port's own, so none of them is API the registry carries. */
-CVPixelBufferRef charon_vision_pixels(CVPixelBufferRef source, size_t wide, size_t high,
-                                     VNImageCropAndScaleOption option);
-/* A CGImage as a buffer of its own size, in CharonVisionImage.m: the helper resamples from a
- * buffer, so a picture a caller handed the handler is drawn into one first and the two
- * crop-and-scale options are applied by the same code either way. */
-CVPixelBufferRef charon_vision_buffer_of_image(CGImageRef image);
+#import "CharonVisionImage.h"
 
 
 

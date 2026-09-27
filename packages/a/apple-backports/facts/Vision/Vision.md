@@ -21,7 +21,26 @@ recorded by `tests/backports/host/vision/run.sh` (33 records) and held against t
 - A request handler takes an image as a pixel buffer, a `CGImage`, a `CIImage`, a URL or data, with an orientation and options, and keeps it. `-performRequests:error:` of it and of the sequence handler
   call the completion handler of each request once, with the error of that request, before it returns, and answer NO with the error of the first request that failed, as Vision does.
   A revision the class has not fails as `VNErrorUnsupportedRevision`, a Core ML request without a model as `VNErrorInvalidModel`, and every other request as `VNErrorNotImplemented`.
-- Core ML is not in this release, so `+[VNCoreMLModel modelForMLModel:error:]` answers nil and `VNErrorInvalidModel`.
+- **Core ML is in this release now, through the CoreML backport this band carries**, so the Core ML
+  request is the one request Vision here really runs: `+[VNCoreMLModel modelForMLModel:error:]` holds
+  a real `MLModel`, refuses a model that takes no image in any of its inputs with `VNErrorInvalidModel`
+  -- the example Core ML's own documentation names -- and `VNImageRequestHandler` hands the image
+  through the model and puts the answers in the request's results.
+
+  The image is brought to the size the model's own description asks for, by the two rules Vision
+  declares and Core ML's own image constructors use: centre crop scales until the picture covers
+  the target and keeps the middle, scale fit scales until it fits and leaves the rest black. A
+  buffer that is already the size the model wants is passed on untouched, so a camera or video
+  frame costs nothing. A `CIImage`, an image URL and image data are not pixel buffers, and a Core ML
+  image input takes a buffer, so they reach the same failure any other unusable image reaches
+  rather than pretending the picture was something it is not.
+
+  The answers are mapped as Core ML maps them, and the mapping is decided by what the model's
+  *description* says an answer is rather than by what the numbers look like: the name a classifier
+  answers its label under becomes one `VNClassificationObservation` per class, highest score
+  first, with the score as the observation's confidence; an image answer becomes a
+  `VNPixelBufferObservation` under the name of the output it came from; anything else becomes a
+  `VNCoreMLFeatureValueObservation` holding the value whole.
 
 ## What is not carried
 
