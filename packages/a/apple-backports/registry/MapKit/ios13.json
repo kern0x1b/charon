@@ -52,9 +52,9 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the PORT'S OWN protocol, declared in CharonMapKit.h, and the port's own completer sends it -- measured, the release has neither the selector nor the class",
-      "effect": "the error a search failed with, handed to the delegate; a FAILED search empties the results AND sends this, so a delegate can tell a search that finished from one that failed, which is the whole of what this message is for",
+      "effect": "the error a search that COULD NOT BE RUN sends: the port's own completer answers it, and it is reserved for that -- a search that runs and finds nothing sends the update message with an empty list instead, because that is what the host's own does. HONEST LIMIT: this probe produces no search that cannot be run, so the host has not been seen to send this message and the port's use of it is not confirmed against Apple's",
       "facts": "facts/MapKit/MapKit.md",
-      "source": "apple.objc.inventory on the armv7 dyld shared cache of 6.1.3 (0 occurrences of MKLocalSearchCompleter) and the SDK 16.4 header MKLocalSearchCompleter.h"
+      "source": "apple.objc.inventory on the armv7 cache of 6.1.3 (the class and the protocol are the port's own); the SDK 16.4 header MKLocalSearchCompleter.h, which declares the message; and tests/backports/host/mapkit-completer, which confirms the OTHER message matches the host and whose mutant shows the comparison can see a wrong delegate argument -- but which cannot produce a search that cannot be run, so THIS message is unconfirmed against the host"
     },
     {
       "api": "-[MKLocalSearchCompleterDelegate completerDidUpdateResults:]",
@@ -63,9 +63,9 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the PORT'S OWN protocol, declared in CharonMapKit.h: measured with apple.objc.inventory on the armv7 cache of 6.1.3 there are 0 occurrences of MKLocalSearchCompleter and 0 of this selector, so neither the class nor the protocol is the release's and both are carried here",
-      "effect": "the results the completer has, handed to the delegate when a search finished; the port's own MKLocalSearchCompleter sends this through the runtime, and the row's own -results is what the delegate reads",
+      "effect": "the results the completer has, handed to the delegate -- and this is the message a search that FINDS NOTHING also sends, with an empty list: measured on the host, a query that finds nothing gives call 1: completerDidUpdateResults: results=0 and NO didFailWithError at all, which is what this port now does too",
       "facts": "facts/MapKit/MapKit.md",
-      "source": "apple.objc.inventory on the armv7 dyld shared cache of 6.1.3, which has 0 occurrences of MKLocalSearchCompleter; the SDK 16.4 header MKLocalSearchCompleter.h, which declares the protocol and the class, and the port's own declaration in CharonMapKit.h"
+      "source": "apple.objc.inventory on the armv7 cache of 6.1.3 (0 occurrences of MKLocalSearchCompleter, so the class and the protocol are the port's own); the SDK 16.4 header MKLocalSearchCompleter.h; and tests/backports/host/mapkit-completer, which compares the port's transcript with the host's own call for call and whose mutant -- a subclass passing a wrong delegate argument -- makes 0 calls where the real build makes 1"
     },
     {
       "api": "-[MKLocalSearchRequest initWithCompletion:]",
