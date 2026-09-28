@@ -68,7 +68,21 @@
 {
     HKSource *source = [coder decodeObjectOfClass:[HKSource class] forKey:@"source"];
     NSString *version = [coder decodeObjectOfClass:[NSString class] forKey:@"version"];
-    return [self initWithSource:source ?: [HKSource charon_sourceWithName:@"" bundleIdentifier:@""] version:version];
+    // The two members of 11.0, which -encodeWithCoder: below writes under these four keys and which
+    // this was not reading, so an archive round trip lost them: measured by
+    // tests/backports/host/healthkit, where the round trip answered nil and 0 for a product type and
+    // an operating system version this port had been given iPhone and 15 for.
+    NSString *productType = [coder decodeObjectOfClass:[NSString class] forKey:@"productType"];
+    NSOperatingSystemVersion operatingSystem = {
+        (NSInteger)[coder decodeDoubleForKey:@"osMajor"],
+        (NSInteger)[coder decodeDoubleForKey:@"osMinor"],
+        (NSInteger)[coder decodeDoubleForKey:@"osPatch"]
+    };
+    HKSourceRevision *revision = [self initWithSource:source ?: [HKSource charon_sourceWithName:@"" bundleIdentifier:@""]
+                                             version:version];
+    if (revision)
+        [revision charon_setProductType:productType operatingSystemVersion:operatingSystem];
+    return revision;
 }
 
 - (void)encodeWithCoder:(NSCoder *)coder
