@@ -432,10 +432,13 @@ function failures(opt)
     expect_equal(found, "no measured set at all", #lift.differences(lines, ""), 5)
     -- A kept accessor whose property is carried, joined by the attribute each is written from: the one join there is
     -- when the accessor is named by its getter rather than by the property it reads.
-    local function accessor(qualified, selector, where)
+    -- an implicit accessor written from a property: its attribute is the property's, at the line the property is
+    -- written at, so the line is the helper's to take - a case about a location two properties share has to write
+    -- the accessor there, or it is not about that location at all
+    local function accessor(qualified, selector, line)
         return {kind = "ObjCMethodDecl", name = selector, isImplicit = true, instance = true, _qualified = qualified,
                 inner = {{kind = "AvailabilityAttr", platform = "ios", introduced = "9.0",
-                          range = {begin = {expansionLoc = {file = "NSProcessInfo.h", line = 222, col = 5}}}}}}
+                          range = {begin = {expansionLoc = {file = "NSProcessInfo.h", line = line or 222, col = 5}}}}}}
     end
     local kept = {["-[NSProcessInfo isLowPowerModeEnabled]"] = true}
     local listed = {["-[NSProcessInfo isLowPowerModeEnabled]"] = {api = "-[NSProcessInfo isLowPowerModeEnabled]", status = "inert"},
@@ -465,15 +468,18 @@ function failures(opt)
     local kept_low = {["-[NSProcessInfo isLowPowerModeEnabled]"] = true}
     local listed_low = {["-[NSProcessInfo isLowPowerModeEnabled]"] = {api = "-[NSProcessInfo isLowPowerModeEnabled]", status = "inert"},
                         ["NSProcessInfo.thermalState"] = thermal, ["NSProcessInfo.lowPowerModeEnabled"] = listed["NSProcessInfo.lowPowerModeEnabled"]}
-    local low = {accessor("NSProcessInfo::isLowPowerModeEnabled", "isLowPowerModeEnabled")}
+    local low = {accessor("NSProcessInfo::isLowPowerModeEnabled", "isLowPowerModeEnabled", 300)}
     expect_equal(found, "a macro's shared location, getter paired with the other property", #lift.accessor_conflicts(kept_low, listed_low, low, shared), 0)
     local kept_thermal = {["-[NSProcessInfo thermalState]"] = true}
     local listed_thermal = {["-[NSProcessInfo thermalState]"] = {api = "-[NSProcessInfo thermalState]", status = "absent"},
                             ["NSProcessInfo.thermalState"] = thermal, ["NSProcessInfo.lowPowerModeEnabled"] = listed["NSProcessInfo.lowPowerModeEnabled"]}
-    local hot = {accessor("NSProcessInfo::thermalState", "thermalState")}
+    local hot = {accessor("NSProcessInfo::thermalState", "thermalState", 300)}
     expect_equal(found, "the other getter, paired with the wrong property", #lift.accessor_conflicts(kept_thermal, listed_thermal, hot, shared), 0)
-    -- the same two, each on its own location, are still the pair the rule exists for
-    expect_equal(found, "the same two, one location each", #lift.accessor_conflicts(kept_low, listed_low, low,
+    -- The same two rows, each written at its own location, are still the pair the rule exists for: it is the
+    -- location that carries two properties that pairs with neither, not the rows. So the accessor is written at
+    -- the line the map here names, which is the contrast the two cases above are about.
+    expect_equal(found, "the same two, one location each", #lift.accessor_conflicts(kept_low, listed_low,
+                 {accessor("NSProcessInfo::isLowPowerModeEnabled", "isLowPowerModeEnabled", 222)},
                  {["NSProcessInfo.h:222:5"] = {"NSProcessInfo.lowPowerModeEnabled"}}), 1)
     expect_equal(found, "a location carrying no property", #lift.accessor_conflicts(kept_low, listed_low, low, {}), 0)
 
