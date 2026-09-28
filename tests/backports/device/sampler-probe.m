@@ -33,7 +33,8 @@ static void report(NSString *label, AudioComponentDescription desc)
     printf("%s: found, name=%s type=0x%08x subtype=0x%08x manufacturer=0x%08x version=0x%x\n",
            label.UTF8String,
            name ? [(__bridge NSString *)name UTF8String] : "(no name)",
-           described.componentType, described.componentSubType, described.componentManufacturer, version);
+           (unsigned)described.componentType, (unsigned)described.componentSubType,
+           (unsigned)described.componentManufacturer, (unsigned)version);
     if (name) {
         CFRelease(name);
     }
@@ -41,7 +42,8 @@ static void report(NSString *label, AudioComponentDescription desc)
 
 int main(void)
 {
-    printf("probe: AudioComponentCount = %u\n", AudioComponentCount());
+    AudioComponentDescription every = {0, 0, 0};
+    printf("probe: AudioComponentCount = %u\n", AudioComponentCount(&every));
     printf("probe: minimum = %s\n", PROBE_MINIMUM);
 
     AudioComponentDescription sampler = {0};
@@ -73,7 +75,8 @@ int main(void)
         UInt32 size = 0;
         AudioComponentCopyName(component, &name);
         printf("component %u: type=0x%08x subtype=0x%08x manufacturer=0x%08x name=%s\n",
-               index, described.componentType, described.componentSubType, described.componentManufacturer,
+               (unsigned)index, (unsigned)described.componentType, (unsigned)described.componentSubType,
+               (unsigned)described.componentManufacturer,
                name ? [(__bridge NSString *)name UTF8String] : "(no name)");
         if (name) {
             CFRelease(name);
