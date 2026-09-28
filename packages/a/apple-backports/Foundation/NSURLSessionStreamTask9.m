@@ -10,6 +10,10 @@
 #include <dlfcn.h>
 #include <Security/SecureTransport.h>
 
+/* SecureTransport's own types, because the header's availability of the framework is not the
+   question: the question is that this library links no Security, so the two readers below are looked
+   up rather than called directly. */
+
 /* The four callbacks of NSURLSessionStreamDelegate that this file makes. The protocol is declared
    here, under the SDK's own spelling, so that the port's library carries it: the band machinery and
    the registry check read a protocol's methods out of the image's Objective-C metadata, and a
@@ -90,8 +94,38 @@ static CFStringRef charon_ssl_context_key(void)
     return key;
 }
 
-static void charon_negotiated_tls(CFReadStreamRef stream, NSNumber **version, NSNumber **cipher)
+/* The two SecureTransport readers are in Security.framework, which this library does not link
+   either -- the 6.1.3 gate's link names both of them -- so they are looked up by name, the same way
+   the CFNetwork key is. Nothing here negotiates: the release's stream made the TLS session, and these
+   are the two numbers it agreed on. */
+typedef OSStatus (*CharonNegotiatedProtocol)(SSLContextRef, SSLProtocol *);
+typedef OSStatus (*CharonNegotiatedCipher)(SSLContextRef, SSLCipherSuite *);
+
+static CharonNegotiatedProtocol charon_tls_protocol;
+static CharonNegotiatedCipher charon_tls_cipher;
+
+static void charon_load_tls(void)
 {
+    static dispatch_once_t once;
+    static CharonNegotiatedProtocol protocol;
+    static CharonNegotiatedCipher cipher;
+    dispatch_once(&once, ^{
+        void *library = dlopen("/System/Library/Frameworks/Security.framework/Security", RTLD_LAZY);
+        if (!library)
+            library = RTLD_DEFAULT;
+        protocol = (CharonNegotiatedProtocol)dlsym(library, "SSLGetNegotiatedProtocolVersion");
+        cipher = (CharonNegotiatedCipher)dlsym(library, "SSLGetNegotiatedCipher");
+    });
+    charon_tls_protocol = protocol;
+    charon_tls_cipher = cipher;
+}
+
+static CharonNegotiatedProtocol charon_tls_protocol;
+static CharonNegotiatedCipher charon_tls_cipher;
+
+static void charon_negotiated_tls(CFReadStreamRef stream, NSNumber **version, NSNumber **cipherValue)
+{
+    charon_load_tls();
     CFStringRef key = charon_ssl_context_key();
     if (!key)
         return;
@@ -99,11 +133,11 @@ static void charon_negotiated_tls(CFReadStreamRef stream, NSNumber **version, NS
     if (!context)
         return;
     SSLProtocol got = kSSLProtocolUnknown;
-    if (SSLGetNegotiatedProtocolVersion((SSLContextRef)context, &got) == noErr && version)
+    if (charon_tls_protocol && charon_tls_protocol((SSLContextRef)context, &got) == noErr && version)
         *version = @(got);
     SSLCipherSuite agreed = 0;
-    if (SSLGetNegotiatedCipher((SSLContextRef)context, &agreed) == noErr && agreed && cipher)
-        *cipher = @(agreed);
+    if (charon_tls_cipher && charon_tls_cipher((SSLContextRef)context, &agreed) == noErr && agreed && cipherValue)
+        *cipherValue = @(agreed);
     CFRelease(context);
 }
 
