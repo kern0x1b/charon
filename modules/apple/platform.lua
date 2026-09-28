@@ -397,10 +397,25 @@ function verify_placed(target, installed)
     report_selectors(source, binaries, target:arch(), root, provided)
 end
 
+-- A copy that failed must not pass for one that happened. os.vcp is a clone-file copy and reports
+-- failure by returning nothing at all, so a caller that ignores it writes a package without the program
+-- in it and the install still says it installed one: the guest then runs whatever the image last had,
+-- which is how an install reports success and leaves the program two edits old. The size is the check,
+-- because a program is never rewritten to the same length by accident mid-install.
+function copy_program(source, destination, description)
+    os.mkdir(path.directory(destination))
+    os.vcp(source, destination)
+    local wanted, got = os.filesize(source), os.isfile(destination) and os.filesize(destination) or -1
+    if got ~= wanted then
+        raise("%s: %s is %d B after being copied and %s is %d B; the image would hold a program that was not built",
+               description, destination, got, source, wanted)
+    end
+    return destination
+end
+
 function install_placed(target, installed)
     local binary = path.join(target:installdir(), installed)
-    os.mkdir(path.directory(binary))
-    os.vcp(target:targetfile(), binary)
+    copy_program(target:targetfile(), binary, target:name())
     local binaries = place_carried(target, target:installdir(), binary)
     for index = #binaries, 1, -1 do
         finish(target, binaries[index])

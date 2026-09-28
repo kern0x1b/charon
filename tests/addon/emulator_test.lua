@@ -465,6 +465,28 @@ local function runner_source(opt, found)
     end
 end
 
+-- The check every copy an install makes ends with: a program that was not copied is a program the
+-- image does not hold, and an install that says it installed one is worse than one that failed. A source
+-- that is not there stands in for a copy that did not happen, because the copy itself cannot be made to
+-- fail here; what is under test is that the result is checked rather than assumed.
+local function copy_step(opt, found)
+    local platform = import("apple.platform", {rootdir = opt.modules, anonymous = true})
+    local folder = fixtures.scratch()
+    io.writefile(path.join(folder, "there"), "program\n")
+    if not platform.copy_program(path.join(folder, "there"), path.join(folder, "usr", "libexec", "there"), "probe") then
+        table.insert(found, "a program that was copied is not reported as a failure")
+    end
+    if not os.isfile(path.join(folder, "usr", "libexec", "there")) then
+        table.insert(found, "a copied program is where it was asked for")
+    end
+    if not fixtures.refusal(function ()
+        platform.copy_program(path.join(folder, "not-built"), path.join(folder, "usr", "libexec", "not-built"), "probe")
+    end) then
+        table.insert(found, "a program that was not built must fail the install, not install nothing")
+    end
+    os.tryrm(folder)
+end
+
 function failures(opt)
     local emulator = import("emulator", {rootdir = opt.modules, anonymous = true})
     local debian = import("debian", {rootdir = opt.modules, anonymous = true})
@@ -481,6 +503,7 @@ function failures(opt)
     concurrency(folder, opt.modules, found)
     queue_step(emulator, folder, opt, found)
     naming_step(emulator, found)
+    copy_step(opt, found)
     os.tryrm(folder)
     return found
 end

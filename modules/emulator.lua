@@ -400,6 +400,12 @@ local function place(tree, rootfs)
             os.mkdir(path.directory(target))
             os.tryrm(target)
             os.vrunv("cp", {"-p", source, target})
+            local wanted, got = os.filesize(source), os.isfile(target) and os.filesize(target) or -1
+            if got ~= wanted then
+                remove(path.directory(destination))
+                raise("%s is %d B in the package and %d B in the image, so the image would hold a program that was not built",
+                       relative, wanted, got)
+            end
         end
     end
 end

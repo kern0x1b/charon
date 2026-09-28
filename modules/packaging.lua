@@ -109,7 +109,7 @@ function write(opt)
                     if not carried[dependency.deb] then
                         carried[dependency.deb] = true
                         local copied = path.join(opt.outputdir or config.builddir(), path.filename(dependency.deb))
-                        os.vcp(dependency.deb, copied)
+                        platform.copy_program(dependency.deb, copied, dependency.name)
                         cprint("${bright green}deb${clear} %s", copied)
                         table.insert(written, {deb = copied})
                     end
