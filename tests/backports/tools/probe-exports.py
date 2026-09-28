@@ -62,13 +62,20 @@ Section: Development
 
 
 def registry_names(root):
-    names = {}
+    """Every constant and function the registry of every framework lists as absent, and the file each is
+    listed in. A name in two files is refused: the two rows would answer for one name, and only the last
+    would decide whether the release exports it."""
+    names, told = {}, {}
     files = glob.glob(os.path.join(root, "registry", "*.json")) + glob.glob(os.path.join(root, "registry", "*", "*.json"))
     for file in sorted(files):
         held = json.load(open(file))
         for entry in held["entries"] if isinstance(held, dict) else held:
+            name = re.sub(r"\(\)$", "", entry["api"])
+            if name in told:
+                sys.exit("%s is named by both %s and %s" % (entry["api"], told[name], os.path.relpath(file, root)))
+            told[name] = os.path.relpath(file, root)
             if entry.get("status") == "absent" and entry.get("kind") in ("constant", "function"):
-                names.setdefault(re.sub(r"\(\)$", "", entry["api"]), []).append(os.path.relpath(file, root))
+                names.setdefault(name, []).append(os.path.relpath(file, root))
     return names
 
 

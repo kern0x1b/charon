@@ -148,7 +148,56 @@ function failures(opt)
     range_step(backports, fixtures.scratch(), found)
     spelling(backports, found)
     unreadable(backports, found)
+    named_twice(backports, found)
     return found
+end
+
+-- A framework's rows live in registry/<Framework>.json or in registry/<Framework>/<part>.json, and both are read.
+-- A name in two of them is a contradiction the gate cannot see through: whichever is read last decides the
+-- status, so a name built and listed implemented in one file is listed absent in the other, and every check
+-- that reads the status answers about the last one. It has to be refused by name, with both paths.
+function named_twice(backports, found)
+    local root = path.join(os.tmpdir(), "registry_test_named_twice")
+    os.tryrm(root)
+    os.mkdir(path.join(root, "registry"))
+    os.mkdir(path.join(root, "registry", "Fix"))
+    local function told()
+        local _, incomplete = backports.registry(root)
+        return table.concat(incomplete, "; ")
+    end
+    local function write(where, entries)
+        io.writefile(path.join(root, "registry", where), string.format('{"framework": "Fix", "entries": [%s]}', table.concat(entries, ", ")))
+    end
+    local function entry(api, status)
+        return string.format('{"api": "%s", "kind": "function", "introduced": "8.0", "status": "%s", "effect": "none", "reason": "because"}', api, status)
+    end
+    os.tryrm(root)
+    os.mkdir(path.join(root, "registry"))
+    os.mkdir(path.join(root, "registry", "Fix"))
+    write("Fix.json", {entry("fix_one", "implemented"), entry("fix_both", "implemented")})
+    write("Fix/part.json", {entry("fix_two", "absent")})
+    if told() ~= "" then
+        table.insert(found, "a name in one file and another in a second is refused, not reported: " .. told())
+    end
+    write("Fix/part.json", {entry("fix_two", "absent"), entry("fix_both", "absent")})
+    local twice = told()
+    if not twice:find("fix_both is named by both registry/Fix.json and registry/Fix/part.json", 1, true) then
+        table.insert(found, "a name in registry/Fix.json and registry/Fix/part.json must be refused naming both paths, not '" .. twice .. "'")
+    end
+    write("Fix/part.json", {entry("fix_both", "absent"), entry("fix_both", "absent")})
+    if not told():find("fix_both is named by both", 1, true) then
+        table.insert(found, "a name twice in one file is refused as well, not '" .. told() .. "'")
+    end
+    -- one member has two legal spellings and they are two names: refusing them would refuse the registry itself
+    os.tryrm(root)
+    os.mkdir(path.join(root, "registry"))
+    io.writefile(path.join(root, "registry", "Fix.json"),
+                 '{"framework": "Fix", "entries": [{"api": "FixView.size", "kind": "property", "introduced": "8.0", "status": "implemented", "facts": "x"},'
+                 .. '{"api": "-[FixView size]", "kind": "method", "introduced": "8.0", "status": "implemented", "facts": "x"}]}')
+    if told() ~= "" then
+        table.insert(found, "the two spellings of one property are two names and are not a duplicate: " .. told())
+    end
+    os.tryrm(root)
 end
 
 -- A method or a property is told by -[Class selector:], +[Class selector:] or Class.name, which is what lift() reads: one spelled Class.selector:

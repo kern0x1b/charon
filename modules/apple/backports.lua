@@ -1254,9 +1254,11 @@ function registry(root)
     local files = table.join(os.files(path.join(root, "registry", "*.json")), os.files(path.join(root, "registry", "*", "*.json")))
     table.sort(files)
     for _, file in ipairs(files) do
-        local named = path.join(path.filename(path.directory(file)), path.filename(file))
-        -- registry/<Framework>.json or registry/<Framework>/<part>.json
+        -- registry/<Framework>.json or registry/<Framework>/<part>.json, named from the package root so that a
+        -- name named twice names two paths a reader can open
         local folder = path.filename(path.directory(file))
+        local named = folder == "registry" and path.filename(file) or folder .. "/" .. path.filename(file)
+        named = "registry/" .. named
         frameworks[folder == "registry" and path.basename(file) or folder] = true
         local held = json.decode(io.readfile(file))
         for _, entry in ipairs(held.entries or held) do

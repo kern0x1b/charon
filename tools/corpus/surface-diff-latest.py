@@ -447,11 +447,18 @@ def library_surface(sdk, library, headers, target, failed=None):
 
 
 def registry_names(root, framework):
-    names = {}
+    """Every name the registry of a framework gives a status, from registry/<Framework>.json and from
+    registry/<Framework>/*.json. A name in two of them is refused: whichever is read last would decide the
+    status, so a name built and listed implemented in one file would be listed absent in the other and every
+    row that reads the status would answer about the last one."""
+    names, told = {}, {}
     for path in glob.glob(os.path.join(root, framework, "*.json")) + glob.glob(os.path.join(root, framework + ".json")):
         with open(path) as stream:
             data = json.load(stream)
         for entry in data["entries"] if isinstance(data, dict) else data:
+            if entry["api"] in told:
+                sys.exit("%s is named by both %s and %s" % (entry["api"], told[entry["api"]], path))
+            told[entry["api"]] = path
             names[entry["api"]] = (entry.get("status", ""), parse_version(entry["introduced"]) if entry.get("introduced") else None)
     return names
 

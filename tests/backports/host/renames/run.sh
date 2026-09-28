@@ -99,5 +99,37 @@ else
     grep -m2 'error:' "$build/broken.err" | sed 's/^/    /'
 fi
 
+# and the check every differential wants runs over what it built: a test that names a renamed selector no
+# object defines would be an unrecognized selector at run time, with nothing in the gate to see it
+cat > "$build/undefined.m" <<'EOF'
+#import <UIKit/UIKit.h>
+@interface UIView (CharonUndefined)
+- (NSInteger)charonHostCount;
+@end
+int main(void)
+{
+    @autoreleasepool {
+        return (int)[[UIView new] charonHostCount];
+    }
+}
+EOF
+if xcrun clang $target $flags -w -c "$build/undefined.m" -o "$build/undefined.o"; then
+    if python3 "$here/../check-private-selectors.py" "$build/undefined.o" "$build/probe.renamed.o" > "$build/private.log" 2>&1; then
+        check yes no "a test naming a renamed selector no object defines is refused"
+        sed 's/^/    /' "$build/private.log"
+    else
+        check yes yes "a test naming a renamed selector no object defines is refused"
+        grep -m1 '^FAIL' "$build/private.log" | cut -c1-120 | sed 's/^/    /'
+    fi
+    if python3 "$here/../check-private-selectors.py" "$build/probe.renamed.o" "$build/probe.renamed.o" > "$build/private2.log" 2>&1; then
+        check yes yes "a test naming only what the objects define passes"
+    else
+        check yes no "a test naming only what the objects define passes"
+        sed 's/^/    /' "$build/private2.log"
+    fi
+else
+    check yes no "the probe of a renamed selector nobody defines compiles"
+fi
+
 printf 'checks=%d failures=%d\n' "$checks" "$failures"
 [ "$failures" = 0 ]
