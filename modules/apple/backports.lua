@@ -618,7 +618,7 @@ function protocol_sources(root, library, folder, umbrella)
 static void charon_%s_protocols(void) __attribute__((used));
 static void charon_%s_protocols(void)
 {
-]], library.name, introduced, library.name, library.name, library.name)
+]], library.name, introduced, library.name, umbrella, library.name, library.name)
         for _, name in ipairs(names) do
             text = text .. string.format("    (void)@protocol(%s);\n", name)
         end
