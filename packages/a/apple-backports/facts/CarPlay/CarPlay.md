@@ -136,7 +136,17 @@ implemented ones, by the object that carries them:
 | 12.0 | CPActionSheetTemplate CPAlertTemplate CPImageSet CPSearchTemplate CPTrip CPRouteChoice CPTripPreviewTextConfiguration |
 | 16.0 | CPButton CPTextButton |
 
-The 8 `absent`, each with its own reason in its row: `CPListItem`, `CPNavigationSession`, `CPSessionConfiguration`, `CPTemplateApplicationDashboardScene`, `CPTemplateApplicationInstrumentClusterScene`, `CPTemplateApplicationScene`, `CPVoiceControlState`, `CPVoiceControlTemplate`.
+The 7 `absent`, each with its own reason in its row: `CPNavigationSession`, `CPSessionConfiguration`,
+`CPTemplateApplicationDashboardScene`, `CPTemplateApplicationInstrumentClusterScene`,
+`CPTemplateApplicationScene`, `CPVoiceControlState` and `CPVoiceControlTemplate`. All seven are the
+scene or the car's own driving, which is the wall.
+
+A 25th class the corpus does **not** ask about, and the reason the registry names 23 + 7 + 1 where
+the corpus has 74: `CPListItem`. The corpus does not list it as missing, because the release carries
+that *name* -- a class of another framework's, measured in facts' own words below -- so the port has to
+say what happens to the name rather than the corpus having to ask. The answer is `ignored`: the name
+is an **alias** through `charon_alias.h`, the loader makes `CharonCPListItem` a subclass of the
+release's own class and gives that class what the alias has and lacks, and the row says so.
 
 The 44 with **no registry entry at all** are the rest of the corpus. They are not `absent` -- they
 draw in-app like these do and nothing about them needs a car, so calling them absent would be a false
