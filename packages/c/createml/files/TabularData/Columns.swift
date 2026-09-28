@@ -182,20 +182,32 @@ public struct Column<Element>: ColumnProtocol {
     /// and the gap is carried through, so `map` over a column that is missing a cell does not
     /// invent one and does not lose the place.
     public func map<T>(_ transform: (Element) throws -> T) rethrows -> Column<T> {
-        Column<T>(name: name, contents: try values.map { $0.map(transform) })
+        var mapped = [T?]()
+        for cell in storage.values {
+            if let value = cell { mapped.append(try transform(value)) } else { mapped.append(nil) }
+        }
+        return Column<T>(name: name, contents: mapped)
     }
 
     /// The cells, transformed, with the results that are nil dropped **and** the missing cells
     /// dropped: both are absent, which is what `compactMap` has always meant.
     public func compactMap<T>(_ transform: (Element) throws -> T?) rethrows -> Column<T> {
-        Column<T>(name: name, try values.compactMap { try $0?.map(transform) })
+        var mapped = [T?]()
+        for cell in storage.values {
+            if let value = cell { mapped.append(try transform(value)) } else { mapped.append(nil) }
+        }
+        return Column<T>(name: name, contents: mapped)
     }
 
     /// The cells the predicate keeps. A missing cell is not a value to ask about, so it is dropped
     /// rather than passed to the predicate: a predicate over `Element` cannot be given a cell that
     /// has none.
     public func filter(_ isIncluded: (Element) throws -> Bool) rethrows -> Column<Element> {
-        Column<Element>(name: name, contents: try values.compactMap { try $0.map(isIncluded) })
+        var kept = [Element?]()
+        for cell in storage.values {
+            if let value = cell { kept.append(try isIncluded(value) ? value : nil) } else { kept.append(nil) }
+        }
+        return Column<Element>(name: name, contents: kept)
     }
 }
 
@@ -247,7 +259,7 @@ public struct ColumnSlice<Element>: ColumnProtocol, BidirectionalCollection {
     public func index(after i: Int) -> Int { i + 1 }
     public func index(before i: Int) -> Int { i - 1 }
 
-    public subscript(position: Int) -> Element {
+    public subscript(position: Int) -> Element? {
         get { base[range.lowerBound + position] }
         set { base[range.lowerBound + position] = newValue }
     }
@@ -263,7 +275,7 @@ public struct ColumnSlice<Element>: ColumnProtocol, BidirectionalCollection {
     public var column: Column<Element> { Column<Element>(name: name, values) }
 
     /// The values, which is what a caller reading a slice as a column needs and what the copy is for.
-    public var values: [Element] { Array(self) }
+    public var values: [Element] { Array(self).compactMap { $0 } }
 }
 
 extension ColumnSlice: Equatable where Element: Equatable {}
@@ -292,7 +304,7 @@ public struct DiscontiguousColumnSlice<Element>: ColumnProtocol, BidirectionalCo
     public func index(after i: Int) -> Int { i + 1 }
     public func index(before i: Int) -> Int { i - 1 }
 
-    public subscript(position: Int) -> Element {
+    public subscript(position: Int) -> Element? {
         get { base[indices[position]] }
         set { base[indices[position]] = newValue }
     }
@@ -301,7 +313,7 @@ public struct DiscontiguousColumnSlice<Element>: ColumnProtocol, BidirectionalCo
         DiscontiguousColumnSlice(base: base, indices: Array(indices[bounds]))
     }
 
-    public var values: [Element] { Array(self) }
+    public var values: [Element] { Array(self).compactMap { $0 } }
 
     public var column: Column<Element> { Column<Element>(name: name, values) }
 }
@@ -403,6 +415,16 @@ public struct AnyColumn: @unchecked Sendable {
     /// "berlin" arrives as `Optional(Optional("berlin"))` and a row that reads through here describes
     /// as an optional of the value. The optional is taken off here, by hand, and a missing cell stays
     /// a nil instead of becoming a value.
+    /// The cells that hold a value, with the missing ones dropped. The public way to read an erased
+    /// column's values, since `values(as:)` is internal: the SDK has no such accessor, and a caller
+    /// reaching for one would be reaching for a name this port invented.
+    public var presentValues: [Any] {
+        storage.map { element -> Any in
+            guard let element = element else { return Optional<Any>.none as Any }
+            return element
+        }
+    }
+
     public var erasedValues: [Any] {
         storage.map { element -> Any in
             guard let element = element else { return Optional<Any>.none as Any }
@@ -419,17 +441,23 @@ public struct AnyColumn: @unchecked Sendable {
     /// The values as the type the caller names, or nil when the column is not of that type — which is
     /// the answer a caller needs, because a column of a different type read as this one is how a
     /// frame gives a category column away as a column of zeroes.
-    /// The values as the type the caller names, with the missing cells dropped, or `nil` when the
-    /// column is not of that type. Dropped rather than kept as `nil`s: a caller asking for the
-    /// values of a column wants the values, and a column missing a cell asked this way says how many
-    /// it has rather than pretending the cell is there. `values(as:)` is not Apple's accessor -
-    /// Apple reaches the cells through the subscript, which is `Element?` - so it is the port's, and
-    /// it drops the missing on purpose.
-    public func values<T>(as type: T.Type = T.self) -> [T]? {
-        var out = [T]()
+    /// The cells as the type the caller names, **of the column's own length**, or `nil` when the
+    /// column is not of that type.
+    ///
+    /// `internal`, because the SDK declares no such accessor: Apple's caller reaches a cell through
+    /// the subscript, which is `Element?`, and an invented name that is public is a public API this
+    /// port has invented.
+    ///
+    /// The result is `[T?]` and the length is the column's, deliberately. Dropping the missing cells
+    /// would make the result shorter than the column, and every caller that indexes it by row
+    /// position would then be reading a different row after the first gap - a column of six cells
+    /// missing the third answers five values, and `values[3]` is the fifth row, not the fourth. A
+    /// caller that wants only the cells that are there compacts them itself, having chosen to.
+    internal func values<T>(as type: T.Type = T.self) -> [T?]? {
+        var out = [T?]()
         out.reserveCapacity(storage.count)
         for value in storage {
-            guard let value = value else { continue }
+            guard let value = value else { out.append(nil); continue }
             guard let typed = value as? T else { return nil }
             out.append(typed)
         }

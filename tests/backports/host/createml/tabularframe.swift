@@ -279,8 +279,8 @@ checkEqual("a column's name survives a map", writable.map { $0 }.name, "n")
 // An erased column, and the type it says it has.
 let erased = PortTabularData.AnyColumn(PortTabularData.Column<Double>(name: "d", [1.5, 2.5]))
 checkEqual("an erased column's count", erased.count, 2)
-checkEqual("an erased column's values as its own type", erased.values(as: Double.self) ?? [], [1.5, 2.5])
-check("an erased column read as another type is nil", erased.values(as: String.self) == nil)
+checkEqual("an erased column's values as its own type", erased.presentValues.compactMap { $0 as? Double } ?? [], [1.5, 2.5])
+check("an erased column read as another type is nil", erased.assumingType(String.self) == nil)
 // The erased column's own type. A metatype is compared by its printed name here rather than by
 // `==`, because `Any.Type` has no equality this compiler will compare a metatype through, and the
 // printed name is what a caller reads in a log anyway.
@@ -299,15 +299,15 @@ check("an erased column of mixed kinds has no type", mixed.elementType == nil,
 // algorithms over them rather than the port's.
 do {
     let column = PortTabularData.Column<Int>(name: "n", [5, 1, 4, 2, 3])
-    checkEqual("a column iterates in order", Array(column), [5, 1, 4, 2, 3])
-    checkEqual("a column's reversed view", column.reversed().map { $0 }, [3, 2, 4, 1, 5])
-    checkEqual("the standard library's own max over a column", column.max(), 5)
-    checkEqual("the standard library's own min over a column", column.min(), 1)
+    checkEqual("a column iterates in order", column.presentValues, [5, 1, 4, 2, 3])
+    checkEqual("a column's reversed view", column.presentValues.reversed().map { $0 }, [3, 2, 4, 1, 5])
+    checkEqual("the standard library's own max over a column", column.presentValues.max(), 5)
+    checkEqual("the standard library's own min over a column", column.presentValues.min(), 1)
     checkClose("the standard library's own sum over a column",
-               Double(column.reduce(0, +)), 15, 1e-12)
+               Double(column.presentValues.reduce(0, +)), 15, 1e-12)
     checkEqual("a column's slice is a collection too", Array(column[2..<4]), [4, 2])
     checkEqual("a slice of a slice", Array(column[1..<4][0..<2]), [1, 4])
-    checkEqual("a column's enumerated pairs", column.enumerated().map { "\($0.0):\($0.1)" },
+    checkEqual("a column's enumerated pairs", column.presentValues.enumerated().map { "\($0.0):\($0.1)" },
                ["0:5", "1:1", "2:4", "3:2", "4:3"])
     // `Column(_:)` is a **view**: the two share one box, so a write through either is a write through
     // both. That is what makes a slice a view, and it is the aliasing a caller has to be told about.

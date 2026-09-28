@@ -103,12 +103,12 @@ public struct DataFrame {
         guard let column = self[columnID.name], let values = column.values(as: T.self) else {
             return Column<T>(name: columnID.name)
         }
-        return Column<T>(name: columnID.name, values)
+        return Column<T>(name: columnID.name, contents: values)
     }
 
     public subscript<T>(columnName: String, type: T.Type) -> Column<T>? {
         guard let column = self[columnName], let values = column.values(as: T.self) else { return nil }
-        return Column<T>(name: columnName, values)
+        return Column<T>(name: columnName, contents: values)
     }
 
     public subscript(dynamicMember columnName: String) -> AnyColumn {
@@ -194,7 +194,7 @@ public struct DataFrame {
         let column = self[columnName, T.self]
         var keep = [Int]()
         for index in 0..<count {
-            if try isIncluded(column?.values[safe: index]) { keep.append(index) }
+            if let cell = column?.values[safe: index], try isIncluded(cell) { keep.append(index) }
         }
         return rows(keep)
     }
@@ -260,11 +260,11 @@ extension DataFrame {
         }
 
         public subscript<T>(columnID: ColumnID<T>) -> T? {
-            base[columnID].values[safe: index]
+            base[columnID].values[safe: index] ?? nil
         }
 
         public subscript<T>(columnName: String, type: T.Type) -> T? {
-            base[columnName, type]?.values[safe: index]
+            base[columnName, type]?.values[safe: index] ?? nil
         }
     }
 
