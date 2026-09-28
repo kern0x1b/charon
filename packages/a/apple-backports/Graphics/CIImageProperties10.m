@@ -2,6 +2,8 @@
 #import <objc/runtime.h>
 #import <stdio.h>
 #import <string.h>
+#import <stdlib.h>
+#import <dlfcn.h>
 
 #pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
 
@@ -18,13 +20,53 @@
 
 static const void *CharonCIPropertiesKey = &CharonCIPropertiesKey;
 
-// -properties as the release had it, captured before the installer replaces it, so an image the port
-// holds nothing for is answered by the framework rather than by the port.
+// -properties as the **framework** had it. Captured by walking the class's own method list and taking
+// the first implementation that is not in this image: the runtime attaches a file's categories before
+// it runs that file's +load, so class_getInstanceMethod here would return this file's own
+// -[CIImage properties] and capture the cycle - the replacement, then the category, then the
+// replacement again, which is a stack overflow (measured: 501 hits before the guard page).
+//
+// The capture is asserted with dladdr: if the implementation chosen is inside this image, the install
+// aborts loudly rather than installing a two-frame cycle.
 static IMP CharonCIPropertiesRelease;
 typedef NSDictionary *(*CharonCIPropertiesFunction)(id, SEL);
 
-// The properties a caller set on an image, beside that image: a category cannot add storage to a class
-// the framework has, and an associated object can.
+// The image this file was loaded from, so "is this implementation ours" is a comparison and not a hope.
+static const char *CharonCIPropertiesOwnImage(void)
+{
+    static const char *image;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        Dl_info info;
+        memset(&info, 0, sizeof info);
+        image = dladdr((const void *)&CharonCIPropertiesOwnImage, &info) && info.dli_fname
+                    ? strdup(info.dli_fname) : "?";
+    });
+    return image;
+}
+
+static bool CharonCIPropertiesIsOurs(const void *implementation)
+{
+    Dl_info info;
+    memset(&info, 0, sizeof info);
+    if (!implementation || !dladdr(implementation, &info) || !info.dli_fname)
+        return true;  // cannot tell, so treat it as ours and refuse the install
+    return strcmp(info.dli_fname, CharonCIPropertiesOwnImage()) == 0;
+}
+
+// The framework's implementation of selector on cls: the first one the class knows that is not ours.
+static IMP CharonCIPropertiesReleaseImplementation(Class cls, SEL selector)
+{
+    unsigned count = 0;
+    Method *methods = class_copyMethodList(cls, &count);
+    IMP found = NULL;
+    for (unsigned i = 0; i < count && !found; i++)
+        if (method_getName(methods[i]) == selector && !CharonCIPropertiesIsOurs(method_getImplementation(methods[i])))
+            found = method_getImplementation(methods[i]);
+    free(methods);
+    return found;
+}
+
 NSDictionary *charon_CIImage_properties(id image, SEL _cmd)
 {
     NSDictionary *held = objc_getAssociatedObject(image, CharonCIPropertiesKey);
@@ -65,8 +107,15 @@ CIImage *charon_CIImage_imageBySettingProperties(id image, SEL _cmd, NSDictionar
     for (size_t i = 0; i < sizeof entries / sizeof *entries; i++) {
         Method method = class_getInstanceMethod([CIImage class], entries[i].selector);
         if (method) {
-            if (strcmp(entries[i].key, "properties") == 0)
-                CharonCIPropertiesRelease = method_getImplementation(method);
+            if (strcmp(entries[i].key, "properties") == 0) {
+                CharonCIPropertiesRelease = CharonCIPropertiesReleaseImplementation([CIImage class], entries[i].selector);
+                if (!CharonCIPropertiesRelease || CharonCIPropertiesIsOurs(CharonCIPropertiesRelease)) {
+                    fprintf(stderr, "charon: REFUSING to install -[properties]: the captured implementation is this "
+                                    "image's own, and installing it would be a cycle\n");
+                    abort();
+                }
+                fprintf(stderr, "charon: captured the framework's -[properties] outside this image\n");
+            }
             method_setImplementation(method, entries[i].implementation);
             fprintf(stderr, "charon: replaced -[%s]\n", entries[i].key);
         } else if (class_addMethod([CIImage class], entries[i].selector, entries[i].implementation, entries[i].types)) {
