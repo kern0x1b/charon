@@ -11,10 +11,6 @@
 // The base classes - AVAudioUnit, AVAudioUnitEffect, AVAudioNode - are carried in
 // libAVFoundationBackports.dylib, which this library links; nothing of theirs is edited here.
 //
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wobjc-protocol-property-synthesis"
-#pragma clang diagnostic ignored "-Wprotocol"
-
 // AVAudioUnitMIDIInstrument and AVAudioUnitSampler are deliberately NOT here: iOS 6.1.3 exports no
 // function that sends a MIDI event to an audio unit (its AudioToolbox AudioUnit family is the
 // twenty-seven functions enumerated in facts/AVFAudio/AUAudioUnit.md, and none of them is a MIDI
@@ -50,33 +46,45 @@
 
 @end
 
-// A parameter's value, and its default: -1 means "the application has not chosen one", so the unit's
-// own current value is read back instead. The unit is asked, not a table consulted.
+// A parameter's value, and where it comes from. A parameter the application has chosen is kept in an
+// ivar and told to the unit; one it has not is read from the unit, which is asked rather than a table
+// consulted. Whether it has been chosen is a BOOL, never a magic value: kDelayParam_Feedback and
+// kTimePitchParam_Pitch both take -1 inside their documented range, so "-1 means unset" would swallow
+// a value the host is entitled to set. (That is not a hypothesis - the host differential in
+// tests/backports/host/avfaudio sets both to -1 before attach and reads them back.)
 #define CharonParameterOf(unit, identifier) CharonUnitParameter((unit).audioUnit, (identifier))
 #define CharonSetParameterOf(unit, identifier, value) CharonSetUnitParameter((unit).audioUnit, (identifier), (value))
 
 @implementation AVAudioUnitDelay {
     float _charon_delayTime;
+    BOOL _charon_havedelayTime;
     float _charon_feedback;
+    BOOL _charon_havefeedback;
     float _charon_lowPassCutoff;
+    BOOL _charon_havelowPassCutoff;
     float _charon_wetDryMix;
+    BOOL _charon_havewetDryMix;
 }
 
 - (instancetype)initWithAudioComponentDescription:(AudioComponentDescription)audioComponentDescription
 {
     self = [super initWithAudioComponentDescription:audioComponentDescription];
     if (self) {
-        _charon_delayTime = -1;
-        _charon_feedback = -1;
-        _charon_lowPassCutoff = -1;
-        _charon_wetDryMix = -1;
+        _charon_delayTime = 0;
+        _charon_havedelayTime = NO;
+        _charon_feedback = 0;
+        _charon_havefeedback = NO;
+        _charon_lowPassCutoff = 0;
+        _charon_havelowPassCutoff = NO;
+        _charon_wetDryMix = 0;
+        _charon_havewetDryMix = NO;
     }
     return self;
 }
 
 - (NSTimeInterval)delayTime
 {
-    if (_charon_delayTime >= 0) {
+    if (_charon_havedelayTime) {
         return _charon_delayTime;
     }
     return CharonParameterOf(self, kDelayParam_DelayTime);
@@ -85,12 +93,13 @@
 - (void)setDelayTime:(NSTimeInterval)delayTime
 {
     _charon_delayTime = (float)delayTime;
+    _charon_havedelayTime = YES;
     CharonSetParameterOf(self, kDelayParam_DelayTime, _charon_delayTime);
 }
 
 - (float)feedback
 {
-    if (_charon_feedback >= 0) {
+    if (_charon_havefeedback) {
         return _charon_feedback;
     }
     return CharonParameterOf(self, kDelayParam_Feedback);
@@ -104,7 +113,7 @@
 
 - (float)lowPassCutoff
 {
-    if (_charon_lowPassCutoff >= 0) {
+    if (_charon_havelowPassCutoff) {
         return _charon_lowPassCutoff;
     }
     return CharonParameterOf(self, kDelayParam_LopassCutoff);
@@ -118,7 +127,7 @@
 
 - (float)wetDryMix
 {
-    if (_charon_wetDryMix >= 0) {
+    if (_charon_havewetDryMix) {
         return _charon_wetDryMix;
     }
     return CharonParameterOf(self, kDelayParam_WetDryMix);
@@ -133,10 +142,10 @@
 // A value chosen before the node was ever attached reaches the unit when the real one arrives.
 - (void)charon_applyPendingParameters
 {
-    if (_charon_delayTime >= 0) CharonSetParameterOf(self, kDelayParam_DelayTime, _charon_delayTime);
-    if (_charon_feedback >= 0) CharonSetParameterOf(self, kDelayParam_Feedback, _charon_feedback);
-    if (_charon_lowPassCutoff >= 0) CharonSetParameterOf(self, kDelayParam_LopassCutoff, _charon_lowPassCutoff);
-    if (_charon_wetDryMix >= 0) CharonSetParameterOf(self, kDelayParam_WetDryMix, _charon_wetDryMix);
+    if (_charon_havedelayTime) CharonSetParameterOf(self, kDelayParam_DelayTime, _charon_delayTime);
+    if (_charon_havefeedback) CharonSetParameterOf(self, kDelayParam_Feedback, _charon_feedback);
+    if (_charon_havelowPassCutoff) CharonSetParameterOf(self, kDelayParam_LopassCutoff, _charon_lowPassCutoff);
+    if (_charon_havewetDryMix) CharonSetParameterOf(self, kDelayParam_WetDryMix, _charon_wetDryMix);
     [super charon_applyPendingParameters];
 }
 
@@ -144,20 +153,22 @@
 
 @implementation AVAudioUnitVarispeed {
     float _charon_rate;
+    BOOL _charon_haverate;
 }
 
 - (instancetype)initWithAudioComponentDescription:(AudioComponentDescription)audioComponentDescription
 {
     self = [super initWithAudioComponentDescription:audioComponentDescription];
     if (self) {
-        _charon_rate = -1;
+        _charon_rate = 0;
+        _charon_haverate = NO;
     }
     return self;
 }
 
 - (float)rate
 {
-    if (_charon_rate >= 0) {
+    if (_charon_haverate) {
         return _charon_rate;
     }
     return CharonParameterOf(self, kVarispeedParam_PlaybackRate);
@@ -171,7 +182,7 @@
 
 - (void)charon_applyPendingParameters
 {
-    if (_charon_rate >= 0) CharonSetParameterOf(self, kVarispeedParam_PlaybackRate, _charon_rate);
+    if (_charon_haverate) CharonSetParameterOf(self, kVarispeedParam_PlaybackRate, _charon_rate);
     [super charon_applyPendingParameters];
 }
 
@@ -179,24 +190,30 @@
 
 @implementation AVAudioUnitTimePitch {
     float _charon_rate;
+    BOOL _charon_haverate;
     float _charon_pitch;
+    BOOL _charon_havepitch;
     float _charon_overlap;
+    BOOL _charon_haveoverlap;
 }
 
 - (instancetype)initWithAudioComponentDescription:(AudioComponentDescription)audioComponentDescription
 {
     self = [super initWithAudioComponentDescription:audioComponentDescription];
     if (self) {
-        _charon_rate = -1;
-        _charon_pitch = -1;
-        _charon_overlap = -1;
+        _charon_rate = 0;
+        _charon_haverate = NO;
+        _charon_pitch = 0;
+        _charon_havepitch = NO;
+        _charon_overlap = 0;
+        _charon_haveoverlap = NO;
     }
     return self;
 }
 
 - (float)rate
 {
-    if (_charon_rate >= 0) {
+    if (_charon_haverate) {
         return _charon_rate;
     }
     return CharonParameterOf(self, kTimePitchParam_Rate);
@@ -210,7 +227,7 @@
 
 - (float)pitch
 {
-    if (_charon_pitch >= 0) {
+    if (_charon_havepitch) {
         return _charon_pitch;
     }
     return CharonParameterOf(self, kTimePitchParam_Pitch);
@@ -224,7 +241,7 @@
 
 - (float)overlap
 {
-    if (_charon_overlap >= 0) {
+    if (_charon_haveoverlap) {
         return _charon_overlap;
     }
     return CharonParameterOf(self, kTimePitchParam_EffectBlend);
@@ -238,9 +255,9 @@
 
 - (void)charon_applyPendingParameters
 {
-    if (_charon_rate >= 0) CharonSetParameterOf(self, kTimePitchParam_Rate, _charon_rate);
-    if (_charon_pitch >= 0) CharonSetParameterOf(self, kTimePitchParam_Pitch, _charon_pitch);
-    if (_charon_overlap >= 0) CharonSetParameterOf(self, kTimePitchParam_EffectBlend, _charon_overlap);
+    if (_charon_haverate) CharonSetParameterOf(self, kTimePitchParam_Rate, _charon_rate);
+    if (_charon_havepitch) CharonSetParameterOf(self, kTimePitchParam_Pitch, _charon_pitch);
+    if (_charon_haveoverlap) CharonSetParameterOf(self, kTimePitchParam_EffectBlend, _charon_overlap);
     [super charon_applyPendingParameters];
 }
 
@@ -249,6 +266,7 @@
 @implementation AVAudioUnitDistortion {
     float _charon_preGain;
     float _charon_wetDryMix;
+    BOOL _charon_havewetDryMix;
     NSInteger _charon_preset;
 }
 
@@ -313,6 +331,7 @@
 
 @implementation AVAudioUnitReverb {
     float _charon_wetDryMix;
+    BOOL _charon_havewetDryMix;
     NSInteger _charon_preset;
 }
 
@@ -320,14 +339,15 @@
 {
     self = [super initWithAudioComponentDescription:audioComponentDescription];
     if (self) {
-        _charon_wetDryMix = -1;
+        _charon_wetDryMix = 0;
+        _charon_havewetDryMix = NO;
     }
     return self;
 }
 
 - (float)wetDryMix
 {
-    if (_charon_wetDryMix >= 0) {
+    if (_charon_havewetDryMix) {
         return _charon_wetDryMix;
     }
     return CharonParameterOf(self, kReverb2Param_DryWetMix);
@@ -354,10 +374,8 @@
 
 - (void)charon_applyPendingParameters
 {
-    if (_charon_wetDryMix >= 0) CharonSetParameterOf(self, kReverb2Param_DryWetMix, _charon_wetDryMix);
+    if (_charon_havewetDryMix) CharonSetParameterOf(self, kReverb2Param_DryWetMix, _charon_wetDryMix);
     [super charon_applyPendingParameters];
 }
 
 @end
-
-#pragma clang diagnostic pop

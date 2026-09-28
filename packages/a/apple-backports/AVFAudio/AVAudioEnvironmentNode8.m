@@ -191,10 +191,6 @@ static AudioComponent CharonEnvironmentComponent(void)
 
 @end
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wobjc-protocol-property-synthesis"
-#pragma clang diagnostic ignored "-Wprotocol"
-
 @implementation AVAudioEnvironmentNode {
     AUGraph _charon_graph;
     AUNode _charon_mixer;
@@ -488,5 +484,3 @@ static AudioComponent CharonEnvironmentComponent(void)
 }
 
 @end
-
-#pragma clang diagnostic pop

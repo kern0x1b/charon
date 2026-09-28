@@ -83,15 +83,41 @@
 
 - (NSArray<NSNumber *> *)supportedChannelLayoutTags
 {
-    // The unit's own answer, as the header says: an array of AudioChannelLayoutTag. It is a property
-    // of the unit's input or output scope, and a unit that publishes none answers nil, which the
-    // header allows.
+    // The tags the unit supports on this bus, through kAudioUnitProperty_SupportedChannelLayoutTags,
+    // which the header documents as "AudioChannelLayoutTags[ variable number of elements ]", Access:
+    // read only. The value is a CFArray whose entries are the *names* of tags, so each is read by
+    // name and the four characters of the name are the tag. A unit that publishes none answers nil,
+    // which the header allows - and nil is the answer, as opposed to the one-element array holding
+    // the bus's own current layout, which is a different question and not the one asked.
     if (_charon_owner == nil || _charon_owner.audioUnit == NULL) {
         return nil;
     }
-    AVAudioFormat *format = self.format;
-    AudioChannelLayoutTag tag = format.channelLayout.layoutTag;
-    return tag != 0 ? @[@(tag)] : nil;
+    AudioUnitScope scope = _charon_type == AUAudioUnitBusTypeInput ? kAudioUnitScope_Input : kAudioUnitScope_Output;
+    UInt32 size = 0;
+    if (AudioUnitGetPropertyInfo(_charon_owner.audioUnit, kAudioUnitProperty_SupportedChannelLayoutTags, scope,
+                                 (AudioUnitElement)_charon_index, &size, NULL) != noErr || size < sizeof(CFArrayRef)) {
+        return nil;
+    }
+    CFArrayRef tags = NULL;
+    size = sizeof(tags);
+    if (AudioUnitGetProperty(_charon_owner.audioUnit, kAudioUnitProperty_SupportedChannelLayoutTags, scope,
+                             (AudioUnitElement)_charon_index, &tags, &size) != noErr || tags == NULL) {
+        return nil;
+    }
+    NSMutableArray<NSNumber *> *found = [NSMutableArray array];
+    CFIndex count = CFArrayGetCount(tags);
+    for (CFIndex index = 0; index < count; index++) {
+        CFStringRef name = CFArrayGetValueAtIndex(tags, index);
+        if (name == NULL) {
+            continue;
+        }
+        AudioChannelLayoutTag tag = CharonTagFromName((__bridge NSString *)name);
+        if (tag != 0) {
+            [found addObject:@(tag)];
+        }
+    }
+    CFRelease(tags);
+    return found;
 }
 
 // Float64 by the header's own Value Type, for the same reason the unit's own latency is: read narrow

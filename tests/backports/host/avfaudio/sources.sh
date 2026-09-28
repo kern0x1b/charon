@@ -44,11 +44,16 @@ hits=$(grep -c "SupportedChannelLayoutTags" "$AVFAUDIO/AUAudioUnitBus9.m" || tru
 check "AUAudioUnitBus.supportedChannelLayoutTags reads kAudioUnitProperty_SupportedChannelLayoutTags" \
       "$([ "$hits" -ge 1 ] && echo yes || echo no)"
 
-# The render path may not allocate, and every observer is called.
-copy=$(grep -c "copy\]" "$AVFAUDIO/AUAudioUnit9.m" || true)
-check "the render path takes no copy of the observer list" "$([ "$copy" -eq 0 ] && echo yes || echo no)"
-breaks=$(grep -c "break;" "$AVFAUDIO/AUAudioUnit9.m" || true)
-check "the observer loop calls every observer rather than breaking after the first" \
+# The render path may not allocate, and every observer is called. Both are read out of the render
+# method alone: a block copied into an ivar off the render thread is ordinary, a copy inside a
+# comment is a comment, and the break in -removeRenderObserver: is where a break belongs.
+# the comment inside the method explains the very rule this checks, so comments are stripped first
+render=$(sed -n '/- (OSStatus)charon_renderWithActionFlags:/,/^}/p' "$AVFAUDIO/AUAudioUnit9.m" | grep -vE '^[[:space:]]*(//|\*|/)')
+copy=$(printf '%s' "$render" | grep -c "copy\]" || true)
+check "the render method takes no copy of the observer list" \
+      "$([ "$copy" -eq 0 ] && echo yes || echo no)"
+breaks=$(printf '%s' "$render" | grep -c "break;" || true)
+check "the render method calls every observer rather than breaking after the first" \
       "$([ "$breaks" -eq 0 ] && echo yes || echo no)"
 
 # A magic sentinel where a legal value lives: kDelayParam_Feedback and kTimePitchParam_Pitch both
