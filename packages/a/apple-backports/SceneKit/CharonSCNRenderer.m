@@ -519,6 +519,37 @@ static GLuint CharonSCNCompile(GLenum kind, NSString *source)
     return shader;
 }
 
+/// The projection a camera draws through, for a point of view and a viewport. The arithmetic is
+/// what it was inside renderScene:pointOfView:width:height:, moved out whole so that the two share
+/// one matrix; a nil point of view, a zero height and an absent camera answer as they did there,
+/// because the point of view of a scene with no camera is the identity and the defaults are the
+/// defaults a new SCNCamera has.
+SCNMatrix4 CharonSCNProjectionMatrix(SCNNode *pointOfView, int width, int height)
+{
+    SCNCamera *camera = pointOfView.camera;
+    float aspect = (float)width / (float)height;
+    float zNear = camera ? camera.zNear : 1, zFar = camera ? camera.zFar : 100;
+    SCNMatrix4 projection;
+    memset(&projection, 0, sizeof(projection));
+    if (camera.usesOrthographicProjection) {
+        float scale = camera.orthographicScale;
+        projection.m11 = 1 / (scale * aspect);
+        projection.m22 = 1 / scale;
+        projection.m33 = -2 / (zFar - zNear);
+        projection.m43 = -(zFar + zNear) / (zFar - zNear);
+        projection.m44 = 1;
+    } else {
+        float fov = camera ? camera.fieldOfView : 60;
+        float f = 1 / tanf(fov * (float)M_PI / 360);
+        projection.m11 = f / aspect;
+        projection.m22 = f;
+        projection.m33 = (zFar + zNear) / (zNear - zFar);
+        projection.m34 = -1;
+        projection.m43 = 2 * zFar * zNear / (zNear - zFar);
+    }
+    return projection;
+}
+
 @implementation CharonSCNRenderer
 {
     EAGLContext *_context;
@@ -1163,30 +1194,15 @@ static void CharonSCNLightColor(SCNLight *light, float scale, float out[3])
     NSMutableArray<SCNNode *> *lightNodes = [NSMutableArray array];
     CharonSCNCollect(scene.rootNode, SCNMatrix4Identity, 1, itemData, lightNodes);
 
-    // the camera: the point of view's world transform inverted, and a projection from its camera
+    // the camera: the point of view's world transform inverted, and a projection from its camera.
+    // The projection is CharonSCNProjectionMatrix, shared with the renderer's projectPoint: and
+    // unprojectPoint:, so that what a hit test projects through is the matrix the frame is drawn
+    // with - a second copy of this arithmetic could disagree with the picture, which is the one
+    // thing a projection must not do.
     SCNMatrix4 cameraWorld = pointOfView ? [pointOfView charonPresentedWorldTransform] : SCNMatrix4Identity;
     SCNMatrix4 view = CharonSCNMatrixInvert(cameraWorld);
     SCNCamera *camera = pointOfView.camera;
-    float aspect = (float)width / (float)height;
-    float zNear = camera ? camera.zNear : 1, zFar = camera ? camera.zFar : 100;
-    SCNMatrix4 projection;
-    memset(&projection, 0, sizeof(projection));
-    if (camera.usesOrthographicProjection) {
-        float scale = camera.orthographicScale;
-        projection.m11 = 1 / (scale * aspect);
-        projection.m22 = 1 / scale;
-        projection.m33 = -2 / (zFar - zNear);
-        projection.m43 = -(zFar + zNear) / (zFar - zNear);
-        projection.m44 = 1;
-    } else {
-        float fov = camera ? camera.fieldOfView : 60;
-        float f = 1 / tanf(fov * (float)M_PI / 360);
-        projection.m11 = f / aspect;
-        projection.m22 = f;
-        projection.m33 = (zFar + zNear) / (zNear - zFar);
-        projection.m34 = -1;
-        projection.m43 = 2 * zFar * zNear / (zNear - zFar);
-    }
+    SCNMatrix4 projection = CharonSCNProjectionMatrix(pointOfView, width, height);
     SCNMatrix4 viewProjection = CharonSCNMatrixMultiply(view, projection);
     float cameraPosition[3] = {cameraWorld.m41, cameraWorld.m42, cameraWorld.m43};
     float coatView[4] = {cameraWorld.m41, cameraWorld.m42, cameraWorld.m43, 1};
