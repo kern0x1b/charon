@@ -27,12 +27,14 @@
                      resultsHandler:(void (^)(NSArray<HKSample *> *_Nullable results, BOOL done, NSError *_Nullable error))resultsHandler
 {
     self = [super initWithCharonSampleType:sampleType];
+    NSLog(@"HKPROBE after super: self=%@ objectType=%@ sampleType=%@", self, [self charon_objectType], [self sampleType]);
     if (self) {
         [self charon_setPredicate:predicate];
         _limit = limit;
         _sortDescriptors = [sortDescriptors copy];
         _resultsHandler = [resultsHandler copy];
     }
+    NSLog(@"HKPROBE before return: self=%@ objectType=%@ sampleType=%@", self, [self charon_objectType], [self sampleType]);
     return self;
 }
 

@@ -56,6 +56,7 @@ static NSString *CharonHKOperatorSpelling(NSPredicateOperatorType type)
 // the release answers nil here for such a query.
 - (nullable HKSampleType *)sampleType
 {
+    NSLog(@"HKPROBE -sampleType: self=%@ _objectType=%@", self, _objectType);
     return [_objectType isKindOfClass:[HKSampleType class]] ? (HKSampleType *)_objectType : nil;
 }
 
