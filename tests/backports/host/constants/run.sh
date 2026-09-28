@@ -40,6 +40,7 @@ failed=0
 # which is indistinguishable from passing. Both default to BUILT, and each names its own library.
 builtHomeKit=${BUILT_HOMEKIT:-${BUILT:-}}
 builtAuthenticationServices=${BUILT_AUTHENTICATIONSERVICES:-${BUILT:-}}
+selfTest="no"
 
 measure() {
     framework="$1"
@@ -179,7 +180,7 @@ if agree:
     with open(table, "w") as f:
         f.write("\n".join(out) + "\n")
     print("   table written: %s (%d rows)" % (table, len(agree)))
-sys.exit(1 if differ or absent else 0)
+sys.exit(1 if differ or absent or wrong or unextractable else 0)
 PYTHON
     rc=$?
     set -e
@@ -189,11 +190,8 @@ PYTHON
 measure HomeKit /System/Library/PrivateFrameworks/HomeKit.framework/Versions/A/HomeKit "$builtHomeKit"
 measure AuthenticationServices /System/Library/Frameworks/AuthenticationServices.framework/AuthenticationServices "$builtAuthenticationServices"
 
-if [ "$failed" -ne 0 ]; then
-    echo "FAIL: a value the port carries is not the value the host holds"
-    exit 1
-fi
-echo "ok: every constant both families carry is the host's own"
+# No verdict yet: the self-test below has a word in the run's outcome, and a verdict printed before it
+# would be about half the run.
 
 # The second comparison -- the built library against the row -- has to be shown to fail, or it is a
 # check nobody can tell from no check. The mutation is the coordinator's: one constant's value changed
@@ -223,13 +221,49 @@ if [ -n "${HOMEKIT_SOURCES:-}" ] && [ -d "${MUTANT_SDK:-/nonexistent}" ] && [ -x
         printf 'HMCharacteristicMetadataFormatArray\n' > "$mutant/one.txt"
         a=$("$build/object-constant" "$mutant/clean/libmutant.dylib" "$mutant/one.txt" 2>/dev/null | tail -1 | cut -f4)
         b=$("$build/object-constant" "$mutant/changed/libmutant.dylib" "$mutant/one.txt" 2>/dev/null | tail -1 | cut -f4)
-        if [ -n "$a" ] && [ -n "$b" ] && [ "$a" != "$b" ]; then
-            echo "ok: the library comparison sees a value changed in the code only ($a -> $b)"
-        else
-            echo "FAIL: the library comparison did not see a value changed in the code only ($a -> $b)"
+        if [ -z "$a" ] || [ -z "$b" ] || [ "$a" = "$b" ]; then
+            echo "FAIL: the mutation did not change the value in the code ($a -> $b), so the self-test"
+            echo "      would pass on a check that cannot see a wrong value"
             exit 1
         fi
+        echo "ok:   the mutation changed one value in the code only ($a -> $b), with its row left correct"
+        # Now the check has to go red on it. The mutant library is handed to the runner as the built
+        # binary, which is the path the finding was about: the row agrees with the host, the library
+        # does not, and the run has to exit non-zero because of the library alone.
+        echo "ok:   handing the mutated library to this same check, which now has to fail:"
+        set +e
+        BUILT_HOMEKIT="$mutant/changed/libmutant.dylib" BUILT_AUTHENTICATIONSERVICES="$builtAuthenticationServices" \
+            HOMEKIT_SOURCES= MUTANT_SDK= MUTANT_CLANG= \
+            "$0" > "$mutant/rerun.txt" 2>&1
+        rerun=$?
+        set -e
+        grep -E "THE LIBRARY SAYS|agree," "$mutant/rerun.txt" | sed 's/^/        /'
+        if [ "$rerun" -eq 0 ]; then
+            echo "FAIL: the run exited 0 with a library that disagrees with its own row"
+            exit 1
+        fi
+        echo "ok:   that run exited $rerun, and the row agreed with the host throughout it"
+        selfTest="yes"
     else
+        selfTest="no"
         echo "note: the code mutation was not built here, so the library comparison is not shown failing"
     fi
 fi
+
+# The verdict, last, and about what was actually compared: the registry row, the host, and the built
+# library where one was given. A run with no built library has compared two of the three and says so.
+compared="the registry row and the host"
+[ -n "$builtHomeKit" ] || [ -n "$builtAuthenticationServices" ] && compared="the registry row, the host, and the built library"
+if [ "$failed" -ne 0 ] || [ "${selfTest:-no}" = "no" ] && [ -n "${HOMEKIT_SOURCES:-}" ]; then
+    if [ "$failed" -ne 0 ]; then
+        echo "FAIL: a value the port carries is not the same across $compared"
+    else
+        echo "FAIL: the self-test did not run"
+    fi
+    exit 1
+fi
+if [ "$failed" -ne 0 ]; then
+    echo "FAIL: a value the port carries is not the same across $compared"
+    exit 1
+fi
+echo "ok: every constant both families carry is the same across $compared"
