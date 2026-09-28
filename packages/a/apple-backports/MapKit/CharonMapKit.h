@@ -112,10 +112,16 @@ typedef NS_OPTIONS(NSUInteger, MKAddressFilterOption) {
 // MKMapItemIdentifier, the iOS 18 way to hold a place by its identifier, which the 16.4 headers do
 // not declare. Apple's own name, declared here so a program compiled against a later header links
 // here; the class is defined in MKMapItemIdentifier.m, in the object of its own measured release.
+//
+// Behind CHARON_HOST_PROBE like the rest of the port's own declarations of names a newer SDK
+// carries: the host's own MapKit has this class, and a probe that compiled the port's declaration
+// beside it would collide.
+#if !CHARON_HOST_PROBE
 @interface MKMapItemIdentifier : NSObject
 - (nullable NSString *)identifierString;
 - (instancetype)initWithMapItem:(MKMapItem *)mapItem;
 @end
+#endif
 
 @interface MKCompassButton (CharonCompass)
 - (void)setCompassHeading:(CLLocationDirection)heading;
