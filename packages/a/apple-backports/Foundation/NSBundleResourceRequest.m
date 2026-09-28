@@ -138,10 +138,12 @@ static BOOL CharonTagIsResolvable(NSBundle *bundle, NSString *tag)
         _bundle = bundle ?: [NSBundle mainBundle];
         /* "The default priority is 0.5" */
         _loadingPriority = 0.5;
+        /* One unit, completed: the packs are in the bundle, so the work is done the moment the
+           request exists, and NSProgress reads a progress with no units as 0 of 0 - not complete -
+           whatever the counts are. One unit and one done is what makes it read as complete. */
         _progress = [[NSProgress alloc] initWithParent:nil userInfo:nil];
-        _progress.totalUnitCount = 0;
-        /* the packs are in the bundle, so the work is done the moment it is asked for */
-        _progress.completedUnitCount = 0;
+        _progress.totalUnitCount = 1;
+        _progress.completedUnitCount = 1;
     }
     return self;
 }

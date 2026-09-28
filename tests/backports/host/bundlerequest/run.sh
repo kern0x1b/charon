@@ -9,7 +9,7 @@ if [ "${1:-}" = --mutants ]; then
 fi
 [ $# -eq 0 ] || { echo "$usage" >&2; exit 2; }
 FOUNDATION=${FOUNDATION:-$here/../../../../packages/a/apple-backports/Foundation}
-BUILD=${BUILD:-${TMPDIR:-/tmp}/charon-bundlerequest-host}
+BUILD=${BUILD:-$here/../../../../.agent-work/runs/bundlerequest}
 sources=${SOURCES:-$(cat "$here/sources.txt")}
 # SAN=1 adds AddressSanitizer, which names the file, the line and the access where lldb only gives a
 # frame; it is a debugging build of this test, not a mode the house runner needs.
@@ -17,7 +17,7 @@ sanitize=""
 if [ "${SAN:-}" = 1 ]; then
     sanitize="-fsanitize=address -fno-omit-frame-pointer -g"
 fi
-quiet="-Wno-deprecated-declarations -Wno-unguarded-availability-new -Wno-unguarded-availability -Wno-incomplete-implementation -Wno-objc-protocol-method-implementation -Wno-nullability-completeness -Wno-objc-designated-initializers -Wno-nonnull"
+quiet="-Werror=format -Wno-deprecated-declarations -Wno-unguarded-availability-new -Wno-unguarded-availability -Wno-incomplete-implementation -Wno-objc-protocol-method-implementation -Wno-nullability-completeness -Wno-objc-designated-initializers -Wno-nonnull"
 
 if [ $mutants = yes ]; then
     missed=0

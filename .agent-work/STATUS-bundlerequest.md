@@ -724,3 +724,39 @@ image lookup -a $lr
 and the hit that traps names the sender. **Until that is read, the oracle's verdict stays open —
 9 or 11 — and items 2 to 5 are undone.** Both changes above stand on the other band's measurement, not
 on mine, and are the right shape whether or not they are the whole of it.
+
+---
+
+## The coordinator's diagnosis, applied: the count is 9 and the progress reads as complete
+
+Three of the four things the run showed, taken:
+
+**1. `-Werror=format` and the `%@` that was given a `const char *`.** The trap was
+`[NSString stringWithFormat:@"%@ -init's name", class_getName(subject)]` — `class_getName` returns
+`const char *`, and `%@` on one reaches `_NSDescriptionWithStringProxyFunc` and traps. Both the name and
+the reason checks are `%s` now, and `run.sh` builds with `-Werror=format` so a C format cannot recur.
+The same defect was in **my own `fail` helper** (`%@` with `"yes"`/`"no"`), which the compiler does
+*not* check because it is an NSString literal and not a C format — that one is `%s` now too.
+
+**2. The count is 9.** The host's private `-initWithTag:` answers nil for both tags, so it is not an
+oracle and never was. Nine of the thirteen rows are holdable and the class is held to the header's own
+words; the two `NSBundle` additions are among them, differing from macOS's inert copies on purpose;
+the two constants and the two plist key names are documented and not measurable.
+
+**3. The progress has to read as complete, and it did not.** The header says the progress is complete
+once the resources are available, and `NSProgress` reads a progress with **no** units as 0 of 0 - not
+complete - whatever the counts are. So the port's is one unit, completed:
+
+```objc
+_progress.totalUnitCount = 1;
+_progress.completedUnitCount = 1;
+```
+
+**4. `run.sh` writes into the worktree**, at `$here/../../../../.agent-work/runs/bundlerequest`, because
+band output never goes to `/tmp`.
+
+**What is not done:** the run still traps and the site is unnamed — the two `%@` fixes above are the
+coordinator's diagnosis, and the trap outlived them, so either their line numbers had moved or there is
+a second one, and `lldb` will not unwind past the leaf stub. One `image lookup -a $lr` on each hit of
+the stub names it. And with it: the mutants, the 13 registry entries, the facts file, the light guard
+and the gates on a final commit.

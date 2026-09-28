@@ -33,7 +33,7 @@ static void same_bool(BOOL ours, BOOL theirs, NSString *what)
 {
     checks++;
     if (ours != theirs)
-        fail(@"%@: the port says %@, Foundation %@", what, ours ? "yes" : "no", theirs ? "yes" : "no");
+        fail(@"%@: the port says %s, Foundation %s", what, ours ? "yes" : "no", theirs ? "yes" : "no");
 }
 
 static void same_double(double ours, double theirs, NSString *what)
@@ -193,10 +193,10 @@ int main(void)
                 name = exception.name;
                 reason = exception.reason;
             }
-            same_string(name, NSInvalidArgumentException, [NSString stringWithFormat:@"%@ -init's name",
-                                                                  class_getName(subject)]);
-            same_string(reason, @"init is unavailable", [NSString stringWithFormat:@"%@ -init's reason",
-                                                                 class_getName(subject)]);
+            same_string(name, NSInvalidArgumentException,
+                        [NSString stringWithFormat:@"%s -init's name", class_getName(subject)]);
+            same_string(reason, @"init is unavailable",
+                        [NSString stringWithFormat:@"%s -init's reason", class_getName(subject)]);
         }
 
         // the three resource methods, for tags the manifest names and one it does not
