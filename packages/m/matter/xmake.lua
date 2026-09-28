@@ -259,11 +259,11 @@ package("matter")
         -- 956.6 (charon's cctools-port) asserts in OutputFile's dylibToOrdinal - "it != _dylibToOrdinal.end()" - while
         -- encoding this symbol table, because a symbol is bound to a library reached through another one's re-export
         -- and that library has no ordinal of its own: libc++ re-exports libc++abi. Measured: the assertion comes and
-        -- goes with *which* of the 123 objects is present - dropping any one of at least a dozen of them links, and
+        -- goes with *which* of the 125 objects is present - dropping any one of at least a dozen of them links, and
         -- neither the objects, nor libCHIP.a, nor the C++ runtime, nor the backports assert alone - which is the
         -- signature of an encoder defect and not of any symbol in the input. Upstream ld64 maps a re-exported dylib to
         -- its parent's ordinal; the flag says the same thing to this linker from the outside. With it the link
-        -- completes: 45 706 036 bytes, 1506 exported MTR* classes, and every symbol that needs one of those re-exported
+        -- completes: 45 110 492 bytes, 1506 exported MTR* classes, and every symbol that needs one of those re-exported
         -- libraries named explicitly on the line, so a missing one is an undefined symbol at the link rather than a
         -- silent ordinal. The fix in cctools-port is the coordinator's to take, in its own commit.
         os.vrunv(assert(toolchain:tool("mxx"), "the apple-ios toolchain names no Objective-C++ compiler for %s", package:arch()),

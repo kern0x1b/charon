@@ -40,15 +40,16 @@ this measurement came from; the members could not be had at all until the framew
 
 ## The state of the build, measured
 
-- **All 123 sources compile for `armv7-apple-ios6.1.3`**: the 100 `MTR*` Objective-C++ of the framework and the 23
-  app-layer C++ files its own Xcode target carries, read out of that target's Sources phase and not guessed. The
+- **All 125 objects compile for `armv7-apple-ios6.1.3`**: the 100 `MTR*` Objective-C++ of the framework and the 23
+  app-layer C++ files its own Xcode target carries, read out of that target's Sources phase and not guessed, plus the two
+  generated Apple-spelling categories: 100 + 23 + 2 = 125. The
   objects are in the package's own source tree; `tools/matter-framework.sh` builds and links them there in minutes
   instead of a whole package resolve.
 **The link succeeds** with `-Wl,-no_implicit_dylibs` (see the flag's reason below): `libMatterBackports.dylib`,
-45 706 036 bytes, `MH_MAGIC ARM V7`, 1506 exported `MTR*` classes, 24 777 exported symbols, 382 undefined, install
+45 110 492 bytes, `MH_MAGIC ARM V7`, 1506 exported `MTR*` classes, 24 777 exported symbols, 382 undefined, install
 name `/usr/lib/charon/org.charon.apple-backports/libMatterBackports.dylib`.
 
-- The four link experiments that found it, each one a link: **dropping** the two sources the framework's target shares
+- The four link experiments that found it, each one a link, over the 125 objects the build produces (the framework's 123 plus the two generated Apple spellings): **dropping** the two sources the framework's target shares
   with `libCHIP.a` (`DescriptorCluster.cpp`, `AttributePersistenceProviderInstance.cpp`) - asserts, so the duplicate
   hypothesis is out; `-Wl,-no_implicit_dylibs` - **links**; only `-lc++` without `-lc++abi` - asserts; `-lc++abi` first -
   asserts. So the miss is a symbol bound through a re-export that has no ordinal of its own, and libc++ re-exporting
@@ -60,8 +61,8 @@ name `/usr/lib/charon/org.charon.apple-backports/libMatterBackports.dylib`.
   | link | result |
   | --- | --- |
   | `libCHIP.a` alone, or with libc++, or with either backport, or with all three | links |
-  | the 123 objects, or any one group of them (the 100 MTR, the 6 codegen data model, the 17 server layer), or two groups | links |
-  | the 123 objects **and** `libCHIP.a` **and** libc++ **and** the two backports | asserts |
+  | the 125 objects, or any one group of them (the 100 MTR, the 6 codegen data model, the 17 server layer, the 2 Apple spellings), or two groups | links |
+  | the 125 objects **and** `libCHIP.a` **and** libc++ **and** the two backports | asserts |
 
   It is not the C++ runtime's install name: the packaged libcxx (`/usr/lib/charon/org.charon.libcxx-550adb3c/…`,
   absolute install names, a Debian package) asserts, the `@rpath` one asserts, staged copies rewritten with
