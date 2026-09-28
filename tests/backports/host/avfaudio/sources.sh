@@ -67,5 +67,20 @@ pragma=$(grep -h "pragma clang diagnostic ignored" "$AVFAUDIO"/*.m \
 check "no file suppresses -Wobjc-protocol-property-synthesis or -Wprotocol wholesale" \
       "$([ "$pragma" -eq 0 ] && echo yes || echo no)"
 
+# The number of AUChannelInfo entries a unit holds is the property's own size over the size of one
+# entry - the header says "The size of this property will represent the number of AUChannelInfo
+# structs that an audio unit provides" - so the count must be derived from the size the unit
+# answered and not written down. A forced count is unobservable through the port's answer, because
+# the port returns the first entry's two numbers and a one-entry property makes any count read the
+# same: the reviewer's "entries = 2" left every output check green. So this is held where it can be
+# held, which is the derivation itself.
+body=$(sed -n '/- (NSArray<NSNumber \*> \*)channelCapabilities/,/^}/p' "$AVFAUDIO/AUAudioUnit9.m")
+derived=$(printf '%s' "$body" | grep -c "size / (UInt32)sizeof(AUChannelInfo)" || true)
+check "the channel pair's entry count is the property size over sizeof(AUChannelInfo)" \
+      "$([ "$derived" -ge 1 ] && echo yes || echo no)"
+literal=$(printf '%s' "$body" | grep -cE "entries[[:space:]]*=[[:space:]]*[0-9]+" || true)
+check "no literal entry count is written over the property's size" \
+      "$([ "$literal" -eq 0 ] && echo yes || echo no)"
+
 printf 'checks=%d failures=%d\n' "$checks" "$failures"
 [ "$failures" -eq 0 ]
