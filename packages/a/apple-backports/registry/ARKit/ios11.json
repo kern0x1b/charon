@@ -8,7 +8,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has; the pose behind it is this tree's own visual-inertial tracker, measured on a 30-frame synthetic sequence at 78.13 degrees of mean rotation error and 0.666 m of mean distance error, which is not Apple's accuracy and is recorded in facts/ARKit/TrackerDifferential.md rather than claimed here",
+      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has; the pose behind it is this tree's own visual-inertial tracker, measured on a 30-frame synthetic sequence at 78.13 degrees of mean rotation error and 0.666 m of mean distance error, which is not Apple's accuracy and is recorded in facts/ARKit/TrackerDifferential.md rather than claimed here carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "an anchor the application placed, carried into every frame at that pose: identifier, name and transform are what the caller set and the session carries; a copy is a new identity at the same pose, which is what -initWithAnchor: means",
       "source": "ARKit of the arm64 shared cache of iOS 12.0, read with the image's symbols: +[ARConfiguration isSupported] at 0x19d3b54a0 and +[ARWorldTrackingConfiguration isSupported] at 0x19d3cfaf4, both reaching ARDeviceSupported; and the armv7 shared cache of iOS 6.1.3, read with modules/apple/objc.lua: AVCaptureDevice with 100 instance methods, AVCaptureVideoDataOutput with 26, CMMotionManager with 74"
     },
@@ -19,7 +19,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has, and the maths behind it, which is this tree's",
+      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has, and the maths behind it, which is this tree's carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the class is there and answers from the tracker; a call that asks for something this device has no sensor for answers NO or nil",
       "source": "ARKit of the arm64 shared cache of iOS 12.0, read with the image's symbols: +[ARConfiguration isSupported] at 0x19d3b54a0 and +[ARWorldTrackingConfiguration isSupported] at 0x19d3cfaf4, both reaching ARDeviceSupported; and the armv7 shared cache of iOS 6.1.3, read with modules/apple/objc.lua: AVCaptureDevice with 100 instance methods, AVCaptureVideoDataOutput with 26, CMMotionManager with 74"
     },
@@ -30,7 +30,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has; the pose behind it is this tree's own visual-inertial tracker, measured on a 30-frame synthetic sequence at 78.13 degrees of mean rotation error and 0.666 m of mean distance error, which is not Apple's accuracy and is recorded in facts/ARKit/TrackerDifferential.md rather than claimed here",
+      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has; the pose behind it is this tree's own visual-inertial tracker, measured on a 30-frame synthetic sequence at 78.13 degrees of mean rotation error and 0.666 m of mean distance error, which is not Apple's accuracy and is recorded in facts/ARKit/TrackerDifferential.md rather than claimed here carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the pose of the camera in the world, with the intrinsics and the light: transform is the tracker's own pose, obtained by integrating the gyroscope and turning on the picture's matches; intrinsics is the camera's field of view and the frame's size; the projection, unprojection and hit test are the shared pinhole arithmetic over those two",
       "source": "ARKit of the arm64 shared cache of iOS 12.0, read with the image's symbols: +[ARConfiguration isSupported] at 0x19d3b54a0 and +[ARWorldTrackingConfiguration isSupported] at 0x19d3cfaf4, both reaching ARDeviceSupported; and the armv7 shared cache of iOS 6.1.3, read with modules/apple/objc.lua: AVCaptureDevice with 100 instance methods, AVCaptureVideoDataOutput with 26, CMMotionManager with 74"
     },
@@ -41,7 +41,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has, and the maths behind it, which is this tree's",
+      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has, and the maths behind it, which is this tree's carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the class is there and answers from the tracker; a call that asks for something this device has no sensor for answers NO or nil",
       "source": "ARKit of the arm64 shared cache of iOS 12.0, read with the image's symbols: +[ARConfiguration isSupported] at 0x19d3b54a0 and +[ARWorldTrackingConfiguration isSupported] at 0x19d3cfaf4, both reaching ARDeviceSupported; and the armv7 shared cache of iOS 6.1.3, read with modules/apple/objc.lua: AVCaptureDevice with 100 instance methods, AVCaptureVideoDataOutput with 26, CMMotionManager with 74"
     },
@@ -52,7 +52,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has, and the maths behind it, which is this tree's",
+      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has, and the maths behind it, which is this tree's carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the class is there and answers from the tracker; a call that asks for something this device has no sensor for answers NO or nil",
       "source": "ARKit of the arm64 shared cache of iOS 12.0, read with the image's symbols: +[ARConfiguration isSupported] at 0x19d3b54a0 and +[ARWorldTrackingConfiguration isSupported] at 0x19d3cfaf4, both reaching ARDeviceSupported; and the armv7 shared cache of iOS 6.1.3, read with modules/apple/objc.lua: AVCaptureDevice with 100 instance methods, AVCaptureVideoDataOutput with 26, CMMotionManager with 74"
     },
@@ -63,7 +63,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has; the pose behind it is this tree's own visual-inertial tracker, measured on a 30-frame synthetic sequence at 78.13 degrees of mean rotation error and 0.666 m of mean distance error, which is not Apple's accuracy and is recorded in facts/ARKit/TrackerDifferential.md rather than claimed here",
+      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has; the pose behind it is this tree's own visual-inertial tracker, measured on a 30-frame synthetic sequence at 78.13 degrees of mean rotation error and 0.666 m of mean distance error, which is not Apple's accuracy and is recorded in facts/ARKit/TrackerDifferential.md rather than claimed here carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "one frame of a session: camera, anchors, rawFeaturePoints and the light estimate are what the tracker measured for that frame; projectPoint, unprojectPoint and hitTest are the shared pinhole arithmetic over the camera's intrinsics and pose; the display transform is the identity because there is no depth sensor to see a real surface by",
       "source": "ARKit of the arm64 shared cache of iOS 12.0, read with the image's symbols: +[ARConfiguration isSupported] at 0x19d3b54a0 and +[ARWorldTrackingConfiguration isSupported] at 0x19d3cfaf4, both reaching ARDeviceSupported; and the armv7 shared cache of iOS 6.1.3, read with modules/apple/objc.lua: AVCaptureDevice with 100 instance methods, AVCaptureVideoDataOutput with 26, CMMotionManager with 74"
     },
@@ -74,7 +74,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has; the pose behind it is this tree's own visual-inertial tracker, measured on a 30-frame synthetic sequence at 78.13 degrees of mean rotation error and 0.666 m of mean distance error, which is not Apple's accuracy and is recorded in facts/ARKit/TrackerDifferential.md rather than claimed here",
+      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has; the pose behind it is this tree's own visual-inertial tracker, measured on a 30-frame synthetic sequence at 78.13 degrees of mean rotation error and 0.666 m of mean distance error, which is not Apple's accuracy and is recorded in facts/ARKit/TrackerDifferential.md rather than claimed here carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "where a hit test met a plane or a point: type is which feature was hit, worldTransform is the hit's pose, and the plane anchor is the plane it was against; the two types that need what only ARKit alone can see answer nil rather than a fabricated result",
       "source": "ARKit of the arm64 shared cache of iOS 12.0, read with the image's symbols: +[ARConfiguration isSupported] at 0x19d3b54a0 and +[ARWorldTrackingConfiguration isSupported] at 0x19d3cfaf4, both reaching ARDeviceSupported; and the armv7 shared cache of iOS 6.1.3, read with modules/apple/objc.lua: AVCaptureDevice with 100 instance methods, AVCaptureVideoDataOutput with 26, CMMotionManager with 74"
     },
@@ -85,7 +85,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has, and the maths behind it, which is this tree's",
+      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has, and the maths behind it, which is this tree's carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the class is there and answers from the tracker; a call that asks for something this device has no sensor for answers NO or nil",
       "source": "ARKit of the arm64 shared cache of iOS 12.0, read with the image's symbols: +[ARConfiguration isSupported] at 0x19d3b54a0 and +[ARWorldTrackingConfiguration isSupported] at 0x19d3cfaf4, both reaching ARDeviceSupported; and the armv7 shared cache of iOS 6.1.3, read with modules/apple/objc.lua: AVCaptureDevice with 100 instance methods, AVCaptureVideoDataOutput with 26, CMMotionManager with 74"
     },
@@ -96,7 +96,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has, and the maths behind it, which is this tree's",
+      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has, and the maths behind it, which is this tree's carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the class is there and answers from the tracker; a call that asks for something this device has no sensor for answers NO or nil",
       "source": "ARKit of the arm64 shared cache of iOS 12.0, read with the image's symbols: +[ARConfiguration isSupported] at 0x19d3b54a0 and +[ARWorldTrackingConfiguration isSupported] at 0x19d3cfaf4, both reaching ARDeviceSupported; and the armv7 shared cache of iOS 6.1.3, read with modules/apple/objc.lua: AVCaptureDevice with 100 instance methods, AVCaptureVideoDataOutput with 26, CMMotionManager with 74"
     },
@@ -107,7 +107,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has, and the maths behind it, which is this tree's",
+      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has, and the maths behind it, which is this tree's carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the class is there and answers from the tracker; a call that asks for something this device has no sensor for answers NO or nil",
       "source": "ARKit of the arm64 shared cache of iOS 12.0, read with the image's symbols: +[ARConfiguration isSupported] at 0x19d3b54a0 and +[ARWorldTrackingConfiguration isSupported] at 0x19d3cfaf4, both reaching ARDeviceSupported; and the armv7 shared cache of iOS 6.1.3, read with modules/apple/objc.lua: AVCaptureDevice with 100 instance methods, AVCaptureVideoDataOutput with 26, CMMotionManager with 74"
     },
@@ -118,7 +118,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has, and the maths behind it, which is this tree's",
+      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has, and the maths behind it, which is this tree's carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the class is there and answers from the tracker; a call that asks for something this device has no sensor for answers NO or nil",
       "source": "ARKit of the arm64 shared cache of iOS 12.0, read with the image's symbols: +[ARConfiguration isSupported] at 0x19d3b54a0 and +[ARWorldTrackingConfiguration isSupported] at 0x19d3cfaf4, both reaching ARDeviceSupported; and the armv7 shared cache of iOS 6.1.3, read with modules/apple/objc.lua: AVCaptureDevice with 100 instance methods, AVCaptureVideoDataOutput with 26, CMMotionManager with 74"
     },
@@ -129,7 +129,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has; the pose behind it is this tree's own visual-inertial tracker, measured on a 30-frame synthetic sequence at 78.13 degrees of mean rotation error and 0.666 m of mean distance error, which is not Apple's accuracy and is recorded in facts/ARKit/TrackerDifferential.md rather than claimed here",
+      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has; the pose behind it is this tree's own visual-inertial tracker, measured on a 30-frame synthetic sequence at 78.13 degrees of mean rotation error and 0.666 m of mean distance error, which is not Apple's accuracy and is recorded in facts/ARKit/TrackerDifferential.md rather than claimed here carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "a plane the detector found, as a detection and never as a measurement: center and extent are the plane the region grower found; alignment is horizontal because that is the surface it grew, and Apple's \"not determined\" is not used because there is no depth sensor here to determine it from; isTracked is the detector's own confidence in that plane",
       "source": "ARKit of the arm64 shared cache of iOS 12.0, read with the image's symbols: +[ARConfiguration isSupported] at 0x19d3b54a0 and +[ARWorldTrackingConfiguration isSupported] at 0x19d3cfaf4, both reaching ARDeviceSupported; and the armv7 shared cache of iOS 6.1.3, read with modules/apple/objc.lua: AVCaptureDevice with 100 instance methods, AVCaptureVideoDataOutput with 26, CMMotionManager with 74"
     },
@@ -140,7 +140,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has; the pose behind it is this tree's own visual-inertial tracker, measured on a 30-frame synthetic sequence at 78.13 degrees of mean rotation error and 0.666 m of mean distance error, which is not Apple's accuracy and is recorded in facts/ARKit/TrackerDifferential.md rather than claimed here",
+      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has; the pose behind it is this tree's own visual-inertial tracker, measured on a 30-frame synthetic sequence at 78.13 degrees of mean rotation error and 0.666 m of mean distance error, which is not Apple's accuracy and is recorded in facts/ARKit/TrackerDifferential.md rather than claimed here carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the quad of one detected plane, as the C buffers the framework declares: vertices, textureCoordinates, triangleIndices and boundaryVertices are four corners and the six indices that join them, malloc'd and filled from the plane, with the counts beside them; a renderer reads them in place",
       "source": "ARKit of the arm64 shared cache of iOS 12.0, read with the image's symbols: +[ARConfiguration isSupported] at 0x19d3b54a0 and +[ARWorldTrackingConfiguration isSupported] at 0x19d3cfaf4, both reaching ARDeviceSupported; and the armv7 shared cache of iOS 6.1.3, read with modules/apple/objc.lua: AVCaptureDevice with 100 instance methods, AVCaptureVideoDataOutput with 26, CMMotionManager with 74"
     },
@@ -151,7 +151,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has; the pose behind it is this tree's own visual-inertial tracker, measured on a 30-frame synthetic sequence at 78.13 degrees of mean rotation error and 0.666 m of mean distance error, which is not Apple's accuracy and is recorded in facts/ARKit/TrackerDifferential.md rather than claimed here",
+      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has; the pose behind it is this tree's own visual-inertial tracker, measured on a 30-frame synthetic sequence at 78.13 degrees of mean rotation error and 0.666 m of mean distance error, which is not Apple's accuracy and is recorded in facts/ARKit/TrackerDifferential.md rather than claimed here carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the points the tracker is following, as the buffer the framework names itself: points is a pointer into a buffer of world positions with count beside it, malloc'd from the tracker's own samples and freed with the object",
       "source": "ARKit of the arm64 shared cache of iOS 12.0, read with the image's symbols: +[ARConfiguration isSupported] at 0x19d3b54a0 and +[ARWorldTrackingConfiguration isSupported] at 0x19d3cfaf4, both reaching ARDeviceSupported; and the armv7 shared cache of iOS 6.1.3, read with modules/apple/objc.lua: AVCaptureDevice with 100 instance methods, AVCaptureVideoDataOutput with 26, CMMotionManager with 74"
     },
@@ -162,7 +162,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has, and the maths behind it, which is this tree's",
+      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has, and the maths behind it, which is this tree's carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the class is there and answers from the tracker; a call that asks for something this device has no sensor for answers NO or nil",
       "source": "ARKit of the arm64 shared cache of iOS 12.0, read with the image's symbols: +[ARConfiguration isSupported] at 0x19d3b54a0 and +[ARWorldTrackingConfiguration isSupported] at 0x19d3cfaf4, both reaching ARDeviceSupported; and the armv7 shared cache of iOS 6.1.3, read with modules/apple/objc.lua: AVCaptureDevice with 100 instance methods, AVCaptureVideoDataOutput with 26, CMMotionManager with 74"
     },
@@ -173,7 +173,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has; the pose behind it is this tree's own visual-inertial tracker, measured on a 30-frame synthetic sequence at 78.13 degrees of mean rotation error and 0.666 m of mean distance error, which is not Apple's accuracy and is recorded in facts/ARKit/TrackerDifferential.md rather than claimed here",
+      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has; the pose behind it is this tree's own visual-inertial tracker, measured on a 30-frame synthetic sequence at 78.13 degrees of mean rotation error and 0.666 m of mean distance error, which is not Apple's accuracy and is recorded in facts/ARKit/TrackerDifferential.md rather than claimed here carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "a ray in the world, which is what a caller asking for a raycast gives the framework: origin and direction come from the pixel through the camera's intrinsics and pose; target and alignment are the caller's, carried unchanged",
       "source": "ARKit of the arm64 shared cache of iOS 12.0, read with the image's symbols: +[ARConfiguration isSupported] at 0x19d3b54a0 and +[ARWorldTrackingConfiguration isSupported] at 0x19d3cfaf4, both reaching ARDeviceSupported; and the armv7 shared cache of iOS 6.1.3, read with modules/apple/objc.lua: AVCaptureDevice with 100 instance methods, AVCaptureVideoDataOutput with 26, CMMotionManager with 74"
     },
@@ -184,7 +184,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has; the pose behind it is this tree's own visual-inertial tracker, measured on a 30-frame synthetic sequence at 78.13 degrees of mean rotation error and 0.666 m of mean distance error, which is not Apple's accuracy and is recorded in facts/ARKit/TrackerDifferential.md rather than claimed here",
+      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has; the pose behind it is this tree's own visual-inertial tracker, measured on a 30-frame synthetic sequence at 78.13 degrees of mean rotation error and 0.666 m of mean distance error, which is not Apple's accuracy and is recorded in facts/ARKit/TrackerDifferential.md rather than claimed here carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "where a ray met a plane the detector found: worldTransform is the hit in world coordinates, with the plane's normal; the distance is how far along the ray it lies, which is what stops a tracked raycast once the camera has moved further",
       "source": "ARKit of the arm64 shared cache of iOS 12.0, read with the image's symbols: +[ARConfiguration isSupported] at 0x19d3b54a0 and +[ARWorldTrackingConfiguration isSupported] at 0x19d3cfaf4, both reaching ARDeviceSupported; and the armv7 shared cache of iOS 6.1.3, read with modules/apple/objc.lua: AVCaptureDevice with 100 instance methods, AVCaptureVideoDataOutput with 26, CMMotionManager with 74"
     },
@@ -195,7 +195,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has; the pose behind it is this tree's own visual-inertial tracker, measured on a 30-frame synthetic sequence at 78.13 degrees of mean rotation error and 0.666 m of mean distance error, which is not Apple's accuracy and is recorded in facts/ARKit/TrackerDifferential.md rather than claimed here",
+      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has; the pose behind it is this tree's own visual-inertial tracker, measured on a 30-frame synthetic sequence at 78.13 degrees of mean rotation error and 0.666 m of mean distance error, which is not Apple's accuracy and is recorded in facts/ARKit/TrackerDifferential.md rather than claimed here carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the session that owns the camera and the gyroscope: run starts the tracker's capture session and gyroscope and answers isSupported from the hardware; every frame is handed to the delegate with the camera's pose, the anchors and the light estimate as the tracker's pipeline measured them",
       "source": "ARKit of the arm64 shared cache of iOS 12.0, read with the image's symbols: +[ARConfiguration isSupported] at 0x19d3b54a0 and +[ARWorldTrackingConfiguration isSupported] at 0x19d3cfaf4, both reaching ARDeviceSupported; and the armv7 shared cache of iOS 6.1.3, read with modules/apple/objc.lua: AVCaptureDevice with 100 instance methods, AVCaptureVideoDataOutput with 26, CMMotionManager with 74"
     },
@@ -206,7 +206,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has; the pose behind it is this tree's own visual-inertial tracker, measured on a 30-frame synthetic sequence at 78.13 degrees of mean rotation error and 0.666 m of mean distance error, which is not Apple's accuracy and is recorded in facts/ARKit/TrackerDifferential.md rather than claimed here",
+      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has; the pose behind it is this tree's own visual-inertial tracker, measured on a 30-frame synthetic sequence at 78.13 degrees of mean rotation error and 0.666 m of mean distance error, which is not Apple's accuracy and is recorded in facts/ARKit/TrackerDifferential.md rather than claimed here carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "a ray the session keeps casting, frame after frame: each frame's hits are handed to the caller's update handler; stopTracking drops them, and the session stops casting a ray the camera has moved further from than it is long",
       "source": "ARKit of the arm64 shared cache of iOS 12.0, read with the image's symbols: +[ARConfiguration isSupported] at 0x19d3b54a0 and +[ARWorldTrackingConfiguration isSupported] at 0x19d3cfaf4, both reaching ARDeviceSupported; and the armv7 shared cache of iOS 6.1.3, read with modules/apple/objc.lua: AVCaptureDevice with 100 instance methods, AVCaptureVideoDataOutput with 26, CMMotionManager with 74"
     },
@@ -217,7 +217,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has, and the maths behind it, which is this tree's",
+      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has, and the maths behind it, which is this tree's carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the class is there and answers from the tracker; a call that asks for something this device has no sensor for answers NO or nil",
       "source": "ARKit of the arm64 shared cache of iOS 12.0, read with the image's symbols: +[ARConfiguration isSupported] at 0x19d3b54a0 and +[ARWorldTrackingConfiguration isSupported] at 0x19d3cfaf4, both reaching ARDeviceSupported; and the armv7 shared cache of iOS 6.1.3, read with modules/apple/objc.lua: AVCaptureDevice with 100 instance methods, AVCaptureVideoDataOutput with 26, CMMotionManager with 74"
     },
@@ -318,7 +318,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the protocol is the SDK's and is weak-imported; a class of this library conforms to it",
+      "reason": "carried: the protocol is the SDK's and is weak-imported; a class of this library conforms to it carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "ARAnchor answers -initWithAnchor: and the protocol is declared as conforming in a class extension, so a caller holding an ARAnchorCopying gets an anchor copied to a new identity at the same pose",
       "source": "the SDK's own ARKit headers, and the armv7 cache of 6.1.3 for what the classes it names really carry"
     },
@@ -329,7 +329,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the protocol is the SDK's and is weak-imported; no class of this library conforms, and deliberately so",
+      "reason": "carried: the protocol is the SDK's and is weak-imported; no class of this library conforms, and deliberately so carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "it is the protocol an application's delegate conforms to, and this library is the one asking: the session calls the twenty-two selectors below on whatever object the caller sets as its delegate, and this library provides no conforming class of its own",
       "source": "the SDK's own ARKit headers, and the armv7 cache of 6.1.3 for what the classes it names really carry"
     },
@@ -340,7 +340,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the protocol is the SDK's and is weak-imported; no class of this library conforms, and deliberately so",
+      "reason": "carried: the protocol is the SDK's and is weak-imported; no class of this library conforms, and deliberately so carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "it is the protocol an application's observer conforms to, and this library is the one asking: the session calls the eight selectors below on whatever object the caller sets as its delegate, and this library provides no conforming class of its own",
       "source": "the SDK's own ARKit headers, and the armv7 cache of 6.1.3 for what the classes it names really carry"
     },
@@ -351,7 +351,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the protocol is the SDK's and is weak-imported; ARPlaneAnchor conforms to it",
+      "reason": "carried: the protocol is the SDK's and is weak-imported; ARPlaneAnchor conforms to it carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "ARPlaneAnchor answers -isTracked from the plane detector's own confidence in that plane, and the conformance is declared in a class extension, so a caller holding an ARTrackable is told whether the session still sees it",
       "source": "the SDK's own ARKit headers, and the armv7 cache of 6.1.3 for what the classes it names really carry"
     },
@@ -362,7 +362,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the headers declare it with FOUNDATION_EXTERN and the release carries no definition of it",
+      "reason": "carried: the headers declare it with FOUNDATION_EXTERN and the release carries no definition of it carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves, and the value is the framework's own",
       "source": "ARKit of the arm64 shared cache of iOS 12.0: the two strings are the framework's own, and the two debug options are the bits ARSCNDebugOption declares"
     },
@@ -373,7 +373,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the headers declare it with FOUNDATION_EXTERN and the release carries no definition of it",
+      "reason": "carried: the headers declare it with FOUNDATION_EXTERN and the release carries no definition of it carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves, and the value is the framework's own",
       "source": "ARKit of the arm64 shared cache of iOS 12.0: the two strings are the framework's own, and the two debug options are the bits ARSCNDebugOption declares"
     },
@@ -384,7 +384,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the headers declare it with FOUNDATION_EXTERN and the release carries no definition of it",
+      "reason": "carried: the headers declare it with FOUNDATION_EXTERN and the release carries no definition of it carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves, and the value is the framework's own",
       "source": "ARKit of the arm64 shared cache of iOS 12.0: the two strings are the framework's own, and the two debug options are the bits ARSCNDebugOption declares"
     },
@@ -395,7 +395,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the headers declare it with FOUNDATION_EXTERN and the release carries no definition of it",
+      "reason": "carried: the headers declare it with FOUNDATION_EXTERN and the release carries no definition of it carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves, and the value is the framework's own",
       "source": "ARKit of the arm64 shared cache of iOS 12.0: the two strings are the framework's own, and the two debug options are the bits ARSCNDebugOption declares"
     },
@@ -406,7 +406,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -417,7 +417,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -428,7 +428,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -439,7 +439,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -450,7 +450,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -461,7 +461,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -472,7 +472,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -483,7 +483,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -494,7 +494,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -505,7 +505,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -516,7 +516,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -527,7 +527,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -538,7 +538,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -549,7 +549,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -560,7 +560,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -571,7 +571,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -582,7 +582,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -593,7 +593,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -604,7 +604,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -615,7 +615,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -626,7 +626,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -637,7 +637,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -648,7 +648,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -659,7 +659,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -670,7 +670,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -681,7 +681,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -692,7 +692,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -703,7 +703,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -714,7 +714,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -725,7 +725,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -736,7 +736,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -747,7 +747,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -758,7 +758,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -769,7 +769,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -780,7 +780,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -791,7 +791,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -802,7 +802,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -813,7 +813,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -824,7 +824,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -835,7 +835,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -846,7 +846,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -857,7 +857,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -868,7 +868,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -879,7 +879,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -890,7 +890,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -901,7 +901,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -912,7 +912,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -923,7 +923,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -934,7 +934,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -945,7 +945,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -956,7 +956,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -967,7 +967,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried",
+      "reason": "carried: the face and body geometry are indexed by these names, and the classes that read them are carried carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the string the framework uses as the key",
       "source": "the SDK's own ARKit headers, where the 52 names are declared with FOUNDATION_EXTERN and no value; the values are the strings Apple's ARFaceAnchor indexes its own mesh with"
     },
@@ -978,7 +978,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the body's joints are named by these, and the estimator that reads them is ARBodyAnchor's",
+      "reason": "carried: the body's joints are named by these, and the estimator that reads them is ARBodyAnchor's carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the joint's name",
       "source": "the SDK's own ARKit headers, which declare the nine names with FOUNDATION_EXTERN and no value"
     },
@@ -989,7 +989,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the body's joints are named by these, and the estimator that reads them is ARBodyAnchor's",
+      "reason": "carried: the body's joints are named by these, and the estimator that reads them is ARBodyAnchor's carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the joint's name",
       "source": "the SDK's own ARKit headers, which declare the nine names with FOUNDATION_EXTERN and no value"
     },
@@ -1000,7 +1000,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the body's joints are named by these, and the estimator that reads them is ARBodyAnchor's",
+      "reason": "carried: the body's joints are named by these, and the estimator that reads them is ARBodyAnchor's carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the joint's name",
       "source": "the SDK's own ARKit headers, which declare the nine names with FOUNDATION_EXTERN and no value"
     },
@@ -1011,7 +1011,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the body's joints are named by these, and the estimator that reads them is ARBodyAnchor's",
+      "reason": "carried: the body's joints are named by these, and the estimator that reads them is ARBodyAnchor's carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the joint's name",
       "source": "the SDK's own ARKit headers, which declare the nine names with FOUNDATION_EXTERN and no value"
     },
@@ -1022,7 +1022,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the body's joints are named by these, and the estimator that reads them is ARBodyAnchor's",
+      "reason": "carried: the body's joints are named by these, and the estimator that reads them is ARBodyAnchor's carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the joint's name",
       "source": "the SDK's own ARKit headers, which declare the nine names with FOUNDATION_EXTERN and no value"
     },
@@ -1033,7 +1033,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the body's joints are named by these, and the estimator that reads them is ARBodyAnchor's",
+      "reason": "carried: the body's joints are named by these, and the estimator that reads them is ARBodyAnchor's carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the joint's name",
       "source": "the SDK's own ARKit headers, which declare the nine names with FOUNDATION_EXTERN and no value"
     },
@@ -1044,7 +1044,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the body's joints are named by these, and the estimator that reads them is ARBodyAnchor's",
+      "reason": "carried: the body's joints are named by these, and the estimator that reads them is ARBodyAnchor's carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the joint's name",
       "source": "the SDK's own ARKit headers, which declare the nine names with FOUNDATION_EXTERN and no value"
     },
@@ -1055,7 +1055,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the body's joints are named by these, and the estimator that reads them is ARBodyAnchor's",
+      "reason": "carried: the body's joints are named by these, and the estimator that reads them is ARBodyAnchor's carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the symbol resolves to the joint's name",
       "source": "the SDK's own ARKit headers, which declare the nine names with FOUNDATION_EXTERN and no value"
     },
@@ -1065,7 +1065,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "carried: the ambient light is measured from the camera's own frames, which is the estimator's input",
+      "reason": "carried: the ambient light is measured from the camera's own frames, which is the estimator's input carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the setting is carried, and ARFrame's ARLightEstimate carries what the frames measured",
       "source": "the SDK 16.4 headers of ARKit"
     },
@@ -1075,7 +1075,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "carried: the microphone is a device the release has, and whether the session opens it is the caller's choice",
+      "reason": "carried: the microphone is a device the release has, and whether the session opens it is the caller's choice carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the setting is carried; a session that is asked for audio opens the input, and one that is not does not",
       "source": "the SDK 16.4 headers of ARKit"
     },
@@ -1085,7 +1085,7 @@
       "introduced": "11.3",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "carried: the formats the primary camera really has, enumerated from AVCaptureDevice",
+      "reason": "carried: the formats the primary camera really has, enumerated from AVCaptureDevice carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "a caller is offered exactly the formats the camera can be configured to, and nothing else",
       "source": "the SDK 16.4 headers of ARKit"
     },
@@ -1095,7 +1095,7 @@
       "introduced": "11.3",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "carried: the format a session is asked to capture at, chosen from the ones the camera has",
+      "reason": "carried: the format a session is asked to capture at, chosen from the ones the camera has carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the format is carried and is one of the supported ones; a session configures the camera with it",
       "source": "the SDK 16.4 headers of ARKit"
     },
@@ -1105,7 +1105,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "carried: the gravity the gyroroscope reads is the device's own attitude, and a world tracking configuration asks for it by name",
+      "reason": "carried: the gravity the gyroroscope reads is the device's own attitude, and a world tracking configuration asks for it by name carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the setting is carried and its getter and setter answer; the value reached is what the tracker's pipeline uses",
       "source": "the SDK 16.4 headers of ARKit"
     },
@@ -1135,7 +1135,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "carried: a fixed lens is what the release's camera has",
+      "reason": "carried: a fixed lens is what the release's camera has carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the setting is carried and answers what the caller set",
       "source": "the SDK 16.4 headers of ARKit"
     },
@@ -1145,7 +1145,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "carried: a tracked image is found in the camera's own frames and needs no depth sensor",
+      "reason": "carried: a tracked image is found in the camera's own frames and needs no depth sensor carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the setting is carried and the session reports at most that many image anchors",
       "source": "the SDK 16.4 headers of ARKit"
     },
@@ -1165,7 +1165,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "carried: a fixed lens is what the release's camera has",
+      "reason": "carried: a fixed lens is what the release's camera has carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the setting is carried and answers what the caller set",
       "source": "the SDK 16.4 headers of ARKit"
     },
@@ -1175,7 +1175,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "carried: the same plane setting the world tracking configuration carries, on a configuration that is itself refused",
+      "reason": "carried: the same plane setting the world tracking configuration carries, on a configuration that is itself refused carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the setting is carried; the configuration answers NO for isSupported, so no session runs it",
       "source": "the SDK 16.4 headers of ARKit"
     },
@@ -1185,7 +1185,7 @@
       "introduced": "11.3",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "carried: a fixed lens is what the release's camera has",
+      "reason": "carried: a fixed lens is what the release's camera has carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the setting is carried and answers what the caller set",
       "source": "the SDK 16.4 headers of ARKit"
     },
@@ -1255,7 +1255,7 @@
       "introduced": "11.3",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "carried: one format of one camera, wrapped so the shape can be compared across devices",
+      "reason": "carried: one format of one camera, wrapped so the shape can be compared across devices carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the class is there, answers its resolution, rate and position from the camera's own format, and is copied rather than shared",
       "source": "the SDK 16.4 headers of ARKit"
     },
@@ -1265,7 +1265,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "carried: the anchors a session has, which is what a world map is",
+      "reason": "carried: the anchors a session has, which is what a world map is carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the class is there; its anchors are the session's, its centre and extent are computed from them, and it codes and copies",
       "source": "the SDK 16.4 headers of ARKit"
     },
@@ -1275,7 +1275,7 @@
       "introduced": "11.3",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "carried: a fixed lens is what the release's camera has, so the answer is the setting itself",
+      "reason": "carried: a fixed lens is what the release's camera has, so the answer is the setting itself carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the setting is carried and answers what the caller set, which is what a fixed-focus camera does",
       "source": "the SDK 16.4 headers of ARKit"
     },
@@ -1305,7 +1305,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "carried: an environment probe is a mesh the frames give, and there is no depth sensor to place it by",
+      "reason": "carried: an environment probe is a mesh the frames give, and there is no depth sensor to place it by carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the setting is carried; automatic asks for a probe the frames can give, and a fixed one is not produced without a depth sensor",
       "source": "the SDK 16.4 headers of ARKit"
     },
@@ -1335,7 +1335,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "carried: a plane is found in the camera's own points, which is the plane detector the tracker runs",
+      "reason": "carried: a plane is found in the camera's own points, which is the plane detector the tracker runs carried from 6.0, not below: from a deployment target of 6.0 a dispatch queue is an Objective-C object, and the SDK's own `ARSession.h:73` declares `@property (nonatomic, strong, nullable) dispatch_queue_t delegateQueue`, which the compiler refuses below that - \"property with 'retain (or strong)' attribute must be of object type\". `os/object.h` reads the fact from `OS_OBJECT_USE_OBJC`, and forcing it off to get past the line breaks 6.0 itself, where dispatch objects are objects. Vision and CoreML set the same 6.0 minimum for the same reason, so ARKit follows them and the 4.3 build leaves it out.",
       "effect": "the setting is carried and the detector reports planes at the level asked for, and none otherwise",
       "source": "the SDK 16.4 headers of ARKit"
     }
