@@ -94,7 +94,7 @@ package("activitykit")
             -- pass (kits r3).
             local sources_activitykit = os.files(path.join(package:scriptdir(), "Sources", "ActivityKit", "**.swift"))
             if #sources_activitykit == 0 then
-                raise("{{}} compiles Sources/ActivityKit/**.swift, which matches no file", package:name())
+                raise("%s compiles Sources/ActivityKit/**.swift, which matches no file", package:name())
             end
             sources_activitykit, {"-o", path.join(objects, "ActivityKit.o")})
         os.vrunv(swiftc, argv)

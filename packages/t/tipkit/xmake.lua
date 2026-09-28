@@ -94,7 +94,7 @@ package("tipkit")
             -- pass (kits r3).
             local sources_tipkit = os.files(path.join(package:scriptdir(), "Sources", "TipKit", "**.swift"))
             if #sources_tipkit == 0 then
-                raise("{{}} compiles Sources/TipKit/**.swift, which matches no file", package:name())
+                raise("%s compiles Sources/TipKit/**.swift, which matches no file", package:name())
             end
             sources_tipkit, {"-o", path.join(objects, "TipKit.o")})
         os.vrunv(swiftc, argv)

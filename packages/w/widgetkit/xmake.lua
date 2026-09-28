@@ -75,7 +75,7 @@ package("widgetkit")
             -- pass (kits r3).
             local sources_widgetkit = os.files(path.join(package:scriptdir(), "Sources", "WidgetKit", "**.swift"))
             if #sources_widgetkit == 0 then
-                raise("{{}} compiles Sources/WidgetKit/**.swift, which matches no file", package:name())
+                raise("%s compiles Sources/WidgetKit/**.swift, which matches no file", package:name())
             end
             sources_widgetkit, {"-o", path.join(objects, "WidgetKit.o")})
         os.vrunv(swiftc, argv)
