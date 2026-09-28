@@ -90,6 +90,13 @@
 {
     return _dataType;
 }
+- (id)copyWithZone:(NSZone *)zone
+{
+    return [[[self class] allocWithZone:zone] charon_initWithShape:_shape
+                                                         dataType:_dataType
+                                                   shapeConstraint:[_shapeConstraint copy]];
+}
+
 
 - (MLMultiArrayShapeConstraint *)shapeConstraint
 {
@@ -157,6 +164,14 @@
 {
     return _pixelFormatType;
 }
+- (id)copyWithZone:(NSZone *)zone
+{
+    return [[[self class] allocWithZone:zone] charon_initWithPixelsHigh:_pixelsHigh
+                                                                pixelsWide:_pixelsWide
+                                                          pixelFormatType:_pixelFormatType
+                                                            sizeConstraint:[_sizeConstraint copy]];
+}
+
 
 - (MLImageSizeConstraint *)sizeConstraint
 {
@@ -208,6 +223,11 @@
 {
     return _keyType;
 }
+- (id)copyWithZone:(NSZone *)zone
+{
+    return [[[self class] allocWithZone:zone] charon_initWithKeyType:_keyType];
+}
+
 
 + (BOOL)supportsSecureCoding
 {

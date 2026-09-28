@@ -280,7 +280,14 @@ static void check_keys(void)
          * description -- and this port reads no updatable model, so there is none to ask. The host
          * differential builds it, because it compiles the port's own sources and can reach the
          * initialiser; facts/CoreML/CoreML.md says why the class is here at all. */
-        CHECK([MLNumericConstraint class] != nil, "the numeric constraint class is there");
+        /* Every constraint copies, which is what a description's own copy asks of it. */
+    CHECK([[MLMultiArrayShapeConstraint class] instancesRespondToSelector:@selector(copyWithZone:)] ||
+              [[MLMultiArrayShapeConstraint class] instancesRespondToSelector:@selector(copy)],
+          "the shape constraint copies");
+    CHECK([[MLImageSize class] instancesRespondToSelector:@selector(copyWithZone:)] ||
+              [[MLImageSize class] instancesRespondToSelector:@selector(copy)],
+          "an image size copies");
+    CHECK([MLNumericConstraint class] != nil, "the numeric constraint class is there");
         CHECK([MLNumericConstraint instancesRespondToSelector:@selector(minNumber)],
               "and answers a least value");
         CHECK([MLNumericConstraint instancesRespondToSelector:@selector(maxNumber)], "and a most");

@@ -66,6 +66,16 @@
 {
     return _type;
 }
+/* A copy is a constraint of the same kind with the same numbers, and a real copy rather than the
+ * same object: a caller that holds a description and copies it must be able to read the copy
+ * without the two sharing anything. */
+- (id)copyWithZone:(NSZone *)zone
+{
+    return [[[self class] allocWithZone:zone] charon_initWithType:_type
+                                                      sizeRanges:_sizeRangeForDimension
+                                               enumeratedShapes:_enumeratedShapes];
+}
+
 
 - (NSArray<NSValue *> *)sizeRangeForDimension
 {
@@ -121,6 +131,11 @@
 {
     return _pixelsWide;
 }
+- (id)copyWithZone:(NSZone *)zone
+{
+    return [[[self class] allocWithZone:zone] charon_initWithPixelsWide:_pixelsWide pixelsHigh:_pixelsHigh];
+}
+
 
 - (NSInteger)pixelsHigh
 {
@@ -201,6 +216,14 @@
 {
     return _pixelsWideRange;
 }
+- (id)copyWithZone:(NSZone *)zone
+{
+    return [[[self class] allocWithZone:zone] charon_initWithType:_type
+                                              pixelsWideRange:_pixelsWideRange
+                                             pixelsHighRange:_pixelsHighRange
+                                        enumeratedImageSizes:_enumeratedImageSizes];
+}
+
 
 - (NSRange)pixelsHighRange
 {
@@ -266,6 +289,12 @@
 {
     return _countRange;
 }
+- (id)copyWithZone:(NSZone *)zone
+{
+    return [[[self class] allocWithZone:zone] charon_initWithValueDescription:[_valueDescription copy]
+                              countRange:_countRange];
+}
+
 
 + (BOOL)supportsSecureCoding
 {

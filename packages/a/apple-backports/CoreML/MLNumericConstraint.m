@@ -43,6 +43,13 @@
 {
     return _minNumber;
 }
+- (id)copyWithZone:(NSZone *)zone
+{
+    return [[[self class] allocWithZone:zone] charon_initWithMinNumber:_minNumber
+                                                              maxNumber:_maxNumber
+                                                     enumeratedNumbers:_enumeratedNumbers];
+}
+
 
 - (NSNumber *)maxNumber
 {
