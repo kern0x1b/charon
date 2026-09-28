@@ -4,13 +4,14 @@
 #import <arpa/inet.h>
 #import <ifaddrs.h>
 #import <net/if.h>
+#include <sys/ioctl.h>
 #import "CharonNWPathMonitor.h"
 #import <dlfcn.h>
 #import <netinet/in.h>
 #import <resolv.h>
 #import <sys/socket.h>
 
-@interface CharonNWInterface : NSObject <OS_nw_interface>
+@interface CharonNWInterface : CHARON_NW_OBJECT(OS_nw_interface)
 @end
 
 
@@ -33,15 +34,43 @@
 @implementation CharonNWPathMonitor
 @end
 
-static nw_interface_type_t charon_type_of(const char *name)
+/* What an interface *is*, from what the kernel says about it rather than from what it is called.
+ *
+ * Three things the kernel answers for every interface, and none of them a name:
+ *
+ * - `IFF_LOOPBACK` on its flags: a loopback, and a path over it is the loopback however the interface
+ *   spells that;
+ * - `SIOCGIFDSTADDR` answering for it: a point-to-point link with a gateway, which on this release is
+ *   the cellular radio. A tunnel is point-to-point too and has no gateway, and that is what tells the
+ *   two apart - not `utun` in a name;
+ * - anything else, which is a broadcast-capable link or a bridge: Wi-Fi on this release, which has no
+ *   wired Ethernet, and `other` for what remains.
+ *
+ * The `struct if_data` behind the AF_LINK entry carries the kernel's own `ifi_type` as well, and that
+ * is the classification the release itself reads - but the IFTYPE_* names for it live in XNU's
+ * `net/if_types.h` and in no Apple SDK, so a port that spelled them out would be writing a mapping of
+ * numbers it cannot measure. The three above are all measurable on a device without a header this
+ * port has to invent.
+ */
+static nw_interface_type_t charon_type_of(const struct ifaddrs *item)
 {
-    if (!strncmp(name, "lo", 2))
+    if (item->ifa_flags & IFF_LOOPBACK)
         return nw_interface_type_loopback;
-    if (!strncmp(name, "pdp_ip", 6))
-        return nw_interface_type_cellular;
-    if (!strncmp(name, "en", 2))
-        return nw_interface_type_wifi;
-    return nw_interface_type_other;
+    if (item->ifa_flags & IFF_POINTOPOINT) {
+        int probe = socket(AF_INET, SOCK_DGRAM, 0);
+        BOOL gateway = NO;
+        if (probe >= 0) {
+            struct ifreq request;
+            memset(&request, 0, sizeof request);
+            strncpy(request.ifr_name, item->ifa_name, IFNAMSIZ - 1);
+            gateway = ioctl(probe, SIOCGIFDSTADDR, &request) == 0;
+            close(probe);
+        }
+        /* A point-to-point link with a gateway is the cellular radio; one without is a tunnel, which
+           is `other` to a program and is how a VPN reaches the network. */
+        return gateway ? nw_interface_type_cellular : nw_interface_type_other;
+    }
+    return nw_interface_type_wifi;
 }
 
 static BOOL charon_usable_v4(const struct sockaddr *address)
@@ -106,11 +135,15 @@ static CharonNWPath *charon_path(SCNetworkReachabilityRef reachability, CharonNW
         for (struct ifaddrs *item = list; item; item = item->ifa_next) {
             if (!item->ifa_addr || !(item->ifa_flags & IFF_UP) || !(item->ifa_flags & IFF_RUNNING))
                 continue;
-            nw_interface_type_t type = charon_type_of(item->ifa_name);
+            nw_interface_type_t type = charon_type_of(item);
             for (NSNumber *prohibited in monitor->_prohibitedTypes) {
                 if ((nw_interface_type_t)prohibited.unsignedIntegerValue == type)
                     goto next;
             }
+            /* An `other` monitor is the default one and it takes every usable interface that is not
+               the loopback - including the ones the kernel names as `other` (a tunnel, a bridge), which
+               is how the release enumerates them: they are the interfaces a path is over, not noise to
+               be dropped. A monitor that asked for a type takes only that type. */
             BOOL wanted = monitor->_required == nw_interface_type_other ? type != nw_interface_type_loopback && type != nw_interface_type_other && (type == nw_interface_type_cellular) == cellular : type == monitor->_required;
             if (monitor->_required == nw_interface_type_other && !reachable)
                 wanted = NO;

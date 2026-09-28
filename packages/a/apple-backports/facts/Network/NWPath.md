@@ -26,3 +26,39 @@ works out for every path it reports - a path over a prohibited interface is then
 interface, which is what a monitor not allowed to use that interface can honestly say about it. It is in
 the Foundation library, in a file of its own (`NWPathMonitor14.m`) because an object that exports the
 symbols of two introductions is split by the build.
+
+## How an interface's type is decided, and what the name was wrong about
+
+`charon_type_of()` used to read the interface's **name**: `lo` for the loopback, `pdp_ip` for the
+cellular radio, `en` for Wi-Fi, everything else `other`. A device run showed four of twenty checks
+failing on the untyped cases, and the two halves of it were wrong in the same way:
+
+- `NWPathMonitor.m` dropped every interface it had typed `other` from a monitor that asked for `other`,
+  so the interfaces the kernel itself names as a tunnel or a bridge never appeared on a path at all -
+  and those are the interfaces a VPN and a Personal Hotspot put a path on;
+- a name cannot tell those apart from anything: `utun*` and `bridge*` both fell through to `other`
+  because there was no branch for either, and a `pdp_ip*`-named interface was called cellular whatever
+  it carried, which a tunnel over Wi-Fi is not.
+
+It reads the kernel's own answers now, none of which is a name:
+
+- `IFF_LOOPBACK` on the flags says a loopback;
+- `SIOCGIFDSTADDR` answering for the interface says a point-to-point link **with a gateway**, which on
+  this release is the cellular radio. A tunnel is point-to-point too and has no gateway, and that is
+  what separates the two;
+- anything else is a broadcast-capable link or a bridge, which on this release - which has no wired
+  Ethernet - is the Wi-Fi radio.
+
+The `struct if_data` behind the `AF_LINK` entry carries the kernel's `ifi_type` as well, and that is
+what the release itself reads, but the `IFTYPE_*` names for it are in XNU's `net/if_types.h` and in
+**no Apple SDK** - this port's 16.4 SDK has a `net/if_types.h` with none of them in it (measured: the
+grep for `IFTYPE` in it answers nothing). Spelling those numbers out would be a mapping of constants no
+SDK on this port carries, and the three answers above are all measurable on a device.
+
+**What this does not settle:** the four checks that failed are the device harness's, and they are
+re-measured on a device, which is not mine to run. What is measured here is that the four interfaces
+the review names are now distinguished by mechanism rather than by name, that both targets compile with
+the change (0 errors at armv7-apple-ios6.1.3 and 0 for either at 4.3), and that the light guard and
+every host differential still pass. The `NWPathMonitor` rows stay as they were until a device run says
+otherwise; if a case there cannot be reproduced, it is written into this file and those calls are not
+marked `implemented`.

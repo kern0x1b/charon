@@ -9,12 +9,22 @@
 
 #import <Foundation/Foundation.h>
 #import <Network/Network.h>
+
+/* The same two spellings the Network library takes, for the same reason: above iOS 6.0 an nw_object is
+   an NSObject adopting the type's protocol (nw_object.h:28) and below it is a plain C struct pointer
+   with no protocol declared by any header (nw_object.h:32), so a path or a monitor is an NSObject here
+   on both sides and nothing below 6.0 names a protocol that does not exist. */
+#if OS_OBJECT_USE_OBJC
+#define CHARON_NW_OBJECT(protocol) NSObject <protocol>
+#else
+#define CHARON_NW_OBJECT(protocol) NSObject
+#endif
 #import <SystemConfiguration/SystemConfiguration.h>
 
-@interface CharonNWPath : NSObject <OS_nw_path>
+@interface CharonNWPath : CHARON_NW_OBJECT(OS_nw_path)
 @end
 
-@interface CharonNWPathMonitor : NSObject <OS_nw_path_monitor> {
+@interface CharonNWPathMonitor : CHARON_NW_OBJECT(OS_nw_path_monitor) {
 @public
     nw_interface_type_t _required;
     NSMutableArray *_prohibitedTypes;
