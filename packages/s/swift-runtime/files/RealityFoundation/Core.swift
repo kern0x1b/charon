@@ -115,10 +115,10 @@ public struct __ComponentRef {
         return __ComponentRef(__REComponentBox(core))
     }
 
-    public func __as<T>(_ type: T.Type) -> T { box.value as! T }
+    public nonisolated func __as<T>(_ type: T.Type) -> T { box.value as! T }
 
     /// What `Component.__toCore(_:)` writes through.
-    public func __write<T>(_ component: T) { box.value = component }
+    public nonisolated func __write<T>(_ component: T) { box.value = component }
 }
 
 /// A reference to a component type's registration.
