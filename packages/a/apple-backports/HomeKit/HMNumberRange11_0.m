@@ -3,7 +3,14 @@
 // files defining it is two class symbols with one name -- the link said so by name.
 //
 // One release's API per object file, which is what the band machinery needs.
+#import "CharonHomeKitInternal.h"
+
 #pragma mark - HMNumberRange
+
+@interface HMNumberRange (CharonHomeKitStore)
+@property (nonatomic, strong, nullable) NSNumber *charon_minValue;
+@property (nonatomic, strong, nullable) NSNumber *charon_maxValue;
+@end
 
 @implementation HMNumberRange
 
