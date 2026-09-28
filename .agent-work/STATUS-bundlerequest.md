@@ -663,3 +663,36 @@ SAN=1 sh tests/backports/host/bundlerequest/run.sh 2>&1 | sed -n '/AddressSaniti
 and the frame that is in the port, not in CoreFoundation, is the one to read — the differential has no
 private call left, so whatever is left is either the port's own ask or one of the two
 `[bundleClass instancesRespondToSelector:]` in the test, and the frames say which immediately.
+
+---
+
+## The invocation is gone, and the remaining trap is the constructor's own
+
+`-[NSInvocation getReturnValue:]` into a `__strong id` under ARC is the well-known pitfall — ARC
+releases bytes it never retained — so there is no invocation left in the test. The oracle is one
+`objc_msgSend`:
+
+```objc
+static id host_initWithTag(Class subject, NSString *tag)
+{
+    return ((id (*)(id, SEL, id))objc_msgSend)([subject alloc], NSSelectorFromString(@"initWithTag:"), tag);
+}
+```
+
+which removes the third fault (the ARC pitfall), the second (`-retainArguments` retaining the
+target) and the first (the target being the class) in one change.
+
+**And the trap moved back to before the oracle: the constructor's print appears and the oracle's
+`note:` never does.** So the remaining PAC failure is in the constructor's own two
+`[bundle instancesRespondToSelector:…]` — the port's own ask, on a class it got by name, with nothing
+held across a class change. The frame that names it is the one command I do not have the budget to
+run now:
+
+```sh
+SAN=1 sh tests/backports/host/bundlerequest/run.sh 2>&1 | sed -n '/AddressSanitizer/,/SUMMARY/p'
+```
+
+**The verdict is still open** — 9 or 11 — and it turns on that one line: if the fault is inside
+`-[NSBundle instancesRespondToSelector:]`'s own path on a class the runtime signed, then the two asks
+have to go the way the class is obtained, one at a time; if it is in `class_addMethod`, then the
+install has to move behind `attach.c` the way the rest of the package's categories are attached.

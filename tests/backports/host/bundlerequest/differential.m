@@ -80,6 +80,15 @@ static void same_string(NSString *ours, NSString *theirs, NSString *what)
 extern double const CharonHostNSBundleResourceRequestLoadingPriorityUrgent;
 extern NSString *const CharonHostNSBundleResourceRequestLowDiskSpaceNotification;
 
+// The host's private initialiser, called the way a direct send reaches it: an NSInvocation's
+// -getReturnValue: into a __strong id is the well-known ARC pitfall (ARC releases bytes it never
+// retained), and -retainArguments retains the target, which is not an argument. One objc_msgSend, no
+// invocation, nothing ARC has an opinion about.
+static id host_initWithTag(Class subject, NSString *tag)
+{
+    return ((id (*)(id, SEL, id))objc_msgSend)([subject alloc], NSSelectorFromString(@"initWithTag:"), tag);
+}
+
 static id host_privileged(Class subject, SEL selector, id first)
 {
     SEL firstSelector = NSSelectorFromString([NSString stringWithFormat:@"%@:", NSStringFromSelector(selector)]);
@@ -133,6 +142,13 @@ int main(void)
         NSBundle *withoutManifest = makeBundle(@"charon-brr-without", NO);
         NSSet *known = [NSSet setWithObjects:@"level1", @"level2", nil];
         NSSet *unknown = [NSSet setWithObject:@"level9"];
+
+        // the oracle, once, by a direct send, and out of the verdict until it has answered
+        for (NSString *tag in @[ @"level1", @"level9" ]) {
+            id theirs = host_initWithTag(theirs, tag);
+            NSString *shown = theirs ? [theirs description] : @"(nil)";
+            printf("note: the host private -initWithTag: with %s -> %s\n", [tag UTF8String], [shown UTF8String]);
+        }
 
         // the four properties, held to the header's own words: the tags it was given, the bundle it
         // resolves in, the default priority, and a progress that is complete the moment it exists
