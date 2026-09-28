@@ -19,19 +19,11 @@
 extern NSDictionary *charon_CIImage_properties(id image, SEL _cmd);
 extern CIImage *charon_CIImage_imageBySettingProperties(id image, SEL _cmd, NSDictionary *properties);
 extern CIImage *charon_CIImage_imageByUnpremultiplyingAlpha(id image, SEL _cmd);
-static CIImage *port_imageBySettingProperties(CIImage *image, NSDictionary *properties) {
-    return charon_CIImage_imageBySettingProperties(image, @selector(imageBySettingProperties:), properties);
-}
-static NSDictionary *port_properties(CIImage *image) {
-    return charon_CIImage_properties(image, @selector(properties));
-}
-static CIImage *port_imageByUnpremultiplyingAlpha(CIImage *image) {
-    return charon_CIImage_imageByUnpremultiplyingAlpha(image, @selector(imageByUnpremultiplyingAlpha));
-}
-#define SET_PROPERTIES(image, properties) port_imageBySettingProperties((image), (properties))
-#define GET_PROPERTIES(image) port_properties(image)
-#define UNPREMULTIPLY(image) port_imageByUnpremultiplyingAlpha(image)
-static const char *const PORT_IMPL_NAME = "charon";
+#define SET_PROPERTIES(image, properties) \
+    charon_CIImage_imageBySettingProperties((image), @selector(imageBySettingProperties:), (properties))
+#define GET_PROPERTIES(image) charon_CIImage_properties((image), @selector(properties))
+#define UNPREMULTIPLY(image) charon_CIImage_imageByUnpremultiplyingAlpha((image), @selector(imageByUnpremultiplyingAlpha))
+static const char *const PORT_IMPL_NAME = "charon_CIImage_*";
 #else
 #define SET_PROPERTIES(image, properties) [(image) imageBySettingProperties:(properties)]
 #define GET_PROPERTIES(image) (image).properties

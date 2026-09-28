@@ -51,7 +51,7 @@ xcrun clang -fobjc-arc $quiet "${CH_PROBE:-$here/probe.m}" -framework CoreImage 
 # the port's classes it asks and it says so.
 objects=""
 for piece in CIImageAccumulator CIFilterShape CIColor CIContextRepresentations CIImageAlgebra \
-            CIContextGCOwner; do
+            CIContextGCOwner CIImageProperties CIImageUnpremultiply; do
     # The port's classes are declared in the renamed support header, so their own sources see their
     # own names; CIContextGCOwner declares its class itself and is given the header only for the rest.
     if [ "$piece" = CIContextGCOwner ]; then
