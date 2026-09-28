@@ -154,10 +154,15 @@ void vDSP_DFT_Interleaved_ExecuteD(const vDSP_DFT_Interleaved_SetupD Setup, cons
             DSPDoubleComplex *packed = (DSPDoubleComplex *)calloc(n, sizeof(DSPDoubleComplex));
             if (!packed)
                 return;
+            // The packing reaches the input as x[2m] and x[2m+1] for m < n, which is the SAME 2*n fact the
+            // inverse's output loop reaches as j < samples. One declaration, two uses.
             const double *x = &Iri[0].real;
-            for (vDSP_Length m = 0; m < n; m++) {
-                packed[m].real = x[2 * m];
-                packed[m].imag = x[2 * m + 1];
+            for (vDSP_Length j = 0; j < samples; j++) {
+                const vDSP_Length m = j / 2;
+                if (j % 2)
+                    packed[m].imag = x[j];
+                else
+                    packed[m].real = x[j];
             }
             // 2. the complex forward of length N, the same loop as the complex-to-complex case above and the
             //    one measured at a worst ratio of 0.000 against the host

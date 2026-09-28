@@ -154,10 +154,17 @@ void vDSP_DFT_Interleaved_Execute(const vDSP_DFT_Interleaved_Setup Setup, const 
             DSPComplex *packed = (DSPComplex *)calloc(n, sizeof(DSPComplex));
             if (!packed)
                 return;
+            // The packing reaches the input as x[2m] and x[2m+1] for m < n, which is the SAME 2*n fact that
+            // the inverse's output loop reaches as j < samples. Two derivations of one fact can drift, so the
+            // packing now walks `samples` and derives m from it - one declaration, two uses - and the input
+            // cannot be read past the caller's half.
             const float *x = &Iri[0].real;
-            for (vDSP_Length m = 0; m < n; m++) {
-                packed[m].real = x[2 * m];
-                packed[m].imag = x[2 * m + 1];
+            for (vDSP_Length j = 0; j < samples; j++) {
+                const vDSP_Length m = j / 2;
+                if (j % 2)
+                    packed[m].imag = x[j];
+                else
+                    packed[m].real = x[j];
             }
             // 2. the complex forward of length N, the same loop as the complex-to-complex case above and the
             //    one measured at a worst ratio of 0.000 against the host
