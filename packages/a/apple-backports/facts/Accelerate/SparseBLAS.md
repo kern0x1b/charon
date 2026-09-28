@@ -694,6 +694,40 @@ contract is built on and they are host-specific facts, not derivable from the he
 COLAMD and pin their commits. Then write the table-driven differential against those measurements before
 the first entry point.
 
+## Handing this to the reviewer: what is against main, and what was fixed on the way
+
+**D against main — the two expected blocks and nothing else.** `git diff origin/main...HEAD -- modules/apple/
+backports.lua packages/a/apple-backports/xmake.lua` is:
+
+1. `backports.lua`'s Accelerate row, which gains `archives = {"suitesparse-ordering"}` and the six lines of
+   comment above it saying why the archive is not API and which parts of SuiteSparse are absent from it;
+2. `apple-backports/xmake.lua`'s `add_deps("charon@suitesparse-ordering v7.12.2", {alias = …})` and the four
+   lines of comment above it.
+
+That is the whole of it. **LIBRARIES is main's plus mine, with no duplicate** — and checking that is what
+found one: resolving an earlier conflict on the same hunk had re-added main's `GraphicsBackports` row, so the
+tree carried it twice, at line 16 and line 21. A duplicated `LIBRARIES` row is a library linked twice, so
+main's copy stands alone where main put it and only the Accelerate row is mine. `grep '{name =
+"GraphicsBackports"'` is 1.
+
+**The `os.vcp` fix, and what it cost to find.** The recipe installs four headers and two licences by
+`os.vcp` into two-level destinations. `os.vcp` creates the last component of its destination and not the
+ones above it, so a copy into `include/SuiteSparse/AMD` was aimed at a directory whose parent did not
+exist. It failed as a **bare `assertion failed!` with a one-line log** until every assert in the recipe
+carried a message, which turned it into `suitesparse-ordering installed no SuiteSparse/AMD/amd.h`, and
+checking `on_test` rather than `on_install` is what showed the install had run to the end and the copies
+had gone nowhere. The destinations now end in a separator, every level is made with `os.mkdir` before its
+copy, and every copy's return value is checked, so a failure names its own file. The chain of four was:
+the toolchain was never at fault (both `cc` and `cxx` resolve to the store's LLVM 23.1.1, measured);
+`SuiteSparse_config.h:26: 'stdio.h' file not found` was a C compile with `-isysroot` and no
+`-isystem` for the SDK's own headers; the bare assertion was `on_test`'s message-less asserts; and this
+is the copy.
+
+**The package still does not install, and the named line is unchanged:** `could not install
+SuiteSparse_config/SuiteSparse_config.h`, with every level of its destination made. That is five rounds on
+a one-line question, and it blocks only the solve family — **the fifteen reviewed patches need no archive
+and are unaffected by it.**
+
 ## The gates, and what they say
 
 Both ends of the ladder, on the tree this page describes, at base `68befaca`:
