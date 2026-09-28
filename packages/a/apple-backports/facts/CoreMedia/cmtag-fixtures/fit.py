@@ -6,6 +6,9 @@ Run from this directory: ./pairs > pairs.tsv, then python3 fit.py
 """
 import itertools, struct, sys
 
+def _unused():
+    return None
+
 def read_table(path):
     """The tags come out of the table, never out of this file: two hand-maintained copies of the same
     data is how the first derivation of this rule came out wrong."""
@@ -29,8 +32,13 @@ def order(fields, category_signed, value_bits):
     """fields is a permutation of (0,1,2) naming category, dataType, value."""
     def key(tag):
         category, dataType, value = tag
-        raw = [signed(category) if category_signed else category, dataType,
-               value if value_bits else (value >> 64 if value_bits == "raw" else value)]
+        if value_bits == "raw":
+            third = struct.pack(">Q", value)
+        elif value_bits == "rendered" and dataType == 2:
+            third = "%d" % (value - (1 << 64) if value & 0x8000000000000000 else value)
+        else:
+            third = value
+        raw = [signed(category) if category_signed else category, dataType, third]
         return tuple(raw[i] for i in fields)
     return key
 
@@ -52,19 +60,22 @@ def memcmp_fields(a, b, fields, big_endian):
 
 def main():
     TAGS, pairs, hashes = read_table("pairs.tsv")
+    # the value may be compared as a number, as its raw bits, or as the CFNumberCompare of a rendered
+    # value whose type is the tag's own - the coordinator's hint, and the only candidate left standing
+    # after the field order is fixed.
 
     print("=== orders: %d pairs, both argument orders" % len(pairs))
     results = []
     for fields in itertools.permutations(range(3)):
         for category_signed in (True, False):
-            for value_bits in ("number",):
+            for value_bits in ("number", "raw"):
                 mismatches = sum(1 for a, b, host in pairs
                                  if compare(TAGS[a], TAGS[b], fields, category_signed, value_bits) != host)
                 reversed_mismatches = sum(1 for a, b, host in pairs
                                           if compare(TAGS[b], TAGS[a], fields, category_signed, value_bits) != host)
-                name = "order %s category %s" % (
+                name = "order %s category %s value %s" % (
                     "-".join("category dataType value".split()[i] for i in fields),
-                    "signed" if category_signed else "unsigned")
+                    "signed" if category_signed else "unsigned", value_bits)
                 results.append((min(mismatches, reversed_mismatches), mismatches, reversed_mismatches, name))
     for fields in itertools.permutations(range(3)):
         for big_endian in (True, False):
@@ -76,6 +87,9 @@ def main():
                             "memcmp of %s fields %s-endian" % ("-".join("category dataType value".split()[i] for i in fields),
                                                                 "big" if big_endian else "little")))
     for best, forward, backward, name in sorted(results):
+        print("  %4d mismatches  (%d forward, %d reversed)  %s" % (best, forward, backward, name))
+    print("\n=== the top three")
+    for best, forward, backward, name in sorted(results)[:3]:
         print("  %4d mismatches  (%d forward, %d reversed)  %s" % (best, forward, backward, name))
     winners = [r for r in results if r[0] == 0]
     if winners:

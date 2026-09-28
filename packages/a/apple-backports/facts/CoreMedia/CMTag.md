@@ -185,9 +185,26 @@ plus both argument orders for the pair the differential disagreed on, plus 13 ha
 orders x signed and unsigned category x the value as a number, and memcmp of the struct's fields in both
 endiannesses — and prints a mismatch count for each, with the better of the two argument orders.
 
-**Over the 78 pairs `pairs.m` measures, exactly one candidate has zero mismatches: category, then data
-type, then value, with the category compared as a signed 32-bit integer and no validity tier.** The same
-order unsigned misses 12, and every other order misses at least 14.
+**Over the union table — fifteen tags, 105 pairs, from `m4`, `m5` and the differential, with the tag
+values written by the emitter — the top three candidates are:**
+
+```
+   0 mismatches  (0 forward, 105 reversed)  order category-dataType-value  category signed  value number
+   0 mismatches  (0 forward, 105 reversed)  order category-dataType-value  category signed  value raw
+   2 mismatches  (2 forward, 103 reversed)  order category-value-dataType  category signed  value number
+```
+
+and every other order, unsigned category included, misses at least fourteen. So the *field order* is
+category, data type, value, with the category signed and no validity tier, on 105 of the host's answers.
+
+**And the differential still disagrees with it on one pair**, so it is still not the rule:
+`all[3]` is `(0, OSType, 0)` and `all[7]` is `('trak', Float64, 0.0)` — the table holds the same two
+categories and data types but with value `1.5` at index 7 — and the host answers **1** for the probe's
+pair, where a signed category comparison gives **−1** because 0 sorts below `'trak'`. Either the
+answer depends on something the three fields do not carry, or the table and the probe are once more
+describing different pairs. The value candidates were added as the coordinator suggested — the value as
+its raw bits, and `rendered` for a signed decimal — and neither changes the count, so the value's
+rendering is not where the disagreement lives.
 
 **That is not yet a derivation of the rule, and the reason is a second copy of the data.** `pairs.m`
 chooses its own thirteen tags; the differential chooses its own twelve; they are not the same set. The one
