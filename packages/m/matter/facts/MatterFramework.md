@@ -109,9 +109,9 @@ the library's own spelling first, because the class list `objc.lua` walks is not
 
 | | before | after |
 | --- | --- | --- |
-| rows carried | 16 461 | **17 061** |
+| rows carried | 16 461 | **17 080** |
 | properties uncarried | 373 | **1** |
-| methods uncarried | 878 | **650** |
+| methods uncarried | 878 | **631** |
 | classes | 985 carried | 985 carried |
 | functions | 8 carried | 8 carried |
 

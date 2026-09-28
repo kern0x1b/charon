@@ -19,6 +19,7 @@ JOBS=${1:-8}
 STAGED=$OUT/framework/Matter
 OBJ=$S/framework
 FW=$S/src/darwin/Framework/CHIP
+CH=$(cd "$(dirname "$0")/.." && pwd)/packages/m/matter/Charon
 
 [ -d "$S" ] || { echo "no $S: build charon@matter once first"; exit 1; }
 [ -f "$VFS" ] || { echo "no lifted headers: build charon@swift-runtime with the backports once first"; exit 1; }
@@ -36,7 +37,9 @@ stage() {
     seen=$(mktemp)
     # CHIP/app is the framework's own: it carries the one header the core files' #include "app/PluginApplicationCallbacks.h"
     # needs, and the framework's header search path is the CHIP directory, so "app/..." resolves there.
-    for dir in "$FW" "$FW/zap-generated" "$FW/ServerEndpoint" "$FW/XPC Protocol" "$FW/app"; do
+    # CHARON is this package's own addition to the library: the Apple-prefixed spellings of the Aliro feature, which
+    # the open-source model declares under its own name and Apple's framework does not, generated as forwards.
+    for dir in "$FW" "$FW/zap-generated" "$FW/ServerEndpoint" "$FW/XPC Protocol" "$FW/app" "$CH"; do
         [ -d "$dir" ] || continue
         for f in "$dir"/*.h "$dir"/*.mm; do
             [ -e "$f" ] || continue
@@ -52,7 +55,8 @@ stage() {
             cp -f "$f" "$STAGED/$rel"
             # The bare-name link is for the <Matter/...> spelling, which only a header has. A source is compiled where
             # it sits, and a second name for it would compile it twice.
-            case "$name" in
+            case "$rel" in
+                Charon/*) ;;   # the generated additions are reached by their own path, not by a bare name
                 *.h) [ "$STAGED/$rel" = "$STAGED/$name" ] || ln -sf "$STAGED/$rel" "$STAGED/$name" ;;
             esac
         done
@@ -168,6 +172,9 @@ printf "%s\n" "${CXXSOURCES[@]}" | xargs -P "$JOBS" -I{} "$OUT/cxx-one.sh" "$S/{
 
 echo "objects: $(find "$OBJ" -name "*.mm.o" -o -name "*.cpp.o" 2>/dev/null | wc -l | tr -d ' ') of $(( $(find "$STAGED" -name "*.mm" | wc -l) + ${#CXXSOURCES[@]} ))"
 
+# The link, the recipe's own line, including -Wl,-no_implicit_dylibs: charon's ld64 956.6 asserts in OutputFile's
+# dylibToOrdinal on a symbol bound through a re-export (libc++ re-exports libc++abi), and the flag is what says the
+# upstream behaviour - a re-exported dylib maps to its parent's ordinal - from outside. coordination/crutches.md has it.
 # The link, the recipe's own line: the Stage 1 static library, the objects, the Network and Foundation backports (iOS 6
 # has no Network.framework, so the framework's device browser's nw_* calls come from the backport), the port's libc++,
 # apple-compat's shims, and the frameworks Apple's xcconfig names.
@@ -190,7 +197,7 @@ mkdir -p "$(dirname "$LIB")"
     -L"$LCXX" -lc++abi -lc++ \
     "$AC/lib/libapple-compat.a" \
     -framework Foundation -framework Security -framework CoreData -framework CoreBluetooth \
-    -Wl,-rpath,"$LCXX" -Wl,-rpath,@loader_path 2>&1 | head -40
+    -Wl,-rpath,"$LCXX" -Wl,-rpath,@loader_path -Wl,-no_implicit_dylibs 2>&1 | head -40
 if [ -f "$LIB" ]; then
     echo "LINKED $LIB"
     otool -hv "$LIB" | tail -1
