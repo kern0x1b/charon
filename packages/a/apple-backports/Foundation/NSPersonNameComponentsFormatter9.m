@@ -184,12 +184,24 @@ static NSString *charon_join(NSArray<NSString *> *pieces, NSString *delimiter)
                 return given;
             return family ?: @"";
         case NSPersonNameComponentsFormatterStyleAbbreviated: {
-            if (self.isPhonetic && !read.middleName.length && !read.namePrefix.length)
-                /* The host raises NSUnknownKeyException here, because its abbreviated template asks
-                   the phonetic object for the component keys it has not got. The port answers the two
-                   initials instead: an API here must not crash its caller, and
-                   facts/Foundation/NSPersonNameComponentsFormatter.md records the divergence. */
-                ;
+            if (self.isPhonetic) {
+                /* The abbreviated template reads the given name and the family name *through* the
+                   phonetic representation, by key path, and the release refuses that read when the
+                   spelling has not got them -- which is how the host raises NSUnknownKeyException here
+                   (measured, ten locales, and the same exception name, reason shape and both userInfo
+                   keys). Reading it the same way means the port raises where the host raises, and a
+                   spelling that does have both names answers the two initials as before. */
+                NSString *first = @"phoneticRepresentation.givenName";
+                NSString *second = @"phoneticRepresentation.familyName";
+                if (!given.length) {
+                    NSString *swap = first;
+                    first = second;
+                    second = swap;
+                }
+                return [charon_pieces(charon_initial([read valueForKey:first]),
+                                      charon_initial([read valueForKey:second]), nil, nil, nil)
+                        componentsJoinedByString:@""];
+            }
             if (!given.length && !family.length)
                 /* nothing to take an initial of: the host answers the nickname, which is the whole
                    of the name there is (measured, and the differential holds it for nine sets) */

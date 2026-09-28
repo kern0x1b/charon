@@ -123,8 +123,15 @@ int main(void)
                     @try { ours = ourFormatted(style, components, identifier, options); }
                     @catch (NSException *exception) { ours = [NSString stringWithFormat:@"raises %@", exception.name]; }
                     NSString *label = [NSString stringWithFormat:@"%@ %@ style %ld", identifier, entry[7], (long)style];
-                    if ([system isKindOfClass:[NSString class]] &&
-                        [system hasPrefix:@"raises NSUnknownKeyException"] && ours != nil) {
+                    if (ours != nil && [ours isKindOfClass:[NSString class]] &&
+                        [ours hasPrefix:@"raises NSUnknownKeyException"] &&
+                        ![[system description] hasPrefix:@"raises NSUnknownKeyException"]) {
+                        failures++;
+                        printf("FAIL %s: the system answers %s, the backport answers %s\n",
+                               label.UTF8String, [system description].UTF8String, [ours description].UTF8String);
+                        continue;
+                    }
+                    if (false) {
                         /* The one place the host raises and the port does not: the host's abbreviated
                            template asks the phonetic object for component keys it has not got. The port
                            answers the two initials, because an API here must not crash its caller, and

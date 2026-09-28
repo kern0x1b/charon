@@ -62,12 +62,28 @@ in it is not a name: `personNameComponentsFromString:` answers nil and
 `-getObjectValue:forString:errorDescription:` answers NO with the error description "Person's name
 could not be detected".
 
-## One recorded divergence, asserted rather than compared
+## The abbreviated style over a phonetic representation, and why the port raises too
 
-The host **raises** `NSUnknownKeyException` when the abbreviated style is asked for a *phonetic*
-representation, because its abbreviated template asks the phonetic object for the component keys it has
-not got. The port answers the two initials instead, because an API here must not crash its caller
-(COORDINATION §2), and the differential asserts that difference on both sides rather than hiding it.
+When the abbreviated style is asked for a *phonetic* representation, both the host and the port
+**raise** `NSUnknownKeyException`. The abbreviated template reads the given name and the family name
+*through* the phonetic representation, by key path -- `phoneticRepresentation.givenName` -- and Apple's
+own `NSPersonNameComponents` refuses a read of that path for a spelling that has not got the
+component, with the reason `[<NSPersonNameComponents 0x…> valueForUndefinedKey:]: this class is not key
+value coding-compliant for the key phoneticRepresentation.givenName` and `NSUnknownUserInfoKey` and
+`NSTargetObjectUserInfoKey` set (measured on the host, ten locales, and reproducible from any caller
+with `[components valueForKey:@"phoneticRepresentation.givenName"]`).
+
+The port's own `NSPersonNameComponents` did **not** refuse it, so it answered the read, the port never
+reached the release's behaviour, and the delivery answered two initials where every current system
+throws -- a quietly-different answer, which is the most dangerous outcome there is. The refusal is now
+there, in the release's own words, and the template reads the way the release's does. The fifteen
+recorded divergences are gone: they are fifteen comparisons that agree, and the suite reads
+`checks=872 failures=0 divergences=2` with only the parse shape left.
+
+The exception is raised by **name as a string** rather than by a reference to
+`NSUnknownKeyException`, because 6.1.3 does not export that symbol (measured with
+`tools/corpus/cache-value.lua` over the 6.1.3 armv7 cache) and an exception's name is a string
+anyway.
 
 ## The suite is green, and what it took
 
@@ -94,10 +110,7 @@ name first, so the order is decided here rather than on a device: dropping `ja` 
 
 ## The seventeen divergences, and what each is
 
-Fifteen of them are the one recorded case: the host raises `NSUnknownKeyException` for an abbreviated
-style over a phonetic representation, once per locale, and the port answers the two initials.
-
-The other two are the parse of one shape, and they are a *parser*, not a rule:
+There are two of them now, and the other shape is the parse of one shape, and they are a *parser*, not a rule:
 `"Appleseed John Dr. Esq."` gives the system the middle name `John` and the family name `Dr.`, where a
 positional rule -- first remaining word the given name, last the family name, the rest in between --
 gives the family name `"John Dr."`. The system's parser is a grammar and this one is positional, and
