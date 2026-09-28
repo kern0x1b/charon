@@ -414,7 +414,7 @@
             "introduced": "15.0",
             "minimum": "6.0",
             "status": "implemented",
-            "reason": "write(to:) is declared and REFUSES with MLCreateErrorCode.cannotWriteModel. The .mlmodel specification writer is a protobuf over the published coremltools schema and belongs to the CoreML package; a model file written with the right extension and bytes no Core ML can read would be worse than one that says it cannot",
+            "reason": "write(to:) is declared and REFUSES with MLCreateErrorCode.cannotWriteModel. The .mlmodel writer is in this package's own CoreML module - it is a protobuf over the published coremltools schema, and the linear model writes through it - and what this estimator cannot use it for is the kind of model it is: a decision tree is a `TreeEnsembleRegressor` (field 302) with one branch of one tree. A file that said NeuralNetworkRegressor and carried one of those would be a model Core ML loads and answers with the wrong arithmetic, which is worse than one that says it cannot",
             "effect": "nothing, and the error saying so",
             "facts": "facts/CreateML/Errors.md",
             "source": "the SDK's own interface; the refusal is the port's and its test checks that it refuses"
@@ -425,7 +425,7 @@
             "introduced": "15.0",
             "minimum": "6.0",
             "status": "implemented",
-            "reason": "write(to:) is declared and REFUSES with MLCreateErrorCode.cannotWriteModel. The .mlmodel specification writer is a protobuf over the published coremltools schema and belongs to the CoreML package; a model file written with the right extension and bytes no Core ML can read would be worse than one that says it cannot",
+            "reason": "write(to:) is declared and REFUSES with MLCreateErrorCode.cannotWriteModel. The .mlmodel writer is in this package's own CoreML module - it is a protobuf over the published coremltools schema, and the linear model writes through it - and what this estimator cannot use it for is the kind of model it is: a forest is a `TreeEnsembleRegressor` (field 302) with a branch per tree. A file that said NeuralNetworkRegressor and carried one of those would be a model Core ML loads and answers with the wrong arithmetic, which is worse than one that says it cannot",
             "effect": "nothing, and the error saying so",
             "facts": "facts/CreateML/Errors.md",
             "source": "the SDK's own interface; the refusal is the port's and its test checks that it refuses"
@@ -436,7 +436,7 @@
             "introduced": "15.0",
             "minimum": "6.0",
             "status": "implemented",
-            "reason": "write(to:) is declared and REFUSES with MLCreateErrorCode.cannotWriteModel. The .mlmodel specification writer is a protobuf over the published coremltools schema and belongs to the CoreML package; a model file written with the right extension and bytes no Core ML can read would be worse than one that says it cannot",
+            "reason": "write(to:) is declared and REFUSES with MLCreateErrorCode.cannotWriteModel. The .mlmodel writer is in this package's own CoreML module - it is a protobuf over the published coremltools schema, and the linear model writes through it - and what this estimator cannot use it for is the kind of model it is: a booster is a `TreeEnsembleRegressor` (field 302) with a branch per iteration. A file that said NeuralNetworkRegressor and carried one of those would be a model Core ML loads and answers with the wrong arithmetic, which is worse than one that says it cannot",
             "effect": "nothing, and the error saying so",
             "facts": "facts/CreateML/Errors.md",
             "source": "the SDK's own interface; the refusal is the port's and its test checks that it refuses"
@@ -447,7 +447,7 @@
             "introduced": "15.0",
             "minimum": "6.0",
             "status": "implemented",
-            "reason": "write(to:) is declared and REFUSES with MLCreateErrorCode.cannotWriteModel. The .mlmodel specification writer is a protobuf over the published coremltools schema and belongs to the CoreML package; a model file written with the right extension and bytes no Core ML can read would be worse than one that says it cannot",
+            "reason": "write(to:) is declared and REFUSES with MLCreateErrorCode.cannotWriteModel. The .mlmodel writer is in this package's own CoreML module - it is a protobuf over the published coremltools schema, and the linear model writes through it - and what this estimator cannot use it for is the kind of model it is: a tree classifier is a `NeuralNetworkClassifier` (field 403) with a string label output. A file that said NeuralNetworkRegressor and carried one of those would be a model Core ML loads and answers with the wrong arithmetic, which is worse than one that says it cannot",
             "effect": "nothing, and the error saying so",
             "facts": "facts/CreateML/Errors.md",
             "source": "the SDK's own interface; the refusal is the port's and its test checks that it refuses"
@@ -458,7 +458,7 @@
             "introduced": "15.0",
             "minimum": "6.0",
             "status": "implemented",
-            "reason": "write(to:) is declared and REFUSES with MLCreateErrorCode.cannotWriteModel. The .mlmodel specification writer is a protobuf over the published coremltools schema and belongs to the CoreML package; a model file written with the right extension and bytes no Core ML can read would be worse than one that says it cannot",
+            "reason": "write(to:) is declared and REFUSES with MLCreateErrorCode.cannotWriteModel. The .mlmodel writer is in this package's own CoreML module - it is a protobuf over the published coremltools schema, and the linear model writes through it - and what this estimator cannot use it for is the kind of model it is: a forest classifier is a `NeuralNetworkClassifier` (field 403) with a string label output. A file that said NeuralNetworkRegressor and carried one of those would be a model Core ML loads and answers with the wrong arithmetic, which is worse than one that says it cannot",
             "effect": "nothing, and the error saying so",
             "facts": "facts/CreateML/Errors.md",
             "source": "the SDK's own interface; the refusal is the port's and its test checks that it refuses"
@@ -469,7 +469,7 @@
             "introduced": "15.0",
             "minimum": "6.0",
             "status": "implemented",
-            "reason": "write(to:) is declared and REFUSES with MLCreateErrorCode.cannotWriteModel. The .mlmodel specification writer is a protobuf over the published coremltools schema and belongs to the CoreML package; a model file written with the right extension and bytes no Core ML can read would be worse than one that says it cannot",
+            "reason": "write(to:) is declared and REFUSES with MLCreateErrorCode.cannotWriteModel. The .mlmodel writer is in this package's own CoreML module - it is a protobuf over the published coremltools schema, and the linear model writes through it - and what this estimator cannot use it for is the kind of model it is: a forest classifier is a `NeuralNetworkClassifier` (field 403) with a string label output. A file that said NeuralNetworkRegressor and carried one of those would be a model Core ML loads and answers with the wrong arithmetic, which is worse than one that says it cannot",
             "effect": "nothing, and the error saying so",
             "facts": "facts/CreateML/Errors.md",
             "source": "the SDK's own interface; the refusal is the port's and its test checks that it refuses"
