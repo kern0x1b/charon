@@ -603,3 +603,32 @@ there is at all.
 Two things the earlier turns got wrong, recorded so they are not repeated: the class-reference story
 was settled by `objc_getClass` and was never the oracle's problem, and the oracle was never reached
 before this change.
+
+---
+
+## ASan names the fault, and it is in this test's helper, before the oracle is ever reached
+
+`SAN=1 sh tests/backports/host/bundlerequest/run.sh` — the run.sh takes the flag and builds the port's
+objects, the renamed ones and the differential with it:
+
+```
+#0 objc_retain+0x10                                    libobjc.A.dylib
+#1 -[NSInvocation retainArguments]+0x130                CoreFoundation
+#2 host_initWithTag    differential.m:94
+#3 main                differential.m:164
+SUMMARY: AddressSanitizer: SEGV in objc_retain
+```
+
+**So the fault is `-[NSInvocation retainArguments]` retaining something that is not an object**
+(`0x410`, a small pointer — a selector's), in the *test's* helper, at the line that retains before it
+invokes. **The host's private `-initWithTag:` is never reached, so it is neither confirmed nor
+disproved as an oracle, and the port is not involved at all.**
+
+**And the fix is one line in that helper, not in the port**: the invocation's `target` and its
+argument are held by ARC only if the locals are `__strong` across the `-invoke`, and
+`-retainArguments` is the wrong tool for a target ARC already owns. Holding the allocated instance and
+the tag in `__strong` locals around the call, and not calling `-retainArguments` at all, is what the
+trap is asking for. (The same trap is listed in `charon/AGENTS.md`: "`NSInvocation` argument lifetime …
+call `-retainArguments` immediately after creating the invocation, before setting any arguments" — and
+the other half of that same rule is that the *target* is not an argument, so `-retainArguments` is
+wrong for it.)
