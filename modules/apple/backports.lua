@@ -1606,6 +1606,78 @@ local function declared_names(root, sdkdir)
     return names
 end
 
+-- Whether the protocol a member's owner names is declared - with a body, not a forward declaration - by a
+-- header this package installs or by the SDK the backport is compiled against. The owner's being a protocol
+-- is not the answer: a protocol nothing declares answers nothing, and the member of one is then implemented
+-- nowhere. The release's own inventory answers for a protocol the release itself carries.
+local SDK_DECLARATIONS = {}
+
+-- The SDK's own protocol declarations, once per SDK: 51 MB of words over tens of thousands of headers, and
+-- the SDK at a given path does not change under us. Keyed by that path and nothing else.
+function sdk_protocol_declarations(sdkdir)
+    if not sdkdir or not os.isdir(sdkdir) then
+        return {}
+    end
+    local seen = SDK_DECLARATIONS[sdkdir]
+    if not seen then
+        seen = {}
+        local function scan(folder)
+            for _, file in ipairs(os.files(path.join(folder, "*.h"))) do
+                for line in io.lines(file) do
+                    for protocol in line:gmatch("@protocol%s+([%w_]+)") do
+                        if not line:find("@protocol%s+" .. protocol .. "%s*;") then
+                            seen[protocol] = true
+                        end
+                    end
+                end
+            end
+        end
+        scan(path.join(sdkdir, "usr/include"))
+        -- every framework, resolved: one of them is a symlink into the Cryptex, and os.files does not
+        -- follow a symlinked directory, so the glob missed its headers and the protocols in them
+        for _, framework in ipairs(os.dirs(path.join(sdkdir, "System/Library/Frameworks", "*"))) do
+            local resolved = framework
+            if os.islink(framework) then
+                local target = os.readlink(framework) or ""
+                if target:sub(1, 1) ~= "/" then
+                    target = path.join(path.directory(framework), target)
+                end
+                resolved = path.absolute(target)
+            end
+            scan(path.join(resolved, "Headers"))
+        end
+        SDK_DECLARATIONS[sdkdir] = seen
+    end
+    return seen
+end
+
+-- Whether the protocol a member's owner names is declared - with a body, not a forward declaration - by a
+-- header this package installs or by the SDK the backport is compiled against. The owner's being a protocol is
+-- not the answer: a protocol nothing declares answers nothing, and the member of one is then implemented
+-- nowhere (ef271700 on ARKit, 5a505a9b on MXDiagnostic). The release's own inventory answers for a protocol
+-- the release itself carries. The tree's own headers are read every call: 87 files, and they change under a
+-- build, which a memo keyed on the folder cannot see.
+function protocol_declared(root, owner, inventory, sdkdir)
+    if inventory and inventory.protocols and inventory.protocols[owner] ~= nil then
+        return true
+    end
+    if sdk_protocol_declarations(sdkdir)[owner] then
+        return true
+    end
+    for _, folder in ipairs({root, path.join(root, "*")}) do
+        for _, file in ipairs(os.files(path.join(folder, "*.h"))) do
+            for line in io.lines(file) do
+                for protocol in line:gmatch("@protocol%s+([%w_]+)") do
+                    if protocol == owner and not line:find("@protocol%s+" .. protocol .. "%s*;") then
+                        return true
+                    end
+                end
+            end
+        end
+    end
+    return false
+end
+
 -- The registry check as build() runs it, in one place: release_inventory takes the cache directory and
 -- nothing else, and check_registry the SDK the objects were compiled against. A test that calls this with
 -- build()'s own option shape is what keeps a wrong argument here from reaching a gate: the light guard's
@@ -1622,49 +1694,6 @@ function declared_protocols(root)
                 for name in line:gmatch("@protocol%s+([%w_]+)") do
                     if not line:find("@protocol%s+" .. name .. "%s*;") then
                         declared[name] = true
--- Whether the protocol a member's owner names is declared - with a body, not a forward declaration - by a
--- header this package installs or by the SDK the backport is compiled against. The owner's being a protocol
--- is not the answer: a protocol nothing declares answers nothing, and the member of one is then implemented
--- nowhere. The release's own inventory answers for a protocol the release itself carries.
-local SDK_DECLARATIONS = {}
--- The SDK's own protocol declarations, once per SDK: 51 MB of words over tens of thousands of headers, and
--- the SDK at a given path does not change under us. Keyed by that path and nothing else.
-function sdk_protocol_declarations(sdkdir)
-    if not sdkdir or not os.isdir(sdkdir) then
-    local seen = SDK_DECLARATIONS[sdkdir]
-    if not seen then
-        seen = {}
-        local function scan(folder)
-            for _, file in ipairs(os.files(path.join(folder, "*.h"))) do
-                for line in io.lines(file) do
-                    for protocol in line:gmatch("@protocol%s+([%w_]+)") do
-                        if not line:find("@protocol%s+" .. protocol .. "%s*;") then
-                            seen[protocol] = true
-                        end
-        scan(path.join(sdkdir, "usr/include"))
-        -- every framework, resolved: one of them is a symlink into the Cryptex, and os.files does not
-        -- follow a symlinked directory, so the glob missed its headers and the protocols in them
-        for _, framework in ipairs(os.dirs(path.join(sdkdir, "System/Library/Frameworks", "*"))) do
-            scan(path.join(path.realpath(framework), "Headers"))
-            local resolved = framework
-            if os.islink(framework) then
-                local target = os.readlink(framework) or ""
-                if target:sub(1, 1) ~= "/" then
-                    target = path.join(path.directory(framework), target)
-                resolved = path.absolute(target)
-            scan(path.join(resolved, "Headers"))
-        SDK_DECLARATIONS[sdkdir] = seen
--- header this package installs or by the SDK the backport is compiled against. The owner's being a protocol is
--- not the answer: a protocol nothing declares answers nothing, and the member of one is then implemented
--- nowhere (ef271700 on ARKit, 5a505a9b on MXDiagnostic). The release's own inventory answers for a protocol
--- the release itself carries. The tree's own headers are read every call: 87 files, and they change under a
--- build, which a memo keyed on the folder cannot see.
-function protocol_declared(root, owner, inventory, sdkdir)
-    if inventory and inventory.protocols and inventory.protocols[owner] ~= nil then
-    if sdk_protocol_declarations(sdkdir)[owner] then
-                for protocol in line:gmatch("@protocol%s+([%w_]+)") do
-                    if protocol == owner and not line:find("@protocol%s+" .. protocol .. "%s*;") then
-                        return true
                     end
                 end
             end
@@ -1679,7 +1708,6 @@ function registry_step(opt, built, complete, exports)
 end
 
 function check_registry(root, found, complete, deployment, exports, inventory, sdkdir, declared)
-function check_registry(root, found, complete, deployment, exports, inventory)
     local listed, incomplete = registry(root)
     local unlisted, undocumented = {}, {}
     -- per call, not a module global: an earlier check in the same process filled it from a tree with no SDK
@@ -1734,15 +1762,14 @@ function check_registry(root, found, complete, deployment, exports, inventory)
             -- A protocol has no accessors, so nothing else in this loop can answer for it: the row is
             -- implemented when the objects carry the protocol's own metadata and it names.
             local declared = entry.kind == "protocol" and ((declared or {})[name] or false) or
-                (owner and ((listed[owner] and listed[owner].kind == "protocol") or (inventory and inventory.protocols and inventory.protocols[owner] ~= nil)))
+                (owner and listed[owner] and listed[owner].kind == "protocol" and
+                 protocol_declared(root, owner, inventory, sdkdir)) or
+                (owner and inventory and inventory.protocols and inventory.protocols[owner] ~= nil) or false
             if (entry.kind == "type" or entry.kind == "case") and not built then
                 -- no symbol will ever answer for a type or an enumeration case, so the header is the build
                 declared_by_header = declared_by_header or declared_names(root, sdkdir)
                 built = declared_by_header[name] or false
             end
-            local declared = entry.kind == "protocol" or
-                (owner and listed[owner] and listed[owner].kind == "protocol" and
-                 protocol_declared(root, owner, inventory, sdkdir))
             if entry.status == "implemented" and not built and not carried and ours and not declared then
                 table.insert(unbuilt, name)
             elseif entry.status == "implemented" and not entry.facts then

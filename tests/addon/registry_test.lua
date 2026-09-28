@@ -169,21 +169,8 @@ end
 -- carry its metadata and named. Each is asked both ways here, with the inventory and the objects' symbols
 -- built by hand, so neither depends on a build.
 local function member_and_protocol_rows(backports, found)
--- A member the registry gives to a protocol is implemented only when that protocol is declared - with a body,
--- by a header this package installs or by the SDK the backport is compiled against. The owner's being a
--- protocol is not itself an answer: five implemented ARSCNViewDelegate rows passed with no code anywhere
--- and the port declaring no such protocol, because the owner term exempted them from asking (ef271700 on
--- ARKit, 5a505a9b on MXDiagnostic).
-local function protocol_owner_step(backports, opt, found)
-    -- one scratch for the case and for the copy it asks in its own process: a second call need not be the same
-    -- directory, and the two trees must be different, so the copy is a subdirectory of this one and neither is
-    -- inside the other
-    local scratch = fixtures.scratch()
-    local root = path.join(scratch, "case")
-    local mutant_root = path.join(scratch, "mutant")
-    os.tryrm(mutant_root)          -- made afresh: a copy an earlier run left is not this run's
-    os.tryrm(scratch)
-    os.mkdir(scratch)
+    local root = fixtures.scratch()
+    os.tryrm(root)
     os.mkdir(root)
     os.mkdir(path.join(root, "registry"))
     local function rows(text)
@@ -206,18 +193,6 @@ local function protocol_owner_step(backports, opt, found)
         local ok = try {
             function () backports.check_registry(root, {classes = classes, members = members, symbols = symbols or {}},
                                                   true, "6.1.3", {}, inventory) return true end,
-    local inventory = {classes = {ARKitShapedView = {image = true, instance = {}, ["+"] = {}}}}
-    local inventory = {classes = {}}
-    local function asked(sdkdir)
-        io.writefile(path.join(root, "registry", "Fix.json"),
-                     '{"framework": "Fix", "entries": ['
-                     .. '{"api": "-[ARKitShapedDelegate shaped]", "kind": "method", "introduced": "9.0", "minimum": "6.0", "status": "implemented", "facts": "f"},'
-                     .. '{"api": "ARKitShapedDelegate", "kind": "protocol", "introduced": "9.0", "minimum": "6.0", "status": "implemented", "facts": "f"}]}')
-            function ()
-                backports.check_registry(root, {classes = {}, members = {},
-                                               symbols = {}, defined = {}}, true, "6.1.3", {}, inventory, sdkdir, {})
-                return "passed"
-            end,
             catch {function (errors) message = tostring(errors) end}
         }
         return (ok and "passed" or message or "raised with no message")
@@ -427,10 +402,48 @@ local function real_object(backports, modules, found)
     if not ok and message:find("nothing of that name is built: " .. name, 1, true) then
         table.insert(found, "the protocol metadata in " .. path.filename(built.object) .. " is not read, so " .. name .. " is reported unbuilt")
     end
+    os.tryrm(root)
+end
+
+-- A member the registry gives to a protocol is implemented only when that protocol is declared - with a body,
+-- by a header this package installs or by the SDK the backport is compiled against. The owner's being a
+-- protocol is not itself an answer: five implemented ARSCNViewDelegate rows passed with no code anywhere
+-- and the port declaring no such protocol, because the owner term exempted them from asking (ef271700 on
+-- ARKit, 5a505a9b on MXDiagnostic).
+local function protocol_owner_step(backports, opt, found)
+    -- one scratch for the case and for the copy it asks in its own process: a second call need not be the same
+    -- directory, and the two trees must be different, so the copy is a subdirectory of this one and neither is
+    -- inside the other
+    local scratch = fixtures.scratch()
+    local root = path.join(scratch, "case")
+    local mutant_root = path.join(scratch, "mutant")
+    os.tryrm(mutant_root)          -- made afresh: a copy an earlier run left is not this run's
+    os.tryrm(scratch)
+    os.mkdir(scratch)
+    os.mkdir(root)
+    os.mkdir(path.join(root, "registry"))
+    local inventory = {classes = {}}
+    local function asked(sdkdir)
+        io.writefile(path.join(root, "registry", "Fix.json"),
+                     '{"framework": "Fix", "entries": ['
+                     .. '{"api": "-[ARKitShapedDelegate shaped]", "kind": "method", "introduced": "9.0", "minimum": "6.0", "status": "implemented", "facts": "f"},'
+                     .. '{"api": "ARKitShapedDelegate", "kind": "protocol", "introduced": "9.0", "minimum": "6.0", "status": "implemented", "facts": "f"}]}')
+        local message
+        local ok = try {
+            function ()
+                backports.check_registry(root, {classes = {}, members = {},
+                                               symbols = {}, defined = {}}, true, "6.1.3", {}, inventory, sdkdir, {})
+                return "passed"
+            end,
+            catch {function (errors) message = tostring(errors) end}
+        }
+        return (ok and "passed" or message or "raised with no message")
+    end
     -- neither side declares ARKitShapedDelegate: the member must be reported
     local said = asked(nil)
     if not said:find("ARKitShapedDelegate shaped", 1, true) then
         table.insert(found, "a member of a protocol that neither a port header nor the SDK declares must be reported, and it is not: " .. said:gsub("\n", " | "):sub(1, 120))
+    end
     -- and with a declaration, the same member passes
     io.writefile(path.join(root, "CharonFixture.h"), "#import <Foundation/Foundation.h>\n@protocol ARKitShapedDelegate <NSObject>\n- (void)shaped;\n@end\n")
     -- the memo regression in one root: a header written after the first answer must be seen
@@ -519,6 +532,8 @@ end
     said = asked(nil)
     if said:find("ARKitShapedDelegate shaped", 1, true) then
         table.insert(found, "a member of a protocol a port header declares must pass, and it is red: " .. said:gsub("\n", " | "):sub(1, 120))
+    end
+    os.tryrm(path.join(root, "CharonFixture.h"))
     -- a framework behind a symlink, the shape 16.4 has for SafariServices: Frameworks/X.framework ->
     -- ../../../Cryptexes/OS/…/X.framework. os.files does not follow a symlinked directory, so the scan has to
     -- resolve it; the protocol it declares with a body must be answered.
@@ -531,6 +546,7 @@ end
     os.execv("ln", {"-sfn", cryptex .. "/X.framework", frameworks .. "/X.framework"}, {try = true})
     if not ask(3, root, "ARKitShapedSymlinked", {}, path.join(root, "fake-sdk-2")) then
         table.insert(found, "a protocol a framework behind a symlink declares must be answered: os.files does not follow one, so the scan has to resolve the framework")
+    end
     -- and a forward declaration is not a declaration: a second SDK of its own, because the words of one path
     -- are memoised and in a build they do not change
     local cryptex3 = path.join(root, "Cryptexes", "OS", "test-uuid-2", "System", "Library", "Frameworks")
@@ -541,6 +557,7 @@ end
     os.execv("ln", {"-sfn", cryptex3 .. "/Y.framework", frameworks3 .. "/Y.framework"}, {try = true})
     if ask(4, root, "ARKitShapedForward", {}, path.join(root, "fake-sdk-3")) then
         table.insert(found, "a forward declaration (@protocol X;) must not answer a row: nothing is declared")
+    end
     os.tryrm(root)
 end
 
