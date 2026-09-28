@@ -186,13 +186,42 @@ under the `Port` names and nothing else, and the test prints the class each side
 from and the address `-init` is reached at — two different classes, two different addresses, one
 process.
 
-**The value mutant does not yet go red** and this says so. It changes the port's default operation to
-the implicit one, the table is unchanged, and the mutation's effect has not been diagnosed. The
-differential itself is green and the value claim it checks is the one above.
+**The value mutant is red**, and three defects stood between it and being so — none of them in the
+differential's idea, all three in the machinery around it:
+
+1. **The comparison was blind to the value the mutant changes.** The table's value column is separated
+   by a run of spaces and the `requestedOperation` line had a single space, so both of its keys were
+   dropped: 12 keys parsed, no `requestedOperation` among them. Every line is aligned now.
+2. **The plain run was never called.** `values.sh` defined `build_and_run` and called it only for the
+   mutant, then went straight to reading a table nothing had produced.
+3. **`set -- $renames` set the script's positional parameters**, and inside `build_and_run` `"$@"` is
+   the function's own two arguments — so the compiler was handed the tag `plain` where a `-D` belongs.
+
+Rewritten from the file as it is rather than patched, which is the only reason three was findable: after
+several rounds of scripted edits the structure was no longer what I believed it was.
+
+The mutant, traced:
+
+    + build_and_run .../AuthenticationServices plain
+    +++ cksum
+    +++ cksum
+    + echo '   the source changed: cksum 628344446 4733 -> 3096366218 4769'
+    + cmp -s .../ASAuthorizationOpenIDRequest.m .../mutant/ASAuthorizationOpenIDRequest.m
+    + build_and_run .../mutant mutant
+    + cmp -s .../plain-table.txt .../mutant-table.txt
+
+    20c20
+    <   fresh   requestedOperation   nil
+    ---
+    >   fresh   requestedOperation   set
+
+    ok: the mutation changed a value and the check noticed, and the port's own source and library
+        were not touched by this run
 
 ## What is not done
 
-576 rows. The value half of the family is measured (30 constants, 30 agree with the host) and the shape
+576 rows. The value differential is green and its mutant is red; the shape differential beside it is
+green and its mutant is red. Both are now witnesses rather than demonstrations. The value half of the family is measured (30 constants, 30 agree with the host) and the shape
 half has a host differential and a mutant; the classes do not exist yet. The differential is currently
 **red** on one case — `-[ASWebAuthenticationSession init]`, which the host has and the port's source did
 not, and which has since been added — and that red has not been cleared, so the check is committed in a
