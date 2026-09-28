@@ -118,3 +118,36 @@ concrete blocker on the 43 QUIC transport-dependent rows, and the QUIC options a
   *connection* works and sends and receives normally (the same measurement). That is why the peer of
   this differential is a plain BSD listener in the test program, and why the port's own listener - which
   is `nw_listener_*`, not in this delivery - has to be measured on the emulator rather than here.
+
+## The link gate's finding, and what it says the TLS of a connection has to be
+
+The 6.1.3 gate, run in the fast lane on the rebased tree, fails here and not at anything of ours:
+
+    "_SSLContextCreate", referenced from:
+        _charon_ready in nw_connection.o
+    ld: symbol(s) not found for architecture armv7
+
+Measured, and the two facts behind it:
+
+- **iOS 6.1.3 exports `SSLContextCreate`** - it is the iOS 6 name of the context call, read out of that
+  release's own cache, and every other call this file uses is there under the name it has always had
+  (`SSLSetIOFuncs`, `SSLSetPeerDomainName`, `SSLSetCertificate`, `SSLSetSessionOption`, `SSLHandshake`,
+  `SSLRead`, `SSLWrite`, `SSLClose`). `SSLGetServerTrust`, `SSLSetProtocolVersion` and
+  `SSLGetNegotiatedProtocol` are not, which is why the release's TLS stops at 1.1.
+- **The SDK this port links against has no `SSLContextCreate` to find.** The 16.4 SDK's
+  `Security.tbd` declares `armv7-ios` and `armv7s-ios` (`targets:` on its first line) and lists
+  `_SSLCreateContext` - the name from iOS 7 on - and not the iOS 6 one. So a library that calls the
+  release's own call cannot be linked for 4.3 or 6.1.3 at all: whatever the device exports, ld64 has
+  nowhere in this SDK to find it.
+
+Two ways out, and which is which:
+
+- **Give the 16.4 SDK's Security stub the name the older releases exported** - a slice for
+  `armv7-ios, armv7s-ios` carrying `_SSLContextCreate`, which is what `packages/i/iphoneos-sdk`'s own
+  stub surgery already does for the 32-bit libSystem names the SDK dropped. That is a change to a
+  package every band shares, so it belongs to the coordinator and not to this band, and it is not
+  landed here unbuilt.
+- **Take the connection's TLS from picotls**, which this port now has as a package
+  (`packages/p/picotls`, a TLS 1.3 with a crypto backend of its own and no OpenSSL behind it) and which
+  links nothing. That is the same conclusion the QUIC row already reached from the other side - a QUIC
+  handshake cannot be made with a TLS 1.1 stack whatever it is - and it is where a connection's TLS goes.
