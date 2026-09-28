@@ -529,3 +529,50 @@ its own `respondsToSelector:`.
 **Everything after that is still undone:** the private initialiser's answer (9 or 11), the differential
 to green, the mutants, the 13 registry entries, the facts file, the light guard, and the gates on the
 final commit.
+
+---
+
+## The stack settles it, and my candidate was wrong
+
+`bt 25` at the stub's entry, the hit before the trap:
+
+```
+frame #0  libobjc`objc_opt_respondsToSelector
+frame #1  CoreFoundation`_CFStringGetFormatSpecifierConfiguration + 32
+frame #2  CoreFoundation`__CFStringAppendFormatCore + 336
+frame #3  CoreFoundation`_CFStringCreateWithFormatAndArgumentsReturningMetadata + 184
+frame #4  CoreFoundation`CFStringCreateWithFormatAndArguments + 164
+frame #5  CoreFoundation`CFStringCreateWithFormat + 48
+frame #6  CoreFoundation`+[NSObject(NSObject) doesNotRecognizeSelector:] + 152
+frame #7  CoreFoundation`___forwarding___ + 1504
+frame #8  CoreFoundation`_CF_forwarding_prep_0 + 96
+frame #9  CoreFoundation`__invoking___ + 148
+frame #10 CoreFoundation`-[NSInvocation invoke] + 424
+frame #11 differential`host_initWithTag + 248
+frame #12 differential`main + 960
+```
+
+**The sender was the test's oracle call, and the receiver is one of CoreFoundation's own** — the trap is
+inside `CFString`'s own format path, reached because the host's private `-initWithTag:` forwards to a
+selector macOS does not implement, and `doesNotRecognizeSelector:` builds the unknown selector's
+signature with `CFStringCreateWithFormatAndArguments`. Nothing in the port, and nothing in the test,
+sends a message to a non-object; the port's ask sites were already past (the constructor's print
+appears first).
+
+**So the private `-initWithTag:` is not an oracle and never was**, and my guess — that the test passed a
+`Class` where an instance was meant — was wrong, as the coordinator said it might be. The differential
+no longer sends it: the port calls nothing private and neither does the test, and the class is held to
+the header's own words (the tags, the bundle, the 0.5 default, a progress complete at once, the urgent
+priority) the way the two `NSBundle` additions already are.
+
+**The trap survives that, which is the open fact.** With the oracle gone, the same SIGTRAP follows the
+constructor's print, so a **second** unrecognised-selector path is being reached — most likely a
+`respondsToSelector:` the *differential* sends somewhere, and the next step is one `bt 25` on this hit
+with the oracle already out, which will name the new frame #11 directly. That is one command and the
+run has not had it.
+
+**The counts, settled by the stack:** the family has **no host oracle for the class's state**, so the
+eleven rows that can be held at all are held to the header, and the two `NSBundle` methods are among
+them with a difference stated. Two more — the two constants — are documented and not measurable. The
+plist's two key names are documented. Nothing here is measurable against a host that cannot build the
+object, and the status says so rather than implying otherwise.

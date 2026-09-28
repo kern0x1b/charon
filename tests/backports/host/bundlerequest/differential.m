@@ -1,13 +1,13 @@
 // differential.m - NSBundleResourceRequest against the host's own, and the two rules the host cannot
 // be asked about against the header's own words.
 //
-// The host's class is a stub on macOS: its public -initWithTags: forwards to a private
-// -initWithTag: and that forwarding is what raises. So the state is compared through that private
-// initialiser, and it is the only private thing this test touches - the port calls nothing private,
-// and neither does any other test in this tree. The two NSBundle additions cannot be compared at all:
-// the host's are the same class and the same selectors as the port's, both attached to the real
-// NSBundle, and the host's are inert, so those two are held to the header instead and the difference
-// is printed.
+// The host's class cannot be an oracle for the state. Its public -initWithTags: forwards to a private
+// -initWithTag:, and in this process that one forwards again to a selector macOS does not implement:
+// doesNotRecognizeSelector: then reaches CoreFoundation's own format path, where the pointer
+// authentication trap is. The stack names every frame of it, from -[NSInvocation invoke] and
+// host_initWithTag through __invoking___, ___forwarding___ and CFStringCreateWithFormatAndArguments
+// to the stub. The port calls nothing private, and neither does this test now. So the class is held
+// to the header's words, and the two NSBundle additions - whose host copies are inert - the same.
 #import <Foundation/Foundation.h>
 #import <objc/message.h>
 #import <objc/runtime.h>
@@ -39,6 +39,8 @@ static void same_double(double ours, double theirs, NSString *what)
     if (ours != theirs)
         fail(@"%@: the port says %g, Foundation %g", what, ours, theirs);
 }
+
+static const double NSBundleResourceRequestUrgent = 1.0;
 
 static void same_integer(long long ours, long long theirs, NSString *what)
 {
@@ -74,29 +76,6 @@ static void same_string(NSString *ours, NSString *theirs, NSString *what)
 
 extern double const CharonHostNSBundleResourceRequestLoadingPriorityUrgent;
 extern NSString *const CharonHostNSBundleResourceRequestLowDiskSpaceNotification;
-
-// The host's private initialiser, the only private selector this test sends.
-static id host_initWithTag(Class subject, NSString *tag, NSBundle *bundle)
-{
-    SEL factory = NSSelectorFromString(@"initWithTag:");
-    NSMethodSignature *signature = [subject instanceMethodSignatureForSelector:factory];
-    if (!signature)
-        return nil;
-    NSInvocation *call = [NSInvocation invocationWithMethodSignature:signature];
-    call.selector = factory;
-    call.target = subject;
-    id held = tag;
-    [call setArgument:&held atIndex:2];
-    [call retainArguments];
-    @try {
-        [call invoke];
-    } @catch (NSException *exception) {
-        return nil;
-    }
-    id result = nil;
-    [call getReturnValue:&result];
-    return result;
-}
 
 static id host_privileged(Class subject, SEL selector, id first)
 {
@@ -152,38 +131,38 @@ int main(void)
         NSSet *known = [NSSet setWithObjects:@"level1", @"level2", nil];
         NSSet *unknown = [NSSet setWithObject:@"level9"];
 
-        // the state, one tag at a time: the host's private initialiser against the port's public one
-        for (NSString *tag in @[ @"level1", @"level2", @"level9" ])
+        // the four properties, held to the header's own words: the tags it was given, the bundle it
+        // resolves in, the default priority, and a progress that is complete the moment it exists
+        for (NSSet *tags in @[ known, unknown ])
             for (NSBundle *bundle in @[ withManifest, withoutManifest ]) {
-                id ourRequest = [[ours alloc] initWithTags:[NSSet setWithObject:tag] bundle:bundle];
-                id theirRequest = host_initWithTag(theirs, tag, bundle);
-                checks++;
-                if (!ourRequest) {
-                    fail(@"the request for %@ in %@: the port made nothing", tag,
-                         [bundle.bundlePath lastPathComponent]);
-                    continue;
-                }
-                if (!theirRequest) {
-                    /* the private initialiser forwards a selector this host does not implement, so
-                       there is no state to compare against and the request's own rules are what is
-                       checked below */
-                    continue;
-                }
-                NSString *what = [NSString stringWithFormat:@"the request for %@ in %@", tag,
+                id request = [[ours alloc] initWithTags:tags bundle:bundle];
+                NSString *what = [NSString stringWithFormat:@"%@ in %@",
+                                                            [[tags allObjects] componentsJoinedByString:@","],
                                                             [bundle.bundlePath lastPathComponent]];
-                same_integer((long long)[[ourRequest tags] count], (long long)[[theirRequest tags] count],
+                checks++;
+                if (!request) {
+                    fail(@"%@: the port made nothing", what);
+                    continue;
+                }
+                same_integer((long long)[[request tags] count], (long long)[tags count],
                              [what stringByAppendingString:@" tag count"]);
-                same_string([[[ourRequest tags] allObjects] componentsJoinedByString:@","],
-                            [[[theirRequest tags] allObjects] componentsJoinedByString:@","],
+                same_string([[[request tags] allObjects] componentsJoinedByString:@","],
+                            [[tags allObjects] componentsJoinedByString:@","],
                             [what stringByAppendingString:@" tags"]);
-                same_string([ourRequest bundle].bundlePath, [theirRequest bundle].bundlePath,
+                same_string([request bundle].bundlePath, bundle.bundlePath,
                             [what stringByAppendingString:@" bundle"]);
-                same_double([ourRequest loadingPriority], [theirRequest loadingPriority],
-                            [what stringByAppendingString:@" loadingPriority"]);
-                same_integer([ourRequest progress].totalUnitCount, [theirRequest progress].totalUnitCount,
+                same_double([request loadingPriority], 0.5,
+                            [what stringByAppendingString:@" the default priority"]);
+                same_integer([request progress].totalUnitCount, 0,
                              [what stringByAppendingString:@" progress totalUnitCount"]);
-                same_integer([ourRequest progress].completedUnitCount, [theirRequest progress].completedUnitCount,
+                same_integer([request progress].completedUnitCount, 0,
                              [what stringByAppendingString:@" progress completedUnitCount"]);
+                same_double([request progress].fractionCompleted, 1.0,
+                            [what stringByAppendingString:@" progress fractionCompleted"]);
+                [request setLoadingPriority:0.25];
+                same_double([request loadingPriority], 0.25, [what stringByAppendingString:@" the priority set"]);
+                [request setLoadingPriority:NSBundleResourceRequestUrgent];
+                same_double([request loadingPriority], 1.0, [what stringByAppendingString:@" the urgent priority"]);
             }
 
         // -init, which the header marks unavailable on every platform and both answer by refusing
