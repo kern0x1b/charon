@@ -62,8 +62,9 @@ sentinel=$(grep -c "= -1;" "$AVFAUDIO/AVAudioUnitSubclasses8.m" || true)
 check "no parameter is kept as -1 to mean 'not set'" "$([ "$sentinel" -eq 0 ] && echo yes || echo no)"
 
 # A blanket suppression of the warning class that would report a missing protocol member.
-pragma=$(grep -h "Wobjc-protocol-property-synthesis" "$AVFAUDIO"/*.m | grep -c "pragma clang diagnostic ignored" || true)
-check "no file suppresses -Wobjc-protocol-property-synthesis wholesale" \
+pragma=$(grep -h "pragma clang diagnostic ignored" "$AVFAUDIO"/*.m \
+    | grep -cE '"-Wobjc-protocol-property-synthesis"|"-Wprotocol"' || true)
+check "no file suppresses -Wobjc-protocol-property-synthesis or -Wprotocol wholesale" \
       "$([ "$pragma" -eq 0 ] && echo yes || echo no)"
 
 printf 'checks=%d failures=%d\n' "$checks" "$failures"

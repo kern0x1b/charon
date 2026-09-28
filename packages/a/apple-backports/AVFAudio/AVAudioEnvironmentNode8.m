@@ -485,13 +485,7 @@ static AudioComponent CharonEnvironmentComponent(void)
     return AudioUnitRender(_charon_outputUnit, &flags, &timestamp, 0, frames, buffer);
 }
 
-@end
 
-// ---- the mixing surface, the node conforms to AVAudioMixing in Apple's header too ----
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wobjc-protocol-property-synthesis"
-#pragma clang diagnostic ignored "-Wprotocol"
-@implementation AVAudioEnvironmentNode (CharonMixing)
 
 // Each of these is the mixer's own parameter on this node's input scope 0, the same set
 // AVAudioUnitMixing9.m uses for the units. The environment node is where they matter most, because a
@@ -539,22 +533,7 @@ static AudioComponent CharonEnvironmentComponent(void)
     [self charon_setMixerParameter:k3DMixerParam_Distance value:distance];
 }
 
-- (AVAudio3DMixingRenderingAlgorithm)renderingAlgorithm
-{
-    return AVAudio3DMixingRenderingAlgorithmSoundField;
-}
 
-- (void)setRenderingAlgorithm:(AVAudio3DMixingRenderingAlgorithm)renderingAlgorithm
-{
-    if (renderingAlgorithm != AVAudio3DMixingRenderingAlgorithmSoundField &&
-        renderingAlgorithm != AVAudio3DMixingRenderingAlgorithmStereoPassThrough) {
-        // This mixer has placement and nothing else, so an algorithm that needs an ear model is one it
-        // cannot render; the unit is left where it is rather than answered as the sound field.
-        return;
-    }
-    [self charon_setMixerParameter:k3DMixerParam_Enable
-                              value:(renderingAlgorithm == AVAudio3DMixingRenderingAlgorithmStereoPassThrough ? 0 : 1)];
-}
 
 - (AVAudio3DMixingSourceMode)sourceMode
 {
@@ -677,4 +656,6 @@ static AudioComponent CharonEnvironmentComponent(void)
 }
 
 @end
-#pragma clang diagnostic pop
+
+
+// ---- the mixing surface, the node conforms to AVAudioMixing in Apple's header too ----
