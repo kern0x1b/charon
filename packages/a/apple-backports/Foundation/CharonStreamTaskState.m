@@ -11,6 +11,7 @@
 @synthesize secure = _secure;
 @synthesize captured = _captured;
 @synthesize finished = _finished;
+@synthesize readClosedReported = _readClosedReported;
 @synthesize openedAt = _openedAt;
 @synthesize started = _started;
 @synthesize localAddress = _localAddress;

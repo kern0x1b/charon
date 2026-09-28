@@ -338,42 +338,75 @@ static int charon_native_descriptor(CFReadStreamRef stream)
     NSInputStream *input = state.input;
     if (!input || !state.readOpen) {
         if (completionHandler)
-            completionHandler(nil, state.input == nil, state.input == nil
-                              ? [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorCancelled userInfo:nil] : nil);
+            completionHandler(nil, YES, input ? nil : [NSError errorWithDomain:NSURLErrorDomain
+                                                                       code:NSURLErrorCannotConnectToHost userInfo:nil]);
         return;
     }
-    /* The read is the system's own, on the stream the release made; the task waits for the length the
-       caller asked for out of what the stream gives, and the timeout is the caller's. */
+
+    /* All three answers come off the stream, which is where the release keeps them: atEOF is the
+       stream's own status rather than a guess from the length we happen to have, the error is the
+       stream's own error rather than nil whenever there is data, and the timeout is the stream's read
+       timeout rather than a loop condition. */
+    NSDate *limit = timeout > 0 ? [NSDate dateWithTimeIntervalSinceNow:timeout] : nil;
+    if (limit) {
+        /* The read timeout is a CFStream key and a CFNetwork one at that, so it is reached by name
+           like the TLS settings are. */
+        NSString *key = charon_read_timeout_key();
+        if (key)
+            [input setProperty:limit forKey:key];
+    }
     NSMutableData *held = [NSMutableData data];
     __block BOOL finished = NO;
-    void (^finish)(NSData *, BOOL, NSError *) = ^(NSData *data, BOOL atEnd, NSError *error) {
+    void (^finish)(BOOL) = ^(BOOL timedOut) {
         if (finished)
             return;
         finished = YES;
+        BOOL atEnd = input.streamStatus == NSStreamStatusAtEnd ||
+                     input.streamStatus == NSStreamStatusClosed || input.streamStatus == NSStreamStatusError;
+        NSError *error = input.streamError;
+        if (timedOut && !error && !atEnd)
+            error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorTimedOut userInfo:nil];
         if (completionHandler)
-            completionHandler(data, atEnd, error);
+            completionHandler(held.length ? held : nil, atEnd, error);
+        /* The header's own case for the two close messages is the one the port never looked for: the
+           *read side* of a connection closing, which is the peer's end arriving -- not this object
+           being told to close. It is sent from here, once, and whether or not any read is in progress. */
+        if (atEnd && !error && !state.readClosedReported) {
+            state.readClosedReported = YES;
+            [self charon_tellDelegate:@selector(URLSession:readClosedForStreamTask:) input:nil];
+        }
     };
-    NSDate *deadline = timeout > 0 ? [NSDate dateWithTimeIntervalSinceNow:timeout] : nil;
+
     while (held.length < maxBytes) {
+        if (timeout > 0 && [limit timeIntervalSinceNow] <= 0) {
+            finish(YES);
+            return;
+        }
         NSUInteger wanted = MIN(maxBytes - held.length, 4096);
         uint8_t buffer[4096];
         NSInteger got = [input read:buffer maxLength:wanted];
         if (got > 0) {
             [held appendBytes:buffer length:(NSUInteger)got];
-            if (held.length >= minBytes && (!timeout || [deadline timeIntervalSinceNow] > 0))
+            if (held.length >= minBytes)
                 break;
             continue;
         }
-        if (got == 0)
-            break;
-        NSError *error = input.streamError;
-        if (error) {
-            finish(nil, NO, error);
-            return;
+        if (got == 0) {
+            if (input.streamStatus == NSStreamStatusAtEnd || input.streamStatus == NSStreamStatusClosed ||
+                input.streamStatus == NSStreamStatusError) {
+                finish(NO);
+                return;
+            }
+            if (timeout > 0 && [limit timeIntervalSinceNow] <= 0) {
+                finish(YES);
+                return;
+            }
+            continue; /* nothing yet, and no end: the stream will call us when there is */
         }
+        finish(NO); /* a real error, and the stream has it */
+        return;
     }
-    BOOL atEnd = input.hasBytesAvailable ? NO : (held.length ? input.streamStatus == NSStreamStatusAtEnd : YES);
-    finish(held.length ? held : nil, atEnd, held.length ? nil : nil);
+    finish(NO);
 }
 
 - (void)writeData:(NSData *)data timeout:(NSTimeInterval)timeout completionHandler:(void (^)(NSError *))completionHandler
@@ -458,6 +491,19 @@ static NSString *charon_ssl_settings_key(void)
         if (!handle)
             handle = RTLD_DEFAULT;
         key = (__bridge NSString *)dlsym(handle, "kCFStreamPropertySSLSettings");
+    });
+    return key;
+}
+
+static NSString *charon_read_timeout_key(void)
+{
+    static NSString *key;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        void *handle = dlopen("/System/Library/Frameworks/CFNetwork.framework/CFNetwork", RTLD_LAZY);
+        if (!handle)
+            handle = RTLD_DEFAULT;
+        key = (__bridge NSString *)dlsym(handle, "kCFStreamPropertyReadTimeout");
     });
     return key;
 }

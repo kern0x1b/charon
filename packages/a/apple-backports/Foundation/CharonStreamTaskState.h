@@ -15,6 +15,8 @@
 @property BOOL secure;
 @property BOOL captured;
 @property BOOL finished;
+/* Whether the read-side close has been reported, so the peer's end is announced once. */
+@property BOOL readClosedReported;
 @property NSDate *openedAt;
 @property BOOL started;
 /* What the release's own stream knows about the socket underneath it, read once when it opens:
