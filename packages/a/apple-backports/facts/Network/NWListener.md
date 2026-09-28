@@ -17,12 +17,24 @@ the host is the client because **the host's Network will not start a listener in
 asked for one, on a port of its choosing and on a port the test names, it answers `failed` with POSIX
 `EINVAL`, while its connection works and sends and receives normally (the same measurement).
 
-Measured and green:
+Measured, and the count is three of the seven, not five - the listener is made, it becomes `ready` on
+the port it was asked for, and it reports that port. What does not pass is stated below rather than
+folded into the total.
 
-- the listener is made, becomes `ready`, and reports the port it was asked for;
+Green, three of them:
+
+- the listener is made;
+- it becomes `ready` on the port it was asked for, and reports that port;
 - the host's own `NWConnection` reaches `ready` **through** the port's listener, which is the accept
-  loop working against Apple's own implementation;
-- the port's listener hands that connection over to a new-connection handler.
+  loop working against Apple's own implementation.
+
+Red, four of them, and none of them folded into the total above:
+
+- the handover to a new-connection handler: the port calls a non-NULL handler at `ready` (measured, with
+  `CHARON_TRACE_LISTENER`, which prints the state, the listener, its queue, the state handler and the
+  new-connection block) and the test's own record of the handover stays empty;
+- and the three checks that stand on it - the bytes the connection the listener made read, the bytes the
+  host read back, and the count of connections handed over.
 
 **Not yet measured, and red in that test:**
 
@@ -39,5 +51,5 @@ Measured and green:
   listener gives that connection its queue before starting it - are in the tree, and the teardown is
   no longer driven by the test while the byte crossing is still red.
 
-So the listener's registry entries stand on the five green checks and the connection's on its own
+So the listener's registry entries stand on the three green checks and the connection's on its own
 differential; neither claims the whole surface.

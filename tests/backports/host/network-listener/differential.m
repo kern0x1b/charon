@@ -75,10 +75,11 @@ static NSUInteger accepted_count(NSMutableArray *connections)
     return count;
 }
 
-static int failures;
+static int failures, checks_run;
 
 static void check(int condition, NSString *what)
 {
+    checks_run++;
     if (condition) {
         printf("ok %s\n", what.UTF8String);
     } else {
@@ -198,7 +199,7 @@ int main(void)
         }
 
         usleep(300000);
-        printf("checks=%d failures=%d\n", failures ? failures : 1, failures);
+        printf("checks=%d failures=%d\n", checks_run, failures);
     }
     return failures ? 1 : 0;
 }
