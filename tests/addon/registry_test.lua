@@ -175,8 +175,14 @@ local function member_and_protocol_rows(backports, found)
 -- and the port declaring no such protocol, because the owner term exempted them from asking (ef271700 on
 -- ARKit, 5a505a9b on MXDiagnostic).
 local function protocol_owner_step(backports, opt, found)
-    local root = fixtures.scratch()
-    os.tryrm(root)
+    -- one scratch for the case and for the copy it asks in its own process: a second call need not be the same
+    -- directory, and the two trees must be different, so the copy is a subdirectory of this one and neither is
+    -- inside the other
+    local scratch = fixtures.scratch()
+    local root = path.join(scratch, "case")
+    local mutant_root = path.join(scratch, "mutant")
+    os.tryrm(scratch)
+    os.mkdir(scratch)
     os.mkdir(root)
     os.mkdir(path.join(root, "registry"))
     local function rows(text)
@@ -427,17 +433,107 @@ local function real_object(backports, modules, found)
     -- and with a declaration, the same member passes
     io.writefile(path.join(root, "CharonFixture.h"), "#import <Foundation/Foundation.h>\n@protocol ARKitShapedDelegate <NSObject>\n- (void)shaped;\n@end\n")
     -- the memo regression in one root: a header written after the first answer must be seen
-    if backports.protocol_declared(root, "ARKitShapedDelayed", inventory, nil) then
+    local function ask(n, a, b, c, d)
+        local value
+        local ok = try {
+            function () value = backports.protocol_declared(a, b, c, d) return true end,
+            catch {function () return false end}
+        }
+        return ok and value or false
+    end
+    if ask(1, root, "ARKitShapedDelayed", inventory, nil) then
         table.insert(found, "a protocol no header declares yet must not be answered from one")
     end
     io.writefile(path.join(root, "CharonDelayed.h"), "@protocol ARKitShapedDelayed <NSObject>\n@end\n")
-    if not backports.protocol_declared(root, "ARKitShapedDelayed", inventory, nil) then
+    if not ask(2, root, "ARKitShapedDelayed", inventory, nil) then
         table.insert(found, "a protocol a header declares after the first answer is not seen: what protocol_declared memoises is keyed on the folder, not on what is in it")
     end
     os.tryrm(path.join(root, "CharonDelayed.h"))
+    -- the mutant, in its own process: the module tree copied into the scratch, the one call dropped, and the
+    -- same fixture asked of the copy by a script run with xmake against the copy's own rootdir. A second
+    -- import of a module already loaded would be the first one back from the cache, so the separation has to be
+    -- a process - the same point the prune's cross-process case turned on.
+    os.mkdir(mutant_root)
+    os.mkdir(path.join(mutant_root, "apple"))
+    for _, name in ipairs(os.files(path.join(opt.modules, "apple", "*.lua"))) do
+        io.writefile(path.join(mutant_root, "apple", path.filename(name)), io.readfile(name))
+    end
+    for _, name in ipairs(os.files(path.join(opt.modules, "*.lua"))) do
+        io.writefile(path.join(mutant_root, path.filename(name)), io.readfile(name))
+    end
+    local backports = path.join(mutant_root, "apple", "backports.lua")
+    local text = io.readfile(backports)
+    local kept = {}
+    for line in text:gmatch("[^\n]*\n?") do
+        if not line:find("protocol_declared(root, owner, inventory, sdkdir)", 1, true) then
+            table.insert(kept, line)
+        elseif #kept > 0 then
+            kept[#kept] = kept[#kept]:gsub("%s+and%s*$", "")
+        end
+    end
+    local without = table.concat(kept)
+    if without == text then
+        table.insert(found, "the mutant could not drop the call: the case would pass on the code that has the hole")
+    end
+    io.writefile(backports, without)
+    os.mkdir(path.join(mutant_root, "registry"))
+    io.writefile(path.join(mutant_root, "registry", "Fix.json"), io.readfile(path.join(root, "registry", "Fix.json")))
+    io.writefile(path.join(mutant_root, "probe.lua"), [[
+function main(modules)
+    local backports = import("apple.backports", {rootdir = modules, anonymous = true})
+    local message
+    local ok = try {
+        function () backports.check_registry(os.getenv("PROBE_ROOT"), {classes = {}, members = {}, symbols = {}, declared = {}},
+                                        true, "6.1.3", {}, {classes = {}}, nil, {}) return "passed" end,
+        catch {function (errors) message = tostring(errors) end}
+    }
+    print(ok and "passed" or (message or "raised"))
+end
+]])
+    os.mkdir(path.join(mutant_root, "packages"))
+    os.mkdir(path.join(mutant_root, "packages", "a"))
+    os.mkdir(path.join(mutant_root, "packages", "a", "apple-backports"))
+    os.mkdir(path.join(mutant_root, "packages", "a", "apple-backports", "registry"))
+    io.writefile(path.join(mutant_root, "packages", "a", "apple-backports", "registry", "Fix.json"),
+                 io.readfile(path.join(root, "registry", "Fix.json")))
+    local out = path.join(root, "mutant.out")
+    io.writefile(out, "")
+    local err = path.join(scratch, "mutant.err")
+    io.writefile(err, "")
+    local rc = os.execv("xmake", {"l", path.join(mutant_root, "probe.lua"), mutant_root},
+                        {try = true, envs = {PROBE_ROOT = root}, stdout = out, stderr = err})
+    local said = io.readfile(out) or ""
+    if said:find("ARKitShapedDelegate shaped", 1, true) then
+        table.insert(found, "the mutant - the module without the one call, in its own process - still reports the "
+                            .. "ARKit member: " .. said:gsub("\n", " | "):sub(1, 120))
+    elseif said:find("passed", 1, true) then
+        table.insert(found, "the mutant did not report anything at all, so the control is not a control: " .. said)
+    end
     said = asked(nil)
     if said:find("ARKitShapedDelegate shaped", 1, true) then
         table.insert(found, "a member of a protocol a port header declares must pass, and it is red: " .. said:gsub("\n", " | "):sub(1, 120))
+    -- a framework behind a symlink, the shape 16.4 has for SafariServices: Frameworks/X.framework ->
+    -- ../../../Cryptexes/OS/…/X.framework. os.files does not follow a symlinked directory, so the scan has to
+    -- resolve it; the protocol it declares with a body must be answered.
+    local cryptex = path.join(root, "Cryptexes", "OS", "test-uuid", "System", "Library", "Frameworks")
+    os.mkdir(path.join(cryptex, "X.framework", "Headers"))
+    io.writefile(path.join(cryptex, "X.framework", "Headers", "X.h"),
+                 "@protocol ARKitShapedSymlinked <NSObject>\n- (void)symlinked;\n@end\n")
+    local frameworks = path.join(root, "fake-sdk-2", "System", "Library", "Frameworks")
+    os.mkdir(frameworks)
+    os.execv("ln", {"-sfn", cryptex .. "/X.framework", frameworks .. "/X.framework"}, {try = true})
+    if not ask(3, root, "ARKitShapedSymlinked", {}, path.join(root, "fake-sdk-2")) then
+        table.insert(found, "a protocol a framework behind a symlink declares must be answered: os.files does not follow one, so the scan has to resolve the framework")
+    -- and a forward declaration is not a declaration: a second SDK of its own, because the words of one path
+    -- are memoised and in a build they do not change
+    local cryptex3 = path.join(root, "Cryptexes", "OS", "test-uuid-2", "System", "Library", "Frameworks")
+    os.mkdir(path.join(cryptex3, "Y.framework", "Headers"))
+    io.writefile(path.join(cryptex3, "Y.framework", "Headers", "Y.h"), "@protocol ARKitShapedForward;\n")
+    local frameworks3 = path.join(root, "fake-sdk-3", "System", "Library", "Frameworks")
+    os.mkdir(frameworks3)
+    os.execv("ln", {"-sfn", cryptex3 .. "/Y.framework", frameworks3 .. "/Y.framework"}, {try = true})
+    if ask(4, root, "ARKitShapedForward", {}, path.join(root, "fake-sdk-3")) then
+        table.insert(found, "a forward declaration (@protocol X;) must not answer a row: nothing is declared")
     os.tryrm(root)
 end
 
