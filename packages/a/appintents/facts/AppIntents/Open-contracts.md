@@ -46,10 +46,17 @@ conformance that wants another specification names its own beside it.
 | `AppEntity.id` | covered through `Identifiable`, which the port's own `AppEntity` refines; nothing to add, and nothing to find in this module's sources |
 | `AppEntity(schema:)` | open by the coordinator's ruling of 2026-09-28, with the reason in `Macros.md`: the interface names the `memberAttribute` role and not the attribute it adds, and Apple's expansion is not on this machine |
 
-**The family's count is not measured yet.** The module compile is queued through `heavy.sh` with no
-timeout on the job (`heavy.sh` waits for a slot by design) and its verdict is what decides whether
-`AppEntity.defaultResolverSpecification` places. The digester has never printed an extension member
-for this owner, so I am not predicting the number.
+**Measured, and it places.** The module compiles for `armv7-apple-ios6.1.3` with the extension member
+in it -- 0 errors, `object 2056252 bytes`, through `heavy.sh` (`.agent-work/runs/appintents-build.sh`),
+and the digester's dump of that build has the member. Against the **80-row** corpus ledger the
+module goes from 13 placed to **14**, and `AppEntity.defaultResolverSpecification` is no longer in
+`AppIntents-missing.tsv`; the four rows that carry that name and are still there belong to other
+owners: `AppEnum` (the `Self: AppEnum` overload, `:427-430`), and `AttributedString`,
+`Calendar.RecurrenceRule` and `Measurement` (the Foundation Swift r2 types, gated at this release).
+
+The number is against the 80-row ledger and is **not comparable** with the 2045/2323 in
+`Counts.md`, which was measured against the 2323-row ledger; that file says so and this does not
+repeat the old total.
 
 ## 3. Rows the digester never prints — 41 rows, and three refuted ways of making them print
 
