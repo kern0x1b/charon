@@ -3,6 +3,7 @@ set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 AV=${AV:-$here/../../../../packages/a/apple-backports/AVFoundation}
 BUILD=${BUILD:-$(mktemp -d)}
+mkdir -p "$BUILD"
 sdk=$(xcrun --show-sdk-path)
 quiet="-Wno-deprecated-declarations -Wno-unguarded-availability-new -Wno-availability"
 renames="-DCMTimeMultiplyByRatio=CharonHostCMTimeMultiplyByRatio"
@@ -21,7 +22,10 @@ for object in "$AV"/*.m; do
     xcrun clang -fobjc-arc $quiet $renames -c "$object" -o "$BUILD/$(basename "$object" .m).o"
 done
 for test in timeratio pcmdata createready constants; do
-    [ -f "$here/$test.m" ] || continue
+    if [ ! -f "$here/$test.m" ]; then
+        echo "note: $here/$test.m is missing, so its checks are not run"
+        exit 1
+    fi
     xcrun clang -fobjc-arc $quiet "$here/$test.m" "$BUILD"/*.o -framework CoreMedia -framework CoreVideo -framework AudioToolbox -framework Foundation -o "$BUILD/$test"
     "$BUILD/$test"
 done

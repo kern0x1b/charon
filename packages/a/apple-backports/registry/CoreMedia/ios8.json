@@ -41,7 +41,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the block-taking form of CMSampleBufferCreate arrived at 12.2; iOS 6's CMSampleBuffer is a system object with nowhere to keep a block",
-      "effect": "builds the buffer with the release's own CMSampleBufferCreate at the readiness asked for and, when it was not ready, runs the handler over the finished buffer, answering the handler's own status; the handler runs during this call, before it returns, and the port does not register it with the release, so a second CMSampleBufferMakeDataReady is the release's own and does not run it again",
+      "effect": "builds the buffer with the release's own CMSampleBufferCreate at the readiness asked for and, when it was not ready, runs the handler over the finished buffer, answering the handler's own status; a failure releases the buffer and leaves the out parameter null. The handler runs during this call, before it returns, and the port does not register it with the release, so a second CMSampleBufferMakeDataReady is the release's own and does not run it again",
       "facts": "facts/CoreMedia/SampleBufferCreateReady.md",
       "source": "the host's own CoreMedia, held case by case over 239 answers by tests/backports/host/coremedia7/createready.m: 179 inside the claim with none different, 60 outside it with 58 the same"
     },
@@ -52,7 +52,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the block-taking form of CMSampleBufferCreateForImageBuffer arrived at 12.2; iOS 6's CMSampleBuffer is a system object with nowhere to keep a block",
-      "effect": "builds the buffer with the release's own CMSampleBufferCreate at the readiness asked for and, when it was not ready, runs the handler over the finished buffer, answering the handler's own status; the handler runs during this call, before it returns, and the port does not register it with the release, so a second CMSampleBufferMakeDataReady is the release's own and does not run it again",
+      "effect": "builds the buffer with the release's own CMSampleBufferCreateForImageBuffer at the readiness asked for and, when it was not ready, runs the handler over the finished buffer, answering the handler's own status; a failure releases the buffer and leaves the out parameter null. The handler runs during this call, before it returns, and the port does not register it with the release, so a second CMSampleBufferMakeDataReady is the release's own and does not run it again",
       "facts": "facts/CoreMedia/SampleBufferCreateReady.md",
       "source": "the host's own CoreMedia, held case by case over 239 answers by tests/backports/host/coremedia7/createready.m: 179 inside the claim with none different, 60 outside it with 58 the same"
     },
