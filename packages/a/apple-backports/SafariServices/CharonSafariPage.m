@@ -268,7 +268,21 @@ enum {
         activities = [delegate safariViewController:[self charon_sender] activityItemsForURL:_currentURL title:title];
     if ([delegate respondsToSelector:@selector(safariViewController:excludedActivityTypesForURL:title:)])
         excluded = [delegate safariViewController:[self charon_sender] excludedActivityTypesForURL:_currentURL title:title];
-    UIActivityViewController *sheet = [[UIActivityViewController alloc] initWithActivityItems:@[_currentURL] applicationActivities:activities];
+    // UIActivityViewController arrived in iOS 6, so a band below it links this object with the
+    // class symbol weak and NULL (the 4.3 gate names it among the four weak imports it does not
+    // export). The share sheet is opened only where the class is there: a release without it
+    // answers the bar button's own action, and there is no sheet to show over it.
+    Class activityViewController = NSClassFromString(@"UIActivityViewController");
+    if (!activityViewController) {
+        static dispatch_once_t once;
+        dispatch_once(&once, ^{
+            NSLog(@"the share sheet is not shown: this release has no UIActivityViewController, and the delegate protocol has no message for a share sheet that could not open");
+        });
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+            [_popover dismissPopoverAnimated:NO];
+        return;
+    }
+    UIActivityViewController *sheet = [[activityViewController alloc] initWithActivityItems:@[_currentURL] applicationActivities:activities];
     if (excluded.count)
         sheet.excludedActivityTypes = excluded;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {

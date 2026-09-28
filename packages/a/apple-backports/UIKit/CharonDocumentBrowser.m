@@ -156,7 +156,16 @@
     cell.textLabel.text = shown;
     BOOL enabled = [self selectable:entry];
     cell.textLabel.textColor = enabled ? [UIColor blackColor] : [UIColor grayColor];
-    cell.detailTextLabel.text = entry.directory ? nil : [NSByteCountFormatter stringFromByteCount:(long long)entry.size countStyle:NSByteCountFormatterCountStyleFile];
+    // NSByteCountFormatter arrived in iOS 6, so a band below it links this object with the class
+    // symbol weak and NULL (the 4.3 gate names it among the four weak imports it does not export).
+    // Where it is not there the size is left off: a count nobody can format is not a number a
+    // document list can show, and the name and the icon are the parts that read.
+    static Class byteCountFormatter = nil;
+    static dispatch_once_t formatterOnce;
+    dispatch_once(&formatterOnce, ^{ byteCountFormatter = NSClassFromString(@"NSByteCountFormatter"); });
+    cell.detailTextLabel.text = (!entry.directory && byteCountFormatter)
+        ? [byteCountFormatter stringFromByteCount:(long long)entry.size countStyle:NSByteCountFormatterCountStyleFile]
+        : nil;
     cell.accessoryType = entry.directory ? UITableViewCellAccessoryDisclosureIndicator : ([_selected containsObject:entry.path] ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone);
     cell.selectionStyle = enabled ? UITableViewCellSelectionStyleBlue : UITableViewCellSelectionStyleNone;
     return cell;
