@@ -82,6 +82,12 @@ package("suitesparse-ordering")
         -- and this one did not, so every header copy went somewhere else and on_test then reported
         -- "installed no SuiteSparse/AMD/amd.h". The return value is checked too, so a copy that fails
         -- says which one instead of being ignored.
+        -- os.vcp creates the last component of its destination and not the ones above it, so the two
+        -- levels of include/SuiteSparse/AMD are made first: without this the copy of
+        -- SuiteSparse_config/SuiteSparse_config.h is attempted into a directory whose parent does not
+        -- exist and the recipe says so, by name, rather than not at all.
+        os.mkdir(path.join(package:installdir("include"), "SuiteSparse"))
+        os.mkdir(path.join(package:installdir("licenses")))
         for from, to in pairs(HEADERS) do
             assert(os.isfile(from), "SuiteSparse " .. package:version() .. " has no " .. from)
             assert(os.vcp(from, path.join(package:installdir("include"), to) .. "/"),
