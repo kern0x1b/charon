@@ -36,6 +36,7 @@
 #import "CharonNW.h"
 #import "CharonNWSupport.h"
 
+#include <assert.h>
 #include <errno.h>
 #include <mach/mach_time.h>
 #include <stdio.h>
@@ -89,6 +90,7 @@ enum { nw_connection_state_setup = 0 };
     CharonNWEndpoint *_currentEndpoint;
     BOOL _started, _cancelled, _finished, _secure, _viable, _viableKnown, _connecting;
     int _socket;
+    int _acceptedSocket;
     SSLContextRef _ssl;
     dispatch_source_t _readSource;
     dispatch_source_t _writeSource;
@@ -795,7 +797,12 @@ void CharonNWConnectionAttach(nw_connection_t value, int handle, BOOL connected)
         if (connection->_cancelled)
             return;
         connection->_socket = handle;
+        connection->_acceptedSocket = handle;
         connection->_currentEndpoint = connection->_endpoint;
+        /* The connection's own socket is now the accepted descriptor and nothing else may be standing
+           in for it: the engine below makes its sources over exactly this number, so a connection that
+           reached here with a different one would be reading a descriptor that is not its socket. */
+        assert(connection->_socket == handle);
     }
     charon_nw_set_nonblocking(handle);
     CharonNWParameters *parameters = connection->_parameters;
