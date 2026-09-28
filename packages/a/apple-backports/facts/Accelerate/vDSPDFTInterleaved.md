@@ -24,28 +24,29 @@ Forward then inverse on `Length = 8`, a single unit bin at each k in turn: **eve
 the length and not its reciprocal — `1/8 = 0.125` would be the other reading — and there is no index reversal
 between the directions.
 
-## 3. The real-to-complex packing does NOT match, and this is why there is no port
+## 3. The real-to-complex packing — SOLVED, and my check was the wrong part
 
-**Checked numerically as the coordinator proposed, and it fails: 0 of 64 random 16-sample real inputs match.**
-With a naive double-precision DFT `X` of the 16 real samples, the prediction was `o[0] = (2*X_0, 2*X_8)` and
-`o[k] = 2*X_k`. What the host returns, first mismatch at k = 1:
+**The packing is the documented one**, confirmed numerically over 64 random 16-sample real inputs:
 
-    the host    -2.20978284  -1.72107601
-    predicted   -2.20978308   0
+    o[0] = (2*X_0, 2*X_8)     both real, by conjugate symmetry
+    o[k] = 2*X_k              BOTH parts, for k = 1 .. Length-1
 
-**The real part agrees to about one ULP and the imaginary part does not agree at all.** For a real input `X_k`
-is real, so a packed real DFT would carry zero in the imaginary parts of elements 1 to Length-1, and the host
-carries `-1.72`. That is the same observation the impulse sweep made — the array is being read as `Length`
-complex values — and it is also why an impulse gives a flat spectrum, which is a property of a complex DFT and
-is not evidence about a real one.
+**My first check was wrong, and it was wrong in a way worth recording.** I computed the naive double DFT keeping
+only the real part and wrote the imaginary part as zero, on the reasoning that a real input gives a real
+spectrum. That holds only for `X_0` and `X_{N/2}`; every other `X_k` is complex. So the prediction was half
+wrong — and **the real part matching to about one ULP was the part that was right**, which is what the packing
+predicts, and I read it as the host being "close but not doing the real transform" instead of as confirmation.
+The coordinator's reading of the same impulse sweep was the correct one: the DFT of an impulse IS a flat
+spectrum, and `(2, 2)` and `(2, -2)` at k = 0 are DC and Nyquist packed.
 
-The forward-then-inverse factor on the real signal is **32 = 4 * Length**, measured on the positions my probe
-read correctly; neither `2*N = 16` nor `N = 8`.
+With both parts carried, the imaginary part matches **exactly** and the real part differs by **1 ULP** — the
+host's float against a double-precision reference, so the double is the more accurate side. **1 of 64 trials
+match bit for bit**, and those are the ones where the float result happens to be exact. This is the same class
+of one-ULP as the biquad's float, and it is the reason a bit-exact differential needs the host's own algorithm
+rather than a naive float DFT.
 
-**Two readings have now been offered for this packing — the coordinator's packed real DFT, and mine that the
-flag is inert — and the numbers support neither.** The real part landing within an ULP of `2*X_k` says the host
-is close to the real transform and not doing it, which is a third thing again. So the packing is unresolved, and
-**the port is not written**, because choosing between those three is a guess about the one thing this family
-exists to get right.
+## 4. The inverse's factor, measured and not assumed
 
-The probe is `.agent-work/runs/dft/` and is not source.
+Forward then inverse on a real signal, through the same packing: **the factor is 32 = 4 * Length**, read on the
+positions the probe unpacks correctly. That is the forward's x2 times the inverse's unscaled 2*Length, which is
+the coordinator's reading, and it is measured rather than assumed.
