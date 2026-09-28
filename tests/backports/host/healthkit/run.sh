@@ -18,7 +18,11 @@ healthkit=${HEALTHKIT:-$here/../../../../packages/a/apple-backports/HealthKit}
 BUILD=${BUILD:-$(mktemp -d)}
 sdk=$(xcrun --show-sdk-path)
 quiet="-w"
-rm -rf "$BUILD/plain" "$BUILD/renamed"
+# The whole build directory goes and not only its two object subdirectories. A run that fails to link
+# then leaves no differential at all, where before it left the one the previous run built, and the line
+# after this one ran that: a stale binary answering for a fixed source. The mutant step below, which
+# compiles into the same tree, is cleared the same way for the same reason.
+rm -rf "$BUILD"
 mkdir -p "$BUILD/plain" "$BUILD/renamed"
 
 # The files that carry the arithmetic, plus the store, which is where two of the port's own functions
@@ -43,8 +47,11 @@ for source in $sources; do
     xcrun clang -fobjc-arc $quiet $renames -I"$healthkit" -c "$healthkit/$source" -o "$BUILD/renamed/$source.o"
 done
 
+# Built under a second name and moved into place only once it exists, so the line after this one can
+# only ever run the binary this run built.
 xcrun clang -fobjc-arc $quiet -I"$healthkit" "$here/differential.m" "$BUILD"/renamed/*.o \
-    -framework Foundation -framework HealthKit -lsqlite3 -o "$BUILD/differential"
+    -framework Foundation -framework HealthKit -lsqlite3 -o "$BUILD/differential.new"
+mv "$BUILD/differential.new" "$BUILD/differential"
 
 "$BUILD/differential"
 
@@ -83,6 +90,8 @@ mutant() {
     # The mutant's tree keeps the library's own layout, so that a source which reaches out of its
     # folder for the shared header still finds it and only the one change is in it.
     rm -rf "$BUILD/mutant"; mkdir -p "$BUILD/mutant/HealthKit"
+    # nothing of a previous run's may be here: the binary is only run if this step builds it
+    rm -f "$BUILD/mutant/differential"
     cp "$healthkit"/*.m "$healthkit"/*.h "$BUILD/mutant/HealthKit/"
     cp "$here/../../../../packages/a/apple-backports/CharonSayOnce.h" "$BUILD/mutant/"
     python3 "$here/mutate.py" "$BUILD/mutant/HealthKit/$file" "$from" "$to"
