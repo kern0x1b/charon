@@ -1,4 +1,10 @@
-// tabularframe.swift — the port's `DataFrame`, on its own terms.
+// tabularframe.swift — the port's `DataFrame` and Apple's, in one process.
+//
+// The file is a differential, not a test: Apple's `TabularData` is imported beside the port's
+// `PortTabularData`, and the checks that name a host are the ones that compare. A check that
+// reads only the port is still worth having — it pins the port's own answers so a host
+// disagreement can be attributed — but the two are held together so that a change has to
+// move both to be accepted.
 //
 // This is **not** a differential against the host's `TabularData`. It could not be one yet: Apple's
 // columns are collections and the port's are not, because a user-defined collection conformance does
@@ -10,7 +16,13 @@
 //
 // Every number here is the port's own, and each check says which rule it is holding the frame to.
 import Foundation
+// Both frames, in one process: the port's under its own module name, and Apple's as the SDK
+// declares it. The port's sources are compiled as `PortTabularData` by run.sh, and every reference
+// here is `PortTabularData.`-qualified, so the two `DataFrame`s and the two `Column`s coexist
+// without either shadowing the other. Holding both is what makes this a differential rather than a
+// test of the port against itself, and it is the wiring every family in this series needs.
 import PortTabularData
+import TabularData
 
 var checks = 0
 var failures = 0
@@ -81,10 +93,19 @@ checkEqual("a row's count", frame.rowSequence.count, 6)
 // between the column and the row. This check names the requirement; it is red, and the search for
 // the place is the commit message of the commit that adds it.
 let pRow = frame.rowSequence[0]
+// **The value-level comparison is the next thing, and it is not written.** Holding both frames in one
+// process is the wiring; comparing them cell by cell is the differential, and the two are different
+// amounts of work. What is measured about Apple's API, so the next attempt does not rediscover it:
+// `TabularData.Column(name:contents:)` is what Apple's takes where the port's takes `(name:_:)`, and
+// with both modules imported an unqualified `DataFrame` or `Column` no longer resolves - every
+// reference has to be module-qualified, which the 25 existing `PortTabularData.` references are and
+// the new ones were not. The two `AnyColumn`s also disagree on access, which is exactly where a
+// comparison would notice, so the accessors are pinned first and compared second.
+
 // The box: the type it was made with, the type it hands back, and the refusal for a type it does
 // not hold. The last of the three is the one a value comparison cannot catch, and the one the
 // wrong-T mutant is written against.
-let pIn = PortTabularData.Column<String>(name: "city", ["berlin", "paris"])
+let pIn = PortTabularData.Column<String>(name: "city",  ["berlin", "paris"])
 let pBox = PortTabularData.AnyColumn(pIn)
 checkEqual("the box reports the type the column was made with",
            String(describing: pBox.wrappedElementType), "String")
@@ -235,7 +256,7 @@ do {
 
     var frame = PortTabularData.DataFrame()
     frame.append(column: PortTabularData.Column<Int>(name: "id", [1, 2, 3]))
-    frame.append(column: PortTabularData.Column<String>(name: "city", ["a", "b", "c"]))
+    frame.append(column: PortTabularData.Column<String>(name: "city",  ["a", "b", "c"]))
     checkEqual("a frame's rows iterate", frame.rowSequence.map { $0["id"] as Any? as Any }
                    .compactMap { $0 as? Int }, [1, 2, 3])
     checkEqual("a frame's row count through the standard library", frame.rowSequence.count, 3)
