@@ -9,6 +9,8 @@
 // differently, and the tolerance is the one run.sh is given.
 #import <Foundation/Foundation.h>
 #import <CoreImage/CoreImage.h>
+#import <objc/runtime.h>
+#import <dlfcn.h>
 
 #import "port-support.h"
 
@@ -357,6 +359,28 @@ static void reportShapes(void)
     put_shape(@"shape scaled interior", [shape transformBy:CGAffineTransformMakeScale(2, 0.5) interior:YES]);
 }
 
+// Which implementation the process actually reaches for a selector, by name: the port's methods are a
+// category, and a category that is shadowed would make the two processes agree whatever the port did.
+static void report_implementation(const char *key, Class cls, SEL selector)
+{
+    Method method = class_getInstanceMethod(cls, selector);
+    IMP implementation = method ? method_getImplementation(method) : NULL;
+    Dl_info info;
+    memset(&info, 0, sizeof info);
+    const char *owner = implementation && dladdr((const void *)implementation, &info) && info.dli_fname
+                            ? strrchr(info.dli_fname, '/') ? strrchr(info.dli_fname, '/') + 1 : info.dli_fname
+                            : "?";
+    printf("%s %p %s\n", key, (void *)implementation, owner);
+}
+
+static void reportImplementations(void)
+{
+    report_implementation("imp imageBySettingProperties:", [CIImage class], @selector(imageBySettingProperties:));
+    report_implementation("imp properties", [CIImage class], @selector(properties));
+    report_implementation("imp imageByUnpremultiplyingAlpha", [CIImage class], @selector(imageByUnpremultiplyingAlpha));
+    report_implementation("imp imageByClampingToExtent", [CIImage class], @selector(imageByClampingToExtent));
+}
+
 int main(void)
 {
     // Unbuffered: a probe that loses everything it printed when it dies cannot say where it died,
@@ -404,6 +428,7 @@ int main(void)
         [spaced setImage:field(extent)];
         report(@"spaced", spaced);
         reportContextOwner();
+        reportImplementations();
         reportPropertiesAndUnpremultiply();
         reportAlgebra();
         reportColors();

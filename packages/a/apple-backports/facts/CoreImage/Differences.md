@@ -44,6 +44,38 @@ Material`; the port takes none of them), the `specular` property's type (a float
 physically plausible function, a colour in the older one in the port), and the clamped-family
 equivalents above. **None of them is a port feature the system lacks.**
 
+## Why the mutations did not go red: three of the four rows are shadowed on the host
+
+`dladdr` on `method_getImplementation(class_getInstanceMethod(...))`, in both processes, from the
+probe's own `reportImplementations`:
+
+    imp imageBySettingProperties:      0x198ccfe8c CoreImage   host
+    imp imageBySettingProperties:      0x198ccfe8c CoreImage   port
+    imp properties                    0x198cd0a94 CoreImage   host
+    imp properties                    0x198cd0a94 CoreImage   port
+    imp imageByUnpremultiplyingAlpha   0x198cce6b0 CoreImage   host
+    imp imageByUnpremultiplyingAlpha   0x198cce6b0 CoreImage   port
+    imp imageByClampingToExtent       0x198bc2d20 CoreImage   host
+    imp imageByClampingToExtent       0x1044f3e34 probe       port
+
+**The three rows reach the same address in both processes.** The macOS framework carries
+`imageBySettingProperties:`, `properties` and `imageByUnpremultiplyingAlpha` - the 16.4 iOS header
+says iOS 6.1.3 has none of them, and the 6.1.3 cache has no CoreImage symbol for any of them - so the
+port's category is **shadowed on the host** and the two processes measure the framework against
+itself. The fourth row, the clamp, is not shadowed: the port reaches the probe's own code, because the
+framework has no such method under that name on this side.
+
+So the mutations were invisible for a reason, and it is not a stale build and not an insensitive
+probe: **the probe never calls the port's method.** These three rows cannot be held by this probe at
+all, and the fifteen measurements they contribute to the verdict line are the framework measured
+against itself. They must come out of the count, and the row must be recorded as measured on the
+release rather than on the host - which needs a device or emulator run, not another host probe.
+
+The `properties` replacement is shadowed the same way, and for a second reason worth naming: the
+`+load` that installs it has not replaced anything either - the port's answer is the framework's
+address, not the replacement's. Whether that `+load` ran at all is the next thing to check, and it is
+one more line in the probe.
+
 ## The two mutations did not go red, and that is not a proof
 
 Flipping one line in each of the two new files - `imageBySettingProperties:` returning the image it was
