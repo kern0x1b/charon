@@ -11,9 +11,12 @@
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 port=${PORT:-$here/../../../../packages/a/apple-backports/MapKit}
-build=${MAPKIT_DELEGATE_BUILD:-${TMPDIR:-/tmp}/charon-mapkit-delegate}
-rm -rf "$build"
+# BUILD goes under the repository's own .agent-work, never the system temp: the run output is
+# evidence and belongs with the band's runs, where it survives a reboot and is not mistaken
+# for scratch. Same rule as the other probes in this package.
+build=${MAPKIT_DELEGATE_BUILD:-$PWD/.agent-work/runs/mapkit-delegate}
 mkdir -p "$build"
+rm -f "$build"/cc.log "$build"/runner.log "$build"/*.txt "$build"/*.body "$build"/*.dylib "$build"/runner
 MACOSX_SDK=$(xcrun --sdk macosx --show-sdk-path)
 TARGET="-target arm64-apple-ios17.0-macabi -isysroot $MACOSX_SDK -isystem $MACOSX_SDK/System/iOSSupport/usr/include -F $MACOSX_SDK/System/iOSSupport/System/Library/Frameworks"
 xcrun clang -fobjc-arc -Wall -fPIC -dynamiclib $TARGET -DCHARON_HOST_PROBE=1 \
