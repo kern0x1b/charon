@@ -484,6 +484,16 @@ local function copy_step(opt, found)
     end) then
         table.insert(found, "a program that was not built must fail the install, not install nothing")
     end
+    -- A file that is not a Mach-O has no LC_UUID, and says so rather than guessing: the UUID is read
+    -- out of a Mach-O by otool, and the two-builds refusal is measured on real binaries rather than here,
+    -- because a stand-in would only test the stand-in.
+    io.writefile(path.join(folder, "not-a-macho"), "built\n")
+    if platform.macho_uuid(path.join(folder, "not-a-macho")) ~= nil then
+        table.insert(found, "a file that is not a Mach-O has no LC_UUID")
+    end
+    if platform.macho_uuid(path.join(folder, "nowhere")) ~= nil then
+        table.insert(found, "a file that is not there has no LC_UUID")
+    end
     os.tryrm(folder)
 end
 

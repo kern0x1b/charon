@@ -418,6 +418,33 @@ end
 -- a copy came from - measured, a build output and the copy an install stages of it report the same
 -- __TEXT size and differ by 1128 bytes - and the UUID says exactly that. Read with the host's otool,
 -- the way the platform's other Mach-O questions are read off a binary.
+-- A file's LC_UUID, which is the one thing neither strip nor a signature touches: strip rewrites the
+-- bytes before the signature and ldid adds one after, so a size or a hash says nothing about which build a
+-- copy came from - measured, a build output and the copy an install stages of it report the same __TEXT
+-- size and differ by 1128 bytes - and the UUID says exactly that. otool reads the byte order itself, so
+-- the Mach-O is not parsed here; the two lines after LC_UUID are cmdsize and then the uuid.
+function macho_uuid(binary)
+    if not os.isfile(binary) then
+        return nil
+    end
+    local listing = os.tmpfile() .. ".otool"
+    os.vrunv("otool", {"-l", binary}, {stdout = listing})
+    local reading, uuid = false, nil
+    for line in io.readfile(listing):gmatch("[^\n]+") do
+        if line:match("cmd +LC_UUID") then
+            reading = 1
+        elseif reading and reading < 3 then
+            reading = reading + 1
+            if reading == 3 then
+                uuid = line:match("^ +uuid +(%S+)")
+                break
+            end
+        end
+    end
+    os.tryrm(listing)
+    return uuid
+end
+
 -- That the file an install staged is the build's own, and not an earlier one. An install that stages a
 -- program it did not build writes a package, says it installed one, and leaves the image with whatever
 -- it last had - so both are refused here, the copy being older than its source and the copy carrying
@@ -429,6 +456,17 @@ function verify_provenance(source, installed, description)
     if os.mtime(installed) < os.mtime(source) then
         raise("%s: %s is older than the %s it was copied from, so the image would hold a program that was not built",
                description, installed, source)
+    end
+    -- Two builds, and the copy is from the other one. This is the check that strip and a signature cannot
+    -- hide behind, and it is what catches a stage that was never refreshed.
+    local wanted, got = macho_uuid(source), macho_uuid(installed)
+    if wanted and got and wanted ~= got then
+        raise("%s: %s carries LC_UUID %s and %s carries %s, so the image would hold a program from another build",
+               description, installed, got, source, wanted)
+    end
+    if (wanted and not got) or (got and not wanted) then
+        raise("%s: %s carries %s and %s carries %s, so one of the two is not this build's program",
+               description, installed, got and got or "no LC_UUID", source, wanted and wanted or "no LC_UUID")
     end
     return installed
 end
