@@ -48,8 +48,11 @@ for source in "$AVFAUDIO"/AVAudioUnitSampler8.m "$AVFAUDIO"/AVAudioUnitMIDIInstr
               "$AVFAUDIO"/CharonAUAudioUnitRender.m "$AVFAUDIO"/CharonAVFAudioCommon.m \
               "$AVFAUDIO"/AVAudioTime8.m "$AVFOUNDATION"/AVAudioNode.m "$AVFOUNDATION"/AVAudioBuffer8.m \
               "$AVFOUNDATION"/AVAudioFormat8.m "$AVFOUNDATION"/AVAudioConnectionPoint.m \
-              "$AVFOUNDATION"/AVAudioPlayerNode.m; do
-    [ -f "$source" ] || continue
+              "$AVFOUNDATION"/AVAudioPlayerNode.m "$AVFOUNDATION"/AVAudioUnit.m; do
+    if [ ! -f "$source" ]; then
+        echo "missing $source" >&2
+        exit 1
+    fi
     # shellcheck disable=SC2086
     xcrun clang -fobjc-arc -w $renames -I"$AVFAUDIO" -I"$AVFOUNDATION" -I"$root/modules" \
         -c "$source" -o "$build/$(basename "$source").o" 2> "$build/$(basename "$source").err" || {

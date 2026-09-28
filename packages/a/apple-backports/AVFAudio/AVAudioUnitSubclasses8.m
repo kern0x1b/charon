@@ -28,14 +28,12 @@
 
 @end
 
-@implementation AVAudioUnitEffect
-
-- (instancetype)initWithAudioComponentDescription:(AudioComponentDescription)audioComponentDescription
-{
-    return [self initWithCharonComponentDescription:audioComponentDescription name:nil manufacturerName:nil version:0];
-}
-
-@end
+// AVAudioUnitEffect is NOT defined here. It is carried in libAVFoundationBackports.dylib by
+// AVFoundation/AVAudioUnit.m, whose registry entry is registry/AVFoundation/ios8avaudiouniteq.json.
+// A second definition of one class is a duplicate-class hazard at load rather than a link error,
+// which is how it survived into this series and was only found by the port-versus-host harness,
+// where it was a duplicate symbol. The subclasses below call its -initWithAudioComponentDescription:,
+// which is that one.
 
 @implementation AVAudioUnitGenerator
 
