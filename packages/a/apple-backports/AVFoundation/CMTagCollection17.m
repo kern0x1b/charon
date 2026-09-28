@@ -7,6 +7,8 @@
 // collection is a sorted array of them and everything here is a search, an insert or a run over it; the
 // class is the port's own behind 26.2's bridged CMTagCollectionRef. facts/CoreMedia/TagCollection.md
 
+static void charon_insert_all(CharonCMTagCollection *into, CharonCMTagCollection *from);
+
 static BOOL charon_tag_less(CMTag left, CMTag right)
 {
     if (left.category != right.category)
@@ -142,8 +144,8 @@ static BOOL charon_tag_equal(CMTag left, CMTag right)
 
 const CMTag kCMTagInvalid = {kCMTagCategory_Undefined, kCMTagDataType_Invalid, 0};
 
-// CharonCMTag26.h declares these extern; a definition that repeated the extern would be the
-// -Wextern-initializer warning, so only the header says extern and this says what.
+// CharonCMTag26.h declares the three keys extern, so a definition that repeated it would be the
+// -Wextern-initializer warning: the header says extern, this says what.
 const CFStringRef kCMTagCategoryKey = CFSTR("category");
 const CFStringRef kCMTagValueKey = CFSTR("value");
 const CFStringRef kCMTagDataTypeKey = CFSTR("flags");
@@ -203,7 +205,17 @@ OSStatus CMTagCollectionCreateCopy(CMTagCollectionRef tagCollection, CFAllocator
 OSStatus CMTagCollectionCreateMutableCopy(CMTagCollectionRef tagCollection, CFAllocatorRef allocator, CMMutableTagCollectionRef *newMutableCollectionCopyOut)
 {
     CharonCMTagCollection *source = charon_to(tagCollection);
-    return CMTagCollectionCreateMutable(allocator, (CFIndex)(source ? source.charon_count : 0), newMutableCollectionCopyOut);
+    if (!newMutableCollectionCopyOut)
+        return kCMTagCollectionError_ParamErr;
+    CMMutableTagCollectionRef out = NULL;
+    OSStatus status = CMTagCollectionCreateMutable(allocator, (CFIndex)(source ? source.charon_count : 0), &out);
+    if (status)
+        return status;
+    // A copy carries the tags: this one made an empty collection, which is what made a union built on
+    // it lose the first collection entirely.
+    charon_insert_all(charon_to((CMTagCollectionRef)out), source);
+    *newMutableCollectionCopyOut = out;
+    return noErr;
 }
 
 static NSString *charon_category_name(CMTagCategory category)
@@ -436,3 +448,193 @@ OSStatus CMTagCollectionAddTagsFromArray(CMMutableTagCollectionRef tagCollection
     return noErr;
 }
 
+// Shared by CreateMutableCopy and the union: copy every tag of one collection into another.
+static void charon_insert_all(CharonCMTagCollection *into, CharonCMTagCollection *from)
+{
+    if (!into || !from)
+        return;
+    const CMTag *tags = [from charon_tags];
+    for (NSUInteger index = 0; index < from.charon_count; index++)
+        [into charon_insert:tags[index]];
+}
+
+// The host's answers, on a one-tag collection against a two-tag one that shares a tag with it:
+// Difference answers nothing, which is the first minus the second, and ExclusiveOr answers one tag,
+// which is the symmetric difference - a tag in one and not the other, counted once. Stacking the two
+// differences answers two there, which is what the port did before this was measured.
+OSStatus CMTagCollectionCreateDifference(CMTagCollectionRef tagCollectionMinuend, CMTagCollectionRef tagCollectionSubtrahend, CMTagCollectionRef *tagCollectionOut)
+{
+    CharonCMTagCollection *minuend = charon_to(tagCollectionMinuend), *subtrahend = charon_to(tagCollectionSubtrahend);
+    if (!tagCollectionOut)
+        return kCMTagCollectionError_ParamErr;
+    CMTagCollectionRef out = NULL;
+    OSStatus status = CMTagCollectionCreateMutable(kCFAllocatorDefault, 0, (CMMutableTagCollectionRef *)&out);
+    if (status)
+        return status;
+    CharonCMTagCollection *result = charon_to(out);
+    const CMTag *tags = minuend ? [minuend charon_tags] : NULL;
+    for (NSUInteger index = 0; minuend && index < minuend.charon_count; index++)
+        if (!subtrahend || ![subtrahend charon_contains:tags[index]])
+            [result charon_insert:tags[index]];
+    *tagCollectionOut = out;
+    return noErr;
+}
+
+OSStatus CMTagCollectionCreateExclusiveOr(CMTagCollectionRef tagCollection1, CMTagCollectionRef tagCollection2, CMTagCollectionRef *tagCollectionOut)
+{
+    CharonCMTagCollection *first = charon_to(tagCollection1), *second = charon_to(tagCollection2);
+    if (!tagCollectionOut)
+        return kCMTagCollectionError_ParamErr;
+    CMTagCollectionRef out = NULL;
+    OSStatus status = CMTagCollectionCreateMutable(kCFAllocatorDefault, 0, (CMMutableTagCollectionRef *)&out);
+    if (status)
+        return status;
+    CharonCMTagCollection *result = charon_to(out);
+    const CMTag *left = first ? [first charon_tags] : NULL;
+    for (NSUInteger index = 0; first && index < first.charon_count; index++)
+        if (!second || ![second charon_contains:left[index]])
+            [result charon_insert:left[index]];
+    const CMTag *right = second ? [second charon_tags] : NULL;
+    for (NSUInteger index = 0; second && index < second.charon_count; index++)
+        if (!first || ![first charon_contains:right[index]])
+            [result charon_insert:right[index]];
+    *tagCollectionOut = out;
+    return noErr;
+}
+
+// The set algebra, the category filter, the two appliers and the dictionary form. Measured on the
+// host's own CoreMedia (facts/CoreMedia/TagCollection.md); the binary …AsData form is Apple's own
+// layout and is not written here.
+
+
+OSStatus CMTagCollectionCreateUnion(CMTagCollectionRef tagCollection1, CMTagCollectionRef tagCollection2, CMTagCollectionRef *tagCollectionOut)
+{
+    CMTagCollectionRef out = NULL;
+    OSStatus status = CMTagCollectionCreateMutableCopy(tagCollection1, NULL, (CMMutableTagCollectionRef *)&out);
+    if (status)
+        return status;
+    // A union is both, not the first one: the host's answers carry the second collection's tags too.
+    charon_insert_all(charon_to(out), charon_to(tagCollection2));
+    *tagCollectionOut = out;
+    return noErr;
+}
+
+OSStatus CMTagCollectionCreateIntersection(CMTagCollectionRef tagCollection1, CMTagCollectionRef tagCollection2, CMTagCollectionRef *tagCollectionOut)
+{
+    CharonCMTagCollection *first = charon_to(tagCollection1), *second = charon_to(tagCollection2);
+    if (!tagCollectionOut)
+        return kCMTagCollectionError_ParamErr;
+    CMTagCollectionRef out = NULL;
+    OSStatus status = CMTagCollectionCreateMutable(kCFAllocatorDefault, 0, (CMMutableTagCollectionRef *)&out);
+    if (status)
+        return status;
+    CharonCMTagCollection *result = charon_to(out);
+    const CMTag *tags = first ? [first charon_tags] : NULL;
+    for (NSUInteger index = 0; first && index < first.charon_count; index++)
+        if (second && [second charon_contains:tags[index]])
+            [result charon_insert:tags[index]];
+    *tagCollectionOut = out;
+    return noErr;
+}
+
+OSStatus CMTagCollectionCopyTagsOfCategories(CFAllocatorRef allocator, CMTagCollectionRef tagCollection, const CMTagCategory *categories,
+                                             CMItemCount categoriesCount, CMTagCollectionRef *newCollectionOut)
+{
+    (void)allocator;
+    CharonCMTagCollection *collection = charon_to(tagCollection);
+    // Measured: a category count of zero is kCMTagCollectionError_ParamErr on the host, not an empty
+    // collection.
+    if (!collection || !categories || !newCollectionOut || !categoriesCount)
+        return kCMTagCollectionError_ParamErr;
+    CMTagCollectionRef out = NULL;
+    OSStatus status = CMTagCollectionCreateMutable(kCFAllocatorDefault, 0, (CMMutableTagCollectionRef *)&out);
+    if (status)
+        return status;
+    const CMTag *tags = [collection charon_tags];
+    for (CMItemCount index = 0; index < categoriesCount; index++)
+        for (NSUInteger one = 0; one < collection.charon_count; one++)
+            if (tags[one].category == categories[index])
+                [charon_to(out) charon_insert:tags[one]];
+    *newCollectionOut = out;
+    return noErr;
+}
+
+void CMTagCollectionApply(CMTagCollectionRef tagCollection, CMTagCollectionApplierFunction applier, void *context)
+{
+    CharonCMTagCollection *collection = charon_to(tagCollection);
+    if (!collection || !applier)
+        return;
+    const CMTag *tags = [collection charon_tags];
+    for (NSUInteger index = 0; index < collection.charon_count; index++)
+        applier(tags[index], context);
+}
+
+CMTag CMTagCollectionApplyUntil(CMTagCollectionRef tagCollection, CMTagCollectionTagFilterFunction filter, void *context)
+{
+    CharonCMTagCollection *collection = charon_to(tagCollection);
+    if (!collection || !filter)
+        return kCMTagInvalid;
+    const CMTag *tags = [collection charon_tags];
+    for (NSUInteger index = 0; index < collection.charon_count; index++)
+        if (filter(tags[index], context))
+            return tags[index];
+    return kCMTagInvalid;
+}
+
+CFDictionaryRef CMTagCollectionCopyAsDictionary(CMTagCollectionRef tagCollection, CFAllocatorRef allocator)
+{
+    (void)allocator;
+    CharonCMTagCollection *collection = charon_to(tagCollection);
+    if (!collection)
+        return NULL;
+    const CMTag *tags = [collection charon_tags];
+    CFMutableArrayRef list = CFArrayCreateMutable(allocator, collection.charon_count, &kCFTypeArrayCallBacks);
+    for (NSUInteger index = 0; index < collection.charon_count; index++) {
+        // CFNumber, not an int: CFDictionaryCreate retains what it is given, and an int on the stack is
+        // retained as a CF object, which is the SEGV ASan named in objc_retain from this line.
+        CFNumberRef category = CFNumberCreate(allocator, kCFNumberSInt32Type, &(int){(int)tags[index].category});
+        CFNumberRef value = CFNumberCreate(allocator, kCFNumberSInt32Type, &(int){(int)tags[index].value});
+        CFNumberRef flags = CFNumberCreate(allocator, kCFNumberSInt32Type, &(int){(int)tags[index].dataType});
+        const void *keys[] = {kCMTagCategoryKey, kCMTagValueKey, kCMTagDataTypeKey};
+        const void *values[] = {category, value, flags};
+        CFDictionaryRef entry = CFDictionaryCreate(allocator, keys, values, 3, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+        CFArrayAppendValue(list, entry);
+        CFRelease(entry);
+        CFRelease(category);
+        CFRelease(value);
+        CFRelease(flags);
+    }
+    const void *keys[] = {CFSTR("tags")};
+    const void *values[] = {list};
+    CFDictionaryRef out = CFDictionaryCreate(allocator, keys, values, 1, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+    CFRelease(list);
+    return out;
+}
+
+OSStatus CMTagCollectionCreateFromDictionary(CFDictionaryRef dict, CFAllocatorRef allocator, CMTagCollectionRef *newCollectionOut)
+{
+    if (!dict || !newCollectionOut)
+        return kCMTagCollectionError_ParamErr;
+    CMTagCollectionRef out = NULL;
+    OSStatus status = CMTagCollectionCreateMutable(kCFAllocatorDefault, 0, (CMMutableTagCollectionRef *)&out);
+    if (status)
+        return status;
+    CFArrayRef list = CFDictionaryGetValue(dict, CFSTR("tags"));
+    if (list && CFGetTypeID(list) == CFArrayGetTypeID()) {
+        CFIndex count = CFArrayGetCount(list);
+        for (CFIndex index = 0; index < count; index++) {
+            CFDictionaryRef entry = CFArrayGetValueAtIndex(list, index);
+            if (!entry || CFGetTypeID(entry) != CFDictionaryGetTypeID())
+                continue;
+            int category = 0, value = 0, flags = 0;
+            CFNumberGetValue(CFDictionaryGetValue(entry, kCMTagCategoryKey), kCFNumberIntType, &category);
+            CFNumberGetValue(CFDictionaryGetValue(entry, kCMTagValueKey), kCFNumberIntType, &value);
+            CFNumberGetValue(CFDictionaryGetValue(entry, kCMTagDataTypeKey), kCFNumberIntType, &flags);
+            CMTag tag = {(CMTagCategory)category, (CMTagDataType)flags, (uint32_t)value};
+            [charon_to(out) charon_insert:tag];
+        }
+    }
+    (void)allocator;
+    *newCollectionOut = out;
+    return noErr;
+}

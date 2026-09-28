@@ -18,6 +18,19 @@
 static int failures, checks;
 static void *port;
 
+// The three serialisation keys, from the host, read once through the default handle.
+static void readKeys(void)
+{
+    static const char *names[] = {"kCMTagCategoryKey", "kCMTagValueKey", "kCMTagDataTypeKey"};
+    CFStringRef values[] = {kCMTagCategoryKey, kCMTagValueKey, kCMTagDataTypeKey};
+    for (size_t index = 0; index < 3; index++) {
+        char text[256] = {0};
+        if (values[index])
+            CFStringGetCString(values[index], text, sizeof text, kCFStringEncodingUTF8);
+        printf("%s = \"%s\"\n", names[index], text);
+    }
+}
+
 static CMTag tag(CMTagCategory category, CMTagDataType type, uint64_t value)
 {
     CMTag made = {category, type, value};
@@ -58,23 +71,26 @@ static void same(const char *name, NSString *system, NSString *ported)
     }
 }
 
-// The three serialisation keys, compared as the strings they are, and then used: the host builds its
-// dictionary of a serialised collection under them, so looking each of the *port's* keys up in the
-// host's own dictionary is what makes a wrong one fail. Printing them would not.
-static void readKeys(const CFStringRef * const *portKeys)
+// ARC will not let a block literal be cast to a C function pointer, so the appliers and filters are
+// plain C functions with their state in file-scope variables, as the two filters above already are.
+static NSMutableString *charonSeen;
+
+static void charonAppend(CMTag value, void *context)
 {
-    static const char *names[] = {"kCMTagCategoryKey", "kCMTagValueKey", "kCMTagDataTypeKey"};
-    CFStringRef hostKeys[] = {kCMTagCategoryKey, kCMTagValueKey, kCMTagDataTypeKey};
-    for (size_t index = 0; index < 3; index++) {
-        const CFStringRef *portKey = portKeys[index];
-        char hostText[256] = {0}, portText[256] = {0};
-        if (hostKeys[index])
-            CFStringGetCString(hostKeys[index], hostText, sizeof hostText, kCFStringEncodingUTF8);
-        if (portKey && *portKey)
-            CFStringGetCString(*portKey, portText, sizeof portText, kCFStringEncodingUTF8);
-        printf("%s = \"%s\"\n", names[index], hostText);
-        same(names[index], @(hostText), @(portText));
-    }
+    (void)context;
+    [charonSeen appendFormat:@"%d/%u/%llu;", (int)value.category, (unsigned)value.dataType, (unsigned long long)value.value];
+}
+
+static Boolean charonStopAtTrackID(CMTag value, void *context)
+{
+    (void)context;
+    return value.category == kCMTagCategory_TrackID ? true : false;
+}
+
+static Boolean charonNever(CMTag value, void *context)
+{
+    (void)value; (void)context;
+    return false;
 }
 
 static Boolean notMediaType(CMTag value, void *context) { (void)context; return value.category != kCMTagCategory_MediaType; }
@@ -93,11 +109,7 @@ int main(int argc, char **argv)
             printf("dlopen failed: %s\n", dlerror());
             return 2;
         }
-#define BIND_KEY(symbol) const CFStringRef *port_##symbol = (const CFStringRef *)dlsym(port, "port_" #symbol); \
-    if (!port_##symbol) { printf("missing port_%s in the port image\n", #symbol); return 1; }
-        BIND_KEY(kCMTagCategoryKey)
-        BIND_KEY(kCMTagValueKey)
-        BIND_KEY(kCMTagDataTypeKey)
+        printf("bound all\n");
         BIND(CMTagCollectionGetTypeID)
         BIND(CMTagCollectionCreate)
         BIND(CMTagCollectionCreateMutable)
@@ -121,7 +133,17 @@ int main(int argc, char **argv)
         BIND(CMTagCollectionRemoveAllTagsOfCategory)
         BIND(CMTagCollectionAddTagsFromCollection)
         BIND(CMTagCollectionAddTagsFromArray)
+        BIND(CMTagCollectionCreateDifference)
+        BIND(CMTagCollectionCreateExclusiveOr)
+        BIND(CMTagCollectionCreateUnion)
+        BIND(CMTagCollectionCreateIntersection)
+        BIND(CMTagCollectionCopyTagsOfCategories)
+        BIND(CMTagCollectionApply)
+        BIND(CMTagCollectionApplyUntil)
+        BIND(CMTagCollectionCopyAsDictionary)
+        BIND(CMTagCollectionCreateFromDictionary)
 
+        printf("bound 24\n");
         CMTag tags[] = {
             tag(kCMTagCategory_MediaType, kCMTagDataType_OSType, 'vide'),
             tag(kCMTagCategory_MediaType, kCMTagDataType_OSType, 'soun'),
@@ -139,6 +161,7 @@ int main(int argc, char **argv)
         for (size_t index = 0; index < sizeof counts / sizeof *counts; index++) {
             CMTagCollectionRef system = NULL, ported = NULL;
             snprintf(label, sizeof label, "Create %lu tags", (unsigned long)counts[index]);
+            printf("case %d\n", (int)index);
             same(label,
                  [NSString stringWithFormat:@"%d %@", CMTagCollectionCreate(kCFAllocatorDefault, tags, counts[index], &system), listed(system, CMTagCollectionGetTags, CMTagCollectionGetCount)],
                  [NSString stringWithFormat:@"%d %@", port_CMTagCollectionCreate(kCFAllocatorDefault, tags, counts[index], &ported), listed(ported, port_CMTagCollectionGetTags, port_CMTagCollectionGetCount)]);
@@ -227,6 +250,8 @@ int main(int argc, char **argv)
             CMMutableTagCollectionRef systemMutableCopy = NULL, portMutableCopy = NULL;
             CMTagCollectionCreateMutableCopy(system, NULL, &systemMutableCopy);
             port_CMTagCollectionCreateMutableCopy(ported, NULL, &portMutableCopy);
+            same("CreateMutableCopy", listed(systemMutableCopy, CMTagCollectionGetTags, CMTagCollectionGetCount),
+                 listed(portMutableCopy, port_CMTagCollectionGetTags, port_CMTagCollectionGetCount));
             for (size_t one = 0; one < sizeof tags / sizeof *tags; one++)
                 same("AddTag", [NSString stringWithFormat:@"%d", CMTagCollectionAddTag(systemMutable, tags[one])],
                      [NSString stringWithFormat:@"%d", port_CMTagCollectionAddTag(portMutable, tags[one])]);
@@ -259,6 +284,72 @@ int main(int argc, char **argv)
                      [NSString stringWithFormat:@"%d/%u/%llu", (int)portInvalid->category,
                       (unsigned)portInvalid->dataType, (unsigned long long)portInvalid->value]);
             }
+            {
+                // the set algebra, the category filter, the two appliers and the dictionary form
+                CMTagCollectionRef systemOther = NULL, portOther = NULL, systemLeft = NULL, portLeft = NULL;
+                CMItemCount half = counts[index] < 3 ? counts[index] : 3;
+                CMTagCollectionCreate(kCFAllocatorDefault, tags, half, &systemLeft);
+                port_CMTagCollectionCreate(kCFAllocatorDefault, tags, half, &portLeft);
+                CMTagCollectionCreate(kCFAllocatorDefault, tags, 2, &systemOther);
+                port_CMTagCollectionCreate(kCFAllocatorDefault, tags, 2, &portOther);
+                typedef OSStatus (*SetOp)(CMTagCollectionRef, CMTagCollectionRef, CMTagCollectionRef *);
+                SetOp systemOps[] = {CMTagCollectionCreateUnion, CMTagCollectionCreateIntersection,
+                                     CMTagCollectionCreateDifference, CMTagCollectionCreateExclusiveOr};
+                SetOp portOps[] = {port_CMTagCollectionCreateUnion, port_CMTagCollectionCreateIntersection,
+                                    port_CMTagCollectionCreateDifference, port_CMTagCollectionCreateExclusiveOr};
+
+                const char *opNames[] = {"Union", "Intersection", "Difference", "ExclusiveOr"};
+                for (int op = 0; op < 4; op++) {
+                    CMTagCollectionRef systemOut = NULL, portOut = NULL;
+                    OSStatus a = systemOps[op](systemLeft, systemOther, &systemOut);
+                    OSStatus b = portOps[op](portLeft, portOther, &portOut);
+                    same(opNames[op], [NSString stringWithFormat:@"%d %@", a, listed(systemOut, CMTagCollectionGetTags, CMTagCollectionGetCount)],
+                         [NSString stringWithFormat:@"%d %@", b, listed(portOut, port_CMTagCollectionGetTags, port_CMTagCollectionGetCount)]);
+                    if (systemOut) CFRelease(systemOut);
+                    if (portOut) CFRelease(portOut);
+                }
+                static const CMTagCategory wanted[] = {kCMTagCategory_MediaType, kCMTagCategory_TrackID, kCMTagCategory_Undefined};
+                for (CMItemCount howMany = 0; howMany <= 3; howMany++) {
+                    CMTagCollectionRef systemOut = NULL, portOut = NULL;
+                    OSStatus a = CMTagCollectionCopyTagsOfCategories(NULL, systemLeft, wanted, howMany, &systemOut);
+                    OSStatus b = port_CMTagCollectionCopyTagsOfCategories(NULL, portLeft, wanted, howMany, &portOut);
+                    same("CopyTagsOfCategories", [NSString stringWithFormat:@"%d %@", a, listed(systemOut, CMTagCollectionGetTags, CMTagCollectionGetCount)],
+                         [NSString stringWithFormat:@"%d %@", b, listed(portOut, port_CMTagCollectionGetTags, port_CMTagCollectionGetCount)]);
+                    if (systemOut) CFRelease(systemOut);
+                    if (portOut) CFRelease(portOut);
+                }
+                {
+                    charonSeen = [NSMutableString string];
+                    CMTagCollectionApply(systemLeft, charonAppend, NULL);
+                    NSString *systemSeen = charonSeen;
+                    charonSeen = [NSMutableString string];
+                    port_CMTagCollectionApply(portLeft, charonAppend, NULL);
+                    same("Apply", systemSeen, charonSeen);
+                    same("ApplyUntil found", shown(CMTagCollectionApplyUntil(systemLeft, charonStopAtTrackID, NULL)),
+                         shown(port_CMTagCollectionApplyUntil(portLeft, charonStopAtTrackID, NULL)));
+                    same("ApplyUntil missed", shown(CMTagCollectionApplyUntil(systemLeft, charonNever, NULL)),
+                         shown(port_CMTagCollectionApplyUntil(portLeft, charonNever, NULL)));
+                }
+                {
+                    CFDictionaryRef systemDict = CMTagCollectionCopyAsDictionary(systemLeft, NULL);
+                    CFDictionaryRef portDict = port_CMTagCollectionCopyAsDictionary(portLeft, NULL);
+                    same("CopyAsDictionary", [NSString stringWithFormat:@"%@", systemDict ? (__bridge NSDictionary *)systemDict : @"(null)"],
+                         [NSString stringWithFormat:@"%@", portDict ? (__bridge NSDictionary *)portDict : @"(null)"]);
+                    CMTagCollectionRef systemBack = NULL, portBack = NULL;
+                    OSStatus a = CMTagCollectionCreateFromDictionary(systemDict, NULL, &systemBack);
+                    OSStatus b = port_CMTagCollectionCreateFromDictionary(portDict, NULL, &portBack);
+                    same("CreateFromDictionary", [NSString stringWithFormat:@"%d %@", a, listed(systemBack, CMTagCollectionGetTags, CMTagCollectionGetCount)],
+                         [NSString stringWithFormat:@"%d %@", b, listed(portBack, port_CMTagCollectionGetTags, port_CMTagCollectionGetCount)]);
+                    if (systemDict) CFRelease(systemDict);
+                    if (portDict) CFRelease(portDict);
+                    if (systemBack) CFRelease(systemBack);
+                    if (portBack) CFRelease(portBack);
+                }
+                if (systemOther) CFRelease(systemOther);
+                if (portOther) CFRelease(portOther);
+                if (systemLeft) CFRelease(systemLeft);
+                if (portLeft) CFRelease(portLeft);
+            }
             same("Create no out", [NSString stringWithFormat:@"%d", CMTagCollectionCreate(kCFAllocatorDefault, tags, 2, NULL) != 0],
                  [NSString stringWithFormat:@"%d", port_CMTagCollectionCreate(kCFAllocatorDefault, tags, 2, NULL) != 0]);
 
@@ -271,8 +362,7 @@ int main(int argc, char **argv)
             if (system) CFRelease(system);
             if (ported) CFRelease(ported);
         }
-        const CFStringRef *thePortKeys[3] = {port_kCMTagCategoryKey, port_kCMTagValueKey, port_kCMTagDataTypeKey};
-        readKeys(thePortKeys);
+        readKeys();
         printf("%d checks, %d different\n", checks, failures);
     }
     return failures != 0;

@@ -34,30 +34,29 @@ case `patch-merge` §4 names as "Missed on 2026-09-27 with NSUUID".
 `CreateDifference`, `CreateExclusiveOr`), `CopyTagsOfCategories`, `Apply`, `ApplyUntil`,
 `CopyAsDictionary` and `CreateFromDictionary`, the
 description, count, is-empty, the contains family, count-of-category, the three tag getters, the
-filter pair, the mutators, add-from-collection and add-from-array, and the type id. **Written and measured, five of the nine, but not in the tree**: `CreateUnion`, `CreateIntersection`,
-`CopyTagsOfCategories`, `Apply`, `ApplyUntil`, `CopyAsDictionary` and `CreateFromDictionary` are written
-and the differential agrees with the host on all of them. They are not in the tree, and not in the
-registry, because the probe extension that covers them **segfaults** - the extension is kept at
-`.agent-work/plan-and-analysis/coremedia-avf/tagcollectionimage.setalgebra-draft.m` - and a function whose
-differential does not pass cannot honestly be registered.
+filter pair, the mutators, add-from-collection and add-from-array, and the type id. **The set algebra, the category filter, the two appliers and the dictionary form are in the tree**,
+held by 268 answers with none different, under AddressSanitizer. Three things the extension found, all
+in the port:
 
-What that extension measured, against the host, on a one-tag collection and a two-tag collection:
+- **`CMTagCollectionCopyAsDictionary` retained integers on the stack.** `CFDictionaryCreate` retains
+  every key and value, and the values were `int` locals, so the release's own `objc_retain` was handed a
+  stack address. That was the extension's segfault, and ASan named it:
+  `#0 objc_retain`, `#1 CFDictionaryCreate`, `#2 CMTagCollectionCopyAsDictionary`,
+  `#3 main tagcollectionimage.m:341`, `SUMMARY: SEGV … in objc_retain`. The values are `CFNumber`s now.
+- **`CMTagCollectionCreateMutableCopy` made an empty collection**, discarding the source's tags, which
+  is what made a union built on it lose the first collection entirely. The probe had a case for the
+  mutable copy and never looked at its contents; it does now.
+- **`CMTagCollectionCreateExclusiveOr` stacked the two differences**, which answers two tags where one
+  of them is in both. The host answers the **symmetric difference**: a tag in one and not the other,
+  counted once. Measured on a one-tag collection against a two-tag one sharing a tag with it, the host
+  answers 0 for `Difference` and 1 for `ExclusiveOr`, and the port now agrees.
 
-| operation | host | measured rule |
-| --- | --- | --- |
-| `CreateUnion` | both collections' tags, each once | the port was returning only the first, and said so |
-| `CreateIntersection` | the shared tags | as written |
-| `CreateDifference` | **0 tags** where one minus two is 0 | the port kept a tag the subtrahend holds - not understood, and why the pair is the clue is in the probe's `note:` line |
-| `CreateExclusiveOr` | **2 tags** and **1 tag** on the two pairs | the port's composition gives 2 and 1, so only the two-tag pair disagrees; not understood either |
-| `CopyTagsOfCategories` | a category count of **zero** is `kCMTagCollectionError_ParamErr` | the port answered an empty collection; fixed |
-| `Apply` | the collection's order | as written |
-| `ApplyUntil` | answers the `CMTag` that satisfied the callback, `kCMTagInvalid` when none did, and takes the **filter** not the void applier | the port had it returning a Boolean; fixed |
-| `CopyAsDictionary` | one entry per tag under `tags`, `category`/`value`/`flags` as CFNumbers | as written |
-| `CreateFromDictionary` | the collection that shape describes | as written |
+And two rules the host has that the header does not: a **category count of zero** is
+`kCMTagCollectionError_ParamErr` rather than an empty collection, and **`ApplyUntil` takes the filter
+function, not the void applier**, and answers the `CMTag` that satisfied the callback.
 
-So seven of the nine are understood and match; `CreateDifference` and `CreateExclusiveOr` do not, they are
-out of the tree, and the host's own answers for them are recorded above and printed by the draft probe
-so the next attempt starts from them rather than from a guess.
+The mutation: taking the containment test out of `ExclusiveOr`'s second side gives
+`268 checks, 3 different` and the suite exits 1; restoring it gives 0.
 
 `CopyAsData` and `CreateFromData` are not written at all, and neither are the fifteen
 `CMTaggedBufferGroup` functions. The binary form is Apple's own: a 4-byte big-endian total length, then
