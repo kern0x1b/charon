@@ -17,11 +17,22 @@
 // the sampler's own instrument interface, which the release's property set does not name. The load is
 // real and complete; the notes are not, and the facts file says which is which.
 
+// One read, so a unit this port could not instantiate answers zero rather than an invented value.
+static AudioUnitParameterValue CharonSamplerParameterValue(AudioUnit unit, AudioUnitParameterID identifier)
+{
+    if (unit == NULL) {
+        return 0;
+    }
+    AudioUnitParameterValue value = 0;
+    if (AudioUnitGetParameter(unit, identifier, kAudioUnitScope_Global, 0, &value) != noErr) {
+        return 0;
+    }
+    return value;
+}
+
 @implementation AVAudioUnitSampler {
-    float _charon_globalTuning;
-    float _charon_masterGain;
+    // Only overallGain is still the port's own state; the other three live on the unit.
     float _charon_overallGain;
-    float _charon_stereoPan;
 }
 
 // The instrument types the load property takes, from the header's own InstrumentTypes enumeration:
@@ -44,10 +55,7 @@ static const UInt8 CharonSoundBankType = kInstrumentType_SF2Preset;
     }
     self = [super initWithCharonComponentDescription:wanted name:nil manufacturerName:nil version:0];
     if (self) {
-        _charon_globalTuning = 0.0f;
-        _charon_masterGain = 0.0f;
         _charon_overallGain = 0.0f;
-        _charon_stereoPan = 0.0f;
     }
     return self;
 }
@@ -141,28 +149,70 @@ static const UInt8 CharonSoundBankType = kInstrumentType_SF2Preset;
     return YES;
 }
 
+// The three members the release's own sampler carries. The ids and the ranges are not guessed: the
+// host's AVAudioUnitSampler was asked, and the values below are its answers -
+//
+//   kAUSamplerParam_Gain         900   range -96 .. 12    decibels, one to one
+//   kAUSamplerParam_CoarseTuning 901   range -24 .. 24    the coarse one: units of 100 cents
+//   kAUSamplerParam_FineTuning   902   range -99 .. 99    the remainder the coarse one leaves
+//   kAUSamplerParam_Pan          903   range -100 .. 100  the unit's own pan scale
+//
+// AVFAudio's globalTuning is documented in cents, -2400 .. +2400, against a coarse parameter of -24 ..
+// 24 - a factor of a hundred - which is what makes that parameter the coarse one and _FineTuning the
+// remainder. facts/AVFAudio/AVAudioUnitSampler.md has the host's own output.
+#define CharonSamplerParameter(scope, identifier, value) \
+    AudioUnitSetParameter(self.audioUnit, (identifier), (scope), 0, (AudioUnitParameterValue)(value), 0)
+#define CharonSamplerParameterRead(identifier) CharonSamplerParameterValue(self.audioUnit, (identifier))
+
+// AVFAudio's globalTuning, in cents, and the release's two tuning parameters. A value of a hundred
+// cents and above is the coarse parameter; below that is the remainder the coarse one cannot hold,
+// which is why the two exist and why _FineTuning's range is +/-99 and not +/-100.
+static void CharonSplitTuning(float cents, AudioUnitParameterValue *coarse, AudioUnitParameterValue *fine)
+{
+    double steps = (double)cents / 100.0;
+    double nearest = round(steps);
+    if (nearest > 24.0) nearest = 24.0;
+    if (nearest < -24.0) nearest = -24.0;
+    double remainder = (double)cents - nearest * 100.0;
+    if (remainder > 99.0) remainder = 99.0;
+    if (remainder < -99.0) remainder = -99.0;
+    *coarse = (AudioUnitParameterValue)nearest;
+    *fine = (AudioUnitParameterValue)remainder;
+}
+
 - (float)globalTuning
 {
-    return _charon_globalTuning;
+    AudioUnitParameterValue coarse = CharonSamplerParameterRead(kAUSamplerParam_CoarseTuning);
+    AudioUnitParameterValue fine = CharonSamplerParameterRead(kAUSamplerParam_FineTuning);
+    if (coarse == 0 && fine == 0) {
+        return 0.0f;
+    }
+    return (float)(coarse * 100.0 + fine);
 }
 
 - (void)setGlobalTuning:(float)globalTuning
 {
-    _charon_globalTuning = globalTuning;
+    AudioUnitParameterValue coarse = 0, fine = 0;
+    CharonSplitTuning(globalTuning, &coarse, &fine);
+    CharonSamplerParameter(kAudioUnitScope_Global, kAUSamplerParam_CoarseTuning, coarse);
+    CharonSamplerParameter(kAudioUnitScope_Global, kAUSamplerParam_FineTuning, fine);
 }
 
 - (float)masterGain
 {
-    return _charon_masterGain;
+    return (float)CharonSamplerParameterRead(kAUSamplerParam_Gain);
 }
 
 - (void)setMasterGain:(float)masterGain
 {
-    _charon_masterGain = masterGain;
+    CharonSamplerParameter(kAudioUnitScope_Global, kAUSamplerParam_Gain, masterGain);
 }
 
 - (float)overallGain
 {
+    // No parameter of the release's sampler is behind this one: it holds four - Gain, CoarseTuning,
+    // FineTuning and Pan - and none of them is an overall gain. The value is held and read back, which
+    // is what the registry's inert row says.
     return _charon_overallGain;
 }
 
@@ -173,12 +223,12 @@ static const UInt8 CharonSoundBankType = kInstrumentType_SF2Preset;
 
 - (float)stereoPan
 {
-    return _charon_stereoPan;
+    return (float)CharonSamplerParameterRead(kAUSamplerParam_Pan);
 }
 
 - (void)setStereoPan:(float)stereoPan
 {
-    _charon_stereoPan = stereoPan;
+    CharonSamplerParameter(kAudioUnitScope_Global, kAUSamplerParam_Pan, stereoPan);
 }
 
 @end
