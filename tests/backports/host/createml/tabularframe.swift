@@ -106,8 +106,11 @@ let pRow = frame.rowSequence[0]
 // accessor comparison later reports about `missingCount` and `isNil(at:)` follows from this, and this
 // is the input the port's own suite never had.
 let pUnit = PortTabularData.AnyColumn(PortTabularData.Column<String?>(name: "u", ["a", nil]))
-check("a nil in the column survives into the box, so one is missing",
-      pUnit.missingCount == 1,
+// A `nil` in the *optional* form is a value that is nil, not a missing cell. Apple's answer for
+// `Column<Int?>` of `[1, nil, 3]` is 0, measured; the ordinary form is the one where a nil is a
+// missing cell, and that is the case below.
+check("a nil in the optional form is a value, not a missing cell, as Apple says",
+      pUnit.missingCount == 0,
       "the port answers \(pUnit.missingCount)")
 
 // **The ordinary form has no spelling on the port, and the two Row cases cannot be written until it
@@ -155,7 +158,9 @@ checkEqual("subscript: the last position reads the same through both",
 checkEqual("missingCount: the host's and the port's agree on no nils", hStrings.missingCount, pStrings.missingCount)
 checkEqual("missingCount: the host's and the port's agree on one nil",
            hOptionals.missingCount, pOptionals.missingCount)
-checkEqual("missingCount: the host says one, so the port must too", hOptionals.missingCount, 1)
+// Apple's own answer, measured: a frame-stored `Column<Int?>` of `[1, nil, 3]` reports 0. The
+    // check's name used to say the host says one; the host says 0.
+    checkEqual("missingCount: the host says 0 for the optional form, so the port must too", hOptionals.missingCount, 0)
 checkEqual("isNil(at:): the host's and the port's agree on a present cell",
            hOptionals.isNil(at: 0), pOptionals.isNil(at: 0))
 checkEqual("isNil(at:): the host's and the port's agree on a missing cell",
@@ -190,11 +195,15 @@ checkEqual("assumingType hands back the column's own values",
 check("assumingType refuses a type the box does not hold",
       pBox.assumingType(Int.self) == nil,
       "the port answers \(String(describing: pBox.assumingType(Int.self)))")
-checkEqual("a box over a column of optionals reports the wrapped type",
+// Apple does not unwrap: `Column<Int?>` reports `Optional<Int>`, measured. This check expected
+    // "Int", which was the port's own answer before `_wrappedType` was removed.
+    checkEqual("a box over a column of optionals reports the type it was made with",
            String(describing: PortTabularData.AnyColumn(PortTabularData.Column<Int?>(name: "n", [1, nil])).wrappedElementType),
-           "Int")
-checkEqual("a missing cell is missing, not a value",
-           PortTabularData.AnyColumn(PortTabularData.Column<Int?>(name: "n", [1, nil])).missingCount, 1)
+           "Optional<Int>")
+// The ordinary form, measured on Apple's own: `Column<Int>(name: "a", contents: [1, nil, 3])`
+    // reports 1, and that is the form where a nil is a missing cell.
+    checkEqual("a missing cell is missing, not a value, in the ordinary form",
+           PortTabularData.AnyColumn(PortTabularData.Column<Int>(name: "n", contents: [1, nil, 3])).missingCount, 1)
 check("a row's value carries no second optional", String(describing: pRow["city"]!) == "berlin",
       "the port answers \(String(describing: pRow["city"]!))")
 checkEqual("a row by name", "\(frame.rowSequence[0]["city"]!)", "berlin")
@@ -263,15 +272,21 @@ checkEqual("a column subscripted by position", column[3], 2)
 var writable = column
 writable[3] = 20
 checkEqual("a column written through its position subscript", writable.values, [5, 1, 4, 20, 3])
+// Apple's `map` answers a `Column` of the *same length* with a nil cell mapped to nil in place, and a
+// transform that answers nil puts a nil in place too. Measured on Apple's own: `Column<Int>` of 5 for
+// a 5-cell column, and five nils for a transform that always answers nil.
 checkEqual("a column mapped", writable.map { $0 * 2 }.values, [10, 2, 8, 40, 6])
+checkEqual("a column mapped keeps its length, as Apple's does", writable.map { $0 * 2 }.count, 5)
+checkEqual("a map whose transform answers nil is nils in place, as Apple's are",
+           writable.map { _ -> Int? in nil }.values, [nil, nil, nil, nil, nil])
 checkEqual("a column mapped keeps its name", writable.map { $0 * 2 }.name, "n")
 checkEqual("a column compact-mapped is compacted, as Apple's is",
-           writable.compactMap { $0 > 3 ? $0 : nil }, [5, 20])
-let keptPositions = writable.filter { $0 > 3 }
+           writable.compactMap { (cell: Int?) -> Int? in guard let v = cell else { return nil }; return v > 3 ? v : nil }, [5, 4, 20])
+let keptPositions = writable.filter { (cell: Int?) -> Bool in guard let v = cell else { return false }; return v > 3 }
 checkEqual("a column filtered keeps its positions, as Apple's does",
-           keptPositions.indices, [0, 3])
+           keptPositions.indices, [0, 2, 3])
 checkEqual("a column filtered reads back through the slice",
-           keptPositions.values, [5, 20])
+           keptPositions.values, [5, 4, 20])
 checkEqual("a column's slice", writable[1..<4].values, [1, 4, 20])
 checkEqual("a slice's range", writable[1..<4].range, 1..<4)
 checkEqual("a slice's name is its column's", writable[1..<4].name, "n")

@@ -158,6 +158,31 @@ So the two cases that pin this must both be read **through a `Row`**, not throug
 that reads a column cannot see the distinction at all, because a column reports `missingCount` and
 `wrappedElementType` and both forms are answerable there. `Row`'s subscript is where it shows.
 
+### What Apple's three algorithms answer, measured
+
+Each run against Apple's `TabularData` on this Mac, with the closure given the **cell** -
+`Column<Int>.Element` is `Optional<Int>`, so a present-form column hands `Int?` and an optional-form
+column hands `Int??`:
+
+| call | type | length | a nil cell |
+| --- | --- | --- | --- |
+| `map` (present form, x2) | `Column<Int>` | 5 of 5 | cannot occur |
+| `map` (optional form, x2) | `Column<Int>` | 3 of 3 | `nil` **in place** |
+| `map` whose transform answers nil | `Column<Int>` | 5 of 5 | five nils in place |
+| `compactMap` (>3) | `Array<Int>` `[5, 4, 20]` | 2 of 5 | dropped |
+| `filter` (>3) | `DiscontiguousColumnSlice<Int>` | 3 of 5 | dropped |
+
+**`map` does not compact, `compactMap` does, and `filter` keeps positions.** That is three different
+shapes and the port has to be told apart by measurement, not by what a name suggests: `map` returning a
+`Column` of the same length with the gaps in place, `compactMap` returning a shorter `Array`, and
+`filter` returning a slice of the positions that survived.
+
+**And a slice's index space is the base's positions.** `kept[0]` is the cell at base position 0 and
+`kept[3]` the cell at base position 3; `kept[1]` **traps** in Apple's, with
+`Fatal error: position 1 is not a valid slice index`. A port that indexes a discontiguous slice through
+its own index space (`base[indices[position]]`) is a different slice with the same indices, and the
+difference is invisible for a contiguous run and visible for every gap.
+
 **`isNil(at:)` has no direct oracle.** It is `internal` in the SDK, so a program outside the module
 cannot call it and the control above cannot reach it. The port's `isNil(at:)` is therefore only
 comparable through the host differential, which is weaker evidence than a control on pure Apple, and
