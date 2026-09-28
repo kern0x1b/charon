@@ -128,8 +128,12 @@ into the program by the compiler; there is nothing here to define, and the regis
 configuration answers YES because the *sensor* is there, and the estimator is what is still to
 write. `ARMatteGenerator` is person segmentation on the frames. `AREnvironmentProbeAnchor` is a
 cube map of the light around a point, built from the frames. The geo family, `ARWorldMap`,
-`ARReferenceImage` and `ARReferenceObject`, `ARAppClipCodeAnchor`, `ARCollaborationData`,
+`ARReferenceObject`, `ARAppClipCodeAnchor`, `ARCollaborationData`,
 `ARParticipantAnchor` and `ARCoachingOverlayView` are not started.
+
+`ARImageAnchor` is carried: it is the anchor whose thing in the world is a printed picture, holding
+the `ARReferenceImage` the session found it from and the scale it measured against it — the tracker's
+own frames, so it rests on the same measurement as everything else the camera is the sensor for.
 
 `ARSCNView` and `ARSKView` are not absent: they are carried over this tree's SceneKit and SpriteKit
 backports, and belong to that library's registry.
