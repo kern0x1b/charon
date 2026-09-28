@@ -4,18 +4,23 @@
 // run time, and the background is the release's own wallpaper or linen where it has one.
 #import <UIKit/UIKit.h>
 #import "CharonCarPlayHome.h"
+#import "CharonCarPlayDock.h"
 
 @implementation CharonCarPlayHomeView {
     NSArray<CharonCarPlayApp *> *_apps;
     NSArray<CharonCarPlayApp *> *_recents;
     CharonCarPlayLayout _layout;
     NSUInteger _page;
+    CharonCarPlayDock *_dock;
 }
 
 @synthesize layout = _layout;
 @synthesize apps = _apps;
 @synthesize recents = _recents;
 @synthesize charon_launch = _charon_launch;
+@synthesize charon_openRecents = _charon_openRecents;
+@synthesize charon_siri = _charon_siri;
+@synthesize charon_openSettings = _charon_openSettings;
 
 - (instancetype)initWithLayout:(CharonCarPlayLayout)layout page:(NSUInteger)page
 {
@@ -34,6 +39,9 @@
             self.backgroundColor = [UIColor blackColor];
         }
         self.opaque = YES;
+        // The dock, at the side the layout leaves for it, over the background, under the grid.
+        _dock = [[CharonCarPlayDock alloc] initWithLayout:layout];
+        [self addSubview:_dock];
     }
     return self;
 }
@@ -47,6 +55,7 @@
 - (void)setRecents:(NSArray<CharonCarPlayApp *> *)recents
 {
     _recents = [recents copy] ?: @[];
+    [_dock setRecents:_recents];
     [self setNeedsDisplay];
 }
 
@@ -153,6 +162,29 @@
 }
 
 // The hit test the daemon's input goes through: which icon is under a point, if any.
+// The dock's actions, forwarded to the template: an app from the grid or from the recents, the Siri
+// button, and the settings pane. Charon's own, so none of it is API the package carries.
+- (void)charon_didTapDockRecents
+{
+    if (self.charon_openRecents) {
+        self.charon_openRecents();
+    }
+}
+
+- (void)charon_didTapDockSiri
+{
+    if (self.charon_siri) {
+        self.charon_siri();
+    }
+}
+
+- (void)charon_didTapDockSettings
+{
+    if (self.charon_openSettings) {
+        self.charon_openSettings();
+    }
+}
+
 - (CharonCarPlayApp *)charon_appAtPoint:(CGPoint)point
 {
     for (NSUInteger row = 0; row < _layout.rows; row++) {

@@ -75,6 +75,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSArray<CharonCarPlayApp *> *apps;
 @property (nonatomic, copy) NSArray<CharonCarPlayApp *> *recents;
 @property (nonatomic, copy) void (^charon_launch)(CharonCarPlayApp *app);
+// The dock's three actions. Siri on this release has no assistant class at all (measured), so
+// `charon_siri` asks for Siri to be opened on the phone and the dock dims its button where nothing
+// can act on that; the recents and the settings pane are the port's own.
+@property (nonatomic, copy) void (^charon_openRecents)(void);
+@property (nonatomic, copy) void (^charon_siri)(void);
+@property (nonatomic, copy) void (^charon_openSettings)(void);
 @end
 
 // The iOS 6 chrome, drawn in code, because the release's own is what a car screen shows: the
