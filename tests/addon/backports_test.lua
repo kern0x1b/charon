@@ -63,6 +63,43 @@ end
 -- can link, and the band for a release that already has it cannot see that it
 -- is there. The library is compiled as the package compiles it, with the
 -- compiler the toolchain names, and asked both questions of one class.
+-- The case that drives the lookup, rather than calling it: releases_in() is what places an
+-- object's API, and it is the line that was wrong. The registry spells a function with its
+-- parentheses, `foo()`, while the name releases_in() has is the symbol's, `_foo`; when it reached
+-- the registry by a raw index it found nothing, the function was unplaced, and check_releases
+-- refused the object holding it - an 18.2 function on a port whose held caches end at 18.0, which
+-- no cache and no source can place, is exactly that case. The three assertions in registry_test
+-- check entry_of's answers and the call site as text, which a fix that reverted the line would
+-- leave green; this one runs the path.
+local function placement_step(backports, opt, folder, found)
+    if not opt.sdk or not opt.clang then
+        table.insert(found, "the placement check needs an SDK and a compiler and was given neither, so it did not run")
+        return
+    end
+    local work = path.join(folder, "placement")
+    os.mkdir(path.join(work, "registry"))
+    io.writefile(path.join(work, "registry", "Place.json"),
+        '{"framework": "Place", "entries": [{"api": "foo()", "kind": "function", "introduced": "18.2",' ..
+        ' "minimum": "6.0", "status": "implemented"}]}\n')
+    local source = path.join(work, "foo.m")
+    io.writefile(source, "void foo(void) { }\n")
+    local object = path.join(work, "foo.o")
+    backports.compile({triple = "armv7-apple-ios6.0", sdkdir = opt.sdk, deployment = "6.0", cc = opt.clang}, source, object)
+    local releases, unplaced = backports.releases_in({architecture = "armv7", root = work, sdkdir = opt.sdk}, source, {object})
+    if #unplaced > 0 then
+        table.insert(found, "a function the registry names foo() must be placed by releases_in, which has the " ..
+                            "symbol's name and needs the registry's spelling: " .. table.concat(unplaced, " "))
+    end
+    if not releases["18.2"] or not releases["18.2"]["foo"] then
+        local found = {}
+        for _, version in ipairs(table.orderkeys(releases)) do
+            for _, name in ipairs(releases[version]) do table.insert(found, name .. " at " .. version) end
+        end
+        table.insert(found, "releases_in must place the function at the release the registry states, and placed: " ..
+                            (#found > 0 and table.concat(found, " ") or "nothing"))
+    end
+end
+
 local function surface_step(backports, opt, folder, found)
     local source = path.join(folder, "surface", "NSDateInterval.m")
     io.writefile(source, "#import <Foundation/Foundation.h>\n" ..
@@ -185,6 +222,7 @@ function failures(opt)
     local found = {}
     local folder = fixtures.scratch()
     digest_step(opt, folder, found)
+    placement_step(backports, opt, folder, found)
     surface_step(backports, opt, folder, found)
     floor_step(backports, opt, folder, found)
     categories_step(backports, opt, folder, found)
