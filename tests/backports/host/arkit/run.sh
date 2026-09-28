@@ -94,18 +94,24 @@ mutant() {
 # The two directions of the pairing swapped, so an anchor is looked up as though it were a node. The
 # view's own lookup, in the view's own file.
 mutant "nodeForAnchor: reads the node-keyed map" ARSCNView11.m \
-    'return [self.nodesByAnchor objectForKey:anchor];' \
-    'return [self.anchorsByNode objectForKey:anchor];'
-
-# The update dropping its texture-coordinate source, so SceneKit reads a corner source and no
-# coordinates - which a caller renders as a black quad.
+    '    SCNNode *node = [self.nodesByAnchor objectForKey:anchor];
+    if (node)
+        return node;' \
+    '    SCNNode *node = [self.anchorsByNode objectForKey:anchor];
+    if (node)
+        return node;'
 mutant "the geometry update drops its coordinate source" ARSCNPlaneGeometry.m \
     '[self charon_replaceSources:@[ positionsSource, textureSource ] elements:@[ element ]];' \
     '[self charon_replaceSources:@[ positionsSource ] elements:@[ element ]];'
 
-echo
-if [ "$survived" -eq 0 ]; then
-    echo "ok both mutants are killed: the differential can fail, and it fails for the right reason"
+# The `willUpdateNode:` message dropped: the pairing is still made, still moved and still broken, and
+# the only thing wrong is that the renderer is not told the change is coming. That is a mutation rather
+# than a different implementation, which is why it has to be listed: the view is right and the delegate
+# is under-told, and only the call order can see it.
+mutant "the willUpdateNode: call is skipped" ARSCNView11.m \
+    'if ([self.delegate respondsToSelector:@selector(renderer:willUpdateNode:forAnchor:)])' \
+    'if (NO && [self.delegate respondsToSelector:@selector(renderer:willUpdateNode:forAnchor:)])'
+    echo "ok every mutant is killed: the differential can fail, and it fails for the right reason"
 else
     echo "FAIL: $survived mutant(s) survived"
 fi

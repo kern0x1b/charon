@@ -14,6 +14,37 @@
 #import <SceneKit/SceneKit.h>
 #import "ARKitShim.h"
 
+/// A renderer that records what it was told and in what order, so the five `renderer:` methods can be
+/// checked as the sequence the framework's renderer protocol describes rather than as five calls that
+/// happen to exist.
+@interface CharonRecordingDelegate : NSObject <ARSCNViewDelegate>
+@property (nonatomic, strong) NSMutableArray<NSString *> *calls;
+@property (nonatomic, strong, nullable) SCNNode *nodeToOffer;
+@end
+
+@implementation CharonRecordingDelegate
+- (instancetype)init
+{
+    self = [super init];
+    if (self)
+        _calls = [NSMutableArray array];
+    return self;
+}
+- (SCNNode *)renderer:(id)renderer nodeForAnchor:(ARAnchor *)anchor
+{
+    [_calls addObject:@"nodeForAnchor"];
+    return _nodeToOffer;
+}
+- (void)renderer:(id)renderer didAddNode:(SCNNode *)node forAnchor:(ARAnchor *)anchor
+{ [_calls addObject:@"didAddNode"]; }
+- (void)renderer:(id)renderer willUpdateNode:(SCNNode *)node forAnchor:(ARAnchor *)anchor
+{ [_calls addObject:@"willUpdateNode"]; }
+- (void)renderer:(id)renderer didUpdateNode:(SCNNode *)node forAnchor:(ARAnchor *)anchor
+{ [_calls addObject:@"didUpdateNode"]; }
+- (void)renderer:(id)renderer didRemoveNode:(SCNNode *)node forAnchor:(ARAnchor *)anchor
+{ [_calls addObject:@"didRemoveNode"]; }
+@end
+
 static int failures = 0;
 static void Check(BOOL ok, NSString *what)
 {
@@ -109,6 +140,33 @@ int main(void)
         [view.nodesByAnchor removeObjectForKey:moved];
         Check([view nodeForAnchor:moved] == nil, @"a removed anchor has no node");
         Check([view anchorForNode:node] == anchor, @"and the node's own pairing is untouched by that");
+
+        // ---- the delegate, and the order the five calls come in ----
+        CharonRecordingDelegate *delegate = [[CharonRecordingDelegate alloc] init];
+        view.delegate = delegate;
+        ARAnchor *second = [[ARAnchor alloc] init];
+
+        [view charon_placeAnchor:second atNode:node];
+        Check([delegate.calls isEqualTo:(@[ @"didAddNode" ])], @"placing a pairing says didAddNode");
+
+        [view charon_moveAnchor:second toNode:child];
+        Check([delegate.calls isEqualTo:(@[ @"didAddNode", @"willUpdateNode", @"didUpdateNode" ])],
+              @"moving a pairing says willUpdateNode then didUpdateNode, after the add");
+
+        [view charon_removeAnchor:second];
+        Check([delegate.calls isEqualTo:(@[ @"didAddNode", @"willUpdateNode", @"didUpdateNode",
+                                             @"didRemoveNode" ])],
+              @"breaking a pairing says didRemoveNode, and it is last");
+
+        // the one the view asks for: a node for an anchor it has none of, and the pairing that follows
+        ARAnchor *third = [[ARAnchor alloc] init];
+        SCNNode *offered = [SCNNode node];
+        delegate.nodeToOffer = offered;
+        [delegate.calls removeAllObjects];
+        Check([view nodeForAnchor:third] == offered, @"the view asks the delegate for a node it has none of");
+        Check([delegate.calls isEqualTo:(@[ @"nodeForAnchor", @"didAddNode" ])],
+              @"and the node it is given is paired, which says didAddNode next");
+        Check([view anchorForNode:offered] == third, @"so the offered node answers with the anchor");
 
         // ---- the geometry sources ----
         ARSCNPlaneGeometry *geometry = [[ARSCNPlaneGeometry alloc] init];

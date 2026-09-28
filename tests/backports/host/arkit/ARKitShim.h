@@ -121,6 +121,9 @@ typedef NS_ENUM(NSInteger, UIInterfaceOrientation) {
 @property (nonatomic, strong, readonly) NSMapTable<SCNNode *, ARAnchor *> *anchorsByNode;
 @property (nonatomic, strong, readonly) NSMapTable<ARAnchor *, SCNNode *> *nodesByAnchor;
 
+- (void)charon_placeAnchor:(ARAnchor *)anchor atNode:(SCNNode *)node;
+- (void)charon_moveAnchor:(ARAnchor *)anchor toNode:(SCNNode *)node;
+- (void)charon_removeAnchor:(ARAnchor *)anchor;
 - (nullable ARAnchor *)anchorForNode:(SCNNode *)node;
 - (nullable SCNNode *)nodeForAnchor:(ARAnchor *)anchor;
 - (NSArray<ARHitTestResult *> *)hitTest:(CGPoint)point types:(ARHitTestResultType)types;

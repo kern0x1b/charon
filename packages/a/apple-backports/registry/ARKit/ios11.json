@@ -1225,10 +1225,11 @@
       "kind": "protocol",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
       "reason": "not carried here: the setting belongs to a configuration this device cannot run, and the reason is the sensor it needs rather than the chip",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "the SDK 16.4 headers of ARKit"
+      "effect": "the five renderer: methods below, on an application's own renderer. The protocol is the SDK's and is not redeclared here - a duplicate definition is ignored by the compiler - and what the port owes it is the metadata, emitted by ARSCNView11.m with a retained @protocol(ARSCNViewDelegate) because a protocol named only in a header nothing references emits no symbol, and the five calls, which the view makes",
+      "source": "the SDK 16.4 headers of ARKit",
+      "facts": "facts/ARKit/ARSCNViewFamily.md"
     },
     {
       "api": "ARSKView",
@@ -1470,7 +1471,7 @@
       "facts": "facts/ARKit/ARSCNViewFamily.md",
       "source": "ARKit of the iOS 16.4 SDK: ARSCNView.h:105-111, @protocol ARSCNViewDelegate",
       "reason": "carried: a method of the SDK's protocol, which an application's renderer conforms to",
-      "effect": "the view tells the delegate when it has placed, is about to update, has updated and has removed the node for an anchor, and asks it for a node when an anchor has none of the view's own"
+      "effect": "the view asks its delegate for a node when it has none of its own, and pairs whatever it is given - which is what makes a node for an anchor the application's rather than the session's, and the reason the protocol exists; measured in tests/backports/host/arkit, which records the calls and their order"
     },
     {
       "api": "-[ARSCNViewDelegate renderer:didAddNode:forAnchor:]",
@@ -1481,7 +1482,7 @@
       "facts": "facts/ARKit/ARSCNViewFamily.md",
       "source": "ARKit of the iOS 16.4 SDK: ARSCNView.h:105-111, @protocol ARSCNViewDelegate",
       "reason": "carried: a method of the SDK's protocol, which an application's renderer conforms to",
-      "effect": "the view tells the delegate when it has placed, is about to update, has updated and has removed the node for an anchor, and asks it for a node when an anchor has none of the view's own"
+      "effect": "said when a pairing is made, including the one made from the node the delegate just offered; measured in tests/backports/host/arkit, which records the calls and their order"
     },
     {
       "api": "-[ARSCNViewDelegate renderer:willUpdateNode:forAnchor:]",
@@ -1492,7 +1493,7 @@
       "facts": "facts/ARKit/ARSCNViewFamily.md",
       "source": "ARKit of the iOS 16.4 SDK: ARSCNView.h:105-111, @protocol ARSCNViewDelegate",
       "reason": "carried: a method of the SDK's protocol, which an application's renderer conforms to",
-      "effect": "the view tells the delegate when it has placed, is about to update, has updated and has removed the node for an anchor, and asks it for a node when an anchor has none of the view's own"
+      "effect": "said before a pairing is moved, so a renderer can prepare what is about to change; measured in tests/backports/host/arkit, which records the calls and their order"
     },
     {
       "api": "-[ARSCNViewDelegate renderer:didUpdateNode:forAnchor:]",
@@ -1503,7 +1504,7 @@
       "facts": "facts/ARKit/ARSCNViewFamily.md",
       "source": "ARKit of the iOS 16.4 SDK: ARSCNView.h:105-111, @protocol ARSCNViewDelegate",
       "reason": "carried: a method of the SDK's protocol, which an application's renderer conforms to",
-      "effect": "the view tells the delegate when it has placed, is about to update, has updated and has removed the node for an anchor, and asks it for a node when an anchor has none of the view's own"
+      "effect": "said after a pairing is moved; measured in tests/backports/host/arkit, which records the calls and their order"
     },
     {
       "api": "-[ARSCNViewDelegate renderer:didRemoveNode:forAnchor:]",
@@ -1514,7 +1515,7 @@
       "facts": "facts/ARKit/ARSCNViewFamily.md",
       "source": "ARKit of the iOS 16.4 SDK: ARSCNView.h:105-111, @protocol ARSCNViewDelegate",
       "reason": "carried: a method of the SDK's protocol, which an application's renderer conforms to",
-      "effect": "the view tells the delegate when it has placed, is about to update, has updated and has removed the node for an anchor, and asks it for a node when an anchor has none of the view's own"
+      "effect": "said when a pairing is broken; measured in tests/backports/host/arkit, which records the calls and their order"
     },
     {
       "api": "-[ARSCNPlaneGeometry planeGeometryWithDevice:]",
