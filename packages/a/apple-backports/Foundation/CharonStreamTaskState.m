@@ -10,6 +10,14 @@
 @synthesize writeOpen = _writeOpen;
 @synthesize secure = _secure;
 @synthesize captured = _captured;
+@synthesize finished = _finished;
+@synthesize openedAt = _openedAt;
 @synthesize started = _started;
+@synthesize localAddress = _localAddress;
+@synthesize localPort = _localPort;
+@synthesize remoteAddress = _remoteAddress;
+@synthesize remotePort = _remotePort;
+@synthesize tlsProtocolVersion = _tlsProtocolVersion;
+@synthesize tlsCipherSuite = _tlsCipherSuite;
 
 @end

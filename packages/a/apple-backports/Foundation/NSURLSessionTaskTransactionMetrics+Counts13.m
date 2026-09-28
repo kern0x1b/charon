@@ -23,6 +23,7 @@
 
 static char CharonTransactionCountsKey;
 static char CharonTransactionFlagsKey;
+static char CharonTransactionSocketKey;
 
 @implementation NSURLSessionTaskTransactionMetrics (CharonCounts)
 
@@ -63,6 +64,32 @@ static int64_t charon_count(NSDictionary *counts, NSString *key)
 {
     return [counts[key] longLongValue];
 }
+
+/* The socket's own four, and the two negotiated TLS values, handed to the transaction by the stream
+   task that owns the socket: a stream task runs no loader, so there is nobody else who could. */
+- (void)charon_noteSocketLocalAddress:(NSString *)address port:(NSNumber *)port
+                        remoteAddress:(NSString *)remote remotePort:(NSNumber *)remotePortNumber
+                    tlsProtocolVersion:(NSNumber *)version cipherSuite:(NSNumber *)cipher
+{
+    NSMutableDictionary *socket = objc_getAssociatedObject(self, &CharonTransactionSocketKey);
+    if (!socket) {
+        socket = [NSMutableDictionary dictionary];
+        objc_setAssociatedObject(self, &CharonTransactionSocketKey, socket, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+    if (address) socket[@"localAddress"] = address;
+    if (port) socket[@"localPort"] = port;
+    if (remote) socket[@"remoteAddress"] = remote;
+    if (remotePortNumber) socket[@"remotePort"] = remotePortNumber;
+    if (version) socket[@"tls"] = version;
+    if (cipher) socket[@"cipher"] = cipher;
+}
+
+- (NSString *)localAddress { return objc_getAssociatedObject(self, &CharonTransactionSocketKey)[@"localAddress"]; }
+- (NSNumber *)localPort { return objc_getAssociatedObject(self, &CharonTransactionSocketKey)[@"localPort"]; }
+- (NSString *)remoteAddress { return objc_getAssociatedObject(self, &CharonTransactionSocketKey)[@"remoteAddress"]; }
+- (NSNumber *)remotePort { return objc_getAssociatedObject(self, &CharonTransactionSocketKey)[@"remotePort"]; }
+- (id)negotiatedTLSProtocolVersion { return objc_getAssociatedObject(self, &CharonTransactionSocketKey)[@"tls"]; }
+- (id)negotiatedTLSCipherSuite { return objc_getAssociatedObject(self, &CharonTransactionSocketKey)[@"cipher"]; }
 
 - (int64_t)countOfRequestBodyBytesSent { return charon_count(objc_getAssociatedObject(self, &CharonTransactionCountsKey), @"sent"); }
 - (int64_t)countOfRequestBodyBytesBeforeEncoding { return charon_count(objc_getAssociatedObject(self, &CharonTransactionCountsKey), @"before"); }

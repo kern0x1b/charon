@@ -14,5 +14,15 @@
 @property BOOL writeOpen;
 @property BOOL secure;
 @property BOOL captured;
+@property BOOL finished;
+@property NSDate *openedAt;
 @property BOOL started;
+/* What the release's own stream knows about the socket underneath it, read once when it opens:
+   kCFStreamPropertySocketNativeHandle for the descriptor, then getsockname and getpeername. */
+@property NSString *localAddress;
+@property NSNumber *localPort;
+@property NSString *remoteAddress;
+@property NSNumber *remotePort;
+@property NSNumber *tlsProtocolVersion;
+@property NSNumber *tlsCipherSuite;
 @end

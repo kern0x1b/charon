@@ -1,8 +1,13 @@
 #import <Foundation/Foundation.h>
 #import <CoreFoundation/CFStream.h>
 #import "CharonStreamTaskState.h"
+#import "CharonURLSessionMetrics.h"
 #import <objc/runtime.h>
 #include <unistd.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <Security/SecureTransport.h>
 
 /* The four callbacks of NSURLSessionStreamDelegate that this file makes. The protocol is declared
    here, under the SDK's own spelling, so that the port's library carries it: the band machinery and
@@ -36,6 +41,55 @@
    being handed to the application, and the write side closing. */
 
 static char CharonStreamTaskStateKey;
+
+/* The address and the port of a socket, in the form the header's properties answer: the address as
+   a string and the port as a number. Both come out of the descriptor the release's own stream gives
+   us through kCFStreamPropertySocketNativeHandle -- measured in the 6.1.3 armv7 cache as a
+   CoreFoundation export -- so nothing here is a second socket stack. */
+static void charon_socket_name(int descriptor, BOOL local, NSString **address, NSNumber **port)
+{
+    struct sockaddr_in name;
+    socklen_t length = sizeof(name);
+    int asked = local ? getsockname(descriptor, (struct sockaddr *)&name, &length)
+                      : getpeername(descriptor, (struct sockaddr *)&name, &length);
+    if (asked != 0 || name.sin_family != AF_INET)
+        return;
+    char text[INET_ADDRSTRLEN];
+    if (!inet_ntop(AF_INET, &name.sin_addr, text, sizeof(text)))
+        return;
+    if (address)
+        *address = @(text);
+    if (port)
+        *port = @(ntohs(name.sin_port));
+}
+
+/* The negotiated version and cipher out of the release's own TLS session, which is the stream's
+   kCFStreamPropertySSLContext once -startSecureConnection has made one. Both are read through public
+   SecureTransport (measured in the 6.1.3 armv7 cache as Security exports), so nothing here
+   negotiates anything: the release's stream did that, and these are the two numbers it agreed on. */
+static void charon_negotiated_tls(CFReadStreamRef stream, NSNumber **version, NSNumber **cipher)
+{
+    CFTypeRef context = CFReadStreamCopyProperty(stream, kCFStreamPropertySSLContext);
+    if (!context)
+        return;
+    SSLProtocol got = kSSLProtocolUnknown;
+    if (SSLGetNegotiatedProtocolVersion((SSLContextRef)context, &got) == noErr && version)
+        *version = @(got);
+    SSLCipherSuite agreed = 0;
+    if (SSLGetNegotiatedCipher((SSLContextRef)context, &agreed) == noErr && agreed && cipher)
+        *cipher = @(agreed);
+    CFRelease(context);
+}
+
+static int charon_native_descriptor(CFReadStreamRef stream)
+{
+    CFTypeRef handle = CFReadStreamCopyProperty(stream, kCFStreamPropertySocketNativeHandle);
+    if (!handle)
+        return -1;
+    int descriptor = (int)(intptr_t)handle;
+    CFRelease(handle);
+    return descriptor;
+}
 
 @interface NSURLSessionStreamTask ()
 @property (nonatomic, strong) NSURLSession *session;
@@ -86,6 +140,7 @@ static char CharonStreamTaskStateKey;
     NSOutputStream *output = nil;
     [NSStream getStreamsToHostWithName:self.hostName ?: @"localhost" port:self.hostPort
                           inputStream:&input outputStream:&output];
+    state.openedAt = [NSDate date];
     state.input = input;
     state.output = output;
     /* The streams are read and written on the run loop of the thread that resumed the task, which is
@@ -94,6 +149,7 @@ static char CharonStreamTaskStateKey;
     [output scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
     [input open];
     [output open];
+    [self charon_readSocketNamesForInput:input];
     [self charon_tellDelegate:@selector(URLSession:streamTask:didBecomeInputStream:outputStream:) input:input];
 }
 
@@ -101,6 +157,80 @@ static char CharonStreamTaskStateKey;
 {
     [self charon_open];
     [super resume];
+}
+
+/* What the release's own stream knows about the socket underneath it, read once when it opens. */
+- (void)charon_readSocketNamesForInput:(NSInputStream *)input
+{
+    NSURLSessionStreamTaskState *state = objc_getAssociatedObject(self, &CharonStreamTaskStateKey);
+    int descriptor = charon_native_descriptor((__bridge CFReadStreamRef)input);
+    if (descriptor < 0)
+        return;
+    /* The four are written through the setters, not into the properties, so the two reads are the
+       only place that knows the order the descriptor is asked in. */
+    NSString *localAddress = nil, *remoteAddress = nil;
+    NSNumber *localPort = nil, *remotePort = nil;
+    charon_socket_name(descriptor, YES, &localAddress, &localPort);
+    charon_socket_name(descriptor, NO, &remoteAddress, &remotePort);
+    NSNumber *version = nil, *cipher = nil;
+    charon_negotiated_tls((__bridge CFReadStreamRef)input, &version, &cipher);
+    state.tlsProtocolVersion = version;
+    state.tlsCipherSuite = cipher;
+    state.localAddress = localAddress;
+    state.localPort = localPort;
+    state.remoteAddress = remoteAddress;
+    state.remotePort = remotePort;
+}
+
+/* The task's metrics, handed to the delegate the way a data task's arrive.
+
+   A stream task runs no loader, so there is nothing else that would build them: this is the whole
+   delivery. One transaction, carrying the request the task was made with, the four names of the
+   socket and the two negotiated TLS values the release's own stream and TLS session hold, and the
+   dates the transaction's own initializer writes. It goes to the delegate on the session's delegate
+   queue -- the session's own queue when it has one, the main queue otherwise -- because that is where
+   every other delegate call of this session arrives. */
+- (void)charon_finishMetrics
+{
+    NSURLSessionStreamTaskState *state = objc_getAssociatedObject(self, &CharonStreamTaskStateKey);
+    if (state.finished)
+        return;
+    state.finished = YES;
+    NSURLSession *session = self.session;
+    id<NSURLSessionDelegate> sessionDelegate = session.delegate;
+    SEL selector = NSSelectorFromString(@"URLSession:task:didFinishCollectingMetrics:");
+    if (![sessionDelegate respondsToSelector:selector])
+        return;
+
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:
+                                    [NSString stringWithFormat:@"stream://%@:%@", self.hostName ?: @"localhost",
+                                     @(self.hostPort)]]];
+    NSURLSessionTaskTransactionMetrics *transaction =
+        [[NSURLSessionTaskTransactionMetrics alloc] initCharonWithRequest:request
+                                                                fetchType:NSURLSessionTaskMetricsResourceFetchTypeNetworkLoad];
+    [transaction charon_noteSocketLocalAddress:state.localAddress port:state.localPort
+                                 remoteAddress:state.remoteAddress remotePort:state.remotePort
+                             tlsProtocolVersion:state.tlsProtocolVersion cipherSuite:state.tlsCipherSuite];
+    [transaction charon_finished];
+    NSDate *end = [NSDate date];
+    NSURLSessionTaskMetrics *metrics =
+        [[NSURLSessionTaskMetrics alloc] initCharonWithTransactions:@[transaction] start:state.openedAt ?: end end:end];
+
+    void (^deliver)(void) = ^{
+        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:
+                                    [(NSObject *)sessionDelegate methodSignatureForSelector:selector]];
+        invocation.selector = selector;
+        invocation.target = sessionDelegate;
+        [invocation setArgument:&session atIndex:2];
+        [invocation setArgument:&self atIndex:3];
+        [invocation setArgument:&metrics atIndex:4];
+        [invocation invoke];
+    };
+    NSOperationQueue *queue = session.delegateQueue;
+    if (queue)
+        [queue addOperationWithBlock:deliver];
+    else
+        dispatch_async(dispatch_get_main_queue(), deliver);
 }
 
 - (id<NSURLSessionStreamDelegate>)charon_delegate
@@ -231,6 +361,8 @@ static char CharonStreamTaskStateKey;
         return;
     state.readOpen = NO;
     [state.input close];
+    if (!state.writeOpen)
+        [self charon_finishMetrics];
     [self charon_tellDelegate:@selector(URLSession:readClosedForStreamTask:) input:nil];
 }
 
@@ -241,6 +373,8 @@ static char CharonStreamTaskStateKey;
         return;
     state.writeOpen = NO;
     [state.output close];
+    if (!state.readOpen)
+        [self charon_finishMetrics];
     [self charon_tellDelegate:@selector(URLSession:writeClosedForStreamTask:) input:nil];
 }
 
