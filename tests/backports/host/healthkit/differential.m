@@ -138,6 +138,11 @@
 - (id)copy;
 @end
 
+@interface CharonHostHKSource : NSObject
++ (instancetype)defaultSource;
+@property (readonly, copy) NSString *bundleIdentifier;
+@end
+
 @interface CharonHostHKSourceRevision : NSObject
 - (instancetype)initWithSource:(HKSource *)source
                        version:(nullable NSString *)version
@@ -820,6 +825,14 @@ static void CharonHKQueryObjects(void)
     NSDictionary *mismatched = @{ @"metadata": @{ HKMetadataKeySyncIdentifier: @"other" } };
     // The collection query is the sixth of the six, and the port's own five-argument initialiser is
     // checked: the type, the predicate, the options, the anchor and the interval it keeps, and the
+    // The host's own sample query on the same predicate, asked for once here so the collection block
+    // below has something of the host's to compare against.
+    HKSampleQuery *theirsByPredicate = [[HKSampleQuery alloc] initWithSampleType:stepCount
+                                                                       predicate:predicate
+                                                                           limit:HKObjectQueryNoLimit
+                                                                    sortDescriptors:nil
+                                                                     resultsHandler:nil];
+
     // predicate's own answer. The host's release of the class carries no five-argument initialiser the
     // 16.4 header declares and the one it does carry raises, so nothing is compared here that the
     // host cannot answer, and the host's own members are asked of the queries it does build, below.
@@ -838,17 +851,18 @@ static void CharonHKQueryObjects(void)
                     stepCount.identifier);
     // The predicate it was made with, and the answers it gives to a matching and a mismatching object.
     CharonHKCompare(@"collection query predicate", mineCollection.predicate, predicate);
+    // The same two objects the block below uses. These two lines were still evaluating the predicate
+    // against an object with no metadata key - the predicate reads metadata.<key>, so it found nothing and
+    // the port answered NO, correctly, while the constant beside it said YES. The port was not wrong and
+    // the expectation was; both now go through matching and mismatched.
     CharonHKCompareBool(@"collection query predicate evaluates a match",
-                        [mineCollection.predicate evaluateWithObject:@{@"HKSourceSyncIdentifier": @"sync"}], YES);
+                        [mineCollection.predicate evaluateWithObject:matching],
+                        [theirsByPredicate.predicate evaluateWithObject:matching]);
     CharonHKCompareBool(@"collection query predicate rejects a mismatch",
-                        [mineCollection.predicate evaluateWithObject:@{@"HKSourceSyncIdentifier": @"other"}], NO);
+                        [mineCollection.predicate evaluateWithObject:mismatched],
+                        [theirsByPredicate.predicate evaluateWithObject:mismatched]);
     // and the same predicate as the host's own sample query and statistics query answer it, so the two
     // are compared rather than one against a constant
-    HKSampleQuery *theirsByPredicate = [[HKSampleQuery alloc] initWithSampleType:stepCount
-                                                                       predicate:predicate
-                                                                           limit:HKObjectQueryNoLimit
-                                                                    sortDescriptors:nil
-                                                                     resultsHandler:nil];
     CharonHostHKSampleQuery *mineByPredicate = [[CharonHostHKSampleQuery alloc] initWithSampleType:mineStepCount
                                                                                            predicate:predicate
                                                                                                limit:HKObjectQueryNoLimit
@@ -1030,11 +1044,27 @@ static void CharonHK11Group(void)
                     [HKUnit smallCalorieUnit].unitString);
     CharonHKCompare(@"largeCalorieUnit unitString", [CharonHostHKUnit largeCalorieUnit].unitString,
                     [HKUnit largeCalorieUnit].unitString);
-    CharonHKCompareDouble(@"internationalUnit in a count",
-                          [[CharonHostHKQuantity quantityWithUnit:[CharonHostHKUnit internationalUnit] doubleValue:1.0]
-                              doubleValueForUnit:[CharonHostHKUnit countUnit]],
-                          [[HKQuantity quantityWithUnit:[HKUnit internationalUnit] doubleValue:1.0]
-                              doubleValueForUnit:[HKUnit countUnit]]);
+    // A conversion between two dimensions is the release's own refusal on both sides, and the refusal
+    // is the answer: the host's doubleValueForUnit: raises for two dimensions and so does this port's,
+    // and the run used to abort because the port's was called outside a @try. Both are asked inside one
+    // and the answers are compared, a value or a refusal.
+    BOOL mineRefused = NO, theirsRefused = NO;
+    double mineValue = 0.0, theirsValue = 0.0;
+    @try {
+        mineValue = [[CharonHostHKQuantity quantityWithUnit:[CharonHostHKUnit internationalUnit] doubleValue:1.0]
+                        doubleValueForUnit:[CharonHostHKUnit countUnit]];
+    } @catch (NSException *exception) {
+        mineRefused = YES;
+    }
+    @try {
+        theirsValue = [[HKQuantity quantityWithUnit:[HKUnit internationalUnit] doubleValue:1.0]
+                          doubleValueForUnit:[HKUnit countUnit]];
+    } @catch (NSException *exception) {
+        theirsRefused = YES;
+    }
+    CharonHKCompareBool(@"internationalUnit into a count is refused on both sides", mineRefused, theirsRefused);
+    if (!mineRefused && !theirsRefused)
+        CharonHKCompareDouble(@"internationalUnit in a count", mineValue, theirsValue);
     CharonHKCompareDouble(@"smallCalorieUnit in a joule",
                           [[CharonHostHKQuantity quantityWithUnit:[CharonHostHKUnit smallCalorieUnit] doubleValue:1.0]
                               doubleValueForUnit:[CharonHostHKUnit jouleUnit]],
@@ -1051,7 +1081,7 @@ static void CharonHK11Group(void)
     // archive they survive, and the sentinels the header declares, none of which needs a store.
     NSOperatingSystemVersion fifteenOneZero = {15, 1, 0};
     CharonHostHKSourceRevision *mineRevision =
-        [[CharonHostHKSourceRevision alloc] initWithSource:[HKSource defaultSource]
+        [[CharonHostHKSourceRevision alloc] initWithSource:[CharonHostHKSource defaultSource]
                                                   version:@"1.0"
                                               productType:@"iPhone"
                                      operatingSystemVersion:fifteenOneZero];
