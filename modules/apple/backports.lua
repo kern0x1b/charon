@@ -100,6 +100,10 @@ end
 -- classes it invents for itself and the ivars of the classes it implements.
 -- None of that is API - a release that already has a class exports its own
 -- ivars, not these - so it is neither weighed against a release nor exported.
+-- The store key of each object this process placed or compiled (object_key), and the symbols read
+-- out of those objects, by key.
+local KEYS, SYMBOLS = {}, {}
+
 local function internal_symbol(name)
     if name:startswith("_OBJC_IVAR_$_") or name:find("$shim", 1, true) then
         return true
@@ -108,7 +112,21 @@ local function internal_symbol(name)
     return bare:startswith("charon_") or bare:startswith("Charon")
 end
 
-local function symbols_where(file, wanted)
+local function symbols_where(file, wanted, kind)
+    -- an object of the store never changes under its key, and a gate reads each one's symbols three
+    -- times over (minimums, the release check, the link)
+    local memo = kind and KEYS[file] and (KEYS[file] .. kind)
+    if memo and SYMBOLS[memo] then
+        return SYMBOLS[memo]
+    end
+    local found = symbols_of(file, wanted)
+    if memo then
+        SYMBOLS[memo] = found
+    end
+    return found
+end
+
+function symbols_of(file, wanted)
     local data = macho.read(file)
     local found = {}
     for _, image in ipairs(macho.images(data)) do
@@ -130,7 +148,7 @@ end
 local function defined_symbols(file, hidden)
     return symbols_where(file, function (kind)
         return kind & 0xE0 == 0 and kind & 0x0E == 0x0E and (hidden or (kind & 0x10 == 0 and kind & 0x01 ~= 0))
-    end)
+    end, hidden and "hidden" or "defined")
 end
 
 -- What an object needs another file to define (nm -u): external, undefined, and not a common symbol,
@@ -138,7 +156,7 @@ end
 local function undefined_symbols(file)
     return symbols_where(file, function (kind, value)
         return kind & 0xE0 == 0 and kind & 0x0E == 0 and kind & 0x01 ~= 0 and value == 0
-    end)
+    end, "undefined")
 end
 
 local function exported_symbols(file)
@@ -200,6 +218,113 @@ local function clang(opt, arguments, objective_c)
     return driver(opt, given)
 end
 
+-- The object store (opt.store): an object kept under a key of everything its compile reads that can
+-- change, so that a build hands back an object it already has without starting a process. A ccache
+-- hit is not that: it is a process, which hashes the preprocessor's inputs, stats every SDK header
+-- it read and copies the object out - measured 30-60 ms a unit under the fleet's load, 2331 units a
+-- gate at four cores, which was the whole of the 21-29 s every gate spent "compiling" a tree nothing
+-- in had changed. The key is the compiler, its arguments with the checkout's own path taken out (as
+-- ccache's base_dir takes it out, so every worktree shares one entry), the source, and every header
+-- of the checkout the source reaches through #include/#import, by content. Headers outside the
+-- checkout - the SDK, the compiler's own, an archive's include folder - sit under installdirs whose
+-- names are the hash of what they hold, and are in the key through the paths in the arguments.
+-- A directive the scan cannot read (a macro in place of a name) leaves the unit out of the store,
+-- compiled every time as before. Reading a directive in a block the preprocessor skips only adds a
+-- header to the key, which costs a rebuild and never a stale object.
+local SCANNED, CONTENT = {}, {}
+
+local function directives(file)
+    local found = SCANNED[file]
+    if found == nil then
+        found = {}
+        for line in io.readfile(file):gmatch("[^\n]+") do
+            local rest = line:match("^%s*#%s*include_next(.*)$") or line:match("^%s*#%s*include(.*)$") or line:match("^%s*#%s*import(.*)$")
+            if rest then
+                local open, name = rest:match('^%s*(["<])([^">]+)[">]')
+                if not open then
+                    found = false
+                    break
+                end
+                table.insert(found, {quoted = open == '"', name = name})
+            end
+        end
+        SCANNED[file] = found
+    end
+    return found
+end
+
+local function content(file)
+    CONTENT[file] = CONTENT[file] or hash.strhash128(io.readfile(file))
+    return CONTENT[file]
+end
+
+-- Every header of the checkout the source reaches, in the order first reached, or nil when a
+-- directive on the way cannot be read. A quoted name is looked for beside the file that names it and
+-- then in the -I folders, an angled one in the -I folders, as clang looks; every folder that holds
+-- the name counts, not only the first, so a header shadowed by another is still in the key.
+local function reached(source, folders)
+    local seen, order = {}, {}
+    local function visit(file)
+        local found = directives(file)
+        if not found then
+            return false
+        end
+        for _, include in ipairs(found) do
+            local candidates = include.quoted and {path.directory(file)} or {}
+            table.join2(candidates, folders)
+            for _, folder in ipairs(candidates) do
+                local header = path.normalize(path.join(folder, include.name))
+                if not seen[header] and os.isfile(header) then
+                    seen[header] = true
+                    table.insert(order, header)
+                    if visit(header) == false then
+                        return false
+                    end
+                end
+            end
+        end
+        return true
+    end
+    if visit(source) == false then
+        return nil
+    end
+    return order
+end
+
+function object_key(opt, program, arguments, source, object)
+    if not opt.store or not opt.root then
+        return nil
+    end
+    local checkout = path.normalize(path.join(path.absolute(opt.root), "..", "..", ".."))
+    local function portable(text)
+        local at = text:find(checkout, 1, true)
+        return at and text:sub(1, at - 1) .. "@checkout" .. portable(text:sub(at + #checkout)) or text
+    end
+    local folders = {}
+    for index, argument in ipairs(arguments) do
+        local folder = argument:match("^%-I(.+)$") or (argument == "-I" and arguments[index + 1])
+        if folder then
+            folder = path.normalize(path.absolute(folder))
+            if folder:startswith(checkout) then
+                table.insert(folders, folder)
+            end
+        end
+    end
+    local headers = reached(source, folders)
+    if not headers then
+        return nil
+    end
+    local parts = {"charon-object-1", program}
+    for _, argument in ipairs(arguments) do
+        table.insert(parts, argument == object and "@object" or portable(argument))
+    end
+    table.insert(parts, content(source))
+    for _, header in ipairs(headers) do
+        table.insert(parts, portable(header) .. "=" .. content(header))
+    end
+    return hash.strhash128(table.concat(parts, "\n"))
+end
+
 -- Only C is compiled hidden. The classes of a backport are the API it carries,
 -- and the headers of the release declare a Foundation class without the
 -- visibility UIKit gives its own, so -fvisibility=hidden makes clang hide every
@@ -213,7 +338,7 @@ end
 -- the inline functions of their headers stay hidden, as the archives' own symbols are. Every .mm
 -- backport is compiled so: one that needs RTTI for another reason (typeid, dynamic_cast) cannot
 -- have it here.
-function compile(opt, source, object, library)
+local function unit(opt, source, object)
     -- The source, absolute, whatever the caller passed. ccache keys an entry on the preprocessed
     -- source with its paths rewritten (base_dir, hash_dir = false), so two spellings of one path are
     -- one key - and it hands back the object verbatim as the run that stored it wrote it, that path
@@ -248,11 +373,62 @@ function compile(opt, source, object, library)
         table.insert(arguments, "-I" .. opt.archives[name].includedir)
     end
     local program, arguments = clang(opt, table.join(arguments, {"-c", source, "-o", object}), objective_c)
+    local key = object_key(opt, program, arguments, source, object)
+    KEYS[object] = key
+    return program, arguments, key and path.join(opt.store, key:sub(1, 2), key .. ".o")
+end
+
+-- The object of one unit at object, from the store when it holds it: true when the compiler ran.
+local function place(object, stored)
+    -- Removed first either way: the object may be a link into the store from an earlier run, and a
+    -- compile must not write through it.
+    os.tryrm(object)
+    if stored and os.isfile(stored) then
+        os.ln(stored, object)
+        -- the store is swept by age (sweep_store), and an entry a build still takes is not old
+        os.touch(stored)
+        return true
+    end
+    return false
+end
+
+function compile(opt, source, object, library)
+    local program, arguments, stored = unit(opt, source, object)
+    if place(object, stored) then
+        return false
+    end
     -- Through the cache, which is apple.cache: it puts the compiler in as the wrapper's first
     -- argument, because os.execv runs a name it cannot execute itself by splitting that name on
     -- spaces, and a checkout under a path with a space in it has to survive that. The link below
     -- goes through driver() and no cache: a cache holds compilations, not links.
     os.vrunv(cache.wrapped(program, arguments))
+    if stored then
+        os.mkdir(path.directory(stored))
+        local temporary = stored .. "." .. hash.strhash32(object .. os.mclock()) .. ".tmp"
+        os.cp(object, temporary)
+        os.mv(temporary, stored)
+    end
+    return true
+end
+
+-- The entries of the store no build has taken for older than seconds, removed: an entry is touched
+-- each time a build takes it, so what goes is what no tree still builds. At most once an hour, since
+-- a gate is every few minutes and a walk of the store is not free.
+function sweep_store(store, seconds)
+    local mark = path.join(store, "swept")
+    if os.isfile(mark) and os.time() - os.mtime(mark) < 3600 then
+        return
+    end
+    os.mkdir(store)
+    io.writefile(mark, "")
+    local now, removed = os.time(), 0
+    for _, file in ipairs(os.files(path.join(store, "**"))) do
+        if file ~= mark and now - os.mtime(file) > seconds then
+            os.tryrm(file)
+            removed = removed + 1
+        end
+    end
+    return removed
 end
 
 -- How many units this build may compile at once. The caller may lower it, and heavy.sh raises it
@@ -290,17 +466,30 @@ local COMPILED
 -- are numbered in, which the link reads them in, is built before this and never touched here.
 local function compile_all(opt, jobs)
     local count = width(opt)
-    COMPILED = (COMPILED or 0) + #jobs
-    if count <= 1 or #jobs < 2 then
-        for _, job in ipairs(jobs) do
-            compile(job.opt, job.source, job.object, job.library)
+    -- What the store already holds is placed here, in this coroutine, with no process started: only
+    -- the rest is handed to the job runner.
+    local missing = {}
+    for _, job in ipairs(jobs) do
+        local _, _, stored = unit(job.opt, job.source, job.object)
+        if not place(job.object, stored) then
+            table.insert(missing, job)
+        end
+    end
+    COMPILED = COMPILED or 0
+    if count <= 1 or #missing < 2 then
+        for _, job in ipairs(missing) do
+            if compile(job.opt, job.source, job.object, job.library) then
+                COMPILED = COMPILED + 1
+            end
         end
         return
     end
     import("async.runjobs")("backports", function (index)
-        local job = jobs[index]
-        compile(job.opt, job.source, job.object, job.library)
-    end, {comax = count, total = #jobs})
+        local job = missing[index]
+        if compile(job.opt, job.source, job.object, job.library) then
+            COMPILED = COMPILED + 1
+        end
+    end, {comax = count, total = #missing})
 end
 
 local function sections_of(file)
@@ -541,7 +730,32 @@ end
 
 local INVENTORIES = {}
 
+-- The Objective-C inventory of a release's cache is a function of the cache file and of the code that
+-- reads it, and reading it is most of what a gate spends linking (measured: 3.9 s of a quiet machine's
+-- time, loaded back in 0.4 s). So a build with a store keeps it there, under the cache's path, size
+-- and time and the text of the modules that read it.
+local INVENTORY_STORE
+
 local function release_inventory(cache)
+    if not INVENTORIES[cache] and INVENTORY_STORE and os.isfile(cache) then
+        local parts = {"charon-inventory-1", cache, tostring(os.filesize(cache)), tostring(os.mtime(cache))}
+        for _, name in ipairs({"objc.lua", "dyld.lua", "macho.lua"}) do
+            table.insert(parts, hash.strhash128(io.readfile(path.join(os.scriptdir(), name))))
+        end
+        local key = hash.strhash128(table.concat(parts, "\n"))
+        local file = path.join(INVENTORY_STORE, "inventories", key .. ".lua")
+        local saved = os.isfile(file) and io.load(file)
+        if saved then
+            os.touch(file)
+        else
+            saved = objc.inventory(cache)
+            os.mkdir(path.directory(file))
+            local temporary = file .. "." .. hash.strhash32(cache .. os.mclock()) .. ".tmp"
+            io.save(temporary, saved)
+            os.mv(temporary, file)
+        end
+        INVENTORIES[cache] = saved
+    end
     INVENTORIES[cache] = INVENTORIES[cache] or objc.inventory(cache)
     return INVENTORIES[cache]
 end
@@ -572,6 +786,43 @@ function cxx_runtime(opt, library, releases, folder)
     table.sort(symbols)
     os.mkdir(folder)
     return {write_stub(opt.architecture, folder, libstdcxx, symbols, {})}
+end
+
+-- The key of one link for the store: the linker's arguments with the run's own folders taken out,
+-- every file they name by content (an object by its store key, which is its content's cause), and the
+-- install paths the link rewrites afterwards. What the link then checks is checked on the copy too.
+function linked_key(opt, program, arguments, real_paths, outputdir, output)
+    if not opt.store then
+        return nil
+    end
+    local parts = {"charon-link-1", program}
+    local folders = {{outputdir, "@outputdir"}, {opt.builddir, "@builddir"}}
+    for _, argument in ipairs(arguments) do
+        local text = argument
+        for _, folder in ipairs(folders) do
+            if folder[1] then
+                local at = text:find(folder[1], 1, true)
+                while at do
+                    text = text:sub(1, at - 1) .. folder[2] .. text:sub(at + #folder[1])
+                    at = text:find(folder[1], at + #folder[2], true)
+                end
+            end
+        end
+        table.insert(parts, text)
+        local file = argument:match("^%-Wl,%-[%w_]+,(.+)$") or argument
+        if file ~= output and os.isfile(file) then
+            table.insert(parts, KEYS[file] or hash.strhash128(io.readfile(file)))
+        end
+        local other = argument:match("^%-l(.+)$")
+        if other then
+            local dylib = path.join(outputdir, "lib" .. other .. ".dylib")
+            table.insert(parts, os.isfile(dylib) and hash.strhash128(io.readfile(dylib)) or "none")
+        end
+    end
+    for _, framework in ipairs(table.orderkeys(real_paths)) do
+        table.insert(parts, framework .. "=" .. real_paths[framework])
+    end
+    return hash.strhash128(table.concat(parts, "\n"))
 end
 
 local function link(opt, library, attach, objects, releases, outputdir, checked)
@@ -690,18 +941,32 @@ local function link(opt, library, attach, objects, releases, outputdir, checked)
         io.writefile(list, table.concat(table.unique(internal), "\n") .. "\n")
         table.insert(arguments, "-Wl,-unexported_symbols_list," .. list)
     end
-    os.vrunv(driver(opt, arguments))
-    local embedded
-    for _, framework in ipairs(library.frameworks) do
-        local real = real_paths[framework]
-        if real then
-            embedded = embedded or macho.images(macho.read(output))[1].libraries
-            local suffix = "/" .. framework .. ".framework/" .. framework
-            for _, current in ipairs(embedded) do
-                if current:endswith(suffix) and current ~= real then
-                    os.vrunv("xcrun", {"install_name_tool", "-change", current, real, output})
+    local program, argv = driver(opt, arguments)
+    local stored = linked_key(opt, program, argv, real_paths, outputdir, output)
+    stored = stored and path.join(opt.store, "links", stored:sub(1, 2), stored .. ".dylib")
+    if stored and os.isfile(stored) then
+        os.cp(stored, output)
+        os.touch(stored)
+    else
+        os.vrunv(program, argv)
+        local embedded
+        for _, framework in ipairs(library.frameworks) do
+            local real = real_paths[framework]
+            if real then
+                embedded = embedded or macho.images(macho.read(output))[1].libraries
+                local suffix = "/" .. framework .. ".framework/" .. framework
+                for _, current in ipairs(embedded) do
+                    if current:endswith(suffix) and current ~= real then
+                        os.vrunv("xcrun", {"install_name_tool", "-change", current, real, output})
+                    end
                 end
             end
+        end
+        if stored then
+            os.mkdir(path.directory(stored))
+            local temporary = stored .. "." .. hash.strhash32(output .. os.mclock()) .. ".tmp"
+            os.cp(output, temporary)
+            os.mv(temporary, stored)
         end
     end
     if sections_of(output)["__DATA,__objc_catlist"] then
@@ -1257,6 +1522,7 @@ function minimums(listed, objects, architecture, deployment)
 end
 
 function build(opt)
+    INVENTORY_STORE = opt.store
     local release = loaded(opt.cache, opt.architecture)
     opt = table.join(opt, {triple = opt.architecture .. "-apple-ios" .. opt.deployment})
     -- What the run spent, in the run's own output. A build that prints only its verdict cannot be
@@ -1428,7 +1694,26 @@ end
 -- one pass can name every such object instead of stopping at the first. A name arrives with the
 -- first of its symbols: a release can export a class without its metaclass (NaturalLanguage of
 -- 12.0 exports _OBJC_CLASS_$_NLTokenizer, and its metaclass only from 16.0), and the class is the API.
-function releases_in(opt, source, object)
+-- What releases_in() measures of one object before the registry is asked: its names in the order
+-- of its symbols, and for each the release the held caches or the SDK's header place it at, or false.
+-- It is a function of the object, the source and the headers it was compiled from and the held
+-- ladder, so an object of the store keeps it beside itself; the registry, which a stack changes
+-- more often than any of those, is asked again every time.
+local function measured_names(opt, source, object)
+    local file
+    if opt.store and KEYS[object] then
+        local signature = {}
+        for _, step in ipairs(ladder(opt.architecture)) do
+            table.insert(signature, step.release .. "=" .. step.architecture .. "=" .. step.source)
+        end
+        local key = hash.strhash128("charon-releases-1\n" .. KEYS[object] .. "\n" .. opt.sdkdir .. "\n" .. table.concat(signature, "\n"))
+        file = path.join(opt.store, "releases", key:sub(1, 2), key .. ".lua")
+        local saved = os.isfile(file) and io.load(file)
+        if saved then
+            os.touch(file)
+            return saved.names, saved.earliest
+        end
+    end
     local names, earliest = {}, {}
     local symbols = exported_symbols(object)
     local first = measured_introduced(opt, symbols)
@@ -1444,25 +1729,43 @@ function releases_in(opt, source, object)
             earliest[name] = version
         end
     end
+    for _, name in ipairs(names) do
+        if not earliest[name] then
+            local dump = os.iorunv(clang(opt, {"-fsyntax-only", "-w", "-Xclang", "-ast-dump", "-Xclang", "-ast-dump-filter", "-Xclang", name, source}, true))
+            earliest[name] = introduced_version(dump, name) or false
+        end
+    end
+    if file then
+        os.mkdir(path.directory(file))
+        local temporary = file .. "." .. hash.strhash32(object .. os.mclock()) .. ".tmp"
+        io.save(temporary, {names = names, earliest = earliest})
+        os.mv(temporary, file)
+    end
+    return names, earliest
+end
+
+function releases_in(opt, source, object)
+    local names, measured = measured_names(opt, source, object)
+    local earliest = {}
+    for _, name in ipairs(names) do
+        local version = measured[name] or nil
+        if not version then
+            -- API that is Foundation's own and in no header of the SDK, which a
+            -- backport still carries under Apple's name because an archive holds
+            -- it: the registry is what says when it arrived.
+            -- Through entry_of, not a raw lookup: the registry spells a function with its
+            -- parentheses and a member with its class, and the name here is the symbol's, so
+            -- `listed[name]` misses every function the registry carries. An 18.2 function on a
+            -- port whose held caches end at 18.0 is exactly that case: no cache places it, the
+            -- source says nothing, and the registry is the only thing that knows.
+            local entry = entry_of(listed(opt.root), name)
+            version = entry and entry.status == "implemented" and entry.introduced or nil
+        end
+        earliest[name] = version or false
+    end
     local releases, unplaced = {}, {}
     for _, name in ipairs(names) do
         local version = earliest[name] or nil
-        if not version then
-            local dump = os.iorunv(clang(opt, {"-fsyntax-only", "-w", "-Xclang", "-ast-dump", "-Xclang", "-ast-dump-filter", "-Xclang", name, source}, true))
-            version = introduced_version(dump, name)
-            if not version then
-                -- API that is Foundation's own and in no header of the SDK, which a
-                -- backport still carries under Apple's name because an archive holds
-                -- it: the registry is what says when it arrived.
-                -- Through entry_of, not a raw lookup: the registry spells a function with its
-                -- parentheses and a member with its class, and the name here is the symbol's, so
-                -- `listed[name]` misses every function the registry carries. An 18.2 function on a
-                -- port whose held caches end at 18.0 is exactly that case: no cache places it, the
-                -- source says nothing, and the registry is the only thing that knows.
-                local entry = entry_of(listed(opt.root), name)
-                version = entry and entry.status == "implemented" and entry.introduced or nil
-            end
-        end
         if version then
             releases[version] = releases[version] or {}
             table.insert(releases[version], name)
@@ -1493,7 +1796,7 @@ end
 local INTRODUCED = {}
 
 local function measured(opt, source, object)
-    local key = object .. ":" .. hash.sha256(object)
+    local key = object .. ":" .. (KEYS[object] or hash.sha256(object))
     if not INTRODUCED[key] then
         local releases, unplaced = releases_in(opt, source, object)
         INTRODUCED[key] = {releases = releases, unplaced = unplaced, problem = misplaced(source, releases, unplaced)}
