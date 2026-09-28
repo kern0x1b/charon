@@ -111,6 +111,9 @@ typedef NS_ENUM(NSInteger, UIInterfaceOrientation) {
 @interface ARSCNView : SCNView
 @property (nonatomic, strong, nullable) ARSession *session;
 @property (nonatomic, weak, nullable) id<ARSCNViewDelegate> delegate;
+@property (nonatomic, assign) BOOL automaticallyUpdatesLighting;
+@property (nonatomic, assign) BOOL rendersCameraGrain;
+@property (nonatomic, assign) BOOL rendersMotionBlur;
 
 /// The pairing between a node and the anchor it stands for. This is the port's own storage, declared
 /// here for the same reason the port declares it in its own header: a test has to be able to put a
