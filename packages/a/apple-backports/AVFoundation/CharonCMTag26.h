@@ -88,6 +88,7 @@ typedef struct CM_BRIDGED_TYPE(id) OpaqueCMTaggedBufferGroup * CMTaggedBufferGro
     CF_REFINED_FOR_SWIFT;
 
 typedef void (*CMTagCollectionApplierFunction)(CMTag tag, void *context) CF_SWIFT_UNAVAILABLE("Unavailable in Swift");
+typedef CMTag (*CMTagCollectionApplyUntilResult)(void);
 
 CF_EXPORT const CFStringRef kCMTagCategoryKey CF_SWIFT_UNAVAILABLE("Unavailable in Swift");
 CF_EXPORT const CFStringRef kCMTagValueKey CF_SWIFT_UNAVAILABLE("Unavailable in Swift");

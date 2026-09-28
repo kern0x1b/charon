@@ -236,8 +236,21 @@ int main(int argc, char **argv)
                  [NSString stringWithFormat:@"%d %@", port_CMTagCollectionAddTagsFromArray(portMutable, more, 2), listed(portMutable, port_CMTagCollectionGetTags, port_CMTagCollectionGetCount)]);
             same("RemoveAllTags", [NSString stringWithFormat:@"%d %@", CMTagCollectionRemoveAllTags(systemMutable), listed(systemMutable, CMTagCollectionGetTags, CMTagCollectionGetCount)],
                  [NSString stringWithFormat:@"%d %@", port_CMTagCollectionRemoveAllTags(portMutable), listed(portMutable, port_CMTagCollectionGetTags, port_CMTagCollectionGetCount)]);
-            same("AddTag invalid", [NSString stringWithFormat:@"%d", CMTagCollectionAddTag(systemMutable, kCMTagInvalid)],
-                 [NSString stringWithFormat:@"%d", port_CMTagCollectionAddTag(portMutable, kCMTagInvalid)]);
+            {
+                CMItemCount systemBefore = CMTagCollectionGetCount(systemMutable);
+                CMItemCount portBefore = port_CMTagCollectionGetCount(portMutable);
+                OSStatus systemStatus = CMTagCollectionAddTag(systemMutable, kCMTagInvalid);
+                OSStatus portStatus = port_CMTagCollectionAddTag(portMutable, kCMTagInvalid);
+                same("AddTag kCMTagInvalid", [NSString stringWithFormat:@"%d count %lu -> %lu", systemStatus,
+                                              (unsigned long)systemBefore, (unsigned long)CMTagCollectionGetCount(systemMutable)],
+                     [NSString stringWithFormat:@"%d count %lu -> %lu", portStatus,
+                      (unsigned long)portBefore, (unsigned long)port_CMTagCollectionGetCount(portMutable)]);
+                const CMTag *portInvalid = dlsym(port, "port_kCMTagInvalid");
+                same("kCMTagInvalid value", [NSString stringWithFormat:@"%d/%u/%llu", (int)kCMTagInvalid.category,
+                                             (unsigned)kCMTagInvalid.dataType, (unsigned long long)kCMTagInvalid.value],
+                     [NSString stringWithFormat:@"%d/%u/%llu", (int)portInvalid->category,
+                      (unsigned)portInvalid->dataType, (unsigned long long)portInvalid->value]);
+            }
             same("Create no out", [NSString stringWithFormat:@"%d", CMTagCollectionCreate(kCFAllocatorDefault, tags, 2, NULL) != 0],
                  [NSString stringWithFormat:@"%d", port_CMTagCollectionCreate(kCFAllocatorDefault, tags, 2, NULL) != 0]);
 

@@ -12,11 +12,25 @@ four-character codes, `CMTagDataType`, `CMTagValue`, the three-word `CMTag` stru
 `CMTagCollectionRef` is `const struct CM_BRIDGED_TYPE(id) OpaqueCMTagCollection *`, so the
 implementation is an Objective-C class, not a CFType.
 
-`CMTagCollection17.m` carries **23 of the family's 34** functions: the create and copy family, the
+`CMTagCollection17.m` carries **23 of the family's 34** functions: the create and copy family, the set algebra (`CreateUnion`, `CreateIntersection`,
+`CreateDifference`, `CreateExclusiveOr`), `CopyTagsOfCategories`, `Apply`, `ApplyUntil`,
+`CopyAsDictionary` and `CreateFromDictionary`, the
 description, count, is-empty, the contains family, count-of-category, the three tag getters, the
-filter pair, the mutators, add-from-collection and add-from-array, and the type id. The set algebra,
-`CopyTagsOfCategories`, `Apply`/`ApplyUntil`, the four serialisation entry points and all fifteen
-`CMTaggedBufferGroup` functions are not in it.
+filter pair, the mutators, add-from-collection and add-from-array, and the type id. **Written but not in the tree yet, and deliberately so**: the set algebra (`CreateUnion`,
+`CreateIntersection`, `CreateDifference`, `CreateExclusiveOr`), `CopyTagsOfCategories`, `Apply`,
+`ApplyUntil`, `CopyAsDictionary` and `CreateFromDictionary`. They are measured against the host - the
+applier visits the tags in the collection's order, `ApplyUntil` returns the `CMTag` that satisfied the
+callback and `kCMTagInvalid` when none did and takes the *filter* function rather than the void applier,
+and the dictionary is one entry per tag under the key `tags` with `category`, `value` and `flags` as
+CFNumbers, `flags` carrying the data type - but the 212-answer probe does not call them yet, so they are
+not in the tree and not in the registry. A function with no host comparison behind it is exactly what the
+gate's registry check exists to catch.
+
+`CopyAsData` and `CreateFromData` are not written at all, and neither are the fifteen
+`CMTaggedBufferGroup` functions. The binary form is Apple's own: a 4-byte big-endian total length, then
+the tags `tgco`, `tgin` and `tgli`, the string `tag coll`, a 16-byte sub-length, an element count and
+20 bytes per tag. That was measured far enough to describe and not far enough to write, and a guess at it
+is what the brief forbids.
 
 ## One bug the differential found in the port
 
@@ -36,8 +50,10 @@ caller and `CFRelease` balances it - `__bridge_retained`.
   *empty* collection contains it - and for every other category only when it holds tags of it. Measured
   over empty, one, three, five and six-tag collections and six categories including an unregistered
   `'zzzz'`, which is never contained.
-- **`AddTag(kCMTagInvalid)`** answers `noErr`, not `InvalidTag`: a tag with no data type is accepted
-  and carries nothing.
+- **`AddTag(kCMTagInvalid)`** answers `noErr`, not `InvalidTag`, and **stores it**: the count goes from
+  0 to 1, and the tag sorts first because its category is 0. It is an ordinary tag with no data type.
+  An earlier reading of this - "accepted and carries nothing" - came from a probe that checked only the
+  status; the differential now checks the count on both sides, which is what caught it.
 - **Adding a tag already held is a no-op**, so `AddTagsFromCollection` over a collection that overlaps
   leaves the size unchanged.
 - **The description** is `CMTagCollection{`, a newline, one `{category:'<fourcc>' value:<v> <type>}` line
@@ -66,7 +82,7 @@ differential's first version broke is the one that matters: **a port's collectio
 the port's own entry points and a host's only to the host's** - handing the port's to the host's makes
 CoreMedia interpret the port's object as its own.
 
-**208 checks, 0 different.** The check can fail: replacing `return true` in `ContainsCategory` with
+**212 checks, 0 different.** The check can fail: replacing `return true` in `ContainsCategory` with
 `return NO` gives **208 checks, 4 different**, and restoring it gives 0 again.
 
 ## Reuse

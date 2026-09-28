@@ -142,6 +142,10 @@ static BOOL charon_tag_equal(CMTag left, CMTag right)
 
 const CMTag kCMTagInvalid = {kCMTagCategory_Undefined, kCMTagDataType_Invalid, 0};
 
+CF_EXPORT const CFStringRef kCMTagCategoryKey = CFSTR("category");
+CF_EXPORT const CFStringRef kCMTagValueKey = CFSTR("value");
+CF_EXPORT const CFStringRef kCMTagDataTypeKey = CFSTR("flags");
+
 CFTypeID CMTagCollectionGetTypeID(void)
 {
     return (CFTypeID)objc_getClass("CharonCMTagCollection");
@@ -238,7 +242,7 @@ CFStringRef CMTagCollectionCopyDescription(CFAllocatorRef allocator, CMTagCollec
     CharonCMTagCollection *collection = charon_to(tagCollection);
     if (!collection)
         return NULL;
-    const CMTag *tags = collection.charon_tags;
+    const CMTag *tags = [collection charon_tags];
     NSMutableString *built = [NSMutableString stringWithString:@"CMTagCollection{\n"];
     for (NSUInteger index = 0; index < collection.charon_count; index++)
         [built appendFormat:@"{category:'%@' value:%@ <%@>}\n", charon_category_name(tags[index].category),
@@ -308,7 +312,7 @@ OSStatus CMTagCollectionGetTags(CMTagCollectionRef tagCollection, CMTag *tagBuff
     CharonCMTagCollection *collection = charon_to(tagCollection);
     if (!collection || (!tagBuffer && tagBufferCount))
         return kCMTagCollectionError_ParamErr;
-    const CMTag *tags = collection.charon_tags;
+    const CMTag *tags = [collection charon_tags];
     CMItemCount written = 0;
     for (NSUInteger index = 0; index < collection.charon_count && written < tagBufferCount; index++)
         tagBuffer[written++] = tags[index];
@@ -323,7 +327,7 @@ OSStatus CMTagCollectionGetTagsWithCategory(CMTagCollectionRef tagCollection, CM
     CharonCMTagCollection *collection = charon_to(tagCollection);
     if (!collection || (!tagBuffer && tagBufferCount))
         return kCMTagCollectionError_ParamErr;
-    const CMTag *tags = collection.charon_tags;
+    const CMTag *tags = [collection charon_tags];
     CMItemCount written = 0;
     CMItemCount matched = 0;
     for (NSUInteger index = 0; index < collection.charon_count; index++)
@@ -343,7 +347,7 @@ CMItemCount CMTagCollectionCountTagsWithFilterFunction(CMTagCollectionRef tagCol
     CharonCMTagCollection *collection = charon_to(tagCollection);
     if (!collection || !filterApplier)
         return 0;
-    const CMTag *tags = collection.charon_tags;
+    const CMTag *tags = [collection charon_tags];
     CMItemCount count = 0;
     for (NSUInteger index = 0; index < collection.charon_count; index++)
         if (filterApplier(tags[index], context))
@@ -357,7 +361,7 @@ OSStatus CMTagCollectionGetTagsWithFilterFunction(CMTagCollectionRef tagCollecti
     CharonCMTagCollection *collection = charon_to(tagCollection);
     if (!collection || !filter || (!tagBuffer && tagBufferCount))
         return kCMTagCollectionError_ParamErr;
-    const CMTag *tags = collection.charon_tags;
+    const CMTag *tags = [collection charon_tags];
     CMItemCount written = 0;
     CMItemCount matched = 0;
     for (NSUInteger index = 0; index < collection.charon_count; index++)
@@ -376,10 +380,8 @@ OSStatus CMTagCollectionAddTag(CMMutableTagCollectionRef tagCollection, CMTag ta
     CharonCMTagCollection *collection = charon_to((CMTagCollectionRef)tagCollection);
     if (!collection)
         return kCMTagCollectionError_ParamErr;
-    // Measured: the host answers noErr for kCMTagInvalid, so a tag with no data type is accepted and
-    // carries nothing, rather than refused.
-    if (!CMTagIsValid(tag))
-        return noErr;
+    // Measured: the host answers noErr for kCMTagInvalid and stores it - the count goes up, and the tag
+    // sorts first because its category is 0. It is an ordinary tag with no data type, not a refusal.
     return [collection charon_insert:tag] ? noErr : kCMTagCollectionError_AllocationFailed;
 }
 
@@ -431,3 +433,4 @@ OSStatus CMTagCollectionAddTagsFromArray(CMMutableTagCollectionRef tagCollection
             return kCMTagCollectionError_AllocationFailed;
     return noErr;
 }
+
