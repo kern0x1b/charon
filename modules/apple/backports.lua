@@ -18,7 +18,6 @@ LIBRARIES = {
     {name = "CoreLocationBackports", folder = "CoreLocation", frameworks = {"CoreLocation", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "CoreDataBackports", folder = "CoreData", frameworks = {"CoreData", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "SecurityBackports", folder = "Security", frameworks = {"Security", "Foundation"}, libraries = {"FoundationBackports"}},
-    {name = "GraphicsBackports", folder = "Graphics", frameworks = {"CoreGraphics", "CoreImage", "CoreVideo", "ImageIO", "Foundation"}, libraries = {"FoundationBackports"}},
     -- suitesparse-ordering is AMD and COLAMD, the two sparse orderings, as a hidden static archive: the
     -- Sparse* solve family needs an ordering and the port's own rows must not export one. Nothing of the
     -- archive is API - it is built -fvisibility=hidden, so libAccelerateBackports.dylib exports what

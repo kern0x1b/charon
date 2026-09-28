@@ -77,22 +77,39 @@ package("suitesparse-ordering")
         table.sort(objects)
         os.vrunv("xcrun", table.join({"libtool", "-static", "-o", path.join(package:installdir("lib"), "libSuiteSparseOrdering.a")}, objects))
 
+        -- The destination ends in a separator, which is what makes os.vcp treat it as a directory to
+        -- put the file in rather than as the name of a file to write - box2d's recipe writes it that way
+        -- and this one did not, so every header copy went somewhere else and on_test then reported
+        -- "installed no SuiteSparse/AMD/amd.h". The return value is checked too, so a copy that fails
+        -- says which one instead of being ignored.
         for from, to in pairs(HEADERS) do
             assert(os.isfile(from), "SuiteSparse " .. package:version() .. " has no " .. from)
-            os.vcp(from, path.join(package:installdir("include"), to))
+            assert(os.vcp(from, path.join(package:installdir("include"), to) .. "/"),
+                   "suitesparse-ordering could not install " .. from)
         end
         for _, name in ipairs(LICENSES) do
             if os.isfile(name) then
-                os.vcp(name, path.join(package:installdir("licenses"), name:gsub("[/\\]", "_")))
+                assert(os.vcp(name, path.join(package:installdir("licenses"), name:gsub("[/\\]", "_"))),
+                       "suitesparse-ordering could not install " .. name)
             end
         end
-        os.vcp("AMD/Doc/License.txt", path.join(package:installdir("licenses"), "AMD-LICENSE.txt"))
-        os.vcp("COLAMD/Doc/License.txt", path.join(package:installdir("licenses"), "COLAMD-LICENSE.txt"))
+        assert(os.vcp("AMD/Doc/License.txt", path.join(package:installdir("licenses"), "AMD-LICENSE.txt")),
+               "suitesparse-ordering could not install AMD's licence")
+        assert(os.vcp("COLAMD/Doc/License.txt", path.join(package:installdir("licenses"), "COLAMD-LICENSE.txt")),
+               "suitesparse-ordering could not install COLAMD's licence")
     end)
 
     on_test(function (package)
-        assert(os.isfile(path.join(package:installdir("lib"), "libSuiteSparseOrdering.a")))
-        assert(os.isfile(path.join(package:installdir("include"), "SuiteSparse/AMD", "amd.h")))
-        assert(os.isfile(path.join(package:installdir("include"), "SuiteSparse/COLAMD", "colamd.h")))
-        assert(os.isfile(path.join(package:installdir("include"), "SuiteSparse/SuiteSparse_config", "SuiteSparse_config.h")))
+        for _, header in ipairs({"SuiteSparse/AMD/amd.h", "SuiteSparse/AMD/amd_internal.h", "SuiteSparse/COLAMD/colamd.h",
+                                 "SuiteSparse/SuiteSparse_config/SuiteSparse_config.h"}) do
+            assert(os.isfile(path.join(package:installdir("include"), header)),
+                   "suitesparse-ordering installed no " .. header)
+        end
+        for _, licence in ipairs({"AMD-LICENSE.txt", "COLAMD-LICENSE.txt"}) do
+            assert(os.isfile(path.join(package:installdir("licenses"), licence)),
+                   "suitesparse-ordering installed no " .. licence)
+        end
+        -- last, so a missing archive is the last thing a failure can be about
+        assert(os.isfile(path.join(package:installdir("lib"), "libSuiteSparseOrdering.a")),
+               "suitesparse-ordering built no " .. path.join(package:installdir("lib"), "libSuiteSparseOrdering.a"))
     end)
