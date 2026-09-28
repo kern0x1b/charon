@@ -12,6 +12,11 @@
 # reported as a constant. The registry's class rows are checked by check-model.sh against the tree
 # instead, which is the right instrument for them.
 #
+# The library comparison needs the two built binaries, named by BUILT_HOMEKIT and
+# BUILT_AUTHENTICATIONSERVICES (or BUILT for both) -- a gate run's libHomeKitBackports.dylib and
+# libAuthenticationServicesBackports.dylib are what to point them at. Set HOMEKIT_SOURCES to a path
+# relative to the repository root to have the code mutation built and shown failing as well.
+#
 # Run with no arguments it measures both families and writes a table per family into
 # coordination/corpus/ledger/constant-values-<framework>.tsv, next to the HomeKit and
 # AuthenticationServices ones it reproduces. Exit 0 only when every value agrees.
@@ -24,11 +29,22 @@ mkdir -p "$build"
 ledger=${LEDGER:-$HOME/Git/projects/ios/coordination/corpus/ledger}
 
 cc -O2 -Wno-unused-parameter -framework CoreFoundation -o "$build/host-probe" "$charon/tools/corpus/host-probe.c"
+cc -O2 -o "$build/object-constant" "$charon/tools/corpus/object-constant.c"
 
 failed=0
+# The built library, when the caller names one. OBJECTS may be a dylib or a directory of objects; a
+# relocatable object's pointer is unresolved, so a directory is only partly useful and the run says
+# which it was given. The gate's libHomeKitBackports.dylib is the artefact that carries the values.
+# One built binary per family, because a HomeKit constant is not in the AuthenticationServices
+# library and a comparison against the wrong one would answer "not in the library" for all of it,
+# which is indistinguishable from passing. Both default to BUILT, and each names its own library.
+builtHomeKit=${BUILT_HOMEKIT:-${BUILT:-}}
+builtAuthenticationServices=${BUILT_AUTHENTICATIONSERVICES:-${BUILT:-}}
+
 measure() {
     framework="$1"
     source="$2"
+    built="$3"
     names="$build/$framework-names.txt"
     measured="$build/$framework.tsv"
     table="$ledger/constant-values-$framework.tsv"
@@ -54,9 +70,30 @@ PYTHON
         echo "   the probe reported names it could not measure; the comparison below says which"
     fi
     set +e
-    python3 - "$registry/$framework" "$measured" "$table" "$framework" <<'PYTHON'
+    # The library's own answer, from the binary: the value the port's code carries, as opposed to the
+    # value its registry row claims. A row and the host can agree perfectly while the source defines
+    # something else, and only this comparison sees that.
+    objectValues="$build/$framework-objects.tsv"
+    if [ -n "$built" ]; then
+        set +e
+        "$build/object-constant" "$built" "$names" > "$objectValues" 2>/dev/null
+        set -e
+    else
+        : > "$objectValues"
+    fi
+
+    set +e
+    python3 - "$registry/$framework" "$measured" "$table" "$framework" "$objectValues" <<'PYTHON'
 import json, os, subprocess, sys
-folder, measured, table, framework = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]
+folder, measured, table, framework, objects = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5]
+inLibrary = {}
+if os.path.getsize(objects) > 0:
+    with open(objects) as f:
+        next(f, None)
+        for line in f:
+            if line.strip():
+                fields = line.rstrip("\n").split("\t")
+                inLibrary[fields[0]] = fields[3]
 intro = {}
 for name in sorted(os.listdir(folder)):
     if not name.endswith(".json"):
@@ -92,7 +129,7 @@ with open(measured) as f:
         if line.strip():
             fields = line.rstrip("\n").split("\t")
             rows[fields[0]] = fields[3]
-agree, differ, absent, unextractable = [], [], [], []
+agree, differ, absent, unextractable, wrong = [], [], [], [], []
 for name, (at, effect) in sorted(intro.items()):
     want = carried(effect)
     got = rows.get(name)
@@ -100,12 +137,17 @@ for name, (at, effect) in sorted(intro.items()):
         absent.append(name)
     elif want is None:
         unextractable.append(name)
-    elif got == want:
-        agree.append(name)
-    else:
+    elif got != want:
         differ.append((name, want, got))
-print("   %d agree, %d differ, %d not exported by the host, %d rows with no value to compare"
-      % (len(agree), len(differ), len(absent), len(unextractable)))
+    elif inLibrary.get(name) not in (None, "-", want):
+        wrong.append((name, want, inLibrary[name]))
+    else:
+        agree.append(name)
+print("   %d agree, %d differ from the host, %d differ from the built library, %d not exported by "
+      "the host, %d rows with no value to compare"
+      % (len(agree), len(differ), len(wrong), len(absent), len(unextractable)))
+for name, want, got in wrong:
+    print("     THE LIBRARY SAYS %-48s row %s library %s" % (name, want, got))
 for name in unextractable:
     print("     NO VALUE IN THE ROW %s" % name)
 for name, want, got in differ:
@@ -113,13 +155,27 @@ for name, want, got in differ:
 for name in absent:
     print("     NOT ON THE HOST %s" % name)
 build = subprocess.run(["sw_vers", "-buildVersion"], capture_output=True, text=True).stdout.strip() or "unknown"
-source = rows and measured or measured
+# Column 6 is the source binary, and it is the probe's own column 6: the framework it opened. An
+# earlier version wrote the scratch path there, which is a temporary directory and says nothing about
+# where the value came from -- a table that names its own scratch path as its source is a table nobody
+# can re-measure from.
+sources = {}
+with open(measured) as f:
+    next(f, None)
+    for line in f:
+        if line.strip():
+            fields = line.rstrip("\n").split("\t")
+            sources[fields[0]] = fields[5] if len(fields) > 5 else "?"
 if agree:
     out = ["api\tintroduced\tc-type\tvalue\thow-measured\tsource-binary\tos-build"]
     for name in sorted(agree):
-        out.append("\t".join([name, intro[name][0], "NSString *const", rows[name],
-                              "dlopen + dlsym on the host, decoded through CFStringGetCString as UTF-8, "
-                              "by tools/corpus/host-probe.c", source, "macOS " + build]))
+        # The how-measured column names every instrument that agreed on the value: the host, the
+        # registry row, and the built library when one was given.
+        how = "dlopen + dlsym on the host, decoded through CFStringGetCString as UTF-8, by tools/corpus/host-probe.c"
+        if name in inLibrary:
+            how += "; and read out of the built library by tools/corpus/object-constant.c"
+        out.append("\t".join([name, intro[name][0], "NSString *const", rows[name], how,
+                              sources.get(name, "?"), "macOS " + build]))
     with open(table, "w") as f:
         f.write("\n".join(out) + "\n")
     print("   table written: %s (%d rows)" % (table, len(agree)))
@@ -130,11 +186,50 @@ PYTHON
     [ "$rc" -eq 0 ] || failed=1
 }
 
-measure HomeKit /System/Library/PrivateFrameworks/HomeKit.framework/Versions/A/HomeKit
-measure AuthenticationServices /System/Library/Frameworks/AuthenticationServices.framework/AuthenticationServices
+measure HomeKit /System/Library/PrivateFrameworks/HomeKit.framework/Versions/A/HomeKit "$builtHomeKit"
+measure AuthenticationServices /System/Library/Frameworks/AuthenticationServices.framework/AuthenticationServices "$builtAuthenticationServices"
 
 if [ "$failed" -ne 0 ]; then
     echo "FAIL: a value the port carries is not the value the host holds"
     exit 1
 fi
 echo "ok: every constant both families carry is the host's own"
+
+# The second comparison -- the built library against the row -- has to be shown to fail, or it is a
+# check nobody can tell from no check. The mutation is the coordinator's: one constant's value changed
+# in the *code* while its registry row stays correct, which is the shape a text comparison cannot see.
+# It needs a linked binary, because a relocatable object's pointer is a relocation the linker fills in
+# and holds no value at all -- which is why the comparison reads a dylib and not a .o.
+if [ -n "${HOMEKIT_SOURCES:-}" ] && [ -d "${MUTANT_SDK:-/nonexistent}" ] && [ -x "${MUTANT_CLANG:-/nonexistent}" ]; then
+    mutant="$build/mutant"
+    mkdir -p "$mutant/clean" "$mutant/changed"
+    # The mutated source is written before the loop that compiles it: the change is one constant's value
+    # in the code, with its registry row left correct, which is the shape a text comparison cannot see.
+    sed 's/@"array"/@"arrayX"/' "$charon/$HOMEKIT_SOURCES" > "$mutant/changed.m" 2>/dev/null || true
+
+    for side in clean changed; do
+        source="$charon/$HOMEKIT_SOURCES"
+        [ "$side" = changed ] && source="$mutant/changed.m"
+        # The port's deployment: the same target the objects in the tree are built for, which is why
+        # the tool has to read a file rather than load it -- an armv7 binary is not this host's.
+        "$MUTANT_CLANG" -target armv7-apple-ios6.1.3 -isysroot "$MUTANT_SDK" -fobjc-arc -Os -g0 -fPIC \
+              -I"$charon/packages/a/apple-backports/HomeKit" \
+              -c "$source" -o "$mutant/$side/c.o" 2>/dev/null || true
+        [ -f "$mutant/$side/c.o" ] || continue
+        "$MUTANT_CLANG" -target armv7-apple-ios6.1.3 -isysroot "$MUTANT_SDK" -dynamiclib -Wl,-undefined,dynamic_lookup \
+              -install_name /usr/lib/libmutant.dylib -o "$mutant/$side/libmutant.dylib" "$mutant/$side/c.o" 2>/dev/null || true
+    done
+    if [ -f "$mutant/clean/libmutant.dylib" ] && [ -f "$mutant/changed/libmutant.dylib" ]; then
+        printf 'HMCharacteristicMetadataFormatArray\n' > "$mutant/one.txt"
+        a=$("$build/object-constant" "$mutant/clean/libmutant.dylib" "$mutant/one.txt" 2>/dev/null | tail -1 | cut -f4)
+        b=$("$build/object-constant" "$mutant/changed/libmutant.dylib" "$mutant/one.txt" 2>/dev/null | tail -1 | cut -f4)
+        if [ -n "$a" ] && [ -n "$b" ] && [ "$a" != "$b" ]; then
+            echo "ok: the library comparison sees a value changed in the code only ($a -> $b)"
+        else
+            echo "FAIL: the library comparison did not see a value changed in the code only ($a -> $b)"
+            exit 1
+        fi
+    else
+        echo "note: the code mutation was not built here, so the library comparison is not shown failing"
+    fi
+fi
