@@ -156,7 +156,7 @@
       "api": "UIDynamicItemBehavior.charge",
       "kind": "property",
       "introduced": "9.0",
-      "maximum": "7.0",
+      "maximum": "9.0",
       "status": "implemented",
       "facts": "facts/UIKit/UIDynamicAnimator.md",
       "source": "objc inventory of the armv7 caches: on the 9.0 rung, not on 8.4.1; from 7.0 the release's own class is used, which lays the class out itself and has no such member before 9.0; the behaviour is the host's UIKitCore through Mac Catalyst, held against the port by tests/backports/host/dynamics"
@@ -165,7 +165,7 @@
       "api": "UIDynamicItemBehavior.anchored",
       "kind": "property",
       "introduced": "9.0",
-      "maximum": "7.0",
+      "maximum": "9.0",
       "status": "implemented",
       "facts": "facts/UIKit/UIDynamicAnimator.md",
       "source": "objc inventory of the armv7 caches: on the 9.0 rung, not on 8.4.1; from 7.0 the release's own class is used, which lays the class out itself and has no such member before 9.0; the behaviour is the host's UIKitCore through Mac Catalyst, held against the port by tests/backports/host/dynamics"
@@ -174,7 +174,7 @@
       "api": "UISnapBehavior.snapPoint",
       "kind": "property",
       "introduced": "9.0",
-      "maximum": "7.0",
+      "maximum": "9.0",
       "status": "implemented",
       "facts": "facts/UIKit/UIDynamicAnimator.md",
       "source": "objc inventory of the armv7 caches: on the 9.0 rung, not on 8.4.1; from 7.0 the release's own class is used, which lays the class out itself and has no such member before 9.0; the behaviour is the host's UIKitCore through Mac Catalyst, held against the port by tests/backports/host/dynamics"
@@ -183,7 +183,7 @@
       "api": "UIAttachmentBehavior.frictionTorque",
       "kind": "property",
       "introduced": "9.0",
-      "maximum": "7.0",
+      "maximum": "9.0",
       "status": "implemented",
       "facts": "facts/UIKit/UIDynamicAnimator.md",
       "source": "objc inventory of the armv7 caches: on the 9.0 rung, not on 8.4.1; from 7.0 the release's own class is used, which lays the class out itself and has no such member before 9.0; the behaviour is the host's UIKitCore through Mac Catalyst, held against the port by tests/backports/host/dynamics"
@@ -192,7 +192,7 @@
       "api": "UIAttachmentBehavior.attachmentRange",
       "kind": "property",
       "introduced": "9.0",
-      "maximum": "7.0",
+      "maximum": "9.0",
       "status": "implemented",
       "facts": "facts/UIKit/UIDynamicAnimator.md",
       "source": "objc inventory of the armv7 caches: on the 9.0 rung, not on 8.4.1; from 7.0 the release's own class is used, which lays the class out itself and has no such member before 9.0; the behaviour is the host's UIKitCore through Mac Catalyst, held against the port by tests/backports/host/dynamics"
@@ -201,7 +201,7 @@
       "api": "+[UIAttachmentBehavior fixedAttachmentWithItem:attachedToItem:attachmentAnchor:]",
       "kind": "method",
       "introduced": "9.0",
-      "maximum": "7.0",
+      "maximum": "9.0",
       "status": "implemented",
       "facts": "facts/UIKit/UIDynamicAnimator.md",
       "source": "objc inventory of the armv7 caches: on the 9.0 rung, not on 8.4.1; from 7.0 the release's own class is used, which lays the class out itself and has no such member before 9.0; the behaviour is the host's UIKitCore through Mac Catalyst, held against the port by tests/backports/host/dynamics"
@@ -210,7 +210,7 @@
       "api": "+[UIAttachmentBehavior pinAttachmentWithItem:attachedToItem:attachmentAnchor:]",
       "kind": "method",
       "introduced": "9.0",
-      "maximum": "7.0",
+      "maximum": "9.0",
       "status": "implemented",
       "facts": "facts/UIKit/UIDynamicAnimator.md",
       "source": "objc inventory of the armv7 caches: on the 9.0 rung, not on 8.4.1; from 7.0 the release's own class is used, which lays the class out itself and has no such member before 9.0; the behaviour is the host's UIKitCore through Mac Catalyst, held against the port by tests/backports/host/dynamics"
@@ -219,7 +219,7 @@
       "api": "+[UIAttachmentBehavior slidingAttachmentWithItem:attachedToItem:attachmentAnchor:axisOfTranslation:]",
       "kind": "method",
       "introduced": "9.0",
-      "maximum": "7.0",
+      "maximum": "9.0",
       "status": "implemented",
       "facts": "facts/UIKit/UIDynamicAnimator.md",
       "source": "objc inventory of the armv7 caches: on the 9.0 rung, not on 8.4.1; from 7.0 the release's own class is used, which lays the class out itself and has no such member before 9.0; the behaviour is the host's UIKitCore through Mac Catalyst, held against the port by tests/backports/host/dynamics"
@@ -228,7 +228,7 @@
       "api": "+[UIAttachmentBehavior slidingAttachmentWithItem:attachmentAnchor:axisOfTranslation:]",
       "kind": "method",
       "introduced": "9.0",
-      "maximum": "7.0",
+      "maximum": "9.0",
       "status": "implemented",
       "facts": "facts/UIKit/UIDynamicAnimator.md",
       "source": "objc inventory of the armv7 caches: on the 9.0 rung, not on 8.4.1; from 7.0 the release's own class is used, which lays the class out itself and has no such member before 9.0; the behaviour is the host's UIKitCore through Mac Catalyst, held against the port by tests/backports/host/dynamics"
@@ -237,7 +237,7 @@
       "api": "+[UIAttachmentBehavior limitAttachmentWithItem:offsetFromCenter:attachedToItem:offsetFromCenter:]",
       "kind": "method",
       "introduced": "9.0",
-      "maximum": "7.0",
+      "maximum": "9.0",
       "status": "implemented",
       "facts": "facts/UIKit/UIDynamicAnimator.md",
       "source": "objc inventory of the armv7 caches: on the 9.0 rung, not on 8.4.1; from 7.0 the release's own class is used, which lays the class out itself and has no such member before 9.0; the behaviour is the host's UIKitCore through Mac Catalyst, held against the port by tests/backports/host/dynamics"

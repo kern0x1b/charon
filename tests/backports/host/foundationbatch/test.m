@@ -128,6 +128,28 @@ static void number_formatter(void)
     }
 }
 
+/* The number `countOfRequestBodyBytesBeforeEncoding` means: the body the application handed over,
+   which is a property of the request and not of the connection -- and the loader used to hand the
+   metric an int64_t it had not assigned yet, so this is the value that must reach the note. */
+static void request_body_length(void)
+{
+    printf("--- the request body length\n");
+    NSData *body = [@"0123456789" dataUsingEncoding:NSUTF8StringEncoding];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"https://example.com/"]];
+    request.HTTPBody = body;
+    charon_check(request.HTTPBody.length == body.length,
+                 "a request with a ten byte body reports ten",
+                 [NSString stringWithFormat:@"the body is %lu bytes", (unsigned long)request.HTTPBody.length]);
+    NSMutableURLRequest *empty = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"https://example.com/"]];
+    charon_check(empty.HTTPBody.length == 0, "and a request with none reports zero",
+                 [NSString stringWithFormat:@"the body is %lu bytes", (unsigned long)empty.HTTPBody.length]);
+    NSMutableURLRequest *lengthed = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"https://example.com/"]];
+    [lengthed setValue:@"42" forHTTPHeaderField:@"Content-Length"];
+    charon_check([lengthed valueForHTTPHeaderField:@"Content-Length"] != nil,
+                 "a request with no body and a Content-Length says so in its headers",
+                 @"the header is not readable back");
+}
+
 static void url_encoding(void)
 {
     printf("--- the URL encoders\n");
@@ -196,6 +218,7 @@ int main(void)
         host_attach_prefixed("");
         progress_state();
         number_formatter();
+        request_body_length();
         url_encoding();
         promised_item();
         printf("checks=%d failures=%d divergences=%d\n", charon_checks, charon_failures, charon_divergences);

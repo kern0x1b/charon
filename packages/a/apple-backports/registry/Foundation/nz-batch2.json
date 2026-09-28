@@ -6,7 +6,7 @@
       "kind": "method",
       "introduced": "18.0",
       "minimum": "6.0",
-      "maximum": "16.0",
+      "maximum": "18.0",
       "status": "absent",
       "reason": "the argument is an NSKeyValueSharedObservers, a Foundation class that no SDK header declares and that the release's libobjc knows nothing of, so carrying the method would mean inventing the type it takes",
       "effect": "the method is not there: respondsToSelector: answers honestly and an unchecked call raises"
@@ -16,7 +16,7 @@
       "kind": "method",
       "introduced": "7.0",
       "minimum": "6.0",
-      "maximum": "6.1.6",
+      "maximum": "7.0",
       "status": "absent",
       "reason": "the SDK's own header marks the class method API_UNAVAILABLE on iOS, watchOS and tvOS, so no iOS application can name it",
       "effect": "the method is not there: respondsToSelector: answers honestly and an unchecked call raises"
@@ -71,7 +71,7 @@
       "kind": "method",
       "introduced": "7.0",
       "minimum": "6.0",
-      "maximum": "6.1.6",
+      "maximum": "7.0",
       "status": "absent",
       "reason": "the release has no public way to make a result whose type is a correction: its own spellings (initWithRange:, replacementCheckingResultWithRange:replacementString:) are in its binary (measured in the 6.1.3 cache's selector table) but in no header, and this port does not build on a private selector",
       "effect": "the method is not there: respondsToSelector: answers honestly and an unchecked call raises"
@@ -108,7 +108,7 @@
       "kind": "method",
       "introduced": "12.0",
       "minimum": "6.0",
-      "maximum": "11.0",
+      "maximum": "12.0",
       "status": "absent",
       "reason": "the saved activities are the system's own Handoff store, and 6.1.3 has no entry point that lists or clears it; the port keeps no store of its own, so there is nothing it could delete without reporting a success it has not earned",
       "effect": "the method is not there: respondsToSelector: answers honestly and an unchecked call raises"
@@ -118,7 +118,7 @@
       "kind": "method",
       "introduced": "13.0",
       "minimum": "6.0",
-      "maximum": "12.0",
+      "maximum": "13.0",
       "status": "absent",
       "reason": "the same table, read from the other end: the release's NSXPCInterface has no such map of its own to read",
       "effect": "the method is not there: respondsToSelector: answers honestly and an unchecked call raises"
@@ -128,7 +128,7 @@
       "kind": "method",
       "introduced": "13.0",
       "minimum": "6.0",
-      "maximum": "12.0",
+      "maximum": "13.0",
       "status": "absent",
       "reason": "xpc_type_t is the type the XPC framework introduced in iOS 8, and the release's NSXPCInterface keeps its own table where no 6.1.3 entry point reaches it",
       "effect": "the method is not there: respondsToSelector: answers honestly and an unchecked call raises"
@@ -300,7 +300,7 @@
       "kind": "method",
       "introduced": "18.0",
       "minimum": "6.0",
-      "maximum": "16.0",
+      "maximum": "18.0",
       "status": "absent",
       "reason": "it reads the user info of the action at the top of the release's own redo stack, which no 6.1.3 entry point reaches",
       "effect": "the method is not there: respondsToSelector: answers honestly and an unchecked call raises"
@@ -310,7 +310,7 @@
       "kind": "method",
       "introduced": "18.0",
       "minimum": "6.0",
-      "maximum": "16.0",
+      "maximum": "18.0",
       "status": "absent",
       "reason": "it reads the user info of the action at the top of the release's own undo stack, which no 6.1.3 entry point reaches",
       "effect": "the method is not there: respondsToSelector: answers honestly and an unchecked call raises"
@@ -320,7 +320,7 @@
       "kind": "method",
       "introduced": "8.0",
       "minimum": "6.0",
-      "maximum": "7.1.2",
+      "maximum": "8.0",
       "status": "absent",
       "reason": "a continuation stream comes from -becomeCurrentWithInputStream:outputStream:, which the release's NSUserActivity does not have",
       "effect": "the method is not there: respondsToSelector: answers honestly and an unchecked call raises"
@@ -330,7 +330,7 @@
       "kind": "method",
       "introduced": "8.0",
       "minimum": "6.0",
-      "maximum": "7.1.2",
+      "maximum": "8.0",
       "status": "absent",
       "reason": "a continued activity is the Handoff daemon handing the application an activity, and 6.1.3 has no -continueUserActivity: to be called from, so the delegate method has no caller",
       "effect": "the method is not there: respondsToSelector: answers honestly and an unchecked call raises"
@@ -547,7 +547,7 @@
       "kind": "property",
       "introduced": "7.0",
       "minimum": "6.0",
-      "maximum": "6.1.6",
+      "maximum": "7.0",
       "status": "absent",
       "reason": "only a correction result carries alternatives and the release cannot make one, so there is nothing for the accessor to read",
       "effect": "the accessor is not there: respondsToSelector: answers honestly and an unchecked call raises"
@@ -629,7 +629,7 @@
       "kind": "property",
       "introduced": "17.4",
       "minimum": "6.0",
-      "maximum": "16.0",
+      "maximum": "17.4",
       "status": "absent",
       "reason": "the count is the release's own redo stack, which its NSUndoManager keeps with no API that reports a size",
       "effect": "the property is not there: an application asking how many steps there are has to keep its own count"
@@ -639,7 +639,7 @@
       "kind": "property",
       "introduced": "17.4",
       "minimum": "6.0",
-      "maximum": "16.0",
+      "maximum": "17.4",
       "status": "absent",
       "reason": "the count is the release's own undo stack, which its NSUndoManager keeps with no API that reports a size",
       "effect": "the property is not there: an application asking how many steps there are has to keep its own count"
@@ -685,7 +685,7 @@
       "kind": "property",
       "introduced": "10.0",
       "minimum": "6.0",
-      "maximum": "9.3.6",
+      "maximum": "10.0",
       "status": "absent",
       "reason": "the connection belongs to the release's NSXPCCoder, which is created by the system's own XPC machinery and keeps it in an ivar no public API returns",
       "effect": "the accessor is not there: respondsToSelector: answers honestly and an unchecked call raises"
@@ -695,7 +695,7 @@
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "maximum": "8.4.1",
+      "maximum": "11.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSOrthographyDefault.md",
       "source": "SDK 26.2 headers; the release's own libicucore, whose uloc_addLikelySubtags is exported in the 6.1.3 armv7 cache (tools/corpus/cache-value.lua)"
