@@ -44,13 +44,48 @@ the bitcode wrapper an earlier run produced came from asking for the module inte
 invocation, and a `-emit-library` link of it "succeeded" into a 16428-byte library with **zero**
 defined symbols - which is how the check that now prints the counts came to exist.
 
-The link is **not** finished, and for one reason only. Of the 412 undefined symbols, 118 are the
-Swift standard library's and 60 are the Swift runtime's (both in `libswiftCore`, which the
-program links), 32 are the port's own `Foundation` overlay, 7 are `Observation`, and 10 are
-`FoundationEssentials` + `FoundationInternationalization` - `Predicate`, `SortDescriptor`, `Date`,
-`UUID`. Those ten are swift-foundation's, and f25214c6's run output is its typecheck-only
-`check.sh` path, so `lib_FoundationEssentials.dylib` does not exist anywhere. Every other import of
-this module resolves against the runtime and the Core Data backports.
+The link is **not** finished, and for one reason only. The 433 undefined symbols of this build, as
+`harness/symbols.lua` prints them, and they add up:
+
+| count | what it is waiting for |
+| --- | --- |
+| 180 | the Swift runtime and the standard library, both in `libswiftCore`, which a program links |
+| 162 | C symbols the frameworks carry |
+| 36 | objc classes the frameworks carry |
+| 34 | the port's own `Foundation` overlay |
+| 7 | `Observation`, the runtime's own |
+| 8 | `FoundationEssentials` |
+| 3 | `FoundationInternationalization` |
+| 430 | everything above |
+| 3 | the classifier reading a mangled *generic parameter* as a module name: `_$s5Index…`, `_$s6Element…`, `_$s8Iterator…` are `Index`, `Element` and `Iterator`, not modules. A name it cannot place is counted, not dropped, so the total holds |
+| **433** | |
+
+The **11** swift-foundation ones are 8 + 3: `Predicate`, `SortDescriptor`, `Date`, `UUID`. They are
+swift-foundation's, and f25214c6's run output is its typecheck-only `check.sh` path, so
+`lib_FoundationEssentials.dylib` does not exist anywhere. Every other import of this module resolves
+against the runtime and the Core Data backports. The ten are named one by one in
+`harness/symbols.lua`, and `on_test` fails when one of them stops being undefined or when an
+eleventh appears.
+
+**Which build verifies this package.** `swift-data` is in no `LIBRARIES` and no gate config, so
+**the backports gate never builds it** - a green gate says nothing about it. Two things verify it,
+and they are different jobs:
+
+- the **armv7 build** is `.agent-work/probe/build.sh <release>`, which runs the flags
+  `modules/apple/swift.lua runtime_flags` builds, compiles the whole module and prints the counts.
+  At this tip, for `6.1.3`:
+  ```
+  COMPILE ERRORS 0
+  OBJECT  SwiftData.o  895464 bytes  Mach-O object arm_v7
+  SYMBOLS defined=2836 undefined=433
+  ```
+  It is in `.agent-work` because it is a *band's* harness and a package's build belongs to the
+  package; the committed half of it is `harness/symbols.lua`, below.
+- the **committed check** is `xmake l packages/s/swift-data/harness/symbols.lua` with
+  `CHARON_SWIFTDATA_OBJECT` naming an object or the installed `libSwiftData.a`, which prints the same
+  `SYMBOLS` and `UNDEFINED` lines and runs the ten-symbol check; and the package's `on_test`, which
+  runs that check on what it installed. Its control is the same file with
+  `CHARON_SWIFTDATA_CONTROL=1`, which is how the check is shown to fail.
 
 And the build is against swift-runtime `29dd4454` (recipe digest `875c24e4...`), while this tree
 at `4d2e24e7` produces `0ccce571...` - the digest 4d2e24e7 regenerated for the backports' UIKit
