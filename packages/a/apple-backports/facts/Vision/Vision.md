@@ -252,22 +252,24 @@ recorded by `tests/backports/host/vision/run.sh` (33 records) and held against t
   branches already computed handed to it as the placement. Everything around it is untouched, and
   the library compiles for armv7 at 6.1.3 with the file that includes the header.
 
-  Through the library's own code path, the same single source and the same geometry as before:
+  **And the "0" that came back through the library was not a measurement of the library.** The
+  coordinator caught the contradiction and it is worth writing down exactly, because it is worse than
+  a tolerance hiding a one: it is a comparison that could only ever read zero.
 
-  | picture to | rule | differing | of |
-  | --- | --- | --- | --- |
-  | 100x50 to 224x224 | scale fit | **0** | 50176 |
-  | 13x7 to 8x8 | scale fit | **0** | 128 |
-  | 16x16 to 16x16 | either | **0** | 256 |
-  | 8x8 to 16x16 | either | **0** | 256 |
-  | 4x7 to 33x9 | scale fit | **0** | 432 |
-  | 100x50 to 224x224 | centre crop | 50176 | 50176 |
-  | 13x7 to 8x8 | centre crop | 64 | 128 |
-  | 4x7 to 33x9 | centre crop | 297 | 432 |
+  The tree's crop check, `tests/backports/host/vision/run-crop.sh`, builds its **system** binary from
+  `crop.m` alone, and in that build `main()` answers *both* sides of the comparison with
+  `oracle(...)` -- the framework's own constructor, twice. So every row of the system build's table is
+  the framework against itself, and reads 0 of whatever it compares. The rows I reported as "the
+  library's own code path" were those: the port build in that script compiles `crop.m` and the
+  header but **not** `Vision/CharonVisionBilinear.c`, so after the integration it cannot even link,
+  and the numbers that came back were the system build's.
 
-  So the scale fit, the two exact-1:1 rows and the integer 2x row all read zero, and the residual
-  the gradient table predicted -- within one count on a quarter of the region -- does not appear in
-  the count at this size. **The centre-crop rows are still red**, and they are the placement question:
-  the +1 inset datum, and whether Core ML's centre crop is a cover-and-crop at all. That is the next
-  step, and until it is done the check is red and there is no light guard, no mutant and no r7.
+  So the honest state is: the **only** measurement of the integrated kernel is the probe's table --
+  18295 of 25088 exact, 6793 off by exactly one, maximum one, in the picture region, for
+  100x50 to 224x224 scale fit -- and the tree's crop check must be fixed before it can measure
+  anything. Two things it needs: the port build must compile `CharonVisionBilinear.c`, and the system
+  build must print its rows as the control they are rather than as a verdict, or not print them at
+  all. The comparison in `differing()` itself is sound -- it walks every byte of the whole buffer
+  including the fourth, with no tolerance -- so it would have shown a one; it was simply never handed
+  the port's answer.
 
