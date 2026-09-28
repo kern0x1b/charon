@@ -1018,3 +1018,38 @@ The fix for the measurement is the one the kernel sweep already used: a source t
 column**, one column at a time, so every destination answer is that column's weight and nothing is a
 blend. That grid gives the sign, the `+ 0.5` and the offset's reference in one run, and it is the last
 measurement the family needs.
+
+
+## The 36 non-slope failures, tabulated: every one is the VERTICAL shear, and only off a scale of one
+
+The coordinator asked for the parameters of the 36 that are not slope cases, in one table. Sorted, with
+`srcOffsetToROI_X` and `_Y` both 0 in every one of them and the destination the same 9x5 as the source:
+
+    vShear 9x5 into 9x5 translate -0.5 scale 0.25 flags 0x4      vShear 9x5 into 9x5 translate -0.5 scale 0.25 flags 0x8
+    vShear 9x5 into 9x5 translate -0.5 scale 0.5  flags 0x4      vShear 9x5 into 9x5 translate -0.5 scale 0.5  flags 0x8
+    vShear 9x5 into 9x5 translate -0.5 scale 2    flags 0x4      vShear 9x5 into 9x5 translate -0.5 scale 2    flags 0x8
+    vShear 9x5 into 9x5 translate 0    scale 0.25 flags 0x4      vShear 9x5 into 9x5 translate 0    scale 0.25 flags 0x8
+    ... the same six translates at 0.5 and 2, and nothing else
+    (12 at a scale of 0.25, 12 at 0.5, 12 at 2)
+
+**Not one of them is an hShear.** And **none is at a scale of 1** - `vShear 9x5 into 9x5 translate 0
+scale 1` passes, and so does every other scale-1 vertical case. So the table says:
+
+- the horizontal shear is exact at **every** scale, both edging modes, every translate - which is what the
+  one-row and multi-row grids measured;
+- the vertical shear is exact at a **scale of 1** and wrong at 0.25, 0.5 and 2, at **every** translate and in
+  **both** edging modes - 36 cases, and the translate and the edging mode are not what they share;
+- what they share is the **axis and the scale together**, and the only thing that differs between the axes
+  at a scale is which extent the along position divides: for the horizontal the along axis is the source's
+  **width** and the picture is 9 wide, and for the vertical it is the source's **height** and the picture is
+  5 tall - so at a scale of 2 the vertical's positions run -0.25 to 1.75 over a kernel of extent 3, while
+  the horizontal's run -0.25 to 3.75 over the same kernel. The vertical's whole along range fits inside the
+  first two source rows and the horizontal's does not, and the grids that came out exact were the
+  horizontal ones.
+
+So the vertical's scale is not dividing a position the port computes the same way, and the single question
+left is **what the host does when the scaled along range is shorter than the kernel** - a 5-tall source at a
+scale of 0.25 has its along positions at 0.125, 2.125, 4.125, 6.125, 8.125 with a kernel of extent 12, so
+every tap but one is outside the picture on both sides and the answer is dominated by what the host
+substitutes there. That is one delta-per-column sweep on a **five-row** picture at a scale of 0.25, the
+vertical axis, and it is the last measurement this family needs.
