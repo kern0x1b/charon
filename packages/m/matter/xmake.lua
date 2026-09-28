@@ -255,17 +255,16 @@ package("matter")
         -- has no Network.framework, so the nw_* calls come from the backport that carries them over BSD sockets.
         local backports = package:dep("backports"):installdir("lib")
         local output = path.join(package:installdir("lib"), "libMatterBackports.dylib")
-        -- -Wl,-no_implicit_dylibs, and this is the linker's own bug worked around rather than ours worked around. ld64
-        -- 956.6 (charon's cctools-port) asserts in OutputFile's dylibToOrdinal - "it != _dylibToOrdinal.end()" - while
-        -- encoding this symbol table, because a symbol is bound to a library reached through another one's re-export
-        -- and that library has no ordinal of its own: libc++ re-exports libc++abi. Measured: the assertion comes and
-        -- goes with *which* of the 125 objects is present - dropping any one of at least a dozen of them links, and
-        -- neither the objects, nor libCHIP.a, nor the C++ runtime, nor the backports assert alone - which is the
-        -- signature of an encoder defect and not of any symbol in the input. Upstream ld64 maps a re-exported dylib to
-        -- its parent's ordinal; the flag says the same thing to this linker from the outside. With it the link
-        -- completes: 45 110 492 bytes, 1506 exported MTR* classes, and every symbol that needs one of those re-exported
-        -- libraries named explicitly on the line, so a missing one is an undefined symbol at the link rather than a
-        -- silent ordinal. The fix in cctools-port is the coordinator's to take, in its own commit.
+        -- No -Wl,-no_implicit_dylibs. It was here to get past ld64 956.6 asserting in
+        -- OutputFile::dylibToOrdinal - "it != _dylibToOrdinal.end()" - while encoding this symbol
+        -- table, and packages/l/ld64 fixes that: the encoder now gives an ordinal to every dylib
+        -- that owns an import proxy, so a second File for an install path the load list already
+        -- holds - the SDK's usr/lib/libobjc.tbd beside usr/lib/libobjc.A.tbd - is no longer left
+        -- without one, and that is the symbol that aborted. The flag did not fix that, it avoided
+        -- it, and at a cost: with implicit dylibs off the ObjC runtime had no ordinal either, so
+        -- _objc_getClass and _class_getSuperclass were bound to Foundation, which does not export
+        -- them, in 5 load commands against the 7 this link now carries. packages/l/ld64/README.md
+        -- has the measurement and the reduced reproducer.
         os.vrunv(assert(toolchain:tool("mxx"), "the apple-ios toolchain names no Objective-C++ compiler for %s", package:arch()),
                  table.join(flags, {"-fuse-ld=" .. path.join(package:dep("ld64"):installdir("bin"), "ld"),
                                     "-dynamiclib", "-install_name", "/usr/lib/charon/org.charon.apple-backports/libMatterBackports.dylib",
@@ -275,7 +274,7 @@ package("matter")
                             path.join(package:dep("apple-compat"):installdir("lib"), "libapple-compat.a"),
                             "-framework", "Foundation", "-framework", "Security", "-framework", "CoreData",
                             "-framework", "CoreBluetooth",
-                            "-Wl,-rpath," .. libcxx, "-Wl,-rpath,@loader_path", "-Wl,-no_implicit_dylibs"}))
+                            "-Wl,-rpath," .. libcxx, "-Wl,-rpath,@loader_path"}))
 
         package:add("links", "Matter")
     end)
