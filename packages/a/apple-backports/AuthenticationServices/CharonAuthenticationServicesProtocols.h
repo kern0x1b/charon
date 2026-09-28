@@ -7,4 +7,6 @@
 #import <Foundation/Foundation.h>
 #import <objc/NSObject.h>
 
-@protocol ASWebAuthenticationPresentationContextProviding;
+API_AVAILABLE(ios(13.0))
+@protocol ASWebAuthenticationPresentationContextProviding <NSObject>
+@end

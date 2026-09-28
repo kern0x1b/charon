@@ -7,4 +7,7 @@
 #import <Foundation/Foundation.h>
 #import <objc/NSObject.h>
 
-@protocol PHPhotoLibraryChangeObserver;
+API_AVAILABLE(ios(8.0))
+@protocol PHPhotoLibraryChangeObserver <NSObject>
+- ()photoLibraryDidChange:(PHChange * _Nonnull)changeInstance;
+@end

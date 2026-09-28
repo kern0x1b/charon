@@ -7,12 +7,25 @@
 #import <Foundation/Foundation.h>
 #import <objc/NSObject.h>
 
-@protocol NSURLSessionDataDelegate;
+API_AVAILABLE(ios(7.0))
+@protocol NSURLSessionDataDelegate <NSURLSessionTaskDelegate>
+- ()URLSession:(NSURLSession * _Nonnull)session dataTask:(NSURLSessionDataTask * _Nonnull)dataTask didReceiveResponse:(NSURLResponse * _Nonnull)response completionHandler:(void (^ _Nonnull)(NSURLSessionResponseDisposition))completionHandler;
+- ()URLSession:(NSURLSession * _Nonnull)session dataTask:(NSURLSessionDataTask * _Nonnull)dataTask didBecomeDownloadTask:(NSURLSessionDownloadTask * _Nonnull)downloadTask;
+- ()URLSession:(NSURLSession * _Nonnull)session dataTask:(NSURLSessionDataTask * _Nonnull)dataTask didBecomeStreamTask:(NSURLSessionStreamTask * _Nonnull)streamTask;
+- ()URLSession:(NSURLSession * _Nonnull)session dataTask:(NSURLSessionDataTask * _Nonnull)dataTask didReceiveData:(NSData * _Nonnull)data;
+- ()URLSession:(NSURLSession * _Nonnull)session dataTask:(NSURLSessionDataTask * _Nonnull)dataTask willCacheResponse:(NSCachedURLResponse * _Nonnull)proposedResponse completionHandler:(void (^ _Nonnull)(NSCachedURLResponse * _Nullable))completionHandler;
+@end
 
-@protocol NSURLSessionDelegate;
+API_AVAILABLE(ios(7.0))
+@protocol NSURLSessionDelegate <NSObject>
+@end
 
-@protocol NSURLSessionDownloadDelegate;
+API_AVAILABLE(ios(7.0))
+@protocol NSURLSessionTaskDelegate <NSURLSessionDelegate>
+@end
 
-@protocol NSURLSessionTaskDelegate;
-
-@protocol NSURLSessionWebSocketDelegate;
+API_AVAILABLE(ios(13.0))
+@protocol NSURLSessionWebSocketDelegate <NSURLSessionTaskDelegate>
+- ()URLSession:(NSURLSession * _Nonnull)session webSocketTask:(NSURLSessionWebSocketTask * _Nonnull)webSocketTask didOpenWithProtocol:(NSString * _Nullable)protocol;
+- ()URLSession:(NSURLSession * _Nonnull)session webSocketTask:(NSURLSessionWebSocketTask * _Nonnull)webSocketTask didCloseWithCode:(NSURLSessionWebSocketCloseCode)closeCode reason:(NSData * _Nullable)reason;
+@end

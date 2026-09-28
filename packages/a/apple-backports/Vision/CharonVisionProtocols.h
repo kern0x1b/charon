@@ -7,6 +7,13 @@
 #import <Foundation/Foundation.h>
 #import <objc/NSObject.h>
 
-@protocol VNFaceObservationAccepting;
+API_AVAILABLE(ios(11.0))
+@protocol VNFaceObservationAccepting <NSObject>
+- ()inputFaceObservations;
+- ()setInputFaceObservations:(NSArray<VNFaceObservation *> * _Nullable)inputFaceObservations;
+@end
 
-@protocol VNRequestRevisionProviding;
+API_AVAILABLE(ios(12.0))
+@protocol VNRequestRevisionProviding <NSObject>
+- ()requestRevision;
+@end

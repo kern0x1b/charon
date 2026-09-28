@@ -7,80 +7,245 @@
 #import <Foundation/Foundation.h>
 #import <objc/NSObject.h>
 
-@protocol NSCollectionLayoutContainer;
+API_AVAILABLE(ios(13.0))
+@protocol NSCollectionLayoutContainer <NSObject>
+@end
 
-@protocol NSCollectionLayoutEnvironment;
+API_AVAILABLE(ios(13.0))
+@protocol NSCollectionLayoutEnvironment <NSObject>
+@end
 
-@protocol NSCollectionLayoutVisibleItem;
+API_AVAILABLE(ios(13.0))
+@protocol NSCollectionLayoutVisibleItem <NSObject, UIDynamicItem>
+@end
 
-@protocol UIActivityItemsConfigurationReading;
+API_AVAILABLE(ios(13.0))
+@protocol UIActivityItemsConfigurationReading <NSObject>
+- ()activityItemsConfigurationSupportsInteraction:(UIActivityItemsConfigurationInteraction  _Nonnull)interaction;
+- ()activityItemsConfigurationMetadataForKey:(UIActivityItemsConfigurationMetadataKey  _Nonnull)key;
+- ()activityItemsConfigurationMetadataForItemAtIndex:(NSInteger)index key:(UIActivityItemsConfigurationMetadataKey  _Nonnull)key;
+- ()activityItemsConfigurationPreviewForItemAtIndex:(NSInteger)index intent:(UIActivityItemsConfigurationPreviewIntent  _Nonnull)intent suggestedSize:(CGSize)suggestedSize;
+- ()itemProvidersForActivityItemsConfiguration;
+- ()applicationActivitiesForActivityItemsConfiguration;
+@end
 
-@protocol UIAdaptivePresentationControllerDelegate;
+API_AVAILABLE(ios(8.0))
+@protocol UIAdaptivePresentationControllerDelegate <NSObject>
+- ()adaptivePresentationStyleForPresentationController:(UIPresentationController * _Nonnull)controller;
+- ()adaptivePresentationStyleForPresentationController:(UIPresentationController * _Nonnull)controller traitCollection:(UITraitCollection * _Nonnull)traitCollection;
+- ()presentationController:(UIPresentationController * _Nonnull)presentationController prepareAdaptivePresentationController:(UIPresentationController * _Nonnull)adaptivePresentationController;
+- ()presentationController:(UIPresentationController * _Nonnull)controller viewControllerForAdaptivePresentationStyle:(UIModalPresentationStyle)style;
+- ()presentationController:(UIPresentationController * _Nonnull)presentationController willPresentWithAdaptiveStyle:(UIModalPresentationStyle)style transitionCoordinator:(id<UIViewControllerTransitionCoordinator>  _Nullable)transitionCoordinator;
+- ()presentationControllerShouldDismiss:(UIPresentationController * _Nonnull)presentationController;
+- ()presentationControllerWillDismiss:(UIPresentationController * _Nonnull)presentationController;
+- ()presentationControllerDidDismiss:(UIPresentationController * _Nonnull)presentationController;
+- ()presentationControllerDidAttemptToDismiss:(UIPresentationController * _Nonnull)presentationController;
+@end
 
-@protocol UIColorPickerViewControllerDelegate;
+API_AVAILABLE(ios(14.0))
+@protocol UIColorPickerViewControllerDelegate <NSObject>
+- ()colorPickerViewControllerDidSelectColor:(UIColorPickerViewController * _Nonnull)viewController;
+- ()colorPickerViewController:(UIColorPickerViewController * _Nonnull)viewController didSelectColor:(UIColor * _Nonnull)color continuously:(BOOL)continuously;
+- ()colorPickerViewControllerDidFinish:(UIColorPickerViewController * _Nonnull)viewController;
+@end
 
-@protocol UIConfigurationState;
+API_AVAILABLE(ios(14.0))
+@protocol UIConfigurationState <NSObject>
+@end
 
-@protocol UIContentConfiguration;
+API_AVAILABLE(ios(14.0))
+@protocol UIContentConfiguration <NSObject>
+@end
 
-@protocol UIContentContainer;
+API_AVAILABLE(ios(8.0))
+@protocol UIContentContainer <NSObject>
+@end
 
-@protocol UIContentView;
+API_AVAILABLE(ios(14.0))
+@protocol UIContentView <NSObject>
+@end
 
-@protocol UIContextMenuInteractionAnimating;
+API_AVAILABLE(ios(13.0))
+@protocol UIContextMenuInteractionAnimating <NSObject>
+- ()addAnimations:(void (^ _Nonnull)(void))animations;
+- ()addCompletion:(void (^ _Nonnull)(void))completion;
+- ()previewViewController;
+@end
 
-@protocol UIContextMenuInteractionCommitAnimating;
+API_AVAILABLE(ios(13.0))
+@protocol UIContextMenuInteractionCommitAnimating <UIContextMenuInteractionAnimating>
+- ()preferredCommitStyle;
+- ()setPreferredCommitStyle:(UIContextMenuInteractionCommitStyle)preferredCommitStyle;
+@end
 
-@protocol UIContextMenuInteractionDelegate;
+API_AVAILABLE(ios(13.0))
+@protocol UIContextMenuInteractionDelegate <NSObject>
+@end
 
-@protocol UICoordinateSpace;
+API_AVAILABLE(ios(8.0))
+@protocol UICoordinateSpace <NSObject>
+@end
 
-@protocol UIDocumentMenuDelegate;
+API_AVAILABLE(ios(8.0))
+@protocol UIDocumentMenuDelegate <NSObject>
+- ()documentMenu:(UIDocumentMenuViewController * _Nonnull)documentMenu didPickDocumentPicker:(UIDocumentPickerViewController * _Nonnull)documentPicker;
+- ()documentMenuWasCancelled:(UIDocumentMenuViewController * _Nonnull)documentMenu;
+@end
 
-@protocol UIDocumentPickerDelegate;
+API_AVAILABLE(ios(8.0))
+@protocol UIDocumentPickerDelegate <NSObject>
+- ()documentPicker:(UIDocumentPickerViewController * _Nonnull)controller didPickDocumentsAtURLs:(NSArray<NSURL *> * _Nonnull)urls;
+- ()documentPickerWasCancelled:(UIDocumentPickerViewController * _Nonnull)controller;
+- ()documentPicker:(UIDocumentPickerViewController * _Nonnull)controller didPickDocumentAtURL:(NSURL * _Nonnull)url;
+@end
 
-@protocol UIDragDropSession;
+API_AVAILABLE(ios(11.0))
+@protocol UIDragDropSession <NSObject>
+@end
 
-@protocol UIDropSession;
+API_AVAILABLE(ios(11.0))
+@protocol UIDropSession <UIDragDropSession, NSProgressReporting>
+@end
 
-@protocol UIInteraction;
+API_AVAILABLE(ios(11.0))
+@protocol UIInteraction <NSObject>
+- ()willMoveToView:(UIView * _Nullable)view;
+- ()didMoveToView:(UIView * _Nullable)view;
+- ()view;
+@end
 
-@protocol UILayoutSupport;
+API_AVAILABLE(ios(7.0))
+@protocol UILayoutSupport <NSObject>
+- ()length;
+- ()topAnchor;
+- ()bottomAnchor;
+- ()heightAnchor;
+@end
 
-@protocol UIMenuLeaf;
+API_AVAILABLE(ios(8.0))
+@protocol UIPopoverPresentationControllerDelegate <UIAdaptivePresentationControllerDelegate>
+- ()prepareForPopoverPresentation:(UIPopoverPresentationController * _Nonnull)popoverPresentationController;
+- ()popoverPresentationControllerShouldDismissPopover:(UIPopoverPresentationController * _Nonnull)popoverPresentationController;
+- ()popoverPresentationControllerDidDismissPopover:(UIPopoverPresentationController * _Nonnull)popoverPresentationController;
+- ()popoverPresentationController:(UIPopoverPresentationController * _Nonnull)popoverPresentationController willRepositionPopoverToRect:(CGRect * _Nonnull)rect inView:(UIView * _Nonnull * _Nonnull)view;
+@end
 
-@protocol UIPopoverPresentationControllerDelegate;
+API_AVAILABLE(ios(9.0))
+@protocol UIPreviewActionItem <NSObject>
+@end
 
-@protocol UIPreviewActionItem;
+API_AVAILABLE(ios(13.0))
+@protocol UISceneDelegate <NSObject>
+@end
 
-@protocol UISceneDelegate;
+API_AVAILABLE(ios(8.0))
+@protocol UISearchControllerDelegate <NSObject>
+- ()willPresentSearchController:(UISearchController * _Nonnull)searchController;
+- ()didPresentSearchController:(UISearchController * _Nonnull)searchController;
+- ()willDismissSearchController:(UISearchController * _Nonnull)searchController;
+- ()didDismissSearchController:(UISearchController * _Nonnull)searchController;
+- ()presentSearchController:(UISearchController * _Nonnull)searchController;
+- ()searchController:(UISearchController * _Nonnull)searchController willChangeToSearchBarPlacement:(UINavigationItemSearchBarPlacement)newPlacement;
+- ()searchController:(UISearchController * _Nonnull)searchController didChangeFromSearchBarPlacement:(UINavigationItemSearchBarPlacement)previousPlacement;
+@end
 
-@protocol UISearchControllerDelegate;
+API_AVAILABLE(ios(8.0))
+@protocol UISearchResultsUpdating <NSObject>
+- ()updateSearchResultsForSearchController:(UISearchController * _Nonnull)searchController;
+- ()updateSearchResultsForSearchController:(UISearchController * _Nonnull)searchController selectingSearchSuggestion:(id<UISearchSuggestion>  _Nonnull)searchSuggestion;
+@end
 
-@protocol UISearchResultsUpdating;
+API_AVAILABLE(ios(15.0))
+@protocol UISheetPresentationControllerDelegate <UIAdaptivePresentationControllerDelegate>
+- ()sheetPresentationControllerDidChangeSelectedDetentIdentifier:(UISheetPresentationController * _Nonnull)sheetPresentationController;
+@end
 
-@protocol UISheetPresentationControllerDelegate;
+API_AVAILABLE(ios(16.0))
+@protocol UISheetPresentationControllerDetentResolutionContext <NSObject>
+- ()containerTraitCollection;
+- ()maximumDetentValue;
+@end
 
-@protocol UISheetPresentationControllerDetentResolutionContext;
+API_AVAILABLE(ios(10.0))
+@protocol UITextInputTraits <NSObject>
+@end
 
-@protocol UITextInputTraits;
+API_AVAILABLE(ios(13.0))
+@protocol UITextInteractionDelegate <NSObject>
+- ()interactionShouldBegin:(UITextInteraction * _Nonnull)interaction atPoint:(CGPoint)point;
+- ()interactionWillBegin:(UITextInteraction * _Nonnull)interaction;
+- ()interactionDidEnd:(UITextInteraction * _Nonnull)interaction;
+@end
 
-@protocol UITextInteractionDelegate;
+API_AVAILABLE(ios(10.0))
+@protocol UIViewAnimating <NSObject>
+- ()startAnimation;
+- ()startAnimationAfterDelay:(NSTimeInterval)delay;
+- ()pauseAnimation;
+- ()stopAnimation:(BOOL)withoutFinishing;
+- ()finishAnimationAtPosition:(UIViewAnimatingPosition)finalPosition;
+- ()state;
+- ()isRunning;
+- ()isReversed;
+- ()setReversed:(BOOL)reversed;
+- ()fractionComplete;
+- ()setFractionComplete:(CGFloat)fractionComplete;
+@end
 
-@protocol UIViewAnimating;
+API_AVAILABLE(ios(7.0))
+@protocol UIViewControllerAnimatedTransitioning <NSObject>
+@end
 
-@protocol UIViewControllerAnimatedTransitioning;
+API_AVAILABLE(ios(7.0))
+@protocol UIViewControllerContextTransitioning <NSObject>
+- ()updateInteractiveTransition:(CGFloat)percentComplete;
+- ()finishInteractiveTransition;
+- ()cancelInteractiveTransition;
+- ()pauseInteractiveTransition;
+- ()completeTransition:(BOOL)didComplete;
+- ()viewControllerForKey:(UITransitionContextViewControllerKey  _Nonnull)key;
+- ()viewForKey:(UITransitionContextViewKey  _Nonnull)key;
+- ()initialFrameForViewController:(UIViewController * _Nonnull)vc;
+- ()finalFrameForViewController:(UIViewController * _Nonnull)vc;
+- ()containerView;
+- ()isAnimated;
+- ()isInteractive;
+- ()transitionWasCancelled;
+- ()presentationStyle;
+- ()targetTransform;
+@end
 
-@protocol UIViewControllerContextTransitioning;
+API_AVAILABLE(ios(7.0))
+@protocol UIViewControllerInteractiveTransitioning <NSObject>
+@end
 
-@protocol UIViewControllerInteractiveTransitioning;
+API_AVAILABLE(ios(7.0))
+@protocol UIViewControllerTransitionCoordinator <UIViewControllerTransitionCoordinatorContext>
+@end
 
-@protocol UIViewControllerTransitionCoordinator;
+API_AVAILABLE(ios(7.0))
+@protocol UIViewControllerTransitionCoordinatorContext <NSObject>
+@end
 
-@protocol UIViewControllerTransitionCoordinatorContext;
+API_AVAILABLE(ios(7.0))
+@protocol UIViewControllerTransitioningDelegate <NSObject>
+@end
 
-@protocol UIViewControllerTransitioningDelegate;
+API_AVAILABLE(ios(10.0))
+@protocol UIViewImplicitlyAnimating <UIViewAnimating>
+- ()addAnimations:(void (^ _Nonnull)(void))animation delayFactor:(CGFloat)delayFactor;
+- ()addAnimations:(void (^ _Nonnull)(void))animation;
+- ()addCompletion:(void (^ _Nonnull)(UIViewAnimatingPosition))completion;
+- ()continueAnimationWithTimingParameters:(id<UITimingCurveProvider>  _Nullable)parameters durationFactor:(CGFloat)durationFactor;
+@end
 
-@protocol UIViewImplicitlyAnimating;
-
-@protocol UIWindowSceneDelegate;
+API_AVAILABLE(ios(13.0))
+@protocol UIWindowSceneDelegate <UISceneDelegate>
+- ()windowScene:(UIWindowScene * _Nonnull)windowScene didUpdateCoordinateSpace:(id<UICoordinateSpace>  _Nonnull)previousCoordinateSpace interfaceOrientation:(UIInterfaceOrientation)previousInterfaceOrientation traitCollection:(UITraitCollection * _Nonnull)previousTraitCollection;
+- ()windowScene:(UIWindowScene * _Nonnull)windowScene didUpdateEffectiveGeometry:(UIWindowSceneGeometry * _Nonnull)previousEffectiveGeometry;
+- ()windowScene:(UIWindowScene * _Nonnull)windowScene performActionForShortcutItem:(UIApplicationShortcutItem * _Nonnull)shortcutItem completionHandler:(void (^ _Nonnull)(BOOL))completionHandler;
+- ()windowScene:(UIWindowScene * _Nonnull)windowScene userDidAcceptCloudKitShareWithMetadata:(CKShareMetadata * _Nonnull)cloudKitShareMetadata;
+- ()preferredWindowingControlStyleForScene:(UIWindowScene * _Nonnull)windowScene;
+- ()window;
+- ()setWindow:(UIWindow * _Nullable)window;
+@end

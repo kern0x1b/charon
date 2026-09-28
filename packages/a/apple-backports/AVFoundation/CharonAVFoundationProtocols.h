@@ -7,4 +7,6 @@
 #import <Foundation/Foundation.h>
 #import <objc/NSObject.h>
 
-@protocol AVCaptureDataOutputSynchronizerDelegate;
+API_AVAILABLE(ios(11.0))
+@protocol AVCaptureDataOutputSynchronizerDelegate <NSObject>
+@end

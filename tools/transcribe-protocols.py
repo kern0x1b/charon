@@ -38,12 +38,17 @@ for line in open(os.path.join(worktree, "modules", "apple", "backports.lua"), en
 FOLDER_OF_FRAMEWORK = {entry["folder"]: entry["folder"] for entry in LIBRARIES}
 
 # a protocol a band already declares needs no transcription
+# a protocol a header already declares with a body; a forward declaration (@protocol X;) is not one, and
+# counting one here is how the headers this tool writes fed themselves back as "already declared"
 have = set()
 for base, _, files in os.walk(os.path.join(worktree, "packages")):
     for name in files:
-        if name.endswith(".h"):
-            have.update(re.findall(r"@protocol\s+(\w+)",
-                                   open(os.path.join(base, name), encoding="utf-8", errors="replace").read()))
+        if not name.endswith(".h"):
+            continue
+        for line in open(os.path.join(base, name), encoding="utf-8", errors="replace"):
+            for protocol in re.findall(r"@protocol\s+([A-Za-z0-9_]+)", line):
+                if not re.search(r"@protocol\s+" + protocol + r"\s*;", line):
+                    have.add(protocol)
 
 os.makedirs(out, exist_ok=True)
 

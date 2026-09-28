@@ -7,4 +7,6 @@
 #import <Foundation/Foundation.h>
 #import <objc/NSObject.h>
 
-@protocol SFSafariViewControllerDelegate;
+API_AVAILABLE(ios(9.0))
+@protocol SFSafariViewControllerDelegate <NSObject>
+@end

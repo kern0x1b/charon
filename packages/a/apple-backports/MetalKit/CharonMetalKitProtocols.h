@@ -7,4 +7,6 @@
 #import <Foundation/Foundation.h>
 #import <objc/NSObject.h>
 
-@protocol MTKViewDelegate;
+API_AVAILABLE(ios(9.0))
+@protocol MTKViewDelegate <NSObject>
+@end

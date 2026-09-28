@@ -7,8 +7,10 @@
 #import <Foundation/Foundation.h>
 #import <objc/NSObject.h>
 
-@protocol SCNAnimatable;
+API_AVAILABLE(ios(8.0))
+@protocol SCNAnimatable <NSObject>
+@end
 
-@protocol SCNSceneRenderer;
-
-@protocol SCNSceneRendererDelegate;
+API_AVAILABLE(ios(9.0))
+@protocol SCNSceneRendererDelegate <NSObject>
+@end

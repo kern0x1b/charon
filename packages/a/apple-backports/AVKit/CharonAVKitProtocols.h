@@ -7,4 +7,6 @@
 #import <Foundation/Foundation.h>
 #import <objc/NSObject.h>
 
-@protocol AVPlayerViewControllerDelegate;
+API_AVAILABLE(ios(8.0))
+@protocol AVPlayerViewControllerDelegate <NSObject>
+@end
