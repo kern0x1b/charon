@@ -254,3 +254,42 @@ output and no new maths.
 The owner's ruling is that this does not get fixed by tuning the solver: the pose is to come out of
 OpenCV 3.4.20's ORB and `solvePnPRansac` once `packages/o/opencv` builds, and this is the record of
 what the hand-written path is not doing while it waits.
+
+## The diagnostic ran: the intrinsics were the transpose, and that was not the cause
+
+The four lines, for one matched landmark, before and after:
+
+```
+landmark image      40.00 7.00 px        landmark image      40.00 7.00 px
+landmark world      0.0000 0.0000 0.0000 landmark world      0.0000 0.0000 0.0000
+landmark projected  0.00 0.00  (BEHIND)  landmark projected  0.00 0.00  (BEHIND)
+intrinsics          fx 138.564 cx 0.000  intrinsics          fx 138.564 cx 80.000
+                    fy 138.564 cy 0.000                        fy 138.564 cy 60.000
+```
+
+`cx 0.000 cy 0.000` is the whole of it. A C `simd_float3x3` is three *columns*, so the matrix
+`[[fx,0,cx],[0,fy,cy],[0,0,1]]` is `columns[0] = (fx,0,0)`, `columns[1] = (0,fy,0)`,
+`columns[2] = (cx,cy,1)`; both the library's `+cameraIntrinsicsForResolution:` and the differential's
+synthetic calibration had the rows in the columns, which is the transpose. The principal point was at
+the corner of the picture and every projection went through it. Fixed in both places, and the
+principal point is now the frame's centre: `cx 80.000 cy 60.000` for 160x120.
+
+**It was not the cause of the step making things worse.** With the transpose fixed and the step back in
+the frame's path, the differential reports:
+
+```
+rotation error: mean 2.27155 rad (130.150 deg), worst 3.13170 rad (179.433 deg)
+distance error: mean 0.87332 m, worst 1.46808 m
+tracking: yes, 5438 points, 2 planes
+```
+
+130.150 degrees against 78.126 without the step, and the plane count falls from sixteen to two. So the
+projection was right and the solver was fitting a world that is wrong for a different reason, which
+points at the **depth** - the first of the three candidates, and the one this was always going to be:
+`depth = f * (axis x ray).x / drift` is first-order and assumes the drift is caused entirely by the
+rotation, and with the translation never integrated the drift is not what it assumes. The step is out of
+the frame's path again, on a second measured ground.
+
+The depth relation's own defect is now the single open thing, and it is the thing OpenCV's
+`solvePnPRansac` replaces rather than repairs: a monocular range from a single frame's drift is not a
+range, and a baseline across frames is what it needs, and there is none.

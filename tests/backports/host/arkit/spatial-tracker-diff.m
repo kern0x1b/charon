@@ -40,9 +40,9 @@ static simd_float3x3 CharonSyntheticIntrinsics(NSUInteger width, NSUInteger heig
     const float halfAngleTangent = 0.5773502692f;
     float focal = ((float)width / 2.0f) / halfAngleTangent;
     simd_float3x3 intrinsics;
-    intrinsics.columns[0] = simd_make_float3(focal, 0, (float)width / 2.0f);
-    intrinsics.columns[1] = simd_make_float3(0, focal, (float)height / 2.0f);
-    intrinsics.columns[2] = simd_make_float3(0, 0, 1);
+    intrinsics.columns[0] = simd_make_float3(focal, 0, 0);
+    intrinsics.columns[1] = simd_make_float3(0, focal, 0);
+    intrinsics.columns[2] = simd_make_float3((float)width / 2.0f, (float)height / 2.0f, 1);
     return intrinsics;
 }
 

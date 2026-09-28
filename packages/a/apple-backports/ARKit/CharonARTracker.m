@@ -364,10 +364,12 @@ static simd_float3x3 CharonRecordedIntrinsics = { 0 };
 
     CGFloat focalLength = (resolution.width / 2) / tanf((float)(fieldOfView * M_PI / 360.0));
     // The principal point is the middle of the frame, which is where the optical axis lands.
+    // Three *columns*, not three rows: the principal point is the third column, and putting it in the
+    // first one builds the transpose, which projects every point through the corner of the picture.
     simd_float3x3 intrinsics;
-    intrinsics.columns[0] = simd_make_float3(focalLength, 0, resolution.width / 2);
-    intrinsics.columns[1] = simd_make_float3(0, focalLength, resolution.height / 2);
-    intrinsics.columns[2] = simd_make_float3(0, 0, 1);
+    intrinsics.columns[0] = simd_make_float3(focalLength, 0, 0);
+    intrinsics.columns[1] = simd_make_float3(0, focalLength, 0);
+    intrinsics.columns[2] = simd_make_float3(resolution.width / 2, resolution.height / 2, 1);
     return intrinsics;
 #endif
 }
@@ -685,6 +687,12 @@ static simd_float3x3 CharonRecordedIntrinsics = { 0 };
     // degrees of accuracy for the appearance of a solver. It stays here, called from one place, so
     // that the work which makes it correct has somewhere to land; the run.sh floor is the
     // without-the-step number, so putting it back in turns that floor red until it beats it.
+    // Still out of the frame's path, and now for a second measured reason. With the principal point
+    // found and fixed (the intrinsics had been built transposed, so cx and cy were 0 and every point
+    // was projected through the corner of the picture), the step reports 130.150 degrees of mean
+    // rotation error against 78.126 without it, and the plane count falls from sixteen to two. So the
+    // projection was not what was wrong: the landmark depth is, which is the first of the three
+    // candidates in the facts and is the one this points at.
     BOOL matched = [self matchFeaturesTurningBy:turn];
     (void)matched;
     [self placeUnmatchedPoints];
@@ -943,6 +951,28 @@ static uint32_t CharonPatchCost(const uint8_t *luma, NSUInteger width, NSUIntege
                                     focal:[self focalLengthInPixels]];
         if (now->hits >= 3)
             [self placePointInWorld:now];
+#ifdef CHARON_TRACKER_TRACE
+        if (matched == 0) {
+            // The four lines: where the point was matched, what world position it carries, where that
+            // position projects, and what the camera projects it through. Which of the three
+            // conventions is wrong is visible in the difference between the first two columns.
+            simd_float3x3 k = [CharonARTracker cameraIntrinsicsForResolution:_resolution];
+            fprintf(stderr, "landmark image      %.2f %.2f px of %.0fx%.0f\n",
+                    now->image.x * (float)_lumaWidth, now->image.y * (float)_lumaHeight,
+                    _lumaWidth, _lumaHeight);
+            fprintf(stderr, "landmark world      %.4f %.4f %.4f\n", now->world.x, now->world.y, now->world.z);
+            simd_float2 where;
+            BOOL ok = CharonProject(_cameraTransform, k, now->world, &where);
+            fprintf(stderr, "landmark projected  %.2f %.2f  (%s)\n", where.x, where.y,
+                    ok ? "in front" : "BEHIND");
+            fprintf(stderr, "intrinsics          fx %.3f cx %.3f fy %.3f cy %.3f\n",
+                    k.columns[0][0], k.columns[2][0], k.columns[1][1], k.columns[2][1]);
+            fprintf(stderr, "landmark camera     %.4f %.4f %.4f   depth %.4f\n", now->camera.x,
+                    now->camera.y, now->camera.z, now->depth);
+            fprintf(stderr, "pose translation    %.4f %.4f %.4f\n", _cameraTransform.columns[3][0],
+                    _cameraTransform.columns[3][1], _cameraTransform.columns[3][2]);
+        }
+#endif
         matched++;
         if (matched >= 4096)
             break;
