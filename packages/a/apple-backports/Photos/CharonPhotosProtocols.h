@@ -1,12 +1,10 @@
 // CharonPhotosProtocols.h — the Photos protocols the SDK this package compiles against does not declare,
-// transcribed from the SDK that does, by .agent-work/probe/transcribe-protocols.py: the base list,
-// the member names, their types and whether each is required or optional, as the compiler reports
-// them. Facts only, and API_AVAILABLE(ios(<introduced>)) so the lift and a band place the row by the
-// release it arrived in. A protocol a band's own header already declares is not here.
+// transcribed by tools/transcribe-protocols.py from the SDK that declares them: the base list, each
+// member with its kind, return type and parameter types, @required and @optional as sections, and
+// API_AVAILABLE(ios(<introduced>)) so the lift and a band place the row by the release it arrived in.
+// Facts only, and nothing written for a protocol or a member the generator refused by name below.
+#import <Photos/Photos.h>
 #import <Foundation/Foundation.h>
 #import <objc/NSObject.h>
 
-API_AVAILABLE(ios(8.0))
-@protocol PHPhotoLibraryChangeObserver <NSObject>
-- (void)photoLibraryDidChange:(PHChange * _Nonnull)changeInstance;
-@end
+@protocol PHPhotoLibraryChangeObserver;

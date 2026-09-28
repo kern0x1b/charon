@@ -1,78 +1,38 @@
 // CharonMetalProtocols.h — the Metal protocols the SDK this package compiles against does not declare,
-// transcribed from the SDK that does, by .agent-work/probe/transcribe-protocols.py: the base list,
-// the member names, their types and whether each is required or optional, as the compiler reports
-// them. Facts only, and API_AVAILABLE(ios(<introduced>)) so the lift and a band place the row by the
-// release it arrived in. A protocol a band's own header already declares is not here.
+// transcribed by tools/transcribe-protocols.py from the SDK that declares them: the base list, each
+// member with its kind, return type and parameter types, @required and @optional as sections, and
+// API_AVAILABLE(ios(<introduced>)) so the lift and a band place the row by the release it arrived in.
+// Facts only, and nothing written for a protocol or a member the generator refused by name below.
+#import <Metal/Metal.h>
 #import <Foundation/Foundation.h>
 #import <objc/NSObject.h>
 
-API_AVAILABLE(ios(11.0))
-@protocol MTLCaptureScope <NSObject>
-- (void)beginScope;
-- (void)endScope;
-- (NSString * _Nullable)label;
-- (void)setLabel:(NSString * _Nullable)label;
-- (id<MTLDevice> _Nonnull)device;
-- (id<MTLCommandQueue> _Nullable)commandQueue;
-- (id<MTL4CommandQueue> _Nullable)mtl4CommandQueue;
-@property ()NSString * _Nullable label;;
-@property (readonly, )id<MTLDevice> _Nonnull device;;
-@property (readonly, )id<MTLCommandQueue> _Nullable commandQueue;;
-@property (readonly, )id<MTL4CommandQueue> _Nullable mtl4CommandQueue;;
-@end
+@protocol MTLBuffer;
 
-API_AVAILABLE(ios(8.0))
-@protocol MTLBuffer <MTLResource>
-@end
+@protocol MTLCaptureScope;
 
-API_AVAILABLE(ios(8.0))
-@protocol MTLCommandBuffer <NSObject>
-@end
+@protocol MTLCommandBuffer;
 
-API_AVAILABLE(ios(8.0))
-@protocol MTLCommandEncoder <NSObject>
-@end
+@protocol MTLCommandEncoder;
 
-API_AVAILABLE(ios(8.0))
-@protocol MTLCommandQueue <NSObject>
-@end
+@protocol MTLCommandQueue;
 
-API_AVAILABLE(ios(8.0))
-@protocol MTLDepthStencilState <NSObject>
-@end
+@protocol MTLDepthStencilState;
 
-API_AVAILABLE(ios(8.0))
-@protocol MTLDevice <NSObject>
-@end
+@protocol MTLDevice;
 
-API_AVAILABLE(ios(8.0))
-@protocol MTLDrawable <NSObject>
-@end
+@protocol MTLDrawable;
 
-API_AVAILABLE(ios(8.0))
-@protocol MTLFunction <NSObject>
-@end
+@protocol MTLFunction;
 
-API_AVAILABLE(ios(8.0))
-@protocol MTLLibrary <NSObject>
-@end
+@protocol MTLLibrary;
 
-API_AVAILABLE(ios(8.0))
-@protocol MTLRenderCommandEncoder <MTLCommandEncoder>
-@end
+@protocol MTLRenderCommandEncoder;
 
-API_AVAILABLE(ios(8.0))
-@protocol MTLRenderPipelineState <MTLAllocation, NSObject>
-@end
+@protocol MTLRenderPipelineState;
 
-API_AVAILABLE(ios(8.0))
-@protocol MTLResource <NSObject>
-@end
+@protocol MTLResource;
 
-API_AVAILABLE(ios(8.0))
-@protocol MTLSamplerState <NSObject>
-@end
+@protocol MTLSamplerState;
 
-API_AVAILABLE(ios(8.0))
-@protocol MTLTexture <MTLResource>
-@end
+@protocol MTLTexture;
