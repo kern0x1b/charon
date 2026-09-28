@@ -66,6 +66,11 @@ xcrun swiftc -swift-version 5 -wmo -parse-as-library -O \
 # build does: the module is named `CoreML` and so is the SDK's clang module, and two modules cannot
 # share a name. `-import-objc-header` puts the header's declarations in the module directly.
 xcrun swiftc -swift-version 5 -wmo -parse-as-library -O \
+    -module-name PortProto \
+    -emit-module -emit-module-path "$out/modules/PortProto.swiftmodule" \
+    -c -o "$out/proto.o" "$out"/files/Protobuf/*.swift
+
+xcrun swiftc -swift-version 5 -wmo -parse-as-library -O \
     -module-name PortCoreML \
     -import-objc-header "$out"/files/CoreML/CharonCoreML.h \
     -emit-module -emit-module-path "$out/modules/PortCoreML.swiftmodule" \
@@ -95,6 +100,16 @@ xcrun swiftc -swift-version 5 -O -I "$out/modules" \
     -framework Foundation \
     -o "$out/tabularframe"
 
+# The `.mlmodel` writer, read back by coremltools 9.0 — a protobuf implementation that is neither this
+# port's nor Swift's Core ML. This reaches the schema and the encoding, NOT a load and a predict: on
+# this SDK's CoreML surface `prediction(fromFeatures:)` is unavailable on macOS, `prediction(from:)` is
+# async over `MLTensor`, and `MLTensor(shape:scalars:)` trips a compiler crash. The file says so and
+# makes no claim it did not make.
+xcrun swiftc -swift-version 5 -O -I "$out/modules" \
+    "$here/model/main.swift" "$out/proto.o" \
+    -framework Foundation \
+    -o "$out/model"
+
 # The linear models, in their own file named main.swift because the host's `fitted` is async and a
 # top-level `await` is only allowed there.
 xcrun swiftc -swift-version 5 -O -I "$out/modules" \
@@ -117,6 +132,7 @@ xcrun swiftc -swift-version 5 -O -I "$out/modules" \
     -framework Accelerate -framework Foundation -framework CoreFoundation \
     -o "$out/preprocessing"
 
+
 # The metrics family, which the host has as `ClassificationMetrics` in its own CreateMLComponents,
 # so it is a straight differential: the same pairs into both objects, every count and score compared.
 xcrun swiftc -swift-version 5 -O -I "$out/modules" \
@@ -138,7 +154,7 @@ xcrun swiftc -swift-version 5 -O -I "$out/modules" \
 # a one-line mutation producing exactly one line of output and no `tabularframe`, `linearmodels` or
 # `transformers` line at all. Each binary's exit is collected and the first non-zero is the script's.
 status=0
-for suite in differential tabularframe linearmodels transformers metrics preprocessing l1; do
+for suite in differential tabularframe linearmodels transformers metrics preprocessing l1 model; do
     if ! "$out/$suite"; then
         echo "FAIL the $suite suite exited non-zero" >&2
         status=1
