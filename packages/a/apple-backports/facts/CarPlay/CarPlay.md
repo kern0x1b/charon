@@ -213,3 +213,59 @@ all**, on purpose. They are not `absent`: they draw in-app like the seventeen do
 them needs a car, so calling them absent would be a false claim. They are simply not written yet, and
 the ledger's rows for them stay `missing`, which is the honest state. They are the next CarPlay round,
 and they follow the shapes read here.
+
+## The car home screen: the geometry, and the look
+
+The owner's decision (design §"the look is skeuomorphic", 2026-09-28 03:20) and the requirement
+(§"the car screen is an iOS home screen", 03:40) are the two halves of this section: **the pixels are
+iOS 6's**, and **the first thing on the screen is a home screen, not a template**.
+
+### The layout, which is what this file's code so far is
+
+`CharonCarPlayLayout.{h,m}` is the geometry of that home screen, and it is deliberately the *only*
+part of it that is pure: a C function of the head unit's screen and its scale, importing Foundation
+and Core Graphics and **not UIKit**, so a host differential can compile the port's own file and
+decide it. `tests/backports/host/mapkit-carplay` does exactly that, for the three resolutions the
+design names — 800x480 (15:9, Table 23-9), 960x540 and 1280x720 (16:9) — and holds:
+
+```
+# 800x480:  dock 136 wide, grid 616x432, 4 columns x 2 rows =  8 a page, icon 117
+# 960x540:  dock 163 wide, grid 749x492, 4 columns x 2 rows =  8 a page, icon 138
+# 1280x720: dock 218 wide, grid 1014x672, 5 columns x 3 rows = 15 a page, icon 168
+31 checks, 0 failures
+```
+
+The rule that produces those numbers, and what "adaptive" has to mean on a car:
+
+- **the icon side comes first** — a fraction of the grid's own size, floored at 48 points (the
+  release's own 44-point minimum touch target, raised for a screen seen from further away than a
+  phone) and capped at 168 so an icon does not become a poster — **and the counts follow from it**. A
+  bigger head unit therefore gets *bigger touch targets and fewer of them*, which the differential
+  asserts directly (117 → 138 → 168 points, and never fewer than the floor);
+- the **dock is at the side**, a fraction of the width, never more than a quarter of it, and the grid
+  starts clear of it — asserted for all three;
+- **every icon and label of a page is inside the grid**, checked for all three, and an index past the
+  last column is *refused* rather than drawn off the edge;
+- **a 2× head unit is the same layout in points**: 1920x1080 pixels at a scale of 2 is 960x540
+  points, and the differential asserts the layouts are identical — which is what the head unit's
+  Setup Message gives, and it is why nothing here knows about pixels.
+
+### The look, and what is not in this file yet
+
+The skeuomorphic appearance is the **release's own UIKit**, not a re-drawing of it: the glossy
+`UIBarStyleBlack` bars, the release's gradient buttons and table cells, its shadows and textures,
+Helvetica. `CarPlayTemplatesView12.m` today draws its list and grid flat, which is the one thing the
+owner's decision rules out, and restyling it is the next piece of work. Artwork comes from the
+release's own on-device resources at run time (`+[UIImage imageNamed:]` for the release's own assets,
+which the package already does elsewhere) or is drawn in code with Core Graphics gradients and
+gloss — **no Apple artwork is copied into this repository**, which is the rule the decision names and
+the reason this file quotes artwork sources rather than carrying images.
+
+The dock's contents and the settings pane are the rest of the screen and are **not written yet**: the
+time comes from `NSDate`, the battery from the release's own `UIDevice` (`batteryLevel`,
+`batteryState`), the cellular signal from `CoreTelephony` (which the release carries — `api-coretelephony`
+owns it), the Siri button from the release's own assistant, and the recents from
+`CPTemplateApplicationScene`'s running templates, which is the scene that the wall says is not there
+— so the recents list is the port's own and says so. The settings pane is a
+`CPListTemplate` over the installed apps with the exclude and reorder rows the owner asked for, and
+because it is a list template it is drawn with the same release chrome as everything else.
