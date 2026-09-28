@@ -68,7 +68,7 @@ function symbols.classify(names)
             owner = "the runtime (libswiftCore)"
         elseif symbols.module_of(name) then
             owner = "module: " .. symbols.module_of(name)
-        elseif name:match("^_OBJC_(CLASS|METACLASS)_%$_") then
+        elseif name:match("^_OBJC_%a*CLASS_%$_") then
             owner = "a framework (objc class)"
         elseif name:match("^_swift_") then
             owner = "the runtime (libswiftCore)"
@@ -194,20 +194,51 @@ function symbols.control()
         table.insert(real, name)
     end
 
+    -- C: the objc buckets. A Lua pattern has no alternation, so `(CLASS|METACLASS)` was a
+    -- literal and the class bucket was empty; and `%a+` also takes _OBJC_IVAR_$, which is not a
+    -- class. One of each, and only the first two may be counted as classes.
+    local objc = { "_OBJC_CLASS_$_NSPersistentContainer",
+                   "_OBJC_METACLASS_$_NSManagedObject",
+                   "_OBJC_IVAR_$__timestamp" }
+    local counts, order = symbols.classify(objc)
+    local classes = counts["a framework (objc class)"] or 0
+    local others = 0
+    for _, owner in ipairs(order) do
+        if owner ~= "a framework (objc class)" then
+            others = others + counts[owner]
+        end
+    end
+    local c = (classes == 2 and others == 1)
+    print(string.format("%-32s %s", "one CLASS, one METACLASS, one IVAR:",
+                        c and "PASS" or "RED"))
+    if not c then
+        print(string.format("   %d landed in the class bucket and %d elsewhere, and it must be "
+                            .. "2 and 1", classes, others))
+    end
+
     local a = run("ten named, one resolved:", withOneResolved)
     local b = run("ten named, one unlisted:", withAnExtra)
-    local c = run("the real list (control):", real)
-    print(string.format("A is red=%s  B is red=%s  the control is green=%s",
-                        tostring(not a), tostring(not b), tostring(c)))
-    os.exit((not a and not b and c) and 0 or 1)
+    local control_green = run("the real list (control):", real)
+    print(string.format("A is red=%s  B is red=%s  the control is green=%s  the objc buckets are "
+                        .. "narrow=%s",
+                        tostring(not a), tostring(not b), tostring(control_green),
+                        tostring(c)))
+    os.exit((not a and not b and control_green and c) and 0 or 1)
 end
 
 -- Run only when this file is the script, not when on_test loads it: xmake calls a standalone
--- script's main(), and a load does not, so this is where the two are kept apart.
+-- script's main(), and a load does not, so this is where the two are kept apart. With neither
+-- variable set this used to exit 0 having printed nothing, which is the worst of both: a
+-- harness that says nothing and succeeds. It names what is missing and fails instead.
 function main()
-    if os.getenv("CHARON_SWIFTDATA_CONTROL") then
+    local control, object = os.getenv("CHARON_SWIFTDATA_CONTROL"), os.getenv("CHARON_SWIFTDATA_OBJECT")
+    if control then
         symbols.control()
-    elseif os.getenv("CHARON_SWIFTDATA_OBJECT") then
+    elseif object then
         symbols.main()
+    else
+        raise("symbols.lua does nothing without one of two: CHARON_SWIFTDATA_CONTROL=1 runs the " ..
+              "control for check_pending, and CHARON_SWIFTDATA_OBJECT=<object or archive> reads " ..
+              "an object's undefined symbols. Neither is set.")
     end
 end

@@ -51,7 +51,7 @@ The link is **not** finished, and for one reason only. The 433 undefined symbols
 | --- | --- |
 | 180 | the Swift runtime and the standard library, both in `libswiftCore`, which a program links |
 | 162 | C symbols the frameworks carry |
-| 36 | objc classes the frameworks carry |
+| 36 | objc classes and metaclasses the frameworks carry |
 | 34 | the port's own `Foundation` overlay |
 | 7 | `Observation`, the runtime's own |
 | 8 | `FoundationEssentials` |
@@ -71,16 +71,18 @@ eleventh appears.
 **the backports gate never builds it** - a green gate says nothing about it. Two things verify it,
 and they are different jobs:
 
-- the **armv7 build** is `.agent-work/probe/build.sh <release>`, which runs the flags
-  `modules/apple/swift.lua runtime_flags` builds, compiles the whole module and prints the counts.
-  At this tip, for `6.1.3`:
+- the **armv7 build** is `packages/s/swift-data/harness/build.sh <release>`, which runs the flags
+  `modules/apple/swift.lua runtime_flags` builds, compiles the whole module, hands the object to
+  `harness/symbols.lua` for the counts, and links it against a built
+  `libCoreDataBackports.dylib`. Where the toolchain, the runtime and swift-foundation's two modules
+  are is a fact about one machine's store and not about the package, so the script takes them in
+  the environment and **names every variable it needs when one is missing**. At this tip, for
+  `6.1.3`:
   ```
   COMPILE ERRORS 0
   OBJECT  SwiftData.o  895464 bytes  Mach-O object arm_v7
   SYMBOLS defined=2836 undefined=433
   ```
-  It is in `.agent-work` because it is a *band's* harness and a package's build belongs to the
-  package; the committed half of it is `harness/symbols.lua`, below.
 - the **committed check** is `xmake l packages/s/swift-data/harness/symbols.lua` with
   `CHARON_SWIFTDATA_OBJECT` naming an object or the installed `libSwiftData.a`, which prints the same
   `SYMBOLS` and `UNDEFINED` lines and runs the ten-symbol check; and the package's `on_test`, which
