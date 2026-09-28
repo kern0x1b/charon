@@ -36,7 +36,7 @@ xmake emulate -d "$device" -r "$release" run /usr/libexec/coreml > "$release.log
 sed 's/\x1b\[[0-9;]*m//g' "$release.log" > "$release.plain"
 if grep -qE '^FAIL' "$release.plain"; then
     echo "$release: failures"
-    grep -E '^FAIL|uncaught' "$release.plain" | head -20
+    grep -E '^FAIL|uncaught' "$release.plain" | head -30
     exit 1
 fi
 if ! grep -Eq 'pass' "$release.plain"; then

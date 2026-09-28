@@ -40,6 +40,26 @@
             completionHandler:(void (^)(id<MLFeatureProvider>, NSError *))handler;
 @end
 
+/* A failed check is written to stderr as well as to the log: the log is a path inside the guest,
+ * which the run cannot read, and stderr is what the emulator hands back. A check that fails where
+ * nobody can see it is a check whose answer is lost. */
+static void coreml_check(BOOL passed, const char *name, NSString *detail)
+{
+    charon_check(passed, name, detail);
+    if (!passed) {
+        fprintf(stderr, "FAIL %s: %s\n", name, detail.UTF8String);
+    }
+}
+
+#undef CHECK
+#undef CHECK_EQUAL
+#define CHECK(condition, name) coreml_check((condition) ? YES : NO, name, @#condition)
+#define CHECK_EQUAL(actual, expected, name) do { \
+        id charon_actual = (actual), charon_expected = (expected); \
+        coreml_check(charon_actual == charon_expected || [charon_actual isEqual:charon_expected], name, \
+                     [NSString stringWithFormat:@"%@ != %@", charon_actual, charon_expected]); \
+    } while (0)
+
 /* A model written out of the embedded bytes and read back through the public API, so the test goes
  * through the same path an application does: a file on disk, then +modelWithContentsOfURL:. */
 static MLModel *model_from(NSString *label, const unsigned char *bytes, unsigned long length, NSError **error)
