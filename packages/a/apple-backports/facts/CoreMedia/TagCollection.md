@@ -226,6 +226,27 @@ gone} — and three pixel buffers):
 | `FormatDescriptionCreateForTaggedBufferGroup` | 0, and `MatchesTaggedBufferGroup` is true for the group it came from and false for an empty one |
 | `GetTypeID` | non-zero |
 
+**The six lookups, and the coordinator's hypothesis is confirmed.** They answer the entry **only when
+exactly one matches**: more than one match is NULL, and so is none, and `indexOut` is left as the caller
+passed it in both cases. Measured with three disjoint collections, where every tag has one match, and
+with a fourth entry that repeats a tag already in the second:
+
+| query | matches | answer |
+| --- | --- | --- |
+| `video`, in one entry | 1 | index 0 |
+| `audio`, in one entry | 1 | index 1 |
+| `track7`, in one entry | 1 | index 1 |
+| `track9`, in one entry | 1 | index 2 |
+| `video`, in two entries | 2 | **NULL** |
+| `ForTagCollection(c1)`, held by one entry | 1 | index 1 |
+| `ForTagCollection(shared)`, held by one entry, though `shared` repeats `video` | 1 | index 3 |
+
+So the two lookups count different things, and both are "the number of entries that carry every one of
+the tags asked for": `ForTag` over the entries whose collection *contains* the tag, `ForTagCollection`
+over the entries whose collection contains every tag of the wanted collection. The earlier chain result
+fits exactly: {video} is carried by all three entries so 3 is too many, {video, track} by two, and
+{video, track, gone} by one, which is why only the third was found.
+
 **And one thing I cannot explain yet, which is why the six lookup functions are not written.** With that
 chain of collections, `GetCVPixelBufferForTag(video)` is **NULL** although `video` is in all three
 collections, `GetCVPixelBufferForTag(track)` is **NULL** although `track` is in two, and only `gone` — the
@@ -237,5 +258,17 @@ the wanted one. So the counts and the lookups disagree in a way I cannot read of
 fifteen functions — the three `ForTag`, the two `ForTagCollection` and nothing else — cannot be written
 from what is measured, and the nine that can are not in the tree because there is no differential yet.
 
-**Not written.** Nothing about the six lookups is claimed, and the nine whose behaviour *is* measured
-are out of the tree until a differential can hold them.
+**Not written, and the blocker is a design one, not a measurement one.** The fifteen need a way to
+*hold* a `CMTag`, which is a three-word C struct with no lifetime of its own and cannot go into an
+`NSArray` as an object, and a way to ask one collection whether it carries another's tags, which is
+`CMTagCollectionContainsSpecifiedTags` - the port's own, in `CMTagCollection17.o`. Calling it from this
+object is the trap in `charon/AGENTS.md` ("a C function shared between backport files"), and the rule
+for it is to put it in a file that exports no API symbol of its own. A half-written attempt that kept
+per-entry tag copies inside the group, and a `CMTagCollectionCopyAllTags` that no SDK declares, are in the
+work area as `CMTaggedBufferGroup17.half-draft.m` and `CharonCMTaggedBufferGroup26.h.draft`; neither is
+in the tree, and the invented helper is exactly what must not ship.
+
+So the next step is a small one and it is a real design decision: either a `charon_`-prefixed no-export
+helper carrying `CMTagCollectionContainsSpecifiedTags` and the tags of a collection as a `NSArray` of
+`NSValue`s, or `CMTagCollectionCopyAllTags` added to the collection's own object. The measurements are
+done; the fifteen are not blocked on anything else.
