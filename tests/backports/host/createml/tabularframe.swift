@@ -110,6 +110,17 @@ check("a nil in the column survives into the box, so one is missing",
       pUnit.missingCount == 1,
       "the port answers \(pUnit.missingCount)")
 
+// **The ordinary form has no spelling on the port, and the two Row cases cannot be written until it
+// does.** Apple's `Column<Int>(contents: [1, nil, 3])` holds a missing value and reports
+// `wrappedElementType == Int`; the port's `Column<Element>` stores `[Element]`, so:
+//
+//     error: 'nil' is not compatible with expected element type 'Array<Int>.ArrayLiteralElement' (aka 'Int')
+//
+// That is a compile error, not a failing check, and it is why there are two cases here rather than
+// four. The change is larger than `AnyColumn`'s storage line and `Row`: a column itself has to be
+// able to hold a missing value while reporting its element type as the value's own type, which means
+// `Column` and `ColumnStorage` are what move, and `AnyColumn` then stops having to strip anything.
+
 // The two AnyColumns side by side, one case per accessor, against Apple's TabularData.
 //
 // The port's `AnyColumn` is a box over a typed column and Apple's is Apple's own; the five accessors
