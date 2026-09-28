@@ -1,4 +1,5 @@
 [
+<<<<<<< HEAD
   {
     "api": "+[NSCalendar calendarWithIdentifier:]",
     "kind": "method",
@@ -1953,4 +1954,2203 @@
     "facts": "facts/Foundation/NSBundleReceiptURL.md",
     "source": "the release's own method of the name (a stub that raises) read on the devices, and tests/backports/device/receipturl.m on iOS 6"
   }
+=======
+ {
+  "api": "+[NSCalendar calendarWithIdentifier:]",
+  "kind": "method",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSCalendar.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "+[NSCharacterSet URLFragmentAllowedCharacterSet]",
+  "kind": "method",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSStringPercentEncoding.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/url",
+  "minimum": "6.0"
+ },
+ {
+  "api": "+[NSCharacterSet URLHostAllowedCharacterSet]",
+  "kind": "method",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSStringPercentEncoding.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/url",
+  "minimum": "6.0"
+ },
+ {
+  "api": "+[NSCharacterSet URLPasswordAllowedCharacterSet]",
+  "kind": "method",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSStringPercentEncoding.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/url",
+  "minimum": "6.0"
+ },
+ {
+  "api": "+[NSCharacterSet URLPathAllowedCharacterSet]",
+  "kind": "method",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSStringPercentEncoding.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/url",
+  "minimum": "6.0"
+ },
+ {
+  "api": "+[NSCharacterSet URLQueryAllowedCharacterSet]",
+  "kind": "method",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSStringPercentEncoding.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/url",
+  "minimum": "6.0"
+ },
+ {
+  "api": "+[NSCharacterSet URLUserAllowedCharacterSet]",
+  "kind": "method",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSStringPercentEncoding.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/url",
+  "minimum": "6.0"
+ },
+ {
+  "api": "+[NSExpression expressionForConditional:trueExpression:falseExpression:]",
+  "kind": "method",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSExpressionConditional.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "+[NSKeyedUnarchiver unarchiveTopLevelObjectWithData:error:]",
+  "kind": "method",
+  "introduced": "2.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSKeyedUnarchiverTopLevel.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "+[NSString objectWithItemProviderData:typeIdentifier:error:]",
+  "kind": "method",
+  "introduced": "11.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSItemProvider.md",
+  "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)",
+  "minimum": "6.0"
+ },
+ {
+  "api": "+[NSString readableTypeIdentifiersForItemProvider]",
+  "kind": "method",
+  "introduced": "11.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSItemProvider.md",
+  "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)",
+  "minimum": "6.0"
+ },
+ {
+  "api": "+[NSString writableTypeIdentifiersForItemProvider]",
+  "kind": "method",
+  "introduced": "11.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSItemProvider.md",
+  "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)",
+  "minimum": "6.0"
+ },
+ {
+  "api": "+[NSURL URLWithDataRepresentation:relativeToURL:]",
+  "kind": "method",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSURL.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "+[NSURL absoluteURLWithDataRepresentation:relativeToURL:]",
+  "kind": "method",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSURL.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "+[NSURL fileURLWithFileSystemRepresentation:isDirectory:relativeToURL:]",
+  "kind": "method",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSURL.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "+[NSURL fileURLWithPath:isDirectory:relativeToURL:]",
+  "kind": "method",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSURL.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "+[NSURL fileURLWithPath:relativeToURL:]",
+  "kind": "method",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSURL.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "+[NSURL objectWithItemProviderData:typeIdentifier:error:]",
+  "kind": "method",
+  "introduced": "11.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSItemProvider.md",
+  "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)",
+  "minimum": "6.0"
+ },
+ {
+  "api": "+[NSURL readableTypeIdentifiersForItemProvider]",
+  "kind": "method",
+  "introduced": "11.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSItemProvider.md",
+  "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)",
+  "minimum": "6.0"
+ },
+ {
+  "api": "+[NSURL writableTypeIdentifiersForItemProvider]",
+  "kind": "method",
+  "introduced": "11.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSItemProvider.md",
+  "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSArray firstObject]",
+  "kind": "method",
+  "introduced": "4.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSArrayFirstObject.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSCalendar compareDate:toDate:toUnitGranularity:]",
+  "kind": "method",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSCalendar.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSCalendar component:fromDate:]",
+  "kind": "method",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSCalendar.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSCalendar components:fromDateComponents:toDateComponents:options:]",
+  "kind": "method",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSCalendar.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSCalendar componentsInTimeZone:fromDate:]",
+  "kind": "method",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSCalendar.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSCalendar date:matchesComponents:]",
+  "kind": "method",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSCalendar.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSCalendar dateByAddingUnit:value:toDate:options:]",
+  "kind": "method",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSCalendar.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSCalendar dateBySettingHour:minute:second:ofDate:options:]",
+  "kind": "method",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSCalendar.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSCalendar dateBySettingUnit:value:ofDate:options:]",
+  "kind": "method",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSCalendar.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSCalendar enumerateDatesStartingAfterDate:matchingComponents:options:usingBlock:]",
+  "kind": "method",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSCalendar.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSCalendar nextDateAfterDate:matchingComponents:options:]",
+  "kind": "method",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSCalendar.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSCalendar dateWithEra:year:month:day:hour:minute:second:nanosecond:]",
+  "kind": "method",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSCalendar.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSCalendar dateWithEra:yearForWeekOfYear:weekOfYear:weekday:hour:minute:second:nanosecond:]",
+  "kind": "method",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSCalendar.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSCalendar getEra:year:month:day:fromDate:]",
+  "kind": "method",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSCalendar.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSCalendar getEra:yearForWeekOfYear:weekOfYear:weekday:fromDate:]",
+  "kind": "method",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSCalendar.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSCalendar getHour:minute:second:nanosecond:fromDate:]",
+  "kind": "method",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSCalendar.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSCalendar isDate:equalToDate:toUnitGranularity:]",
+  "kind": "method",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSCalendar.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSCalendar isDate:inSameDayAsDate:]",
+  "kind": "method",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSCalendar.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSCalendar isDateInToday:]",
+  "kind": "method",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSCalendar.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSCalendar isDateInTomorrow:]",
+  "kind": "method",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSCalendar.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSCalendar isDateInWeekend:]",
+  "kind": "method",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSCalendar.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSCalendar isDateInYesterday:]",
+  "kind": "method",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSCalendar.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSCalendar nextWeekendStartDate:interval:options:afterDate:]",
+  "kind": "method",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSCalendar.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSCalendar rangeOfWeekendStartDate:interval:containingDate:]",
+  "kind": "method",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSCalendar.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSCalendar startOfDayForDate:]",
+  "kind": "method",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSCalendar.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSCoder decodeTopLevelObjectAndReturnError:]",
+  "kind": "method",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSCoderTopLevel.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSCoder decodeTopLevelObjectForKey:error:]",
+  "kind": "method",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSCoderTopLevel.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSCoder decodeTopLevelObjectOfClass:forKey:error:]",
+  "kind": "method",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSCoderTopLevel.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSCoder decodeTopLevelObjectOfClasses:forKey:error:]",
+  "kind": "method",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSCoderTopLevel.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSCoder decodingFailurePolicy]",
+  "kind": "method",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSCoderFailure.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSCoder error]",
+  "kind": "method",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSCoderFailure.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSCoder failWithError:]",
+  "kind": "method",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSCoderFailure.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSCoder setDecodingFailurePolicy:]",
+  "kind": "method",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSCoderFailure.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSData base64EncodedDataWithOptions:]",
+  "kind": "method",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSData.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSData base64EncodedStringWithOptions:]",
+  "kind": "method",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSData.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSData enumerateByteRangesUsingBlock:]",
+  "kind": "method",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSData.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSData initWithBase64EncodedData:options:]",
+  "kind": "method",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSData.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSData initWithBase64EncodedString:options:]",
+  "kind": "method",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSData.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSData initWithBytesNoCopy:length:deallocator:]",
+  "kind": "method",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSData.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSDateComponents isValidDateInCalendar:]",
+  "kind": "method",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSCalendar.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSDateComponents isValidDate]",
+  "kind": "method",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSCalendar.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSIndexPath getIndexes:range:]",
+  "kind": "method",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSIndexPathIndexes.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSLocale alternateQuotationBeginDelimiter]",
+  "kind": "method",
+  "introduced": "10.0",
+  "minimum": "4.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSLocale.md",
+  "source": "the host's own Foundation, property against key"
+ },
+ {
+  "api": "-[NSLocale alternateQuotationEndDelimiter]",
+  "kind": "method",
+  "introduced": "10.0",
+  "minimum": "4.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSLocale.md",
+  "source": "the host's own Foundation, property against key"
+ },
+ {
+  "api": "-[NSLocale calendarIdentifier]",
+  "kind": "method",
+  "introduced": "10.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSLocale.md",
+  "source": "the host's own Foundation, property against key",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSLocale collationIdentifier]",
+  "kind": "method",
+  "introduced": "10.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSLocale.md",
+  "source": "the host's own Foundation, property against key",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSLocale collatorIdentifier]",
+  "kind": "method",
+  "introduced": "10.0",
+  "minimum": "4.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSLocale.md",
+  "source": "the host's own Foundation, property against key"
+ },
+ {
+  "api": "-[NSLocale countryCode]",
+  "kind": "method",
+  "introduced": "10.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSLocale.md",
+  "source": "the host's own Foundation, property against key",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSLocale currencyCode]",
+  "kind": "method",
+  "introduced": "10.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSLocale.md",
+  "source": "the host's own Foundation, property against key",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSLocale currencySymbol]",
+  "kind": "method",
+  "introduced": "10.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSLocale.md",
+  "source": "the host's own Foundation, property against key",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSLocale decimalSeparator]",
+  "kind": "method",
+  "introduced": "10.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSLocale.md",
+  "source": "the host's own Foundation, property against key",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSLocale exemplarCharacterSet]",
+  "kind": "method",
+  "introduced": "10.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSLocale.md",
+  "source": "the host's own Foundation, property against key",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSLocale groupingSeparator]",
+  "kind": "method",
+  "introduced": "10.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSLocale.md",
+  "source": "the host's own Foundation, property against key",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSLocale languageCode]",
+  "kind": "method",
+  "introduced": "10.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSLocale.md",
+  "source": "the host's own Foundation, property against key",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSLocale localizedStringForCalendarIdentifier:]",
+  "kind": "method",
+  "introduced": "10.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSLocale.md",
+  "source": "the host's own Foundation, property against key",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSLocale localizedStringForCollationIdentifier:]",
+  "kind": "method",
+  "introduced": "10.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSLocale.md",
+  "source": "the host's own Foundation, property against key",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSLocale localizedStringForCollatorIdentifier:]",
+  "kind": "method",
+  "introduced": "10.0",
+  "minimum": "4.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSLocale.md",
+  "source": "the host's own Foundation, property against key"
+ },
+ {
+  "api": "-[NSLocale localizedStringForCountryCode:]",
+  "kind": "method",
+  "introduced": "10.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSLocale.md",
+  "source": "the host's own Foundation, property against key",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSLocale localizedStringForCurrencyCode:]",
+  "kind": "method",
+  "introduced": "10.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSLocale.md",
+  "source": "the host's own Foundation, property against key",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSLocale localizedStringForLanguageCode:]",
+  "kind": "method",
+  "introduced": "10.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSLocale.md",
+  "source": "the host's own Foundation, property against key",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSLocale localizedStringForLocaleIdentifier:]",
+  "kind": "method",
+  "introduced": "10.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSLocale.md",
+  "source": "the host's own Foundation, property against key",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSLocale localizedStringForScriptCode:]",
+  "kind": "method",
+  "introduced": "10.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSLocale.md",
+  "source": "the host's own Foundation, property against key",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSLocale localizedStringForVariantCode:]",
+  "kind": "method",
+  "introduced": "10.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSLocale.md",
+  "source": "the host's own Foundation, property against key",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSLocale quotationBeginDelimiter]",
+  "kind": "method",
+  "introduced": "10.0",
+  "minimum": "4.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSLocale.md",
+  "source": "the host's own Foundation, property against key"
+ },
+ {
+  "api": "-[NSLocale quotationEndDelimiter]",
+  "kind": "method",
+  "introduced": "10.0",
+  "minimum": "4.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSLocale.md",
+  "source": "the host's own Foundation, property against key"
+ },
+ {
+  "api": "-[NSLocale scriptCode]",
+  "kind": "method",
+  "introduced": "10.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSLocale.md",
+  "source": "the host's own Foundation, property against key",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSLocale usesMetricSystem]",
+  "kind": "method",
+  "introduced": "10.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSLocale.md",
+  "source": "the host's own Foundation, property against key",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSLocale variantCode]",
+  "kind": "method",
+  "introduced": "10.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSLocale.md",
+  "source": "the host's own Foundation, property against key",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSMutableString applyTransform:reverse:range:updatedRange:]",
+  "kind": "method",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSStringTransform.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSOperation qualityOfService]",
+  "kind": "method",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSQualityOfService.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSOperation setQualityOfService:]",
+  "kind": "method",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSQualityOfService.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSOperationQueue qualityOfService]",
+  "kind": "method",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSQualityOfService.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSOperationQueue setQualityOfService:]",
+  "kind": "method",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSQualityOfService.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSOperationQueue setUnderlyingQueue:]",
+  "kind": "method",
+  "introduced": "8.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "reason": "see -[NSOperationQueue underlyingQueue]",
+  "effect": "sets the dispatch queue that runs the operations, raising NSInvalidArgumentException when the queue is not empty, as the newest release does",
+  "facts": "facts/Foundation/NSOperationQueueUnderlyingQueue.md",
+  "source": "the host's own Foundation, held against the port's scheduler by tests/backports/host/underlying and read again on an iPhone 4S and an iPad 2 running 6.1.3 by tests/backports/device/underlying.m"
+ },
+ {
+  "api": "-[NSOperationQueue underlyingQueue]",
+  "kind": "method",
+  "introduced": "8.0",
+  "minimum": "6.0",
+  "status": "implemented",
+  "reason": "the release runs an operation queue on threads of its own and cannot be told to run it on a dispatch queue, so the port schedules the operations of such a queue itself",
+  "effect": "with an underlying queue set, the queue's operations start on that dispatch queue, at most as many at a time as the limit allows, the ready ones by priority and then by arrival; the count, the operations, cancelling, suspending, waiting and +currentQueue answer for it; a queue that is not empty refuses a new underlying queue, and setting nil hands the queue back to the release",
+  "facts": "facts/Foundation/NSOperationQueueUnderlyingQueue.md",
+  "source": "the host's own Foundation, held against the port's scheduler by tests/backports/host/underlying and read again on an iPhone 4S and an iPad 2 running 6.1.3 by tests/backports/device/underlying.m"
+ },
+ {
+  "api": "-[NSProcessInfo beginActivityWithOptions:reason:]",
+  "kind": "method",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSProcessInfo.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSProcessInfo endActivity:]",
+  "kind": "method",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSProcessInfo.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSProcessInfo isLowPowerModeEnabled]",
+  "kind": "method",
+  "introduced": "9.0",
+  "minimum": "6.0",
+  "status": "inert",
+  "reason": "the release has no Low Power Mode: no setting turns it on and no process can read a state of it",
+  "effect": "it answers NO, as a device whose user has not turned the mode on does, and says so once in the log; an application is never told to save energy",
+  "facts": "facts/Foundation/NSProcessInfoPowerState.md",
+  "source": "the host's own Foundation; the caches of iOS 6.0 to 9.0 searched for the getter and the setting"
+ },
+ {
+  "api": "-[NSProcessInfo isOperatingSystemAtLeastVersion:]",
+  "kind": "method",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSProcessInfo.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSProcessInfo operatingSystemVersion]",
+  "kind": "method",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSProcessInfo.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSProcessInfo performActivityWithOptions:reason:usingBlock:]",
+  "kind": "method",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSProcessInfo.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSScanner scanUnsignedLongLong:]",
+  "kind": "method",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSScannerUnsignedLongLong.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSString containsString:]",
+  "kind": "method",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSStringLocalizedCase.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSString loadDataWithTypeIdentifier:forItemProviderCompletionHandler:]",
+  "kind": "method",
+  "introduced": "11.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSItemProvider.md",
+  "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSString localizedCapitalizedString]",
+  "kind": "method",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSStringLocalizedCase.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSString localizedCaseInsensitiveContainsString:]",
+  "kind": "method",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSStringLocalizedCase.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSString localizedLowercaseString]",
+  "kind": "method",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSStringLocalizedCase.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSString localizedStandardContainsString:]",
+  "kind": "method",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSStringLocalizedCase.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSString localizedStandardRangeOfString:]",
+  "kind": "method",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSStringLocalizedCase.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSString localizedUppercaseString]",
+  "kind": "method",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSStringLocalizedCase.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSString stringByAddingPercentEncodingWithAllowedCharacters:]",
+  "kind": "method",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSStringPercentEncoding.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/url",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSString stringByApplyingTransform:reverse:]",
+  "kind": "method",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSStringTransform.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSString stringByRemovingPercentEncoding]",
+  "kind": "method",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSStringPercentEncoding.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/url",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSString writableTypeIdentifiersForItemProvider]",
+  "kind": "method",
+  "introduced": "11.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSItemProvider.md",
+  "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSThread qualityOfService]",
+  "kind": "method",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSQualityOfService.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSThread setQualityOfService:]",
+  "kind": "method",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSQualityOfService.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSTimer setTolerance:]",
+  "kind": "method",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSTimer.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSTimer tolerance]",
+  "kind": "method",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSTimer.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSURL startAccessingSecurityScopedResource]",
+  "kind": "method",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSURL.md",
+  "source": "tests/backports/device/documentpicker.m on iOS 6",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSURL stopAccessingSecurityScopedResource]",
+  "kind": "method",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSURL.md",
+  "source": "tests/backports/device/documentpicker.m on iOS 6",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSURL dataRepresentation]",
+  "kind": "method",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSURL.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSURL fileSystemRepresentation]",
+  "kind": "method",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSURL.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSURL getFileSystemRepresentation:maxLength:]",
+  "kind": "method",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSURL.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSURL hasDirectoryPath]",
+  "kind": "method",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSURL.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSURL initAbsoluteURLWithDataRepresentation:relativeToURL:]",
+  "kind": "method",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSURL.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSURL initFileURLWithFileSystemRepresentation:isDirectory:relativeToURL:]",
+  "kind": "method",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSURL.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSURL initFileURLWithPath:isDirectory:relativeToURL:]",
+  "kind": "method",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSURL.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSURL initFileURLWithPath:relativeToURL:]",
+  "kind": "method",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSURL.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSURL initWithDataRepresentation:relativeToURL:]",
+  "kind": "method",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSURL.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSURL loadDataWithTypeIdentifier:forItemProviderCompletionHandler:]",
+  "kind": "method",
+  "introduced": "11.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSItemProvider.md",
+  "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSURL removeAllCachedResourceValues]",
+  "kind": "method",
+  "introduced": "7.0",
+  "minimum": "4.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSURL.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
+ },
+ {
+  "api": "-[NSURL removeCachedResourceValueForKey:]",
+  "kind": "method",
+  "introduced": "7.0",
+  "minimum": "4.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSURL.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
+ },
+ {
+  "api": "-[NSURL setTemporaryResourceValue:forKey:]",
+  "kind": "method",
+  "introduced": "7.0",
+  "minimum": "4.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSURL.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2"
+ },
+ {
+  "api": "-[NSURL writableTypeIdentifiersForItemProvider]",
+  "kind": "method",
+  "introduced": "11.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSItemProvider.md",
+  "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSURLSessionConfiguration setTLSMaximumSupportedProtocol:]",
+  "kind": "method",
+  "introduced": "7.0",
+  "status": "absent",
+  "reason": "the release hands its requests to NSURLConnection, which takes no bound on the handshake",
+  "effect": "the setter is not there, so respondsToSelector: answers honestly and an unchecked call raises; the getter answers the bound the platform really has",
+  "facts": "facts/Foundation/NSURLSession.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSURLSessionConfiguration.TLSMaximumSupportedProtocol",
+  "kind": "property",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSURLSession.md",
+  "source": "packages/a/apple-backports/Foundation/NSURLSessionConfiguration.m, which the setter's own entry already documents the absent half of",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSURLSessionConfiguration setTLSMinimumSupportedProtocol:]",
+  "kind": "method",
+  "introduced": "7.0",
+  "status": "absent",
+  "reason": "the release hands its requests to NSURLConnection, which takes no bound on the handshake",
+  "effect": "the setter is not there, so respondsToSelector: answers honestly and an unchecked call raises; the getter answers the bound the platform really has",
+  "facts": "facts/Foundation/NSURLSession.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSURLSessionConfiguration.TLSMinimumSupportedProtocol",
+  "kind": "property",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSURLSession.md",
+  "source": "packages/a/apple-backports/Foundation/NSURLSessionConfiguration.m, which the setter's own entry already documents the absent half of",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSURLSessionTask progress]",
+  "kind": "method",
+  "introduced": "11.0",
+  "status": "absent",
+  "reason": "the release has NSProgress but not the progress of a task: the newest release builds it as a progress of 100 units that carries a file kind, the kind of transfer and the byte counts in its user info, and its units and its fraction did not agree in the samples read (5 units completed at a fraction of 0.2875), so no rule for them was read",
+  "effect": "the task does not answer -progress, although the SDK declares NSURLSessionTask as NSProgressReporting, so a call crashes unless it is guarded; the counts the task keeps - countOfBytesReceived, countOfBytesSent and their expected values - are there to build a progress from",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSUserActivityDelegate userActivity:didReceiveInputStream:outputStream:]",
+  "kind": "method",
+  "introduced": "8.0",
+  "minimum": "6.0",
+  "status": "absent",
+  "reason": "no other device opens a stream to an activity",
+  "effect": "the message is never sent, and getContinuationStreamsWithCompletionHandler: answers the error of an activity nobody continues"
+ },
+ {
+  "api": "-[NSUserActivityDelegate userActivityWasContinued:]",
+  "kind": "method",
+  "introduced": "8.0",
+  "minimum": "6.0",
+  "status": "absent",
+  "reason": "no other device continues an activity from this one",
+  "effect": "the message is never sent"
+ },
+ {
+  "api": "-[NSValue getValue:size:]",
+  "kind": "method",
+  "introduced": "11.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSValueSize.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "CFAutorelease",
+  "kind": "constant",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/CFAutorelease.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "CFRunLoopTimerGetTolerance",
+  "kind": "constant",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSTimer.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "CFRunLoopTimerSetTolerance",
+  "kind": "constant",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSTimer.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSExtensionItem",
+  "kind": "class",
+  "introduced": "8.0",
+  "status": "inert",
+  "reason": "the release has no app extensions, so no extension is given an item and no item comes back from one",
+  "effect": "the item holds the title, the text, the attachments and the user info it was given, is copied and archived, and reaches no extension",
+  "facts": "facts/Foundation/NSExtensionItem.md",
+  "source": "the header of the SDK 16.4 and the coding keys the class uses",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSExtensionItemAttachmentsKey",
+  "kind": "constant",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSExtensionItem.md",
+  "source": "the header of the SDK 16.4",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSExtensionItemAttributedContentTextKey",
+  "kind": "constant",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSExtensionItem.md",
+  "source": "the header of the SDK 16.4",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSExtensionItemAttributedTitleKey",
+  "kind": "constant",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSExtensionItem.md",
+  "source": "the header of the SDK 16.4",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSExtensionJavaScriptFinalizeArgumentKey",
+  "kind": "constant",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSItemProvider.md",
+  "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSExtensionJavaScriptPreprocessingResultsKey",
+  "kind": "constant",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSItemProvider.md",
+  "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSItemProvider",
+  "kind": "class",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSItemProvider.md",
+  "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSItemProviderErrorDomain",
+  "kind": "constant",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSItemProvider.md",
+  "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSItemProviderPreferredImageSizeKey",
+  "kind": "constant",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSItemProvider.md",
+  "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSKeyedArchiveRootObjectKey",
+  "kind": "constant",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSKeyedArchiver.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSProcessInfoPowerStateDidChangeNotification",
+  "kind": "constant",
+  "introduced": "9.0",
+  "minimum": "6.0",
+  "status": "inert",
+  "reason": "the state it reports never changes on this release",
+  "effect": "it is carried with the release's string and is never posted",
+  "facts": "facts/Foundation/NSProcessInfoPowerState.md",
+  "source": "the host's own Foundation"
+ },
+ {
+  "api": "NSStringTransformFullwidthToHalfwidth",
+  "kind": "constant",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSStringTransform.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSStringTransformHiraganaToKatakana",
+  "kind": "constant",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSStringTransform.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSStringTransformLatinToArabic",
+  "kind": "constant",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSStringTransform.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSStringTransformLatinToCyrillic",
+  "kind": "constant",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSStringTransform.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSStringTransformLatinToGreek",
+  "kind": "constant",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSStringTransform.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSStringTransformLatinToHangul",
+  "kind": "constant",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSStringTransform.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSStringTransformLatinToHebrew",
+  "kind": "constant",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSStringTransform.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSStringTransformLatinToHiragana",
+  "kind": "constant",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSStringTransform.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSStringTransformLatinToKatakana",
+  "kind": "constant",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSStringTransform.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSStringTransformLatinToThai",
+  "kind": "constant",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSStringTransform.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSStringTransformMandarinToLatin",
+  "kind": "constant",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSStringTransform.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSStringTransformStripCombiningMarks",
+  "kind": "constant",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSStringTransform.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSStringTransformStripDiacritics",
+  "kind": "constant",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSStringTransform.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSStringTransformToLatin",
+  "kind": "constant",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSStringTransform.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSStringTransformToUnicodeName",
+  "kind": "constant",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSStringTransform.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSStringTransformToXMLHex",
+  "kind": "constant",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSStringTransform.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSURLComponents",
+  "kind": "class",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSURLComponents.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSURLComponents.encodedHost",
+  "kind": "property",
+  "introduced": "16.0",
+  "status": "absent",
+  "reason": "not carried: its setter accepts only a host already in IDNA or percent-encoded form, a check the backport's URL grammar does not make",
+  "effect": "the property is not there on the backport's class, so respondsToSelector: answers honestly and an unchecked call raises",
+  "source": "SDK 16.4, NSURL.h",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSURLErrorBackgroundTaskCancelledReasonKey",
+  "kind": "constant",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSURLSession.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSURLQueryItem",
+  "kind": "class",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSURLQueryItem.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSURLSession",
+  "kind": "class",
+  "introduced": "7.0",
+  "minimum": "5.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSURLSession.md"
+ },
+ {
+  "api": "NSURLSessionConfiguration",
+  "kind": "class",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSURLSession.md",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSURLSessionDataTask",
+  "kind": "class",
+  "introduced": "7.0",
+  "minimum": "5.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSURLSession.md"
+ },
+ {
+  "api": "NSURLSessionDownloadTask",
+  "kind": "class",
+  "introduced": "7.0",
+  "minimum": "5.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSURLSession.md"
+ },
+ {
+  "api": "NSURLSessionDownloadTaskResumeData",
+  "kind": "constant",
+  "introduced": "7.0",
+  "minimum": "5.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSURLSession.md"
+ },
+ {
+  "api": "NSURLSessionTask",
+  "kind": "class",
+  "introduced": "7.0",
+  "minimum": "5.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSURLSession.md"
+ },
+ {
+  "api": "NSURLSessionTaskPriorityDefault",
+  "kind": "constant",
+  "introduced": "8.0",
+  "minimum": "5.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSURLSession.md"
+ },
+ {
+  "api": "NSURLSessionTaskPriorityHigh",
+  "kind": "constant",
+  "introduced": "8.0",
+  "minimum": "5.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSURLSession.md"
+ },
+ {
+  "api": "NSURLSessionTaskPriorityLow",
+  "kind": "constant",
+  "introduced": "8.0",
+  "minimum": "5.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSURLSession.md"
+ },
+ {
+  "api": "NSURLSessionTransferSizeUnknown",
+  "kind": "constant",
+  "introduced": "7.0",
+  "minimum": "5.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSURLSession.md"
+ },
+ {
+  "api": "NSURLSessionUploadTask",
+  "kind": "class",
+  "introduced": "7.0",
+  "minimum": "5.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSURLSession.md"
+ },
+ {
+  "api": "NSURLUbiquitousItemDownloadingErrorKey",
+  "kind": "constant",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSURL.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSURLUbiquitousItemDownloadingStatusCurrent",
+  "kind": "constant",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSURL.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSURLUbiquitousItemDownloadingStatusDownloaded",
+  "kind": "constant",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSURL.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSURLUbiquitousItemDownloadingStatusKey",
+  "kind": "constant",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSURL.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSURLUbiquitousItemDownloadingStatusNotDownloaded",
+  "kind": "constant",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSURL.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSURLUbiquitousItemUploadingErrorKey",
+  "kind": "constant",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSURL.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/foundation2",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSUserActivity",
+  "kind": "class",
+  "introduced": "8.0",
+  "status": "inert",
+  "reason": "the release has no Handoff, no Spotlight index of activities and no continuation: nothing on the device advertises an activity or takes one in",
+  "effect": "the activity is made, holds what it was given, asks its delegate to save once after becomeCurrent as the system does, and is never advertised, indexed or continued",
+  "facts": "facts/Foundation/NSUserActivity.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/uikit2 (useractivity)",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSUserActivityTypeBrowsingWeb",
+  "kind": "constant",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSUserActivity.md",
+  "source": "the host's own Foundation, through the differential run of tests/backports/host/uikit2 (useractivity)",
+  "minimum": "6.0"
+ },
+ {
+  "api": "__kCFBooleanTrue",
+  "kind": "constant",
+  "introduced": "13.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/CFBooleanConstants.md",
+  "source": "dyld_shared_cache_armv7 for 6.1.3 (LC_SYMTAB and three disassembled CoreFoundation functions), and a strong import of provenance and utm (corpus)",
+  "minimum": "6.0"
+ },
+ {
+  "api": "__kCFBooleanFalse",
+  "kind": "constant",
+  "introduced": "13.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/CFBooleanConstants.md",
+  "source": "dyld_shared_cache_armv7 for 6.1.3 (LC_SYMTAB and three disassembled CoreFoundation functions), and a strong import of provenance and utm (corpus)",
+  "minimum": "6.0"
+ },
+ {
+  "api": "__NSArray0__",
+  "kind": "constant",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/EmptyCollections.md",
+  "source": "the host's own CoreFoundation, through dlsym",
+  "minimum": "6.0"
+ },
+ {
+  "api": "__NSDictionary0__",
+  "kind": "constant",
+  "introduced": "9.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/EmptyCollections.md",
+  "source": "the host's own CoreFoundation, through dlsym",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSConstantArray",
+  "kind": "class",
+  "introduced": "13.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSConstantLiterals.md",
+  "source": "a strong import of UTM.app/UTM (arm64, corpus), read through nm, dyld_info -fixups and raw file offsets",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSConstantDictionary",
+  "kind": "class",
+  "introduced": "13.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSConstantLiterals.md",
+  "source": "a strong import of UTM.app/UTM (arm64, corpus), read through nm, dyld_info -fixups and raw file offsets",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSConstantIntegerNumber",
+  "kind": "class",
+  "introduced": "13.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSConstantLiterals.md",
+  "source": "a strong import of UTM.app/UTM (arm64, corpus), read through nm, dyld_info -fixups and raw file offsets",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSConstantDoubleNumber",
+  "kind": "class",
+  "introduced": "13.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSConstantLiterals.md",
+  "source": "crash-demand-top.tsv rank 65, a strong import of provenance (coordinator 2026-09-22 override: LOAD-FAIL class, absent forbidden by COORDINATION.md \u00a72); layout reasoned by analogy to NSConstantIntegerNumber's measured one, no binary of provenance's own was available to disassemble",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSDateComponentsFormatter",
+  "kind": "class",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSDateComponentsFormatter.md",
+  "source": "the host's own Foundation, through the fuzz differential of tests/backports/host/uikit2 (datecomponentsformatter) and the recorded cases of tests/backports/host/datecomponents",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSMetadataUbiquitousItemDownloadingStatusKey",
+  "kind": "constant",
+  "introduced": "7.0",
+  "status": "inert",
+  "facts": "facts/Foundation/CloudAndExtensions.md",
+  "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+  "reason": "the release has no iCloud metadata of iOS 7 to hand out",
+  "effect": "the name is there and no metadata item carries it",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSMetadataUbiquitousItemDownloadingStatusNotDownloaded",
+  "kind": "constant",
+  "introduced": "7.0",
+  "status": "inert",
+  "facts": "facts/Foundation/CloudAndExtensions.md",
+  "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+  "reason": "the release has no iCloud metadata of iOS 7 to hand out",
+  "effect": "the name is there and no metadata item carries it",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSMetadataUbiquitousItemDownloadingStatusDownloaded",
+  "kind": "constant",
+  "introduced": "7.0",
+  "status": "inert",
+  "facts": "facts/Foundation/CloudAndExtensions.md",
+  "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+  "reason": "the release has no iCloud metadata of iOS 7 to hand out",
+  "effect": "the name is there and no metadata item carries it",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSMetadataUbiquitousItemDownloadingStatusCurrent",
+  "kind": "constant",
+  "introduced": "7.0",
+  "status": "inert",
+  "facts": "facts/Foundation/CloudAndExtensions.md",
+  "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+  "reason": "the release has no iCloud metadata of iOS 7 to hand out",
+  "effect": "the name is there and no metadata item carries it",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSMetadataUbiquitousItemDownloadingErrorKey",
+  "kind": "constant",
+  "introduced": "7.0",
+  "status": "inert",
+  "facts": "facts/Foundation/CloudAndExtensions.md",
+  "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+  "reason": "the release has no iCloud metadata of iOS 7 to hand out",
+  "effect": "the name is there and no metadata item carries it",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSMetadataUbiquitousItemUploadingErrorKey",
+  "kind": "constant",
+  "introduced": "7.0",
+  "status": "inert",
+  "facts": "facts/Foundation/CloudAndExtensions.md",
+  "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+  "reason": "the release has no iCloud metadata of iOS 7 to hand out",
+  "effect": "the name is there and no metadata item carries it",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSMetadataQueryUpdateAddedItemsKey",
+  "kind": "constant",
+  "introduced": "8.0",
+  "status": "inert",
+  "facts": "facts/Foundation/CloudAndExtensions.md",
+  "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+  "reason": "the release has no iCloud metadata of iOS 7 to hand out",
+  "effect": "the name is there and no metadata item or query update carries it",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSMetadataQueryUpdateChangedItemsKey",
+  "kind": "constant",
+  "introduced": "8.0",
+  "status": "inert",
+  "facts": "facts/Foundation/CloudAndExtensions.md",
+  "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+  "reason": "the release has no iCloud metadata of iOS 7 to hand out",
+  "effect": "the name is there and no metadata item or query update carries it",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSMetadataQueryUpdateRemovedItemsKey",
+  "kind": "constant",
+  "introduced": "8.0",
+  "status": "inert",
+  "facts": "facts/Foundation/CloudAndExtensions.md",
+  "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+  "reason": "the release has no iCloud metadata of iOS 7 to hand out",
+  "effect": "the name is there and no metadata item or query update carries it",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSMetadataQueryAccessibleUbiquitousExternalDocumentsScope",
+  "kind": "constant",
+  "introduced": "8.0",
+  "status": "inert",
+  "facts": "facts/Foundation/CloudAndExtensions.md",
+  "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+  "reason": "the release has no iCloud metadata of iOS 7 to hand out",
+  "effect": "the name is there and no metadata item or query update carries it",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSMetadataItemContentTypeKey",
+  "kind": "constant",
+  "introduced": "8.0",
+  "status": "inert",
+  "facts": "facts/Foundation/CloudAndExtensions.md",
+  "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+  "reason": "the release has no iCloud metadata of iOS 7 to hand out",
+  "effect": "the name is there and no metadata item or query update carries it",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSMetadataItemContentTypeTreeKey",
+  "kind": "constant",
+  "introduced": "8.0",
+  "status": "inert",
+  "facts": "facts/Foundation/CloudAndExtensions.md",
+  "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+  "reason": "the release has no iCloud metadata of iOS 7 to hand out",
+  "effect": "the name is there and no metadata item or query update carries it",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSMetadataUbiquitousItemDownloadRequestedKey",
+  "kind": "constant",
+  "introduced": "8.0",
+  "status": "inert",
+  "facts": "facts/Foundation/CloudAndExtensions.md",
+  "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+  "reason": "the release has no iCloud metadata of iOS 7 to hand out",
+  "effect": "the name is there and no metadata item or query update carries it",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSMetadataUbiquitousItemIsExternalDocumentKey",
+  "kind": "constant",
+  "introduced": "8.0",
+  "status": "inert",
+  "facts": "facts/Foundation/CloudAndExtensions.md",
+  "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+  "reason": "the release has no iCloud metadata of iOS 7 to hand out",
+  "effect": "the name is there and no metadata item or query update carries it",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSMetadataUbiquitousItemContainerDisplayNameKey",
+  "kind": "constant",
+  "introduced": "8.0",
+  "status": "inert",
+  "facts": "facts/Foundation/CloudAndExtensions.md",
+  "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+  "reason": "the release has no iCloud metadata of iOS 7 to hand out",
+  "effect": "the name is there and no metadata item or query update carries it",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSMetadataUbiquitousItemURLInLocalContainerKey",
+  "kind": "constant",
+  "introduced": "8.0",
+  "status": "inert",
+  "facts": "facts/Foundation/CloudAndExtensions.md",
+  "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+  "reason": "the release has no iCloud metadata of iOS 7 to hand out",
+  "effect": "the name is there and no metadata item or query update carries it",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSMetadataUbiquitousItemIsSharedKey",
+  "kind": "constant",
+  "introduced": "8.3",
+  "status": "inert",
+  "facts": "facts/Foundation/CloudAndExtensions.md",
+  "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+  "reason": "the release has no shared iCloud items",
+  "effect": "the name is there and no metadata item carries it",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSMetadataUbiquitousSharedItemCurrentUserRoleKey",
+  "kind": "constant",
+  "introduced": "10.0",
+  "status": "inert",
+  "facts": "facts/Foundation/CloudAndExtensions.md",
+  "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+  "reason": "the release has no shared iCloud items",
+  "effect": "the name is there and no metadata item carries it",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSMetadataUbiquitousSharedItemCurrentUserPermissionsKey",
+  "kind": "constant",
+  "introduced": "10.0",
+  "status": "inert",
+  "facts": "facts/Foundation/CloudAndExtensions.md",
+  "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+  "reason": "the release has no shared iCloud items",
+  "effect": "the name is there and no metadata item carries it",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSMetadataUbiquitousSharedItemOwnerNameComponentsKey",
+  "kind": "constant",
+  "introduced": "9.0",
+  "status": "inert",
+  "facts": "facts/Foundation/CloudAndExtensions.md",
+  "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+  "reason": "the release has no shared iCloud items",
+  "effect": "the name is there and no metadata item carries it",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSMetadataUbiquitousSharedItemMostRecentEditorNameComponentsKey",
+  "kind": "constant",
+  "introduced": "10.0",
+  "status": "inert",
+  "facts": "facts/Foundation/CloudAndExtensions.md",
+  "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+  "reason": "the release has no shared iCloud items",
+  "effect": "the name is there and no metadata item carries it",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSMetadataUbiquitousSharedItemRoleOwner",
+  "kind": "constant",
+  "introduced": "8.3",
+  "status": "inert",
+  "facts": "facts/Foundation/CloudAndExtensions.md",
+  "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+  "reason": "the release has no shared iCloud items",
+  "effect": "the name is there and no metadata item carries it",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSMetadataUbiquitousSharedItemRoleParticipant",
+  "kind": "constant",
+  "introduced": "8.3",
+  "status": "inert",
+  "facts": "facts/Foundation/CloudAndExtensions.md",
+  "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+  "reason": "the release has no shared iCloud items",
+  "effect": "the name is there and no metadata item carries it",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSMetadataUbiquitousSharedItemPermissionsReadOnly",
+  "kind": "constant",
+  "introduced": "10.0",
+  "status": "inert",
+  "facts": "facts/Foundation/CloudAndExtensions.md",
+  "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+  "reason": "the release has no shared iCloud items",
+  "effect": "the name is there and no metadata item carries it",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSMetadataUbiquitousSharedItemPermissionsReadWrite",
+  "kind": "constant",
+  "introduced": "10.0",
+  "status": "inert",
+  "facts": "facts/Foundation/CloudAndExtensions.md",
+  "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+  "reason": "the release has no shared iCloud items",
+  "effect": "the name is there and no metadata item carries it",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSExtensionHostDidBecomeActiveNotification",
+  "kind": "constant",
+  "introduced": "8.2",
+  "status": "inert",
+  "facts": "facts/Foundation/CloudAndExtensions.md",
+  "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+  "reason": "the release has no app extension and so no host to tell one of its state",
+  "effect": "the name is there and nothing is ever posted under it",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSExtensionHostDidEnterBackgroundNotification",
+  "kind": "constant",
+  "introduced": "8.2",
+  "status": "inert",
+  "facts": "facts/Foundation/CloudAndExtensions.md",
+  "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+  "reason": "the release has no app extension and so no host to tell one of its state",
+  "effect": "the name is there and nothing is ever posted under it",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSExtensionHostWillEnterForegroundNotification",
+  "kind": "constant",
+  "introduced": "8.2",
+  "status": "inert",
+  "facts": "facts/Foundation/CloudAndExtensions.md",
+  "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+  "reason": "the release has no app extension and so no host to tell one of its state",
+  "effect": "the name is there and nothing is ever posted under it",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSExtensionHostWillResignActiveNotification",
+  "kind": "constant",
+  "introduced": "8.2",
+  "status": "inert",
+  "facts": "facts/Foundation/CloudAndExtensions.md",
+  "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+  "reason": "the release has no app extension and so no host to tell one of its state",
+  "effect": "the name is there and nothing is ever posted under it",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSExtensionMain",
+  "kind": "function",
+  "introduced": "8.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/CloudAndExtensions.md",
+  "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSDataDeallocatorVM",
+  "kind": "constant",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/CloudAndExtensions.md",
+  "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSDataDeallocatorUnmap",
+  "kind": "constant",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/CloudAndExtensions.md",
+  "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSDataDeallocatorFree",
+  "kind": "constant",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/CloudAndExtensions.md",
+  "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSDataDeallocatorNone",
+  "kind": "constant",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/CloudAndExtensions.md",
+  "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSFileAccessIntent",
+  "kind": "class",
+  "introduced": "8.0",
+  "minimum": "5.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/CloudAndExtensions.md",
+  "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports"
+ },
+ {
+  "api": "-[NSFileCoordinator coordinateAccessWithIntents:queue:byAccessor:]",
+  "kind": "method",
+  "introduced": "8.0",
+  "minimum": "5.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/CloudAndExtensions.md",
+  "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports"
+ },
+ {
+  "api": "-[NSFileManager containerURLForSecurityApplicationGroupIdentifier:]",
+  "kind": "method",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSFileManagerAppGroup.md",
+  "source": "the host's own Foundation through Mac Catalyst, tests/backports/host/appgroup (20 identifiers), and tests/backports/device/appgroup.m on iOS 6",
+  "minimum": "6.0"
+ },
+ {
+  "api": "-[NSUserDefaults initWithSuiteName:]",
+  "kind": "method",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSUserDefaultsSuite.md",
+  "source": "the host's own Foundation through Mac Catalyst, tests/backports/host/suitedefaults (50 answers of typed reads and writes), and tests/backports/device/suitedefaults.m on iOS 6",
+  "minimum": "6.0"
+ },
+ {
+  "api": "NSBundle.appStoreReceiptURL",
+  "kind": "property",
+  "introduced": "7.0",
+  "status": "implemented",
+  "facts": "facts/Foundation/NSBundleReceiptURL.md",
+  "source": "the release's own method of the name (a stub that raises) read on the devices, and tests/backports/device/receipturl.m on iOS 6",
+  "minimum": "6.0"
+ }
+>>>>>>> 89d9c1d8f (Floor every registry entry that had none, at the port's own 6.0)
 ]

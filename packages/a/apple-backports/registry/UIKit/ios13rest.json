@@ -4188,7 +4188,8 @@
    "introduced": "14.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIDocumentPickerViewController.md",
-   "source": "the public headers of SDK 26.5 (the real default: the original document is moved, matching initForExportingURLs:urls asCopy:NO); the port's own initWithURLs:inMode: for the rest"
+   "source": "the public headers of SDK 26.5 (the real default: the original document is moved, matching initForExportingURLs:urls asCopy:NO); the port's own initWithURLs:inMode: for the rest",
+   "minimum": "6.0"
   },
   {
    "api": "-[UIDocumentPickerViewController initForExportingURLs:asCopy:]",
@@ -4196,7 +4197,8 @@
    "introduced": "14.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIDocumentPickerViewController.md",
-   "source": "carried onto the port's own initWithURLs:inMode:, asCopy mapped to Export/Move exactly as the SDK 26.5 header documents"
+   "source": "carried onto the port's own initWithURLs:inMode:, asCopy mapped to Export/Move exactly as the SDK 26.5 header documents",
+   "minimum": "6.0"
   },
   {
    "api": "-[UIDocumentPickerViewController initForOpeningContentTypes:]",
@@ -4204,7 +4206,8 @@
    "introduced": "14.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIDocumentPickerViewController.md",
-   "source": "the public headers of SDK 26.5 (the real default: the original document, matching initForOpeningContentTypes:contentTypes asCopy:NO); the port's own initWithDocumentTypes:inMode: for the rest"
+   "source": "the public headers of SDK 26.5 (the real default: the original document, matching initForOpeningContentTypes:contentTypes asCopy:NO); the port's own initWithDocumentTypes:inMode: for the rest",
+   "minimum": "6.0"
   },
   {
    "api": "-[UIDocumentPickerViewController initForOpeningContentTypes:asCopy:]",
@@ -4212,7 +4215,8 @@
    "introduced": "14.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIDocumentPickerViewController.md",
-   "source": "carried onto the port's own initWithDocumentTypes:inMode:, contentTypes reduced to their UTType.identifier and asCopy mapped to Import/Open exactly as the SDK 26.5 header documents"
+   "source": "carried onto the port's own initWithDocumentTypes:inMode:, contentTypes reduced to their UTType.identifier and asCopy mapped to Import/Open exactly as the SDK 26.5 header documents",
+   "minimum": "6.0"
   },
   {
    "api": "UTType",
@@ -4220,7 +4224,8 @@
    "introduced": "14.0",
    "status": "implemented",
    "facts": "facts/UIKit/UTType.md",
-   "source": "the local SDK's own UniformTypeIdentifiers/UTType.h and UTCoreTypes.h for the surface and the eleven constants' identifiers; UTType* C functions MobileCoreServices already carries on iOS 6 for the behaviour"
+   "source": "the local SDK's own UniformTypeIdentifiers/UTType.h and UTCoreTypes.h for the surface and the eleven constants' identifiers; UTType* C functions MobileCoreServices already carries on iOS 6 for the behaviour",
+   "minimum": "6.0"
   },
   {
    "api": "UTTypeItem",
@@ -4228,7 +4233,8 @@
    "introduced": "14.0",
    "status": "implemented",
    "facts": "facts/UIKit/UTType.md",
-   "source": "the local SDK's UTCoreTypes.h, identifier public.item"
+   "source": "the local SDK's UTCoreTypes.h, identifier public.item",
+   "minimum": "6.0"
   },
   {
    "api": "UTTypeContent",
@@ -4236,7 +4242,8 @@
    "introduced": "14.0",
    "status": "implemented",
    "facts": "facts/UIKit/UTType.md",
-   "source": "the local SDK's UTCoreTypes.h, identifier public.content"
+   "source": "the local SDK's UTCoreTypes.h, identifier public.content",
+   "minimum": "6.0"
   },
   {
    "api": "UTTypeData",
@@ -4244,7 +4251,8 @@
    "introduced": "14.0",
    "status": "implemented",
    "facts": "facts/UIKit/UTType.md",
-   "source": "the local SDK's UTCoreTypes.h, identifier public.data"
+   "source": "the local SDK's UTCoreTypes.h, identifier public.data",
+   "minimum": "6.0"
   },
   {
    "api": "UTTypeDirectory",
@@ -4252,7 +4260,8 @@
    "introduced": "14.0",
    "status": "implemented",
    "facts": "facts/UIKit/UTType.md",
-   "source": "the local SDK's UTCoreTypes.h, identifier public.directory"
+   "source": "the local SDK's UTCoreTypes.h, identifier public.directory",
+   "minimum": "6.0"
   },
   {
    "api": "UTTypeURL",
@@ -4260,7 +4269,8 @@
    "introduced": "14.0",
    "status": "implemented",
    "facts": "facts/UIKit/UTType.md",
-   "source": "the local SDK's UTCoreTypes.h, identifier public.url"
+   "source": "the local SDK's UTCoreTypes.h, identifier public.url",
+   "minimum": "6.0"
   },
   {
    "api": "UTTypeFileURL",
@@ -4268,7 +4278,8 @@
    "introduced": "14.0",
    "status": "implemented",
    "facts": "facts/UIKit/UTType.md",
-   "source": "the local SDK's UTCoreTypes.h, identifier public.file-url"
+   "source": "the local SDK's UTCoreTypes.h, identifier public.file-url",
+   "minimum": "6.0"
   },
   {
    "api": "UTTypeText",
@@ -4276,7 +4287,8 @@
    "introduced": "14.0",
    "status": "implemented",
    "facts": "facts/UIKit/UTType.md",
-   "source": "the local SDK's UTCoreTypes.h, identifier public.text"
+   "source": "the local SDK's UTCoreTypes.h, identifier public.text",
+   "minimum": "6.0"
   },
   {
    "api": "UTTypePlainText",
@@ -4284,7 +4296,8 @@
    "introduced": "14.0",
    "status": "implemented",
    "facts": "facts/UIKit/UTType.md",
-   "source": "the local SDK's UTCoreTypes.h, identifier public.plain-text"
+   "source": "the local SDK's UTCoreTypes.h, identifier public.plain-text",
+   "minimum": "6.0"
   },
   {
    "api": "UTTypeUTF8PlainText",
@@ -4292,7 +4305,8 @@
    "introduced": "14.0",
    "status": "implemented",
    "facts": "facts/UIKit/UTType.md",
-   "source": "the local SDK's UTCoreTypes.h, identifier public.utf8-plain-text"
+   "source": "the local SDK's UTCoreTypes.h, identifier public.utf8-plain-text",
+   "minimum": "6.0"
   },
   {
    "api": "UTTypeImage",
@@ -4300,7 +4314,8 @@
    "introduced": "14.0",
    "status": "implemented",
    "facts": "facts/UIKit/UTType.md",
-   "source": "the local SDK's UTCoreTypes.h, identifier public.image"
+   "source": "the local SDK's UTCoreTypes.h, identifier public.image",
+   "minimum": "6.0"
   },
   {
    "api": "UTTypePDF",
@@ -4308,7 +4323,8 @@
    "introduced": "14.0",
    "status": "implemented",
    "facts": "facts/UIKit/UTType.md",
-   "source": "the local SDK's UTCoreTypes.h, identifier com.adobe.pdf"
+   "source": "the local SDK's UTCoreTypes.h, identifier com.adobe.pdf",
+   "minimum": "6.0"
   },
   {
    "api": "-[UISplitViewController hideColumn:]",
