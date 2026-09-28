@@ -403,6 +403,59 @@ Apple's CLAPACK `zgesvd_` is **not** usable as this oracle on this host: driven 
 pointer-scalar ABI it answers `2.62521e+299, 2, 3.27186e-314` for a matrix whose squared singular values
 must sum to 15, so the closed form above is what the family is held against, and it needs no LAPACK at all.
 
+## The `Sparse*` solve family: 199 rows, and what the factor set actually is
+
+`vecLib/Sparse/Solve.h` is 8 339 lines and the family's 158 entry points plus 41 constants are it. Read
+from the header of iOS 26.2 before writing anything, the surface is:
+
+- the **transparent types** — `SparseMatrix_{Double,Float,Complex_Double,Complex_Float}` (CSC), the matching
+  `DenseMatrix_*`, `SparsePreconditioner_*`, `SparseOpaqueSymbolicFactorization_*` and
+  `SparseOpaqueFactorization_*` — each built through `_SparseConvertFromCoordinate(m, n, nBlock, blockSize,
+  attributes, row, col, val, storage, workspace)`, so the caller supplies a storage and a workspace and the
+  library lays the CSC out into them;
+- the **direct methods**, one interface and eight factorisations, with the pivoting named in the enum:
+  `SparseFactorizationCholesky` for SPD, `SparseFactorizationLDLT` (the default, which the header says is
+  currently TPP), `LDLTUnpivoted`, `LDLTSBK` (Supernode Bunch-Kaufman with static pivoting),
+  `LDLTTPP` (threshold partial pivoting), `QR` (m >= n), `CholeskyAtA` (QR without storing Q) and `LU`
+  (currently TPP), with `LUUnpivoted`, `LUSPP` and `LUTPP`; and each carries its own `SparseStatus` —
+  `SparseStatusOK`, `SparseFactorizationFailed`, `SparseMatrixIsSingular`, `SparseInternalError`,
+  `SparseParameterError`, `SparseStatusReleased`;
+- the **iterative methods** `CG`, `GMRES` and `LSMR`, each with its own options struct and its own
+  preconditioner interface, and `SparseIterate` for restarting one with a new right-hand side;
+- and the **factor algebra**: `SparseSolve`, `SparseRefactor`, `SparseMultiply`, `SparseMultiplyAdd`,
+  `SparseGetTranspose`/`SparseGetConjugateTranspose`, `SparseGetStateSize_*`, `SparseGetInertia`,
+  `SparseUpdateFactor`, `SparseCreateSubfactor` and the eleven `SparseSubfactor_*` selections,
+  `SparseScaling*`, `SparseOrder*`, `SparseRetain`/`SparseCleanup`/`SparseOpaqueDestroy`, and
+  `SparseConvertFromCoordinate`/`SparseConvertFromOpaque`.
+
+**The factor set is not small, and that decides the reuse question.** Four factorisation families with
+eleven named pivoting variants between them, the numerically delicate part being Bunch-Kaufman and
+threshold partial pivoting, is a real sparse-factorisation stack, not something to re-derive from a header.
+
+**The three candidates, and what the licences actually permit** — read from the upstream licences, not from
+a description of them:
+
+| upstream | licence | what it gives | usable how |
+| --- | --- | --- | --- |
+| Eigen `SimplicialLLT` / `SimplicialLDLT` / `SparseQR` / `SparseLU` | **MPL-2.0**, file-level copyleft | all four families, with `BunchKaufman` and `AMDOrdering` / `ColamdOrdering` already written | **vendorable as whole unmodified files**, and read as the reference for the algorithm and the pivoting. But the port ships one C/Objective-C `.dylib` per framework; adding a vendored C++ library to `packages/a/apple-backports/Accelerate/` is a packaging change to every band that shares the folder, not a row, and the vendored files would need their own package, their own licence file and their own gate entries |
+| SuiteSparse **AMD and COLAMD** | **BSD-3** | the two orderings every one of the above calls underneath | **the right thing to reuse**: small, self-contained, permissively licensed, and taking them removes the only ordering work that is pure bookkeeping |
+| SuiteSparse **CHOLMOD**, **UMFPACK**, **SPQR** | **LGPL / GPL** | LDLᵀ, QR and LU to stand on | **read only, never vendored.** The licence is the constraint and it is not one to work around |
+
+**So the shape the rules point at is: a native implementation over the release's own BLAS and LAPACK, with
+AMD and COLAMD vendored from SuiteSparse for the orderings, and Eigen read as the reference for the
+factorisations and their pivoting.** Nothing copyleft enters the shipped library, the one component that is
+pure bookkeeping is reused rather than rewritten, and the part that is numerically delicate is written here
+against the release's LAPACK, which every band already links.
+
+**What is not done.** No code, no clone, no vendored file. The next three steps, in order: measure the
+host's `SparseFactor`/`SparseSolve` on a small SPD matrix, a symmetric indefinite one under each of the four
+LDLT pivoting options, a singular matrix and a matrix that is not positive definite fed to Cholesky, and a
+general square one under LU — recording the `SparseStatus` and the solution of each, because the
+`SparseMatrixIsSingular` and `SparseFactorizationFailed` answers are what the whole family's error
+contract is built on and they are host-specific facts, not derivable from the header. Then vendor AMD and
+COLAMD and pin their commits. Then write the table-driven differential against those measurements before
+the first entry point.
+
 ## The gates, and what they say
 
 Both ends of the ladder, on the tree this page describes, at base `68befaca`:
