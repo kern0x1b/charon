@@ -530,6 +530,286 @@
    "effect": "a drop proposal that also says where the row would land",
    "facts": "facts/UIKit/DragAndDrop.md",
    "source": "the header of SDK 26.2 for what each type is; the tree's own UIDropInteraction.m, UIDropProposal.m and UIDropCoordinators.m build them, and the port's drag and drop uses them"
+  },
+  {
+   "api": "-[UICollectionViewDragDelegate collectionView:itemsForBeginningDragSession:atIndexPath:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the collection view asks its own drag delegate: what the item at an index path is, asked with a session it can answer about, before anything is lifted",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each question is and when the header says it is asked; the order the port drives is written down in .agent-work/plan-and-analysis/uikit-a/viewdragdrop-oracle.md, and the one ordering an upstream shows is WinObjC (MIT) at 94f6b5bfdc09d945e30607b56124b6f94a5b9d7b, UICollectionView.mm:1730-1750. Neither upstream routes a view-level drag and drop delegate, and the Catalyst host cannot be asked because macOS UIKit has no such protocol, so the sequence is the documented one tested against the engine"
+  },
+  {
+   "api": "-[UICollectionViewDragDelegate collectionView:dragPreviewParametersForItemAtIndexPath:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the collection view asks its own drag delegate: the parameters the item's lift preview is built from, the drag delegate's to choose",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each question is and when the header says it is asked; the order the port drives is written down in .agent-work/plan-and-analysis/uikit-a/viewdragdrop-oracle.md, and the one ordering an upstream shows is WinObjC (MIT) at 94f6b5bfdc09d945e30607b56124b6f94a5b9d7b, UICollectionView.mm:1730-1750. Neither upstream routes a view-level drag and drop delegate, and the Catalyst host cannot be asked because macOS UIKit has no such protocol, so the sequence is the documented one tested against the engine"
+  },
+  {
+   "api": "-[UICollectionViewDragDelegate collectionView:dragSessionAllowsMoveOperation:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the collection view asks its own drag delegate: whether a session may move its items, asked when the answer is needed so a delegate can change its mind mid-drag",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each question is and when the header says it is asked; the order the port drives is written down in .agent-work/plan-and-analysis/uikit-a/viewdragdrop-oracle.md, and the one ordering an upstream shows is WinObjC (MIT) at 94f6b5bfdc09d945e30607b56124b6f94a5b9d7b, UICollectionView.mm:1730-1750. Neither upstream routes a view-level drag and drop delegate, and the Catalyst host cannot be asked because macOS UIKit has no such protocol, so the sequence is the documented one tested against the engine"
+  },
+  {
+   "api": "-[UICollectionViewDragDelegate collectionView:dragSessionIsRestrictedToDraggingApplication:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the collection view asks its own drag delegate: whether a session is confined to the application that began it, YES where the delegate has none because a drag on this release stays here",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each question is and when the header says it is asked; the order the port drives is written down in .agent-work/plan-and-analysis/uikit-a/viewdragdrop-oracle.md, and the one ordering an upstream shows is WinObjC (MIT) at 94f6b5bfdc09d945e30607b56124b6f94a5b9d7b, UICollectionView.mm:1730-1750. Neither upstream routes a view-level drag and drop delegate, and the Catalyst host cannot be asked because macOS UIKit has no such protocol, so the sequence is the documented one tested against the engine"
+  },
+  {
+   "api": "-[UICollectionViewDragDelegate collectionView:dragSessionWillBegin:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the collection view asks its own drag delegate: told once the items exist and before the lift animation",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each question is and when the header says it is asked; the order the port drives is written down in .agent-work/plan-and-analysis/uikit-a/viewdragdrop-oracle.md, and the one ordering an upstream shows is WinObjC (MIT) at 94f6b5bfdc09d945e30607b56124b6f94a5b9d7b, UICollectionView.mm:1730-1750. Neither upstream routes a view-level drag and drop delegate, and the Catalyst host cannot be asked because macOS UIKit has no such protocol, so the sequence is the documented one tested against the engine"
+  },
+  {
+   "api": "-[UICollectionViewDragDelegate collectionView:dragSessionDidEnd:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the collection view asks its own drag delegate: told once the drag is over",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each question is and when the header says it is asked; the order the port drives is written down in .agent-work/plan-and-analysis/uikit-a/viewdragdrop-oracle.md, and the one ordering an upstream shows is WinObjC (MIT) at 94f6b5bfdc09d945e30607b56124b6f94a5b9d7b, UICollectionView.mm:1730-1750. Neither upstream routes a view-level drag and drop delegate, and the Catalyst host cannot be asked because macOS UIKit has no such protocol, so the sequence is the documented one tested against the engine"
+  },
+  {
+   "api": "-[UICollectionViewDragDelegate collectionView:itemsForAddingToDragSession:atIndexPath:point:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the collection view asks its own drag delegate: the items a second item adds to a session under way, with the point the release's own layout gives that index path",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each question is and when the header says it is asked; the order the port drives is written down in .agent-work/plan-and-analysis/uikit-a/viewdragdrop-oracle.md, and the one ordering an upstream shows is WinObjC (MIT) at 94f6b5bfdc09d945e30607b56124b6f94a5b9d7b, UICollectionView.mm:1730-1750. Neither upstream routes a view-level drag and drop delegate, and the Catalyst host cannot be asked because macOS UIKit has no such protocol, so the sequence is the documented one tested against the engine"
+  },
+  {
+   "api": "-[UITableViewDragDelegate tableView:itemsForBeginningDragSession:atIndexPath:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the table view asks its own drag delegate: what the row at an index path is, asked with a session it can answer about, before anything is lifted",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each question is and when the header says it is asked; the order the port drives is written down in .agent-work/plan-and-analysis/uikit-a/viewdragdrop-oracle.md, and the one ordering an upstream shows is WinObjC (MIT) at 94f6b5bfdc09d945e30607b56124b6f94a5b9d7b, UICollectionView.mm:1730-1750. Neither upstream routes a view-level drag and drop delegate, and the Catalyst host cannot be asked because macOS UIKit has no such protocol, so the sequence is the documented one tested against the engine"
+  },
+  {
+   "api": "-[UITableViewDragDelegate tableView:dragPreviewParametersForRowAtIndexPath:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the table view asks its own drag delegate: the parameters the row's lift preview is built from, the drag delegate's to choose",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each question is and when the header says it is asked; the order the port drives is written down in .agent-work/plan-and-analysis/uikit-a/viewdragdrop-oracle.md, and the one ordering an upstream shows is WinObjC (MIT) at 94f6b5bfdc09d945e30607b56124b6f94a5b9d7b, UICollectionView.mm:1730-1750. Neither upstream routes a view-level drag and drop delegate, and the Catalyst host cannot be asked because macOS UIKit has no such protocol, so the sequence is the documented one tested against the engine"
+  },
+  {
+   "api": "-[UITableViewDragDelegate tableView:dragSessionAllowsMoveOperation:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the table view asks its own drag delegate: whether a session may move its rows, asked when the answer is needed",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each question is and when the header says it is asked; the order the port drives is written down in .agent-work/plan-and-analysis/uikit-a/viewdragdrop-oracle.md, and the one ordering an upstream shows is WinObjC (MIT) at 94f6b5bfdc09d945e30607b56124b6f94a5b9d7b, UICollectionView.mm:1730-1750. Neither upstream routes a view-level drag and drop delegate, and the Catalyst host cannot be asked because macOS UIKit has no such protocol, so the sequence is the documented one tested against the engine"
+  },
+  {
+   "api": "-[UITableViewDragDelegate tableView:dragSessionIsRestrictedToDraggingApplication:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the table view asks its own drag delegate: whether a session is confined to the application that began it, YES where the delegate has none",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each question is and when the header says it is asked; the order the port drives is written down in .agent-work/plan-and-analysis/uikit-a/viewdragdrop-oracle.md, and the one ordering an upstream shows is WinObjC (MIT) at 94f6b5bfdc09d945e30607b56124b6f94a5b9d7b, UICollectionView.mm:1730-1750. Neither upstream routes a view-level drag and drop delegate, and the Catalyst host cannot be asked because macOS UIKit has no such protocol, so the sequence is the documented one tested against the engine"
+  },
+  {
+   "api": "-[UITableViewDragDelegate tableView:dragSessionWillBegin:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the table view asks its own drag delegate: told once the items exist and before the lift animation",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each question is and when the header says it is asked; the order the port drives is written down in .agent-work/plan-and-analysis/uikit-a/viewdragdrop-oracle.md, and the one ordering an upstream shows is WinObjC (MIT) at 94f6b5bfdc09d945e30607b56124b6f94a5b9d7b, UICollectionView.mm:1730-1750. Neither upstream routes a view-level drag and drop delegate, and the Catalyst host cannot be asked because macOS UIKit has no such protocol, so the sequence is the documented one tested against the engine"
+  },
+  {
+   "api": "-[UITableViewDragDelegate tableView:dragSessionDidEnd:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the table view asks its own drag delegate: told once the drag is over",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each question is and when the header says it is asked; the order the port drives is written down in .agent-work/plan-and-analysis/uikit-a/viewdragdrop-oracle.md, and the one ordering an upstream shows is WinObjC (MIT) at 94f6b5bfdc09d945e30607b56124b6f94a5b9d7b, UICollectionView.mm:1730-1750. Neither upstream routes a view-level drag and drop delegate, and the Catalyst host cannot be asked because macOS UIKit has no such protocol, so the sequence is the documented one tested against the engine"
+  },
+  {
+   "api": "-[UITableViewDragDelegate tableView:itemsForAddingToDragSession:atIndexPath:point:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the table view asks its own drag delegate: the items a second row adds to a session under way, with the point the release's own row geometry gives it",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each question is and when the header says it is asked; the order the port drives is written down in .agent-work/plan-and-analysis/uikit-a/viewdragdrop-oracle.md, and the one ordering an upstream shows is WinObjC (MIT) at 94f6b5bfdc09d945e30607b56124b6f94a5b9d7b, UICollectionView.mm:1730-1750. Neither upstream routes a view-level drag and drop delegate, and the Catalyst host cannot be asked because macOS UIKit has no such protocol, so the sequence is the documented one tested against the engine"
+  },
+  {
+   "api": "-[UICollectionViewDropDelegate collectionView:canHandleDropSession:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the collection view asks its own drop delegate: whether the session will be handled at all; NO where the delegate has none, so an unhandled session is not dropped",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each question is and when the header says it is asked; the order the port drives is written down in .agent-work/plan-and-analysis/uikit-a/viewdragdrop-oracle.md, and the one ordering an upstream shows is WinObjC (MIT) at 94f6b5bfdc09d945e30607b56124b6f94a5b9d7b, UICollectionView.mm:1730-1750. Neither upstream routes a view-level drag and drop delegate, and the Catalyst host cannot be asked because macOS UIKit has no such protocol, so the sequence is the documented one tested against the engine"
+  },
+  {
+   "api": "-[UICollectionViewDropDelegate collectionView:dropSessionDidEnter:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the collection view asks its own drop delegate: told when the session enters, before the first update",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each question is and when the header says it is asked; the order the port drives is written down in .agent-work/plan-and-analysis/uikit-a/viewdragdrop-oracle.md, and the one ordering an upstream shows is WinObjC (MIT) at 94f6b5bfdc09d945e30607b56124b6f94a5b9d7b, UICollectionView.mm:1730-1750. Neither upstream routes a view-level drag and drop delegate, and the Catalyst host cannot be asked because macOS UIKit has no such protocol, so the sequence is the documented one tested against the engine"
+  },
+  {
+   "api": "-[UICollectionViewDropDelegate collectionView:dropSessionDidUpdate:withDestinationIndexPath:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the collection view asks its own drop delegate: what the session would do at this point, asked each time the finger moves, with the destination the release's own hit test gives; cancelled rather than moved where the delegate answers nothing, so nothing is dropped that was not agreed to",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each question is and when the header says it is asked; the order the port drives is written down in .agent-work/plan-and-analysis/uikit-a/viewdragdrop-oracle.md, and the one ordering an upstream shows is WinObjC (MIT) at 94f6b5bfdc09d945e30607b56124b6f94a5b9d7b, UICollectionView.mm:1730-1750. Neither upstream routes a view-level drag and drop delegate, and the Catalyst host cannot be asked because macOS UIKit has no such protocol, so the sequence is the documented one tested against the engine"
+  },
+  {
+   "api": "-[UICollectionViewDropDelegate collectionView:dropPreviewParametersForItemAtIndexPath:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the collection view asks its own drop delegate: the parameters the drop preview is built from, the drop delegate's to choose",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each question is and when the header says it is asked; the order the port drives is written down in .agent-work/plan-and-analysis/uikit-a/viewdragdrop-oracle.md, and the one ordering an upstream shows is WinObjC (MIT) at 94f6b5bfdc09d945e30607b56124b6f94a5b9d7b, UICollectionView.mm:1730-1750. Neither upstream routes a view-level drag and drop delegate, and the Catalyst host cannot be asked because macOS UIKit has no such protocol, so the sequence is the documented one tested against the engine"
+  },
+  {
+   "api": "-[UICollectionViewDropDelegate collectionView:performDropWithCoordinator:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the collection view asks its own drop delegate: the drop, with the coordinator the items move through: the items, the destination, the proposal and the session",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each question is and when the header says it is asked; the order the port drives is written down in .agent-work/plan-and-analysis/uikit-a/viewdragdrop-oracle.md, and the one ordering an upstream shows is WinObjC (MIT) at 94f6b5bfdc09d945e30607b56124b6f94a5b9d7b, UICollectionView.mm:1730-1750. Neither upstream routes a view-level drag and drop delegate, and the Catalyst host cannot be asked because macOS UIKit has no such protocol, so the sequence is the documented one tested against the engine"
+  },
+  {
+   "api": "-[UICollectionViewDropDelegate collectionView:dropSessionDidExit:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the collection view asks its own drop delegate: told when the session leaves the view",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each question is and when the header says it is asked; the order the port drives is written down in .agent-work/plan-and-analysis/uikit-a/viewdragdrop-oracle.md, and the one ordering an upstream shows is WinObjC (MIT) at 94f6b5bfdc09d945e30607b56124b6f94a5b9d7b, UICollectionView.mm:1730-1750. Neither upstream routes a view-level drag and drop delegate, and the Catalyst host cannot be asked because macOS UIKit has no such protocol, so the sequence is the documented one tested against the engine"
+  },
+  {
+   "api": "-[UICollectionViewDropDelegate collectionView:dropSessionDidEnd:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the collection view asks its own drop delegate: told when the session is over",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each question is and when the header says it is asked; the order the port drives is written down in .agent-work/plan-and-analysis/uikit-a/viewdragdrop-oracle.md, and the one ordering an upstream shows is WinObjC (MIT) at 94f6b5bfdc09d945e30607b56124b6f94a5b9d7b, UICollectionView.mm:1730-1750. Neither upstream routes a view-level drag and drop delegate, and the Catalyst host cannot be asked because macOS UIKit has no such protocol, so the sequence is the documented one tested against the engine"
+  },
+  {
+   "api": "-[UITableViewDropDelegate tableView:canHandleDropSession:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the table view asks its own drop delegate: whether the session will be handled at all; NO where the delegate has none",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each question is and when the header says it is asked; the order the port drives is written down in .agent-work/plan-and-analysis/uikit-a/viewdragdrop-oracle.md, and the one ordering an upstream shows is WinObjC (MIT) at 94f6b5bfdc09d945e30607b56124b6f94a5b9d7b, UICollectionView.mm:1730-1750. Neither upstream routes a view-level drag and drop delegate, and the Catalyst host cannot be asked because macOS UIKit has no such protocol, so the sequence is the documented one tested against the engine"
+  },
+  {
+   "api": "-[UITableViewDropDelegate tableView:dropSessionDidEnter:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the table view asks its own drop delegate: told when the session enters, before the first update",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each question is and when the header says it is asked; the order the port drives is written down in .agent-work/plan-and-analysis/uikit-a/viewdragdrop-oracle.md, and the one ordering an upstream shows is WinObjC (MIT) at 94f6b5bfdc09d945e30607b56124b6f94a5b9d7b, UICollectionView.mm:1730-1750. Neither upstream routes a view-level drag and drop delegate, and the Catalyst host cannot be asked because macOS UIKit has no such protocol, so the sequence is the documented one tested against the engine"
+  },
+  {
+   "api": "-[UITableViewDropDelegate tableView:dropSessionDidUpdate:withDestinationIndexPath:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the table view asks its own drop delegate: what the session would do at this point, asked each time the finger moves, with the destination the release's own hit test gives; cancelled where the delegate answers nothing",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each question is and when the header says it is asked; the order the port drives is written down in .agent-work/plan-and-analysis/uikit-a/viewdragdrop-oracle.md, and the one ordering an upstream shows is WinObjC (MIT) at 94f6b5bfdc09d945e30607b56124b6f94a5b9d7b, UICollectionView.mm:1730-1750. Neither upstream routes a view-level drag and drop delegate, and the Catalyst host cannot be asked because macOS UIKit has no such protocol, so the sequence is the documented one tested against the engine"
+  },
+  {
+   "api": "-[UITableViewDropDelegate tableView:dropPreviewParametersForRowAtIndexPath:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the table view asks its own drop delegate: the parameters the drop preview is built from",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each question is and when the header says it is asked; the order the port drives is written down in .agent-work/plan-and-analysis/uikit-a/viewdragdrop-oracle.md, and the one ordering an upstream shows is WinObjC (MIT) at 94f6b5bfdc09d945e30607b56124b6f94a5b9d7b, UICollectionView.mm:1730-1750. Neither upstream routes a view-level drag and drop delegate, and the Catalyst host cannot be asked because macOS UIKit has no such protocol, so the sequence is the documented one tested against the engine"
+  },
+  {
+   "api": "-[UITableViewDropDelegate tableView:performDropWithCoordinator:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the table view asks its own drop delegate: the drop, with the coordinator the rows move through",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each question is and when the header says it is asked; the order the port drives is written down in .agent-work/plan-and-analysis/uikit-a/viewdragdrop-oracle.md, and the one ordering an upstream shows is WinObjC (MIT) at 94f6b5bfdc09d945e30607b56124b6f94a5b9d7b, UICollectionView.mm:1730-1750. Neither upstream routes a view-level drag and drop delegate, and the Catalyst host cannot be asked because macOS UIKit has no such protocol, so the sequence is the documented one tested against the engine"
+  },
+  {
+   "api": "-[UITableViewDropDelegate tableView:dropSessionDidExit:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the table view asks its own drop delegate: told when the session leaves the view",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each question is and when the header says it is asked; the order the port drives is written down in .agent-work/plan-and-analysis/uikit-a/viewdragdrop-oracle.md, and the one ordering an upstream shows is WinObjC (MIT) at 94f6b5bfdc09d945e30607b56124b6f94a5b9d7b, UICollectionView.mm:1730-1750. Neither upstream routes a view-level drag and drop delegate, and the Catalyst host cannot be asked because macOS UIKit has no such protocol, so the sequence is the documented one tested against the engine"
+  },
+  {
+   "api": "-[UITableViewDropDelegate tableView:dropSessionDidEnd:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the table view asks its own drop delegate: told when the session is over",
+   "facts": "facts/UIKit/DragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each question is and when the header says it is asked; the order the port drives is written down in .agent-work/plan-and-analysis/uikit-a/viewdragdrop-oracle.md, and the one ordering an upstream shows is WinObjC (MIT) at 94f6b5bfdc09d945e30607b56124b6f94a5b9d7b, UICollectionView.mm:1730-1750. Neither upstream routes a view-level drag and drop delegate, and the Catalyst host cannot be asked because macOS UIKit has no such protocol, so the sequence is the documented one tested against the engine"
   }
  ]
 }
