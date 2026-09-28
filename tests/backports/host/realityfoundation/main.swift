@@ -1119,6 +1119,55 @@ check("a cancelled subscription hears nothing more", began, raisedBefore)
         print("FAIL a missing environment raised \(error) rather than a CocoaError")
     }
 
+    // MARK: The emitter
+
+    // The particle component is carried as the value a program sets and reads back. What is not
+    // carried is the drawing - a particle is drawn through a low-level instance buffer by a
+    // renderer, and neither SceneKit nor this port's view has one - so these checks are about the
+    // values and the component's place on the entity, and the drawing is an absent registry row,
+    // not a check that was left out.
+    let emitterEntity = Entity()
+    check("an entity with no emitter has none", emitterEntity.particleEmitter == nil, true)
+    var emitter = ParticleEmitterComponent()
+    emitter.emitterShape = .cone
+    emitter.mainEmitter.birthRate = 24
+    emitter.mainEmitter.lifeSpan = 1.5
+    emitter.burstCount = 5
+    emitterEntity.particleEmitter = emitter
+    check("an emitter is on the entity it was put on", emitterEntity.particleEmitter?.emitterShape == .cone, true)
+    check("with the rate it was given", emitterEntity.particleEmitter?.mainEmitter.birthRate ?? -1, Float(24))
+    check("and the life it was given", emitterEntity.particleEmitter?.mainEmitter.lifeSpan ?? -1, 1.5)
+    check("and the burst it was given", emitterEntity.particleEmitter?.burstCount ?? -1, 5)
+    check("and it is a component of the module's own set",
+          emitterEntity.components[ParticleEmitterComponent.self] != nil, true)
+    // The nested names the SDK uses are the same types: a caller writes
+    // ParticleEmitterComponent.EmitterShape and the two spellings are one type.
+    let shape: ParticleEmitterComponent.EmitterShape = .torus
+    check("the SDK's nested spelling is this module's type", shape == ParticleEmitterShape.torus, true)
+    check("and a birth location with its own payload",
+          ParticleEmitterComponent.BirthLocation.vertices(count: SIMD3<UInt>(2, 3, 4)) == .vertices(count: SIMD3<UInt>(2, 3, 4)), true)
+    check("and a free billboard mode with an axis",
+          ParticleEmitter.BillboardMode.free(axis: SIMD3<Float>(0, 1, 0), variation: 10)
+              == ParticleEmitter.BillboardMode.free(axis: SIMD3<Float>(0, 1, 0), variation: 10), true)
+    // Codable, as the SDK's is (26.2:11789 - `Component, Swift.Codable`, and not Equatable, which
+    // is why the round trip below compares fields and not the two values): the round trip is the
+    // check that the synthesis is real and that every member is carried by it.
+    do {
+        let data = try JSONEncoder().encode(emitter)
+        let back = try JSONDecoder().decode(ParticleEmitterComponent.self, from: data)
+        check("the component round-trips through Codable", back.emitterShape, emitter.emitterShape)
+        check("with its shape size", back.emitterShapeSize, emitter.emitterShapeSize)
+        check("with its emission direction", back.emissionDirection, emitter.emissionDirection)
+        check("with its burst", back.burstCount, emitter.burstCount)
+        check("and its simulation state", back.simulationState, emitter.simulationState)
+        check("and its emitter's own rate", back.mainEmitter.birthRate, Float(24))
+        check("and its emitter's own noise scale", back.mainEmitter.noiseScale, emitter.mainEmitter.noiseScale)
+    } catch {
+        print("FAIL the emitter did not round-trip through Codable: \(error)")
+    }
+    emitterEntity.particleEmitter = nil
+    check("taking it away leaves nothing", emitterEntity.particleEmitter == nil, true)
+
     // MARK: Bounds
 
     let unit = Entity()

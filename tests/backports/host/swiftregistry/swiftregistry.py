@@ -69,9 +69,21 @@ def main():
             # The row's name is qualified when the type is nested - `ARView.RenderOptions` - and a
             # declaration is spelled by the type's own name, so the last piece is the one to look
             # for.
-            declared = row["api"].rsplit(".", 1)[-1]
+            qualified = row["api"]
+            declared = qualified.rsplit(".", 1)[-1]
             if not re.search(r"\b(%s)\s+%s\b" % ("|".join(KINDS), re.escape(declared)), tree):
-                failures.append(f"{name}: {row['api']} ({row['kind']}, {row['status']}) has no declaration in files/")
+                failures.append(f"{name}: {qualified} ({row['kind']}, {row['status']}) has no declaration in files/")
+                continue
+            # A qualified name is a path, and every step of it has to be a type this tree declares:
+            # `ARView.Environment.Background` is only that name if `ARView.Environment` and
+            # `Background` are both declared. A nested spelling and a file-scope type re-exported
+            # under its owner's name are both legitimate, and this does not care which - it checks
+            # that the names exist, not the mechanism that binds them.
+            for step in qualified.split(".")[:-1]:
+                if not re.search(r"\b(%s)\s+%s\b" % ("|".join(KINDS), re.escape(step)), tree):
+                    failures.append(f"{name}: {qualified} names {step}, which files/ does not declare, so the path "
+                                    f"cannot be written")
+                    break
     if failures:
         for failure in failures:
             print(f"FAIL {failure}")
