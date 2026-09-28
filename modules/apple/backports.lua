@@ -432,6 +432,24 @@ local function unit(opt, source, object)
     return program, arguments, key and path.join(opt.store, key:sub(1, 2), key .. ".o")
 end
 
+local function store_folder(folder)
+    try { function () os.mkdir(folder) end }
+    assert(os.isdir(folder), "cannot create the store folder " .. folder)
+end
+
+local function place(object, stored)
+    -- Removed first either way: the object may be a link into the store from an earlier run, and a
+    -- compile must not write through it.
+    os.tryrm(object)
+    if stored and os.isfile(stored) then
+        os.ln(stored, object)
+        -- the store is swept by age (sweep_store), and an entry a build still takes is not old
+        os.touch(stored)
+        return true
+    end
+    return false
+end
+
 function compile_arguments(opt, source)
     local objective_c = not source:endswith(".c")
     local arguments = {"-Os", "-g0", "-Wall", "-Wno-unguarded-availability-new", "-Wno-unguarded-availability"}
