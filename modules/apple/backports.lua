@@ -152,8 +152,16 @@ local function exported_symbols(file)
 end
 
 -- The clang driver a build runs: the one it was given, or the host's.
--- The archive a name in a library's list refers to, under the alias the library wrote or the
--- package the resolve turned it into.
+-- The archive a name in a library's list refers to.
+--
+-- The name in a library's list is the **alias** it was written with ("charon-coding"), and the
+-- table the build is handed is keyed by the **package** the resolve turned that alias into
+-- ("charon@charon-coding 1.0.0"), because that is what the caller that resolves packages can
+-- know. So the lookup tries the alias first and the package form second - which is what the
+-- `charon@` branch was there for, and it had no caller until compile() started needing the
+-- include directory of an archive whose API is C (measured: with the alias-only lookup the header
+-- is not found and the Accessibility library does not compile). The recipe's own `common` table
+-- keys by the alias, so both spellings occur, and this is where they are joined.
 function archive_of(archives, name)
     if not archives then
         return nil
@@ -162,8 +170,7 @@ function archive_of(archives, name)
         return archives[name]
     end
     for key, archive in pairs(archives) do
-        local package = key:match("^(%S+)") or key
-        if package == "charon@" .. name or key == name then
+        if (key:match("^(%S+)") or key) == "charon@" .. name then
             return archive
         end
     end
@@ -206,7 +213,7 @@ end
 -- the inline functions of their headers stay hidden, as the archives' own symbols are. Every .mm
 -- backport is compiled so: one that needs RTTI for another reason (typeid, dynamic_cast) cannot
 -- have it here.
-function compile(opt, source, object)
+function compile(opt, source, object, library)
     -- The source, absolute, whatever the caller passed. ccache keys an entry on the preprocessed
     -- source with its paths rewritten (base_dir, hash_dir = false), so two spellings of one path are
     -- one key - and it hands back the object verbatim as the run that stored it wrote it, that path
@@ -228,10 +235,23 @@ function compile(opt, source, object)
     if source:endswith(".mm") then
         table.join2(arguments, {"-fno-rtti", "-fvisibility-inlines-hidden"})
     end
-    -- Every archive's headers, for every file: an archive whose API is C is used by C files, and
-    -- before this its headers reached a .mm only.
-    for _, name in ipairs(table.orderkeys(opt.archives or {})) do
-        table.insert(arguments, "-I" .. opt.archives[name].includedir)
+    -- The headers of the archives whose API is C, for every file: they are used by C files, and
+    -- before this an archive's headers reached a .mm only. A C++ archive's headers are added below,
+    -- for a .mm only, which is the only thing a C++ archive's API is used by - so the C++ rule and
+    -- the C one are each applied where they belong, rather than every archive reaching every file.
+    for _, name in ipairs(library and library.c_archives or {}) do
+        local archive = archive_of(opt.archives, name)
+        if archive then
+            table.insert(arguments, "-I" .. archive.includedir)
+        end
+    end
+    if source:endswith(".mm") then
+        for _, name in ipairs(library and library.archives or {}) do
+            local archive = archive_of(opt.archives, name)
+            if archive then
+                table.insert(arguments, "-I" .. archive.includedir)
+            end
+        end
     end
     local program, arguments = clang(opt, table.join(arguments, {"-c", source, "-o", object}), objective_c)
     -- Through the cache, which is apple.cache: it puts the compiler in as the wrapper's first
@@ -279,13 +299,13 @@ local function compile_all(opt, jobs)
     COMPILED = (COMPILED or 0) + #jobs
     if count <= 1 or #jobs < 2 then
         for _, job in ipairs(jobs) do
-            compile(job.opt, job.source, job.object)
+            compile(job.opt, job.source, job.object, job.library)
         end
         return
     end
     import("async.runjobs")("backports", function (index)
         local job = jobs[index]
-        compile(job.opt, job.source, job.object)
+        compile(job.opt, job.source, job.object, job.library)
     end, {comax = count, total = #jobs})
 end
 
@@ -368,7 +388,8 @@ local function compiled(opt)
             else
                 object = path.join(opt.builddir, "objects", library.folder, path.basename(source) .. ".o")
                 os.mkdir(path.directory(object))
-                table.insert(pending, {opt = opt, source = source, object = object})
+                table.insert(pending, {opt = opt, source = source, object = object,
+                                       library = library})
             end
             table.insert(objects[library.name], object)
             origins[object] = source
@@ -627,7 +648,7 @@ local function link(opt, library, attach, objects, releases, outputdir, checked)
     for _, name in ipairs(library.archives or {}) do
         wanted_archives[name] = cxx
     end
-    for _, name in ipairs(library.c_archives or {}) do
+    for _, name in ipairs(library and library.c_archives or {}) do
         wanted_archives[name] = true
     end
     for _, language in ipairs(table.orderkeys(wanted_archives)) do

@@ -6,6 +6,23 @@ package("apple-backports")
 
     add_deps("charon@firmware-tools", {alias = "firmware-tools"})
     add_deps("charon@charon-coding", {alias = "charon-coding"})
+
+    -- The digest of **this** recipe and of the shared helper's header, because eleven files
+    -- include charon-coding's header by its path in this checkout. Without the header here, a
+    -- changed declaration moved charon-coding's own digest and not this one, so the objects that
+    -- were compiled against the old header were not rebuilt and the library linked the new archive
+    -- beside a stale object - which no gate, no import check and no check_registry looks at. With
+    -- it, a changed header is a changed library and the objects that use it are compiled again.
+    local shared = {}
+    for _, source in ipairs(os.files(path.join(os.scriptdir(), "..", "..", "c", "charon-coding", "files", "*.h"))) do
+        table.insert(shared, path.filename(source) .. "=" .. hash.sha256(source))
+    end
+    table.sort(shared)
+    local recipe = {"xmake.lua=" .. hash.sha256(path.join(os.scriptdir(), "xmake.lua"))}
+    for _, digest in ipairs(shared) do
+        table.insert(recipe, digest)
+    end
+    add_configs("recipe", {description = "The digest of this recipe and of the shared coding helper's header.", default = hash.strhash128(table.concat(recipe, ";")), type = "string", readonly = true})
     add_deps("charon@ldid 2.1.5-procursus7+23.gaf86971", {alias = "ldid"})
     add_deps("charon@box2d 2.2.1", {alias = "box2d"})
 

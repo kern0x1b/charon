@@ -297,6 +297,33 @@ IntentsUI (58 rows, 43 of them entries, 15 absent with a reason each) is a libra
 `libIntentsUIBackports.dylib` over UIKit, and is in `facts/IntentsUI/IntentsUI.md`. AppIntents
 (2323 rows) is a `swift-runtime` deliverable and is not here.
 
+## Where the tables and the walker come from, and that nothing came from liblouis
+
+**The braille tables are written from the standard, not copied from an implementation.**
+liblouis is the implementation everyone uses and it is **LGPL**: read it, do not copy it, and
+**this package never had a copy of it** — there is no liblouis in the tree, in the store or in
+anything this work read. What is in `CharonBraille.m` is written out here:
+
+* the twenty-six letter cells, as the dot numbers the grade-1 alphabet gives each letter, and
+  every cell the **Unicode braille pattern** those dots are (`U+2800 +` the dot bitmask, dot 1 the
+  lowest bit), which is the published block's own definition;
+* the capital sign as **dot 6** (`U+2820`), the number sign as **dots 3, 4, 5 and 6** (`U+283C`),
+  the grade-1 indicator as **dots 5 and 6** (`U+2830`), and the digits `1-9` as `a-i` with `0` as
+  `j`;
+* the punctuation cells the standard covers with one cell, and the two places two characters share
+  a cell, which the table says rather than the code inventing a second one;
+* the run rules: one sign for a capital on its own, **twice** before a run of consecutive capitals,
+  the number sign once for a run of digits, and the grade-1 indicator before a letter `a-j` that
+  follows a digit.
+
+The **coding walker** is this package's own: it walks a class's ivar list through the Objective-C
+runtime, from the object's class up to `NSObject`, and encodes a value type by its bytes and an
+object by its value. The one part that follows something outside is the **ownership read**, and
+that is the runtime's own documented attribute format: a property's `property_getAttributes` string
+ends in its backing ivar (`T@"NSString",C,N,V_name`), and the ownership is a flag in the field list
+after the type field. The field-list walk and the table of what each declaration compiles to are in
+this file, and the negative control for it is `tests/backports/callgen/ownership-test.sh`.
+
 ## What is not measured here
 
 This framework's behaviour was written against the header of iPhoneOS 16.4 and measured against

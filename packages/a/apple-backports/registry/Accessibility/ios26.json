@@ -696,7 +696,8 @@
       "status": "implemented",
       "effect": "the value the object was given, or the one instance of the manager for the process",
       "minimum": "6.0",
-      "source": "the header of iPhoneOS 26.2, transcribed where 16.4 has none"
+      "source": "the header of iPhoneOS 26.2, transcribed where 16.4 has none",
+      "reason": "a class property: a pair of class methods over a static, and the value is one instance of the manager for the process, built once behind dispatch_once"
     },
     {
       "api": "AXMathExpressionFenced.closeString",
@@ -984,9 +985,10 @@
       "introduced": "18.0",
       "facts": "facts/Accessibility/Accessibility.md",
       "status": "implemented",
-      "effect": "the value the object was given, or the one instance of the manager for the process",
+      "effect": "the technology the request was built with, copied, and a request that was built without one answers nil - never the manager's singleton, which is what an earlier version of this entry said by mistake",
       "minimum": "6.0",
-      "source": "the header of iPhoneOS 26.2, transcribed where 16.4 has none"
+      "source": "the header of iPhoneOS 26.2, transcribed where 16.4 has none",
+      "reason": "the property is read by the class's own hand-written getter over the NSString the initialiser stored, and it is an **instance** property, not a class property: the runtime holds the object, not the class"
     },
     {
       "api": "AccessibilitySettings.animatedImagesEnabled",
