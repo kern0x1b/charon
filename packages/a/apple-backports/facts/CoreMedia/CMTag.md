@@ -101,3 +101,22 @@ no registry row.
 And a defect this table found in what is committed: `CMTagGetValueDataType` is an **export**, and
 `CharonCMTag26.h` was inlining it — so the object was defining **eighteen**, not nineteen. The inline is
 removed and the function is defined in the object.
+
+
+## Two divergences, measured, and one of them is a defect that is fixed
+
+**`CMTagCompare` — fixed.** My first pass returned "equal" whenever either tag was invalid, from reading
+two measurements of *two invalid tags*. The host's own matrix over five tags (invalid, a zero category
+with no data type, 'mdia' with no data type, the 'vide' tag, and 'trak'/SInt64 7) is a **total order with
+validity first**: two invalid tags are equal, an invalid tag is less than a valid one whatever its
+category, and beyond that it is category, then data type, then value. `'vide'` against `kCMTagInvalid` is
+1, not 0. The differential found it and the implementation follows the matrix.
+
+**`CMTagHash` — open, and a named divergence.** The host's values are about forty bits — 242338807774
+for `kCMTagInvalid`, 242339364781 for `'mdia'` with no data type, 930911443662 for the `'vide'` tag,
+175247351123 for `'trak'`/SInt64 7 — and the port's is a `CFHash` of the three decimal fields, which for
+the `'vide'` tag is 11562196563089929323. The port's is a *consistent* hash: equal tags hash equal and
+the measured tags do not collide, and the differential now checks exactly that rather than comparing
+the host's mixing to ours. The five samples above are not enough to identify the host's mixing function,
+and guessing one would be an invention, so the divergence is recorded here as `-12894` is, and the
+values are here for whoever identifies it with a wider sample set.

@@ -4,6 +4,7 @@
 #import <CoreFoundation/CoreFoundation.h>
 #import <Foundation/Foundation.h>
 #import <dlfcn.h>
+#import <string.h>
 #import <objc/runtime.h>
 #import "CharonCMTaggedBufferGroup26.h"
 #include <stdio.h>
@@ -417,6 +418,27 @@ int main(int argc, char **argv)
                     OSStatus b = port_CMTaggedBufferGroupCreate(kCFAllocatorDefault, rightTags, rightBuffers, &portGroup);
                     same("group create", [NSString stringWithFormat:@"%d count %lu", a, (unsigned long)CMTaggedBufferGroupGetCount(systemGroup)],
                          [NSString stringWithFormat:@"%d count %lu", b, (unsigned long)port_CMTaggedBufferGroupGetCount(portGroup)]);
+                    // Which image each name actually resolves to. A differential cannot detect a name
+                    // that only the port declares: both pointers would land in the port's image and the
+                    // comparison would be the port against itself. So it is checked, not assumed.
+                    {
+                        static const char *names[] = {"CMTagCollectionCreateDifference", "CMTagCollectionCreateUnion",
+                                                      "CMTagCollectionCreateExclusiveOr", "CMTagCollectionCreateIntersection",
+                                                      "CMTagCollectionGetCount", "CMTagCollectionCopyAsData"};
+                        for (size_t which = 0; which < sizeof names / sizeof *names; which++) {
+                            Dl_info hostInfo, portInfo;
+                            memset(&hostInfo, 0, sizeof hostInfo);
+                            memset(&portInfo, 0, sizeof portInfo);
+                            void *host = dlsym(RTLD_DEFAULT, names[which]);
+                            void *mine = dlsym(port, names[which]);
+                            dladdr(host, &hostInfo);
+                            dladdr(mine, &portInfo);
+                            printf("  %-40s host %-18s port %-18s\n", names[which],
+                                   hostInfo.dli_fname ? strrchr(hostInfo.dli_fname, '/') + 1 : "(null)",
+                                   portInfo.dli_fname ? strrchr(portInfo.dli_fname, '/') + 1 : "(null)");
+                        }
+                        fflush(stdout);
+                    }
                     printf("  portGroup is %s\n", object_getClassName((__bridge id)portGroup)); fflush(stdout);
                     for (CFIndex which = 0; which < 3; which++)
                         printf("  port collection %ld is %s\n", (long)which, object_getClassName((__bridge id)mineDisjoint[which]));

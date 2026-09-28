@@ -95,8 +95,13 @@ Boolean CMTagHasFloat64Value( CMTag tag )
 
 CFComparisonResult CMTagCompare( CMTag tag1, CMTag tag2 )
 {
-    if (!CMTagIsValid(tag1) || !CMTagIsValid(tag2))
-        return kCFCompareEqualTo;
+    // A total order over the four fields, validity first. Measured on the host: two invalid tags are
+    // equal, an invalid tag is less than a valid one whatever its category is, and beyond that it is
+    // category, then data type, then value. It is NOT "an invalid tag equals everything" - the
+    // 'vide' tag against kCMTagInvalid is 1, and the matrix of the five measured tags is symmetric and
+    // antisymmetric on every pair.
+    if (CMTagIsValid(tag1) != CMTagIsValid(tag2))
+        return CMTagIsValid(tag1) ? kCFCompareGreaterThan : kCFCompareLessThan;
     if (charon_tag_is_less(tag1, tag2))
         return kCFCompareLessThan;
     return charon_tag_equal(tag1, tag2) ? kCFCompareEqualTo : kCFCompareGreaterThan;
