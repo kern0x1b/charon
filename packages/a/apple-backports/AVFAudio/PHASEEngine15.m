@@ -25,6 +25,21 @@
     PHASEObject *_charon_rootObject;
 }
 
+// The SDK declares rootObject as a @property (readonly, strong, nonatomic) on PHASEEngine, and the
+// port's hand-written getter was not the accessor the runtime called: the property's own synthesised
+// accessor read a different, empty slot, so a fresh engine answered nil while the root sat live in
+// _charon_rootObject. Measured in the harness, the slot at the ivar's offset and the getter the
+// message sent:
+//
+//   stage the property: rootObject attributes T@"charon_host_PHASEObject",R,N
+//   stage the ivar: _charon_rootObject at 72, type @"charon_host_PHASEObject",
+//       slot 0x7a558c8e00, getter 0x0
+//
+// Binding the property to the port's own ivar is what makes the accessor unambiguously this
+// implementation's, and @synthesize is required here anyway: the build compiles with
+// -Werror=objc-missing-property-synthesis.
+@synthesize rootObject = _charon_rootObject;
+
 - (instancetype)initWithUpdateMode:(PHASEUpdateMode)updateMode
 {
     if ((self = [super init])) {
