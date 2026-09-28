@@ -86,70 +86,38 @@ recorded by `tests/backports/host/vision/run.sh` (33 records) and held against t
   so it is not evidence about the port and is not recorded as any.
 
   It has now run, with the port's own resampler built into the probe
-  (`.agent-work/runs/crop-probe/centre.m`, the harness's trick, renamed header and all). The two
-  answers for 100x50 brought to 224x224 under Core ML's own `CenterCrop`:
+  (`.agent-work/runs/crop-probe/`, the harness's trick, renamed header and all), and **it corrects
+  the previous round's conclusion.**
 
-  ```
-  coreML  (0,0) 2c541555  (mid) 7f7c7dff  (end) 32004d69  (0,h-1) 2c001555
-  port    (0,0) 89fa3fff  (mid) 927c7fff  (end) 9b00beff  (0,h-1) 89003fff
-  row 112, columns 100..102:  coreML 267c76ff 2d7c77ff 327c78ff
-                              port   2b7c78ff 307c78ff 367c79ff
-  centre square of the source, scaled: (0,0) 92fa40ff  (mid) 887c7fff
-  ```
+  `VNImageCropAndScaleOption` is CenterCrop=0, ScaleFit=1, ScaleFill=2 in Vision's own header, and
+  the probe takes the value from that header rather than from a literal, so a mismatched value is
+  not what happened. The 3x3 for 100x50 brought to 224x224, differing pixels, columns what the
+  probe hands Core ML and rows the port's own rule:
 
-  The green is `7c` on both along that row -- the green channel is the row's position, so the two
-  agree about *where* vertically -- and the red advances by 5 or 6 a column on **both**, which is the
-  source's 100 columns across 224, i.e. a scale of 2.24 on Core ML's side and, on the port's, the
-  same ramp reached through a cover of 448 columns cropped to 224. The two are the same picture at
-  slightly different horizontal scales, which is why every pixel differs while the ramp looks the
-  same: a sub-pixel scale difference is a fraction of a column at column 100 and more at column 200.
+  | port \ key | CenterCrop (0) | ScaleFit (1) | ScaleFill (2) | no option |
+  | --- | --- | --- | --- | --- |
+  | port CenterCrop | 50026 | 50175 | 50148 | 50148 |
+  | port ScaleFit | 50176 | 49632 | 50174 | 50174 |
+  | no option vs Core ML's own | 50174 | 50175 | **0** | -- |
 
-  **So Core ML's own `CenterCrop` in this constructor is neither of Vision's rules.** It scales the
-  whole source to the target -- 2.24 across and 4.48 down for this picture, a stretch -- where
-  Vision's centre crop covers and crops and Vision's scale fit fits and centres. The centre square
-  (50x50 scaled to 224x224, a quarter of a source width in each direction) is a third answer again
-  and reads 50036 against Core ML, so hypothesis (a) is out as well. That is consistent with what
-  the no-option measurement already said -- 50175 from its own `ScaleFit` and 50035 from its own
-  `CenterCrop`, neither of them reproducing its own default -- and it means the row cannot be made
-  to agree: making it agree would mean giving `VNImageCropAndScaleOptionCenterCrop` a rule that is
-  not the one it is named for, on a request path that a Vision caller reads.
+  Two corrections, and the second is the one that matters:
 
-  **The row is therefore a recorded divergence with its measurement, not a defect to be fixed**: 50026
-  of 50176 pixels for 100x50 to 224x224 centre crop, because Core ML's own `CenterCrop` option is a
-  stretch and the port's is Vision's cover-and-crop. The port's centre crop is unchanged. What would
-  settle it beyond this is a model and a picture where the two rules coincide, which the corpus does
-  not have.
+  - **Core ML's no-option default is `ScaleFill`**, exactly: the framework's answer with nothing in
+    the options dictionary and its answer with 2 under the key differ by 0 of 50176. So the stretch
+    this row was reading -- the whole source scaled to 2.24 across and 4.48 down -- is the
+    *default*, not `CenterCrop`, and the previous round's claim that "Core ML's own CenterCrop is a
+    stretch" was **wrong**. The centre crop Core ML answers to 0 under the key is a fourth thing again
+    that the port does not match.
+  - **The five zero rows do not survive a change of where the source bytes come from.** They were
+    measured with the source built by the port's own picture helper, whose fresh buffer has a zero
+    fourth byte; this run hands the same rule a source from Core ML's own 100x50 answer, which has
+    `ff` there, and the 100x50 to 224x224 scale-fit row reads **49632** instead of 0. So those zeros
+    were agreement on a byte that depended on the buffer the source was built in -- the alpha -- and
+    not a general agreement; the kernel question is open again behind it, and the five rows must be
+    re-measured with one source, whichever is chosen, before any of them can be called zero.
 
-  The two rules themselves: centre crop scales until the picture covers the
-  target and keeps the middle, scale fit scales until it fits and leaves the rest black. A buffer
-  that is already the size the model wants is passed on untouched, so a camera or video frame costs
-  nothing, and the row length a picture is drawn into is the buffer's own
-  (`CVPixelBufferGetBytesPerRow`), never `width * 4` -- CoreVideo pads its rows to a boundary of its
-  own, so a width that is not a multiple of 16 has rows longer than its own pixels.
+  What the three options mean to Core ML, and what they mean to Vision, is the next thing to read: the
+  port carries two of the three (`ScaleFill` is not among them), and the matrix says it matches none
+  of the three for this picture. The centre-crop row is therefore **not** yet characterised and the
+  facts should not claim it is a divergence.
 
-  **What the host's Vision transform accepts is not yet known, and four shapes were measured to find
-  out.** `vision_image` in `tools/coreml/make-models.py` is an image model; the host answers a
-  *refusal* for every shape tried -- a fixed 32x32 input with a fixed output gets the wrapper made and
-  the request fails with "The VNCoreMLTransform request failed", and a ranged input, with a fixed or a
-  ranged output and with a preprocessing scaler, is refused by the wrapper itself with "Failed to
-  initialize VNCoreMLTransformer". The port is held to the same answer, and the case records it. The
-  three rules the request path would exercise behind an accepted model -- the two crop-and-scale rules
-  and the Core ML branch of the handler -- are therefore named in `tests/backports/host/vision/run.sh`
-  as unexercised rather than left to fail the mutant line, and the corpus change that would reach them
-  is the open one. A `CIImage`, an image URL and image data are not pixel buffers, and a Core ML
-  image input takes a buffer, so they reach the same failure any other unusable image reaches
-  rather than pretending the picture was something it is not.
-
-  The answers are mapped as Core ML maps them, and the mapping is decided by what the model's
-  *description* says an answer is rather than by what the numbers look like: the name a classifier
-  answers its label under becomes one `VNClassificationObservation` per class, highest score
-  first, with the score as the observation's confidence; an image answer becomes a
-  `VNPixelBufferObservation` under the name of the output it came from; anything else becomes a
-  `VNCoreMLFeatureValueObservation` holding the value whole.
-
-## What is not carried
-
-No request runs: the port carries what an application names and answers the error of a function that is not implemented, so the application takes its own path, and not an empty result that says
-nothing was found. Detecting a barcode, a rectangle, a face and its landmarks are next, each with the host's Vision as the oracle. The observations that only a running request makes (rectangles, barcodes, faces with landmarks) have
-their properties and no way to be made yet; the landmark regions answer no points. `+revision:supportsConstellation:` arrived in iOS 13 and is not carried. The host's Vision is newer than the releases read and differs in what it does with a tracker's level (it ignores it), a copy of an observation (it
-returns the same object), a yaw out of range (it clamps) and the symbologies it reads by default (it has more); the port follows iOS 12 there, and the records leave those out.
