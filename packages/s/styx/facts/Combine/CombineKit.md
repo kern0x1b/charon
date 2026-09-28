@@ -52,6 +52,9 @@ in ours, not apple: 272
 
 ## The 93 rows that are not covered, each with the reason
 
+73 + 8 + 4 + 3 + 1 + 4 = 93, counted from the same
+`corpus-missing.tsv` the coverage run wrote, and each part listed row by row below.
+
 **73 rows — `Optional.Publisher.*` and `Result.Publisher.*` members.** The module
 declares Apple's names: `Optional.Publisher`, `Optional.publisher`, `Result.Publisher` and
 `Result.publisher` are all there, with every operator on them, and a client that writes
@@ -65,11 +68,11 @@ namespace is dead weight here, but removing it means editing the fork's own file
 this layer does not do. The printed path is the divergence; the API a caller writes is
 Apple's.
 
-**9 rows — witnesses the compiler derives.** `CombineIdentifier.==(a:b:)` and
-`hash(into:)`, `Subscribers.Demand.==(a:b:)`, `hash(into:)`, `hashValue`,
-`Subscribers.Completion.==(a:b:)`, `hash(into:)`, `hashValue` and `AnyCancellable.hashValue`.
-Each of these types declares `Equatable` or `Hashable`, so every one of them answers
-`==` and hashes; Apple's framework interface prints the operators under their public names
+**8 rows — witnesses the compiler derives.** `CombineIdentifier.==(a:b:)`, `.hash(into:)` and
+`.hashValue`, `Subscribers.Demand.==(a:b:)`, `.hash(into:)` and `.hashValue`,
+`AnyCancellable.hashValue`, and `ImmediateScheduler.SchedulerTimeType.Stride.==(a:b:)`.
+Each of these types declares `Equatable` or `Hashable`, so every one of them answers `==`
+and hashes; Apple's framework interface prints the operators under their public names
 because Apple writes them out, and the interface synthesised out of a module built for a
 target prints the derived ones under the compiler's own name (`__derived_struct_equals`,
 `__derived_struct_hash`). The `PrefetchStrategy` operator *was* written out, because that
@@ -77,11 +80,11 @@ one the compiler derives for an enum and the fork's file could be left alone; th
 are witnesses the compiler owns, and re-declaring them from another file is an
 `invalid redeclaration`.
 
-**3 rows — `Record.encode(to:)`, `Record.init(from:)`, and
-`ImmediateScheduler.SchedulerTimeType.Stride.init(from:)` / `encode(to:)`.** `Record` and
-`Stride` are already `Codable`; the fork declares the conformance in its own file and the
-compiler synthesises the two methods, so the same printed-name difference applies. Writing
-them from this layer is a redeclaration.
+**4 rows — `Record.encode(to:)`, `Record.init(from:)`,
+`ImmediateScheduler.SchedulerTimeType.Stride.encode(to:)` and `.init(from:)`.** `Record`
+and `Stride` are already `Codable`; the fork declares the conformance in its own file and
+the compiler synthesises the two methods, so the same printed-name difference applies.
+Writing them from this layer is a redeclaration.
 
 **3 rows — `Record.Recording.output`, `Record.Recording.completion`,
 `Subscribers.Assign.object`.** The fork declares them `public private(set) var`; Apple
@@ -134,8 +137,7 @@ nothing. The trace now holds the subscription for as long as the case lives, and
 what the collect cases above depend on.
 
 **The mutation.** `Publishers.CollectByTime.Inner.request(_:)` had its one line
-`subscription.request(demand)` changed to a comment, the host module rebuilt, and the table
-run again:
+`subscription.request(demand)` changed to a comment and the table run again:
 
 ```
 cases: cases 40
@@ -146,7 +148,28 @@ DIFFERENTIAL: 4 differing lines
 -collect/byTimeOrCount/on-the-count	value [3]
 ```
 
-The line restored, the module rebuilt, the table identical again.
+**The run builds the module itself.** It used to link whatever `Combine.o` was already in
+the tree, so a change to the module's Swift could sit in the sources while the run measured
+the old object and answered `identical` - a mutation of the source read as a pass, which is
+the one thing this table must never do. `run.sh` now builds the host module from the sources
+beside it before it builds either probe, and a failure to build stops the run. With that,
+`MergeInner.request(_:)` had its demand pass-through loop emptied - nothing but a comment -
+and `run.sh` alone, with no separate build step, reported
+
+```
+cases: cases 40
+DIFFERENTIAL: 21 differing lines
+-merge/two/interleaved	value 1
+-merge/two/interleaved	value 2
+-merge/two/interleaved	value 3
+-merge/two/holds-until-demanded	value 1
+-merge/two/holds-until-demanded	value 2
+-merge/two/holds-until-demanded	finished
+-merge/three/chains	value 9
+...
+```
+
+and with the line back it is `identical` again.
 
 The host copy of the module is called `CombineKit`, and the staged sources have the module's
 own `Combine.` prefix rewritten to that name. The reason is the host, not the module: on

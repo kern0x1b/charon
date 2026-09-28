@@ -13,7 +13,8 @@ beside the runtime and libcxx, and writes `import Combine`.
 | Upstream commit | `1c6f02c7ed8140c0ba7a783aaddb6e0685a0037b` (OpenCombine's `HEAD`; its `0.14.0` tag is `8576f0d579b27020beccbccc3ea6844f3ddfc2c2`) |
 | The fork | [kern0x1b/styx](https://github.com/kern0x1b/styx), MIT, `2026.09.20` — the upstream plus the fold of its three modules into one named `Combine`, the C++ helper, and the iOS 6 adaptations |
 | Pinned commit | `f5fe6511d963d1a21f23c0f3ec820135a69168ff` |
-| The licence | the upstream's `LICENSE` (MIT, Copyright 2019 Sergej Jaskiewicz), installed with the package |
+| The licence | the upstream's `LICENSE`, installed with the package under `licenses/LICENSE`: MIT License, Copyright (c) 2019 Sergej Jaskiewicz |
+| The fork's own terms | the fork changes the sources and adds the layer in `files/CombineKit`; it claims no new licence over Sergej Jaskiewicz's work, and the upstream's copyright and permission notice travel with the code unchanged |
 
 The recipe pins that commit, keeps the licence beside the install, and hashes its own
 sources and recipe into a readonly digest config, so a changed recipe or a changed file is
