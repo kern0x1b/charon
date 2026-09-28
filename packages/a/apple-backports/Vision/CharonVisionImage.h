@@ -79,6 +79,14 @@ static inline CVPixelBufferRef charon_vision_pixels(CVPixelBufferRef source, siz
                                 kCGImageAlphaNoneSkipFirst | kCGBitmapByteOrder32Little, provider, NULL, NO,
                                 kCGRenderingIntentDefault);
     }
+    /* The alpha byte is left as CoreGraphics leaves it, and that is measured rather than assumed:
+     * Core ML's own constructor writes `00 00 00 00` in the bars and `ff` under the picture for a
+     * scaled case, and `00` everywhere for the one case where no resampling happens. A context that
+     * *writes* the alpha -- premultiplied-last, which is what it would take to write the bars
+     * transparent -- was measured and rejected: it made every row worse and turned the exact 1:1
+     * case from 0 of 256 into 256 of 256, so the framework's 1:1 answer carries the alpha its own
+     * buffer was created with rather than the picture's. What the difference then is, the check
+     * measures; the facts say what has been ruled out. */
     /* The row length is the buffer's own, never width * 4: a CoreVideo buffer pads its rows to a
      * boundary of its own choosing, so a width that is not a multiple of 16 has rows longer than its
      * own pixels, and a context told width * 4 would write over the padding and scramble every row

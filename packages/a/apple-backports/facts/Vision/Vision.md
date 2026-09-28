@@ -31,49 +31,50 @@ recorded by `tests/backports/host/vision/run.sh` (33 records) and held against t
   declares and Core ML's own image constructors use -- measured against Core ML's own constructor
   as the oracle, which is what this port has to match:
 
-  | picture to | differing pixels, the port against Core ML | of |
-  | --- | --- | --- |
-  | 100x50 to 224x224, centre crop | 50175 | 50176 |
-  | 100x50 to 224x224, scale fit | 49632 | 50176 |
-  | 13x7 to 8x8, scale fit | 64 | 128 |
-  | 16x16 to 16x16, either (the exact 1:1) | **0** | 256 |
-  | 8x8 to 16x16, scale fit | 252 | 256 |
+  **Each rule is now compared with the same rule on the framework's side.** Core ML's own
+  constructor takes a `VNImageCropAndScaleOption` under the `CropAndScale` key -- its header says so:
+  "Key for VNImageCropAndScaleOption describing how to crop and scale the image (or region of
+  interest) to the desired size" -- so the oracle for a row is that row's own rule handed over, and
+  `MLFeatureValueImageOptionCropRect` is the other key it takes. The table is therefore like for
+  like, and it is still red:
 
-  The check is `tests/backports/host/vision/run-crop.sh` with `crop.m`: one program built twice,
-  once against Core ML's own `+[MLFeatureValue featureValueWithCGImage:pixelsWide:pixelsHigh:pixelFormatType:options:error:]`
-  -- which answers itself with 0 of every case, so the program is sound -- and once against the
-  port's own resampler under names of its own. Each case prints `differing=N of M` and the run fails
-  if any N is not zero. It is red.
+  | picture to | rule | differing pixels | of |
+  | --- | --- | --- | --- |
+  | 100x50 to 224x224 | centre crop | 50015 | 50176 |
+  | 100x50 to 224x224 | scale fit | 49632 | 50176 |
+  | 13x7 to 8x8 | centre crop | 64 | 128 |
+  | 13x7 to 8x8 | scale fit | 64 | 128 |
+  | 16x16 to 16x16 (the exact 1:1) | either | **0** | 256 |
+  | 8x8 to 16x16 (an integer 2x) | either | 252 | 256 |
+  | 4x7 to 33x9 | centre crop | 347 | 432 |
+  | 4x7 to 33x9 | scale fit | 338 | 432 |
 
-  **What the three-pixel dump says** (100x50 to 224x224, same format `BGR `, same `bytesPerRow` 896,
-  same size on both sides):
+  **The interpolation is not the cause, and that is now measured.** The harness compiles the port's
+  own function with each of CoreGraphics' three qualities and reads the worst row for each:
+  **High 50015, Medium 50015, None 50092.** A nearest-neighbour resample is within 77 pixels of the
+  smoothest, while every row differs by tens of thousands, so whatever it is, it is not the kernel.
+  The header's default (`kCGInterpolationHigh`) stays because two of the three tie and choosing the
+  worst of the tie on no evidence would be a claim; it is a seam, not an answer.
 
-  ```
-  coreML: (0,0) 00 00 00 00 | (112,112) 92 7c 7f ff | (223,223) 00 00 00 00
-  port  : (0,0) 89 fa 3f ff | (112,112) 92 7c 7f ff | (223,223) 9b 00 be ff    (centre crop)
-  port  : (0,0) 00 00 00 ff | (112,112) 92 7b 80 ff | (223,223) 00 00 00 ff    (scale fit)
-  ```
+  **Core ML's no-option answer is neither of Vision's two rules.** With the options dictionary empty
+  the framework's answer for 100x50 brought to 224x224 is 50175 of 50176 pixels from its own
+  `ScaleFit` and 50035 of 50176 from its own `CenterCrop`: neither, exactly. The header states no
+  default, and this measures it.
 
-  Two things, and one of them is not a defect:
+  **A premultiplied-last context was tried and rejected by the numbers.** Writing the alpha is what
+  a transparent fill needs, and it is the obvious reading of Core ML writing `00 00 00 00` in the bars
+  and `ff` under the picture. It made every row worse and turned the exact 1:1 case from 0 of 256 into
+  256 of 256 -- so the framework's 1:1 answer carries the alpha its own buffer was created with, not
+  the picture's, and the difference the alpha suggested is not the one. Reverted, with the numbers
+  that rejected it in the header of the function.
 
-  - **Core ML's `CropAndScale` is the *fit* rule, not a crop.** Its corners are black where the
-    centre crop's are picture, because it scales the picture until it fits inside the target and
-    centres it -- which is Vision's `ScaleFit`. Vision's `CenterCrop` (scale until the picture
-    covers the target, keep the middle) has no counterpart in this constructor, so that row is a
-    difference of *rules* and the oracle for the fit rule is the row below it.
-  - **For the fit rule the geometry agrees**: the middle pixel matches Core ML exactly
-    (`92 7c 7f ff` on both, and one count off on the scale-fit line, which is the resampling kernel's
-    rounding). What is left is the **fourth byte**: Core ML writes `00` in the bars and `ff` under
-    the picture, and the port writes `ff` in both -- `kCGImageAlphaNoneSkipFirst` skips the first
-    byte of each pixel, so a fill never writes it and the buffer's own content shows through. The
-    port's bars and the port's picture are therefore one byte different from the framework's across
-    the whole buffer, which is the bulk of the 49632.
-
-  So the order the coordinator set is the right one and it is not finished: the *rules* are now named
-  and paired, the geometry is measured as agreeing, the *channels* (that fourth byte) are measured
-  as disagreeing, and the interpolation quality is still not the question -- all three qualities read
-  the same 49632. The next change is the alpha byte: the fill has to write the picture's alpha and
-  the bars' none, rather than leave the buffer's.
+  What the dump already ruled out, and what is left: the **rules** are paired (each row now has its
+  own oracle), the **geometry** agrees (the middle pixel matches exactly, so no flip and no
+  half-pixel offset), the **format and row length** are identical on both sides (`BGR `,
+  `bytesPerRow` 896), and the **kernel** is measured as irrelevant. The fourth byte is the largest
+  single difference and the two readings of it have both failed, so the next measurement is the two
+  buffers' *first rows* side by side rather than three sampled pixels, which will show whether the
+  difference is in the picture, in the bars, or in the scaled picture's interior.
 
   The two rules themselves: centre crop scales until the picture covers the
   target and keeps the middle, scale fit scales until it fits and leaves the rest black. A buffer

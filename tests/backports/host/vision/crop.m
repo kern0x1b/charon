@@ -14,6 +14,7 @@
 #import <CoreVideo/CoreVideo.h>
 #import <CoreML/CoreML.h>
 #import <Foundation/Foundation.h>
+#import <Vision/Vision.h>
 
 #ifdef CHARON_PORT_BUILD
 #import <Vision/Vision.h>
@@ -31,7 +32,7 @@ static CGImageRef picture(size_t wide, size_t high)
      * Core ML's own constructor refuses to make a buffer of one ("Failed to form pixel buffer from
      * CGImage"), which is the same reason the port's buffer helper draws with the same order. */
     CGContextRef context = CGBitmapContextCreate(NULL, wide, high, 8, 0, space,
-                                                 kCGImageAlphaNoneSkipFirst | kCGBitmapByteOrder32Little);
+                                                 kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Little);
     CGImageRef image = NULL;
     size_t x, y;
     CGColorSpaceRelease(space);
@@ -53,10 +54,15 @@ static CGImageRef picture(size_t wide, size_t high)
 
 /* Core ML's own constructor, which is the oracle: it takes the picture, the size to bring it to and
  * the options, and answers a buffer. */
-static CVPixelBufferRef oracle(CGImageRef image, size_t wide, size_t high, BOOL cropAndScale)
+/* Core ML's own constructor takes a VNImageCropAndScaleOption under the CropAndScale key -- the
+ * header says so: "Key for VNImageCropAndScaleOption describing how to crop and scale the image (or
+ * region of interest) to the desired size" -- so the oracle for each rule is the same rule handed
+ * over, and the row is a comparison of like with like. A negative option asks for the *default*,
+ * which the header does not state; the run measures it and prints it. */
+static CVPixelBufferRef oracle(CGImageRef image, size_t wide, size_t high, int option)
 {
     NSError *failure = nil;
-    NSDictionary *options = cropAndScale ? @{ MLFeatureValueImageOptionCropAndScale : @YES } : @{};
+    NSDictionary *options = option < 0 ? @{} : @{ MLFeatureValueImageOptionCropAndScale : @(option) };
     MLFeatureValue *value = [MLFeatureValue featureValueWithCGImage:image
                                                        pixelsWide:wide
                                                        pixelsHigh:high
@@ -155,7 +161,9 @@ int main(int argc, const char *argv[])
             CGImageRef image = picture(sizes[index].from_wide, sizes[index].from_high);
             int option;
             for (option = 0; option < 2; option++) {
-                CVPixelBufferRef want = oracle(image, sizes[index].to_wide, sizes[index].to_high, YES);
+                CVPixelBufferRef want = oracle(image, sizes[index].to_wide, sizes[index].to_high,
+                                               option == 0 ? VNImageCropAndScaleOptionCenterCrop
+                                                           : VNImageCropAndScaleOptionScaleFit);
 #ifdef CHARON_PORT_BUILD
                 CVPixelBufferRef got = port_answer(image, sizes[index].to_wide, sizes[index].to_high,
                                                     option == 0 ? VNImageCropAndScaleOptionCenterCrop
@@ -166,19 +174,11 @@ int main(int argc, const char *argv[])
 #endif
                 size_t of = 0;
                 long difference = differing(want, got, &of);
-                if (option == 0) {
-                    /* The centre crop is Vision's own rule -- scale until the picture covers the
-                     * target and keep the middle -- and Core ML's CropAndScale is not that rule: it
-                     * scales until the picture fits and centres it, so its answer has black where a
-                     * crop would have kept the middle. The difference reported here is between two
-                     * rules, and the oracle for the fit rule is the line below. */
-                    printf("  (centrecrop is Vision's cover-and-crop; Core ML's CropAndScale is the fit "
-                           "rule, so this row is a difference of rules)\n");
-                }
+
                 printf("%zux%zu to %zux%zu option %s: differing=%ld of %zu\n", sizes[index].from_wide,
                        sizes[index].from_high, sizes[index].to_wide, sizes[index].to_high,
                        option == 0 ? "centrecrop" : "scalefit", difference, of);
-                if (index == 0 || index == 1) {
+                if (index == 0) {
                     CVPixelBufferLockBaseAddress(want, kCVPixelBufferLock_ReadOnly);
                     CVPixelBufferLockBaseAddress(got, kCVPixelBufferLock_ReadOnly);
                     dump(want, "coreML");
@@ -201,6 +201,24 @@ int main(int argc, const char *argv[])
     }
     (void)argc;
     (void)argv;
+    /* The default the header does not state: the same picture with no option in the dictionary. */
+    {
+        CGImageRef image = picture(100, 50);
+        CVPixelBufferRef want = oracle(image, 224, 224, -1);
+        CVPixelBufferRef fit = oracle(image, 224, 224, VNImageCropAndScaleOptionScaleFit);
+        CVPixelBufferRef crop = oracle(image, 224, 224, VNImageCropAndScaleOptionCenterCrop);
+        size_t ofFit = 0, ofCrop = 0;
+        long againstFit = differing(want, fit, &ofFit);
+        long againstCrop = differing(want, crop, &ofCrop);
+        printf("no option given: the framework's own answer is %ld of %zu pixels from ScaleFit and "
+               "%ld of %zu from CenterCrop, so its default is %s\n",
+               againstFit, ofFit, againstCrop, ofCrop,
+               againstFit == 0 ? "ScaleFit" : (againstCrop == 0 ? "CenterCrop" : "neither, exactly"));
+        if (want != NULL) CVPixelBufferRelease(want);
+        if (fit != NULL) CVPixelBufferRelease(fit);
+        if (crop != NULL) CVPixelBufferRelease(crop);
+        CGImageRelease(image);
+    }
     printf("worst differing pixels: %ld\n", worst);
     return worst == 0 ? 0 : 1;
 }
