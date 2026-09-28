@@ -1564,6 +1564,9 @@ end
 function check_registry(root, found, complete, deployment, exports, inventory, sdkdir, declared)
     local listed, incomplete = registry(root)
     local unlisted, undocumented = {}, {}
+    -- per call, not a module global: an earlier check in the same process filled it from a tree with no SDK
+    -- and the next one reused that answer instead of asking declared_names about its own
+    local declared_by_header
     for _, carried in ipairs({found.classes, found.members, found.symbols}) do
         for name in pairs(carried) do
             -- the protocol metadata symbols answer for the protocol rows and are not API of their own
