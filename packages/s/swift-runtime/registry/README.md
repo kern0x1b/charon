@@ -27,3 +27,19 @@ The files:
 
 Each entry names the SDK interface the declaration was read from and the measurement behind it. A
 row that is **not** in these files is not implemented, whatever the corpus's ledger says about it.
+
+## These rows and the swift-runtime lift sets
+
+They do not touch each other, and the reason is in the recipe rather than in this directory:
+`xmake.lua:433` hands `lift()` the **apple-backports** registry (`backported:installdir("share")`), and
+`lift/iPhoneOS{16.4,26.2}.sdk.txt` is what that lift leaves alone. Nothing here is read by it — a Swift
+module exports no symbol a dylib inventory sees, which is the same reason the rows are kept out of
+`apple-backports/registry/`. So adding a row here does not make the committed sets stale, and a series
+that only adds rows here owes no re-measure. Rule R4 of `.agents/skills/patch-merge/SKILL.md` §4 fires
+on an implemented entry **in the registry the lift reads** that no SDK header declares — a private
+class, a stub-only function — and on a change to `modules/apple/lift.lua` itself.
+
+Measured on this series (2026-09-28, on `b74b9a00`): `git diff --name-only cc435f9d..HEAD --
+packages/a/apple-backports modules/apple` is empty, `git diff --stat -- packages/s/swift-runtime/lift`
+is empty, and `coordination/lift-verify.lua` on this worktree reports `lift_test: 0 failures` with both
+sets counted and their headers true.
