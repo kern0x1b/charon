@@ -30,6 +30,17 @@ gate places them at 5.0.
 `udtitvfmt_*`. A 4.3 path would mean vendoring ICU into the package, which is a later item and not
 this one.
 
+**And the whole library links `libicucore` in every band, strongly, including 4.3.** The link is a
+property of `FoundationBackports` and not of a band, and `modules/apple/deps.lua` turns a library name
+into `-l<name>` with no weak form, so a 4.3 band that does **not** use this class still carries an
+LC_LOAD_DYLIB for `libicucore`, whose four symbols the 4.3 release exports none of. What is weak is
+the three **imports**: they are declared `__attribute__((weak_import))` and bind NULL on 4.3, which is
+what `-[NSDateIntervalFormatter charon_intervalFrom:to:]` checks for before its first call. So the
+cost is one load command a band does not need and one library on a release whose libicucore holds
+none of the four symbols, and not a fault: the import check passes because 4.3 *has* a libicucore, and
+the release is never asked for a symbol it does not have. A weak form in `deps.lua` would fix it and
+that file is shared with every package, so it is a change for the coordinator and not for this file.
+
 ## What comes from the release and what comes from the port
 
 From the **release**, which is the point of the route: the join between a date and a time and
