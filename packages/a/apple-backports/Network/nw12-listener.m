@@ -22,6 +22,8 @@
  */
 
 #import "CharonNW.h"
+#include <mach/mach_time.h>
+#include <stdio.h>
 #import "CharonNWSupport.h"
 #import <Foundation/NSNetServices.h>
 
@@ -149,6 +151,11 @@ static void charon_listener_adopt(CharonNWListener *listener, int handle)
        forgets one. Then the handler, and then the start: a connection that can reach `ready` with no
        handler on it would be handed to nobody. */
     __weak CharonNWListener *weak = listener;
+    if (getenv("CHARON_TRACE_CONNECTION")) {
+        extern int charon_nw_connection_socket(nw_connection_t connection);
+        fprintf(stderr, "[charon] adopt accepted=%d the-connection-holds=%d\n", handle,
+                charon_nw_connection_socket(connection));
+    }
     if (!CharonNWConnectionHasQueue(connection))
         nw_connection_set_queue(connection, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
     nw_connection_set_state_changed_handler(connection, ^(nw_connection_state_t state, nw_error_t error) {

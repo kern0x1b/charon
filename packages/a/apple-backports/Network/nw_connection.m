@@ -810,6 +810,18 @@ void CharonNWConnectionAttach(nw_connection_t value, int handle, BOOL connected)
     connection->_secure = charon_is_secure(parameters);
 }
 
+/* The descriptor a connection object holds, asked for by the files that cannot see its ivars: the
+   listener's accept path says which fd the object it made is holding, so that a start that dialled
+   again instead of adopting it would be visible in one trace. */
+int charon_nw_connection_socket(nw_connection_t value)
+{
+    return ((CharonNWConnection *)value)->_socket;
+}
+
+/* The descriptor a connection object holds, for the files that cannot see its ivars: the listener's
+   accept path says which fd the object it made is holding, so a start that dialled again instead of
+   adopting it is one line of trace away. */
+
 /* Whether a program has already given this connection a queue, which is what a listener asks before it
    starts one: a connection with no queue does nothing at all when it is started. */
 BOOL CharonNWConnectionHasQueue(nw_connection_t value)
@@ -1135,6 +1147,19 @@ void nw_connection_start(nw_connection_t connection)
             return;
         self->_startedAtMilliseconds = charon_nw_uptime_milliseconds();
         charon_report_state(self, nw_connection_state_waiting, nil);
+        if (self->_acceptedSocket >= 0) {
+            /* A connection whose socket came from an accept is connected already. Dialling the
+               endpoint again would be a *client* connection to the listener's own address, on a
+               socket of its own, while the accepted descriptor sat unused: that is what a connection
+               made by a listener used to do, and nothing the program sent to it ever arrived. The
+               engine is made over the accepted descriptor, asserted to be the connection's socket. */
+            @synchronized(self) {
+                assert(self->_socket == self->_acceptedSocket);
+            }
+            charon_install_sources(self);
+            charon_ready(self);
+            return;
+        }
         dispatch_async(self->_connectQueue, ^{
             charon_open(self);
         });
