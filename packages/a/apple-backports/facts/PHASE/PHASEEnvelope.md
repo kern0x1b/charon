@@ -61,3 +61,29 @@ curve. Two mutants, both red:
 own framework on this machine. Resonance Audio and Steam Audio (both Apache-2.0) carry HRTF and
 attenuation DSP — the `PHASESpatialPipeline` family, not this one — and nothing here needs it. OpenAL
 Soft is LGPL and was not read.
+
+## PHASEEnvelopeDistanceModelParameters
+
+The third class of the family, in `PHASEEnvelopeDistanceModelParameters15.m`: a distance model whose
+curve is a `PHASEEnvelope`. The header states the contract twice — *"An envelope object where x values
+are interpreted as distance and the y values interpreted as gain"* — and that is the whole of it, so
+what is carried is the holding of an envelope and not a distance model: there is no `PHASEDistanceModel`
+on any release of this port to convert.
+
+`-init` and `+new` are `NS_UNAVAILABLE` and `-initWithEnvelope:` is the `NS_DESIGNATED_INITIALIZER`, so
+the class is made one way. The designated initializer allocates the superclass directly rather than
+calling `[super init]`, because `PHASEDistanceModelParameters` marks `-init` unavailable and declares no
+designated initializer to chain to — and it inherits no state, its only member being its own
+`fadeOutParameters`.
+
+The differential asks both the port and the host to hold the envelope they were made with, and compares
+the gain each reports at 5 m, which is the envelope's own arithmetic reached through the model:
+
+```
+stage the gain at 5 m: host 0.75, port 0.75
+checks=55 failures=0
+```
+
+Two mutants, both red: the model keeping its own envelope instead of the one it was made with, and the
+initializer's argument dropped. Both fail the same two checks, the second with the gain reported as 0
+against the host's 0.75.
