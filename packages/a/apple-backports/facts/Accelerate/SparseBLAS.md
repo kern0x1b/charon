@@ -589,13 +589,21 @@ the package is still not building:
   the store's LLVM 23.1.1. `package:toolchains()[1]` is the wrong pick outside the gate, and with the system
   clang on the path `toolchain:config("sdkdir")` is not what the compile line needs either. The recipe has to
   ask the addon the way `backports.lua` does, not take the first entry.
-- The `-isystem` fix is **verified to reach the right header**, and the failure has moved past it. What is
-  left is a bare `assertion failed!` with no message, and every `assert` in the recipe carries one, so the
-  bare one is xmake's own — `os.vrunv` or `os.mkdir` or `path.absolute` — not the recipe's five
-  directory checks. The next probe is the same scratch project with the addon pinned to the version
-  `build-gate.lua` computes, and the recipe's own traceback rather than the require machinery's: the
-  latter names `install_packages.lua` and says only that the package "must be installed", which is the
-  install failing, not where.
+- The `-isystem` fix **works**, and that is now measured three ways rather than inferred. All fifteen
+  objects are built in the cache — `AMD_amd_1.o` through `AMD_amd_version.o` and `COLAMD_colamd.o` and
+  `COLAMD_colamd_version.o`, none missing — and the recipe's own link line run by hand over them produces
+  a **24 072-byte** `libSuiteSparseOrdering.a` with one warning, `libtool: warning: 'AMD_amd_dump.o' has no
+  symbols`, which is a fact about that file and not a fault.
+- **What is left is a bare `assertion failed!` whose log is one line long** and carries no compiler output
+  at all. Every one of the recipe's seven asserts carries a message, and the five directory checks and the
+  fifteen source checks both pass, so the bare assertion is xmake's own rather than the recipe's. The
+  archive is not installed — `$HOME/.xmake/packages/s/suitesparse-ordering/v7.12.2` exists and is empty of
+  it — so the failure is after the link and around the `os.vcp` calls that install the headers and the
+  licences, or in xmake's own bookkeeping of the install.
+- So: **the package's build is understood and its install is not.** The next probe is one `os.vcp` and
+  one `os.mkdir` replaced by a print, which is the same technique that found the `stdio.h` frame: put a
+  marker after each of the three install steps and read the last one that printed. That is cheap and it is
+  a measurement rather than a guess, and it is where I stop.
 
 
 
