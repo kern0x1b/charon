@@ -441,7 +441,10 @@ package("swift-runtime")
                 local result = lift.lift({clang = toolchain:tool("cc"), swiftc = swiftc, sdk = toolchain:config("sdkdir"), triple = triple,
                                           minimum = minimum, registry = backported:installdir("share"),
                                           outputdir = path.join(package:installdir("share"), "lift"),
-                                          expected = os.isfile(measured) and io.readfile(measured) or ""})
+                                          expected = os.isfile(measured) and io.readfile(measured) or "",
+                                          -- the lift's output for these inputs, and the compiler's answers it asked, are kept
+                                          -- in ~/.charon/cache/lift and handed back: the same lift again takes a second
+                                          keep = true})
                 print("lifted %d marks in %d headers for %d implemented API; left alone: %d classes, %d other names the lift found no declaration of, %d members no class reaches a declaration of (share/lift/left-alone.txt)",
                       result.lifted, result.headers, result.implemented, #result.classes, #result.unmatched, #result.undeclared)
                 lifted = {"-vfsoverlay", result.vfs}

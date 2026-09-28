@@ -18,10 +18,12 @@
 
 import("core.base.json")
 import("async.runjobs")
+import("core.compress.lz4")
 import("dyld")
 import("backports")
 import("compat")
 import("cache")
+import("multidump")
 
 local function version(text)
     return (text or ""):gsub("_", ".")
@@ -161,6 +163,33 @@ function system_headers(sdk, symbols, standalone)
     return table.orderkeys(found)
 end
 
+-- system_headers() for this lift, kept on disk: it is a function of the SDK's own headers, the symbols, the compiler and the
+-- target, and it costs a compile per header that cannot be told public from its module map alone (30 s of a 65 s lift of
+-- three frameworks, measured). The key is every file under the SDK's usr/include by name, size and time, the symbols, the
+-- compiler by path, size and time, the target, and this file's text - what system_headers() and stands_alone() read.
+function kept_system_headers(opt, symbols)
+    local root = path.join(opt.sdk, "usr", "include")
+    local parts = {"charon-system-headers-1", opt.triple, opt.clang, tostring(os.filesize(opt.clang)), tostring(os.mtime(opt.clang)),
+                   hash.strhash128(io.readfile(path.join(os.scriptdir(), "lift.lua"))), table.concat(symbols, " ")}
+    local files = os.files(path.join(root, "**"))
+    table.sort(files)
+    for _, file in ipairs(files) do
+        table.insert(parts, path.relative(file, root) .. " " .. hash.xxhash128(file))
+    end
+    local key = hash.strhash128(table.concat(parts, "\n"))
+    local file = path.join(os.getenv("CHARON_HOME") or path.join(os.getenv("HOME"), ".charon"), "cache", "lift", "system-" .. key .. ".lua")
+    local saved = os.isfile(file) and io.load(file)
+    if saved then
+        return saved.headers
+    end
+    local headers = system_headers(opt.sdk, symbols, function (name) return stands_alone(opt, name) end)
+    try { function () os.mkdir(path.directory(file)) end }
+    local temporary = file .. "." .. hash.strhash32(file .. os.mclock()) .. ".tmp"
+    io.save(temporary, {headers = headers})
+    os.mv(temporary, file)
+    return headers
+end
+
 -- Whether a header can be included alone: the compiler reads `#include <name>` and finds an error in it or not. An error the compiler places in
 -- a file (the header's, or one it includes) says it cannot, and so does one of its own includes it cannot find (a libc++ header needs its C++ include path, which it does not
 -- have here). A compiler that does not run, a crash, or the probed header not being there at all raise, because answering "cannot"
@@ -242,6 +271,67 @@ function name_groups(names)
     return groups
 end
 
+-- The environment a compiler reads, which a kept answer and a kept lift are keyed on.
+local ENVIRONMENT = {"CPATH", "C_INCLUDE_PATH", "OBJC_INCLUDE_PATH", "CPLUS_INCLUDE_PATH", "OBJCPLUS_INCLUDE_PATH",
+                     "SDKROOT", "DEVELOPER_DIR", "IPHONEOS_DEPLOYMENT_TARGET", "CCC_OVERRIDE_OPTIONS", "CHARON_LIFT_MULTIDUMP",
+                     "CHARON_LLVM_CONFIG"}
+
+local OUTPUTDIR = "@charon-lift-outputdir@"
+
+-- every string of value with from replaced by to, tables walked
+local function respelled(value, from, to)
+    if type(value) == "string" then
+        -- in pieces, joined once: a dump names the umbrella at every declaration, and rebuilding the string at each was
+        -- quadratic in its length
+        local pieces, from_at = {}, 1
+        local at = value:find(from, 1, true)
+        if not at then
+            return value
+        end
+        while at do
+            table.insert(pieces, value:sub(from_at, at - 1))
+            table.insert(pieces, to)
+            from_at = at + #from
+            at = value:find(from, from_at, true)
+        end
+        table.insert(pieces, value:sub(from_at))
+        return table.concat(pieces)
+    elseif type(value) == "table" then
+        local copy = {}
+        for key, item in pairs(value) do
+            copy[respelled(key, from, to)] = respelled(item, from, to)
+        end
+        return copy
+    end
+    return value
+end
+
+-- The output folder's path spelled as a mark in a kept file, and back: as it is, and as JSON writes it (vfs.yaml, where every
+-- "/" is "\/"), so that no spelling of the folder a lift was run in is left in what another folder is given.
+local function unplaced(text, outputdir)
+    return respelled(respelled(text, (outputdir:gsub("/", "\\/")), OUTPUTDIR .. "json"), outputdir, OUTPUTDIR)
+end
+local function placed(text, outputdir)
+    return respelled(respelled(text, OUTPUTDIR .. "json", (outputdir:gsub("/", "\\/"))), OUTPUTDIR, outputdir)
+end
+
+-- What an SDK's headers are, by name and content (7153 headers of SDK 26.2 in 0.2 s), read once per lift: lift() empties
+-- the table, so that headers rewritten between two lifts of one process - as a test rewrites its fixture - are read again.
+-- Not by size and time, which a header rewritten to the same length within a second does not change.
+local stamps = {}
+function sdk_stamp(sdk)
+    if not stamps[sdk] then
+        local headers = table.join(os.files(path.join(sdk, "**.h")), os.files(path.join(sdk, "usr", "include", "**.modulemap")))
+        table.sort(headers)
+        local parts = {sdk}
+        for _, file in ipairs(headers) do
+            table.insert(parts, path.relative(file, sdk) .. " " .. hash.xxhash128(file))
+        end
+        stamps[sdk] = hash.strhash128(table.concat(parts, "\n"))
+    end
+    return stamps[sdk]
+end
+
 local function dumper(opt, frameworks, headers)
     local umbrella = path.join(opt.outputdir, "umbrella.m")
     local lines = {}
@@ -264,21 +354,30 @@ local function dumper(opt, frameworks, headers)
         end
         return arguments
     end
-    local function query(filter, vfs)
-        local arguments = table.join(base(vfs), {"-Xclang", "-ast-dump-filter=" .. filter})
-        local text = cache.iorunv(opt.clang, table.join(arguments, {"-Xclang", "-ast-dump=json"}))
-        if not text then
+    -- what was asked, counted as it is asked: the lift reads it when it ends
+    local asked, runs = {}, 0
+    local counted = {filters = 0, runs = 0, frameworks = #frameworks, parses = 0, clang = 0, decode = 0, bytes = 0, prefetch = 0, prefetches = 0, recalled = 0}
+    local function note(filter, cost)
+        if not asked[filter] then
+            asked[filter] = true
+            counted.filters = counted.filters + 1
+        end
+        runs = runs + cost
+        counted.runs = runs
+    end
+    -- What a query found: the JSON dump's declarations, each with the qualified name and the typedefs the text dump of the
+    -- same filter heads it with.
+    local function answered(filter, text, listing)
+        if not text or not listing then
             raise("clang gave no dump for the filter %s", filter)
         end
+        local started = os.mclock()
+        counted.bytes = counted.bytes + #text + #listing
         local found = objects(text)
         -- The JSON names no owner; the text dump of the same filter heads each declaration with its qualified name, in
         -- the same order. With the declaration's type written after it (-ast-dump-decl-types: a function's, a variable's,
         -- a typedef's own), it also names every typedef that type goes through - a return type, a parameter's, and the
         -- typedef a typedef names in turn (dispatch_qos_class_t, then qos_class_t) - which the JSON gives no way to follow.
-        local listing = cache.iorunv(opt.clang, table.join(arguments, {"-Xclang", "-ast-dump", "-Xclang", "-ast-dump-decl-types"}))
-        if not listing then
-            raise("clang gave no dump for the filter %s", filter)
-        end
         local sections = listing_sections(listing)
         if #sections == #found then
             for index, node in ipairs(found) do
@@ -286,11 +385,159 @@ local function dumper(opt, frameworks, headers)
                 node._typedefs = sections[index].typedefs
             end
         end
+        counted.decode = counted.decode + os.mclock() - started
         return found
     end
+    -- The two dumps of one filter, as clang prints them for it on its own: two parses of the umbrella.
+    local function asked_alone(filter, vfs)
+        note(filter, 2)
+        local arguments = table.join(base(vfs), {"-Xclang", "-ast-dump-filter=" .. filter})
+        return cache.iorunv(opt.clang, table.join(arguments, {"-Xclang", "-ast-dump=json"})),
+               cache.iorunv(opt.clang, table.join(arguments, {"-Xclang", "-ast-dump", "-Xclang", "-ast-dump-decl-types"}))
+    end
+    -- The two dumps of every filter of a list, from one parse (multidump.lua), or nil where there is no plugin.
+    local batches = 0
+    local function asked_together(filters, vfs)
+        local dylib = multidump.plugin(opt.clang)
+        if not dylib then
+            return nil
+        end
+        batches = batches + 1
+        for index, filter in ipairs(filters) do
+            note(filter, index == 1 and 1 or 0)
+        end
+        local folder = path.join(opt.outputdir, "multidump", tostring(batches) .. "-" .. hash.strhash32(filters[1] .. os.mclock()))
+        os.mkdir(folder)
+        local list = path.join(folder, "filters.txt")
+        io.writefile(list, table.concat(filters, "\n") .. "\n")
+        local started = os.mclock()
+        os.iorunv(opt.clang, multidump.arguments(dylib, base(vfs), list, folder))
+        counted.parses = counted.parses + 1
+        counted.clang = counted.clang + os.mclock() - started
+        local answers = {}
+        for index = 1, #filters do
+            answers[index] = {io.readfile(path.join(folder, index .. ".json")), io.readfile(path.join(folder, index .. ".txt"))}
+        end
+        os.tryrm(folder)
+        return answers
+    end
+    -- The plugin's answer is compared with clang's own once, on the first filter it is given, before any of its answers is
+    -- used: a plugin built against headers that are not exactly the lift's clang's could print something else, and then it
+    -- is not used again and every query is asked alone. The plugin is keyed on the compiler it was built for (multidump.lua),
+    -- so a plugin that answered as clang does is marked beside itself, and is not compared again.
+    local agrees = multidump.plugin(opt.clang) and multidump.plugin(opt.clang) .. ".agrees"
+    local checked = agrees and os.isfile(agrees) or false
+    local together
+    local function asked_checked(filters, vfs)
+        local answers = asked_together(filters, vfs)
+        if answers and not checked then
+            checked = true
+            local text, listing = asked_alone(filters[1], vfs)
+            local function same(a, b)
+                return a and b and a:gsub("0x%x+", "") == b:gsub("0x%x+", "")
+            end
+            if not same(text, answers[1][1]) or not same(listing, answers[1][2]) then
+                cprint("${color.warning}lift:${clear} the multidump plugin does not answer %s as clang does; every query is asked alone", filters[1])
+                multidump.refuse()
+                return nil
+            end
+            io.writefile(agrees, filters[1] .. "\n")
+        end
+        return answers
+    end
+    -- What the plugin answered for a filter over the umbrella alone, kept between lifts: an answer is what clang prints for
+    -- the umbrella's parse, and depends on the umbrella's text, the SDK's headers, the compiler, the plugin and the
+    -- environment the compiler reads - not on the registry or on this file. A lift after a change to the registry asks
+    -- again only what it did not ask before. The folder the umbrella is in is spelled as a mark, as in a kept result;
+    -- a query over an overlay is not kept (the overlay is the lift's own output).
+    local held
+    do
+        local dylib = multidump.plugin(opt.clang)
+        if dylib and opt.keep then
+            local parts = {"charon-lift-dumps-1", io.readfile(umbrella), sdk_stamp(opt.sdk), opt.triple, dylib,
+                           opt.clang .. " " .. tostring(os.filesize(opt.clang)) .. " " .. tostring(os.mtime(opt.clang))}
+            for _, name in ipairs(ENVIRONMENT) do
+                table.insert(parts, name .. "=" .. (os.getenv(name) or ""))
+            end
+            held = path.join(os.getenv("CHARON_HOME") or path.join(os.getenv("HOME"), ".charon"), "cache", "lift",
+                             "dumps-" .. hash.strhash128(table.concat(parts, "\n")))
+        end
+    end
+    if held then
+        try { function () os.mkdir(held) end }
+        io.writefile(path.join(held, "used"), "")
+    end
+    local function held_file(filter)
+        return path.join(held, hash.strhash128(filter) .. ".lz4")
+    end
+    local function recalled(filter)
+        local file = held_file(filter)
+        if not os.isfile(file) then
+            return nil
+        end
+        local text = placed(lz4.decompress(io.readfile(file, {encoding = "binary"})):str(), opt.outputdir)
+        local split = text:find("\0", 1, true)
+        return split and {text:sub(1, split - 1), text:sub(split + 1)} or nil
+    end
+    local function remember(filter, answer)
+        if not answer[1] or not answer[2] then
+            return
+        end
+        local file = held_file(filter)
+        try { function () os.mkdir(held) end }
+        local temporary = file .. "." .. hash.strhash32(file .. os.mclock()) .. ".tmp"
+        io.writefile(temporary, lz4.compress(unplaced(answer[1] .. "\0" .. answer[2], opt.outputdir)):str(), {encoding = "binary"})
+        os.mv(temporary, file)
+    end
+    together = function (filters, vfs)
+        if vfs or not held then
+            return asked_checked(filters, vfs)
+        end
+        local answers, missing, at = {}, {}, {}
+        for index, filter in ipairs(filters) do
+            answers[index] = recalled(filter)
+            if answers[index] then
+                counted.recalled = counted.recalled + 1
+            else
+                table.insert(missing, filter)
+                at[#missing] = index
+            end
+        end
+        if #missing > 0 then
+            local asked = asked_checked(missing, vfs)
+            if not asked then
+                return nil
+            end
+            for position, answer in ipairs(asked) do
+                answers[at[position]] = answer
+                remember(missing[position], answer)
+            end
+        end
+        return answers
+    end
+    local function query(filter, vfs)
+        local answers = together({filter}, vfs)
+        if answers then
+            return answered(filter, answers[1][1], answers[1][2])
+        end
+        local text, listing = asked_alone(filter, vfs)
+        return answered(filter, text, listing)
+    end
     local dumps, alone = {}, {}
+    -- While collecting, a dump not held yet is noted instead of asked, and answers nothing: a loop run once that way names
+    -- the queries it will make, and they are then asked together (prefetch) before it runs for real.
+    local collecting
+    local function collect(on)
+        local noted = collecting
+        collecting = on and {} or nil
+        return noted and table.orderkeys(noted) or {}
+    end
     local function dump(filter, vfs)
         local key = filter .. "|" .. (vfs or "")
+        if not dumps[key] and collecting and not vfs then
+            collecting[filter] = true
+            return {}
+        end
         if not dumps[key] then
             table.insert(alone, key)
             dumps[key] = query(filter, vfs)
@@ -322,7 +569,14 @@ local function dumper(opt, frameworks, headers)
     -- so what a name's own query prints is those of the group's that contain the name - unless the name is found only below a
     -- declaration of the group that does not contain it, and then it is asked for on its own. What is asked one at a time is
     -- kept in `alone`, to see what a loop still lacks a prefetch for.
+    local prefetch_inner
     local function prefetch(filters, vfs)
+        local started = os.mclock()
+        prefetch_inner(filters, vfs)
+        counted.prefetch = counted.prefetch + os.mclock() - started
+        counted.prefetches = counted.prefetches + 1
+    end
+    prefetch_inner = function (filters, vfs)
         local missing, seen, plain, names = {}, {}, {}, {}
         for _, filter in ipairs(filters) do
             local key = filter .. "|" .. (vfs or "")
@@ -335,8 +589,11 @@ local function dumper(opt, frameworks, headers)
         for _, filter in ipairs(plain) do
             table.insert(jobs, {filter = filter})
         end
+        -- With the plugin every filter of a batch is answered from the batch's one parse, and a group saves nothing: it
+        -- only makes the answer larger (a prefix of six characters is every declaration that contains it)
+        local grouped = opt.grouped ~= false and not multidump.plugin(opt.clang)
         for _, group in ipairs(name_groups(names)) do
-            if opt.grouped == false then
+            if not grouped then
                 for _, name in ipairs(group.names) do
                     table.insert(jobs, {filter = name})
                 end
@@ -346,9 +603,44 @@ local function dumper(opt, frameworks, headers)
         end
         local answers = {}
         local function ask(wanted)
+            -- With the plugin, the queries go in batches, each one parse: as many batches as runs at once. A parse is a
+            -- second whatever it is asked, and what it writes for each filter is a fraction of that (measured over the
+            -- overlay: 1500 filters in one parse 3.0 s, a bare parse 1.0 s), so a batch is as large as the width allows.
+            local width = opt.jobs or 8
+            if #wanted > 1 and multidump.plugin(opt.clang) then
+                local size = math.max(1, math.ceil(#wanted / width))
+                local groups = {}
+                for first = 1, #wanted, size do
+                    table.insert(groups, first)
+                end
+                -- the first batch alone, so that the check against clang's own answer is made before the others run, until
+                -- it has been made
+                local order = checked and {} or {groups[1]}
+                local rest = {}
+                for index = checked and 1 or 2, #groups do
+                    table.insert(rest, groups[index])
+                end
+                local function batch(first)
+                    local filters = {}
+                    for index = first, math.min(first + size - 1, #wanted) do
+                        table.insert(filters, wanted[index].filter)
+                    end
+                    local found = together(filters, vfs)
+                    for offset, filter in ipairs(filters) do
+                        answers[first + offset - 1] = found and answered(filter, found[offset][1], found[offset][2]) or query(filter, vfs)
+                    end
+                end
+                if order[1] then
+                    batch(order[1])
+                end
+                runjobs("dump", function (index)
+                    batch(rest[index])
+                end, {total = #rest, comax = width})
+                return
+            end
             runjobs("dump", function (index)
                 answers[index] = query(wanted[index].filter, vfs)
-            end, {total = #wanted, comax = opt.jobs or 8})  -- 96 queries: 71 s one at a time, 12.7 s at 8, 11.6 s at 10 (12 cores)
+            end, {total = #wanted, comax = width})  -- 96 queries: 71 s one at a time, 12.7 s at 8, 11.6 s at 10 (12 cores)
         end
         ask(jobs)
         local again = {}
@@ -392,7 +684,11 @@ local function dumper(opt, frameworks, headers)
             end
         end
     end
-    return dump, umbrella, prefetch, alone
+    -- What the dumper spent its time on, by count: the filters are the unit of work, each one two
+    -- clang runs over the whole umbrella, and a grouped filter covers a prefix of names. The
+    -- per-framework breakdown is the umbrella's own, and a lift's cost does not follow it - a
+    -- framework with few registry entries is read in full and lifted in none.
+    return dump, umbrella, prefetch, alone, counted, collect
 end
 
 -- Which receivers conform to which protocols, as clang answers it: a receiver converts to id<P> without a diagnostic
@@ -486,33 +782,48 @@ local function preprocessed(opt, languages, names, apart)
         wanted[name] = true
     end
     local kept, reached = {}, {}
-    for _, language in ipairs(languages) do
-        local text = cache.iorunv(opt.clang, table.join({"-target", opt.triple, "-isysroot", opt.sdk, "-Wno-incompatible-sysroot", "-E"},
-                                                     language.arguments, {path.join(opt.outputdir, "umbrella.m")}))
-        tokens_kept(text, wanted, kept, reached)
+    -- every language's preprocessing at once: each is a compile of the umbrella, and they do not depend on each other
+    local texts = {}
+    runjobs("preprocess", function (index)
+        texts[index] = cache.iorunv(opt.clang, table.join({"-target", opt.triple, "-isysroot", opt.sdk, "-Wno-incompatible-sysroot", "-E"},
+                                                       languages[index].arguments, {path.join(opt.outputdir, "umbrella.m")}))
+    end, {total = #languages, comax = math.max(1, math.min(#languages, opt.jobs or 8))})
+    for index, language in ipairs(languages) do
         if apart then
             own[language.name] = {kept = {}, reached = {}}
-            tokens_kept(text, apart, own[language.name].kept, own[language.name].reached)
         end
+        tokens_kept(texts[index], wanted, kept, reached, apart, apart and own[language.name].kept, apart and own[language.name].reached)
     end
     return kept, reached, own
 end
 
 -- The names of wanted a preprocessor's output (clang -E, with its line markers) keeps as tokens, by the file and line
 -- each came from: added to kept[file][line][name], and every file it names to reached.
-function tokens_kept(text, wanted, kept, reached)
+-- A second set of names (apart, into apart_kept and apart_reached) is told in the same pass, as if tokens_kept were called
+-- again with it: the output is read once for both.
+function tokens_kept(text, wanted, kept, reached, apart, apart_kept, apart_reached)
     local file, line
     for output in (text .. "\n"):gmatch("([^\n]*)\n") do
         local number, marked = output:match('^# (%d+) "([^"]*)"')
         if number then
             file, line = marked, tonumber(number)
             reached[file] = true
+            if apart_reached then
+                apart_reached[file] = true
+            end
         elseif file then
-            for word in code_of(output):gmatch("[%a_][%w_]*") do
+            -- code_of() gives back a line with no comment or literal in it unchanged, and most lines of clang -E have
+            -- neither: those are read as they are
+            for word in (output:find("[/\"']") and code_of(output) or output):gmatch("[%a_][%w_]*") do
                 if wanted[word] then
                     kept[file] = kept[file] or {}
                     kept[file][line] = kept[file][line] or {}
                     kept[file][line][word] = true
+                end
+                if apart and apart[word] then
+                    apart_kept[file] = apart_kept[file] or {}
+                    apart_kept[file][line] = apart_kept[file][line] or {}
+                    apart_kept[file][line][word] = true
                 end
             end
             line = line + 1
@@ -600,11 +911,15 @@ local function expander(opt, headers, languages)
         end
         local vfs = path.join(opt.outputdir, "expand.yaml")
         json.savefile(vfs, overlay)
-        local forms = {}
-        for _, language in ipairs(languages) do
-            local text = cache.iorunv(opt.clang, table.join({"-target", opt.triple, "-isysroot", opt.sdk, "-Wno-incompatible-sysroot",
-                                                          "-E", "-P"}, language.arguments,
-                                                         {path.join(opt.outputdir, "umbrella.m"), "-ivfsoverlay", vfs}))
+        local forms, texts = {}, {}
+        -- every language at once, read back in the languages' order
+        runjobs("expand", function (index)
+            texts[index] = cache.iorunv(opt.clang, table.join({"-target", opt.triple, "-isysroot", opt.sdk, "-Wno-incompatible-sysroot",
+                                                            "-E", "-P"}, languages[index].arguments,
+                                                           {path.join(opt.outputdir, "umbrella.m"), "-ivfsoverlay", vfs}))
+        end, {total = #languages, comax = math.max(1, math.min(#languages, opt.jobs or 8))})
+        for position, language in ipairs(languages) do
+            local text = texts[position]
             for index, expansion in text:gmatch("charon_expansion_(%d+)(.-)charon_expansion_end") do
                 local site = all[tonumber(index)]
                 forms[site] = forms[site] or {}
@@ -788,9 +1103,23 @@ local function member_matches(member, node)
         or node.kind == "ObjCMethodDecl" and (node.name == member.property or setter_property(node.name) == member.property)
 end
 
+-- An entry's own name without a trailing "(", and the member it names if it names one. Both
+-- depend on the entry alone, and matches() is called once per node of the entry's dump - a dump
+-- of a class prefix is thousands of nodes - so computing them per node is the single largest
+-- thing the entries loop does: a string substitution and a table built and thrown away for every
+-- (entry, node) pair, which is what made the loop 64 per cent of a lift. Kept on the entry, so
+-- every call site gets them and none of them changes what is matched.
+local function api_of(entry)
+    if entry.name == nil then
+        local api = entry.api:gsub("%(%)$", "")
+        entry.name = api
+        entry.member = member_api(api)
+    end
+    return entry.name, entry.member
+end
+
 local function matches(entry, node)
-    local api = entry.api:gsub("%(%)$", "")
-    local member = member_api(api)
+    local api, member = api_of(entry)
     -- A category is the class's by the class it extends, never by its own name: UIViewController (UIPresentationController)
     -- is named after a class the backports carry, and its members are UIViewController's.
     if entry.kind == "class" then
@@ -812,6 +1141,43 @@ local function matches(entry, node)
     return (node.kind == "VarDecl" or node.kind == "FunctionDecl" or node.kind == "EnumConstantDecl") and node.name == api
 end
 
+-- The nodes of a dump that can match an entry, in the dump's order: for a member, those whose name is its selector, its
+-- property or the setter of its property - the only names member_matches() accepts - and every node for anything else.
+-- A dump of a class's members is thousands of nodes and the class has hundreds of entries, and each entry looked at every
+-- node: the entries loops were most of a lift. The index is built once per dump, and matches() still decides.
+local indexes = {}
+local function candidates(entry, nodes)
+    local _, member = api_of(entry)
+    if not member then
+        return nodes
+    end
+    local index = indexes[nodes]
+    if not index then
+        index = {}
+        for position, node in ipairs(nodes) do
+            for _, name in ipairs({node.name, node.name and setter_property(node.name) or nil}) do
+                index[name] = index[name] or {}
+                table.insert(index[name], position)
+            end
+        end
+        indexes[nodes] = index
+    end
+    local positions, seen = {}, {}
+    for _, name in ipairs(member.selector and {member.selector} or {member.property}) do
+        for _, position in ipairs(index[name] or {}) do
+            if not seen[position] then
+                seen[position] = true
+                table.insert(positions, position)
+            end
+        end
+    end
+    table.sort(positions)
+    local found = {}
+    for _, position in ipairs(positions) do
+        table.insert(found, nodes[position])
+    end
+    return found
+end
 
 -- A type the headers alone declare - an enumeration, a set of options, a structure - has no entry in the registry: the
 -- backports carry nothing of it. It comes down when every API of the SDK that uses it and is above the port's release is
@@ -1177,13 +1543,41 @@ end
 -- opt.registry (the folder holding registry/), opt.outputdir; opt.jobs, the compiler runs at once (8), and opt.grouped = false, which
 -- asks for every name on its own, not by the prefix a group of them shares (the reference the grouping is checked against).
 -- Answers the VFS overlay to hand the compiler and what was done; raises when either check finds a difference.
-function lift(opt)
+local function computed(opt)
+    -- Where the time went, per phase, in this run's own output. A lift is the slowest job on this
+    -- machine and until now it reported only its total, so the only way to see which phase that
+    -- total was made of was to sample the process tree from outside - which is not a number two
+    -- runs can be compared on, and which cannot say which framework or which filter cost what. The
+    -- per-phase marks below are the four calls that can each take minutes; the per-filter counts
+    -- come from the dumper, which already knows how many it asked.
+    local marked = os.getenv("LIFT_PROFILE") and {} or nil
+    local phase = marked and os.mclock() or 0
+    local counted
+    local function mark(name)
+        if not marked then
+            return
+        end
+        local now = os.mclock()
+        marked[#marked + 1] = {name, (now - phase) / 1000}
+        phase = now
+        -- as it happens too, so a lift that stops on an error still says where its time went
+        printf("lift: %-18s %8.1fs (so far)\n", name, marked[#marked][2])
+        if counted then
+            local was = marked.counted or {}
+            local function delta(key) return (counted[key] or 0) - (was[key] or 0) end
+            printf("lift:   %d prefetches %.1fs wall, %d parses %.1fs clang (summed), %.1fs decode, %.1f MB, %d filters, %d recalled\n",
+                   delta("prefetches"), delta("prefetch") / 1000, delta("parses"), delta("clang") / 1000, delta("decode") / 1000,
+                   delta("bytes") / 1e6, delta("filters"), delta("recalled"))
+            marked.counted = table.copy(counted)
+        end
+    end
     os.tryrm(opt.outputdir)
     os.mkdir(opt.outputdir)
     local listed, incomplete, registered = backports.registry(opt.registry)
     if #incomplete > 0 then
         raise("the backports registry is incomplete: %s", table.concat(incomplete, "; "))
     end
+    mark("registry")
     -- The frameworks read: every one the registry has a file for, and opt.frameworks on top of them.
     --
     -- The registry names the frameworks a backport implements something in, which is 48 of the 298
@@ -1209,11 +1603,17 @@ function lift(opt)
     for _, entry in ipairs(system_entries()) do
         table.insert(symbols, entry.api)
     end
-    local system = system_headers(opt.sdk, symbols, function (name) return stands_alone(opt, name) end)
-    local dump, umbrella, prefetch, alone = dumper(opt, frameworks, system)
+    local system = kept_system_headers(opt, symbols)
+    mark("system headers")
+    local dump, umbrella, prefetch, alone, collect
+    dump, umbrella, prefetch, alone, counted, collect = dumper(opt, frameworks, system)
+    mark("dumper")
     local conforms = conformer(opt, umbrella)
+    mark("conformer")
     local languages = languages_of(opt)
+    mark("languages")
     local expand = expander(opt, header_files(opt.sdk, frameworks), languages)
+    mark("expander")
     local kept, entries = {}, {}
     for api, entry in pairs(listed) do
         if entry.status == "implemented" then
@@ -1253,6 +1653,18 @@ function lift(opt)
         return chain
     end
 
+    -- A header's text, read once. Several loops here walk the declarations a dump brought back
+    -- and each of them needs the file those declarations are in, and the same file comes round
+    -- once per declaration in it.
+    local read = {}
+    local function contents(file)
+        local held = read[file]
+        if held == nil then
+            held = io.readfile(file) or false
+            read[file] = held
+        end
+        return held or nil
+    end
     local edits, blocked, targets, unmatched = {}, {}, {}, {}
     -- regional[file][id]: a declaration a region's attribute reaches, to be given its own (see declared_at)
     local regional = {}
@@ -1279,13 +1691,36 @@ function lift(opt)
         table.insert(filters, filter_of(entry))
     end
     prefetch(filters)
+    -- the superclasses of every class, a level at a time: the loop below reads each class's chain, and a chain read
+    -- one class at a time was a parse of the umbrella for each
+    do
+        local wave, reached = {}, {}
+        for _, entry in ipairs(entries) do
+            if entry.kind == "class" then
+                table.insert(wave, entry.api)
+            end
+        end
+        while #wave > 0 do
+            prefetch(wave)
+            local up = {}
+            for _, name in ipairs(wave) do
+                local above = superclass(name)
+                if above and not reached[above] then
+                    reached[above] = true
+                    table.insert(up, above)
+                end
+            end
+            wave = up
+        end
+    end
+    mark("entries:prefetch")
     for _, entry in ipairs(entries) do
         local target = opt.minimum
         if entry.minimum and later(entry.minimum, target) then
             target = entry.minimum
         end
         local found = {}
-        for _, node in ipairs(dump(filter_of(entry))) do
+        for _, node in ipairs(candidates(entry, dump(filter_of(entry)))) do
             if matches(entry, node) then
                 table.insert(found, node)
             end
@@ -1339,6 +1774,7 @@ function lift(opt)
         end
     end
 
+    mark("entries:loop")
     -- A property the backports carry whose setter they leave out: the setter clang declares for it shares the property's
     -- mark, so lowering the mark would lower the setter too. It is declared explicitly beside the property instead, at
     -- the release the SDK gives it - Swift then answers the property from the lowered release and refuses the setter
@@ -1352,7 +1788,7 @@ function lift(opt)
     for api in pairs(kept) do
         local member = member_api(api)
         if member and member.selector and member.selector:find(":$") then
-            for _, node in ipairs(dump(filter_of(listed[api]))) do
+            for _, node in ipairs(candidates(listed[api], dump(filter_of(listed[api])))) do
                 if node.kind == "ObjCMethodDecl" and node.isImplicit and matches(listed[api], node) then
                     for _, mark in ipairs(marks(node)) do
                         local at = mark.line .. ":" .. mark.col
@@ -1369,6 +1805,7 @@ function lift(opt)
         end
     end
 
+    mark("entries:setters")
     -- A member the registry names on a class that the SDK declares not on the class itself but where a use of the class
     -- reaches it: in a superclass (+[UICollectionViewLayout invalidationContextClass] for the flow layout), or as a
     -- requirement of a protocol the class conforms to (UIView's traitCollection is UITraitEnvironment's, NSString's item
@@ -1405,6 +1842,33 @@ function lift(opt)
             end
         end
         prefetch(asked)
+        -- what the loop below asks of what the selectors found: whether each owner is a protocol, and, for an owner that
+        -- only an implicit accessor names, its property by name
+        local owners = {}
+        for _, api in ipairs(unmatched) do
+            local member = member_api(api:gsub("%(%)$", ""))
+            if member then
+                local by_owner = {}
+                for _, node in ipairs(dump(member.selector or member.property)) do
+                    local by = owner_of(node)
+                    if by and member_matches(member, node) then
+                        by_owner[by] = by_owner[by] or {}
+                        table.insert(by_owner[by], node)
+                    end
+                end
+                for by, nodes in pairs(by_owner) do
+                    table.insert(owners, by)
+                    local accessor_only = true
+                    for _, node in ipairs(nodes) do
+                        accessor_only = accessor_only and node.kind ~= "ObjCPropertyDecl" and node.isImplicit
+                    end
+                    if accessor_only then
+                        table.insert(owners, setter_property(nodes[1].name) or nodes[1].name)
+                    end
+                end
+            end
+        end
+        prefetch(owners)
         while #wave > 0 do
             prefetch(wave)
             local up = {}
@@ -1418,6 +1882,7 @@ function lift(opt)
             wave = up
         end
     end
+    mark("entries:waves")
     for _, api in ipairs(unmatched) do
         local member = member_api(api:gsub("%(%)$", ""))
         if member then
@@ -1476,7 +1941,9 @@ function lift(opt)
             table.insert(pending, found)
         end
     end
+    mark("entries:unmatched")
     local conforming = conforms(questions)
+    mark("entries:conforms")
     local members = {}
     for _, found in ipairs(pending) do
         for index, nodes in pairs(found.asked) do
@@ -1546,6 +2013,7 @@ function lift(opt)
             end
         end
     end
+    mark("entries:pending")
     prefetch(table.orderkeys(members))
     for _, owner in ipairs(table.orderkeys(members)) do
         -- dump(owner) answers one entry per file that names the class, most a forward declaration (@class UIView;); the
@@ -1565,9 +2033,14 @@ function lift(opt)
             end
         end
         local file = interface and (interface.loc or {}).file
-        -- clang places the @interface's end at the "end" after the "@", and a location in a macro has no offset of its own
+        -- clang places the @interface's end at the "end" after the "@", and a location in a macro has no offset
         local ending = file and ((interface.range or {})["end"] or {}).offset
-        local content = ending and io.readfile(file)
+        -- The header, read once per file and not once per @interface: this loop runs over every
+        -- interface the dump found, and a class with several declarations - a category, a class
+        -- extension, a redeclaration in a second header - came back through it each time, reading
+        -- the same file again to look at three bytes. Three lines below, code_of() memoises the
+        -- same file for the same reason; this is the same thing one function up.
+        local content = ending and contents(file)
         if content and interface.loc.offset and content:sub(ending, ending + 3) == "@end" then
             redeclared[file] = redeclared[file] or {}
             table.insert(redeclared[file], {owner = owner, name = interface.loc.offset, at = ending - 1,
@@ -1595,6 +2068,7 @@ function lift(opt)
     -- dump's _typedefs), every typedef a method or property names for its result, a parameter or itself, and then every
     -- typedef those name in turn - qos_class_self returns qos_class_t, dispatch_queue_attr_make_with_qos_class takes
     -- dispatch_qos_class_t, which is qos_class_t, whose enumerators are the values both mean.
+    mark("entries:members")
     local named = {}
     local function alias(type)
         type = type or {}
@@ -1603,7 +2077,7 @@ function lift(opt)
     for _, entry in ipairs(entries) do
         -- a member redeclared on its class names what the declaration it repeats names
         local nodes = table.join(resolved[entry.api] or {})
-        for _, node in ipairs(dump(filter_of(entry))) do
+        for _, node in ipairs(candidates(entry, dump(filter_of(entry)))) do
             if matches(entry, node) then
                 table.insert(nodes, node)
             end
@@ -1635,6 +2109,7 @@ function lift(opt)
             end
         end
     end
+    mark("entries:named")
     local followed = {}
     local pending = table.keys(named)
     while #pending > 0 do
@@ -1660,6 +2135,7 @@ function lift(opt)
     end
     local lowered_types, kept_types = {}, {}
     local headers = header_files(opt.sdk, frameworks)
+    mark("rewrite:entries")
     local codes = {}
     local function code(file)
         codes[file] = codes[file] or code_of(io.readfile(file))
@@ -1679,6 +2155,7 @@ function lift(opt)
             owners[entry.owner] = true
         end
     end
+    mark("rewrite:codes")
     local tokens, reached, own = preprocessed(opt, languages, table.keys(told), owners)
     -- Every language that reads a class whose members go into its @interface reads that @interface: a header whose own
     -- #if gave a language another @interface of the class would leave the language without them.
@@ -1702,13 +2179,51 @@ function lift(opt)
             end
         end
     end
+    -- Where each word of the headers' code stands: mentioned[word] = {{file, lines = {line, ...}}, ...}, in the order of
+    -- headers and of lines. users() runs once for every type the entries name, and it looked for the type in the whole of
+    -- every header read - thousands of files, for each of thousands of types, and again for the pass that names what it
+    -- will ask: 270 s of a full lift was that scan. A word here is what the pattern %f[%w_]name%f[^%w_] finds, a run of
+    -- letters, digits and underscores, so the lines this lists for a name are the lines that pattern finds it on.
+    local mentioned, split
+    local function mentions(name)
+        if not mentioned then
+            mentioned, split = {}, {}
+            for _, file in ipairs(headers) do
+                local lines = code(file):split("\n", {strict = true})
+                split[file] = lines
+                for index, line in ipairs(lines) do
+                    local here = {}
+                    for word in line:gmatch("[%w_]+") do
+                        if not here[word] then
+                            here[word] = true
+                            local places = mentioned[word]
+                            if not places then
+                                places = {}
+                                mentioned[word] = places
+                            end
+                            local last = places[#places]
+                            if not last or last.file ~= file then
+                                last = {file = file, lines = {}}
+                                table.insert(places, last)
+                            end
+                            table.insert(last.lines, index)
+                        end
+                    end
+                end
+            end
+        end
+        return mentioned[name] or {}
+    end
+    local starts_of = {}
     local function users(name, declared, seen)
         seen[name] = true
         local blocking, target = {}, opt.minimum
-        for _, file in ipairs(headers) do
+        for _, place in ipairs(mentions(name)) do
+            local file = place.file
             local text = code(file)
-            if text:find("%f[%w_]" .. name .. "%f[^%w_]") then
-                local starts, lines = line_starts(text), text:split("\n", {strict = true})
+            do
+                starts_of[file] = starts_of[file] or line_starts(text)
+                local starts, lines = starts_of[file], split[file]
                 -- a mention no language keeps as a token, in a file the umbrella reaches, is none; its declaration's
                 -- lines count together, as a macro called over several lines expands on its first
                 local function dropped(index)
@@ -1727,8 +2242,9 @@ function lift(opt)
                     end
                     return true
                 end
-                for index, line in ipairs(lines) do
-                    if line:find("%f[%w_]" .. name .. "%f[^%w_]") and not line:trim():startswith("#") and not dropped(index) then
+                for _, index in ipairs(place.lines) do
+                    local line = lines[index]
+                    if not line:trim():startswith("#") and not dropped(index) then
                         local low, high = starts[index], starts[index + 1]
                         -- its own declaration, as the dump has it, or one in a branch the preprocessor did not take
                         -- (dispatch/object.h's typedef unsigned int dispatch_qos_class_t where sys/qos.h is missing)
@@ -1818,7 +2334,30 @@ function lift(opt)
     end
     local names = table.keys(named)
     table.sort(names)
+    mark("rewrite:before types")
     prefetch(names)
+    -- what users() is about to ask one at a time - the owners of the lines a type is used on, the words of their
+    -- declarations - named by a pass that asks nothing, then asked together: each alone was a parse of the whole umbrella
+    collect(true)
+    for _, name in ipairs(names) do
+        local declared = {}
+        for _, node in ipairs(dump(name)) do
+            if (node.kind == "TypedefDecl" or node.kind == "EnumDecl" or node.kind == "RecordDecl") and (node.name or node._qualified) == name then
+                table.insert(declared, node)
+            end
+        end
+        local above = false
+        for _, node in ipairs(declared) do
+            for _, mark in ipairs(type_marks(node)) do
+                above = above or later(mark.introduced, opt.minimum)
+            end
+        end
+        if above then
+            users(name, declared, {})
+        end
+    end
+    prefetch(collect(false))
+    mark("rewrite:types prefetch")
     for _, name in ipairs(names) do
         local declared = {}
         for _, node in ipairs(dump(name)) do
@@ -1855,6 +2394,7 @@ function lift(opt)
     for file, categories in pairs(redeclared) do
         edits[file] = edits[file] or {}
     end
+    mark("rewrite:preprocessed")
     local sorted_files = table.keys(edits)
     table.sort(sorted_files)
     local copies, unrewritten = {}, {}
@@ -1924,6 +2464,7 @@ function lift(opt)
             end
         end
     end
+    mark("rewrite:unrewritten")
     for _, item in ipairs(copies) do
         local file, lines, sites = item.file, item.lines, item.sites
         for _, site in ipairs(sites) do
@@ -1974,15 +2515,18 @@ function lift(opt)
         roots[folder] = roots[folder] or {}
         table.insert(roots[folder], {type = "file", name = path.filename(file), ["external-contents"] = copy})
     end
+    mark("rewrite:write")
     -- marked, so that no edit at all still writes `"roots": []`, which clang reads, not `{}`, which it refuses
     local overlay = {version = 0, ["case-sensitive"] = "false", roots = json.mark_as_array({})}
     local folders = table.keys(roots)
     table.sort(folders)
+    mark("rewrite:overlay")
     for _, folder in ipairs(folders) do
         table.insert(overlay.roots, {type = "directory", name = folder, contents = roots[folder]})
     end
     local vfs = path.join(opt.outputdir, "vfs.yaml")
     json.savefile(vfs, overlay)
+    mark("rewrite:prefetch")
 
     -- Both ways: what is implemented answers the lowered release, and nothing else moved. A use no one text can stand
     -- for in every language fails by its own name, whatever else it would have shown.
@@ -2011,7 +2555,7 @@ function lift(opt)
         local entry = listed[api]
         local member = member_api(api:gsub("%(%)$", ""))
         touched[api] = member and members[member.owner] ~= nil
-        for _, node in ipairs(dump(filter_of(entry))) do
+        for _, node in ipairs(candidates(entry, dump(filter_of(entry)))) do
             if matches(entry, node) then
                 for _, mark in ipairs(marks(node)) do
                     before[api] = (not before[api] or later(before[api], mark.introduced)) and mark.introduced or before[api]
@@ -2026,6 +2570,7 @@ function lift(opt)
         end
     end
     prefetch(lifted_filters, vfs)
+    mark("rewrite:types")
     for name, target in pairs(lowered_types) do
         for _, node in ipairs(latest(dump(name, vfs))) do
             if (node.kind == "TypedefDecl" or node.kind == "EnumDecl" or node.kind == "RecordDecl") and (node.name or node._qualified) == name then
@@ -2052,6 +2597,7 @@ function lift(opt)
             end
         end
     end
+    mark("rewrite:kept")
     for api in pairs(kept) do
         local entry = listed[api]
         local after
@@ -2093,6 +2639,120 @@ function lift(opt)
     -- what the lift leaves alone is written beside its result, and compared with the set measured for this SDK
     local left = left_alone(unmatched, undeclared, listed)
     io.writefile(path.join(opt.outputdir, "left-alone.txt"), table.concat(left, "\n") .. "\n")
+    local classes, rest, kinds = split_unmatched(unmatched, listed)
+    -- `alone`: the queries asked one at a time, which no loop asked for ahead of itself; `skipped`: the kept entries not asked over the overlay
+    mark("rewrite:tail")
+    if marked then
+        for _, row in ipairs(marked) do
+            printf("lift: %-18s %8.1fs\n", row[1], row[2])
+        end
+        printf("lift: dumper asked %d filters over %d frameworks in %d clang runs\n",
+               counted.filters, counted.frameworks, counted.runs)
+    end
+    return {alone = alone, skipped = skipped, vfs = vfs, lifted = lifted, headers = #sorted_files, implemented = #entries, unmatched = rest, kinds = kinds,
+            classes = classes, undeclared = undeclared, types = lowered_types, kept_types = kept_types, phases = marked, dumper = counted}, left
+end
+
+-- What a lift is a function of, as one key: the registry and the SDK's headers and module maps by content or by name, size
+-- and time, the two compilers by path, size and time, the environment they read, the target, the frameworks asked for, and
+-- the code that lifts (this folder's modules and the plugin's source). The same key is the same lift, so its output is kept
+-- and handed back instead of lifted again: a lift is minutes of compiles, and the key is a second of reading.
+local function lift_key(opt)
+    local parts = {"charon-lift-1", opt.triple, tostring(opt.minimum), tostring(opt.grouped),
+                   table.concat(table.unique(table.join(opt.frameworks or {})), " ")}
+    for _, program in ipairs({opt.clang, opt.swiftc}) do
+        table.insert(parts, program .. " " .. tostring(os.filesize(program)) .. " " .. tostring(os.mtime(program)))
+    end
+    for _, name in ipairs(ENVIRONMENT) do
+        table.insert(parts, name .. "=" .. (os.getenv(name) or ""))
+    end
+    local code = table.join(os.files(path.join(os.scriptdir(), "*.lua")), os.files(path.join(os.scriptdir(), "multidump", "*")))
+    table.sort(code)
+    for _, file in ipairs(code) do
+        table.insert(parts, path.filename(file) .. " " .. hash.strhash128(io.readfile(file)))
+    end
+    local registry = os.files(path.join(opt.registry, "registry", "**"))
+    table.sort(registry)
+    for _, file in ipairs(registry) do
+        table.insert(parts, path.relative(file, opt.registry) .. " " .. hash.strhash128(io.readfile(file)))
+    end
+    table.insert(parts, sdk_stamp(opt.sdk))
+    return hash.strhash128(table.concat(parts, "\n"))
+end
+
+local function kept_folder(key)
+    return path.join(os.getenv("CHARON_HOME") or path.join(os.getenv("HOME"), ".charon"), "cache", "lift", "result-" .. key)
+end
+
+-- The kept folders of one kind beyond the most recently used few, removed: a result is kept for every registry a lift
+-- was run on, and each is the whole of the lifted headers (14 MB for SDK 26.2), so without this the folder grows with
+-- every change to the registry. The file stamp in each is touched whenever the folder is used (a folder's own time is not
+-- moved by a touch), so what is removed is what was used least lately.
+local function swept(pattern, stamp, count)
+    local folders = os.dirs(path.join(os.getenv("CHARON_HOME") or path.join(os.getenv("HOME"), ".charon"), "cache", "lift", pattern))
+    local used = {}
+    for _, folder in ipairs(folders) do
+        used[folder] = os.mtime(path.join(folder, stamp)) or 0
+    end
+    table.sort(folders, function (a, b) return used[a] > used[b] end)
+    for index = count + 1, #folders do
+        os.tryrm(folders[index])
+    end
+end
+
+-- The output of a lift kept under key: every file of the output folder with its own path spelled as a mark, and the result.
+local function keep(key, outputdir, result, left)
+    local folder = kept_folder(key)
+    if os.isdir(folder) then
+        return
+    end
+    local temporary = folder .. "." .. hash.strhash32(folder .. os.mclock()) .. ".tmp"
+    for _, file in ipairs(os.files(path.join(outputdir, "**"))) do
+        local target = path.join(temporary, "files", path.relative(file, outputdir))
+        try { function () os.mkdir(path.directory(target)) end }
+        local text = io.readfile(file, {encoding = "binary"})
+        io.writefile(target, unplaced(text, outputdir), {encoding = "binary"})
+    end
+    io.save(path.join(temporary, "result.lua"), unplaced({result = result, left = left}, outputdir))
+    try { function () os.mkdir(path.directory(folder)) end }
+    if not try { function () os.mv(temporary, folder); return true end } then
+        os.tryrm(temporary)
+    end
+    swept("result-*", "result.lua", 8)
+    swept("dumps-*", "used", 4)
+end
+
+-- The kept output under key laid into outputdir, and its result, or nil.
+local function restore(key, outputdir)
+    local folder = kept_folder(key)
+    local saved = os.isfile(path.join(folder, "result.lua")) and io.load(path.join(folder, "result.lua"))
+    if not saved then
+        return nil
+    end
+    local files = path.join(folder, "files")
+    for _, file in ipairs(os.files(path.join(files, "**"))) do
+        local target = path.join(outputdir, path.relative(file, files))
+        os.mkdir(path.directory(target))
+        io.writefile(target, placed(io.readfile(file, {encoding = "binary"}), outputdir), {encoding = "binary"})
+    end
+    os.touch(path.join(folder, "result.lua"))
+    return placed(saved, outputdir)
+end
+
+function lift(opt)
+    stamps = {}
+    local key = opt.keep and lift_key(opt) or nil
+    local result, left
+    local restored = key and (os.tryrm(opt.outputdir) or true) and (os.mkdir(opt.outputdir) or true) and restore(key, opt.outputdir)
+    if restored then
+        result, left = restored.result, restored.left
+        result.kept = true
+    else
+        result, left = computed(opt)
+        if key then
+            keep(key, opt.outputdir, result, left)
+        end
+    end
     assert(opt.expected ~= nil, "lift: opt.expected is the text of the measured set of what is left alone, or false to only measure")
     if opt.expected then
         local differing = differences(left, opt.expected)
@@ -2106,10 +2766,7 @@ function lift(opt)
                   measured and "" or "no set is measured for it, ", #differing, table.concat(differing, "; "))
         end
     end
-    local classes, rest, kinds = split_unmatched(unmatched, listed)
-    -- `alone`: the queries asked one at a time, which no loop asked for ahead of itself; `skipped`: the kept entries not asked over the overlay
-    return {alone = alone, skipped = skipped, vfs = vfs, lifted = lifted, headers = #sorted_files, implemented = #entries, unmatched = rest, kinds = kinds,
-            classes = classes, undeclared = undeclared, types = lowered_types, kept_types = kept_types}
+    return result
 end
 
 -- What the lift leaves alone, one line each, sorted: `class<TAB>name<TAB>` for an implemented class the search found no declaration of,
