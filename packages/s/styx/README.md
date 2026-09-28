@@ -45,8 +45,8 @@ does not have and Apple's declaration does:
 | Covered by the built armv7 module | 1131 |
 | The 93 that are not, and why | `facts/Combine/CombineKit.md` |
 | `swift-api-digester -dump-sdk`, Apple's 26.2 `Combine.swiftinterface` against ours | 963 declarations in both, 72 in Apple's that are not in ours, 272 in ours that Apple does not declare |
-| Host differential, 40 cases, the same source against the host's own Combine and against ours | 8 differing lines, all in the new merge operator; `facts/Combine/CombineKit.md` |
-| The armv7 probe on the emulated iPhone 4S at 6.1.3 | `facts/Combine/CombineKit.md` |
+| Host differential, 40 cases, the same source against the host's own Combine and against ours | `DIFFERENTIAL: identical`; the mutation turns it to 4 differing lines; `facts/Combine/CombineKit.md` |
+| The armv7 probe on the emulated iPhone 4S at 6.1.3 | 50 of 50, `combinekit: every check held`, exit 0 |
 
 ## What is not here, and is absent rather than stubbed
 

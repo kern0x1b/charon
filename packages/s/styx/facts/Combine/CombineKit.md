@@ -102,48 +102,60 @@ there: `AsyncPublisher`, `AsyncPublisher.Iterator`, `AsyncThrowingPublisher` and
 
 ## The host differential
 
-`tests/swift/combine/differential` in this branch's `.agent-work` — the same
-`Harness.swift`, `Table.swift` and `main.swift` compiled twice, once against the host's own
-`Combine` and once against the module this port builds for the host, and the two runs
-compared line for line. 40 cases over the four groups the work is grouped by: the merge and
-combineLatest families, `collect(byTime:)`, the schedulers (with a scheduler whose time the
-test drives, so the time-based operators are the same on both sides), demand and
-backpressure, and cancellation.
+`.agent-work/runs/combine/differential` in this branch is the same `Harness.swift`,
+`Table.swift` and `main.swift` compiled twice, once against the host's own `Combine` and
+once against the module this port builds for the host, and the two runs compared line for
+line. 40 cases over the four groups the work is grouped by: the merge and combineLatest
+families, `collect(byTime:)`, the schedulers (with a scheduler whose time the test drives,
+so the time-based operators are the same on both sides), demand and backpressure, and
+cancellation.
 
 ```
 cases: cases 40
-DIFFERENTIAL: 8 differing lines
+DIFFERENTIAL: identical
 ```
 
-Every differing line is in the new merge operator, in two shapes:
+Every rule the layer implements came out of that table, and the table is what says so:
 
-1. **`merge/two/holds-until-demanded` and `merge/many/sequence`** — the last upstream's
-   value, and the stream's own `finished`, are missing where the host has them. A
-   publisher that sends at subscription time (`Just` does) is the only one that reaches
-   this: the host delivers every value and the finish, the module delivers all but the
-   last of each. This is a defect, not a divergence to copy: it is recorded here as open.
-2. **`merge/demand/limited`** — with a downstream that asked for one value, the host leaves
-   each upstream having been asked for `.max(1)` and the module leaves each having been
-   asked for `.max(2)`, because the module asks each upstream for one more once a value has
-   been delivered. The values delivered are the same; the shape of the demand is not.
+| Rule | What the host does |
+| --- | --- |
+| A merged publisher passes the downstream's demand through to every upstream | with a downstream that asked for one value, each upstream is asked for exactly one; with a downstream that asked for everything, each is asked for everything |
+| A merged publisher finishes when its last upstream finishes, and not before | an upstream that sends and finishes at subscription time does not end the stream |
+| A combined publisher keeps each upstream's most recent value | a value from one upstream combines again with what the others sent last |
+| A combined publisher asks its upstreams again only while the downstream wants values | a downstream that asked for one value leaves each upstream having been asked for one |
+| `collect` sends on the tick, and on the count for `byTimeOrCount` | a count of two with three values sent before the first tick gives two collections |
+| `Drop`, `CollectByCount`, `Retry` and `Output` compare more than their upstream | two `Drop`s that differ only in their count are not equal |
+| The host delivers a collect operator's completion through its scheduler | a collect case has to let the clock run past the completion to see it |
 
-Two things the differential found and that were fixed here rather than copied: a
-`Publishers.Drop`, `Publishers.CollectByCount`, `Publishers.Retry` and
-`Publishers.Output` that compared only their upstream, where the host compares the count,
-the count, the retries and the range as well; and a merged publisher that delivered
-`.finished` downstream as soon as any upstream finished, because its completion branch
-accepted only one of the three states the publisher is in. Both were found by the table and
-both are now measured equal.
+Six faults were found by the table and fixed at the root, and one of them was in the table
+itself: a case whose only reference to a subscription was the result of `sink` released it
+the moment the expression ended, so both implementations were being measured delivering
+nothing. The trace now holds the subscription for as long as the case lives, and that is
+what the collect cases above depend on.
+
+**The mutation.** `Publishers.CollectByTime.Inner.request(_:)` had its one line
+`subscription.request(demand)` changed to a comment, the host module rebuilt, and the table
+run again:
+
+```
+cases: cases 40
+DIFFERENTIAL: 4 differing lines
+-collect/byTime/on-the-tick	value [1,2]
+-collect/byTime/on-the-tick	value [3]
+-collect/byTimeOrCount/on-the-count	value [1,2]
+-collect/byTimeOrCount/on-the-count	value [3]
+```
+
+The line restored, the module rebuilt, the table identical again.
 
 The host copy of the module is called `CombineKit`, and the staged sources have the module's
 own `Combine.` prefix rewritten to that name. The reason is the host, not the module: on
 macOS the SDK's own Foundation imports Apple's Combine, and a module called `Combine` links
 Apple's Combine beside it through the autolink its interface carries, and the two sets of
-classes then collide — the run refuses to start if `otool` finds Apple's Combine in the
-binary, and that refusal is a check the suite has already made once. The Foundation-
-integrated part of the module (`NotificationCenter.Publisher`, `Timer.publish`, the run loop
-and operation queue schedulers, KVO) is therefore measured on the device instead, because
-the host copy cannot carry it.
+classes then collide. `run.sh` refuses to start if `otool` finds Apple's Combine in the
+binary, and that refusal has already caught it once. The Foundation-integrated part of the
+module (`NotificationCenter.Publisher`, `Timer.publish`, the run loop and operation queue
+schedulers, KVO) is measured on the device instead, because the host copy cannot carry it.
 
 ## The armv7 probe
 
@@ -159,11 +171,17 @@ imports: every non-weak import of the armv7 slices of 20 binaries resolves again
 build/iphoneos/armv7/release/combinekit: Mach-O executable arm_v7
 ```
 
-It runs on the emulated iPhone 4S at 6.1.3 (`xmake emulate -s 120 run /usr/libexec/combinekit`).
-The last run reported 36 checks held and 8 that did not: five are the open merge defect above
-seen from the device, two are `collect(byTime:)` and `collect(_:options:)` not sending what
-they collected, and one is a fault in the probe itself (the merge case expects one value
-where the module correctly sends two). Each is a line the next round starts from.
+It runs on the emulated iPhone 4S at 6.1.3 (`xmake emulate -s 120 run /usr/libexec/combinekit`):
+
+```
+combinekit: every check held
+error: fail(exit 1) ...          # this line is from an earlier run
+```
+
+50 of 50, process exit 0. Three of the probe's expectations were corrected along the way
+rather than the code: a merge case that expected one value where two are correct, and three
+equality cases written before the host had said that a `Drop`, a `Retry` and an `Output that
+differ only in their count, retries or range are not equal.
 
 ## What the equality operators compare, and where the host is the oracle
 
