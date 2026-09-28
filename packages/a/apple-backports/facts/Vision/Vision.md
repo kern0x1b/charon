@@ -367,6 +367,21 @@ recorded by `tests/backports/host/vision/run.sh` (33 records) and held against t
   behind it -- the property is nullable, and one run of the probe got a value with none. The check
   now says so instead of dereferencing it.
 
-  The top-down transform also rules the origin out as the cause: the coordinate fit's numbers are
-  byte-identical before and after it.
+  **The fit's synthetic control, and it localises the defect to the y normal equations.** A buffer
+  written with a *known* map -- scale 2 and offset 0 on x, scale 0.5 and offset -4 on y, straight
+  into the bytes, no picture and no Core ML in the loop -- and fitted by the same routine gives
+
+  ```
+  | synthetic, scale 2 offset 0 by 0.5 offset -4 (k=4) | 2.00000 | -0.000 | 3.03066 | -50.703 | 17.7999 |
+  ```
+
+  The **x fit is exact to five places** and the **y fit is not**: 3.03 and -50.7 where the map says
+  0.5 and -4, with an rms of 17.8 source pixels. So the twelve real cases were never fitted by a
+  sound y fit, and the zero vertical slope in every one of them is a property of the fit, not of
+  the picture, the buffer, the orientation or the channel order -- all four of which are now
+  measured and settled.
+
+  The suspect is the y normal equations themselves, where the design matrix's second column is
+  built and summed. Not repaired here, so **no scale, offset or residual is quoted for the twelve
+  real cases** and the r8 export waits on it.
 
