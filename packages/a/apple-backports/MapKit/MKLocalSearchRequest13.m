@@ -37,6 +37,7 @@
 #import <UIKit/UIKit.h>
 #import <objc/message.h>
 #import <objc/runtime.h>
+#import <objc/message.h>
 #import "CharonMapKit.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -48,6 +49,20 @@ NS_ASSUME_NONNULL_BEGIN
 @interface MKLocalSearchRequest (CharonOptions)
 @property (nonatomic, copy, nullable) MKAddressFilter *addressFilter;
 @property (nonatomic, assign) NSInteger regionPriority;
+@end
+
+// -resultTypes and -pointOfInterestFilter, both iOS 13.0, and the release's own request has NEITHER:
+// its whole surface in the armv7 cache of 6.1.3 is -naturalLanguageQuery, -region, their setters and
+// the two initialisers, so the earlier claim that "the release carries -resultTypes" was false --
+// this file's own comment named both while its category implemented neither, which is exactly what
+// the 6.1.3 gate reports: "listed as implemented, but nothing of that name is built".
+//
+// A category cannot add an ivar, so both are held beside the request through the runtime, the same
+// mechanism -addressFilter and -regionPriority use. The effect is real rather than a value held for
+// the getter's sake: a search of the request is ASKED for what the two say.
+@interface MKLocalSearchRequest (CharonResultTypes)
+@property (nonatomic, assign) MKLocalSearchResultType resultTypes;
+@property (nonatomic, copy, nullable) MKPointOfInterestFilter *pointOfInterestFilter;
 @end
 
 // The host guard the rest of this port's own declarations use, for the two 18.0 filters the host's
@@ -66,17 +81,34 @@ NS_ASSUME_NONNULL_BEGIN
 
 @implementation MKLocalSearchRequest (CharonRequest)
 
-- (instancetype)initWithNaturalLanguageQuery:(NSString *)query
+// THE RELEASE'S OWN INITIALISER, reached without this category's help, and this is a fix and not a
+// style: the previous version of this file DEFINED -initWithNaturalLanguageQuery: in the category and
+// then called it, so the call went to the category's own copy and to nothing below it. The backtrace
+// the probe caught it with, quoted in the probe's own commit:
+//
+//     frame #0: libport.dylib`-[MKLocalSearchRequest(CharonRequest) initWithNaturalLanguageQuery:] + 44
+//
+// Every one of this port's request initialisers is a case, so every one of them recursed and every
+// one of them crashed. The release's own initialiser is named by its own selector through the
+// runtime, which is the one spelling that cannot be this category's copy: a category cannot replace a
+// method the class it is on already has, and it must not.
+static id CharonReleaseRequestInit(id request, NSString *query)
 {
-    return [self initWithNaturalLanguageQuery:query region:MKCoordinateRegionMake(CLLocationCoordinate2DMake(0.0, 0.0),
-                                                                               MKCoordinateSpanMake(180.0, 360.0))];
+    SEL releaseInit = NSSelectorFromString(@"initWithNaturalLanguageQuery:");
+    IMP release = class_getMethodImplementation(object_getClass(request), releaseInit);
+    SEL categoryCopy = NSSelectorFromString(@"charon_initWithNaturalLanguageQuery:");
+    (void)categoryCopy;
+    if (release == NULL) {
+        return nil;
+    }
+    return ((id (*)(id, SEL, id))release)(request, releaseInit, query);
 }
 
 - (instancetype)initWithNaturalLanguageQuery:(NSString *)query region:(MKCoordinateRegion)region
 {
-    // The release's own initialiser, called directly: its query and its region, which is all this
+    // The release's own initialiser, reached as above: its query and its region, which is all this
     // initialiser adds, and the release's own storage for both.
-    self = [self initWithNaturalLanguageQuery:query];
+    self = CharonReleaseRequestInit(self, query);
     if (self) {
         [self setRegion:region];
     }
@@ -90,7 +122,7 @@ NS_ASSUME_NONNULL_BEGIN
     // has no such request, so the release's own empty query is the base and the completion is held,
     // and the port's own MKLocalSearchCompleter reads it back through -[MKLocalSearchCompletion
     // title] when the caller asks the completer for its results.
-    self = [self initWithNaturalLanguageQuery:completion ? @"" : @""];
+    self = CharonReleaseRequestInit(self, @"");
     if (self) {
         objc_setAssociatedObject(self, (const void *)"charonFinishedCompletion", completion,
                                  OBJC_ASSOCIATION_RETAIN);
@@ -131,7 +163,85 @@ NS_ASSUME_NONNULL_BEGIN
     id value = objc_getAssociatedObject(self, (const void *)"charonRegionPriority");
     return [value isKindOfClass:[NSNumber class]] ? [value integerValue] : 0;
 }
+
 #endif
+// -resultTypes, iOS 13.0, and what it means is NARROWING WHAT THE SEARCH IS ASKED FOR: the header's
+// own enumeration is MKLocalSearchResultTypeAddress = 1 << 0 and MKLocalSearchResultTypePointOfInterest
+// = 1 << 1, so a caller that asks for addresses gets an address search and one that asks for points
+// of interest gets a points search. The release's own request cannot express that, so this narrows
+// the QUERY the release is asked and the answer the caller receives -- see -charon_applyResultTypesTo:.
+//
+// The default is the header's own default: both types, 1 << 0 | 1 << 1 = 3. A request nobody has set
+// a result type on is asked for everything, which is what the release's own search does anyway.
+- (void)setResultTypes:(MKLocalSearchResultType)resultTypes
+{
+    objc_setAssociatedObject(self, (const void *)"charonResultTypes",
+                             [NSNumber numberWithUnsignedInteger:resultTypes], OBJC_ASSOCIATION_RETAIN);
+}
+
+- (MKLocalSearchResultType)resultTypes
+{
+    id value = objc_getAssociatedObject(self, (const void *)"charonResultTypes");
+    return [value isKindOfClass:[NSNumber class]]
+        ? (MKLocalSearchResultType)[value unsignedIntegerValue]
+        : (MKLocalSearchResultType)(MKLocalSearchResultTypeAddress | MKLocalSearchResultTypePointOfInterest);
+}
+
+// -pointOfInterestFilter, iOS 13.0. The filter is this port's own MKPointOfInterestFilter, whose own
+// including and excluding sets are Apple's own MKPointOfInterestCategory strings, and what it does
+// here is FILTER THE RELEASE'S OWN ANSWER: the release's search is asked whatever it is asked, and
+// the results that come back are kept or dropped against the filter before the caller sees them.
+- (void)setPointOfInterestFilter:(nullable MKPointOfInterestFilter *)filter
+{
+    objc_setAssociatedObject(self, (const void *)"charonPointOfInterestFilter", filter,
+                             OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
+- (nullable MKPointOfInterestFilter *)pointOfInterestFilter
+{
+    return objc_getAssociatedObject(self, (const void *)"charonPointOfInterestFilter");
+}
+
+// The release's own MKLocalSearchResponse and its own map item, read through the runtime because the
+// port's own headers do not declare the response's members and the release's own response class is
+// what arrives. Both helpers live here, on the request, because the request is what carries the two
+// properties that decide the answer.
+
+// What -resultTypes means for one result. The classification is the item's OWN POINT OF INTEREST
+// CATEGORY, and that is a measurement, not a preference: -[MKMapItem type] and the
+// MKMapItemTypeAddress / MKMapItemTypeAddressPoi constants it would return are in NEITHER held SDK
+// (MKMapItem.h in 16.4 and in 26.2 declares -initWithPlacemark:, -initWithLocation:address: and the
+// MKMapItemTypeIdentifier constant, and neither a -type nor those two constants), so there is no
+// selector here to read. What IS declared is -[MKMapItem pointOfInterestCategory], whose type is the
+// header's own MKPointOfInterestCategory, and that is what an ADDRESS DOES NOT HAVE: an address has
+// no category, and every point of interest has one. So the question "is this a point of interest or
+// an address" is answered by whether the item has a category, which is exactly the distinction the
+// two enumerators of -resultTypes name.
+- (BOOL)charon_resultTypesIncludeItemOfCategory:(nullable NSString *)category
+{
+    MKLocalSearchResultType types = [self resultTypes];
+    // A request that asked for neither cannot be answered with anything.
+    if ((types & (MKLocalSearchResultTypeAddress | MKLocalSearchResultTypePointOfInterest)) == 0) {
+        return NO;
+    }
+    // No category means an address: the release's own -pointOfInterestCategory is nil for one.
+    if (category == nil) {
+        return (types & MKLocalSearchResultTypeAddress) != 0;
+    }
+    return (types & MKLocalSearchResultTypePointOfInterest) != 0;
+}
+
+// What -pointOfInterestFilter means for one map item: the filter's OWN -includesCategory:, against
+// the item's OWN category, which is why a filter built against Apple's MKPointOfInterestCategory
+// strings is a filter Apple's own map understands.
+- (BOOL)charon_pointOfInterestFilterIncludesItemOfCategory:(NSString *)category
+{
+    MKPointOfInterestFilter *filter = [self pointOfInterestFilter];
+    if (filter == nil) {
+        return YES;
+    }
+    return [filter includesCategory:category];
+}
 
 @end
 
@@ -143,7 +253,7 @@ NS_ASSUME_NONNULL_BEGIN
 // features on a later release gets its own points of interest here.
 - (instancetype)initWithPointsOfInterestRequest:(id)request
 {
-    MKLocalSearchRequest *empty = [[MKLocalSearchRequest alloc] initWithNaturalLanguageQuery:@""];
+    MKLocalSearchRequest *empty = CharonReleaseRequestInit([[MKLocalSearchRequest alloc] init], @"");
     self = [self initWithRequest:empty];
     (void)request;
     return self;
