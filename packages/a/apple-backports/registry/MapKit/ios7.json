@@ -376,6 +376,105 @@
       "source": "the SDK 16.4 header, and the release's own projection and geometry functions, measured in the armv7 cache of 6.1.3"
     },
     {
+      "api": "-[MKMapViewDelegate mapView:clusterAnnotationForMemberAnnotations:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the PORT'S OWN protocol, declared in CharonMapKit.h behind CHARON_HOST_PROBE, and the PORT'S OWN proxy (MKMapViewDelegateRenderers.m) asks: the release's own map view will not ask, so the proxy does",
+      "effect": "the annotation standing for a group, asked of the program's own delegate by the port's own proxy, and where the program does not implement it the port's own cluster view is used",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory on the armv7 dyld shared cache of 6.1.3: the release's own MKMapViewDelegate has the iOS 6 set and NONE of these nine, and the release's own map view asks for none of them. NOT YET DIFFERENTIALLY CHECKED: a host probe that drives the port's own proxy with a recording delegate, one case per message, is written but has not been run, so each row's effect states what the port does and not what the host was measured to do"
+    },
+    {
+      "api": "-[MKMapViewDelegate mapView:didAddOverlayRenderers:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the PORT'S OWN protocol, declared in CharonMapKit.h behind CHARON_HOST_PROBE, and the PORT'S OWN proxy (MKMapViewDelegateRenderers.m) asks: the release's own map view will not ask, so the proxy does",
+      "effect": "the renderers just added, SENT by the port's own map view code when the port's own renderer tree adds one, with the array the header's own signature names",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory on the armv7 dyld shared cache of 6.1.3: the release's own MKMapViewDelegate has the iOS 6 set and NONE of these nine, and the release's own map view asks for none of them. NOT YET DIFFERENTIALLY CHECKED: a host probe that drives the port's own proxy with a recording delegate, one case per message, is written but has not been run, so each row's effect states what the port does and not what the host was measured to do"
+    },
+    {
+      "api": "-[MKMapViewDelegate mapView:didDeselectAnnotation:]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the PORT'S OWN protocol, declared in CharonMapKit.h behind CHARON_HOST_PROBE, and the PORT'S OWN proxy (MKMapViewDelegateRenderers.m) asks: the release's own map view will not ask, so the proxy does",
+      "effect": "sent by the port's own map view code when the release's own map view deselects one",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory on the armv7 dyld shared cache of 6.1.3: the release's own MKMapViewDelegate has the iOS 6 set and NONE of these nine, and the release's own map view asks for none of them. NOT YET DIFFERENTIALLY CHECKED: a host probe that drives the port's own proxy with a recording delegate, one case per message, is written but has not been run, so each row's effect states what the port does and not what the host was measured to do"
+    },
+    {
+      "api": "-[MKMapViewDelegate mapView:didSelectAnnotation:]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the PORT'S OWN protocol, declared in CharonMapKit.h behind CHARON_HOST_PROBE, and the PORT'S OWN proxy (MKMapViewDelegateRenderers.m) asks: the release's own map view will not ask, so the proxy does",
+      "effect": "sent by the port's own map view code when the release's own map view selects an annotation, with the annotation the release selected",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory on the armv7 dyld shared cache of 6.1.3: the release's own MKMapViewDelegate has the iOS 6 set and NONE of these nine, and the release's own map view asks for none of them. NOT YET DIFFERENTIALLY CHECKED: a host probe that drives the port's own proxy with a recording delegate, one case per message, is written but has not been run, so each row's effect states what the port does and not what the host was measured to do"
+    },
+    {
+      "api": "-[MKMapViewDelegate mapView:rendererForOverlay:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the PORT'S OWN protocol, declared in CharonMapKit.h behind CHARON_HOST_PROBE, and the PORT'S OWN proxy (MKMapViewDelegateRenderers.m) asks: the release's own map view will not ask, so the proxy does",
+      "effect": "the renderer for an overlay, asked of the program's own delegate by the port's own proxy, because the release's map view never asks; where the program does not implement it the port's own default renderer is used, which is the one in CarPlay-terms: MKCircleRenderer, MKPolygonRenderer, MKPolylineRenderer, MKTileOverlayRenderer and the multi ones -- so an overlay is always drawn by something",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory on the armv7 dyld shared cache of 6.1.3: the release's own MKMapViewDelegate has the iOS 6 set and NONE of these nine, and the release's own map view asks for none of them. NOT YET DIFFERENTIALLY CHECKED: a host probe that drives the port's own proxy with a recording delegate, one case per message, is written but has not been run, so each row's effect states what the port does and not what the host was measured to do"
+    },
+    {
+      "api": "-[MKMapViewDelegate mapView:selectionAccessoryForAnnotation:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the PORT'S OWN protocol, declared in CharonMapKit.h behind CHARON_HOST_PROBE, and the PORT'S OWN proxy (MKMapViewDelegateRenderers.m) asks: the release's own map view will not ask, so the proxy does",
+      "effect": "the accessory for a selected annotation, asked of the program's own delegate by the port's own proxy, and where the program does not implement it the release's own callout is left as it is",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory on the armv7 dyld shared cache of 6.1.3: the release's own MKMapViewDelegate has the iOS 6 set and NONE of these nine, and the release's own map view asks for none of them. NOT YET DIFFERENTIALLY CHECKED: a host probe that drives the port's own proxy with a recording delegate, one case per message, is written but has not been run, so each row's effect states what the port does and not what the host was measured to do"
+    },
+    {
+      "api": "-[MKMapViewDelegate mapViewDidChangeVisibleRegion:]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the PORT'S OWN protocol, declared in CharonMapKit.h behind CHARON_HOST_PROBE, and the PORT'S OWN proxy (MKMapViewDelegateRenderers.m) asks: the release's own map view will not ask, so the proxy does",
+      "effect": "sent by the port's own map view code when the region changes, so a program's own map code is told",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory on the armv7 dyld shared cache of 6.1.3: the release's own MKMapViewDelegate has the iOS 6 set and NONE of these nine, and the release's own map view asks for none of them. NOT YET DIFFERENTIALLY CHECKED: a host probe that drives the port's own proxy with a recording delegate, one case per message, is written but has not been run, so each row's effect states what the port does and not what the host was measured to do"
+    },
+    {
+      "api": "-[MKMapViewDelegate mapViewDidFinishRenderingMap:fullyRendered:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the PORT'S OWN protocol, declared in CharonMapKit.h behind CHARON_HOST_PROBE, and the PORT'S OWN proxy (MKMapViewDelegateRenderers.m) asks: the release's own map view will not ask, so the proxy does",
+      "effect": "sent by the port's own map view code when a render finishes, with the flag the header's own signature names, true when every overlay of the region was drawn",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory on the armv7 dyld shared cache of 6.1.3: the release's own MKMapViewDelegate has the iOS 6 set and NONE of these nine, and the release's own map view asks for none of them. NOT YET DIFFERENTIALLY CHECKED: a host probe that drives the port's own proxy with a recording delegate, one case per message, is written but has not been run, so each row's effect states what the port does and not what the host was measured to do"
+    },
+    {
+      "api": "-[MKMapViewDelegate mapViewWillStartRenderingMap:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the PORT'S OWN protocol, declared in CharonMapKit.h behind CHARON_HOST_PROBE, and the PORT'S OWN proxy (MKMapViewDelegateRenderers.m) asks: the release's own map view will not ask, so the proxy does",
+      "effect": "sent by the port's own map view code when a render begins, so a program can see the render start",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory on the armv7 dyld shared cache of 6.1.3: the release's own MKMapViewDelegate has the iOS 6 set and NONE of these nine, and the release's own map view asks for none of them. NOT YET DIFFERENTIALLY CHECKED: a host probe that drives the port's own proxy with a recording delegate, one case per message, is written but has not been run, so each row's effect states what the port does and not what the host was measured to do"
+    },
+    {
       "api": "-[MKOverlayPathRenderer applyFillPropertiesToContext:atZoomScale:]",
       "kind": "method",
       "introduced": "7.0",
