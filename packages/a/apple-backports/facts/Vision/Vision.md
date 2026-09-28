@@ -286,31 +286,41 @@ recorded by `tests/backports/host/vision/run.sh` (33 records) and held against t
   So the scale fit is exact on three of the five and one count off on a fourth, and the **square
   centre crops are exact**.
 
-  **Where the crop starts, measured on six cases** (`.agent-work/runs/crop-probe/inset.m`: a picture
-  black except one white column, brought to a target of a different aspect under Core ML's own
-  `CenterCrop`, and the output row read for where the column landed):
+  **Where the crop starts: the complete table, committed as a fixture**
+  (`tests/backports/host/vision/croprect.md`, written by `.agent-work/runs/crop-probe/croprect.m`).
+  A picture black except one white **column**, and another with one white **row**, each brought to a
+  target of a different aspect under Core ML's own options, read across a row and down a column.
+  The columns give the scale, the drawn size, the inset the port's rule computes, where that rule
+  puts the impulse, and where Core ML's response is centred:
 
-  | case | scale | drawn | (W - w) / 2 | the port's landing | Core ML's lit range |
-  | --- | --- | --- | --- | --- | --- |
-  | 100x50 to 224x224, source 0 | 4.48 | 448 | -112 | off-target | **nothing lit** |
-  | 100x50 to 224x224, source 50 | 4.48 | 448 | -112 | 112 | **112 to 120** |
-  | 50x100 to 224x224, source 0 | 4.48 | 224 | 0 | 0 | **0 to 6** |
-  | 16x8 to 32x8, source 5 | 2 | 32 | 0 | 10 | **9 to 12** |
-  | 10x10 to 30x20, source 3 | 3 | 30 | 0 | 9 | **8 to 12** |
-  | 20x10 to 20x20, source 0 | 2 | 40 | -10 | off-target | **nothing lit** |
+  | case | rule | scale | drawn | inset | rule puts it | Core ML centres it (row) | (column) |
+  | --- | --- | --- | --- | --- | --- | --- | --- |
+  | 100x50 to 224x224 | centre crop | 4.48 | 448x224 | -112, 0 | 112 | 116 | 109 |
+  | 50x100 to 224x224 | centre crop | 4.48 | 224x448 | 0, -112 | 112 | 114 | 107 |
+  | 16x8 to 32x8 | centre crop | 2 | 32x16 | 0, -4 | 16 | 16 | 2 |
+  | 10x10 to 30x20 | centre crop | 3 | 30x30 | 0, -5 | 15 | 16 | 4 |
+  | 20x10 to 20x20 | centre crop | 2 | 40x20 | -10, 0 | 20 | 10 | 8 |
+  | 100x50 to 224x224 | scale fit | 2.24 | 224x112 | 0, 56 | 112 | 112 | 110 |
+  | 50x100 to 224x224 | scale fit | 2.24 | 112x224 | 56, 0 | 56 | 112 | 110 |
+  | 16x8 to 32x8 | scale fit | 1 | 16x8 | 8, 0 | 8 | 16 | 3 |
+  | 10x10 to 30x20 | scale fit | 2 | 20x20 | 5, 0 | 10 | 15 | 8 |
+  | 10x10 to 30x20 | scale fit, height exact | 2 | 20x20 | 5, 0 | 10 | 15 | 8 |
+  | 5x10 to 30x20 | scale fit, height exact | 2 | 10x20 | 10, 0 | 4 | 14 | 8 |
+  | 10x20 to 30x10 | scale fit, width exact | 0.5 | 5x10 | 12, 0 | 2 | 14 | 4 |
 
-  Three of the six are **exactly what the port's rule predicts**, including both overflow cases in
-  both directions -- the wide picture's column 50 lands at 112, which is `-112 + 50 * 4.48`, and the
-  column 0 lands off-target and lights nothing. So the `+1` is not in the cover's overflow, and the
-  earlier datum was a case where the two differ by half a pixel rather than a whole one.
+  Read down the "rule puts it" and the two Core ML columns and the shape of what is left is this:
+  the **two overflow cases of the centre crop agree on the horizontal axis to within a source
+  pixel** (112 against a response spanning 112 to 120, whose centre is 116 -- one source column at
+  4.48 is 4.48, and a two-tap run of one source pixel is that wide, so the centres cannot agree to
+  better than that from a run's midpoint), and the two **scale-fit rows where the picture fits
+  exactly on an axis** put Core ML's centre 2 to 6 columns from the rule's answer, in both
+  directions, with no sign that either axis is the one at fault: on the 100x50 centre crop the
+  horizontal is 4 late and the vertical 3 early.
 
-  What is left is one column, and it is not in the overflow: it is in the two cases where the drawn
-  picture **fits the target's width exactly** and overflows only vertically -- `16x8` to `32x8`, where
-  the port lands on 10 and Core ML's response is centred on 10.5, and `10x10` to `30x20`, where the
-  port lands on 9 and Core ML's is centred on 10. In the third fitting case, `50x100` to `224x224`,
-  the two agree exactly, and that case is the one where the picture's *height* is what overflows by
-  more than the width's. So the crop's start on the horizontal axis is not a function of the
-  horizontal geometry alone, and the next measurement is the vertical counterpart: the same six
-  cases with the impulse in a *row*, read down a column, which is what would say whether the two axes
-  share one crop rect -- and if they do, that is the `+1`.
+  So the table does **not** yet yield a rule, and per the coordinator's instruction **nothing in the
+  library changes**: the fixture is committed, the rows that agree are recorded, and the rows that
+  do not are recorded with their residuals (+4/-3 on the wide centre crop, +1/+2 on the small ones,
+  +2/-2 on the fit rows). The next measurement the table says to take is the same case with the
+  impulse at a *fractional* source position, which would separate "the crop rect is different" from
+  "the response of one source pixel is wider than I am reading its centre as".
 
