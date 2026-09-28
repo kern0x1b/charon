@@ -34,13 +34,32 @@ NS_ASSUME_NONNULL_BEGIN
    against is 16.4, which predates them and has no proxy_config.h at all, so the port declares them
    itself; an SDK new enough to have that header declares them itself and must not be declared twice,
    which is what the test is for. */
+/* The base every object of this library has, chosen the way the SDK chooses it.
+ *
+ * Above iOS 6.0 the SDK's own spelling (nw_object.h:28) is OS_OBJECT_DECL: an NSObject adopting the
+ * protocol of the type, which is what these classes are and what every call of the API takes. Below
+ * 6.0 the SDK's spelling (nw_object.h:32) is a plain C struct pointer with no protocol at all, and
+ * `OS_nw_endpoint` and the rest of them are not declared by any header - so naming one here would be
+ * inventing API Apple's own header deliberately does not have. The classes therefore take NSObject as
+ * their base on that side, and the macro's argument is never expanded, so the undeclared protocol is
+ * never named: which is the SDK's own answer, and the only one that is not an invention.
+ *
+ * The calls keep the types the SDK declares for that target, so a function defined here and a caller
+ * of it agree on `struct nw_connection *` below 6.0 and on `NSObject<OS_nw_connection> *` above it,
+ * and the casts between a port object and an nw_* one are the same explicit cast either way. */
+#if OS_OBJECT_USE_OBJC
+#define CHARON_NW_OBJECT(protocol) NSObject <protocol>
+#else
+#define CHARON_NW_OBJECT(protocol) NSObject
+#endif
+
 #if !__has_include(<Network/proxy_config.h>)
 @protocol OS_nw_proxy_config <NSObject>
 @end
 @protocol OS_nw_relay_hop <NSObject>
 @end
-typedef NSObject <OS_nw_proxy_config> *nw_proxy_config_t;
-typedef NSObject <OS_nw_relay_hop> *nw_relay_hop_t;
+typedef CHARON_NW_OBJECT(OS_nw_proxy_config) *nw_proxy_config_t;
+typedef CHARON_NW_OBJECT(OS_nw_relay_hop) *nw_relay_hop_t;
 #endif
 
 
@@ -72,7 +91,7 @@ typedef NSObject <OS_nw_relay_hop> *nw_relay_hop_t;
 /* An endpoint. The release keeps a host, a port, a URL, a Bonjour service and a socket address in
    one object, and answers only the accessors of the type it holds: a host endpoint has no address,
    an address endpoint no host name. */
-@interface CharonNWEndpoint : NSObject <OS_nw_endpoint> {
+@interface CharonNWEndpoint : CHARON_NW_OBJECT(OS_nw_endpoint) {
 @public
     nw_endpoint_type_t _type;
     NSString *_hostname;
@@ -91,7 +110,7 @@ typedef NSObject <OS_nw_relay_hop> *nw_relay_hop_t;
    and the flags it was created with. The built-in protocols each have one definition for the whole
    process, and `nw_protocol_definition_is_equal` says two are the same when they name the same
    protocol the same way. */
-@interface CharonNWProtocolDefinition : NSObject <OS_nw_protocol_definition> {
+@interface CharonNWProtocolDefinition : CHARON_NW_OBJECT(OS_nw_protocol_definition) {
 @public
     NSString *_family;
     NSString *_identifier;
@@ -103,7 +122,7 @@ typedef NSObject <OS_nw_relay_hop> *nw_relay_hop_t;
 /* What a connection is told about one protocol of its stack. The settings are kept by the name the
    SDK's own setter for each of them uses, so the connection reads back exactly what the program
    set, and a setting nobody set reads as the default its getter documents. */
-@interface CharonNWProtocolOptions : NSObject <OS_nw_protocol_options> {
+@interface CharonNWProtocolOptions : CHARON_NW_OBJECT(OS_nw_protocol_options) {
 @public
     CharonNWProtocolDefinition *_definition;
     NSMutableDictionary *_values;
@@ -115,7 +134,7 @@ typedef NSObject <OS_nw_relay_hop> *nw_relay_hop_t;
    protocol has to say about the message - the service class and the ECN flag of an IP packet, the
    opcode and the close code of a WebSocket frame, the stream a QUIC message belongs to. A framer's
    message is one of these too, which is what nw_framer_message_t is a typedef of. */
-@interface CharonNWProtocolMetadata : NSObject <OS_nw_protocol_metadata> {
+@interface CharonNWProtocolMetadata : CHARON_NW_OBJECT(OS_nw_protocol_metadata) {
 @public
     CharonNWProtocolDefinition *_definition;
     NSMutableDictionary *_values;
@@ -125,7 +144,7 @@ typedef NSObject <OS_nw_relay_hop> *nw_relay_hop_t;
 
 /* An error, as the state handler and the failed-handler of a framer are given it: the domain of
    Network's own errors and the code inside it. */
-@interface CharonNWError : NSObject <OS_nw_error> {
+@interface CharonNWError : CHARON_NW_OBJECT(OS_nw_error) {
 @public
     nw_error_domain_t _domain;
     int _code;
@@ -135,7 +154,7 @@ typedef NSObject <OS_nw_relay_hop> *nw_relay_hop_t;
 /* What a piece of content is: the name a program gave it, how soon it matters, when it stops
    mattering, whether it is the last of a message, and what each protocol of the stack is told
    about it. */
-@interface CharonNWContentContext : NSObject <OS_nw_content_context> {
+@interface CharonNWContentContext : CHARON_NW_OBJECT(OS_nw_content_context) {
 @public
     NSString *_identifier;
     double _relativePriority;
@@ -148,7 +167,7 @@ typedef NSObject <OS_nw_relay_hop> *nw_relay_hop_t;
 
 /* The stack: the internet protocol, the transport protocol, and the application protocols above
    them, outermost first - the order `nw_protocol_stack_iterate_application_protocols` walks. */
-@interface CharonNWProtocolStack : NSObject <OS_nw_protocol_stack> {
+@interface CharonNWProtocolStack : CHARON_NW_OBJECT(OS_nw_protocol_stack) {
 @public
     CharonNWProtocolOptions *_internet;
     CharonNWProtocolOptions *_transport;
@@ -156,7 +175,7 @@ typedef NSObject <OS_nw_relay_hop> *nw_relay_hop_t;
 }
 @end
 
-@interface CharonNWParameters : NSObject <OS_nw_parameters> {
+@interface CharonNWParameters : CHARON_NW_OBJECT(OS_nw_parameters) {
 @public
     CharonNWProtocolStack *_stack;
     CharonNWEndpoint *_localEndpoint;
@@ -183,7 +202,7 @@ typedef NSObject <OS_nw_relay_hop> *nw_relay_hop_t;
 @end
 
 /* A DNS-SD TXT record: the key-value pairs of a Bonjour service, kept in the order they arrived. */
-@interface CharonNWTxtRecord : NSObject <OS_nw_txt_record> {
+@interface CharonNWTxtRecord : CHARON_NW_OBJECT(OS_nw_txt_record) {
 @public
     NSMutableArray *_keys;
     NSMutableArray *_values;
@@ -191,7 +210,7 @@ typedef NSObject <OS_nw_relay_hop> *nw_relay_hop_t;
 }
 @end
 
-@interface CharonNWRelayHop : NSObject <OS_nw_relay_hop> {
+@interface CharonNWRelayHop : CHARON_NW_OBJECT(OS_nw_relay_hop) {
 @public
     CharonNWEndpoint *_http3;
     CharonNWEndpoint *_http2;
@@ -201,7 +220,7 @@ typedef NSObject <OS_nw_relay_hop> *nw_relay_hop_t;
 }
 @end
 
-@interface CharonNWProxyConfig : NSObject <OS_nw_proxy_config> {
+@interface CharonNWProxyConfig : CHARON_NW_OBJECT(OS_nw_proxy_config) {
 @public
     NSString *_kind;
     CharonNWEndpoint *_endpoint;
@@ -218,7 +237,7 @@ typedef NSObject <OS_nw_relay_hop> *nw_relay_hop_t;
 }
 @end
 
-@interface CharonNWPrivacyContext : NSObject <OS_nw_privacy_context> {
+@interface CharonNWPrivacyContext : CHARON_NW_OBJECT(OS_nw_privacy_context) {
 @public
     NSString *_description;
     BOOL _loggingDisabled;
@@ -228,7 +247,7 @@ typedef NSObject <OS_nw_relay_hop> *nw_relay_hop_t;
 }
 @end
 
-@interface CharonNWResolverConfig : NSObject <OS_nw_resolver_config> {
+@interface CharonNWResolverConfig : CHARON_NW_OBJECT(OS_nw_resolver_config) {
 @public
     NSString *_kind;
     CharonNWEndpoint *_endpoint;
@@ -236,7 +255,7 @@ typedef NSObject <OS_nw_relay_hop> *nw_relay_hop_t;
 }
 @end
 
-@interface CharonNWBrowseDescriptor : NSObject <OS_nw_browse_descriptor> {
+@interface CharonNWBrowseDescriptor : CHARON_NW_OBJECT(OS_nw_browse_descriptor) {
 @public
     NSString *_bonjourType;
     NSString *_bonjourDomain;
@@ -245,7 +264,7 @@ typedef NSObject <OS_nw_relay_hop> *nw_relay_hop_t;
 }
 @end
 
-@interface CharonNWAdvertiseDescriptor : NSObject <OS_nw_advertise_descriptor> {
+@interface CharonNWAdvertiseDescriptor : CHARON_NW_OBJECT(OS_nw_advertise_descriptor) {
 @public
     NSString *_bonjourName;
     NSString *_bonjourType;
@@ -257,7 +276,7 @@ typedef NSObject <OS_nw_relay_hop> *nw_relay_hop_t;
 }
 @end
 
-@interface CharonNWBrowseResult : NSObject <OS_nw_browse_result> {
+@interface CharonNWBrowseResult : CHARON_NW_OBJECT(OS_nw_browse_result) {
 @public
     NSString *_name;
     NSString *_type;
@@ -268,7 +287,7 @@ typedef NSObject <OS_nw_relay_hop> *nw_relay_hop_t;
 }
 @end
 
-@interface CharonNWGroupDescriptor : NSObject <OS_nw_group_descriptor> {
+@interface CharonNWGroupDescriptor : CHARON_NW_OBJECT(OS_nw_group_descriptor) {
 @public
     NSString *_kind;
     CharonNWEndpoint *_multicastGroup;
@@ -281,7 +300,7 @@ typedef NSObject <OS_nw_relay_hop> *nw_relay_hop_t;
 
 /* The framer's own state. A framer is a program's protocol: it is handed bytes and hands bytes
    back, and everything it needs between the two calls is here. */
-@interface CharonNWFramer : NSObject <OS_nw_framer> {
+@interface CharonNWFramer : CHARON_NW_OBJECT(OS_nw_framer) {
 @public
     CharonNWProtocolDefinition *_definition;
     CharonNWProtocolOptions *_options;
@@ -310,7 +329,7 @@ typedef NSObject <OS_nw_relay_hop> *nw_relay_hop_t;
 @end
 
 /* The WebSocket handshake's request and response: the headers and the subprotocols of each side. */
-@interface CharonNWWebSocketRequest : NSObject <OS_nw_ws_request> {
+@interface CharonNWWebSocketRequest : CHARON_NW_OBJECT(OS_nw_ws_request) {
 @public
     NSMutableArray *_subprotocols;
     NSMutableArray *_headerNames;
@@ -318,7 +337,7 @@ typedef NSObject <OS_nw_relay_hop> *nw_relay_hop_t;
 }
 @end
 
-@interface CharonNWWebSocketResponse : NSObject <OS_nw_ws_response> {
+@interface CharonNWWebSocketResponse : CHARON_NW_OBJECT(OS_nw_ws_response) {
 @public
     nw_ws_response_status_t _status;
     NSString *_selectedSubprotocol;
@@ -331,7 +350,7 @@ typedef NSObject <OS_nw_relay_hop> *nw_relay_hop_t;
    came before it, the protocols of the stack, and the addresses that were tried. Filled in by the
    connection from its own state machine, and read back by the block of
    nw_connection_access_establishment_report. */
-@interface CharonNWEstablishmentReport : NSObject <OS_nw_establishment_report> {
+@interface CharonNWEstablishmentReport : CHARON_NW_OBJECT(OS_nw_establishment_report) {
 @public
     uint64_t _durationMilliseconds;
     uint64_t _attemptStartedAfterMilliseconds;
@@ -349,7 +368,7 @@ typedef NSObject <OS_nw_relay_hop> *nw_relay_hop_t;
 
 /* One resolution: the address a connection settled on, and the ones it did not, with how long each
    took and where the answer came from. */
-@interface CharonNWResolutionReport : NSObject <OS_nw_resolution_report> {
+@interface CharonNWResolutionReport : CHARON_NW_OBJECT(OS_nw_resolution_report) {
 @public
     uint64_t _milliseconds;
     uint32_t _endpointCount;
@@ -364,7 +383,7 @@ typedef NSObject <OS_nw_relay_hop> *nw_relay_hop_t;
 /* What a connection moved while it was up. Pending until the block of
    nw_data_transfer_report_collect has been given it, and the byte counts, the RTTs and the state
    are 0 until then, as the header says they are for a report that is not collected. */
-@interface CharonNWDataTransferReport : NSObject <OS_nw_data_transfer_report> {
+@interface CharonNWDataTransferReport : CHARON_NW_OBJECT(OS_nw_data_transfer_report) {
 @public
     nw_data_transfer_report_state_t _state;
     uint64_t _durationMilliseconds;
