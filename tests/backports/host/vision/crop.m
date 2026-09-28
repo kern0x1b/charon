@@ -121,6 +121,25 @@ static long differing(CVPixelBufferRef want, CVPixelBufferRef got, size_t *of)
     return different;
 }
 
+/* Three pixels of a buffer, as raw bytes: the origin, the middle and the far corner, beside the
+ * buffer's own pixel format and row length. Three pixels are enough to tell a vertical flip from a
+ * channel order from a row's padding, which is what a "nearly every pixel differs" is. */
+static void dump(CVPixelBufferRef buffer, const char *who)
+{
+    size_t wide = CVPixelBufferGetWidth(buffer), high = CVPixelBufferGetHeight(buffer);
+    size_t stride = CVPixelBufferGetBytesPerRow(buffer);
+    size_t points[3][2] = {{0, 0}, {wide / 2, high / 2}, {wide - 1, high - 1}};
+    int index;
+    printf("%s: format=%u bytesPerRow=%lu size=%zux%zu", who, (unsigned)CVPixelBufferGetPixelFormatType(buffer),
+           (unsigned long)stride, wide, high);
+    for (index = 0; index < 3; index++) {
+        const uint8_t *row = (const uint8_t *)CVPixelBufferGetBaseAddress(buffer) + points[index][1] * stride;
+        printf(" | (%zu,%zu) %02x %02x %02x %02x", points[index][0], points[index][1], row[points[index][0] * 4],
+               row[points[index][0] * 4 + 1], row[points[index][0] * 4 + 2], row[points[index][0] * 4 + 3]);
+    }
+    printf("\n");
+}
+
 int main(int argc, const char *argv[])
 {
     /* the two options this port carries, and the sizes: the review's two, an exact 1:1, and an
@@ -147,9 +166,26 @@ int main(int argc, const char *argv[])
 #endif
                 size_t of = 0;
                 long difference = differing(want, got, &of);
+                if (option == 0) {
+                    /* The centre crop is Vision's own rule -- scale until the picture covers the
+                     * target and keep the middle -- and Core ML's CropAndScale is not that rule: it
+                     * scales until the picture fits and centres it, so its answer has black where a
+                     * crop would have kept the middle. The difference reported here is between two
+                     * rules, and the oracle for the fit rule is the line below. */
+                    printf("  (centrecrop is Vision's cover-and-crop; Core ML's CropAndScale is the fit "
+                           "rule, so this row is a difference of rules)\n");
+                }
                 printf("%zux%zu to %zux%zu option %s: differing=%ld of %zu\n", sizes[index].from_wide,
                        sizes[index].from_high, sizes[index].to_wide, sizes[index].to_high,
                        option == 0 ? "centrecrop" : "scalefit", difference, of);
+                if (index == 0 || index == 1) {
+                    CVPixelBufferLockBaseAddress(want, kCVPixelBufferLock_ReadOnly);
+                    CVPixelBufferLockBaseAddress(got, kCVPixelBufferLock_ReadOnly);
+                    dump(want, "coreML");
+                    dump(got, "port  ");
+                    CVPixelBufferUnlockBaseAddress(want, kCVPixelBufferLock_ReadOnly);
+                    CVPixelBufferUnlockBaseAddress(got, kCVPixelBufferLock_ReadOnly);
+                }
                 if (difference > worst) {
                     worst = difference;
                 }

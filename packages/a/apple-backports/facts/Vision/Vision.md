@@ -35,32 +35,45 @@ recorded by `tests/backports/host/vision/run.sh` (33 records) and held against t
   | --- | --- | --- |
   | 100x50 to 224x224, centre crop | 50175 | 50176 |
   | 100x50 to 224x224, scale fit | 49632 | 50176 |
-  | 13x7 to 8x8, either | 64 | 128 |
+  | 13x7 to 8x8, scale fit | 64 | 128 |
   | 16x16 to 16x16, either (the exact 1:1) | **0** | 256 |
-  | 8x8 to 16x16, either (an integer 2x) | 252 | 256 |
+  | 8x8 to 16x16, scale fit | 252 | 256 |
 
   The check is `tests/backports/host/vision/run-crop.sh` with `crop.m`: one program built twice,
   once against Core ML's own `+[MLFeatureValue featureValueWithCGImage:pixelsWide:pixelsHigh:pixelFormatType:options:error:]`
   -- which answers itself with 0 of every case, so the program is sound -- and once against the
-  port's own resampler, compiled with the library under names of its own. Each case prints
-  `differing=N of M` and the run fails if any N is not zero.
+  port's own resampler under names of its own. Each case prints `differing=N of M` and the run fails
+  if any N is not zero. It is red.
 
-  **The port does not match, and the reason is not yet known.** The one case it matches exactly is
-  the one where no resampling happens at all: a 16x16 picture asked for as 16x16 is handed on
-  untouched, and 0 of 256 pixels differ. Every case that *scales* is wrong, and wrong by nearly
-  every pixel rather than by the handful a blend-versus-paste difference would cost -- so this is
-  not the interpolation quality, and `kCGInterpolationHigh` is not the answer either: the harness
-  compiles the port's own function with each of CoreGraphics' three qualities and every one of them
-  reads the same 50175 of 50176. Something about the drawing differs wholesale -- the channel order
-  of the buffer it reads, or the geometry it draws into -- and the next thing to do is read the two
-  buffers' first rows side by side and name the difference. The seam for the quality
-  (`CHARON_VISION_INTERPOLATION`, defaulting to `kCGInterpolationHigh`) is what let all three be
-  measured in one run, and it stays because it is how the right one will be recognised when the
-  cause is found.
+  **What the three-pixel dump says** (100x50 to 224x224, same format `BGR `, same `bytesPerRow` 896,
+  same size on both sides):
 
-  The review's own figures -- 1996 of 50176 for 100x50 to 224x224 and 22 of 64 for 13x7 to 8x8 --
-  were measured against a paste through a different path, and this check does not reproduce them;
-  the numbers above are the ones this tree produces, and they are worse.
+  ```
+  coreML: (0,0) 00 00 00 00 | (112,112) 92 7c 7f ff | (223,223) 00 00 00 00
+  port  : (0,0) 89 fa 3f ff | (112,112) 92 7c 7f ff | (223,223) 9b 00 be ff    (centre crop)
+  port  : (0,0) 00 00 00 ff | (112,112) 92 7b 80 ff | (223,223) 00 00 00 ff    (scale fit)
+  ```
+
+  Two things, and one of them is not a defect:
+
+  - **Core ML's `CropAndScale` is the *fit* rule, not a crop.** Its corners are black where the
+    centre crop's are picture, because it scales the picture until it fits inside the target and
+    centres it -- which is Vision's `ScaleFit`. Vision's `CenterCrop` (scale until the picture
+    covers the target, keep the middle) has no counterpart in this constructor, so that row is a
+    difference of *rules* and the oracle for the fit rule is the row below it.
+  - **For the fit rule the geometry agrees**: the middle pixel matches Core ML exactly
+    (`92 7c 7f ff` on both, and one count off on the scale-fit line, which is the resampling kernel's
+    rounding). What is left is the **fourth byte**: Core ML writes `00` in the bars and `ff` under
+    the picture, and the port writes `ff` in both -- `kCGImageAlphaNoneSkipFirst` skips the first
+    byte of each pixel, so a fill never writes it and the buffer's own content shows through. The
+    port's bars and the port's picture are therefore one byte different from the framework's across
+    the whole buffer, which is the bulk of the 49632.
+
+  So the order the coordinator set is the right one and it is not finished: the *rules* are now named
+  and paired, the geometry is measured as agreeing, the *channels* (that fourth byte) are measured
+  as disagreeing, and the interpolation quality is still not the question -- all three qualities read
+  the same 49632. The next change is the alpha byte: the fill has to write the picture's alpha and
+  the bars' none, rather than leave the buffer's.
 
   The two rules themselves: centre crop scales until the picture covers the
   target and keeps the middle, scale fit scales until it fits and leaves the rest black. A buffer
