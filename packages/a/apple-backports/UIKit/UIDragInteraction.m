@@ -2,6 +2,7 @@
 #import <objc/runtime.h>
 
 #import "CharonDragDrop.h"
+#import "CharonDragDrop.h"
 #import "CharonDragSession.h"
 
 #pragma clang diagnostic ignored "-Wobjc-designated-initializers"
@@ -36,6 +37,17 @@
 @private
     __weak id<UIDragInteractionDelegate> _delegate;
     BOOL _enabled;
+}
+
+// The class's own default is read here, where the class is available, and handed to the shared
+// helper that every band carries -- the helper may not name a symbol that only exists from iOS 11.
+// The value is the class's own answer and not a guess, and the helper and this class cannot drift
+// apart because it is this class that supplies it.
++ (void)initialize
+{
+    if (self != [UIDragInteraction class])
+        return;
+    charon_set_drag_interaction_enabled_default([UIDragInteraction isEnabledByDefault]);
 }
 
 // Written out rather than synthesized: the package build treats an unsynthesized property here as an

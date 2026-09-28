@@ -669,7 +669,7 @@
    "kind": "property",
    "introduced": "11.0",
    "status": "implemented",
-   "effect": "reads what was set, and the class default of the drag interaction, NO, before that; setting it starts nothing",
+   "effect": "reads what the application set, and the drag interaction's own class default before that, which is YES, so a view with nothing set reports the class's answer rather than a literal; setting it starts nothing",
    "source": "UIKitCore of the arm64 shared cache of iOS 12.0, read through its own method lists and their code: the accessors of the scroll view: the enabled flag is read before the class default of UIDragInteraction is asked, the delegates are stored, and the active state is that of a controller that no drag has started",
    "facts": "facts/UIKit/DragAndDrop.md",
    "minimum": "6.0"
@@ -1323,7 +1323,7 @@
    "introduced": "11.0",
    "minimum": "6.0",
    "status": "implemented",
-   "effect": "reads what was set, and the class default of the drag interaction, NO, before that; setting it starts nothing",
+   "effect": "reads what the application set, and the drag interaction's own class default before that, which is YES, so a view with nothing set reports the class's answer rather than a literal; setting it starts nothing",
    "source": "UIKitCore of the arm64 shared cache of iOS 12.0, read through its own method lists and their code: the accessors of the scroll view: the enabled flag is read before the class default of UIDragInteraction is asked, the delegates are stored, and the active state is that of a controller that no drag has started",
    "facts": "facts/UIKit/DragAndDrop.md"
   },
