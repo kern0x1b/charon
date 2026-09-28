@@ -32,7 +32,12 @@ package("appintents")
                 return path.join(dep:installdir("share"))
             end
         end
-        return path.join(os.scriptdir(), "..", "apple-backports", "registry")
+        -- `package:scriptdir()`, not `os.scriptdir()`: the latter is the directory of the *last*
+        -- script xmake loaded, which during a fleet resolve is some other package's -- it read
+        -- `packages/l/libcxx/../apple-backports/registry` and reported the registry as carrying no
+        -- CoreSpotlight entry, which `packages/a/apple-backports/registry/CoreSpotlight/ios9.json`
+        -- says otherwise (.agent-work/runs/packages/configure.log).
+        return path.join(package:scriptdir(), "..", "apple-backports", "registry")
     end
 
     on_install("iphoneos", function (package)
