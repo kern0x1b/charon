@@ -102,6 +102,44 @@ let pRow = frame.rowSequence[0]
 // the new ones were not. The two `AnyColumn`s also disagree on access, which is exactly where a
 // comparison would notice, so the accessors are pinned first and compared second.
 
+// The two AnyColumns side by side, one case per accessor, against Apple's TabularData.
+//
+// The port's `AnyColumn` is a box over a typed column and Apple's is Apple's own; the five accessors
+// below are the ones a caller reaches for, and each is compared rather than asserted, because a port
+// that is only ever checked against itself cannot notice being wrong in the way the host is also
+// wrong. `assumingType` is deliberately *not* in this list: Apple's returns a non-optional `Column<T>`
+// and traps on a wrong `T`, and the port's returns nil, which is a departure already argued and not
+// a disagreement to be averaged away.
+// Apple's `AnyColumn` has no accessible initialiser - it is reached through a frame, which is the
+// only way a caller gets one, and that is the path the comparison should take.
+var hHostFrame = TabularData.DataFrame()
+hHostFrame.append(column: TabularData.Column<String>(name: "city", contents: ["berlin", "paris", "madrid"]))
+hHostFrame.append(column: TabularData.Column<Int?>(name: "n", contents: [1, nil, 3]))
+let hStrings = hHostFrame["city"]
+let hOptionals = hHostFrame["n"]
+let pStrings = PortTabularData.AnyColumn(PortTabularData.Column<String>(name: "city", ["berlin", "paris", "madrid"]))
+let pOptionals = PortTabularData.AnyColumn(PortTabularData.Column<Int?>(name: "n", [1, nil, 3]))
+
+checkEqual("count: the host's and the port's agree", hStrings.count, pStrings.count)
+checkEqual("name: the host's and the port's agree", hStrings.name, pStrings.name)
+checkEqual("wrappedElementType: the host's and the port's agree",
+           String(describing: hStrings.wrappedElementType), String(describing: pStrings.wrappedElementType))
+checkEqual("subscript: position 0 reads the same through both",
+           String(describing: hStrings[0]), String(describing: pStrings[position: 0]))
+checkEqual("subscript: the last position reads the same through both",
+           String(describing: hStrings[2]), String(describing: pStrings[position: 2]))
+checkEqual("missingCount: the host's and the port's agree on no nils", hStrings.missingCount, pStrings.missingCount)
+checkEqual("missingCount: the host's and the port's agree on one nil",
+           hOptionals.missingCount, pOptionals.missingCount)
+checkEqual("missingCount: the host says one, so the port must too", hOptionals.missingCount, 1)
+checkEqual("isNil(at:): the host's and the port's agree on a present cell",
+           hOptionals.isNil(at: 0), pOptionals.isNil(at: 0))
+checkEqual("isNil(at:): the host's and the port's agree on a missing cell",
+           hOptionals.isNil(at: 1), pOptionals.isNil(at: 1))
+checkEqual("isNil(at:) past the end: the host says missing", hOptionals.isNil(at: 99), pOptionals.isNil(at: 99))
+checkEqual("wrappedElementType of a column of optionals: the host's and the port's agree",
+           String(describing: hOptionals.wrappedElementType), String(describing: pOptionals.wrappedElementType))
+
 // The box: the type it was made with, the type it hands back, and the refusal for a type it does
 // not hold. The last of the three is the one a value comparison cannot catch, and the one the
 // wrong-T mutant is written against.
