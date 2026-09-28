@@ -3,7 +3,7 @@
 #import "../CharonValueStore.h"
 
 // SensorKit of iOS 15.0, the properties that arrived then.
-@implementation SRApplicationUsage
+@implementation SRApplicationUsage (CharonSensorKit150)
 @dynamic reportApplicationIdentifier, textInputSessions;
 CHARON_VALUE_PROPERTY(NSString *, reportApplicationIdentifier)
 CHARON_VALUE_PROPERTY(NSArray *, textInputSessions)

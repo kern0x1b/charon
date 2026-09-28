@@ -3,7 +3,7 @@
 #import "../CharonValueStore.h"
 
 // SensorKit of iOS 16.4, the properties that arrived then.
-@implementation SRApplicationUsage
+@implementation SRApplicationUsage (CharonSensorKit164)
 @dynamic supplementalCategories, relativeStartTime;
 CHARON_VALUE_PROPERTY(NSArray *, supplementalCategories)
 CHARON_SCALAR_PROPERTY(NSTimeInterval, relativeStartTime)
