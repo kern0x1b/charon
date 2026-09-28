@@ -4,7 +4,8 @@
 // **every field number below is read out of those files** rather than recalled:
 //
 //     Model                   specificationVersion = 1, description = 2, neuralNetworkRegressor = 303
-//     ModelDescription        input = 1, output = 10, metadata = 100
+//     ModelDescription        functions = 20, input = 1, output = 10, metadata = 100
+//     FunctionDescription     name = 1, input = 2, output = 3, predictedFeatureName = 4
 //     FeatureDescription      name = 1, shortDescription = 2, type = 3
 //     FeatureTypes            oneof { int64Type = 1, doubleType = 2, stringType = 3, multiArrayType = 5 }
 //     ArrayFeatureType        shape = 1, dataType = 2   (FLOAT32 = 0x10000|32 = 65568)
@@ -104,11 +105,34 @@ public enum ModelWriter {
         metadata.string(2, version)                // versionString = 2
         metadata.string(3, author)                  // author = 3
 
+        // **The description is a FUNCTION, not the model-level input/output.** Core ML's own
+        // validator rejected the model-level form with
+        //
+        //     validator error: Specification is missing regressor predictedFeatureName
+        //
+        // because `predictedFeatureName` — which `Model.proto:167` marks *"[Required for regressor
+        // and classifier functions]"* — exists **only on `FunctionDescription`** (field 4), and
+        // `ModelDescription`'s own `input`/`output` are documented as "use these fields below only
+        // when `functions` above is empty". The first version wrote the model-level form; coremltools
+        // read it happily, because a protobuf parser does not validate, and the **real compiler** is
+        // what caught it. That is the whole argument for loading a written model rather than parsing it.
+        var function = ProtoWriter()
+        function.string(1, "main")                                                  // name = 1
+        function.message(2, numericFeature(name: featureName, shape: [1, weights.count]))  // input = 2
+        function.message(3, numericFeature(name: outputName, shape: [1, 1]))            // output = 3
+        function.string(4, outputName)                                                 // predictedFeatureName = 4
+
+        // The function is there because the **validator** wants `predictedFeatureName`; the
+        // model-level `input`/`output` are there too because the **prediction path** reads them —
+        // with only the function, compiling succeeds and predicting throws out of Core ML's own
+        // `unordered_map::at` with a key that is not there. So a model that compiles and predicts
+        // carries both, and the schema's "use these fields below only when `functions` above is
+        // empty" is not what the 16.4 implementation does.
         var modelDescription = ProtoWriter()
-        modelDescription.message(1, numericFeature(name: featureName,
-                                                   shape: [1, weights.count]))  // input = 1
-        modelDescription.message(10, numericFeature(name: outputName, shape: [1, 1])) // output = 10
-        modelDescription.message(100, metadata)                                      // metadata = 100
+        modelDescription.message(20, function)                                         // functions = 20
+        modelDescription.message(1, numericFeature(name: featureName, shape: [1, weights.count]))  // input = 1
+        modelDescription.message(10, numericFeature(name: outputName, shape: [1, 1]))            // output = 10
+        modelDescription.message(100, metadata)                                        // metadata = 100
 
         var model = ProtoWriter()
         model.varint(1, specificationVersion)                       // specificationVersion = 1
