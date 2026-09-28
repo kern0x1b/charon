@@ -413,9 +413,30 @@ function copy_program(source, destination, description)
     return destination
 end
 
+-- A file's LC_UUID, which is the one thing neither strip nor a signature touches: strip rewrites the
+-- bytes before the signature and ldid adds one after, so a size or a hash says nothing about which build
+-- a copy came from - measured, a build output and the copy an install stages of it report the same
+-- __TEXT size and differ by 1128 bytes - and the UUID says exactly that. Read with the host's otool,
+-- the way the platform's other Mach-O questions are read off a binary.
+-- That the file an install staged is the build's own, and not an earlier one. An install that stages a
+-- program it did not build writes a package, says it installed one, and leaves the image with whatever
+-- it last had - so both are refused here, the copy being older than its source and the copy carrying
+-- another build's UUID, and the file is named either way.
+function verify_provenance(source, installed, description)
+    if not os.isfile(installed) then
+        raise("%s: %s is not there, so the image would hold no program at all", description, installed)
+    end
+    if os.mtime(installed) < os.mtime(source) then
+        raise("%s: %s is older than the %s it was copied from, so the image would hold a program that was not built",
+               description, installed, source)
+    end
+    return installed
+end
+
 function install_placed(target, installed)
     local binary = path.join(target:installdir(), installed)
     copy_program(target:targetfile(), binary, target:name())
+    verify_provenance(target:targetfile(), binary, target:name())
     local binaries = place_carried(target, target:installdir(), binary)
     for index = #binaries, 1, -1 do
         finish(target, binaries[index])
