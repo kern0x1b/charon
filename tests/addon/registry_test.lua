@@ -93,6 +93,41 @@ function failures(opt)
         table.insert(found, root .. " holds no registry to read")
         return found
     end
+    -- The lookup a band places an API by. entry_of() tries every spelling the registry uses, so a
+    -- function the registry spells with its parentheses is found by the bare name the symbol table
+    -- gives, and a member by the class that owns it. releases_in() falls back to it when no held
+    -- cache and no source place a name - an 18.2 function on a port whose caches end at 18.0 is that
+    -- case - and a raw listed[name] there misses every function, which left its object unplaceable
+    -- and the object refused. These were in backports_test, which the light guard does not run, so
+    -- they could not be executed; they are here, in a suite the guard does run, and they fail by
+    -- assertion rather than on a nil field.
+    local spellings = {["SomeLateFunction()"] = {api = "SomeLateFunction()", kind = "function",
+                                                 introduced = "18.2", status = "implemented"},
+                       ["-[UIView tintColorDidChange]"] = {api = "-[UIView tintColorDidChange]",
+                                                           kind = "method", introduced = "7.0",
+                                                           status = "implemented"},
+                       ["UIBlurEffect"] = {api = "UIBlurEffect", kind = "class", introduced = "8.0",
+                                           status = "absent"}}
+    local by_function = backports.entry_of(spellings, "SomeLateFunction")
+    local by_member = backports.entry_of(spellings, "UIView.tintColorDidChange")
+    if not by_function or by_function.introduced ~= "18.2" then
+        table.insert(found, "the registry entry of a function must be found by the bare name the symbol table gives it, since the registry spells it with its parentheses")
+    end
+    if not by_member or by_member.introduced ~= "7.0" then
+        table.insert(found, "the registry entry of a member must be found by the class that owns it, which is the shape check_registry is given")
+    end
+    if backports.entry_of(spellings, "NoSuchName") then
+        table.insert(found, "a name the registry does not carry must be answered nil, not another entry")
+    end
+    -- And the call that regressed, asserted on the source so it needs no compiler: the fallback has
+    -- to reach the registry through entry_of.
+    local source = io.readfile(path.join(opt.modules, "apple", "backports.lua")) or ""
+    local first = source:find("function releases_in", 1, true)
+    local last = first and source:find("\nend\n", first, true)
+    local body = (first and last) and source:sub(first, last) or ""
+    if not body:find("entry_of(listed(opt.root), name)", 1, true) then
+        table.insert(found, "releases_in must reach the registry through entry_of and not by a raw index that misses every function")
+    end
     local listed, incomplete = backports.registry(root)
     for index, complaint in ipairs(incomplete or {}) do
         if index <= 8 then

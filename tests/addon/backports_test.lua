@@ -314,33 +314,6 @@ function failures(opt)
     if backports.introduced_version(dump, "NSURLQueryItem") ~= "8.0" or backports.introduced_version(dump, "NSURLComponents") then
         table.insert(found, "the release a declaration arrived in is the earliest iOS availability of its own declarations, not of their members or of another declaration the filter matched")
     end
-    -- A function the registry spells with its parentheses, looked up by the name the symbol table
-    -- gives: releases_in() places an API of a release no held cache carries through this, and a raw
-    -- `listed[name]` misses every function, which is how an 18.2 function on a port whose caches
-    -- end at 18.0 came out unplaceable and its object was refused.
-    do
-        local listed = {["SomeLateFunction()"] = {api = "SomeLateFunction()", kind = "function",
-                                                   introduced = "18.2", status = "implemented"},
-                        ["-[UIView tintColorDidChange]"] = {api = "-[UIView tintColorDidChange]",
-                                                             kind = "method", introduced = "7.0",
-                                                             status = "implemented"},
-                        ["UIStackView"] = {api = "UIStackView", kind = "class", introduced = "9.0",
-                                           status = "implemented"},
-                        ["UIBlurEffect"] = {api = "UIBlurEffect", kind = "class", introduced = "8.0",
-                                            status = "absent"}}
-        local by_name = backports.entry_of(listed, "SomeLateFunction")
-        local by_method = backports.entry_of(listed, "tintColorDidChange")
-        if not by_name or by_name.introduced ~= "18.2" then
-            table.insert(found, "the registry entry of a function must be found by the bare name the symbol table gives: " .. tostring(by_name))
-        end
-        if not by_method or by_method.introduced ~= "7.0" then
-            table.insert(found, "the registry entry of a method must be found by the class that owns it: " .. tostring(by_method))
-        end
-        if backports.entry_of(listed, "NoSuchName") then
-            table.insert(found, "a name the registry does not carry must be answered nil, not another entry")
-        end
-    end
-
     local named = backports.availability_names({"_OBJC_CLASS_$_NSDimension", "_OBJC_METACLASS_$_NSDimension",
                                                 "_OBJC_IVAR_$_NSDimension._converter", "_NSCalendarIdentifierGregorian"})
     if not named["NSDimension"] or not named["NSCalendarIdentifierGregorian"] or named["OBJC_IVAR_$_NSDimension._converter"] then
