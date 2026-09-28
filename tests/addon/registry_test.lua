@@ -261,7 +261,8 @@ local function own_rows(backports, found)
     rows("Beta", "BetaOne")
     local out = path.join(root, "out")
     os.mkdir(out)
-    for folder, name in ipairs({{"Alpha", "AlphaOne"}, {"Beta", "BetaOne"}}) do
+    for _, pair in ipairs({{"Alpha", "AlphaOne"}, {"Beta", "BetaOne"}}) do
+        local folder, name = pair[1], pair[2]
         local library = {name = folder .. "Backports", folder = folder}
         local written = backports.protocol_sources(root, library, out, folder)
         local text = written[1] and io.readfile(written[1]) or ""
