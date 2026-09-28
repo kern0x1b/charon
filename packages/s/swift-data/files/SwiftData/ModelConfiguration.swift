@@ -1,236 +1,191 @@
-// ModelConfiguration.swift
-// SwiftData ModelConfiguration implementation over Core Data for iOS 6
+// Where a store keeps itself: which file, whose container it is shared through, and what it
+// mirrors.
 
-@preconcurrency import Foundation
+import Foundation
 import CoreData
 
-public struct ModelConfiguration: Sendable, Codable, Equatable, Hashable {
+public struct ModelConfiguration: Identifiable, Hashable, @unchecked Sendable {
+    /// A group container is either "the one the bundle's entitlements name", named by hand, or
+    /// none. `automatic` and a named container are different answers and are kept apart, because
+    /// a store in the wrong container is a store another process cannot see.
+    public struct GroupContainer: Hashable, Sendable {
+        enum Choice: Hashable { case automatic, none, identifier(String) }
+
+        let choice: Choice
+
+        public static var automatic: GroupContainer { GroupContainer(choice: .automatic) }
+        public static var none: GroupContainer { GroupContainer(choice: .none) }
+        public static func identifier(_ groupName: String) -> GroupContainer {
+            GroupContainer(choice: .identifier(groupName))
+        }
+
+        /// The container's identifier, when one was named. `automatic` reads the bundle's
+        /// entitlements, which is where the name of the automatic group is written down.
+        public var identifier: String? {
+            switch choice {
+            case .automatic: return ModelConfiguration.bundleGroupContainerIdentifier()
+            case .none: return nil
+            case .identifier(let name): return name
+            }
+        }
+    }
+
+    /// What a store mirrors. `private(_:)` names the CloudKit container the store mirrors into;
+    /// `none` says it mirrors nothing; `automatic` says the store mirrors into the container the
+    /// bundle's own identifier names.
+    public struct CloudKitDatabase: Hashable, Sendable {
+        enum Choice: Hashable { case automatic, none, privateDatabase(String) }
+
+        let choice: Choice
+
+        public static var automatic: CloudKitDatabase { CloudKitDatabase(choice: .automatic) }
+        public static var none: CloudKitDatabase { CloudKitDatabase(choice: .none) }
+        public static func `private`(_ privateDBName: String) -> CloudKitDatabase {
+            CloudKitDatabase(choice: .privateDatabase(privateDBName))
+        }
+
+        /// The container identifier this configuration names, or nil when it names none. It is
+        /// what `cloudKitContainerIdentifier` answers, and what the store description is built
+        /// from.
+        public var identifier: String? {
+            switch choice {
+            case .automatic: return nil
+            case .none: return nil
+            case .privateDatabase(let name): return name
+            }
+        }
+    }
+
+    public let url: URL
     public let name: String
-    public let schema: Schema?
-    public let url: URL?
+    public let groupAppContainerIdentifier: String?
+    public let cloudKitContainerIdentifier: String?
+    public let groupContainer: GroupContainer
+    public let cloudKitDatabase: CloudKitDatabase
+    public var schema: Schema?
     public let allowsSave: Bool
     public let isStoredInMemoryOnly: Bool
-    public let cloudKitContainerIdentifier: String?
-    public let cloudKitDatabase: CloudKitDatabase
-    public let groupContainer: GroupContainer
-    public let groupAppContainerIdentifier: String?
 
-    public init(
-        _ name: String,
-        schema: Schema? = nil,
-        url: URL? = nil,
-        allowsSave: Bool = true,
-        cloudKitDatabase: CloudKitDatabase = .none,
-        groupContainer: GroupContainer = .none
-    ) {
-        self.name = name
-        self.schema = schema
-        self.url = url
-        self.allowsSave = allowsSave
-        self.isStoredInMemoryOnly = url == nil
-        self.cloudKitContainerIdentifier = nil
-        self.cloudKitDatabase = cloudKitDatabase
-        self.groupContainer = groupContainer
-        self.groupAppContainerIdentifier = nil
+    public typealias ID = URL
+
+    public init(isStoredInMemoryOnly: Bool = false) {
+        self.init(nil, schema: nil, isStoredInMemoryOnly: isStoredInMemoryOnly)
     }
 
-    public init(
-        _ name: String,
-        schema: Schema,
-        isStoredInMemoryOnly: Bool = false,
-        allowsSave: Bool = true,
-        groupContainer: GroupContainer = .none,
-        cloudKitDatabase: CloudKitDatabase = .none
-    ) {
-        self.name = name
+    public init(for forTypes: any PersistentModel.Type..., isStoredInMemoryOnly: Bool = false) {
+        self.init(nil, schema: Schema(forTypes, version: .init(1, 0, 0)), isStoredInMemoryOnly: isStoredInMemoryOnly)
+    }
+
+    public init(_ name: String? = nil, schema: Schema? = nil, isStoredInMemoryOnly: Bool = false,
+                allowsSave: Bool = true, groupContainer: GroupContainer = .automatic,
+                cloudKitDatabase: CloudKitDatabase = .automatic) {
+        self.name = name ?? "default"
         self.schema = schema
-        self.url = nil
         self.allowsSave = allowsSave
         self.isStoredInMemoryOnly = isStoredInMemoryOnly
-        self.cloudKitContainerIdentifier = nil
-        self.cloudKitDatabase = cloudKitDatabase
         self.groupContainer = groupContainer
-        self.groupAppContainerIdentifier = nil
+        self.groupAppContainerIdentifier = groupContainer.identifier
+        self.cloudKitDatabase = cloudKitDatabase
+        self.cloudKitContainerIdentifier = cloudKitDatabase.identifier
+        self.url = ModelConfiguration.locate(name: self.name, inMemoryOnly: isStoredInMemoryOnly,
+                                             groupAppContainerIdentifier: groupContainer.identifier)
     }
 
-    public init(
-        for modelType: any PersistentModel.Type,
-        isStoredInMemoryOnly: Bool = false
-    ) {
-        self.name = "default"
-        self.schema = Schema([modelType])
-        self.url = nil
-        self.allowsSave = true
-        self.isStoredInMemoryOnly = isStoredInMemoryOnly
-        self.cloudKitContainerIdentifier = nil
-        self.cloudKitDatabase = .none
-        self.groupContainer = .none
-        self.groupAppContainerIdentifier = nil
-    }
-
-    public init(
-        _ name: String,
-        schema: Schema,
-        url: URL,
-        allowsSave: Bool,
-        cloudKitDatabase: CloudKitDatabase
-    ) {
-        self.name = name
+    public init(_ name: String? = nil, schema: Schema? = nil, url: URL, allowsSave: Bool = true,
+                cloudKitDatabase: CloudKitDatabase = .automatic) {
+        self.name = name ?? url.lastPathComponent
         self.schema = schema
-        self.url = url
         self.allowsSave = allowsSave
         self.isStoredInMemoryOnly = false
-        self.cloudKitContainerIdentifier = nil
-        self.cloudKitDatabase = cloudKitDatabase
         self.groupContainer = .none
         self.groupAppContainerIdentifier = nil
+        self.cloudKitDatabase = cloudKitDatabase
+        self.cloudKitContainerIdentifier = cloudKitDatabase.identifier
+        self.url = url
     }
 
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.name = try container.decode(String.self, forKey: .name)
-        self.schema = try container.decodeIfPresent(Schema.self, forKey: .schema)
-        self.url = try container.decodeIfPresent(URL.self, forKey: .url)
-        self.allowsSave = try container.decodeIfPresent(Bool.self, forKey: .allowsSave) ?? true
-        self.isStoredInMemoryOnly = try container.decodeIfPresent(Bool.self, forKey: .isStoredInMemoryOnly) ?? false
-        self.cloudKitContainerIdentifier = try container.decodeIfPresent(String.self, forKey: .cloudKitContainerIdentifier)
-        self.cloudKitDatabase = try container.decodeIfPresent(CloudKitDatabase.self, forKey: .cloudKitDatabase) ?? .none
-        self.groupContainer = try container.decodeIfPresent(GroupContainer.self, forKey: .groupContainer) ?? .none
-        self.groupAppContainerIdentifier = try container.decodeIfPresent(String.self, forKey: .groupAppContainerIdentifier)
+    public var id: URL { url }
+
+    /// The file a store of this name is kept in. A store in a group container is inside that
+    /// container - which is what makes it visible to the processes that share it - and a store
+    /// that names none is in the app's own Application Support, where a store of its own belongs.
+    static func locate(name: String, inMemoryOnly: Bool, groupAppContainerIdentifier: String?) -> URL {
+        if inMemoryOnly { return URL(fileURLWithPath: "/dev/null") }
+        let manager = FileManager.default
+        if let group = groupAppContainerIdentifier, let shared = manager.containerURL(
+            forSecurityApplicationGroupIdentifier: group) {
+            return shared.appendingPathComponent(name).appendingPathExtension("store")
+        }
+        let support = (try? manager.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil,
+                                        create: true))
+            ?? URL(fileURLWithPath: NSTemporaryDirectory())
+        return support.appendingPathComponent(name).appendingPathExtension("store")
     }
 
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(name, forKey: .name)
-        try container.encodeIfPresent(schema, forKey: .schema)
-        try container.encodeIfPresent(url, forKey: .url)
-        try container.encode(allowsSave, forKey: .allowsSave)
-        try container.encode(isStoredInMemoryOnly, forKey: .isStoredInMemoryOnly)
-        try container.encodeIfPresent(cloudKitContainerIdentifier, forKey: .cloudKitContainerIdentifier)
-        try container.encode(cloudKitDatabase, forKey: .cloudKitDatabase)
-        try container.encode(groupContainer, forKey: .groupContainer)
-        try container.encodeIfPresent(groupAppContainerIdentifier, forKey: .groupAppContainerIdentifier)
+    /// The group container the bundle's own entitlements name, which is what `.automatic` means
+    /// and the only place a program can learn it without writing it down twice.
+    static func bundleGroupContainerIdentifier() -> String? {
+        (Bundle.main.object(forInfoDictionaryKey: "AppIdentifierPrefix") as? String).map { _ in
+            Bundle.main.object(forInfoDictionaryKey: "GroupContainers") as? [[String: Any]] ?? []
+        }.flatMap { $0.first?["identifier"] as? String }
     }
 
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(name)
-        hasher.combine(schema)
         hasher.combine(url)
+        hasher.combine(name)
+        hasher.combine(groupAppContainerIdentifier)
+        hasher.combine(cloudKitContainerIdentifier)
         hasher.combine(allowsSave)
         hasher.combine(isStoredInMemoryOnly)
-        hasher.combine(cloudKitContainerIdentifier)
-        hasher.combine(cloudKitDatabase)
-        hasher.combine(groupContainer)
-        hasher.combine(groupAppContainerIdentifier)
     }
 
     public static func == (lhs: ModelConfiguration, rhs: ModelConfiguration) -> Bool {
-        lhs.name == rhs.name && lhs.schema == rhs.schema && lhs.url == rhs.url && lhs.allowsSave == rhs.allowsSave && lhs.isStoredInMemoryOnly == rhs.isStoredInMemoryOnly && lhs.cloudKitContainerIdentifier == rhs.cloudKitContainerIdentifier && lhs.cloudKitDatabase == rhs.cloudKitDatabase && lhs.groupContainer == rhs.groupContainer && lhs.groupAppContainerIdentifier == rhs.groupAppContainerIdentifier
+        lhs.url == rhs.url && lhs.name == rhs.name
+            && lhs.groupAppContainerIdentifier == rhs.groupAppContainerIdentifier
+            && lhs.cloudKitContainerIdentifier == rhs.cloudKitContainerIdentifier
+            && lhs.allowsSave == rhs.allowsSave && lhs.isStoredInMemoryOnly == rhs.isStoredInMemoryOnly
     }
 
-    public var debugDescription: String { "ModelConfiguration(\(name), inMemory: \(isStoredInMemoryOnly))" }
+    public var hashValue: Int {
+        var hasher = Hasher()
+        hash(into: &hasher)
+        return hasher.finalize()
+    }
+}
 
+extension ModelConfiguration: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        "ModelConfiguration(\(name) at \(url.path)"
+            + (groupAppContainerIdentifier.map { ", group \($0)" } ?? "")
+            + (cloudKitContainerIdentifier.map { ", cloud \($0)" } ?? "")
+            + (isStoredInMemoryOnly ? ", in memory" : "") + ")"
+    }
+}
+
+extension ModelConfiguration: DataStoreConfiguration {
+    public typealias Store = DefaultStore
+
+    /// What a configuration has to answer for before a store is opened from it: a name a file
+    /// system takes, a schema the container has, and a file a container can be written into.
     public func validate() throws {
-        if name.isEmpty {
+        if name.isEmpty { throw SwiftDataError.configurationFileNameContainsInvalidCharacters }
+        if name.utf8.count > 255 { throw SwiftDataError.configurationFileNameTooLong }
+        let illegal = CharacterSet(charactersIn: "/\\:?%*|\"<>")
+        if name.rangeOfCharacter(from: illegal) != nil {
             throw SwiftDataError.configurationFileNameContainsInvalidCharacters
         }
-        if name.count > 255 {
-            throw SwiftDataError.configurationFileNameTooLong
-        }
-    }
-
-    private enum CodingKeys: String, CodingKey {
-        case name, schema, url, allowsSave, isStoredInMemoryOnly, cloudKitContainerIdentifier, cloudKitDatabase, groupContainer, groupAppContainerIdentifier
-    }
-
-    public enum GroupContainer: Sendable, Codable, Equatable, Hashable {
-        case none, automatic, identifier(String)
-
-        public static func makeIdentifier(_ identifier: String) -> GroupContainer { .identifier(identifier) }
-
-        public init(from decoder: Decoder) throws {
-            let container = try decoder.singleValueContainer()
-            let string = try container.decode(String.self)
-            switch string {
-            case "none": self = .none
-            case "automatic": self = .automatic
-            default: self = .identifier(string)
-            }
-        }
-
-        public func encode(to encoder: Encoder) throws {
-            var container = encoder.singleValueContainer()
-            switch self {
-            case .none: try container.encode("none")
-            case .automatic: try container.encode("automatic")
-            case .identifier(let id): try container.encode(id)
-            }
-        }
-
-        public func hash(into hasher: inout Hasher) {
-            switch self {
-            case .none: hasher.combine("none")
-            case .automatic: hasher.combine("automatic")
-            case .identifier(let id): hasher.combine(id)
-            }
-        }
-
-        public static func == (lhs: GroupContainer, rhs: GroupContainer) -> Bool {
-            switch (lhs, rhs) {
-            case (.none, .none), (.automatic, .automatic): return true
-            case (.identifier(let a), .identifier(let b)): return a == b
-            default: return false
+        guard let schema else { return }
+        for entity in schema.entities {
+            if entity.attributes.contains(where: { $0.defaultValue == nil && $0.isOptional })
+                && entity.relationships.isEmpty && entity.attributes.isEmpty {
+                throw SwiftDataError.modelValidationFailure
             }
         }
     }
+}
 
-    public enum CloudKitDatabase: Sendable, Codable, Equatable, Hashable {
-        case none, automatic, `private`(String), shared(String), `public`(String)
-
-        public static func makePrivate(_ identifier: String) -> CloudKitDatabase { .`private`(identifier) }
-        public static func makeShared(_ identifier: String) -> CloudKitDatabase { .shared(identifier) }
-        public static func makePublic(_ identifier: String) -> CloudKitDatabase { .`public`(identifier) }
-
-        public init(from decoder: Decoder) throws {
-            let container = try decoder.singleValueContainer()
-            let string = try container.decode(String.self)
-            if string == "none" { self = .none }
-            else if string == "automatic" { self = .automatic }
-            else if string.hasPrefix("private:") { self = .`private`(String(string.dropFirst(8))) }
-            else if string.hasPrefix("shared:") { self = .shared(String(string.dropFirst(7))) }
-            else if string.hasPrefix("public:") { self = .`public`(String(string.dropFirst(7))) }
-            else { self = .none }
-        }
-
-        public func encode(to encoder: Encoder) throws {
-            var container = encoder.singleValueContainer()
-            switch self {
-            case .none: try container.encode("none")
-            case .automatic: try container.encode("automatic")
-            case .`private`(let id): try container.encode("private:\(id)")
-            case .shared(let id): try container.encode("shared:\(id)")
-            case .`public`(let id): try container.encode("public:\(id)")
-            }
-        }
-
-        public func hash(into hasher: inout Hasher) {
-            switch self {
-            case .none: hasher.combine("none")
-            case .automatic: hasher.combine("automatic")
-            case .`private`(let id): hasher.combine("private:\(id)")
-            case .shared(let id): hasher.combine("shared:\(id)")
-            case .`public`(let id): hasher.combine("public:\(id)")
-            }
-        }
-
-        public static func == (lhs: CloudKitDatabase, rhs: CloudKitDatabase) -> Bool {
-            switch (lhs, rhs) {
-            case (.none, .none), (.automatic, .automatic): return true
-            case (.`private`(let a), .`private`(let b)): return a == b
-            case (.shared(let a), .shared(let b)): return a == b
-            case (.`public`(let a), .`public`(let b)): return a == b
-            default: return false
-            }
-        }
-    }
+extension DataStoreConfiguration {
+    /// The default: a configuration with no schema of its own is a configuration of whatever
+    /// schema the container it is given to holds.
+    public func validate() throws {}
 }

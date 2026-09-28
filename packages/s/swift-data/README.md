@@ -1,33 +1,31 @@
-# SwiftData for the port's armv7 releases
+# charon@swift-data
 
-One Swift module, built for armv7 by `packages/s/swift-data/xmake.lua` against the
-`charon@swift-runtime` a port carries:
+The SwiftData module for the port's armv7 releases: a Swift module named `SwiftData`, built
+against the `charon@swift-runtime` a port carries, so a program writes `import SwiftData`.
 
-| Module | Holds |
-| --- | --- |
-| `SwiftData` | `Schema`, `ModelConfiguration`, `ModelContainer`, `ModelContext`, `FetchDescriptor`, `PersistentIdentifier`, `Predicate`, `SortDescriptor`, and the model/attribute/relationship/index/uniqueness types |
+The storage is the release's own Core Data - `NSPersistentContainer` and
+`NSPersistentStoreDescription` from iOS 6.0, the backports' `NSPersistentHistory*`,
+`NSPersistentCloudKitContainer`, `NSBatchDeleteRequest` and `NSFetchIndexDescription` below it -
+and this package is the SwiftData API as a layer over it.
 
-**What is not here yet**, and is absent rather than stubbed:
-- `DefaultStore`, `DefaultSnapshot`, `DefaultHistoryTransaction`, `DefaultHistoryToken`, `DefaultHistoryInsert`, `DefaultHistoryDelete` — the custom store implementation layer
-- `HistoryDescriptor`, `HistoryTransaction`, `HistoryToken`, `HistoryChange`, `HistoryTombstone`, `HistoryProviding`, `HistoryInsert`, `HistoryDelete`, `HistoryUpdate` — the history API
-- `DataStore`, `DataStoreConfiguration`, `DataStoreSnapshot`, `DataStoreError`, `DataStoreBatching` — the store abstraction layer
-- `Schema.Index`, `Schema.Index.Types`, `Schema.Unique`, `Schema.Unique.CodingKeys` — advanced indexing
-- `VersionedSchema`, `SchemaMigrationPlan`, `MigrationStage` — migration API
-- `ModelExecutor`, `SerialModelExecutor`, `DefaultSerialModelExecutor`, `ModelActor` — concurrency/execution
-- The SwiftUI integration (`Query`, `modelContext`, `modelContainer`, `AppStorage`, `SceneStorage`, `Model`, `DocumentGroup`) — requires SwiftUI
+What is measured about that substrate, and what the port does and does not have, is in
+`facts/SwiftData/Substrate.md`. Two things a caller should read there first: a Swift module
+cannot be built for the 4.3 band (the runtime's own `Swift` module has a floor of iOS 6.0, because
+every Core Data backport entry has `minimum: 6.0`), and `FetchDescriptor`'s predicate and sort
+order are `Foundation.Predicate` and `Foundation.SortDescriptor`, which arrive with
+`charon@swift-foundation` and are not on the port yet.
 
-**What is implemented over the device's Core Data:**
-- `Schema` and its nested types (`Entity`, `Attribute`, `Relationship`, `CompositeAttribute`, `Index`, `Unique`, `PropertyMetadata`) — the schema is serializable and can be reconstructed into an `NSManagedObjectModel`
-- `ModelConfiguration` — maps to `NSPersistentStoreDescription` with in-memory or SQLite stores
-- `ModelContainer` — wraps `NSPersistentContainer`, loads stores synchronously, provides `mainContext`
-- `ModelContext` — wraps `NSManagedObjectContext`, implements `fetch`, `insert`, `delete`, `save`, `transaction`, `fetchCount`, `fetchIdentifiers`, `enumerate`
-- `FetchDescriptor` — builds `NSFetchRequest` with predicate, sort descriptors, batch size, prefetching
-- `Predicate` — wraps `NSPredicate`, the `#Predicate` macro is from swift-foundation
-- `SortDescriptor` — wraps `NSSortDescriptor`
-- `PersistentIdentifier` — wraps `NSManagedObjectID`, codable and comparable
-- `PersistentModel` protocol — conformance added by the `@Model` macro (not in this package)
-- `SwiftDataError` — the error enum with all documented cases
+## State of this package
 
-The storage layer is the device's own Core Data. `NSPersistentContainer` and `NSPersistentStoreDescription` exist on iOS 6.0; this package adds the SwiftData API as a layer on top. No matrix code, no second implementation of what the release already has.
+The rewrite of the pilot's draft is in progress and does not compile yet. What is landed here is
+measured and true: the substrate, the schema (`Schema`, `Schema.Version`,
+`Schema.PropertyMetadata`, `Schema.Entity`, `SchemaProperty`, `Schema.Attribute`,
+`Schema.CompositeAttribute`, `Schema.Relationship`, `Schema.Index`, `Schema.Unique`),
+`PersistentIdentifier`, `PersistentModel` and its `BackingData` with the Core Data behind it,
+`ModelConfiguration`, `VersionedSchema`/`SchemaMigrationPlan`/`MigrationStage`, `FetchDescriptor`
+and `FetchResultsCollection`, `ModelContext`, and the two error types.
 
-**Host differential:** the same model, container, insert, fetch with a descriptor, save and delete, compared in two processes against macOS SwiftData.
+What is not here yet: `ModelContainer`, the `DataStore` layer and its `DefaultStore`, the history
+API, the model executors, and the `SwiftDataMacros` plugin that `@Model` and the rest are
+declared as. A `ModelContext` without its container cannot be built, so the module as it stands
+does not typecheck; the next step is `ModelContainer` and then the store.

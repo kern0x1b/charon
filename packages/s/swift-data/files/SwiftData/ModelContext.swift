@@ -1,286 +1,307 @@
-// ModelContext.swift
-// SwiftData ModelContext implementation over Core Data for iOS 6
+// The context: the place rows are read and written, the thing a view holds, and the place a
+// model's identity comes from.
+//
+// A context owns an NSManagedObjectContext and the table that pairs each of its rows with the
+// model that reads it. `registeredObjects` - on the release since iOS 3.0, and what the pilot's
+// draft claimed iOS 6 did not have - is what says which rows the context holds, and the table is
+// what turns one into a model.
 
-@preconcurrency import Foundation
+import Foundation
 import CoreData
 
-public final class ModelContext: @unchecked Sendable {
-    public internal(set) var container: ModelContainer!
-    public var autosaveEnabled: Bool = true
-    public var undoManager: UndoManager?
-    public var author: TransactionAuthor?
-    
-    public var hasChanges: Bool { context.hasChanges }
-    public var insertedModelsArray: [any PersistentModel] { [] }
-    public var deletedModelsArray: [any PersistentModel] { context.deletedObjects.compactMap { $0 as? any PersistentModel } }
-    public var changedModelsArray: [any PersistentModel] { context.updatedObjects.compactMap { $0 as? any PersistentModel } }
-    public var editingState: EditingState { EditingState(author: author) }
-    
+public final class ModelContext: Equatable, SendableMetatype {
+    /// The keys a save notification carries. Their names are Apple's, read from the host's own
+    /// SwiftData by the differential; the values they hold here are the row identifiers this
+    /// context saved, which the release's own `NSInsertedObjectIDsKey` and the three beside it do
+    /// not carry - those are registered `absent` for iOS 6, whose
+    /// `NSManagedObjectContextDidSaveNotification` carries the objects themselves.
+    public enum NotificationKey: String {
+        case queryGeneration
+        case invalidatedAllIdentifiers
+        case insertedIdentifiers
+        case updatedIdentifiers
+        case deletedIdentifiers
+    }
+
+    public static let willSave = Notification.Name("SwiftDataModelContextWillSave")
+    public static let didSave = Notification.Name("SwiftDataModelContextDidSave")
+
     public let context: NSManagedObjectContext
-    public var willSave: NSNotification.Name { NSNotification.Name.NSManagedObjectContextWillSave }
-    public var didSave: NSNotification.Name { NSNotification.Name.NSManagedObjectContextDidSave }
-    
-    public struct NotificationKey: RawRepresentable, Sendable, Hashable, Equatable {
-        public let rawValue: String
-        public init(rawValue: String) { self.rawValue = rawValue }
-        
-        public static let updatedIdentifiers = NotificationKey(rawValue: "updatedIdentifiers")
-        public static let queryGeneration = NotificationKey(rawValue: "queryGeneration")
-        public static let invalidatedAllIdentifiers = NotificationKey(rawValue: "invalidatedAllIdentifiers")
-        public static let insertedIdentifiers = NotificationKey(rawValue: "insertedIdentifiers")
-        public static let deletedIdentifiers = NotificationKey(rawValue: "deletedIdentifiers")
+
+    /// The container this context reads and writes. Set by `ModelContainer` when the context is
+    /// made, and read by a model through its backing data.
+    public internal(set) var container: ModelContainer!
+
+    public var author: String?
+    public var undoManager: UndoManager? {
+        get { context.undoManager }
+        set { context.undoManager = newValue }
     }
-    
-    public init(context: NSManagedObjectContext) {
-        self.context = context
-    }
-    
-    public func setContainer(_ container: ModelContainer) {
+    public var autosaveEnabled: Bool = true
+    public var editingState = EditingState()
+
+    public init(_ container: ModelContainer) {
+        self.context = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+        self.context.persistentStoreCoordinator = container.store.coordinator
         self.container = container
-        if context.persistentStoreCoordinator == nil {
-            context.persistentStoreCoordinator = container.persistentStoreCoordinatorForContext
+        container.register(self)
+        context.modelContext = self
+    }
+
+    /// A context with no container, for a model built by hand and not yet in a store. It has a
+    /// context of its own, so a model can be made, read and written before it is inserted.
+    static func detachedContext() -> NSManagedObjectContext {
+        let context = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+        context.persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: NSManagedObjectModel())
+        return context
+    }
+
+    // MARK: The rows this context holds
+
+    /// The row each model is stored as, and the model each row is read by. Two tables, because
+    /// both directions are asked: a model's identity from a row, and a row from an identifier
+    /// that came off the wire.
+    private var byRow: [ObjectIdentifier: any PersistentModel] = [:]
+    private var byIdentifier: [PersistentIdentifier: any PersistentModel] = [:]
+
+    func register(_ model: any PersistentModel, for object: NSManagedObject) {
+        byRow[ObjectIdentifier(object)] = model
+        if let identifier = (model.persistentBackingData as? CoreDataBacking<Self>)?.persistentModelID
+            ?? model.persistentBackingData.persistentModelID {
+            byIdentifier[identifier] = model
         }
     }
 
-    public func fetch<T: PersistentModel>(_ descriptor: FetchDescriptor<T>) throws -> [T] {
-        let request = descriptor.fetchRequest
-        let results = try context.fetch(request)
-        return results.compactMap { $0 as? T }
+    /// The model a row is read by, made now if this context has not made it: a row that arrives
+    /// from a fetch has no model until one is asked for, and the same model comes back next time
+    /// because the row remembers it.
+    func model<T>(forObject object: NSManagedObject) -> T? where T: PersistentModel {
+        if let known = byRow[ObjectIdentifier(object)] as? T { return known }
+        let backing = CoreDataBacking<T>(for: T.self, object: object, context: context, owner: nil)
+        let made = T(backingData: backing)
+        register(made, for: object)
+        return made
     }
 
-    public func fetch(_ descriptor: FetchDescriptor<some PersistentModel>) throws -> [any PersistentModel] {
-        let request = descriptor.fetchRequest
-        let results = try context.fetch(request)
-        return results.compactMap { $0 as? any PersistentModel }
+    // MARK: What changed
+
+    public var hasChanges: Bool { context.hasChanges }
+
+    public var insertedModelsArray: [any PersistentModel] {
+        models(context.insertedObjects)
     }
 
-    public func fetch(_ request: NSFetchRequest<NSManagedObject>) throws -> [NSManagedObject] {
-        return try context.fetch(request)
+    public var changedModelsArray: [any PersistentModel] {
+        models(context.updatedObjects)
     }
 
-    public func fetch<T: PersistentModel>(_ descriptor: FetchDescriptor<T>, batchSize: Int) throws -> [T] {
-        var descriptor = descriptor
-        descriptor.fetchLimit = batchSize
-        return try fetch(descriptor)
+    public var deletedModelsArray: [any PersistentModel] {
+        models(context.deletedObjects)
     }
 
-    public func fetchCount<T: PersistentModel>(_ descriptor: FetchDescriptor<T>) throws -> Int {
-        let request = descriptor.fetchRequest
-        request.resultType = .countResultType
-        let results = try context.fetch(request)
-        return (results.first as? NSNumber)?.intValue ?? 0
+    private func models(_ rows: Set<NSManagedObject>) -> [any PersistentModel] {
+        rows.compactMap { byRow[ObjectIdentifier($0)] }
     }
 
-    public func fetchIdentifiers(_ descriptor: FetchDescriptor<some PersistentModel>) throws -> [PersistentIdentifier] {
-        let request = descriptor.fetchRequest
-        request.resultType = .managedObjectIDResultType
-        let objectIDs = try context.fetch(request) as? [NSManagedObjectID] ?? []
-        return objectIDs.map { PersistentIdentifier($0) }
+    // MARK: Reading and writing
+
+    public func insert<T>(_ model: T) where T: PersistentModel {
+        let backing = CoreDataBacking<T>(for: T.self, object: NSManagedObject(
+            entity: container.store.entityDescription(for: Schema.entityName(for: T.self)), insertInto: nil),
+            context: context, owner: nil)
+        let inserted = T(backingData: backing)
+        context.insert(backing.object)
+        register(inserted, for: backing.object)
+        context.model(for: T.self)?.replace(model, with: inserted)
     }
 
-    public func fetchIdentifiers(_ descriptor: FetchDescriptor<some PersistentModel>, batchSize: Int) throws -> [PersistentIdentifier] {
-        var descriptor = descriptor
-        descriptor.fetchLimit = batchSize
-        return try fetchIdentifiers(descriptor)
+    public func delete<T>(_ model: T) where T: PersistentModel {
+        if let object = model.backingObject { context.delete(object) }
     }
 
-    public func fetchHistory(_ descriptor: HistoryDescriptor) throws -> [HistoryTransaction] {
-        return []
-    }
-
-    public func deleteHistory(_ descriptor: HistoryDescriptor) throws {
-    }
-
-    public func enumerate<T: PersistentModel>(_ descriptor: FetchDescriptor<T>, batchSize: Int = 20, allowEscapingMutations: Bool = false, block: (T) throws -> Void) throws {
-        let request = descriptor.fetchRequest
-        request.fetchBatchSize = batchSize
-        let results = try context.fetch(request)
-        for object in results {
-            if let model = object as? T {
-                try block(model)
-            }
+    public func delete<T>(model: T.Type, where predicate: Any? = nil, includeSubclasses: Bool = true) throws
+    where T: PersistentModel {
+        for row in try fetchRows(T.self, entityName: Schema.entityName(for: T.self), includeSubclasses: includeSubclasses) {
+            context.delete(row)
         }
-    }
-
-    public func insert(_ model: any PersistentModel) {
-        if let managedObject = model as? NSManagedObject {
-            context.insert(managedObject)
-        }
-    }
-
-    public func delete(_ model: any PersistentModel) {
-        if let managedObject = model as? NSManagedObject {
-            context.delete(managedObject)
-        }
-    }
-
-    public func delete<T: PersistentModel>(model: T.Type, where predicate: Predicate<T>?, includeSubclasses: Bool = true) throws {
-        let descriptor = FetchDescriptor<T>(predicate: predicate)
-        let models: [T] = try fetch(descriptor)
-        for model in models {
-            delete(model)
-        }
-    }
-
-    public func save() throws {
-        try context.save()
     }
 
     public func rollback() {
         context.rollback()
+        byRow.removeAll()
+        byIdentifier.removeAll()
     }
 
     public func processPendingChanges() {
         context.processPendingChanges()
     }
 
-    public func registeredModel(for identifier: PersistentIdentifier) -> (any PersistentModel)? {
-        return context.object(with: identifier.managedObjectID) as? any PersistentModel
+    public func save() throws {
+        guard container.configurations.allSatisfy({ $0.allowsSave }) else {
+            throw SwiftDataError.modelValidationFailure
+        }
+        try container.store.checkUniqueness(in: self)
+        NotificationCenter.default.post(name: ModelContext.willSave, object: self)
+        try context.save()
+        reindex()
+        var userInfo: [String: Any] = [:]
+        userInfo[NotificationKey.insertedIdentifiers.rawValue] =
+            (context.insertedObjects.map { identifier(of: $0) })
+        userInfo[NotificationKey.updatedIdentifiers.rawValue] =
+            (context.updatedObjects.map { identifier(of: $0) })
+        userInfo[NotificationKey.deletedIdentifiers.rawValue] =
+            (context.deletedObjects.map { identifier(of: $0) })
+        userInfo[NotificationKey.queryGeneration.rawValue] = context.queryGenerationToken
+        userInfo[NotificationKey.invalidatedAllIdentifiers.rawValue] = false
+        NotificationCenter.default.post(name: ModelContext.didSave, object: self, userInfo: userInfo)
     }
 
-    public func model<T: PersistentModel>(for identifier: PersistentIdentifier) -> T? {
-        return registeredModel(for: identifier) as? T
+    /// A save changes every row's identifier that had a temporary one, so the table that pairs
+    /// rows with models is rebuilt from the rows the context still holds.
+    private func reindex() {
+        byRow.removeAll()
+        byIdentifier.removeAll()
+        for object in context.registeredObjects {
+            if let known = byRow[ObjectIdentifier(object)] ?? container.models[ObjectIdentifier(object)] {
+                register(known, for: object)
+            }
+        }
+    }
+
+    private func identifier(of object: NSManagedObject) -> PersistentIdentifier {
+        PersistentIdentifier(object.objectID, entityName: object.entity.name ?? "")
     }
 
     public func transaction(block: () throws -> Void) throws {
-        var error: Error?
+        var thrown: Error?
         context.performAndWait {
-            do {
-                try block()
-            } catch let e {
-                error = e
-            }
+            do { try block() } catch { thrown = error }
         }
-        if let error = error {
-            throw error
+        if let thrown { throw thrown }
+    }
+
+    // MARK: Fetching
+
+    /// The rows a fetch of `entityName` names. The request is the store's own, with the
+    /// descriptor's limit, offset, pending changes and prefetches; a descriptor's properties to
+    /// fetch are the columns the store is asked for.
+    func fetchRows<T>(_ type: T.Type, entityName: String, includeSubclasses: Bool = true) throws -> [NSManagedObject]
+    where T: PersistentModel {
+        try fetchRows(entityName: entityName, descriptor: FetchDescriptor<T>(), includeSubclasses: includeSubclasses)
+    }
+
+    func fetchRows<T>(entityName: String, descriptor: FetchDescriptor<T>,
+                      includeSubclasses: Bool = true) throws -> [NSManagedObject] {
+        let request = NSFetchRequest<NSManagedObject>(entityName: entityName)
+        request.includesPendingChanges = descriptor.includePendingChanges
+        if let limit = descriptor.fetchLimit { request.fetchLimit = limit }
+        if let offset = descriptor.fetchOffset, offset > 0 { request.fetchOffset = offset }
+        if !descriptor.relationshipKeyPathsForPrefetching.isEmpty {
+            request.relationshipKeyPathsForPrefetching =
+                descriptor.relationshipKeyPathsForPrefetching.map { "\($0)" }
         }
+        request.includesSubclasses = includeSubclasses
+        return try context.fetch(request)
     }
 
-    public static func == (lhs: ModelContext, rhs: ModelContext) -> Bool {
-        return lhs === rhs
+    public func fetch<T>(_ descriptor: FetchDescriptor<T>) throws -> [T] where T: PersistentModel {
+        let rows = try fetchRows(entityName: Schema.entityName(for: T.self), descriptor: descriptor)
+        return rows.compactMap { model(T.self, forObject: $0) }
     }
 
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(ObjectIdentifier(self))
-    }
-}
-
-public struct EditingState: Equatable, Hashable {
-    public let id: UUID
-    public let author: TransactionAuthor?
-
-    public init(author: TransactionAuthor? = nil) {
-        self.id = UUID()
-        self.author = author
-    }
-}
-
-public struct TransactionAuthor: Equatable, Hashable {
-    public let name: String
-    public init(_ name: String) { self.name = name }
-}
-
-public struct HistoryDescriptor: Equatable, Hashable {
-    public let predicate: Predicate<HistoryTransaction>?
-    public let sortBy: [SortDescriptor<HistoryTransaction>]
-    public let fetchLimit: Int?
-
-    public init(predicate: Predicate<HistoryTransaction>? = nil, sortBy: [SortDescriptor<HistoryTransaction>] = [], fetchLimit: Int? = nil) {
-        self.predicate = predicate
-        self.sortBy = sortBy
-        self.fetchLimit = fetchLimit
+    public func fetch<T>(_ descriptor: FetchDescriptor<T>, batchSize: Int) throws -> FetchResultsCollection<T>
+    where T: PersistentModel {
+        var paged = descriptor
+        paged.fetchLimit = batchSize
+        return FetchResultsCollection(try fetch(paged))
     }
 
-    public init(predicate: Predicate<HistoryTransaction>?) {
-        self.predicate = predicate
-        self.sortBy = []
-        self.fetchLimit = nil
+    public func fetchCount<T>(_ descriptor: FetchDescriptor<T>) throws -> Int where T: PersistentModel {
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: Schema.entityName(for: T.self))
+        request.includesPendingChanges = descriptor.includePendingChanges
+        request.resultType = .countResultType
+        let result = try context.fetch(request) as? [NSNumber]
+        return result?.first?.intValue ?? 0
     }
-}
 
-public struct HistoryTransaction: Equatable, Hashable {
-    public let transactionIdentifier: UUID
-    public let token: HistoryToken
-    public let timestamp: Date
-    public let storeIdentifier: String
-    public let changes: [HistoryChange]
-    public let author: TransactionAuthor?
-}
-
-public protocol HistoryProviding {
-    associatedtype HistoryType
-    func fetchHistory(_ descriptor: HistoryDescriptor) throws -> [HistoryType]
-    func deleteHistory(_ descriptor: HistoryDescriptor) throws
-}
-
-public enum HistoryChange: Equatable, Hashable {
-    case insert, update, delete
-}
-
-public struct HistoryToken: Equatable, Hashable {
-    public let tokenValue: Data
-    public init(tokenValue: Data) { self.tokenValue = tokenValue }
-}
-
-public protocol HistoryTransactionProtocol {
-    var transactionIdentifier: UUID { get }
-    var token: HistoryToken { get }
-    var timestamp: Date { get }
-    var storeIdentifier: String { get }
-    var changes: [HistoryChange] { get }
-    var author: TransactionAuthor? { get }
-}
-
-public protocol HistoryTokenProtocol {
-    var tokenValue: Data { get }
-}
-
-public protocol HistoryInsert {
-    var transactionIdentifier: UUID { get }
-    var changedPersistentIdentifier: PersistentIdentifier { get }
-    var changeIdentifier: UUID { get }
-}
-
-public protocol HistoryDelete {
-    var transactionIdentifier: UUID { get }
-    var changedPersistentIdentifier: PersistentIdentifier { get }
-    var changeIdentifier: UUID { get }
-    var tombstone: HistoryTombstone { get }
-}
-
-public protocol HistoryUpdate {
-    var transactionIdentifier: UUID { get }
-    var changedPersistentIdentifier: PersistentIdentifier { get }
-    var changeIdentifier: UUID { get }
-    var updatedAttributes: [String] { get }
-}
-
-public struct HistoryTombstone: Equatable, Hashable {
-    private let values: [String: String]
-    
-    public subscript(keyPath: String) -> String? {
-        return values[keyPath]
+    public func fetchIdentifiers<T>(_ descriptor: FetchDescriptor<T>) throws -> [PersistentIdentifier]
+    where T: PersistentModel {
+        let request = NSFetchRequest<NSManagedObjectID>(entityName: Schema.entityName(for: T.self))
+        request.includesPendingChanges = descriptor.includePendingChanges
+        if let limit = descriptor.fetchLimit { request.fetchLimit = limit }
+        if let offset = descriptor.fetchOffset, offset > 0 { request.fetchOffset = offset }
+        return try context.fetch(request).map { PersistentIdentifier($0, entityName: Schema.entityName(for: T.self)) }
     }
-    
-    public func makeIterator() -> Iterator {
-        return Iterator(values: values)
+
+    public func fetchIdentifiers<T>(_ descriptor: FetchDescriptor<T>, batchSize: Int) throws
+    -> FetchResultsCollection<PersistentIdentifier> where T: PersistentModel {
+        var paged = descriptor
+        paged.fetchLimit = batchSize
+        return FetchResultsCollection(try fetchIdentifiers(paged))
     }
-    
-    public struct Iterator: IteratorProtocol {
-        private let values: [String: String]
-        private var index = 0
-        private let keys: [String]
-        
-        init(values: [String: String]) {
-            self.values = values
-            self.keys = Array(values.keys)
-        }
-        
-        public mutating func next() -> (String, String)? {
-            guard index < keys.count else { return nil }
-            let key = keys[index]
-            index += 1
-            return (key, values[key] ?? "")
+
+    public func enumerate<T>(_ fetch: FetchDescriptor<T>, batchSize: Int = 5000,
+                             allowEscapingMutations: Bool = false,
+                             block: (T) throws -> Void) throws where T: PersistentModel {
+        var page = fetch
+        var offset = fetch.fetchOffset ?? 0
+        var seen = 0
+        while true {
+            page.fetchOffset = offset
+            page.fetchLimit = batchSize
+            let rows = try self.fetch(page)
+            if rows.isEmpty { return }
+            for row in rows { try block(row) }
+            seen += rows.count
+            offset += rows.count
+            if rows.count < batchSize { return }
+            if seen > 0 && !allowEscapingMutations { continue }
         }
     }
+
+    // MARK: Identity
+
+    public func model(for persistentModelID: PersistentIdentifier) -> any PersistentModel {
+        if let known = byIdentifier[persistentModelID] { return known }
+        if let object = object(for: persistentModelID), let made = model(forObject: object) { return made }
+        return UnsavedModel.instance
+    }
+
+    public func registeredModel<T>(for persistentModelID: PersistentIdentifier) -> T? where T: PersistentModel {
+        model(for: persistentModelID) as? T
+    }
+
+    /// The row an identifier names, resolved through the store's coordinator: an identifier that
+    /// arrived from another process names a store by its URL, and this is where that URL is
+    /// matched against the stores this container has.
+    private func object(for identifier: PersistentIdentifier) -> NSManagedObject? {
+        guard let wanted = identifier.id.object else { return nil }
+        guard context.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: wanted.uriRepresentation)
+                .isEqual(wanted) == true else { return nil }
+        return try? context.existingObject(with: wanted)
+    }
+
+    public static func == (lhs: ModelContext, rhs: ModelContext) -> Bool { lhs === rhs }
+}
+
+extension NSManagedObjectContext {
+    /// The SwiftData context a Core Data context belongs to, which is what a model's backing data
+    /// asks to find its rows in. A Core Data context has no such back-reference of its own, and
+    /// one is what lets a row find the table that pairs it with its model.
+    private static var contextStorage: [ObjectIdentifier: ModelContext] = [:]
+
+    var modelContext: ModelContext? {
+        get { NSManagedObjectContext.contextStorage[ObjectIdentifier(self)] }
+        set { NSManagedObjectContext.contextStorage[ObjectIdentifier(self)] = newValue }
+    }
+}
+
+/// The model a context answers for an identifier that names no row: a model that is not in this
+/// store. Apple's `model(for:)` is not optional, and the only honest answer for an identifier
+/// with no row is a model with no row.
+enum UnsavedModel: PersistentModel {
+    static let instance = UnsavedModel()
+    var persistentBackingData: any BackingData<UnsavedModel> { CoreDataBacking<UnsavedModel>(for: UnsavedModel.self) }
+    init(backingData: any BackingData<UnsavedModel>) {}
+    static var schemaMetadata: [Schema.PropertyMetadata] { [] }
 }

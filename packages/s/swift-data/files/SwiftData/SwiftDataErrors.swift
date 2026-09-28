@@ -1,152 +1,91 @@
-// SwiftDataErrors.swift
-// SwiftData error types and SwiftUI integration stubs
+// The two error types of the framework, and the coding keys a store's snapshot is written with.
 
-@preconcurrency import Foundation
+import Foundation
 
-public enum SwiftDataError: Error, Equatable, Hashable {
-    case unsupportedPredicate
-    case unsupportedSortDescriptor
-    case unsupportedKeyPath
-    case unknownSchema
-    case sortingPendingChangesWithIdentifiers
-    case modelValidationFailure
-    case missingModelContext
-    case loadIssueModelContainer
-    case invalidTransactionFetchRequest
-    case includePendingChangesWithBatchSize
-    case historyTokenExpired
-    case duplicateConfiguration
-    case configurationSchemaNotFoundInContainerSchema
-    case configurationFileNameTooLong
-    case configurationFileNameContainsInvalidCharacters
-    case backwardMigration
+/// What a store refuses, and why. The cases are Apple's, so a program that catches one of them
+/// keeps working here; the payload is a sentence, because `Error` gives a type name and nothing
+/// else and a store that cannot say what it refused has said nothing.
+public struct SwiftDataError: Error, Hashable {
+    let message: String
 
-    public static func ~= (lhs: SwiftDataError, rhs: SwiftDataError) -> Bool {
-        return lhs == rhs
+    init(_ message: String) {
+        self.message = message
+    }
+
+    public static let includePendingChangesWithBatchSize = SwiftDataError(
+        "a fetch with a batch size cannot include the context's pending changes")
+    public static let unsupportedPredicate = SwiftDataError("the store cannot run this predicate")
+    public static let unsupportedKeyPath = SwiftDataError("the store cannot reach through this key path")
+    public static let sortingPendingChangesWithIdentifiers = SwiftDataError(
+        "a fetch that returns identifiers cannot be sorted by them while the context's pending changes are included")
+    public static let unsupportedSortDescriptor = SwiftDataError("the store cannot order by this sort descriptor")
+    public static let duplicateConfiguration = SwiftDataError("two configurations of one container name the same store")
+    public static let configurationFileNameTooLong = SwiftDataError("the store's file name is longer than a file system takes")
+    public static let configurationFileNameContainsInvalidCharacters = SwiftDataError(
+        "the store's file name holds a character a file system does not take")
+    public static let configurationSchemaNotFoundInContainerSchema = SwiftDataError(
+        "the configuration's schema is not one of the container's schemas")
+    public static let loadIssueModelContainer = SwiftDataError("the container holds a schema that could not be read")
+    public static let modelValidationFailure = SwiftDataError("the schema does not describe a model a store can hold")
+    public static let missingModelContext = SwiftDataError("the model has no context")
+    public static let backwardMigration = SwiftDataError("the store is newer than the schema it is read with")
+    public static let unknownSchema = SwiftDataError("the schema named is not one this store knows")
+    public static let historyTokenExpired = SwiftDataError("the history token is older than the history this store keeps")
+    public static let invalidTransactionFetchRequest = SwiftDataError(
+        "a history fetch needs a date or a token to start from")
+
+    public static func == (lhs: SwiftDataError, rhs: SwiftDataError) -> Bool {
+        lhs.message == rhs.message
     }
 
     public func hash(into hasher: inout Hasher) {
+        hasher.combine(message)
+    }
+
+    public var hashValue: Int {
+        var hasher = Hasher()
+        hash(into: &hasher)
+        return hasher.finalize()
+    }
+
+    /// What a program writes in a `catch`, and what this answers to: the store's own
+    /// `SwiftDataError.historyTokenExpired` answers to any error that says the same thing, which
+    /// is what lets a caller catch its own error type through this one.
+    public static func ~= (lhs: SwiftDataError, rhs: any Error) -> Bool {
+        guard let other = rhs as? SwiftDataError else { return false }
+        return other == lhs
+    }
+}
+
+public enum DataStoreError: Error, Equatable, Hashable {
+    case unsupportedFeature
+    case preferInMemoryFilter
+    case preferInMemorySort
+    case invalidPredicate
+}
+
+/// The keys a store's snapshot is written under: the row's own identifier, and one key per
+/// modelled property, named by the property.
+public enum DataStoreSnapshotCodingKey: CodingKey {
+    case persistentIdentifier
+    case modeledProperty(String)
+
+    public var stringValue: String {
         switch self {
-        case .unsupportedPredicate: hasher.combine("unsupportedPredicate")
-        case .unsupportedSortDescriptor: hasher.combine("unsupportedSortDescriptor")
-        case .unsupportedKeyPath: hasher.combine("unsupportedKeyPath")
-        case .unknownSchema: hasher.combine("unknownSchema")
-        case .sortingPendingChangesWithIdentifiers: hasher.combine("sortingPendingChangesWithIdentifiers")
-        case .modelValidationFailure: hasher.combine("modelValidationFailure")
-        case .missingModelContext: hasher.combine("missingModelContext")
-        case .loadIssueModelContainer: hasher.combine("loadIssueModelContainer")
-        case .invalidTransactionFetchRequest: hasher.combine("invalidTransactionFetchRequest")
-        case .includePendingChangesWithBatchSize: hasher.combine("includePendingChangesWithBatchSize")
-        case .historyTokenExpired: hasher.combine("historyTokenExpired")
-        case .duplicateConfiguration: hasher.combine("duplicateConfiguration")
-        case .configurationSchemaNotFoundInContainerSchema: hasher.combine("configurationSchemaNotFoundInContainerSchema")
-        case .configurationFileNameTooLong: hasher.combine("configurationFileNameTooLong")
-        case .configurationFileNameContainsInvalidCharacters: hasher.combine("configurationFileNameContainsInvalidCharacters")
-        case .backwardMigration: hasher.combine("backwardMigration")
+        case .persistentIdentifier: return "persistentIdentifier"
+        case .modeledProperty(let name): return name
         }
     }
 
-    public static func == (lhs: SwiftDataError, rhs: SwiftDataError) -> Bool {
-        switch (lhs, rhs) {
-        case (.unsupportedPredicate, .unsupportedPredicate): return true
-        case (.unsupportedSortDescriptor, .unsupportedSortDescriptor): return true
-        case (.unsupportedKeyPath, .unsupportedKeyPath): return true
-        case (.unknownSchema, .unknownSchema): return true
-        case (.sortingPendingChangesWithIdentifiers, .sortingPendingChangesWithIdentifiers): return true
-        case (.modelValidationFailure, .modelValidationFailure): return true
-        case (.missingModelContext, .missingModelContext): return true
-        case (.loadIssueModelContainer, .loadIssueModelContainer): return true
-        case (.invalidTransactionFetchRequest, .invalidTransactionFetchRequest): return true
-        case (.includePendingChangesWithBatchSize, .includePendingChangesWithBatchSize): return true
-        case (.historyTokenExpired, .historyTokenExpired): return true
-        case (.duplicateConfiguration, .duplicateConfiguration): return true
-        case (.configurationSchemaNotFoundInContainerSchema, .configurationSchemaNotFoundInContainerSchema): return true
-        case (.configurationFileNameTooLong, .configurationFileNameTooLong): return true
-        case (.configurationFileNameContainsInvalidCharacters, .configurationFileNameContainsInvalidCharacters): return true
-        case (.backwardMigration, .backwardMigration): return true
-        default: return false
+    public init?(stringValue: String) {
+        if stringValue == "persistentIdentifier" {
+            self = .persistentIdentifier
+        } else {
+            self = .modeledProperty(stringValue)
         }
     }
-}
 
-// Property wrappers for AppStorage/SceneStorage
-@propertyWrapper
-public struct AppStorage<Value>: DynamicProperty {
-    public var wrappedValue: Value { fatalError("Requires SwiftUI") }
-    public init(wrappedValue: Value, _ key: String, store: UserDefaults? = nil) {}
-    public init(_ key: String, store: UserDefaults? = nil) where Value: ExpressibleByNilLiteral {}
-}
+    public var intValue: Int? { nil }
 
-@propertyWrapper
-public struct SceneStorage<Value>: DynamicProperty {
-    public var wrappedValue: Value { fatalError("Requires SwiftUI") }
-    public init(wrappedValue: Value, _ key: String) {}
-    public init(_ key: String) where Value: ExpressibleByNilLiteral {}
-}
-
-@propertyWrapper
-public struct Model<Content: PersistentModel>: DynamicProperty {
-    public var wrappedValue: Content { fatalError("Requires SwiftUI") }
-    public init() {}
-}
-
-public protocol DynamicProperty {}
-
-// Environment values
-public struct EnvironmentValues {
-    public var modelContext: ModelContext? { nil }
-}
-
-// SwiftUI integration stubs - these are absents, not stubs
-// They compile but require SwiftUI to be useful
-
-public protocol View {}
-
-public struct EmptyView: View {}
-
-public extension View {
-    func modelContext(_ context: ModelContext) -> EmptyView { fatalError("Requires SwiftUI") }
-    func modelContainer(for type: any PersistentModel.Type, inMemory: Bool = false, isAutosaveEnabled: Bool = true, isUndoEnabled: Bool = true, onSetup: ((ModelContainer) -> Void)? = nil) -> EmptyView { fatalError("Requires SwiftUI") }
-    func modelContainer(_ container: ModelContainer) -> EmptyView { fatalError("Requires SwiftUI") }
-}
-
-public protocol Scene {}
-
-public extension Scene {
-    func modelContext(_ context: ModelContext) -> EmptyView { fatalError("Requires SwiftUI") }
-    func modelContainer(for type: any PersistentModel.Type, inMemory: Bool = false, isAutosaveEnabled: Bool = true, isUndoEnabled: Bool = true, onSetup: ((ModelContainer) -> Void)? = nil) -> EmptyView { fatalError("Requires SwiftUI") }
-    func modelContainer(_ container: ModelContainer) -> EmptyView { fatalError("Requires SwiftUI") }
-}
-
-public struct Animation {
-    public static let `default` = Animation()
-    public static let easeInOut = Animation()
-    public static let linear = Animation()
-}
-
-// Query property wrapper - requires SwiftUI
-@propertyWrapper
-public struct QueryProperty<Content: PersistentModel>: DynamicProperty {
-    public var wrappedValue: [Content] { fatalError("Query requires SwiftUI") }
-    public var modelContext: ModelContext? { nil }
-    public var fetchError: Error? { nil }
-    public init(filter: Predicate<Content>? = nil, sort: [SortDescriptor<Content>] = [], transaction: TransactionAuthor? = nil, animation: Animation? = nil) {}
-    public mutating func update() {}
-}
-
-public func query<Content>(filter: Predicate<Content>? = nil, sort: [SortDescriptor<Content>] = [], transaction: TransactionAuthor? = nil, animation: Animation? = nil) -> EmptyView where Content: PersistentModel {
-    fatalError("Query is a property wrapper for SwiftUI")
-}
-
-// DocumentGroup for document-based apps
-public struct DocumentGroup<Content: View>: Scene {
-    public init(viewing: any PersistentModel.Type, migrationPlan: (any SchemaMigrationPlan)? = nil, viewer: @escaping (ModelContainer) -> Content) {}
-    public init(viewing: any PersistentModel.Type, contentType: UTType, viewer: @escaping (ModelContainer) -> Content) {}
-    public init(editing: any PersistentModel.Type, migrationPlan: (any SchemaMigrationPlan)? = nil, editor: @escaping (ModelContainer) -> Content, prepareDocument: @escaping (ModelContainer) throws -> Void) {}
-    public init(editing: any PersistentModel.Type, contentType: UTType, editor: @escaping (ModelContainer) -> Content, prepareDocument: @escaping (ModelContainer) throws -> Void) {}
-    public var body: EmptyView { fatalError("Requires SwiftUI") }
-}
-
-public struct UTType {
-    public init(_ identifier: String) {}
+    public init?(intValue: Int) { nil }
 }

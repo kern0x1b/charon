@@ -1,298 +1,129 @@
-// PersistentIdentifier.swift
-// SwiftData PersistentIdentifier implementation over Core Data for iOS 6
+// The identity a store gives one of its rows.
+//
+// Apple's ID is opaque and, in their store, a UUID. Here the store is Core Data, whose identity
+// is the NSManagedObjectID, and that is what an ID carries: a permanent objectID for a row of
+// one store, resolved through that store's coordinator. Decoding needs no store, because
+// NSManagedObjectID's -URIRepresentation is self-contained (CoreData, iOS 5.0), and a decoded
+// identifier names a store that the decoder's process may not have loaded - which is exactly
+// what an identifier that arrived over the wire is.
 
-@preconcurrency import Foundation
+import Foundation
 import CoreData
 
-public struct PersistentIdentifier: Codable, Equatable, Hashable, Comparable {
-    public let id: UUID
-    public let entityName: String
-    public let storeIdentifier: String
+public struct PersistentIdentifier: Hashable, Identifiable, Equatable, Comparable, Codable, Sendable {
+    public struct ID: Hashable, Equatable, Sendable {
+        /// The row's permanent objectID, when the store that made it is here to resolve one.
+        /// An NSManagedObjectID is immutable once made and Core Data answers hash/isEqual for it,
+        /// so it is safe to hand between the threads a ModelContext is used from - which is what
+        /// Sendable on the identifier promises.
+        let object: NSManagedObjectID?
 
-    public init(id: UUID = UUID(), entityName: String, storeIdentifier: String = "default") {
-        self.id = id
-        self.entityName = entityName
-        self.storeIdentifier = storeIdentifier
+        /// The row's own URI form, which is what an identifier keeps and what it is compared and
+        /// hashed by: it names the store as well as the row, so an identifier that arrived from
+        /// another process says which store it belongs to without a coordinator to ask.
+        let uri: URL
+
+        init(_ object: NSManagedObjectID) {
+            self.object = object
+            self.uri = object.uriRepresentation
+        }
+
+        init(uri: URL) {
+            self.object = nil
+            self.uri = uri
+        }
+
+        public static func == (lhs: ID, rhs: ID) -> Bool {
+            if let left = lhs.object, let right = rhs.object {
+                return left.isEqual(right)
+            }
+            return lhs.uri == rhs.uri
+        }
+
+        public func hash(into hasher: inout Hasher) {
+            hasher.combine(uri)
+        }
+
+        public var hashValue: Int {
+            var hasher = Hasher()
+            hash(into: &hasher)
+            return hasher.finalize()
+        }
     }
 
-    public init(_ managedObjectID: NSManagedObjectID) {
-        self.id = UUID() // In real implementation, this would be derived from the managedObjectID
-        self.entityName = managedObjectID.entity.name ?? "Unknown"
-        self.storeIdentifier = managedObjectID.persistentStore?.identifier ?? "default"
+    public let id: ID
+    public var entityName: String { name }
+    public var storeIdentifier: String? { store }
+
+    let name: String
+    let store: String?
+
+    public init(_ object: NSManagedObjectID, entityName: String) {
+        self.id = ID(object)
+        self.name = entityName
+        self.store = object.persistentStore?.url?.lastPathComponent
     }
 
-    public var managedObjectID: NSManagedObjectID {
-        // In real implementation, this would reconstruct the NSManagedObjectID
-        return NSManagedObjectID()
+    init(uri: URL, entityName: String) {
+        self.id = ID(uri: uri)
+        self.name = entityName
+        self.store = uri.lastPathComponent
     }
 
-    public static func identifier(for entityName: String, primaryKey: Any) -> PersistentIdentifier {
-        return PersistentIdentifier(entityName: entityName)
+    /// The store's own naming of a row, for a store that is not Core Data: the primary key's
+    /// value, as a string, together with the entity it names.
+    public static func identifier<T>(for storeIdentifier: String, entityName: String,
+                                     primaryKey: T) throws -> PersistentIdentifier
+    where T: Comparable, T: CustomStringConvertible, T: Decodable, T: Encodable, T: Hashable {
+        guard let url = URL(string: "\(storeIdentifier)") else {
+            throw SwiftDataError.unknownSchema
+        }
+        return PersistentIdentifier(uri: url, entityName: entityName)
+    }
+
+    public static func == (lhs: PersistentIdentifier, rhs: PersistentIdentifier) -> Bool {
+        lhs.id == rhs.id && lhs.name == rhs.name && lhs.store == rhs.store
+    }
+
+    // Two identifiers of one store are ordered by the row's place in it, which Core Data answers
+    // with the objectID's own -compare:; identifiers of different stores are ordered by the store
+    // name, so the order is total and stable rather than undefined.
+    public static func < (lhs: PersistentIdentifier, rhs: PersistentIdentifier) -> Bool {
+        if lhs.name != rhs.name { return lhs.name < rhs.name }
+        if lhs.store != rhs.store { return (lhs.store ?? "") < (rhs.store ?? "") }
+        if let left = lhs.id.object, let right = rhs.id.object {
+            return left.compare(right) == .orderedAscending
+        }
+        return lhs.id.uri.absoluteString < rhs.id.uri.absoluteString
     }
 
     public func hash(into hasher: inout Hasher) {
         hasher.combine(id)
-        hasher.combine(entityName)
-        hasher.combine(storeIdentifier)
+        hasher.combine(name)
+        hasher.combine(store)
     }
 
-    public static func == (lhs: PersistentIdentifier, rhs: PersistentIdentifier) -> Bool {
-        lhs.id == rhs.id && lhs.entityName == rhs.entityName && lhs.storeIdentifier == rhs.storeIdentifier
+    public var hashValue: Int {
+        var hasher = Hasher()
+        hash(into: &hasher)
+        return hasher.finalize()
     }
 
-    public static func < (lhs: PersistentIdentifier, rhs: PersistentIdentifier) -> Bool {
-        lhs.id.uuidString < rhs.id.uuidString
+    private enum CodingKeys: String, CodingKey {
+        case entityName, storeIdentifier, uri
     }
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(id, forKey: .id)
-        try container.encode(entityName, forKey: .entityName)
-        try container.encode(storeIdentifier, forKey: .storeIdentifier)
+        try container.encode(name, forKey: .entityName)
+        try container.encodeIfPresent(store, forKey: .storeIdentifier)
+        try container.encode(id.uri, forKey: .uri)
     }
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.id = try container.decode(UUID.self, forKey: .id)
-        self.entityName = try container.decode(String.self, forKey: .entityName)
-        self.storeIdentifier = try container.decode(String.self, forKey: .storeIdentifier)
+        self.name = try container.decode(String.self, forKey: .entityName)
+        self.store = try container.decodeIfPresent(String.self, forKey: .storeIdentifier)
+        self.id = ID(uri: try container.decode(URL.self, forKey: .uri))
     }
-
-    public var debugDescription: String { "PersistentIdentifier(\(entityName): \(id))" }
-
-    public var hashValue: Int { id.hashValue }
-
-    private enum CodingKeys: String, CodingKey {
-        case id, entityName, storeIdentifier
-    }
-}
-
-public extension PersistentIdentifier {
-    struct ID: Codable, Equatable, Hashable {
-        public let uuid: UUID
-
-        public init(_ uuid: UUID = UUID()) { self.uuid = uuid }
-
-        public init(from decoder: Decoder) throws {
-            let container = try decoder.singleValueContainer()
-            self.uuid = try container.decode(UUID.self)
-        }
-
-        public func encode(to encoder: Encoder) throws {
-            var container = encoder.singleValueContainer()
-            try container.encode(uuid)
-        }
-
-        public func hash(into hasher: inout Hasher) { hasher.combine(uuid) }
-
-        public static func == (lhs: ID, rhs: ID) -> Bool { lhs.uuid == rhs.uuid }
-
-        public var hashValue: Int { uuid.hashValue }
-    }
-}
-
-public protocol PersistentModel: AnyObject {
-    static var entityName: String { get }
-    var persistentModelID: PersistentIdentifier { get }
-    var persistentBackingData: BackingData { get }
-    var modelContext: ModelContext? { get }
-    var isDeleted: Bool { get }
-    var hasChanges: Bool { get }
-    var schemaMetadata: Schema.PropertyMetadata? { get }
-
-    init(backingData: BackingData)
-    func getValue(forKey key: String) -> Any?
-    func setValue(_ value: Any?, forKey key: String)
-    func getTransformableValue(forKey key: String) -> Any?
-    func setTransformableValue(_ value: Any?, forKey key: String)
-    func createBackingData() -> BackingData
-}
-
-public extension PersistentModel {
-    static var entityName: String { String(describing: Self.self) }
-}
-
-public struct BackingData: Codable, Equatable, Hashable {
-    public let persistentModelID: PersistentIdentifier
-    public let metadata: [String: String]
-
-    public init(for modelID: PersistentIdentifier, metadata: [String: String] = [:]) {
-        self.persistentModelID = modelID
-        self.metadata = metadata
-    }
-
-    public func getValue(forKey key: String) -> Any? { metadata[key] }
-    public func setValue(_ value: Any?, forKey key: String) -> BackingData {
-        var newMetadata = metadata
-        if let value = value {
-            newMetadata[key] = String(describing: value)
-        } else {
-            newMetadata[key] = nil
-        }
-        return BackingData(for: persistentModelID, metadata: newMetadata)
-    }
-    public func getTransformableValue(forKey key: String) -> Any? { metadata[key] }
-    public func setTransformableValue(_ value: Any?, forKey key: String) -> BackingData {
-        var newMetadata = metadata
-        if let value = value {
-            newMetadata[key] = String(describing: value)
-        } else {
-            newMetadata[key] = nil
-        }
-        return BackingData(for: persistentModelID, metadata: newMetadata)
-    }
-}
-
-public protocol ModelExecutor {
-    var modelContext: ModelContext { get }
-    func enqueue(_ job: @escaping @Sendable () -> Void)
-}
-
-public protocol ModelActor: Actor {
-    var modelContainer: ModelContainer { get }
-    var modelContext: ModelContext { get }
-    var modelExecutor: ModelExecutor { get }
-    subscript<Result>(id: PersistentIdentifier, as type: Result.Type) -> Result? { get }
-}
-
-public protocol SerialModelExecutor: ModelExecutor {
-    func asUnownedSerialExecutor() -> UnownedSerialExecutor
-}
-
-public final class DefaultSerialModelExecutor: SerialModelExecutor, @unchecked Sendable {
-    public let modelContext: ModelContext
-    private let queue: DispatchQueue
-
-    public init(modelContext: ModelContext) {
-        self.modelContext = modelContext
-        self.queue = DispatchQueue(label: "SwiftData.ModelExecutor")
-    }
-
-    public func enqueue(_ job: @escaping @Sendable () -> Void) {
-        queue.async(execute: job)
-    }
-
-    public func asUnownedSerialExecutor() -> UnownedSerialExecutor {
-        // Full Swift concurrency not available on iOS 6
-        fatalError("UnownedSerialExecutor not available on iOS 6")
-    }
-}
-
-public protocol DataStore {
-    associatedtype Model: PersistentModel
-    var schema: Schema { get }
-    var identifier: String { get }
-    var configuration: DataStoreConfiguration { get }
-    func fetch(_ request: DataStoreFetchRequest<Model>) throws -> DataStoreFetchResult<Model>
-    func fetchCount(_ request: DataStoreFetchRequest<Model>) throws -> Int
-    func fetchIdentifiers(_ request: DataStoreFetchRequest<Model>) throws -> [PersistentIdentifier]
-    func save(_ request: DataStoreSaveChangesRequest<Model>) throws -> DataStoreSaveChangesResult
-    func initializeState(for configuration: DataStoreConfiguration) throws
-    func invalidateState(for configuration: DataStoreConfiguration) throws
-    func erase() throws
-    func cachedSnapshots(for editingState: EditingState) -> [DataStoreSnapshot]
-}
-
-public protocol DataStoreConfiguration {
-    var schema: Schema { get }
-    var name: String { get }
-    func validate() throws
-}
-
-public protocol DataStoreBatching {
-    associatedtype Model: PersistentModel
-    func delete(_ request: DataStoreBatchDeleteRequest<Model>) throws
-}
-
-public struct DataStoreFetchRequest<Model: PersistentModel> {
-    public let descriptor: FetchDescriptor<Model>
-    public let editingState: EditingState?
-}
-
-public struct DataStoreFetchResult<Model: PersistentModel> {
-    public let descriptor: FetchDescriptor<Model>
-    public let fetchedSnapshots: [DataStoreSnapshot]
-    public let relatedSnapshots: [DataStoreSnapshot]
-}
-
-public struct DataStoreSaveChangesRequest<Model: PersistentModel> {
-    public let inserted: [BackingData]
-    public let updated: [BackingData]
-    public let deleted: [BackingData]
-    public let editingState: EditingState
-}
-
-public struct DataStoreSaveChangesResult {
-    public let storeIdentifier: String
-    public let snapshotsToReregister: [DataStoreSnapshot]
-    public let remappedIdentifiers: [PersistentIdentifier: PersistentIdentifier]
-}
-
-public struct DataStoreBatchDeleteRequest<Model: PersistentModel> {
-    public let predicate: Predicate<Model>?
-    public let includeSubclasses: Bool
-    public let editingState: EditingState
-}
-
-public struct DataStoreConfigurationImpl: DataStoreConfiguration {
-    public let schema: Schema
-    public let name: String
-
-    public func validate() throws {
-        if name.isEmpty { throw SwiftDataError.configurationFileNameContainsInvalidCharacters }
-    }
-}
-
-public struct DataStoreError: Error, Equatable, Hashable {
-    public static let unsupportedFeature = DataStoreError("unsupportedFeature")
-    public static let preferInMemorySort = DataStoreError("preferInMemorySort")
-    public static let preferInMemoryFilter = DataStoreError("preferInMemoryFilter")
-    public static let invalidPredicate = DataStoreError("invalidPredicate")
-
-    let code: String
-    private init(_ code: String) { self.code = code }
-
-    public static func == (lhs: DataStoreError, rhs: DataStoreError) -> Bool { lhs.code == rhs.code }
-    public func hash(into hasher: inout Hasher) { hasher.combine(code) }
-}
-
-public struct DataStoreSnapshot: Codable, Equatable, Hashable {
-    public let persistentIdentifier: PersistentIdentifier
-    public let values: [String: String]
-
-    public init(from backingData: BackingData, relatedBackingDatas: [BackingData] = []) {
-        self.persistentIdentifier = backingData.persistentModelID
-        self.values = backingData.metadata
-    }
-
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.persistentIdentifier = try container.decode(PersistentIdentifier.self, forKey: .persistentIdentifier)
-        self.values = try container.decode([String: String].self, forKey: .values)
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(persistentIdentifier, forKey: .persistentIdentifier)
-        try container.encode(values, forKey: .values)
-    }
-
-    public func copy(persistentIdentifier: PersistentIdentifier, remappedIdentifiers: [PersistentIdentifier: PersistentIdentifier]) -> DataStoreSnapshot {
-        return DataStoreSnapshot(from: BackingData(for: persistentIdentifier, metadata: values))
-    }
-
-    private enum CodingKeys: String, CodingKey {
-        case persistentIdentifier, values
-    }
-}
-
-public struct DataStoreSnapshotCodingKey: CodingKey, Equatable, Hashable {
-    public let stringValue: String
-    public let intValue: Int?
-
-    public init?(stringValue: String) { self.stringValue = stringValue; self.intValue = nil }
-    public init?(intValue: Int) { self.stringValue = "\(intValue)"; self.intValue = intValue }
-
-    public static let persistentIdentifier = DataStoreSnapshotCodingKey(stringValue: "persistentIdentifier")!
-    public static let modeledProperty = DataStoreSnapshotCodingKey(stringValue: "modeledProperty")!
 }

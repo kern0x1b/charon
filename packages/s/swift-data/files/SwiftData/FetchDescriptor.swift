@@ -1,124 +1,71 @@
-// FetchDescriptor.swift
-// SwiftData FetchDescriptor implementation over Core Data for iOS 6
+// What to read out of a store: which rows, in what order, how many.
+//
+// The predicate and the sort order are not here: they are `Foundation.Predicate` and
+// `Foundation.SortDescriptor`, which are Foundation's rows (`swiftlang/swift-foundation:
+// Sources/FoundationEssentials/Predicate/Predicate.swift`, `owner-registry = swift-foundation` in
+// the corpus) and which the port's Foundation has not yet - `Predicate` and `SortDescriptor` are
+// declared in neither the runtime's Foundation overlay nor the device's Foundation.framework, and
+// `packages/s/swift-foundation` is not in the shared store. `FetchDescriptor.init(predicate:
+// sortBy:)`, `.predicate`, `.sortBy`, `DataStoreBatchDeleteRequest.predicate` and
+// `HistoryDescriptor.predicate`/`.sortBy` are therefore not in this delivery, and the eight rows
+// are registered `missing` with that reason. Everything else a descriptor holds is here, and
+// `init()` takes no arguments, so a fetch of every row of an entity works today.
 
-@preconcurrency import Foundation
-import CoreData
+import Foundation
 
-public struct FetchDescriptor<T: PersistentModel>: Equatable, Hashable {
-    public let predicate: Predicate<T>?
-    public let sortBy: [SortDescriptor<T>]
-    public let propertiesToFetch: [String]?
-    public let relationshipKeyPathsForPrefetching: [String]?
+public struct FetchDescriptor<T> where T: PersistentModel {
+    /// How many rows to read, and how many to skip before the first. Both are the store's own
+    /// limits, applied where the store applies them.
     public var fetchLimit: Int?
-    public var fetchOffset: Int
-    public let includePendingChanges: Bool
+    public var fetchOffset: Int?
 
-    public init(
-        predicate: Predicate<T>? = nil,
-        sortBy: [SortDescriptor<T>] = [],
-        propertiesToFetch: [String]? = nil,
-        relationshipKeyPathsForPrefetching: [String]? = nil,
-        fetchLimit: Int? = nil,
-        fetchOffset: Int = 0,
-        includePendingChanges: Bool = true
-    ) {
-        self.predicate = predicate
-        self.sortBy = sortBy
-        self.propertiesToFetch = propertiesToFetch
-        self.relationshipKeyPathsForPrefetching = relationshipKeyPathsForPrefetching
-        self.fetchLimit = fetchLimit
-        self.fetchOffset = fetchOffset
-        self.includePendingChanges = includePendingChanges
-    }
+    /// Whether the rows this context has changed but not saved are in the answer. `true` is what
+    /// `NSFetchRequest.includesPendingChanges` means, and the release has had it since iOS 3.0.
+    public var includePendingChanges: Bool
 
-    public init(predicate: Predicate<T>?, sortBy: [SortDescriptor<T>]) {
-        self.predicate = predicate
-        self.sortBy = sortBy
-        self.propertiesToFetch = nil
-        self.relationshipKeyPathsForPrefetching = nil
+    /// The properties to read: a row comes back with these, and the rest fault, which is what
+    /// Core Data does with a row whose columns were not fetched.
+    public var propertiesToFetch: [PartialKeyPath<T>]
+
+    /// The relationships to bring in with the row.
+    public var relationshipKeyPathsForPrefetching: [PartialKeyPath<T>]
+
+    public init() {
         self.fetchLimit = nil
-        self.fetchOffset = 0
+        self.fetchOffset = nil
         self.includePendingChanges = true
+        self.propertiesToFetch = []
+        self.relationshipKeyPathsForPrefetching = []
     }
+}
 
+extension FetchDescriptor: Equatable {
     public static func == (lhs: FetchDescriptor<T>, rhs: FetchDescriptor<T>) -> Bool {
-        lhs.predicate == rhs.predicate && lhs.sortBy == rhs.sortBy && lhs.fetchLimit == rhs.fetchLimit && lhs.fetchOffset == rhs.fetchOffset && lhs.includePendingChanges == rhs.includePendingChanges
-    }
-
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(predicate)
-        hasher.combine(sortBy)
-        hasher.combine(fetchLimit)
-        hasher.combine(fetchOffset)
-        hasher.combine(includePendingChanges)
-    }
-
-    internal var fetchRequest: NSFetchRequest<NSManagedObject> {
-        let request = NSFetchRequest<NSManagedObject>(entityName: T.entityName)
-        if let predicate = predicate {
-            request.predicate = predicate.nsPredicate
-        }
-        request.sortDescriptors = sortBy.map { $0.nsSortDescriptor }
-        if let limit = fetchLimit { request.fetchLimit = limit }
-        if fetchOffset > 0 { request.fetchOffset = fetchOffset }
-        request.includesPendingChanges = includePendingChanges
-        if let properties = propertiesToFetch { request.propertiesToFetch = properties }
-        if let prefetch = relationshipKeyPathsForPrefetching { request.relationshipKeyPathsForPrefetching = prefetch }
-        return request
+        lhs.fetchLimit == rhs.fetchLimit && lhs.fetchOffset == rhs.fetchOffset
+            && lhs.includePendingChanges == rhs.includePendingChanges
+            && lhs.propertiesToFetch.map { "\($0)" } == rhs.propertiesToFetch.map { "\($0)" }
+            && lhs.relationshipKeyPathsForPrefetching.map { "\($0)" }
+                == rhs.relationshipKeyPathsForPrefetching.map { "\($0)" }
     }
 }
 
-public struct SortDescriptor<Root>: Sendable, Codable, Equatable, Hashable {
-    public let keyPath: String
-    public let order: SortOrder
+extension FetchDescriptor: @unchecked Sendable {}
 
-    public init(keyPath: String, order: SortOrder = .forward) {
-        self.keyPath = keyPath
-        self.order = order
-    }
-
-    public var nsSortDescriptor: NSSortDescriptor {
-        NSSortDescriptor(key: keyPath, ascending: order == .forward)
-    }
-}
-
-public enum SortOrder: Sendable, Codable, Equatable, Hashable {
-    case forward, reverse
-}
-
-public struct Predicate<Root>: Equatable, Hashable {
-    internal let nsPredicate: NSPredicate
-
-    public init(_ build: () -> NSPredicate) {
-        self.nsPredicate = build()
-    }
-
-    public static func == (lhs: Predicate<Root>, rhs: Predicate<Root>) -> Bool {
-        lhs.nsPredicate.isEqual(rhs.nsPredicate)
-    }
-
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(nsPredicate.predicateFormat)
-    }
-}
-
-public struct FetchResultsCollection<Element: PersistentModel>: Sequence {
-    public let models: [Element]
-    public var startIndex: Int { models.startIndex }
-    public var endIndex: Int { models.endIndex }
+/// A page of a fetch, so that a program can walk a store's rows without holding them all. A
+/// `RandomAccessCollection` over one page, which is what it is.
+public struct FetchResultsCollection<Element>: RandomAccessCollection {
     public typealias Index = Int
-    public typealias SubSequence = ArraySlice<Element>
-    public typealias Iterator = IndexingIterator<[Element]>
+    public typealias Indices = Range<Int>
+    public typealias Iterator = IndexingIterator<FetchResultsCollection<Element>>
+    public typealias SubSequence = Slice<FetchResultsCollection<Element>>
 
-    public init(models: [Element]) {
-        self.models = models
-    }
+    public var startIndex: Int { 0 }
+    public var endIndex: Int { elements.count }
+    public subscript(position: Int) -> Element { elements[position] }
 
-    public subscript(position: Int) -> Element {
-        models[position]
-    }
+    let elements: [Element]
 
-    public func makeIterator() -> Iterator {
-        models.makeIterator()
+    init(_ elements: [Element]) {
+        self.elements = elements
     }
 }
