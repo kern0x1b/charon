@@ -124,9 +124,24 @@ actions are all writable against the release and against UIKit.
 
 ## What is carried, and what is the wall
 
-**24 classes implemented, in four objects by the release that first exports them, and 7 classes
-`absent` at the seam.** The numbers are the registry's own, counted from
-`registry/CarPlay/ios12.json`; they are the only count in this file. The implemented ones:
+**23 classes implemented, 7 `absent` at the seam, and 44 with no registry entry at all** -- the 74
+classes the SDK 26.2 declares and this port does not have, accounted for exactly. **These numbers are
+generated from `registry/CarPlay/*.json` and not written by hand, so they cannot drift again.** The
+implemented ones, by the object that carries them:
+
+| object | classes |
+| --- | --- |
+| 12.0 | CPWindow CPTemplate CPBarButton CPGridButton CPMapButton CPTravelEstimates CPManeuver CPAlertAction CPNavigationAlert |
+| 12.0 | CPListItem CPListSection CPListTemplate CPGridTemplate CPMapTemplate CPInterfaceController |
+| 12.0 | CPActionSheetTemplate CPAlertTemplate CPImageSet CPSearchTemplate CPTrip CPRouteChoice CPTripPreviewTextConfiguration |
+| 16.0 | CPButton CPTextButton |
+
+The 8 `absent`, each with its own reason in its row: `CPListItem`, `CPNavigationSession`, `CPSessionConfiguration`, `CPTemplateApplicationDashboardScene`, `CPTemplateApplicationInstrumentClusterScene`, `CPTemplateApplicationScene`, `CPVoiceControlState`, `CPVoiceControlTemplate`.
+
+The 44 with **no registry entry at all** are the rest of the corpus. They are not `absent` -- they
+draw in-app like these do and nothing about them needs a car, so calling them absent would be a false
+claim -- and they are simply not written yet, so their ledger rows stay `missing`, which is the honest
+word for a member nobody carries. The objects they go in, measured:
 
 | object | classes |
 | --- | --- |

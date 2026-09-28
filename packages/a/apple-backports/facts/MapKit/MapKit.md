@@ -326,10 +326,6 @@ it. The band's own R4 removal holds: `CPTemplate.title` is gone, because the SDK
   `_MKMapCameraZoomDefault` has there. It is not a distance, it is the end of a zoom range that
   the range does not bound, which is why the one-sided initialisers leave the other end at it and
   the getter gives it back unchanged.
-- The `MKPointOfInterestCategory*` strings are **not** in this delivery. Their values have to be
-  read out of a real cache, and the arm64e caches this machine holds are stored as a header file
-  plus sixty numbered sub-caches, which `tools/cfconst.py` does not read; reading them is the next
-  step and is a whole object file of its own (two, by release).
 
 ## The checks
 
