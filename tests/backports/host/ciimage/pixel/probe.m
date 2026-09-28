@@ -245,6 +245,32 @@ static void reportContextOwner(void)
     }
 }
 
+// The two rows the properties and the unpremultiply answer, asked over a field with an alpha in it and
+// over a field that has no end, and over the round trip between them.
+static void reportPropertiesAndUnpremultiply(void)
+{
+    CGRect bounds = CGRectMake(0, 0, 6, 4);
+    CIImage *finite = [[[CIImage alloc] initWithColor:[[CIColor alloc] initWithRed:0.6 green:0.3 blue:0.9 alpha:0.5]]
+        imageByCroppingToRect:bounds];
+    CIImage *infinite = [[CIImage alloc] initWithColor:[[CIColor alloc] initWithRed:0.6 green:0.3 blue:0.9 alpha:0.5]];
+
+    put_box(@"props source", finite.extent);
+    CIImage *set = [finite imageBySettingProperties:@{@"charonProbe": @"one"}];
+    put(@"props distinct %d", set != finite);
+    put(@"props count %lu", (unsigned long)set.properties.count);
+    put(@"props value %@", set.properties[@"charonProbe"] ?: @"(none)");
+    put_box(@"props extent", set.extent);
+    put_bytes(@"props pixels", render([set imageByCroppingToRect:bounds]));
+    put(@"props source still %lu", (unsigned long)finite.properties.count);
+
+    put_box(@"unpre finite extent", [finite imageByUnpremultiplyingAlpha].extent);
+    put_bytes(@"unpre finite", render([[finite imageByUnpremultiplyingAlpha] imageByCroppingToRect:bounds]));
+    put_pixels(@"unpre finite", render([[finite imageByUnpremultiplyingAlpha] imageByCroppingToRect:bounds]));
+    put_bytes(@"unpre round trip", render([[[finite imageByPremultiplyingAlpha] imageByUnpremultiplyingAlpha]
+        imageByCroppingToRect:bounds]));
+    put(@"unpre infinite infinite %d", CGRectIsInfinite([infinite imageByUnpremultiplyingAlpha].extent));
+}
+
 // A colour, measured as the numbers the colour object holds and as the bytes an image of that colour
 // renders to. The named colours and the two spellings of the colour-space initialisers are asked with
 // the same components, so a conversion that is not the system's shows up as a different pixel.
@@ -378,6 +404,7 @@ int main(void)
         [spaced setImage:field(extent)];
         report(@"spaced", spaced);
         reportContextOwner();
+        reportPropertiesAndUnpremultiply();
         reportAlgebra();
         reportColors();
         reportRepresentations();
