@@ -102,6 +102,8 @@ extension Tips {
         public var cloudKitContainer: ConfigurationOption.CloudKitContainer?
         /// Whether the app has configured its tips yet, which is what a second `configure` finds.
         public private(set) var configured = false
+        /// Which kind of tip each id belongs to, filled in when the datastore is told about a tip.
+        public private(set) var kinds: [String: String] = [:]
 
         /// The file the datastore is kept in, which is the app's own container.
         public let defaultURL: URL
@@ -159,6 +161,17 @@ extension Tips {
         public mutating func delete(id: String) {
             donations[id] = nil
             save()
+        }
+
+        /// The ids of every tip the store has been told about that belongs to one of the given
+        /// kinds, which is what the framework's type-taking test helpers filter over.
+        public func tipIDs(of kinds: [any Tip.Type]) -> [String] {
+            return self.kinds.filter { wanted in kinds.contains { String(describing: $0) == wanted.value } }.keys.sorted()
+        }
+
+        public mutating func invalidate(_ tipID: String, of kind: String, reason: Tips.InvalidationReason) {
+            kinds[tipID] = kind
+            invalidate(tipID, reason: reason)
         }
 
         public mutating func invalidate(_ tipID: String, reason: Tips.InvalidationReason) {
@@ -305,18 +318,16 @@ extension Tips {
     }
 
     /// Put the given tips back in the list, which is what a test starts from.
-    public static func showTipsForTesting(_ tips: [AnyTip]) {
-        for tip in tips { Store.shared.restore(tip.id) }
+    /// The framework takes *types* (`TipKit-ios.swiftinterface:1003`), so a test writes
+    /// `showTipsForTesting([MyTip.self])` and every tip of that kind comes back, not the one instance
+    /// the caller happened to hold.
+    public static func showTipsForTesting(_ tips: [any Tip.Type]) {
+        for id in Store.shared.tipIDs(of: tips) { Store.shared.restore(id) }
     }
 
-    /// Put every tip the app has registered back in the list.
-    public static func showAllTipsForTesting() {
-        Store.shared.restoreAll()
-    }
-
-    /// Take the given tips off the list, which is what a test walks through.
-    public static func hideTipsForTesting(_ tips: [AnyTip]) {
-        for tip in tips { Store.shared.invalidate(tip.id, reason: .tipClosed) }
+    /// Take every tip of the given kinds off the list, which is what a test walks through.
+    public static func hideTipsForTesting(_ tips: [any Tip.Type]) {
+        for id in Store.shared.tipIDs(of: tips) { Store.shared.invalidate(id, reason: .tipClosed) }
     }
 
     /// Take every tip the app has registered off the list.

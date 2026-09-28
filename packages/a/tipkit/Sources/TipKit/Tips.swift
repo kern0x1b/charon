@@ -82,8 +82,12 @@ public struct AnyTip: Tip {
     public let actions: [Tips.Action]
     public let rules: [Tips.Rule]
     public let options: [Tips.TipOption]
+    /// The kind of tip this was erased from, which is what the framework's type-taking test helpers
+    /// filter the datastore over (`Tips.showTipsForTesting(_: [any Tip.Type])`).
+    public let kind: String
 
     public init(_ tip: some Tip) {
+        self.kind = String(describing: type(of: tip))
         self.id = tip.id
         self.title = tip.title
         self.message = tip.message
@@ -106,7 +110,9 @@ public struct AnyTip: Tip {
         return statusUpdates.map { status in Tips.Store.shared.shouldDisplay(self) && status == .available }
     }
 
-    public func invalidate(reason: Tips.InvalidationReason) { Tips.Store.shared.invalidate(id, reason: reason) }
+    public func invalidate(reason: Tips.InvalidationReason) {
+        Tips.Store.shared.invalidate(id, of: kind, reason: reason)
+    }
     public func resetEligibility() async { Tips.Store.shared.reset(id) }
 }
 
@@ -344,15 +350,36 @@ public enum Tips {
     }
 
     /// An option on a rule's parameter, which is the parameter's own.
-    public struct ParameterOption: Sendable {
+    ///
+    /// A marker, and the only value the framework gives one is `.transient`
+    /// (`TipKit-ios.swiftinterface:250,258`) -- a `static var` of this type, not a `Bool` an
+    /// initialiser takes. So a rule says `options: .transient`, and a parameter asks each option in
+    /// turn whether it is that one.
+    public struct ParameterOption: Sendable, Equatable {
         /// Whether the value the parameter holds is not kept between runs.
-        public let transient: Bool
+        public static var transient: ParameterOption { return ParameterOption(.transient) }
 
-        public init(transient: Bool) { self.transient = transient }
+        enum Kind: String, Sendable {
+            case transient
+        }
+
+        let kind: Kind
+
+        init(_ kind: Kind) { self.kind = kind }
+
+        public static func == (a: ParameterOption, b: ParameterOption) -> Bool { return a.kind == b.kind }
+        public func hash(into hasher: inout Hasher) { hasher.combine(kind) }
+        public var hashValue: Int { return kind.hashValue }
     }
 
     /// A parameter of a rule: a value the rule reads out of the donations, and what to do when it is
     /// of the wrong type.
+    ///
+    /// The two initialisers are the framework's own (`TipKit-ios.swiftinterface:241,243`): one takes
+    /// the key path into the donation type the value is read from, the other the enclosing type's
+    /// name and the value's, and both take the options **variadically**, which is what makes
+    /// `options: .transient` the way a rule writes it. `wrappedValue` is a `var`, as the framework's
+    /// is, so a rule may change the value between runs.
     public struct Parameter<Value>: Identifiable, Sendable where Value: Decodable, Value: Encodable, Value: Sendable {
         public typealias ID = String
         public typealias Value = Value
@@ -360,20 +387,27 @@ public enum Tips {
         /// The name the donation and the rule agree on.
         public let id: String
         /// The value the rule reads.
-        public let wrappedValue: Value
-        /// Whether the value is not kept between runs.
+        public var wrappedValue: Value
+        /// Whether the value is not kept between runs, which is what `.transient` says.
         public let isTransient: Bool
 
-        public init(_ id: String, _ defaultValue: Value, _ options: ParameterOption? = nil) {
-            self.id = id
-            self.wrappedValue = defaultValue
-            self.isTransient = options?.transient ?? false
+        public init<T>(_ keyPath: KeyPath<T, Value>, _ initialValue: Value, _ options: ParameterOption...) {
+            self.id = String(describing: keyPath)
+            self.wrappedValue = initialValue
+            self.isTransient = options.contains(.transient)
         }
 
-        public init(_ id: String, _ defaultValue: Value, _ transient: Bool, _ options: ParameterOption? = nil) {
+        public init(_ enclosingInstance: (some Any).Type, _ name: String, _ initialValue: Value,
+                    _ options: ParameterOption...) {
+            self.id = "\(enclosingInstance).\(name)"
+            self.wrappedValue = initialValue
+            self.isTransient = options.contains(.transient)
+        }
+
+        public init(_ id: String, _ initialValue: Value, _ options: ParameterOption...) {
             self.id = id
-            self.wrappedValue = defaultValue
-            self.isTransient = transient || (options?.transient ?? false)
+            self.wrappedValue = initialValue
+            self.isTransient = options.contains(.transient)
         }
     }
 

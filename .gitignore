@@ -14,3 +14,12 @@ device.*.env
 **/shots/
 *-shots/
 tests/backports/emulate/calls/xmake-addons.lock
+
+# A hand-run Swift probe writes its compiled module next to the sources it was made from; a stale
+# one there is what a later `-I` on that directory reads instead of the source. The recipes compile
+# the module from the sources, so these are never needed (AGENTS.md, Conventions: build artifacts are
+# never committed).
+*.swiftmodule
+*.swiftdoc
+*.swiftsourceinfo
+*.abi.json
