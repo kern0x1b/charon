@@ -1,3 +1,4 @@
+#import "CharonCMTagSupport.h"
 #import "CharonCMTag26.h"
 #import <objc/runtime.h>
 #include <stdlib.h>
@@ -9,138 +10,10 @@
 
 static void charon_insert_all(CharonCMTagCollection *into, CharonCMTagCollection *from);
 
-static BOOL charon_tag_less(CMTag left, CMTag right)
-{
-    if (left.category != right.category)
-        return left.category < right.category;
-    if (left.dataType != right.dataType)
-        return left.dataType < right.dataType;
-    return left.value < right.value;
-}
-
-static BOOL charon_tag_equal(CMTag left, CMTag right)
-{
-    return left.category == right.category && left.dataType == right.dataType && left.value == right.value;
-}
-
-@implementation CharonCMTagCollection {
-    CMTag *_tags;
-    NSUInteger _count;
-    NSUInteger _capacity;
-}
-
-@synthesize charon_count = _count;
-
-- (instancetype)charon_initWithTags:(const CMTag *)tags count:(NSUInteger)count __attribute__((objc_method_family(init)))
-{
-    self = [super init];
-    if (!self)
-        return nil;
-    if (count) {
-        _tags = malloc(count * sizeof *_tags);
-        if (!_tags)
-            return nil;
-        _capacity = count;
-        for (NSUInteger index = 0; index < count; index++)
-            [self charon_insert:tags[index]];
-    }
-    return self;
-}
-
-- (void)dealloc
-{
-    free(_tags);
-    _tags = NULL;
-    _count = 0;
-    _capacity = 0;
-}
-
-- (const CMTag *)charon_tags
-{
-    return _tags;
-}
-
-// The index of the first tag not less than the one asked for, and whether that is the tag itself.
-- (NSUInteger)charon_indexOfTag:(CMTag)tag
-{
-    NSUInteger low = 0, high = _count;
-    while (low < high) {
-        NSUInteger middle = low + (high - low) / 2;
-        if (charon_tag_less(_tags[middle], tag))
-            low = middle + 1;
-        else
-            high = middle;
-    }
-    return low;
-}
-
-- (BOOL)charon_contains:(CMTag)tag
-{
-    if (!CMTagIsValid(tag))
-        return NO;
-    NSUInteger at = [self charon_indexOfTag:tag];
-    return at < _count && charon_tag_equal(_tags[at], tag);
-}
-
-- (BOOL)charon_insert:(CMTag)tag
-{
-    if ([self charon_contains:tag])
-        return YES;
-    if (_count == _capacity) {
-        NSUInteger capacity = _capacity ? _capacity * 2 : 8;
-        CMTag *tags = realloc(_tags, capacity * sizeof *tags);
-        if (!tags)
-            return NO;
-        _tags = tags;
-        _capacity = capacity;
-    }
-    NSUInteger at = [self charon_indexOfTag:tag];
-    memmove(_tags + at + 1, _tags + at, (_count - at) * sizeof *_tags);
-    _tags[at] = tag;
-    _count++;
-    return YES;
-}
-
-- (BOOL)charon_remove:(CMTag)tag
-{
-    NSUInteger at = [self charon_indexOfTag:tag];
-    if (at >= _count || !charon_tag_equal(_tags[at], tag))
-        return NO;
-    memmove(_tags + at, _tags + at + 1, (_count - at - 1) * sizeof *_tags);
-    _count--;
-    return YES;
-}
-
-- (NSUInteger)charon_removeCategory:(CMTagCategory)category
-{
-    CMTag probe = {category, kCMTagDataType_Invalid, 0};
-    NSUInteger at = [self charon_indexOfTag:probe], end = at;
-    while (end < _count && _tags[end].category == category)
-        end++;
-    if (end > at) {
-        memmove(_tags + at, _tags + end, (_count - end) * sizeof *_tags);
-        _count -= end - at;
-    }
-    return end - at;
-}
-
-- (void)charon_removeAll
-{
-    _count = 0;
-}
-
-- (NSUInteger)charon_countOfCategory:(CMTagCategory)category
-{
-    CMTag probe = {category, kCMTagDataType_Invalid, 0};
-    NSUInteger at = [self charon_indexOfTag:probe], count = 0;
-    while (at < _count && _tags[at].category == category) {
-        count++;
-        at++;
-    }
-    return count;
-}
-
-@end
+// The class and its storage are in CharonCMTagSupport.m: on the 16.4 SDK the collection's tags can
+// only be read through the functions below, which live in this object, so an object that needs them has
+// to be able to reach the storage without calling this object's API. The rules the class and the group
+// share - the comparison and the "every wanted tag is carried" test - are there too.
 
 const CMTag kCMTagInvalid = {kCMTagCategory_Undefined, kCMTagDataType_Invalid, 0};
 

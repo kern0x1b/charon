@@ -99,15 +99,6 @@ CF_EXPORT const CMTag kCMTagInvalid CF_REFINED_FOR_SWIFT;
 #endif
 
 // The port's own class behind the bridged reference, named so it cannot collide with the SDK's.
-@interface CharonCMTagCollection : NSObject
-@property (nonatomic, readonly) NSUInteger charon_count;
-- (instancetype)charon_initWithTags:(const CMTag *)tags count:(NSUInteger)count __attribute__((objc_method_family(init)));
-- (BOOL)charon_contains:(CMTag)tag;
-- (BOOL)charon_insert:(CMTag)tag;
-- (BOOL)charon_remove:(CMTag)tag;
-- (NSUInteger)charon_removeCategory:(CMTagCategory)category;
-- (void)charon_removeAll;
-- (NSUInteger)charon_countOfCategory:(CMTagCategory)category;
-- (NSUInteger)charon_indexOfTag:(CMTag)tag;
-- (const CMTag *)charon_tags;
-@end
+// The collection's class is declared in CharonCMTagSupport.h, next to its implementation, so
+// this header carries only the tag types it needs.
+

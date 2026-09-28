@@ -32,7 +32,8 @@ done
 # The CMTagCollection family: the port's file as its own image, so its names are reached through
 # dlopen(RTLD_LOCAL | RTLD_FIRST) while the probe's own calls reach the host's CoreMedia. No renaming,
 # no -D, and no system header is touched.
-xcrun clang -dynamiclib -fobjc-arc $quiet -I"$AV" -DkCMTagInvalid=port_kCMTagInvalid \
+xcrun clang -c -fobjc-arc $quiet -I"$AV" -o "$BUILD/CharonCMTagSupport.o" "$AV/CharonCMTagSupport.m"
+xcrun clang -dynamiclib -fobjc-arc $quiet -I"$AV" -DkCMTagInvalid=port_kCMTagInvalid "$BUILD/CharonCMTagSupport.o" \
     -DkCMTagCategoryKey=port_kCMTagCategoryKey -DkCMTagValueKey=port_kCMTagValueKey -DkCMTagDataTypeKey=port_kCMTagDataTypeKey -framework Foundation -framework CoreMedia -framework CoreVideo \
     -o "$BUILD/libCharonCMTag.dylib" "$AV/CMTagCollection17.m"
 xcrun clang -fobjc-arc $quiet "$here/tagcollectionimage.m" -framework CoreMedia -framework CoreVideo -framework Foundation \
