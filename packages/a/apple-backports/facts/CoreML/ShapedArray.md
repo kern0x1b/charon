@@ -107,6 +107,32 @@ The third is the one that looks like a bug in Apple and is not: the host's subsc
 and `String(describing:)` of an `Any?` that holds a value describes as `Optional(value)`. The port's
 returned `Any`, which describes as the bare value, is the divergence.
 
+### Why `missingCount` of 0 is not strange, and the two forms Apple keeps apart
+
+`Column<Int?>` has `WrappedElement == Int?`, so its `contents:` is `[Int??]` and a `nil` written in a
+literal goes in as `.some(nil)` — a **value** to Apple, not a missing one. The ordinary form has
+`WrappedElement == Int`, so the same literal is a genuine missing value. Both measured, on Apple's own
+module:
+
+    let a = Column<Int?>(name: "a", contents: [1, nil, 3])
+    let b = Column<Int>(name: "a", contents: [1, nil, 3])
+
+    optional-form  missing=0 wrapped=Optional<Int> count=3
+    ordinary-form  missing=1 wrapped=Int count=3
+
+**Apple keeps the two forms apart, and the port's unwrapping collapses them into one.** The port
+answers `Int` and `missingCount` 1 for *both*, because `_withoutOptionalLayer` strips the optional
+before the storage line sees it and `_wrappedType(of:)` strips it for the reported type. So the
+optional form, where Apple says "three values, none missing, of type `Optional<Int>`", becomes in the
+port "three values, one missing, of type `Int`" — a different column by Apple's own definition of the
+difference.
+
+That is the whole of the divergence, and it is why removing the unwrapping is the fix rather than a
+change of detail. The two cases that pin it are one per form: an optional-form column reporting
+`Optional<Int>` and a `missingCount` of 0, and an ordinary-form column reporting `Int` and 1. The port
+must match both, and a single test of one form cannot tell a port that keeps them apart from one that
+has merged them.
+
 **`isNil(at:)` has no direct oracle.** It is `internal` in the SDK, so a program outside the module
 cannot call it and the control above cannot reach it. The port's `isNil(at:)` is therefore only
 comparable through the host differential, which is weaker evidence than a control on pure Apple, and
