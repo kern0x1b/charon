@@ -587,6 +587,49 @@ function sources(root, library)
     return found
 end
 
+-- The protocol metadata a framework carries, which the port does not: on Apple a framework's protocols are
+-- in the framework, so NSProtocolFromString and -conformsToProtocol: work on a class an application never saw,
+-- and the port emits a protocol's metadata only where a class adopts it. An implemented protocol row nothing
+-- adopts is a row no build answers for, and check_registry holds it red (measured 2026-09-28: 73 such rows,
+-- coordination/registry-gap-2026-09-28.tsv). So the build writes one object source per library per release
+-- band - <Library>Protocols<release>.m - that names every protocol the band carries, which is what makes clang
+-- emit __OBJC_PROTOCOL_$_<name> into the object. One file per band, so every symbol in it first appears in one
+-- release and release-split has nothing to flag; one io.writefile per file, so no redirection can truncate it.
+function protocol_sources(root, library, folder, umbrella)
+    local rows = registry(root)
+    local bands = {}
+    for api, entry in pairs(rows) do
+        if entry.kind == "protocol" and entry.status == "implemented" then
+            local introduced = entry.introduced or "0"
+            bands[introduced] = bands[introduced] or {}
+            table.insert(bands[introduced], api)
+        end
+    end
+    local written = {}
+    for introduced, names in pairs(bands) do
+        table.sort(names)
+        local file = path.join(folder, library.name .. "Protocols" .. introduced .. ".m")
+        local text = string.format([[// %sProtocols%s.m — written by modules/apple/backports.lua, not by hand.
+// Every @protocol() below is named so clang emits __OBJC_PROTOCOL_$_<name> into this object, which is the
+// metadata the release carries for that protocol in %s.framework itself. One file per release the rows
+// arrived in, so every symbol here first appears in one release and release-split is clean.
+#import <%s>
+
+static void charon_%s_protocols(void) __attribute__((used));
+static void charon_%s_protocols(void)
+{
+]], library.name, introduced, library.name, library.name, library.name)
+        for _, name in ipairs(names) do
+            text = text .. string.format("    (void)@protocol(%s);\n", name)
+        end
+        text = text .. "}\n"
+        io.writefile(file, text)
+        table.insert(written, file)
+    end
+    table.sort(written)
+    return written
+end
+
 local function names_a_class(symbols)
     for _, symbol in ipairs(symbols) do
         if symbol:startswith("_OBJC_CLASS_$_") or symbol:startswith("_OBJC_METACLASS_$_") or symbol:startswith("_OBJC_IVAR_$_") then
@@ -641,6 +684,16 @@ local function compiled(opt)
     local pending = {}
     for _, library in ipairs(LIBRARIES) do
         objects[library.name] = {}
+        -- the protocol metadata the framework carries and the port does not: one generated source per band
+        local generated = path.join(opt.builddir, "protocols", library.folder)
+        os.mkdir(generated)
+        for _, source in ipairs(protocol_sources(opt.root, library, generated, library.frameworks[1])) do
+            local object = path.join(opt.builddir, "objects", library.folder, "protocols", path.filename(source) .. ".o")
+            os.mkdir(path.directory(object))
+            pending[#pending + 1] = {opt = opt, source = source, object = object}
+            table.insert(objects[library.name], object)
+            origins[object] = source
+        end
         for _, source in ipairs(sources(opt.root, library)) do
             local object
             if placed[source] then
