@@ -41,7 +41,12 @@ def order(fields, category_signed, value_bits):
                 number = struct.unpack(">d", struct.pack(">Q", value))[0]
                 # a NaN becomes its own sentinel, so two NaNs are equal to each other and, with the
                 # rule below, to everything else; -0.0 becomes +0.0, which is what the host answers
-                third = float("-inf") if number != number else (0.0 if number == 0.0 else number)
+                if number != number:
+                    # a NaN is a position for own-type and an equality for own-type-nan-equal; the
+                    # two names must reach different code, which the score check above now proves
+                    third = float("-inf") if value_bits == "own-type" else 0.0
+                else:
+                    third = 0.0 if number == 0.0 else number
             elif dataType == 2:
                 third = value - (1 << 64) if value & 0x8000000000000000 else value
             else:
@@ -52,12 +57,20 @@ def order(fields, category_signed, value_bits):
         return tuple(raw[i] for i in fields)
     return key
 
+def is_nan(tag):
+    """A NaN read out of the tag itself, not out of a key: a key cannot carry the fact, because the
+    sentinel that would carry it is a number and the host's answer is an equality rather than a place."""
+    category, dataType, value = tag
+    if dataType != 3:
+        return False
+    return struct.unpack(">d", struct.pack(">Q", value))[0] != struct.unpack(">d", struct.pack(">Q", value))[0]
+
+
 def compare(a, b, fields, category_signed, value_bits):
+    # the host answers EQUAL for a NaN against anything, measured over every pair that involves one
+    if value_bits == "own-type-nan-equal" and (is_nan(a) or is_nan(b)):
+        return 0
     ka, kb = order(fields, category_signed, value_bits)(a), order(fields, category_signed, value_bits)(b)
-    if value_bits == "own-type-nan-equal" and ka[:2] == kb[:2]:
-        # a NaN on either side: the host answers equal, to everything, which is every unexplained pair
-        if ka[2] == "NaN" or kb[2] == "NaN":
-            return 0
     return 0 if ka == kb else (-1 if ka < kb else 1)
 
 def memcmp_fields(a, b, fields, big_endian):
