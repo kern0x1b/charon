@@ -55,8 +55,13 @@ has now given it.
   load of nothing.
 - A refused load is reported with the status the release returned, never as a load that quietly did
   nothing.
-- `globalTuning`, `masterGain`, `overallGain` and `stereoPan` are the sampler's own state on this
-  port, held and read back.
+- `globalTuning`, `masterGain`, `overallGain` and `stereoPan` are **inert**, and the reason is
+  measured: the header declares all four, and the port holds and reads each back, but iOS 6.1.3's
+  AudioToolbox property set names no property behind them. The sampler of that release is a component
+  (the emulator probe found `Apple: AUSampler`, type `'aumu'`, subtype `'samp'`, manufacturer
+  `'appl'`), and no AudioUnit property of it is named in the release's headers - so there is nothing
+  to tell the unit, and a host that sets one reads the same value back with no audio changed. Each row
+  says so in its `effect` and `reason`.
 
 ## What is not carried, and why
 
