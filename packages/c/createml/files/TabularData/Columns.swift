@@ -191,23 +191,25 @@ public struct Column<Element>: ColumnProtocol {
 
     /// The cells, transformed, with the results that are nil dropped **and** the missing cells
     /// dropped: both are absent, which is what `compactMap` has always meant.
-    public func compactMap<T>(_ transform: (Element) throws -> T?) rethrows -> Column<T> {
-        var mapped = [T?]()
+    public func compactMap<T>(_ transform: (Element) throws -> T?) rethrows -> [T] {
+        var out = [T]()
         for cell in storage.values {
-            if let value = cell { mapped.append(try transform(value)) } else { mapped.append(nil) }
+            guard let value = cell else { continue }
+            if let result = try transform(value) { out.append(result) }
         }
-        return Column<T>(name: name, contents: mapped)
+        return out
     }
 
     /// The cells the predicate keeps. A missing cell is not a value to ask about, so it is dropped
     /// rather than passed to the predicate: a predicate over `Element` cannot be given a cell that
     /// has none.
-    public func filter(_ isIncluded: (Element) throws -> Bool) rethrows -> Column<Element> {
-        var kept = [Element?]()
-        for cell in storage.values {
-            if let value = cell { kept.append(try isIncluded(value) ? value : nil) } else { kept.append(nil) }
+    public func filter(_ isIncluded: (Element) throws -> Bool) rethrows -> DiscontiguousColumnSlice<Element> {
+        var kept = [Int]()
+        for (position, cell) in storage.values.enumerated() {
+            guard let value = cell else { continue }
+            if try isIncluded(value) { kept.append(position) }
         }
-        return Column<Element>(name: name, contents: kept)
+        return DiscontiguousColumnSlice(name: name, base: self, indices: kept)
     }
 }
 
@@ -284,7 +286,10 @@ extension ColumnSlice: Equatable where Element: Equatable {}
 /// is what a caller has after anything but a straight range.
 public struct DiscontiguousColumnSlice<Element>: ColumnProtocol, BidirectionalCollection {
     public var base: Column<Element>
-    private let indices: [Int]
+    /// The positions of the base this slice keeps. Public because it is what a discontiguous slice
+    /// *is* - Apple answers one from `filter`, and a caller that cannot see the positions cannot tell
+    /// which cells survived.
+    public let indices: [Int]
     public var name: String {
         get { base.name }
         set { base.name = newValue }
@@ -351,11 +356,14 @@ public struct AnyColumn: @unchecked Sendable {
 
     public init<T>(_ column: Column<T>) {
         self.name = column.name
-        self.wrappedElementType = _wrappedType(of: T.self)
+        self.wrappedElementType = T.self
         // An element that is already optional keeps its own nil and is not wrapped a second time.
         // `Row` builds its column from `[Any?]`, so without this the row's values arrive as
         // `Optional(Optional("berlin"))` and every row read describes as an optional of the value.
-        self.storage = column.values.map { _withoutOptionalLayer($0 as Any) }
+        // The cells as they are. A `nil` here is a cell with no value and a `.some(nil)` a value
+        // that is itself an optional, which is the distinction the SDK keeps; there is nothing to
+        // strip, and stripping is what merged the two forms in the first place.
+        self.storage = column.values.map { $0 as Any? }
         self.makeTyped = { renamed in
             var copy = column
             copy.name = renamed
@@ -485,26 +493,6 @@ private protocol _AlreadyOptional {
     var anyValue: Any? { get }
     /// The type underneath, which is what `wrappedElementType` reports.
     static var wrappedElementType: Any.Type { get }
-}
-
-/// The value with any optional layer taken off, or `nil` when the value *was* nil.
-///
-/// Structural, on purpose. The previous version asked `(value as Any) as? _AlreadyOptional` and took
-/// the answer, and the answer was `nil` in the sense that the branch never ran: nothing in the port's
-/// own 431 checks put a nil into a column, so a cast that cannot fail loudly looked exactly like a
-/// cast that worked. A `Mirror` cannot be swallowed that way - a value that is not optional has
-/// `displayStyle != .optional` and comes back untouched, `.some` unwraps to its child, and `.none` has
-/// no child and answers `nil`.
-private func _withoutOptionalLayer(_ value: Any) -> Any? {
-    let mirror = Mirror(reflecting: value)
-    guard mirror.displayStyle == .optional else { return value }
-    return mirror.children.first?.value
-}
-
-/// The type underneath an optional, or the type itself when it is not one.
-private func _wrappedType(of type: Any.Type) -> Any.Type {
-    guard let optional = type as? _AlreadyOptional.Type else { return type }
-    return optional.wrappedElementType
 }
 
 extension Optional: _AlreadyOptional {

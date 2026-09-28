@@ -265,8 +265,13 @@ writable[3] = 20
 checkEqual("a column written through its position subscript", writable.values, [5, 1, 4, 20, 3])
 checkEqual("a column mapped", writable.map { $0 * 2 }.values, [10, 2, 8, 40, 6])
 checkEqual("a column mapped keeps its name", writable.map { $0 * 2 }.name, "n")
-checkEqual("a column compact-mapped", writable.compactMap { $0 > 3 ? $0 : nil }.values, [5, 4, 20])
-checkEqual("a column filtered", writable.filter { $0 > 3 }.values, [5, 4, 20])
+checkEqual("a column compact-mapped is compacted, as Apple's is",
+           writable.compactMap { $0 > 3 ? $0 : nil }, [5, 20])
+let keptPositions = writable.filter { $0 > 3 }
+checkEqual("a column filtered keeps its positions, as Apple's does",
+           keptPositions.indices, [0, 3])
+checkEqual("a column filtered reads back through the slice",
+           keptPositions.values, [5, 20])
 checkEqual("a column's slice", writable[1..<4].values, [1, 4, 20])
 checkEqual("a slice's range", writable[1..<4].range, 1..<4)
 checkEqual("a slice's name is its column's", writable[1..<4].name, "n")
