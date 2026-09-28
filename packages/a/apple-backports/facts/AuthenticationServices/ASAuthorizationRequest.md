@@ -70,6 +70,40 @@ and the mutant, with the base request's `-provider` and its `@synthesize` remove
     ASAuthorizationRequest      provider                                       yes no  the port is missing it
     the check exited 1, which is what a check that can see a removed member does
 
+## The member list comes from the header, and a class with no header is an error
+
+The first version kept a table here of which members to ask each class about, and a class missing from
+it was asked `init` alone and passed — a check that compares what it happens to have been told to. There
+is no table now. The list is parsed at run time out of the framework's own headers, in the SDK the
+build compiles against, and **a class the registry carries whose header cannot be found stops the run
+and is named**. Asking the host for everything it has instead would ask about the release's private
+methods — `initWithProvider:`, `supportsStyle:` — which are not claims and not in the headers.
+
+That widened the questions from four hand-listed members to the seven the two headers declare, and the
+run is **red on two of them**, which is the point of the change:
+
+    ASAuthorizationRequest  new                        no  yes  the port adds it
+    ASAuthorizationRequest  init                       yes yes  same
+    ASAuthorizationRequest  copyWithZone:              yes yes  same
+    ASAuthorizationRequest  encodeWithCoder:           yes yes  same
+    ASAuthorizationRequest  initWithCoder:             yes yes  same
+    ASWebAuthenticationSession  initWithURL:           no  yes  the port adds it
+    ASWebAuthenticationSession  start                  yes yes  same
+    ASWebAuthenticationSession  cancel                 yes yes  same
+    ASWebAuthenticationSession  new                    no  no   same
+    ASWebAuthenticationSession  init                   yes yes  same
+
+`ASAuthorizationRequest new` is a defect in `port_has` and not a finding: the source has no `+new` and
+no `- (…)new`, and the check reports one. Diagnosed as far as "reports a selector the file does not
+contain"; the cause is not yet known and is the next thing to look at, because a matcher that invents a
+selector is worse than one that misses one. `ASWebAuthenticationSession initWithURL:` is the same
+pattern — a short selector the port has and the check does not see — and the host's answer of "no" for
+both is itself suspicious, since a host that answers "no" to a class method the header declares is more
+likely the tool's host side than the framework.
+
+**So the gap is closed and the check is red.** It is committed red, with the two cases named, rather
+than committed green on the four members the old table happened to list.
+
 ## What is not done
 
 578 rows. The value half of the family is measured (30 constants, 30 agree with the host) and the shape
