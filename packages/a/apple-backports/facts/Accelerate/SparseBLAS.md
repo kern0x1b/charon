@@ -348,11 +348,19 @@ blockers and three minors. All six are fixed; this is what each one was and what
    every one of the sixty-nine rows is called.
 4. **A block commented as the transposed case passed `CblasNoTrans`** — the transposes went in, and the
    `A` is a 3x2 so the transpose is the header's own legal shape.
-5. **A comment named a function not in the tree** — `CharonComplexElementAt` belongs to the complex half,
-   which is held out of this tree, and the comment now says what the shared body is for without naming a
-   reader that is not here.
-6. **A computed-and-discarded search** — the transposed triangular solve searched for an entry that
-   `CharonSparseElementAt` searches for again; the line and its `(void)` are gone.
+5. **A comment named a function not in the tree** — closed: `CharonComplexElementAt` belonged to the
+   complex half, and the comment now says what the shared body is for without naming a reader. Re-checked
+   in the rebased tree: `grep -rn CharonComplex packages/ tests/` returns the facts file's own record of
+   the fix and nothing in any code comment.
+6. **A computed-and-discarded search** — closed: the transposed triangular solve searched for an entry
+   that `CharonSparseElementAt` searches for again. Re-checked: no `(void)at` remains anywhere in the
+   port's Accelerate sources, and the only `CharonSparseSearch` in the transposed block is the one whose
+   result is tested.
+
+And finding C, "sixteen of sixty-nine called by neither test", recounted against the delivered files by
+reading the registry and counting the call sites in each: **the host differential calls 69 of 69, the
+device test calls 47, and the two together call 69 — none is called by neither.** It was 16 of 69 before;
+all sixteen are now asked, as the double twins of cases the float half already compares.
 
 One case is now a recorded divergence rather than an agreement: a sparse-sparse product whose inner
 dimensions do not conform is `SPARSE_ILLEGAL_PARAMETER` at the port and a product of two matrices that do
@@ -430,6 +438,34 @@ Two notes the tool prints and the reading depends on: no release is held between
 between 16.0 and 18.0, so a 16.0 or an 18.0 in that output means "after the previous rung and by this
 one", not a measured first release. And a category has no `nm`-visible symbols, so a clean run says
 nothing about any category file — there is none here.
+
+## The complex half: where it lives and what is and is not held
+
+`SparseComplex18.m` and `CharonSparseComplex.h` sit in `tests/backports/host/sparsecomplex/`, beside the
+differential that holds them, and `run.sh` resolves the root and both source paths from its own location.
+They are **beside the test and not in `packages/a/apple-backports/Accelerate/`** for a reason the gate
+enforces rather than a preference: that folder is the library, a file in it is built, and a built symbol
+with no registry entry is a red `built, but no entry in registry/`. The complex half has no registry rows
+because it is not carried yet.
+
+**What the 41 checks hold, name by name.** They cover eight of the twenty-nine entry-point pairs, all
+through the float complex forms: the matrix-vector product, the triangular solve of a vector, the
+triangular solve of a matrix, the dense product, the outer product, the trace, the elementwise norm and
+the operator norm — together with `sparse_matrix_create_float_complex`,
+`sparse_insert_entry_float_complex`, `sparse_set_matrix_property`, `sparse_get_matrix_nonzero_count`,
+`sparse_extract_sparse_row_float_complex` and `sparse_matrix_destroy`, which the eight go through.
+
+**What they do not hold: twenty-one pairs and the other twenty-nine singles** — the block and
+variable-block creations, `sparse_insert_entries_*`, `sparse_insert_row_*`, `sparse_insert_col_*`,
+`sparse_insert_block_*`, `sparse_extract_sparse_column_*`, `sparse_extract_block_*`,
+`sparse_inner_product_dense_*`, `sparse_inner_product_sparse_*`,
+`sparse_vector_add_with_scale_dense_*`, `sparse_vector_norm_*`, `sparse_get_vector_nonzero_count_*`,
+`sparse_pack_vector_*`, `sparse_unpack_vector_*`, `sparse_permute_rows_*`, `sparse_permute_cols_*`,
+`sparse_matrix_product_sparse_*`, and every double twin. None of them is called by anything yet.
+
+So the sequence the next session takes is: widen this table until all fifty-eight are compared, and only
+then add the registry rows and move the two files beside `SparseBLAS9.m`. The gate will tell it when the
+move is legal, because until then the moved file's fifty-eight symbols are built with no entry.
 
 ## The complex half's differential, and the mutation proof
 
