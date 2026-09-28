@@ -95,3 +95,30 @@ factors, and the accepted-length set of section 0 — all reproduced exactly and
 else is the transform's arithmetic, and it is held to K. A mutant that puts a twiddle's sign wrong, drops the
 x2, or swaps the packing breaks the bound by orders of magnitude rather than by an ULP, which is the test that
 the bound is tight enough to be a specification.
+
+## 6. The inverse's unpacking, as a formula, and the obstacle to the differential
+
+**The 16x16 table of impulses gives the unpacking directly** - the inverse is linear, so an impulse in each of
+the sixteen scalar inputs of the packed spectrum, read out as the sixteen real samples it produces, IS the
+formula. Measured, with N = 8 and j the sample index:
+
+    o[0].real  contributes  1        to every sample
+    o[0].imag  contributes  (-1)^j
+    o[k].real  contributes  2*cos(2*pi*k*j/(2N))     for k = 1 .. N-1
+    o[k].imag  contributes -2*sin(2*pi*k*j/(2N))
+
+Written out and checked on 64 random packed spectra against the bound: **the worst ratio is 0.851, inside
+K = 1.538.** So the inverse is specified as well as the forward, and both are held to the bound.
+
+**The obstacle, and it is the house's rename mechanism rather than anything in the rows.** The differential
+renames the port's definitions so the port's and the host's can sit in one binary, by compiling the port with
+`-DvDSP_DFT_Interleaved_CreateSetup=charon_host_vDSP_DFT_Interleaved_CreateSetup` and so on. **Those three
+function names share a prefix with the opaque setup type `vDSP_DFT_Interleaved_Setup`**, and the preprocessor
+substitution reaches the header's own declarations of the type, so vDSP.h stops compiling at the family's own
+declarations. Every other family in this band renames cleanly because no function name is a prefix of a type
+name it also declares.
+
+So the differential needs a different mechanism here - renaming by an explicit per-file list that does not
+substitute the type, or compiling the port with a macro rather than `-D` - and **that is not a decision I
+should make quietly, because it changes how every subsequent differential in this band is built.** The port
+itself compiles clean.
