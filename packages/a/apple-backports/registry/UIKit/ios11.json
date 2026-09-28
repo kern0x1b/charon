@@ -1109,36 +1109,6 @@
    "facts": "facts/UIKit/TextSystem7.md"
   },
   {
-   "api": "UIImagePickerControllerImageURL",
-   "kind": "constant",
-   "introduced": "11.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "effect": "the key carries the string UIKit gives it, so an application can look it up; this release's image picker never puts it in the dictionary, and the application falls back to UIImagePickerControllerReferenceURL, which it does fill in",
-   "facts": "facts/UIKit/UIKitConstants11.md",
-   "source": "UIKit of iOS 11.0 arm64, the exported constant at 0x1aa619318"
-  },
-  {
-   "api": "UIActivityTypeMarkupAsPDF",
-   "kind": "constant",
-   "introduced": "11.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "effect": "the constant carries com.apple.UIKit.activity.MarkupAsPDF, the identifier UIKit uses, so it can be named in excludedActivityTypes; this release's share sheet never offers that activity, so excluding it excludes nothing",
-   "facts": "facts/UIKit/UIKitConstants11.md",
-   "source": "UIKit of iOS 11.0 arm64, the exported constant at 0x1aa645bf0"
-  },
-  {
-   "api": "UIAccessibilityVoiceOverStatusDidChangeNotification",
-   "kind": "constant",
-   "introduced": "11.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "effect": "the name carries UIAccessibilityVoiceOverTouchStatusChanged, the string this release posts under its older name, so an application registered for the new name is told when VoiceOver starts and stops",
-   "facts": "facts/UIKit/UIKitConstants11.md",
-   "source": "UIKit of iOS 11.0 arm64, the exported constant at 0x1aa61b730, read beside the deprecated UIAccessibilityVoiceOverStatusChanged at 0x1aa61b738; the same string exported by UIKit of 6.1.3 armv7"
-  },
-  {
    "api": "UIAccessibilityClosedCaptioningStatusDidChangeNotification",
    "kind": "constant",
    "introduced": "11.0",
@@ -1513,15 +1483,6 @@
    "reason": "the focus engine is part of UIKit's own event handling, which the port does not replace",
    "effect": "the name is not there. An application that registers for this notification without checking for UIFocusSystem first passes a nil name, which observes every notification there is, so the check matters more here than usual",
    "source": "UIKit of iOS 12.0 arm64"
-  },
-  {
-   "api": "UIScreenCapturedDidChangeNotification",
-   "kind": "constant",
-   "introduced": "11.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "facts": "facts/UIKit/UIScreenCaptured.md",
-   "source": "UIKit of iOS 12.0 arm64 (the accessor and the ivar it reads) and the host's UIKit through Mac Catalyst, tests/backports/device/traits11-cases.m on an iPad 2 on iOS 6.1.3"
   },
   {
    "api": "UIInputViewController.hasFullAccess",

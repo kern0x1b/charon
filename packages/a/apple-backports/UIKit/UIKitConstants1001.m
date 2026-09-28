@@ -7,8 +7,8 @@
 // held release that has it, so a band from 10.0.1 on re-exports the release's own and the
 // bands below keep this one.
 //
-// Every value below was read out of a real dyld shared cache, the 16.0 arm64e cache,
-// never from a header and never from a host framework.
+// Every value below was read out of a real dyld shared cache - the 10.0.1 rung of the
+// machine's held ladder - and never from a header and never from a host framework.
 
 #import <UIKit/UIKit.h>
 

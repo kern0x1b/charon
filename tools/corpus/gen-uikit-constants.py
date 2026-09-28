@@ -155,7 +155,26 @@ def carried_elsewhere():
     return found
 
 
+def named_before():
+    """Every api the framework's registry names as this script starts.
+
+    The prune below is what takes the generated file's own names out of the other registry files, so
+    a deletion check that reads the registry afterwards sees a registry this run has already edited
+    and is blind to the very rows it exists to catch.
+    """
+    base = os.path.dirname(REGISTRY)
+    names = set()
+    for path in sorted(glob.glob(os.path.join(base, "%s.json" % FRAMEWORK))
+                       + glob.glob(os.path.join(REGISTRY, "*.json"))):
+        with open(path, encoding="utf-8") as handle:
+            data = json.load(handle)
+        for entry in (data if isinstance(data, list) else data["entries"]):
+            names.add(entry["api"])
+    return names
+
+
 def main():
+    named = named_before()
     with open(TABLE, newline="", encoding="utf-8") as handle:
         measured = list(csv.DictReader(handle, delimiter="\t"))
     elsewhere = carried_elsewhere()
@@ -185,8 +204,9 @@ def main():
             "// held release that has it, so a band from %s on re-exports the release's own and the" % release,
             "// bands below keep this one.",
             "//",
-            "// Every value below was read out of a real dyld shared cache, %s," % (images or "?")
-            , "// never from a header and never from a host framework.",
+            "// Every value below was read out of a real dyld shared cache - the %s rung of the"
+            % (items[0]["from-release"] if items else "?"),
+            "// machine's held ladder - and never from a header and never from a host framework.",
             "",
             "#import <UIKit/UIKit.h>",
             "",
@@ -225,9 +245,9 @@ def main():
             entries.append({
                 "api": item["api"], "kind": "constant", "introduced": "", "minimum": "6.0",
                 "status": "implemented", "facts": "facts/UIKit/" + facts,
-                "source": "the value read out of the %s cache of iOS %s, the oldest held release that "
-                          "exports the symbol (%s)"
-                          % (os.path.basename(item["image"]), release, item["image"]),
+                "source": "the value read out of the %s cache of iOS %s, the oldest held release "
+                          "that exports the symbol (the %s rung of the machine's held ladder)"
+                          % (os.path.basename(item["image"]), release, release),
             })
         with open(os.path.join(FACTS, facts), "w", encoding="utf-8") as out:
             out.write("# The UIKit constants first exported by iOS %s\n\n" % release)
@@ -264,10 +284,27 @@ def main():
             handle.write("\n")
         print("  %-22s %d entries of the generated file's came out" % (os.path.basename(path),
                                                                        len(held) - len(kept)))
+    # An object is removed only when nothing in the registry still names it. Deleting one whose rows
+    # survive is how four 11.0 constants were left named by the registry and built by nothing - the
+    # 6.1.3 gate's "listed as implemented, but nothing of that name is built" - so the check is here
+    # and the deletion is refused rather than done.
+    orphans = 0
     for stale in sorted(glob.glob(os.path.join(OUT, "UIKitConstants*.m"))):
-        if os.path.basename(stale) not in written_files:
-            os.unlink(stale)
-            print("removed the object with nothing left in it: %s" % os.path.basename(stale))
+        if os.path.basename(stale) in written_files:
+            continue
+        with open(stale, encoding="utf-8") as handle:
+            text = handle.read()
+        still = sorted(set(re.findall(r"^\s*[\w \*]+?\b(\w+)\s*=", text, re.M)) & named)
+        if still:
+            print("  %s would go but the registry still names %d of its symbols (%s), so it stays and "
+                  "the table has to carry them" % (os.path.basename(stale), len(still), ", ".join(still[:3])),
+                  file=sys.stderr)
+            orphans += 1
+            continue
+        os.unlink(stale)
+        print("removed the object with nothing left in it and nothing naming it: %s" % os.path.basename(stale))
+    if orphans:
+        print("%d object(s) kept because the registry still names their symbols" % orphans, file=sys.stderr)
     print("%d constants in %d objects; %d left out, another registry file already names them"
           % (len(rows), len(written_files), len(skipped)))
     for source in written_files:

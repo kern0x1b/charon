@@ -8,7 +8,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants1001.md",
-   "source": "the value read out of the the 16.0 arm64e cache cache of iOS 10.0.1, the oldest held release that exports the symbol (the 16.0 arm64e cache)"
+   "source": "the value read out of the the 16.0 arm64e cache cache of iOS 10.0.1, the oldest held release that exports the symbol (the 10.0.1 rung of the machine's held ladder)"
   },
   {
    "api": "UIPasteboardTypeAutomatic",
@@ -17,7 +17,43 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants1001.md",
-   "source": "the value read out of the UIKit cache of iOS 10.0.1, the oldest held release that exports the symbol (/System/Library/Frameworks/UIKit.framework/UIKit)"
+   "source": "the value read out of the UIKit cache of iOS 10.0.1, the oldest held release that exports the symbol (the 10.0.1 rung of the machine's held ladder)"
+  },
+  {
+   "api": "UIAccessibilityVoiceOverStatusDidChangeNotification",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants110.md",
+   "source": "the value read out of the dyld_shared_cache_arm64 cache of iOS 11.0, the oldest held release that exports the symbol (the 11.0 rung of the machine's held ladder)"
+  },
+  {
+   "api": "UIActivityTypeMarkupAsPDF",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants110.md",
+   "source": "the value read out of the dyld_shared_cache_arm64 cache of iOS 11.0, the oldest held release that exports the symbol (the 11.0 rung of the machine's held ladder)"
+  },
+  {
+   "api": "UIImagePickerControllerImageURL",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants110.md",
+   "source": "the value read out of the dyld_shared_cache_arm64 cache of iOS 11.0, the oldest held release that exports the symbol (the 11.0 rung of the machine's held ladder)"
+  },
+  {
+   "api": "UIScreenCapturedDidChangeNotification",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants110.md",
+   "source": "the value read out of the dyld_shared_cache_arm64 cache of iOS 11.0, the oldest held release that exports the symbol (the 11.0 rung of the machine's held ladder)"
   },
   {
    "api": "NSTextContentStorageUnsupportedAttributeAddedNotification",
@@ -26,7 +62,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants160.md",
-   "source": "the value read out of the UIFoundation cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIFoundation.framework/UIFoundation)"
+   "source": "the value read out of the UIFoundation cache of iOS 16.0, the oldest held release that exports the symbol (the 16.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIActionPaste",
@@ -35,7 +71,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants160.md",
-   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (the 16.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIActionPasteAndGo",
@@ -44,7 +80,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants160.md",
-   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (the 16.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIActionPasteAndMatchStyle",
@@ -53,7 +89,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants160.md",
-   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (the 16.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIActionPasteAndSearch",
@@ -62,7 +98,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants160.md",
-   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (the 16.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIActivityItemsConfigurationMetadataKeyLinkPresentationMetadata",
@@ -71,7 +107,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants160.md",
-   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (the 16.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIActivityTypeCollaborationCopyLink",
@@ -80,7 +116,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants160.md",
-   "source": "the value read out of the ShareSheet cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/ShareSheet.framework/ShareSheet)"
+   "source": "the value read out of the ShareSheet cache of iOS 16.0, the oldest held release that exports the symbol (the 16.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIActivityTypeCollaborationInviteWithLink",
@@ -89,7 +125,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants160.md",
-   "source": "the value read out of the ShareSheet cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/ShareSheet.framework/ShareSheet)"
+   "source": "the value read out of the ShareSheet cache of iOS 16.0, the oldest held release that exports the symbol (the 16.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIActivityTypeSharePlay",
@@ -98,7 +134,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants160.md",
-   "source": "the value read out of the ShareSheet cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/ShareSheet.framework/ShareSheet)"
+   "source": "the value read out of the ShareSheet cache of iOS 16.0, the oldest held release that exports the symbol (the 16.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIApplicationLaunchOptionsEventAttributionKey",
@@ -107,7 +143,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants160.md",
-   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (the 16.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIApplicationOpenExternalURLOptionsEventAttributionKey",
@@ -116,7 +152,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants160.md",
-   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (the 16.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIApplicationOpenURLOptionsEventAttributionKey",
@@ -125,7 +161,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants160.md",
-   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (the 16.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIGuidedAccessErrorDomain",
@@ -134,7 +170,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants160.md",
-   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (the 16.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIKeyInputDelete",
@@ -143,7 +179,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants160.md",
-   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (the 16.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIListSeparatorAutomaticInsets",
@@ -152,7 +188,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants160.md",
-   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (the 16.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIPasteboardDetectionPatternCalendarEvent",
@@ -161,7 +197,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants160.md",
-   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (the 16.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIPasteboardDetectionPatternEmailAddress",
@@ -170,7 +206,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants160.md",
-   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (the 16.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIPasteboardDetectionPatternFlightNumber",
@@ -179,7 +215,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants160.md",
-   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (the 16.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIPasteboardDetectionPatternLink",
@@ -188,7 +224,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants160.md",
-   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (the 16.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIPasteboardDetectionPatternMoneyAmount",
@@ -197,7 +233,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants160.md",
-   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (the 16.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIPasteboardDetectionPatternPhoneNumber",
@@ -206,7 +242,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants160.md",
-   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (the 16.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIPasteboardDetectionPatternPostalAddress",
@@ -215,7 +251,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants160.md",
-   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (the 16.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIPasteboardDetectionPatternShipmentTrackingNumber",
@@ -224,7 +260,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants160.md",
-   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (the 16.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIPointerAccessoryPositionBottom",
@@ -233,7 +269,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants160.md",
-   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (the 16.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIPointerAccessoryPositionBottomLeft",
@@ -242,7 +278,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants160.md",
-   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (the 16.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIPointerAccessoryPositionBottomRight",
@@ -251,7 +287,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants160.md",
-   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (the 16.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIPointerAccessoryPositionLeft",
@@ -260,7 +296,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants160.md",
-   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (the 16.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIPointerAccessoryPositionRight",
@@ -269,7 +305,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants160.md",
-   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (the 16.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIPointerAccessoryPositionTop",
@@ -278,7 +314,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants160.md",
-   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (the 16.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIPointerAccessoryPositionTopLeft",
@@ -287,7 +323,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants160.md",
-   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (the 16.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIPointerAccessoryPositionTopRight",
@@ -296,7 +332,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants160.md",
-   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (the 16.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextContentTypeDateTime",
@@ -305,7 +341,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants160.md",
-   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (the 16.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextContentTypeFlightNumber",
@@ -314,7 +350,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants160.md",
-   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (the 16.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextContentTypeShipmentTrackingNumber",
@@ -323,7 +359,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants160.md",
-   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (the 16.0 rung of the machine's held ladder)"
   },
   {
    "api": "NSAdaptiveImageGlyphAttributeName",
@@ -332,7 +368,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIFoundation cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIFoundation.framework/UIFoundation)"
+   "source": "the value read out of the UIFoundation cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "NSDefaultFontExcludedDocumentAttribute",
@@ -341,7 +377,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIFoundation cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIFoundation.framework/UIFoundation)"
+   "source": "the value read out of the UIFoundation cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "NSTextHighlightColorSchemeAttributeName",
@@ -350,7 +386,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIFoundation cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIFoundation.framework/UIFoundation)"
+   "source": "the value read out of the UIFoundation cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "NSTextHighlightColorSchemeBlue",
@@ -359,7 +395,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIFoundation cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIFoundation.framework/UIFoundation)"
+   "source": "the value read out of the UIFoundation cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "NSTextHighlightColorSchemeDefault",
@@ -368,7 +404,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIFoundation cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIFoundation.framework/UIFoundation)"
+   "source": "the value read out of the UIFoundation cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "NSTextHighlightColorSchemeMint",
@@ -377,7 +413,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIFoundation cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIFoundation.framework/UIFoundation)"
+   "source": "the value read out of the UIFoundation cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "NSTextHighlightColorSchemeOrange",
@@ -386,7 +422,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIFoundation cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIFoundation.framework/UIFoundation)"
+   "source": "the value read out of the UIFoundation cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "NSTextHighlightColorSchemePink",
@@ -395,7 +431,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIFoundation cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIFoundation.framework/UIFoundation)"
+   "source": "the value read out of the UIFoundation cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "NSTextHighlightColorSchemePurple",
@@ -404,7 +440,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIFoundation cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIFoundation.framework/UIFoundation)"
+   "source": "the value read out of the UIFoundation cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "NSTextHighlightStyleAttributeName",
@@ -413,7 +449,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIFoundation cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIFoundation.framework/UIFoundation)"
+   "source": "the value read out of the UIFoundation cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "NSTextHighlightStyleDefault",
@@ -422,7 +458,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIFoundation cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIFoundation.framework/UIFoundation)"
+   "source": "the value read out of the UIFoundation cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "NSTextKit1ListMarkerFormatDocumentOption",
@@ -431,7 +467,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIFoundation cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIFoundation.framework/UIFoundation)"
+   "source": "the value read out of the UIFoundation cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIAccessibilityCustomActionCategoryEdit",
@@ -440,7 +476,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIAccessibilityPriorityDefault",
@@ -449,7 +485,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIAccessibilityPriorityHigh",
@@ -458,7 +494,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIAccessibilityPriorityLow",
@@ -467,7 +503,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIAccessibilitySpeechAttributeAnnouncementPriority",
@@ -476,7 +512,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIAccessibilityTraitSupportsZoom",
@@ -485,7 +521,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIAccessibilityTraitToggleButton",
@@ -494,7 +530,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIActivityItemsConfigurationInteractionCopy",
@@ -503,7 +539,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIActivityItemsConfigurationMetadataKeyCollaborationModeRestrictions",
@@ -512,7 +548,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the ShareSheet cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/ShareSheet.framework/ShareSheet)"
+   "source": "the value read out of the ShareSheet cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIActivityItemsConfigurationMetadataKeyShareRecipients",
@@ -521,7 +557,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the ShareSheet cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/ShareSheet.framework/ShareSheet)"
+   "source": "the value read out of the ShareSheet cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIActivityTypeAddToHomeScreen",
@@ -530,7 +566,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the ShareSheet cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/ShareSheet.framework/ShareSheet)"
+   "source": "the value read out of the ShareSheet cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UICollectionLayoutSectionOrthogonalScrollingDecelerationRateAutomatic",
@@ -539,7 +575,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the CollectionViewCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/CollectionViewCore.framework/CollectionViewCore)"
+   "source": "the value read out of the CollectionViewCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UICollectionLayoutSectionOrthogonalScrollingDecelerationRateFast",
@@ -548,7 +584,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the CollectionViewCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/CollectionViewCore.framework/CollectionViewCore)"
+   "source": "the value read out of the CollectionViewCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UICollectionLayoutSectionOrthogonalScrollingDecelerationRateNormal",
@@ -557,7 +593,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the CollectionViewCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/CollectionViewCore.framework/CollectionViewCore)"
+   "source": "the value read out of the CollectionViewCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIDocumentCreationIntentDefault",
@@ -566,7 +602,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIFontTextStyleExtraLargeTitle",
@@ -575,7 +611,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIFontTextStyleExtraLargeTitle2",
@@ -584,7 +620,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIMenuAutoFill",
@@ -593,7 +629,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UISceneSystemProtectionDidChangeNotification",
@@ -602,7 +638,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextContentTypeBirthdate",
@@ -611,7 +647,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextContentTypeBirthdateDay",
@@ -620,7 +656,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextContentTypeBirthdateMonth",
@@ -629,7 +665,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextContentTypeBirthdateYear",
@@ -638,7 +674,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextContentTypeCellularEID",
@@ -647,7 +683,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextContentTypeCellularIMEI",
@@ -656,7 +692,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextContentTypeCreditCardExpiration",
@@ -665,7 +701,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextContentTypeCreditCardExpirationMonth",
@@ -674,7 +710,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextContentTypeCreditCardExpirationYear",
@@ -683,7 +719,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextContentTypeCreditCardFamilyName",
@@ -692,7 +728,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextContentTypeCreditCardGivenName",
@@ -701,7 +737,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextContentTypeCreditCardMiddleName",
@@ -710,7 +746,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextContentTypeCreditCardName",
@@ -719,7 +755,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextContentTypeCreditCardSecurityCode",
@@ -728,7 +764,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextContentTypeCreditCardType",
@@ -737,7 +773,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerDecreaseFontSizeChangeType",
@@ -746,7 +782,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerDecreaseIndentationChangeType",
@@ -755,7 +791,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerFontAttributesComponentKey",
@@ -764,7 +800,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerFontChangeType",
@@ -773,7 +809,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerFontPickerComponentKey",
@@ -782,7 +818,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerFontPointSizeComponentKey",
@@ -791,7 +827,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerFontSizeChangeType",
@@ -800,7 +836,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerFontSizeComponentKey",
@@ -809,7 +845,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerFormattingStyleChangeType",
@@ -818,7 +854,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerFormattingStylesComponentKey",
@@ -827,7 +863,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerHighlightBlue",
@@ -836,7 +872,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerHighlightChangeType",
@@ -845,7 +881,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerHighlightComponentKey",
@@ -854,7 +890,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerHighlightDefault",
@@ -863,7 +899,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerHighlightMint",
@@ -872,7 +908,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerHighlightOrange",
@@ -881,7 +917,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerHighlightPickerComponentKey",
@@ -890,7 +926,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerHighlightPink",
@@ -899,7 +935,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerHighlightPurple",
@@ -908,7 +944,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerIncreaseFontSizeChangeType",
@@ -917,7 +953,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerIncreaseIndentationChangeType",
@@ -926,7 +962,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerLineHeightComponentKey",
@@ -935,7 +971,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerLineHeightPointSizeChangeType",
@@ -944,7 +980,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerListStylesComponentKey",
@@ -953,7 +989,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerRemoveBoldChangeType",
@@ -962,7 +998,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerRemoveItalicChangeType",
@@ -971,7 +1007,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerRemoveStrikethroughChangeType",
@@ -980,7 +1016,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerRemoveUnderlineChangeType",
@@ -989,7 +1025,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerSetBoldChangeType",
@@ -998,7 +1034,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerSetItalicChangeType",
@@ -1007,7 +1043,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerSetStrikethroughChangeType",
@@ -1016,7 +1052,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerSetUnderlineChangeType",
@@ -1025,7 +1061,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerTextAlignmentAndJustificationComponentKey",
@@ -1034,7 +1070,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerTextAlignmentCenter",
@@ -1043,7 +1079,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerTextAlignmentChangeType",
@@ -1052,7 +1088,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerTextAlignmentComponentKey",
@@ -1061,7 +1097,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerTextAlignmentJustified",
@@ -1070,7 +1106,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerTextAlignmentLeft",
@@ -1079,7 +1115,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerTextAlignmentNatural",
@@ -1088,7 +1124,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerTextAlignmentRight",
@@ -1097,7 +1133,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerTextColorChangeType",
@@ -1106,7 +1142,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerTextColorComponentKey",
@@ -1115,7 +1151,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerTextIndentationComponentKey",
@@ -1124,7 +1160,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerTextListChangeType",
@@ -1133,7 +1169,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerTextListDecimal",
@@ -1142,7 +1178,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerTextListDisc",
@@ -1151,7 +1187,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerTextListHyphen",
@@ -1160,7 +1196,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerTextListOther",
@@ -1169,7 +1205,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextFormattingViewControllerUndefinedChangeType",
@@ -1178,7 +1214,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "UITextItemTagAttributeName",
@@ -1187,7 +1223,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants180.md",
-   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (the 18.0 rung of the machine's held ladder)"
   },
   {
    "api": "NSWritingToolsExclusionAttributeName",
@@ -1196,7 +1232,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants182.md",
-   "source": "the value read out of the dyld_shared_cache_arm64e cache of iOS 18.2, the oldest held release that exports the symbol (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e)"
+   "source": "the value read out of the dyld_shared_cache_arm64e cache of iOS 18.2, the oldest held release that exports the symbol (the 18.2 rung of the machine's held ladder)"
   },
   {
    "api": "UIApplicationCategoryDefaultErrorDomain",
@@ -1205,7 +1241,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants182.md",
-   "source": "the value read out of the dyld_shared_cache_arm64e cache of iOS 18.2, the oldest held release that exports the symbol (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e)"
+   "source": "the value read out of the dyld_shared_cache_arm64e cache of iOS 18.2, the oldest held release that exports the symbol (the 18.2 rung of the machine's held ladder)"
   },
   {
    "api": "UIApplicationCategoryDefaultRetryAvailabilityDateErrorKey",
@@ -1214,7 +1250,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants182.md",
-   "source": "the value read out of the dyld_shared_cache_arm64e cache of iOS 18.2, the oldest held release that exports the symbol (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e)"
+   "source": "the value read out of the dyld_shared_cache_arm64e cache of iOS 18.2, the oldest held release that exports the symbol (the 18.2 rung of the machine's held ladder)"
   },
   {
    "api": "UIApplicationCategoryDefaultStatusLastProvidedDateErrorKey",
@@ -1223,7 +1259,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants182.md",
-   "source": "the value read out of the dyld_shared_cache_arm64e cache of iOS 18.2, the oldest held release that exports the symbol (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e)"
+   "source": "the value read out of the dyld_shared_cache_arm64e cache of iOS 18.2, the oldest held release that exports the symbol (the 18.2 rung of the machine's held ladder)"
   },
   {
    "api": "UIApplicationOpenDefaultApplicationsSettingsURLString",
@@ -1232,7 +1268,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants183.md",
-   "source": "the value read out of the dyld_shared_cache_arm64e cache of iOS 18.3, the oldest held release that exports the symbol (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e)"
+   "source": "the value read out of the dyld_shared_cache_arm64e cache of iOS 18.3, the oldest held release that exports the symbol (the 18.3 rung of the machine's held ladder)"
   },
   {
    "api": "UIActionNewFromPasteboard",
@@ -1241,7 +1277,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants260.md",
-   "source": "the value read out of the dyld_shared_cache_arm64e cache of iOS 26.0, the oldest held release that exports the symbol (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e)"
+   "source": "the value read out of the dyld_shared_cache_arm64e cache of iOS 26.0, the oldest held release that exports the symbol (the 26.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIDocumentDidMoveToWritableLocationNotification",
@@ -1250,7 +1286,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants260.md",
-   "source": "the value read out of the dyld_shared_cache_arm64e cache of iOS 26.0, the oldest held release that exports the symbol (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e)"
+   "source": "the value read out of the dyld_shared_cache_arm64e cache of iOS 26.0, the oldest held release that exports the symbol (the 26.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIDocumentDidMoveToWritableLocationOldURLKey",
@@ -1259,7 +1295,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants260.md",
-   "source": "the value read out of the dyld_shared_cache_arm64e cache of iOS 26.0, the oldest held release that exports the symbol (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e)"
+   "source": "the value read out of the dyld_shared_cache_arm64e cache of iOS 26.0, the oldest held release that exports the symbol (the 26.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIMenuFindPanel",
@@ -1268,7 +1304,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants260.md",
-   "source": "the value read out of the dyld_shared_cache_arm64e cache of iOS 26.0, the oldest held release that exports the symbol (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e)"
+   "source": "the value read out of the dyld_shared_cache_arm64e cache of iOS 26.0, the oldest held release that exports the symbol (the 26.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIMenuNewItem",
@@ -1277,7 +1313,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants260.md",
-   "source": "the value read out of the dyld_shared_cache_arm64e cache of iOS 26.0, the oldest held release that exports the symbol (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e)"
+   "source": "the value read out of the dyld_shared_cache_arm64e cache of iOS 26.0, the oldest held release that exports the symbol (the 26.0 rung of the machine's held ladder)"
   },
   {
    "api": "UIWindowSceneSessionRoleAssistiveAccessApplication",
@@ -1286,7 +1322,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants260.md",
-   "source": "the value read out of the dyld_shared_cache_arm64e cache of iOS 26.0, the oldest held release that exports the symbol (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e)"
+   "source": "the value read out of the dyld_shared_cache_arm64e cache of iOS 26.0, the oldest held release that exports the symbol (the 26.0 rung of the machine's held ladder)"
   }
  ]
 }

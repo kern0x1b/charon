@@ -7,8 +7,8 @@
 // held release that has it, so a band from 18.2 on re-exports the release's own and the
 // bands below keep this one.
 //
-// Every value below was read out of a real dyld shared cache, /System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e,
-// never from a header and never from a host framework.
+// Every value below was read out of a real dyld shared cache - the 18.2 rung of the
+// machine's held ladder - and never from a header and never from a host framework.
 
 #import <UIKit/UIKit.h>
 
