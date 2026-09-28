@@ -305,6 +305,20 @@ static void creation(void)
                "variable block with a zero", "both answer a matrix and the same row count");
         if (c) RENAME(sparse_matrix_destroy)(c);
         if (d) sparse_matrix_destroy(d);
+        // And the double twin of the whole case, which the review found was declared and never called:
+        // every one of the sixty-nine rows has to be reached, and a declared-but-uncalled entry point is
+        // a row the registry calls implemented and nothing tests.
+        sparse_matrix_double e = RENAME(sparse_matrix_variable_block_create_double)(3, 3, K, L);
+        sparse_matrix_double f = sparse_matrix_variable_block_create_double(3, 3, K, L);
+        int both = RENAME(sparse_get_matrix_number_of_rows)(e) == sparse_get_matrix_number_of_rows(f) &&
+                   RENAME(sparse_get_matrix_number_of_columns)(e) == sparse_get_matrix_number_of_columns(f);
+        for (sparse_index i = 0; both && i < 8; i++) {
+            both = RENAME(sparse_get_block_dimension_for_row)(e, i) == sparse_get_block_dimension_for_row(f, i) &&
+                   RENAME(sparse_get_block_dimension_for_col)(e, i) == sparse_get_block_dimension_for_col(f, i);
+        }
+        report(both, "a double variable block matrix", "rows, columns and every block dimension");
+        if (e) RENAME(sparse_matrix_destroy)(e);
+        if (f) sparse_matrix_destroy(f);
     }
     // A point-wise matrix has no block dimensions, and a NULL has none either.
     {
@@ -923,7 +937,26 @@ static void level2(void)
             // 0.333333 and 1 ABOVE the pointer, three elements past the end of the caller's block. The
             // port answers the header's rule instead, which stays inside it, and the arithmetic that
             // rule gives is exercised above with an increment of 1 on the same matrix.
-            // A matrix with no triangular property is refused and the vector is left alone.
+            // The one guard of the port's that no case held: a transpose outside the enumeration. The header
+    // says SPARSE_ILLEGAL_PARAMETER, and the host's own answer for the level-2 product is to hand the
+    // parameter to cblas_cgemv and end the process, so the port's status is the header's and the host's
+    // fate is asked in a child (the child asks of the host, and the port's own status is the header's).
+    {
+        float x[3] = {1, 1, 1}, y[3] = {1, 1, 1};
+        sparse_status port = RENAME(sparse_matrix_vector_product_dense_float)((enum CBLAS_TRANSPOSE)9, 1.0f, pa, x, 1, y, 1);
+        report(port == SPARSE_ILLEGAL_PARAMETER, "a transpose outside the enumeration, the vector product",
+               "the port answers the status the header names, and y is left alone");
+        float B[6] = {1, 2, 3, 4, 5, 6}, dy[4] = {1, 1, 1, 1};
+        sparse_status dense = RENAME(sparse_matrix_product_dense_float)(CblasRowMajor, (enum CBLAS_TRANSPOSE)9, 2, 1.0f, pa, B,
+                                                                       2, dy, 2);
+        report(dense == SPARSE_ILLEGAL_PARAMETER, "a transpose outside the enumeration, the dense product",
+               "the port answers the status the header names, and C is left alone");
+        float b[3] = {2, 5, 4};
+        sparse_status tri = RENAME(sparse_vector_triangular_solve_dense_float)((enum CBLAS_TRANSPOSE)9, 1.0f, pl, b, 1);
+        report(tri == SPARSE_ILLEGAL_PARAMETER, "a transpose outside the enumeration, the triangular solve",
+               "the port answers the status the header names, and x is left alone");
+    }
+    // A matrix with no triangular property is refused and the vector is left alone.
             {
                 float b1[3] = {2, 5, 4}, b2[3] = {2, 5, 4};
                 sparse_status ma = RENAME(sparse_vector_triangular_solve_dense_float)(CblasNoTrans, 1.0f, pa, b1, 1);

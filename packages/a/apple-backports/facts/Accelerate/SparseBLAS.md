@@ -357,10 +357,38 @@ blockers and three minors. All six are fixed; this is what each one was and what
    port's Accelerate sources, and the only `CharonSparseSearch` in the transposed block is the one whose
    result is tested.
 
-And finding C, "sixteen of sixty-nine called by neither test", recounted against the delivered files by
-reading the registry and counting the call sites in each: **the host differential calls 69 of 69, the
-device test calls 47, and the two together call 69 — none is called by neither.** It was 16 of 69 before;
-all sixteen are now asked, as the double twins of cases the float half already compares.
+And finding C, "sixteen of sixty-nine called by neither test". Recounted against the delivered files:
+**the host differential calls 69 of 69, the device test calls 47, and no row is called by neither.** It was
+16 of 69 before, and all sixteen are now asked as the double twins of cases the float half already
+compares.
+
+**How that count is measured, and the two recounts that got it wrong.** Reading the registry and counting
+the call sites in each harness is the method, and the arithmetic is a `grep` per row name over the two
+files: a row counts as called when its name appears in a call position, not only on its prototype line.
+Two scripts of mine did that arithmetic wrongly and both reported 69 of 69 while
+`sparse_matrix_variable_block_create_double` stood on line 40 of the differential and nowhere else — its
+float twin is called at 289, 290, 302, 303, 552 and 553, so the count was 68 and the r3 verdict and the
+r4 review were right and my facts file was wrong twice over. The grep is the measurement and the sentence
+carries it; the number is only ever written down from the grep's output.
+
+**What the r4 review's correction is:** `sparse_matrix_variable_block_create_double` is now called beside
+its float twin in `creation()`, as a case of its own with a name of its own, and the invalid-transpose
+refusal r3 asked for is now three cases in `level2()` — the vector product, the dense product and the
+triangular solve, each passing `(enum CBLAS_TRANSPOSE)9` and asserting that the port answers
+`SPARSE_ILLEGAL_PARAMETER`, which is the header's status. That guard had nothing holding it before: the
+table's transpose values were all in the enumeration, and the host's own answer for the level-2 product is
+to hand the parameter to `cblas_cgemv` and end the process, so the port's status is checked against the
+header and not against the host.
+
+**Reuse.** The complex half reuses the real half's whole row structure and its whole scalar storage —
+`CharonSparseRow`, `CharonSparseSearch`, `CharonSparseGrow` and the four matrix bodies all live in
+`CharonSparseBLAS.h` and are shared, so there is one row machinery in this family and not two — and it
+reuses the release's own complex BLAS, `cblas_caxpy`, `cblas_caxpy`'s double twin `cblas_zaxpy`,
+`cblas_ccopy`, `cblas_zcopy`, `cblas_cgemv`, `cblas_zgemv`, `cblas_cherk` and `cblas_zherk`, all measured at
+**4.0** by the ladder, and the release's LAPACK `ssyev_` and `dsyev_`, also at 4.0. It vendors nothing and
+takes nothing copyleft. The two entry points the release's complex BLAS does not have at all —
+`cblas_cger`/`cblas_zger` and `cblas_cdotu`/`cblas_cdotc`/`cblas_zdotu` — are written here, and the ladder
+says why.
 
 One case is now a recorded divergence rather than an agreement: a sparse-sparse product whose inner
 dimensions do not conform is `SPARSE_ILLEGAL_PARAMETER` at the port and a product of two matrices that do
