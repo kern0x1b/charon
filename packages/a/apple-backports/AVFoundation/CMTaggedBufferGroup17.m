@@ -21,6 +21,11 @@
     NSUInteger _entries;
 }
 
+// Named, because the package builds with -Werror=objc-missing-property-synthesis: the two readonly
+// properties are the ivars the initialiser fills.
+@synthesize charon_collections = _charon_collections;
+@synthesize charon_buffers = _charon_buffers;
+
 - (instancetype)charon_initWithCollections:(NSArray *)collections buffers:(NSArray *)buffers
 {
     self = [super init];
