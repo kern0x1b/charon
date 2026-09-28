@@ -7,22 +7,6 @@ package("apple-backports")
     add_deps("charon@firmware-tools", {alias = "firmware-tools"})
     add_deps("charon@charon-coding", {alias = "charon-coding"})
 
-    -- The digest of **this** recipe and of the shared helper's header, because eleven files
-    -- include charon-coding's header by its path in this checkout. Without the header here, a
-    -- changed declaration moved charon-coding's own digest and not this one, so the objects that
-    -- were compiled against the old header were not rebuilt and the library linked the new archive
-    -- beside a stale object - which no gate, no import check and no check_registry looks at. With
-    -- it, a changed header is a changed library and the objects that use it are compiled again.
-    local shared = {}
-    for _, source in ipairs(os.files(path.join(os.scriptdir(), "..", "..", "c", "charon-coding", "files", "*.h"))) do
-        table.insert(shared, path.filename(source) .. "=" .. hash.sha256(source))
-    end
-    table.sort(shared)
-    local recipe = {"xmake.lua=" .. hash.sha256(path.join(os.scriptdir(), "xmake.lua"))}
-    for _, digest in ipairs(shared) do
-        table.insert(recipe, digest)
-    end
-    add_configs("recipe", {description = "The digest of this recipe and of the shared coding helper's header.", default = hash.strhash128(table.concat(recipe, ";")), type = "string", readonly = true})
     add_deps("charon@ldid 2.1.5-procursus7+23.gaf86971", {alias = "ldid"})
     add_deps("charon@box2d 2.2.1", {alias = "box2d"})
 
@@ -32,6 +16,15 @@ package("apple-backports")
                               os.files(path.join(os.scriptdir(), "registry", "*.json")), os.files(path.join(os.scriptdir(), "registry", "*", "*.json")))
     table.insert(inputs, path.join(modules, "apple", "backports.lua"))
     table.insert(inputs, path.join(os.scriptdir(), "..", "..", "..", "addons", "c", "charon", "xmake.lua"))
+    -- The shared coding helper's header, in **this** digest and not only in charon-coding's own.
+    -- Eleven files include it by its path in this checkout, so a changed declaration moved
+    -- charon-coding's digest and not the one the objects are cached under: they were not rebuilt,
+    -- and the library linked the new archive beside a stale object. No gate, no import check and no
+    -- check_registry looks at that; the `sources` digest is the thing they would be keyed on, so
+    -- the header belongs here.
+    for _, header in ipairs(os.files(path.join(os.scriptdir(), "..", "..", "c", "charon-coding", "files", "*.h"))) do
+        table.insert(inputs, header)
+    end
     table.sort(inputs)
     local digests = {}
     for _, file in ipairs(inputs) do
