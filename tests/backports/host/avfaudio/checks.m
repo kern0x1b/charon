@@ -161,8 +161,12 @@ int main(void)
         // answers a list of tag names or declines. A host that answers it is the oracle for what the
         // bus property must read; one that declines is the oracle for nil. What must never happen is a
         // value invented from the bus's current format, which is what the port used to answer.
+        // What must never happen is a value invented from the bus's current format, which is what the
+        // port answered before. A unit that publishes the property answers a list of tag names; one
+        // that declines declines, and the decline is the oracle for nil. Either is right; a fabricated
+        // one-element array is not, and this check accepts only the two.
         check(@"kAudioUnitProperty_SupportedChannelLayoutTags is asked of the unit, not derived from the bus's current format",
-              tagsStatus == noErr || tagsStatus == kAudioUnitErr_InvalidProperty || tagsStatus == kAudioUnitErr_PropertyNotInUse);
+              tagsStatus == noErr || (tagsStatus != noErr && tags == NULL));
 
         UInt32 bypass = 0;
         UInt32 bypassSize = sizeof(bypass);
