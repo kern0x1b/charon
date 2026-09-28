@@ -219,3 +219,82 @@ emulator run's last step is handed to the emulate band in
 `charon/.agent-work/worktrees/api-presentation/.agent-work/handoffs/2026-09-28-emulate-daemon-payload.md`
 and queued in `coordination/api-queue.md` for `7e035ac0`, because the daemon has no `LC_LOAD_DYLIB` for
 the backports library and nothing this band adds to the project will put one there.
+
+---
+
+## The second measurement, and it changes two of the plan's assumptions
+
+`.agent-work/measure/brr-plist.m` asks the host what the class *is*, and the bundle side. Four facts,
+each one a change to what I wrote above.
+
+**1. The host's class is not only a stub — it is a stub with Apple's own structure in it.** The method
+list, measured:
+
+```
+instance:  -tags  -bundle  -progress  -init  -dealloc  -loadingPriority  -setLoadingPriority:
+           -beginAccessingResourcesWithCompletionHandler:
+           -conditionallyBeginAccessingResourcesWithCompletionHandler:  -endAccessingResources
+           -initWithTag:  -initWithTags:  -initWithTags:bundle:
+class:     +_connection  +_setConnection:  +_addExtensionEndpoint:  +_assetPackBundleForBundle:withAssetPackID:
+           +_extensionEndpoint  +_extensionEndpointForMainBundleOfHostApplication:
+           +_flushCacheForBundle:forBundle:  +_manifestWithBundle:error:
+```
+
+**`+_manifestWithBundle:error:` is the manifest reader**, and `+_assetPackBundleForBundle:withAssetPackID:`
+is the pack lookup — so the shape of the implementation is visible even where the instance cannot be
+built, and it is the shape the port should have: a manifest per bundle, read once, and a pack resolved
+by its id inside the bundle. `-initWithTag:` (singular) is the internal initialiser the public one
+forwards to, which is why the public one's exception names it.
+
+**2. The two `NSBundle` additions answer on the host**, both of them, despite
+`API_UNAVAILABLE(macos)`:
+
+```
+setPreservationPriority:forTags: answers
+preservationPriorityForTag:  answers
+```
+
+**So they are measurable after all** — including the refusal the header promises ("This method will
+throw an exception if the receiver bundle has no on demand resource tag information"), which is a host
+measurement and not a header sentence. That makes them two rows that the host *can* hold the port to,
+and the plan above is wrong to have set them aside.
+
+**3. A bundle's `OnDemandResources.plist` is reachable with the release's own `NSBundle`** — measured on
+a bundle written on the spot:
+
+```
+NSBundle reads it back: /tmp/…/brr/OnDemandResources.plist
+urlForResource:withExtension: -> file:///tmp/…/brr/OnDemandResources.plist
+```
+
+So the port needs no new machinery to *find* the manifest: `[bundle pathForResource:@"OnDemandResources"
+ofType:@"plist"]` is an iOS 2 call. What the port must add is the *parsing* — `NSBundleResourceRequestTags`
+is a tag → array-of-packs map, each pack a dictionary with `NSBundleResourceRequestPath` — and neither
+name is in any header on this machine, so both are the documented asset-pack format, and the facts file
+has to say that twice now: for the top-level key and for the per-pack one.
+
+**4. Neither of the family's two symbols is on the host at all:**
+
+```
+NSBundleResourceRequestLoadingPriorityUrgent:    no symbol on the host
+NSBundleResourceRequestLowDiskSpaceNotification: no symbol on the host
+```
+
+Both are `API_UNAVAILABLE(macos)`, and a constant behind that attribute is not emitted in the macOS
+framework — so **there is no value of either to measure on this host, and the two rows cannot be held to
+it.** What the header gives is the name, and the header's own sentences give the values' meaning: the
+urgent priority is "the maximum amount of resources available to finishing this request as soon as
+possible", the property's range is "between 0 and 1, with 1 being the highest", and a notification's
+name is its own string. So the two values are **documented, not measured**, and the facts file must
+label them that way rather than imply a measurement the host cannot give. This is the same shape as the
+`NSInlinePresentationIntentAttributeName` key, whose value *was* measurable because its type is not
+platform-restricted.
+
+## What this leaves for the code
+
+Measured and holdable: the 13 members' structure and the two initialisers' refusal, `+_manifestWithBundle:error:`
+as the manifest's shape, the two `NSBundle` additions and their refusal, the manifest's location, and
+the error codes 4992/4993/4994.
+Documented and not holdable: the plist's two key names, the urgent priority, and the notification's
+name. Rule-as-ruled: every resolvable tag completes at once, an unknown one completes with 4994, no
+download ever happens, and `progress` is completed at once.
