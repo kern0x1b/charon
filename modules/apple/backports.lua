@@ -1411,7 +1411,65 @@ function entry_of(listed, name)
     return owner and listed[owner] or nil
 end
 
-function check_registry(root, found, complete, deployment, exports, inventory)
+-- Every name the headers the build reads declare: the tree's own - a Charon header, generated or written - and
+-- the SDK the package compiled against. A type, an enumeration or a struct has no symbol by nature, so an entry
+-- of kind "type" or "case" is implemented when a header declares it, and the declaration is read, never taken on
+-- trust: a name no header here or there declares is the same as a class nothing exports. The SDK holds tens of
+-- thousands of headers, so its pass is kept beside the caches and read again for nothing.
+local function declared_names(root, sdkdir)
+    local names, ours = {}, {}
+    for _, file in ipairs(os.files(path.join(root, "*.h"))) do
+        for word in io.readfile(file):gmatch("[%w_]+") do
+            ours[word] = true
+        end
+    end
+    for _, folder in ipairs({root, path.join(root, "*")}) do
+        for _, file in ipairs(os.files(path.join(folder, "*.h"))) do
+            for word in io.readfile(file):gmatch("[%w_]+") do
+                ours[word] = true
+            end
+        end
+    end
+    if sdkdir and os.isdir(sdkdir) then
+        -- named by a key over everything its content depends on, the reader included: a tag for how the
+        -- words are gathered, so a change here is a different file and nothing is ever invalidated by hand
+        -- (the rule dyld.lua's own kept files are written to). Without the tag a fixed SDK path keeps serving
+        -- the words an earlier reader gathered - and an earlier reader that gathered none.
+        local kept = path.join(dyld.root(), "cache", "sdk-header-names-v1-" .. hash.sha256(sdkdir):sub(1, 16) .. ".txt")
+        local text = os.isfile(kept) and io.readfile(kept) or nil
+        if not text then
+            -- os.execv's stdout is a file to write, not a buffer: grep's words go to a temporary file, and
+            -- the words themselves are kept in the cache by io.writefile, which is what this tree has
+            local found = os.tmpfile()
+            for _, folder in ipairs({path.join(sdkdir, "usr/include"), path.join(sdkdir, "System/Library/Frameworks")}) do
+                if os.isdir(folder) then
+                    os.execv("grep", {"-rhoE", "[A-Za-z_][A-Za-z0-9_]*", folder}, {stdout = found})
+                end
+            end
+            text = io.readfile(found) or ""
+            os.tryrm(found)
+            io.writefile(kept, text)
+        end
+        for word in text:gmatch("[%w_]+") do
+            names[word] = true
+        end
+    end
+    for word in pairs(ours) do
+        names[word] = true
+    end
+    return names
+end
+
+-- The registry check as build() runs it, in one place: release_inventory takes the cache directory and
+-- nothing else, and check_registry the SDK the objects were compiled against. A test that calls this with
+-- build()'s own option shape is what keeps a wrong argument here from reaching a gate: the light guard's
+-- fixtures call check_registry directly and never did.
+function registry_step(opt, built, complete, exports)
+    return check_registry(opt.root, built, complete, opt.deployment, exports,
+                          release_inventory(opt.cache), opt.sdkdir)
+end
+
+function check_registry(root, found, complete, deployment, exports, inventory, sdkdir)
     local listed, incomplete = registry(root)
     local unlisted, undocumented = {}, {}
     for _, carried in ipairs({found.classes, found.members, found.symbols}) do

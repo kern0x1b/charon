@@ -121,6 +121,22 @@ local function type_rows(backports, found)
     if refused ~= "the check passed, nothing was held unbuilt" then
         table.insert(found, "a type and an enumeration case a Charon header declares must not be held unbuilt: " .. refused)
     end
+    -- the SDK pass: a type no header of the tree declares, that a header of an SDK declares, must pass
+    -- through the tree's own headers and reach the SDK search, which is a grep into a file and a cached copy
+    local sdk = path.join(root, "fake-sdk")
+    os.mkdir(path.join(sdk, "usr"))
+    os.mkdir(path.join(sdk, "usr", "include"))
+    io.writefile(path.join(sdk, "usr", "include", "Fake.h"), "typedef int FixturedSdkType;\n")
+    io.writefile(path.join(root, "registry", "Fix.json"), string.format('{"framework": "Fix", "entries": [%s]}', row("FixturedSdkType", "type")))
+    local message
+    local passed = try {
+        function () backports.check_registry(root, {classes = {}, members = {}, symbols = {}}, true, "6.1.3", {}, nil, sdk) return true end,
+        catch {function (errors) message = tostring(errors) end}
+    }
+    if (passed and "the check passed, nothing was held unbuilt") ~= "the check passed, nothing was held unbuilt" then
+        table.insert(found, "a type the SDK's headers declare must not be held unbuilt, and the SDK search is not reaching that answer: " .. tostring(message))
+    end
+
     local absent = told({row("FixturedAbsent", "type"), row("FixturedCaseAbsent", "case")})
     for _, name in ipairs({"FixturedAbsent", "FixturedCaseAbsent"}) do
         if not absent:find(name, 1, true) then
