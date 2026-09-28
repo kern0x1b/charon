@@ -254,3 +254,31 @@ The fitter could not see that, and the reason is again the data: **none of the f
 negative Float64**, so its `value number` and `value raw` candidates were indistinguishable over every
 pair it held. One tag with a negative float value, and a `signed double` candidate, would make the
 table decide it. That is the next measurement, and it is a sample, not a rule.
+
+
+## The fourteen unexplained pairs, printed with both values as bits: all fourteen are Float64
+
+`fit.py` prints, for every pair the best candidate leaves, each side's category, data type and value
+with the value's 64-bit pattern. **Every one of the fourteen has category 1953653099 (`'trak'`) and data
+type 3, and not one of them involves a category or a data-type difference.** They are all the value, and
+the pattern they show is:
+
+- **The finite values order numerically and signedly.** 1.5 above −0.5, −0.5 below −0.0, below 0.0 and
+  below +Inf; 0.0 above −Inf; −0.0 below +Inf. Every one of those is what a signed double gives.
+- **−0.0 and +0.0 are equal** (`17 vs 18` is 0).
+- **A NaN is equal to everything.** Every pair involving index 21 or 22 answers **0** - against 1.5, −0.5,
+  −0.0 and 0.0 alike. That is not a sort position, it is the host answering "equal" whenever either
+  value is a NaN.
+
+So the rule that fits is: category as a signed 32-bit integer, then data type, then the value as a signed
+number of the tag's own type - a signed 64-bit for SInt64, a signed double for Float64 - with −0.0 equal
+to 0.0 and a NaN equal to every value.
+
+**The `own-type` and `own-type-nan-equal` candidates are meant to be that and do not reproduce it**, both
+scoring the same 14, so the defect is in the fitter's candidate rather than in the host: the two names
+run the same code path, and a pair the candidate should get right - 1.5 against −0.5, which a signed
+double orders 1 - is still listed as unexplained. That is the thing to fix next, and the fix is in
+`fit.py`, not in the port.
+
+Until it is, `CMTagCompare` keeps the signed-category implementation that 105 answers support, no
+registry rows are written, and the family is not deliverable.

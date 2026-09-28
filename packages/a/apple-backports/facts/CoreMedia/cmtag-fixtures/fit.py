@@ -34,7 +34,18 @@ def order(fields, category_signed, value_bits):
         category, dataType, value = tag
         if value_bits == "raw":
             third = struct.pack(">Q", value)
-        elif value_bits == "own-type":
+        elif value_bits.startswith("own-type"):
+            # the value as a signed number of its own type, with a NaN equal to EVERYTHING - which is
+            # what all fourteen unexplained pairs show - and -0.0 equal to 0.0
+            if dataType == 3:
+                number = struct.unpack(">d", struct.pack(">Q", value))[0]
+                # a NaN becomes its own sentinel, so two NaNs are equal to each other and, with the
+                # rule below, to everything else; -0.0 becomes +0.0, which is what the host answers
+                third = "NaN" if number != number else (0.0 if number == 0.0 else number)
+            elif dataType == 2:
+                third = value - (1 << 64) if value & 0x8000000000000000 else value
+            else:
+                third = value
             # the value as a signed number of the tag's OWN data type, which is what the refuting pair
             # asked for: an int64 as int64, a float64 as a double, and the rest as the unsigned word
             if dataType == 2:
@@ -51,6 +62,10 @@ def order(fields, category_signed, value_bits):
 
 def compare(a, b, fields, category_signed, value_bits):
     ka, kb = order(fields, category_signed, value_bits)(a), order(fields, category_signed, value_bits)(b)
+    if value_bits == "own-type-nan-equal" and ka[:2] == kb[:2]:
+        # a NaN on either side: the host answers equal, to everything, which is every unexplained pair
+        if ka[2] == "NaN" or kb[2] == "NaN":
+            return 0
     return 0 if ka == kb else (-1 if ka < kb else 1)
 
 def memcmp_fields(a, b, fields, big_endian):
@@ -75,7 +90,7 @@ def main():
     results = []
     for fields in itertools.permutations(range(3)):
         for category_signed in (True, False):
-            for value_bits in ("number", "raw", "own-type"):
+            for value_bits in ("number", "raw", "own-type", "own-type-nan-equal"):
                 mismatches = sum(1 for a, b, host in pairs
                                  if compare(TAGS[a], TAGS[b], fields, category_signed, value_bits) != host)
                 reversed_mismatches = sum(1 for a, b, host in pairs
@@ -99,6 +114,34 @@ def main():
     for best, forward, backward, name in sorted(results)[:3]:
         print("  %4d mismatches  (%d forward, %d reversed)  %s" % (best, forward, backward, name))
     winners = [r for r in results if r[0] == 0]
+    best_name = sorted(results)[0][3]
+    fields = tuple("category dataType value".split().index(p) for p in best_name.split()[1].split("-"))
+    category_signed = "signed" in best_name
+    value_bits = best_name.split("value ")[1]
+    print("\n=== the pairs the best candidate leaves, with both values as bits")
+    for a, b, host in pairs:
+        if compare(TAGS[a], TAGS[b], fields, category_signed, value_bits) == host:
+            continue
+        marks = []
+        for index in (a, b):
+            category, dataType, value = TAGS[index]
+            tag = "cat %d type %d" % (category, dataType)
+            if dataType == 3:
+                number = struct.unpack(">d", struct.pack(">Q", value))[0]
+                if number != number:
+                    tag += " NaN"
+                elif number == 0.0 and value:
+                    tag += " -0.0"
+                elif number in (float("inf"), float("-inf")):
+                    tag += " %sInf" % ("+" if number > 0 else "-")
+                else:
+                    tag += " %g" % number
+            elif dataType == 2:
+                tag += " int %d" % (value - (1 << 64) if value & 0x8000000000000000 else value)
+            else:
+                tag += " 0x%016x" % value
+            marks.append("[%d] %s 0x%016x" % (index, tag, value))
+        print("  %3d vs %3d  host %2d  %s" % (a, b, host, "   ".join(marks)))
     if winners:
         print("\nzero-mismatch candidates: %d" % len(winners))
         for _, _, _, name in winners:
