@@ -169,6 +169,12 @@ end
 -- carry its metadata and named. Each is asked both ways here, with the inventory and the objects' symbols
 -- built by hand, so neither depends on a build.
 local function member_and_protocol_rows(backports, found)
+-- A member the registry gives to a protocol is implemented only when that protocol is declared - with a body,
+-- by a header this package installs or by the SDK the backport is compiled against. The owner's being a
+-- protocol is not itself an answer: five implemented ARSCNViewDelegate rows passed with no code anywhere
+-- and the port declaring no such protocol, because the owner term exempted them from asking (ef271700 on
+-- ARKit, 5a505a9b on MXDiagnostic).
+local function protocol_owner_step(backports, opt, found)
     local root = fixtures.scratch()
     os.tryrm(root)
     os.mkdir(root)
@@ -193,6 +199,17 @@ local function member_and_protocol_rows(backports, found)
         local ok = try {
             function () backports.check_registry(root, {classes = classes, members = members, symbols = symbols or {}},
                                                   true, "6.1.3", {}, inventory) return true end,
+    local inventory = {classes = {ARKitShapedView = {image = true, instance = {}, ["+"] = {}}}}
+    local function asked(sdkdir)
+        io.writefile(path.join(root, "registry", "Fix.json"),
+                     '{"framework": "Fix", "entries": ['
+                     .. '{"api": "-[ARKitShapedView anchor]", "kind": "method", "introduced": "9.0", "minimum": "6.0", "status": "implemented", "facts": "f"},'
+                     .. '{"api": "ARKitShapedDelegate", "kind": "protocol", "introduced": "9.0", "minimum": "6.0", "status": "implemented", "facts": "f"}]}')
+            function ()
+                backports.check_registry(root, {classes = {ARKitShapedView = true}, members = {},
+                                               symbols = {}, defined = {}}, true, "6.1.3", {}, inventory, sdkdir, {})
+                return "passed"
+            end,
             catch {function (errors) message = tostring(errors) end}
         }
         return (ok and "passed" or message or "raised with no message")
@@ -402,6 +419,15 @@ local function real_object(backports, modules, found)
     if not ok and message:find("nothing of that name is built: " .. name, 1, true) then
         table.insert(found, "the protocol metadata in " .. path.filename(built.object) .. " is not read, so " .. name .. " is reported unbuilt")
     end
+    -- neither side declares ARKitShapedDelegate: the member must be reported
+    local said = asked(nil)
+    if not said:find("ARKitShapedDelegate", 1, true) then
+        table.insert(found, "a member of a protocol that neither a port header nor the SDK declares must be reported, and it is not: " .. said:gsub("\n", " | "):sub(1, 120))
+    -- and with a declaration, the same member passes
+    io.writefile(path.join(root, "CharonFixture.h"), "#import <Foundation/Foundation.h>\n@protocol ARKitShapedDelegate <NSObject>\n- (void)shaped;\n@end\n")
+    said = asked(nil)
+    if said:find("ARKitShapedDelegate", 1, true) then
+        table.insert(found, "a member of a protocol a port header declares must pass, and it is red: " .. said:gsub("\n", " | "):sub(1, 120))
     os.tryrm(root)
 end
 
@@ -476,6 +502,7 @@ function failures(opt)
     generated_includes(backports, found)
     message_names(backports, found)
     real_object(backports, opt.modules, found)
+    protocol_owner_step(backports, opt, found)
     return found
 end
 
