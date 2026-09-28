@@ -96,14 +96,14 @@ print(d.get('state','?'), d.get('reason',''), d.get('signal','') and 'signal '+s
 guest_lines() {
     image=$2
     guest=$3
-    rootfs=$(ls -d "$HOME/.charon/emulator/images.noindex/$image/iPhone3,1_"*"/rootfs" 2>/dev/null | head -1)
+    rootfs=$(ls -d "$HOME/.charon/emulator/images.noindex/$image/iPhone3,1_"*"/run/rootfs" 2>/dev/null | head -1)
     [ -n "$rootfs" ] || { echo "$guest: no image rootfs at $HOME/.charon/emulator/images.noindex/$image"; return 0; }
     done_file="$rootfs/private/var/backports/dragdroprouting.done"
     asked_file="$rootfs/private/var/backports/dragdroprouting.asked"
     if [ -f "$done_file" ]; then
-        printf '%s verdict: ' "$guest"; tr -d '\n' < "$done_file"; echo
+        printf '%s .done: ' "$guest"; tr -d '\n' < "$done_file"; echo
     else
-        echo "$guest: the guest wrote no verdict file -- the program did not reach the check"
+        echo "$guest: no .done file -- the program did not reach the check"
     fi
     if [ -f "$asked_file" ]; then
         echo "$guest asked:"; sed 's/^/    /' "$asked_file"
