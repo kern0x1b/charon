@@ -1523,25 +1523,32 @@ end
 -- nothing else, and check_registry the SDK the objects were compiled against. A test that calls this with
 -- build()'s own option shape is what keeps a wrong argument here from reaching a gate: the light guard's
 -- fixtures call check_registry directly and never did.
-function registry_step(opt, built, complete, exports)
-    -- A protocol's metadata is defined by an object and never exported by the library that holds it
-    -- (nm -m on build/objects/<folder>/protocols/*.o: every __OBJC_PROTOCOL_$_<name> and
-    -- __OBJC_LABEL_PROTOCOL_$_<name> is non-external), so the objects are the only place the
-    -- rule can see it. A protocol with neither members nor properties has no PROP_LIST_ and no
-    -- PROTOCOL_REFERENCE_ of its own, so the pair keyed on below is the one every protocol has.
-    local objects = path.join(opt.builddir, "objects")
-    for _, folder in ipairs(os.dirs(path.join(objects, "*"))) do
-        for _, object in ipairs(os.files(path.join(objects, folder, "*.o"))) do
-            for _, symbol in ipairs(defined_symbols(object)) do
-                built.defined["_" .. symbol:sub(2)] = true
+-- Every protocol a header the package installs declares with a body, and every one it only names.
+-- Objective-C emits a protocol's metadata into the image that uses or adopts it, and the runtime
+-- deduplicates it, so a library need not carry a protocol for a caller to get it: what a caller needs is
+-- the declaration, and a forward declaration (@protocol X;) is not one.
+function declared_protocols(root)
+    local declared = {}
+    for _, pattern in ipairs({"*.h", "*/*.h"}) do
+        for _, file in ipairs(os.files(path.join(root, pattern))) do
+            for line in io.lines(file) do
+                for name in line:gmatch("@protocol%s+([%w_]+)") do
+                    if not line:find("@protocol%s+" .. name .. "%s*;") then
+                        declared[name] = true
+                    end
+                end
             end
         end
     end
-    return check_registry(opt.root, built, complete, opt.deployment, exports,
-                          release_inventory(opt.cache), opt.sdkdir)
+    return declared
 end
 
-function check_registry(root, found, complete, deployment, exports, inventory, sdkdir)
+function registry_step(opt, built, complete, exports)
+    return check_registry(opt.root, built, complete, opt.deployment, exports,
+                          release_inventory(opt.cache), opt.sdkdir, declared_protocols(opt.root))
+end
+
+function check_registry(root, found, complete, deployment, exports, inventory, sdkdir, declared)
     local listed, incomplete = registry(root)
     local unlisted, undocumented = {}, {}
     for _, carried in ipairs({found.classes, found.members, found.symbols}) do
@@ -1592,9 +1599,7 @@ function check_registry(root, found, complete, deployment, exports, inventory, s
             local ours = not deployment or in_range(entry, deployment)
             -- A protocol has no accessors, so nothing else in this loop can answer for it: the row is
             -- implemented when the objects carry the protocol's own metadata and it names.
-            local declared = entry.kind == "protocol" and
-                ((found.defined or {})["__OBJC_PROTOCOL_$_" .. name] ~= nil or
-                 (found.defined or {})["__OBJC_LABEL_PROTOCOL_$_" .. name] ~= nil) or
+            local declared = entry.kind == "protocol" and ((declared or {})[name] or false) or
                 (owner and ((listed[owner] and listed[owner].kind == "protocol") or (inventory and inventory.protocols and inventory.protocols[owner] ~= nil)))
             if (entry.kind == "type" or entry.kind == "case") and not built then
                 -- no symbol will ever answer for a type or an enumeration case, so the header is the build

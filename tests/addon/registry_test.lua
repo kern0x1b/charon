@@ -181,7 +181,7 @@ local function member_and_protocol_rows(backports, found)
                                    FixProtocol = {image = true, instance = {}, ["+"] = {}}}}
     -- what the build carries: FixClass, which the release has and the port defines, and FixProtocol, which
     -- neither the release nor the objects carry unless a case below says so
-    local function asked(members, symbols, defined, withProtocol)
+    local function asked(members, symbols, withProtocol)
         -- FixClass only: the objects define a protocol's metadata, not a class of the protocol's name, so
         -- putting FixProtocol in found.classes would make `built` true and the row would never be unbuilt -
         -- which is how this case passed in every shape before
@@ -191,8 +191,7 @@ local function member_and_protocol_rows(backports, found)
         end
         local message
         local ok = try {
-            function () backports.check_registry(root, {classes = classes, members = members,
-                                                        symbols = symbols or {}, defined = defined or {}},
+            function () backports.check_registry(root, {classes = classes, members = members, symbols = symbols or {}},
                                                   true, "6.1.3", {}, inventory) return true end,
             catch {function (errors) message = tostring(errors) end}
         }
@@ -215,17 +214,24 @@ local function member_and_protocol_rows(backports, found)
     -- the imported set instead - where a class's names live - the row stays unbuilt, which is how 73 rows
     -- stayed red while the objects carried 91 of their metadata symbols (measured 2026-09-28, nm on
     -- build/objects/*/protocols/*.o)
-    said = asked({}, nil, {["__OBJC_PROTOCOL_$_FixProtocol"] = true}, true)
-    if said:find("FixProtocol") then
-        table.insert(found, "a protocol row whose objects define the protocol's metadata must pass, and it is red: " .. said)
+    -- the rule reads a header the package installs, not a symbol: a protocol the package declares with a
+    -- body is implemented, and a forward declaration on its own is not - which is the side that used to be
+    -- a symbol in an object and is now what a caller compiles against
+    io.writefile(path.join(root, "CharonFixture.h"), "#import <Foundation/Foundation.h>\n@protocol FixProtocol <NSObject>\n- (void)fixIt;\n@end\n")
+    local declared = backports.declared_protocols(root)
+    if not declared.FixProtocol then
+        table.insert(found, "a protocol a header the package installs declares with a body must be implemented, and it is not")
     end
-    said = asked({}, {["__OBJC_PROTOCOL_$_FixProtocol"] = true}, nil, true)
-    if not said:find("FixProtocol", 1, true) then
-        table.insert(found, "a protocol row whose metadata is only an import must not pass, and it does: " .. said)
+    os.tryrm(path.join(root, "CharonFixture.h"))
+    io.writefile(path.join(root, "CharonFixture.h"), "#import <Foundation/Foundation.h>\n@protocol FixProtocol;\n")
+    declared = backports.declared_protocols(root)
+    if declared.FixProtocol then
+        table.insert(found, "a forward declaration is not a declaration: @protocol FixProtocol; must not answer the row")
     end
+    os.tryrm(path.join(root, "CharonFixture.h"))
     said = asked({}, {})
     if not said:find("FixProtocol", 1, true) then
-        table.insert(found, "a protocol row nothing in the objects carries must be red, and it is not: " .. said)
+        table.insert(found, "a protocol row no header declares must be red, and it is not: " .. said)
     end
     os.tryrm(root)
 end
