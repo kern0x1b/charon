@@ -137,26 +137,42 @@ recorded by `tests/backports/host/vision/run.sh` (33 records) and held against t
   `kCIInputAspectRatioKey`, where it wants a number, and raised. The coordinator's condition for
   chasing that was a residual left by the colour test, and there is none.
 
-  **The uniform case, and it decides it.** A single colour -- (200,100,50) -- over 100x50 brought to
-  224x224 under `ScaleFit`, read at the middle of the picture and of the bars on both sides:
+  **The uniform case rules colour management out.** A single colour -- (200,100,50) -- over 100x50
+  brought to 224x224 under `ScaleFit`, read at the middle of the picture on both sides:
 
   ```
-  coreML, middle of the picture   B=32 G=64 R=c8 A=ff
-  the port, middle of the picture B=32 G=64 R=c8 A=ff      <- identical
-  coreML, middle of the bars      B=00 G=00 R=00 A=00
-  the port, middle of the bars     B=00 G=00 R=00 A=ff      <- the fourth byte only
+  coreML   B=32 G=64 R=c8 A=ff
+  the port B=32 G=64 R=c8 A=ff     identical, to the byte
   ```
 
-  The colour survives both paths exactly: 200 is c8, 100 is 64, 50 is 32, and the two agree to the
-  byte. **Core ML's buffer carries no colour space at all** -- `CVImageBufferGetColorSpace` answers
-  none -- and the port's context and the picture's are both plain RGB models, so there is nothing on
-  either side to convert. So a smooth difference of up to 55 over a *gradient* is **not** colour
-  management, and since geometry and a kernel cannot change a uniform image and the uniform case
-  agrees, it is not the geometry either. What is left is the resampling of a varying field: Core ML
-  interpolates a gradient differently from all three of CoreGraphics' qualities and all four of
-  vImage's flag sets, which are the seven measured.
+  and at the middle of the bars they differ only in the fourth byte -- 00 against ff -- which a model
+  does not read. **Core ML's buffer carries no colour space at all**, and the port's context and the
+  picture's are both plain RGB models, so there is nothing on either side to convert. So the smooth
+  difference over a gradient is not colour, and since geometry and a kernel cannot change a uniform
+  image and the uniform case agrees, it is not the geometry either.
 
-  The colour-space seam the probe needed for this is **reverted**: it measured nothing, and a dead
-  knob in the library is worse than no knob. The interpolation seam stays, because it is what let all
-  three qualities be measured against the same function.
+  **The impulse, and three of its four cases were confounded -- withdrawn.** An impulse is the right
+  way to read a kernel, and reading it settled the *placement* instead: with a picture black except
+  one white column, the output row of `16x8` brought to `64x8` under `ScaleFit` is
+
+  ```
+  impulse at source column 4:  ... 255 at output column 28 ...
+  impulse at source column 3:  ... 255 at output column 27 ...
+  4x down, 64x8 -> 16x8, impulse at source 20: row 0 all zero, row 4 has 137 at column 5
+  ```
+
+  The scale is `min(64/16, 8/8)` = **1**: a wide, short picture brought to a wide, short target is
+  never scaled horizontally, because the height caps the scale. So the picture is *placed* -- output
+  column = bar 24 + source column, at 255, unfiltered -- and those three cases measure placement, not
+  a kernel. They are withdrawn as kernel evidence. Two facts survive them: where nothing is scaled
+  the picture is point-sampled with no filter at all, and the one case that really did scale (the 4x
+  down) answers **137** for a 255 impulse, so there *is* filtering on a downscale.
+
+  And a placement datum out of the same rows: `16x8` brought to `32x8` puts source column 5 at
+  output **14**, where bar + 5 is 13 -- Core ML's horizontal inset there is one more than
+  `(W - w) / 2`, which the centre-crop row may share and the fit rows do not.
+
+  The cases that would actually read the kernel are the ones where the target's aspect matches the
+  picture's, so that `ScaleFit` scales it: `16x8` to `64x32` for 4x up, and `64x8` to `16x2` for 4x
+  down. That is the next run, and the kernel has not been read yet.
 
