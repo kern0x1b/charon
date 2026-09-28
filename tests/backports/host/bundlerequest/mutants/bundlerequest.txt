@@ -11,5 +11,7 @@ the manifest is read from the bundle	NSBundleResourceRequest.m	s/charon_manifest
 the tag map is the manifest's tags key	NSBundleResourceRequest.m	s/charon_manifest_tags_key = @"NSBundleResourceRequestTags";/charon_manifest_tags_key = @"NSBundleResourceRequestTagsX";/
 the urgent priority is 1.0	NSBundleResourceRequest.m	s/double const NSBundleResourceRequestLoadingPriorityUrgent = 1\.0;/double const NSBundleResourceRequestLoadingPriorityUrgent = 0.5;/
 the notification is its own name	NSBundleResourceRequest.m	s/@"NSBundleResourceRequestLowDiskSpaceNotification";/@"LowDiskSpace";/
+# device-only: brk #0xc472 in the optimized objc_opt_respondsToSelector stub, which a call test on 6.1.3
+# measures and a host differential cannot: both queries answer NO on a class that lacks both selectors.
 the install asks with class_getInstanceMethod, not -instancesRespondToSelector:	NSBundleResourceRequest.m	s/BOOL hasSet = class_getInstanceMethod\(bundle, \@selector\(setPreservationPriority:forTags:\)\) != NULL;/BOOL hasSet = [bundle instancesRespondToSelector:\@selector(setPreservationPriority:forTags:)];/	device
 the install inverts the decision, adding both methods	NSBundleResourceRequest.m	s/BOOL hasSet = class_getInstanceMethod\(bundle, \@selector\(setPreservationPriority:forTags:\)\) != NULL;/BOOL hasSet = class_getInstanceMethod(bundle, \@selector\(setPreservationPriority:forTags:\)) == NULL;/
