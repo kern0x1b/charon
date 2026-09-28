@@ -155,13 +155,6 @@
     return self;
 }
 
-+ (NSArray<INAddMediaMediaItemResolutionResult *> *)successesWithResolvedMediaItems:(NSArray<INMediaItem *> *)resolvedMediaItems
-{
-    // An array of resolution results is what the system collects out of the
-    // factories it called; with no system there is nothing to collect.
-    return nil;
-}
-
 + (instancetype)unsupportedForReason:(INAddMediaMediaItemUnsupportedReason)reason
 {
     return [self charon_resolutionWithStatus:CharonIntentsResolutionUnsupported resolvedValue:nil valuesToDisambiguate:nil valueToConfirm:nil unsupportedReason:reason];
@@ -1840,13 +1833,6 @@
  resolvedValue:[resolvedMediaItem copy] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
-+ (NSArray<__kindof INMediaItemResolutionResult *> *)successesWithResolvedMediaItems:(NSArray<INMediaItem *> *)resolvedMediaItems
-{
-    // An array of resolution results is what the system collects out of the
-    // factories it called; with no system there is nothing to collect.
-    return nil;
-}
-
 + (instancetype)disambiguationWithMediaItemsToDisambiguate:(NSArray<INMediaItem *> *)mediaItemsToDisambiguate
 {
     return [self charon_resolutionWithStatus:CharonIntentsResolutionDisambiguation resolvedValue:nil valuesToDisambiguate:[mediaItemsToDisambiguate copy] valueToConfirm:nil];
@@ -2160,13 +2146,6 @@
         [self charon_adoptResolutionOf:mediaItemResolutionResult];
     }
     return self;
-}
-
-+ (NSArray<INPlayMediaMediaItemResolutionResult *> *)successesWithResolvedMediaItems:(NSArray<INMediaItem *> *)resolvedMediaItems
-{
-    // An array of resolution results is what the system collects out of the
-    // factories it called; with no system there is nothing to collect.
-    return nil;
 }
 
 + (instancetype)unsupportedForReason:(INPlayMediaMediaItemUnsupportedReason)reason
@@ -2589,13 +2568,6 @@
         [self charon_adoptResolutionOf:mediaItemResolutionResult];
     }
     return self;
-}
-
-+ (NSArray<INSearchForMediaMediaItemResolutionResult *> *)successesWithResolvedMediaItems:(NSArray<INMediaItem *> *)resolvedMediaItems
-{
-    // An array of resolution results is what the system collects out of the
-    // factories it called; with no system there is nothing to collect.
-    return nil;
 }
 
 + (instancetype)unsupportedForReason:(INSearchForMediaMediaItemUnsupportedReason)reason
@@ -3639,13 +3611,6 @@
         [self charon_adoptResolutionOf:mediaItemResolutionResult];
     }
     return self;
-}
-
-+ (NSArray<INUpdateMediaAffinityMediaItemResolutionResult *> *)successesWithResolvedMediaItems:(NSArray<INMediaItem *> *)resolvedMediaItems
-{
-    // An array of resolution results is what the system collects out of the
-    // factories it called; with no system there is nothing to collect.
-    return nil;
 }
 
 + (instancetype)unsupportedForReason:(INUpdateMediaAffinityMediaItemUnsupportedReason)reason

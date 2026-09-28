@@ -392,7 +392,13 @@ def main():
         # The cause the generator recorded, and nothing else: a chain the SDK forbids, a value
         # this delivery does not carry, a class the headers only forward declare, a factory that
         # answers an array. Nothing else about the entry moves.
-        reason = vocabulary.get(causes.get(api), options.reason)
+        reason = vocabulary.get(causes.get(api))
+        if reason is None and owner in answered:
+            # The generator read every header of the SDK this port compiles against and wrote
+            # down every member it declared, implemented, withheld or did not find. A member of a
+            # class it implemented that it never mentioned is one no header declares.
+            reason = vocabulary.get("not_declared")
+        reason = reason or options.reason
         if owner in hand_written:
             # A member of a hand written class whose accessor the file does not show: the reason
             # says so, and the count says how many, so a delivery cannot quietly claim one.

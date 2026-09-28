@@ -730,14 +730,23 @@ def implementation(interface, protocols, carried, intents, interfaces, forward=(
                 accessors.add(selector)
 
     stored, synthesised, dynamic, setters, skipped, members = [], [], [], [], [], []
+    causes_by_name = {}
     dynamic_causes = {}
     for name, member in sorted(own.items()):
         kind = type_of(member)
+        if base_type(kind) == interface.name:
+            # A property of the class's own type on the class itself: the runtime already holds
+            # the class, so there is no storage for an ivar to keep it in, and answering it with
+            # one would be a value nothing had put there.
+            causes_by_name[name] = "class_property"
+            dynamic.append((name, member.get("category"), "class_property"))
+            continue
         withheld = deferred_type(kind, intents, carried, forward)
         if withheld:
             cause = "forward_only_class" if (withheld in forward and not SYSTEM.match(withheld)) \
                     else "later_group"
             dynamic_causes[name] = cause
+            causes_by_name[name] = cause
             dynamic.append((name, member.get("category"), cause))
             continue
         stored.append(("_" + name, spelled(kind), name))
@@ -847,7 +856,13 @@ def implementation(interface, protocols, carried, intents, interfaces, forward=(
             out += written + [""]
 
     for method in interface.methods:
-        out += factory(interface, method, resolution)
+        built = factory(interface, method, resolution)
+        if built is False:
+            causes_by_name["%s[%s %s]" % ("+" if method.get("instance") is False else "-",
+                                             interface.name, method.get("name") or "")] = \
+                "collection_factory"
+            continue
+        out += built
         out.append("")
 
     if "NSSecureCoding" in conformed:
@@ -895,9 +910,7 @@ def implementation(interface, protocols, carried, intents, interfaces, forward=(
                 out += ["", "- (void)set%s:(%s)%s" % (name[0].upper() + name[1:], kind, name), "{",
                         "    _%s = %s;" % (name, "[%s copy]" % name if copied else name), "}"]
         out += ["", "@end", ""]
-    causes = {}
-    for name, _, cause in dynamic:
-        causes[name] = cause
+    causes = dict(causes_by_name)
     for selector, cause in skipped:
         causes[selector] = cause
     report = answer_of(out, interface.name)
@@ -923,12 +936,12 @@ def factory(interface, method, resolution):
     returns = spelled(returns_of(method))
     if (returns.rstrip().endswith("*") and "NSArray" in returns) \
             or selector.startswith("successesWithResolved"):
-        # A factory that answers an array of results, not one result: the system's own, and there
-        # is no system here to have built one.
-        return ["+ (%s)%s" % (returns, interface.spelled_selector(method)), "{",
-                "    // An array of resolution results is what the system collects out of the",
-                "    // factories it called; with no system there is nothing to collect.",
-                "    return nil;", "}"]
+        # A factory that answers an **array** of resolution results is the system's own: the
+        # system calls the per-parameter factory and collects what it gets, and there is no system
+        # here to have called any. So nothing is emitted - a body returning nil would be registered
+        # as an implementation and would be a value that looks like a collection and is empty -
+        # and the cause is recorded, which is what the registry writes as the reason.
+        return False
     parameters = parameters_of(method)
     if not parameters or len(parameters) != 1:
         return []
