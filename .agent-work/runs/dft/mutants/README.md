@@ -19,7 +19,7 @@ Proof the two sides are distinct, from the binary:
 | the packing swapped at element 0 | **4 of 17 red** — the real-to-complex forward at N 8 first |
 | DC's O_0 term dropped | **4 of 17 red** — the real-to-complex forward at N 8 first |
 | the inverse's (-1)^j term dropped | **4 of 17 red** — the real-to-complex inverse at N 8 first |
-| the header's 5*5 length accepted back | **0 of 17 — NOT DETECTED** |
+| the exponent floor lowered from 2 to 1, so lengths the release refuses are accepted | **1 of 17 red** — the accepted-length set over 1 to 1024 |
 
 The unmutated port: **17 checks, 0 failures**, worst ratios 0.820 (real-to-complex inverse) and 1.401 (the
 real-to-complex forward) at N = 32, against the bound 1.538. **Not bit exact** — the port differs from the
