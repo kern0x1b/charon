@@ -82,6 +82,21 @@ written and why:
   port cannot make, so the class has no such method, `respondsToSelector:` answers no, and the
   header's own availability mark (iOS 14) is still on it, so a port cannot call it either. `imageWithURL:` reads the URL and answers no image for a URL it cannot read, which is the
   header's own `nullable` on that method.
+* **`INIntentSetImageKeyPath`** and **`_INIntentSetImageKeyPath`** are **not carried at all**,
+  and their registry entries say so. They are not Objective-C declarations: the two methods they
+  name, `-[INIntent setImage:forParameterNamed:]` and `-[INIntent imageForParameterNamed:]`, are
+  in `INIntent.h` marked `NS_REFINED_FOR_SWIFT`, and that attribute is what sends their Swift
+  names into these two protocols instead of leaving them on the selectors - which is why a
+  search of the SDK's headers finds the methods and not the protocols. What the SDK writes of
+  the protocols is in its Swift overlay, `Intents.swiftmodule/arm64-apple-ios.swiftinterface`
+  (the private one, the public one refining it, and `INIntent` conforming to both), and as Swift
+  symbols in `usr/lib/swift/libswiftIntents.tbd`; 16.4 and 26.2 write the same. Both SDKs are
+  read the same way here, so there is nothing one of them has and the other does not.
+  The entries are `absent` rather than `implemented` because there is no header to lower: the
+  two methods are carried, with their own iOS 12.0 marks lowered, and they are what a client on
+  this release calls. An entry that said this protocol was carried by lowering its header was
+  claiming a mechanism no Swift declaration can be carried by, and a lift refuses by name a
+  registered protocol it can find in no header - which is what it did.
 * **`INPreferences`** answers `INSiriAuthorizationStatusRestricted` for
   `siriAuthorizationStatus`, which is the header's own wording for a system where Siri
   services are restricted and the user cannot change the answer, and it hands the same status

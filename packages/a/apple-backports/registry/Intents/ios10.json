@@ -9062,10 +9062,11 @@
       "kind": "protocol",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "implemented",
+      "status": "absent",
       "facts": "facts/Intents/Intents.md",
-      "reason": "the protocol is the SDK's own declaration, carried by the header once the availability of its members is lowered, and the members are the entries of this file",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "reason": "the SDK declares it in no header: the two methods it refines carry NS_REFINED_FOR_SWIFT in INIntent.h, which sends their Swift names to this protocol instead of to the selectors, so what is left is a Swift declaration in the SDK's own overlay and a set of Swift symbols in its stub, and there is no header whose availability could be lowered. This port declares no such protocol, and no release it covers has an Intents framework of its own",
+      "effect": "nothing is carried and nothing answers it: the public protocol is an empty refinement of the private one, and what a client on this release calls are the Objective-C methods both of them name, -[INIntent setImage:forParameterNamed:] and -[INIntent imageForParameterNamed:]",
+      "source": "Intents.swiftmodule/arm64-apple-ios.swiftinterface and usr/lib/swift/libswiftIntents.tbd of iPhoneOS 16.4, the only places either SDK writes the name, and INIntent.h for the two methods it refines; the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "INListCarsIntentHandling",
@@ -9542,10 +9543,11 @@
       "kind": "protocol",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "implemented",
+      "status": "absent",
       "facts": "facts/Intents/Intents.md",
-      "reason": "the protocol is the SDK's own declaration, carried by the header once the availability of its members is lowered, and the members are the entries of this file",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "reason": "the SDK declares it in no header: the two methods it refines carry NS_REFINED_FOR_SWIFT in INIntent.h, which sends their Swift names to this protocol instead of to the selectors, so what is left is a Swift declaration in the SDK's own overlay and a set of Swift symbols in its stub, and there is no header whose availability could be lowered. This port declares no such protocol, and no release it covers has an Intents framework of its own",
+      "effect": "nothing is carried and nothing answers it: the two methods this private protocol refines are carried as the Objective-C methods they are, -[INIntent setImage:forParameterNamed:] and -[INIntent imageForParameterNamed:], and they are what a client on this release calls",
+      "source": "Intents.swiftmodule/arm64-apple-ios.swiftinterface and usr/lib/swift/libswiftIntents.tbd of iPhoneOS 16.4, the only places either SDK writes the name, and INIntent.h for the two methods it refines; the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     }
   ]
 }
