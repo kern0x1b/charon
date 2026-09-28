@@ -44,7 +44,40 @@ Both measured, both with a known fix, neither committed:
 
 The draft is in `.agent-work/ARSCNView-draft.m`.
 
-## The gap in `ARSCNPlaneGeometry`
+## The gap in `ARSCNPlaneGeometry`, settled by the SDK
+
+`SCNGeometry.h:121` and `:135`:
+
+```objc
+@property(nonatomic, readonly) NSArray<SCNGeometrySource *> *geometrySources API_AVAILABLE(macos(10.10));
+@property(nonatomic, readonly) NSArray<SCNGeometryElement *> *geometryElements API_AVAILABLE(macos(10.10));
+```
+
+**Both are readonly, and the only public way to put data into a geometry is
+`+geometryWithSources:elements:`, which returns a new object.** So `-updateFromPlaneGeometry:` — an
+instance method, which by its name has to update the receiver in place — cannot repopulate a geometry
+from ARKit's file: the storage is the SDK's and is not visible there. Apple's own design has the
+update living inside SceneKit, where those ivars are.
+
+So this is a SceneKit change and not a SceneKit *row*, and the two ways it can be made are both in
+SceneKit's gift: the properties readwrite, or a method that takes a geometry and repopulates it. Either
+one is new API on a class the tree implements, so it is the SceneKit band's to add and to measure
+against the host's SceneKit — which has these properties writable, since on macOS
+`+geometryWithSources:elements:` is the documented way to build one and a caller that mutates in place
+does so through SceneKit's own storage.
+
+What is *not* needed any more is the constructor work. All the constructors were the ones the SDK has
+declared since 8.0, and the port implements the two ARSCNPlaneGeometry needs:
+
+| constructor | port | registry |
+| --- | --- | --- |
+| `+geometrySourceWithData:semantic:…:dataStride:` | `SCNGeometrySource.m` | **added** (commit `1f8a5812e`) |
+| `+geometryElementWithData:primitiveType:primitiveCount:bytesPerIndex:` | `SCNGeometryElement.m` | **added** (commit `1f8a5812e`) |
+| `geometrySources`, `geometryElements`, `+geometryWithSources:elements:` | `SCNGeometry.m` | **added** (commit `bc8ff2c89`) |
+
+Five rows this series has found the port implements and the registry did not carry.
+
+## The earlier gap, superseded
 
 Three SceneKit members it needs: `geometrySources` and `geometryElements` and
 `+geometryWithSources:elements:` are implemented by the port and are now rows (`ios8.json`, 70 → 73).
