@@ -86,7 +86,7 @@ static NSString *_held = nil;
 // probe that answered the views' own drop delegates was never asked by anything: 6.1.3's views have
 // no drop delegate property of their own to set, so the routing asked its first question and then
 // had no one to ask.
-@interface OrderProbe : NSObject <UIDropInteractionDelegate>
+@interface OrderProbe : NSObject <UIDropInteractionDelegate, UICollectionViewDataSource, UITableViewDataSource>
 @property (nonatomic, strong) NSMutableArray<NSString *> *log;
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) UITableView *tableView;
@@ -103,12 +103,40 @@ static NSString *_held = nil;
 
 // The index path the interaction's update is asked about, which the routing gets from the view's
 // own hit test; the record carries it so the arguments are in the comparison.
-- (void)setDestinationForView:(UIView *)view atPoint:(CGPoint)point
+- (BOOL)setDestinationForView:(UIView *)view atPoint:(CGPoint)point
 {
     NSIndexPath *path = [view isKindOfClass:[UICollectionView class]]
         ? [(UICollectionView *)view indexPathForItemAtPoint:point]
         : [(UITableView *)view indexPathForRowAtPoint:point];
     self.destination = path ? [NSString stringWithFormat:@"%ld-%ld", (long)path.section, (long)path.item] : @"(nil)";
+    return path != nil;
+}
+
+// One cell in a section and one row: the views need something laid out for the release's own hit
+// tests to find, and that is what the sequence asks the view for.
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
+{
+    return 12;
+}
+
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
+{
+    return 1;
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    return [collectionView dequeueReusableCellWithReuseIdentifier:@"c" forIndexPath:indexPath];
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return 12;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return [tableView dequeueReusableCellWithIdentifier:@"t"];
 }
 
 - (void)note:(NSString *)line
@@ -225,6 +253,9 @@ static NSString *_held = nil;
     probe.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, 320, 200)
                                                     style:UITableViewStylePlain];
     [probe.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"c"];
+    [probe.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"t"];
+    probe.collectionView.dataSource = probe;
+    probe.tableView.dataSource = probe;
     // A window the views are in, so the release lays them out and its hit tests find their items.
     UIWindow *window = [[UIWindow alloc] initWithFrame:CGRectMake(0, 0, 320, 480)];
     window.rootViewController = [[UIViewController alloc] init];
@@ -235,6 +266,12 @@ static NSString *_held = nil;
     [probe.collectionView layoutIfNeeded];
     [probe.tableView reloadData];
     [probe.tableView layoutIfNeeded];
+    // The points the release's own hit tests are asked about, so the record says whether each view
+    // had an item under it: without one the sequence legitimately stops after the enter.
+    BOOL collectionHas = [probe setDestinationForView:probe.collectionView atPoint:CGPointMake(20, 20)];
+    BOOL tableHas = [probe setDestinationForView:probe.tableView atPoint:CGPointMake(20, 20)];
+    [self noteHeld:[NSString stringWithFormat:@"pointHasItem collection=%d table=%d",
+                    (int)collectionHas, (int)tableHas]];
 
     // A drop interaction on each view, with the probe as the interaction's delegate: the sequence
     // asks the interaction, and the interaction calls its delegate, so this is the path the messages

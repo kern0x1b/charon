@@ -22,6 +22,7 @@ local ui = path.join(root, "packages/a/apple-backports/UIKit")
 target("dragdroprouting")
     add_rules("@addon/charon/daemon")
     add_files(path.join(ui, "ViewDragDropRouting11.m"),
+              path.join(ui, "UIView+Interactions.m"),
               path.join(ui, "CharonDropSequence11.m"),
               path.join(ui, "CharonDropCoordinatorObjects.m"),
               path.join(ui, "UIDropCoordinators.m"),
