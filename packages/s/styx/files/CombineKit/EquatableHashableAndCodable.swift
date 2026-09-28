@@ -130,7 +130,7 @@ extension Publishers.CollectByCount {
     public static func == (lhs: Publishers.CollectByCount<Upstream>, rhs: Publishers.CollectByCount<Upstream>) -> Bool
         where Upstream: Equatable
     {
-        return lhs.upstream == rhs.upstream
+        return lhs.upstream == rhs.upstream && lhs.count == rhs.count
     }
 }
 
@@ -166,7 +166,7 @@ extension Publishers.Drop {
     public static func == (lhs: Publishers.Drop<Upstream>, rhs: Publishers.Drop<Upstream>) -> Bool
         where Upstream: Equatable
     {
-        return lhs.upstream == rhs.upstream
+        return lhs.upstream == rhs.upstream && lhs.count == rhs.count
     }
 }
 
@@ -212,6 +212,8 @@ extension Publishers.Output {
         where Upstream: Equatable
     {
         return lhs.upstream == rhs.upstream
+            && lhs.range.lowerBound == rhs.range.lowerBound
+            && lhs.range.upperBound == rhs.range.upperBound
     }
 }
 
@@ -238,7 +240,7 @@ extension Publishers.Retry {
     public static func == (lhs: Publishers.Retry<Upstream>, rhs: Publishers.Retry<Upstream>) -> Bool
         where Upstream: Equatable
     {
-        return lhs.upstream == rhs.upstream
+        return lhs.upstream == rhs.upstream && lhs.retries == rhs.retries
     }
 }
 

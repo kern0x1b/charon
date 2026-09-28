@@ -31,11 +31,18 @@ internal final class MergeInner<Output, Failure: Error, Downstream: Subscriber>:
     private let expectedUpstreamCount: Int
 
     private var state: State = .awaitingSubscriptions
+    private var isDownstreamSubscribed = false
     private var upstreamSubscriptions: [Subscription] = []
     private var receivedUpstreamCount = 0
     private var remainingUpstreamCount: Int
     private var downstreamDemand: Subscribers.Demand = .none
-    private var didRequestUpstream = false
+    /// What arrived before the downstream had asked for anything. A publisher that sends
+    /// at subscription time - `Just` does - delivers its value before the merged
+    /// publisher has been told about the subscription, and that value is held here
+    /// rather than lost. One value per upstream is all that can arrive this way: a
+    /// publisher that sends a second one without a request is already sending more than
+    /// it was asked for.
+    private var valuesBeforeDemand: [Output] = []
 
     init(downstream: Downstream, upstreamCount: Int) {
         self.downstream = downstream
@@ -56,22 +63,35 @@ internal final class MergeInner<Output, Failure: Error, Downstream: Subscriber>:
             return
         }
         downstreamDemand += demand
-        // Every upstream of a merged publisher is asked for as much as it will give:
-        // there is no per-upstream buffer to hold a value in, so upstream demand cannot
-        // be shaped by downstream demand. A value that arrives with no demand behind it
-        // is dropped, which is what Apple's documentation for the operator says it does.
-        let shouldRequestUpstream = !didRequestUpstream
-        didRequestUpstream = true
-        let subscriptions = shouldRequestUpstream ? upstreamSubscriptions : []
+        // The upstreams were asked for one value each as their subscription arrived, so
+        // there is nothing to ask for here: what arrived early waits in
+        // `valuesBeforeDemand` and goes downstream now, in the order it arrived.
+        let held = valuesBeforeDemand
+        valuesBeforeDemand = []
         lock.unlock()
 
+        for value in held {
+            deliver(value)
+        }
+    }
+
+    /// Sends one value downstream, adds whatever demand it returned, and asks each
+    /// upstream for one more: each holds a single request, and without that a publisher
+    /// that sends again - a subject does - would go quiet.
+    private func deliver(_ value: Output) {
+        let additionalDemand = downstream.receive(value)
+        lock.lock()
+        downstreamDemand += additionalDemand
+        let subscriptions = upstreamSubscriptions
+        lock.unlock()
         for subscription in subscriptions {
-            subscription.request(.unlimited)
+            subscription.request(.max(1))
         }
     }
 
     func cancel() {
         lock.lock()
+        isDownstreamSubscribed = false
         guard case .terminated = state else {
             state = .terminated
             let subscriptions = upstreamSubscriptions
@@ -96,31 +116,54 @@ internal final class MergeInner<Output, Failure: Error, Downstream: Subscriber>:
         }
         upstreamSubscriptions.append(subscription)
         receivedUpstreamCount += 1
-        // The downstream learns of the subscription only once every upstream has
-        // arrived, so that the demand it asks for is answered to all of them.
-        guard receivedUpstreamCount == expectedUpstreamCount else {
-            lock.unlock()
-            return
+        // Each upstream is asked for one value as it arrives, not when the downstream
+        // first asks. Measured against the host's own Combine: a merged publisher hands
+        // each upstream `.max(1)` the moment that upstream subscribes, and a publisher
+        // that sends at subscription time - `Just` does - would otherwise have its value
+        // refused for want of a request that had not been made yet.
+        let isTheLast = receivedUpstreamCount == expectedUpstreamCount
+        if isTheLast {
+            state = .active
+            isDownstreamSubscribed = true
         }
-        state = .active
+        // Every upstream that has already finished by the time the last one arrives has
+        // been counted, and the merged publisher is through before it has even been
+        // subscribed to downstream.
+        let isThrough = isTheLast && remainingUpstreamCount == 0
         lock.unlock()
+        subscription.request(.max(1))
+        guard isTheLast else { return }
+        // The downstream learns of the subscription only once every upstream has arrived.
         downstream.receive(subscription: self)
+        if isThrough {
+            lock.lock()
+            state = .terminated
+            lock.unlock()
+            downstream.receive(completion: .finished)
+        }
     }
 
     func receive(_ input: Output) -> Subscribers.Demand {
         lock.lock()
-        guard case .active = state, downstreamDemand > .none else {
+        guard case .active = state else {
+            // The value arrived before the downstream was told about the subscription, so
+            // it cannot have asked for anything yet: the value waits for it. A value that
+            // arrives after the stream has ended is not held.
+            if case .awaitingSubscriptions = state {
+                valuesBeforeDemand.append(input)
+            }
+            lock.unlock()
+            return .none
+        }
+        guard downstreamDemand > .none else {
+            // Demand asked for and spent: a value with none behind it is dropped, which is
+            // what Apple's documentation for the operator says it does.
             lock.unlock()
             return .none
         }
         downstreamDemand -= 1
         lock.unlock()
-        let additionalDemand = downstream.receive(input)
-        if additionalDemand > .none {
-            lock.lock()
-            downstreamDemand += additionalDemand
-            lock.unlock()
-        }
+        deliver(input)
         return .none
     }
 
@@ -146,13 +189,18 @@ internal final class MergeInner<Output, Failure: Error, Downstream: Subscriber>:
             // that one more of them is done. A subscription that has already finished
             // stays in the list until cancellation, which is a no-op on it.
             remainingUpstreamCount -= 1
-            guard case .terminated = state, remainingUpstreamCount > 0 else {
-                state = .terminated
+            // The downstream is told the stream finished only once every upstream has
+            // finished *and* it has been told about the subscription: an upstream that
+            // sends and finishes at subscription time is through before the others have
+            // arrived, and the completion waits for the rest.
+            guard case .terminated = state, remainingUpstreamCount == 0,
+                  isDownstreamSubscribed else {
                 lock.unlock()
-                downstream.receive(completion: .finished)
                 return
             }
+            state = .terminated
             lock.unlock()
+            downstream.receive(completion: .finished)
         }
     }
 }
@@ -272,6 +320,13 @@ internal class CombineLatestInner<Output, Failure: Error, Downstream: Subscriber
         downstreamDemand += demand
         let isSendable = isDownstreamSubscribed && hasCombinedValue
         lock.unlock()
+        // Each upstream is asked for one value each time the downstream asks, and not
+        // again after a combination is sent. Measured against the host's own Combine: a
+        // downstream that asked for one value leaves each upstream having been asked for
+        // one, not two.
+        for child in children {
+            child.upstream?.request(.max(1))
+        }
         // A combination can only be sent once the downstream has asked for one. The
         // upstreams each hold a single value meanwhile, which is the buffer of one the
         // operator's documentation describes; nothing is lost while it waits.
@@ -311,7 +366,6 @@ internal class CombineLatestInner<Output, Failure: Error, Downstream: Subscriber
         isDownstreamSubscribed = true
         lock.unlock()
         downstream.receive(subscription: self)
-        children.forEach { $0.upstream?.request(.max(1)) }
     }
 
     fileprivate func childDidReceiveValue(_ child: any CombineLatestChildProtocol) {
@@ -365,16 +419,10 @@ internal class CombineLatestInner<Output, Failure: Error, Downstream: Subscriber
         }
         let value = combinedValue()
         downstreamDemand -= 1
-        let children = self.children
         lock.unlock()
         let additionalDemand = downstream.receive(value)
         lock.lock()
         downstreamDemand += additionalDemand
-        let isStillActive = !isTerminated
         lock.unlock()
-        guard isStillActive else { return }
-        // Every upstream's value was consumed by the combination just sent, so each of
-        // them is asked for one more.
-        children.forEach { $0.upstream?.request(.max(1)) }
     }
 }
