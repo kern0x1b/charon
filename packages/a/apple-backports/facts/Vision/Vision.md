@@ -324,3 +324,26 @@ recorded by `tests/backports/host/vision/run.sh` (33 records) and held against t
   impulse at a *fractional* source position, which would separate "the crop rect is different" from
   "the response of one source pixel is wider than I am reading its centre as".
 
+  **The channel order, from a control that passes.** A black picture with one known pixel in it --
+  (3,5) at R=200, G=0, B=0 -- drawn top-down (`CGContextTranslateCTM(0, h)` then
+  `CGContextScaleCTM(1, -1)`) and read back out of a `kCVPixelFormatType_32BGRA` buffer drawn with
+  `kCGBitmapByteOrder32Little | kCGImageAlphaNoneSkipFirst`, gives
+
+  ```
+  (3,5) from the top: 00 00 c8 ff
+  ```
+
+  so the byte order is **B, G, R, A**: the red is byte 2 where it was put, and the fourth byte is
+  `ff`, so the pixels are not premultiplied. The picture and the buffer agree.
+
+  Two things this settles and one it does not. It settles that the channel order is *not* the
+  degenerate-vertical-fit's cause, so the fit's zero slope is a defect in the fit rather than in the
+  buffer. It settles that the earlier probes that read a buffer they never drew into were reading
+  zeros -- the control had been vacuous until now, and the `nothing lit` rows in the fixture come
+  from a probe with the same habit, which is why they are recorded as measurements of nothing. It
+  does **not** settle the order of the buffer *Core ML returns*, which is the one the crop check
+  compares: that part of the probe still crashes after the control, and it is the next thing to fix.
+
+  The top-down transform also rules the origin out as the cause: the coordinate fit's numbers are
+  byte-identical before and after it.
+
