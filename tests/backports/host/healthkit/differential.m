@@ -230,6 +230,16 @@
 - (BOOL)isCompatibleWithUnit:(CharonHostHKUnit *)unit;
 @end
 
+// fprintf knows no %@ - that is a Foundation specifier, and C printf prints it as a plain @ - so
+// every object goes through -description here and every class through NSStringFromClass, and the two
+// booleans are %d because they are ints and not pointers. The last two versions of the print below
+// said an ivar held garbage, and it did: %s for an object, and then %@ for the same object.
+static const char *CharonHKDescribe(id object)
+{
+    NSString *text = [object description];
+    return text ? (const char *)[text UTF8String] : "(null)";
+}
+
 static NSUInteger CharonHKDifferences;
 static NSUInteger CharonHKComparisons;
 
@@ -786,14 +796,12 @@ static void CharonHKQueryObjects(void)
         // comes back is the thing to look at.
         id mineType = [CharonHostHKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeartRate];
         id theirsType = [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeartRate];
-        // The print that answers difference 1: what the port's -sampleType tests against, and whether
-        // the type the harness built with the port's own factory passes it. %@ and not %s, because an
-        // object is not a C string: the last version of this print said the ivar held garbage when it
-        // held a type, and the garbage was the format string.
-        printf("LAYOUT mineType=%@ portSampleType=%@ mineIsKind=%d | theirsType=%@ hostSampleType=%@ theirsIsKind=%d\n",
-               [mineType class], [CharonHostHKSampleType class],
-               [mineType isKindOfClass:[CharonHostHKSampleType class]],
-               [theirsType class], [HKSampleType class], [theirsType isKindOfClass:[HKSampleType class]]);
+        // The print that answers difference 1, through CharonHKDescribe.
+        printf("LAYOUT mineType=%s portSampleType=%s mineIsKind=%d | theirsType=%s hostSampleType=%s theirsIsKind=%d\n",
+               CharonHKDescribe([mineType class]), CharonHKDescribe([CharonHostHKSampleType class]),
+               [mineType isKindOfClass:[CharonHostHKSampleType class]] ? 1 : 0,
+               CharonHKDescribe([theirsType class]), CharonHKDescribe([HKSampleType class]),
+               [theirsType isKindOfClass:[HKSampleType class]] ? 1 : 0);
     }
 
     // The type a query is for, and the sample type under its own name, which is the same object.
