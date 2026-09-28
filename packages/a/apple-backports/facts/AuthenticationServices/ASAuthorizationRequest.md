@@ -150,6 +150,46 @@ build of the same files plus an assertion on a fresh request's four properties a
 the next piece of work. The two request classes are committed with a green shape check and **no value
 mutant**, and this file says so rather than letting the green stand for more than it is.
 
+## The value differential, and what it changed
+
+`run.sh` asks whether a member is *bound*, reading the binary. A value is not a method, so the value
+check is a second instrument: it **runs** the code, both builds of it, in one process.
+
+**How a request is made is the whole thing, and I had it wrong.** `ASAuthorizationRequest`'s header
+marks `-init` and `+new` `NS_UNAVAILABLE` — by design, because a request is not made by constructing
+it. It comes from a provider: `[[ASAuthorizationAppleIDProvider alloc] init] createRequest`, which the
+SDK gives, needs no daemon, no network and no UI, and returns a real `ASAuthorizationAppleIDRequest`. My
+first attempt used `[[cls alloc] init]` on the host, the base's `-init` raised, and I concluded "the
+framework is a stub". That was a conclusion, not a measurement: the initialiser is unavailable *by
+design* and the provider is the way in.
+
+**Two builds, one process, the renames on the port's translation units only.** The test TU compiles
+without the `-D` list and names the SDK's classes; the port's own build renames its three to
+`PortAS…`, so the test reaches them by name and never sees a port class under a release name.
+
+**What the host holds, measured:**
+
+    fresh  requestedScopes nil   state nil   nonce nil   requestedOperation nil   user nil
+    copy   requestedScopes set   state set   nonce set   requestedOperation set   user set
+    (with the first three set on the original before copying)
+
+**And it changed this port.** A fresh request's `requestedOperation` is **nil** on the host, not the
+implicit operation — the header types the property non-nullable and the release leaves it nil. This port
+defaulting it to `ASAuthorizationOperationImplicit` was sending an operation the release does not
+send, which is a behavioural difference an application can observe and which no member list can see. The
+default is nil now, and the reason is in the source.
+
+    12 keys, 0 differ between the two builds
+
+**Two call targets, proved rather than asserted:** `nm` shows the port's three classes in the binary
+under the `Port` names and nothing else, and the test prints the class each side built its request
+from and the address `-init` is reached at — two different classes, two different addresses, one
+process.
+
+**The value mutant does not yet go red** and this says so. It changes the port's default operation to
+the implicit one, the table is unchanged, and the mutation's effect has not been diagnosed. The
+differential itself is green and the value claim it checks is the one above.
+
 ## What is not done
 
 576 rows. The value half of the family is measured (30 constants, 30 agree with the host) and the shape

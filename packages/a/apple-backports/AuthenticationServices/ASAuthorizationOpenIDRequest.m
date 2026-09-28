@@ -14,11 +14,19 @@
 // it -- which is the distinction the check's must-be-unavailable state exists to draw, and the
 // superclass is the other side of it.
 //
-// **What a fresh request holds.** The header gives every property a nil-able value and one non-nil
-// default: `requestedOperation` is `ASAuthorizationOperationImplicit`, the operation whose meaning
-// depends on the provider rather than being spelled out. That default is the header's, not a
-// measurement: the host will not make an instance to ask -- its -init is the one under this heading --
-// so it is recorded as the header's default and not as something observed.
+// **What a fresh request holds**, measured on the host through the path a request is meant to come
+// from -- `[[ASAuthorizationAppleIDProvider alloc] init] createRequest`, which needs no daemon, no
+// network and no UI:
+
+//     requestedScopes    nil
+//     state              nil
+//     nonce              nil
+//     requestedOperation nil      <- not the implicit operation, and not an NSString
+//     user               nil
+
+// and its copy, with the first three set beforehand, carries all three. The `requestedOperation` being
+// nil is the one that changes this class: the header types it non-nullable and the release leaves it
+// nil, so the port leaves it nil too.
 #import <AuthenticationServices/AuthenticationServices.h>
 #import "CharonASConstruction.h"
 
@@ -39,7 +47,14 @@
         _requestedScopes = nil;
         _state = nil;
         _nonce = nil;
-        _requestedOperation = [ASAuthorizationOperationImplicit copy];
+        // nil, and this is a measurement rather than a reading of the header. The host's own provider
+        // hands out a request whose requestedOperation is nil -- asked on macOS 27.0 through
+        // [[ASAuthorizationAppleIDProvider alloc] init] createRequest, which is how a request is
+        // supposed to be made, since the base marks -init and +new unavailable. The header types the
+        // property as non-nullable and the release leaves it nil, and the port follows the release:
+        // defaulting it to the implicit operation would have made a port that sends an operation the
+        // release does not send, which is a behavioural difference an application can observe.
+        _requestedOperation = nil;
     }
     return self;
 }
