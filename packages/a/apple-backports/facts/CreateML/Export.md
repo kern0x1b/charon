@@ -68,3 +68,55 @@ scalar where a vector belongs are all caught, by coremltools rather than by the 
 
 The writer's own round trip runs first, so a writer whose reader cannot read it is caught before any
 other implementation is asked.
+
+### The package build, and why `MLMultiArrayDataType` is not there
+
+The build fails in the `CoreML` module at `ShapedArray.swift`:
+
+```
+files/CoreML/ShapedArray.swift:47:36: error: cannot find type 'MLMultiArrayDataType' in scope
+```
+
+**The lift is working. The type is genuinely absent from the port's releases.** `MLMultiArrayDataType`
+is declared in the iPhoneOS 16.4 SDK's `MLMultiArray.h:17` as
+
+```objc
+typedef NS_ENUM(NSInteger, MLMultiArrayDataType) {
+    MLMultiArrayDataTypeDouble  = 0x10000 | 64,
+    MLMultiArrayDataTypeFloat32 = 0x10000 | 32,
+} API_AVAILABLE(macos(10.13), ios(11.0), watchos(4.0), tvos(11.0));
+```
+
+**iOS 11.0** — the annotation on the closing brace covers the whole enumeration. The port's Swift
+targets are armv7, and the compiler itself fixes the window: `ios6.1` is refused with *"Swift requires
+a minimum deployment target of iOS 7.0.0"* and every `ios11.0`-and-above with *"does not support
+emitting binaries or IR for armv7"*. So the range the port can build armv7 into is iOS 7.0-10.x, and
+inside it the type is unavailable:
+
+| deployment | diagnostic |
+| --- | --- |
+| ios7.0 / 8.0 / 9.0 / 10.0 | `error: 'MLMultiArrayDataType' is only available in iOS 11.0 or newer` |
+| ios11.0 and above | armv7 unsupported outright |
+
+That is a **decision, not a defect**, and it is the coordinator's to make, because the two honest
+answers are both a change of contract:
+
+- **Relax the availability, which is what a backport of a header-only enum is.** The type is
+  `NS_ENUM(NSInteger, ...)` with no runtime presence: the *values* are wire numbers, and the
+  arithmetic is done by this port's own code. A lifted header that carried the port's releases instead
+  of the SDK's would make it legal, and then `registry/CoreML/createml-shapedarray.json` — which already
+  claims the type and its cases as this package's — becomes true. This is the better answer: it keeps
+  the public surface Apple's.
+- **Carry the wire value, and say so.** `Float32` is `0x10000 | 32` and `Double` is `0x10000 | 64`,
+  numbers the registry already records as read out of Apple's own header, and the writer already
+  emits them. A `multiArrayDataType` returning a number would build everywhere, at the cost of a
+  public surface that is not Apple's.
+
+**What is not an answer**, and is the one this package deliberately did not take: declaring the enum a
+second time inside the overlay. The registry already claims the type as this package's, so a hand
+written copy would be the second copy of a declaration that exists, and the port's rule is to fix the
+original rather than to add a parallel one.
+
+The writer itself does not need the type: it emits the numbers, and the two independent readers check
+them. So this blocks the **package build** and nothing in the host suites, which is why 425 checks
+pass on the host while the device build does not compile.
