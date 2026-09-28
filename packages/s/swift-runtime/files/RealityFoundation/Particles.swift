@@ -80,22 +80,29 @@ import Foundation
         case free(axis: SIMD3<Float>, variation: Float)
     }
 
-    /// How a particle's opacity runs over its life.
+    /// How a particle's opacity runs over its life: :11907-11914, the linear, the eased, the
+    /// gradual and the quick shapes, and constant for one that does not change.
     public enum OpacityCurve: Codable, Equatable, Hashable {
         case linearFadeOut
         case linearFadeIn
         case gradualFadeInOut
         case quickFadeInOut
+        case easeFadeIn
+        case easeFadeOut
+        case constant
     }
 
-    /// How particles are ordered against each other.
+    /// How particles are ordered against each other: :11923-11929, by depth, by id or by age,
+    /// each in both directions, and unsorted. The directions are the system's names, not
+    /// "near to far": increasing is the order the renderer walks.
     public enum SortOrder: Codable, Equatable, Hashable {
-        /// No ordering: the renderer draws them as they come.
-        case none
-        /// By distance from the camera, near to far.
-        case distance
-        /// By age, oldest first.
-        case age
+        case increasingDepth
+        case decreasingDepth
+        case increasingID
+        case decreasingID
+        case increasingAge
+        case decreasingAge
+        case unsorted
     }
 
     /// How many particles are born in a second, and by how much that may differ.
@@ -155,7 +162,7 @@ import Foundation
                 noiseAnimationSpeed: Float = 0, attractionStrength: Float = 0,
                 attractionCenter: SIMD3<Float> = .zero, vortexStrength: Float = 0,
                 vortexDirection: SIMD3<Float> = .zero, isLightingEnabled: Bool = false,
-                stretchFactor: Float = 0, sortOrder: SortOrder = .none) {
+                stretchFactor: Float = 0, sortOrder: SortOrder = .unsorted) {
         self.birthRate = birthRate
         self.birthRateVariation = birthRateVariation
         self.dampingFactor = dampingFactor

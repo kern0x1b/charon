@@ -1146,6 +1146,10 @@ check("a cancelled subscription hears nothing more", began, raisedBefore)
     check("the SDK's nested spelling is this module's type", shape == ParticleEmitterShape.torus, true)
     check("and a birth location with its own payload",
           ParticleEmitterComponent.BirthLocation.vertices(count: SIMD3<UInt>(2, 3, 4)) == .vertices(count: SIMD3<UInt>(2, 3, 4)), true)
+    check("and a sort order the system names both ways",
+          ParticleEmitter.SortOrder.increasingAge == ParticleEmitter.SortOrder.decreasingAge, false)
+    check("and an opacity curve of each kind the interface lists",
+          [ParticleEmitter.OpacityCurve.linearFadeOut, .easeFadeIn, .quickFadeInOut, .gradualFadeInOut].count, 4)
     check("and a free billboard mode with an axis",
           ParticleEmitter.BillboardMode.free(axis: SIMD3<Float>(0, 1, 0), variation: 10)
               == ParticleEmitter.BillboardMode.free(axis: SIMD3<Float>(0, 1, 0), variation: 10), true)
