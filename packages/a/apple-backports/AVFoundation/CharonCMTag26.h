@@ -55,10 +55,8 @@ CF_INLINE CMTagValue CMTagGetValue( CMTag tag ) CF_REFINED_FOR_SWIFT
 	return tag.value;
 }
 
-CF_INLINE CMTagDataType CMTagGetValueDataType( CMTag tag ) CF_REFINED_FOR_SWIFT
-{
-	return tag.dataType;
-}
+CM_EXPORT CMTagDataType CMTagGetValueDataType( CMTag tag );
+
 
 CF_INLINE CMTagCategory CMTagGetCategory( CMTag tag ) CF_REFINED_FOR_SWIFT
 {

@@ -40,6 +40,11 @@ CMTag CMTagMakeWithFloat64Value( CMTagCategory category, double value )
     return tag;
 }
 
+CMTagDataType CMTagGetValueDataType( CMTag tag )
+{
+    return tag.dataType;
+}
+
 FourCharCode CMTagGetOSTypeValue( CMTag tag )
 {
     return (FourCharCode)(uint32_t)tag.value;

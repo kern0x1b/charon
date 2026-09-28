@@ -57,3 +57,47 @@ implementations at all: the comparison is on the bit pattern, so it is exact. An
 is all three keys zero, and it reads back invalid.
 
 `CMTagMakeFromDictionary` on a dictionary that is not one, or with the keys missing, gives an invalid tag.
+
+## The twenty-five rows, read off both headers
+
+`grep -n -E 'CF_EXPORT|CM_INLINE|CF_INLINE'` and `grep -n -E '^CM_INLINE|^CM_EXPORT'` on
+`CMTag.h`, in the 26.2 iOS SDK and in the host's macOS SDK. **The two headers are identical** — the same
+six inlines at the same line numbers and the same nineteen exports — so the object follows 26.2 and the
+host is the oracle for all of them without a single divergence to name.
+
+| name | 26.2 | line | host |
+| --- | --- | --- | --- |
+| `CMTagIsValid` | `CM_INLINE` | 127 | `CM_INLINE` 127 |
+| `CMTagGetValueDataType` | `CM_EXPORT` | 135 | `CM_EXPORT` 135 |
+| `CMTagGetCategory` | `CM_INLINE` | 331 | `CM_INLINE` 331 |
+| `CMTagCategoryEqualToTagCategory` | `CM_INLINE` | 341 | `CM_INLINE` 341 |
+| `CMTagGetValue` | `CM_INLINE` | 350 | `CM_INLINE` 350 |
+| `CMTagHasCategory` | `CM_INLINE` | 359 | `CM_INLINE` 359 |
+| `CMTagHasSInt64Value` | `CM_EXPORT` | 367 | `CM_EXPORT` 367 |
+| `CMTagGetSInt64Value` | `CM_EXPORT` | 376 | `CM_EXPORT` 376 |
+| `CMTagHasFloat64Value` | `CM_EXPORT` | 384 | `CM_EXPORT` 384 |
+| `CMTagGetFloat64Value` | `CM_EXPORT` | 393 | `CM_EXPORT` 393 |
+| `CMTagHasOSTypeValue` | `CM_EXPORT` | 401 | `CM_EXPORT` 401 |
+| `CMTagGetOSTypeValue` | `CM_EXPORT` | 410 | `CM_EXPORT` 410 |
+| `CMTagHasFlagsValue` | `CM_EXPORT` | 418 | `CM_EXPORT` 418 |
+| `CMTagGetFlagsValue` | `CM_EXPORT` | 427 | `CM_EXPORT` 427 |
+| `CMTagMakeWithSInt64Value` | `CM_EXPORT` | 439 | `CM_EXPORT` 439 |
+| `CMTagMakeWithFloat64Value` | `CM_EXPORT` | 449 | `CM_EXPORT` 449 |
+| `CMTagMakeWithOSTypeValue` | `CM_EXPORT` | 459 | `CM_EXPORT` 459 |
+| `CMTagMakeWithFlagsValue` | `CM_EXPORT` | 470 | `CM_EXPORT` 470 |
+| `CMTagEqualToTag` | `CM_EXPORT` | 486 | `CM_EXPORT` 486 |
+| `CMTagCompare` | `CM_EXPORT` | 496 | `CM_EXPORT` 496 |
+| `CMTagCategoryValueEqualToValue` | `CM_INLINE` | 506 | `CM_INLINE` 506 |
+| `CMTagHash` | `CM_EXPORT` | 514 | `CM_EXPORT` 514 |
+| `CMTagCopyDescription` | `CM_EXPORT` | 524 | `CM_EXPORT` 524 |
+| `CMTagCopyAsDictionary` | `CM_EXPORT` | 539 | `CM_EXPORT` 539 |
+| `CMTagMakeFromDictionary` | `CM_EXPORT` | 550 | `CM_EXPORT` 550 |
+
+The six inlines carry their bodies again at 589, 594, 599, 604, 609 and 614, which is how 26.2 spells an
+inline. **The package therefore defines nineteen** of the twenty-five: the six inlines are the header's,
+so the object exports nothing for them, the differential cannot and must not compare them, and they need
+no registry row.
+
+And a defect this table found in what is committed: `CMTagGetValueDataType` is an **export**, and
+`CharonCMTag26.h` was inlining it — so the object was defining **eighteen**, not nineteen. The inline is
+removed and the function is defined in the object.
