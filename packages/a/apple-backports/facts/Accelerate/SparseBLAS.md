@@ -553,6 +553,15 @@ It is wired the way the ruling says: `backports.lua`'s Accelerate row carries
 refuses with `apple-backports links the archive suitesparse-ordering and its recipe declares no dependency
 with that alias` — which is what it did, and the dep is the fix.
 
+**Two of this band's module commits are now upstream, and the rebase says so.** Main carries both halves
+of the archive decision: MLCompute's `-I` half and, since the coordinator's ruling, the link half — so
+`git rebase` onto `5af078dd5` found `for _, name in ipairs(library.archives or {})` already in
+`backports.lua` and dropped this band's copy of each as empty. The two commits are not in the series
+because they are not needed: `backports.lua:400` has the `-I` loop and `:957` the unguarded archive link.
+The one change of mine that survives the rebase is the `archives = {"suitesparse-ordering"}` on the
+Accelerate row and the `add_deps` beside it, and the only conflict was an adjacent line, resolved by
+keeping main's `GraphicsBackports` row and adding mine after it.
+
 **Where it stops, and the bare assertion answered by the compiler's own line.** A scratch project
 (`add_repositories` at the checkout, `add_addons("charon v0.1.0")`, `set_defaultplat("iphoneos")`,
 `add_requires("charon@suitesparse-ordering v7.12.2")`) and `xmake f -c -y` puts the failure where the
@@ -580,9 +589,13 @@ the package is still not building:
   the store's LLVM 23.1.1. `package:toolchains()[1]` is the wrong pick outside the gate, and with the system
   clang on the path `toolchain:config("sdkdir")` is not what the compile line needs either. The recipe has to
   ask the addon the way `backports.lua` does, not take the first entry.
-- So the `-isystem` fix is **the right fix, verified to reach the right header, and not yet proven to build
-  the archive** — the run above still ends on the same `stdio.h` line because the toolchain, not the
-  include path, is the remaining half.
+- The `-isystem` fix is **verified to reach the right header**, and the failure has moved past it. What is
+  left is a bare `assertion failed!` with no message, and every `assert` in the recipe carries one, so the
+  bare one is xmake's own — `os.vrunv` or `os.mkdir` or `path.absolute` — not the recipe's five
+  directory checks. The next probe is the same scratch project with the addon pinned to the version
+  `build-gate.lua` computes, and the recipe's own traceback rather than the require machinery's: the
+  latter names `install_packages.lua` and says only that the package "must be installed", which is the
+  install failing, not where.
 
 
 
