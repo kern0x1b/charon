@@ -42,3 +42,21 @@ target("charoncalls")
                    "measurement program, not a released image: it calls every member of the framework it is handed and forks once per member")
     end
     set_values("charon.control", "control")
+
+-- The collection factories' port half: the count table, on the device, for the real generated
+-- body and for a mutant of it. It is a second program in this port rather than a port of its own
+-- because it links the same libraries and wants the same build: the library under test is the
+-- library both read, and a second port would resolve and build the package twice for one answer.
+target("charoncollection")
+    add_rules("@addon/charon/daemon")
+    add_files(path.join(root, "tests/backports/emulate/calls/collection-port.m"))
+    add_mflags("-fobjc-arc")
+    add_ldflags("-fobjc-arc", {force = true})
+    add_frameworks("Foundation")
+    if package then
+        add_packages("apple-backports")
+        set_values("charon.libraries", "apple-backports")
+        set_values("charon.waive.weak-imports",
+                   "measurement program, not a released image: it calls one member of the framework it is handed")
+    end
+    set_values("charon.control", "control")
