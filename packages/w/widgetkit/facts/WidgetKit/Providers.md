@@ -16,8 +16,9 @@ to configure this widget with - which is `recommendations()`, and the app-intent
 instance the widget is configured with, which is what the `for:` of those two spellings is.
 
 These are the rows the module's next pass writes; the rest of WidgetKit's surface is declared and
-measured (245 of 340 placed, and the 95 that are not are listed in
-`.agent-work/runs/kits/WidgetKit-missing.tsv`).
+measured (**240 of 340 placed, and the 100 that are not** are listed in
+`.agent-work/runs/kits/WidgetKit-missing.tsv`, and the counts section below says where the 245 came
+from and what took the five).
 
 ## What landed after the TipKit differential, and what the ledger can see of it
 

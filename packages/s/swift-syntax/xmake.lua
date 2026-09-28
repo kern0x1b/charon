@@ -56,7 +56,22 @@ package("swift-syntax")
         -- The fetch's own layout, read from the private store after the first run: the upstream root
         -- is `<cache>/<version>/source/swift-syntax`, and `Package.swift` and `Sources/` are in it.
         -- `sourcedir()` is that `source`, so the root is one level *down*, not up.
-        local source = path.join(package:sourcedir(), "swift-syntax")
+        -- There is no `sourcedir()` in this context either -- it is nil here, and the run printed
+        -- `--package-path nil/swift-syntax` -- so the fetched root is *found* instead of derived:
+        -- the package's own name and version, under the store's cache, and the directory holding
+        -- `Package.swift` is the root. A path that does not exist is a refusal, not a build of
+        -- nothing.
+        local function fetched_root()
+            local global = os.getenv("XMAKE_GLOBALDIR") or path.join(os.getenv("HOME"), ".xmake")
+            local base = path.join(global, "cache", "packages", "2609", "s", "swift-syntax",
+                                   package:version_str())
+            if not os.isfile(path.join(base, "source", "swift-syntax", "Package.swift")) then
+                raise("%s fetches swift-syntax, and its fetched root is not at %s: the store's layout moved",
+                      package:name(), path.join(base, "source", "swift-syntax"))
+            end
+            return path.join(base, "source", "swift-syntax")
+        end
+        local source = fetched_root()
         os.vrunv("swift", {"build", "--package-path", source, "--scratch-path", build,
                            "--triple", "arm64-apple-macosx13.0", "-c", "release"}, {curdir = source})
         -- The products: the modules under Modules/, the archives beside them, and the resources
