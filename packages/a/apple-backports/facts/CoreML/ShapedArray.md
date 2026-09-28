@@ -77,3 +77,37 @@ what is being carried, why a header-only `NS_ENUM` with an `ios(11.0)` annotatio
 release that never had it, and the measurement that lifting it to `ios(6.1.3)` makes the linear
 family compile at ios 7.0 through 10.0 — are in
 **[MLMultiArrayDataType.md](MLMultiArrayDataType.md)**.
+
+## What Apple's own `AnyColumn` answers, measured against Apple's own
+
+The port's `AnyColumn` is a box over a typed column, and the box's accessors are compared with
+Apple's. The comparison is only worth anything once it is established that the host side is Apple and
+not a construction mistake, so the control is Apple's own module with nothing of the port's in it:
+
+    let c = TabularData.Column<Int?>(name: "a", contents: [1, nil, 3])
+    print(c.missingCount, c.wrappedElementType)
+    var f = TabularData.DataFrame(); f.append(column: c)
+    print(f["a"].missingCount, f["a"].wrappedElementType, f["a"].count)
+
+    pure column   missingCount=0 wrapped=Optional<Int>
+    after append  missingCount=0 wrapped=Optional<Int> count=3
+
+**`count` is 3 on both sides, so nothing is dropped on `append`, and Apple's `missingCount` is 0 for
+the nil in the column.** `wrappedElementType` is `Optional<Int>`: **Apple does not unwrap.**
+
+Three things follow for the port, all in the same direction — the host is the oracle:
+
+| accessor | Apple | the port must |
+| --- | --- | --- |
+| `wrappedElementType` of `Column<Int?>` | `Optional<Int>` | `Optional<Int>`, not the unwrapped `Int` |
+| `missingCount` of `[1, nil, 3]` | 0 | 0 |
+| position subscript | describes as `Optional("berlin")` for a column of plain `String` | `subscript(position:) -> Any?` |
+
+The third is the one that looks like a bug in Apple and is not: the host's subscript returns `Any?`,
+and `String(describing:)` of an `Any?` that holds a value describes as `Optional(value)`. The port's
+returned `Any`, which describes as the bare value, is the divergence.
+
+**`isNil(at:)` has no direct oracle.** It is `internal` in the SDK, so a program outside the module
+cannot call it and the control above cannot reach it. The port's `isNil(at:)` is therefore only
+comparable through the host differential, which is weaker evidence than a control on pure Apple, and
+that is worth saying before the port's answer there is changed.
