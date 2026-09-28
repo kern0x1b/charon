@@ -58,6 +58,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @implementation PKPaymentAuthorizationViewController (CharonSecureElement)
 
+// +canMakePayments, 8.0: the capability question, NO, like the controller's own.
++ (BOOL)canMakePayments
+{
+    return NO;
+}
+
 + (BOOL)canMakePaymentsUsingNetworks:(NSSet *)networks
 {
     (void)networks;
