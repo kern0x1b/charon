@@ -1245,7 +1245,7 @@ end
 
 
 function surface(binaries, architecture)
-    local found = {classes = {}, members = {}, symbols = {}, registered = {}, answered = {}}
+    local found = {classes = {}, members = {}, symbols = {}, defined = {}, registered = {}, answered = {}}
     for _, binary in ipairs(binaries) do
         local ours = {}
         if macho.imported_symbols(binary, architecture)["objc_allocateClassPair"] then
@@ -1260,6 +1260,7 @@ function surface(binaries, architecture)
                 found.classes[class] = true
             elseif not symbol:startswith("_OBJC_METACLASS_$_") and not symbol:startswith("_OBJC_IVAR_$_") then
                 found.symbols[symbol:sub(2)] = true
+                found.defined["_" .. symbol:sub(2)] = true
             end
         end
         local inventory = objc.binary_inventory(binary, architecture)
@@ -1579,8 +1580,8 @@ function check_registry(root, found, complete, deployment, exports, inventory, s
             -- A protocol has no accessors, so nothing else in this loop can answer for it: the row is
             -- implemented when the objects carry the protocol's own metadata and it names.
             local declared = entry.kind == "protocol" and
-                ((found.symbols or {})["_OBJC_PROTOCOL_$_" .. name] ~= nil or
-                 (found.symbols or {})["_OBJC_LABEL_PROTOCOL_$_" .. name] ~= nil) or
+                ((found.defined or {})["_OBJC_PROTOCOL_$_" .. name] ~= nil or
+                 (found.defined or {})["_OBJC_LABEL_PROTOCOL_$_" .. name] ~= nil) or
                 (owner and ((listed[owner] and listed[owner].kind == "protocol") or (inventory and inventory.protocols and inventory.protocols[owner] ~= nil)))
             if (entry.kind == "type" or entry.kind == "case") and not built then
                 -- no symbol will ever answer for a type or an enumeration case, so the header is the build

@@ -181,14 +181,19 @@ local function member_and_protocol_rows(backports, found)
                                    FixProtocol = {image = true, instance = {}, ["+"] = {}}}}
     -- what the build carries: FixClass, which the release has and the port defines, and FixProtocol, which
     -- neither the release nor the objects carry unless a case below says so
-    local function asked(members, symbols, withProtocol)
-        local classes = {FixClass = true}
+    local function asked(members, symbols, defined, withProtocol)
+        -- FixClass only: the objects define a protocol's metadata, not a class of the protocol's name, so
+        -- putting FixProtocol in found.classes would make `built` true and the row would never be unbuilt -
+        -- which is how this case passed in every shape before
+        local classes = {FixClass = withProtocol and true or true}
         if withProtocol then
-            classes.FixProtocol = true
+            classes = {FixClass = true}
         end
         local message
         local ok = try {
-            function () backports.check_registry(root, {classes = classes, members = members, symbols = symbols or {}}, true, "6.1.3", {}, inventory) return true end,
+            function () backports.check_registry(root, {classes = classes, members = members,
+                                                        symbols = symbols or {}, defined = defined or {}},
+                                                  true, "6.1.3", {}, inventory) return true end,
             catch {function (errors) message = tostring(errors) end}
         }
         return (ok and "passed" or message or "raised with no message")
@@ -206,10 +211,17 @@ local function member_and_protocol_rows(backports, found)
         table.insert(found, "a category method with a row of its own must pass, and it is red: " .. said)
     end
     rows(protocol)
-    local symbols = {["_OBJC_PROTOCOL_$_FixProtocol"] = true}
-    said = asked({}, symbols)
+    -- the metadata symbol is one the object *defines*, so the rule reads the defined set: with the symbol in
+    -- the imported set instead - where a class's names live - the row stays unbuilt, which is how 73 rows
+    -- stayed red while the objects carried 91 of their metadata symbols (measured 2026-09-28, nm on
+    -- build/objects/*/protocols/*.o)
+    said = asked({}, nil, {["_OBJC_PROTOCOL_$_FixProtocol"] = true}, true)
     if said:find("FixProtocol") then
-        table.insert(found, "a protocol row whose objects carry the protocol's metadata must pass, and it is red: " .. said)
+        table.insert(found, "a protocol row whose objects define the protocol's metadata must pass, and it is red: " .. said)
+    end
+    said = asked({}, {["_OBJC_PROTOCOL_$_FixProtocol"] = true}, nil, true)
+    if not said:find("FixProtocol", 1, true) then
+        table.insert(found, "a protocol row whose metadata is only an import must not pass, and it does: " .. said)
     end
     said = asked({}, {})
     if not said:find("FixProtocol", 1, true) then
