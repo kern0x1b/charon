@@ -71,7 +71,7 @@ LIBRARIES = {
     -- class of its own that the release would answer.
     {name = "AccessibilityBackports", folder = "Accessibility", frameworks = {"Accessibility", "Foundation", "CoreGraphics"}, libraries = {"FoundationBackports"}, archives = {"charon-coding"}, c_archives = {"charon-coding"}},
     {name = "IntentsUIBackports", folder = "IntentsUI", frameworks = {"IntentsUI", "Intents", "UIKit", "Foundation", "CoreGraphics"}, libraries = {"FoundationBackports", "IntentsBackports"}},
-    {name = "ARKitBackports", folder = "ARKit", frameworks = {"ARKit", "AVFoundation", "CoreMotion", "CoreLocation", "CoreMedia", "CoreVideo", "CoreGraphics", "QuartzCore", "OpenGLES", "UIKit", "Foundation"}, libraries = {"FoundationBackports", "AVFoundationBackports", "SceneKitBackports"}},
+    {name = "ARKitBackports", folder = "ARKit", frameworks = {"ARKit", "AVFoundation", "CoreMotion", "CoreLocation", "CoreMedia", "CoreVideo", "CoreGraphics", "ImageIO", "QuartzCore", "OpenGLES", "UIKit", "Foundation"}, libraries = {"FoundationBackports", "AVFoundationBackports", "SceneKitBackports"}},
     {name = "HealthKitBackports", folder = "HealthKit", frameworks = {"UIKit", "Foundation"}, libraries = {"FoundationBackports"}, system = {"sqlite3"}}
 }
 PACKAGE = "org.charon.apple-backports"
@@ -630,7 +630,7 @@ function protocol_sources(root, library, folder, umbrella)
     -- folder is that framework is the one that carries them, and a framework no library builds (PhotosUI, whose
     -- protocols ride in PhotosBackports) is not read into any library at all. Reading the whole registry put all
     -- 73 rows into every library.
-    local bands = {}
+    local bands, floors_of = {}, {}
     for _, file in ipairs(table.join(os.files(path.join(root, "registry", library.folder, "*.json")),
                                  os.files(path.join(root, "registry", library.folder .. ".json")))) do
         local held = json.loadfile(file)
@@ -642,10 +642,14 @@ function protocol_sources(root, library, folder, umbrella)
                 local introduced = entry.introduced or "0"
                 bands[introduced] = bands[introduced] or {}
                 table.insert(bands[introduced], entry.api)
+                -- the file's floor is the highest minimum of its rows, as a source the registry places has
+                if entry.minimum and (not floors_of[introduced] or dyld.compare_versions(entry.minimum, floors_of[introduced]) > 0) then
+                    floors_of[introduced] = entry.minimum
+                end
             end
         end
     end
-    local written = {}
+    local written, floor = {}, {}
     for introduced, names in pairs(bands) do
         table.sort(names)
         local file = path.join(folder, library.name .. "Protocols" .. introduced .. ".m")
@@ -665,9 +669,10 @@ static void charon_%s_protocols(void)
         text = text .. "}\n"
         io.writefile(file, text)
         table.insert(written, file)
+        floor[file] = floors_of[introduced]
     end
     table.sort(written)
-    return written
+    return written, floor
 end
 
 local function names_a_class(symbols)
@@ -727,10 +732,19 @@ local function compiled(opt)
         -- the protocol metadata the framework carries and the port does not: one generated source per band
         local generated = path.join(opt.builddir, "protocols", library.folder)
         os.mkdir(generated)
-        for _, source in ipairs(protocol_sources(opt.root, library, generated, library.frameworks[1])) do
+        local written, floor = protocol_sources(opt.root, library, generated, library.frameworks[1])
+        for _, source in ipairs(written) do
             local object = path.join(opt.builddir, "objects", library.folder, "protocols", path.filename(source) .. ".o")
             os.mkdir(path.directory(object))
             local job = table.join(opt, {includes = {path.join(opt.root, library.folder)}})
+            -- compiled at its rows' registry minimum, as floors() compiles a placed source, and left out of every
+            -- band below it: a framework's headers need not compile for a release its rows are not carried to
+            -- (ARKit's ARSession.h declares a strong dispatch_queue_t, which is no object before iOS 6)
+            local minimum = floor[source]
+            if minimum and dyld.compare_versions(minimum, opt.deployment) > 0 then
+                job = table.join(job, {deployment = minimum, triple = opt.architecture .. "-apple-ios" .. minimum})
+                minimums[object] = minimum
+            end
             pending[#pending + 1] = {opt = job, source = source, object = object}
             table.insert(objects[library.name], object)
             origins[object] = source
