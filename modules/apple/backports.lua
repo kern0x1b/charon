@@ -1775,7 +1775,9 @@ function check_registry(root, found, complete, deployment, exports, inventory, s
             local ours = not deployment or in_range(entry, deployment)
             -- A protocol has no accessors, so nothing else in this loop can answer for it: the row is
             -- implemented when the objects carry the protocol's own metadata and it names.
-            local declared = entry.kind == "protocol" and ((declared or {})[name] or false) or
+            -- a protocol row is answered by a declaration a caller compiles against: a header this package installs,
+            -- or the SDK, or the release itself - the same three protocol_declared asks for a member's owner
+            local declared = entry.kind == "protocol" and ((declared or {})[name] or protocol_declared(root, name, inventory, sdkdir)) or
                 (owner and listed[owner] and listed[owner].kind == "protocol" and
                  protocol_declared(root, owner, inventory, sdkdir)) or
                 (owner and inventory and inventory.protocols and inventory.protocols[owner] ~= nil) or false
