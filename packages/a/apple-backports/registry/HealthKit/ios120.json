@@ -1,0 +1,302 @@
+{
+  "framework": "HealthKit",
+  "entries": [
+    {
+      "api": "HKClinicalRecord",
+      "kind": "class",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 12.0 is the release of the clinical record and of the FHIR resource behind it, and the first HealthKit image this workspace holds that carries all of them. a health record, a sample of a clinical type",
+      "effect": "its clinical type, its display name and the FHIR resource behind it, all kept as they were given. The start and end are both the day the record was added, which is what the header's own discussion says and what this port does, so a predicate over a period finds it; the UUID is not treated as stable, and the stable identity the header names - source, resource type, resource identifier - is what the two predicates of HKQuery are built over. NSSecureCoding and NSCopying carry the three members beside HKSample's",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 12.0, read with tools/cfconst.py; the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 12.0 for the values"
+    },
+    {
+      "api": "HKClinicalType",
+      "kind": "class",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 12.0 is the release of the clinical record and of the FHIR resource behind it, and the first HealthKit image this workspace holds that carries all of them. a type that identifies samples that contain clinical record data",
+      "effect": "the clinical type of the identifier given, and nil for an identifier that is not a clinical type; the seven the release declares for 12.0 are the ones answered, and the class is a type like any other. NSSecureCoding and NSCopying carry the identifier, from HKObjectType",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 12.0, read with tools/cfconst.py; the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 12.0 for the values"
+    },
+    {
+      "api": "HKFHIRResource",
+      "kind": "class",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 12.0 is the release of the clinical record and of the FHIR resource behind it, and the first HealthKit image this workspace holds that carries all of them. the FHIR resource behind a clinical record",
+      "effect": "its type, its identifier, its data and where it came from, each kept as it was given and read back as it was. The header closes off -init and gives no initialiser, so the resource is made through the port's own factory, which is the one path the class has. NSSecureCoding and NSCopying carry the four members; FHIRVersion is of 14.0 and is not answered here",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 12.0, read with tools/cfconst.py; the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 12.0 for the values"
+    },
+    {
+      "api": "HKClinicalTypeIdentifierAllergyRecord",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "this constant holds its own name, which is the shape 6dc5caf3 is generating for every HealthKit constant, so this group does not define it and waits for that run; the overlap is written up in coordination/reviews/healthkit-12-constants.md",
+      "effect": "the symbol is not in the library until that run lands; the value is the name itself, measured in the arm64 cache of 12.0, so nothing is lost by its absence and no value is invented here",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "HKClinicalTypeIdentifierConditionRecord",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "this constant holds its own name, which is the shape 6dc5caf3 is generating for every HealthKit constant, so this group does not define it and waits for that run; the overlap is written up in coordination/reviews/healthkit-12-constants.md",
+      "effect": "the symbol is not in the library until that run lands; the value is the name itself, measured in the arm64 cache of 12.0, so nothing is lost by its absence and no value is invented here",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "HKClinicalTypeIdentifierImmunizationRecord",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "this constant holds its own name, which is the shape 6dc5caf3 is generating for every HealthKit constant, so this group does not define it and waits for that run; the overlap is written up in coordination/reviews/healthkit-12-constants.md",
+      "effect": "the symbol is not in the library until that run lands; the value is the name itself, measured in the arm64 cache of 12.0, so nothing is lost by its absence and no value is invented here",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "HKClinicalTypeIdentifierLabResultRecord",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "this constant holds its own name, which is the shape 6dc5caf3 is generating for every HealthKit constant, so this group does not define it and waits for that run; the overlap is written up in coordination/reviews/healthkit-12-constants.md",
+      "effect": "the symbol is not in the library until that run lands; the value is the name itself, measured in the arm64 cache of 12.0, so nothing is lost by its absence and no value is invented here",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "HKClinicalTypeIdentifierMedicationRecord",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "this constant holds its own name, which is the shape 6dc5caf3 is generating for every HealthKit constant, so this group does not define it and waits for that run; the overlap is written up in coordination/reviews/healthkit-12-constants.md",
+      "effect": "the symbol is not in the library until that run lands; the value is the name itself, measured in the arm64 cache of 12.0, so nothing is lost by its absence and no value is invented here",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "HKClinicalTypeIdentifierProcedureRecord",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "this constant holds its own name, which is the shape 6dc5caf3 is generating for every HealthKit constant, so this group does not define it and waits for that run; the overlap is written up in coordination/reviews/healthkit-12-constants.md",
+      "effect": "the symbol is not in the library until that run lands; the value is the name itself, measured in the arm64 cache of 12.0, so nothing is lost by its absence and no value is invented here",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "HKClinicalTypeIdentifierVitalSignRecord",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "this constant holds its own name, which is the shape 6dc5caf3 is generating for every HealthKit constant, so this group does not define it and waits for that run; the overlap is written up in coordination/reviews/healthkit-12-constants.md",
+      "effect": "the symbol is not in the library until that run lands; the value is the name itself, measured in the arm64 cache of 12.0, so nothing is lost by its absence and no value is invented here",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "HKFHIRResourceTypeAllergyIntolerance",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 12.0 is the release of the clinical record and of the FHIR resource behind it, and the first HealthKit image this workspace holds that carries all of them",
+      "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 12.0 through the image's own symbol table rather than assumed; it is not the constant's own name, which is why it is carried here and not by the run generating the ones that are",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 12.0, read with tools/cfconst.py"
+    },
+    {
+      "api": "HKFHIRResourceTypeCondition",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 12.0 is the release of the clinical record and of the FHIR resource behind it, and the first HealthKit image this workspace holds that carries all of them",
+      "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 12.0 through the image's own symbol table rather than assumed; it is not the constant's own name, which is why it is carried here and not by the run generating the ones that are",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 12.0, read with tools/cfconst.py"
+    },
+    {
+      "api": "HKFHIRResourceTypeImmunization",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 12.0 is the release of the clinical record and of the FHIR resource behind it, and the first HealthKit image this workspace holds that carries all of them",
+      "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 12.0 through the image's own symbol table rather than assumed; it is not the constant's own name, which is why it is carried here and not by the run generating the ones that are",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 12.0, read with tools/cfconst.py"
+    },
+    {
+      "api": "HKFHIRResourceTypeMedicationDispense",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 12.0 is the release of the clinical record and of the FHIR resource behind it, and the first HealthKit image this workspace holds that carries all of them",
+      "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 12.0 through the image's own symbol table rather than assumed; it is not the constant's own name, which is why it is carried here and not by the run generating the ones that are",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 12.0, read with tools/cfconst.py"
+    },
+    {
+      "api": "HKFHIRResourceTypeMedicationOrder",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 12.0 is the release of the clinical record and of the FHIR resource behind it, and the first HealthKit image this workspace holds that carries all of them",
+      "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 12.0 through the image's own symbol table rather than assumed; it is not the constant's own name, which is why it is carried here and not by the run generating the ones that are",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 12.0, read with tools/cfconst.py"
+    },
+    {
+      "api": "HKFHIRResourceTypeMedicationStatement",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 12.0 is the release of the clinical record and of the FHIR resource behind it, and the first HealthKit image this workspace holds that carries all of them",
+      "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 12.0 through the image's own symbol table rather than assumed; it is not the constant's own name, which is why it is carried here and not by the run generating the ones that are",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 12.0, read with tools/cfconst.py"
+    },
+    {
+      "api": "HKFHIRResourceTypeObservation",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 12.0 is the release of the clinical record and of the FHIR resource behind it, and the first HealthKit image this workspace holds that carries all of them",
+      "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 12.0 through the image's own symbol table rather than assumed; it is not the constant's own name, which is why it is carried here and not by the run generating the ones that are",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 12.0, read with tools/cfconst.py"
+    },
+    {
+      "api": "HKFHIRResourceTypeProcedure",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 12.0 is the release of the clinical record and of the FHIR resource behind it, and the first HealthKit image this workspace holds that carries all of them",
+      "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 12.0 through the image's own symbol table rather than assumed; it is not the constant's own name, which is why it is carried here and not by the run generating the ones that are",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 12.0, read with tools/cfconst.py"
+    },
+    {
+      "api": "HKMetadataKeyCrossTrainerDistance",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 12.0 is the release of the clinical record and of the FHIR resource behind it, and the first HealthKit image this workspace holds that carries all of them",
+      "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 12.0 through the image's own symbol table rather than assumed; it is not the constant's own name, which is why it is carried here and not by the run generating the ones that are",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 12.0, read with tools/cfconst.py"
+    },
+    {
+      "api": "HKMetadataKeyFitnessMachineDuration",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 12.0 is the release of the clinical record and of the FHIR resource behind it, and the first HealthKit image this workspace holds that carries all of them",
+      "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 12.0 through the image's own symbol table rather than assumed; it is not the constant's own name, which is why it is carried here and not by the run generating the ones that are",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 12.0, read with tools/cfconst.py"
+    },
+    {
+      "api": "HKMetadataKeyIndoorBikeDistance",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 12.0 is the release of the clinical record and of the FHIR resource behind it, and the first HealthKit image this workspace holds that carries all of them",
+      "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 12.0 through the image's own symbol table rather than assumed; it is not the constant's own name, which is why it is carried here and not by the run generating the ones that are",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 12.0, read with tools/cfconst.py"
+    },
+    {
+      "api": "HKPredicateKeyPathClinicalRecordFHIRResourceIdentifier",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 12.0 is the release of the clinical record and of the FHIR resource behind it, and the first HealthKit image this workspace holds that carries all of them",
+      "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 12.0 through the image's own symbol table rather than assumed; it is not the constant's own name, which is why it is carried here and not by the run generating the ones that are",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 12.0, read with tools/cfconst.py"
+    },
+    {
+      "api": "HKPredicateKeyPathClinicalRecordFHIRResourceType",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 12.0 is the release of the clinical record and of the FHIR resource behind it, and the first HealthKit image this workspace holds that carries all of them",
+      "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 12.0 through the image's own symbol table rather than assumed; it is not the constant's own name, which is why it is carried here and not by the run generating the ones that are",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 12.0, read with tools/cfconst.py"
+    },
+    {
+      "api": "HKPredicateKeyPathSum",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 12.0 is the release of the clinical record and of the FHIR resource behind it, and the first HealthKit image this workspace holds that carries all of them",
+      "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 12.0 through the image's own symbol table rather than assumed; it is not the constant's own name, which is why it is carried here and not by the run generating the ones that are",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 12.0, read with tools/cfconst.py"
+    },
+    {
+      "api": "+[HKObjectType clinicalTypeForIdentifier:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 12.0 is the release of the clinical record and of the FHIR resource behind it, and the first HealthKit image this workspace holds that carries all of them",
+      "effect": "the clinical type of the identifier given, and nil for an identifier that is not a clinical type",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 12.0 for the values"
+    },
+    {
+      "api": "+[HKQuery predicateForClinicalRecordsFromSource:FHIRResourceType:identifier:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 12.0 is the release of the clinical record and of the FHIR resource behind it, and the first HealthKit image this workspace holds that carries all of them",
+      "effect": "a predicate over the three facts the header says make a record's identity - the source, the resource type and the resource identifier - combined with AND, one test for each that was given, and nil where none was",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 12.0 for the values"
+    },
+    {
+      "api": "+[HKQuery predicateForClinicalRecordsWithFHIRResourceType:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 12.0 is the release of the clinical record and of the FHIR resource behind it, and the first HealthKit image this workspace holds that carries all of them",
+      "effect": "a predicate over the resource type's key path for the type given, and nil where none was given",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 12.0 for the values"
+    }
+  ]
+}

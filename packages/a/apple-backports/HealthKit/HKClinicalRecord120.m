@@ -64,6 +64,11 @@
     NSURL *_sourceURL;
 }
 
+// FHIRVersion is of 14.0 and this group is of 12.0, so the property is @dynamic: the compiler emits no
+// accessor, the selector is not in the library, and -respondsToSelector: answers NO for it rather than
+// an accessor that would answer nil and look like a version this library has.
+@dynamic FHIRVersion;
+
 + (BOOL)supportsSecureCoding
 {
     return YES;

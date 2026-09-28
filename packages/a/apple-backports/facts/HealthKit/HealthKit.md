@@ -198,6 +198,31 @@ there is nothing to read. The value is a true statement about the hardware every
 on is made by, and it is said here, in `HKDevice9.m` beside the code, and in the registry effect for
 `+[HKDevice localDevice]`, so that a reader of any of the three does not take it for a measured value.
 
+## The 11.0 group's placement, measured on the images rather than taken from either source
+
+The review asks which of the SDK and the cache each class's release is taken from, and the answer is
+per class, measured. What I measured, by extracting the HealthKit image out of each rung of the held
+ladder with `modules/apple/dyld.lua`'s `extract()` and reading its own symbol table with `nm`:
+
+| class | the first rung of the held ladder whose image carries it | whose date I follow |
+| --- | --- | --- |
+| `HKSeriesBuilder`, `HKSeriesSample` | **10.0.1** (and 10.3.4, and 11.0) | the cache: 10.0.1, not the 10.0.1 I had guessed and not 10.3.4 |
+| `HKSeriesType`, `HKWorkoutRoute`, `HKWorkoutRouteBuilder`, `HKWorkoutRouteQuery` | **11.0** | the SDK: 11.0, and the cache agrees |
+| `HKClinicalRecord`, `HKClinicalType`, `HKFHIRResource` | **12.0** | the SDK: 12.0, and the cache agrees |
+
+So two of the review's four statements are the measurement and two are not, and both halves are
+recorded here rather than argued. `HKSeriesBuilder` and `HKSeriesSample` are **of 10.0.1 by the cache and
+of no SDK version at all** - the SDK's headers declare them with no `API_AVAILABLE` of their own, so
+there is no header date to follow for them and the cache is the only source; they were in the 12.0
+group's file and are moved to a group of their own at 10.0.1. The route classes **are** in the 11.0
+image - measured, not asserted - so their date of 11.0 is the SDK's and the cache's together. The
+clinical record classes are of 12.0 and the cache agrees, and they are carried in the 12.0 group.
+
+What `dyld.first_releases` says over the same ladder is "no rung carries it" for all nine, because it
+asks where a *client* binds the symbol and a client of this port binds nothing that is not in the SDK.
+The release check reads the same two numbers the gate printed: 10.0.1 for the two superclasses and 11.0
+for the route classes, which is the placement this file describes.
+
 ## The header decides whether a method exists; the image supplies only a value
 
 The SDK headers are the authority on what an API is, and a release image is the authority on the value
