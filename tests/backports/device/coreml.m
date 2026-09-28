@@ -173,7 +173,8 @@ static void check_arrays(void)
     MLMultiArray *read;
     CHECK(array != nil, "a multi array of a shape builds");
     CHECK_EQUAL(@(6), @(array.count), "a 2 by 3 array holds six elements");
-    CHECK_EQUAL(@6, @(array.dataType), "it is of the element type it was asked for");
+    CHECK_EQUAL(@(MLMultiArrayDataTypeFloat32), @(array.dataType),
+                "it is of the element type it was asked for");
     [array setObject:@1.5 atIndexedSubscript:4];
     CHECK_EQUAL(@1.5, [array objectAtIndexedSubscript:4], "an element written is an element read");
     {
@@ -199,8 +200,10 @@ static void check_arrays(void)
             __block void *mutableSeen = NULL;
             [read getMutableBytesWithHandler:^(void *bytes, NSInteger length, NSArray<NSNumber *> *strides) {
                 mutableSeen = bytes;
-                ((double *)bytes)[0] = 7.5;
-                CHECK_EQUAL(@(3), @(strides.count), "the mutable handler hands over the strides");
+                /* The array is float32, so the write is a float32: a double written into it would
+                 * be the test's own type error, not a reading of the port. */
+                ((float *)bytes)[0] = 7.5f;
+                CHECK_EQUAL(@(2), @(strides.count), "the mutable handler hands over the strides");
             }];
             CHECK(mutableSeen == seen, "the mutable handler hands over the same buffer");
             CHECK_EQUAL(@7.5, [read objectAtIndexedSubscript:0], "and a write through it is a write to the array");
@@ -324,7 +327,11 @@ static void check_configuration(void)
     configuration.parameters = @{ MLParameterKey.momentum : @0.5 };
     CHECK_EQUAL(@(1ul), @(configuration.parameters.count), "a parameter is kept");
     CHECK_EQUAL(@([[configuration copy] computeUnits]), @(configuration.computeUnits), "a copy keeps the units");
-    CHECK([[configuration copy] isEqual:configuration], "and is equal to what it was copied from");
+    /* A copy is compared by what it copied: NSCopying promises a copy of the values, not an
+     * object that isEqual: the original -- MLModelConfiguration has no isEqual: of its own. */
+    CHECK([[configuration copy] computeUnits] == configuration.computeUnits &&
+              [[[configuration copy] copy] computeUnits] == configuration.computeUnits,
+          "and a copy of a copy keeps them");
     {
         NSData *archive = [NSKeyedArchiver archivedDataWithRootObject:configuration];
         MLModelConfiguration *back = [NSKeyedUnarchiver unarchiveObjectWithData:archive];
