@@ -1053,3 +1053,35 @@ scale of 0.25 has its along positions at 0.125, 2.125, 4.125, 6.125, 8.125 with 
 every tap but one is outside the picture on both sides and the answer is dominated by what the host
 substitutes there. That is one delta-per-column sweep on a **five-row** picture at a scale of 0.25, the
 vertical axis, and it is the last measurement this family needs.
+
+
+## The extent is ruled out: the vertical is wrong on BOTH shapes, by 4 and 8
+
+The coordinator's test - a vertical shear at a scale of 2 on a 5x12 source and on a 12x5 one, which shares
+everything but the shape (`probe-extent.m`, host and port compared sample for sample):
+
+    vShear  5x12 at a scale of 2:  60 of  60 samples differ, the widest by 8.24359
+    vShear 12x5  at a scale of 2:  60 of  60 samples differ, the widest by 4.34259
+    hShear  5x12 at a scale of 2:  46 of  60 samples differ, the widest by 1.90735e-06
+    hShear 12x5  at a scale of 2:  39 of  60 samples differ, the widest by 4.76837e-07
+
+**Not an extent swap.** The vertical is wrong on the 5x12 and on the 12x5 alike, and by a factor of ten
+between them - a swap would be right on one of them. And the horizontal's "differences" are `1.9e-06` and
+`4.8e-07`, which is **floating-point noise, not a mapping error**: the differential's own tolerance for a
+PlanarF case is `4/23` = 0.174, so the horizontal is well inside it and the strict equality in this probe
+is what is counting them.
+
+So the axis asymmetry is real and it is not a swap: the horizontal divides the **along** position by the
+filter's scale and lands on the host to the last bit at 0.25, 0.5 and 2, and the vertical does not. For a
+vertical shear the along axis is the **row**, and a five-row picture at a scale of 2 has its five
+destination rows reading source rows -0.25 to 1.75 - two of five rows, with the rest of every kernel
+outside. That is the one case the 5x5 and 9x5 grids have not separated: they have both the along extent
+small *and* the cross extent equal to the kernel's, so a stretch of the kernel and a stretch of the
+position look the same.
+
+What settles it is a vertical shear at a scale of 2 on a picture that is **tall** - twelve rows and five
+columns - read as a delta per column, so the row each destination row lands on is unambiguous. If the host's
+vertical positions run -0.25 to 5.75 the position is divided as the horizontal's is and the kernel is not
+stretched along the row; if they run -0.25 to 11.75 the position is **not** divided and only the kernel
+stretches, which is the header's "the support is scaled by 1/scale when downsampling" with the position left
+alone. Those two grids are one run apart, and the twelve-row one is the measurement.
