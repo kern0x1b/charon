@@ -57,6 +57,9 @@ static void report(const char *what, const void *a, size_t an, const void *b, si
     }
 }
 
+void charon_probe_vDSP_sve_svesq(const float *a, vDSP_Stride ia, float *sum, float *sumsquares, vDSP_Length n);
+void charon_probe_vDSP_sve_svesqD(const double *a, vDSP_Stride ia, double *sum, double *sumsquares, vDSP_Length n);
+
 #define SAMPLES 32
 
 // The stable filter (poles about 0.643) and the unstable one (a pole at -1.733), so the guest sees both a
@@ -417,6 +420,132 @@ static void run_search(const char *label, const double *coeffs, vDSP_Length sect
     }
 }
 
+// ============================================================================================
+// The reduction order of vDSP_sve_svesq, on the target.
+//
+// **Control first, and it is the hand-computed one.** 1, 2, 3, 4 sums to 10 and squares to 30, both
+// exact in float, so the evaluator is checked against a value that involves no floating-point question
+// before any candidate order is credited. Three searches in the biquad shape each reported on a
+// function that was not the one being searched, and only a control that does not involve the host can
+// catch that.
+//
+// Every input is built so the candidate orders give DIFFERENT answers - a reduction that commutes
+// settles nothing - and every comparison is on the bit pattern, never `==`, because NaN never equals
+// NaN and -0 equals +0.
+static double sve_reduce_sequential(const double *v, int n)
+{
+    double s = 0, q = 0;
+    for (int i = 0; i < n; i++) { s = s + v[i]; q = q + v[i] * v[i]; }
+    return s;
+}
+
+// blocked: partial sums of `block`, each summed left to right, then the partials summed left to right
+static double sve_reduce_blocked(const double *v, int n, int block)
+{
+    double s = 0, q = 0;
+    for (int base = 0; base < n; base += block) {
+        double ps = 0, pq = 0;
+        int end = base + block < n ? base + block : n;
+        for (int i = base; i < end; i++) { ps = ps + v[i]; pq = pq + v[i] * v[i]; }
+        s = s + ps; q = q + pq;
+    }
+    return s;
+}
+
+// pairwise: the recursive halving a tree reduction does
+static double sve_reduce_pairwise(const double *v, int n)
+{
+    if (n == 1) return v[0];
+    int half = n / 2;
+    return sve_reduce_pairwise(v, half) + sve_reduce_pairwise(v + half, n - half);
+}
+
+// NEON 4-lane partial sums: four independent accumulators combined at the end. This is what a vector
+// reduction does and it is NOT the same order as pairwise - four lanes combine in yet another order.
+static double sve_reduce_neon4(const double *v, int n)
+{
+    float32x4_t acc = vdupq_n_f32(0.0f);
+    int i = 0;
+    for (; i + 4 <= n; i += 4)
+        acc = vaddq_f32(acc, vdupq_n_f32((float)v[i] + (float)v[i + 1] + (float)v[i + 2] + (float)v[i + 3] * 0.0f));
+    float32x2_t half = vadd_f32(vget_low_f32(acc), vget_high_f32(acc));
+    float total = vget_lane_f32(vpadd_f32(half, half), 0);
+    for (; i < n; i++) total = total + (float)v[i];
+    return total;
+}
+
+static void sve_report(const char *what, int ok, const char *note)
+{
+    checks++;
+    if (ok) { printf("ok %s%s%s\n", what, note[0] ? " - " : "", note); return; }
+    failures++;
+    printf("FAIL %s%s%s\n", what, note[0] ? " - " : "", note);
+}
+
+// The control: 1, 2, 3, 4 -> 10 and 30, by hand, exact in float. Nothing is credited until this passes.
+static int sve_control(void)
+{
+    float in[4] = {1.0f, 2.0f, 3.0f, 4.0f};
+    float s = -1.0f, q = -1.0f;
+    charon_probe_vDSP_sve_svesq(in, 1, &s, &q, 4);
+    const float want_s = 10.0f, want_q = 30.0f;
+    int ok = memcmp(&s, &want_s, sizeof s) == 0 && memcmp(&q, &want_q, sizeof q) == 0;
+    sve_report("CONTROL: the port gives 10 and 30 for 1, 2, 3, 4", ok, "which is the hand value, exact in float");
+    return ok;
+}
+
+static void sve_search_reductions(void)
+{
+    if (!sve_control()) {
+        printf("probe: the control failed, so no candidate order is credited\n");
+        return;
+    }
+    static const float cases[4][6] = {
+        {1e30f, 1.0f, -1e30f, 1.0f, 1e-30f, 3.0f},
+        {1.0f, 1e-8f, 1.0f, 1e-8f, 1.0f, 1e-8f},
+        {3.0f, 1.0f, 4.0f, 1.0f, 5.0f, 9.0f},
+        {1e-42f, 1e-42f, 1e-42f, 1e-42f, 1e-42f, 1e-42f}
+    };
+    static const char *names[4] = {"a cancellation the left-to-right order loses",
+                                   "small terms between large ones",
+                                   "an exact sum of 23",
+                                   "six denormals, whose squares underflow in float"};
+    static const char *cand[5] = {"sequential", "blocked at 2", "blocked at 4", "pairwise halving",
+                                  "NEON 4-lane partial sums"};
+    int matched[5] = {0, 0, 0, 0, 0};
+    for (int c = 0; c < 4; c++) {
+        float hs = 0, hq = 0, ps = 0, pq = 0;
+        vDSP_sve_svesq(cases[c], 1, &hs, &hq, 6);
+        charon_probe_vDSP_sve_svesq(cases[c], 1, &ps, &pq, 6);
+        char note[120];
+        snprintf(note, sizeof note, "case %d, %s", c, names[c]);
+        int agrees = memcmp(&hs, &ps, sizeof hs) == 0 && memcmp(&hq, &pq, sizeof hq) == 0;
+        sve_report(note, agrees, "the release's sum and the port's, bit for bit");
+        printf("  the release's sum %.9g sumsq %.9g; the port's sum %.9g sumsq %.9g\n", hs, hq, ps, pq);
+        double want = (double)hs;
+        for (int k = 0; k < 5; k++) {
+            double v[6];
+            for (int i = 0; i < 6; i++) v[i] = cases[c][i];
+            double got = k == 0 ? sve_reduce_sequential(v, 6)
+                      : k == 1 ? sve_reduce_blocked(v, 6, 2)
+                      : k == 2 ? sve_reduce_blocked(v, 6, 4)
+                      : k == 3 ? sve_reduce_pairwise(v, 6)
+                               : sve_reduce_neon4(v, 6);
+            int ok = memcmp(&got, &want, sizeof got) == 0;
+            if (ok) matched[k]++;
+            printf("    %-28s %.17g %s\n", cand[k], got, ok ? "matches the release" : "DIFFERS");
+        }
+    }
+    printf("\n  the candidates matching EVERY case:");
+    int any = 0;
+    for (int k = 0; k < 5; k++)
+        if (matched[k] == 4) { printf(" %s", cand[k]); any = 1; }
+    if (!any) printf(" NONE - the host's order is none of these five");
+    printf("\n");
+    for (int k = 0; k < 5; k++)
+        printf("    %-28s matched %d of 4\n", cand[k], matched[k]);
+}
+
 int main(int argc, char **argv)
 {
     @autoreleasepool {
@@ -433,6 +562,8 @@ int main(int argc, char **argv)
         run_search("the stable filter", kStable, 1);
         run_search("the unstable filter", kUnstable, 1);
         run_search("the stable filter", kStable, 4);
+        printf("\nprobe: the reduction order of vDSP_sve_svesq\n");
+        sve_search_reductions();
         printf("probe: %d checks, %d failures\n", checks, failures);
     }
     return failures == 0 ? 0 : 1;

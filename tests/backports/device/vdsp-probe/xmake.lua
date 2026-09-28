@@ -18,6 +18,11 @@ target("vdsp-biquad-probe")
     add_rules("@addon/charon/daemon")
     add_files(path.join(root, "tests/backports/device/vdsp-probe/vdsp-biquad-probe.m"))
     add_files(path.join(root, "packages/a/apple-backports/Accelerate/vDSPBiquad6.m"))
+    add_files(path.join(root, "packages/a/apple-backports/Accelerate/vDSPSve7.m"))
+    add_defines("vDSP_sve_svesq=charon_probe_vDSP_sve_svesq",
+                "vDSP_sve_svesqD=charon_probe_vDSP_sve_svesqD")
+    add_files(path.join(root, "packages/a/apple-backports/Accelerate/vDSPSve7.m"))
+    add_defines("vDSP_sve_svesq=charon_probe_vDSP_sve_svesq", "vDSP_sve_svesqD=charon_probe_vDSP_sve_svesqD")
     add_defines("vDSP_biquad=charon_probe_vDSP_biquad",
                 "vDSP_biquadD=charon_probe_vDSP_biquadD",
                 "vDSP_biquad_CreateSetup=charon_probe_vDSP_biquad_CreateSetup",
