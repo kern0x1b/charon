@@ -6,66 +6,135 @@ import Foundation
 // MARK: - Comparison operators
 
 /// Whether a parameter has a value at all.
-public enum HasValueComparisonOperator {
+public enum HasValueComparisonOperator{
     case hasNoValue
     case hasAnyValue
 
-    public static func == (a: HasValueComparisonOperator, b: HasValueComparisonOperator) -> Bool { return true }
+    /// Which of the type's own cases this is. A query compares the operator a rule wrote
+    /// with the one it runs, and an equality that answered `true` for every pair -- or a
+    /// hash that told none of them apart -- would match the wrong one and collapse every
+    /// value of the type into one bucket, so both are made of this.
+    var ordinal: Int {
+        switch self {
+        case .hasNoValue: return 0
+        case .hasAnyValue: return 1
+        }
+    }
+
+    public static func == (a: HasValueComparisonOperator, b: HasValueComparisonOperator) -> Bool { return a.ordinal == b.ordinal }
 
     public func hash(into hasher: inout Hasher) {}
 }
 
 /// Whether a value is equal to another.
-public enum EquatableComparisonOperator {
+public enum EquatableComparisonOperator{
     case equalTo
     case notEqualTo
 
-    public static func == (a: EquatableComparisonOperator, b: EquatableComparisonOperator) -> Bool { return true }
+    /// Which of the type's own cases this is. A query compares the operator a rule wrote
+    /// with the one it runs, and an equality that answered `true` for every pair -- or a
+    /// hash that told none of them apart -- would match the wrong one and collapse every
+    /// value of the type into one bucket, so both are made of this.
+    var ordinal: Int {
+        switch self {
+        case .equalTo: return 0
+        case .notEqualTo: return 1
+        }
+    }
+
+    public static func == (a: EquatableComparisonOperator, b: EquatableComparisonOperator) -> Bool { return a.ordinal == b.ordinal }
 
     public func hash(into hasher: inout Hasher) {}
 }
 
 /// Whether a value is one of a list of values.
-public enum OneOfComparisonOperator {
+public enum OneOfComparisonOperator{
     case oneOf
 
-    public static func == (a: OneOfComparisonOperator, b: OneOfComparisonOperator) -> Bool { return true }
+    /// Which of the type's own cases this is. A query compares the operator a rule wrote
+    /// with the one it runs, and an equality that answered `true` for every pair -- or a
+    /// hash that told none of them apart -- would match the wrong one and collapse every
+    /// value of the type into one bucket, so both are made of this.
+    var ordinal: Int {
+        switch self {
+        case .oneOf: return 0
+        }
+    }
+
+    public static func == (a: OneOfComparisonOperator, b: OneOfComparisonOperator) -> Bool { return a.ordinal == b.ordinal }
 
     public func hash(into hasher: inout Hasher) {}
 }
 
 /// Whether a value is above or below another.
-public enum ComparableComparisonOperator {
+public enum ComparableComparisonOperator{
     case lessThan
     case lessThanOrEqualTo
     case greaterThan
     case greaterThanOrEqualTo
 
-    public static func == (a: ComparableComparisonOperator, b: ComparableComparisonOperator) -> Bool { return true }
+    /// Which of the type's own cases this is. A query compares the operator a rule wrote
+    /// with the one it runs, and an equality that answered `true` for every pair -- or a
+    /// hash that told none of them apart -- would match the wrong one and collapse every
+    /// value of the type into one bucket, so both are made of this.
+    var ordinal: Int {
+        switch self {
+        case .lessThan: return 0
+        case .lessThanOrEqualTo: return 1
+        case .greaterThan: return 2
+        case .greaterThanOrEqualTo: return 3
+        }
+    }
+
+    public static func == (a: ComparableComparisonOperator, b: ComparableComparisonOperator) -> Bool { return a.ordinal == b.ordinal }
 
     public func hash(into hasher: inout Hasher) {}
 }
 
 /// How a string is compared to another.
-public enum StringComparisonOperator {
+public enum StringComparisonOperator{
     case contains
     case doesNotContain
     case hasPrefix
     case hasSuffix
 
-    public static func == (a: StringComparisonOperator, b: StringComparisonOperator) -> Bool { return true }
+    /// Which of the type's own cases this is. A query compares the operator a rule wrote
+    /// with the one it runs, and an equality that answered `true` for every pair -- or a
+    /// hash that told none of them apart -- would match the wrong one and collapse every
+    /// value of the type into one bucket, so both are made of this.
+    var ordinal: Int {
+        switch self {
+        case .contains: return 0
+        case .doesNotContain: return 1
+        case .hasPrefix: return 2
+        case .hasSuffix: return 3
+        }
+    }
+
+    public static func == (a: StringComparisonOperator, b: StringComparisonOperator) -> Bool { return a.ordinal == b.ordinal }
 
     public func hash(into hasher: inout Hasher) {}
 }
 
 /// Whether several comparators are combined with every one of them or with any one of them.
-public enum EntityQueryComparatorMode {
+public enum EntityQueryComparatorMode{
     /// Every comparator has to match.
     case and
     /// One comparator matching is enough.
     case or
 
-    public static func == (a: EntityQueryComparatorMode, b: EntityQueryComparatorMode) -> Bool { return true }
+    /// Which of the type's own cases this is. A query compares the operator a rule wrote
+    /// with the one it runs, and an equality that answered `true` for every pair -- or a
+    /// hash that told none of them apart -- would match the wrong one and collapse every
+    /// value of the type into one bucket, so both are made of this.
+    var ordinal: Int {
+        switch self {
+        case .and: return 0
+        case .or: return 1
+        }
+    }
+
+    public static func == (a: EntityQueryComparatorMode, b: EntityQueryComparatorMode) -> Bool { return a.ordinal == b.ordinal }
 
     public func hash(into hasher: inout Hasher) {}
 }

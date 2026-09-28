@@ -250,13 +250,24 @@ extension AppIntentsPackage {
 // MARK: - Focus filters
 
 /// Why a focus filter could not be set.
-public enum SetFocusFilterIntentError: Error, Equatable {
+public enum SetFocusFilterIntentError{
     /// The filter the caller named is not one the app has.
     case notFound
     /// The caller named no filter, and there is no default.
     case missingParameterValue
 
-    public static func == (a: SetFocusFilterIntentError, b: SetFocusFilterIntentError) -> Bool { return true }
+    /// Which of the type's own cases this is. A query compares the operator a rule wrote
+    /// with the one it runs, and an equality that answered `true` for every pair -- or a
+    /// hash that told none of them apart -- would match the wrong one and collapse every
+    /// value of the type into one bucket, so both are made of this.
+    var ordinal: Int {
+        switch self {
+        case .notFound: return 0
+        case .missingParameterValue: return 1
+        }
+    }
+
+    public static func == (a: SetFocusFilterIntentError, b: SetFocusFilterIntentError) -> Bool { return a.ordinal == b.ordinal }
 }
 
 /// What a focus filter of the app's own matches: the notifications it lets through and the content it

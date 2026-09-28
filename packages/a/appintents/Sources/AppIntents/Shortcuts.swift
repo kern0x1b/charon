@@ -272,14 +272,24 @@ public struct AppShortcutPhrase<Intent>: ExpressibleByStringInterpolation, Charo
 
 /// What a phrase may name instead of writing it out: the app's own name, which is what the phrase is
 /// written around.
-public enum AppShortcutPhraseToken: Hashable, Sendable {
+public enum AppShortcutPhraseToken{
     /// The name of the app the phrase calls into.
     case applicationName
 
     /// The text the token stands for, which is the app's own display name.
     public var text: String { return Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String ?? "" }
 
-    public static func == (a: AppShortcutPhraseToken, b: AppShortcutPhraseToken) -> Bool { return true }
+    /// Which of the type's own cases this is. A query compares the operator a rule wrote
+    /// with the one it runs, and an equality that answered `true` for every pair -- or a
+    /// hash that told none of them apart -- would match the wrong one and collapse every
+    /// value of the type into one bucket, so both are made of this.
+    var ordinal: Int {
+        switch self {
+        case .applicationName: return 0
+        }
+    }
+
+    public static func == (a: AppShortcutPhraseToken, b: AppShortcutPhraseToken) -> Bool { return a.ordinal == b.ordinal }
 
     public func hash(into hasher: inout Hasher) {}
 }
@@ -334,7 +344,7 @@ public struct NegativeAppShortcutPhrases {
 }
 
 /// The colour a shortcut's tile is shown on, which is the framework's own list of tile colours.
-public enum ShortcutTileColor: Hashable, Sendable {
+public enum ShortcutTileColor{
     case red
     case orange
     case yellow
@@ -352,7 +362,32 @@ public enum ShortcutTileColor: Hashable, Sendable {
     case grayGreen
     case lightBlue
 
-    public static func == (a: ShortcutTileColor, b: ShortcutTileColor) -> Bool { return true }
+    /// Which of the type's own cases this is. A query compares the operator a rule wrote
+    /// with the one it runs, and an equality that answered `true` for every pair -- or a
+    /// hash that told none of them apart -- would match the wrong one and collapse every
+    /// value of the type into one bucket, so both are made of this.
+    var ordinal: Int {
+        switch self {
+        case .red: return 0
+        case .orange: return 1
+        case .yellow: return 2
+        case .green: return 3
+        case .teal: return 4
+        case .blue: return 5
+        case .purple: return 6
+        case .pink: return 7
+        case .navy: return 8
+        case .lime: return 9
+        case .tangerine: return 10
+        case .grape: return 11
+        case .grayBlue: return 12
+        case .grayBrown: return 13
+        case .grayGreen: return 14
+        case .lightBlue: return 15
+        }
+    }
+
+    public static func == (a: ShortcutTileColor, b: ShortcutTileColor) -> Bool { return a.ordinal == b.ordinal }
 
     public func hash(into hasher: inout Hasher) {}
 }
