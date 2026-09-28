@@ -76,7 +76,7 @@ internal final class ColumnStorage<Element>: @unchecked Sendable {
 }
 
 /// A column of a frame, holding values of one type.
-public struct Column<Element>: ColumnProtocol, BidirectionalCollection {
+public struct Column<Element>: ColumnProtocol {
     public var name: String
     /// The column's values, in the box every view of this column shares. `storage` is `internal` and
     /// the views are in this file, so nothing outside can reach past the value semantics.
@@ -151,8 +151,11 @@ public struct Column<Element>: ColumnProtocol, BidirectionalCollection {
     }
 
 
-    public typealias SubSequence = ColumnSlice<Element>
-
+    /// How many cells, missing ones included. A plain member rather than a `Collection` one: the
+    /// column is not a `Collection` (Apple's is not either, and an optional subscript cannot be one)
+    /// and the count of its cells is asked for constantly.
+    public var count: Int { values.count }
+    public var isEmpty: Bool { values.isEmpty }
     public var startIndex: Int { 0 }
     public var endIndex: Int { values.count }
     public func index(after i: Int) -> Int { i + 1 }
@@ -175,16 +178,24 @@ public struct Column<Element>: ColumnProtocol, BidirectionalCollection {
     public mutating func append(contentsOf other: [Element]) { values.append(contentsOf: other) }
     public mutating func reserveCapacity(_ capacity: Int) { values.reserveCapacity(capacity) }
 
+    /// The cells, transformed. A missing cell stays missing: the transform sees the present values
+    /// and the gap is carried through, so `map` over a column that is missing a cell does not
+    /// invent one and does not lose the place.
     public func map<T>(_ transform: (Element) throws -> T) rethrows -> Column<T> {
-        Column<T>(name: name, try values.map(transform))
+        Column<T>(name: name, contents: try values.map { $0.map(transform) })
     }
 
+    /// The cells, transformed, with the results that are nil dropped **and** the missing cells
+    /// dropped: both are absent, which is what `compactMap` has always meant.
     public func compactMap<T>(_ transform: (Element) throws -> T?) rethrows -> Column<T> {
-        Column<T>(name: name, try values.compactMap(transform))
+        Column<T>(name: name, try values.compactMap { try $0?.map(transform) })
     }
 
+    /// The cells the predicate keeps. A missing cell is not a value to ask about, so it is dropped
+    /// rather than passed to the predicate: a predicate over `Element` cannot be given a cell that
+    /// has none.
     public func filter(_ isIncluded: (Element) throws -> Bool) rethrows -> Column<Element> {
-        Column<Element>(name: name, try values.filter(isIncluded))
+        Column<Element>(name: name, contents: try values.compactMap { try $0.map(isIncluded) })
     }
 }
 
@@ -408,10 +419,17 @@ public struct AnyColumn: @unchecked Sendable {
     /// The values as the type the caller names, or nil when the column is not of that type — which is
     /// the answer a caller needs, because a column of a different type read as this one is how a
     /// frame gives a category column away as a column of zeroes.
+    /// The values as the type the caller names, with the missing cells dropped, or `nil` when the
+    /// column is not of that type. Dropped rather than kept as `nil`s: a caller asking for the
+    /// values of a column wants the values, and a column missing a cell asked this way says how many
+    /// it has rather than pretending the cell is there. `values(as:)` is not Apple's accessor -
+    /// Apple reaches the cells through the subscript, which is `Element?` - so it is the port's, and
+    /// it drops the missing on purpose.
     public func values<T>(as type: T.Type = T.self) -> [T]? {
         var out = [T]()
         out.reserveCapacity(storage.count)
         for value in storage {
+            guard let value = value else { continue }
             guard let typed = value as? T else { return nil }
             out.append(typed)
         }
