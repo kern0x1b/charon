@@ -8,7 +8,11 @@ typedef void (^VisionRecorder)(NSString *name, NSString *value);
  * differential is a host check and the models live beside it, and a run without them says so
  * rather than skipping the case quietly. */
 typedef struct {
-    NSURL *glm_classifier;
+    NSURL *glm_classifier;   /* a GLM over three numbers: a model with no image input at all */
+    NSURL *image;            /* a convolution over a 3x8x8 array, the model the port and the host
+                              * are a recorded divergence apart on */
+    NSURL *vision;           /* a 32x32 picture in and a picture out: a model whose input is an
+                              * image, which is the only kind VNCoreMLRequest will take */
 } CoreMLModels;
 
 CoreMLModels vision_coreml_models(void);

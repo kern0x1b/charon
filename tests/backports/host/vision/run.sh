@@ -14,7 +14,7 @@ common="-target arm64-apple-ios15.0-macabi -isysroot $sdk $frameworks -fobjc-arc
 libs="-framework Foundation -framework CoreGraphics -framework CoreImage -framework CoreVideo -framework ImageIO -framework CoreML"
 
 xcrun clang $common -I"$device" "$here/record.m" "$device/vision-cases.m" $libs -framework Vision -o "$build/system"
-VISION_COREML_MODELS="$here/../../../../.agent-work/runs/coreml-predict/models" VISION_COREML_MODELS="$here/../../../../.agent-work/runs/coreml-predict/models" VISION_RECORDS="$build/system.json" "$build/system"
+VISION_COREML_MODELS="$here/../../../../.agent-work/runs/coreml-models-2" VISION_RECORDS="$build/system.json" "$build/system"
 python3 "$here/../foundation2/embed.py" "$build/system.json" "$device/vision-expectations.h"
 sed -i.bak 's/foundation2_expectations/vision_expectations/' "$device/vision-expectations.h" && rm -f "$device/vision-expectations.h.bak"
 echo "records: $(python3 -c "import json; print(len(json.load(open('$build/system.json'))))")"
@@ -38,7 +38,7 @@ port() {
 mkdir -p "$build/port"
 cp "$vision"/*.m "$vision"/*.h "$build/port/"
 port "$build/port"
-VISION_COREML_MODELS="$here/../../../../.agent-work/runs/coreml-predict/models" VISION_COREML_MODELS="$here/../../../../.agent-work/runs/coreml-predict/models" VISION_RECORDS="$build/port.json" "$build/port/run"
+VISION_COREML_MODELS="$here/../../../../.agent-work/runs/coreml-models-2" VISION_RECORDS="$build/port.json" "$build/port/run"
 # The scores of a Core ML prediction are reported and not failed on: the model they come from is
 # nn_image, whose prediction the port and this host are a recorded divergence apart
 # (facts/CoreML/CoreML.md). Everything else -- the classes of observation, their identifiers, how
@@ -87,6 +87,7 @@ mutant VNObservations.m "_requestRevision = requestRevision;" "_requestRevision 
 mutant VNObservations.m "return [self observationWithRequestRevision:0 boundingBox:boundingBox];" "return [self observationWithRequestRevision:1 boundingBox:boundingBox];"
 mutant VNObservations.m "return YES;" "return NO;"
 mutant VNObservations.m "return charon_vision_clone(self, zone);" "return [[VNObservation alloc] init];"
+mutant VNRequests.m "    if ([wrapper charon_coreml_image_feature] == nil) {" "    if (0) {"
 mutant VNHandlers.m "VNErrorUnsupportedRevision" "VNErrorNotImplemented"
 mutant VNHandlers.m "if (handler)
             handler(request, failure);" "if (handler)

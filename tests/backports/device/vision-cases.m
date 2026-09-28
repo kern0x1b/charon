@@ -3,6 +3,14 @@
 #import "vision-cases.h"
 
 #import <CoreML/CoreML.h>
+#import <CoreVideo/CoreVideo.h>
+
+/* The model behind a VNCoreMLModel. This port's VNCoreMLModel is built from a Core ML model and
+ * holds it; Apple's is the same shape. The declaration is the test's own, for the reason the port
+ * gives its own accessors: a wrapper's model is not in Vision's Objective-C surface. */
+@interface VNCoreMLModel (CharonModel)
+- (MLModel *)model;
+@end
 #import <CoreGraphics/CoreGraphics.h>
 
 static NSString *rect(CGRect r)
@@ -268,7 +276,114 @@ CoreMLModels vision_coreml_models(void)
                                 ? [NSURL fileURLWithPath:[directory stringByAppendingPathComponent:
                                                                              @"glm_classifier.mlmodel"]]
                                 : nil;
+    models.image = directory.length > 0
+                       ? [NSURL fileURLWithPath:[directory stringByAppendingPathComponent:@"nn_image.mlmodel"]]
+                       : nil;
+    models.vision = directory.length > 0
+                        ? [NSURL fileURLWithPath:[directory stringByAppendingPathComponent:@"vision_image.mlmodel"]]
+                        : nil;
     return models;
+}
+
+
+/* The model whose input is a *picture*, which is the only kind a VNCoreMLRequest will take. The
+ * wrapper is asked for it, the request is performed over a picture of a different size, and
+ * everything that comes back is recorded: the wrapper's answer, the kind, the size and the colour
+ * space the model declares, the error if there is one, and every observation with its class, the
+ * name its value came from, the shape and the numbers of that value, and the box where the
+ * observation is one that has a box.
+ *
+ * The container is `vision_image` from tools/coreml/make-models.py: a 32 by 32 picture through one
+ * 1x1 convolution, declared as the specification's own `imageType`. coremltools 9.0's runtime will
+ * not run a network whose input is a picture, which is why the manifest records it with no
+ * prediction and why the interpreter check does not read this container; Apple's Core ML and Vision,
+ * which are what this case runs through, are the frameworks that do.
+ */
+static void picture_case(CoreMLModels models, VisionRecorder record)
+{
+    NSError *failure = nil;
+    NSURL *compiled;
+    VNCoreMLModel *model;
+
+    if (models.vision == nil) {
+        return;
+    }
+    compiled = [MLModel compileModelAtURL:models.vision error:&failure];
+    model = compiled != nil ? [VNCoreMLModel modelForMLModel:[MLModel modelWithContentsOfURL:compiled error:&failure]
+                                               error:&failure]
+                            : nil;
+    record(@"picture/model", model != nil ? @"made" : @"refused");
+    if (model == nil) {
+        record(@"picture/error", [NSString stringWithFormat:@"%@/%ld", failure.domain ?: @"(none)",
+                                                        (long)failure.code]);
+        return;
+    }
+    record(@"picture/input", model.inputImageFeatureName ?: @"(nil)");
+    {
+        MLModel *carried = [model model];
+        MLFeatureDescription *described =
+            carried.modelDescription.inputDescriptionsByName[model.inputImageFeatureName];
+        MLImageConstraint *constraint = described.imageConstraint;
+        record(@"picture/type", [NSString stringWithFormat:@"%ld", (long)described.type]);
+        record(@"picture/size", [NSString stringWithFormat:@"%ldx%ld", (long)constraint.pixelsWide,
+                                                            (long)constraint.pixelsHigh]);
+        record(@"picture/format", [NSString stringWithFormat:@"%u", (unsigned)constraint.pixelFormatType]);
+    }
+    {
+        VNCoreMLRequest *request = [[VNCoreMLRequest alloc] initWithModel:model];
+        VNImageRequestHandler *handler =
+            [[VNImageRequestHandler alloc] initWithCGImage:vision_picture(64, 64) options:@{}];
+        NSMutableArray *seen = [NSMutableArray array];
+        NSError *runFailure = nil;
+        BOOL ran = [handler performRequests:@[ request ] error:&runFailure];
+        NSUInteger index;
+        for (index = 0; index < request.results.count; index++) {
+            VNObservation *observation = request.results[index];
+            [seen addObject:NSStringFromClass([observation class])];
+            if ([observation isKindOfClass:[VNClassificationObservation class]]) {
+                [seen addObject:[NSString stringWithFormat:@"(%@/%.4f)",
+                                                           ((VNClassificationObservation *)observation).identifier,
+                                                           (double)observation.confidence]];
+            } else if ([observation isKindOfClass:[VNPixelBufferObservation class]]) {
+                CVPixelBufferRef buffer = ((VNPixelBufferObservation *)observation).pixelBuffer;
+                [seen addObject:[NSString stringWithFormat:@"[%@ %lux%lu]",
+                                                           ((VNPixelBufferObservation *)observation).featureName,
+                                                           (unsigned long)CVPixelBufferGetWidth(buffer),
+                                                           (unsigned long)CVPixelBufferGetHeight(buffer)]];
+            } else if ([observation isKindOfClass:[VNCoreMLFeatureValueObservation class]]) {
+                MLFeatureValue *value = ((VNCoreMLFeatureValueObservation *)observation).featureValue;
+                if (value.multiArrayValue != nil) {
+                    MLMultiArray *array = value.multiArrayValue;
+                    NSMutableArray *read = [NSMutableArray array];
+                    NSInteger element;
+                    for (element = 0; element < MIN((NSInteger)array.count, 4); element++) {
+                        [read addObject:[NSString stringWithFormat:@"%.4f",
+                                                              [[array objectAtIndexedSubscript:element] doubleValue]]];
+                    }
+                    [seen addObject:[NSString stringWithFormat:@"<%@ %@ %@>",
+                                                       ((VNCoreMLFeatureValueObservation *)observation).featureName,
+                                                       [[array.shape valueForKey:@"description"]
+                                                           componentsJoinedByString:@","],
+                                                       [read componentsJoinedByString:@","]]];
+                } else {
+                    [seen addObject:[NSString stringWithFormat:@"<%@ %@ type=%ld>",
+                                                       ((VNCoreMLFeatureValueObservation *)observation).featureName,
+                                                       value.stringValue ?: @"(nil)", (long)value.type]];
+                }
+            } else if ([observation isKindOfClass:[VNDetectedObjectObservation class]]) {
+                VNDetectedObjectObservation *detected = (VNDetectedObjectObservation *)observation;
+                [seen addObject:[NSString stringWithFormat:@"{%ld %ld %ld %ld}",
+                                                           (long)(detected.boundingBox.origin.x * 1000),
+                                                           (long)(detected.boundingBox.origin.y * 1000),
+                                                           (long)(detected.boundingBox.size.width * 1000),
+                                                           (long)(detected.boundingBox.size.height * 1000)]];
+            }
+        }
+        record(@"picture/ran", [NSString stringWithFormat:@"%d %@/%ld", ran, runFailure.domain ?: @"(none)",
+                                                          (long)runFailure.code]);
+        record(@"picture/text", runFailure.localizedDescription ?: @"(none)");
+        record(@"picture/observations", [seen componentsJoinedByString:@" "]);
+    }
 }
 
 void vision_run(VisionRecorder record, CoreMLModels models)
@@ -279,4 +394,5 @@ void vision_run(VisionRecorder record, CoreMLModels models)
     observations(record);
     handlers(record);
     coreml_model(models, record);
+    picture_case(models, record);
 }

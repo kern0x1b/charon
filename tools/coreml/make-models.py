@@ -60,6 +60,10 @@ SPEC_11_2, SPEC_12_0, SPEC_12_2, SPEC_13_0 = 3, 4, 5, 6
 # Each sample matches the shape the model declares: the dense classifier's input is a vector
 # of three, not a batch of them, and the pipeline's scaler takes one double at a time.
 SAMPLES = {
+    # The image model is declared as a picture, and coremltools 9.0's runtime will not run a
+    # network whose input is one -- measured -- so there is no host input for it here. The
+    # framework that does run it is Apple's Core ML, through the Vision host differential.
+    "vision_image": None,
     "glm": {"x": [-1.5, 0.0]},
     "glm_classifier": {"x": [0.5, -0.5]},
     "nn_classifier": {"x": np.array([0.5, -0.25, 1.0], np.float32)},
@@ -78,6 +82,8 @@ SAMPLES = {
 def sample_of(name):
     """The input for a model, or None when this host cannot give it one."""
     recorded = SAMPLES[name]
+    if recorded is None:
+        return None
     if isinstance(recorded, str) and recorded.startswith("image:"):
         from PIL import Image
         side = int(recorded.split(":")[1].split("x")[0])
@@ -533,6 +539,56 @@ def build_glm_classifier():
     return spec
 
 
+def build_vision_image():
+    """An image in, an image out: a picture of 32 by 32 through one 1x1 convolution, which is the
+    smallest model a Vision request can be run on, and the shape Vision's own transform exists for.
+
+    A `VNCoreMLRequest` hands the handler's picture to a model that takes one, brings it to the
+    size the model declares, and answers with the model's own output: for this model an image
+    again, which is a `VNPixelBufferObservation`. The convolution is 1x1 and one channel, so it is
+    a per-pixel weight on the red channel and nothing else -- the arithmetic cannot be argued
+    about, and what the case is measuring is the *path*: the size the picture was brought to, and
+    the observation that comes back.
+
+    The input is declared as the specification's own `imageType`, and not as the array of three
+    channels the convolutional model beside it uses, because the two are different features to a
+    model: an image input is a picture with a colour space and a size, and it is the only kind a
+    `VNCoreMLRequest` will hand a picture to. coremltools 9.0's runtime refuses to *run* a network
+    with an image input -- measured, and recorded as `prediction: null` below, which is the
+    manifest's way of saying "this container is for a framework that runs it" -- while Apple's own
+    Core ML and Vision, which are what the Vision host differential runs, run it exactly.
+    """
+    builder = ct.models.neural_network.NeuralNetworkBuilder(
+        input_features=[("image", datatypes.Array(3, 32, 32))], output_features=[("out", datatypes.Array(1, 32, 32))])
+    weights = np.zeros((1, 1, 1, 3), np.float32)
+    weights[0, 0, 0] = [1.0 / 255.0, 0.0, 0.0]
+    builder.add_convolution("conv", 3, 1, 1, 1, 1, 1, "valid", 1, weights, np.zeros(1, np.float32),
+                            True, False, output_name="out", input_name="image")
+    spec = builder.spec
+    # Both ends are pictures: the builder wrote arrays of channels, and an image is a picture with
+    # a colour space and a size, which is a different thing to a model.
+    described = Model_pb2.FeatureDescription(name="image")
+    picture = described.type.imageType
+    picture.colorSpace = 20          # 20 is the specification's own "RGB"
+    # A range rather than a size, which is what Vision's own crop-and-scale is for: the model will
+    # take a picture of any size inside the range, and the request path is what brings the
+    # handler's picture inside it. A model that fixes its size has nothing for that to do.
+    size = picture.imageSizeRange
+    size.widthRange.lowerBound = 16
+    size.widthRange.upperBound = 256
+    size.heightRange.lowerBound = 16
+    size.heightRange.upperBound = 256
+    spec.description.input[0].CopyFrom(described)
+    answer = Model_pb2.FeatureDescription(name="out")
+    out_picture = answer.type.imageType
+    out_picture.width = 32
+    out_picture.height = 32
+    out_picture.colorSpace = 20
+    spec.description.output[0].CopyFrom(answer)
+    spec.specificationVersion = SPEC_12_2
+    return spec
+
+
 BUILDERS = {
     "glm_classifier": build_glm_classifier,
     "nn_layers": build_nn_layers,
@@ -544,6 +600,7 @@ BUILDERS = {
     "tree_classifier": build_tree_classifier,
     "glm": build_glm,
     "pipeline": build_pipeline,
+    "vision_image": build_vision_image,
 }
 
 
