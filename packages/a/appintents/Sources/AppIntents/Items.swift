@@ -209,6 +209,15 @@ public struct IntentFile: Hashable, Sendable {
     /// The content types the framework may write the file as, which is the type the app gave.
     public var availableContentTypes: [String] { return type.map { [$0] } ?? [] }
 
+    /// A file of the given content type that the caller fills in. The framework's own declaration
+    /// names only the content type (`IntentFile.data(contentType:)` in the ledger, the 26.2 row), so
+    /// this is that shape: an empty file of the type, which the caller writes before it hands the
+    /// file on. The form with the bytes is the one below, and is what a caller that already has them
+    /// writes.
+    public static func data(contentType: String) -> IntentFile {
+        return IntentFile(data: Data(), filename: "file", type: contentType)
+    }
+
     public static func data(contentType: String, filename: String = "file",
                             data: @escaping () throws -> Data) -> IntentFile {
         return IntentFile(data: (try? data()) ?? Data(), filename: filename, type: contentType)
@@ -217,6 +226,18 @@ public struct IntentFile: Hashable, Sendable {
     /// The file the intent hands on, written by the caller's own handler into a file the framework
     /// names. The row the framework's own declaration carries is `file(contentType:)`, so the
     /// destination and the handler are the ones a caller passes after it.
+    /// A file of the given content type, at a URL the caller writes to. The framework's own
+    /// declaration names the content type and the directory and no handler
+    /// (`IntentFile.file(contentType:destinationDirectory:)` in the ledger, the 26.2 row): the file
+    /// is *at* that URL, so this is the same path the form below computes, and the caller fills it
+    /// in. The file is created there, so a caller that writes to it writes to a file that exists.
+    public static func file(contentType: String, destinationDirectory: URL? = nil) -> IntentFile {
+        let directory = destinationDirectory ?? URL(fileURLWithPath: NSTemporaryDirectory())
+        let url = directory.appendingPathComponent("charon-intent-file")
+        if !FileManager.default.fileExists(atPath: url.path) { FileManager.default.createFile(atPath: url.path, contents: Data()) }
+        return IntentFile(fileURL: url, filename: url.lastPathComponent, type: contentType)
+    }
+
     public static func file(contentType: String, destinationDirectory: URL? = nil,
                             fileHandler: (URL) throws -> Void) -> IntentFile {
         let directory = destinationDirectory ?? URL(fileURLWithPath: NSTemporaryDirectory())
