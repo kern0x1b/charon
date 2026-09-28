@@ -184,8 +184,6 @@ static matrix_double4x4 CharonMDLQuaternionMatrix(simd_quatd rotation)
 }
 
 @end
-
-// The other two single-axis rotations are the same operation about their own axis.
 @implementation MDLTransformRotateYOp {
     CharonMDLOpRecord _record;
     MDLAnimatedScalar *_value;
@@ -256,7 +254,6 @@ static matrix_double4x4 CharonMDLQuaternionMatrix(simd_quatd rotation)
 }
 
 @end
-
 @implementation MDLTransformRotateZOp {
     CharonMDLOpRecord _record;
     MDLAnimatedScalar *_value;
@@ -327,7 +324,6 @@ static matrix_double4x4 CharonMDLQuaternionMatrix(simd_quatd rotation)
 }
 
 @end
-
 @implementation MDLTransformRotateOp {
     CharonMDLOpRecord _record;
     MDLAnimatedVector3 *_value;
@@ -412,7 +408,6 @@ static matrix_double4x4 CharonMDLQuaternionMatrix(simd_quatd rotation)
 }
 
 @end
-
 @implementation MDLTransformTranslateOp {
     CharonMDLOpRecord _record;
     MDLAnimatedVector3 *_value;
@@ -482,7 +477,6 @@ static matrix_double4x4 CharonMDLQuaternionMatrix(simd_quatd rotation)
 }
 
 @end
-
 @implementation MDLTransformScaleOp {
     CharonMDLOpRecord _record;
     MDLAnimatedVector3 *_value;
@@ -552,7 +546,6 @@ static matrix_double4x4 CharonMDLQuaternionMatrix(simd_quatd rotation)
 }
 
 @end
-
 @implementation MDLTransformMatrixOp {
     CharonMDLOpRecord _record;
     MDLAnimatedMatrix4x4 *_value;
@@ -620,78 +613,6 @@ static matrix_double4x4 CharonMDLQuaternionMatrix(simd_quatd rotation)
 }
 
 @end
-
-@implementation MDLTransformOrientOp {
-    CharonMDLOpRecord _record;
-    MDLAnimatedQuaternion *_value;
-}
-
-- (instancetype)init
-{
-    if ((self = [super init]))
-        _value = [[MDLAnimatedQuaternion alloc] init];
-    return self;
-}
-
-- (void)dealloc
-{
-}
-
-- (CharonMDLOpRecord *)charon_record
-{
-    return &_record;
-}
-
-- (MDLAnimatedValue *)charon_value
-{
-    return _value;
-}
-
-- (void)charon_setAnimatedValue:(MDLAnimatedValue *)value
-{
-    if (_value != value) {
-        _value = (id)value;
-    }
-}
-
-- (void)charon_takeOverFrom:(id<MDLTransformOp>)op
-{
-    [self charon_setAnimatedValue:[(MDLAnimatedValue *)(MDLAnimatedValue *)[(id)op animatedValue] copy]];
-    _record.name = [(id<MDLTransformOp>)op name];
-    _record.inverse = [op IsInverseOp];
-}
-
-- (NSString *)name
-{
-    return _record.name;
-}
-
-- (bool)IsInverseOp
-{
-    return _record.inverse;
-}
-
-- (matrix_double4x4)double4x4AtTime:(NSTimeInterval)time
-{
-    simd_quatd rotation = [_value doubleQuaternionAtTime:time];
-    return CharonMDLQuaternionMatrix(rotation);
-}
-
-- (matrix_float4x4)float4x4AtTime:(NSTimeInterval)time
-{
-    return CharonMDLFloat4x4([self double4x4AtTime:time]);
-}
-
-- (MDLAnimatedQuaternion *)animatedValue
-{
-    return _value;
-}
-
-@end
-
-// A stack is the product of its operations in the order they were added, and it is also a transform
-// component, so an object can carry one in place of an MDLTransform.
-
 @implementation MDLTransformStack {
     NSMutableArray<id<MDLTransformOp>> *_ops;
     NSMutableDictionary<NSString *, MDLAnimatedValue *> *_values;

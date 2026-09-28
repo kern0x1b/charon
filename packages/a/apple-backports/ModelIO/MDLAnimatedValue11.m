@@ -185,10 +185,6 @@ typedef struct {
 }
 
 @end
-
-// The three array-shaped values hold their element count rather than one value, and every element is
-// the same component count, so they share the base with the scalar ones.
-
 @implementation MDLAnimatedScalarArray {
     NSUInteger _elementCount;
 }
@@ -203,7 +199,6 @@ typedef struct {
 }
 
 @end
-
 @implementation MDLAnimatedVector3Array {
     NSUInteger _elementCount;
 }
@@ -218,7 +213,6 @@ typedef struct {
 }
 
 @end
-
 @implementation MDLAnimatedQuaternionArray {
     NSUInteger _elementCount;
 }
@@ -233,7 +227,6 @@ typedef struct {
 }
 
 @end
-
 @implementation MDLAnimatedScalar
 
 - (instancetype)init
@@ -271,7 +264,6 @@ typedef struct {
 }
 
 @end
-
 @implementation MDLAnimatedVector2
 
 - (instancetype)init
@@ -309,7 +301,6 @@ typedef struct {
 }
 
 @end
-
 @implementation MDLAnimatedVector3
 
 - (instancetype)init
@@ -347,7 +338,6 @@ typedef struct {
 }
 
 @end
-
 @implementation MDLAnimatedVector4
 
 - (instancetype)init
@@ -385,46 +375,6 @@ typedef struct {
 }
 
 @end
-
-@implementation MDLAnimatedQuaternion
-
-- (instancetype)init
-{
-    if ((self = [super init]))
-        self.charon_componentCount = 4;
-    return self;
-}
-
-- (void)setFloatQuaternion:(simd_quatf)value atTime:(NSTimeInterval)time
-{
-    // A quaternion is its four components, the imaginary one first and the real one last.
-    double components[4] = {value.vector.x, value.vector.y, value.vector.z, value.vector.w};
-    [self charon_setComponents:components atTime:time];
-}
-
-- (void)setDoubleQuaternion:(simd_quatd)value atTime:(NSTimeInterval)time
-{
-    double components[4] = {value.vector.x, value.vector.y, value.vector.z, value.vector.w};
-    self.charon_doublePrecision = YES;
-    [self charon_setComponents:components atTime:time];
-}
-
-- (simd_quatf)floatQuaternionAtTime:(NSTimeInterval)time
-{
-    double components[4];
-    [self charon_getComponents:components atTime:time];
-    return simd_quaternion((float)components[0], (float)components[1], (float)components[2], (float)components[3]);
-}
-
-- (simd_quatd)doubleQuaternionAtTime:(NSTimeInterval)time
-{
-    double components[4];
-    [self charon_getComponents:components atTime:time];
-    return simd_quaternion(components[0], components[1], components[2], components[3]);
-}
-
-@end
-
 @implementation MDLAnimatedMatrix4x4
 
 - (instancetype)init
