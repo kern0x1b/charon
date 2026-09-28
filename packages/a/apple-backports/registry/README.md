@@ -38,6 +38,20 @@ accessors at once, as `UIScreen.captured`, a function as
 `UIFontTextStyleBody`. A class whose whole surface shares one status is one
 entry; a method of an implemented class that is not implemented gets its own.
 
+`kind` is `class`, `protocol`, `method`, `property`, `constant` or `function`,
+and two more for what no symbol can ever answer for. An `NS_ENUM` or
+`NS_OPTIONS`, a typedef, a struct or a union has no exported symbol by nature -
+nothing exports `MLMultiArrayDataType` or `MLMultiArrayDataTypeDouble` - so
+such a row could never be `implemented` and the check would hold it red
+forever. They are `kind: "type"` (the typedef, enumeration or struct itself)
+and `kind: "case"` (one case of it, named by its own symbol), and the check
+asks a different question of them: a header the build reads - the tree's own, a
+Charon header generated or written, or the SDK it compiled against - must
+**declare** the name. That is read, never taken on trust from the entry, so an
+`implemented` type or case no header declares is held exactly as red as an
+implemented class nothing builds. `introduced` still says when the release
+arrived, which is what makes a Swift module that needs the case see it.
+
 `introduced` is the release the SDK's availability gives, and for a private
 entry point a backport calls, the release of the API that needed it. `removed` names the
 release that took the API away, so that what modern iOS no longer has is not

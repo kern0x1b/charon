@@ -85,6 +85,67 @@ end
 -- refuses one that contradicts itself - after an hour of building. The suite
 -- asks the registry of the repository the same question in a hundredth of a
 -- second, so a duplicate entry is a failed test and not a failed release.
+
+-- A type, an enumeration or a struct has no symbol by nature: nothing exports MLMultiArrayDataType or
+-- MLMultiArrayDataTypeDouble, so an implemented row of kind "type" or "case" can never be answered by a
+-- symbol, and the check would hold it red forever. Such a row is implemented when a header the build reads
+-- declares it - and the declaration is read, not taken on trust: a name no header declares is the same as a
+-- class nothing exports, which is what this step measures both ways.
+local function type_rows(backports, found)
+    local root = fixtures.scratch()
+    os.tryrm(root)
+    os.mkdir(root)                       -- os.mkdir takes one directory: its parents must already be there
+    os.mkdir(path.join(root, "Charon"))
+    os.mkdir(path.join(root, "registry"))
+    -- a Charon header of the tree's own, the shape a generated header declaring a type has
+    io.writefile(path.join(root, "Charon", "CharonFixture.h"),
+                 "#import <Foundation/Foundation.h>\ntypedef NSUInteger FixturedType;\ntypedef NS_ENUM(NSInteger, FixturedKind) {\n    FixturedCaseOne = 1,\n    FixturedCaseTwo = 2,\n};\n")
+    -- xmake's try() returns values only when the block succeeds: it calls the catch and discards whatever
+    -- that returns, so a message taken from try's second value is nil on a raise. The catch therefore writes
+    -- into this, and told() says which of the two happened.
+    local function told(rows)
+        io.writefile(path.join(root, "registry", "Fix.json"), string.format('{"framework": "Fix", "entries": [%s]}', table.concat(rows, ", ")))
+        local message
+        local passed = try {
+            function () backports.check_registry(root, {classes = {}, members = {}, symbols = {}}, true, "6.1.3", {}, nil) return true end,
+            catch {function (errors) message = tostring(errors) end}
+        }
+        return (passed and "the check passed, nothing was held unbuilt") or message or "raised with no message"
+    end
+    -- the shape a real row has: an NS_ENUM or a typedef a port carries from the release it arrived in, so
+    -- `ours` is true at 6.1.3 and `carried` is false (it arrived later), which is the case the check is about
+    local function row(api, kind)
+        return string.format('{"api": "%s", "kind": "%s", "introduced": "11.0", "minimum": "6.0", "status": "implemented", "facts": "f"}', api, kind)
+    end
+    local refused = told({row("FixturedType", "type"), row("FixturedKind", "type"), row("FixturedCaseOne", "case")})
+    if refused ~= "the check passed, nothing was held unbuilt" then
+        table.insert(found, "a type and an enumeration case a Charon header declares must not be held unbuilt: " .. refused)
+    end
+    local absent = told({row("FixturedAbsent", "type"), row("FixturedCaseAbsent", "case")})
+    for _, name in ipairs({"FixturedAbsent", "FixturedCaseAbsent"}) do
+        if not absent:find(name, 1, true) then
+            table.insert(found, "a type no header declares is still red, and the run must name " .. name .. ": " .. absent)
+        end
+    end
+    -- a function is registered with its parentheses and a symbol with none, so the fallback that reads the
+    -- registry for the release a name arrived in has to try both spellings of one symbol
+    local rows = backports.registry(root)
+    told({string.format('{"api": "FixturedFree()", "kind": "function", "introduced": "11.0", "minimum": "6.0", "status": "implemented", "facts": "f"}')})
+    rows = backports.registry(root)
+    if (rows["FixturedFree()"] or {}).kind ~= "function" then
+        table.insert(found, "a function is not read out of the registry at all, so nothing can look it up")
+    end
+    -- and the two kinds are read as themselves, not as methods: the spelling rule does not apply to them
+    told({row("FixturedType", "type"), row("FixturedKind", "type"), row("FixturedCaseOne", "case")})
+    local listed = backports.registry(root)
+    for _, name in ipairs({"FixturedType", "FixturedKind", "FixturedCaseOne"}) do
+        if (listed[name] or {}).kind == nil then
+            table.insert(found, "the registry does not list " .. name .. " at all")
+        end
+    end
+    os.tryrm(root)
+end
+
 function failures(opt)
     local backports = import("apple.backports", {rootdir = opt.modules, anonymous = true})
     local found = {}
@@ -149,6 +210,7 @@ function failures(opt)
     spelling(backports, found)
     unreadable(backports, found)
     named_twice(backports, found)
+    type_rows(backports, found)
     return found
 end
 
