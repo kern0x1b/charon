@@ -53,19 +53,34 @@ extern __attribute__((weak_import)) CharonUDateIntervalFormat
     udtitvfmt_open(const char *locale, const uint16_t *skeleton, int32_t skeletonLength,
                    const uint16_t *tzID, int32_t tzIDLength, CharonUErrorCode *status);
 extern __attribute__((weak_import)) void udtitvfmt_close(CharonUDateIntervalFormat *formatter);
-/* Six arguments, which is ICU 49's own declaration of udtitvfmt_format - (formatter, from, to,
-   result, resultCapacity, status) - and the build this file is for carries icudt49_dat, so that is the
-   form to call. A seventh `const void *position` appears in Apple's ICU in later builds; the port
-   does not pass one, and the device program is what settles which form the copy in the cache takes:
-   with the wrong arity the status lands in the wrong register, ICU answers an error, and
-   -charon_intervalFrom:to: returns nil rather than misbehaving, so the failure is a missing answer
-   and not a crash. Read out of the 6.1.3 cache, udtitvfmt_format is at 0x38b03420 and reaches its
-   stack arguments through a frame pointer the prologue builds before the sp alignment, so the count
-   cannot be read off the first instructions alone (coordination/reviews/2026-09-28-api-dateinterval.md
-   finding B). */
+/* Seven parameters, and the declaration is ICU's own. From
+   udateintervalformat.h, on this machine at
+   api-uikit-a/.agent-work/upstreams/WinObjC/deps/prebuilt/include/icu/unicode/udateintervalformat.h
+   (ICU 57.1), the header marking both this and udtitvfmt_open "@stable ICU 4.8":
+
+     U_STABLE int32_t U_EXPORT2 udtitvfmt_format(const UDateIntervalFormat* formatter,
+                                                 UDate fromDate,
+                                                 UDate toDate,
+                                                 UChar* result,
+                                                 int32_t resultCapacity,
+                                                 UFieldPosition* position,
+                                                 UErrorCode* status);
+
+     U_STABLE UDateIntervalFormat* U_EXPORT2 udtitvfmt_open(
+         const char* locale, const UChar* skeleton, int32_t skeletonLength,
+         const UChar* tzID, int32_t tzIDLength, UErrorCode* status);
+
+   so `position` is a real argument and comes **before** the status, and the port passes NULL for it -
+   the field position is how a caller learns which field a result is, and this class asks for the text.
+   A six-parameter form, which the review's finding B cited, is not this API. That header is 57.1 and
+   not the 49 the release links, but the declaration is marked stable since 4.8 and so is the same one
+   6.1.3 was built from; the device program is what holds it against the cache's own libicucore.
+
+   udtitvfmt_setAttribute is **not in that header at all**: it is Apple's own addition, which is why
+   the ladder finds it exported and the port does not call it. */
 extern __attribute__((weak_import)) int32_t
     udtitvfmt_format(const CharonUDateIntervalFormat *formatter, CharonUDate fromDate, CharonUDate toDate,
-                     uint16_t *result, int32_t resultCapacity, CharonUErrorCode *status);
+                     uint16_t *result, int32_t resultCapacity, void *position, CharonUErrorCode *status);
 
 /* The date and the time skeleton of each of the header's five styles, the way the release's own
    NSDateFormatter writes them. A style pair is the two skeletons joined, the date's fields first and
@@ -272,7 +287,7 @@ static NSString *CharonIntervalSkeleton(NSInteger dateStyle, NSInteger timeStyle
     uint16_t buffer[512];
     status = 0;
     int32_t written = udtitvfmt_format(&formatter, (CharonUDate)from.timeIntervalSinceReferenceDate,
-                                       (CharonUDate)to.timeIntervalSinceReferenceDate, buffer, 512, &status);
+                                       (CharonUDate)to.timeIntervalSinceReferenceDate, buffer, 512, NULL, &status);
     CharonUDateIntervalFormat closing = formatter;
     udtitvfmt_close(&closing);
     if (status != 0 || written <= 0)
