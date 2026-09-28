@@ -181,6 +181,7 @@ local function protocol_owner_step(backports, opt, found)
     local scratch = fixtures.scratch()
     local root = path.join(scratch, "case")
     local mutant_root = path.join(scratch, "mutant")
+    os.tryrm(mutant_root)          -- made afresh: a copy an earlier run left is not this run's
     os.tryrm(scratch)
     os.mkdir(scratch)
     os.mkdir(root)
@@ -463,18 +464,16 @@ local function real_object(backports, modules, found)
     end
     local backports = path.join(mutant_root, "apple", "backports.lua")
     local text = io.readfile(backports)
-    local kept = {}
-    for line in text:gmatch("[^\n]*\n?") do
-        if not line:find("protocol_declared(root, owner, inventory, sdkdir)", 1, true) then
-            table.insert(kept, line)
-        elseif #kept > 0 then
-            kept[#kept] = kept[#kept]:gsub("%s+and%s*$", "")
-        end
+    -- the call, not the definition: the call closes the expression with )) and the definition with ), so the
+    -- needle with both closing parens is in the copy exactly once
+    local needle = "protocol_declared(root, owner, inventory, sdkdir))"
+    local first, last = text:find(needle, 1, true)
+    local second = first and text:find(needle, last + 1, true)
+    if not first or second then
+        table.insert(found, "the needle is not in the copy exactly once, so the mutant is not what it claims: "
+                            .. tostring(first) .. "/" .. tostring(second))
     end
-    local without = table.concat(kept)
-    if without == text then
-        table.insert(found, "the mutant could not drop the call: the case would pass on the code that has the hole")
-    end
+    local without = first and (text:sub(1, first - 1) .. "false)" .. text:sub(last + 1)) or text
     io.writefile(backports, without)
     os.mkdir(path.join(mutant_root, "registry"))
     io.writefile(path.join(mutant_root, "registry", "Fix.json"), io.readfile(path.join(root, "registry", "Fix.json")))
@@ -503,11 +502,19 @@ end
     local rc = os.execv("xmake", {"l", path.join(mutant_root, "probe.lua"), mutant_root},
                         {try = true, envs = {PROBE_ROOT = root}, stdout = out, stderr = err})
     local said = io.readfile(out) or ""
-    if said:find("ARKitShapedDelegate shaped", 1, true) then
-        table.insert(found, "the mutant - the module without the one call, in its own process - still reports the "
-                            .. "ARKit member: " .. said:gsub("\n", " | "):sub(1, 120))
+    local failed = io.readfile(err) or ""
+    if rc ~= 0 then
+        table.insert(found, string.format("the mutant's probe died with %s and said nothing: %s", tostring(rc),
+                                          failed:gsub("\n", " | "):sub(1, 200)))
+    elseif said:find("ARKitShapedDelegate shaped", 1, true) then
+        -- the control, and its red is the point: the copy without the one call reports the ARKit member,
+        -- which is what the hole looks like from a process that has the hole
     elseif said:find("passed", 1, true) then
-        table.insert(found, "the mutant did not report anything at all, so the control is not a control: " .. said)
+        table.insert(found, "the mutant did not report the ARKit member, so the control is not a control: " .. said)
+    else
+        table.insert(found, "the mutant's probe answered nothing at all, which is a failure of the control: rc="
+                            .. tostring(rc) .. " answer=[" .. said:gsub("\n", " | "):sub(1, 120) .. "] stderr="
+                            .. failed:gsub("\n", " | "):sub(1, 120))
     end
     said = asked(nil)
     if said:find("ARKitShapedDelegate shaped", 1, true) then

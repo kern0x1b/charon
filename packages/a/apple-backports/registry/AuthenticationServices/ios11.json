@@ -110,7 +110,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "source": "the headers of SDK 16.4; AuthenticationServices of the arm64 shared cache of iOS 13.0 for what the release does, and the SFAuthenticationSession of iOS 11 this package's session is built on for what it can do",
-      "facts": "tools/transcribe-protocols.py: the protocol's base list and members, transcribed from the 26.2 SDK's AST; the scan reads it from the 16.4 SDK, whose SafariServices.framework is a symlink into the Cryptex"
+      "facts": "transcribed from the 26.2 SDK's AST, whose ObjCProtocolDecl carries the base list, the members and whether each is required or optional; the generator is tools/transcribe-protocols.py, in the registry-types series, not in this tree. The 16.4 SDK declares it with a body - AuthenticationServices.framework in that SDK is a symlink into ../../../System/Cryptexes/OS/\u2026 and os.files does not follow one, which is why the scan resolves every framework before reading its Headers"
     },
     {
       "api": "-[ASWebAuthenticationPresentationContextProviding presentationAnchorForWebAuthenticationSession:]",
