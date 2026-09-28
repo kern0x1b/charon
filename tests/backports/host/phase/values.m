@@ -123,6 +123,11 @@ static void compareDefaults(void)
 @property(nonatomic, assign) NSInteger curveType;
 @end
 
+@interface charon_host_PHASEEnvelopeDistanceModelParameters : NSObject
+- (instancetype)initWithEnvelope:(id)envelope;
+@property(nonatomic, strong, readonly) id envelope;
+@end
+
 @interface charon_host_PHASEEnvelope : NSObject
 - (instancetype)initWithStartPoint:(simd_double2)startPoint
                           segments:(NSArray<charon_host_PHASEEnvelopeSegment *> *)segments;
@@ -233,6 +238,38 @@ static void compareEngine(void)
     check(@"the host's root object has no children either", [[theirRoot valueForKey:@"children"] count] == 0);
     check(@"a fresh engine has no active group preset on either",
           [mine activeGroupPreset] == nil && [theirs valueForKey:@"activeGroupPreset"] == nil);
+}
+
+// The distance model that holds an envelope, and the envelope it holds. The header's contract is that
+// x is distance and y is gain, so the model is only as good as the envelope behind it - and the two
+// are compared on both counts.
+static void compareEnvelopeDistanceModel(void)
+{
+    Class portModel = NSClassFromString(@"charon_host_PHASEEnvelopeDistanceModelParameters");
+    Class hostModel = NSClassFromString(@"PHASEEnvelopeDistanceModelParameters");
+    Class portEnv = NSClassFromString(@"charon_host_PHASEEnvelope");
+    Class hostEnv = NSClassFromString(@"PHASEEnvelope");
+    if (portModel == Nil || hostModel == Nil) {
+        printf("skip the envelope distance model: the host's PHASE does not carry it, or the port's is not here\n");
+        return;
+    }
+    // the envelope x is distance over 0..10 m, y is gain over 0..1
+    id theirSegment = [[hostEnv alloc] initWithStartPoint:simd_make_double2(0.0, 0.0) segments:@[
+        [[NSClassFromString(@"PHASEEnvelopeSegment") alloc] initWithEndPoint:simd_make_double2(10.0, 1.0)
+                                                                     curveType:PHASECurveTypeInverseSquared]]];
+    id mySegment = [[portEnv alloc] initWithStartPoint:simd_make_double2(0.0, 0.0) segments:@[
+        [[NSClassFromString(@"charon_host_PHASEEnvelopeSegment") alloc] initWithEndPoint:simd_make_double2(10.0, 1.0)
+                                                                                       curveType:PHASECurveTypeInverseSquared]]];
+    id theirs = [[hostModel alloc] initWithEnvelope:theirSegment];
+    id mine = [[portModel alloc] initWithEnvelope:mySegment];
+    check(@"the host's distance model holds the envelope it was made with", [theirs envelope] == theirSegment);
+    check(@"the port's distance model holds the envelope it was made with",
+          [mine valueForKey:@"envelope"] == mySegment);
+    // and the gain it reports at a distance is the envelope's, so the two agree on the whole point
+    double theirGain = [[theirs envelope] evaluateForValue:5.0];
+    double myGain = [[mine valueForKey:@"envelope"] evaluateForValue:5.0];
+    printf("stage the gain at 5 m: host %g, port %g\n", theirGain, myGain);
+    checkClose(@"the gain at 5 m is the same on both", myGain, theirGain, 1e-9);
 }
 
 // The envelope, held to the host's own evaluation of the same eleven curve types. The two are asked
@@ -378,6 +415,7 @@ int main(void)
         compareDefaults();
         compareEngine();
         compareEnvelope();
+        compareEnvelopeDistanceModel();
         printf("checks=%d failures=%d\n", checks, failures);
     }
     return failures == 0 ? 0 : 1;

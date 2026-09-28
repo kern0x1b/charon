@@ -29,7 +29,7 @@ for name in PHASENumericPair PHASEDistanceModelParameters PHASEDistanceModelFade
              PHASEGeometricSpreadingDistanceModelParameters PHASEDirectivityModelParameters \
              PHASECardioidDirectivityModelSubbandParameters PHASEConeDirectivityModelSubbandParameters \
              PHASECardioidDirectivityModelParameters PHASEConeDirectivityModelParameters PHASEEngine PHASEObject \
-             PHASEEnvelope PHASEEnvelopeSegment
+             PHASEEnvelope PHASEEnvelopeSegment PHASEEnvelopeDistanceModelParameters
 do
     renames="$renames -D$name=charon_host_$name"
 done
@@ -38,7 +38,8 @@ done
 # this did the first time.
 port_objects=""
 for source in "$AVFAUDIO/PHASEValueTypes15.m" "$AVFAUDIO/PHASEEngine15.m" "$AVFAUDIO/PHASEObject15.m" \
-    "$AVFAUDIO/PHASEEnvelope15.m" "$AVFAUDIO/PHASEEnvelopeSegment15.m"; do
+    "$AVFAUDIO/PHASEEnvelope15.m" "$AVFAUDIO/PHASEEnvelopeSegment15.m" \
+    "$AVFAUDIO/PHASEEnvelopeDistanceModelParameters15.m"; do
     name=$(basename "$source")
     # shellcheck disable=SC2086
     xcrun clang -fobjc-arc -w $renames -I"$AVFAUDIO" -I"$root/modules" \
