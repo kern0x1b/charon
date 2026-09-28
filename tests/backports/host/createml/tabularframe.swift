@@ -127,6 +127,10 @@ let hStrings = hHostFrame["city"]
 let hOptionals = hHostFrame["n"]
 let pStrings = PortTabularData.AnyColumn(PortTabularData.Column<String>(name: "city", ["berlin", "paris", "madrid"]))
 let pOptionals = PortTabularData.AnyColumn(PortTabularData.Column<Int?>(name: "n", [1, nil, 3]))
+print("DIRECT host missingCount=\(hOptionals.missingCount) host wrapped=\(String(describing: hOptionals.wrappedElementType))")
+print("DIRECT port missingCount=\(pOptionals.missingCount) port wrapped=\(String(describing: pOptionals.wrappedElementType))")
+print("DIRECT host isNil(at:1)=\(hOptionals.isNil(at: 1)) port isNil(at:1)=\(pOptionals.isNil(at: 1))")
+print("DIRECT host [0]=\(String(describing: hStrings[0])) port [0]=\(String(describing: pStrings[position: 0]))")
 print("PROBE-BEFORE missing=\(pOptionals.missingCount) wrapped=\(String(describing: pOptionals.wrappedElementType))")
 
 checkEqual("count: the host's and the port's agree", hStrings.count, pStrings.count)
