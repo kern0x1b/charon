@@ -1548,7 +1548,7 @@
     },
     {
       "api": "ARSCNDebugOptions",
-      "kind": "constant",
+      "kind": "type",
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
