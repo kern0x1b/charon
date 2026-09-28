@@ -186,6 +186,29 @@ public struct EntityProperty<Value>: @unchecked Sendable where Value: _IntentVal
         self.setter = getSetter
     }
 
+    /// The three combinations the framework names that this had not: the asynchronous getter on its
+    /// own, and the indexing key with a getter or with a setter. Each is the same property the
+    /// neighbours above build, with the part the argument names: a getter reads the value the index
+    /// stores, a setter writes one back, and `indexingKey` is the name the index holds it under --
+    /// which is why the key is the second argument rather than a title, and why a property with both
+    /// a getter and a setter is one the app may write.
+    public init(identifier: String, asyncGetter: @escaping (EntityProperty<Value>) async -> Value) {
+        self.init(identifier: identifier)
+        self.getter = asyncGetter
+        self.modifiers = [.async]
+    }
+
+    public init(identifier: String, indexingKey: String, getSetter: @escaping (Value) async -> Void) {
+        self.init(identifier: identifier, indexingKey: indexingKey)
+        self.setter = getSetter
+    }
+
+    public init(identifier: String, indexingKey: String, getter: @escaping (EntityProperty<Value>) async -> Value) {
+        self.init(identifier: identifier, indexingKey: indexingKey)
+        self.getter = getter
+        self.modifiers = [.async]
+    }
+
     public init(identifier: String, customIndexingKey: String, getSetter: @escaping (Value) async -> Void) {
         self.init(identifier: identifier)
         self.indexingKey = customIndexingKey
