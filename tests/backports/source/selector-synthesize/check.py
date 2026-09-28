@@ -12,7 +12,7 @@ shape and one that does not. A check that cannot fail is not a check, and a dete
 shown to find a known case is not evidence either.
 
     ./run.sh            the whole package, plus the two proofs
-    ./check.py <file>   one file, if you want to look at a specific one
+    ./check.py <file|dir>   one file, or every .m under one directory
 """
 import os
 import re
@@ -49,6 +49,23 @@ def find(path):
     return hits
 
 
+def expand(argument):
+    """The source files named by one argument, which may be a file or a directory.
+
+    A directory is walked rather than opened, so `run.sh some/dir` answers the question about that
+    directory instead of raising IsADirectoryError out of open() - which is what it did, and a
+    documented path that cannot be taken is not a documented path.
+    """
+    if os.path.isdir(argument):
+        found = []
+        for base, _, names in os.walk(argument):
+            for name in sorted(names):
+                if name.endswith(".m"):
+                    found.append(os.path.join(base, name))
+        return found
+    return [argument] if os.path.exists(argument) else []
+
+
 def here(*parts):
     return os.path.join(os.path.dirname(os.path.abspath(__file__)), *parts)
 
@@ -76,10 +93,15 @@ def main():
     if not prove():
         return 1
     if len(sys.argv) > 1:
-        for path in sys.argv[1:]:
-            for name, category, synth, synth_line, accessor_line in find(path):
-                print("%s  %s %s  %s  @synthesize:%d  accessor:%d"
-                      % (path, name, category, synth, synth_line, accessor_line))
+        reported = 0
+        for argument in sys.argv[1:]:
+            for path in expand(argument):
+                for name, category, synth, synth_line, accessor_line in find(path):
+                    reported += 1
+                    print("%s  %s %s  %s  @synthesize:%d  accessor:%d"
+                          % (path, name, category, synth, synth_line, accessor_line))
+        if reported == 0:
+            print("no collision in %s" % " ".join(sys.argv[1:]))
         return 0
     # four levels up: selector-synthesize -> source -> backports -> tests -> the repository root
     root = here("..", "..", "..", "..")

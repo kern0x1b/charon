@@ -13,8 +13,9 @@ instead of the ones below.
 ## Running it
 
 ```
-./run.sh                the whole package
-./run.sh path/to/a.m    one file
+./run.sh                    the whole package
+./run.sh path/to/a.m        one file
+./run.sh path/to/a/dir      every .m under one directory
 ```
 
 It **proves itself first**, against the two files in `proofs/`:
