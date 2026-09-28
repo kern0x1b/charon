@@ -422,9 +422,10 @@
       "kind": "property",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the home graph and the HAP transport that would reach an accessory, which this port does not carry: it has no HAP session with an accessory, and iOS 6 runs no home hub, no homekitd and no accessories daemon, so there is no system service to ask for a home graph either",
-      "effect": "the message is not there: respondsToSelector: answers NO"
+      "status": "implemented",
+      "effect": "the accessory's profiles, one per set of services, from the store's own list; a profile is a set of services an accessory presents, and this port's graph holds whatever the store recorded",
+      "facts": "facts/HomeKit/HMHome.md",
+      "source": "HomeKit of the arm64e shared caches of 16.0 and 18.0 and the arm64 one of 12.0, and the documented contract of each member"
     },
     {
       "api": "HMAccessory.cameraProfiles",
@@ -715,9 +716,10 @@
       "kind": "method",
       "introduced": "26.1",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the home graph and the HAP transport that would reach an accessory, which this port does not carry: it has no HAP session with an accessory, and iOS 6 runs no home hub, no homekitd and no accessories daemon, so there is no system service to ask for a home graph either",
-      "effect": "the message is not there: respondsToSelector: answers NO"
+      "status": "implemented",
+      "effect": "the accessory whose stored HAP public key is that one, and HMErrorCodeNotFound for a key the store does not hold. Looking a vendor accessory up is a search of what the port holds, and this port pairs with no accessory, so the store's pairings are empty and the answer for any key is the not-found one, which is what an empty store answers",
+      "facts": "facts/HomeKit/HMHome.md",
+      "source": "HomeKit of the arm64e shared caches of 16.0 and 18.0 and the arm64 one of 12.0, and the documented contract of each member"
     }
   ]
 }
