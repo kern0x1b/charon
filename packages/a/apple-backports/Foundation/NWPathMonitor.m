@@ -57,16 +57,6 @@
 #define CHARON_IFI_TYPE_SOFT_LOOPBACK 24  /* IANA softwareLoopback */
 #define CHARON_IFI_TYPE_CELLULAR    0xff  /* XNU's IFT_CELLULAR, which IANA does not carry */
 
-/* Whether an interface of this type is on the path a monitor is building.
- *
- * `other` - a tunnel, a bridge - is not, and that is the release's own answer rather than a rule the
- * port invented: on the machine the port is measured against, `ifconfig -l` lists utun0, utun1, utun2,
- * bridge0, awdl0 and llw0, and `nw_path_enumerate_interfaces` on that same machine's own path lists
- * **en0 and nothing else** (measured; the run is in the facts). So the interfaces the kernel names as
- * `other` are exactly the ones a path is not over, and the classifier that tells a tunnel from a
- * bridge is what lets the monitor say so deliberately - and lets a program that asked for a type be
- * told the truth when it is not there.
- */
 static BOOL charon_path_wants(nw_interface_type_t required, nw_interface_type_t type, BOOL reachable, BOOL cellular,
                               BOOL hasAddress)
 {
@@ -203,10 +193,10 @@ static CharonNWPath *charon_path(SCNetworkReachabilityRef reachability, CharonNW
                 if ((nw_interface_type_t)prohibited.unsignedIntegerValue == type)
                     goto next;
             }
-            /* An `other` monitor is the default one and it takes every usable interface that is not
-               the loopback - including the ones the kernel names as `other` (a tunnel, a bridge), which
-               is how the release enumerates them: they are the interfaces a path is over, not noise to
-               be dropped. A monitor that asked for a type takes only that type. */
+            /* An `other` monitor is the default one, and it takes every usable interface that is not
+               the loopback. What makes an interface the kernel names `other` - a tunnel, a bridge - part
+               of the path is its ADDRESS, not its type: the predicate below is asked with the address
+               known, because a live tunnel has one and a bridge has none. */
             BOOL address4 = item->ifa_addr->sa_family == AF_INET && charon_usable_v4(item->ifa_addr);
             BOOL address6 = item->ifa_addr->sa_family == AF_INET6 && charon_usable_v6(item->ifa_addr);
             if (!charon_path_wants(monitor->_required, type, reachable, cellular, address4 || address6))

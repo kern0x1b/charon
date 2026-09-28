@@ -86,9 +86,9 @@ all if it had not been asked `ifi_type` first.
 cellular radio, `en` for Wi-Fi, everything else `other`. A device run showed four of twenty checks
 failing on the untyped cases, and the two halves of it were wrong in the same way:
 
-- `NWPathMonitor.m` dropped every interface it had typed `other` from a monitor that asked for `other`,
-  so the interfaces the kernel itself names as a tunnel or a bridge never appeared on a path at all -
-  and a tunnel of type `other` was never on a path at all - and it is: see the measurement above;
+- `NWPathMonitor.m` dropped every interface it had typed `other` from a monitor that asked for `other`, which is
+  the default one, and that was wrong: an `other` interface **with an address** is on the path, and a live
+
 - a name cannot tell those apart from anything: `utun*` and `bridge*` both fell through to `other`
   because there was no branch for either, and a `pdp_ip*`-named interface was called cellular whatever
   it carried, which a tunnel over Wi-Fi is not.
