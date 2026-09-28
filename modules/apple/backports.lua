@@ -930,7 +930,7 @@ local function in_range(entry, deployment)
 end
 
 -- The registry entry a built name answers to: its own spelling, else the entry of the class that owns it.
-local function entry_of(listed, name)
+function entry_of(listed, name)
     for spelling in pairs(spellings(name)) do
         if listed[spelling] then
             return listed[spelling]
@@ -1371,7 +1371,12 @@ function releases_in(opt, source, object)
                 -- API that is Foundation's own and in no header of the SDK, which a
                 -- backport still carries under Apple's name because an archive holds
                 -- it: the registry is what says when it arrived.
-                local entry = listed(opt.root)[name]
+                -- Through entry_of, not a raw lookup: the registry spells a function with its
+                -- parentheses and a member with its class, and the name here is the symbol's, so
+                -- `listed[name]` misses every function the registry carries. An 18.2 function on a
+                -- port whose held caches end at 18.0 is exactly that case: no cache places it, the
+                -- source says nothing, and the registry is the only thing that knows.
+                local entry = entry_of(listed(opt.root), name)
                 version = entry and entry.status == "implemented" and entry.introduced or nil
             end
         end
