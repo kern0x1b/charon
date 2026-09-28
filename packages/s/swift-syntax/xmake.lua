@@ -49,8 +49,13 @@ package("swift-syntax")
         -- hand-written compile of twenty modules would be a second thing to keep right.
         local build = path.join(package:installdir(), "build")
         os.mkdir(build)
-        os.vrunv("swift", {"build", "--package-path", path.join(package:sourcefile(), ".."), "--scratch-path", build,
-                           "--triple", "arm64-apple-macosx13.0", "-c", "release-only"}, {curdir = package:sourcefile()})
+        -- `sourcedir()`, not `sourcefile()`: there is no such method, and the install died on it
+        -- before it ran a single compile -- "attempt to call a nil value (method 'sourcefile')",
+        -- `.agent-work/runs/swift-syntax/globaldir/.xmake/cache/…/logs/install.txt`. The upstream
+        -- root is the fetch's own directory, one level up from the package's `src/`.
+        local source = package:sourcedir()
+        os.vrunv("swift", {"build", "--package-path", path.join(source, ".."), "--scratch-path", build,
+                           "--triple", "arm64-apple-macosx13.0", "-c", "release-only"}, {curdir = source})
         -- The products: the modules under Modules/, the archives beside them, and the resources
         -- SwiftSyntax keeps as files.
         local products = path.join(build, "release-only")
