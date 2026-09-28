@@ -638,3 +638,131 @@ OSStatus CMTagCollectionCreateFromDictionary(CFDictionaryRef dict, CFAllocatorRe
     *newCollectionOut = out;
     return noErr;
 }
+
+// The binary form, measured off the host's own CoreMedia over collections of 0, 1, 2 and 3 tags and
+// every data type (facts/CoreMedia/TagCollection.md). A 44-byte header, then 16 bytes per tag:
+//
+//   uint32  the whole record's length, big endian
+//   char4   "tgco"
+//   uint32  20
+//   char4   "tgin"
+//   uint32  0
+//   char8   "tag coll"
+//   uint32  16 * (count + 1)
+//   char4   "tgli"
+//   uint32  0
+//   uint32  the number of tags
+//   per tag: uint32 the category as four characters, uint32 the data type, uint32 zero, uint64 the value
+//
+// An OSType's value sits in the low 32 bits of that 8-byte field and a Float64's is a big-endian
+// double in all of it, both straight from the host's own bytes.
+
+#define charon_data_tag 16
+#define charon_data_header 44
+
+static void charon_data_put32(uint8_t *at, uint32_t value)
+{
+    at[0] = (uint8_t)(value >> 24);
+    at[1] = (uint8_t)(value >> 16);
+    at[2] = (uint8_t)(value >> 8);
+    at[3] = (uint8_t)value;
+}
+
+static uint32_t charon_data_get32(const uint8_t *at)
+{
+    return ((uint32_t)at[0] << 24) | ((uint32_t)at[1] << 16) | ((uint32_t)at[2] << 8) | at[3];
+}
+
+static void charon_data_category(uint8_t *at, CMTagCategory category)
+{
+    at[0] = (uint8_t)(category >> 24);
+    at[1] = (uint8_t)(category >> 16);
+    at[2] = (uint8_t)(category >> 8);
+    at[3] = (uint8_t)category;
+}
+
+CFDataRef CMTagCollectionCopyAsData(CMTagCollectionRef tagCollection, CFAllocatorRef allocator)
+{
+    CharonCMTagCollection *collection = charon_to(tagCollection);
+    if (!collection)
+        return NULL;
+    const CMTag *tags = [collection charon_tags];
+    size_t length = charon_data_header + (size_t)collection.charon_count * charon_data_tag;
+    uint8_t *bytes = calloc(length, 1);
+    if (!bytes)
+        return NULL;
+    charon_data_put32(bytes, (uint32_t)length);
+    memcpy(bytes + 4, "tgco", 4);
+    charon_data_put32(bytes + 8, 20);
+    memcpy(bytes + 12, "tgin", 4);
+    charon_data_put32(bytes + 16, 0);
+    memcpy(bytes + 20, "tag coll", 8);
+    charon_data_put32(bytes + 28, (uint32_t)(charon_data_tag * (collection.charon_count + 1)));
+    memcpy(bytes + 32, "tgli", 4);
+    charon_data_put32(bytes + 36, 0);
+    charon_data_put32(bytes + 40, (uint32_t)collection.charon_count);
+    for (NSUInteger index = 0; index < collection.charon_count; index++) {
+        uint8_t *at = bytes + charon_data_header + index * charon_data_tag;
+        charon_data_category(at, tags[index].category);
+        charon_data_put32(at + 4, tags[index].dataType);
+        for (int byte = 0; byte < 8; byte++)
+            at[8 + byte] = (uint8_t)(tags[index].value >> (56 - 8 * byte));
+    }
+    CFDataRef data = CFDataCreate(allocator, bytes, (CFIndex)length);
+    free(bytes);
+    return data;
+}
+
+OSStatus CMTagCollectionCreateFromData(CFDataRef data, CFAllocatorRef allocator, CMTagCollectionRef *newCollectionOut)
+{
+    (void)allocator;
+    if (!data || !newCollectionOut)
+        return kCMTagCollectionError_ParamErr;
+    *newCollectionOut = NULL;
+    const uint8_t *bytes = CFDataGetBytePtr(data);
+    size_t length = (size_t)CFDataGetLength(data);
+    // Every one of these answers is the host's own, measured over a whole record, eight truncations of
+    // it and every one of its eleven header fields flipped (facts/CoreMedia/TagCollection.md):
+    //   shorter than the header            kCMTagCollectionError_ParamErr (-15740)
+    //   the length, the sub-length or 20    -12894, which the host does not name
+    //   either of the two zero fields       kCMTagCollectionError_InvalidTagCollectionDataVersion (-15747)
+    //   "tag coll"                          kCMTagCollectionError_InvalidTagCollectionData (-15745)
+    //   a count the length does not fit     kCMTagCollectionError_InvalidTagCollectionData (-15745)
+    // The three magic tags are not compared: the host answers 0 for a record whose "tgco", "tgin" or
+    // "tgli" first byte is flipped, so a port that refused one would refuse a record the host reads.
+    // Measured over every length from 0 to 48: below 8 bytes the host answers
+    // kCMTagCollectionError_ParamErr, and from 8 up it answers -12894 - it reads the total length out of
+    // the first four bytes and finds a record that is not the one it was handed.
+    if (length < 8)
+        return kCMTagCollectionError_ParamErr;
+    if (length < charon_data_header)
+        return (OSStatus)-12894;
+    uint32_t count = charon_data_get32(bytes + 40);
+    if (charon_data_get32(bytes) != length || charon_data_get32(bytes + 8) != 20)
+        return (OSStatus)-12894;
+    // A count the length cannot fit is -15745 and is decided *before* the sub-length, which is the whole
+    // of the difference between a flipped count and a flipped sub-length.
+    if (length != charon_data_header + (size_t)count * charon_data_tag)
+        return kCMTagCollectionError_InvalidTagCollectionData;
+    if (charon_data_get32(bytes + 28) != charon_data_tag * (count + 1))
+        return (OSStatus)-12894;
+    if (charon_data_get32(bytes + 16) || charon_data_get32(bytes + 36))
+        return kCMTagCollectionError_InvalidTagCollectionDataVersion;
+    if (memcmp(bytes + 20, "tag coll", 8))
+        return kCMTagCollectionError_InvalidTagCollectionData;
+    CMTagCollectionRef out = NULL;
+    OSStatus status = CMTagCollectionCreateMutable(kCFAllocatorDefault, (CFIndex)count, (CMMutableTagCollectionRef *)&out);
+    if (status)
+        return status;
+    for (uint32_t index = 0; index < count; index++) {
+        const uint8_t *at = bytes + charon_data_header + (size_t)index * charon_data_tag;
+        uint64_t value = 0;
+        for (int byte = 0; byte < 8; byte++)
+            value = (value << 8) | at[8 + byte];
+        CMTagCategory category = (CMTagCategory)charon_data_get32(at);
+        CMTag tag = {category, (CMTagDataType)charon_data_get32(at + 4), value};
+        [charon_to(out) charon_insert:tag];
+    }
+    *newCollectionOut = out;
+    return noErr;
+}

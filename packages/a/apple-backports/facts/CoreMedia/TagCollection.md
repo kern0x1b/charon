@@ -58,9 +58,8 @@ function, not the void applier**, and answers the `CMTag` that satisfied the cal
 The mutation: taking the containment test out of `ExclusiveOr`'s second side gives
 `268 checks, 3 different` and the suite exits 1; restoring it gives 0.
 
-`CopyAsData` and `CreateFromData` are **measured completely and not yet in the tree**; the drafts are
-`CMTagCollection17.binaryform-draft.m` and `tagcollectionimage.binaryform-draft.m`, and the probe they
-reach is `.agent-work/runs/tagdata/`.
+`CopyAsData` and `CreateFromData` are **in the tree and held by 356 answers, none different**; the
+measurement that produced the layout is `.agent-work/runs/tagdata/`.
 
 **The layout**, from the host's own bytes for collections of 0, 1, 2 and 3 tags and every data type:
 a 44-byte header and **16 bytes per tag**.
@@ -98,12 +97,25 @@ header fields flipped:
 That last row is the one a port gets wrong by being careful: refusing a record whose magic does not match
 would refuse records the host reads.
 
-**Where the draft stands: 356 checks, 20 different.** The error map is implemented and reproduces the
-table above; two things are not, and I ran out of turn before finding them. The port's own round trip
-loses the value (`1835297121/5/0` where the host answers `…/5/1986618469`), and one header-flip case
-answers `-15745` where the port says `-12894` - the order of the count check against the length check.
-The bytes the port writes are byte-identical to the host's, so the fault is in the reader's offsets or
-its check order, not in the layout.
+**356 checks, 0 different**, and the last two answers were as small as the first two suggested.
+
+- **The value field starts at +8**, not +12: the per-tag record is category, data type, and then the
+  8-byte value, with no reserved field. Reading it at +12 read the next tag's first four bytes and, for
+  the last tag, past the end of the record - which is what lost the value. The *writer* put a zero at +8
+  and the value at +12, which produces the same bytes for anything under 2^32, so the byte-for-byte
+  comparison passed and hid it. The mutation puts the reader's offset back to +12 and gives
+  `356 checks, 2 different` with the suite exiting 1.
+- **The order of the two length checks.** A count the length cannot fit is `-15745` and is decided
+  *before* the sub-length, which is the whole difference between a flipped count and a flipped sub-length.
+- **And the length threshold is 8, not 44.** Measured over every length from 0 to 48: below 8 bytes the
+  host answers `kCMTagCollectionError_ParamErr`, and from 8 up it answers `-12894`, because it reads the
+  total length out of the first four bytes, finds a record that is not the one it was handed, and says so
+  before it has looked at any of the rest.
+
+`-12894` is returned as the number itself, with the conditions that produce it written above and in the
+source, because **no SDK on this machine names it**: `grep -rn 12894` over the 26.2 CoreMedia headers
+finds nothing, and the surrounding enums (`kCMTagCollectionError_*`, `kCMFormatDescriptionError_*`) stop
+at -15749 and -12718. Inventing a name for it would be worse than carrying the number the host prints.
 
 ## One bug the differential found in the port
 

@@ -142,6 +142,8 @@ int main(int argc, char **argv)
         BIND(CMTagCollectionApplyUntil)
         BIND(CMTagCollectionCopyAsDictionary)
         BIND(CMTagCollectionCreateFromDictionary)
+        BIND(CMTagCollectionCopyAsData)
+        BIND(CMTagCollectionCreateFromData)
 
         printf("bound 24\n");
         CMTag tags[] = {
@@ -317,6 +319,56 @@ int main(int argc, char **argv)
                          [NSString stringWithFormat:@"%d %@", b, listed(portOut, port_CMTagCollectionGetTags, port_CMTagCollectionGetCount)]);
                     if (systemOut) CFRelease(systemOut);
                     if (portOut) CFRelease(portOut);
+                }
+                {
+                    // The binary form, both ways: the port's bytes against the host's byte for byte,
+                    // and each side's reader against the other side's writer.
+                    CFDataRef systemData = CMTagCollectionCopyAsData(systemLeft, NULL);
+                    CFDataRef portData = port_CMTagCollectionCopyAsData(portLeft, NULL);
+                    same("CopyAsData", [NSString stringWithFormat:@"%@", systemData ? (__bridge NSData *)systemData : @"(null)"],
+                         [NSString stringWithFormat:@"%@", portData ? (__bridge NSData *)portData : @"(null)"]);
+                    CMTagCollectionRef systemFromHost = NULL, portFromPort = NULL, systemFromPort = NULL, portFromHost = NULL;
+                    OSStatus a1 = CMTagCollectionCreateFromData(systemData, NULL, &systemFromHost);
+                    OSStatus b1 = port_CMTagCollectionCreateFromData(portData, NULL, &portFromPort);
+                    same("CreateFromData its own", [NSString stringWithFormat:@"%d %@", a1, listed(systemFromHost, CMTagCollectionGetTags, CMTagCollectionGetCount)],
+                         [NSString stringWithFormat:@"%d %@", b1, listed(portFromPort, port_CMTagCollectionGetTags, port_CMTagCollectionGetCount)]);
+                    OSStatus a2 = CMTagCollectionCreateFromData(portData, NULL, &systemFromPort);
+                    OSStatus b2 = port_CMTagCollectionCreateFromData(systemData, NULL, &portFromHost);
+                    same("CreateFromData the other's bytes", [NSString stringWithFormat:@"%d %@", a2, listed(systemFromPort, CMTagCollectionGetTags, CMTagCollectionGetCount)],
+                         [NSString stringWithFormat:@"%d %@", b2, listed(portFromHost, port_CMTagCollectionGetTags, port_CMTagCollectionGetCount)]);
+                    if (systemData) {
+                        uint8_t *copy = malloc(CFDataGetLength(systemData));
+                        memcpy(copy, CFDataGetBytePtr(systemData), CFDataGetLength(systemData));
+                        for (CFIndex cut = 0; cut < 8; cut++) {
+                            CMTagCollectionRef shortOut = NULL, portShortOut = NULL;
+                            CFDataRef cutDown = CFDataCreate(NULL, copy, CFDataGetLength(systemData) - cut);
+                            OSStatus a3 = CMTagCollectionCreateFromData(cutDown, NULL, &shortOut);
+                            OSStatus b3 = port_CMTagCollectionCreateFromData(cutDown, NULL, &portShortOut);
+                            same("CreateFromData truncated", [NSString stringWithFormat:@"%d", a3], [NSString stringWithFormat:@"%d", b3]);
+                            if (shortOut) CFRelease(shortOut);
+                            if (portShortOut) CFRelease(portShortOut);
+                            CFRelease(cutDown);
+                        }
+                        for (int byte = 0; byte < 44; byte += 4) {
+                            copy[byte] ^= 0xFF;
+                            CMTagCollectionRef badOut = NULL, portBadOut = NULL;
+                            CFDataRef bad = CFDataCreate(NULL, copy, CFDataGetLength(systemData));
+                            OSStatus a4 = CMTagCollectionCreateFromData(bad, NULL, &badOut);
+                            OSStatus b4 = port_CMTagCollectionCreateFromData(bad, NULL, &portBadOut);
+                            same("CreateFromData header flipped", [NSString stringWithFormat:@"%d", a4], [NSString stringWithFormat:@"%d", b4]);
+                            if (badOut) CFRelease(badOut);
+                            if (portBadOut) CFRelease(portBadOut);
+                            CFRelease(bad);
+                            copy[byte] ^= 0xFF;
+                        }
+                        free(copy);
+                        CFRelease(systemData);
+                    }
+                    if (portData) CFRelease(portData);
+                    if (systemFromHost) CFRelease(systemFromHost);
+                    if (portFromPort) CFRelease(portFromPort);
+                    if (systemFromPort) CFRelease(systemFromPort);
+                    if (portFromHost) CFRelease(portFromHost);
                 }
                 {
                     charonSeen = [NSMutableString string];
