@@ -644,18 +644,21 @@ local function held_image_step(emulator, folder, found)
         os.execv("touch", {"-t", when, what}, {try = true, stdout = os.nul, stderr = os.nul})
     end
     local held = wait_for_the_lock(image .. ".lock", folder .. "/held.txt")
+    -- the lock is aged with the owner and the image, as one pass after the holder says "held": the holder's
+    -- open(lock, "a") created it inside the owner, and a fresh lock reads as a use of the owner
+    for _, what in ipairs({image, owner, image .. ".lock"}) do
+        os.execv("touch", {"-t", when, what}, {try = true, stdout = os.nul, stderr = os.nul})
+    end
     if not held then
         table.insert(found, "the holder process did not take the image's lock")
     end
-    os.execv("touch", {"-t", when, image .. ".lock"}, {try = true, stdout = os.nul, stderr = os.nul})
-    print(string.format("o1 image lock mtime=%s (old is %s)", os.mtime(image .. ".lock"), when))
-    print(string.format("o1 owner mtime=%s used=%s unlocks=%s", os.mtime(owner), tostring(emulator.used(owner, 24)),
-                       tostring(emulator.unlocks(owner))))
     local removed = emulator.prune({root = folder, hours = 24})
     if os.isdir(image) then
         -- kept, which is the point
     else
-        table.insert(found, "o1: an image a live xmake emulate holds must survive the prune, and it was removed: " .. table.concat(removed, " "))
+        table.insert(found, string.format("o1: an image a live xmake emulate holds must survive the prune, and it was removed: %s (owner mtime=%s used=%s unlocks=%s)",
+                                          table.concat(removed, " "), os.mtime(owner),
+                                          tostring(emulator.used(owner, 24)), tostring(emulator.unlocks(owner))))
     end
     -- a lock beside an *owner* is the prune's: the run's real lock is the image's, which the holder made
     local visited = path.join(base, "o3")
