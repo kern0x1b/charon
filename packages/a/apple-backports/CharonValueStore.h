@@ -38,6 +38,30 @@ static inline NSArray<NSString *> *CharonValuePropertyNames(Class cls)
     return names;
 }
 
+// The store, one pair of functions for every root: the dictionary is created on first use, so an
+// object the port only reads costs nothing, and it is keyed by the property's own name - the same
+// names the walk returns - so a value is found by name from either side.
+static inline NSMutableDictionary *CharonValueStore(id owner)
+{
+    static const char key;
+    NSMutableDictionary *values = objc_getAssociatedObject(owner, &key);
+    if (!values) {
+        values = [NSMutableDictionary dictionary];
+        objc_setAssociatedObject(owner, &key, values, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+    return values;
+}
+
+static inline void CharonValueSet(id owner, id value, NSString *key)
+{
+    if (!key)
+        return;
+    if (value)
+        CharonValueStore(owner)[key] = value;
+    else
+        [CharonValueStore(owner) removeObjectForKey:key];
+}
+
 // What a property's value becomes in a dictionary. Four cases, and each is the only one that keeps
 // the value true:
 //
@@ -90,11 +114,21 @@ static inline id CharonValueConvert(id value, Class firstRoot, Class secondRoot)
 }
 
 // The object's own properties, each key the property's own name as the SDK header spells it.
+//
+// The STORE is read, not the getter, and that is the whole point of it. A scalar property's getter boxes
+// its value, so a property nothing ever set reads back as 0 or NO - and asking the getter would put
+// that into the dictionary as a measured zero, which is exactly what MetricKit's facts promise the port
+// does not do ("a property that was never set is left out rather than written as null"). Reading the
+// store makes "not set" absent whatever the property's type, and it is the same string the KVC walk
+// and the setter use, so the three cannot disagree.
 static inline NSDictionary *CharonValueConvertProperties(id value, Class firstRoot, Class secondRoot)
 {
     NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
     for (NSString *name in CharonValuePropertyNames([value class])) {
-        id converted = CharonValueConvert([value valueForKey:name], firstRoot, secondRoot);
+        id held = CharonValueStore(value)[name];
+        if (!held)
+            continue;
+        id converted = CharonValueConvert(held, firstRoot, secondRoot);
         if (converted)
             dictionary[name] = converted;
     }
@@ -170,47 +204,31 @@ static inline BOOL CharonValueDecode(id value, NSCoder *coder, NSSet<Class> *all
     return whole;
 }
 
-// The store, one pair of functions for every root: the dictionary is created on first use, so an
-// object the port only reads costs nothing, and it is keyed by the property's own name - the same
-// names the walk returns - so a value is found by name from either side.
-static inline NSMutableDictionary *CharonValueStore(id owner)
-{
-    static const char key;
-    NSMutableDictionary *values = objc_getAssociatedObject(owner, &key);
-    if (!values) {
-        values = [NSMutableDictionary dictionary];
-        objc_setAssociatedObject(owner, &key, values, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    }
-    return values;
-}
+// The one way a value is put in, on the class's own CharonMetricValue category and on SensorKit's when
+// it arrives: -charon_setValue:forKey: with the property's own name as the key. Every category
+// declares it, so a translation unit outside the class's file can fill a value in.
 
-static inline void CharonValueSet(id owner, id value, NSString *key)
-{
-    if (!key)
-        return;
-    if (value)
-        CharonValueStore(owner)[key] = value;
-    else
-        [CharonValueStore(owner) removeObjectForKey:key];
-}
-
-// One value property: the accessor the SDK header declares, and the port's own setter for it - the
-// setter is what the store, a decoder and a manager fill a value in with, and it is Charon-prefixed so
-// that a selector a category adds is not API the registry has to describe. The getter casts, because
-// the store is untyped and the header's type is the promise.
+// One value property: the accessor the SDK header declares, and nothing else. A per-property setter
+// generated here would be a SECOND place every property's name is spelled - the property here and the
+// selector a call site sends - and a second spelling is what the M-Z reviews caught twice: once with
+// the declaration and the accessor disagreeing, and once with a macro that emitted
+// `charon_setcumulativeCPUTime:` while every call site sent `charon_setCumulativeCPUTime:`. The preprocessor
+// cannot capitalise a name, so doing that correctly needs a 142-entry spelling table maintained by
+// hand - a worse version of the same duplication, because a new property is a compile error in it.
+//
+// A value is therefore put in through the store's own -charon_setValue:forKey:, with the property's
+// name as the key, which is the SAME string the property walk and every KVC read use. There is one
+// spelling of each property's name, in the header, and a key that does not match one simply reads nil.
 #define CHARON_VALUE_PROPERTY(Type, name)                                                   \
-    -(Type)name { return (Type)[self charon_valueForKey:@ #name]; }                          \
-    -(void)charon_set##name:(Type)value { [self charon_setValue:value forKey:@ #name]; }
+    -(Type)name { return (Type)[self charon_valueForKey:@ #name]; }
 
 // A property whose value is not an object - a count, a flag - is boxed into the store as an NSNumber
 // and read back out of one, which is what the property walk sees through KVC as well.
 #define CHARON_SCALAR_PROPERTY(Type, name)                                                  \
-    -(Type)name { return (Type)[[self charon_valueForKey:@ #name] longLongValue]; }         \
-    -(void)charon_set##name:(Type)value { [self charon_setValue:@(value) forKey:@ #name]; }
+    -(Type)name { return (Type)[[self charon_valueForKey:@ #name] longLongValue]; }
 
 // The same for a double, which longLongValue would round.
 #define CHARON_DOUBLE_PROPERTY(Type, name)                                                  \
-    -(Type)name { return (Type)[[self charon_valueForKey:@ #name] doubleValue]; }           \
-    -(void)charon_set##name:(Type)value { [self charon_setValue:@(value) forKey:@ #name]; }
+    -(Type)name { return (Type)[[self charon_valueForKey:@ #name] doubleValue]; }
 
 #endif

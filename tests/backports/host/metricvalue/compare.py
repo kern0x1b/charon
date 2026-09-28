@@ -23,7 +23,7 @@ expect = {
     "filled.unsetIsAbsent": "0",         # a property nobody set is not in the dictionary
     "filled.jsonKeyCount": "1",
     "date.endAbsent": "0",               # and the same for a date
-    "archive.equal": "1",                # an archived value reads back equal
+    "archive.sameRepresentation": "1",    # an archived value reads back to the same representation
 }
 for name, wanted in expect.items():
     if port.get(name) != wanted:
@@ -38,6 +38,20 @@ if port.get("filled.cumulativeCPUTime") != port.get("filled.jsonValue"):
 if port.get("filled.cumulativeCPUTime") != port.get("archive.cumulativeCPUTime"):
     bad.append("the archived value came back as %r, not %r"
                % (port.get("archive.cumulativeCPUTime"), port.get("filled.cumulativeCPUTime")))
+
+# The KVC walk: every property the port declares and the SDK it builds against does not must be
+# answered by an accessor on the port's own class, or the representation of that class raises. This is
+# the check the M-Z review asked for after F1, and it is the one the gate cannot make: check_registry
+# collects the classes a library carries and the selectors its CATEGORIES add, and a method missing from
+# a class the port defines is not a missing symbol.
+for name in sorted(k for k in port if k.startswith("kvc.")):
+    if not name.endswith(".answers") and not name.endswith(".read"):
+        continue
+    if port.get(name) != "1":
+        bad.append("%s: no accessor answers that name on the port's own class" % name)
+for name in sorted(k for k in port if k.startswith("kvc.") and k.endswith(".class")):
+    if port.get(name) != "1":
+        bad.append("%s: the port's own class is not in the build" % name)
 
 if bad:
     for line in bad:

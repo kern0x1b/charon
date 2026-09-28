@@ -211,13 +211,13 @@ static double CharonMonotonicSeconds(void)
     MXHistogram<NSUnitDuration *> *histogram = [[MXHistogram alloc] init];
     NSMeasurement<NSUnitDuration *> *duration =
         [[NSMeasurement alloc] initWithDoubleValue:interval unit:[NSUnitDuration seconds]];
-    [histogram charon_setTotalBucketCount:1];
+    [histogram charon_setValue:@1 forKey:@"totalBucketCount"];
     MXHistogramBucket<NSUnitDuration *> *bucket = [[MXHistogramBucket alloc] init];
-    [bucket charon_setBucketStart:duration];
-    [bucket charon_setBucketEnd:duration];
-    [bucket charon_setBucketCount:1];
-    [histogram charon_setBucketEnumerator:[@[bucket] objectEnumerator]];
-    [metric charon_setHistogrammedExtendedLaunch:histogram];
+    [bucket charon_setValue:duration forKey:@"bucketStart"];
+    [bucket charon_setValue:duration forKey:@"bucketEnd"];
+    [bucket charon_setValue:@1 forKey:@"bucketCount"];
+    [histogram charon_setValue:[@[bucket] objectEnumerator] forKey:@"bucketEnumerator"];
+    [metric charon_setValue:histogram forKey:@"histogrammedExtendedLaunch"];
     return YES;
 }
 
@@ -292,8 +292,8 @@ NSArray<MXSignpostMetric *> *CharonSignpostMetrics(void)
         MXSignpostMetric *metric = byKey[key];
         if (!metric) {
             metric = [[MXSignpostMetric alloc] init];
-            [metric charon_setSignpostName:interval.name];
-            [metric charon_setSignpostCategory:interval.category];
+            [metric charon_setValue:interval.name forKey:@"signpostName"];
+            [metric charon_setValue:interval.category forKey:@"signpostCategory"];
             byKey[key] = metric;
             [metrics addObject:metric];
         }
@@ -301,12 +301,12 @@ NSArray<MXSignpostMetric *> *CharonSignpostMetrics(void)
         // carries the name, the category, the data and the count, and the data carries the histogram.
         MXSignpostIntervalData *data = [metric charon_signpostIntervalData] ?: ({
             MXSignpostIntervalData *made = [[MXSignpostIntervalData alloc] init];
-            [metric charon_setSignpostIntervalData:made];
+            [metric charon_setValue:made forKey:@"signpostIntervalData"];
             made;
         });
         MXHistogram *histogram = [data charon_histogrammedSignpostDuration] ?: ({
             MXHistogram *made = [[MXHistogram alloc] init];
-            [data charon_setHistogrammedSignpostDuration:made];
+            [data charon_setValue:made forKey:@"histogrammedSignpostDuration"];
             made;
         });
         NSMutableArray *buckets = objc_getAssociatedObject(histogram, @selector(bucketEnumerator));
@@ -317,22 +317,22 @@ NSArray<MXSignpostMetric *> *CharonSignpostMetrics(void)
         NSMeasurement<NSUnitDuration *> *duration =
             [[NSMeasurement alloc] initWithDoubleValue:interval.seconds unit:[NSUnitDuration seconds]];
         MXHistogramBucket<NSUnitDuration *> *bucket = [[MXHistogramBucket alloc] init];
-        [bucket charon_setBucketStart:duration];
-        [bucket charon_setBucketEnd:duration];
-        [bucket charon_setBucketCount:interval.count];
+        [bucket charon_setValue:duration forKey:@"bucketStart"];
+        [bucket charon_setValue:duration forKey:@"bucketEnd"];
+        [bucket charon_setValue:@(interval.count) forKey:@"bucketCount"];
         [buckets addObject:bucket];
-        [histogram charon_setTotalBucketCount:buckets.count];
-        [histogram charon_setBucketEnumerator:[buckets objectEnumerator]];
-        [metric charon_setTotalCount:(NSUInteger)[metric charon_totalCount] + interval.count];
+        [histogram charon_setValue:@(buckets.count) forKey:@"totalBucketCount"];
+        [histogram charon_setValue:[buckets objectEnumerator] forKey:@"bucketEnumerator"];
+        [metric charon_setValue:@((NSUInteger)[metric charon_totalCount] + interval.count) forKey:@"totalCount"];
 
         NSMeasurement<NSUnitDuration *> *cpu = [data charon_cumulativeCPUTime] ?: ({
             NSMeasurement *made = [[NSMeasurement alloc] initWithDoubleValue:0.0 unit:[NSUnitDuration seconds]];
-            [data charon_setCumulativeCPUTime:made];
+            [data charon_setValue:made forKey:@"cumulativeCPUTime"];
             (NSMeasurement *)made;
         });
-        [data charon_setCumulativeCPUTime:
-            [[NSMeasurement alloc] initWithDoubleValue:[cpu doubleValue] + interval.seconds
-                                                   unit:[NSUnitDuration seconds]]];
+        [data charon_setValue:[[NSMeasurement alloc] initWithDoubleValue:[cpu doubleValue] + interval.seconds
+                                                             unit:[NSUnitDuration seconds]]
+                   forKey:@"cumulativeCPUTime"];
     }
     return metrics;
 }

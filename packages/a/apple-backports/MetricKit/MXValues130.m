@@ -117,9 +117,10 @@ CHARON_VALUE_PROPERTY(NSString *, platformArchitecture)
 // The properties the lowered SDK does not declare, in a category because a property a
 // category declares is implemented in a category - and only there: a host build takes the
 // host's own, newer, declarations, and the host's own class supplies these accessors.
-#ifndef CHARON_HOST_DIFFERENTIAL
 @implementation MXMetaData (CharonMetricKit)
+#ifndef CHARON_HOST_DIFFERENTIAL
 @dynamic lowPowerModeEnabled, isTestFlightApp, pid, bundleIdentifier;
+#endif
 
 CHARON_SCALAR_PROPERTY(bool, lowPowerModeEnabled)
 CHARON_SCALAR_PROPERTY(bool, isTestFlightApp)
@@ -130,7 +131,6 @@ CHARON_VALUE_PROPERTY(NSString *, bundleIdentifier)
 - (NSData *)JSONRepresentation { return [CharonMetricValue jsonOf:self]; }
 - (NSDictionary *)dictionaryRepresentation { return [CharonMetricValue dictionaryOf:self]; }
 @end
-#endif
 @implementation MXMetric
 @end
 
@@ -164,9 +164,10 @@ CHARON_VALUE_PROPERTY(MXMetaData *, metaData)
 // The properties the lowered SDK does not declare, in a category because a property a
 // category declares is implemented in a category - and only there: a host build takes the
 // host's own, newer, declarations, and the host's own class supplies these accessors.
-#ifndef CHARON_HOST_DIFFERENTIAL
 @implementation MXMetricPayload (CharonMetricKit)
+#ifndef CHARON_HOST_DIFFERENTIAL
 @dynamic diskSpaceUsageMetrics;
+#endif
 
 CHARON_VALUE_PROPERTY(MXDiskSpaceUsageMetric *, diskSpaceUsageMetrics)
 
@@ -174,7 +175,6 @@ CHARON_VALUE_PROPERTY(MXDiskSpaceUsageMetric *, diskSpaceUsageMetrics)
 - (NSData *)JSONRepresentation { return [CharonMetricValue jsonOf:self]; }
 - (NSDictionary *)dictionaryRepresentation { return [CharonMetricValue dictionaryOf:self]; }
 @end
-#endif
 @implementation MXNetworkTransferMetric
 @dynamic cumulativeWifiUpload, cumulativeWifiDownload, cumulativeCellularUpload, cumulativeCellularDownload;
 
