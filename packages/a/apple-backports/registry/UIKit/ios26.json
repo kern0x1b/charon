@@ -42,48 +42,44 @@
    "source": "SDK 26.5, Mac Catalyst, UIKit"
   },
   {
-   "api": "NSWritingToolsExclusionAttributeName",
-   "kind": "constant",
-   "introduced": "18.2",
-   "minimum": "6.0",
-   "status": "implemented",
-   "facts": "facts/UIKit/UIKitConstants182.md",
-   "effect": "the constant is exported under its own name and answers WTWritingToolsPreserved",
-   "source": "UIKit/UIKitConstants182.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0",
-   "note": "the object carries only API of iOS 18.2 and no band below it has that, but a 32-bit target's highest deployment version is 10.0, so the object cannot be floored past that: the band machinery would compile it with -target armv7-apple-ios18.2, which clang refuses (measured, both gates)"
+    "api": "NSWritingToolsExclusionAttributeName",
+    "kind": "constant",
+    "introduced": "18.2",
+    "minimum": "6.0",
+    "status": "absent",
+    "reason": "no release held on this machine exports the symbol, and a constant's value is never taken from a header or from a host framework, so there is no value to carry",
+    "effect": "the symbol is not there: a weak reference to it is NULL",
+    "source": "the held release ladder of this machine, read symbol by symbol with tools/corpus/cache-value.lua: the newest cache held is iOS 18.0 and this constant arrived later"
   },
   {
-   "api": "UIApplicationCategoryDefaultErrorDomain",
-   "kind": "constant",
-   "introduced": "18.2",
-   "minimum": "6.0",
-   "status": "implemented",
-   "facts": "facts/UIKit/UIKitConstants182.md",
-   "effect": "the constant is exported under its own name and answers UIApplicationCategoryDefaultErrorDomain",
-   "source": "UIKit/UIKitConstants182.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0",
-   "note": "the object carries only API of iOS 18.2 and no band below it has that, but a 32-bit target's highest deployment version is 10.0, so the object cannot be floored past that: the band machinery would compile it with -target armv7-apple-ios18.2, which clang refuses (measured, both gates)"
+    "api": "UIApplicationCategoryDefaultErrorDomain",
+    "kind": "constant",
+    "introduced": "18.2",
+    "minimum": "6.0",
+    "status": "absent",
+    "reason": "no release held on this machine exports the symbol, and a constant's value is never taken from a header or from a host framework, so there is no value to carry",
+    "effect": "the symbol is not there: a weak reference to it is NULL",
+    "source": "the held release ladder of this machine, read symbol by symbol with tools/corpus/cache-value.lua: the newest cache held is iOS 18.0 and this constant arrived later"
   },
   {
-   "api": "UIApplicationCategoryDefaultRetryAvailabilityDateErrorKey",
-   "kind": "constant",
-   "introduced": "18.2",
-   "minimum": "6.0",
-   "status": "implemented",
-   "facts": "facts/UIKit/UIKitConstants182.md",
-   "effect": "the constant is exported under its own name and answers UIApplicationCategoryDefaultRetryAvailabilityDateErrorKey",
-   "source": "UIKit/UIKitConstants182.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0",
-   "note": "the object carries only API of iOS 18.2 and no band below it has that, but a 32-bit target's highest deployment version is 10.0, so the object cannot be floored past that: the band machinery would compile it with -target armv7-apple-ios18.2, which clang refuses (measured, both gates)"
+    "api": "UIApplicationCategoryDefaultRetryAvailabilityDateErrorKey",
+    "kind": "constant",
+    "introduced": "18.2",
+    "minimum": "6.0",
+    "status": "absent",
+    "reason": "no release held on this machine exports the symbol, and a constant's value is never taken from a header or from a host framework, so there is no value to carry",
+    "effect": "the symbol is not there: a weak reference to it is NULL",
+    "source": "the held release ladder of this machine, read symbol by symbol with tools/corpus/cache-value.lua: the newest cache held is iOS 18.0 and this constant arrived later"
   },
   {
-   "api": "UIApplicationCategoryDefaultStatusLastProvidedDateErrorKey",
-   "kind": "constant",
-   "introduced": "18.2",
-   "minimum": "6.0",
-   "status": "implemented",
-   "facts": "facts/UIKit/UIKitConstants182.md",
-   "effect": "the constant is exported under its own name and answers UIApplicationCategoryDefaultStatusLastProvidedDateErrorKey",
-   "source": "UIKit/UIKitConstants182.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0",
-   "note": "the object carries only API of iOS 18.2 and no band below it has that, but a 32-bit target's highest deployment version is 10.0, so the object cannot be floored past that: the band machinery would compile it with -target armv7-apple-ios18.2, which clang refuses (measured, both gates)"
+    "api": "UIApplicationCategoryDefaultStatusLastProvidedDateErrorKey",
+    "kind": "constant",
+    "introduced": "18.2",
+    "minimum": "6.0",
+    "status": "absent",
+    "reason": "no release held on this machine exports the symbol, and a constant's value is never taken from a header or from a host framework, so there is no value to carry",
+    "effect": "the symbol is not there: a weak reference to it is NULL",
+    "source": "the held release ladder of this machine, read symbol by symbol with tools/corpus/cache-value.lua: the newest cache held is iOS 18.0 and this constant arrived later"
   },
   {
    "api": "UITextView.subclassForWritingToolsCoordinator",
@@ -146,26 +142,24 @@
    "source": "SDK 26.5, Mac Catalyst, UIKit"
   },
   {
-   "api": "UIWritingToolsCoordinatorTextAnimationDebugDescription()",
-   "kind": "function",
-   "introduced": "18.2",
-   "minimum": "6.0",
-   "status": "implemented",
-   "facts": "facts/UIKit/UIWritingToolsCoordinatorTextAnimation18.md",
-   "effect": "the framework's own four answers, measured by calling it: \"Awaiting-new-text animation\", \"Text removal animation\", \"Text insertion animation\" and, for a value that is none of the three cases, \"Unknown text animation\"",
-   "source": "UIKit/UIWritingToolsCoordinatorTextAnimation18.m; measured by dlsym'ing the Mac Catalyst UIKit's own function on macOS 27 (build 26A428) and calling it for every value, in this repository's own windowed harness (.agent-work/runs/uikit-c/probe.out)",
-   "note": "the object carries only API of iOS 18.2 and no band below it has that, but a 32-bit target's highest deployment version is 10.0, so the object cannot be floored past that: the band machinery would compile it with -target armv7-apple-ios18.2, which clang refuses (measured, both gates)"
+    "api": "UIWritingToolsCoordinatorTextAnimationDebugDescription()",
+    "kind": "function",
+    "introduced": "18.2",
+    "minimum": "6.0",
+    "status": "implemented",
+    "facts": "facts/UIKit/UIWritingToolsCoordinatorTextAnimation18.md",
+    "effect": "the name of the case, as the header spells it: Anticipate, Remove, Insert",
+    "source": "UIKit/UIWritingToolsCoordinatorTextAnimation18.m; the SDK 26.2 header's three cases, at lines 431-447 - the release's own spelling of each name is NOT read, because no release carrying the function is held on this machine and no host framework has it; said again in the facts file"
   },
   {
-   "api": "UIApplicationOpenDefaultApplicationsSettingsURLString",
-   "kind": "constant",
-   "introduced": "18.3",
-   "minimum": "6.0",
-   "status": "implemented",
-   "facts": "facts/UIKit/UIKitConstants183.md",
-   "effect": "the constant is exported under its own name and answers app-settings:default-applications",
-   "source": "UIKit/UIKitConstants183.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0",
-   "note": "the object carries only API of iOS 18.3 and no band below it has that, but a 32-bit target's highest deployment version is 10.0, so the object cannot be floored past that: the band machinery would compile it with -target armv7-apple-ios18.3, which clang refuses (measured, both gates)"
+    "api": "UIApplicationOpenDefaultApplicationsSettingsURLString",
+    "kind": "constant",
+    "introduced": "18.3",
+    "minimum": "6.0",
+    "status": "absent",
+    "reason": "no release held on this machine exports the symbol, and a constant's value is never taken from a header or from a host framework, so there is no value to carry",
+    "effect": "the symbol is not there: a weak reference to it is NULL",
+    "source": "the held release ladder of this machine, read symbol by symbol with tools/corpus/cache-value.lua: the newest cache held is iOS 18.0 and this constant arrived later"
   },
   {
    "api": "-[UITextFieldDelegate textField:insertInputSuggestion:]",
@@ -828,15 +822,14 @@
    "source": "SDK 26.5, Mac Catalyst, UIKit"
   },
   {
-   "api": "UIActionNewFromPasteboard",
-   "kind": "constant",
-   "introduced": "26.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "facts": "facts/UIKit/UIKitConstants260.md",
-   "effect": "the constant is exported under its own name and answers com.apple.action.newFromPasteboard",
-   "source": "UIKit/UIKitConstants260.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0",
-   "note": "the object carries only iOS 26 API and no band below 26.0 has it, but a 32-bit target's highest deployment version is 10.0, so the object cannot be floored past that: the band machinery would compile it with -target armv7-apple-ios26.0, which clang refuses (measured, both gates)"
+    "api": "UIActionNewFromPasteboard",
+    "kind": "constant",
+    "introduced": "26.0",
+    "minimum": "6.0",
+    "status": "absent",
+    "reason": "no release held on this machine exports the symbol, and a constant's value is never taken from a header or from a host framework, so there is no value to carry",
+    "effect": "the symbol is not there: a weak reference to it is NULL",
+    "source": "the held release ladder of this machine, read symbol by symbol with tools/corpus/cache-value.lua: the newest cache held is iOS 18.0 and this constant arrived later"
   },
   {
    "api": "UIBackgroundExtensionView",
@@ -1009,26 +1002,24 @@
    "source": "SDK 26.5, Mac Catalyst, UIKit"
   },
   {
-   "api": "UIDocumentDidMoveToWritableLocationNotification",
-   "kind": "constant",
-   "introduced": "26.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "facts": "facts/UIKit/UIKitConstants260.md",
-   "effect": "the constant is exported under its own name and answers UIDocumentDidMoveToWritableLocationNotification",
-   "source": "UIKit/UIKitConstants260.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0",
-   "note": "the object carries only iOS 26 API and no band below 26.0 has it, but a 32-bit target's highest deployment version is 10.0, so the object cannot be floored past that: the band machinery would compile it with -target armv7-apple-ios26.0, which clang refuses (measured, both gates)"
+    "api": "UIDocumentDidMoveToWritableLocationNotification",
+    "kind": "constant",
+    "introduced": "26.0",
+    "minimum": "6.0",
+    "status": "absent",
+    "reason": "no release held on this machine exports the symbol, and a constant's value is never taken from a header or from a host framework, so there is no value to carry",
+    "effect": "the symbol is not there: a weak reference to it is NULL",
+    "source": "the held release ladder of this machine, read symbol by symbol with tools/corpus/cache-value.lua: the newest cache held is iOS 18.0 and this constant arrived later"
   },
   {
-   "api": "UIDocumentDidMoveToWritableLocationOldURLKey",
-   "kind": "constant",
-   "introduced": "26.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "facts": "facts/UIKit/UIKitConstants260.md",
-   "effect": "the constant is exported under its own name and answers UIDocumentDidMoveToWritableLocationOldURLKey",
-   "source": "UIKit/UIKitConstants260.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0",
-   "note": "the object carries only iOS 26 API and no band below 26.0 has it, but a 32-bit target's highest deployment version is 10.0, so the object cannot be floored past that: the band machinery would compile it with -target armv7-apple-ios26.0, which clang refuses (measured, both gates)"
+    "api": "UIDocumentDidMoveToWritableLocationOldURLKey",
+    "kind": "constant",
+    "introduced": "26.0",
+    "minimum": "6.0",
+    "status": "absent",
+    "reason": "no release held on this machine exports the symbol, and a constant's value is never taken from a header or from a host framework, so there is no value to carry",
+    "effect": "the symbol is not there: a weak reference to it is NULL",
+    "source": "the held release ladder of this machine, read symbol by symbol with tools/corpus/cache-value.lua: the newest cache held is iOS 18.0 and this constant arrived later"
   },
   {
    "api": "UIGlassContainerEffect",
@@ -1071,26 +1062,24 @@
    "source": "SDK 26.5, Mac Catalyst, UIKit"
   },
   {
-   "api": "UIMenuFindPanel",
-   "kind": "constant",
-   "introduced": "26.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "facts": "facts/UIKit/UIKitConstants260.md",
-   "effect": "the constant is exported under its own name and answers com.apple.menu.find-panel",
-   "source": "UIKit/UIKitConstants260.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0",
-   "note": "the object carries only iOS 26 API and no band below 26.0 has it, but a 32-bit target's highest deployment version is 10.0, so the object cannot be floored past that: the band machinery would compile it with -target armv7-apple-ios26.0, which clang refuses (measured, both gates)"
+    "api": "UIMenuFindPanel",
+    "kind": "constant",
+    "introduced": "26.0",
+    "minimum": "6.0",
+    "status": "absent",
+    "reason": "no release held on this machine exports the symbol, and a constant's value is never taken from a header or from a host framework, so there is no value to carry",
+    "effect": "the symbol is not there: a weak reference to it is NULL",
+    "source": "the held release ladder of this machine, read symbol by symbol with tools/corpus/cache-value.lua: the newest cache held is iOS 18.0 and this constant arrived later"
   },
   {
-   "api": "UIMenuNewItem",
-   "kind": "constant",
-   "introduced": "26.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "facts": "facts/UIKit/UIKitConstants260.md",
-   "effect": "the constant is exported under its own name and answers com.apple.menu.new-item",
-   "source": "UIKit/UIKitConstants260.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0",
-   "note": "the object carries only iOS 26 API and no band below 26.0 has it, but a 32-bit target's highest deployment version is 10.0, so the object cannot be floored past that: the band machinery would compile it with -target armv7-apple-ios26.0, which clang refuses (measured, both gates)"
+    "api": "UIMenuNewItem",
+    "kind": "constant",
+    "introduced": "26.0",
+    "minimum": "6.0",
+    "status": "absent",
+    "reason": "no release held on this machine exports the symbol, and a constant's value is never taken from a header or from a host framework, so there is no value to carry",
+    "effect": "the symbol is not there: a weak reference to it is NULL",
+    "source": "the held release ladder of this machine, read symbol by symbol with tools/corpus/cache-value.lua: the newest cache held is iOS 18.0 and this constant arrived later"
   },
   {
    "api": "UIMenuSystemFindElementGroupConfiguration",
@@ -1526,41 +1515,45 @@
    "api": "UITraitCollection.hdrHeadroomUsageLimit",
    "kind": "property",
    "introduced": "26.0",
-   "minimum": "6.0",
+   "minimum": "5.0",
    "status": "absent",
    "reason": "neither iOS 6 nor the backports give UITraitCollection a property like it: it arrived in iOS 26",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "source": "SDK 26.5, Mac Catalyst, UIKit",
+   "note": "the object holds API of a class that arrived in iOS 5.0 or stores its data in one, so a band below that release must leave it out"
   },
   {
    "api": "UITraitCollection.resolvesNaturalAlignmentWithBaseWritingDirection",
    "kind": "property",
    "introduced": "26.0",
-   "minimum": "6.0",
+   "minimum": "5.0",
    "status": "absent",
    "reason": "neither iOS 6 nor the backports give UITraitCollection a property like it: it arrived in iOS 26",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "source": "SDK 26.5, Mac Catalyst, UIKit",
+   "note": "the object holds API of a class that arrived in iOS 5.0 or stores its data in one, so a band below that release must leave it out"
   },
   {
    "api": "UITraitCollection.splitViewControllerLayoutEnvironment",
    "kind": "property",
    "introduced": "26.0",
-   "minimum": "6.0",
+   "minimum": "5.0",
    "status": "absent",
    "reason": "neither iOS 6 nor the backports give UITraitCollection a property like it: it arrived in iOS 26",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "source": "SDK 26.5, Mac Catalyst, UIKit",
+   "note": "the object holds API of a class that arrived in iOS 5.0 or stores its data in one, so a band below that release must leave it out"
   },
   {
    "api": "UITraitCollection.tabAccessoryEnvironment",
    "kind": "property",
    "introduced": "26.0",
-   "minimum": "6.0",
+   "minimum": "5.0",
    "status": "absent",
    "reason": "neither iOS 6 nor the backports give UITraitCollection a property like it: it arrived in iOS 26",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "source": "SDK 26.5, Mac Catalyst, UIKit",
+   "note": "the object holds API of a class that arrived in iOS 5.0 or stores its data in one, so a band below that release must leave it out"
   },
   {
    "api": "UITraitHDRHeadroomUsageLimit",
@@ -1643,15 +1636,14 @@
    "source": "SDK 26.5, Mac Catalyst, UIKit"
   },
   {
-   "api": "UIWindowSceneSessionRoleAssistiveAccessApplication",
-   "kind": "constant",
-   "introduced": "26.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "facts": "facts/UIKit/UIKitConstants260.md",
-   "effect": "the constant is exported under its own name and answers UIWindowSceneSessionRoleAssistiveAccessApplication",
-   "source": "UIKit/UIKitConstants260.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0",
-   "note": "the object carries only iOS 26 API and no band below 26.0 has it, but a 32-bit target's highest deployment version is 10.0, so the object cannot be floored past that: the band machinery would compile it with -target armv7-apple-ios26.0, which clang refuses (measured, both gates)"
+    "api": "UIWindowSceneSessionRoleAssistiveAccessApplication",
+    "kind": "constant",
+    "introduced": "26.0",
+    "minimum": "6.0",
+    "status": "absent",
+    "reason": "no release held on this machine exports the symbol, and a constant's value is never taken from a header or from a host framework, so there is no value to carry",
+    "effect": "the symbol is not there: a weak reference to it is NULL",
+    "source": "the held release ladder of this machine, read symbol by symbol with tools/corpus/cache-value.lua: the newest cache held is iOS 18.0 and this constant arrived later"
   },
   {
    "api": "+[UIColorEffect effectWithColor:]",
