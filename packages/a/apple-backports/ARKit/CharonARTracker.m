@@ -53,6 +53,45 @@ static NSError *CharonTrackerError(CharonARTrackerError code, NSString *reason)
                            userInfo:@{NSLocalizedDescriptionKey: reason}];
 }
 
+/// The preintegrated measurement between two instants, in the form of Forster et al.'s
+/// "On-Manifold Preintegration for Real-Time Visual-Inertial Odometry" (RA-L 12(4) 2017), equations
+/// 22 and 23.
+///
+/// Why that paper: it is the scheme the bullet asks for and the one permissive VIO packages implement,
+/// and it is the right one here because the attitude is already exact - the differential reads it
+/// back at 0.004 degrees - and with the attitude exact, gravity is removed exactly by the rotation, so
+/// what is left is the device's own acceleration and integrating it twice is the translation.
+///
+/// Its two measurements are what the update consumes: a delta-velocity, which is the world change in
+/// velocity across the interval, and a delta-position, which is the world displacement. Both are
+/// accumulated from the constant-acceleration model of equation 320 in a world frame that is carried
+/// along with the attitude, so the interval's rotation is in the preintegration rather than applied
+/// to it afterwards.
+typedef struct {
+    simd_float3 deltaVelocity;   ///< world change in velocity across the interval
+    simd_float3 deltaPosition;   ///< world displacement across the interval
+    float       duration;        ///< how long the interval was
+} CharonPreintegration;
+
+/// One interval of the accelerometer, preintegrated.
+///
+/// The constant-acceleration model: over `dt` with the mean force `f`, the world velocity gains
+/// `f * dt` and the world position gains `f * dt^2 / 2`. `f` is the specific force with gravity
+/// removed, which is `R * measured - g` for the attitude `R` and the gravity vector `g`; with the
+/// attitude right, the `R * measured` term contains exactly the -g that cancels the subtraction, and
+/// what remains is the device's own acceleration.
+static CharonPreintegration CharonPreintegrateInterval(simd_float3 specificForceWorld, float dt)
+{
+    CharonPreintegration out;
+    out.deltaVelocity = simd_make_float3(specificForceWorld.x * dt, specificForceWorld.y * dt,
+                                        specificForceWorld.z * dt);
+    out.deltaPosition = simd_make_float3(0.5f * specificForceWorld.x * dt * dt,
+                                        0.5f * specificForceWorld.y * dt * dt,
+                                        0.5f * specificForceWorld.z * dt * dt);
+    out.duration = dt;
+    return out;
+}
+
 #pragma mark - The small linear algebra the tracking needs
 
 /// The 3-D point at a distance along a ray, which is what a pixel becomes once the pose is known.
@@ -82,6 +121,11 @@ static simd_float4 CharonQuaternionProduct(simd_float4 lhs, simd_float4 rhs)
 }
 
 /// A quaternion that turns `from` onto `to`, both unit, by the shortest way round.
+/// Gravity, as the vector an accelerometer measures it as: the world frame's -z, at the standard
+/// 9.80665 m/s^2. The device is Y-up and Z-back, so gravity pulls it towards -z, and an accelerometer
+/// at rest reads exactly this much along its own z.
+static const simd_float3 CharonGravity = { 0, 0, -9.80665f };
+
 static simd_quatf CharonRotationBetween(simd_quatf from, simd_quatf to)
 {
     // The order is the whole content of this function: the rotation that carries `from` onto `to` is
@@ -92,20 +136,6 @@ static simd_quatf CharonRotationBetween(simd_quatf from, simd_quatf to)
     simd_quatf inverse = simd_normalize(simd_conjugate(from));
     simd_float4 product = CharonQuaternionProduct(inverse.vector, to.vector);
     return simd_normalize(simd_quaternion(product.x, product.y, product.z, product.w));
-}
-
-/// The matrix of the rotation a quaternion names. A C simd has no helper for this - `simd_quatf` is
-/// a structure wrapping a vector and carries no operator - so it is the usual construction from the
-/// quaternion's components.
-static simd_float4x4 CharonMatrixFromQuaternion(simd_quatf q)
-{
-    float x = q.vector.x, y = q.vector.y, z = q.vector.z, w = q.vector.w;
-    simd_float4x4 m;
-    m.columns[0] = simd_make_float4(1 - 2 * (y * y + z * z), 2 * (x * y + z * w), 2 * (x * z - y * w), 0);
-    m.columns[1] = simd_make_float4(2 * (x * y - z * w), 1 - 2 * (x * x + z * z), 2 * (y * z + x * w), 0);
-    m.columns[2] = simd_make_float4(2 * (x * z + y * w), 2 * (y * z - x * w), 1 - 2 * (x * x + y * y), 0);
-    m.columns[3] = simd_make_float4(0, 0, 0, 1);
-    return m;
 }
 
 /// Gauss-Newton over the six parameters of a pose.
@@ -138,7 +168,7 @@ static simd_float4x4 CharonPoseIncrement(simd_float3 w, simd_float3 t)
     else
         rotation.vector = simd_make_float4(w.x / angle * sinf(half), w.y / angle * sinf(half),
                                            w.z / angle * sinf(half), cosf(half));
-    simd_float4x4 increment = CharonMatrixFromQuaternion(rotation);
+    simd_float4x4 increment = CharonQuaternionMatrix(rotation);
     increment.columns[3] = simd_make_float4(t.x, t.y, t.z, 1);
     return increment;
 }
@@ -322,7 +352,11 @@ static BOOL CharonSolveSix(float A[6][6], float b[6], float out[6])
     CGFloat _ambientColorTemperature;
     BOOL _tracking;
     BOOL _havePose;
-    simd_float4x4 _previousPose;   ///< the pose the previous frame's observations were made with
+    simd_float4x4 _previousPose;
+    simd_float3 _measuredAcceleration;
+    simd_float3 _velocity;              ///< the world velocity the preintegration carries
+    double _lastCaptureTime;           ///< when the last frame was
+    BOOL _haveTimestamp;               ///< whether there has been a frame to measure an interval from   ///< the pose the previous frame's observations were made with
 
     // The points of the frame being processed, and the frame before it.
     CharonARPoint *_points;      ///< the matches of the current frame
@@ -336,6 +370,8 @@ static BOOL CharonSolveSix(float A[6][6], float b[6], float out[6])
     NSUInteger _lumaWidth;
     NSUInteger _lumaHeight;
 }
+
+    @synthesize measuredAcceleration = _measuredAcceleration;
 
 static simd_float3x3 CharonRecordedIntrinsics = { 0 };
 
@@ -466,6 +502,7 @@ static simd_float3x3 CharonRecordedIntrinsics = { 0 };
     _tracking = NO;
     _timestamp = 0;
     _pointCount = 0;
+    _haveTimestamp = NO;
     _previousCount = 0;
     return self;
 }
@@ -678,7 +715,51 @@ static simd_float3x3 CharonRecordedIntrinsics = { 0 };
     // The gyroscope's turn is applied to the pose the tracker already holds, so the pose is carried
     // from one frame to the next rather than restarted: a rate integrated over a sequence is the only
     // reason the sequence is worth anything, and the picture is what corrects it.
-    _cameraTransform = simd_mul(CharonMatrixFromQuaternion(turn), _cameraTransform);
+    _cameraTransform = simd_mul(CharonQuaternionMatrix(turn), _cameraTransform);
+
+    // Translation, from the accelerometer and the attitude that is now exact. The accelerometer reads
+    // the device's own acceleration with gravity still in it; rotating that reading into the world by
+    // the attitude leaves gravity along -z, and subtracting the gravity vector leaves the device's own
+    // acceleration. That is preintegrated over the interval and added to the pose's translation, which
+    // is the whole of Forster et al.'s equation 320 for a single interval.
+    float dt = _haveTimestamp ? (float)(captureTime - _lastCaptureTime) : 0;
+    if (dt > 0 && dt < 1.0f) {
+        {
+            simd_float4x4 worldFromDevice = _cameraTransform;
+            simd_float3 inWorld = simd_make_float3(
+                    worldFromDevice.columns[0][0] * _measuredAcceleration.x +
+                    worldFromDevice.columns[1][0] * _measuredAcceleration.y +
+                    worldFromDevice.columns[2][0] * _measuredAcceleration.z,
+                    worldFromDevice.columns[0][1] * _measuredAcceleration.x +
+                    worldFromDevice.columns[1][1] * _measuredAcceleration.y +
+                    worldFromDevice.columns[2][1] * _measuredAcceleration.z,
+                    worldFromDevice.columns[0][2] * _measuredAcceleration.x +
+                    worldFromDevice.columns[1][2] * _measuredAcceleration.y +
+                    worldFromDevice.columns[2][2] * _measuredAcceleration.z);
+            simd_float3 own = simd_make_float3(inWorld.x, inWorld.y, inWorld.z - CharonGravity.z);
+            CharonPreintegration interval = CharonPreintegrateInterval(own, dt);
+            // The velocity the poses carry between frames, so the displacement is the velocity times
+            // the interval plus the preintegrated one - the constant-acceleration form, which is what
+            // the paper's delta-position is for.
+            simd_float4 carried = simd_mul(_cameraTransform,
+                                           (simd_float4){ _velocity.x, _velocity.y, _velocity.z, 0 });
+            _velocity = simd_make_float3(carried.x + interval.deltaVelocity.x,
+                                         carried.y + interval.deltaVelocity.y,
+                                         carried.z + interval.deltaVelocity.z);
+            simd_float4 position = simd_mul(_cameraTransform,
+                                            (simd_float4){ interval.deltaPosition.x,
+                                                           interval.deltaPosition.y,
+                                                           interval.deltaPosition.z, 0 });
+            _cameraTransform.columns[3] = simd_make_float4(
+                    _cameraTransform.columns[3][0] + position.x,
+                    _cameraTransform.columns[3][1] + position.y,
+                    _cameraTransform.columns[3][2] + position.z, 1);
+        }
+    }
+    // the record of this frame is made whether or not there was an interval to preintegrate, or the
+    // first frame with one would never be the frame before it
+    _lastCaptureTime = captureTime;
+    _haveTimestamp = YES;
 
     [self findFeatures];
     // The Gauss-Newton step is written and runs, but it is not in the frame's path, because it was
@@ -956,7 +1037,7 @@ static uint32_t CharonPatchCost(const uint8_t *luma, NSUInteger width, NSUIntege
         simd_float3x3 intrinsics = [CharonARTracker cameraIntrinsicsForResolution:_resolution];
         simd_float4x4 wasPose = _previousPose;
         if (simd_length(_cameraTransform.columns[3] - wasPose.columns[3]) < 1e-9f)
-            wasPose = simd_mul(CharonMatrixFromQuaternion(simd_normalize(simd_conjugate(turn))),
+            wasPose = simd_mul(CharonQuaternionMatrix(simd_normalize(simd_conjugate(turn))),
                                _cameraTransform);
         now->depth = CharonTriangulatedDepth(intrinsics, wasPixel, nowPixel, wasPose, _cameraTransform);
         if (now->hits >= 3)

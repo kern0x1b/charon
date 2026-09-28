@@ -67,6 +67,23 @@ static inline simd_float3 CharonRayDirection(simd_float3x3 intrinsics, simd_floa
     return simd_normalize(simd_make_float3(product.x, product.y, product.z));
 }
 
+/// The matrix of the rotation a quaternion names, in the tracker's own header because the recorded
+/// sequence that measures the tracker needs the same one the tracker uses - a differential that
+/// measured a different rotation would be measuring its own.
+///
+/// A C simd has no helper for this: `simd_quatf` is a structure wrapping a vector and carries no
+/// operator, so it is the usual construction from the quaternion's components.
+static inline simd_float4x4 CharonQuaternionMatrix(simd_quatf q)
+{
+    float x = q.vector.x, y = q.vector.y, z = q.vector.z, w = q.vector.w;
+    simd_float4x4 m;
+    m.columns[0] = simd_make_float4(1 - 2 * (y * y + z * z), 2 * (x * y + z * w), 2 * (x * z - y * w), 0);
+    m.columns[1] = simd_make_float4(2 * (x * y - z * w), 1 - 2 * (x * x + z * z), 2 * (y * z + x * w), 0);
+    m.columns[2] = simd_make_float4(2 * (x * z + y * w), 2 * (y * z - x * w), 1 - 2 * (x * x + y * y), 0);
+    m.columns[3] = simd_make_float4(0, 0, 0, 1);
+    return m;
+}
+
 @protocol CharonARTrackerDelegate;
 
 /// The tracker. One per session; a session owns it and asks it for a pose.
@@ -146,6 +163,15 @@ static inline simd_float3 CharonRayDirection(simd_float3x3 intrinsics, simd_floa
 
 /// The camera's own pose for the frame just handed in: a 4x4 from the camera's space to the
 /// world's, which is the transform every anchor and every ray is expressed in.
+/// The specific force the accelerometer measured for this frame, in the device's own axes.
+///
+/// This is what an accelerometer reads: the acceleration the device is undergoing, with gravity
+/// still in it, because gravity is an acceleration too. It is the same reading from
+/// CMMotionManager's accelerometer data on a device, and the same reading the tracker removes
+/// gravity from using the attitude above, which is why the attitude is the thing that has to be
+/// right first: with the attitude exact, gravity comes out exactly.
+@property (nonatomic, assign) simd_float3 measuredAcceleration;
+
 - (simd_float4x4)processPixelBuffer:(CVPixelBufferRef)pixelBuffer
                         captureTime:(NSTimeInterval)captureTime
                       deviceRotation:(simd_quatf)deviceRotation;

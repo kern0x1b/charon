@@ -46,6 +46,7 @@ static simd_float3x3 CharonSyntheticIntrinsics(NSUInteger width, NSUInteger heig
     return intrinsics;
 }
 
+
 #pragma mark - The ground truth
 
 /// One step of a camera that turns a fixed angle about `y` and walks a fixed distance forwards.
@@ -69,6 +70,43 @@ static CharonTruth CharonTruthAt(int i, float stepAngle, float stepLength)
     truth.translation = (simd_float3){x, 0.0f, z};
     return truth;
 }
+
+/// The specific force an accelerometer reads for the fixture's own motion, in the device's axes.
+///
+/// An accelerometer reads the acceleration the device is undergoing with gravity still in it, because
+/// gravity is an acceleration too: at rest it reads exactly -g along its own z. So the reading for a
+/// device that is both turning and moving is `R * (a_world - g)`, where `R` is the attitude and `g` is
+/// gravity in the world. The tracker removes gravity from that with the same attitude, which is what
+/// makes the removal exact rather than a subtraction that leaves a bias behind.
+static simd_float3 CharonSpecificForceAt(int i, float stepAngle, float stepLength, float dt)
+{
+    // the truth's own first difference is the acceleration, taken in closed form from the path
+    CharonTruth before = CharonTruthAt(i - 1 >= 0 ? i - 1 : 0, stepAngle, stepLength);
+    CharonTruth after = CharonTruthAt(i, stepAngle, stepLength);
+    simd_float3 step = { after.translation.x - before.translation.x,
+                         after.translation.y - before.translation.y,
+                         after.translation.z - before.translation.z };
+    simd_float3 earlier = { 0, 0, 0 };
+    if (i >= 2) {
+        CharonTruth back = CharonTruthAt(i - 2, stepAngle, stepLength);
+        earlier = (simd_float3){ step.x - (before.translation.x - back.translation.x),
+                                 step.y - (before.translation.y - back.translation.y),
+                                 step.z - (before.translation.z - back.translation.z) };
+    }
+    simd_float3 worldAcceleration = { (step.x - earlier.x) / (dt * dt), (step.y - earlier.y) / (dt * dt),
+                                      (step.z - earlier.z) / (dt * dt) };
+    simd_float4x4 worldFromDevice = CharonQuaternionMatrix(after.rotation);
+    // a_world - g, then R, which is the reading
+    simd_float3 inWorld = { worldAcceleration.x, worldAcceleration.y, worldAcceleration.z + 9.80665f };
+    return simd_make_float3(
+            worldFromDevice.columns[0][0] * inWorld.x + worldFromDevice.columns[1][0] * inWorld.y +
+            worldFromDevice.columns[2][0] * inWorld.z,
+            worldFromDevice.columns[0][1] * inWorld.x + worldFromDevice.columns[1][1] * inWorld.y +
+            worldFromDevice.columns[2][1] * inWorld.z,
+            worldFromDevice.columns[0][2] * inWorld.x + worldFromDevice.columns[1][2] * inWorld.y +
+            worldFromDevice.columns[2][2] * inWorld.z);
+}
+
 
 /// A vector turned by a quaternion, the same three cross products the tracker uses.
 static float clampf(float value, float low, float high)
@@ -215,6 +253,7 @@ int main(void)
             memcpy(base + y * stride, planes[step] + y * width, width);
         CVPixelBufferUnlockBaseAddress(buffer, 0);
 
+        tracker.measuredAcceleration = CharonSpecificForceAt(step, stepAngle, stepLength, 1.0 / 30.0);
         simd_float4x4 got = [tracker processPixelBuffer:buffer
                                  captureTime:(double)step / 30.0
                              deviceRotation:truth.rotation];
