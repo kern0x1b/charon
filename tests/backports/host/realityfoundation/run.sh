@@ -58,4 +58,46 @@ grep -v '^ok ' "$build/log" || true
 # cannot be checked against one.
 printf 'checks: %s\n' "$(grep -c '^ok ' "$build/log")"
 echo "log=$build/log"
+
+# A differential that cannot tell a mutation from itself guards nothing, so the two mutations this
+# family's own commits name are run against it: the clamp's composition - which both the per-pass
+# demand and the pose go through - and the pose a limit is held to. Each is a one-token change that
+# still compiles, and a mutant counts as caught only when the *suite* goes red: a compiler error is a
+# build failure and proves nothing, which is how the first attempt at this was measured.
+if [ "${RF_MUTANTS:-1}" = "1" ]; then
+    survived=0
+    notbuilt=0
+    mutant() {
+        label=$1; from=$2; to=$3
+        rm -rf "$build/mutant"; mkdir -p "$build/mutant"
+        cp -R "$files" "$build/mutant/files"
+        python3 "$here/mutate.py" "$build/mutant/files/RealityFoundation/IK.swift" "$from" "$to" || { echo "MUTANT REFUSED: $label"; survived=$((survived + 1)); return; }
+        if RF_OVERLAY_FILES="$build/mutant/files" RF_BUILD="$build/mutant-build" RF_MUTANTS=0 \
+           sh "$here/run.sh" > "$build/mutant-build.log" 2>&1; then
+            echo "MUTANT SURVIVED: $label"
+            survived=$((survived + 1))
+        elif grep -qE "error:" "$build/mutant-build.log"; then
+            echo "MUTANT DID NOT BUILD: $label - a build failure, not a caught mutation"
+            notbuilt=$((notbuilt + 1))
+        else
+            echo "caught: $label"
+        fi
+        rm -rf "$build/mutant-build" "$build/mutant"
+    }
+    # 1. The clamp takes the *held* twist off and puts it back, so the limit undoes itself. One
+    #    token, and it still builds - the review's own attempt failed to compile, which proved nothing.
+    mutant "the clamp's composition" \
+        "    return (rotation * original.inverse) * clamp" \
+        "    return (rotation * clamp.inverse) * clamp"
+    # 2. The pose is not held to the joint's limit: the read-back and write-back go, and the demand
+    #    clamp above is the only limit left, which bounds a pass and not a joint.
+    mutant "the pose a limit holds" \
+        "                        if held != posed { chain[at].setWorldOrientation(held) }" \
+        "                        if false, held != posed { chain[at].setWorldOrientation(held) }"
+    if [ "$survived" -ne 0 ] || [ "$notbuilt" -ne 0 ]; then
+        echo "$survived mutant(s) survived and $notbuilt did not build; the differential is not holding"
+        exit 1
+    fi
+    echo "mutations: all caught"
+fi
 exit $result
