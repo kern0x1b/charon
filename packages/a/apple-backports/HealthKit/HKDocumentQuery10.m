@@ -23,7 +23,7 @@
                       resultsHandler:(void (^)(HKDocumentQuery *query, NSArray<HKDocumentSample *> *_Nullable results,
                                                NSError *_Nullable error))handler
 {
-    HKDocumentQuery *query = [super charon_initWithSampleType:documentType];
+    HKDocumentQuery *query = [super initWithCharonSampleType:documentType];
     if (query) {
         query->_documentType = documentType;
         [query charon_setPredicate:predicate];

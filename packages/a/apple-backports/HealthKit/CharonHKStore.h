@@ -317,8 +317,15 @@ extern Class _Nullable CharonHKClassForTypeKind(NSInteger kind);
 @end
 
 @interface HKQuery (CharonInternal)
-- (instancetype)charon_initWithSampleType:(nullable HKSampleType *)sampleType;
-- (instancetype)charon_initWithObjectType:(nullable HKObjectType *)objectType;
+// The base of every query subclass's initialiser. It is an instance method and its name is in the init
+// family, which is what lets a subclass write `self = [super initWithCharonObjectType:...]` and set its
+// own ivars after: a category's class method is not visible through a subclass type, and a class
+// extension declared in this header is visible only to the one file that implements HKQuery, so
+// neither would reach the five subclass files that call it. -init is NS_UNAVAILABLE on HKQuery, so this
+// is the port's own allocation and the path that leaves a query with its type, its predicate and its
+// handler.
+- (instancetype)initWithCharonObjectType:(nullable HKObjectType *)objectType;
+- (instancetype)initWithCharonSampleType:(nullable HKSampleType *)sampleType;
 - (nullable NSPredicate *)charon_predicate;
 - (nullable HKObjectType *)charon_objectType;
 - (void)charon_setPredicate:(nullable NSPredicate *)predicate;
@@ -326,6 +333,10 @@ extern Class _Nullable CharonHKClassForTypeKind(NSInteger kind);
 - (BOOL)charon_hasBeenExecuted;
 - (void)charon_setQueue:(dispatch_queue_t)queue;
 - (void)charon_perform:(dispatch_block_t)block;
+@end
+
+@interface HKStatisticsCollection (CharonInternalInterval)
++ (nullable NSDateComponents *)charon_normalizedIntervalComponents:(nullable NSDateComponents *)components;
 @end
 
 @interface HKStatistics (CharonInternal)

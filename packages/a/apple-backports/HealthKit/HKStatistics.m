@@ -420,6 +420,23 @@
     return found;
 }
 
+// A query's interval as the release keeps it: every component that was left unset reads as 0 rather
+// than as NSDateComponentUndefined, which is what the host's own HKStatisticsCollectionQuery answers
+// for a components object the caller set one field of. Measured by tests/backports/host/healthkit.
++ (NSDateComponents *)charon_normalizedIntervalComponents:(nullable NSDateComponents *)components
+{
+    if (!components)
+        return nil;
+    NSDateComponents *normal = [components copy];
+    NSArray *fields = @[ @"era", @"year", @"month", @"day", @"hour", @"minute", @"second", @"weekday",
+                         @"weekdayOrdinal", @"quarter", @"weekOfMonth", @"weekOfYear", @"yearForWeekOfYear" ];
+    for (NSString *field in fields) {
+        if ([normal valueForKey:field] == NSDateComponentUndefined)
+            [normal setValue:@0 forKey:field];
+    }
+    return normal;
+}
+
 - (void)enumerateStatisticsFromDate:(NSDate *)startDate
                              toDate:(NSDate *)endDate
                            withBlock:(void (^)(HKStatistics *result, BOOL *stop))block

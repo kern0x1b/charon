@@ -26,7 +26,7 @@
                   sortDescriptors:(nullable NSArray<NSSortDescriptor *> *)sortDescriptors
                      resultsHandler:(void (^)(NSArray<HKSample *> *_Nullable results, BOOL done, NSError *_Nullable error))resultsHandler
 {
-    self = [super charon_initWithObjectType:sampleType];
+    self = [super initWithCharonSampleType:sampleType];
     if (self) {
         [self charon_setPredicate:predicate];
         _limit = limit;
@@ -100,7 +100,7 @@
                              options:(HKStatisticsOptions)options
                     completionHandler:(void (^)(HKStatistics *_Nullable result, NSError *_Nullable error))completionHandler
 {
-    self = [super charon_initWithObjectType:quantityType];
+    self = [super initWithCharonSampleType:quantityType];
     if (self) {
         [self charon_setPredicate:quantitySamplePredicate];
         _options = options;
@@ -160,12 +160,12 @@
                           anchorDate:(NSDate *)anchorDate
                   intervalComponents:(NSDateComponents *)intervalComponents
 {
-    self = [super charon_initWithObjectType:quantityType];
+    self = [super initWithCharonSampleType:quantityType];
     if (self) {
         [self charon_setPredicate:quantitySamplePredicate];
         _options = options;
         _anchorDate = [anchorDate copy];
-        _intervalComponents = [intervalComponents copy];
+        _intervalComponents = [HKStatisticsCollection charon_normalizedIntervalComponents:intervalComponents];
     }
     return self;
 }
@@ -275,7 +275,7 @@
                     samplePredicate:(nullable NSPredicate *)predicate
                   completionHandler:(void (^)(NSArray<HKSource *> *sources, NSError *_Nullable error))completionHandler
 {
-    self = [super charon_initWithObjectType:sampleType];
+    self = [super initWithCharonSampleType:sampleType];
     if (self) {
         [self charon_setPredicate:predicate];
         _completionHandler = [completionHandler copy];
@@ -315,7 +315,7 @@
             samplePredicates:(nullable NSArray<NSPredicate *> *)samplePredicates
                  completion:(void (^)(NSArray<HKCorrelation *> *_Nullable results, NSError *_Nullable error))completion
 {
-    self = [super charon_initWithObjectType:correlationType];
+    self = [super initWithCharonSampleType:correlationType];
     if (self) {
         _correlationType = correlationType;
         _samplePredicates = [samplePredicates copy];
@@ -377,7 +377,7 @@
                     updateHandler:(void (^)(HKObserverQuery *query, HKQueryAnchor *_Nullable anchor,
                                             void (^_Nullable completion)(void), NSError *_Nullable error))updateHandler
 {
-    self = [super charon_initWithObjectType:sampleType];
+    self = [super initWithCharonSampleType:sampleType];
     if (self) {
         [self charon_setPredicate:predicate];
         _updateHandler = [updateHandler copy];
@@ -457,7 +457,7 @@
            completionHandler:(void (^)(HKAnchoredObjectQuery *query, NSArray<HKSample *> *_Nullable results,
                                        NSUInteger newAnchor, NSError *_Nullable error))completionHandler
 {
-    HKAnchoredObjectQuery *fresh = [super charon_initWithObjectType:type];
+    HKAnchoredObjectQuery *fresh = [super initWithCharonObjectType:type];
     if (fresh) {
         [fresh charon_setPredicate:predicate];
         fresh->_anchor = [HKQueryAnchor anchorFromValue:anchor];

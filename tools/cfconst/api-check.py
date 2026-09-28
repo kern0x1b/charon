@@ -244,9 +244,22 @@ def main(root, dylib=None, images=False, framework="HealthKit"):
     return problems
 
 
-if __name__ == "__main__":
+def _entry():
     arguments = [a for a in sys.argv[1:] if a != "--images"]
     images = "--images" in sys.argv
     root = arguments[0] if arguments else "."
     dylib = None if images else (arguments[1] if len(arguments) > 1 else None)
-    sys.exit(0 if main(root, dylib=dylib, images=images) == 0 else 1)
+    # A dylib that is not a file is a mistake, not a run with nothing to check: without it every row
+    # would read as not built and the tool would report the whole registry as missing, which is worse
+    # than saying so and stopping.
+    if dylib is not None and not os.path.isfile(dylib):
+        sys.stderr.write("api-check: %s is not a file; pass the built libHealthKitBackports.dylib of a gate run\n" % dylib)
+        return 2
+    if dylib is None and not images:
+        sys.stderr.write("api-check: pass a built dylib, or --images for the weaker reading over the release images\n")
+        return 2
+    return 0 if main(root, dylib=dylib, images=images) == 0 else 1
+
+
+if __name__ == "__main__":
+    sys.exit(_entry())

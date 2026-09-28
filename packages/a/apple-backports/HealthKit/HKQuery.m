@@ -64,22 +64,34 @@ static NSString *CharonHKOperatorSpelling(NSPredicateOperatorType type)
     return _predicate;
 }
 
+// The header declares -predicate strong and not copy, and a copied HealthKit predicate does not
+// evaluate as the one it was copied from: the measured answer for the port's copy was NO where the
+// host's own predicate gave YES for the same object. It is held as given, which is what the header says.
 - (void)charon_setPredicate:(nullable NSPredicate *)predicate
 {
-    _predicate = [predicate copy];
+    _predicate = predicate;
 }
 
-- (instancetype)initWithSampleType:(nullable HKSampleType *)sampleType
+// -init is NS_UNAVAILABLE on this class, so the allocation is the port's own, and the name is in the
+// init family so that a subclass may write `self = [super initWithCharonObjectType:...]` and set its
+// own ivars after. It is an instance method rather than a class method because a category's class
+// method is not visible through a subclass type and a class extension declared in a header is visible
+// only to the one file that implements this class, so neither would reach the five subclass files that
+// call it.
+//
+// An initialiser that wrote `self = [super initWithCharonObjectType:...]` before this existed was left
+// as the bare allocation, with no type, no predicate and no handler.
+- (instancetype)initWithCharonObjectType:(nullable HKObjectType *)objectType
 {
-    return [self charon_initWithObjectType:sampleType];
+    self = [super init];
+    if (self)
+        _objectType = (HKObjectType *)[objectType copy];
+    return self;
 }
 
-- (instancetype)charon_initWithObjectType:(nullable HKObjectType *)objectType
+- (instancetype)initWithCharonSampleType:(nullable HKSampleType *)sampleType
 {
-    HKQuery *fresh = [super init];
-    if (fresh)
-        fresh->_objectType = (HKObjectType *)[objectType copy];
-    return fresh;
+    return [self initWithCharonObjectType:sampleType];
 }
 
 // Where a query's handlers are called. The release delivers them on the queue the caller chose with

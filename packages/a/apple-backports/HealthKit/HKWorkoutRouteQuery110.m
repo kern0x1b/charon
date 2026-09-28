@@ -223,7 +223,7 @@ static id CharonHKAllocateBuilder(Class cls)
 - (instancetype)initWithRoute:(HKWorkoutRoute *)workoutRoute
                   dataHandler:(void (^)(NSData *_Nullable routeData, NSError *_Nullable error))dataHandler
 {
-    HKWorkoutRouteQuery *query = [super charon_initWithObjectType:[HKObjectType workoutType]];
+    HKWorkoutRouteQuery *query = [super initWithCharonObjectType:[HKObjectType workoutType]];
     if (query) {
         query->_route = (HKWorkoutRoute *)[workoutRoute copy];
         query->_dataHandler = [dataHandler copy];
