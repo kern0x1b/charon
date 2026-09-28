@@ -1233,16 +1233,15 @@ end
 
 -- The members a binary's categories add to classes it does not define itself: the API a category
 -- carries, as the registry spells it.
-local function added_members(inventory)
+local function class_image(inventory, name)
+    local class = inventory and inventory.classes and inventory.classes[name]
+    return class and class.image or false
+end
+
+local function members_of(inventory, classes)
     local found = {}
     for name, class in pairs(inventory and inventory.classes or {}) do
-        -- The port's own classes are its machinery, and it names them; everything else a category
-        -- adds is API, whether or not the release has the class - the backports exist to add to
-        -- classes the release has. Both former conditions hid the same members: a class the port
-        -- defines is one the release has too, so `not class.image` and `not ours[name]` each
-        -- excluded what the other could have shown. Measured 2026-09-28 on a green 6.1.3 build of
-        -- main: 1,452 members, none of which any registry row answers for.
-        if not name:startswith("Charon") then
+        if classes(name) then
             for kind, sign in pairs({instance = "-", class = "+"}) do
                 for selector in pairs(class[kind]) do
                     local plain = selector:sub(2)
@@ -1255,6 +1254,28 @@ local function added_members(inventory)
     end
     return found
 end
+
+-- What the band machinery places an object by: the members a category adds to a class the object does not
+-- define. A member the port adds in a category is not defined by the object that carries it - a member of
+-- a class the release already carries belongs to that class - and counting it here moved the carrying object
+-- out of the band its own minimum says: measured 2026-09-28 by bisecting the 4.3 gate over 2fde39f4, which
+-- widened this for check_registry, and put 16 objects above iOS 4.3.
+local function added_members(inventory, ours)
+    return members_of(inventory, function (name)
+        return not class_image(inventory, name) and not ours[name]
+    end)
+end
+
+-- The API the port carries in its categories, which is a wider question than what any one object defines: a
+-- member the port adds to a class the release already carries is API the port carries, and check_registry asks
+-- whether a row says so. The port's own classes are its machinery and it names them. This is the set 2fde39f4
+-- widened, kept for that reader alone.
+local function carried_api(inventory)
+    return members_of(inventory, function (name)
+        return not name:startswith("Charon")
+    end)
+end
+
 
 function surface(binaries, architecture)
     local found = {classes = {}, members = {}, symbols = {}, registered = {}, answered = {}}
@@ -1287,7 +1308,7 @@ function surface(binaries, architecture)
                 end
             end
         end
-        for _, member in ipairs(added_members(inventory)) do
+        for _, member in ipairs(carried_api(inventory)) do
             found.members[member] = true
         end
     end
@@ -1648,7 +1669,7 @@ local function carried_names(object, architecture)
         end
         names[class or symbol:sub(2)] = true
     end
-    for _, member in ipairs(added_members(objc.binary_inventory(object, architecture))) do
+    for _, member in ipairs(added_members(objc.binary_inventory(object, architecture), ours)) do
         names[member] = true
     end
     return table.orderkeys(names)
