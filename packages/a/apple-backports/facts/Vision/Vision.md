@@ -283,11 +283,34 @@ recorded by `tests/backports/host/vision/run.sh` (33 records) and held against t
   | 4x7 to 33x9 | **0** of 432 | 297 of 432 |
   | 100x50 to 224x224 | 3208 of 50176 | 50176 of 50176 |
 
-  So the scale fit is exact on three of the five and one count off on a fourth, the **square
-  centre crops are exact**, and what is left is the **centre crop of a picture whose aspect does not
-  match the target's** -- recorded with its numbers rather than claimed as fixed. The question is
-  where the crop *starts*: the datum from the impulse rows is that Core ML's horizontal inset is one
-  more than `(W - w) / 2` (`16x8` to `32x8` put source column 5 at output 14, where bar + 5 is 13),
-and this is the row that would settle it. The kernel is exact for the fit rule and for a cover of a
-matching aspect, so the kernel is not what is left.
+  So the scale fit is exact on three of the five and one count off on a fourth, and the **square
+  centre crops are exact**.
+
+  **Where the crop starts, measured on six cases** (`.agent-work/runs/crop-probe/inset.m`: a picture
+  black except one white column, brought to a target of a different aspect under Core ML's own
+  `CenterCrop`, and the output row read for where the column landed):
+
+  | case | scale | drawn | (W - w) / 2 | the port's landing | Core ML's lit range |
+  | --- | --- | --- | --- | --- | --- |
+  | 100x50 to 224x224, source 0 | 4.48 | 448 | -112 | off-target | **nothing lit** |
+  | 100x50 to 224x224, source 50 | 4.48 | 448 | -112 | 112 | **112 to 120** |
+  | 50x100 to 224x224, source 0 | 4.48 | 224 | 0 | 0 | **0 to 6** |
+  | 16x8 to 32x8, source 5 | 2 | 32 | 0 | 10 | **9 to 12** |
+  | 10x10 to 30x20, source 3 | 3 | 30 | 0 | 9 | **8 to 12** |
+  | 20x10 to 20x20, source 0 | 2 | 40 | -10 | off-target | **nothing lit** |
+
+  Three of the six are **exactly what the port's rule predicts**, including both overflow cases in
+  both directions -- the wide picture's column 50 lands at 112, which is `-112 + 50 * 4.48`, and the
+  column 0 lands off-target and lights nothing. So the `+1` is not in the cover's overflow, and the
+  earlier datum was a case where the two differ by half a pixel rather than a whole one.
+
+  What is left is one column, and it is not in the overflow: it is in the two cases where the drawn
+  picture **fits the target's width exactly** and overflows only vertically -- `16x8` to `32x8`, where
+  the port lands on 10 and Core ML's response is centred on 10.5, and `10x10` to `30x20`, where the
+  port lands on 9 and Core ML's is centred on 10. In the third fitting case, `50x100` to `224x224`,
+  the two agree exactly, and that case is the one where the picture's *height* is what overflows by
+  more than the width's. So the crop's start on the horizontal axis is not a function of the
+  horizontal geometry alone, and the next measurement is the vertical counterpart: the same six
+  cases with the impulse in a *row*, read down a column, which is what would say whether the two axes
+  share one crop rect -- and if they do, that is the `+1`.
 
