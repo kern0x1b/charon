@@ -93,3 +93,37 @@ the header names it somewhere the port has not looked, these four are implemente
 status is wrong. What settles it is `AudioUnitGetPropertyInfo` over `kAudioUnitScope_Global` on a real
 `AUSampler` for the property behind each accessor — and the emulator probe that found the sampler
 registered is already positioned to answer exactly that.
+
+## The host's own measurement of the three parameters, and the mapping
+
+The release names the parameters — `kAUSamplerParam_Gain` 900, `kAUSamplerParam_CoarseTuning` 901,
+`kAUSamplerParam_FineTuning` 902, `kAUSamplerParam_Pan` 903 — and gives **no range for any of them** in
+`AudioUnitParameters.h`. So the range and the mapping are asked of the host's own
+`AVAudioUnitSampler`, by `tests/backports/host/avfaudio/run-sampler.sh`, which reads
+`kAudioUnitProperty_ParameterInfo` for each id (there is no `AudioUnitGetParameterInfo` on the SDK;
+the range is that property with the parameter id as the element — the same path the port's parameter
+tree walks) and then sets the AVFAudio property and reads the parameter back. Measured:
+
+```
+stage the host's sampler: unit 0xe9c680de
+globalTuning     id 901  status 0  infoStatus 0  current 0  range -24 .. 24
+fineTuning       id 902  status 0  infoStatus 0  current 0  range -99 .. 99
+masterGain       id 900  status 0  infoStatus 0  current 0  range -96 .. 12
+stereoPan        id 903  status 0  infoStatus 0  current 0  range -100 .. 100
+stage globalTuning = 100 -> parameter 901 reads 1 (status 0)
+stage globalTuning = -100 -> parameter 901 reads -1 (status 0)
+stage masterGain = -6 -> parameter 900 reads -6 (status 0)
+stage stereoPan = 0.5 -> parameter 903 reads 0.5 (status 0)
+```
+
+So the mapping the port has to reproduce, and the reason `globalTuning` is the *coarse* one:
+
+| property | parameter | the parameter's range | AVFAudio's own range | the mapping |
+| --- | --- | --- | --- | --- |
+| `globalTuning` | 901 | −24 … 24 | −2400 … +2400 cents | **a factor of 100**: `parameter = cents / 100` |
+| `masterGain` | 900 | −96 … 12 dB | — | **1:1** in decibels |
+| `stereoPan` | 903 | −100 … 100 | — | **1:1** |
+| `fineTuning` | 902 | −99 … 99 | — | the ±99 remainder the coarse one leaves |
+
+`overallGain` has **no** parameter behind it, which is why its row is `inert` with that as the
+reason: the release's sampler holds four parameters and none of them is an overall gain.
