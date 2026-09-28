@@ -37,6 +37,22 @@
     [self charon_apply:value originator:originator atHostTime:hostTime eventType:AUParameterAutomationEventTypeValue automate:hostTime != 0];
 }
 
+// What the observers are told after a scheduled change.
+//
+// The value observers are told the value the unit now holds, which is a real read of the unit: the
+// change is applied by AudioUnitScheduleParameters and the value read back with AudioUnitGetParameter,
+// so nothing here is the port's own account of a write.
+//
+// The recording and automation observers are NOT told, and that is the honest answer rather than a
+// missing one. They exist to report what the *unit* did - a gesture it recognised, a touch and a
+// release - and this release carries no record of it: its property set has no
+// kAudioUnitProperty_ParameterHistory and no kAudioUnitProperty_ParameterValue, only
+// kAudioUnitProperty_ParameterHistoryInfo, which says how often a host *should* poll and how long it
+// should keep what it polls, and the thing it polls does not exist here either. So a host recording a
+// gesture gets nothing, where a newer release would get the unit's account of it. An earlier version
+// of this built the two events in the port and handed them over; that was the port's echo of its own
+// write wearing the unit's name, and it is gone. See facts/AVFAudio/AUAudioUnit.md.
+
 - (void)charon_apply:(AUValue)value
            originator:(AUParameterObserverToken)originator
            atHostTime:(uint64_t)hostTime
@@ -53,23 +69,8 @@
         event.eventType = kParameterEvent_Immediate;
         event.eventValues.immediate.value = (AudioUnitParameterValue)value;
         AudioUnitScheduleParameters(owner.audioUnit, &event, 1);
-        // The unit takes the value at the host time it was given, and the observers hear of the
-        // change now, which is what a host that moved a control expects.
-        AURecordedParameterEvent recorded = {
-            .hostTime = hostTime,
-            .address = self.address,
-            .value = value,
-        };
-        AUParameterAutomationEvent automated = {
-            .hostTime = hostTime,
-            .address = self.address,
-            .value = value,
-            .eventType = eventType,
-            .reserved = 0,
-        };
-        [self charon_notifyValue:value atAddress:self.address];
-        [self charon_notifyRecording:1 events:&recorded];
-        [self charon_notifyAutomation:1 events:&automated];
+        // The value the unit holds now, read back from the unit, is what the value observers get.
+        [self charon_notifyValue:self.value atAddress:self.address];
         return;
     }
     if (owner != nil && owner.audioUnit != NULL) {

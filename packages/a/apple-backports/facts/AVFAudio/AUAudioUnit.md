@@ -114,3 +114,34 @@ automation observer, which is carried.
   `AVAudioSessionCapability` 26.0, `AVAudioSessionPortExtensionBluetoothMicrophone` 26.0),
   transcribed from SDK 26.2 and checked absent in 16.4 first, so the day the build SDK moves past them
   the header can go away instead of shadowing the real declarations.
+
+## Reuse
+
+**searched: none, and here is what was looked for.** The work here is the glue to Apple's names over
+audio units the release already has, so there is nothing to vendor: the queries were
+`AVAudioUnit`, `AUParameterTree`, `AUAudioUnit` and `kAudioUnitProperty_ParameterInfo` on GitHub
+repository search, and the permissive results are sample applications (MIT, single-digit to low-double-digit
+stars) or a macOS-only Rust binding crate (Apache-2.0) — none re-implements Apple's classes, and all
+call the same AudioUnit C API this library already calls. For the distance-attenuation maths, the
+upstreams the brief names are **Resonance Audio** and **Steam Audio**, both Apache-2.0: nothing is taken
+from either, because the three models the header defines are three closed forms and the mixer
+already applies the result as its own gain. OpenAL Soft is LGPL and was not read.
+
+## What the recording and automation observers are not told, and why
+
+`tokenByAddingParameterRecordingObserver:` and `tokenByAddingParameterAutomationObserver:` register,
+and an observer added to either is **not** called after a change on this release. They exist to report
+what the *unit* did — a gesture it recognised, a touch and a release — and this release carries no
+record of it. Measured on the build SDK's own `AudioUnitProperties.h`: the property set has
+`kAudioUnitProperty_ParameterHistoryInfo` (id 53) and nothing else — **no**
+`kAudioUnitProperty_ParameterHistory` and **no** `kAudioUnitProperty_ParameterValue`. The first says
+how often a host *should* poll and how long it should keep what it polls; the thing it would poll is
+not in this release. So there is nothing of the unit's to hand an observer.
+
+An earlier version of this built an `AURecordedParameterEvent` and an `AUParameterAutomationEvent` in
+the port and handed them over after a scheduled change. That was the port's echo of its own write
+wearing the unit's name, and it is gone. What the value observers get is the value the unit **holds
+after** the change, read back with `AudioUnitGetParameter` — a real read of the unit, which is what
+`AUParameterObserver`'s own header asks for. The two record-shaped observers are silent here, and a
+host that records a gesture on this release records nothing rather than being told the port's own
+account of it.

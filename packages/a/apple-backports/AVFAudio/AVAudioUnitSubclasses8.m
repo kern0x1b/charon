@@ -280,7 +280,7 @@
     return self;
 }
 
-// The v2 distortion unit of this release has no PreGain and no WetDryMix parameter. Its fifteen are
+// The v2 distortion unit of this release has no PreGain and no WetDryMix parameter. Its sixteen, ids 0-15, are
 // Delay, Decay, DelayMix, Decimation, Rounding, DecimationMix, LinearTerm, SquaredTerm, CubicTerm,
 // PolynomialMix, RingModFreq1, RingModFreq2, RingModBalance, RingModMix, SoftClipGain and FinalMix -
 // all out of AudioUnitParameters.h, and none of them either of these. So both values are kept and
@@ -308,7 +308,7 @@
     _charon_wetDryMix = wetDryMix;
 }
 
-// The v2 distortion unit of this release has no preset parameter and no factory presets: its fifteen
+// The v2 distortion unit of this release has no preset parameter and no factory presets: its sixteen, ids 0-15,
 // parameters are the ring modulator and decimation ones listed above, and a preset number is not one
 // of them. The preset is therefore kept and nothing acts on it, which is what the registry calls
 // inert - a value a host can set and read back that changes no audio on this release.

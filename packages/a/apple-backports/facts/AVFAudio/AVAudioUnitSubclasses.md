@@ -32,14 +32,14 @@ id the unit does not have.
 `AVAudioUnitDistortion.preGain`, `AVAudioUnitDistortion.wetDryMix`,
 `AVAudioUnitDistortion.loadFactoryPreset:` and `AVAudioUnitReverb.loadFactoryPreset:` are kept and read
 back, and **nothing acts on them**. The reason is measured, not guessed: iOS 6.1.3's v2 distortion unit
-has fifteen parameters — `kDistortionParam_Delay`, `_Decay`, `_DelayMix`, `_Decimation`, `_Rounding`,
+has sixteen parameters, ids 0-15 — `kDistortionParam_Delay`, `_Decay`, `_DelayMix`, `_Decimation`, `_Rounding`,
 `_DecimationMix`, `_LinearTerm`, `_SquaredTerm`, `_CubicTerm`, `_PolynomialMix`, `_RingModFreq1`,
 `_RingModFreq2`, `_RingModBalance`, `_RingModMix`, `_SoftClipGain` and `_FinalMix` — and neither
 `PreGain` nor `WetDryMix` nor any preset is among them. Its reverb carries the `kReverb2Param_*` set
 and no preset either. `preGain` and `wetDryMix` are v3 members of the AudioUnit.framework units, and
 `loadFactoryPreset:` is v3 with it.
 
-Mapping either property onto one of the fifteen would be a claim the release cannot back, so they are
+Mapping either property onto one of the sixteen would be a claim the release cannot back, so they are
 `inert`: a value a host can set before the node is rendered and read back afterwards, which changes
 no audio on this release. That is the registry's `inert` status and not a silent fake; the effect and
 the reason are in `registry/AVFAudio/iosaudiounitsubclasses8.json`.

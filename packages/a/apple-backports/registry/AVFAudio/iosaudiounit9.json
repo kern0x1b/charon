@@ -2,15 +2,6 @@
   "framework": "AVFAudio",
   "entries": [
     {
-      "api": "AUAudioUnit",
-      "kind": "class",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/AVFAudio/AUAudioUnit.md",
-      "source": "SDK 16.4 and SDK 26.2 AUAudioUnit.h/AUParameters.h/AudioToolbox AUComponent.h, and the C base read from the real armv7 6.1.3 shared cache with dyld.load: AudioToolbox exports the whole AudioComponent family (ten functions), the whole AudioUnit family and the whole AUGraph family, and iOS 6.1.3 exports no AudioUnit.framework and no AUAudioUnit C entry point"
-    },
-    {
       "api": "-[AUAudioUnit allocateRenderResourcesAndReturnError:]",
       "kind": "method",
       "introduced": "9.0",
@@ -47,15 +38,6 @@
       "source": "SDK 16.4 and SDK 26.2 AUAudioUnit.h/AUParameters.h/AudioToolbox AUComponent.h, and the C base read from the real armv7 6.1.3 shared cache with dyld.load: AudioToolbox exports the whole AudioComponent family (ten functions), the whole AudioUnit family and the whole AUGraph family, and iOS 6.1.3 exports no AudioUnit.framework and no AUAudioUnit C entry point"
     },
     {
-      "api": "-[AUAudioUnit component]",
-      "kind": "method",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/AVFAudio/AUAudioUnit.md",
-      "source": "SDK 16.4 and SDK 26.2 AUAudioUnit.h/AUParameters.h/AudioToolbox AUComponent.h, and the C base read from the real armv7 6.1.3 shared cache with dyld.load: AudioToolbox exports the whole AudioComponent family (ten functions), the whole AudioUnit family and the whole AUGraph family, and iOS 6.1.3 exports no AudioUnit.framework and no AUAudioUnit C entry point"
-    },
-    {
       "api": "-[AUAudioUnit componentDescription]",
       "kind": "method",
       "introduced": "9.0",
@@ -75,6 +57,15 @@
     },
     {
       "api": "-[AUAudioUnit componentVersion]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFAudio/AUAudioUnit.md",
+      "source": "SDK 16.4 and SDK 26.2 AUAudioUnit.h/AUParameters.h/AudioToolbox AUComponent.h, and the C base read from the real armv7 6.1.3 shared cache with dyld.load: AudioToolbox exports the whole AudioComponent family (ten functions), the whole AudioUnit family and the whole AUGraph family, and iOS 6.1.3 exports no AudioUnit.framework and no AUAudioUnit C entry point"
+    },
+    {
+      "api": "-[AUAudioUnit component]",
       "kind": "method",
       "introduced": "9.0",
       "minimum": "6.0",
@@ -353,15 +344,6 @@
       "source": "SDK 16.4 and SDK 26.2 AUAudioUnit.h/AUParameters.h/AudioToolbox AUComponent.h, and the C base read from the real armv7 6.1.3 shared cache with dyld.load: AudioToolbox exports the whole AudioComponent family (ten functions), the whole AudioUnit family and the whole AUGraph family, and iOS 6.1.3 exports no AudioUnit.framework and no AUAudioUnit C entry point"
     },
     {
-      "api": "AUAudioUnitBus",
-      "kind": "class",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/AVFAudio/AUAudioUnit.md",
-      "source": "SDK 16.4 and SDK 26.2 AUAudioUnit.h/AUParameters.h/AudioToolbox AUComponent.h, and the C base read from the real armv7 6.1.3 shared cache with dyld.load: AudioToolbox exports the whole AudioComponent family (ten functions), the whole AudioUnit family and the whole AUGraph family, and iOS 6.1.3 exports no AudioUnit.framework and no AUAudioUnit C entry point"
-    },
-    {
       "api": "-[AUAudioUnitBus busType]",
       "kind": "method",
       "introduced": "9.0",
@@ -470,15 +452,6 @@
       "source": "SDK 16.4 and SDK 26.2 AUAudioUnit.h/AUParameters.h/AudioToolbox AUComponent.h, and the C base read from the real armv7 6.1.3 shared cache with dyld.load: AudioToolbox exports the whole AudioComponent family (ten functions), the whole AudioUnit family and the whole AUGraph family, and iOS 6.1.3 exports no AudioUnit.framework and no AUAudioUnit C entry point"
     },
     {
-      "api": "AUAudioUnitBusArray",
-      "kind": "class",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/AVFAudio/AUAudioUnit.md",
-      "source": "SDK 16.4 and SDK 26.2 AUAudioUnit.h/AUParameters.h/AudioToolbox AUComponent.h, and the C base read from the real armv7 6.1.3 shared cache with dyld.load: AudioToolbox exports the whole AudioComponent family (ten functions), the whole AudioUnit family and the whole AUGraph family, and iOS 6.1.3 exports no AudioUnit.framework and no AUAudioUnit C entry point"
-    },
-    {
       "api": "-[AUAudioUnitBusArray addObserverToAllBusses:forKeyPath:options:context:]",
       "kind": "method",
       "introduced": "9.0",
@@ -497,7 +470,7 @@
       "source": "SDK 16.4 and SDK 26.2 AUAudioUnit.h/AUParameters.h/AudioToolbox AUComponent.h, and the C base read from the real armv7 6.1.3 shared cache with dyld.load: AudioToolbox exports the whole AudioComponent family (ten functions), the whole AudioUnit family and the whole AUGraph family, and iOS 6.1.3 exports no AudioUnit.framework and no AUAudioUnit C entry point"
     },
     {
-      "api": "-[AUAudioUnitBusArray count]",
+      "api": "-[AUAudioUnitBusArray countByEnumeratingWithState:objects:count:]",
       "kind": "method",
       "introduced": "9.0",
       "minimum": "6.0",
@@ -506,7 +479,7 @@
       "source": "SDK 16.4 and SDK 26.2 AUAudioUnit.h/AUParameters.h/AudioToolbox AUComponent.h, and the C base read from the real armv7 6.1.3 shared cache with dyld.load: AudioToolbox exports the whole AudioComponent family (ten functions), the whole AudioUnit family and the whole AUGraph family, and iOS 6.1.3 exports no AudioUnit.framework and no AUAudioUnit C entry point"
     },
     {
-      "api": "-[AUAudioUnitBusArray countByEnumeratingWithState:objects:count:]",
+      "api": "-[AUAudioUnitBusArray count]",
       "kind": "method",
       "introduced": "9.0",
       "minimum": "6.0",
@@ -578,15 +551,6 @@
       "source": "SDK 16.4 and SDK 26.2 AUAudioUnit.h/AUParameters.h/AudioToolbox AUComponent.h, and the C base read from the real armv7 6.1.3 shared cache with dyld.load: AudioToolbox exports the whole AudioComponent family (ten functions), the whole AudioUnit family and the whole AUGraph family, and iOS 6.1.3 exports no AudioUnit.framework and no AUAudioUnit C entry point"
     },
     {
-      "api": "AUAudioUnitPreset",
-      "kind": "class",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/AVFAudio/AUAudioUnit.md",
-      "source": "SDK 16.4 and SDK 26.2 AUAudioUnit.h/AUParameters.h/AudioToolbox AUComponent.h, and the C base read from the real armv7 6.1.3 shared cache with dyld.load: AudioToolbox exports the whole AudioComponent family (ten functions), the whole AudioUnit family and the whole AUGraph family, and iOS 6.1.3 exports no AudioUnit.framework and no AUAudioUnit C entry point"
-    },
-    {
       "api": "-[AUAudioUnitPreset encodeWithCoder:]",
       "kind": "method",
       "introduced": "9.0",
@@ -634,15 +598,6 @@
     {
       "api": "-[AUAudioUnitPreset setNumber:]",
       "kind": "method",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/AVFAudio/AUAudioUnit.md",
-      "source": "SDK 16.4 and SDK 26.2 AUAudioUnit.h/AUParameters.h/AudioToolbox AUComponent.h, and the C base read from the real armv7 6.1.3 shared cache with dyld.load: AudioToolbox exports the whole AudioComponent family (ten functions), the whole AudioUnit family and the whole AUGraph family, and iOS 6.1.3 exports no AudioUnit.framework and no AUAudioUnit C entry point"
-    },
-    {
-      "api": "AUParameter",
-      "kind": "class",
       "introduced": "9.0",
       "minimum": "6.0",
       "status": "implemented",
@@ -758,15 +713,6 @@
       "source": "SDK 16.4 and SDK 26.2 AUAudioUnit.h/AUParameters.h/AudioToolbox AUComponent.h, and the C base read from the real armv7 6.1.3 shared cache with dyld.load: AudioToolbox exports the whole AudioComponent family (ten functions), the whole AudioUnit family and the whole AUGraph family, and iOS 6.1.3 exports no AudioUnit.framework and no AUAudioUnit C entry point"
     },
     {
-      "api": "-[AUParameter unit]",
-      "kind": "method",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/AVFAudio/AUAudioUnit.md",
-      "source": "SDK 16.4 and SDK 26.2 AUAudioUnit.h/AUParameters.h/AudioToolbox AUComponent.h, and the C base read from the real armv7 6.1.3 shared cache with dyld.load: AudioToolbox exports the whole AudioComponent family (ten functions), the whole AudioUnit family and the whole AUGraph family, and iOS 6.1.3 exports no AudioUnit.framework and no AUAudioUnit C entry point"
-    },
-    {
       "api": "-[AUParameter unitName]",
       "kind": "method",
       "introduced": "9.0",
@@ -776,7 +722,7 @@
       "source": "SDK 16.4 and SDK 26.2 AUAudioUnit.h/AUParameters.h/AudioToolbox AUComponent.h, and the C base read from the real armv7 6.1.3 shared cache with dyld.load: AudioToolbox exports the whole AudioComponent family (ten functions), the whole AudioUnit family and the whole AUGraph family, and iOS 6.1.3 exports no AudioUnit.framework and no AUAudioUnit C entry point"
     },
     {
-      "api": "-[AUParameter value]",
+      "api": "-[AUParameter unit]",
       "kind": "method",
       "introduced": "9.0",
       "minimum": "6.0",
@@ -803,8 +749,8 @@
       "source": "SDK 16.4 and SDK 26.2 AUAudioUnit.h/AUParameters.h/AudioToolbox AUComponent.h, and the C base read from the real armv7 6.1.3 shared cache with dyld.load: AudioToolbox exports the whole AudioComponent family (ten functions), the whole AudioUnit family and the whole AUGraph family, and iOS 6.1.3 exports no AudioUnit.framework and no AUAudioUnit C entry point"
     },
     {
-      "api": "AUParameterGroup",
-      "kind": "class",
+      "api": "-[AUParameter value]",
+      "kind": "method",
       "introduced": "9.0",
       "minimum": "6.0",
       "status": "implemented",
@@ -866,16 +812,7 @@
       "source": "SDK 16.4 and SDK 26.2 AUAudioUnit.h/AUParameters.h/AudioToolbox AUComponent.h, and the C base read from the real armv7 6.1.3 shared cache with dyld.load: AudioToolbox exports the whole AudioComponent family (ten functions), the whole AudioUnit family and the whole AUGraph family, and iOS 6.1.3 exports no AudioUnit.framework and no AUAudioUnit C entry point"
     },
     {
-      "api": "AUParameterNode",
-      "kind": "class",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/AVFAudio/AUAudioUnit.md",
-      "source": "SDK 16.4 and SDK 26.2 AUAudioUnit.h/AUParameters.h/AudioToolbox AUComponent.h, and the C base read from the real armv7 6.1.3 shared cache with dyld.load: AudioToolbox exports the whole AudioComponent family (ten functions), the whole AudioUnit family and the whole AUGraph family, and iOS 6.1.3 exports no AudioUnit.framework and no AUAudioUnit C entry point"
-    },
-    {
-      "api": "-[AUParameterNode displayName]",
+      "api": "-[AUParameterNode displayNameWithLength:]",
       "kind": "method",
       "introduced": "9.0",
       "minimum": "6.0",
@@ -884,7 +821,7 @@
       "source": "SDK 16.4 and SDK 26.2 AUAudioUnit.h/AUParameters.h/AudioToolbox AUComponent.h, and the C base read from the real armv7 6.1.3 shared cache with dyld.load: AudioToolbox exports the whole AudioComponent family (ten functions), the whole AudioUnit family and the whole AUGraph family, and iOS 6.1.3 exports no AudioUnit.framework and no AUAudioUnit C entry point"
     },
     {
-      "api": "-[AUParameterNode displayNameWithLength:]",
+      "api": "-[AUParameterNode displayName]",
       "kind": "method",
       "introduced": "9.0",
       "minimum": "6.0",
@@ -947,15 +884,6 @@
       "source": "SDK 16.4 and SDK 26.2 AUAudioUnit.h/AUParameters.h/AudioToolbox AUComponent.h, and the C base read from the real armv7 6.1.3 shared cache with dyld.load: AudioToolbox exports the whole AudioComponent family (ten functions), the whole AudioUnit family and the whole AUGraph family, and iOS 6.1.3 exports no AudioUnit.framework and no AUAudioUnit C entry point"
     },
     {
-      "api": "AUParameterTree",
-      "kind": "class",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/AVFAudio/AUAudioUnit.md",
-      "source": "SDK 16.4 and SDK 26.2 AUAudioUnit.h/AUParameters.h/AudioToolbox AUComponent.h, and the C base read from the real armv7 6.1.3 shared cache with dyld.load: AudioToolbox exports the whole AudioComponent family (ten functions), the whole AudioUnit family and the whole AUGraph family, and iOS 6.1.3 exports no AudioUnit.framework and no AUAudioUnit C entry point"
-    },
-    {
       "api": "-[AUParameterTree parameterWithAddress:]",
       "kind": "method",
       "introduced": "9.0",
@@ -976,6 +904,89 @@
     {
       "api": "-[AUParameterTree valueForKeyPath:]",
       "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFAudio/AUAudioUnit.md",
+      "source": "SDK 16.4 and SDK 26.2 AUAudioUnit.h/AUParameters.h/AudioToolbox AUComponent.h, and the C base read from the real armv7 6.1.3 shared cache with dyld.load: AudioToolbox exports the whole AudioComponent family (ten functions), the whole AudioUnit family and the whole AUGraph family, and iOS 6.1.3 exports no AudioUnit.framework and no AUAudioUnit C entry point"
+    },
+    {
+      "api": "-[AVAudioUnitBus setLatency:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "facts": "facts/AVFAudio/AVAudioUnitMixing.md",
+      "source": "SDK 16.4 and 26.2 AVFAudio AVAudioMixing.h and the AVAudioUnit/TimeEffect/Generator headers, over the release's own k3DMixerParam_ set (AudioToolbox AudioUnitParameters.h, iOS 2.0) and kAudioUnitProperty_BypassEffect, the two the header itself names for these members",
+      "reason": "the header's own AudioUnitProperties.h marks kAudioUnitProperty_Latency \"Access: Read\"; measured against a real host AudioUnit, AudioUnitSetProperty on it is refused with kAudioUnitErr_InvalidProperty (-10879) and the read-back is unchanged",
+      "effect": "calling it raises an unrecognised selector, which is what absent means; the bus's own latency is read and answers what the unit holds"
+    },
+    {
+      "api": "AUAudioUnit",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFAudio/AUAudioUnit.md",
+      "source": "SDK 16.4 and SDK 26.2 AUAudioUnit.h/AUParameters.h/AudioToolbox AUComponent.h, and the C base read from the real armv7 6.1.3 shared cache with dyld.load: AudioToolbox exports the whole AudioComponent family (ten functions), the whole AudioUnit family and the whole AUGraph family, and iOS 6.1.3 exports no AudioUnit.framework and no AUAudioUnit C entry point"
+    },
+    {
+      "api": "AUAudioUnitBus",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFAudio/AUAudioUnit.md",
+      "source": "SDK 16.4 and SDK 26.2 AUAudioUnit.h/AUParameters.h/AudioToolbox AUComponent.h, and the C base read from the real armv7 6.1.3 shared cache with dyld.load: AudioToolbox exports the whole AudioComponent family (ten functions), the whole AudioUnit family and the whole AUGraph family, and iOS 6.1.3 exports no AudioUnit.framework and no AUAudioUnit C entry point"
+    },
+    {
+      "api": "AUAudioUnitBusArray",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFAudio/AUAudioUnit.md",
+      "source": "SDK 16.4 and SDK 26.2 AUAudioUnit.h/AUParameters.h/AudioToolbox AUComponent.h, and the C base read from the real armv7 6.1.3 shared cache with dyld.load: AudioToolbox exports the whole AudioComponent family (ten functions), the whole AudioUnit family and the whole AUGraph family, and iOS 6.1.3 exports no AudioUnit.framework and no AUAudioUnit C entry point"
+    },
+    {
+      "api": "AUAudioUnitPreset",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFAudio/AUAudioUnit.md",
+      "source": "SDK 16.4 and SDK 26.2 AUAudioUnit.h/AUParameters.h/AudioToolbox AUComponent.h, and the C base read from the real armv7 6.1.3 shared cache with dyld.load: AudioToolbox exports the whole AudioComponent family (ten functions), the whole AudioUnit family and the whole AUGraph family, and iOS 6.1.3 exports no AudioUnit.framework and no AUAudioUnit C entry point"
+    },
+    {
+      "api": "AUParameter",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFAudio/AUAudioUnit.md",
+      "source": "SDK 16.4 and SDK 26.2 AUAudioUnit.h/AUParameters.h/AudioToolbox AUComponent.h, and the C base read from the real armv7 6.1.3 shared cache with dyld.load: AudioToolbox exports the whole AudioComponent family (ten functions), the whole AudioUnit family and the whole AUGraph family, and iOS 6.1.3 exports no AudioUnit.framework and no AUAudioUnit C entry point"
+    },
+    {
+      "api": "AUParameterGroup",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFAudio/AUAudioUnit.md",
+      "source": "SDK 16.4 and SDK 26.2 AUAudioUnit.h/AUParameters.h/AudioToolbox AUComponent.h, and the C base read from the real armv7 6.1.3 shared cache with dyld.load: AudioToolbox exports the whole AudioComponent family (ten functions), the whole AudioUnit family and the whole AUGraph family, and iOS 6.1.3 exports no AudioUnit.framework and no AUAudioUnit C entry point"
+    },
+    {
+      "api": "AUParameterNode",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFAudio/AUAudioUnit.md",
+      "source": "SDK 16.4 and SDK 26.2 AUAudioUnit.h/AUParameters.h/AudioToolbox AUComponent.h, and the C base read from the real armv7 6.1.3 shared cache with dyld.load: AudioToolbox exports the whole AudioComponent family (ten functions), the whole AudioUnit family and the whole AUGraph family, and iOS 6.1.3 exports no AudioUnit.framework and no AUAudioUnit C entry point"
+    },
+    {
+      "api": "AUParameterTree",
+      "kind": "class",
       "introduced": "9.0",
       "minimum": "6.0",
       "status": "implemented",
