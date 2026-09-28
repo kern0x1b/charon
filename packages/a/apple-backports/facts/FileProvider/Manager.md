@@ -5,53 +5,65 @@ The first family of the FileProvider port, and the one with 38 of the 217 missin
 port builds is 6.1.3, which has no FileProvider framework and no extension host at all, so the
 whole family is the port's own work.
 
-## Oracle: the documentation, because the host is forbidden or absent
+## Oracle: the host, for the two members the header leaves available
 
-**The host cannot answer these questions, and it is worth saying exactly which part of it is
-why.** macOS has FileProvider, and the coordinator's expectation was that `+managerForDomain:`,
-`+getDomainsWithCompletionHandler:`, `placeholderURLForURL:` and the error domain are measurable
-there. Compiled against the Command Line Tools' macOS SDK, they are not:
+**I got this wrong once and the header settles it.** A first pass took `defaultManager` and
+`providerIdentifier` for iOS-only and reported the manager unmeasurable. `NSFileProviderManager.h`
+in the Command Line Tools' macOS SDK says otherwise:
 
 ```
-manager-host.swift:20:37: error: 'defaultManager' is unavailable in macOS
-manager-host.swift:23:61: error: 'providerIdentifier' is unavailable in macOS
-error: 'placeholderURLForURL(for:)' is unavailable in macOS
-error: type 'NSFileProviderManager' has no member 'manager'
+62:  @property (class, readonly, strong) NSFileProviderManager *defaultManager API_UNAVAILABLE(macos);
+67:  + (nullable instancetype)managerForDomain:(NSFileProviderDomain *)domain;
+217: + (NSURL *)placeholderURLForURL:(NSURL *)url FILEPROVIDER_API_AVAILABILITY_V2;
+244: + (void)getDomainsWithCompletionHandler:(void (^)(NSArray<NSFileProviderDomain *> *domains, NSError * _Nullable error))completionHandler;
 ```
 
-`defaultManager` and `providerIdentifier` are **iOS-only**, and so is the placeholder URL; the
-manager-for-a-domain class method is absent from the macOS SDK under any spelling tried. So the
-manager a domain owner talks to exists only on the platform whose extension host the port also
-lacks.
+`defaultManager` is the one excluded on macOS, and `placeholderURLForURL:` carries
+`FILEPROVIDER_API_AVAILABILITY_V2`, which the Swift importer refuses there. **`managerForDomain:`
+and `getDomainsWithCompletionHandler:` carry NO availability macro at all** - they are available,
+and the earlier failure was my Swift spelling (`.manager`), not the platform.
 
-**And the rest is forbidden rather than absent**, on the host as on the device: `addDomain:`,
-`removeDomain:`, `removeAllDomainsWithCompletionHandler:`, `signalEnumeratorFor…`,
-`claimKnownFolders:…` and `registerURLSessionTask:` change the state of the machine, and the rule
-is the same as NetworkExtension's. A differential that called them would be testing the Mac.
+Measured, in Objective-C, with the header's own selectors
+(`.agent-work/probe/host/domains-host.m`, read-only: a list and a lookup on a domain that is not
+registered):
 
-**What follows for the port.** Each member of the 11.0 core therefore answers from the header and
-its documentation, and the facts say so rather than implying a measurement happened:
+```
+getDomainsWithCompletionHandler: = 0 domain(s), error = The application cannot be used right now.
+   NSError domain/code           = NSFileProviderErrorDomain / -2001
+managerForDomain(unregistered)  = a manager
+NSFileProviderErrorDomain       = NSFileProviderErrorDomain
+   NSFileProviderErrorNoSuchItem      = -1005   "no such item"
+   NSFileProviderErrorServerUnreachable = -1004
+```
 
-| member | answer on 6.1.3 | where the answer comes from |
+**Two lines of the previous version of this file were wrong, and both were guesses dressed as
+findings.** `getDomains` is not "an empty array and no error": it is an empty array **and an
+error**, `NSFileProviderErrorDomain` code **-2001**. And `managerForDomain:` on an unregistered
+domain is **a manager, not nil**. A third guess is gone with them: `DomainNotFound` and
+`NoSuchExtension` are **not declared at all** in the macOS SDK's `NSFileProviderError.h` - I made
+those names up, and the codes above are the ones that exist.
+
+So the table, per member, with where each answer comes from:
+
+| member | answer | oracle |
 | --- | --- | --- |
-| `+defaultManager` | a manager with no domains | documentation: there is no extension host, so the default manager is empty, not absent |
-| `+getDomainsWithCompletionHandler:` | an **empty array and no error** | documentation: no host means no domains, and an empty list is not a failure |
-| `+managerForDomain:` | nil, and the completion with `NSFileProviderErrorDomainNotFound` | the header's documented error, whose value the header carries |
-| `-placeholderURLForURL:` | the URL itself, unchanged | documentation: with no domains there is no placeholder mapping, so the file is where it is |
-| `-stateDirectoryURLWithError:` | the container's own directory, no error | documentation: a manager with no domains still has state |
-| `-addDomain:` / `-removeDomain:` | the completion with the documented error | documentation; **forbidden on the host**, so there is no oracle even if the host had the class |
-| `+NSFileProviderError` values | the values in the header | the header; the `domain` string `NSFileProviderErrorDomain` is the framework's own and is the same on every platform that has it |
-
-The error constants are the one part that is *almost* measurable — the host's own
-`NSFileProviderError.Code` carries `rawValue` and `domain` — and the header carries the same
-numbers, so the port exports the header's and quotes the host for the domain string. What the host
-could not give is a manager to ask.
+| `+getDomainsWithCompletionHandler:` | **0 domains, and an error**: `NSFileProviderErrorDomain` / -2001 | **the host**, measured |
+| `+managerForDomain:` (unregistered) | **a manager** | **the host**, measured |
+| `+defaultManager` | excluded on macOS; on 6.1.3 a manager with no domains | documentation - the host is absent, and iOS-only |
+| `-placeholderURLForURL:` | `FILEPROVIDER_API_AVAILABILITY_V2`, refused by the macOS importer | documentation - the host is absent |
+| `-providerIdentifier` | same macro, refused on macOS | documentation |
+| `-addDomain:` / `-removeDomain:` / `-removeAllDomains…` | the completion with the documented error | **forbidden on the host**, as on the device |
+| `-signalEnumeratorFor…`, `-claimKnownFolders:…`, `-registerURLSessionTask:` | as the header documents | **forbidden on the host** |
+| `NSFileProviderError` codes | the values above, from the header and quoted by the host | **both** |
 
 ## The honest limit
 
-There is **no differential for this family's behaviour**, because there is no second
-implementation on this machine to compare against: the class is iOS-only, the calls that would
-exercise it are forbidden, and the release the port targets has no such framework. The differential
-that *can* exist is over the **constants and the shapes** — the error domain, the raw values, the
-empty-domains contract — and that is what a mutant would be written against: change the value a
-constant carries, and the differential goes red.
+**There is a differential for the two measurable members and not for the rest.** `getDomains` and
+`managerForDomain:` are measured above and can be compared on both sides, and the error domain and
+its codes are measured on both. The members that would exercise the manager's behaviour -
+`addDomain:`, `removeDomain:`, the known-folder claim, the task registration, the enumerator
+signalling - are forbidden on the host and absent on 6.1.3, so their answers come from the
+documentation and the table says which line is which.
+
+The mutant belongs on the constants: change a code the port exports and the differential goes
+red against -1005 and -2001.
