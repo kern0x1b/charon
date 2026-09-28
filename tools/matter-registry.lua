@@ -85,6 +85,7 @@ local function surface(binary, architecture)
     if not inventory then
         raise("%s has no %s slice", binary, architecture)
     end
+    found.inventory = inventory
     for name, class in pairs(inventory.classes) do
         found.classes[name] = true
         for kind, sign in pairs({instance = "-", class = "+"}) do
@@ -102,17 +103,34 @@ local function surface(binary, architecture)
     return found
 end
 
+-- A member of a class is answered by the class or by any of its superclasses, and objc.lua keys a class's *own* method
+-- list by sign and selector ("-authMode"), not by the -[Class selector:] spelling the registry uses. Reading only the
+-- class's own list misses every accessor a subclass inherits, which is every accessor of the model's deprecated
+-- ...Entry, ...EP and ...OutputInfo classes over its ...Struct classes.
+local function responds(inventory, name, sign, selector)
+    local seen = {}
+    while name and inventory.classes[name] and not seen[name] do
+        seen[name] = true
+        if inventory.classes[name].instance[sign .. selector] or inventory.classes[name].class[sign .. selector] then
+            return true
+        end
+        name = inventory.classes[name].superclass
+    end
+    return false
+end
+
 -- The accessors a property is written as: its getter -[Class name], or its setter -[Class setName:]. The SDK spells a
 -- getter after the property with a prefix as well (isName, hasName, canName, ...), so each of those is a getter too.
 local function property_answered(found, owner, name)
-    if found.members["-[" .. owner .. " " .. name .. "]"] then
+    if found.members["-[" .. owner .. " " .. name .. "]"] or responds(found.inventory, owner, "-", name) then
         return true
     end
-    if found.members["-[" .. owner .. " set" .. name:sub(1, 1):upper() .. name:sub(2) .. ":]"] then
+    if found.members["-[" .. owner .. " set" .. name:sub(1, 1):upper() .. name:sub(2) .. ":]"] or
+       responds(found.inventory, owner, "-", "set" .. name:sub(1, 1):upper() .. name:sub(2) .. ":") then
         return true
     end
     for _, prefix in ipairs({"is", "has", "as", "can", "should", "will", "did", "countOf", "objectAt"}) do
-        if found.members["-[" .. owner .. " " .. prefix .. name:sub(1, 1):upper() .. name:sub(2) .. "]"] then
+        if responds(found.inventory, owner, "-", prefix .. name:sub(1, 1):upper() .. name:sub(2)) then
             return true
         end
     end
@@ -202,7 +220,7 @@ function main(binary, corpus, outdir, facts, architecture)
     local families, carried, missing = {}, 0, {}
     for _, row in ipairs(rows) do
         local status
-        local sign, owner_of = row.api:match("^([-+])%[([%w_]+) (.+)%]$")
+        local sign, owner_of, selector = row.api:match("^([-+])%[([%w_]+) (.+)%]$")
         local owner, name = row.api:match("^([%u][%w_]*)%.(.+)$")
         if row.kind == "class" then
             status = found.classes[row.api]
@@ -210,7 +228,7 @@ function main(binary, corpus, outdir, facts, architecture)
             status = found.protocols[row.api]
         elseif row.kind == "method" then
             if sign then
-                status = found.members[row.api]
+                status = found.members[row.api] or responds(found.inventory, owner_of, sign, selector)
             elseif owner and found.members["-[" .. owner .. " " .. name .. "]"] or found.members["+[" .. owner .. " " .. name .. "]"] then
                 status = true
             end

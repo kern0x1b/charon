@@ -49,6 +49,23 @@ import("core.base.json")
 local objc = import("apple.objc", {rootdir = path.join(os.scriptdir(), "..", "modules"), anonymous = true})
 local macho = import("apple.macho", {rootdir = path.join(os.scriptdir(), "..", "modules"), anonymous = true})
 
+
+-- A member of a class is answered by the class or by any of its superclasses, and objc.lua keys a class's *own*
+-- method list by sign and selector ("-authMode"), not by the -[Class selector:] spelling the registry uses. Reading
+-- only the class's own list therefore misses every accessor a subclass inherits, which is every accessor of the
+-- deprecated ...Entry, ...EP and ...OutputInfo classes the model declares over its ...Struct classes.
+local function responds(inv, name, sign, selector)
+    local seen = {}
+    while name and inv.classes[name] and not seen[name] do
+        seen[name] = true
+        if inv.classes[name].instance[sign .. selector] or inv.classes[name].class[sign .. selector] then
+            return true
+        end
+        name = inv.classes[name].superclass
+    end
+    return false
+end
+
 local FRAMEWORK = "Matter"
 
 -- The symbols a C++ library and a compiler's runtime carry that are not the framework's API: not the port's business,
@@ -114,7 +131,7 @@ local function surface(binary, architecture)
     for name in pairs(inventory.protocols) do
         found.protocols[name] = true
     end
-    return found
+    return found, inventory
 end
 
 -- The host's TSV, as a surface of the same shape the port's library is read into.
@@ -209,6 +226,9 @@ local function rows_of(corpus)
     return rows
 end
 
+-- The port's own inventory, kept so a member can be looked up through the class's superclasses.
+local portinventory
+
 function main(corpus, host, port, architecture)
     local rows = rows_of(corpus)
     local theirs = host_surface(host)
@@ -216,7 +236,7 @@ function main(corpus, host, port, architecture)
     -- rows of the SDK 26.2 surface this host's own framework carries.
     local ours, haveport
     if port and os.isfile(port) then
-        ours = surface(port, architecture or "armv7")
+        ours, portinventory = surface(port, architecture or "armv7")
         haveport = true
     else
         ours = {classes = {}, members = {}, symbols = {}, protocols = {}}
@@ -229,7 +249,21 @@ function main(corpus, host, port, architecture)
     end
     local lines = {}
     for _, row in ipairs(rows) do
+        -- The port's side: the same rows, but a member is looked for through the class's superclasses.
+        local sign, owner_of, selector = row.api:match("^([-+])%[([%w_]+) (.+)%]$")
+        if sign and portinventory then
+            row.resolved = responds(portinventory, owner_of, sign, selector)
+        end
         local here, there = answered(ours, row), answered(theirs, row)
+        if haveport and row.kind == "method" and row.resolved then
+            here = true
+        elseif haveport and row.kind == "property" and portinventory then
+            local owner, prop = row.api:match("^([%u][%w_]*)%.(.+)$")
+            if owner then
+                here = responds(portinventory, owner, "-", prop) or
+                       responds(portinventory, owner, "-", "set" .. prop:sub(1, 1):upper() .. prop:sub(2) .. ":")
+            end
+        end
         local answer
         if haveport then
             if here and there then
