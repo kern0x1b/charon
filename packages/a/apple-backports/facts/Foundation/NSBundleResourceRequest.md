@@ -4,10 +4,10 @@ Introduced in iOS 9.0. The application's own on-demand resources, seen from the 
 them: a set of tags, the bundle they resolve in, a priority, and a progress that is complete the
 moment the request exists. Plus the two `NSBundle` methods that hold a priority per bundle and tag.
 
-Source: the host's own class on macOS 27.0 through `tests/backports/host/bundlerequest` (78
-comparisons, none differing, and fourteen one-line changes of the rules below each caught by that
-differential), the header's own words where the host has no answer, and the ruling the band was given
-where neither does.
+Source: the host's own class on macOS 27.0 through `tests/backports/host/bundlerequest` - **82 checks,
+none differing**, and **14 host rows of one-line changes of the rules below, all caught**, with a fifteenth
+row marked device-only - the header's own words where the host has no answer, and the ruling the band
+was given where neither does.
 
 ## What the host is and is not
 
@@ -151,11 +151,11 @@ against the host where the host has an answer, and against the header where it d
 
 ## The facts this family is held to, and the two it is not
 
-- **held to the host, 78 comparisons:** the four properties, the two initialisers' contract, the
+- **held to the host, 82 checks:** the four properties, the two initialisers' contract, the
   refusal, the progress's four facts, the error's domain and code, the conditional answer, the manifest
   being read through the release's own `NSBundle`, and the two constants' names;
-- **held to the header:** the plist's three key names, the urgent priority, the notification's name, the
-  default bundle and the default priority;
+- **held to the header:** the manifest's two key names and its file name, the urgent priority, the
+  notification's name, the default bundle and the default priority;
 - **held to a call test on the device:** the two `NSBundle` methods, because the port installs nothing
   on a host that has them;
 - **not held anywhere:** the two constants' *values*, which no host on this machine emits.

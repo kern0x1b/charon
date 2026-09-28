@@ -9,7 +9,7 @@
 // objc_autoreleaseReturnValue, so the host's private initialiser does not describe an object return
 // on this platform. So the class is held to the header's own words - the tags, the bundle, the 0.5
 // default, a progress complete at once, the urgent priority - and the two NSBundle additions, whose
-// host copies are inert, the same way. That is nine of the thirteen rows held to something, and two
+// host copies are inert, the same way. That is nine of the fifteen rows held to something, and two
 // constants and the two plist key names that are documented and not measurable.
 #import <Foundation/Foundation.h>
 #import <objc/message.h>

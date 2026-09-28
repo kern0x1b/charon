@@ -38,7 +38,7 @@ if [ $mutants = yes ]; then
             perl -0pi -e "$change" "$mutant/Foundation/$file"
             if cmp -s "$FOUNDATION/$file" "$mutant/Foundation/$file"; then
                 echo "MISSED $name: marked device-only, and its change no longer applies"
-                missed=1
+                missed=$((missed + 1))
             else
                 device=$((device + 1))
                 echo "device-only: $name (not run in this process)"
@@ -51,15 +51,15 @@ if [ $mutants = yes ]; then
         perl -0pi -e "$change" "$mutant/Foundation/$file"
         if cmp -s "$FOUNDATION/$file" "$mutant/Foundation/$file"; then
             echo "STALE $name: the change no longer applies"
-            missed=1
+            missed=$((missed + 1))
             continue
         fi
         if FOUNDATION="$mutant/Foundation" BUILD="$mutant/build" sh "$here/run.sh" > "$mutant.log" 2>&1; then
             echo "MISSED $name"
-            missed=1
+            missed=$((missed + 1))
         elif grep -q ' error: ' "$mutant.log"; then
             echo "BROKEN $name: the mutant does not compile"
-            missed=1
+            missed=$((missed + 1))
         elif grep -q '^FAIL ' "$mutant.log"; then
             caught=$((caught + 1))
             echo "caught $name: $(grep '^FAIL ' "$mutant.log" | head -1 | cut -c6- | cut -d: -f1)"
@@ -76,7 +76,10 @@ if [ $mutants = yes ]; then
     seen=$((caught + missed))
     if [ "$seen" -ne "$host_rows" ]; then
         echo "MISSED the runner read $seen of the file's $host_rows host rows: check that it ends in a newline"
-        missed=1
+        missed=$((missed + 1))
+    fi
+    if [ "$missed" -ne 0 ]; then
+        echo "$missed of the host rows went the wrong way"
     fi
     echo "$caught caught of $host_rows host rows, $device device-only"
     exit $missed

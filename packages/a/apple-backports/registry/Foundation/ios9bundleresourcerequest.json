@@ -10,7 +10,7 @@
       "reason": "the class arrived in iOS 9 and the release has none of it, so the class, its two initialisers, its three resource methods and its four properties are carried whole",
       "effect": "an application can ask a bundle for its on-demand resources by tag: the request holds the tags it was given and the bundle they resolve in, its progress is complete the moment it exists because the packs are already in the bundle, and a tag the bundle's manifest does not name completes with NSBundleOnDemandResourceInvalidTagError, 4994, in NSCocoaErrorDomain",
       "facts": "facts/Foundation/NSBundleResourceRequest.md",
-      "source": "the host's own class, through tests/backports/host/bundlerequest: 78 comparisons, none differing, and thirteen one-line changes of the rules they rest on each caught"
+      "source": "the host's own class, through tests/backports/host/bundlerequest: 82 checks, none differing, and 14 host rows of one-line changes of the rules they rest on, each caught, with a fifteenth row marked device-only"
     },
     {
       "api": "NSBundleResourceRequestLoadingPriorityUrgent",
