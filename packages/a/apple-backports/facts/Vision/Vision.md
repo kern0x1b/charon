@@ -246,9 +246,28 @@ recorded by `tests/backports/host/vision/run.sh` (33 records) and held against t
   not been separated from it yet. Splitting that seam -- truncate the position, round the value --
   is one measurement from the 0 bucket.
 
-  **Not integrated.** The library is untouched and the tree is clean: `CharonVisionImage.h` still
-  draws with CoreGraphics, the gate is green as it was, and integrating a kernel one bit from the
-  table would be integrating an unmeasured claim. What is left in order: split the seam and re-run
-  the table, integrate `Vision/CharonVisionBilinear.c` with a two-line declaration and a single
-  changed call in the header, then the 137, the +1 inset, the mutant, the light guard and r7.
+  **Integrated, and every scale-fit row now reads 0.** The kernel is in the library as
+  `Vision/CharonVisionBilinear.c` with a two-line declaration in `CharonVisionImage.h`, and the
+  header changes by one call: the CoreGraphics draw becomes the kernel call, with the rect the two
+  branches already computed handed to it as the placement. Everything around it is untouched, and
+  the library compiles for armv7 at 6.1.3 with the file that includes the header.
+
+  Through the library's own code path, the same single source and the same geometry as before:
+
+  | picture to | rule | differing | of |
+  | --- | --- | --- | --- |
+  | 100x50 to 224x224 | scale fit | **0** | 50176 |
+  | 13x7 to 8x8 | scale fit | **0** | 128 |
+  | 16x16 to 16x16 | either | **0** | 256 |
+  | 8x8 to 16x16 | either | **0** | 256 |
+  | 4x7 to 33x9 | scale fit | **0** | 432 |
+  | 100x50 to 224x224 | centre crop | 50176 | 50176 |
+  | 13x7 to 8x8 | centre crop | 64 | 128 |
+  | 4x7 to 33x9 | centre crop | 297 | 432 |
+
+  So the scale fit, the two exact-1:1 rows and the integer 2x row all read zero, and the residual
+  the gradient table predicted -- within one count on a quarter of the region -- does not appear in
+  the count at this size. **The centre-crop rows are still red**, and they are the placement question:
+  the +1 inset datum, and whether Core ML's centre crop is a cover-and-crop at all. That is the next
+  step, and until it is done the check is red and there is no light guard, no mutant and no r7.
 
