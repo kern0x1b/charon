@@ -1,8 +1,10 @@
 set_project("dragdroprouting")
 set_version("0.0.1")
--- The addon as a port pins it, from the tag already in the shared store, v0.8.13, which is the one with
--- plugins/emulate; this working copy is never installed as the addon (charon/AGENTS.md, Traps).
-add_repositories("charon https://github.com/kern0x1b/charon.git charon-repo-0.8.13")
+-- The working copy under test, named by run.sh (DDR_ROOT); the addon is the tag already in the store,
+-- v0.8.13, the one with plugins/emulate. A working copy is never installed as the addon
+-- (charon/AGENTS.md, Traps).
+local root = os.getenv("DDR_ROOT") or path.join(os.scriptdir(), "../../../..")
+add_repositories("charon " .. root)
 add_addons("charon v0.8.13")
 set_config("apple_minimum", "6.1.3")
 includes("@addon/charon/apple-ios")
@@ -15,8 +17,6 @@ set_defaultarchs("iphoneos|armv7")
 -- The order test as a device binary: it is a command-line program, so the emulator can run it. The
 -- port's own objects go in by path -- the routing, the drop sequence and the coordinators it asks --
 -- rather than as the addon, which would be a different build of them.
-local root = os.getenv("DDR_ROOT")
-if not root or root == "" then root = path.join(os.scriptdir(), "../../../../..") end
 if os.getenv("DDR_ROOT") and os.getenv("DDR_ROOT") ~= "" then root = os.getenv("DDR_ROOT") end
 local ui = path.join(root, "packages/a/apple-backports/UIKit")
 target("dragdroprouting")

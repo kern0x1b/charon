@@ -28,7 +28,7 @@ failed=0
 # The mutation, kept beside this script so the pair is reproducible: the collection view's half of the
 # drop sequence with dropSessionDidEnter: moved past its first dropSessionDidUpdate:withDestination-
 # IndexPath:. The same seven calls, two of them the other way round.
-seq=$W/packages/a/apple-backports/UIKit/CharonDropSequence11.m
+seq=$root/packages/a/apple-backports/UIKit/CharonDropSequence11.m
 mutated=$here/CharonDropSequence11.m.mutated
 original=$here/CharonDropSequence11.m.original
 cp "$seq" "$original"
