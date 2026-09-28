@@ -21,5 +21,7 @@ sdk=${SDK:-$(xcrun --show-sdk-path)}
 mkdir -p "$build"
 "$swiftc" -O -target "$(uname -m)-apple-macos14" -sdk "$sdk" -swift-version 5 \
     -framework Metal -o "$build/project" "$here/project.swift"
-"$build/project" | tee "$build/log"
+# The device test's header: the host's own answers, recorded here so the port is held to them.
+DEVICE=${DEVICE:-$here/../../device}
+"$build/project" "$DEVICE/scenekitprojection-expectations.h" | tee "$build/log"
 grep -qE "scenekitprojection: OK" "$build/log"

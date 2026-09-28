@@ -121,4 +121,33 @@ for point in points {
     print("\(round < 0.01 ? "ok  " : "DIFF") unproject -> (\(back.x), \(back.y), \(back.z)) round trip \(round)")
 }
 print("worst delta \(worst)")
+
+// MARK: Recording, for the device test
+//
+// The same answers in the form tests/backports/device/accelerate7-expectations.h uses - one
+// {"name", "value"} per answer - written to the header the device test includes. The names are the
+// contract: the device test asks the *port's* projectPoint and unprojectPoint for the same camera,
+// viewport and points, and has to come back with these.
+if CommandLine.arguments.count > 1 {
+    var lines: [String] = []
+    lines.append("// The answers of macOS SceneKit's SCNSceneRenderer.projectPoint / unprojectPoint, written by")
+    lines.append("// host/scenekitprojection/project.swift from an SCNRenderer that rendered one offscreen frame.")
+    lines.append("// The camera is at (0, 0, 10) looking down -z, fieldOfView 60, zNear 1, zFar 1000, viewport 800x600.")
+    let cases: [(String, SIMD3<Float>)] = [
+        ("0,0,0", SIMD3<Float>(0, 0, 0)), ("1,0,0", SIMD3<Float>(1, 0, 0)),
+        ("0,1,0", SIMD3<Float>(0, 1, 0)), ("-1,-1,0", SIMD3<Float>(-1, -1, 0)),
+        ("0,0,-9", SIMD3<Float>(0, 0, -9)), ("0,0,-9.999", SIMD3<Float>(0, 0, -9.999)),
+        ("0,0,-990", SIMD3<Float>(0, 0, -990)), ("3,-2,-5", SIMD3<Float>(3, -2, -5)),
+    ]
+    for (label, point) in cases {
+        let projected = renderer.projectPoint(SCNVector3(CGFloat(point.x), CGFloat(point.y), CGFloat(point.z)))
+        let value = "\(projected.x),\(projected.y),\(projected.z)"
+        lines.append("    {\"projectPoint \(label)\", \"\(value)\"},")
+        let back = renderer.unprojectPoint(projected)
+        lines.append("    {\"unprojectPoint \(label)\", \"\(back.x),\(back.y),\(back.z)\"},")
+    }
+    let header = lines.joined(separator: "\n") + "\n"
+    try! header.write(toFile: CommandLine.arguments[1], atomically: true, encoding: .utf8)
+    print("wrote \(CommandLine.arguments[1])")
+}
 print(worst < 0.01 ? "scenekitprojection: OK - the port's projection is the system's" : "scenekitprojection: FAILED - the port's projection is not the system's")
