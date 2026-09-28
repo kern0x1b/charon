@@ -770,6 +770,39 @@
       "effect": "SCNNode and SCNMaterialProperty answer addAnimation:forKey:, removeAnimationForKey:, removeAllAnimations, animationKeys, animationForKey:, pauseAnimationForKey:, resumeAnimationForKey: and isAnimationForKeyPaused:, and SCNView evaluates CABasicAnimation, CASpringAnimation and CAAnimationGroup on eulerAngles, scale, position, opacity and contentsTransform each frame as macOS SceneKit does (facts); another key path or animation class is said once in the log and not evaluated; removeAnimationForKey:fadeOutDuration:, setSpeed:forAnimationKey: and the SCNAnimationPlayer members of iOS 11 are not carried",
       "source": "measured on the cache ladder with objc.inventory: absent up to 7.1.2, present from 8.0; the behaviour from macOS SceneKit's own series of Telegram's animations (tests/backports/host/scenekit/animation)",
       "facts": "facts/SceneKit/SCNView.md"
+    },
+    {
+      "api": "SCNGeometry.geometrySources",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SceneKit/SCNGeometry.md",
+      "reason": "carried: the SDK's own SCNGeometry declares it and the port answers it from the sources it was given",
+      "effect": "the geometry's vertex and coordinate sources, as the objects the renderer reads them from; a caller that builds a geometry with -geometryWithSources:elements: reads them straight back",
+      "source": "SceneKit of the iOS 16.4 SDK: SCNGeometry.h, @property (nonatomic, retain) NSArray<SCNGeometrySource *> *geometrySources, 8.0"
+    },
+    {
+      "api": "SCNGeometry.geometryElements",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SceneKit/SCNGeometry.md",
+      "reason": "carried: the SDK's own SCNGeometry declares it and the port answers it from the elements it was given",
+      "effect": "the geometry's index buffers, which is what pairs a source's vertices into triangles",
+      "source": "SceneKit of the iOS 16.4 SDK: SCNGeometry.h, @property (nonatomic, retain) NSArray<SCNGeometryElement *> *geometryElements, 8.0"
+    },
+    {
+      "api": "SCNGeometry.geometryWithSources:elements:",
+      "kind": "function",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SceneKit/SCNGeometry.md",
+      "reason": "carried: the SDK's own SCNGeometry declares it and the port builds a geometry from a caller's sources",
+      "effect": "a geometry over the caller's own sources and elements, with the port's first material already on it, which is the whole of what ARSCNPlaneGeometry needs to hand a plane's buffers to a node",
+      "source": "SceneKit of the iOS 16.4 SDK: SCNGeometry.h, + (instancetype)geometryWithSources:elements:, 8.0"
     }
   ]
 }
