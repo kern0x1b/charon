@@ -8,26 +8,40 @@ string `bool`. None of that is derivable from the name, and a porter who writes 
 a value that looks right and pairs with nothing. So all 255 of them are read out of a real
 HomeKit.framework, one value per symbol, and written down here.
 
-## How each value was read
+## How each value is measured, and how to re-measure it
 
-`modules/apple/dyld.lua` is the project's own cache reader, and the read is three steps per symbol:
+**The tool is in the tree: `tools/corpus/host-probe.c`.** It opens a framework with `dlopen`, looks a
+name up with `dlsym`, and decodes the `NSString *const` it finds through `CFStringGetCString` as
+UTF-8, sized by the string's own `CFStringGetLength`. Run it over the 255 names against the host's own
+HomeKit:
 
-1. the export table gives the symbol's own address inside HomeKit.framework;
-2. `pointer_at` resolves the pointer stored there through that cache's slide information (version 1,
-   2, 3 or 5, whatever the cache holds) to the address of the `__CFConstantString`;
-3. the `__CFConstantString`'s `char *` at +16 (arm64) or +8 (armv7) gives the characters, and its
-   length at the next word gives how many there should be.
+```
+$ xcrun clang -framework CoreFoundation -o host-probe tools/corpus/host-probe.c
+$ host-probe /System/Library/PrivateFrameworks/HomeKit.framework/Versions/A/HomeKit names.txt
+asked 255, 0 not exported, 0 not a CFString
+```
 
-The last step is the check that makes the other two trustworthy: **the length the `__CFConstantString`
-claims equals the number of bytes the C string actually runs to, in every case, in every cache.**
-255 symbols, 0 mismatches. A wrong unsliding lands inside some other mapping and reads *a* string;
-it lands on one whose own length field disagrees with its bytes, which is what a length field is for.
+**255 asked, 255 exported, 255 agreeing with the values the port carries, 0 differing, 0 unreadable.**
+The output is `coordination/corpus/ledger/constant-values-HomeKit.tsv`, in the same seven columns as
+the other bands' `constant-values-*.tsv`, so it diffs against them.
 
-Three caches were read and compared: `12.0/dyld_shared_cache_arm64` (arm64),
-`16.0/dyld_shared_cache_arm64e` (arm64e) and `18.0/dyld_shared_cache_arm64e` (arm64e), so the 64-bit
-reader's two paths are both exercised and neither is trusted alone. 281 of the 284 symbols the two
-frameworks declare are held by at least one of them, and **all three agree on every value they hold**
-— no cache disagrees with another on any of the 255.
+Two things about the walk are worth stating, because both were wrong at first and both were found by
+running it:
+
+- **Sizing is `CFStringGetLength`, not a two-call `CFStringGetCString`.** Asked with a null buffer,
+  `CFStringGetCString` does not answer a length — it fails — and an early version of the tool read
+  that as "not a CFString" for all 255 while the same walk in Objective-C read every one of them.
+- **There is deliberately no `CFGetTypeID` test before the conversion.** The `isa` pointer inside a
+  constant string in a dyld shared cache is stored with the cache's own fixups, so that test answers
+  "not a CFString" for every value in a shared-cache framework. The conversion reads the same object
+  correctly, and the length it reports is the check that stays: a wrong address is a failed
+  conversion, not a plausible wrong answer.
+
+**The release half is a different measurement by a different tool**, and this document used to blur
+the two. Which iOS release first exports a symbol is measured by `tools/release-split.lua`, which is
+in the tree and walks the real cache ladder; the band machinery places an object by that measurement,
+which is why the constant files are named for it. The values themselves are Apple's, and the host's
+copy is the one this delivery checks them against.
 
 ## The two releases that changed a value
 
