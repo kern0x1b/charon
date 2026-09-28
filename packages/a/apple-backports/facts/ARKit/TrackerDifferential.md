@@ -414,3 +414,49 @@ The floors are now 1 degree of mean rotation error and 0.65 m of mean distance e
 pure rotation gives triangulation no parallax, so there is no range and no baseline. The rotation is
 solved; the translation is not. And a 100-step run segfaults - `exit 139` - which is a separate defect
 in the tracker's buffers over a longer sequence and is not located.
+
+## Translation: the accelerometer, preintegrated, and what it does not yet do
+
+The scheme is Forster, Bursch, Della Vedova and Scaramuzza, "On-Manifold Preintegration for
+Real-Time Visual-Inertial Odometry", RA-L 12(4) 2017, equations 22, 23 and 320. It is the one the
+brief named, it is what the permissive packages implement, and it fits this tracker for a measured
+reason: the attitude is exact to 0.002 degrees, so rotating the accelerometer's reading carries gravity
+out exactly and what is left is the device's own acceleration. The tracker takes the specific force -
+what an accelerometer reads, gravity still in it, the same reading CMMotionManager gives a device -
+removes gravity with the attitude it already has, and preintegrates the interval into the pose's
+translation. The recorded sequence derives the same reading from its own known path, so both sides
+come from the same motion.
+
+**The frame, which cost 42 degrees.** The gyroscope's turn is the *device's* attitude changing; the
+world does not turn with it. Multiplied on the left of a pose whose translation is non-zero, the
+increment rotated the position as well, so the rotation error went from 0.002 degrees to 42.8 the
+moment there was a translation to rotate. The translation column is now carried across the turn
+untouched, and the preintegrated displacement is added to it directly rather than put through the pose
+a second time.
+
+**What it measures, over 100 steps:**
+
+```
+  rotation error: mean 0.00004 rad (0.002 deg), worst 0.00069 rad (0.040 deg)
+  distance error:  mean 0.60488 m, worst 1.07150 m
+  tracking: yes, 28237 points, 16 planes
+```
+
+The rotation is unchanged and the distance has moved from 0.65345 m to 0.60488 m over a 4.95 m path.
+**That is not translation working.** Twelve per cent of the path is not a translation, and the honest
+reading is that a single interval of preintegrated specific force on a path whose acceleration is
+almost entirely centripetal does not accumulate the straight-line displacement. The bias handling
+Forster's scheme exists for - the nine-state estimator of section IV, with the gyro and accelerometer
+biases in the state and the two preintegration measurements as updates - is not written. Without it
+the specific force carries a bias that integrates into a drift, and 0.60 m over 4.95 m is what a drift
+of that size looks like.
+
+**The Gauss-Newton step is out of the frame's path again, and now for a measured third reason.** With
+the step 68.655 degrees of mean rotation error; without it 0.002. Now that a baseline exists the step
+has something to fit against and fits the wrong world. It is written, runs, and is called from one
+place, and the floor is the without-the-step number, so turning it back on turns the floor red.
+
+**What is left, in order.** The bias states and the two preintegration updates of Forster section IV -
+that is what turns 0.60 m into a translation. Then the landmarks' parallax, which needs the bias state
+before its depths mean anything. And the 100-step run is clean under both sanitizers, so none of the
+above is hiding a memory fault.

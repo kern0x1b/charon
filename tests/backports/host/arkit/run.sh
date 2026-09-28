@@ -72,6 +72,6 @@ floor() {
               exit failed ? 1 : 0 }' "$BUILD/tracker-diff.txt"
 }
 floor "rotation error: mean" 0.01 deg
-floor "distance error: mean" 0.70 m
+floor "distance error: mean" 0.65 m
 
 echo "ok the tracker carries its pose, finds its planes, and holds the accuracy floor the facts record"
