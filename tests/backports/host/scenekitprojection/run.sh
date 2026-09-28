@@ -17,6 +17,6 @@ swiftc=${SWIFTC:-swiftc}
 sdk=${SDK:-$(xcrun --show-sdk-path)}
 mkdir -p "$build"
 "$swiftc" -O -target "$(uname -m)-apple-macos14" -sdk "$sdk" -swift-version 5 \
-    -o "$build/project" "$here/project.swift"
+    -framework Metal -o "$build/project" "$here/project.swift"
 "$build/project" | tee "$build/log"
 grep -qE "scenekitprojection: OK" "$build/log"

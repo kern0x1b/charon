@@ -11,39 +11,46 @@
 
 import Foundation
 import SceneKit
+import Metal
 import simd
 
 // MARK: The arithmetic the port uses
 
 /// world -> viewport, with z 0 at the near plane and 1 at the far one.
 func project(point world: SIMD3<Float>, camera: SCNNode, viewport: CGSize) -> SIMD3<Float> {
-    let cameraMatrix = simd_float4x4(camera.worldTransform)
-    let eye = cameraMatrix.inverse * simd_float4(world.x, world.y, world.z, 1)
-    let cam = SCNCamera()
-    let halfFov = Float(cam.fieldOfView) * .pi / 360        // SceneKit's fieldOfView is in degrees, full angle
-    let tanHalf = tan(halfFov)
+    let eye = simd_float4x4(camera.worldTransform).inverse * simd_float4(world.x, world.y, world.z, 1)
+    // The camera's *own* numbers: an earlier version of this read fieldOfView and the planes off a
+    // freshly made SCNCamera, which has the defaults (zFar 100) and not the camera's, and that is
+    // one of the three ways it was wrong.
+    guard let cam = camera.camera else { return .zero }
+    let tanHalf = tan(Float(cam.fieldOfView) * .pi / 360)   // SceneKit's fieldOfView is a full angle, in degrees
     let aspect = Float(viewport.width / max(viewport.height, 1))
-    // SceneKit looks down -z from the camera, so the depth is negative in front of it.
+    let near = Float(cam.zNear), far = Float(cam.zFar)
+    // SceneKit looks down -z from the camera, so the depth in front of it is the negated z.
     let depth = max(-eye.z, 1e-6)
     let ndcX = (eye.x / depth) / (tanHalf * aspect)
     let ndcY = (eye.y / depth) / tanHalf
-    let near = Float(cam.zNear), far = Float(cam.zFar)
-    let z = (depth - near) / max(far - near, 1e-6)
+    // The depth is the *perspective* one, not a linear share of the range: the header's z is 0 at
+    // the near plane and 1 at the far one, and only the perspective mapping gets there (measured:
+    // the host answers 0.9342675 for a point 15 in front of a camera whose planes are 1 and 1000,
+    // which is ((f+n)/(f-n) - 2fn/((f-n)d) + 1)/2 = 0.9342675; the linear share would be 0.014).
+    let ndcZ = (far + near) / (far - near) - (2 * far * near) / ((far - near) * depth)
     return SIMD3<Float>((ndcX + 1) / 2 * Float(viewport.width),
-                        (1 - ndcY) / 2 * Float(viewport.height),
-                        z)
+                        (ndcY + 1) / 2 * Float(viewport.height),   // no flip: the host's y has the sign, not the opposite
+                        (ndcZ + 1) / 2)
 }
 
 /// viewport -> world, the inverse of the above.
 func unproject(point screen: SIMD3<Float>, camera: SCNNode, viewport: CGSize) -> SIMD3<Float> {
-    let cam = SCNCamera()
-    let halfFov = Float(cam.fieldOfView) * .pi / 360
-    let tanHalf = tan(halfFov)
+    guard let cam = camera.camera else { return .zero }
+    let tanHalf = tan(Float(cam.fieldOfView) * .pi / 360)
     let aspect = Float(viewport.width / max(viewport.height, 1))
-    let ndcX = Float(screen.x) / Float(viewport.width) * 2 - 1
-    let ndcY = 1 - Float(screen.y) / Float(viewport.height) * 2
     let near = Float(cam.zNear), far = Float(cam.zFar)
-    let depth = near + Float(screen.z) * (far - near)
+    let ndcX = Float(screen.x) / Float(viewport.width) * 2 - 1
+    let ndcY = Float(screen.y) / Float(viewport.height) * 2 - 1
+    let ndcZ = Float(screen.z) * 2 - 1
+    // The inverse of the perspective mapping above: from ndcZ back to the view-space depth.
+    let depth = (2 * far * near) / ((far + near) - ndcZ * (far - near))
     let eye = SIMD3<Float>(ndcX * tanHalf * aspect * depth, ndcY * tanHalf * depth, -depth)
     let world = simd_float4x4(camera.worldTransform) * simd_float4(eye.x, eye.y, eye.z, 1)
     return SIMD3<Float>(world.x, world.y, world.z)
@@ -51,8 +58,14 @@ func unproject(point screen: SIMD3<Float>, camera: SCNNode, viewport: CGSize) ->
 
 // MARK: The case
 
-let viewport = CGSize(width: 800, height: 600)
-let view = SCNView(frame: CGRect(origin: .zero, size: viewport))
+// The oracle is an SCNRenderer, which is what the method belongs to: SCNRenderer and SCNView both
+// conform to SCNSceneRenderer, and the existing SceneKit render case
+// (tests/backports/host/scenekit/render.swift:47-53) is the setup - a Metal device, a scene, a
+// point of view and one offscreen frame - that makes a renderer project anything at all. A view
+// that has never rendered answers projectPoint its input back unchanged, which is what this case
+// measured before it rendered, and the control below is what catches that.
+let size = CGSize(width: 800, height: 600)
+let scene = SCNScene()
 let camera = SCNNode()
 let cam = SCNCamera()
 cam.fieldOfView = 60
@@ -61,9 +74,31 @@ cam.zFar = 1000
 camera.camera = cam
 camera.position = SCNVector3(CGFloat(0), CGFloat(0), CGFloat(10))
 camera.eulerAngles = SCNVector3(CGFloat(0), CGFloat(0), CGFloat(0))
-view.pointOfView = camera
-view.scene = SCNScene()
-view.layout()
+scene.rootNode.addChildNode(camera)
+// Something in the scene for the renderer to draw, so the frame is a real one.
+let box = SCNBox(width: 2, height: 2, length: 2, chamferRadius: 0)
+let lit = SCNNode(geometry: box)
+lit.position = SCNVector3(CGFloat(0), CGFloat(0), CGFloat(0))
+scene.rootNode.addChildNode(lit)
+
+let renderer = SCNRenderer(device: MTLCreateSystemDefaultDevice(), options: nil)
+renderer.scene = scene
+renderer.pointOfView = camera
+// One frame, offscreen: this is what gives the renderer its projection.
+_ = renderer.snapshot(atTime: 0, with: size, antialiasingMode: .none)
+
+// The control: a point off the camera's axis has to come back *moved*. If the renderer hands it
+// back unchanged it has no projection, and every comparison below would be against an identity -
+// which is an error in the oracle, not a pass.
+let control = SIMD3<Float>(1, 0.5, 0)
+let controlTheirs = renderer.projectPoint(SCNVector3(CGFloat(control.x), CGFloat(control.y), CGFloat(control.z)))
+let controlOut = SIMD3<Float>(Float(controlTheirs.x), Float(controlTheirs.y), Float(controlTheirs.z))
+let controlMoved = simd_distance(controlOut, control) > 0.01
+print("control: a point off the axis comes back at \(controlOut), \(simd_distance(controlOut, control)) from where it went in - \(controlMoved ? "moved" : "UNCHANGED, the oracle has no projection")")
+if !controlMoved {
+    print("scenekitprojection: ERROR - the host answered an off-axis point unchanged, so there is no projection to compare against")
+    exit(2)
+}
 
 // Points in front of the camera, spread across the viewport and in depth, including the near and far
 // planes where the header says z is exactly 0 and 1.
@@ -73,16 +108,14 @@ let points: [SIMD3<Float>] = [
 ]
 var worst = 0.0
 for point in points {
-    let ours = project(point: point, camera: camera, viewport: viewport)
-    let theirs = view.projectPoint(SCNVector3(CGFloat(point.x), CGFloat(point.y), CGFloat(point.z)))
-    // This SceneKit spells an SCNVector3's components CGFloat; the arithmetic above is Float, so
-    // the two are converted where they meet rather than by widening a tolerance.
-    let delta = simd_distance(ours, SIMD3<Float>(Float(theirs.x), Float(theirs.y), Float(theirs.z)))
+    let ours = project(point: point, camera: camera, viewport: size)
+    let theirs = renderer.projectPoint(SCNVector3(CGFloat(point.x), CGFloat(point.y), CGFloat(point.z)))
+    let theirsPoint = SIMD3<Float>(Float(theirs.x), Float(theirs.y), Float(theirs.z))
+    let delta = simd_distance(ours, theirsPoint)
     worst = max(worst, Double(delta))
     let mark = delta < 0.01 ? "ok  " : "DIFF"
     print("\(mark) point (\(point.x), \(point.y), \(point.z)) ours (\(ours.x), \(ours.y), \(ours.z)) theirs (\(theirs.x), \(theirs.y), \(theirs.z)) delta \(delta)")
-    let back = unproject(point: SIMD3<Float>(Float(theirs.x), Float(theirs.y), Float(theirs.z)),
-                         camera: camera, viewport: viewport)
+    let back = unproject(point: theirsPoint, camera: camera, viewport: size)
     let round = simd_distance(back, point)
     worst = max(worst, Double(round))
     print("\(round < 0.01 ? "ok  " : "DIFF") unproject -> (\(back.x), \(back.y), \(back.z)) round trip \(round)")
