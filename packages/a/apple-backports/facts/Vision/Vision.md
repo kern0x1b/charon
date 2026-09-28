@@ -28,10 +28,23 @@ recorded by `tests/backports/host/vision/run.sh` (33 records) and held against t
   through the model and puts the answers in the request's results.
 
   The image is brought to the size the model's own description asks for, by the two rules Vision
-  declares and Core ML's own image constructors use: centre crop scales until the picture covers
-  the target and keeps the middle, scale fit scales until it fits and leaves the rest black. A
-  buffer that is already the size the model wants is passed on untouched, so a camera or video
-  frame costs nothing. A `CIImage`, an image URL and image data are not pixel buffers, and a Core ML
+  declares and Core ML's own image constructors use: centre crop scales until the picture covers the
+  target and keeps the middle, scale fit scales until it fits and leaves the rest black. A buffer
+  that is already the size the model wants is passed on untouched, so a camera or video frame costs
+  nothing, and the row length a picture is drawn into is the buffer's own
+  (`CVPixelBufferGetBytesPerRow`), never `width * 4` -- CoreVideo pads its rows to a boundary of its
+  own, so a width that is not a multiple of 16 has rows longer than its own pixels.
+
+  **What the host's Vision transform accepts is not yet known, and four shapes were measured to find
+  out.** `vision_image` in `tools/coreml/make-models.py` is an image model; the host answers a
+  *refusal* for every shape tried -- a fixed 32x32 input with a fixed output gets the wrapper made and
+  the request fails with "The VNCoreMLTransform request failed", and a ranged input, with a fixed or a
+  ranged output and with a preprocessing scaler, is refused by the wrapper itself with "Failed to
+  initialize VNCoreMLTransformer". The port is held to the same answer, and the case records it. The
+  three rules the request path would exercise behind an accepted model -- the two crop-and-scale rules
+  and the Core ML branch of the handler -- are therefore named in `tests/backports/host/vision/run.sh`
+  as unexercised rather than left to fail the mutant line, and the corpus change that would reach them
+  is the open one. A `CIImage`, an image URL and image data are not pixel buffers, and a Core ML
   image input takes a buffer, so they reach the same failure any other unusable image reaches
   rather than pretending the picture was something it is not.
 

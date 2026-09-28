@@ -560,6 +560,9 @@ def build_vision_image():
     """
     builder = ct.models.neural_network.NeuralNetworkBuilder(
         input_features=[("image", datatypes.Array(3, 32, 32))], output_features=[("out", datatypes.Array(1, 32, 32))])
+    # The layers are written for the 32 by 32 the corpus is built at; the range is what the
+    # *description* says the feature will take, which is a claim about the model rather than about
+    # this build of it, and the request path is what brings a picture inside it.
     weights = np.zeros((1, 1, 1, 3), np.float32)
     weights[0, 0, 0] = [1.0 / 255.0, 0.0, 0.0]
     builder.add_convolution("conv", 3, 1, 1, 1, 1, 1, "valid", 1, weights, np.zeros(1, np.float32),
@@ -579,11 +582,28 @@ def build_vision_image():
     size.heightRange.lowerBound = 16
     size.heightRange.upperBound = 256
     spec.description.input[0].CopyFrom(described)
+    # The preprocessing: the scale and bias a picture's bytes are put through before a layer sees
+    # them, which is what Core ML's own compiler writes into a model with an image input and what
+    # Vision's transform is built around. Without it the model has no image processing to run, which
+    # is what the three shapes measured without it say.
+    preprocessing = spec.neuralNetwork.preprocessing.add()
+    preprocessing.featureName = "image"
+    preprocessing.scaler.channelScale = 1.0 / 255.0
+    preprocessing.scaler.redBias = -1.0
+    preprocessing.scaler.greenBias = -1.0
+    preprocessing.scaler.blueBias = -1.0
+    # The answer is a picture too, and of a *range* like the input: a model whose two ends disagree
+    # about whether their size is fixed is a model Vision's transform cannot build, which is measured
+    # -- the wrapper refuses a ranged input with a fixed output outright -- and the range is what the
+    # request path is for: a picture of any size inside it, brought to a size the model accepts.
     answer = Model_pb2.FeatureDescription(name="out")
     out_picture = answer.type.imageType
-    out_picture.width = 32
-    out_picture.height = 32
     out_picture.colorSpace = 20
+    out_size = out_picture.imageSizeRange
+    out_size.widthRange.lowerBound = 16
+    out_size.widthRange.upperBound = 256
+    out_size.heightRange.lowerBound = 16
+    out_size.heightRange.upperBound = 256
     spec.description.output[0].CopyFrom(answer)
     spec.specificationVersion = SPEC_12_2
     return spec

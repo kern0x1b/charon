@@ -71,7 +71,12 @@ static inline CVPixelBufferRef charon_vision_pixels(CVPixelBufferRef source, siz
                                 kCGImageAlphaNoneSkipFirst | kCGBitmapByteOrder32Little, provider, NULL, NO,
                                 kCGRenderingIntentDefault);
     }
-    context = CGBitmapContextCreate(CVPixelBufferGetBaseAddress(buffer), wide, high, 8, wide * 4, space,
+    /* The row length is the buffer's own, never width * 4: a CoreVideo buffer pads its rows to a
+     * boundary of its own choosing, so a width that is not a multiple of 16 has rows longer than its
+     * own pixels, and a context told width * 4 would write over the padding and scramble every row
+     * after the first. */
+    context = CGBitmapContextCreate(CVPixelBufferGetBaseAddress(buffer), wide, high, 8,
+                                    CVPixelBufferGetBytesPerRow(buffer), space,
                                     kCGImageAlphaNoneSkipFirst | kCGBitmapByteOrder32Little);
     if (context != NULL) {
         CGRect where;
@@ -85,8 +90,15 @@ static inline CVPixelBufferRef charon_vision_pixels(CVPixelBufferRef source, siz
                                ((CGFloat)high - (CGFloat)sh * scale) / 2.0, (CGFloat)sw * scale,
                                (CGFloat)sh * scale);
         } else {
+            /* Centre crop: the picture is scaled until it *covers* the target -- the shorter side
+             * is the target's exactly -- and centred, so the target is a window on the middle of the
+             * scaled picture. Drawing it at the target's own size instead would be a scale fit, and
+             * the middle would be the middle of nothing: the scale is the whole difference between
+             * the two options. */
             scale = MAX((CGFloat)wide / (CGFloat)sw, (CGFloat)high / (CGFloat)sh);
-            where = CGRectMake(0, 0, (CGFloat)wide, (CGFloat)high);
+            where = CGRectMake(((CGFloat)wide - (CGFloat)sw * scale) / 2.0,
+                               ((CGFloat)high - (CGFloat)sh * scale) / 2.0, (CGFloat)sw * scale,
+                               (CGFloat)sh * scale);
         }
         if (picture != NULL) {
             CGContextDrawImage(context, where, picture);
@@ -135,7 +147,8 @@ static inline CVPixelBufferRef charon_vision_buffer_of_image(CGImageRef image)
         return NULL;
     }
     space = CGColorSpaceCreateDeviceRGB();
-    context = CGBitmapContextCreate(CVPixelBufferGetBaseAddress(buffer), wide, high, 8, wide * 4, space,
+    context = CGBitmapContextCreate(CVPixelBufferGetBaseAddress(buffer), wide, high, 8,
+                                    CVPixelBufferGetBytesPerRow(buffer), space,
                                     kCGImageAlphaNoneSkipFirst | kCGBitmapByteOrder32Little);
     if (space != NULL) {
         CGColorSpaceRelease(space);

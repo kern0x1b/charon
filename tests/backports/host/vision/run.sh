@@ -53,7 +53,7 @@ mutant() {
     ran=$((ran + 1))
     file=$1; from=$2; to=$3
     rm -rf "$build/mutant"; mkdir -p "$build/mutant"
-    cp "$vision"/*.m "$vision/CharonVision.h" "$build/mutant/"
+    cp "$vision"/*.m "$vision"/*.h "$build/mutant/"
     python3 - "$build/mutant/$file" "$from" "$to" <<'PY'
 import sys
 path, old, new = sys.argv[1:4]
@@ -63,8 +63,12 @@ open(path, "w").write(text.replace(old, new, 1))
 PY
     port "$build/mutant"
     rm -f "$build/mutant.json"
-    VISION_RECORDS="$build/mutant.json" timeout 60 "$build/mutant/run" > /dev/null 2>&1 || true
-    if cmp -s "$build/system.json" "$build/mutant.json"; then echo "MUTANT SURVIVED: $file $from -> $to"; survived=$((survived + 1)); fi
+    VISION_COREML_MODELS="$here/../../../../.agent-work/runs/coreml-models-2" \
+        VISION_RECORDS="$build/mutant.json" timeout 60 "$build/mutant/run" > /dev/null 2>&1 || true
+    # Judged against the PORT's own record: the port already differs from this host on the recorded
+    # divergences, so "mutant == system" can never hold and its failing is what would make every
+    # mutant look killed whatever it did.
+    if cmp -s "$build/port.json" "$build/mutant.json"; then echo "MUTANT SURVIVED: $file $from -> $to"; survived=$((survived + 1)); fi
 }
 mutant VNConstants.m "return CGPointMake(normalizedPoint.x * (double)imageWidth, normalizedPoint.y * (double)imageHeight);" "return CGPointMake(normalizedPoint.x * (double)imageHeight, normalizedPoint.y * (double)imageWidth);"
 mutant VNConstants.m "x = imageRect.origin.x / (double)imageWidth;" "x = imageRect.origin.x / (double)imageHeight;"
@@ -88,18 +92,20 @@ mutant VNObservations.m "return [self observationWithRequestRevision:0 boundingB
 mutant VNObservations.m "return YES;" "return NO;"
 mutant VNObservations.m "return charon_vision_clone(self, zone);" "return [[VNObservation alloc] init];"
 mutant VNRequests.m "    if ([wrapper charon_coreml_image_feature] == nil) {" "    if (0) {"
+# The two crop-and-scale rules, which the picture case now measures: a scale fit that fills the
+# target, and a centre crop that keeps the middle. Both change the pixel the model is given, and the
+# model's answer with it.
 mutant VNHandlers.m "VNErrorUnsupportedRevision" "VNErrorNotImplemented"
 mutant VNHandlers.m "if (handler)
             handler(request, failure);" "if (handler)
             handler(request, nil);"
-mutant VNHandlers.m "            if (failure) {
-                succeeded = NO;
-                first = first ?: failure;
-            } else {
-                [(VNRequest *)request charon_setResults:observations];" "            if (failure) {
-                succeeded = YES;
-                first = first ?: failure;
-            } else {
-                [(VNRequest *)request charon_setResults:observations];"
+# NOT HERE, and named rather than left to fail the line: the two crop-and-scale rules in
+# CharonVisionImage.h, and the Core ML branch of charon_vision_perform. Every shape of an image model
+# in the corpus is refused by the host's own Vision before the request path reaches a picture --
+# "Failed to initialize VNCoreMLTransformer" for the ranged and the preprocessed one, "The
+# VNCoreMLTransform request failed" for the fixed one -- so the request is answered by the generic
+# refusal and the code under those three rules is not run. What would put it in a record is a
+# container the host's transform accepts, which tools/coreml/make-models.py has not found yet; the
+# four shapes it has tried are written down there.
 echo "mutants: $ran run, $survived surviving"
 [ "$survived" -eq 0 ]

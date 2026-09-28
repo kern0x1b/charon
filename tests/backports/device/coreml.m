@@ -12,6 +12,7 @@
  */
 #import <CoreML/CoreML.h>
 
+#import <objc/runtime.h>
 #import <stdarg.h>
 #import <string.h>
 
@@ -292,19 +293,58 @@ static void check_keys(void)
         CHECK_EQUAL(key.scope, back.scope, "with its scope");
     }
     {
-        /* MLNumericConstraint is not built here: it is a class of the port's own with no public
+        /* A description of each kind a model in the corpus can hand us, copied twice and compared: the
+     * copy of a description is the only thing that ever asks a constraint to copy, so this is what
+     * holds that path rather than a check that a class answers a selector. */
+    {
+        MLModel *model = model_from(@"copy", charon_ml_model_glm_classifier, sizeof(charon_ml_model_glm_classifier), NULL);
+        MLModelDescription *described = model.modelDescription;
+        NSDictionary *inputs = described.inputDescriptionsByName;
+        NSEnumerator *each = [inputs keyEnumerator];
+        NSString *name;
+        while ((name = [each nextObject]) != nil) {
+            MLFeatureDescription *one = inputs[name];
+            MLFeatureDescription *copy = [one copy];
+            MLFeatureDescription *again = [copy copy];
+            char label[96];
+            snprintf(label, sizeof label, "%s: a description copies twice", name.UTF8String);
+            charon_check([copy isEqual:one] && [again isEqual:one] && copy != one && again != copy, label,
+                         @"a copy differs, or is the original");
+            if (one.type == MLFeatureTypeMultiArray) {
+                MLMultiArrayShapeConstraint *constraint = one.multiArrayConstraint.shapeConstraint;
+                snprintf(label, sizeof label, "%s: its shape constraint copies", name.UTF8String);
+                charon_check([constraint copy] != nil &&
+                                 [[constraint copy] isEqual:constraint] && [constraint copy] != constraint,
+                             label, @"the constraint did not copy, or copied to itself");
+            }
+        }
+    }
+    /* MLNumericConstraint is not built here: it is a class of the port's own with no public
          * initialiser of Core ML's, and the only thing that makes one is a model's parameter
          * description -- and this port reads no updatable model, so there is none to ask. The host
          * differential builds it, because it compiles the port's own sources and can reach the
          * initialiser; facts/CoreML/CoreML.md says why the class is here at all. */
-        /* Every constraint copies, which is what a description's own copy asks of it. */
-    CHECK([[MLMultiArrayShapeConstraint class] instancesRespondToSelector:@selector(copyWithZone:)] ||
-              [[MLMultiArrayShapeConstraint class] instancesRespondToSelector:@selector(copy)],
-          "the shape constraint copies");
-    CHECK([[MLImageSize class] instancesRespondToSelector:@selector(copyWithZone:)] ||
-              [[MLImageSize class] instancesRespondToSelector:@selector(copy)],
-          "an image size copies");
-    CHECK([MLNumericConstraint class] != nil, "the numeric constraint class is there");
+        /* Every one of the eight constraint classes copies, and the question is one the class itself
+     * can fail: `class_getInstanceMethod` asks whether *that* class implements the selector, where
+     * `instancesRespondToSelector:` would be answered by `-copy`, which every object inherits from
+     * NSObject and which therefore answers yes for a class that implements nothing. */
+    {
+        Class constraints[] = {
+            [MLMultiArrayShapeConstraint class], [MLImageSize class], [MLImageSizeConstraint class],
+            [MLSequenceConstraint class],       [MLMultiArrayConstraint class], [MLImageConstraint class],
+            [MLDictionaryConstraint class],     [MLNumericConstraint class],
+        };
+        const char *names[] = {"the shape constraint", "an image size", "the image size constraint",
+                               "the sequence constraint", "the multi array constraint", "the image constraint",
+                               "the dictionary constraint", "the numeric constraint"};
+        NSUInteger index;
+        for (index = 0; index < 8; index++) {
+            char label[96];
+            snprintf(label, sizeof label, "%s implements -copyWithZone: itself", names[index]);
+            charon_check(class_getInstanceMethod(constraints[index], @selector(copyWithZone:)) != NULL, label,
+                         @"nothing in the class implements it, so a description carrying it cannot be copied");
+        }
+    }
         CHECK([MLNumericConstraint instancesRespondToSelector:@selector(minNumber)],
               "and answers a least value");
         CHECK([MLNumericConstraint instancesRespondToSelector:@selector(maxNumber)], "and a most");
@@ -636,6 +676,9 @@ int main(int argc, const char *argv[])
         }
         check_assets();
         check_loading_failures();
+        /* The count goes to stderr, which the run reads: the log is at a path inside the guest and
+         * the run cannot open it, so a pass printed nothing anyone could count. */
+        fprintf(stderr, "coreml: %d checks, %d failures\n", charon_checks, charon_failures);
         printf("%d checks, %d failures\n", charon_checks, charon_failures);
     }
     return charon_failures == 0 ? 0 : 1;

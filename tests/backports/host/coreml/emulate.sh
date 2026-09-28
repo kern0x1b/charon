@@ -44,4 +44,12 @@ if ! grep -Eq 'pass' "$release.plain"; then
     tail -20 "$release.plain"
     exit 1
 fi
-grep -E ' checks, ' "$release.plain" | tail -1
+# The count is printed on a pass as well as a failure: a verdict with no list behind it is a verdict
+# nobody can check, and the guest's own log is at a path inside the guest that the run cannot open.
+# So the test writes the count to stderr, and this is where it is read.
+if grep -qE '^coreml: [0-9]+ checks' "$release.plain"; then
+    grep -E '^coreml: [0-9]+ checks' "$release.plain" | tail -1
+else
+    echo "$release: pass (the guest printed no count: the run's own line is the verdict above)"
+    grep -E 'pass on' "$release.plain" | tail -1
+fi
