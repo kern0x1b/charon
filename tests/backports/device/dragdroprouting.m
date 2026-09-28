@@ -46,32 +46,21 @@ static NSString *CharonDescribe(NSIndexPath *path)
 //     sessionDidExit:" -- so it is last, and it is sent even to an interaction that has seen only
 //     the enter and the exit.
 //
-// That is the order these two views are asserted to ask in. The strings carry the class and the
-// arguments each message is given, so a change in what a message carries fails as well as a change
-// in when it arrives.
-static NSArray *chCollectionDocumentedOrder(void)
+// The strings are the interaction's own selector names with the arguments each message is given, so
+// a change in what a message carries fails as well as a change in when it arrives.
+//
+// The order is asked twice, once over a collection view and once over a table view, because the two
+// views' routing is two objects and each has to be told the same thing: what the interaction's
+// delegate is called and in what order, and with which arguments.
+static NSArray *chDocumentedOrder(NSString *host)
 {
-    return @[@"collection.canHandleDropSession",
-             @"collection.dropSessionDidEnter",
-             @"collection.dropSessionDidUpdate:withDestinationIndexPath:{0, 0}",
-             @"collection.dropPreviewParametersForItemAtIndexPath:{0, 0}",
-             @"collection.performDropWithCoordinator:items=1:destination={0, 0}:operation=1:intent=2",
-             @"collection.dropSessionDidExit",
-             @"collection.dropSessionDidEnd"];
-}
-
-// UITableView's drop delegate is UITableViewDropDelegate, which is the same set of questions over a
-// table, and the header that declares them says the same things about when each is sent, so the
-// order is the same with the table's own selectors.
-static NSArray *chTableDocumentedOrder(void)
-{
-    return @[@"table.canHandleDropSession",
-             @"table.dropSessionDidEnter",
-             @"table.dropSessionDidUpdate:withDestinationIndexPath:{0, 0}",
-             @"table.dropPreviewParametersForRowAtIndexPath:{0, 0}",
-             @"table.performDropWithCoordinator:items=1:destination={0, 0}:operation=1:intent=2",
-             @"table.dropSessionDidExit",
-             @"table.dropSessionDidEnd"];
+    return @[[NSString stringWithFormat:@"%@.canHandleDropSession", host],
+             [NSString stringWithFormat:@"%@.dropInteraction:sessionDidEnter:", host],
+             [NSString stringWithFormat:@"%@.dropInteraction:sessionDidUpdate:indexPath=0-0", host],
+             [NSString stringWithFormat:@"%@.dropInteraction:previewForDroppingItem:withDefault:", host],
+             [NSString stringWithFormat:@"%@.dropInteraction:performDrop:items=1", host],
+             [NSString stringWithFormat:@"%@.dropInteraction:sessionDidExit:", host],
+             [NSString stringWithFormat:@"%@.dropInteraction:sessionDidEnd:", host]];
 }
 
 static NSString *const results_folder = @"/private/var/backports";
@@ -90,11 +79,19 @@ static NSMutableArray<NSString *> *_order = nil;
 // .agent-work/plan-and-analysis/uikit-a/viewdragdrop-oracle.md, and the one ordering an upstream
 // does show is WinObjC (MIT) at 94f6b5bf, UICollectionView.mm:1730-1750.
 
-@interface OrderProbe : NSObject <UICollectionViewDragDelegate, UICollectionViewDropDelegate,
-                                UITableViewDragDelegate, UITableViewDropDelegate>
+// The probe answers UIDropInteractionDelegate, whose documented order is what this test asserts,
+// and is set as the UIDropInteraction's delegate -- the delegate the interaction actually asks. A
+// probe that answered the views' own drop delegates was never asked by anything: 6.1.3's views have
+// no drop delegate property of their own to set, so the routing asked its first question and then
+// had no one to ask.
+@interface OrderProbe : NSObject <UIDropInteractionDelegate>
 @property (nonatomic, strong) NSMutableArray<NSString *> *log;
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) UITableView *tableView;
+// The name the record carries -- collection or table -- and the index path the interaction's update
+// was given, so the record says which view was asked and with what.
+@property (nonatomic, copy) NSString *host;
+@property (nonatomic, copy) NSString *destination;
 @end
 
 @implementation OrderProbe
@@ -102,109 +99,69 @@ static NSMutableArray<NSString *> *_order = nil;
 @synthesize collectionView = _collectionView;
 @synthesize tableView = _tableView;
 
+// The index path the interaction's update is asked about, which the routing gets from the view's
+// own hit test; the record carries it so the arguments are in the comparison.
+- (void)setDestinationForView:(UIView *)view atPoint:(CGPoint)point
+{
+    NSIndexPath *path = [view isKindOfClass:[UICollectionView class]]
+        ? [(UICollectionView *)view indexPathForItemAtPoint:point]
+        : [(UITableView *)view indexPathForRowAtPoint:point];
+    self.destination = path ? [NSString stringWithFormat:@"%ld-%ld", (long)path.section, (long)path.item] : @"(nil)";
+}
+
 - (void)note:(NSString *)line
 {
     [_log addObject:line];
     [_order addObject:line];
 }
 
-// The proposals, which is what carries the arguments: the destination index path the routing
-// worked out, and the operation and intent the delegate gives in return, read back through the
-// coordinator the routing hands it.
-- (UICollectionViewDropProposal *)collectionView:(UICollectionView *)collectionView
-                    dropSessionDidUpdate:(id<UIDropSession>)session
-        withDestinationIndexPath:(NSIndexPath *)destination
+// The interaction's delegate, one method for every question, recorded with the host the interaction
+// is over and the arguments the message carries.
+- (NSString *)line:(NSString *)what host:(NSString *)host
 {
-    [self note:[NSString stringWithFormat:@"collection.dropSessionDidUpdate:withDestinationIndexPath:%@",
-              CharonDescribe(destination)]];
-    return [[UICollectionViewDropProposal alloc] initWithDropOperation:UIDropOperationMove
-                                                              intent:UICollectionViewDropIntentInsertIntoDestinationIndexPath];
+    return [NSString stringWithFormat:@"%@.%@", host, what];
 }
 
-- (void)collectionView:(UICollectionView *)collectionView performDropWithCoordinator:(id<UICollectionViewDropCoordinator>)coordinator
+- (BOOL)dropInteraction:(UIDropInteraction *)interaction canHandleSession:(id<UIDropSession>)session
 {
-    [self note:[NSString stringWithFormat:@"collection.performDropWithCoordinator:items=%lu:destination=%@:operation=%ld:intent=%ld",
-              (unsigned long)coordinator.items.count,
-              CharonDescribe(coordinator.destinationIndexPath),
-              (long)coordinator.proposal.operation, (long)coordinator.proposal.intent]];
-}
-
-- (UITableViewDropProposal *)tableView:(UITableView *)tableView
-              dropSessionDidUpdate:(id<UIDropSession>)session
-      withDestinationIndexPath:(NSIndexPath *)destination
-{
-    [self note:[NSString stringWithFormat:@"table.dropSessionDidUpdate:withDestinationIndexPath:%@",
-              CharonDescribe(destination)]];
-    return [[UITableViewDropProposal alloc] initWithDropOperation:UIDropOperationMove
-                                                          intent:UITableViewDropIntentInsertIntoDestinationIndexPath];
-}
-
-- (void)tableView:(UITableView *)tableView performDropWithCoordinator:(id<UITableViewDropCoordinator>)coordinator
-{
-    [self note:[NSString stringWithFormat:@"table.performDropWithCoordinator:items=%lu:destination=%@:operation=%ld:intent=%ld",
-              (unsigned long)coordinator.items.count,
-              CharonDescribe(coordinator.destinationIndexPath),
-              (long)coordinator.proposal.operation, (long)coordinator.proposal.intent]];
-}
-
-// The preview questions, the entry and the exit, so that every message the sequence names is one
-// the delegate hears.
-- (BOOL)collectionView:(UICollectionView *)collectionView canHandleDropSession:(id<UIDropSession>)session
-{
-    [self note:@"collection.canHandleDropSession"];
+    [self note:[self line:@"canHandleDropSession" host:self.host]];
     return YES;
 }
 
-- (void)collectionView:(UICollectionView *)collectionView dropSessionDidEnter:(id<UIDropSession>)session
+- (void)dropInteraction:(UIDropInteraction *)interaction sessionDidEnter:(id<UIDropSession>)session
 {
-    [self note:@"collection.dropSessionDidEnter"];
+    [self note:[self line:@"dropInteraction:sessionDidEnter:" host:self.host]];
 }
 
-- (UIDragPreviewParameters *)collectionView:(UICollectionView *)collectionView
-             dropPreviewParametersForItemAtIndexPath:(NSIndexPath *)indexPath
+- (UIDropProposal *)dropInteraction:(UIDropInteraction *)interaction sessionDidUpdate:(id<UIDropSession>)session
 {
-    [self note:[NSString stringWithFormat:@"collection.dropPreviewParametersForItemAtIndexPath:%@",
-              CharonDescribe(indexPath)]];
-    return nil;
+    [self note:[NSString stringWithFormat:@"%@.dropInteraction:sessionDidUpdate:indexPath=%@",
+              self.host, self.destination]];
+    return [[UIDropProposal alloc] initWithDropOperation:UIDropOperationMove];
 }
 
-- (void)collectionView:(UICollectionView *)collectionView dropSessionDidExit:(id<UIDropSession>)session
+- (UITargetedDragPreview *)dropInteraction:(UIDropInteraction *)interaction
+                 previewForDroppingItem:(UIDragItem *)item
+                               withDefault:(UITargetedDragPreview *)defaultPreview
 {
-    [self note:@"collection.dropSessionDidExit"];
+    [self note:[self line:@"dropInteraction:previewForDroppingItem:withDefault:" host:self.host]];
+    return defaultPreview;
 }
 
-- (void)collectionView:(UICollectionView *)collectionView dropSessionDidEnd:(id<UIDropSession>)session
+- (void)dropInteraction:(UIDropInteraction *)interaction performDrop:(id<UIDropSession>)session
 {
-    [self note:@"collection.dropSessionDidEnd"];
+    [self note:[NSString stringWithFormat:@"%@.dropInteraction:performDrop:items=%lu",
+              self.host, (unsigned long)session.items.count]];
 }
 
-- (BOOL)tableView:(UITableView *)tableView canHandleDropSession:(id<UIDropSession>)session
+- (void)dropInteraction:(UIDropInteraction *)interaction sessionDidExit:(id<UIDropSession>)session
 {
-    [self note:@"table.canHandleDropSession"];
-    return YES;
+    [self note:[self line:@"dropInteraction:sessionDidExit:" host:self.host]];
 }
 
-- (void)tableView:(UITableView *)tableView dropSessionDidEnter:(id<UIDropSession>)session
+- (void)dropInteraction:(UIDropInteraction *)interaction sessionDidEnd:(id<UIDropSession>)session
 {
-    [self note:@"table.dropSessionDidEnter"];
-}
-
-- (UIDragPreviewParameters *)tableView:(UITableView *)tableView
-      dropPreviewParametersForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    [self note:[NSString stringWithFormat:@"table.dropPreviewParametersForRowAtIndexPath:%@",
-              CharonDescribe(indexPath)]];
-    return nil;
-}
-
-- (void)tableView:(UITableView *)tableView dropSessionDidExit:(id<UIDropSession>)session
-{
-    [self note:@"table.dropSessionDidExit"];
-}
-
-- (void)tableView:(UITableView *)tableView dropSessionDidEnd:(id<UIDropSession>)session
-{
-    [self note:@"table.dropSessionDidEnd"];
+    [self note:[self line:@"dropInteraction:sessionDidEnd:" host:self.host]];
 }
 
 @end
@@ -269,17 +226,27 @@ static NSMutableArray<NSString *> *_order = nil;
     [probe.tableView reloadData];
     [probe.tableView layoutIfNeeded];
 
-    // The views' own drop delegates, which is who the routing asks: UIDragInteractionDelegate and
-    // UIDropInteractionDelegate are the *interactions'* delegates, and the questions the routing
-    // puts to a view are the view's drop delegate's -- UICollectionViewDropDelegate and
-    // UITableViewDropDelegate. The probe answers the view's, which is why the interaction's name
-    // is not the one in the record.
-    probe.collectionView.dropDelegate = probe;
-    probe.tableView.dropDelegate = probe;
+    // A drop interaction on each view, with the probe as the interaction's delegate: the sequence
+    // asks the interaction, and the interaction calls its delegate, so this is the path the messages
+    // travel. Setting a view's own dropDelegate would not be it: that is a different protocol and a
+    // different delegate, and on 6.1.3 the view has no such property to set.
+    probe.host = @"collection";
+    UIDropInteraction *collectionDrop = [[UIDropInteraction alloc] initWithDelegate:probe];
+    [probe.collectionView addInteraction:collectionDrop];
+    probe.collectionView.dragInteractionEnabled = YES;
+    probe.host = @"table";
+    UIDropInteraction *tableDrop = [[UIDropInteraction alloc] initWithDelegate:probe];
+    [probe.tableView addInteraction:tableDrop];
+    probe.tableView.dragInteractionEnabled = YES;
 
-    // One drop over each, at a point the release's own hit test finds an item under.
+    // One drop over each, at a point the release's own hit test finds an item under. The record's
+    // destination is the one that hit test found, so the comparison's arguments are the routing's.
+    probe.host = @"collection";
+    [probe setDestinationForView:probe.collectionView atPoint:CGPointMake(20, 20)];
     [probe.collectionView charon_driveDropSessionAtPoint:CGPointMake(20, 20)];
     NSUInteger afterCollection = probe.log.count;
+    probe.host = @"table";
+    [probe setDestinationForView:probe.tableView atPoint:CGPointMake(20, 20)];
     [probe.tableView charon_driveDropSessionAtPoint:CGPointMake(20, 20)];
 
     // What was asked, against the sequence the port names, with the arguments each carried.
@@ -287,14 +254,14 @@ static NSMutableArray<NSString *> *_order = nil;
     NSArray *tableAsked = [probe.log subarrayWithRange:NSMakeRange(afterCollection,
                                                                    probe.log.count - afterCollection)];
     NSMutableArray *expectedCollection = [NSMutableArray array];
-    for (NSString *line in chCollectionDocumentedOrder())
+    for (NSString *line in chDocumentedOrder(@"collection"))
         [expectedCollection addObject:line];
     charon_check([collectionAsked isEqualToArray:expectedCollection],
                  "the collection view's drop delegate is asked in the documented order, with the arguments it is given",
                  [NSString stringWithFormat:@"\n    asked   %@\n    expect  %@", collectionAsked, expectedCollection]);
 
     NSMutableArray *tableExpectation = [NSMutableArray array];
-    for (NSString *line in chTableDocumentedOrder())
+    for (NSString *line in chDocumentedOrder(@"table"))
         [tableExpectation addObject:line];
     charon_check([tableAsked isEqualToArray:tableExpectation],
                  "the table view's drop delegate is asked in the documented order, with the arguments it is given",
