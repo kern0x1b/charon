@@ -9,6 +9,8 @@
 
 #import <HealthKit/HealthKit.h>
 
+#import <objc/runtime.h>
+
 #import "CharonHKStore.h"
 
 #pragma mark - HKSampleQuery
@@ -27,6 +29,10 @@
                      resultsHandler:(void (^)(NSArray<HKSample *> *_Nullable results, BOOL done, NSError *_Nullable error))resultsHandler
 {
     self = [super initWithCharonSampleType:sampleType];
+    // The print is here to be removed: the differential reports -[HKSampleQuery sampleType] nil where
+    // the host reads the identifier, and this says what the base initialiser left behind.
+    fprintf(stderr, "HKPROBE HKSampleQuery after super: class=%s objectType=%s sampleType=%s self=%p\n",
+            class_getName(self.class), [self charon_objectType], [self sampleType], self);
     if (self) {
         [self charon_setPredicate:predicate];
         _limit = limit;
