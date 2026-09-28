@@ -140,7 +140,7 @@ The registry's `introduced` keeps the SDK's number, as the registry convention s
 `16.0` on the ladder is an upper bound: nothing is held between 12.0 and 16.0, so it means "after 12.0,
 by 16.0" and never a measured 13.0-15.x.
 
-`CMFormatDescription80.m` (7), `90.m` (9), `100.m` (1), `1001.m` (1), `110.m` (4), `120.m` (1),
+`CMFormatDescription80.m` (7), `90.m` (8), `100.m` (1), `1001.m` (2), `110.m` (4), `120.m` (1),
 `130.m` (6), `140.m` (1), `150.m` (3), `160.m` (1), `170.m` (9), `172.m` (2), `180.m` (7), `260.m` (23).
 
 ## Reuse

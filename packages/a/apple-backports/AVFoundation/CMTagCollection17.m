@@ -142,9 +142,11 @@ static BOOL charon_tag_equal(CMTag left, CMTag right)
 
 const CMTag kCMTagInvalid = {kCMTagCategory_Undefined, kCMTagDataType_Invalid, 0};
 
-CF_EXPORT const CFStringRef kCMTagCategoryKey = CFSTR("category");
-CF_EXPORT const CFStringRef kCMTagValueKey = CFSTR("value");
-CF_EXPORT const CFStringRef kCMTagDataTypeKey = CFSTR("flags");
+// CharonCMTag26.h declares these extern; a definition that repeated the extern would be the
+// -Wextern-initializer warning, so only the header says extern and this says what.
+const CFStringRef kCMTagCategoryKey = CFSTR("category");
+const CFStringRef kCMTagValueKey = CFSTR("value");
+const CFStringRef kCMTagDataTypeKey = CFSTR("flags");
 
 CFTypeID CMTagCollectionGetTypeID(void)
 {

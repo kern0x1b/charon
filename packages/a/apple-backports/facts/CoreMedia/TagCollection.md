@@ -105,6 +105,13 @@ caller and `CFRelease` balances it - `__bridge_retained`.
 
 `flags`, not `dataType` - a value guessed from the name would have been wrong.
 
+**How they are held.** Twice, and both bite. Each is compared to the port's own, reached through the
+image handle, byte for byte; and each of the **port's** three keys is looked up in a dictionary the
+**host** built from a real collection, which is the round trip the registry rows name - a key that differs
+from the host's finds nothing there. The first version of that row claimed a round trip no test
+performed, and `kCMTagDataTypeKey = "dataType"` still gave `212 checks, 0 different`; it now gives
+**215 checks, 1 different**, and the suite exits 1.
+
 ## The differential
 
 `tests/backports/host/coremedia7/tagcollectionimage.m` builds the port's file as its own image
@@ -115,7 +122,7 @@ differential's first version broke is the one that matters: **a port's collectio
 the port's own entry points and a host's only to the host's** - handing the port's to the host's makes
 CoreMedia interpret the port's object as its own.
 
-**212 checks, 0 different.** The check can fail: replacing `return true` in `ContainsCategory` with
+**215 checks, 0 different.** The check can fail: replacing `return true` in `ContainsCategory` with
 `return NO` gives **208 checks, 4 different**, and restoring it gives 0 again.
 
 ## Reuse

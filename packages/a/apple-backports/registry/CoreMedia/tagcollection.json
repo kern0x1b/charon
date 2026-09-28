@@ -274,7 +274,7 @@
       "reason": "CMTag arrived at iOS 17 and the SDK the toolchain resolves is 16.4, where the header does not exist; CharonCMTag26.h transcribes 26.2's declaration",
       "effect": "the key a serialised entry gives its category under = CFSTR(\"category\")",
       "facts": "facts/CoreMedia/TagCollection.md",
-      "source": "read out of the host's own CoreMedia, and held to it by the AddTag kCMTagInvalid case of tests/backports/host/coremedia7/tagcollectionimage.m through the dictionary round trip"
+      "source": "read out of the host's own CoreMedia and compared to the port's own, byte for byte, by the three key cases of tests/backports/host/coremedia7/tagcollectionimage.m; and used: each of the port's three keys is looked up in a dictionary the *host* built from a real collection, so a key that differs finds nothing. Changing kCMTagDataTypeKey to \"dataType\" gives 215 checks, 1 different"
     },
     {
       "api": "kCMTagValueKey",
@@ -285,7 +285,7 @@
       "reason": "CMTag arrived at iOS 17 and the SDK the toolchain resolves is 16.4, where the header does not exist; CharonCMTag26.h transcribes 26.2's declaration",
       "effect": "the key a serialised entry gives its value under = CFSTR(\"value\")",
       "facts": "facts/CoreMedia/TagCollection.md",
-      "source": "read out of the host's own CoreMedia, and held to it by the AddTag kCMTagInvalid case of tests/backports/host/coremedia7/tagcollectionimage.m through the dictionary round trip"
+      "source": "read out of the host's own CoreMedia and compared to the port's own, byte for byte, by the three key cases of tests/backports/host/coremedia7/tagcollectionimage.m; and used: each of the port's three keys is looked up in a dictionary the *host* built from a real collection, so a key that differs finds nothing. Changing kCMTagDataTypeKey to \"dataType\" gives 215 checks, 1 different"
     },
     {
       "api": "kCMTagDataTypeKey",
@@ -296,7 +296,7 @@
       "reason": "CMTag arrived at iOS 17 and the SDK the toolchain resolves is 16.4, where the header does not exist; CharonCMTag26.h transcribes 26.2's declaration",
       "effect": "the key a serialised entry gives its data type under - flags, not dataType = CFSTR(\"flags\")",
       "facts": "facts/CoreMedia/TagCollection.md",
-      "source": "read out of the host's own CoreMedia, and held to it by the AddTag kCMTagInvalid case of tests/backports/host/coremedia7/tagcollectionimage.m through the dictionary round trip"
+      "source": "read out of the host's own CoreMedia and compared to the port's own, byte for byte, by the three key cases of tests/backports/host/coremedia7/tagcollectionimage.m; and used: each of the port's three keys is looked up in a dictionary the *host* built from a real collection, so a key that differs finds nothing. Changing kCMTagDataTypeKey to \"dataType\" gives 215 checks, 1 different"
     }
   ]
 }
