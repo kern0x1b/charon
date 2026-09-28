@@ -344,6 +344,29 @@ recorded by `tests/backports/host/vision/run.sh` (33 records) and held against t
   does **not** settle the order of the buffer *Core ML returns*, which is the one the crop check
   compares: that part of the probe still crashes after the control, and it is the next thing to fix.
 
+  **And the order of the buffer Core ML returns, with the same control.** The probe reads the four
+  bytes of the answer where the known pixel must have landed:
+
+  ```
+  Core ML's answer is a 1111970369 buffer, 128 bytes a row
+  at (3,5) scaled by 2 the pixel belongs at (6,10); the brightest output pixel is (6,10) at 113
+  its four bytes: 00 00 71 ff
+  ```
+
+  `1111970369` is `BGR `, the red is **byte 2** where the picture put it, and the fourth byte is
+  `ff`: the returned buffer is **BGRA and not premultiplied**, the same as the port's own. The
+  brightest pixel is exactly at (6,10), so at this scale the map is exactly 2x with no offset, and
+  `113` is 200 taken at a half-pixel position by the two-tap kernel -- the same bilinear the
+  impulse rows identified.
+
+  So the channel order is settled on both sides and **a channel swap is not, and was never, the
+  cause of the centre-crop rows**: the check compares bytes, both sides are BGRA, and a swap would
+  have broken the scale-fit rows too, which read 0.
+
+  The fault behind the crash was the first read of the answer's bytes with `imageBufferValue` NULL
+  behind it -- the property is nullable, and one run of the probe got a value with none. The check
+  now says so instead of dereferencing it.
+
   The top-down transform also rules the origin out as the cause: the coordinate fit's numbers are
   byte-identical before and after it.
 
