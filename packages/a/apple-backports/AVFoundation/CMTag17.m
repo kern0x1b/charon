@@ -199,18 +199,18 @@ CMTag CMTagMakeFromDictionary( CFDictionaryRef dict )
 // The description, in the host's own shape: {category:'<four>' value:<v> <type>}, with values as
 // 'xxxx' for OSType, 0x… for Flags, decimal for SInt64 and %.2f for Float64 - and with **no closing
 // brace** for an invalid tag, which is what the host prints and is measured byte by byte.
+// The four characters, through kCFStringEncodingMacRoman, which is what the host uses: a category of
+// 0xc7000000 comes back as U+00AB, and MacRoman gives U+00AB where Windows Latin-1 gives U+00C7. The
+// string ends at the first zero byte, which is why the host prints the Undefined category as ''.
 static NSString *charon_category_text(CMTagCategory category)
 {
-    // One character per byte, and the string ENDS at a zero byte: it is a C string, which is why the
-    // host prints the Undefined category as '' and 0x7fffffff as one 0x7f and nothing beyond it.
-    NSMutableString *text = [NSMutableString stringWithCapacity:4];
-    for (int shift = 24; shift >= 0; shift -= 8) {
-        unsigned byte = (unsigned)((category >> shift) & 0xFF);
-        if (!byte)
-            break;
-        [text appendFormat:@"%C", (unichar)byte];
-    }
-    return text;
+    unsigned char bytes[4];
+    for (int index = 0; index < 4; index++)
+        bytes[index] = (unsigned char)((category >> (24 - index * 8)) & 0xFF);
+    CFIndex length = 0;
+    while (length < 4 && bytes[length])
+        length++;
+    return (__bridge NSString *)CFStringCreateWithBytes(NULL, bytes, (CFIndex)length, kCFStringEncodingMacRoman, false);
 }
 
 static NSString *charon_value_text(CMTag tag)
