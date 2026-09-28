@@ -130,12 +130,15 @@
 - (NSInteger)charon_matchesForTags:(const CMTag *)tags count:(CMItemCount)count
 {
     const CMTag *all = [self charon_tags];
-    if (!all)
-        return 0;
     NSInteger matches = 0;
-    for (NSInteger entry = 0; entry < [self charon_count]; entry++)
-        if (charon_tag_carries(all + _offsets[entry], _offsets[entry + 1] - _offsets[entry], tags, count))
+    for (NSInteger entry = 0; entry < [self charon_count]; entry++) {
+        // An empty run is carried by every entry - the host answers 1 for a group of one empty
+        // collection, and 0 for a group with no entries - and charon_tag_carries never dereferences a
+        // zero count, so a NULL run is passed as it is rather than as an offset from a NULL base.
+        CMItemCount at = _offsets[entry], held = _offsets[entry + 1] - at;
+        if (charon_tag_carries(all ? all + at : NULL, held, tags, count))
             matches++;
+    }
     return matches;
 }
 

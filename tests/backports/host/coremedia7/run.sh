@@ -38,7 +38,7 @@ xcrun clang -dynamiclib -fobjc-arc $quiet -I"$AV" -DkCMTagInvalid=port_kCMTagInv
     -DkCMTagCategoryKey=port_kCMTagCategoryKey -DkCMTagValueKey=port_kCMTagValueKey -DkCMTagDataTypeKey=port_kCMTagDataTypeKey \
     -framework Foundation -framework CoreMedia -framework CoreVideo \
     -o "$BUILD/libCharonCMTag.dylib" "$AV/CMTagCollection17.m" "$BUILD/CharonCMTagSupport.o" "$BUILD/CMTaggedBufferGroup17.o"
-xcrun clang -fobjc-arc $quiet "$here/tagcollectionimage.m" -framework CoreMedia -framework CoreVideo -framework Foundation \
+xcrun clang -fobjc-arc $quiet -I"$AV" "$here/tagcollectionimage.m" -framework CoreMedia -framework CoreVideo -framework Foundation \
     -o "$BUILD/tagcollectionimage"
 "$BUILD/tagcollectionimage" "$BUILD/libCharonCMTag.dylib"
 # The HEVC reader is held against a real hvcC - the record of an ffmpeg/libx265 stream, committed here

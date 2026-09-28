@@ -5,6 +5,7 @@
 #import <Foundation/Foundation.h>
 #import <dlfcn.h>
 #import <objc/runtime.h>
+#import "CharonCMTaggedBufferGroup26.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -385,6 +386,10 @@ int main(int argc, char **argv)
                 // CMTaggedBufferGroup: three disjoint collections, then a fourth entry that repeats a
                 // tag already in the second, so both a unique match and an ambiguous one are asked for.
                 {
+                    printf("  at creation: portLeft %ld, portOther %ld, portCopy %ld\n",
+                           (long)CMTagCollectionGetCount(portLeft), (long)CMTagCollectionGetCount(portOther),
+                           (long)CMTagCollectionGetCount(portCopy));
+                    fflush(stdout);
                     CMTagCollectionRef disjoint[3];
                     disjoint[0] = systemLeft;
                     disjoint[1] = systemOther;
@@ -494,12 +499,18 @@ int main(int argc, char **argv)
                     }
                     {
                         CMTaggedBufferGroupRef systemCombined = NULL, portCombined = NULL;
-                        const void *groupRefs[2] = { systemGroup, systemGroup };
-                        CFMutableArrayRef groups = CFArrayCreateMutable(NULL, 2, &kCFTypeArrayCallBacks);
-                        CFArrayAppendValue(groups, groupRefs[0]);
-                        CFArrayAppendValue(groups, groupRefs[1]);
-                        OSStatus ca = CMTaggedBufferGroupCreateCombined(kCFAllocatorDefault, groups, &systemCombined);
-                        OSStatus cb = port_CMTaggedBufferGroupCreateCombined(kCFAllocatorDefault, groups, &portCombined);
+                        // Each side's own groups, for the same reason as the collections: the port's
+                        // CreateCombined messages each group it is handed, and a host group has no
+                        // charon_collections for it. The one array both sides may share is the buffers,
+                        // which are CoreVideo's own on both sides.
+                        CFMutableArrayRef theirGroups = CFArrayCreateMutable(NULL, 2, &kCFTypeArrayCallBacks);
+                        CFArrayAppendValue(theirGroups, systemGroup);
+                        CFArrayAppendValue(theirGroups, systemGroup);
+                        CFMutableArrayRef myGroups = CFArrayCreateMutable(NULL, 2, &kCFTypeArrayCallBacks);
+                        CFArrayAppendValue(myGroups, portGroup);
+                        CFArrayAppendValue(myGroups, portGroup);
+                        OSStatus ca = CMTaggedBufferGroupCreateCombined(kCFAllocatorDefault, theirGroups, &systemCombined);
+                        OSStatus cb = port_CMTaggedBufferGroupCreateCombined(kCFAllocatorDefault, myGroups, &portCombined);
                         same("group combined", [NSString stringWithFormat:@"%d %lu", ca, (unsigned long)CMTaggedBufferGroupGetCount(systemCombined)],
                              [NSString stringWithFormat:@"%d %lu", cb, (unsigned long)port_CMTaggedBufferGroupGetCount(portCombined)]);
                         CMTaggedBufferGroupRef systemShort = NULL, portShort = NULL;
