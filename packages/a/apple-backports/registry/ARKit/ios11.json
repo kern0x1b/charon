@@ -1214,10 +1214,11 @@
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "not carried here: the setting belongs to a configuration this device cannot run, and the reason is the sensor it needs rather than the chip",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "the SDK 16.4 headers of ARKit"
+      "status": "implemented",
+      "reason": "carried: a SceneKit view, declared by the SDK as @interface ARSCNView : SCNView<ARSessionProviding>, and the SceneKit port implements that very class - SCNView.m is @implementation SCNView carrying _OBJC_CLASS_$_SCNView, with CharonSCN.h:1 importing the SDK's own SceneKit.h as its declaration - so the superclass this subclasses is one the tree already has",
+      "effect": "a real SCNView subclass rather than a view that holds one: the class and its 11.0 members are in ARSCNView11.m and its one 12.0 member in a category in ARSCNView12.m, a caller puts an SCNNode in the view's own scene and gets the ARKit anchor back through anchorForNode:, and a node the caller built is nil because it was never paired",
+      "source": "the SDK 16.4 headers of ARKit",
+      "facts": "facts/ARKit/ARSCNViewFamily.md"
     },
     {
       "api": "ARSCNViewDelegate",
@@ -1412,8 +1413,8 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARSCNViewFamily.md",
-      "source": "ARKit of the iOS 16.4 SDK: ARSCNView.h, the class at :24 and its members",
-      "reason": "carried: deprecated by the framework in favour of a raycast query, and forwarded to the frame",
+      "source": "ARKit of the iOS 16.4 SDK: ARSCNView.h, the class at :24 and its members; documented, not measured: the answer is the session's current frame's and a frame is an ARKit class the host has not, so SceneKit cannot observe what the view forwarded to it",
+      "reason": "carried: deprecated by the framework in favour of a raycast query, and forwarded to the frame The oracle is Apple's documentation, said so in `source`",
       "effect": "the ARHitTestResults the session's current frame answers for a point and the types asked for, which is the shared pinhole arithmetic in ARFrame.m rather than a second copy of it"
     },
     {
@@ -1423,8 +1424,8 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARSCNViewFamily.md",
-      "source": "ARKit of the iOS 16.4 SDK: ARSCNView.h, the class at :24 and its members",
-      "reason": "carried: forwarded to the frame",
+      "source": "ARKit of the iOS 16.4 SDK: ARSCNView.h, the class at :24 and its members; documented, not measured: the query is built by the frame from the camera's intrinsics and pose, both ARKit classes the host has not",
+      "reason": "carried: forwarded to the frame The oracle is Apple's documentation, said so in `source`",
       "effect": "the ARRaycastQuery built from the pixel, the camera's intrinsics and the camera's pose; nil when the camera states no intrinsics, and the query the framework's own replacement for hitTest:types: is built from"
     },
     {
@@ -1456,8 +1457,8 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARSCNViewFamily.md",
-      "source": "ARKit of the iOS 16.4 SDK: ARSCNView.h:100, API_AVAILABLE(ios(12.0)) NS_REFINED_FOR_SWIFT",
-      "reason": "carried: a 12.0 member of an 11.0 class, so the class is in an 11.0 object and this is a category in a 12.0 one - the shape UISegmentedControl+Actions14.m uses. The arithmetic is the camera's: ARCamera.h:117 declares the five-argument form and ARFrame.h declares no unprojection at all",
+      "source": "ARKit of the iOS 16.4 SDK: ARSCNView.h:100, API_AVAILABLE(ios(12.0)) NS_REFINED_FOR_SWIFT; documented, not measured: the arithmetic is the camera's, ARCamera.h:117, and ARFrame.h declares no unprojection at all, so the view asks a class the host has not",
+      "reason": "carried: a 12.0 member of an 11.0 class, so the class is in an 11.0 object and this is a category in a 12.0 one - the shape UISegmentedControl+Actions14.m uses. The arithmetic is the camera's: ARCamera.h:117 declares the five-argument form and ARFrame.h declares no unprojection at all The oracle is Apple's documentation, said so in `source`",
       "effect": "where a point in the view's pixels meets a plane in the world, with the view's own size as the viewport; the declaration is visible at a 6.1.3 target because API_AVAILABLE gives a warning the build silences and NS_REFINED_FOR_SWIFT is a Swift-side rename - what makes the member 12.0's is the release it arrived in"
     },
     {
@@ -1533,9 +1534,20 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARSCNViewFamily.md",
-      "source": "ARKit of the iOS 16.4 SDK: ARSCNPlaneGeometry.h:9",
-      "reason": "carried: the two properties it would set are readonly - SCNGeometry.h:121 and :135 - and the only public way into a geometry is +geometryWithSources:elements:, which returns a new object, so the in-place update goes through the port's own package-internal charon_replaceSources:elements: declared in CharonSCN.h and in no public header",
+      "source": "ARKit of the iOS 16.4 SDK: ARSCNPlaneGeometry.h:9; documented, not measured: the buffers the update is given come from an ARPlaneGeometry, an ARKit class the host has not; the part SceneKit can see - the sources and the element it reads back - is measured in tests/backports/host/arkit",
+      "reason": "carried: the two properties it would set are readonly - SCNGeometry.h:121 and :135 - and the only public way into a geometry is +geometryWithSources:elements:, which returns a new object, so the in-place update goes through the port's own package-internal charon_replaceSources:elements: declared in CharonSCN.h and in no public header The oracle is Apple's documentation, said so in `source`",
       "effect": "the geometry's sources become the plane's own vertex and coordinate buffers and its element the plane's six indices, copied into the int16 layout SceneKit takes, with the buffers kept for as long as the sources read them"
+    },
+    {
+      "api": "ARSCNDebugOptions",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "facts": "facts/ARKit/ARSCNViewFamily.md",
+      "source": "ARKit of the iOS 16.4 SDK: ARSCNView.h:175, typedef SCNDebugOptions ARSCNDebugOptions",
+      "reason": "not carried: it is SceneKit's own SCNDebugOptions under an ARKit name, and the renderer that would consume one is the port's - a typedef here would be a second name for a type nothing in this library defines",
+      "effect": "none: a caller naming the type is naming SceneKit's, which the SceneKit port declares"
     }
   ]
 }

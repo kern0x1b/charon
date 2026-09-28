@@ -30,6 +30,12 @@
 // is, and the class object is in the right place: `_OBJC_CLASS_$_ARSCNView` first exists at 11.0.
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
+// A protocol named only in a header nothing references emits no metadata, so the class this file
+// carries refers to its own delegate's protocol by evaluating it. The expression is not a compile-time
+// constant, so it lives in a retained function body, and this object is where it belongs: the protocol
+// arrived in 11.0 with the class.
+__attribute__((used)) static Protocol *CharonEmitARSCNViewDelegate(void) { return @protocol(ARSCNViewDelegate); }
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface ARSCNView ()
@@ -47,6 +53,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Both maps, made.
 - (void)charon_resetAnchorMaps;
+
+/// Pairing an anchor with the node it is shown by, moving it, and breaking it. These are where the
+/// delegate's `renderer:` methods are called, and the view owns the pairing, so the calls live with it.
+- (void)charon_placeAnchor:(ARAnchor *)anchor atNode:(SCNNode *)node;
+- (void)charon_moveAnchor:(ARAnchor *)anchor toNode:(SCNNode *)node;
+- (void)charon_removeAnchor:(ARAnchor *)anchor;
 
 @end
 
@@ -83,6 +95,42 @@ NS_ASSUME_NONNULL_BEGIN
     _nodesByAnchor = [NSMapTable weakToWeakObjectsMapTable];
 }
 
+/// Pairing an anchor with the node it is shown by, and telling the delegate.
+///
+/// This is where `renderer:didAddNode:forAnchor:` belongs, and where a caller that has not placed a
+/// node itself gets to: the map is the view's own, so a pairing made here is one the delegate is told
+/// about, exactly as the framework's own view tells it.
+- (void)charon_placeAnchor:(ARAnchor *)anchor atNode:(SCNNode *)node
+{
+    [self.anchorsByNode setObject:anchor forKey:node];
+    [self.nodesByAnchor setObject:node forKey:anchor];
+    if ([self.delegate respondsToSelector:@selector(renderer:didAddNode:forAnchor:)])
+        [self.delegate renderer:self didAddNode:node forAnchor:anchor];
+}
+
+/// Moving a pairing, telling the delegate before and after as the framework's renderer protocol does.
+- (void)charon_moveAnchor:(ARAnchor *)anchor toNode:(SCNNode *)node
+{
+    SCNNode *was = [self.nodesByAnchor objectForKey:anchor];
+    if ([self.delegate respondsToSelector:@selector(renderer:willUpdateNode:forAnchor:)])
+        [self.delegate renderer:self willUpdateNode:was ?: node forAnchor:anchor];
+    [self.anchorsByNode setObject:anchor forKey:node];
+    [self.nodesByAnchor setObject:node forKey:anchor];
+    if ([self.delegate respondsToSelector:@selector(renderer:didUpdateNode:forAnchor:)])
+        [self.delegate renderer:self didUpdateNode:node forAnchor:anchor];
+}
+
+/// Breaking a pairing, which is `renderer:didRemoveNode:forAnchor:`.
+- (void)charon_removeAnchor:(ARAnchor *)anchor
+{
+    SCNNode *node = [self.nodesByAnchor objectForKey:anchor];
+    if (node)
+        [self.anchorsByNode removeObjectForKey:node];
+    [self.nodesByAnchor removeObjectForKey:anchor];
+    if (node && [self.delegate respondsToSelector:@selector(renderer:didRemoveNode:forAnchor:)])
+        [self.delegate renderer:self didRemoveNode:node forAnchor:anchor];
+}
+
 - (nullable ARAnchor *)anchorForNode:(SCNNode *)node
 {
     // The session places a node for an anchor, and a node the caller has put inside it is the same node
@@ -98,7 +146,17 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (nullable SCNNode *)nodeForAnchor:(ARAnchor *)anchor
 {
-    return [self.nodesByAnchor objectForKey:anchor];
+    SCNNode *node = [self.nodesByAnchor objectForKey:anchor];
+    if (node)
+        return node;
+    // No node of the view's own, so the delegate is asked for one - which is what makes a node for an
+    // anchor the application's rather than the session's, and the reason the protocol exists.
+    if ([self.delegate respondsToSelector:@selector(renderer:nodeForAnchor:)]) {
+        node = [self.delegate renderer:self nodeForAnchor:anchor];
+        if (node)
+            [self charon_placeAnchor:anchor atNode:node];
+    }
+    return node;
 }
 
 - (NSArray<ARHitTestResult *> *)hitTest:(CGPoint)point types:(ARHitTestResultType)types

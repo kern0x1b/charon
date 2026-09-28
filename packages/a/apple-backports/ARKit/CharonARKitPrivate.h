@@ -6,6 +6,8 @@
 #import <simd/simd.h>
 #import <math.h>
 
+#import <SceneKit/SceneKit.h>
+
 #import "CharonARTracker.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -176,3 +178,12 @@ static inline simd_float4x4 CharonInverse(simd_float4x4 m)
 @end
 
 NS_ASSUME_NONNULL_END
+
+/// The view's renderer delegate is the SDK's own, declared at ARSCNView.h:104. It is not redeclared
+/// here - a duplicate protocol definition is ignored by the compiler and warns - and what the port
+/// owes it is smaller and more useful: the metadata has to exist and the view has to actually call
+/// those five methods, because a row that says `implemented` and describes a view that never asks its
+/// delegate for a node is a false row.
+///
+/// The metadata is emitted by `ARSCNView11.m`, in the object that carries the class and with it the
+/// protocol's own release, and the calls are made where a pairing is made, changed and broken.
