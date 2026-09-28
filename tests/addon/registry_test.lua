@@ -218,6 +218,32 @@ local function member_and_protocol_rows(backports, found)
     os.tryrm(root)
 end
 
+
+-- Two readers of a category's members, and they answer two different questions. The band machinery places an
+-- object by what it *defines*, so a member the port adds in a category belongs to that class, not to the object
+-- carrying it; check_registry asks what the port *carries*, which is wider. A synthetic inventory is enough:
+-- one class the object defines, one class the release carries, one of the port's own, and a category member on
+-- each. At 2fde39f4's shape - one reader for both - the first assertion fails, which is the bisect's finding.
+local function two_readers(backports, found)
+    local inventory = {classes = {
+        -- the inventory's own shape: a key is the selector with its kind, and the reader strips that
+        FixDefined = {image = true, instance = {["-definedOne"] = true}, ["+"] = {}},
+        FixCarried = {image = true, instance = {["-carriedOne"] = true}, ["+"] = {}},
+        CharonHelper = {image = false, instance = {["-helperOne"] = true}, ["+"] = {}}}}
+    local function read(list)
+        table.sort(list)
+        return table.concat(list, " ")
+    end
+    local band = read(backports.added_members(inventory, {FixDefined = true, FixCarried = true}))
+    if band ~= "-[CharonHelper helperOne]" then
+        table.insert(found, "the band reader must return only what the object defines, not a member a category adds to a class the release carries, and it says: " .. band)
+    end
+    local api = read(backports.carried_api(inventory))
+    if not api:find("%-%[FixCarried carriedOne%]", 1, false) or api:find("CharonHelper", 1, true) or not api:find("FixDefined", 1, true) then
+        table.insert(found, "the API reader must return the members of every class but the port's own, and it says: " .. api)
+    end
+end
+
 function failures(opt)
     local backports = import("apple.backports", {rootdir = opt.modules, anonymous = true})
     local found = {}
@@ -284,6 +310,7 @@ function failures(opt)
     named_twice(backports, found)
     type_rows(backports, found)
     member_and_protocol_rows(backports, found)
+    two_readers(backports, found)
     return found
 end
 

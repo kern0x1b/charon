@@ -613,12 +613,12 @@ function protocol_sources(root, library, folder, umbrella)
 // Every @protocol() below is named so clang emits __OBJC_PROTOCOL_$_<name> into this object, which is the
 // metadata the release carries for that protocol in %s.framework itself. One file per release the rows
 // arrived in, so every symbol here first appears in one release and release-split is clean.
-#import <%s>
+#import <%s/%s.h>
 
 static void charon_%s_protocols(void) __attribute__((used));
 static void charon_%s_protocols(void)
 {
-]], library.name, introduced, library.name, umbrella, library.name, library.name)
+]], library.name, introduced, library.name, umbrella, umbrella, library.name, library.name)
         for _, name in ipairs(names) do
             text = text .. string.format("    (void)@protocol(%s);\n", name)
         end
@@ -1260,7 +1260,7 @@ end
 -- a class the release already carries belongs to that class - and counting it here moved the carrying object
 -- out of the band its own minimum says: measured 2026-09-28 by bisecting the 4.3 gate over 2fde39f4, which
 -- widened this for check_registry, and put 16 objects above iOS 4.3.
-local function added_members(inventory, ours)
+function added_members(inventory, ours)
     return members_of(inventory, function (name)
         return not class_image(inventory, name) and not ours[name]
     end)
@@ -1270,7 +1270,7 @@ end
 -- member the port adds to a class the release already carries is API the port carries, and check_registry asks
 -- whether a row says so. The port's own classes are its machinery and it names them. This is the set 2fde39f4
 -- widened, kept for that reader alone.
-local function carried_api(inventory)
+function carried_api(inventory)
     return members_of(inventory, function (name)
         return not name:startswith("Charon")
     end)
