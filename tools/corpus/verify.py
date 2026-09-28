@@ -61,6 +61,8 @@ def status(api):
                   "+[%s %s]" % (o, name), "+[%s set%s:]" % (o, up)]
     for k in cands:
         if k in reg: return reg[k]
+    for k in cands:
+        if k in _pkg_reg: return _pkg_reg[k]
     return "нет строки"
 # Bodies of every @implementation in the tree, keyed by class (categories merged into the class).
 # A flat blob cannot tell WHICH class defines a selector: `- (BOOL)accessibilityIgnoresInvertColors`
@@ -71,6 +73,44 @@ for _m in re.finditer(r'@implementation\s+(\w+)([^\n]*)\n(.*?)(?=^@end)', BLOB, 
 def _body(cls):
     return "\n".join(IMPLS.get(cls, []))
 import json as _j
+
+
+# A Swift package carries its own registry and its own sources, and neither is in the export this
+# file has always read: that export is the apple-backports one, so every row of a Swift module --
+# SwiftData, Styx, Shade -- came back "нет строки", and in_tree() below could not see a .swift file
+# either, so a whole Swift framework read as real work that was in fact carried. A package's
+# registry is a registry like any other and is read the same way.
+def _swift_tree_files():
+    found = []
+    for root, dirs, files in os.walk(T):
+        dirs[:] = [d for d in dirs if d not in (".git", ".agent-work", "build", "lib")]
+        for name in files:
+            path = os.path.join(root, name)
+            if name.endswith(".json") and os.path.basename(root) == "registry":
+                found.append((path, True))
+            elif name.endswith(".swift") and os.sep + "files" + os.sep in path:
+                found.append((path, False))
+    return found
+
+_pkg_reg = {}
+SWIFT = ""
+for _path, _is_registry in _swift_tree_files():
+    if _is_registry:
+        try:
+            _data = _j.load(open(_path))
+        except Exception:
+            continue
+        for _entry in (_data.get("entries") or []) if isinstance(_data, dict) else []:
+            _api, _status = _entry.get("api"), _entry.get("status")
+            if _api and _status:
+                _pkg_reg.setdefault(_api, _status)
+                if _entry.get("kind"):
+                    reg_kinds.setdefault(_api, _entry["kind"])
+    else:
+        try:
+            SWIFT += open(_path).read() + "\n"
+        except Exception:
+            pass
 # reg_kinds now comes straight from EXP's own "kind" column (see above) -- no more separate
 # /tmp/reg-kinds.json with no generator anywhere in this tree.
 PROTOCOLS={a for a,kk in reg_kinds.items() if kk=="protocol"}
@@ -110,6 +150,16 @@ def in_tree(api, kind=None, owner=None):
     elif "." in a and not a.startswith("_"): own,sel=a.split(".",1)
     else: own,sel=None,a.lstrip("_")
     own=owner or own
+    if own is not None and SWIFT:
+        # A Swift module declares its members with a public modifier and not with an
+        # @interface, so the Objective-C lookup above cannot see one. A method's api names
+        # its selector with labels only, so what is looked for is the first label. A member
+        # that is only a protocol requirement has no declaration of its own, and the scan
+        # says nothing about it - which is the honest answer, because a package's registry
+        # is what says a requirement is carried.
+        _first = sel.split(":")[0]
+        if _first and re.search(r"\b" + re.escape(_first) + r"\b", SWIFT):
+            return True
     if own is not None:
         # A PROTOCOL owner has no @implementation of its own: the member is provided by the concrete
         # classes that adopt it. Widen the search to every class the CALLING apps actually import.
