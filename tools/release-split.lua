@@ -70,6 +70,7 @@
 -- carried exactly one real symbol plus these helpers, none of which any release will ever export.
 
 import("apple.dyld", {rootdir = path.join(os.scriptdir(), "..", "modules")})
+import("apple.macho", {rootdir = path.join(os.scriptdir(), "..", "modules")})
 
 local EXCLUDED = {
     "^_OBJC_IVAR_%$_",
@@ -99,18 +100,32 @@ local function internal(name)
     return bare:startswith("charon_") or bare:startswith("Charon")
 end
 
+-- What nm -gUm lists of an object without "private external", read out of its symbol table here rather
+-- than by an nm per object: a gate's objects are a thousand files, and a process each was most of what
+-- this run cost (measured 51 s over one 6.1.3 gate's 19 folders). A symbol counts when it is external
+-- (N_EXT), not private external (N_PEXT: a hidden weak definition such as clang's
+-- ___clang_call_terminate of a noexcept destructor is nm -g visible, is in no release, and is not what
+-- band() weighs), not a debugging entry (N_STAB), and defined (its type is not N_UNDF).
 local function symbols_of(object)
-    -- -m says which of them are private external: a hidden weak definition (clang's ___clang_call_terminate
-    -- of a noexcept destructor) is nm -g visible, is in no release, and is not what band() weighs.
-    local out = os.iorunv("nm", {"-gUm", object})
+    local data = macho.read(object)
     local found = {}
-    for line in out:gmatch("[^\n]+") do
-        local name = line:match("%S+$")
-        if name and not line:find("private external", 1, true) and not internal(name) then
-            table.insert(found, name)
+    for _, image in ipairs(macho.images(data)) do
+        if image.symtab then
+            local symoff, nsyms, stroff = image.symtab[1], image.symtab[2], image.symtab[3]
+            local entry = image.wide and 16 or 12
+            for index = 0, nsyms - 1 do
+                local strx, kind = string.unpack("<I4B", data, image.base + symoff + index * entry + 1)
+                if kind & 0xE0 == 0 and kind & 0x0E ~= 0 and kind & 0x10 == 0 and kind & 0x01 ~= 0 then
+                    local start = image.base + stroff + strx + 1
+                    local name = data:sub(start, data:find("\0", start, true) - 1)
+                    if not internal(name) then
+                        found[name] = true
+                    end
+                end
+            end
         end
     end
-    return found
+    return table.orderkeys(found)
 end
 
 local function ladder()
@@ -125,8 +140,7 @@ local function recorded_sdk(objectsdir)
     end
 end
 
-function main(objectsdir, output, sdkdir)
-    assert(objectsdir, "usage: xmake l tools/release-split.lua OBJECTSDIR [OUTPUT] [SDKDIR]")
+local function check(objectsdir, output, sdkdir)
     sdkdir = sdkdir or recorded_sdk(objectsdir)
     if not sdkdir then
         raise("release-split: %s has no record of the SDK it was compiled against (objects/sdkdir, written by the build); pass SDKDIR", objectsdir)
@@ -199,4 +213,31 @@ function main(objectsdir, output, sdkdir)
     end
     cprint("release-split: clean, every object file's symbols first-appear in one release (%d files, %d symbols, %d releases checked)",
            #files, table.orderkeys(all_symbols) and #table.orderkeys(all_symbols) or 0, #ladder())
+end
+
+-- OBJECTSDIR is one folder of objects, or the objects folder of a build (the one holding its sdkdir
+-- record, and attach.o, which is no library's), whose every folder is then checked in this one run: the ladder and the SDK's owners are loaded once, not once a folder.
+function main(objectsdir, output, sdkdir)
+    assert(objectsdir, "usage: xmake l tools/release-split.lua OBJECTSDIR [OUTPUT] [SDKDIR]")
+    local record = path.join(objectsdir, "sdkdir")
+    if not os.isfile(record) then
+        return check(objectsdir, output, sdkdir)
+    end
+    sdkdir = sdkdir or (os.isfile(record) and io.readfile(record):trim()) or nil
+    local failed = {}
+    for _, folder in ipairs(os.dirs(path.join(objectsdir, "*"))) do
+        if #os.files(path.join(folder, "*.o")) > 0 then
+            print("release-split: %s", folder)
+            local ok, errors = try {function () check(folder, output and (output .. "." .. path.filename(folder)), sdkdir); return true end,
+                                    catch {function (errors) return errors end}}
+            if ok ~= true then
+                cprint("${color.error}%s${clear}", tostring(ok))
+                table.insert(failed, path.filename(folder))
+            end
+        end
+    end
+    if #failed > 0 then
+        raise("release-split: %d folder(s) are not clean: %s", #failed, table.concat(failed, ", "))
+    end
+    cprint("release-split: every folder of %s is clean", objectsdir)
 end
