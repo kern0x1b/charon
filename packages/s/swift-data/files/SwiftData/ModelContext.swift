@@ -305,6 +305,27 @@ public final class ModelContext: Equatable, SendableMetatype {
 
     // MARK: Identity
 
+    // MARK: The history
+
+    /// What the store remembers of what was saved to it, oldest first.
+    ///
+    /// The store is the one that holds the history - `NSPersistentHistoryChangeRequest` and the
+    /// transactions it returns are the backports', registry/CoreData/ios11.json, and the store's
+    /// description sets `NSPersistentHistoryTrackingKey` so there is one to read - and the
+    /// descriptor's three members are all it has: a predicate, a limit and an order. There is no
+    /// token and no date on it, so a fetch is the store's whole history. A reader that wants to
+    /// resume from where it was holds the token the transactions carry.
+    public func fetchHistory(_ descriptor: HistoryDescriptor<DefaultHistoryTransaction>) throws
+    -> [DefaultHistoryTransaction] {
+        try container.store.fetchHistory(descriptor)
+    }
+
+    /// The history before the newest transaction, gone. A store that keeps everything grows with
+    /// every write, and this is how a program says where to stop keeping it.
+    public func deleteHistory(_ descriptor: HistoryDescriptor<DefaultHistoryTransaction>) throws {
+        try container.store.deleteHistory(descriptor)
+    }
+
     public func model(for persistentModelID: PersistentIdentifier) -> any PersistentModel {
         // What this context holds under that identity. A model is paired with its row the first
         // time that row is read as that model - by a fetch, by `registeredModel`, or by reading a

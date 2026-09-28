@@ -17,11 +17,10 @@ order are `Foundation.Predicate` and `Foundation.SortDescriptor`, which arrive w
 
 ## State of this package
 
-**582 of the corpus's 584 SwiftData rows are carried.** The two that are not are
-`ModelContext.fetchHistory(_:)` and `ModelContext.deleteHistory(_:)`: both are declared as
-requirements of `HistoryProviding` and implemented nowhere — `DefaultStore` does not conform to it —
-and the substrate for them is carried, so they are written and not yet written, and the registry
-says so with the grep that shows it. The **seven** macros are declared with Apple's own `@attached`
+**All 584 of the corpus's SwiftData rows are carried.** The last two were the history:
+`ModelContext.fetchHistory(_:)` and `ModelContext.deleteHistory(_:)`, over the backports'
+`NSPersistentHistory*` and the `HistoryProviding` conformance the review's first round called a
+stub. The **seven** macros are declared with Apple's own `@attached`
 roles and compile with no plugin on the machine, because `#externalMacro` is only resolved when a
 macro is *used*.
 

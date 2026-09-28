@@ -3,6 +3,8 @@
 
 import Foundation
 import CoreData
+import FoundationEssentials
+import FoundationInternationalization
 
 public final class DefaultStore: DataStore, DataStoreBatching, @unchecked Sendable {
     public typealias Configuration = ModelConfiguration
@@ -281,6 +283,9 @@ public final class DefaultStore: DataStore, DataStoreBatching, @unchecked Sendab
 /// *is* is kept by the transformer or, with none, by `NSCoding`.
 enum AttributeMapping {
     static func coreDataType(of type: any Any.Type, transformable: Bool) -> NSAttributeType {
+        typealias Date = Foundation.Date
+        typealias Data = Foundation.Data
+        typealias Decimal = Foundation.Decimal
         if transformable { return .transformableAttributeType }
         switch type {
         case is String.Type, is Substring.Type: return .stringAttributeType
@@ -304,4 +309,149 @@ public struct UniquenessViolation: Error {
     public let entity: String
     public let constraint: [String]
     public let conflict: NSConstraintConflict
+}
+
+// MARK: - The history
+//
+// A history is what the store remembers of what was saved to it, over the backports'
+// NSPersistentHistory*: NSPersistentHistoryChangeRequest, NSPersistentHistoryToken,
+// NSPersistentHistoryTransaction, NSPersistentHistoryChange, NSPersistentHistoryResult,
+// NSPersistentHistoryTrackingKey, NSPersistentHistoryTokenKey,
+// -[NSPersistentStoreCoordinator currentPersistentHistoryTokenFromStores:] and
+// NSManagedObjectContext.transactionAuthor, all `implemented` with `minimum: 6.0` in
+// registry/CoreData/ios11.json. A store that sets NSPersistentHistoryTrackingKey keeps them, and
+// this store's on_install sets it, so there is something below to read.
+//
+// What a descriptor can ask for is what its three members are: a predicate, a limit and an order.
+// There is no token and no date on it, so a fetch is the store's whole history, newest last, and a
+// delete is everything before the newest transaction. A reader that wants to resume from where it
+// was holds the token itself - `DefaultHistoryToken.tokenValue` carries the transaction number per
+// store - and this is stated here because the interface says the same thing and nothing more.
+
+extension DefaultStore: HistoryProviding {
+    public static var historyType: DefaultHistoryTransaction.Type { DefaultHistoryTransaction.self }
+
+    public func fetchHistory(_ descriptor: HistoryDescriptor<DefaultHistoryTransaction>)
+    throws -> [DefaultHistoryTransaction] {
+        // The release declares fetchHistoryAfterDate:, AfterToken: and AfterTransaction:, and the
+        // importer gives all three the SAME name, `fetchHistory(after:)`, so the overload is chosen
+        // by the argument's type and a nil literal picks none of them. A token that holds nothing
+        // is the whole history, and a descriptor has no token on it to say otherwise, so that is
+        // the spelling.
+        let request = NSPersistentHistoryChangeRequest.fetchHistory(after: NSPersistentHistoryToken())
+        if descriptor.fetchLimit > 0 {
+            // The release's transaction is not an NSFetchRequestResult, so the fetch is untyped and
+            // the limit is the fetch's own.
+            let fetch = NSFetchRequest<NSFetchRequestResult>(entityName: "NSPersistentHistoryTransaction")
+            fetch.fetchLimit = Int(descriptor.fetchLimit)
+            request.fetchRequest = fetch
+        }
+        let rows = try execute(request)
+        var transactions = rows.map { DefaultHistoryTransaction($0) }
+        // The predicate is compiled by the compiler and answers a transaction's own values, and the
+        // store cannot be told about it, so it is run here. That is what
+        // `DataStoreError.preferInMemoryFilter` documents.
+        if let predicate = descriptor.predicate {
+            transactions = try transactions.filter { try predicate.evaluate($0) }
+        }
+        if !descriptor.sortBy.isEmpty {
+            transactions.sort { lhs, rhs in
+                for sort in descriptor.sortBy {
+                    guard let key = sort.keyPath, let name = key._kvcKeyPathString,
+                          let order = DefaultHistoryTransaction.sortValue(of: name, lhs, rhs) else { continue }
+                    if order != .orderedSame {
+                        return sort.order == SortOrder.forward ? order == .orderedAscending
+                                                              : order == .orderedDescending
+                    }
+                }
+                return false
+            }
+        }
+        return transactions
+    }
+
+    public func deleteHistory(_ descriptor: HistoryDescriptor<DefaultHistoryTransaction>) throws {
+        let request = NSPersistentHistoryChangeRequest.deleteHistory(before: NSPersistentHistoryToken())
+        let context = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+        context.persistentStoreCoordinator = coordinator
+        try context.execute(request)
+        _ = descriptor
+    }
+
+    private func execute(_ request: NSPersistentHistoryChangeRequest) throws -> [NSPersistentHistoryTransaction] {
+        let context = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+        context.persistentStoreCoordinator = coordinator
+        let result = try context.execute(request) as? NSPersistentHistoryResult
+        return (result?.result as? [NSPersistentHistoryTransaction]) ?? []
+    }
+}
+
+extension DefaultHistoryTransaction {
+    /// One of the backports' transactions, read. The release declares `transactionNumber`, which is
+    /// a transaction's identity: it is its place in the store's history, it is comparable, and it
+    /// is what a token points at.
+    init(_ transaction: NSPersistentHistoryTransaction) {
+        let number = transaction.transactionNumber
+        let when = StoredValue.cast(transaction.timestamp, to: Foundation.Date.self)
+            ?? Foundation.Date(timeIntervalSince1970: 0)
+        self.timestamp = StoredValue.cast(when, to: Date.self) ?? Date(timeIntervalSince1970: 0)
+        self.transactionIdentifier = number
+        self.storeIdentifier = transaction.storeID
+        self.bundleIdentifier = transaction.bundleID
+        self.processIdentifier = transaction.processID
+        self.author = transaction.author
+        self.token = DefaultHistoryToken(tokenValue: [transaction.storeID: number])
+        self.changes = (transaction.changes ?? []).map { DefaultHistoryChange($0, in: number) }
+    }
+
+    /// A named property of a transaction, for a sort key path. A history transaction's own
+    /// properties are the ones the release declares, and a key path naming another is not one of
+    /// them, so it answers nil and the sort leaves that key alone rather than sorting by something
+    /// nobody named.
+    static func sortValue(of name: String, _ lhs: DefaultHistoryTransaction,
+                          _ rhs: DefaultHistoryTransaction) -> Foundation.ComparisonResult? {
+        switch name {
+        case "timestamp", "date":
+            if lhs.timestamp == rhs.timestamp { return .orderedSame }
+            return lhs.timestamp < rhs.timestamp ? .orderedAscending : .orderedDescending
+        case "transactionIdentifier":
+            if lhs.transactionIdentifier == rhs.transactionIdentifier { return .orderedSame }
+            return lhs.transactionIdentifier < rhs.transactionIdentifier ? .orderedAscending : .orderedDescending
+        case "author":
+            let left = lhs.author ?? "", right = rhs.author ?? ""
+            if left == right { return .orderedSame }
+            return left < right ? .orderedAscending : .orderedDescending
+        case "storeIdentifier", "storeId":
+            if lhs.storeIdentifier == rhs.storeIdentifier { return .orderedSame }
+            return lhs.storeIdentifier < rhs.storeIdentifier ? .orderedAscending : .orderedDescending
+        default:
+            return nil
+        }
+    }
+}
+
+/// One of the backports' changes, read. The release's `NSPersistentHistoryChangeType` is three
+/// cases, and a change is an insert, an update or a delete; a delete carries a tombstone, which is
+/// what a reader still sees of the row it held.
+func DefaultHistoryChange(_ change: NSPersistentHistoryChange,
+                           in transaction: Int64) -> HistoryChange {
+    let identifier = PersistentIdentifier(change.changedObjectID,
+                                          entityName: change.changedObjectID.entity.name ?? "")
+    switch change.changeType {
+    case .insert:
+        return .insert(DefaultHistoryInsert<SnapshotModel>(changeIdentifier: transaction,
+                                            transactionIdentifier: transaction,
+                                            changedPersistentIdentifier: identifier))
+    case .update:
+        return .update(DefaultHistoryUpdate<SnapshotModel>(changeIdentifier: transaction,
+                                            transactionIdentifier: transaction,
+                                            changedPersistentIdentifier: identifier,
+                                            updatedAttributes: []))
+    default:
+        return .delete(DefaultHistoryDelete<SnapshotModel>(changeIdentifier: transaction,
+                                            transactionIdentifier: transaction,
+                                            changedPersistentIdentifier: identifier,
+                                            tombstone: HistoryTombstone(values: (change.tombstone ?? [:])
+                                                .map { (String(describing: $0.key), $0.value) })))
+    }
 }
