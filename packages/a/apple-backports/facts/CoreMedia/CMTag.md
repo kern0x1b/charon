@@ -148,3 +148,30 @@ fixed.**
 
 The hash remains open as recorded above: non-linear in every field, one field's low bits changing the
 whole answer, which is a string hash, and five samples do not identify it.
+
+
+## The two sweeps contradict each other, so the compare order is not derived
+
+`m4.m` sweeps the categories, the data types, the values and the invalid tag against a fixed reference;
+`m5.m` sweeps seventeen values against each other, 289 pairs. Both are in this work area with their
+output.
+
+What they agree on: the value is **numeric** ascending — 19 lies between 11 and 20, 100 after 99 — and
+the data type is ascending. The single value row of `m4.m` reads "everything above 7 is greater", which
+is exactly what a numeric order says; I read its `1` as "string" and wrote that into these facts. It
+was a misreading of the output.
+
+What they do **not** settle: the category. The sweep says a zero category sorts **below** `'mdia'`
+(`6d646961`), and `0xffffffff` sorts below it too, which a **signed** order gives and an unsigned or
+bytewise one does not. But the differential's own case 3 against case 7 — `'trak'`/Float64/1.5 against a
+zero-category OSType tag — is **1** on the host, and both a signed and an unsigned category order put
+zero below `'trak'`. So the two measurements disagree and no single field order explains both.
+
+The implementation therefore keeps **validity first, then the plain field order**, which is what both
+the five-tag matrix and the category sweep support, and the source says so at the point of the
+decision. The remaining disagreement is recorded here and in the source rather than resolved by a rule
+that one more case would break — which is how the two invented exports and the `CreateDifference`
+claim happened in this family.
+
+So: `CMTagCompare` is **not** derived, `CMTagHash` is **not** derived, `CMTagCopyDescription` is fixed
+byte-exact against the host's own bytes, and the family is not deliverable.

@@ -95,11 +95,15 @@ Boolean CMTagHasFloat64Value( CMTag tag )
 
 CFComparisonResult CMTagCompare( CMTag tag1, CMTag tag2 )
 {
-    // A total order over the four fields, validity first. Measured on the host: two invalid tags are
-    // equal, an invalid tag is less than a valid one whatever its category is, and beyond that it is
-    // category, then data type, then value. It is NOT "an invalid tag equals everything" - the
-    // 'vide' tag against kCMTagInvalid is 1, and the matrix of the five measured tags is symmetric and
-    // antisymmetric on every pair.
+    // Validity first, then category, then data type, then value. That is the host's answer on the
+    // five-tag matrix and on the category sweep in .agent-work/runs/cmtag/m4.m, and it is what the port
+    // implements.
+    //
+    // It does NOT explain every pair, and that is deliberate. The differential's case 3 against case 7 -
+    // 'trak' at Float64 1.5 against a zero-category OSType tag - is 1 on the host, and both a signed and
+    // an unsigned category order put the zero category below 'trak', so the two sweeps and the
+    // differential disagree. The disagreement is in facts/CoreMedia/CMTag.md and the rule is left at
+    // what the table supports rather than at a guess one more case would break.
     if (CMTagIsValid(tag1) != CMTagIsValid(tag2))
         return CMTagIsValid(tag1) ? kCFCompareGreaterThan : kCFCompareLessThan;
     if (charon_tag_is_less(tag1, tag2))
@@ -209,9 +213,13 @@ static NSString *charon_type_text(CMTagDataType type)
 CFStringRef CMTagCopyDescription( CFAllocatorRef allocator, CMTag tag )
 {
     (void)allocator;
+    // An invalid tag's description is {category:'<four>'{INVALID} - the literal suffix, measured as
+    // 21 bytes ending 7d, so the brace IS closed. My earlier note that it was missing was read off a
+    // truncated print. The suffix is driven by the data type, not the category: 'mdia' with no data type
+    // gives {category:'mdia'{INVALID} and the same 0 category with an OSType gives a normal description.
     NSString *text;
     if (!CMTagIsValid(tag))
-        text = [NSString stringWithFormat:@"{category:'%@'", charon_category_text(tag.category)];
+        text = [NSString stringWithFormat:@"{category:'%@'{INVALID}", charon_category_text(tag.category)];
     else
         text = [NSString stringWithFormat:@"{category:'%@' value:%@ <%@>}", charon_category_text(tag.category),
                                         charon_value_text(tag), charon_type_text(tag.dataType)];
