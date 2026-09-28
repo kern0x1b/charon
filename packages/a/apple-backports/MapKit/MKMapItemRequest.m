@@ -80,7 +80,13 @@
     }
     if (_cancelled) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            completionHandler(nil, nil);
+        // A cancelled request answers with an ERROR, which is what the host's own does and not the
+        // nil/nil pair: measured on the host, a cancelled MKLocalSearch answers nil and
+        // MKErrorDomain code 1, where a search that merely finds nothing answers nil and code 4. The
+        // domain and the code are the host's own.
+        NSError *cancelled = [NSError errorWithDomain:MKErrorDomain code:1 userInfo:
+            @{NSLocalizedDescriptionKey: @"the request was cancelled"}];
+        completionHandler(nil, cancelled);
         });
         return;
     }

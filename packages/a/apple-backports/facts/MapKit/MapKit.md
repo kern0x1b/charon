@@ -447,8 +447,18 @@ each part is:
 **Every shape was measured on the host before the code was written**, and three would have been wrong
 otherwise: `initWithMapItem:displaysMap:` is `@28@0:8@16B24` — the second argument is a **BOOL**;
 `calloutWithCalloutStyle:` is `@24@0:8q16` — the callout style is an **eight-byte enum**; and
-`+callout`/`+openInMaps` are **class** methods on a class with no instance methods, so the corpus's
-`property` spelling is a class property and the build's own `spellings()` reads it as `+[Class property]`.
+`+callout`/`+openInMaps` are **class** methods, so the corpus's `property` spelling is a class
+property and the build's own `spellings()` reads it as `+[Class property]`. On the host the style has
+**7 instance methods of its own and 5 class methods** — the four factories and those two class
+properties — and an earlier draft of this file said it had "no instance methods", which was wrong.
+
+**What is measured and what is inferred on cancellation, because the two are not the same here**: the
+`MKErrorDomain` code 1 for a cancellation is **measured on `MKLocalSearch`**, the host class that has a
+`-cancel` and a completion. It is **inferred** for `MKMapItemRequest` and the two geocoding requests,
+which have no host analogue a probe can drive — `MKMapItemRequest`'s designated initialiser takes a map
+feature, and a host program cannot make one. The inference is MapKit's own convention applied
+consistently across the requests, and it is recorded here so nobody reads it as a measurement of
+these three.
 
 **One difference between the two releases, recorded rather than smoothed over**: the host's own
 `MKMapItem` no longer has `-placeID` and has `-identifier` instead, while this release has `-placeID`.

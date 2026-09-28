@@ -300,8 +300,15 @@ typedef NS_ENUM(NSInteger, MKAddressRepresentationsContextStyle) {
     }
     NSString *address = _addressString;
     if (address.length == 0 || _cancelled) {
+        BOOL cancelled = _cancelled;
         dispatch_async(dispatch_get_main_queue(), ^{
-            completionHandler(nil, nil);
+            // A cancelled request answers with an ERROR, the host's own convention: measured on the
+            // host, a cancelled MKLocalSearch answers nil and MKErrorDomain code 1, where a search
+            // that finds nothing answers nil and code 4. An empty address is not a cancellation but
+            // it is not a success either, so it gets the same shape with its own reason.
+            completionHandler(nil, [NSError errorWithDomain:MKErrorDomain code:1 userInfo:
+                @{NSLocalizedDescriptionKey: cancelled ? @"the geocoding request was cancelled"
+                                                       : @"the geocoding request has no address to look up"}]);
         });
         return;
     }
@@ -315,12 +322,23 @@ typedef NS_ENUM(NSInteger, MKAddressRepresentationsContextStyle) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 MKGeocodingRequest *strong = weak;
                 if (!strong) {
-                    completionHandler(nil, nil);
+                    // The request is gone: the caller is ANSWERED, and the answer says so rather than
+                    // being a nil/nil pair, which a caller cannot tell from a success.
+                    completionHandler(nil, [NSError errorWithDomain:MKErrorDomain code:1 userInfo:
+                        @{NSLocalizedDescriptionKey: @"the MKGeocodingRequest was released before the geocoder answered"}]);
                     return;
                 }
                 strong->_loading = NO;
                 BOOL cancelled = strong->_cancelled;
-                completionHandler(cancelled ? nil : items, cancelled ? nil : error);
+                if (cancelled) {
+                    // A cancelled request answers with an ERROR, the host's own convention: measured
+                    // on the host, a cancelled MKLocalSearch answers nil and MKErrorDomain code 1, where
+                    // a search that finds nothing answers nil and code 4.
+                    completionHandler(nil, [NSError errorWithDomain:MKErrorDomain code:1 userInfo:
+                        @{NSLocalizedDescriptionKey: @"the geocoding request was cancelled"}]);
+                    return;
+                }
+                completionHandler(items, error);
             });
         }];
     });
@@ -395,8 +413,15 @@ typedef NS_ENUM(NSInteger, MKAddressRepresentationsContextStyle) {
     }
     CLLocation *location = _location;
     if (!location || _cancelled) {
+        BOOL cancelled = _cancelled;
         dispatch_async(dispatch_get_main_queue(), ^{
-            completionHandler(nil, nil);
+            // The host's own shape, measured: a cancelled request answers nil and MKErrorDomain code 1,
+            // where one that finds nothing answers nil and code 4. An absent location is the same
+            // shape with its own reason.
+            completionHandler(nil, [NSError errorWithDomain:MKErrorDomain code:1 userInfo:
+                @{NSLocalizedDescriptionKey: cancelled
+                    ? @"the reverse geocoding request was cancelled"
+                    : @"the reverse geocoding request has no location to look up"}]);
         });
         return;
     }
@@ -410,12 +435,23 @@ typedef NS_ENUM(NSInteger, MKAddressRepresentationsContextStyle) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 MKReverseGeocodingRequest *strong = weak;
                 if (!strong) {
-                    completionHandler(nil, nil);
+                    // Released before the geocoder answered: the caller is ANSWERED, with a reason,
+                    // and not with a nil/nil pair a caller cannot tell from a success.
+                    completionHandler(nil, [NSError errorWithDomain:MKErrorDomain code:1 userInfo:
+                        @{NSLocalizedDescriptionKey: @"the MKReverseGeocodingRequest was released before the geocoder answered"}]);
                     return;
                 }
                 strong->_loading = NO;
                 BOOL cancelled = strong->_cancelled;
-                completionHandler(cancelled ? nil : items, cancelled ? nil : error);
+                if (cancelled) {
+                    // A cancelled request answers with an ERROR, the host's own convention: measured
+                    // on the host, a cancelled MKLocalSearch answers nil and MKErrorDomain code 1, where
+                    // a search that finds nothing answers nil and code 4.
+                    completionHandler(nil, [NSError errorWithDomain:MKErrorDomain code:1 userInfo:
+                        @{NSLocalizedDescriptionKey: @"the geocoding request was cancelled"}]);
+                    return;
+                }
+                completionHandler(items, error);
             });
         }];
     });
