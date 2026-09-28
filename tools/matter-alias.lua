@@ -10,9 +10,6 @@
 --
 -- A target that the library does not carry is *not* emitted and is named here, because a forward to nothing is a
 -- method that lies.
---
--- The four paths arrive as named parameters: a vararg in the signature puts xmake's own `opt` where the first of them
--- would be, and the first is a number.
 local objc = import("apple.objc", {rootdir = path.join(os.scriptdir(), "..", "modules"), anonymous = true})
 -- Apple's two spellings, as the rename the SDK's surface shows.
 local function target_of(selector)
@@ -40,7 +37,7 @@ function main(binary, corpus, diff, out)
         return false
     end
     local hostmembers = {}
-    for line in io.lines(diff:gsub("matter%-host%-diff", "host/matter-host-diff")) do
+    for line in io.lines(diff) do
         local f = {}
         for field in (line:gsub("\n$", "") .. "\t"):gmatch("([^\t]*)\t") do
             table.insert(f, field)
@@ -76,7 +73,7 @@ function main(binary, corpus, diff, out)
         table.insert(byowner[f.owner], f)
     end
     os.mkdir(out)
-    local written = 0
+    local written, classes = 0, 0
     for _, owner in ipairs(table.orderkeys(byowner)) do
         local lines = {
             "/*",
@@ -101,34 +98,36 @@ function main(binary, corpus, diff, out)
             "@implementation " .. owner .. " (CharonAppleSpelling)",
             ""
         }
+        -- The signature of the apple-prefixed method is the unprefixed method's, with the prefix put back: the same
+        -- parameters and the same types, because it is the same command over the same ids. So it is read out of the
+        -- framework's own header, which declares the unprefixed one, rather than assembled from the selector - a
+        -- selector carries no types, and a forward with untyped parameters is not the same method.
         for _, f in ipairs(byowner[owner]) do
-            table.insert(lines, string.format("- (%s%s", f.selector, f.selector:find(":") and " " or ""))
-            if not f.selector:find(":") then
-                table.insert(lines, "{")
-                table.insert(lines, string.format("    return [self %s%s];", f.selector, f.to))
-                table.insert(lines, "}")
+            local declaration = signature_in(header_for(owner, "packages/m/matter/headers"), f.to)
+            if not declaration then
+                table.insert(absent, f.api .. "  ->  " .. f.to .. "  (no declaration in the header to copy the types from)")
             else
-                local parameters, first = {}, true
-                for parameter in f.selector:gmatch("([^:]*):") do
-                    table.insert(parameters, (first and "" or " ") .. parameter .. ":")
-                    first = false
-                end
+                table.insert(lines, "-" .. rename(declaration))
+                table.insert(lines, "{")
                 local arguments = {}
                 for parameter in f.selector:gmatch("([^:]*):") do
                     table.insert(arguments, parameter .. ":")
                 end
                 table.insert(lines, string.format("    return [self %s%s];", f.to, table.concat(arguments, " ")))
                 table.insert(lines, "}")
+                table.insert(lines, "")
+                written = written + 1
             end
-            table.insert(lines, "")
-            written = written + 1
         end
         table.insert(lines, "@end")
         table.insert(lines, "")
         io.writefile(path.join(out, owner .. ".mm"), table.concat(lines, "\n"))
+        classes = classes + 1
     end
-    print("%d forwards in %d files, each to a selector the library carries; %d rows with no carried target:",
-          written, #(function () local n = 0 for _ in pairs(byowner) do n = n + 1 end return n end)(), #absent)
+    -- print takes one argument in this Lua, so a formatted line is string.format's work; and a gsub in an argument
+    -- position hands io.lines the substitution count as its start offset, which is why the paths are passed whole.
+    print(string.format("%d forwards over %d classes, each to a selector the library carries; %d rows with no carried target:",
+                        written, classes, #absent))
     for _, row in ipairs(absent) do
         print("  no target: " .. row)
     end
