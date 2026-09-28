@@ -1,0 +1,16 @@
+{
+  "framework": "Accelerate",
+  "entries": [
+    {
+      "api": "vDSP_distancesq()",
+      "kind": "function",
+      "status": "inert",
+      "introduced": "5.0",
+      "minimum": "4.3",
+      "reason": "the squared Euclidean distance between two strided rows, as the header's own Maps line gives it: C[0] = sum((A[n] - B[n]) ** 2, 0 <= n < N) - one scalar out, a window of N, and no inner count because there is no inner dimension",
+      "effect": "one float at C[0], accumulated left to right in float over N elements read at the two given strides, with nothing else in C touched; N = 0 answers 0",
+      "facts": "facts/Accelerate/vDSPPlacement.md",
+      "source": "the header of iOS 16.4, which declares it at 5.0 with the Maps line, and the 5.1.1 guest as the oracle"
+    }
+  ]
+}
