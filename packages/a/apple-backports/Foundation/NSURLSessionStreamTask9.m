@@ -547,11 +547,30 @@ static NSString *charon_ssl_level_key(void)
        is a false report to the application. */
 }
 
+/* The tree's own idiom for a row that is stored and does nothing, from
+   MKMapView+Transform.m: say it once per api, in the log, and not every time. */
+- (void)charon_inert:(NSString *)api why:(NSString *)why
+{
+    static NSMutableSet *told;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        told = [[NSMutableSet alloc] init];
+    });
+    @synchronized(told) {
+        if ([told containsObject:api])
+            return;
+        [told addObject:api];
+        NSLog(@"FoundationBackports: %s does nothing on this release, and %@", [api UTF8String], why);
+    }
+}
+
 - (void)stopSecureConnection
 {
     /* Deprecated by the SDK, and rightly: TLS cannot be taken off a connection that has it. On a
        connection that never started it there is nothing to stop, which is the answer the header's own
-       deprecation text describes. */
+       deprecation text describes -- so this does nothing, and says so once rather than every time. */
+    [self charon_inert:@"-stopSecureConnection"
+                   why:@"TLS cannot be taken off a connection that has it, and the SDK deprecates the method for that reason"];
 }
 
 @end
