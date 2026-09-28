@@ -76,7 +76,17 @@
     if ((self = [super initWithStyle:UITableViewStylePlain])) {
         _picker = picker;
         _path = [path copy];
-        _selected = [NSMutableOrderedSet orderedSet];
+        // NSMutableOrderedSet arrived in iOS 5, so a band below it links this object with the class
+        // symbol weak and NULL - the 4.3 gate names _OBJC_CLASS_$_NSMutableOrderedSet among the weak
+        // imports the release it is checked against does not export - and this is an initialiser, so
+        // the message goes out whatever the release has. The class is looked up once; a release
+        // without it has no ordered set, and the selection is then nil, which every use below reads
+        // as "nothing selected": the document row shows no check mark and the commit button stays
+        // out, and that is what a release that cannot keep a selection gives.
+        static Class orderedSet = nil;
+        static dispatch_once_t once;
+        dispatch_once(&once, ^{ orderedSet = NSClassFromString(@"NSMutableOrderedSet"); });
+        _selected = orderedSet ? [orderedSet orderedSet] : nil;
         self.title = title ?: (path.length <= 1 ? @"/" : path.lastPathComponent);
     }
     return self;
