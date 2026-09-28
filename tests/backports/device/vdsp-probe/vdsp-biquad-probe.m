@@ -15,6 +15,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <math.h>
+#include <arm_neon.h>
 
 #pragma clang diagnostic ignored "-Wunguarded-availability-new"
 
@@ -151,6 +152,271 @@ static void run_specials(void)
     charon_probe_vDSP_biquad_DestroySetup(port);
 }
 
+// ============================================================================================
+// The float search, run HERE, on the target, where the control finally works.
+//
+// **Control: the search's variant 0 in DOUBLE must reproduce the release's own double output bit for
+// bit.** This port already does, so a search that fails that control is broken and reports nothing.
+// That is the control the macOS probe could not pass, and it exists here because the double case is
+// bit-exact on the target.
+//
+// **A fused combine is not a candidate on this machine at all.** armv7 VFP before VFPv4 has no
+// fused multiply-add, so the fma masks in the tree enumeration are recorded as unavailable rather than
+// run: the compiler has no fmaf here, and a variant that needs one is a variant the target cannot take.
+// ============================================================================================
+
+typedef struct { int a, b, leaf, fused; } SearchNode;
+typedef struct { SearchNode node[9]; int used; } SearchTree;
+typedef struct { SearchTree tree[128]; int count; } SearchForest;
+
+static void search_all(const int *leaves, int count, SearchForest *out)
+{
+    if (count == 1) {
+        SearchTree *t = &out->tree[out->count++];
+        t->used = 1; t->node[0].a = t->node[0].b = -1; t->node[0].leaf = leaves[0]; t->node[0].fused = 0;
+        return;
+    }
+    for (int mask = 1; mask < (1 << count) - 1; mask += 2) {
+        int left[5], right[5], nl = 0, nr = 0;
+        for (int i = 0; i < count; i++) { if ((mask >> i) & 1) left[nl++] = leaves[i]; else right[nr++] = leaves[i]; }
+        SearchForest lf, rf; lf.count = 0; rf.count = 0;
+        search_all(left, nl, &lf);
+        search_all(right, nr, &rf);
+        for (int i = 0; i < lf.count; i++)
+            for (int j = 0; j < rf.count; j++) {
+                SearchTree *t = &out->tree[out->count++];
+                int k = 0;
+                for (int q = 0; q < lf.tree[i].used; q++) t->node[k++] = lf.tree[i].node[q];
+                int lroot = lf.tree[i].used - 1;
+                for (int q = 0; q < rf.tree[j].used; q++) t->node[k++] = rf.tree[j].node[q];
+                int rroot = lf.tree[i].used + rf.tree[j].used - 1;
+                t->node[k].a = lroot; t->node[k].b = rroot; t->node[k].leaf = -1; t->node[k].fused = 0;
+                t->used = k + 1;
+            }
+    }
+}
+
+static void search_printed(SearchForest *out)
+{
+    SearchTree *t = &out->tree[out->count++];
+    for (int i = 0; i < 5; i++) { t->node[i].a = t->node[i].b = -1; t->node[i].leaf = i; t->node[i].fused = 0; }
+    int root = 0;
+    for (int i = 5; i < 9; i++) {
+        t->node[i].a = root; t->node[i].b = i - 5; t->node[i].leaf = -1; t->node[i].fused = 0; root = i;
+    }
+    t->used = 9;
+}
+
+#define SEARCH_SAMPLES 32
+
+// The delay, the header's layout: Delay[2s] = x[s][N-2] and Delay[2s+1] = x[s][N-1].
+static float tree_run(const SearchTree *tree, const double *c, const float *x, int n_samples, float *delay)
+{
+    for (int n = 0; n < n_samples; n++) {
+        float fa[5][2];
+        fa[0][0] = (float)c[0]; fa[0][1] = x[n];
+        fa[1][0] = (float)c[1]; fa[1][1] = delay[1];
+        fa[2][0] = (float)c[2]; fa[2][1] = delay[0];
+        fa[3][0] = (float)-c[3]; fa[3][1] = delay[3];
+        fa[4][0] = (float)-c[4]; fa[4][1] = delay[2];
+        float v[9];
+        for (int i = 0; i < tree->used; i++) {
+            if (tree->node[i].leaf >= 0)
+                v[i] = fa[tree->node[i].leaf][0] * fa[tree->node[i].leaf][1];
+            else
+                v[i] = v[tree->node[i].a] + v[tree->node[i].b];
+        }
+        float out = v[tree->used - 1];
+        delay[0] = delay[1]; delay[1] = x[n];
+        delay[2] = delay[3]; delay[3] = out;
+        if (n == n_samples - 1) return out;
+    }
+    return 0;
+}
+
+static double tree_run_double(const SearchTree *tree, const double *c, const float *x, int n_samples, double *delay)
+{
+    for (int n = 0; n < n_samples; n++) {
+        double fa[5][2];
+        fa[0][0] = c[0]; fa[0][1] = x[n];
+        fa[1][0] = c[1]; fa[1][1] = delay[1];
+        fa[2][0] = c[2]; fa[2][1] = delay[0];
+        fa[3][0] = -c[3]; fa[3][1] = delay[3];
+        fa[4][0] = -c[4]; fa[4][1] = delay[2];
+        double v[9];
+        for (int i = 0; i < tree->used; i++) {
+            if (tree->node[i].leaf >= 0)
+                v[i] = fa[tree->node[i].leaf][0] * fa[tree->node[i].leaf][1];
+            else
+                v[i] = v[tree->node[i].a] + v[tree->node[i].b];
+        }
+        double out = v[tree->used - 1];
+        delay[0] = delay[1]; delay[1] = x[n];
+        delay[2] = delay[3]; delay[3] = out;
+        if (n == n_samples - 1) return out;
+    }
+    return 0;
+}
+
+// The five extra candidates, each with the delay it needs.
+static float named_candidate(int which, const double *c, const float *x, int n_samples, float *delay)
+{
+    float b0 = (float)c[0], b1 = (float)c[1], b2 = (float)c[2], a1 = (float)c[3], a2 = (float)c[4];
+    if (which == 0) {                                   // the printed form, per operation in float
+        for (int n = 0; n < n_samples; n++) {
+            float xn = x[n];
+            float out = b0 * xn + b1 * delay[1] + b2 * delay[0] - a1 * delay[3] - a2 * delay[2];
+            delay[0] = delay[1]; delay[1] = xn; delay[2] = delay[3]; delay[3] = out;
+            if (n == n_samples - 1) return out;
+        }
+    } else if (which == 1) {                            // accumulated in double, rounded to float once
+        double d[4] = {delay[0], delay[1], delay[2], delay[3]};
+        float out = 0;
+        for (int n = 0; n < n_samples; n++) {
+            double xn = x[n];
+            double acc = (double)b0 * xn + (double)b1 * d[1] + (double)b2 * d[0] - (double)a1 * d[3] - (double)a2 * d[2];
+            out = (float)acc;
+            d[0] = d[1]; d[1] = xn; d[2] = d[3]; d[3] = acc;
+        }
+        for (int i = 0; i < 4; i++) delay[i] = (float)d[i];
+        return out;
+    } else if (which == 2) {                            // only the feedback products rounded, the sum in double
+        double d[4] = {delay[0], delay[1], delay[2], delay[3]};
+        float out = 0;
+        for (int n = 0; n < n_samples; n++) {
+            double xn = x[n];
+            double acc = (double)b0 * xn + (double)((float)(b1 * (float)d[1])) + (double)((float)(b2 * (float)d[0]))
+                       - (double)((float)(a1 * (float)d[3])) - (double)((float)(a2 * (float)d[2]));
+            out = (float)acc;
+            d[0] = d[1]; d[1] = xn; d[2] = d[3]; d[3] = acc;
+        }
+        for (int i = 0; i < 4; i++) delay[i] = (float)d[i];
+        return out;
+    } else if (which == 3) {                            // the delay kept in double between samples
+        double d[4] = {delay[0], delay[1], delay[2], delay[3]};
+        float out = 0;
+        for (int n = 0; n < n_samples; n++) {
+            float xn = x[n];
+            float acc = b0 * xn + b1 * (float)d[1] + b2 * (float)d[0] - a1 * (float)d[3] - a2 * (float)d[2];
+            out = acc;
+            d[0] = d[1]; d[1] = xn; d[2] = d[3]; d[3] = acc;
+        }
+        for (int i = 0; i < 4; i++) delay[i] = (float)d[i];
+        return out;
+    } else {                                            // NEON 4-lane, flush-to-zero
+        // Four lanes, every add a vector add, every product computed in the lane type. vmulq_n_f32 takes a
+        // SCALAR, not a vector - an earlier version passed vectors and would not compile - so the products
+        // are formed in float and broadcast into lanes, which is the same arithmetic the vector unit does
+        // with vmla.
+        double d[4] = {delay[0], delay[1], delay[2], delay[3]};
+        float out = 0;
+        for (int n = 0; n < n_samples; n++) {
+            float xn = x[n];
+            float32x4_t acc = vdupq_n_f32(0.0f);
+            acc = vaddq_f32(acc, vdupq_n_f32(b0 * xn));
+            acc = vaddq_f32(acc, vdupq_n_f32(b1 * (float)d[1]));
+            acc = vaddq_f32(acc, vdupq_n_f32(b2 * (float)d[0]));
+            acc = vaddq_f32(acc, vdupq_n_f32(-a1 * (float)d[3]));
+            acc = vaddq_f32(acc, vdupq_n_f32(-a2 * (float)d[2]));
+            out = vgetq_lane_f32(acc, 0);
+            d[0] = d[1]; d[1] = xn; d[2] = d[3]; d[3] = out;
+        }
+        for (int i2 = 0; i2 < 4; i2++) delay[i2] = (float)d[i2];
+        return out;
+    }
+    return 0;
+}
+
+// The search, driven. Control first: variant 0 in DOUBLE against the release's own double output.
+static void run_search(const char *label, const double *coeffs, vDSP_Length sections)
+{
+    printf("\nsearch: %s, %d sections\n", label, (int)sections);
+    double all[5 * 8];
+    for (vDSP_Length s2 = 0; s2 < sections; s2++)
+        for (int k = 0; k < 5; k++) all[s2 * 5 + k] = coeffs[k] + s2 * 0.03125;
+    float x[SEARCH_SAMPLES];
+    for (int i = 0; i < SEARCH_SAMPLES; i++) x[i] = (float)(0.25 * ((i * 7) % 11) - 1.0);
+
+    // the release's own answers, in both precisions
+    float host_f[SEARCH_SAMPLES], host_fd[4] = {0, 0, 0, 0};
+    double host_d[SEARCH_SAMPLES], host_dd[4] = {0, 0, 0, 0};
+    double xd[SEARCH_SAMPLES];
+    for (int i = 0; i < SEARCH_SAMPLES; i++) xd[i] = x[i];
+    vDSP_biquad_Setup hf = vDSP_biquad_CreateSetup(all, sections);
+    vDSP_biquad((const struct vDSP_biquad_SetupStruct *)hf, host_fd, x, 1, host_f, 1, SEARCH_SAMPLES);
+    vDSP_biquad_DestroySetup(hf);
+    vDSP_biquad_SetupD hd = vDSP_biquad_CreateSetupD(all, sections);
+    vDSP_biquadD((const struct vDSP_biquad_SetupStructD *)hd, host_dd, xd, 1, host_d, 1, SEARCH_SAMPLES);
+    vDSP_biquad_DestroySetupD(hd);
+
+    int leaves[5] = {0, 1, 2, 3, 4};
+    SearchForest forest; forest.count = 0;
+    search_printed(&forest);
+    search_all(leaves, 5, &forest);
+    printf("  %d trees, variant 0 is the printed form\n", forest.count);
+
+    // CONTROL: variant 0 in double against the release's double output, every sample, bit for bit
+    {
+        double delay[4] = {0, 0, 0, 0};
+        int bad = -1;
+        for (int n = 0; n < SEARCH_SAMPLES; n++) {
+            double fa[5][2];
+            fa[0][0] = all[0]; fa[0][1] = x[n];
+            fa[1][0] = all[1]; fa[1][1] = delay[1];
+            fa[2][0] = all[2]; fa[2][1] = delay[0];
+            fa[3][0] = -all[3]; fa[3][1] = delay[3];
+            fa[4][0] = -all[4]; fa[4][1] = delay[2];
+            double v[9];
+            const SearchTree *t = &forest.tree[0];
+            for (int i = 0; i < t->used; i++)
+                v[i] = t->node[i].leaf >= 0 ? fa[t->node[i].leaf][0] * fa[t->node[i].leaf][1]
+                                            : v[t->node[i].a] + v[t->node[i].b];
+            double out = v[t->used - 1];
+            if (memcmp(&out, &host_d[n], sizeof out) != 0) { bad = n; break; }
+            delay[0] = delay[1]; delay[1] = x[n]; delay[2] = delay[3]; delay[3] = out;
+        }
+        if (bad >= 0) {
+            printf("  CONTROL FAILED: variant 0 in double differs from the release at sample %d - the search "
+                   "reports nothing\n", bad);
+            return;
+        }
+        printf("  control passed: variant 0 in double reproduces the release bit for bit on all %d samples\n",
+               SEARCH_SAMPLES);
+    }
+
+    // every association, in float
+    int matched = 0, best = SEARCH_SAMPLES + 1, best_tree = -1;
+    for (int t = 0; t < forest.count; t++) {
+        float delay[4] = {0, 0, 0, 0};
+        int first = -1;
+        for (int n = 0; n < SEARCH_SAMPLES; n++) {
+            float out = tree_run(&forest.tree[t], all, x, n + 1, delay);
+            if (memcmp(&out, &host_f[n], sizeof out) != 0) { first = n; break; }
+        }
+        if (first < 0) { matched++; printf("  MATCHES every sample: tree %d of %d\n", t, forest.count); }
+        else if (first < best) { best = first; best_tree = t; }
+    }
+    printf("  the %d associations in float: %s; the best, tree %d, first differs at sample %d\n", forest.count,
+           matched ? "some match" : "NONE match", best_tree, best);
+    printf("  the fused masks are not candidates here: armv7 VFP before VFPv4 has no fused multiply-add\n");
+
+    static const char *named[5] = {"the printed form, per operation in float",
+                                   "accumulated in double, rounded to float once a sample",
+                                   "only the feedback products rounded, the sum in double",
+                                   "the delay kept in double between samples",
+                                   "NEON 4-lane with flush-to-zero"};
+    for (int which = 0; which < 5; which++) {
+        float delay[4] = {0, 0, 0, 0};
+        int first = -1;
+        for (int n = 0; n < SEARCH_SAMPLES; n++) {
+            float out = named_candidate(which, all, x, n + 1, delay);
+            if (memcmp(&out, &host_f[n], sizeof out) != 0) { first = n; break; }
+        }
+        printf("    %-54s %s", named[which], first < 0 ? "MATCHES every sample\n" : "");
+        if (first >= 0) printf("first differs at sample %d\n", first);
+    }
+}
+
 int main(int argc, char **argv)
 {
     @autoreleasepool {
@@ -164,6 +430,9 @@ int main(int argc, char **argv)
         run_double("the stable filter in double", kStable, 1);
         run_double("the unstable filter in double", kUnstable, 3);
         run_specials();
+        run_search("the stable filter", kStable, 1);
+        run_search("the unstable filter", kUnstable, 1);
+        run_search("the stable filter", kStable, 4);
         printf("probe: %d checks, %d failures\n", checks, failures);
     }
     return failures == 0 ? 0 : 1;
