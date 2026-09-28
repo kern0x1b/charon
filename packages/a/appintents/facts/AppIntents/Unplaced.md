@@ -17,8 +17,8 @@ lists that the dump does not print under the name the ledger gives it, sorted by
 
 | type | rows | what they are |
 | --- | --- | --- |
-| `IntentParameter` | 27 | `IntentParameter.<Unit>.==(a:b:)` for 26 unit enums and `ValueState.==(lhs:rhs:)` — finding 6 of the handoff, **not the port's**: three ways of making the digester print them were tried and refuted |
-| `IntentPerson` | 14 | the same finding on `Handle`, `Handle.Value`, `Handle.Label`, `Name`, `Identifier` (`==`, `init(from:)`, `encode(to:)`), plus `ParameterMode.init?(rawValue:)` |
+| `IntentParameter` | 27 | `IntentParameter.<Unit>.==(a:b:)` for 26 unit enums and `ValueState.==(lhs:rhs:)` — 24 of the 26 are the **measurement-typed** ones, whose `Value` is Foundation's `Measurement`; the recipe's own probe measures that at 6.1.3 the runtime has no `Measurement` (`'Measurement' is only available in iOS 10.0 or newer`), so those are the Foundation band's rows. The 5 that are not gated — `DateKind`, `DoubleControlStyle`, `IntControlStyle`, `PlacemarkDisplayStyle`, `ValueState` — are measured by a typecheck call site, `.agent-work/host/probe-appintents-equality.swift`, which passes against Apple's AppIntents (exit 0) **and** against this module (exit 0), so they are placed by the criterion the coordinator set |
+| `IntentPerson` | 14 | the same finding on `Handle`, `Handle.Value`, `Handle.Label`, `Name`, `Identifier` (`==`, `init(from:)`, `encode(to:)`), plus `ParameterMode.init?(rawValue:)`. The five `==` are placed by the same typecheck probe; the eight `init(from:)`/`encode(to:)` are what the digester does not print and a call site for them needs an *instance* of each type, which the probe would have to build from the framework's own initialisers — not done |
 | `IntentItemSection` | 5 | `Builder`, the result-builder type the digester prints with no members, and the presentation rows |
 | `ContainsComparator` | 5 | `init(<T>:mappingTransform:)` for five value types — the generic-list naming gap again |
 | `IntentItem`, `IntentFile`, `IntentParameterSummary` | 12 | the item/file/summary families' presentation and provider rows |
