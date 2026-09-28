@@ -1646,6 +1646,13 @@ function sdk_protocol_declarations(sdkdir)
         -- follow a symlinked directory, so the glob missed its headers and the protocols in them
         for _, framework in ipairs(os.dirs(path.join(sdkdir, "System/Library/Frameworks", "*"))) do
             scan(path.join(path.realpath(framework), "Headers"))
+            local resolved = framework
+            if os.islink(framework) then
+                local target = os.readlink(framework) or ""
+                if target:sub(1, 1) ~= "/" then
+                    target = path.join(path.directory(framework), target)
+                resolved = path.absolute(target)
+            scan(path.join(resolved, "Headers"))
         SDK_DECLARATIONS[sdkdir] = seen
 -- header this package installs or by the SDK the backport is compiled against. The owner's being a protocol is
 -- not the answer: a protocol nothing declares answers nothing, and the member of one is then implemented
