@@ -79,20 +79,28 @@ int main(void)
         // (-10879), where the port answers an empty array and a swap of two absent values changes
         // nothing - a comparison that cannot fail. So the walk looks for a unit that answers it, and
         // says so when none does rather than comparing two empty arrays.
-        AudioComponentDescription described = {0};
-        OSType types[] = {kAudioUnitType_Mixer, kAudioUnitType_Effect, kAudioUnitType_MusicDevice};
-        for (size_t t = 0; t < sizeof(types) / sizeof(*types) && described.componentType == 0; t++) {
+        // Two units, and each gets its own checks. Only a mixer answers
+        // kAudioUnitProperty_SupportedNumChannels, and it answers it as an AUChannelInfo array, so
+        // the swap that check watches is invisible on an effect: an effect declines the property with
+        // -10879, the port answers an empty array, and swapping two absent values changes nothing -
+        // a comparison that cannot fail. The bypass and the parameter tree are about an effect. So
+        // the channel pair is asked of a mixer and the rest of an effect, and both are named.
+        AudioComponentDescription described = CharonFirstComponentOfType(kAudioUnitType_Effect);
+        if (described.componentType == 0) {
+            described = CharonFirstComponentOfType(kAudioUnitType_FormatConverter);
+        }
+        AudioComponentDescription mixer = {0};
+        {
             AudioComponentDescription any = {0};
-            any.componentType = types[t];
+            any.componentType = kAudioUnitType_Mixer;
             AudioComponent component = AudioComponentFindNext(NULL, &any);
             while (component != NULL) {
                 AudioComponentInstance probe = NULL;
                 if (AudioComponentInstanceNew(component, &probe) == noErr && probe != NULL) {
-                    SInt32 pair[2] = {0, 0};
-                    UInt32 size = sizeof(pair);
+                    UInt32 size = 0;
                     if (AudioUnitGetProperty((AudioUnit)probe, kAudioUnitProperty_SupportedNumChannels,
-                                             kAudioUnitScope_Global, 0, pair, &size) == noErr && size >= sizeof(pair)) {
-                        AudioComponentGetDescription(component, &described);
+                                             kAudioUnitScope_Global, 0, NULL, &size) == noErr && size > 0) {
+                        AudioComponentGetDescription(component, &mixer);
                         AudioComponentInstanceDispose(probe);
                         break;
                     }
@@ -101,18 +109,16 @@ int main(void)
                 component = AudioComponentFindNext(component, &any);
             }
         }
-        if (described.componentType == 0) {
-            // fall back to an effect so the rest of the harness still has something to ask
-            described = CharonFirstComponentOfType(kAudioUnitType_Effect);
-            printf("stage no host unit answers kAudioUnitProperty_SupportedNumChannels: the channel pair is not compared\n");
+        char effectLabel[5] = {0};
+        printf("stage the effect the rest is asked about: type '%s'\n", effectLabel);
+        if (mixer.componentType != 0) {
+            char mixerLabel[5] = {0};
+            OSType mixerName = mixer.componentType;
+            memcpy(mixerLabel, &mixerName, 4);
+            printf("stage the mixer the channel pair is asked about: type '%s'\n", mixerLabel);
         } else {
-            char label[5] = {0};
-            OSType name = described.componentType;
-            memcpy(label, &name, 4);
-            printf("stage a unit that answers the channel pair: type '%s'\n", label);
+            printf("stage no host unit answers kAudioUnitProperty_SupportedNumChannels: the channel pair is not compared\n");
         }
-        AudioComponentDescription effectFallback = CharonFirstComponentOfType(kAudioUnitType_Effect);
-        if (described.componentType == 0) { described = effectFallback; }
         if (described.componentType == 0) {
             printf("FAIL no host effect component: the port and the host would be asked nothing\n");
             return 1;
@@ -122,9 +128,13 @@ int main(void)
         memcpy(sub, &subtype, 4);
         printf("stage both are asked about type 'xfua' subtype '%s'\n", sub);
 
-        NSError *portError = nil;
-        charon_host_AUAudioUnit *port = [[charon_host_AUAudioUnit alloc] initWithComponentDescription:described error:&portError];
-        check(@"the port's AUAudioUnit instantiates a real component", port != nil && portError == nil);
+        // The channel pair is asked of the port on the mixer, since that is the unit that answers it;
+        // everything below is asked on the effect.
+        charon_host_AUAudioUnit *port = [[charon_host_AUAudioUnit alloc] initWithComponentDescription:described error:NULL];
+        charon_host_AUAudioUnit *portOnMixer = mixer.componentType != 0
+            ? [[charon_host_AUAudioUnit alloc] initWithComponentDescription:mixer error:NULL] : nil;
+        check(@"the port instantiates a real effect", port != nil);
+        check(@"the port instantiates a real mixer for the channel pair", mixer.componentType == 0 || portOnMixer != nil);
         AUAudioUnit *host = [[AUAudioUnit alloc] initWithComponentDescription:described error:NULL];
         check(@"the host's AUAudioUnit instantiates the same one", host != nil);
         if (port == nil || host == nil) {
@@ -140,21 +150,26 @@ int main(void)
         // What the release itself answers for the property the header names, on this very unit, read
         // both ways: as the two SInt32 the header's discussion shows, and as a single UInt32, which is
         // what the property's "Value Type: UInt32" line says. A port that reads four bytes and checks
-        // the size against eight answers an empty array, and this is where that is visible.
+        // the size against eight answers an empty array, and this is where that is visible. The
+        // mixer instance, when there is one, is the unit the pair is asked about, because only a
+        // mixer answers the property.
+        charon_host_AUAudioUnit *channelUnit = portOnMixer != nil ? portOnMixer : port;
         SInt32 pair[2] = {0, 0};
         UInt32 pairSize = sizeof(pair);
-        OSStatus pairStatus = AudioUnitGetProperty(port.audioUnit,
+        OSStatus pairStatus = AudioUnitGetProperty(channelUnit.audioUnit,
                                                    kAudioUnitProperty_SupportedNumChannels,
                                                    kAudioUnitScope_Global, 0, pair, &pairSize);
         UInt32 single = 0;
         UInt32 singleSize = sizeof(single);
-        OSStatus singleStatus = AudioUnitGetProperty(port.audioUnit,
+        OSStatus singleStatus = AudioUnitGetProperty(channelUnit.audioUnit,
                                                      kAudioUnitProperty_SupportedNumChannels,
                                                      kAudioUnitScope_Global, 0, &single, &singleSize);
+        printf("stage the port's own audioUnit is %p, the host's %p\n",
+               (void *)channelUnit.audioUnit, (__bridge void *)host);
         printf("stage the property itself: as two SInt32 status %d size %u (%d, %d); as one UInt32 status %d size %u value %u\n",
                (int)pairStatus, pairSize, (int)pair[0], (int)pair[1], (int)singleStatus, singleSize, (unsigned)single);
 
-        NSArray *portChannels = port.channelCapabilities;
+        NSArray *portChannels = channelUnit.channelCapabilities;
         NSArray *hostChannels = host.channelCapabilities;
         printf("stage channelCapabilities: port %s, host %s\n",
                portChannels.description.UTF8String, hostChannels.description.UTF8String);
@@ -166,8 +181,24 @@ int main(void)
         } else {
             printf("stage the channel pair is not compared: this unit declines kAudioUnitProperty_SupportedNumChannels\n");
         }
-        check(@"both answer two numbers, or neither does",
-              (portChannels.count == 2) == (hostChannels.count == 2));
+        // the mixer instance, when there is one, is the unit the pair is asked about
+        // The port's pair is compared with the release's own first AUChannelInfo entry, which is
+        // what the property holds; Apple's class is only reported, because it answers nil for a unit
+        // that is not in an engine and there is nothing there to compare with.
+        if (pairStatus == noErr && pairSize >= sizeof(AUChannelInfo)) {
+            AUChannelInfo entry = {0, 0};
+            UInt32 read = sizeof(entry);
+            AudioUnitGetProperty(channelUnit.audioUnit, kAudioUnitProperty_SupportedNumChannels,
+                                 kAudioUnitScope_Global, 0, &entry, &read);
+            printf("stage the release's own entry: in %d out %d (%u bytes)\n",
+                   (int)entry.inChannels, (int)entry.outChannels, (unsigned)read);
+            check(@"the port's pair is the release's own entry, in the header's order",
+                  portChannels.count == 2 &&
+                  [portChannels[0] intValue] == entry.inChannels &&
+                  [portChannels[1] intValue] == entry.outChannels);
+        } else {
+            printf("stage the pair is not compared: the unit declines the property (%d)\n", (int)pairStatus);
+        }
         if (portChannels.count == 2 && hostChannels.count == 2) {
             // the input count is the one that can exceed the output count, and it is first
             check(@"the port's first number is the input count, as the header documents",

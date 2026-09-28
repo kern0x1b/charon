@@ -459,13 +459,38 @@
 // array, which is the truth over the empty set.
 - (NSArray<NSNumber *> *)channelCapabilities
 {
-    SInt32 capabilities[2] = {0, 0};
-    UInt32 size = sizeof(capabilities);
+    // The property is an AUChannelInfo *array*: "The size of this property will represent the number
+    // of AUChannelInfo structs that an audio unit provides. Each entry describes a particular number
+    // of channels on any input, matched to a particular number of channels on any output", and
+    // AUChannelInfo is two SInt16 - inChannels then outChannels - so one entry is four bytes.
+    //
+    // Reading it as a fixed pair of eight bytes is wrong twice over. A unit that answers one entry
+    // writes four and leaves the size it was given, so a size check against eight passes, and the two
+    // numbers come from two different words: the port-versus-host harness measured a mixer answering
+    // 0x00010001 - one channel in, one channel out - and -channelCapabilities returning 65537 and
+    // 65538, which are that word and whatever followed it.
+    //
+    // So the size is asked for and one entry is read out of however many there are, and the pair is
+    // that entry's input and output in the header's order. A unit that declines answers the empty
+    // array, which is the true answer over no entries.
+    UInt32 size = 0;
     if (AudioUnitGetProperty(_charon_audioUnit, kAudioUnitProperty_SupportedNumChannels, kAudioUnitScope_Global,
-                             0, capabilities, &size) != noErr || size < sizeof(capabilities)) {
+                             0, NULL, &size) != noErr || size < sizeof(AUChannelInfo)) {
         return @[];
     }
-    return @[@(capabilities[0]), @(capabilities[1])];
+    UInt32 entries = size / (UInt32)sizeof(AUChannelInfo);
+    AUChannelInfo *infos = calloc(entries, sizeof(AUChannelInfo));
+    if (infos == NULL) {
+        return @[];
+    }
+    OSStatus status = AudioUnitGetProperty(_charon_audioUnit, kAudioUnitProperty_SupportedNumChannels,
+                                           kAudioUnitScope_Global, 0, infos, &size);
+    NSArray *answer = @[];
+    if (status == noErr && size >= sizeof(AUChannelInfo)) {
+        answer = @[@(infos[0].inChannels), @(infos[0].outChannels)];
+    }
+    free(infos);
+    return answer;
 }
 
 #pragma mark Presets
