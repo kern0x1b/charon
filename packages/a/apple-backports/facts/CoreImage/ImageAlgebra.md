@@ -31,6 +31,15 @@ the bytes it renders to.
   extend. Carrying it means a context of the port's own that draws into a `CGContext`: a bitmap render
   and a draw per call, and a real question of what drawing means for a context asked to draw the same
   image twice.
+- **`-imageBySettingProperties:`** needs a way to put properties on an image, and the release has none:
+  the header's `properties` is readonly with no setter, so the only implementations are a touch of the
+  private ivar behind it - a crutch - and a call back into the method for a new image, which is a stack
+  overflow (measured under `-fsanitize=address`, and `setValue:forKey:@"properties"` on a `CIImage`
+  raises `NSUnknownKeyException`). The row is not carried.
+- Together with the unpremultiply and the clamps, **three of this family are methods the framework
+  calls on an image while it renders it**, not conveniences a caller makes. Answering them from a
+  category replaces the framework's own step, which calls the port's, which calls the framework's. That
+  is the trap, and it is the same one three times.
 - **`-imageByUnpremultiplyingAlpha`** needs a filter that divides by alpha, and the release has none:
   `CIDivideBlendMode` is absent from its cache. The one honest path is through the port's own
   accumulator, dividing the bytes per pixel, and that is not written yet.

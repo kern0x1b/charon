@@ -90,17 +90,6 @@
       "source": "the header of the iOS 16.4 SDK for the contract; the host's own CoreImage over the same calls, by tests/backports/host/ciimage/pixel, which prints the extent of what comes out and the bytes it renders to; the 6.1.3 armv7 dyld cache, read for which filters the release carries and which it does not, and for the selectors it has and has not"
     },
     {
-      "api": "-[CIImage imageBySettingProperties:]",
-      "kind": "method",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "iOS 6 has the filters this is made of - CIAffineClamp, CIColorMatrix, CIGaussianBlur, CILanczosScaleTransform, CIMaskToAlpha and CIConstantColorGenerator, all read out of the release's own cache - and not the operation, so an application naming it finds nothing",
-      "effect": "the same image carrying what the caller said about it in the image's own properties, which is where the release keeps what a renderer is told",
-      "facts": "facts/CoreImage/ImageAlgebra.md",
-      "source": "the header of the iOS 16.4 SDK for the contract; the host's own CoreImage over the same calls, by tests/backports/host/ciimage/pixel, which prints the extent of what comes out and the bytes it renders to; the 6.1.3 armv7 dyld cache, read for which filters the release carries and which it does not, and for the selectors it has and has not"
-    },
-    {
       "api": "CIImage.blackImage",
       "kind": "property",
       "introduced": "13.0",

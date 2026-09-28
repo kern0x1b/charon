@@ -15,34 +15,48 @@
 - (CIImage *)imageByApplyingGaussianBlurWithSigma:(CGFloat)sigma
 {
     // The release's own gaussian blur, with the sigma the caller gives.
+    // Only the keys the filter has - read off the framework itself: inputImage and inputRadius. A
+    // filter asked for a key it does not have raises rather than doing nothing.
     CIFilter *blur = [CIFilter filterWithName:@"CIGaussianBlur"];
     [blur setValue:self forKey:kCIInputImageKey];
-    // Only the radius: the filter has no angle on the system this is written against, and setting a key
-    // a filter does not have raises rather than doing nothing.
-    if ([blur respondsToSelector:NSSelectorFromString(@"setInputRadius:")])
-        [blur setValue:@(sigma) forKey:@"inputRadius"];
+    [blur setValue:@(sigma) forKey:@"inputRadius"];
     return blur.outputImage ?: self;
+}
+
+// How deep this thread is inside a clamp the port is making. -[CIAffineClamp outputImage] clamps its
+// own input first, and it does that by asking the input for -[CIImage imageByClampingToRect:] - which
+// on a release that has that method is this category, so each clamp asked for another until the stack
+// ran out. Measured under -fsanitize=address as a stack overflow with those two frames repeating. A
+// thread already inside the port's clamp is answering the framework's own question, and the answer is
+// the image it has; a thread that is not is the caller and gets the clamp. The depth is per thread, so
+// a clamp on one thread never short-circuits a clamp on another.
+static _Thread_local NSInteger CharonCIClampDepth;
+
+// One clamp of the image to the rectangle, or the image itself when the ask is the framework's own
+// and this thread is already inside the port's clamp.
+static CIImage *CharonCIClamp(CIImage *image, CGRect rect)
+{
+    if (CharonCIClampDepth > 0)
+        return image;
+    CharonCIClampDepth++;
+    CIImage *clamped = image;
+    if (!CGRectIsNull(rect) && !CGRectIsEmpty(rect)) {
+        CIFilter *filter = [CIFilter filterWithName:@"CIAffineClamp"];
+        [filter setValue:[image imageByCroppingToRect:rect] forKey:kCIInputImageKey];
+        clamped = filter.outputImage ?: [image imageByCroppingToRect:rect];
+    }
+    CharonCIClampDepth--;
+    return clamped;
 }
 
 - (CIImage *)imageByClampingToExtent
 {
-    CIFilter *filter = [CIFilter filterWithName:@"CIAffineClamp"];
-    [filter setValue:self forKey:kCIInputImageKey];
-    return filter.outputImage ?: self;
+    return CharonCIClamp(self, self.extent);
 }
 
 - (CIImage *)imageByClampingToRect:(CGRect)rect
 {
-    // The image over that rectangle, and the result clamped, so what comes out stops at the rectangle
-    // instead of at the image's own edge.
-    // One clamp, over the image already cropped to the rectangle. It was a clamp over a clamp, and
-    // CIAffineClamp's own output comes through -[CIImage imageByClampingToExtent], which on a release
-    // that has that method is this very category, so the second clamp called the first and the first
-    // called the second until the stack ran out.
-    CIImage *cropped = [self imageByCroppingToRect:rect];
-    CIFilter *filter = [CIFilter filterWithName:@"CIAffineClamp"];
-    [filter setValue:cropped forKey:kCIInputImageKey];
-    return filter.outputImage ?: cropped;
+    return CharonCIClamp(self, rect);
 }
 
 - (CIImage *)imageByInsertingIntermediate
@@ -106,26 +120,35 @@
     // sampling, and the release has a lanczos scale to make one with: the image is scaled by the
     // transform with the lanczos filter in front of the sampler, and the surface it covers is the
     // one the transform asks for.
+    // A high quality downsample is a proper filter over the source rather than the renderer's point
+    // sampling. The release's lanczos scale has three keys - the image, a scale and an aspect ratio -
+    // and no translation, so the transform is taken apart: the uniform scale goes through the filter
+    // and what is left of the transform is applied over the result. A key the filter does not have
+    // raises rather than doing nothing, which is how the earlier version of this died.
+    CGFloat scale = sqrtf(fabs(transform.a * transform.d - transform.b * transform.c));
+    if (scale <= 0)
+        return [self imageByApplyingTransform:transform];
     CIFilter *filter = [CIFilter filterWithName:@"CILanczosScaleTransform"];
     [filter setValue:self forKey:kCIInputImageKey];
-    [filter setValue:@(transform.a) forKey:@"inputScale"];
-    [filter setValue:@(transform.d) forKey:@"inputAspectRatio"];
-    [filter setValue:@(transform.tx) forKey:@"inputTranslateX"];
-    [filter setValue:@(transform.ty) forKey:@"inputTranslateY"];
-    return filter.outputImage ?: [self imageByApplyingTransform:transform];
+    [filter setValue:@(scale) forKey:@"inputScale"];
+    [filter setValue:@(1) forKey:@"inputAspectRatio"];
+    CIImage *scaled = filter.outputImage;
+    if (!scaled)
+        return [self imageByApplyingTransform:transform];
+    CGAffineTransform rest = CGAffineTransformMakeTranslation(transform.tx, transform.ty);
+    return [scaled imageByApplyingTransform:rest];
 }
 
-- (CIImage *)imageBySettingProperties:(NSDictionary *)properties
-{
-    // The same image, carrying what the caller said about it: an image's own properties dictionary is
-    // where the release keeps what a renderer is told about it, and a later caller reads them back.
-    CIImage *image = self;
-    if (!properties.count)
-        return image;
-    NSMutableDictionary *merged = [image.properties mutableCopy] ?: [NSMutableDictionary dictionary];
-    [merged addEntriesFromDictionary:properties];
-    return [image imageBySettingProperties:merged];
-}
+// -imageBySettingProperties: is NOT here, and the reason is measured. The release exposes no way to
+// set an image's properties: the header's `properties` is readonly and there is no setter, so the two
+// implementations available are a touch of the private ivar behind it - a crutch - and a call back into
+// this method to get a new image, which is a stack overflow (measured under -fsanitize=address). The
+// row stays named in facts/CoreImage/ImageAlgebra.md.
+//
+// That makes three of this family - -imageByUnpremultiplyingAlpha, -imageBySettingProperties: and, on
+// the host's own measure, the clamp methods - methods the framework itself calls on an image while it
+// renders it, rather than conveniences a caller makes. Answering them from a category is a trap: the
+// framework's own step is replaced and calls the port's, which calls the framework's.
 
 @end
 
