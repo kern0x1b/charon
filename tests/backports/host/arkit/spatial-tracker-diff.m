@@ -169,19 +169,27 @@ static simd_quatf CharonAttitudeOf(simd_float4x4 pose)
 int main(void)
 {
     const NSUInteger width = 160, height = 120;
-    const int count = 30;
+    const int count = 100;
     const float stepAngle = 0.10f;
     const float stepLength = 0.05f;
     const float rotationNoise = 0.002f;   // what a gyroscope really says, and never exactly
     const float translationNoise = 0.002f;
 
-    // The frames, one per step, kept so the same sequence can be replayed
-    uint8_t *planes[64];
-    for (int step = 0; step < count; step++)
-        planes[step] = (uint8_t *)calloc(width * height, 1);
-    if (!planes[0]) {
-        printf("no memory for the frames\n");
+    // The frames, one per step, kept so the same sequence can be replayed. The store is sized from the
+    // step count and not a constant beside it: this was a literal 64 with a 30-step count, and
+    // raising the count wrote past it - a stack-buffer-overflow the sanitizers name exactly. The
+    // frames themselves are far too many to sit on the stack at a longer sequence anyway.
+    uint8_t **planes = calloc((size_t)count, sizeof *planes);
+    if (!planes) {
+        printf("no memory for the frame list\n");
         return 1;
+    }
+    for (int step = 0; step < count; step++) {
+        planes[step] = (uint8_t *)calloc(width * height, 1);
+        if (!planes[step]) {
+            printf("no memory for the frames\n");
+            return 1;
+        }
     }
     for (int step = 0; step < count; step++)
         CharonRenderFrame(planes[step], width, height, CharonTruthAt(step, stepAngle, stepLength), rotationNoise);

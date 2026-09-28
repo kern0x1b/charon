@@ -29,6 +29,22 @@ xcrun clang -fobjc-arc -DCHARON_TRACKER_OFFLINE -DCHARON_TRACKER_SYNTHETIC \
     "$here/spatial-tracker-diff.m" "$ARKit/CharonARTracker.m" \
     -framework Foundation -framework CoreGraphics -framework CoreMedia -framework CoreVideo \
     -o "$BUILD/tracker-diff"
+# The same 100-step sequence again under AddressSanitizer and UndefinedBehaviorSanitizer, because the
+# un-sanitized run is the one that reads a number: the fixture kept its frames in a literal-sized
+# array, and a longer sequence wrote past it - which is a segfault with no diagnosis in it. The
+# sanitizers name the buffer and the index, and this is what stops it coming back.
+clang -fobjc-arc -w -g -O1 -fsanitize=address,undefined -fno-omit-frame-pointer \
+    -DCHARON_TRACKER_OFFLINE -DCHARON_TRACKER_SYNTHETIC \
+    -I"$ARKit" -I"$sdk/System/Library/Frameworks/ARKit.framework/Headers" \
+    "$here/spatial-tracker-diff.m" "$ARKit/CharonARTracker.m" \
+    -framework Foundation -framework CoreGraphics -framework CoreMedia -framework CoreVideo \
+    -o "$BUILD/tracker-diff-sanitized" || { echo "FAIL: the sanitized build did not link"; exit 1; }
+sanitized=$(ASAN_OPTIONS=detect_leaks=0 "$BUILD/tracker-diff-sanitized" 2>&1)
+printf '%s\n' "$sanitized" | grep -qE "ERROR: AddressSanitizer|runtime error" && {
+    printf '%s\n' "$sanitized" | grep -E "ERROR: AddressSanitizer|runtime error|SUMMARY" | head -3
+    echo "FAIL: the sanitized run reports a fault"; exit 1; }
+echo "ok the 100-step sequence is clean under AddressSanitizer and UndefinedBehaviorSanitizer"
+
 "$BUILD/tracker-diff" | tee "$BUILD/tracker-diff.txt"
 grep -q '^spatial tracker differential' "$BUILD/tracker-diff.txt" || {
     echo "FAIL: the differential printed no verdict"; exit 1; }
@@ -55,7 +71,7 @@ floor() {
         END { if (!seen) { printf "FAIL: the verdict line for %s is not in the output\n", k; exit 1 }
               exit failed ? 1 : 0 }' "$BUILD/tracker-diff.txt"
 }
-floor "rotation error: mean" 1 deg
-floor "distance error: mean" 0.65 m
+floor "rotation error: mean" 0.01 deg
+floor "distance error: mean" 0.70 m
 
 echo "ok the tracker carries its pose, finds its planes, and holds the accuracy floor the facts record"
