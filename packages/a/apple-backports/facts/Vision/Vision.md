@@ -85,39 +85,42 @@ recorded by `tests/backports/host/vision/run.sh` (33 records) and held against t
   the row-112 dump in the last run compared the oracle with itself, the call site passing it twice,
   so it is not evidence about the port and is not recorded as any.
 
-  It has now run, with the port's own resampler built into the probe
-  (`.agent-work/runs/crop-probe/`, the harness's trick, renamed header and all), and **it corrects
-  the previous round's conclusion.**
+  **The method is now the one the coordinator set, and the result is that the earlier zeros were an
+  artefact.** One CGImage, created once from fixed bytes, is handed to Core ML's constructor
+  directly and to the port through the port's own picture-to-buffer helper and its own resampler --
+  no second builder, nothing reconstructed from another framework's answer. The verdict counts the
+  three colour channels, because that is what a model reads: an image feature of an RGB model
+  carries three, and the fourth byte of a BGRA buffer is not one of them. That byte is reported
+  beside the verdict as information. The 1:1 control reads **0/0 on every row of both sizes**, so the
+  method is sound.
 
-  `VNImageCropAndScaleOption` is CenterCrop=0, ScaleFit=1, ScaleFill=2 in Vision's own header, and
-  the probe takes the value from that header rather than from a literal, so a mismatched value is
-  not what happened. The 3x3 for 100x50 brought to 224x224, differing pixels, columns what the
-  probe hands Core ML and rows the port's own rule:
+  Colour/alpha, differing pixels, for 100x50 brought to 224x224:
 
-  | port \ key | CenterCrop (0) | ScaleFit (1) | ScaleFill (2) | no option |
+  | key handed to Core ML | port CentreCrop | port ScaleFit | port at its own size | the 1:1 control |
   | --- | --- | --- | --- | --- |
-  | port CenterCrop | 50026 | 50175 | 50148 | 50148 |
-  | port ScaleFit | 50176 | 49632 | 50174 | 50174 |
-  | no option vs Core ML's own | 50174 | 50175 | **0** | -- |
+  | CenterCrop (0) | 50175/1996 | 50176/1996 | 50176/45645 | **0/0** |
+  | ScaleFit (1) | 50176/25088 | **25028/25088** | 30084/30088 | **0/0** |
+  | ScaleFill (2) | 50176/0 | 50172/0 | 50171/45176 | **0/0** |
+  | no option | 50176/0 | 50172/0 | 50171/45176 | **0/0** |
 
-  Two corrections, and the second is the one that matters:
+  and for 13x7 brought to 8x8:
 
-  - **Core ML's no-option default is `ScaleFill`**, exactly: the framework's answer with nothing in
-    the options dictionary and its answer with 2 under the key differ by 0 of 50176. So the stretch
-    this row was reading -- the whole source scaled to 2.24 across and 4.48 down -- is the
-    *default*, not `CenterCrop`, and the previous round's claim that "Core ML's own CenterCrop is a
-    stretch" was **wrong**. The centre crop Core ML answers to 0 under the key is a fourth thing again
-    that the port does not match.
-  - **The five zero rows do not survive a change of where the source bytes come from.** They were
-    measured with the source built by the port's own picture helper, whose fresh buffer has a zero
-    fourth byte; this run hands the same rule a source from Core ML's own 100x50 answer, which has
-    `ff` there, and the 100x50 to 224x224 scale-fit row reads **49632** instead of 0. So those zeros
-    were agreement on a byte that depended on the buffer the source was built in -- the alpha -- and
-    not a general agreement; the kernel question is open again behind it, and the five rows must be
-    re-measured with one source, whichever is chosen, before any of them can be called zero.
+  | key handed to Core ML | port CentreCrop | port ScaleFit | port at its own size | the 1:1 control |
+  | --- | --- | --- | --- | --- |
+  | CenterCrop (0) | 64/22 | 64/22 | 99/57 | **0/0** |
+  | ScaleFit (1) | 64/32 | **48/32** | 90/59 | **0/0** |
+  | ScaleFill (2) | 64/0 | 64/0 | 99/43 | **0/0** |
+  | no option | 64/0 | 64/0 | 99/43 | **0/0** |
 
-  What the three options mean to Core ML, and what they mean to Vision, is the next thing to read: the
-  port carries two of the three (`ScaleFill` is not among them), and the matrix says it matches none
-  of the three for this picture. The centre-crop row is therefore **not** yet characterised and the
-  facts should not claim it is a divergence.
+  **No cell is 0 except the control.** The best is the port's ScaleFit against Core ML's own
+  `ScaleFit`, at 25028 of 50176 and 48 of 128 -- a partial agreement, not agreement. So the
+  condition under which the earlier five rows were called zero -- "if ScaleFit and 1:1 read 0 on
+  colour, they are genuinely right" -- is **not** met, and those five rows are withdrawn for the
+  second time and now with the method that finds it. The Core ML no-option default is confirmed to
+  be `ScaleFill`, exactly (its no-option row is its `ScaleFill` row, pixel for pixel).
+
+  What is left is a real resampling difference of about half the pixels, in the same direction in
+  both cases, with the control clean and the geometry measured as agreeing. The next measurement is
+  the *shape* of that difference -- the two rows side by side, on colour only, with one source --
+  and the crop rect each side implies for the centre-crop row, which this run did not get to print.
 
