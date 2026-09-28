@@ -560,4 +560,3 @@ extension ARView.Environment {
 }
 
 // MARK: - What the renderer is asked to do
-
