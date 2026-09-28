@@ -3102,6 +3102,61 @@
       "effect": "a real window the application owns, which is what a car's window is here, with the header's own mapButtonSafeAreaLayoutGuide as a real layout guide that the map template's map buttons are added to; templateApplicationScene is nil because there is no scene, which is the wall",
       "facts": "facts/CarPlay/CarPlay.md",
       "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+    },
+    {
+      "api": "CharonCarPlayDock",
+      "kind": "class",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the dock at the side: the clock, the cellular status, the battery, Siri, the recents and the settings, each from the release's own source",
+      "effect": "TIME from NSDate through the release's own calendar with a minute timer; CELLULAR as the ACCESS TECHNOLOGY and the carrier's own name out of -radioAccessTechnology and -subscriberCellularProvider, and NO bar count, because the release has no -signalStrength to measure one with; BATTERY from UIDevice's own -batteryMonitoringEnabled, which is what has to be on before -batteryLevel answers, and -1 where the device will not say; SIRI drawn DIMMED and disabled where nothing can act on it, because the release has no assistant class at all -- neither SiriShortcut nor Assistant is in the cache and the Siri selector in it is a notification category, not a way to ask",
+      "facts": "facts/CarPlay/CarPlay.md",
+      "source": "apple.objc.inventory and a raw selector search against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name and the only classes these names touch: -signalStrength, SiriShortcut, Assistant, UIDevice's -batteryLevel/-batteryState/-isBatteryMonitoringEnabled and CTTelephonyNetworkInfo's -radioAccessTechnology and -subscriberCellularProvider"
+    },
+    {
+      "api": "CharonCarPlayHomeSettingsTemplate",
+      "kind": "class",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the settings pane the owner asked for: exclude an app from the car home screen, put it back, and reorder what is left",
+      "effect": "two sections, what is on the car screen and what is not, each row carrying the app's own icon and a handler that the release's own list template calls when the row is chosen; the order is set with a tap because a car screen has no room for a drag, and the state is the port's own in the release's own NSUserDefaults so the daemon and the car screen read one thing",
+      "facts": "facts/CarPlay/CarPlay.md",
+      "source": "CharonCarPlayHomeSettings.m, drawn by this port's own CPListTemplate and the same release chrome as every other list"
+    },
+    {
+      "api": "CharonCarPlayHomeTemplate",
+      "kind": "class",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the home screen itself, a CPTemplate, so the interface controller pushes and pops it like any other and carplayd renders contentWindow.rootViewController.view.layer",
+      "effect": "-initWithScreenSize: takes the head unit's own size from the Setup Message; the recents are the PORT'S OWN list of what was launched from this screen, which is said to be, because Apple's come from the scene and the scene is the wall",
+      "facts": "facts/CarPlay/CarPlay.md",
+      "source": "CharonCarPlayHome.m, and tests/backports/host/mapkit-carplay for the layout it draws itself with"
+    },
+    {
+      "api": "CharonCarPlayHomeView",
+      "kind": "class",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the grid of the APPS' OWN icons, read at run time the way SpringBoard reads them, and the page dots",
+      "effect": "CFBundleIcons/CFBundlePrimaryIcon, the older CFBundleIconFiles, the singular CFBundleIconFile, the @2x form first, and UIPrerenderedIcon read off each image so the iOS 6 gloss is drawn in code ONLY where the release has not drawn it; an app that ships no icon gets its name on a plate rather than a picture invented for it; the background is the release's own linen or wallpaper read by name on the device, and a gradient of its own colours where it ships neither -- NO artwork is in this repository",
+      "facts": "facts/CarPlay/CarPlay.md",
+      "source": "apple.objc.inventory and a raw selector search against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name and the only classes these names touch (UIPrerenderedIcon, UIDevice's battery members, CTTelephonyNetworkInfo's -radioAccessTechnology)"
+    },
+    {
+      "api": "CharonCarPlayLayout",
+      "kind": "class",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the geometry of the car home screen, a C function of the head unit's screen and scale, and the only part of it that is pure: Foundation and Core Graphics and NOT UIKit, so tests/backports/host/mapkit-carplay compiles this very file on the host and decides the three head-unit resolutions",
+      "effect": "the dock's width and the grid's rect, the icon side and the column and row counts that follow from it, and one icon's frame; checked on the host at 800x480, 960x540 and 1280x720 (31 checks, 0 failures), holding that the dock is at the side and under a quarter of the width, that every icon of a page is inside the grid, that an index past the last column is refused, and that a bigger head unit gets BIGGER icons",
+      "facts": "facts/CarPlay/CarPlay.md",
+      "source": "CharonCarPlayLayout.m, and tests/backports/host/mapkit-carplay"
     }
   ]
 }
