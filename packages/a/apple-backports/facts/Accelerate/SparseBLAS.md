@@ -359,6 +359,42 @@ dimensions do not conform is `SPARSE_ILLEGAL_PARAMETER` at the port and a produc
 not conform at the host. The header calls that shape undefined, and the port refuses rather than writing
 one. It is in the differential as its own case, with both statuses in the output.
 
+## The operator-two norm, settled with an oracle that is not a BLAS
+
+The one number in this family where the port and the host were said to differ is the largest singular
+value, and it is now settled without a LAPACK. For an `m x n` A with `m <= n`, `AᴴA` is `m x m` Hermitian
+and its eigenvalues are the squares of the singular values; for `m = 2` they are in closed form,
+
+```
+lambda = (t + d + sqrt((t - d)^2 + 4 |z|^2)) / 2,   z = (AᴴA)[0][1],  t = (AᴴA)[0][0],  d = (AᴴA)[1][1]
+```
+
+evaluated in `long double complex`, and for larger `m` a power iteration on `AᴴA` in the same type,
+started from a fixed vector so the answer is deterministic. Two identities hold it to the truth and both
+are checked on every call: the squared singular values sum to the sum of the squared moduli (the Frobenius
+identity), and `sigma_max` is at most their root.
+
+| matrix | the oracle's `sigma_max` | `sqrt(sum \|a\|^2)` | the host's operator-two norm | the gap |
+| --- | --- | --- | --- | --- |
+| `[[1, 0, 2], [0, 3 + i, 0]]` | 4.13171487543 | 4.472135955 | 4.131535372 | 1.8e-5 relative |
+| `[[-1, 2 + i, -3i], [4, 0, -5 + 2i]]` | 7.31109285942 | 7.745966692 | 7.311090975 | 2.6e-7 relative |
+
+**So the host is right and the port is right, and the rule is the largest singular value.** Two things
+follow, and the first is a correction of an earlier page of this file:
+
+- The `6.5724` this file earlier gave for `[[-1, 2 + i, -3i], [4, 0, -5 + 2i]]` was a bad hand
+  computation. The true value is **7.311092859** and the host answers 7.311090975, so the "the host
+  differs from the largest singular value" finding is **withdrawn**: the host is within 2.6e-7 of it,
+  which is its own iterative precision.
+- The host reaches the number by an iteration and the port by an eigen-decomposition of `AᴴA` through
+  the release's own `cblas_cherk` and `ssyev_`, so the two differ by about **1.8e-5** relative at worst.
+  The differential's `5e-3` for that one number is therefore about **270x** the host's own error. It
+  stays, and it is now a measured quantity rather than a guess.
+
+Apple's CLAPACK `zgesvd_` is **not** usable as this oracle on this host: driven through `clapack.h`'s
+pointer-scalar ABI it answers `2.62521e+299, 2, 3.27186e-314` for a matrix whose squared singular values
+must sum to 15, so the closed form above is what the family is held against, and it needs no LAPACK at all.
+
 ## The gates, and what they say
 
 Both ends of the ladder, on the tree this page describes, at base `68befaca`:
