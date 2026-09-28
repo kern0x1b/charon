@@ -237,9 +237,47 @@ static double CharonMonotonicSeconds(void)
 // So this returns the port's own snapshot object as the non-NULL opaque pointer that declaration
 // types, and the port's emit path records that pointer as the public field on every signpost it takes
 // - which is what makes the pointer mean something rather than merely be a valid address.
+// The port's own snapshot, and the one object both libraries can see. The store that holds the
+// intervals is looked up by its own name rather than named in a link: a library of this package
+// exports only the names the registry lists, and the registry lists only names an SDK header
+// declares, so nothing of ours is linkable from another of our libraries. That is the port's own
+// idiom for a class in another image - NSClassFromString in AVFoundation/AVCaptureDevice+Authorization.m,
+// in CoreSpotlight/CSSearchableIndex.m, in CallKit/CharonCallAudio.m.
+// The snapshot, and the object _MXSignpostMetricsSnapshot returns. It is the metric library's own
+// class rather than the store's, for the one reason there is: a library of this package exports only
+// the names the registry lists, so a class defined in the Foundation library cannot be named from the
+// metric library at all.
+@interface CharonMetricSnapshot : NSObject
+@property (nonatomic, copy) NSArray<CharonSignpostInterval *> *intervals;
+@end
+
+@implementation CharonMetricSnapshot
+@synthesize intervals = _intervals;
+@end
+
+static Class CharonSignpostStoreClass(void)
+{
+    static Class store;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        store = NSClassFromString(@"CharonSignpostStore");
+    });
+    return store;
+}
+
+static NSArray<CharonSignpostInterval *> *CharonRecordedIntervals(void)
+{
+    Class store = CharonSignpostStoreClass();
+    if (!store || ![store respondsToSelector:@selector(intervals)])
+        return @[];
+    return [store performSelector:@selector(intervals)] ?: @[];
+}
+
 void *_Nonnull _MXSignpostMetricsSnapshot(void)
 {
-    return (__bridge_retained void *)[[CharonSignpostStore snapshot] copy];
+    CharonMetricSnapshot *snapshot = [[CharonMetricSnapshot alloc] init];
+    snapshot.intervals = CharonRecordedIntervals();
+    return (__bridge_retained void *)snapshot;
 }
 
 // The metrics themselves, read out of the same store: one per signpost name and category, with the
@@ -249,7 +287,7 @@ NSArray<MXSignpostMetric *> *CharonSignpostMetrics(void)
 {
     NSMutableArray<MXSignpostMetric *> *metrics = [NSMutableArray array];
     NSMutableDictionary<NSString *, MXSignpostMetric *> *byKey = [NSMutableDictionary dictionary];
-    for (CharonSignpostInterval *interval in [CharonSignpostStore intervals]) {
+    for (CharonSignpostInterval *interval in CharonRecordedIntervals()) {
         NSString *key = [NSString stringWithFormat:@"%@%c%@", interval.subsystem, 0, interval.name];
         MXSignpostMetric *metric = byKey[key];
         if (!metric) {

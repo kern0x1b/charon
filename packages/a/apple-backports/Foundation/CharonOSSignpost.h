@@ -30,19 +30,22 @@
 // Every interval the process has emitted, oldest first, and the store they are read from. This is the
 // port's own API - a Charon-prefixed class and two functions - so the registry has nothing to describe
 // and an application cannot mistake it for Apple's.
-// The snapshot the private MetricKit function hands to the signpost stream: the intervals as they
-// stand, as one object, so that the pointer `_MXSignpostMetricsSnapshot` returns is a real snapshot
-// rather than a valid address. MetricKit's own macros append a public `signpost:metrics` field to
-// every signpost it emits and pass this pointer as that field's one argument, so the port records the
-// pointer on the intervals it takes and a snapshot and an interval are the same thing seen twice.
-@interface CharonSignpostSnapshot : NSObject
-@property (nonatomic, copy) NSArray<CharonSignpostInterval *> *intervals;
-@end
+// The store of the intervals a process has marked. MetricKit's snapshot is its own object rather than
+// one of this class's: a library of this package exports only the names the registry lists, so a class
+// of ours defined here cannot be named from another of our libraries, and the snapshot - which
+// _MXSignpostMetricsSnapshot returns and which therefore lives in the metric library - is the object
+// that has to be built there.
+// The name another of this package's libraries looks this class up by, which is how it reaches it: a
+// library of this package exports only the names the registry lists, and the registry lists only
+// names an SDK header declares, so nothing of ours is linkable from another of our libraries. The
+// store is looked up once by this name and messaged, which is the port's own idiom for a class in
+// another image (NSClassFromString in AVFoundation/AVCaptureDevice+Authorization.m, in
+// CoreSpotlight/CSSearchableIndex.m, in CallKit/CharonCallAudio.m).
 
 @interface CharonSignpostStore : NSObject
 + (NSArray<CharonSignpostInterval *> *)intervals;
-+ (CharonSignpostSnapshot *)snapshot;
-+ (void *)snapshotPointer;
+// The public signpost:metrics pointer the mark carried, kept with the interval, so that the signpost the
+// application marked and the snapshot MetricKit read the metrics from are the same fact.
 + (void)takePointer:(void *)pointer forInterval:(CharonSignpostInterval *)interval;
 + (void)recordBeginFor:(os_signpost_id_t)spid log:(os_log_t)log name:(const char *)name;
 + (void)recordEndFor:(os_signpost_id_t)spid log:(os_log_t)log name:(const char *)name;

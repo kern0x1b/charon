@@ -1,5 +1,6 @@
 #import "CharonOSSignpost.h"
 #import "CharonOSLog.h"
+#import <objc/runtime.h>
 #import <mach/mach_time.h>
 
 // The four functions of signpost.h that a TU can call, and the store they record into. Everything else
@@ -15,10 +16,6 @@
 @synthesize seconds = _seconds;
 @synthesize count = _count;
 
-@end
-
-@implementation CharonSignpostSnapshot
-@synthesize intervals = _intervals;
 @end
 
 @implementation CharonSignpostStore
@@ -70,29 +67,11 @@ static CharonSignpostInterval *charon_begin_record(NSDictionary *begin, const ch
     return interval;
 }
 
-// The snapshot, and the one pointer that is the snapshot: the same object every time, so a caller
-// that keeps the pointer and reads it later reads a snapshot that is still the one it was given.
-+ (CharonSignpostSnapshot *)snapshot
-{
-    static CharonSignpostSnapshot *snapshot;
-    static dispatch_once_t once;
-    dispatch_once(&once, ^{
-        snapshot = [[CharonSignpostSnapshot alloc] init];
-    });
-    snapshot.intervals = [self intervals];
-    return snapshot;
-}
-
-+ (void *)snapshotPointer
-{
-    return (__bridge void *)[[self snapshot] copy];
-}
-
 + (void)takePointer:(void *)pointer forInterval:(CharonSignpostInterval *)interval
 {
     // The public field the mark carries, kept with the interval so that a snapshot and a signpost are
     // the same fact: the signpost the application marked points at the snapshot the metrics came from.
-    [interval setValue:(__bridge id)pointer forKey:@"CharonSignpostSnapshot"];
+    objc_setAssociatedObject(interval, @selector(CharonSignpostSnapshot), (__bridge id)pointer, OBJC_ASSOCIATION_ASSIGN);
 }
 
 + (NSArray<CharonSignpostInterval *> *)intervals
