@@ -123,36 +123,26 @@ substitute the type, or compiling the port with a macro rather than `-D` - and *
 should make quietly, because it changes how every subsequent differential in this band is built.** The port
 itself compiles clean.
 
-## 7. RETRACTION: there is no host for these rows, and the "bit exact" result was vacuous
+## 7. CORRECTION: the host IS the oracle, and the earlier probes stand
 
-`vDSP_DFT_Interleaved_*` is `API_AVAILABLE(macos(12.0), ios(15.0))`, and the differential's "bit exact, worst ratio
-0.000 at N = 8, 12, 16 and 32" was **the port compared with itself**. `nm` on the differential binary:
+**A retraction in the previous commit was wrong and is withdrawn here.** It claimed the macOS SDK does not
+carry this family and that the "bit exact" result was the port compared with itself. The family IS there -
+`vDSP.h:7600` declares it and `vecLib.tbd` exports `_vDSP_DFT_Interleaved_Execute` - and the length sweep,
+the impulse tables and K = 1.538 all came from the real release.
 
-    0000000100000a58  bl  _charon_host_vDSP_DFT_Interleaved_Execute     <- called "the port"
-    0000000100000a68  bl  _charon_host_vDSP_DFT_Interleaved_Execute     <- called "the host"
+What actually happened: **the `-D` renames were applied to the differential's translation unit as well**, so
+its host calls were renamed to `charon_host_*` too and both call sites reached the port. The port's object
+must be compiled with the `-D` list and **the differential's must not**. With that, `nm` shows the two sides
+distinct - `_vDSP_DFT_Interleaved_Execute` undefined and binding to Accelerate, `_charon_host_…` defined -
+and the comparison is real.
 
-**Both call sites reach the same address**, and the binary contains **no** bare `vDSP_DFT_Interleaved_Execute`
-at all: the release's own name was resolved by the linker to the port's renamed object, because **the macOS SDK
-does not have these functions** and neither does the 16.4 iOS SDK. So every 0.000 was a tautology, the
-twiddle-sign mutant could not be detected because only one function was in the comparison, and **the
-commit d9ee800e6's central claim is withdrawn.**
+**What the result actually is, corrected: the port is WITHIN the bound, not bit exact.** 17 checks, 0 failures,
+worst ratios 0.820 and 1.401 at N = 32 against K = 1.538, over the four accepted lengths in both forms and
+both directions and 64 inputs each. The 0.000 in the earlier commit was the tautology; the honest figure is a
+ratio inside the bound, which is exactly what the bound is for. Five of six mutants go red by orders of
+magnitude; the sixth, the length set, does not, and the gap is recorded in the mutants' README rather than
+counted as a pass.
 
-**What this means for the family, and it is the same position as `vDSP_biquad_SetCoefficients`:** the three
-rows are 15.0, **no guest here runs 15.0, and the host does not have the function**, so there is **no oracle at
-all** for the arithmetic. The rows stay `inert` and the reason is now that, not a pending measurement.
+The rows stay **inert** - 15.0, and no guest here runs 15.0 - and the arithmetic is now measured against the
+host, so the only thing between them and `implemented` is a guest and the sixth mutant.
 
-**What still stands, because it is about the release and not about a comparison that did not happen:**
-the accepted-length set, 31 of 1024, `f` in {2, 3, 5, 9, 15} with `n >= 2`, refused at 25, 100, 200, 400 and 800
-and the header's `5*5` excluded; the forward packing `o[0] = (2*X_0, 2*X_n)` with `X_n` the Nyquist alternating
-sum and `o[k] = 2*X_k`; the inverse's unpacking from a 16x16 table of impulses; and the direct-sum reference in
-the test, which the split reproduced to 1e-14 on the even bins and 1.5e-6 on the odd ones. **The bound K = 1.538
-is real** - it was measured against the release on a macOS host that DOES have a comparable FFT, through
-`vDSP_DFT_Interleaved` only in the sense that the comparison was of the host's own transform against a double
-reference - but **no claim is made here that the port meets it**, because the measurement that would say so
-cannot be run.
-
-## 8. What a real check needs
-
-A guest on 15.0 or later, which this workspace does not have, or a host build that exports the family. Until
-one of those exists the differential cannot fail and is therefore not a check, and the three rows are carried
-as `inert` with this reason rather than on the strength of a tautology.

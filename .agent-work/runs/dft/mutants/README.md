@@ -1,24 +1,31 @@
 # Mutants for vDSPDFTInterleaved15.m
 
-Applied to a **copy** of the port under this directory, never to the tree. Each is built with the same
-three `-D` renames the differential uses and run against the same host.
+Applied to a **copy** of the port under this directory, never to the tree. **The port's object is compiled
+with the three `-D` renames and the differential's translation unit is compiled WITHOUT them**, so the
+differential's host calls keep the release's own names. The earlier arrangement passed `-D` to both, which
+renamed the host calls to `charon_host_*` as well and made the port's output the answer on both sides.
+
+Proof the two sides are distinct, from the binary:
+
+    undefined   _vDSP_DFT_Interleaved_Execute                    the release's, bound to Accelerate
+    defined     _charon_host_vDSP_DFT_Interleaved_Execute       the port's
+
+## The six
 
 | mutant | result |
 | --- | --- |
-| a twiddle's sign flipped (`sign = forward ? -1.0 : 1.0` -> `sign = 1.0`) | **17 checks, 0 failures — NOT DETECTED** |
+| a twiddle's sign flipped | **8 of 17 red** — the complex-to-complex forward at N 8 first |
+| the real forward's x2 dropped | **4 of 17 red** — the real-to-complex forward at N 8 first |
+| the packing swapped at element 0 | **4 of 17 red** — the real-to-complex forward at N 8 first |
+| DC's O_0 term dropped | **4 of 17 red** — the real-to-complex forward at N 8 first |
+| the inverse's (-1)^j term dropped | **4 of 17 red** — the real-to-complex inverse at N 8 first |
+| the header's 5*5 length accepted back | **0 of 17 — NOT DETECTED** |
 
-**One mutant run, and it does not go red, so the differential is not yet a check.** The mutation landed -
-`double sign = 1.0;` is at line 88 of the mutant copy and the tree still carries the conditional - and the
-binary builds and runs. So the port's output is *bit identical* to the host's with the forward sign flipped,
-which means the sign is not reaching the arithmetic the way the source reads.
+The unmutated port: **17 checks, 0 failures**, worst ratios 0.820 (real-to-complex inverse) and 1.401 (the
+real-to-complex forward) at N = 32, against the bound 1.538. **Not bit exact** — the port differs from the
+release by ULPs and the bound is what holds it, which is what the bound is for.
 
-The five remaining mutants have not been run. They are not counted here as passing and the row's record does
-not claim a mutation.
-
-## What would settle it
-
-The port's twiddle sign is the only thing the mutation touches, so either the sign is compensated somewhere in
-the real path - the split's `W_k` carries its own `e^{-i*pi*k/N}` and a double flip would cancel - or the
-differential is not calling the port's function at all. The first is checked by flipping the **split's** sign
-instead and seeing whether the real-to-complex forward goes red; the second by printing which symbol the
-`charon_host_*` call actually binds to. Neither has been done.
+**The sixth mutant does not go red, and that is a gap in the length check, not a pass.** Accepting
+`f = 5*5 = 25` should make the port accept 25 * 2**n for n >= 2 — 400 is inside the 1 to 1024 sweep and the
+host refuses it — so the accept/refuse comparison should disagree. It does not, and the reason has not been
+looked at. The row's own record says so; the length rule is not yet covered by a failing mutant.
