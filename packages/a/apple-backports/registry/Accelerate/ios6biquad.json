@@ -1,0 +1,71 @@
+{
+  "framework": "Accelerate",
+  "entries": [
+    {
+      "api": "vDSP_biquad_CreateSetup()",
+      "kind": "function",
+      "introduced": "6.0",
+      "minimum": "4.3",
+      "status": "planned",
+      "reason": "a float setup of M sections in one channel, the five coefficients per section in the order the header's own pseudocode uses, and the state at zero",
+      "effect": "a one-section one-channel cascade, which is vDSP_biquadm_CreateSetup with N = 1 and the float flag set; or NULL for no coefficients and for a count that would overflow. A zero M is not a refusal: the host answers NULL-free setups of no sections",
+      "facts": "facts/Accelerate/vDSPBiquad6.md",
+      "source": "the header of iOS 16.4, which declares all six at 6.0, and this band's existing multi-section biquad, which the six delegate to"
+    },
+    {
+      "api": "vDSP_biquad_CreateSetupD()",
+      "kind": "function",
+      "introduced": "6.0",
+      "minimum": "4.3",
+      "status": "planned",
+      "reason": "the same with a double setup, whose coefficients do not approach their targets on a SetTargets call",
+      "effect": "a one-section one-channel double cascade, the same call with the interpolates flag clear, so a SetTargets on it changes nothing",
+      "facts": "facts/Accelerate/vDSPBiquad6.md",
+      "source": "the header of iOS 16.4, which declares all six at 6.0, and this band's existing multi-section biquad, which the six delegate to"
+    },
+    {
+      "api": "vDSP_biquad_DestroySetup()",
+      "kind": "function",
+      "introduced": "6.0",
+      "minimum": "4.3",
+      "status": "planned",
+      "reason": "frees the setup vDSP_biquad_CreateSetup returned",
+      "effect": "the same free vDSP_biquadm_DestroySetup does, and a NULL setup is not a crash",
+      "facts": "facts/Accelerate/vDSPBiquad6.md",
+      "source": "the header of iOS 16.4, which declares all six at 6.0, and this band's existing multi-section biquad, which the six delegate to"
+    },
+    {
+      "api": "vDSP_biquad_DestroySetupD()",
+      "kind": "function",
+      "introduced": "6.0",
+      "minimum": "4.3",
+      "status": "planned",
+      "reason": "frees the setup vDSP_biquad_CreateSetupD returned",
+      "effect": "the same free, and a NULL setup is not a crash",
+      "facts": "facts/Accelerate/vDSPBiquad6.md",
+      "source": "the header of iOS 16.4, which declares all six at 6.0, and this band's existing multi-section biquad, which the six delegate to"
+    },
+    {
+      "api": "vDSP_biquad()",
+      "kind": "function",
+      "introduced": "6.0",
+      "minimum": "4.3",
+      "status": "planned",
+      "reason": "one section over one channel, given the caller's single input and output arrays where the multi-section form takes an array of arrays",
+      "effect": "the multi-section loop over one section and one channel, so the state advances once per sample and nothing crosses between channels",
+      "facts": "facts/Accelerate/vDSPBiquad6.md",
+      "source": "the header of iOS 16.4, which declares all six at 6.0, and this band's existing multi-section biquad, which the six delegate to"
+    },
+    {
+      "api": "vDSP_biquadD()",
+      "kind": "function",
+      "introduced": "6.0",
+      "minimum": "4.3",
+      "status": "planned",
+      "reason": "the same in double precision",
+      "effect": "the multi-section double loop over one section and one channel",
+      "facts": "facts/Accelerate/vDSPBiquad6.md",
+      "source": "the header of iOS 16.4, which declares all six at 6.0, and this band's existing multi-section biquad, which the six delegate to"
+    }
+  ]
+}
