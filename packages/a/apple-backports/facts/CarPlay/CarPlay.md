@@ -283,7 +283,7 @@ that the class and the method to do it are in the 6.1.3 armv7 cache. **Measured 
 | --- | --- | --- |
 | `/System/Library/PrivateFrameworks/AssistantServices.framework/AssistantServices` | **22**, all `AF*` and `DK*`: `AFConnection`, `AFDictationConnection`, `AFDictationOptions`, `AFSettingsConnection`, `AFSpeechInterpretation`, `AFSpeechPhrase`, `AFPreferences`, `DKConnection`, `DKServer` | the speech and **dictation** transport. There is **no `AssistantController` and no `AssistantSession`** in the image |
 | `/System/Library/PrivateFrameworks/AssistantUI.framework/AssistantUI` | **24**, all `AFUI*` except two: `SBAssistantAwayBottomView`, `SBDeviceLockKeypadSiri` | the lock screen's "Hey, how's the weather" panel and the keypad's dictation button. Neither starts Siri |
-| `/System/Library/PrivateFrameworks/SpringBoardServices.framework/SpringBoardServices` | **9**: `SBAppLaunchUtilities`, `SBLaunchAppListener`, `SBSAccelerometer` | no assistant controller |
+| `/System/Library/PrivateFrameworks/SpringBoardServices.framework/SpringBoardServices` | **9**: `SBAppLaunchUtilities`, `SBLaunchAppListener`, `SBSAccelerometer` | no assistant controller. What *does* hold the assistant is **SpringBoard itself**, which is not a cache image at all: `otool -hv` on the guest's own binary reads `MH_MAGIC ARM V7 0x00 EXECUTE ... DYLDLINK TWOLEVEL PIE`, so it is an executable, and `nm -gU` on it finds **0** occurrences of `SBAssistantController` -- there is nothing to bind to from another process |
 | `/usr/lib/libAWDProtobufSiri.dylib` | `AWDSiri*` | the transport to Apple's servers |
 | `/System/Library/PrivateFrameworks/AppleAccount.framework/AppleAccount` | `AASetupAssistant*` | the **account** setup, not Siri |
 
@@ -321,33 +321,50 @@ measurement.
 ### The selector, and why it cannot be sent from here
 
 Read out of the 6.1.3 guest's own SpringBoard binary in the emulator rootfs, with `otool -oV` over its
-`__DATA,__objc_classlist` — the metadata, not a string scan:
+`__DATA,__objc_classlist` -- the metadata, not a string scan:
 
 ```
-SBAssistantController, 47 instance methods, 6 class methods
-  -[SBAssistantController activateIgnoringTouches]              types v8@0:4     (no argument, void)
+SBAssistantController, 47 instance methods, 7 class methods
+  -[SBAssistantController activateIgnoringTouches]              types c8@0:4    (returns a BOOL)
   -[SBAssistantController dismissAssistant]                     v8@0:4
   -[SBAssistantController dismissAssistantWithFade]             v8@0:4
   -[SBAssistantController dismissAssistantWithFadeOfDuration:]  v16@0:4d8
   -[SBAssistantController dismissAssistantForAlertActivation:]  v12@0:4@8
-  the six class methods: debugDescription, four popover callbacks, and a protocol name
+
+  the class's own seven:  +sharedInstance  @8@0:4,  +sharedInstanceIfExists  @8@0:4,
+    +supportedAndEnabled  c8@0:4,  +shouldEnterAssistant  c8@0:4,  +isAssistantVisible  c8@0:4,
+    +isAssistantRunningHidden  c8@0:4,  +_runActivateAssistantTest  c8@0:4
+  and the metaclass's baseProtocols (count 2): SBHomeCentricPopoverControllerDelegate, NSObject
 ```
 
-**`-[SBAssistantController activateIgnoringTouches]` is the selector** the plate would send: no
-argument, void, one message is the whole activation. Two things follow from the same metadata, and
-together they are why the plate is not an action:
+**`-[SBAssistantController activateIgnoringTouches]` is the selector** the plate would send: it takes
+no argument and **returns a `BOOL`**, so a caller can tell whether the activation took. And **there is
+an accessor**: `+sharedInstance` and `+sharedInstanceIfExists` both return `id`, which is how a caller
+inside SpringBoard reaches the one instance.
 
-1. **There is no accessor.** None of the six class methods is `+sharedController`,
-   `+assistantController` or anything else that hands the instance out, so the controller is a
-   singleton **SpringBoard holds**; and the dismissal siblings are the proof of the shape, because
-   every activation-adjacent method here *dismisses*.
-2. **The class is not reachable by symbol.** It lives in SpringBoard, a bundled application and not a
-   dylib, so `NSClassFromString(@"SBAssistantController")` in any other process — a root daemon
-   included — finds nothing of it, and there is no image to `dlopen`.
+An earlier version of this file said there was no accessor and that the instance was unreachably held.
+That was wrong, and it was wrong because the `otool` output it was read from was **truncated**: the
+"six class methods" in it were the metaclass's *protocols* plus one instance method, not its methods.
+The correct figures are the seven above, and `+sharedInstance` is one of them.
 
-So the honest answer stands, and it is now the measured one: **this release offers no way to activate
-the assistant from another process.** Bringing Siri up needs **SpringBoard to send that message on the
-daemon's behalf**, over the port's existing path into SpringBoard. The metadata settles the selector
-and the reachability; the path is the one thing neither a cache nor a class list can decide, and it
-is the next measurement. The plate in the carplay port's `charon_apps.m` carries the same measurement
-in its own comment, where the plate is drawn, and the two agree.
+**What settles the conclusion is not the accessor but where the class lives**, and both of these are
+measurements on the same binary:
+
+1. `otool -hv` reads
+   `MH_MAGIC ARM V7 0x00 EXECUTE 98 9932 NOUNDEFS DYLDLINK TWOLEVEL PIE` -- **SpringBoard is an
+   executable, not a dylib.** No other process can `dlopen` an executable, so the accessor is of no use
+   to a daemon: the class and its accessor both live in a program that is not a library.
+2. `nm -gU` finds **0** occurrences of `SBAssistantController`, so the class symbol is not exported
+   either and there is nothing to bind to from outside.
+
+So the honest answer stands, now on the two measurements that carry it: **this release offers no way
+to activate the assistant from another process.** Bringing Siri up needs **SpringBoard to send that
+message on the daemon's behalf**, over a path into SpringBoard -- and the port has none: a search of
+its own `src/`, `xmake.lua` and `packaging/` for `backboardd`, `SpringBoardServices`, `mach_port`,
+`bootstrap_look_up`, `CFMessagePort`, `NSXPC`, `IOService` and `MachServices` finds nothing, and the
+design's own section 3 describes the daemon's Mach service as the **app-facing** one it declares,
+with `backboardd` as the precedent for that and not as something the port calls. Carrying the message
+would mean a new IPC surface plus a hook inside SpringBoard, the one thing only SpringBoard can do.
+The plate in the carplay port's `charon_apps.m` says the same, where the plate is drawn, and the two
+agree.
+
