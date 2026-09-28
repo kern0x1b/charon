@@ -244,6 +244,7 @@ static NSMutableArray<NSString *> *_order = nil;
     gCharonExit = charon_failures ? 1 : 0;
 }
 
+// The check, and the run that reads the exit status out of it.
 - (void)run
 {
     OrderProbe *probe = [[OrderProbe alloc] init];
@@ -305,7 +306,12 @@ static NSMutableArray<NSString *> *_order = nil;
 int main(int argc, char **argv)
 {
     @autoreleasepool {
-        [[OrderDriver alloc] init];
+        // The driver runs the check, not the other way round: it was converted from a
+        // UIApplicationMain app, where the launch callback used to drive it, and nothing called it,
+        // so the checks never ran and the program's exit status was the runner's report of a
+        // process that had started and stopped.
+        OrderDriver *driver = [[OrderDriver alloc] init];
+        [driver run];
     }
-    return 0;
+    return gCharonExit;
 }
