@@ -1,6 +1,24 @@
 #import <UIKit/UIKit.h>
+#import <UIKit/UICollectionView.h>
+#import <UIKit/UITableView.h>
 #import "check.h"
 #import "dragdroprouting-cases.h"
+
+// An index path as the release describes it, since NSStringFromIndexPath is not a function the
+// release has: the section and the item, in braces.
+static NSString *CharonDescribe(NSIndexPath *path)
+{
+    return path ? [NSString stringWithFormat:@"{%ld, %ld}", (long)path.section, (long)path.item] : @"(nil)";
+}
+
+// The two views' drop sequences, as CharonDropSequence11.m defines them.
+@interface UICollectionView (CharonDropSequenceForTest)
+- (void)charon_driveDropSessionAtPoint:(CGPoint)point;
+@end
+
+@interface UITableView (CharonDropSequenceForTest)
+- (void)charon_driveDropSessionAtPoint:(CGPoint)point;
+@end
 
 static NSString *const results_folder = @"/private/var/backports";
 
@@ -208,7 +226,7 @@ static NSString *const results_folder = @"/private/var/backports";
             [expectedCollection addObject:[@"collection." stringByAppendingString:message]];
     }
     charon_check([collectionAsked isEqualToArray:expectedCollection],
-                 @"the collection view's drop delegate is asked in the documented order, with the arguments it is given",
+                 "the collection view's drop delegate is asked in the documented order, with the arguments it is given",
                  [NSString stringWithFormat:@"\n    asked   %@\n    expect  %@", collectionAsked, expectedCollection]);
 
     NSArray *tableExpectation = @[@"table.canHandleDropSession",
@@ -219,7 +237,7 @@ static NSString *const results_folder = @"/private/var/backports";
                                   @"table.dropSessionDidExit",
                                   @"table.dropSessionDidEnd"];
     charon_check([tableAsked isEqualToArray:tableExpectation],
-                 @"the table view's drop delegate is asked in the documented order, with the arguments it is given",
+                 "the table view's drop delegate is asked in the documented order, with the arguments it is given",
                  [NSString stringWithFormat:@"\n    asked   %@\n    expect  %@", tableAsked, tableExpectation]);
 
     printf("asked %lu messages: %lu collection, %lu table\n",
