@@ -95,3 +95,18 @@ xmake emulate -d iPhone4,1 -r 6.1.3 launch org.example.app tap 160 260
   `.agent-work/runs/`. Do not run `xmake emulate clean` while other sessions use the emulator: it
   always removes the shared `tmp.noindex` and `cache.noindex` too, and every other port's next run
   starts cold.
+- `checking for Xcode SDK ... no` is not a failure. It is xmake's check of the *host* platform, which
+  it prints once before it switches to the target, and it is there in every configure that succeeds.
+  The SDK and the linker a guest build uses come from `charon@iphoneos-sdk` and `charon@ld64` through
+  the addon's `apple-ios` toolchain, and `xmake show -t <target>` reads the paths: look for
+  `-isysroot ~/.xmake/packages/i/iphoneos-sdk/...` and `-fuse-ld=~/.xmake/packages/l/ld64/.../ld`.
+  There is no Xcode on this machine and a port does not need one; `set_allowedplats`/`set_allowedarchs`
+  are what main's own guest ports write, but a project with only
+  `set_defaultplat`/`set_defaultarchs` lands on the same addon toolchain - measured on a scratch
+  `daemon` port, which configured and produced those flags with neither pair.
+- `package(<name>) is being accessed by other processes, please wait!` is a run **waiting for the
+  shared store**, not failing: the last line of the log, and then nothing, for as long as the other
+  build holds the lock. The lock is `~/.xmake/cache/packages/<xy>/<name>/<version>/package.lock` and
+  `lsof` on it names the holder. Nothing in a port changes it; a configure that is waiting must not
+  be left running, and a run whose log ends on that line has not configured.
+
