@@ -125,12 +125,25 @@ CFDictionaryRef CMTagCopyAsDictionary( CMTag tag, CFAllocatorRef allocator )
 {
     // A Float64's value travels as the double's bit pattern in a 64-bit integer - 1.5 is
     // 4609434218613702656 - which is what makes the round trip exact; measured.
-    unsigned value = (unsigned)tag.value;
-    uint64_t wide = tag.value;
+    //
+    // CFNumbers, not the addresses of integers. CFDictionaryCreate retains every key and value it is
+    // given, so handing it &value made it retain the address of a stack slot - objc_retain on the tag's
+    // own bytes - and the probe died there. The dictionary is a number's.
+    unsigned category = (unsigned)tag.category;
+    unsigned dataType = (unsigned)tag.dataType;
+    uint64_t value = tag.value;
+    CFNumberRef numbers[] = {
+        CFNumberCreate(allocator, kCFNumberSInt32Type, &category),
+        CFNumberCreate(allocator, kCFNumberSInt32Type, &dataType),
+        CFNumberCreate(allocator, kCFNumberSInt64Type, &value),
+    };
     const void *keys[] = {kCMTagCategoryKey, kCMTagDataTypeKey, kCMTagValueKey};
-    const void *values[] = {&value, &tag.dataType, &wide};
-    (void)allocator;
-    return CFDictionaryCreate(NULL, keys, values, 3, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+    const void *values[] = {numbers[0], numbers[1], numbers[2]};
+    CFDictionaryRef out = CFDictionaryCreate(allocator, keys, values, 3, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+    for (size_t index = 0; index < 3; index++)
+        if (numbers[index])
+            CFRelease(numbers[index]);
+    return out;
 }
 
 CMTag CMTagMakeFromDictionary( CFDictionaryRef dict )

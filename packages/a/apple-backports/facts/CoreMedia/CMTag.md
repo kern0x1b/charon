@@ -120,3 +120,31 @@ the measured tags do not collide, and the differential now checks exactly that r
 the host's mixing to ours. The five samples above are not enough to identify the host's mixing function,
 and guessing one would be an invention, so the divergence is recorded here as `-12894` is, and the
 values are here for whoever identifies it with a wider sample set.
+
+
+## What the differential now finds, all three of them mine, none of them fixed
+
+The probe runs to completion — **405 checks, 8 different** — and every difference is a defect in what I
+wrote, not in the port's host. The family is therefore not deliverable and nothing is registered.
+
+**1. `CMTagCopyDictionary` handed `CFDictionaryCreate` the addresses of three integers.**
+`CFDictionaryCreate` retains every key and value, so it retained the address of a stack slot holding the
+tag's own bytes — `objc_retain` on `0x76696480`, the ASCII of the tag. That was the segfault, and
+lldb named the frame in one command: `#0 objc_retain`, one frame, no callers, address ASCII. The values
+are `CFNumber`s now, built and released here. **Fixed.**
+
+**2. `CMTagCopyDescription` does not reproduce the host's invalid-tag text.** My facts said the
+description of an invalid tag has "no closing brace", from reading a truncated print. The host's actual
+text is `{category:''{INVALID}` — a literal `{INVALID}` suffix, not a missing brace. Mine emits
+`{category:''`. The facts were wrong and so is the code. **Not fixed.**
+
+**3. `CMTagCompare` is still not the host's order.** With validity first — which the five-tag matrix
+established — the host ranks a **valid** tag whose category is 0 *above* one whose category is `'mdia'`:
+`'mdia'`/OSType against `0`/OSType is 1, where a numeric category comparison says less. So the order is
+validity first and then the category, but the Undefined category does not sort first among the valid
+ones. I do not have the samples to say what it does sort by, and an ordering guessed from three
+comparisons is how `CreateDifference` and the two export inventions happened, so it is not written. **Not
+fixed.**
+
+The hash remains open as recorded above: non-linear in every field, one field's low bits changing the
+whole answer, which is a string hash, and five samples do not identify it.
