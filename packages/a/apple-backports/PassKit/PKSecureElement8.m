@@ -29,22 +29,9 @@
 // the release's own three classes -- are in the objects of their own releases, beside this one.
 #import <PassKit/PassKit.h>
 #import <UIKit/UIKit.h>
-#import <objc/message.h>
+#import "CharonPassKit.h"
 
 NS_ASSUME_NONNULL_BEGIN
-
-// The release's own error domain, LINKED and not defined: -PKPassKitErrorDomain is first exported at
-// 6.0, so the symbol is the release's and this file only names it. The code is the header's own
-// PKUnsupportedVersionError, which is the nearest to "this device cannot do that".
-static NSString *const CharonNoSecureElementReason =
-    @"this device has no Secure Element, so the operation cannot be carried out";
-
-static NSError *CharonNoSecureElementError(void)
-{
-    return [NSError errorWithDomain:PKPassKitErrorDomain
-                               code:PKUnsupportedVersionError
-                           userInfo:@{NSLocalizedDescriptionKey: CharonNoSecureElementReason}];
-}
 
 @implementation PKPaymentAuthorizationController (CharonSecureElement)
 
@@ -124,7 +111,7 @@ static NSError *CharonNoSecureElementError(void)
                 completion:(void (^)(BOOL, NSError *))completion
 {
     if (completion) {
-        completion(NO, CharonNoSecureElementError());
+        completion(NO, CharonPassKitNoHardwareError());
     }
 }
 
@@ -135,7 +122,7 @@ static NSError *CharonNoSecureElementError(void)
     (void)paymentPass;
     (void)activationData;
     if (completion) {
-        completion(NO, CharonNoSecureElementError());
+        completion(NO, CharonPassKitNoHardwareError());
     }
 }
 
@@ -146,7 +133,7 @@ static NSError *CharonNoSecureElementError(void)
     (void)secureElementPass;
     (void)activationData;
     if (completion) {
-        completion(NO, CharonNoSecureElementError());
+        completion(NO, CharonPassKitNoHardwareError());
     }
 }
 
@@ -157,7 +144,7 @@ static NSError *CharonNoSecureElementError(void)
     (void)signatureData;
     (void)secureElementPass;
     if (completion) {
-        completion(nil, CharonNoSecureElementError());
+        completion(nil, CharonPassKitNoHardwareError());
     }
 }
 
@@ -166,7 +153,7 @@ static NSError *CharonNoSecureElementError(void)
 {
     (void)secureElementPass;
     if (completion) {
-        completion(nil, CharonNoSecureElementError());
+        completion(nil, CharonPassKitNoHardwareError());
     }
 }
 
@@ -175,7 +162,7 @@ static NSError *CharonNoSecureElementError(void)
 {
     (void)secureElementPass;
     if (completion) {
-        completion(nil, CharonNoSecureElementError());
+        completion(nil, CharonPassKitNoHardwareError());
     }
 }
 
