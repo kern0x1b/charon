@@ -196,15 +196,17 @@ int main(void)
         check(accepted != NULL, @"and the port's listener handed the connection over");
 
 
-        for (int index = 0; index < 200 && down.length < 4; index++)
+        for (int index = 0; index < 200 && up.length < 4; index++)
             usleep(25000);
-        check(down.length >= 4, @"the connection the listener made read what the host sent");
+        /* the receive at the new-connection handler is on the connection the listener made, so
+           what the host sent is in `up`; `down` is what the host's own connection read. */
+        check(up.length >= 4, @"the connection the listener made read what the host sent");
         if (accepted) {
             P(nw_connection_send)(accepted, dispatch_data_create("up", 2, NULL, DISPATCH_DATA_DESTRUCTOR_DEFAULT),
                                    nw_content_context_create("listener test"), true, ^(nw_error_t error) {});
-            for (int index = 0; index < 200 && up.length < 2; index++)
+            for (int index = 0; index < 200 && down.length < 2; index++)
                 usleep(25000);
-            check(up.length >= 2, @"and the host read what the listener's connection sent");
+            check(down.length >= 2, @"and the host read what the listener's connection sent");
         }
 
         usleep(300000);

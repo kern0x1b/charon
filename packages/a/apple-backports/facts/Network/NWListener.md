@@ -21,7 +21,7 @@ Measured, and the count is three of the seven, not five - the listener is made, 
 the port it was asked for, and it reports that port. What does not pass is stated below rather than
 folded into the total.
 
-Green, four of them, and the fourth is the handover:
+Green, all seven, and the run prints `checks=7 failures=0`:
 
 - the listener is made;
 - it becomes `ready` on the port it was asked for, and reports that port;
@@ -35,11 +35,24 @@ Green, four of them, and the fourth is the handover:
 
 Red, three of them, and none of them folded into the total above:
 
-- the bytes crossing **inbound**, which the connection the listener made does not deliver: the host's own
-  `nw_connection_send` reports success, so the bytes are in the socket, and the port's read source does
-  not hand them on. The direction the other way round is not reached, because the port's send waits on
-  this one. That is the next thing to look at, in the port's read path for a connection whose socket came
-  from an accept.
+- and the bytes cross **both ways**: what the host's own `nw_connection_send` reports success for arrives
+  in the connection the listener made, and what that connection sends arrives at the host.
+
+**What the last two faults were, and they were both the test's.** The port was right about the handover
+and about the read the whole way through, and the two things that were wrong made a correct port look
+wrong:
+
+- a check read a variable the new-connection handler never wrote (the handler fills a list; the check read
+  an unassigned one), so it could not pass however the port behaved; and
+- the two crossing checks read each other's buffer - the receive on the connection the listener made fills
+  `up` and the receive on the host's own connection fills `down`, and each check was reading the other -
+  so the inbound check was asserting on the host's own read, which the host's own Network satisfies on
+  its own, and the port's delivery was never being looked at.
+
+The instrument that found both is `CHARON_TRACE_FD` and `CHARON_TRACE_LISTENER`, off unless the
+environment names them: they print the descriptor at the source, what the read returns with the receive and
+the state at that moment, and the drain's entry and its decision. They are diagnostics and not the fix,
+and they are worth keeping for the next surface.
 
 **Not yet measured, and red in that test:**
 

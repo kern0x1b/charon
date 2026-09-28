@@ -391,6 +391,10 @@ static NSData *charon_framer_message(CharonNWConnection *connection, BOOL *isCom
 
 static void charon_deliver_received(CharonNWConnection *connection)
 {
+    if (getenv("CHARON_TRACE_FD"))
+        fprintf(stderr, "[charon] drain: enter connection=%p state=%d receives=%lu pendingRead=%lu framer=%d\n",
+                (__bridge void *)connection, connection->_value, (unsigned long)connection->_receives.count,
+                (unsigned long)connection->_pendingRead.length, connection->_framer ? 1 : 0);
     for (CharonNWReceive *receive in [connection->_receives copy]) {
         NSData *message = nil;
         BOOL isComplete = NO;
@@ -426,6 +430,9 @@ static void charon_deliver_received(CharonNWConnection *connection)
             NSUInteger take = connection->_pendingRead.length;
             if (receive->_maximum && take > receive->_maximum)
                 take = receive->_maximum;
+            if (getenv("CHARON_TRACE_FD"))
+                fprintf(stderr, "[charon] drain: stream take=%lu min=%u max=%u\n", (unsigned long)take,
+                        receive->_minimum, receive->_maximum);
             if (take < receive->_minimum)
                 break;
             NSData *message = [connection->_pendingRead subdataWithRange:NSMakeRange(0, take)];
