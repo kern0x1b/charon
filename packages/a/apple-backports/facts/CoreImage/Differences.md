@@ -68,14 +68,31 @@ and the installer's own stderr says what it decided, which was the open question
 So the `+load` runs and does replace, and the probe calls the port's own exported functions directly.
 The category was never shadowed and the `+load` was never broken.
 
-**And the port's probe then crashes**, in the first call, with
+**And the port's probe then crashes** - and the crash is a stack overflow, measured:
 
-    frame #0: libobjc.A.dylib`objc_storeStrong + 4
-    EXC_BAD_ACCESS (code=2, address=0x16f603fe0)
+    breakpoint set -n charon_CIImage_properties -i 500, then run
+    stop reason: breakpoint 1.1
+    frame #0: probe`charon_CIImage_properties
+    hit count = 501
 
-and **no further frames** - so it is an ARC store to a wild pointer and there is **no recursion in the
-trace**. I had guessed recursion, from the captured-IMP-comes-after-the-install idea, and that guess
-is withdrawn: there is no evidence for it and the trace does not show it. Undiagnosed.
+`EXC_BAD_ACCESS (code=2)` at `0x16f603fe0` is the main thread's **guard page** just below its stack,
+which is what a stack overflow faults on; `bt` shows only frame #0 because the stack is gone, so the
+recursion is invisible to an unwind. The breakpoint count is what shows it, and it is 501 and counting.
+
+**The mechanism, and it is not the one I first guessed.** The installer captures the release's `-properties`
+IMP with
+
+    Method method = class_getInstanceMethod([CIImage class], @selector(properties));
+    CharonCIPropertiesRelease = method_getImplementation(method);
+
+but **the runtime attaches a file's categories before it runs that file's `+load`**, so
+`class_getInstanceMethod` returns this same file's own `-[CIImage properties]`, not the framework's. The
+captured "release IMP" is therefore the category's method, which calls `charon_CIImage_properties`, which
+calls the captured IMP - a two-frame cycle, and the stack goes.
+
+The guard that would have caught it is not `captured != replacement`, which is true here and passes:
+the captured is the *category's* method, a third thing. It is **"the captured IMP is not in this image"**,
+which is what `dladdr` is for, asserted at install.
 
 The rows are therefore not measured yet, the mutations have not been re-run, and the `ciimage` count
 still carries measurements the probe does not make.
