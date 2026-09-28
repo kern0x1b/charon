@@ -148,13 +148,13 @@ public final class DefaultStore: DataStore, DataStoreBatching, @unchecked Sendab
                           plan: any SchemaMigrationPlan.Type) throws {
         let target = Schema(versionedSchema: last)
         guard target != schema else { return }
-        let source = try Self.model(from: target)
-        let destination = try Self.model(from: schema)
-        let mapping = try NSMappingModel.inferredMappingModel(forSourceModel: source,
-                                                               destinationModel: destination)
-        // The release's own signature takes the file a store is migrated to, not a store: a
-        // migration writes a new file, so the store is migrated beside itself and the result put
-        // in its place.
+        // The release's own -migratePersistentStore:toURL:options:withType:error: takes no
+        // mapping model, so the migration this performs is the store's own: a column the new
+        // schema adds and the old one lacks is added to the table. A migration that renames a
+        // column, or changes a column's type, needs a mapping model and the release has no
+        // signature that takes one - which is what `MigrationStage.custom` is for, and why a
+        // rename in a plan is written as one. The signature also takes the file a store is
+        // migrated to, not a store, so the store is migrated beside itself and put in place.
         if let store = coordinator.persistentStores.first, let url = store.url {
             let moved = url.deletingLastPathComponent()
                 .appendingPathComponent(url.lastPathComponent + ".migrating")

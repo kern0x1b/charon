@@ -139,9 +139,16 @@ public final class ModelContext: Equatable, SendableMetatype {
         if let object = model.backingObject { context.delete(object) }
     }
 
-    public func delete<T>(model: T.Type, where predicate: Any? = nil, includeSubclasses: Bool = true) throws
-    where T: PersistentModel {
-        for row in try fetchRows(T.self, entityName: Schema.entityName(for: T.self), includeSubclasses: includeSubclasses) {
+    /// Every row of the entity, or of the rows a predicate names. The predicate is a
+    /// `Foundation.Predicate` the port does not have yet, so this is the unfiltered form and it
+    /// deletes by fetching: the batch-delete path of the store, `DataStoreBatching.delete`, is
+    /// where a predicate belongs.
+    public func delete<T>(model: T.Type, where predicate: Predicate<T>? = nil,
+                          includeSubclasses: Bool = true) throws where T: PersistentModel {
+        var descriptor = FetchDescriptor<T>()
+        descriptor.predicate = predicate
+        for row in try fetchRows(entityName: Schema.entityName(for: T.self), descriptor: descriptor,
+                                 includeSubclasses: includeSubclasses) {
             context.delete(row)
         }
     }

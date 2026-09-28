@@ -17,15 +17,24 @@ order are `Foundation.Predicate` and `Foundation.SortDescriptor`, which arrive w
 
 ## State of this package
 
-The rewrite of the pilot's draft is in progress and does not compile yet. What is landed here is
-measured and true: the substrate, the schema (`Schema`, `Schema.Version`,
-`Schema.PropertyMetadata`, `Schema.Entity`, `SchemaProperty`, `Schema.Attribute`,
-`Schema.CompositeAttribute`, `Schema.Relationship`, `Schema.Index`, `Schema.Unique`),
-`PersistentIdentifier`, `PersistentModel` and its `BackingData` with the Core Data behind it,
-`ModelConfiguration`, `VersionedSchema`/`SchemaMigrationPlan`/`MigrationStage`, `FetchDescriptor`
-and `FetchResultsCollection`, `ModelContext`, and the two error types.
+**564 of the corpus's 584 SwiftData rows are carried** and 20 are not, all twenty with a reason in
+`registry/SwiftData.json`. What is missing is the six macro names and the actor family, and both
+are one thing: nothing expands a macro yet, and nothing runs a model on its own executor.
 
-What is not here yet: `ModelContainer`, the `DataStore` layer and its `DefaultStore`, the history
-API, the model executors, and the `SwiftDataMacros` plugin that `@Model` and the rest are
-declared as. A `ModelContext` without its container cannot be built, so the module as it stands
-does not typecheck; the next step is `ModelContainer` and then the store.
+Built, measured: `swiftc -target armv7-apple-ios6.1.3` over the whole module, the swift-runtime
+built with the Core Data backports and swift-foundation's `FoundationEssentials` and
+`FoundationInternationalization` on the search path, **0 errors**, 654680 bytes of object, the
+target triple read back out of it. The link of that object is not shown, because
+`-wmo`'s output is a bitcode wrapper and the two routes that would read it are both unavailable
+here (the pinned llvm has no `LLOP.so`, and this driver answers "unable to load output file map"
+for a valid one). The package's own `on_install` compiles per source file and would link; it
+cannot run yet, because `charon@swift-foundation` is f25214c6's series and not in the shared store.
+
+Also missing, and not part of the 20: `DefaultStore`'s `HistoryProviding` conformance and
+`ModelContext.fetchHistory`/`deleteHistory` are written as types but not wired to the store, and
+`@Model` needs the plugin above before any of this is reachable from a program.
+
+The differential so far is one case, and it is measured on both sides: `.agent-work/probe/model/
+MissingValue.swift` is compiled against Apple's SwiftData on the host and typechecked against this
+module for armv7, and the host's answer to a value the schema requires and the row does not hold
+is a trap with those words - see `facts/SwiftData/Substrate.md`.
