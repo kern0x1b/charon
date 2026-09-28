@@ -45,41 +45,45 @@
    "api": "NSWritingToolsExclusionAttributeName",
    "kind": "constant",
    "introduced": "18.2",
-   "minimum": "18.2",
+   "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants182.md",
    "effect": "the constant is exported under its own name and answers WTWritingToolsPreserved",
-   "source": "UIKit/UIKitConstants182.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0"
+   "source": "UIKit/UIKitConstants182.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0",
+   "note": "the object carries only API of iOS 18.2 and no band below it has that, but a 32-bit target's highest deployment version is 10.0, so the object cannot be floored past that: the band machinery would compile it with -target armv7-apple-ios18.2, which clang refuses (measured, both gates)"
   },
   {
    "api": "UIApplicationCategoryDefaultErrorDomain",
    "kind": "constant",
    "introduced": "18.2",
-   "minimum": "18.2",
+   "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants182.md",
    "effect": "the constant is exported under its own name and answers UIApplicationCategoryDefaultErrorDomain",
-   "source": "UIKit/UIKitConstants182.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0"
+   "source": "UIKit/UIKitConstants182.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0",
+   "note": "the object carries only API of iOS 18.2 and no band below it has that, but a 32-bit target's highest deployment version is 10.0, so the object cannot be floored past that: the band machinery would compile it with -target armv7-apple-ios18.2, which clang refuses (measured, both gates)"
   },
   {
    "api": "UIApplicationCategoryDefaultRetryAvailabilityDateErrorKey",
    "kind": "constant",
    "introduced": "18.2",
-   "minimum": "18.2",
+   "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants182.md",
    "effect": "the constant is exported under its own name and answers UIApplicationCategoryDefaultRetryAvailabilityDateErrorKey",
-   "source": "UIKit/UIKitConstants182.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0"
+   "source": "UIKit/UIKitConstants182.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0",
+   "note": "the object carries only API of iOS 18.2 and no band below it has that, but a 32-bit target's highest deployment version is 10.0, so the object cannot be floored past that: the band machinery would compile it with -target armv7-apple-ios18.2, which clang refuses (measured, both gates)"
   },
   {
    "api": "UIApplicationCategoryDefaultStatusLastProvidedDateErrorKey",
    "kind": "constant",
    "introduced": "18.2",
-   "minimum": "18.2",
+   "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants182.md",
    "effect": "the constant is exported under its own name and answers UIApplicationCategoryDefaultStatusLastProvidedDateErrorKey",
-   "source": "UIKit/UIKitConstants182.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0"
+   "source": "UIKit/UIKitConstants182.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0",
+   "note": "the object carries only API of iOS 18.2 and no band below it has that, but a 32-bit target's highest deployment version is 10.0, so the object cannot be floored past that: the band machinery would compile it with -target armv7-apple-ios18.2, which clang refuses (measured, both gates)"
   },
   {
    "api": "UITextView.subclassForWritingToolsCoordinator",
@@ -145,21 +149,23 @@
    "api": "UIWritingToolsCoordinatorTextAnimationDebugDescription()",
    "kind": "function",
    "introduced": "18.2",
-   "minimum": "18.2",
+   "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIWritingToolsCoordinatorTextAnimation18.md",
    "effect": "the framework's own four answers, measured by calling it: \"Awaiting-new-text animation\", \"Text removal animation\", \"Text insertion animation\" and, for a value that is none of the three cases, \"Unknown text animation\"",
-   "source": "UIKit/UIWritingToolsCoordinatorTextAnimation18.m; measured by dlsym'ing the Mac Catalyst UIKit's own function on macOS 27 (build 26A428) and calling it for every value, in this repository's own windowed harness (.agent-work/runs/uikit-c/probe.out)"
+   "source": "UIKit/UIWritingToolsCoordinatorTextAnimation18.m; measured by dlsym'ing the Mac Catalyst UIKit's own function on macOS 27 (build 26A428) and calling it for every value, in this repository's own windowed harness (.agent-work/runs/uikit-c/probe.out)",
+   "note": "the object carries only API of iOS 18.2 and no band below it has that, but a 32-bit target's highest deployment version is 10.0, so the object cannot be floored past that: the band machinery would compile it with -target armv7-apple-ios18.2, which clang refuses (measured, both gates)"
   },
   {
    "api": "UIApplicationOpenDefaultApplicationsSettingsURLString",
    "kind": "constant",
    "introduced": "18.3",
-   "minimum": "18.3",
+   "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants183.md",
    "effect": "the constant is exported under its own name and answers app-settings:default-applications",
-   "source": "UIKit/UIKitConstants183.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0"
+   "source": "UIKit/UIKitConstants183.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0",
+   "note": "the object carries only API of iOS 18.3 and no band below it has that, but a 32-bit target's highest deployment version is 10.0, so the object cannot be floored past that: the band machinery would compile it with -target armv7-apple-ios18.3, which clang refuses (measured, both gates)"
   },
   {
    "api": "-[UITextFieldDelegate textField:insertInputSuggestion:]",
