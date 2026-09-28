@@ -155,6 +155,18 @@
     return self;
 }
 
++ (NSArray<INAddMediaMediaItemResolutionResult *> *)successesWithResolvedMediaItems:(NSArray<INMediaItem *> *)resolvedMediaItems
+{
+    // One result per item, each made by this class's own single-item factory
+    // +successWithResolvedMediaItem, and an empty array for an input that is nil or empty - the
+    // host's own answer, measured on all five of these factories.
+    NSMutableArray *results = [NSMutableArray arrayWithCapacity:resolvedMediaItems.count];
+    for (id resolvedMediaItem in resolvedMediaItems) {
+        [results addObject:[self successWithResolvedMediaItem:resolvedMediaItem]];
+    }
+    return results;
+}
+
 + (instancetype)unsupportedForReason:(INAddMediaMediaItemUnsupportedReason)reason
 {
     return [self charon_resolutionWithStatus:CharonIntentsResolutionUnsupported resolvedValue:nil valuesToDisambiguate:nil valueToConfirm:nil unsupportedReason:reason];
@@ -1833,6 +1845,18 @@
  resolvedValue:[resolvedMediaItem copy] valuesToDisambiguate:nil valueToConfirm:nil];
 }
 
++ (NSArray<__kindof INMediaItemResolutionResult *> *)successesWithResolvedMediaItems:(NSArray<INMediaItem *> *)resolvedMediaItems
+{
+    // One result per item, each made by this class's own single-item factory
+    // +successWithResolvedMediaItem, and an empty array for an input that is nil or empty - the
+    // host's own answer, measured on all five of these factories.
+    NSMutableArray *results = [NSMutableArray arrayWithCapacity:resolvedMediaItems.count];
+    for (id resolvedMediaItem in resolvedMediaItems) {
+        [results addObject:[self successWithResolvedMediaItem:resolvedMediaItem]];
+    }
+    return results;
+}
+
 + (instancetype)disambiguationWithMediaItemsToDisambiguate:(NSArray<INMediaItem *> *)mediaItemsToDisambiguate
 {
     return [self charon_resolutionWithStatus:CharonIntentsResolutionDisambiguation resolvedValue:nil valuesToDisambiguate:[mediaItemsToDisambiguate copy] valueToConfirm:nil];
@@ -2146,6 +2170,18 @@
         [self charon_adoptResolutionOf:mediaItemResolutionResult];
     }
     return self;
+}
+
++ (NSArray<INPlayMediaMediaItemResolutionResult *> *)successesWithResolvedMediaItems:(NSArray<INMediaItem *> *)resolvedMediaItems
+{
+    // One result per item, each made by this class's own single-item factory
+    // +successWithResolvedMediaItem, and an empty array for an input that is nil or empty - the
+    // host's own answer, measured on all five of these factories.
+    NSMutableArray *results = [NSMutableArray arrayWithCapacity:resolvedMediaItems.count];
+    for (id resolvedMediaItem in resolvedMediaItems) {
+        [results addObject:[self successWithResolvedMediaItem:resolvedMediaItem]];
+    }
+    return results;
 }
 
 + (instancetype)unsupportedForReason:(INPlayMediaMediaItemUnsupportedReason)reason
@@ -2568,6 +2604,18 @@
         [self charon_adoptResolutionOf:mediaItemResolutionResult];
     }
     return self;
+}
+
++ (NSArray<INSearchForMediaMediaItemResolutionResult *> *)successesWithResolvedMediaItems:(NSArray<INMediaItem *> *)resolvedMediaItems
+{
+    // One result per item, each made by this class's own single-item factory
+    // +successWithResolvedMediaItem, and an empty array for an input that is nil or empty - the
+    // host's own answer, measured on all five of these factories.
+    NSMutableArray *results = [NSMutableArray arrayWithCapacity:resolvedMediaItems.count];
+    for (id resolvedMediaItem in resolvedMediaItems) {
+        [results addObject:[self successWithResolvedMediaItem:resolvedMediaItem]];
+    }
+    return results;
 }
 
 + (instancetype)unsupportedForReason:(INSearchForMediaMediaItemUnsupportedReason)reason
@@ -3611,6 +3659,18 @@
         [self charon_adoptResolutionOf:mediaItemResolutionResult];
     }
     return self;
+}
+
++ (NSArray<INUpdateMediaAffinityMediaItemResolutionResult *> *)successesWithResolvedMediaItems:(NSArray<INMediaItem *> *)resolvedMediaItems
+{
+    // One result per item, each made by this class's own single-item factory
+    // +successWithResolvedMediaItem, and an empty array for an input that is nil or empty - the
+    // host's own answer, measured on all five of these factories.
+    NSMutableArray *results = [NSMutableArray arrayWithCapacity:resolvedMediaItems.count];
+    for (id resolvedMediaItem in resolvedMediaItems) {
+        [results addObject:[self successWithResolvedMediaItem:resolvedMediaItem]];
+    }
+    return results;
 }
 
 + (instancetype)unsupportedForReason:(INUpdateMediaAffinityMediaItemUnsupportedReason)reason

@@ -856,7 +856,7 @@ def implementation(interface, protocols, carried, intents, interfaces, forward=(
             out += written + [""]
 
     for method in interface.methods:
-        built = factory(interface, method, resolution)
+        built = factory(interface, method, resolution, interfaces)
         if built is False:
             causes_by_name["%s[%s %s]" % ("+" if method.get("instance") is False else "-",
                                              interface.name, method.get("name") or "")] = \
@@ -928,7 +928,33 @@ CONFIRMATION = re.compile(r"^confirmationRequiredWith(.*)ToConfirm:$")
 CONFIRMATION_VALUE = "confirmationRequiredWithValueToConfirm:"
 
 
-def factory(interface, method, resolution):
+def single_item_factory(interface, plural, interfaces=None):
+    """The class's own factory for one item, for a factory that answers a collection of them.
+
+    `+successesWithResolvedMediaItems:` and `+successWithResolvedMediaItem:` differ in a plural
+    and a singular, so the singular is looked for by name among the class's own methods rather
+    than spelled here - the generator has the class's declarations, and the spelling is Apple's.
+    """
+    stem = plural.split(":")[0]
+    if not stem.startswith("successes"):
+        return None
+    rest = stem[len("successes"):]
+    wanted = "success" + rest
+    if rest.endswith("s"):
+        wanted = "success" + rest[:-1]
+    # The single-item factory is declared by the base and inherited by the four subclasses that
+    # pluralise it, so the whole superclass chain is asked.
+    seen, name = set(), interface.name
+    while interfaces and name and name not in seen:
+        seen.add(name)
+        for candidate in interfaces[name].methods:
+            if candidate.get("instance") is False and (candidate.get("name") or "") == wanted + ":":
+                return candidate
+        name = interfaces[name].superclass
+    return None
+
+
+def factory(interface, method, resolution, interfaces=None):
     """The body of a resolution result's class method, or nothing."""
     selector = method.get("name") or ""
     if not resolution or has_attr(method, "UnavailableAttr"):
@@ -936,12 +962,34 @@ def factory(interface, method, resolution):
     returns = spelled(returns_of(method))
     if (returns.rstrip().endswith("*") and "NSArray" in returns) \
             or selector.startswith("successesWithResolved"):
-        # A factory that answers an **array** of resolution results is the system's own: the
-        # system calls the per-parameter factory and collects what it gets, and there is no system
-        # here to have called any. So nothing is emitted - a body returning nil would be registered
-        # as an implementation and would be a value that looks like a collection and is empty -
-        # and the cause is recorded, which is what the registry writes as the reason.
-        return False
+        # A factory that answers an **array** of resolution results is one result per item, each
+        # made by this class's own single-item factory. That was measured on the host through
+        # objc_msgSend into all five of them (macOS 26's Intents.framework), which answers:
+        #   two items  -> __NSArrayM, count 2, each element an instance of the class asked
+        #   one item   -> count 1, one element of the class
+        #   empty      -> count 0, an array
+        #   nil        -> count 0, an array - not nil, because a caller counts what it is given
+        # and each element's resolvedValue is the item it was made from. So this is a map, and the
+        # only shape the framework's own has.
+        single = single_item_factory(interface, selector, interfaces)
+        if not single:
+            # No single-item factory to map with: nothing is emitted and the cause is recorded,
+            # because a body returning nil would be a collection that looks full and is empty.
+            return False
+        keyword = (single.get("name") or "").split(":")[0]
+        item = parameters_of(single)[0][1] if parameters_of(single) else "item"
+        input = parameters_of(method)[0][1] if parameters_of(method) else "items"
+        return ["+ (%s)%s" % (returns, interface.spelled_selector(method)), "{",
+                "    // One result per item, each made by this class's own single-item factory",
+                "    // +%s, and an empty array for an input that is nil or empty - the"
+                % keyword,
+                "    // host's own answer, measured on all five of these factories.",
+                "    NSMutableArray *results = [NSMutableArray arrayWithCapacity:%s.count];" % input,
+                "    for (id %s in %s) {" % (item, input),
+                "        [results addObject:[self %s:%s]];" % (keyword, item),
+                "    }",
+                "    return results;",
+                "}"]
     parameters = parameters_of(method)
     if not parameters or len(parameters) != 1:
         return []

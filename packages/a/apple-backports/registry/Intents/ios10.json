@@ -2013,7 +2013,7 @@
       "kind": "method",
       "introduced": "13.0",
       "status": "absent",
-      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "reason": "a class of a later group of this same delivery",
       "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/Intents/Intents.md"
     },
@@ -2042,7 +2042,7 @@
       "kind": "method",
       "introduced": "13.0",
       "status": "absent",
-      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "reason": "a class of a later group of this same delivery",
       "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/Intents/Intents.md"
     },
@@ -2936,7 +2936,7 @@
       "kind": "method",
       "introduced": "11.0",
       "status": "absent",
-      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "reason": "a class of a later group of this same delivery",
       "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/Intents/Intents.md"
     },
@@ -2945,7 +2945,7 @@
       "kind": "method",
       "introduced": "11.0",
       "status": "absent",
-      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "reason": "a class of a later group of this same delivery",
       "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/Intents/Intents.md"
     },
@@ -3305,7 +3305,7 @@
       "kind": "method",
       "introduced": "17.0",
       "status": "absent",
-      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "reason": "a class of a later group of this same delivery",
       "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/Intents/Intents.md"
     },
@@ -3324,7 +3324,7 @@
       "kind": "method",
       "introduced": "17.0",
       "status": "absent",
-      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "reason": "a class of a later group of this same delivery",
       "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/Intents/Intents.md"
     },
@@ -3333,7 +3333,7 @@
       "kind": "method",
       "introduced": "17.0",
       "status": "absent",
-      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "reason": "a class of a later group of this same delivery",
       "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/Intents/Intents.md"
     },
@@ -3342,7 +3342,7 @@
       "kind": "method",
       "introduced": "18.0",
       "status": "absent",
-      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "reason": "a class of a later group of this same delivery",
       "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/Intents/Intents.md"
     },
@@ -3351,7 +3351,7 @@
       "kind": "method",
       "introduced": "18.0",
       "status": "absent",
-      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "reason": "a class of a later group of this same delivery",
       "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/Intents/Intents.md"
     },
@@ -3788,7 +3788,7 @@
       "kind": "method",
       "introduced": "10.0",
       "status": "absent",
-      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "reason": "a class of a later group of this same delivery",
       "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/Intents/Intents.md"
     },
@@ -3855,7 +3855,7 @@
       "kind": "method",
       "introduced": "10.0",
       "status": "absent",
-      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "reason": "a class of a later group of this same delivery",
       "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/Intents/Intents.md"
     },
@@ -3864,7 +3864,7 @@
       "kind": "method",
       "introduced": "10.0",
       "status": "absent",
-      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "reason": "a class of a later group of this same delivery",
       "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/Intents/Intents.md"
     },
@@ -3873,7 +3873,7 @@
       "kind": "method",
       "introduced": "10.0",
       "status": "absent",
-      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "reason": "a class of a later group of this same delivery",
       "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/Intents/Intents.md"
     },
@@ -3882,7 +3882,7 @@
       "kind": "method",
       "introduced": "10.2",
       "status": "absent",
-      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped that value would answer with a class that looks filled and is not",
+      "reason": "a class of a later group of this same delivery",
       "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/Intents/Intents.md"
     },

@@ -32,14 +32,12 @@ EXPECTED = {
 # looks for it, and it is written from the same cause.
 REASON_FIELDS = ("reason", "effect")
 
-# A status may move from implemented to absent, and only there, when the new reason is one of the
-# causes that mean *no body is the right answer*: the previous `implemented` claimed a member the
-# file does not carry, and the whole point of the cause vocabulary is that such a member is
-# recorded rather than answered with a value that looks like something. The fields that move with
-# the status are the ones that only an implemented entry carries.
-WITHDRAWN = ("answers an array of resolution results", "of the class's own type",
-            "the SDK's own headers do not declare")
-STATUS_FIELDS = ("status", "minimum", "source")
+# **No status may move.** A member that was registered as implemented and should not have been
+# is fixed by implementing it, and not by teaching this guard to accept the move: a guard widened
+# for one's own change is not a guard. The two causes that once read "no body is the right answer"
+# here - a factory that answers an array, and a class property - turned out to be implementable,
+# and the bodies are in the generator now.
+WITHDRAWN = ()
 
 
 def main():
@@ -94,14 +92,10 @@ def main():
             if after is None:
                 failures.append("%s: %s is gone" % (name, api))
                 continue
-            withdrawn = after.get("status") == "absent" and before.get("status") == "implemented" \
-                and any(mark in (after.get("reason") or "") for mark in WITHDRAWN)
             for field in sorted(set(before) | set(after)):
                 if before.get(field) == after.get(field):
                     continue
                 if field in REASON_FIELDS:
-                    continue
-                if withdrawn and field in STATUS_FIELDS:
                     continue
                 failures.append("%s: %s moved its %s" % (name, api, field))
     for failure in failures:
