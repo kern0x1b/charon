@@ -523,3 +523,38 @@ rotation is exact.
 
 The nine-state code is kept in this band's worktree under `.agent-work/` rather than in the delivery,
 so the derivation is available without being mistaken for working code.
+
+## The landmarks' parallax, measured, and taken out
+
+The coordinator's next item. It is the visual half of a visual-inertial system, and the point of it is
+that it is not circular: the accelerometer moves the pose and the picture says whether it moved as far
+as that, which is the order the two halves run in and the reason a system carries both. With the
+rotation exact to 0.002 degrees, three parameters are left — the translation — and for every point
+matched across the interval the two rays meet at a place in the world whose reprojection error is the
+residual, differentiated by finite differences and solved by the same elimination the pose step uses.
+
+**It is written, it compiles clean under the gate's flags, and it makes the distance worse:**
+
+```
+  rotation error: mean 0.00004 rad (0.002 deg), worst 0.00069 rad (0.040 deg)
+  distance error:  mean 0.63329 m, worst 1.16846 m
+  tracking: yes, 28184 points, 16 planes
+```
+
+against 0.60488 m without it. So of the three things tried against the distance, none of them works: no
+filter 0.65345, a three-state bias filter 0.60488, the paper's nine-state filter 0.60850, and the
+visual parallax update 0.63329. Only the first two are close enough to be the same measurement, and
+none of the four is a translation of a 4.95 m path.
+
+The parallax is the right idea and the arithmetic is checked, so what the number says is narrower than
+"it does not work": with the accelerometer's integration giving a baseline that is already ~12% wrong,
+the two rays meet in the wrong place, and correcting the translation to make the reprojection agree
+corrects it towards the wrong baseline. It needs a baseline that is right to within something, and
+that is the piece the fixture could supply and a device cannot: the sequence knows its own path, and a
+monocular system does not.
+
+So the delivery takes it out on the same rule as the two filters — a correction measured to make the
+measurement worse is dead weight a reader will trust — and the built code stays in this worktree under
+`.agent-work/` for whoever picks the next piece up. The order of the three is what I would tell them:
+the rotation is solved and exact, the distance is not, and the distance needs a measurement of the
+baseline rather than an integration of one.
