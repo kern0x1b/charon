@@ -38,7 +38,8 @@ this package will name it and nothing more.
 Built, measured: `swiftc -target armv7-apple-ios6.1.3` over the whole module, the swift-runtime
 built with the Core Data backports and swift-foundation's `FoundationEssentials` and
 `FoundationInternationalization` on the search path: **0 errors**, a `Mach-O object arm_v7` of
-**856804 bytes, 2733 defined and 412 undefined symbols**. `-wmo -c` on its own writes that object;
+**867740 bytes, 2836 defined and 433 undefined symbols**, the ten swift-foundation ones named in
+`facts/SwiftData/Substrate.md` and in `on_test`. `-wmo -c` on its own writes that object;
 the bitcode wrapper an earlier run produced came from asking for the module interface in the same
 invocation, and a `-emit-library` link of it "succeeded" into a 16428-byte library with **zero**
 defined symbols - which is how the check that now prints the counts came to exist.
@@ -58,9 +59,12 @@ at `4d2e24e7` produces `0ccce571...` - the digest 4d2e24e7 regenerated for the b
 **This build has to be re-measured against the runtime this tree produces, and that is a gate-sized
 job, not a band-sized one.**
 
-Also missing, and not part of the 20: `DefaultStore`'s `HistoryProviding` conformance and
-`ModelContext.fetchHistory`/`deleteHistory` are written as types but not wired to the store, and
-`@Model` needs the plugin above before any of this is reachable from a program.
+Wired to the store, and the two places are where the wiring is: `DefaultStore` conforms to
+`HistoryProviding` and holds `fetchHistory` and `deleteHistory` at
+`files/SwiftData/DefaultStore.swift:331`, and `ModelContext.fetchHistory` and `deleteHistory` hand
+the descriptor to the store at `files/SwiftData/ModelContext.swift:318`. What is still missing is
+`@Model`'s expansion: the seven macro names are declared and the module builds without any plugin, but
+a program that writes `@Model` needs `SwiftDataMacros`.
 
 The differential so far is one case, and it is measured on both sides: `.agent-work/probe/model/
 MissingValue.swift` is compiled against Apple's SwiftData on the host and typechecked against this

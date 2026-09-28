@@ -214,3 +214,30 @@ _$s30FoundationInternationalization14SortDescriptorVMa / VMn
 The package's `on_test` names all ten, so the day the library lands — or the day one of them stops
 being used — that is a failure with a name rather than a link that moved for a reason nobody wrote
 down.
+
+## `DefaultHistoryTransaction` is a public name of Apple's, and the port declares one too
+
+The host's own SwiftData **ships `DefaultHistoryTransaction`**, and `ModelContext.fetchHistory`
+answers `[SwiftData.DefaultHistoryTransaction]`. Measured on the host, from
+`arm64e-apple-macos.swiftinterface` of the Command Line Tools SDK (Swift 6.4, macOS 27):
+
+```
+public typealias HistoryType = SwiftData::DefaultHistoryTransaction
+final public func fetchHistory(_ descriptor: SwiftData::HistoryDescriptor<SwiftData::DefaultHistoryTransaction>) throws -> [SwiftData::DefaultHistoryTransaction]
+```
+
+So the port is not inventing a type where Apple has none: it is **re-declaring a public name** with
+its own members, over Core Data's `NSPersistentHistoryTransaction` rather than over Apple's store.
+Under R4 that is a name the port adds, and a program that imports both would see two of them.
+
+The corpus asks for it, so the name is right — `DefaultHistoryTransaction`'s own rows are in
+`sdk-26.2-surface.tsv` and Apple's interface declares it. What the port adds is a second definition
+of the same name, and the one fact that keeps it honest: a transaction's identity here is the
+release's `NSPersistentHistoryTransaction.transactionNumber`, the store identifier is its `storeID`,
+and a token is that number per store — so the two are the same values read from the release rather
+than Apple's own encoding. A program that only ever goes through this port's `ModelContext` cannot
+tell them apart; one that mixed the two would, and that is the divergence the facts name.
+
+The oracle for the history family (`.agent-work/probe/model/History.swift`) uses the **bare** name on
+purpose: it resolves to whichever module is in scope, which is what lets one source be both Apple's
+program and the port's.
