@@ -88,7 +88,7 @@ failing on the untyped cases, and the two halves of it were wrong in the same wa
 
 - `NWPathMonitor.m` dropped every interface it had typed `other` from a monitor that asked for `other`,
   so the interfaces the kernel itself names as a tunnel or a bridge never appeared on a path at all -
-  and those are the interfaces a VPN and a Personal Hotspot put a path on;
+  and a tunnel of type `other` was never on a path at all - and it is: see the measurement above;
 - a name cannot tell those apart from anything: `utun*` and `bridge*` both fell through to `other`
   because there was no branch for either, and a `pdp_ip*`-named interface was called cellular whatever
   it carried, which a tunnel over Wi-Fi is not.
@@ -118,19 +118,32 @@ here, against the kernel's own `ifi_type` numbers and the mutations in the table
 
 ### What the release's own path does with a tunnel and a bridge
 
-Measured on the host, reading only, nothing configured: `ifconfig -l` lists `utun0`, `utun1`, `utun2`,
-`bridge0`, `awdl0` and `llw0` on that machine, and `nw_path_enumerate_interfaces` on **that same
-machine's own path** lists `en0` (type 1, wifi) and nothing else. So the interfaces the kernel names as
-`other` are exactly the ones a path is not over, and the port's filter is the release's answer rather than
-a rule the port invented. What the classifier that tells a tunnel from a bridge is *for* is therefore not
-that they reach a path: it is that a program which asked for a type is told the truth about what is
-there, and that the port's own enumeration names a VPN's tunnel and a hotspot's bridge apart instead of
-calling both by one name.
+**One statement, and it is a measurement of this machine: reading only, nothing configured, no network
+preference touched.** With 44 interfaces up (`ifconfig -l`), `nw_path_enumerate_interfaces` on a live
+path returns, three runs apart and stable:
 
-The predicate is `charon_path_wants()`, asked with synthetic types in the objects differential, with a
-mutation each: taking `other` out of it turns *a tunnel is not on the path* and *a bridge is not on the
-path either* red; dropping the loopback turns *the loopback is not on the path either* red; dropping the
-route check turns *nothing is on a path with no route* red.
+```
+en0      type=1   (wifi)
+en0      type=1
+utun21   type=0   (other)
+```
+
+So **`other` IS on a path.** `utun21` is a live tunnel, the classifier types it `other` because the
+kernel's `ifi_type` for it is 1 - IANA `other`, and not 131, `tunnel` - and the release puts it on the
+path beside the Wi-Fi interface. What decides an `other` interface is therefore **not its type but
+whether the path actually goes through it**, which is whether it carries an address the path can be over.
+A bridge has none and is left out for that, not for its name.
+
+That makes the claim the review of 2026-09-29 rejected - and which this file, the monitor's comment and
+the differential's comment all said in three places - wrong in all three, and the mutant that took the
+`other` filter *out* of the predicate was a mutant in the wrong direction: putting the type filter back
+turns the tunnel row red, and so does taking the address away.
+
+The predicate is `charon_path_wants()`, asked with synthetic types in the objects differential - nine
+rows, so a filter on the path is a check that can fail rather than a line in a comment - with a mutant
+each. A device run over a real tunnel is what would confirm the same thing in the port's own path
+assembly, and this file says so rather than claiming it.
+
 
 **What this does not settle:** the four checks that failed are the device harness's, and they are
 re-measured on a device, which is not mine to run. What is measured here is that the four interfaces

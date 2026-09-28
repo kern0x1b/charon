@@ -67,16 +67,25 @@
  * bridge is what lets the monitor say so deliberately - and lets a program that asked for a type be
  * told the truth when it is not there.
  */
-static BOOL charon_path_wants(nw_interface_type_t required, nw_interface_type_t type, BOOL reachable, BOOL cellular)
+static BOOL charon_path_wants(nw_interface_type_t required, nw_interface_type_t type, BOOL reachable, BOOL cellular,
+                              BOOL hasAddress)
 {
-    if (required == nw_interface_type_other) {
-        if (type == nw_interface_type_loopback || type == nw_interface_type_other)
-            return NO;
-        if (!reachable)
-            return NO;
-        return (type == nw_interface_type_cellular) == cellular;
-    }
-    return type == required;
+    if (required != nw_interface_type_other)
+        return type == required;
+    if (type == nw_interface_type_loopback)
+        return NO;
+    if (!reachable)
+        return NO;
+    /* An `other` interface - a tunnel, a bridge - is on the path when the path actually goes through it,
+       which is whether it carries an address the path can be over, and not what the kernel calls it.
+       That is the release's own answer, measured on this machine: with 44 interfaces up,
+       `nw_path_enumerate_interfaces` on a live path returns en0, en0 and **utun21**, a tunnel the
+       classifier types `other` (its ifi_type is 1, IANA other - not 131, tunnel), stable over three
+       runs. So an `other` interface is dropped for having no address - which is what happens to a
+       bridge, and not what happens to a tunnel with one. */
+    if (type == nw_interface_type_other)
+        return hasAddress;
+    return (type == nw_interface_type_cellular) == cellular;
 }
 
 static nw_interface_type_t charon_type_of(const struct ifaddrs *item)
@@ -198,10 +207,10 @@ static CharonNWPath *charon_path(SCNetworkReachabilityRef reachability, CharonNW
                the loopback - including the ones the kernel names as `other` (a tunnel, a bridge), which
                is how the release enumerates them: they are the interfaces a path is over, not noise to
                be dropped. A monitor that asked for a type takes only that type. */
-            if (!charon_path_wants(monitor->_required, type, reachable, cellular))
-                continue;
             BOOL address4 = item->ifa_addr->sa_family == AF_INET && charon_usable_v4(item->ifa_addr);
             BOOL address6 = item->ifa_addr->sa_family == AF_INET6 && charon_usable_v6(item->ifa_addr);
+            if (!charon_path_wants(monitor->_required, type, reachable, cellular, address4 || address6))
+                continue;
             if (!address4 && !address6)
                 continue;
             if (type != nw_interface_type_loopback) {
@@ -415,7 +424,8 @@ nw_interface_type_t charon_path_interface_type(const struct ifaddrs *item)
 
 /* The path's own decision, named for the objects differential: it is asked about synthetic interfaces
    there, so that a filter on the path can be a check that can fail rather than a line in a comment. */
-BOOL charon_path_wants_interface(nw_interface_type_t required, nw_interface_type_t type, BOOL reachable, BOOL cellular)
+BOOL charon_path_wants_interface(nw_interface_type_t required, nw_interface_type_t type, BOOL reachable, BOOL cellular,
+                                 BOOL hasAddress)
 {
-    return charon_path_wants(required, type, reachable, cellular);
+    return charon_path_wants(required, type, reachable, cellular, hasAddress);
 }
