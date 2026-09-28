@@ -15,6 +15,22 @@
 // on either and this is the value and hierarchy the header describes, not a translation of a class
 // that exists.
 
+// The identity matrix, written out. The SDK's matrix_identity_float4x4 is a *function* in this SDK's
+// simd header, and the 6.1.3 gate says so by name:
+//
+//   libAVFAudioBackports.dylib weakly imports 1 symbol the armv7 release it is checked against does
+//   not export, each of which is NULL there and must be called only behind a check for it:
+//   _matrix_identity_float4x4
+//
+// A weak import of a symbol the release lacks is a call through NULL, so the identity is a literal and
+// the object depends on no symbol to stand at one.
+static const simd_float4x4 CharonIdentityTransform = {{
+    {1.0f, 0.0f, 0.0f, 0.0f},
+    {0.0f, 1.0f, 0.0f, 0.0f},
+    {0.0f, 0.0f, 1.0f, 0.0f},
+    {0.0f, 0.0f, 0.0f, 1.0f},
+}};
+
 @implementation PHASEObject {
     __weak PHASEObject *_charon_parent;
     __weak PHASEEngine *_charon_engine;
@@ -31,9 +47,9 @@
     if ((self = [super init])) {
         _charon_engine = engine;
         _charon_children = [NSMutableArray array];
-        _charon_transform = matrix_identity_float4x4;
-        _charon_localTransform = matrix_identity_float4x4;
-        _charon_worldTransform = matrix_identity_float4x4;
+        _charon_transform = CharonIdentityTransform;
+        _charon_localTransform = CharonIdentityTransform;
+        _charon_worldTransform = CharonIdentityTransform;
     }
     return self;
 }
