@@ -576,3 +576,30 @@ eleven rows that can be held at all are held to the header, and the two `NSBundl
 them with a difference stated. Two more — the two constants — are documented and not measurable. The
 plist's two key names are documented. Nothing here is measurable against a host that cannot build the
 object, and the status says so rather than implying otherwise.
+
+---
+
+## The invocation's target was the class, and the trap was this test's bug — fixed, and the failure moved
+
+`frame #6` was `+[NSObject(NSObject) doesNotRecognizeSelector:]`, the **class** method: the message
+`initWithTag:` had gone to the *class* object. The invocation's target was the class, with no `alloc`
+in front of it, so the private initialiser **was never tested**. `host_initWithTag` now allocates:
+
+```objc
+call.target = [subject alloc];
+```
+
+**The failure moved, and it is worth exactly that:** with the target an instance the run no longer traps
+with `brk #0xc472` inside CoreFoundation's format path, and instead ends on a **segmentation fault**
+(rc 139) further on, with no "the host's private -initWithTag: did not answer" line printed — so the
+oracle still does not answer, and the second path is a different one from the PAC trap.
+
+**So the count is still not settled: 9 or 11.** The next command is unchanged in shape and now has
+something new to read: `bt 25` on the fault, and whether frame #11 is `host_initWithTag` or the test's
+own code. If the fault is inside the host's private initialiser, the oracle is unusable and the class
+is held to the header alone; if it is the port's, that is the first evidence of the port's behaviour
+there is at all.
+
+Two things the earlier turns got wrong, recorded so they are not repeated: the class-reference story
+was settled by `objc_getClass` and was never the oracle's problem, and the oracle was never reached
+before this change.
