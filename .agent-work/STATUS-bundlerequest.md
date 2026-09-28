@@ -351,3 +351,39 @@ the macOS framework does not emit at all, so neither value can be measured on th
 from the header's own words. The two plist key names — `NSBundleResourceRequestTags` and
 `NSBundleResourceRequestPath` — are not API rows and are not measured; they are the documented
 asset-pack format, read out of the plist the ruling describes.
+
+---
+
+## The private initialiser is not an oracle, and the differential is red
+
+Two things the differential found, both about the oracle rather than the port.
+
+**1. `-initWithTag:` forwards a selector this host does not implement.** One probe said it answered
+(`-initWithTag: -> an object`), and the differential says otherwise, in the process where the port's
+`NSBundle (NSBundleResourceRequestAdditions)` category is attached to the real `NSBundle`:
+
+```
+2   CoreFoundation   -[NSObject(NSObject) doesNotRecognizeSelector:]
+5   CoreFoundation   __invoking___ + 148
+6   CoreFoundation   -[NSInvocation invoke] + 424
+7   differential     host_initWithTag + 260
+```
+
+**So the private initialiser is not usable as a state oracle**, and the earlier conclusion in this file —
+that there is one — is wrong again, in the direction the first measurement pointed: the family has **no
+host oracle for the class's state**. The probe and the differential disagree, and the disagreement is
+itself the finding: the same selector answers in a bare process and forwards in one where the port's
+category is attached, which is a difference the test cannot control and must not depend on. The
+differential now catches the exception and reports "no state to compare", and the class's rules are
+checked against the header's words instead. **The 11 rows are therefore 9 holdable and 2 not, and the two
+are the `NSBundle` additions**, whose host copies are inert and where the port deliberately differs.
+
+**2. The differential aborts, and not on the oracle.** With the oracle guarded, the run dies on a
+SIGTRAP with no exception — a trap inside the port or inside the harness, not a message — and I have not
+bisected it. The next session's first command on this family is `sh tests/backports/host/bundlerequest/run.sh`
+with a bisect, and the class is where I would look first: `+supportsSecureCoding`, the two
+`CharonManifests`/`CharonPriorities` tables, and `-init`'s `raise` with a `return nil` after it.
+
+The port's own state is *unverified*. It compiles clean under `-Wall -Werror=objc-missing-property-synthesis`
+and exports exactly the class, its metaclass and the two constants, and none of that is a measurement of
+its behaviour.
