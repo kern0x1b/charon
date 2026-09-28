@@ -24,11 +24,18 @@ which is header-only: no class, no method, nothing to build, no symbol to export
 ledger's own status for these rows is `header-ok` and why there is nothing to build for them.
 
 So the carry is a *lift*, not a library: the port's release has no CoreML at all, the SDK marks the
-header `ios(11.0)`, and Swift refuses a reference below the deployment target. The registry entry
-lowers the availability, and `registry/CoreML/createml-shapedarray.json` does that **and** brings CoreML
-into the set of frameworks the lift walks, because `modules/apple/lift.lua` reads exactly the
-frameworks the registry has a file for (`local frameworks = registered`, lift.lua:1187) — there is no
-list of frameworks to edit. Adding the file is the whole of it.
+header `ios(11.0)`, and Swift refuses a reference below the deployment target.
+
+**What the registry file is for, precisely, is giving the lift a *name* to lower.** `lift.lua` lowers
+the availability of what the registry records as `implemented`; with no row for
+`MLMultiArrayDataType` the enumeration keeps the SDK's `ios(11.0)` and the port's `CoreML` module
+cannot see the type at all. That is the whole job.
+
+It does **not** bring CoreML into the set of frameworks the lift walks, and an earlier version of this
+file said that it did. It does not, and the review is right about why: `registry/CoreML/absent_CoreML.json`
+(43 entries) is already in main at the base `68befaca`, so `lift.lua:1187`'s `local frameworks = registered`
+already contained CoreML before this series. A reader who believed the old text would look for the
+wrong thing the day the lift changes, which is the whole cost of a wrong sentence in a facts file.
 
 ## The values, read rather than assumed
 

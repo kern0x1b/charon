@@ -163,8 +163,25 @@ public struct MLShapedArray<Scalar: MLShapedArrayScalar>: @unchecked Sendable {
         MLShapedArraySlice(array: Array(scalars[sliceRange]), shape: [sliceRange.count], strides: [1])
     }
 
-    /// A slice along one dimension, keeping the rest: `array[1, 0..<columns]` is the second row.
-    public subscript(dimension: Int, slice sliceRange: Range<Int>) -> MLShapedArraySlice<Scalar> {
+    /// A slice **along one dimension**: `array.slice(0..<3, along: 1)` of a `2 x 3` array is the
+    /// second *row*, three scalars, shaped `[3]`.
+    ///
+    /// **A method and not the framework's `subscript(dimension:slice:)`,** and that is this
+    /// compiler's doing rather than a preference. A two-parameter subscript here is called with its
+    /// leading label *implicit*, and a caller that writes the leading argument without a label gets
+    /// it bound to the wrong parameter rather than an error: the review's probe and mine both got
+    /// shape `[2, 3]` and eighteen values out of a three-element row, which is the wrong row *and* a
+    /// shape that lies about them. Writing the label is refused with "extraneous argument label", so
+    /// the subscript form is not reachable at all on this toolchain. A method has one call shape
+    /// and one meaning, and the values are now right:
+    ///
+    ///   - the result's shape is the array's own with **that dimension replaced by the slice's
+    ///     extent** — the first version built it from the dimensions the slice *removed*, so a `2 x 3`
+    ///     array answered shape `[2]` while holding three scalars;
+    ///   - the values are read by walking the *other* dimensions with this one at the slice index,
+    ///     stepping it once per element of the result. The first version varied the sliced dimension
+    ///     with every other index at zero, so the "second row" answered the first row's values.
+    public func slice(_ sliceRange: Range<Int>, along dimension: Int) -> MLShapedArraySlice<Scalar> {
         guard dimension < shape.count else {
             preconditionFailure("this array is " + String(shape.count) + "-dimensional")
         }
@@ -172,18 +189,29 @@ public struct MLShapedArray<Scalar: MLShapedArrayScalar>: @unchecked Sendable {
             preconditionFailure(String(describing: sliceRange) + " is outside a dimension of " +
                                 String(shape[dimension]))
         }
-        var kept = [Int](repeating: 0, count: shape.count - 1)
-        var source = 0
-        for (position, extent) in shape.enumerated() {
-            if position == dimension { continue }
-            kept[source] = extent
-            source += 1
+        let kept = shape.enumerated().map { position, extent in
+            position == dimension ? sliceRange.count : extent
         }
+        // The block is read in **the array's own row-major order**. That is the whole of it, and it
+        // is not the same as putting the sliced dimension last or first: for a `2 x 3` array, slicing
+        // to two columns must answer `[1, 2, 4, 5]` and slicing to two rows must answer
+        // `[1, 2, 3, 4, 5, 6]`, and only walking the *kept* block in its own row-major order and
+        // mapping each position into the slice gives both.
+        let total = MLShapedArray.count(of: kept)
         var values = [Scalar]()
-        values.reserveCapacity(MLShapedArray.count(of: kept))
-        for index in sliceRange {
-            var offsets = [Int](repeating: 0, count: shape.count)
-            offsets[dimension] = index
+        values.reserveCapacity(total)
+        var offsets = [Int](repeating: 0, count: shape.count)
+        for combination in 0..<total {
+            // Row-major over the kept shape: the **first** dimension is the most significant, so
+            // the *last* is the one that varies fastest. Decoding from the first instead gives a
+            // `[2, 2]` block the order `(0,0) (1,0) (0,1) (1,1)`, which is its transpose.
+            var rest = combination
+            for position in kept.indices.reversed() {
+                let extent = Swift.max(kept[position], 1)
+                offsets[position] = rest % extent
+                rest /= extent
+            }
+            offsets[dimension] = sliceRange.lowerBound + offsets[dimension]
             values.append(scalars[flat(offsets)])
         }
         return MLShapedArraySlice(array: values, shape: kept, strides: MLShapedArray.strides(for: kept))
@@ -196,6 +224,10 @@ public struct MLShapedArraySlice<Scalar: MLShapedArrayScalar>: @unchecked Sendab
     public let shape: [Int]
     public let strides: [Int]
     public private(set) var scalars: [Scalar]
+
+    /// The slice's scalars, which is what a caller reads it for: the same name the array uses, so
+    /// `array[0, slice: ..].values` and `array.values` are the same kind of thing.
+    public var values: [Scalar] { scalars }
 
     init(array: [Scalar], shape: [Int], strides: [Int]) {
         self.shape = shape

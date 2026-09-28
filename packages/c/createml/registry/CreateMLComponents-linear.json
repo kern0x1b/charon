@@ -106,10 +106,10 @@
             "introduced": "15.0",
             "minimum": "6.0",
             "status": "implemented",
-            "reason": "why a linear model could not answer: a width it was not fitted for, too few rows, a design with no answer, or an L1 penalty this build does not fit. Each names the numbers involved, because a refusal that does not say which is a refusal a caller has to guess about",
+            "reason": "NOT APPLE'S SURFACE AND NOT IN THE LEDGER. The SDK 26.2 CreateMLComponents declares no `LinearModelError`; its public error enums are OptimizationError, EstimatorEncodingError, DatasetError and ModelUpdateError, and the surface has 0 rows for it. It is the port's own error for the linear models - a width the model was not fitted for, too few rows, a design with no answer, an L1 penalty this build does not fit - and it lives in the package's own registry so that nothing reads it as a row of Apple's",
             "effect": "the reason, in the framework's own words",
             "facts": "facts/CreateML/LinearModels.md",
-            "source": "this port's; each case and its reason is in the facts"
+            "source": "the SDK's own interface for the absence; the enum is this port's"
         }
     ]
 }

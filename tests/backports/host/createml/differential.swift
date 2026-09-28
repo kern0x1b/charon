@@ -201,6 +201,27 @@ do {
     checkEqual("the table's row count", port.size.rows, host.size.rows)
     checkEqual("the table's column count", port.size.columns, host.size.columns)
 
+    // A sequence value's debugDescription describes its description. The first version interpolated
+    // its own getter, so any caller that reflects or dumps one got a stack overflow rather than a
+    // string, and nothing in this suite reached it.
+    let sequence = PortCreateML.MLDataValue.sequence([.int(1), .string("two"), .double(3)])
+    // The enum's own debugDescription names its case and its values: `Sequence: 1, two, 3.0`. The
+    // claim is that it is a *string* and not a call into itself.
+    check("a sequence value's debugDescription is a string",
+          String(reflecting: sequence).contains("Sequence") && String(reflecting: sequence).contains("two"),
+          "the port answers \(String(reflecting: sequence))")
+    check("a sequence value's debugDescription is not its own getter",
+          !sequence.debugDescription.contains("debugDescription"),
+          "the port answers \(sequence.debugDescription)")
+    let dictionary = PortCreateML.MLDataValue.dictionary(["k": .int(7)])
+    check("a dictionary value's debugDescription is a string too",
+          String(reflecting: dictionary).contains("k: 7"),
+          "the port answers \(String(reflecting: dictionary))")
+    let multi = PortCreateML.MLDataValue.multiArray(.init([1, 2, 3], shape: [3]))
+    check("a multi-array value's debugDescription is a string too",
+          String(reflecting: multi).contains("MultiArray"),
+          "the port answers \(String(reflecting: multi))")
+
     let portRead = Read(port: port), hostRead = Read(host: host)
     for name in host.columnNames {
         check("the type of the column \(name)", portRead.kinds[name] == hostRead.kinds[name],

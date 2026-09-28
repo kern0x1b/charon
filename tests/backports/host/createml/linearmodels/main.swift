@@ -228,8 +228,47 @@ do {
     matrix[indices: 1, 2] = 60
     checkClose("a shaped array written by index per dimension", matrix[indices: 1, 2], 60, 1e-12)
     checkClose("a shaped array's buffer, row-major", matrix.scalars[5], 60, 1e-12)
-    checkEqual("a row of a shaped array, as a slice of the other dimension",
-              matrix[1, slice: 0..<3].count, 3)
+    // A **partial** slice of one dimension is a sub-block, and that is what `slice(_:along:)` gives:
+    // the array's own shape with that dimension's extent replaced by the slice's, and the values read
+    // by walking the other dimensions. Two things make this check able to fail where the old one could
+    // not — the slice is a *proper sub-range* rather than a whole extent (slicing a whole extent is
+    // the identity and proves nothing), and the **values and the shape** are compared rather than the
+    // count. The old code answered shape `[2]` holding three scalars, and a count of 3 accepted it.
+    // A *fresh* array: an earlier check writes through `matrix`'s own index subscript, so slicing
+    // `matrix` would be slicing a table a previous line changed.
+    let block = PortCoreML.MLShapedArray(scalars: [1, 2, 3, 4, 5, 6], shape: [2, 3])
+    let row = block.slice(0..<2, along: 1)
+    checkEqual("a sub-block's shape replaces the sliced dimension's extent", row.shape, [2, 2])
+    checkEqual("a sub-block's values are the block's, in order", row.values, [1, 2, 4, 5])
+    checkEqual("a sub-block's count", row.count, 4)
+    checkEqual("a sub-block along the other axis is a different block",
+               block.slice(0..<2, along: 0).values, [1, 2, 3, 4, 5, 6])
+    checkEqual("a sub-block along the other axis has that block's shape",
+               block.slice(0..<2, along: 0).shape, [2, 3])
+    // A whole row — one that *drops* a dimension — is a different operation from a partial slice, and
+    // saying so is the point: `slice(_:along:)` never drops a dimension, so a caller who wants a row
+    // takes the flat range. Both are checked so neither is mistaken for the other.
+    let firstRow = matrix.scalars[0..<3]
+    checkEqual("a whole row is a flat range of the scalars", Array(block.scalars[0..<3]), [1, 2, 3])
+    checkEqual("a whole extent is the identity", block.slice(0..<3, along: 1).scalars, [1, 2, 3, 4, 5, 6])
+    // And the slice as a whole array, which is the one thing a slice is for and which aborted the
+    // process before: the shape is a lie about the values, so the array initialiser's own
+    // precondition caught it and a caller reshaping a slice crashed.
+    let asArray = row.array
+    checkEqual("a sub-block reshaped as an array keeps its values", asArray.scalars, [1, 2, 4, 5])
+    checkEqual("a sub-block reshaped as an array keeps its shape", asArray.shape, [2, 2])
+    // A slice on the *second* dimension of a three-dimensional array, so the walk over the other two
+    // dimensions is exercised with more than one of them.
+    let cube = PortCoreML.MLShapedArray(scalars: (0..<24).map { Double($0) }, shape: [2, 3, 4])
+    // A plane of a `2 x 3 x 4` array: the last dimension, sliced to two of its four, leaves twelve
+    // scalars in the order they sit in the array. The old code answered shape `[3, 4]` and
+    // twenty-four values here, and reshaping it aborted the process.
+    let plane = cube.slice(0..<2, along: 2)
+    checkEqual("a plane's shape keeps the sliced dimension's new extent", plane.shape, [2, 3, 2])
+    checkEqual("a plane's values are the block's, in the array's order", plane.values,
+               [0, 1, 4, 5, 8, 9, 12, 13, 16, 17, 20, 21])
+    checkEqual("a plane reshaped as an array keeps its count", plane.array.scalars.count, 12)
+    checkEqual("a plane reshaped as an array keeps its shape", plane.array.shape, [2, 3, 2])
     checkEqual("a range of a shaped array's rows", matrix[slice: 0..<2].count, 2)
     checkEqual("a shaped array of a constant", feature([0, 0, 0]).scalars, [0, 0, 0])
     checkEqual("the strides of a one-row shape",

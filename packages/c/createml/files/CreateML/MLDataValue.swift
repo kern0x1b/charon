@@ -160,7 +160,10 @@ public enum MLDataValue: Equatable, Hashable, CustomStringConvertible, CustomDeb
         public var dataValue: MLDataValue { .sequence(elements) }
         public static var dataValueType: MLDataValue.ValueType { .sequence }
         public var description: String { elements.map(\.description).joined(separator: ", ") }
-        public var debugDescription: String { "Sequence(\(debugDescription))" }
+        // Its *description*, like its three siblings: interpolating `debugDescription` here is
+        // a call into this same getter, and any caller that reflects or dumps a sequence
+        // value gets a stack overflow rather than a string.
+        public var debugDescription: String { "Sequence(\(description))" }
     }
 
     /// A dictionary of values.

@@ -118,8 +118,15 @@ xcrun swiftc -swift-version 5 -O -I "$out/modules" \
     -framework CreateMLComponents \
     -o "$out/metrics"
 
-"$out/differential"
-"$out/tabularframe"
-"$out/linearmodels"
-"$out/transformers"
-"$out/metrics"
+# All five, and the *script* fails at the end. `set -e` on `"$out/differential"` aborted the run at the
+# first red suite, so three suites whose state was unknown read as a build failure: the review measured
+# a one-line mutation producing exactly one line of output and no `tabularframe`, `linearmodels` or
+# `transformers` line at all. Each binary's exit is collected and the first non-zero is the script's.
+status=0
+for suite in differential tabularframe linearmodels transformers metrics; do
+    if ! "$out/$suite"; then
+        echo "FAIL the $suite suite exited non-zero" >&2
+        status=1
+    fi
+done
+exit $status

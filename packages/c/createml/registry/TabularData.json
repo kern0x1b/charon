@@ -173,9 +173,9 @@
             "minimum": "6.0",
             "status": "implemented",
             "reason": "declared with its primary associated type and its name, and WITHOUT the BidirectionalCollection inheritance the framework's own declaration has. The inheritance is the part this toolchain will not accept: a protocol whose primary associated type is named `Element` and which also inherits a collection has two `Element`s, and a conforming type cannot satisfy both - measured, four shapes tried. The columns conform to BidirectionalCollection directly, beside the protocol, so a caller iterating a column does it through the type it has; the cost is that a caller holding a ColumnProtocol existential cannot iterate it without a cast",
-            "effect": "the name, the count and whether it is empty",
+            "effect": "the name, and the element type. NOT a count and NOT isEmpty: the protocol declares `associatedtype Element` and `var name` and nothing else, and a row that overstated the surface is what a caller reads to decide what works. The columns themselves are BidirectionalCollections and do answer a count, through the type and not through this protocol - `any ColumnProtocol<Int>` is not a collection and cannot be iterated",
             "facts": "facts/TabularData/Columns.md",
-            "source": "the iOS 26.2 SDK's TabularData.swiftinterface for the declaration; the divergence measured on both compilers and recorded with the witness"
+            "source": "the iOS 26.2 SDK's TabularData.swiftinterface for the declaration; the divergence measured on both compilers and recorded with the witness; the absence of a count is measured by `p.count` not compiling on an existential"
         },
         {
             "api": "Column",
