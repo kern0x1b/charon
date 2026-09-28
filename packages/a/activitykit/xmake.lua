@@ -85,7 +85,18 @@ package("activitykit")
             module = "ActivityKit", optimize = "fastest", prefix_map = os.curdir() .. "=/activitykit"}),
             defs, module_paths, {"-I", swiftdir, "-emit-module", "-emit-module-path",
              path.join(module, package:arch() .. "-apple-ios.swiftmodule"), "-c"},
-            os.files(path.join("Sources", "ActivityKit", "**.swift")), {"-o", path.join(objects, "ActivityKit.o")})
+            -- Absolute, and refused when it matches nothing: `modules/apple/sources.lua` is where the
+            -- C-family sources go and it raises "compiles %s, which matches no file" for a pattern
+            -- that matches none, and the Swift side had neither -- a relative glob resolved against
+            -- the *compiler's* working directory, which is how charon@appintents' install failed with
+            -- "error opening input file 'Sources/AppIntents/LocalizedStringResource.swift'"
+            -- (kits r2), and a glob that matched nothing compiles an empty module and calls it a
+            -- pass (kits r3).
+            local sources_activitykit = os.files(path.join(package:scriptdir(), "Sources", "ActivityKit", "**.swift"))
+            if #sources_activitykit == 0 then
+                raise("{{}} compiles Sources/ActivityKit/**.swift, which matches no file", package:name())
+            end
+            sources_activitykit, {"-o", path.join(objects, "ActivityKit.o")})
         os.vrunv(swiftc, argv)
         os.vrunv(toolchain:tool("ar"), {"-rcs", path.join(package:installdir("lib"), "libActivityKit.a"),
                  path.join(objects, "ActivityKit.o")})

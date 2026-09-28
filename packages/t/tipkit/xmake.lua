@@ -85,7 +85,18 @@ package("tipkit")
             module = "TipKit", optimize = "fastest", prefix_map = os.curdir() .. "=/tipkit"}),
             defs, module_paths, {"-I", swiftdir, "-emit-module", "-emit-module-path",
              path.join(module, package:arch() .. "-apple-ios.swiftmodule"), "-c"},
-            os.files(path.join("Sources", "TipKit", "**.swift")), {"-o", path.join(objects, "TipKit.o")})
+            -- Absolute, and refused when it matches nothing: `modules/apple/sources.lua` is where the
+            -- C-family sources go and it raises "compiles %s, which matches no file" for a pattern
+            -- that matches none, and the Swift side had neither -- a relative glob resolved against
+            -- the *compiler's* working directory, which is how charon@appintents' install failed with
+            -- "error opening input file 'Sources/AppIntents/LocalizedStringResource.swift'"
+            -- (kits r2), and a glob that matched nothing compiles an empty module and calls it a
+            -- pass (kits r3).
+            local sources_tipkit = os.files(path.join(package:scriptdir(), "Sources", "TipKit", "**.swift"))
+            if #sources_tipkit == 0 then
+                raise("{{}} compiles Sources/TipKit/**.swift, which matches no file", package:name())
+            end
+            sources_tipkit, {"-o", path.join(objects, "TipKit.o")})
         os.vrunv(swiftc, argv)
         os.vrunv(toolchain:tool("ar"), {"-rcs", path.join(package:installdir("lib"), "libTipKit.a"),
                  path.join(objects, "TipKit.o")})

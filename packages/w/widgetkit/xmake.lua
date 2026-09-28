@@ -66,7 +66,18 @@ package("widgetkit")
             module = "WidgetKit", optimize = "fastest", prefix_map = os.curdir() .. "=/widgetkit"}),
             module_paths, {"-I", swiftdir, "-emit-module", "-emit-module-path",
              path.join(module, package:arch() .. "-apple-ios.swiftmodule"), "-c"},
-            os.files(path.join("Sources", "WidgetKit", "**.swift")), {"-o", path.join(objects, "WidgetKit.o")})
+            -- Absolute, and refused when it matches nothing: `modules/apple/sources.lua` is where the
+            -- C-family sources go and it raises "compiles %s, which matches no file" for a pattern
+            -- that matches none, and the Swift side had neither -- a relative glob resolved against
+            -- the *compiler's* working directory, which is how charon@appintents' install failed with
+            -- "error opening input file 'Sources/AppIntents/LocalizedStringResource.swift'"
+            -- (kits r2), and a glob that matched nothing compiles an empty module and calls it a
+            -- pass (kits r3).
+            local sources_widgetkit = os.files(path.join(package:scriptdir(), "Sources", "WidgetKit", "**.swift"))
+            if #sources_widgetkit == 0 then
+                raise("{{}} compiles Sources/WidgetKit/**.swift, which matches no file", package:name())
+            end
+            sources_widgetkit, {"-o", path.join(objects, "WidgetKit.o")})
         os.vrunv(swiftc, argv)
         os.vrunv(toolchain:tool("ar"), {"-rcs", path.join(package:installdir("lib"), "libWidgetKit.a"),
                  path.join(objects, "WidgetKit.o")})
