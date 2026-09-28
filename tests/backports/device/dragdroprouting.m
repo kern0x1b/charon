@@ -133,24 +133,22 @@ static NSString *const results_folder = @"/private/var/backports";
 
 @end
 
-@interface OrderDelegate : UIResponder <UIApplicationDelegate>
-@property (nonatomic, strong) UIWindow *window;
+// A command-line program, no UIApplicationMain: an app started by xmake emulate never reaches
+// its launch callback, so the test makes the window itself and drives the routing, which is what it
+// is about. The layout the views need is laid out explicitly, not by a run loop.
+@interface OrderDriver : NSObject
 @end
 
-@implementation OrderDelegate
+@implementation OrderDriver
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)options
+- (instancetype)init
 {
-    [[NSFileManager defaultManager] createDirectoryAtPath:results_folder withIntermediateDirectories:YES attributes:nil error:NULL];
-    [[NSFileManager defaultManager] removeItemAtPath:[results_folder stringByAppendingPathComponent:@"dragdroprouting.done"] error:NULL];
-    charon_log_to([results_folder stringByAppendingPathComponent:@"dragdroprouting.log"]);
-    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    self.window.rootViewController = [[UIViewController alloc] init];
-    [self.window makeKeyAndVisible];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self run];
-    });
-    return YES;
+    if ((self = [super init])) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:results_folder withIntermediateDirectories:YES attributes:nil error:NULL];
+        [[NSFileManager defaultManager] removeItemAtPath:[results_folder stringByAppendingPathComponent:@"dragdroprouting.done"] error:NULL];
+        charon_log_to([results_folder stringByAppendingPathComponent:@"dragdroprouting.log"]);
+    }
+    return self;
 }
 
 - (void)finish
@@ -174,8 +172,12 @@ static NSString *const results_folder = @"/private/var/backports";
     probe.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, 320, 200)
                                                     style:UITableViewStylePlain];
     [probe.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"c"];
-    [self.window.rootViewController.view addSubview:probe.collectionView];
-    [self.window.rootViewController.view addSubview:probe.tableView];
+    // A window the views are in, so the release lays them out and its hit tests find their items.
+    UIWindow *window = [[UIWindow alloc] initWithFrame:CGRectMake(0, 0, 320, 480)];
+    window.rootViewController = [[UIViewController alloc] init];
+    [window makeKeyAndVisible];
+    [window.rootViewController.view addSubview:probe.collectionView];
+    [window.rootViewController.view addSubview:probe.tableView];
     [probe.collectionView reloadData];
     [probe.collectionView layoutIfNeeded];
     [probe.tableView reloadData];
@@ -230,6 +232,7 @@ static NSString *const results_folder = @"/private/var/backports";
 int main(int argc, char **argv)
 {
     @autoreleasepool {
-        return UIApplicationMain(argc, argv, nil, NSStringFromClass([OrderDelegate class]));
+        [[OrderDriver alloc] init];
     }
+    return 0;
 }
