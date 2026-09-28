@@ -167,10 +167,19 @@ end
 -- target, and it costs a compile per header that cannot be told public from its module map alone (30 s of a 65 s lift of
 -- three frameworks, measured). The key is every file under the SDK's usr/include by name, size and time, the symbols, the
 -- compiler by path, size and time, the target, and this file's text - what system_headers() and stands_alone() read.
+-- The environment a compiler reads, which the kept system headers, a kept answer and a kept lift are keyed on.
+local ENVIRONMENT = {"CPATH", "C_INCLUDE_PATH", "OBJC_INCLUDE_PATH", "CPLUS_INCLUDE_PATH", "OBJCPLUS_INCLUDE_PATH",
+                     "SDKROOT", "DEVELOPER_DIR", "IPHONEOS_DEPLOYMENT_TARGET", "CCC_OVERRIDE_OPTIONS", "CHARON_LIFT_MULTIDUMP",
+                     "CHARON_LLVM_CONFIG"}
+
 function kept_system_headers(opt, symbols)
     local root = path.join(opt.sdk, "usr", "include")
     local parts = {"charon-system-headers-1", opt.triple, opt.clang, tostring(os.filesize(opt.clang)), tostring(os.mtime(opt.clang)),
                    hash.strhash128(io.readfile(path.join(os.scriptdir(), "lift.lua"))), table.concat(symbols, " ")}
+    -- what the probes compile reads the environment as the lift's own compiles do
+    for _, name in ipairs(ENVIRONMENT) do
+        table.insert(parts, name .. "=" .. (os.getenv(name) or ""))
+    end
     local files = os.files(path.join(root, "**"))
     table.sort(files)
     for _, file in ipairs(files) do
@@ -270,11 +279,6 @@ function name_groups(names)
     end
     return groups
 end
-
--- The environment a compiler reads, which a kept answer and a kept lift are keyed on.
-local ENVIRONMENT = {"CPATH", "C_INCLUDE_PATH", "OBJC_INCLUDE_PATH", "CPLUS_INCLUDE_PATH", "OBJCPLUS_INCLUDE_PATH",
-                     "SDKROOT", "DEVELOPER_DIR", "IPHONEOS_DEPLOYMENT_TARGET", "CCC_OVERRIDE_OPTIONS", "CHARON_LIFT_MULTIDUMP",
-                     "CHARON_LLVM_CONFIG"}
 
 local OUTPUTDIR = "@charon-lift-outputdir@"
 
@@ -421,30 +425,6 @@ local function dumper(opt, frameworks, headers)
         os.tryrm(folder)
         return answers
     end
-    -- The plugin's answer is compared with clang's own once, on the first filter it is given, before any of its answers is
-    -- used: a plugin built against headers that are not exactly the lift's clang's could print something else, and then it
-    -- is not used again and every query is asked alone. The plugin is keyed on the compiler it was built for (multidump.lua),
-    -- so a plugin that answered as clang does is marked beside itself, and is not compared again.
-    local agrees = multidump.plugin(opt.clang) and multidump.plugin(opt.clang) .. ".agrees"
-    local checked = agrees and os.isfile(agrees) or false
-    local together
-    local function asked_checked(filters, vfs)
-        local answers = asked_together(filters, vfs)
-        if answers and not checked then
-            checked = true
-            local text, listing = asked_alone(filters[1], vfs)
-            local function same(a, b)
-                return a and b and a:gsub("0x%x+", "") == b:gsub("0x%x+", "")
-            end
-            if not same(text, answers[1][1]) or not same(listing, answers[1][2]) then
-                cprint("${color.warning}lift:${clear} the multidump plugin does not answer %s as clang does; every query is asked alone", filters[1])
-                multidump.refuse()
-                return nil
-            end
-            io.writefile(agrees, filters[1] .. "\n")
-        end
-        return answers
-    end
     -- What the plugin answered for a filter over the umbrella alone, kept between lifts: an answer is what clang prints for
     -- the umbrella's parse, and depends on the umbrella's text, the SDK's headers, the compiler, the plugin and the
     -- environment the compiler reads - not on the registry or on this file. A lift after a change to the registry asks
@@ -466,6 +446,54 @@ local function dumper(opt, frameworks, headers)
     if held then
         try { function () os.mkdir(held) end }
         io.writefile(path.join(held, "used"), "")
+    end
+    -- The plugin's answers are compared with clang's own before any of them is used, on up to three filters of the first
+    -- batch of different kinds (the first, a class's members, a plain name): a plugin built against headers that are not
+    -- exactly the lift's clang's could print something else, and then it is not used again and every query is asked
+    -- alone. Where its answers are kept, that they agreed is kept with them (a set of answers is a function of the plugin,
+    -- the umbrella, the SDK, the target and the environment, as its key is), and the answers of that set are not
+    -- compared again; a lift that keeps nothing compares once per run.
+    local agrees = held and path.join(held, "agrees")
+    local checked = agrees and os.isfile(agrees) or false
+    local together
+    local function asked_checked(filters, vfs)
+        local answers = asked_together(filters, vfs)
+        if answers and not checked then
+            checked = true
+            local compared, seen = {}, {}
+            local function pick(index)
+                if index and not seen[index] then
+                    seen[index] = true
+                    table.insert(compared, index)
+                end
+            end
+            pick(1)
+            for index, filter in ipairs(filters) do
+                if filter:find("::", 1, true) then pick(index); break end
+            end
+            for index, filter in ipairs(filters) do
+                if index ~= 1 and filter:find("^[%a_][%w_]*$") then pick(index); break end
+            end
+            local function same(a, b)
+                return a and b and a:gsub("0x%x+", "") == b:gsub("0x%x+", "")
+            end
+            for _, index in ipairs(compared) do
+                local text, listing = asked_alone(filters[index], vfs)
+                if not same(text, answers[index][1]) or not same(listing, answers[index][2]) then
+                    cprint("${color.warning}lift:${clear} the multidump plugin does not answer %s as clang does; every query is asked alone", filters[index])
+                    multidump.refuse()
+                    return nil
+                end
+            end
+            if agrees then
+                local names = {}
+                for _, index in ipairs(compared) do
+                    table.insert(names, filters[index])
+                end
+                io.writefile(agrees, table.concat(names, "\n") .. "\n")
+            end
+        end
+        return answers
     end
     local function held_file(filter)
         return path.join(held, hash.strhash128(filter) .. ".lz4")
