@@ -183,6 +183,16 @@
       "effect": "the request Sign in with Apple is made with: -user and -setUser: over the value a previous authorization response vended, so a second sign-in asks for the same person rather than a new one; -init, which this header does not mark unavailable; and -copyWithZone: carrying the user as well as the superclass's scopes, state, nonce and operation",
       "facts": "facts/AuthenticationServices/ASAuthorizationRequest.md",
       "source": "macOS 27.0's own AuthenticationServices, asked with class_copyMethodList for the class's method list by tests/backports/host/authservices -- four instance methods, of which the destructor is the compiler's; the 26.2 header's contract; and the request's members as the header declares them, read by clang's AST"
+    },
+    {
+      "api": "ASAuthorizationAppleIDCredential",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the value a finished Sign in with Apple returns: -user, -authorizedScopes, -identityToken, -authorizationCode, -state, -email, -fullName and -realUserStatus, all readonly, each copied in and out, and -copyWithZone: carrying all eight. -fullName and -email are only filled on the FIRST sign-in for a user and are nil on every later one; -realUserStatus is a hint the header says not to gate on, and the port carries the value it was given and nothing more",
+      "facts": "facts/AuthenticationServices/ASAuthorizationRequest.md",
+      "source": "macOS 27.0's own AuthenticationServices, asked with class_copyMethodList for the class's method list by tests/backports/host/authservices; the 26.2 header's contract; and the credential's members as the header declares them, read by clang's AST"
     }
   ]
 }

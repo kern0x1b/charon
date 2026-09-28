@@ -37,4 +37,24 @@ extern NSString *const ASCharonProviderCodingKey;
     __attribute__((objc_method_family(init)));
 @end
 
+// A credential is a value object: the release marks -init and +new unavailable and hands the object
+// back from a provider. The port's way in names the seven values the header declares, because there is
+// no other way to make one and a credential with no user is not a credential.
+@interface ASAuthorizationAppleIDCredential (CharonASConstruction)
+- (instancetype)charon_initWithUser:(NSString *)user
+                   authorizedScopes:(NSArray<ASAuthorizationScope> *)authorizedScopes
+                     identityToken:(NSData *)identityToken
+                  authorizationCode:(NSData *)authorizationCode
+                             state:(NSString *)state
+                             email:(NSString *)email
+                          fullName:(NSPersonNameComponents *)fullName
+                    realUserStatus:(ASUserDetectionStatus)realUserStatus
+    __attribute__((objc_method_family(init)));
+@end
+
+@interface ASAuthorizationAppleIDProvider (CharonASConstruction)
+- (instancetype)charon_initWithCredentialState:(id)store
+    __attribute__((objc_method_family(init)));
+@end
+
 #endif
