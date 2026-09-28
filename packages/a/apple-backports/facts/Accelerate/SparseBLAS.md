@@ -395,6 +395,40 @@ between 16.0 and 18.0, so a 16.0 or an 18.0 in that output means "after the prev
 one", not a measured first release. And a category has no `nm`-visible symbols, so a clean run says
 nothing about any category file — there is none here.
 
+## The complex half's differential, and the mutation proof
+
+`tests/backports/host/sparsecomplex/differential.m` and its `run.sh` are **in the tree**, not in
+`.agent-work`: a rewrite script emptied the copy that lived there, and a test that a script can empty
+does not belong outside the tree. The cases are a table — the operation, the shape, which of the two
+entry blocks to build, the alpha, the transpose, the order, the leading dimensions, the strides, the
+norm, the expected status and a note — and one loop builds the matrix on both sides from the row, calls
+through the operation's own signature and compares. The port is one dylib, `dlopen`ed
+`RTLD_LOCAL | RTLD_FIRST` and reached by `dlsym`, so nothing of the port's can interpose the host's and
+there is no `-D` renaming in the file. A refused case runs the host in a child, because the host does not
+always refuse what the port refuses (measured: an unnamed transpose goes into `cblas_cgemv`, which ends the
+process). **41 checks, 0 failures.**
+
+Two things the table got wrong the first time, both in the table and not in the port: the two row-major
+dense products carried an output stride of 2 against three columns, which the port **and** the host
+refuse; and the alpha-zero outer product's elements are now compared by the nonzero count, because the
+host has not materialised that product and an elementwise read of it takes its process down.
+
+`compareComplex` builds its detail in a buffer of its own and carries the size with it. It took a
+`char *` and wrote with `sizeof` on it, which is **the size of the pointer and not of the buffer**, so
+every mismatch was cut to seven characters — which is why every failure used to end in `status `.
+
+**The differential can fail.** One line of `SparseComplex18.m` mutated, `(float complex *)y + to` to
+`+ (to - 1)` in `CharonComplexVectorProduct`, and:
+
+```
+MUTATED:  41 checks, 6 failures
+FAIL a matrix-vector product: alpha 1: element 0: port 6+0i, host 7+0i; status 0 against 0, wanted 0
+FAIL a matrix-vector product: alpha 2: element 0: port 12+0i, host 14+0i; status 0 against 0, wanted 0
+RESTORED: 41 checks, 0 failures      (the source byte-identical to the committed one afterwards)
+```
+
+The differing element is named in full, which is the `sizeof` fix demonstrated rather than asserted.
+
 ## The complex half's new differential
 
 `…/.agent-work/wip/sparsecomplex/host/differential-complex.m`, written from scratch, and the old one is
