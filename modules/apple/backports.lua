@@ -367,17 +367,28 @@ end
 -- backport is compiled so: one that needs RTTI for another reason (typeid, dynamic_cast) cannot
 -- have it here.
 local function unit(opt, source, object)
-    -- The source, absolute, whatever the caller passed. ccache keys an entry on the preprocessed
-    -- source with its paths rewritten (base_dir, hash_dir = false), so two spellings of one path are
-    -- one key - and it hands back the object verbatim as the run that stored it wrote it, that path
-    -- spelling included. A relative caller and an absolute caller therefore share a key and get two
-    -- different objects: measured over a whole gate, 981 of 982 objects byte-identical against a
-    -- CCACHE_DISABLE=1 build and one - UIKit/UIDynamicAnimator.o, 84 bytes - differing by exactly
-    -- the string "packages/a/apple-backports/UIKit/UIDynamicAnimator.mm" against its absolute form,
-    -- and which of the two a build gets is decided by whichever job stored the entry first. Both
-    -- production callers pass an absolute path already (the gate's checkout, the recipe's
-    -- scriptdir()); this makes it so for every caller, so the spelling cannot diverge again.
-    source = path.absolute(source)
+    -- The source, absolute, and relative to this package rather than to wherever xmake happens to
+    -- be: path.absolute() on its own resolves a relative source against the working directory,
+    -- which inside package:on_install is xmake's own and not the checkout, so a caller that passed
+    -- "UIKit/Foo.mm" would be looked for under xmake's directory. Every caller here already passes
+    -- path.join(opt.root, ...), so this is the identity for all of them; it is here for the next one.
+    if not source:startswith("/") then
+        source = path.join(opt.root, source)
+    end
+    -- This does NOT close the one-object residue, and nothing a caller passes can. ccache rewrites
+    -- the compiler's own -c argument when base_dir is set - heavy.sh sets it in the cache's
+    -- ccache.conf - and hands the object back as that run wrote it, so a cached build records the
+    -- relative spelling whatever the caller passed and an uncached one the absolute. Measured the
+    -- same file three ways straight through ccache, so nothing else was in the way: no cache and
+    -- ccache with base_dir unset are byte for byte the same and both record the absolute path;
+    -- only base_dir set gives the relative one. That rewrite is the price of the cross-worktree
+    -- sharing hash_dir = false buys, and -ffile-prefix-map, which rules/apple-ios already applies
+    -- to this repository's own targets, is the follow-up that would collapse both spellings -
+    -- measured, and it does not: the map rewrites an absolute spelling and ccache hands the
+    -- compiler a relative one, so the gap falls from 84 bytes to 8 and stops
+    -- (band-api-prefixmap, d2e15520). What the two lines above close is the other half: a caller
+    -- that spelled the source two ways would be two objects under one key, and that is no longer
+    -- possible.
     local objective_c = not source:endswith(".c")
     local arguments = {"-Os", "-g0", "-Wall", "-Wno-unguarded-availability-new", "-Wno-unguarded-availability"}
     if objective_c then

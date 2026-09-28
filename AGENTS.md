@@ -173,9 +173,11 @@ Each entry: wrong pattern → right pattern → the mechanical reason.
   replays is the object the compiler wrote, so identity is a measurement — but measure it with
   callers that spell the source the same way every time. The key is path-independent and the object
   is not: a relative and an absolute spelling of one path are one key and two objects, and which one
-  a build gets is decided by whichever job stored the entry first. Measured over a gate, 981 of 982
-  objects byte-identical and one 84-byte difference that was exactly that string;
-  `backports.compile()` takes its source absolute so no caller can reintroduce it.
+  a build gets is decided by whichever job stored the entry first. Nothing a caller passes closes
+  it: it is ccache's own `base_dir` rewrite of the `-c` argument, measured the same file three ways
+  with nothing else in the way, and `-ffile-prefix-map` is the follow-up that would collapse both
+  spellings and does not (`band-api-prefixmap`, `d2e15520`). What rooting the source against
+  `opt.root` closes is the other half — two spellings from one caller — which is not this.
   `CCACHE_DISABLE` set at all, empty included, takes the cache out for a build that has to show its
   own work; `CCACHE` names a program and is checked before it is used, so a stale one costs the
   cache and not the build. `apple.cache` says which call sites are routed and names the one in
