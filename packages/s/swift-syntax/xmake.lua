@@ -12,9 +12,7 @@ package("swift-syntax")
     -- the commit is the only thing that identifies them, and a recipe that changed its pin has to be
     -- a different package or a port keeps linking the modules of another release.
     add_configs("recipe", {description = "The digest of this recipe and the upstream commit it pins, so a changed flag or pin is a different package.",
-                           default = hash.strhash128(path.join(hash.sha256(path.join(os.scriptdir(), "xmake.lua")),
-                                                               package:commit() or package:revision())),
-                           type = "string", readonly = true})
+                           default = "", type = "string", readonly = true})
 
     -- Where a dependent finds the modules and the archives: `rules/macro` reads this to compile a
     -- plugin executable, and the Swift side reads it to typecheck an expansion test.
@@ -31,6 +29,12 @@ package("swift-syntax")
     }
 
     on_load("@macosx", function (package)
+        -- The digest is computed here and not in the config's default, because `package:commit()` is
+        -- not callable while the recipe body is being read -- it is `attempt to call a nil value
+        -- (global 'package')`, which is how this recipe did not load (kits r4). libcxx and llvm
+        -- compute theirs in on_load for the same reason.
+        package:set("recipe", hash.strhash128(path.join(hash.sha256(path.join(os.scriptdir(), "xmake.lua")),
+                                                       package:commit() or package:revision())))
         -- The host compiler goes out with the modules: a plugin is built for the host, and nothing
         -- else in the fleet publishes one (rules/macro reads it, and there is no producer for it
         -- before this), so it is named here beside what it is for.

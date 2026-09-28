@@ -97,3 +97,18 @@ why.
 `ControlWidgetButton` and `ControlWidgetToggle` keep the constructors that take the app's own label
 (`init(action:label:)`, and the `actionLabel:`/`valueLabel:` forms), which trap nowhere and need
 nothing this module does not have.
+
+## The counts
+
+`340 - 100 - 0 = 240` is this module's placement, measured with the toolchain's own
+`swift-api-digester -dump-sdk` of the module built for `armv7-apple-ios6.1.3` against
+`coordination/corpus/ledger/WidgetKit.tsv` (340 rows), and it is the same number the kits' run
+directory's table carries with its `<F>-missing.tsv` beside it. The rule is stated there: `rows -
+missing - wrong-kind = placed`, every line checked against the list beside it rather than written from
+memory, because a table written from memory drifts (TipKit once read 247/73 while its own TSV held 75).
+
+The step that took it from 245 to 240 is review 2's, and the five rows are named in the table above:
+two `ControlWidget*` constructors and three `body: Never` members, all of which stood for
+declarations the framework does not have. Nothing in this module's later work moved a row: the two
+subset-condition changes and the `Parameter`/`ParameterOption` rewrite were in TipKit, and the
+comparator work was in AppIntents, and neither is a number this module reports.
