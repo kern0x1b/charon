@@ -1215,6 +1215,18 @@ end
 
 local STATUSES = {implemented = true, inert = true, absent = true, ignored = true}
 
+-- The accessor that reads or writes a property by the property's own name, as the other spelling of that one
+-- API: -[Class name] or +[Class name] for Class.name, and Class.name for either. The setter is deliberately not
+-- one of them: a property can be carried while its setter is left out or left inert, which is what a row of its
+-- own is for, and spelling() would pair them and refuse an answer that is right.
+local function accessor_of(api)
+    local sign, owner, name = api:match("^([-+])%[([%w_]+) ([%w_]+)%]$")
+    if sign then
+        return owner .. "." .. name
+    end
+    return api:match("^([%u][%w_]*)%.([%w_]+)$") and api
+end
+
 function registry(root)
     local listed, told, incomplete, frameworks = {}, {}, {}, {}
     local files = table.join(os.files(path.join(root, "registry", "*.json")), os.files(path.join(root, "registry", "*", "*.json")))
@@ -1236,6 +1248,11 @@ function registry(root)
             local plain = entry.api:gsub("%(%)$", "")
             if (entry.kind == "method" or entry.kind == "property") and not (plain:match("^[-+]%[[%w_]+ .+%]$") or plain:match("^[%w_]+%.[%w_]+$")) then
                 table.insert(incomplete, entry.api .. " is a " .. entry.kind .. " not spelled -[Class selector:], +[Class selector:] or Class.name")
+            elseif (entry.kind == "class" or entry.kind == "protocol") and not plain:match("^[%u_][%w_]*$") then
+                -- the other way round: a class or a protocol is matched against an ObjCInterfaceDecl or an
+                -- ObjCProtocolDecl of that name, so a member spelling is a name no dump can ever answer
+                table.insert(incomplete, entry.api .. " is a " .. entry.kind .. " spelled " .. entry.api ..
+                                          ", and a " .. entry.kind .. " is named by its interface or its protocol, not by a member")
             end
             if not STATUSES[entry.status] then
                 table.insert(incomplete, entry.api .. " says " .. tostring(entry.status) .. ", which is not one of the four answers")
@@ -1250,6 +1267,24 @@ function registry(root)
             end
         end
     end
+    -- Two rows that name one API in two spellings are one API and must answer alike: the lift carries the
+    -- implemented one and lowers its availability, and an implicit accessor carries its property's attribute,
+    -- so a status that disagreed between a property and the accessor that reads it has one of them say the
+    -- call is not there and the other lower it anyway. The lift refuses its own headers over that, after the
+    -- whole surface has been dumped; said here, the registry is refused in the second it is read.
+    local told_pair = {}
+    for api, entry in pairs(listed) do
+        local other = accessor_of(api)
+        local twin = other and other ~= api and listed[other] or nil
+        if twin and twin.status ~= entry.status then
+            local pair = api < other and (api .. " " .. other) or (other .. " " .. api)
+            if not told_pair[pair] then
+                told_pair[pair] = true
+                table.insert(incomplete, string.format("%s is %s and %s is %s, and they are one API in two spellings (%s and %s), which the lift would carry and lower together",
+                                                      api, entry.status, other, twin.status, told[api], told[other]))
+            end
+        end
+    end
     return listed, incomplete, table.orderkeys(frameworks)
 end
 
@@ -1261,7 +1296,7 @@ local function property_of(selector)
     return selector:match("^([%w_]+)$")
 end
 
-local function spellings(api)
+spellings = function(api)
     local plain = api:gsub("%(%)$", "")
     local found = {[plain] = true, [plain .. "()"] = true}
     local class, member = plain:match("^([%u][%w_]*)%.(.+)$")

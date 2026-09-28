@@ -147,6 +147,7 @@ function failures(opt)
     wiring(backports, root, found)
     range_step(backports, fixtures.scratch(), found)
     spelling(backports, found)
+    unreadable(backports, found)
     return found
 end
 
@@ -171,6 +172,50 @@ function spelling(backports, found)
         if not told:find(spelled[1] .. " is a " .. spelled[2] .. " not spelled", 1, true) then
             table.insert(found, string.format("the %s %s is not refused by name (says '%s')", spelled[2], spelled[1], told))
         end
+    end
+    os.tryrm(root)
+end
+
+-- The two ways a member is named, and the two ways one API is named twice, are both refused by name, because
+-- each of them is a row the lift cannot carry and cannot say why: a class or a protocol is matched against an
+-- interface or a protocol of that name and a member spelling is no name at all, and two spellings of one API
+-- that answer differently have the lift lower the implemented one and then find the other lowered, which it
+-- refuses over after the whole surface has been dumped. The two rows below are the ones a full lift of
+-- 7bb678779 raised over, both of them, on both SDKs.
+function unreadable(backports, found)
+    local root = path.join(os.tmpdir(), "registry_test_unreadable")
+    os.tryrm(root)
+    os.mkdir(path.join(root, "registry"))
+    local function complaints(rows)
+        io.writefile(path.join(root, "registry", "Fix.json"), '{"framework": "Fix", "entries": [' .. table.concat(rows, ", ") .. ']}')
+        local _, incomplete = backports.registry(root)
+        return table.concat(incomplete, "; ")
+    end
+    local function row(api, kind, status, extra)
+        return string.format('{"api": "%s", "kind": "%s", "introduced": "9.0", "minimum": "6.0", "status": "%s"%s}',
+                             api, kind, status, extra or "")
+    end
+    local told = complaints({row("+[FixView isEnabledByDefault]", "class", "implemented")})
+    if not told:find("is a class spelled +[FixView isEnabledByDefault]", 1, true) then
+        table.insert(found, string.format("a class row spelled as a method is not refused by name (says '%s')", told))
+    end
+    told = complaints({row("FixView.size", "property", "implemented"), row("-[FixView size]", "method", "inert", ', "reason": "nothing draws it", "effect": "nothing"')})
+    if not told:find("they are one API in two spellings", 1, true) then
+        table.insert(found, string.format("two spellings of one API that answer differently are not refused (says '%s')", told))
+    -- the pair is named in whichever order the table hands it over, so each half is looked for on its own
+    elseif not told:find("FixView.size is implemented", 1, true) or not told:find("-[FixView size] is inert", 1, true) then
+        table.insert(found, string.format("the refusal does not name both spellings with their statuses (says '%s')", told))
+    end
+    -- a property carried and its setter left out is an answer, not a contradiction: the setter is its own row
+    told = complaints({row("FixView.size", "property", "implemented"),
+                      row("-[FixView setSize:]", "method", "absent", ', "reason": "iOS 6 has no such setter", "effect": "nothing is resized"')})
+    if told ~= "" then
+        table.insert(found, string.format("a property carried and its setter absent are refused as one API in two spellings (says '%s')", told))
+    end
+    -- the same two spellings answering alike is the ordinary case and must stay silent
+    told = complaints({row("FixView.size", "property", "implemented"), row("-[FixView size]", "method", "implemented", ', "facts": "facts/Fix.md"')})
+    if told ~= "" then
+        table.insert(found, string.format("two spellings of one API that answer alike are refused (says '%s')", told))
     end
     os.tryrm(root)
 end
