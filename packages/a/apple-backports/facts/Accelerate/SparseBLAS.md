@@ -522,11 +522,66 @@ COLAMD/Source/colamd.c:7  SPDX-License-Identifier: BSD-3-clause
 ```
 
 So the reuse the plan names is executable and pinned twice over — a version and a hash the machine already
-carries, and an SPDX identifier read from each source. What is not done with it: it is **not yet vendored**
-into a package. The next step is that, and it has a consequence the gate will enforce — `amd_order` and
-`colamd_order` are exported C symbols, so a vendored copy of them is a band with its own `introduced` in
-the release-split sense, and the port's own 4.0/6.0 rows must not claim the same names. The CHOLMOD and
-UMFPACK sources are in the same tarball and are **not touched**: they are LGPL and GPL.
+carries, and an SPDX identifier read from each source. **No source is copied into the repository**: the
+package downloads the same tarball the machine's own registry pins and builds from it, so the bytes are the
+tarball's and the tree carries a recipe and a hash.
+
+### The package, written and wired, and exactly where it stops
+
+`packages/s/suitesparse-ordering/xmake.lua`, shaped on `packages/b/box2d/xmake.lua`: the same
+`add_urls` and `add_versions` pair, the same `add_links`, the same `recipe` config so a changed flag is a
+different library, `set_license("BSD-3-Clause")`, `package.strict_compatibility`, and an `on_install` that
+builds with the apple-ios toolchain at `-Os -fvisibility=hidden` into `libSuiteSparseOrdering.a` with
+`libtool -static`. The source list is **spelled out, not globbed**, so a directory added to the tarball
+cannot join the build by accident:
+
+- `AMD/Source`: `amd_1.c amd_2.c amd_aat.c amd_control.c amd_defaults.c amd_dump.c amd_info.c
+  amd_post_tree.c amd_postorder.c amd_preprocess.c amd_valid.c amd_version.c` — the `amd_l_*` int64 variants
+  are left out, a 32-bit armv7 build does not use them;
+- `COLAMD/Source`: `colamd.c colamd_version.c`;
+- and `SuiteSparse_config/SuiteSparse_config.h` for the include path and the install.
+
+**CHOLMOD, UMFPACK, CXSparse, SuiteSparseQR, KLU, Mongoose, ParU, RBio, SPQR, SPEX, GraphBLAS, CAMD,
+CCOLAMD, CSparse and BTF are all in the same tarball and none of them is named**, because the first two are
+LGPL and GPL and the rest are not what this package is for. The four licence and README files installed are
+`AMD/Doc/License.txt` and `COLAMD/Doc/License.txt` plus the two READMEs, under both their own names and
+the package's.
+
+It is wired the way the ruling says: `backports.lua`'s Accelerate row carries
+`archives = {"suitesparse-ordering"}`, and `packages/a/apple-backports/xmake.lua` declares
+`add_deps("charon@suitesparse-ordering v7.12.2", {alias = "suitesparse-ordering"})`, without which the gate
+refuses with `apple-backports links the archive suitesparse-ordering and its recipe declares no dependency
+with that alias` — which is what it did, and the dep is the fix.
+
+**Where it stops.** The download succeeds — `download … v7.12.2.tar.gz .. ok`, the same URL and the same
+hash the machine's registry carries — and the **install step fails** with a bare `assertion failed!` and
+no message:
+
+```
+$HOME/.xmake/cache/packages/2609/s/suitesparse-ordering/v7.12.2/installdir.failed/logs/install.txt
+assertion failed!
+```
+
+Three things were fixed on the way there and each is recorded because each was a real error, not a guess:
+`$(version)` is a parse-time substitution and cannot appear inside `on_install` (the recipe now asks
+`package:version()`); the version is `v7.12.2` **with** the `v`, because the registry's URL template puts
+`$(version)` where the tag has one and a bare `7.12.2` is a 404; and xmake unpacks the tarball with its
+top level already stripped, so the sources sit directly under `os.curdir()` and the recipe says which five
+directories it expects to find there, so a layout change is a message and not an assertion.
+
+**So the ruling's proof is not yet produced and I am not claiming it**: the archive does not build, the
+`libAccelerateBackports.dylib` has not been relinked with it, and there is no `nm -gU` on a dylib carrying
+it. The next step is the bare assertion in that install log, and the two lines of `on_install` that call
+`package:toolchains()` and `os.vrunv` are where a message-less failure would come from — most likely the
+toolchain object, since box2d's recipe takes `[1]` off the same call and works, so the difference is that
+this one builds C with `toolchain:tool("cc")` where box2d builds C++ with `toolchain:tool("cxx")`.
+
+One more thing to settle before the archive can reach a C family at all, and it is a change to a module
+every band shares, so I am flagging it rather than making it: `backports.lua:546` consumes a library's
+`archives` **only when the library has Objective-C++ objects** (`for _, name in ipairs(cxx and
+library.archives or {})`), and `compile()` adds the archives' `-I` only for `.mm`. The `Sparse*` solve family
+is C, so with the module as it stands the archive is listed, resolved and built but never linked and its
+headers never on the include path. That is one line in a shared module and it is the coordinator's call.
 
 ### The device as a second oracle: asked, not yet answered
 

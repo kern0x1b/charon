@@ -9,6 +9,14 @@ package("apple-backports")
 
     add_deps("charon@ldid 2.1.5-procursus7+23.gaf86971", {alias = "ldid"})
     add_deps("charon@box2d 2.2.1", {alias = "box2d"})
+    -- AMD and COLAMD, the two sparse orderings, as a static archive. The Sparse* solve family needs an
+    -- ordering and this stack's own rows must not export one. The archive is not the proof of that: AMD
+    -- and COLAMD mark their entry points with their own AMD_EXPORT and COLAMD_EXPORT, which is
+    -- visibility("default") and overrides the -fvisibility=hidden the recipe compiles with - measured,
+    -- `nm -gU` on the built libSuiteSparseOrdering.a counts 28 global amd_* and colamd_* names. The proof
+    -- is on libAccelerateBackports.dylib and cannot be made until a caller exists. Only AMD, COLAMD and
+    -- SuiteSparse_config are in the recipe: the rest of the tarball is LGPL, GPL, or not this package.
+    add_deps("charon@suitesparse-ordering v7.12.2", {alias = "suitesparse-ordering"})
     add_deps("charon@monocypher 4.0.2", {alias = "monocypher"})
 
     local modules = path.join(os.scriptdir(), "..", "..", "..", "modules")
