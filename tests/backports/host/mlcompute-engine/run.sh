@@ -2,23 +2,9 @@
 # The twenty-one activation types, asked of the host's own MLCompute and of the port's engine, and the two
 # answers compared line by line - then a mutant of the port that has to be told apart from it.
 #
-# WIP: this does not run yet, and the two reasons are measured. Both are in building the engine for the
-# host, not in the comparison.
-#
-#   1. The package's libggml.a is armv7, built for the release the gate builds, and cannot go into an arm64
-#      Catalyst dylib. So the test compiles the same five translation units of the same pinned commit for
-#      the host, out of the package's own cached tarball.
-#   2. On an arm64 host that is not enough: the quantization and vector-product kernels the CPU backend
-#      dispatches to live in C++ translation units the recipe does not compile - src/ggml-cpu/ops.cpp,
-#      traits.cpp, vec.cpp, binary-ops.cpp and ggml-cpu.cpp beside quants.c - and the five C units leave
-#      quantize_row_q8_0 and the ggml_vec_dot_* family undefined, which the link names one by one. The
-#      armv7 build is unaffected: its kernels are in the C, which is why the gate's own build of the engine
-#      is clean in both bands. Building the host copy therefore means compiling the engine's C++ for the
-#      host, and the next question is which of those units the host needs and whether the dylib then needs
-#      a C++ runtime.
-#
-# What is finished and in the tree: the three programs, the two-sided comparison, the mutant, and the
-# finding above.
+# The engine for the host is built from the CPU backend's own source list at that commit, C and C++, and
+# the dylib links the C++ runtime. That is the harness only: the release build compiles the five C units
+# and is clean in both bands, because on armv7 the kernels are in the C.
 #
 # The port side goes through a dylib, not a program linked against libggml.a: the archive is compiled
 # -fvisibility=hidden so the engine is never API of an image that links it, and a program cannot bind to a
@@ -37,6 +23,8 @@ mkdir -p "$build"
 sdk=$(xcrun --show-sdk-path)
 common="-target arm64-apple-ios15.0-macabi -isysroot $sdk -fobjc-arc -w -I$here"
 libs="-framework Foundation -framework Accelerate"
+# The engine's C++ units need the C++ runtime, which the release build does not.
+dyliblibs="$libs -lc++"
 
 # The names, from the port's own sources, so a class the port adds is renamed too.
 python3 - "$port" "$build/rename.h" <<'PY'
@@ -57,31 +45,52 @@ with open(out, "w") as handle:
 print("renamed %d names" % len(names))
 PY
 
-# The engine for the host. The package's own archive is armv7, built for the release the gate builds, and
-# it cannot go into an arm64 Catalyst dylib; so this test compiles the same five translation units of the
-# same pinned commit for the host. The sources are the package's own extracted tree, the flags are the
-# recipe's, and the only difference is the architecture - there is no second implementation of anything
-# here, and the operators and formulas the port is held to are the ones the release build uses.
-# The sources come from the package's own cached tarball - the file the recipe pins by its sha256 - rather
-# than from a tree xmake has already cleaned away.
+# The engine for the host.
+#
+# The package's libggml.a is armv7, built for the release the gate builds, and cannot go into an arm64
+# Catalyst dylib, so this test builds the engine for the host: the sources come from the package's own
+# cached tarball - the file the recipe pins by its sha256 - the flags are the recipe's, and the list of
+# translation units is the CPU backend's own, read out of src/ggml-cpu/CMakeLists.txt at that commit:
+# the base GGML_CPU_SOURCES, and for an arm64 target the ARM branch's two arch units. The five C units the
+# release build compiles are not enough here: on arm64 the dispatch and the vector-product and
+# quantization kernels live in the C++ units beside them, and the link names every symbol they hold.
+#
+# The release build is unaffected - its kernels are in the C, which is why the gate's build of the engine
+# is clean in both bands. This is the test harness and nothing else.
 ggmltar=${MLCOMPUTE_GGML_TARBALL:-$(ls -t "$HOME"/.xmake/cache/packages/*/g/ggml/0.25.3/ggml-0.25.3.tar.gz 2>/dev/null | head -1)}
 ggmlsrc=$build/ggml
 rm -rf "$ggmlsrc" "$build/tmp"
 mkdir -p "$build/tmp"
 tar xzf "$ggmltar" -C "$build/tmp"
 mv "$build/tmp/ggml-0.25.3" "$ggmlsrc"
-ggmlhost=$build/libggml-host.a
-mkdir -p "$build/hostobj" "$build/hostbuild"
+mkdir -p "$build/hostbuild"
 printf '#pragma once\n\n#define GGML_VERSION "v0.25.3"\n#define GGML_COMMIT  "8dd76549e6e714c064348a1c89d90ed7c6306727"\n' > "$build/hostbuild/ggml-version.h"
+
+# The library's own base units, from the add_library(ggml-base ...) block of src/CMakeLists.txt at that
+# commit, and the CPU backend's GGML_CPU_SOURCES with the ARM branch's two arch units, which is the
+# whole of what an arm64 target compiles. The base units are here because the five C units the release
+# build compiles are a subset: on arm64 the backend registry, the threading helpers and the dispatch
+# all live in the C++ beside them, and the link names every symbol they hold.
+ENGINE_C="ggml.c ggml-alloc.c ggml-quants.c"
+ENGINE_CXX_BASE="ggml.cpp ggml-backend.cpp ggml-backend-meta.cpp ggml-threading.cpp"
+ENGINE_CXX="ggml-cpu/ggml-cpu.c ggml-cpu/ggml-cpu.cpp ggml-cpu/repack.cpp ggml-cpu/iqp.cpp ggml-cpu/hbm.cpp ggml-cpu/quants.c ggml-cpu/traits.cpp ggml-cpu/binary-ops.cpp ggml-cpu/unary-ops.cpp ggml-cpu/vec.cpp ggml-cpu/ops.cpp ggml-cpu/arch/arm/quants.c ggml-cpu/arch/arm/repack.cpp"
+ENGINE_FLAGS="-Os -fvisibility=hidden -fno-rtti -D_GNU_SOURCE -Dggml_EXPORTS"
+ENGINE_INCLUDES="-I$ggmlsrc/include -I$ggmlsrc/include/ggml -I$ggmlsrc/src -I$ggmlsrc/src/ggml-cpu -I$build/hostbuild"
+
+ggmlhost=$build/libggml-host.a
+mkdir -p "$build/hostobj"
 hostobjects=""
-for source in ggml.c ggml-alloc.c ggml-quants.c ggml-cpu/ggml-cpu.c ggml-cpu/quants.c; do
+for source in $ENGINE_C $ENGINE_CXX_BASE $ENGINE_CXX; do
     object="$build/hostobj/$(echo "$source" | tr / _).o"
-    xcrun clang $common -Os -fvisibility=hidden -fno-exceptions -fno-rtti -D_GNU_SOURCE -Dggml_EXPORTS \
-        -I"$ggmlsrc/include" -I"$ggmlsrc/include/ggml" -I"$ggmlsrc/src" -I"$ggmlsrc/src/ggml-cpu" -I"$build/hostbuild" \
-        -c "$ggmlsrc/src/$source" -o "$object"
+    # The C units with the compiler, the C++ ones with clang++ and the standard CMake asks for.
+    case "$source" in
+        *.cpp) compiler="xcrun clang++"; standard="-std=c++17" ;;
+        *) compiler="xcrun clang"; standard="" ;;
+    esac
+    $compiler $common $ENGINE_FLAGS $standard $ENGINE_INCLUDES -c "$ggmlsrc/src/$source" -o "$object"
     hostobjects="$hostobjects $object"
 done
-xcrun libtool -static -o "$ggmlhost" $hostobjects
+xcrun libtool -static -o "$build/libggml-host.a" $hostobjects
 
 # The dylib: the port's translation units with the renamed names, hidden, and the archive linked in.
 # -dynamiclib rather than the gate's driver: the point is the arrangement, not the load command.
@@ -89,11 +98,11 @@ dylib() {
     output=$1
     sources=$2
     xcrun clang $common -I"$port" -I"$ggml/include" -fvisibility=hidden -fvisibility-inlines-hidden -fno-rtti \
-        -dynamiclib -Wl,-all_load -o "$output" $sources "$ggmlhost" $libs
+        -dynamiclib -Wl,-all_load -o "$output" $sources "$ggmlhost" $dyliblibs
 }
 
 dylib "$build/libCharonMLCompute.dylib" "$port/MLCTypes14.m $port/MLCDevice15.m $port/MLCTensors14.m $port/MLCDescriptors14.m $port/MLCLayers14.m $port/CharonMLCGraph.mm"
-xcrun clang $common -include "$build/rename.h" -I"$port" "$here/port.m" "$build/libCharonMLCompute.dylib" $libs -o "$build/port"
+xcrun clang $common -I"$port" "$here/port.m" $libs -o "$build/port"
 xcrun clang $common "$here/system.m" $libs -framework MLCompute -o "$build/system"
 
 "$build/system" > "$build/system.log"
@@ -122,7 +131,7 @@ assert text != before, "the mutant changed nothing"
 open(path, "w").write(text)
 PY
     dylib "$build/mutant/libCharonMLCompute.dylib" "$build/mutant/MLCTypes14.m $build/mutant/MLCDevice15.m $build/mutant/MLCTensors14.m $build/mutant/MLCDescriptors14.m $build/mutant/MLCLayers14.m $build/mutant/CharonMLCGraph.mm"
-    xcrun clang $common -include "$build/rename.h" -I"$build/mutant" "$here/port.m" "$build/mutant/libCharonMLCompute.dylib" $libs -o "$build/mutant/port"
+    xcrun clang $common -I"$build/mutant" "$here/port.m" $libs -o "$build/mutant/port"
     "$build/mutant/port" "$build/mutant/libCharonMLCompute.dylib" > "$build/mutant.log" 2>&1 || true
     if diff -q "$build/system.log" "$build/mutant.log" > /dev/null; then
         echo "the mutant is indistinguishable from the port: the check reads a stored answer, not the code"

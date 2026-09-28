@@ -64,10 +64,13 @@ static void CharonMLCEngineOpen(CharonMLCEngine *engine, int nodes)
 {
     engine->nodes = nodes;
     engine->bytes = (size_t)(16 * 1024 * 1024) + (size_t)nodes * 4096;
+    // no_alloc false, so ggml allocates the pool itself: with no_alloc true and no buffer supplied, the
+    // tensors a graph builds have no data to point at and the compute cannot read them. The pool is
+    // mem_size big, and ggml_graph_compute_with_ctx finds the compute buffer inside it.
     struct ggml_init_params params = {
         /*.mem_size =*/ engine->bytes,
         /*.mem_buffer =*/ NULL,
-        /*.no_alloc =*/ true,
+        /*.no_alloc =*/ false,
     };
     engine->context = ggml_init(params);
     engine->graph = engine->context ? ggml_new_graph_custom(engine->context, (size_t)nodes * 8, false) : NULL;
@@ -111,8 +114,10 @@ static float CharonMLCActivate(const CharonMLCFormula *formula, float x)
             // and with the default a and b of 1 as 1, 1, 1, 1.
             return fminf(x >= 0.0f ? x : a * x, b);
         case MLCActivationTypeLogSigmoid:
-            // log(1 / (1 + e^(-x))), measured: -0.3132617, -0.126928, -0.04858733, -0.01814996.
-            return -log1pf(expf(-x));
+            // log(1 / (1 + e^(-x))), measured: -0.3132617, -0.126928, -0.04858733, -0.01815. Written as
+            // logf of 1 + expf in float, not as log1pf: the framework's last value rounds to -0.01815 and
+            // log1pf's does not, and the float form is what the host answers to.
+            return -logf(1.0f + expf(-x));
         case MLCActivationTypeHardShrink:
             // x where x > a or x < -a and 0 otherwise, measured with a of 0.5 as the identity over
             // 1, 2, 3, 4 and with a of 0.3 as the identity too.
@@ -128,10 +133,13 @@ static float CharonMLCActivate(const CharonMLCFormula *formula, float x)
             // min(max(x, a), b), measured with a and b of 1 as 1, 1, 1, 1 and with -1 and 2 as 1, 2, 2, 2.
             return fminf(fmaxf(x, a), b);
         case MLCActivationTypeGELU:
-            // a * x * CDF(b x), which is the framework's own form: with a of 1 and b of 1 it is the
-            // identity over 1, 2, 3, 4 (measured), and with the layer's own a of 0.797885 and b of
-            // 0.044715 it answers 0.841192, 1.954598, 2.996363, 3.99993 (measured).
-            return a * x * 0.5f * (1.0f + erff(b * x * 0.70710678118654752440f));
+            // The tanh approximation, not the erf one - measured, and the difference is a third decimal:
+            //   x/2 * (1 + tanh(a * (x + b x^3)))
+            // with a the square root of 2/pi and b the cubic coefficient 0.044715 the descriptor carries.
+            // At 1, 2, 3 and 4 that gives 0.841192, 1.954598, 2.996363 and 3.99993, which is what the
+            // host answers (measured). The erf form gives 0.841345 at 1 and the host does not, so the erf
+            // form is not what this framework computes.
+            return x * 0.5f * (1.0f + tanhf(a * (x + b * x * x * x)));
         case MLCActivationTypeTanhShrink:
             // x - tanh(x), measured with the default a of 1 as 0.2384059, 1.035972, 2.004945, 3.000671
             // and with the layer's own a of 0 as the same, since the layer's a is not read here.
@@ -177,6 +185,11 @@ static void CharonMLCActivationCallback(struct ggml_tensor *out, const struct gg
 
 // The operator an activation descriptor is, given the engine's context and its input. The ones with an
 // operator of their own are that operator; the rest are ggml_map_custom1 with the formula above.
+//
+// The GELU is in the second group and not the first, which the differential found: ggml's GELU is the erf
+// form and takes no parameters, and this framework's is the tanh form with two of them - at 1 the erf form
+// gives 0.841345 and the host gives 0.841192 (measured). An operator of the same name is not the same
+// function whenever the descriptor carries parameters the operator does not read.
 struct ggml_tensor *CharonMLCActivationOn(CharonMLCEngine *engine, struct ggml_tensor *input, MLCActivationDescriptor *descriptor)
 {
     struct ggml_context *context = engine->context;
@@ -193,8 +206,6 @@ struct ggml_tensor *CharonMLCActivationOn(CharonMLCEngine *engine, struct ggml_t
             return ggml_elu(context, input);
         case MLCActivationTypeSoftPlus:
             return ggml_softplus(context, input);
-        case MLCActivationTypeGELU:
-            return ggml_gelu_erf(context, input);
         default:
             break;
     }

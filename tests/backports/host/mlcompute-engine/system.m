@@ -17,6 +17,12 @@ int main(void)
             [result bindAndWriteData:[MLCTensorData dataWithBytesNoCopy:calloc(1, 4 * sizeof(float)) length:4 * sizeof(float)] toDevice:nil];
             MLCActivationLayer *layer = [MLCActivationLayer layerWithDescriptor:[MLCActivationDescriptor descriptorWithType:type]];
 
+            // The result of an execute is written into the buffer named in outputsData:, and the graph's own
+            // tensor holds nothing - measured on the host while the engine's numbers were taken. So the
+            // buffer is kept and read, not the tensor.
+            float *out = calloc(1, 4 * sizeof(float));
+            MLCTensorData *outData = [MLCTensorData dataWithBytesNoCopy:out length:4 * sizeof(float)];
+
             MLCDevice *cpu = [MLCDevice cpuDevice];
             MLCGraph *graph = [MLCGraph graph];
             MLCTensor *output = [graph nodeWithLayer:layer source:input];
@@ -27,7 +33,7 @@ int main(void)
             __block NSString *outcome = nil;
             if (ready) {
                 [inference executeWithInputsData:@{ @"input": [MLCTensorData dataWithBytesNoCopy:(float[4]){ 1, 2, 3, 4 } length:4 * sizeof(float)] }
-                                     outputsData:@{ @"output": [MLCTensorData dataWithBytesNoCopy:calloc(1, 4 * sizeof(float)) length:4 * sizeof(float)] }
+                                     outputsData:@{ @"output": outData }
                                        batchSize:0 options:MLCExecutionOptionsSynchronous
                                 completionHandler:^(MLCTensor *tensor, NSError *error, NSTimeInterval time) {
                                     done = YES;
@@ -41,8 +47,8 @@ int main(void)
                 printf("activation %s\t(no answer: %s)\n", charon_case_names[type], outcome.UTF8String ?: "did not compile");
                 continue;
             }
-            const float *values = result.data.bytes;
-            printf("activation %s\t%g,%g,%g,%g\n", charon_case_names[type], values[0], values[1], values[2], values[3]);
+            printf("activation %s\t%g,%g,%g,%g\n", charon_case_names[type], out[0], out[1], out[2], out[3]);
+            free(out);
         }
     }
     return 0;
