@@ -285,11 +285,11 @@ end
 local function generated_includes(backports, found)
     local folder = "/somewhere/packages/a/apple-backports/Foundation"
     local flags = table.concat(backports.compile_arguments({includes = {folder}}, "Protocols.m"), " ")
-    if not flags:find("%-I" .. folder, 1, true) then
+    if not flags:find("-I" .. folder, 1, true) then
         table.insert(found, "a generated source's job must add the library's own folder to its include path, and it does not: " .. flags)
     end
     local bare = table.concat(backports.compile_arguments({}, "Protocols.m"), " ")
-    if bare:find("%-I/somewhere", 1, true) then
+    if bare:find("-I/somewhere", 1, true) then
         table.insert(found, "a job that names no include root must not have one, and it does: " .. bare)
     end
 end
