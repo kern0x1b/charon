@@ -855,14 +855,23 @@ static void CharonMDLReadUSDA(NSData *data, NSMutableArray<MDLObject *> *objects
         NSString *indexArray = CharonMDLUSDAArray(body, @"faceVertexIndices", NULL);
         if (!pointArray || !countArray || !indexArray)
             continue;
-        NSArray<NSString *> *pointWords = [pointArray componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        NSUInteger vertexCount = pointWords.count / 3;
+        // A tuple is "(x, y, z)," as four whitespace-separated tokens where the commas are inside
+        // them, so the numbers are read off the token stream three at a time with the punctuation
+        // trimmed: reading fixed triples of tokens took the x of the token before the tuple, which is
+        // why every point's x was the point before it and the first was zero.
+        NSMutableArray<NSNumber *> *pointNumbers = [NSMutableArray array];
+        for (NSString *token in [pointArray componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]) {
+            NSString *number = [token stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@",()"]];
+            if (number.length)
+                [pointNumbers addObject:@(number.doubleValue)];
+        }
+        NSUInteger vertexCount = pointNumbers.count / 3;
         CharonMDLSourceMesh mesh;
         memset(&mesh, 0, sizeof mesh);
         CharonMDLSourceVertex *vertex = calloc(vertexCount ? vertexCount : 1, sizeof(CharonMDLSourceVertex));
         for (NSUInteger k = 0; k < vertexCount; k++)
-            vertex[k].position = (vector_float3){[pointWords[k * 3] floatValue], [pointWords[k * 3 + 1] floatValue],
-                                                [pointWords[k * 3 + 2] floatValue]};
+            vertex[k].position = (vector_float3){pointNumbers[k * 3].floatValue, pointNumbers[k * 3 + 1].floatValue,
+                                                pointNumbers[k * 3 + 2].floatValue};
         mesh.vertex = vertex;
         mesh.vertexCount = vertexCount;
         mesh.vertexCapacity = vertexCount;

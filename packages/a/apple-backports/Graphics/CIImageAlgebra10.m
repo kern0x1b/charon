@@ -35,11 +35,14 @@
 {
     // The image over that rectangle, and the result clamped, so what comes out stops at the rectangle
     // instead of at the image's own edge.
+    // One clamp, over the image already cropped to the rectangle. It was a clamp over a clamp, and
+    // CIAffineClamp's own output comes through -[CIImage imageByClampingToExtent], which on a release
+    // that has that method is this very category, so the second clamp called the first and the first
+    // called the second until the stack ran out.
+    CIImage *cropped = [self imageByCroppingToRect:rect];
     CIFilter *filter = [CIFilter filterWithName:@"CIAffineClamp"];
-    [filter setValue:[[self imageByCroppingToRect:rect] imageByApplyingFilter:@"CIAffineClamp"
-                                withInputParameters:@{kCIInputImageKey: [self imageByCroppingToRect:rect]}]
-            forKey:kCIInputImageKey];
-    return filter.outputImage ?: self;
+    [filter setValue:cropped forKey:kCIInputImageKey];
+    return filter.outputImage ?: cropped;
 }
 
 - (CIImage *)imageByInsertingIntermediate
