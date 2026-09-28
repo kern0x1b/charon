@@ -1,0 +1,103 @@
+# The open AppIntents rows, and what each one needs
+
+What the rows are, and what settles each of them. Every entry names the interface line that settles
+it, or says that the interface does not — the 26.2 interface the rows are written against is not on
+this machine, so the reference read here is the macOS 27 SDK's
+`arm64e-apple-macos.swiftinterface`, and where a row's own spelling in the ledger differs from it that
+is noted. No header text is reproduced: a type's declarations are cited by line, not copied.
+
+The rows are the 261 in `.agent-work/runs/kits/AppIntents-missing.tsv`, measured against the
+2323-row ledger (see `Counts.md` for the row set this was measured with).
+
+## 1. Rows that name a member the protocol only inherits — 2 rows, and a class
+
+| row | what settles it |
+| --- | --- |
+| `AppEntity.displayRepresentation` | declared by **`InstanceDisplayRepresentable`**, not by `AppEntity` (`:3819-3821`: `var displayRepresentation: DisplayRepresentation { get }`), which `DisplayRepresentable` refines (`:3789`) and `AppEntity` refines through it (`:413`) |
+| `AppEntity.id` | declared by **`Identifiable`**, a Swift standard library protocol, and inherited by `AppEntity` through the same refinement chain (`:413`) |
+
+Measured against the digester's own dump: it prints `displayRepresentation` under
+`AppIntents.InstanceDisplayRepresentable` and prints **nothing** for `AppIntents.DisplayRepresentable`
+or for `AppIntents.AppEntity` — an inherited member is not printed on the inheriting protocol. So a row
+may name a protocol that only inherits what the row names, and the digester will not print it there.
+This is the smallest member of that class in this module, and the class is worth the ledger band
+checking across all four modules before anything else: a row on a refining protocol is not evidence
+that the declaration is absent.
+
+## 2. A row that is an extension member, not a requirement — 1 row
+
+| row | what settles it |
+| --- | --- |
+| `AppEntity.defaultResolverSpecification` | an `AppEntity` **extension** member, `public static var defaultResolverSpecification: EmptyResolverSpecification<Self> { get }` (`:423-425`), with a second, `some ResolverSpecification` one for `Self: AppEnum` (`:427-430`). It is not a protocol requirement, so it belongs in an `extension AppEntity`, and the port declares it on individual types instead |
+
+**This one is implementable and is not written yet**: an `extension AppEntity` carrying
+`defaultResolverSpecification` returning `EmptyResolverSpecification()` is the interface's shape, and
+the row is the port's. It is not in this turn's commits because the coordinator's ruling was to hold
+everything until the swift-syntax build returns.
+
+## 3. Rows the digester never prints — 41 rows, and three refuted ways of making them print
+
+| rows | what settles it |
+| --- | --- |
+| `IntentParameter.<Unit>.==(a:b:)` for 26 unit types and `ValueState.==(lhs:rhs:)` — **27** | the digester prints each type's cases and `hashValue` and no equality member. Three hypotheses were tried on the built module and all three are refuted: not enums only (`IntentPerson.Handle` is a struct), not synthesised only (`IntentParameter.Acceleration` declares its `==` in `Units.swift:21`), not nesting in a generic type (`InputConnectionBehavior` is top-level). The discriminator is not identified |
+| `IntentPerson.Handle`/`.Handle.Value`/`.Handle.Label`/`.Name`/`.Identifier` — 14, of which the 5 `==` are **placed by a typecheck call site** and the 8 `init(from:)`/`encode(to:)` are here | same behaviour, same refutations. The `==` rows were placed by `.agent-work/host/probe-appintents-equality.swift` typechecking against Apple's AppIntents and against this module, both exit 0; the coding members need a call site, and a call site for them needs an *instance* of each type |
+| `AttributedStringFromStringResolver` — 7, and it is not this one | **all three are declared**: `==` and `hash(into:)` come from `Resolver: Hashable, Sendable` (the port's own `Resolver` carries it, `Values.swift:210`) and `resolve(from:context:)` is at `Gated.swift:53`. The 7 rows are the *gated* ones: the whole type is behind `CHARON_APPINTENTS_ATTRIBUTED_STRING`, and the recipe's own probe measures that this runtime has no `AttributedString` |
+
+## 4. Rows that are another band's — 16 rows
+
+`String.IntentInputOptions.CapitalizationType.==(a:b:)`, `Measurement` ×4, `Calendar` ×4,
+`AttributedString` ×4: the Foundation Swift r2 types, gated in `Sources/AppIntents/Gated.swift` behind
+`CHARON_APPINTENTS_ATTRIBUTED_STRING`, `CHARON_APPINTENTS_MEASUREMENT` and
+`CHARON_APPINTENTS_RECURRENCE_RULE`, each measured by a probe in `xmake.lua:118-133` and not assumed.
+The probe is what says `'Measurement' is only available in iOS 10.0 or newer` on this release, so the
+rows are `missing` by the truth and belong to the Foundation port.
+
+## 5. Rows the digester prints under another name — 106 rows
+
+Documented once, with the five normalisations and the per-module counts, in
+`.agent-work/handoffs/2026-09-28-ledger-swift-digester-naming.md`. Of the 106, 68 are
+`IntentParameter.init`'s generic parameter list, which the digester does not print at all; the rest are
+`==(a:b:)`→`==(_:_:)`, `init?(coder:)`→`init(coder:)`, `subscript(keyPath:)`→`subscript(_:)` and `~=`.
+Of the families below, the comparators (`ContainsComparator` ×5, the three other comparators ×6) and
+`IntentParameterSummary.init(_:table:…)` are entirely of this kind: the declarations are there and the
+spelling is the ledger's to normalise.
+
+## 6. Rows that are Apple's macro plugin — 16 rows
+
+`AppEntity(schema:)`, `AppIntent(schema:)`, `AppEnum(schema:)`, `AssistantEntity/Enum/Intent(schema:)`,
+`ComputedProperty()` ×5, `DeferredProperty()` ×2, `UnionValue()`. The contracts are in
+`Macros.md`, the four `memberAttribute` rows are open by the coordinator's ruling with the reason, and
+the plugin itself is the series in `packages/a/appintents-macros/`.
+
+## 7. Rows that are a result-builder type's members — 9 rows
+
+`IntentItem.Builder.buildArray(_:)`, `.buildBlock()`, `.buildBlock(_:)`, `.buildExpression(_:)`,
+`IntentItemSection.Builder.buildBlock()`/`.buildBlock(_:)`,
+`IntentParameterSummary.ParameterKeyPathsBuilder.buildBlock(_:)`/`.buildExpression(_:)`. The digester
+prints a `@resultBuilder` type with **no members at all** — measured on `Tips.GroupBuilder` in the kits
+and on these three here — so the declarations are there and nothing makes them appear.
+
+## 8. Rows the port declares, of the same class as §3 — 5 rows
+
+`DisplayRepresentation.==(a:b:)`, `DisplayRepresentation.Image.==(a:b:)` and
+`DisplayRepresentation.Image.DisplayStyle.==(a:b:)`, `IntentFile.==(a:b:)` and
+`IntentFile.IntentFileError.==(a:b:)`. `DisplayRepresentation` **is** Equatable in the interface
+(`:3845`, `ExpressibleByStringLiteral, Equatable`) and is Equatable in the port (`Display.swift:81`);
+`IntentFile` is a `Hashable` struct (`Items.swift:157`). So these are the class of §3 — a member the
+digester does not print — and not a missing declaration.
+
+## 9. What the ledger's spelling adds that the macOS 27 interface does not — 2 rows
+
+`IntentParameterSummary.init(_:table:<Intent>.ParameterKeyPathsBuilder:)` and
+`IntentParameterSummary.init(<Intent>.ParameterKeyPathsBuilder:)` name a **result-builder type** as a
+parameter. The port's initialisers take that builder (`Queries.swift:371,436`), and macOS 27's interface
+prints `IntentParameterSummary` with the same builder parameters, so these are spelling and not shape.
+They move with normalisation 5.
+
+## The one implementable row in this list, and the one decision
+
+`AppEntity.defaultResolverSpecification` (§2) is the only row here whose fix is a declaration rather
+than a normalisation, a gate or another band's, and it is written down with the interface line that
+settles it. The decision that is not mine is §6's four `memberAttribute` rows: the interface names the
+role and not the attribute, Apple's expansion is not on this machine, and the coordinator's ruling of
+2026-09-28 is that they stay unimplemented with the reason on the row.
