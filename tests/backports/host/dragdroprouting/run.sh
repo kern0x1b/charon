@@ -80,19 +80,33 @@ run_one() {
 }
 
 # The pair, in this order: the tree, then the mutated tree, then the tree back.
-# the guest's own lines, read out of the image the run kept
+# The test's own verdict, read out of the image the run used: the program wrote two files in the
+# guest, what it was asked and what it concluded, and the runner's log carries neither.
 guest_lines() {
-    DDR_ROOT=$root xmake emulate -d "$device" -r "$1" log > "guest-$2-$1.log" 2>&1 || true
-    grep -aE 'MATCH|RED|^FAIL|^asked|^ok ' "guest-$2-$1.log" || true
+    image=$2
+    guest=$3
+    rootfs=$(ls -d "$HOME/.charon/emulator/images.noindex/$image/iPhone3,1_"*"/rootfs" 2>/dev/null | head -1)
+    [ -n "$rootfs" ] || { echo "$guest: no image rootfs at $HOME/.charon/emulator/images.noindex/$image"; return 0; }
+    done_file="$rootfs/private/var/backports/dragdroprouting.done"
+    asked_file="$rootfs/private/var/backports/dragdroprouting.asked"
+    if [ -f "$done_file" ]; then
+        printf '%s verdict: ' "$guest"; tr -d '\n' < "$done_file"; echo
+    else
+        echo "$guest: the guest wrote no verdict file -- the program did not reach the check"
+    fi
+    if [ -f "$asked_file" ]; then
+        echo "$guest asked:"; sed 's/^/    /' "$asked_file"
+    fi
 }
 
 # Clean, then the mutated tree, then the tree back, all on this machine in this order.
 for release in $releases; do
-    run_one "$release" clean && guest_lines "$release" clean || failed=1
+    image=$(ls -td "$HOME/.charon/emulator/images.noindex/"dragdroprouting-* 2>/dev/null | head -1)
+    run_one "$release" clean && guest_lines "$release" "$(basename "$image")" clean || failed=1
 done
 cp "$mutated" "$seq"
 for release in $releases; do
-    run_one "$release" mutated && guest_lines "$release" mutated || true
+    run_one "$release" mutated && guest_lines "$release" "$(basename "$image")" mutated || true
 done
 cp "$original" "$seq"
 exit $failed

@@ -76,6 +76,10 @@ static NSArray *chTableDocumentedOrder(void)
 
 static NSString *const results_folder = @"/private/var/backports";
 
+// The program's exit status, which the runner reads, and every message the test's delegate heard.
+static int gCharonExit = 0;
+static NSMutableArray<NSString *> *_order = nil;
+
 // Drives the port's view drag and drop routing with a delegate that records what it was asked and in
 // what order, and asserts the order and the arguments each message carried.
 //
@@ -101,7 +105,7 @@ static NSString *const results_folder = @"/private/var/backports";
 - (void)note:(NSString *)line
 {
     [_log addObject:line];
-    printf("asked %s\n", line.UTF8String);
+    [_order addObject:line];
 }
 
 // The proposals, which is what carries the arguments: the destination index path the routing
@@ -223,19 +227,28 @@ static NSString *const results_folder = @"/private/var/backports";
     return self;
 }
 
+// The verdict, and what the test asked, written to files in the guest. The runner's own line says
+// only whether the program ran, and its log carries none of the program's output, so a file in the
+// image is the only place a verdict can be read back from -- the stdout in the log is not a source.
 - (void)finish
 {
-    printf("checks=%d failures=%d\n", charon_checks, charon_failures);
+    NSMutableString *asked = [NSMutableString string];
+    for (NSString *line in _order)
+        [asked appendFormat:@"%@\n", line];
+    [asked writeToFile:[results_folder stringByAppendingPathComponent:@"dragdroprouting.asked"]
+           atomically:YES encoding:NSUTF8StringEncoding error:NULL];
     NSString *summary = [NSString stringWithFormat:@"%@ checks=%d failures=%d\n",
                          charon_failures ? @"FAIL" : @"ok", charon_checks, charon_failures];
     [summary writeToFile:[results_folder stringByAppendingPathComponent:@"dragdroprouting.done"]
               atomically:YES encoding:NSUTF8StringEncoding error:NULL];
+    gCharonExit = charon_failures ? 1 : 0;
 }
 
 - (void)run
 {
     OrderProbe *probe = [[OrderProbe alloc] init];
     probe.log = [NSMutableArray array];
+    _order = [NSMutableArray array];
 
     UICollectionViewFlowLayout *flow = [[UICollectionViewFlowLayout alloc] init];
     flow.itemSize = CGSizeMake(40, 40);
