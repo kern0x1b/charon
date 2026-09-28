@@ -525,3 +525,37 @@ against A's 0.2232, and the three per cent is the blended ramp's own bias -- the
 earlier fits showed. The vertical carries the same 0.2232 scale and **no offset**, which is what
 "the centre square" means: a square has the source's full height, so only x is offset by
 (100 - 50) / 2 = 25.
+
+### Which shape: the centre square, or the target's aspect?
+
+`tests/backports/host/vision/crop-probe/shape.m`, in the tree. A square target cannot tell them
+apart -- both give 50x50 of a 100x50 source -- so both are scored on the targets that are **not**
+square, and on the control where they must coincide. Every lit pixel.
+
+| case | rule | rms on x (source columns) | rms on y (source rows) | pixels |
+| --- | --- | --- | --- | --- |
+| 16x8 to 32x8 | the centre square, 8x8 | 2.2650 | 1.1594 | 256 |
+| 16x8 to 32x8 | **the target's aspect, 16x4** | **0.0713** | **0.0488** | 256 |
+| 10x10 to 30x20 | the centre square, 10x10 | 0.9025 | 1.9215 | 600 |
+| 10x10 to 30x20 | **the target's aspect, 10x6.67** | 0.9025 | **1.2868** | 600 |
+| 20x10 to 20x20 | both, 10x10 -- a square source | 0.0192 | 0.0653 | 380 |
+
+**The target's aspect wins outright on 16x8 to 32x8** -- 0.07 of a source column against the square's
+2.27, the square being 0.05 of a row off and the aspect 0.07 of a column, both the quantisation at
+k=17. On 10x10 to 30x20 they tie on x, as they must, and separate on y: 1.92 against 1.29. The last
+row is the control, and the two print the same numbers because a square source into a square target
+has one rect.
+
+**So the rule is the largest centred rect of the source with the target's aspect**, and on a square
+target that is a 50x50 rect of a 100x50 source -- which is what the 224x224 case measured, the
++24.493 against a predicted +25. The square and the aspect are therefore **one rule** on a square
+target, and a rule I was about to code as "the centre square" would have been wrong on every
+non-square one.
+
+**A sign error of mine, in the candidate I called "the port's rule".** The 49.16 that probe reported
+for candidate B is *not* a measurement of the port. B was written by hand as
+`src = (dx - 112 + 0.5) * (100/448) - 0.5`, and the inset is **negative** in the store address, so
+the index within the drawn picture is `dx + 112`, not `dx - 112`. With the sign right the prediction
+is `(dx + 112.5) * 0.2232 - 0.5 = 24.61 + 0.2232 dx`, which is candidate A to two places. So the
+port's rule and Core ML's rule are the same, the 49.16 was my arithmetic, and the red cover row is a
+defect in the port's **code** that this does not locate.
