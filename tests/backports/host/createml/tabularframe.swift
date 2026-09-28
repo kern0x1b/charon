@@ -87,6 +87,18 @@ checkEqual("the position of a column by name", frame.indexOfColumn("city"), 1)
 
 // A row, read three ways.
 checkEqual("a row's count", frame.rowSequence.count, 6)
+// A missing cell as an `Any?`, on both sides. A description string cannot answer the question that
+// matters - whether a caller's `if let` takes the right branch - because two values can describe the
+// same and compare differently. Both sides answer `true` and `Optional<Any>`, so the erasure is not
+// where a missing cell is lost, and the check is here to keep it that way.
+let hostOrd = TabularData.Column<Int>(name: "a", contents: [1, nil, 3])
+let portOrd = PortTabularData.Column<Int>(name: "a", contents: [1, nil, 3])
+let hostCell: Any? = hostOrd[1]
+let portCell: Any? = portOrd[1]
+check("a missing cell is nil as an Any?, as the host answers", hostCell == nil)
+check("a missing cell is nil as an Any? on the port too", portCell == nil)
+check("a present cell is not nil on either side", (hostOrd[0] as Any?) != nil && (portOrd[0] as Any?) != nil)
+
 // A row's value must not be wrapped a second time. A frame's own column describes as
 // `Optional("berlin")` after the box, and a row that reads through it describes as
 // `Optional(Optional("berlin"))` - so the erasure is putting the `Any?` *into* an `Any` somewhere

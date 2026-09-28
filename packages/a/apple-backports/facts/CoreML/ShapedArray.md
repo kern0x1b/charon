@@ -183,6 +183,30 @@ shapes and the port has to be told apart by measurement, not by what a name sugg
 its own index space (`base[indices[position]]`) is a different slice with the same indices, and the
 difference is invisible for a contiguous run and visible for every gap.
 
+### A missing cell is a value difference, not a description - and it is not in the erasure
+
+The question a description string cannot answer is whether a caller's `if let` takes the right branch:
+two values can describe the same and compare differently. Measured on both sides with the same check:
+
+    let v: Any? = column[1]        // the cell that is missing
+
+    host   v == nil : true    type(of: v) = Optional<Any>    described = nil
+    port   v == nil : true    type(of: v) = Optional<Any>
+
+**The erasure is not where a missing cell is lost.** The port's `Column` subscript answers `.none` for
+a missing cell exactly as Apple's does, and the check is in the suite to keep it so.
+
+Where the difference does show is one level up, and it is the *algorithm signature* rather than the
+cell. With a transform of `(Element) -> T`, a transform that answers nil makes `T` itself `Int?`, so
+the result is a `Column<Int?>` whose `values` is `[Int??]` and describes as `[Optional(nil), ...]`.
+Apple's algorithms take the **cell**, `(Element?) -> T`, so the same transform answers `T == Int?` on
+top of a `Column<Int>` and the values describe as `[nil, ...]`. Measured on Apple's own:
+
+    map of a transform that always answers nil:  [nil, nil, nil, nil, nil]   count=5
+
+Same numbers, same behaviour, and a different type on the outside - which is why a caller who mapped
+with the port's signature and then read `[0]` gets a doubly optional and the host's does not.
+
 **`isNil(at:)` has no direct oracle.** It is `internal` in the SDK, so a program outside the module
 cannot call it and the control above cannot reach it. The port's `isNil(at:)` is therefore only
 comparable through the host differential, which is weaker evidence than a control on pure Apple, and
