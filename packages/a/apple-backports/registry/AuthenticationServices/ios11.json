@@ -108,10 +108,9 @@
       "kind": "protocol",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the 16.4 SDK does not declare the protocol, so a header this package installs cannot declare it either",
-      "effect": "the protocol is not declared: a client that names it does not compile, and it is transcribed when the SDK that declares it is the one the build uses",
-      "source": "the headers of SDK 16.4; AuthenticationServices of the arm64 shared cache of iOS 13.0 for what the release does, and the SFAuthenticationSession of iOS 11 this package's session is built on for what it can do"
+      "status": "implemented",
+      "source": "the headers of SDK 16.4; AuthenticationServices of the arm64 shared cache of iOS 13.0 for what the release does, and the SFAuthenticationSession of iOS 11 this package's session is built on for what it can do",
+      "facts": "tools/transcribe-protocols.py: the protocol's base list and members, transcribed from the 26.2 SDK's AST; the scan reads it from the 16.4 SDK, whose SafariServices.framework is a symlink into the Cryptex"
     },
     {
       "api": "-[ASWebAuthenticationPresentationContextProviding presentationAnchorForWebAuthenticationSession:]",

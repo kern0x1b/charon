@@ -35,10 +35,9 @@
     "api": "SFSafariViewControllerDelegate",
     "kind": "protocol",
     "introduced": "9.0",
-    "status": "absent",
+    "status": "implemented",
     "source": "the newest header of the SDK, and the host's own SafariServices for what a controller answers before it is shown (tests/backports/host/uikit2, group safariviewcontroller)",
-    "reason": "the 16.4 SDK does not declare the protocol, so a header this package installs cannot declare it either",
-    "effect": "the protocol is not declared: a client that names it does not compile, and it is transcribed when the SDK that declares it is the one the build uses"
+    "facts": "tools/transcribe-protocols.py: the protocol's base list and members, transcribed from the 26.2 SDK's AST; the scan reads it from the 16.4 SDK, whose SafariServices.framework is a symlink into the Cryptex"
   },
   {
     "api": "+[SFSafariViewController prewarmConnectionsToURLs:]",
