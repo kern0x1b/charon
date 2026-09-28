@@ -291,6 +291,32 @@ local function reached(source, folders)
     return order
 end
 
+local OWN_TEXT
+
+-- This file's text, by content: what a measurement or a link kept in the store was computed by.
+local function own_text()
+    OWN_TEXT = OWN_TEXT or hash.strhash128(io.readfile(path.join(os.scriptdir(), "backports.lua")))
+    return OWN_TEXT
+end
+
+-- What the compiler and the linker read from the environment besides their arguments: the include
+-- paths clang takes from the environment and the SDK and deployment the driver falls back on. A key
+-- without them hands back what a different environment built (measured: a header found only on
+-- CPATH, changed between two runs, and the second run took the first run's object).
+local ENVIRONMENT = {"CPATH", "C_INCLUDE_PATH", "OBJC_INCLUDE_PATH", "CPLUS_INCLUDE_PATH", "OBJCPLUS_INCLUDE_PATH",
+                     "SDKROOT", "DEVELOPER_DIR", "IPHONEOS_DEPLOYMENT_TARGET", "MACOSX_DEPLOYMENT_TARGET",
+                     "CCC_OVERRIDE_OPTIONS", "LIBRARY_PATH", "LD_LIBRARY_PATH", "DYLD_LIBRARY_PATH"}
+local function environment()
+    local parts = {}
+    for _, name in ipairs(ENVIRONMENT) do
+        local value = os.getenv(name)
+        if value then
+            table.insert(parts, name .. "=" .. value)
+        end
+    end
+    return table.concat(parts, "\n")
+end
+
 function object_key(opt, program, arguments, source, object)
     if not opt.store or not opt.root then
         return nil
@@ -314,7 +340,9 @@ function object_key(opt, program, arguments, source, object)
     if not headers then
         return nil
     end
-    local parts = {"charon-object-1", program}
+    -- The arguments are the whole of what this file asks of the compiler, so its own text is not here:
+    -- an edit that changes a compile changes its arguments.
+    local parts = {"charon-object-2", program, environment()}
     for _, argument in ipairs(arguments) do
         table.insert(parts, argument == object and "@object" or portable(argument))
     end
@@ -818,7 +846,9 @@ function linked_key(opt, program, arguments, real_paths, outputdir, output)
     if not opt.store then
         return nil
     end
-    local parts = {"charon-link-1", program}
+    -- This file's text too: what it does to a library after the linker (the install paths it rewrites)
+    -- is its code and not an argument.
+    local parts = {"charon-link-2", program, environment(), own_text()}
     local folders = {{outputdir, "@outputdir"}, {opt.builddir, "@builddir"}}
     for _, argument in ipairs(arguments) do
         local text = argument
@@ -1722,14 +1752,6 @@ end
 -- It is a function of the object, the source and the headers it was compiled from and the held
 -- ladder, so an object of the store keeps it beside itself; the registry, which a stack changes
 -- more often than any of those, is asked again every time.
-local OWN_TEXT
-
--- This file's text, by content: what a measurement kept in the store was computed by.
-local function own_text()
-    OWN_TEXT = OWN_TEXT or hash.strhash128(io.readfile(path.join(os.scriptdir(), "backports.lua")))
-    return OWN_TEXT
-end
-
 local function measured_names(opt, source, object)
     local file
     if opt.store and KEYS[object] then
