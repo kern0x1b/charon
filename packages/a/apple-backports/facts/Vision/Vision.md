@@ -492,3 +492,36 @@ ramp.)
 **The vertical is the alarming one**: the difference spans 1 to 49 -- the picture's whole height --
 on an axis where the cover fits **exactly**, drawn 224 against a target of 224, so there is no crop
 on that axis to differ about. Whatever is going on, it is not a placement.
+
+### Core ML's centre crop, on every lit pixel, against two rules
+
+`tests/backports/host/vision/crop-probe/four.m`, in the tree, fits four lines over Core ML's own
+answer for 100x50 to 224x224 centre crop -- every one of the 49275 lit pixels, not a sample:
+
+| what is fitted | slope | offset | rms | pixels |
+| --- | --- | --- | --- | --- |
+| red against x | 0.21618 | +24.493 | 2.3958 | 49275 |
+| red against y | -0.00342 | +48.987 | 14.1794 | 49275 |
+| green against x | 0.00072 | +24.632 | 14.0176 | 49275 |
+| green against y | 0.21882 | -0.127 | 1.8443 | 49275 |
+
+**No transposition**: each channel follows its own axis and nothing else -- green against x is
+0.00072, red against y is -0.00342. **And the same rule scored, not fitted**, because a free fit
+finds a line whatever the answer is and a rule has to be predicted:
+
+| candidate rule | rms against the measured source columns |
+| --- | --- |
+| **A: the centre square, `src = (dst + 0.5) * (50/224) - 0.5 + 25`** | **2.6003** |
+| B: the port's cover, 4.48, drawn 448, inset (448 - 224) / 2 = 112 | 49.1578 |
+
+**So Core ML's centre crop is a centre *square* of the source, scaled to the target** -- A, by a
+factor of nineteen -- and **the port implements a cover**, which is a different rule. That is why every
+cover row of the check is red, and it is not a rounding, a kernel or a placement: the two rules are
+different shapes.
+
+The fits agree with A's prediction where it can be checked without a blend: the **offset is +24.493
+against A's +24.61**, a tenth of a source column, which is the quantisation; the slope reads 0.216
+against A's 0.2232, and the three per cent is the blended ramp's own bias -- the same bias the
+earlier fits showed. The vertical carries the same 0.2232 scale and **no offset**, which is what
+"the centre square" means: a square has the source's full height, so only x is offset by
+(100 - 50) / 2 = 25.
