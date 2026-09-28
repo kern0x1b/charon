@@ -325,3 +325,40 @@ consume the baseline once there is one.
 
 What unblocks it is a baseline, and a baseline is a translation the pose has to carry. That is the whole
 of what is left, and it is what `solvePnPRansac` produces and what nothing in this tree yet does.
+
+## Frame 0 reads 0.000 degrees, so the conventions agree and the 78 is a rate
+
+The check the coordinator asked for, and it has not been made before: the differential **skipped its
+first three frames** ("the first frames establish the pose; there is nothing to compare yet"), so the one
+frame that distinguishes a convention error from a tracking error was never measured. It is measured now:
+
+```
+  step  0: pose rotation error    0.000 deg   distance error   0.0020 m
+  step  1: pose rotation error   11.459 deg   distance error   0.0500 m
+  step  2: pose rotation error   22.918 deg   distance error   0.1000 m
+  step  3: pose rotation error   34.377 deg   distance error   0.1497 m
+  step 29: pose rotation error    0.000 deg   distance error   0.9951 m
+```
+
+**Frame 0 is 0.000 degrees.** A camera-to-world against world-to-camera mix, a quaternion component
+order, or ARKit's camera frame against the dataset's would all read a constant non-zero angle there.
+This reads zero, so the frame conventions and the handedness are right, and the 78 degrees is not a
+convention error.
+
+**It is a rate error of exactly two.** The step is 5.73 degrees and the error grows by 11.459 degrees
+per step, which is 2 x 5.73, and it wraps back to 0.000 degrees at step 29 where the accumulated error
+passes a half turn. A clean integer multiple with a wrap is an arithmetic one, not a numerical drift:
+the pose is being advanced by twice the turn the gyroscope reported, and the mean of 71.459 degrees is
+what a 2x rate looks like averaged over a full turn and a half.
+
+Not yet located. What is ruled out: the turn's order (`CharonRotationBetween` is `conj(from) * to` and
+is verified by the wrap), the quaternion-to-matrix construction (checked by hand for the y-axis case the
+sequence uses: it gives `columns[0] = (cos, 0, -sin)`, `columns[2] = (sin, 0, cos)`, the right-handed
+rotation), the intrinsics (fixed, and now reading `cx 80 cy 60`), and the depth (triangulation, and it
+reports zero correctly because there is no baseline). What is not ruled out: the pose being advanced
+somewhere as well as at `CharonARTracker.m:681`, or the differential's own truth being indexed twice -
+there are three loops over the frames in `spatial-tracker-diff.m` and only one of them is the measurement.
+
+The next measurement is one line: print the quaternion the differential hands the tracker and the
+matrix the tracker makes of it, for step 1, and read the angle out of the matrix. That says whether the
+2x is before or inside the tracker.

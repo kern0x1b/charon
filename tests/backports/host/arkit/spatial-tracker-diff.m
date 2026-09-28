@@ -205,10 +205,15 @@ int main(void)
                              deviceRotation:truth.rotation];
         CVPixelBufferRelease(buffer);
 
-        if (step < 3)      // the first frames establish the pose; there is nothing to compare yet
-            continue;
-        double rotation = CharonAngleBetween(CharonAttitudeOf(got), truth.rotation);
+        // Frame 0 is measured, and it is the frame that says whether the conventions agree: the
+        // tracker is handed the ground truth's own attitude, so a first frame that does not read 0
+        // degrees is a convention error - an axis, a handedness, a camera frame against the dataset's -
+        // and not a tracking error, and no amount of the latter will move it.
         simd_float3 walked = (simd_float3){got.columns[3].x, got.columns[3].y, got.columns[3].z};
+        double rotation = CharonAngleBetween(CharonAttitudeOf(got), truth.rotation);
+        if (step < 4 || step == count - 1)
+            printf("  step %2d: pose rotation error %8.3f deg   distance error %8.4f m\n", step,
+                   rotation * 180.0 / M_PI, simd_length(walked - truth.translation));
         double distance = simd_length(walked - truth.translation);
         sumRotation += rotation;
         sumDistance += distance;
