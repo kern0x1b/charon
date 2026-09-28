@@ -159,3 +159,63 @@ proof this package accepts for a Foundation value class.
 not, and its only error is `class_getMetaClass` being undeclared in a file that imports
 `<objc/runtime.h>` — a toolchain oddity, not a logic error. Steps 0 and 1 of the first probe have run and
 their output is above; steps 2 to 5 have not run at all.
+
+---
+
+## The ruling, and what it adds to the facts
+
+**Carry it natively on the app's own bundle.** Tags are read from the bundle's `OnDemandResources.plist`
+— the `NSBundleResourceRequestTags` map, tag to asset packs, each pack with its path inside the bundle. A
+request whose tags all resolve completes at once with no error and `conditionallyBeginAccessing…` answers
+YES; an unknown tag completes with `NSBundleOnDemandResourceInvalidTagError` in `NSCocoaErrorDomain`; and
+`loadingPriority`, `progress` (completed at once) and the preservation priority are held as values. No
+download ever happens, because every resolvable pack is local. That is the documented behaviour when the
+packs are in the bundle, not an invention.
+
+**The two facts this family has, and where each came from:**
+
+- the three error codes, **measured out of the header** (`FoundationErrors.h`, iOS 9.0, the
+  `NSCocoaErrorDomain` group, identical in the 16.4 and 26.2 SDKs):
+  `NSBundleOnDemandResourceOutOfSpaceError` = **4992**,
+  `NSBundleOnDemandResourceExceededMaximumSizeError` = **4993**,
+  `NSBundleOnDemandResourceInvalidTagError` = **4994** — the last of which is the ruling's, and the
+  header's own comment names the manifest it is about: "the system could not find in the application tag
+  manifest";
+- the plist key names, **not from any header**: `NSBundleResourceRequestTags`, `OnDemandResources` and the
+  asset-pack path key are absent from every Foundation header in the 16.4 and 26.2 SDKs on this machine.
+  They are the documented asset-pack format the ruling supplies, and the facts file has to say that is
+  where they come from rather than implying a measurement. **This is a correction to the plan I wrote
+  above, which assumed the header would carry them.**
+
+**Two more members in the same header, not in the eleven rows the ledger prices** (iOS 9.0, both
+`API_UNAVAILABLE(macos)`, in `@interface NSBundle (NSBundleResourceRequestAdditions)`):
+
+```objc
+- (void)setPreservationPriority:(double)priority forTags:(NSSet<NSString *> *)tags;   // :235
+- (double)preservationPriorityForTag:(NSString *)tag;                                   // :236
+```
+
+with the header's own sentence for the first: "This method will throw an exception if the receiver
+bundle has no on demand resource tag information." The ruling names the preservation priority as a value
+held, so these two belong with the class; whether they are a twelfth and a thirteenth row or part of the
+class's eleven is the coordinator's call, and I would register them as their own two rows rather than fold
+them in.
+
+**And there is no registry entry for any of it** — `NSBundleResourceRequest`, the notification and the
+urgent priority are named in no file under `registry/Foundation/`, which is why the ledger prices the
+class `missing` with `needs: code`. So the family is not "flip eleven `absent` entries"; it is thirteen
+new entries plus a class, a category on `NSBundle`, and two symbols.
+
+## Not started
+
+No code for this family is written. The state is: the family chosen and approved, the eleven rows
+counted, the eleven members read out of the 16.4 header, the stub on the host measured (the class is
+there, `NSObject` is its superclass, and its initialisers raise `NSInvalidArgumentException` with the
+reason `init is unavailable`), the error codes measured, the plist keys established as *not* a header
+fact, the two `NSBundle` additions found, and the ruling's shape recorded above.
+
+The proof the ruling names — the call test plus the emulator run — is not available to this band: the
+emulator run's last step is handed to the emulate band in
+`charon/.agent-work/worktrees/api-presentation/.agent-work/handoffs/2026-09-28-emulate-daemon-payload.md`
+and queued in `coordination/api-queue.md` for `7e035ac0`, because the daemon has no `LC_LOAD_DYLIB` for
+the backports library and nothing this band adds to the project will put one there.
