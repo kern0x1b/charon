@@ -491,7 +491,53 @@ cross-check, not a host-comparison differential** — which is a weaker guarante
 carry, and the coordinator should rule on that before 158 rows are built against it. The plan is otherwise
 unchanged and the measurements above are why each step of it is in the order it is.
 
-**What is not done.** No code, no clone, no vendored file. The next three steps, in order: measure the
+### AMD and COLAMD: fetched, verified, and BSD-3 at the source
+
+`git clone https://github.com/suitesparse/SuiteSparse` **fails on this machine** — "Repository not found",
+for the `suitesparse` path, while a public GitLab clone works, so the proxy is selective and that path is not
+reachable. **The xmake registry's own recipe is**, and it is the better answer because the machine already
+trusts its pin:
+
+```
+$HOME/.xmake/repositories/xmake-repo/packages/s/suitesparse/xmake.lua
+    add_urls("https://github.com/DrTimothyAldenDavis/SuiteSparse/archive/refs/tags/$(version).tar.gz", …)
+    add_versions("v7.12.2", "679412daa5f69af96d6976595c1ac64f252287a56e98cc4a8155d09cc7fd69e8")
+```
+
+Fetched and hashed:
+
+```
+SuiteSparse v7.12.2, 95 337 908 bytes
+  sha256 679412daa5f69af96d6976595c1ac64f252287a56e98cc4a8155d09cc7fd69e8
+  which is exactly the pin the machine's own xmake registry carries for v7.12.2
+```
+
+And the licences are read out of the two files, not from a description of them:
+
+```
+AMD/Source/amd_1.c:5     AMD, Copyright (c) 1996-2022, Timothy A. Davis, Patrick R. Amestoy, and …
+AMD/Source/amd_1.c:7     SPDX-License-Identifier: BSD-3-clause
+COLAMD/Source/colamd.c:5  COLAMD, Copyright (c) 1998-2022, Timothy A. Davis and Stefan Larimore, …
+COLAMD/Source/colamd.c:7  SPDX-License-Identifier: BSD-3-clause
+```
+
+So the reuse the plan names is executable and pinned twice over — a version and a hash the machine already
+carries, and an SPDX identifier read from each source. What is not done with it: it is **not yet vendored**
+into a package. The next step is that, and it has a consequence the gate will enforce — `amd_order` and
+`colamd_order` are exported C symbols, so a vendored copy of them is a band with its own `introduced` in
+the release-split sense, and the port's own 4.0/6.0 rows must not claim the same names. The CHOLMOD and
+UMFPACK sources are in the same tarball and are **not touched**: they are LGPL and GPL.
+
+### The device as a second oracle: asked, not yet answered
+
+The plan records a fourth oracle — an emulated 26.x or 17.x firmware, where these symbols are in the
+Accelerate cache. I have asked the worker that owns the emulated device which images exist on this machine
+and what a single run would cost, and **the answer has not arrived**: the response was a status line about
+that worker's own task, not an answer. So nothing is planned on the device. The invariant differential
+cross-checked against the release's LAPACK is what the family is being built against, and the device oracle
+is a possibility to be confirmed rather than a dependency.
+
+**What is not done.** No code, no vendored file, no device measurement. The next steps, in order: measure the
 host's `SparseFactor`/`SparseSolve` on a small SPD matrix, a symmetric indefinite one under each of the four
 LDLT pivoting options, a singular matrix and a matrix that is not positive definite fed to Cholesky, and a
 general square one under LU — recording the `SparseStatus` and the solution of each, because the
