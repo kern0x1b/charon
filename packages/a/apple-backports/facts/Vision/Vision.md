@@ -85,8 +85,40 @@ recorded by `tests/backports/host/vision/run.sh` (33 records) and held against t
   the row-112 dump in the last run compared the oracle with itself, the call site passing it twice,
   so it is not evidence about the port and is not recorded as any.
 
-  Until that runs, the port's centre crop is unchanged: it is Vision's rule, it is what the option
-  is called, and nothing measured says to replace it.
+  It has now run, with the port's own resampler built into the probe
+  (`.agent-work/runs/crop-probe/centre.m`, the harness's trick, renamed header and all). The two
+  answers for 100x50 brought to 224x224 under Core ML's own `CenterCrop`:
+
+  ```
+  coreML  (0,0) 2c541555  (mid) 7f7c7dff  (end) 32004d69  (0,h-1) 2c001555
+  port    (0,0) 89fa3fff  (mid) 927c7fff  (end) 9b00beff  (0,h-1) 89003fff
+  row 112, columns 100..102:  coreML 267c76ff 2d7c77ff 327c78ff
+                              port   2b7c78ff 307c78ff 367c79ff
+  centre square of the source, scaled: (0,0) 92fa40ff  (mid) 887c7fff
+  ```
+
+  The green is `7c` on both along that row -- the green channel is the row's position, so the two
+  agree about *where* vertically -- and the red advances by 5 or 6 a column on **both**, which is the
+  source's 100 columns across 224, i.e. a scale of 2.24 on Core ML's side and, on the port's, the
+  same ramp reached through a cover of 448 columns cropped to 224. The two are the same picture at
+  slightly different horizontal scales, which is why every pixel differs while the ramp looks the
+  same: a sub-pixel scale difference is a fraction of a column at column 100 and more at column 200.
+
+  **So Core ML's own `CenterCrop` in this constructor is neither of Vision's rules.** It scales the
+  whole source to the target -- 2.24 across and 4.48 down for this picture, a stretch -- where
+  Vision's centre crop covers and crops and Vision's scale fit fits and centres. The centre square
+  (50x50 scaled to 224x224, a quarter of a source width in each direction) is a third answer again
+  and reads 50036 against Core ML, so hypothesis (a) is out as well. That is consistent with what
+  the no-option measurement already said -- 50175 from its own `ScaleFit` and 50035 from its own
+  `CenterCrop`, neither of them reproducing its own default -- and it means the row cannot be made
+  to agree: making it agree would mean giving `VNImageCropAndScaleOptionCenterCrop` a rule that is
+  not the one it is named for, on a request path that a Vision caller reads.
+
+  **The row is therefore a recorded divergence with its measurement, not a defect to be fixed**: 50026
+  of 50176 pixels for 100x50 to 224x224 centre crop, because Core ML's own `CenterCrop` option is a
+  stretch and the port's is Vision's cover-and-crop. The port's centre crop is unchanged. What would
+  settle it beyond this is a model and a picture where the two rules coincide, which the corpus does
+  not have.
 
   The two rules themselves: centre crop scales until the picture covers the
   target and keeps the middle, scale fit scales until it fits and leaves the rest black. A buffer
