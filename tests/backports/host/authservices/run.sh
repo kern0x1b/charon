@@ -56,13 +56,18 @@ build_library() {
     sources=$1
     output=$2
     objects=""
+    # Each build compiles into its own directory: a second build reusing the first one's object files is
+    # how a mutation ends up measured against the thing it was meant to remove.
+    objdir=$(dirname "$output")/objects
+    mkdir -p "$objdir"
+    rm -f "$objdir"/*.o
     for source in $sources; do
         name=$(basename "$source" .m)
         "$AS_CLANG" -target armv7-apple-ios6.1.3 -isysroot "$sdk" -fobjc-arc -Os -g0 -fPIC \
             -I"$package" -I"$charon/packages/a/apple-backports/HomeKit" -I"$monocypher" \
-            -c "$source" -o "$build/$name.o" 2>"$build/$name.log" || {
+            -c "$source" -o "$objdir/$name.o" 2>"$build/$name.log" || {
                 echo "FAIL: $source did not compile"; head -5 "$build/$name.log"; return 1; }
-        objects="$objects $build/$name.o"
+        objects="$objects $objdir/$name.o"
     done
     "$AS_CLANG" -target armv7-apple-ios6.1.3 -isysroot "$sdk" -dynamiclib \
         -Wl,-undefined,dynamic_lookup -install_name /usr/lib/libAuthenticationServicesBackports.dylib \
@@ -168,22 +173,44 @@ if [ "${1:-}" = "--mutate" ]; then
     # The headers travel with the copy: the sources import them by name, and a build whose include path
     # is the mutant's own directory needs them there or it stops at the first import.
     cp "$package"/*.h "$build/mutant/" 2>/dev/null || true
+    # Removing the getter's body is not enough, and measuring that is what this says. The SDK's header
+    # declares `@property (nonatomic, readonly, strong) id <ASAuthorizationProvider> provider;`, so the
+    # class's own @implementation autosynthesises the accessor: take the body away and add nothing and
+    # the method is still bound, at the same address, and the check cannot see the removal at all. The
+    # first version of this mutation removed the body *and* the @synthesize line, which re-enabled
+    # autosynthesis rather than disabling it. `@dynamic` is what turns it off, and it is the same thing
+    # the port's own comments say about a bare @property not counting as an implementation.
     python3 - "$build/mutant/ASAuthorizationRequest.m" <<'PYTHON'
 import re, sys
 path = sys.argv[1]
 text = open(path).read()
 before = text
 text = re.sub(r"- \(id<ASAuthorizationProvider>\)provider\n\{\n    return _provider;\n\}\n", "", text)
-text = text.replace("@synthesize provider = _provider;\n", "")
 if text == before:
     sys.stderr.write("the mutation changed nothing: the member's text is not what the pattern expects\n")
     sys.exit(1)
+# `@dynamic` turns autosynthesis off, which stops the accessor being bound -- and it also stops the
+# ivar being synthesised, so the mutant declares the ivar itself. What is left is a class that compiles
+# and holds the provider, with no -provider method bound at all, which is exactly the state a removal
+# would leave.
+text = text.replace("@synthesize provider = _provider;\n",
+                    "{\n    id<ASAuthorizationProvider> _provider;\n}\n@dynamic provider;\n", 1)
 open(path, "w").write(text)
 PYTHON
     saved=$package
     package=$build/mutant
     build_library "$(ls "$build/mutant"/*.m) $shared" "$build/mutant/lib.dylib"
     package=$saved
+    # A mutant that did not take is not a mutant: the method has to be gone from the binary's own method
+    # list before the comparison is run, or the check is being asked to notice something that is still
+    # there and its "passes" would mean nothing.
+    if otool -oV "$build/mutant/lib.dylib" | grep -qE "^ +name +0x[0-9a-f]+ +provider$"; then
+        echo "FAIL: the mutation did not take: the method is still in the mutant library's method list"
+        echo "      at:"
+        otool -oV "$build/mutant/lib.dylib" | grep -E "^ +name +0x[0-9a-f]+ +provider$" | sed 's/^/        /'
+        exit 1
+    fi
+    echo "   the method is gone from the mutant library's method list, so the check below can notice"
     set +e
     compare mutant "$build/mutant/lib.dylib" > "$build/mutant.txt" 2>&1
     mutant=$?
