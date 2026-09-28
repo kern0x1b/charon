@@ -1,21 +1,49 @@
-# What each macro expands to
+# The macro rows, and why the expansion cannot be compared on this machine
 
-The framework's macros attach a conformance to the type they are written on. A port on these releases
-writes that conformance out, because the plugin that expands them (`AppIntentsMacros`, a swift-syntax
-executable the framework builds) is not on the release and has no interface in the 26.2 SDK either.
+Nineteen rows name a macro the framework's compiler expands: `AppIntentsMacros` (16 — `AppEntity`,
+`AppEnum`, `AppIntent`, `AssistantEntity`, `AssistantEnum`, `AssistantIntent`, `ComputedProperty`
+×5, `DeferredProperty` ×2, `UnionValue`) and `TipKitMacros` (2 — `Rule`, `Parameter`).
+`Sources/AppIntents/Remaining.swift` and `Sources/TipKit/Predicates.swift` **declare** them with the
+framework's own `@attached` attributes; what is missing is the plugin that expands them, and that
+plugin is Apple's, on Apple's releases, and is not here.
 
-| the macro | what it attaches |
+**Measured: Apple's plugin is not reachable on this machine.** The toolchain the packages build
+against (`charon@swift`, 6.4) ships two host plugins and no more:
+
+```
+$ ls …/swift/6.4.0/f1d0e4…/lib/swift/host/plugins/
+libObservationMacros.dylib
+libSwiftMacros.dylib
+```
+
+`find` over the Command Line Tools, the shared store and `~/Library/Developer` finds no
+`AppIntentsMacros` and no `TipKitMacros` — no `*Macros*` directory anywhere but swift-syntax's own
+`SwiftSyntaxMacros.swiftmodule`. The macOS 27 SDK's `AppIntents` interface *names* the plugin
+(`arm64e-apple-macos.swiftinterface:55,192,2863,3954` all say
+`#externalMacro(module: "AppIntentsMacros", type: …)`), which is why the declarations in
+`Remaining.swift` are exactly right and still cannot be expanded here: `#externalMacro` resolves
+against a loaded plugin, and there is none to load.
+
+**So the reference is the interface, and the comparison is a hand-checked one.** Every macro's
+contract is in that file, and it is complete enough to implement against:
+
+| macro | the interface's attachments |
 | --- | --- |
-| `AppEntity(schema:)` | `AppEntity` and `AssistantSchemaEntity` to the type, with `__assistantSchemaEntity` |
-| `AssistantEntity(schema:)` | the same, for an entity the assistant offers on its own |
-| `AppIntent(schema:)` | `AppIntent` and `AssistantSchemaIntent` to the type |
-| `AssistantIntent(schema:)` | the same, for an intent the assistant offers on its own |
-| `AppEnum(schema:)` | `AppEnum` and `AssistantSchemaEnum` to the type |
-| `AssistantEnum(schema:)` | the same, for an enum the assistant offers on its own |
-| `ComputedProperty(title:)` and the other five spellings | a peer `EntityProperty` the framework computes when it is asked for, under the title and indexing key the macro names |
-| `DeferredProperty(title:)` and `DeferredProperty()` | a peer `EntityProperty` the app's entity is asked for only when a caller needs it |
-| `UnionValue()` | `_IntentValueRepresentable` to the type, with the value types it stands for |
+| `ComputedProperty()` | `@attached(peer, names: prefixed(`$`), prefixed(`_`))` `@attached(accessor, names: named(get), named(set))` — so `$foo` and `_foo` peers and a get/set pair |
+| `AppEntity<T>(schema:)` | `@attached(memberAttribute)` `@attached(extension, conformances: AppEntity, AssistantSchemaEntity, names: named(__assistantSchemaEntity))` |
+| `AssistantIntent<T>(schema:)` | `@attached(memberAttribute)` `@attached(extension, conformances: AssistantSchemaIntent, ShowInAppSearchResultsIntent, names: named(__assistantSchemaIntent))` |
+| `AppIntent<T>(schema:)` | `@attached(memberAttribute)` `@attached(extension, conformances: AppIntent, names: named(perform))` |
 
-The conformances the macros attach are in the module as protocols, so a type that writes one out gets
-the same requirements the macro would have given it, and the `AssistantSchema*` protocols are the ones
-that add `isAssistantOnly`.
+A plugin written here would be compared against those attachments and against a hand-expanded
+example per macro — the *contract*, not Apple's output. **That is weaker than a diff, and the
+difference is stated rather than papered over:** Apple's expansion of `#AppEntity(schema:)` is
+whatever `AppIntentsMacros.AppEntityMacros` produces, and no copy of it is on this machine to diff
+against. The gate for claiming a macro is done is therefore: the expansion this port produces
+matches the interface's declared attachments exactly, and the hand-checked expansion of a small
+example is in `.agent-work/` beside the plugin.
+
+**The loader is in place.** `415a119e "Let a port expand a macro plugin its dependencies ship"` is
+cherry-picked here (`-x`, so both series carry the same commit): `rules/swift/xmake.lua:182` adds each
+dependency's `CHARON_SWIFT_PLUGINS` folders as `-plugin-path`, so a package that builds a plugin can
+be found by a port that uses it. What remains is the plugin itself, for the host, built with
+swift-syntax (Apache-2.0), and the 19 rows move when it exists and not before.
