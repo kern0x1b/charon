@@ -569,7 +569,7 @@
       "status": "implemented",
       "effect": "stops accepting, withdraws what it published and cancels the connections it made",
       "facts": "facts/Network/NWListener.md",
-      "source": "the port's listener and the host's own NWConnection through it over a loopback pair - the host is the client because the host's Network will not start a listener in this environment (measured: failed with POSIX EINVAL), which is facts/Network/NWListener.md: ready on the port it was asked for, the port it reports, the host's connection ready through the accept loop, and the connection handed over (tests/backports/host/network-listener). The bytes through a connection the listener makes are NOT yet measured and that test is red on them"
+      "source": "the port's listener and the host's own NWConnection through it over a loopback pair, in which the port is the listener because the host's Network will not start one in this environment (measured: failed with POSIX EINVAL). THREE checks pass and the run prints checks=6 failures=2: the listener is made, it becomes ready on the port it was asked for and reports that port, and the host's connection is ready through the accept loop. RED and not claimed: the handover to a new-connection handler - the port calls a non-NULL handler at ready (CHARON_TRACE_LISTENER prints the state, the listener, its queue, the state handler and the block) and the test's own record of the handover stays empty - and the three checks that stand on it, so the byte crossing through a connection this listener made is NOT measured. facts/Network/NWListener.md says the same"
     },
     {
       "api": "nw_listener_create()",
@@ -579,7 +579,7 @@
       "status": "implemented",
       "effect": "a listener of the parameters' transport, on a port the system gives",
       "facts": "facts/Network/NWListener.md",
-      "source": "the port's listener and the host's own NWConnection through it over a loopback pair - the host is the client because the host's Network will not start a listener in this environment (measured: failed with POSIX EINVAL), which is facts/Network/NWListener.md: ready on the port it was asked for, the port it reports, the host's connection ready through the accept loop, and the connection handed over (tests/backports/host/network-listener). The bytes through a connection the listener makes are NOT yet measured and that test is red on them"
+      "source": "the port's listener and the host's own NWConnection through it over a loopback pair, in which the port is the listener because the host's Network will not start one in this environment (measured: failed with POSIX EINVAL). THREE checks pass and the run prints checks=6 failures=2: the listener is made, it becomes ready on the port it was asked for and reports that port, and the host's connection is ready through the accept loop. RED and not claimed: the handover to a new-connection handler - the port calls a non-NULL handler at ready (CHARON_TRACE_LISTENER prints the state, the listener, its queue, the state handler and the block) and the test's own record of the handover stays empty - and the three checks that stand on it, so the byte crossing through a connection this listener made is NOT measured. facts/Network/NWListener.md says the same"
     },
     {
       "api": "nw_listener_create_with_connection()",
@@ -589,7 +589,7 @@
       "status": "implemented",
       "effect": "a listener of the socket a connection already has",
       "facts": "facts/Network/NWListener.md",
-      "source": "the port's listener and the host's own NWConnection through it over a loopback pair - the host is the client because the host's Network will not start a listener in this environment (measured: failed with POSIX EINVAL), which is facts/Network/NWListener.md: ready on the port it was asked for, the port it reports, the host's connection ready through the accept loop, and the connection handed over (tests/backports/host/network-listener). The bytes through a connection the listener makes are NOT yet measured and that test is red on them"
+      "source": "the port's listener and the host's own NWConnection through it over a loopback pair, in which the port is the listener because the host's Network will not start one in this environment (measured: failed with POSIX EINVAL). THREE checks pass and the run prints checks=6 failures=2: the listener is made, it becomes ready on the port it was asked for and reports that port, and the host's connection is ready through the accept loop. RED and not claimed: the handover to a new-connection handler - the port calls a non-NULL handler at ready (CHARON_TRACE_LISTENER prints the state, the listener, its queue, the state handler and the block) and the test's own record of the handover stays empty - and the three checks that stand on it, so the byte crossing through a connection this listener made is NOT measured. facts/Network/NWListener.md says the same"
     },
     {
       "api": "nw_listener_create_with_port()",
@@ -599,7 +599,7 @@
       "status": "implemented",
       "effect": "a listener on the port that is named",
       "facts": "facts/Network/NWListener.md",
-      "source": "the port's listener and the host's own NWConnection through it over a loopback pair - the host is the client because the host's Network will not start a listener in this environment (measured: failed with POSIX EINVAL), which is facts/Network/NWListener.md: ready on the port it was asked for, the port it reports, the host's connection ready through the accept loop, and the connection handed over (tests/backports/host/network-listener). The bytes through a connection the listener makes are NOT yet measured and that test is red on them"
+      "source": "the port's listener and the host's own NWConnection through it over a loopback pair, in which the port is the listener because the host's Network will not start one in this environment (measured: failed with POSIX EINVAL). THREE checks pass and the run prints checks=6 failures=2: the listener is made, it becomes ready on the port it was asked for and reports that port, and the host's connection is ready through the accept loop. RED and not claimed: the handover to a new-connection handler - the port calls a non-NULL handler at ready (CHARON_TRACE_LISTENER prints the state, the listener, its queue, the state handler and the block) and the test's own record of the handover stays empty - and the three checks that stand on it, so the byte crossing through a connection this listener made is NOT measured. facts/Network/NWListener.md says the same"
     },
     {
       "api": "nw_listener_get_port()",
@@ -609,7 +609,7 @@
       "status": "implemented",
       "effect": "the port the listener is bound to, 0 until it is ready",
       "facts": "facts/Network/NWListener.md",
-      "source": "the port's listener and the host's own NWConnection through it over a loopback pair - the host is the client because the host's Network will not start a listener in this environment (measured: failed with POSIX EINVAL), which is facts/Network/NWListener.md: ready on the port it was asked for, the port it reports, the host's connection ready through the accept loop, and the connection handed over (tests/backports/host/network-listener). The bytes through a connection the listener makes are NOT yet measured and that test is red on them"
+      "source": "the port's listener and the host's own NWConnection through it over a loopback pair, in which the port is the listener because the host's Network will not start one in this environment (measured: failed with POSIX EINVAL). THREE checks pass and the run prints checks=6 failures=2: the listener is made, it becomes ready on the port it was asked for and reports that port, and the host's connection is ready through the accept loop. RED and not claimed: the handover to a new-connection handler - the port calls a non-NULL handler at ready (CHARON_TRACE_LISTENER prints the state, the listener, its queue, the state handler and the block) and the test's own record of the handover stays empty - and the three checks that stand on it, so the byte crossing through a connection this listener made is NOT measured. facts/Network/NWListener.md says the same"
     },
     {
       "api": "nw_listener_set_advertise_descriptor()",
@@ -619,7 +619,7 @@
       "status": "implemented",
       "effect": "the Bonjour service the listener publishes",
       "facts": "facts/Network/NWListener.md",
-      "source": "the port's listener and the host's own NWConnection through it over a loopback pair - the host is the client because the host's Network will not start a listener in this environment (measured: failed with POSIX EINVAL), which is facts/Network/NWListener.md: ready on the port it was asked for, the port it reports, the host's connection ready through the accept loop, and the connection handed over (tests/backports/host/network-listener). The bytes through a connection the listener makes are NOT yet measured and that test is red on them"
+      "source": "the port's listener and the host's own NWConnection through it over a loopback pair, in which the port is the listener because the host's Network will not start one in this environment (measured: failed with POSIX EINVAL). THREE checks pass and the run prints checks=6 failures=2: the listener is made, it becomes ready on the port it was asked for and reports that port, and the host's connection is ready through the accept loop. RED and not claimed: the handover to a new-connection handler - the port calls a non-NULL handler at ready (CHARON_TRACE_LISTENER prints the state, the listener, its queue, the state handler and the block) and the test's own record of the handover stays empty - and the three checks that stand on it, so the byte crossing through a connection this listener made is NOT measured. facts/Network/NWListener.md says the same"
     },
     {
       "api": "nw_listener_set_advertised_endpoint_changed_handler()",
@@ -629,7 +629,7 @@
       "status": "implemented",
       "effect": "the block called when the published endpoint is added or withdrawn",
       "facts": "facts/Network/NWListener.md",
-      "source": "the port's listener and the host's own NWConnection through it over a loopback pair - the host is the client because the host's Network will not start a listener in this environment (measured: failed with POSIX EINVAL), which is facts/Network/NWListener.md: ready on the port it was asked for, the port it reports, the host's connection ready through the accept loop, and the connection handed over (tests/backports/host/network-listener). The bytes through a connection the listener makes are NOT yet measured and that test is red on them"
+      "source": "the port's listener and the host's own NWConnection through it over a loopback pair, in which the port is the listener because the host's Network will not start one in this environment (measured: failed with POSIX EINVAL). THREE checks pass and the run prints checks=6 failures=2: the listener is made, it becomes ready on the port it was asked for and reports that port, and the host's connection is ready through the accept loop. RED and not claimed: the handover to a new-connection handler - the port calls a non-NULL handler at ready (CHARON_TRACE_LISTENER prints the state, the listener, its queue, the state handler and the block) and the test's own record of the handover stays empty - and the three checks that stand on it, so the byte crossing through a connection this listener made is NOT measured. facts/Network/NWListener.md says the same"
     },
     {
       "api": "nw_listener_set_new_connection_handler()",
@@ -639,7 +639,7 @@
       "status": "implemented",
       "effect": "the block called with each connection the listener accepts",
       "facts": "facts/Network/NWListener.md",
-      "source": "the port's listener and the host's own NWConnection through it over a loopback pair - the host is the client because the host's Network will not start a listener in this environment (measured: failed with POSIX EINVAL), which is facts/Network/NWListener.md: ready on the port it was asked for, the port it reports, the host's connection ready through the accept loop, and the connection handed over (tests/backports/host/network-listener). The bytes through a connection the listener makes are NOT yet measured and that test is red on them"
+      "source": "the port's listener and the host's own NWConnection through it over a loopback pair, in which the port is the listener because the host's Network will not start one in this environment (measured: failed with POSIX EINVAL). THREE checks pass and the run prints checks=6 failures=2: the listener is made, it becomes ready on the port it was asked for and reports that port, and the host's connection is ready through the accept loop. RED and not claimed: the handover to a new-connection handler - the port calls a non-NULL handler at ready (CHARON_TRACE_LISTENER prints the state, the listener, its queue, the state handler and the block) and the test's own record of the handover stays empty - and the three checks that stand on it, so the byte crossing through a connection this listener made is NOT measured. facts/Network/NWListener.md says the same"
     },
     {
       "api": "nw_listener_set_queue()",
@@ -649,7 +649,7 @@
       "status": "implemented",
       "effect": "the queue every handler of the listener is called on",
       "facts": "facts/Network/NWListener.md",
-      "source": "the port's listener and the host's own NWConnection through it over a loopback pair - the host is the client because the host's Network will not start a listener in this environment (measured: failed with POSIX EINVAL), which is facts/Network/NWListener.md: ready on the port it was asked for, the port it reports, the host's connection ready through the accept loop, and the connection handed over (tests/backports/host/network-listener). The bytes through a connection the listener makes are NOT yet measured and that test is red on them"
+      "source": "the port's listener and the host's own NWConnection through it over a loopback pair, in which the port is the listener because the host's Network will not start one in this environment (measured: failed with POSIX EINVAL). THREE checks pass and the run prints checks=6 failures=2: the listener is made, it becomes ready on the port it was asked for and reports that port, and the host's connection is ready through the accept loop. RED and not claimed: the handover to a new-connection handler - the port calls a non-NULL handler at ready (CHARON_TRACE_LISTENER prints the state, the listener, its queue, the state handler and the block) and the test's own record of the handover stays empty - and the three checks that stand on it, so the byte crossing through a connection this listener made is NOT measured. facts/Network/NWListener.md says the same"
     },
     {
       "api": "nw_listener_set_state_changed_handler()",
@@ -659,7 +659,7 @@
       "status": "implemented",
       "effect": "the block called with every state the listener reaches",
       "facts": "facts/Network/NWListener.md",
-      "source": "the port's listener and the host's own NWConnection through it over a loopback pair - the host is the client because the host's Network will not start a listener in this environment (measured: failed with POSIX EINVAL), which is facts/Network/NWListener.md: ready on the port it was asked for, the port it reports, the host's connection ready through the accept loop, and the connection handed over (tests/backports/host/network-listener). The bytes through a connection the listener makes are NOT yet measured and that test is red on them"
+      "source": "the port's listener and the host's own NWConnection through it over a loopback pair, in which the port is the listener because the host's Network will not start one in this environment (measured: failed with POSIX EINVAL). THREE checks pass and the run prints checks=6 failures=2: the listener is made, it becomes ready on the port it was asked for and reports that port, and the host's connection is ready through the accept loop. RED and not claimed: the handover to a new-connection handler - the port calls a non-NULL handler at ready (CHARON_TRACE_LISTENER prints the state, the listener, its queue, the state handler and the block) and the test's own record of the handover stays empty - and the three checks that stand on it, so the byte crossing through a connection this listener made is NOT measured. facts/Network/NWListener.md says the same"
     },
     {
       "api": "nw_listener_start()",
@@ -669,7 +669,7 @@
       "status": "implemented",
       "effect": "binds, listens and begins to accept",
       "facts": "facts/Network/NWListener.md",
-      "source": "the port's listener and the host's own NWConnection through it over a loopback pair - the host is the client because the host's Network will not start a listener in this environment (measured: failed with POSIX EINVAL), which is facts/Network/NWListener.md: ready on the port it was asked for, the port it reports, the host's connection ready through the accept loop, and the connection handed over (tests/backports/host/network-listener). The bytes through a connection the listener makes are NOT yet measured and that test is red on them"
+      "source": "the port's listener and the host's own NWConnection through it over a loopback pair, in which the port is the listener because the host's Network will not start one in this environment (measured: failed with POSIX EINVAL). THREE checks pass and the run prints checks=6 failures=2: the listener is made, it becomes ready on the port it was asked for and reports that port, and the host's connection is ready through the accept loop. RED and not claimed: the handover to a new-connection handler - the port calls a non-NULL handler at ready (CHARON_TRACE_LISTENER prints the state, the listener, its queue, the state handler and the block) and the test's own record of the handover stays empty - and the three checks that stand on it, so the byte crossing through a connection this listener made is NOT measured. facts/Network/NWListener.md says the same"
     },
     {
       "api": "nw_parameters_clear_prohibited_interface_types()",

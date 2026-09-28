@@ -369,7 +369,7 @@
       "status": "implemented",
       "effect": "runs a block on the framer's own queue, where the framer's state may be touched",
       "facts": "facts/Network/NWObjects.md",
-      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
+      "source": "the port's own framer objects, read: the definitions, their equality, the options and their object values, and a message's own values are compared with the host's own Network in tests/backports/host/network-objects, which is also where the options differential names them. The framer's ENGINE - parse_input, parse_output, deliver_input, deliver_input_no_copy, the three writes, pass_through, mark_ready, mark_failed_with_error, schedule_wakeup, async, the handlers, prepend_application_protocol and the endpoint/parameter/options copies - is NOT compared and not measured: those calls need a framer object, which only a connection makes, and no differential in the tree puts a framer in a stack. The engine is implemented and read, not verified (facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_copy_local_endpoint()",
@@ -379,7 +379,7 @@
       "status": "implemented",
       "effect": "the local endpoint of the connection the framer is in",
       "facts": "facts/Network/NWObjects.md",
-      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
+      "source": "the port's own framer objects, read: the definitions, their equality, the options and their object values, and a message's own values are compared with the host's own Network in tests/backports/host/network-objects, which is also where the options differential names them. The framer's ENGINE - parse_input, parse_output, deliver_input, deliver_input_no_copy, the three writes, pass_through, mark_ready, mark_failed_with_error, schedule_wakeup, async, the handlers, prepend_application_protocol and the endpoint/parameter/options copies - is NOT compared and not measured: those calls need a framer object, which only a connection makes, and no differential in the tree puts a framer in a stack. The engine is implemented and read, not verified (facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_copy_parameters()",
@@ -389,7 +389,7 @@
       "status": "implemented",
       "effect": "the parameters of the connection the framer is in",
       "facts": "facts/Network/NWObjects.md",
-      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
+      "source": "the port's own framer objects, read: the definitions, their equality, the options and their object values, and a message's own values are compared with the host's own Network in tests/backports/host/network-objects, which is also where the options differential names them. The framer's ENGINE - parse_input, parse_output, deliver_input, deliver_input_no_copy, the three writes, pass_through, mark_ready, mark_failed_with_error, schedule_wakeup, async, the handlers, prepend_application_protocol and the endpoint/parameter/options copies - is NOT compared and not measured: those calls need a framer object, which only a connection makes, and no differential in the tree puts a framer in a stack. The engine is implemented and read, not verified (facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_copy_remote_endpoint()",
@@ -399,7 +399,7 @@
       "status": "implemented",
       "effect": "the remote endpoint of the connection the framer is in",
       "facts": "facts/Network/NWObjects.md",
-      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
+      "source": "the port's own framer objects, read: the definitions, their equality, the options and their object values, and a message's own values are compared with the host's own Network in tests/backports/host/network-objects, which is also where the options differential names them. The framer's ENGINE - parse_input, parse_output, deliver_input, deliver_input_no_copy, the three writes, pass_through, mark_ready, mark_failed_with_error, schedule_wakeup, async, the handlers, prepend_application_protocol and the endpoint/parameter/options copies - is NOT compared and not measured: those calls need a framer object, which only a connection makes, and no differential in the tree puts a framer in a stack. The engine is implemented and read, not verified (facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_create_definition()",
@@ -409,7 +409,7 @@
       "status": "implemented",
       "effect": "the definition of a protocol a program writes, of that name and those flags",
       "facts": "facts/Network/NWObjects.md",
-      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
+      "source": "the port's own framer objects, read: the definitions, their equality, the options and their object values, and a message's own values are compared with the host's own Network in tests/backports/host/network-objects, which is also where the options differential names them. The framer's ENGINE - parse_input, parse_output, deliver_input, deliver_input_no_copy, the three writes, pass_through, mark_ready, mark_failed_with_error, schedule_wakeup, async, the handlers, prepend_application_protocol and the endpoint/parameter/options copies - is NOT compared and not measured: those calls need a framer object, which only a connection makes, and no differential in the tree puts a framer in a stack. The engine is implemented and read, not verified (facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_create_options()",
@@ -429,7 +429,7 @@
       "status": "implemented",
       "effect": "hands a whole message to the application, copied",
       "facts": "facts/Network/NWObjects.md",
-      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
+      "source": "the port's own framer objects, read: the definitions, their equality, the options and their object values, and a message's own values are compared with the host's own Network in tests/backports/host/network-objects, which is also where the options differential names them. The framer's ENGINE - parse_input, parse_output, deliver_input, deliver_input_no_copy, the three writes, pass_through, mark_ready, mark_failed_with_error, schedule_wakeup, async, the handlers, prepend_application_protocol and the endpoint/parameter/options copies - is NOT compared and not measured: those calls need a framer object, which only a connection makes, and no differential in the tree puts a framer in a stack. The engine is implemented and read, not verified (facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_deliver_input_no_copy()",
@@ -439,7 +439,7 @@
       "status": "implemented",
       "effect": "hands a whole message to the application out of the framer's own buffer",
       "facts": "facts/Network/NWObjects.md",
-      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
+      "source": "the port's own framer objects, read: the definitions, their equality, the options and their object values, and a message's own values are compared with the host's own Network in tests/backports/host/network-objects, which is also where the options differential names them. The framer's ENGINE - parse_input, parse_output, deliver_input, deliver_input_no_copy, the three writes, pass_through, mark_ready, mark_failed_with_error, schedule_wakeup, async, the handlers, prepend_application_protocol and the endpoint/parameter/options copies - is NOT compared and not measured: those calls need a framer object, which only a connection makes, and no differential in the tree puts a framer in a stack. The engine is implemented and read, not verified (facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_mark_failed_with_error()",
@@ -449,7 +449,7 @@
       "status": "implemented",
       "effect": "ends the parse with an error, and the connection fails with it",
       "facts": "facts/Network/NWObjects.md",
-      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
+      "source": "the port's own framer objects, read: the definitions, their equality, the options and their object values, and a message's own values are compared with the host's own Network in tests/backports/host/network-objects, which is also where the options differential names them. The framer's ENGINE - parse_input, parse_output, deliver_input, deliver_input_no_copy, the three writes, pass_through, mark_ready, mark_failed_with_error, schedule_wakeup, async, the handlers, prepend_application_protocol and the endpoint/parameter/options copies - is NOT compared and not measured: those calls need a framer object, which only a connection makes, and no differential in the tree puts a framer in a stack. The engine is implemented and read, not verified (facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_mark_ready()",
@@ -459,7 +459,7 @@
       "status": "implemented",
       "effect": "ends the parse: the framer has what it was waiting for",
       "facts": "facts/Network/NWObjects.md",
-      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
+      "source": "the port's own framer objects, read: the definitions, their equality, the options and their object values, and a message's own values are compared with the host's own Network in tests/backports/host/network-objects, which is also where the options differential names them. The framer's ENGINE - parse_input, parse_output, deliver_input, deliver_input_no_copy, the three writes, pass_through, mark_ready, mark_failed_with_error, schedule_wakeup, async, the handlers, prepend_application_protocol and the endpoint/parameter/options copies - is NOT compared and not measured: those calls need a framer object, which only a connection makes, and no differential in the tree puts a framer in a stack. The engine is implemented and read, not verified (facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_message_access_value()",
@@ -519,7 +519,7 @@
       "status": "implemented",
       "effect": "parses the bytes that have arrived, running the caller's block once over a contiguous buffer",
       "facts": "facts/Network/NWObjects.md",
-      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
+      "source": "the port's own framer objects, read: the definitions, their equality, the options and their object values, and a message's own values are compared with the host's own Network in tests/backports/host/network-objects, which is also where the options differential names them. The framer's ENGINE - parse_input, parse_output, deliver_input, deliver_input_no_copy, the three writes, pass_through, mark_ready, mark_failed_with_error, schedule_wakeup, async, the handlers, prepend_application_protocol and the endpoint/parameter/options copies - is NOT compared and not measured: those calls need a framer object, which only a connection makes, and no differential in the tree puts a framer in a stack. The engine is implemented and read, not verified (facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_parse_output()",
@@ -529,7 +529,7 @@
       "status": "implemented",
       "effect": "parses the bytes the program has written, running the caller's block once over a contiguous buffer",
       "facts": "facts/Network/NWObjects.md",
-      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
+      "source": "the port's own framer objects, read: the definitions, their equality, the options and their object values, and a message's own values are compared with the host's own Network in tests/backports/host/network-objects, which is also where the options differential names them. The framer's ENGINE - parse_input, parse_output, deliver_input, deliver_input_no_copy, the three writes, pass_through, mark_ready, mark_failed_with_error, schedule_wakeup, async, the handlers, prepend_application_protocol and the endpoint/parameter/options copies - is NOT compared and not measured: those calls need a framer object, which only a connection makes, and no differential in the tree puts a framer in a stack. The engine is implemented and read, not verified (facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_pass_through_input()",
@@ -539,7 +539,7 @@
       "status": "implemented",
       "effect": "stops parsing the input: the bytes go on as they are",
       "facts": "facts/Network/NWObjects.md",
-      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
+      "source": "the port's own framer objects, read: the definitions, their equality, the options and their object values, and a message's own values are compared with the host's own Network in tests/backports/host/network-objects, which is also where the options differential names them. The framer's ENGINE - parse_input, parse_output, deliver_input, deliver_input_no_copy, the three writes, pass_through, mark_ready, mark_failed_with_error, schedule_wakeup, async, the handlers, prepend_application_protocol and the endpoint/parameter/options copies - is NOT compared and not measured: those calls need a framer object, which only a connection makes, and no differential in the tree puts a framer in a stack. The engine is implemented and read, not verified (facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_pass_through_output()",
@@ -549,7 +549,7 @@
       "status": "implemented",
       "effect": "stops building the output: the bytes go out as they are",
       "facts": "facts/Network/NWObjects.md",
-      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
+      "source": "the port's own framer objects, read: the definitions, their equality, the options and their object values, and a message's own values are compared with the host's own Network in tests/backports/host/network-objects, which is also where the options differential names them. The framer's ENGINE - parse_input, parse_output, deliver_input, deliver_input_no_copy, the three writes, pass_through, mark_ready, mark_failed_with_error, schedule_wakeup, async, the handlers, prepend_application_protocol and the endpoint/parameter/options copies - is NOT compared and not measured: those calls need a framer object, which only a connection makes, and no differential in the tree puts a framer in a stack. The engine is implemented and read, not verified (facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_prepend_application_protocol()",
@@ -559,7 +559,7 @@
       "status": "implemented",
       "effect": "a protocol to sit above this one in the connection's stack",
       "facts": "facts/Network/NWObjects.md",
-      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
+      "source": "the port's own framer objects, read: the definitions, their equality, the options and their object values, and a message's own values are compared with the host's own Network in tests/backports/host/network-objects, which is also where the options differential names them. The framer's ENGINE - parse_input, parse_output, deliver_input, deliver_input_no_copy, the three writes, pass_through, mark_ready, mark_failed_with_error, schedule_wakeup, async, the handlers, prepend_application_protocol and the endpoint/parameter/options copies - is NOT compared and not measured: those calls need a framer object, which only a connection makes, and no differential in the tree puts a framer in a stack. The engine is implemented and read, not verified (facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_protocol_create_message()",
@@ -579,7 +579,7 @@
       "status": "implemented",
       "effect": "asks for the wakeup handler to be called after that many milliseconds, or takes it back",
       "facts": "facts/Network/NWObjects.md",
-      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
+      "source": "the port's own framer objects, read: the definitions, their equality, the options and their object values, and a message's own values are compared with the host's own Network in tests/backports/host/network-objects, which is also where the options differential names them. The framer's ENGINE - parse_input, parse_output, deliver_input, deliver_input_no_copy, the three writes, pass_through, mark_ready, mark_failed_with_error, schedule_wakeup, async, the handlers, prepend_application_protocol and the endpoint/parameter/options copies - is NOT compared and not measured: those calls need a framer object, which only a connection makes, and no differential in the tree puts a framer in a stack. The engine is implemented and read, not verified (facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_set_cleanup_handler()",
@@ -589,7 +589,7 @@
       "status": "implemented",
       "effect": "the block called when the framer is torn down",
       "facts": "facts/Network/NWObjects.md",
-      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
+      "source": "the port's own framer objects, read: the definitions, their equality, the options and their object values, and a message's own values are compared with the host's own Network in tests/backports/host/network-objects, which is also where the options differential names them. The framer's ENGINE - parse_input, parse_output, deliver_input, deliver_input_no_copy, the three writes, pass_through, mark_ready, mark_failed_with_error, schedule_wakeup, async, the handlers, prepend_application_protocol and the endpoint/parameter/options copies - is NOT compared and not measured: those calls need a framer object, which only a connection makes, and no differential in the tree puts a framer in a stack. The engine is implemented and read, not verified (facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_set_input_handler()",
@@ -599,7 +599,7 @@
       "status": "implemented",
       "effect": "the block called when new input has arrived to be parsed",
       "facts": "facts/Network/NWObjects.md",
-      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
+      "source": "the port's own framer objects, read: the definitions, their equality, the options and their object values, and a message's own values are compared with the host's own Network in tests/backports/host/network-objects, which is also where the options differential names them. The framer's ENGINE - parse_input, parse_output, deliver_input, deliver_input_no_copy, the three writes, pass_through, mark_ready, mark_failed_with_error, schedule_wakeup, async, the handlers, prepend_application_protocol and the endpoint/parameter/options copies - is NOT compared and not measured: those calls need a framer object, which only a connection makes, and no differential in the tree puts a framer in a stack. The engine is implemented and read, not verified (facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_set_output_handler()",
@@ -609,7 +609,7 @@
       "status": "implemented",
       "effect": "the block called instead of the program when output is written",
       "facts": "facts/Network/NWObjects.md",
-      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
+      "source": "the port's own framer objects, read: the definitions, their equality, the options and their object values, and a message's own values are compared with the host's own Network in tests/backports/host/network-objects, which is also where the options differential names them. The framer's ENGINE - parse_input, parse_output, deliver_input, deliver_input_no_copy, the three writes, pass_through, mark_ready, mark_failed_with_error, schedule_wakeup, async, the handlers, prepend_application_protocol and the endpoint/parameter/options copies - is NOT compared and not measured: those calls need a framer object, which only a connection makes, and no differential in the tree puts a framer in a stack. The engine is implemented and read, not verified (facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_set_stop_handler()",
@@ -619,7 +619,7 @@
       "status": "implemented",
       "effect": "the block called when the connection stops using the framer",
       "facts": "facts/Network/NWObjects.md",
-      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
+      "source": "the port's own framer objects, read: the definitions, their equality, the options and their object values, and a message's own values are compared with the host's own Network in tests/backports/host/network-objects, which is also where the options differential names them. The framer's ENGINE - parse_input, parse_output, deliver_input, deliver_input_no_copy, the three writes, pass_through, mark_ready, mark_failed_with_error, schedule_wakeup, async, the handlers, prepend_application_protocol and the endpoint/parameter/options copies - is NOT compared and not measured: those calls need a framer object, which only a connection makes, and no differential in the tree puts a framer in a stack. The engine is implemented and read, not verified (facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_set_wakeup_handler()",
@@ -629,7 +629,7 @@
       "status": "implemented",
       "effect": "the block called when the framer's own wakeup comes",
       "facts": "facts/Network/NWObjects.md",
-      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
+      "source": "the port's own framer objects, read: the definitions, their equality, the options and their object values, and a message's own values are compared with the host's own Network in tests/backports/host/network-objects, which is also where the options differential names them. The framer's ENGINE - parse_input, parse_output, deliver_input, deliver_input_no_copy, the three writes, pass_through, mark_ready, mark_failed_with_error, schedule_wakeup, async, the handlers, prepend_application_protocol and the endpoint/parameter/options copies - is NOT compared and not measured: those calls need a framer object, which only a connection makes, and no differential in the tree puts a framer in a stack. The engine is implemented and read, not verified (facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_write_output()",
@@ -639,7 +639,7 @@
       "status": "implemented",
       "effect": "adds bytes for the connection to send",
       "facts": "facts/Network/NWObjects.md",
-      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
+      "source": "the port's own framer objects, read: the definitions, their equality, the options and their object values, and a message's own values are compared with the host's own Network in tests/backports/host/network-objects, which is also where the options differential names them. The framer's ENGINE - parse_input, parse_output, deliver_input, deliver_input_no_copy, the three writes, pass_through, mark_ready, mark_failed_with_error, schedule_wakeup, async, the handlers, prepend_application_protocol and the endpoint/parameter/options copies - is NOT compared and not measured: those calls need a framer object, which only a connection makes, and no differential in the tree puts a framer in a stack. The engine is implemented and read, not verified (facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_write_output_data()",
@@ -649,7 +649,7 @@
       "status": "implemented",
       "effect": "adds a dispatch data for the connection to send",
       "facts": "facts/Network/NWObjects.md",
-      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
+      "source": "the port's own framer objects, read: the definitions, their equality, the options and their object values, and a message's own values are compared with the host's own Network in tests/backports/host/network-objects, which is also where the options differential names them. The framer's ENGINE - parse_input, parse_output, deliver_input, deliver_input_no_copy, the three writes, pass_through, mark_ready, mark_failed_with_error, schedule_wakeup, async, the handlers, prepend_application_protocol and the endpoint/parameter/options copies - is NOT compared and not measured: those calls need a framer object, which only a connection makes, and no differential in the tree puts a framer in a stack. The engine is implemented and read, not verified (facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_write_output_no_copy()",
@@ -659,7 +659,7 @@
       "status": "implemented",
       "effect": "whether what the program wrote is there to be sent",
       "facts": "facts/Network/NWObjects.md",
-      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
+      "source": "the port's own framer objects, read: the definitions, their equality, the options and their object values, and a message's own values are compared with the host's own Network in tests/backports/host/network-objects, which is also where the options differential names them. The framer's ENGINE - parse_input, parse_output, deliver_input, deliver_input_no_copy, the three writes, pass_through, mark_ready, mark_failed_with_error, schedule_wakeup, async, the handlers, prepend_application_protocol and the endpoint/parameter/options copies - is NOT compared and not measured: those calls need a framer object, which only a connection makes, and no differential in the tree puts a framer in a stack. The engine is implemented and read, not verified (facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_ip_options_set_local_address_preference()",

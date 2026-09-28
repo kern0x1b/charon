@@ -8,7 +8,7 @@
  * by two dispatch sources on the connection's own queue - so every handler of a connection is called
  * on the queue that was set, and never before `nw_connection_start` has returned to its caller. A
  * connection with a TLS protocol in its stack wraps that socket in the release's own SecureTransport
- * (`SSLContextCreate`, `SSLSetIOFuncs`, `SSLSetPeerDomainName`, `SSLHandshake`, `SSLRead`, `SSLWrite`
+ * (`SSLCreateContext`, `SSLSetIOFuncs`, `SSLSetPeerDomainName`, `SSLHandshake`, `SSLRead`, `SSLWrite`
  * - all measured exported by the iOS 6.1.3 cache, `facts/Network/NWConnection.md`), driven from the
  * same two sources, so the handshake and the data travel over one engine and the state machine has
  * one place to move.
@@ -55,17 +55,14 @@
 #include <Security/Security.h>
 #include <Security/SecureTransport.h>
 
-/* Two names this release has and the SDK the port compiles against does not, declared here because
-   the port's own TLS needs them and a header cannot be asked for what it does not carry:
-   - `SSLContextCreate` is the context call of this release. The SDK declares `SSLCreateContext`, which
-     arrived in iOS 7; the 6.1.3 cache exports no such symbol and exports this one (measured, and
-     facts/Network/NWConnection.md has the reading of the cache).
-   - `nw_connection_state_setup` is the state a connection is in before it is started, the value 0 of
-     the SDK 26.2 enumeration; the 16.4 header starts its own at `invalid` and has no such case. */
-#if !defined(SSL_CREATECONTEXT_DECLARED)
-extern SSLContextRef SSLContextCreate(CFAllocatorRef allocator, SSLProtocolSide side);
-#define SSL_CREATECONTEXT_DECLARED 1
-#endif
+/* One name the SDK the port compiles against does not declare, declared here because the port's own
+   code needs it and a header cannot be asked for what it does not carry: `nw_connection_state_setup` is
+   the state a connection is in before it is started, the value 0 of the SDK 26.2 enumeration, while the
+   16.4 header starts its own at `invalid` and has no such case.
+
+   The TLS needs no such name, and the claim that it once did was wrong: the release's context call is
+   `SSLCreateContext`, which this SDK declares and the 6.1.3 cache exports - `SSLContextCreate` is
+   exported by no release on this machine (measured; facts/Network/NWConnection.md has the reading). */
 enum { nw_connection_state_setup = 0 };
 
 /* One piece of content on its way out, and one receive waiting for one. */
@@ -344,9 +341,9 @@ static OSStatus charon_tls_write(SSLConnectionRef connection, const void *data, 
     return errno == EAGAIN || errno == EWOULDBLOCK ? errSSLWouldBlock : errSSLClosedAbort;
 }
 
-/* The context of this release's SecureTransport. SSLContextCreate is the name here: SSLCreateContext
-   is the name from iOS 7 on and the 6.1.3 cache exports no such symbol (measured - see
-   facts/Network/NWConnection.md), and every other call of this TLS is there: SSLSetIOFuncs,
+/* The context of this release's SecureTransport, under the name both the SDK and the 6.1.3 cache
+   carry: SSLCreateContext (measured - facts/Network/NWConnection.md), and every other call of this TLS
+   is there too: SSLSetIOFuncs,
    SSLSetPeerDomainName, SSLSetCertificate, SSLSetSessionOption, SSLHandshake, SSLRead, SSLWrite,
    SSLClose. A connection takes the system's own evaluation of the server's chain - this release has
    no SSLGetServerTrust, so a program that wants a policy of its own asks to break on server auth with

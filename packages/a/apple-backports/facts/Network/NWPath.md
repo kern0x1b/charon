@@ -108,6 +108,14 @@ what the release itself reads, but the `IFTYPE_*` names for it are in XNU's `net
 grep for `IFTYPE` in it answers nothing). Spelling those numbers out would be a mapping of constants no
 SDK on this port carries, and the three answers above are all measurable on a device.
 
+**The device harness, and what it cannot decide.** `tests/backports/device/nwpath.m` asks the monitor for
+the type of each interface and compares it with what *it* decides from the interface's **name** -
+`pdp_ip*` cellular, `en*` Wi-Fi, `lo*` the loopback, everything else `other`. That rule is in the
+harness, not in the port, and it is the rule that cannot tell a tunnel from a bridge: both are `other` to
+it, and both would read as `other` whatever the port answers. So a device run confirms the loopback, the
+cellular radio and Wi-Fi, and it cannot by itself confirm a tunnel or a bridge; those two are confirmed
+here, against the kernel's own `ifi_type` numbers and the mutations in the table above.
+
 **What this does not settle:** the four checks that failed are the device harness's, and they are
 re-measured on a device, which is not mine to run. What is measured here is that the four interfaces
 the review names are now distinguished by mechanism rather than by name, that both targets compile with
