@@ -306,6 +306,51 @@ local function generated_includes(backports, found)
     end
 end
 
+
+-- The check's messages are read by a machine - the gap list is what the bands are handed - and a member's
+-- name holds a space (-[FixMapView setDelegate:]), so the names are joined with "; " and split back here. One
+-- question only: does the list split into the names it names.
+local function message_names(backports, found)
+    local root = fixtures.scratch()
+    os.tryrm(root)
+    os.mkdir(root)
+    os.mkdir(path.join(root, "registry"))
+    local inventory = {classes = {FixMapView = {image = true, instance = {}, ["+"] = {}}}}
+    local function row(api, kind)
+        return string.format('{"api": "%s", "kind": "%s", "introduced": "9.0", "minimum": "6.0", "status": "implemented", "facts": "f"}', api, kind)
+    end
+    io.writefile(path.join(root, "registry", "Fix.json"),
+                 string.format('{"framework": "Fix", "entries": [%s]}', row("FixMapView", "class")))
+    local message
+    local passed = try {
+        function ()
+            local surface = {classes = {FixMapView = true},
+                             members = {["-[FixMapView alpha]"] = true, ["-[FixMapView beta:]"] = true},
+                             symbols = {}, defined = {}}
+            backports.check_registry(root, surface, true, "6.1.3", {}, inventory)
+            return "passed"
+        end,
+        catch {function (errors) message = tostring(errors) end}
+    }
+    os.tryrm(root)
+    if passed then
+        table.insert(found, "a member of a class the release carries with no row of its own must be reported, and it is not")
+        return
+    end
+    local listed = (message:match("built, but no entry in registry/: (.*)") or ""):gsub("%s+$", "")
+    if listed == "" then
+        table.insert(found, "the gap list must be in the message a machine reads: " .. message:gsub("\n", " | "):sub(1, 110))
+        return
+    end
+    local names = {}
+    for name in listed:gmatch("[^;]+") do
+        table.insert(names, (name:gsub("^%s+", "")))
+    end
+    if #names ~= 2 or names[1] ~= "-[FixMapView alpha]" or names[2] ~= "-[FixMapView beta:]" then
+        table.insert(found, "the gap list must split back into the two names it names, and it says: " .. listed)
+    end
+end
+
 function failures(opt)
     local backports = import("apple.backports", {rootdir = opt.modules, anonymous = true})
     local found = {}
@@ -375,6 +420,7 @@ function failures(opt)
     two_readers(backports, found)
     own_rows(backports, found)
     generated_includes(backports, found)
+    message_names(backports, found)
     return found
 end
 

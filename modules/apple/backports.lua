@@ -1606,19 +1606,19 @@ function check_registry(root, found, complete, deployment, exports, inventory, s
             table.insert(lines, "  " .. described)
         end
         if #unlisted > 0 then
-            table.insert(lines, "  built, but no entry in registry/: " .. table.concat(unlisted, " "))
+            table.insert(lines, "  built, but no entry in registry/: " .. table.concat(unlisted, "; "))
         end
         if #unbuilt > 0 then
-            table.insert(lines, "  listed as implemented, but nothing of that name is built: " .. table.concat(unbuilt, " "))
+            table.insert(lines, "  listed as implemented, but nothing of that name is built: " .. table.concat(unbuilt, "; "))
         end
         if #answered > 0 then
-            table.insert(lines, "  listed as absent, but what is built answers it: " .. table.concat(answered, " "))
+            table.insert(lines, "  listed as absent, but what is built answers it: " .. table.concat(answered, "; "))
         end
         if #held > 0 then
-            table.insert(lines, "  listed as absent, but the release carries it itself, so it is the release's own and not absent: " .. table.concat(held, " "))
+            table.insert(lines, "  listed as absent, but the release carries it itself, so it is the release's own and not absent: " .. table.concat(held, "; "))
         end
         if #missing > 0 then
-            table.insert(lines, "  listed as ignored because the release carries it, but the release does not: " .. table.concat(missing, " "))
+            table.insert(lines, "  listed as ignored because the release carries it, but the release does not: " .. table.concat(missing, "; "))
         end
         raise(table.concat(lines, "\n"))
     end
