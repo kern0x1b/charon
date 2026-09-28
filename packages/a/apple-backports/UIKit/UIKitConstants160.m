@@ -44,3 +44,30 @@ const UIPointerAccessoryPosition UIPointerAccessoryPositionTopRight = {.offset =
 const UITextContentType UITextContentTypeDateTime = @"date-time";
 const UITextContentType UITextContentTypeFlightNumber = @"flight-number";
 const UITextContentType UITextContentTypeShipmentTrackingNumber = @"shipment-tracking-number";
+
+// Configuring the accessibility features of a Single App Mode session, iOS 12.2, and the
+// error domain its failures are reported in (the value of the domain read from the 16.0
+// cache, the oldest held release that exports it).
+//
+// It is in this object because it reads UIGuidedAccessErrorDomain, which is above: a C function
+// that reaches a constant in another object breaks in exactly the bands where the two land on
+// opposite sides of the release split (charon/AGENTS.md, "A C function shared between backport
+// files"). Both arrived in 12.2, whose first held exporting release is 16.0, so the object carries
+// one release.
+
+void UIGuidedAccessConfigureAccessibilityFeatures(UIGuidedAccessAccessibilityFeature features, BOOL enabled, void (^completion)(BOOL success, NSError *error))
+{
+    if (!completion)
+        return;
+    // "The application is not authorized to perform the requested action. For example, it may have
+    // requested a configuration change but is not locked into Single App Mode via a configuration
+    // profile" (SDK 26.2, UIGuidedAccess.h:17-19, UIGuidedAccessErrorPermissionDenied) - which is
+    // this case exactly: the function changes what a Single App Mode session allows, there is no
+    // such session here, and the request is answered on the next turn of the main queue, as the
+    // release's own completion is not called from inside the request.
+    dispatch_async(dispatch_get_main_queue(), ^{
+        completion(NO, [NSError errorWithDomain:UIGuidedAccessErrorDomain
+                                            code:UIGuidedAccessErrorPermissionDenied
+                                        userInfo:nil]);
+    });
+}
