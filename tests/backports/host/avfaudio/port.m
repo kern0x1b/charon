@@ -28,6 +28,7 @@
 @property (readonly) double tailTime;
 @property (nonatomic) AURenderBlock renderBlock;
 - (BOOL)allocateRenderResourcesAndReturnError:(NSError **)error;
+- (AudioUnit)audioUnit;
 @end
 
 @interface charon_host_AUAudioUnitBus : NSObject
@@ -136,6 +137,23 @@ int main(void)
         // harness exists to see: the host's own header documents the order as
         // "(-16, 2) indicates that a unit can accept up to 16 channels of input across its input
         // busses, but will only produce 2 channels of output".
+        // What the release itself answers for the property the header names, on this very unit, read
+        // both ways: as the two SInt32 the header's discussion shows, and as a single UInt32, which is
+        // what the property's "Value Type: UInt32" line says. A port that reads four bytes and checks
+        // the size against eight answers an empty array, and this is where that is visible.
+        SInt32 pair[2] = {0, 0};
+        UInt32 pairSize = sizeof(pair);
+        OSStatus pairStatus = AudioUnitGetProperty(port.audioUnit,
+                                                   kAudioUnitProperty_SupportedNumChannels,
+                                                   kAudioUnitScope_Global, 0, pair, &pairSize);
+        UInt32 single = 0;
+        UInt32 singleSize = sizeof(single);
+        OSStatus singleStatus = AudioUnitGetProperty(port.audioUnit,
+                                                     kAudioUnitProperty_SupportedNumChannels,
+                                                     kAudioUnitScope_Global, 0, &single, &singleSize);
+        printf("stage the property itself: as two SInt32 status %d size %u (%d, %d); as one UInt32 status %d size %u value %u\n",
+               (int)pairStatus, pairSize, (int)pair[0], (int)pair[1], (int)singleStatus, singleSize, (unsigned)single);
+
         NSArray *portChannels = port.channelCapabilities;
         NSArray *hostChannels = host.channelCapabilities;
         printf("stage channelCapabilities: port %s, host %s\n",
