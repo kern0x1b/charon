@@ -30,6 +30,55 @@ NS_ASSUME_NONNULL_BEGIN
     }
 }
 
+// The 9.0 automatic-presentation trio and +remotePaymentPasses. Suppression is what Apple calls the
+// stop of the wallet popping a pass up over whatever is in front of it, and this device never pops
+// one, so there is nothing to suppress and nothing to report: isSuppressing says NO, the request
+// answers with the release's own error rather than a token it has no use for, and the end call is
+// the no-op that ends nothing.
++ (BOOL)isSuppressingAutomaticPassPresentation
+{
+    return NO;
+}
+
++ (void)requestAutomaticPassPresentationSuppressionWithResponseHandler:
+    (void (^)(id suppressionToken, NSError *error))responseHandler
+{
+    if (responseHandler) {
+        responseHandler(nil, CharonPassKitNoHardwareError());
+    }
+}
+
++ (void)endAutomaticPassPresentationSuppressionWithRequestToken:(id)requestToken
+{
+    (void)requestToken;
+}
+
+// +remotePaymentPasses, 9.0: the empty set for the same reason +passesOfType: gives one.
++ (NSArray *)remotePaymentPasses
+{
+    return @[];
+}
+
+// -authorizationStatusForCapability:, 26.0, and its request beside it: the question is
+// PKPaymentAuthorizationStatusNotDetermined (0), which is the honest answer rather than
+// PKPaymentAuthorizationStatusRestricted, because nothing has been asked and nothing was refused.
+// The request therefore answers NotDetermined too, with the release's own error, rather than
+// pretending a decision was reached.
+- (NSInteger)authorizationStatusForCapability:(NSInteger)capability
+{
+    (void)capability;
+    return 0;
+}
+
+- (void)requestAuthorizationForCapability:(NSInteger)capability
+                              completion:(void (^)(NSInteger status, NSError *error))completion
+{
+    (void)capability;
+    if (completion) {
+        completion(0, CharonPassKitNoHardwareError());
+    }
+}
+
 // -openPaymentSetup, 8.3: a void method that opens the release's own settings. There is no wallet to
 // set up, so it does nothing rather than presenting a sheet for one that cannot be used.
 - (void)openPaymentSetup
