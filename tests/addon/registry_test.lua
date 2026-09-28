@@ -313,6 +313,24 @@ local function generated_includes(backports, found)
 end
 
 
+-- Every generated protocol source imports its library's Charon<Folder>Protocols.h, so a library with an
+-- implemented protocol row and no such header stops the gate on "file not found" (ARKit, HomeKit, Intents and
+-- IntentsUI did). The rows are read by protocol_sources itself, the reader the build uses, over the tree's own
+-- registry, and the case fails for each library that generates a source and has no header beside it.
+local function protocol_headers(backports, root, found)
+    local out = fixtures.scratch()
+    for _, library in ipairs(backports.libraries()) do
+        local written = backports.protocol_sources(root, library, out, library.folder)
+        local header = path.join(root, library.folder, "Charon" .. library.folder .. "Protocols.h")
+        if #written > 0 and not os.isfile(header) then
+            table.insert(found, string.format("%s has %d generated protocol sources and no %s for them to import",
+                                              library.name, #written, path.filename(header)))
+        end
+    end
+    os.tryrm(out)
+end
+
+
 -- The check's messages are read by a machine - the gap list is what the bands are handed - and a member's
 -- name holds a space (-[FixMapView setDelegate:]), so the names are joined with "; " and split back here. One
 -- question only: does the list split into the names it names.
@@ -630,6 +648,7 @@ function failures(opt)
     two_readers(backports, found)
     own_rows(backports, found)
     generated_includes(backports, found)
+    protocol_headers(backports, root, found)
     message_names(backports, found)
     real_object(backports, opt.modules, found)
     protocol_owner_step(backports, opt, found)
