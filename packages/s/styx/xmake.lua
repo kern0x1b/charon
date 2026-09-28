@@ -19,6 +19,13 @@ package("styx")
     for _, file in ipairs(sources) do
         table.insert(digests, path.filename(file) .. "=" .. hash.sha256(file))
     end
+    -- files/CombineKit is the layer of our own that closes the gap between what the fork
+    -- ships and what Apple's Combine declares; it is compiled into the same module, and
+    -- every file of it is part of the recipe's digest, so a change to it is a different
+    -- package with its own install path.
+    for _, file in ipairs(os.files(path.join(os.scriptdir(), "files", "CombineKit", "**.swift"))) do
+        table.insert(digests, path.filename(file) .. "=" .. hash.sha256(file))
+    end
     add_configs("recipe", {description = "The digest of this recipe and the source it adds, so a changed recipe is a different package.", default = hash.strhash128(table.concat(digests, ";")), type = "string", readonly = true})
 
     local libraries = {"Combine", "CombineHelpers"}
@@ -53,6 +60,13 @@ package("styx")
         -- The runtime's Dispatch overlay (Swift 5.4.3) has no DispatchTime.distance(to:);
         -- add it in the largest unit that fits an Int, as the scheduler needs it.
         os.cp(path.join(package:scriptdir(), "files", "DispatchTimeDistance.swift"), path.join("Sources", "Combine", "Schedulers"))
+
+        -- The layer of our own, copied into the module tree so that it is compiled as part
+        -- of the one `Combine` module and sees the fork's internal helpers.
+        os.mkdir(path.join("Sources", "Combine", "CombineKit"))
+        for _, file in ipairs(os.files(path.join(package:scriptdir(), "files", "CombineKit", "**.swift"))) do
+            os.cp(file, path.join("Sources", "Combine", "CombineKit", path.filename(file)))
+        end
 
         -- The C++ helper (locking primitives, combine-identifier counter).
         os.vrunv(toolchain:tool("cxx"), {"-target", triple, "-isysroot", sdk, "-nostdinc++", "-isystem",
