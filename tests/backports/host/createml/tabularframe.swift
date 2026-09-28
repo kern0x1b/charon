@@ -127,6 +127,7 @@ let hStrings = hHostFrame["city"]
 let hOptionals = hHostFrame["n"]
 let pStrings = PortTabularData.AnyColumn(PortTabularData.Column<String>(name: "city", ["berlin", "paris", "madrid"]))
 let pOptionals = PortTabularData.AnyColumn(PortTabularData.Column<Int?>(name: "n", [1, nil, 3]))
+print("PROBE-BEFORE missing=\(pOptionals.missingCount) wrapped=\(String(describing: pOptionals.wrappedElementType))")
 
 checkEqual("count: the host's and the port's agree", hStrings.count, pStrings.count)
 checkEqual("name: the host's and the port's agree", hStrings.name, pStrings.name)
@@ -147,6 +148,7 @@ checkEqual("isNil(at:): the host's and the port's agree on a missing cell",
 checkEqual("isNil(at:) past the end: the host says missing", hOptionals.isNil(at: 99), pOptionals.isNil(at: 99))
 checkEqual("wrappedElementType of a column of optionals: the host's and the port's agree",
            String(describing: hOptionals.wrappedElementType), String(describing: pOptionals.wrappedElementType))
+print("PROBE-AFTER  missing=\(pOptionals.missingCount) wrapped=\(String(describing: pOptionals.wrappedElementType))")
 
 // The probe runs here rather than at the top of the file because it reads `pOptionals`, and
 // this file is top-level code: a forward read of a top-level `let` is not a compile error and
