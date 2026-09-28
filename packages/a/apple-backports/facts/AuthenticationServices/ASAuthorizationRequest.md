@@ -128,9 +128,31 @@ copy that quietly changed one of those would be a different request wearing the 
 
     21 cases, 0 red
 
+## ASAuthorizationAppleIDRequest, and what the check cannot see
+
+One property over its superclass, and the measured class list is four instance methods: `user`,
+`setUser:`, `init` and the destructor the compiler emits. `user` is the identifier a previous
+authorization response vended, so a second sign-in asks for the same person rather than a new one.
+
+    ASAuthorizationAppleIDRequest  user       instance  available  yes yes  same
+    ASAuthorizationAppleIDRequest  setUser:   instance  available  yes yes  same
+    23 cases, 0 red
+
+**No value mutant for this class yet, and the reason is a limit of the check rather than an oversight.**
+The shape check reads the *binary*: it asks whether a method is bound, and the port's library is armv7
+so the code cannot be run on this host. A value claim -- the implicit operation a fresh request holds,
+or `user` surviving a copy -- is invisible to it, and a value mutant against it would be a mutation
+nothing could notice, which is the thing the mutant exists to prevent.
+
+Making it able to see values means compiling these sources for **this** host and running them, which
+they allow: they use Foundation and AuthenticationServices, and both exist on macOS. That is a host
+build of the same files plus an assertion on a fresh request's four properties and its copy's, and it is
+the next piece of work. The two request classes are committed with a green shape check and **no value
+mutant**, and this file says so rather than letting the green stand for more than it is.
+
 ## What is not done
 
-577 rows. The value half of the family is measured (30 constants, 30 agree with the host) and the shape
+576 rows. The value half of the family is measured (30 constants, 30 agree with the host) and the shape
 half has a host differential and a mutant; the classes do not exist yet. The differential is currently
 **red** on one case — `-[ASWebAuthenticationSession init]`, which the host has and the port's source did
 not, and which has since been added — and that red has not been cleared, so the check is committed in a

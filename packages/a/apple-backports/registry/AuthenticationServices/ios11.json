@@ -173,6 +173,16 @@
       "effect": "the OpenID-shaped request: -requestedScopes, -state, -nonce and -requestedOperation with their setters, -init (this header does not mark it unavailable and the host binds it, unlike the superclass, which does), and -copyWithZone: carrying all four across. A fresh request holds nil scopes, state and nonce and the implicit operation",
       "facts": "facts/AuthenticationServices/ASAuthorizationRequest.md",
       "source": "macOS 27.0's own AuthenticationServices, asked with class_copyMethodList for the class's method list by tests/backports/host/authservices; the 26.2 header's contract; and the request's members as the header declares them, read by clang's AST"
+    },
+    {
+      "api": "ASAuthorizationAppleIDRequest",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the request Sign in with Apple is made with: -user and -setUser: over the value a previous authorization response vended, so a second sign-in asks for the same person rather than a new one; -init, which this header does not mark unavailable; and -copyWithZone: carrying the user as well as the superclass's scopes, state, nonce and operation",
+      "facts": "facts/AuthenticationServices/ASAuthorizationRequest.md",
+      "source": "macOS 27.0's own AuthenticationServices, asked with class_copyMethodList for the class's method list by tests/backports/host/authservices -- four instance methods, of which the destructor is the compiler's; the 26.2 header's contract; and the request's members as the header declares them, read by clang's AST"
     }
   ]
 }
