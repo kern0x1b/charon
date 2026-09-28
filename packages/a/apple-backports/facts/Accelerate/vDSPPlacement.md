@@ -57,3 +57,25 @@ otherwise, and the ports are one multiply-add per element with two scalars read 
 
 The macOS arm64 host's answers are candidates for all of this and the oracle for none of it: it has been wrong
 twice on rows that are native on 6.0 armv7 — the reduction's order, and the biquad's one-ULP float difference.
+
+## Blocked: vDSP_biquad_SetCoefficientsSingle and _Double
+
+Both are 15.0, and **both act on the release's own `vDSP_biquad_Setup`**, whose layout vDSP.h leaves opaque — the
+type is `struct vDSP_biquad_SetupStruct *` and the header says the contents may change between releases and are
+to be touched only through the setup routines. That is a different situation from every other row in this band:
+
+- The three **double** biquad rows are implemented because the setup is **the port's own object** from end to
+  end — `vDSP_biquad_CreateSetupD` allocates it, `vDSP_biquadD` reads it — so both sides of the comparison are
+  the port's and the host's own, and the host is a full oracle.
+- `SetCoefficients` is handed a setup **the release allocated**. A port cannot construct one, so the host
+  differential has nothing to call it on: the setup type is opaque on both sides and only the release can make
+  one.
+
+**So the two rows wait for a guest probe**, after 7e035ac0's install fix, where the probe creates a setup with
+`vDSP_biquad_CreateSetup`, calls `SetCoefficients` on it, and observes the change through `vDSP_biquad` — the
+setup never being read. **The layout is not guessed, and no host-side row is claimed.**
+
+What a guest probe will still have to settle, because the header does not say it: how many coefficients the
+call reads (`__nsec` sections at five each, or something else), what happens to a section's state when its
+coefficients change under a filter that has already run, and whether float coefficients are rounded once or
+approached — which the multi-section form's `interpolates` flag already models for `SetTargets`.
