@@ -216,3 +216,41 @@ ORB-SLAM, VINS and OpenVINS are GPL: read only, and nothing here is derived from
 Nothing in the delivered maths was written from a paper: the arithmetic above is closed-form geometry
 over the tree's own matrices, and the parts that are a named algorithm are to be replaced by the
 permissive implementation rather than transcribed.
+
+## Open: the landmark depth and the pose convention disagree
+
+This is the reason the Gauss-Newton step is out of the frame's path, and it is not located.
+
+What is known, in the order it was measured. The pose accumulates the gyroscope's turn correctly once
+`CharonRotationBetween` multiplies `conj(from) * to` rather than `from * to` — two attitudes a step
+apart about one axis give the sum of their angles in the wrong order, and the pose reached 143 degrees
+after five frames where the truth was at 28.65. A landmark's depth comes from the turn-compensated
+drift of a point known to be the same point, divided by the camera's focal length, which is the camera's
+own `AVCaptureDeviceFormat` field of view; a recorded sequence has no camera to ask, so the differential
+hands over the calibration of the camera it renders with (a 30-degree half angle, which is that
+rendering's own projection). With all of that in place the solver still makes the pose worse: 124.099
+degrees with the step, 78.126 without.
+
+So one of three things is wrong, and the numbers do not yet say which:
+
+- **the depth is not a depth.** The relation `depth = f * (axis x ray).x / drift` is first-order and
+  assumes the drift is caused entirely by the rotation. Real drift also carries the camera's own
+  translation, and with the translation never integrated the drift is not what the relation assumes.
+  The fix is a baseline from the depth change across a frame, which is the missing piece anyway.
+- **the pose convention is the other way round.** The pose is the camera's in the world, so a landmark
+  is placed with it and put back into the camera's space with its inverse. The first version applied it
+  the wrong way and every point projected behind the camera, which the solver reported as no residual
+  at all rather than as a wrong one; it is now inverted, but "now inverted" is not "now right".
+- **the projection and the landmark are in different hands.** `CharonProject` builds a ray from
+  `intrinsics` and the pose; the landmark was placed from a ray built from a *normalised* image
+  coordinate and the frame's size. Those agree only if the principal point is the frame's centre and
+  the intrinsics are the same ones, and the principal point is assumed rather than measured.
+
+What would locate it, in order of cheapness: print one landmark and one observation - the image
+coordinate it was matched at, the world position it was placed at, and where the projection of that
+position lands - for one frame, and check which of the three pairs disagrees. That is four lines of
+output and no new maths.
+
+The owner's ruling is that this does not get fixed by tuning the solver: the pose is to come out of
+OpenCV 3.4.20's ORB and `solvePnPRansac` once `packages/o/opencv` builds, and this is the record of
+what the hand-written path is not doing while it waits.
