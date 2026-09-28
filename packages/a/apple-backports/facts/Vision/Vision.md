@@ -31,17 +31,36 @@ recorded by `tests/backports/host/vision/run.sh` (33 records) and held against t
   declares and Core ML's own image constructors use -- measured against Core ML's own constructor
   as the oracle, which is what this port has to match:
 
-  | picture to | differing pixels against a paste | what the port does |
+  | picture to | differing pixels, the port against Core ML | of |
   | --- | --- | --- |
-  | 100x50 to 224x224 | 1996 of 50176 (the review's measurement) | `kCGImageInterpolationHigh`, unverified |
-  | 13x7 to 8x8 | 22 of 64 (the review's measurement) | the same, unverified |
+  | 100x50 to 224x224, centre crop | 50175 | 50176 |
+  | 100x50 to 224x224, scale fit | 49632 | 50176 |
+  | 13x7 to 8x8, either | 64 | 128 |
+  | 16x16 to 16x16, either (the exact 1:1) | **0** | 256 |
+  | 8x8 to 16x16, either (an integer 2x) | 252 | 256 |
 
-  Core ML blends when the scale is fractional and a paste does not, and the interpolation quality
-  is the whole of the difference. **`kCGImageInterpolationHigh` is set on both contexts, and the
-  number of differing pixels after that change is not yet measured in this tree** -- the two figures
-  above are what the review measured against a paste, and they are what the change was made for. A
-  check that compares the two pixel for pixel does not exist yet, and until it does this is the
-  one place in the request path whose output is not held to the oracle.
+  The check is `tests/backports/host/vision/run-crop.sh` with `crop.m`: one program built twice,
+  once against Core ML's own `+[MLFeatureValue featureValueWithCGImage:pixelsWide:pixelsHigh:pixelFormatType:options:error:]`
+  -- which answers itself with 0 of every case, so the program is sound -- and once against the
+  port's own resampler, compiled with the library under names of its own. Each case prints
+  `differing=N of M` and the run fails if any N is not zero.
+
+  **The port does not match, and the reason is not yet known.** The one case it matches exactly is
+  the one where no resampling happens at all: a 16x16 picture asked for as 16x16 is handed on
+  untouched, and 0 of 256 pixels differ. Every case that *scales* is wrong, and wrong by nearly
+  every pixel rather than by the handful a blend-versus-paste difference would cost -- so this is
+  not the interpolation quality, and `kCGInterpolationHigh` is not the answer either: the harness
+  compiles the port's own function with each of CoreGraphics' three qualities and every one of them
+  reads the same 50175 of 50176. Something about the drawing differs wholesale -- the channel order
+  of the buffer it reads, or the geometry it draws into -- and the next thing to do is read the two
+  buffers' first rows side by side and name the difference. The seam for the quality
+  (`CHARON_VISION_INTERPOLATION`, defaulting to `kCGInterpolationHigh`) is what let all three be
+  measured in one run, and it stays because it is how the right one will be recognised when the
+  cause is found.
+
+  The review's own figures -- 1996 of 50176 for 100x50 to 224x224 and 22 of 64 for 13x7 to 8x8 --
+  were measured against a paste through a different path, and this check does not reproduce them;
+  the numbers above are the ones this tree produces, and they are worse.
 
   The two rules themselves: centre crop scales until the picture covers the
   target and keeps the middle, scale fit scales until it fits and leaves the rest black. A buffer

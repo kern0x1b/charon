@@ -28,6 +28,14 @@
 #import <CoreGraphics/CoreGraphics.h>
 #import <CoreVideo/CoreVideo.h>
 
+/* The interpolation Core ML's own image constructor uses, as a macro so the check can compile this
+ * same function with each of CoreGraphics' qualities and find the one that matches the framework
+ * pixel for pixel -- tests/backports/host/vision/crop.m, which is how `High` was chosen. The default
+ * is what the measurement says; a caller that wants a different one is the check, not a library. */
+#ifndef CHARON_VISION_INTERPOLATION
+#define CHARON_VISION_INTERPOLATION kCGInterpolationHigh
+#endif
+
 static inline CVPixelBufferRef charon_vision_pixels(CVPixelBufferRef source, size_t wide, size_t high,
                                             VNImageCropAndScaleOption option)
 {
@@ -87,7 +95,7 @@ static inline CVPixelBufferRef charon_vision_pixels(CVPixelBufferRef source, siz
          * colour of its nearest corner. The interpolation quality is the only difference, and this
          * is the one CoreGraphics offers that is not nearest-neighbour: `High` resamples with a
          * smooth kernel, and it is what the numbers above are measured against. */
-        CGContextSetInterpolationQuality(context, kCGImageInterpolationHigh);
+        CGContextSetInterpolationQuality(context, CHARON_VISION_INTERPOLATION);
         /* Black first, so scale fit's bars are black rather than whatever the buffer held. */
         CGContextSetRGBFillColor(context, 0, 0, 0, 1);
         CGContextFillRect(context, CGRectMake(0, 0, (CGFloat)wide, (CGFloat)high));
@@ -161,7 +169,7 @@ static inline CVPixelBufferRef charon_vision_buffer_of_image(CGImageRef image)
         CGColorSpaceRelease(space);
     }
     if (context != NULL) {
-        CGContextSetInterpolationQuality(context, kCGImageInterpolationHigh);
+        CGContextSetInterpolationQuality(context, CHARON_VISION_INTERPOLATION);
     }
     if (context == NULL) {
         CVPixelBufferUnlockBaseAddress(buffer, 0);
