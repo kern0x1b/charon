@@ -1180,14 +1180,20 @@ end
 
 -- The members a binary's categories add to classes it does not define itself: the API a category
 -- carries, as the registry spells it.
-local function added_members(inventory, ours)
+local function added_members(inventory)
     local found = {}
     for name, class in pairs(inventory and inventory.classes or {}) do
-        if not class.image and not ours[name] then
+        -- The port's own classes are its machinery, and it names them; everything else a category
+        -- adds is API, whether or not the release has the class - the backports exist to add to
+        -- classes the release has. Both former conditions hid the same members: a class the port
+        -- defines is one the release has too, so `not class.image` and `not ours[name]` each
+        -- excluded what the other could have shown. Measured 2026-09-28 on a green 6.1.3 build of
+        -- main: 1,452 members, none of which any registry row answers for.
+        if not name:startswith("Charon") then
             for kind, sign in pairs({instance = "-", class = "+"}) do
                 for selector in pairs(class[kind]) do
                     local plain = selector:sub(2)
-                    if not plain:startswith("charon_") and not plain:startswith(".cxx_") and plain ~= "load" then
+                    if not plain:startswith(".cxx_") and plain ~= "load" and not internal_symbol(plain) then
                         table.insert(found, string.format("%s[%s %s]", sign, name, plain))
                     end
                 end
@@ -1228,7 +1234,7 @@ function surface(binaries, architecture)
                 end
             end
         end
-        for _, member in ipairs(added_members(inventory, ours)) do
+        for _, member in ipairs(added_members(inventory)) do
             found.members[member] = true
         end
     end
@@ -1566,7 +1572,7 @@ local function carried_names(object, architecture)
         end
         names[class or symbol:sub(2)] = true
     end
-    for _, member in ipairs(added_members(objc.binary_inventory(object, architecture), ours)) do
+    for _, member in ipairs(added_members(objc.binary_inventory(object, architecture))) do
         names[member] = true
     end
     return table.orderkeys(names)
