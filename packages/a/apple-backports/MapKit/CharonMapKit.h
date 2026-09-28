@@ -35,16 +35,14 @@ NS_ASSUME_NONNULL_BEGIN
 @class MKLocalSearchCompleter;
 @class MKLocalSearchCompletion;
 
-#if !CHARON_HOST_PROBE
-// The port's OWN protocol, behind the host guard because the host's MapKit declares one of the same
-// name -- but the 16.4 SDK the port compiles against declares only the protocol, never the class, so
-// on a device this IS the declaration and there is no collision.
-@protocol MKLocalSearchCompleterDelegate <NSObject>
-@optional
-- (void)completerDidUpdateResults:(id)completer;
-- (void)completer:(id)completer didFailWithError:(nullable NSError *)error;
-@end
-#endif
+// MKLocalSearchCompleterDelegate is NOT declared here, and that is a measurement rather than an
+// omission. The 16.4 SDK this package compiles against DOES declare it -- MKLocalSearchCompleter.h:48,
+// with the same two @optional members this port needs -- so a declaration here was a second one of the
+// same protocol and clang ignored it: "duplicate protocol definition of
+// 'MKLocalSearchCompleterDelegate' is ignored [-Wduplicate-protocol]". What the RELEASE lacks is the
+// CLASS: 6.1.3 has 0 occurrences of MKLocalSearchCompleter and 0 of the protocol, so on a device the
+// SDK's declaration stands and the port's own class below is the only thing it adds. The protocol is
+// the SDK's, imported by every header of this folder; the port only needs the class.
 
 // MKLocalSearchCompleter's regionPriority, whose OWN type differs between the SDKs: the 16.4 one the
 // port compiles against does not declare the property at all, and the host's MapKit declares it as

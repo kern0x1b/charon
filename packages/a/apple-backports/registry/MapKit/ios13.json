@@ -198,6 +198,17 @@
       "effect": "which kinds of result the release's own search is asked for, the release's own -resultTypes, which the 16.4 header declares and the release carries",
       "facts": "facts/MapKit/MapKit.md",
       "source": "apple.objc.inventory on the armv7 dyld shared cache of 6.1.3: the release's own MKLocalSearchRequest carries -naturalLanguageQuery, -region and their setters, its own MKLocalSearch carries -initWithRequest:, -startWithCompletionHandler:, -cancel and -isSearching, and its own MKDirectionsRequest carries -source, -destination, -transportType, -requestsAlternateRoutes, -departureDate and -arrivalDate"
+    },
+    {
+      "api": "MKLocalSearchCompleterDelegate",
+      "kind": "protocol",
+      "introduced": "9.3",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MapKit/MapKit.md",
+      "reason": "the PORT'S OWN protocol, declared in CharonMapKit.h:42 behind CHARON_HOST_PROBE, because the 6.1.3 armv7 cache has 0 occurrences of MKLocalSearchCompleter and 0 of its delegate protocol, so there is nothing to carry and everything to declare. The declaration is needed and not decorative: a member of a protocol is built only when its owner is a protocol row this registry carries, and without this row the two messages below are declared and never built. The two @optional members are the 26.2 header's own (MKLocalSearchCompleter.h:62-68) and the 16.4 header's own (:48-50), the same two selectors in the same order",
+      "effect": "the protocol an application's delegate conforms to for the port's own completer: it declares -completerDidUpdateResults: and -completer:didFailWithError: as OPTIONAL, both @optional in the SDK's own headers, so a conformer implements neither, one or both and the port's completer asks for each only where the delegate responds to it",
+      "source": "apple.objc.inventory on the armv7 dyld shared cache of 6.1.3, which finds 0 occurrences of MKLocalSearchCompleter and 0 of MKLocalSearchCompleterDelegate, so both are the port's own; the SDK 16.4's MapKit.framework/Headers/MKLocalSearchCompleter.h:48-50 and the SDK 26.2's :62-68, which agree on both members; and CharonMapKit.h:42, where this port declares it"
     }
   ]
 }
