@@ -427,3 +427,29 @@ with -- which is the whole reason the port carries the class. The host is still 
 and the probe keeps it: the port's own answer, checked against **RFC 7946 itself** (the shapes, the
 counts, the coordinates, and the five mutations that must be refused), which is a check the decoder can
 pass or fail without Apple's decoder in the picture.
+
+## The map item family, and what each piece stands on
+
+Forty-nine rows, and no wall in any of them: the release has `MKLocalSearch` (first exported 6.1) and
+`MKMapItem` with `-placeID`, `-placemark`, `-dictionaryRepresentation`, `-phoneNumber`, `-rating`,
+`-attributions` and `-openInMapsWithLaunchOptions:` (all measured with `apple.objc.inventory` on the
+armv7 cache of 6.1.3), and a place is something this release genuinely holds. The family, and what
+each part is:
+
+| piece | rows | object | what it is |
+| --- | --- | --- | --- |
+| `MKMapItemRequest` | 6 | 16.0 | made **for a map feature**, and a map feature is a thing the map itself knows about, which arrives with a map that has features. This release's map has none and `MKMapFeatureAnnotation` is registered `absent` for that reason — so `-cancel`/`-cancelled`/`-loading` are real, the feature is `nil`, and `-getMapItemWithCompletionHandler:` answers with the header's own error in `MKErrorDomain` rather than a made-up place |
+| `MKMapItemIdentifier` | 2 | 18.0 | the release's own `-placeID`, kept byte for byte, and `nil` where the place has none |
+| `MKMapItem`'s later members | 7 | category on the release's class | `timeZone` and `pointOfInterestCategory` and `location` and `address` and `addressRepresentations` out of the release's own placemark vocabulary and its own `-dictionaryRepresentation`; `identifier` reads the release's own `-placeID`; `alternateIdentifiers` is **one** identifier, because there is no second place to name here |
+| `MKMapItemAnnotation` | 2 | 18.0 | the release's own `MKAnnotation` shape with the item behind it, the coordinate and title from the item's own placemark, and the **invalid** coordinate where there is none |
+| the detail screen's three classes | 17 | 18.0 | `MKMapItemDetailViewController` as a real view controller over the release's own views, `MKSelectionAccessory` as the accessory that opens it in a style, and the style as Apple's own class with 5 class methods (the four factories and the two class properties) and 7 instance methods of its own |
+
+**Every shape was measured on the host before the code was written**, and three would have been wrong
+otherwise: `initWithMapItem:displaysMap:` is `@28@0:8@16B24` — the second argument is a **BOOL**;
+`calloutWithCalloutStyle:` is `@24@0:8q16` — the callout style is an **eight-byte enum**; and
+`+callout`/`+openInMaps` are **class** methods on a class with no instance methods, so the corpus's
+`property` spelling is a class property and the build's own `spellings()` reads it as `+[Class property]`.
+
+**One difference between the two releases, recorded rather than smoothed over**: the host's own
+`MKMapItem` no longer has `-placeID` and has `-identifier` instead, while this release has `-placeID`.
+The port reads **the release's** name, and each member's registry entry says so.
