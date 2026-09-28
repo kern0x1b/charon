@@ -24,6 +24,22 @@ package("monocypher")
     on_install("iphoneos", function (package)
         local toolchain = assert(package:toolchains(), "monocypher is built with the apple-ios toolchain")[1]
         toolchain:load()
+        -- The compiler is the one the charon toolchain names, taken from the llvm package the
+        -- way toolchains/apple-ios/xmake.lua's parts() takes it, and not through
+        -- toolchain:tool("cc"): that call falls back to the host's /usr/bin/clang silently when the
+        -- toolchain has not resolved its llvm package, and the host's clang cannot target
+        -- armv7-apple-ios at all. The 4.3 gate's resolve hit exactly that and the install failed
+        -- with a runv of /usr/bin/clang. Naming the package, and refusing when it is not there,
+        -- turns that silent fallback into a failure that says what it wants.
+        local required = package:required_packages() or {}
+        local llvm = required["llvm"]
+        if not llvm then
+            raise("charon@monocypher is built with the charon toolchain's clang, which comes from the llvm package; this package's graph does not hold it")
+        end
+        local compiler = path.join(llvm:installdir(), "bin", "clang")
+        if not os.isfile(compiler) then
+            raise("charon@monocypher needs the charon clang at %s, and there is none there", compiler)
+        end
         -- xmake strips the tarball's top folder, so what the release ships as
         -- monocypher-$(version)/src/monocypher.c is at src/monocypher.c here. Naming the release folder
         -- is what the gate reported: "cannot copy file monocypher-4.0.2/src/monocypher.c, file not
@@ -39,7 +55,7 @@ package("monocypher")
         for _, source in ipairs({"monocypher.c", "monocypher-ed25519.c"}) do
             local object = path.absolute(path.join("objects", source:gsub("%.c$", ".o")))
             os.mkdir(path.directory(object))
-            os.vrunv(toolchain:tool("cc"), table.join(target, FLAGS, {"-c", path.join(staged, source), "-o", object}))
+            os.vrunv(compiler, table.join(target, FLAGS, {"-c", path.join(staged, source), "-o", object}))
             table.insert(objects, object)
         end
         os.vrunv("xcrun", table.join({"libtool", "-static", "-o", path.join(package:installdir("lib"), "libMonocypher.a")}, objects))
