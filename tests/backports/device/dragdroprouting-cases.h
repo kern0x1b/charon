@@ -1,8 +1,6 @@
 #import <Foundation/Foundation.h>
 
-// The order in which a view asks its own drop delegate. It lives in the port, in
-// CharonDropSequence11.m, next to the code that asks in that order, so the sequence a test asserts
-// and the sequence the routing drives are read from the same place. Swapping two entries there is
-// the mutation that must turn the test red.
-NSArray *charon_collection_drop_order(void);
-NSArray *charon_table_drop_order(void);
+// The order a view asks its own drop delegate in is asserted against Apple's, as a literal in
+// dragdroprouting.m beside the reason from the header. Nothing here is read from the port: an
+// expectation taken from the code under test cannot fail when the code is wrong, which is the hole
+// this file previously had.

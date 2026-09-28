@@ -11,7 +11,8 @@ static NSString *CharonDescribe(NSIndexPath *path)
     return path ? [NSString stringWithFormat:@"{%ld, %ld}", (long)path.section, (long)path.item] : @"(nil)";
 }
 
-// The two views' drop sequences, as CharonDropSequence11.m defines them.
+// The two views' drop sequences, as the port names them. Only the entry point is borrowed: the
+// ORDER is not read from the port, it is asserted against Apple's, below.
 @interface UICollectionView (CharonDropSequenceForTest)
 - (void)charon_driveDropSessionAtPoint:(CGPoint)point;
 @end
@@ -19,6 +20,59 @@ static NSString *CharonDescribe(NSIndexPath *path)
 @interface UITableView (CharonDropSequenceForTest)
 - (void)charon_driveDropSessionAtPoint:(CGPoint)point;
 @end
+
+// ---------------------------------------------------------------------------------------------
+// The order Apple documents, as a fact about the header rather than a copy of its text.
+//
+// UIDropInteraction.h says, as a fact about when each is sent:
+//
+//   * `dropInteraction:canHandleSession:` gates the rest: if it is not implemented or returns
+//     true, the other methods are called "starting with -dropInteraction:sessionDidEnter:". So
+//     canHandle is first and sessionDidEnter follows it, and nothing else is sent when it is false.
+//   * `dropInteraction:sessionDidEnter:` is "called when a drag enters the view".
+//   * `dropInteraction:sessionDidUpdate:` is "called when the drag enters the interaction's view,
+//     or when the drag moves while inside the view", and it is the one a delegate must implement to
+//     accept a drop at all -- so it is asked on every move, after the enter, before the drop.
+//   * `dropInteraction:previewForDroppingItem:withDefault:` is the drop animation's preview, which
+//     the header places after `-dropInteraction:performDrop:` has been called, and the port asks
+//     it for the drop that is about to be performed, so it is between the update and the perform.
+//   * `dropInteraction:performDrop:` is "called when the user drops onto this interaction's view",
+//     and the data may be requested "only during the scope of this method".
+//   * `dropInteraction:concludeDrop:` is called "after -dropInteraction:performDrop: has been
+//     called, and all resulting drop animations have completed", which is the last thing before the
+//     view is told to draw its final state.
+//   * `dropInteraction:sessionDidEnd:` is called "when the drag session ends, for any reason",
+//     "for *every* interaction that ever received sessionDidEnter:, sessionDidUpdate: or
+//     sessionDidExit:" -- so it is last, and it is sent even to an interaction that has seen only
+//     the enter and the exit.
+//
+// That is the order these two views are asserted to ask in. The strings carry the class and the
+// arguments each message is given, so a change in what a message carries fails as well as a change
+// in when it arrives.
+static NSArray *chCollectionDocumentedOrder(void)
+{
+    return @[@"collection.canHandleDropSession",
+             @"collection.dropSessionDidEnter",
+             @"collection.dropSessionDidUpdate:withDestinationIndexPath:{0, 0}",
+             @"collection.dropPreviewParametersForItemAtIndexPath:{0, 0}",
+             @"collection.performDropWithCoordinator:items=1:destination={0, 0}:operation=1:intent=2",
+             @"collection.dropSessionDidExit",
+             @"collection.dropSessionDidEnd"];
+}
+
+// UITableView's drop delegate is UITableViewDropDelegate, which is the same set of questions over a
+// table, and the header that declares them says the same things about when each is sent, so the
+// order is the same with the table's own selectors.
+static NSArray *chTableDocumentedOrder(void)
+{
+    return @[@"table.canHandleDropSession",
+             @"table.dropSessionDidEnter",
+             @"table.dropSessionDidUpdate:withDestinationIndexPath:{0, 0}",
+             @"table.dropPreviewParametersForRowAtIndexPath:{0, 0}",
+             @"table.performDropWithCoordinator:items=1:destination={0, 0}:operation=1:intent=2",
+             @"table.dropSessionDidExit",
+             @"table.dropSessionDidEnd"];
+}
 
 static NSString *const results_folder = @"/private/var/backports";
 
@@ -215,27 +269,15 @@ static NSString *const results_folder = @"/private/var/backports";
     NSArray *tableAsked = [probe.log subarrayWithRange:NSMakeRange(afterCollection,
                                                                    probe.log.count - afterCollection)];
     NSMutableArray *expectedCollection = [NSMutableArray array];
-    for (NSString *message in charon_collection_drop_order()) {
-        if ([message isEqualToString:@"dropSessionDidUpdate:withDestinationIndexPath:"])
-            [expectedCollection addObject:[NSString stringWithFormat:@"collection.%@:0-0", message]];
-        else if ([message isEqualToString:@"performDropWithCoordinator:"])
-            [expectedCollection addObject:@"collection.performDropWithCoordinator:items=1:destination={0, 0}:operation=1:intent=2"];
-        else if ([message isEqualToString:@"dropPreviewParametersForItemAtIndexPath:"])
-            [expectedCollection addObject:@"collection.dropPreviewParametersForItemAtIndexPath:0-0"];
-        else
-            [expectedCollection addObject:[@"collection." stringByAppendingString:message]];
-    }
+    for (NSString *line in chCollectionDocumentedOrder())
+        [expectedCollection addObject:line];
     charon_check([collectionAsked isEqualToArray:expectedCollection],
                  "the collection view's drop delegate is asked in the documented order, with the arguments it is given",
                  [NSString stringWithFormat:@"\n    asked   %@\n    expect  %@", collectionAsked, expectedCollection]);
 
-    NSArray *tableExpectation = @[@"table.canHandleDropSession",
-                                  @"table.dropSessionDidEnter",
-                                  @"table.dropSessionDidUpdate:withDestinationIndexPath:0-0",
-                                  @"table.dropPreviewParametersForRowAtIndexPath:0-0",
-                                  @"table.performDropWithCoordinator:items=1:destination={0, 0}:operation=1:intent=2",
-                                  @"table.dropSessionDidExit",
-                                  @"table.dropSessionDidEnd"];
+    NSMutableArray *tableExpectation = [NSMutableArray array];
+    for (NSString *line in chTableDocumentedOrder())
+        [tableExpectation addObject:line];
     charon_check([tableAsked isEqualToArray:tableExpectation],
                  "the table view's drop delegate is asked in the documented order, with the arguments it is given",
                  [NSString stringWithFormat:@"\n    asked   %@\n    expect  %@", tableAsked, tableExpectation]);
