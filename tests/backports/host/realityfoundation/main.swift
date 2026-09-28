@@ -1153,6 +1153,44 @@ check("a cancelled subscription hears nothing more", began, raisedBefore)
     check("and a free billboard mode with an axis",
           ParticleEmitter.BillboardMode.free(axis: SIMD3<Float>(0, 1, 0), variation: 10)
               == ParticleEmitter.BillboardMode.free(axis: SIMD3<Float>(0, 1, 0), variation: 10), true)
+    // The members the interface declares at :12009-12011 and the types behind them: the blend
+    // mode, the image, and the sprite sheet with its seven settings.
+    check("an emitter blends by alpha until a program says otherwise",
+          ParticleEmitter().blendMode, ParticleEmitter.BlendMode.alpha)
+    check("and has no image and no sheet", ParticleEmitter().image == nil && ParticleEmitter().imageSequence == nil, true)
+    var sheet = ParticleEmitter.ImageSequence(rowCount: 4, columnCount: 8, initialFrame: 3,
+                                              initialFrameVariation: 1, frameRate: 24, frameRateVariation: 0.5,
+                                              animationMode: .looping)
+    check("a sheet is the grid it was given", sheet.rowCount, 4)
+    check("and its columns", sheet.columnCount, 8)
+    check("and the frame it starts on", sheet.initialFrame, 3)
+    check("and by how much that may differ", sheet.initialFrameVariation, 1)
+    check("and the rate it plays at", sheet.frameRate, Float(24))
+    check("and by how much that may differ", sheet.frameRateVariation, Float(0.5))
+    check("and how it carries on", sheet.animationMode, ParticleEmitter.ImageSequence.AnimationRepeatMode.looping)
+    check("the sheet's own three modes are the system's",
+          [ParticleEmitter.ImageSequence.AnimationRepeatMode.playOnce, .looping, .autoReverse].count, 3)
+    check("and the blend mode's three are too",
+          [ParticleEmitter.BlendMode.alpha, .opaque, .additive].count, 3)
+    check("a sheet round-trips through Codable, as the interface's struct is Codable",
+          { try? JSONDecoder().decode(ParticleEmitter.ImageSequence.self,
+                                      from: JSONEncoder().encode(sheet)) }() == sheet, true)
+    sheet.rowCount = 1
+    check("and the top-level AnimationRepeatMode is a different type with the system's four cases",
+          [AnimationRepeatMode.none, .repeat, .cumulative, .autoReverse].count, 4)
+    // The image cannot be decoded: a texture is a runtime object with no name this port can code,
+    // and the decode says so rather than dropping it. The check is that it refuses.
+    do {
+        let withImage = ParticleEmitter(image: TextureResource.generate(from: CGColor(gray: 0.5, alpha: 1)))
+        let data = try JSONEncoder().encode(withImage)
+        _ = try JSONDecoder().decode(ParticleEmitter.self, from: data)
+        print("FAIL an emitter with an image decoded, and it should have refused")
+    } catch is DecodingError {
+        check("an emitter whose data names a texture refuses to decode rather than dropping it", true, true)
+    } catch {
+        print("FAIL the refusal was a \(error) and not a DecodingError")
+    }
+
     // Codable, as the SDK's is (26.2:11789 - `Component, Swift.Codable`, and not Equatable, which
     // is why the round trip below compares fields and not the two values): the round trip is the
     // check that the synthesis is real and that every member is carried by it.

@@ -54,5 +54,8 @@ common="-target $target -sdk $sdk -swift-version 5 -parse-as-library -O -wmo"
 
 "$build/rf-check" > "$build/log" 2>&1 && result=0 || result=$?
 grep -v '^ok ' "$build/log" || true
+# The number, because a commit message quotes it and a run that prints only "ALL CHECKS PASSED"
+# cannot be checked against one.
+printf 'checks: %s\n' "$(grep -c '^ok ' "$build/log")"
 echo "log=$build/log"
 exit $result

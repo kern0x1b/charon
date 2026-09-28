@@ -788,7 +788,7 @@
             "minimum": "6.1.3",
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
-            "effect": "the member is carried whole: the declaration, the behaviour the host measures, and the release it is available from",
+            "effect": "the emitter's own settings are carried: the birth rate and its variation, the damping, the acceleration, the spreading angle, the size and its variation, the billboard mode, the mass and its variation, the life span and its variation, the angle and angular speed and their variations, the opacity curve, the size and colour evolution, the noise's strength, scale and animation speed, the attraction and the vortex, the lighting flag, the stretch factor and the sort order - thirty-four members, each read from the interface. Not the whole emitter: the image and the image sequence are declared so its shape is the interface's, and both are absent rows, because a particle is drawn by a renderer this port has none of",
             "source": "the host differential in the tree, tests/backports/host/realityfoundation (319 checks, run by tests/backports/host/run-all.sh), and the SDK interface each declaration was read from"
         },
         {
@@ -839,6 +839,136 @@
             "status": "implemented",
             "reason": "the SDK has no such member: an emitter is a component and a program reaches it through entity.components[ParticleEmitterComponent.self]. This is the accessor's this port adds, named the way the module's other optional components are",
             "effect": "an entity's emitter, read and written through the component set, and nil for an entity that has none - the shape the SDK's own accessors of the same kind have",
+            "source": "the host differential in the tree, tests/backports/host/realityfoundation (319 checks, run by tests/backports/host/run-all.sh), and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "ParticleEmitterComponent.ParticleEmitter.BlendMode",
+            "kind": "enum",
+            "introduced": "15.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in the tree, tests/backports/host/realityfoundation (319 checks, run by tests/backports/host/run-all.sh), and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "ParticleEmitterComponent.ParticleEmitter.ImageSequence",
+            "kind": "struct",
+            "introduced": "15.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in the tree, tests/backports/host/realityfoundation (319 checks, run by tests/backports/host/run-all.sh), and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "ParticleEmitterComponent.ParticleEmitter.ImageSequence.AnimationRepeatMode",
+            "kind": "enum",
+            "introduced": "15.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in the tree, tests/backports/host/realityfoundation (319 checks, run by tests/backports/host/run-all.sh), and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "ParticleEmitterComponent.ParticleEmitter.ImageSequence.rowCount",
+            "kind": "property",
+            "introduced": "15.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in the tree, tests/backports/host/realityfoundation (319 checks, run by tests/backports/host/run-all.sh), and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "ParticleEmitterComponent.ParticleEmitter.ImageSequence.columnCount",
+            "kind": "property",
+            "introduced": "15.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in the tree, tests/backports/host/realityfoundation (319 checks, run by tests/backports/host/run-all.sh), and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "ParticleEmitterComponent.ParticleEmitter.ImageSequence.initialFrame",
+            "kind": "property",
+            "introduced": "15.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in the tree, tests/backports/host/realityfoundation (319 checks, run by tests/backports/host/run-all.sh), and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "ParticleEmitterComponent.ParticleEmitter.ImageSequence.initialFrameVariation",
+            "kind": "property",
+            "introduced": "15.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in the tree, tests/backports/host/realityfoundation (319 checks, run by tests/backports/host/run-all.sh), and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "ParticleEmitterComponent.ParticleEmitter.ImageSequence.frameRate",
+            "kind": "property",
+            "introduced": "15.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in the tree, tests/backports/host/realityfoundation (319 checks, run by tests/backports/host/run-all.sh), and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "ParticleEmitterComponent.ParticleEmitter.ImageSequence.frameRateVariation",
+            "kind": "property",
+            "introduced": "15.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in the tree, tests/backports/host/realityfoundation (319 checks, run by tests/backports/host/run-all.sh), and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "ParticleEmitterComponent.ParticleEmitter.ImageSequence.animationMode",
+            "kind": "property",
+            "introduced": "15.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in the tree, tests/backports/host/realityfoundation (319 checks, run by tests/backports/host/run-all.sh), and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "ParticleEmitterComponent.ParticleEmitter.blendMode",
+            "kind": "property",
+            "introduced": "15.0",
+            "minimum": "6.1.3",
+            "status": "implemented",
+            "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
+            "effect": "the member is carried whole: the declaration as the interface gives it, the behaviour the host measures, and the release it is available from",
+            "source": "the host differential in the tree, tests/backports/host/realityfoundation (319 checks, run by tests/backports/host/run-all.sh), and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "ParticleEmitterComponent.ParticleEmitter.image",
+            "kind": "property",
+            "introduced": "15.0",
+            "minimum": "6.1.3",
+            "status": "absent",
+            "reason": "a texture is a runtime object: generated from a colour or a scalar, or handed over by a renderer, and this port's TextureResource has no loader that could rebuild one from a name, so there is nothing to carry for a program to set. The member is declared so the emitter has the interface's shape, and the decoder refuses data that names one rather than dropping it",
+            "effect": "a program can read the member and set it to nil; it cannot put a texture in one and have it survive coding",
+            "source": "the host differential in the tree, tests/backports/host/realityfoundation (319 checks, run by tests/backports/host/run-all.sh), and the SDK interface each declaration was read from"
+        },
+        {
+            "api": "ParticleEmitterComponent.ParticleEmitter.imageSequence",
+            "kind": "property",
+            "introduced": "15.0",
+            "minimum": "6.1.3",
+            "status": "absent",
+            "reason": "a sprite sheet is drawn from a texture, and a particle is drawn by RealityKit's renderer through a low-level instance buffer; this port's view is an SCNView over the SceneKit bridge and no release this old carries a particle renderer in either, so the sheet that would say which frame of that texture a particle shows has nothing to be shown on",
+            "effect": "the member is declared and reads as the interface's type; no particle is drawn from it",
             "source": "the host differential in the tree, tests/backports/host/realityfoundation (319 checks, run by tests/backports/host/run-all.sh), and the SDK interface each declaration was read from"
         }
     ]

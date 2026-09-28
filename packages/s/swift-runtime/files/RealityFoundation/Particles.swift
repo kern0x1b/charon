@@ -105,6 +105,49 @@ import Foundation
         case unsorted
     }
 
+    /// How a particle is blended into what is behind it: :11940-11942, the three cases the
+    /// interface lists. A renderer reads it; the value is carried so a program can set it.
+    public enum BlendMode: Codable, Equatable, Hashable {
+        case alpha
+        case opaque
+        case additive
+    }
+
+    /// A particle that is a frame of a sprite sheet, and how the sheet is walked: :11951-11957.
+    /// The interface declares the type and its members with no member of `ParticleEmitter` that
+    /// holds one - the one that holds it is `imageSequence` below - so this is the whole of it.
+    public struct ImageSequence: Codable, Equatable, Hashable {
+        /// How many frames the sheet is cut into, along each axis of the grid.
+        public var rowCount: Int
+        public var columnCount: Int
+        /// Which frame the first particle starts on, and by how much that may differ.
+        public var initialFrame: Int
+        public var initialFrameVariation: Int
+        /// How many frames a second the sheet is played at, and by how much that may differ.
+        public var frameRate: Float
+        public var frameRateVariation: Float
+        public var animationMode: AnimationRepeatMode
+
+        /// How the sheet carries on past its last frame: :11959-11961.
+        public enum AnimationRepeatMode: Codable, Equatable, Hashable {
+            case playOnce
+            case looping
+            case autoReverse
+        }
+
+        public init(rowCount: Int = 1, columnCount: Int = 1, initialFrame: Int = 0,
+                    initialFrameVariation: Int = 0, frameRate: Float = 0,
+                    frameRateVariation: Float = 0, animationMode: AnimationRepeatMode = .playOnce) {
+            self.rowCount = rowCount
+            self.columnCount = columnCount
+            self.initialFrame = initialFrame
+            self.initialFrameVariation = initialFrameVariation
+            self.frameRate = frameRate
+            self.frameRateVariation = frameRateVariation
+            self.animationMode = animationMode
+        }
+    }
+
     /// How many particles are born in a second, and by how much that may differ.
     public var birthRate: Float
     public var birthRateVariation: Float
@@ -149,6 +192,12 @@ import Foundation
     /// How far a fast particle is stretched along its own direction.
     public var stretchFactor: Float
     public var sortOrder: SortOrder
+    /// How a particle is blended into what is behind it.
+    public var blendMode: BlendMode
+    /// The texture a particle is drawn with, and the sheet it walks when the texture is several
+    /// frames in one.
+    public var image: TextureResource?
+    public var imageSequence: ImageSequence?
 
     public init(birthRate: Float = 1, birthRateVariation: Float = 0, dampingFactor: Float = 0,
                 acceleration: SIMD3<Float> = .zero, spreadingAngle: Float = 0, size: Float = 0.05,
@@ -162,7 +211,9 @@ import Foundation
                 noiseAnimationSpeed: Float = 0, attractionStrength: Float = 0,
                 attractionCenter: SIMD3<Float> = .zero, vortexStrength: Float = 0,
                 vortexDirection: SIMD3<Float> = .zero, isLightingEnabled: Bool = false,
-                stretchFactor: Float = 0, sortOrder: SortOrder = .unsorted) {
+                stretchFactor: Float = 0, sortOrder: SortOrder = .unsorted,
+                blendMode: BlendMode = .alpha, image: TextureResource? = nil,
+                imageSequence: ImageSequence? = nil) {
         self.birthRate = birthRate
         self.birthRateVariation = birthRateVariation
         self.dampingFactor = dampingFactor
@@ -193,6 +244,115 @@ import Foundation
         self.isLightingEnabled = isLightingEnabled
         self.stretchFactor = stretchFactor
         self.sortOrder = sortOrder
+        self.blendMode = blendMode
+        self.image = image
+        self.imageSequence = imageSequence
+    }
+}
+
+extension ParticleEmitter {
+    /// The coding of an emitter is written by hand, and the reason is a member that cannot be
+    /// coded: `image` is a `TextureResource`, a class that is not `Codable` in the SDK either
+    /// (26.2:1784), so the SDK's own `ParticleEmitter: Codable` is written by hand as well
+    /// (:11893). A texture is an asset - it is generated from a colour or a scalar, or handed over
+    /// by a renderer - and this port's `TextureResource` has no loader that could rebuild one from
+    /// a name, so the name is what is coded and a decode that names a texture this process does
+    /// not have says so instead of quietly dropping it.
+    private enum CodingKey: String, Swift.CodingKey {
+        case birthRate, birthRateVariation, dampingFactor, acceleration, spreadingAngle
+        case size, sizeVariation, billboardMode, mass, massVariation
+        case lifeSpan, lifeSpanVariation, angle, angleVariation
+        case angularSpeed, angularSpeedVariation, opacityCurve
+        case sizeMultiplierAtEndOfLifespan, sizeMultiplierAtEndOfLifespanPower
+        case colorEvolutionPower, noiseStrength, noiseScale, noiseAnimationSpeed
+        case attractionStrength, attractionCenter, vortexStrength, vortexDirection
+        case isLightingEnabled, stretchFactor, sortOrder, blendMode, image, imageSequence
+    }
+
+    /// What a texture is coded as. A texture is a runtime object here - generated from a colour
+    /// or a scalar, or handed over by a renderer - and the port gives it no name to code, so what
+    /// is written is its type name, which says which texture it was and not which one. A decode
+    /// refuses any data that carries one, so the loss is never silent.
+    private static func codedName(of texture: TextureResource) -> String { String(describing: type(of: texture)) }
+
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKey.self)
+        self.birthRate = try container.decode(Float.self, forKey: .birthRate)
+        self.birthRateVariation = try container.decode(Float.self, forKey: .birthRateVariation)
+        self.dampingFactor = try container.decode(Float.self, forKey: .dampingFactor)
+        self.acceleration = try container.decode(SIMD3<Float>.self, forKey: .acceleration)
+        self.spreadingAngle = try container.decode(Float.self, forKey: .spreadingAngle)
+        self.size = try container.decode(Float.self, forKey: .size)
+        self.sizeVariation = try container.decode(Float.self, forKey: .sizeVariation)
+        self.billboardMode = try container.decode(BillboardMode.self, forKey: .billboardMode)
+        self.mass = try container.decode(Float.self, forKey: .mass)
+        self.massVariation = try container.decode(Float.self, forKey: .massVariation)
+        self.lifeSpan = try container.decode(Double.self, forKey: .lifeSpan)
+        self.lifeSpanVariation = try container.decode(Double.self, forKey: .lifeSpanVariation)
+        self.angle = try container.decode(Float.self, forKey: .angle)
+        self.angleVariation = try container.decode(Float.self, forKey: .angleVariation)
+        self.angularSpeed = try container.decode(Float.self, forKey: .angularSpeed)
+        self.angularSpeedVariation = try container.decode(Float.self, forKey: .angularSpeedVariation)
+        self.opacityCurve = try container.decode(OpacityCurve.self, forKey: .opacityCurve)
+        self.sizeMultiplierAtEndOfLifespan = try container.decode(Float.self, forKey: .sizeMultiplierAtEndOfLifespan)
+        self.sizeMultiplierAtEndOfLifespanPower = try container.decode(Float.self, forKey: .sizeMultiplierAtEndOfLifespanPower)
+        self.colorEvolutionPower = try container.decode(Float.self, forKey: .colorEvolutionPower)
+        self.noiseStrength = try container.decode(Float.self, forKey: .noiseStrength)
+        self.noiseScale = try container.decode(Float.self, forKey: .noiseScale)
+        self.noiseAnimationSpeed = try container.decode(Float.self, forKey: .noiseAnimationSpeed)
+        self.attractionStrength = try container.decode(Float.self, forKey: .attractionStrength)
+        self.attractionCenter = try container.decode(SIMD3<Float>.self, forKey: .attractionCenter)
+        self.vortexStrength = try container.decode(Float.self, forKey: .vortexStrength)
+        self.vortexDirection = try container.decode(SIMD3<Float>.self, forKey: .vortexDirection)
+        self.isLightingEnabled = try container.decode(Bool.self, forKey: .isLightingEnabled)
+        self.stretchFactor = try container.decode(Float.self, forKey: .stretchFactor)
+        self.sortOrder = try container.decode(SortOrder.self, forKey: .sortOrder)
+        self.blendMode = try container.decode(BlendMode.self, forKey: .blendMode)
+        self.imageSequence = try container.decodeIfPresent(ImageSequence.self, forKey: .imageSequence)
+        if try container.decodeIfPresent(String.self, forKey: .image) != nil {
+            throw DecodingError.dataCorruptedError(forKey: .image, in: container,
+                debugDescription: "an emitter's image is a texture, and this port's TextureResource is not Codable and "
+                                   + "has no loader that could rebuild one from a name, so a texture named in the data "
+                                   + "cannot be decoded; remove the image, or carry the emitter without coding it")
+        }
+        self.image = nil
+    }
+
+    public func encode(to encoder: any Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKey.self)
+        try container.encode(birthRate, forKey: .birthRate)
+        try container.encode(birthRateVariation, forKey: .birthRateVariation)
+        try container.encode(dampingFactor, forKey: .dampingFactor)
+        try container.encode(acceleration, forKey: .acceleration)
+        try container.encode(spreadingAngle, forKey: .spreadingAngle)
+        try container.encode(size, forKey: .size)
+        try container.encode(sizeVariation, forKey: .sizeVariation)
+        try container.encode(billboardMode, forKey: .billboardMode)
+        try container.encode(mass, forKey: .mass)
+        try container.encode(massVariation, forKey: .massVariation)
+        try container.encode(lifeSpan, forKey: .lifeSpan)
+        try container.encode(lifeSpanVariation, forKey: .lifeSpanVariation)
+        try container.encode(angle, forKey: .angle)
+        try container.encode(angleVariation, forKey: .angleVariation)
+        try container.encode(angularSpeed, forKey: .angularSpeed)
+        try container.encode(angularSpeedVariation, forKey: .angularSpeedVariation)
+        try container.encode(opacityCurve, forKey: .opacityCurve)
+        try container.encode(sizeMultiplierAtEndOfLifespan, forKey: .sizeMultiplierAtEndOfLifespan)
+        try container.encode(sizeMultiplierAtEndOfLifespanPower, forKey: .sizeMultiplierAtEndOfLifespanPower)
+        try container.encode(colorEvolutionPower, forKey: .colorEvolutionPower)
+        try container.encode(noiseStrength, forKey: .noiseStrength)
+        try container.encode(noiseScale, forKey: .noiseScale)
+        try container.encode(noiseAnimationSpeed, forKey: .noiseAnimationSpeed)
+        try container.encode(attractionStrength, forKey: .attractionStrength)
+        try container.encode(attractionCenter, forKey: .attractionCenter)
+        try container.encode(vortexStrength, forKey: .vortexStrength)
+        try container.encode(vortexDirection, forKey: .vortexDirection)
+        try container.encode(isLightingEnabled, forKey: .isLightingEnabled)
+        try container.encode(stretchFactor, forKey: .stretchFactor)
+        try container.encode(sortOrder, forKey: .sortOrder)
+        try container.encode(blendMode, forKey: .blendMode)
+        try container.encodeIfPresent(imageSequence, forKey: .imageSequence)
+        try container.encodeIfPresent(image.map { ParticleEmitter.codedName(of: $0) }, forKey: .image)
     }
 }
 
