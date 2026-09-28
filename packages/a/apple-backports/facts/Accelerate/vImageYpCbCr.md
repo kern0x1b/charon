@@ -191,3 +191,12 @@ layouts and one 16-bit, the 10-bit v410 and v210, the 16-bit v216 and y416, and 
 fifths of the family has no counterpart to borrow, and the one fifth that has differs in its argument shape
 rather than its arithmetic. What was taken is the *confirmation* that the bit positions are the conventional
 ones, not a line of code: there is no code from libyuv in this package.
+
+**This delivery's rows, counted on its own base `4d2e24e7`: 28.** The 28 are the Y'CbCr shapes of
+`ios8ypcbcr-shapes.json` - the 4:2:2, 4:2:0, 4:4:4, v410, v210 and sixteen-bit conversions in both
+directions, which the file carries and which the differential holds to the system over 8 947 checks. The ten
+Y'CbCr symbols, the four matrices and the two generators of `ios8ypcbcr.json`, and the seven rows of
+`ios7.json` and `ios7pixels.json`, were already in `charon` on this base and are **not** part of this
+delivery: main's Accelerate band put them there. The delivery's whole Accelerate count is therefore 28 here
+plus the 5 of `ios7-15-rotate90.json`, which is **33 rows** — not the 51 I have been reporting, which
+counted main's eighteen as well.

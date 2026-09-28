@@ -1148,3 +1148,12 @@ and the edging is the thing this family had to get right, since the host substit
 weight intact and does not renormalise over the survivors, which is exactly the case stb does not have. It is
 also a whole-image resampler with no shear, rotate or affine transform, so 87 of this family's functions
 have no counterpart in it. There is no code from stb_image_resize in this package.
+
+**This delivery's rows, counted on its own base `4d2e24e7`: 5.** They are the five quarter turns of
+`ios7-15-rotate90.json` - `vImageRotate90_ARGB16U` and `vImageRotate90_ARGB16S` at 7.0, and
+`vImageRotate90_ARGB16F`, `vImageRotate90_CbCr16F` and `vImageRotate90_Planar16F` at 15.0 - held to the
+system over 656 checks. The **thirty-six shears are not delivered**: the horizontal is exact and the vertical
+is not, an object with no registry entry is kept in every band from 4.3, and `status: implemented` on a
+function its own differential rejects is not a thing this package ships. Their source is on the
+`vimage-shear-wip` branch, where the vertical is 39 of 212 and its mapping is characterised down to one
+half-pixel sign.
