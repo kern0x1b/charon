@@ -99,6 +99,18 @@
     return _charon_description;
 }
 
+// The AudioUnit behind this object. The property is declared in the CharonImpl category in
+// CharonAUAudioUnit.h, and Objective-C does not auto-synthesise a property declared in a category -
+// so the getter is written here. Without it every -[self audioUnit] in the library raised
+// "unrecognized selector sent to instance", and the gate could not see that: the property is
+// Charon-prefixed, so no registry row names it, and check_registry holds the build to the registry in
+// both directions rather than to the compiler. The port-versus-host half of
+// tests/backports/host/avfaudio found it by calling the port.
+- (AudioUnit)audioUnit
+{
+    return _charon_audioUnit;
+}
+
 - (AudioComponent)component
 {
     return _charon_component;

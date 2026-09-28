@@ -28,6 +28,22 @@
     return [[AVAudioFormat alloc] initWithStreamDescription:&described];
 }
 
+// The private initializer the bus array builds its busses with. It is declared in the CharonImpl
+// category in CharonAVFAudio.h and it was *sent* by -charon_allComponents and never defined: the
+// object carried an undefined _objc_msgSend$initWithCharonOwner:type:index:, so every call raised.
+// The gate cannot see that - a Charon-prefixed selector has no registry row, and the linker does not
+// complain about an Objective-C message send - and the port-versus-host half of
+// tests/backports/host/avfaudio found it the first time it instantiated a bus.
+- (instancetype)initWithCharonOwner:(AUAudioUnit *)owner type:(AUAudioUnitBusType)type index:(NSUInteger)index
+{
+    if ((self = [super init])) {
+        _charon_owner = owner;
+        _charon_type = type;
+        _charon_index = index;
+    }
+    return self;
+}
+
 - (BOOL)setFormat:(AVAudioFormat *)format error:(NSError **)outError
 {
     if (format == nil || _charon_owner == nil || _charon_owner.audioUnit == NULL) {

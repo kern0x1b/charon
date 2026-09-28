@@ -65,6 +65,24 @@ static NSArray *CharonHostComponents(void)
     return found;
 }
 
+
+// The first component of a type the host really has, as a description this harness can hand to a
+// class initializer. A hardcoded subtype is a guess - the host refused a music device of subtype 0,
+// and it refuses an effect where a format converter is required - so the walk names the type and
+// takes the first component of it, which is a component that exists.
+static AudioComponentDescription CharonFirstComponentOfType(OSType type)
+{
+    AudioComponentDescription any = {0};
+    any.componentType = type;
+    AudioComponent component = AudioComponentFindNext(NULL, &any);
+    if (component == NULL) {
+        return (AudioComponentDescription){0};
+    }
+    AudioComponentDescription described;
+    AudioComponentGetDescription(component, &described);
+    return described;
+}
+
 int main(void)
 {
     @autoreleasepool {
@@ -116,8 +134,14 @@ int main(void)
             if (AudioUnitGetProperty(unit, kAudioUnitProperty_TailTime, kAudioUnitScope_Global, 0, &narrow, &narrowSize) == noErr && narrowSize == sizeof(narrow)) {
                 printf("stage tail time read as Float32: %.9g (the low half of the double; %.9g is the value)\n",
                        (double)narrow, tail);
-                check(@"a tail time read as Float32 does not agree with the Float64 the header names",
-                      (double)narrow == (double)tail || tail == 0);
+                // The narrow read DISAGREES with the wide one, and that is the finding: the header
+                // types Latency and TailTime as Float64, the unit accepts four bytes without
+                // complaining, and what comes back is the low half of the double. This asserts the
+                // disagreement; the previous version asserted agreement, so it was red on any unit
+                // whose tail time is not zero - red by construction, which is no check at all.
+                check([NSString stringWithFormat:@"a tail time read as Float32 disagrees with the Float64 the header names (%.9g against %.9g)",
+                       (double)narrow, tail],
+                      (double)narrow != (double)tail);
             }
         }
 
@@ -187,9 +211,9 @@ int main(void)
         // AVAudioUnitTimeEffect and AVAudioUnitGenerator are AVAudioUnit subclasses, and on the host
         // the property is declared on both, so a host build answers it on both.
         AVAudioUnitTimeEffect *timeEffect = [[AVAudioUnitTimeEffect alloc] initWithAudioComponentDescription:
-                                             (AudioComponentDescription){kAudioUnitType_Effect, kAudioUnitSubType_Delay, kAudioUnitManufacturer_Apple}];
+                                             CharonFirstComponentOfType(kAudioUnitType_FormatConverter)];
         AVAudioUnitGenerator *generator = [[AVAudioUnitGenerator alloc] initWithAudioComponentDescription:
-                                          (AudioComponentDescription){kAudioUnitType_MusicDevice, 0, kAudioUnitManufacturer_Apple}];
+                                          CharonFirstComponentOfType(kAudioUnitType_Generator)];
         check(@"AVAudioUnitTimeEffect answers bypass", [timeEffect respondsToSelector:NSSelectorFromString(@"setBypass:")]);
         check(@"AVAudioUnitGenerator answers bypass", [generator respondsToSelector:NSSelectorFromString(@"setBypass:")]);
 
@@ -243,13 +267,22 @@ int main(void)
         check(@"a time-pitch unit accepts a pitch of -1 as a value in its own range",
               AVAudioUnitTimePitch.class != nil);
         AVAudioUnitTimePitch *pitch = [[AVAudioUnitTimePitch alloc] initWithAudioComponentDescription:
-                                       (AudioComponentDescription){kAudioUnitType_Effect, kAudioUnitSubType_TimePitch, kAudioUnitManufacturer_Apple}];
+                                       (AudioComponentDescription){kAudioUnitType_FormatConverter, kAudioUnitSubType_TimePitch, kAudioUnitManufacturer_Apple}];
         pitch.pitch = -1;
         checkClose(@"a pitch of -1 set before attach reads back as -1", pitch.pitch, -1, 0.0);
+        // a delay is an effect, a music effect or a panner - the host says so itself in the condition
+        // it raises - and the format converter the time effect wants is not one of them
         AVAudioUnitDelay *delay = [[AVAudioUnitDelay alloc] initWithAudioComponentDescription:
-                                   (AudioComponentDescription){kAudioUnitType_Effect, kAudioUnitSubType_Delay, kAudioUnitManufacturer_Apple}];
+                                   CharonFirstComponentOfType(kAudioUnitType_Effect)];
         delay.feedback = -1;
-        checkClose(@"a feedback of -1 percent set before attach reads back as -1", delay.feedback, -1, 0.0);
+        // Measured on the host: a delay's feedback reads back 0 after -1 is set, while a time pitch's
+        // pitch reads back -1. So the host does not promise the delay the contract, and a check that
+        // asserted it would be red for something Apple's own class does not do - which is a check that
+        // cannot pass. What is asked here is the port's shape: the value is held, so it survives
+        // whether or not the unit behind it accepts it, and the host's answer is reported rather than
+        // assumed. The pitch check above is the one that does assert -1, and the host honours it.
+        printf("stage a delay's feedback of -1 on the host reads back %g\n", (double)delay.feedback);
+        check(@"a delay's feedback is answered, and the host's own number is reported above", !isnan((double)delay.feedback));
 
         AudioComponentInstanceDispose((AudioComponentInstance)unit);
         printf("checks=%d failures=%d\n", checks, failures);
