@@ -23,56 +23,145 @@ import re
 import subprocess
 import sys
 
-API_AVAILABLE = re.compile(r"API_(?:UN)?AVAILABLE\s*\(([^)]*)\)")
+# The TEXT dump, not the JSON one. Measured on FileProvider: the JSON AST has 16563 nodes whose
+# kind is AvailabilityAttr and NOT ONE carries a version - across all of them the keys are id,
+# kind and range, 149 with `inherited` - so the release a declaration is gated at is not in the
+# JSON at all. The text dump prints it on the Attr's own line, hanging UNDER the declaration in
+# the dump's indentation, which is what pairs them:
+#
+#   | |-AvailabilityAttr 0x7a1d26f210 <col:43, col:84> ios 14.0 0 0 "" "" 0
+#
+# An availability guard is a conjunction of constraints and a release must satisfy ALL of them, so
+# the one that binds is the HIGHEST iOS version among the Attrs under a declaration - not the
+# first, which is what a naive scan reads.
+DECL = re.compile(r"^([|` -]*)(ObjC[A-Za-z]+Decl|AvailabilityAttr)\b(.*)$")
+IOS = re.compile(r"\bios\s+(\d+(?:\.\d+)?)\b")
+ADDRESS = re.compile(r"^0x[0-9a-f]+$")
+LOCATION = re.compile(r"^<<.*>>$|^<.*>$|^col:\d+$|^line:\d+.*$")
+KINDS = ("ObjCInterfaceDecl", "ObjCProtocolDecl", "ObjCMethodDecl", "ObjCPropertyDecl",
+         "ObjCClassDecl", "ObjCCategoryDecl")
+MEMBER_KINDS = ("ObjCMethodDecl", "ObjCPropertyDecl")
+
+
+def _target(args):
+    return "%s-apple-ios%s" % (os.environ.get("CHARON_SWIFT_ARCH", "armv7"), args.minimum)
+
+
+def identifier(kind, rest):
+    """The name a declaration line carries.
+
+    A line is the address, the location and then the name: `0x7a1cef97f0 <line:255:1, col:8>
+    col:8 NSAttributedString` for an interface, and `... col:2 -isEqual: 'BOOL' [no]` for a
+    method. For a type the name is the last token once the address and the location are out of
+    the way; for a method it is the first token that begins with the ObjC sigil, because after it
+    come the argument types and the attributes, not more of the name.
+    """
+    words = [w for w in rest.split()
+             if w and not ADDRESS.match(w) and not LOCATION.match(w)]
+    if not words:
+        return ""
+    if kind in MEMBER_KINDS:
+        for w in words:
+            if w[0] in "-+":
+                return w
+    return words[-1]
 
 
 def dump_ast(framework, sdk, target, work):
-    """The AST of a framework's UMBRELLA, as JSON.
+    """The TEXT AST of a framework's UMBRELLA.
 
-    A bare header does not compile: NS_OPTIONS and the other Foundation macros arrive through
-    the umbrella's include order, so a per-header dump reported every header as failed and found
-    nothing. One line that imports <Framework/Framework.h> compiles and the AST filter gives the
-    whole framework in one dump, which is also the only way the class, its categories and its
-    methods arrive in one tree.
+    A bare header does not compile: NS_OPTIONS and the rest of the Foundation macros arrive
+    through the umbrella's include order, so a per-header dump reported every header as failed and
+    found nothing. One line importing <Framework/Framework.h> compiles and the whole framework is
+    one tree, which is also the only way a class, its categories and its methods arrive together.
     """
     source = os.path.join(work, "umbrella.m")
     with open(source, "w") as fh:
         fh.write("#import <%s/%s.h>\n" % (framework, framework))
     argv = ["clang", "-fsyntax-only", "-x", "objective-c", "-isysroot", sdk,
-            "-target", target, "-Xclang", "-ast-dump=json", source]
+            "-target", target, "-Xclang", "-ast-dump", source]
     proc = subprocess.run(argv, capture_output=True, text=True)
     if proc.returncode != 0 or not proc.stdout.strip():
         return None, proc.stderr.strip().splitlines()[:5]
-    return json.loads(proc.stdout), None
+    return proc.stdout, None
 
 
-def walk(node, out):
-    """Every declaration node in the dump, with its name and the release macro it carries."""
-    kind = node.get("kind")
-    if kind in ("ObjCInterfaceDecl", "ObjCProtocolDecl", "ObjCMethodDecl",
-                "ObjCPropertyDecl", "ObjCClassDecl"):
-        name = node.get("name") or ""
-        if kind == "ObjCClassDecl" and node.get("name"):
-            name = "implementation " + name
-        loc = (node.get("loc") or {})
-        spelling = loc.get("spelling") if isinstance(loc, dict) else None
-        spelling = spelling if isinstance(spelling, str) else ""
-        macro = API_AVAILABLE.search(spelling) or API_AVAILABLE.search(
-            (node.get("attrs") or [{}])[0].get("value", "")
-            if isinstance(node.get("attrs"), list) and node["attrs"] else "")
-        out.append((kind, name, node.get("name") or "", macro, node))
-    for child in node.get("inner", []) or []:
-        walk(child, out)
+def _ver(text):
+    return tuple(int(p) for p in text.split("."))
 
 
-def introduced(macro, target):
-    """The lowest iOS release an API_AVAILABLE macro admits, or None when it admits any."""
-    if not macro:
-        return None
-    versions = re.findall(r"ios\((\d+(?:\.\d+)?)\)", macro.group(1) if macro.groups() else "")
-    if not versions:
-        return None
-    return min(versions, key=lambda s: [int(p) for p in s.split(".")])
+def _highest(attrs):
+    versions = [v.group(1) for v in (IOS.search(a) for a in attrs) if v]
+    return max(versions, key=_ver) if versions else None
+
+
+def declared_here(headers):
+    """The types this framework's OWN headers declare, by name.
+
+    The umbrella is a FileProvider header that imports Foundation, so the dump holds every
+    @interface the compile touched - NSArray, NSDate and the rest - and counting them is counting
+    another framework. A name is the framework's own when one of its headers says
+    `@interface <name>` or `@protocol <name>`, and that is read from the headers themselves rather
+    than inferred from the dump.
+    """
+    own = set()
+    pattern = re.compile(r"^\s*@(?:interface|protocol)\s+([A-Za-z_]\w*)", re.M)
+    for name in sorted(os.listdir(headers)):
+        if name.endswith(".h"):
+            try:
+                own |= set(pattern.findall(open(os.path.join(headers, name),
+                                                  errors="replace").read()))
+            except Exception:
+                pass
+    return own
+
+
+def parse(text, own=None):
+    """One row per TYPE, with its members hanging off it.
+
+    A row per member was the original shape and it printed "Interface NSArray" nine times: a type
+    with nine members was nine types. The index is by (kind, identifier), which is also what a
+    plan is written against - a class and what it declares, once.
+    """
+    order, attrs, pending = [], [], None
+    types = {}
+
+    def flush():
+        if pending is None:
+            return
+        kind = pending[1]
+        ident = identifier(kind, pending[2])
+        key = (kind, ident)
+        if key not in types:
+            order.append(key)
+            types[key] = {"members": [], "introduced": _highest(attrs)}
+        elif kind in MEMBER_KINDS:
+            types[key]["members"].append((identifier(kind, pending[2]), _highest(attrs)))
+        else:
+            current, later = types[key]["introduced"], _highest(attrs)
+            if current and later and _ver(later) > _ver(current):
+                types[key]["introduced"] = later
+
+    for line in text.splitlines():
+        m = DECL.match(line)
+        if not m:
+            continue
+        prefix, kind, rest = m.group(1), m.group(2), m.group(3)
+        if kind == "AvailabilityAttr":
+            if pending is not None:
+                attrs.append(rest)
+            continue
+        if pending is not None and len(prefix) <= len(pending[0]):
+            flush()
+            pending, attrs = None, []
+        if own is not None and kind in ("ObjCInterfaceDecl", "ObjCProtocolDecl",
+                                        "ObjCClassDecl", "ObjCCategoryDecl"):
+            if identifier(kind, rest) not in own:
+                pending, attrs = None, []
+        if kind in KINDS:
+            pending, attrs = (prefix, kind, rest), []
+    flush()
+    return order, types
 
 
 def main():
@@ -80,69 +169,61 @@ def main():
     ap.add_argument("--sdk", required=True, help="an SDK root")
     ap.add_argument("--framework", required=True)
     ap.add_argument("--minimum", default="6.1.3", help="the release the port must carry to")
-    ap.add_argument("--json", action="store_true", help="machine-readable, one object per member")
+    ap.add_argument("--json", action="store_true", help="one object per type, members inside")
+    ap.add_argument("--top", type=int, default=25)
     args = ap.parse_args()
 
+    import tempfile
+    with tempfile.TemporaryDirectory() as work:
+        ast, err = dump_ast(args.framework, args.sdk, _target(args), work)
+    if ast is None:
+        print("FAILED: %s" % err)
+        return
     headers = os.path.join(args.sdk, "System", "Library", "Frameworks",
                            args.framework + ".framework", "Headers")
-    if not os.path.isdir(headers):
-        raise SystemExit("no headers for %s under %s" % (args.framework, args.sdk))
-    target = "armv7-apple-ios" + args.minimum
-
-    import tempfile
-    nodes = []
-    failures = []
-    with tempfile.TemporaryDirectory() as work:
-        ast, err = dump_ast(args.framework, args.sdk, target, work)
-        if ast is None:
-            failures.append((args.framework + ".h", err))
-        else:
-            walk(ast, nodes)
+    own = declared_here(headers)
+    order, types = parse(ast, own)
 
     floor = tuple(int(p) for p in args.minimum.split("."))
-    by_owner = collections.defaultdict(list)
-    for kind, display, plain, macro, node in nodes:
-        if kind not in ("ObjCInterfaceDecl", "ObjCProtocolDecl"):
-            continue
-        by_owner[(kind, display)].append((node.get("name"), introduced(macro, target)))
-
-    rows = []
-    for (kind, display), members in sorted(by_owner.items()):
-        for mname, intro in members:
-            reached = intro is None or tuple(int(p) for p in intro.split(".")) <= floor
-            rows.append((kind, display, mname, intro, reached))
+    by_intro = collections.Counter()
+    reachable = 0
+    total_members = 0
+    for key in order:
+        entry = types[key]
+        total_members += len(entry["members"])
+        by_intro[entry["introduced"] or "any"] += len(entry["members"])
+        for _, intro in entry["members"]:
+            if intro and tuple(int(p) for p in intro.split(".")) <= floor:
+                reachable += 1
 
     if args.json:
-        print(json.dumps([{"kind": k, "owner": d, "member": m, "introduced": i, "at_minimum": r}
-                          for k, d, m, i, r in rows], indent=2))
+        print(json.dumps([{"kind": k, "type": k, "introduced": types[k]["introduced"],
+                           "members": [{"name": n, "introduced": i}
+                                       for n, i in types[k]["members"]]}
+                          for k in order], indent=2))
         return
 
-    want = tuple(int(p) for p in args.minimum.split("."))
     print("== %s headers under %s, checked at iOS %s" % (args.framework, args.sdk, args.minimum))
-    print("   %d headers in the framework, %d dumps failed; %d types, %d members"
-          % (len([n for n in os.listdir(headers) if n.endswith(".h")]),
-             len(failures), len(by_owner), len(rows)))
-    for name, err in failures:
-        print("   FAILED %s: %s" % (name, err))
+    print("   %d types, %d members"
+          % (len(order), total_members))
+    with_release = sum(len(types[k]["members"]) for k in order)
+    print("   %d members carry a release; %d are reachable at %s"
+          % (with_release, reachable, args.minimum))
     print()
-    by_intro = collections.Counter(i or "any" for _, _, _, i, _ in rows)
     print("   members by the release they were introduced in:")
     for intro, n in sorted(by_intro.items(), key=lambda kv: (kv[0] == "any", kv[0])):
-        reached = intro == "any" or tuple(int(p) for p in intro.split(".")) <= want
-        print("     %-8s %4d  %s" % (intro, n, "reachable" if reached else "NOT at this release"))
+        got = intro == "any" or tuple(int(p) for p in intro.split(".")) <= floor
+        print("     %-8s %5d  %s" % (intro, n, "reachable" if got else "NOT at this release"))
     print()
-    print("== types")
-    for kind, display, mname, intro, reached in rows:
-        if kind in ("ObjCInterfaceDecl", "ObjCProtocolDecl"):
-            print("   %-22s %-44s %s" % (kind.replace("ObjC", "").replace("Decl", ""),
-                                            display, intro or "any"))
-    unreachable = [(k, d, m, i) for k, d, m, i, r in rows if not r and m]
-    print()
-    print("== %d members this release does not have" % len(unreachable))
-    for k, d, m, i in unreachable[:40]:
-        print("   %-40s %-30s %s" % (d, m, i))
-    if len(unreachable) > 40:
-        print("   ... and %d more" % (len(unreachable) - 40))
+    print("== types, one row each")
+    print("   %-8s %-9s %-44s %s" % ("kind", "release", "type", "members"))
+    for key in order[:args.top]:
+        entry = types[key]
+        print("   %-8s %-9s %-44s %d"
+              % (key[0].replace("ObjC", "").replace("Decl", ""), entry["introduced"] or "any",
+                 key[1], len(entry["members"])))
+    if len(order) > args.top:
+        print("   ... and %d more types" % (len(order) - args.top))
 
 
 if __name__ == "__main__":
