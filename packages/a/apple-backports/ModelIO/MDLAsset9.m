@@ -744,10 +744,12 @@ static void CharonMDLReadPLY(NSData *data, NSMutableArray<MDLObject *> *objects,
                 property.valueKind = CharonMDLPLYKind(words[1], words[2]);
                 strncpy(property.name, words[2].UTF8String ?: "", sizeof property.name - 1);
             }
-            // What is stored there is an array of NSValue, not a mutable one, and the gate's own clang
-            // says so where the host's does not.
-            NSArray *properties = elementProperties[elements.count - 1];
+            // The list of this element's properties is built as a mutable array and the outer list
+            // holds it, so what comes back is a mutable one; the gate's clang insists on being told
+            // that, where the host's does not.
+            NSMutableArray *properties = [(NSMutableArray *)elementProperties[elements.count - 1] mutableCopy];
             [properties addObject:[NSValue valueWithBytes:&property objCType:@encode(CharonMDLPLYProperty)]];
+            [elementProperties replaceObjectAtIndex:elements.count - 1 withObject:properties];
         }
     }
     BOOL ascii = [format isEqualToString:@"ascii"];
