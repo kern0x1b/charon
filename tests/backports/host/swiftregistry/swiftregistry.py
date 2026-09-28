@@ -71,6 +71,19 @@ def main():
             # for.
             qualified = row["api"]
             declared = qualified.rsplit(".", 1)[-1]
+            # A row may name the conformance that provides its name, as `conformance-provided:
+            # OptionSet` in its reason: Swift prints a conformance's own typealiases in the
+            # interface, so `DemandOptions.RawValue` is a row with no declaration of its own. The
+            # exception is only worth anything if it is still checked, so the type that owns the
+            # name must really declare the conformance the row names.
+            provided = re.search(r"conformance-provided:\s*([A-Za-z][A-Za-z0-9_]*)", row.get("reason", ""))
+            if provided is not None:
+                owner = qualified.rsplit(".", 1)[0].rsplit(".", 1)[-1] if "." in qualified else None
+                if owner and re.search(r"\b%s\b[^\n]*:\s*[^\n]*\b%s\b" % (re.escape(owner), re.escape(provided.group(1))), tree):
+                    continue
+                failures.append(f"{name}: {qualified} says its conformance {provided.group(1)} provides it, but "
+                                f"files/ does not declare {owner} conforming to it")
+                continue
             if not re.search(r"\b(%s)\s+%s\b" % ("|".join(KINDS), re.escape(declared)), tree):
                 failures.append(f"{name}: {qualified} ({row['kind']}, {row['status']}) has no declaration in files/")
                 continue
