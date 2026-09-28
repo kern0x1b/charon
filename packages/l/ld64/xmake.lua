@@ -33,6 +33,10 @@ package("ld64")
         local tapi = assert(os.dirs(path.join(package:resourcedir("libtapi"), "apple-libtapi-*"))[1])
         os.vrunv("patch", {"-p2", "-d", tapi, "-i", path.join(package:scriptdir(), "patches", "libtapi-without-darwin-linker-version-helper.patch")})
         os.vrunv("patch", {"-p2", "-i", path.join(package:scriptdir(), "patches", "inlined-text-stub-before-search-paths.patch")})
+        -- ld64 956.6 gives an ordinal only to the dylibs in state.dylibs, and a dylib that is
+        -- reached only through another one's re-export is not among them, so encoding an import
+        -- proxy that belongs to it aborts the link in dylibToOrdinal(). See the patch.
+        os.vrunv("patch", {"-p2", "-i", path.join(package:scriptdir(), "patches", "ordinal-for-dylib-that-only-a-reexport-reaches.patch")})
 
         local tapi_version = "1600.0.11.8"
         local tapi_build = path.absolute("tapi-build")

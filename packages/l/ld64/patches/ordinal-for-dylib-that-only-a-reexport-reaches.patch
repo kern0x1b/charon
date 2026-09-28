@@ -1,0 +1,36 @@
+--- a/cctools-port/cctools/ld64/src/ld/OutputFile.cpp
++++ b/cctools-port/cctools/ld64/src/ld/OutputFile.cpp
+@@ -5313,6 +5313,33 @@ void OutputFile::buildDylibOrdinalMapping(ld::Internal& state)
+ 		}
+ 	}
+
++	// A dylib that is only reached through another dylib's re-export is not in state.dylibs unless
++	// the resolver promoted it, and the loop above walks nothing but state.dylibs. An import proxy
++	// atom whose file() is such a dylib is therefore left with no ordinal at all, and encoding it
++	// aborts the link in dylibToOrdinal(). Give every dylib that owns a proxy an ordinal, and add
++	// it to the load list unless some dylib already loaded carries that install path, so the
++	// library the symbol came from is the one the output loads and the one the symbol binds to.
++	// Nothing that links today changes: a dylib that already has an ordinal is skipped, and one
++	// without an ordinal is exactly the case that used to abort.
++	for (const ld::Internal::FinalSection* sect : state.sections) {
++		if ( sect->type() != ld::Section::typeImportProxies ) { continue; }
++		for (const ld::Atom* rawAtom : sect->atoms) {
++			const ld::dylib::File* aDylib = dynamic_cast<const ld::dylib::File*>(rawAtom->file());
++			if ( aDylib == NULL ) { continue; }
++			if ( _dylibToOrdinal.find(aDylib) != _dylibToOrdinal.end() ) { continue; }
++			int ordinal;
++			if ( this->hasOrdinalForInstallPath(aDylib->installPath(), &ordinal) ) {
++				// some dylib already in the load list carries that install path, bind to it
++				_dylibToOrdinal[aDylib] = ordinal;
++			}
++			else {
++				// the dylib exporting this symbol is not loaded, so load it and give it an ordinal
++				_dylibsToLoad.push_back(const_cast<ld::dylib::File*>(aDylib));
++				_dylibToOrdinal[aDylib] = _dylibsToLoad.size();
++			}
++		}
++	}
++
+ 	_noReExportedDylibs = !hasReExports;
+ }
+
