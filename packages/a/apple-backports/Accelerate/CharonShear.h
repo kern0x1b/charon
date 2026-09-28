@@ -161,7 +161,7 @@ static inline vImage_Error CharonShearRun(const vImage_Buffer *src, const vImage
     vImagePixelCount dstCross = horizontal ? dest->height : dest->width;
     vImagePixelCount along0 = horizontal ? offsetX : offsetY;
     vImagePixelCount cross0 = horizontal ? offsetY : offsetX;
-    double scale = filter->scale < 1.0f ? (double)filter->scale : 1.0;
+    double scale = (double)filter->scale;
     int extend = (flags & kvImageEdgeExtend) ? 1 : 0;
     int fill = (flags & kvImageBackgroundColorFill) ? 1 : 0;
     (void)slope;
@@ -198,7 +198,7 @@ static inline vImage_Error CharonShearRun(const vImage_Buffer *src, const vImage
             // `slope * extent` rows from its own row, which made the shear drift; and the row is the
             // DESTINATION's own row plus that offset, which is the piece an earlier version dropped.
             double centre = ((double)along0 + (double)along + 0.5
-                             + (horizontal ? -translate : translate)) / (double)scale - 0.5;
+                             + (horizontal ? -translate : translate)) / scale - 0.5;
             int base = (int)floor(centre);
             CharonResampleWeights(centre, base, extent, filter->lobes, filter->scale, weights);
             long first = (long)base - (long)extent;
