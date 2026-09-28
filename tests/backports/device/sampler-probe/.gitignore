@@ -2,3 +2,6 @@
 # heavy.sh wrapper log. facts/AVFAudio/AVAudioUnitSampler.md pastes the verdict; nothing here is tracked.
 run/
 background.log
+xmake-addons.lock
+run/
+background.log
