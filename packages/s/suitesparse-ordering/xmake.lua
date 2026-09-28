@@ -77,36 +77,28 @@ package("suitesparse-ordering")
         table.sort(objects)
         os.vrunv("xcrun", table.join({"libtool", "-static", "-o", path.join(package:installdir("lib"), "libSuiteSparseOrdering.a")}, objects))
 
-        -- The destination ends in a separator, which is what makes os.vcp treat it as a directory to
-        -- put the file in rather than as the name of a file to write - box2d's recipe writes it that way
-        -- and this one did not, so every header copy went somewhere else and on_test then reported
-        -- "installed no SuiteSparse/AMD/amd.h". The return value is checked too, so a copy that fails
-        -- says which one instead of being ignored.
-        -- os.vcp creates the last component of its destination and not the ones above it, so the two
-        -- levels of include/SuiteSparse/AMD are made first: without this the copy of
-        -- SuiteSparse_config/SuiteSparse_config.h is attempted into a directory whose parent does not
-        -- exist and the recipe says so, by name, rather than not at all.
-        os.mkdir(path.join(package:installdir("include"), "SuiteSparse"))
-        os.mkdir(path.join(package:installdir("licenses")))
+        -- os.vcp is for copying INTO a directory, and with a directory destination it can make a
+        -- directory named after the file or put the file a level above where it was aimed - which is
+        -- what four rounds of "could not install <name>" were: the copies went somewhere, just not where
+        -- the test looked. os.cp takes a file to a file, so the destination here is the full path of the
+        -- file, its directory is made first, and isfile afterwards says whether it arrived.
+        local function install_file(source, destination)
+            print("suitesparse-ordering: %s -> %s", source, destination)
+            assert(os.isfile(source), "SuiteSparse " .. package:version() .. " has no " .. source)
+            os.mkdir(path.directory(destination))
+            assert(os.cp(source, destination), "suitesparse-ordering could not copy " .. source .. " to " .. destination)
+            assert(os.isfile(destination), "suitesparse-ordering copied " .. source .. " somewhere other than " .. destination)
+        end
         for from, to in pairs(HEADERS) do
-            assert(os.isfile(from), "SuiteSparse " .. package:version() .. " has no " .. from)
-            -- every level of the destination made here rather than left to os.vcp, whose habit of
-            -- creating the last component and not the ones above it cost two runs: first
-            -- SuiteSparse_config/SuiteSparse_config.h, then COLAMD/Include/colamd.h.
-            os.mkdir(path.join(package:installdir("include"), to))
-            assert(os.vcp(from, path.join(package:installdir("include"), to) .. "/"),
-                   "suitesparse-ordering could not install " .. from)
+            install_file(from, path.join(package:installdir("include"), to, path.filename(from)))
         end
         for _, name in ipairs(LICENSES) do
             if os.isfile(name) then
-                assert(os.vcp(name, path.join(package:installdir("licenses"), name:gsub("[/\\]", "_"))),
-                       "suitesparse-ordering could not install " .. name)
+                install_file(name, path.join(package:installdir("licenses"), name:gsub("[/\\]", "_")))
             end
         end
-        assert(os.vcp("AMD/Doc/License.txt", path.join(package:installdir("licenses"), "AMD-LICENSE.txt")),
-               "suitesparse-ordering could not install AMD's licence")
-        assert(os.vcp("COLAMD/Doc/License.txt", path.join(package:installdir("licenses"), "COLAMD-LICENSE.txt")),
-               "suitesparse-ordering could not install COLAMD's licence")
+        install_file("AMD/Doc/License.txt", path.join(package:installdir("licenses"), "AMD-LICENSE.txt"))
+        install_file("COLAMD/Doc/License.txt", path.join(package:installdir("licenses"), "COLAMD-LICENSE.txt"))
     end)
 
     on_test(function (package)

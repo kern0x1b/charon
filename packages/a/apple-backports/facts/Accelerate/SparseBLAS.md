@@ -357,19 +357,32 @@ blockers and three minors. All six are fixed; this is what each one was and what
    port's Accelerate sources, and the only `CharonSparseSearch` in the transposed block is the one whose
    result is tested.
 
-And finding C, "sixteen of sixty-nine called by neither test". Recounted against the delivered files:
-**the host differential calls 69 of 69, the device test calls 47, and no row is called by neither.** It was
-16 of 69 before, and all sixteen are now asked as the double twins of cases the float half already
-compares.
+And finding C, "sixteen of sixty-nine called by neither test".
 
-**How that count is measured, and the two recounts that got it wrong.** Reading the registry and counting
-the call sites in each harness is the method, and the arithmetic is a `grep` per row name over the two
-files: a row counts as called when its name appears in a call position, not only on its prototype line.
-Two scripts of mine did that arithmetic wrongly and both reported 69 of 69 while
-`sparse_matrix_variable_block_create_double` stood on line 40 of the differential and nowhere else — its
-float twin is called at 289, 290, 302, 303, 552 and 553, so the count was 68 and the r3 verdict and the
-r4 review were right and my facts file was wrong twice over. The grep is the measurement and the sentence
-carries it; the number is only ever written down from the grep's output.
+**The count, and how it is measured — at call sites, because two earlier counts were not.** The review
+found that a per-row `grep` for a row's name returns all 69 because six of the names appear in the
+differential **as declarations only**, on the prototype lines; and that my own recount scripts did the
+same thing, so a number of 69 of 69 went into this file twice while rows were untested. A name-grep is
+not a count of calls and this one is not used any more.
+
+The count now is **call sites**: a line that contains the row's name followed by `(` and is **not a
+declaration**, a declaration being a line whose name is preceded by a type — `sparse_matrix_double
+RENAME(sparse_matrix_create_double)(…)` — and a call being everything else, including one whose statement
+ends in `;` on the same line. Counted that way against the delivered tree:
+
+```
+the registry rows                              69
+called at a call site by the host differential  67
+called at a call site by the device test       47
+called by either                               69
+called by neither                               0
+```
+
+and the two rows the r4 review found called by nobody now have cases of their own —
+`sparse_matrix_variable_block_create_double` beside its float twin, and
+`sparse_matrix_product_sparse_double` beside its float twin over both layouts, plus the non-conforming
+shape as the one recorded divergence of the family. The harness's own tally agrees: it runs
+**368 checks**, which is 365 plus the three the last two cases add.
 
 **What the r4 review's correction is:** `sparse_matrix_variable_block_create_double` is now called beside
 its float twin in `creation()`, as a case of its own with a name of its own, and the invalid-transpose

@@ -18,6 +18,7 @@
 //     "header" below.
 
 #import <Accelerate/Accelerate.h>
+#include <complex.h>   // the double twins of the sparse-sparse product, and the imaginary unit
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -305,6 +306,48 @@ static void creation(void)
                "variable block with a zero", "both answer a matrix and the same row count");
         if (c) RENAME(sparse_matrix_destroy)(c);
         if (d) sparse_matrix_destroy(d);
+        // The double twin of the sparse-sparse product, the third row the review found called by nobody:
+        // its float twin is compared three times over, so this is the same case at the other precision.
+        {
+            double complex v[6] = {1, 2 + 1i, 3, 4, 5i, 6};
+            sparse_index rows[6] = {0, 0, 1, 1, 2, 2}, columns[6] = {0, 1, 0, 1, 0, 1};
+            Pair a = pointwise(2, 3, 6, v, rows, columns, 1), b = pointwise(2, 3, 6, v, rows, columns, 1);
+            double complex sc[4] = {5, 6, 7, 8};
+            sparse_index srows[4] = {0, 0, 1, 1}, scols[4] = {0, 1, 0, 1};
+            Pair s = pointwise(3, 2, 4, sc, srows, scols, 1);
+            // A 2x3 A with a 3x2 S conforms for the non-transposed operand - the inner dimensions
+            // are 3 and 3 - and not for the transposed one, which the header calls undefined: the port
+            // refuses it and the host computes, and that is the one recorded divergence in the family.
+            for (int order = 0; order < 2; order++) {
+                double complex c1[4] = {7, 7, 7, 7}, c2[4] = {7, 7, 7, 7};
+                sparse_status ma = RENAME(sparse_matrix_product_sparse_double)((enum CBLAS_ORDER)(order ? 102 : 101),
+                                                                                  CblasNoTrans, 1.0 + 0i,
+                                                                                  (sparse_matrix_double_complex)a.mine,
+                                                                                  (sparse_matrix_double_complex)s.mine, c1, 2);
+                sparse_status mb = sparse_matrix_product_sparse_double((enum CBLAS_ORDER)(order ? 102 : 101), CblasNoTrans,
+                                                                       1.0 + 0i, (sparse_matrix_double_complex)b.theirs,
+                                                                       (sparse_matrix_double_complex)s.theirs, c2, 2);
+                int ok = ma == mb;
+                for (int k = 0; k < 4; k++) ok = ok && same_doubles(c1, c2, 4, 1e-12, "x");
+                snprintf(detail, sizeof detail, "order %d: port %d host %d", order, ma, mb);
+                report(ok, "a double sparse product, both layouts", detail);
+            }
+            {
+                double complex c1[4] = {7, 7, 7, 7}, c2[4] = {7, 7, 7, 7};
+                sparse_status ma = RENAME(sparse_matrix_product_sparse_double)(CblasRowMajor, CblasTrans, 1.0 + 0i,
+                                                                               (sparse_matrix_double_complex)a.mine,
+                                                                               (sparse_matrix_double_complex)s.mine, c1, 2);
+                sparse_status mb = sparse_matrix_product_sparse_double(CblasRowMajor, CblasTrans, 1.0 + 0i,
+                                                                       (sparse_matrix_double_complex)b.theirs,
+                                                                       (sparse_matrix_double_complex)s.theirs, c2, 2);
+                snprintf(detail, sizeof detail, "inner dimensions 2 against 3: the port refuses with %d, the host "
+                         "answers %d and writes a product of two matrices that do not conform", ma, mb);
+                report(ma == SPARSE_ILLEGAL_PARAMETER && mb == SPARSE_SUCCESS,
+                       "a double sparse product whose inner dimensions do not conform", detail);
+            }
+            RENAME(sparse_matrix_destroy)(a.mine); sparse_matrix_destroy(a.theirs);
+            RENAME(sparse_matrix_destroy)(s.mine); sparse_matrix_destroy(s.theirs);
+        }
         // And the double twin of the whole case, which the review found was declared and never called:
         // every one of the sixty-nine rows has to be reached, and a declared-but-uncalled entry point is
         // a row the registry calls implemented and nothing tests.
