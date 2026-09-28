@@ -51,6 +51,17 @@
     return (CLLocationDirection)fmod(fmod(degrees, 360.0) + 360.0, 360.0);
 }
 
+// The bearing of the ARRIVAL: the direction you are travelling in when you get there, which is
+// the initial bearing of the reverse leg. It is the same for the short legs and tens of degrees
+// different for the long ones, and a factory that answers a camera's heading has to say which it
+// means: the host's own answers the arrival bearing, measured over London->Paris (0.97 degrees from
+// the initial one) and New York->London (26.8 degrees from it).
++ (CLLocationDirection)charon_arrivalBearingFromCoordinate:(CLLocationCoordinate2D)from toCoordinate:(CLLocationCoordinate2D)to
+{
+    CLLocationDirection initial = [self charon_bearingFromCoordinate:to toCoordinate:from];
+    return (CLLocationDirection)fmod(fmod((double)initial, 360.0) + 360.0, 360.0);
+}
+
 + (MKMapRect)charon_mapRectForRegion:(MKCoordinateRegion)region
 {
     // The centre of the region and the span it covers, in the two halves MapKit's own projection

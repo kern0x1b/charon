@@ -44,6 +44,7 @@ NS_ASSUME_NONNULL_BEGIN
 // MKMapCamera answers it the same way for -cameraLookingAtCenterCoordinate:fromEyeCoordinate:
 //eyeAltitude:, and there is no release function for it.
 + (CLLocationDirection)charon_bearingFromCoordinate:(CLLocationCoordinate2D)from toCoordinate:(CLLocationCoordinate2D)to;
++ (CLLocationDirection)charon_arrivalBearingFromCoordinate:(CLLocationCoordinate2D)from toCoordinate:(CLLocationCoordinate2D)to;
 
 // The map rect of a coordinate region: the inverse of the release's own
 // MKCoordinateRegionForMapRect, which is how the two are kept answering each other exactly.

@@ -10,12 +10,6 @@
 #import <math.h>
 #import "CharonMapKit.h"
 
-// The height of a camera's eye above the point it looks at, as a multiple of the distance it looks
-// across. This is the ratio the release's own MKRoadWidthAtZoomScale family and MapKit's own
-// cameras share, and it is what makes the deprecated altitude and the iOS 13
-// centerCoordinateDistance two names for one number.
-static const double CharonMapCameraEyeRatio = 1.5;
-
 @implementation MKMapCamera
 
 @synthesize centerCoordinate = _centerCoordinate;
@@ -36,7 +30,10 @@ static const double CharonMapCameraEyeRatio = 1.5;
     camera->_centerCoordinateDistance = distance > 0.0 ? distance : 0.0;
     camera->_heading = heading;
     camera->_pitch = pitch;
-    camera->_altitude = distance > 0.0 ? distance * CharonMapCameraEyeRatio : 0.0;
+    // The altitude is the camera's own height above the centre, which is the distance the camera
+    // looks across times the cosine of its pitch -- the identity measured above, and the one the
+    // two setters below keep.
+    camera->_altitude = camera->_centerCoordinateDistance * cos((double)pitch * M_PI / 180.0);
     return camera;
 }
 
@@ -49,18 +46,44 @@ static const double CharonMapCameraEyeRatio = 1.5;
                                    heading:0.0];
 }
 
+// The camera a release's own eye and altitude make, and the CONVENTION is measured, not assumed.
+//
+// Four cases measured against the host's own MapKit (tests/backports/host/mapkit, the eye/centre
+// pairs and altitudes it prints) give two identities that hold to the last digit, for all four:
+//
+//   altitude == centerCoordinateDistance * cos(pitch)
+//   sqrt(centerCoordinateDistance^2 - altitude^2) == the great-circle distance between the eye
+//       and the centre
+//
+// so PITCH IS MEASURED FROM THE VERTICAL -- 0 is straight down, which is what the SDK's own comment
+// on MKMapCamera.pitch says -- and the distance is the HYPOTENUSE of that great circle and the eye
+// altitude, not the great circle itself. An earlier version of this file took the distance to be the
+// great circle and the pitch to be the angle above the ground, which is the complement of Apple's
+// and was wrong by 90 degrees minus the true angle.
 + (instancetype)cameraLookingAtCenterCoordinate:(CLLocationCoordinate2D)centerCoordinate
                              fromEyeCoordinate:(CLLocationCoordinate2D)eyeCoordinate
                                    eyeAltitude:(CLLocationDistance)eyeAltitude
 {
     CLLocation *eye = [[CLLocation alloc] initWithLatitude:eyeCoordinate.latitude longitude:eyeCoordinate.longitude];
     CLLocation *centre = [[CLLocation alloc] initWithLatitude:centerCoordinate.latitude longitude:centerCoordinate.longitude];
-    CLLocationDistance distance = [eye distanceFromLocation:centre];
-    CLLocationDirection heading = [CharonMapKit charon_bearingFromCoordinate:eyeCoordinate toCoordinate:centerCoordinate];
-    // The angle the eye altitude makes with the distance it looks across, measured from straight
-    // down, which is what pitch is: 0 looks straight down, 90 looks at the horizon.
-    double pitch = distance > 0.0 ? 180.0 / M_PI * atan(eyeAltitude / distance) : 90.0;
-    return [self charon_cameraAtCoordinate:centerCoordinate distance:distance pitch:(CGFloat)pitch heading:heading];
+    // The distance the release's own CLLocation measures between the two, and the altitude the
+    // caller put the eye at, which is the height above the centre.
+    CLLocationDistance ground = [eye distanceFromLocation:centre];
+    double altitude = eyeAltitude > 0.0 ? eyeAltitude : 0.0;
+    CLLocationDistance distance = sqrt(ground * ground + altitude * altitude);
+    // The pitch from the vertical, which is the angle whose cosine is the altitude over the distance.
+    double ratio = distance > 0.0 ? altitude / (double)distance : 0.0;
+    if (ratio > 1.0) {
+        ratio = 1.0;
+    }
+    CGFloat pitch = (CGFloat)(acos(ratio) * 180.0 / M_PI);
+    // The heading, the INITIAL bearing of the great circle, which is what the host's own answers on
+    // the short legs: London->Paris the two differ by 0.97 degrees, and the port and the host agree
+    // there. Across the Atlantic they differ by 26.8 degrees and the port does not pretend to know
+    // the host's rule; the differential asserts that divergence is still live and names it.
+    CLLocationDirection heading = [CharonMapKit charon_bearingFromCoordinate:eyeCoordinate
+                                                                 toCoordinate:centerCoordinate];
+    return [self charon_cameraAtCoordinate:centerCoordinate distance:distance pitch:pitch heading:heading];
 }
 
 + (instancetype)cameraLookingAtCenterCoordinate:(CLLocationCoordinate2D)centerCoordinate
@@ -119,11 +142,13 @@ static const double CharonMapCameraEyeRatio = 1.5;
     return self;
 }
 
+// The two spellings of one fact, as measured: the altitude is the distance the camera looks across
+// times the cosine of its pitch. So setting one sets the other, and neither invents a number.
 - (void)setAltitude:(CLLocationDistance)altitude
 {
     _altitude = altitude;
-    if (altitude > 0.0) {
-        _centerCoordinateDistance = altitude / CharonMapCameraEyeRatio;
+    if (_pitch > 0.0) {
+        _centerCoordinateDistance = altitude / cos((double)_pitch * M_PI / 180.0);
     }
 }
 
@@ -131,7 +156,7 @@ static const double CharonMapCameraEyeRatio = 1.5;
 {
     _centerCoordinateDistance = distance;
     if (distance > 0.0) {
-        _altitude = distance * CharonMapCameraEyeRatio;
+        _altitude = distance * cos((double)_pitch * M_PI / 180.0);
     }
 }
 

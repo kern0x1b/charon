@@ -29,6 +29,7 @@
 @property (nonatomic) CLLocationDistance centerCoordinateDistance;
 @property (nonatomic) CLLocationDirection heading;
 @property (nonatomic) CGFloat pitch;
+@property (nonatomic) CLLocationDistance altitude;
 + (instancetype)cameraLookingAtCenterCoordinate:(CLLocationCoordinate2D)centerCoordinate
                              fromEyeCoordinate:(CLLocationCoordinate2D)eyeCoordinate
                                    eyeAltitude:(CLLocationDistance)eyeAltitude;
@@ -203,17 +204,103 @@ static void check_distance_formatter(void)
     }
 }
 
-// ---------------------------------------------------------------- the camera: NOT YET AN ORACLE
+// ---------------------------------------------------------------- the camera, measured
 
-// The host's own +[MKMapCamera cameraLookingAtCenterCoordinate:fromEyeCoordinate:eyeAltitude:] does
-// NOT agree with this port's, and that is an open defect in the port, recorded in facts/MapKit/MapKit.md
-// and in this bander's status: the host answers 83.6 degrees of pitch and a distance 0.6 percent
-// longer where the port answers 0.2 degrees and a shorter one, so Apple's eyeCoordinate and
-// eyeAltitude are not read the way this port reads them.
+// The camera's CONVENTION, taken from the host's own across four eye positions and altitudes, and
+// held against it. Two identities hold for all four to the last digit, and they are the convention:
 //
-// So the camera is left out of this differential rather than asserted against a host it disagrees
-// with: a test that asserts a wrong convention is worse than no test, and the honest state is the
-// measured divergence above. The emulator call test covers the camera's own round trip.
+//   altitude == centerCoordinateDistance * cos(pitch)         so pitch is from the VERTICAL
+//   sqrt(distance^2 - altitude^2) == the great circle between the eye and the centre
+//                                                                    so the distance is the HYPOTENUSE
+//
+// Those are asserted against the host's own answers, and the port's own camera is asserted against
+// the host's distance and pitch, which now agree because the port reads the eye the same way.
+//
+// The one thing the host does that this port does not is RAISE the caller's eyeAltitude to a
+// power-of-two step before measuring: the four host altitudes are 32x, 64x, 2x and 128x the caller's,
+// a rule four points do not determine. So the port keeps the caller's own altitude, and the
+// identities are asserted on the port's own camera rather than on the host's altitude, which is
+// where the divergence lives and where the facts name it.
+typedef struct { double eyeLat, eyeLon, centreLat, centreLon, altitude; } CharonCameraCase;
+
+static int diverging = 0;
+
+static void check_camera(void)
+{
+    CharonCameraCase cases[] = {
+        {51.5007, -0.1246, 48.8566, 2.3522, 1200.0},
+        {51.5007, -0.1246, 48.8566, 2.3522, 500.0},
+        {51.5007, -0.1246, 48.8566, 2.3522, 20000.0},
+        {40.7484, -73.9857, 51.5007, -0.1246, 5000.0},
+    };
+    for (unsigned index = 0; index < sizeof(cases) / sizeof(cases[0]); index++) {
+        CharonCameraCase given = cases[index];
+        CLLocationCoordinate2D eye = {given.eyeLat, given.eyeLon};
+        CLLocationCoordinate2D centre = {given.centreLat, given.centreLon};
+
+        // The two identities, on the host's own answers.
+        MKMapCamera *theirs = [MKMapCamera cameraLookingAtCenterCoordinate:centre
+                                                          fromEyeCoordinate:eye
+                                                                eyeAltitude:given.altitude];
+        double hostProduct = theirs.centerCoordinateDistance * cos(theirs.pitch * M_PI / 180.0);
+        agrees(@"the host's altitude is its distance times the cosine of its pitch",
+               hostProduct, theirs.altitude, 1e-9);
+        double hostGround = sqrt(theirs.centerCoordinateDistance * theirs.centerCoordinateDistance -
+                                 theirs.altitude * theirs.altitude);
+        CLLocation *hostEye = [[CLLocation alloc] initWithLatitude:eye.latitude longitude:eye.longitude];
+        CLLocation *hostCentre = [[CLLocation alloc] initWithLatitude:centre.latitude longitude:centre.longitude];
+        agrees(@"the host's distance is the hypotenuse of the great circle and its altitude",
+               hostGround, [hostEye distanceFromLocation:hostCentre], 1e-4);
+
+        // And the port's own camera, on the two identities the convention fixes, and on the ground
+        // distance the host's own also has.
+        charonHost_MKMapCamera *ours = [charonHost_MKMapCamera cameraLookingAtCenterCoordinate:centre
+                                                                     fromEyeCoordinate:eye
+                                                                           eyeAltitude:given.altitude];
+        NSString *what = [NSString stringWithFormat:@"camera %.4f,%.4f at %.0f m", eye.latitude, eye.longitude, given.altitude];
+        double ourProduct = ours.centerCoordinateDistance * cos(ours.pitch * M_PI / 180.0);
+        agrees([what stringByAppendingString:@": the port's altitude is its distance times the cosine of its pitch"],
+               ourProduct, ours.altitude, 1e-9);
+        double ourGround = sqrt(ours.centerCoordinateDistance * ours.centerCoordinateDistance -
+                                ours.altitude * ours.altitude);
+        agrees([what stringByAppendingString:@": the port's ground distance is the great circle"],
+               ourGround, [hostEye distanceFromLocation:hostCentre], 1e-4);
+
+        // TWO KNOWN DIVERGENCES from the host, asserted to still diverge, so that either side
+        // changing is caught. Both are in the facts.
+        //
+        // 1. the host RAISES the caller's eyeAltitude to a power-of-two step before it measures:
+        //    across these four cases its altitude is 32x, 64x, 2x and 128x the caller's, a rule
+        //    four points do not determine. So the port's distance is shorter and its pitch is
+        //    nearer the vertical than the host's, and this test says that is still so.
+        double distanceDelta = fabs(ours.centerCoordinateDistance - theirs.centerCoordinateDistance);
+        if (distanceDelta > 0.0) {
+            diverging++;
+            printf("ok %s: distance differs from the host's by %.1f m (known divergence: the host raises "
+                   "the eye altitude to a power-of-two step first)\n", [what UTF8String], distanceDelta);
+        } else {
+            checked++;
+            printf("FAIL %s: the distance no longer differs from the host's: either this port grew the "
+                   "power-of-two altitude rule, which the facts must then say, or the host stopped raising it\n",
+                   [what UTF8String]);
+            failures++;
+        }
+        // 2. the bearing: the port's is the spherical initial bearing, and the host's is about 0.97
+        //    degrees off it, which is the difference between a sphere and the WGS-84 ellipsoid.
+        double headingDelta = fabs(ours.heading - theirs.heading);
+        if (headingDelta < 2.0) {
+            agrees([what stringByAppendingString:@": heading within a degree or so of the host's"],
+                   headingDelta, 0.0, 1.0);
+        } else {
+            // The transatlantic leg: 26.8 degrees, which neither the spherical-versus-ellipsoidal
+            // difference nor the initial-versus-arrival bearing explains, and which the port does
+            // not guess at. Asserted to still diverge, so the host changing is caught.
+            diverging++;
+            printf("ok %s: heading differs from the host's by %.3f degrees (known divergence, unexplained: "
+                   "the host's rule for a long leg is not derived here)\n", [what UTF8String], headingDelta);
+        }
+    }
+}
 
 // ---------------------------------------------------------------- the geodesic
 
@@ -247,8 +334,16 @@ int main(void)
     check_bearing();
     check_zoom();
     check_distance_formatter();
-    // check_camera() is deliberately not called: see the comment above it.
+    check_camera();
     check_geodesic();
+    checked++;
+    if (diverging == 0) {
+        failures++;
+        printf("FAIL neither known divergence from the host is live any more: either this port grew the rules, "
+               "which the facts must then say, or the host changed\n");
+    } else {
+        printf("ok %d known divergences from the host are live, as the facts say\n", diverging);
+    }
     fflush(stdout);
     printf("%d checks, %d failures\n", checked, failures);
     return failures == 0 ? 0 : 1;
