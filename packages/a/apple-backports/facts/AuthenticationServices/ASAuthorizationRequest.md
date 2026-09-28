@@ -104,9 +104,33 @@ likely the tool's host side than the framework.
 **So the gap is closed and the check is red.** It is committed red, with the two cases named, rather
 than committed green on the four members the old table happened to list.
 
+## The first subclass, and the two header shapes
+
+`ASAuthorizationOpenIDRequest` is the first class below the base, and the first place the two headers
+differ: the base marks `-init` and `+new` `NS_UNAVAILABLE`, its own header does not, and the host's
+own class list for it has eleven instance methods **including `init`**:
+
+    nonce  setNonce:  state  setState:  requestedOperation  setRequestedOperation:
+    requestedScopes  setRequestedScopes:  init  .cxx_destruct  supportsStyle:
+
+`supportsStyle:` is the release's own, is not in the header, and is therefore not asked about -- a
+private method is not a claim. `init` **is** asked about here and **is** bound here, because this
+header asks for it. That is the whole point of the `must-be-unavailable` state: the base and its
+subclass are on opposite sides of it, and a check that treated "the port declares -init" as a single
+verdict would be wrong on one and right on the other.
+
+A fresh request holds nil `requestedScopes`, `state` and `nonce` and the **implicit** operation, which
+is the header's default rather than a measurement: the host will not make an instance to ask, because
+its `-init` is the one under discussion. Recorded as the header's default, not as something observed.
+
+`-copyWithZone:` carries all four across. A request's identity is what it asks the provider for, and a
+copy that quietly changed one of those would be a different request wearing the same object's memory.
+
+    21 cases, 0 red
+
 ## What is not done
 
-578 rows. The value half of the family is measured (30 constants, 30 agree with the host) and the shape
+577 rows. The value half of the family is measured (30 constants, 30 agree with the host) and the shape
 half has a host differential and a mutant; the classes do not exist yet. The differential is currently
 **red** on one case — `-[ASWebAuthenticationSession init]`, which the host has and the port's source did
 not, and which has since been added — and that red has not been cleared, so the check is committed in a
