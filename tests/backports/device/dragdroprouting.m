@@ -269,7 +269,11 @@ static NSMutableArray<NSString *> *_order = nil;
     [probe.tableView reloadData];
     [probe.tableView layoutIfNeeded];
 
-    // The views' own drop delegates, which is who the routing asks.
+    // The views' own drop delegates, which is who the routing asks: UIDragInteractionDelegate and
+    // UIDropInteractionDelegate are the *interactions'* delegates, and the questions the routing
+    // puts to a view are the view's drop delegate's -- UICollectionViewDropDelegate and
+    // UITableViewDropDelegate. The probe answers the view's, which is why the interaction's name
+    // is not the one in the record.
     probe.collectionView.dropDelegate = probe;
     probe.tableView.dropDelegate = probe;
 
