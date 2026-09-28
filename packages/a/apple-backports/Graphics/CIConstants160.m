@@ -8,9 +8,5 @@
 // the release's own filters read the parameter by, read off the host's CoreImage rather than
 // written out by hand. facts/CoreImage/Constants.md has the run that read them.
 // Split by release: an object may only carry API that arrived in one of them, which the
-// gate reads off the stub. These arrived in iOS 18; the values are the host's own symbols.
-NSString *const kCIContextMemoryLimit = @"kCIContextMemoryLimit";
-NSString *const kCIImageContentHeadroom = @"kCIImageContentHeadroom";
-NSString *const kCIImageExpandToHDR = @"kCIImageExpandToHDR";
-NSString *const kCIImageRepresentationHDRGainMapAsRGB = @"kCIImageRepresentationHDRGainMapAsRGB";
-NSString *const kCIImageRepresentationHDRImage = @"kCIImageRepresentationHDRImage";
+// gate reads off the stub. These arrived in iOS 16.0; the values are the host's own symbols.
+NSString *const kCIInputEnableEDRModeKey = @"inputEnableEDRMode";

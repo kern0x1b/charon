@@ -7,9 +7,11 @@
 // some of them and not the rest, and the ones it does not carry are here: every value is the string
 // the release's own filters read the parameter by, read off the host's CoreImage rather than
 // written out by hand. facts/CoreImage/Constants.md has the run that read them.
-// Split by release: an object may only carry API that arrived in one of them, which the gate
-// reads off the stub. The values are the host's own symbols; facts/CoreImage/Constants.md.
-CIFormat kCIFormatRGBAf = 2312;
+// Split by release: an object may only carry API that arrived in one of them, which the
+// gate reads off the stub. These arrived in iOS 7.0; the values are the host's own symbols.
+CIFormat kCIFormatA8 = 257;
+CIFormat kCIFormatLA8 = 260;
+CIFormat kCIFormatR8 = 261;
 NSString *const CIDetectorEyeBlink = @"CIDetectorEyeBlink";
 NSString *const CIDetectorSmile = @"CIDetectorSmile";
 NSString *const kCIContextOutputPremultiplied = @"output_premultiplied";

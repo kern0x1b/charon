@@ -7,8 +7,8 @@
 // some of them and not the rest, and the ones it does not carry are here: every value is the string
 // the release's own filters read the parameter by, read off the host's CoreImage rather than
 // written out by hand. facts/CoreImage/Constants.md has the run that read them.
-// Split by release: an object may only carry API that arrived in one of them, which the gate
-// reads off the stub. The values are the host's own symbols; facts/CoreImage/Constants.md.
+// Split by release: an object may only carry API that arrived in one of them, which the
+// gate reads off the stub. These arrived in iOS 16; the values are the host's own symbols.
 NSString *const kCIContextAllowLowPower = @"kCIContextAllowLowPower";
 NSString *const kCIImageAuxiliaryHDRGainMap = @"kCIImageAuxiliaryHDRGainMap";
 NSString *const kCIImageAuxiliarySemanticSegmentationGlassesMatte = @"kCIImageAuxiliarySemanticSegmentationGlassesMatte";
