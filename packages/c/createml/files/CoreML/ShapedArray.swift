@@ -18,6 +18,24 @@
 // The row-major layout is the one the strides describe, and it is what a linear model's weights are
 // already in: a design matrix of `rows x columns` has strides `[columns, 1]`, which is what
 // `LinearRegressor` hands back, so the arithmetic that fitted it needs no copy on the way out.
+//
+// ## What is reused, and what is not
+//
+// The leading-dimension arithmetic below — the scalars an element of a given leading index spans, the
+// flat offset of that index, and the flat range a leading range covers — is **taken from** TensorFlow
+// swift-apis' `ShapedArray` (`Sources/TensorFlow/Core/ShapedArray.swift`, Apache-2.0,
+// https://github.com/tensorflow/swift-apis), which computes exactly these three as
+// `scalarCountPerElement`, `scalarIndex(fromIndex:)` and `scalarSubrange(from:)`:
+// `shape.isEmpty ? 0 : shape.dropFirst().reduce(1, *)`. It is the part that every strided N-D array
+// needs and the part that is easy to get subtly wrong, and it is the whole of what a row slice is.
+//
+// Three parts of that file are **not** taken, and `facts/CoreML/ShapedArray.md` says why:
+// its `TensorBuffer`, which has a second storage mode holding a `TF_Tensor*` — a dependency on
+// TensorFlow's C library, a second copy of arithmetic and a dylib this port does not have; its
+// several hundred lines of aligned multi-line shape description, where a port needs a shape and a
+// count in a log line; and its `RandomAccessCollection, MutableCollection` conformance, which is
+// the shape this toolchain rejects and which the port's review just cost a wrong row and a process
+// abort over (F3).
 
 import CoreML
 import Foundation
@@ -55,6 +73,30 @@ public struct MLShapedArray<Scalar: MLShapedArrayScalar>: @unchecked Sendable {
 
     /// The number of scalars, which is the product of the shape.
     public var count: Int { scalars.count }
+
+    /// How many scalars one element of the leading dimension spans: the product of everything after
+    /// the first, and **zero** for a shape with no dimensions at all.
+    ///
+    /// Taken from TensorFlow swift-apis' `ShapedArray` (Apache-2.0), which computes this as
+    /// `shape.isEmpty ? 0 : shape.dropFirst().reduce(1, *)`. The empty case is the one worth keeping:
+    /// a zero-dimensional array holds one scalar and no dimensions, and `dropFirst()` on an empty shape
+    /// gives an empty product of `1` — a leading "dimension" of one scalar, which is the right answer
+    /// by accident rather than by the `0` the case needs.
+    public var scalarsPerLeadingIndex: Int {
+        shape.isEmpty ? 0 : shape.dropFirst().reduce(1, *)
+    }
+
+    /// The flat offset of an index in the leading dimension.
+    public func scalarOffset(forLeadingIndex index: Int) -> Int {
+        scalarsPerLeadingIndex * index
+    }
+
+    /// The flat range of scalars a range in the leading dimension covers — which is the whole of a
+    /// row slice, and is here once so that the slicing code and the buffer code cannot disagree about
+    /// what a row is.
+    public func scalarRange(forLeadingRange range: Range<Int>) -> Range<Int> {
+        scalarOffset(forLeadingIndex: range.lowerBound)..<scalarOffset(forLeadingIndex: range.upperBound)
+    }
 
     /// The strides a shape of this shape has, in elements: the last dimension is 1 and each one
     /// before it is the product of the ones after it.
@@ -161,6 +203,25 @@ public struct MLShapedArray<Scalar: MLShapedArrayScalar>: @unchecked Sendable {
     /// feature matrix.
     public subscript(slice sliceRange: Range<Int>) -> MLShapedArraySlice<Scalar> {
         MLShapedArraySlice(array: Array(scalars[sliceRange]), shape: [sliceRange.count], strides: [1])
+    }
+
+    /// **A whole leading-dimension slice** — one row of a design matrix, or one observation — and the
+    /// one that *drops* a dimension, which `slice(_:along:)` deliberately does not.
+    ///
+    /// The two operations are different and the review's F3 is why they are told apart here. A
+    /// *partial* slice of a dimension is a sub-block and keeps the dimension with a new extent; a
+    /// *whole* leading-dimension slice is a row and is one-dimensional. The flat range is the reused
+    /// `scalarRange(forLeadingRange:)`, so a row is computed in one place and the shape it answers is
+    /// what a row is: one dimension, of that many scalars.
+    public subscript(leadingRange range: Range<Int>) -> MLShapedArraySlice<Scalar> {
+        let flat = scalarRange(forLeadingRange: range)
+        return MLShapedArraySlice(array: Array(scalars[flat]), shape: [flat.count], strides: [1])
+    }
+
+    /// The rows of a two-dimensional array, as an array of rows.
+    public var rows: [MLShapedArraySlice<Scalar>] {
+        guard shape.count == 2 else { return [] }
+        return (0..<shape[0]).map { self[leadingRange: $0..<($0 + 1)] }
     }
 
     /// A slice **along one dimension**: `array.slice(0..<3, along: 1)` of a `2 x 3` array is the

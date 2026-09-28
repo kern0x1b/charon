@@ -248,8 +248,31 @@ do {
     // A whole row — one that *drops* a dimension — is a different operation from a partial slice, and
     // saying so is the point: `slice(_:along:)` never drops a dimension, so a caller who wants a row
     // takes the flat range. Both are checked so neither is mistaken for the other.
-    let firstRow = matrix.scalars[0..<3]
-    checkEqual("a whole row is a flat range of the scalars", Array(block.scalars[0..<3]), [1, 2, 3])
+    let flatFirstRow = Array(matrix.scalars[0..<3])
+    // A **whole leading-dimension slice** is a row and drops a dimension; a partial slice is a
+    // sub-block and keeps it. The two are told apart deliberately, and both are checked, because the
+    // review's F3 is exactly what happens when a slice is allowed to be either.
+    let leadingFirstRow = block[leadingRange: 0..<1]
+    checkEqual("a whole leading-dimension slice is one-dimensional", leadingFirstRow.shape, [3])
+    checkEqual("and is that row's values", leadingFirstRow.values, [1, 2, 3])
+    let secondRow = block[leadingRange: 1..<2]
+    checkEqual("the second row too", secondRow.values, [4, 5, 6])
+    checkEqual("a block's rows", block.rows.map { $0.values }, [[1, 2, 3], [4, 5, 6]])
+    checkEqual("the reused leading-dimension arithmetic: scalars per leading index",
+               block.scalarsPerLeadingIndex, 3)
+    checkEqual("and the flat offset of an index in it", block.scalarOffset(forLeadingIndex: 1), 3)
+    let leadingRange = block.scalarRange(forLeadingRange: 1..<2)
+    checkEqual("and the flat range a leading range covers", leadingRange.lowerBound, 3)
+    checkEqual("up to", leadingRange.upperBound, 6)
+    // A **zero**-dimensional array is one with no dimensions at all, not a one-dimensional array of
+    // one element: the shape `[]` holds exactly one scalar, and the leading-dimension count is then
+    // 0 rather than the 1 an empty product would give. The `shape.isEmpty` case is the one worth
+    // keeping for that reason.
+    let zeroDimensional = PortCoreML.MLShapedArray(scalars: [9.0], shape: [])
+    checkEqual("a zero-dimensional array's shape is empty", zeroDimensional.shape, [])
+    checkEqual("and it holds one scalar", zeroDimensional.count, 1)
+    checkEqual("and spans no leading index", zeroDimensional.scalarsPerLeadingIndex, 0)
+    checkEqual("a one-dimensional array spans one scalar per index", feature([1, 2, 3]).scalarsPerLeadingIndex, 1)
     checkEqual("a whole extent is the identity", block.slice(0..<3, along: 1).scalars, [1, 2, 3, 4, 5, 6])
     // And the slice as a whole array, which is the one thing a slice is for and which aborted the
     // process before: the shape is a lie about the values, so the array initialiser's own

@@ -82,7 +82,22 @@ do {
     // here position by position, which is the same table and does not need the port's shaped array to
     // exist in the same process.
     let hostMatrix = theirs.makeConfusionMatrix()
-    let portMatrix = mine.makeConfusionMatrix()
+    // The port's matrix is the framework's own `MLShapedArray<Float>`, read through its own strides.
+    let portShaped = mine.makeConfusionMatrix()
+    checkEqual("the port's matrix is a shaped array of the row by the column",
+               portShaped.shape, [labelSet.count, labelSet.count])
+    checkEqual("with the strides a row-major two-dimensional block has", portShaped.strides, [labelSet.count, 1])
+    var portMatrix = [[Int]]()
+    for row in 0..<labelSet.count {
+        var cells = [Int]()
+        for column in 0..<labelSet.count { cells.append(Int(portShaped[indices: row, column])) }
+        portMatrix.append(cells)
+    }
+    // And the plain-array reading is the same numbers in the same order, so a caller without CoreML
+    // is not being given a second answer.
+    checkEqual("the plain-array matrix is the shaped array's, cell for cell",
+               mine.makeConfusionMatrixRows(), portMatrix)
+    checkEqual("and the label order is published", mine.confusionMatrixLabelOrder.count, labelSet.count)
     checkEqual("the confusion matrix's shape", portMatrix.map { $0.count },
                Array(repeating: labelSet.count, count: labelSet.count))
     let count = labelSet.count

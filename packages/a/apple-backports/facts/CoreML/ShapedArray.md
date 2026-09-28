@@ -85,6 +85,53 @@ brings `libCoreMLBackports.dylib` and the `MLMultiArray` class, and the rows thi
 `registry/CoreML/` and nothing else, and the coordinator has told them this file's names so neither
 writes them twice.
 
+## What is reused, and what is not
+
+The port's `MLShapedArray` is written over the port's own layout, but its **leading-dimension
+arithmetic** is taken from TensorFlow swift-apis' `ShapedArray` —
+`Sources/TensorFlow/Core/ShapedArray.swift`, Apache-2.0, <https://github.com/tensorflow/swift-apis> —
+which computes exactly these three:
+
+| here | there | what it is |
+| --- | --- | --- |
+| `scalarsPerLeadingIndex` | `scalarCountPerElement` | `shape.isEmpty ? 0 : shape.dropFirst().reduce(1, *)` |
+| `scalarOffset(forLeadingIndex:)` | `scalarIndex(fromIndex:)` | the element count times the index |
+| `scalarRange(forLeadingRange:)` | `scalarSubrange(from:)` | the flat range a leading range covers |
+
+That is the part every strided N-dimensional array needs and the part that is easy to get subtly
+wrong, and it is the whole of what a row *is* — a leading-dimension slice, a flat range, one
+dimension of that many scalars. The `shape.isEmpty ? 0` is worth keeping for one reason: a
+zero-dimensional array holds **one** scalar and no dimensions, and an empty product of `1` gives a
+leading dimension of one scalar by accident rather than by the case.
+
+Three parts of that file are **not** taken:
+
+- **`TensorBuffer`**, whose second storage mode holds a `TF_Tensor*`. That is a dependency on
+  TensorFlow's C library: a second copy of the arithmetic the port already gets from the device's own
+  BLAS, and a dylib the port does not have.
+- **Its several hundred lines of aligned, multi-line shape description** — `scalarDescription`,
+  `elementDescription`, `fullDescription`, `leftPadded(toLength:)`. A port needs a shape and a count in
+  a log line, and `MLShapedArray.description` here is `"[2, 3] (6 values)"`.
+- **Its `RandomAccessCollection, MutableCollection` conformance.** That is the shape this toolchain
+  rejects — the port's review cost a wrong registry row and a process abort on exactly that (finding
+  F3, where a `subscript(position:)` written with a second parameter name and a two-parameter
+  `subscript(dimension:slice:)` together produced a wrong row *and* a trap). The port's columns
+  therefore carry the members and not the conformance, and that divergence is in
+  `facts/TabularData/Columns.md`.
+
+## Two kinds of slice, which the review's F3 is why they are told apart
+
+- **A partial slice** of one dimension is a **sub-block**: the array's shape with that dimension's
+  extent replaced, read in the array's own row-major order. `slice(_:along:)`.
+- **A whole leading-dimension slice** is a **row**: it *drops* the dimension and is
+  one-dimensional. `subscript(leadingRange:)`, and `rows` for the two-dimensional case.
+
+Both are checked. The first version of the port had only the sub-block, applied with the sliced
+dimension innermost and then outermost, and neither is right for both axes: a `2 x 3` array sliced to two
+columns must answer `[1, 2, 4, 5]` and to two rows `[1, 2, 3, 4, 5, 6]`, and only walking the *kept
+block* in its own order gives both. The decode runs from the **last** dimension; the
+first-to-last version gives the transpose.
+
 ## What a caller can and cannot do with it
 
 A caller can name a scalar type's `multiArrayDataType` and can build an `MLShapedArray` of that scalar

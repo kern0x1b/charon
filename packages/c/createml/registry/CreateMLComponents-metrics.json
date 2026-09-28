@@ -95,10 +95,21 @@
             "introduced": "15.0",
             "minimum": "6.0",
             "status": "implemented",
-            "reason": "the matrix as [[Int]] - row is the row's own label, column is the prediction, cell the count - and NOT as CoreML's MLShapedArray<Float>, which is a shaped array the port's CoreML overlay does not yet provide. The off-diagonal is a COUNT of the rows and not a test of whether such a row exists, which the first version got wrong and the host's cells caught",
-            "effect": "the matrix as a table of counts",
+            "reason": "the matrix as the framework's own MLShapedArray<Float>: a row per label AS THE ANSWER, a column per label AS THE PREDICTION, and the cell the count of the rows that landed there. The labels are ordered by their printed names so two matrices are comparable, and the off-diagonal cells are derived from the remembered (predicted, answer) pairs rather than from the three count dictionaries: `predicted - hits` is how many rows were predicted as a label and were not it, which does not say WHICH answer they had, and a matrix with the right numbers in the wrong cells is worse than no matrix",
+            "effect": "MLShapedArray<Float>, a row per answer and a column per prediction",
             "facts": "facts/CreateMLComponents/Metrics.md",
-            "source": "compared cell by cell against the host's own matrix, read through withUnsafeShapedBufferPointer; the port of MLShapedArray is a real gap and is next"
+            "source": "the SDK 26.2 CreateMLComponents.swiftinterface, whose signature returns MLShapedArray<Float>; the cells are compared against the host's own matrix in tests/backports/host/createml/metrics, 86 checks"
+        },
+        {
+            "api": "ClassificationMetrics.makeConfusionMatrixRows",
+            "kind": "method",
+            "introduced": "15.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "the same numbers in the same order as plain nested arrays, for a caller that has no CoreML to hand. It is NOT the framework's return type and the registry does not claim it is: the framework's method is makeConfusionMatrix() and it answers MLShapedArray<Float>. This exists so the metrics can be read without importing CoreML, and the test checks the two agree cell for cell so it cannot drift",
+            "effect": "[[Int]], the same cells as the shaped array",
+            "facts": "facts/CreateMLComponents/Metrics.md",
+            "source": "this port's; the agreement with the shaped array is checked by tests/backports/host/createml/metrics, 86 checks"
         }
     ]
 }

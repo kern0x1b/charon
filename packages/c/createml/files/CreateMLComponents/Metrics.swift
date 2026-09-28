@@ -205,35 +205,51 @@ public struct ClassificationMetrics<Label: Hashable> {
         return 2 * precision * recall / (precision + recall)
     }
 
-    /// The confusion matrix as the framework's own `MLShapedArray` of `Float`: a row per label as the
-    /// answer, a column per label as the prediction, and the cell the count of the rows that landed
-    /// there.
+    /// The confusion matrix as the framework's own `MLShapedArray<Float>`: a row per label **as the
+    /// answer**, a column per label **as the prediction**, and the cell the count of the rows that
+    /// landed there.
     ///
-    /// **Absent, and this is the honest shape of the gap:** the matrix is `MLShapedArray<Float>`, which
-    /// is CoreML's Swift type, and the CoreML Swift overlay on this port is what this series is
-    /// building. The type is declared by the header and the overlay carries the arithmetic, so the
-    /// matrix is computed here and *not* returned as the framework's shaped array; a caller that
-    /// wants the framework's type casts it. The counts are the same either way, and the test checks
-    /// them against the host's own matrix.
-    public func makeConfusionMatrix() -> [[Int]] {
-        // Row = the row's own label, column = what the model predicted, cell = the count. The labels
-        // are ordered by their printed names so the matrix is the same table twice over, which is what
-        // makes it comparable; and the off-diagonal cell is derived, not stored, because the storage
-        // is three dictionaries and a confusion matrix is all the counts they imply.
+    /// The labels are ordered by their printed names, so the matrix is the same table twice over and
+    /// two of them are comparable. The off-diagonal cells are derived from the remembered
+    /// `(predicted, answer)` pairs rather than from the three count dictionaries, because
+    /// `predicted - hits` is how many rows were predicted as a label and were not it, which does not
+    /// say *which* answer they had; a confusion matrix that got that wrong would be a matrix of the
+    /// right numbers in the wrong cells.
+    public func makeConfusionMatrix() -> MLShapedArray<Float> {
+        let order = labels.sorted { String(describing: $0) < String(describing: $1) }
+        let count = order.count
+        var cells = [Float](repeating: 0, count: count * count)
+        for (row, answer) in order.enumerated() {
+            for (column, guess) in order.enumerated() {
+                let cell = pairs.reduce(0) { total, pair in
+                    pair.1 == answer && pair.0 == guess ? total + 1 : total
+                }
+                cells[row * count + column] = Float(cell)
+            }
+        }
+        return MLShapedArray(scalars: cells, shape: [count, count])
+    }
+
+    /// The confusion matrix as plain nested arrays, for a caller that has no CoreML to hand.
+    ///
+    /// The *same* numbers in the same order as `makeConfusionMatrix()`; it exists so the metrics can
+    /// be read without importing CoreML, and it is not the framework's return type. The framework's
+    /// method is above and answers `MLShapedArray<Float>`.
+    public func makeConfusionMatrixRows() -> [[Int]] {
         let order = labels.sorted { String(describing: $0) < String(describing: $1) }
         return order.map { answer in
             order.map { guess in
-                if answer == guess { return hits[answer] ?? 0 }
-                // Predicted as `guess`, and the row was not `guess`: that is `guess`'s false positives,
-                // of which some had this `answer` and some had another. The rows that had *this*
-                // answer and were predicted as something else are the answer's false negatives, and
-                // the cell is the count of the rows with this answer predicted as this guess — which
-                // is only knowable if the pair is remembered, so it is.
-                return pairs.reduce(0) { total, pair in
-                    pair.0 == guess && pair.1 == answer ? total + 1 : total
+                pairs.reduce(0) { total, pair in
+                    pair.1 == answer && pair.0 == guess ? total + 1 : total
                 }
             }
         }
+    }
+
+    /// The label order the matrix's rows and columns are in, which is a caller needs to read a cell
+    /// back into a label.
+    public var confusionMatrixLabelOrder: [Label] {
+        labels.sorted { String(describing: $0) < String(describing: $1) }
     }
 
     /// The (predicted, answer) pairs, kept so a confusion matrix's off-diagonal is a count and not a
