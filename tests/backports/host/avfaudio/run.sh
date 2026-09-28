@@ -10,6 +10,20 @@
 # A run that instantiates no host unit fails rather than passing vacuously: the oracle has to be there.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+
+# The offline-render differential is its own program: it asks the host's own 3D mixer and the host's
+# own offline engine, and it needs neither the port's sources nor an SDK, so it is built and run first
+# and its verdict is part of this script's.
+xcrun clang -fobjc-arc -Wall -Wno-deprecated-declarations \
+    "$here/offline.m" -framework Foundation -framework AudioToolbox -framework AVFAudio -framework CoreAudio \
+    -o "$here/../../../.agent-work/avfaudio-offline" 2>/dev/null || {
+        xcrun clang -fobjc-arc -Wall -Wno-deprecated-declarations "$here/offline.m" \
+            -framework Foundation -framework AudioToolbox -framework AVFAudio -framework CoreAudio \
+            -o "${TMPDIR:-/tmp}/avfaudio-offline"
+    }
+offline_bin="$here/../../../.agent-work/avfaudio-offline"
+[ -x "$offline_bin" ] || offline_bin="${TMPDIR:-/tmp}/avfaudio-offline"
+"$offline_bin" || exit $?
 AVFAUDIO=${AVFAUDIO:-$here/../../../../packages/a/apple-backports/AVFAudio}
 build=${AVFAUDIO_HOST_BUILD:-${TMPDIR:-/tmp}/charon-avfaudio-host}
 rm -rf "$build"
