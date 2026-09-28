@@ -66,9 +66,13 @@ public protocol ColumnProtocol<Element> {
 /// write through a view. With the storage in a reference the slice and the column see the same values,
 /// which is what the name says and what the framework's own slice does.
 internal final class ColumnStorage<Element>: @unchecked Sendable {
-    var values: [Element]
+    /// `[Element?]`, not `[Element]`: the SDK's `Column<WrappedElement>` is itself
+    /// `OptionalColumnProtocol`, and the missing cell is expressed by the *type* rather than by a
+    /// separate optional column. A column therefore has to be able to hold a nil while reporting its
+    /// element type as the value's own type, and `[Element]` cannot hold one at all.
+    var values: [Element?]
 
-    init(_ values: [Element]) { self.values = values }
+    init(_ values: [Element?]) { self.values = values }
 }
 
 /// A column of a frame, holding values of one type.
@@ -77,10 +81,18 @@ public struct Column<Element>: ColumnProtocol, BidirectionalCollection {
     /// The column's values, in the box every view of this column shares. `storage` is `internal` and
     /// the views are in this file, so nothing outside can reach past the value semantics.
     internal let storage: ColumnStorage<Element>
-    public var values: [Element] {
+    /// The column's cells, each of which may be missing. `Element` is the *value* type, so a nil
+    /// here is a cell with no value and a `.some(nil)` a value that is itself an optional - the
+    /// distinction the SDK keeps and this column now keeps with it.
+    public var values: [Element?] {
         get { storage.values }
         set { storage.values = newValue }
     }
+
+    /// The cells that hold a value, with the missing ones dropped. What most callers of a column
+    /// want, and the port's own readers used to get it from `values` before the missing cell became
+    /// expressible.
+    public var presentValues: [Element] { storage.values.compactMap { $0 } }
 
     /// Every initialiser assigns the **box** first and `name` second: `values` goes through the box,
     /// so writing `self.values` before the box exists reads `self` uninitialised. That is a real
@@ -91,12 +103,31 @@ public struct Column<Element>: ColumnProtocol, BidirectionalCollection {
     }
 
     public init(name: String = "", _ values: [Element]) {
-        self.storage = ColumnStorage<Element>(values)
+        self.storage = ColumnStorage<Element>(values.map { $0 })
+        self.name = name
+    }
+
+    /// The SDK's two `contents:` initialisers, verbatim in their constraints.
+    ///
+    ///     public init<S>(name: String, contents: S) where S: Sequence, S.Element == WrappedElement?
+    ///     public init<S>(name: String, contents: S) where WrappedElement == S.Element, S: Sequence
+    ///
+    /// The first is the ordinary form: the cells are `Element?` and a `nil` in them is a missing
+    /// cell by the type. The second is the present form: the cells are `Element` and cannot be
+    /// missing. The port could not write the first before, because `Column<Int>(name:_:)` took
+    /// `[Int]` and `nil` did not fit - so a column that is missing a cell had no spelling at all.
+    public init<S>(name: String, contents: S) where S: Sequence, S.Element == Element? {
+        self.storage = ColumnStorage<Element>(Array(contents))
+        self.name = name
+    }
+
+    public init<S>(name: String, contents: S) where Element == S.Element, S: Sequence {
+        self.storage = ColumnStorage<Element>(contents.map { $0 })
         self.name = name
     }
 
     public init<S: Sequence>(_ source: S, name: String = "") where S.Element == Element {
-        self.storage = ColumnStorage<Element>(Array(source))
+        self.storage = ColumnStorage<Element>(source.map { $0 })
         self.name = name
     }
 
@@ -110,12 +141,12 @@ public struct Column<Element>: ColumnProtocol, BidirectionalCollection {
 
     /// A column of its own over a copy of another one's values.
     public init(copying column: Column<Element>, name: String? = nil) {
-        self.storage = ColumnStorage<Element>(column.values)
+        self.storage = ColumnStorage<Element>(column.storage.values)
         self.name = name ?? column.name
     }
 
     public init(repeating value: Element, count: Int, name: String = "") {
-        self.storage = ColumnStorage<Element>([Element](repeating: value, count: count))
+        self.storage = ColumnStorage<Element>([Element?](repeating: value, count: count))
         self.name = name
     }
 
@@ -127,7 +158,9 @@ public struct Column<Element>: ColumnProtocol, BidirectionalCollection {
     public func index(after i: Int) -> Int { i + 1 }
     public func index(before i: Int) -> Int { i - 1 }
 
-    public subscript(position: Int) -> Element {
+    /// A cell, which may be missing. `Element?` is what makes a column that is missing a cell
+    /// possible, and it is the SDK's own subscript type.
+    public subscript(position: Int) -> Element? {
         get { values[position] }
         set { values[position] = newValue }
     }
