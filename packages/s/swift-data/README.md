@@ -23,12 +23,26 @@ are one thing: nothing expands a macro yet, and nothing runs a model on its own 
 
 Built, measured: `swiftc -target armv7-apple-ios6.1.3` over the whole module, the swift-runtime
 built with the Core Data backports and swift-foundation's `FoundationEssentials` and
-`FoundationInternationalization` on the search path, **0 errors**, 654680 bytes of object, the
-target triple read back out of it. The link of that object is not shown, because
-`-wmo`'s output is a bitcode wrapper and the two routes that would read it are both unavailable
-here (the pinned llvm has no `LLOP.so`, and this driver answers "unable to load output file map"
-for a valid one). The package's own `on_install` compiles per source file and would link; it
-cannot run yet, because `charon@swift-foundation` is f25214c6's series and not in the shared store.
+`FoundationInternationalization` on the search path: **0 errors**, a `Mach-O object arm_v7` of
+**856804 bytes, 2733 defined and 412 undefined symbols**. `-wmo -c` on its own writes that object;
+the bitcode wrapper an earlier run produced came from asking for the module interface in the same
+invocation, and a `-emit-library` link of it "succeeded" into a 16428-byte library with **zero**
+defined symbols - which is how the check that now prints the counts came to exist.
+
+The link is **not** finished, and for one reason only. Of the 412 undefined symbols, 118 are the
+Swift standard library's and 60 are the Swift runtime's (both in `libswiftCore`, which the
+program links), 32 are the port's own `Foundation` overlay, 7 are `Observation`, and 10 are
+`FoundationEssentials` + `FoundationInternationalization` - `Predicate`, `SortDescriptor`, `Date`,
+`UUID`. Those ten are swift-foundation's, and f25214c6's run output is its typecheck-only
+`check.sh` path, so `lib_FoundationEssentials.dylib` does not exist anywhere. Every other import of
+this module resolves against the runtime and the Core Data backports.
+
+And the build is against swift-runtime `29dd4454` (recipe digest `875c24e4...`), while this tree
+at `4d2e24e7` produces `0ccce571...` - the digest 4d2e24e7 regenerated for the backports' UIKit
+7-12 and CarPlay series, which are `backports.lua` changes and so can move the lift. The newest
+`backports=true` swift-runtime in the store is from 04:34 today, built against the older digest.
+**This build has to be re-measured against the runtime this tree produces, and that is a gate-sized
+job, not a band-sized one.**
 
 Also missing, and not part of the 20: `DefaultStore`'s `HistoryProviding` conformance and
 `ModelContext.fetchHistory`/`deleteHistory` are written as types but not wired to the store, and
