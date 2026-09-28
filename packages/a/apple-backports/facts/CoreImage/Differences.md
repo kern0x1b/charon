@@ -55,6 +55,25 @@ pass, and I am not claiming either row is proved: this is the same failure mode 
 "four mutations still gave 252/252", where the port process was the host. **The next thing to do is to
 find out which, before either row is claimed as held.**
 
+## The 4.3 lower bound, measured: CoreImage arrives in 5.0
+
+`tools/cicontext-bounds.lua`, with `apple.dyld` and no raw search over the cache bytes:
+
+    4.3     the CoreImage image: NOT in the cache
+    4.3.5   the CoreImage image: NOT in the cache
+    5.0     the CoreImage image: in the cache
+
+So **iOS 4.3 has no CoreImage at all**, and my earlier guess that "4.3 has CIContext" was wrong twice
+over. The placement follows from that: the two new files reference `CIContext` and `CIImage`, whose
+lower bound is 5.0, so they must sit at 5.0 or later and must not be built for 4.3. The 4.3 gate's
+failure is not "the release has the class and the port's copy is dropped" - at 4.3 the port's copy is
+*kept* - it is that the band does not link CoreImage because the files that make it are placed at 10.0
+and 11.0 and never enter the 4.3 band at all.
+
+The `image.exports` accessor inside `apple.dyld` did not resolve from an `open_cache` image entry, so
+this establishes the **image's presence** and not which of the two releases first exports the four
+classes from it. The presence is what the placement needs.
+
 ## The 4.3 gate, and what it means for the two new files
 
 `4.3` fails on two symbols, and the reason is the release's:
