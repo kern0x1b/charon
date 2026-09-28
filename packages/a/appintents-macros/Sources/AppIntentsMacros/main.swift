@@ -150,5 +150,8 @@ struct AppIntentsMacrosPlugin: CompilerPlugin {
     let providingMacros: [Macro.Type] = [
         EntityPropertyMacro.self,
         DeferredPropertyMacro.self,
+        AppEntityMacro.self,
+        AppIntentMacro.self,
+        AppEnumMacro.self,
     ]
 }
