@@ -160,6 +160,10 @@ static void charon_listener_adopt(CharonNWListener *listener, int handle)
         nw_connection_set_queue(connection, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
     nw_connection_set_state_changed_handler(connection, ^(nw_connection_state_t state, nw_error_t error) {
         CharonNWListener *strong = weak;
+        if (getenv("CHARON_TRACE_LISTENER"))
+            fprintf(stderr, "[charon] listener: state %d on %p queue %p handler %p newConnection %p\n",
+                    state, (__bridge void *)listener, strong ? (__bridge void *)strong->_queue : NULL,
+                    (__bridge void *)listener, strong ? (__bridge void *)strong->_newConnection : NULL);
         if (state != nw_connection_state_ready || !strong || !strong->_newConnection)
             return;
         strong->_newConnection(connection);

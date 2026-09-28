@@ -127,10 +127,10 @@ int main(void)
         /* Every connection the listener hands over is held and read, and the assertions are about one:
            the first, which is the host's own connect attempt. A later accept is a retry, and a test
            that asserts on whichever arrived last is asserting about a socket nobody is talking to. */
-        NSMutableArray *every = [NSMutableArray array];
+        NSMutableArray *every = [[NSMutableArray alloc] init];  /* owned: not ARC, and the handler runs on the listener's queue */
         __block nw_connection_t accepted = nil;
         __block NSUInteger accepts = 0;
-        __block NSMutableData *up = [NSMutableData data];
+        __block NSMutableData *up = [[NSMutableData alloc] init];  /* owned, for the same reason */
         P(nw_listener_set_new_connection_handler)(listener, ^(nw_connection_t connection) {
             /* a program gives the connection it has been handed a queue of its own, not the
                listener's: the engines of many connections would then share one serial queue */
@@ -157,7 +157,7 @@ int main(void)
                                                                                        NW_PARAMETERS_DEFAULT_CONFIGURATION));
         nw_connection_set_queue(host_side, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
         __block int host_ready = 0;
-        __block NSMutableData *down = [NSMutableData data];
+        __block NSMutableData *down = [[NSMutableData alloc] init];  /* owned, for the same reason */
         nw_connection_set_state_changed_handler(host_side, ^(nw_connection_state_t state, nw_error_t error) {
             /* every transition of the host's own connection, in the one trace the port's is in, with the
                error the state carries: that is what says whether the host is retrying and why */
