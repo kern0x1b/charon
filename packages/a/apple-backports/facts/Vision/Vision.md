@@ -224,10 +224,14 @@ recorded by `tests/backports/host/vision/run.sh` (33 records) and held against t
   one**, and the rounding of the sample position to be read from the gradient -- round-half-up or
   truncation are not yet separated by a measurement.
 
-  **What has not been done: the implementation.** A separable bilinear resampler over the BGRA buffer
-  is about thirty lines of C and works on iOS 6, and it is the fix this row has been reaching for. It
-  is not written, so nothing about it is claimed here: not that it reads 0 on the gradient table, not
-  what the +1 inset does to the centre crop, and not the mutant. The next step is the kernel in C,
-  then the gradient table, then the placement, then the mutant, then the light guard and r7 -- in
-  that order, and the check decides each.
+  **The implementation is written and is not yet in the library.** It is in
+  `.agent-work/runs/crop-probe/kernel.c` -- a separable bilinear over the BGRA buffer, two taps,
+  the half-pixel centre, taps clamped at the edges, no prefilter, rounding half up with a
+  `CHARON_VISION_TRUNCATE` seam for the other rounding -- and it compiles. It has **not** replaced
+  the CoreGraphics draw in `CharonVisionImage.h`: the edit was applied and reverted in the same
+  session, because the replacement of the draw's region took out more of the file than it meant to
+  and the header no longer compiled. So nothing about the kernel is claimed: not that it reads 0 on
+  the gradient table, not what the +1 inset does to the centre crop, and not a mutant. The order of
+  the rest is: paste the kernel in, run the gradient table, then the placement, then the mutant, then
+  the light guard and r7.
 
