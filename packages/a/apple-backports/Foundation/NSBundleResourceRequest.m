@@ -1,5 +1,6 @@
 #import <Foundation/Foundation.h>
 #import "CharonMethodProem.h"
+#import <objc/runtime.h>
 
 /* NSBundleResourceRequest (iOS 9.0) over the port's release.
 
@@ -214,32 +215,56 @@ static BOOL CharonTagIsResolvable(NSBundle *bundle, NSString *tag)
 
 /* The two additions, on NSBundle, in the header's own terms. macOS ships them as stubs that answer
    and read back 0 where the header promises an exception, so the host cannot hold the port to them and
-   the port follows the header. */
-@implementation NSBundle (NSBundleResourceRequestAdditions)
+   the port follows the header.
 
-- (void)setPreservationPriority:(double)priority forTags:(NSSet<NSString *> *)tags
+   They are *installed*, not compiled in, and only when NSBundle does not already answer: a compiled
+   category attaches unconditionally and would override the host's own two methods on macOS, which is
+   what broke the host's private -initWithTag: the first time this ran beside it. The fleet rule is
+   that the port installs nothing where the host already has the API, and an answer to
+   -instancesRespondToSelector: is how that is asked of it - the same shape as
+   Foundation/NSBundle+ReceiptURL.m's +load, which replaces or adds per selector.
+
+   The two are plain C functions rather than methods, because they are the implementations a runtime
+   install needs and because a method's self would be a request rather than the bundle the caller
+   asked about. They are used only here and live in the same object as the class, so no band's file
+   can be left out from under them. */
+static void CharonSetPreservationPriority(NSBundle *bundle, SEL selector, double priority, NSSet<NSString *> *tags)
 {
-    NSDictionary *manifest = CharonManifestForBundle(self);
+    NSDictionary *manifest = CharonManifestForBundle(bundle);
     if ([manifest count] == 0) {
         [NSException raise:NSInvalidArgumentException
-                    format:@"%@: this bundle has no on demand resource tag information", charon_method_proem(self, _cmd)];
+                    format:@"%@: this bundle has no on demand resource tag information",
+                           charon_method_proem(bundle, selector)];
         return;
     }
+    NSMutableDictionary *priorities = CharonPriorities()[bundle.bundlePath ?: @""];
     for (NSString *tag in tags) {
         if (manifest[tag] == nil) {
             [NSException raise:NSInvalidArgumentException
-                        format:@"%@: “%@” is not a tag in this bundle's asset manifest", charon_method_proem(self, _cmd), tag];
+                        format:@"%@: \u201c%@\u201d is not a tag in this bundle's asset manifest",
+                               charon_method_proem(bundle, selector), tag];
             return;
         }
-        NSMutableDictionary *priorities = CharonPriorities()[self.bundlePath ?: @""];
         priorities[tag] = @(priority);
     }
 }
 
-- (double)preservationPriorityForTag:(NSString *)tag
+static double CharonPreservationPriorityForTag(NSBundle *bundle, SEL selector, NSString *tag)
 {
-    NSNumber *held = CharonPriorities()[self.bundlePath ?: @""][tag];
+    NSNumber *held = CharonPriorities()[bundle.bundlePath ?: @""][tag];
     return held ? [held doubleValue] : 0.0;
 }
 
-@end
+/* A constructor, not +load: +load of a backport runs before the runtime has vended the framework's
+   classes, and asking one then traps (charon/AGENTS.md, Traps: "+load in a backport", and
+   Foundation/NSBundle+ReceiptURL.m, whose categories are attached from attach.c's constructor for the
+   same reason). */
+__attribute__((constructor)) static void CharonInstallNSBundleAdditions(void)
+{
+    if (![NSBundle instancesRespondToSelector:@selector(setPreservationPriority:forTags:)])
+        class_addMethod([NSBundle class], @selector(setPreservationPriority:forTags:),
+                        (IMP)CharonSetPreservationPriority, "v@:@d@");
+    if (![NSBundle instancesRespondToSelector:@selector(preservationPriorityForTag:)])
+        class_addMethod([NSBundle class], @selector(preservationPriorityForTag:),
+                        (IMP)CharonPreservationPriorityForTag, "d@:@@");
+}

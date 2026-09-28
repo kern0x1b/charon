@@ -387,3 +387,48 @@ with a bisect, and the class is where I would look first: `+supportsSecureCoding
 The port's own state is *unverified*. It compiles clean under `-Wall -Werror=objc-missing-property-synthesis`
 and exports exactly the class, its metaclass and the two constants, and none of that is a measurement of
 its behaviour.
+
+---
+
+## Two root causes found, and the trap survives both
+
+**1. The compiled category was the wrong mechanism, and the coordinator is right about why.** A
+category on `NSBundle` attaches unconditionally, so it overrode the host's own
+`setPreservationPriority:forTags:` and `preservationPriorityForTag:` on macOS, and that is what broke
+the host's private `-initWithTag:` — the fleet rule is that the port installs nothing where the host
+already has the API. The two are now plain C functions installed by a `class_addMethod` **only when
+`[NSBundle instancesRespondToSelector:]` says the host does not**, which is
+`Foundation/NSBundle+ReceiptURL.m`'s shape, and they are used only here, in the same object as the
+class, so no band's file can be left out from under them.
+
+**2. `+load` was too early, and that is the tree's own trap.** `charon/AGENTS.md` records it: "`+load`
+runs before `attach.c`'s constructor attaches `__DATA,__charon_catlist`", which is why
+`NSBundle+ReceiptURL.m`'s categories are attached from a constructor. The install is now
+`__attribute__((constructor))`, for the same reason.
+
+**And the trap survives both, and it is not the oracle.** With the oracle guarded, the differential
+aborts, and lldb puts it here:
+
+```
+* thread #1, stop reason: EXC_BREAKPOINT (code=1, subcode=0x18ab0c688)
+  frame #0: libobjc.A.dylib`objc_opt_respondsToSelector + 48
+    0x18ab0c688 <+48>: brk    #0xc472
+    0x18ab0c68c <+52>: ldrsh  w8, [x16, #0x1e]
+```
+
+`brk` in the optimized `respondsToSelector` stub is the trap for a receiver that is not an object, and
+the differential binary holds **no** `respondsToSelector` of its own — so the call is the port's
+constructor's `[NSBundle instancesRespondToSelector:…]`, reached before the runtime has vended NSBundle
+into the image. `attach.c` is what the tree uses to get past that, and this file does not go through it.
+
+**So the next session's first three commands**, in order:
+1. `xcrun nm -u <the renamed object> | grep -i respond` to confirm the caller, then
+2. move the two installs behind the same mechanism the rest of the package uses for a Foundation
+   category — `charon_catlist`, or a constructor that runs after `+load` (a second, later constructor;
+   the weak-import dance is what `Foundation/NSBundle+ReceiptURL.m` avoids by having a real category), and
+3. `sh tests/backports/host/bundlerequest/run.sh` again.
+
+**Nothing else in this family is verified.** The class compiles clean under
+`-Wall -Werror=objc-missing-property-synthesis` and exports the class, its metaclass and the two
+constants; the differential is written and red; there are no mutants, no registry entries and no facts
+file; the gates are on the wrong commit.
