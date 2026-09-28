@@ -463,3 +463,30 @@ these three.
 **One difference between the two releases, recorded rather than smoothed over**: the host's own
 `MKMapItem` no longer has `-placeID` and has `-identifier` instead, while this release has `-placeID`.
 The port reads **the release's** name, and each member's registry entry says so.
+
+## The request family, and the one wall in it
+
+Eighteen rows, and the shape of all but eight of them is a **category on a class the release already
+carries**. Measured with `apple.objc.inventory` on the armv7 cache of 6.1.3: the release's own
+`MKLocalSearchRequest` carries `-naturalLanguageQuery`, `-region` and their setters; its own
+`MKLocalSearch` carries `-initWithRequest:`, `-startWithCompletionHandler:`, `-cancel` and
+`-isSearching`; and its own `MKDirectionsRequest` carries `-source`, `-destination`,
+`-transportType`, `-requestsAlternateRoutes`, `-departureDate` and `-arrivalDate`. So iOS 7's
+`MKLocalSearchRequest` and iOS 9.3's `MKLocalSearchCompleter` are **not** new classes here — they are
+the release's, plus the members later releases added, and the gate's `added_members()` skips a class
+with an `image` (which is every class the release has), so the registry names each member because a
+caller's member *is* reached through the category. That is the same rule the `CPListItem` rows needed.
+
+What is implemented: the two initialisers over the release's own request and its own `-setRegion:`;
+`-resultTypes` and `-pointOfInterestFilter` as the release's own, which the 16.4 header declares and
+the release carries; `-addressFilter` and `-regionPriority` (iOS 18) held **beside** the request
+through the runtime, because a category cannot have an ivar — and `regionPriority` answers **0**,
+the header's own default, where nobody set one, rather than a number of this port's;
+`-initWithPointsOfInterestRequest:` over the release's own search; and the completer's two delegate
+messages, which the port's own `MKLocalSearchCompleter` already sends.
+
+**The wall, and it is eight rows: `MKLocalPointsOfInterestRequest` and its members are `absent`.**
+A map's own points of interest — the restaurants and stations a map knows about — arrive with a map
+that has them, and this release's map has none. So there is no centre and radius to search around, the
+class is not built as a request for nothing, and `-initWithPointsOfInterestRequest:` asks the release's
+own search with the empty request, which is the release's own answer for a request with no query.

@@ -1,0 +1,203 @@
+{
+  "framework": "MapKit",
+  "entries": [
+    {
+      "api": "-[MKLocalPointsOfInterestRequest initWithCenterCoordinate:radius:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a MAP'S OWN points of interest: the restaurants and stations a map knows about, which arrive with a map that has them. This release's map has none, so there is no centre and radius to search around and the class is absent for that reason rather than built as a request for nothing",
+      "effect": "the method is not there: there is no centre and radius to search around, because the map has no points of interest to find near one",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "a MAP'S OWN points of interest: the restaurants and stations a map knows about, which arrive with a map that has them. This release's map has none, so there is no centre and radius to search around and the class is absent for that reason rather than built as a request for nothing"
+    },
+    {
+      "api": "-[MKLocalPointsOfInterestRequest initWithCoordinateRegion:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a MAP'S OWN points of interest: the restaurants and stations a map knows about, which arrive with a map that has them. This release's map has none, so there is no centre and radius to search around and the class is absent for that reason rather than built as a request for nothing",
+      "effect": "the method is not there, for the same reason: a map with no points of interest has no region to search",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "a MAP'S OWN points of interest: the restaurants and stations a map knows about, which arrive with a map that has them. This release's map has none, so there is no centre and radius to search around and the class is absent for that reason rather than built as a request for nothing"
+    },
+    {
+      "api": "-[MKLocalPointsOfInterestRequest init]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a MAP'S OWN points of interest: the restaurants and stations a map knows about, which arrive with a map that has them. This release's map has none, so there is no centre and radius to search around and the class is absent for that reason rather than built as a request for nothing",
+      "effect": "the method is not there, and Apple's own header already marks it unavailable, so this row is a row Apple does not offer either",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "a MAP'S OWN points of interest: the restaurants and stations a map knows about, which arrive with a map that has them. This release's map has none, so there is no centre and radius to search around and the class is absent for that reason rather than built as a request for nothing"
+    },
+    {
+      "api": "-[MKLocalSearch initWithPointsOfInterestRequest:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a CATEGORY on a class the release already carries: added_members() skips a class with an image, which is every class the release has, and a caller's member IS reached through the category, so the registry names each one -- the same rule the CPListItem rows needed",
+      "effect": "the release's own search, asked over the map's own points of interest -- which this release's map does not have, so the search is made with the empty request and the caller's points-of-interest request is not something this port can honour",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory on the armv7 dyld shared cache of 6.1.3: the release's own MKLocalSearchRequest carries -naturalLanguageQuery, -region and their setters, its own MKLocalSearch carries -initWithRequest:, -startWithCompletionHandler:, -cancel and -isSearching, and its own MKDirectionsRequest carries -source, -destination, -transportType, -requestsAlternateRoutes, -departureDate and -arrivalDate; a MAP'S OWN points of interest: the restaurants and stations a map knows about, which arrive with a map that has them. This release's map has none, so there is no centre and radius to search around and the class is absent for that reason rather than built as a request for nothing"
+    },
+    {
+      "api": "-[MKLocalSearchCompleterDelegate completer:didFailWithError:]",
+      "kind": "method",
+      "introduced": "9.3",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the release's own protocol member, and the port's own completer already sends it",
+      "effect": "the error a search failed with, handed to the delegate; an error rather than an empty result list, so a delegate can tell finished from failed",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory on the armv7 dyld shared cache of 6.1.3: the release's own MKLocalSearchRequest carries -naturalLanguageQuery, -region and their setters, its own MKLocalSearch carries -initWithRequest:, -startWithCompletionHandler:, -cancel and -isSearching, and its own MKDirectionsRequest carries -source, -destination, -transportType, -requestsAlternateRoutes, -departureDate and -arrivalDate"
+    },
+    {
+      "api": "-[MKLocalSearchCompleterDelegate completerDidUpdateResults:]",
+      "kind": "method",
+      "introduced": "9.3",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the release's own protocol member, and the port's own completer already sends it",
+      "effect": "the results the completer has, handed to the delegate when a search finished; the port's own MKLocalSearchCompleter sends this through the runtime, and this is where a delegate's implementation is reached",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory on the armv7 dyld shared cache of 6.1.3: the release's own MKLocalSearchRequest carries -naturalLanguageQuery, -region and their setters, its own MKLocalSearch carries -initWithRequest:, -startWithCompletionHandler:, -cancel and -isSearching, and its own MKDirectionsRequest carries -source, -destination, -transportType, -requestsAlternateRoutes, -departureDate and -arrivalDate"
+    },
+    {
+      "api": "-[MKLocalSearchRequest initWithCompletion:]",
+      "kind": "method",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a CATEGORY on a class the release already carries: added_members() skips a class with an image, which is every class the release has, and a caller's member IS reached through the category, so the registry names each one -- the same rule the CPListItem rows needed",
+      "effect": "a request that is already finished rather than asked: the release's own empty query, and the caller's completion answered with nil and MKErrorDomain code 2 saying the request was made with a completion and no query, so the release's own search was never asked for anything",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory on the armv7 dyld shared cache of 6.1.3: the release's own MKLocalSearchRequest carries -naturalLanguageQuery, -region and their setters, its own MKLocalSearch carries -initWithRequest:, -startWithCompletionHandler:, -cancel and -isSearching, and its own MKDirectionsRequest carries -source, -destination, -transportType, -requestsAlternateRoutes, -departureDate and -arrivalDate"
+    },
+    {
+      "api": "-[MKLocalSearchRequest initWithNaturalLanguageQuery:]",
+      "kind": "method",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a CATEGORY on a class the release already carries: added_members() skips a class with an image, which is every class the release has, and a caller's member IS reached through the category, so the registry names each one -- the same rule the CPListItem rows needed",
+      "effect": "the header's own query-only initialiser, which is the release's query with the whole world as the region, so the release's own search is asked with no narrower a place than any",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory on the armv7 dyld shared cache of 6.1.3: the release's own MKLocalSearchRequest carries -naturalLanguageQuery, -region and their setters, its own MKLocalSearch carries -initWithRequest:, -startWithCompletionHandler:, -cancel and -isSearching, and its own MKDirectionsRequest carries -source, -destination, -transportType, -requestsAlternateRoutes, -departureDate and -arrivalDate"
+    },
+    {
+      "api": "-[MKLocalSearchRequest initWithNaturalLanguageQuery:region:]",
+      "kind": "method",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a CATEGORY on a class the release already carries: added_members() skips a class with an image, which is every class the release has, and a caller's member IS reached through the category, so the registry names each one -- the same rule the CPListItem rows needed",
+      "effect": "the release's own request with the query and the region the caller gave, through the release's own initialiser and its own -setRegion:",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory on the armv7 dyld shared cache of 6.1.3: the release's own MKLocalSearchRequest carries -naturalLanguageQuery, -region and their setters, its own MKLocalSearch carries -initWithRequest:, -startWithCompletionHandler:, -cancel and -isSearching, and its own MKDirectionsRequest carries -source, -destination, -transportType, -requestsAlternateRoutes, -departureDate and -arrivalDate"
+    },
+    {
+      "api": "MKLocalPointsOfInterestRequest",
+      "kind": "class",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a MAP'S OWN points of interest: the restaurants and stations a map knows about, which arrive with a map that has them. This release's map has none, so there is no centre and radius to search around and the class is absent for that reason rather than built as a request for nothing",
+      "effect": "the class is not there: NSClassFromString answers nil and a compile-time reference has nothing to link, which is what a release whose map has no points of interest answers",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "a MAP'S OWN points of interest: the restaurants and stations a map knows about, which arrive with a map that has them. This release's map has none, so there is no centre and radius to search around and the class is absent for that reason rather than built as a request for nothing"
+    },
+    {
+      "api": "MKLocalPointsOfInterestRequest.coordinate",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a MAP'S OWN points of interest: the restaurants and stations a map knows about, which arrive with a map that has them. This release's map has none, so there is no centre and radius to search around and the class is absent for that reason rather than built as a request for nothing",
+      "effect": "there is no centre, because the request cannot be made without a map that has points of interest",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "a MAP'S OWN points of interest: the restaurants and stations a map knows about, which arrive with a map that has them. This release's map has none, so there is no centre and radius to search around and the class is absent for that reason rather than built as a request for nothing"
+    },
+    {
+      "api": "MKLocalPointsOfInterestRequest.pointOfInterestFilter",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a MAP'S OWN points of interest: the restaurants and stations a map knows about, which arrive with a map that has them. This release's map has none, so there is no centre and radius to search around and the class is absent for that reason rather than built as a request for nothing",
+      "effect": "there is no filter, because there is nothing to filter: the map has no points of interest to name",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "a MAP'S OWN points of interest: the restaurants and stations a map knows about, which arrive with a map that has them. This release's map has none, so there is no centre and radius to search around and the class is absent for that reason rather than built as a request for nothing"
+    },
+    {
+      "api": "MKLocalPointsOfInterestRequest.radius",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a MAP'S OWN points of interest: the restaurants and stations a map knows about, which arrive with a map that has them. This release's map has none, so there is no centre and radius to search around and the class is absent for that reason rather than built as a request for nothing",
+      "effect": "there is no radius, for the same reason",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "a MAP'S OWN points of interest: the restaurants and stations a map knows about, which arrive with a map that has them. This release's map has none, so there is no centre and radius to search around and the class is absent for that reason rather than built as a request for nothing"
+    },
+    {
+      "api": "MKLocalPointsOfInterestRequest.region",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a MAP'S OWN points of interest: the restaurants and stations a map knows about, which arrive with a map that has them. This release's map has none, so there is no centre and radius to search around and the class is absent for that reason rather than built as a request for nothing",
+      "effect": "there is no region, for the same reason",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "a MAP'S OWN points of interest: the restaurants and stations a map knows about, which arrive with a map that has them. This release's map has none, so there is no centre and radius to search around and the class is absent for that reason rather than built as a request for nothing"
+    },
+    {
+      "api": "MKLocalSearchRequest.addressFilter",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a CATEGORY on a class the release already carries: added_members() skips a class with an image, which is every class the release has, and a caller's member IS reached through the category, so the registry names each one -- the same rule the CPListItem rows needed; and the release has no room for it, so it is held beside the request",
+      "effect": "which parts of an address the search is about, kept beside the request through the runtime, and read back to narrow what the release's own search is asked for",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory on the armv7 dyld shared cache of 6.1.3: the release's own MKLocalSearchRequest carries -naturalLanguageQuery, -region and their setters, its own MKLocalSearch carries -initWithRequest:, -startWithCompletionHandler:, -cancel and -isSearching, and its own MKDirectionsRequest carries -source, -destination, -transportType, -requestsAlternateRoutes, -departureDate and -arrivalDate"
+    },
+    {
+      "api": "MKLocalSearchRequest.pointOfInterestFilter",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a CATEGORY on a class the release already carries: added_members() skips a class with an image, which is every class the release has, and a caller's member IS reached through the category, so the registry names each one -- the same rule the CPListItem rows needed",
+      "effect": "the release's own -pointOfInterestFilter, which the 16.4 header declares and the release carries, and which narrows what the release's own search is asked for",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory on the armv7 dyld shared cache of 6.1.3: the release's own MKLocalSearchRequest carries -naturalLanguageQuery, -region and their setters, its own MKLocalSearch carries -initWithRequest:, -startWithCompletionHandler:, -cancel and -isSearching, and its own MKDirectionsRequest carries -source, -destination, -transportType, -requestsAlternateRoutes, -departureDate and -arrivalDate"
+    },
+    {
+      "api": "MKLocalSearchRequest.regionPriority",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a CATEGORY on a class the release already carries: added_members() skips a class with an image, which is every class the release has, and a caller's member IS reached through the category, so the registry names each one -- the same rule the CPListItem rows needed; and the release has no room for it, so it is held beside the request",
+      "effect": "how hard the region matters: zero is the header's own default, so a request nobody set a priority on answers the default and not a number of this port's",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory on the armv7 dyld shared cache of 6.1.3: the release's own MKLocalSearchRequest carries -naturalLanguageQuery, -region and their setters, its own MKLocalSearch carries -initWithRequest:, -startWithCompletionHandler:, -cancel and -isSearching, and its own MKDirectionsRequest carries -source, -destination, -transportType, -requestsAlternateRoutes, -departureDate and -arrivalDate"
+    },
+    {
+      "api": "MKLocalSearchRequest.resultTypes",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a CATEGORY on a class the release already carries: added_members() skips a class with an image, which is every class the release has, and a caller's member IS reached through the category, so the registry names each one -- the same rule the CPListItem rows needed",
+      "effect": "which kinds of result the release's own search is asked for, the release's own -resultTypes, which the 16.4 header declares and the release carries",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory on the armv7 dyld shared cache of 6.1.3: the release's own MKLocalSearchRequest carries -naturalLanguageQuery, -region and their setters, its own MKLocalSearch carries -initWithRequest:, -startWithCompletionHandler:, -cancel and -isSearching, and its own MKDirectionsRequest carries -source, -destination, -transportType, -requestsAlternateRoutes, -departureDate and -arrivalDate"
+    }
+  ]
+}
