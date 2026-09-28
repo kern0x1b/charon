@@ -362,3 +362,55 @@ there are three loops over the frames in `spatial-tracker-diff.m` and only one o
 The next measurement is one line: print the quaternion the differential hands the tracker and the
 matrix the tracker makes of it, for step 1, and read the angle out of the matrix. That says whether the
 2x is before or inside the tracker.
+
+## The 78 degrees was the differential, not the tracker
+
+Measured, over the 30-frame sequence, after the fix:
+
+```
+  step  0: pose rotation error    0.000 deg   distance error   0.0020 m
+  step  1: pose rotation error    0.000 deg   distance error   0.0500 m
+  step  2: pose rotation error    0.000 deg   distance error   0.1000 m
+  step  3: pose rotation error    0.000 deg   distance error   0.1497 m
+  step 29: pose rotation error    0.000 deg   distance error   0.9951 m
+  rotation error: mean 0.00002 rad (0.001 deg), worst 0.00069 rad (0.040 deg)
+  distance error:  mean 0.60422 m, worst 0.99510 m
+  tracking: yes, 5438 points, 16 planes
+```
+
+**Retracting what this file said before.** Every number above the previous line, and every conclusion
+drawn from it, was a measurement of a broken oracle. `CharonAttitudeOf` in the differential had every
+component of the matrix-to-quaternion extraction the wrong way round - column-major, so
+`R[2][1] - R[1][2]` for the quaternion's x is `columns[1][2] - columns[2][1]` and the file had it
+reversed - which reads every rotation back as its conjugate. The angle between a rotation and its
+inverse is exactly twice its angle, which is why the error grew 11.459 degrees per 5.73-degree step
+and wrapped to zero at step 29. The tracker was accumulating the turn correctly all along.
+
+**How the two were told apart, which is the part worth keeping.** The signature is that the error is
+exactly 2*theta and is the *same* on every axis:
+
+```
+pure y          input 5.730 deg -> read back 5.730 deg   error 11.45996 deg
+pure x          input 5.730 deg -> read back 5.730 deg   error 11.45996 deg
+pure z          input 5.730 deg -> read back 5.730 deg   error 11.45996 deg
+combined x+y+z  input 9.908 deg -> read back 9.908 deg   error 19.81636 deg
+```
+
+A pose that genuinely turned the wrong way, or a step that needed inverting, would not be symmetric
+across axes. A conjugate is. After the fix the same four cases read 0.00000 deg.
+
+**The mutation, which is what holds the floor.** Putting the conjugated read-back back turns the run
+red, so the 1-degree floor is a real check and not a number that always passes:
+
+```
+FAIL: rotation error: mean is 71.459 deg, over the floor of 1
+```
+
+The floors are now 1 degree of mean rotation error and 0.65 m of mean distance error, over the
+30-frame sequence. Both were 80 and 0.70 before, which the 78 degrees could not have failed.
+
+**What is actually left.** The distance error, and it is the same gap it has been: 0.604 m growing
+0.05 m a step is the path the pose does not travel, because the translation is never integrated and a
+pure rotation gives triangulation no parallax, so there is no range and no baseline. The rotation is
+solved; the translation is not. And a 100-step run segfaults - `exit 139` - which is a separate defect
+in the tracker's buffers over a longer sequence and is not located.

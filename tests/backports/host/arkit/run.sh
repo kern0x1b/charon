@@ -55,7 +55,7 @@ floor() {
         END { if (!seen) { printf "FAIL: the verdict line for %s is not in the output\n", k; exit 1 }
               exit failed ? 1 : 0 }' "$BUILD/tracker-diff.txt"
 }
-floor "rotation error: mean" 80 deg
-floor "distance error: mean" 0.70 m
+floor "rotation error: mean" 1 deg
+floor "distance error: mean" 0.65 m
 
 echo "ok the tracker carries its pose, finds its planes, and holds the accuracy floor the facts record"

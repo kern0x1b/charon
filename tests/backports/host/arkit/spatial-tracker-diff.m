@@ -135,14 +135,21 @@ static float CharonAngleBetween(simd_quatf a, simd_quatf b)
 }
 
 /// The attitude the reported camera transform carries, read back out of its three-by-three.
+/// A pose's attitude, from its matrix.
+///
+/// Column-major: the element at row `r`, column `c` is `pose.columns[c][r]`, so the usual
+/// `R[2][1] - R[1][2]` for the quaternion's x is `columns[1][2] - columns[2][1]`. The two terms the
+/// other way round give the conjugate, and the angle between a rotation and its inverse is exactly
+/// twice its angle - on every axis alike, which is what told this apart from a pose that was
+/// genuinely turning the wrong way.
 static simd_quatf CharonAttitudeOf(simd_float4x4 pose)
 {
     float trace = pose.columns[0][0] + pose.columns[1][1] + pose.columns[2][2];
     if (trace > 0.0f) {
         float s = sqrtf(trace + 1.0f) * 2.0f;
-        return simd_normalize(simd_quaternion((pose.columns[2][1] - pose.columns[1][2]) / s,
-                              (pose.columns[0][2] - pose.columns[2][0]) / s,
-                              (pose.columns[1][0] - pose.columns[0][1]) / s,
+        return simd_normalize(simd_quaternion((pose.columns[1][2] - pose.columns[2][1]) / s,
+                              (pose.columns[2][0] - pose.columns[0][2]) / s,
+                              (pose.columns[0][1] - pose.columns[1][0]) / s,
                               0.25f * s));
     }
     if (pose.columns[0][0] > pose.columns[1][1] && pose.columns[0][0] > pose.columns[2][2]) {
@@ -150,13 +157,13 @@ static simd_quatf CharonAttitudeOf(simd_float4x4 pose)
         return simd_normalize(simd_quaternion(0.25f * s,
                                               (pose.columns[0][1] + pose.columns[1][0]) / s,
                                               (pose.columns[0][2] + pose.columns[2][0]) / s,
-                                              (pose.columns[2][1] - pose.columns[1][2]) / s));
+                                              (pose.columns[1][2] - pose.columns[2][1]) / s));
     }
     float s = sqrtf(1.0f + pose.columns[2][2] - pose.columns[0][0] - pose.columns[1][1]) * 2.0f;
     return simd_normalize(simd_quaternion((pose.columns[0][1] + pose.columns[1][0]) / s,
                                           0.25f * s,
                                           (pose.columns[1][2] + pose.columns[2][1]) / s,
-                                          (pose.columns[0][2] - pose.columns[2][0]) / s));
+                                          (pose.columns[2][0] - pose.columns[0][2]) / s));
 }
 
 int main(void)
