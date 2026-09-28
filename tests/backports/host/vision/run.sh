@@ -14,7 +14,7 @@ common="-target arm64-apple-ios15.0-macabi -isysroot $sdk $frameworks -fobjc-arc
 libs="-framework Foundation -framework CoreGraphics -framework CoreImage -framework CoreVideo -framework ImageIO -framework CoreML"
 
 xcrun clang $common -I"$device" "$here/record.m" "$device/vision-cases.m" $libs -framework Vision -o "$build/system"
-VISION_COREML_MODELS="$here/../../../../.agent-work/runs/coreml-predict/models" VISION_RECORDS="$build/system.json" "$build/system"
+VISION_COREML_MODELS="$here/../../../../.agent-work/runs/coreml-predict/models" VISION_COREML_MODELS="$here/../../../../.agent-work/runs/coreml-predict/models" VISION_RECORDS="$build/system.json" "$build/system"
 python3 "$here/../foundation2/embed.py" "$build/system.json" "$device/vision-expectations.h"
 sed -i.bak 's/foundation2_expectations/vision_expectations/' "$device/vision-expectations.h" && rm -f "$device/vision-expectations.h.bak"
 echo "records: $(python3 -c "import json; print(len(json.load(open('$build/system.json'))))")"
@@ -38,7 +38,7 @@ port() {
 mkdir -p "$build/port"
 cp "$vision"/*.m "$vision"/*.h "$build/port/"
 port "$build/port"
-VISION_COREML_MODELS="$here/../../../../.agent-work/runs/coreml-predict/models" VISION_RECORDS="$build/port.json" "$build/port/run"
+VISION_COREML_MODELS="$here/../../../../.agent-work/runs/coreml-predict/models" VISION_COREML_MODELS="$here/../../../../.agent-work/runs/coreml-predict/models" VISION_RECORDS="$build/port.json" "$build/port/run"
 # The scores of a Core ML prediction are reported and not failed on: the model they come from is
 # nn_image, whose prediction the port and this host are a recorded divergence apart
 # (facts/CoreML/CoreML.md). Everything else -- the classes of observation, their identifiers, how
@@ -48,7 +48,9 @@ if [ $? -eq 0 ]; then echo "port: same as the system"; else echo "port: DIFFERS"
 
 # 4. mutants: each of these has to change the record, or the rule it stands for is not applied
 survived=0
+ran=0
 mutant() {
+    ran=$((ran + 1))
     file=$1; from=$2; to=$3
     rm -rf "$build/mutant"; mkdir -p "$build/mutant"
     cp "$vision"/*.m "$vision/CharonVision.h" "$build/mutant/"
@@ -89,6 +91,14 @@ mutant VNHandlers.m "VNErrorUnsupportedRevision" "VNErrorNotImplemented"
 mutant VNHandlers.m "if (handler)
             handler(request, failure);" "if (handler)
             handler(request, nil);"
-mutant VNHandlers.m "succeeded = NO;" "succeeded = YES;"
-echo "mutants surviving: $survived"
+mutant VNHandlers.m "            if (failure) {
+                succeeded = NO;
+                first = first ?: failure;
+            } else {
+                [(VNRequest *)request charon_setResults:observations];" "            if (failure) {
+                succeeded = YES;
+                first = first ?: failure;
+            } else {
+                [(VNRequest *)request charon_setResults:observations];"
+echo "mutants: $ran run, $survived surviving"
 [ "$survived" -eq 0 ]

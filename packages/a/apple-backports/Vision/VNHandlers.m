@@ -185,8 +185,11 @@ static NSError *charon_vision_failure(VNRequest *request)
     Class cls = [request class];
     if (![[cls supportedRevisions] containsIndex:request.revision])
         return charon_vision_error(VNErrorUnsupportedRevision, [NSString stringWithFormat:@"%@ does not support %@Revision%lu", NSStringFromClass(cls), NSStringFromClass(cls), (unsigned long)request.revision]);
+    /* A Core ML request with no model behind it: the framework's own answer, measured against the
+     * Vision of this host, is the operation-failed code rather than the invalid-model one, and the
+     * two are different cases a caller may handle differently. */
     if ([request isKindOfClass:[VNCoreMLRequest class]] && ![(VNCoreMLRequest *)request model])
-        return charon_vision_error(VNErrorInvalidModel, @"The model does not have a valid input feature of type image");
+        return charon_vision_error(VNErrorOperationFailed, @"The model does not have a valid input feature of type image");
     return charon_vision_error(VNErrorNotImplemented, [NSString stringWithFormat:@"%@ is not implemented on this release", NSStringFromClass(cls)]);
 }
 

@@ -557,14 +557,38 @@
     }
     charon_ml_features_init(&inputs);
     charon_ml_features_init(&outputs);
+    /* A feature the caller did not supply, or supplied as the undefined value that stands for
+     * having not supplied it. The description says whether the model may do without it, and the
+     * ones it may not are reported here, by name, rather than being left to the interpreter.
+     *
+     * The code is the framework-level one, and that is measured rather than assumed: a real Core ML
+     * asked to predict without a required feature answers com.apple.CoreML with code 0, and the
+     * name of the feature is in the message. The port used to let the failure come out of the
+     * interpreter, which is where the same 0 came from by accident and without the name. */
+    for (index = 0; index < _model.input_count; index++) {
+        const charon_ml_feature *described = &_model.inputs[index];
+        NSString *wanted = described->name != NULL ? @(described->name) : nil;
+        MLFeatureValue *value = wanted != nil ? [input featureValueForName:wanted] : nil;
+        if (described->optional != 0 || wanted == nil) {
+            continue;
+        }
+        if (value == nil || value.isUndefined) {
+            charon_ml_features_release(&inputs);
+            charon_ml_features_release(&outputs);
+            charon_ml_error(error, CHARON_ML_ERROR_GENERIC,
+                            [NSString stringWithFormat:@"the model needs an input of type %ld for the feature "
+                                                       @"'%@' and it was not given one",
+                                                       (long)charon_ml_feature_type_of(described->type), wanted]);
+            return nil;
+        }
+    }
     names = [input.featureNames objectEnumerator];
     while ((name = [names nextObject]) != nil) {
         MLFeatureValue *value = [input featureValueForName:name];
         charon_ml_value held;
         if (value == nil || value.isUndefined) {
-            /* An undefined value is an input the caller left out, which is a thing the model may
-             * allow: the description says whether the feature is optional, and a required one is
-             * reported by name below rather than being sent as an empty value. */
+            /* An optional feature the caller left out, which a model may do without: the check
+             * above has already refused the ones it may not. */
             continue;
         }
         held = charon_ml_value_owned_copy([value charonValue]);

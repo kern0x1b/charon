@@ -111,6 +111,9 @@ static void defaults(VisionRecorder record)
     record(@"landmarks", [NSString stringWithFormat:@"%d", landmarks.inputFaceObservations == nil]);
     landmarks.inputFaceObservations = @[face];
     record(@"landmarks.set", [NSString stringWithFormat:@"%lu", (unsigned long)landmarks.inputFaceObservations.count]);
+    /* The domain every Vision error is in, measured rather than assumed: an application switches
+     * on it to tell a Vision failure from any other. */
+    record(@"errorDomain", VNErrorDomain);
     VNCoreMLRequest *coreml = [[VNCoreMLRequest alloc] initWithModel:nil];
     record(@"coreml", [NSString stringWithFormat:@"crop=%lu model=%d", (unsigned long)coreml.imageCropAndScaleOption, coreml.model == nil]);
     coreml.imageCropAndScaleOption = VNImageCropAndScaleOptionScaleFill;
@@ -148,6 +151,24 @@ static void coreml_model(CoreMLModels models, VisionRecorder record)
     record(@"coreml.model", [NSString stringWithFormat:@"%d input=%@", wrapper != nil,
                                                        wrapper.inputImageFeatureName ?: @"(nil)"]);
     record(@"coreml.nosuchmodel", [VNCoreMLModel modelForMLModel:nil error:&failure] == nil ? @"refused" : @"made");
+    /* Two requests that cannot be run, performed: one with no model behind it, and one whose
+     * model takes no image at all -- which is the refusal the branch this port added answers, and
+     * what a caller is told when the run failed rather than being handed an empty result and no
+     * reason. */
+    {
+        VNImageRequestHandler *handler = [[VNImageRequestHandler alloc] initWithCGImage:vision_picture(8, 8)
+                                                                                options:@{}];
+        VNCoreMLRequest *bare = [[VNCoreMLRequest alloc] initWithModel:nil];
+        NSError *runFailure = nil;
+        BOOL ok = [handler performRequests:@[ bare ] error:&runFailure];
+        record(@"coreml.perform", [NSString stringWithFormat:@"%d %@/%ld", ok,
+                                                             runFailure.domain ?: @"(none)", (long)runFailure.code]);
+        record(@"coreml.perform.results", [NSString stringWithFormat:@"%lu", (unsigned long)bare.results.count]);
+        ok = [handler performRequests:@[ [[VNCoreMLRequest alloc] initWithModel:wrapper] ] error:&runFailure];
+        record(@"coreml.perform.vector", [NSString stringWithFormat:@"%d %@/%ld", ok,
+                                                                         runFailure.domain ?: @"(none)",
+                                                                         (long)runFailure.code]);
+    }
     /* A model with no image in any of its inputs is the case Core ML's own documentation names as
      * the example of one Vision cannot use. */
     record(@"coreml.vectormodel", [VNCoreMLModel modelForMLModel:[MLModel modelWithContentsOfURL:compiled

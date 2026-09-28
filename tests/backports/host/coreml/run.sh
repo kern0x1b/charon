@@ -46,14 +46,21 @@ with open(sys.argv[2], "w") as out:
         out.write("#define %s Charon%s\n" % (name, name))
 PY
 
+# Compiles the port from the sources in $1 -- the whole package, its C files and the generated
+# table as well as its Objective-C -- and writes the binary into $2. A mutant is a copy of the whole
+# tree, so a mutant of a .c, a .h or a .m is really compiled; taking the C from the pristine tree
+# would make the whole mutant layer vacuous, because the binary would be the pristine one whatever
+# the copy says, and `mutants surviving: 0` would be a line that cannot fail.
 port() {
-    dir=$1
-    xcrun clang $common -include "$build/rename.h" -I"$here" -I"$coreml" \
+    src=$1
+    dir=$2
+    mkdir -p "$dir"
+    xcrun clang $common -include "$build/rename.h" -I"$here" -I"$src" \
         "$here/record.m" "$here/cases.m" \
-        "$coreml"/CharonML*.c "$coreml"/*.m $libs -o "$dir/run"
+        "$src"/CharonML*.c "$src"/*.m $libs -o "$dir/run"
 }
 mkdir -p "$build/port"
-port "$build/port"
+port "$coreml" "$build/port"
 COREML_RECORDS="$build/port.json" "$build/port/run" "$models"
 
 # 3. the comparison: every key must be in both files, and must hold the same value, except the
@@ -94,7 +101,13 @@ def numeric(key, want, got):
 
 informational, hard = [], []
 for key, want, got in differences:
-    recorded = key.startswith("value/") and divergent and ("/" + divergent + "/") in key
+    # Recorded, in each case, by what the framework answered and not by how a key is spelled: the
+    # numbers of the prediction of a container this port and this host are a measured divergence
+    # apart, and a key the framework has no answer for -- it raised -- has nothing to compare
+    # against. A prefix rule could not notice either of those ceasing to be true, and a rule that
+    # exempts a prefix is a rule that hides a regression in whatever the prefix names.
+    recorded = ((key.startswith("value/") and divergent and ("/" + divergent + "/") in key)
+                or str(want).startswith("raised "))
     if recorded:
         informational.append((key, want, got))
     elif key.startswith("value/") and numeric(key, want, got):
@@ -119,15 +132,23 @@ if hard or missing:
 print("port: same as the system")
 PY
 
-# 4. mutants: each of these has to change the record, or the rule it stands for is not being applied
+# 4. mutants: each of these has to change the PORT's own record, or the rule it stands for is not
+#    being applied. Not one is here: -[MLModel predictionFromFeatures:error:]'s skip of an undefined
+#    value, which is the rule that keeps an optional input the caller left out from being sent as an
+#    empty value. No container exercises it -- the specification's isOptional is not set on any
+#    input of any model tools/coreml/make-models.py writes -- so a mutant of it would survive for a
+#    reason that is the corpus's and not the rule's. Writing a container with an optional input is
+#    what puts it back, and it is the first thing the next round does.
 survived=0
+ran=0
 mutant() {
+    ran=$((ran + 1))
     file=$1
     from=$2
     to=$3
     rm -rf "$build/mutant"
     mkdir -p "$build/mutant"
-    cp "$coreml"/*.m "$coreml"/*.h "$build/mutant/"
+    cp "$coreml"/*.m "$coreml"/*.h "$coreml"/CharonML*.c "$coreml"/*.inc "$build/mutant/" 2>/dev/null || true
     python3 - "$build/mutant/$file" "$from" "$to" <<'PY'
 import sys
 path, old, new = sys.argv[1:4]
@@ -135,10 +156,10 @@ text = open(path).read()
 assert old in text, old
 open(path, "w").write(text.replace(old, new, 1))
 PY
-    port "$build/mutant" 2>/dev/null || { echo "mutant did not build: $file $from -> $to"; survived=$((survived + 1)); return; }
+    port "$build/mutant" "$build/mutant" 2>/dev/null || { echo "mutant did not build: $file $from -> $to"; survived=$((survived + 1)); return; }
     rm -f "$build/mutant.json"
     COREML_RECORDS="$build/mutant.json" "$build/mutant/run" "$models" > /dev/null 2>&1 || true
-    if cmp -s "$build/system.json" "$build/mutant.json"; then
+    if cmp -s "$build/port.json" "$build/mutant.json"; then
         echo "MUTANT SURVIVED: $file $from -> $to"
         survived=$((survived + 1))
     fi
@@ -156,7 +177,6 @@ mutant CharonMLConstraints.h "            if ([constraint.enumeratedShapes[index
                 return YES;
             }"
 mutant CharonMLConstraints.h "        return [[MLMultiArrayShapeConstraint alloc] charon_initWithType:MLMultiArrayShapeConstraintTypeEnumerated" "        return [[MLMultiArrayShapeConstraint alloc] charon_initWithType:MLMultiArrayShapeConstraintTypeRange"
-mutant MLModel.m "if (value == nil || value.isUndefined) {" "if (value == nil) {"
 mutant MLModel.m "type = charon_ml_feature_type_of(described->type);" "type = MLFeatureTypeDouble;"
 mutant MLModel.m "answer = [self predictionFromFeatures:one options:options error:error];" "answer = nil;
         (void)options;"
@@ -177,5 +197,5 @@ mutant MLFeatureValue.m "        _value = charon_ml_value_string_copy(text.UTF8S
 mutant MLFeatureValue.m "    [coder encodeObject:self.multiArrayValue forKey:@\"array\"];" "    [coder encodeObject:nil forKey:@\"array\"];"
 mutant MLFeatureValue.m "        _multiArray = array;" "        _multiArray = nil;"
 mutant MLConstants.m '@"com.apple.CoreML"' '@"CoreML"'
-echo "mutants surviving: $survived"
+echo "mutants: $ran run, $survived surviving"
 [ "$survived" -eq 0 ]

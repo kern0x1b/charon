@@ -91,9 +91,12 @@ Each of these is refused with a line naming the layer, not approximated:
 `tests/backports/host/coreml` records what a real Core ML answers for the same containers -- every
 description, every constraint, `-isAllowedValue:` over a battery of values, the providers, the keys,
 the options, the constants and a prediction per model -- and holds the port's own classes, compiled
-under names of their own, to that record: **609 keys, none differing, five recorded divergences**,
-and fifteen mutants of the port, none of which survives. Nine things the obvious reading gets wrong
-came out of it, and each is now what the framework does:
+under names of their own, to that record: **722 keys compared, none differing, five recorded
+divergences**, over **eighteen mutants of the port, every one of them caught** -- the run prints
+`mutants: 18 run, 0 surviving`, so a harness that silently compiled none of them cannot report a
+clean line, and a mutant is judged against the **port's own record** rather than the framework's,
+which is what makes "a mutant changed nothing" a thing the run can see. Nine things the obvious
+reading gets wrong came out of it, and each is now what the framework does:
 
 - **A feature that fixes its shape has a shape constraint, of the *enumerated* kind.** Not none, and
   not a range: the enumerated kind with that one shape in it, and the size ranges filled in as well,
@@ -171,7 +174,8 @@ on the same condition, which is also the exact string the port's own Foundation 
 `NSCoder+Collections14.m` when a collection is decoded from a coder of that kind -- the private
 selector is not reachable from here and is not the sort of thing this port calls, so the refusal is
 raised rather than taken. The case in `tests/backports/host/coreml` records both paths, so a change
-in either is caught: 678 keys, and the two builds agree on every one of them.
+in either is caught: 722 keys compared, none differing, five recorded divergences, and the two
+builds agree on every one of them.
 
 An **image** feature value does not round trip on either: a pixel buffer is not something a secure
 archive carries, so the value comes back of the image type and undefined, and the facts say so.

@@ -454,6 +454,83 @@ static void constants(CoreMLRecorder record)
  * what went in. An archive that loses a value is a coder advertised and not delivered, and this is
  * the case that catches it -- the review of the value types found one, where the writer wrote the
  * array and the string and the reader read the type alone. */
+/* Three things a prediction answers that the cases above do not reach, each of which a rule in the
+ * port could quietly stop applying:
+ *
+ *   - a batch: one provider per element, each naming the features the model answered, so a batch
+ *     that answered nothing, or one element for three, is a different record;
+ *   - an array of numbers and an array of strings handed to a provider: both are sequences, and the
+ *     kind of the elements is the sequence's own;
+ *   - a required input that the caller left out: the prediction fails, and the failure is
+ *     Core ML's own feature-type code with the name of the input in it.
+ */
+static void batch_case(MLModel *model, CoreMLRecorder record)
+{
+    NSMutableArray *providers = [NSMutableArray array];
+    NSString *(^names)(id<MLFeatureProvider>) = ^NSString *(id<MLFeatureProvider> provider) {
+        return [[provider.featureNames allObjects] componentsJoinedByString:@","];
+    };
+    NSInteger index;
+    NSError *failure = nil;
+    id<MLBatchProvider> answers;
+
+    for (index = 0; index < 3; index++) {
+        NSDictionary *given = @{ @"x" : @[ @1.0, @2.0, @3.0 ] };
+        [providers addObject:[[MLDictionaryFeatureProvider alloc] initWithDictionary:given error:&failure]];
+    }
+    answers = [model predictionsFromBatch:[[MLArrayBatchProvider alloc] initWithFeatureProviderArray:providers]
+                                     error:&failure];
+    record(@"batch/answers", answers != nil ? [NSString stringWithFormat:@"%ld", (long)answers.count] : @"(nil)");
+    record(@"batch/error", [NSString stringWithFormat:@"%@/%ld", failure.domain ?: @"(none)", (long)failure.code]);
+    for (index = 0; index < 3; index++) {
+        record([NSString stringWithFormat:@"batch/%ld", (long)index],
+               answers != nil ? names([answers featuresAtIndex:index]) : @"(nil)");
+    }
+}
+
+static void provider_case(CoreMLRecorder record)
+{
+    NSDictionary *given = @{ @"numbers" : @[ @1, @2, @3 ], @"words" : @[ @"x", @"y" ] };
+    NSError *failure = nil;
+    MLDictionaryFeatureProvider *provider = [[MLDictionaryFeatureProvider alloc] initWithDictionary:given
+                                                                                                error:&failure];
+    record(@"provider/numbers.type", [NSString stringWithFormat:@"%ld",
+                                                                  (long)[provider featureValueForName:@"numbers"].type]);
+    record(@"provider/words.type", [NSString stringWithFormat:@"%ld",
+                                                                (long)[provider featureValueForName:@"words"].type]);
+    record(@"provider/numbers.sequence",
+           [NSString stringWithFormat:@"%@", numbers([provider featureValueForName:@"numbers"].sequenceValue.int64Values)]);
+    record(@"provider/words.sequence",
+           [NSString stringWithFormat:@"%@", [[provider featureValueForName:@"words"].sequenceValue.stringValues
+                                                 componentsJoinedByString:@","]]);
+    record(@"provider/array.error", [NSString stringWithFormat:@"%@/%ld", failure.domain ?: @"(none)",
+                                                                     (long)failure.code]);
+}
+
+static void missing_input(MLModel *model, CoreMLRecorder record)
+{
+    MLModelDescription *description = model.modelDescription;
+    NSString *name = description.inputDescriptionsByName.allKeys.firstObject;
+    MLFeatureDescription *described = description.inputDescriptionsByName[name];
+    NSError *failure = nil;
+    id<MLFeatureProvider> answer;
+
+    if (name == nil || described == nil) {
+        return;
+    }
+    /* A feature the model does not mark optional, given to it as the undefined value a caller
+     * leaves out by sending nothing for it at all: the prediction cannot be made, and the error
+     * says which input was missing rather than that something was. */
+    answer = [model predictionFromFeatures:[[MLDictionaryFeatureProvider alloc] initWithDictionary:@{}
+                                                                                               error:&failure]
+                                    error:&failure];
+    record(@"missing/answer", answer != nil ? @"not nil" : @"nil");
+    record(@"missing/code", [NSString stringWithFormat:@"%@/%ld", failure.domain ?: @"(none)", (long)failure.code]);
+    record(@"missing/names", [failure.localizedDescription rangeOfString:name].location != NSNotFound ? @"named" : @"not named");
+    record(@"missing/optional", [NSString stringWithFormat:@"%@", described.isOptional ? @"YES" : @"NO"]);
+    record(@"missing/type", [NSString stringWithFormat:@"%ld", (long)described.type]);
+}
+
 static void round_trips(CoreMLRecorder record)
 {
     NSDictionary *pairs = @{ @"one" : @1.5, @"two" : @2.5 };
@@ -522,25 +599,34 @@ static void round_trips(CoreMLRecorder record)
                                         after.sequenceValue ? numbers(after.sequenceValue.int64Values) : @"(nil)"]);
         record([key stringByAppendingString:@"/equal"],
                [before isEqualToFeatureValue:after] ? @"YES" : @"NO");
-        /* The same value through a *secure* unarchiver, which is the path the release answers on:
-         * a plain +[NSKeyedUnarchiver unarchiveObjectWithData:] refuses a collection, and a
-         * caller that wants the value back asks for it securely. Both answers are recorded. */
-        {
-            NSData *secure = [NSKeyedArchiver archivedDataWithRootObject:before
-                                       requiringSecureCoding:YES
-                                                       error:NULL];
-            MLFeatureValue *back = secure != nil ? [NSKeyedUnarchiver unarchivedObjectOfClass:[MLFeatureValue class]
-                                                                       fromData:secure
-                                                                         error:NULL]
-                                                 : nil;
-            record([key stringByAppendingString:@"/secure"],
-                   back == nil ? @"(nil)"
-                               : [NSString stringWithFormat:@"type=%ld array=%@ string=%@ count=%lu",
-                                                            (long)back.type,
-                                                            back.multiArrayValue ? @"yes" : @"no",
-                                                            back.stringValue ?: @"(nil)",
-                                                            (unsigned long)back.dictionaryValue.count]);
-        }
+    }
+
+    /* The same values through a *secure* unarchiver, for every kind including the one the plain
+     * path refused: a value over a multi array comes back through a secure unarchiver on the
+     * framework, and it has to come back here too. This is the only place the array's own round
+     * trip can be seen at all, because the plain path raises on both sides -- so a rule that
+     * quietly stopped writing or reading the array would leave the plain path unable to notice,
+     * and the mutants that break it exactly that way would survive.
+     */
+    for (index = 0; index < values.count; index++) {
+        NSString *key = [NSString stringWithFormat:@"archive/%@/secure", names[index]];
+        MLFeatureValue *before = values[index];
+        NSData *secure = [NSKeyedArchiver archivedDataWithRootObject:before requiringSecureCoding:YES error:NULL];
+        MLFeatureValue *back = secure != nil ? [NSKeyedUnarchiver unarchivedObjectOfClass:[MLFeatureValue class]
+                                                                    fromData:secure
+                                                                      error:NULL]
+                                             : nil;
+        record([key stringByAppendingString:@"/type"],
+               back == nil ? @"(nil)" : [NSString stringWithFormat:@"%ld", (long)back.type]);
+        record([key stringByAppendingString:@"/array"],
+               back == nil ? @"(nil)" : (back.multiArrayValue != nil ? numbers(back.multiArrayValue.shape)
+                                                                   : @"(nil)"));
+        record([key stringByAppendingString:@"/string"],
+               back == nil ? @"(nil)" : (back.stringValue ?: @"(nil)"));
+        record([key stringByAppendingString:@"/undefined"],
+               back == nil ? @"(nil)" : (back.isUndefined ? @"YES" : @"NO"));
+        record([key stringByAppendingString:@"/equal"],
+               back == nil ? @"(nil)" : ([back isEqualToFeatureValue:before] ? @"YES" : @"NO"));
     }
 }
 
@@ -610,6 +696,10 @@ void coreml_run(NSString *models, CoreMLRecorder record)
                      [NSString stringWithFormat:@"%@/output/%@", label, name], record);
         }
         predict(model, label, record);
+        if ([label isEqualToString:@"glm_classifier"]) {
+            batch_case(model, record);
+            missing_input(model, record);
+        }
         /* A parameter the model does not have is the model's own error, not a missing answer. */
         {
             NSError *missing = nil;
@@ -634,6 +724,7 @@ void coreml_run(NSString *models, CoreMLRecorder record)
         record(@"model/no-url", none == nil ? error_of(absent) : @"not nil");
     }
     round_trips(record);
+    provider_case(record);
     providers(record);
     keys(record);
     constants(record);
