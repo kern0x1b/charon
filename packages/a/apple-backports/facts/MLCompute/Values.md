@@ -20,6 +20,16 @@ directory are the measurement behind each family:
 | `Layers.md` | the thirty layer classes: their factories, measured, and **not carried** - the next family |
 | `Engine.md` | what the framework computes, measured: the activations, the arity of every arithmetic operation, the constant a comparison writes, the shape-moving and reducing layers - **not carried** |
 
+## The mutation, and why the script no longer carries one
+
+The excuse list once named six patterns, of which three were answered the same way by both sides, and a
+mutation proved the difference: +[MLCDevice cpuDevice] was made to report the wrong type, a case the port
+*has* and which was excused because the list was too wide, and the check passed it. The list is now the
+three that really differ - the GPU device, the Neural Engine, and a device asked for by type - and a case
+the port has is no longer excused by anything, so the mutation cannot pass and the script does not carry
+it. What it proved is kept here: the check reads the port's code, and the width of the list was the only
+thing that could have hidden a divergence.
+
 ## How each answer was measured
 
 Every value in this delivery was read off the host's own MLCompute, on macOS, through Mac

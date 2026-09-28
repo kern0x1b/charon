@@ -68,7 +68,11 @@ fi
 # differ. A GPU through Metal and the Neural Engine: the host has both, the port has neither, and each side
 # answers as a machine with what it has. The cases record the difference rather than hide it, and the facts
 # say what the port answers and why.
-names="gpuDevice|aneDevice|deviceWithType (GPU|CPU|Any|Any multiple)|cpuDevice|cpuDevice copy|deviceWithGPUDevices empty"
+# Only the three that really differ, so what is printed is true: the framework has a Metal device and
+# a Neural Engine and this release has neither, and each side answers as a machine with what it has.
+# The CPU device, a device for "any", a copy of one and the empty device list are answered the same way
+# by both: they are in the cases and they are compared like any other.
+names="gpuDevice|aneDevice|deviceWithType GPU"
 allowed="^($names)$"
 tab=$(printf '\t')
 diffout=$(diff "$build/system.log" "$build/port.log" || true)
@@ -91,32 +95,3 @@ echo "$system_only" | grep -E "^($names)${tab}" | sed "s/^/  system /" | head -2
 echo "$diffout" | grep "^>" | sed "s/^> //" | grep -E "^($names)${tab}" | sed "s/^/  port   /" | head -20
 echo "cases=$(grep -c "	" "$build/system.log") log=$build/system.log"
 
-# The mutation: +[MLCDevice cpuDevice] reporting the wrong type. That case is on the excuse list, so a
-# check that only looks at the excused names would let it pass while still printing that the port answers
-# as the host does everywhere else. It must not pass.
-mutant() {
-    rm -rf "$build/mutant"
-    mkdir -p "$build/mutant"
-    cp "$port"/*.m "$port"/*.mm "$port"/*.h "$build/mutant/"
-    python3 - "$build/mutant/MLCDevice15.m" <<'PYEOF'
-import sys
-path = sys.argv[1]
-text = open(path).read()
-before = text
-text = text.replace('return [[self alloc] initWithType:MLCDeviceTypeCPU actual:MLCDeviceTypeCPU];',
-                    'return [[self alloc] initWithType:MLCDeviceTypeCPU actual:MLCDeviceTypeGPU];')
-assert text != before, "the mutant changed nothing"
-open(path, "w").write(text)
-PYEOF
-    xcrun clang $common -include "$build/rename.h" -I"$build/mutant" "$here/record.m" "$here/cases.m" "$here/layer-cases.m" \
-        "$build/mutant"/MLCTypes14.m "$build/mutant"/MLCDevice15.m "$build/mutant"/MLCTensors14.m "$build/mutant"/MLCDescriptors14.m \
-        "$build/mutant"/MLCLayers14.m $libs -framework MLCompute -o "$build/mutant/run" 2>/dev/null || true
-    "$build/mutant/run" > "$build/mutant.log" 2>&1 || true
-    if ! diff "$build/system.log" "$build/mutant.log" | grep -q "^[<>]"; then
-        echo "the mutant is indistinguishable from the port: the check reads a stored answer, not the code"
-        exit 1
-    fi
-    echo "the mutant is told apart:"
-    diff "$build/system.log" "$build/mutant.log" | grep "^[<>]" | head -4 | sed "s/^/  /"
-}
-mutant
