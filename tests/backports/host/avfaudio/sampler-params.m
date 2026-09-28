@@ -10,6 +10,13 @@
 #import <AVFAudio/AVFAudio.h>
 #import <AudioToolbox/AudioToolbox.h>
 
+// The port's own attach hook, the one AVAudioEngine calls when it puts a node in a graph. The harness has
+// no engine, and the handle the accessors use is assigned here - which is why the port's globalTuning
+// read back 0 for every value: there was no unit to write to.
+@interface charon_host_AVAudioNode : NSObject
+- (void)charon_setEngine:(id)engine auNode:(AUNode)node audioUnit:(AudioUnit)unit;
+@end
+
 @interface charon_host_AVAudioUnitSampler : NSObject
 - (instancetype)initWithAudioComponentDescription:(AudioComponentDescription)description;
 - (float)masterGain;
@@ -43,6 +50,21 @@ int main(void) {
         charon_host_AVAudioUnitSampler *mine = [[charon_host_AVAudioUnitSampler alloc] initWithAudioComponentDescription:description];
         if (theirs == nil || mine == nil) { printf("FAIL a sampler would not instantiate\n"); return 1; }
         [theirs loadInstrumentAtURL:[NSURL URLWithString:@"file:///nonexistent"] error:nil];
+
+        // Attach the port's sampler the way the engine does: one graph, one node, the unit out of it,
+        // and the port's own hook. The handle the three accessors write through is assigned there and
+        // nowhere else - AVAudioUnit's -initWithCharonComponentDescription: records the description
+        // and stops - so without this the port has no unit and every set is a no-op.
+        AudioUnit attached = NULL;
+        AUGraph graph = NULL;
+        if (NewAUGraph(&graph) == noErr && AUGraphOpen(graph) == noErr) {
+            AUNode node = 0;
+            if (AUGraphAddNode(graph, &description, &node) == noErr) {
+                AUGraphNodeInfo(graph, node, NULL, &attached);
+                [(charon_host_AVAudioNode *)mine charon_setEngine:nil auNode:node audioUnit:attached];
+                printf("stage the port's node is attached: node %d unit %p\n", (int)node, (void *)attached);
+            }
+        }
         AudioUnit theirUnit = theirs.audioUnit, myUnit = mine.audioUnit;
         printf("stage both are asked about the same component: host %p, port %p\n",
                (void *)theirUnit, (void *)myUnit);
@@ -83,6 +105,10 @@ int main(void) {
             printf("stage globalTuning read back: host %g, port %g\n", (double)theirs.globalTuning, (double)mine.globalTuning);
             check(@"globalTuning reads back the value that was set, on both",
                   fabsf(theirs.globalTuning - value) < 0.51f && fabsf(mine.globalTuning - value) < 0.51f);
+        }
+        if (graph != NULL) {
+            AUGraphClose(graph);
+            DisposeAUGraph(graph);
         }
         printf("checks=%d failures=%d\n", checks, failures);
     }
