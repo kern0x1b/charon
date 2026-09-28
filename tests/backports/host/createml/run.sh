@@ -110,6 +110,13 @@ xcrun swiftc -swift-version 5 -O -I "$out/modules" \
     -framework Accelerate -framework Foundation -framework CoreFoundation \
     -o "$out/transformers"
 
+# The preprocessing wrappers and the estimator protocols, over a table and two small estimators the
+# test supplies: a pipeline adds no arithmetic, so what is checked is the two things it does change.
+xcrun swiftc -swift-version 5 -O -I "$out/modules" \
+    "$here/preprocessing/main.swift" "$out/cmc.o" "$out/coreml.o" \
+    -framework Accelerate -framework Foundation -framework CoreFoundation \
+    -o "$out/preprocessing"
+
 # The metrics family, which the host has as `ClassificationMetrics` in its own CreateMLComponents,
 # so it is a straight differential: the same pairs into both objects, every count and score compared.
 xcrun swiftc -swift-version 5 -O -I "$out/modules" \
@@ -123,7 +130,7 @@ xcrun swiftc -swift-version 5 -O -I "$out/modules" \
 # a one-line mutation producing exactly one line of output and no `tabularframe`, `linearmodels` or
 # `transformers` line at all. Each binary's exit is collected and the first non-zero is the script's.
 status=0
-for suite in differential tabularframe linearmodels transformers metrics; do
+for suite in differential tabularframe linearmodels transformers metrics preprocessing; do
     if ! "$out/$suite"; then
         echo "FAIL the $suite suite exited non-zero" >&2
         status=1
