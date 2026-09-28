@@ -50,11 +50,15 @@ LIBRARIES = {
     {name = "MapKitBackports", folder = "MapKit", frameworks = {"MapKit", "UIKit", "CoreGraphics", "CoreLocation", "QuartzCore", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "PassKitBackports", folder = "PassKit", frameworks = {"PassKit", "UIKit", "CoreGraphics", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "CarPlayBackports", folder = "CarPlay", frameworks = {"CarPlay", "MapKit", "UIKit", "CoreGraphics", "CoreTelephony", "Foundation"}, libraries = {"FoundationBackports"}},
+<<<<<<< HEAD
     {name = "NetworkBackports", folder = "Network", frameworks = {"Network", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "IntentsBackports", folder = "Intents", frameworks = {"Intents", "UIKit", "CoreLocation", "Foundation"}, libraries = {"FoundationBackports"}, archives = {"charon-coding"}, c_archives = {"charon-coding"}},
     {name = "AccessibilityBackports", folder = "Accessibility", frameworks = {"Accessibility", "Foundation", "CoreGraphics"}, libraries = {"FoundationBackports"}, archives = {"charon-coding"}, c_archives = {"charon-coding"}},
     {name = "IntentsUIBackports", folder = "IntentsUI", frameworks = {"IntentsUI", "Intents", "UIKit", "Foundation", "CoreGraphics"}, libraries = {"FoundationBackports", "IntentsBackports"}}
     {name = "HealthKitBackports", folder = "HealthKit", frameworks = {"Foundation"}, libraries = {"FoundationBackports"}, system = {"sqlite3"}},
+=======
+    {name = "HealthKitBackports", folder = "HealthKit", frameworks = {"UIKit", "Foundation"}, libraries = {"FoundationBackports"}, system = {"sqlite3"}},
+>>>>>>> 0bf687334 (Restore the comma the rebase's resolution dropped, and the closing brace it doubled)
 }
 
 PACKAGE = "org.charon.apple-backports"
