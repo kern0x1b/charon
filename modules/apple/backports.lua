@@ -9,11 +9,16 @@ import("cache")
 
 -- A library stands after every library it names in `libraries`: link() finds those in the output folder, so they are built first.
 LIBRARIES = {
+<<<<<<< HEAD
     -- libicucore carries the four udtitvfmt_* entry points NSDateIntervalFormatter is built on, exported by the
     -- release from iOS 5.0 on and by none before it, so the class floor is 5.0; the imports are weak, so a
     -- release whose libicucore lacks them binds NULL and the class answers nil rather than faulting.
     {name = "FoundationBackports", folder = "Foundation", frameworks = {"Foundation", "CoreFoundation", "SystemConfiguration"}, libraries = {"icucore"}},
     {name = "UIKitBackports", folder = "UIKit", frameworks = {"UIKit", "Foundation", "CoreGraphics", "QuartzCore", "MobileCoreServices", "ImageIO"}, libraries = {"FoundationBackports"}}, archives = {"box2d"}},
+=======
+    {name = "FoundationBackports", folder = "Foundation", frameworks = {"Foundation", "CoreFoundation", "SystemConfiguration"}},
+    {name = "UIKitBackports", folder = "UIKit", frameworks = {"UIKit", "Foundation", "CoreGraphics", "QuartzCore", "MobileCoreServices", "ImageIO"}, libraries = {"FoundationBackports", "GraphicsBackports"}, archives = {"box2d"}},
+>>>>>>> 92d6f83a7 (Build and link the graphics backport for a UIKit build, which now needs a colour-space match)
     {name = "CoreLocationBackports", folder = "CoreLocation", frameworks = {"CoreLocation", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "CoreDataBackports", folder = "CoreData", frameworks = {"CoreData", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "SecurityBackports", folder = "Security", frameworks = {"Security", "Foundation"}, libraries = {"FoundationBackports"}},
