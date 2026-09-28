@@ -225,3 +225,34 @@ one the port already implements - so the 12.0 object needs
 Both are one declaration and one forward. The draft is `.agent-work/ARSCNView12-draft.m` and it is not in
 the delivery because it does not build.
 
+## There is no host differential for this family, and that is the framework's doing
+
+`tests/backports/host/arkit/run.sh` exists and measures the tracker. It does **not** measure this
+family, and the reason is measured rather than assumed:
+
+```
+arkit-scnview-diff.m:29:9: error: unknown type name 'ARSCNView'; did you mean 'SCNView'?
+arkit-scnview-diff.m:32:26: error: property 'session' not found on object of type 'SCNView *'
+```
+
+The host has **SceneKit** and it has no **ARKit** - ARKit has never shipped on macOS, and the SDK that
+declares `ARSCNView` is the iPhoneOS SDK, whose headers cannot be compiled into a macOS build. So:
+
+- `ARSCNView` is an ARKit class, and its superclass is real, but the *class* is in a framework the
+  host does not have. `SCNView` compiles; `ARSCNView` does not name anything.
+- `ARFrame`, `ARSession`, `ARHitTestResult` and `ARRaycastQuery` are iOS-only types too, so the
+  forwarding half cannot even be *typed* on the host, let alone compared against an oracle.
+
+**So the oracle for this family is Apple's documentation, labelled `documented` on every row that
+depends on it** - the forwarding methods answer what the frame answers because they call it, and the
+geometry methods answer the plane's own buffers because that is what the framework's own
+`updateFromPlaneGeometry:` says they do. What *is* measured is the build: both objects compile clean
+under the build's own flags, and the release split is checked by the gate, which weighs each object
+against the release of the API it carries.
+
+The mutation that a host differential would carry is applied where the code is, instead: the pairing
+is a map the view holds rather than a category ivar on the SDK's `SCNNode`, and that is checked by the
+compiler - a category's `@synthesize` is rejected even on the non-fragile ABI armv7 has, which is why
+`NSMapTable` is the only shape this can have. Writing a host test that cannot name the class would be
+a test of nothing.
+
