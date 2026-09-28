@@ -368,15 +368,6 @@
   "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/tail2, and tests/backports/device/tail2.m on iOS 6"
  },
  {
-   "api": "UIPasteboardTypeAutomatic",
-   "kind": "constant",
-   "introduced": "10.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "facts": "facts/UIKit/UIKitConstants1001.md",
-   "source": "the value read out of the UIKit cache of iOS 10.0.1, the oldest held release that exports the symbol (/System/Library/Frameworks/UIKit.framework/UIKit)"
- },
- {
   "api": "-[UISelectionFeedbackGenerator selectionChanged]",
   "kind": "method",
   "introduced": "10.0",

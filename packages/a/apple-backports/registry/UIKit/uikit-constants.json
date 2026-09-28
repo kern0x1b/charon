@@ -2,110 +2,1291 @@
  "framework": "UIKit",
  "entries": [
   {
-   "api": "UIApplicationLaunchOptionsEventAttributionKey",
+   "api": "UICollectionViewLayoutAutomaticDimension",
    "kind": "constant",
-   "introduced": "14.5",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants1001.md",
+   "source": "the value read out of the the 16.0 arm64e cache cache of iOS 10.0.1, the oldest held release that exports the symbol (the 16.0 arm64e cache)"
+  },
+  {
+   "api": "UIPasteboardTypeAutomatic",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants1001.md",
+   "source": "the value read out of the UIKit cache of iOS 10.0.1, the oldest held release that exports the symbol (/System/Library/Frameworks/UIKit.framework/UIKit)"
+  },
+  {
+   "api": "NSTextContentStorageUnsupportedAttributeAddedNotification",
+   "kind": "constant",
+   "introduced": "",
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants160.md",
-   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore); the constants another object on main already defines are left to that object, and their values were compared against this band's measurement and agree on all 44 of them"
+   "source": "the value read out of the UIFoundation cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIFoundation.framework/UIFoundation)"
+  },
+  {
+   "api": "UIActionPaste",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants160.md",
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UIActionPasteAndGo",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants160.md",
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UIActionPasteAndMatchStyle",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants160.md",
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UIActionPasteAndSearch",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants160.md",
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UIActivityItemsConfigurationMetadataKeyLinkPresentationMetadata",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants160.md",
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UIActivityTypeCollaborationCopyLink",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants160.md",
+   "source": "the value read out of the ShareSheet cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/ShareSheet.framework/ShareSheet)"
+  },
+  {
+   "api": "UIActivityTypeCollaborationInviteWithLink",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants160.md",
+   "source": "the value read out of the ShareSheet cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/ShareSheet.framework/ShareSheet)"
+  },
+  {
+   "api": "UIActivityTypeSharePlay",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants160.md",
+   "source": "the value read out of the ShareSheet cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/ShareSheet.framework/ShareSheet)"
+  },
+  {
+   "api": "UIApplicationLaunchOptionsEventAttributionKey",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants160.md",
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
   },
   {
    "api": "UIApplicationOpenExternalURLOptionsEventAttributionKey",
    "kind": "constant",
-   "introduced": "14.5",
+   "introduced": "",
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants160.md",
-   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore); the constants another object on main already defines are left to that object, and their values were compared against this band's measurement and agree on all 44 of them"
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
   },
   {
    "api": "UIApplicationOpenURLOptionsEventAttributionKey",
    "kind": "constant",
-   "introduced": "14.5",
+   "introduced": "",
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants160.md",
-   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore); the constants another object on main already defines are left to that object, and their values were compared against this band's measurement and agree on all 44 of them"
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
   },
   {
-   "api": "UIBlurEffectStyleExtraDark",
+   "api": "UIGuidedAccessErrorDomain",
    "kind": "constant",
-   "introduced": "8.0",
+   "introduced": "",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the SDK declares it for another platform only, so no program compiled for iOS can name it",
-   "effect": "the symbol is not there: a weak reference to it is NULL, which is what the header's own unavailability makes true",
-   "source": "the SDK 26.2 header, UIBlurEffect.h:20 - API_AVAILABLE(tvos(10.0)) API_UNAVAILABLE(ios); the constants another object on main already defines are left to that object, and their values were compared against this band's measurement and agree on all 44 of them"
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants160.md",
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UIKeyInputDelete",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants160.md",
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
   },
   {
    "api": "UIListSeparatorAutomaticInsets",
    "kind": "constant",
-   "introduced": "14.5",
+   "introduced": "",
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants160.md",
-   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore); the constants another object on main already defines are left to that object, and their values were compared against this band's measurement and agree on all 44 of them"
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
   },
   {
-   "api": "UIPressTypePageDown",
+   "api": "UIPasteboardDetectionPatternCalendarEvent",
    "kind": "constant",
-   "introduced": "9.0",
+   "introduced": "",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the SDK declares it for another platform only, so no program compiled for iOS can name it",
-   "effect": "the symbol is not there: a weak reference to it is NULL, which is what the header's own unavailability makes true",
-   "source": "the SDK 26.2 header, UIPress.h:37 - API_AVAILABLE(tvos(14.3)) API_UNAVAILABLE(ios, watchos); the constants another object on main already defines are left to that object, and their values were compared against this band's measurement and agree on all 44 of them"
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants160.md",
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
   },
   {
-   "api": "UIPressTypePageUp",
+   "api": "UIPasteboardDetectionPatternEmailAddress",
    "kind": "constant",
-   "introduced": "9.0",
+   "introduced": "",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the SDK declares it for another platform only, so no program compiled for iOS can name it",
-   "effect": "the symbol is not there: a weak reference to it is NULL, which is what the header's own unavailability makes true",
-   "source": "the SDK 26.2 header, UIPress.h:36 - API_AVAILABLE(tvos(14.3)) API_UNAVAILABLE(ios, watchos); the constants another object on main already defines are left to that object, and their values were compared against this band's measurement and agree on all 44 of them"
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants160.md",
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
   },
   {
-   "api": "UIPressTypeTVRemoteFourColors",
+   "api": "UIPasteboardDetectionPatternFlightNumber",
    "kind": "constant",
-   "introduced": "9.0",
+   "introduced": "",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the SDK declares it for another platform only, so no program compiled for iOS can name it",
-   "effect": "the symbol is not there: a weak reference to it is NULL, which is what the header's own unavailability makes true",
-   "source": "the SDK 26.2 header, UIPress.h:46 - API_AVAILABLE(tvos(18.1)) API_UNAVAILABLE(ios, watchos, visionos); the constants another object on main already defines are left to that object, and their values were compared against this band's measurement and agree on all 44 of them"
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants160.md",
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
   },
   {
-   "api": "UIPressTypeTVRemoteOneTwoThree",
+   "api": "UIPasteboardDetectionPatternLink",
    "kind": "constant",
-   "introduced": "9.0",
+   "introduced": "",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the SDK declares it for another platform only, so no program compiled for iOS can name it",
-   "effect": "the symbol is not there: a weak reference to it is NULL, which is what the header's own unavailability makes true",
-   "source": "the SDK 26.2 header, UIPress.h:42 - API_AVAILABLE(tvos(18.1)) API_UNAVAILABLE(ios, watchos, visionos); the constants another object on main already defines are left to that object, and their values were compared against this band's measurement and agree on all 44 of them"
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants160.md",
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
   },
   {
-   "api": "UITextFieldDidEndEditingReasonCancelled",
+   "api": "UIPasteboardDetectionPatternMoneyAmount",
    "kind": "constant",
-   "introduced": "10.0",
+   "introduced": "",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the SDK declares it for another platform only, so no program compiled for iOS can name it",
-   "effect": "the symbol is not there: a weak reference to it is NULL, which is what the header's own unavailability makes true",
-   "source": "the SDK 26.2 header, UITextField.h:49 - UIKIT_AVAILABLE_TVOS_ONLY(10_0), which is __IOS_UNAVAILABLE; the constants another object on main already defines are left to that object, and their values were compared against this band's measurement and agree on all 44 of them"
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants160.md",
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
   },
   {
-   "api": "UITextViewBorderStyleRoundedRect",
+   "api": "UIPasteboardDetectionPatternPhoneNumber",
    "kind": "constant",
-   "introduced": "17.0",
+   "introduced": "",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the SDK declares it for another platform only, so no program compiled for iOS can name it",
-   "effect": "the symbol is not there: a weak reference to it is NULL, which is what the header's own unavailability makes true",
-   "source": "the SDK 26.2 header, UITextView.h:215 - API_AVAILABLE(visionos(1.0)) API_UNAVAILABLE(ios, watchos); the constants another object on main already defines are left to that object, and their values were compared against this band's measurement and agree on all 44 of them"
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants160.md",
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UIPasteboardDetectionPatternPostalAddress",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants160.md",
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UIPasteboardDetectionPatternShipmentTrackingNumber",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants160.md",
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UIPointerAccessoryPositionBottom",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants160.md",
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UIPointerAccessoryPositionBottomLeft",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants160.md",
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UIPointerAccessoryPositionBottomRight",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants160.md",
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UIPointerAccessoryPositionLeft",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants160.md",
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UIPointerAccessoryPositionRight",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants160.md",
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UIPointerAccessoryPositionTop",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants160.md",
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UIPointerAccessoryPositionTopLeft",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants160.md",
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UIPointerAccessoryPositionTopRight",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants160.md",
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextContentTypeDateTime",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants160.md",
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextContentTypeFlightNumber",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants160.md",
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextContentTypeShipmentTrackingNumber",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants160.md",
+   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "NSAdaptiveImageGlyphAttributeName",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIFoundation cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIFoundation.framework/UIFoundation)"
+  },
+  {
+   "api": "NSDefaultFontExcludedDocumentAttribute",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIFoundation cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIFoundation.framework/UIFoundation)"
+  },
+  {
+   "api": "NSTextHighlightColorSchemeAttributeName",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIFoundation cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIFoundation.framework/UIFoundation)"
+  },
+  {
+   "api": "NSTextHighlightColorSchemeBlue",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIFoundation cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIFoundation.framework/UIFoundation)"
+  },
+  {
+   "api": "NSTextHighlightColorSchemeDefault",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIFoundation cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIFoundation.framework/UIFoundation)"
+  },
+  {
+   "api": "NSTextHighlightColorSchemeMint",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIFoundation cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIFoundation.framework/UIFoundation)"
+  },
+  {
+   "api": "NSTextHighlightColorSchemeOrange",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIFoundation cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIFoundation.framework/UIFoundation)"
+  },
+  {
+   "api": "NSTextHighlightColorSchemePink",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIFoundation cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIFoundation.framework/UIFoundation)"
+  },
+  {
+   "api": "NSTextHighlightColorSchemePurple",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIFoundation cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIFoundation.framework/UIFoundation)"
+  },
+  {
+   "api": "NSTextHighlightStyleAttributeName",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIFoundation cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIFoundation.framework/UIFoundation)"
+  },
+  {
+   "api": "NSTextHighlightStyleDefault",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIFoundation cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIFoundation.framework/UIFoundation)"
+  },
+  {
+   "api": "NSTextKit1ListMarkerFormatDocumentOption",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIFoundation cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIFoundation.framework/UIFoundation)"
+  },
+  {
+   "api": "UIAccessibilityCustomActionCategoryEdit",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UIAccessibilityPriorityDefault",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UIAccessibilityPriorityHigh",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UIAccessibilityPriorityLow",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UIAccessibilitySpeechAttributeAnnouncementPriority",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UIAccessibilityTraitSupportsZoom",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UIAccessibilityTraitToggleButton",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UIActivityItemsConfigurationInteractionCopy",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UIActivityItemsConfigurationMetadataKeyCollaborationModeRestrictions",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the ShareSheet cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/ShareSheet.framework/ShareSheet)"
+  },
+  {
+   "api": "UIActivityItemsConfigurationMetadataKeyShareRecipients",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the ShareSheet cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/ShareSheet.framework/ShareSheet)"
+  },
+  {
+   "api": "UIActivityTypeAddToHomeScreen",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the ShareSheet cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/ShareSheet.framework/ShareSheet)"
+  },
+  {
+   "api": "UICollectionLayoutSectionOrthogonalScrollingDecelerationRateAutomatic",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the CollectionViewCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/CollectionViewCore.framework/CollectionViewCore)"
+  },
+  {
+   "api": "UICollectionLayoutSectionOrthogonalScrollingDecelerationRateFast",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the CollectionViewCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/CollectionViewCore.framework/CollectionViewCore)"
+  },
+  {
+   "api": "UICollectionLayoutSectionOrthogonalScrollingDecelerationRateNormal",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the CollectionViewCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/CollectionViewCore.framework/CollectionViewCore)"
+  },
+  {
+   "api": "UIDocumentCreationIntentDefault",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UIFontTextStyleExtraLargeTitle",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UIFontTextStyleExtraLargeTitle2",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UIMenuAutoFill",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UISceneSystemProtectionDidChangeNotification",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextContentTypeBirthdate",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextContentTypeBirthdateDay",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextContentTypeBirthdateMonth",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextContentTypeBirthdateYear",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextContentTypeCellularEID",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextContentTypeCellularIMEI",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextContentTypeCreditCardExpiration",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextContentTypeCreditCardExpirationMonth",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextContentTypeCreditCardExpirationYear",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextContentTypeCreditCardFamilyName",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextContentTypeCreditCardGivenName",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextContentTypeCreditCardMiddleName",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextContentTypeCreditCardName",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextContentTypeCreditCardSecurityCode",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextContentTypeCreditCardType",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerDecreaseFontSizeChangeType",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerDecreaseIndentationChangeType",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerFontAttributesComponentKey",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerFontChangeType",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerFontPickerComponentKey",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerFontPointSizeComponentKey",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerFontSizeChangeType",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerFontSizeComponentKey",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerFormattingStyleChangeType",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerFormattingStylesComponentKey",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerHighlightBlue",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerHighlightChangeType",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerHighlightComponentKey",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerHighlightDefault",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerHighlightMint",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerHighlightOrange",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerHighlightPickerComponentKey",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerHighlightPink",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerHighlightPurple",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerIncreaseFontSizeChangeType",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerIncreaseIndentationChangeType",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerLineHeightComponentKey",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerLineHeightPointSizeChangeType",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerListStylesComponentKey",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerRemoveBoldChangeType",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerRemoveItalicChangeType",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerRemoveStrikethroughChangeType",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerRemoveUnderlineChangeType",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerSetBoldChangeType",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerSetItalicChangeType",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerSetStrikethroughChangeType",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerSetUnderlineChangeType",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerTextAlignmentAndJustificationComponentKey",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerTextAlignmentCenter",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerTextAlignmentChangeType",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerTextAlignmentComponentKey",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerTextAlignmentJustified",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerTextAlignmentLeft",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerTextAlignmentNatural",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerTextAlignmentRight",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerTextColorChangeType",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerTextColorComponentKey",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerTextIndentationComponentKey",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerTextListChangeType",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerTextListDecimal",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerTextListDisc",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerTextListHyphen",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerTextListOther",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextFormattingViewControllerUndefinedChangeType",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "UITextItemTagAttributeName",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants180.md",
+   "source": "the value read out of the UIKitCore cache of iOS 18.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
+  },
+  {
+   "api": "NSWritingToolsExclusionAttributeName",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants182.md",
+   "source": "the value read out of the dyld_shared_cache_arm64e cache of iOS 18.2, the oldest held release that exports the symbol (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e)"
+  },
+  {
+   "api": "UIApplicationCategoryDefaultErrorDomain",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants182.md",
+   "source": "the value read out of the dyld_shared_cache_arm64e cache of iOS 18.2, the oldest held release that exports the symbol (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e)"
+  },
+  {
+   "api": "UIApplicationCategoryDefaultRetryAvailabilityDateErrorKey",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants182.md",
+   "source": "the value read out of the dyld_shared_cache_arm64e cache of iOS 18.2, the oldest held release that exports the symbol (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e)"
+  },
+  {
+   "api": "UIApplicationCategoryDefaultStatusLastProvidedDateErrorKey",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants182.md",
+   "source": "the value read out of the dyld_shared_cache_arm64e cache of iOS 18.2, the oldest held release that exports the symbol (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e)"
+  },
+  {
+   "api": "UIApplicationOpenDefaultApplicationsSettingsURLString",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants183.md",
+   "source": "the value read out of the dyld_shared_cache_arm64e cache of iOS 18.3, the oldest held release that exports the symbol (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e)"
+  },
+  {
+   "api": "UIActionNewFromPasteboard",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants260.md",
+   "source": "the value read out of the dyld_shared_cache_arm64e cache of iOS 26.0, the oldest held release that exports the symbol (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e)"
+  },
+  {
+   "api": "UIDocumentDidMoveToWritableLocationNotification",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants260.md",
+   "source": "the value read out of the dyld_shared_cache_arm64e cache of iOS 26.0, the oldest held release that exports the symbol (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e)"
+  },
+  {
+   "api": "UIDocumentDidMoveToWritableLocationOldURLKey",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants260.md",
+   "source": "the value read out of the dyld_shared_cache_arm64e cache of iOS 26.0, the oldest held release that exports the symbol (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e)"
+  },
+  {
+   "api": "UIMenuFindPanel",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants260.md",
+   "source": "the value read out of the dyld_shared_cache_arm64e cache of iOS 26.0, the oldest held release that exports the symbol (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e)"
+  },
+  {
+   "api": "UIMenuNewItem",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants260.md",
+   "source": "the value read out of the dyld_shared_cache_arm64e cache of iOS 26.0, the oldest held release that exports the symbol (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e)"
+  },
+  {
+   "api": "UIWindowSceneSessionRoleAssistiveAccessApplication",
+   "kind": "constant",
+   "introduced": "",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIKitConstants260.md",
+   "source": "the value read out of the dyld_shared_cache_arm64e cache of iOS 26.0, the oldest held release that exports the symbol (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e)"
   }
  ]
 }

@@ -591,15 +591,6 @@
    "source": "SDK 16.4, UIKit"
   },
   {
-    "api": "NSTextContentStorageUnsupportedAttributeAddedNotification",
-    "kind": "constant",
-    "introduced": "15.0",
-    "minimum": "6.0",
-    "status": "implemented",
-    "facts": "facts/UIKit/UIKitConstants160.md",
-    "source": "the value read out of the UIFoundation cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIFoundation.framework/UIFoundation)"
-  },
-  {
    "api": "NSTextElement",
    "kind": "class",
    "introduced": "15.0",
@@ -758,51 +749,6 @@
    "reason": "the delegate of the Text Kit 2 viewport controller, asked to place the fragments in view; the port carries no Text Kit 2 (NSTextLayoutManager and NSTextContentStorage absent), so nothing would ask",
    "effect": "the protocol is not there: NSProtocolFromString answers nil",
    "source": "SDK 16.4, UIKit"
-  },
-  {
-    "api": "UIActionPaste",
-    "kind": "constant",
-    "introduced": "15.0",
-    "minimum": "6.0",
-    "status": "implemented",
-    "facts": "facts/UIKit/UIKitConstants160.md",
-    "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
-  },
-  {
-    "api": "UIActionPasteAndGo",
-    "kind": "constant",
-    "introduced": "15.0",
-    "minimum": "6.0",
-    "status": "implemented",
-    "facts": "facts/UIKit/UIKitConstants160.md",
-    "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
-  },
-  {
-    "api": "UIActionPasteAndMatchStyle",
-    "kind": "constant",
-    "introduced": "15.0",
-    "minimum": "6.0",
-    "status": "implemented",
-    "facts": "facts/UIKit/UIKitConstants160.md",
-    "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
-  },
-  {
-    "api": "UIActionPasteAndSearch",
-    "kind": "constant",
-    "introduced": "15.0",
-    "minimum": "6.0",
-    "status": "implemented",
-    "facts": "facts/UIKit/UIKitConstants160.md",
-    "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
-  },
-  {
-    "api": "UIActivityItemsConfigurationMetadataKeyLinkPresentationMetadata",
-    "kind": "constant",
-    "introduced": "15.0",
-    "minimum": "6.0",
-    "status": "implemented",
-    "facts": "facts/UIKit/UIKitConstants160.md",
-    "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
   },
   {
    "api": "UIActivityItemsConfigurationProviding",
@@ -995,16 +941,6 @@
    "source": "SDK 16.4, UIKit; not in the class's methods in the 6.1.3 or 12.0 cache, and in 16.0 and 18.0 (objc.inventory)"
   },
   {
-    "api": "UICollectionViewLayoutAutomaticDimension",
-    "kind": "constant",
-    "introduced": "15.0",
-    "minimum": "6.0",
-    "status": "implemented",
-    "facts": "facts/UIKit/UIKitConstants1001.md",
-    "source": "the value read out of the UIKit cache of iOS 10.0.1, the oldest held release that exports the symbol (/System/Library/Frameworks/UIKit.framework/UIKit)",
-    "note": "CGFLOAT_MAX: the read is DBL_MAX, which is CGFLOAT_MAX on the 64-bit ABI the read was made on, and FLT_MAX on the port's own 32-bit ABI"
-  },
-  {
    "api": "UIColor.systemCyanColor",
    "kind": "property",
    "introduced": "15.0",
@@ -1115,15 +1051,6 @@
    "source": "SDK 16.4, UIKit"
   },
   {
-    "api": "UIKeyInputDelete",
-    "kind": "constant",
-    "introduced": "15.0",
-    "minimum": "6.0",
-    "status": "implemented",
-    "facts": "facts/UIKit/UIKitConstants160.md",
-    "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
-  },
-  {
    "api": "UIKeyboardLayoutGuide",
    "kind": "class",
    "introduced": "15.0",
@@ -1174,78 +1101,6 @@
    "source": "SDK 16.4, UIKit; not exported by UIKitCore in the 12.0 cache, exported in 16.0 with this value (cfconst.lua)"
   },
   {
-    "api": "UIPasteboardDetectionPatternCalendarEvent",
-    "kind": "constant",
-    "introduced": "15.0",
-    "minimum": "6.0",
-    "status": "implemented",
-    "facts": "facts/UIKit/UIKitConstants160.md",
-    "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
-  },
-  {
-    "api": "UIPasteboardDetectionPatternEmailAddress",
-    "kind": "constant",
-    "introduced": "15.0",
-    "minimum": "6.0",
-    "status": "implemented",
-    "facts": "facts/UIKit/UIKitConstants160.md",
-    "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
-  },
-  {
-    "api": "UIPasteboardDetectionPatternFlightNumber",
-    "kind": "constant",
-    "introduced": "15.0",
-    "minimum": "6.0",
-    "status": "implemented",
-    "facts": "facts/UIKit/UIKitConstants160.md",
-    "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
-  },
-  {
-    "api": "UIPasteboardDetectionPatternLink",
-    "kind": "constant",
-    "introduced": "15.0",
-    "minimum": "6.0",
-    "status": "implemented",
-    "facts": "facts/UIKit/UIKitConstants160.md",
-    "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
-  },
-  {
-    "api": "UIPasteboardDetectionPatternMoneyAmount",
-    "kind": "constant",
-    "introduced": "15.0",
-    "minimum": "6.0",
-    "status": "implemented",
-    "facts": "facts/UIKit/UIKitConstants160.md",
-    "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
-  },
-  {
-    "api": "UIPasteboardDetectionPatternPhoneNumber",
-    "kind": "constant",
-    "introduced": "15.0",
-    "minimum": "6.0",
-    "status": "implemented",
-    "facts": "facts/UIKit/UIKitConstants160.md",
-    "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
-  },
-  {
-    "api": "UIPasteboardDetectionPatternPostalAddress",
-    "kind": "constant",
-    "introduced": "15.0",
-    "minimum": "6.0",
-    "status": "implemented",
-    "facts": "facts/UIKit/UIKitConstants160.md",
-    "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
-  },
-  {
-    "api": "UIPasteboardDetectionPatternShipmentTrackingNumber",
-    "kind": "constant",
-    "introduced": "15.0",
-    "minimum": "6.0",
-    "status": "implemented",
-    "facts": "facts/UIKit/UIKitConstants160.md",
-    "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
-  },
-  {
    "api": "UIPointerAccessory",
    "kind": "class",
    "introduced": "15.0",
@@ -1254,78 +1109,6 @@
    "reason": "an arrow or shape drawn next to the pointer; the port draws no pointer (facts/UIKit/UIPointerStyle.md) and the 4S and iPad 2 have none, so there is nothing to draw it next to",
    "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
    "source": "SDK 16.4, UIKit"
-  },
-  {
-    "api": "UIPointerAccessoryPositionBottom",
-    "kind": "constant",
-    "introduced": "15.0",
-    "minimum": "6.0",
-    "status": "implemented",
-    "facts": "facts/UIKit/UIKitConstants160.md",
-    "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
-  },
-  {
-    "api": "UIPointerAccessoryPositionBottomLeft",
-    "kind": "constant",
-    "introduced": "15.0",
-    "minimum": "6.0",
-    "status": "implemented",
-    "facts": "facts/UIKit/UIKitConstants160.md",
-    "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
-  },
-  {
-    "api": "UIPointerAccessoryPositionBottomRight",
-    "kind": "constant",
-    "introduced": "15.0",
-    "minimum": "6.0",
-    "status": "implemented",
-    "facts": "facts/UIKit/UIKitConstants160.md",
-    "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
-  },
-  {
-    "api": "UIPointerAccessoryPositionLeft",
-    "kind": "constant",
-    "introduced": "15.0",
-    "minimum": "6.0",
-    "status": "implemented",
-    "facts": "facts/UIKit/UIKitConstants160.md",
-    "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
-  },
-  {
-    "api": "UIPointerAccessoryPositionRight",
-    "kind": "constant",
-    "introduced": "15.0",
-    "minimum": "6.0",
-    "status": "implemented",
-    "facts": "facts/UIKit/UIKitConstants160.md",
-    "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
-  },
-  {
-    "api": "UIPointerAccessoryPositionTop",
-    "kind": "constant",
-    "introduced": "15.0",
-    "minimum": "6.0",
-    "status": "implemented",
-    "facts": "facts/UIKit/UIKitConstants160.md",
-    "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
-  },
-  {
-    "api": "UIPointerAccessoryPositionTopLeft",
-    "kind": "constant",
-    "introduced": "15.0",
-    "minimum": "6.0",
-    "status": "implemented",
-    "facts": "facts/UIKit/UIKitConstants160.md",
-    "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
-  },
-  {
-    "api": "UIPointerAccessoryPositionTopRight",
-    "kind": "constant",
-    "introduced": "15.0",
-    "minimum": "6.0",
-    "status": "implemented",
-    "facts": "facts/UIKit/UIKitConstants160.md",
-    "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
   },
   {
    "api": "UIPointerStyle.accessories",
@@ -1506,33 +1289,6 @@
    "effect": "kept copied; setting it asks for a configuration update, and the update calls it after updateConfigurationUsingState:, with the view and the same state",
    "facts": "facts/UIKit/UICollectionViewCellConfiguration.md",
    "source": "SDK 16.4, UIKit; not in the class's methods in the 6.1.3 or 12.0 cache, and in 16.0 and 18.0 (objc.inventory)"
-  },
-  {
-    "api": "UITextContentTypeDateTime",
-    "kind": "constant",
-    "introduced": "15.0",
-    "minimum": "6.0",
-    "status": "implemented",
-    "facts": "facts/UIKit/UIKitConstants160.md",
-    "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
-  },
-  {
-    "api": "UITextContentTypeFlightNumber",
-    "kind": "constant",
-    "introduced": "15.0",
-    "minimum": "6.0",
-    "status": "implemented",
-    "facts": "facts/UIKit/UIKitConstants160.md",
-    "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
-  },
-  {
-    "api": "UITextContentTypeShipmentTrackingNumber",
-    "kind": "constant",
-    "introduced": "15.0",
-    "minimum": "6.0",
-    "status": "implemented",
-    "facts": "facts/UIKit/UIKitConstants160.md",
-    "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore)"
   },
   {
    "api": "UITextField.interactionState",
@@ -1763,15 +1519,6 @@
    "reason": "options for asking the system to show a new scene; the port runs one scene and refuses a second (requestSceneSessionActivation answers multiple scenes not supported, facts/UIKit/UIScene.md), so a request is refused before any option is read",
    "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
    "source": "SDK 16.4, UIKit"
-  },
-  {
-    "api": "UIActivityTypeSharePlay",
-    "kind": "constant",
-    "introduced": "15.4",
-    "minimum": "6.0",
-    "status": "implemented",
-    "facts": "facts/UIKit/UIKitConstants160.md",
-    "source": "the value read out of the ShareSheet cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/ShareSheet.framework/ShareSheet)"
   },
   {
    "api": "UIActivityViewController.allowsProminentActivity",
@@ -2433,24 +2180,6 @@
    "reason": "the Text Kit 2 element for one item of a list; the port carries no Text Kit 2 (NSTextLayoutManager and NSTextContentStorage absent), so nothing splits text into list elements",
    "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
    "source": "SDK 16.4, UIKit"
-  },
-  {
-    "api": "UIActivityTypeCollaborationCopyLink",
-    "kind": "constant",
-    "introduced": "16.0",
-    "minimum": "6.0",
-    "status": "implemented",
-    "facts": "facts/UIKit/UIKitConstants160.md",
-    "source": "the value read out of the ShareSheet cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/ShareSheet.framework/ShareSheet)"
-  },
-  {
-    "api": "UIActivityTypeCollaborationInviteWithLink",
-    "kind": "constant",
-    "introduced": "16.0",
-    "minimum": "6.0",
-    "status": "implemented",
-    "facts": "facts/UIKit/UIKitConstants160.md",
-    "source": "the value read out of the ShareSheet cache of iOS 16.0, the oldest held release that exports the symbol (/System/Library/PrivateFrameworks/ShareSheet.framework/ShareSheet)"
   },
   {
    "api": "UIAlertController.severity",

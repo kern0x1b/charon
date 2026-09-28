@@ -42,46 +42,6 @@
    "source": "SDK 26.5, Mac Catalyst, UIKit"
   },
   {
-    "api": "NSWritingToolsExclusionAttributeName",
-    "kind": "constant",
-    "introduced": "18.2",
-    "minimum": "6.0",
-    "status": "absent",
-    "reason": "no release held on this machine exports the symbol, and a constant's value is never taken from a header or from a host framework, so there is no value to carry",
-    "effect": "the symbol is not there: a weak reference to it is NULL",
-    "source": "the held release ladder of this machine, read symbol by symbol with tools/corpus/cache-value.lua: the newest cache held is iOS 18.0 and this constant arrived later"
-  },
-  {
-    "api": "UIApplicationCategoryDefaultErrorDomain",
-    "kind": "constant",
-    "introduced": "18.2",
-    "minimum": "6.0",
-    "status": "absent",
-    "reason": "no release held on this machine exports the symbol, and a constant's value is never taken from a header or from a host framework, so there is no value to carry",
-    "effect": "the symbol is not there: a weak reference to it is NULL",
-    "source": "the held release ladder of this machine, read symbol by symbol with tools/corpus/cache-value.lua: the newest cache held is iOS 18.0 and this constant arrived later"
-  },
-  {
-    "api": "UIApplicationCategoryDefaultRetryAvailabilityDateErrorKey",
-    "kind": "constant",
-    "introduced": "18.2",
-    "minimum": "6.0",
-    "status": "absent",
-    "reason": "no release held on this machine exports the symbol, and a constant's value is never taken from a header or from a host framework, so there is no value to carry",
-    "effect": "the symbol is not there: a weak reference to it is NULL",
-    "source": "the held release ladder of this machine, read symbol by symbol with tools/corpus/cache-value.lua: the newest cache held is iOS 18.0 and this constant arrived later"
-  },
-  {
-    "api": "UIApplicationCategoryDefaultStatusLastProvidedDateErrorKey",
-    "kind": "constant",
-    "introduced": "18.2",
-    "minimum": "6.0",
-    "status": "absent",
-    "reason": "no release held on this machine exports the symbol, and a constant's value is never taken from a header or from a host framework, so there is no value to carry",
-    "effect": "the symbol is not there: a weak reference to it is NULL",
-    "source": "the held release ladder of this machine, read symbol by symbol with tools/corpus/cache-value.lua: the newest cache held is iOS 18.0 and this constant arrived later"
-  },
-  {
    "api": "UITextView.subclassForWritingToolsCoordinator",
    "kind": "property",
    "introduced": "18.2",
@@ -142,24 +102,14 @@
    "source": "SDK 26.5, Mac Catalyst, UIKit"
   },
   {
-    "api": "UIWritingToolsCoordinatorTextAnimationDebugDescription()",
-    "kind": "function",
-    "introduced": "18.2",
-    "minimum": "6.0",
-    "status": "implemented",
-    "facts": "facts/UIKit/UIWritingToolsCoordinatorTextAnimation18.md",
-    "effect": "the name of the case, as the header spells it: Anticipate, Remove, Insert",
-    "source": "UIKit/UIWritingToolsCoordinatorTextAnimation18.m; the SDK 26.2 header's three cases, at lines 431-447 - the release's own spelling of each name is NOT read, because no release carrying the function is held on this machine and no host framework has it; said again in the facts file"
-  },
-  {
-    "api": "UIApplicationOpenDefaultApplicationsSettingsURLString",
-    "kind": "constant",
-    "introduced": "18.3",
-    "minimum": "6.0",
-    "status": "absent",
-    "reason": "no release held on this machine exports the symbol, and a constant's value is never taken from a header or from a host framework, so there is no value to carry",
-    "effect": "the symbol is not there: a weak reference to it is NULL",
-    "source": "the held release ladder of this machine, read symbol by symbol with tools/corpus/cache-value.lua: the newest cache held is iOS 18.0 and this constant arrived later"
+   "api": "UIWritingToolsCoordinatorTextAnimationDebugDescription()",
+   "kind": "function",
+   "introduced": "18.2",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/UIWritingToolsCoordinatorTextAnimation18.md",
+   "effect": "the name of the case, as the header spells it: Anticipate, Remove, Insert",
+   "source": "UIKit/UIWritingToolsCoordinatorTextAnimation18.m; the SDK 26.2 header's three cases, at lines 431-447 - the release's own spelling of each name is NOT read, because no release carrying the function is held on this machine and no host framework has it; said again in the facts file"
   },
   {
    "api": "-[UITextFieldDelegate textField:insertInputSuggestion:]",
@@ -822,16 +772,6 @@
    "source": "SDK 26.5, Mac Catalyst, UIKit"
   },
   {
-    "api": "UIActionNewFromPasteboard",
-    "kind": "constant",
-    "introduced": "26.0",
-    "minimum": "6.0",
-    "status": "absent",
-    "reason": "no release held on this machine exports the symbol, and a constant's value is never taken from a header or from a host framework, so there is no value to carry",
-    "effect": "the symbol is not there: a weak reference to it is NULL",
-    "source": "the held release ladder of this machine, read symbol by symbol with tools/corpus/cache-value.lua: the newest cache held is iOS 18.0 and this constant arrived later"
-  },
-  {
    "api": "UIBackgroundExtensionView",
    "kind": "class",
    "introduced": "26.0",
@@ -1002,26 +942,6 @@
    "source": "SDK 26.5, Mac Catalyst, UIKit"
   },
   {
-    "api": "UIDocumentDidMoveToWritableLocationNotification",
-    "kind": "constant",
-    "introduced": "26.0",
-    "minimum": "6.0",
-    "status": "absent",
-    "reason": "no release held on this machine exports the symbol, and a constant's value is never taken from a header or from a host framework, so there is no value to carry",
-    "effect": "the symbol is not there: a weak reference to it is NULL",
-    "source": "the held release ladder of this machine, read symbol by symbol with tools/corpus/cache-value.lua: the newest cache held is iOS 18.0 and this constant arrived later"
-  },
-  {
-    "api": "UIDocumentDidMoveToWritableLocationOldURLKey",
-    "kind": "constant",
-    "introduced": "26.0",
-    "minimum": "6.0",
-    "status": "absent",
-    "reason": "no release held on this machine exports the symbol, and a constant's value is never taken from a header or from a host framework, so there is no value to carry",
-    "effect": "the symbol is not there: a weak reference to it is NULL",
-    "source": "the held release ladder of this machine, read symbol by symbol with tools/corpus/cache-value.lua: the newest cache held is iOS 18.0 and this constant arrived later"
-  },
-  {
    "api": "UIGlassContainerEffect",
    "kind": "class",
    "introduced": "26.0",
@@ -1060,26 +980,6 @@
    "reason": "the class arrived in iOS 26, and nothing in iOS 6 does its work or stands in for it",
    "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
    "source": "SDK 26.5, Mac Catalyst, UIKit"
-  },
-  {
-    "api": "UIMenuFindPanel",
-    "kind": "constant",
-    "introduced": "26.0",
-    "minimum": "6.0",
-    "status": "absent",
-    "reason": "no release held on this machine exports the symbol, and a constant's value is never taken from a header or from a host framework, so there is no value to carry",
-    "effect": "the symbol is not there: a weak reference to it is NULL",
-    "source": "the held release ladder of this machine, read symbol by symbol with tools/corpus/cache-value.lua: the newest cache held is iOS 18.0 and this constant arrived later"
-  },
-  {
-    "api": "UIMenuNewItem",
-    "kind": "constant",
-    "introduced": "26.0",
-    "minimum": "6.0",
-    "status": "absent",
-    "reason": "no release held on this machine exports the symbol, and a constant's value is never taken from a header or from a host framework, so there is no value to carry",
-    "effect": "the symbol is not there: a weak reference to it is NULL",
-    "source": "the held release ladder of this machine, read symbol by symbol with tools/corpus/cache-value.lua: the newest cache held is iOS 18.0 and this constant arrived later"
   },
   {
    "api": "UIMenuSystemFindElementGroupConfiguration",
@@ -1630,16 +1530,6 @@
    "reason": "neither iOS 6 nor the backports give UIViewPropertyAnimator a property like it: it arrived in iOS 26",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
    "source": "SDK 26.5, Mac Catalyst, UIKit"
-  },
-  {
-    "api": "UIWindowSceneSessionRoleAssistiveAccessApplication",
-    "kind": "constant",
-    "introduced": "26.0",
-    "minimum": "6.0",
-    "status": "absent",
-    "reason": "no release held on this machine exports the symbol, and a constant's value is never taken from a header or from a host framework, so there is no value to carry",
-    "effect": "the symbol is not there: a weak reference to it is NULL",
-    "source": "the held release ladder of this machine, read symbol by symbol with tools/corpus/cache-value.lua: the newest cache held is iOS 18.0 and this constant arrived later"
   },
   {
    "api": "+[UIColorEffect effectWithColor:]",

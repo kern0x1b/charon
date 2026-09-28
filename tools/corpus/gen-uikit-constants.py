@@ -12,7 +12,16 @@ appear in, measured rather than read from a header.
 
 A constant another registry file already names is not written again: two files naming one symbol is
 an error the build refuses (`registry()`: "is named by both ... and ..."), and `UIKitExportedConstants-<release>.m`
-carries those on main. The exclusion is read from that registry, so it cannot come back unnoticed.
+carries those on main. The exclusion is read from those objects, and the names this file does own
+come back out of the framework's other registry files, so the two cannot both carry one symbol.
+
+The table's `c-type` column is **the node's own `qualType` as clang printed it**, not the header's
+spelling and not a re-derivation of it. That is deliberate: the build compares types the way clang
+does, and the nullability is part of that comparison. `NSAttributedStringKey const _Nonnull` and
+`NSAttributedStringKey const` are the same type to a reader and *not* the same type to a redefinition
+check - dropping the annotation, as a cleaner-looking spelling does, turns every `_Nonnull`
+declaration in the SDK into "redefinition ... with a different type" and the file stops compiling.
+Only the `API_*` attribute macros come off, because they are not part of the type.
 """
 import collections
 import csv
@@ -29,6 +38,7 @@ OUT = os.path.join(ROOT, "packages", "a", "apple-backports", "UIKit")
 FACTS = os.path.join(ROOT, "packages", "a", "apple-backports", "facts", "UIKit")
 REGISTRY = os.path.join(ROOT, "packages", "a", "apple-backports", "registry", "UIKit")
 OWNED = "uikit-constants.json"
+FRAMEWORK = "UIKit"
 
 ATTRS = ("API_AVAILABLE", "API_UNAVAILABLE", "API_DEPRECATED", "NS_SWIFT_NAME",
          "NS_REFINED_FOR_SWIFT", "NS_SWIFT_UNAVAILABLE", "UIKIT_AVAILABLE", "NS_CLASS_AVAILABLE",
@@ -71,9 +81,13 @@ void UIGuidedAccessConfigureAccessibilityFeatures(UIGuidedAccessAccessibilityFea
 
 
 def clean_type(text):
+    """The declaration's type, with the attribute macros off and nothing else.
+
+    The nullability stays: it is part of the type clang compares a redefinition against, and
+    dropping it makes every _Nonnull declaration in the SDK a redefinition of ours.
+    """
     for attr in ATTRS:
         text = re.sub(r"\b%s\b(\([^)]*\))?" % attr, " ", text)
-    text = re.sub(r"\b_Nullable\b|\b_Nonnull\b|\b__kindof\b|\b_null_unspecified\b", " ", text)
     return " ".join(text.split())
 
 
@@ -222,9 +236,34 @@ def main():
             out.write("| constant | the value |\n| --- | --- |\n")
             for item in items:
                 out.write("| `%s` | `%s` |\n" % (item["api"], item["value"]))
+    owned = {entry["api"] for entry in entries}
     with open(os.path.join(REGISTRY, OWNED), "w", encoding="utf-8") as out:
         json.dump({"framework": "UIKit", "entries": entries}, out, indent=1)
         out.write("\n")
+    # The generated file is the registry of the objects it writes, so a name it owns comes out of the
+    # framework's other registry files: two files naming one symbol is an error the build refuses
+    # (registry(): "is named by both ... and ..."), and this band's own earlier entries sat in
+    # ios15-16.json and UIKit.json before the objects were generated.
+    base = os.path.dirname(REGISTRY)
+    for path in sorted(glob.glob(os.path.join(base, "%s.json" % FRAMEWORK))
+                       + glob.glob(os.path.join(REGISTRY, "*.json"))):
+        if os.path.basename(path) == OWNED:
+            continue
+        with open(path, encoding="utf-8") as handle:
+            data = json.load(handle)
+        held = data if isinstance(data, list) else data["entries"]
+        kept = [entry for entry in held if entry["api"] not in owned]
+        if len(kept) == len(held):
+            continue
+        if isinstance(data, list):
+            data = kept
+        else:
+            data["entries"] = kept
+        with open(path, "w", encoding="utf-8") as handle:
+            json.dump(data, handle, indent=1)
+            handle.write("\n")
+        print("  %-22s %d entries of the generated file's came out" % (os.path.basename(path),
+                                                                       len(held) - len(kept)))
     for stale in sorted(glob.glob(os.path.join(OUT, "UIKitConstants*.m"))):
         if os.path.basename(stale) not in written_files:
             os.unlink(stale)
