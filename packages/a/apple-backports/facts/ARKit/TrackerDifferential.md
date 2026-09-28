@@ -293,3 +293,35 @@ the frame's path again, on a second measured ground.
 The depth relation's own defect is now the single open thing, and it is the thing OpenCV's
 `solvePnPRansac` replaces rather than repairs: a monocular range from a single frame's drift is not a
 range, and a baseline across frames is what it needs, and there is none.
+
+## The depth is triangulation now, and it reports no range because there is no baseline
+
+The depth is no longer the first-order drift formula. A point matched across two frames is on the ray
+out of the camera that saw it first, through the pixel it was seen at, and on the ray out of the camera
+now, through the pixel it is at; the distance along the first ray at which those two rays meet is its
+depth. That is the triangulation a two-frame stereo pair does, in `CharonTriangulatedDepth`, and it
+takes the pose delta's own translation as the baseline - so the translation is in the model rather than
+missing from it, which is what the drift formula was: it attributed the whole drift to the rotation and
+had no baseline at all.
+
+Measured, and the measurement is the point:
+
+```
+landmark world      0.0000 0.0000 0.0000
+landmark projected  0.00 0.00  (BEHIND)
+landmark camera     0.0000 0.0000 0.0000   depth 0.0000
+```
+
+Every landmark's depth is zero, and it is zero *correctly*: a camera that turns without moving has no
+parallax between two views of a point, and triangulation of a pure rotation correctly yields no range.
+The old formula produced a number in that situation - that is what "depth 0.1352" was - and the number
+was wrong, and a solver built on it fit a world that was not there.
+
+So the depth and the translation turn out to be one missing thing seen from two sides. With the model
+correct and the baseline absent, the Gauss-Newton step is **neutral** rather than harmful: 78.126 degrees
+of mean rotation error with it and 78.126 without, 0.666 m, 5438 points, sixteen planes. It is left in
+the frame's path, because a correct model fed nothing is a step of zero and the step is what will
+consume the baseline once there is one.
+
+What unblocks it is a baseline, and a baseline is a translation the pose has to carry. That is the whole
+of what is left, and it is what `solvePnPRansac` produces and what nothing in this tree yet does.

@@ -322,6 +322,7 @@ static BOOL CharonSolveSix(float A[6][6], float b[6], float out[6])
     CGFloat _ambientColorTemperature;
     BOOL _tracking;
     BOOL _havePose;
+    simd_float4x4 _previousPose;   ///< the pose the previous frame's observations were made with
 
     // The points of the frame being processed, and the frame before it.
     CharonARPoint *_points;      ///< the matches of the current frame
@@ -694,12 +695,14 @@ static simd_float3x3 CharonRecordedIntrinsics = { 0 };
     // projection was not what was wrong: the landmark depth is, which is the first of the three
     // candidates in the facts and is the one this points at.
     BOOL matched = [self matchFeaturesTurningBy:turn];
-    (void)matched;
+    if (matched)
+        [self refinePose];
     [self placeUnmatchedPoints];
     [self rememberFrame];
     [self detectPlanes];
 
     _lastRotation = deviceRotation;
+    _previousPose = _cameraTransform;
     _deviceTransform = _cameraTransform;
     _tracking = matched && _pointCount > 8;
 
@@ -943,12 +946,19 @@ static uint32_t CharonPatchCost(const uint8_t *luma, NSUInteger width, NSUIntege
         // median of those over the frame is the scene's depth, and every point takes it: a frame
         // looks at one scene, so its points are all at one distance to the accuracy a single frame
         // can give, and the median is the one that is not a mis-correspondence.
-        simd_float2 driftPixels = simd_make_float2(
-                (now->image.x - was->image.x) * (float)_lumaWidth,
-                (now->image.y - was->image.y) * (float)_lumaHeight);
-        simd_float3 turnAxis = simd_make_float3(turn.vector.x, turn.vector.y, turn.vector.z);
-        now->depth = [self depthForDrift:driftPixels along:turnAxis
-                                    focal:[self focalLengthInPixels]];
+        // Two views of the point: the image it was last matched at, and the image it is at now,
+        // with the pose the camera held for the first of them and the pose it holds now. The range is
+        // where those two rays meet, which is triangulation and not a first-order guess about drift.
+        simd_float2 wasPixel = simd_make_float2(was->image.x * (float)_lumaWidth,
+                                                was->image.y * (float)_lumaHeight);
+        simd_float2 nowPixel = simd_make_float2(now->image.x * (float)_lumaWidth,
+                                                now->image.y * (float)_lumaHeight);
+        simd_float3x3 intrinsics = [CharonARTracker cameraIntrinsicsForResolution:_resolution];
+        simd_float4x4 wasPose = _previousPose;
+        if (simd_length(_cameraTransform.columns[3] - wasPose.columns[3]) < 1e-9f)
+            wasPose = simd_mul(CharonMatrixFromQuaternion(simd_normalize(simd_conjugate(turn))),
+                               _cameraTransform);
+        now->depth = CharonTriangulatedDepth(intrinsics, wasPixel, nowPixel, wasPose, _cameraTransform);
         if (now->hits >= 3)
             [self placePointInWorld:now];
 #ifdef CHARON_TRACKER_TRACE
@@ -1131,6 +1141,40 @@ static simd_float4x4 CharonNudgedPose(simd_float4x4 pose, int parameter, float e
 /// camera's own focal length is the constant that turns that drift into a depth. So the drift of a
 /// point that is known to be the same point, divided by the turn that moved it, gives the distance -
 /// no assumed size for the feature, and no constant fitted to a scene.
+/// A landmark's range from two views of it and the pose between them.
+///
+/// This is the triangulation a two-frame stereo pair does, and it is what the drift formula was
+/// reaching for and could not reach. A point seen at `u0` in one frame and `u1` in the next, with the
+/// camera's pose changed by `from` -> `to` between them, is on the ray out of the first camera
+/// through `u0` and on the ray out of the second camera through `u1`; the distance along the first
+/// ray at which the two rays meet is the point's depth.
+///
+/// The first-order form of it is `depth = f * (baseline / disparity)`, with the disparity in pixels
+/// and the baseline the distance the camera moved, and it is exact for a point's own ray pair - which
+/// is what the drift formula was *not*: it attributed the whole drift to the rotation and had no
+/// baseline at all, because the translation was never integrated. Here the baseline is the pose
+/// delta's own translation, so the translation is in the model rather than missing from it.
+static float CharonTriangulatedDepth(simd_float3x3 intrinsics, simd_float2 u0, simd_float2 u1,
+                                     simd_float4x4 from, simd_float4x4 to)
+{
+    // the two rays, in the world, through the two observations
+    simd_float3 d0 = CharonRayDirection(intrinsics, from, u0);
+    simd_float3 d1 = CharonRayDirection(intrinsics, to, u1);
+    simd_float3 o0 = { from.columns[3][0], from.columns[3][1], from.columns[3][2] };
+    simd_float3 o1 = { to.columns[3][0], to.columns[3][1], to.columns[3][2] };
+
+    // the plane through the first origin and the two directions; the point is on it, and its distance
+    // along the first ray follows from where the second ray crosses that plane
+    simd_float3 n = simd_normalize(simd_cross(d0, d1));
+    float denominator = simd_dot(n, d1);
+    if (fabsf(denominator) < 1e-6f)
+        return 0;   // the two rays are coplanar with the baseline: no parallax, no range
+    float along = simd_dot(n, o1 - o0) / denominator;
+    if (along <= 0)
+        return 0;
+    return along;
+}
+
 - (float)depthForDrift:(simd_float2)driftPixels
                  along:(simd_float3)turnAxis
                 focal:(float)focalLength

@@ -55,6 +55,18 @@ typedef struct {
     simd_float3 position;
 } CharonARCloudPoint;
 
+/// A pixel and a camera's intrinsics are the direction a ray leaves the camera in.
+static inline simd_float3 CharonRayDirection(simd_float3x3 intrinsics, simd_float4x4 transform, simd_float2 point)
+{
+    float fx = intrinsics.columns[0][0], cx = intrinsics.columns[2][0];
+    float fy = intrinsics.columns[1][1], cy = intrinsics.columns[2][1];
+    if (fx == 0 || fy == 0)
+        return simd_make_float3(0, 0, -1);
+    simd_float3 inCamera = simd_make_float3((point.x - cx) / fx, (point.y - cy) / fy, -1);
+    simd_float4 product = simd_mul(transform, (simd_float4){ inCamera.x, inCamera.y, inCamera.z, 0 });
+    return simd_normalize(simd_make_float3(product.x, product.y, product.z));
+}
+
 @protocol CharonARTrackerDelegate;
 
 /// The tracker. One per session; a session owns it and asks it for a pose.

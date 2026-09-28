@@ -127,18 +127,6 @@ static simd_float3 CharonUnprojectPoint(simd_float3x3 intrinsics, simd_float4x4 
                             planeOrigin.z + direction.z * along);
 }
 
-/// A pixel and a camera's intrinsics are the direction a ray leaves the camera in.
-static simd_float3 CharonRayDirection(simd_float3x3 intrinsics, simd_float4x4 transform, CGPoint point)
-{
-    float fx = intrinsics.columns[0][0], cx = intrinsics.columns[2][0];
-    float fy = intrinsics.columns[1][1], cy = intrinsics.columns[2][1];
-    if (fx == 0 || fy == 0)
-        return simd_make_float3(0, 0, -1);
-    simd_float3 inCamera = simd_make_float3(((float)point.x - cx) / fx, ((float)point.y - cy) / fy, -1);
-    simd_float4 product = simd_mul(transform, (simd_float4){ inCamera.x, inCamera.y, inCamera.z, 0 });
-    return simd_normalize(simd_make_float3(product.x, product.y, product.z));
-}
-
 static simd_float3 CharonRayOrigin(simd_float4x4 transform)
 {
     return simd_make_float3(transform.columns[3][0], transform.columns[3][1], transform.columns[3][2]);
@@ -276,7 +264,7 @@ static NSArray<ARHitTestResult *> *CharonHitTest(CharonARTracker *tracker, simd_
                                   alignment:(ARRaycastTargetAlignment)alignment
 {
     return [[ARRaycastQuery alloc] initWithOrigin:CharonRayOrigin(_transform)
-                                        direction:CharonRayDirection(_intrinsics, _transform, point)
+                                        direction:CharonRayDirection(_intrinsics, _transform, simd_make_float2((float)point.x, (float)point.y))
                                  allowingTarget:target
                                         alignment:alignment];
 }
@@ -489,7 +477,7 @@ static NSArray<ARHitTestResult *> *CharonHitTest(CharonARTracker *tracker, simd_
                                   alignment:(ARRaycastTargetAlignment)alignment
 {
     return [[ARRaycastQuery alloc] initWithOrigin:CharonRayOrigin(_camera.transform)
-                                        direction:CharonRayDirection(_camera.intrinsics, _camera.transform, point)
+                                        direction:CharonRayDirection(_camera.intrinsics, _camera.transform, simd_make_float2((float)point.x, (float)point.y))
                                  allowingTarget:target
                                         alignment:alignment];
 }
