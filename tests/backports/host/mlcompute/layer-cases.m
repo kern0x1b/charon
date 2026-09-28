@@ -277,8 +277,10 @@ void charon_mlcompute_layer_cases(void)
         row(@"layer norm refused, shape", wrongNormalized.normalizedShape);
         row(@"layer norm refused, beta", wrongNormalized.beta ? @"kept" : @"no");
 
-        // The multihead attention factory, which had no case: the host answers nil for every arrangement
-        // tried, and the port now does too.
+        // The multihead attention factory, which had no case. The port answers nil for every arrangement
+        // tried, as the framework does; the host cannot be asked, because MLCompute 26's macOS header
+        // removes the class from the interface and a Catalyst build cannot name it, so this one case is
+        // asked of the port alone and says what the framework's own answer was measured to be.
         MLCMultiheadAttentionDescriptor *attentionDescriptor = [MLCMultiheadAttentionDescriptor descriptorWithModelDimension:4 headCount:2];
         MLCTensor *attentionWeights = [MLCTensor tensorWithDescriptor:shape_(@[ @4, @4 ]) fillWithData:@(1)];
         MLCTensor *attentionBiases = [MLCTensor tensorWithDescriptor:shape_(@[ @4 ]) fillWithData:@(1)];

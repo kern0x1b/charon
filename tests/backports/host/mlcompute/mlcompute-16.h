@@ -23,3 +23,16 @@ static id CharonNewOf(NSString *name)
 {
     return CharonNew(NSClassFromString(name));
 }
+
+// The multihead attention layer, which MLCompute 26's macOS header marks gone past macOS 14 and a Mac
+// Catalyst build therefore cannot name at all - the class is removed from the interface, not merely
+// marked unavailable, so no pragma brings it back. The port carries it: the iOS header declares it for
+// iOS 14, where it is not deprecated, and the corpus of SDK 26.2 names it. Declared here, as a category
+// with no implementation, so that the one case for its factory is asked of the port - which is all that
+// can be asked of it, and the reason the case does not compare two runs.
+@interface MLCMultiheadAttentionLayer (CharonSixteen)
++ (instancetype)layerWithDescriptor:(MLCMultiheadAttentionDescriptor *)descriptor
+                             weights:(NSArray<MLCTensor *> *)weights
+                              biases:(NSArray<MLCTensor *> *)biases
+                      attentionBiases:(NSArray<MLCTensor *> *)attentionBiases;
+@end
