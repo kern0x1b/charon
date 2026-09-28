@@ -11,22 +11,40 @@ on any of them and none of this is a translation of a unit that exists. What the
 the value types: a set of doubles with documented defaults, one initializer with a stated precondition,
 and one gain law.
 
-## The values are the header's
+## The values are the header's, and each is the number the header states
 
-- `PHASENumericPair.first` and `.second` — *"The default value is 0.0"*, for both, which is what
-  `-initWithFirstValue:secondValue:` and the accessors hold.
-- `PHASEDistanceModelFadeOutParameters.cullDistance` — one double, given to the initializer, read
-  back.
-- `PHASEGeometricSpreadingDistanceModelParameters.rolloffFactor` — **the header names no default**,
-  so none is invented: the ivar's own zero stands until a caller sets it, and the gain law below says
-  what a zero exponent means rather than leaving it ambiguous.
-- `PHASEConeDirectivityModelSubbandParameters.innerAngle` and `.outerAngle` — *"The default value for
-  each angle is 360.0"*, both of them, which is what `-init` leaves behind.
-- `setInnerAngle:outerAngle:` — the header's one precondition, *"outerAngle must be >= innerAngle"*,
-  is enforced: a call that breaks it leaves the pair unchanged, because an inner angle outside the
-  outer one describes no cone.
-- `PHASECardioidDirectivityModelSubbandParameters` — `frequency`, `pattern`, `sharpness`, each
-  defaulting to the header's 0.0.
+An earlier version of this file claimed every default was the header's and five of them were not. The
+header states seven, byte-identical in the build SDK (16.4) and in 26.2, and the port now carries all
+seven:
+
+| value | default | where the header says it |
+| --- | --- | --- |
+| `PHASECardioidDirectivityModelSubbandParameters.frequency` | **1000.0** | `PHASEDirectivityModel.h:31` — "clamped to the range [20.0, 20000.0]" |
+| `…Cardioid….pattern` | 0.0 | `:39` — "0.0 is omnidirectional. 0.5 is cardioid. 1.0 is dipole" |
+| `…Cardioid….sharpness` | **1.0** | `:47` — "clamped to [1.0, DBL_MAX]" |
+| `PHASEConeDirectivityModelSubbandParameters.frequency` | **1000.0** | `:81` |
+| `…Cone….innerAngle` | 360.0 | `:89` |
+| `…Cone….outerAngle` | 360.0 | `:97` |
+| `…Cone….outerGain` | **1.0** | `:105` — "clamped to the range [0.0, 1.0]" |
+| `PHASEGeometricSpreadingDistanceModelParameters.rolloffFactor` | **1.0** | `PHASEDistanceModel.h:87` — and the header says what each value *means*: "0.0 is no effect. 0.5 is half the effect. 1.0 is normal. 2.0 is double the effect" |
+| `PHASENumericPair.first` and `.second` | 0.0 | `PHASEEnvelope.h:41,48` — "The default value is 0.0", for both |
+
+Two consequences worth stating, because the first version got both wrong:
+
+- A subband `frequency` default of 0.0 would be a value the header says is **outside** the property's
+  own documented range `[20.0, 20000.0]`. That is the "quietly different" outcome, on two properties,
+  and it is why a default is worth carrying from the header rather than from a zeroed ivar.
+- The rolloff factor's default **is** named (1.0), and the earlier claim that none was named — and so
+  that none should be invented — was the inverse of the header. The port now answers 1.0 for a fresh
+  object, and a *set* value is kept, which is what the flag in the getter distinguishes.
+
+`PHASEDistanceModelFadeOutParameters.cullDistance` and the three `subbandParameters`/`fadeOutParameters`
+properties carry **no** documented default in the header; those are the port's own zeroed state, and
+they are recorded as such rather than as the header's answer.
+
+`setInnerAngle:outerAngle:` — the header's one precondition, *"outerAngle must be >= innerAngle"*,
+is enforced: a call that breaks it leaves the pair unchanged, because an inner angle outside the outer
+one describes no cone.
 
 ## The one gain law
 

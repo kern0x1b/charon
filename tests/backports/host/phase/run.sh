@@ -1,19 +1,48 @@
 #!/bin/sh
-# values.sh — the host oracle for PHASE's spatial-audio value types.
+# values.sh — the host oracle for PHASE's spatial-audio value types, with the port's own classes in
+# the same binary.
 #
-# PHASE's own value types - the directivity and distance-model parameter classes and the pair of
-# numbers - are the attenuation maths, and they are the classes a host differential can settle: the
-# host's own PHASE.framework is the same framework, so each value it holds is an answer the port's
-# can be held to. A class the host does not carry is reported as such and not skipped quietly, and
-# the run is a failure if the host has no PHASE at all, so nothing passes vacuously.
+# Two halves, and the second is the one that can fail:
+#
+#   the host half asks the host's own PHASE.framework for the documented defaults of a *fresh* object
+#   of each class - not a value set and read back, which was never a measurement of a default;
+#
+#   the port half compiles the port's own PHASEValueTypes15.m with its class names renamed, so
+#   charon_host_PHASECardioidDirectivityModelSubbandParameters sits beside Apple's in one binary, and
+#   holds a fresh port object to the same eight numbers the host's fresh object answers. A default the
+#   port gets wrong is then a difference, not a comment.
+#
+# A class the host does not carry is reported and skipped; the run fails outright if the host has no
+# PHASE at all, so nothing passes vacuously.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+root=${PHASE_ROOT:-$(cd "$here/../../../.." && pwd)}
+AVFAUDIO="$root/packages/a/apple-backports/AVFAudio"
 build=${PHASE_VALUES_BUILD:-${TMPDIR:-/tmp}/charon-phase-values}
 rm -rf "$build"
 mkdir -p "$build"
-xcrun clang -fobjc-arc -Wall -Wno-deprecated-declarations \
-    "$here/values.m" -framework Foundation -framework PHASE -o "$build/values" 2> "$build/build.err" || {
-        echo "FAIL building"; head -8 "$build/build.err"; exit 1; }
+
+# Every class the port's PHASE source defines, renamed. The list is written out rather than derived: a
+# derived one spans the whole folder and renames classes this binary does not compile.
+renames=""
+for name in PHASENumericPair PHASEDistanceModelParameters PHASEDistanceModelFadeOutParameters \
+             PHASEGeometricSpreadingDistanceModelParameters PHASEDirectivityModelParameters \
+             PHASECardioidDirectivityModelSubbandParameters PHASEConeDirectivityModelSubbandParameters \
+             PHASECardioidDirectivityModelParameters PHASEConeDirectivityModelParameters
+do
+    renames="$renames -D$name=charon_host_$name"
+done
+
+# shellcheck disable=SC2086
+xcrun clang -fobjc-arc -w $renames -I"$AVFAUDIO" -I"$root/modules" \
+    -c "$AVFAUDIO/PHASEValueTypes15.m" -o "$build/port.o" 2> "$build/port.err" || {
+        echo "FAIL compiling the port's PHASE value types"; head -6 "$build/port.err"; exit 1; }
+
+# shellcheck disable=SC2086
+xcrun clang -fobjc-arc -Wall -Wno-deprecated-declarations "$here/values.m" "$build/port.o" \
+    -framework Foundation -framework PHASE -o "$build/values" 2> "$build/link.err" || {
+        echo "FAIL linking"; head -8 "$build/link.err"; exit 1; }
+
 "$build/values" > "$build/log" 2>&1 && result=0 || result=$?
 grep -v '^ok ' "$build/log" || true
 echo "log=$build/log"

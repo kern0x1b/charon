@@ -79,26 +79,32 @@
 @end
 
 @implementation PHASEGeometricSpreadingDistanceModelParameters {
-    // No initialiser is written: the class derives from PHASEDistanceModelParameters, whose -init and
-    // +new the header marks NS_UNAVAILABLE, and clang inherits that unavailability into the
-    // subclass, so writing one here is a hard error rather than an override.
-    //
-    // The header also names no default for the rolloff factor - unlike the cone subband's two
-    // angles, which it says are 360.0 each - so none is invented here: the ivar's own zero stands
-    // until a caller sets it. facts/AVFAudio/PHASEValueTypes.md records that, and what the gain
-    // law does with a zero exponent, so a reader is not left guessing whether it means "no
-    // attenuation" or "unset".
     double _charon_rolloffFactor;
+    BOOL _charon_rolloffSet;
 }
 
+// No initialiser is written: the class derives from PHASEDistanceModelParameters, whose -init and
+// +new the header marks NS_UNAVAILABLE, and clang inherits that unavailability into the subclass, so
+// writing one here is a hard error rather than an override.
+//
+// The default is therefore set on first read rather than in an -init that may not be written. It is
+// the header's own (PHASEDistanceModel.h:87, "Default value is 1.0"), not a value this port chose -
+// and the header goes on to say what each value means, which is the point of carrying it at all:
+// "0.0 is no effect. 0.5 is half the effect. 1.0 is normal. 2.0 is double the effect." A property
+// left at its ivar zero would mean "no effect", which the header names as a *setting* and not as
+// what a fresh parameter object holds.
 - (double)rolloffFactor
 {
-    return _charon_rolloffFactor;
+    // A fresh object answers the header's default; a set one answers what was set. The flag is what
+    // tells them apart, and not a magic value - the same discipline the C3 review finding settled
+    // for the audio-unit parameters, where -1 is a legal value of two of the ten.
+    return _charon_rolloffSet ? _charon_rolloffFactor : 1.0;
 }
 
 - (void)setRolloffFactor:(double)rolloffFactor
 {
     _charon_rolloffFactor = rolloffFactor;
+    _charon_rolloffSet = YES;
 }
 
 // The law the rolloff factor is the exponent of. This is the whole of what a geometric spreading
@@ -147,10 +153,14 @@
 - (instancetype)init
 {
     if ((self = [super init])) {
-        // The header's own defaults: 0.0 for each of the three.
-        _charon_frequency = 0.0;
+        // The header's own defaults, each with the line that states it: frequency 1000.0
+        // (PHASEDirectivityModel.h:31, "clamped to the range [20.0, 20000.0]"), pattern 0.0 (:39,
+        // "0.0 is omnidirectional. 0.5 is cardioid. 1.0 is dipole") and sharpness 1.0 (:47,
+        // "clamped to [1.0, DBL_MAX]"). A default of 0.0 for the frequency would be a value the
+        // header says is outside the property's own documented range.
+        _charon_frequency = 1000.0;
         _charon_pattern = 0.0;
-        _charon_sharpness = 0.0;
+        _charon_sharpness = 1.0;
     }
     return self;
 }
@@ -197,11 +207,13 @@
 - (instancetype)init
 {
     if ((self = [super init])) {
-        // "The default value for each angle is 360.0", which the header states for both.
-        _charon_frequency = 0.0;
+        // The header's own defaults, each with the line that states it: frequency 1000.0
+        // (PHASEDirectivityModel.h:81), innerAngle 360.0 (:89), outerAngle 360.0 (:97) and outerGain
+        // 1.0 (:105, "clamped to the range [0.0, 1.0]").
+        _charon_frequency = 1000.0;
         _charon_innerAngle = 360.0;
         _charon_outerAngle = 360.0;
-        _charon_outerGain = 0.0;
+        _charon_outerGain = 1.0;
     }
     return self;
 }

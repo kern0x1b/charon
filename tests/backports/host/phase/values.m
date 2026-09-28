@@ -46,6 +46,75 @@ static BOOL hostHas(Class cls)
     return YES;
 }
 
+// The port's own classes, renamed by run.sh so they sit beside Apple's in this binary.
+@interface charon_host_PHASECardioidDirectivityModelSubbandParameters : NSObject
+- (instancetype)init;
+- (double)frequency;
+- (double)pattern;
+- (double)sharpness;
+@end
+
+@interface charon_host_PHASEConeDirectivityModelSubbandParameters : NSObject
+- (instancetype)init;
+- (double)frequency;
+- (double)innerAngle;
+- (double)outerAngle;
+- (double)outerGain;
+@end
+
+@interface charon_host_PHASEGeometricSpreadingDistanceModelParameters : NSObject
+- (double)rolloffFactor;
+- (void)setRolloffFactor:(double)rolloffFactor;
+@end
+
+@interface charon_host_PHASENumericPair : NSObject
+- (instancetype)initWithFirstValue:(double)first secondValue:(double)second;
+- (double)first;
+- (double)second;
+@end
+
+// A fresh object of each kind, from the port and from the host, and the eight documented numbers
+// compared between them. This is the half that fails when the port's defaults are wrong.
+static void compareDefaults(void)
+{
+    Class portCardioid = NSClassFromString(@"charon_host_PHASECardioidDirectivityModelSubbandParameters");
+    Class portCone = NSClassFromString(@"charon_host_PHASEConeDirectivityModelSubbandParameters");
+    Class hostCardioid = NSClassFromString(@"PHASECardioidDirectivityModelSubbandParameters");
+    Class hostCone = NSClassFromString(@"PHASEConeDirectivityModelSubbandParameters");
+
+    if (portCardioid != Nil && hostCardioid != Nil) {
+        id mine = [[portCardioid alloc] init];
+        id theirs = [[hostCardioid alloc] init];
+        check(@"the port's fresh cardioid subband has the same frequency default",
+              [[mine valueForKey:@"frequency"] doubleValue] == [[theirs valueForKey:@"frequency"] doubleValue]);
+        check(@"the port's fresh cardioid subband has the same pattern default",
+              [[mine valueForKey:@"pattern"] doubleValue] == [[theirs valueForKey:@"pattern"] doubleValue]);
+        check(@"the port's fresh cardioid subband has the same sharpness default",
+              [[mine valueForKey:@"sharpness"] doubleValue] == [[theirs valueForKey:@"sharpness"] doubleValue]);
+        printf("stage cardioid subband defaults: port %g/%g/%g, host %g/%g/%g\n",
+               [[mine valueForKey:@"frequency"] doubleValue], [[mine valueForKey:@"pattern"] doubleValue],
+               [[mine valueForKey:@"sharpness"] doubleValue],
+               [[theirs valueForKey:@"frequency"] doubleValue], [[theirs valueForKey:@"pattern"] doubleValue],
+               [[theirs valueForKey:@"sharpness"] doubleValue]);
+    }
+    if (portCone != Nil && hostCone != Nil) {
+        id mine = [[portCone alloc] init];
+        id theirs = [[hostCone alloc] init];
+        const char *keys[4] = {"frequency", "innerAngle", "outerAngle", "outerGain"};
+        for (int index = 0; index < 4; index++) {
+            NSString *key = @(keys[index]);
+            checkClose([NSString stringWithFormat:@"the port's fresh cone subband has the same %@ default", key],
+                       [[mine valueForKey:key] doubleValue], [[theirs valueForKey:key] doubleValue], 0.0);
+        }
+    }
+    Class portSpreading = NSClassFromString(@"charon_host_PHASEGeometricSpreadingDistanceModelParameters");
+    if (portSpreading != Nil) {
+        id mine = [[portSpreading alloc] init];
+        checkClose(@"the port's fresh geometric spreading object has the same rolloff default",
+                   [[mine valueForKey:@"rolloffFactor"] doubleValue], 1.0, 0.0);
+    }
+}
+
 int main(void)
 {
     @autoreleasepool {
@@ -89,10 +158,12 @@ int main(void)
             [spreading setValue:@(1.0) forKey:@"rolloffFactor"];
             double rolloff = [[spreading valueForKey:@"rolloffFactor"] doubleValue];
             checkClose(@"the host's geometric spreading holds the rolloff factor", rolloff, 1.0, 0.0);
-            // and the law itself, which is what the port computes
-            double distance = 4.0;
-            checkClose(@"geometric spreading is 1/distance at rolloff 1", 1.0 / pow(distance, rolloff),
-                       1.0 / pow(distance, rolloff), 1e-12);
+            // a fresh object, and its default, which is the thing the review found the port wrong
+            // about. The old check 6 was tautological: it compared 1.0/pow(d,rolloff) with
+            // 1.0/pow(d,rolloff), so it could not fail and taught nothing.
+            id fresh = [[spreadingClass alloc] init];
+            checkClose(@"a fresh geometric spreading object holds the header's default rolloff factor",
+                       [[fresh valueForKey:@"rolloffFactor"] doubleValue], 1.0, 0.0);
         } else {
             printf("skip PHASEGeometricSpreadingDistanceModelParameters: the host's PHASE does not carry it\n");
         }
@@ -103,15 +174,34 @@ int main(void)
         Class coneSubband = NSClassFromString(@"PHASEConeDirectivityModelSubbandParameters");
         if (cardioidSubband != Nil) {
             printf("stage the host's cardioid subband class: %s\n", NSStringFromClass(cardioidSubband).UTF8String);
+            // A fresh cardioid subband holds three documented defaults: 1000.0, 0.0 and 1.0.
+            id fresh = [[cardioidSubband alloc] init];
+            checkClose(@"a fresh cardioid subband's frequency is the header's 1000.0",
+                       [[fresh valueForKey:@"frequency"] doubleValue], 1000.0, 0.0);
+            checkClose(@"a fresh cardioid subband's pattern is the header's 0.0",
+                       [[fresh valueForKey:@"pattern"] doubleValue], 0.0, 0.0);
+            checkClose(@"a fresh cardioid subband's sharpness is the header's 1.0",
+                       [[fresh valueForKey:@"sharpness"] doubleValue], 1.0, 0.0);
         } else {
             printf("skip PHASECardioidDirectivityModelSubbandParameters: the host's PHASE does not carry it\n");
         }
         if (coneSubband != Nil) {
             printf("stage the host's cone subband class: %s\n", NSStringFromClass(coneSubband).UTF8String);
+            // and four: 1000.0, 360.0, 360.0 and 1.0
+            id fresh = [[coneSubband alloc] init];
+            checkClose(@"a fresh cone subband's frequency is the header's 1000.0",
+                       [[fresh valueForKey:@"frequency"] doubleValue], 1000.0, 0.0);
+            checkClose(@"a fresh cone subband's inner angle is the header's 360.0",
+                       [[fresh valueForKey:@"innerAngle"] doubleValue], 360.0, 0.0);
+            checkClose(@"a fresh cone subband's outer angle is the header's 360.0",
+                       [[fresh valueForKey:@"outerAngle"] doubleValue], 360.0, 0.0);
+            checkClose(@"a fresh cone subband's outer gain is the header's 1.0",
+                       [[fresh valueForKey:@"outerGain"] doubleValue], 1.0, 0.0);
         } else {
             printf("skip PHASEConeDirectivityModelSubbandParameters: the host's PHASE does not carry it\n");
         }
 
+        compareDefaults();
         printf("checks=%d failures=%d\n", checks, failures);
     }
     return failures == 0 ? 0 : 1;

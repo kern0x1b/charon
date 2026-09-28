@@ -8,7 +8,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/PHASE/PHASEValueTypes.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEEnvelope.h, PHASEDirectivityModel.h and PHASEDistanceModel.h; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value below is the header's own documented default, with the host's PHASE as the oracle in tests/backports/host/phase/"
+      "source": "SDK 16.4 and 26.2 PHASE.framework, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own, compared against a fresh object of the host's own PHASE by tests/backports/host/phase/run.sh, which also holds the port's own renamed classes to the same numbers; the documented default for this class is at PHASEDirectivityModel.h:134 (subbandParameters, no documented default)"
     },
     {
       "api": "-[PHASECardioidDirectivityModelParameters subbandParameters]",
@@ -17,7 +17,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/PHASE/PHASEValueTypes.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEEnvelope.h, PHASEDirectivityModel.h and PHASEDistanceModel.h; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value below is the header's own documented default, with the host's PHASE as the oracle in tests/backports/host/phase/"
+      "source": "SDK 16.4 and 26.2 PHASE.framework, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own, compared against a fresh object of the host's own PHASE by tests/backports/host/phase/run.sh, which also holds the port's own renamed classes to the same numbers; the documented default for this class is at PHASEDirectivityModel.h:134 (subbandParameters, no documented default)"
     },
     {
       "api": "-[PHASECardioidDirectivityModelSubbandParameters frequency]",
@@ -26,7 +26,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/PHASE/PHASEValueTypes.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEEnvelope.h, PHASEDirectivityModel.h and PHASEDistanceModel.h; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value below is the header's own documented default, with the host's PHASE as the oracle in tests/backports/host/phase/"
+      "source": "SDK 16.4 and 26.2 PHASE.framework, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own, compared against a fresh object of the host's own PHASE by tests/backports/host/phase/run.sh, which also holds the port's own renamed classes to the same numbers; the documented default for this class is at PHASEDirectivityModel.h:31,39,47"
     },
     {
       "api": "-[PHASECardioidDirectivityModelSubbandParameters init]",
@@ -35,7 +35,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/PHASE/PHASEValueTypes.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEEnvelope.h, PHASEDirectivityModel.h and PHASEDistanceModel.h; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value below is the header's own documented default, with the host's PHASE as the oracle in tests/backports/host/phase/"
+      "source": "SDK 16.4 and 26.2 PHASE.framework, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own, compared against a fresh object of the host's own PHASE by tests/backports/host/phase/run.sh, which also holds the port's own renamed classes to the same numbers; the documented default for this class is at PHASEDirectivityModel.h:31,39,47"
     },
     {
       "api": "-[PHASECardioidDirectivityModelSubbandParameters pattern]",
@@ -44,7 +44,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/PHASE/PHASEValueTypes.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEEnvelope.h, PHASEDirectivityModel.h and PHASEDistanceModel.h; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value below is the header's own documented default, with the host's PHASE as the oracle in tests/backports/host/phase/"
+      "source": "SDK 16.4 and 26.2 PHASE.framework, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own, compared against a fresh object of the host's own PHASE by tests/backports/host/phase/run.sh, which also holds the port's own renamed classes to the same numbers; the documented default for this class is at PHASEDirectivityModel.h:31,39,47"
     },
     {
       "api": "-[PHASECardioidDirectivityModelSubbandParameters setFrequency]",
@@ -53,7 +53,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/PHASE/PHASEValueTypes.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEEnvelope.h, PHASEDirectivityModel.h and PHASEDistanceModel.h; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value below is the header's own documented default, with the host's PHASE as the oracle in tests/backports/host/phase/"
+      "source": "SDK 16.4 and 26.2 PHASE.framework, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own, compared against a fresh object of the host's own PHASE by tests/backports/host/phase/run.sh, which also holds the port's own renamed classes to the same numbers; the documented default for this class is at PHASEDirectivityModel.h:31,39,47"
     },
     {
       "api": "-[PHASECardioidDirectivityModelSubbandParameters setPattern]",
@@ -62,7 +62,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/PHASE/PHASEValueTypes.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEEnvelope.h, PHASEDirectivityModel.h and PHASEDistanceModel.h; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value below is the header's own documented default, with the host's PHASE as the oracle in tests/backports/host/phase/"
+      "source": "SDK 16.4 and 26.2 PHASE.framework, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own, compared against a fresh object of the host's own PHASE by tests/backports/host/phase/run.sh, which also holds the port's own renamed classes to the same numbers; the documented default for this class is at PHASEDirectivityModel.h:31,39,47"
     },
     {
       "api": "-[PHASECardioidDirectivityModelSubbandParameters setSharpness]",
@@ -71,7 +71,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/PHASE/PHASEValueTypes.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEEnvelope.h, PHASEDirectivityModel.h and PHASEDistanceModel.h; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value below is the header's own documented default, with the host's PHASE as the oracle in tests/backports/host/phase/"
+      "source": "SDK 16.4 and 26.2 PHASE.framework, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own, compared against a fresh object of the host's own PHASE by tests/backports/host/phase/run.sh, which also holds the port's own renamed classes to the same numbers; the documented default for this class is at PHASEDirectivityModel.h:31,39,47"
     },
     {
       "api": "-[PHASECardioidDirectivityModelSubbandParameters sharpness]",
@@ -80,7 +80,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/PHASE/PHASEValueTypes.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEEnvelope.h, PHASEDirectivityModel.h and PHASEDistanceModel.h; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value below is the header's own documented default, with the host's PHASE as the oracle in tests/backports/host/phase/"
+      "source": "SDK 16.4 and 26.2 PHASE.framework, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own, compared against a fresh object of the host's own PHASE by tests/backports/host/phase/run.sh, which also holds the port's own renamed classes to the same numbers; the documented default for this class is at PHASEDirectivityModel.h:31,39,47"
     },
     {
       "api": "-[PHASEConeDirectivityModelParameters initWithSubbandParameters]",
@@ -89,7 +89,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/PHASE/PHASEValueTypes.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEEnvelope.h, PHASEDirectivityModel.h and PHASEDistanceModel.h; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value below is the header's own documented default, with the host's PHASE as the oracle in tests/backports/host/phase/"
+      "source": "SDK 16.4 and 26.2 PHASE.framework, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own, compared against a fresh object of the host's own PHASE by tests/backports/host/phase/run.sh, which also holds the port's own renamed classes to the same numbers; the documented default for this class is at PHASEDirectivityModel.h:154 (subbandParameters, no documented default)"
     },
     {
       "api": "-[PHASEConeDirectivityModelParameters subbandParameters]",
@@ -98,7 +98,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/PHASE/PHASEValueTypes.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEEnvelope.h, PHASEDirectivityModel.h and PHASEDistanceModel.h; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value below is the header's own documented default, with the host's PHASE as the oracle in tests/backports/host/phase/"
+      "source": "SDK 16.4 and 26.2 PHASE.framework, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own, compared against a fresh object of the host's own PHASE by tests/backports/host/phase/run.sh, which also holds the port's own renamed classes to the same numbers; the documented default for this class is at PHASEDirectivityModel.h:154 (subbandParameters, no documented default)"
     },
     {
       "api": "-[PHASEConeDirectivityModelSubbandParameters frequency]",
@@ -107,7 +107,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/PHASE/PHASEValueTypes.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEEnvelope.h, PHASEDirectivityModel.h and PHASEDistanceModel.h; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value below is the header's own documented default, with the host's PHASE as the oracle in tests/backports/host/phase/"
+      "source": "SDK 16.4 and 26.2 PHASE.framework, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own, compared against a fresh object of the host's own PHASE by tests/backports/host/phase/run.sh, which also holds the port's own renamed classes to the same numbers; the documented default for this class is at PHASEDirectivityModel.h:81,89,97,105"
     },
     {
       "api": "-[PHASEConeDirectivityModelSubbandParameters init]",
@@ -116,7 +116,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/PHASE/PHASEValueTypes.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEEnvelope.h, PHASEDirectivityModel.h and PHASEDistanceModel.h; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value below is the header's own documented default, with the host's PHASE as the oracle in tests/backports/host/phase/"
+      "source": "SDK 16.4 and 26.2 PHASE.framework, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own, compared against a fresh object of the host's own PHASE by tests/backports/host/phase/run.sh, which also holds the port's own renamed classes to the same numbers; the documented default for this class is at PHASEDirectivityModel.h:81,89,97,105"
     },
     {
       "api": "-[PHASEConeDirectivityModelSubbandParameters innerAngle]",
@@ -125,7 +125,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/PHASE/PHASEValueTypes.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEEnvelope.h, PHASEDirectivityModel.h and PHASEDistanceModel.h; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value below is the header's own documented default, with the host's PHASE as the oracle in tests/backports/host/phase/"
+      "source": "SDK 16.4 and 26.2 PHASE.framework, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own, compared against a fresh object of the host's own PHASE by tests/backports/host/phase/run.sh, which also holds the port's own renamed classes to the same numbers; the documented default for this class is at PHASEDirectivityModel.h:81,89,97,105"
     },
     {
       "api": "-[PHASEConeDirectivityModelSubbandParameters outerAngle]",
@@ -134,7 +134,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/PHASE/PHASEValueTypes.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEEnvelope.h, PHASEDirectivityModel.h and PHASEDistanceModel.h; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value below is the header's own documented default, with the host's PHASE as the oracle in tests/backports/host/phase/"
+      "source": "SDK 16.4 and 26.2 PHASE.framework, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own, compared against a fresh object of the host's own PHASE by tests/backports/host/phase/run.sh, which also holds the port's own renamed classes to the same numbers; the documented default for this class is at PHASEDirectivityModel.h:81,89,97,105"
     },
     {
       "api": "-[PHASEConeDirectivityModelSubbandParameters outerGain]",
@@ -143,7 +143,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/PHASE/PHASEValueTypes.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEEnvelope.h, PHASEDirectivityModel.h and PHASEDistanceModel.h; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value below is the header's own documented default, with the host's PHASE as the oracle in tests/backports/host/phase/"
+      "source": "SDK 16.4 and 26.2 PHASE.framework, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own, compared against a fresh object of the host's own PHASE by tests/backports/host/phase/run.sh, which also holds the port's own renamed classes to the same numbers; the documented default for this class is at PHASEDirectivityModel.h:81,89,97,105"
     },
     {
       "api": "-[PHASEConeDirectivityModelSubbandParameters setFrequency]",
@@ -152,7 +152,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/PHASE/PHASEValueTypes.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEEnvelope.h, PHASEDirectivityModel.h and PHASEDistanceModel.h; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value below is the header's own documented default, with the host's PHASE as the oracle in tests/backports/host/phase/"
+      "source": "SDK 16.4 and 26.2 PHASE.framework, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own, compared against a fresh object of the host's own PHASE by tests/backports/host/phase/run.sh, which also holds the port's own renamed classes to the same numbers; the documented default for this class is at PHASEDirectivityModel.h:81,89,97,105"
     },
     {
       "api": "-[PHASEConeDirectivityModelSubbandParameters setInnerAngle:outerAngle]",
@@ -161,7 +161,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/PHASE/PHASEValueTypes.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEEnvelope.h, PHASEDirectivityModel.h and PHASEDistanceModel.h; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value below is the header's own documented default, with the host's PHASE as the oracle in tests/backports/host/phase/"
+      "source": "SDK 16.4 and 26.2 PHASE.framework, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own, compared against a fresh object of the host's own PHASE by tests/backports/host/phase/run.sh, which also holds the port's own renamed classes to the same numbers; the documented default for this class is at PHASEDirectivityModel.h:81,89,97,105"
     },
     {
       "api": "-[PHASEConeDirectivityModelSubbandParameters setOuterGain]",
@@ -170,7 +170,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/PHASE/PHASEValueTypes.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEEnvelope.h, PHASEDirectivityModel.h and PHASEDistanceModel.h; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value below is the header's own documented default, with the host's PHASE as the oracle in tests/backports/host/phase/"
+      "source": "SDK 16.4 and 26.2 PHASE.framework, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own, compared against a fresh object of the host's own PHASE by tests/backports/host/phase/run.sh, which also holds the port's own renamed classes to the same numbers; the documented default for this class is at PHASEDirectivityModel.h:81,89,97,105"
     },
     {
       "api": "-[PHASEDistanceModelFadeOutParameters cullDistance]",
@@ -179,7 +179,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/PHASE/PHASEValueTypes.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEEnvelope.h, PHASEDirectivityModel.h and PHASEDistanceModel.h; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value below is the header's own documented default, with the host's PHASE as the oracle in tests/backports/host/phase/"
+      "source": "SDK 16.4 and 26.2 PHASE.framework, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own, compared against a fresh object of the host's own PHASE by tests/backports/host/phase/run.sh, which also holds the port's own renamed classes to the same numbers; the documented default for this class is at PHASEDistanceModel.h (cullDistance carries no documented default; the initializer's argument is the value)"
     },
     {
       "api": "-[PHASEDistanceModelFadeOutParameters initWithCullDistance]",
@@ -188,7 +188,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/PHASE/PHASEValueTypes.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEEnvelope.h, PHASEDirectivityModel.h and PHASEDistanceModel.h; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value below is the header's own documented default, with the host's PHASE as the oracle in tests/backports/host/phase/"
+      "source": "SDK 16.4 and 26.2 PHASE.framework, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own, compared against a fresh object of the host's own PHASE by tests/backports/host/phase/run.sh, which also holds the port's own renamed classes to the same numbers; the documented default for this class is at PHASEDistanceModel.h (cullDistance carries no documented default; the initializer's argument is the value)"
     },
     {
       "api": "-[PHASEDistanceModelParameters fadeOutParameters]",
@@ -197,7 +197,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/PHASE/PHASEValueTypes.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEEnvelope.h, PHASEDirectivityModel.h and PHASEDistanceModel.h; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value below is the header's own documented default, with the host's PHASE as the oracle in tests/backports/host/phase/"
+      "source": "SDK 16.4 and 26.2 PHASE.framework, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own, compared against a fresh object of the host's own PHASE by tests/backports/host/phase/run.sh, which also holds the port's own renamed classes to the same numbers; the documented default for this class is at PHASEDistanceModel.h (fadeOutParameters, no documented default)"
     },
     {
       "api": "-[PHASEDistanceModelParameters setFadeOutParameters]",
@@ -206,7 +206,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/PHASE/PHASEValueTypes.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEEnvelope.h, PHASEDirectivityModel.h and PHASEDistanceModel.h; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value below is the header's own documented default, with the host's PHASE as the oracle in tests/backports/host/phase/"
+      "source": "SDK 16.4 and 26.2 PHASE.framework, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own, compared against a fresh object of the host's own PHASE by tests/backports/host/phase/run.sh, which also holds the port's own renamed classes to the same numbers; the documented default for this class is at PHASEDistanceModel.h (fadeOutParameters, no documented default)"
     },
     {
       "api": "-[PHASEGeometricSpreadingDistanceModelParameters rolloffFactor]",
@@ -215,7 +215,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/PHASE/PHASEValueTypes.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEEnvelope.h, PHASEDirectivityModel.h and PHASEDistanceModel.h; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value below is the header's own documented default, with the host's PHASE as the oracle in tests/backports/host/phase/"
+      "source": "SDK 16.4 and 26.2 PHASE.framework, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own, compared against a fresh object of the host's own PHASE by tests/backports/host/phase/run.sh, which also holds the port's own renamed classes to the same numbers; the documented default for this class is at PHASEDistanceModel.h:87"
     },
     {
       "api": "-[PHASEGeometricSpreadingDistanceModelParameters setRolloffFactor]",
@@ -224,7 +224,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/PHASE/PHASEValueTypes.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEEnvelope.h, PHASEDirectivityModel.h and PHASEDistanceModel.h; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value below is the header's own documented default, with the host's PHASE as the oracle in tests/backports/host/phase/"
+      "source": "SDK 16.4 and 26.2 PHASE.framework, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own, compared against a fresh object of the host's own PHASE by tests/backports/host/phase/run.sh, which also holds the port's own renamed classes to the same numbers; the documented default for this class is at PHASEDistanceModel.h:87"
     },
     {
       "api": "-[PHASENumericPair first]",
@@ -233,7 +233,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/PHASE/PHASEValueTypes.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEEnvelope.h, PHASEDirectivityModel.h and PHASEDistanceModel.h; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value below is the header's own documented default, with the host's PHASE as the oracle in tests/backports/host/phase/"
+      "source": "SDK 16.4 and 26.2 PHASE.framework, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own, compared against a fresh object of the host's own PHASE by tests/backports/host/phase/run.sh, which also holds the port's own renamed classes to the same numbers; the documented default for this class is at PHASEEnvelope.h:41,48"
     },
     {
       "api": "-[PHASENumericPair initWithFirstValue:secondValue]",
@@ -242,7 +242,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/PHASE/PHASEValueTypes.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEEnvelope.h, PHASEDirectivityModel.h and PHASEDistanceModel.h; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value below is the header's own documented default, with the host's PHASE as the oracle in tests/backports/host/phase/"
+      "source": "SDK 16.4 and 26.2 PHASE.framework, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own, compared against a fresh object of the host's own PHASE by tests/backports/host/phase/run.sh, which also holds the port's own renamed classes to the same numbers; the documented default for this class is at PHASEEnvelope.h:41,48"
     },
     {
       "api": "-[PHASENumericPair init]",
@@ -251,7 +251,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/PHASE/PHASEValueTypes.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEEnvelope.h, PHASEDirectivityModel.h and PHASEDistanceModel.h; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value below is the header's own documented default, with the host's PHASE as the oracle in tests/backports/host/phase/"
+      "source": "SDK 16.4 and 26.2 PHASE.framework, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own, compared against a fresh object of the host's own PHASE by tests/backports/host/phase/run.sh, which also holds the port's own renamed classes to the same numbers; the documented default for this class is at PHASEEnvelope.h:41,48"
     },
     {
       "api": "-[PHASENumericPair second]",
@@ -260,7 +260,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/PHASE/PHASEValueTypes.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEEnvelope.h, PHASEDirectivityModel.h and PHASEDistanceModel.h; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value below is the header's own documented default, with the host's PHASE as the oracle in tests/backports/host/phase/"
+      "source": "SDK 16.4 and 26.2 PHASE.framework, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own, compared against a fresh object of the host's own PHASE by tests/backports/host/phase/run.sh, which also holds the port's own renamed classes to the same numbers; the documented default for this class is at PHASEEnvelope.h:41,48"
     },
     {
       "api": "-[PHASENumericPair setFirst]",
@@ -269,7 +269,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/PHASE/PHASEValueTypes.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEEnvelope.h, PHASEDirectivityModel.h and PHASEDistanceModel.h; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value below is the header's own documented default, with the host's PHASE as the oracle in tests/backports/host/phase/"
+      "source": "SDK 16.4 and 26.2 PHASE.framework, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own, compared against a fresh object of the host's own PHASE by tests/backports/host/phase/run.sh, which also holds the port's own renamed classes to the same numbers; the documented default for this class is at PHASEEnvelope.h:41,48"
     },
     {
       "api": "-[PHASENumericPair setSecond]",
@@ -278,7 +278,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/PHASE/PHASEValueTypes.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEEnvelope.h, PHASEDirectivityModel.h and PHASEDistanceModel.h; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value below is the header's own documented default, with the host's PHASE as the oracle in tests/backports/host/phase/"
+      "source": "SDK 16.4 and 26.2 PHASE.framework, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own, compared against a fresh object of the host's own PHASE by tests/backports/host/phase/run.sh, which also holds the port's own renamed classes to the same numbers; the documented default for this class is at PHASEEnvelope.h:41,48"
     },
     {
       "api": "PHASECardioidDirectivityModelParameters",
@@ -287,7 +287,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/PHASE/PHASEValueTypes.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEEnvelope.h, PHASEDirectivityModel.h and PHASEDistanceModel.h; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value below is the header's own documented default, with the host's PHASE as the oracle in tests/backports/host/phase/"
+      "source": "SDK 16.4 and 26.2 PHASE.framework, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own, compared against a fresh object of the host's own PHASE by tests/backports/host/phase/run.sh, which also holds the port's own renamed classes to the same numbers; the documented default for this class is at PHASEDirectivityModel.h:134 (subbandParameters, no documented default)"
     },
     {
       "api": "PHASECardioidDirectivityModelSubbandParameters",
@@ -296,7 +296,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/PHASE/PHASEValueTypes.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEEnvelope.h, PHASEDirectivityModel.h and PHASEDistanceModel.h; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value below is the header's own documented default, with the host's PHASE as the oracle in tests/backports/host/phase/"
+      "source": "SDK 16.4 and 26.2 PHASE.framework, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own, compared against a fresh object of the host's own PHASE by tests/backports/host/phase/run.sh, which also holds the port's own renamed classes to the same numbers; the documented default for this class is at PHASEDirectivityModel.h:31,39,47"
     },
     {
       "api": "PHASEConeDirectivityModelParameters",
@@ -305,7 +305,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/PHASE/PHASEValueTypes.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEEnvelope.h, PHASEDirectivityModel.h and PHASEDistanceModel.h; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value below is the header's own documented default, with the host's PHASE as the oracle in tests/backports/host/phase/"
+      "source": "SDK 16.4 and 26.2 PHASE.framework, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own, compared against a fresh object of the host's own PHASE by tests/backports/host/phase/run.sh, which also holds the port's own renamed classes to the same numbers; the documented default for this class is at PHASEDirectivityModel.h:154 (subbandParameters, no documented default)"
     },
     {
       "api": "PHASEConeDirectivityModelSubbandParameters",
@@ -314,7 +314,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/PHASE/PHASEValueTypes.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEEnvelope.h, PHASEDirectivityModel.h and PHASEDistanceModel.h; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value below is the header's own documented default, with the host's PHASE as the oracle in tests/backports/host/phase/"
+      "source": "SDK 16.4 and 26.2 PHASE.framework, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own, compared against a fresh object of the host's own PHASE by tests/backports/host/phase/run.sh, which also holds the port's own renamed classes to the same numbers; the documented default for this class is at PHASEDirectivityModel.h:81,89,97,105"
     },
     {
       "api": "PHASEDirectivityModelParameters",
@@ -323,7 +323,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/PHASE/PHASEValueTypes.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEEnvelope.h, PHASEDirectivityModel.h and PHASEDistanceModel.h; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value below is the header's own documented default, with the host's PHASE as the oracle in tests/backports/host/phase/"
+      "source": "SDK 16.4 and 26.2 PHASE.framework, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own, compared against a fresh object of the host's own PHASE by tests/backports/host/phase/run.sh, which also holds the port's own renamed classes to the same numbers; the documented default for this class is at PHASEDirectivityModel.h:121 (no members at all)"
     },
     {
       "api": "PHASEDistanceModelFadeOutParameters",
@@ -332,7 +332,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/PHASE/PHASEValueTypes.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEEnvelope.h, PHASEDirectivityModel.h and PHASEDistanceModel.h; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value below is the header's own documented default, with the host's PHASE as the oracle in tests/backports/host/phase/"
+      "source": "SDK 16.4 and 26.2 PHASE.framework, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own, compared against a fresh object of the host's own PHASE by tests/backports/host/phase/run.sh, which also holds the port's own renamed classes to the same numbers; the documented default for this class is at PHASEDistanceModel.h (cullDistance carries no documented default; the initializer's argument is the value)"
     },
     {
       "api": "PHASEDistanceModelParameters",
@@ -341,7 +341,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/PHASE/PHASEValueTypes.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEEnvelope.h, PHASEDirectivityModel.h and PHASEDistanceModel.h; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value below is the header's own documented default, with the host's PHASE as the oracle in tests/backports/host/phase/"
+      "source": "SDK 16.4 and 26.2 PHASE.framework, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own, compared against a fresh object of the host's own PHASE by tests/backports/host/phase/run.sh, which also holds the port's own renamed classes to the same numbers; the documented default for this class is at PHASEDistanceModel.h (fadeOutParameters, no documented default)"
     },
     {
       "api": "PHASEGeometricSpreadingDistanceModelParameters",
@@ -350,7 +350,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/PHASE/PHASEValueTypes.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEEnvelope.h, PHASEDirectivityModel.h and PHASEDistanceModel.h; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value below is the header's own documented default, with the host's PHASE as the oracle in tests/backports/host/phase/"
+      "source": "SDK 16.4 and 26.2 PHASE.framework, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own, compared against a fresh object of the host's own PHASE by tests/backports/host/phase/run.sh, which also holds the port's own renamed classes to the same numbers; the documented default for this class is at PHASEDistanceModel.h:87"
     },
     {
       "api": "PHASENumericPair",
@@ -359,7 +359,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/PHASE/PHASEValueTypes.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEEnvelope.h, PHASEDirectivityModel.h and PHASEDistanceModel.h; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value below is the header's own documented default, with the host's PHASE as the oracle in tests/backports/host/phase/"
+      "source": "SDK 16.4 and 26.2 PHASE.framework, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own, compared against a fresh object of the host's own PHASE by tests/backports/host/phase/run.sh, which also holds the port's own renamed classes to the same numbers; the documented default for this class is at PHASEEnvelope.h:41,48"
     }
   ]
 }
