@@ -128,7 +128,7 @@ package("apple-backports")
                                      (package:config("avfoundation") or package:config("avfaudio")) and {"AVFoundationBackports"} or {},
                                      package:config("avfaudio") and {"AVFAudioBackports"} or {},
                                      package:config("webkit") and {"WebKitBackports"} or {},
-                                     (package:config("graphics") or package:config("avfoundation") or package:config("avfaudio")) and {"GraphicsBackports"} or {},
+                                     (package:config("graphics") or package:config("avfoundation") or package:config("avfaudio") or package:config("uikit")) and {"GraphicsBackports"} or {},
                                      package:config("localauthentication") and {"LocalAuthenticationBackports"} or {},
                                      (package:config("safariservices") or package:config("authenticationservices")) and {"SafariServicesBackports"} or {},
                                      package:config("authenticationservices") and {"AuthenticationServicesBackports"} or {},
