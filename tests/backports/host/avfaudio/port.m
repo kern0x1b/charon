@@ -91,8 +91,12 @@ int main(void)
         }
         AudioComponentDescription mixer = {0};
         {
+            // An output unit is the asymmetric case: its entry is (0 in, 2 out), and swapping the
+            // two numbers is a different array, which is what makes the mutation visible. A mixer's
+            // entry is (1, 1) - symmetric - and a swap of it returns the identical array, so a
+            // harness asked about a mixer cannot tell a correct port from a swapped one.
             AudioComponentDescription any = {0};
-            any.componentType = kAudioUnitType_Mixer;
+            any.componentType = kAudioUnitType_Output;
             AudioComponent component = AudioComponentFindNext(NULL, &any);
             while (component != NULL) {
                 AudioComponentInstance probe = NULL;
