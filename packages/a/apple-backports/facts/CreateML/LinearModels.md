@@ -84,3 +84,101 @@ top.
 `AnnotatedFeature` and `AnnotatedPrediction` are here because the two `fitted` overloads are told
 apart by their argument type and a tuple is not one: with a tuple the compiler resolves the closure
 before it knows which overload is meant, and picks the wrong one.
+
+## The L1 penalty, and the bug that was hiding in it
+
+**Both penalties are now fitted.** `l2Penalty` by the closed form of `LinearAlgebra.swift`, `l1Penalty`
+by the proximal iteration in `Proximal.swift`, and both at once by the L1 route with its quadratic term.
+`l1Penalty > 0` selects the route and nothing else.
+
+The first version **refused** an L1 penalty, on the reasoning that a fit which quietly dropped it
+would hand back a confident number about a model nobody asked for. That reasoning was right and the
+refusal was the wrong answer to it: the penalty is solvable, and refusing a thing that can be computed
+is the same failure wearing a hat. Writing the solver is what showed that.
+
+FISTA — accelerated ISTA — with the exact prox of the penalty on the smooth part's gradient step, the
+step from the largest eigenvalue of `X'X/n` by **power iteration on the device's own BLAS** (the
+matrix is already built and one symmetric matrix-vector product is cheap, where backtracking would take
+twenty to reach a step the power iteration reaches in ten), the ISTA fallback at the accepted point
+when the extrapolated one overshoots, and the **KKT residual** as the convergence test.
+
+### Four defects, and the last one is the one that mattered
+
+1. **A rejected step's objective was recorded as the reference.** The next comparison was then against a
+   value the sequence never took, the convergence test never fired, and the run walked off: an
+   objective of `1e140` with `converged = false`.
+2. **The monotone fallback shortened the step from the *extrapolated* point `y`.** As `t` goes to zero
+   that candidate tends to `y`, never to the accepted point `w`, so the sequence could not recover.
+   The correct fallback, and what monotone FISTA specifies, is to take the step **at `w`** — one plain
+   ISTA iteration — and halve only if *that* fails as well.
+3. **The convergence test was the objective's movement.** It reported a point **0.07 of objective** above
+   the minimum as converged, on a plateau. On a convex objective a stationary point is global, so the
+   test has to be stationary-ness: the subgradient of `f + l1·|.|` at the point must be zero — for a
+   coordinate at zero, `|g| <= threshold`; for one away from it, `g + l1·sign(w) = 0`.
+4. **`softThreshold` had its two branches the wrong way round.** `sign(x) * max(|x| - l, 0)` was written
+   as `value < 0 ? magnitude - l : -(magnitude - l)`, so **every positive coordinate came out
+   negative.** This is the one that mattered, and it was hiding behind all three others: the sequence
+   could not converge, and the wrong convergence test would not say so. With the sign fixed and the KKT
+   residual as the test, the residual at a penalty of 0.5 is **5.9e-9** and the single-weight nudge
+   check finds nothing that lowers the objective.
+
+A sign error in a proximal operator is the most ordinary mistake in this method, and it took a test
+with teeth to see, because a soft threshold that pushes the wrong way still *runs*.
+
+### The test, and the mutation that survives it
+
+`tests/backports/host/createml/l1/` — 9 checks, and deliberately the other way round from a
+differential:
+
+- the soft threshold on **both** sides of the kink, and a negative one keeping its sign — which is
+  where a magnitude-only implementation loses, and where mutation 1 dies;
+- the solver **converges**, and the point it returns is a minimum **by the KKT condition**;
+- **no single-weight nudge lowers the objective** — 12 nudges of `0.01`, `0.05` and `0.2` in both
+  directions. This is the check with teeth, and it is what caught defect 3: a point 0.07 of objective
+  above the minimum moves downhill.
+
+**What the suite still cannot catch:** removing the ISTA fallback at the accepted point (defect 2's
+repair) leaves the suite green, because on this table the extrapolated step never overshoots and the
+fallback never fires. The line is `Proximal.swift`'s `if objectiveAtW <= previousObjective` in both
+solvers, and a test that makes the extrapolated point overshoot — a table where the condition
+holds — is the next strengthening. It is recorded here rather than left for someone to rediscover by
+running a mutation and seeing it pass.
+
+### The convention, and the measurement that found it
+
+**The port minimises `1/(2n)|X(Xw - y)|² + l2/2 |w|² + l1 |w|₁`**, with the **intercept
+unpenalised** — it is column zero of the design and the penalty skips it, which is what makes a
+penalty comparable across a target's own units.
+
+**The host's `l1Penalty` is on a different scale.** Measured on the same twelve rows, both fitted, both
+evaluated at the port's own objective:
+
+| `l1Penalty` | the host's point | the port's point | lower |
+| --- | --- | --- | --- |
+| 0.0 | 0.070270271 | 0.070270270 | the port, by 1e-9 |
+| 0.1 | **0.393352910** | 1.564355710 | **the host** |
+| 0.5 | 1.650085721 | **1.543222290** | **the port** |
+| 2.0 | 5.855339163 | **1.541666667** | **the port** |
+
+At no penalty the two agree to nine places — the closed form is the convention-free claim, and it
+holds. Away from zero they solve **different problems**, so the suite asserts what does not depend on
+the convention and *reports* which side is lower at each penalty rather than asserting a claim the two
+do not share. That is not the host being wrong: a penalty is a convention before it is an algorithm,
+and the port's is the one its own `ridgeL1Objective` is written against, which is what makes the KKT
+check and the objective comparison mean anything.
+
+`LinearModelError.l1PenaltyDidNotConverge` is what a run that cannot reach the tolerance says, rather
+than answering the point it stopped at. The tolerance is the caller's, and a caller who asks for more
+digits than a few hundred thousand prox steps deliver is told so.
+
+## Not carried, and why
+
+- **`MultiLabelClassificationMetrics.mapLabels` is absent** while the single-label one is carried. A
+  metrics over `T` built from one over `Label` is one line of storage copying, and this compiler
+  resolves the `init()` of a *different* generic instantiation through a parent conversion that does not
+  exist — accepted at one element type, rejected at another. The counts and the scores do not need it: a
+  caller renames the labels before they reach a multi-label metrics, which is where a rename belongs.
+- **`LinearModelError` is the port's own type.** The SDK 26.2 `CreateMLComponents` declares no such
+  enumeration; its public errors are `OptimizationError`, `EstimatorEncodingError`, `DatasetError` and
+  `ModelUpdateError`, and the surface has 0 rows for it. It is recorded in the package's own registry
+  beside the code, and nothing reads it as a row of Apple's.

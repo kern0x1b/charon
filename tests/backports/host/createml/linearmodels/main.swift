@@ -138,17 +138,35 @@ do {
     } catch {}
     check("a model of the wrong width refuses rather than truncating", widthRefused)
 
-    var l1Refused = false
-    do {
-        let configured = PortCreateMLComponents.LinearRegressor<Double>(
-            configuration: .init(l2Penalty: 0, l1Penalty: 0.5))
-        _ = try configured.fitted(to: rows)
-    } catch let error as PortCreateMLComponents.LinearModelError {
-        l1Refused = true
-        check("the L1 refusal names the penalty that was asked for", "\(error)".contains("0.5"),
-              "the port answers \(error)")
-    } catch {}
-    check("an L1 penalty is refused, not ignored", l1Refused)
+    // The L1 penalty is now **fitted**, by the proximal iteration in `Proximal.swift`. Three things
+    // are checked here; the closed form, the predictions and the KKT zero pattern are held against
+    // the host's own `MLLinearRegressor` in the `l1` suite, which is where the host is reachable.
+    let unpenalised = try PortCreateMLComponents.LinearRegressor<Double>(
+        configuration: .init(l2Penalty: 0, l1Penalty: 0, maximumIterations: 500)).fitted(to: rows)
+    let penalised = try PortCreateMLComponents.LinearRegressor<Double>(
+        configuration: .init(l2Penalty: 0, l1Penalty: 0.5, maximumIterations: 2000,
+                             stepSize: 0.1, convergenceThreshold: 1e-12)).fitted(to: rows)
+    // Two features, so three coefficients: an intercept and two weights. Derived from the
+    // width rather than written down, so it cannot drift from the fixture above.
+    let width = rows.first?.feature.scalars.count ?? 0
+    checkEqual("an L1 fit answers one coefficient per feature and an intercept",
+               penalised.coefficients.count, width + 1)
+    var moved = 0.0
+    for index in 0..<penalised.coefficients.count {
+        moved = max(moved, abs(Double(penalised.coefficients[index]) - Double(unpenalised.coefficients[index])))
+    }
+    check("and the penalty moved the answer", moved > 0.0, "the largest change is \(moved)")
+    // The penalty is on the weights and not the intercept: the intercept is column zero and the
+    // penalty skips it, which is the convention every linear model here uses and the one that makes
+    // a penalty comparable across a target's own units.
+    let interceptMoved = abs(Double(penalised.coefficients[0]) - Double(unpenalised.coefficients[0]))
+    var weightsMoved = 0.0
+    for index in 1..<penalised.coefficients.count {
+        weightsMoved = max(weightsMoved,
+                           abs(Double(penalised.coefficients[index]) - Double(unpenalised.coefficients[index])))
+    }
+    check("the penalty skipped the intercept, as the convention says", interceptMoved < weightsMoved,
+          "the intercept moved by \(interceptMoved) and a weight by \(weightsMoved)")
 
     var singularRefused = false
     do {

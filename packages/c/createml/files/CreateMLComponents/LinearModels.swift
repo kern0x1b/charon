@@ -1,11 +1,17 @@
 // LinearModels.swift — the linear regressor and the logistic classifier, over the shaped array.
 //
 // Both are the *ridge* fit of `LinearAlgebra.swift`, and the reason is the parameter the framework
-// hands them. `LinearRegressor.Configuration` carries `l2Penalty` and `l1Penalty`; the fit here takes
-// the L2 one and **reports the L1 one as not implemented rather than ignoring it** — a caller who
-// sets `l1Penalty` and gets a fit that did not use it has been told a falsehood by a number. The
-// L1 objective has no closed form and needs an iterative solver (a proximal step, or the path
-// following the L2 solution), which is a body of its own; see `facts/CreateML/LinearModels.md`.
+// hands them. `LinearRegressor.Configuration` carries `l2Penalty` and `l1Penalty` and **both are
+// fitted**: the L2 one by the closed-form solve of `LinearAlgebra.swift`, the L1 one by the proximal
+// iteration in `Proximal.swift`, and both at once by the L1 route with its quadratic term.
+// `l1Penalty > 0` selects the route and nothing else.
+//
+// The first version **refused** an L1 penalty on the reasoning that a fit which quietly dropped it
+// would hand back a confident number about a model nobody asked for. The reasoning was right and the
+// refusal was the wrong answer to it — the penalty is solvable, and refusing a thing that can be
+// computed is the same failure wearing a hat. The iteration is in `Proximal.swift` and the KKT
+// residual is its convergence test; a run that cannot reach the tolerance says so
+// (`LinearModelError.l1PenaltyDidNotConverge`) rather than answering the point it reached.
 //
 // The design matrix is a `MLShapedArray<Scalar>` and so is the model's answer, so a prediction is a
 // dot product over the buffer the fit produced and nothing is copied on the way out. The strides are
@@ -153,7 +159,7 @@ public enum LinearModelError: Error, CustomStringConvertible, Equatable {
     case shapeMismatch(expected: Int, found: Int)
     case notEnoughRows(Int)
     case singular(Int)
-    case l1PenaltyNotImplemented(Double)
+    case l1PenaltyDidNotConverge(Int)
 
     public var description: String {
         switch self {
@@ -165,10 +171,11 @@ public enum LinearModelError: Error, CustomStringConvertible, Equatable {
         case .singular(let column):
             return "The design matrix has no answer in column " + String(column)
                 + ": two features are the same, or one is a multiple of another."
-        case .l1PenaltyNotImplemented(let value):
-            return "This build fits the L2 penalty and not the L1 one, and the caller asked for an L1 "
-                + "penalty of " + String(value) + ". A fit that ignored it would be a number about a "
-                + "different model."
+        case .l1PenaltyDidNotConverge(let iterations):
+            return "The L1 fit ran its " + String(iterations) + " iteration(s) and did not reach a "
+                + "minimum - the KKT residual of the point it stopped at is above the tolerance - so "
+                + "the coefficients are the point the run reached and not the L1 solution. Raise "
+                + "maximumIterations or convergenceThreshold."
         }
     }
 }
@@ -256,9 +263,6 @@ public struct LinearRegressor<Scalar: LinearScalar> {
 
     private func fit(rows: [MLShapedArray<Scalar>], targets: [Scalar]?,
                      validation: [MLShapedArray<Scalar>]?) throws -> ([Scalar], Int) {
-        guard configuration.l1Penalty == 0 else {
-            throw LinearModelError.l1PenaltyNotImplemented(configuration.l1Penalty)
-        }
         let width = rows.first?.scalars.count ?? 0
         guard width > 0 else { throw LinearModelError.shapeMismatch(expected: 1, found: 0) }
         guard rows.count > width else { throw LinearModelError.notEnoughRows(rows.count) }
@@ -280,6 +284,24 @@ public struct LinearRegressor<Scalar: LinearScalar> {
         }
         let observations = targets.map { Double($0) }
         let design = designMatrix(rows, width: width)
+        // The L1 penalty changes what kind of problem this is, and the route with it: a closed-form
+        // solve for the L2 case, a proximal iteration for the L1 one. `l1Penalty > 0` selects it, and
+        // both penalties may be on at once, in which case the proximal step's `l2Penalty` term is what
+        // adds the quadratic part. The iteration is judged by the KKT residual, which is the only
+        // right test for a proximal method on a non-smooth objective, and a run that cannot reach it
+        // says so rather than answering the point it reached.
+        if configuration.l1Penalty > 0 {
+            let (weights, _, converged) = ProximalSolver.ridgeL1(
+                design: design, targets: observations,
+                l1Penalty: configuration.l1Penalty, l2Penalty: configuration.l2Penalty,
+                iterations: configuration.maximumIterations,
+                step: configuration.stepSize > 0 ? configuration.stepSize : nil,
+                tolerance: configuration.convergenceThreshold > 0 ? configuration.convergenceThreshold : 1e-10)
+            if !converged {
+                throw LinearModelError.l1PenaltyDidNotConverge(configuration.maximumIterations)
+            }
+            return (weights.map { Scalar($0) }, 0)
+        }
         let (solution, info) = RowMatrix.ridgeLeastSquares(design: design, targets: observations,
                                                            penalty: configuration.l2Penalty)
         if info != 0 { throw LinearModelError.singular(width) }
@@ -415,9 +437,6 @@ public struct LogisticRegressionClassifier<Scalar: LinearScalar, Label: Hashable
 
     public func fitted<Input: Sequence>(to input: Input) throws -> LogisticRegressionClassifierModel<Scalar, Label>
         where Input.Element == AnnotatedFeature<MLShapedArray<Scalar>, Label> {
-        guard configuration.l1Penalty == 0 else {
-            throw LinearModelError.l1PenaltyNotImplemented(configuration.l1Penalty)
-        }
         let rows = Array(input)
         guard let width = rows.first?.feature.scalars.count, width > 0 else {
             throw LinearModelError.shapeMismatch(expected: 1, found: 0)
@@ -446,8 +465,30 @@ public struct LogisticRegressionClassifier<Scalar: LinearScalar, Label: Hashable
                     design[index, feature + 1] = Double(row.feature.scalars[feature])
                 }
             }
-            let (solution, info) = RowMatrix.ridgeLeastSquares(design: design, targets: targets,
-                                                               penalty: configuration.l2Penalty)
+            // The same route as the regression's, per class: a closed form without an L1 term, a
+            // proximal iteration with one. One class against the rest, so the labels' scores stay
+            // independent and the distribution comes from the logistic link over them, as
+            // `prediction(from:)` already says.
+            let (solution, info): ([Double], Int)
+            if configuration.l1Penalty > 0 {
+                let (weights, _, converged) = ProximalSolver.logisticL1(
+                    design: design, targets: targets,
+                    l1Penalty: configuration.l1Penalty, l2Penalty: configuration.l2Penalty,
+                    iterations: configuration.maximumIterations,
+                    step: configuration.stepSize > 0 ? configuration.stepSize : nil,
+                    tolerance: configuration.convergenceThreshold > 0
+                        ? configuration.convergenceThreshold : 1e-10)
+                if !converged {
+                    throw LinearModelError.l1PenaltyDidNotConverge(configuration.maximumIterations)
+                }
+                solution = weights
+                info = 0
+            } else {
+                let solved = RowMatrix.ridgeLeastSquares(design: design, targets: targets,
+                                                        penalty: configuration.l2Penalty)
+                solution = solved.0
+                info = solved.1
+            }
             if info != 0 { throw LinearModelError.singular(position) }
             guard solution.count == width + 1 else {
                 // The solution is the design's own width, so this cannot happen; the check is here

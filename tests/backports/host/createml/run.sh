@@ -125,12 +125,20 @@ xcrun swiftc -swift-version 5 -O -I "$out/modules" \
     -framework CreateMLComponents \
     -o "$out/metrics"
 
-# All five, and the *script* fails at the end. `set -e` on `"$out/differential"` aborted the run at the
+# The L1 fit, against the host's own MLLinearRegressor on the same rows. The host publishes no
+# coefficients - they live inside its MLModel - so the comparison the port can make directly is
+# predictions, which is also the claim a caller relies on.
+xcrun swiftc -swift-version 5 -O -I "$out/modules" \
+    "$here/l1/main.swift" "$out/cmc.o" "$out/coreml.o" \
+    -framework Accelerate -framework Foundation -framework CoreFoundation -framework CreateML \
+    -o "$out/l1"
+
+# All seven, and the *script* fails at the end. `set -e` on the first binary aborted the run at the
 # first red suite, so three suites whose state was unknown read as a build failure: the review measured
 # a one-line mutation producing exactly one line of output and no `tabularframe`, `linearmodels` or
 # `transformers` line at all. Each binary's exit is collected and the first non-zero is the script's.
 status=0
-for suite in differential tabularframe linearmodels transformers metrics preprocessing; do
+for suite in differential tabularframe linearmodels transformers metrics preprocessing l1; do
     if ! "$out/$suite"; then
         echo "FAIL the $suite suite exited non-zero" >&2
         status=1
