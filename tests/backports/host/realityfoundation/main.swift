@@ -1334,6 +1334,25 @@ check("a cancelled subscription hears nothing more", began, raisedBefore)
     }
 
     do {
+        // The limits, with the probe on so the run says what the clamp is given.
+        let probe = straightChain(along: SIMD3<Float>(0, 0, 1), weight: SIMD3<Float>(0, 1, 0),
+                                  limits: IKRig.Joint.LimitsDefinition(boneAxis: .y,
+                                                                         minimumAngles: SIMD3<Float>(-Float.pi, -0.2, -Float.pi),
+                                                                         maximumAngles: SIMD3<Float>(Float.pi, 0.2, Float.pi)))
+        reach(probe.0, probe.1, SIMD3<Float>(1, 0, 1))
+        let heldAngle = atan2(probe.3.position(relativeTo: nil).x, probe.3.position(relativeTo: nil).z)
+        // Every joint of the chain is held to a fifth of a radian about y, so the arm as a whole
+        // may turn at most two of them, and the target is a turn of three quarters of one.
+        check("a chain whose joints are limited stops at their limits", heldAngle < 0.45, true)
+        check("and did turn as far as the limits allow", heldAngle > 0.05, true)
+        // The same chain unlimited, which does reach.
+        let free = straightChain(along: SIMD3<Float>(0, 0, 1), weight: SIMD3<Float>(0, 1, 0))
+        reach(free.0, free.1, SIMD3<Float>(1, 0, 1))
+        check("while an unlimited chain reaches the target",
+              atan2(free.3.position(relativeTo: nil).x, free.3.position(relativeTo: nil).z) > 0.7, true)
+    }
+
+    do {
         // A joint with no stiffness is not turned at all, which is what a stiffness of zero means.
         // The joint's own rotation is its orientation, not its position: the root turning moves
         // every joint's position without touching the joints' own.

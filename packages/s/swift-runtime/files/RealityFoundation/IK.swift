@@ -702,6 +702,7 @@ enum __IKRestPose {
 
 // MARK: - Solving
 
+
 /// The solve itself, run once a step by the simulation, over the joint entities a component's rig
 /// names.
 ///
@@ -762,9 +763,9 @@ func __solveInverseKinematics(of node: __REEntity) {
                         let axis: SIMD3<Float> = limits.boneAxis == .x ? SIMD3<Float>(1, 0, 0)
                             : (limits.boneAxis == .y ? SIMD3<Float>(0, 1, 0) : SIMD3<Float>(0, 0, 1))
                         let index = limits.boneAxis == .x ? 0 : (limits.boneAxis == .y ? 1 : 2)
+                        let strength = min(max(limits.weight * rig.globalLimitsWeight, 0), 1)
                         turn = __IKClamp(reached, axis: axis, minimum: limits.minimumAngles[index],
-                                         maximum: limits.maximumAngles[index],
-                                         strength: min(max(limits.weight * rig.globalLimitsWeight, 0), 1))
+                                         maximum: limits.maximumAngles[index], strength: strength)
                     }
                     // The demand is weighted in the joint's *own* frame, which is what makes a
                     // per-axis weight mean an axis: the demand is taken into the joint's frame,
@@ -776,6 +777,19 @@ func __solveInverseKinematics(of node: __REEntity) {
                     let frame = joint.worldOrientation
                     let local = frame.inverse * turn * frame
                     chain[at].turn(by: frame * __IKScaled(local, by: weights) * frame.inverse)
+                    // And the joint's *pose* is held, which is what a limit is: clamping the demand
+                    // alone bounds each pass and not the joint, so a chain of two joints limited to
+                    // 0.2 reaches 0.786 - each pass asking for its 0.2 and adding up (measured).
+                    if let limits = joint.limits {
+                        let axis: SIMD3<Float> = limits.boneAxis == .x ? SIMD3<Float>(1, 0, 0)
+                            : (limits.boneAxis == .y ? SIMD3<Float>(0, 1, 0) : SIMD3<Float>(0, 0, 1))
+                        let index = limits.boneAxis == .x ? 0 : (limits.boneAxis == .y ? 1 : 2)
+                        let strength = min(max(limits.weight * rig.globalLimitsWeight, 0), 1)
+                        let posed = chain[at].worldOrientationNow
+                        let held = __IKClamp(posed, axis: axis, minimum: limits.minimumAngles[index],
+                                             maximum: limits.maximumAngles[index], strength: strength)
+                        if held != posed { chain[at].setWorldOrientation(held) }
+                    }
                     moved = true
                 }
                 if !moved { break }
@@ -809,6 +823,14 @@ struct __IKChainJoint {
     /// A joint's own rotation, turned by `rotation` about its own axes.
     mutating func turn(by rotation: simd_quatf) {
         entity.transform.rotation = __IKOrientation(rotation, in: orientation)
+    }
+
+    /// The joint's world orientation, which is its own turned by its parent's.
+    var worldOrientationNow: simd_quatf { __IKParentFrame(of: entity) * entity.transform.rotation }
+
+    /// Puts the joint at a world orientation, taking the parent's into account.
+    mutating func setWorldOrientation(_ world: simd_quatf) {
+        entity.transform.rotation = __IKParentFrame(of: entity).inverse * world
     }
 }
 
@@ -892,6 +914,15 @@ func __IKSwingTwist(_ rotation: simd_quatf) -> (twists: SIMD3<Float>, swing: sim
 
 func __IKAxis(_ index: Int) -> SIMD3<Float> {
     index == 0 ? SIMD3<Float>(1, 0, 0) : (index == 1 ? SIMD3<Float>(0, 1, 0) : SIMD3<Float>(0, 0, 1))
+}
+
+/// A joint's parent's orientation in the world, which is the frame the joint's own axes sit in.
+@MainActor
+func __IKParentFrame(of entity: __REEntity) -> simd_quatf {
+    guard let parent = entity.parent else { return simd_quatf(angle: 0, axis: SIMD3<Float>(1, 0, 0)) }
+    let m = parent.transformMatrixInHierarchy
+    return simd_quatf(float3x3(columns: (simd_make_float3(m.columns.0), simd_make_float3(m.columns.1),
+                                          simd_make_float3(m.columns.2))))
 }
 
 /// One axis's angle of a rotation: the twist of a swing-twist decomposition, which is exact and has
