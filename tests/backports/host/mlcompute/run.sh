@@ -54,9 +54,14 @@ xcrun clang $common -include "$build/rename.h" -I"$port" "$here/record.m" "$here
     "$port/MLCTypes14.m" "$port/MLCDevice15.m" "$port/MLCTensors14.m" "$port/MLCDescriptors14.m" "$port/MLCLayers14.m" $libs -o "$build/port"
 "$build/port" > "$build/port.log" 2>&1 || { echo "the port run failed:"; tail -20 "$build/port.log"; exit 1; }
 
-# The names of the two must be the same set, or a case is answered by one and not by the other.
-if [ "$(grep -c "	" "$build/system.log")" != "$(grep -c "	" "$build/port.log")" ]; then
-    echo "the two runs answered a different number of cases: $(grep -c "	" "$build/system.log") and $(grep -c "	" "$build/port.log")"
+# The names of the two must be the same set, not merely the same number: a case answered by one side and
+# not by the other, with a different case elsewhere making the counts even, is a case that is not being
+# checked. The two sets are compared by name.
+cut -f1 "$build/system.log" | sort > "$build/system.keys"
+cut -f1 "$build/port.log" | sort > "$build/port.keys"
+if ! diff -q "$build/system.keys" "$build/port.keys" > /dev/null; then
+    echo "the two runs did not answer the same cases:"
+    diff "$build/system.keys" "$build/port.keys" | head -20
     exit 1
 fi
 # The cases whose answer is about hardware this release has none of, and which are therefore meant to
@@ -85,3 +90,33 @@ echo "the cases that differ, and are meant to:"
 echo "$system_only" | grep -E "^($names)${tab}" | sed "s/^/  system /" | head -20
 echo "$diffout" | grep "^>" | sed "s/^> //" | grep -E "^($names)${tab}" | sed "s/^/  port   /" | head -20
 echo "cases=$(grep -c "	" "$build/system.log") log=$build/system.log"
+
+# The mutation: +[MLCDevice cpuDevice] reporting the wrong type. That case is on the excuse list, so a
+# check that only looks at the excused names would let it pass while still printing that the port answers
+# as the host does everywhere else. It must not pass.
+mutant() {
+    rm -rf "$build/mutant"
+    mkdir -p "$build/mutant"
+    cp "$port"/*.m "$port"/*.mm "$port"/*.h "$build/mutant/"
+    python3 - "$build/mutant/MLCDevice15.m" <<'PYEOF'
+import sys
+path = sys.argv[1]
+text = open(path).read()
+before = text
+text = text.replace('return [[self alloc] initWithType:MLCDeviceTypeCPU actual:MLCDeviceTypeCPU];',
+                    'return [[self alloc] initWithType:MLCDeviceTypeCPU actual:MLCDeviceTypeGPU];')
+assert text != before, "the mutant changed nothing"
+open(path, "w").write(text)
+PYEOF
+    xcrun clang $common -include "$build/rename.h" -I"$build/mutant" "$here/record.m" "$here/cases.m" "$here/layer-cases.m" \
+        "$build/mutant"/MLCTypes14.m "$build/mutant"/MLCDevice15.m "$build/mutant"/MLCTensors14.m "$build/mutant"/MLCDescriptors14.m \
+        "$build/mutant"/MLCLayers14.m $libs -framework MLCompute -o "$build/mutant/run" 2>/dev/null || true
+    "$build/mutant/run" > "$build/mutant.log" 2>&1 || true
+    if ! diff "$build/system.log" "$build/mutant.log" | grep -q "^[<>]"; then
+        echo "the mutant is indistinguishable from the port: the check reads a stored answer, not the code"
+        exit 1
+    fi
+    echo "the mutant is told apart:"
+    diff "$build/system.log" "$build/mutant.log" | grep "^[<>]" | head -4 | sed "s/^/  /"
+}
+mutant
