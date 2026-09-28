@@ -308,14 +308,19 @@ static void check_keys(void)
             MLFeatureDescription *again = [copy copy];
             char label[96];
             snprintf(label, sizeof label, "%s: a description copies twice", name.UTF8String);
-            charon_check([copy isEqual:one] && [again isEqual:one] && copy != one && again != copy, label,
-                         @"a copy differs, or is the original");
+            coreml_check([copy isEqual:one] && [again isEqual:one] && copy != one && again != copy, label,
+                          @"a copy differs, or is the original");
             if (one.type == MLFeatureTypeMultiArray) {
+                /* A constraint has no isEqual: of its own -- Core ML declares none -- so the copy is
+                 * compared by the numbers it carries, which is what the class is: the same kind, the
+                 * same ranges, the same set of shapes, and a different object. */
                 MLMultiArrayShapeConstraint *constraint = one.multiArrayConstraint.shapeConstraint;
+                MLMultiArrayShapeConstraint *copied = [constraint copy];
                 snprintf(label, sizeof label, "%s: its shape constraint copies", name.UTF8String);
-                charon_check([constraint copy] != nil &&
-                                 [[constraint copy] isEqual:constraint] && [constraint copy] != constraint,
-                             label, @"the constraint did not copy, or copied to itself");
+                coreml_check(copied != nil && copied != constraint && copied.type == constraint.type &&
+                                 [copied.sizeRangeForDimension isEqualToArray:constraint.sizeRangeForDimension] &&
+                                 [copied.enumeratedShapes isEqualToArray:constraint.enumeratedShapes],
+                             label, @"the constraint did not copy, or copied to something else");
             }
         }
     }
@@ -341,8 +346,8 @@ static void check_keys(void)
         for (index = 0; index < 8; index++) {
             char label[96];
             snprintf(label, sizeof label, "%s implements -copyWithZone: itself", names[index]);
-            charon_check(class_getInstanceMethod(constraints[index], @selector(copyWithZone:)) != NULL, label,
-                         @"nothing in the class implements it, so a description carrying it cannot be copied");
+            coreml_check(class_getInstanceMethod(constraints[index], @selector(copyWithZone:)) != NULL, label,
+                          @"nothing in the class implements it, so a description carrying it cannot be copied");
         }
     }
         CHECK([MLNumericConstraint instancesRespondToSelector:@selector(minNumber)],
