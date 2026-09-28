@@ -87,6 +87,24 @@ static id system_localized(NSString *language, id pronouns)
                                         language, pronouns);
 }
 
+/* The fixture the review asked for: a factory on the port that makes a term with a language and no
+   pronouns, so the two comparisons -isEqual: makes that the four singletons cannot reach are
+   exercised -- "is this the current user's term" and "is this the same language". Without it the suite
+   only ever compared terms that carry no language at all, so both lines of the method were untested. */
+static id our_term_with_language(NSString *language)
+{
+    SEL factory = NSSelectorFromString(@"termWithLanguageIdentifier:");
+    if (![ourClass respondsToSelector:factory])
+        return nil;
+    return ((CharonSend1)objc_msgSend)(ourClass, factory, language);
+}
+
+static id system_term_with_language(NSString *language)
+{
+    SEL factory = NSSelectorFromString(@"localizedForLanguageIdentifier:withPronouns:");
+    return ((CharonSend2)objc_msgSend)(systemClass, factory, language, (id)nil);
+}
+
 static void expect(NSString *label, BOOL system, BOOL ours)
 {
     checks++;
@@ -175,6 +193,30 @@ int main(void)
                [theirAgain hash] == [system_localized(@"de", nil) hash], [ourAgain hash] == [ourAgain hash]);
         expect(@"equal terms hash alike (de, an empty array)",
                [theirEmpty hash] == [system_localized(@"de", @[]) hash], [ourEmpty hash] == [ourEmpty hash]);
+
+        /* The fixture, and the two comparisons it exists to reach. */
+        id ourEnglish = our_term_with_language(@"en"), ourGerman = our_term_with_language(@"de");
+        id theirEnglish = system_term_with_language(@"en"), theirGerman = system_term_with_language(@"de");
+        charon_check(ourEnglish != nil, "the port has the +termWithLanguageIdentifier: fixture",
+                     @"the fixture is not there, so neither comparison below is exercised");
+        if (ourEnglish) {
+            /* currentUser: a localized term is never the current user's term, whatever else matches. */
+            id ourEnglishAgain = our_term_with_language(@"en");
+            expect(@"two terms for the same language are equal", [theirEnglish isEqual:theirEnglish],
+                   [ourEnglish isEqual:ourEnglishAgain]);
+            expect(@"a localized term is not the current user's",
+                   ![theirEnglish isEqual:theirCurrent], ![ourEnglish isEqual:ourCurrent]);
+            expect(@"and neither is the gendered ones' equal",
+                   ![theirEnglish isEqual:theirNeutral], ![ourEnglish isEqual:ourNeutral]);
+            /* languageIdentifier: the language is part of the comparison, and part of the hash. */
+            expect(@"two languages are not the same term", ![theirEnglish isEqual:theirGerman],
+                   ![ourEnglish isEqual:ourGerman]);
+            expect(@"equal terms hash alike across the fixture",
+                   [theirEnglish hash] == [system_term_with_language(@"en") hash],
+                   [ourEnglish hash] == [ourEnglishAgain hash]);
+            expect(@"the two languages' hashes differ", [theirEnglish hash] != [theirGerman hash],
+                   [ourEnglish hash] != [ourGerman hash]);
+        }
 
         printf("checks=%d failures=%d divergences=%d\n", checks, failures, divergences);
     }

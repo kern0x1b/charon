@@ -143,8 +143,19 @@ static char CharonTermOfAddressStateKey;
 
 + (instancetype)localizedForLanguageIdentifier:(NSString *)language withPronouns:(NSArray *)pronouns
 {
-    return [self charon_termWithLanguage:language pronouns:pronouns currentUser:NO
-                                   origin:[NSString stringWithFormat:@"localized %@", language ?: @""]];
+    /* The origin is the *factory*, not what it was asked for: if the language went into it, every
+       pair of localized terms would differ by origin and the language comparison below would never
+       be the thing that answered -- which is exactly what the differential's fixture found when the
+       origin read "localized en" and "localized de". */
+    return [self charon_termWithLanguage:language pronouns:pronouns currentUser:NO origin:@"localized"];
+}
+
+/* The fixture the differential builds its language comparisons with: a term for a language and no
+   pronouns. It is the same shape as +localizedForLanguageIdentifier:withPronouns: with a nil list,
+   under the name the host's own Swift interface gives it, so a test can name one argument. */
++ (instancetype)termWithLanguageIdentifier:(NSString *)language
+{
+    return [self localizedForLanguageIdentifier:language withPronouns:nil];
 }
 
 - (NSString *)languageIdentifier
