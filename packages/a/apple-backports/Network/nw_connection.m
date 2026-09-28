@@ -583,6 +583,8 @@ static void charon_tls_pump(CharonNWConnection *connection)
 
 static void charon_readable(CharonNWConnection *connection)
 {
+    if (getenv("CHARON_TRACE_FD"))
+        fprintf(stderr, "[charon] readable: fd=%d\n", connection->_socket);
     charon_dump(connection, "read");
     uint8_t buffer[16384];
     while (YES) {
@@ -692,6 +694,9 @@ static void charon_install_sources(CharonNWConnection *connection)
        write; a socket is always writable, so an always-live one would spin. */
     /* The read source is made once the socket is a connection: while a connect is in progress there is
        nothing to read, and the read source would fire for a hangup the kernel has not decided on yet. */
+    if (getenv("CHARON_TRACE_FD"))
+        fprintf(stderr, "[charon] sources: fd=%d connecting=%d queue=%p\n", connection->_socket,
+                connection->_connecting, (__bridge void *)connection->_queue);
     connection->_readSource = connection->_connecting ? NULL : charon_nw_read_source(connection->_socket, connection->_queue);
     if (connection->_readSource) {
         __weak CharonNWConnection *weak = connection;
