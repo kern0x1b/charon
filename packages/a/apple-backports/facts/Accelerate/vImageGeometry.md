@@ -948,3 +948,38 @@ kernel answered by the backColor of -1.
 Solving it needs one more run of `probe-scale.m` with the source made **taller than one row** so the
 diagonal walk has a `cross` extent, at a scale of 2, printing the exact values: that separates a magnified
 *phase* from a magnified *position* in one grid, and it is the last measurement the family needs.
+
+## The multi-row grid: the scale cases are exact, and the slope is not sheared at all
+
+A 5x5 picture whose row `r` is the constant `r + 1` and whose column `c` carries `0.01c`, so a horizontal
+answer separates which row was read from which column, with a backColor of -9 so the back-coloured
+destinations are unmistakable. The host's five rows and the port's five rows, side by side
+(`probe-multirow.m`):
+
+    scale 0.5  host  0.280  2.001 -4.017 -9.822 -8.812   port  0.280  2.001 -4.017 -9.822 -8.812
+              ... and the same for all four remaining rows
+    scale 2    host -1.105  2.033  1.613  0.711  0.944   port -1.105  2.033  1.613  0.711  0.944
+              ... and the same for all four remaining rows
+
+**Exact, every value, at both scales and on a picture that has the cross extent the one-row grid lacked.**
+So the scale handling is finished: the divisor is the filter's own scale, the position carries the half
+pixel, the kernel stretches when minifying, and the two edging modes are each honoured.
+
+**And the slope is not sheared at all in the port.** A scale of 1 and a slope of 1:
+
+    host  -9.000 -9.000 -8.755 -10.114 -4.001     port  1.000 1.010 1.020 1.030 1.040
+    host  -9.000 -8.731 -10.225 -3.501  3.230     port  2.000 2.010 2.020 2.030 2.040
+    host  -8.707 -10.337 -3.001  4.341  2.722     port  3.000 3.010 3.020 3.030 3.040
+    host -10.448 -2.501  5.453  3.697  3.706     port  4.000 4.010 4.020 4.030 4.040
+    host  -2.001  6.564  4.673  4.681  6.600     port  5.000 5.010 5.020 5.030 5.040
+
+The port's rows are the source's own rows, unmoved and unsheared - the exact values `r + 1 + 0.01c` - while
+the host walks each row's own values across the picture and fills the rest with the backColor of -9. So the
+**across term contributes nothing in the port**: `row = sourceCross + floor(slope * (at - centre) + 0.5)` is
+coming out as `sourceCross` for every tap, which means `at` equals `centre` for every tap, which means the
+tap positions and the centre are the same value - and the only way that happens with
+`at = first + k` and `centre` a separate value is that the *weights* and the positions disagree about which
+tap is which.
+
+That is a localised defect in the across term, it is the last one the family has, and the 36 registry
+entries stay **out** until the differential is green.
