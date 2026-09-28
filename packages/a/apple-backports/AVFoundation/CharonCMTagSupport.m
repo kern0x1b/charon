@@ -163,3 +163,16 @@ BOOL charon_tag_carries(const CMTag *held, CMItemCount heldCount, const CMTag *w
 }
 
 @end
+
+// The class method that hands a collection's tags to another object, in the helper so the group never
+// calls CMTagCollection17.o's API. The caller frees the array.
+CMTag *charon_copy_all_tags(CMTagCollectionRef collection, CMItemCount *countOut)
+{
+    CharonCMTagCollection *mine = (__bridge CharonCMTagCollection *)collection;
+    if (!mine) {
+        if (countOut)
+            *countOut = 0;
+        return NULL;
+    }
+    return [mine charon_copyAllTags:countOut];
+}
