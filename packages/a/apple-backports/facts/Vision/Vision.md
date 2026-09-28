@@ -68,8 +68,25 @@ recorded by `tests/backports/host/vision/run.sh` (33 records) and held against t
   `MLFeatureValueImageOptionCropRect` -- are **attempted and not yet obtained**: that probe run
   faults on the centre-crop oracle, which comes back NULL when the constructor is handed an
   explicit size and an option with no constraint behind it, and the measurement dereferences it.
-  Until it runs, the port's centre crop is unchanged: it is Vision's rule, it is what the
-  option is called, and nothing measured says to replace it.
+  Two of those measurements are now in, and both **exclude** their hypothesis:
+
+  - The centre-crop oracle answers, with error `null`/0 and the very options dictionary the
+    working run used. The null in the previous run came from the *other* dictionary in that block --
+    a `CropRect` whose value was an `NSValue` wrapping a range, where Core ML wants a rect -- which
+    is what the coordinator said it was.
+  - The three crop origins (exact, floor, round) all compute the **same** inset, `-112`, for this
+    case, and all three read **50176 of 50176**. So the crop origin is not the difference, and with
+    all three coinciding at the centre the horizontal shift sweep cannot find one either.
+
+  What is left is the *content*: with the same scale (4.48) and the same origin, Core ML's
+  centre crop of a 100x50 picture into 224x224 does not produce what a cover-and-crop produces, and
+  every pixel differs. The next measurement is the two buffers' corners and rows **of the port's own
+  answer** against the oracle's, which means building the probe as a port build for that block --
+  the row-112 dump in the last run compared the oracle with itself, the call site passing it twice,
+  so it is not evidence about the port and is not recorded as any.
+
+  Until that runs, the port's centre crop is unchanged: it is Vision's rule, it is what the option
+  is called, and nothing measured says to replace it.
 
   The two rules themselves: centre crop scales until the picture covers the
   target and keeps the middle, scale fit scales until it fits and leaves the rest black. A buffer
