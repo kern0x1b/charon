@@ -269,3 +269,29 @@ owns it), the Siri button from the release's own assistant, and the recents from
 — so the recents list is the port's own and says so. The settings pane is a
 `CPListTemplate` over the installed apps with the exclude and reorder rows the owner asked for, and
 because it is a list template it is drawn with the same release chrome as everything else.
+
+### Why the home screen carries no registry row
+
+The gate says it plainly and it is right: the five classes the home screen is built from --
+`CharonCarPlayLayout`, `CharonCarPlayHomeTemplate`, `CharonCarPlayHomeView`, `CharonCarPlayDock` and
+`CharonCarPlayHomeSettingsTemplate` -- are **Charon's own**, and `internal_symbol()` in
+`modules/apple/backports.lua` filters every name beginning with `Charon` out of what a library
+exports, precisely because such a class is the port's own machinery and not API. So the registry
+carries no row for them, the way it carries none for MediaPlayer's `CharonRemoteCommandTarget` or
+Contacts' `CharonContactsBook`.
+
+The API the screen is *reached through* is the SDK's own and was already registered: a home screen is
+a `CPTemplate`, and the interface controller's own `-setRootTemplate:animated:completion:` is what
+sets it. `CharonCarPlayHomeTemplate` is the port's own **entry point** for that call, and how to make
+it is in `CharonCarPlayHome.h` at the top:
+
+```objc
+CPTemplate *home = [[CharonCarPlayHomeTemplate alloc] initWithScreenSize:screenSize];
+[interfaceController setRootTemplate:home animated:NO completion:nil];
+// and the design's §4 render step takes contentWindow.rootViewController.view.layer
+```
+
+So the delivery the car's first screen is reached by is `-[CharonCarPlayHomeTemplate
+initWithScreenSize:]` followed by `-[CPInterfaceController setRootTemplate:animated:completion:]`,
+and the pixels are `interfaceController.contentWindow.rootViewController.view.layer` -- the same
+layer the design's render step already takes, with nothing new called on the daemon.
