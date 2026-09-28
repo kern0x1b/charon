@@ -49,3 +49,49 @@ to stand at one.
 `tests/backports/host/phase/run.sh` compares the **declared behaviour** and not the class name: that
 the port's root is a `PHASEObject`, that it has no parent and no children, and that its transform is
 the identity — and that the host agrees about the two of those that are declared behaviour.
+
+## The open item: the harness answers `rootObject` through a class that is not only the port's
+
+The engine's `rootObject` is made, kept, and answered — and the harness still reports it as nil. What is
+established, and what is not, so the next reader does not repeat the three measurements:
+
+**Not the rename.** The answering method is the port's own, found by the coordinator's method
+(`class_getMethodImplementation` on the object's own class, then `dladdr`):
+
+```
+stage asked charon_host_PHASEEngine, imp 0x1023ac108,
+    symbol -[charon_host_PHASEEngine rootObject]
+```
+
+so it is neither a category elsewhere nor the SDK's, and the port's and Apple's classes are two
+distinct classes in the one binary. The breakpoint on it hits.
+
+**Not a weak or unsafe ivar, and not the wrong initializer.** The engine declares the ivar
+`PHASEObject *_charon_rootObject;` with no ownership qualifier, and assigns it in
+`-initWithUpdateMode:`, which is its only initializer. `@synthesize rootObject = _charon_rootObject;`
+binds the property to that ivar and is required by the build's
+`-Werror=objc-missing-property-synthesis`; it did not change the harness's answer.
+
+**What the class's ivars say.** Reading the runtime's own ivar list and every slot:
+
+```
+stage ivar _charon_unitsPerSecond      at   8  slot 0x3ff0000000000000   <- 1.0, the header's
+stage ivar _charon_defaultReverbPreset  at  32  slot 0x724e6f6e             <- 'rNon', the header's
+stage ivar _charon_rootObject          at  72  slot 0x755cd20e00           <- a live root
+stage ivar _lastRenderTime             at  80  type AVAudioTime
+```
+
+Every ivar this port declares is at the offset it should be, holding the value the header documents, and
+**the root's slot holds a live object** while the message returns nil. And there is a tenth ivar,
+`_lastRenderTime`, typed `AVAudioTime`, which `grep -rn` finds **nowhere** in
+`packages/a/apple-backports/`. It is a property of Apple's own 26.0 `PHASEEngine`, whose declared type is
+`AVAudioTime`.
+
+`nm` finds exactly one definition of the class, in `PHASEEngine15.m.o`, and the harness binary contains
+**no AVFAudio symbol at all**. So the class the runtime answers through carries the port's ivars *and* an
+ivar from Apple's `PHASEEngine`. The only mechanism I know that produces that is the port's object and
+the framework's agreeing on one class name once the harness renames it — which is a **harness**
+defect, not a port one, and is the thing to chase next.
+
+`checks=37 failures=1` until then. No mutant is added for it, because a mutant that presumes the
+cause is the mistake this delivery has already made once.
