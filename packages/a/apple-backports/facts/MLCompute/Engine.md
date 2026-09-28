@@ -29,6 +29,23 @@ this port would then have to stub. ncnn and XNNPACK are the better *kernels* and
 result; ncnn is also a far larger build and its tensor model is not MLCompute's, and XNNPACK's operators
 want their weights pre-packed, which is a poor fit for a program that hands MLCompute descriptors.
 
+## The GELU, and the two constants it uses rather than the descriptor's
+
+The engine differential's case builds its activation with `+descriptorWithType:` and no parameters, so
+the GELU arrives with a and b of 1. The formula written for the parameters, `x/2 * (1 + tanh(a * (x +
+b x^3)))`, then answers 0.982014, 2, 3 and 4 for 1, 2, 3 and 4 - the tanh of a large argument, which
+is what the port was returning and the last failing case.
+
+The framework answers 0.841192, 1.9546, 2.99636 and 3.99993 for the same input and the same
+descriptor, which is the standard tanh approximation with its own two constants: the square root of
+2/pi and 0.044715. So the parameters of this one activation reach nothing, and the port writes the
+framework's constants rather than reading the caller's. Those are also the numbers
+`+[MLCActivationLayer geluLayer]`'s descriptor carries, so the layer and the default descriptor are
+the same function.
+
+The erf form is still not it: `x/2 * (1 + erff(x / sqrt(2)))` gives 0.841345 at 1, and the framework
+does not.
+
 ## What was measured about it
 
 **It builds for this port's oldest release.** All three translation units compile for
