@@ -178,3 +178,25 @@ no `SKView.m`. The ladder puts `_OBJC_CLASS_$_SKView` first at **7.0**:
 So `ARSKView`, being declared as `@interface ARSKView : SKView`, is a SpriteKit dependency at every
 band. Its nine rows: the class, `anchorForNode:`, `hitTest:types:`, `nodeForAnchor:`, and
 `ARSKViewDelegate`'s five `view:` methods. The cause is above and it is for the SpriteKit owner.
+
+## A correction: the "nineteen errors" were my hand compile, not the build
+
+An earlier commit of this series said `SCNGeometry.m` "has 19 pre-existing errors". That was wrong and
+the error is mine. The gate compiles an object with (`backports.lua:394-396`):
+
+```
+-Os -g0 -Wall -Wno-unguarded-availability-new -Wno-unguarded-availability
+-Werror=objc-missing-property-synthesis
+```
+
+**`-Werror` is not blanket**, and a hand compile with a blanket `-Werror` reports nineteen errors on that
+file which the build does not see — the protocol members of `SCNAnimatable`
+(`animationKeys`, `insertMaterial:atIndex:`, `removeMaterialAtIndex:`,
+`replaceMaterialAtIndex:withMaterial:`), which the gate does not ask about. Under the real flags
+`SCNGeometry.m`, `SCNView.m` and `charon_replaceSources:elements:` are all clean, and every ARKit object
+compiles clean under the same flags.
+
+A hand compile is not a measurement of the tree's own files, and the rule is to build through the
+package's own rules or reuse the gate's compile line verbatim. The flags are recorded here so the next
+person does not have to find them.
+
