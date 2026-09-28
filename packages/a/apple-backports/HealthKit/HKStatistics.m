@@ -428,12 +428,36 @@
     if (!components)
         return nil;
     NSDateComponents *normal = [components copy];
-    NSArray *fields = @[ @"era", @"year", @"month", @"day", @"hour", @"minute", @"second", @"weekday",
-                         @"weekdayOrdinal", @"quarter", @"weekOfMonth", @"weekOfYear", @"yearForWeekOfYear" ];
-    for (NSString *field in fields) {
-        if ([normal valueForKey:field] == NSDateComponentUndefined)
-            [normal setValue:@0 forKey:field];
-    }
+    // Through the component's own accessor and not -valueForKey:. NSDateComponents holds each component
+    // as an NSNumber and -valueForKey: never returns NSDateComponentUndefined, which is an NSDateComponent
+    // enum in NSCalendar.h and not a key: read this way every comparison was false, nothing was set, and
+    // the host's own 0 never arrived - which is the difference the differential reported.
+    if ([normal era] == NSDateComponentUndefined)
+        [normal setEra:0];
+    if ([normal year] == NSDateComponentUndefined)
+        [normal setYear:0];
+    if ([normal month] == NSDateComponentUndefined)
+        [normal setMonth:0];
+    if ([normal day] == NSDateComponentUndefined)
+        [normal setDay:0];
+    if ([normal hour] == NSDateComponentUndefined)
+        [normal setHour:0];
+    if ([normal minute] == NSDateComponentUndefined)
+        [normal setMinute:0];
+    if ([normal second] == NSDateComponentUndefined)
+        [normal setSecond:0];
+    if ([normal weekday] == NSDateComponentUndefined)
+        [normal setWeekday:0];
+    if ([normal weekdayOrdinal] == NSDateComponentUndefined)
+        [normal setWeekdayOrdinal:0];
+    if ([normal quarter] == NSDateComponentUndefined)
+        [normal setQuarter:0];
+    if ([normal weekOfMonth] == NSDateComponentUndefined)
+        [normal setWeekOfMonth:0];
+    if ([normal weekOfYear] == NSDateComponentUndefined)
+        [normal setWeekOfYear:0];
+    if ([normal yearForWeekOfYear] == NSDateComponentUndefined)
+        [normal setYearForWeekOfYear:0];
     return normal;
 }
 
