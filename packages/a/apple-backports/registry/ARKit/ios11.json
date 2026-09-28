@@ -227,7 +227,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "scene depth, which only a LiDAR's sensor measures; the iPhone 4S has a camera and no depth sensor",
+      "reason": "not carried, and it is a sensor rather than a gap in this series: a depth sensor's frame, and this device has no depth sensor. The framework's own answer for a device without the sensor is what is here",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "the armv7 shared cache of iOS 6.1.3, read with modules/apple/objc.lua: no depth and no face class of any kind"
     },
@@ -237,7 +237,7 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "an environment probe is a cube map of the light around a point, which is a computation on the camera's frames and is ARKit's own probe, not carried here",
+      "reason": "not carried, and it is a sensor rather than a gap in this series: a probe of the surroundings placed by a depth sensor, and this device has none. The framework's own answer for a device without the sensor is what is here",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "the armv7 shared cache of iOS 6.1.3, read with modules/apple/objc.lua: no depth and no face class of any kind"
     },
@@ -247,7 +247,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "a face anchor's geometry is measured by a TrueDepth sensor across the face, which this device has not",
+      "reason": "not carried, and it is a sensor rather than a gap in this series: a face, measured by a sensor across it, and this device has none. The framework's own answer for a device without the sensor is what is here",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "the armv7 shared cache of iOS 6.1.3, read with modules/apple/objc.lua: no depth and no face class of any kind"
     },
@@ -257,7 +257,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the face mesh a TrueDepth sensor measures, which this device has not",
+      "reason": "not carried, and it is a sensor rather than a gap in this series: the mesh of a face, which is that sensor's own output. The framework's own answer for a device without the sensor is what is here",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "the armv7 shared cache of iOS 6.1.3, read with modules/apple/objc.lua: no depth and no face class of any kind"
     },
@@ -267,7 +267,7 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "a scene mesh read from scene depth, which only a LiDAR's sensor measures",
+      "reason": "not carried, and it is a sensor rather than a gap in this series: a mesh, and a mesh comes from a depth sensor this device has not. The framework's own answer for a device without the sensor is what is here",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "the armv7 shared cache of iOS 6.1.3, read with modules/apple/objc.lua: no depth and no face class of any kind"
     },
@@ -277,7 +277,7 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the vertices of that mesh, which come from the same depth sensor",
+      "reason": "not carried, and it is a sensor rather than a gap in this series: a mesh geometry over that sensor's output. The framework's own answer for a device without the sensor is what is here",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "the armv7 shared cache of iOS 6.1.3, read with modules/apple/objc.lua: no depth and no face class of any kind"
     },
@@ -287,7 +287,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "a scanned object, which is a mesh read from scene depth",
+      "reason": "not carried, and it is a sensor rather than a gap in this series: a scanned object, and the scan is a depth sensor's mesh. The framework's own answer for a device without the sensor is what is here",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "the armv7 shared cache of iOS 6.1.3, read with modules/apple/objc.lua: no depth and no face class of any kind"
     },
@@ -297,7 +297,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "a SceneKit face mesh, and the face it is a mesh of is a TrueDepth sensor's",
+      "reason": "not carried, and it is a sensor rather than a gap in this series: a SceneKit geometry over a face mesh, and the mesh needs that sensor. The framework's own answer for a device without the sensor is what is here",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "the armv7 shared cache of iOS 6.1.3, read with modules/apple/objc.lua: no depth and no face class of any kind"
     },
@@ -306,10 +306,11 @@
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a SceneKit mesh of a plane, and a detected plane has no mesh to give",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "the armv7 shared cache of iOS 6.1.3, read with modules/apple/objc.lua: no depth and no face class of any kind"
+      "status": "implemented",
+      "reason": "carried: a geometry over a plane the detector found, and the SceneKit port implements SCNGeometry",
+      "effect": "a geometry source over the plane's four corners and four coordinate pairs and an element over its six indices, filled by -updateFromPlaneGeometry: through the port's package-internal charon_replaceSources:elements:",
+      "source": "the armv7 shared cache of iOS 6.1.3, read with modules/apple/objc.lua: no depth and no face class of any kind",
+      "facts": "facts/ARKit/ARSCNViewFamily.md"
     },
     {
       "api": "ARAnchorCopying",
@@ -1115,7 +1116,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "not carried here: the setting belongs to a configuration this device cannot run, and the reason is the sensor it needs rather than the chip",
+      "reason": "not carried yet, and deliberately not as a sensor answer: a directional light estimate is measured from the camera's own frames and the frame's own motion, so it needs no sensor this device has not. It is carried on the next slice, which puts it beside ARLightEstimate; this series took the image-tracking family and the settings, and leaving it absent with that reason is honest in a way that marking it a sensor would not be",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "the SDK 16.4 headers of ARKit"
     },
@@ -1124,10 +1125,11 @@
       "kind": "class",
       "introduced": "11.3",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "not carried here: the setting belongs to a configuration this device cannot run, and the reason is the sensor it needs rather than the chip",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "the SDK 16.4 headers of ARKit"
+      "status": "implemented",
+      "reason": "carried: an anchor whose thing in the world is a printed picture, found by the camera",
+      "effect": "referenceImage is the picture it was found from and estimatedScaleFactor the scale the session measured against it; neither initialiser is available because an image anchor exists because the session found the picture, not because a caller asked for one",
+      "source": "the SDK 16.4 headers of ARKit",
+      "facts": "facts/ARKit/ARSCNViewFamily.md"
     },
     {
       "api": "ARImageTrackingConfiguration.autoFocusEnabled",
@@ -1154,10 +1156,11 @@
       "kind": "property",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "not carried here: the setting belongs to a configuration this device cannot run, and the reason is the sensor it needs rather than the chip",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "the SDK 16.4 headers of ARKit"
+      "status": "implemented",
+      "reason": "carried: the set of pictures the session is asked to look for, and finding one needs only the camera",
+      "effect": "the set as the caller set it, copied so a later change to their set does not change the configuration",
+      "source": "the SDK 16.4 headers of ARKit",
+      "facts": "facts/ARKit/ARSCNViewFamily.md"
     },
     {
       "api": "ARObjectScanningConfiguration.autoFocusEnabled",
@@ -1194,10 +1197,11 @@
       "kind": "class",
       "introduced": "11.3",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "not carried here: the setting belongs to a configuration this device cannot run, and the reason is the sensor it needs rather than the chip",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "the SDK 16.4 headers of ARKit"
+      "status": "implemented",
+      "reason": "carried: a picture of a thing in the world and its real width, and the session finds it in the camera's frames - no sensor beyond the camera the session is already running",
+      "effect": "a caller builds one from a CGImage or a pixel buffer, physicalSize is that width and the picture's own aspect ratio, +referenceImagesInGroupNamed:bundle: reads a <name>.arreferenceimage folder and its Contents.json, and -validateWithCompletionHandler: says what can be said without frames",
+      "source": "the SDK 16.4 headers of ARKit",
+      "facts": "facts/ARKit/ARSCNViewFamily.md"
     },
     {
       "api": "ARReferenceObject",
@@ -1205,7 +1209,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "not carried here: the setting belongs to a configuration this device cannot run, and the reason is the sensor it needs rather than the chip",
+      "reason": "not carried, and it is a sensor rather than a gap in this series: a scanned object, and the scan is a depth sensor's mesh. The framework's own answer for a device without the sensor is what is here",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "the SDK 16.4 headers of ARKit"
     },
@@ -1237,7 +1241,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "not carried here: the setting belongs to a configuration this device cannot run, and the reason is the sensor it needs rather than the chip",
+      "reason": "not carried, and it is a dependency rather than a sensor: a SpriteKit view: ARSKView.h declares it as @interface ARSKView : SKView, and SKView is not among the libraries this tree carries - SpriteKit has no folder, no row and no implementation, and the cache ladder puts _OBJC_CLASS_$_SKView first at 7.0. So this is a SpriteKit dependency and not a hardware answer, and it is not carried as one",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "the SDK 16.4 headers of ARKit"
     },
@@ -1247,7 +1251,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "not carried here: the setting belongs to a configuration this device cannot run, and the reason is the sensor it needs rather than the chip",
+      "reason": "not carried, and it is a dependency rather than a sensor: a SpriteKit view's delegate, for the same reason: the view it belongs to cannot be carried, and a protocol with no class behind it describes nothing a caller can set",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
       "source": "the SDK 16.4 headers of ARKit"
     },
@@ -1286,10 +1290,11 @@
       "kind": "property",
       "introduced": "11.3",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "not carried here: the setting belongs to a configuration this device cannot run, and the reason is the sensor it needs rather than the chip",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "the SDK 16.4 headers of ARKit"
+      "status": "implemented",
+      "reason": "carried: the 11.3 plus of the same set on a world configuration, and it needs only the camera",
+      "effect": "the set as the caller set it, copied, and nil clears it because the property is null_resettable",
+      "source": "the SDK 16.4 headers of ARKit",
+      "facts": "facts/ARKit/ARSCNViewFamily.md"
     },
     {
       "api": "ARWorldTrackingConfiguration.detectionObjects",
@@ -1297,7 +1302,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "not carried here: the setting belongs to a configuration this device cannot run, and the reason is the sensor it needs rather than the chip",
+      "reason": "not carried, and it is a sensor rather than a gap in this series: the set of objects a session would scan, and scanning one is a depth sensor's mesh. The framework's own answer for a device without the sensor is what is here",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "the SDK 16.4 headers of ARKit"
     },
@@ -1316,20 +1321,22 @@
       "kind": "property",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "not carried here: the setting belongs to a configuration this device cannot run, and the reason is the sensor it needs rather than the chip",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "the SDK 16.4 headers of ARKit"
+      "status": "implemented",
+      "reason": "carried: a map the session starts from, and carrying one is starting from it",
+      "effect": "the map, and a session asked to run with one starts from that map's anchors rather than from nothing",
+      "source": "the SDK 16.4 headers of ARKit",
+      "facts": "facts/ARKit/ARSCNViewFamily.md"
     },
     {
       "api": "ARWorldTrackingConfiguration.maximumNumberOfTrackedImages",
       "kind": "property",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "not carried here: the setting belongs to a configuration this device cannot run, and the reason is the sensor it needs rather than the chip",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "the SDK 16.4 headers of ARKit"
+      "status": "implemented",
+      "reason": "carried: how many pictures the session reports at once, which is a number the caller sets",
+      "effect": "the number asked for, and a session reports at most that many image anchors",
+      "source": "the SDK 16.4 headers of ARKit",
+      "facts": "facts/ARKit/ARSCNViewFamily.md"
     },
     {
       "api": "ARWorldTrackingConfiguration.planeDetection",
@@ -1544,11 +1551,11 @@
       "kind": "constant",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
       "facts": "facts/ARKit/ARSCNViewFamily.md",
       "source": "ARKit of the iOS 16.4 SDK: ARSCNView.h:175, typedef SCNDebugOptions ARSCNDebugOptions",
-      "reason": "not carried: it is SceneKit's own SCNDebugOptions under an ARKit name, and the renderer that would consume one is the port's - a typedef here would be a second name for a type nothing in this library defines",
-      "effect": "none: a caller naming the type is naming SceneKit's, which the SceneKit port declares"
+      "reason": "carried: a typedef over SceneKit's own SCNDebugOptions, which the SceneKit port declares",
+      "effect": "the name, for a caller that writes it; the values below are what the port's renderer reads"
     }
   ]
 }

@@ -27,7 +27,9 @@
 @implementation ARImageTrackingConfiguration
 {
     NSInteger _maximumNumberOfTrackedImages;
+    NSSet<ARReferenceImage *> *_trackingImages;
 }
+
 
 - (instancetype)init
 {
