@@ -16,7 +16,7 @@
 //
 
 #import <Intents/Intents.h>
-#import <CharonCoding.h>
+#import "../../../c/charon-coding/files/CharonCoding.h"
 #import "CharonIntentsResolution.h"
 #import "CharonIntents262.h"
 

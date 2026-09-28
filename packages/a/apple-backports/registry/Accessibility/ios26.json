@@ -693,9 +693,10 @@
       "kind": "property",
       "introduced": "18.2",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "the system that begins a feature override - grayscale, inverted colours, Voice Control, VoiceOver, zoom - does not run on this release, so the manager answers nil with the header's own Undefined and there is no session to end",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "implemented",
+      "effect": "the value the object was given, or the one instance of the manager for the process",
+      "minimum": "6.0",
+      "source": "the header of iPhoneOS 26.2, transcribed where 16.4 has none"
     },
     {
       "api": "AXMathExpressionFenced.closeString",
@@ -972,18 +973,20 @@
       "kind": "property",
       "introduced": "18.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "implemented",
+      "effect": "there is no current request on a release that runs no assistive technology service, so it is nil",
+      "minimum": "6.0",
+      "source": "the header of iPhoneOS 26.2, transcribed where 16.4 has none"
     },
     {
       "api": "AXRequest.technology",
       "kind": "property",
       "introduced": "18.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "implemented",
+      "effect": "the value the object was given, or the one instance of the manager for the process",
+      "minimum": "6.0",
+      "source": "the header of iPhoneOS 26.2, transcribed where 16.4 has none"
     },
     {
       "api": "AccessibilitySettings.animatedImagesEnabled",

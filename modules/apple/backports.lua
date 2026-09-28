@@ -152,6 +152,24 @@ local function exported_symbols(file)
 end
 
 -- The clang driver a build runs: the one it was given, or the host's.
+-- The archive a name in a library's list refers to, under the alias the library wrote or the
+-- package the resolve turned it into.
+function archive_of(archives, name)
+    if not archives then
+        return nil
+    end
+    if archives[name] then
+        return archives[name]
+    end
+    for key, archive in pairs(archives) do
+        local package = key:match("^(%S+)") or key
+        if package == "charon@" .. name or key == name then
+            return archive
+        end
+    end
+    return nil
+end
+
 local function driver(opt, arguments)
     if opt.cc then
         return opt.cc, arguments
@@ -603,9 +621,18 @@ local function link(opt, library, attach, objects, releases, outputdir, checked)
     --
     -- tests/addon/archive_language_test.lua is the check: it fails on any library whose archives a
     -- band that keeps no C++ object could not link, which is the state without this.
-    for _, language in ipairs({library.archives or {}, library.c_archives or {}}) do
-        if cxx or language == library.c_archives then
-            local archive = opt.archives and opt.archives[language]
+    -- One list of the archives this band keeps, and the order they go on the link line in: the
+    -- C ones always, the C++ ones only for a band that kept a .mm object, and each name once.
+    local wanted_archives = {}
+    for _, name in ipairs(library.archives or {}) do
+        wanted_archives[name] = cxx
+    end
+    for _, name in ipairs(library.c_archives or {}) do
+        wanted_archives[name] = true
+    end
+    for _, language in ipairs(table.orderkeys(wanted_archives)) do
+        if wanted_archives[language] then
+            local archive = archive_of(opt.archives, language)
             if not archive then
                 raise("%s links the static library of the package %s, and the build was given none: pass archives = {%s = {linkdir = ..., link = ..., includedir = ...}}, from the package's installdir",
                       library.name, language, language)

@@ -27,7 +27,7 @@
 // about behaviour: each of them is the header's own chain.
 #pragma clang diagnostic ignored "-Wobjc-designated-initializers"
 
-#import <CharonCoding.h>
+#import "../../../c/charon-coding/files/CharonCoding.h"
 #import "CharonIntentsResolution.h"
 #import "CharonIntentsStore.h"
 
