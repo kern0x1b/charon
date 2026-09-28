@@ -9,7 +9,7 @@
 # first version of this probe got wrong.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
-port=${PORT:-$here/../../../../packages/a/apple-backports/MapKit}
+port=${PORT:-$here/../../../../.agent-work/plan-and-analysis/geojson}
 build=${MAPKIT_GEOJSON_BUILD:-${TMPDIR:-/tmp}/charon-mapkit-geojson}
 rm -rf "$build"
 mkdir -p "$build"
