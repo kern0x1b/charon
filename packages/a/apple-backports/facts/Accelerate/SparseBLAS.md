@@ -736,10 +736,39 @@ the toolchain was never at fault (both `cc` and `cxx` resolve to the store's LLV
 `-isystem` for the SDK's own headers; the bare assertion was `on_test`'s message-less asserts; and this
 is the copy.
 
-**The package still does not install, and the named line is unchanged:** `could not install
-SuiteSparse_config/SuiteSparse_config.h`, with every level of its destination made. That is five rounds on
-a one-line question, and it blocks only the solve family — **the fifteen reviewed patches need no archive
-and are unaffected by it.**
+**The package installs.** Measured, one run of that one package at a 1-minute load of 11.17, with no
+queue: `xmake f -c -y` in a scratch project carrying only this one requirement **exits 0**, the six copies
+print their source and their destination, and the package directory holds
+
+```
+lib/libSuiteSparseOrdering.a                       24 072 bytes
+include/SuiteSparse/AMD/amd.h            include/SuiteSparse/AMD/amd_internal.h
+include/SuiteSparse/COLAMD/colamd.h      include/SuiteSparse/SuiteSparse_config/SuiteSparse_config.h
+licenses/AMD_Doc_License.txt   licenses/COLAMD_Doc_License.txt   (and the two READMEs)
+```
+
+**And the root cause of the four rounds, which is worth more than the fix.** `os.cp` and `os.vcp` **return
+nothing**, on success and on failure alike — measured, on a real file, both return `nil` and both have
+copied. Every one of those rounds failed on `assert(os.cp(…))`, which asserts on a function with no
+return value, while the copy it was checking had in fact worked. Three of the four diagnoses were about
+`os.vcp` and about `os.mkdir` and were about where a file went; **none of them was the reason**, and the
+real one was visible only by calling the API and looking at what came back instead of assuming its shape.
+The check that was right all along is the one that is now the only one: `os.isfile(destination)`.
+
+**What `nm -gU` says, and a claim of mine that was wrong.** The ruling asks for a proof that no `amd_*` or
+`colamd_*` export appears in `libAccelerateBackports.dylib`, and I had written that the archive is built
+`-fvisibility=hidden` so the dylib "shows no amd_* or colamd_* name". Measured on the archive that is
+**false as stated**: `nm -gU lib/libSuiteSparseOrdering.a` counts **28** global `amd_*` and `colamd_*`
+names, starting with `T _amd_1`, because AMD and COLAMD mark their entry points with their own
+`AMD_EXPORT`/`COLAMD_EXPORT` and that is `visibility("default")`, which a `-fvisibility=hidden` on the
+command line does not override.
+
+The ruling's proof is on the dylib, and **it cannot be made yet**: nothing in this tree calls an ordering,
+so the dylib has no undefined `amd_*` symbol to resolve from the archive and none to export. What is true
+today is the archive's own count, and it is 28; what will have to be shown when the first caller lands is
+the dylib's, and if that caller is C in a `-fvisibility=hidden` object then the archive's globals are
+resolved to a hidden reference and the dylib exports none of them. `backports.lua`'s comment now says
+exactly that, and says the archive is not the proof.
 
 ## The gates, and what they say
 

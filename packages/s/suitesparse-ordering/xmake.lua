@@ -95,8 +95,12 @@ package("suitesparse-ordering")
                 print("suitesparse-ordering:   mkdir %s", made)
                 os.mkdir(made)
             end
-            assert(os.cp(source, destination), "suitesparse-ordering could not copy " .. source .. " to " .. destination)
-            assert(os.isfile(destination), "suitesparse-ordering copied " .. source .. " somewhere other than " .. destination)
+            -- os.cp returns nothing, on success and on failure alike: measured, with a real file, both
+            -- it and os.vcp return nil and both have copied. So the copy is not asserted on its return
+            -- value - which is what the last three rounds were, and each of them failed on the assert
+            -- rather than on the copy - and is checked by finding the file where it was aimed.
+            os.cp(source, destination)
+            assert(os.isfile(destination), "suitesparse-ordering could not copy " .. source .. " to " .. destination)
         end
         for from, to in pairs(HEADERS) do
             install_file(from, path.join(package:installdir("include"), to, path.filename(from)))

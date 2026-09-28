@@ -18,12 +18,17 @@ LIBRARIES = {
     {name = "CoreLocationBackports", folder = "CoreLocation", frameworks = {"CoreLocation", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "CoreDataBackports", folder = "CoreData", frameworks = {"CoreData", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "SecurityBackports", folder = "Security", frameworks = {"Security", "Foundation"}, libraries = {"FoundationBackports"}},
-    -- suitesparse-ordering is AMD and COLAMD, the two sparse orderings, as a hidden static archive: the
-    -- Sparse* solve family needs an ordering and the port's own rows must not export one. Nothing of the
-    -- archive is API - it is built -fvisibility=hidden, so libAccelerateBackports.dylib exports what
-    -- Accelerate exports and nm -gU on it shows no amd_* or colamd_* name, which is what leaves
-    -- release-split with nothing of ours to place. CHOLMOD, UMFPACK and the rest of SuiteSparse are not in
-    -- that package: they are LGPL and GPL and this one is BSD-3.
+    -- suitesparse-ordering is AMD and COLAMD, the two sparse orderings, as a static archive: the Sparse*
+    -- solve family needs an ordering and this stack's own rows must not export one. The archive is not
+    -- API of the image, and the archive ITSELF is not a proof of that: AMD and COLAMD mark their entry
+    -- points with their own AMD_EXPORT and COLAMD_EXPORT, which is visibility("default") and overrides
+    -- the -fvisibility=hidden the recipe compiles with - measured, `nm -gU` on the built
+    -- libSuiteSparseOrdering.a counts 28 global amd_* and colamd_* names, where the claim on the archive
+    -- would say none. The proof the ruling asks for is on libAccelerateBackports.dylib and cannot be made
+    -- until a caller exists: nothing in this tree references an ordering yet, so nothing here exports one
+    -- either way, and when the first caller lands it is what the dylib's nm has to show. CHOLMOD,
+    -- UMFPACK and the rest of SuiteSparse are not in that package: they are LGPL and GPL and this one is
+    -- BSD-3.
     {name = "AccelerateBackports", folder = "Accelerate", frameworks = {"Accelerate", "CoreGraphics", "Foundation"}, libraries = {"FoundationBackports"}, archives = {"suitesparse-ordering"}},
     {name = "AVFoundationBackports", folder = "AVFoundation", frameworks = {"AVFoundation", "CoreMedia", "CoreVideo", "AudioToolbox", "CoreImage", "ImageIO", "CoreGraphics", "QuartzCore", "Accelerate", "UIKit", "Foundation"}, libraries = {"FoundationBackports", "GraphicsBackports", "AccelerateBackports"}},
     {name = "AVFAudioBackports", folder = "AVFAudio", frameworks = {"AudioToolbox", "CoreAudio", "AVFoundation", "UIKit", "Foundation", "Accelerate", "QuartzCore"}, libraries = {"FoundationBackports", "GraphicsBackports", "AccelerateBackports", "AVFoundationBackports"}},
