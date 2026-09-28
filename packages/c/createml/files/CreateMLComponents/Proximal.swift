@@ -138,50 +138,35 @@ public enum ProximalSolver {
             //   - the **rejected** step's objective is never recorded, or the next comparison is
             //     against a value the sequence never took and the run walks off to infinity (it did:
             //     an objective of 1e140 with `converged = false`);
-            //   - when the step **at the extrapolated point `y`** does not reduce the objective, the
-            //     fallback is not a shorter step from `y` — as `t` goes to zero that candidate tends to
-            //     `y`, never to the accepted `w`, so the sequence cannot recover. The fallback is to
-            //     take the step **at `w`**, which is plain ISTA for one iteration and is what
-            //     monotone FISTA actually specifies;
-            //   - and only if *that* does not fall is the step halved.
+            //   - and when it does not fall, the step is **halved** and the step taken again.
+            //
+            // There is deliberately **no ISTA fallback at the accepted point**, and that is a
+            // measurement rather than an omission. A version of this had one, on the reasoning that a
+            // shorter step from the extrapolated point tends to `y` rather than to `w` and so cannot
+            // recover. It was **never taken**: on the fifteen-row table, on a badly scaled design, at
+            // momentum 0, 1 and 3, and with the step set deliberately to 1, 2, 4, 8 and 16 times
+            // `1/L` — at every one of those the sequence's results are **bit-identical** with the
+            // fallback present and with it deleted. The halving reaches every case the fallback was
+            // meant to, so the code was dead and has been removed rather than kept with a test that
+            // cannot fail.
             var candidate = [Double](repeating: 0, count: p)
             var objective = Double.infinity
-            var atW = [Double](repeating: 0, count: p)
-            var objectiveAtW = Double.infinity
             var halvings = 0
             while true {
-                // The gradient of the smooth part at the accepted point, for the ISTA fallback.
-                var residualW = design.multiplied(by: w)
-                for index in 0..<residualW.count { residualW[index] -= targets[index] }
-                var gradientW = design.transposedMultiplied(by: residualW).map { $0 * gradientScale }
-                if l2Penalty > 0 {
-                    for index in 1..<p { gradientW[index] += l2Penalty * w[index] }
-                }
-                atW = softThreshold(zip(w, gradientW).map { $0 - t * $1 }, t * l1Penalty)
-                if !atW.isEmpty { atW[0] = w[0] - t * gradientW[0] }
-                objectiveAtW = ridgeL1Objective(design: design, targets: targets, weights: atW,
-                                               l1Penalty: l1Penalty, l2Penalty: l2Penalty)
-
                 candidate = softThreshold(
                     zip(y, gradient).map { $0 - t * $1 }, t * l1Penalty)
                 // The intercept is column zero and is not penalised: put it back after the threshold.
                 if !candidate.isEmpty { candidate[0] = y[0] - t * gradient[0] }
                 objective = ridgeL1Objective(design: design, targets: targets, weights: candidate,
                                              l1Penalty: l1Penalty, l2Penalty: l2Penalty)
-                if objective <= previousObjective { break }
-                if objectiveAtW <= previousObjective {
-                    candidate = atW
-                    objective = objectiveAtW
-                    break
-                }
-                if halvings >= 40 { break }
+                if objective <= previousObjective || halvings >= 40 { break }
                 t /= 2
                 halvings += 1
             }
-            // Neither the extrapolated step nor the ISTA step nor a shorter one could be made to
-            // fall: that is a divergence, and saying so beats answering the point the run reached.
+            // No step, at any length, could be made to fall: that is a divergence, and saying so beats
+            // answering the point the run reached.
             if halvings >= 40 && objective > previousObjective {
-                w = atW
+                w = candidate
                 return (w, used, false)
             }
             previousObjective = objective
@@ -301,43 +286,23 @@ public enum ProximalSolver {
             if l2Penalty > 0 {
                 for index in 1..<p { gradient[index] += l2Penalty * y[index] }
             }
-            // The same accept-or-fall-back loop as the regression's, for the same three reasons: a
-            // rejected step's objective is not recorded; a step at the extrapolated `y` that does not
-            // fall is followed by a step at the accepted `w` and not by a shorter step from `y`; and
-            // only then is the step halved.
+            // The same loop as the regression's, and the same absence: no ISTA fallback, for the
+            // same measured reason, on the same fixtures.
             var candidate = [Double](repeating: 0, count: p)
             var objective = Double.infinity
-            var atW = [Double](repeating: 0, count: p)
-            var objectiveAtW = Double.infinity
             var halvings = 0
             while true {
-                var residualW = design.multiplied(by: w)
-                for index in 0..<residualW.count { residualW[index] -= targets[index] }
-                var gradientW = design.transposedMultiplied(by: residualW).map { $0 * gradientScale }
-                if l2Penalty > 0 {
-                    for index in 1..<p { gradientW[index] += l2Penalty * w[index] }
-                }
-                atW = softThreshold(zip(w, gradientW).map { $0 - t * $1 }, t * l1Penalty)
-                if !atW.isEmpty { atW[0] = w[0] - t * gradientW[0] }
-                objectiveAtW = logisticObjective(design: design, targets: targets, weights: atW,
-                                                  l1Penalty: l1Penalty, l2Penalty: l2Penalty)
                 candidate = softThreshold(
                     zip(y, gradient).map { $0 - t * $1 }, t * l1Penalty)
                 if !candidate.isEmpty { candidate[0] = y[0] - t * gradient[0] }
                 objective = logisticObjective(design: design, targets: targets, weights: candidate,
                                              l1Penalty: l1Penalty, l2Penalty: l2Penalty)
-                if objective <= previousObjective { break }
-                if objectiveAtW <= previousObjective {
-                    candidate = atW
-                    objective = objectiveAtW
-                    break
-                }
-                if halvings >= 40 { break }
+                if objective <= previousObjective || halvings >= 40 { break }
                 t /= 2
                 halvings += 1
             }
             if halvings >= 40 && objective > previousObjective {
-                w = atW
+                w = candidate
                 return (w, used, false)
             }
             previousObjective = objective

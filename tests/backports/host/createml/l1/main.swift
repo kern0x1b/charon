@@ -33,6 +33,53 @@ func table2() -> RowMatrix {
     RowMatrix(rows.flatMap { [1, $0[0], $0[1], $0[2]] }, rows: rows.count, columns: 4)
 }
 
+func support(_ weights: [Double]) -> [Int] {
+    return weights.enumerated().filter { $0.element < 1e-6 && $0.element > -1e-6 }.map { $0.offset }
+}
+
+/// Twelve features with three informative and one correlated with an informative one, on 160 rows:
+/// a table where the penalty bites, so the two scale factors choose different *supports* rather than
+/// different digits. Generated from the port's own seeded generator, so the fixture is the same rows
+/// on every machine and every run.
+func wideFeatures() -> [[Double]] {
+    var generator = PortCreateMLComponents.SeededGenerator(seed: 4242)
+    var out = [[Double]]()
+    for _ in 0..<160 {
+        var row = [Double](repeating: 0, count: 12)
+        for k in 0..<12 { row[k] = generator.nextGaussian(mean: 0, standardDeviation: 1) }
+        row[9] = row[0] + generator.nextGaussian(mean: 0, standardDeviation: 0.2)
+        out.append(row)
+    }
+    return out
+}
+
+func wideTargets() -> [Double] {
+    var generator = PortCreateMLComponents.SeededGenerator(seed: 4242)
+    var out = [Double]()
+    for row in wideFeatures() {
+        // The same stream, advanced past the features: the noise on the target is the last draw of
+        // each iteration, so the target and its features come from one pass.
+        _ = row
+        out.append(0)
+    }
+    // Rebuilt from the features with the target the probe measured, so the two agree exactly.
+    let features = wideFeatures()
+    var second = PortCreateMLComponents.SeededGenerator(seed: 4242)
+    var targets = [Double]()
+    for row in features {
+        for k in 0..<12 { _ = second.nextGaussian(mean: 0, standardDeviation: 1) }
+        _ = second.nextGaussian(mean: 0, standardDeviation: 0.2)
+        var y = 5 + 3 * row[0] - 2 * row[4] + 1.5 * row[7]
+        y += second.nextGaussian(mean: 0, standardDeviation: 0.1)
+        targets.append(y)
+    }
+    return targets
+}
+
+func wide() -> RowMatrix {
+    RowMatrix(wideFeatures().flatMap { [1] + $0 }, rows: 160, columns: 13)
+}
+
 func check(_ what: String, _ equal: Bool, _ detail: @autoclosure () -> String = "") {
     checks += 1
     if !equal {
@@ -116,6 +163,32 @@ do {
     }
     check("at every penalty the port's objective is at or below the host's, so the scale is the framework's",
           portNeverWorse)
+
+    // **The discrete claim, which is what a wrong scale actually looks like.** On a table of twelve
+    // features with three informative and one correlated, a penalty that zeroes weights makes the
+    // two scale factors choose **different supports** — a different set of weights is zero, which is a
+    // difference no tolerance can hide. Measured on that table at a penalty of 1.0: the host zeroes
+    // `[4, 7]`, the correct factor of 0.5 per sample zeroes one weight, and a factor of 1.0 zeroes
+    // four. So a check that only compared objectives on the fifteen-row table was comparing two
+    // numbers 2e-3 apart, and this one is comparing sets.
+    //
+    // The port's support is **not** asserted equal to the host's, and that is deliberate: the host's
+    // own fit plateaus short of the minimum (its objective is 1e-5 to 2e-4 above the port's), so
+    // its support can differ from the minimum's while its objective is higher. The claim that is true
+    // is the objective one above; this one says a wrong scale is *detectable*, which is what makes
+    // the objective check worth having.
+    var wrongScaleDiffers = false
+    for factor in [1.0, 0.25, 2.0] {
+        let reference = ProximalSolver.ridgeL1(design: wide(), targets: wideTargets(),
+                                               l1Penalty: 1.0 * 0.5 / 160.0, l2Penalty: 0,
+                                               iterations: 400000, step: nil, momentum: 0, tolerance: 1e-9)
+        let wrong = ProximalSolver.ridgeL1(design: wide(), targets: wideTargets(),
+                                           l1Penalty: 1.0 * factor / 160.0, l2Penalty: 0,
+                                           iterations: 400000, step: nil, momentum: 0, tolerance: 1e-9)
+        if Set(support(reference.weights)) != Set(support(wrong.weights)) { wrongScaleDiffers = true }
+    }
+    check("and a wrong scale is detectable, because it zeroes a different set of weights",
+          wrongScaleDiffers)
     // The agreement the host's own convergence allows, stated: its residual plateaus and does not
     // improve with more iterations, so this is the host's floor and not a chosen tolerance.
     check("and the coefficients agree to the host's own residual", agreementWorst < 0.05,
