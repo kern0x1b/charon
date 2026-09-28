@@ -13,14 +13,20 @@ deliveries:
   the 36 value classes, their 142 properties, the dictionary and JSON representations, the archiver,
   the manager with a real subscriber list and a real payload store, and the two extended-launch
   measurements, which are real measurements of a real interval.
-- **A member whose promise is "the system did something" needs the release's machinery, and without it
-  is not carried at all.** Four rows of the 209, and no more:
-  `+[MXMetricManager makeLogHandleWithCategory:]` (it returns an `os_log_t`, and the logging subsystem
-  it names arrived in iOS 10), `_MXSignpostMetricsSnapshot()` (the signpost subsystem it snapshots
-  arrived in iOS 12), and the two `MXMetricManagerSubscriber` messages, because the port carries no
-  class that conforms to that protocol - a subscriber is the application's own object and its own
-  translation unit emits the protocol. The *messages* are real: the manager sends both to whatever
-  object `-addSubscriber:` was given.
+- **A member whose promise is "the system did something" needs the release's machinery.** Two of the
+  209 needed nothing this release lacks, because the port already carried the machinery:
+  `+[MXMetricManager makeLogHandleWithCategory:]` is `os_log_create` over the port's own log, which has
+  been carried from 6.0 (`registry/Foundation/oslog.json`), and `_MXSignpostMetricsSnapshot()` is over
+  the signpost family, which this delivery now carries over that same log
+  (`facts/Foundation/OSLogSignpost.md`). Both were `absent` in a first pass on the grounds that
+  os_log and os_signpost are later than this release - and that was wrong: `absent` is for hardware the
+  device does not have, and neither of these is hardware.
+- **The two `MXMetricManagerSubscriber` messages are the only rows of the 209 that are `absent`**, and
+  for one reason: the port carries no class that conforms to that protocol. A subscriber is the
+  application's own object and its own translation unit emits the protocol. The *messages* are real -
+  the manager sends both to whatever object `-addSubscriber:` was given - and the entry says so; what
+  is absent is the protocol, and the library must carry no `__OBJC_PROTOCOL_$_` for it, or the next
+  check reads the two and finds them.
 
 Nothing here answers a zero for a measurement it did not take. A property reads nil until something
 puts a value in it, and a nil property is left out of the dictionary entirely rather than written as
@@ -120,6 +126,24 @@ walk stopped at the first newline - and wrote that row as `absent` with the reas
 name is declared on the class the SDK 26.2 headers give it". The header does declare it, the port
 carries it, and the entry is now `implemented`; the error is worth recording because a registry entry and
 the tree have to agree, and the gate is what says when they do not.
+
+## The two rows that were absent and are not
+
+`+[MXMetricManager makeLogHandleWithCategory:]` returns an `os_log_t`, and this package has carried
+`os_log_create`, `_os_log_internal` and `os_log_type_enabled` from 6.0 - so the handle is
+`os_log_create("com.apple.metrickit.log", category)`, over the port's own log, named with the subsystem
+Apple uses for this framework's own log. Its own `-description` names the subsystem and the category it
+was made with, which is what the host differential would print.
+
+`_MXSignpostMetricsSnapshot()` is declared in the SDK after all, in `MXSignpost_Private.h` - the header
+whose own comment says "implementation details that are not meant for clients to call directly. The
+header must be public to allow clients to compile properly" - and its type is `void* _Nonnull`. So R4
+does not apply: a name an SDK header declares, in a private header, is not a name no header declares.
+The macros beside the declaration also say exactly what the pointer is for: every signpost MetricKit
+emits gets a public `signpost:metrics` field and this pointer as its one argument, and the port's emit
+path records that pointer on the interval it takes. The port's own os_signpost family
+(`facts/Foundation/OSLogSignpost.md`) is what records it, and the port's signpost metrics are read out
+of the same store.
 
 **No host differential.** There is no MetricKit in the host's `iOSSupport` (measured: the directory has
 128 frameworks and MetricKit is not among them), and a differential would have no system implementation

@@ -4,6 +4,8 @@
 #import <Foundation/Foundation.h>
 #import "CharonMetricKit.h"
 
+@class MXSignpostMetric;
+
 // Every MetricKit class is a value object the system fills in, and Apple's own headers give them no
 // initialiser, no setter and one representation method each. So the storage here is one dictionary per
 // object, keyed by the property's own name, and each property is one of the three macros below: the
@@ -272,6 +274,7 @@
 @interface MXHistogram (CharonMetricKitSetters)
 - (void)charon_setTotalBucketCount:(NSUInteger)value;
 - (void)charon_setBucketEnumerator:(id)value;
+- (id)charon_bucketEnumerator;
 @end
 
 @interface MXHistogramBucket (CharonMetricKitSetters)
@@ -279,6 +282,29 @@
 - (void)charon_setBucketEnd:(id)value;
 - (void)charon_setBucketCount:(NSUInteger)value;
 @end
+
+// The metrics, read out of the port's signpost store. Charon-prefixed, so it is the port's own API and
+// the registry has nothing to describe: the private snapshot itself is typed by the SDK's own
+// MXSignpost_Private.h as a non-NULL opaque pointer, and a function of ours that returned a public
+// class would be a different function with the same name.
+FOUNDATION_EXPORT NSArray<MXSignpostMetric *> *CharonSignpostMetrics(void);
+
+@interface MXSignpostMetric (CharonMetricKitSetters)
+- (void)charon_setSignpostName:(id)value;
+- (void)charon_setSignpostCategory:(id)value;
+- (void)charon_setSignpostIntervalData:(id)value;
+- (void)charon_setTotalCount:(NSUInteger)value;
+- (id)charon_totalCount;
+- (id)charon_signpostIntervalData;
+@end
+
+@interface MXSignpostIntervalData (CharonMetricKitSetters)
+- (void)charon_setHistogrammedSignpostDuration:(id)value;
+- (void)charon_setCumulativeCPUTime:(id)value;
+- (id)charon_cumulativeCPUTime;
+- (id)charon_histogrammedSignpostDuration;
+@end
+
 
 @interface MXAppLaunchMetric (CharonMetricKitSetters)
 - (void)charon_setHistogrammedExtendedLaunch:(id)value;

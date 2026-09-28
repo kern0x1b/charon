@@ -1,5 +1,7 @@
 #import "CharonMetricValue.h"
 #import "CharonMetricKit.h"
+#import "../Foundation/CharonOSLog.h"
+#import "../Foundation/CharonOSSignpost.h"
 #import "../CharonSayOnce.h"
 #import <objc/runtime.h>
 #import <sys/time.h>
@@ -22,15 +24,16 @@
 //     real measurements, not stubs: the first takes a monotonic reading and the second takes another and
 //     records the interval as a real MXAppLaunchMetric. That is exactly what a launch measurement is, and
 //     the clock is the release's own;
-//   - and +makeLogHandleWithCategory: is not carried. It returns an os_log_t, and the logging subsystem
-//     it names arrived in iOS 10: there is no such handle on this release to hand back, so the port does
-//     not carry the selector and the registry entry says so.
-
-// +makeLogHandleWithCategory: is the one method of this class the port does not carry, and the header
-// declares it, so -Wincomplete-implementation fires on every build of this file: it returns an os_log_t and
-// the logging subsystem it names arrived in iOS 10, so there is no such handle on this release to hand
-// back. registry/MetricKit/ios13.json records it as absent with that reason.
-#pragma clang diagnostic ignored "-Wincomplete-implementation"
+//   - and +makeLogHandleWithCategory: is real. It returns an os_log_t, which is a subsystem and a
+//     category, and this package already carries the log it is made of (registry/Foundation/oslog.json):
+//     os_log_create, _os_log_internal and os_log_type_enabled are implemented from 6.0 by
+//     Foundation/OSLog9.m and OSLog10.m. So the handle this returns is a real one over that log, named
+//     with the subsystem Apple uses for this framework's own log.
+//
+// And the signposts an application marks are real too, which is what makes the snapshot below real:
+// os_signpost is a software subsystem (iOS 12) that the port now carries over the same log
+// (Foundation/CharonOSSignpost.m), and it *records* the intervals an application emits rather than
+// throwing them away.
 
 NSString *const MXErrorDomain = @"MXErrorDomain";
 
@@ -63,6 +66,14 @@ static double CharonMonotonicSeconds(void)
 }
 
 @implementation MXMetricManager
+
+// The log handle, which is a subsystem and a category: Apple's own subsystem string for this
+// framework, and the category the caller names. Over the port's own log, so the handle is a real one
+// and its own -description names the subsystem and the category it was made with.
++ (os_log_t)makeLogHandleWithCategory:(NSString *)category
+{
+    return os_log_create("com.apple.metrickit.log", category.UTF8String);
+}
 
 + (MXMetricManager *)sharedManager
 {
@@ -211,3 +222,79 @@ static double CharonMonotonicSeconds(void)
 }
 
 @end
+
+// The signpost snapshot, over the intervals the port's own os_signpost family recorded
+// (Foundation/CharonOSSignpost.m).
+//
+// The SDK ships the declaration - MetricKit.framework/Headers/MXSignpost_Private.h, the header whose
+// own comment says "implementation details that are not meant for clients to call directly. The
+// header must be public to allow clients to compile properly" - and the declaration is
+// `void* _Nonnull _MXSignpostMetricsSnapshot(void)`. What the macros beside it say the pointer is for
+// is exact: every signpost MetricKit emits has `\n%{public, signpost:metrics}@` appended to its format
+// and the snapshot passed as that one argument, so the signpost stream carries the metrics and the
+// signpost that is marked carries it with it.
+//
+// So this returns the port's own snapshot object as the non-NULL opaque pointer that declaration
+// types, and the port's emit path records that pointer as the public field on every signpost it takes
+// - which is what makes the pointer mean something rather than merely be a valid address.
+void *_Nonnull _MXSignpostMetricsSnapshot(void)
+{
+    return (__bridge_retained void *)[[CharonSignpostStore snapshot] copy];
+}
+
+// The metrics themselves, read out of the same store: one per signpost name and category, with the
+// duration of every interval of that name in the interval data's histogram, as the header's own
+// -signpostName, -signpostCategory, -signpostIntervalData and -totalCount say.
+NSArray<MXSignpostMetric *> *CharonSignpostMetrics(void)
+{
+    NSMutableArray<MXSignpostMetric *> *metrics = [NSMutableArray array];
+    NSMutableDictionary<NSString *, MXSignpostMetric *> *byKey = [NSMutableDictionary dictionary];
+    for (CharonSignpostInterval *interval in [CharonSignpostStore intervals]) {
+        NSString *key = [NSString stringWithFormat:@"%@%c%@", interval.subsystem, 0, interval.name];
+        MXSignpostMetric *metric = byKey[key];
+        if (!metric) {
+            metric = [[MXSignpostMetric alloc] init];
+            [metric charon_setSignpostName:interval.name];
+            [metric charon_setSignpostCategory:interval.category];
+            byKey[key] = metric;
+            [metrics addObject:metric];
+        }
+        // The histogram of the durations is the interval data's own, as the header says: the metric
+        // carries the name, the category, the data and the count, and the data carries the histogram.
+        MXSignpostIntervalData *data = [metric charon_signpostIntervalData] ?: ({
+            MXSignpostIntervalData *made = [[MXSignpostIntervalData alloc] init];
+            [metric charon_setSignpostIntervalData:made];
+            made;
+        });
+        MXHistogram *histogram = [data charon_histogrammedSignpostDuration] ?: ({
+            MXHistogram *made = [[MXHistogram alloc] init];
+            [data charon_setHistogrammedSignpostDuration:made];
+            made;
+        });
+        NSMutableArray *buckets = objc_getAssociatedObject(histogram, @selector(bucketEnumerator));
+        if (!buckets) {
+            buckets = [NSMutableArray array];
+            objc_setAssociatedObject(histogram, @selector(bucketEnumerator), buckets, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        }
+        NSMeasurement<NSUnitDuration *> *duration =
+            [[NSMeasurement alloc] initWithDoubleValue:interval.seconds unit:[NSUnitDuration seconds]];
+        MXHistogramBucket<NSUnitDuration *> *bucket = [[MXHistogramBucket alloc] init];
+        [bucket charon_setBucketStart:duration];
+        [bucket charon_setBucketEnd:duration];
+        [bucket charon_setBucketCount:interval.count];
+        [buckets addObject:bucket];
+        [histogram charon_setTotalBucketCount:buckets.count];
+        [histogram charon_setBucketEnumerator:[buckets objectEnumerator]];
+        [metric charon_setTotalCount:(NSUInteger)[metric charon_totalCount] + interval.count];
+
+        NSMeasurement<NSUnitDuration *> *cpu = [data charon_cumulativeCPUTime] ?: ({
+            NSMeasurement *made = [[NSMeasurement alloc] initWithDoubleValue:0.0 unit:[NSUnitDuration seconds]];
+            [data charon_setCumulativeCPUTime:made];
+            (NSMeasurement *)made;
+        });
+        [data charon_setCumulativeCPUTime:
+            [[NSMeasurement alloc] initWithDoubleValue:[cpu doubleValue] + interval.seconds
+                                                   unit:[NSUnitDuration seconds]]];
+    }
+    return metrics;
+}
