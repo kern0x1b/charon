@@ -307,10 +307,12 @@ static int charon_native_descriptor(CFReadStreamRef stream)
     id<NSURLSessionStreamDelegate> delegate = [self charon_delegate];
     if (!delegate)
         return;
-    SEL chosen = NSSelectorFromString([NSString stringWithFormat:@"charonHost_%@", NSStringFromSelector(selector)]);
+    /* The selector the protocol in this file declares, asked for by that same name. A device build
+       has no other prefix to ask for, and the host differential renames the declaration and the call
+       site together, which is what prefix_selectors.py exists for. */
     NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:
-                                [(NSObject *)delegate methodSignatureForSelector:chosen]];
-    invocation.selector = chosen;
+                                [(NSObject *)delegate methodSignatureForSelector:selector]];
+    invocation.selector = selector;
     invocation.target = delegate;
     [invocation setArgument:&self atIndex:2];
     if (selector == @selector(URLSession:streamTask:didBecomeInputStream:outputStream:)) {
