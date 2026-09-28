@@ -4,7 +4,7 @@
 
 @interface UICollectionViewLayoutAttributes (CharonHostTransform7)
 - (CGAffineTransform)charonHostTransform;
-- (void)setCharonHostTransform:(CGAffineTransform)transform;
+- (void)charonHostSetTransform:(CGAffineTransform)transform;
 @end
 
 static NSString *describe(CGAffineTransform t)
@@ -22,7 +22,7 @@ int main(void)
             UICollectionViewLayoutAttributes *system = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:path];
             UICollectionViewLayoutAttributes *ours = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:path];
             system.transform = affine[index];
-            ours.charonHostTransform = affine[index];
+            [ours charonHostSetTransform:affine[index]];
             charon_check(CATransform3DEqualToTransform(system.transform3D, ours.transform3D), "setting transform sets transform3D as the system does",
                          describe(affine[index]));
             charon_check(CGAffineTransformEqualToTransform(system.transform, ours.charonHostTransform), "transform reads back as the system's",

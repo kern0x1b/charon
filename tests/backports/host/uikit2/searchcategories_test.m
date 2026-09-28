@@ -47,7 +47,7 @@ void charon_windowed_run(UIWindow *window)
     CharonFakeBar *empty = [[CharonFakeBar alloc] initWithFrame:CGRectMake(0, 0, 200, 44)];
     charon_check(((id (*)(id, SEL))objc_msgSend)(empty, find) == nil, "a search bar with no text field answers nil", @"it answered one");
 
-    SEL get = NSSelectorFromString(@"charonHostAutomaticallyShowsScopeBar"), set = NSSelectorFromString(@"setCharonHostAutomaticallyShowsScopeBar:");
+    SEL get = NSSelectorFromString(@"charonHostAutomaticallyShowsScopeBar"), set = NSSelectorFromString(@"charonHostSetAutomaticallyShowsScopeBar:");
     UISearchController *controller = [[UISearchController alloc] initWithSearchResultsController:nil];
     BOOL first = ((BOOL (*)(id, SEL))objc_msgSend)(controller, get);
     ((void (*)(id, SEL, BOOL))objc_msgSend)(controller, set, NO);

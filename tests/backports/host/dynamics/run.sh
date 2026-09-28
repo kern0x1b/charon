@@ -53,7 +53,7 @@ flags_of() {
 for file in $files; do
     xcrun clang $target $(flags_of "$file") -DCHARON_HOST_DIFFERENTIAL=1 -w -c "$file" -o "$build/plain/$(basename "$file").o"
 done
-renames "$(ls "$build"/plain/*.o)" "*" > "$build/renames.flags"
+renames "$(ls "$build"/plain/*.o)" > "$build/renames.flags"
 host=""
 ios70=""
 for file in $files; do

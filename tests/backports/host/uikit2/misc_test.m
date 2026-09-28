@@ -12,7 +12,7 @@
 
 @interface UIFont (CharonHostStyles)
 + (UIFont *)charonHostPreferredFontForTextStyle:(NSString *)style;
-+ (UIFont *)systemFontOfSize:(CGFloat)size weight:(UIFontWeight)weight;
++ (UIFont *)charonHostSystemFontOfSize:(CGFloat)size weight:(UIFontWeight)weight;
 @end
 
 @interface UIColor (CharonHostSystemColors)
@@ -34,16 +34,16 @@
 
 @interface UITextField (CharonHostDefaultTextAttributes)
 - (NSDictionary *)charonHostDefaultTextAttributes;
-- (void)setCharonHostDefaultTextAttributes:(NSDictionary *)attributes;
+- (void)charonHostSetDefaultTextAttributes:(NSDictionary *)attributes;
 @end
 
 @interface UIViewController (CharonHostExtendedLayout)
 - (UIRectEdge)charonHostEdgesForExtendedLayout;
-- (void)setCharonHostEdgesForExtendedLayout:(UIRectEdge)edges;
+- (void)charonHostSetEdgesForExtendedLayout:(UIRectEdge)edges;
 - (BOOL)charonHostExtendedLayoutIncludesOpaqueBars;
-- (void)setCharonHostExtendedLayoutIncludesOpaqueBars:(BOOL)includes;
+- (void)charonHostSetExtendedLayoutIncludesOpaqueBars:(BOOL)includes;
 - (BOOL)charonHostAutomaticallyAdjustsScrollViewInsets;
-- (void)setCharonHostAutomaticallyAdjustsScrollViewInsets:(BOOL)adjusts;
+- (void)charonHostSetAutomaticallyAdjustsScrollViewInsets:(BOOL)adjusts;
 @end
 
 extern const UIFontWeight CharonHostUIFontWeightUltraLight, CharonHostUIFontWeightThin, CharonHostUIFontWeightLight;
@@ -112,7 +112,7 @@ int main(void)
         for (NSUInteger index = 0; index < sizeof(weights) / sizeof(*weights); index++) {
             charon_check(*weights[index].ours == weights[index].system, NAMED(@"UIFontWeight %s", weights[index].name),
                          [NSString stringWithFormat:@"%.17g != %.17g", (double)*weights[index].ours, (double)weights[index].system]);
-            UIFont *font = [UIFont systemFontOfSize:15 weight:*weights[index].ours];
+            UIFont *font = [UIFont charonHostSystemFontOfSize:15 weight:*weights[index].ours];
             BOOL bold = (font.fontDescriptor.symbolicTraits & UIFontDescriptorTraitBold) != 0;
             charon_check(font.pointSize == 15, NAMED(@"weight %s size", weights[index].name), @"the size is not kept");
             charon_check(bold == (*weights[index].ours > UIFontWeightMedium), NAMED(@"weight %s maps to bold or not", weights[index].name),
@@ -176,7 +176,7 @@ int main(void)
         paragraph.alignment = NSTextAlignmentCenter;
         NSDictionary *applied = @{NSFontAttributeName: [UIFont systemFontOfSize:23], NSForegroundColorAttributeName: [UIColor blueColor],
                                   NSParagraphStyleAttributeName: paragraph, NSKernAttributeName: @1.5};
-        [ourField setCharonHostDefaultTextAttributes:applied];
+        [ourField charonHostSetDefaultTextAttributes:applied];
         systemField.defaultTextAttributes = applied;
         charon_check([ourField.font isEqual:systemField.font], "setting the attributes sets the font", @"the font differs");
         charon_check([ourField.textColor isEqual:systemField.textColor], "setting the attributes sets the colour", @"the colour differs");
@@ -203,7 +203,7 @@ int main(void)
         UITextField *sequenceOurs = [[UITextField alloc] init], *sequenceSystem = [[UITextField alloc] init];
         for (NSUInteger index = 0; index < sequence.count; index++) {
             NSDictionary *attributes = sequence[index] == [NSNull null] ? nil : sequence[index];
-            [sequenceOurs setCharonHostDefaultTextAttributes:attributes];
+            [sequenceOurs charonHostSetDefaultTextAttributes:attributes];
             sequenceSystem.defaultTextAttributes = attributes;
             NSString *ourSummary = [NSString stringWithFormat:@"%@ %@ %ld", summary([sequenceOurs charonHostDefaultTextAttributes]), sequenceOurs.font.pointSize > 0 ? @(sequenceOurs.font.pointSize) : @0, (long)sequenceOurs.textAlignment];
             NSString *systemSummary = [NSString stringWithFormat:@"%@ %@ %ld", summary(sequenceSystem.defaultTextAttributes), sequenceSystem.font.pointSize > 0 ? @(sequenceSystem.font.pointSize) : @0, (long)sequenceSystem.textAlignment];
@@ -213,12 +213,12 @@ int main(void)
         charon_check([controller charonHostEdgesForExtendedLayout] == controller.edgesForExtendedLayout, "edgesForExtendedLayout default", @"the default differs");
         charon_check([controller charonHostExtendedLayoutIncludesOpaqueBars] == controller.extendedLayoutIncludesOpaqueBars, "extendedLayoutIncludesOpaqueBars default", @"the default differs");
         charon_check([controller charonHostAutomaticallyAdjustsScrollViewInsets] == YES, "automaticallyAdjustsScrollViewInsets default", @"the default is not YES");
-        [controller setCharonHostEdgesForExtendedLayout:UIRectEdgeBottom | UIRectEdgeLeft];
+        [controller charonHostSetEdgesForExtendedLayout:UIRectEdgeBottom | UIRectEdgeLeft];
         controller.edgesForExtendedLayout = UIRectEdgeBottom | UIRectEdgeLeft;
         charon_check([controller charonHostEdgesForExtendedLayout] == controller.edgesForExtendedLayout, "edgesForExtendedLayout round trip", @"the stored edges differ");
-        [controller setCharonHostExtendedLayoutIncludesOpaqueBars:YES];
+        [controller charonHostSetExtendedLayoutIncludesOpaqueBars:YES];
         charon_check([controller charonHostExtendedLayoutIncludesOpaqueBars], "extendedLayoutIncludesOpaqueBars round trip", @"the stored value differs");
-        [controller setCharonHostAutomaticallyAdjustsScrollViewInsets:NO];
+        [controller charonHostSetAutomaticallyAdjustsScrollViewInsets:NO];
         charon_check(![controller charonHostAutomaticallyAdjustsScrollViewInsets], "automaticallyAdjustsScrollViewInsets round trip", @"the stored value differs");
 
         printf("checks=%d failures=%d\n", charon_checks, charon_failures);

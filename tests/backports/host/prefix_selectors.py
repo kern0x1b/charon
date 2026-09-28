@@ -54,11 +54,17 @@ FAMILIES = ("mutableCopy", "copy", "init", "new", "alloc")
 
 
 def prefixed(keyword, prefix):
+    # A prefix that ends in "_" is a separator and is kept as it is, so the keyword keeps its own
+    # spelling (charonHost_ + nativeBounds -> charonHost_nativeBounds). A prefix without one is glued
+    # to the keyword as the first half of a camel-cased name, so the keyword's first letter is raised
+    # (charonHost + nativeBounds -> charonHostNativeBounds).
     for family in FAMILIES:
         rest = keyword[len(family):]
         if keyword.startswith(family) and (not rest or rest[0].isupper()):
             return family + prefix[0].upper() + prefix[1:].rstrip("_") + rest
-    return prefix + keyword
+    if prefix.endswith("_"):
+        return prefix + keyword
+    return prefix + keyword[0].upper() + keyword[1:]
 
 
 def spelled(type_node):
@@ -174,9 +180,15 @@ class Rewriter:
                 accessors.append("set" + name[0].upper() + name[1:] + ":")
             receiver = node.get("inner", [{}])[0].get("type", {}).get("qualType", "")
             receiver = context[1] if bare(receiver) in ("id", "instancetype") and context else bare(receiver)
-            for accessor in accessors:
-                if self.owns("-", receiver, accessor):
-                    self.unresolved.append((node["range"]["begin"]["offset"], accessor + " through dot syntax"))
+            if any(self.owns("-", receiver, accessor) for accessor in accessors):
+                # Dot syntax names the accessor itself, so a read is rewritten like a message send's keyword.
+                # A write cannot be: clang derives the setter from the property name it reads, so `self.foo = x`
+                # asks for -setFoo: under the property name -charonHostFoo:, and one identifier cannot stand
+                # for both. That is reported rather than half done; such a write has to be spelled out as a send.
+                if node.get("isMessagingSetter"):
+                    self.unresolved.append((node["range"]["end"]["offset"], "a write to %s through dot syntax" % name))
+                else:
+                    self.inserts.add(node["range"]["end"]["offset"])
         for value in node.values():
             if isinstance(value, (list, dict)):
                 self.walk(value, context)
@@ -207,7 +219,7 @@ def main():
         rewriter.walk(document, None)
     for offset, selector in sorted(set(rewriter.unresolved)):
         line = source.count("\n", 0, offset) + 1
-        print("%s:%d: a carried selector %s whose receiver the rewrite cannot place" % (source_path, line, selector), file=sys.stderr)
+        print("%s:%d: a carried selector the rewrite cannot rename: %s" % (source_path, line, selector), file=sys.stderr)
     if rewriter.unresolved:
         sys.exit(1)
     rewritten = rewriter.result(prefix)

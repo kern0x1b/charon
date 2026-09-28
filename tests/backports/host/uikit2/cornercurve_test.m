@@ -6,7 +6,7 @@ extern NSString *const CharonHostkCACornerCurveCircular, *const CharonHostkCACor
 
 @interface CALayer (CharonHostCornerCurve)
 - (NSString *)charonHostCornerCurve;
-- (void)setCharonHostCornerCurve:(NSString *)cornerCurve;
+- (void)charonHostSetCornerCurve:(NSString *)cornerCurve;
 @end
 
 static double mismatch(CALayer *one, CALayer *two, CGSize size)
@@ -49,7 +49,7 @@ int main(void)
                     layer.masksToBounds = YES;
                 }
                 system.cornerCurve = kCACornerCurveContinuous;
-                [ours setCharonHostCornerCurve:kCACornerCurveContinuous];
+                [ours charonHostSetCornerCurve:kCACornerCurveContinuous];
                 double off = mismatch(system, ours, size);
                 NSString *name = [NSString stringWithFormat:@"a continuous %gx%g layer with radius %@ covers the system's shape within 1.5%%: %.3f%%", size.width, size.height, radius, off * 100];
                 CHECK(off < 0.015, name.UTF8String);
@@ -62,13 +62,13 @@ int main(void)
             CALayer *ours = [CALayer layer], *theirs = [CALayer layer];
             CHECK_EQUAL([ours charonHostCornerCurve], theirs.cornerCurve, "a fresh layer starts as the system's");
             id given = [value isKindOfClass:[NSNull class]] ? nil : value;
-            [ours setCharonHostCornerCurve:given];
+            [ours charonHostSetCornerCurve:given];
             theirs.cornerCurve = given;
             NSString *first = [NSString stringWithFormat:@"a layer set to %@", value];
             CHECK_EQUAL([ours charonHostCornerCurve], theirs.cornerCurve, first.UTF8String);
-            [ours setCharonHostCornerCurve:kCACornerCurveContinuous];
+            [ours charonHostSetCornerCurve:kCACornerCurveContinuous];
             theirs.cornerCurve = kCACornerCurveContinuous;
-            [ours setCharonHostCornerCurve:given];
+            [ours charonHostSetCornerCurve:given];
             theirs.cornerCurve = given;
             NSString *second = [NSString stringWithFormat:@"a continuous layer then set to %@", value];
             CHECK_EQUAL([ours charonHostCornerCurve], theirs.cornerCurve, second.UTF8String);

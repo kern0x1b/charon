@@ -5,10 +5,10 @@
 
 @interface UIView (CharonHostViewMisc)
 - (UIView *)charonHostMaskView;
-- (void)setCharonHostMaskView:(UIView *)view;
+- (void)charonHostSetMaskView:(UIView *)view;
 + (void)charonHostPerformWithoutAnimation:(void (^)(void))block;
 - (NSInteger)charonHostSemanticContentAttribute;
-- (void)setCharonHostSemanticContentAttribute:(NSInteger)attribute;
+- (void)charonHostSetSemanticContentAttribute:(NSInteger)attribute;
 - (NSInteger)charonHostEffectiveUserInterfaceLayoutDirection;
 + (NSInteger)charonHostUserInterfaceLayoutDirectionForSemanticContentAttribute:(NSInteger)attribute;
 + (NSInteger)charonHostUserInterfaceLayoutDirectionForSemanticContentAttribute:(NSInteger)attribute relativeToLayoutDirection:(NSInteger)direction;
@@ -18,14 +18,14 @@
 - (UIView *)charonHostViewIfLoaded;
 - (void)charonHostLoadViewIfNeeded;
 - (CGSize)charonHostPreferredContentSize;
-- (void)setCharonHostPreferredContentSize:(CGSize)size;
+- (void)charonHostSetPreferredContentSize:(CGSize)size;
 - (NSInteger)charonHostPreferredStatusBarStyle;
 - (BOOL)charonHostPrefersStatusBarHidden;
 - (NSInteger)charonHostPreferredStatusBarUpdateAnimation;
 - (UIViewController *)charonHostChildViewControllerForStatusBarStyle;
 - (UIViewController *)charonHostChildViewControllerForStatusBarHidden;
 - (BOOL)charonHostModalPresentationCapturesStatusBarAppearance;
-- (void)setCharonHostModalPresentationCapturesStatusBarAppearance:(BOOL)captures;
+- (void)charonHostSetModalPresentationCapturesStatusBarAppearance:(BOOL)captures;
 @end
 
 @interface LoadingController : UIViewController
@@ -63,7 +63,7 @@ int main(void)
             charon_check([UIView charonHostUserInterfaceLayoutDirectionForSemanticContentAttribute:attribute] == [UIView userInterfaceLayoutDirectionForSemanticContentAttribute:(UISemanticContentAttribute)attribute],
                          NAMED(@"layout direction of attribute %ld", (long)attribute), @"the direction differs");
             UIView *ours = [[UIView alloc] init], *system = [[UIView alloc] init];
-            [ours setCharonHostSemanticContentAttribute:attribute];
+            [ours charonHostSetSemanticContentAttribute:attribute];
             system.semanticContentAttribute = (UISemanticContentAttribute)attribute;
             charon_check([ours charonHostSemanticContentAttribute] == system.semanticContentAttribute, NAMED(@"attribute %ld is kept", (long)attribute), @"the attribute differs");
             charon_check([ours charonHostEffectiveUserInterfaceLayoutDirection] == system.effectiveUserInterfaceLayoutDirection, NAMED(@"effective direction of attribute %ld", (long)attribute), @"the direction differs");
@@ -71,38 +71,38 @@ int main(void)
         UIView *ourParent = [[UIView alloc] init], *ourChild = [[UIView alloc] init], *parent = [[UIView alloc] init], *child = [[UIView alloc] init];
         [ourParent addSubview:ourChild];
         [parent addSubview:child];
-        [ourParent setCharonHostSemanticContentAttribute:4];
+        [ourParent charonHostSetSemanticContentAttribute:4];
         parent.semanticContentAttribute = UISemanticContentAttributeForceRightToLeft;
         charon_check([ourChild charonHostEffectiveUserInterfaceLayoutDirection] == child.effectiveUserInterfaceLayoutDirection, "a child does not take its parent's attribute", @"the direction differs");
 
         UIView *ourHost = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 100, 50)], *systemHost = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 100, 50)];
         UIView *ourMask = [[UIView alloc] initWithFrame:CGRectMake(5, 5, 10, 10)], *systemMask = [[UIView alloc] initWithFrame:CGRectMake(5, 5, 10, 10)];
         charon_check([ourHost charonHostMaskView] == nil && systemHost.maskView == nil, "no mask view at first", @"a mask view is there");
-        [ourHost setCharonHostMaskView:ourMask];
+        [ourHost charonHostSetMaskView:ourMask];
         systemHost.maskView = systemMask;
         charon_check([ourHost charonHostMaskView] == ourMask && systemHost.maskView == systemMask, "the mask view is the one set", @"the mask view differs");
         charon_check((ourHost.layer.mask == ourMask.layer) == (systemHost.layer.mask == systemMask.layer) && ourHost.layer.mask != nil, "the mask view's layer is the layer's mask", @"the mask differs");
         charon_check(ourHost.subviews.count == systemHost.subviews.count, "the mask view is not a subview", @"the subviews differ");
         charon_check(CGRectEqualToRect(ourMask.frame, systemMask.frame), "the mask view keeps its frame", @"the frame differs");
-        [ourHost setCharonHostMaskView:ourMask];
+        [ourHost charonHostSetMaskView:ourMask];
         systemHost.maskView = systemMask;
         charon_check(ourHost.layer.mask == ourMask.layer && systemHost.layer.mask == systemMask.layer, "setting the mask view again changes nothing", @"the mask went");
         UIView *ourNext = [[UIView alloc] init], *systemNext = [[UIView alloc] init];
-        [ourHost setCharonHostMaskView:ourNext];
+        [ourHost charonHostSetMaskView:ourNext];
         systemHost.maskView = systemNext;
         charon_check(ourMask.superview == nil && systemMask.superview == nil && ourHost.layer.mask == ourNext.layer && systemHost.layer.mask == systemNext.layer, "another mask view replaces the first", @"the replacement differs");
         UIView *ourElsewhere = [[UIView alloc] init], *systemElsewhere = [[UIView alloc] init];
         UIView *ourTaken = [[UIView alloc] init], *systemTaken = [[UIView alloc] init];
         [ourElsewhere addSubview:ourTaken];
         [systemElsewhere addSubview:systemTaken];
-        [ourHost setCharonHostMaskView:ourTaken];
+        [ourHost charonHostSetMaskView:ourTaken];
         systemHost.maskView = systemTaken;
         charon_check(ourElsewhere.subviews.count == systemElsewhere.subviews.count, "a view taken as the mask leaves its superview", @"the superview keeps it");
-        [ourHost setCharonHostMaskView:nil];
+        [ourHost charonHostSetMaskView:nil];
         systemHost.maskView = nil;
         charon_check(ourHost.layer.mask == nil && systemHost.layer.mask == nil && ourHost.layer.mask == systemHost.layer.mask, "no mask view, no mask", @"a mask stays");
         NSString *ourRaise = nil, *systemRaise = nil;
-        @try { [ourHost setCharonHostMaskView:ourHost]; } @catch (NSException *exception) { ourRaise = exception.name; }
+        @try { [ourHost charonHostSetMaskView:ourHost]; } @catch (NSException *exception) { ourRaise = exception.name; }
         @try { systemHost.maskView = systemHost; } @catch (NSException *exception) { systemRaise = exception.name; }
         charon_check([ourRaise isEqualToString:systemRaise] && ourRaise != nil, "a view as its own mask raises", [NSString stringWithFormat:@"%@ != %@", ourRaise, systemRaise]);
 
@@ -138,7 +138,7 @@ int main(void)
 
         UIViewController *fresh = [[UIViewController alloc] init], *freshSystem = [[UIViewController alloc] init];
         charon_check(CGSizeEqualToSize([fresh charonHostPreferredContentSize], freshSystem.preferredContentSize), "the preferred content size of a new controller", @"the size differs");
-        [fresh setCharonHostPreferredContentSize:CGSizeMake(320, 480)];
+        [fresh charonHostSetPreferredContentSize:CGSizeMake(320, 480)];
         freshSystem.preferredContentSize = CGSizeMake(320, 480);
         charon_check(CGSizeEqualToSize([fresh charonHostPreferredContentSize], freshSystem.preferredContentSize), "the preferred content size is kept", @"the size differs");
         charon_check([fresh charonHostPreferredStatusBarStyle] == freshSystem.preferredStatusBarStyle && [fresh charonHostPrefersStatusBarHidden] == freshSystem.prefersStatusBarHidden &&
@@ -146,7 +146,7 @@ int main(void)
         charon_check([fresh charonHostChildViewControllerForStatusBarStyle] == freshSystem.childViewControllerForStatusBarStyle && [fresh charonHostChildViewControllerForStatusBarHidden] == freshSystem.childViewControllerForStatusBarHidden,
                      "no controller child answers for the status bar", @"a child differs");
         charon_check([fresh charonHostModalPresentationCapturesStatusBarAppearance] == freshSystem.modalPresentationCapturesStatusBarAppearance, "a presentation captures the status bar as the system does at first", @"the flag differs");
-        [fresh setCharonHostModalPresentationCapturesStatusBarAppearance:YES];
+        [fresh charonHostSetModalPresentationCapturesStatusBarAppearance:YES];
         freshSystem.modalPresentationCapturesStatusBarAppearance = YES;
         charon_check([fresh charonHostModalPresentationCapturesStatusBarAppearance] == freshSystem.modalPresentationCapturesStatusBarAppearance, "the capture flag is kept", @"the flag differs");
     }

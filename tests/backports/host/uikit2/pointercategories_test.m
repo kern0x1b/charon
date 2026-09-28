@@ -51,8 +51,8 @@ static NSString *yes(BOOL value)
 static NSArray *button_lines(UIView *window)
 {
     NSMutableArray *lines = [NSMutableArray array];
-    SEL enabled = NSSelectorFromString(@"isCharonHostPointerInteractionEnabled"), set_enabled = NSSelectorFromString(@"setCharonHostPointerInteractionEnabled:"),
-        get_selector = NSSelectorFromString(@"charonHostPointerStyleProvider"), set_selector = NSSelectorFromString(@"setCharonHostPointerStyleProvider:");
+    SEL enabled = NSSelectorFromString(@"charonHostIsPointerInteractionEnabled"), set_enabled = NSSelectorFromString(@"charonHostSetPointerInteractionEnabled:"),
+        get_selector = NSSelectorFromString(@"charonHostPointerStyleProvider"), set_selector = NSSelectorFromString(@"charonHostSetPointerStyleProvider:");
     for (int ours = 0; ours < 2; ours++) {
         NSMutableArray *rows = [NSMutableArray array];
         UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
@@ -85,7 +85,7 @@ static NSArray *gesture_lines(BOOL ours)
 {
     NSMutableArray *lines = [NSMutableArray array];
     SEL modifiers = NSSelectorFromString(@"charonHostModifierFlags"), mask = NSSelectorFromString(@"charonHostButtonMask"), receive = NSSelectorFromString(@"charonHostShouldReceiveEvent:"),
-        required = NSSelectorFromString(@"charonHostButtonMaskRequired"), set_required = NSSelectorFromString(@"setCharonHostButtonMaskRequired:");
+        required = NSSelectorFromString(@"charonHostButtonMaskRequired"), set_required = NSSelectorFromString(@"charonHostSetButtonMaskRequired:");
     UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc] init];
     UIEvent *event = [[UIEvent alloc] init];
     [lines addObject:line(@"recognizer", @[@(ours ? ((NSInteger (*)(id, SEL))objc_msgSend)(pan, modifiers) : pan.modifierFlags), @(ours ? ((NSInteger (*)(id, SEL))objc_msgSend)(pan, mask) : pan.buttonMask),

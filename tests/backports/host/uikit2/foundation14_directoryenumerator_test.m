@@ -43,7 +43,7 @@ static NSString *walk(id enumerator, BOOL port, NSString *root, uint64_t skips)
 {
     NSMutableString *out = [NSMutableString string];
     SEL nextSelector = @selector(nextObject), levelSelector = @selector(level);
-    SEL postSelector = NSSelectorFromString(port ? @"isCharonHostEnumeratingDirectoryPostOrder" : @"isEnumeratingDirectoryPostOrder");
+    SEL postSelector = NSSelectorFromString(port ? @"charonHostIsEnumeratingDirectoryPostOrder" : @"isEnumeratingDirectoryPostOrder");
     NSURL *url;
     NSUInteger index = 0;
     uint64_t saved = state;
@@ -101,7 +101,7 @@ int main(int argc, char **argv)
         [manager removeItemAtPath:base error:NULL];
         charon_check(wrong == 0, "directories are visited again after their contents, as the system's enumerator visits them", [NSString stringWithFormat:@"%lu of %lu trees differ", (unsigned long)wrong, (unsigned long)trees]);
         NSDirectoryEnumerator *plain = [manager enumeratorAtPath:NSTemporaryDirectory()];
-        CHECK(!((BOOL (*)(id, SEL))objc_msgSend)(plain, NSSelectorFromString(@"isCharonHostEnumeratingDirectoryPostOrder")), "an enumerator made without the option is never in post order");
+        CHECK(!((BOOL (*)(id, SEL))objc_msgSend)(plain, NSSelectorFromString(@"charonHostIsEnumeratingDirectoryPostOrder")), "an enumerator made without the option is never in post order");
     }
     printf("checks=%d failures=%d\n", charon_checks, charon_failures);
     return charon_failures;

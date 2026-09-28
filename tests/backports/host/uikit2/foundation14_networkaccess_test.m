@@ -23,7 +23,7 @@ static void set_flag(id object, NSString *name, BOOL value, BOOL port)
 {
     NSString *setter = [@"set" stringByAppendingString:[[name substringToIndex:1].uppercaseString stringByAppendingString:[name substringFromIndex:1]]];
     if (port)
-        setter = [@"setCharonHost" stringByAppendingString:[[name substringToIndex:1].uppercaseString stringByAppendingString:[name substringFromIndex:1]]];
+        setter = [@"charonHostSet" stringByAppendingString:[[name substringToIndex:1].uppercaseString stringByAppendingString:[name substringFromIndex:1]]];
     ((void (*)(id, SEL, BOOL))objc_msgSend)(object, NSSelectorFromString([setter stringByAppendingString:@":"]), value);
 }
 

@@ -17,49 +17,49 @@
 
 @interface UINavigationBar (CharonHostAppearances)
 - (id)charonHostStandardAppearance;
-- (void)setCharonHostStandardAppearance:(id)appearance;
+- (void)charonHostSetStandardAppearance:(id)appearance;
 - (id)charonHostCompactAppearance;
-- (void)setCharonHostCompactAppearance:(id)appearance;
+- (void)charonHostSetCompactAppearance:(id)appearance;
 - (id)charonHostScrollEdgeAppearance;
-- (void)setCharonHostScrollEdgeAppearance:(id)appearance;
+- (void)charonHostSetScrollEdgeAppearance:(id)appearance;
 - (id)charonHostCompactScrollEdgeAppearance;
-- (void)setCharonHostCompactScrollEdgeAppearance:(id)appearance;
+- (void)charonHostSetCompactScrollEdgeAppearance:(id)appearance;
 @end
 
 @interface UIToolbar (CharonHostAppearances)
 - (id)charonHostStandardAppearance;
-- (void)setCharonHostStandardAppearance:(id)appearance;
+- (void)charonHostSetStandardAppearance:(id)appearance;
 - (id)charonHostCompactAppearance;
-- (void)setCharonHostCompactAppearance:(id)appearance;
+- (void)charonHostSetCompactAppearance:(id)appearance;
 - (id)charonHostScrollEdgeAppearance;
-- (void)setCharonHostScrollEdgeAppearance:(id)appearance;
+- (void)charonHostSetScrollEdgeAppearance:(id)appearance;
 - (id)charonHostCompactScrollEdgeAppearance;
-- (void)setCharonHostCompactScrollEdgeAppearance:(id)appearance;
+- (void)charonHostSetCompactScrollEdgeAppearance:(id)appearance;
 @end
 
 @interface UITabBar (CharonHostAppearances)
 - (id)charonHostStandardAppearance;
-- (void)setCharonHostStandardAppearance:(id)appearance;
+- (void)charonHostSetStandardAppearance:(id)appearance;
 - (id)charonHostScrollEdgeAppearance;
-- (void)setCharonHostScrollEdgeAppearance:(id)appearance;
+- (void)charonHostSetScrollEdgeAppearance:(id)appearance;
 @end
 
 @interface UINavigationItem (CharonHostAppearances)
 - (id)charonHostStandardAppearance;
-- (void)setCharonHostStandardAppearance:(id)appearance;
+- (void)charonHostSetStandardAppearance:(id)appearance;
 - (id)charonHostCompactAppearance;
-- (void)setCharonHostCompactAppearance:(id)appearance;
+- (void)charonHostSetCompactAppearance:(id)appearance;
 - (id)charonHostScrollEdgeAppearance;
-- (void)setCharonHostScrollEdgeAppearance:(id)appearance;
+- (void)charonHostSetScrollEdgeAppearance:(id)appearance;
 - (id)charonHostCompactScrollEdgeAppearance;
-- (void)setCharonHostCompactScrollEdgeAppearance:(id)appearance;
+- (void)charonHostSetCompactScrollEdgeAppearance:(id)appearance;
 @end
 
 @interface UITabBarItem (CharonHostAppearances)
 - (id)charonHostStandardAppearance;
-- (void)setCharonHostStandardAppearance:(id)appearance;
+- (void)charonHostSetStandardAppearance:(id)appearance;
 - (id)charonHostScrollEdgeAppearance;
-- (void)setCharonHostScrollEdgeAppearance:(id)appearance;
+- (void)charonHostSetScrollEdgeAppearance:(id)appearance;
 @end
 
 #import "appearances-cases.h"
@@ -481,7 +481,7 @@ static void check_accessors(NSString *name, id ourBar, id systemBar, NSArray *sl
     for (NSString *slot in slots) {
         NSString *capital = [[slot substringToIndex:1].uppercaseString stringByAppendingString:[slot substringFromIndex:1]];
         SEL ourGetter = NSSelectorFromString([@"charonHost" stringByAppendingString:capital]);
-        SEL ourSetter = NSSelectorFromString([NSString stringWithFormat:@"setCharonHost%@:", capital]);
+        SEL ourSetter = NSSelectorFromString([NSString stringWithFormat:@"charonHostSet%@:", capital]);
         SEL systemGetter = NSSelectorFromString(slot);
         SEL systemSetter = NSSelectorFromString([NSString stringWithFormat:@"set%@:", capital]);
         charon_check([ourBar respondsToSelector:ourGetter] && [ourBar respondsToSelector:ourSetter], NAMED(@"%@ answers %@", name, slot), @"the accessors are missing");
@@ -527,7 +527,7 @@ static void check_application(void)
     [[navigationAppearance buttonAppearance].normal setBackgroundImage:images[0]];
     [[navigationAppearance doneButtonAppearance].normal setBackgroundImage:images[1]];
     [[navigationAppearance backButtonAppearance].normal setBackgroundImage:images[1]];
-    [navigation setCharonHostStandardAppearance:navigationAppearance];
+    [navigation charonHostSetStandardAppearance:navigationAppearance];
     charon_check([pixel([navigation backgroundImageForBarMetrics:UIBarMetricsDefault]) hasPrefix:@"255 0 0 255"], "a background colour becomes a solid background image of the bar", pixel([navigation backgroundImageForBarMetrics:UIBarMetricsDefault]));
     charon_check([navigation backgroundImageForBarMetrics:UIBarMetricsLandscapePhone] == nil, "without a compact appearance the landscape metrics keep no image of their own", @"an image is set");
     NSDictionary *legacy = navigation.titleTextAttributes;
@@ -550,24 +550,24 @@ static void check_application(void)
     id compact = make_kind(@"UINavigationBarAppearance", YES);
     [compact configureWithOpaqueBackground];
     [compact setBackgroundColor:[UIColor greenColor]];
-    [navigation setCharonHostCompactAppearance:compact];
+    [navigation charonHostSetCompactAppearance:compact];
     charon_check([pixel([navigation backgroundImageForBarMetrics:UIBarMetricsLandscapePhone]) hasPrefix:@"0 255 0 255"], "the compact appearance is applied to the landscape metrics", pixel([navigation backgroundImageForBarMetrics:UIBarMetricsLandscapePhone]));
-    [navigation setCharonHostCompactAppearance:nil];
+    [navigation charonHostSetCompactAppearance:nil];
     charon_check([navigation backgroundImageForBarMetrics:UIBarMetricsLandscapePhone] == nil, "clearing the compact appearance clears the landscape image", @"the image stays");
 
     id scroll = make_kind(@"UINavigationBarAppearance", YES);
     [scroll configureWithOpaqueBackground];
     [scroll setBackgroundColor:[UIColor yellowColor]];
-    [navigation setCharonHostScrollEdgeAppearance:scroll];
+    [navigation charonHostSetScrollEdgeAppearance:scroll];
     charon_check([pixel([navigation backgroundImageForBarMetrics:UIBarMetricsDefault]) hasPrefix:@"255 255 0 255"] && [navigation charonHostScrollEdgeAppearance] != nil,
                  "a bar with no scroll view is at its edge and takes the scroll edge appearance", pixel([navigation backgroundImageForBarMetrics:UIBarMetricsDefault]));
     id compactEdge = make_kind(@"UINavigationBarAppearance", YES);
     [compactEdge configureWithOpaqueBackground];
     [compactEdge setBackgroundColor:[UIColor purpleColor]];
-    [navigation setCharonHostCompactScrollEdgeAppearance:compactEdge];
+    [navigation charonHostSetCompactScrollEdgeAppearance:compactEdge];
     charon_check([pixel([navigation backgroundImageForBarMetrics:UIBarMetricsLandscapePhone]) hasPrefix:@"128 0 128 255"], "the compact scroll edge appearance goes to the landscape metrics at the edge", pixel([navigation backgroundImageForBarMetrics:UIBarMetricsLandscapePhone]));
-    [navigation setCharonHostCompactScrollEdgeAppearance:nil];
-    [navigation setCharonHostScrollEdgeAppearance:nil];
+    [navigation charonHostSetCompactScrollEdgeAppearance:nil];
+    [navigation charonHostSetScrollEdgeAppearance:nil];
     charon_check([pixel([navigation backgroundImageForBarMetrics:UIBarMetricsDefault]) hasPrefix:@"0 0 255 255"] && [navigation backgroundImageForBarMetrics:UIBarMetricsLandscapePhone] == nil, "without a scroll edge appearance the standard one is used at the edge", pixel([navigation backgroundImageForBarMetrics:UIBarMetricsDefault]));
 
     UINavigationItem *first = [[UINavigationItem alloc] initWithTitle:@"one"], *second = [[UINavigationItem alloc] initWithTitle:@"two"];
@@ -576,7 +576,7 @@ static void check_application(void)
     id itemGreen = make_kind(@"UINavigationBarAppearance", YES);
     [itemGreen configureWithOpaqueBackground];
     [itemGreen setBackgroundColor:[UIColor greenColor]];
-    [second setCharonHostStandardAppearance:itemGreen];
+    [second charonHostSetStandardAppearance:itemGreen];
     [navigation charon_refreshForced:NO];
     charon_check([pixel([navigation backgroundImageForBarMetrics:UIBarMetricsDefault]) hasPrefix:@"0 255 0 255"], "the appearance of the top item is the bar's", pixel([navigation backgroundImageForBarMetrics:UIBarMetricsDefault]));
     [[second charonHostStandardAppearance] setBackgroundColor:[UIColor purpleColor]];
@@ -585,15 +585,15 @@ static void check_application(void)
     id itemEdge = make_kind(@"UINavigationBarAppearance", YES);
     [itemEdge configureWithOpaqueBackground];
     [itemEdge setBackgroundColor:[UIColor orangeColor]];
-    [second setCharonHostScrollEdgeAppearance:itemEdge];
+    [second charonHostSetScrollEdgeAppearance:itemEdge];
     charon_check([pixel([navigation backgroundImageForBarMetrics:UIBarMetricsDefault]) hasPrefix:@"255 128 0 255"], "the scroll edge appearance of the top item comes before its standard one at the edge", pixel([navigation backgroundImageForBarMetrics:UIBarMetricsDefault]));
-    [second setCharonHostScrollEdgeAppearance:nil];
+    [second charonHostSetScrollEdgeAppearance:nil];
     [navigation popNavigationItemAnimated:NO];
     [navigation charon_refreshForced:NO];
     charon_check([pixel([navigation backgroundImageForBarMetrics:UIBarMetricsDefault]) hasPrefix:@"0 0 255 255"], "popping the item returns the bar to its own appearance", pixel([navigation backgroundImageForBarMetrics:UIBarMetricsDefault]));
-    [first setCharonHostStandardAppearance:itemGreen];
+    [first charonHostSetStandardAppearance:itemGreen];
     charon_check([pixel([navigation backgroundImageForBarMetrics:UIBarMetricsDefault]) hasPrefix:@"0 255 0 255"], "setting the appearance of the top item applies it at once", pixel([navigation backgroundImageForBarMetrics:UIBarMetricsDefault]));
-    [first setCharonHostStandardAppearance:nil];
+    [first charonHostSetStandardAppearance:nil];
     charon_check([pixel([navigation backgroundImageForBarMetrics:UIBarMetricsDefault]) hasPrefix:@"0 0 255 255"], "clearing it returns the bar to its own", pixel([navigation backgroundImageForBarMetrics:UIBarMetricsDefault]));
 
     UITabBar *itemTabs = [[UITabBar alloc] init];
@@ -604,8 +604,8 @@ static void check_application(void)
     [tabOwn setBackgroundColor:[UIColor redColor]];
     [tabItemApp configureWithOpaqueBackground];
     [tabItemApp setBackgroundColor:[UIColor greenColor]];
-    [itemTabs setCharonHostStandardAppearance:tabOwn];
-    [tabTwo setCharonHostStandardAppearance:tabItemApp];
+    [itemTabs charonHostSetStandardAppearance:tabOwn];
+    [tabTwo charonHostSetStandardAppearance:tabItemApp];
     itemTabs.selectedItem = tabOne;
     [itemTabs charon_refreshForced:NO];
     charon_check([pixel(itemTabs.backgroundImage) hasPrefix:@"255 0 0 255"], "a tab bar with an item that has no appearance keeps its own", pixel(itemTabs.backgroundImage));
@@ -614,18 +614,18 @@ static void check_application(void)
     charon_check([pixel(itemTabs.backgroundImage) hasPrefix:@"0 255 0 255"], "the appearance of the selected tab item is the bar's", pixel(itemTabs.backgroundImage));
 
     id transparent = make_kind(@"UINavigationBarAppearance", YES);
-    [navigation setCharonHostStandardAppearance:transparent];
+    [navigation charonHostSetStandardAppearance:transparent];
     charon_check([pixel([navigation backgroundImageForBarMetrics:UIBarMetricsDefault]) hasPrefix:@"0 0 0 0"] && navigation.shadowImage.size.width == 0, "a transparent appearance clears the bar and its shadow", pixel([navigation backgroundImageForBarMetrics:UIBarMetricsDefault]));
     id blur = make_kind(@"UINavigationBarAppearance", YES);
     [blur setBackgroundEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
-    [navigation setCharonHostStandardAppearance:blur];
+    [navigation charonHostSetStandardAppearance:blur];
     charon_check([navigation backgroundImageForBarMetrics:UIBarMetricsDefault] == nil, "a blur effect leaves the bar its own look", @"an image is set");
     id image = make_kind(@"UINavigationBarAppearance", YES);
     [image setBackgroundImage:images[1]];
     [image setShadowImage:images[0]];
-    [navigation setCharonHostStandardAppearance:image];
+    [navigation charonHostSetStandardAppearance:image];
     charon_check(CGSizeEqualToSize([navigation backgroundImageForBarMetrics:UIBarMetricsDefault].size, ((UIImage *)images[1]).size) && CGSizeEqualToSize(navigation.shadowImage.size, ((UIImage *)images[0]).size), "a background image and a shadow image are handed on as they are", [NSString stringWithFormat:@"%@ %@", [navigation backgroundImageForBarMetrics:UIBarMetricsDefault], navigation.shadowImage]);
-    [navigation setCharonHostStandardAppearance:nil];
+    [navigation charonHostSetStandardAppearance:nil];
     settle();
     charon_check([navigation backgroundImageForBarMetrics:UIBarMetricsDefault] == nil && navigation.shadowImage == nil && navigation.titleTextAttributes == nil, "clearing the standard appearance takes the look back", @"something stays");
     charon_check([proxy titleTextAttributesForState:UIControlStateNormal][UITextAttributeTextColor] == nil && [proxy backgroundImageForState:UIControlStateNormal style:UIBarButtonItemStylePlain barMetrics:UIBarMetricsDefault] == nil, "the buttons are cleared as well", @"they stay");
@@ -633,7 +633,7 @@ static void check_application(void)
     UINavigationBar *untouched = [[UINavigationBar alloc] init];
     id defaultAppearance = [untouched charonHostStandardAppearance];
     (void)defaultAppearance;
-    [untouched setCharonHostCompactAppearance:nil];
+    [untouched charonHostSetCompactAppearance:nil];
     settle();
     charon_check([untouched backgroundImageForBarMetrics:UIBarMetricsDefault] == nil && untouched.titleTextAttributes == nil, "reading the default appearance changes nothing", @"the bar changed");
     [[untouched charonHostStandardAppearance] setTitleTextAttributes:@{NSForegroundColorAttributeName: red}];
@@ -645,12 +645,12 @@ static void check_application(void)
     [toolbarAppearance configureWithOpaqueBackground];
     [toolbarAppearance setBackgroundColor:red];
     [[toolbarAppearance doneButtonAppearance].normal setBackgroundImage:images[1]];
-    [toolbar setCharonHostStandardAppearance:toolbarAppearance];
+    [toolbar charonHostSetStandardAppearance:toolbarAppearance];
     charon_check([pixel([toolbar backgroundImageForToolbarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault]) hasPrefix:@"255 0 0 255"], "a toolbar takes the background colour as a solid image", pixel([toolbar backgroundImageForToolbarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault]));
     charon_check([toolbar shadowImageForToolbarPosition:UIBarPositionAny].size.width == 1, "a toolbar takes the shadow as a hairline", @"no hairline");
     UIBarButtonItem *toolbarProxy = [UIBarButtonItem appearanceWhenContainedIn:[UIToolbar class], nil];
     charon_check([toolbarProxy backgroundImageForState:UIControlStateNormal style:UIBarButtonItemStyleDone barMetrics:UIBarMetricsDefault] == images[1], "the done button image reaches the buttons of toolbars", @"the image is missing");
-    [toolbar setCharonHostStandardAppearance:nil];
+    [toolbar charonHostSetStandardAppearance:nil];
     settle();
     charon_check([toolbar backgroundImageForToolbarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault] == nil, "clearing the toolbar appearance takes the look back", @"an image stays");
 
@@ -662,13 +662,13 @@ static void check_application(void)
     [[tabAppearance stackedLayoutAppearance].selected setIconColor:[UIColor greenColor]];
     [[tabAppearance stackedLayoutAppearance].normal setTitleTextAttributes:@{NSForegroundColorAttributeName: [UIColor blueColor]}];
     [[tabAppearance stackedLayoutAppearance].selected setTitleTextAttributes:@{NSForegroundColorAttributeName: [UIColor yellowColor]}];
-    [tabs setCharonHostStandardAppearance:tabAppearance];
+    [tabs charonHostSetStandardAppearance:tabAppearance];
     charon_check([pixel(tabs.backgroundImage) hasPrefix:@"255 0 0 255"] && tabs.shadowImage.size.width == 1, "a tab bar takes the background colour and the shadow", pixel(tabs.backgroundImage));
     charon_check(CGSizeEqualToSize(tabs.selectionIndicatorImage.size, ((UIImage *)images[0]).size) && [tabs.recordedTint isEqual:[UIColor greenColor]], "the selection indicator image and the selected icon colour are applied", [NSString stringWithFormat:@"%@ %@", tabs.selectionIndicatorImage, tabs.recordedTint]);
     UITabBarItem *itemProxy = [UITabBarItem appearanceWhenContainedIn:[UITabBar class], nil];
     charon_check([[itemProxy titleTextAttributesForState:UIControlStateNormal][UITextAttributeTextColor] isEqual:[UIColor blueColor]] && [[itemProxy titleTextAttributesForState:UIControlStateSelected][UITextAttributeTextColor] isEqual:[UIColor yellowColor]],
                  "the normal and selected tab titles reach the tab items", @"a colour is missing");
-    [tabs setCharonHostStandardAppearance:nil];
+    [tabs charonHostSetStandardAppearance:nil];
     settle();
     charon_check(tabs.backgroundImage == nil && tabs.selectionIndicatorImage == nil && tabs.recordedTint == nil, "clearing the tab bar appearance takes the look back", @"something stays");
 }

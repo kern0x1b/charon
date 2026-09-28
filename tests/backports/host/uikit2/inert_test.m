@@ -2,15 +2,15 @@
 
 @interface UIView (CharonHostLargeContent)
 - (BOOL)charonHostShowsLargeContentViewer;
-- (void)setCharonHostShowsLargeContentViewer:(BOOL)value;
+- (void)charonHostSetShowsLargeContentViewer:(BOOL)value;
 - (NSString *)charonHostLargeContentTitle;
-- (void)setCharonHostLargeContentTitle:(NSString *)value;
+- (void)charonHostSetLargeContentTitle:(NSString *)value;
 - (UIImage *)charonHostLargeContentImage;
-- (void)setCharonHostLargeContentImage:(UIImage *)value;
+- (void)charonHostSetLargeContentImage:(UIImage *)value;
 - (BOOL)charonHostScalesLargeContentImage;
-- (void)setCharonHostScalesLargeContentImage:(BOOL)value;
+- (void)charonHostSetScalesLargeContentImage:(BOOL)value;
 - (UIEdgeInsets)charonHostLargeContentImageInsets;
-- (void)setCharonHostLargeContentImageInsets:(UIEdgeInsets)value;
+- (void)charonHostSetLargeContentImageInsets:(UIEdgeInsets)value;
 @end
 
 @interface UIWindowScene (CharonHostScreenshot)
@@ -24,7 +24,7 @@
 @interface UIViewController (CharonHostPointerLock)
 - (BOOL)charonHostPrefersPointerLocked;
 - (UIViewController *)charonHostChildViewControllerForPointerLock;
-- (void)setCharonHostNeedsUpdateOfPrefersPointerLocked;
+- (void)charonHostSetNeedsUpdateOfPrefersPointerLocked;
 @end
 
 @interface Delegate : NSObject <UILargeContentViewerInteractionDelegate, UIScribbleInteractionDelegate, UIIndirectScribbleInteractionDelegate, UITextInteractionDelegate, UIScreenshotServiceDelegate, UITextFormattingCoordinatorDelegate>
@@ -71,11 +71,11 @@ static NSArray *large_lines(BOOL port, UIView *view, Class interaction, UIView *
     void (*setBool)(id, SEL, BOOL) = (void *)objc_msgSend;
     void (*setObject)(id, SEL, id) = (void *)objc_msgSend;
     void (*setEdge)(id, SEL, UIEdgeInsets) = (void *)objc_msgSend;
-    SEL showsGet = port ? @selector(charonHostShowsLargeContentViewer) : @selector(showsLargeContentViewer), showsSet = port ? @selector(setCharonHostShowsLargeContentViewer:) : @selector(setShowsLargeContentViewer:),
-        titleGet = port ? @selector(charonHostLargeContentTitle) : @selector(largeContentTitle), titleSet = port ? @selector(setCharonHostLargeContentTitle:) : @selector(setLargeContentTitle:),
-        imageGet = port ? @selector(charonHostLargeContentImage) : @selector(largeContentImage), imageSet = port ? @selector(setCharonHostLargeContentImage:) : @selector(setLargeContentImage:),
-        scalesGet = port ? @selector(charonHostScalesLargeContentViewer) : @selector(scalesLargeContentImage), scalesSet = port ? @selector(setCharonHostScalesLargeContentImage:) : @selector(setScalesLargeContentImage:),
-        edgeGet = port ? @selector(charonHostLargeContentImageInsets) : @selector(largeContentImageInsets), edgeSet = port ? @selector(setCharonHostLargeContentImageInsets:) : @selector(setLargeContentImageInsets:);
+    SEL showsGet = port ? @selector(charonHostShowsLargeContentViewer) : @selector(showsLargeContentViewer), showsSet = port ? @selector(charonHostSetShowsLargeContentViewer:) : @selector(setShowsLargeContentViewer:),
+        titleGet = port ? @selector(charonHostLargeContentTitle) : @selector(largeContentTitle), titleSet = port ? @selector(charonHostSetLargeContentTitle:) : @selector(setLargeContentTitle:),
+        imageGet = port ? @selector(charonHostLargeContentImage) : @selector(largeContentImage), imageSet = port ? @selector(charonHostSetLargeContentImage:) : @selector(setLargeContentImage:),
+        scalesGet = port ? @selector(charonHostScalesLargeContentViewer) : @selector(scalesLargeContentImage), scalesSet = port ? @selector(charonHostSetScalesLargeContentImage:) : @selector(setScalesLargeContentImage:),
+        edgeGet = port ? @selector(charonHostLargeContentImageInsets) : @selector(largeContentImageInsets), edgeSet = port ? @selector(charonHostSetLargeContentImageInsets:) : @selector(setLargeContentImageInsets:);
     scalesGet = port ? @selector(charonHostScalesLargeContentImage) : @selector(scalesLargeContentImage);
     [lines addObject:ur_line(@"defaults", @[ur_yes(shows(view, showsGet)), title(view, titleGet) ?: @"nil", image(view, imageGet) ?: @"nil", ur_yes(shows(view, scalesGet)), insets(edge(view, edgeGet))])];
     UIImage *picture = [[UIImage alloc] init];
@@ -152,7 +152,7 @@ void charon_windowed_run(UIWindow *window)
         id state = [scene charonHostPointerLockState], systemState = scene.pointerLockState;
         charon_check(state != nil && systemState != nil && ![state isLocked] && [state isKindOfClass:ourLock] && state == [scene charonHostPointerLockState], "a scene has a pointer lock state that is not locked", @"it does not");
         UIViewController *controller = window.rootViewController;
-        NSString *portLock = ur_line(@"lock", @[ur_yes([controller charonHostPrefersPointerLocked]), [controller charonHostChildViewControllerForPointerLock] ?: @"nil", ur_raised(^id { [controller setCharonHostNeedsUpdateOfPrefersPointerLocked]; return @"ok"; })]);
+        NSString *portLock = ur_line(@"lock", @[ur_yes([controller charonHostPrefersPointerLocked]), [controller charonHostChildViewControllerForPointerLock] ?: @"nil", ur_raised(^id { [controller charonHostSetNeedsUpdateOfPrefersPointerLocked]; return @"ok"; })]);
         NSString *systemLock = ur_line(@"lock", @[ur_yes([controller prefersPointerLocked]), controller.childViewControllerForPointerLock ?: @"nil", ur_raised(^id { [controller setNeedsUpdateOfPrefersPointerLocked]; return @"ok"; })]);
         ur_agree(@"pointer lock members of a view controller", @[portLock], @[systemLock]);
     }

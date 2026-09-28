@@ -66,7 +66,7 @@ static UICollectionView *list_view(int side, id *sourceOut, NSMutableArray *log,
         UICollectionViewListCell *cell = [v dequeueReusableCellWithReuseIdentifier:@"c" forIndexPath:path];
         id content = ((id (*)(id, SEL))objc_msgSend)(cell, renamed(side, @"defaultContentConfiguration"));
         [content setText:item];
-        ((void (*)(id, SEL, id))objc_msgSend)(cell, side ? NSSelectorFromString(@"setCharonHostContentConfiguration:") : NSSelectorFromString(@"setContentConfiguration:"), content);
+        ((void (*)(id, SEL, id))objc_msgSend)(cell, side ? NSSelectorFromString(@"charonHostSetContentConfiguration:") : NSSelectorFromString(@"setContentConfiguration:"), content);
         id ss = [source snapshotForSection:@"s"];
         BOOL parent = [ss containsItem:item] && [[ss snapshotOfParentItem:item] items].count;
         cell.accessories = parent ? @[[[named(side, @"UICellAccessoryOutlineDisclosure") alloc] init]] : @[];

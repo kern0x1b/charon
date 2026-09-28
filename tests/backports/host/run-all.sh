@@ -18,6 +18,9 @@ fi
 # spot the sweep exists to close, so nothing is skipped silently and no reason here is a guess.
 needs_arguments="registry cachereader fuzz"
 records_only="naturallanguage-record smallapis2"
+# Directories that hold a helper the differentials use rather than a test of their own: nothing here builds or
+# checks anything, and passing them over silently is the blind spot this sweep exists to close, so each is named.
+helpers="nsdataasset scenekit-defaults"
 
 alive='^(ok|FAIL|note|skip|stage|record|records:|checks=|[0-9]+ (of|checks))'
 
@@ -35,6 +38,10 @@ wanted=$*
 
 dead=0
 for name in $wanted; do
+    case " $helpers " in *" $name "*)
+        printf '%-24s %s\n' "$name" "skipped: it holds a helper for other tests, not a test of its own"
+        continue
+    esac
     script=$here/$name/run.sh
     if [ ! -f "$script" ]; then
         printf '%-24s %s\n' "$name" "no run.sh"

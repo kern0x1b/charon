@@ -37,7 +37,7 @@ UIFontWeight CharonHostUIFontWeightForImageSymbolWeight(UIImageSymbolWeight symb
 + (UIImage *)charonHostSystemImageNamed:(NSString *)name;
 + (UIImage *)charonHostSystemImageNamed:(NSString *)name compatibleWithTraitCollection:(UITraitCollection *)traitCollection;
 + (UIImage *)charonHostSystemImageNamed:(NSString *)name withConfiguration:(id)configuration;
-- (BOOL)isCharonHostSymbolImage;
+- (BOOL)charonHostIsSymbolImage;
 - (id)charonHostSymbolConfiguration;
 - (UIImage *)charonHostImageByApplyingSymbolConfiguration:(id)configuration;
 - (BOOL)charonHostHasBaseline;
@@ -46,7 +46,7 @@ UIFontWeight CharonHostUIFontWeightForImageSymbolWeight(UIImageSymbolWeight symb
 
 @interface UIImageView (CharonHostSymbols)
 - (id)charonHostPreferredSymbolConfiguration;
-- (void)setCharonHostPreferredSymbolConfiguration:(id)configuration;
+- (void)charonHostSetPreferredSymbolConfiguration:(id)configuration;
 @end
 
 #define NAMED(...) ([NSString stringWithFormat:__VA_ARGS__].UTF8String)
@@ -366,7 +366,7 @@ static NSArray *image_lines(BOOL port, Class cls)
     NSMutableArray *lines = [NSMutableArray array];
     UIImage *plain = bitmap(1), *retina = bitmap(2), *empty = [[UIImage alloc] init];
     id (^symbol_configuration)(UIImage *) = ^id(UIImage *image) { return port ? [image charonHostSymbolConfiguration] : image.symbolConfiguration; };
-    BOOL (^is_symbol)(UIImage *) = ^BOOL(UIImage *image) { return port ? [image isCharonHostSymbolImage] : image.symbolImage; };
+    BOOL (^is_symbol)(UIImage *) = ^BOOL(UIImage *image) { return port ? [image charonHostIsSymbolImage] : image.symbolImage; };
     UIImage *(^apply)(UIImage *, id) = ^UIImage *(UIImage *image, id configuration) {
         return port ? [image charonHostImageByApplyingSymbolConfiguration:configuration] : [image imageByApplyingSymbolConfiguration:configuration];
     };
@@ -425,7 +425,7 @@ static NSArray *view_lines(BOOL port, Class cls)
     id (^get)(UIImageView *) = ^id(UIImageView *view) { return port ? [view charonHostPreferredSymbolConfiguration] : view.preferredSymbolConfiguration; };
     void (^set)(UIImageView *, id) = ^(UIImageView *view, id configuration) {
         if (port)
-            [view setCharonHostPreferredSymbolConfiguration:configuration];
+            [view charonHostSetPreferredSymbolConfiguration:configuration];
         else
             view.preferredSymbolConfiguration = configuration;
     };
@@ -497,7 +497,7 @@ static void symbol_checks(Class port)
             [missing addObject:name];
             continue;
         }
-        if (!drawn.charonHostSymbolConfiguration || ![drawn isCharonHostSymbolImage] || drawn.renderingMode != UIImageRenderingModeAlwaysTemplate || ![drawn charonHostHasBaseline])
+        if (!drawn.charonHostSymbolConfiguration || ![drawn charonHostIsSymbolImage] || drawn.renderingMode != UIImageRenderingModeAlwaysTemplate || ![drawn charonHostHasBaseline])
             [notImages addObject:name];
         for (int c = 0; c < 8; c++) {
             id configuration = [port configurationWithPointSize:configs[c][0] weight:(UIImageSymbolWeight)configs[c][1] scale:(UIImageSymbolScale)configs[c][2]];
@@ -560,7 +560,7 @@ static void symbol_checks(Class port)
     UIImage *again = [small charonHostImageByApplyingSymbolConfiguration:[port configurationWithPointSize:48 weight:UIImageSymbolWeightBold scale:UIImageSymbolScaleMedium]];
     UIImage *host = [[UIImage systemImageNamed:@"star" withConfiguration:[UIImageSymbolConfiguration configurationWithPointSize:12 weight:UIImageSymbolWeightRegular scale:UIImageSymbolScaleMedium]]
                         imageByApplyingSymbolConfiguration:[UIImageSymbolConfiguration configurationWithPointSize:48 weight:UIImageSymbolWeightBold scale:UIImageSymbolScaleMedium]];
-    charon_check(fabs(again.size.width - host.size.width) <= 1 && fabs(again.size.height - host.size.height) <= 1 && [again isCharonHostSymbolImage],
+    charon_check(fabs(again.size.width - host.size.width) <= 1 && fabs(again.size.height - host.size.height) <= 1 && [again charonHostIsSymbolImage],
                  "applying a configuration to a symbol image draws it again at the new size", NSStringFromCGSize(again.size));
     NSString *merged = norm([again charonHostSymbolConfiguration]);
     charon_check([without_traits([again charonHostSymbolConfiguration]) isEqualToString:@"pointSize=48, weight=Bold, scale=Medium"], "and holds the merged configuration", merged);

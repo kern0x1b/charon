@@ -142,7 +142,7 @@ static SEL getter_sel(int side, NSString *name)
 
 static SEL setter_sel(int side, NSString *name)
 {
-    return NSSelectorFromString(side ? [NSString stringWithFormat:@"setCharonHost%@:", capital(name)] : [NSString stringWithFormat:@"set%@:", capital(name)]);
+    return NSSelectorFromString(side ? [NSString stringWithFormat:@"charonHostSet%@:", capital(name)] : [NSString stringWithFormat:@"set%@:", capital(name)]);
 }
 
 static id get(int side, id object, NSString *name)
@@ -167,12 +167,12 @@ static void set_bool(int side, id object, NSString *name, BOOL value)
 
 static void editing(int side, UICollectionView *view, BOOL value)
 {
-    ((void (*)(id, SEL, BOOL))objc_msgSend)(view, NSSelectorFromString(side ? @"setCharonHostEditing:" : @"setEditing:"), value);
+    ((void (*)(id, SEL, BOOL))objc_msgSend)(view, NSSelectorFromString(side ? @"charonHostSetEditing:" : @"setEditing:"), value);
 }
 
 static BOOL is_editing(int side, UICollectionView *view)
 {
-    return ((BOOL (*)(id, SEL))objc_msgSend)(view, NSSelectorFromString(side ? @"isCharonHostEditing" : @"isEditing"));
+    return ((BOOL (*)(id, SEL))objc_msgSend)(view, NSSelectorFromString(side ? @"charonHostIsEditing" : @"isEditing"));
 }
 
 static void spin(void)
@@ -265,12 +265,12 @@ static NSString *cell_geometry(UICollectionViewCell *cell, int side)
 
 @interface UICollectionViewCell (CharonHostConfiguration)
 - (void)charonHostUpdateConfigurationUsingState:(id)state;
-- (void)setCharonHostNeedsUpdateConfiguration;
+- (void)charonHostSetNeedsUpdateConfiguration;
 @end
 
 @interface UITableViewCell (CharonHostConfiguration)
 - (void)charonHostUpdateConfigurationUsingState:(id)state;
-- (void)setCharonHostNeedsUpdateConfiguration;
+- (void)charonHostSetNeedsUpdateConfiguration;
 @end
 
 static NSMutableArray *update_log;
@@ -279,7 +279,7 @@ static NSString *state_text(id state)
 {
     UICellConfigurationState *s = state;
     BOOL port = [NSStringFromClass([state class]) hasPrefix:@"CharonHost"];
-    BOOL editing = ((BOOL (*)(id, SEL))objc_msgSend)(state, NSSelectorFromString(port ? @"isCharonHostEditing" : @"isEditing"));
+    BOOL editing = ((BOOL (*)(id, SEL))objc_msgSend)(state, NSSelectorFromString(port ? @"charonHostIsEditing" : @"isEditing"));
     return [NSString stringWithFormat:@"h=%d s=%d e=%d d=%d f=%d", s.highlighted, s.selected, editing, s.disabled, s.focused];
 }
 
@@ -308,10 +308,10 @@ static NSString *state_text(id state)
     [update_log addObject:[@"update " stringByAppendingString:state_text(state)]];
     [super charonHostUpdateConfigurationUsingState:state];
 }
-- (void)setCharonHostNeedsUpdateConfiguration
+- (void)charonHostSetNeedsUpdateConfiguration
 {
     [update_log addObject:@"needsUpdate"];
-    [super setCharonHostNeedsUpdateConfiguration];
+    [super charonHostSetNeedsUpdateConfiguration];
 }
 @end
 
@@ -412,7 +412,7 @@ static void run_updates(void)
         updated = get(side, cell, @"contentConfiguration");
         [outputs addObject:[NSString stringWithFormat:@"auto off font %@ auto=%d", font_text(updated.textProperties.font), get_bool(side, cell, @"automaticallyUpdatesContentConfiguration")]];
         set_bool(side, cell, @"automaticallyUpdatesContentConfiguration", YES);
-        ((void (*)(id, SEL))objc_msgSend)(cell, NSSelectorFromString(side ? @"setCharonHostNeedsUpdateConfiguration" : @"setNeedsUpdateConfiguration"));
+        ((void (*)(id, SEL))objc_msgSend)(cell, NSSelectorFromString(side ? @"charonHostSetNeedsUpdateConfiguration" : @"setNeedsUpdateConfiguration"));
         [outputs addObject:[@"manual " stringByAppendingString:flush_log()]];
         cell.userInteractionEnabled = NO;
         [outputs addObject:[@"disabled state " stringByAppendingString:normalised(get(side, cell, @"configurationState"))]];

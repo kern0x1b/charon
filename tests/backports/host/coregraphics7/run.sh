@@ -4,7 +4,7 @@ here=$(cd "$(dirname "$0")" && pwd)
 GRAPHICS=${GRAPHICS:-$here/../../../../packages/a/apple-backports/Graphics}
 harness=${COREGRAPHICS7_HARNESS:-$here/../../device}
 build=${COREGRAPHICS7_BUILD:-${TMPDIR:-/tmp}/charon-coregraphics7-host}
-sources="CGColorSpaceICCData10.m CGColorSpaceHDR13.m CGColorSpaceHDR14.m CGColorSpaceHDR15.m"
+sources="CGColorSpaceICCData10.m CGColorSpaceHDR13.m CGColorSpaceHDR14.m CGColorSpaceHDR15.m CGColorSpaceExtendedRange93.m"
 renames=""
 for name in CGColorSpaceCopyICCData CGColorSpaceUsesExtendedRange CGColorSpaceIsHDR CGColorSpaceUsesITUR_2100TF CGColorSpaceIsHLGBased CGColorSpaceIsPQBased; do
     renames="$renames -D$name=charon_host_$name"

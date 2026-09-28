@@ -17,15 +17,15 @@
 @end
 
 @interface CharonHostUIMotionEffectGroup : CharonHostUIMotionEffect
-@property (copy, nonatomic) NSArray *charonHostMotionEffects;
+@property (copy, nonatomic) NSArray *motionEffects;
 @end
 
 @interface UIView (CharonHostMotionEffects)
 - (NSArray *)charonHostMotionEffects;
-- (void)setCharonHostMotionEffects:(NSArray *)motionEffects;
+- (void)charonHostSetMotionEffects:(NSArray *)motionEffects;
 - (void)charonHostAddMotionEffect:(CharonHostUIMotionEffect *)effect;
 - (void)charonHostRemoveMotionEffect:(CharonHostUIMotionEffect *)effect;
-- (void)charon_applyMotionEffectsForViewerOffset:(UIOffset)offset duration:(NSTimeInterval)duration;
+- (void)charonHostCharon_applyMotionEffectsForViewerOffset:(UIOffset)offset duration:(NSTimeInterval)duration;
 @end
 
 static CharonHostUIInterpolatingMotionEffect *effect_for(NSString *keyPath, UIInterpolatingMotionEffectType type, id minimum, id maximum)
@@ -81,13 +81,13 @@ int main(void)
 
         CharonHostUIMotionEffectGroup *group = [[CharonHostUIMotionEffectGroup alloc] init];
         charon_check([group keyPathsAndRelativeValuesForViewerOffset:UIOffsetZero] == nil, "an empty group emits nothing", @"values were emitted");
-        group.charonHostMotionEffects = @[horizontal, effect_for(@"center.x", UIInterpolatingMotionEffectTypeTiltAlongHorizontalAxis, @1, @3), vertical];
+        group.motionEffects = @[horizontal, effect_for(@"center.x", UIInterpolatingMotionEffectTypeTiltAlongHorizontalAxis, @1, @3), vertical];
         NSDictionary *merged = [group keyPathsAndRelativeValuesForViewerOffset:UIOffsetMake(1, -1)];
         charon_check(merged.count == 2, "a group merges the key paths of its effects", [NSString stringWithFormat:@"%@", merged]);
         charon_check(fabs([[merged objectForKey:@"center.x"] doubleValue] - (30 + 3)) < 1e-6, "a group adds the values of one key path", [NSString stringWithFormat:@"%@", merged]);
         charon_check(fabs([[merged objectForKey:@"center.y"] doubleValue] - 30) < 1e-6, "a group keeps the values of the other key path", [NSString stringWithFormat:@"%@", merged]);
         CharonHostUIMotionEffectGroup *nested = [[CharonHostUIMotionEffectGroup alloc] init];
-        nested.charonHostMotionEffects = @[group, horizontal];
+        nested.motionEffects = @[group, horizontal];
         charon_check(fabs([[[nested keyPathsAndRelativeValuesForViewerOffset:UIOffsetMake(1, -1)] objectForKey:@"center.x"] doubleValue] - (30 + 3 + 30)) < 1e-6,
                      "a group inside a group", @"the nested values are wrong");
 
@@ -100,12 +100,12 @@ int main(void)
         charon_check([view charonHostMotionEffects].count == 2, "a view holds several effects", @"the second effect is missing");
         [view charonHostRemoveMotionEffect:horizontal];
         charon_check([view charonHostMotionEffects].count == 1 && [[view charonHostMotionEffects] objectAtIndex:0] == vertical, "removing an effect", @"the wrong effect was removed");
-        [view setCharonHostMotionEffects:@[horizontal, (CharonHostUIMotionEffect *)@"not an effect"]];
+        [view charonHostSetMotionEffects:@[horizontal, (CharonHostUIMotionEffect *)@"not an effect"]];
         charon_check([view charonHostMotionEffects].count == 2, "setting the effects keeps what is not an effect, as the system does", @"a foreign object was dropped");
 
-        [view setCharonHostMotionEffects:@[effect_for(@"center.x", UIInterpolatingMotionEffectTypeTiltAlongHorizontalAxis, @(-10), @10),
+        [view charonHostSetMotionEffects:@[effect_for(@"center.x", UIInterpolatingMotionEffectTypeTiltAlongHorizontalAxis, @(-10), @10),
                                            effect_for(@"layer.shadowOpacity", UIInterpolatingMotionEffectTypeTiltAlongHorizontalAxis, @0, @1)]];
-        [view charon_applyMotionEffectsForViewerOffset:UIOffsetMake(1, 0) duration:0.05];
+        [view charonHostCharon_applyMotionEffectsForViewerOffset:UIOffsetMake(1, 0) duration:0.05];
         CABasicAnimation *position = (CABasicAnimation *)[view.layer animationForKey:@"charon.motionEffect.position.x"];
         CABasicAnimation *shadow = (CABasicAnimation *)[view.layer animationForKey:@"charon.motionEffect.shadowOpacity"];
         charon_check(position != nil && shadow != nil, "applying the effects animates the layer", @"no animation was added");
@@ -113,12 +113,12 @@ int main(void)
         charon_check([position.toValue doubleValue] == 10 && [position.fromValue doubleValue] == 0, "the applied animation carries the relative value",
                      [NSString stringWithFormat:@"%@ -> %@", position.fromValue, position.toValue]);
         charon_check([shadow.toValue doubleValue] == 1, "a layer key path is applied without its prefix", [NSString stringWithFormat:@"%@", shadow.toValue]);
-        [view charon_applyMotionEffectsForViewerOffset:UIOffsetMake(-1, 0) duration:0.05];
+        [view charonHostCharon_applyMotionEffectsForViewerOffset:UIOffsetMake(-1, 0) duration:0.05];
         position = (CABasicAnimation *)[view.layer animationForKey:@"charon.motionEffect.position.x"];
         charon_check([position.fromValue doubleValue] == 10 && [position.toValue doubleValue] == -10, "the next update starts where the last one stopped",
                      [NSString stringWithFormat:@"%@ -> %@", position.fromValue, position.toValue]);
-        [view setCharonHostMotionEffects:@[]];
-        [view charon_applyMotionEffectsForViewerOffset:UIOffsetZero duration:0.05];
+        [view charonHostSetMotionEffects:@[]];
+        [view charonHostCharon_applyMotionEffectsForViewerOffset:UIOffsetZero duration:0.05];
         position = (CABasicAnimation *)[view.layer animationForKey:@"charon.motionEffect.position.x"];
         charon_check([position.toValue doubleValue] == 0 && position.removedOnCompletion, "removing the effects animates the layer back", [NSString stringWithFormat:@"%@", position]);
 

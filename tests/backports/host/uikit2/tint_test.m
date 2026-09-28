@@ -5,9 +5,9 @@
 
 @interface UIView (CharonHostTintColor)
 - (UIColor *)charonHostTintColor;
-- (void)setCharonHostTintColor:(UIColor *)tintColor;
+- (void)charonHostSetTintColor:(UIColor *)tintColor;
 - (UIViewTintAdjustmentMode)charonHostTintAdjustmentMode;
-- (void)setCharonHostTintAdjustmentMode:(UIViewTintAdjustmentMode)mode;
+- (void)charonHostSetTintAdjustmentMode:(UIViewTintAdjustmentMode)mode;
 - (void)charonHostTintColorDidChange;
 @end
 
@@ -47,20 +47,20 @@ int main(void)
         charon_check([components_of([leaf charonHostTintColor]) isEqualToString:components_of([root charonHostTintColor])], "the default reaches every view", @"the leaf sees another colour");
         charon_check([root charonHostTintAdjustmentMode] == UIViewTintAdjustmentModeNormal, "the default adjustment mode", @"the default mode is not normal");
 
-        [ownColour setCharonHostTintColor:[UIColor greenColor]];
+        [ownColour charonHostSetTintColor:[UIColor greenColor]];
         root.changes = middle.changes = leaf.changes = ownColour.changes = 0;
-        [root setCharonHostTintColor:[UIColor redColor]];
+        [root charonHostSetTintColor:[UIColor redColor]];
         charon_check([components_of([leaf charonHostTintColor]) isEqualToString:components_of([UIColor redColor])], "a set colour is inherited", components_of([leaf charonHostTintColor]));
         charon_check([components_of([ownColour charonHostTintColor]) isEqualToString:components_of([UIColor greenColor])], "a view with its own colour keeps it", components_of([ownColour charonHostTintColor]));
         charon_check(root.changes == 1 && middle.changes == 1 && leaf.changes == 1, "setting the colour reaches the views that inherit it",
                      [NSString stringWithFormat:@"%ld %ld %ld", (long)root.changes, (long)middle.changes, (long)leaf.changes]);
         charon_check(ownColour.changes == 0, "setting the colour stops at a view with its own colour", @"the view was told about a colour it does not use");
 
-        [middle setCharonHostTintColor:nil];
+        [middle charonHostSetTintColor:nil];
         charon_check([components_of([leaf charonHostTintColor]) isEqualToString:components_of([UIColor redColor])], "clearing a colour falls back to the superview", components_of([leaf charonHostTintColor]));
 
         root.changes = middle.changes = leaf.changes = 0;
-        [middle setCharonHostTintAdjustmentMode:UIViewTintAdjustmentModeDimmed];
+        [middle charonHostSetTintAdjustmentMode:UIViewTintAdjustmentModeDimmed];
         charon_check([middle charonHostTintAdjustmentMode] == UIViewTintAdjustmentModeDimmed && [leaf charonHostTintAdjustmentMode] == UIViewTintAdjustmentModeDimmed,
                      "the adjustment mode is inherited", @"the mode is not inherited");
         charon_check([root charonHostTintAdjustmentMode] == UIViewTintAdjustmentModeNormal, "the adjustment mode does not reach the superview", @"the superview was dimmed");
@@ -82,7 +82,7 @@ int main(void)
                      "the dimmed colour is the one the system makes, to the byte the grey is stored in",
                      [NSString stringWithFormat:@"ours %.6f/%.3f system %.6f/%.3f", ourWhite, ourAlpha, systemWhite, systemAlpha]);
         charon_check([components_of([root charonHostTintColor]) isEqualToString:components_of([UIColor redColor])], "a view above the dimmed one keeps its colour", components_of([root charonHostTintColor]));
-        [middle setCharonHostTintAdjustmentMode:UIViewTintAdjustmentModeNormal];
+        [middle charonHostSetTintAdjustmentMode:UIViewTintAdjustmentModeNormal];
         charon_check([components_of([leaf charonHostTintColor]) isEqualToString:components_of([UIColor redColor])], "the colour comes back when the dimming stops", components_of([leaf charonHostTintColor]));
 
         printf("checks=%d failures=%d\n", charon_checks, charon_failures);
