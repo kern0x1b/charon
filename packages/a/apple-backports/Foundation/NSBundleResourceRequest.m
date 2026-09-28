@@ -263,32 +263,17 @@ static double CharonPreservationPriorityForTag(NSBundle *bundle, SEL selector, N
    classes, and asking one then traps (charon/AGENTS.md, Traps: "+load in a backport", and
    Foundation/NSBundle+ReceiptURL.m, whose categories are attached from attach.c's constructor for the
    same reason). */
-__attribute__((constructor)) static void CharonInstallNSBundleAdditions(void)
+/* The install, taking the class it is to install on, so that a caller can hand it one that has
+   neither method. The constructor below passes NSBundle; the differential passes a class of its own,
+   which is the only way the *decision* can be tested at all, because on a host that already has both
+   the two queries agree and nothing is said about whether the port would have installed them. */
+void CharonInstallNSBundleAdditions(Class bundle)
 {
-    /* The class by name, not by reference. A class *reference* to NSBundle is a weak import in this
-       package - the class does not exist on the release it is built for - and on arm64e the optimized
-       stub that answers -respondsToSelector: authenticates whatever that reference holds, so a
-       reference the link did not sign the way the host signs it is a brk #0xc472 (a pointer
-       authentication failure, DA key) before any message is sent. Asking the runtime for the class by
-       name gives a pointer the runtime itself signed. */
-    Class bundle = objc_getClass("NSBundle");
-    Dl_info where;
-    memset(&where, 0, sizeof(where));
-    dladdr((__bridge const void *)bundle, &where);
-    fprintf(stderr, "charon: NSBundle is %p, in %s, and objc_getClass agrees: %d\n", (__bridge void *)bundle,
-            where.dli_fname ? where.dli_fname : "(nowhere)", bundle == objc_getClass("NSBundle"));
-    if (bundle == Nil) {
-        fprintf(stderr, "charon: no NSBundle in this process; the two additions are not installed\n");
-        return;
-    }
-    /* Both answers before either mutation: adding a method rewrites the class, and a class pointer
-       held across that is not the one the runtime would hand out again - asking it afterwards is what
-       traps (a pointer authentication failure, DA key, in the optimized -respondsToSelector stub). */
     /* class_getInstanceMethod, not -instancesRespondToSelector:. The optimized stub behind
        -instancesRespondToSelector: traps with brk #0xc472 for a selector that nothing has
-       registered, and on macOS these two are registered nowhere; class_getInstanceMethod walks the
-       superclasses and answers without that path (measured by the other band that hit the same trap,
-       99038dbf). */
+       registered (measured by the band that hit the same trap, 99038dbf), and on a class of this
+       file's own making neither selector is registered anywhere. Both answers are read before either
+       mutation: adding a method rewrites the class, and a pointer held across that is stale. */
     BOOL hasSet = class_getInstanceMethod(bundle, @selector(setPreservationPriority:forTags:)) != NULL;
     BOOL hasGet = class_getInstanceMethod(bundle, @selector(preservationPriorityForTag:)) != NULL;
     if (!hasSet)
@@ -297,4 +282,19 @@ __attribute__((constructor)) static void CharonInstallNSBundleAdditions(void)
     if (!hasGet)
         class_addMethod(bundle, @selector(preservationPriorityForTag:),
                         (IMP)CharonPreservationPriorityForTag, "d@:@@");
+}
+
+__attribute__((constructor)) static void CharonInstallOnNSBundle(void)
+{
+    Class bundle = objc_getClass("NSBundle");
+    if (bundle == Nil) {
+        fprintf(stderr, "charon: no NSBundle in this process; the two additions are not installed\n");
+        return;
+    }
+    CharonInstallNSBundleAdditions(bundle);
+    Dl_info where;
+    memset(&where, 0, sizeof(where));
+    dladdr((__bridge const void *)bundle, &where);
+    fprintf(stderr, "charon: NSBundle is %p, in %s\n", (__bridge void *)bundle,
+            where.dli_fname ? where.dli_fname : "(nowhere)");
 }

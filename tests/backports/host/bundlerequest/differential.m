@@ -61,6 +61,14 @@ static void same_string(NSString *ours, NSString *theirs, NSString *what)
         fail(@"%@: the port says |%@|, Foundation |%@|", what, ours ?: @"(nil)", theirs ?: @"(nil)");
 }
 
+// the one thing the port's installed functions read from the object they are called on
+static NSString *charon_bundlePath(id self, SEL selector)
+{
+    (void)self;
+    (void)selector;
+    return @"/tmp/charon-brr-fresh";
+}
+
 // The port's own class, declared here under the name run.sh gives it, so the calls are typed and reach
 // its accessors by name. It is the release that has none of this, so nothing here relies on a
 // declaration the SDK owns.
@@ -78,6 +86,9 @@ static void same_string(NSString *ours, NSString *theirs, NSString *what)
 @end
 
 extern double const CharonHostNSBundleResourceRequestLoadingPriorityUrgent;
+/* the port's install, taking the class to install on - the only way the *decision* is testable, since
+   on a host that already has both methods the two queries agree whatever the port does */
+extern void CharonInstallNSBundleAdditions(Class bundle);
 extern NSString *const CharonHostNSBundleResourceRequestLowDiskSpaceNotification;
 
 // The host's private initialiser, called the way a direct send reaches it: an NSInvocation's
@@ -283,6 +294,37 @@ int main(void)
             printf("note: %s - a refusal: %s, level1 reads %g, an unnamed tag reads %g\n",
                    [what UTF8String], reason ? [reason UTF8String] : "(none)", level1, level9);
         }
+        /* the install, on a class of the test's own that has neither selector: both are added, and
+           the behaviour they carry is the port's and not the host's */
+        /* a class of the test's own that has the two selectors *absent* and the one the port's
+           functions read -bundlePath- present, so what is under test is the decision and not a
+           forward to a method this class never had */
+        static NSString *const path = @"/tmp/charon-brr-fresh";
+        Class fresh = objc_allocateClassPair([NSObject class], "CharonHostFreshBundle", 0);
+        class_addMethod(fresh, NSSelectorFromString(@"bundlePath"), (IMP)charon_bundlePath, "@@:");
+        objc_registerClassPair(fresh);
+        (void)path;
+        CharonInstallNSBundleAdditions(fresh);
+        SEL installedSet = NSSelectorFromString(@"setPreservationPriority:forTags:");
+        SEL installedGet = NSSelectorFromString(@"preservationPriorityForTag:");
+        same_bool(class_getInstanceMethod(fresh, installedSet) != NULL, YES,
+                  @"the install adds -setPreservationPriority:forTags: to a class that lacks it");
+        same_bool(class_getInstanceMethod(fresh, installedGet) != NULL, YES,
+                  @"the install adds -preservationPriorityForTag: to a class that lacks it");
+        {
+            id instance = [fresh alloc];
+            NSString *refusal = nil;
+            @try {
+                ((void (*)(id, SEL, double, id))objc_msgSend)(instance, installedSet, 0.25, known);
+            } @catch (NSException *exception) {
+                refusal = exception.reason;
+            }
+            same_bool(refusal != nil, YES,
+                      @"the installed setter raises the header's refusal where the bundle has no tags");
+            same_double(((double (*)(id, SEL, id))objc_msgSend)(instance, installedGet, @"level1"), 0.0,
+                        @"the installed getter reads 0 for a tag that was never set");
+        }
+
         printf("note: the host's two NSBundle additions are the same selectors on the same class and read back 0,\n"
                "  so the port's two are held to the header and differ from macOS on purpose.\n");
 
