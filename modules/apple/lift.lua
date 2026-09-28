@@ -1657,6 +1657,61 @@ local function computed(opt)
     end
     table.sort(entries, function (a, b) return a.api < b.api end)
 
+    -- Before the surface is asked: the kept accessors a carried property carries. The carried properties of a class
+    -- that also has a kept getter, and the kept getters themselves, are one parse's worth of filters (multidump), and
+    -- the join is the attribute each is written from. A refusal here instead of at the end of the run is a second or
+    -- two of a run that is a minute, and it names both rows and both statuses.
+    local getters, owners, asked = {}, {}, 0
+    for api in pairs(kept) do
+        local member = member_api(api:gsub("%(%)$", ""))
+        if member and member.selector and not member.selector:find(":") then
+            getters[api] = member
+            owners[member.owner] = true
+            asked = asked + 1
+        end
+    end
+    local carried_properties = {}
+    for _, entry in ipairs(entries) do
+        if entry.kind == "property" then
+            local member = member_api(entry.api:gsub("%(%)$", ""))
+            if member and owners[member.owner] then
+                table.insert(carried_properties, entry)
+            end
+        end
+    end
+    if #carried_properties > 0 and asked > 0 then
+        local wave = {}
+        for _, entry in ipairs(carried_properties) do
+            table.insert(wave, filter_of(entry))
+        end
+        for api in pairs(getters) do
+            table.insert(wave, filter_of(listed[api]))
+        end
+        prefetch(wave)
+        local where_of, answers = {}, {}
+        for _, entry in ipairs(carried_properties) do
+            for _, node in ipairs(dump(filter_of(entry))) do
+                local found = node.kind == "ObjCPropertyDecl" and attribute_where(node)
+                if found and listed[member_api(entry.api:gsub("%(%)$", "")).owner .. "." .. node.name] then
+                    where_of[found] = listed[member_api(entry.api:gsub("%(%)$", "")).owner .. "." .. node.name].api
+                end
+                table.insert(answers, node)
+            end
+        end
+        for api in pairs(getters) do
+            for _, node in ipairs(dump(filter_of(listed[api]))) do
+                table.insert(answers, node)
+            end
+        end
+        local conflicts = accessor_conflicts(kept, listed, answers, where_of)
+        if #conflicts > 0 then
+            table.sort(conflicts)
+            raise("the registry answers an accessor and the property it is written from differently, and the lift carries the property: %s",
+                  table.concat(conflicts, "; "))
+        end
+    end
+    mark("accessor pairs")
+
     local supers = {}
     local function superclass(name)
         if supers[name] == nil then
@@ -2803,6 +2858,61 @@ end
 -- name no header declares (a private class, a compiler-rt intrinsic, a later SDK's API), or one whose header it does not read. A
 -- set measured for an SDK holds what was found, and is no proof that the SDK declares none of them: each line has to be a name
 -- no header declares, or be told apart (a registry spelling lift() reads, a folder of headers it reads) when it is a defect.
+-- Where the availability of a declaration is written, as the dump gives it: the file, line and column of the
+-- AvailabilityAttr, or nil where the header writes none. An implicit accessor's attribute is its property's, written
+-- once for both (see marks()), so two declarations that answer the same where are one API's declaration and its
+-- accessors whatever they are called.
+function attribute_where(node)
+    for _, child in ipairs(node.inner or {}) do
+        if child.kind == "AvailabilityAttr" and child.platform == "ios" and child.introduced then
+            local begin = child.range and child.range.begin or {}
+            local where = begin.expansionLoc or begin
+            if where.file and where.line and where.col then
+                return string.format("%s:%s:%s", where.file, where.line, where.col), child.introduced
+            end
+        end
+    end
+end
+
+-- The kept accessors a carried property carries, one complaint each. What a parse answered for a list of filters is
+-- the union of what each of them matches (a filter prints the outermost declarations whose qualified name contains
+-- it), so every declaration is indexed by its own qualified name and each api read from its own nodes: an
+-- attribute's where is the join between a property and the accessors written from it, and it is the only join there
+-- is - a getter may be named anything at all, and only the header says which.
+--
+-- The registry refuses two spellings of one API that answer differently where it is read, by name: a property
+-- `Class.name` and an accessor spelled -[Class name]. This is the half it cannot see.
+-- `-[NSProcessInfo isLowPowerModeEnabled]` is the accessor of the property `NSProcessInfo.lowPowerModeEnabled`, and
+-- the two are one API with a getter= attribute in a header between them.
+function accessor_conflicts(kept, listed, answers, where_of)
+    local declarations = {}
+    for _, node in ipairs(answers) do
+        if node.name then
+            declarations[(owner_of(node) or "") .. "::" .. node.name] = node
+        end
+    end
+    local found, seen = {}, {}
+    for api in pairs(kept) do
+        local member = member_api(api:gsub("%(%)$", ""))
+        if member and member.selector and not member.selector:find(":") and not member.selector:find("^set") then
+            local node = declarations[member.owner .. "::" .. member.selector]
+            if node and node.kind == "ObjCMethodDecl" and node.isImplicit then
+                local where = attribute_where(node)
+                local property = where and where_of[where] or nil
+                if property and property ~= api and kept[api] and listed[property].status == "implemented" then
+                    local pair = api < property and (api .. " " .. property) or (property .. " " .. api)
+                    if not seen[pair] then
+                        seen[pair] = true
+                        table.insert(found, string.format("%s is %s and %s is %s, and the first is written from the second's own availability, so lowering the second lowers the first",
+                                                          api, listed[api].status, property, listed[property].status))
+                    end
+                end
+            end
+        end
+    end
+    return found
+end
+
 function left_alone(unmatched, undeclared, listed)
     local lines = {}
     local classes, rest, kinds = split_unmatched(unmatched, listed)

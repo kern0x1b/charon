@@ -430,6 +430,31 @@ function failures(opt)
                  {{api = "-[NSCoder setX:]", how = "declared only by NSSecureCoding"}, {api = "-[NSY z]", how = "owner not found"}}, registry), measured)),
                  "new: undeclared -[NSCoder setX:] declared only by NSSecureCoding; no longer found: undeclared -[NSCoder setX:] declared nowhere")
     expect_equal(found, "no measured set at all", #lift.differences(lines, ""), 5)
+    -- A kept accessor whose property is carried, joined by the attribute each is written from: the one join there is
+    -- when the accessor is named by its getter rather than by the property it reads.
+    local function accessor(qualified, selector, where)
+        return {kind = "ObjCMethodDecl", name = selector, isImplicit = true, instance = true, _qualified = qualified,
+                inner = {{kind = "AvailabilityAttr", platform = "ios", introduced = "9.0",
+                          range = {begin = {expansionLoc = {file = "NSProcessInfo.h", line = 222, col = 5}}}}}}
+    end
+    local kept = {["-[NSProcessInfo isLowPowerModeEnabled]"] = true}
+    local listed = {["-[NSProcessInfo isLowPowerModeEnabled]"] = {api = "-[NSProcessInfo isLowPowerModeEnabled]", status = "inert"},
+                    ["NSProcessInfo.lowPowerModeEnabled"] = {api = "NSProcessInfo.lowPowerModeEnabled", status = "implemented"}}
+    local where_of = {["NSProcessInfo.h:222:5"] = "NSProcessInfo.lowPowerModeEnabled"}
+    local answers = {accessor("NSProcessInfo::isLowPowerModeEnabled", "isLowPowerModeEnabled")}
+    expect_equal(found, "a kept accessor of a carried property", #lift.accessor_conflicts(kept, listed, answers, where_of), 1)
+    expect_equal(found, "and it names both rows",
+                 (lift.accessor_conflicts(kept, listed, answers, where_of)[1] or ""):match("isLowPowerModeEnabled%] is inert") ~= nil, true)
+    -- the same accessor with nothing carried under its attribute: nothing to refuse
+    expect_equal(found, "a kept accessor of nothing carried", #lift.accessor_conflicts(kept, listed, answers, {}), 0)
+    -- an explicit accessor is its own declaration, whatever else shares the class
+    local written = accessor("NSProcessInfo::isLowPowerModeEnabled", "isLowPowerModeEnabled")
+    written.isImplicit = false
+    expect_equal(found, "an accessor the header writes itself", #lift.accessor_conflicts(kept, listed, {written}, where_of), 0)
+    -- the accessor carried as well as the property: one API, one answer, nothing to refuse
+    kept["-[NSProcessInfo isLowPowerModeEnabled]"] = nil
+    listed["-[NSProcessInfo isLowPowerModeEnabled]"] = {api = "-[NSProcessInfo isLowPowerModeEnabled]", status = "implemented"}
+    expect_equal(found, "both spellings carried", #lift.accessor_conflicts(kept, listed, answers, where_of), 0)
 
     -- an implemented class no header declares stays unmatched and is named apart as a class; the rest keep their kind
     local classes, rest, kinds = lift.split_unmatched({"CharonNoSuchClassAnywhere", "_ceil", "CharonProto"}, {CharonNoSuchClassAnywhere = {kind = "class"},
