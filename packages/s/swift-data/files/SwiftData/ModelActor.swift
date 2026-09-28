@@ -65,27 +65,23 @@ public class DefaultSerialModelExecutor: @unchecked Sendable, SerialModelExecuto
         self.modelContext = modelContext
     }
 
-    /// The job runs on the context's own queue, which is a private one: that is what makes this
-    /// executor serial, and it is the queue the context already uses for its own work, so a model
-    /// and the store agree on which thread a row is read on.
+    /// The job runs on the context's own queue, through `perform`, and not on a queue of the
+    /// executor's own: one queue is what makes the actor's work and the context's own operations
+    /// serial against each other, which is what an actor over a `ModelContext` means. A
+    /// `DispatchQueue` here would be a second one, and a job could then read a row while the
+    /// context was saving it.
     public func enqueue(_ job: consuming ExecutorJob) {
+        // An `ExecutorJob` is noncopyable and `~Escapable`, so it cannot be captured by
+        // `perform`'s escaping closure: "noncopyable 'job' cannot be consumed when captured by an
+        // escaping closure", and a typecheck does not diagnose it while the compile does.
+        // `UnownedJob(job)` is the standard library's own form of the job that is copyable and
+        // escapable - it borrows the job's executor rather than owning it, which is all a queue
+        // needs - so the context's queue can run it on the unowned executor this object already
+        // is. This is how the public examples of a custom executor on top of dispatch are written.
+        let unowned = UnownedJob(job)
+        let serial = self.asUnownedSerialExecutor()
         let context = modelContext.context
-        // The job is run on the unowned serial executor, not on this object: `ExecutorJob`
-        // takes an `UnownedSerialExecutor` and the standard library's own executors hand it
-        // exactly this value. An object cannot be its own unowned executor - that is the whole
-        // point of "unowned" - and passing `self` is a type error, which is the toolchain
-        // saying so.
-        // A job is not copyable, and an `NSManagedObjectContext.performAndWait` block cannot hold
-        // one: it is borrowed, not consumed. The job is therefore taken by a function that hands
-        // it to `runSynchronously`, and the context is asked to run that function on its own
-        // queue with `perform`, which takes an escaping closure and can own what it needs.
-        let unowned = UnownedSerialExecutor(self)
-        struct Runner {
-            let unowned: UnownedSerialExecutor
-            func run(_ job: consuming ExecutorJob) { job.runSynchronously(on: unowned) }
-        }
-        let runner = Runner(unowned: unowned)
-        context.perform { runner.run(job) }
+        context.perform { unowned.runSynchronously(on: serial) }
     }
 
     @objc deinit {}
