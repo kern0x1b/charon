@@ -33,13 +33,6 @@ NSString *const ASCharonProviderCodingKey = @"org.charon.authservices.provider";
     return self;
 }
 
-// The release marks -init and +new unavailable: an application is not meant to make a bare request,
-// and nothing could service one without a provider.
-- (instancetype)init
-{
-    return [self charon_initWithProvider:nil];
-}
-
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     // The provider is an object the caller supplies, and a coder is text or bytes; the release's own
