@@ -9,8 +9,6 @@
 // error and its reason come from CharonPassKit, so no sentence is written twice.
 #import "CharonPassKit.h"
 
-NS_ASSUME_NONNULL_BEGIN
-
 @implementation PKPassLibrary (CharonWallet)
 
 // +passesOfType:, 8.0: there are no passes, because none can be added, so the answer is the empty
@@ -132,4 +130,3 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-NS_ASSUME_NONNULL_END

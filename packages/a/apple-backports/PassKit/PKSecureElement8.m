@@ -31,8 +31,6 @@
 #import <UIKit/UIKit.h>
 #import "CharonPassKit.h"
 
-NS_ASSUME_NONNULL_BEGIN
-
 @implementation PKPaymentAuthorizationController (CharonSecureElement)
 
 // Apple's own documentation: a device that cannot make payments says so here. The four NO answers.
@@ -41,13 +39,13 @@ NS_ASSUME_NONNULL_BEGIN
     return NO;
 }
 
-+ (BOOL)canMakePaymentsUsingNetworks:(NSSet *)networks
++ (BOOL)canMakePaymentsUsingNetworks:(NSArray *)networks
 {
     (void)networks;
     return NO;
 }
 
-+ (BOOL)canMakePaymentsUsingNetworks:(NSSet *)networks capabilities:(PKPaymentNetworkCapabilities)capabilities
++ (BOOL)canMakePaymentsUsingNetworks:(NSArray *)networks capabilities:(PKMerchantCapability)capabilities
 {
     (void)networks;
     (void)capabilities;
@@ -64,13 +62,13 @@ NS_ASSUME_NONNULL_BEGIN
     return NO;
 }
 
-+ (BOOL)canMakePaymentsUsingNetworks:(NSSet *)networks
++ (BOOL)canMakePaymentsUsingNetworks:(NSArray *)networks
 {
     (void)networks;
     return NO;
 }
 
-+ (BOOL)canMakePaymentsUsingNetworks:(NSSet *)networks capabilities:(PKPaymentNetworkCapabilities)capabilities
++ (BOOL)canMakePaymentsUsingNetworks:(NSArray *)networks capabilities:(PKMerchantCapability)capabilities
 {
     (void)networks;
     (void)capabilities;
@@ -114,7 +112,7 @@ NS_ASSUME_NONNULL_BEGIN
 // code, so a caller is told rather than left waiting.
 - (void)activatePaymentPass:(PKPaymentPass *)paymentPass
          withActivationCode:(NSString *)activationCode
-                completion:(void (^)(BOOL, NSError *))completion
+                completion:(void (^)(BOOL success, NSError * _Nullable error))completion
 {
     if (completion) {
         completion(NO, CharonPassKitNoHardwareError());
@@ -122,8 +120,8 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)activatePaymentPass:(PKPaymentPass *)paymentPass
-       withActivationData:(PKPaymentActivationData *)activationData
-                completion:(void (^)(BOOL, NSError *))completion
+       withActivationData:(NSData *)activationData
+                completion:(void (^)(BOOL success, NSError * _Nullable error))completion
 {
     (void)paymentPass;
     (void)activationData;
@@ -133,8 +131,8 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)activateSecureElementPass:(PKSecureElementPass *)secureElementPass
-             withActivationData:(PKPaymentActivationData *)activationData
-                      completion:(void (^)(BOOL, NSError *))completion
+             withActivationData:(NSData *)activationData
+                      completion:(void (^)(BOOL success, NSError * _Nullable error))completion
 {
     (void)secureElementPass;
     (void)activationData;
@@ -145,17 +143,17 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)signData:(NSData *)signatureData
  withSecureElementPass:(PKSecureElementPass *)secureElementPass
-        completion:(void (^)(NSData *, NSError *))completion
+        completion:(void (^)(NSData * _Nullable signedData, NSData * _Nullable signature, NSError * _Nullable error))completion
 {
     (void)signatureData;
     (void)secureElementPass;
     if (completion) {
-        completion(nil, CharonPassKitNoHardwareError());
+        completion(nil, nil, CharonPassKitNoHardwareError());
     }
 }
 
 - (void)serviceProviderDataForSecureElementPass:(PKSecureElementPass *)secureElementPass
-                                   completion:(void (^)(NSData *, NSError *))completion
+                                   completion:(void (^)(NSData * _Nullable serviceProviderData, NSError * _Nullable error))completion
 {
     (void)secureElementPass;
     if (completion) {
@@ -164,7 +162,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)encryptedServiceProviderDataForSecureElementPass:(PKSecureElementPass *)secureElementPass
-                                             completion:(void (^)(NSData *, NSError *))completion
+                                             completion:(void (^)(NSDictionary * _Nullable encryptedServiceProviderData, NSError * _Nullable error))completion
 {
     (void)secureElementPass;
     if (completion) {
@@ -181,4 +179,3 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-NS_ASSUME_NONNULL_END
