@@ -68,6 +68,8 @@ static NSString *const results_folder = @"/private/var/backports";
 // The program's exit status, which the runner reads, and every message the test's delegate heard.
 static int gCharonExit = 0;
 static NSMutableArray<NSString *> *_order = nil;
+// What the two views ended up holding, written beside the order in the guest's asked file.
+static NSString *_held = nil;
 
 // Drives the port's view drag and drop routing with a delegate that records what it was asked and in
 // what order, and asserts the order and the arguments each message carried.
@@ -192,6 +194,8 @@ static NSMutableArray<NSString *> *_order = nil;
     NSMutableString *asked = [NSMutableString string];
     for (NSString *line in _order)
         [asked appendFormat:@"%@\n", line];
+    if (_held)
+        [asked appendFormat:@"%@\n", _held];
     [asked writeToFile:[results_folder stringByAppendingPathComponent:@"dragdroprouting.asked"]
            atomically:YES encoding:NSUTF8StringEncoding error:NULL];
     NSString *summary = [NSString stringWithFormat:@"%@ checks=%d failures=%d\n",
@@ -202,6 +206,12 @@ static NSMutableArray<NSString *> *_order = nil;
 }
 
 // The check, and the run that reads the exit status out of it.
+// One line, in the record, about what the views were holding rather than about what they were asked.
+- (void)noteHeld:(NSString *)line
+{
+    _held = line;
+}
+
 - (void)run
 {
     OrderProbe *probe = [[OrderProbe alloc] init];
@@ -250,8 +260,10 @@ static NSMutableArray<NSString *> *_order = nil;
     [probe.tableView charon_driveDropSessionAtPoint:CGPointMake(20, 20)];
 
     // The interactions the two views actually hold, which is what the real addInteraction: gave them.
-    record(@"collection.interactionsHeld", [NSString stringWithFormat:@"%lu", (unsigned long)probe.collectionView.interactions.count]);
-    record(@"table.interactionsHeld", [NSString stringWithFormat:@"%lu", (unsigned long)probe.tableView.interactions.count]);
+    [self noteHeld:[NSString stringWithFormat:@"collection.interactionsHeld=%lu",
+                    (unsigned long)probe.collectionView.interactions.count]];
+    [self noteHeld:[NSString stringWithFormat:@"table.interactionsHeld=%lu",
+                    (unsigned long)probe.tableView.interactions.count]];
 
     // What was asked, against the sequence the port names, with the arguments each carried.
     NSArray *collectionAsked = [probe.log subarrayWithRange:NSMakeRange(0, afterCollection)];

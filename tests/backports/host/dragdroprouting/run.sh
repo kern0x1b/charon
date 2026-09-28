@@ -70,6 +70,17 @@ run_one() {
         echo "$2 $release: killed (status 137) before the guest ran -- the machine was out of memory, not a verdict"
         return 1
     fi
+    # The addon's own verdict for the run, which says pass, fail, crash or timeout where the run's
+    # exit status only says the process stopped.
+    image=$3
+    verdict=$(ls -d "$HOME/.charon/emulator/images.noindex/$image/iPhone3,1_"*"/run/verdict.json" 2>/dev/null | head -1)
+    if [ -n "$verdict" ]; then
+        echo "$2 $release: $(python3 -c "
+import json,sys
+d=json.load(open('$verdict'))
+print(d.get('state','?'), d.get('reason',''), d.get('signal','') and 'signal '+str(d['signal']) or '')
+" 2>/dev/null)"
+    fi
     if [ "$status" -eq 0 ] && grep -Eq 'pass.{0,12} on iPhone' "$release.log"; then
         echo "$2 $release: pass"
         return 0
@@ -102,11 +113,12 @@ guest_lines() {
 # Clean, then the mutated tree, then the tree back, all on this machine in this order.
 for release in $releases; do
     image=$(ls -td "$HOME/.charon/emulator/images.noindex/"dragdroprouting-* 2>/dev/null | head -1)
-    run_one "$release" clean && guest_lines "$release" "$(basename "$image")" clean || failed=1
+    :
+    run_one "$release" clean "$(basename "$image")" && guest_lines "$release" "$(basename "$image")" clean || failed=1
 done
 cp "$mutated" "$seq"
 for release in $releases; do
-    run_one "$release" mutated && guest_lines "$release" "$(basename "$image")" mutated || true
+    run_one "$release" mutated "$(basename "$image")" && guest_lines "$release" "$(basename "$image")" mutated || true
 done
 cp "$original" "$seq"
 exit $failed
