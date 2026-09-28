@@ -101,3 +101,35 @@ than a normalisation, a gate or another band's, and it is written down with the 
 settles it. The decision that is not mine is §6's four `memberAttribute` rows: the interface names the
 role and not the attribute, Apple's expansion is not on this machine, and the coordinator's ruling of
 2026-09-28 is that they stay unimplemented with the reason on the row.
+
+## The inherited-member check, run across all four modules
+
+The §1 rows are a class, and the class was looked for in all four modules rather than assumed to be
+two rows. The method: for every row in each module's `<F>-missing.tsv`, take the member's own name,
+find the protocols that *declare* a member of that name in that module's interface, and walk the
+row's owner's refinement chain to see whether the declaring protocol is on it. Interfaces read:
+`AppIntents.framework/Modules/AppIntents.swiftmodule/arm64e-apple-macos.swiftinterface` (the macOS 27
+SDK, since the 26.2 one is not on this machine) and this package's own copies of the three kit
+interfaces in `.agent-work/kits/`.
+
+| module | rows that name an inherited member | which protocol declares it | does the port cover it through that protocol |
+| --- | --- | --- | --- |
+| **AppIntents** | `AppEntity.displayRepresentation` | **`InstanceDisplayRepresentable`** (`:3819-3821`), reached `AppEntity` → `DisplayRepresentable` (`:3789`) → `InstanceDisplayRepresentable` | **yes** — `Display.swift:19-20` declares `InstanceDisplayRepresentable` with `var displayRepresentation` and the port's own `DisplayRepresentable` refines it, so the declaration is under the protocol the interface names |
+| **AppIntents** | `AppEntity.id` | **`Identifiable`**, a Swift standard library protocol — *outside this interface entirely*, which is why no scan of it finds the row | **yes**, through `Identifiable` itself: the port's `AppEntity` refines `Identifiable` (`:10` in `Entity.swift`), and `id` is that protocol's own requirement. There is nothing to add, and nothing to find in this module's sources |
+| **AppIntents** | `AppEnum.defaultResolverSpecification`, `URLRepresentableEntity.urlRepresentationParameter`, `URLRepresentableEnum.urlRepresentationParameter` | not inherited rows: the first is an **`extension AppEnum` member** (`:427-430`), the same shape as `AppEntity.defaultResolverSpecification` in §2, and the other two are declared by `CustomURLRepresentationParameterConvertible` (`:10392`) which `URLRepresentableEntity` (`:10439`) and `URLRepresentableEnum` (`:10484`) both **refine directly** | **yes** for the pair — `Remaining.swift:264,270,275` implements `urlRepresentationParameter` on the three conforming types the port has (`String`, `Int`, `URL`), which is exactly the set `CustomURLRepresentationParameterConvertible` asks for |
+| **TipKit** | **0** | — | every one of its 73 open rows is naming-gap, gated, cross-module, a macro, a builder member, or the `==` omission |
+| **WidgetKit** | **0** | — | its 100 are the same, plus the SwiftUI rows routed to the SwiftUI band |
+| **ActivityKit** | **0** | — | its 10 are eight operator spellings, three enums the digester does not print equality for, and three it prints under the ledger's own name |
+
+**What the check settles.** Two of the four AppIntents rows in §1 are real and the port covers both
+through the declaring protocol — so they are *measurement* rows, not missing declarations, and the
+port is not to touch them. The other two in the fourth line are not inherited rows at all: one is the
+extension-member shape §2 already covers, and one is a direct refinement the port implements on the
+three types that conform. And the three kits have no rows of this class, so the ledger band can stop
+looking for them there.
+
+**The method's own limit, stated.** It matches on the *member's name* and walks refinements read from
+the interface's own text; it cannot see a member declared by a protocol in another module (the
+`Identifiable` case above is found by hand for that reason) and it cannot see a member the interface
+prints only in a private interface. A row it does not report is therefore "not found this way", not
+"not a row of this class".
