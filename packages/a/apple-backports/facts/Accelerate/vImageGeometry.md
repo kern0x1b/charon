@@ -1085,3 +1085,33 @@ vertical positions run -0.25 to 5.75 the position is divided as the horizontal's
 stretched along the row; if they run -0.25 to 11.75 the position is **not** divided and only the kernel
 stretches, which is the header's "the support is scaled by 1/scale when downsampling" with the position left
 alone. Those two grids are one run apart, and the twelve-row one is the measurement.
+
+
+## The host's vertical is NOT the transpose of its own horizontal
+
+The decisive instrument, run on the host itself: transpose the source, run the host's **horizontal** shear on
+it, transpose the answer back, and compare with the host's **vertical** shear on the original - same slope,
+same translate, same scale, same edging mode, same backColor (`probe-transpose.m`).
+
+    host 5x12  slope 0 translate 0 scale 2   flags 0x4:  60 of 60 differ, the widest by  3.54579
+    host 12x5  slope 0 translate 0 scale 2   flags 0x4:  60 of 60 differ, the widest by 11.5986
+    host 9x5   slope 0 translate 0 scale 2   flags 0x4:  45 of 45 differ, the widest by 12.0342
+    host 9x5   slope 0 translate 0 scale 0.5 flags 0x4:  45 of 45 differ, the widest by 11.3884
+    host 9x5   slope 1 translate 0 scale 1   flags 0x4:  39 of 45 differ, the widest by 12.8863
+
+**Every cell, on every case, by 3.5 to 12.9.** So the two axes are not the same function with the axes
+swapped, the transpose composition is not available as a shortcut, and the port's vertical needs its own
+measurement rather than a swap of the horizontal's. That is worth having ruled out with one run: it is the
+answer I would otherwise have spent the next several turns assuming.
+
+**And the last case is the sharpest one: at a SLOPE of 1 and a scale of 1 - where the position division is
+the identity and the kernel does not stretch - the two differ in 39 of 45 cells.** So the axes part company
+even where no scaling is involved at all, which means the difference is **not** in the position and **not**
+in the kernel: it is in the **edge**, or in which extent a limit is taken against, or in the sign of one of
+the three terms. The horizontal is exact in that case and the vertical is not, and the two are the host's
+own.
+
+So the three candidates the transpose test leaves, and each is one run: read a delta per ROW of a five-row
+picture with the vertical at a slope of 1 and a scale of 1, and the destination row's weight names the
+source row it read - which separates a sign from a limit from an edge in one grid. That is where this family
+stands, and it is a smaller question than the one this turn started with.
