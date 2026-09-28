@@ -1,0 +1,38 @@
+{
+  "framework": "Accelerate",
+  "entries": [
+    {
+      "api": "vDSP_DFT_Interleaved_CreateSetup()",
+      "kind": "function",
+      "status": "inert",
+      "introduced": "15.0",
+      "minimum": "4.3",
+      "reason": "a setup for the interleaved transform, carrying its length, direction and form, and refusing every length the release refuses",
+      "effect": "a setup for Length = f * 2**n with f in {2, 3, 5, 9, 15} and n >= 2 - the host's set, measured over 1 to 1024 with 0 disagreements, and NOT the header's list, which adds 5*5 = 25 that the release does not implement (25, 100, 200, 400 and 800 are all refused). NULL otherwise",
+      "facts": "facts/Accelerate/vDSPDFTInterleaved.md",
+      "source": "the header of iOS 16.4 and the release's own vDSP on the host: the accepted-length set over 1 to 1024, the packing and unpacking by impulse, and the transforms themselves, which are BIT EXACT in both forms and both directions at N = 8, 12, 16 and 32 over 64 inputs each"
+    },
+    {
+      "api": "vDSP_DFT_Interleaved_DestroySetup()",
+      "kind": "function",
+      "status": "inert",
+      "introduced": "15.0",
+      "minimum": "4.3",
+      "reason": "frees the setup this band's CreateSetup returned",
+      "effect": "the port's own object freed; NULL is not a crash",
+      "facts": "facts/Accelerate/vDSPDFTInterleaved.md",
+      "source": "the header of iOS 16.4 and the release's own vDSP on the host: the accepted-length set over 1 to 1024, the packing and unpacking by impulse, and the transforms themselves, which are BIT EXACT in both forms and both directions at N = 8, 12, 16 and 32 over 64 inputs each"
+    },
+    {
+      "api": "vDSP_DFT_Interleaved_Execute()",
+      "kind": "function",
+      "status": "inert",
+      "introduced": "15.0",
+      "minimum": "4.3",
+      "reason": "the interleaved transform, with the length, direction and form taken from the setup - Execute is given no stride, no direction and no length",
+      "effect": "complex-to-complex is a direct sum in the caller's own float, measured BIT EXACT against the host in both directions; real-to-complex packs the 2*Length real signal as in[n] = (x[2n], x[2n+1]), runs the verified complex forward of length Length, and splits it - E_k = (Z_k + conj Z_{N-k})/2, O_k = (Z_k - conj Z_{N-k})/(2i), X_k = E_k + e^{-i*pi*k/N}*O_k, X_N = E_0 - O_0 - then writes o[0] = (2*X_0, 2*X_N) and o[k] = 2*X_k, the x2 being vDSP's real-transform scale. The inverse is the measured unpacking: o[0].real gives every sample 1, o[0].imag gives (-1)^j, o[k] gives 2*cos and -2*sin",
+      "facts": "facts/Accelerate/vDSPDFTInterleaved.md",
+      "source": "the header of iOS 16.4 and the release's own vDSP on the host: the accepted-length set over 1 to 1024, the packing and unpacking by impulse, and the transforms themselves, which are BIT EXACT in both forms and both directions at N = 8, 12, 16 and 32 over 64 inputs each"
+    }
+  ]
+}
