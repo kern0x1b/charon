@@ -44,23 +44,45 @@ for and its CMake would otherwise generate (`GGML_VERSION`, `GGML_COMMIT`, from
 `src/ggml-version.h.in`), compiles the three units and installs `libggml.a` with the five headers
 MLCompute includes.
 
-## The two things that are not done
+## Two things that cost a day each, and what they were
 
-**The recipe does not install yet.** `xmake` fails its `on_install` with a bare
-`assertion failed!` and no message, before any of the recipe's own checks run - so it is an assertion
-inside xmake's own install path, not one of mine, and the log names no line. Everything up to it is
-measured: the download succeeds, the tree is where the recipe looks (`source/src/ggml.c`,
-`source/include/ggml.h` are both there, and xmake flattens the archive so `os.curdir()` is the install
-directory itself), and the three units compile. Finishing it is a matter of bisecting xmake's install
-path - the likely suspects are the `os.vcp` of a file into a directory that does not exist yet
-(`package:installdir("licenses")`) and the `libtool` invocation, neither of which any other recipe in
-this repository does in quite this combination.
+**The bare `assertion failed!` was a trailing slash.** `xmake -vD` named it -
+`packages/g/ggml/xmake.lua:88`, in `on_test` - and everything before it had succeeded: the three units
+compiled, `libtool` made the archive, and the log showed every copy. `os.vcp` copies a file *as* its
+destination unless the destination names a directory, and xmake spells "this is a directory" as a
+trailing slash - which is why `Box2D` and `charon` in the neighbouring recipes end theirs in `.. "/"`.
+Without it the five headers became one file called `ggml`, and the test could not find
+`include/ggml/ggml.h`. With the slash, and an `os.mkdir` for the include and licences directories, the
+install says `ok` and the recipe's own test passes.
 
-**The wiring is not landed, deliberately.** Two lines reach the engine - the `add_deps("charon@ggml
-0.25.3")` and the `archives = {ggml = ...}` in `packages/a/apple-backports/xmake.lua`, and the
-`archives = {"ggml"}` on MLCompute's entry in `modules/apple/backports.lua`. They are not in the tree,
-because a dependency that cannot install would break every band that builds apple-backports. They are
-one line each, and they go in as soon as the recipe installs.
+**The archive needs five translation units, not three.** The CPU backend's own two carry the convenience
+wrappers that `ggml.c` only declares - `ggml_sigmoid`, `ggml_new_f32`, `ggml_set_f32`, the graph
+compute - and with only the library's three the archive links with undefined symbols the first time
+anything calls one.
+
+**The recipe is landed and wired**: `add_deps("charon@ggml 0.25.3")` and its `archives` entry in
+`packages/a/apple-backports/xmake.lua`, and `archives = {"ggml"}` on MLCompute's entry in
+`modules/apple/backports.lua`. Both gates build it and link it, in both bands.
+
+## What is not done
+
+**The first mapping is written and compiles, and is not in the tree.** `CharonMLCGraph.mm` maps the
+twenty-one activations onto ggml's operators - the ten ggml has an operator for directly, the other
+eleven through `ggml_map_custom1` with the measured formula of `Engine.md` in the callback - and it
+compiles clean for `armv7-apple-ios6.1.3`. It is held in `.agent-work/` rather than committed because
+two things about it are not finished:
+
+1. **it does not compile inside the gate**, and the place to look is named: `modules/apple/backports.lua`'s
+   `compile()` adds an archive's `-I` only in its `.mm` branch, and the gate's resolve does report the
+   archive, so the trace of that one compile says where the include path goes;
+2. **its host differential cannot link the archive directly**, because the archive is compiled
+   `-fvisibility=hidden` - deliberately, so the engine is never API of the image that links it. The host
+   side of the comparison therefore has to be a dylib built the way the library is and loaded, not a
+   program linked against `libggml.a`, which is the same reason a second copy of ggml in a process could
+   never bind to this one.
+
+Both are mechanical, and neither is a doubt about the design: the formulas are the measured ones and the
+operators are ggml's.
 
 ## A note on the machine
 

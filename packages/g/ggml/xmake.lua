@@ -37,7 +37,7 @@ package("ggml")
     -- library is built without RTTI and without exceptions, which it does not use, so it needs of the
     -- C++ runtime nothing at all - it is C, and it links libc only.
     local FLAGS = {"-Os", "-fvisibility=hidden", "-fno-exceptions", "-fno-rtti", "-D_GNU_SOURCE", "-Dggml_EXPORTS"}
-    local SOURCES = {"ggml.c", "ggml-alloc.c", "ggml-quants.c"}
+    local SOURCES = {"ggml.c", "ggml-alloc.c", "ggml-quants.c", "ggml-cpu/ggml-cpu.c", "ggml-cpu/quants.c"}
     local HEADERS = {"ggml.h", "ggml-alloc.h", "ggml-cpu.h", "ggml-opt.h", "ggml-backend.h"}
 
     on_install("iphoneos", function (package)
@@ -63,11 +63,14 @@ package("ggml")
                         "-I" .. path.join(root, "include"), "-I" .. path.join(root, "include", "ggml"),
                         "-I" .. path.join(root, "src"), "-I" .. path.join(root, "src", "ggml-cpu")}
 
-        -- Only the three translation units the library itself is: the backends and the examples are
-        -- their own targets and are not needed by an image that links this in.
+        -- Five translation units, and not the library's three: the CPU backend's own two carry the
+        -- convenience wrappers that ggml.c only declares - ggml_sigmoid, ggml_new_f32, ggml_set_f32 and the
+        -- graph compute - and without them the archive links with undefined symbols the first time
+        -- anything calls one. The other backends and the examples are their own targets and are not
+        -- needed by an image that links this in.
         local objects = {}
         for _, source in ipairs(SOURCES) do
-            local object = path.absolute(path.join("objects", source:gsub("%.", "_") .. ".o"))
+            local object = path.absolute(path.join("objects", source:gsub("[/.]", "_") .. ".o"))
             os.mkdir(path.directory(object))
             os.vrunv(toolchain:tool("cc"), table.join(target, FLAGS, {"-c", path.join(root, "src", source), "-o", object}))
             table.insert(objects, object)
@@ -89,6 +92,7 @@ package("ggml")
 
     on_test(function (package)
         assert(os.isfile(path.join(package:installdir("lib"), "libggml.a")))
+        assert(os.isfile(path.join(package:installdir("include"), "ggml", "ggml-cpu.h")))
         assert(os.isfile(path.join(package:installdir("include"), "ggml", "ggml.h")))
         assert(os.isfile(path.join(package:installdir("include"), "ggml", "ggml-opt.h")))
     end)
