@@ -138,12 +138,10 @@ static BOOL CharonTagIsResolvable(NSBundle *bundle, NSString *tag)
         _bundle = bundle ?: [NSBundle mainBundle];
         /* "The default priority is 0.5" */
         _loadingPriority = 0.5;
-        /* One unit, completed: the packs are in the bundle, so the work is done the moment the
-           request exists, and NSProgress reads a progress with no units as 0 of 0 - not complete -
-           whatever the counts are. One unit and one done is what makes it read as complete. */
-        _progress = [[NSProgress alloc] initWithParent:nil userInfo:nil];
-        _progress.totalUnitCount = 1;
-        _progress.completedUnitCount = 1;
+        /* The host's shape exactly, measured: a fresh NSProgress with no units set is indeterminate
+           and finished, and -fractionCompleted reads 1 - the counts are left alone rather than set,
+           because setting them is what took the port off 1. */
+        _progress = [[NSProgress alloc] init];
     }
     return self;
 }
@@ -204,8 +202,10 @@ static BOOL CharonTagIsResolvable(NSBundle *bundle, NSString *tag)
 
 - (void)conditionallyBeginAccessingResourcesWithCompletionHandler:(void (^)(BOOL available))handler
 {
+    /* Yes whatever the tags are: the packs are in the bundle, so there is nothing to wait for, and
+       the host answers YES for a tag its manifest does not name as well. */
     if (handler)
-        handler([self charon_unresolvableTags] == nil);
+        handler(YES);
 }
 
 - (void)endAccessingResources

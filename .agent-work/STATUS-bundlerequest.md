@@ -760,3 +760,46 @@ coordinator's diagnosis, and the trap outlived them, so either their line number
 a second one, and `lldb` will not unwind past the leaf stub. One `image lookup -a $lr` on each hit of
 the stub names it. And with it: the mutants, the 13 registry entries, the facts file, the light guard
 and the gates on a final commit.
+
+---
+
+## The differential is green: 74 checks, none differing
+
+```
+$ rm -rf .agent-work/runs/bundlerequest && sh tests/backports/host/bundlerequest/run.sh
+checks=74 failures=0
+```
+
+**The stale binary was the trap**, not a fault in anything: a run that does not rebuild reads the last
+build, and the last build was from before the `%@` fix. **Always `rm -rf` the build directory, or
+rebuild, before a run** — and `run.sh`'s `BUILD` now lives in the worktree
+(`$here/../../../../.agent-work/runs/bundlerequest`) so the tree a run reads is the tree it is in.
+
+**Three of the four findings, fixed natively against the host:**
+
+- **`-progress`**: a fresh `NSProgress` with its counts left alone is indeterminate and finished and
+  reads `fractionCompleted` 1; the port was building it with `-initWithParent:userInfo:`, which does not
+  give that. It is `[[NSProgress alloc] init]` now, and the differential compares the class, `isFinished`
+  and `isIndeterminate` against a fresh `NSProgress` as well as the counts and the fraction, so the shape
+  is held and not just the number.
+- **`-conditionallyBeginAccessingResourcesWithCompletionHandler:`** answers **YES whatever the tags
+  are** — the packs are in the bundle, so there is nothing to wait for — and that is the host's answer.
+- **`-setPreservationPriority:forTags:`**: the port's refusal is the header's and it raises it, on a
+  release that has no such method; see below for what this process can and cannot check.
+
+**The fourth changes the count, and it corrects three conclusions of mine.** The host's two `NSBundle`
+additions are **not inert**: on a bundle that has a manifest they store and read a priority back
+(level1 reads 0.25), and the earlier "answers, and reads 0" measurement was made on a bundle with **no**
+manifest and a tag the bundle did not have. So:
+
+- the two rows **are** real API with real behaviour, and
+- **in this process the port installs nothing for them** — `class_getInstanceMethod` finds the host's own
+  and the fleet rule says the port installs nothing where the host has the API — so those two sends
+  reach the *host's* methods and measure the host, not the port. The differential **records** what the
+  host does (`note: … a refusal: …, level1 reads …`) instead of pretending to compare, because a
+  comparison here would be the host against itself.
+
+**So the count is 11 holdable, not 9 — but 9 of them in this process and 2 on a release that has no such
+methods**, which is the device. The private `-initWithTag:` is not an oracle (it answers nil for both
+tags), so the class's own state is held to the header's words, as the status has said since the
+attempt failed.
