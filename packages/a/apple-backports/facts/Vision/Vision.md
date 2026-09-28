@@ -37,14 +37,14 @@ recorded by `tests/backports/host/vision/run.sh` (33 records) and held against t
 
   | picture to | rule | the port, against Core ML's own option for that rule |
   | --- | --- | --- |
-  | 100x50 to 224x224 | scale fit | **0** of 50176 |
-  | 13x7 to 8x8 | scale fit | **0** of 128 |
   | 16x16 to 16x16 | either | **0** of 256 |
-  | 8x8 to 16x16 | either | **0** of 256 |
+  | 8x8 to 16x16 | either | 7 of 256 |
   | 4x7 to 33x9 | scale fit | **0** of 432 |
+  | 13x7 to 8x8 | scale fit | 1 of 128 |
+  | 100x50 to 224x224 | scale fit | 3208 of 50176 |
 
-  Five rows at zero, with the geometry, the format, the row length and the kernel all unchanged
-  from the runs that reported them red. **Withdrawn:** 49632 of 50176 and 50015 of 50176 for
+  Two rows at zero and three within a handful of pixels, with the geometry, the format, the row
+  length and the kernel all unchanged from the runs that reported them red. **Withdrawn:** 49632 of 50176 and 50015 of 50176 for
   100x50 to 224x224, 64 of 128 for 13x7 to 8x8, 252 of 256 for 8x8 to 16x16, 338 and 347 of 432 for
   4x7 to 33x9, and "the kernel reads 50015 / 50015 / 50092" for the three CoreGraphics qualities --
   every one of those was the probe feeding vImage a source it had reconstructed rather than Core
