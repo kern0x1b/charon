@@ -177,12 +177,26 @@ method is not there rather than finding it in the corpus and wondering:
   carried here for a while and are removed; the group of 18.0 answers them.
 
 The check that finds these, and that a later session should run before each delivery, is
-`.agent-work/runs/api-kits/api-check.py`: every registered row against the set of names the gate's own
+`tools/cfconst/api-check.py`: every registered row against the set of names the gate's own
 `backports.surface()` reads out of the built dylib. It reads the *built* library, so it sees what this
 port carries; the *release's* image cannot answer it, because `objc.binary_inventory` on an image
 extracted from a shared cache reads a class's category method lists and not the class's own, so a
 public method of a release looks absent. The SDK header and its availability annotations are the
 authority for what a release has; the image is the authority for the values a constant holds.
+
+## The one field this port invents: a device's manufacturer
+
+`+[HKDevice localDevice]` answers the host's own name, model and system version out of the release's own
+`UIDevice`, and nil for the four the release has no value for on a host device — the hardware and
+firmware revisions and the two identifiers, which are a paired accessory's. The **manufacturer is the
+exception and it is this port's own string.** Measured: the HealthKit image of the armv7 shared cache of
+iOS 9.0 holds exactly one occurrence of the string `Apple` and no exported symbol reaches it — the only
+names in that image with `Apple` in them are `HKCategoryTypeIdentifierAppleStandHour`,
+`HKSourceOptionsForAppleDevice` and `HKSourceOptionsForNonAppleDevice` — and the image of iOS 8.0 holds
+none at all. HealthKit has no manufacturer constant of its own on any image this workspace holds, so
+there is nothing to read. The value is a true statement about the hardware every device this port runs
+on is made by, and it is said here, in `HKDevice9.m` beside the code, and in the registry effect for
+`+[HKDevice localDevice]`, so that a reader of any of the three does not take it for a measured value.
 
 ## The header decides whether a method exists; the image supplies only a value
 
@@ -223,11 +237,19 @@ its class's release.
 
 **The 20 constants of 10.0 came out of the arm64 cache of 10.0.1**, not an armv7 one: there is no
 10.0 or 10.0.1 armv7 cache in this workspace, and the armv7s slice's data pointers are tagged, so the
-32-bit reader cannot read that slice. Several of the twenty values are not their own names -
-`HKDocumentTypeIdentifierCDA` is `HKDocumentTypeCDA`, `HKMetadataKeyWeatherCondition` is
-`HKWeatherCondition`, `HKPredicateKeyPathCDAAuthorName` is `author_name`, and
-`HKPredicateKeyPathWorkoutTotalSwimmingStrokeCount` is `totalSwimmingStrokeCount`, the same string
-`HKWorkoutSortIdentifierTotalSwimmingStrokeCount` holds.
+32-bit reader cannot read that slice. **Twelve of the twenty hold a string that is not their own name**,
+which is the reason the values are read rather than written: `HKMetadataKeyLapLength` is `HKLapLength`,
+`HKMetadataKeyWeatherCondition` is `HKWeatherCondition`, `HKMetadataKeyWeatherHumidity` and
+`HKMetadataKeyWeatherTemperature` are `HKWeatherHumidity` and `HKWeatherTemperature`,
+`HKMetadataKeySwimmingLocationType` and `HKMetadataKeySwimmingStrokeStyle` are
+`HKSwimmingLocationType` and `HKSwimmingStrokeStyle`, `HKPredicateKeyPathCDAAuthorName`,
+`HKPredicateKeyPathCDACustodianName` and `HKPredicateKeyPathCDAPatientName` are `author_name`,
+`custodian_name` and `patient_name`, `HKPredicateKeyPathCDATitle` is `title`, and
+`HKPredicateKeyPathWorkoutTotalSwimmingStrokeCount` and `HKWorkoutSortIdentifierTotalSwimmingStrokeCount` are
+both `totalSwimmingStrokeCount`. The other **eight hold their own names**, among them
+`HKDocumentTypeIdentifierCDA`, which holds `HKDocumentTypeIdentifierCDA` — the 10.0.1 image, the host's own
+HealthKit through `dlsym`, and the line in `HKConstants100.m` agree, and an earlier version of this
+paragraph and of that file's own comment claimed otherwise.
 
 **One wall in the 10.0 group**: `-startWatchAppWithWorkoutConfiguration:completion:` starts a workout on
 a paired watch, and this release has no watch application and no daemon that would start one. It is

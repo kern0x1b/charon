@@ -809,6 +809,12 @@ static NSString *CharonHKStringForDimensions(NSArray *bases, NSDictionary *power
 
 #pragma mark The factory methods of the header
 
+// +[HKUnit kilojoulesUnit] and +[HKUnit milliseconds] are not here: no SDK header of 16.4 or 26.2
+// declares either, though the HealthKit image of the armv7 shared cache of 8.0 carries both. They are
+// Apple's own, and this port does not answer a member of Apple's under a public-shaped name. The two
+// units are in the table and +[HKUnit unitFromString:] reads them, which is where a caller of this
+// library meets them.
+
 + (instancetype)gramUnit
 {
     return [self charon_namedUnit:@"g"];
@@ -953,11 +959,6 @@ static NSString *CharonHKStringForDimensions(NSArray *bases, NSDictionary *power
     return [self charon_prefixedUnitForDimension:CharonHKDimensionTime prefix:prefix];
 }
 
-+ (instancetype)milliseconds
-{
-    return [self charon_namedUnit:@"ms"];
-}
-
 + (instancetype)minuteUnit
 {
     return [self charon_namedUnit:@"min"];
@@ -991,11 +992,6 @@ static NSString *CharonHKStringForDimensions(NSArray *bases, NSDictionary *power
 + (instancetype)calorieUnit
 {
     return [self charon_namedUnit:@"cal"];
-}
-
-+ (instancetype)kilojoulesUnit
-{
-    return [self charon_namedUnit:@"kJ"];
 }
 
 + (instancetype)degreeCelsiusUnit
@@ -1119,7 +1115,7 @@ static NSString *CharonHKStringForDimensions(NSArray *bases, NSDictionary *power
     case NSEnergyFormatterUnitJoule:
         return [self jouleUnit];
     case NSEnergyFormatterUnitKilojoule:
-        return [self kilojoulesUnit];
+        return [self charon_namedUnit:@"kJ"];
     case NSEnergyFormatterUnitCalorie:
         return [self smallCalorieUnit];
     case NSEnergyFormatterUnitKilocalorie:

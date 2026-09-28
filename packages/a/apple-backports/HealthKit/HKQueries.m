@@ -26,7 +26,7 @@
                   sortDescriptors:(nullable NSArray<NSSortDescriptor *> *)sortDescriptors
                      resultsHandler:(void (^)(NSArray<HKSample *> *_Nullable results, BOOL done, NSError *_Nullable error))resultsHandler
 {
-    self = [super initWithSampleType:sampleType];
+    self = [super charon_initWithObjectType:sampleType];
     if (self) {
         [self charon_setPredicate:predicate];
         _limit = limit;
@@ -100,7 +100,7 @@
                              options:(HKStatisticsOptions)options
                     completionHandler:(void (^)(HKStatistics *_Nullable result, NSError *_Nullable error))completionHandler
 {
-    self = [super initWithSampleType:quantityType];
+    self = [super charon_initWithObjectType:quantityType];
     if (self) {
         [self charon_setPredicate:quantitySamplePredicate];
         _options = options;
@@ -160,7 +160,7 @@
                           anchorDate:(NSDate *)anchorDate
                   intervalComponents:(NSDateComponents *)intervalComponents
 {
-    self = [super initWithSampleType:quantityType];
+    self = [super charon_initWithObjectType:quantityType];
     if (self) {
         [self charon_setPredicate:quantitySamplePredicate];
         _options = options;
@@ -170,22 +170,6 @@
     return self;
 }
 
-- (instancetype)initWithQuantityType:(HKQuantityType *)quantityType
-                quantitySamplePredicate:(nullable NSPredicate *)quantitySamplePredicate
-                             options:(HKStatisticsOptions)options
-                          anchorDate:(NSDate *)anchorDate
-                  intervalComponents:(NSDateComponents *)intervalComponents
-                 initialResultsHandler:(void (^)(HKStatisticsCollection *_Nullable results, NSError *_Nullable error))initialResultsHandler
-{
-    self = [self initWithQuantityType:quantityType
-              quantitySamplePredicate:quantitySamplePredicate
-                                  options:options
-                               anchorDate:anchorDate
-                       intervalComponents:intervalComponents];
-    if (self)
-        _initialResultsHandler = [initialResultsHandler copy];
-    return self;
-}
 
 - (NSDate *)anchorDate
 {
@@ -207,7 +191,10 @@
     _statisticsCollection = statisticsCollection;
 }
 
-- (nullable NSDate *)lastAnchor
+// Apple's own private member: no SDK header of 16.4 or 26.2 declares -lastAnchor on
+// HKStatisticsCollectionQuery, so the port answers it under its own name and the public-shaped getter
+// is not in the method list of the exported class.
+- (nullable NSDate *)charon_lastAnchor
 {
     return _lastAnchor;
 }
@@ -288,7 +275,7 @@
                     samplePredicate:(nullable NSPredicate *)predicate
                   completionHandler:(void (^)(NSArray<HKSource *> *sources, NSError *_Nullable error))completionHandler
 {
-    self = [super initWithSampleType:sampleType];
+    self = [super charon_initWithObjectType:sampleType];
     if (self) {
         [self charon_setPredicate:predicate];
         _completionHandler = [completionHandler copy];
@@ -328,7 +315,7 @@
             samplePredicates:(nullable NSArray<NSPredicate *> *)samplePredicates
                  completion:(void (^)(NSArray<HKCorrelation *> *_Nullable results, NSError *_Nullable error))completion
 {
-    self = [super initWithSampleType:correlationType];
+    self = [super charon_initWithObjectType:correlationType];
     if (self) {
         _correlationType = correlationType;
         _samplePredicates = [samplePredicates copy];
@@ -390,7 +377,7 @@
                     updateHandler:(void (^)(HKObserverQuery *query, HKQueryAnchor *_Nullable anchor,
                                             void (^_Nullable completion)(void), NSError *_Nullable error))updateHandler
 {
-    self = [super initWithSampleType:sampleType];
+    self = [super charon_initWithObjectType:sampleType];
     if (self) {
         [self charon_setPredicate:predicate];
         _updateHandler = [updateHandler copy];
@@ -470,7 +457,7 @@
            completionHandler:(void (^)(HKAnchoredObjectQuery *query, NSArray<HKSample *> *_Nullable results,
                                        NSUInteger newAnchor, NSError *_Nullable error))completionHandler
 {
-    HKAnchoredObjectQuery *fresh = [super initWithSampleType:type];
+    HKAnchoredObjectQuery *fresh = [super charon_initWithObjectType:type];
     if (fresh) {
         [fresh charon_setPredicate:predicate];
         fresh->_anchor = [HKQueryAnchor anchorFromValue:anchor];

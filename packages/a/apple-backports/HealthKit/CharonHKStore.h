@@ -302,7 +302,7 @@ extern Class _Nullable CharonHKClassForTypeKind(NSInteger kind);
 @end
 
 @interface HKQuery (CharonInternal)
-- (instancetype)initWithSampleType:(nullable HKSampleType *)sampleType;
+- (instancetype)charon_initWithSampleType:(nullable HKSampleType *)sampleType;
 - (instancetype)charon_initWithObjectType:(nullable HKObjectType *)objectType;
 - (nullable NSPredicate *)charon_predicate;
 - (nullable HKObjectType *)charon_objectType;

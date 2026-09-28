@@ -327,7 +327,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "iOS 9.3 is the release of the activity ring, and the one whose image this workspace holds the two constants it added in",
-      "effect": "the host's own name, model and system version, read out of the release's own UIDevice, and nil for the four the release has no value for on a host device",
+      "effect": "the host's own name, model and system version, read out of the release's own UIDevice, and nil for the four the release has no value for on a host device. The manufacturer is the one field of this device that is this port's own string and the one no measurement in this repository supports: the HealthKit image of the armv7 shared cache of iOS 9.0 holds exactly one occurrence of the string Apple and no exported symbol reaches it, the image of 8.0 holds none, and HealthKit has no manufacturer constant of its own on any image this workspace holds. It is a true statement about the hardware every device this port runs on is made by, and it is this port's own value",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the armv7 shared cache of iOS 9.0, HealthKit.framework, extracted with modules/apple/dyld.lua's extract()"
     },

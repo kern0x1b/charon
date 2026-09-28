@@ -9,11 +9,19 @@
 //   python3 tools/cfconst.py ~/.charon/dyld/10.0.1/dyld_shared_cache_arm64 \
 //       /System/Library/Frameworks/HealthKit.framework/HealthKit _HKDocumentTypeIdentifierCDA
 //
-// Several of the twenty values are not their own names, which is the reason they are read rather than
-// written: HKDocumentTypeIdentifierCDA is "HKDocumentTypeCDA", HKMetadataKeyWeatherCondition is
-// "HKWeatherCondition", HKPredicateKeyPathCDAAuthorName is "author_name", and
-// HKPredicateKeyPathWorkoutTotalSwimmingStrokeCount is "totalSwimmingStrokeCount" - the same string
-// HKWorkoutSortIdentifierTotalSwimmingStrokeCount holds.
+// Twelve of the twenty hold a string that is not their own name, which is the reason the values are
+// read rather than written, and they are: HKMetadataKeyLapLength is "HKLapLength",
+// HKMetadataKeyWeatherCondition is "HKWeatherCondition", HKMetadataKeyWeatherHumidity and
+// HKMetadataKeyWeatherTemperature are "HKWeatherHumidity" and "HKWeatherTemperature",
+// HKMetadataKeySwimmingLocationType and HKMetadataKeySwimmingStrokeStyle are
+// "HKSwimmingLocationType" and "HKSwimmingStrokeStyle", HKPredicateKeyPathCDAAuthorName,
+// HKPredicateKeyPathCDACustodianName and HKPredicateKeyPathCDAPatientName are "author_name",
+// "custodian_name" and "patient_name", HKPredicateKeyPathCDATitle is "title", and
+// HKPredicateKeyPathWorkoutTotalSwimmingStrokeCount and HKWorkoutSortIdentifierTotalSwimmingStrokeCount
+// are both "totalSwimmingStrokeCount". The other eight hold their own names, among them
+// HKDocumentTypeIdentifierCDA, which holds "HKDocumentTypeIdentifierCDA" - three sources agree on that
+// one, the image, the host's own dlsym and this line, and an earlier version of this comment claimed
+// otherwise.
 //
 // The declaration of each is the SDK's own.
 

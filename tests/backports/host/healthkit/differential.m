@@ -426,10 +426,14 @@ static void CharonHKPrefixedFactories(void)
                         @"fluidOunceImperialUnit", @"pintUSUnit", @"pintImperialUnit", @"cupUSUnit",
                         @"cupImperialUnit", @"pascalUnit", @"millimeterOfMercuryUnit",
                         @"centimeterOfWaterUnit", @"atmosphereUnit",
-                        @"secondUnit", @"milliseconds", @"minuteUnit", @"hourUnit", @"dayUnit", @"jouleUnit",
+                        @"secondUnit", @"minuteUnit", @"hourUnit", @"dayUnit", @"jouleUnit",
                         @"kilocalorieUnit", @"calorieUnit", @"degreeCelsiusUnit",
                         @"degreeFahrenheitUnit", @"kelvinUnit", @"siemenUnit", @"countUnit",
                         @"percentUnit" ];
+    // +[HKUnit kilojoulesUnit] and +[HKUnit milliseconds] are deliberately not asked for: no SDK
+    // header of 16.4 or 26.2 declares either, so they are Apple's own and this library does not
+    // answer them. The two units are in the table and +[HKUnit unitFromString:] reads them, which the
+    // unit cases above already compare.
     for (NSString *name in plain) {
         SEL chosen = NSSelectorFromString(name);
         BOOL theirsHas = [HKUnit respondsToSelector:chosen];

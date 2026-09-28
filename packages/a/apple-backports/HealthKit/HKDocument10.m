@@ -36,7 +36,7 @@
 
 @implementation HKDocumentSample {
     HKDocumentType *_documentType;
-    NSDictionary *_document;
+    NSDictionary *_charonDocument;
 }
 
 + (BOOL)supportsSecureCoding
@@ -61,7 +61,7 @@
                                                   endDate:endDate];
     if (sample) {
         sample->_documentType = documentType;
-        sample->_document = [document copy];
+        sample->_charonDocument = [document copy];
     }
     return sample;
 }
@@ -74,7 +74,7 @@
         NSDictionary *document = [coder decodeObjectOfClasses:[NSSet setWithObjects:[NSDictionary class], [NSString class],
                                                                           [NSData class], [NSDate class], [NSNumber class], nil]
                                                  forKey:@"document"];
-        sample->_document = [document copy];
+        sample->_charonDocument = [document copy];
     }
     return sample;
 }
@@ -83,7 +83,7 @@
 {
     [super encodeWithCoder:coder];
     [coder encodeObject:_documentType forKey:@"documentType"];
-    [coder encodeObject:_document forKey:@"document"];
+    [coder encodeObject:_charonDocument forKey:@"document"];
 }
 
 - (instancetype)charon_copyForStore
@@ -91,7 +91,7 @@
     HKDocumentSample *copy = [super charon_copyForStore];
     if (copy) {
         copy->_documentType = [_documentType copy];
-        copy->_document = [_document copy];
+        copy->_charonDocument = [_charonDocument copy];
     }
     return copy;
 }
