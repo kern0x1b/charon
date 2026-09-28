@@ -22,6 +22,14 @@
 #import <ARKit/ARKit.h>
 #import <SceneKit/SceneKit.h>
 
+// `ARSCNView.h:100` declares `-unprojectPoint:ontoPlaneWithTransform:` on the class, and it is
+// implemented in `ARSCNView12.m` - a 12.0 category object, because the class is 11.0's and an object
+// carries one release's API. So this object is warned that the class does not implement a method its
+// own header declares, which is the same situation as the category's own warning in that file and is
+// silenced the same way. This is a warning about where a method is implemented, not about whether it
+// is, and the class object is in the right place: `_OBJC_CLASS_$_ARSCNView` first exists at 11.0.
+#pragma clang diagnostic ignored "-Wincomplete-implementation"
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface ARSCNView ()
