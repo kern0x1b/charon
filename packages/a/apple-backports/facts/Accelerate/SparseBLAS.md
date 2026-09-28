@@ -553,9 +553,23 @@ It is wired the way the ruling says: `backports.lua`'s Accelerate row carries
 refuses with `apple-backports links the archive suitesparse-ordering and its recipe declares no dependency
 with that alias` — which is what it did, and the dep is the fix.
 
-**Where it stops.** The download succeeds — `download … v7.12.2.tar.gz .. ok`, the same URL and the same
-hash the machine's registry carries — and the **install step fails** with a bare `assertion failed!` and
-no message:
+**Where it stops, and the bare assertion answered.** The download succeeds — `download … v7.12.2.tar.gz
+.. ok`, the same URL and the same hash the machine's registry carries — and the **install step fails** with
+a bare `assertion failed!` and no message. The suspicion that it is `toolchain:tool("cc")` returning nil
+for apple-ios is **disproved by a print added ahead of it**, which is in the recipe and runs before
+anything else is assumed:
+
+```
+suitesparse-ordering: toolchain table: 0x774f137cc0,
+  cc  = $HOME/.xmake/packages/l/llvm/23.1.1/<the store's hash>/bin/clang
+  cxx = $HOME/.xmake/packages/l/llvm/23.1.1/<the store's hash>/bin/clang++
+```
+
+Both resolve, so the failure is after that point: in one of the five `os.isdir` checks that follow (whose
+messages name the directory) or in an xmake internal whose own assert carries no text. The next narrowing
+step is to print each of those five; the log to read is
+
+
 
 ```
 $HOME/.xmake/cache/packages/2609/s/suitesparse-ordering/v7.12.2/installdir.failed/logs/install.txt

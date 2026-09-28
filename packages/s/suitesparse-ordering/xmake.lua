@@ -41,6 +41,11 @@ package("suitesparse-ordering")
     on_install("iphoneos", function (package)
         local toolchain = assert(package:toolchains(), "suitesparse-ordering is built with the apple-ios toolchain")[1]
         toolchain:load()
+        -- What the toolchain answers for the two compilers, before anything else is assumed: box2d asks
+        -- for "cxx" and this package asks for "cc", and the install log says only "assertion failed!",
+        -- so this is where the question gets answered rather than guessed at.
+        print("suitesparse-ordering: toolchain %s, cc = %s, cxx = %s", tostring(toolchain), tostring(toolchain:tool("cc")),
+              tostring(toolchain:tool("cxx")))
         local sdkdir = toolchain:config("sdkdir")
         local target = {"-target", package:arch() .. "-apple-ios", "-miphoneos-version-min=" .. toolchain:config("deployment"),
                         "-isysroot", sdkdir, "-I" .. path.join(os.curdir(), "SuiteSparse_config"),
