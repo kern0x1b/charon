@@ -1,10 +1,10 @@
 # What lift() leaves alone against iPhoneOS16.4.sdk (the archive the iphoneos-sdk package installs for 16.4): one full lift of the registry of this series
-# (main ee62d4dc2 with stack 14, which added ARKit, HomeKit, Network, bundlerequest, MapKit, the registry's own types and SensorKit's categories - not one of them a header of either SDK declares), none dropped: 785 lines.
+# (main ee62d4dc2 with stack 14, which added ARKit, HomeKit, Network, bundlerequest, MapKit, the registry's own types and SensorKit's categories - not one of them a header of either SDK declares - plus the MLCompute series (48 classes, 13 functions and 416 members of MLCompute.framework - 477 implemented rows, and not one of them declared by a header of either SDK either, the framework being not on these releases), 477 of the 1262 lines here), none dropped: 1262 lines.
 # Each is a name the lift did not reach, and each was looked for in every header of the SDK (usr/include and the frameworks) and found declared nowhere,
 # but for the ones told here:
-#  - class (64): a class no header declares (a stub exports some, some are private, some a later SDK's).
-#  - undeclared (388): a registered member its class reaches no declaration of; the line says where the SDK declares it, or that it declares it nowhere.
-#  - unmatched (333): __sincosf_stret and __sincos_stret are declared by math.h, in the branch of __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000, which the 6.1.3 target does not read.
+#  - class (112): a class no header declares (a stub exports some, some are private, some a later SDK's).
+#  - undeclared (804): a registered member its class reaches no declaration of; the line says where the SDK declares it, or that it declares it nowhere.
+#  - unmatched (346): __sincosf_stret and __sincos_stret are declared by math.h, in the branch of __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000, which the 6.1.3 target does not read.
 #    The rest (CG*(), NSData*, NSExtensionMain, BLAS{Get,Set}Threading(), __NS*, __kCF*, compiler-rt and libSystem internals) are exported by a stub or private, or arrived after this SDK, and named by no header.
 class	AVAudioApplication	
 class	AVAudioSessionCapability	
@@ -36,6 +36,54 @@ class	MKMapItemDetailViewController
 class	MKMapItemIdentifier	
 class	MKReverseGeocodingRequest	
 class	MKSelectionAccessory	
+class	MLCActivationDescriptor	
+class	MLCActivationLayer	
+class	MLCArithmeticLayer	
+class	MLCBatchNormalizationLayer	
+class	MLCComparisonLayer	
+class	MLCConcatenationLayer	
+class	MLCConvolutionDescriptor	
+class	MLCConvolutionLayer	
+class	MLCDevice	
+class	MLCDropoutLayer	
+class	MLCEmbeddingDescriptor	
+class	MLCEmbeddingLayer	
+class	MLCFullyConnectedLayer	
+class	MLCGatherLayer	
+class	MLCGramMatrixLayer	
+class	MLCGroupNormalizationLayer	
+class	MLCInstanceNormalizationLayer	
+class	MLCLSTMDescriptor	
+class	MLCLSTMLayer	
+class	MLCLayer	
+class	MLCLayerNormalizationLayer	
+class	MLCLossDescriptor	
+class	MLCLossLayer	
+class	MLCMatMulDescriptor	
+class	MLCMatMulLayer	
+class	MLCMultiheadAttentionDescriptor	
+class	MLCMultiheadAttentionLayer	
+class	MLCOptimizerDescriptor	
+class	MLCPaddingLayer	
+class	MLCPlatform	
+class	MLCPoolingDescriptor	
+class	MLCPoolingLayer	
+class	MLCReductionLayer	
+class	MLCReshapeLayer	
+class	MLCScatterLayer	
+class	MLCSelectionLayer	
+class	MLCSliceLayer	
+class	MLCSoftmaxLayer	
+class	MLCSplitLayer	
+class	MLCTensor	
+class	MLCTensorData	
+class	MLCTensorDescriptor	
+class	MLCTensorOptimizerDeviceData	
+class	MLCTensorParameter	
+class	MLCTransposeLayer	
+class	MLCUpsampleLayer	
+class	MLCYOLOLossDescriptor	
+class	MLCYOLOLossLayer	
 class	MXCrashDiagnosticObjectiveCExceptionReason	
 class	MXDiskSpaceUsageMetric	
 class	MXSignpostRecord	
@@ -82,6 +130,173 @@ undeclared	+[MKMapItemDetailSelectionAccessoryPresentationStyle sheetPresentedFr
 undeclared	+[MKReverseGeocodingRequest new]	declared only by ARAnchor, ARBody2D, ARBodyTrackingConfiguration, ARCamera, ARCollaborationData, ARConfiguration, ARFaceGeometry, ARFaceTrackingConfiguration, ARFrame, ARGeoTrackingConfiguration, ARGeoTrackingStatus, ARGeometryElement, ARGeometrySource, ARHitTestResult, ARImageTrackingConfiguration, ARLightEstimate, ARMatteGenerator, ARMeshGeometry, ARObjectScanningConfiguration, AROrientationTrackingConfiguration, ARPlaneGeometry, ARPointCloud, ARPositionalTrackingConfiguration, ARQuickLookPreviewItem, ARReferenceImage, ARReferenceObject, ARSCNFaceGeometry, ARSkeleton, ARSkeleton2D, ARSkeleton3D, ARSkeletonDefinition, ARVideoFormat, ARWorldMap, ARWorldTrackingConfiguration, ASAuthorization, ASAuthorizationAppleIDCredential, ASAuthorizationController, ASAuthorizationPlatformPublicKeyCredentialAssertion, ASAuthorizationPlatformPublicKeyCredentialAssertionRequest, ASAuthorizationPlatformPublicKeyCredentialDescriptor, ASAuthorizationPlatformPublicKeyCredentialProvider, ASAuthorizationPlatformPublicKeyCredentialRegistration, ASAuthorizationPlatformPublicKeyCredentialRegistrationRequest, ASAuthorizationPublicKeyCredentialParameters, ASAuthorizationRequest, ASAuthorizationSecurityKeyPublicKeyCredentialAssertion, ASAuthorizationSecurityKeyPublicKeyCredentialDescriptor, ASAuthorizationSecurityKeyPublicKeyCredentialProvider, ASAuthorizationSecurityKeyPublicKeyCredentialRegistrationRequest, ASAuthorizationSingleSignOnCredential, ASAuthorizationSingleSignOnProvider, ASAuthorizationWebBrowserPlatformPublicKeyCredential, ASWebAuthenticationSession, ASWebAuthenticationSessionRequest, AVAggregateAssetDownloadTask, AVAssetCache, AVAssetDownloadConfiguration, AVAssetDownloadTask, AVAssetDownloadURLSession, AVAssetExportSession, AVAssetImageGenerator, AVAssetPlaybackAssistant, AVAssetReader, AVAssetReaderAudioMixOutput, AVAssetReaderOutputCaptionAdaptor, AVAssetReaderOutputMetadataAdaptor, AVAssetReaderSampleReferenceOutput, AVAssetReaderTrackOutput, AVAssetReaderVideoCompositionOutput, AVAssetResourceLoader, AVAssetResourceLoadingContentInformationRequest, AVAssetResourceLoadingDataRequest, AVAssetResourceLoadingRequest, AVAssetResourceLoadingRequestor, AVAssetSegmentReport, AVAssetSegmentReportSampleInformation, AVAssetSegmentTrackReport, AVAssetTrack, AVAssetTrackSegment, AVAssetVariant, AVAssetVariantAudioAttributes, AVAssetVariantQualifier, AVAssetVariantVideoAttributes, AVAssetWriter, AVAssetWriterInput, AVAssetWriterInputCaptionAdaptor, AVAssetWriterInputGroup, AVAssetWriterInputMetadataAdaptor, AVAssetWriterInputPassDescription, AVAssetWriterInputPixelBufferAdaptor, AVAudioRoutingArbiter, AVCameraCalibrationData, AVCaptureAudioChannel, AVCaptureAudioDataOutput, AVCaptureAudioFileOutput, AVCaptureAudioPreviewOutput, AVCaptureBracketedStillImageSettings, AVCaptureConnection, AVCaptureDataOutputSynchronizer, AVCaptureDepthDataOutput, AVCaptureDevice, AVCaptureDeviceDiscoverySession, AVCaptureDeviceFormat, AVCaptureDeviceInputSource, AVCaptureInput, AVCaptureInputPort, AVCaptureMetadataOutput, AVCaptureMovieFileOutput, AVCaptureOutput, AVCapturePhoto, AVCapturePhotoOutput, AVCaptureResolvedPhotoSettings, AVCaptureScreenInput, AVCaptureStillImageOutput, AVCaptureSynchronizedData, AVCaptureSynchronizedDataCollection, AVCaptureSystemPressureState, AVCaptureVideoDataOutput, AVContentKeySession, AVCoordinatedPlaybackSuspension, AVDelegatingPlaybackCoordinatorBufferingCommand, AVDelegatingPlaybackCoordinatorPauseCommand, AVDelegatingPlaybackCoordinatorPlayCommand, AVDelegatingPlaybackCoordinatorPlaybackControlCommand, AVDelegatingPlaybackCoordinatorSeekCommand, AVDepthData, AVDisplayCriteria, AVFrameRateRange, AVMediaDataStorage, AVMetadataObject, AVOutputSettingsAssistant, AVPictureInPictureControllerContentSource, AVPlaybackCoordinator, AVPlaybackSpeed, AVPlayerInterstitialEvent, AVPlayerItem, AVPlayerItemAccessLog, AVPlayerItemAccessLogEvent, AVPlayerItemErrorLog, AVPlayerItemErrorLogEvent, AVPlayerLooper, AVPlayerPlaybackCoordinator, AVPortraitEffectsMatte, AVSampleBufferGenerator, AVSampleBufferGeneratorBatch, AVSampleBufferRequest, AVSampleCursor, AVSemanticSegmentationMatte, AVSpeechSynthesisProviderRequest, AVSpeechSynthesisProviderVoice, AVTextStyleRule, AVURLAsset, AXBrailleMap, AXCategoricalDataAxisDescriptor, AXChartDescriptor, AXCustomContent, AXDataPoint, AXDataPointValue, AXDataSeriesDescriptor, AXNumericDataAxisDescriptor, BGTaskRequest, BGTaskScheduler, CKAsset, CKDatabase, CKDatabaseSubscription, CKRecord, CKReference, CKSubscription, CLPlacemark, CNContactFetchRequest, CNFetchResult, CNPhoneNumber, CPActionSheetTemplate, CPAlertAction, CPAlertTemplate, CPBarButton, CPButton, CPContactTemplate, CPDashboardButton, CPDashboardController, CPGridButton, CPGridTemplate, CPImageSet, CPInformationItem, CPInformationRatingItem, CPInformationTemplate, CPInstrumentClusterController, CPInterfaceController, CPListSection, CPListTemplate, CPMessageComposeBarButton, CPNavigationSession, CPNowPlayingButton, CPNowPlayingTemplate, CPPointOfInterest, CPPointOfInterestTemplate, CPRouteChoice, CPSessionConfiguration, CPTabBarTemplate, CPTextButton, CPTravelEstimates, CPTrip, CXProvider, GCPhysicalInputElementCollection, GCVirtualController, HKAttachment, HKClinicalRecord, HKContactsLensSpecification, HKContactsPrescription, HKGlassesLensSpecification, HKGlassesPrescription, HKLensSpecification, HKQueryDescriptor, HKVerifiableClinicalRecord, HKVerifiableClinicalRecordQuery, HKVerifiableClinicalRecordSubject, HKVisionPrescription, HKVisionPrism, HKWorkoutActivity, HMAccessoryOwnershipToken, HMAccessorySetupPayload, HMAccessorySetupResult, HMAction, HMCharacteristicWriteAction, HMEvent, INShortcut, INVoiceShortcut, INVoiceShortcutCenter, LAPersistedRight, LAPrivateKey, LAPublicKey, LARightStore, LASecret, MKIconStyle, MKLookAroundScene, MKLookAroundSceneRequest, MKLookAroundSnapshotter, MKMapConfiguration, MKMapFeatureAnnotation, MKMapItemRequest, MLKey, MLMetricKey, MLModelAsset, MLModelCollection, MLModelCollectionEntry, MLParameterKey, MLTask, MLUpdateProgressHandlers, MLUpdateTask, MPAdTimeRange, MPMediaItemArtwork, MPMediaPlaylistCreationMetadata, MPMusicPlayerController, MPMusicPlayerControllerQueue, MPMusicPlayerQueueDescriptor, MPNowPlayingInfoCenter, MPNowPlayingSession, MPRemoteCommand, MPRemoteCommandCenter, NSCollectionLayoutAnchor, NSCollectionLayoutBoundarySupplementaryItem, NSCollectionLayoutDecorationItem, NSCollectionLayoutDimension, NSCollectionLayoutEdgeSpacing, NSCollectionLayoutGroup, NSCollectionLayoutGroupCustomItem, NSCollectionLayoutItem, NSCollectionLayoutSection, NSCollectionLayoutSize, NSCollectionLayoutSpacing, NSCollectionLayoutSupplementaryItem, NSManagedObjectContext, NSObject, NSPersistentCloudKitContainerEvent, NSPersistentCloudKitContainerEventResult, NSTextAttachmentViewProvider, NSTextRange, NSTextSelectionNavigation, NSTextViewportLayoutController, NSURLSession, NSURLSessionConfiguration, NSURLSessionDataTask, NSURLSessionDownloadTask, NSURLSessionStreamTask, NSURLSessionTask, NSURLSessionTaskMetrics, NSURLSessionTaskTransactionMetrics, NSURLSessionUploadTask, NSURLSessionWebSocketMessage, NSURLSessionWebSocketTask, NSUnit, PHASEAmbientMixerDefinition, PHASEAsset, PHASEAssetRegistry, PHASEBlendNodeDefinition, PHASEChannelMixerDefinition, PHASEContainerNodeDefinition, PHASEDefinition, PHASEDirectivityModelParameters, PHASEDistanceModelFadeOutParameters, PHASEDistanceModelParameters, PHASEDucker, PHASEEngine, PHASEEnvelope, PHASEEnvelopeDistanceModelParameters, PHASEGeneratorNodeDefinition, PHASEGlobalMetaParameterAsset, PHASEGroup, PHASEGroupPreset, PHASEGroupPresetSetting, PHASEListener, PHASEMappedMetaParameterDefinition, PHASEMaterial, PHASEMedium, PHASEMetaParameter, PHASEMetaParameterDefinition, PHASEMixer, PHASEMixerDefinition, PHASENumberMetaParameter, PHASENumberMetaParameterDefinition, PHASEObject, PHASEOccluder, PHASEPushStreamNode, PHASEPushStreamNodeDefinition, PHASESamplerNodeDefinition, PHASEShape, PHASEShapeElement, PHASESoundAsset, PHASESoundEvent, PHASESoundEventNodeAsset, PHASESoundEventNodeDefinition, PHASESource, PHASESpatialMixerDefinition, PHASESpatialPipeline, PHASEStringMetaParameter, PHASEStringMetaParameterDefinition, PHASESwitchNodeDefinition, PHPersistentChange, PHPersistentChangeFetchResult, PHPersistentChangeToken, PHPersistentObjectChangeDetails, PHPickerFilter, PHPickerResult, PHPickerViewController, PKAddSecureElementPassConfiguration, PKIdentityDocument, PKIdentityElement, PKIdentityIntentToStore, PKPaymentOrderDetails, PKShareablePassMetadataPreview, PKStoredValuePassBalance, PKVehicleConnectionSession, SFSafariViewControllerActivityButton, SFSafariViewControllerDataStore, SFSafariViewControllerPrewarmingToken, SRFetchResult, SRSensorReader, SRSupplementalCategory, UIAccessibilityLocationDescriptor, UIAction, UIActivityItemsConfiguration, UIBackgroundConfiguration, UIBandSelectionInteraction, UIBarButtonItemStateAppearance, UIButtonConfiguration, UICalendarSelection, UICellAccessoryCustomView, UICellAccessoryLabel, UICellAccessoryPopUpMenu, UICollectionLayoutListConfiguration, UICollectionViewCompositionalLayout, UICollectionViewDiffableDataSource, UICollectionViewPlaceholder, UICommand, UICommandAlternate, UIContextMenuInteraction, UIDocumentProperties, UIDragInteraction, UIDragItem, UIDragPreview, UIDropInteraction, UIDropProposal, UIEditMenuConfiguration, UIEditMenuInteraction, UIEventAttribution, UIFindInteraction, UIFocusEffect, UIFocusMovementHint, UIFocusSystem, UIImageConfiguration, UIIndirectScribbleInteraction, UIListContentConfiguration, UIListContentView, UIListSeparatorConfiguration, UIMenu, UIMenuElement, UIMenuSystem, UIOpenURLContext, UIPointerAccessory, UIPointerEffect, UIPointerLockState, UIPointerRegion, UIPointerShape, UIPointerStyle, UIPreviewTarget, UIScene, UISceneConnectionOptions, UISceneOpenURLOptions, UISceneSession, UISceneSizeRestrictions, UISceneWindowingBehaviors, UIScreenshotService, UIScribbleInteraction, UISearchToken, UISheetPresentationControllerDetent, UISpringLoadedInteraction, UIStatusBarManager, UITabBarItemStateAppearance, UITableViewDiffableDataSource, UITableViewPlaceholder, UITargetedPreview, UITextDragPreviewRenderer, UITextInputContext, UITextInputPasswordRules, UITextSearchingFindSession, UIToolTipConfiguration, UIViewConfigurationState, UIWindowSceneActivationConfiguration, UIWindowSceneActivationInteraction, UIWindowSceneGeometry, UIWindowSceneGeometryPreferences, UTType, VNContour, VNDetectedPoint, VNFaceLandmarkRegion, VNGeneratePersonSegmentationRequest, VNRecognizedPointsObservation, VNStatefulRequest, WKContentWorld
 undeclared	+[MKSelectionAccessory mapItemDetailWithPresentationStyle:]	owner not found
 undeclared	+[MKSelectionAccessory new]	declared only by ARAnchor, ARBody2D, ARBodyTrackingConfiguration, ARCamera, ARCollaborationData, ARConfiguration, ARFaceGeometry, ARFaceTrackingConfiguration, ARFrame, ARGeoTrackingConfiguration, ARGeoTrackingStatus, ARGeometryElement, ARGeometrySource, ARHitTestResult, ARImageTrackingConfiguration, ARLightEstimate, ARMatteGenerator, ARMeshGeometry, ARObjectScanningConfiguration, AROrientationTrackingConfiguration, ARPlaneGeometry, ARPointCloud, ARPositionalTrackingConfiguration, ARQuickLookPreviewItem, ARReferenceImage, ARReferenceObject, ARSCNFaceGeometry, ARSkeleton, ARSkeleton2D, ARSkeleton3D, ARSkeletonDefinition, ARVideoFormat, ARWorldMap, ARWorldTrackingConfiguration, ASAuthorization, ASAuthorizationAppleIDCredential, ASAuthorizationController, ASAuthorizationPlatformPublicKeyCredentialAssertion, ASAuthorizationPlatformPublicKeyCredentialAssertionRequest, ASAuthorizationPlatformPublicKeyCredentialDescriptor, ASAuthorizationPlatformPublicKeyCredentialProvider, ASAuthorizationPlatformPublicKeyCredentialRegistration, ASAuthorizationPlatformPublicKeyCredentialRegistrationRequest, ASAuthorizationPublicKeyCredentialParameters, ASAuthorizationRequest, ASAuthorizationSecurityKeyPublicKeyCredentialAssertion, ASAuthorizationSecurityKeyPublicKeyCredentialDescriptor, ASAuthorizationSecurityKeyPublicKeyCredentialProvider, ASAuthorizationSecurityKeyPublicKeyCredentialRegistrationRequest, ASAuthorizationSingleSignOnCredential, ASAuthorizationSingleSignOnProvider, ASAuthorizationWebBrowserPlatformPublicKeyCredential, ASWebAuthenticationSession, ASWebAuthenticationSessionRequest, AVAggregateAssetDownloadTask, AVAssetCache, AVAssetDownloadConfiguration, AVAssetDownloadTask, AVAssetDownloadURLSession, AVAssetExportSession, AVAssetImageGenerator, AVAssetPlaybackAssistant, AVAssetReader, AVAssetReaderAudioMixOutput, AVAssetReaderOutputCaptionAdaptor, AVAssetReaderOutputMetadataAdaptor, AVAssetReaderSampleReferenceOutput, AVAssetReaderTrackOutput, AVAssetReaderVideoCompositionOutput, AVAssetResourceLoader, AVAssetResourceLoadingContentInformationRequest, AVAssetResourceLoadingDataRequest, AVAssetResourceLoadingRequest, AVAssetResourceLoadingRequestor, AVAssetSegmentReport, AVAssetSegmentReportSampleInformation, AVAssetSegmentTrackReport, AVAssetTrack, AVAssetTrackSegment, AVAssetVariant, AVAssetVariantAudioAttributes, AVAssetVariantQualifier, AVAssetVariantVideoAttributes, AVAssetWriter, AVAssetWriterInput, AVAssetWriterInputCaptionAdaptor, AVAssetWriterInputGroup, AVAssetWriterInputMetadataAdaptor, AVAssetWriterInputPassDescription, AVAssetWriterInputPixelBufferAdaptor, AVAudioRoutingArbiter, AVCameraCalibrationData, AVCaptureAudioChannel, AVCaptureAudioDataOutput, AVCaptureAudioFileOutput, AVCaptureAudioPreviewOutput, AVCaptureBracketedStillImageSettings, AVCaptureConnection, AVCaptureDataOutputSynchronizer, AVCaptureDepthDataOutput, AVCaptureDevice, AVCaptureDeviceDiscoverySession, AVCaptureDeviceFormat, AVCaptureDeviceInputSource, AVCaptureInput, AVCaptureInputPort, AVCaptureMetadataOutput, AVCaptureMovieFileOutput, AVCaptureOutput, AVCapturePhoto, AVCapturePhotoOutput, AVCaptureResolvedPhotoSettings, AVCaptureScreenInput, AVCaptureStillImageOutput, AVCaptureSynchronizedData, AVCaptureSynchronizedDataCollection, AVCaptureSystemPressureState, AVCaptureVideoDataOutput, AVContentKeySession, AVCoordinatedPlaybackSuspension, AVDelegatingPlaybackCoordinatorBufferingCommand, AVDelegatingPlaybackCoordinatorPauseCommand, AVDelegatingPlaybackCoordinatorPlayCommand, AVDelegatingPlaybackCoordinatorPlaybackControlCommand, AVDelegatingPlaybackCoordinatorSeekCommand, AVDepthData, AVDisplayCriteria, AVFrameRateRange, AVMediaDataStorage, AVMetadataObject, AVOutputSettingsAssistant, AVPictureInPictureControllerContentSource, AVPlaybackCoordinator, AVPlaybackSpeed, AVPlayerInterstitialEvent, AVPlayerItem, AVPlayerItemAccessLog, AVPlayerItemAccessLogEvent, AVPlayerItemErrorLog, AVPlayerItemErrorLogEvent, AVPlayerLooper, AVPlayerPlaybackCoordinator, AVPortraitEffectsMatte, AVSampleBufferGenerator, AVSampleBufferGeneratorBatch, AVSampleBufferRequest, AVSampleCursor, AVSemanticSegmentationMatte, AVSpeechSynthesisProviderRequest, AVSpeechSynthesisProviderVoice, AVTextStyleRule, AVURLAsset, AXBrailleMap, AXCategoricalDataAxisDescriptor, AXChartDescriptor, AXCustomContent, AXDataPoint, AXDataPointValue, AXDataSeriesDescriptor, AXNumericDataAxisDescriptor, BGTaskRequest, BGTaskScheduler, CKAsset, CKDatabase, CKDatabaseSubscription, CKRecord, CKReference, CKSubscription, CLPlacemark, CNContactFetchRequest, CNFetchResult, CNPhoneNumber, CPActionSheetTemplate, CPAlertAction, CPAlertTemplate, CPBarButton, CPButton, CPContactTemplate, CPDashboardButton, CPDashboardController, CPGridButton, CPGridTemplate, CPImageSet, CPInformationItem, CPInformationRatingItem, CPInformationTemplate, CPInstrumentClusterController, CPInterfaceController, CPListSection, CPListTemplate, CPMessageComposeBarButton, CPNavigationSession, CPNowPlayingButton, CPNowPlayingTemplate, CPPointOfInterest, CPPointOfInterestTemplate, CPRouteChoice, CPSessionConfiguration, CPTabBarTemplate, CPTextButton, CPTravelEstimates, CPTrip, CXProvider, GCPhysicalInputElementCollection, GCVirtualController, HKAttachment, HKClinicalRecord, HKContactsLensSpecification, HKContactsPrescription, HKGlassesLensSpecification, HKGlassesPrescription, HKLensSpecification, HKQueryDescriptor, HKVerifiableClinicalRecord, HKVerifiableClinicalRecordQuery, HKVerifiableClinicalRecordSubject, HKVisionPrescription, HKVisionPrism, HKWorkoutActivity, HMAccessoryOwnershipToken, HMAccessorySetupPayload, HMAccessorySetupResult, HMAction, HMCharacteristicWriteAction, HMEvent, INShortcut, INVoiceShortcut, INVoiceShortcutCenter, LAPersistedRight, LAPrivateKey, LAPublicKey, LARightStore, LASecret, MKIconStyle, MKLookAroundScene, MKLookAroundSceneRequest, MKLookAroundSnapshotter, MKMapConfiguration, MKMapFeatureAnnotation, MKMapItemRequest, MLKey, MLMetricKey, MLModelAsset, MLModelCollection, MLModelCollectionEntry, MLParameterKey, MLTask, MLUpdateProgressHandlers, MLUpdateTask, MPAdTimeRange, MPMediaItemArtwork, MPMediaPlaylistCreationMetadata, MPMusicPlayerController, MPMusicPlayerControllerQueue, MPMusicPlayerQueueDescriptor, MPNowPlayingInfoCenter, MPNowPlayingSession, MPRemoteCommand, MPRemoteCommandCenter, NSCollectionLayoutAnchor, NSCollectionLayoutBoundarySupplementaryItem, NSCollectionLayoutDecorationItem, NSCollectionLayoutDimension, NSCollectionLayoutEdgeSpacing, NSCollectionLayoutGroup, NSCollectionLayoutGroupCustomItem, NSCollectionLayoutItem, NSCollectionLayoutSection, NSCollectionLayoutSize, NSCollectionLayoutSpacing, NSCollectionLayoutSupplementaryItem, NSManagedObjectContext, NSObject, NSPersistentCloudKitContainerEvent, NSPersistentCloudKitContainerEventResult, NSTextAttachmentViewProvider, NSTextRange, NSTextSelectionNavigation, NSTextViewportLayoutController, NSURLSession, NSURLSessionConfiguration, NSURLSessionDataTask, NSURLSessionDownloadTask, NSURLSessionStreamTask, NSURLSessionTask, NSURLSessionTaskMetrics, NSURLSessionTaskTransactionMetrics, NSURLSessionUploadTask, NSURLSessionWebSocketMessage, NSURLSessionWebSocketTask, NSUnit, PHASEAmbientMixerDefinition, PHASEAsset, PHASEAssetRegistry, PHASEBlendNodeDefinition, PHASEChannelMixerDefinition, PHASEContainerNodeDefinition, PHASEDefinition, PHASEDirectivityModelParameters, PHASEDistanceModelFadeOutParameters, PHASEDistanceModelParameters, PHASEDucker, PHASEEngine, PHASEEnvelope, PHASEEnvelopeDistanceModelParameters, PHASEGeneratorNodeDefinition, PHASEGlobalMetaParameterAsset, PHASEGroup, PHASEGroupPreset, PHASEGroupPresetSetting, PHASEListener, PHASEMappedMetaParameterDefinition, PHASEMaterial, PHASEMedium, PHASEMetaParameter, PHASEMetaParameterDefinition, PHASEMixer, PHASEMixerDefinition, PHASENumberMetaParameter, PHASENumberMetaParameterDefinition, PHASEObject, PHASEOccluder, PHASEPushStreamNode, PHASEPushStreamNodeDefinition, PHASESamplerNodeDefinition, PHASEShape, PHASEShapeElement, PHASESoundAsset, PHASESoundEvent, PHASESoundEventNodeAsset, PHASESoundEventNodeDefinition, PHASESource, PHASESpatialMixerDefinition, PHASESpatialPipeline, PHASEStringMetaParameter, PHASEStringMetaParameterDefinition, PHASESwitchNodeDefinition, PHPersistentChange, PHPersistentChangeFetchResult, PHPersistentChangeToken, PHPersistentObjectChangeDetails, PHPickerFilter, PHPickerResult, PHPickerViewController, PKAddSecureElementPassConfiguration, PKIdentityDocument, PKIdentityElement, PKIdentityIntentToStore, PKPaymentOrderDetails, PKShareablePassMetadataPreview, PKStoredValuePassBalance, PKVehicleConnectionSession, SFSafariViewControllerActivityButton, SFSafariViewControllerDataStore, SFSafariViewControllerPrewarmingToken, SRFetchResult, SRSensorReader, SRSupplementalCategory, UIAccessibilityLocationDescriptor, UIAction, UIActivityItemsConfiguration, UIBackgroundConfiguration, UIBandSelectionInteraction, UIBarButtonItemStateAppearance, UIButtonConfiguration, UICalendarSelection, UICellAccessoryCustomView, UICellAccessoryLabel, UICellAccessoryPopUpMenu, UICollectionLayoutListConfiguration, UICollectionViewCompositionalLayout, UICollectionViewDiffableDataSource, UICollectionViewPlaceholder, UICommand, UICommandAlternate, UIContextMenuInteraction, UIDocumentProperties, UIDragInteraction, UIDragItem, UIDragPreview, UIDropInteraction, UIDropProposal, UIEditMenuConfiguration, UIEditMenuInteraction, UIEventAttribution, UIFindInteraction, UIFocusEffect, UIFocusMovementHint, UIFocusSystem, UIImageConfiguration, UIIndirectScribbleInteraction, UIListContentConfiguration, UIListContentView, UIListSeparatorConfiguration, UIMenu, UIMenuElement, UIMenuSystem, UIOpenURLContext, UIPointerAccessory, UIPointerEffect, UIPointerLockState, UIPointerRegion, UIPointerShape, UIPointerStyle, UIPreviewTarget, UIScene, UISceneConnectionOptions, UISceneOpenURLOptions, UISceneSession, UISceneSizeRestrictions, UISceneWindowingBehaviors, UIScreenshotService, UIScribbleInteraction, UISearchToken, UISheetPresentationControllerDetent, UISpringLoadedInteraction, UIStatusBarManager, UITabBarItemStateAppearance, UITableViewDiffableDataSource, UITableViewPlaceholder, UITargetedPreview, UITextDragPreviewRenderer, UITextInputContext, UITextInputPasswordRules, UITextSearchingFindSession, UIToolTipConfiguration, UIViewConfigurationState, UIWindowSceneActivationConfiguration, UIWindowSceneActivationInteraction, UIWindowSceneGeometry, UIWindowSceneGeometryPreferences, UTType, VNContour, VNDetectedPoint, VNFaceLandmarkRegion, VNGeneratePersonSegmentationRequest, VNRecognizedPointsObservation, VNStatefulRequest, WKContentWorld
+undeclared	+[MLCActivationDescriptor descriptorWithType:]	declared nowhere
+undeclared	+[MLCActivationDescriptor descriptorWithType:a:]	declared nowhere
+undeclared	+[MLCActivationDescriptor descriptorWithType:a:b:]	declared nowhere
+undeclared	+[MLCActivationDescriptor descriptorWithType:a:b:c:]	declared nowhere
+undeclared	+[MLCActivationDescriptor new]	declared nowhere
+undeclared	+[MLCActivationLayer celuLayerWithA:]	declared nowhere
+undeclared	+[MLCActivationLayer clampLayerWithMinValue:maxValue:]	declared nowhere
+undeclared	+[MLCActivationLayer eluLayerWithA:]	declared nowhere
+undeclared	+[MLCActivationLayer hardShrinkLayerWithA:]	declared nowhere
+undeclared	+[MLCActivationLayer layerWithDescriptor:]	declared nowhere
+undeclared	+[MLCActivationLayer leakyReLULayerWithNegativeSlope:]	declared nowhere
+undeclared	+[MLCActivationLayer linearLayerWithScale:bias:]	declared nowhere
+undeclared	+[MLCActivationLayer relunLayerWithA:b:]	declared nowhere
+undeclared	+[MLCActivationLayer softPlusLayerWithBeta:]	declared nowhere
+undeclared	+[MLCActivationLayer softShrinkLayerWithA:]	declared nowhere
+undeclared	+[MLCActivationLayer thresholdLayerWithThreshold:replacement:]	declared nowhere
+undeclared	+[MLCArithmeticLayer layerWithOperation:]	declared nowhere
+undeclared	+[MLCBatchNormalizationLayer layerWithFeatureChannelCount:mean:variance:beta:gamma:varianceEpsilon:]	declared nowhere
+undeclared	+[MLCBatchNormalizationLayer layerWithFeatureChannelCount:mean:variance:beta:gamma:varianceEpsilon:momentum:]	declared nowhere
+undeclared	+[MLCComparisonLayer layerWithOperation:]	declared nowhere
+undeclared	+[MLCConcatenationLayer layerWithDimension:]	declared nowhere
+undeclared	+[MLCConcatenationLayer layer]	declared nowhere
+undeclared	+[MLCConvolutionDescriptor convolutionTransposeDescriptorWithKernelSizes:inputFeatureChannelCount:outputFeatureChannelCount:groupCount:strides:dilationRates:paddingPolicy:paddingSizes:]	declared nowhere
+undeclared	+[MLCConvolutionDescriptor convolutionTransposeDescriptorWithKernelSizes:inputFeatureChannelCount:outputFeatureChannelCount:strides:paddingPolicy:paddingSizes:]	declared nowhere
+undeclared	+[MLCConvolutionDescriptor convolutionTransposeDescriptorWithKernelWidth:kernelHeight:inputFeatureChannelCount:outputFeatureChannelCount:]	declared nowhere
+undeclared	+[MLCConvolutionDescriptor depthwiseConvolutionDescriptorWithKernelSizes:inputFeatureChannelCount:channelMultiplier:strides:dilationRates:paddingPolicy:paddingSizes:]	declared nowhere
+undeclared	+[MLCConvolutionDescriptor depthwiseConvolutionDescriptorWithKernelSizes:inputFeatureChannelCount:channelMultiplier:strides:paddingPolicy:paddingSizes:]	declared nowhere
+undeclared	+[MLCConvolutionDescriptor depthwiseConvolutionDescriptorWithKernelWidth:kernelHeight:inputFeatureChannelCount:channelMultiplier:]	declared nowhere
+undeclared	+[MLCConvolutionDescriptor descriptorWithKernelSizes:inputFeatureChannelCount:outputFeatureChannelCount:groupCount:strides:dilationRates:paddingPolicy:paddingSizes:]	declared nowhere
+undeclared	+[MLCConvolutionDescriptor descriptorWithKernelSizes:inputFeatureChannelCount:outputFeatureChannelCount:strides:paddingPolicy:paddingSizes:]	declared nowhere
+undeclared	+[MLCConvolutionDescriptor descriptorWithKernelWidth:kernelHeight:inputFeatureChannelCount:outputFeatureChannelCount:]	declared nowhere
+undeclared	+[MLCConvolutionDescriptor descriptorWithType:kernelSizes:inputFeatureChannelCount:outputFeatureChannelCount:groupCount:strides:dilationRates:paddingPolicy:paddingSizes:]	declared nowhere
+undeclared	+[MLCConvolutionLayer layerWithWeights:biases:descriptor:]	declared nowhere
+undeclared	+[MLCDevice aneDevice]	declared nowhere
+undeclared	+[MLCDevice cpuDevice]	declared nowhere
+undeclared	+[MLCDevice deviceWithGPUDevices:]	declared nowhere
+undeclared	+[MLCDevice deviceWithType:]	declared nowhere
+undeclared	+[MLCDevice deviceWithType:selectsMultipleComputeDevices:]	declared nowhere
+undeclared	+[MLCDevice gpuDevice]	declared nowhere
+undeclared	+[MLCDropoutLayer layerWithRate:seed:]	declared nowhere
+undeclared	+[MLCEmbeddingDescriptor descriptorWithEmbeddingCount:embeddingDimension:]	declared nowhere
+undeclared	+[MLCEmbeddingDescriptor descriptorWithEmbeddingCount:embeddingDimension:paddingIndex:maximumNorm:pNorm:scalesGradientByFrequency:]	declared nowhere
+undeclared	+[MLCEmbeddingDescriptor new]	declared nowhere
+undeclared	+[MLCEmbeddingLayer layerWithDescriptor:weights:]	declared nowhere
+undeclared	+[MLCFullyConnectedLayer layerWithWeights:biases:descriptor:]	declared nowhere
+undeclared	+[MLCGatherLayer layerWithDimension:]	declared nowhere
+undeclared	+[MLCGramMatrixLayer layerWithScale:]	declared nowhere
+undeclared	+[MLCGroupNormalizationLayer layerWithFeatureChannelCount:groupCount:beta:gamma:varianceEpsilon:]	declared nowhere
+undeclared	+[MLCInstanceNormalizationLayer layerWithFeatureChannelCount:beta:gamma:varianceEpsilon:]	declared nowhere
+undeclared	+[MLCInstanceNormalizationLayer layerWithFeatureChannelCount:beta:gamma:varianceEpsilon:momentum:]	declared nowhere
+undeclared	+[MLCInstanceNormalizationLayer layerWithFeatureChannelCount:mean:variance:beta:gamma:varianceEpsilon:momentum:]	declared nowhere
+undeclared	+[MLCLSTMDescriptor descriptorWithInputSize:hiddenSize:layerCount:]	declared nowhere
+undeclared	+[MLCLSTMDescriptor descriptorWithInputSize:hiddenSize:layerCount:usesBiases:batchFirst:isBidirectional:dropout:]	declared nowhere
+undeclared	+[MLCLSTMDescriptor descriptorWithInputSize:hiddenSize:layerCount:usesBiases:batchFirst:isBidirectional:returnsSequences:dropout:]	declared nowhere
+undeclared	+[MLCLSTMDescriptor descriptorWithInputSize:hiddenSize:layerCount:usesBiases:batchFirst:isBidirectional:returnsSequences:dropout:resultMode:]	declared nowhere
+undeclared	+[MLCLSTMDescriptor descriptorWithInputSize:hiddenSize:layerCount:usesBiases:isBidirectional:dropout:]	declared nowhere
+undeclared	+[MLCLSTMDescriptor new]	declared nowhere
+undeclared	+[MLCLSTMLayer layerWithDescriptor:inputWeights:hiddenWeights:biases:]	declared nowhere
+undeclared	+[MLCLSTMLayer layerWithDescriptor:inputWeights:hiddenWeights:peepholeWeights:biases:]	declared nowhere
+undeclared	+[MLCLSTMLayer layerWithDescriptor:inputWeights:hiddenWeights:peepholeWeights:biases:gateActivations:outputResultActivation:]	declared nowhere
+undeclared	+[MLCLayer new]	declared nowhere
+undeclared	+[MLCLayer supportsDataType:onDevice:]	declared nowhere
+undeclared	+[MLCLayerNormalizationLayer layerWithNormalizedShape:beta:gamma:varianceEpsilon:]	declared nowhere
+undeclared	+[MLCLossDescriptor descriptorWithType:reductionType:]	declared nowhere
+undeclared	+[MLCLossDescriptor descriptorWithType:reductionType:weight:]	declared nowhere
+undeclared	+[MLCLossDescriptor descriptorWithType:reductionType:weight:labelSmoothing:classCount:]	declared nowhere
+undeclared	+[MLCLossDescriptor descriptorWithType:reductionType:weight:labelSmoothing:classCount:epsilon:delta:]	declared nowhere
+undeclared	+[MLCLossDescriptor new]	declared nowhere
+undeclared	+[MLCLossLayer categoricalCrossEntropyLossWithReductionType:labelSmoothing:classCount:weight:]	declared nowhere
+undeclared	+[MLCLossLayer categoricalCrossEntropyLossWithReductionType:labelSmoothing:classCount:weights:]	declared nowhere
+undeclared	+[MLCLossLayer cosineDistanceLossWithReductionType:weight:]	declared nowhere
+undeclared	+[MLCLossLayer cosineDistanceLossWithReductionType:weights:]	declared nowhere
+undeclared	+[MLCLossLayer hingeLossWithReductionType:weight:]	declared nowhere
+undeclared	+[MLCLossLayer hingeLossWithReductionType:weights:]	declared nowhere
+undeclared	+[MLCLossLayer huberLossWithReductionType:delta:weight:]	declared nowhere
+undeclared	+[MLCLossLayer huberLossWithReductionType:delta:weights:]	declared nowhere
+undeclared	+[MLCLossLayer layerWithDescriptor:]	declared nowhere
+undeclared	+[MLCLossLayer layerWithDescriptor:weights:]	declared nowhere
+undeclared	+[MLCLossLayer logLossWithReductionType:epsilon:weight:]	declared nowhere
+undeclared	+[MLCLossLayer logLossWithReductionType:epsilon:weights:]	declared nowhere
+undeclared	+[MLCLossLayer meanAbsoluteErrorLossWithReductionType:weight:]	declared nowhere
+undeclared	+[MLCLossLayer meanAbsoluteErrorLossWithReductionType:weights:]	declared nowhere
+undeclared	+[MLCLossLayer meanSquaredErrorLossWithReductionType:weight:]	declared nowhere
+undeclared	+[MLCLossLayer meanSquaredErrorLossWithReductionType:weights:]	declared nowhere
+undeclared	+[MLCLossLayer sigmoidCrossEntropyLossWithReductionType:labelSmoothing:weight:]	declared nowhere
+undeclared	+[MLCLossLayer sigmoidCrossEntropyLossWithReductionType:labelSmoothing:weights:]	declared nowhere
+undeclared	+[MLCLossLayer softmaxCrossEntropyLossWithReductionType:labelSmoothing:classCount:weight:]	declared nowhere
+undeclared	+[MLCLossLayer softmaxCrossEntropyLossWithReductionType:labelSmoothing:classCount:weights:]	declared nowhere
+undeclared	+[MLCMatMulDescriptor descriptorWithAlpha:transposesX:transposesY:]	declared nowhere
+undeclared	+[MLCMatMulDescriptor descriptor]	declared nowhere
+undeclared	+[MLCMatMulDescriptor new]	declared nowhere
+undeclared	+[MLCMatMulLayer layerWithDescriptor:]	declared nowhere
+undeclared	+[MLCMultiheadAttentionDescriptor descriptorWithModelDimension:headCount:]	declared nowhere
+undeclared	+[MLCMultiheadAttentionDescriptor descriptorWithModelDimension:keyDimension:valueDimension:headCount:dropout:hasBiases:hasAttentionBiases:addsZeroAttention:]	declared nowhere
+undeclared	+[MLCMultiheadAttentionDescriptor new]	declared nowhere
+undeclared	+[MLCMultiheadAttentionLayer layerWithDescriptor:weights:biases:attentionBiases:]	declared nowhere
+undeclared	+[MLCOptimizerDescriptor descriptorWithLearningRate:gradientRescale:appliesGradientClipping:gradientClipMax:gradientClipMin:regularizationType:regularizationScale:]	declared nowhere
+undeclared	+[MLCOptimizerDescriptor descriptorWithLearningRate:gradientRescale:appliesGradientClipping:gradientClippingType:gradientClipMax:gradientClipMin:maximumClippingNorm:customGlobalNorm:regularizationType:regularizationScale:]	declared nowhere
+undeclared	+[MLCOptimizerDescriptor descriptorWithLearningRate:gradientRescale:regularizationType:regularizationScale:]	declared nowhere
+undeclared	+[MLCPaddingLayer layerWithConstantPadding:constantValue:]	declared nowhere
+undeclared	+[MLCPaddingLayer layerWithReflectionPadding:]	declared nowhere
+undeclared	+[MLCPaddingLayer layerWithSymmetricPadding:]	declared nowhere
+undeclared	+[MLCPaddingLayer layerWithZeroPadding:]	declared nowhere
+undeclared	+[MLCPlatform getRNGseed]	declared nowhere
+undeclared	+[MLCPlatform setRNGSeedTo:]	declared nowhere
+undeclared	+[MLCPoolingDescriptor averagePoolingDescriptorWithKernelSizes:strides:dilationRates:paddingPolicy:paddingSizes:countIncludesPadding:]	declared nowhere
+undeclared	+[MLCPoolingDescriptor averagePoolingDescriptorWithKernelSizes:strides:paddingPolicy:paddingSizes:countIncludesPadding:]	declared nowhere
+undeclared	+[MLCPoolingDescriptor l2NormPoolingDescriptorWithKernelSizes:strides:dilationRates:paddingPolicy:paddingSizes:]	declared nowhere
+undeclared	+[MLCPoolingDescriptor l2NormPoolingDescriptorWithKernelSizes:strides:paddingPolicy:paddingSizes:]	declared nowhere
+undeclared	+[MLCPoolingDescriptor maxPoolingDescriptorWithKernelSizes:strides:dilationRates:paddingPolicy:paddingSizes:]	declared nowhere
+undeclared	+[MLCPoolingDescriptor maxPoolingDescriptorWithKernelSizes:strides:paddingPolicy:paddingSizes:]	declared nowhere
+undeclared	+[MLCPoolingDescriptor new]	declared nowhere
+undeclared	+[MLCPoolingDescriptor poolingDescriptorWithType:kernelSize:stride:]	declared nowhere
+undeclared	+[MLCPoolingLayer layerWithDescriptor:]	declared nowhere
+undeclared	+[MLCReductionLayer layerWithReductionType:dimension:]	declared nowhere
+undeclared	+[MLCReductionLayer layerWithReductionType:dimensions:]	declared nowhere
+undeclared	+[MLCReshapeLayer layerWithShape:]	declared nowhere
+undeclared	+[MLCScatterLayer layerWithDimension:reductionType:]	declared nowhere
+undeclared	+[MLCSelectionLayer layer]	declared nowhere
+undeclared	+[MLCSliceLayer sliceLayerWithStart:end:stride:]	declared nowhere
+undeclared	+[MLCSoftmaxLayer layerWithOperation:]	declared nowhere
+undeclared	+[MLCSoftmaxLayer layerWithOperation:dimension:]	declared nowhere
+undeclared	+[MLCSplitLayer layerWithSplitCount:dimension:]	declared nowhere
+undeclared	+[MLCSplitLayer layerWithSplitSectionLengths:dimension:]	declared nowhere
+undeclared	+[MLCTensor new]	declared nowhere
+undeclared	+[MLCTensor tensorWithDescriptor:]	declared nowhere
+undeclared	+[MLCTensor tensorWithDescriptor:data:]	declared nowhere
+undeclared	+[MLCTensor tensorWithDescriptor:fillWithData:]	declared nowhere
+undeclared	+[MLCTensor tensorWithDescriptor:randomInitializerType:]	declared nowhere
+undeclared	+[MLCTensor tensorWithSequenceLength:featureChannelCount:batchSize:]	declared nowhere
+undeclared	+[MLCTensor tensorWithSequenceLength:featureChannelCount:batchSize:data:]	declared nowhere
+undeclared	+[MLCTensor tensorWithSequenceLength:featureChannelCount:batchSize:randomInitializerType:]	declared nowhere
+undeclared	+[MLCTensor tensorWithSequenceLengths:sortedSequences:featureChannelCount:batchSize:data:]	declared nowhere
+undeclared	+[MLCTensor tensorWithSequenceLengths:sortedSequences:featureChannelCount:batchSize:randomInitializerType:]	declared nowhere
+undeclared	+[MLCTensor tensorWithShape:]	declared nowhere
+undeclared	+[MLCTensor tensorWithShape:data:dataType:]	declared nowhere
+undeclared	+[MLCTensor tensorWithShape:dataType:]	declared nowhere
+undeclared	+[MLCTensor tensorWithShape:fillWithData:dataType:]	declared nowhere
+undeclared	+[MLCTensor tensorWithShape:randomInitializerType:]	declared nowhere
+undeclared	+[MLCTensor tensorWithShape:randomInitializerType:dataType:]	declared nowhere
+undeclared	+[MLCTensor tensorWithWidth:height:featureChannelCount:batchSize:]	declared nowhere
+undeclared	+[MLCTensor tensorWithWidth:height:featureChannelCount:batchSize:data:]	declared nowhere
+undeclared	+[MLCTensor tensorWithWidth:height:featureChannelCount:batchSize:data:dataType:]	declared nowhere
+undeclared	+[MLCTensor tensorWithWidth:height:featureChannelCount:batchSize:fillWithData:dataType:]	declared nowhere
+undeclared	+[MLCTensor tensorWithWidth:height:featureChannelCount:batchSize:randomInitializerType:]	declared nowhere
+undeclared	+[MLCTensorData dataWithBytesNoCopy:length:]	declared nowhere
+undeclared	+[MLCTensorData dataWithBytesNoCopy:length:deallocator:]	declared nowhere
+undeclared	+[MLCTensorData dataWithImmutableBytesNoCopy:length:]	declared nowhere
+undeclared	+[MLCTensorData new]	declared nowhere
+undeclared	+[MLCTensorDescriptor convolutionBiasesDescriptorWithFeatureChannelCount:dataType:]	declared nowhere
+undeclared	+[MLCTensorDescriptor convolutionWeightsDescriptorWithInputFeatureChannelCount:outputFeatureChannelCount:dataType:]	declared nowhere
+undeclared	+[MLCTensorDescriptor convolutionWeightsDescriptorWithWidth:height:inputFeatureChannelCount:outputFeatureChannelCount:dataType:]	declared nowhere
+undeclared	+[MLCTensorDescriptor descriptorWithShape:dataType:]	declared nowhere
+undeclared	+[MLCTensorDescriptor descriptorWithShape:sequenceLengths:sortedSequences:dataType:]	declared nowhere
+undeclared	+[MLCTensorDescriptor descriptorWithWidth:height:featureChannelCount:batchSize:]	declared nowhere
+undeclared	+[MLCTensorDescriptor descriptorWithWidth:height:featureChannelCount:batchSize:dataType:]	declared nowhere
+undeclared	+[MLCTensorDescriptor new]	declared nowhere
+undeclared	+[MLCTensorOptimizerDeviceData new]	declared nowhere
+undeclared	+[MLCTensorParameter new]	declared nowhere
+undeclared	+[MLCTensorParameter parameterWithTensor:]	declared nowhere
+undeclared	+[MLCTensorParameter parameterWithTensor:optimizerData:]	declared nowhere
+undeclared	+[MLCTransposeLayer layerWithDimensions:]	declared nowhere
+undeclared	+[MLCUpsampleLayer layerWithShape:]	declared nowhere
+undeclared	+[MLCUpsampleLayer layerWithShape:sampleMode:alignsCorners:]	declared nowhere
+undeclared	+[MLCYOLOLossDescriptor descriptorWithAnchorBoxes:anchorBoxCount:]	declared nowhere
+undeclared	+[MLCYOLOLossDescriptor new]	declared nowhere
+undeclared	+[MLCYOLOLossLayer layerWithDescriptor:]	declared nowhere
 undeclared	+[NSTermOfAddress currentUser]	owner not found
 undeclared	+[NSTermOfAddress feminine]	owner not found
 undeclared	+[NSTermOfAddress localizedForLanguageIdentifier:withPronouns:]	owner not found
@@ -175,6 +390,255 @@ undeclared	-[MKReverseGeocodingRequest getMapItemsWithCompletionHandler:]	owner 
 undeclared	-[MKReverseGeocodingRequest initWithLocation:]	declared only by NSTextRange, VNDetectedPoint, VNPoint
 undeclared	-[MKReverseGeocodingRequest init]	declared only by ARAnchor, ARBody2D, ARBodyTrackingConfiguration, ARCamera, ARCollaborationData, ARConfiguration, ARFaceGeometry, ARFaceTrackingConfiguration, ARFrame, ARGeoTrackingConfiguration, ARGeoTrackingStatus, ARGeometryElement, ARGeometrySource, ARHitTestResult, ARImageTrackingConfiguration, ARLightEstimate, ARMatteGenerator, ARMeshGeometry, ARObjectScanningConfiguration, AROrientationTrackingConfiguration, ARPlaneGeometry, ARPointCloud, ARPositionalTrackingConfiguration, ARQuickLookPreviewItem, ARRaycastQuery, ARRaycastResult, ARReferenceImage, ARReferenceObject, ARSCNFaceGeometry, ARSkeleton, ARSkeleton2D, ARSkeleton3D, ARTrackedRaycast, ARVideoFormat, ARWorldMap, ARWorldTrackingConfiguration, ASAuthorization, ASAuthorizationAppleIDCredential, ASAuthorizationController, ASAuthorizationPlatformPublicKeyCredentialAssertion, ASAuthorizationPlatformPublicKeyCredentialAssertionRequest, ASAuthorizationPlatformPublicKeyCredentialDescriptor, ASAuthorizationPlatformPublicKeyCredentialProvider, ASAuthorizationPlatformPublicKeyCredentialRegistration, ASAuthorizationPlatformPublicKeyCredentialRegistrationRequest, ASAuthorizationPublicKeyCredentialParameters, ASAuthorizationRequest, ASAuthorizationSecurityKeyPublicKeyCredentialAssertion, ASAuthorizationSecurityKeyPublicKeyCredentialDescriptor, ASAuthorizationSecurityKeyPublicKeyCredentialProvider, ASAuthorizationSecurityKeyPublicKeyCredentialRegistrationRequest, ASAuthorizationSingleSignOnCredential, ASAuthorizationSingleSignOnProvider, ASAuthorizationWebBrowserPlatformPublicKeyCredential, ASAuthorizationWebBrowserPublicKeyCredentialManager, ASCredentialIdentityStore, ASPasswordCredentialIdentity, ASWebAuthenticationSession, ASWebAuthenticationSessionRequest, AUAudioUnit, AUAudioUnitBusArray, AVAggregateAssetDownloadTask, AVAssetCache, AVAssetDownloadConfiguration, AVAssetDownloadTask, AVAssetDownloadURLSession, AVAssetExportSession, AVAssetImageGenerator, AVAssetPlaybackAssistant, AVAssetReader, AVAssetReaderAudioMixOutput, AVAssetReaderOutputCaptionAdaptor, AVAssetReaderOutputMetadataAdaptor, AVAssetReaderSampleReferenceOutput, AVAssetReaderTrackOutput, AVAssetReaderVideoCompositionOutput, AVAssetResourceLoader, AVAssetResourceLoadingContentInformationRequest, AVAssetResourceLoadingDataRequest, AVAssetResourceLoadingRequest, AVAssetResourceLoadingRequestor, AVAssetSegmentReport, AVAssetSegmentReportSampleInformation, AVAssetSegmentTrackReport, AVAssetTrack, AVAssetTrackSegment, AVAssetVariant, AVAssetVariantAudioAttributes, AVAssetVariantQualifier, AVAssetVariantVideoAttributes, AVAssetWriter, AVAssetWriterInput, AVAssetWriterInputCaptionAdaptor, AVAssetWriterInputGroup, AVAssetWriterInputMetadataAdaptor, AVAssetWriterInputPassDescription, AVAssetWriterInputPixelBufferAdaptor, AVAudioChannelLayout, AVAudioConnectionPoint, AVAudioEngine, AVAudioEnvironmentDistanceAttenuationParameters, AVAudioEnvironmentNode, AVAudioEnvironmentReverbParameters, AVAudioInputNode, AVAudioMixerNode, AVAudioMixingDestination, AVAudioOutputNode, AVAudioPlayerNode, AVAudioRoutingArbiter, AVAudioSequencer, AVAudioSession, AVAudioSinkNode, AVAudioSourceNode, AVAudioUnitEQFilterParameters, AVCameraCalibrationData, AVCaptureAudioChannel, AVCaptureAudioDataOutput, AVCaptureAudioFileOutput, AVCaptureAudioPreviewOutput, AVCaptureBracketedStillImageSettings, AVCaptureConnection, AVCaptureDataOutputSynchronizer, AVCaptureDepthDataOutput, AVCaptureDevice, AVCaptureDeviceDiscoverySession, AVCaptureDeviceFormat, AVCaptureDeviceInputSource, AVCaptureInput, AVCaptureInputPort, AVCaptureMetadataOutput, AVCaptureMovieFileOutput, AVCaptureOutput, AVCapturePhoto, AVCapturePhotoOutput, AVCaptureResolvedPhotoSettings, AVCaptureScreenInput, AVCaptureStillImageOutput, AVCaptureSynchronizedData, AVCaptureSynchronizedDataCollection, AVCaptureSystemPressureState, AVCaptureVideoDataOutput, AVContentKeySession, AVCoordinatedPlaybackSuspension, AVDelegatingPlaybackCoordinatorBufferingCommand, AVDelegatingPlaybackCoordinatorPauseCommand, AVDelegatingPlaybackCoordinatorPlayCommand, AVDelegatingPlaybackCoordinatorPlaybackControlCommand, AVDelegatingPlaybackCoordinatorSeekCommand, AVDepthData, AVDisplayCriteria, AVFrameRateRange, AVMediaDataStorage, AVMetadataObject, AVOutputSettingsAssistant, AVPictureInPictureControllerContentSource, AVPlaybackCoordinator, AVPlaybackSpeed, AVPlayerInterstitialEvent, AVPlayerItem, AVPlayerItemAccessLog, AVPlayerItemAccessLogEvent, AVPlayerItemErrorLog, AVPlayerItemErrorLogEvent, AVPlayerLooper, AVPlayerPlaybackCoordinator, AVPortraitEffectsMatte, AVSampleBufferGenerator, AVSampleBufferGeneratorBatch, AVSampleBufferRequest, AVSampleCursor, AVSemanticSegmentationMatte, AVSpeechSynthesisProviderRequest, AVSpeechSynthesisProviderVoice, AVTextStyleRule, AVURLAsset, AXBrailleMap, AXCategoricalDataAxisDescriptor, AXChartDescriptor, AXCustomContent, AXDataPoint, AXDataPointValue, AXDataSeriesDescriptor, AXNumericDataAxisDescriptor, BGTask, BGTaskRequest, BGTaskScheduler, CAEDRMetadata, CALayer, CIContext, CKAsset, CKDatabase, CKDatabaseSubscription, CKRecord, CKReference, CKSubscription, CLPlacemark, CNContactFetchRequest, CNFetchResult, CNPhoneNumber, CPActionSheetTemplate, CPAlertAction, CPAlertTemplate, CPBarButton, CPButton, CPContactTemplate, CPDashboardButton, CPDashboardController, CPGridButton, CPGridTemplate, CPImageSet, CPInformationItem, CPInformationRatingItem, CPInformationTemplate, CPInstrumentClusterController, CPInterfaceController, CPListSection, CPListTemplate, CPMessageComposeBarButton, CPNavigationSession, CPNowPlayingButton, CPNowPlayingTemplate, CPPointOfInterest, CPPointOfInterestTemplate, CPRouteChoice, CPSessionConfiguration, CPTabBarTemplate, CPTextButton, CPTravelEstimates, CPTrip, CSCustomAttributeKey, CSSearchQuery, CXAction, CXCall, CXCallAction, CXCallController, CXHandle, CXProvider, CXProviderConfiguration, EAGLContext, GCColor, GCDeviceBattery, GCDeviceHaptics, GCDeviceLight, GCPhysicalInputElementCollection, GCRacingWheel, GCSteeringWheelElement, GCVirtualController, HKAttachment, HKAudiogramSensitivityPoint, HKCategorySample, HKClinicalRecord, HKContactsLensSpecification, HKContactsPrescription, HKDeletedObject, HKDevice, HKFHIRResource, HKFHIRVersion, HKGlassesLensSpecification, HKGlassesPrescription, HKLensSpecification, HKLiveWorkoutDataSource, HKObject, HKObjectType, HKQuantity, HKQuantitySeriesSampleBuilder, HKQuery, HKQueryAnchor, HKQueryDescriptor, HKSeriesBuilder, HKSource, HKSourceRevision, HKStatistics, HKStatisticsCollection, HKUnit, HKVerifiableClinicalRecord, HKVerifiableClinicalRecordQuery, HKVerifiableClinicalRecordSubject, HKVisionPrescription, HKVisionPrism, HKWorkoutActivity, HKWorkoutBuilder, HKWorkoutEvent, HKWorkoutSession, HMAccessControl, HMAccessoryOwnershipToken, HMAccessoryProfile, HMAccessorySetupPayload, HMAccessorySetupResult, HMAction, HMActionSet, HMCalendarEvent, HMCameraAudioControl, HMCameraProfile, HMCameraSettingsControl, HMCharacteristicEvent, HMCharacteristicThresholdRangeEvent, HMCharacteristicWriteAction, HMDurationEvent, HMEvent, HMEventTrigger, HMHome, HMLocationEvent, HMMutableCalendarEvent, HMMutableCharacteristicEvent, HMMutableCharacteristicThresholdRangeEvent, HMMutableDurationEvent, HMMutableLocationEvent, HMMutablePresenceEvent, HMNumberRange, HMPresenceEvent, HMRoom, HMServiceGroup, HMSignificantTimeEvent, HMTimerTrigger, HMTrigger, HMUser, HMZone, INActivateCarSignalIntentResponse, INAddMediaIntentResponse, INAddTasksIntentResponse, INAirline, INAirport, INAirportGate, INAnswerCallIntentResponse, INAppendToNoteIntentResponse, INBalanceAmount, INBillDetails, INBillPayee, INBoatReservation, INBoatTrip, INBusReservation, INBusTrip, INCallGroup, INCallRecord, INCallRecordFilter, INCancelRideIntent, INCancelRideIntentResponse, INCancelWorkoutIntentResponse, INCar, INCarHeadUnit, INCreateNoteIntentResponse, INCreateTaskListIntentResponse, INCurrencyAmount, INDateComponentsRange, INDefaultCardTemplate, INDeleteTasksIntentResponse, INEndWorkoutIntentResponse, INFlight, INFocusStatus, INGetCarLockStatusIntentResponse, INGetCarPowerLevelStatusIntentResponse, INGetReservationDetailsIntentResponse, INGetRideStatusIntent, INGetRideStatusIntentResponse, INGetVisualCodeIntentResponse, INHangUpCallIntentResponse, INIntentDonationMetadata, INIntentResolutionResult, INInteraction, INListCarsIntent, INListCarsIntentResponse, INListRideOptionsIntentResponse, INMediaDestination, INMediaItem, INMediaSearch, INMediaUserContext, INMessage, INObject, INObjectCollection, INObjectSection, INPauseWorkoutIntentResponse, INPayBillIntentResponse, INPaymentAccount, INPaymentAmount, INPaymentMethod, INPaymentRecord, INPerson, INPersonHandle, INPlayMediaIntentResponse, INPriceRange, INRecurrenceRule, INRelevanceProvider, INRelevantShortcutStore, INRentalCar, INRequestPaymentIntentResponse, INRequestRideIntentResponse, INReservation, INReservationAction, INResumeWorkoutIntentResponse, INRideCompletionStatus, INRideFareLineItem, INRideOption, INRidePartySizeOption, INSaveProfileInCarIntentResponse, INSearchCallHistoryIntentResponse, INSearchForAccountsIntentResponse, INSearchForBillsIntentResponse, INSearchForMediaIntentResponse, INSearchForMessagesIntentResponse, INSearchForNotebookItemsIntentResponse, INSearchForPhotosIntentResponse, INSeat, INSendMessageIntentDonationMetadata, INSendMessageIntentResponse, INSendPaymentIntentResponse, INSendRideFeedbackIntent, INSendRideFeedbackIntentResponse, INSetAudioSourceInCarIntentResponse, INSetCarLockStatusIntentResponse, INSetClimateSettingsInCarIntentResponse, INSetDefrosterSettingsInCarIntentResponse, INSetMessageAttributeIntentResponse, INSetProfileInCarIntentResponse, INSetRadioStationIntentResponse, INSetSeatSettingsInCarIntentResponse, INSetTaskAttributeIntentResponse, INShareFocusStatusIntentResponse, INShortcut, INSnoozeTasksIntentResponse, INSpeakableString, INStartAudioCallIntentResponse, INStartCallIntentResponse, INStartPhotoPlaybackIntentResponse, INStartVideoCallIntentResponse, INStartWorkoutIntentResponse, INTicketedEvent, INTrainTrip, INTransferMoneyIntentResponse, INUIAddVoiceShortcutButton, INUIAddVoiceShortcutViewController, INUIEditVoiceShortcutViewController, INUserContext, INVoiceShortcut, INVoiceShortcutCenter, JSContext, JSVirtualMachine, LAPersistedRight, LAPrivateKey, LAPublicKey, LARight, LARightStore, LASecret, MDLMaterialProperty, MDLMaterialPropertyConnection, MDLMaterialPropertyGraph, MDLMaterialPropertyNode, MDLTexture, MDLTransform, MDLTransformStack, MKClusterAnnotation, MKHybridMapConfiguration, MKIconStyle, MKImageryMapConfiguration, MKLocalPointsOfInterestRequest, MKLocalSearchRequest, MKLookAroundScene, MKLookAroundSceneRequest, MKLookAroundSnapshotter, MKMapConfiguration, MKMapFeatureAnnotation, MKMapItemRequest, MKPointAnnotation, MKStandardMapConfiguration, MLImageConstraint, MLKey, MLMetricKey, MLModelAsset, MLModelCollection, MLModelCollectionEntry, MLParameterKey, MLTask, MLUpdateProgressHandlers, MLUpdateTask, MPAdTimeRange, MPMediaItemArtwork, MPMediaPlaylistCreationMetadata, MPMusicPlayerController, MPMusicPlayerControllerQueue, MPMusicPlayerQueueDescriptor, MPNowPlayingInfoCenter, MPNowPlayingSession, MPRemoteCommand, MPRemoteCommandCenter, MPSAccelerationStructure, MPSAccelerationStructureGroup, MPSCNNArithmeticGradientState, MPSCNNDropoutGradientState, MPSCNNLossDataDescriptor, MPSCNNLossDescriptor, MPSCNNLossLabels, MPSCNNNeuronGradientNode, MPSCNNNeuronNode, MPSCNNYOLOLossDescriptor, MPSCommandBuffer, MPSImage, MPSKeyedUnarchiver, MPSMatrix, MPSMatrixCopyDescriptor, MPSNDArray, MPSNDArrayDescriptor, MPSNNFilterNode, MPSNNImageNode, MPSNNNeuronDescriptor, MPSNNStateNode, MPSPolygonBuffer, MPSRayIntersector, MPSState, MPSStateResourceList, MPSVector, MSMessage, MSMessageLiveLayout, MSSticker, MTKMesh, MTKMeshBuffer, MTKMeshBufferAllocator, MTKSubmesh, MTKTextureLoader, MTLCaptureManager, MTLRasterizationRateLayerDescriptor, MTLSharedEventListener, NFCISO15693ReaderSession, NFCISO7816APDU, NFCNDEFMessage, NFCNDEFPayload, NFCNDEFReaderSession, NFCReaderSession, NFCTagReaderSession, NFCVASReaderSession, NLLanguageRecognizer, NSArray, NSAttributedStringMarkdownParsingOptions, NSBatchDeleteRequest, NSBatchInsertRequest, NSBundleResourceRequest, NSCalendar, NSCollectionLayoutAnchor, NSCollectionLayoutBoundarySupplementaryItem, NSCollectionLayoutDecorationItem, NSCollectionLayoutDimension, NSCollectionLayoutEdgeSpacing, NSCollectionLayoutGroup, NSCollectionLayoutGroupCustomItem, NSCollectionLayoutItem, NSCollectionLayoutSection, NSCollectionLayoutSize, NSCollectionLayoutSpacing, NSCollectionLayoutSupplementaryItem, NSCoreDataCoreSpotlightDelegate, NSDataAsset, NSDate, NSDateInterval, NSDictionary, NSDiffableDataSourceSectionSnapshot, NSFetchRequest, NSISO8601DateFormatter, NSInflectionRule, NSItemProvider, NSKeyedArchiver, NSKeyedUnarchiver, NSLayoutManager, NSLocale, NSManagedObjectContext, NSManagedObjectModel, NSMeasurement, NSMergeConflict, NSMergePolicy, NSMutableArray, NSMutableDictionary, NSMutableOrderedSet, NSMutableSet, NSNetServiceBrowser, NSNotification, NSObject, NSOrderedCollectionChange, NSOrderedSet, NSPersistentCloudKitContainerEvent, NSPersistentCloudKitContainerEventResult, NSPersistentCloudKitContainerOptions, NSPersistentStore, NSPresentationIntent, NSSet, NSShadow, NSString, NSTextAttachmentViewProvider, NSTextContentManager, NSTextLayoutFragment, NSTextLayoutManager, NSTextLineFragment, NSTextRange, NSTextSelection, NSTextSelectionNavigation, NSTextViewportLayoutController, NSThread, NSURLComponents, NSURLSession, NSURLSessionConfiguration, NSURLSessionDataTask, NSURLSessionDownloadTask, NSURLSessionStreamTask, NSURLSessionTask, NSURLSessionTaskMetrics, NSURLSessionTaskTransactionMetrics, NSURLSessionUploadTask, NSURLSessionWebSocketMessage, NSURLSessionWebSocketTask, NSUUID, NSUnit, NSUserActivity, NSUserDefaults, OS_object, OS_os_workgroup, OS_os_workgroup_interval, OS_os_workgroup_parallel, PHASEAsset, PHASEAssetRegistry, PHASECardioidDirectivityModelSubbandParameters, PHASEConeDirectivityModelSubbandParameters, PHASEDirectivityModelParameters, PHASEDistanceModelFadeOutParameters, PHASEDistanceModelParameters, PHASEDucker, PHASEEngine, PHASEEnvelope, PHASEEnvelopeDistanceModelParameters, PHASEGeometricSpreadingDistanceModelParameters, PHASEGlobalMetaParameterAsset, PHASEGroup, PHASEGroupPreset, PHASEGroupPresetSetting, PHASEListener, PHASEMaterial, PHASEMedium, PHASEMetaParameter, PHASEMixer, PHASENumberMetaParameter, PHASEObject, PHASEOccluder, PHASEPushStreamNode, PHASEShape, PHASEShapeElement, PHASESoundAsset, PHASESoundEvent, PHASESoundEventNodeAsset, PHASESource, PHASESpatialPipeline, PHASEStringMetaParameter, PHLivePhoto, PHLivePhotoEditingContext, PHPersistentChange, PHPersistentChangeFetchResult, PHPersistentChangeToken, PHPersistentObjectChangeDetails, PHPickerConfiguration, PHPickerFilter, PHPickerResult, PHPickerViewController, PKAddCarKeyPassConfiguration, PKAddPaymentPassRequest, PKAddSecureElementPassConfiguration, PKAutomaticReloadPaymentRequest, PKDateComponentsRange, PKDeferredPaymentRequest, PKIdentityDocument, PKIdentityElement, PKIdentityIntentToStore, PKIssuerProvisioningExtensionPassEntry, PKIssuerProvisioningExtensionStatus, PKPaymentOrderDetails, PKPaymentTokenContext, PKPushRegistry, PKRecurringPaymentRequest, PKShareSecureElementPassViewController, PKShareablePassMetadataPreview, PKStoredValuePassBalance, PKVehicleConnectionSession, SCNAudioPlayer, SFAuthenticationSession, SFSafariViewController, SFSafariViewControllerActivityButton, SFSafariViewControllerDataStore, SFSafariViewControllerPrewarmingToken, SKAttributeValue, SKNode, SRFetchResult, SRSensorReader, SRSupplementalCategory, SSReadingList, UIAccessibilityLocationDescriptor, UIAction, UIActivityItemProvider, UIActivityItemsConfiguration, UIActivityViewController, UIApplicationShortcutItem, UIBackgroundConfiguration, UIBandSelectionInteraction, UIBarAppearance, UIBarButtonItem, UIBarButtonItemAppearance, UIBarButtonItemStateAppearance, UIBarItem, UIBezierPath, UIButtonConfiguration, UICalendarSelection, UICalendarViewDecoration, UICellAccessory, UICellAccessoryCustomView, UICellAccessoryLabel, UICellAccessoryPopUpMenu, UICollectionLayoutListConfiguration, UICollectionViewCompositionalLayout, UICollectionViewDiffableDataSource, UICollectionViewLayout, UICollectionViewPlaceholder, UICollectionViewTransitionLayout, UIColorPickerViewController, UICommand, UICommandAlternate, UIContextMenuInteraction, UICubicTimingParameters, UIDocumentBrowserAction, UIDocumentBrowserTransitionController, UIDocumentProperties, UIDragInteraction, UIDragItem, UIDragPreview, UIDropInteraction, UIDropProposal, UIEditMenuConfiguration, UIEditMenuInteraction, UIEventAttribution, UIFieldBehavior, UIFindInteraction, UIFocusEffect, UIFocusMovementHint, UIFocusSystem, UIFontDescriptor, UIFontMetrics, UIGestureRecognizer, UIImageAsset, UIImageConfiguration, UIIndirectScribbleInteraction, UIKeyCommand, UIListContentConfiguration, UIListContentView, UIListSeparatorConfiguration, UILocalNotification, UIMenu, UIMenuElement, UIMenuSystem, UIMotionEffect, UIOpenURLContext, UIPasteConfiguration, UIPointerAccessory, UIPointerEffect, UIPointerLockState, UIPointerRegion, UIPointerShape, UIPointerStyle, UIPresentationController, UIPreviewInteraction, UIPreviewParameters, UIPreviewTarget, UIReferenceLibraryViewController, UIRefreshControl, UIScene, UISceneActivationConditions, UISceneConnectionOptions, UISceneOpenURLOptions, UISceneSession, UISceneSizeRestrictions, UISceneWindowingBehaviors, UIScreenshotService, UIScribbleInteraction, UISearchBar, UISearchToken, UISheetPresentationControllerDetent, UISpringLoadedInteraction, UISpringTimingParameters, UIStatusBarManager, UIStoryboardSegue, UIStoryboardUnwindSegueSource, UITabBarItem, UITabBarItemAppearance, UITabBarItemStateAppearance, UITableViewDiffableDataSource, UITableViewPlaceholder, UITargetedPreview, UITextDragPreviewRenderer, UITextFormattingCoordinator, UITextInputContext, UITextInputPasswordRules, UITextSearchingFindSession, UIToolTipConfiguration, UIToolTipInteraction, UITraitCollection, UIUserNotificationAction, UIUserNotificationCategory, UIViewConfigurationState, UIWindowSceneActivationConfiguration, UIWindowSceneActivationInteraction, UIWindowSceneGeometry, UIWindowSceneGeometryPreferences, UIWindowSceneGeometryPreferencesIOS, UIWindowSceneGeometryPreferencesMac, UNNotification, UNNotificationAction, UNNotificationActionIcon, UNNotificationAttachment, UNNotificationCategory, UNNotificationRequest, UNNotificationResponse, UNNotificationSettings, UNNotificationSound, UNNotificationTrigger, UNUserNotificationCenter, UTType, VNContour, VNCoreMLModel, VNCoreMLRequest, VNDetectedPoint, VNFaceLandmarkRegion, VNFaceLandmarks, VNGeneratePersonSegmentationRequest, VNImageRequestHandler, VNRecognizedPointsObservation, VNRequest, VNSequenceRequestHandler, VNStatefulRequest, VNTargetedImageRequest, VNTrackObjectRequest, VNTrackRectangleRequest, VNTrackingRequest, VNVideoProcessor, VNVideoProcessorFrameRateCadence, VNVideoProcessorTimeIntervalCadence, WKBackForwardListItem, WKContentWorld, WKContextMenuElementInfo, WKFindResult, WKHTTPCookieStore, WKSecurityOrigin, WKWebsiteDataStore
 undeclared	-[MKSelectionAccessory init]	declared only by ARAnchor, ARBody2D, ARBodyTrackingConfiguration, ARCamera, ARCollaborationData, ARConfiguration, ARFaceGeometry, ARFaceTrackingConfiguration, ARFrame, ARGeoTrackingConfiguration, ARGeoTrackingStatus, ARGeometryElement, ARGeometrySource, ARHitTestResult, ARImageTrackingConfiguration, ARLightEstimate, ARMatteGenerator, ARMeshGeometry, ARObjectScanningConfiguration, AROrientationTrackingConfiguration, ARPlaneGeometry, ARPointCloud, ARPositionalTrackingConfiguration, ARQuickLookPreviewItem, ARRaycastQuery, ARRaycastResult, ARReferenceImage, ARReferenceObject, ARSCNFaceGeometry, ARSkeleton, ARSkeleton2D, ARSkeleton3D, ARTrackedRaycast, ARVideoFormat, ARWorldMap, ARWorldTrackingConfiguration, ASAuthorization, ASAuthorizationAppleIDCredential, ASAuthorizationController, ASAuthorizationPlatformPublicKeyCredentialAssertion, ASAuthorizationPlatformPublicKeyCredentialAssertionRequest, ASAuthorizationPlatformPublicKeyCredentialDescriptor, ASAuthorizationPlatformPublicKeyCredentialProvider, ASAuthorizationPlatformPublicKeyCredentialRegistration, ASAuthorizationPlatformPublicKeyCredentialRegistrationRequest, ASAuthorizationPublicKeyCredentialParameters, ASAuthorizationRequest, ASAuthorizationSecurityKeyPublicKeyCredentialAssertion, ASAuthorizationSecurityKeyPublicKeyCredentialDescriptor, ASAuthorizationSecurityKeyPublicKeyCredentialProvider, ASAuthorizationSecurityKeyPublicKeyCredentialRegistrationRequest, ASAuthorizationSingleSignOnCredential, ASAuthorizationSingleSignOnProvider, ASAuthorizationWebBrowserPlatformPublicKeyCredential, ASAuthorizationWebBrowserPublicKeyCredentialManager, ASCredentialIdentityStore, ASPasswordCredentialIdentity, ASWebAuthenticationSession, ASWebAuthenticationSessionRequest, AUAudioUnit, AUAudioUnitBusArray, AVAggregateAssetDownloadTask, AVAssetCache, AVAssetDownloadConfiguration, AVAssetDownloadTask, AVAssetDownloadURLSession, AVAssetExportSession, AVAssetImageGenerator, AVAssetPlaybackAssistant, AVAssetReader, AVAssetReaderAudioMixOutput, AVAssetReaderOutputCaptionAdaptor, AVAssetReaderOutputMetadataAdaptor, AVAssetReaderSampleReferenceOutput, AVAssetReaderTrackOutput, AVAssetReaderVideoCompositionOutput, AVAssetResourceLoader, AVAssetResourceLoadingContentInformationRequest, AVAssetResourceLoadingDataRequest, AVAssetResourceLoadingRequest, AVAssetResourceLoadingRequestor, AVAssetSegmentReport, AVAssetSegmentReportSampleInformation, AVAssetSegmentTrackReport, AVAssetTrack, AVAssetTrackSegment, AVAssetVariant, AVAssetVariantAudioAttributes, AVAssetVariantQualifier, AVAssetVariantVideoAttributes, AVAssetWriter, AVAssetWriterInput, AVAssetWriterInputCaptionAdaptor, AVAssetWriterInputGroup, AVAssetWriterInputMetadataAdaptor, AVAssetWriterInputPassDescription, AVAssetWriterInputPixelBufferAdaptor, AVAudioChannelLayout, AVAudioConnectionPoint, AVAudioEngine, AVAudioEnvironmentDistanceAttenuationParameters, AVAudioEnvironmentNode, AVAudioEnvironmentReverbParameters, AVAudioInputNode, AVAudioMixerNode, AVAudioMixingDestination, AVAudioOutputNode, AVAudioPlayerNode, AVAudioRoutingArbiter, AVAudioSequencer, AVAudioSession, AVAudioSinkNode, AVAudioSourceNode, AVAudioUnitEQFilterParameters, AVCameraCalibrationData, AVCaptureAudioChannel, AVCaptureAudioDataOutput, AVCaptureAudioFileOutput, AVCaptureAudioPreviewOutput, AVCaptureBracketedStillImageSettings, AVCaptureConnection, AVCaptureDataOutputSynchronizer, AVCaptureDepthDataOutput, AVCaptureDevice, AVCaptureDeviceDiscoverySession, AVCaptureDeviceFormat, AVCaptureDeviceInputSource, AVCaptureInput, AVCaptureInputPort, AVCaptureMetadataOutput, AVCaptureMovieFileOutput, AVCaptureOutput, AVCapturePhoto, AVCapturePhotoOutput, AVCaptureResolvedPhotoSettings, AVCaptureScreenInput, AVCaptureStillImageOutput, AVCaptureSynchronizedData, AVCaptureSynchronizedDataCollection, AVCaptureSystemPressureState, AVCaptureVideoDataOutput, AVContentKeySession, AVCoordinatedPlaybackSuspension, AVDelegatingPlaybackCoordinatorBufferingCommand, AVDelegatingPlaybackCoordinatorPauseCommand, AVDelegatingPlaybackCoordinatorPlayCommand, AVDelegatingPlaybackCoordinatorPlaybackControlCommand, AVDelegatingPlaybackCoordinatorSeekCommand, AVDepthData, AVDisplayCriteria, AVFrameRateRange, AVMediaDataStorage, AVMetadataObject, AVOutputSettingsAssistant, AVPictureInPictureControllerContentSource, AVPlaybackCoordinator, AVPlaybackSpeed, AVPlayerInterstitialEvent, AVPlayerItem, AVPlayerItemAccessLog, AVPlayerItemAccessLogEvent, AVPlayerItemErrorLog, AVPlayerItemErrorLogEvent, AVPlayerLooper, AVPlayerPlaybackCoordinator, AVPortraitEffectsMatte, AVSampleBufferGenerator, AVSampleBufferGeneratorBatch, AVSampleBufferRequest, AVSampleCursor, AVSemanticSegmentationMatte, AVSpeechSynthesisProviderRequest, AVSpeechSynthesisProviderVoice, AVTextStyleRule, AVURLAsset, AXBrailleMap, AXCategoricalDataAxisDescriptor, AXChartDescriptor, AXCustomContent, AXDataPoint, AXDataPointValue, AXDataSeriesDescriptor, AXNumericDataAxisDescriptor, BGTask, BGTaskRequest, BGTaskScheduler, CAEDRMetadata, CALayer, CIContext, CKAsset, CKDatabase, CKDatabaseSubscription, CKRecord, CKReference, CKSubscription, CLPlacemark, CNContactFetchRequest, CNFetchResult, CNPhoneNumber, CPActionSheetTemplate, CPAlertAction, CPAlertTemplate, CPBarButton, CPButton, CPContactTemplate, CPDashboardButton, CPDashboardController, CPGridButton, CPGridTemplate, CPImageSet, CPInformationItem, CPInformationRatingItem, CPInformationTemplate, CPInstrumentClusterController, CPInterfaceController, CPListSection, CPListTemplate, CPMessageComposeBarButton, CPNavigationSession, CPNowPlayingButton, CPNowPlayingTemplate, CPPointOfInterest, CPPointOfInterestTemplate, CPRouteChoice, CPSessionConfiguration, CPTabBarTemplate, CPTextButton, CPTravelEstimates, CPTrip, CSCustomAttributeKey, CSSearchQuery, CXAction, CXCall, CXCallAction, CXCallController, CXHandle, CXProvider, CXProviderConfiguration, EAGLContext, GCColor, GCDeviceBattery, GCDeviceHaptics, GCDeviceLight, GCPhysicalInputElementCollection, GCRacingWheel, GCSteeringWheelElement, GCVirtualController, HKAttachment, HKAudiogramSensitivityPoint, HKCategorySample, HKClinicalRecord, HKContactsLensSpecification, HKContactsPrescription, HKDeletedObject, HKDevice, HKFHIRResource, HKFHIRVersion, HKGlassesLensSpecification, HKGlassesPrescription, HKLensSpecification, HKLiveWorkoutDataSource, HKObject, HKObjectType, HKQuantity, HKQuantitySeriesSampleBuilder, HKQuery, HKQueryAnchor, HKQueryDescriptor, HKSeriesBuilder, HKSource, HKSourceRevision, HKStatistics, HKStatisticsCollection, HKUnit, HKVerifiableClinicalRecord, HKVerifiableClinicalRecordQuery, HKVerifiableClinicalRecordSubject, HKVisionPrescription, HKVisionPrism, HKWorkoutActivity, HKWorkoutBuilder, HKWorkoutEvent, HKWorkoutSession, HMAccessControl, HMAccessoryOwnershipToken, HMAccessoryProfile, HMAccessorySetupPayload, HMAccessorySetupResult, HMAction, HMActionSet, HMCalendarEvent, HMCameraAudioControl, HMCameraProfile, HMCameraSettingsControl, HMCharacteristicEvent, HMCharacteristicThresholdRangeEvent, HMCharacteristicWriteAction, HMDurationEvent, HMEvent, HMEventTrigger, HMHome, HMLocationEvent, HMMutableCalendarEvent, HMMutableCharacteristicEvent, HMMutableCharacteristicThresholdRangeEvent, HMMutableDurationEvent, HMMutableLocationEvent, HMMutablePresenceEvent, HMNumberRange, HMPresenceEvent, HMRoom, HMServiceGroup, HMSignificantTimeEvent, HMTimerTrigger, HMTrigger, HMUser, HMZone, INActivateCarSignalIntentResponse, INAddMediaIntentResponse, INAddTasksIntentResponse, INAirline, INAirport, INAirportGate, INAnswerCallIntentResponse, INAppendToNoteIntentResponse, INBalanceAmount, INBillDetails, INBillPayee, INBoatReservation, INBoatTrip, INBusReservation, INBusTrip, INCallGroup, INCallRecord, INCallRecordFilter, INCancelRideIntent, INCancelRideIntentResponse, INCancelWorkoutIntentResponse, INCar, INCarHeadUnit, INCreateNoteIntentResponse, INCreateTaskListIntentResponse, INCurrencyAmount, INDateComponentsRange, INDefaultCardTemplate, INDeleteTasksIntentResponse, INEndWorkoutIntentResponse, INFlight, INFocusStatus, INGetCarLockStatusIntentResponse, INGetCarPowerLevelStatusIntentResponse, INGetReservationDetailsIntentResponse, INGetRideStatusIntent, INGetRideStatusIntentResponse, INGetVisualCodeIntentResponse, INHangUpCallIntentResponse, INIntentDonationMetadata, INIntentResolutionResult, INInteraction, INListCarsIntent, INListCarsIntentResponse, INListRideOptionsIntentResponse, INMediaDestination, INMediaItem, INMediaSearch, INMediaUserContext, INMessage, INObject, INObjectCollection, INObjectSection, INPauseWorkoutIntentResponse, INPayBillIntentResponse, INPaymentAccount, INPaymentAmount, INPaymentMethod, INPaymentRecord, INPerson, INPersonHandle, INPlayMediaIntentResponse, INPriceRange, INRecurrenceRule, INRelevanceProvider, INRelevantShortcutStore, INRentalCar, INRequestPaymentIntentResponse, INRequestRideIntentResponse, INReservation, INReservationAction, INResumeWorkoutIntentResponse, INRideCompletionStatus, INRideFareLineItem, INRideOption, INRidePartySizeOption, INSaveProfileInCarIntentResponse, INSearchCallHistoryIntentResponse, INSearchForAccountsIntentResponse, INSearchForBillsIntentResponse, INSearchForMediaIntentResponse, INSearchForMessagesIntentResponse, INSearchForNotebookItemsIntentResponse, INSearchForPhotosIntentResponse, INSeat, INSendMessageIntentDonationMetadata, INSendMessageIntentResponse, INSendPaymentIntentResponse, INSendRideFeedbackIntent, INSendRideFeedbackIntentResponse, INSetAudioSourceInCarIntentResponse, INSetCarLockStatusIntentResponse, INSetClimateSettingsInCarIntentResponse, INSetDefrosterSettingsInCarIntentResponse, INSetMessageAttributeIntentResponse, INSetProfileInCarIntentResponse, INSetRadioStationIntentResponse, INSetSeatSettingsInCarIntentResponse, INSetTaskAttributeIntentResponse, INShareFocusStatusIntentResponse, INShortcut, INSnoozeTasksIntentResponse, INSpeakableString, INStartAudioCallIntentResponse, INStartCallIntentResponse, INStartPhotoPlaybackIntentResponse, INStartVideoCallIntentResponse, INStartWorkoutIntentResponse, INTicketedEvent, INTrainTrip, INTransferMoneyIntentResponse, INUIAddVoiceShortcutButton, INUIAddVoiceShortcutViewController, INUIEditVoiceShortcutViewController, INUserContext, INVoiceShortcut, INVoiceShortcutCenter, JSContext, JSVirtualMachine, LAPersistedRight, LAPrivateKey, LAPublicKey, LARight, LARightStore, LASecret, MDLMaterialProperty, MDLMaterialPropertyConnection, MDLMaterialPropertyGraph, MDLMaterialPropertyNode, MDLTexture, MDLTransform, MDLTransformStack, MKClusterAnnotation, MKHybridMapConfiguration, MKIconStyle, MKImageryMapConfiguration, MKLocalPointsOfInterestRequest, MKLocalSearchRequest, MKLookAroundScene, MKLookAroundSceneRequest, MKLookAroundSnapshotter, MKMapConfiguration, MKMapFeatureAnnotation, MKMapItemRequest, MKPointAnnotation, MKStandardMapConfiguration, MLImageConstraint, MLKey, MLMetricKey, MLModelAsset, MLModelCollection, MLModelCollectionEntry, MLParameterKey, MLTask, MLUpdateProgressHandlers, MLUpdateTask, MPAdTimeRange, MPMediaItemArtwork, MPMediaPlaylistCreationMetadata, MPMusicPlayerController, MPMusicPlayerControllerQueue, MPMusicPlayerQueueDescriptor, MPNowPlayingInfoCenter, MPNowPlayingSession, MPRemoteCommand, MPRemoteCommandCenter, MPSAccelerationStructure, MPSAccelerationStructureGroup, MPSCNNArithmeticGradientState, MPSCNNDropoutGradientState, MPSCNNLossDataDescriptor, MPSCNNLossDescriptor, MPSCNNLossLabels, MPSCNNNeuronGradientNode, MPSCNNNeuronNode, MPSCNNYOLOLossDescriptor, MPSCommandBuffer, MPSImage, MPSKeyedUnarchiver, MPSMatrix, MPSMatrixCopyDescriptor, MPSNDArray, MPSNDArrayDescriptor, MPSNNFilterNode, MPSNNImageNode, MPSNNNeuronDescriptor, MPSNNStateNode, MPSPolygonBuffer, MPSRayIntersector, MPSState, MPSStateResourceList, MPSVector, MSMessage, MSMessageLiveLayout, MSSticker, MTKMesh, MTKMeshBuffer, MTKMeshBufferAllocator, MTKSubmesh, MTKTextureLoader, MTLCaptureManager, MTLRasterizationRateLayerDescriptor, MTLSharedEventListener, NFCISO15693ReaderSession, NFCISO7816APDU, NFCNDEFMessage, NFCNDEFPayload, NFCNDEFReaderSession, NFCReaderSession, NFCTagReaderSession, NFCVASReaderSession, NLLanguageRecognizer, NSArray, NSAttributedStringMarkdownParsingOptions, NSBatchDeleteRequest, NSBatchInsertRequest, NSBundleResourceRequest, NSCalendar, NSCollectionLayoutAnchor, NSCollectionLayoutBoundarySupplementaryItem, NSCollectionLayoutDecorationItem, NSCollectionLayoutDimension, NSCollectionLayoutEdgeSpacing, NSCollectionLayoutGroup, NSCollectionLayoutGroupCustomItem, NSCollectionLayoutItem, NSCollectionLayoutSection, NSCollectionLayoutSize, NSCollectionLayoutSpacing, NSCollectionLayoutSupplementaryItem, NSCoreDataCoreSpotlightDelegate, NSDataAsset, NSDate, NSDateInterval, NSDictionary, NSDiffableDataSourceSectionSnapshot, NSFetchRequest, NSISO8601DateFormatter, NSInflectionRule, NSItemProvider, NSKeyedArchiver, NSKeyedUnarchiver, NSLayoutManager, NSLocale, NSManagedObjectContext, NSManagedObjectModel, NSMeasurement, NSMergeConflict, NSMergePolicy, NSMutableArray, NSMutableDictionary, NSMutableOrderedSet, NSMutableSet, NSNetServiceBrowser, NSNotification, NSObject, NSOrderedCollectionChange, NSOrderedSet, NSPersistentCloudKitContainerEvent, NSPersistentCloudKitContainerEventResult, NSPersistentCloudKitContainerOptions, NSPersistentStore, NSPresentationIntent, NSSet, NSShadow, NSString, NSTextAttachmentViewProvider, NSTextContentManager, NSTextLayoutFragment, NSTextLayoutManager, NSTextLineFragment, NSTextRange, NSTextSelection, NSTextSelectionNavigation, NSTextViewportLayoutController, NSThread, NSURLComponents, NSURLSession, NSURLSessionConfiguration, NSURLSessionDataTask, NSURLSessionDownloadTask, NSURLSessionStreamTask, NSURLSessionTask, NSURLSessionTaskMetrics, NSURLSessionTaskTransactionMetrics, NSURLSessionUploadTask, NSURLSessionWebSocketMessage, NSURLSessionWebSocketTask, NSUUID, NSUnit, NSUserActivity, NSUserDefaults, OS_object, OS_os_workgroup, OS_os_workgroup_interval, OS_os_workgroup_parallel, PHASEAsset, PHASEAssetRegistry, PHASECardioidDirectivityModelSubbandParameters, PHASEConeDirectivityModelSubbandParameters, PHASEDirectivityModelParameters, PHASEDistanceModelFadeOutParameters, PHASEDistanceModelParameters, PHASEDucker, PHASEEngine, PHASEEnvelope, PHASEEnvelopeDistanceModelParameters, PHASEGeometricSpreadingDistanceModelParameters, PHASEGlobalMetaParameterAsset, PHASEGroup, PHASEGroupPreset, PHASEGroupPresetSetting, PHASEListener, PHASEMaterial, PHASEMedium, PHASEMetaParameter, PHASEMixer, PHASENumberMetaParameter, PHASEObject, PHASEOccluder, PHASEPushStreamNode, PHASEShape, PHASEShapeElement, PHASESoundAsset, PHASESoundEvent, PHASESoundEventNodeAsset, PHASESource, PHASESpatialPipeline, PHASEStringMetaParameter, PHLivePhoto, PHLivePhotoEditingContext, PHPersistentChange, PHPersistentChangeFetchResult, PHPersistentChangeToken, PHPersistentObjectChangeDetails, PHPickerConfiguration, PHPickerFilter, PHPickerResult, PHPickerViewController, PKAddCarKeyPassConfiguration, PKAddPaymentPassRequest, PKAddSecureElementPassConfiguration, PKAutomaticReloadPaymentRequest, PKDateComponentsRange, PKDeferredPaymentRequest, PKIdentityDocument, PKIdentityElement, PKIdentityIntentToStore, PKIssuerProvisioningExtensionPassEntry, PKIssuerProvisioningExtensionStatus, PKPaymentOrderDetails, PKPaymentTokenContext, PKPushRegistry, PKRecurringPaymentRequest, PKShareSecureElementPassViewController, PKShareablePassMetadataPreview, PKStoredValuePassBalance, PKVehicleConnectionSession, SCNAudioPlayer, SFAuthenticationSession, SFSafariViewController, SFSafariViewControllerActivityButton, SFSafariViewControllerDataStore, SFSafariViewControllerPrewarmingToken, SKAttributeValue, SKNode, SRFetchResult, SRSensorReader, SRSupplementalCategory, SSReadingList, UIAccessibilityLocationDescriptor, UIAction, UIActivityItemProvider, UIActivityItemsConfiguration, UIActivityViewController, UIApplicationShortcutItem, UIBackgroundConfiguration, UIBandSelectionInteraction, UIBarAppearance, UIBarButtonItem, UIBarButtonItemAppearance, UIBarButtonItemStateAppearance, UIBarItem, UIBezierPath, UIButtonConfiguration, UICalendarSelection, UICalendarViewDecoration, UICellAccessory, UICellAccessoryCustomView, UICellAccessoryLabel, UICellAccessoryPopUpMenu, UICollectionLayoutListConfiguration, UICollectionViewCompositionalLayout, UICollectionViewDiffableDataSource, UICollectionViewLayout, UICollectionViewPlaceholder, UICollectionViewTransitionLayout, UIColorPickerViewController, UICommand, UICommandAlternate, UIContextMenuInteraction, UICubicTimingParameters, UIDocumentBrowserAction, UIDocumentBrowserTransitionController, UIDocumentProperties, UIDragInteraction, UIDragItem, UIDragPreview, UIDropInteraction, UIDropProposal, UIEditMenuConfiguration, UIEditMenuInteraction, UIEventAttribution, UIFieldBehavior, UIFindInteraction, UIFocusEffect, UIFocusMovementHint, UIFocusSystem, UIFontDescriptor, UIFontMetrics, UIGestureRecognizer, UIImageAsset, UIImageConfiguration, UIIndirectScribbleInteraction, UIKeyCommand, UIListContentConfiguration, UIListContentView, UIListSeparatorConfiguration, UILocalNotification, UIMenu, UIMenuElement, UIMenuSystem, UIMotionEffect, UIOpenURLContext, UIPasteConfiguration, UIPointerAccessory, UIPointerEffect, UIPointerLockState, UIPointerRegion, UIPointerShape, UIPointerStyle, UIPresentationController, UIPreviewInteraction, UIPreviewParameters, UIPreviewTarget, UIReferenceLibraryViewController, UIRefreshControl, UIScene, UISceneActivationConditions, UISceneConnectionOptions, UISceneOpenURLOptions, UISceneSession, UISceneSizeRestrictions, UISceneWindowingBehaviors, UIScreenshotService, UIScribbleInteraction, UISearchBar, UISearchToken, UISheetPresentationControllerDetent, UISpringLoadedInteraction, UISpringTimingParameters, UIStatusBarManager, UIStoryboardSegue, UIStoryboardUnwindSegueSource, UITabBarItem, UITabBarItemAppearance, UITabBarItemStateAppearance, UITableViewDiffableDataSource, UITableViewPlaceholder, UITargetedPreview, UITextDragPreviewRenderer, UITextFormattingCoordinator, UITextInputContext, UITextInputPasswordRules, UITextSearchingFindSession, UIToolTipConfiguration, UIToolTipInteraction, UITraitCollection, UIUserNotificationAction, UIUserNotificationCategory, UIViewConfigurationState, UIWindowSceneActivationConfiguration, UIWindowSceneActivationInteraction, UIWindowSceneGeometry, UIWindowSceneGeometryPreferences, UIWindowSceneGeometryPreferencesIOS, UIWindowSceneGeometryPreferencesMac, UNNotification, UNNotificationAction, UNNotificationActionIcon, UNNotificationAttachment, UNNotificationCategory, UNNotificationRequest, UNNotificationResponse, UNNotificationSettings, UNNotificationSound, UNNotificationTrigger, UNUserNotificationCenter, UTType, VNContour, VNCoreMLModel, VNCoreMLRequest, VNDetectedPoint, VNFaceLandmarkRegion, VNFaceLandmarks, VNGeneratePersonSegmentationRequest, VNImageRequestHandler, VNRecognizedPointsObservation, VNRequest, VNSequenceRequestHandler, VNStatefulRequest, VNTargetedImageRequest, VNTrackObjectRequest, VNTrackRectangleRequest, VNTrackingRequest, VNVideoProcessor, VNVideoProcessorFrameRateCadence, VNVideoProcessorTimeIntervalCadence, WKBackForwardListItem, WKContentWorld, WKContextMenuElementInfo, WKFindResult, WKHTTPCookieStore, WKSecurityOrigin, WKWebsiteDataStore
+undeclared	-[MLCActivationDescriptor a]	declared nowhere
+undeclared	-[MLCActivationDescriptor activationType]	declared nowhere
+undeclared	-[MLCActivationDescriptor b]	declared nowhere
+undeclared	-[MLCActivationDescriptor c]	declared nowhere
+undeclared	-[MLCActivationDescriptor init]	declared nowhere
+undeclared	-[MLCActivationLayer absoluteLayer]	declared nowhere
+undeclared	-[MLCActivationLayer celuLayer]	declared nowhere
+undeclared	-[MLCActivationLayer descriptor]	declared nowhere
+undeclared	-[MLCActivationLayer eluLayer]	declared nowhere
+undeclared	-[MLCActivationLayer geluLayer]	declared nowhere
+undeclared	-[MLCActivationLayer hardShrinkLayer]	declared nowhere
+undeclared	-[MLCActivationLayer hardSigmoidLayer]	declared nowhere
+undeclared	-[MLCActivationLayer hardSwishLayer]	declared nowhere
+undeclared	-[MLCActivationLayer leakyReLULayer]	declared nowhere
+undeclared	-[MLCActivationLayer logSigmoidLayer]	declared nowhere
+undeclared	-[MLCActivationLayer relu6Layer]	declared nowhere
+undeclared	-[MLCActivationLayer reluLayer]	declared nowhere
+undeclared	-[MLCActivationLayer seluLayer]	declared nowhere
+undeclared	-[MLCActivationLayer sigmoidLayer]	declared nowhere
+undeclared	-[MLCActivationLayer softPlusLayer]	declared nowhere
+undeclared	-[MLCActivationLayer softShrinkLayer]	declared nowhere
+undeclared	-[MLCActivationLayer softSignLayer]	declared nowhere
+undeclared	-[MLCActivationLayer tanhLayer]	declared nowhere
+undeclared	-[MLCActivationLayer tanhShrinkLayer]	declared nowhere
+undeclared	-[MLCArithmeticLayer operation]	declared nowhere
+undeclared	-[MLCBatchNormalizationLayer betaParameter]	declared nowhere
+undeclared	-[MLCBatchNormalizationLayer beta]	declared nowhere
+undeclared	-[MLCBatchNormalizationLayer featureChannelCount]	declared nowhere
+undeclared	-[MLCBatchNormalizationLayer gammaParameter]	declared nowhere
+undeclared	-[MLCBatchNormalizationLayer gamma]	declared nowhere
+undeclared	-[MLCBatchNormalizationLayer mean]	declared nowhere
+undeclared	-[MLCBatchNormalizationLayer momentum]	declared nowhere
+undeclared	-[MLCBatchNormalizationLayer varianceEpsilon]	declared nowhere
+undeclared	-[MLCBatchNormalizationLayer variance]	declared nowhere
+undeclared	-[MLCComparisonLayer operation]	declared nowhere
+undeclared	-[MLCConcatenationLayer dimension]	declared nowhere
+undeclared	-[MLCConvolutionDescriptor convolutionType]	declared nowhere
+undeclared	-[MLCConvolutionDescriptor dilationRateInX]	declared nowhere
+undeclared	-[MLCConvolutionDescriptor dilationRateInY]	declared nowhere
+undeclared	-[MLCConvolutionDescriptor groupCount]	declared nowhere
+undeclared	-[MLCConvolutionDescriptor inputFeatureChannelCount]	declared nowhere
+undeclared	-[MLCConvolutionDescriptor isConvolutionTranspose]	declared nowhere
+undeclared	-[MLCConvolutionDescriptor kernelHeight]	declared nowhere
+undeclared	-[MLCConvolutionDescriptor kernelWidth]	declared nowhere
+undeclared	-[MLCConvolutionDescriptor outputFeatureChannelCount]	declared nowhere
+undeclared	-[MLCConvolutionDescriptor paddingPolicy]	declared nowhere
+undeclared	-[MLCConvolutionDescriptor paddingSizeInX]	declared nowhere
+undeclared	-[MLCConvolutionDescriptor paddingSizeInY]	declared nowhere
+undeclared	-[MLCConvolutionDescriptor strideInX]	declared nowhere
+undeclared	-[MLCConvolutionDescriptor strideInY]	declared nowhere
+undeclared	-[MLCConvolutionDescriptor usesDepthwiseConvolution]	declared nowhere
+undeclared	-[MLCConvolutionLayer biasesParameter]	declared nowhere
+undeclared	-[MLCConvolutionLayer biases]	declared nowhere
+undeclared	-[MLCConvolutionLayer descriptor]	declared nowhere
+undeclared	-[MLCConvolutionLayer weightsParameter]	declared nowhere
+undeclared	-[MLCConvolutionLayer weights]	declared nowhere
+undeclared	-[MLCDevice actualDeviceType]	declared nowhere
+undeclared	-[MLCDevice gpuDevices]	declared nowhere
+undeclared	-[MLCDevice type]	declared nowhere
+undeclared	-[MLCDropoutLayer rate]	declared nowhere
+undeclared	-[MLCDropoutLayer seed]	declared nowhere
+undeclared	-[MLCEmbeddingDescriptor embeddingCount]	declared nowhere
+undeclared	-[MLCEmbeddingDescriptor embeddingDimension]	declared nowhere
+undeclared	-[MLCEmbeddingDescriptor init]	declared nowhere
+undeclared	-[MLCEmbeddingDescriptor maximumNorm]	declared nowhere
+undeclared	-[MLCEmbeddingDescriptor pNorm]	declared nowhere
+undeclared	-[MLCEmbeddingDescriptor paddingIndex]	declared nowhere
+undeclared	-[MLCEmbeddingDescriptor scalesGradientByFrequency]	declared nowhere
+undeclared	-[MLCEmbeddingLayer descriptor]	declared nowhere
+undeclared	-[MLCEmbeddingLayer weightsParameter]	declared nowhere
+undeclared	-[MLCEmbeddingLayer weights]	declared nowhere
+undeclared	-[MLCFullyConnectedLayer biasesParameter]	declared nowhere
+undeclared	-[MLCFullyConnectedLayer biases]	declared nowhere
+undeclared	-[MLCFullyConnectedLayer descriptor]	declared nowhere
+undeclared	-[MLCFullyConnectedLayer weightsParameter]	declared nowhere
+undeclared	-[MLCFullyConnectedLayer weights]	declared nowhere
+undeclared	-[MLCGatherLayer dimension]	declared nowhere
+undeclared	-[MLCGramMatrixLayer scale]	declared nowhere
+undeclared	-[MLCGroupNormalizationLayer betaParameter]	declared nowhere
+undeclared	-[MLCGroupNormalizationLayer beta]	declared nowhere
+undeclared	-[MLCGroupNormalizationLayer featureChannelCount]	declared nowhere
+undeclared	-[MLCGroupNormalizationLayer gammaParameter]	declared nowhere
+undeclared	-[MLCGroupNormalizationLayer gamma]	declared nowhere
+undeclared	-[MLCGroupNormalizationLayer groupCount]	declared nowhere
+undeclared	-[MLCGroupNormalizationLayer varianceEpsilon]	declared nowhere
+undeclared	-[MLCInstanceNormalizationLayer betaParameter]	declared nowhere
+undeclared	-[MLCInstanceNormalizationLayer beta]	declared nowhere
+undeclared	-[MLCInstanceNormalizationLayer featureChannelCount]	declared nowhere
+undeclared	-[MLCInstanceNormalizationLayer gammaParameter]	declared nowhere
+undeclared	-[MLCInstanceNormalizationLayer gamma]	declared nowhere
+undeclared	-[MLCInstanceNormalizationLayer mean]	declared nowhere
+undeclared	-[MLCInstanceNormalizationLayer momentum]	declared nowhere
+undeclared	-[MLCInstanceNormalizationLayer varianceEpsilon]	declared nowhere
+undeclared	-[MLCInstanceNormalizationLayer variance]	declared nowhere
+undeclared	-[MLCLSTMDescriptor batchFirst]	declared nowhere
+undeclared	-[MLCLSTMDescriptor dropout]	declared nowhere
+undeclared	-[MLCLSTMDescriptor hiddenSize]	declared nowhere
+undeclared	-[MLCLSTMDescriptor init]	declared nowhere
+undeclared	-[MLCLSTMDescriptor inputSize]	declared nowhere
+undeclared	-[MLCLSTMDescriptor isBidirectional]	declared nowhere
+undeclared	-[MLCLSTMDescriptor layerCount]	declared nowhere
+undeclared	-[MLCLSTMDescriptor resultMode]	declared nowhere
+undeclared	-[MLCLSTMDescriptor returnsSequences]	declared nowhere
+undeclared	-[MLCLSTMDescriptor usesBiases]	declared nowhere
+undeclared	-[MLCLSTMLayer biasesParameters]	declared nowhere
+undeclared	-[MLCLSTMLayer biases]	declared nowhere
+undeclared	-[MLCLSTMLayer descriptor]	declared nowhere
+undeclared	-[MLCLSTMLayer gateActivations]	declared nowhere
+undeclared	-[MLCLSTMLayer hiddenWeightsParameters]	declared nowhere
+undeclared	-[MLCLSTMLayer hiddenWeights]	declared nowhere
+undeclared	-[MLCLSTMLayer inputWeightsParameters]	declared nowhere
+undeclared	-[MLCLSTMLayer inputWeights]	declared nowhere
+undeclared	-[MLCLSTMLayer outputResultActivation]	declared nowhere
+undeclared	-[MLCLSTMLayer peepholeWeightsParameters]	declared nowhere
+undeclared	-[MLCLSTMLayer peepholeWeights]	declared nowhere
+undeclared	-[MLCLayer deviceType]	declared nowhere
+undeclared	-[MLCLayer init]	declared nowhere
+undeclared	-[MLCLayer isDebuggingEnabled]	declared nowhere
+undeclared	-[MLCLayer label]	declared nowhere
+undeclared	-[MLCLayer layerID]	declared nowhere
+undeclared	-[MLCLayerNormalizationLayer betaParameter]	declared nowhere
+undeclared	-[MLCLayerNormalizationLayer beta]	declared nowhere
+undeclared	-[MLCLayerNormalizationLayer gammaParameter]	declared nowhere
+undeclared	-[MLCLayerNormalizationLayer gamma]	declared nowhere
+undeclared	-[MLCLayerNormalizationLayer normalizedShape]	declared nowhere
+undeclared	-[MLCLayerNormalizationLayer varianceEpsilon]	declared nowhere
+undeclared	-[MLCLossDescriptor classCount]	declared nowhere
+undeclared	-[MLCLossDescriptor delta]	declared nowhere
+undeclared	-[MLCLossDescriptor epsilon]	declared nowhere
+undeclared	-[MLCLossDescriptor init]	declared nowhere
+undeclared	-[MLCLossDescriptor labelSmoothing]	declared nowhere
+undeclared	-[MLCLossDescriptor lossType]	declared nowhere
+undeclared	-[MLCLossDescriptor reductionType]	declared nowhere
+undeclared	-[MLCLossDescriptor weight]	declared nowhere
+undeclared	-[MLCLossLayer descriptor]	declared nowhere
+undeclared	-[MLCLossLayer weights]	declared nowhere
+undeclared	-[MLCMatMulDescriptor alpha]	declared nowhere
+undeclared	-[MLCMatMulDescriptor init]	declared nowhere
+undeclared	-[MLCMatMulDescriptor transposesX]	declared nowhere
+undeclared	-[MLCMatMulDescriptor transposesY]	declared nowhere
+undeclared	-[MLCMatMulLayer descriptor]	declared nowhere
+undeclared	-[MLCMultiheadAttentionDescriptor addsZeroAttention]	declared nowhere
+undeclared	-[MLCMultiheadAttentionDescriptor dropout]	declared nowhere
+undeclared	-[MLCMultiheadAttentionDescriptor hasAttentionBiases]	declared nowhere
+undeclared	-[MLCMultiheadAttentionDescriptor hasBiases]	declared nowhere
+undeclared	-[MLCMultiheadAttentionDescriptor headCount]	declared nowhere
+undeclared	-[MLCMultiheadAttentionDescriptor init]	declared nowhere
+undeclared	-[MLCMultiheadAttentionDescriptor keyDimension]	declared nowhere
+undeclared	-[MLCMultiheadAttentionDescriptor modelDimension]	declared nowhere
+undeclared	-[MLCMultiheadAttentionDescriptor valueDimension]	declared nowhere
+undeclared	-[MLCMultiheadAttentionLayer attentionBiases]	declared nowhere
+undeclared	-[MLCMultiheadAttentionLayer biasesParameters]	declared nowhere
+undeclared	-[MLCMultiheadAttentionLayer biases]	declared nowhere
+undeclared	-[MLCMultiheadAttentionLayer descriptor]	declared nowhere
+undeclared	-[MLCMultiheadAttentionLayer weightsParameters]	declared nowhere
+undeclared	-[MLCMultiheadAttentionLayer weights]	declared nowhere
+undeclared	-[MLCOptimizerDescriptor appliesGradientClipping]	declared nowhere
+undeclared	-[MLCOptimizerDescriptor customGlobalNorm]	declared nowhere
+undeclared	-[MLCOptimizerDescriptor gradientClipMax]	declared nowhere
+undeclared	-[MLCOptimizerDescriptor gradientClipMin]	declared nowhere
+undeclared	-[MLCOptimizerDescriptor gradientClippingType]	declared nowhere
+undeclared	-[MLCOptimizerDescriptor gradientRescale]	declared nowhere
+undeclared	-[MLCOptimizerDescriptor learningRate]	declared nowhere
+undeclared	-[MLCOptimizerDescriptor maximumClippingNorm]	declared nowhere
+undeclared	-[MLCOptimizerDescriptor regularizationScale]	declared nowhere
+undeclared	-[MLCOptimizerDescriptor regularizationType]	declared nowhere
+undeclared	-[MLCPaddingLayer constantValue]	declared nowhere
+undeclared	-[MLCPaddingLayer paddingBottom]	declared nowhere
+undeclared	-[MLCPaddingLayer paddingLeft]	declared nowhere
+undeclared	-[MLCPaddingLayer paddingRight]	declared nowhere
+undeclared	-[MLCPaddingLayer paddingTop]	declared nowhere
+undeclared	-[MLCPaddingLayer paddingType]	declared nowhere
+undeclared	-[MLCPoolingDescriptor countIncludesPadding]	declared nowhere
+undeclared	-[MLCPoolingDescriptor dilationRateInX]	declared nowhere
+undeclared	-[MLCPoolingDescriptor dilationRateInY]	declared nowhere
+undeclared	-[MLCPoolingDescriptor init]	declared nowhere
+undeclared	-[MLCPoolingDescriptor kernelHeight]	declared nowhere
+undeclared	-[MLCPoolingDescriptor kernelWidth]	declared nowhere
+undeclared	-[MLCPoolingDescriptor paddingPolicy]	declared nowhere
+undeclared	-[MLCPoolingDescriptor paddingSizeInX]	declared nowhere
+undeclared	-[MLCPoolingDescriptor paddingSizeInY]	declared nowhere
+undeclared	-[MLCPoolingDescriptor poolingType]	declared nowhere
+undeclared	-[MLCPoolingDescriptor strideInX]	declared nowhere
+undeclared	-[MLCPoolingDescriptor strideInY]	declared nowhere
+undeclared	-[MLCPoolingLayer descriptor]	declared nowhere
+undeclared	-[MLCReductionLayer dimension]	declared nowhere
+undeclared	-[MLCReductionLayer dimensions]	declared nowhere
+undeclared	-[MLCReductionLayer reductionType]	declared nowhere
+undeclared	-[MLCReshapeLayer shape]	declared nowhere
+undeclared	-[MLCScatterLayer dimension]	declared nowhere
+undeclared	-[MLCScatterLayer reductionType]	declared nowhere
+undeclared	-[MLCSliceLayer end]	declared nowhere
+undeclared	-[MLCSliceLayer start]	declared nowhere
+undeclared	-[MLCSliceLayer stride]	declared nowhere
+undeclared	-[MLCSoftmaxLayer dimension]	declared nowhere
+undeclared	-[MLCSoftmaxLayer operation]	declared nowhere
+undeclared	-[MLCSplitLayer dimension]	declared nowhere
+undeclared	-[MLCSplitLayer splitCount]	declared nowhere
+undeclared	-[MLCSplitLayer splitSectionLengths]	declared nowhere
+undeclared	-[MLCTensor bindAndWriteData:toDevice:]	declared nowhere
+undeclared	-[MLCTensor bindOptimizerData:deviceData:]	declared nowhere
+undeclared	-[MLCTensor copyDataFromDeviceMemoryToBytes:length:synchronizeWithDevice:]	declared nowhere
+undeclared	-[MLCTensor data]	declared nowhere
+undeclared	-[MLCTensor descriptor]	declared nowhere
+undeclared	-[MLCTensor device]	declared nowhere
+undeclared	-[MLCTensor hasValidNumerics]	declared nowhere
+undeclared	-[MLCTensor init]	declared nowhere
+undeclared	-[MLCTensor label]	declared nowhere
+undeclared	-[MLCTensor optimizerData]	declared nowhere
+undeclared	-[MLCTensor optimizerDeviceData]	declared nowhere
+undeclared	-[MLCTensor synchronizeData]	declared nowhere
+undeclared	-[MLCTensor synchronizeOptimizerData]	declared nowhere
+undeclared	-[MLCTensor tensorByDequantizingToType:scale:bias:]	declared nowhere
+undeclared	-[MLCTensor tensorByDequantizingToType:scale:bias:axis:]	declared nowhere
+undeclared	-[MLCTensor tensorByQuantizingToType:scale:bias:]	declared nowhere
+undeclared	-[MLCTensor tensorByQuantizingToType:scale:bias:axis:]	declared nowhere
+undeclared	-[MLCTensor tensorID]	declared nowhere
+undeclared	-[MLCTensorData bytes]	declared nowhere
+undeclared	-[MLCTensorData init]	declared nowhere
+undeclared	-[MLCTensorData length]	declared nowhere
+undeclared	-[MLCTensorDescriptor batchSizePerSequenceStep]	declared nowhere
+undeclared	-[MLCTensorDescriptor dataType]	declared nowhere
+undeclared	-[MLCTensorDescriptor dimensionCount]	declared nowhere
+undeclared	-[MLCTensorDescriptor init]	declared nowhere
+undeclared	-[MLCTensorDescriptor maxTensorDimensions]	declared nowhere
+undeclared	-[MLCTensorDescriptor sequenceLengths]	declared nowhere
+undeclared	-[MLCTensorDescriptor shape]	declared nowhere
+undeclared	-[MLCTensorDescriptor sortedSequences]	declared nowhere
+undeclared	-[MLCTensorDescriptor stride]	declared nowhere
+undeclared	-[MLCTensorDescriptor tensorAllocationSizeInBytes]	declared nowhere
+undeclared	-[MLCTensorParameter init]	declared nowhere
+undeclared	-[MLCTensorParameter isUpdatable]	declared nowhere
+undeclared	-[MLCTensorParameter tensor]	declared nowhere
+undeclared	-[MLCTransposeLayer dimensions]	declared nowhere
+undeclared	-[MLCUpsampleLayer alignsCorners]	declared nowhere
+undeclared	-[MLCUpsampleLayer sampleMode]	declared nowhere
+undeclared	-[MLCUpsampleLayer shape]	declared nowhere
+undeclared	-[MLCYOLOLossDescriptor anchorBoxCount]	declared nowhere
+undeclared	-[MLCYOLOLossDescriptor anchorBoxes]	declared nowhere
+undeclared	-[MLCYOLOLossDescriptor init]	declared nowhere
+undeclared	-[MLCYOLOLossDescriptor maximumIOUForObjectAbsence]	declared nowhere
+undeclared	-[MLCYOLOLossDescriptor minimumIOUForObjectPresence]	declared nowhere
+undeclared	-[MLCYOLOLossDescriptor scaleClassLoss]	declared nowhere
+undeclared	-[MLCYOLOLossDescriptor scaleNoObjectConfidenceLoss]	declared nowhere
+undeclared	-[MLCYOLOLossDescriptor scaleObjectConfidenceLoss]	declared nowhere
+undeclared	-[MLCYOLOLossDescriptor scaleSpatialPositionLoss]	declared nowhere
+undeclared	-[MLCYOLOLossDescriptor scaleSpatialSizeLoss]	declared nowhere
+undeclared	-[MLCYOLOLossDescriptor shouldRescore]	declared nowhere
+undeclared	-[MLCYOLOLossLayer yoloLossDescriptor]	declared nowhere
 undeclared	-[MXCrashDiagnosticObjectiveCExceptionReason JSONRepresentation]	declared only by MXCallStackTree, MXDiagnostic, MXDiagnosticPayload, MXMetaData, MXMetric, MXMetricPayload
 undeclared	-[MXCrashDiagnosticObjectiveCExceptionReason dictionaryRepresentation]	declared only by MXDiagnostic, MXDiagnosticPayload, MXMetaData, MXMetric, MXMetricPayload, NSMapTable, NSUbiquitousKeyValueStore, NSUserDefaults, SCNTechnique, UIPrintInfo
 undeclared	-[MXSignpostRecord JSONRepresentation]	declared only by MXCallStackTree, MXDiagnostic, MXDiagnosticPayload, MXMetaData, MXMetric, MXMetricPayload
@@ -583,6 +1047,19 @@ unmatched	MKPointOfInterestCategorySurfing	constant
 unmatched	MKPointOfInterestCategorySwimming	constant
 unmatched	MKPointOfInterestCategoryTennis	constant
 unmatched	MKPointOfInterestCategoryVolleyball	constant
+unmatched	MLCActivationTypeDebugDescription()	function
+unmatched	MLCArithmeticOperationDebugDescription()	function
+unmatched	MLCComparisonOperationDebugDescription()	function
+unmatched	MLCConvolutionTypeDebugDescription()	function
+unmatched	MLCGradientClippingTypeDebugDescription()	function
+unmatched	MLCLSTMResultModeDebugDescription()	function
+unmatched	MLCLossTypeDebugDescription()	function
+unmatched	MLCPaddingPolicyDebugDescription()	function
+unmatched	MLCPaddingTypeDebugDescription()	function
+unmatched	MLCPoolingTypeDebugDescription()	function
+unmatched	MLCReductionTypeDebugDescription()	function
+unmatched	MLCSampleModeDebugDescription()	function
+unmatched	MLCSoftmaxOperationDebugDescription()	function
 unmatched	NSAdaptiveImageGlyphAttributeName	constant
 unmatched	NSDataDeallocatorFree	constant
 unmatched	NSDataDeallocatorNone	constant
