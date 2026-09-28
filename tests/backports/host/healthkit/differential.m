@@ -16,6 +16,8 @@
 #import <Foundation/Foundation.h>
 #import <HealthKit/HealthKit.h>
 
+#import <objc/runtime.h>
+
 #import "CharonHKTypes.h"
 
 // The members iOS 9.3 added to HKQuery, which the header this file compiles against declares in
@@ -748,6 +750,33 @@ static void CharonHKQueryObjects(void)
     HKQuantityType *heartRate = [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeartRate];
     if (!stepCount || !heartRate)
         return;
+
+
+    // The check the coordinator asked for: the superclass of the port's own sample query, and the
+    // offset of _objectType in it and in the class that declares it. If the two differ the object is
+    // of a different layout than the code that reads it thinks, which is what a rename that did not
+    // reach one file's superclass looks like from the inside.
+    {
+        Class mineClass = objc_getClass("CharonHostHKSampleQuery");
+        Class mineSuper = mineClass ? class_getSuperclass(mineClass) : Nil;
+        Class theirsClass = objc_getClass("HKSampleQuery");
+        Class theirsSuper = theirsClass ? class_getSuperclass(theirsClass) : Nil;
+        printf("LAYOUT mine=%s super=%s | theirs=%s super=%s\n",
+               mineClass ? class_getName(mineClass) : "(none)",
+               mineSuper ? class_getName(mineSuper) : "(none)",
+               theirsClass ? class_getName(theirsClass) : "(none)",
+               theirsSuper ? class_getName(theirsSuper) : "(none)");
+        printf("LAYOUT mine superclass is the host's HKQuery: %s\n",
+               mineSuper == objc_getClass("HKQuery") ? "YES" : "no");
+        Ivar inMine = mineSuper ? class_getInstanceVariable(mineSuper, "_objectType") : NULL;
+        Ivar inTheirs = theirsSuper ? class_getInstanceVariable(theirsSuper, "_objectType") : NULL;
+        printf("LAYOUT _objectType offset: mineSuper=%lld theirsSuper=%lld\n",
+               inMine ? (long long)ivar_getOffset(inMine) : -1LL,
+               inTheirs ? (long long)ivar_getOffset(inTheirs) : -1LL);
+        Ivar inMineQuery = mineClass ? class_getInstanceVariable(mineClass, "_objectType") : NULL;
+        printf("LAYOUT _objectType offset on the sample query itself: %lld\n",
+               inMineQuery ? (long long)ivar_getOffset(inMineQuery) : -1LL);
+    }
 
     // The type a query is for, and the sample type under its own name, which is the same object.
     // The objects the predicate is evaluated against, and the answers both sides give for them. The
