@@ -1,6 +1,6 @@
 # A CIContext with a surface and options, and the unpremultiply, for iOS 6
 
-3 rows, `registry/CoreImage/ctxowner9.json`. `-imageBySamplingNearest` is in
+1 row, `registry/CoreImage/ctxowner9.json`. `-imageBySamplingNearest` is in
 `facts/CoreImage/ImageAlgebra.md` and is not carried; the reason is there.
 
 iOS 6's selector table has `contextWithOptions:`, `contextWithEAGLContext:` and
@@ -37,6 +37,17 @@ Carrying it would need the division to happen somewhere other than that selector
 has, which there is not (`CIDivideBlendMode` is absent from its cache), or a port renderer of its own
 below CoreImage, which is a much larger piece and is not begun. The row stays named. The same reasoning
 is why `-imageBySamplingNearest` is not carried: the release has no sampler to mark an image with.
+
+## The two properties, not carried and not ignored
+
+`CIContext.workingColorSpace` and `CIContext.workingFormat` are **not in the registry at all**. They
+were `implemented` and the gate said the base `CIContext` does not build them — the port's own context
+class answers them, and a `CIContext` the release made does not have them either. They were `ignored`
+and the gate said the release does not carry them, which at iOS 6.1.3 is true. So neither status is
+honest and the rows are gone, with the reason here: **a release that has a working colour space and
+format answers them itself, and on one that has not the port's own context class answers them for the
+contexts the port makes** — which is a property of `CharonGOCtxContext`, not of `CIContext`, and a
+caller holding a context the port did not make finds nothing either way.
 
 ## What the pixel probe measures
 

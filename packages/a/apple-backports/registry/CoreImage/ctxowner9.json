@@ -11,30 +11,6 @@
       "effect": "a context of the release's own, made with the release's own +contextWithOptions:, that draws into the CGContext named; a category cannot add storage to a class the framework has, so the surface is an associated object on the context",
       "facts": "facts/CoreImage/ContextOwner.md",
       "source": "the header of the iOS 16.4 SDK for the contract; the host's own CoreImage over the same calls, by tests/backports/host/ciimage/pixel, which draws into a CGContext on both sides and prints the bytes that context ended up holding; the 6.1.3 armv7 selector table for what the release has"
-    },
-    {
-      "api": "CIContext.workingColorSpace",
-      "kind": "property",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "ignored",
-      "reason": "a CIContext that was made by +contextWithOptions: or +contextWithCGContext: on a release that has a working colour space and format answers them itself, and the release does this itself. The port's own context class answers them too, for a release that has no such property; the base CIContext does not, and a caller holding a CIContext the port did not make finds nothing, so the row is not claimed on CIContext",
-      "effect": "the colour space the context's options name, read off the same associated options, and none for a context made with no space in its options",
-      "facts": "facts/CoreImage/ContextOwner.md",
-      "source": "the header of the iOS 16.4 SDK for the contract; the host's own CoreImage over the same calls, by tests/backports/host/ciimage/pixel, which draws into a CGContext on both sides and prints the bytes that context ended up holding; the 6.1.3 armv7 selector table for what the release has",
-      "release": "iOS 6 has no CIContext property of that name: the release's CoreContext does not carry it, so a caller asking a context the port did not make finds nothing, and on a release that does carry it the release answers it"
-    },
-    {
-      "api": "CIContext.workingFormat",
-      "kind": "property",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "ignored",
-      "reason": "a CIContext that was made by +contextWithOptions: or +contextWithCGContext: on a release that has a working colour space and format answers them itself, and the release does this itself. The port's own context class answers them too, for a release that has no such property; the base CIContext does not, and a caller holding a CIContext the port did not make finds nothing, so the row is not claimed on CIContext",
-      "effect": "the format the context's options name, and eight bits a channel for a context whose options name none",
-      "facts": "facts/CoreImage/ContextOwner.md",
-      "source": "the header of the iOS 16.4 SDK for the contract; the host's own CoreImage over the same calls, by tests/backports/host/ciimage/pixel, which draws into a CGContext on both sides and prints the bytes that context ended up holding; the 6.1.3 armv7 selector table for what the release has",
-      "release": "iOS 6 has no CIContext property of that name: the release's CoreContext does not carry it, so a caller asking a context the port did not make finds nothing, and on a release that does carry it the release answers it"
     }
   ]
 }
