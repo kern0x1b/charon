@@ -1,14 +1,13 @@
 {
- "framework": "Foundation",
- "entries": [
-  {
-   "api": "CFRunLoopObserverCreateWithHandler",
-   "kind": "constant",
-   "introduced": "5.0",
-   "status": "implemented",
-   "facts": "facts/Foundation/CFRunLoopObserverCreateWithHandler.md",
-   "source": "the host's own CoreFoundation, held against the backport by tests/backports/host/uikit2 (runloopobserver)",
-   "minimum": "6.0"
-  }
- ]
+  "framework": "Foundation",
+  "entries": [
+    {
+      "api": "CFRunLoopObserverCreateWithHandler",
+      "kind": "constant",
+      "introduced": "5.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/CFRunLoopObserverCreateWithHandler.md",
+      "source": "the host's own CoreFoundation, held against the backport by tests/backports/host/uikit2 (runloopobserver)"
+    }
+  ]
 }

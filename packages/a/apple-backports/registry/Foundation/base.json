@@ -1,5 +1,8 @@
 [
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 60e244874 (Take the blanket floor back off, measured: it caused 25 of the 39 placements)
   {
     "api": "+[NSCalendar calendarWithIdentifier:]",
     "kind": "method",
@@ -1105,6 +1108,27 @@
     "effect": "the task does not answer -progress, although the SDK declares NSURLSessionTask as NSProgressReporting, so a call crashes unless it is guarded; the counts the task keeps - countOfBytesReceived, countOfBytesSent and their expected values - are there to build a progress from"
   },
   {
+<<<<<<< HEAD
+=======
+    "api": "-[NSUserActivityDelegate userActivity:didReceiveInputStream:outputStream:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "minimum": "6.0",
+    "status": "absent",
+    "reason": "no other device opens a stream to an activity",
+    "effect": "the message is never sent, and getContinuationStreamsWithCompletionHandler: answers the error of an activity nobody continues"
+  },
+  {
+    "api": "-[NSUserActivityDelegate userActivityWasContinued:]",
+    "kind": "method",
+    "introduced": "8.0",
+    "minimum": "6.0",
+    "status": "absent",
+    "reason": "no other device continues an activity from this one",
+    "effect": "the message is never sent"
+  },
+  {
+>>>>>>> 60e244874 (Take the blanket floor back off, measured: it caused 25 of the 39 placements)
     "api": "-[NSValue getValue:size:]",
     "kind": "method",
     "introduced": "11.0",
@@ -1344,6 +1368,18 @@
     "facts": "facts/Foundation/NSURLComponents.md"
   },
   {
+<<<<<<< HEAD
+=======
+    "api": "NSURLComponents.encodedHost",
+    "kind": "property",
+    "introduced": "16.0",
+    "status": "absent",
+    "reason": "not carried: its setter accepts only a host already in IDNA or percent-encoded form, a check the backport's URL grammar does not make",
+    "effect": "the property is not there on the backport's class, so respondsToSelector: answers honestly and an unchecked call raises",
+    "source": "SDK 16.4, NSURL.h"
+  },
+  {
+>>>>>>> 60e244874 (Take the blanket floor back off, measured: it caused 25 of the 39 placements)
     "api": "NSURLErrorBackgroundTaskCancelledReasonKey",
     "kind": "constant",
     "introduced": "8.0",
@@ -1572,7 +1608,11 @@
     "introduced": "13.0",
     "status": "implemented",
     "facts": "facts/Foundation/NSConstantLiterals.md",
+<<<<<<< HEAD
     "source": "crash-demand-top.tsv rank 65, a strong import of provenance (coordinator 2026-09-22 override: LOAD-FAIL class, absent forbidden by COORDINATION.md \u00a72); layout reasoned by analogy to NSConstantIntegerNumber's measured one, no binary of provenance's own was available to disassemble"
+=======
+    "source": "crash-demand-top.tsv rank 65, a strong import of provenance (coordinator 2026-09-22 override: LOAD-FAIL class, absent forbidden by COORDINATION.md §2); layout reasoned by analogy to NSConstantIntegerNumber's measured one, no binary of provenance's own was available to disassemble"
+>>>>>>> 60e244874 (Take the blanket floor back off, measured: it caused 25 of the 39 placements)
   },
   {
     "api": "NSDateComponentsFormatter",
@@ -1954,6 +1994,7 @@
     "facts": "facts/Foundation/NSBundleReceiptURL.md",
     "source": "the release's own method of the name (a stub that raises) read on the devices, and tests/backports/device/receipturl.m on iOS 6"
   }
+<<<<<<< HEAD
 =======
  {
   "api": "+[NSCalendar calendarWithIdentifier:]",
@@ -4153,4 +4194,6 @@
   "minimum": "6.0"
  }
 >>>>>>> 89d9c1d8f (Floor every registry entry that had none, at the port's own 6.0)
+=======
+>>>>>>> 60e244874 (Take the blanket floor back off, measured: it caused 25 of the 39 placements)
 ]

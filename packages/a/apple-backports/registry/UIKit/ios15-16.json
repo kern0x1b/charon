@@ -3352,8 +3352,7 @@
    "introduced": "16.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIWindowSceneGeometryPreferences.md",
-   "source": "SDK 16.4, UIKit",
-   "minimum": "6.0"
+   "source": "SDK 16.4, UIKit"
   },
   {
    "api": "UIWindowSceneGeometryPreferencesIOS",
@@ -3361,8 +3360,7 @@
    "introduced": "16.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIWindowSceneGeometryPreferences.md",
-   "source": "SDK 16.4, UIKit",
-   "minimum": "6.0"
+   "source": "SDK 16.4, UIKit"
   },
   {
    "api": "UIWindowSceneSessionRoleExternalDisplayNonInteractive",
@@ -3370,8 +3368,7 @@
    "introduced": "16.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIScene.md",
-   "source": "SDK 16.4, UIKit",
-   "minimum": "6.0"
+   "source": "SDK 16.4, UIKit"
   }
  ]
 }
