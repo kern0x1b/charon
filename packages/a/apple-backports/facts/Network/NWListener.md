@@ -21,20 +21,25 @@ Measured, and the count is three of the seven, not five - the listener is made, 
 the port it was asked for, and it reports that port. What does not pass is stated below rather than
 folded into the total.
 
-Green, three of them:
+Green, four of them, and the fourth is the handover:
 
 - the listener is made;
 - it becomes `ready` on the port it was asked for, and reports that port;
 - the host's own `NWConnection` reaches `ready` **through** the port's listener, which is the accept
-  loop working against Apple's own implementation.
+  loop working against Apple's own implementation;
+- the handover to a new-connection handler, and the port was right about it: `CHARON_TRACE_LISTENER` shows
+  it calling the handler at `ready`, with the listener the test holds, the queue the test set, and the
+  connection the test's own block then receives. What was wrong was the check - the test's handler
+  filled a list and the check read a variable nothing ever wrote, so the check could not pass however the
+  port behaved.
 
-Red, four of them, and none of them folded into the total above:
+Red, three of them, and none of them folded into the total above:
 
-- the handover to a new-connection handler: the port calls a non-NULL handler at `ready` (measured, with
-  `CHARON_TRACE_LISTENER`, which prints the state, the listener, its queue, the state handler and the
-  new-connection block) and the test's own record of the handover stays empty;
-- and the three checks that stand on it - the bytes the connection the listener made read, the bytes the
-  host read back, and the count of connections handed over.
+- the bytes crossing **inbound**, which the connection the listener made does not deliver: the host's own
+  `nw_connection_send` reports success, so the bytes are in the socket, and the port's read source does
+  not hand them on. The direction the other way round is not reached, because the port's send waits on
+  this one. That is the next thing to look at, in the port's read path for a connection whose socket came
+  from an accept.
 
 **Not yet measured, and red in that test:**
 

@@ -184,6 +184,15 @@ int main(void)
         for (int index = 0; index < 300 && !(host_ready && accepted); index++)
             usleep(25000);
         check(host_ready, @"the host's connection is ready through the port's listener");
+        /* The record the handler fills is `every`; `accepted` is the one connection the checks are
+         * about, so it is taken from that record under the same lock. It was declared and read and
+         * never written, which is why this check could not pass however the port behaved - and the
+         * port was right: CHARON_TRACE_LISTENER shows it calling the handler at `ready`, on the
+         * listener the test holds, with the connection the test's own block then receives. */
+        @synchronized(every) {
+            if (!accepted && every.count)
+                accepted = (nw_connection_t)every.firstObject;
+        }
         check(accepted != NULL, @"and the port's listener handed the connection over");
 
 
