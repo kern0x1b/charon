@@ -272,3 +272,15 @@ So the next step is a small one and it is a real design decision: either a `char
 helper carrying `CMTagCollectionContainsSpecifiedTags` and the tags of a collection as a `NSArray` of
 `NSValue`s, or `CMTagCollectionCopyAllTags` added to the collection's own object. The measurements are
 done; the fifteen are not blocked on anything else.
+
+## A group cannot hold a host collection, and that is the SDK, not the group
+
+Measured, not inferred. `charon_copy_all_tags` bridges a `CMTagCollectionRef` to `CharonCMTagCollection`
+and messages it, which works for a collection this package made and fails for one CoreMedia made:
+`-[__NSCFType charon_copyAllTags:]: unrecognized selector`. The other route - the host's own
+`CMTagCollectionGetTags` - is the port's symbol on the 16.4 SDK, so the port cannot call it either.
+
+The consequence for the differential is that **each side's group must be built from that side's own
+collections**, and a mixed group is not constructible here at all. The case was written, run, and removed
+rather than left to abort the suite; a caller on 6.1.3 can only hold port collections anyway, so the limit
+does not reach the port's users, but it is the reason the probe's arrays are per side.

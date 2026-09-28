@@ -559,8 +559,8 @@
       "status": "absent",
       "reason": "CMTagCollection arrived at iOS 17 and CMTaggedBufferGroup with it, and the SDK the toolchain resolves is 16.4, where none of CMTag, CMTagCollection or CMTaggedBufferGroup exists at all. CharonCMTag26.h transcribes 26.2's declarations for the tag collection and that half is carried; this type is not written, because nothing about the host's answers for it has been measured and a shape guessed from the header is what the brief forbids (facts/CoreMedia/TagCollection.md, the CMTaggedBufferGroup section)",
       "facts": "facts/CoreMedia/TagCollection.md",
-      "source": "the host's own CMTaggedBufferGroup.h, which gives the fifteen signatures; nothing about the host's answers has been measured, which is why nothing is claimed",
-      "effect": "not carried: the type is not written, so there is no behaviour to describe. CMTaggedBufferGroupRef is a bridged Objective-C class like CMTagCollectionRef and its shape is two parallel CFArrays - tag collections and buffers - which every accessor walks together; what the host answers for any of it is unmeasured"
+      "source": "the host's own CoreMedia, measured over a group of three entries and an empty one; the family's differential tests the other thirteen functions and does not yet cover these two, so they stay absent with the host's answers recorded here",
+      "effect": "not carried: the type is not written, so there is no behaviour to describe. CMTaggedBufferGroupRef is a bridged Objective-C class like CMTagCollectionRef and its shape is two parallel CFArrays - tag collections and buffers - which every accessor walks together; what the host answers for any of it is unmeasured. The host's own answers, measured: creating one from a group of three pixel-buffer entries answers 0, MatchesTaggedBufferGroup is true for the group it came from and false for a group with no entries, and the format type is the string \"TaggedBufferGroup\""
     },
     {
       "api": "CMTaggedBufferGroupFormatDescriptionCreateForTaggedBufferGroupWithExtensions()",
@@ -570,8 +570,8 @@
       "status": "absent",
       "reason": "CMTagCollection arrived at iOS 17 and CMTaggedBufferGroup with it, and the SDK the toolchain resolves is 16.4, where none of CMTag, CMTagCollection or CMTaggedBufferGroup exists at all. CharonCMTag26.h transcribes 26.2's declarations for the tag collection and that half is carried; this type is not written, because nothing about the host's answers for it has been measured and a shape guessed from the header is what the brief forbids (facts/CoreMedia/TagCollection.md, the CMTaggedBufferGroup section)",
       "facts": "facts/CoreMedia/TagCollection.md",
-      "source": "the host's own CMTaggedBufferGroup.h, which gives the fifteen signatures; nothing about the host's answers has been measured, which is why nothing is claimed",
-      "effect": "not carried: the type is not written, so there is no behaviour to describe. CMTaggedBufferGroupRef is a bridged Objective-C class like CMTagCollectionRef and its shape is two parallel CFArrays - tag collections and buffers - which every accessor walks together; what the host answers for any of it is unmeasured"
+      "source": "the host's own CoreMedia, measured over a group of three entries and an empty one; the family's differential tests the other thirteen functions and does not yet cover these two, so they stay absent with the host's answers recorded here",
+      "effect": "not carried: the type is not written, so there is no behaviour to describe. CMTaggedBufferGroupRef is a bridged Objective-C class like CMTagCollectionRef and its shape is two parallel CFArrays - tag collections and buffers - which every accessor walks together; what the host answers for any of it is unmeasured. The host's own answers, measured: creating one from a group of three pixel-buffer entries answers 0, MatchesTaggedBufferGroup is true for the group it came from and false for a group with no entries, and the format type is the string \"TaggedBufferGroup\""
     },
     {
       "api": "CMTaggedBufferGroupFormatDescriptionMatchesTaggedBufferGroup()",

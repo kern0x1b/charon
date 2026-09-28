@@ -423,6 +423,13 @@ int main(int argc, char **argv)
                     printf("  systemGroup is %s\n", object_getClassName((__bridge id)systemGroup)); fflush(stdout);
                     for (CFIndex which = 0; which < 3; which++)
                         printf("  system collection %ld is %s\n", (long)which, object_getClassName((__bridge id)disjoint[which]));
+                    // A group holding a collection the host made is NOT constructible on the 16.4 SDK,
+                    // and that is a limit of the SDK rather than of the group: reading a collection's
+                    // tags needs CMTagCollectionGetTags, and on this SDK that name is this package's
+                    // own symbol in CMTagCollection17.o, so charon_copy_all_tags can read a port
+                    // collection and cannot read a host one - the port's own reader, reached through a
+                    // bridge, is what __NSCFType rejects. The case was written, run and removed rather
+                    // than left to abort the suite; the limit is in the facts.
                     same("group type id", [NSString stringWithFormat:@"%d", CMTaggedBufferGroupGetTypeID() != 0],
                          [NSString stringWithFormat:@"%d", CMTaggedBufferGroupGetTypeID() != 0]);
                     for (CFIndex index = -1; index < 4; index++) {
@@ -520,12 +527,9 @@ int main(int argc, char **argv)
                         for (CFIndex index = 0; index < 2; index++) CFArrayAppendValue(shorterBuffers, made[index]);
                         same("group mismatched", [NSString stringWithFormat:@"%d", CMTaggedBufferGroupCreate(kCFAllocatorDefault, shorter, shorterBuffers, &systemShort) != 0],
                              [NSString stringWithFormat:@"%d", port_CMTaggedBufferGroupCreate(kCFAllocatorDefault, shorter, shorterBuffers, &portShort) != 0]);
-                        CMFormatDescriptionRef theirDesc = NULL;
-                        OSStatus da = CMTaggedBufferGroupFormatDescriptionCreateForTaggedBufferGroup(kCFAllocatorDefault, systemGroup, &theirDesc);
-                        same("group format description", [NSString stringWithFormat:@"%d %d %d", da,
-                                                          CMTaggedBufferGroupFormatDescriptionMatchesTaggedBufferGroup(theirDesc, systemGroup),
-                                                          CMTaggedBufferGroupFormatDescriptionMatchesTaggedBufferGroup(theirDesc, systemShort)],
-                             [NSString stringWithFormat:@"%d", port_CMTaggedBufferGroupGetCount(portGroup) != 0]);
+                        // The two FormatDescriptionCreate functions are not carried by this family yet,
+                        // so there is nothing to compare; the row is in the registry as absent and the
+                        // host's own answers are in the work area (facts/CoreMedia/TagCollection.md).
                     }
                 }
 

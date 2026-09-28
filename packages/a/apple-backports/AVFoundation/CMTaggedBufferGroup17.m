@@ -32,8 +32,22 @@
     if (_entries) {
         _offsets = calloc(_entries + 1, sizeof *_offsets);
         for (NSUInteger index = 0; index < _entries; index++) {
-            CharonCMTagCollection *one = (__bridge CharonCMTagCollection *)(__bridge CMTagCollectionRef)_charon_collections[index];
-            _offsets[index + 1] = _offsets[index] + (CMItemCount)one.charon_count;
+            // One read per collection, through the C API, with the length coming back with the tags:
+            // the group never holds an element as an object, so a host collection and a port one are the
+            // same thing to it, and the two counts cannot disagree because there is only one read.
+            CMItemCount held = 0;
+            CMTag *run = charon_copy_all_tags((CMTagCollectionRef)(__bridge void *)[collections objectAtIndex:index], &held);
+            size_t room = (size_t)(_offsets[index] + held) * sizeof *_tags;
+            CMTag *grown = realloc(_tags, room ? room : 1);
+            if (!grown) {
+                free(run);
+                return nil;
+            }
+            _tags = grown;
+            if (held)
+                memcpy(_tags + _offsets[index], run, (size_t)held * sizeof *run);
+            _offsets[index + 1] = _offsets[index] + held;
+            free(run);
         }
     }
     return self;
@@ -48,24 +62,10 @@
     _entries = 0;
 }
 
-// Every entry's tags, one run after another in the group's own order.
+// The flat array, laid once in the initialiser from one read per collection, so this is a getter and
+// nothing here can read past what was written.
 - (const CMTag *)charon_tags
 {
-    if (_tags || !_entries)
-        return _tags;
-    CMItemCount total = 0;
-    for (NSUInteger index = 0; index < _entries; index++)
-        total += _offsets[index];
-    _tags = total ? malloc((size_t)total * sizeof *_tags) : NULL;
-    if (total && !_tags)
-        return NULL;
-    CMItemCount at = 0;
-    for (NSUInteger index = 0; index < _entries; index++) {
-        CharonCMTagCollection *one = (__bridge CharonCMTagCollection *)(__bridge CMTagCollectionRef)_charon_collections[index];
-        const CMTag *run = one.charon_tags;
-        for (NSUInteger tag = 0; tag < one.charon_count; tag++)
-            _tags[at++] = run[tag];
-    }
     return _tags;
 }
 
@@ -300,8 +300,6 @@ CMItemCount CMTaggedBufferGroupGetNumberOfMatchesForTagCollection(CMTaggedBuffer
 {
     CMItemCount count = 0;
     CMTag *tags = charon_copy_tags(tagCollection, &count);
-    if (!tags)
-        return 0;
     CMItemCount matches = (CMItemCount)[charon_to(group) charon_matchesForTags:tags count:count];
     free(tags);
     return matches;

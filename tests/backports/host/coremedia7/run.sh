@@ -6,6 +6,11 @@ BUILD=${BUILD:-$(mktemp -d)}
 mkdir -p "$BUILD"
 sdk=$(xcrun --show-sdk-path)
 quiet="-Wno-deprecated-declarations -Wno-unguarded-availability-new -Wno-availability"
+
+# SAN=1 builds every object and the probe with AddressSanitizer, through the same flags as everything
+# else here, and is how a walk off the end of a port's own array gets named instead of guessed at.
+san=""
+[ "${SAN:-0}" = "1" ] && san="-fsanitize=address -g -fno-omit-frame-pointer"
 renames="-DCMTimeMultiplyByRatio=CharonHostCMTimeMultiplyByRatio"
 renames="$renames -DCMSampleBufferCopyPCMDataIntoAudioBufferList=CharonHostCMSampleBufferCopyPCMDataIntoAudioBufferList"
 renames="$renames -DCMSampleBufferCreateReady=CharonHostCMSampleBufferCreateReady"
@@ -19,26 +24,26 @@ renames="$renames -DCMVideoFormatDescriptionGetHEVCParameterSetAtIndex=CharonHos
 renames="$renames $(cat "$here/formatdescription-renames.txt")"
 for object in "$AV"/*.m; do
     case "$(basename "$object")" in CMFormatDescription*|CMTime71*|CMSampleBuffer*) ;; *) continue ;; esac
-    xcrun clang -fobjc-arc $quiet $renames -c "$object" -o "$BUILD/$(basename "$object" .m).o"
+    xcrun clang -fobjc-arc $quiet $renames -c $san "$object" -o "$BUILD/$(basename "$object" .m).o"
 done
 for test in timeratio pcmdata createready constants; do
     if [ ! -f "$here/$test.m" ]; then
         echo "note: $here/$test.m is missing, so its checks are not run"
         exit 1
     fi
-    xcrun clang -fobjc-arc $quiet "$here/$test.m" "$BUILD"/*.o -framework CoreMedia -framework CoreVideo -framework AudioToolbox -framework Foundation -o "$BUILD/$test"
+    xcrun clang -fobjc-arc $quiet $san "$here/$test.m" "$BUILD"/*.o -framework CoreMedia -framework CoreVideo -framework AudioToolbox -framework Foundation -o "$BUILD/$test"
     "$BUILD/$test"
 done
 # The CMTagCollection family: the port's file as its own image, so its names are reached through
 # dlopen(RTLD_LOCAL | RTLD_FIRST) while the probe's own calls reach the host's CoreMedia. No renaming,
 # no -D, and no system header is touched.
-xcrun clang -c -fobjc-arc $quiet -I"$AV" -o "$BUILD/CharonCMTagSupport.o" "$AV/CharonCMTagSupport.m"
-xcrun clang -c -fobjc-arc $quiet -I"$AV" -o "$BUILD/CMTaggedBufferGroup17.o" "$AV/CMTaggedBufferGroup17.m"
-xcrun clang -dynamiclib -fobjc-arc $quiet -I"$AV" -DkCMTagInvalid=port_kCMTagInvalid \
+xcrun clang -c -fobjc-arc $quiet $san -I"$AV" -o "$BUILD/CharonCMTagSupport.o" "$AV/CharonCMTagSupport.m"
+xcrun clang -c -fobjc-arc $quiet $san -I"$AV" -o "$BUILD/CMTaggedBufferGroup17.o" "$AV/CMTaggedBufferGroup17.m"
+xcrun clang -dynamiclib -fobjc-arc $quiet $san -I"$AV" -DkCMTagInvalid=port_kCMTagInvalid \
     -DkCMTagCategoryKey=port_kCMTagCategoryKey -DkCMTagValueKey=port_kCMTagValueKey -DkCMTagDataTypeKey=port_kCMTagDataTypeKey \
     -framework Foundation -framework CoreMedia -framework CoreVideo \
     -o "$BUILD/libCharonCMTag.dylib" "$AV/CMTagCollection17.m" "$BUILD/CharonCMTagSupport.o" "$BUILD/CMTaggedBufferGroup17.o"
-xcrun clang -fobjc-arc $quiet -I"$AV" "$here/tagcollectionimage.m" -framework CoreMedia -framework CoreVideo -framework Foundation \
+xcrun clang -fobjc-arc $quiet $san -I"$AV" "$here/tagcollectionimage.m" -framework CoreMedia -framework CoreVideo -framework Foundation \
     -o "$BUILD/tagcollectionimage"
 "$BUILD/tagcollectionimage" "$BUILD/libCharonCMTag.dylib"
 # The HEVC reader is held against a real hvcC - the record of an ffmpeg/libx265 stream, committed here
