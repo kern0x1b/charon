@@ -102,6 +102,14 @@ let pRow = frame.rowSequence[0]
 // the new ones were not. The two `AnyColumn`s also disagree on access, which is exactly where a
 // comparison would notice, so the accessors are pinned first and compared second.
 
+// One case first, before the eleven: a nil has to survive into the box's storage. Everything the
+// accessor comparison later reports about `missingCount` and `isNil(at:)` follows from this, and this
+// is the input the port's own suite never had.
+let pUnit = PortTabularData.AnyColumn(PortTabularData.Column<String?>(name: "u", ["a", nil]))
+check("a nil in the column survives into the box, so one is missing",
+      pUnit.missingCount == 1,
+      "the port answers \(pUnit.missingCount)")
+
 // The two AnyColumns side by side, one case per accessor, against Apple's TabularData.
 //
 // The port's `AnyColumn` is a box over a typed column and Apple's is Apple's own; the five accessors

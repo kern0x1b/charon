@@ -299,12 +299,7 @@ public struct AnyColumn: @unchecked Sendable {
         // An element that is already optional keeps its own nil and is not wrapped a second time.
         // `Row` builds its column from `[Any?]`, so without this the row's values arrive as
         // `Optional(Optional("berlin"))` and every row read describes as an optional of the value.
-        self.storage = column.values.map { value -> Any? in
-            if let alreadyOptional = (value as Any) as? _AlreadyOptional {
-                return alreadyOptional.anyValue
-            }
-            return value as Any?
-        }
+        self.storage = column.values.map { _withoutOptionalLayer($0 as Any) }
         self.makeTyped = { renamed in
             var copy = column
             copy.name = renamed
@@ -411,6 +406,20 @@ private protocol _AlreadyOptional {
     var anyValue: Any? { get }
     /// The type underneath, which is what `wrappedElementType` reports.
     static var wrappedElementType: Any.Type { get }
+}
+
+/// The value with any optional layer taken off, or `nil` when the value *was* nil.
+///
+/// Structural, on purpose. The previous version asked `(value as Any) as? _AlreadyOptional` and took
+/// the answer, and the answer was `nil` in the sense that the branch never ran: nothing in the port's
+/// own 431 checks put a nil into a column, so a cast that cannot fail loudly looked exactly like a
+/// cast that worked. A `Mirror` cannot be swallowed that way - a value that is not optional has
+/// `displayStyle != .optional` and comes back untouched, `.some` unwraps to its child, and `.none` has
+/// no child and answers `nil`.
+private func _withoutOptionalLayer(_ value: Any) -> Any? {
+    let mirror = Mirror(reflecting: value)
+    guard mirror.displayStyle == .optional else { return value }
+    return mirror.children.first?.value
 }
 
 /// The type underneath an optional, or the type itself when it is not one.
