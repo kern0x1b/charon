@@ -2,18 +2,23 @@
 # The port's complex sparse family, as a dylib, held against the host's own Accelerate from a table of
 # cases. Cases are data; the loop and the switch are the only code that reads them.
 set -eu
+# The root and every path under it come from where this script is, the way every other run.sh in
+# tests/backports/host/ does, so the 41 answers belong to the checkout the script is in and not to
+# whichever worktree last ran it.
 here=$(cd "$(dirname "$0")" && pwd)
-root=${CHARON_WORKTREE:-$HOME/Git/projects/ios/charon/.agent-work/worktrees/api-bnns-sparse}
+# the repository: sparsecomplex -> host -> backports -> tests -> the root, four levels up
+root=$(cd "$here/../../../../" && pwd)
 ACCELERATE=${ACCELERATE:-$root/packages/a/apple-backports/Accelerate}
-COMPLEX=${COMPLEX:-$root/.agent-work/wip/sparsecomplex}
-build=${SPARSECOMPLEX_BUILD:-$root/.agent-work/build/sparsecomplex}
+COMPLEX=${COMPLEX:-$here}
+build=${SPARSECOMPLEX_BUILD:-${TMPDIR:-/tmp}/charon-sparsecomplex-host}
 rm -rf "$build"
 mkdir -p "$build"
 
-# The port's two halves in one dylib: the complex family, and the real half that owns the entry points
-# the SDK declares with a void * matrix for, which a complex matrix answers on the same terms. It is
-# dlopen'd RTLD_LOCAL | RTLD_FIRST and reached by dlsym, so nothing of the port's can interpose the
-# host's and the host's Accelerate is the one the process already has.
+# The port's two halves in one dylib: the complex family, which lives beside this script because it is
+# not yet carried in the library - it has no registry rows, and the gate requires an entry for anything
+# a band builds - and the real half, which IS carried, in the Accelerate folder. The dylib is dlopen'd
+# RTLD_LOCAL | RTLD_FIRST and reached by dlsym, so nothing of the port's can interpose the host's and the
+# host's Accelerate is the one the process already has.
 xcrun clang -fobjc-arc -w -dynamiclib -I"$COMPLEX" -I"$ACCELERATE" -framework Accelerate -framework Foundation \
     -install_name @rpath/libComplexPort.dylib \
     -o "$build/libComplexPort.dylib" "$COMPLEX/SparseComplex18.m" "$ACCELERATE/SparseBLAS9.m"
