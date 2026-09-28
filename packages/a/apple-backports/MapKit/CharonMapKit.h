@@ -109,6 +109,14 @@ typedef NS_OPTIONS(NSUInteger, MKAddressFilterOption) {
 // The rose's heading, which is this port's own: the header's MKCompassButton has a mapView and a
 // visibility and nothing that says which way the map is facing. Declared and not implemented here,
 // so the map view can set the rose as it turns.
+// MKMapItemIdentifier, the iOS 18 way to hold a place by its identifier, which the 16.4 headers do
+// not declare. Apple's own name, declared here so a program compiled against a later header links
+// here; the class is defined in MKMapItemIdentifier.m, in the object of its own measured release.
+@interface MKMapItemIdentifier : NSObject
+- (nullable NSString *)identifierString;
+- (instancetype)initWithMapItem:(MKMapItem *)mapItem;
+@end
+
 @interface MKCompassButton (CharonCompass)
 - (void)setCompassHeading:(CLLocationDirection)heading;
 @end

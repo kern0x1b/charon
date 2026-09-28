@@ -1047,6 +1047,72 @@
       "source": "the SDK 16.4 header, and the release's own projection and geometry functions, measured in the armv7 cache of 6.1.3"
     },
     {
+      "api": "MKMapItemRequest",
+      "kind": "class",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the request is made for a MAP FEATURE -- the 16.4 header's designated initialiser is -initWithMapFeatureAnnotation: and +new is unavailable -- and a map FEATURE is a thing the map itself knows about, and this release's map has none: MKMapFeatureAnnotation is registered absent for that reason, so there is no feature for a request to resolve",
+      "effect": "-cancel, -cancelled and -loading are real: a running request that was asked to stop; -getMapItemWithCompletionHandler: answers with the header's own error in MKErrorDomain saying the map has no features to resolve, and NOT with a made-up place. A release whose map does have features resolves it properly and nothing here stands in its way",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3: the release's own MKMapItem carries -placeID, -placemark, -initWithPlacemark: and -openInMapsWithLaunchOptions:, and MKLocalSearch is first exported at 6.1, and apple.dyld's first_releases, which puts MKMapItemRequest at 16.0"
+    },
+    {
+      "api": "MKMapItemRequest.cancelled",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the header's own state of a request that was asked to stop, and the request carries it",
+      "effect": "YES from -cancel and after, NO before, and the completion that a cancelled request answers is nil/nil, which is what a caller that stopped waiting wants",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3: the release's own MKMapItem carries -placeID, -placemark, -initWithPlacemark: and -openInMapsWithLaunchOptions:, and MKLocalSearch is first exported at 6.1"
+    },
+    {
+      "api": "MKMapItemRequest.featureAnnotation",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the feature the request was made for, which the designated initialiser takes and the request holds",
+      "effect": "the feature it was given, and nil where there is no map feature on this release -- which is every case here, and nil is the honest answer rather than a substitute",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3: the release's own MKMapItem carries -placeID, -placemark, -initWithPlacemark: and -openInMapsWithLaunchOptions:, and MKLocalSearch is first exported at 6.1; a map FEATURE is a thing the map itself knows about, and this release's map has none: MKMapFeatureAnnotation is registered absent for that reason, so there is no feature for a request to resolve"
+    },
+    {
+      "api": "MKMapItemRequest.loading",
+      "kind": "property",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the header's own state of a request that is running, and the request carries it",
+      "effect": "YES only while a resolve is in flight and NO when it is answered or cancelled, which is what the caller polls",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3: the release's own MKMapItem carries -placeID, -placemark, -initWithPlacemark: and -openInMapsWithLaunchOptions:, and MKLocalSearch is first exported at 6.1"
+    },
+    {
+      "api": "MKMapItemRequest.mapFeatureAnnotation",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the 18.0 spelling of the same feature, which the 16.4 header does not declare",
+      "effect": "the same object as featureAnnotation, under Apple's own later name, so a program compiled against a later header links here",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3: the release's own MKMapItem carries -placeID, -placemark, -initWithPlacemark: and -openInMapsWithLaunchOptions:, and MKLocalSearch is first exported at 6.1; a map FEATURE is a thing the map itself knows about, and this release's map has none: MKMapFeatureAnnotation is registered absent for that reason, so there is no feature for a request to resolve"
+    },
+    {
+      "api": "MKMapItemRequest.mapItemIdentifier",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the identifier of the place the request is for, asked of the feature through the runtime because MKMapFeatureAnnotation is absent here",
+      "effect": "the feature's own identifier where it has one, and nil where it does not; a place is named by the release's own -[MKMapItem placeID] (measured), and nothing is composed here",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3: the release's own MKMapItem carries -placeID, -placemark, -initWithPlacemark: and -openInMapsWithLaunchOptions:, and MKLocalSearch is first exported at 6.1"
+    },
+    {
       "api": "MKMultiPolygon",
       "kind": "class",
       "introduced": "13.0",
