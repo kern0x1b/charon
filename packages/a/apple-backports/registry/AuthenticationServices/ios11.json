@@ -108,10 +108,9 @@
       "kind": "protocol",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "an application's own class adopts this protocol; the port's part is sending its one message, not declaring the protocol itself, which the SDK's own headers already do",
-      "effect": "-[ASWebAuthenticationSession start] sends presentationAnchorForWebAuthenticationSession: to whatever conforms to it",
-      "facts": "facts/AuthenticationServices/ASWebAuthenticationSession.md",
+      "status": "absent",
+      "reason": "the 16.4 SDK does not declare the protocol, so a header this package installs cannot declare it either",
+      "effect": "the protocol is not declared: a client that names it does not compile, and it is transcribed when the SDK that declares it is the one the build uses",
       "source": "the headers of SDK 16.4; AuthenticationServices of the arm64 shared cache of iOS 13.0 for what the release does, and the SFAuthenticationSession of iOS 11 this package's session is built on for what it can do"
     },
     {
