@@ -197,8 +197,16 @@ static inline vImage_Error CharonShearRun(const vImage_Buffer *src, const vImage
             // centre tap is k = extent, so an offset of `k` from the first tap put the centre
             // `slope * extent` rows from its own row, which made the shear drift; and the row is the
             // DESTINATION's own row plus that offset, which is the piece an earlier version dropped.
-            double centre = ((double)along0 + (double)along + 0.5
-                             + (horizontal ? -translate : translate)) / scale - 0.5;
+            // The shear shifts the ALONG position by the slope times the CROSS coordinate of the
+            // destination, once for the whole row - not once per tap. The row a destination row reads is
+            // its own; what moves sideways is where along that row it looks. The half pixel is in the
+            // cross coordinate because a row is sampled at its centre, and the sign is the transpose:
+            // a horizontal shear's slope moves the source left as the row grows, and the vertical's moves
+            // it the other way.
+            double acrossOfOutput = (double)cross0 + (double)cross + 0.5;
+            double alongPosition = (double)along0 + (double)along + 0.5 + (horizontal ? -translate : translate)
+                                   + (horizontal ? -slope : slope) * acrossOfOutput;
+            double centre = alongPosition / scale - 0.5;
             int base = (int)floor(centre);
             CharonResampleWeights(centre, base, extent, filter->lobes, filter->scale, weights);
             long first = (long)base - (long)extent;
@@ -206,7 +214,7 @@ static inline vImage_Error CharonShearRun(const vImage_Buffer *src, const vImage
                 double sum = 0.0;
                 for (int k = 0; k < taps; k++) {
                     long at = first + k;
-                    long row = sourceCross + (long)floor(slope * ((double)at - centre) + 0.5);
+                    long row = sourceCross;
                     // A tap outside ALONG the shear is replaced by the BACKCOLOR with its weight kept, not
                     // dropped: a source constant at 1.0 with a backColor of -1 makes the answer `2w - 1`,
                     // and the system answers -0.000 and 1.223, which are weights and not gaps. At a

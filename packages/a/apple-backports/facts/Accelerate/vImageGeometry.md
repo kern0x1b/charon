@@ -983,3 +983,38 @@ tap is which.
 
 That is a localised defect in the across term, it is the last one the family has, and the 36 registry
 entries stay **out** until the differential is green.
+
+
+## The slope is a shift of the ALONG position, not a walk of the taps
+
+The coordinator is right and the committed model was wrong: in a vImage horizontal shear **the row stays the
+row** - a destination row reads its own source row - and what moves is the position *along* that row, by
+`slope` times the destination row. The multi-row grid shows it directly: at a slope of 1 the port answered
+the source's own rows, unmoved, while the host walked each row's values across the picture and filled the
+rest with the backColor, which is a per-row diagonal shift and not a per-tap one.
+
+So the model is now
+
+    row           = sourceCross
+    centre_along  = ((along0 + along + 0.5) ± translate ∓ slope * (cross0 + cross + 0.5)) / scale - 0.5
+
+with the half pixel in the cross coordinate, because a row is sampled at its centre, and the vertical the
+transpose. The compiler caught a real slip on the way in - a local `along` shadowing the loop's own, which
+made the expression read itself and sent the run to 106 failures - and the name is fixed.
+
+**The sign and the half pixel are not yet confirmed.** The run is at **212 checks, 39 failures** - 12 at a
+scale of 0.25, 12 at 0.5, 12 at 2, and the 3 slope cases - which is the same count the per-tap model gave, so
+one of the sign, the `+ 0.5` and the `∓` is wrong and the differential cannot say which.
+
+The grid meant to settle it (`probe-slopemodel.m`, a source of five rows where row `r` carries `100 + r` and
+column `c` carries `0.01c`) came out **too noisy to read**: the answers are blends of several columns and
+the backColor of -9, and a blend like -23.0 or 6.0 does not name the column it came from. What it *does*
+show cleanly is the per-row diagonal and its direction - at a slope of 1 the data sits further right on the
+lower rows, and at a slope of -0.5 the other way - and that `srcOffsetToROI_Y` of 2 on a five-row picture
+answers a uniform 0 on every cell, so the offset shifts which source row a destination row names and is
+**not** clamped to the picture.
+
+The fix for the measurement is the one the kernel sweep already used: a source that is a **delta per
+column**, one column at a time, so every destination answer is that column's weight and nothing is a
+blend. That grid gives the sign, the `+ 0.5` and the offset's reference in one run, and it is the last
+measurement the family needs.
