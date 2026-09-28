@@ -97,7 +97,7 @@
             "status": "implemented",
             "reason": "NOT APPLE'S SURFACE AND NOT IN THE LEDGER. The SDK 26.2 CreateMLComponents declares no `ColumnarTransformer` - its transformer protocols are Transformer, TabularTransformer, TemporalTransformer and RandomTransformer - and `coordination/corpus/sdk-26.2-surface.tsv` has 0 rows for it. It is the port's own protocol, the shape the eight scalers and encoders here share, and it is recorded in the package's own registry so that nothing reads it as a row of Apple's. The framework's own name for the same thing is `TabularTransformer`; the port conforms the scalers to that name's shape and this protocol is the port's spelling of it",
             "effect": "the statistics, and the transformed table",
-            "facts": "facts/CreateMLComponents/Transformers.md",
+            "facts": "facts/CreateML/Transformers.md",
             "source": "the SDK's own interface for the absence; the protocol is this port's"
         }
     ]

@@ -42,7 +42,7 @@
             "status": "implemented",
             "reason": "declared and carried by the port's CreateML module, with the behaviour its own suite checks",
             "effect": "the type's own members",
-            "facts": "facts/CreateML/Errors.md",
+            "facts": "facts/CreateML/Export.md",
             "source": "the SDK 26.2 CreateML.swiftinterface for the declarations; the port's own behaviour is exercised by tests/backports/host/createml, and the table layer against the host's own CreateML in one process"
         },
         {
@@ -295,7 +295,7 @@
             "status": "implemented",
             "reason": "declared and carried by the port's CreateML module, with the behaviour its own suite checks",
             "effect": "the type's own members",
-            "facts": "facts/CreateML/Errors.md",
+            "facts": "facts/CreateML/Export.md",
             "source": "the SDK 26.2 CreateML.swiftinterface for the declarations; the port's own behaviour is exercised by tests/backports/host/createml, and the table layer against the host's own CreateML in one process"
         },
         {
@@ -413,10 +413,10 @@
             "kind": "method",
             "introduced": "15.0",
             "minimum": "6.0",
-            "status": "implemented",
-            "reason": "write(to:) is declared and REFUSES with MLCreateErrorCode.cannotWriteModel. The .mlmodel writer is in this package's own CoreML module - it is a protobuf over the published coremltools schema, and the linear model writes through it - and what this estimator cannot use it for is the kind of model it is: a decision tree is a `TreeEnsembleRegressor` (field 302) with one branch of one tree. A file that said NeuralNetworkRegressor and carried one of those would be a model Core ML loads and answers with the wrong arithmetic, which is worse than one that says it cannot",
-            "effect": "nothing, and the error saying so",
-            "facts": "facts/CreateML/Errors.md",
+            "status": "absent",
+            "reason": "write(to:) is declared and refuses with MLCreateErrorCode.cannotWriteModel, case 6, whose text is `The model cannot be written from this build or platform`. Apple's own write(to:metadata:) writes a model for a decision tree on every release that has it, so this refuses where Apple's would work and the row is `absent`, not `implemented`. It is absent because the model is a different kind of object: a `TreeEnsembleRegressor` (field 302) with one branch of one tree, and the writer in this package's CoreML module writes a NeuralNetworkRegressor. A file that said NeuralNetworkRegressor and carried one of those would be a model Core ML loads and answers with the wrong arithmetic, which is worse than one that says it cannot. The error it gives is in facts/CreateML/Export.md",
+            "effect": "nothing, and MLCreateErrorCode.cannotWriteModel saying so",
+            "facts": "facts/CreateML/Export.md",
             "source": "the SDK's own interface; the refusal is the port's and its test checks that it refuses"
         },
         {
@@ -424,10 +424,10 @@
             "kind": "method",
             "introduced": "15.0",
             "minimum": "6.0",
-            "status": "implemented",
-            "reason": "write(to:) is declared and REFUSES with MLCreateErrorCode.cannotWriteModel. The .mlmodel writer is in this package's own CoreML module - it is a protobuf over the published coremltools schema, and the linear model writes through it - and what this estimator cannot use it for is the kind of model it is: a forest is a `TreeEnsembleRegressor` (field 302) with a branch per tree. A file that said NeuralNetworkRegressor and carried one of those would be a model Core ML loads and answers with the wrong arithmetic, which is worse than one that says it cannot",
-            "effect": "nothing, and the error saying so",
-            "facts": "facts/CreateML/Errors.md",
+            "status": "absent",
+            "reason": "write(to:) is declared and refuses with MLCreateErrorCode.cannotWriteModel, case 6, whose text is `The model cannot be written from this build or platform`. Apple's own write(to:metadata:) writes a model for a forest on every release that has it, so this refuses where Apple's would work and the row is `absent`, not `implemented`. It is absent because the model is a different kind of object: a `TreeEnsembleRegressor` (field 302) with a branch per tree, and the writer in this package's CoreML module writes a NeuralNetworkRegressor. A file that said NeuralNetworkRegressor and carried one of those would be a model Core ML loads and answers with the wrong arithmetic, which is worse than one that says it cannot. The error it gives is in facts/CreateML/Export.md",
+            "effect": "nothing, and MLCreateErrorCode.cannotWriteModel saying so",
+            "facts": "facts/CreateML/Export.md",
             "source": "the SDK's own interface; the refusal is the port's and its test checks that it refuses"
         },
         {
@@ -435,10 +435,10 @@
             "kind": "method",
             "introduced": "15.0",
             "minimum": "6.0",
-            "status": "implemented",
-            "reason": "write(to:) is declared and REFUSES with MLCreateErrorCode.cannotWriteModel. The .mlmodel writer is in this package's own CoreML module - it is a protobuf over the published coremltools schema, and the linear model writes through it - and what this estimator cannot use it for is the kind of model it is: a booster is a `TreeEnsembleRegressor` (field 302) with a branch per iteration. A file that said NeuralNetworkRegressor and carried one of those would be a model Core ML loads and answers with the wrong arithmetic, which is worse than one that says it cannot",
-            "effect": "nothing, and the error saying so",
-            "facts": "facts/CreateML/Errors.md",
+            "status": "absent",
+            "reason": "write(to:) is declared and refuses with MLCreateErrorCode.cannotWriteModel, case 6, whose text is `The model cannot be written from this build or platform`. Apple's own write(to:metadata:) writes a model for a booster on every release that has it, so this refuses where Apple's would work and the row is `absent`, not `implemented`. It is absent because the model is a different kind of object: a `TreeEnsembleRegressor` (field 302) with a branch per iteration, and the writer in this package's CoreML module writes a NeuralNetworkRegressor. A file that said NeuralNetworkRegressor and carried one of those would be a model Core ML loads and answers with the wrong arithmetic, which is worse than one that says it cannot. The error it gives is in facts/CreateML/Export.md",
+            "effect": "nothing, and MLCreateErrorCode.cannotWriteModel saying so",
+            "facts": "facts/CreateML/Export.md",
             "source": "the SDK's own interface; the refusal is the port's and its test checks that it refuses"
         },
         {
@@ -446,10 +446,10 @@
             "kind": "method",
             "introduced": "15.0",
             "minimum": "6.0",
-            "status": "implemented",
-            "reason": "write(to:) is declared and REFUSES with MLCreateErrorCode.cannotWriteModel. The .mlmodel writer is in this package's own CoreML module - it is a protobuf over the published coremltools schema, and the linear model writes through it - and what this estimator cannot use it for is the kind of model it is: a tree classifier is a `NeuralNetworkClassifier` (field 403) with a string label output. A file that said NeuralNetworkRegressor and carried one of those would be a model Core ML loads and answers with the wrong arithmetic, which is worse than one that says it cannot",
-            "effect": "nothing, and the error saying so",
-            "facts": "facts/CreateML/Errors.md",
+            "status": "absent",
+            "reason": "write(to:) is declared and refuses with MLCreateErrorCode.cannotWriteModel, case 6, whose text is `The model cannot be written from this build or platform`. Apple's own write(to:metadata:) writes a model for a tree classifier on every release that has it, so this refuses where Apple's would work and the row is `absent`, not `implemented`. It is absent because the model is a different kind of object: a `NeuralNetworkClassifier` (field 403) with a string label output, and the writer in this package's CoreML module writes a NeuralNetworkRegressor. A file that said NeuralNetworkRegressor and carried one of those would be a model Core ML loads and answers with the wrong arithmetic, which is worse than one that says it cannot. The error it gives is in facts/CreateML/Export.md",
+            "effect": "nothing, and MLCreateErrorCode.cannotWriteModel saying so",
+            "facts": "facts/CreateML/Export.md",
             "source": "the SDK's own interface; the refusal is the port's and its test checks that it refuses"
         },
         {
@@ -457,10 +457,10 @@
             "kind": "method",
             "introduced": "15.0",
             "minimum": "6.0",
-            "status": "implemented",
-            "reason": "write(to:) is declared and REFUSES with MLCreateErrorCode.cannotWriteModel. The .mlmodel writer is in this package's own CoreML module - it is a protobuf over the published coremltools schema, and the linear model writes through it - and what this estimator cannot use it for is the kind of model it is: a forest classifier is a `NeuralNetworkClassifier` (field 403) with a string label output. A file that said NeuralNetworkRegressor and carried one of those would be a model Core ML loads and answers with the wrong arithmetic, which is worse than one that says it cannot",
-            "effect": "nothing, and the error saying so",
-            "facts": "facts/CreateML/Errors.md",
+            "status": "absent",
+            "reason": "write(to:) is declared and refuses with MLCreateErrorCode.cannotWriteModel, case 6, whose text is `The model cannot be written from this build or platform`. Apple's own write(to:metadata:) writes a model for a forest classifier on every release that has it, so this refuses where Apple's would work and the row is `absent`, not `implemented`. It is absent because the model is a different kind of object: a `NeuralNetworkClassifier` (field 403) with a string label output, and the writer in this package's CoreML module writes a NeuralNetworkRegressor. A file that said NeuralNetworkRegressor and carried one of those would be a model Core ML loads and answers with the wrong arithmetic, which is worse than one that says it cannot. The error it gives is in facts/CreateML/Export.md",
+            "effect": "nothing, and MLCreateErrorCode.cannotWriteModel saying so",
+            "facts": "facts/CreateML/Export.md",
             "source": "the SDK's own interface; the refusal is the port's and its test checks that it refuses"
         },
         {
@@ -468,10 +468,10 @@
             "kind": "method",
             "introduced": "15.0",
             "minimum": "6.0",
-            "status": "implemented",
-            "reason": "write(to:) is declared and REFUSES with MLCreateErrorCode.cannotWriteModel. The .mlmodel writer is in this package's own CoreML module - it is a protobuf over the published coremltools schema, and the linear model writes through it - and what this estimator cannot use it for is the kind of model it is: a forest classifier is a `NeuralNetworkClassifier` (field 403) with a string label output. A file that said NeuralNetworkRegressor and carried one of those would be a model Core ML loads and answers with the wrong arithmetic, which is worse than one that says it cannot",
-            "effect": "nothing, and the error saying so",
-            "facts": "facts/CreateML/Errors.md",
+            "status": "absent",
+            "reason": "write(to:) is declared and refuses with MLCreateErrorCode.cannotWriteModel, case 6, whose text is `The model cannot be written from this build or platform`. Apple's own write(to:metadata:) writes a model for a forest classifier on every release that has it, so this refuses where Apple's would work and the row is `absent`, not `implemented`. It is absent because the model is a different kind of object: a `NeuralNetworkClassifier` (field 403) with a string label output, and the writer in this package's CoreML module writes a NeuralNetworkRegressor. A file that said NeuralNetworkRegressor and carried one of those would be a model Core ML loads and answers with the wrong arithmetic, which is worse than one that says it cannot. The error it gives is in facts/CreateML/Export.md",
+            "effect": "nothing, and MLCreateErrorCode.cannotWriteModel saying so",
+            "facts": "facts/CreateML/Export.md",
             "source": "the SDK's own interface; the refusal is the port's and its test checks that it refuses"
         }
     ]

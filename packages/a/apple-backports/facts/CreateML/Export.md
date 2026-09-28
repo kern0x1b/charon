@@ -120,3 +120,38 @@ original rather than to add a parallel one.
 The writer itself does not need the type: it emits the numbers, and the two independent readers check
 them. So this blocks the **package build** and nothing in the host suites, which is why 425 checks
 pass on the host while the device build does not compile.
+
+## The error the six refusals give, and why the rows are `absent`
+
+The six rows for `write(to:)` — one per estimator, in `registry/CreateML.json` — are `absent`, and
+this is the measurement that decides it. **Apple's own `write(to:metadata:)` writes a model** for
+every one of these estimators on every release that has it, so a refusal here is a refusal where
+Apple's would work. A row that refuses where Apple's also refuses is `implemented` and its effect
+says so; these are the other case, so they are `absent`, and the reason and the error belong here.
+
+The error is `MLCreateErrorCode.cannotWriteModel`, **case 6** of that code's enumeration, and the
+text it carries is
+
+    The model cannot be written from this build or platform
+
+which is the port's own sentence, in `CreateML/TabularEstimators.swift`, and it is what a caller sees
+from both spellings — `write(to:metadata:)` and `write(toFile:metadata:)`, six estimators, twelve
+throws.
+
+**Why the refusal, and what it is not.** The `.mlmodel` writer is not missing: it is in this
+package's own CoreML module, it is a protobuf over the published coremltools schema, and the linear
+model writes through it. What these six cannot use it for is the kind of model they are. A decision
+tree, a forest and a booster are a `TreeEnsembleRegressor` (field 302) — a branch per tree, a branch
+per iteration — and a tree or forest classifier is a `NeuralNetworkClassifier` (field 403), with a
+string label output and a probabilities output. The writer writes a `NeuralNetworkRegressor`, whose
+single inner-product layer is exactly the arithmetic a linear model is and exactly not the arithmetic
+these six are. A file carrying one of those under `NeuralNetworkRegressor` would be a model Core ML
+loads and answers with the **wrong numbers**, silently, which is the failure the whole corpus
+contract treats as worse than an honest error.
+
+**What would move a row to `implemented`.** A writer for field 302 or field 403 in this package's
+CoreML module, and a model it produces that two readers accept — coremltools 9.0, and Core ML's own
+compiler. The tree-ensemble case also has an open question recorded above: coremltools 9.0's
+`TreeEnsembleRegressor` carries only `treeEnsemble` and `postEvaluationTransform`, with no
+`predictedFeatureName` anywhere on it, so whatever answers the validator for the neural-network form
+has to be found for this one too.
