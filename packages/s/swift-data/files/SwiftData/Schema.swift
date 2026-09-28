@@ -28,7 +28,9 @@ public final class Schema: Codable, Hashable {
         self.init(entities, version: version)
     }
 
-    public init(_ entities: [Entity], version: Version = Version(1, 0, 0)) {
+    /// The designated form the variadic initialiser above calls. Apple's interface declares only
+    /// the variadic one, so this is internal: a caller with a list calls it with `...`.
+    init(_ entities: [Entity], version: Version = Version(1, 0, 0)) {
         self.encodingVersion = Schema.schemaEncodingVersion
         self.version = version
         self.entities = entities
@@ -139,7 +141,10 @@ public final class Schema: Codable, Hashable {
             self.init(name, subentities: [Entity](), properties: properties)
         }
 
-        public init(_ name: String, subentities: [Entity], properties: [any SchemaProperty]) {
+        /// The designated form the two variadic initialisers above call. Apple's interface
+        /// declares only the variadic ones, so this is internal: a caller holds a list and wants
+        /// one entity out of it, the variadic initialiser takes it with `...`.
+        init(_ name: String, subentities: [Entity], properties: [any SchemaProperty]) {
             self.name = name
             self.subentities = Set(subentities)
             self.superentityName = nil

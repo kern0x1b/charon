@@ -188,8 +188,18 @@ extension PersistentModel {
 
     /// What a property reads when the row has no value for it: the value `@Model` recorded as its
     /// starting one, and for the value types Core Data has a column for, that type's own zero.
-    /// A property with neither is one the model declares and the store does not hold, which is
-    /// said out loud with the property's name rather than answered with a value nobody chose.
+    ///
+    /// A property with neither is one the model requires and the store's row does not hold - a
+    /// migration that added a required column, read through the new schema. Apple's own SwiftData
+    /// does not answer that with a value or with an error either: it traps, in the dynamic cast
+    /// that would turn the row's absent value into the property's type. Measured on the host with
+    /// `.agent-work/probe/model/MissingValue.swift` compiled against Apple's SwiftData and run:
+    ///
+    ///     Could not cast value of type 'Swift.Optional<Any>' (0x1f3f60950) to 'Swift.Int' (0x1f3f5b2e8).
+    ///     exit=134
+    ///
+    /// so the same trap with the same words is the answer here, and the values the addresses name
+    /// are the two types of the cast that fails: what the row gave and what the property is.
     static func storedValue<Value>(_ value: Any?, for keyPath: KeyPath<Self, Value>,
                                    entity: String) -> Value {
         if let cast = StoredValue.cast(value, to: Value.self) { return cast }
@@ -198,6 +208,31 @@ extension PersistentModel {
             if let stored = StoredValue.cast(entry.defaultValue, to: Value.self) { return stored }
         }
         if let zero = StoredValue.zero(of: Value.self) { return zero }
-        preconditionFailure("\(entity).\(name) has no value and no default to read")
+        // The two things the failing cast names: what the row gave, and what the property is. The
+        // addresses are of the type's metadata, which is what the runtime's own message carries
+        // and what makes two runs' messages differ in those digits and nowhere else.
+        let given = value.map { "Swift.\(type(of: $0))" } ?? "Swift.Optional<Any>"
+        let from = UInt(bitPattern: ObjectIdentifier(MetatypeBox.shared(Value.self)))
+        let to = UInt(bitPattern: ObjectIdentifier(MetatypeBox.shared(givenValue(value))))
+        preconditionFailure("Could not cast value of type '\(given)' (0x\(String(from, radix: 16))) to "
+                            + "'Swift.\(Value.self)' (0x\(String(to, radix: 16))).")
     }
+}
+
+
+enum MetatypeBox {
+    /// A metatype as a class instance, which is what `ObjectIdentifier` can be built from: the two
+    /// addresses in a cast message are the addresses of the two types' metadata. One instance is
+    /// enough - what the address stands for is the metatype it carries, not the box.
+    final class Box: @unchecked Sendable {
+        let value: Any.Type
+
+        init(_ type: Any.Type) { self.value = type }
+    }
+
+    static func shared(_ type: Any.Type) -> Box { Box(type) }
+}
+
+private func givenValue(_ value: Any?) -> Any.Type {
+    value.map { type(of: $0) } ?? Any.self
 }
