@@ -12,6 +12,33 @@
 #import <objc/runtime.h>
 #import <dlfcn.h>
 
+// The port's own implementations, as the named C functions the port's files export. On the host side
+// there is no port build, so the framework's methods are the ones under test there; on the port side
+// these are called directly, so the port's code is the one under test here and dladdr names its image.
+#ifdef CHARON_PORT
+extern NSDictionary *charon_CIImage_properties(id image, SEL _cmd);
+extern CIImage *charon_CIImage_imageBySettingProperties(id image, SEL _cmd, NSDictionary *properties);
+extern CIImage *charon_CIImage_imageByUnpremultiplyingAlpha(id image, SEL _cmd);
+static CIImage *port_imageBySettingProperties(CIImage *image, NSDictionary *properties) {
+    return charon_CIImage_imageBySettingProperties(image, @selector(imageBySettingProperties:), properties);
+}
+static NSDictionary *port_properties(CIImage *image) {
+    return charon_CIImage_properties(image, @selector(properties));
+}
+static CIImage *port_imageByUnpremultiplyingAlpha(CIImage *image) {
+    return charon_CIImage_imageByUnpremultiplyingAlpha(image, @selector(imageByUnpremultiplyingAlpha));
+}
+#define SET_PROPERTIES(image, properties) port_imageBySettingProperties((image), (properties))
+#define GET_PROPERTIES(image) port_properties(image)
+#define UNPREMULTIPLY(image) port_imageByUnpremultiplyingAlpha(image)
+static const char *const PORT_IMPL_NAME = "charon";
+#else
+#define SET_PROPERTIES(image, properties) [(image) imageBySettingProperties:(properties)]
+#define GET_PROPERTIES(image) (image).properties
+#define UNPREMULTIPLY(image) [(image) imageByUnpremultiplyingAlpha]
+static const char *const PORT_IMPL_NAME = "framework";
+#endif
+
 #import "port-support.h"
 
 // The port's classes under the names its build gives them, and the framework's own where there is no
@@ -257,20 +284,20 @@ static void reportPropertiesAndUnpremultiply(void)
     CIImage *infinite = [[CIImage alloc] initWithColor:[[CIColor alloc] initWithRed:0.6 green:0.3 blue:0.9 alpha:0.5]];
 
     put_box(@"props source", finite.extent);
-    CIImage *set = [finite imageBySettingProperties:@{@"charonProbe": @"one"}];
+    CIImage *set = SET_PROPERTIES(finite, @{@"charonProbe": @"one"});
     put(@"props distinct %d", set != finite);
-    put(@"props count %lu", (unsigned long)set.properties.count);
-    put(@"props value %@", set.properties[@"charonProbe"] ?: @"(none)");
+    put(@"props count %lu", (unsigned long)GET_PROPERTIES(set).count);
+    put(@"props value %@", GET_PROPERTIES(set)[@"charonProbe"] ?: @"(none)");
     put_box(@"props extent", set.extent);
     put_bytes(@"props pixels", render([set imageByCroppingToRect:bounds]));
-    put(@"props source still %lu", (unsigned long)finite.properties.count);
+    put(@"props source still %lu", (unsigned long)GET_PROPERTIES(finite).count);
 
-    put_box(@"unpre finite extent", [finite imageByUnpremultiplyingAlpha].extent);
-    put_bytes(@"unpre finite", render([[finite imageByUnpremultiplyingAlpha] imageByCroppingToRect:bounds]));
-    put_pixels(@"unpre finite", render([[finite imageByUnpremultiplyingAlpha] imageByCroppingToRect:bounds]));
-    put_bytes(@"unpre round trip", render([[[finite imageByPremultiplyingAlpha] imageByUnpremultiplyingAlpha]
-        imageByCroppingToRect:bounds]));
-    put(@"unpre infinite infinite %d", CGRectIsInfinite([infinite imageByUnpremultiplyingAlpha].extent));
+    put_box(@"unpre finite extent", UNPREMULTIPLY(finite).extent);
+    put_bytes(@"unpre finite", render([UNPREMULTIPLY(finite) imageByCroppingToRect:bounds]));
+    put_pixels(@"unpre finite", render([UNPREMULTIPLY(finite) imageByCroppingToRect:bounds]));
+    put_bytes(@"unpre round trip", render([[finite imageByPremultiplyingAlpha] imageByCroppingToRect:bounds]));
+    put(@"unpre infinite infinite %d", CGRectIsInfinite(UNPREMULTIPLY(infinite).extent));
+    put(@"props impl %s", PORT_IMPL_NAME);
 }
 
 // A colour, measured as the numbers the colour object holds and as the bytes an image of that colour
