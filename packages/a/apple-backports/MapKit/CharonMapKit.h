@@ -32,23 +32,36 @@ NS_ASSUME_NONNULL_BEGIN
 // and 0 of the two delegate selectors, so the completer this port carries is the PORT'S OWN, and so
 // is the protocol it calls. The 16.4 SDK headers declare both, and the shapes here are the headers'
 // own: the protocol's two optional members, and the two places the completer hands them over.
-#if !CHARON_HOST_PROBE
 @class MKLocalSearchCompleter;
 @class MKLocalSearchCompletion;
 
+#if !CHARON_HOST_PROBE
+// The port's OWN protocol, behind the host guard because the host's MapKit declares one of the same
+// name -- but the 16.4 SDK the port compiles against declares only the protocol, never the class, so
+// on a device this IS the declaration and there is no collision.
 @protocol MKLocalSearchCompleterDelegate <NSObject>
 @optional
 - (void)completerDidUpdateResults:(id)completer;
 - (void)completer:(id)completer didFailWithError:(nullable NSError *)error;
 @end
+#endif
 
-// The two places the completer hands the delegate its answer, so the object that does it and the
-// object that is called agree without either naming the other's file. Charon's own, no API.
+// MKLocalSearchCompleter's regionPriority, whose OWN type differs between the SDKs: the 16.4 one the
+// port compiles against does not declare the property at all, and the host's MapKit declares it as
+// MKLocalSearchRegionPriority. The port's own declaration is the enum where that enum exists and the
+// integer where it does not, so the same source builds both places.
+#if !CHARON_HOST_PROBE
+typedef NSInteger MKLocalSearchRegionPriority;
+#endif
+
+// The two places the completer hands the delegate its answer. Charon's own names, NOT behind the
+// host guard: they collide with nothing Apple's headers declare, and hiding them behind a guard that
+// the host build turns on would hide the declaration from the very code that calls them, which is
+// what the Catalyst probe found.
 @interface MKLocalSearchCompleter (CharonDelegate)
 - (void)charon_delegateDidUpdate;
 - (void)charon_delegateDidFail:(nullable NSError *)error;
 @end
-#endif
 
 @interface CharonMapKit : NSObject
 

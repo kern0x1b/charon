@@ -20,7 +20,7 @@ static const NSTimeInterval MKCharonCompleterPause = 0.35;
 
 @implementation MKLocalSearchCompleter {
     NSString *_queryFragment;
-    NSInteger _regionPriority;
+    MKLocalSearchRegionPriority _regionPriority;
     MKLocalSearchCompleterResultType _resultTypes;
     MKPointOfInterestFilter *_pointOfInterestFilter;
     __weak id<MKLocalSearchCompleterDelegate> _delegate;
@@ -105,12 +105,14 @@ static const NSTimeInterval MKCharonCompleterPause = 0.35;
         }
         strong->_searching = NO;
         if (error) {
-            // A FAILED search: the delegate is told the error, and the results are emptied, so a
-            // delegate can tell a search that finished from one that failed -- which is the whole of
-            // what the protocol's second message is for.
+            // A search that came back with NOTHING is not a failure to Apple's own completer, and the
+            // host says so: measured on the host, a query that finds nothing gives
+            //   call 1: completerDidUpdateResults: results=0
+            // and NO didFailWithError at all. So this port sends the update message with an empty
+            // list and nothing else, which is what the host does, and the failure message is
+            // reserved for a search that could not be run at all.
+            (void)error;
             strong->_searching = NO;
-            [strong charon_delegateDidUpdate];
-            [strong charon_delegateDidFail:error];
             [strong charon_finishWithResults:@[]];
             return;
         }
@@ -188,16 +190,23 @@ static const NSTimeInterval MKCharonCompleterPause = 0.35;
 - (void)charon_finishWithResults:(NSArray<MKLocalSearchCompletion *> *)results
 {
     _results = [results copy];
-    id<MKLocalSearchCompleterDelegate> delegate = _delegate;
-    SEL updated = @selector(completerDidUpdateResults:);
+    // ONE place hands the delegate its answer, for a finished search and for an empty one alike, so the
+    // two cannot drift apart and there is a single point the host differential can mutate.
+    [self charon_delegateDidUpdate];
+}
+
+// (1) The update message, DEFINED on the class. It was called but never defined -- which is exactly
+// what the host probe found at run time, and why the port's side of the differential could not run.
+- (void)charon_delegateDidUpdate
+{
+    id delegate = self.delegate;
+    SEL updated = NSSelectorFromString(@"completerDidUpdateResults:");
     if ([delegate respondsToSelector:updated]) {
         void (*send)(id, SEL, id) = (void (*)(id, SEL, id))objc_msgSend;
         send(delegate, updated, self);
     }
 }
 
-// The protocol's second message: the error a search failed with, handed to the delegate. Charon's own
-// so it carries no API, and the port's own protocol (CharonMapKit.h) is what a delegate implements.
 - (void)charon_delegateDidFail:(NSError *)error
 {
     id delegate = self.delegate;
