@@ -19,6 +19,17 @@ static inline SCNMatrix4 CharonSCNMatrixMultiply(SCNMatrix4 a, SCNMatrix4 b)
     return result;
 }
 
+// A vector by a matrix, in the same convention as CharonSCNMatrixMultiply: the matrix's memory is
+// the column-major one OpenGL ES multiplies column vectors with, and the transform is a row vector,
+// so a point is multiplied as a row and a direction is multiplied with the translation left out.
+static inline void CharonSCNMatrixMultiplyVector(SCNMatrix4 matrix, const float *v, float *out)
+{
+    const float *m = &matrix.m11;
+    for (int row = 0; row < 4; row++) {
+        out[row] = m[row * 4 + 0] * v[0] + m[row * 4 + 1] * v[1] + m[row * 4 + 2] * v[2] + m[row * 4 + 3] * v[3];
+    }
+}
+
 // The inverse by cofactors; a matrix with no inverse is answered unchanged, as SceneKit answers it.
 static inline SCNMatrix4 CharonSCNMatrixInvert(SCNMatrix4 matrix)
 {
