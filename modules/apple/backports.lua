@@ -378,6 +378,15 @@ local function unit(opt, source, object)
     return program, arguments, key and path.join(opt.store, key:sub(1, 2), key .. ".o")
 end
 
+-- A folder of the store, made. Every gate of the fleet writes the one store, and two of them create
+-- the same two-hex folder at once all the time: os.mkdir raises on the EEXIST the loser gets
+-- (measured, xmake 3.1.1: "cannot create directory: .../44, File exists"), which kills that gate
+-- over a folder that is there. It is there, and that is all that is asked.
+local function store_folder(folder)
+    try { function () os.mkdir(folder) end }
+    assert(os.isdir(folder), "cannot create the store folder " .. folder)
+end
+
 -- The object of one unit at object, from the store when it holds it: true when the compiler ran.
 local function place(object, stored)
     -- Removed first either way: the object may be a link into the store from an earlier run, and a
@@ -403,7 +412,7 @@ function compile(opt, source, object, library)
     -- goes through driver() and no cache: a cache holds compilations, not links.
     os.vrunv(cache.wrapped(program, arguments))
     if stored then
-        os.mkdir(path.directory(stored))
+        store_folder(path.directory(stored))
         local temporary = stored .. "." .. hash.strhash32(object .. os.mclock()) .. ".tmp"
         os.cp(object, temporary)
         os.mv(temporary, stored)
@@ -415,17 +424,31 @@ end
 -- each time a build takes it, so what goes is what no tree still builds. At most once an hour, since
 -- a gate is every few minutes and a walk of the store is not free.
 function sweep_store(store, seconds)
+    -- The store comes from the environment (CHARON_OBJECT_STORE), and a stale value can name any
+    -- folder: only what this file writes is removed, an object, a link, a measurement or an
+    -- inventory named by its key (or the temporary of one a killed build left), in the four places
+    -- it writes them, and nothing else under store is ever looked at.
+    local KEY = string.rep("%x", 32)
+    local kinds = {
+        {"*", "*.o", "^" .. KEY .. "%.o"},
+        {"links/*", "*.dylib", "^" .. KEY .. "%.dylib"},
+        {"releases/*", "*.lua", "^" .. KEY .. "%.lua"},
+        {"inventories", "*.lua", "^" .. KEY .. "%.lua"}}
     local mark = path.join(store, "swept")
-    if os.isfile(mark) and os.time() - os.mtime(mark) < 3600 then
+    if not os.isdir(store) or (os.isfile(mark) and os.time() - os.mtime(mark) < 3600) then
         return
     end
-    os.mkdir(store)
     io.writefile(mark, "")
     local now, removed = os.time(), 0
-    for _, file in ipairs(os.files(path.join(store, "**"))) do
-        if file ~= mark and now - os.mtime(file) > seconds then
-            os.tryrm(file)
-            removed = removed + 1
+    for _, kind in ipairs(kinds) do
+        for _, file in ipairs(os.files(path.join(store, kind[1], kind[2] .. "*"))) do
+            local name = path.filename(file)
+            if name:match(kind[3] .. "$") or name:match(kind[3] .. "%.%x+%.tmp$") then
+                if now - os.mtime(file) > seconds then
+                    os.tryrm(file)
+                    removed = removed + 1
+                end
+            end
         end
     end
     return removed
@@ -749,7 +772,7 @@ local function release_inventory(cache)
             os.touch(file)
         else
             saved = objc.inventory(cache)
-            os.mkdir(path.directory(file))
+            store_folder(path.directory(file))
             local temporary = file .. "." .. hash.strhash32(cache .. os.mclock()) .. ".tmp"
             io.save(temporary, saved)
             os.mv(temporary, file)
@@ -963,7 +986,7 @@ local function link(opt, library, attach, objects, releases, outputdir, checked)
             end
         end
         if stored then
-            os.mkdir(path.directory(stored))
+            store_folder(path.directory(stored))
             local temporary = stored .. "." .. hash.strhash32(output .. os.mclock()) .. ".tmp"
             os.cp(output, temporary)
             os.mv(temporary, stored)
@@ -1699,6 +1722,14 @@ end
 -- It is a function of the object, the source and the headers it was compiled from and the held
 -- ladder, so an object of the store keeps it beside itself; the registry, which a stack changes
 -- more often than any of those, is asked again every time.
+local OWN_TEXT
+
+-- This file's text, by content: what a measurement kept in the store was computed by.
+local function own_text()
+    OWN_TEXT = OWN_TEXT or hash.strhash128(io.readfile(path.join(os.scriptdir(), "backports.lua")))
+    return OWN_TEXT
+end
+
 local function measured_names(opt, source, object)
     local file
     if opt.store and KEYS[object] then
@@ -1706,7 +1737,10 @@ local function measured_names(opt, source, object)
         for _, step in ipairs(ladder(opt.architecture)) do
             table.insert(signature, step.release .. "=" .. step.architecture .. "=" .. step.source)
         end
-        local key = hash.strhash128("charon-releases-1\n" .. KEYS[object] .. "\n" .. opt.sdkdir .. "\n" .. table.concat(signature, "\n"))
+        -- the measurement's own inputs (its code, the SDK's .tbd files, the rungs), and this file, whose
+        -- rules name the symbols and read the header's answer
+        local key = hash.strhash128("charon-releases-2\n" .. KEYS[object] .. "\n" .. opt.sdkdir .. "\n" .. table.concat(signature, "\n")
+                                    .. "\n" .. dyld.first_release_key(ladder(opt.architecture), opt.sdkdir) .. "\n" .. own_text())
         file = path.join(opt.store, "releases", key:sub(1, 2), key .. ".lua")
         local saved = os.isfile(file) and io.load(file)
         if saved then
@@ -1736,7 +1770,7 @@ local function measured_names(opt, source, object)
         end
     end
     if file then
-        os.mkdir(path.directory(file))
+        store_folder(path.directory(file))
         local temporary = file .. "." .. hash.strhash32(object .. os.mclock()) .. ".tmp"
         io.save(temporary, {names = names, earliest = earliest})
         os.mv(temporary, file)

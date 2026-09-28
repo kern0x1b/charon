@@ -897,6 +897,13 @@ local function first_release_file(ladder, sdkdir)
     return kept_file("first-release", hash.strhash128(sdk_key(sdkdir) .. " " .. ladder_signature(ladder)))
 end
 
+-- What first_releases(ladder, sdkdir, ...) answers from: the code that measures, the SDK's .tbd files
+-- by content and the ladder's rungs. A caller that keeps an answer of its own keys it on this, so a
+-- change to any of the three is a new key and not a stale answer.
+function first_release_key(ladder, sdkdir)
+    return code_key() .. "-" .. sdk_key(sdkdir) .. "-" .. ladder_signature(ladder)
+end
+
 -- The kept files this code reads for each of sdkdirs and ladders: what tools/cache-sweep.lua keeps
 -- of this checkout's measurements. It computes names only, and measures nothing.
 function kept_files(sdkdirs, ladders)
