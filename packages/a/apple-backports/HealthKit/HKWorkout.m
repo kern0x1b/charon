@@ -136,6 +136,39 @@
     return YES;
 }
 
+// The workout's own half of the archive, which the class did not have at all: a workout archived and
+// read back came back with no duration, no activity type, no events and no totals, because
+// -initWithCoder: and -encodeWithCoder: belonged to HKObject alone and the superclass decodes the
+// sample's type and its two dates and nothing that is a workout's own. The keys are the port's own
+// spelling, the one HKSample and HKQuantity already use here, and not the host's archive keys: those
+// are Apple's private format, in no header, and a reader of this library is not reading Apple's.
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    HKWorkout *workout = [super initWithCoder:coder];
+    if (workout) {
+        workout->_duration = [coder decodeDoubleForKey:@"duration"];
+        workout->_workoutActivityType = (HKWorkoutActivityType)[coder decodeIntegerForKey:@"workoutActivityType"];
+        workout->_workoutEvents = [[coder decodeObjectOfClass:[NSArray class] forKey:@"workoutEvents"] copy] ?: @[];
+        workout->_totalEnergyBurned = [[coder decodeObjectOfClass:[HKQuantity class] forKey:@"totalEnergyBurned"] copy];
+        workout->_totalDistance = [[coder decodeObjectOfClass:[HKQuantity class] forKey:@"totalDistance"] copy];
+        workout->_charonStrokeCount = [[coder decodeObjectOfClass:[HKQuantity class] forKey:@"totalSwimmingStrokeCount"] copy];
+        workout->_charonFlightsClimbed = [[coder decodeObjectOfClass:[HKQuantity class] forKey:@"totalFlightsClimbed"] copy];
+    }
+    return workout;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    [super encodeWithCoder:coder];
+    [coder encodeDouble:_duration forKey:@"duration"];
+    [coder encodeInteger:(NSInteger)_workoutActivityType forKey:@"workoutActivityType"];
+    [coder encodeObject:_workoutEvents forKey:@"workoutEvents"];
+    [coder encodeObject:_totalEnergyBurned forKey:@"totalEnergyBurned"];
+    [coder encodeObject:_totalDistance forKey:@"totalDistance"];
+    [coder encodeObject:_charonStrokeCount forKey:@"totalSwimmingStrokeCount"];
+    [coder encodeObject:_charonFlightsClimbed forKey:@"totalFlightsClimbed"];
+}
+
 - (instancetype)charon_initWithType:(HKObjectType *)type
                            metadata:(nullable NSDictionary *)metadata
                           startDate:(NSDate *)startDate
