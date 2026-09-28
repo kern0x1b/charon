@@ -35,6 +35,12 @@ import sys
 # the one that binds is the HIGHEST iOS version among the Attrs under a declaration - not the
 # first, which is what a naive scan reads.
 DECL = re.compile(r"^([|` -]*)(ObjC[A-Za-z]+Decl|AvailabilityAttr)\b(.*)$")
+# A location is <file:line:col> - NSObjCRuntime.h:19:27,
+# .../FileProvider.framework/Headers/NSFileProviderItem.h:22:54 - so the file is followed by two
+# COLONS and numbers. A pattern asking for ":line:" matches nothing at all, which is what the
+# instrumented guard showed: the tracked path was None on every one of the dump's 70k lines and the
+# scope test therefore never had a path to test.
+HEADER = re.compile(r"(/\S+\.h):\d+:\d+")
 IOS = re.compile(r"\bios\s+(\d+(?:\.\d+)?)\b")
 ADDRESS = re.compile(r"^0x[0-9a-f]+$")
 LOCATION = re.compile(r"^<<.*>>$|^<.*>$|^col:\d+$|^line:\d+.*$")
@@ -95,28 +101,7 @@ def _highest(attrs):
     return max(versions, key=_ver) if versions else None
 
 
-def declared_here(headers):
-    """The types this framework's OWN headers declare, by name.
-
-    The umbrella is a FileProvider header that imports Foundation, so the dump holds every
-    @interface the compile touched - NSArray, NSDate and the rest - and counting them is counting
-    another framework. A name is the framework's own when one of its headers says
-    `@interface <name>` or `@protocol <name>`, and that is read from the headers themselves rather
-    than inferred from the dump.
-    """
-    own = set()
-    pattern = re.compile(r"^\s*@(?:interface|protocol)\s+([A-Za-z_]\w*)", re.M)
-    for name in sorted(os.listdir(headers)):
-        if name.endswith(".h"):
-            try:
-                own |= set(pattern.findall(open(os.path.join(headers, name),
-                                                  errors="replace").read()))
-            except Exception:
-                pass
-    return own
-
-
-def parse(text, own=None):
+def parse(text, framework=None):
     """One row per TYPE, with its members hanging off it.
 
     A row per member was the original shape and it printed "Interface NSArray" nine times: a type
@@ -124,6 +109,15 @@ def parse(text, own=None):
     plan is written against - a class and what it declares, once.
     """
     order, attrs, pending = [], [], None
+    # The scope comes from the DUMP: a declaration's location is <begin, end> and the end is the
+    # header the declaration sits in - NSObjCRuntime.h:19:27,
+    # .../FileProvider.framework/Headers/NSFileProviderItem.h:22:54 - and a line that carries only
+    # `line:` has no path at all and means the file of the line above it, so the path is carried
+    # forward. Keeping what is under the framework's own Headers is therefore a decision about
+    # locations, not about names: Foundation's NSArray and FileProvider's NSFileProviderManager
+    # are both named in the same dump and only one of them is in this framework.
+    path = None
+    marker = ("/%s.framework/Headers/" % framework) if framework else None
     types = {}
 
     def flush():
@@ -143,6 +137,9 @@ def parse(text, own=None):
                 types[key]["introduced"] = later
 
     for line in text.splitlines():
+        found = HEADER.search(line)
+        if found:
+            path = found.group(1)
         m = DECL.match(line)
         if not m:
             continue
@@ -154,10 +151,9 @@ def parse(text, own=None):
         if pending is not None and len(prefix) <= len(pending[0]):
             flush()
             pending, attrs = None, []
-        if own is not None and kind in ("ObjCInterfaceDecl", "ObjCProtocolDecl",
-                                        "ObjCClassDecl", "ObjCCategoryDecl"):
-            if identifier(kind, rest) not in own:
-                pending, attrs = None, []
+        if marker and path and marker not in path:
+            pending, attrs = None, []
+            continue
         if kind in KINDS:
             pending, attrs = (prefix, kind, rest), []
     flush()
@@ -181,8 +177,7 @@ def main():
         return
     headers = os.path.join(args.sdk, "System", "Library", "Frameworks",
                            args.framework + ".framework", "Headers")
-    own = declared_here(headers)
-    order, types = parse(ast, own)
+    order, types = parse(ast, args.framework)
 
     floor = tuple(int(p) for p in args.minimum.split("."))
     by_intro = collections.Counter()
