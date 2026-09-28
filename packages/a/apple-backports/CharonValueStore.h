@@ -17,9 +17,9 @@
 // symbol from the other. This is the same arrangement CharonSayOnce.h has for the say-once, which
 // several libraries include from here.
 //
-// A framework that uses this declares its own roots - the two classes its leaves inherit, or the
-// classes that hold a store of their own - and passes them in, which is what keeps the conversion
-// table honest: a value is one of *this* framework's classes or it is not.
+// The roots a framework passes are advisory and are kept only for the record: a value is recognised by
+// the store's own accessor (see CharonValueConvert), so a framework with two roots and one with
+// thirty-eight are both covered by the same test and neither has to enumerate its classes.
 
 // The property names an object has: its own class first, then each superclass, and without NSObject's
 // own. This is the one place that knows what a value object is made of, and the dictionary, the JSON
@@ -105,10 +105,13 @@ static inline id CharonValueConvert(id value, Class firstRoot, Class secondRoot)
         }];
         return converted;
     }
-    // A value of this framework represents itself the way its own class does, which is the contract
-    // its two representation methods make.
-    if ((firstRoot && [[value class] isSubclassOfClass:firstRoot]) ||
-        (secondRoot && [[value class] isSubclassOfClass:secondRoot]))
+    // A value of one of the frameworks using this header represents itself the way its own class does,
+    // which is the contract its representation methods make. The test is that the class answers the
+    // store's own accessor, which every value class here gets from the category its framework declares -
+    // not "a subclass of one of the roots this framework named", which fits a framework with two roots
+    // and cannot fit one with thirty-eight, since all of those are NSObject subclasses and there is no
+    // common superclass left to name.
+    if ([(id)value respondsToSelector:@selector(charon_valueForKey:)])
         return CharonValueConvertProperties(value, firstRoot, secondRoot);
     return [value description];
 }
