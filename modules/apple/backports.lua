@@ -1634,14 +1634,18 @@ function sdk_protocol_declarations(sdkdir)
     local seen = SDK_DECLARATIONS[sdkdir]
     if not seen then
         seen = {}
-        for _, folder in ipairs({path.join(sdkdir, "usr/include"),
-                                 path.join(sdkdir, "System/Library/Frameworks", "*", "Headers")}) do
+        local function scan(folder)
             for _, file in ipairs(os.files(path.join(folder, "*.h"))) do
                 for line in io.lines(file) do
                     for protocol in line:gmatch("@protocol%s+([%w_]+)") do
                         if not line:find("@protocol%s+" .. protocol .. "%s*;") then
                             seen[protocol] = true
                         end
+        scan(path.join(sdkdir, "usr/include"))
+        -- every framework, resolved: one of them is a symlink into the Cryptex, and os.files does not
+        -- follow a symlinked directory, so the glob missed its headers and the protocols in them
+        for _, framework in ipairs(os.dirs(path.join(sdkdir, "System/Library/Frameworks", "*"))) do
+            scan(path.join(path.realpath(framework), "Headers"))
         SDK_DECLARATIONS[sdkdir] = seen
 -- header this package installs or by the SDK the backport is compiled against. The owner's being a protocol is
 -- not the answer: a protocol nothing declares answers nothing, and the member of one is then implemented
