@@ -385,3 +385,54 @@ recorded by `tests/backports/host/vision/run.sh` (33 records) and held against t
   built and summed. Not repaired here, so **no scale, offset or residual is quoted for the twelve
   real cases** and the r8 export waits on it.
 
+
+## The crop rect: the probe, the fit's controls, and what the twelve say
+
+**Retraction.** A commit ago this file said the defect was in the y normal equations of the crop-rect
+fit. It was not: they are correct, and the fit recovers a known map's slope on both axes to three
+places. What was wrong was how the fit *printed* the offset -- as `-b/a` and `-d/c`, dividing an
+intercept that is already in source pixels by the slope again, which turned a map's **+4 into -2** on
+a slope of 0.5 and a map's **-8 into +24** on a slope of a third. The probe made two mistakes of
+its own before that: it wrote a map whose values ran off the end of a byte, and it read buffers it
+never drew into. None of that was a property of Core ML, and none of it is in what follows.
+
+**The probe** is `tests/backports/host/vision/crop-probe/coords.m`, in the tree, with its build and
+run in its header. **Its controls**, which is what makes its numbers mean anything:
+
+| map it is given | scale x | offset x | scale y | offset y | rms | pixels |
+| --- | --- | --- | --- | --- | --- | --- |
+| x = 0.5d + 1, y = 1d + 3 -- no rounding anywhere | **0.50000** | **+1.000** | **1.00000** | **+3.000** | **0.0000** | 1952 |
+| x = 2d + 0, y = 0.5d + 4 | 1.99854 | +0.238 | 0.50000 | +4.000 | 0.2499 | 1920 |
+| x = 1.5d + 2, y = 3d - 8 | 1.50083 | +2.011 | 3.02222 | -7.904 | 0.3813 | 1020 |
+
+The first has maps that land on whole source pixels, so the answer must be exact, and it is, to five
+places on the scale and three on the offset, with a residual of zero. The other two have a half-step,
+and come back within a quarter of a source pixel, which is the staircase of a nearest-neighbour step
+and not an error in the fit.
+
+**The twelve real cases**, each against Core ML's own option for that rule. Scale and offset are in
+source pixels, and the offset is the source position at destination 0.
+
+| case | scale x | offset x | scale y | offset y | rms | pixels |
+| --- | --- | --- | --- | --- | --- | --- |
+| 100x50 to 224x224, centre crop | 4.63073 | +24.397 | 4.56821 | -0.155 | 3.2769 | 50176 |
+| 50x100 to 224x224, centre crop | 4.56821 | -0.155 | 4.69761 | +25.793 | 3.7462 | 50176 |
+| 16x8 to 32x8, centre crop | 2.01925 | -0.158 | 2.02266 | +1.814 | 0.0555 | 256 |
+| 10x10 to 30x20, centre crop | 3.39385 | -0.033 | 4.29270 | +3.002 | 1.2014 | 600 |
+| 20x10 to 20x20, centre crop | 2.00116 | +4.753 | 2.03460 | -0.154 | 0.0700 | 400 |
+| 100x50 to 224x224, scale fit | 2.24129 | -0.244 | 2.24064 | -25.245 | 0.2057 | 25084 |
+| 50x100 to 224x224, scale fit | 2.24064 | -25.245 | 2.24129 | -0.244 | 0.2057 | 25084 |
+| 16x8 to 32x8, scale fit | 1.00000 | -8.000 | 1.00000 | +0.000 | 0.0000 | 127 |
+| 10x10 to 30x20, scale fit | 2.02845 | -2.649 | 2.02845 | -0.184 | 0.0947 | 399 |
+| 5x10 to 30x20, scale fit | 2.11381 | -4.860 | 2.02789 | -0.186 | 0.1035 | 199 |
+| 10x20 to 30x10, scale fit | 0.87500 | -12.802 | 0.60281 | +0.445 | 2.9810 | 60 |
+
+**What these numbers are, and what they are not.** They are a measurement, not a crop rect. The one
+case with a residual of **exactly zero** is 16x8 to 32x8 scale fit, and it reads scale 1.00000 on both
+axes with offsets -8 and 0 -- a pure translation, which is what a picture of sixteen columns inside a
+thirty-two wide target is, with an eight column bar. The other ten have residuals between 0.06 and
+3.7, and the reason is the **blend**: a bilinear kernel puts every output between its neighbours, so
+what comes back is a weighted point rather than a source pixel, and the fit recovers the blend rather
+than the sample. The controls show the same thing from the other side -- a residual of zero only where
+nothing is blended. So the rule for the crop rect **cannot be read off this table** until the blend is
+accounted for, and doing that is the next piece of work, not a claim this table supports.
