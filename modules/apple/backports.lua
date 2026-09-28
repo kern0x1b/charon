@@ -400,6 +400,13 @@ local function unit(opt, source, object)
     for _, name in ipairs(table.orderkeys(opt.archives or {})) do
         table.insert(arguments, "-I" .. opt.archives[name].includedir)
     end
+    -- __FILE__ spelled from the checkout, not with it: an object that names its own source (UIDynamicAnimator.mm's
+    -- assertion handler) otherwise carries the path of the worktree that built it, which the store's key leaves out on
+    -- purpose so every worktree shares one entry - measured, two worktrees, one key, two objects differing in that path.
+    if opt.root then
+        local checkout = path.normalize(path.join(path.absolute(opt.root), "..", "..", ".."))
+        table.insert(arguments, "-fmacro-prefix-map=" .. checkout .. "/=")
+    end
     local program, arguments = clang(opt, table.join(arguments, {"-c", source, "-o", object}), objective_c)
     local key = object_key(opt, program, arguments, source, object)
     KEYS[object] = key
@@ -438,7 +445,11 @@ function compile(opt, source, object, library)
     -- argument, because os.execv runs a name it cannot execute itself by splitting that name on
     -- spaces, and a checkout under a path with a space in it has to survive that. The link below
     -- goes through driver() and no cache: a cache holds compilations, not links.
-    os.vrunv(cache.wrapped(program, arguments))
+    -- From the checkout: ccache (base_dir) hands the compiler every path under the tree relative to where it runs, and
+    -- __FILE__ is then spelled from there - from the shared checkout it named the worktree (".agent-work/worktrees/<name>/
+    -- packages/..."), which the store's key leaves out; from the checkout itself it is "packages/..." in every worktree.
+    local program, argv = cache.wrapped(program, arguments)
+    os.vrunv(program, argv, opt.root and {curdir = path.normalize(path.join(path.absolute(opt.root), "..", "..", ".."))} or nil)
     if stored then
         store_folder(path.directory(stored))
         local temporary = stored .. "." .. hash.strhash32(object .. os.mclock()) .. ".tmp"
