@@ -3,6 +3,7 @@
 
 #pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
 
+
 // The sample machinery is MDLAnimatedValue's own, in MDLAnimatedValue11.m, and a class extension's
 // methods are not visible to a subclass, so what MDLAnimatedQuaternion needs of it is declared here.
 @interface MDLAnimatedQuaternion ()
