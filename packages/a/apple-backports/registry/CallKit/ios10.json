@@ -87,9 +87,10 @@
       "kind": "protocol",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/CallKit/CallKit.md",
-      "source": "CallKit of the arm64 shared cache of iOS 12.0, and SDK 16.4, CallKit"
+      "status": "absent",
+      "source": "CallKit of the arm64 shared cache of iOS 12.0, and SDK 16.4, CallKit",
+      "reason": "CharonCallKitProtocols.h:27:79: error: expected a type: a parameter's type is not declared by the iOS 16.4 SDK, so the protocol cannot be declared by a header this package installs",
+      "effect": "the protocol is not declared, so a client that names it does not compile: it is transcribed once the type it needs is carried"
     },
     {
       "api": "CXCallUpdate",
@@ -195,9 +196,10 @@
       "kind": "protocol",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/CallKit/CallKit.md",
-      "source": "CallKit of the arm64 shared cache of iOS 12.0, and SDK 16.4, CallKit"
+      "status": "absent",
+      "source": "CallKit of the arm64 shared cache of iOS 12.0, and SDK 16.4, CallKit",
+      "reason": "CharonCallKitProtocols.h:27:79: error: expected a type: a parameter's type is not declared by the iOS 16.4 SDK, so the protocol cannot be declared by a header this package installs",
+      "effect": "the protocol is not declared, so a client that names it does not compile: it is transcribed once the type it needs is carried"
     },
     {
       "api": "CXSetGroupCallAction",

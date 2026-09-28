@@ -105,10 +105,9 @@
       "kind": "protocol",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the protocol is carried by the classes of the port that answer for it; an application that holds an id of it gets an object of OpenGL ES 2.0 behind it",
-      "effect": "the protocol is there, and the methods of it the port does not do are not implemented; facts/Metal/RenderPath.md lists what is done and what is not",
-      "facts": "facts/Metal/RenderPath.md",
+      "status": "absent",
+      "reason": "CharonMetalProtocols.h:51:35: error: cannot find protocol declaration for 'MTLAllocation': the base is not declared by the iOS 16.4 SDK, so the protocol cannot be declared by a header this package installs",
+      "effect": "the protocol is not declared, so a client that names it does not compile: it is transcribed once the type it needs is carried",
       "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
     },
     {
@@ -116,10 +115,9 @@
       "kind": "protocol",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the protocol is carried by the classes of the port that answer for it; an application that holds an id of it gets an object of OpenGL ES 2.0 behind it",
-      "effect": "the protocol is there, and the methods of it the port does not do are not implemented; facts/Metal/RenderPath.md lists what is done and what is not",
-      "facts": "facts/Metal/RenderPath.md",
+      "status": "absent",
+      "reason": "CharonMetalProtocols.h:51:35: error: cannot find protocol declaration for 'MTLAllocation': the base is not declared by the iOS 16.4 SDK, so the protocol cannot be declared by a header this package installs",
+      "effect": "the protocol is not declared, so a client that names it does not compile: it is transcribed once the type it needs is carried",
       "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
     },
     {
@@ -127,10 +125,9 @@
       "kind": "protocol",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the protocol is carried by the classes of the port that answer for it; an application that holds an id of it gets an object of OpenGL ES 2.0 behind it",
-      "effect": "the protocol is there, and the methods of it the port does not do are not implemented; facts/Metal/RenderPath.md lists what is done and what is not",
-      "facts": "facts/Metal/RenderPath.md",
+      "status": "absent",
+      "reason": "CharonMetalProtocols.h:51:35: error: cannot find protocol declaration for 'MTLAllocation': the base is not declared by the iOS 16.4 SDK, so the protocol cannot be declared by a header this package installs",
+      "effect": "the protocol is not declared, so a client that names it does not compile: it is transcribed once the type it needs is carried",
       "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
     },
     {
@@ -138,10 +135,9 @@
       "kind": "protocol",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the protocol is carried by the classes of the port that answer for it; an application that holds an id of it gets an object of OpenGL ES 2.0 behind it",
-      "effect": "the protocol is there, and the methods of it the port does not do are not implemented; facts/Metal/RenderPath.md lists what is done and what is not",
-      "facts": "facts/Metal/RenderPath.md",
+      "status": "absent",
+      "reason": "CharonMetalProtocols.h:51:35: error: cannot find protocol declaration for 'MTLAllocation': the base is not declared by the iOS 16.4 SDK, so the protocol cannot be declared by a header this package installs",
+      "effect": "the protocol is not declared, so a client that names it does not compile: it is transcribed once the type it needs is carried",
       "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
     },
     {
@@ -149,10 +145,9 @@
       "kind": "protocol",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the protocol is carried by the classes of the port that answer for it; an application that holds an id of it gets an object of OpenGL ES 2.0 behind it",
-      "effect": "the protocol is there, and the methods of it the port does not do are not implemented; facts/Metal/RenderPath.md lists what is done and what is not",
-      "facts": "facts/Metal/RenderPath.md",
+      "status": "absent",
+      "reason": "CharonMetalProtocols.h:51:35: error: cannot find protocol declaration for 'MTLAllocation': the base is not declared by the iOS 16.4 SDK, so the protocol cannot be declared by a header this package installs",
+      "effect": "the protocol is not declared, so a client that names it does not compile: it is transcribed once the type it needs is carried",
       "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
     },
     {
@@ -160,10 +155,9 @@
       "kind": "protocol",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the protocol is carried by the classes of the port that answer for it; an application that holds an id of it gets an object of OpenGL ES 2.0 behind it",
-      "effect": "the protocol is there, and the methods of it the port does not do are not implemented; facts/Metal/RenderPath.md lists what is done and what is not",
-      "facts": "facts/Metal/RenderPath.md",
+      "status": "absent",
+      "reason": "CharonMetalProtocols.h:51:35: error: cannot find protocol declaration for 'MTLAllocation': the base is not declared by the iOS 16.4 SDK, so the protocol cannot be declared by a header this package installs",
+      "effect": "the protocol is not declared, so a client that names it does not compile: it is transcribed once the type it needs is carried",
       "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
     },
     {
@@ -171,10 +165,9 @@
       "kind": "protocol",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the protocol is carried by the classes of the port that answer for it; an application that holds an id of it gets an object of OpenGL ES 2.0 behind it",
-      "effect": "the protocol is there, and the methods of it the port does not do are not implemented; facts/Metal/RenderPath.md lists what is done and what is not",
-      "facts": "facts/Metal/RenderPath.md",
+      "status": "absent",
+      "reason": "CharonMetalProtocols.h:51:35: error: cannot find protocol declaration for 'MTLAllocation': the base is not declared by the iOS 16.4 SDK, so the protocol cannot be declared by a header this package installs",
+      "effect": "the protocol is not declared, so a client that names it does not compile: it is transcribed once the type it needs is carried",
       "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
     },
     {
@@ -182,10 +175,9 @@
       "kind": "protocol",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the protocol is carried by the classes of the port that answer for it; an application that holds an id of it gets an object of OpenGL ES 2.0 behind it",
-      "effect": "the protocol is there, and the methods of it the port does not do are not implemented; facts/Metal/RenderPath.md lists what is done and what is not",
-      "facts": "facts/Metal/RenderPath.md",
+      "status": "absent",
+      "reason": "CharonMetalProtocols.h:51:35: error: cannot find protocol declaration for 'MTLAllocation': the base is not declared by the iOS 16.4 SDK, so the protocol cannot be declared by a header this package installs",
+      "effect": "the protocol is not declared, so a client that names it does not compile: it is transcribed once the type it needs is carried",
       "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
     },
     {
@@ -193,10 +185,9 @@
       "kind": "protocol",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the protocol is carried by the classes of the port that answer for it; an application that holds an id of it gets an object of OpenGL ES 2.0 behind it",
-      "effect": "the protocol is there, and the methods of it the port does not do are not implemented; facts/Metal/RenderPath.md lists what is done and what is not",
-      "facts": "facts/Metal/RenderPath.md",
+      "status": "absent",
+      "reason": "CharonMetalProtocols.h:51:35: error: cannot find protocol declaration for 'MTLAllocation': the base is not declared by the iOS 16.4 SDK, so the protocol cannot be declared by a header this package installs",
+      "effect": "the protocol is not declared, so a client that names it does not compile: it is transcribed once the type it needs is carried",
       "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
     },
     {
@@ -204,10 +195,9 @@
       "kind": "protocol",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the protocol is carried by the classes of the port that answer for it; an application that holds an id of it gets an object of OpenGL ES 2.0 behind it",
-      "effect": "the protocol is there, and the methods of it the port does not do are not implemented; facts/Metal/RenderPath.md lists what is done and what is not",
-      "facts": "facts/Metal/RenderPath.md",
+      "status": "absent",
+      "reason": "CharonMetalProtocols.h:51:35: error: cannot find protocol declaration for 'MTLAllocation': the base is not declared by the iOS 16.4 SDK, so the protocol cannot be declared by a header this package installs",
+      "effect": "the protocol is not declared, so a client that names it does not compile: it is transcribed once the type it needs is carried",
       "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
     },
     {
@@ -215,10 +205,9 @@
       "kind": "protocol",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the protocol is carried by the classes of the port that answer for it; an application that holds an id of it gets an object of OpenGL ES 2.0 behind it",
-      "effect": "the protocol is there, and the methods of it the port does not do are not implemented; facts/Metal/RenderPath.md lists what is done and what is not",
-      "facts": "facts/Metal/RenderPath.md",
+      "status": "absent",
+      "reason": "CharonMetalProtocols.h:51:35: error: cannot find protocol declaration for 'MTLAllocation': the base is not declared by the iOS 16.4 SDK, so the protocol cannot be declared by a header this package installs",
+      "effect": "the protocol is not declared, so a client that names it does not compile: it is transcribed once the type it needs is carried",
       "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
     },
     {
@@ -226,10 +215,9 @@
       "kind": "protocol",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the protocol is carried by the classes of the port that answer for it; an application that holds an id of it gets an object of OpenGL ES 2.0 behind it",
-      "effect": "the protocol is there, and the methods of it the port does not do are not implemented; facts/Metal/RenderPath.md lists what is done and what is not",
-      "facts": "facts/Metal/RenderPath.md",
+      "status": "absent",
+      "reason": "CharonMetalProtocols.h:51:35: error: cannot find protocol declaration for 'MTLAllocation': the base is not declared by the iOS 16.4 SDK, so the protocol cannot be declared by a header this package installs",
+      "effect": "the protocol is not declared, so a client that names it does not compile: it is transcribed once the type it needs is carried",
       "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
     },
     {
@@ -237,10 +225,9 @@
       "kind": "protocol",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the protocol is carried by the classes of the port that answer for it; an application that holds an id of it gets an object of OpenGL ES 2.0 behind it",
-      "effect": "the protocol is there, and the methods of it the port does not do are not implemented; facts/Metal/RenderPath.md lists what is done and what is not",
-      "facts": "facts/Metal/RenderPath.md",
+      "status": "absent",
+      "reason": "CharonMetalProtocols.h:51:35: error: cannot find protocol declaration for 'MTLAllocation': the base is not declared by the iOS 16.4 SDK, so the protocol cannot be declared by a header this package installs",
+      "effect": "the protocol is not declared, so a client that names it does not compile: it is transcribed once the type it needs is carried",
       "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
     },
     {
@@ -325,10 +312,9 @@
       "kind": "protocol",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the protocol is carried so that an application tests and writes depth and stencil the way it does with Metal; the port does it with the depth and stencil buffers OpenGL ES 2.0 has",
-      "effect": "the protocol is there, and the state it names is made by the device and set on the render command encoder; the depth of Metal's clip space is turned into ES's by the vertex shader, and what ES 2.0 cannot do is listed in facts/Metal/RenderPath.md",
-      "facts": "facts/Metal/RenderPath.md",
+      "status": "absent",
+      "reason": "CharonMetalProtocols.h:51:35: error: cannot find protocol declaration for 'MTLAllocation': the base is not declared by the iOS 16.4 SDK, so the protocol cannot be declared by a header this package installs",
+      "effect": "the protocol is not declared, so a client that names it does not compile: it is transcribed once the type it needs is carried",
       "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
     },
     {
