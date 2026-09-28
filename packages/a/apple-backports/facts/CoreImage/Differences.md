@@ -54,3 +54,23 @@ not reach the built sources or the rows are insensitive to them. I could not det
 pass, and I am not claiming either row is proved: this is the same failure mode as the first
 "four mutations still gave 252/252", where the port process was the host. **The next thing to do is to
 find out which, before either row is claimed as held.**
+
+## The 4.3 gate, and what it means for the two new files
+
+`4.3` fails on two symbols, and the reason is the release's:
+
+```
+Undefined symbols for architecture armv7:
+  "_OBJC_CLASS_$_CIContext", referenced from:
+      objc-class-ref in CIImageUnpremultiply11.o
+  "_OBJC_CLASS_$_CIImage", referenced from: ...
+```
+
+iOS 4.3 **has** CIImage and CIContext. So at that band the release supplies the classes, the port's own
+`CIImage+FilterParameters.m` is dropped as carrying API the release has, and the two new files - which
+define only selectors the release lacks, so they are kept - are left referencing classes no port object
+defines. That is the "a file whose exports a band's release already has is left out of that band" trap
+arriving through the class rather than through a C function, and it is why neither new file may name a
+class without the band carrying it. Not fixed; the next step is to see which of the port's files is
+dropped at 4.3 and to decide between keeping the arithmetic in a file the band keeps and having the
+class come from the release.
