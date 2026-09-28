@@ -3958,6 +3958,15 @@
    "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
    "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
    "source": "SDK 26, Mac Catalyst, UIKit"
+  },
+  {
+   "api": "CharonEdgeList",
+   "kind": "class",
+   "introduced": "7.0",
+   "minimum": "7.0",
+   "status": "implemented",
+   "facts": "facts/UIKit/TextSystem7.md",
+   "source": "the port's own edge list, which the exclusion-path flattening in NSTextContainer+ExclusionPaths.m collects a path's elements into; it arrives with the TextKit of iOS 7.0 that NSTextContainer belongs to"
   }
  ]
 }

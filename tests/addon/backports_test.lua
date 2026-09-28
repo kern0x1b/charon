@@ -101,6 +101,10 @@ local function placement_step(backports, opt, folder, found)
 end
 
 local function surface_step(backports, opt, folder, found)
+    if not opt.sdk or not opt.clang then
+        table.insert(found, "the surface check needs an SDK and a compiler and was given neither, so it did not run")
+        return
+    end
     local source = path.join(folder, "surface", "NSDateInterval.m")
     io.writefile(source, "#import <Foundation/Foundation.h>\n" ..
                          "void charon_surface_helper(void);\n" ..
