@@ -15,6 +15,7 @@
 #import <objc/message.h>
 #import <objc/runtime.h>
 #import <dlfcn.h>
+#include <stdlib.h>
 
 static int checks;
 static int failures;
@@ -61,12 +62,22 @@ static void same_string(NSString *ours, NSString *theirs, NSString *what)
         fail(@"%@: the port says |%@|, Foundation |%@|", what, ours ?: @"(nil)", theirs ?: @"(nil)");
 }
 
+// Where the probe writes: run.sh's own build directory when it set one, and the worktree otherwise.
+// Band output never goes to /tmp, and one constant is where the path is written down.
+static NSString *charon_run_path(void)
+{
+    const char *fromEnvironment = getenv("BUILD");
+    if (fromEnvironment != NULL && fromEnvironment[0] != '\0')
+        return [NSString stringWithUTF8String:fromEnvironment];
+    return @".agent-work/runs/bundlerequest/fresh";
+}
+
 // the one thing the port's installed functions read from the object they are called on
 static NSString *charon_bundlePath(id self, SEL selector)
 {
     (void)self;
     (void)selector;
-    return @"/tmp/charon-brr-fresh";
+    return charon_run_path();
 }
 
 // The port's own class, declared here under the name run.sh gives it, so the calls are typed and reach
@@ -299,11 +310,9 @@ int main(void)
         /* a class of the test's own that has the two selectors *absent* and the one the port's
            functions read -bundlePath- present, so what is under test is the decision and not a
            forward to a method this class never had */
-        static NSString *const path = @"/tmp/charon-brr-fresh";
         Class fresh = objc_allocateClassPair([NSObject class], "CharonHostFreshBundle", 0);
         class_addMethod(fresh, NSSelectorFromString(@"bundlePath"), (IMP)charon_bundlePath, "@@:");
         objc_registerClassPair(fresh);
-        (void)path;
         CharonInstallNSBundleAdditions(fresh);
         SEL installedSet = NSSelectorFromString(@"setPreservationPriority:forTags:");
         SEL installedGet = NSSelectorFromString(@"preservationPriorityForTag:");
@@ -325,6 +334,7 @@ int main(void)
                         @"the installed getter reads 0 for a tag that was never set");
         }
 
+        printf("note: the fresh class the install was exercised on carries %s\n", [charon_run_path() UTF8String]);
         printf("note: the host's two NSBundle additions are the same selectors on the same class and read back 0,\n"
                "  so the port's two are held to the header and differ from macOS on purpose.\n");
 

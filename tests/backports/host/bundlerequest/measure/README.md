@@ -6,25 +6,30 @@ and the commands are below. They are kept with the test rather than in `.agent-w
 what the test rests on and `.agent-work` is not part of any branch.
 
 ```sh
+# every binary goes under the worktree, beside the run.sh's own build directory: band output never
+# goes to /tmp
+runs=$PWD/.agent-work/runs/host-measurements
+mkdir -p "$runs"
+
 # the class: its superclass, conformances, and which of the eleven members answers
-xcrun clang -fobjc-arc -Wno-unguarded-availability -o /tmp/host-methods \
-    tests/backports/host/bundlerequest/measure/host-methods.m -framework Foundation && /tmp/host-methods
+xcrun clang -fobjc-arc -Wno-unguarded-availability -o $runs/host-methods \
+    tests/backports/host/bundlerequest/measure/host-methods.m -framework Foundation && $runs/host-methods
 
 # -init's refusal, -initWithTag:'s answer, and the two additions' behaviour on a bundle with and
 # without a manifest
-xcrun clang -fobjc-arc -Wno-deprecated-declarations -Wno-unguarded-availability -o /tmp/host-init \
-    tests/backports/host/bundlerequest/measure/host-init.m -framework Foundation && /tmp/host-init
+xcrun clang -fobjc-arc -Wno-deprecated-declarations -Wno-unguarded-availability -o $runs/host-init \
+    tests/backports/host/bundlerequest/measure/host-init.m -framework Foundation && $runs/host-init
 
 # the manifest: a bundle written on the spot with such a plist in it, read back through the release's
 # own -[NSBundle pathForResource:ofType:], and the two constants by dlsym
 xcrun clang -fobjc-arc -Wno-deprecated-declarations -Wno-unguarded-availability -include dlfcn.h \
-    -o /tmp/host-plist tests/backports/host/bundlerequest/measure/host-plist.m -framework Foundation && /tmp/host-plist
+    -o $runs/host-plist tests/backports/host/bundlerequest/measure/host-plist.m -framework Foundation && $runs/host-plist
 
 # the step-by-step facts: the eight properties, the two initialisers, the four properties under the
 # manifest's rules, the two additions per language, and the pronoun-shaped corners
-xcrun clang -fobjc-arc -Wno-deprecated-declarations -Wno-unguarded-availability -o /tmp/host-facts \
+xcrun clang -fobjc-arc -Wno-deprecated-declarations -Wno-unguarded-availability -o $runs/host-facts \
     tests/backports/host/bundlerequest/measure/host-facts.m -framework Foundation
-for step in 0 1 2 3 4; do /tmp/host-facts $step; done
+for step in 0 1 2 3 4; do $runs/host-facts $step; done
 ```
 
 Two things no program here can print, and the facts file says so where it uses them:

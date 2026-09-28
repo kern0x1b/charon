@@ -10,6 +10,7 @@ fi
 [ $# -eq 0 ] || { echo "$usage" >&2; exit 2; }
 FOUNDATION=${FOUNDATION:-$here/../../../../packages/a/apple-backports/Foundation}
 BUILD=${BUILD:-$here/../../../../.agent-work/runs/bundlerequest}
+export BUILD
 sources=${SOURCES:-$(cat "$here/sources.txt")}
 # SAN=1 adds AddressSanitizer, which names the file, the line and the access where lldb only gives a
 # frame; it is a debugging build of this test, not a mode the house runner needs.
