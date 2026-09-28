@@ -172,7 +172,43 @@ recorded by `tests/backports/host/vision/run.sh` (33 records) and held against t
   output **14**, where bar + 5 is 13 -- Core ML's horizontal inset there is one more than
   `(W - w) / 2`, which the centre-crop row may share and the fit rows do not.
 
-  The cases that would actually read the kernel are the ones where the target's aspect matches the
-  picture's, so that `ScaleFit` scales it: `16x8` to `64x32` for 4x up, and `64x8` to `16x2` for 4x
-  down. That is the next run, and the kernel has not been read yet.
+  **The kernel, read off the aspect-matched cases.** With the target's aspect matching the picture's,
+  `ScaleFit` scales it, and the output row *is* the impulse response. The red channel, as numbers:
+
+  * **4x up, a white column at source 4** (`16x8` -> `64x32`) -- eight symmetric taps, centred
+    between output columns 17 and 18:
+
+    ```
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 32 96 159 223 | 223 159 96 32 0 0 ...
+    ```
+
+    The weights are `32 96 159 223 223 159 96 32`, they sum to **exactly 1020 = 4 x 255**, the scale,
+    and the two central taps are equal. An even-symmetric response whose two central taps are equal
+    puts the kernel's centre **between** two destination pixels, and the centre sits at 17.5 for a
+    source column of 4 and a scale of 4: that is the **half-pixel convention**, `dst = (x + 0.5) * s -
+    0.5`, not align-corners. **Eight taps** is neither bilinear (two) nor bicubic (four), and the
+    weights' shape -- rising, a flat pair at the top, falling -- is the signature of a wider kernel
+    than bicubic, which with a 4x support is what a **Lanczos-style** filter gives on the way up.
+
+  * **4x up, a white row at source 2** -- the same eight taps down the other axis, so the kernel is
+    **separable**: one set of weights horizontally, the same vertically.
+
+  * **4x down, a white column at source 20** (`64x32` -> `16x8`) -- a **single** output pixel, `137`,
+    with no spread at all. So the downscale is a **point sample through the same filter**, not an
+    area average: it is not `255 / 16` and it is not `255`, and nothing of the neighbours reaches
+    it.
+
+  * **1.5x, a white column at source 4** (`16x8` -> `24x12`) -- `43 212 128`, and at source 5
+    `128 212 43`. The response is **asymmetric**, which is where the convention shows at a
+    non-integer scale: the same weights, sampled at a fractional position, put their mass to one
+    side. It is also the shape that a half-pixel convention gives and an align-corners one does
+    not.
+
+  So the parameters, as measured: a separable kernel, **eight taps per axis**, weights
+  `32/1020, 96/1020, 159/1020, 223/1020, 223/1020, 159/1020, 96/1020, 32/1020` scaled by the
+  factor, the **half-pixel** sample-centre convention `dst = (x + 0.5) * s - 0.5`, and a **point
+  sample** on a downscale rather than an area average. What has *not* been done: implementing them.
+  A separable resampler in C over the BGRA buffer is the shape of the fix and it works on iOS 6, but
+  it is not written, and writing it against a kernel that has not been checked on the gradient table
+  would be exactly the kind of claim this row has already produced twice.
 
