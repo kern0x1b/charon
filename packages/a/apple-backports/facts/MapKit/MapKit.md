@@ -402,3 +402,28 @@ release's own base64 into the release's own `MKPolyline`, so the route is drawn 
 renderer out of the release's own geometry; the distance and the duration are the engine's own, and
 the ETA is the request's departure date plus the engine's duration. `MKDirectionsTransportTypeTransit`
 has no OSRM profile and is answered with the walking one, which the registry says it is.
+
+## Why the GeoJSON decoder has no host differential, and that is structural
+
+Measured, and it is the same collision the `CPListItem` name is: the port's decoder carries **Apple's
+own class name**, because that is what a program links. On a host where Apple's own decoder exists,
+the runtime resolves the name to Apple's image and the port's class is unreachable:
+
+```
+objc[50969]: Class MKGeoJSONDecoder is implemented in both
+  /System/Library/Frameworks/MapKit.framework/Versions/A/MapKit
+  /…/libGeoJSONBackport.dylib. This may cause spurious casting failures and mysterious crashes.
+  One of the duplicates must be removed or renamed.
+```
+
+Renaming the port's class into a static link, which is what the first version of the probe did, is not
+a way round it either: that produced a class the loader did not finish registering -- `class_getImageName`
+found it, `respondsToSelector:` said no, and `class_copyMethodList` on it raised SIGBUS -- which is a
+malformed method list, i.e. a registration failure, not a missing method.
+
+So the host **cannot be the oracle for this family**, and the honest consequence is that the check
+for these six rows is the **emulator call test on 6.1.3**, where there is no Apple decoder to collide
+with -- which is the whole reason the port carries the class. The host is still useful for one thing
+and the probe keeps it: the port's own answer, checked against **RFC 7946 itself** (the shapes, the
+counts, the coordinates, and the five mutations that must be refused), which is a check the decoder can
+pass or fail without Apple's decoder in the picture.
