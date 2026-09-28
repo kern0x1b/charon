@@ -212,6 +212,9 @@ def main():
                              "that shares it (the two 10.x groups share ios10.json)")
     parser.add_argument("--hand-written", default="CharonIntents100.m",
                         help="the file this group's hand written classes are in")
+    parser.add_argument("--causes",
+                        help="the generator's own vocabulary of why a member is not answered, "
+                             "written by tools/intents/gen-causes.py")
     parser.add_argument("--no-protocols", action="store_true",
                         help="this group writes no protocol row: another group's file already has it")
     parser.add_argument("--reason", required=True,
@@ -219,11 +222,17 @@ def main():
     options = parser.parse_args()
 
     answered = {}
+    vocabulary = json.load(open(options.causes)) if options.causes else {}
+    causes = {}
     for path in options.report:
         for name, report in json.load(open(path)).items():
             answered.setdefault(name, {"properties": set(), "dynamic": set(), "methods": set()})
             for kind in ("properties", "dynamic", "methods"):
-                answered[name][kind] |= set(report[kind])
+                answered[name][kind] |= set(report.get(kind, []))
+            # The generator records why it left a member out. That cause is the reason, and it is
+            # the whole of N3: an entry that says "a class of a later group" for a member whose
+            # class this delivery carries is a false claim, and the cause is already known.
+            causes.update(report.get("causes", {}))
             # A property answered by an accessor of its own - the ones a category of the SDK's own
             # header declares, which clang will not let a class implementation synthesise - is
             # answered just the same, and the registry has to say so.
@@ -335,7 +344,8 @@ def main():
                                                      % owner if owner in hand_written else None))
                     continue
                 if api.split(".")[1] in report["dynamic"]:
-                    entries.append(absent(api, "property", intro, options.reason, options.facts))
+                    entries.append(absent(api, "property", intro,
+                                          vocabulary.get(causes.get(api), options.reason), options.facts))
                     missing["dynamic"] += 1
                     continue
             if kind == "method":
@@ -350,16 +360,15 @@ def main():
                     continue
                 if api.endswith("] init") or api == "-[%s init]" % owner:
                     entries.append(absent(api, "method", intro,
-                                          "the header marks the class's -init unavailable, so a port "
-                                          "cannot call it and the class answers the initialiser "
-                                          "the header does declare", options.facts))
+                                          vocabulary.get(causes.get(api),
+                                                        "the header marks the class's -init "
+                                                        "unavailable, so a port cannot call it and "
+                                                        "the class answers the initialiser the "
+                                                        "header does declare"), options.facts))
                     missing["init"] += 1
                     continue
                 entries.append(absent(api, "method", intro,
-                                      "an initialiser that takes a value of a class this delivery "
-                                      "does not carry is not given a body, because a body that "
-                                      "dropped that value would answer with a class that looks "
-                                      "filled and is not", options.facts))
+                                      vocabulary.get(causes.get(api), options.reason), options.facts))
                 missing["skipped"] += 1
                 continue
         if kind == "class":
@@ -380,7 +389,10 @@ def main():
         # group of this same delivery, or a member the SDK's own header marks unavailable. It is
         # written as absent with that reason rather than left out, so that nothing is claimed in
         # one direction and missed in the other.
-        reason = options.reason
+        # The cause the generator recorded, and nothing else: a chain the SDK forbids, a value
+        # this delivery does not carry, a class the headers only forward declare, a factory that
+        # answers an array. Nothing else about the entry moves.
+        reason = vocabulary.get(causes.get(api), options.reason)
         if owner in hand_written:
             # A member of a hand written class whose accessor the file does not show: the reason
             # says so, and the count says how many, so a delivery cannot quietly claim one.

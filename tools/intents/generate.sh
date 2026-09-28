@@ -30,7 +30,7 @@ PORT_SDK=${PORT_SDK:-$(ls -d "$HOME"/.xmake/packages/i/iphoneos-sdk/*/*/iPhoneOS
 SDK_262=${SDK_262:-$HOME/Git/projects/ios/charon/.agent-work/sdk-26.2/iPhoneOS26.2.sdk}
 CORPUS=${CORPUS:-$HOME/Git/projects/ios/coordination/corpus/sdk-26.2-surface.tsv}
 classes=$root/packages/a/apple-backports/Intents
-registry=$root/packages/a/apple-backports/registry/Intents
+registry=${REGISTRY_OUT:-$root/packages/a/apple-backports/registry/Intents}
 groups=$here/groups
 facts=facts/Intents/Intents.md
 mkdir -p "$work" "$registry"
@@ -50,6 +50,9 @@ newer_version=$(basename "$SDK_262" | sed 's/iPhoneOS//; s/\.sdk//')
     > "$work/ast-262.json"
 
 carried=$groups/intents-classes.txt
+# The generator's own vocabulary of why a member is not answered, written out so an absent entry's
+# reason is the cause the generator recorded and not the owner class's group.
+python3 "$here/gen-causes.py" --out "$work/causes.json"
 # group:release:file:newer:protocols
 for entry in 10_0_1:10.0.1:ios10:no:yes \
             10_3:10.3:ios10:no:yes \
@@ -90,7 +93,7 @@ for entry in 11_0:11.0:ios11 \
     # shellcheck disable=SC2086
     python3 "$here/gen-registry.py" --corpus "$CORPUS" --classes "$groups/$group.txt" \
         --report "$work/report-$group.json" --out "$registry/$file.json" --facts "$facts" \
-        --release "$release" --no-protocols $extra \
+        --release "$release" --no-protocols --causes "$work/causes.json" $extra \
             --reason "a class of a later group of this same delivery"
 done
 echo "regenerated: $(ls "$classes"/IN*.m | wc -l) object files, $(ls "$registry"/ios*.json | wc -l) registry files"
