@@ -146,3 +146,32 @@ arriving through the class rather than through a C function, and it is why neith
 class without the band carrying it. Not fixed; the next step is to see which of the port's files is
 dropped at 4.3 and to decide between keeping the arithmetic in a file the band keeps and having the
 class come from the release.
+
+## The count, and what it now measures
+
+    ciimage: 564 measurements, 532 the same, 19 different, 52 one side only (tolerance 5e-4)
+
+The three CoreImage rows that were in that count and were **not measurements of the port** are out of
+it, and the two that are in it are now the port's own code, because the probe calls
+`charon_CIImage_properties`, `charon_CIImage_imageBySettingProperties` and
+`charon_CIImage_imageByUnpremultiplyingAlpha` directly and `dladdr` names the probe's image for all
+three. Both are registered as **crutches**, with the measurement, in `registry/CoreImage/ctxowner9.json`
+and `coordination/crutches.md`:
+
+- `-imageBySettingProperties:` — the values read back correctly (`props count 1`, `props value one` on
+  both sides) and the identity cannot match: `props distinct 0` in the port against `1` on the system.
+- `-imageByUnpremultiplyingAlpha` — `unpre finite pixel 1` is `255 153 255 128` on the system and
+  `255 151 255 128` in the port, and `unpre round trip` is `487584e5` (which **is** the source
+  checksum, so the system's is exactly the identity) against `fd3b7745`.
+
+### UNMEASURED: the four "0 distinct" alternatives were measured on the host, not on the release
+
+The finding that no public construction makes a distinct image with the same extent - `-copy`, an
+identity affine transform, an identity colour matrix and a crop to the image's own extent all returning
+the same object, and a clamp returning a distinct one only by making the extent infinite - was
+**measured against the macOS 26 host's CoreImage**. The port runs against the **release's** CoreImage.
+CoreImage arrives with iOS 5.0 (measured against the armv7 caches: the image is absent from 4.3 and
+4.3.5, present in 5.0), so on iOS 6.1.3 the question is whether `-copy` or an identity transform
+returns a distinct image there. **That is unmeasured, and it is a device or emulator question.** If the
+release's copy is distinct, the port's row is right and the identity matches with no change; if it is
+not, the crutch stands. Nothing here should be read as a claim about the release.
