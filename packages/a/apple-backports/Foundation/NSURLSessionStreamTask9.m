@@ -440,17 +440,60 @@ static int charon_native_descriptor(CFReadStreamRef stream)
     [self charon_tellDelegate:@selector(URLSession:writeClosedForStreamTask:) input:nil];
 }
 
+/* The two CFNetwork keys TLS is asked for with, reached by name because this library links no
+   CFNetwork -- the gate's own linker says so. kCFStreamSocketSecurityLevelNegotiatedSSL is
+   CoreFoundation's and is named by value here rather than by symbol, because a string constant can be
+   written out and a data symbol cannot be linked. */
+static NSString *charon_ssl_settings_key(void)
+{
+    static NSString *key;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        void *handle = dlopen("/System/Library/Frameworks/CFNetwork.framework/CFNetwork", RTLD_LAZY);
+        if (!handle)
+            handle = RTLD_DEFAULT;
+        key = (__bridge NSString *)dlsym(handle, "kCFStreamPropertySSLSettings");
+    });
+    return key;
+}
+
+static NSString *charon_ssl_level_key(void)
+{
+    static NSString *key;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        void *handle = dlopen("/System/Library/Frameworks/CFNetwork.framework/CFNetwork", RTLD_LAZY);
+        if (!handle)
+            handle = RTLD_DEFAULT;
+        key = (__bridge NSString *)dlsym(handle, "kCFStreamSSLLevel");
+    });
+    return key;
+}
+
 - (void)startSecureConnection
 {
     NSURLSessionStreamTaskState *state = objc_getAssociatedObject(self, &CharonStreamTaskStateKey);
     if (state.secure)
         return;
     state.secure = YES;
-    /* The TLS layer is the system's: the stream is told to negotiate, which is all that is asked of
-       it, and the certificate the peer presents is the release's own CFStream to judge. */
-    if (state.input)
-        [state.input setProperty:@YES forKey:(__bridge NSString *)kCFStreamPropertyShouldCloseNativeSocket];
-    [self charon_tellDelegate:@selector(URLSession:betterRouteDiscoveredForStreamTask:) input:nil];
+    /* TLS is the release's own, asked for the release's way: the SSL settings go on both streams
+       *before* they are opened, and CFNetwork negotiates and judges the certificate. That is the
+       whole of what the method promises, and this used to set a flag about closing the native
+       socket instead, which is not what a secure connection is. The key and the level are the two
+       CFNetwork strings, looked up by name; the level's own value is written out, because
+       kCFStreamSocketSecurityLevelNegotiatedSSL is a CoreFoundation data symbol this library cannot
+       link either. */
+    NSString *settings = charon_ssl_settings_key();
+    NSString *level = charon_ssl_level_key();
+    if (settings && level) {
+        NSDictionary *negotiated = @{level: @"kCFStreamSocketSecurityLevelNegotiatedSSL"};
+        if (state.input)
+            [state.input setProperty:negotiated forKey:settings];
+        if (state.output)
+            [state.output setProperty:negotiated forKey:settings];
+    }
+    /* No route message: iOS 6 has no call that reports one, and inventing it on an unrelated event
+       is a false report to the application. */
 }
 
 - (void)stopSecureConnection
