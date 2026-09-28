@@ -155,10 +155,33 @@ framework of either kind carries. The 603 concentrate in the delegate and XPC pr
 `MTRXPCServerProtocol_MTRDeviceController` (5), `MTRDeviceAttestationDelegate` (4), `MTRDevicePairingDelegate` (4),
 `MTRKeypair` (4), `MTRDeviceDelegate` (3), `MTRStorage` (3) - with the remainder two per `MTRBaseCluster<Cluster>`.
 
-A delegate protocol's methods are implemented by the **application**, not by the framework: what the port owes is the
-protocol's own metadata (which this library carries, the class rows above are 985 of 985) and the framework *calling*
-each delegate method at the moment upstream's Darwin framework does. The XPC protocols are the framework's own
-process boundary, and what upstream does with them is the question still open here.
+A delegate protocol's methods are implemented by the **application**, not by the framework. What the port owes for them
+is two things, and both are measurable:
+
+- **the protocol's metadata**, which this library carries: the port and the host's framework agree on 11 of the 16
+  protocol rows, and 5 no framework of either kind carries.
+- **the framework calling each method at the moment upstream's Darwin framework calls it** - and that is settled by
+  construction rather than by a diff: the port's framework sources *are* upstream's, byte for byte. Measured, by
+  sha1 of each file in the build tree against the tag: `MTRDeviceController_Concrete.mm`, `MTRBaseDevice.mm`,
+  `MTRCommissioningOperation.mm`, `MTRDevice_XPC.mm`, `MTRDeviceController_XPC.mm` and
+  `MTRDeviceControllerDataStore.mm` are all **identical**. The recipe compiles the hundred sources unmodified - the
+  only files it adds are `packages/m/matter/Charon/`, the Apple spellings - so every delegate call site upstream has, the
+  port has, at the same line of the same file. The call sites, in the framework's own `.mm` files: 26 mentions of
+  `MTRDeviceControllerDelegate`, 25 of `MTROperationalCredentialsDelegate`, 10 each of `MTRCommissioningDelegate`,
+  `MTRDeviceControllerStorageDelegate` and `MTROTAProviderDelegate`, 4 of `MTRDeviceAttestationDelegate`, over 49
+  distinct delegate sends.
+
+**The XPC protocols are the framework's own process boundary**, and upstream's own arrangement is the answer to what
+the port owes: `MTRXPCClientProtocol` is declared in `XPC Protocol/MTRXPCClientProtocol.h`, used by `MTRDevice_XPC.h`
+and implemented by `MTRDeviceController_XPC.mm`, and `MTRXPCServerProtocol` by the same file the other way. So the
+*client* half is what a program implements when it drives a controller in another process, and the *server* half is
+what the framework implements when it is the one in that process - and `MTRDeviceController_XPC.mm` is in the hundred
+sources the port compiles unchanged, so both halves are carried at the port. The 7 rows of the two protocols the corpus
+lists and neither framework carries are names upstream does not declare, and the 7 rows that are in the surface and in
+neither side are the same shape.
+
+So none of the 603 needs an implementation from this side: they are the *methods of protocols the application
+implements*, and the port's job for them is the metadata and the call sites, both of which it has.
 
 ## xmake's `l` runner and a script that takes four paths
 
