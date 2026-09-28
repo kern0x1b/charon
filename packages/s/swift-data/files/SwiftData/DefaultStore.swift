@@ -148,16 +148,14 @@ public final class DefaultStore: DataStore, DataStoreBatching, @unchecked Sendab
                           plan: any SchemaMigrationPlan.Type) throws {
         let target = Schema(versionedSchema: last)
         guard target != schema else { return }
-        let mapping = NSMappingModel.inferredMappingModel(forSourceModel: try Self.model(from: target),
-                                                          destinationModel: try Self.model(from: schema))
-        // The release's own signature takes the file the store is migrated to, not a store: a
-        // migration writes a new file and the old one is removed by the caller, which is why
-        // this one is migrated into a temporary name and back.
+        let source = try Self.model(from: target)
+        let destination = try Self.model(from: schema)
+        let mapping = try NSMappingModel.inferredMappingModel(forSourceModel: source,
+                                                               destinationModel: destination)
         // The release's own signature takes the file a store is migrated to, not a store: a
         // migration writes a new file, so the store is migrated beside itself and the result put
-        // in its place. `inferredMappingModel` is optional and answers nil when it finds no
-        // mapping, which is the store being already at the schema it is opened with.
-        if let mapping, let store = coordinator.persistentStores.first, let url = store.url {
+        // in its place.
+        if let store = coordinator.persistentStores.first, let url = store.url {
             let moved = url.deletingLastPathComponent()
                 .appendingPathComponent(url.lastPathComponent + ".migrating")
             try coordinator.migratePersistentStore(store, to: moved, options: nil, withType: NSSQLiteStoreType)
@@ -264,9 +262,9 @@ public final class DefaultStore: DataStore, DataStoreBatching, @unchecked Sendab
                         // iOS 6, and `NSConstraintConflict` is an Objective-C class this module
                         // cannot throw, so the refusal is a Swift error that carries both the
                         // constraint that was broken and Core Data's own value for the conflict.
-                        let conflict = NSConstraintConflict(constraint: constraint, databaseObject: row,
+                        let conflict = NSConstraintConflict(constraint: constraint, database: row,
                                                             databaseSnapshot: nil,
-                                                            conflictingObjects: [first, row],
+                                                            conflicting: [first, row],
                                                             conflictingSnapshots: [])
                         throw UniquenessViolation(entity: schemaEntity.name, constraint: constraint,
                                                   conflict: conflict)

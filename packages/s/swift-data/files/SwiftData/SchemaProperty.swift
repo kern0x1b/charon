@@ -438,12 +438,16 @@ extension Schema {
         public var valueType: any Any.Type = Any.self
         public var isUnique: Bool { false }
 
-        public init(_ indices: Types<T>...) {
+        public init(indices: [Types<T>]) {
             self.indices = indices
         }
 
+        public convenience init(_ indices: Types<T>...) {
+            self.init(indices: indices)
+        }
+
         public convenience init(_ binaryIndices: [PartialKeyPath<T>]...) {
-            self.init(binaryIndices.map { Types.binary($0) })
+            self.init(indices: binaryIndices.map { Types.binary($0) })
         }
 
         public required init(from decoder: any Decoder) throws {
@@ -536,7 +540,7 @@ struct IndexNames: SchemaProperty, IndexNaming {
     var valueType: any Any.Type
     let indices: [String]
 
-    var indexPropertyNames: [[String]] { indices }
+    var indexPropertyNames: [[String]] { [indices] }
 
     private enum CodingKeys: String, CodingKey { case name, indices }
 

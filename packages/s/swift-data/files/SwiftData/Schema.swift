@@ -42,7 +42,7 @@ public final class Schema: Codable, Hashable {
     /// The schema of a set of model types, which is what `@Model` writes into `schemaMetadata`
     /// and what this reads back: one entity per type, named after the type, holding the
     /// properties the macro recorded.
-    public init(_ types: [any PersistentModel.Type], version: Version = Version(1, 0, 0)) {
+    public convenience init(_ types: [any PersistentModel.Type], version: Version = Version(1, 0, 0)) {
         self.init(types.map { Entity($0) }, version: version)
     }
 
@@ -154,7 +154,7 @@ public final class Schema: Codable, Hashable {
         /// The entity a model type is stored as, with the properties its macro recorded. The
         /// order is the order the macro wrote, which is the order the source declared them in:
         /// a store's columns are made in that order and a migration compares them in that order.
-        public init(_ modelType: any PersistentModel.Type) {
+        public convenience init(_ modelType: any PersistentModel.Type) {
             self.init(Schema.entityName(for: modelType))
             storedProperties = modelType.schemaMetadata.map { entry in
                 entry.metadata ?? Attribute(name: entry.name, originalName: entry.name,
@@ -166,8 +166,8 @@ public final class Schema: Codable, Hashable {
         public static func == (lhs: Entity, rhs: Entity) -> Bool {
             lhs.name == rhs.name && lhs.superentityName == rhs.superentityName
                 && lhs.subentities.map { $0.name } == rhs.subentities.map { $0.name }
-                && lhs.storedProperties == rhs.storedProperties
-                && lhs.inheritedProperties == rhs.inheritedProperties
+                && Schema.Fingerprint.of(lhs.storedProperties) == Schema.Fingerprint.of(rhs.storedProperties)
+                && Schema.Fingerprint.of(lhs.inheritedProperties) == Schema.Fingerprint.of(rhs.inheritedProperties)
         }
 
         public func hash(into hasher: inout Hasher) {
@@ -314,7 +314,7 @@ public final class Schema: Codable, Hashable {
 
     public final func save(to toURL: URL) throws {
         let encoder = JSONEncoder()
-        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        encoder.outputFormatting = [.prettyPrinted]
         try encoder.encode(self).write(to: toURL)
     }
 
@@ -347,6 +347,42 @@ public final class Schema: Codable, Hashable {
     }
 }
 
+extension Schema {
+    /// What a property list is, as text. An entity holds `[any SchemaProperty]`, and an
+    /// existential of a `Hashable` protocol is not itself `Hashable`, so a list of them is
+    /// compared and hashed through this: every member of every kind, in one place, so that two
+    /// entities are equal exactly when they say the same things.
+    enum Fingerprint {
+        static func of(_ properties: [any SchemaProperty]) -> String {
+            properties.map(one).joined(separator: "|")
+        }
+
+        private static func one(_ property: any SchemaProperty) -> String {
+            switch property {
+            case let attribute as CompositeAttribute:
+                return "composite(\(attribute.name), \(attribute.originalName), \(attribute.options), " +
+                    "\(attribute.valueType), \(String(describing: attribute.defaultValue)), " +
+                    "\(attribute.hashModifier ?? "")){\(of(attribute.properties))}"
+            case let attribute as Attribute:
+                return "attribute(\(attribute.name), \(attribute.originalName), \(attribute.options), " +
+                    "\(attribute.valueType), \(String(describing: attribute.defaultValue)), " +
+                    "\(attribute.hashModifier ?? ""))"
+            case let relationship as Relationship:
+                return "relationship(\(relationship.name), \(relationship.originalName), \(relationship.options), " +
+                    "\(relationship.valueType), \(relationship.destination), \(relationship.deleteRule), " +
+                    "\(relationship.inverseName ?? ""), \(relationship.minimumModelCount.map(String.init) ?? ""), " +
+                    "\(relationship.maximumModelCount.map(String.init) ?? ""), \(relationship.hashModifier ?? ""))"
+            case let index as any IndexNaming:
+                return "index(\(index.indexPropertyNames))"
+            case let unique as any UniqueNaming:
+                return "unique(\(unique.uniquePropertyNames))"
+            default:
+                return "\(property.name)"
+            }
+        }
+    }
+}
+
 extension Schema: CustomDebugStringConvertible {
     public var debugDescription: String {
         "Schema(\(version), \(entities.map { $0.name }))"
@@ -360,17 +396,17 @@ extension Schema: @unchecked Sendable {}
 /// own. This is the one place a schema's written form is ours - Apple's own is not published, and
 /// a file this package writes is read by this package.
 enum StoredProperty: Codable {
-    case attribute(Attribute)
-    case composite(CompositeAttribute)
-    case relationship(Relationship)
+    case attribute(Schema.Attribute)
+    case composite(Schema.CompositeAttribute)
+    case relationship(Schema.Relationship)
     case index([String])
     case unique([[String]])
 
     init(_ property: any SchemaProperty) {
         switch property {
-        case let attribute as CompositeAttribute: self = .composite(attribute)
-        case let attribute as Attribute: self = .attribute(attribute)
-        case let relationship as Relationship: self = .relationship(relationship)
+        case let attribute as Schema.CompositeAttribute: self = .composite(attribute)
+        case let attribute as Schema.Attribute: self = .attribute(attribute)
+        case let relationship as Schema.Relationship: self = .relationship(relationship)
         case let index as any IndexNaming: self = .index(index.indexPropertyNames.flatMap { $0 })
         case let unique as any UniqueNaming: self = .unique(unique.uniquePropertyNames)
         default: self = .index([property.name])
@@ -393,9 +429,9 @@ enum StoredProperty: Codable {
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         switch try container.decode(String.self, forKey: .kind) {
-        case "attribute": self = .attribute(try Attribute(from: decoder))
-        case "composite": self = .composite(try CompositeAttribute(from: decoder))
-        case "relationship": self = .relationship(try Relationship(from: decoder))
+        case "attribute": self = .attribute(try Schema.Attribute(from: decoder))
+        case "composite": self = .composite(try Schema.CompositeAttribute(from: decoder))
+        case "relationship": self = .relationship(try Schema.Relationship(from: decoder))
         case "unique": self = .unique(try container.decode([[String]].self, forKey: .constraints))
         default: self = .index(try container.decode([String].self, forKey: .indices))
         }

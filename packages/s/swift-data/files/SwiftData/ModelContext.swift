@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreData
+import Observation
 
 public final class ModelContext: Equatable, SendableMetatype {
     /// The keys a save notification carries. Their names are Apple's, read from the host's own
@@ -73,13 +74,32 @@ public final class ModelContext: Equatable, SendableMetatype {
     /// from a fetch has no model until one is asked for, and the same model comes back next time
     /// because the row remembers it. The type is the one this call names, which is what a fetch
     /// of `T` and a relationship of `T.PersistentElement` both have.
-    func makeModel<T>(forObject object: NSManagedObject) -> T? where T: PersistentModel {
+    func makeModel<T>(_ type: T.Type, forObject object: NSManagedObject) -> T? where T: PersistentModel {
         if let known = byRow[ObjectIdentifier(object)] as? T { return known }
         let backing = CoreDataBacking<T>(for: T.self, object: object, context: context, owner: nil)
         let made = T(backingData: backing)
         register(made, for: object)
-        container?.store.remember(T.self, for: object.entity.name ?? Schema.entityName(for: T.self))
+        remember(type, for: object.entity.name ?? Schema.entityName(for: T.self))
         return made
+    }
+
+    /// The model a row is read by, for a caller that does not know the type. Which type that is
+    /// comes from this table, which is filled the first time a row of that entity is read as a
+    /// model of that type - the one place the type is statically known.
+    func model(forObject object: NSManagedObject) -> any PersistentModel? {
+        if let known = byRow[ObjectIdentifier(object)] { return known }
+        guard let name = object.entity.name, let make = factories[name] else { return nil }
+        let made = make(object, context)
+        byRow[ObjectIdentifier(object)] = made
+        return made
+    }
+
+    private var factories: [String: (NSManagedObject, NSManagedObjectContext) -> any PersistentModel] = [:]
+
+    private func remember<T: PersistentModel>(_ type: T.Type, for entityName: String) {
+        factories[entityName] = { object, context in
+            T(backingData: CoreDataBacking<T>(for: T.self, object: object, context: context, owner: nil))
+        }
     }
 
     // MARK: What changed
@@ -288,12 +308,12 @@ extension NSManagedObjectContext {
 /// The model a context answers for an identifier that names no row: a model that is not in this
 /// store. Apple's `model(for:)` is not optional, and the only honest answer for an identifier
 /// with no row is a model with no row.
+@Observable
 public final class UnsavedModel: PersistentModel {
     public static let instance = UnsavedModel()
     public init() {}
-    public var persistentBackingData: any BackingData<UnsavedModel> {
+    public var persistentBackingData: any BackingData<UnsavedModel> =
         CoreDataBacking<UnsavedModel>(for: UnsavedModel.self)
-    }
     public init(backingData: any BackingData<UnsavedModel>) {}
     public static var schemaMetadata: [Schema.PropertyMetadata] { [] }
 }

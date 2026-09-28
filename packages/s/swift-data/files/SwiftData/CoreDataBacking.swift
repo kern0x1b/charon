@@ -141,12 +141,12 @@ public final class CoreDataBacking<Model: PersistentModel>: BackingData, @unchec
 
     public func setValue<Value, OtherModel>(forKey keyPath: KeyPath<Model, Value>, to newValue: Value)
     where Value: RelationshipCollection, OtherModel == Value.PersistentElement {
-        write(CoreDataBacking.propertyName(of: keyPath), rows(of: newValue as Any))
+        write(CoreDataBacking.propertyName(of: keyPath), CoreDataBacking.rows(of: newValue as Any))
     }
 
     public func setValue<Value, OtherModel>(forKey keyPath: KeyPath<Model, Value>, to newValue: Value)
     where Value: Encodable, Value: RelationshipCollection, OtherModel == Value.PersistentElement {
-        write(CoreDataBacking.propertyName(of: keyPath), rows(of: newValue as Any))
+        write(CoreDataBacking.propertyName(of: keyPath), CoreDataBacking.rows(of: newValue as Any))
     }
 
     public func setTransformableValue<Value>(forKey keyPath: KeyPath<Model, Value>, to newValue: Value) {
@@ -174,7 +174,7 @@ public final class CoreDataBacking<Model: PersistentModel>: BackingData, @unchec
     }
 
     /// The rows a collection holds: one for a model, and every one for a collection of them.
-    private func rows(of value: Any) -> [NSManagedObject]? {
+    static func rows(of value: Any) -> [NSManagedObject]? {
         if let one = value as? any PersistentModel { return one.backingObject.map { [$0] } }
         return (value as? any Sequence)?.compactMap { ($0 as? any PersistentModel)?.backingObject }
     }

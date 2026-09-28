@@ -102,7 +102,7 @@ public struct HistoryTombstone<Model>: Sequence, @unchecked Sendable where Model
 
     public subscript(keyPath: PartialKeyPath<Model>) -> (any Sendable)? {
         guard let name = keyPath._kvcKeyPathString else { return nil }
-        return values.first { $0.0 == name }?.1 as? any Sendable
+        return StoredValue.box(values.first { $0.0 == name }?.1) ?? NSNull()
     }
 
     public func makeIterator() -> Iterator { Iterator(values: values) }
@@ -242,7 +242,7 @@ public struct DefaultHistoryToken: HistoryToken, Comparable, Codable {
     /// fetch can be resumed from.
     public var tokenValue: [String: Int64]?
 
-    public var id: Int { tokenValue?.values.max() ?? 0 }
+    public var id: Int { Int(tokenValue?.values.max() ?? 0) }
 
     public init(tokenValue: [String: Int64]? = nil) {
         self.tokenValue = tokenValue

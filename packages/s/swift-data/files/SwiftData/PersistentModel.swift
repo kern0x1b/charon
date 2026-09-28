@@ -171,8 +171,50 @@ extension PersistentIdentifier {
 /// than through a cast that would fail on a number stored as a string; and a value Core Data
 /// cannot hold in a column of its own - a struct, an array, an enum - is written as JSON, which
 /// is what `NSTransformableAttributeType` stores when it is given no transformer of its own.
+/// `JSONEncoder.encode` takes an `Encodable`, and a value of any type is what a store is asked
+/// to write; this is the one place the two meet.
+struct AnyEncodable: Encodable {
+    let value: Any
+
+    init(_ value: Any) { self.value = value }
+
+    func encode(to encoder: any Encoder) throws {
+        if let encodable = value as? any Encodable { try encodable.encode(to: encoder) }
+        var container = encoder.singleValueContainer()
+        try container.encode(String(describing: value))
+    }
+}
+
+/// `JSONDecoder.decode` the other way, for a value whose Swift type the reader only learns at the
+/// call. What a transformable column keeps is JSON, so what comes back is one of the types JSON
+/// carries; a Swift type that is not one of them is a type the column does not hold.
+struct AnyDecodable: Decodable {
+    let value: Any
+
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        if container.decodeNil() {
+            self.value = NSNull()
+        } else if let decoded = try? container.decode(Bool.self) {
+            self.value = decoded
+        } else if let decoded = try? container.decode(Int64.self) {
+            self.value = decoded
+        } else if let decoded = try? container.decode(Double.self) {
+            self.value = decoded
+        } else if let decoded = try? container.decode(String.self) {
+            self.value = decoded
+        } else {
+            self.value = NSNull()
+        }
+    }
+
+    func typed<T>(as type: T.Type) -> T? { value as? T }
+}
+
 enum StoredValue {
-    static func box(_ value: Any) -> Any {
+    /// The boxed form of a value Core Data has a column for, and nil for one it has not, which is
+    /// what tells the writer to fall through to JSON.
+    static func box(_ value: Any) -> Any? {
         switch value {
         case let value as String: return value as NSString
         case let value as Int: return NSNumber(value: value)
@@ -189,14 +231,14 @@ enum StoredValue {
         case let value as Data: return value as NSData
         case let value as UUID: return value as NSUUID
         case let value as URL: return value as NSURL
-        default: return value
+        default: return nil
         }
     }
 
     /// A value read back as the type the model asked for. `as?` first, because a value that is
     /// already of the type is the common case; then the boxed types Core Data answers with; then
     /// JSON, for what a store kept as data.
-    static func cast<T>(_ value: Any?, to type: Any.Type) -> T? {
+    static func cast<T>(_ value: Any?, to type: T.Type) -> T? {
         guard let value else { return nil }
         if let typed = value as? T { return typed }
         switch type {
@@ -218,7 +260,8 @@ enum StoredValue {
         case is URL.Type:
             return (value as? NSURL) as? T
         default:
-            if let data = value as? Data, let decoded = try? JSONDecoder().decode(T.self, from: data) {
+            if let data = value as? Data, let any = try? JSONDecoder().decode(AnyDecodable.self, from: data),
+               let decoded = any.typed(as: T.self) {
                 return decoded
             }
             return nil
@@ -228,7 +271,7 @@ enum StoredValue {
     /// The value a column of a type holds when it holds none: Core Data's own types have a
     /// defined zero, and a Swift optional one is nil. Nothing else has a value to answer with,
     /// and a store that is asked for one is saying its schema and its rows disagree.
-    static func zero<T>(of type: Any.Type) -> T? {
+    static func zero<T>(of type: T.Type) -> T? {
         switch type {
         case is String.Type: return "" as? T
         case is Bool.Type: return false as? T
@@ -246,15 +289,8 @@ enum StoredValue {
 
     /// A value written into a store: the boxed forms, and JSON for what has no column of its own.
     static func store<T>(_ value: T) -> Any {
-        switch value {
-        case let value as String, let value as Int, let value as Int64, let value as Int32, let value as Int16,
-             let value as UInt, let value as UInt64, let value as UInt32, let value as Double, let value as Float,
-             let value as Bool, let value as Date, let value as Data, let value as UUID, let value as URL,
-             let value as NSString, let value as NSNumber, let value as NSDate, let value as NSData, let value as NSUUID:
-            return box(value as Any)
-        default:
-            if let encoded = try? JSONEncoder().encode(value) { return encoded as NSData }
-            return box(value as Any)
-        }
+        if let boxed = box(value as Any) { return boxed }
+        if let encoded = try? JSONEncoder().encode(AnyEncodable(value)) { return encoded as NSData }
+        return value
     }
 }

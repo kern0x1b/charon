@@ -2,6 +2,7 @@
 // the Core Data one answers them.
 
 import Foundation
+import Observation
 
 public typealias DataStoreSnapshotValue = Codable & Sendable
 
@@ -67,13 +68,13 @@ extension DataStore {
 
 /// The model type the default `cachedSnapshots` fetches with: a store with no cache of its own
 /// has no entity of its own to name, and this names none.
+@Observable
 public final class SnapshotModel: PersistentModel {
     public static let instance = SnapshotModel()
     public init() {}
     public init(backingData: any BackingData<SnapshotModel>) {}
-    public var persistentBackingData: any BackingData<SnapshotModel> {
+    public var persistentBackingData: any BackingData<SnapshotModel> =
         CoreDataBacking<SnapshotModel>(for: SnapshotModel.self)
-    }
     public static var schemaMetadata: [Schema.PropertyMetadata] { [] }
 }
 
