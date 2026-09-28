@@ -72,6 +72,11 @@ extension Schema {
             /// says the option carries no name.
             let transformer: String
 
+            init(kind: Kind, transformer: String = "") {
+                self.kind = kind
+                self.transformer = transformer
+            }
+
             public static var unique: Option { Option(kind: .unique) }
             public static var externalStorage: Option { Option(kind: .externalStorage) }
             public static var allowsCloudEncryption: Option { Option(kind: .allowsCloudEncryption) }
@@ -428,9 +433,9 @@ extension Schema {
 
         public let indices: [Types<T>]
 
-        public var name: String { "" }
-        public var originalName: String { "" }
-        public var valueType: any Any.Type { Any.self }
+        public var name: String = ""
+        public var originalName: String = ""
+        public var valueType: any Any.Type = Any.self
         public var isUnique: Bool { false }
 
         public init(_ indices: Types<T>...) {
@@ -475,9 +480,9 @@ extension Schema {
 
         public let constraints: [[PartialKeyPath<T>]]
 
-        public var name: String { "" }
-        public var originalName: String { "" }
-        public var valueType: any Any.Type { Any.self }
+        public var name: String = ""
+        public var originalName: String = ""
+        public var valueType: any Any.Type = Any.self
         public var isUnique: Bool { true }
 
         public init(_ constraints: [PartialKeyPath<T>]...) {
@@ -529,20 +534,92 @@ struct IndexNames: SchemaProperty, IndexNaming {
     var name: String
     var originalName: String = ""
     var valueType: any Any.Type
-    var isUnique: Bool { false }
     let indices: [String]
 
     var indexPropertyNames: [[String]] { indices }
+
+    private enum CodingKeys: String, CodingKey { case name, indices }
+
+    var isUnique: Bool { false }
+
+    init(name: String, valueType: any Any.Type, indices: [String]) {
+        self.name = name
+        self.valueType = valueType
+        self.indices = indices
+    }
+
+    static func == (lhs: IndexNames, rhs: IndexNames) -> Bool {
+        lhs.name == rhs.name && lhs.indices == rhs.indices
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(name)
+        hasher.combine(indices)
+    }
+
+    var hashValue: Int {
+        var hasher = Hasher()
+        hash(into: &hasher)
+        return hasher.finalize()
+    }
+
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.name = try container.decode(String.self, forKey: .name)
+        self.indices = try container.decode([String].self, forKey: .indices)
+        self.valueType = String.self
+    }
+
+    func encode(to encoder: any Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(name, forKey: .name)
+        try container.encode(indices, forKey: .indices)
+    }
 }
 
 struct UniqueNames: SchemaProperty, UniqueNaming {
     var name: String
     var originalName: String = ""
     var valueType: any Any.Type
-    var isUnique: Bool { true }
     let constraints: [[String]]
 
     var uniquePropertyNames: [[String]] { constraints }
+
+    private enum CodingKeys: String, CodingKey { case name, constraints }
+
+    init(name: String, valueType: any Any.Type, constraints: [[String]]) {
+        self.name = name
+        self.valueType = valueType
+        self.constraints = constraints
+    }
+
+    static func == (lhs: UniqueNames, rhs: UniqueNames) -> Bool {
+        lhs.name == rhs.name && lhs.constraints == rhs.constraints
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(name)
+        hasher.combine(constraints)
+    }
+
+    var hashValue: Int {
+        var hasher = Hasher()
+        hash(into: &hasher)
+        return hasher.finalize()
+    }
+
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.name = try container.decode(String.self, forKey: .name)
+        self.constraints = try container.decode([[String]].self, forKey: .constraints)
+        self.valueType = [[String]].self
+    }
+
+    func encode(to encoder: any Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(name, forKey: .name)
+        try container.encode(constraints, forKey: .constraints)
+    }
 }
 
 /// A value of any type, written as what `JSONEncoder` can carry. A default value is a literal the

@@ -25,7 +25,7 @@ public struct PersistentIdentifier: Hashable, Identifiable, Equatable, Comparabl
 
         init(_ object: NSManagedObjectID) {
             self.object = object
-            self.uri = object.uriRepresentation
+            self.uri = object.uriRepresentation()
         }
 
         init(uri: URL) {
@@ -91,9 +91,6 @@ public struct PersistentIdentifier: Hashable, Identifiable, Equatable, Comparabl
     public static func < (lhs: PersistentIdentifier, rhs: PersistentIdentifier) -> Bool {
         if lhs.name != rhs.name { return lhs.name < rhs.name }
         if lhs.store != rhs.store { return (lhs.store ?? "") < (rhs.store ?? "") }
-        if let left = lhs.id.object, let right = rhs.id.object {
-            return left.compare(right) == .orderedAscending
-        }
         return lhs.id.uri.absoluteString < rhs.id.uri.absoluteString
     }
 

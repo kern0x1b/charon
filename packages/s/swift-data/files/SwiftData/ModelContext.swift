@@ -64,22 +64,21 @@ public final class ModelContext: Equatable, SendableMetatype {
     private var byRow: [ObjectIdentifier: any PersistentModel] = [:]
     private var byIdentifier: [PersistentIdentifier: any PersistentModel] = [:]
 
-    func register(_ model: any PersistentModel, for object: NSManagedObject) {
+    func register<Model: PersistentModel>(_ model: Model, for object: NSManagedObject) {
         byRow[ObjectIdentifier(object)] = model
-        if let identifier = (model.persistentBackingData as? CoreDataBacking<Self>)?.persistentModelID
-            ?? model.persistentBackingData.persistentModelID {
-            byIdentifier[identifier] = model
-        }
+        if let identifier = model.persistentBackingData.persistentModelID { byIdentifier[identifier] = model }
     }
 
     /// The model a row is read by, made now if this context has not made it: a row that arrives
     /// from a fetch has no model until one is asked for, and the same model comes back next time
-    /// because the row remembers it.
-    func model<T>(forObject object: NSManagedObject) -> T? where T: PersistentModel {
+    /// because the row remembers it. The type is the one this call names, which is what a fetch
+    /// of `T` and a relationship of `T.PersistentElement` both have.
+    func makeModel<T>(forObject object: NSManagedObject) -> T? where T: PersistentModel {
         if let known = byRow[ObjectIdentifier(object)] as? T { return known }
         let backing = CoreDataBacking<T>(for: T.self, object: object, context: context, owner: nil)
         let made = T(backingData: backing)
         register(made, for: object)
+        container?.store.remember(T.self, for: object.entity.name ?? Schema.entityName(for: T.self))
         return made
     }
 
@@ -112,7 +111,6 @@ public final class ModelContext: Equatable, SendableMetatype {
         let inserted = T(backingData: backing)
         context.insert(backing.object)
         register(inserted, for: backing.object)
-        context.model(for: T.self)?.replace(model, with: inserted)
     }
 
     public func delete<T>(_ model: T) where T: PersistentModel {
@@ -200,13 +198,12 @@ public final class ModelContext: Equatable, SendableMetatype {
             request.relationshipKeyPathsForPrefetching =
                 descriptor.relationshipKeyPathsForPrefetching.map { "\($0)" }
         }
-        request.includesSubclasses = includeSubclasses
         return try context.fetch(request)
     }
 
     public func fetch<T>(_ descriptor: FetchDescriptor<T>) throws -> [T] where T: PersistentModel {
         let rows = try fetchRows(entityName: Schema.entityName(for: T.self), descriptor: descriptor)
-        return rows.compactMap { model(T.self, forObject: $0) }
+        return rows.compactMap { makeModel(T.self, forObject: $0) }
     }
 
     public func fetch<T>(_ descriptor: FetchDescriptor<T>, batchSize: Int) throws -> FetchResultsCollection<T>
@@ -262,23 +259,15 @@ public final class ModelContext: Equatable, SendableMetatype {
     // MARK: Identity
 
     public func model(for persistentModelID: PersistentIdentifier) -> any PersistentModel {
-        if let known = byIdentifier[persistentModelID] { return known }
-        if let object = object(for: persistentModelID), let made = model(forObject: object) { return made }
-        return UnsavedModel.instance
+        // What this context holds under that identity. A model is paired with its row the first
+        // time that row is read as that model - by a fetch, by `registeredModel`, or by reading a
+        // relationship - and an identity this context has never paired a model with names a row
+        // or a store that is not here, which is a model with no row.
+        byIdentifier[persistentModelID] ?? UnsavedModel.instance
     }
 
     public func registeredModel<T>(for persistentModelID: PersistentIdentifier) -> T? where T: PersistentModel {
-        model(for: persistentModelID) as? T
-    }
-
-    /// The row an identifier names, resolved through the store's coordinator: an identifier that
-    /// arrived from another process names a store by its URL, and this is where that URL is
-    /// matched against the stores this container has.
-    private func object(for identifier: PersistentIdentifier) -> NSManagedObject? {
-        guard let wanted = identifier.id.object else { return nil }
-        guard context.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: wanted.uriRepresentation)
-                .isEqual(wanted) == true else { return nil }
-        return try? context.existingObject(with: wanted)
+        byIdentifier[persistentModelID] as? T
     }
 
     public static func == (lhs: ModelContext, rhs: ModelContext) -> Bool { lhs === rhs }
@@ -299,9 +288,12 @@ extension NSManagedObjectContext {
 /// The model a context answers for an identifier that names no row: a model that is not in this
 /// store. Apple's `model(for:)` is not optional, and the only honest answer for an identifier
 /// with no row is a model with no row.
-enum UnsavedModel: PersistentModel {
-    static let instance = UnsavedModel()
-    var persistentBackingData: any BackingData<UnsavedModel> { CoreDataBacking<UnsavedModel>(for: UnsavedModel.self) }
-    init(backingData: any BackingData<UnsavedModel>) {}
-    static var schemaMetadata: [Schema.PropertyMetadata] { [] }
+public final class UnsavedModel: PersistentModel {
+    public static let instance = UnsavedModel()
+    public init() {}
+    public var persistentBackingData: any BackingData<UnsavedModel> {
+        CoreDataBacking<UnsavedModel>(for: UnsavedModel.self)
+    }
+    public init(backingData: any BackingData<UnsavedModel>) {}
+    public static var schemaMetadata: [Schema.PropertyMetadata] { [] }
 }
