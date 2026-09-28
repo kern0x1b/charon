@@ -245,15 +245,6 @@
       "source": "SDK 16.4 and 26.2 PHASE.framework, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own, compared against a fresh object of the host's own PHASE by tests/backports/host/phase/run.sh, which also holds the port's own renamed classes to the same numbers; the documented default for this class is at PHASEEnvelope.h:41,48"
     },
     {
-      "api": "-[PHASENumericPair init]",
-      "kind": "method",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/PHASE/PHASEValueTypes.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own, compared against a fresh object of the host's own PHASE by tests/backports/host/phase/run.sh, which also holds the port's own renamed classes to the same numbers; the documented default for this class is at PHASEEnvelope.h:41,48"
-    },
-    {
       "api": "-[PHASENumericPair second]",
       "kind": "property",
       "introduced": "15.0",
