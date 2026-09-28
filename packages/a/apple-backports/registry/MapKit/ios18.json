@@ -2,6 +2,105 @@
   "framework": "MapKit",
   "entries": [
     {
+      "api": "MKMapItem.address",
+      "kind": "property",
+      "introduced": "26.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a CATEGORY on a class the release carries, over the release's own placemark address vocabulary",
+      "effect": "a real address built from the release's own thoroughfare, locality, administrative area and country, and nil where the item has no placemark or none of them",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "measured on the host's own MapKit.framework before the code was written: the host's MKMapItem answers -address, -addressRepresentations, -identifier, -alternateIdentifiers, -location, -pointOfInterestCategory and -timeZone, all of them @16@0:8, and its MKMapItemAnnotation carries -mapItem @16@0:8, -initWithMapItem: @24@0:8@16, and the MKAnnotation members -coordinate and -title; apple.objc.inventory against the armv7 dyld shared cache of 6.1.3: the release's own MKMapItem carries -placeID, -placemark, -dictionaryRepresentation and -openInMapsWithLaunchOptions:, and its MKPlacemark carries the whole address vocabulary"
+    },
+    {
+      "api": "MKMapItem.addressRepresentations",
+      "kind": "property",
+      "introduced": "26.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a CATEGORY on a class the release carries, over the same address",
+      "effect": "the representations of that same address, and nil where the item has no address",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "measured on the host's own MapKit.framework before the code was written: the host's MKMapItem answers -address, -addressRepresentations, -identifier, -alternateIdentifiers, -location, -pointOfInterestCategory and -timeZone, all of them @16@0:8, and its MKMapItemAnnotation carries -mapItem @16@0:8, -initWithMapItem: @24@0:8@16, and the MKAnnotation members -coordinate and -title; apple.objc.inventory against the armv7 dyld shared cache of 6.1.3: the release's own MKMapItem carries -placeID, -placemark, -dictionaryRepresentation and -openInMapsWithLaunchOptions:, and its MKPlacemark carries the whole address vocabulary"
+    },
+    {
+      "api": "MKMapItem.alternateIdentifiers",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a CATEGORY on a class the release carries",
+      "effect": "one identifier, which is the truth on this release: there is no second place to name, and a list padded with a repeat would say there were two. An empty list where the item has no identifier",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "measured on the host's own MapKit.framework before the code was written: the host's MKMapItem answers -address, -addressRepresentations, -identifier, -alternateIdentifiers, -location, -pointOfInterestCategory and -timeZone, all of them @16@0:8, and its MKMapItemAnnotation carries -mapItem @16@0:8, -initWithMapItem: @24@0:8@16, and the MKAnnotation members -coordinate and -title"
+    },
+    {
+      "api": "MKMapItem.identifier",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a CATEGORY on a class the release carries; the release names a place's identifier -placeID, which is in the 6.1.3 cache (measured), and the host's own class has since replaced it with -identifier -- so the port reads the release's name and the two are the same idea on each release",
+      "effect": "the release's own place identifier, byte for byte, and nil where the item has none",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "measured on the host's own MapKit.framework before the code was written: the host's MKMapItem answers -address, -addressRepresentations, -identifier, -alternateIdentifiers, -location, -pointOfInterestCategory and -timeZone, all of them @16@0:8, and its MKMapItemAnnotation carries -mapItem @16@0:8, -initWithMapItem: @24@0:8@16, and the MKAnnotation members -coordinate and -title; apple.objc.inventory against the armv7 dyld shared cache of 6.1.3: the release's own MKMapItem carries -placeID, -placemark, -dictionaryRepresentation and -openInMapsWithLaunchOptions:, and its MKPlacemark carries the whole address vocabulary"
+    },
+    {
+      "api": "MKMapItem.location",
+      "kind": "property",
+      "introduced": "26.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a CATEGORY on a class the release carries, over the release's own placemark",
+      "effect": "a CLLocation at the item's own placemark coordinate, and nil where the item has no placemark or the coordinate is invalid",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "measured on the host's own MapKit.framework before the code was written: the host's MKMapItem answers -address, -addressRepresentations, -identifier, -alternateIdentifiers, -location, -pointOfInterestCategory and -timeZone, all of them @16@0:8, and its MKMapItemAnnotation carries -mapItem @16@0:8, -initWithMapItem: @24@0:8@16, and the MKAnnotation members -coordinate and -title; apple.objc.inventory against the armv7 dyld shared cache of 6.1.3: the release's own MKMapItem carries -placeID, -placemark, -dictionaryRepresentation and -openInMapsWithLaunchOptions:, and its MKPlacemark carries the whole address vocabulary"
+    },
+    {
+      "api": "MKMapItem.pointOfInterestCategory",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a CATEGORY on a class the release carries, over the release's own -dictionaryRepresentation",
+      "effect": "the item's own category, out of the pass's own JSON under Apple's own key, and nil where the pass declares none",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "measured on the host's own MapKit.framework before the code was written: the host's MKMapItem answers -address, -addressRepresentations, -identifier, -alternateIdentifiers, -location, -pointOfInterestCategory and -timeZone, all of them @16@0:8, and its MKMapItemAnnotation carries -mapItem @16@0:8, -initWithMapItem: @24@0:8@16, and the MKAnnotation members -coordinate and -title; apple.objc.inventory against the armv7 dyld shared cache of 6.1.3: the release's own MKMapItem carries -placeID, -placemark, -dictionaryRepresentation and -openInMapsWithLaunchOptions:, and its MKPlacemark carries the whole address vocabulary"
+    },
+    {
+      "api": "MKMapItem.timeZone",
+      "kind": "property",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a CATEGORY on a class the release carries, so the method is reached through the category, and the release's own MKPlacemark has had a timeZone since 3.2",
+      "effect": "the release's own CLTimeZone of the item's placemark, and nil where the item has no placemark",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "measured on the host's own MapKit.framework before the code was written: the host's MKMapItem answers -address, -addressRepresentations, -identifier, -alternateIdentifiers, -location, -pointOfInterestCategory and -timeZone, all of them @16@0:8, and its MKMapItemAnnotation carries -mapItem @16@0:8, -initWithMapItem: @24@0:8@16, and the MKAnnotation members -coordinate and -title; apple.objc.inventory against the armv7 dyld shared cache of 6.1.3: the release's own MKMapItem carries -placeID, -placemark, -dictionaryRepresentation and -openInMapsWithLaunchOptions:, and its MKPlacemark carries the whole address vocabulary"
+    },
+    {
+      "api": "MKMapItemAnnotation",
+      "kind": "class",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the release has no annotation for a map item at all, and this one needs none: the release's own MKAnnotation shape with the item behind it, and the coordinate and title out of the item's own placemark",
+      "effect": "a real annotation a map can show for a map item: -mapItem, -initWithMapItem:, and the MKAnnotation members -coordinate and -title read from the item's own placemark, with the invalid coordinate and a nil title where the item has no placemark rather than a point at (0,0)",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "measured on the host's own MapKit.framework before the code was written: the host's MKMapItem answers -address, -addressRepresentations, -identifier, -alternateIdentifiers, -location, -pointOfInterestCategory and -timeZone, all of them @16@0:8, and its MKMapItemAnnotation carries -mapItem @16@0:8, -initWithMapItem: @24@0:8@16, and the MKAnnotation members -coordinate and -title; apple.objc.inventory against the armv7 dyld shared cache of 6.1.3: the release's own MKMapItem carries -placeID, -placemark, -dictionaryRepresentation and -openInMapsWithLaunchOptions:, and its MKPlacemark carries the whole address vocabulary"
+    },
+    {
+      "api": "MKMapItemAnnotation.mapItem",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the item behind the annotation, which the initialiser takes and the annotation holds",
+      "effect": "the item it was made for, and settable, so an annotation can be re-pointed at another item",
+      "facts": "facts/MapKit/MapKit.md",
+      "source": "measured on the host's own MapKit.framework before the code was written: the host's MKMapItem answers -address, -addressRepresentations, -identifier, -alternateIdentifiers, -location, -pointOfInterestCategory and -timeZone, all of them @16@0:8, and its MKMapItemAnnotation carries -mapItem @16@0:8, -initWithMapItem: @24@0:8@16, and the MKAnnotation members -coordinate and -title"
+    },
+    {
       "api": "MKMapItemIdentifier",
       "kind": "class",
       "introduced": "18.0",

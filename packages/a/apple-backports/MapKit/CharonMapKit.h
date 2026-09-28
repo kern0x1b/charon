@@ -116,6 +116,21 @@ typedef NS_OPTIONS(NSUInteger, MKAddressFilterOption) {
 // Behind CHARON_HOST_PROBE like the rest of the port's own declarations of names a newer SDK
 // carries: the host's own MapKit has this class, and a probe that compiled the port's declaration
 // beside it would collide.
+// The 26.0 address pair, which this file needs by name for the address members of MKMapItem, and
+// which the 16.4 headers do not declare. Under the host guard: the host's own MapKit has both.
+#if !CHARON_HOST_PROBE
+@interface MKAddressRepresentations : NSObject
+- (instancetype)initWithFullAddress:(NSString *)fullAddress;
+@end
+
+@interface MKAddress : NSObject
+- (instancetype)initWithFullAddress:(NSString *)fullAddress;
+@property (nonatomic, readonly, copy) NSString *fullAddress;
+@property (nonatomic, readonly, copy) NSString *shortAddress;
+- (nullable MKAddressRepresentations *)addressRepresentations;
+@end
+#endif /* !CHARON_HOST_PROBE */
+
 #if !CHARON_HOST_PROBE
 @interface MKMapItemIdentifier : NSObject
 - (nullable NSString *)identifierString;

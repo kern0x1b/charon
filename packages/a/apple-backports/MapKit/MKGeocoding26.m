@@ -22,25 +22,12 @@ typedef NS_ENUM(NSInteger, MKAddressRepresentationsContextStyle) {
     MKAddressRepresentationsContextStyleShort,
 };
 
-@interface MKAddressRepresentations : NSObject <NSCopying, NSSecureCoding>
-- (instancetype)init;
-- (instancetype)initWithFullAddress:(NSString *)fullAddress;
-- (instancetype)initWithCity:(NSString *)city;
-@property (nonatomic, readonly, copy) NSString *fullAddress;
-@property (nonatomic, readonly, copy) NSString *shortAddress;
-@property (nonatomic, readonly, copy) NSString *cityName;
-@property (nonatomic, readonly, copy) NSString *regionName;
-@property (nonatomic, readonly, copy) NSString *regionCode;
-- (NSString *)fullAddressIncludingRegion:(BOOL)includingRegion;
-- (NSString *)cityWithContextUsingStyle:(MKAddressRepresentationsContextStyle)style;
-@end
-
-@interface MKAddress : NSObject <NSCopying>
-- (instancetype)init;
-- (instancetype)initWithFullAddress:(NSString *)fullAddress;
-@property (nonatomic, readonly, copy) MKAddressRepresentations *addressRepresentations;
-@property (nonatomic, readonly, copy) NSString *fullAddress;
-@property (nonatomic, readonly, copy) NSString *shortAddress;
+@interface MKAddressRepresentations ()
+@property (nonatomic, copy) NSString *fullAddress;
+@property (nonatomic, copy) NSString *shortAddress;
+@property (nonatomic, copy) NSString *cityName;
+@property (nonatomic, copy) NSString *regionName;
+@property (nonatomic, copy) NSString *regionCode;
 @end
 
 @implementation MKAddressRepresentations {
@@ -153,11 +140,25 @@ typedef NS_ENUM(NSInteger, MKAddressRepresentationsContextStyle) {
 
 @end
 
+@interface MKAddress ()
+@property (nonatomic, copy) NSString *fullAddress;
+@property (nonatomic, copy) NSString *shortAddress;
+@end
+
+
 @implementation MKAddress {
+    NSString *_fullAddress;
+    NSString *_shortAddress;
     MKAddressRepresentations *_representations;
 }
 
-@synthesize addressRepresentations = _representations;
+@synthesize fullAddress = _fullAddress;
+@synthesize shortAddress = _shortAddress;
+
+- (MKAddressRepresentations *)addressRepresentations
+{
+    return _representations;
+}
 
 - (instancetype)init
 {
