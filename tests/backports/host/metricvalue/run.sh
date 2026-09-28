@@ -69,7 +69,18 @@ mutant() {
     METRICVALUE_RECORDS="$build/mutant.json" timeout 90 "$build/mutant/run" >/dev/null 2>&1 || true
     # a mutant that cannot even build counts as caught: the record is gone
     if [ ! -f "$build/mutant.json" ]; then echo "caught (would not build): $label"; return; fi
-    if cmp -s "$build/port.json" "$build/mutant.json"; then echo "MUTANT SURVIVED: $label"; survived=$((survived + 1)); fi
+    if cmp -s "$build/port.json" "$build/mutant.json"; then
+        echo "MUTANT SURVIVED: $label"; survived=$((survived + 1))
+    else
+        # say WHICH record changed: a mutation that is caught for a reason nobody can see is not
+        # holding anything
+        for key in $(python3 -c "
+import json
+a = json.load(open('$build/port.json')); b = json.load(open('$build/mutant.json'))
+print(' '.join(k for k in sorted(set(a) | set(b)) if a.get(k) != b.get(k)))"); do
+            echo "  caught by $key: $(python3 -c "import json;print(json.load(open('$build/port.json')).get('$key'))") -> $(python3 -c "import json;print(json.load(open('$build/mutant.json')).get('$key'))")"
+        done
+    fi
 }
 mutant "the date becomes a wall-clock reading" CharonValueStore.h "        return @([(NSDate *)value timeIntervalSinceReferenceDate]);" "        return @([(NSDate *)value timeIntervalSince1970]);"
 mutant "a measurement becomes a string" CharonValueStore.h "        return @([(NSMeasurement *)value doubleValue]);" "        return [value description];"

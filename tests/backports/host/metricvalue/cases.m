@@ -14,6 +14,24 @@
 - (void)charon_setValue:(id)value forKey:(NSString *)key;
 @end
 
+// The round trip sets through the store, so every walked class needs the store's own setter - the
+// same one the port's own code fills values in through.
+@interface MXAnimationMetric (CharonMetricValueCases)
+- (void)charon_setValue:(id)value forKey:(NSString *)key;
+@end
+@interface MXMetaData (CharonMetricValueCases)
+- (void)charon_setValue:(id)value forKey:(NSString *)key;
+@end
+@interface MXMetricPayload (CharonMetricValueCases)
+- (void)charon_setValue:(id)value forKey:(NSString *)key;
+@end
+@interface MXCrashDiagnostic (CharonMetricValueCases)
+- (void)charon_setValue:(id)value forKey:(NSString *)key;
+@end
+@interface MXDiagnostic (CharonMetricValueCases)
+- (void)charon_setValue:(id)value forKey:(NSString *)key;
+@end
+
 @interface MXDiagnosticPayload (CharonMetricValueCases)
 - (void)charon_setValue:(id)value forKey:(NSString *)key;
 @end
@@ -116,23 +134,27 @@ void metricvalue_run(CertificateRecorder record)
     // which has an accessor of that name of its own - and the walk would report the port's eight
     // accessors while measuring Apple's nine. Naming the symbol makes the port's class a compile-time
     // requirement, so a class the port does not carry is a build error rather than a silent pass.
+    // (class, key, sentinel) - the sentinel is what has to come BACK, and it is chosen so that a value
+    // no one wrote cannot pass for it: an object property takes a string, a scalar one a number the
+    // synthesised default cannot be.
     NSArray *pairs = @[
 #ifdef CHARON_METRICVALUE_PORT
-        @[[MXAnimationMetric class], @"hitchTimeRatio"],
-        @[[MXMetaData class], @"bundleIdentifier"],
-        @[[MXMetaData class], @"lowPowerModeEnabled"],
-        @[[MXMetaData class], @"isTestFlightApp"],
-        @[[MXMetaData class], @"pid"],
-        @[[MXMetricPayload class], @"diskSpaceUsageMetrics"],
-        @[[MXCrashDiagnostic class], @"exceptionReason"],
-        @[[MXDiagnostic class], @"signpostData"],
+        @[[MXAnimationMetric class], @"hitchTimeRatio", @"sentinel-measurement"],
+        @[[MXMetaData class], @"bundleIdentifier", @"sentinel-bundle"],
+        @[[MXMetaData class], @"lowPowerModeEnabled", @YES],
+        @[[MXMetaData class], @"isTestFlightApp", @YES],
+        @[[MXMetaData class], @"pid", @4242],
+        @[[MXMetricPayload class], @"diskSpaceUsageMetrics", @"sentinel-disk"],
+        @[[MXCrashDiagnostic class], @"exceptionReason", @"sentinel-reason"],
+        @[[MXDiagnostic class], @"signpostData", @"sentinel-signpost"],
         // and one ordinary property, so the walk is not only about the gaps
-        @[[MXCPUMetric class], @"cumulativeCPUTime"],
+        @[[MXCPUMetric class], @"cumulativeCPUTime", @"sentinel-cpu"],
 #endif
     ];
     for (NSArray *pair in pairs) {
         Class cls = pair[0];
         NSString *key = pair[1];
+        id sentinel = pair[2];
         NSString *who = NSStringFromClass(cls);
         record(([NSString stringWithFormat:@"kvc.%@.%@.class", who, key]), cls ? @"1" : @"0");
         SEL selector = NSSelectorFromString(key);
@@ -140,11 +162,25 @@ void metricvalue_run(CertificateRecorder record)
         record(([NSString stringWithFormat:@"kvc.%@.%@.answers", who, key]), answers ? @"1" : @"0");
         if (!answers)
             continue;
-        // the read itself: this is the call that raised before, and the selector check is what makes a
-        // missing accessor a recorded 0 rather than a crash
+        // The read itself: this is the call that raised before, and the selector check is what makes a
+        // missing accessor a recorded 0 rather than a crash.
         id instance = [[cls alloc] init];
         (void)[instance valueForKey:key];
         record(([NSString stringWithFormat:@"kvc.%@.%@.read", who, key]), (instance ? @"1" : @"0"));
+
+        // THE ROUND TRIP, and the reason the answers record above is not enough on its own. In a host
+        // build the port's own @dynamic sits behind CHARON_HOST_DIFFERENTIAL, so the property is declared
+        // by the host's own header (renamed, so it lands on the port's class) and the COMPILER SYNTHESISES
+        // a getter for it when the port's is missing. A synthesised getter still answers the selector -
+        // which is why the mutation that deletes the port's accessor cannot be made red by asking
+        // respondsToSelector: - but it reads an ivar nothing writes, so a value set through the port's
+        // own -charon_setValue:forKey: does not come back through it. Reading the value back is what
+        // tells the port's accessor from a synthesised one, and it needs no symbol table and no nm.
+        [instance charon_setValue:sentinel forKey:key];
+        id back = [instance valueForKey:key];
+        BOOL same = [back isKindOfClass:[NSString class]] ? [back isEqualToString:sentinel]
+                                                          : [back isEqual:sentinel];
+        record(([NSString stringWithFormat:@"kvc.%@.%@.roundTrip", who, key]), same ? @"1" : @"0");
     }
 #endif
 }

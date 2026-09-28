@@ -145,7 +145,30 @@ path records that pointer on the interval it takes. The port's own os_signpost f
 (`facts/Foundation/OSLogSignpost.md`) is what records it, and the port's signpost metrics are read out
 of the same store.
 
-**No host differential.** There is no MetricKit in the host's `iOSSupport` (measured: the directory has
+## The value differential, and the one check that needed the round trip
+
+`tests/backports/host/metricvalue` builds the port's own sources for a host and asks two questions.
+The first is what the system's MetricKit writes for a value nothing measured, and the port must answer
+it the same way. The second is the KVC walk: the eight properties the port declares and the 16.4 SDK it
+builds against does not, plus one ordinary property, each set through the port's own
+`-charon_setValue:forKey:` and read back through the accessor, with the class named by its **symbol** so
+that the port's class is the one under test and a class it does not carry is a build error.
+
+That round trip is the check the `hitchTimeRatio` mutation needed, and the reason is worth writing
+down. The port half compiles with `-DCHARON_HOST_DIFFERENTIAL=1`, because the host's MetricKit is
+*newer* than the SDK the port ships against and the rename header rewrites the class name inside Apple's
+own headers: Apple's `@interface MXSignpostRecord` becomes `@interface CharonMXSignpostRecord`, the same
+class the port declares. Building without the flag was measured and does not build —
+`duplicate interface definition for class 'CharonMXSignpostRecord'`, then six `property has a previous
+declaration` — so it is not a configuration that can be asked for. With the flag, the port's `@dynamic`
+is compiled out, the property is declared by Apple's header, and the **compiler synthesises** a getter
+when the port's is missing. A synthesised getter still answers the selector, which is why
+`instancesRespondToSelector:` cannot see the mutation, and `nm` cannot either: the synthesised IMP is
+in the binary and the ivar is present in both variants. What a synthesised getter cannot do is return a
+value nobody wrote, so the round trip is what separates it from the port's accessor. No symbol table
+and no `nm` is involved.
+
+## Not measured against a host (measured: the directory has
 128 frameworks and MetricKit is not among them), and a differential would have no system implementation
 to compare against - the values here are the system's *output*, which is precisely what this release
 does not produce. What could be measured by hand - the property lists, the hierarchy, the SDK gap - is
