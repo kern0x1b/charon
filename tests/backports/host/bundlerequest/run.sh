@@ -24,11 +24,27 @@ if [ $mutants = yes ]; then
     caught=0
     tab=$(printf '\t')
     mutant=$BUILD-mutant
-    while IFS="$tab" read -r name file change; do
+    device=0
+    while IFS="$tab" read -r name file change mark; do
         # a comment, or anything without the three fields, is not a mutant: the counts below are of
         # the rows the file holds, and a comment must not be read as one
         case "$name" in ''|\#*) continue;; esac
         [ -n "$change" ] || continue
+        if [ "$mark" = device ]; then
+            # A row marked device-only is not run here, and the mark may not hide a stale row or a
+            # real gap: its change is applied to a copy and must still apply, or the row is reported.
+            rm -rf "$mutant"; mkdir -p "$mutant/Foundation"
+            cp -R "$FOUNDATION"/ "$mutant/Foundation/"
+            perl -0pi -e "$change" "$mutant/Foundation/$file"
+            if cmp -s "$FOUNDATION/$file" "$mutant/Foundation/$file"; then
+                echo "MISSED $name: marked device-only, and its change no longer applies"
+                missed=1
+            else
+                device=$((device + 1))
+                echo "device-only: $name (not run in this process)"
+            fi
+            continue
+        fi
         rm -rf "$mutant"
         mkdir -p "$mutant/Foundation"
         cp -R "$FOUNDATION"/ "$mutant/Foundation/"
@@ -55,13 +71,14 @@ if [ $mutants = yes ]; then
     rm -rf "$mutant" "$mutant.log"
     # The file must end in a newline and every row must be read: without this a dropped last line
     # looks exactly like a file with one fewer mutant, and nothing said so.
-    entries=$(grep -c "	" "$here/mutants/bundlerequest.txt")
+    host_rows=$(grep -c "	" "$here/mutants/bundlerequest.txt")
+    host_rows=$((host_rows - device))
     seen=$((caught + missed))
-    if [ "$seen" -ne "$entries" ]; then
-        echo "MISSED the runner read $seen of the file's $entries rows: check that it ends in a newline"
+    if [ "$seen" -ne "$host_rows" ]; then
+        echo "MISSED the runner read $seen of the file's $host_rows host rows: check that it ends in a newline"
         missed=1
     fi
-    echo "$caught caught of $entries rows"
+    echo "$caught caught of $host_rows host rows, $device device-only"
     exit $missed
 fi
 
