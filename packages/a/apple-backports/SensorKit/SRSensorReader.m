@@ -32,7 +32,7 @@
 
 // SensorKit's error domain is the string the host's SensorKit gives it, read from the host's own
 // framework: `SRErrorDomain` is @"SRErrorDomain". The reader's errors are in it, so it is carried.
-NSErrorDomain const SRErrorDomain = @"SRErrorDomain";
+NSErrorDomain SRErrorDomain = @"SRErrorDomain";
 
 @implementation SRSensorReader
 
