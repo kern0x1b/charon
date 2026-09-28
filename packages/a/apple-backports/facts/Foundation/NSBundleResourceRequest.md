@@ -119,7 +119,8 @@ priority back — level1 reads 0.25 — and the earlier "answers, and reads 0" m
 bundle with **no** manifest and a tag it did not have.
 
 **They are installed only where `NSBundle` does not already answer**, with `class_getInstanceMethod`,
-which walks the superclasses:
+which walks the superclasses and does not enter the optimized stub whose trap for an unregistered
+selector is `brk #0xc472`:
 
 ```objc
 BOOL hasSet = class_getInstanceMethod(bundle, @selector(setPreservationPriority:forTags:)) != NULL;
@@ -129,8 +130,17 @@ That is the fleet rule — the port installs nothing where the host already has 
 **in the host process these two sends reach the host's own methods**: the differential *records* what
 the host does and does not pretend to compare. **The port's own copies run, and can be held, only on a
 release that has neither, which is the device**, so those two rows are device-only and a call test
-there is what holds them. A mutant of either is not in the mutants file for the same reason, and the
-status records it rather than leaving a gap that looks like coverage.
+there is what holds them.
+
+**One mutant of the install is not catchable here, and says so rather than being left out.** Asking
+with `-instancesRespondToSelector:` instead of `class_getInstanceMethod` gives the same answer for
+both on a class that has neither method — which is the class the differential installs on, and the
+only one where the decision is testable at all — so the two are indistinguishable here. **What
+distinguishes them is the trap itself**: on a 6.x release `-instancesRespondToSelector:` traps with
+`brk #0xc472` for a selector nothing has registered, and `class_getInstanceMethod` does not, so a
+device call test is what tells them apart, and the row is **device-only** for that reason. The mutant
+that inverts the decision — `!= NULL` to `== NULL`, adding both methods to a class that already has
+them — **is** caught here, by the install's four checks on a class of the test's own.
 
 ## What the search for a reusable implementation found
 

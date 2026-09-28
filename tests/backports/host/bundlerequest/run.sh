@@ -25,6 +25,10 @@ if [ $mutants = yes ]; then
     tab=$(printf '\t')
     mutant=$BUILD-mutant
     while IFS="$tab" read -r name file change; do
+        # a comment, or anything without the three fields, is not a mutant: the counts below are of
+        # the rows the file holds, and a comment must not be read as one
+        case "$name" in ''|\#*) continue;; esac
+        [ -n "$change" ] || continue
         rm -rf "$mutant"
         mkdir -p "$mutant/Foundation"
         cp -R "$FOUNDATION"/ "$mutant/Foundation/"
@@ -51,7 +55,7 @@ if [ $mutants = yes ]; then
     rm -rf "$mutant" "$mutant.log"
     # The file must end in a newline and every row must be read: without this a dropped last line
     # looks exactly like a file with one fewer mutant, and nothing said so.
-    entries=$(grep -c . "$here/mutants/bundlerequest.txt")
+    entries=$(grep -c "	" "$here/mutants/bundlerequest.txt")
     seen=$((caught + missed))
     if [ "$seen" -ne "$entries" ]; then
         echo "MISSED the runner read $seen of the file's $entries rows: check that it ends in a newline"
