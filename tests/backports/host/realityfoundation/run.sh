@@ -20,7 +20,10 @@
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 files=${RF_OVERLAY_FILES:-$here/../../../../packages/s/swift-runtime/files}
-build=${RF_BUILD:-${TMPDIR:-/tmp}/charon-realityfoundation-host}
+# The build goes in the worktree's own run directory, not the system temp path: the brief's rule is
+# that nothing of a band goes in /tmp, which is wiped, and this build is run output.
+here_root=$(cd "$here/../../../.." && pwd)
+build=${RF_BUILD:-$here_root/.agent-work/runs/host-realityfoundation}
 sdk=${RF_SDK:-$(xcrun --show-sdk-path)}
 target=${RF_TARGET:-$(uname -m)-apple-macos14}
 swiftc=${RF_SWIFTC:-$HOME/.xmake/packages/s/swift/6.4.0/f1d0e4f9eebe477396350986a88081e5/bin/swiftc}

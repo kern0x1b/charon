@@ -12,7 +12,10 @@
 # one is not.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
-build=${BUILD:-$(mktemp -d)}
+# In the worktree, not /tmp: the brief's rule is that nothing of a band goes in the system temp
+# path, which is wiped. The case is rebuilt every run and the log it keeps is the evidence.
+here_root=$(cd "$here/../../../.." && pwd)
+build=${BUILD:-$here_root/.agent-work/runs/host-scenekitprojection}
 swiftc=${SWIFTC:-swiftc}
 sdk=${SDK:-$(xcrun --show-sdk-path)}
 mkdir -p "$build"
