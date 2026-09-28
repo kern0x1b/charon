@@ -70,6 +70,11 @@
 @property (readonly) NSPredicate *predicate;
 @end
 
+@interface CharonHostHKSampleType : NSObject
+@end
+
+@class CharonHostHKQuantityType;
+
 @interface CharonHostHKSampleQuery : NSObject
 - (instancetype)initWithSampleType:(HKSampleType *)sampleType
                          predicate:(nullable NSPredicate *)predicate
@@ -776,6 +781,19 @@ static void CharonHKQueryObjects(void)
         Ivar inMineQuery = mineClass ? class_getInstanceVariable(mineClass, "_objectType") : NULL;
         printf("LAYOUT _objectType offset on the sample query itself: %lld\n",
                inMineQuery ? (long long)ivar_getOffset(inMineQuery) : -1LL);
+        // What the port's own -sampleType tests, and whether the type it was made with passes it: the
+        // harness's declaration of the factory returns the host's HKQuantityType, so the class of what
+        // comes back is the thing to look at.
+        id mineType = [CharonHostHKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeartRate];
+        id theirsType = [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeartRate];
+        // The print that answers difference 1: what the port's -sampleType tests against, and whether
+        // the type the harness built with the port's own factory passes it. %@ and not %s, because an
+        // object is not a C string: the last version of this print said the ivar held garbage when it
+        // held a type, and the garbage was the format string.
+        printf("LAYOUT mineType=%@ portSampleType=%@ mineIsKind=%d | theirsType=%@ hostSampleType=%@ theirsIsKind=%d\n",
+               [mineType class], [CharonHostHKSampleType class],
+               [mineType isKindOfClass:[CharonHostHKSampleType class]],
+               [theirsType class], [HKSampleType class], [theirsType isKindOfClass:[HKSampleType class]]);
     }
 
     // The type a query is for, and the sample type under its own name, which is the same object.
