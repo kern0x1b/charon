@@ -146,6 +146,7 @@ local function type_rows(backports, found)
     os.tryrm(root)
 end
 
+
 function failures(opt)
     local backports = import("apple.backports", {rootdir = opt.modules, anonymous = true})
     local found = {}
