@@ -126,6 +126,30 @@ HMTimerTrigger *CharonHomeKitTimerTrigger(NSString *identifier, NSString * _Null
 - (void)charon_tellHome:(SEL)selector object:(id)object block:(void (^)(id<HMHomeDelegate> delegate, HMHome *home, id object))block;
 @end
 
+
+#pragma mark - the events of iOS 9.0
+
+HMEvent *CharonHomeKitEvent(NSString *identifier, NSString *kind);
+HMEventTrigger *CharonHomeKitEventTrigger(NSString *identifier, NSString * _Nullable homeIdentifier);
+HMHomeAccessControl *CharonHomeKitHomeAccessControl(HMHome *home, HMUser *user);
+
+@interface HMEvent () @property (nonatomic, copy) NSString *charon_identifier; @end
+@interface HMCharacteristicEvent () @property (nonatomic, strong, nullable) HMCharacteristic *charon_characteristic;
+@property (nonatomic, strong, nullable) id charon_triggerValue; @end
+@interface HMLocationEvent () @property (nonatomic, strong, nullable) CLCircularRegion *charon_region; @end
+@interface HMEventTrigger () @property (nonatomic, copy) NSString *charon_identifier;
+@property (nonatomic, copy, nullable) NSString *charon_homeIdentifier; @end
+@interface HMHomeAccessControl () @property (nonatomic, weak, nullable) HMHome *charon_home;
+@property (nonatomic, strong, nullable) HMUser *charon_user; @end
+
+@interface HMEventTrigger (CharonHomeKitStore)
+- (void)charon_setHomeIdentifier:(NSString * _Nullable)homeIdentifier;
+- (void)charon_applyName:(NSString * _Nullable)name;
+- (void)charon_applyEvents:(NSArray<HMEvent *> * _Nullable)events forKey:(NSString *)key;
+- (void)charon_applyPredicate:(NSPredicate * _Nullable)predicate;
+- (NSArray<HMEvent *> *)charon_eventsForKey:(NSString *)key;
+@end
+
 NS_ASSUME_NONNULL_END
 
 #endif

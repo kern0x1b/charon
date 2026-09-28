@@ -280,7 +280,7 @@
         return nil;
     for (HMUser *held in self.users) {
         if ([held.uniqueIdentifier isEqual:wanted.uniqueIdentifier])
-            return held.charon_homeAccessControl;
+            return CharonHomeKitHomeAccessControl(self, held);
     }
     return nil;
 }

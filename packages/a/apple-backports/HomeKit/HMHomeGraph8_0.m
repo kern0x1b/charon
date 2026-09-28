@@ -552,7 +552,7 @@ HMTrigger *CharonHomeKitTrigger(NSString *identifier, NSString *homeIdentifier)
 {
     // HMTrigger's -init is unavailable in the release's header, so the timer trigger is built through
     // the port's own designated initialiser and the three initialisers above it are its arguments.
-    self = [self charon_initWithStore:[CharonHomeKitStore shared] identifier:nil];
+    self = [super charon_initWithStore:[CharonHomeKitStore shared] identifier:nil];
     if (self) {
         [self charon_applyName:name];
         [self charon_applyFireDate:fireDate];
@@ -564,7 +564,7 @@ HMTrigger *CharonHomeKitTrigger(NSString *identifier, NSString *homeIdentifier)
 - (instancetype)initWithName:(NSString *)name fireDate:(NSDate *)fireDate timeZone:(NSTimeZone *)timeZone
                  recurrence:(NSDateComponents *)recurrence recurrenceCalendar:(NSCalendar *)recurrenceCalendar
 {
-    self = [self charon_initWithStore:[CharonHomeKitStore shared] identifier:nil];
+    self = [super charon_initWithStore:[CharonHomeKitStore shared] identifier:nil];
     if (self) {
         [self charon_applyName:name];
         [self charon_applyFireDate:fireDate];
