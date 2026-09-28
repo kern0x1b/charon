@@ -125,8 +125,8 @@ import sys
 path = sys.argv[1]
 text = open(path).read()
 before = text
-text = text.replace("return a * x * 0.5f * (1.0f + erff(b * x * 0.70710678118654752440f));",
-                    "return a * x * 0.5f * (1.0f + erff(b * x * 0.71710678118654752440f));")
+text = text.replace("return x * 0.5f * (1.0f + tanhf(0.7978845608f * (x + 0.044715f * x * x * x)));",
+                    "return x * 0.5f * (1.0f + tanhf(0.7078845608f * (x + 0.044715f * x * x * x)));")
 assert text != before, "the mutant changed nothing"
 open(path, "w").write(text)
 PY

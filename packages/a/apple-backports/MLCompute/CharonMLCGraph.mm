@@ -133,13 +133,20 @@ static float CharonMLCActivate(const CharonMLCFormula *formula, float x)
             // min(max(x, a), b), measured with a and b of 1 as 1, 1, 1, 1 and with -1 and 2 as 1, 2, 2, 2.
             return fminf(fmaxf(x, a), b);
         case MLCActivationTypeGELU:
-            // The tanh approximation, not the erf one - measured, and the difference is a third decimal:
-            //   x/2 * (1 + tanh(a * (x + b x^3)))
-            // with a the square root of 2/pi and b the cubic coefficient 0.044715 the descriptor carries.
-            // At 1, 2, 3 and 4 that gives 0.841192, 1.954598, 2.996363 and 3.99993, which is what the
-            // host answers (measured). The erf form gives 0.841345 at 1 and the host does not, so the erf
-            // form is not what this framework computes.
-            return x * 0.5f * (1.0f + tanhf(a * (x + b * x * x * x)));
+            // The tanh approximation and not the erf one - measured, and the difference is a third decimal:
+            // the erf form gives 0.841345 at 1 and the framework gives 0.841192.
+            //
+            //   x/2 * (1 + tanh(c * (x + d x^3)))   with c the square root of 2/pi and d = 0.044715
+            //
+            // The descriptor's a and b do not reach this: the framework answers 0.841192, 1.9546, 2.99636
+            // and 3.99993 for 1, 2, 3 and 4 with a descriptor whose parameters are 1 and 1, which are
+            // these two constants and not what the caller gave (measured - the differential's own case
+            // builds the descriptor with +descriptorWithType: and no parameters, and the formula with
+            // a = b = 1 answers 0.982014, 2, 3 and 4 instead). So the two constants are the framework's
+            // own, written here, and the descriptor's parameters for this one are read by nothing.
+            (void)a;
+            (void)b;
+            return x * 0.5f * (1.0f + tanhf(0.7978845608f * (x + 0.044715f * x * x * x)));
         case MLCActivationTypeTanhShrink:
             // x - tanh(x), measured with the default a of 1 as 0.2384059, 1.035972, 2.004945, 3.000671
             // and with the layer's own a of 0 as the same, since the layer's a is not read here.
