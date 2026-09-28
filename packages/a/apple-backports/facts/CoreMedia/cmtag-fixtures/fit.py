@@ -41,17 +41,9 @@ def order(fields, category_signed, value_bits):
                 number = struct.unpack(">d", struct.pack(">Q", value))[0]
                 # a NaN becomes its own sentinel, so two NaNs are equal to each other and, with the
                 # rule below, to everything else; -0.0 becomes +0.0, which is what the host answers
-                third = "NaN" if number != number else (0.0 if number == 0.0 else number)
+                third = float("-inf") if number != number else (0.0 if number == 0.0 else number)
             elif dataType == 2:
                 third = value - (1 << 64) if value & 0x8000000000000000 else value
-            else:
-                third = value
-            # the value as a signed number of the tag's OWN data type, which is what the refuting pair
-            # asked for: an int64 as int64, a float64 as a double, and the rest as the unsigned word
-            if dataType == 2:
-                third = value - (1 << 64) if value & 0x8000000000000000 else value
-            elif dataType == 3:
-                third = struct.unpack(">d", struct.pack(">Q", value))[0]
             else:
                 third = value
         else:
@@ -110,6 +102,16 @@ def main():
                                                                 "big" if big_endian else "little")))
     for best, forward, backward, name in sorted(results):
         print("  %4d mismatches  (%d forward, %d reversed)  %s" % (best, forward, backward, name))
+    signatures = {}
+    for best, forward, backward, name in results:
+        signatures.setdefault((best, forward, backward), []).append(name)
+    for (best, forward, backward), names in sorted(signatures.items()):
+        if len(names) > 1:
+            print("STOP: two candidates score identically, so at least one is not running its own code:")
+            for name in names:
+                print("   %4d (%d forward, %d reversed)  %s" % (best, forward, backward, name))
+            raise SystemExit(1)
+    print("\n=== every candidate's name changes its score, checked over %d pairs" % len(pairs))
     print("\n=== the top three")
     for best, forward, backward, name in sorted(results)[:3]:
         print("  %4d mismatches  (%d forward, %d reversed)  %s" % (best, forward, backward, name))
@@ -118,6 +120,11 @@ def main():
     fields = tuple("category dataType value".split().index(p) for p in best_name.split()[1].split("-"))
     category_signed = "signed" in best_name
     value_bits = best_name.split("value ")[1]
+    print("\n=== the type the candidate chose for 1.5 against -0.5")
+    for index in (7, 15):
+        category, dataType, value = TAGS[index]
+        key = order(fields, category_signed, value_bits)((category, dataType, value))
+        print("  tag %d: data type %d, value 0x%016x -> key %r (%s)" % (index, dataType, value, key[2], type(key[2]).__name__))
     print("\n=== the pairs the best candidate leaves, with both values as bits")
     for a, b, host in pairs:
         if compare(TAGS[a], TAGS[b], fields, category_signed, value_bits) == host:

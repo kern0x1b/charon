@@ -282,3 +282,29 @@ double orders 1 - is still listed as unexplained. That is the thing to fix next,
 
 Until it is, `CMTagCompare` keeps the signed-category implementation that 105 answers support, no
 registry rows are written, and the family is not deliverable.
+
+
+## The self-check fires before anything else, and it fires on my own two candidates
+
+`fit.py` now asserts, before it reports anything, that **every pair of candidate names gives a
+different score or a different unexplained list**, and stops if two agree. It stops:
+
+```
+STOP: two candidates score identically, so at least one is not running its own code:
+     11 (11 forward, 248 reversed)  order category-dataType-value  signed  value own-type
+     11 (11 forward, 248 reversed)  order category-dataType-value  signed  value own-type-nan-equal
+```
+
+That is the check catching exactly what it was written for. `own-type` and `own-type-nan-equal` are the
+**same function**: the NaN sentinel and the −0.0 collapse were moved into the branch the two names
+share, so the equality rule that distinguishes them is unreachable. And the original defect is still
+there underneath: a second block in the `own-type` branch **overwrote** the sentinel the first block
+computed, which is why both scored the same 14 before and the same 11 now.
+
+Removing that block is what took it from 14 to 11, and the type the candidate chose is now printed for
+the pair that decides it. The remaining 11 are the NaN ones: the candidate sorts a NaN as −∞ and the
+host answers **equal** for a NaN against anything, so the rule has to be an equality rather than a
+position — and the candidate that expresses it is the one the self-check says is not running.
+
+That is the next step and it is small. The family is still not deliverable, no registry rows are written,
+and the approved series stands at 74 / 0, 464 / 0 and 7544 / 0.
