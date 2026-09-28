@@ -277,6 +277,23 @@ local function own_rows(backports, found)
     os.tryrm(root)
 end
 
+
+-- A source this build generated sits in the build directory, and its quoted import reaches a header of the
+-- tree only when the tree is on the path: the generated protocol source imports its library's Charon header,
+-- and without this the gate stopped on "CharonFoundationProtocols.h file not found" for every library. The
+-- case is the flags a job would be compiled with, and it fails when the include loop is gone.
+local function generated_includes(backports, found)
+    local folder = "/somewhere/packages/a/apple-backports/Foundation"
+    local flags = table.concat(backports.compile_arguments({includes = {folder}}, "Protocols.m"), " ")
+    if not flags:find("%-I" .. folder, 1, true) then
+        table.insert(found, "a generated source's job must add the library's own folder to its include path, and it does not: " .. flags)
+    end
+    local bare = table.concat(backports.compile_arguments({}, "Protocols.m"), " ")
+    if bare:find("%-I/somewhere", 1, true) then
+        table.insert(found, "a job that names no include root must not have one, and it does: " .. bare)
+    end
+end
+
 function failures(opt)
     local backports = import("apple.backports", {rootdir = opt.modules, anonymous = true})
     local found = {}
@@ -345,6 +362,7 @@ function failures(opt)
     member_and_protocol_rows(backports, found)
     two_readers(backports, found)
     own_rows(backports, found)
+    generated_includes(backports, found)
     return found
 end
 

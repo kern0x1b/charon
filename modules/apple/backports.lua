@@ -371,31 +371,15 @@ end
 -- the inline functions of their headers stay hidden, as the archives' own symbols are. Every .mm
 -- backport is compiled so: one that needs RTTI for another reason (typeid, dynamic_cast) cannot
 -- have it here.
-local function unit(opt, source, object)
-    -- The source, absolute, and relative to this package rather than to wherever xmake happens to
-    -- be: path.absolute() on its own resolves a relative source against the working directory,
-    -- which inside package:on_install is xmake's own and not the checkout, so a caller that passed
-    -- "UIKit/Foo.mm" would be looked for under xmake's directory. Every caller here already passes
-    -- path.join(opt.root, ...), so this is the identity for all of them; it is here for the next one.
-    if not source:startswith("/") then
-        source = path.join(opt.root, source)
-    end
-    -- This does NOT close the one-object residue, and nothing a caller passes can. ccache rewrites
-    -- the compiler's own -c argument when base_dir is set - heavy.sh sets it in the cache's
-    -- ccache.conf - and hands the object back as that run wrote it, so a cached build records the
-    -- relative spelling whatever the caller passed and an uncached one the absolute. Measured the
-    -- same file three ways straight through ccache, so nothing else was in the way: no cache and
-    -- ccache with base_dir unset are byte for byte the same and both record the absolute path;
-    -- only base_dir set gives the relative one. That rewrite is the price of the cross-worktree
-    -- sharing hash_dir = false buys, and -ffile-prefix-map, which rules/apple-ios already applies
-    -- to this repository's own targets, is the follow-up that would collapse both spellings -
-    -- measured, and it does not: the map rewrites an absolute spelling and ccache hands the
-    -- compiler a relative one, so the gap falls from 84 bytes to 8 and stops
-    -- (band-api-prefixmap, d2e15520). What the two lines above close is the other half: a caller
-    -- that spelled the source two ways would be two objects under one key, and that is no longer
-    -- possible.
+-- The flags one source is compiled with. A job may add include roots of its own: a source this build
+-- generated sits in the build directory, and its quoted import reaches a header of the tree only when the
+-- tree is on the path.
+function compile_arguments(opt, source)
     local objective_c = not source:endswith(".c")
     local arguments = {"-Os", "-g0", "-Wall", "-Wno-unguarded-availability-new", "-Wno-unguarded-availability"}
+    for _, folder in ipairs(opt.includes or {}) do
+        table.insert(arguments, "-I" .. folder)
+    end
     if objective_c then
         table.insert(arguments, "-Werror=objc-missing-property-synthesis")
     else
@@ -423,40 +407,12 @@ local function unit(opt, source, object)
         local checkout = path.normalize(path.join(path.absolute(opt.root), "..", "..", ".."))
         table.insert(arguments, "-fmacro-prefix-map=" .. checkout .. "/=")
     end
-    local program, arguments = clang(opt, table.join(arguments, {"-c", source, "-o", object}), objective_c)
-    local key = object_key(opt, program, arguments, source, object)
-    KEYS[object] = key
-    return program, arguments, key and path.join(opt.store, key:sub(1, 2), key .. ".o")
+    return arguments, objective_c
 end
 
--- A folder of the store, made. Every gate of the fleet writes the one store, and two of them create
--- the same two-hex folder at once all the time: os.mkdir raises on the EEXIST the loser gets
--- (measured, xmake 3.1.1: "cannot create directory: .../44, File exists"), which kills that gate
--- over a folder that is there. It is there, and that is all that is asked.
-local function store_folder(folder)
-    try { function () os.mkdir(folder) end }
-    assert(os.isdir(folder), "cannot create the store folder " .. folder)
-end
-
--- The object of one unit at object, from the store when it holds it: true when the compiler ran.
-local function place(object, stored)
-    -- Removed first either way: the object may be a link into the store from an earlier run, and a
-    -- compile must not write through it.
-    os.tryrm(object)
-    if stored and os.isfile(stored) then
-        os.ln(stored, object)
-        -- the store is swept by age (sweep_store), and an entry a build still takes is not old
-        os.touch(stored)
-        return true
-    end
-    return false
-end
-
-function compile(opt, source, object, library)
-    local program, arguments, stored = unit(opt, source, object)
-    if place(object, stored) then
-        return false
-    end
+function compile(opt, source, object)
+    local flags, objective_c = compile_arguments(opt, source)
+    local program, arguments = clang(opt, table.join(flags, {"-c", source, "-o", object}), objective_c)
     -- Through the cache, which is apple.cache: it puts the compiler in as the wrapper's first
     -- argument, because os.execv runs a name it cannot execute itself by splitting that name on
     -- spaces, and a checkout under a path with a space in it has to survive that. The link below
@@ -700,7 +656,8 @@ local function compiled(opt)
         for _, source in ipairs(protocol_sources(opt.root, library, generated, library.frameworks[1])) do
             local object = path.join(opt.builddir, "objects", library.folder, "protocols", path.filename(source) .. ".o")
             os.mkdir(path.directory(object))
-            pending[#pending + 1] = {opt = opt, source = source, object = object}
+            local job = table.join(opt, {includes = {path.join(opt.root, library.folder)}})
+            pending[#pending + 1] = {opt = job, source = source, object = object}
             table.insert(objects[library.name], object)
             origins[object] = source
         end
