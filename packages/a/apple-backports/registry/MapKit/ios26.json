@@ -437,9 +437,9 @@
       "minimum": "6.0",
       "status": "inert",
       "reason": "A SUBSTITUTION, and crutches.md entry 1 says so. Measured: the SDK 16.4 header marks the property NS_AVAILABLE(10_11, 9_0), and the armv7 cache of 6.1.3 has 0 occurrences of detailCalloutAccessoryView, 0 of setDetailCalloutAccessoryView: and 0 of calloutView. The release's own MKAnnotationView has leftCalloutAccessoryView and rightCalloutAccessoryView and no third slot, so this release cannot place a view under the title inside a callout.",
-      "effect": "the caller's view is drawn in the release's OWN LEFT callout slot, which is BESIDE the callout and not under its title, so a caller that sets this does not get Apple's placement. The native fix is to draw a callout of this port's own with the detail view under the title -- crutches.md entry 1, not done",
+      "effect": "the caller's view is drawn in the release's OWN LEFT callout slot, which is BESIDE the callout and not under its title, so a caller that sets this does not get Apple's placement. The native fix is a callout of this port's own with the detail view under the title; it is recorded as open in coordination/crutches.md and is not done",
       "facts": "facts/MapKit/MapKit.md",
-      "source": "the SDK 16.4 header MKAnnotationView.h (NS_AVAILABLE(10_11, 9_0)), a raw selector search of the armv7 dyld shared cache of 6.1.3 (0 occurrences of the selector and of calloutView), and packages/a/apple-backports/crutches.md entry 1"
+      "source": "the SDK 16.4 header MKAnnotationView.h (NS_AVAILABLE(10_11, 9_0)), a raw selector search of the armv7 dyld shared cache of 6.1.3 (0 occurrences of detailCalloutAccessoryView, 0 of setDetailCalloutAccessoryView: and 0 of calloutView), and coordination/crutches.md, where the substitution is recorded as open"
     },
     {
       "api": "MKAnnotationView.displayPriority",

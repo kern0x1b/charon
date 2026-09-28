@@ -57,6 +57,15 @@
     return nil;
 }
 
+- (void)charon_didAddOverlayRenderers:(NSArray *)renderers
+{
+    id<MKMapViewDelegate> delegate = [self delegate];
+    SEL asked = NSSelectorFromString(@"mapView:didAddOverlayRenderers:");
+    if ([delegate respondsToSelector:asked]) {
+        ((void (*)(id, SEL, MKMapView *, NSArray *))objc_msgSend)(delegate, asked, self, renderers);
+    }
+}
+
 - (void)charon_willStartRendering
 {
     id<MKMapViewDelegate> delegate = [self delegate];

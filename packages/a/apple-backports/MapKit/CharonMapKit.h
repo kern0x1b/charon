@@ -95,6 +95,11 @@ typedef NSInteger MKLocalSearchRegionPriority;
 // in the armv7 cache of 6.1.3 (measured by selector string) and the SDK's MKMultiPoint.h is where
 // it is declared; the 16.4 header has no `coordinates` property, so this is the one spelling there
 // is. Declared and not implemented: the class and the method are the release's.
+// An `inert` member says so ONCE, in the log, the first time it is used, and never again -- what
+// the registry README asks of an inert entry, so a caller finds out without the log becoming noise.
+// The port's own, so it carries no API.
+void charon_sayOnce(NSString *api, NSString *why);
+
 @interface MKMultiPoint (CharonPoints)
 - (void)getCoordinates:(CLLocationCoordinate2D *)coords range:(NSRange)range;
 @end

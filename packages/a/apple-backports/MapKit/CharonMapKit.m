@@ -97,3 +97,23 @@
 }
 
 @end
+
+// The once-only log. A static set of the names already said, so the second use is silent.
+void charon_sayOnce(NSString *api, NSString *why)
+{
+    static NSMutableSet *told;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        told = [[NSMutableSet alloc] init];
+    });
+    if (api.length == 0) {
+        return;
+    }
+    @synchronized(told) {
+        if ([told containsObject:api]) {
+            return;
+        }
+        [told addObject:api];
+    }
+    NSLog(@"MKMapBackports: %@ is inert -- %@", api, why ?: @"no reason recorded");
+}
