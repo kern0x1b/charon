@@ -1,11 +1,11 @@
 # What lift() leaves alone against iPhoneOS16.4.sdk (the archive the iphoneos-sdk package installs for 16.4): one full lift of the registry of this series
-# (main fdd88cd0, which added __NSConcreteUUID - a class no header declares - implemented, carrying NSUUID below iOS 6.0), none dropped: 47 lines.
+# (the Accelerate series 68befaca..093c0c06, which added BLASGetThreading and BLASSetThreading - declared by 26.2's vecLib/thread_api.h and by no header of 16.4's), none dropped: 49 lines.
 # Each is a name the lift did not reach, and each was looked for in every header of the SDK (usr/include and the frameworks) and found declared nowhere,
 # but for the ones told here:
 #  - class (8): a class no header declares (a stub exports some, some are private, some a later SDK's).
 #  - undeclared (8): a registered member its class reaches no declaration of; the line says where the SDK declares it, or that it declares it nowhere.
-#  - unmatched (31): __sincosf_stret and __sincos_stret are declared by math.h, in the branch of __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000, which the 6.1.3 target does not read.
-#    The rest (CG*(), NSData*, NSExtensionMain, __NS*, __kCF*, compiler-rt and libSystem internals) are exported by a stub or private, and named by no header.
+#  - unmatched (33): __sincosf_stret and __sincos_stret are declared by math.h, in the branch of __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000, which the 6.1.3 target does not read.
+#    The rest (CG*(), NSData*, NSExtensionMain, BLAS{Get,Set}Threading(), __NS*, __kCF*, compiler-rt and libSystem internals) are exported by a stub or private, or arrived after this SDK, and named by no header.
 class	NSConstantArray	
 class	NSConstantDictionary	
 class	NSConstantDoubleNumber	
@@ -22,6 +22,8 @@ undeclared	-[UITextView replaceRange:withAttributedText:]	declared nowhere
 undeclared	-[UIViewController viewIsAppearing:]	declared nowhere
 undeclared	UINavigationBarAppearance.prominentButtonAppearance	declared nowhere
 undeclared	UIToolbarAppearance.prominentButtonAppearance	declared nowhere
+unmatched	BLASGetThreading()	function
+unmatched	BLASSetThreading()	function
 unmatched	CGBitmapGetAlignedBytesPerRow()	function
 unmatched	CGContextGetBlendMode()	function
 unmatched	CGContextGetLineWidth()	function

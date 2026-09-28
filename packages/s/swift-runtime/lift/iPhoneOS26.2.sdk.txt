@@ -1,5 +1,5 @@
 # What lift() leaves alone against iPhoneOS26.2.sdk (the archive the iphoneos-sdk package installs for 26.2): one full lift of the registry of this series
-# (main fdd88cd0, which added __NSConcreteUUID - a class no header declares - implemented, carrying NSUUID below iOS 6.0), none dropped: 40 lines.
+# (the Accelerate series 68befaca..093c0c06, which added BLASGetThreading and BLASSetThreading - declared by 26.2's vecLib/thread_api.h and by no header of 16.4's), none dropped: 40 lines.
 # Each is a name the lift did not reach, and each was looked for in every header of the SDK (usr/include and the frameworks) and found declared nowhere,
 # but for the ones told here:
 #  - class (8): a class no header declares (a stub exports some, some are private, some a later SDK's).
