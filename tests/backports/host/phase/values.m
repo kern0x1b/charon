@@ -10,6 +10,7 @@
 #import <Foundation/Foundation.h>
 #import <PHASE/PHASE.h>
 #import <dlfcn.h>
+#import <simd/simd.h>
 
 static int checks = 0;
 static int failures = 0;
@@ -116,6 +117,20 @@ static void compareDefaults(void)
 }
 
 // The port's engine, renamed.
+@interface charon_host_PHASEEnvelopeSegment : NSObject
+- (instancetype)initWithEndPoint:(simd_double2)endPoint curveType:(NSInteger)curveType;
+@property(nonatomic, assign) simd_double2 endPoint;
+@property(nonatomic, assign) NSInteger curveType;
+@end
+
+@interface charon_host_PHASEEnvelope : NSObject
+- (instancetype)initWithStartPoint:(simd_double2)startPoint
+                          segments:(NSArray<charon_host_PHASEEnvelopeSegment *> *)segments;
+- (double)evaluateForValue:(double)x;
+- (PHASENumericPair *)domain;
+- (PHASENumericPair *)range;
+@end
+
 @interface charon_host_PHASEEngine : NSObject
 - (instancetype)initWithUpdateMode:(NSInteger)updateMode;
 - (double)unitsPerSecond;
@@ -220,6 +235,60 @@ static void compareEngine(void)
           [mine activeGroupPreset] == nil && [theirs valueForKey:@"activeGroupPreset"] == nil);
 }
 
+// The envelope, held to the host's own evaluation of the same eleven curve types. The two are asked
+// the same questions at the same points, and the difference is the value, not the class.
+static void compareEnvelope(void)
+{
+    Class portEnvelope = NSClassFromString(@"charon_host_PHASEEnvelope");
+    Class portSegment = NSClassFromString(@"charon_host_PHASEEnvelopeSegment");
+    Class hostEnvelope = NSClassFromString(@"PHASEEnvelope");
+    Class hostSegment = NSClassFromString(@"PHASEEnvelopeSegment");
+    if (portEnvelope == Nil || hostEnvelope == Nil || portSegment == Nil || hostSegment == Nil) {
+        printf("skip the envelope: the host's PHASE does not carry it, or the port's is not here\n");
+        return;
+    }
+    // every case of the enumeration, by the four-character value the port carries
+    const NSInteger curves[] = {
+        PHASECurveTypeLinear, PHASECurveTypeSquared, PHASECurveTypeInverseSquared,
+        PHASECurveTypeCubed, PHASECurveTypeInverseCubed, PHASECurveTypeSine, PHASECurveTypeInverseSine,
+        PHASECurveTypeSigmoid, PHASECurveTypeInverseSigmoid,
+        PHASECurveTypeHoldStartValue, PHASECurveTypeJumpToEndValue,
+    };
+    const double samples[] = {0.0, 0.125, 0.25, 0.5, 0.75, 0.875, 1.0};
+    for (size_t curve = 0; curve < sizeof(curves) / sizeof(*curves); curve++) {
+        id theirSegment = [[hostSegment alloc] initWithEndPoint:simd_make_double2(1.0, 1.0) curveType:curves[curve]];
+        id mySegment = [[portSegment alloc] initWithEndPoint:simd_make_double2(1.0, 1.0) curveType:curves[curve]];
+        id theirs = [[hostEnvelope alloc] initWithStartPoint:simd_make_double2(0.0, 0.0) segments:@[theirSegment]];
+        id mine = [[portEnvelope alloc] initWithStartPoint:simd_make_double2(0.0, 0.0) segments:@[mySegment]];
+        if (theirs == nil || mine == nil) {
+            printf("stage curve 0x%08x: the host made %p, the port made %p\n", (unsigned)curves[curve], theirs, mine);
+            continue;
+        }
+        double worst = 0;
+        for (size_t sample = 0; sample < sizeof(samples) / sizeof(*samples); sample++) {
+            double theirValue = [theirs evaluateForValue:samples[sample]];
+            double myValue = [mine evaluateForValue:samples[sample]];
+            double difference = fabs(theirValue - myValue);
+            if (difference > worst) { worst = difference; }
+        }
+        printf("stage curve 0x%08x: worst difference over %zu samples %g\n",
+               (unsigned)curves[curve], sizeof(samples) / sizeof(*samples), worst);
+        checkClose([NSString stringWithFormat:@"curve 0x%08x agrees with the host", (unsigned)curves[curve]],
+                   worst, 0.0, 1e-6);
+    }
+    // the extent, which is the envelope's own arithmetic rather than a curve
+    id theirSegment = [[hostSegment alloc] initWithEndPoint:simd_make_double2(4.0, 2.0) curveType:PHASECurveTypeLinear];
+    id mySegment = [[portSegment alloc] initWithEndPoint:simd_make_double2(4.0, 2.0) curveType:PHASECurveTypeLinear];
+    id theirs = [[hostEnvelope alloc] initWithStartPoint:simd_make_double2(1.0, 0.5) segments:@[theirSegment]];
+    id mine = [[portEnvelope alloc] initWithStartPoint:simd_make_double2(1.0, 0.5) segments:@[mySegment]];
+    check(@"the host's domain is the start point's x and the last end point's x",
+          [[[theirs domain] valueForKey:@"first"] isEqual:@(1.0)] && [[[theirs domain] valueForKey:@"second"] isEqual:@(4.0)]);
+    check(@"the port's domain is the same", [[[mine domain] valueForKey:@"first"] isEqual:@(1.0)] && [[[mine domain] valueForKey:@"second"] isEqual:@(4.0)]);
+    check(@"the host's range is the start point's y and the last end point's y",
+          [[[theirs valueForKey:@"range"] valueForKey:@"first"] isEqual:@(0.5)] && [[[theirs valueForKey:@"range"] valueForKey:@"second"] isEqual:@(2.0)]);
+    check(@"the port's range is the same", [[[mine valueForKey:@"range"] valueForKey:@"first"] isEqual:@(0.5)] && [[[mine valueForKey:@"range"] valueForKey:@"second"] isEqual:@(2.0)]);
+}
+
 int main(void)
 {
     @autoreleasepool {
@@ -308,6 +377,7 @@ int main(void)
 
         compareDefaults();
         compareEngine();
+        compareEnvelope();
         printf("checks=%d failures=%d\n", checks, failures);
     }
     return failures == 0 ? 0 : 1;
