@@ -1,42 +1,14 @@
 #import <Foundation/Foundation.h>
+#import "CharonNetworkAccess.h"
 #import <objc/runtime.h>
 #include <dlfcn.h>
 #include <netinet/in.h>
 #include <string.h>
 
-int charon_network_cellular_override = -1;
-
+/* The two keys the port keeps the expensive and constrained answers under, beside the category that
+   reads them. */
 static NSString *const CharonExpensiveKey = @"CharonAllowsExpensiveNetworkAccess";
 static NSString *const CharonConstrainedKey = @"CharonAllowsConstrainedNetworkAccess";
-
-static BOOL charon_network_cellular(void)
-{
-    if (charon_network_cellular_override >= 0)
-        return charon_network_cellular_override != 0;
-    static void *(*create)(void *, const struct sockaddr *);
-    static BOOL (*flags)(void *, uint32_t *);
-    static dispatch_once_t once;
-    dispatch_once(&once, ^{
-        void *handle = dlopen("/System/Library/Frameworks/SystemConfiguration.framework/SystemConfiguration", RTLD_LAZY);
-        if (!handle)
-            return;
-        create = dlsym(handle, "SCNetworkReachabilityCreateWithAddress");
-        flags = dlsym(handle, "SCNetworkReachabilityGetFlags");
-    });
-    if (!create || !flags)
-        return NO;
-    struct sockaddr_in address;
-    memset(&address, 0, sizeof(address));
-    address.sin_len = sizeof(address);
-    address.sin_family = AF_INET;
-    void *reference = create(NULL, (const struct sockaddr *)&address);
-    if (!reference)
-        return NO;
-    uint32_t bits = 0;
-    BOOL known = flags(reference, &bits);
-    CFRelease(reference);
-    return known && (bits & 0x00040000) != 0;
-}
 
 static BOOL charon_network_local(NSURL *URL)
 {

@@ -28,7 +28,7 @@ static char CharonTransactionSocketKey;
 @implementation NSURLSessionTaskTransactionMetrics (CharonCounts)
 
 /* The session's own per-host table, which is where "was there already a connection" is answered. */
-- (void)charon_noteConnectionReused:(BOOL)reused bytesSent:(int64_t)sent beforeEncoding:(int64_t)before received:(int64_t)received
+- (void)charon_noteBytesSent:(int64_t)sent beforeEncoding:(int64_t)before received:(int64_t)received
 {
     NSMutableDictionary *counts = objc_getAssociatedObject(self, &CharonTransactionCountsKey);
     if (!counts) {
@@ -39,6 +39,10 @@ static char CharonTransactionSocketKey;
     counts[@"before"] = @(before);
     counts[@"received"] = @(received);
     counts[@"decoded"] = @(received);
+}
+
+- (void)charon_noteConnectionReused:(BOOL)reused
+{
     NSMutableDictionary *flags = objc_getAssociatedObject(self, &CharonTransactionFlagsKey);
     if (!flags) {
         flags = [NSMutableDictionary dictionary];

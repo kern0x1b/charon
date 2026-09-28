@@ -1,4 +1,5 @@
 #import "CharonURLSessionMetrics.h"
+#import "CharonNetworkAccess.h"
 #include <limits.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
@@ -645,7 +646,11 @@ static void charon_task_release_slot(NSURLSessionTask *task)
         if (waiting->_finished)
             continue;
         waiting->_holdsSlot = YES;
-        session->_connectionsPerHost[host] = @([session->_connectionsPerHost[host] integerValue] + 1);
+        /* The table knows whether this host was already being talked to, and that is the whole of
+           -isReusedConnection: a connection that was not the first the session opened to this host. */
+        NSInteger already = [session->_connectionsPerHost[host] integerValue];
+        [waiting->_metricsTransactions.lastObject charon_noteConnectionReused:already > 0];
+        session->_connectionsPerHost[host] = @(already + 1);
         charon_task_load(waiting, waiting->_currentRequest);
         break;
     }
@@ -663,7 +668,12 @@ static void charon_metrics_begin(NSURLSessionTask *task, NSURLRequest *request, 
 static void charon_metrics_response(NSURLSessionTask *task, NSURLResponse *response)
 {
     @synchronized (task) {
-        [task->_metricsTransactions.lastObject charon_receivedResponse:response];
+        NSURLSessionTaskTransactionMetrics *transaction = task->_metricsTransactions.lastObject;
+        [transaction charon_receivedResponse:response];
+        /* The interface, at the point the response arrives: the port's own cellular answer, and the
+           two link flags a session of its own cannot observe, which are answered as the release's
+           own connection would -- nothing to say. */
+        [transaction charon_noteInterfaceFlags:charon_network_cellular() expensive:NO constrained:NO proxy:NO];
     }
 }
 
@@ -1027,6 +1037,12 @@ static void charon_task_sent(NSURLSessionTask *task, int64_t written, int64_t to
     int64_t expected;
     @synchronized (task) {
         task->_countOfBytesSent = total;
+        /* The bytes, said in the block that already holds them and the last transaction: what the
+           connection reports went, what the caller handed over went before any encoding, and what has
+           come back so far. */
+        [task->_metricsTransactions.lastObject charon_noteBytesSent:total
+                                                     beforeEncoding:expected
+                                                            received:task->_countOfBytesReceived];
         if (expectedByConnection > 0)
             task->_countOfBytesExpectedToSend = expectedByConnection;
         expected = task->_countOfBytesExpectedToSend;
