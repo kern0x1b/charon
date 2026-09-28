@@ -440,7 +440,7 @@ function failures(opt)
     local kept = {["-[NSProcessInfo isLowPowerModeEnabled]"] = true}
     local listed = {["-[NSProcessInfo isLowPowerModeEnabled]"] = {api = "-[NSProcessInfo isLowPowerModeEnabled]", status = "inert"},
                     ["NSProcessInfo.lowPowerModeEnabled"] = {api = "NSProcessInfo.lowPowerModeEnabled", status = "implemented"}}
-    local where_of = {["NSProcessInfo.h:222:5"] = "NSProcessInfo.lowPowerModeEnabled"}
+    local where_of = {["NSProcessInfo.h:222:5"] = {"NSProcessInfo.lowPowerModeEnabled"}}
     local answers = {accessor("NSProcessInfo::isLowPowerModeEnabled", "isLowPowerModeEnabled")}
     expect_equal(found, "a kept accessor of a carried property", #lift.accessor_conflicts(kept, listed, answers, where_of), 1)
     expect_equal(found, "and it names both rows",
@@ -455,6 +455,116 @@ function failures(opt)
     kept["-[NSProcessInfo isLowPowerModeEnabled]"] = nil
     listed["-[NSProcessInfo isLowPowerModeEnabled]"] = {api = "-[NSProcessInfo isLowPowerModeEnabled]", status = "implemented"}
     expect_equal(found, "both spellings carried", #lift.accessor_conflicts(kept, listed, answers, where_of), 0)
+
+    -- A macro that expands to two declarations writes both their availability attributes at one place, so a
+    -- location can carry two properties. Which one a getter was written from is then not something the location
+    -- can say, and pairing it with either refuses two rows that have nothing to do with each other: a false
+    -- refusal stops a lift, while a miss is a number. These are the reviewer's two cases.
+    local shared = {["NSProcessInfo.h:300:5"] = {"NSProcessInfo.thermalState", "NSProcessInfo.lowPowerModeEnabled"}}
+    local thermal = {api = "NSProcessInfo.thermalState", kind = "property", status = "implemented"}
+    local kept_low = {["-[NSProcessInfo isLowPowerModeEnabled]"] = true}
+    local listed_low = {["-[NSProcessInfo isLowPowerModeEnabled]"] = {api = "-[NSProcessInfo isLowPowerModeEnabled]", status = "inert"},
+                        ["NSProcessInfo.thermalState"] = thermal, ["NSProcessInfo.lowPowerModeEnabled"] = listed["NSProcessInfo.lowPowerModeEnabled"]}
+    local low = {accessor("NSProcessInfo::isLowPowerModeEnabled", "isLowPowerModeEnabled")}
+    expect_equal(found, "a macro's shared location, getter paired with the other property", #lift.accessor_conflicts(kept_low, listed_low, low, shared), 0)
+    local kept_thermal = {["-[NSProcessInfo thermalState]"] = true}
+    local listed_thermal = {["-[NSProcessInfo thermalState]"] = {api = "-[NSProcessInfo thermalState]", status = "absent"},
+                            ["NSProcessInfo.thermalState"] = thermal, ["NSProcessInfo.lowPowerModeEnabled"] = listed["NSProcessInfo.lowPowerModeEnabled"]}
+    local hot = {accessor("NSProcessInfo::thermalState", "thermalState")}
+    expect_equal(found, "the other getter, paired with the wrong property", #lift.accessor_conflicts(kept_thermal, listed_thermal, hot, shared), 0)
+    -- the same two, each on its own location, are still the pair the rule exists for
+    expect_equal(found, "the same two, one location each", #lift.accessor_conflicts(kept_low, listed_low, low,
+                 {["NSProcessInfo.h:222:5"] = {"NSProcessInfo.lowPowerModeEnabled"}}), 1)
+    expect_equal(found, "a location carrying no property", #lift.accessor_conflicts(kept_low, listed_low, low, {}), 0)
+
+    -- The guards that decide whether the rule fires, one case each. A property that is not carried answers no
+    -- question about the accessor's, and a property paired with itself is one row, not two.
+    local listed_ignored = {["-[NSProcessInfo isLowPowerModeEnabled]"] = listed["-[NSProcessInfo isLowPowerModeEnabled]"],
+                            ["NSProcessInfo.lowPowerModeEnabled"] = {api = "NSProcessInfo.lowPowerModeEnabled", status = "ignored"}}
+    expect_equal(found, "a property that is ignored, not carried", #lift.accessor_conflicts(kept_low, listed_ignored, low, where_of), 0)
+    -- A row the registry spells as the property is a member, and the accessor scan never reads it: the loop walks
+    -- apis member_api() gives a *selector*, and a dotted name has a property instead. So a kept property row and
+    -- the implicit accessor written from it are one API however the registry spells it, and the two spellings can
+    -- never be one row - which is why the rule carries no guard for it.
+    local own = {api = "NSProcessInfo.lowPowerModeEnabled", kind = "property", status = "implemented"}
+    expect_equal(found, "a property row is a member", lift.absence_of(own.api, {[own.api] = own}), "member")
+    expect_equal(found, "and the accessor scan does not read it", #lift.accessor_conflicts({[own.api] = true}, {[own.api] = own},
+                                                                     {accessor("NSProcessInfo::lowPowerModeEnabled", "lowPowerModeEnabled")},
+                                                                     {["NSProcessInfo.h:222:5"] = {own.api}}), 0)
+    expect_equal(found, "while the getter of it is one the scan does read",
+                 #lift.accessor_conflicts({["-[NSProcessInfo lowPowerModeEnabled]"] = true},
+                                          {["-[NSProcessInfo lowPowerModeEnabled]"] = {api = "-[NSProcessInfo lowPowerModeEnabled]", status = "inert"},
+                                           [own.api] = own},
+                                          {accessor("NSProcessInfo::lowPowerModeEnabled", "lowPowerModeEnabled")},
+                                          {["NSProcessInfo.h:222:5"] = {own.api}}), 1)
+
+    -- What must never be silent: a member in unmatched is the lookup failing, and is refused by name. A protocol
+    -- is measured, a class is measured, a function is measured; a member is not - and each of those three is a
+    -- case, because a rule that fires on the wrong shape is what a case is for.
+    expect_equal(found, "a member in unmatched is refused", #lift.silently_absent({"-[NSProcessInfo isLowPowerModeEnabled]"}, {}), 1)
+    -- two of the five are member spellings - one a method, one a property - and the other three are not members
+    -- at all, which is the whole of the rule: a protocol, a class and a function are measured, not refused
+    expect_equal(found, "two of five names are members, and only those two are refused",
+                 #lift.silently_absent({"-[NSNoSuchClass z]", "NSNoSuchClass.p", "INNoSuchProtocol", "_ceil", "NSNoSuchClass"},
+                                    {INNoSuchProtocol = {kind = "protocol"}, NSNoSuchClass = {kind = "class"}}), 2)
+    expect_equal(found, "a protocol is measured, not refused", #lift.silently_absent({"INEditMessageIntentHandling"}, {INEditMessageIntentHandling = {kind = "protocol"}}), 0)
+    expect_equal(found, "a class is measured, not refused", #lift.silently_absent({"NSNoSuchClass"}, {NSNoSuchClass = {kind = "class"}}), 0)
+    expect_equal(found, "and nothing at all is nothing to refuse", #lift.silently_absent({}), 0)
+    -- The classifier, one shape each: a member is refused, and the three other shapes are measured. This is the
+    -- one place both rules read, so a mutation of either of them - the protocol clause of 0002 put back, or the
+    -- refusal narrowed - is a case here.
+    expect_equal(found, "a method is a member", lift.absence_of("-[NSNoSuchClass z]", {}), "member")
+    expect_equal(found, "a property is a member", lift.absence_of("NSNoSuchClass.p", {}), "member")
+    expect_equal(found, "a class method is a member", lift.absence_of("+[NSNoSuchClass z]", {}), "member")
+    expect_equal(found, "a protocol is not a member", lift.absence_of("INNoSuchProtocol", {INNoSuchProtocol = {kind = "protocol"}}), "protocol")
+    expect_equal(found, "a class is not a member", lift.absence_of("NSNoSuchClass", {NSNoSuchClass = {kind = "class"}}), "class")
+    expect_equal(found, "a function is not a member", lift.absence_of("_ceil", {}), "function or constant")
+    expect_equal(found, "a function the registry gives a kind for is that kind", lift.absence_of("_ceil", {_ceil = {kind = "function"}}), "function")
+
+    -- The set file's header counts are computed by the writer, so a re-measure moves them. A hand-written count is
+    -- the one number in the file a reader cannot check against anything else, and a re-measure that does not move it
+    -- is a re-measure nobody notices was wrong.
+    local header = {"# What lift() leaves alone against iPhoneOS16.4.sdk: one full lift of the registry of this series",
+                    "# (main deadbeef, which added a thing), none dropped: 3 lines.",
+                    "# Each is a name the lift did not reach, and each was looked for in every header of the SDK",
+                    "#  - class (1): a class no header declares",
+                    "#  - undeclared (1): a registered member its class reaches no declaration of",
+                    "#  - unmatched (1): __sincosf_stret is declared by math.h"}
+    local three = {"class\tNSNoSuchClass\t", "undeclared\t-[NSNoSuchClass z]\tdeclared nowhere", "unmatched\t_ceil\tfunction or constant"}
+    local written = lift.set_with_counts(header, three)
+    local function says(what)
+        return tostring(written:find(what, 1, true) ~= nil)
+    end
+    expect_equal(found, "the total is the lines' own", says("none dropped: 3 lines."), "true")
+    expect_equal(found, "the header's class count is computed", says("#  - class (1):"), "true")
+    expect_equal(found, "the header's undeclared count is computed", says("#  - undeclared (1):"), "true")
+    expect_equal(found, "the header's unmatched count is computed", says("#  - unmatched (1):"), "true")
+    expect_equal(found, "and the numbers in the header are not the ones it was given", says("none dropped: 99 lines."), "false")
+    expect_equal(found, "the prose after each count is kept", says("a class no header declares"), "true")
+    expect_equal(found, "the prose of the other lines is kept", says("looked for in every header of the SDK"), "true")
+    expect_equal(found, "the series is kept when none is given", says("main deadbeef, which added a thing"), "true")
+    expect_equal(found, "and replaced when one is", tostring(lift.set_with_counts(header, three, "main cafebabe"):find("main cafebabe", 1, true) ~= nil), "true")
+    local four = lift.set_with_counts(header, {"class\tA\t", "class\tB\t", "class\tC\t", "unmatched\t_ceil\tfunction"})
+    expect_equal(found, "a longer set moves the count that changed", tostring(four:find("#  - class (3):", 1, true) ~= nil), "true")
+    expect_equal(found, "and leaves the one that did not", tostring(four:find("#  - undeclared (0):", 1, true) ~= nil), "true")
+    -- the header first and the lines under it, in the order they were measured: the writer sorts nothing, so a
+    -- set that is already sorted stays byte for byte what left_alone() wrote
+    local under = 0
+    for _, line in ipairs(header) do
+        under = under + #line + 1
+    end
+    expect_equal(found, "the lines are under the header, in the order measured", written:sub(under + 1), table.concat(three, "\n") .. "\n")
+    -- A registered protocol no header of the SDK declares is measured, as a class with no declaration is: a line in
+    -- the set carrying its kind, so a name spelled wrong is a new line in the next re-measure's diff. A protocol the
+    -- SDK declares is not in unmatched and so is not in the set at all.
+    local protocols = {INEditMessageIntentHandling = {api = "INEditMessageIntentHandling", kind = "protocol", status = "implemented"},
+                       INCarPlayDomainHandling = {api = "INCarPlayDomainHandling", kind = "protocol", status = "implemented"}}
+    expect_equal(found, "a registered protocol the SDK declares nowhere", named(lift.left_alone({"INEditMessageIntentHandling"}, {}, protocols)),
+                 "unmatched\tINEditMessageIntentHandling\tprotocol")
+    expect_equal(found, "a protocol the SDK declares", named(lift.left_alone({}, {}, protocols)), "")
+    local both = {INEditMessageIntentHandling = protocols.INEditMessageIntentHandling, NSNoSuchClass = {api = "NSNoSuchClass", kind = "class", status = "implemented"}}
+    expect_equal(found, "a class beside it keeps its own kind", named(lift.left_alone({"INEditMessageIntentHandling", "NSNoSuchClass"}, {}, both)),
+                 "class\tNSNoSuchClass\t; unmatched\tINEditMessageIntentHandling\tprotocol")
 
     -- an implemented class no header declares stays unmatched and is named apart as a class; the rest keep their kind
     local classes, rest, kinds = lift.split_unmatched({"CharonNoSuchClassAnywhere", "_ceil", "CharonProto"}, {CharonNoSuchClassAnywhere = {kind = "class"},

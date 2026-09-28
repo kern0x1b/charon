@@ -1693,7 +1693,10 @@ local function computed(opt)
             for _, node in ipairs(dump(filter_of(entry))) do
                 local found = node.kind == "ObjCPropertyDecl" and attribute_where(node)
                 if found and listed[member_api(entry.api:gsub("%(%)$", "")).owner .. "." .. node.name] then
-                    where_of[found] = listed[member_api(entry.api:gsub("%(%)$", "")).owner .. "." .. node.name].api
+                    -- a set, and not one name: a macro that expands to two declarations writes both their
+                    -- attributes at one place, and a location carrying two properties pairs with neither
+                    where_of[found] = where_of[found] or {}
+                    table.insert(where_of[found], listed[member_api(entry.api:gsub("%(%)$", "")).owner .. "." .. node.name].api)
                 end
                 table.insert(answers, node)
             end
@@ -2700,21 +2703,21 @@ local function computed(opt)
         raise("the lifted headers are wrong: %s", table.concat(failures, "; "))
     end
     table.sort(unmatched)
-    -- A plain function or type can be unmatched honestly (a compiler-rt intrinsic, a private header this dumper
-    -- does not read) - lift.lua's own header comment already documents that as expected. A protocol, and a class or
-    -- protocol member, cannot: a protocol is dumped by its name, and entry.kind == "class"/nil-with-member-syntax names a
+    -- A plain function or a type can be unmatched honestly (a compiler-rt intrinsic, a private header this dumper does
+    -- not read) - lift.lua's own header comment already documents that as expected, and a class with no declaration is
+    -- measured as a line for the same reason. So is a protocol: the SDK can have one this port declares itself and no
+    -- header of, and that is a fact about the SDK, not a gap in the lookup. Both go into the set with their kind, and
+    -- the set is re-measured and reviewed, so a name spelled wrong arrives as a new line in that diff instead of as
+    -- silence here.
+    --
+    -- A class or protocol *member* is different, and cannot be: entry.kind == "class"/nil-with-member-syntax names a
     -- method or property the AST-dump filter should find under its owner's own qualified scope, whether or not that
     -- owner has a registry entry of its own (this lookup never consults listed[owner] - see matches()), or else in a
     -- superclass or a protocol the owner conforms to, where it is redeclared, or nowhere the owner reaches, where it is
     -- named in undeclared with where the SDK does declare it (above). A member still here matched none of those: that
     -- is not a gap in SDK coverage, it is this lookup failing to find something that is really there, and reporting it
     -- only inside a count nobody is required to look at is exactly the silent loss this checks against.
-    local silent = {}
-    for _, api in ipairs(unmatched) do
-        if member_api(api:gsub("%(%)$", "")) or (listed[api] or {}).kind == "protocol" then
-            table.insert(silent, api)
-        end
-    end
+    local silent = silently_absent(unmatched, listed)
     if #silent > 0 then
         raise("lift() found no declaration at all for %d registered class/protocol member(s), which should never be silently absent: %s",
               #silent, table.concat(silent, "; "))
@@ -2898,8 +2901,15 @@ function accessor_conflicts(kept, listed, answers, where_of)
             local node = declarations[member.owner .. "::" .. member.selector]
             if node and node.kind == "ObjCMethodDecl" and node.isImplicit then
                 local where = attribute_where(node)
-                local property = where and where_of[where] or nil
-                if property and property ~= api and kept[api] and listed[property].status == "implemented" then
+                -- only a location that names one property pairs with it: where two properties are written at
+                -- one place, neither can be told from the other, and a false refusal of an unrelated pair stops
+                -- a lift, while a miss is a number
+                local there = where and where_of[where] or nil
+                local property = there and #there == 1 and there[1] or nil
+                -- `api` is a bracketed method spelling and `property` the dotted one - the loop below reads only
+                -- apis member_api() gives a selector, and where_of holds only what listed[Owner.name] answered -
+                -- so the two can never be one row, and a guard for that would be a guard nothing can reach
+                if property and kept[api] and listed[property].status == "implemented" then
                     local pair = api < property and (api .. " " .. property) or (property .. " " .. api)
                     if not seen[pair] then
                         seen[pair] = true
@@ -2911,6 +2921,96 @@ function accessor_conflicts(kept, listed, answers, where_of)
         end
     end
     return found
+end
+
+-- The names in unmatched that must not be there: a class or protocol *member* - anything spelled as one, a method or
+-- a property - and nothing else. A plain function or a type can be unmatched honestly (a compiler-rt intrinsic, a
+-- private header the dumper does not read), a class with no declaration is measured as a line for the same reason,
+-- and so is a protocol: the SDK can have one this port declares itself and no header of, and the set is re-measured
+-- and reviewed, so a name spelled wrong arrives as a new line in that diff rather than as silence here.
+--
+-- A member is different and cannot be: it is a method or property the filter should find under its owner's own
+-- qualified scope, or in a superclass or a protocol the owner conforms to where it is redeclared, or nowhere the
+-- owner reaches where it is named in undeclared with where the SDK does declare it. One still in unmatched matched
+-- none of those, which is the lookup failing rather than the SDK.
+-- The measured set as the file holds it: the header comment the file already carries, with its three per-kind
+-- counts and its total computed from the lines, and the lines under it. The counts are what this computes and
+-- never what a reader writes - a hand-written count is one a re-measure does not move, and the count is the one
+-- number in the file a reader has no other way to check. A line the header has no line for is left as it is, and
+-- a header with no line for a kind the set holds is refused: those two are the shape, and the shape is the reader's.
+-- `series` replaces the parenthetical of the second line, which is what names the series the set was measured on.
+function set_with_counts(header, lines, series)
+    local counts = {class = 0, undeclared = 0, unmatched = 0}
+    local total = 0
+    for _, line in ipairs(lines) do
+        local kind = line:match("^(%a+)\t")
+        if counts[kind] then
+            counts[kind] = counts[kind] + 1
+            total = total + 1
+        end
+    end
+    local said, out = {}, {}
+    local text, tail = "# (", " lines."
+    for _, line in ipairs(header) do
+        if line:match("^#  %- class %(%d+%):") then
+            line = "#  - class (" .. counts.class .. "):" .. line:sub((line:find(":", 1, true) or 1) + 1)
+            said.class = true
+        elseif line:match("^#  %- undeclared %(%d+%):") then
+            line = "#  - undeclared (" .. counts.undeclared .. "):" .. line:sub((line:find(":", 1, true) or 1) + 1)
+            said.undeclared = true
+        elseif line:match("^#  %- unmatched %(%d+%):") then
+            line = "#  - unmatched (" .. counts.unmatched .. "):" .. line:sub((line:find(":", 1, true) or 1) + 1)
+            said.unmatched = true
+        elseif line:match("^# %(.*%), none dropped: %d+ lines%.$") then
+            local spelled = series
+            if not spelled or spelled == "" then
+                local at = line:find(text, 1, true)
+                spelled = line:sub(at + #text, (line:find("), none dropped:", 1, true) or 1) - 1)
+            end
+            line = text .. spelled .. "), none dropped: " .. total .. tail
+            said.total = true
+        end
+        table.insert(out, line)
+    end
+    local missing = {}
+    for _, kind in ipairs({"class", "undeclared", "unmatched"}) do
+        if counts[kind] > 0 and not said[kind] then
+            table.insert(missing, kind)
+        end
+    end
+    if not said.total then
+        table.insert(missing, "the total")
+    end
+    if #missing > 0 then
+        raise("the set's header says no count of %s, and this does not invent one", table.concat(missing, ", "))
+    end
+    for _, line in ipairs(lines) do
+        table.insert(out, line)
+    end
+    return table.concat(out, "\n") .. "\n"
+end
+
+-- What a name in unmatched is: "member" when it is spelled as one - a method or a property, which the filter should
+-- have found under its owner's own qualified scope, or in a superclass or a protocol the owner conforms to where it
+-- is redeclared, or nowhere the owner reaches where it is named in undeclared with where the SDK does declare it -
+-- and the registry's own kind otherwise. A member is the lookup failing; a protocol, a class, a function and a type
+-- are facts about the SDK or about the port, and are measured.
+function absence_of(api, listed)
+    if member_api(api:gsub("%(%)$", "")) then
+        return "member"
+    end
+    return (listed[api] or {}).kind or "function or constant"
+end
+
+-- The names in unmatched that must not be there: the members, and nothing else.
+function silently_absent(unmatched, listed)
+    local silent = {}
+    for _, api in ipairs(unmatched) do
+        if absence_of(api, listed) == "member" then
+            table.insert(silent, api)
+        end
+    end
+    return silent
 end
 
 function left_alone(unmatched, undeclared, listed)
