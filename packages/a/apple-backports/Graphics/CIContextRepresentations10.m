@@ -1,7 +1,6 @@
 #import <CoreImage/CoreImage.h>
 #import <CoreGraphics/CoreGraphics.h>
 #import <ImageIO/ImageIO.h>
-#import <CoreServices/CoreServices.h>
 
 #pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
 
@@ -15,32 +14,40 @@
 // The type an encoding is written as, and the type an image is rendered as for it. A byte format is
 // rendered as it is named; a float format is rendered into sixteen bits a channel, which is as much of
 // a float image as a file of that type carries in a way CoreGraphics can hand over.
+// The uniform types these encodings are, as the strings they are. The SDK names them (__bridge CFStringRef)CharonCITTTypePNG,
+// (__bridge CFStringRef)CharonCITTTypeTIFF and (__bridge CFStringRef)CharonCITTTypeJPEG, and (__bridge CFStringRef)CharonCITTTypeJPEG is not exported by the release this is written
+// against - the linker says so, undefined for armv7 - so the types are the strings themselves, which
+// is what those constants hold.
+static NSString *const CharonCITTTypePNG = @"public.png";
+static NSString *const CharonCITTTypeTIFF = @"public.tiff";
+static NSString *const CharonCITTTypeJPEG = @"public.jpeg";
+
 static BOOL CharonCIEncodedFormat(CIFormat format, CFStringRef *type, CIFormat *rendered)
 {
     // Ifs and not a switch, because the header declares the formats as exported constants and they are
     // values and not case labels - which is the same thing the accumulator ran into.
     if (format == kCIFormatRGBA8) {
-        *type = kUTTypePNG, *rendered = kCIFormatRGBA8;
+        *type = (__bridge CFStringRef)CharonCITTTypePNG, *rendered = kCIFormatRGBA8;
         return YES;
     }
     if (format == kCIFormatBGRA8) {
-        *type = kUTTypePNG, *rendered = kCIFormatBGRA8;
+        *type = (__bridge CFStringRef)CharonCITTTypePNG, *rendered = kCIFormatBGRA8;
         return YES;
     }
     if (format == kCIFormatL8) {
-        *type = kUTTypeTIFF, *rendered = kCIFormatL8;
+        *type = (__bridge CFStringRef)CharonCITTTypeTIFF, *rendered = kCIFormatL8;
         return YES;
     }
     if (format == kCIFormatLA8) {
-        *type = kUTTypeTIFF, *rendered = kCIFormatLA8;
+        *type = (__bridge CFStringRef)CharonCITTTypeTIFF, *rendered = kCIFormatLA8;
         return YES;
     }
     if (format == kCIFormatRGBAf) {
-        *type = kUTTypeTIFF, *rendered = kCIFormatRGBAh;
+        *type = (__bridge CFStringRef)CharonCITTTypeTIFF, *rendered = kCIFormatRGBAh;
         return YES;
     }
     if (format == kCIFormatRGBAh) {
-        *type = kUTTypeTIFF, *rendered = kCIFormatRGBAh;
+        *type = (__bridge CFStringRef)CharonCITTTypeTIFF, *rendered = kCIFormatRGBAh;
         return YES;
     }
     return NO;
@@ -80,18 +87,18 @@ static BOOL CharonCIEncodedFormat(CIFormat format, CFStringRef *type, CIFormat *
 - (NSData *)PNGRepresentationOfImage:(CIImage *)image format:(CIFormat)format colorSpace:(CGColorSpaceRef)colorSpace
                              options:(NSDictionary *)options
 {
-    return [self charon_representationOfImage:image format:format colorSpace:colorSpace type:kUTTypePNG];
+    return [self charon_representationOfImage:image format:format colorSpace:colorSpace type:(__bridge CFStringRef)CharonCITTTypePNG];
 }
 
 - (NSData *)TIFFRepresentationOfImage:(CIImage *)image format:(CIFormat)format colorSpace:(CGColorSpaceRef)colorSpace
                               options:(NSDictionary *)options
 {
-    return [self charon_representationOfImage:image format:format colorSpace:colorSpace type:kUTTypeTIFF];
+    return [self charon_representationOfImage:image format:format colorSpace:colorSpace type:(__bridge CFStringRef)CharonCITTTypeTIFF];
 }
 
 - (NSData *)JPEGRepresentationOfImage:(CIImage *)image colorSpace:(CGColorSpaceRef)colorSpace options:(NSDictionary *)options
 {
-    return [self charon_representationOfImage:image format:kCIFormatL8 colorSpace:colorSpace type:kUTTypeJPEG];
+    return [self charon_representationOfImage:image format:kCIFormatL8 colorSpace:colorSpace type:(__bridge CFStringRef)CharonCITTTypeJPEG];
 }
 
 // The image as bytes of the type asked for: the image rendered to a CGImage of the format, and that
@@ -104,7 +111,7 @@ static BOOL CharonCIEncodedFormat(CIFormat format, CFStringRef *type, CIFormat *
     CIFormat rendered = kCIFormatRGBA8;
     if (!CharonCIEncodedFormat(format, &fileType, &rendered))
         return nil;
-    if (CFEqual(type, kUTTypeJPEG)) {
+    if (CFEqual(type, (__bridge CFStringRef)CharonCITTTypeJPEG)) {
         // JPEG is three channels and no alpha, so the image is rendered as RGB rather than RGBA.
         rendered = kCIFormatRGBAf;
     }
@@ -131,7 +138,7 @@ static BOOL CharonCIEncodedFormat(CIFormat format, CFStringRef *type, CIFormat *
                                error:(NSError **)error
 {
     return [self charon_writeRepresentationOfImage:image toURL:url format:format colorSpace:colorSpace
-                                               type:kUTTypePNG error:error];
+                                               type:(__bridge CFStringRef)CharonCITTTypePNG error:error];
 }
 
 - (BOOL)writeTIFFRepresentationOfImage:(CIImage *)image
@@ -142,7 +149,7 @@ static BOOL CharonCIEncodedFormat(CIFormat format, CFStringRef *type, CIFormat *
                                 error:(NSError **)error
 {
     return [self charon_writeRepresentationOfImage:image toURL:url format:format colorSpace:colorSpace
-                                               type:kUTTypeTIFF error:error];
+                                               type:(__bridge CFStringRef)CharonCITTTypeTIFF error:error];
 }
 
 - (BOOL)writeJPEGRepresentationOfImage:(CIImage *)image
@@ -152,7 +159,7 @@ static BOOL CharonCIEncodedFormat(CIFormat format, CFStringRef *type, CIFormat *
                                 error:(NSError **)error
 {
     return [self charon_writeRepresentationOfImage:image toURL:url format:kCIFormatRGBAf colorSpace:colorSpace
-                                               type:kUTTypeJPEG error:error];
+                                               type:(__bridge CFStringRef)CharonCITTTypeJPEG error:error];
 }
 
 // To a file, through the same bytes the representation gives: a URL is where those bytes go, and
