@@ -58,11 +58,52 @@ function, not the void applier**, and answers the `CMTag` that satisfied the cal
 The mutation: taking the containment test out of `ExclusiveOr`'s second side gives
 `268 checks, 3 different` and the suite exits 1; restoring it gives 0.
 
-`CopyAsData` and `CreateFromData` are not written at all, and neither are the fifteen
-`CMTaggedBufferGroup` functions. The binary form is Apple's own: a 4-byte big-endian total length, then
-the tags `tgco`, `tgin` and `tgli`, the string `tag coll`, a 16-byte sub-length, an element count and
-20 bytes per tag. That was measured far enough to describe and not far enough to write, and a guess at it
-is what the brief forbids.
+`CopyAsData` and `CreateFromData` are **measured completely and not yet in the tree**; the drafts are
+`CMTagCollection17.binaryform-draft.m` and `tagcollectionimage.binaryform-draft.m`, and the probe they
+reach is `.agent-work/runs/tagdata/`.
+
+**The layout**, from the host's own bytes for collections of 0, 1, 2 and 3 tags and every data type:
+a 44-byte header and **16 bytes per tag**.
+
+```
+uint32  the whole record's length, big endian
+char4   "tgco"          - not compared by the host
+uint32  20
+char4   "tgin"          - not compared by the host
+uint32  0              - must be zero
+char8   "tag coll"
+uint32  16 * (count + 1)
+char4   "tgli"          - not compared by the host
+uint32  0              - must be zero
+uint32  the number of tags
+per tag: uint32 the category as four characters, uint32 the data type, uint64 the value
+```
+
+The value is a plain big-endian 64-bit field: an `OSType` sits in its low 32 bits (`'vide'` is
+`00000000 76696465`), a `Float64` is a big-endian double in all eight (`1.5` is `3ff8000000000000`),
+and `0x0102030405060708` survives whole. Every collection round-trips through the host's own reader with
+`0`.
+
+**The answers, every one measured** over a whole record, eight truncations of it and each of its eleven
+header fields flipped:
+
+| record | host |
+| --- | --- |
+| shorter than the 44-byte header | `-15740` `kCMTagCollectionError_ParamErr` |
+| the length field, the sub-length field, or the 20 | **`-12894`, which no SDK on this machine names** |
+| either zero field non-zero | `-15747` `kCMTagCollectionError_InvalidTagCollectionDataVersion` |
+| `tag coll` altered, or a count the length does not fit | `-15745` `kCMTagCollectionError_InvalidTagCollectionData` |
+| the first byte of `tgco`, `tgin` or `tgli` flipped | **0 — the host does not compare the three magic tags** |
+
+That last row is the one a port gets wrong by being careful: refusing a record whose magic does not match
+would refuse records the host reads.
+
+**Where the draft stands: 356 checks, 20 different.** The error map is implemented and reproduces the
+table above; two things are not, and I ran out of turn before finding them. The port's own round trip
+loses the value (`1835297121/5/0` where the host answers `…/5/1986618469`), and one header-flip case
+answers `-15745` where the port says `-12894` - the order of the count check against the length check.
+The bytes the port writes are byte-identical to the host's, so the fault is in the reader's offsets or
+its check order, not in the layout.
 
 ## One bug the differential found in the port
 
