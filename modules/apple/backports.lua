@@ -2002,7 +2002,9 @@ function build(opt)
     check_categories(release, release_inventory(opt.cache), built, opt.architecture, opt.deployment)
     if #built == #LIBRARIES then
         check_band_caches(opt, objects)
-        local undocumented = check_registry(opt.root, surface(built, opt.architecture), opt.registry, opt.deployment, release.exports, release_inventory(opt.cache))
+        -- registry_step, not check_registry: it hands the check the SDK the objects were compiled against and the
+        -- protocols the headers declare, without which every member of a protocol the SDK declares reads unbuilt
+        local undocumented = registry_step(opt, surface(built, opt.architecture), opt.registry, release.exports)
         if undocumented > 0 then
             cprint("${color.warning}note:${clear} %d of the registry's entries name no file of facts yet", undocumented)
         end
