@@ -96,7 +96,32 @@ are in neither column because they are header-declared enumerations - they live 
 symbols either library exports; the 41 the port exports and the host does not are the ones upstream's headers
 declare as `extern`.
 
-## The 372 properties and the 48 methods, told apart
+## The inherited accessors: 16 461 becomes 17 061
+
+The 372 properties were never missing. `objc.binary_inventory` keys a class's **own** method list by sign and
+selector (`-authMode`), and the registry re-formats those into the `-[Class selector:]` spelling; reading only a
+class's own list therefore misses every accessor a subclass inherits, and the model's deprecated `…Entry`, `…EP` and
+`…OutputInfo` classes inherit **all** of theirs from the `…Struct` classes. Measured, over the 372: the superclass
+chain is right in every one (`MTRAccessControlClusterAccessControlEntry : MTRAccessControlClusterAccessControlEntryStruct`,
+`MTRApplicationLauncherClusterApplicationEP : MTRApplicationLauncherClusterApplicationEPStruct`, and so on), and every
+accessor resolves once the chain is walked. Both tools now answer a member by the class **or** any superclass, and try
+the library's own spelling first, because the class list `objc.lua` walks is not every class the library exports.
+
+| | before | after |
+| --- | --- | --- |
+| rows carried | 16 461 | **17 061** |
+| properties uncarried | 373 | **1** |
+| methods uncarried | 878 | **650** |
+| classes | 985 carried | 985 carried |
+| functions | 8 carried | 8 carried |
+
+**What the 17 061 of 24 647 leaves, family by family.** 6 490 constants and 440 enum types are header-declared
+enumerations: they live in the importing program's own text and are not symbols a library can export, so the headers
+the package installs are their coverage. 5 protocols and 1 property are rows no framework of either kind carries.
+**650 methods are the port's real gap**, of which 48 are ones the host's framework does carry and this library does
+not — the rest are rows neither framework has. Every one is named in `.agent-work/host/matter-host-diff.tsv`.
+
+## The 48 methods that are missing
 
 For every property row the host's framework answers and the port's does not, the port's own metadata was asked what it
 carries for that class. Measured, over all 372: the **class is present in every one of them** (the port carries all
