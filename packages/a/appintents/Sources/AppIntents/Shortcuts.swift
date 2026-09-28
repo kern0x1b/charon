@@ -291,7 +291,6 @@ public enum AppShortcutPhraseToken{
 
     public static func == (a: AppShortcutPhraseToken, b: AppShortcutPhraseToken) -> Bool { return a.ordinal == b.ordinal }
 
-    public func hash(into hasher: inout Hasher) {}
 }
 
 /// A phrase that says an intent is *not* what the caller wants, added in iOS 17.
@@ -389,7 +388,6 @@ public enum ShortcutTileColor{
 
     public static func == (a: ShortcutTileColor, b: ShortcutTileColor) -> Bool { return a.ordinal == b.ordinal }
 
-    public func hash(into hasher: inout Hasher) {}
 }
 
 /// The options a shortcut's tile offers above its parameters, added in iOS 17.

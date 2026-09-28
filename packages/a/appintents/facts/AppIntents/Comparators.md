@@ -33,10 +33,34 @@ module does not build for the host (53 errors, the same wall as ActivityKit's an
 differentials) and there is no iOS runtime here, so the behaviour half of this family needs an
 emulator run and the declaration half is what the typecheck settles.
 
-**Twenty are still written `{ return true }`** — one in `Items.swift` (`IntentFileError`), one in
-`Queries.swift`, three in `URLRepresentations.swift`, six in `Values+Foundation.swift` and nine in
-`Values.swift` — and twenty-six `hash(into:)` are still `{}`. Those types are the resolvers and the
-value wrappers, whose cases carry a payload (`DoubleFromStringResolver` and the rest take the value
-they resolve), so the discriminator is the payload and not a case index: they need the same `ordinal`
-computed from the value, which is the next step and not one this commit makes. They are listed here
-so that nobody reads "nine fixed" as "all fixed".
+**The other twenty are gone too, and the reason is the opposite of the nine's.** Read each type's
+conformance in Apple's own interface (`arm64e-apple-macos.swiftinterface`) and they split two ways:
+
+* the **payload enums** — `IntentFileError`, `EntityQuerySort.Ordering`, the two
+  `StringInterpolation.Token`s — are `Equatable` in Apple's API, through a separate
+  `extension X : Swift::Equatable {}` (which is how the printer spells a synthesised conformance), and
+  they are fixed by the same `ordinal` as the nine;
+* the **resolvers** — `DoubleFromStringResolver`, `IntResolver`, `URLFromStringResolver`,
+  `StringFromIntResolver`, `BoolFromStringResolver`, `DoubleFromIntResolver`, `DoubleResolver`,
+  `StringFromDoubleResolver`, `EmptyResolverSpecification`, `AttributedStringFromStringResolver`,
+  `StringSearchCriteriaFromStringResolverSpecificification`, and the six in
+  `Values+Foundation.swift` — get their equality from **`Resolver : Swift::Hashable, Sendable`**, and
+  the port's own `Resolver` already carries the same refinement (`Values.swift:210`). Every one of
+  those structs has no stored property, so what the compiler synthesises from the requirement *is*
+  the answer Apple gets: equal to its own kind, and a constant hash. The hand-written pair was
+  overriding that synthesis with a literal `true` and an empty `hash(into:)`, which is why the answer
+  looked right and the declaration was still fabricated. **The members are deleted, not rewritten,
+  and the protocol's requirement stands on its own.**
+
+**Nothing is left, so there is no crutches.md entry for this family.** The count of
+`== { return true }` and of `hash(into:) {}` in the module is zero, measured after the last build:
+
+```
+$ grep -rc "static func == (.*) -> Bool { return true }\|func hash(into hasher: inout Hasher) {}" … | grep -v :0 | wc -l
+0
+```
+
+The measurement does not move — the digester does not print an enum's `==` — and the row count stays
+**2043 of 2323**: what changed is what the module answers, and the probe that asks is in
+`.agent-work/host/probe-comparators.swift`. The port's *answers* still want an emulator run, which
+this machine has not had yet.

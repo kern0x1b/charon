@@ -58,7 +58,6 @@ public struct AttributedStringFromStringResolver: Resolver {
     public static func == (a: AttributedStringFromStringResolver,
                            b: AttributedStringFromStringResolver) -> Bool { return true }
 
-    public func hash(into hasher: inout Hasher) {}
 }
 #endif
 

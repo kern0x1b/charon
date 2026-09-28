@@ -78,9 +78,7 @@ public struct EntityURLRepresentation<Entity>: ExpressibleByStringInterpolation 
             /// The text the token stands for, which is the identifier the framework writes.
             public var value: String { return "id" }
 
-            public static func == (a: Token, b: Token) -> Bool { return true }
 
-            public func hash(into hasher: inout Hasher) {}
         }
     }
 }
@@ -130,9 +128,7 @@ public struct EnumURLRepresentation<Enum>: ExpressibleByStringInterpolation wher
                 /// The text the token stands for, which is the raw value the case is written as.
                 public var value: String { return "rawValue" }
 
-                public static func == (a: Token, b: Token) -> Bool { return true }
 
-                public func hash(into hasher: inout Hasher) {}
             }
         }
     }
@@ -182,9 +178,7 @@ public struct EnumURLRepresentation<Enum>: ExpressibleByStringInterpolation wher
             /// The text the token stands for, which is the raw value the case is written as.
             public var value: String { return "rawValue" }
 
-            public static func == (a: Token, b: Token) -> Bool { return true }
 
-            public func hash(into hasher: inout Hasher) {}
         }
     }
 }

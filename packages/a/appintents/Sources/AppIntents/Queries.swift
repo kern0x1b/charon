@@ -23,7 +23,6 @@ public enum HasValueComparisonOperator{
 
     public static func == (a: HasValueComparisonOperator, b: HasValueComparisonOperator) -> Bool { return a.ordinal == b.ordinal }
 
-    public func hash(into hasher: inout Hasher) {}
 }
 
 /// Whether a value is equal to another.
@@ -44,7 +43,6 @@ public enum EquatableComparisonOperator{
 
     public static func == (a: EquatableComparisonOperator, b: EquatableComparisonOperator) -> Bool { return a.ordinal == b.ordinal }
 
-    public func hash(into hasher: inout Hasher) {}
 }
 
 /// Whether a value is one of a list of values.
@@ -63,7 +61,6 @@ public enum OneOfComparisonOperator{
 
     public static func == (a: OneOfComparisonOperator, b: OneOfComparisonOperator) -> Bool { return a.ordinal == b.ordinal }
 
-    public func hash(into hasher: inout Hasher) {}
 }
 
 /// Whether a value is above or below another.
@@ -88,7 +85,6 @@ public enum ComparableComparisonOperator{
 
     public static func == (a: ComparableComparisonOperator, b: ComparableComparisonOperator) -> Bool { return a.ordinal == b.ordinal }
 
-    public func hash(into hasher: inout Hasher) {}
 }
 
 /// How a string is compared to another.
@@ -113,7 +109,6 @@ public enum StringComparisonOperator{
 
     public static func == (a: StringComparisonOperator, b: StringComparisonOperator) -> Bool { return a.ordinal == b.ordinal }
 
-    public func hash(into hasher: inout Hasher) {}
 }
 
 /// Whether several comparators are combined with every one of them or with any one of them.
@@ -136,7 +131,6 @@ public enum EntityQueryComparatorMode{
 
     public static func == (a: EntityQueryComparatorMode, b: EntityQueryComparatorMode) -> Bool { return a.ordinal == b.ordinal }
 
-    public func hash(into hasher: inout Hasher) {}
 }
 
 // MARK: - Comparators
@@ -516,9 +510,7 @@ public struct EntityQuerySort<Entity> where Entity: AppEntity {
         case ascending
         case descending
 
-        public static func == (a: Ordering, b: Ordering) -> Bool { return true }
 
-        public func hash(into hasher: inout Hasher) {}
     }
 
     /// The property sorted by, written as the key path an app names it with.

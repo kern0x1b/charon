@@ -198,11 +198,8 @@ public struct EmptyResolverSpecification<Value: _IntentValue>: ResolverSpecifica
 
     public func makeIterator() -> IndexingIterator<[any Resolver]> { return [any Resolver]().makeIterator() }
 
-    public static func == (a: EmptyResolverSpecification<Value>, b: EmptyResolverSpecification<Value>) -> Bool { return true }
 
-    public func hash(into hasher: inout Hasher) {}
 
-    public var hashValue: Int { return 0 }
 }
 
 /// A resolver: it turns a value of `Input` (a string, an integer, a date) into the value a parameter
@@ -293,9 +290,7 @@ public struct DoubleFromStringResolver: RangeCheckingResolver {
         return Double(input)
     }
 
-    public static func == (a: DoubleFromStringResolver, b: DoubleFromStringResolver) -> Bool { return true }
 
-    public func hash(into hasher: inout Hasher) {}
 }
 
 /// Reads a `String` into a `Bool`: the spellings the release's own `Bool` init takes, and nothing
@@ -315,9 +310,7 @@ public struct BoolFromStringResolver: Resolver {
         }
     }
 
-    public static func == (a: BoolFromStringResolver, b: BoolFromStringResolver) -> Bool { return true }
 
-    public func hash(into hasher: inout Hasher) {}
 }
 
 /// Reads a `String` into a `URL`, with the same spellings `URL(string:)` takes.
@@ -331,9 +324,7 @@ public struct URLFromStringResolver: Resolver {
         return URL(string: input)
     }
 
-    public static func == (a: URLFromStringResolver, b: URLFromStringResolver) -> Bool { return true }
 
-    public func hash(into hasher: inout Hasher) {}
 }
 
 /// Reads an `Int` into the string a parameter that asks for one writes.
@@ -347,9 +338,7 @@ public struct StringFromIntResolver: Resolver {
         return String(input)
     }
 
-    public static func == (a: StringFromIntResolver, b: StringFromIntResolver) -> Bool { return true }
 
-    public func hash(into hasher: inout Hasher) {}
 }
 
 /// Reads a `Double` into the string a parameter that asks for one writes.
@@ -363,9 +352,7 @@ public struct StringFromDoubleResolver: Resolver {
         return String(input)
     }
 
-    public static func == (a: StringFromDoubleResolver, b: StringFromDoubleResolver) -> Bool { return true }
 
-    public func hash(into hasher: inout Hasher) {}
 }
 
 /// Reads a number into an `Int` by the rule the resolver names, which is how a numeric parameter with
@@ -413,9 +400,7 @@ public struct IntResolver: RangeCheckingResolver {
         return Int(input)
     }
 
-    public static func == (a: IntResolver, b: IntResolver) -> Bool { return true }
 
-    public func hash(into hasher: inout Hasher) {}
 }
 
 /// Reads a `String` into a `Double` with no radix of its own.
@@ -429,9 +414,7 @@ public struct DoubleResolver: RangeCheckingResolver {
         return Double(input)
     }
 
-    public static func == (a: DoubleResolver, b: DoubleResolver) -> Bool { return true }
 
-    public func hash(into hasher: inout Hasher) {}
 }
 
 /// Reads an `Int` into a `Double`.
@@ -445,9 +428,7 @@ public struct DoubleFromIntResolver: RangeCheckingResolver {
         return Double(input)
     }
 
-    public static func == (a: DoubleFromIntResolver, b: DoubleFromIntResolver) -> Bool { return true }
 
-    public func hash(into hasher: inout Hasher) {}
 }
 
 /// Reads the term of a `StringSearchCriteria` out of the string a parameter carries.
@@ -465,7 +446,6 @@ public struct StringSearchCriteriaFromStringResolverSpecificification: Resolver 
     public static func == (a: StringSearchCriteriaFromStringResolverSpecificification,
                            b: StringSearchCriteriaFromStringResolverSpecificification) -> Bool { return true }
 
-    public func hash(into hasher: inout Hasher) {}
 }
 
 /// How a string parameter of the framework's own is asked for: which keyboard, which capitalization,
@@ -482,7 +462,6 @@ public extension String {
             case numberPad
 
             public static func == (a: KeyboardType, b: KeyboardType) -> Bool { true }
-            public func hash(into hasher: inout Hasher) {}
         }
 
         /// The capitalization the parameter is asked with.
@@ -493,7 +472,6 @@ public extension String {
             case allCharacters
 
             public static func == (a: CapitalizationType, b: CapitalizationType) -> Bool { true }
-            public func hash(into hasher: inout Hasher) {}
         }
 
         public var keyboardType: KeyboardType

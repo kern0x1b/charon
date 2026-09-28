@@ -176,9 +176,7 @@ public struct IntentFile: Hashable, Sendable {
             }
         }
 
-        public static func == (a: IntentFileError, b: IntentFileError) -> Bool { return true }
 
-        public func hash(into hasher: inout Hasher) {}
     }
 
     /// The bytes of the file, when the app gave bytes.

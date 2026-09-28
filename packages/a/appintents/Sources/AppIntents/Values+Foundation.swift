@@ -11,8 +11,6 @@ import Foundation
 /// string form needs.
 struct IdentityResolver: Resolver {
     func resolve(from input: String, context: IntentParameterContext<String>) async throws -> String? { return input }
-    static func == (a: IdentityResolver, b: IdentityResolver) -> Bool { return true }
-    func hash(into hasher: inout Hasher) {}
 }
 
 /// The specification of the resolvers of a parameter, built by `ResolverSpecificationBuilder` and
@@ -295,8 +293,6 @@ struct UUIDResolver: Resolver {
         return UUID(uuidString: input)
     }
 
-    static func == (a: UUIDResolver, b: UUIDResolver) -> Bool { return true }
-    func hash(into hasher: inout Hasher) {}
 }
 
 /// Reads a `String` into a `Float`.
@@ -305,8 +301,6 @@ struct FloatResolver: Resolver {
         return Float(input)
     }
 
-    static func == (a: FloatResolver, b: FloatResolver) -> Bool { return true }
-    func hash(into hasher: inout Hasher) {}
 }
 
 /// Reads a `String` into a `Date`, with the spellings the release's own `Date` parsers take.
@@ -321,8 +315,6 @@ struct DateResolver: Resolver {
         return nil
     }
 
-    static func == (a: DateResolver, b: DateResolver) -> Bool { return true }
-    func hash(into hasher: inout Hasher) {}
 }
 
 /// Reads a `String` into `DateComponents`, by the same parsers `DateResolver` uses.
@@ -341,8 +333,6 @@ struct DateComponentsResolver: Resolver {
         return nil
     }
 
-    static func == (a: DateComponentsResolver, b: DateComponentsResolver) -> Bool { return true }
-    func hash(into hasher: inout Hasher) {}
 }
 
 extension Optional: _IntentValue where Wrapped: _IntentValue {
@@ -378,8 +368,6 @@ struct ElementResolver<Element: _IntentValue>: Resolver {
             .compactMap { CharonIntentValueParser.parse($0, as: Element.UnwrappedType.self) }
     }
 
-    static func == (a: ElementResolver<Element>, b: ElementResolver<Element>) -> Bool { return true }
-    func hash(into hasher: inout Hasher) {}
 }
 
 /// Writing a value of a type back as the string a caller would write for it, which is what the port's
