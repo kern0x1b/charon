@@ -124,13 +124,16 @@ static inline void CharonResampleWeights(double centre, int taps, vImagePixelCou
                                          float scale, double *weights)
 {
     int count = (int)(2 * extent) + 1;
-    double step = 1.0 / (double)(scale < 1.0f ? scale : 1.0f);
-    double sum = 0.0;
+    // At or above a scale of one the kernel is the plain Lanczos over the lobes. Below one the SUPPORT
+    // stretches by 1/scale - the header's own "the support is scaled by 1/scale when downsampling" - and the
+    // weight at a tap is the kernel at (tap - centre) * scale, so the stretch is in the argument and not in
+    // the step, and the weights are normalised over the stretched support.
+    double minifying = scale < 1.0f ? 1.0 : 1.0;
     int first = taps - (int)extent;
+    double sum = 0.0;
     for (int k = 0; k < count; k++) {
-        // the source position this tap stands for, and the kernel's distance from the mapped position
-        double at = (double)(first + k) * step;
-        double distance = (centre - at) * step;
+        double at = (double)(first + k);
+        double distance = (at - centre) * (scale < 1.0f ? (double)scale * minifying : 1.0);
         weights[k] = CharonLanczos(distance, lobes);
         sum += weights[k];
     }

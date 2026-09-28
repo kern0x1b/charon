@@ -197,7 +197,8 @@ static inline vImage_Error CharonShearRun(const vImage_Buffer *src, const vImage
             // centre tap is k = extent, so an offset of `k` from the first tap put the centre
             // `slope * extent` rows from its own row, which made the shear drift; and the row is the
             // DESTINATION's own row plus that offset, which is the piece an earlier version dropped.
-            double centre = ((double)along0 + (double)along + (horizontal ? -translate : translate)) / scale;
+            double centre = ((double)along0 + (double)along + 0.5
+                             + (horizontal ? -translate : translate)) / (double)scale - 0.5;
             int base = (int)floor(centre);
             CharonResampleWeights(centre, base, extent, filter->lobes, filter->scale, weights);
             long first = (long)base - (long)extent;

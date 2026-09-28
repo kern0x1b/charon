@@ -912,3 +912,39 @@ indices and the answer is a weighted mean of the columns the kernel covers - and
 carries at a scale other than one, which the table in `CharonResampling.h` fixes as
 `ceil(lobes / min(1, scale))` on the strength of the *extent* measurement and has never been checked
 against a resample.
+
+
+## The half pixel and the stretched kernel: minification matches to the digit
+
+The coordinator's two rules, applied and measured:
+
+- **the pixel-centre position**, `centre = ((along0 + along + 0.5) ± translate) / scale - 0.5`;
+- **the kernel stretches when minifying** - at a scale below one the weight at a tap is
+  `sinc(x) * sinc(x / lobes)` at `x = (tap - centre) * scale`, over `ceil(lobes / scale)` taps, normalised;
+  at or above one it is the plain kernel over the lobes.
+
+At a **scale of 0.5 the port now answers `1.3717` where the host answers `1.3717`** - the same four
+decimals, from a grid where the source's own indices are its values. The stretched kernel and the half
+pixel are therefore both right, and the eight-bit-vs-half-float question does not arise.
+
+    212 checks, 51 failures, the widest sample difference 3.38196
+    12 at a scale of 0.25, 12 at 0.5, 24 at 2, and 3 slope cases
+    AddressSanitizer 0 reports, UndefinedBehaviorSanitizer 0 reports
+
+So the scale-1 cases and the scale-2 cases are closed, and what is left is **24 cases at a scale of 2 - pure
+magnification, where the kernel does NOT stretch - plus 24 minification cases at 0.25 and 0.5 that the
+scale-0.5 grid says are right, so those are failing on something the one-row grid cannot show: a picture
+that is one row has no `cross` extent for the diagonal walk, and the 0.5 cases in the differential are
+9x5.**
+
+The magnification grid is the open measurement and it is small: at a scale of 2 the host answers `0.5062,
+1.3635, 1.8378, 2.2001, 2.7624, 3.2302, 3.7698, 4.2302, 4.7698, 5.2302, 5.7698, 6.2302` where the port answers
+`1.0000, 2.0000, 3.0000, ...` - the port is sampling exact columns and the host is not. At a scale of 2 the
+extent from the table is 3, the same as at a scale of 1, so the kernel is the plain one; what is missing is
+the *phase* the host uses for a magnified grid, and the host's first value of 0.5062 - below the source's
+first value of 1.0 - says its position for `x = 0` is before the source's first column with part of the
+kernel answered by the backColor of -1.
+
+Solving it needs one more run of `probe-scale.m` with the source made **taller than one row** so the
+diagonal walk has a `cross` extent, at a scale of 2, printing the exact values: that separates a magnified
+*phase* from a magnified *position* in one grid, and it is the last measurement the family needs.
