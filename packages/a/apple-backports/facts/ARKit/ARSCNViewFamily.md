@@ -113,11 +113,34 @@ and not new public API, and it needs no registry row. On 8.0–11.2, where Scene
 is no such storage to reach and no override is read, so `ARSCNPlaneGeometry` on that band is a
 **dependency** and the reason is this table.
 
-**What I could not do.** I did not reproduce this run. Re-running the row-2 configuration this turn
-failed to compile — an edit dropped two local declarations — and the stale binary gave different numbers
-on two consecutive invocations (0 px, then an unsigned underflow), so the harness as it stands is not
-reproducible and I am not presenting the table above as a repeat. It is one run, its control drew, and
-every case fits the same reading; that is the whole of its standing.
+**And it did not reproduce.** The build is now fixed and the stale binary deleted, and a clean rerun of
+exactly this configuration gives:
+
+```
+  case 1  factory-built geometry draws:          0 px
+  case 2  subclass, no override:                0 px
+  case 3  only the getters hold the data:       0 px
+  case 4  the getters hold half a quad:         0 px
+  case 5  the getters hold nothing:             0 px
+```
+
+with the background line absent entirely. Two consecutive invocations agree with each other and
+disagree with the run above, so the harness is not deterministic here: `SCNRenderer` is asked for
+`device:nil` and what it hands back varies, and the empty-scene background reads 14716 once and 0
+afterwards.
+
+**So the table stands as one unreproduced run, and there is now a second observation against it.** It
+is not promoted to "reproduced", and it is not withdrawn either. What the clean rerun does establish is
+that the probe as written cannot answer the question: its verdict line still reads "NOT read" only
+because the control draws nothing, which is the wrong way round — a control that fails makes the
+verdict unearned, and here the unearned verdict happens to agree with the earlier reading, which is
+exactly the coincidence that should not be trusted.
+
+What would make it a measurement: an `SCNRenderer` built on a device obtained explicitly rather than
+`nil`, so the background is the same on every run, and the control's silhouette compared against that
+background before any override case is read. Until that is done, the per-band consequences below stand
+on the reasoning — an override the framework never calls cannot be a route, whatever the pixels say — and
+not on this probe.
 
 ## The earlier gap, superseded
 
