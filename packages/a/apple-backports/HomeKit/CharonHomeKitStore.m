@@ -88,6 +88,19 @@
 
 @end
 
+// The pair every graph edge is written with, declared in CharonHomeKitConstruction.h. The store holds
+// the identifier as a string because that is what a property list holds; Apple's headers give the
+// uniqueIdentifier family an NSUUID, and this is where one becomes the other.
+NSUUID *CharonHomeKitUUID(NSString *identifier)
+{
+    return identifier ? [[NSUUID alloc] initWithUUIDString:identifier] : nil;
+}
+
+NSString *CharonHomeKitUUIDString(NSUUID *identifier)
+{
+    return identifier ? [identifier UUIDString] : nil;
+}
+
 NSString *CharonHomeKitNewIdentifier(void)
 {
     return [[[NSUUID UUID] UUIDString] uppercaseString];

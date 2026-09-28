@@ -88,7 +88,7 @@ sort -u "$implemented" -o "$implemented"
 # out of what an object is weighed for, and a store the model sits on is the substrate rather than a row
 # of the surface. They are named here so the difference is visible, and not counted as a failure.
 cat "$listed" "$answered" | sort -u > "$all_listed"
-comm -13 "$all_listed" "$implemented" | grep -v '^Charon' > "$unlisted" || true
+comm -13 "$all_listed" "$implemented" | grep -v -e '^Charon' -e '^NSObject$' > "$unlisted" || true
 
 printf '%s\n' "registry $framework: classes and protocols the tree defines and the registry lists"
 printf '  %-44s %s\n' "defined by the library:" "$(wc -l < "$implemented" | tr -d ' ')"

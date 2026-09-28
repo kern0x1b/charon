@@ -61,81 +61,90 @@
       "kind": "class",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the home graph and the HAP transport that would reach an accessory, which this port does not carry: it has no HAP session with an accessory, and iOS 6 runs no home hub, no homekitd and no accessories daemon, so there is no system service to ask for a home graph either",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
+      "status": "implemented",
+      "effect": "a room of a home: name, uniqueIdentifier and the accessories assigned to it, with -updateName:completionHandler: writing the name to the store",
+      "facts": "facts/HomeKit/HMHome.md",
+      "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
     },
     {
       "api": "HMZone",
       "kind": "class",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the home graph and the HAP transport that would reach an accessory, which this port does not carry: it has no HAP session with an accessory, and iOS 6 runs no home hub, no homekitd and no accessories daemon, so there is no system service to ask for a home graph either",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
+      "status": "implemented",
+      "effect": "a zone of a home: name, uniqueIdentifier and its rooms. -addRoom:completionHandler: refuses a room already in another zone of the same home with HMErrorCodeObjectAlreadyAssociatedToHome, the way the release does",
+      "facts": "facts/HomeKit/HMHome.md",
+      "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
     },
     {
       "api": "HMUser",
       "kind": "class",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the home graph and the HAP transport that would reach an accessory, which this port does not carry: it has no HAP session with an accessory, and iOS 6 runs no home hub, no homekitd and no accessories daemon, so there is no system service to ask for a home graph either",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
+      "status": "implemented",
+      "effect": "a user of a home: name and uniqueIdentifier from the store",
+      "facts": "facts/HomeKit/HMHome.md",
+      "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
     },
     {
       "api": "HMServiceGroup",
       "kind": "class",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the home graph and the HAP transport that would reach an accessory, which this port does not carry: it has no HAP session with an accessory, and iOS 6 runs no home hub, no homekitd and no accessories daemon, so there is no system service to ask for a home graph either",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
+      "status": "implemented",
+      "effect": "a group of an accessory's services, with -addService: and -removeService: editing the store's own membership and reporting through HMHomeDelegate",
+      "facts": "facts/HomeKit/HMHome.md",
+      "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
     },
     {
       "api": "HMHome",
       "kind": "class",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the home graph and the HAP transport that would reach an accessory, which this port does not carry: it has no HAP session with an accessory, and iOS 6 runs no home hub, no homekitd and no accessories daemon, so there is no system service to ask for a home graph either",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
+      "status": "implemented",
+      "effect": "a home: name, primary, uniqueIdentifier, rooms, zones, users, serviceGroups, accessories, triggers, actionSets, currentUser, homeHubState, servicesWithTypes:, roomForEntireHome and the whole of the add/remove/update methods write the store and report through HMHomeDelegate. -homeHubState is HMHomeHubStateNotAvailable, which is what a home with no hub answers. -addAccessory:completionHandler: answers HMErrorCodeAccessoryPairingFailed and changes nothing, because adding an accessory to a home is a HAP pair-setup and this port carries none",
+      "facts": "facts/HomeKit/HMHome.md",
+      "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
     },
     {
       "api": "HMHomeManager",
       "kind": "class",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the home graph and the HAP transport that would reach an accessory, which this port does not carry: it has no HAP session with an accessory, and iOS 6 runs no home hub, no homekitd and no accessories daemon, so there is no system service to ask for a home graph either",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
+      "status": "implemented",
+      "effect": "the manager: homes, primaryHome, authorizationStatus, delegate, and -addHomeWithName:completionHandler:, -removeHome:completionHandler: and -updatePrimaryHome:completionHandler: writing the store and reporting through HMHomeManagerDelegate. authorizationStatus is HMHomeManagerAuthorizationStatusDetermined, because the port's graph is the application's own store, which no other application can reach",
+      "facts": "facts/HomeKit/HMHome.md",
+      "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
     },
     {
       "api": "HMTrigger",
       "kind": "class",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the home graph and the HAP transport that would reach an accessory, which this port does not carry: it has no HAP session with an accessory, and iOS 6 runs no home hub, no homekitd and no accessories daemon, so there is no system service to ask for a home graph either",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
+      "status": "implemented",
+      "effect": "a trigger of a home: name, enabled, lastFireDate and actionSets, with -updateName:completionHandler:, -enable:completionHandler:, -addActionSet:completionHandler: and -removeActionSet:completionHandler: writing the store",
+      "facts": "facts/HomeKit/HMHome.md",
+      "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
     },
     {
       "api": "HMTimerTrigger",
       "kind": "class",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the home graph and the HAP transport that would reach an accessory, which this port does not carry: it has no HAP session with an accessory, and iOS 6 runs no home hub, no homekitd and no accessories daemon, so there is no system service to ask for a home graph either",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
+      "status": "implemented",
+      "effect": "a trigger that fires at a time: fireDate, timeZone, recurrence and recurrenceCalendar, with -updateFireDate:completionHandler: refusing a date in the past with HMErrorCodeFireDateInPast, and the recurrence stored as the numbers a date component is made of so it crosses a property list",
+      "facts": "facts/HomeKit/HMHome.md",
+      "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
     },
     {
       "api": "HMActionSet",
       "kind": "class",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the home graph and the HAP transport that would reach an accessory, which this port does not carry: it has no HAP session with an accessory, and iOS 6 runs no home hub, no homekitd and no accessories daemon, so there is no system service to ask for a home graph either",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
+      "status": "implemented",
+      "effect": "a set of actions: name, actionSetType, executing, lastExecutionDate and actions, with -addAction: and -removeAction: writing the store and reporting through HMHomeDelegate",
+      "facts": "facts/HomeKit/HMHome.md",
+      "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
     },
     {
       "api": "HMAction",

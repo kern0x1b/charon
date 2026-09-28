@@ -10,6 +10,7 @@
 #import <HomeKit/HomeKit.h>
 #import <CoreLocation/CoreLocation.h>
 #import "CharonHomeKitModel.h"
+#import "CharonHomeKitConstruction.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -67,6 +68,62 @@ NSString * _Nullable CharonHomeKitAccessoryCategoryDescription(NSString * _Nulla
 - (void)charon_setServiceIdentifier:(NSString * _Nullable)serviceIdentifier;
 - (void)charon_setValue:(id)value;
 - (void)charon_setProperties:(NSArray<NSString *> *)properties;
+@end
+
+#pragma mark - the home graph's own entry points
+
+HMRoom *CharonHomeKitRoom(NSString *identifier, NSString * _Nullable homeIdentifier);
+HMZone *CharonHomeKitZone(NSString *identifier, NSString * _Nullable homeIdentifier);
+HMUser *CharonHomeKitUser(NSString *identifier, NSString * _Nullable homeIdentifier);
+HMServiceGroup *CharonHomeKitServiceGroup(NSString *identifier, NSString * _Nullable homeIdentifier);
+HMHome *CharonHomeKitHome(NSString *identifier);
+HMActionSet *CharonHomeKitActionSet(NSString *identifier, NSString * _Nullable homeIdentifier);
+HMAction *CharonHomeKitAction(NSString *identifier, NSString * _Nullable homeIdentifier);
+HMTrigger *CharonHomeKitTrigger(NSString *identifier, NSString * _Nullable homeIdentifier);
+HMTimerTrigger *CharonHomeKitTimerTrigger(NSString *identifier, NSString * _Nullable homeIdentifier);
+
+@interface HMRoom () @property (nonatomic, copy) NSString *charon_identifier;
+@property (nonatomic, copy, nullable) NSString *charon_homeIdentifier; @end
+@interface HMZone () @property (nonatomic, copy) NSString *charon_identifier;
+@property (nonatomic, copy, nullable) NSString *charon_homeIdentifier; @end
+@interface HMUser () @property (nonatomic, copy) NSString *charon_identifier;
+@property (nonatomic, copy, nullable) NSString *charon_homeIdentifier; @end
+@interface HMServiceGroup () @property (nonatomic, copy) NSString *charon_identifier;
+@property (nonatomic, copy, nullable) NSString *charon_homeIdentifier; @end
+@interface HMActionSet () @property (nonatomic, copy) NSString *charon_identifier;
+@property (nonatomic, copy, nullable) NSString *charon_homeIdentifier; @end
+@interface HMActionSet (CharonHomeKitStore) - (void)charon_setHomeIdentifier:(NSString * _Nullable)homeIdentifier; @end
+@interface HMTrigger () @property (nonatomic, copy) NSString *charon_identifier;
+@property (nonatomic, copy, nullable) NSString *charon_homeIdentifier; @end
+@interface HMHome () @property (nonatomic, copy) NSString *charon_identifier;
+@property (nonatomic, copy, nullable) NSString *charon_homeIdentifier;
+@property (nonatomic, weak, nullable) id<HMHomeDelegate> charon_delegate; @end
+@interface HMHomeManager () @property (nonatomic, weak, nullable) id<HMHomeManagerDelegate> charon_delegate; @end
+
+@interface HMHome (CharonHomeKitStore)
+- (void)charon_setHomeIdentifier:(NSString * _Nullable)homeIdentifier;
+- (NSMutableArray *)charon_orderFor:(NSString *)key;
+- (void)charon_setOrder:(NSArray *)order for:(NSString *)key;
+- (void)charon_append:(NSString *)identifier to:(NSString *)key;
+- (BOOL)charon_remove:(NSString *)identifier from:(NSString *)key named:(NSString *)what;
+- (BOOL)charon_nameInUse:(NSString *)name;
+- (BOOL)charon_holdsAccessory:(HMAccessory *)accessory;
+@end
+@interface HMUser (CharonHomeKitStore)
+- (void)charon_setName:(NSString *)name;
+/** The access control for this user, the port's own object: HMHomeAccessControl is iOS 9.0 and is not
+ *  in the tree in this round, so -homeAccessControlForUser: answers nil for a user that has none rather
+ *  than building a class it does not have. facts/HomeKit/HMHome.md says so. */
+@property (nonatomic, strong, nullable) id charon_homeAccessControl;
+@end
+@interface HMTrigger (CharonHomeKitStore) - (void)charon_setHomeIdentifier:(NSString * _Nullable)homeIdentifier; @end
+@interface HMTimerTrigger (CharonHomeKitStore)
+- (void)charon_applyName:(NSString * _Nullable)name;
+- (void)charon_applyFireDate:(NSDate * _Nullable)fireDate;
+- (void)charon_applyRecurrence:(NSDateComponents * _Nullable)recurrence;
+@end
+@interface NSObject (CharonHomeKitDelegate)
+- (void)charon_tellHome:(SEL)selector object:(id)object block:(void (^)(id<HMHomeDelegate> delegate, HMHome *home, id object))block;
 @end
 
 NS_ASSUME_NONNULL_END
