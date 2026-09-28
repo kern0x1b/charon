@@ -14,6 +14,12 @@ public protocol AppEntity: AppValue, DisplayRepresentable, Identifiable
 
     /// The property of an entity an intent is asked about, which is a parameter of the entity.
     typealias Property = EntityProperty<Self>
+
+    /// The query that finds this entity when a caller names it, which is the entity's own query.
+    /// A requirement, not a convenience, so that `MyEntity.defaultQuery` is one thing whatever the
+    /// query is; the framework's own declaration carries it and supplies a default only where a
+    /// conformance may have one (`arm64e-apple-macos.swiftinterface:413-416`).
+    static var defaultQuery: Self.DefaultQuery { get }
 }
 
 /// An enum: a closed set of cases the app names, which a parameter carries.
