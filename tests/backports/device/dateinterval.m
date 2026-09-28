@@ -24,6 +24,15 @@ static NSArray *SplitLine(NSString *line)
     return [line componentsSeparatedByString:@"\t"];
 }
 
+static void expect(BOOL ok, NSString *what, NSString *detail)
+{
+    charon_checks++;
+    if (!ok) {
+        charon_failures++;
+        printf("FAIL %s: %s\n", [what UTF8String], [detail UTF8String]);
+    }
+}
+
 int main(int argc, char **argv)
 {
     @autoreleasepool {
@@ -55,8 +64,48 @@ int main(int argc, char **argv)
             if (!line.length)
                 continue;
             NSArray *fields = SplitLine(line);
+            // The golden file has three kinds of line and each has its own shape: a `defaults` line is
+            // the key, the two styles and the template the host read off a fresh formatter; a `template`
+            // line is the key, the locale, the skeleton, the start and the answer; and every other line
+            // is the seven-field case. Reading them all as the seven-field shape rejects the 135
+            // defaults and the 105 template lines outright (the review's finding 2).
+            if ([fields[0] isEqualToString:@"defaults"]) {
+                NSDateIntervalFormatter *fresh = [[formatterClass alloc] init];
+                NSString *what = [NSString stringWithFormat:@"the defaults of a fresh formatter: %@", line];
+                expect([[fresh valueForKey:@"dateStyle"] integerValue] == [fields[1] integerValue]
+                           && [[fresh valueForKey:@"timeStyle"] integerValue] == [fields[2] integerValue]
+                           && [[fresh valueForKey:@"dateTemplate"] isEqualToString:fields[3]],
+                       what,
+                       [NSString stringWithFormat:@"ours %ld %ld \"%@\"", (long)[fresh valueForKey:@"dateStyle"],
+                        (long)[fresh valueForKey:@"timeStyle"], [[fresh valueForKey:@"dateTemplate"] description]]);
+                compared++;
+                continue;
+            }
+            if ([fields[0] isEqualToString:@"template"]) {
+                if (fields.count < 5) {
+                    CHECK(NO, "a template line has its five fields");
+                    continue;
+                }
+                NSDateIntervalFormatter *formatter = [[formatterClass alloc] init];
+                formatter.locale = [NSLocale localeWithLocaleIdentifier:fields[1]];
+                formatter.dateStyle = formatter.timeStyle = 0;
+                formatter.dateTemplate = fields[2];
+                formatter.timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
+                NSString *answer = [formatter stringFromDate:[NSDate dateWithTimeIntervalSinceReferenceDate:[fields[3] doubleValue]]
+                                                   toDate:[NSDate dateWithTimeIntervalSinceReferenceDate:[fields[3] doubleValue] + 3600]];
+                compared++;
+                if (![answer isEqualToString:[fields[4] UTF8String]]) {
+                    differing++;
+                    if (differing <= 20) {
+                        NSString *note = [NSString stringWithFormat:@"template %@ %@ expected [%@] got [%@]", fields[1],
+                                          fields[2], fields[4], answer];
+                        printf("  %s\n", [note UTF8String]);
+                    }
+                }
+                continue;
+            }
             if (fields.count < 7) {
-                CHECK(NO, "a line of the golden file has its seven fields");
+                CHECK(NO, "a case line has its seven fields");
                 continue;
             }
             NSLocale *locale = [NSLocale localeWithLocaleIdentifier:fields[0]];

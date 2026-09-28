@@ -8,7 +8,7 @@
       "minimum": "5.0",
       "status": "implemented",
       "reason": "the release's own ICU computes the interval patterns - udtitvfmt_open, format and close are exported (setAttribute is too, and unused) by the release's libicucore from iOS 5.0 on, and 4.3 exports none of the four - so the class is that API called the way the release's own class calls it, and the joins, the collapse of a shared day and every locale's choice of them are the release's answers",
-      "effect": "a range written with the locale's, the zone's and the two styles' own joins, or in the form the template names; a copy, an archive and the two defaults the header states wrongly - both styles are the short one and the template is empty, not NoStyle",
+      "effect": "a range written with the locale's, the zone's and the two styles' own joins, or in the form the template names; a copy, an archive and the two defaults the header states wrongly - both styles are the short one and the template is the locale own combined short pattern, which in en_US is dd/MM/y, HH:mm, not the empty string the header states",
       "facts": "facts/Foundation/NSDateIntervalFormatter.md",
       "source": "the host's own NSDateIntervalFormatter over fifteen locales x the twenty-five pairs of the five styles x three zones x three date pairs, 3480 cases, written out by tests/backports/device/dateinterval/make-expected.m into tests/backports/device/dateinterval/expected.txt and compared line by line by tests/backports/device/dateinterval.m. **device-unverified**: that device run has not happened, and the host's libicucore refuses the call the port makes - it answers U_ILLEGAL_ARGUMENT_ERROR for every skeleton - so no macOS differential holds this path and none is claimed"
     },
@@ -64,7 +64,8 @@
       "minimum": "5.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSDateIntervalFormatter.md",
-      "source": "the template is expanded by the release's own +[NSDateFormatter dateFormatFromTemplate:options:locale:] and the skeleton read off that, with the quoted literal runs dropped; 105 template cases in the golden file over five locales and the header's own examples; device-unverified"
+      "source": "the template is expanded by the release's own +[NSDateFormatter dateFormatFromTemplate:options:locale:] and the skeleton read off that, with the quoted literal runs dropped; 105 template cases in the golden file over five locales and the header's own examples; device-unverified",
+      "effect": "a template names the skeleton instead of the two styles, expanded by the release and then reduced to a skeleton; unset it answers the locale own combined short pattern, measured in the golden file defaults lines"
     },
     {
       "api": "NSDateIntervalFormatter.dateStyle",

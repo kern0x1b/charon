@@ -45,14 +45,19 @@ styles are `NSDateIntervalFormatterNoStyle` and the template is the empty string
 short pattern, not an empty string. Both are measured in the golden file, as the `defaults` lines
 beside the 3375 cases, and the port answers the measured answers (the review's finding E).
 
-A skeleton's **repetitions are the width and are kept**: `yMMMd` is the abbreviated month and `yMMMMd`
+A skeleton's **repetitions are the width, and they are kept**: `yMMMd` is the abbreviated month and `yMMMMd`
 the full one, `jmms` a two-digit minute and `jmmszzzz` a long zone name. An earlier version dropped
 the repeats and collapsed 21 of the 25 style pairs onto a handful of skeletons - the review's finding
 A - and the 25 are now checked against the review's own no-dedup reference, line for line.
 
 A `dateTemplate` is a **template, not a skeleton**, so the release expands it:
-`+[NSDateFormatter dateFormatFromTemplate:options:locale:]`, the same 5.0 floor, gives the pattern, and
-the skeleton is what that pattern's field letters say with the quoted literal runs dropped. Before this
+`+[NSDateFormatter dateFormatFromTemplate:options:locale:]`, the same 5.0 floor, gives the **pattern**,
+and a pattern is not a skeleton either — `h:mm a` is three fields and a meridiem where the skeleton is
+`jm`, `M/d/y, h:mm a` where it is `yMdjm`, `MMMM d, y` where it is `yMMMMd`. So the pattern is
+**reduced** to a skeleton: every run of one field letter becomes a count, the fields are put in CLDR's
+order, `h`/`k`/`K` become the locale's hour symbol `j`, and the meridiem goes as implied by the hour. The
+26.2 header calls `jm` and `MMMd` skeletons and says they give "7:56 AM - 7:56 PM" and "Mar 4", and the
+105 template cases are what holds it. Before this
 the template was handed to `udtitvfmt_open` verbatim, which asks the release for a skeleton and gives
 it a pattern - the review's finding D. The golden file carries 105 template cases, the header's own
 examples (`jm`, `MMMd`, `yMdjm`, `yMMMMd`, `jmv`, `MMMdjmss`, `Hm`) over five locales, so the row is

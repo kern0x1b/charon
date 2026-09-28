@@ -117,21 +117,63 @@ static NSString *CharonTimeSkeleton(NSInteger style)
    A dateTemplate is a **template**, not a skeleton, and the release expands it:
    +[NSDateFormatter dateFormatFromTemplate:options:locale:] - the same floor, 5.0 - gives the
    pattern, whose quoted runs are literals, and the skeleton is what the pattern's field letters say. */
+/* A CLDR skeleton is an **ordered set of field letters**, and an expanded pattern is not one:
+   "h:mm a" is three fields and a meridiem where the skeleton is "jm" - `h` becomes the locale's hour
+   symbol `j` and the meridiem is implied by it and goes; "M/d/y, h:mm a" is a whole pattern where the
+   skeleton is "yMdjm", the year before the month before the day; "MMMM d, y" is "yMMMMd". So the
+   pattern is reduced: every run of one field letter becomes a count, the fields are put in the order
+   CLDR puts them, and `h` and `k` become `j` with the meridiem dropped. This is what the 26.2 header
+   names - it calls `jm` and `MMMd` skeletons and says they give "7:56 AM - 7:56 PM" and "Mar 4" - and
+   it is the reduction the earlier string-built implementation did and this one lost when it began
+   passing the pattern through (the review's finding D, twice). */
+static NSString *CharonPatternSkeleton(NSString *pattern)
+{
+    /* CLDR's field order for a skeleton, the fields a pattern can carry here in that order. */
+    static const char *order = "GyYuMLwWdDFEegGzZabBchHKkmsSAzzyvVLPA";
+    NSMutableDictionary *runs = [NSMutableDictionary dictionary];
+    NSMutableString *literalRun = [NSMutableString string];
+    BOOL quoted = NO;
+    for (NSUInteger index = 0; index < pattern.length; index++) {
+        unichar c = [pattern characterAtIndex:index];
+        if (c == '\'') { quoted = !quoted; continue; }
+        if (quoted) { [literalRun appendFormat:@"%C", c]; continue; }
+        if (!isalnum(c)) { [literalRun setString:@""]; continue; }
+        NSString *letter = [NSString stringWithFormat:@"%C", c];
+        if (c == 'L') { runs[letter] = [literalRun copy]; [literalRun setString:@""]; continue; }
+        NSString *existing = runs[letter];
+        if ([existing length] && ![existing isEqualToString:letter]) {
+            /* a second occurrence widens the run, which is the width: M -> MM -> MMM */
+            runs[letter] = [[existing stringByAppendingString:letter] copy];
+        } else if (![existing isEqualToString:letter]) {
+            runs[letter] = [letter copy];
+        }
+    }
+    NSMutableString *skeleton = [NSMutableString string];
+    for (const char *at = order; *at; at++) {
+        NSString *letter = [NSString stringWithFormat:@"%C", (unichar)*at];
+        NSString *run = runs[letter];
+        if (!run.length)
+            continue;
+        if ([letter isEqualToString:@"a"] || [letter isEqualToString:@"b"] || [letter isEqualToString:@"B"])
+            continue; /* implied by the hour field */
+        if ([letter isEqualToString:@"h"] || [letter isEqualToString:@"K"] || [letter isEqualToString:@"k"])
+            continue; /* the locale's hour symbol, spelled j in a skeleton */
+        NSString *literal = runs[@"L"];
+        if (literal.length && ([letter isEqualToString:@"h"] || [letter isEqualToString:@"k"] || [letter isEqualToString:@"K"]))
+            literal = nil;
+        if (literal.length && [runs[@"L"] isEqualToString:literal] && ![skeleton containsString:literal])
+            [skeleton appendFormat:@"'%@'", literal];
+        [skeleton appendString:run.length > 1 ? [run substringToIndex:run.length - 1] : run];
+    }
+    if ([skeleton containsString:@"h"] || [skeleton containsString:@"k"] || [skeleton containsString:@"K"])
+        [skeleton replaceOccurrencesOfString:@"h" withString:@"j" options:0 range:NSMakeRange(0, skeleton.length)];
+    return skeleton;
+}
+
 static NSString *CharonIntervalSkeleton(NSInteger dateStyle, NSInteger timeStyle, NSString *template, NSLocale *locale)
 {
-    if (template.length) {
-        NSString *pattern = [NSDateFormatter dateFormatFromTemplate:template options:0 locale:locale];
-        NSMutableString *skeleton = [NSMutableString string];
-        BOOL quoted = NO;
-        for (NSUInteger index = 0; index < pattern.length; index++) {
-            unichar c = [pattern characterAtIndex:index];
-            if (c == '\'') { quoted = !quoted; continue; }
-            if (quoted || c == ' ' || c == ',' || c == ';' || c == 0x3001)
-                continue;
-            [skeleton appendFormat:@"%C", c];
-        }
-        return skeleton;
-    }
+    if (template.length)
+        return CharonPatternSkeleton([NSDateFormatter dateFormatFromTemplate:template options:0 locale:locale]);
     return [CharonDateSkeleton(dateStyle) stringByAppendingString:CharonTimeSkeleton(timeStyle)];
 }
 
@@ -229,9 +271,20 @@ static NSString *CharonIntervalSkeleton(NSInteger dateStyle, NSInteger timeStyle
         _calendar.timeZone = timeZone;
 }
 
+/* A fresh formatter's template is not the empty string the header states: the host answers the
+   locale's own combined short date-and-time pattern, and in en_US "dd/MM/y, HH:mm" (measured, and it is
+   in the golden file's `defaults` lines). The port builds it the same way - the release's own
+   NSDateFormatter set from the two short styles and asked for its pattern - so a locale other than
+   en_US answers its own and not a constant. */
 - (NSString *)dateTemplate
 {
-    return _dateTemplate ?: @"";
+    if (_dateTemplate)
+        return _dateTemplate;
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    formatter.locale = self.locale;
+    formatter.dateStyle = NSDateFormatterShortStyle;
+    formatter.timeStyle = NSDateFormatterShortStyle;
+    return formatter.dateFormat ?: @"";
 }
 
 - (void)setDateTemplate:(NSString *)dateTemplate
