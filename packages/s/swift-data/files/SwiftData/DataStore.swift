@@ -3,6 +3,12 @@
 
 import Foundation
 import Observation
+import FoundationEssentials
+
+// This port's Foundation overlay and swift-foundation's FoundationEssentials both declare
+// `UUID` and `Date`, and a file that imports both cannot say which it means. FoundationEssentials
+// is the one that will be the port's Foundation once charon@swift-foundation is in the store, and
+// it is the one whose values a store's rows are written as, so it is named at every use below.
 
 public typealias DataStoreSnapshotValue = Codable & Sendable
 
@@ -102,12 +108,12 @@ extension DataStoreSnapshot {
 
 /// What one editing state is: who made the changes of a save, and which state they belong to.
 public struct EditingState: Identifiable, Sendable {
-    public typealias ID = UUID
+    public typealias ID = FoundationEssentials.UUID
 
-    public let id: UUID
+    public let id: FoundationEssentials.UUID
     public var author: String?
 
-    public init(id: UUID = UUID(), author: String? = nil) {
+    public init(id: FoundationEssentials.UUID = FoundationEssentials.UUID(), author: String? = nil) {
         self.id = id
         self.author = author
     }
@@ -165,14 +171,17 @@ public final class DataStoreSaveChangesResult<T>: Sendable where T: DataStoreSna
     }
 }
 
-/// A batch delete: every row of an entity, of the store's own. Apple's takes a predicate as well;
-/// that is one of the eight rows this delivery leaves out, because a predicate is
-/// `Foundation.Predicate` and the port has none yet.
+/// A batch delete: the rows of an entity the predicate names, of the store's own. A store turns
+/// the predicate into an `NSPredicate` where it can - `DataStoreError.preferInMemoryFilter` when
+/// it cannot, which is the signal to fetch and delete rather than to hand the predicate over.
 public struct DataStoreBatchDeleteRequest<T>: Sendable where T: PersistentModel {
     public let editingState: EditingState
-    public let includeSubclasses: Bool
+    public var includeSubclasses: Bool
+    public var predicate: Predicate<T>?
 
-    public init(editingState: EditingState = EditingState(), includeSubclasses: Bool = true) {
+    public init(predicate: Predicate<T>? = nil, editingState: EditingState = EditingState(),
+                includeSubclasses: Bool = true) {
+        self.predicate = predicate
         self.editingState = editingState
         self.includeSubclasses = includeSubclasses
     }

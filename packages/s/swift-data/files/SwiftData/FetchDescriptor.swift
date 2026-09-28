@@ -1,21 +1,31 @@
 // What to read out of a store: which rows, in what order, how many.
 //
-// The predicate and the sort order are not here: they are `Foundation.Predicate` and
-// `Foundation.SortDescriptor`, which are Foundation's rows (`swiftlang/swift-foundation:
-// Sources/FoundationEssentials/Predicate/Predicate.swift`, `owner-registry = swift-foundation` in
-// the corpus) and which the port's Foundation has not yet - `Predicate` and `SortDescriptor` are
-// declared in neither the runtime's Foundation overlay nor the device's Foundation.framework, and
-// `packages/s/swift-foundation` is not in the shared store. `FetchDescriptor.init(predicate:
-// sortBy:)`, `.predicate`, `.sortBy`, `DataStoreBatchDeleteRequest.predicate` and
-// `HistoryDescriptor.predicate`/`.sortBy` are therefore not in this delivery, and the eight rows
-// are registered `missing` with that reason. Everything else a descriptor holds is here, and
-// `init()` takes no arguments, so a fetch of every row of an entity works today.
+// The predicate and the sort order are `Foundation.Predicate` and `Foundation.SortDescriptor`,
+// which are the port's Foundation's once charon@swift-foundation is in the store: `Predicate`
+// and `SortOrder` in FoundationEssentials, `SortDescriptor` in FoundationInternationalization
+// (swift-foundation 6.4.0, 3b9d8f42b7923a7c1ae9ce20f3b05d1facac334e). Until that package is
+// merged this module is typechecked against the Foundation band's own build of those two
+// modules, read (not installed) from its worktree.
 
 import Foundation
+import FoundationEssentials
+import FoundationInternationalization
 
 public struct FetchDescriptor<T> where T: PersistentModel {
+    /// Which rows. The store cannot turn a `Predicate` into an `NSPredicate`: the node types of
+    /// `PredicateExpression` are internal to swift-foundation and `Predicate.evaluate(_:)` is the
+    /// only public way to run one, so a fetch with a predicate reads its rows and filters them in
+    /// memory, which is what `DataStoreError.preferInMemoryFilter` documents.
+    public var predicate: Predicate<T>?
+
+    /// The order, pushed into the store: a `SortDescriptor`'s key path is a `KeyPath`, and
+    /// `AnyKeyPath._kvcKeyPathString` is the name Core Data's `NSSortDescriptor` sorts by, so
+    /// the rows come back ordered by the store rather than by Swift.
+    public var sortBy: [SortDescriptor<T>]
+
     /// How many rows to read, and how many to skip before the first. Both are the store's own
-    /// limits, applied where the store applies them.
+    /// limits, applied where the store applies them, and both are counted after the predicate has
+    /// filtered, because the filtering happens here.
     public var fetchLimit: Int?
     public var fetchOffset: Int?
 
@@ -30,7 +40,9 @@ public struct FetchDescriptor<T> where T: PersistentModel {
     /// The relationships to bring in with the row.
     public var relationshipKeyPathsForPrefetching: [PartialKeyPath<T>]
 
-    public init() {
+    public init(predicate: Predicate<T>? = nil, sortBy: [SortDescriptor<T>] = []) {
+        self.predicate = predicate
+        self.sortBy = sortBy
         self.fetchLimit = nil
         self.fetchOffset = nil
         self.includePendingChanges = true
@@ -43,6 +55,8 @@ extension FetchDescriptor: Equatable {
     public static func == (lhs: FetchDescriptor<T>, rhs: FetchDescriptor<T>) -> Bool {
         lhs.fetchLimit == rhs.fetchLimit && lhs.fetchOffset == rhs.fetchOffset
             && lhs.includePendingChanges == rhs.includePendingChanges
+            && lhs.sortBy.map { "\($0.keyPath.map { "\($0)" } ?? "")" }
+                == rhs.sortBy.map { "\($0.keyPath.map { "\($0)" } ?? "")" }
             && lhs.propertiesToFetch.map { "\($0)" } == rhs.propertiesToFetch.map { "\($0)" }
             && lhs.relationshipKeyPathsForPrefetching.map { "\($0)" }
                 == rhs.relationshipKeyPathsForPrefetching.map { "\($0)" }

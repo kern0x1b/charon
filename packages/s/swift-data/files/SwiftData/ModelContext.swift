@@ -9,6 +9,8 @@
 import Foundation
 import CoreData
 import Observation
+import FoundationEssentials
+import FoundationInternationalization
 
 public final class ModelContext: Equatable, SendableMetatype {
     /// The keys a save notification carries. Their names are Apple's, read from the host's own
@@ -208,12 +210,28 @@ public final class ModelContext: Equatable, SendableMetatype {
         try fetchRows(entityName: entityName, descriptor: FetchDescriptor<T>(), includeSubclasses: includeSubclasses)
     }
 
+    /// The rows a fetch names. The store orders them: a `SortDescriptor`'s key path is a
+    /// `KeyPath`, and `AnyKeyPath._kvcKeyPathString` is the name `NSSortDescriptor` sorts by, so
+    /// the order becomes the store's own ORDER BY rather than a sort of rows already in memory.
+    /// A predicate cannot go the other way - the node types of `PredicateExpression` are internal
+    /// to swift-foundation and `Predicate.evaluate(_:)` is the only public way to run one - so a
+    /// fetch with one reads its rows and filters them here, which is what
+    /// `DataStoreError.preferInMemoryFilter` says a store does. The limit and the offset are
+    /// therefore counted after the filtering, not by the store.
     func fetchRows<T>(entityName: String, descriptor: FetchDescriptor<T>,
                       includeSubclasses: Bool = true) throws -> [NSManagedObject] {
         let request = NSFetchRequest<NSManagedObject>(entityName: entityName)
         request.includesPendingChanges = descriptor.includePendingChanges
-        if let limit = descriptor.fetchLimit { request.fetchLimit = limit }
-        if let offset = descriptor.fetchOffset, offset > 0 { request.fetchOffset = offset }
+        if !descriptor.sortBy.isEmpty {
+            request.sortDescriptors = descriptor.sortBy.compactMap { sort in
+                guard let key = sort.keyPath, let name = key._kvcKeyPathString else { return nil }
+                return NSSortDescriptor(key: name, ascending: sort.order == SortOrder.forward)
+            }
+        }
+        if descriptor.predicate == nil {
+            if let limit = descriptor.fetchLimit { request.fetchLimit = limit }
+            if let offset = descriptor.fetchOffset, offset > 0 { request.fetchOffset = offset }
+        }
         if !descriptor.relationshipKeyPathsForPrefetching.isEmpty {
             request.relationshipKeyPathsForPrefetching =
                 descriptor.relationshipKeyPathsForPrefetching.map { "\($0)" }
@@ -223,7 +241,9 @@ public final class ModelContext: Equatable, SendableMetatype {
 
     public func fetch<T>(_ descriptor: FetchDescriptor<T>) throws -> [T] where T: PersistentModel {
         let rows = try fetchRows(entityName: Schema.entityName(for: T.self), descriptor: descriptor)
-        return rows.compactMap { makeModel(T.self, forObject: $0) }
+        let models = rows.compactMap { makeModel(T.self, forObject: $0) }
+        guard let predicate = descriptor.predicate else { return models }
+        return try models.filter { try predicate.evaluate($0) }
     }
 
     public func fetch<T>(_ descriptor: FetchDescriptor<T>, batchSize: Int) throws -> FetchResultsCollection<T>

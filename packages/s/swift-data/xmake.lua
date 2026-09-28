@@ -31,6 +31,11 @@ package("swift-data")
                     backports = package:config("backports") or nil, backports_uikit = package:config("backports_uikit") or nil}})
         -- Core Data for the storage layer, Foundation for the model types
         package:add("frameworks", "CoreData", "Foundation", "CoreFoundation")
+        -- `Predicate` and `SortOrder` are in FoundationEssentials and `SortDescriptor` in
+        -- FoundationInternationalization, so FetchDescriptor's predicate and sortBy and
+        -- HistoryDescriptor's are swift-foundation's own release types, taken from that package
+        -- and not re-declared here. Its series has to land before this package builds.
+        package:add("deps", "charon@swift-foundation", {alias = "swift-foundation"})
     end)
 
     on_install("iphoneos", function (package)

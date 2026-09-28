@@ -10,13 +10,20 @@
 
 import Foundation
 import CoreData
+import FoundationEssentials
+import FoundationInternationalization
+
+// This port's Foundation overlay and swift-foundation's FoundationEssentials both declare
+// `Date`, and a file that imports both cannot say which it means. FoundationEssentials is the one
+// that will be the port's Foundation once charon@swift-foundation is in the store, and it is the
+// one whose values a store's rows are written as, so it is named at every use below.
 
 // MARK: - The protocols
 
 public protocol HistoryTransaction: Hashable, Identifiable, Sendable {
     associatedtype TokenType: Comparable, Hashable, Identifiable, Sendable
     associatedtype TransactionIdentifier: Comparable, Hashable, Sendable
-    var timestamp: Date { get }
+    var timestamp: FoundationEssentials.Date { get }
     var changes: [HistoryChange] { get }
     var token: TokenType { get }
     var transactionIdentifier: TransactionIdentifier { get }
@@ -109,28 +116,15 @@ public struct HistoryTombstone<Model>: Sequence, @unchecked Sendable where Model
 }
 
 public struct HistoryDescriptor<TransactionType> where TransactionType: HistoryTransaction {
+    /// How many transactions to read; zero is every one of them.
     public var fetchLimit: UInt64
-    public var sortBy: [SortDescriptorPlaceholder]
+    public var predicate: Predicate<TransactionType>?
+    public var sortBy: [SortDescriptor<TransactionType>]
 
-    public init(predicate: Any? = nil, sortBy: [SortDescriptorPlaceholder] = []) {
+    public init(predicate: Predicate<TransactionType>? = nil, sortBy: [SortDescriptor<TransactionType>] = []) {
         self.fetchLimit = 0
+        self.predicate = predicate
         self.sortBy = sortBy
-    }
-}
-
-/// The sort order of a history fetch. Apple's is `[Foundation.SortDescriptor<TransactionType>]`,
-/// and that type is one of the eight rows this delivery leaves out; this is the order itself, so
-/// that a caller can say which way round it wants a history without naming a type the port has
-/// not got yet.
-public struct SortDescriptorPlaceholder: Codable, Hashable, Sendable {
-    public enum Order: String, Codable, Hashable, Sendable { case forward, reverse }
-
-    public let key: String
-    public let order: Order
-
-    public init(key: String, order: Order = .forward) {
-        self.key = key
-        self.order = order
     }
 }
 
@@ -142,7 +136,7 @@ public struct DefaultHistoryTransaction: HistoryTransaction {
     public typealias ID = Int64
 
     public var id: Int64 { transactionIdentifier }
-    public let timestamp: Date
+    public let timestamp: FoundationEssentials.Date
     public let changes: [HistoryChange]
     public let token: DefaultHistoryToken
     public let transactionIdentifier: Int64
