@@ -100,10 +100,13 @@ def main():
     if failures:
         for failure in failures:
             print(f"FAIL {failure}")
-        print(f"swiftregistry: {len(failures)} implemented row(s) with no declaration, of {checked} checked")
+        # A run is reported by its verdict line and nothing else: a line that says how many of
+        # something there were is not a result, and reading one as a pass is how a red check went
+        # out as green. So the verdict is one line, and it is the last one.
+        print(f"swiftregistry: FAILED - {len(failures)} implemented type row(s) with no declaration, of {checked} checked")
         return 1
     print(f"ok   every implemented type row has a declaration ({checked} rows)")
-    print(f"ok   swiftregistry: {checked} implemented type rows, {len(failures)} without a declaration")
+    print(f"swiftregistry: OK - {checked} implemented type rows, none without a declaration")
     return 0
 
 
