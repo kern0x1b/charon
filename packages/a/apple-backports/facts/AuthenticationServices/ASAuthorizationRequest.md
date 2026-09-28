@@ -37,9 +37,42 @@ graph uses and for the same reason.
 
 582 is the whole family. This class is the first of them, and the next ones are its subclasses.
 
+## Why `port_has` did not see `-init`, and what it reads
+
+It was asked, and here is what it said. The diagnostic read
+`packages/a/apple-backports/AuthenticationServices/ASWebAuthenticationSession.m` — **7231 bytes on
+disk, 7231 read**, so the file was not short and not unreadable — found `@implementation
+ASWebAuthenticationSession` at offset 3374, and then searched for:
+
+    - (init)
+
+**which no Objective-C method has**, because the return type sits between the parens. Every port-side
+answer from that tool was "no" whatever the tree held: the classes it reported as missing were missing
+to the search, not to the port. The one real difference it did report — the missing
+`-[ASWebAuthenticationSession init]` — came out right for the wrong reason, and the `-init` was added on
+the strength of a report the tool could not be trusted to make.
+
+The first correction allowed a space between the sign and the paren and then required the paren to be
+the very next character, which `- (instancetype)init` does not have either, so the second run was still
+green in the wrong direction. What works is where a declaration puts the selector: a `-` or `+`, optional
+space, `(`, the return type, `)`, optional space, and then the member name with a non-identifier after
+it — so that `charon_initWithProvider:` is not read as `provider`, which is the next false positive the
+prefix form would have given.
+
+    ASWebAuthenticationSession   init                                            yes yes same
+    ASAuthorizationRequest      provider                                       yes yes same
+    ASAuthorizationRequest      copyWithZone:                                   yes yes same
+    ASAuthorizationRequest      encodeWithCoder:                                yes yes same
+    shapes: 4 cases, 0 differences
+
+and the mutant, with the base request's `-provider` and its `@synthesize` removed from a copy:
+
+    ASAuthorizationRequest      provider                                       yes no  the port is missing it
+    the check exited 1, which is what a check that can see a removed member does
+
 ## What is not done
 
-579 rows. The value half of the family is measured (30 constants, 30 agree with the host) and the shape
+578 rows. The value half of the family is measured (30 constants, 30 agree with the host) and the shape
 half has a host differential and a mutant; the classes do not exist yet. The differential is currently
 **red** on one case — `-[ASWebAuthenticationSession init]`, which the host has and the port's source did
 not, and which has since been added — and that red has not been cleared, so the check is committed in a

@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 /* The members asked about for a class, and the per-class overrides. A class with members of its own
  * overrides the list; the default is the set every class of the family is asked, so a new class is
@@ -81,21 +82,40 @@ static int port_has(const char *path, const char *className, const char *member)
     }
 
     int found = 0;
-    char definition[256];
-    /* Both spellings: - (id)copyWithZone: and + (instancetype)numberRangeWith... */
-    snprintf(definition, sizeof definition, "- (%s)", member);
-    char *at = strstr(body, definition);
-    if (!at) {
-        snprintf(definition, sizeof definition, "+ (%s)", member);
-        at = strstr(body, definition);
-    }
-    if (at) {
-        for (const char *cursor = at + strlen(definition); *cursor; ++cursor) {
-            if (*cursor == '{') {
+    /* The selector is looked for where a declaration puts it: after the return type's closing
+     * parenthesis, with - or + and a ( before it. The first version searched for "- (member)" -- the
+     * literal text `- (init)` -- and no Objective-C method has that, because the return type sits between
+     * the parens; every port-side answer was therefore "no" whatever the tree held, and the check
+     * reported the one real difference it found for the wrong reason as well. */
+    for (char *cursor = body; *cursor && !found; ++cursor) {
+        if (*cursor != '-' && *cursor != '+')
+            continue;
+        /* A space between the sign and the paren is the spelling, not an exception: "- (instancetype)init". */
+        char *open = cursor + 1;
+        while (*open == ' ' || *open == '\t')
+            ++open;
+        if (*open != '(')
+            continue;
+        char *close = strchr(open + 1, ')');
+        if (!close)
+            continue;
+        /* The selector begins at the first non-space after the return type. */
+        char *selector = close + 1;
+        while (*selector == ' ' || *selector == '\t' || *selector == '\n')
+            ++selector;
+        size_t length = strlen(member);
+        if (strncmp(selector, member, length) != 0)
+            continue;
+        /* And the member name ends there: the next character is not part of a longer selector. */
+        char next = selector[length];
+        if (next && (isalnum((unsigned char)next) || next == '_'))
+            continue;
+        for (const char *at = selector + length; *at; ++at) {
+            if (*at == '{') {
                 found = 1;
                 break;
             }
-            if (*cursor == ';')
+            if (*at == ';')
                 break;
         }
     }
