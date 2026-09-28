@@ -10,8 +10,12 @@
  */
 
 #import "CharonNW.h"
+#include <Availability.h>
 
-bool nw_path_is_ultra_constrained(nw_path_t path)
+/* the SDK's own mark for a name this release's cache does not have: it arrived in iOS 18.0 */
+#define CHARON_IOS_18 API_AVAILABLE(ios(18.0))
+
+CHARON_IOS_18 bool nw_path_is_ultra_constrained(nw_path_t path)
 {
     (void)path;
     return false;

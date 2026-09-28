@@ -53,8 +53,8 @@ LIBRARIES = {
     {name = "PassKitBackports", folder = "PassKit", frameworks = {"PassKit", "UIKit", "CoreGraphics", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "CarPlayBackports", folder = "CarPlay", frameworks = {"CarPlay", "MapKit", "UIKit", "CoreGraphics", "CoreTelephony", "Foundation"}, libraries = {"FoundationBackports"}},
     -- Network.framework does not exist on the releases this port covers, so this library is the only place its
-    -- connection surface can be, and it reports the path through the Foundation library's path monitor.
-    {name = "NetworkBackports", folder = "Network", frameworks = {"Network", "Foundation"}, libraries = {"FoundationBackports"}},
+    -- connection surface can be. It reports the path through the path monitor the Foundation library already carries.
+    {name = "NetworkBackports", folder = "Network", frameworks = {"Network", "Foundation", "Security"}, libraries = {"FoundationBackports"}},
     -- Intents arrives with iOS 8 and the armv7 ladder ends at 10.3.4, so no release this package
     -- covers carries it: every band builds this library whole. It links UIKit because an Intents
     -- image is the application's own image and UIKit is where the asset catalogue is on every
