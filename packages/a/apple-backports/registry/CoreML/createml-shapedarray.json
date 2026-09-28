@@ -29,7 +29,7 @@
             "introduced": "14.0",
             "minimum": "6.0",
             "status": "implemented",
-            "reason": "a case of the header-only MLMultiArrayDataType, named by its own symbol, and checked the way a case is: the header the build reads declares it. The value is the header's own, read from MLMultiArray.h of the iPhoneOS 16.4 SDK",
+            "reason": "a case of the header-only MLMultiArrayDataType, named by its own symbol, and checked the way a case is: the header the build reads declares it. The value is the header's own, read from MLMultiArray.h of the iPhoneOS 16.4 SDK The case carries its own API_AVAILABLE in that header, at MLMultiArray.h:19, iOS 14.0, and the release in `introduced` is that one; the port answers at 6.0, which is what the lift lowers it to",
             "effect": "the value the header gives it",
             "facts": "facts/CoreML/ShapedArray.md",
             "source": "MLMultiArray.h of the iPhoneOS 16.4 SDK, 0x10000 | 64, the same value as the Double case under a name the release added later"
@@ -51,7 +51,7 @@
             "introduced": "16.0",
             "minimum": "6.0",
             "status": "implemented",
-            "reason": "a case of the header-only MLMultiArrayDataType, named by its own symbol, and checked the way a case is: the header the build reads declares it. The value is the header's own, read from MLMultiArray.h of the iPhoneOS 16.4 SDK",
+            "reason": "a case of the header-only MLMultiArrayDataType, named by its own symbol, and checked the way a case is: the header the build reads declares it. The value is the header's own, read from MLMultiArray.h of the iPhoneOS 16.4 SDK This is the one case the header marks later than the enumeration's own ios(11.0) - MLMultiArray.h:21 says iOS 16.0, and `introduced` is that - and the port answers at 6.0, which is what the lift lowers it to",
             "effect": "the value the header gives it",
             "facts": "facts/CoreML/ShapedArray.md",
             "source": "MLMultiArray.h of the iPhoneOS 16.4 SDK, 0x10000 | 16"
@@ -62,7 +62,7 @@
             "introduced": "14.0",
             "minimum": "6.0",
             "status": "implemented",
-            "reason": "a case of the header-only MLMultiArrayDataType, named by its own symbol, and checked the way a case is: the header the build reads declares it. The value is the header's own, read from MLMultiArray.h of the iPhoneOS 16.4 SDK",
+            "reason": "a case of the header-only MLMultiArrayDataType, named by its own symbol, and checked the way a case is: the header the build reads declares it. The value is the header's own, read from MLMultiArray.h of the iPhoneOS 16.4 SDK The case carries its own API_AVAILABLE in that header, at MLMultiArray.h:22, iOS 14.0, and the release in `introduced` is that one; the port answers at 6.0, which is what the lift lowers it to",
             "effect": "the value the header gives it",
             "facts": "facts/CoreML/ShapedArray.md",
             "source": "MLMultiArray.h of the iPhoneOS 16.4 SDK, 0x10000 | 32, the same value as the Float32 case under a name the release added later"
