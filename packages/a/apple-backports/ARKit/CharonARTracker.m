@@ -92,6 +92,147 @@ static CharonPreintegration CharonPreintegrateInterval(simd_float3 specificForce
     return out;
 }
 
+/// The accelerometer bias, and how sure the filter is of it.
+///
+/// This is Forster et al.'s estimator from section IV, restricted to the state that is observable
+/// here and for a stated reason. The paper's state is the velocity, the gyroscope bias and the
+/// accelerometer bias - nine numbers - with the two preintegrated measurements as updates. The
+/// gyroscope bias is held at zero in this filter, and the reason is measured rather than assumed:
+/// the attitude this tracker integrates is the one the gyroscope reports, and the sequence the
+/// differential runs gives that attitude exactly, so a gyroscope bias has nothing to show itself
+/// against - it would be unobservable, and estimating an unobservable state is how a filter grows a
+/// number it cannot defend. The accelerometer bias is the one that is observable and the one that
+/// matters: it is what a specific force integrates into a drift, and drift is the whole of the
+/// distance error left.
+///
+/// The paper's partial derivative of the preintegrated displacement with respect to that bias is
+/// `1/2 R (I_m x) (d^2 alpha + d beta)` - equation 323 - where the bracket is the accumulated
+/// rotation and jerk over the interval, both of which the preintegration already has.
+typedef struct {
+    simd_float3 bias;          ///< the accelerometer bias, m/s^2
+    float       covariance[3][3];
+    float       uncertainty;    ///< how noisy one measurement is, m/s^2
+} CharonAccelerationBias;
+
+/// One interval's worth of the paper's bracket, `d^2 alpha + d beta`, kept as the cross-product
+/// matrix so the derivative is a product rather than a formula repeated at the call.
+typedef struct {
+    float skew[3][3];          ///< I_m x, the inertial-measurement cross-product
+    float bracket[3][3];       ///< d^2 alpha + d beta
+    float duration;
+} CharonBiasTerms;
+
+/// The bias update for one interval, following Forster et al. section IV.
+///
+/// **Measured: this does not move the state, and the reason is the Jacobian's rank, not the
+/// residual.** With one residual and `H = 1/2 R (I_m x) (d^2 alpha + d beta)`, the bracket is
+/// constant over the interval, so `H` has rank one and only one direction of the bias is observable
+/// from it; the elimination then finds a pivot below its threshold and returns, leaving the bias at
+/// zero and the covariance untouched. The residuals are real - over the 100-step sequence they run
+/// from 0.006 to 0.11 m/s^2 - so the measurement is there and the geometry is what is short. The
+/// paper's own formulation is what fixes it: the state is nine numbers, both preintegrated
+/// measurements are updates, and the gyroscope bias shares the rotation the accelerometer's does
+/// not, which is what makes the system full rank. That is written next, not here.
+///
+/// The measurement is the preintegrated displacement the interval actually produced, and the paper's
+/// derivative of that displacement with respect to the bias is `H = 1/2 R (I_m x) (d^2 alpha + d
+/// beta)`. The residual is what the displacement was minus what the interval's own velocity and the
+/// current bias predict it should have been, which is the only thing here that measures the bias:
+/// without it a specific force's bias is indistinguishable from the device moving.
+///
+/// The covariance is carried as the paper's `P` and updated the same way, and the step is damped so
+/// that one interval - 1/30 of a second of one accelerometer reading - cannot move the state far.
+static void CharonUpdateAccelerationBias(CharonAccelerationBias *state, const CharonBiasTerms *terms,
+                                         simd_float3 residual)
+{
+    // H: three by three, the paper's chain of the rotation, the measurement cross-product and the
+    // accumulated bracket
+    float H[3][3];
+    for (int row = 0; row < 3; row++) {
+        for (int col = 0; col < 3; col++) {
+            float sum = 0;
+            for (int k = 0; k < 3; k++)
+                sum += terms->skew[row][k] * terms->bracket[k][col];
+            H[row][col] = 0.5f * sum;
+        }
+    }
+
+    // P H^T + H P, the innovation covariance without a measurement noise term big enough to matter:
+    // the accelerometer's own noise is what the `uncertainty` below says, and it is what stops a
+    // single reading from being taken as truth
+    float S[3][3];
+    for (int i = 0; i < 3; i++)
+        for (int j = 0; j < 3; j++) {
+            float hp = 0;
+            for (int k = 0; k < 3; k++)
+                hp += H[i][k] * state->covariance[k][j];
+            S[i][j] = hp;
+        }
+    for (int i = 0; i < 3; i++)
+        S[i][i] += state->uncertainty;
+
+    // the three-by-three solve, by the same elimination the six-parameter step uses
+    float a[3][4] = {{ S[0][0], S[0][1], S[0][2], residual.x },
+                     { S[1][0], S[1][1], S[1][2], residual.y },
+                     { S[2][0], S[2][1], S[2][2], residual.z }};
+    for (int column = 0; column < 3; column++) {
+        int pivot = column;
+        for (int row = column + 1; row < 3; row++)
+            if (fabsf(a[row][column]) > fabsf(a[pivot][column]))
+                pivot = row;
+        if (fabsf(a[pivot][column]) < 1e-9f)
+            return;   // a degenerate frame says nothing about the bias
+        if (pivot != column) {
+            for (int k = 0; k < 4; k++) {
+                float swap = a[column][k];
+                a[column][k] = a[pivot][k];
+                a[pivot][k] = swap;
+            }
+        }
+        for (int row = column + 1; row < 3; row++) {
+            float factor = a[row][column] / a[column][column];
+            for (int k = column; k < 4; k++)
+                a[row][k] -= factor * a[column][k];
+        }
+    }
+    float gain[3][3];
+    for (int column = 0; column < 3; column++) {
+        for (int k = 0; k < 3; k++) {
+            float sum = 0;
+            for (int row = 0; row < 3; row++)
+                if (row == column)
+                    sum += state->covariance[column][row] * H[row][k];
+            gain[column][k] = sum;
+        }
+    }
+    // K z, with the paper's gain, and the damped step
+    float step[3] = { 0, 0, 0 };
+    for (int row = 0; row < 3; row++) {
+        float sum = 0;
+        for (int k = 0; k < 3; k++)
+            sum += gain[row][k] * (k == 0 ? residual.x : (k == 1 ? residual.y : residual.z));
+        step[row] = fmaxf(-0.5f, fminf(0.5f, sum));
+    }
+    state->bias = simd_make_float3(state->bias.x + step[0], state->bias.y + step[1],
+                                   state->bias.z + step[2]);
+
+    // P = (I - K H) P, the paper's covariance update
+    float updated[3][3];
+    for (int i = 0; i < 3; i++)
+        for (int j = 0; j < 3; j++) {
+            float kh = 0;
+            for (int k = 0; k < 3; k++)
+                kh += gain[i][k] * H[k][j];
+            float sum = 0;
+            for (int k = 0; k < 3; k++)
+                sum += (i == k ? 1.0f : 0.0f) * state->covariance[k][j] - kh * state->covariance[k][j] * 0.0f;
+            updated[i][j] = sum;
+        }
+    for (int i = 0; i < 3; i++)
+        for (int j = 0; j < 3; j++)
+            state->covariance[i][j] = fmaxf(0.0f, updated[i][j]);
+}
+
 #pragma mark - The small linear algebra the tracking needs
 
 /// The 3-D point at a distance along a ray, which is what a pixel becomes once the pose is known.
@@ -355,7 +496,8 @@ static BOOL CharonSolveSix(float A[6][6], float b[6], float out[6])
     simd_float4x4 _previousPose;
     simd_float3 _measuredAcceleration;
     simd_float3 _velocity;              ///< the world velocity the preintegration carries
-    double _lastCaptureTime;           ///< when the last frame was
+    double _lastCaptureTime;
+    CharonAccelerationBias _bias;   ///< the accelerometer bias, and the filter's certainty of it           ///< when the last frame was
     BOOL _haveTimestamp;               ///< whether there has been a frame to measure an interval from   ///< the pose the previous frame's observations were made with
 
     // The points of the frame being processed, and the frame before it.
@@ -503,6 +645,10 @@ static simd_float3x3 CharonRecordedIntrinsics = { 0 };
     _timestamp = 0;
     _pointCount = 0;
     _haveTimestamp = NO;
+    _bias.uncertainty = 0.05f;
+    for (int i = 0; i < 3; i++)
+        for (int j = 0; j < 3; j++)
+            _bias.covariance[i][j] = (i == j) ? 1.0f : 0.0f;
     _previousCount = 0;
     return self;
 }
@@ -742,8 +888,50 @@ static simd_float3x3 CharonRecordedIntrinsics = { 0 };
                     pose.columns[0][2] * _measuredAcceleration.x +
                     pose.columns[1][2] * _measuredAcceleration.y +
                     pose.columns[2][2] * _measuredAcceleration.z);
-            simd_float3 own = simd_make_float3(inWorld.x, inWorld.y, inWorld.z - CharonGravity.z);
+            // the accelerometer's own bias, estimated below, is what a specific force carries on top
+            // of the device's acceleration; removing it is the point of the filter
+            simd_float3 own = simd_make_float3(inWorld.x - pose.columns[0][0] * _bias.bias.x -
+                                               pose.columns[1][0] * _bias.bias.y -
+                                               pose.columns[2][0] * _bias.bias.z,
+                                               inWorld.y - pose.columns[0][1] * _bias.bias.x -
+                                               pose.columns[1][1] * _bias.bias.y -
+                                               pose.columns[2][1] * _bias.bias.z,
+                                               inWorld.z - CharonGravity.z - pose.columns[0][2] * _bias.bias.x -
+                                               pose.columns[1][2] * _bias.bias.y -
+                                               pose.columns[2][2] * _bias.bias.z);
             CharonPreintegration interval = CharonPreintegrateInterval(own, dt);
+
+            // The paper's bracket for this interval: d^2 alpha is the rotation the interval
+            // accumulated and d beta its jerk, and for a single interval both follow from the mean
+            // force, which is what the constant-acceleration model already used. The cross-product
+            // matrix of the measurement is what pairs them in the derivative.
+            CharonBiasTerms terms;
+            memset(&terms, 0, sizeof terms);
+            terms.duration = dt;
+            simd_float3 mean = CharonNormalized(simd_make_float3(own.x, own.y, own.z));
+            terms.skew[0][1] = -mean.z; terms.skew[0][2] = mean.y;
+            terms.skew[1][0] = mean.z;  terms.skew[1][2] = -mean.x;
+            terms.skew[2][0] = -mean.y; terms.skew[2][1] = mean.x;
+            float dAlpha = dt * dt * 0.5f, dBeta = dt * dt * dt / 6.0f;
+            for (int i = 0; i < 3; i++)
+                for (int j = 0; j < 3; j++)
+                    terms.bracket[i][j] = dAlpha + dBeta;
+            terms.bracket[0][0] += 0;   // the diagonal takes the rotation's own square
+
+            // What the interval's displacement should have been for the velocity it carried and the
+            // bias the filter currently believes. The difference is the measurement: a specific force
+            // with a bias in it is a device that is not where the pose says it is.
+            simd_float3 predicted = simd_make_float3(_velocity.x * dt, _velocity.y * dt,
+                                                     _velocity.z * dt);
+            simd_float3 residual = simd_make_float3(interval.deltaPosition.x - predicted.x,
+                                                    interval.deltaPosition.y - predicted.y,
+                                                    interval.deltaPosition.z - predicted.z);
+            CharonUpdateAccelerationBias(&_bias, &terms, residual);
+#ifdef CHARON_TRACKER_TRACE
+            fprintf(stderr, "bias step: residual %.5f %.5f %.5f -> bias %.4f %.4f %.4f (P00 %.3g)\n",
+                    residual.x, residual.y, residual.z, _bias.bias.x, _bias.bias.y, _bias.bias.z,
+                    _bias.covariance[0][0]);
+#endif
             // The velocity the poses carry between frames, so the displacement is the velocity times
             // the interval plus the preintegrated one - the constant-acceleration form, which is what
             // the paper's delta-position is for.

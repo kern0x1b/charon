@@ -460,3 +460,30 @@ place, and the floor is the without-the-step number, so turning it back on turns
 that is what turns 0.60 m into a translation. Then the landmarks' parallax, which needs the bias state
 before its depths mean anything. And the 100-step run is clean under both sanitizers, so none of the
 above is hiding a memory fault.
+
+## Forster's bias states: written, wired, and measured not to move
+
+The filter is the accelerometer bias and the filter's certainty of it, following Forster et al.
+section IV with the paper's partial derivative of the preintegrated displacement with respect to that
+bias, `H = 1/2 R (I_m x) (d^2 alpha + d beta)` (equation 323), the innovation covariance, the gain
+and the covariance update. The gyroscope bias is held at zero and the reason is measured, not assumed:
+the attitude this tracker integrates is the one the gyroscope reports and the differential's sequence
+gives it exactly, so a gyroscope bias has nothing to show itself against.
+
+**It does not move the state, and the reason is the Jacobian's rank rather than the residual.** Over
+the 100-step sequence the residual the update is handed runs from 0.006 to 0.11 m/s^2, so the
+measurement is real. But the bracket `d^2 alpha + d beta` is constant over one interval, so `H` is
+rank one: one residual constrains one direction of the bias and leaves the other two free. The
+elimination then finds a pivot below its threshold and returns, and the bias stays at 0.0000 with the
+covariance at 1.
+
+The same fix the paper applies is the fix here, and it is not a tweak: the state is nine numbers -
+velocity, gyroscope bias, accelerometer bias - *both* preintegrated measurements are updates, and the
+gyroscope bias shares the rotation the accelerometer's does not, which is what makes the system full
+rank. The nine-state version is what has to be written; the three-state one cannot be made to work
+without inventing observability that is not there. That is recorded in the source above the function
+as well as here, so the next reader does not spend the measurement again.
+
+**The distance error is unchanged at 0.60488 m over a 4.95 m path**, which is the honest consequence:
+the preintegration plus this filter is still not a translation. The rotation remains 0.002 degrees and
+its floor and the conjugated-read-back mutation are unaffected.
