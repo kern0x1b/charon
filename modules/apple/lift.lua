@@ -1608,8 +1608,8 @@ local function computed(opt)
     mark("registry")
     -- The frameworks read: every one the registry has a file for, and opt.frameworks on top of them.
     --
-    -- The registry names the frameworks a backport implements something in, which is 48 of the 298
-    -- the SDK's surface covers, so a header-only API - one that needs no backport, only its
+    -- The registry names only the frameworks a backport implements something in, a minority of the
+    -- frameworks the SDK ships and of those the corpus surface covers, so a header-only API - one that needs no backport, only its
     -- availability lowered so a translation unit naming it compiles for 6.1.3 - in any other
     -- framework is not read at all, and cannot become reachable however long the registry's own
     -- frameworks take. The extra list is the surface's frameworks, and it is passed in rather than
