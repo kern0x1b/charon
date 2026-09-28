@@ -6,7 +6,7 @@
       "kind": "method",
       "introduced": "13.0",
       "minimum": "7.0",
-      "maximum": "9.3.6",
+      "maximum": "13.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionConfigurationFlags.md",
       "source": "SDK 26.2 headers; tests/backports/device/foundation15batch.m on the device"
@@ -16,7 +16,7 @@
       "kind": "method",
       "introduced": "13.0",
       "minimum": "7.0",
-      "maximum": "9.3.6",
+      "maximum": "13.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionConfigurationFlags.md",
       "source": "SDK 26.2 headers; tests/backports/device/foundation15batch.m on the device"
@@ -26,7 +26,7 @@
       "kind": "method",
       "introduced": "26.1",
       "minimum": "7.0",
-      "maximum": "18.0",
+      "maximum": "26.1",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionConfigurationFlags.md",
       "source": "SDK 26.2 headers; tests/backports/device/foundation15batch.m on the device"
@@ -36,7 +36,7 @@
       "kind": "method",
       "introduced": "26.0",
       "minimum": "7.0",
-      "maximum": "16.0",
+      "maximum": "26.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionConfigurationFlags.md",
       "source": "SDK 26.2 headers; tests/backports/device/foundation15batch.m on the device"
@@ -46,7 +46,7 @@
       "kind": "method",
       "introduced": "11.0",
       "minimum": "7.0",
-      "maximum": "9.3.6",
+      "maximum": "11.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionConfigurationFlags.md",
       "source": "SDK 26.2 headers; tests/backports/device/foundation15batch.m on the device"
@@ -56,7 +56,7 @@
       "kind": "method",
       "introduced": "16.0",
       "minimum": "7.0",
-      "maximum": "12.0",
+      "maximum": "16.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionConfigurationFlags.md",
       "source": "SDK 26.2 headers; tests/backports/device/foundation15batch.m on the device"
@@ -66,7 +66,7 @@
       "kind": "method",
       "introduced": "26.1",
       "minimum": "7.0",
-      "maximum": "18.0",
+      "maximum": "26.1",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionConfigurationFlags.md",
       "source": "SDK 26.2 headers; tests/backports/device/foundation15batch.m on the device"
@@ -76,7 +76,7 @@
       "kind": "method",
       "introduced": "26.0",
       "minimum": "7.0",
-      "maximum": "16.0",
+      "maximum": "26.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionConfigurationFlags.md",
       "source": "SDK 26.2 headers; tests/backports/device/foundation15batch.m on the device"
@@ -86,7 +86,7 @@
       "kind": "method",
       "introduced": "11.0",
       "minimum": "7.0",
-      "maximum": "9.3.6",
+      "maximum": "11.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionConfigurationFlags.md",
       "source": "SDK 26.2 headers; tests/backports/device/foundation15batch.m on the device"
@@ -96,7 +96,7 @@
       "kind": "method",
       "introduced": "16.0",
       "minimum": "7.0",
-      "maximum": "12.0",
+      "maximum": "16.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionConfigurationFlags.md",
       "source": "SDK 26.2 headers; tests/backports/device/foundation15batch.m on the device"
@@ -106,7 +106,7 @@
       "kind": "method",
       "introduced": "9.0",
       "minimum": "7.0",
-      "maximum": "8.4.1",
+      "maximum": "9.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionConfigurationFlags.md",
       "source": "SDK 26.2 headers; tests/backports/device/foundation15batch.m on the device"
@@ -116,7 +116,7 @@
       "kind": "method",
       "introduced": "13.0",
       "minimum": "7.0",
-      "maximum": "9.3.6",
+      "maximum": "13.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionConfigurationFlags.md",
       "source": "SDK 26.2 headers; tests/backports/device/foundation15batch.m on the device"
@@ -126,7 +126,7 @@
       "kind": "method",
       "introduced": "13.0",
       "minimum": "7.0",
-      "maximum": "9.3.6",
+      "maximum": "13.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionConfigurationFlags.md",
       "source": "SDK 26.2 headers; tests/backports/device/foundation15batch.m on the device"
@@ -136,7 +136,7 @@
       "kind": "method",
       "introduced": "18.4",
       "minimum": "7.0",
-      "maximum": "16.0",
+      "maximum": "18.4",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionConfigurationFlags.md",
       "source": "SDK 26.2 headers; tests/backports/device/foundation15batch.m on the device"
@@ -146,7 +146,7 @@
       "kind": "method",
       "introduced": "9.0",
       "minimum": "7.0",
-      "maximum": "8.4.1",
+      "maximum": "9.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionConfigurationFlags.md",
       "source": "SDK 26.2 headers; tests/backports/device/foundation15batch.m on the device"
@@ -156,7 +156,7 @@
       "kind": "method",
       "introduced": "18.4",
       "minimum": "7.0",
-      "maximum": "16.0",
+      "maximum": "18.4",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionConfigurationFlags.md",
       "source": "SDK 26.2 headers; tests/backports/device/foundation15batch.m on the device"
@@ -166,7 +166,7 @@
       "kind": "method",
       "introduced": "13.0",
       "minimum": "5.0",
-      "maximum": "12.0",
+      "maximum": "13.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
       "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values"
@@ -176,7 +176,7 @@
       "kind": "method",
       "introduced": "13.0",
       "minimum": "5.0",
-      "maximum": "12.0",
+      "maximum": "13.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
       "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values"
@@ -186,7 +186,7 @@
       "kind": "method",
       "introduced": "13.0",
       "minimum": "5.0",
-      "maximum": "12.0",
+      "maximum": "13.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
       "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values"
@@ -196,7 +196,7 @@
       "kind": "method",
       "introduced": "13.0",
       "minimum": "5.0",
-      "maximum": "12.0",
+      "maximum": "13.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
       "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values"
@@ -206,7 +206,7 @@
       "kind": "method",
       "introduced": "13.0",
       "minimum": "5.0",
-      "maximum": "12.0",
+      "maximum": "13.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
       "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values"
@@ -216,7 +216,7 @@
       "kind": "method",
       "introduced": "13.0",
       "minimum": "5.0",
-      "maximum": "12.0",
+      "maximum": "13.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
       "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values"
@@ -226,7 +226,7 @@
       "kind": "method",
       "introduced": "13.0",
       "minimum": "5.0",
-      "maximum": "12.0",
+      "maximum": "13.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
       "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values"
@@ -236,7 +236,7 @@
       "kind": "method",
       "introduced": "13.0",
       "minimum": "5.0",
-      "maximum": "12.0",
+      "maximum": "13.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
       "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values"
@@ -246,7 +246,7 @@
       "kind": "method",
       "introduced": "13.0",
       "minimum": "5.0",
-      "maximum": "12.0",
+      "maximum": "13.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
       "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values"
@@ -256,7 +256,7 @@
       "kind": "method",
       "introduced": "13.0",
       "minimum": "5.0",
-      "maximum": "12.0",
+      "maximum": "13.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
       "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values"
@@ -266,7 +266,7 @@
       "kind": "method",
       "introduced": "13.0",
       "minimum": "5.0",
-      "maximum": "12.0",
+      "maximum": "13.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
       "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values"
@@ -276,7 +276,7 @@
       "kind": "property",
       "introduced": "13.0",
       "minimum": "7.0",
-      "maximum": "9.3.6",
+      "maximum": "13.0",
       "status": "implemented",
       "source": "SDK 26.2 headers; tests/backports/device/foundation15batch.m on the device",
       "facts": "facts/Foundation/NSURLSessionConfigurationFlags.md"
@@ -286,7 +286,7 @@
       "kind": "property",
       "introduced": "13.0",
       "minimum": "7.0",
-      "maximum": "9.3.6",
+      "maximum": "13.0",
       "status": "implemented",
       "source": "SDK 26.2 headers; tests/backports/device/foundation15batch.m on the device",
       "facts": "facts/Foundation/NSURLSessionConfigurationFlags.md"
@@ -296,7 +296,7 @@
       "kind": "property",
       "introduced": "26.1",
       "minimum": "7.0",
-      "maximum": "18.0",
+      "maximum": "26.1",
       "status": "implemented",
       "source": "SDK 26.2 headers; tests/backports/device/foundation15batch.m on the device",
       "facts": "facts/Foundation/NSURLSessionConfigurationFlags.md"
@@ -306,7 +306,7 @@
       "kind": "property",
       "introduced": "26.0",
       "minimum": "7.0",
-      "maximum": "16.0",
+      "maximum": "26.0",
       "status": "implemented",
       "source": "SDK 26.2 headers; tests/backports/device/foundation15batch.m on the device",
       "facts": "facts/Foundation/NSURLSessionConfigurationFlags.md"
@@ -316,7 +316,7 @@
       "kind": "property",
       "introduced": "11.0",
       "minimum": "7.0",
-      "maximum": "9.3.6",
+      "maximum": "11.0",
       "status": "implemented",
       "source": "SDK 26.2 headers; tests/backports/device/foundation15batch.m on the device",
       "facts": "facts/Foundation/NSURLSessionConfigurationFlags.md"
@@ -326,7 +326,7 @@
       "kind": "property",
       "introduced": "16.0",
       "minimum": "7.0",
-      "maximum": "12.0",
+      "maximum": "16.0",
       "status": "implemented",
       "source": "SDK 26.2 headers; tests/backports/device/foundation15batch.m on the device",
       "facts": "facts/Foundation/NSURLSessionConfigurationFlags.md"
@@ -336,7 +336,7 @@
       "kind": "property",
       "introduced": "9.0",
       "minimum": "7.0",
-      "maximum": "8.4.1",
+      "maximum": "9.0",
       "status": "implemented",
       "source": "SDK 26.2 headers; tests/backports/device/foundation15batch.m on the device",
       "facts": "facts/Foundation/NSURLSessionConfigurationFlags.md"
@@ -346,7 +346,7 @@
       "kind": "property",
       "introduced": "18.4",
       "minimum": "7.0",
-      "maximum": "16.0",
+      "maximum": "18.4",
       "status": "implemented",
       "source": "SDK 26.2 headers; tests/backports/device/foundation15batch.m on the device",
       "facts": "facts/Foundation/NSURLSessionConfigurationFlags.md"
@@ -356,7 +356,7 @@
       "kind": "property",
       "introduced": "13.0",
       "minimum": "5.0",
-      "maximum": "12.0",
+      "maximum": "13.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
       "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values"
@@ -366,7 +366,7 @@
       "kind": "property",
       "introduced": "13.0",
       "minimum": "5.0",
-      "maximum": "12.0",
+      "maximum": "13.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
       "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values"
@@ -376,7 +376,7 @@
       "kind": "property",
       "introduced": "13.0",
       "minimum": "5.0",
-      "maximum": "12.0",
+      "maximum": "13.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
       "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values"
@@ -386,7 +386,7 @@
       "kind": "property",
       "introduced": "13.0",
       "minimum": "5.0",
-      "maximum": "12.0",
+      "maximum": "13.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
       "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values"
@@ -396,7 +396,7 @@
       "kind": "property",
       "introduced": "13.0",
       "minimum": "5.0",
-      "maximum": "12.0",
+      "maximum": "13.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionStreamTaskSocketMetrics.md",
       "source": "the port's own stream task over the release's CFStream pair: kCFStreamPropertySocketNativeHandle and getsockname/getpeername for the four names, and kCFStreamPropertySSLContext with SSLGetNegotiatedProtocolVersion and SSLGetNegotiatedCipher for the two negotiated values, all measured in the 6.1.3 armv7 cache and all reached by name where the library links no CFNetwork and no Security",
@@ -407,7 +407,7 @@
       "kind": "property",
       "introduced": "13.0",
       "minimum": "5.0",
-      "maximum": "12.0",
+      "maximum": "13.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
       "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values"
@@ -417,7 +417,7 @@
       "kind": "property",
       "introduced": "13.0",
       "minimum": "5.0",
-      "maximum": "12.0",
+      "maximum": "13.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
       "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values"
@@ -427,7 +427,7 @@
       "kind": "property",
       "introduced": "13.0",
       "minimum": "5.0",
-      "maximum": "12.0",
+      "maximum": "13.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionStreamTaskSocketMetrics.md",
       "source": "the port's own stream task over the release's CFStream pair: kCFStreamPropertySocketNativeHandle and getsockname/getpeername for the four names, and kCFStreamPropertySSLContext with SSLGetNegotiatedProtocolVersion and SSLGetNegotiatedCipher for the two negotiated values, all measured in the 6.1.3 armv7 cache and all reached by name where the library links no CFNetwork and no Security",
@@ -436,9 +436,9 @@
     {
       "api": "NSURLSessionTaskTransactionMetrics.domainResolutionProtocol",
       "kind": "property",
-      "introduced": "13.0",
+      "introduced": "14.0",
       "minimum": "5.0",
-      "maximum": "12.0",
+      "maximum": "14.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
       "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values"
@@ -448,7 +448,7 @@
       "kind": "property",
       "introduced": "13.0",
       "minimum": "5.0",
-      "maximum": "12.0",
+      "maximum": "13.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
       "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values"
@@ -458,7 +458,7 @@
       "kind": "property",
       "introduced": "13.0",
       "minimum": "5.0",
-      "maximum": "12.0",
+      "maximum": "13.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionStreamTaskSocketMetrics.md",
       "source": "the port's own stream task over the release's CFStream pair: kCFStreamPropertySocketNativeHandle and getsockname/getpeername for the four names, and kCFStreamPropertySSLContext with SSLGetNegotiatedProtocolVersion and SSLGetNegotiatedCipher for the two negotiated values, all measured in the 6.1.3 armv7 cache and all reached by name where the library links no CFNetwork and no Security",
@@ -469,7 +469,7 @@
       "kind": "property",
       "introduced": "13.0",
       "minimum": "5.0",
-      "maximum": "12.0",
+      "maximum": "13.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionStreamTaskSocketMetrics.md",
       "source": "the port's own stream task over the release's CFStream pair: kCFStreamPropertySocketNativeHandle and getsockname/getpeername for the four names, and kCFStreamPropertySSLContext with SSLGetNegotiatedProtocolVersion and SSLGetNegotiatedCipher for the two negotiated values, all measured in the 6.1.3 armv7 cache and all reached by name where the library links no CFNetwork and no Security",
@@ -480,7 +480,7 @@
       "kind": "property",
       "introduced": "13.0",
       "minimum": "5.0",
-      "maximum": "12.0",
+      "maximum": "13.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
       "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values"
@@ -490,7 +490,7 @@
       "kind": "property",
       "introduced": "13.0",
       "minimum": "5.0",
-      "maximum": "12.0",
+      "maximum": "13.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionStreamTaskSocketMetrics.md",
       "source": "the port's own stream task over the release's CFStream pair: kCFStreamPropertySocketNativeHandle and getsockname/getpeername for the four names, and kCFStreamPropertySSLContext with SSLGetNegotiatedProtocolVersion and SSLGetNegotiatedCipher for the two negotiated values, all measured in the 6.1.3 armv7 cache and all reached by name where the library links no CFNetwork and no Security",
@@ -501,7 +501,7 @@
       "kind": "property",
       "introduced": "13.0",
       "minimum": "5.0",
-      "maximum": "12.0",
+      "maximum": "13.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionStreamTaskSocketMetrics.md",
       "source": "the port's own stream task over the release's CFStream pair: kCFStreamPropertySocketNativeHandle and getsockname/getpeername for the four names, and kCFStreamPropertySSLContext with SSLGetNegotiatedProtocolVersion and SSLGetNegotiatedCipher for the two negotiated values, all measured in the 6.1.3 armv7 cache and all reached by name where the library links no CFNetwork and no Security",
@@ -510,9 +510,9 @@
     {
       "api": "NSURLSessionTaskTransactionMetrics.proxyConnection",
       "kind": "property",
-      "introduced": "13.0",
+      "introduced": "10.0",
       "minimum": "5.0",
-      "maximum": "12.0",
+      "maximum": "10.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
       "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values"
@@ -522,7 +522,7 @@
       "kind": "property",
       "introduced": "13.0",
       "minimum": "5.0",
-      "maximum": "12.0",
+      "maximum": "13.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionStreamTaskSocketMetrics.md",
       "source": "the port's own stream task over the release's CFStream pair: kCFStreamPropertySocketNativeHandle and getsockname/getpeername for the four names, and kCFStreamPropertySSLContext with SSLGetNegotiatedProtocolVersion and SSLGetNegotiatedCipher for the two negotiated values, all measured in the 6.1.3 armv7 cache and all reached by name where the library links no CFNetwork and no Security",
@@ -533,7 +533,7 @@
       "kind": "property",
       "introduced": "13.0",
       "minimum": "5.0",
-      "maximum": "12.0",
+      "maximum": "13.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionStreamTaskSocketMetrics.md",
       "source": "the port's own stream task over the release's CFStream pair: kCFStreamPropertySocketNativeHandle and getsockname/getpeername for the four names, and kCFStreamPropertySSLContext with SSLGetNegotiatedProtocolVersion and SSLGetNegotiatedCipher for the two negotiated values, all measured in the 6.1.3 armv7 cache and all reached by name where the library links no CFNetwork and no Security",
@@ -542,9 +542,9 @@
     {
       "api": "NSURLSessionTaskTransactionMetrics.reusedConnection",
       "kind": "property",
-      "introduced": "13.0",
+      "introduced": "10.0",
       "minimum": "5.0",
-      "maximum": "12.0",
+      "maximum": "10.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
       "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values"
