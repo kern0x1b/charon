@@ -40,7 +40,7 @@ static NSString *const results_folder = @"/private/var/backports";
         withDestinationIndexPath:(NSIndexPath *)destination
 {
     [self note:[NSString stringWithFormat:@"collection.dropSessionDidUpdate:withDestinationIndexPath:%@",
-              NSStringFromIndexPath(destination)]];
+              CharonDescribe(destination)]];
     return [[UICollectionViewDropProposal alloc] initWithDropOperation:UIDropOperationMove
                                                               intent:UICollectionViewDropIntentInsertIntoDestinationIndexPath];
 }
@@ -49,7 +49,7 @@ static NSString *const results_folder = @"/private/var/backports";
 {
     [self note:[NSString stringWithFormat:@"collection.performDropWithCoordinator:items=%lu:destination=%@:operation=%ld:intent=%ld",
               (unsigned long)coordinator.items.count,
-              NSStringFromIndexPath(coordinator.destinationIndexPath),
+              CharonDescribe(coordinator.destinationIndexPath),
               (long)coordinator.proposal.operation, (long)coordinator.proposal.intent]];
 }
 
@@ -58,7 +58,7 @@ static NSString *const results_folder = @"/private/var/backports";
       withDestinationIndexPath:(NSIndexPath *)destination
 {
     [self note:[NSString stringWithFormat:@"table.dropSessionDidUpdate:withDestinationIndexPath:%@",
-              NSStringFromIndexPath(destination)]];
+              CharonDescribe(destination)]];
     return [[UITableViewDropProposal alloc] initWithDropOperation:UIDropOperationMove
                                                           intent:UITableViewDropIntentInsertIntoDestinationIndexPath];
 }
@@ -67,7 +67,7 @@ static NSString *const results_folder = @"/private/var/backports";
 {
     [self note:[NSString stringWithFormat:@"table.performDropWithCoordinator:items=%lu:destination=%@:operation=%ld:intent=%ld",
               (unsigned long)coordinator.items.count,
-              NSStringFromIndexPath(coordinator.destinationIndexPath),
+              CharonDescribe(coordinator.destinationIndexPath),
               (long)coordinator.proposal.operation, (long)coordinator.proposal.intent]];
 }
 
@@ -88,7 +88,7 @@ static NSString *const results_folder = @"/private/var/backports";
              dropPreviewParametersForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     [self note:[NSString stringWithFormat:@"collection.dropPreviewParametersForItemAtIndexPath:%@",
-              NSStringFromIndexPath(indexPath)]];
+              CharonDescribe(indexPath)]];
     return nil;
 }
 
@@ -117,7 +117,7 @@ static NSString *const results_folder = @"/private/var/backports";
       dropPreviewParametersForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [self note:[NSString stringWithFormat:@"table.dropPreviewParametersForRowAtIndexPath:%@",
-              NSStringFromIndexPath(indexPath)]];
+              CharonDescribe(indexPath)]];
     return nil;
 }
 
