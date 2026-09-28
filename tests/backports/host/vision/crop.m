@@ -16,6 +16,9 @@
 #import <Foundation/Foundation.h>
 #import <Vision/Vision.h>
 
+#include <dlfcn.h>
+#include <stdint.h>
+
 #ifdef CHARON_PORT_BUILD
 #import <Vision/Vision.h>
 /* The port's two functions, the header's interpolation left at its default. */
@@ -146,6 +149,21 @@ static void dump(CVPixelBufferRef buffer, const char *who)
     printf("\n");
 }
 
+/* Which image each answer came out of. The framework's answer is Core ML's own constructor; the
+ * port's is the kernel in CharonVisionBilinear.c. If both resolve to the same image the comparison
+ * is the framework against itself and every row reads zero, which is what happened once. */
+static const char *image_of(const void *address, char *into, size_t size)
+{
+    Dl_info info;
+    if (dladdr(address, &info) != 0 && info.dli_fname != NULL) {
+        const char *at = strrchr(info.dli_fname, '/');
+        snprintf(into, size, "%s", at != NULL ? at + 1 : info.dli_fname);
+        return into;
+    }
+    snprintf(into, size, "(unknown)");
+    return into;
+}
+
 int main(int argc, const char *argv[])
 {
     /* the two options this port carries, and the sizes: the review's two, an exact 1:1, and an
@@ -157,6 +175,26 @@ int main(int argc, const char *argv[])
     long worst = 0;
 
     @autoreleasepool {
+#ifdef CHARON_PORT_BUILD
+        {
+            char kernel[256], framework[256];
+            image_of((const void *)(uintptr_t)&charon_vision_bilinear, kernel, sizeof kernel);
+            image_of((__bridge void *)NSClassFromString(@"MLFeatureValue"), framework, sizeof framework);
+            printf("=== the two answers come from: the port's %s and the framework's %s\n", kernel, framework);
+            if (strcmp(kernel, framework) == 0) {
+                printf("BOTH SIDES ARE THE SAME IMAGE: this comparison is the framework against "
+                       "itself and every row below reads zero by construction\n");
+                return 2;
+            }
+        }
+#else
+        {
+            char framework[256];
+            image_of((const void *)(__bridge void *)NSClassFromString(@"MLFeatureValue"), framework, sizeof framework);
+            printf("=== the system's own rows: both sides are %s, so they are a control, not a "
+                   "verdict\n", framework);
+        }
+#endif
         for (index = 0; index < sizeof(sizes) / sizeof(sizes[0]); index++) {
             CGImageRef image = picture(sizes[index].from_wide, sizes[index].from_high);
             int option;

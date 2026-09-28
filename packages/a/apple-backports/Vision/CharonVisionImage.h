@@ -49,13 +49,17 @@ extern void charon_vision_bilinear(const uint8_t *source, size_t sourceStride, s
 static inline CVPixelBufferRef charon_vision_pixels(CVPixelBufferRef source, size_t wide, size_t high,
                                             VNImageCropAndScaleOption option)
 {
+    /* The placement is rounded the way the kernel's own check rounds it, and the bars are the
+     * kernel's own memset: CoreGraphics drew them once under a picture the kernel then drew over,
+     * which is two resamplers and the CG one winning wherever the two disagreed. Core ML's
+     * reference has `00 00 00 00` in the bars -- measured, not assumed -- which is what a cleared
+     * buffer holds. */
     CVPixelBufferRef buffer = NULL;
-    CGColorSpaceRef space = NULL;
-    CGContextRef context = NULL;
-    CGDataProviderRef provider = NULL;
-    CGImageRef picture = NULL;
     const uint8_t *bytes;
-    size_t sw, sh, stride;
+    uint8_t *out;
+    size_t sw, sh, stride, outStride, drawWide, drawHigh;
+    long insetX, insetY;
+    CGFloat scale;
 
     if (source == NULL || wide == 0 || high == 0) {
         return NULL;
@@ -80,82 +84,32 @@ static inline CVPixelBufferRef charon_vision_pixels(CVPixelBufferRef source, siz
         }
         return NULL;
     }
-    space = CGColorSpaceCreateDeviceRGB();
-    /* The source read as a CGImage, so the two options are applied to a picture rather than to a
-     * rectangle of arithmetic: what is drawn is the pixels the handler holds. */
-    provider = CGDataProviderCreateWithData(NULL, bytes, stride * sh, NULL);
-    if (space != NULL && provider != NULL) {
-        picture = CGImageCreate(sw, sh, 8, 32, stride, space,
-                                kCGImageAlphaNoneSkipFirst | kCGBitmapByteOrder32Little, provider, NULL, NO,
-                                kCGRenderingIntentDefault);
+    scale = option == VNImageCropAndScaleOptionScaleFit
+                ? MIN((CGFloat)wide / (CGFloat)sw, (CGFloat)high / (CGFloat)sh)
+                : MAX((CGFloat)wide / (CGFloat)sw, (CGFloat)high / (CGFloat)sh);
+    drawWide = (size_t)((CGFloat)sw * scale + 0.5);
+    drawHigh = (size_t)((CGFloat)sh * scale + 0.5);
+    if (drawWide < 1) {
+        drawWide = 1;
     }
-    /* The alpha byte is left as CoreGraphics leaves it, and that is measured rather than assumed:
-     * Core ML's own constructor writes `00 00 00 00` in the bars and `ff` under the picture for a
-     * scaled case, and `00` everywhere for the one case where no resampling happens. A context that
-     * *writes* the alpha -- premultiplied-last, which is what it would take to write the bars
-     * transparent -- was measured and rejected: it made every row worse and turned the exact 1:1
-     * case from 0 of 256 into 256 of 256, so the framework's 1:1 answer carries the alpha its own
-     * buffer was created with rather than the picture's. What the difference then is, the check
-     * measures; the facts say what has been ruled out. */
-    /* The row length is the buffer's own, never width * 4: a CoreVideo buffer pads its rows to a
-     * boundary of its own choosing, so a width that is not a multiple of 16 has rows longer than its
-     * own pixels, and a context told width * 4 would write over the padding and scramble every row
-     * after the first. */
-    context = CGBitmapContextCreate(CVPixelBufferGetBaseAddress(buffer), wide, high, 8,
-                                    CVPixelBufferGetBytesPerRow(buffer), space,
-                                    kCGImageAlphaNoneSkipFirst | kCGBitmapByteOrder32Little);
-    if (context != NULL) {
-        CGRect where;
-        CGFloat scale;
-        /* Core ML's own image constructor blends when the scale is fractional: measured on this
-         * host, 100x50 brought to 224x224 leaves 1996 of 50176 pixels different from a paste and
-         * 13x7 brought to 8x8 leaves 22 of 64, while a paste leaves every scaled pixel at the
-         * colour of its nearest corner. The interpolation quality is the only difference, and this
-         * is the one CoreGraphics offers that is not nearest-neighbour: `High` resamples with a
-         * smooth kernel, and it is what the numbers above are measured against. */
-        CGContextSetInterpolationQuality(context, CHARON_VISION_INTERPOLATION);
-        /* Black first, so scale fit's bars are black rather than whatever the buffer held. */
-        CGContextSetRGBFillColor(context, 0, 0, 0, 1);
-        CGContextFillRect(context, CGRectMake(0, 0, (CGFloat)wide, (CGFloat)high));
-        if (option == VNImageCropAndScaleOptionScaleFit) {
-            scale = MIN((CGFloat)wide / (CGFloat)sw, (CGFloat)high / (CGFloat)sh);
-            where = CGRectMake(((CGFloat)wide - (CGFloat)sw * scale) / 2.0,
-                               ((CGFloat)high - (CGFloat)sh * scale) / 2.0, (CGFloat)sw * scale,
-                               (CGFloat)sh * scale);
-        } else {
-            /* Centre crop: the picture is scaled until it *covers* the target -- the shorter side
-             * is the target's exactly -- and centred, so the target is a window on the middle of the
-             * scaled picture. Drawing it at the target's own size instead would be a scale fit, and
-             * the middle would be the middle of nothing: the scale is the whole difference between
-             * the two options. */
-            scale = MAX((CGFloat)wide / (CGFloat)sw, (CGFloat)high / (CGFloat)sh);
-            where = CGRectMake(((CGFloat)wide - (CGFloat)sw * scale) / 2.0,
-                               ((CGFloat)high - (CGFloat)sh * scale) / 2.0, (CGFloat)sw * scale,
-                               (CGFloat)sh * scale);
-        }
-        if (picture != NULL) {
-            /* The draw, by the kernel: the rect `where` is the picture's placement, and the
-             * resampler writes exactly the region of the target that lies inside it. */
-            charon_vision_bilinear(bytes, stride, sw, sh, (uint8_t *)CVPixelBufferGetBaseAddress(buffer),
-                                   CVPixelBufferGetBytesPerRow(buffer), (long)where.origin.x,
-                                   (long)where.origin.y, (long)where.size.width, (long)where.size.height,
-                                   (long)wide, (long)high);
-        }
+    if (drawHigh < 1) {
+        drawHigh = 1;
     }
-    if (picture != NULL) {
-        CGImageRelease(picture);
+    if (drawWide > wide) {
+        drawWide = wide;
     }
-    if (provider != NULL) {
-        CGDataProviderRelease(provider);
+    if (drawHigh > high) {
+        drawHigh = high;
     }
-    if (context != NULL) {
-        CGContextRelease(context);
-    }
-    if (space != NULL) {
-        CGColorSpaceRelease(space);
-    }
-    CVPixelBufferUnlockBaseAddress(buffer, 0);
+    insetX = (long)wide > (long)drawWide ? ((long)wide - (long)drawWide) / 2 : 0;
+    insetY = (long)high > (long)drawHigh ? ((long)high - (long)drawHigh) / 2 : 0;
+    out = (uint8_t *)CVPixelBufferGetBaseAddress(buffer);
+    outStride = CVPixelBufferGetBytesPerRow(buffer);
+    memset(out, 0, outStride * high);
+    charon_vision_bilinear(bytes, stride, sw, sh, out, outStride, insetX, insetY, (long)drawWide,
+                           (long)drawHigh, (long)wide, (long)high);
     CVPixelBufferUnlockBaseAddress(source, kCVPixelBufferLock_ReadOnly);
+    CVPixelBufferUnlockBaseAddress(buffer, 0);
     return buffer;
 }
 
