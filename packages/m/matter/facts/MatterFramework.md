@@ -160,6 +160,16 @@ protocol's own metadata (which this library carries, the class rows above are 98
 each delegate method at the moment upstream's Darwin framework does. The XPC protocols are the framework's own
 process boundary, and what upstream does with them is the question still open here.
 
+## xmake's `l` runner and a script that takes four paths
+
+`xmake l tools/x.lua <a> <b> <c> <d>` does deliver four positional strings, both as named parameters and through
+`{...}` - measured with a probe that printed them. What is not delivered is a script that *imports* `apple.objc` and then
+reads a large library inside `main`: it fails with `attempt to index a number value (local 'opt')` before its first
+statement in `main` runs, which is xmake's sandbox `opt` rather than anything in the arguments. `tools/matter-alias.lua`
+is the script: the four paths arrive, the import returns a table, and the call after it does not. The rename rule and
+the emitter in it are sound; what is missing is the isolation of that failure, and until it is isolated the 48 forwards
+are not written.
+
 ## The 48 methods that are missing
 
 For every property row the host's framework answers and the port's does not, the port's own metadata was asked what it
