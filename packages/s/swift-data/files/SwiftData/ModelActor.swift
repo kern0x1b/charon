@@ -75,8 +75,17 @@ public class DefaultSerialModelExecutor: @unchecked Sendable, SerialModelExecuto
         // exactly this value. An object cannot be its own unowned executor - that is the whole
         // point of "unowned" - and passing `self` is a type error, which is the toolchain
         // saying so.
+        // A job is not copyable, and an `NSManagedObjectContext.performAndWait` block cannot hold
+        // one: it is borrowed, not consumed. The job is therefore taken by a function that hands
+        // it to `runSynchronously`, and the context is asked to run that function on its own
+        // queue with `perform`, which takes an escaping closure and can own what it needs.
         let unowned = UnownedSerialExecutor(self)
-        context.perform { job.runSynchronously(on: unowned) }
+        struct Runner {
+            let unowned: UnownedSerialExecutor
+            func run(_ job: consuming ExecutorJob) { job.runSynchronously(on: unowned) }
+        }
+        let runner = Runner(unowned: unowned)
+        context.perform { runner.run(job) }
     }
 
     @objc deinit {}
