@@ -92,20 +92,25 @@ mutant VNObservations.m "return [self observationWithRequestRevision:0 boundingB
 mutant VNObservations.m "return YES;" "return NO;"
 mutant VNObservations.m "return charon_vision_clone(self, zone);" "return [[VNObservation alloc] init];"
 mutant VNRequests.m "    if ([wrapper charon_coreml_image_feature] == nil) {" "    if (0) {"
-# The two crop-and-scale rules, which the picture case now measures: a scale fit that fills the
-# target, and a centre crop that keeps the middle. Both change the pixel the model is given, and the
-# model's answer with it.
+# The wrapper's refusal, which is the host's own answer for every image model in the corpus and the
+# one this mutant kills: a wrapper that answered for a model with no image in any of its inputs
+# would be a difference the picture case would see.
 mutant VNHandlers.m "VNErrorUnsupportedRevision" "VNErrorNotImplemented"
 mutant VNHandlers.m "if (handler)
             handler(request, failure);" "if (handler)
             handler(request, nil);"
 # NOT HERE, and named rather than left to fail the line: the two crop-and-scale rules in
-# CharonVisionImage.h, and the Core ML branch of charon_vision_perform. Every shape of an image model
-# in the corpus is refused by the host's own Vision before the request path reaches a picture --
-# "Failed to initialize VNCoreMLTransformer" for the ranged and the preprocessed one, "The
-# VNCoreMLTransform request failed" for the fixed one -- so the request is answered by the generic
-# refusal and the code under those three rules is not run. What would put it in a record is a
-# container the host's transform accepts, which tools/coreml/make-models.py has not found yet; the
-# four shapes it has tried are written down there.
+# CharonVisionImage.h, the Core ML branch of charon_vision_perform, and the request path's own
+# resampler. Every shape of an image model in the corpus is refused by the host's own Vision before
+# the request path reaches a picture -- "Failed to initialize VNCoreMLTransformer" for the ranged
+# and the preprocessed one, "The VNCoreMLTransform request failed" for the fixed one -- so the
+# request is answered by the generic refusal and nothing under those rules is run. What would put
+# them in a record is a container the host's transform accepts, which
+# tools/coreml/make-models.py has not found yet; the four shapes it has tried are written down
+# there. The crop-and-scale rules are measured against Core ML's own image constructor -- the
+# oracle facts/Vision/Vision.md cites -- by comparing pixels, which is NOT yet a check in this
+# tree: the review measured 1996 of 50176 pixels differing for 100x50 to 224x224 and 22 of 64 for
+# 13x7 to 8x8 against a paste, and the interpolation quality in CharonVisionImage.h is the change
+# made for it, unverified here.
 echo "mutants: $ran run, $survived surviving"
 [ "$survived" -eq 0 ]

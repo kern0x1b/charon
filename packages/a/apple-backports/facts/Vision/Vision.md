@@ -28,7 +28,22 @@ recorded by `tests/backports/host/vision/run.sh` (33 records) and held against t
   through the model and puts the answers in the request's results.
 
   The image is brought to the size the model's own description asks for, by the two rules Vision
-  declares and Core ML's own image constructors use: centre crop scales until the picture covers the
+  declares and Core ML's own image constructors use -- measured against Core ML's own constructor
+  as the oracle, which is what this port has to match:
+
+  | picture to | differing pixels against a paste | what the port does |
+  | --- | --- | --- |
+  | 100x50 to 224x224 | 1996 of 50176 (the review's measurement) | `kCGImageInterpolationHigh`, unverified |
+  | 13x7 to 8x8 | 22 of 64 (the review's measurement) | the same, unverified |
+
+  Core ML blends when the scale is fractional and a paste does not, and the interpolation quality
+  is the whole of the difference. **`kCGImageInterpolationHigh` is set on both contexts, and the
+  number of differing pixels after that change is not yet measured in this tree** -- the two figures
+  above are what the review measured against a paste, and they are what the change was made for. A
+  check that compares the two pixel for pixel does not exist yet, and until it does this is the
+  one place in the request path whose output is not held to the oracle.
+
+  The two rules themselves: centre crop scales until the picture covers the
   target and keeps the middle, scale fit scales until it fits and leaves the rest black. A buffer
   that is already the size the model wants is passed on untouched, so a camera or video frame costs
   nothing, and the row length a picture is drawn into is the buffer's own

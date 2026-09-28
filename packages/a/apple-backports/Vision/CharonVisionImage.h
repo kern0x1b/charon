@@ -81,6 +81,13 @@ static inline CVPixelBufferRef charon_vision_pixels(CVPixelBufferRef source, siz
     if (context != NULL) {
         CGRect where;
         CGFloat scale;
+        /* Core ML's own image constructor blends when the scale is fractional: measured on this
+         * host, 100x50 brought to 224x224 leaves 1996 of 50176 pixels different from a paste and
+         * 13x7 brought to 8x8 leaves 22 of 64, while a paste leaves every scaled pixel at the
+         * colour of its nearest corner. The interpolation quality is the only difference, and this
+         * is the one CoreGraphics offers that is not nearest-neighbour: `High` resamples with a
+         * smooth kernel, and it is what the numbers above are measured against. */
+        CGContextSetInterpolationQuality(context, kCGImageInterpolationHigh);
         /* Black first, so scale fit's bars are black rather than whatever the buffer held. */
         CGContextSetRGBFillColor(context, 0, 0, 0, 1);
         CGContextFillRect(context, CGRectMake(0, 0, (CGFloat)wide, (CGFloat)high));
@@ -152,6 +159,9 @@ static inline CVPixelBufferRef charon_vision_buffer_of_image(CGImageRef image)
                                     kCGImageAlphaNoneSkipFirst | kCGBitmapByteOrder32Little);
     if (space != NULL) {
         CGColorSpaceRelease(space);
+    }
+    if (context != NULL) {
+        CGContextSetInterpolationQuality(context, kCGImageInterpolationHigh);
     }
     if (context == NULL) {
         CVPixelBufferUnlockBaseAddress(buffer, 0);
