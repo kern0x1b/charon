@@ -7,48 +7,6 @@
 // arrived in iOS 11.0, whatever release a later member of one of them arrived in.
 #import "CharonHomeKitInternal.h"
 
-#pragma mark - HMNumberRange
-
-@implementation HMNumberRange
-
-@synthesize charon_minValue = _charon_minValue, charon_maxValue = _charon_maxValue;
-
-// -init and +new are unavailable in the release's own header, so the range is made the way the
-// release makes the objects it has no initialiser for, through its own class method; see
-// CharonHomeKitConstruction.h for why the port's construction is what it is.
-- (instancetype)charon_initWithStore:(CharonHomeKitStore *)store identifier:(NSUUID *)identifier __attribute__((objc_method_family(init)))
-{
-    (void)store;
-    (void)identifier;
-    self = [super init];
-    return self;
-}
-
-+ (instancetype)numberRangeWithMinValue:(NSNumber *)minValue maxValue:(NSNumber *)maxValue
-{
-    HMNumberRange *range = [[HMNumberRange alloc] charon_initWithStore:nil identifier:nil];
-    range.charon_minValue = minValue;
-    range.charon_maxValue = maxValue;
-    return range;
-}
-
-- (NSNumber *)minValue
-{
-    return [_charon_minValue copy];
-}
-
-- (NSNumber *)maxValue
-{
-    return [_charon_maxValue copy];
-}
-
-@end
-
-HMNumberRange *CharonHomeKitNumberRange(NSNumber *minimum, NSNumber *maximum)
-{
-    return [HMNumberRange numberRangeWithMinValue:minimum maxValue:maximum];
-}
-
 #pragma mark - HMTimeEvent
 
 @implementation HMTimeEvent
