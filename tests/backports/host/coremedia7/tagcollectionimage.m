@@ -4,6 +4,7 @@
 #import <CoreFoundation/CoreFoundation.h>
 #import <Foundation/Foundation.h>
 #import <dlfcn.h>
+#import <objc/runtime.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -411,6 +412,12 @@ int main(int argc, char **argv)
                     OSStatus b = port_CMTaggedBufferGroupCreate(kCFAllocatorDefault, rightTags, rightBuffers, &portGroup);
                     same("group create", [NSString stringWithFormat:@"%d count %lu", a, (unsigned long)CMTaggedBufferGroupGetCount(systemGroup)],
                          [NSString stringWithFormat:@"%d count %lu", b, (unsigned long)port_CMTaggedBufferGroupGetCount(portGroup)]);
+                    printf("  portGroup is %s\n", object_getClassName((__bridge id)portGroup)); fflush(stdout);
+                    for (CFIndex which = 0; which < 3; which++)
+                        printf("  port collection %ld is %s\n", (long)which, object_getClassName((__bridge id)mineDisjoint[which]));
+                    printf("  systemGroup is %s\n", object_getClassName((__bridge id)systemGroup)); fflush(stdout);
+                    for (CFIndex which = 0; which < 3; which++)
+                        printf("  system collection %ld is %s\n", (long)which, object_getClassName((__bridge id)disjoint[which]));
                     same("group type id", [NSString stringWithFormat:@"%d", CMTaggedBufferGroupGetTypeID() != 0],
                          [NSString stringWithFormat:@"%d", CMTaggedBufferGroupGetTypeID() != 0]);
                     for (CFIndex index = -1; index < 4; index++) {
@@ -435,8 +442,8 @@ int main(int argc, char **argv)
                     }
                     // a fourth entry repeating a tag, so two entries match and the answer must be NULL
                     CFMutableArrayRef more = CFArrayCreateMutable(NULL, 4, &kCFTypeArrayCallBacks);
-                    for (CFIndex index = 0; index < 3; index++) { CFArrayAppendValue(more, disjoint[index]); CFArrayAppendValue(more, mineDisjoint[index]); }
-                    CFArrayAppendValue(more, systemOther);
+                    for (CFIndex index = 0; index < 3; index++) CFArrayAppendValue(more, disjoint[index]);
+                    CFArrayAppendValue(more, disjoint[1]);
                     CFMutableArrayRef moreBuffers = CFArrayCreateMutable(NULL, 4, &kCFTypeArrayCallBacks);
                     for (CFIndex index = 0; index < 3; index++) CFArrayAppendValue(moreBuffers, made[index]);
                     CVPixelBufferRef extra = NULL;
@@ -447,7 +454,24 @@ int main(int argc, char **argv)
                     CFMutableArrayRef moreMine = CFArrayCreateMutable(NULL, 8, &kCFTypeArrayCallBacks);
                     for (CFIndex index = 0; index < 3; index++) CFArrayAppendValue(moreMine, mineDisjoint[index]);
                     CFArrayAppendValue(moreMine, mineDisjoint[1]);
-                    CMTaggedBufferGroupCreate(kCFAllocatorDefault, moreMine, moreBuffers, &portRepeated);
+                    port_CMTaggedBufferGroupCreate(kCFAllocatorDefault, moreMine, moreBuffers, &portRepeated);
+                    printf("  repeated: more has %lu collections, moreMine %lu, moreBuffers %lu buffers\n",
+                           (unsigned long)CFArrayGetCount(more), (unsigned long)CFArrayGetCount(moreMine),
+                           (unsigned long)CFArrayGetCount(moreBuffers));
+                    Dl_info mine, theirs;
+                    memset(&mine, 0, sizeof mine);
+                    memset(&theirs, 0, sizeof theirs);
+                    dladdr((const void *)port_CMTaggedBufferGroupCreate, &mine);
+                    dladdr((const void *)CMTaggedBufferGroupCreate, &theirs);
+                    printf("  portRepeated came from %s, systemRepeated from %s\n",
+                           mine.dli_fname ? mine.dli_fname : "?", theirs.dli_fname ? theirs.dli_fname : "?");
+                    fflush(stdout);
+                    printf("  portRepeated is %s, systemRepeated is %s\n",
+                           object_getClassName((__bridge id)portRepeated), object_getClassName((__bridge id)systemRepeated));
+                    for (CFIndex which = 0; which < 3; which++)
+                        printf("  repeated collection %ld: mine %s, system %s\n", (long)which,
+                               object_getClassName((__bridge id)mineDisjoint[which]), object_getClassName((__bridge id)disjoint[which]));
+                    fflush(stdout);
                     for (CFIndex which = 0; which < 3; which++) {
                         CFIndex theirIndex = 99, myIndex = 99;
                         CVPixelBufferRef theirFound = CMTaggedBufferGroupGetCVPixelBufferForTagCollection(systemRepeated, disjoint[which], &theirIndex);
