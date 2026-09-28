@@ -1252,8 +1252,11 @@ check("a cancelled subscription hears nothing more", began, raisedBefore)
         constraint.target = Transform(translation: SIMD3<Float>(1, 0.5, 0.2))
         scene.coreScene.__advancePhysics(deltaTime: 1.0 / 60.0)
         let wanted = constraint.target.translation
+        // The end effector's place in the world, which is not its own `position`: that is the
+        // local one, and a target is given in the entity tree's own space (the solver reads the
+        // hierarchy matrix for the same reason).
         check("a solve puts the end effector on a reachable target",
-              simd_distance(tip.position, wanted) < 0.02, true)
+              simd_distance(tip.position(relativeTo: nil), wanted) < 0.02, true)
         // The forward-kinematics weight is how much of the rig's own pose is kept, so at one the
         // chain does not move at all.
         // The weight is the rig's, and a solver reads it from the rig the resource holds, so it is
@@ -1262,8 +1265,83 @@ check("a cancelled subscription hears nothing more", began, raisedBefore)
         heldConstraint.target = Transform(translation: SIMD3<Float>(1, 0.5, 0.2))
         heldScene.coreScene.__advancePhysics(deltaTime: 1.0 / 60.0)
         check("a forward-kinematics weight of one keeps the whole chain still",
-              simd_distance(heldTip.position, simd_make_float3(heldTip.transform.matrix.columns.3)) < 1e-6, true)
+              simd_distance(heldTip.position(relativeTo: nil), heldTip.position(relativeTo: nil)) < 1e-6
+                && heldTip.position(relativeTo: nil) == SIMD3<Float>(0, 1, 1), true)
         _ = root
+    }
+
+    // The per-axis weights are what make a joint take part of a demand, and nothing else here
+    // measures them. The chain is straight along x and every joint may only twist about y, so the
+    // tip can only leave the line by turning about y - which keeps it on the line's own plane, and
+    // its y at zero whatever the target says. A bent chain would not do: a joint turning about one
+    // axis swings everything below it, and the tip's other two axes move with it.
+    // A straight chain, so that a joint which may only turn about one axis can only swing the
+    // whole arm within that axis's plane. `along` is which way the chain runs, which decides what
+    // the demanded rotation is about: a chain along x aiming at a target off to the side is a turn
+    // about z, a chain along z aiming the same way is a turn about y.
+    func straightChain(along axis: SIMD3<Float>, weight: SIMD3<Float>,
+                       stiffness: SIMD3<Float> = .one,
+                       limits: IKRig.Joint.LimitsDefinition? = nil) -> (Scene, Entity, Entity, Entity) {
+        var rig = IKRig(maxIterations: 64)
+        let joint = { (name: String, parent: IKRig.JointID?) in
+            IKRig.Joint(name: name, parentID: parent,
+                        restTransform: parent == nil ? .identity : Transform(translation: axis),
+                        active: true, fkWeightPerAxis: weight, rotationStiffness: stiffness,
+                        limits: name == "mid" ? limits : nil) }
+        _ = rig.joints.set(joint("root", nil))
+        _ = rig.joints.set(joint("mid", IKRig.JointID(name: "root")))
+        _ = rig.joints.set(joint("tip", IKRig.JointID(name: "mid")))
+        _ = rig.constraints.set(.point(named: "reach", on: "tip"))
+        let scene = Scene()
+        let holder = AnchorEntity()
+        scene.addAnchor(holder)
+        let root = Entity(); root.name = "root"; holder.addChild(root)
+        let mid = Entity(); mid.name = "mid"; root.addChild(mid)
+        let tip = Entity(); tip.name = "tip"; mid.addChild(tip)
+        root.inverseKinematics = IKComponent(resource: try! IKResource(rig: rig))
+        return (scene, root, mid, tip)
+    }
+    let identityOrientation = simd_quatf(angle: 0, axis: SIMD3<Float>(1, 0, 0))
+    func reach(_ scene: Scene, _ root: Entity, _ target: SIMD3<Float>) {
+        root.inverseKinematics?.solvers[0].constraints[0].target = Transform(translation: target)
+        scene.coreScene.__advancePhysics(deltaTime: 1.0 / 60.0)
+    }
+    do {
+        // The chain runs along z, so the demand for a target off to the side is a turn about y, and
+        // a joint weighted on y alone is given the whole of it: the tip reaches.
+        let (scene, root, _, tip) = straightChain(along: SIMD3<Float>(0, 0, 1), weight: SIMD3<Float>(0, 1, 0))
+        reach(scene, root, SIMD3<Float>(1, 0, 1))
+        check("a joint weighted on the axis the demand is about reaches the target",
+              simd_distance(tip.position(relativeTo: nil), SIMD3<Float>(1, 0, 1)) < 0.02, true)
+    }
+    do {
+        // The same chain and the same weight, with a target out of that axis's plane: the demand
+        // now has a component the joint may not take, and the tip stays in the plane.
+        let (scene, root, _, tip) = straightChain(along: SIMD3<Float>(0, 0, 1), weight: SIMD3<Float>(0, 1, 0))
+        reach(scene, root, SIMD3<Float>(1, 1, 1))
+        check("a chain that may only turn about one axis stays in that axis's plane",
+              abs(tip.position(relativeTo: nil).y) < 1e-4, true)
+        check("and so cannot reach a target out of it",
+              simd_distance(tip.position(relativeTo: nil), SIMD3<Float>(1, 1, 1)) > 0.2, true)
+    }
+    do {
+        // And the same chain weighted on none of the axes that the demand is about cannot turn at
+        // all, which is the other half of the same fact.
+        let (scene, root, _, tip) = straightChain(along: SIMD3<Float>(0, 0, 1), weight: SIMD3<Float>(1, 0, 0))
+        reach(scene, root, SIMD3<Float>(1, 0, 1))
+        check("a joint weighted away from the axis the demand is about does not turn",
+              simd_distance(tip.position(relativeTo: nil), SIMD3<Float>(0, 0, 2)) < 1e-3, true)
+    }
+
+    do {
+        // A joint with no stiffness is not turned at all, which is what a stiffness of zero means.
+        // The joint's own rotation is its orientation, not its position: the root turning moves
+        // every joint's position without touching the joints' own.
+        let (scene, root, mid, _) = straightChain(along: SIMD3<Float>(0, 0, 1),
+                                                 weight: SIMD3<Float>(repeating: 1), stiffness: .zero)
+        reach(scene, root, SIMD3<Float>(1, 0, 1))
+        check("a joint with no stiffness is not turned",
+              abs(simd_dot(mid.transform.rotation.vector, identityOrientation.vector)) > 1 - 1e-6, true)
     }
 
     // A joint that is not active is not turned, and a rig with no joints is not a resource.
