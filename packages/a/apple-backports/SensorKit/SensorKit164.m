@@ -11,21 +11,6 @@ CHARON_SCALAR_PROPERTY(NSTimeInterval, relativeStartTime)
 @implementation SRApplicationUsage (CharonSensorKitValue)
 CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
 @end
-@implementation SRDeviceUsageReport
-@dynamic version;
-CHARON_VALUE_PROPERTY(NSString *, version)
-@end
-@implementation SRDeviceUsageReport (CharonSensorKitValue)
-CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
-@end
-@implementation SRKeyboardMetrics
-CHARON_VALUE_PROPERTY(NSArray *, sessionIdentifiers)
-CHARON_VALUE_PROPERTY(SRKeyboardProbabilityMetric *, touchUpDown)
-CHARON_VALUE_PROPERTY(NSArray *, longWordTouchUpDown)
-@end
-@implementation SRKeyboardMetrics (CharonSensorKitValue)
-CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
-@end
 @implementation SRMediaEvent
 @dynamic mediaIdentifier, eventType;
 CHARON_VALUE_PROPERTY(NSString *, mediaIdentifier)
@@ -107,20 +92,5 @@ CHARON_VALUE_PROPERTY(NSString *, identifier)
 
 @end
 @implementation SRSupplementalCategory (CharonSensorKitValue)
-CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
-@end
-@implementation SRTextInputSession
-@dynamic sessionIdentifier;
-CHARON_VALUE_PROPERTY(NSString *, sessionIdentifier)
-@end
-@implementation SRTextInputSession (CharonSensorKitValue)
-CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
-@end
-@implementation SRWristDetection
-@dynamic onWristDate, offWristDate;
-CHARON_VALUE_PROPERTY(NSDate *, onWristDate)
-CHARON_VALUE_PROPERTY(NSDate *, offWristDate)
-@end
-@implementation SRWristDetection (CharonSensorKitValue)
 CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
 @end

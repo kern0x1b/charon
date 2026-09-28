@@ -166,10 +166,6 @@ static CMTag *charon_copy_tags(CMTagCollectionRef collection, CMItemCount *count
     return charon_copy_all_tags(collection, countOut);
 }
 
-#if !__has_include(<CoreMedia/CMTaggedBufferGroup.h>)
-const CFStringRef kCMTaggedBufferGroupFormatType_TaggedBufferGroup = CFSTR("TaggedBufferGroup");
-#endif
-
 // -15780 is the host's answer when the two arrays differ in length, and no SDK on this machine names
 // it, so the number is carried with the condition that produces it.
 #define charon_param_err ((OSStatus)-15780)
@@ -177,11 +173,6 @@ const CFStringRef kCMTaggedBufferGroupFormatType_TaggedBufferGroup = CFSTR("Tagg
 CFTypeID CMTaggedBufferGroupGetTypeID(void)
 {
     return (CFTypeID)objc_getClass("CharonCMTaggedBufferGroup");
-}
-
-CFTypeID CMTaggedBufferGroupFormatDescriptionGetTypeID(void)
-{
-    return (CFTypeID)objc_getClass("CharonCMTaggedBufferGroupFormatDescription");
 }
 
 OSStatus CMTaggedBufferGroupCreate(CFAllocatorRef allocator, CFArrayRef tagCollections, CFArrayRef buffers, CMTaggedBufferGroupRef *out)

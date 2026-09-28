@@ -16,7 +16,6 @@ typedef struct CM_BRIDGED_TYPE(id) OpaqueCMTaggedBufferGroup * CMTaggedBufferGro
     CF_REFINED_FOR_SWIFT CF_SWIFT_UNAVAILABLE("Unavailable in Swift");
 
 CF_EXPORT CFTypeID CMTaggedBufferGroupGetTypeID(void);
-CF_EXPORT CFTypeID CMTaggedBufferGroupFormatDescriptionGetTypeID(void);
 
 CF_EXPORT OSStatus CMTaggedBufferGroupCreate(CFAllocatorRef allocator, CFArrayRef tagCollections, CFArrayRef buffers,
                                              CMTaggedBufferGroupRef *taggedBufferGroupOut);
@@ -49,11 +48,6 @@ typedef CF_ENUM(OSStatus, CMTaggedBufferGroupError) {
     kCMTaggedBufferGroupError_InternalError = -15781,
     kCMTaggedBufferGroupError_AllocationFailed = -15782
 } CF_SWIFT_UNAVAILABLE("Unavailable in Swift");
-
-#if !__has_include(<CoreMedia/CMTaggedBufferGroup.h>)
-CF_EXPORT const CFStringRef kCMTaggedBufferGroupFormatType_TaggedBufferGroup
-    CF_SWIFT_UNAVAILABLE("Unavailable in Swift");
-#endif
 
 #endif
 
