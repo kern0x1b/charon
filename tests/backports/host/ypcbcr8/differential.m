@@ -305,12 +305,16 @@ static void fill_pair(vImage_Buffer theirs, vImage_Buffer ours)
 //
 // `tolerance` is how far a sample may differ and still be the last bit of the arithmetic. It is one
 // everywhere except where the conversion's own scale makes a last-bit difference in the dot product a
-// larger difference in the sample: writing a Y'CbCr sample into a sixteen-bit shape multiplies the
-// chroma by 2 * 28672 / 255 = 257 (and the luma by 257), so one unit in the eight-bit sum the header's
-// rule adds up becomes 257 in the stored sample. That is measured, not assumed: a 34x34 picture with the
-// full-range-wide-open sixteen-bit range, whose chroma scale is 257.1, has one sample in five hundred
-// thousand where the port and the system are a whole 257 apart - the two roundings of the same sum, one
-// way and the other, on either side of a clamp.
+// larger difference in the sample.
+//
+// The scale is 2 * (CbCrRangeMax - CbCr_bias) / 255 - which at the FULL sixteen-bit range, where
+// CbCrRangeMax = 65535 and CbCr_bias = 0, is 514.0, and at the 28672 chroma range is 224.88. One unit of
+// the eight-bit dot product the header's rule adds up is therefore worth one of those in the stored
+// sixteen-bit sample, and that is what the bound is: the review is right that "2*28672/255 = 257" was
+// wrong twice over - the arithmetic and the claim that sixteen bits mean 257. The measured case is the
+// full-range LUMA plane, and a 34x34 picture with the full-range-wide-open sixteen-bit range has one
+// sample in five hundred thousand where the port and the system are a whole 514 apart, the two roundings
+// of the same sum on either side of a clamp.
 static NSString *compare(vImage_Buffer theirs, vImage_Buffer ours, unsigned words, int tolerance)
 {
     int worst = 0;
@@ -331,9 +335,10 @@ static NSString *compare(vImage_Buffer theirs, vImage_Buffer ours, unsigned word
             if (difference > widest) {
                 widest = difference;
                 snprintf(widestWhere, sizeof widestWhere, "a 16-bit sample: the port and the system rounded "
-                         "the eight-bit dot product's one unit differently, and 2 * 28672 / 255 = 257 is what "
-                         "one unit of that sum is worth in a 16-bit sample - so this is inside the 257 those "
-                         "shapes are compared at");
+                         "the eight-bit dot product's one unit differently, and 2 * (CbCrRangeMax - "
+                         "CbCr_bias) / 255 is what one unit of that sum is worth in a 16-bit sample - 514 at "
+                         "the full sixteen-bit range, 224.88 at the 28672 chroma range - so this is inside "
+                         "the 514 those shapes are compared at");
             }
             if (difference > worst) {
                 worst = difference;
@@ -341,7 +346,8 @@ static NSString *compare(vImage_Buffer theirs, vImage_Buffer ours, unsigned word
             }
         }
     }
-    if (worst <= tolerance)
+    // the stated limit is not itself admitted: a difference of exactly `tolerance` is one unit too many
+    if (worst < (double)tolerance)
         return nil;
     return [NSString stringWithFormat:@"row %llu sample %llu differs by %d, past the last bit's %d",
                                       where / 1000000, where % 1000000, worst, tolerance];
@@ -801,8 +807,10 @@ int main(void)
                                 // 2 * (CbCrRangeMax - CbCr_bias) / 255, which is 257 at the full 16-bit
                                 // range, so a one-unit difference in the eight-bit sum the header's rule
                                 // adds up is a 257 difference in the stored sample.
+                                // 2 * (CbCrRangeMax - CbCr_bias) / 255, taken at the full sixteen-bit
+                                // range where it is largest: 514.0, not 257.
                                 int shapeScale = (example->type == kvImage422CbYpCrYp16
-                                                  || example->type == kvImage444AYpCbCr16) ? 257 : 1;
+                                                  || example->type == kvImage444AYpCbCr16) ? 514 : 1;
                                 difference = compare(theirBack[plane], ourBack[plane], example->wide ? 2 : 1,
                                                    example->wide ? (int)(full_of(example->argb) / 255.0f) : shapeScale);;
                                 NSString *which = [what stringByAppendingString:(plane ? @": the chroma plane"

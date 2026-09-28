@@ -25,6 +25,7 @@
 #pragma once
 
 #import <Accelerate/Accelerate.h>
+#include <stdbool.h>
 #include "CharonResampling.h"
 #include "CharonVImageFixed.h"
 
@@ -145,7 +146,7 @@ static inline vImage_Error CharonShearReady(const vImage_Buffer *src, const vIma
 // extended".
 static inline vImage_Error CharonShearRun(const vImage_Buffer *src, const vImage_Buffer *dest,
                                           const CharonResampleFilter *filter, enum CharonPixelType type,
-                                          BOOL horizontal, double translate, double slope,
+                                          int horizontal, double translate, double slope,
                                           vImagePixelCount offsetX, vImagePixelCount offsetY,
                                           const double *backColor, vImage_Flags flags)
 {
@@ -163,7 +164,7 @@ static inline vImage_Error CharonShearRun(const vImage_Buffer *src, const vImage
     vImagePixelCount cross0 = horizontal ? offsetY : offsetX;
     double scale = (double)filter->scale;
     int extend = (flags & kvImageEdgeExtend) ? 1 : 0;
-    int fill = (flags & kvImageBackgroundColorFill) ? 1 : 0;
+    int fill = (flags & kvImageBackgroundColorFill) ? true : false;
     (void)slope;
 
     // The two axes are kept apart on purpose, because they are different and mixing them is what read past
