@@ -596,13 +596,23 @@ end
 -- emit __OBJC_PROTOCOL_$_<name> into the object. One file per band, so every symbol in it first appears in one
 -- release and release-split has nothing to flag; one io.writefile per file, so no redirection can truncate it.
 function protocol_sources(root, library, folder, umbrella)
-    local rows = registry(root)
+    -- Only this library's own rows: a framework's rows live under registry/<folder>/, so the library whose
+    -- folder is that framework is the one that carries them, and a framework no library builds (PhotosUI, whose
+    -- protocols ride in PhotosBackports) is not read into any library at all. Reading the whole registry put all
+    -- 73 rows into every library.
     local bands = {}
-    for api, entry in pairs(rows) do
-        if entry.kind == "protocol" and entry.status == "implemented" then
-            local introduced = entry.introduced or "0"
-            bands[introduced] = bands[introduced] or {}
-            table.insert(bands[introduced], api)
+    for _, file in ipairs(table.join(os.files(path.join(root, "registry", library.folder, "*.json")),
+                                 os.files(path.join(root, "registry", library.folder .. ".json")))) do
+        local held = json.loadfile(file)
+        if type(held) == "table" and held.entries == nil and #held == 0 then
+            held = {entries = {}}
+        end
+        for _, entry in ipairs((held.entries or held)) do
+            if entry.kind == "protocol" and entry.status == "implemented" then
+                local introduced = entry.introduced or "0"
+                bands[introduced] = bands[introduced] or {}
+                table.insert(bands[introduced], entry.api)
+            end
         end
     end
     local written = {}

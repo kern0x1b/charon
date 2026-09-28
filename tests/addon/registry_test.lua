@@ -244,6 +244,38 @@ local function two_readers(backports, found)
     end
 end
 
+
+-- protocol_sources is a library's own reader: a synthetic registry with two libraries' folders, and each
+-- generates only the rows of its own folder. Reading the whole registry put all 73 rows into every library.
+local function own_rows(backports, found)
+    local root = fixtures.scratch()
+    os.tryrm(root)
+    os.mkdir(path.join(root, "registry"))
+    os.mkdir(path.join(root, "registry", "Alpha"))
+    os.mkdir(path.join(root, "registry", "Beta"))
+    local function rows(folder, name)
+        io.writefile(path.join(root, "registry", folder, "rows.json"),
+                     string.format('{"framework": "%s", "entries": [{"api": "%s", "kind": "protocol", "introduced": "9.0", "status": "implemented", "facts": "f"}]}', folder, name))
+    end
+    rows("Alpha", "AlphaOne")
+    rows("Beta", "BetaOne")
+    local out = path.join(root, "out")
+    os.mkdir(out)
+    for folder, name in ipairs({{"Alpha", "AlphaOne"}, {"Beta", "BetaOne"}}) do
+        local library = {name = folder .. "Backports", folder = folder}
+        local written = backports.protocol_sources(root, library, out, folder)
+        local text = written[1] and io.readfile(written[1]) or ""
+        if not text:find("@protocol(" .. name .. ")", 1, true) then
+            table.insert(found, folder .. " does not generate its own protocol row: " .. text:gsub("\n", " "):sub(1, 90))
+        end
+        local other = folder == "Alpha" and "BetaOne" or "AlphaOne"
+        if text:find("@protocol(" .. other .. ")", 1, true) then
+            table.insert(found, folder .. " generates the other library's protocol row, so every library carries every protocol")
+        end
+    end
+    os.tryrm(root)
+end
+
 function failures(opt)
     local backports = import("apple.backports", {rootdir = opt.modules, anonymous = true})
     local found = {}
@@ -311,6 +343,7 @@ function failures(opt)
     type_rows(backports, found)
     member_and_protocol_rows(backports, found)
     two_readers(backports, found)
+    own_rows(backports, found)
     return found
 end
 
