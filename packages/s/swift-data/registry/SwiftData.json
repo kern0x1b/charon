@@ -4057,9 +4057,9 @@
             "introduced": "18.0",
             "minimum": "6.1.3",
             "facts": "facts/SwiftData/Substrate.md",
-            "status": "implemented",
-            "reason": "built for armv7 at iOS 6.1.3 over the release's Core Data; the declaration is present and the row's spelling is what the test cannot match.",
-            "source": "macOS 27's own SwiftData measured beside the port, over Core Data of iOS 6.1.3 with the backports the port carries"
+            "status": "missing",
+            "reason": "the same requirement, History.swift:88, implemented nowhere. The substrate is the same.",
+            "verified_by": "a grep for the declaration: the only occurrence is the protocol requirement"
         },
         {
             "api": "ModelContext.fetchHistory(_:)",
@@ -4067,9 +4067,9 @@
             "introduced": "18.0",
             "minimum": "6.1.3",
             "facts": "facts/SwiftData/Substrate.md",
-            "status": "implemented",
-            "reason": "built for armv7 at iOS 6.1.3 over the release's Core Data; the declaration is present and the row's spelling is what the test cannot match.",
-            "source": "macOS 27's own SwiftData measured beside the port, over Core Data of iOS 6.1.3 with the backports the port carries"
+            "status": "missing",
+            "reason": "the member is declared as a requirement of HistoryProviding in History.swift:87 and is implemented nowhere: DefaultStore does not conform to HistoryProviding, and there is no ModelContext.fetchHistory. The substrate is carried (registry/CoreData/ios11.json: NSPersistentHistoryChangeRequest, NSPersistentHistoryToken, NSPersistentHistoryTransaction, NSPersistentHistoryChange, and -[NSPersistentStoreCoordinator currentPersistentHistoryTokenFromStores:] and NSManagedObjectContext.transactionAuthor), so this is written and not yet written, and the row says which.",
+            "verified_by": "a grep for the declaration: the only occurrence is the protocol requirement"
         },
         {
             "api": "PersistentIdentifier.identifier(for:entityName:primaryKey:)",

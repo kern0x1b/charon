@@ -17,10 +17,11 @@ order are `Foundation.Predicate` and `Foundation.SortDescriptor`, which arrive w
 
 ## State of this package
 
-**583 of the corpus's 584 SwiftData rows are carried**, and the one that is not is
-`DefaultSerialModelExecutor.asUnownedSerialExecutor()`, which the standard library's
-`SerialExecutor` defines and this class inherits; the same call is spelled out where a caller needs
-it, in `ModelActor.unownedExecutor`. The six macros are declared with Apple's own `@attached` roles
+**582 of the corpus's 584 SwiftData rows are carried.** The two that are not are
+`ModelContext.fetchHistory(_:)` and `ModelContext.deleteHistory(_:)`: both are declared as
+requirements of `HistoryProviding` and implemented nowhere — `DefaultStore` does not conform to it —
+and the substrate for them is carried, so they are written and not yet written, and the registry
+says so with the grep that shows it. The six macros are declared with Apple's own `@attached` roles
 and compile with no plugin on the machine, because `#externalMacro` is only resolved when a macro
 is *used*.
 
