@@ -172,8 +172,8 @@
    "source": "the header of SDK 26.2 for what each type declares; the release's own UILongPressGestureRecognizer and UIPanGestureRecognizer, which are the gestures a drag is made of; the port's own sessions, which have no counterpart on the release because it has no drag service"
   },
   {
-   "api": "+[UIDragInteraction isEnabledByDefault]",
-   "kind": "class",
+   "api": "UIDragInteraction.enabledByDefault",
+   "kind": "property",
    "introduced": "11.0",
    "minimum": "6.0",
    "status": "implemented",

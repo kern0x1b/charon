@@ -772,7 +772,7 @@
     "kind": "method",
     "introduced": "9.0",
     "minimum": "6.0",
-    "status": "inert",
+    "status": "implemented",
     "reason": "the release has no Low Power Mode: no setting turns it on and no process can read a state of it",
     "effect": "it answers NO, as a device whose user has not turned the mode on does, and says so once in the log; an application is never told to save energy",
     "facts": "facts/Foundation/NSProcessInfoPowerState.md",
