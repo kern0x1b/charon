@@ -84,8 +84,18 @@ package("swift-syntax")
             end
         end
         print("%s: building from %s", package:name(), source)
-        os.vrunv("swift", {"build", "--package-path", source, "--scratch-path", build,
-                           "--triple", "arm64-apple-macosx13.0", "-c", "release"}, {curdir = source})
+        -- Serialised, and at the machine's low priority. `swift build` with no `--jobs` takes every
+        -- core, and this runs *inside* a slow slot: the run that produced the log below reached
+        -- `[243 / 478]` and stopped with no error line, the scratch directory gone with the failed
+        -- install and the install dir empty -- the reading of a job that used the whole machine and
+        -- was killed, not of a compile that failed. A heavy job shares this machine with every other
+        -- band, so it takes its share of the cores (FLEET_HEAVY_CPUS when the caller sets it) and the
+        -- lowered priority heavy.sh exports, and nothing else.
+        local jobs = os.getenv("FLEET_HEAVY_CPUS") or "2"
+        os.vrunv("nice", {"-n", "10", "swift", "build", "--package-path", source, "--scratch-path", build,
+                          "--triple", "arm64-apple-macosx13.0", "-c", "release", "--jobs", jobs},
+                 {curdir = source})
+        print("%s: built with --jobs %s", package:name(), jobs)
         -- The products: the modules under Modules/, the archives beside them, and the resources
         -- SwiftSyntax keeps as files.
         -- The configuration is named `release` (SwiftPM has no `release-only`: "error: The value
