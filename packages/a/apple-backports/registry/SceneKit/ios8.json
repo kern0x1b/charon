@@ -803,6 +803,28 @@
       "reason": "carried: the SDK's own SCNGeometry declares it and the port builds a geometry from a caller's sources",
       "effect": "a geometry over the caller's own sources and elements, with the port's first material already on it, which is the whole of what ARSCNPlaneGeometry needs to hand a plane's buffers to a node",
       "source": "SceneKit of the iOS 16.4 SDK: SCNGeometry.h, + (instancetype)geometryWithSources:elements:, 8.0"
+    },
+    {
+      "api": "SCNGeometrySource.geometrySourceWithData:semantic:vectorCount:floatComponents:componentsPerVector:bytesPerComponent:dataOffset:dataStride:",
+      "kind": "function",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SceneKit/SCNGeometrySource.md",
+      "reason": "carried: the SDK's own SCNGeometrySource declares it and the port implements it in SCNGeometrySource.m",
+      "effect": "a geometry source over a caller's own buffer, with the semantic that tells a renderer what the numbers are and the stride that says how to walk them; this is what ARSCNPlaneGeometry hands a plane's own vertex and coordinate buffers to, so no copy of them is made",
+      "source": "SceneKit of the iOS 16.4 SDK: SCNGeometry.h, +geometrySourceWithData:semantic:vectorCount:floatComponents:componentsPerVector:bytesPerComponent:dataOffset:dataStride:, 8.0"
+    },
+    {
+      "api": "SCNGeometryElement.geometryElementWithData:primitiveType:primitiveCount:bytesPerIndex:",
+      "kind": "function",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SceneKit/SCNGeometryElement.md",
+      "reason": "carried: the SDK's own SCNGeometryElement declares it and the port implements it in SCNGeometryElement.m",
+      "effect": "an index buffer over a caller's own data, saying what the indices make - a triangle strip, a line, a point - and how many of them there are, which is what pairs ARSCNPlaneGeometry's six indices into two triangles",
+      "source": "SceneKit of the iOS 16.4 SDK: SCNGeometry.h, +geometryElementWithData:primitiveType:primitiveCount:bytesPerIndex:, 8.0"
     }
   ]
 }
