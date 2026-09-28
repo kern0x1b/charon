@@ -68,13 +68,30 @@ recorded by `tests/backports/host/vision/run.sh` (33 records) and held against t
   the picture's, and the difference the alpha suggested is not the one. Reverted, with the numbers
   that rejected it in the header of the function.
 
-  **vImage was not measured in this round.** The hypothesis is the strongest one left -- an exact
-  1:1 and 252 of 256 differing on an integer 2x is what you would expect of a resampler that is not
-  CoreGraphics' -- and vImage is in Accelerate and has been since iOS 5, so a port could call
-  `vImageScale_ARGB8888` natively. A comparison was written into the check and it **crashes
-  (SIGBUS) before it prints**, so it was taken back out rather than left in the tree unrunnable. It
-  is the first thing to try next, with the geometry of its centre crop right (the first attempt
-  scaled the whole source instead of cropping it, which is a different rule).
+  **vImage: the comparison runs now, and it does not say vImage is the resampler yet.** The
+  coordinator was right that the SIGBUS was a fault in the probe and not a residual. The probe lives
+  outside the tree, in `.agent-work/runs/crop-probe/`, and it runs. The three faults were the three
+  usual ones: a base address read before its lock, a row length taken as `width * 4` where the
+  buffer's own `CVPixelBufferGetBytesPerRow` is larger, and a destination offset that could run past
+  the allocation -- the scaled size is now clamped into the destination, so the offset cannot.
+
+  What it reads, per flag set (`kvImageNoFlags`, `kvImageHighQualityResampling` -- Lanczos,
+  `kvImageEdgeExtend`, and both): 8x8 to 16x16 **297 of 432 under all four**, 4x7 to 33x9 centre crop
+  **45 of 432 under all four**, and 16x16 to 16x16 -- the case where nothing is resampled and the
+  port matches the framework exactly -- **256 of 256 under all four**. That last one is the
+  information: vImage does not reproduce the framework's answer even where no scaling happens, so
+  what the comparison is currently measuring is not the kernel but the **bytes**: `vImageScale_ARGB8888`
+  reads *premultiplied ARGB*, and the buffer it is handed here is `BGR ` with no premultiplication,
+  so two channels and an alpha are out of place before any resampling is considered. The flag sets
+  being indistinguishable from each other is the same fact seen from the other side: with the wrong
+  layout the kernel makes no difference.
+
+  So the honest position: **vImage is not yet excluded and not yet adopted.** The next step is to
+  hand it a premultiplied-ARGB source -- converted from the same picture, with the conversion
+  itself checked against the framework's 1:1 answer, which the port already matches -- and read the
+  four flag sets again. The two candidates the coordinator named after it, `VTPixelTransferSession`
+  (not on iOS 6 before 8.0, so it could only be a reference for what Core ML does, never what the port
+  calls) and CoreImage's `CILanczosScaleTransform`, are untested.
 
   What the dump already ruled out, and what is left: the **rules** are paired (each row now has its
   own oracle), the **geometry** agrees (the middle pixel matches exactly, so no flip and no
