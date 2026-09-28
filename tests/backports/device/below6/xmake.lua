@@ -47,7 +47,10 @@ for name, program in pairs(PROGRAMS) do
         add_rules("@addon/charon/daemon")
         add_files(path.join(root, "tests/backports/device", name .. ".m"), path.join(root, "tests/backports/device/check.m"))
         for _, extra in ipairs(program.extra or {}) do
-            add_files(path.join(root, "tests/backports/device", extra))
+            -- add_extrafiles, not add_files: xmake's add_files takes sources and refuses a .txt with
+            -- "unknown source file", which is how a program's golden table fails to travel with its
+            -- package. add_extrafiles ships the file and does not try to compile it.
+            add_extrafiles(path.join(root, "tests/backports/device", extra))
         end
         add_includedirs(path.join(root, "tests/backports/device"))
         add_mflags("-fobjc-arc")
