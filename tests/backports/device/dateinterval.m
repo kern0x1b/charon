@@ -40,9 +40,13 @@ int main(int argc, char **argv)
 
         // One class, from whichever image the band linked: the port's below 8.0 and the release's from there.
         Class formatterClass = NSClassFromString(@"NSDateIntervalFormatter");
-        CHECK(formatterClass != Nil, "NSDateIntervalFormatter is there");
-        if (!formatterClass)
-            return 1;
+        if (!formatterClass) {
+            // The class floor is 5.0 and below6's "ported" cell builds at 4.3, where band() leaves the
+            // object out and the release's own Foundation has no such class. A 4.3 run has nothing to
+            // compare and says so; it is not a failure of the port (the review's finding F).
+            printf("dateinterval: no NSDateIntervalFormatter on this release, which is below the 5.0 floor\n");
+            return 0;
+        }
         BOOL ported = strstr(class_getImageName(formatterClass), "FoundationBackports") != NULL;
 
         NSArray *lines = [contents componentsSeparatedByString:@"\n"];

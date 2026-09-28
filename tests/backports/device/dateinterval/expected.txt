@@ -1,11 +1,20 @@
+defaults	1	1	dd/MM/y, HH:mm
 en_US	0	0	UTC	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 en_US	0	0	UTC	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 en_US	0	0	UTC	600000000	631622400	
+defaults	1	1	dd/MM/y, HH:mm
 en_US	0	0	America/New_York	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 en_US	0	0	America/New_York	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 en_US	0	0	America/New_York	600000000	631622400	
+defaults	1	1	dd/MM/y, HH:mm
 en_US	0	0	Europe/Warsaw	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 en_US	0	0	Europe/Warsaw	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 en_US	0	0	Europe/Warsaw	600000000	631622400	
 en_US	0	1	UTC	600000000	600003600	10:40 – 11:40 AM
 en_US	0	1	UTC	600000000	600093600	1/6/2020, 10:40 AM – 1/7/2020, 12:40 PM
@@ -223,14 +232,23 @@ en_US	4	4	America/New_York	600000000	631622400	Monday, January 6, 2020 at 5:40:0
 en_US	4	4	Europe/Warsaw	600000000	600003600	Monday, January 6, 2020, 11:40:00 AM GMT+1 – 12:40:00 PM GMT+1
 en_US	4	4	Europe/Warsaw	600000000	600093600	Monday, January 6, 2020 at 11:40:00 AM Central European Standard Time – Tuesday, January 7, 2020 at 1:40:00 PM Central European Standard Time
 en_US	4	4	Europe/Warsaw	600000000	631622400	Monday, January 6, 2020 at 11:40:00 AM Central European Standard Time – Wednesday, January 6, 2021 at 11:40:00 AM Central European Standard Time
+defaults	1	1	dd/MM/y, HH:mm
 en_GB	0	0	UTC	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 en_GB	0	0	UTC	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 en_GB	0	0	UTC	600000000	631622400	
+defaults	1	1	dd/MM/y, HH:mm
 en_GB	0	0	America/New_York	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 en_GB	0	0	America/New_York	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 en_GB	0	0	America/New_York	600000000	631622400	
+defaults	1	1	dd/MM/y, HH:mm
 en_GB	0	0	Europe/Warsaw	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 en_GB	0	0	Europe/Warsaw	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 en_GB	0	0	Europe/Warsaw	600000000	631622400	
 en_GB	0	1	UTC	600000000	600003600	10:40 – 11:40
 en_GB	0	1	UTC	600000000	600093600	06/01/2020, 10:40 – 07/01/2020, 12:40
@@ -448,14 +466,23 @@ en_GB	4	4	America/New_York	600000000	631622400	Monday, 6 January 2020 at 05:40:0
 en_GB	4	4	Europe/Warsaw	600000000	600003600	Monday, 6 January 2020, 11:40:00 CET – 12:40:00 CET
 en_GB	4	4	Europe/Warsaw	600000000	600093600	Monday, 6 January 2020 at 11:40:00 Central European Standard Time – Tuesday, 7 January 2020 at 13:40:00 Central European Standard Time
 en_GB	4	4	Europe/Warsaw	600000000	631622400	Monday, 6 January 2020 at 11:40:00 Central European Standard Time – Wednesday, 6 January 2021 at 11:40:00 Central European Standard Time
+defaults	1	1	dd/MM/y, HH:mm
 en_AU	0	0	UTC	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 en_AU	0	0	UTC	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 en_AU	0	0	UTC	600000000	631622400	
+defaults	1	1	dd/MM/y, HH:mm
 en_AU	0	0	America/New_York	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 en_AU	0	0	America/New_York	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 en_AU	0	0	America/New_York	600000000	631622400	
+defaults	1	1	dd/MM/y, HH:mm
 en_AU	0	0	Europe/Warsaw	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 en_AU	0	0	Europe/Warsaw	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 en_AU	0	0	Europe/Warsaw	600000000	631622400	
 en_AU	0	1	UTC	600000000	600003600	10:40 – 11:40 am
 en_AU	0	1	UTC	600000000	600093600	6/1/2020, 10:40 am – 7/1/2020, 12:40 pm
@@ -673,14 +700,23 @@ en_AU	4	4	America/New_York	600000000	631622400	Monday 6 January 2020 at 5:40:00�
 en_AU	4	4	Europe/Warsaw	600000000	600003600	Monday 6 January 2020, 11:40:00 am GMT+1 – 12:40:00 pm GMT+1
 en_AU	4	4	Europe/Warsaw	600000000	600093600	Monday 6 January 2020 at 11:40:00 am Central European Standard Time – Tuesday 7 January 2020 at 1:40:00 pm Central European Standard Time
 en_AU	4	4	Europe/Warsaw	600000000	631622400	Monday 6 January 2020 at 11:40:00 am Central European Standard Time – Wednesday 6 January 2021 at 11:40:00 am Central European Standard Time
+defaults	1	1	dd/MM/y, HH:mm
 en_CA	0	0	UTC	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 en_CA	0	0	UTC	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 en_CA	0	0	UTC	600000000	631622400	
+defaults	1	1	dd/MM/y, HH:mm
 en_CA	0	0	America/New_York	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 en_CA	0	0	America/New_York	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 en_CA	0	0	America/New_York	600000000	631622400	
+defaults	1	1	dd/MM/y, HH:mm
 en_CA	0	0	Europe/Warsaw	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 en_CA	0	0	Europe/Warsaw	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 en_CA	0	0	Europe/Warsaw	600000000	631622400	
 en_CA	0	1	UTC	600000000	600003600	10:40–11:40 AM
 en_CA	0	1	UTC	600000000	600093600	2020-01-06, 10:40 AM–2020-01-07, 12:40 PM
@@ -898,14 +934,23 @@ en_CA	4	4	America/New_York	600000000	631622400	Monday, January 6, 2020 at 5:40:0
 en_CA	4	4	Europe/Warsaw	600000000	600003600	Monday, January 6, 2020, 11:40:00 AM GMT+1–12:40:00 PM GMT+1
 en_CA	4	4	Europe/Warsaw	600000000	600093600	Monday, January 6, 2020 at 11:40:00 AM Central European Standard Time–Tuesday, January 7, 2020 at 1:40:00 PM Central European Standard Time
 en_CA	4	4	Europe/Warsaw	600000000	631622400	Monday, January 6, 2020 at 11:40:00 AM Central European Standard Time–Wednesday, January 6, 2021 at 11:40:00 AM Central European Standard Time
+defaults	1	1	dd/MM/y, HH:mm
 en_IN	0	0	UTC	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 en_IN	0	0	UTC	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 en_IN	0	0	UTC	600000000	631622400	
+defaults	1	1	dd/MM/y, HH:mm
 en_IN	0	0	America/New_York	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 en_IN	0	0	America/New_York	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 en_IN	0	0	America/New_York	600000000	631622400	
+defaults	1	1	dd/MM/y, HH:mm
 en_IN	0	0	Europe/Warsaw	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 en_IN	0	0	Europe/Warsaw	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 en_IN	0	0	Europe/Warsaw	600000000	631622400	
 en_IN	0	1	UTC	600000000	600003600	10:40 – 11:40 AM
 en_IN	0	1	UTC	600000000	600093600	6/1/2020, 10:40 AM – 7/1/2020, 12:40 PM
@@ -1123,14 +1168,23 @@ en_IN	4	4	America/New_York	600000000	631622400	Monday, 6 January 2020 at 5:40:00
 en_IN	4	4	Europe/Warsaw	600000000	600003600	Monday, 6 January 2020, 11:40:00 AM GMT+1 – 12:40:00 PM GMT+1
 en_IN	4	4	Europe/Warsaw	600000000	600093600	Monday, 6 January 2020 at 11:40:00 AM Central European Standard Time – Tuesday, 7 January 2020 at 1:40:00 PM Central European Standard Time
 en_IN	4	4	Europe/Warsaw	600000000	631622400	Monday, 6 January 2020 at 11:40:00 AM Central European Standard Time – Wednesday, 6 January 2021 at 11:40:00 AM Central European Standard Time
+defaults	1	1	dd/MM/y, HH:mm
 de_DE	0	0	UTC	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 de_DE	0	0	UTC	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 de_DE	0	0	UTC	600000000	631622400	
+defaults	1	1	dd/MM/y, HH:mm
 de_DE	0	0	America/New_York	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 de_DE	0	0	America/New_York	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 de_DE	0	0	America/New_York	600000000	631622400	
+defaults	1	1	dd/MM/y, HH:mm
 de_DE	0	0	Europe/Warsaw	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 de_DE	0	0	Europe/Warsaw	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 de_DE	0	0	Europe/Warsaw	600000000	631622400	
 de_DE	0	1	UTC	600000000	600003600	10:40–11:40
 de_DE	0	1	UTC	600000000	600093600	6.1.2020, 10:40 – 7.1.2020, 12:40
@@ -1348,14 +1402,23 @@ de_DE	4	4	America/New_York	600000000	631622400	Montag, 6. Januar 2020 um 05:40:0
 de_DE	4	4	Europe/Warsaw	600000000	600003600	Montag, 6. Januar 2020, 11:40:00 MEZ – 12:40:00 MEZ
 de_DE	4	4	Europe/Warsaw	600000000	600093600	Montag, 6. Januar 2020 um 11:40:00 Mitteleuropäische Normalzeit – Dienstag, 7. Januar 2020 um 13:40:00 Mitteleuropäische Normalzeit
 de_DE	4	4	Europe/Warsaw	600000000	631622400	Montag, 6. Januar 2020 um 11:40:00 Mitteleuropäische Normalzeit – Mittwoch, 6. Januar 2021 um 11:40:00 Mitteleuropäische Normalzeit
+defaults	1	1	dd/MM/y, HH:mm
 fr_FR	0	0	UTC	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 fr_FR	0	0	UTC	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 fr_FR	0	0	UTC	600000000	631622400	
+defaults	1	1	dd/MM/y, HH:mm
 fr_FR	0	0	America/New_York	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 fr_FR	0	0	America/New_York	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 fr_FR	0	0	America/New_York	600000000	631622400	
+defaults	1	1	dd/MM/y, HH:mm
 fr_FR	0	0	Europe/Warsaw	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 fr_FR	0	0	Europe/Warsaw	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 fr_FR	0	0	Europe/Warsaw	600000000	631622400	
 fr_FR	0	1	UTC	600000000	600003600	10:40 – 11:40
 fr_FR	0	1	UTC	600000000	600093600	06/01/2020 10:40 – 07/01/2020 12:40
@@ -1573,14 +1636,23 @@ fr_FR	4	4	America/New_York	600000000	631622400	lundi 6 janvier 2020 à 05:40:00 
 fr_FR	4	4	Europe/Warsaw	600000000	600003600	lundi 6 janvier 2020, 11:40:00 UTC+1 – 12:40:00 UTC+1
 fr_FR	4	4	Europe/Warsaw	600000000	600093600	lundi 6 janvier 2020 à 11:40:00 heure normale d’Europe centrale – mardi 7 janvier 2020 à 13:40:00 heure normale d’Europe centrale
 fr_FR	4	4	Europe/Warsaw	600000000	631622400	lundi 6 janvier 2020 à 11:40:00 heure normale d’Europe centrale – mercredi 6 janvier 2021 à 11:40:00 heure normale d’Europe centrale
+defaults	1	1	dd/MM/y, HH:mm
 es_MX	0	0	UTC	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 es_MX	0	0	UTC	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 es_MX	0	0	UTC	600000000	631622400	
+defaults	1	1	dd/MM/y, HH:mm
 es_MX	0	0	America/New_York	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 es_MX	0	0	America/New_York	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 es_MX	0	0	America/New_York	600000000	631622400	
+defaults	1	1	dd/MM/y, HH:mm
 es_MX	0	0	Europe/Warsaw	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 es_MX	0	0	Europe/Warsaw	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 es_MX	0	0	Europe/Warsaw	600000000	631622400	
 es_MX	0	1	UTC	600000000	600003600	10:40 – 11:40 a.m.
 es_MX	0	1	UTC	600000000	600093600	6/1/2020, 10:40 a.m. – 7/1/2020, 12:40 p.m.
@@ -1798,14 +1870,23 @@ es_MX	4	4	America/New_York	600000000	631622400	lunes, 6 de enero de 2020, 5:40:0
 es_MX	4	4	Europe/Warsaw	600000000	600003600	lunes, 6 de enero de 2020, 11:40:00 a.m. GMT+1 – 12:40:00 p.m. GMT+1
 es_MX	4	4	Europe/Warsaw	600000000	600093600	lunes, 6 de enero de 2020, 11:40:00 a.m. hora estándar de Europa central – martes, 7 de enero de 2020, 1:40:00 p.m. hora estándar de Europa central
 es_MX	4	4	Europe/Warsaw	600000000	631622400	lunes, 6 de enero de 2020, 11:40:00 a.m. hora estándar de Europa central – miércoles, 6 de enero de 2021, 11:40:00 a.m. hora estándar de Europa central
+defaults	1	1	dd/MM/y, HH:mm
 it_IT	0	0	UTC	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 it_IT	0	0	UTC	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 it_IT	0	0	UTC	600000000	631622400	
+defaults	1	1	dd/MM/y, HH:mm
 it_IT	0	0	America/New_York	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 it_IT	0	0	America/New_York	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 it_IT	0	0	America/New_York	600000000	631622400	
+defaults	1	1	dd/MM/y, HH:mm
 it_IT	0	0	Europe/Warsaw	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 it_IT	0	0	Europe/Warsaw	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 it_IT	0	0	Europe/Warsaw	600000000	631622400	
 it_IT	0	1	UTC	600000000	600003600	10:40–11:40
 it_IT	0	1	UTC	600000000	600093600	06/01/2020, 10:40 – 07/01/2020, 12:40
@@ -2023,14 +2104,23 @@ it_IT	4	4	America/New_York	600000000	631622400	lunedì 6 gennaio 2020 alle ore 0
 it_IT	4	4	Europe/Warsaw	600000000	600003600	lunedì 6 gennaio 2020, 11:40:00 CET – 12:40:00 CET
 it_IT	4	4	Europe/Warsaw	600000000	600093600	lunedì 6 gennaio 2020 alle ore 11:40:00 Ora standard dell’Europa centrale – martedì 7 gennaio 2020 alle ore 13:40:00 Ora standard dell’Europa centrale
 it_IT	4	4	Europe/Warsaw	600000000	631622400	lunedì 6 gennaio 2020 alle ore 11:40:00 Ora standard dell’Europa centrale – mercoledì 6 gennaio 2021 alle ore 11:40:00 Ora standard dell’Europa centrale
+defaults	1	1	dd/MM/y, HH:mm
 pt_BR	0	0	UTC	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 pt_BR	0	0	UTC	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 pt_BR	0	0	UTC	600000000	631622400	
+defaults	1	1	dd/MM/y, HH:mm
 pt_BR	0	0	America/New_York	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 pt_BR	0	0	America/New_York	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 pt_BR	0	0	America/New_York	600000000	631622400	
+defaults	1	1	dd/MM/y, HH:mm
 pt_BR	0	0	Europe/Warsaw	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 pt_BR	0	0	Europe/Warsaw	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 pt_BR	0	0	Europe/Warsaw	600000000	631622400	
 pt_BR	0	1	UTC	600000000	600003600	10:40 – 11:40
 pt_BR	0	1	UTC	600000000	600093600	06/01/2020, 10:40 – 07/01/2020, 12:40
@@ -2248,14 +2338,23 @@ pt_BR	4	4	America/New_York	600000000	631622400	segunda-feira, 6 de janeiro de 20
 pt_BR	4	4	Europe/Warsaw	600000000	600003600	segunda-feira, 6 de janeiro de 2020 11:40:00 GMT+1 – 12:40:00 GMT+1
 pt_BR	4	4	Europe/Warsaw	600000000	600093600	segunda-feira, 6 de janeiro de 2020 às 11:40:00 Horário Padrão da Europa Central – terça-feira, 7 de janeiro de 2020 às 13:40:00 Horário Padrão da Europa Central
 pt_BR	4	4	Europe/Warsaw	600000000	631622400	segunda-feira, 6 de janeiro de 2020 às 11:40:00 Horário Padrão da Europa Central – quarta-feira, 6 de janeiro de 2021 às 11:40:00 Horário Padrão da Europa Central
+defaults	1	1	dd/MM/y, HH:mm
 ja_JP	0	0	UTC	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 ja_JP	0	0	UTC	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 ja_JP	0	0	UTC	600000000	631622400	
+defaults	1	1	dd/MM/y, HH:mm
 ja_JP	0	0	America/New_York	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 ja_JP	0	0	America/New_York	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 ja_JP	0	0	America/New_York	600000000	631622400	
+defaults	1	1	dd/MM/y, HH:mm
 ja_JP	0	0	Europe/Warsaw	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 ja_JP	0	0	Europe/Warsaw	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 ja_JP	0	0	Europe/Warsaw	600000000	631622400	
 ja_JP	0	1	UTC	600000000	600003600	10時40分～11時40分
 ja_JP	0	1	UTC	600000000	600093600	2020/1/6 10:40～2020/1/7 12:40
@@ -2473,14 +2572,23 @@ ja_JP	4	4	America/New_York	600000000	631622400	2020/1/6月曜日 5時40分00秒 
 ja_JP	4	4	Europe/Warsaw	600000000	600003600	2020/1/6月曜日 11:40:00 GMT+1～12:40:00 GMT+1
 ja_JP	4	4	Europe/Warsaw	600000000	600093600	2020/1/6月曜日 11時40分00秒 中央ヨーロッパ標準時～2020/1/7火曜日 13時40分00秒 中央ヨーロッパ標準時
 ja_JP	4	4	Europe/Warsaw	600000000	631622400	2020/1/6月曜日 11時40分00秒 中央ヨーロッパ標準時～2021/1/6水曜日 11時40分00秒 中央ヨーロッパ標準時
+defaults	1	1	dd/MM/y, HH:mm
 ko_KR	0	0	UTC	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 ko_KR	0	0	UTC	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 ko_KR	0	0	UTC	600000000	631622400	
+defaults	1	1	dd/MM/y, HH:mm
 ko_KR	0	0	America/New_York	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 ko_KR	0	0	America/New_York	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 ko_KR	0	0	America/New_York	600000000	631622400	
+defaults	1	1	dd/MM/y, HH:mm
 ko_KR	0	0	Europe/Warsaw	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 ko_KR	0	0	Europe/Warsaw	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 ko_KR	0	0	Europe/Warsaw	600000000	631622400	
 ko_KR	0	1	UTC	600000000	600003600	오전 10:40~11:40
 ko_KR	0	1	UTC	600000000	600093600	2020. 1. 6. 오전 10:40 ~ 2020. 1. 7. 오후 12:40
@@ -2698,14 +2806,23 @@ ko_KR	4	4	America/New_York	600000000	631622400	2020년 1월 6일 월요일 오�
 ko_KR	4	4	Europe/Warsaw	600000000	600003600	2020년 1월 6일 월요일 오전 11시 40분 0초 GMT+1 ~ 오후 12시 40분 0초 GMT+1
 ko_KR	4	4	Europe/Warsaw	600000000	600093600	2020년 1월 6일 월요일 오전 11시 40분 0초 중부유럽 표준시 ~ 2020년 1월 7일 화요일 오후 1시 40분 0초 중부유럽 표준시
 ko_KR	4	4	Europe/Warsaw	600000000	631622400	2020년 1월 6일 월요일 오전 11시 40분 0초 중부유럽 표준시 ~ 2021년 1월 6일 수요일 오전 11시 40분 0초 중부유럽 표준시
+defaults	1	1	dd/MM/y, HH:mm
 zh_CN	0	0	UTC	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 zh_CN	0	0	UTC	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 zh_CN	0	0	UTC	600000000	631622400	
+defaults	1	1	dd/MM/y, HH:mm
 zh_CN	0	0	America/New_York	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 zh_CN	0	0	America/New_York	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 zh_CN	0	0	America/New_York	600000000	631622400	
+defaults	1	1	dd/MM/y, HH:mm
 zh_CN	0	0	Europe/Warsaw	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 zh_CN	0	0	Europe/Warsaw	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 zh_CN	0	0	Europe/Warsaw	600000000	631622400	
 zh_CN	0	1	UTC	600000000	600003600	10:40 – 11:40
 zh_CN	0	1	UTC	600000000	600093600	2020/1/6 10:40 – 2020/1/7 12:40
@@ -2923,14 +3040,23 @@ zh_CN	4	4	America/New_York	600000000	631622400	2020年1月6日星期一 北美�
 zh_CN	4	4	Europe/Warsaw	600000000	600003600	2020年1月6日星期一 GMT+1 11:40:00 – GMT+1 12:40:00
 zh_CN	4	4	Europe/Warsaw	600000000	600093600	2020年1月6日星期一 中欧标准时间 11:40:00 – 2020年1月7日星期二 中欧标准时间 13:40:00
 zh_CN	4	4	Europe/Warsaw	600000000	631622400	2020年1月6日星期一 中欧标准时间 11:40:00 – 2021年1月6日星期三 中欧标准时间 11:40:00
+defaults	1	1	dd/MM/y, HH:mm
 ru_RU	0	0	UTC	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 ru_RU	0	0	UTC	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 ru_RU	0	0	UTC	600000000	631622400	
+defaults	1	1	dd/MM/y, HH:mm
 ru_RU	0	0	America/New_York	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 ru_RU	0	0	America/New_York	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 ru_RU	0	0	America/New_York	600000000	631622400	
+defaults	1	1	dd/MM/y, HH:mm
 ru_RU	0	0	Europe/Warsaw	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 ru_RU	0	0	Europe/Warsaw	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 ru_RU	0	0	Europe/Warsaw	600000000	631622400	
 ru_RU	0	1	UTC	600000000	600003600	10:40—11:40
 ru_RU	0	1	UTC	600000000	600093600	06.01.2020, 10:40 — 07.01.2020, 12:40
@@ -3148,14 +3274,23 @@ ru_RU	4	4	America/New_York	600000000	631622400	понедельник, 6 янв�
 ru_RU	4	4	Europe/Warsaw	600000000	600003600	понедельник, 6 января 2020 г., 11:40:00 GMT+1 — 12:40:00 GMT+1
 ru_RU	4	4	Europe/Warsaw	600000000	600093600	понедельник, 6 января 2020 г. в 11:40:00 Центральная Европа, стандартное время — вторник, 7 января 2020 г. в 13:40:00 Центральная Европа, стандартное время
 ru_RU	4	4	Europe/Warsaw	600000000	631622400	понедельник, 6 января 2020 г. в 11:40:00 Центральная Европа, стандартное время — среда, 6 января 2021 г. в 11:40:00 Центральная Европа, стандартное время
+defaults	1	1	dd/MM/y, HH:mm
 ar_EG	0	0	UTC	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 ar_EG	0	0	UTC	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 ar_EG	0	0	UTC	600000000	631622400	
+defaults	1	1	dd/MM/y, HH:mm
 ar_EG	0	0	America/New_York	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 ar_EG	0	0	America/New_York	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 ar_EG	0	0	America/New_York	600000000	631622400	
+defaults	1	1	dd/MM/y, HH:mm
 ar_EG	0	0	Europe/Warsaw	600000000	600003600	
+defaults	1	1	dd/MM/y, HH:mm
 ar_EG	0	0	Europe/Warsaw	600000000	600093600	
+defaults	1	1	dd/MM/y, HH:mm
 ar_EG	0	0	Europe/Warsaw	600000000	631622400	
 ar_EG	0	1	UTC	600000000	600003600	١٠:٤٠–١١:٤٠ ص
 ar_EG	0	1	UTC	600000000	600093600	٦‏/١‏/٢٠٢٠، ١٠:٤٠ ص – ٧‏/١‏/٢٠٢٠، ١٢:٤٠ م
@@ -3373,3 +3508,108 @@ ar_EG	4	4	America/New_York	600000000	631622400	الاثنين، ٦ يناير، 
 ar_EG	4	4	Europe/Warsaw	600000000	600003600	الاثنين، ٦ يناير، ٢٠٢٠، ١١:٤٠:٠٠ ص غرينتش+١ – ١٢:٤٠:٠٠ م غرينتش+١
 ar_EG	4	4	Europe/Warsaw	600000000	600093600	الاثنين، ٦ يناير، ٢٠٢٠، ١١:٤٠:٠٠ ص توقيت وسط أوروبا الرسمي – الثلاثاء، ٧ يناير، ٢٠٢٠، ١:٤٠:٠٠ م توقيت وسط أوروبا الرسمي
 ar_EG	4	4	Europe/Warsaw	600000000	631622400	الاثنين، ٦ يناير، ٢٠٢٠، ١١:٤٠:٠٠ ص توقيت وسط أوروبا الرسمي – الأربعاء، ٦ يناير، ٢٠٢١، ١١:٤٠:٠٠ ص توقيت وسط أوروبا الرسمي
+template	en_US	jm	600000000	10:40 – 11:40 AM
+template	en_US	jm	600000000	1/6/2020, 10:40 AM – 1/7/2020, 12:40 PM
+template	en_US	jm	600000000	1/6/2020, 10:40 AM – 1/6/2021, 10:40 AM
+template	en_US	MMMd	600000000	Jan 6
+template	en_US	MMMd	600000000	Jan 6 – 7
+template	en_US	MMMd	600000000	Jan 6, 2020 – Jan 6, 2021
+template	en_US	yMdjm	600000000	1/6/2020, 10:40 – 11:40 AM
+template	en_US	yMdjm	600000000	1/6/2020, 10:40 AM – 1/7/2020, 12:40 PM
+template	en_US	yMdjm	600000000	1/6/2020, 10:40 AM – 1/6/2021, 10:40 AM
+template	en_US	yMMMMd	600000000	January 6, 2020
+template	en_US	yMMMMd	600000000	January 6 – 7, 2020
+template	en_US	yMMMMd	600000000	January 6, 2020 – January 6, 2021
+template	en_US	jmv	600000000	10:40 – 11:40 AM GMT
+template	en_US	jmv	600000000	1/6/2020, 10:40 AM GMT – 1/7/2020, 12:40 PM GMT
+template	en_US	jmv	600000000	1/6/2020, 10:40 AM GMT – 1/6/2021, 10:40 AM GMT
+template	en_US	MMMdjmss	600000000	Jan 6, 10:40:00 AM – 11:40:00 AM
+template	en_US	MMMdjmss	600000000	Jan 6 at 10:40:00 AM – Jan 7 at 12:40:00 PM
+template	en_US	MMMdjmss	600000000	Jan 6 at 10:40:00 AM – Jan 6 at 10:40:00 AM
+template	en_US	Hm	600000000	10:40 – 11:40
+template	en_US	Hm	600000000	1/6/2020, 10:40 – 1/7/2020, 12:40
+template	en_US	Hm	600000000	1/6/2020, 10:40 – 1/6/2021, 10:40
+template	en_GB	jm	600000000	10:40 – 11:40
+template	en_GB	jm	600000000	06/01/2020, 10:40 – 07/01/2020, 12:40
+template	en_GB	jm	600000000	06/01/2020, 10:40 – 06/01/2021, 10:40
+template	en_GB	MMMd	600000000	6 Jan
+template	en_GB	MMMd	600000000	6 – 7 Jan
+template	en_GB	MMMd	600000000	6 Jan 2020 – 6 Jan 2021
+template	en_GB	yMdjm	600000000	06/01/2020, 10:40 – 11:40
+template	en_GB	yMdjm	600000000	06/01/2020, 10:40 – 07/01/2020, 12:40
+template	en_GB	yMdjm	600000000	06/01/2020, 10:40 – 06/01/2021, 10:40
+template	en_GB	yMMMMd	600000000	6 January 2020
+template	en_GB	yMMMMd	600000000	6 – 7 January 2020
+template	en_GB	yMMMMd	600000000	6 January 2020 – 6 January 2021
+template	en_GB	jmv	600000000	10:40 – 11:40 GMT
+template	en_GB	jmv	600000000	06/01/2020, 10:40 GMT – 07/01/2020, 12:40 GMT
+template	en_GB	jmv	600000000	06/01/2020, 10:40 GMT – 06/01/2021, 10:40 GMT
+template	en_GB	MMMdjmss	600000000	6 Jan, 10:40:00 – 11:40:00
+template	en_GB	MMMdjmss	600000000	6 Jan at 10:40:00 – 7 Jan at 12:40:00
+template	en_GB	MMMdjmss	600000000	6 Jan at 10:40:00 – 6 Jan at 10:40:00
+template	en_GB	Hm	600000000	10:40 – 11:40
+template	en_GB	Hm	600000000	06/01/2020, 10:40 – 07/01/2020, 12:40
+template	en_GB	Hm	600000000	06/01/2020, 10:40 – 06/01/2021, 10:40
+template	de_DE	jm	600000000	10:40–11:40
+template	de_DE	jm	600000000	6.1.2020, 10:40 – 7.1.2020, 12:40
+template	de_DE	jm	600000000	6.1.2020, 10:40 – 6.1.2021, 10:40
+template	de_DE	MMMd	600000000	6. Jan.
+template	de_DE	MMMd	600000000	6.–7. Jan.
+template	de_DE	MMMd	600000000	6. Jan. 2020 – 6. Jan. 2021
+template	de_DE	yMdjm	600000000	6.1.2020, 10:40–11:40
+template	de_DE	yMdjm	600000000	6.1.2020, 10:40 – 7.1.2020, 12:40
+template	de_DE	yMdjm	600000000	6.1.2020, 10:40 – 6.1.2021, 10:40
+template	de_DE	yMMMMd	600000000	6. Januar 2020
+template	de_DE	yMMMMd	600000000	6.–7. Januar 2020
+template	de_DE	yMMMMd	600000000	6. Januar 2020 – 6. Januar 2021
+template	de_DE	jmv	600000000	10:40–11:40 GMT+0
+template	de_DE	jmv	600000000	6.1.2020, 10:40 GMT+0 – 7.1.2020, 12:40 GMT+0
+template	de_DE	jmv	600000000	6.1.2020, 10:40 GMT+0 – 6.1.2021, 10:40 GMT+0
+template	de_DE	MMMdjmss	600000000	6. Jan., 10:40:00 – 11:40:00
+template	de_DE	MMMdjmss	600000000	6. Jan., 10:40:00 – 7. Jan., 12:40:00
+template	de_DE	MMMdjmss	600000000	6. Jan., 10:40:00 – 6. Jan., 10:40:00
+template	de_DE	Hm	600000000	10:40–11:40
+template	de_DE	Hm	600000000	6.1.2020, 10:40 – 7.1.2020, 12:40
+template	de_DE	Hm	600000000	6.1.2020, 10:40 – 6.1.2021, 10:40
+template	ja_JP	jm	600000000	10時40分～11時40分
+template	ja_JP	jm	600000000	2020/1/6 10:40～2020/1/7 12:40
+template	ja_JP	jm	600000000	2020/1/6 10:40～2021/1/6 10:40
+template	ja_JP	MMMd	600000000	1月6日
+template	ja_JP	MMMd	600000000	1月6日～7日
+template	ja_JP	MMMd	600000000	2020年1月6日～2021年1月6日
+template	ja_JP	yMdjm	600000000	2020/1/6 10時40分～11時40分
+template	ja_JP	yMdjm	600000000	2020/1/6 10:40～2020/1/7 12:40
+template	ja_JP	yMdjm	600000000	2020/1/6 10:40～2021/1/6 10:40
+template	ja_JP	yMMMMd	600000000	2020年1月6日
+template	ja_JP	yMMMMd	600000000	2020年1月6日～7日
+template	ja_JP	yMMMMd	600000000	2020年1月6日～2021年1月6日
+template	ja_JP	jmv	600000000	10時40分～11時40分(GMT+0)
+template	ja_JP	jmv	600000000	2020/1/6 10:40 GMT+0～2020/1/7 12:40 GMT+0
+template	ja_JP	jmv	600000000	2020/1/6 10:40 GMT+0～2021/1/6 10:40 GMT+0
+template	ja_JP	MMMdjmss	600000000	1月6日 10:40:00～11:40:00
+template	ja_JP	MMMdjmss	600000000	1月6日 10:40:00～1月7日 12:40:00
+template	ja_JP	MMMdjmss	600000000	1月6日 10:40:00～1月6日 10:40:00
+template	ja_JP	Hm	600000000	10時40分～11時40分
+template	ja_JP	Hm	600000000	2020/1/6 10:40～2020/1/7 12:40
+template	ja_JP	Hm	600000000	2020/1/6 10:40～2021/1/6 10:40
+template	fr_FR	jm	600000000	10:40 – 11:40
+template	fr_FR	jm	600000000	06/01/2020 10:40 – 07/01/2020 12:40
+template	fr_FR	jm	600000000	06/01/2020 10:40 – 06/01/2021 10:40
+template	fr_FR	MMMd	600000000	6 janv.
+template	fr_FR	MMMd	600000000	6–7 janv.
+template	fr_FR	MMMd	600000000	6 janv. 2020 – 6 janv. 2021
+template	fr_FR	yMdjm	600000000	06/01/2020, 10:40 – 11:40
+template	fr_FR	yMdjm	600000000	06/01/2020 10:40 – 07/01/2020 12:40
+template	fr_FR	yMdjm	600000000	06/01/2020 10:40 – 06/01/2021 10:40
+template	fr_FR	yMMMMd	600000000	6 janvier 2020
+template	fr_FR	yMMMMd	600000000	6–7 janvier 2020
+template	fr_FR	yMMMMd	600000000	6 janvier 2020 – 6 janvier 2021
+template	fr_FR	jmv	600000000	10:40 – 11:40 UTC+0
+template	fr_FR	jmv	600000000	06/01/2020 10:40 UTC+0 – 07/01/2020 12:40 UTC+0
+template	fr_FR	jmv	600000000	06/01/2020 10:40 UTC+0 – 06/01/2021 10:40 UTC+0
+template	fr_FR	MMMdjmss	600000000	6 janv., 10:40:00 – 11:40:00
+template	fr_FR	MMMdjmss	600000000	6 janv. à 10:40:00 – 7 janv. à 12:40:00
+template	fr_FR	MMMdjmss	600000000	6 janv. à 10:40:00 – 6 janv. à 10:40:00
+template	fr_FR	Hm	600000000	10:40 – 11:40
+template	fr_FR	Hm	600000000	06/01/2020 10:40 – 07/01/2020 12:40
+template	fr_FR	Hm	600000000	06/01/2020 10:40 – 06/01/2021 10:40

@@ -24,7 +24,9 @@
    `const char *locale` first. So the joins, the collapse of a shared day, the way the two ends of a
    range are written and every locale's own choice of them are the release's answers and not a table
    here, which is why the class is a thin wrapper and why the header's own examples of what a skeleton
-   produces need nothing reproduced: the release's DateIntervalFormat produces them.
+   produces need nothing reproduced: the release's DateIntervalFormat produces them. The fourth
+   exported symbol, udtitvfmt_setAttribute, is measured on the ladder and is **not** called: every
+   setting the class makes is an argument of udtitvfmt_open.
 
    **device-unverified.** Every expected answer is the host's own NSDateIntervalFormatter's, written
    out by tests/backports/device/dateinterval/make-expected.m into
@@ -51,9 +53,19 @@ extern __attribute__((weak_import)) CharonUDateIntervalFormat
     udtitvfmt_open(const char *locale, const uint16_t *skeleton, int32_t skeletonLength,
                    const uint16_t *tzID, int32_t tzIDLength, CharonUErrorCode *status);
 extern __attribute__((weak_import)) void udtitvfmt_close(CharonUDateIntervalFormat *formatter);
+/* Six arguments, which is ICU 49's own declaration of udtitvfmt_format - (formatter, from, to,
+   result, resultCapacity, status) - and the build this file is for carries icudt49_dat, so that is the
+   form to call. A seventh `const void *position` appears in Apple's ICU in later builds; the port
+   does not pass one, and the device program is what settles which form the copy in the cache takes:
+   with the wrong arity the status lands in the wrong register, ICU answers an error, and
+   -charon_intervalFrom:to: returns nil rather than misbehaving, so the failure is a missing answer
+   and not a crash. Read out of the 6.1.3 cache, udtitvfmt_format is at 0x38b03420 and reaches its
+   stack arguments through a frame pointer the prologue builds before the sp alignment, so the count
+   cannot be read off the first instructions alone (coordination/reviews/2026-09-28-api-dateinterval.md
+   finding B). */
 extern __attribute__((weak_import)) int32_t
     udtitvfmt_format(const CharonUDateIntervalFormat *formatter, CharonUDate fromDate, CharonUDate toDate,
-                     uint16_t *result, int32_t resultCapacity, void *position, CharonUErrorCode *status);
+                     uint16_t *result, int32_t resultCapacity, CharonUErrorCode *status);
 
 /* The date and the time skeleton of each of the header's five styles, the way the release's own
    NSDateFormatter writes them. A style pair is the two skeletons joined, the date's fields first and
@@ -81,21 +93,31 @@ static NSString *CharonTimeSkeleton(NSInteger style)
     }
 }
 
-/* The two skeletons joined, each field letter once and the date's fields first. */
-static NSString *CharonIntervalSkeleton(NSInteger dateStyle, NSInteger timeStyle, NSString *template)
+/* The two skeletons joined, the date's fields first and **every repetition kept**: in a CLDR skeleton
+   a repeated field letter is the width, not noise - `yMMMd` is the abbreviated month and `yMMMMd` the
+   full one, `jmms` is a two-digit minute and `jmmszzzz` a long zone name. Dropping the repeats
+   collapses 21 of the 25 style pairs onto a handful of skeletons (measured: (2,0) came out as `yMd`,
+   (0,4) as `jmsz`), which is the review's finding A.
+
+   A dateTemplate is a **template**, not a skeleton, and the release expands it:
+   +[NSDateFormatter dateFormatFromTemplate:options:locale:] - the same floor, 5.0 - gives the
+   pattern, whose quoted runs are literals, and the skeleton is what the pattern's field letters say. */
+static NSString *CharonIntervalSkeleton(NSInteger dateStyle, NSInteger timeStyle, NSString *template, NSLocale *locale)
 {
-    if (template.length)
-        return template;
-    NSString *date = CharonDateSkeleton(dateStyle), *time = CharonTimeSkeleton(timeStyle);
-    NSMutableString *out = [NSMutableString string];
-    for (NSString *half in @[date, time])
-        for (NSUInteger index = 0; index < half.length; index++) {
-            unichar field = [half characterAtIndex:index];
-            NSString *letter = [NSString stringWithFormat:@"%C", field];
-            if ([out rangeOfString:letter].location == NSNotFound)
-                [out appendString:letter];
+    if (template.length) {
+        NSString *pattern = [NSDateFormatter dateFormatFromTemplate:template options:0 locale:locale];
+        NSMutableString *skeleton = [NSMutableString string];
+        BOOL quoted = NO;
+        for (NSUInteger index = 0; index < pattern.length; index++) {
+            unichar c = [pattern characterAtIndex:index];
+            if (c == '\'') { quoted = !quoted; continue; }
+            if (quoted || c == ' ' || c == ',' || c == ';' || c == 0x3001)
+                continue;
+            [skeleton appendFormat:@"%C", c];
         }
-    return out;
+        return skeleton;
+    }
+    return [CharonDateSkeleton(dateStyle) stringByAppendingString:CharonTimeSkeleton(timeStyle)];
 }
 
 @implementation NSDateIntervalFormatter {
@@ -224,7 +246,7 @@ static NSString *CharonIntervalSkeleton(NSInteger dateStyle, NSInteger timeStyle
 
 - (NSString *)charon_intervalFrom:(NSDate *)from to:(NSDate *)to
 {
-    NSString *skeleton = CharonIntervalSkeleton((NSInteger)_dateStyle, (NSInteger)_timeStyle, _dateTemplate);
+    NSString *skeleton = CharonIntervalSkeleton((NSInteger)_dateStyle, (NSInteger)_timeStyle, _dateTemplate, self.locale);
     if (!skeleton.length)
         return @"";
     /* The zone is the formatter's, in the UChar form the entry point takes; the locale is the
@@ -250,7 +272,7 @@ static NSString *CharonIntervalSkeleton(NSInteger dateStyle, NSInteger timeStyle
     uint16_t buffer[512];
     status = 0;
     int32_t written = udtitvfmt_format(&formatter, (CharonUDate)from.timeIntervalSinceReferenceDate,
-                                       (CharonUDate)to.timeIntervalSinceReferenceDate, buffer, 512, NULL, &status);
+                                       (CharonUDate)to.timeIntervalSinceReferenceDate, buffer, 512, &status);
     CharonUDateIntervalFormat closing = formatter;
     udtitvfmt_close(&closing);
     if (status != 0 || written <= 0)

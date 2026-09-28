@@ -50,6 +50,14 @@ int main(int argc, char **argv)
                             formatter.dateStyle = (NSDateIntervalFormatterStyle)dateStyle;
                             formatter.timeStyle = (NSDateIntervalFormatterStyle)timeStyle;
                             formatter.timeZone = [NSTimeZone timeZoneWithName:zone];
+                            // The defaults, read off a formatter nothing was set on, which is the
+                            // measurement the -init row rests on: the header says NoStyle for both and
+                            // the delivery claims the short style, and this is what settles it.
+                            if (dateStyle == 0 && timeStyle == 0) {
+                                NSDateIntervalFormatter *fresh = [[NSDateIntervalFormatter alloc] init];
+                                printf("defaults\t%ld\t%ld\t%s\n", (long)fresh.dateStyle, (long)fresh.timeStyle,
+                                       fresh.dateTemplate.UTF8String);
+                            }
                             NSString *answer = [formatter stringFromDate:pair[0] toDate:pair[1]];
                             // A tab and a newline are the only characters that would make a line ambiguous.
                             NSString *safe = [[answer stringByReplacingOccurrencesOfString:@"\t" withString:@" "]
@@ -60,6 +68,22 @@ int main(int argc, char **argv)
                             cases++;
                         }
                     }
+                }
+            }
+        }
+        // A template, over the header's own examples, so the dateTemplate row is held and not asserted.
+        for (NSString *identifier in @[@"en_US", @"en_GB", @"de_DE", @"ja_JP", @"fr_FR"]) {
+            for (NSString *template in @[@"jm", @"MMMd", @"yMdjm", @"yMMMMd", @"jmv", @"MMMdjmss", @"Hm"]) {
+                for (NSArray *pair in pairs) {
+                    NSDateIntervalFormatter *formatter = [[NSDateIntervalFormatter alloc] init];
+                    formatter.locale = [NSLocale localeWithLocaleIdentifier:identifier];
+                    formatter.dateStyle = formatter.timeStyle = NSDateIntervalFormatterNoStyle;
+                    formatter.dateTemplate = template;
+                    formatter.timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
+                    printf("template\t%s\t%s\t%ld\t%s\n", identifier.UTF8String, template.UTF8String,
+                                           (long)[pair[0] timeIntervalSinceReferenceDate],
+                                           [formatter stringFromDate:pair[0] toDate:pair[1]].UTF8String);
+                    cases++;
                 }
             }
         }

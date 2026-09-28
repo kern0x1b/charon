@@ -40,9 +40,31 @@ range inside one day, and `jm` giving "7:56 AM - 7:56 PM" against "7:56 - 19:56"
 
 From the **port**: the six properties, the two methods, the two styles and the template turned into
 one **skeleton** for the release, and the two defaults the header states wrongly. The header says both
-styles are `NSDateIntervalFormatterNoStyle` and the template is the empty string; the host reads **both
-styles back as the short style** and the template as empty, and the port does the same, which is why
-the golden file's NoStyle rows are empty and its first real row is the short one.
+styles are `NSDateIntervalFormatterNoStyle` and the template is the empty string; the host reads
+**both styles back as 1, the short style**, and the template back as `dd/MM/y, HH:mm` - the combined
+short pattern, not an empty string. Both are measured in the golden file, as the `defaults` lines
+beside the 3375 cases, and the port answers the measured answers (the review's finding E).
+
+A skeleton's **repetitions are the width and are kept**: `yMMMd` is the abbreviated month and `yMMMMd`
+the full one, `jmms` a two-digit minute and `jmmszzzz` a long zone name. An earlier version dropped
+the repeats and collapsed 21 of the 25 style pairs onto a handful of skeletons - the review's finding
+A - and the 25 are now checked against the review's own no-dedup reference, line for line.
+
+A `dateTemplate` is a **template, not a skeleton**, so the release expands it:
+`+[NSDateFormatter dateFormatFromTemplate:options:locale:]`, the same 5.0 floor, gives the pattern, and
+the skeleton is what that pattern's field letters say with the quoted literal runs dropped. Before this
+the template was handed to `udtitvfmt_open` verbatim, which asks the release for a skeleton and gives
+it a pattern - the review's finding D. The golden file carries 105 template cases, the header's own
+examples (`jm`, `MMMd`, `yMdjm`, `yMMMMd`, `jmv`, `MMMdjmss`, `Hm`) over five locales, so the row is
+held.
+
+`udtitvfmt_format` is called with **six** arguments, which is ICU 49's own declaration and the
+version 6.1.3 links (`icudt49_dat`). A seventh `const void *position` appears in Apple's ICU in later
+builds; the port does not pass one, and with the wrong arity the status lands in the wrong register,
+ICU answers an error and the class returns nil rather than misbehaving - a missing answer, not a crash.
+Read out of the 6.1.3 cache the function is at `0x38b03420` and reaches its stack arguments through a
+frame pointer the prologue builds before the sp alignment, so the count is not readable off the first
+instructions alone; the device program is what settles it (the review's finding B).
 
 The skeleton of a style pair is the date skeleton and the time skeleton joined, the date's fields
 first and each field letter once:
@@ -73,13 +95,17 @@ What holds it instead is a **golden file** and a device run:
 - `tests/backports/device/dateinterval/make-expected.m` writes the host's own
   `NSDateIntervalFormatter` over **fifteen locales** x the **twenty-five pairs** of the five styles x
   **three zones** (UTC, America/New_York, Europe/Warsaw) x **three date pairs** (an hour inside one
-  day, across midnight, into the next year) into
-  `tests/backports/device/dateinterval/expected.txt` — **3375 cases**, one line each, tab-separated, in
+  day, across midnight, into the next year), plus the `defaults` of a formatter nothing was set on and
+  **105 template cases** over five locales, into
+  `tests/backports/device/dateinterval/expected.txt` — **3480 cases**, one line each, tab-separated, in
   a fixed order so a diff means something;
 - `tests/backports/device/dateinterval.m` runs the port on the device, asks each case, and compares
   line by line, printing the first twenty that differ and then the count. It also checks that
   `-stringFromDateInterval:` and `-stringFromDate:toDate:` agree, and says whether the class it got
   is the port's or the release's.
+
+A 4.3 run has no such class - the floor is 5.0 and `band()` leaves the object out below it - so the
+program says so and stops rather than failing, and the `below6` entry carries a waiver for it.
 
 **That run has not happened.** Until it does, the registry's `source` for every row of this class
 says `device-unverified`, and so does the commit that carries it.

@@ -37,7 +37,10 @@ local PROGRAMS = {
     -- dateinterval.m runs the port's own NSDateIntervalFormatter - the release's DateIntervalFormat underneath - against
     -- the golden file dateinterval/expected.txt, which is the host's own class's answers over 3375 cases. The class is
     -- carried from 5.0, so the program's band names it and the file travels with it.
-    dateinterval = {extra = {"dateinterval/expected.txt"}},
+    -- The class floor is 5.0 and the "ported" cell builds at 4.3, so this program waives the weak
+    -- import the way one that reaches below 6.0 does, and it reports a 4.3 run as "no class" rather
+    -- than as a failure: the case table is a 5.0 and 6.0 question, not a 4.3 one.
+    dateinterval = {extra = {"dateinterval/expected.txt"}, waiver = "NSDateIntervalFormatter is carried from 5.0 and 4.3's own Foundation has no such class"},
 }
 for name, program in pairs(PROGRAMS) do
     target(name)
