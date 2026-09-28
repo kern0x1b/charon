@@ -78,3 +78,18 @@ still holds.
 searched: none. This is a property write and a struct layout the release defines;
 there is no sampler or synthesis to vendor, and Resonance Audio and Steam Audio (both Apache-2.0)
 carry DSP the release's own unit already has.
+
+### The reviewer's note on the four, which is the one thing to check here
+
+The change of these four from `implemented` to `inert` **rests on a negative**, and it is the one
+thing in this family I would want a second reader on. The four are declared by the 26.2 SDK's
+`AVAudioUnitSampler.h` and the port holds and reads each of them back, so nothing is missing from the
+port. The case that they are *not* implemented is that **no AudioUnit property behind them is named in
+the release's own headers**: `kAUSamplerProperty_LoadInstrument` and `kAUSamplerProperty_LoadAudioFiles`
+are the properties the release does name for that unit, and nothing names these four.
+
+A negative is weaker evidence than a positive. If some other property of that unit does reach them and
+the header names it somewhere the port has not looked, these four are implemented after all and the
+status is wrong. What settles it is `AudioUnitGetPropertyInfo` over `kAudioUnitScope_Global` on a real
+`AUSampler` for the property behind each accessor — and the emulator probe that found the sampler
+registered is already positioned to answer exactly that.
