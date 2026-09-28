@@ -1,4 +1,5 @@
 #import "CharonAVFAudio.h"
+#import "CharonAVFAudioNew.h"
 #import <AVFAudio/AVAudioEnvironmentNode.h>
 #import <AudioToolbox/AUComponent.h>
 #import <AudioToolbox/AudioUnitParameters.h>
@@ -202,6 +203,7 @@ static AudioComponent CharonEnvironmentComponent(void)
     AVAudio3DVectorOrientation _charon_listenerVectorOrientation;
     AVAudio3DAngularOrientation _charon_listenerAngularOrientation;
     float _charon_outputVolume;
+    BOOL _charon_headTrackingEnabled;
     AVAudioEnvironmentDistanceAttenuationParameters *_charon_attenuation;
     AVAudioEnvironmentReverbParameters *_charon_reverb;
 }
@@ -484,3 +486,195 @@ static AudioComponent CharonEnvironmentComponent(void)
 }
 
 @end
+
+// ---- the mixing surface, the node conforms to AVAudioMixing in Apple's header too ----
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wobjc-protocol-property-synthesis"
+#pragma clang diagnostic ignored "-Wprotocol"
+@implementation AVAudioEnvironmentNode (CharonMixing)
+
+// Each of these is the mixer's own parameter on this node's input scope 0, the same set
+// AVAudioUnitMixing9.m uses for the units. The environment node is where they matter most, because a
+// source's position and the listener's position are what the mixer places against each other.
+- (float)volume
+{
+    return [self charon_mixerParameter:k3DMixerParam_Gain];
+}
+
+- (void)setVolume:(float)volume
+{
+    [self charon_setMixerParameter:k3DMixerParam_Gain value:volume];
+}
+
+- (float)pan
+{
+    return [self charon_mixerParameter:k3DMixerParam_Azimuth] / 180.0f;
+}
+
+- (void)setPan:(float)pan
+{
+    [self charon_setMixerParameter:k3DMixerParam_Azimuth value:pan * 180.0f];
+}
+
+- (AVAudio3DPoint)position
+{
+    AudioUnitParameterValue azimuth = 0, elevation = 0, distance = 0;
+    [self charon_readMixerAzimuth:&azimuth elevation:&elevation distance:&distance];
+    float azimuthRadians = (float)azimuth * (float)M_PI / 180.0f;
+    float elevationRadians = (float)elevation * (float)M_PI / 180.0f;
+    return AVAudioMake3DPoint(distance * (float)cos(elevationRadians) * (float)sin(azimuthRadians),
+                               distance * (float)sin(elevationRadians),
+                               distance * (float)cos(elevationRadians) * (float)cos(azimuthRadians));
+}
+
+- (void)setPosition:(AVAudio3DPoint)position
+{
+    float distance = sqrtf(position.x * position.x + position.y * position.y + position.z * position.z);
+    if (distance <= 0) {
+        [self charon_setMixerParameter:k3DMixerParam_Distance value:0];
+        return;
+    }
+    [self charon_setMixerParameter:k3DMixerParam_Azimuth value:atan2f(position.x, position.z) * 180.0f / (float)M_PI];
+    [self charon_setMixerParameter:k3DMixerParam_Elevation value:asinf(position.y / distance) * 180.0f / (float)M_PI];
+    [self charon_setMixerParameter:k3DMixerParam_Distance value:distance];
+}
+
+- (AVAudio3DMixingRenderingAlgorithm)renderingAlgorithm
+{
+    return AVAudio3DMixingRenderingAlgorithmSoundField;
+}
+
+- (void)setRenderingAlgorithm:(AVAudio3DMixingRenderingAlgorithm)renderingAlgorithm
+{
+    if (renderingAlgorithm != AVAudio3DMixingRenderingAlgorithmSoundField &&
+        renderingAlgorithm != AVAudio3DMixingRenderingAlgorithmStereoPassThrough) {
+        // This mixer has placement and nothing else, so an algorithm that needs an ear model is one it
+        // cannot render; the unit is left where it is rather than answered as the sound field.
+        return;
+    }
+    [self charon_setMixerParameter:k3DMixerParam_Enable
+                              value:(renderingAlgorithm == AVAudio3DMixingRenderingAlgorithmStereoPassThrough ? 0 : 1)];
+}
+
+- (AVAudio3DMixingSourceMode)sourceMode
+{
+    return AVAudio3DMixingSourceModePointSource;
+}
+
+- (void)setSourceMode:(AVAudio3DMixingSourceMode)sourceMode
+{
+}
+
+- (AVAudio3DMixingPointSourceInHeadMode)pointSourceInHeadMode
+{
+    return AVAudio3DMixingPointSourceInHeadModeMono;
+}
+
+- (void)setPointSourceInHeadMode:(AVAudio3DMixingPointSourceInHeadMode)pointSourceInHeadMode
+{
+}
+
+- (float)rate
+{
+    return [self charon_mixerParameter:k3DMixerParam_PlaybackRate];
+}
+
+- (void)setRate:(float)rate
+{
+    [self charon_setMixerParameter:k3DMixerParam_PlaybackRate value:rate];
+}
+
+- (float)reverbBlend
+{
+    return [self charon_mixerParameter:k3DMixerParam_ReverbBlend] / 100.0f;
+}
+
+- (void)setReverbBlend:(float)reverbBlend
+{
+    [self charon_setMixerParameter:k3DMixerParam_ReverbBlend value:reverbBlend * 100.0f];
+}
+
+- (float)occlusion
+{
+    return [self charon_mixerParameter:k3DMixerParam_OcclusionAttenuation];
+}
+
+- (void)setOcclusion:(float)occlusion
+{
+    [self charon_setMixerParameter:k3DMixerParam_OcclusionAttenuation value:occlusion];
+}
+
+- (float)obstruction
+{
+    return [self charon_mixerParameter:k3DMixerParam_ObstructionAttenuation];
+}
+
+- (void)setObstruction:(float)obstruction
+{
+    [self charon_setMixerParameter:k3DMixerParam_ObstructionAttenuation value:obstruction];
+}
+
+- (AVAudioMixingDestination *)destinationForMixer:(AVAudioNode *)mixer bus:(AVAudioNodeBus)bus
+{
+    if (mixer == nil) {
+        return nil;
+    }
+    return [[AVAudioMixingDestination alloc] initWithCharonNode:self mixer:mixer bus:bus];
+}
+
+- (float)charon_mixerParameter:(AudioUnitParameterID)identifier
+{
+    if (_charon_mixerUnit == NULL) {
+        return 0;
+    }
+    AudioUnitParameterValue value = 0;
+    if (AudioUnitGetParameter(_charon_mixerUnit, identifier, kAudioUnitScope_Input, 0, &value) != noErr) {
+        return 0;
+    }
+    return (float)value;
+}
+
+- (void)charon_setMixerParameter:(AudioUnitParameterID)identifier value:(float)value
+{
+    if (_charon_mixerUnit == NULL) {
+        return;
+    }
+    OSStatus status = AudioUnitSetParameter(_charon_mixerUnit, identifier, kAudioUnitScope_Input, 0,
+                                            (AudioUnitParameterValue)value, 0);
+    if (status != noErr) {
+        [AUAudioUnit charon_noteInert:[NSString stringWithFormat:@"AVAudioEnvironmentNode parameter %u", (unsigned)identifier]
+                                 why:@"this release's mixer refused the value, so it keeps the value it had"];
+    }
+}
+
+- (void)charon_readMixerAzimuth:(AudioUnitParameterValue *)azimuth
+                       elevation:(AudioUnitParameterValue *)elevation
+                        distance:(AudioUnitParameterValue *)distance
+{
+    *azimuth = (AudioUnitParameterValue)[self charon_mixerParameter:k3DMixerParam_Azimuth];
+    *elevation = (AudioUnitParameterValue)[self charon_mixerParameter:k3DMixerParam_Elevation];
+    *distance = (AudioUnitParameterValue)[self charon_mixerParameter:k3DMixerParam_Distance];
+}
+
+// ---- iOS 18: head tracking, on a release with no head tracking ----
+- (BOOL)listenerHeadTrackingEnabled
+{
+    // Kept and read back, and nothing acts on it. Tracking a head means reading a device this one does
+    // not have: the release's mixer has no head-tracking parameter, and no ARKit, no CoreMotion head
+    // pose and no audio-unit property expresses one. A release without the facility reports the switch
+    // off where a newer one would track, and a program that reads it before enabling it - which is the
+    // documented use - sees NO. facts/AVFAudio/AVAudioEnvironmentNode.md.
+    return _charon_headTrackingEnabled;
+}
+
+- (void)setListenerHeadTrackingEnabled:(BOOL)listenerHeadTrackingEnabled
+{
+    if (_charon_headTrackingEnabled != listenerHeadTrackingEnabled) {
+        _charon_headTrackingEnabled = listenerHeadTrackingEnabled;
+        [AUAudioUnit charon_noteInert:@"setListenerHeadTrackingEnabled:"
+                                 why:@"iOS 6.1.3 has no head tracking: no mixer parameter, no ARKit and no CoreMotion head pose, so the value is kept and read back"];
+    }
+}
+
+@end
+#pragma clang diagnostic pop

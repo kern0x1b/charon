@@ -49,6 +49,16 @@ typedef NS_ENUM(NSInteger, AVAudioApplicationMicrophoneInjectionPermission) {
 + (void)requestMicrophoneInjectionPermissionWithCompletionHandler:(void (^)(AVAudioApplicationMicrophoneInjectionPermission permission))response;
 @end
 
+// AVAudioEnvironmentNode.listenerHeadTrackingEnabled is iOS 18.0 and the build SDK is 16.4, so the
+// declaration is here for the same reason the three classes below are: without it the member has no
+// @interface here and an @implementation written against it is a root class. The 26.2 header declares
+// it `@property (nonatomic) BOOL listenerHeadTrackingEnabled;` on AVAudioEnvironmentNode, which is
+// declared there as `AVAudioEnvironmentNode : AVAudioNode <AVAudioMixing>` - the same superclass and
+// the same protocol the 16.4 header declares, so the member is declared in a category on it.
+@interface AVAudioEnvironmentNode (CharonHeadTracking)
+@property (nonatomic) BOOL listenerHeadTrackingEnabled;
+@end
+
 @interface AVAudioSessionCapability : NSObject
 @property (readonly, nonatomic, getter=isSupported) BOOL supported;
 @property (readonly, nonatomic, getter=isEnabled) BOOL enabled;

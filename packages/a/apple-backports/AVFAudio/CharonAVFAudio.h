@@ -59,6 +59,18 @@ AudioChannelLayoutTag CharonTagFromName(NSString *name);
 - (NSMutableArray *_Nonnull)charon_queue;
 @end
 
+// AVAudioMixingDestination's private initializer and the once-in-a-log note, both declared here so
+// the environment node and the units can reach them without each declaring them again.
+@interface AVAudioMixingDestination (CharonInit)
+- (instancetype _Nonnull)initWithCharonNode:(AVAudioNode *_Nullable)node
+                                     mixer:(AVAudioNode *_Nullable)mixer
+                                        bus:(AVAudioNodeBus)bus;
+@end
+
+@interface AUAudioUnit (CharonNote)
++ (void)charon_noteInert:(NSString *)member why:(NSString *)why;
+@end
+
 // The environment node's own plumbing. AVAudioEnvironmentNode carries a graph of its own - the
 // release's kAudioUnitSubType_SpatialMixer (which the SDK renames from the deprecated
 // kAudioUnitSubType_AU3DMixerEmbedded, same value, iOS 2.0) terminated into a generic output - so that
