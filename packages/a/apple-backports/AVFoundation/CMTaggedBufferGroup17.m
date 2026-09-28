@@ -22,7 +22,10 @@
 }
 
 // Named, because the package builds with -Werror=objc-missing-property-synthesis: the two readonly
-// properties are the ivars the initialiser fills.
+// properties are the ivars the initialiser fills. -Wobjc-missing-property-synthesis is -Werror in the
+// gate, so both properties are bound explicitly to the ivars that really hold them. No hand-written
+// accessor for either: a @synthesize beside a getter is the rootObject trap, and the initialiser's
+// _charon_collections = [collections copy] is the assignment through the synthesized ivar.
 @synthesize charon_collections = _charon_collections;
 @synthesize charon_buffers = _charon_buffers;
 
