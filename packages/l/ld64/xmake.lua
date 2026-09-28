@@ -13,6 +13,20 @@ package("ld64")
                   "cf939c661aa288da773e59acf8ab916bb6c322bf7abe9130c09a66bcc98fdc5a")
     add_deps("cmake", "ninja", {kind = "binary"})
 
+    -- This is the linker every armv7 link in the fleet uses: toolchains/apple-ios puts this
+    -- package's bin/ld in -fuse-ld=. So a rebuild of it in place changes the linker under every
+    -- package at once, and a patch edited here would otherwise be invisible until somebody
+    -- happened to rebuild. Hashing patches/ into the package identity - the shape
+    -- packages/a/apple-backports uses for its own sources - makes a changed linker a different
+    -- package that installs beside the old one, and leaves the old install path working.
+    local inputs = os.files(path.join(os.scriptdir(), "patches", "*.patch"))
+    table.sort(inputs)
+    local digests = {}
+    for _, file in ipairs(inputs) do
+        table.insert(digests, path.filename(file) .. "=" .. hash.sha256(file))
+    end
+    add_configs("patches", {description = "The digest of this package's patches, so a changed linker is a different package: every armv7 link in the fleet links with it, and a rebuild in place would change all of them at once.", default = hash.strhash128(table.concat(digests, ";")), type = "string", readonly = true})
+
     -- This is a specific cctools-port ld64 that still inserts armv7 branch
     -- islands; the system /usr/bin/ld is not it. Without an on_fetch a
     -- toolchain package is looked for on the system first, and a clean store
@@ -37,6 +51,11 @@ package("ld64")
         -- reached only through another one's re-export is not among them, so encoding an import
         -- proxy that belongs to it aborts the link in dylibToOrdinal(). See the patch.
         os.vrunv("patch", {"-p2", "-i", path.join(package:scriptdir(), "patches", "ordinal-for-dylib-that-only-a-reexport-reaches.patch")})
+        -- ld64's own option for this is -snapshot_dir, which also turns the snapshot on for a
+        -- clean link, and its only environment route is the directory of LD_TRACE_FILE, which is
+        -- Apple's build system's. Neither is a way to keep the snapshot and move it, and nothing
+        -- switches the one an assertion writes off, so the default location moves instead.
+        os.vrunv("patch", {"-p2", "-i", path.join(package:scriptdir(), "patches", "link-snapshot-beside-the-output.patch")})
 
         local tapi_version = "1600.0.11.8"
         local tapi_build = path.absolute("tapi-build")

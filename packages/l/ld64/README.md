@@ -16,6 +16,36 @@ a port does, so this is the linker the whole fleet links with.
 | `libtapi-without-darwin-linker-version-helper.patch` | libtapi builds against a host without `ld`'s linker-version helper |
 | `inlined-text-stub-before-search-paths.patch` | use the TAPI file inlined in a `.tbd` before searching the paths |
 | `ordinal-for-dylib-that-only-a-reexport-reaches.patch` | the defect below |
+| `link-snapshot-beside-the-output.patch` | an assertion's link snapshot goes beside the output, not into `/tmp` |
+
+## Where an assertion's link snapshot lands
+
+`ld64`'s own options do not give what is wanted here, which is why this is a patch:
+
+- `-snapshot_dir <path>` sets the directory, but it also calls `setSnapshotMode(SNAPSHOT_DEBUG)` and
+  `fSnapshotSnapshotRequested = true` (`Options.cpp:4013`), so it *turns the snapshot on* for a link that
+  would otherwise write nothing. It is the opposite of a way to keep the snapshot and move it.
+- The one environment route is `LD_TRACE_FILE`: `Snapshot::createSnapshot` uses the *directory* of it
+  (`Snapshot.cpp:243`, rdar://89496214), and that is Apple's build system's, not ours to set.
+- Nothing switches off the one an assertion writes. `ld64`'s `__assert_rtn` (`ld.cpp:1708`, the assert
+  override) calls `setSnapshotMode(SNAPSHOT_DEBUG)` and `createSnapshot()` itself. The only way it stays
+  off today is the directory not being creatable, at which point `createSnapshot` falls back to
+  `SNAPSHOT_DISABLED` with a warning (`Snapshot.cpp:261`).
+
+So the default location moves instead: beside the output the snapshot describes, which is what `-o`
+names, and the current directory when there is no `-o` (the output is then `a.out`). Measured, on the same
+assertion, with the ordinal code unpatched so the link still aborts:
+
+```
+unpatched:  A linker snapshot was created at:  /tmp/a.dylib-2026-09-28-130757.ld-snapshot
+patched:    A linker snapshot was created at:  .../snapmeasure/b.dylib-2026-09-28-130757.ld-snapshot
+```
+
+`ls /tmp | grep -c ld-snapshot` goes 0 -> 1 on the first and stays 1 on the second, so the patched linker
+adds nothing to `/tmp`; the snapshot is 171 MB, which is why it matters that it is somewhere a build can
+clean up. A *successful* link writes no snapshot either way: `createSnapshot` is reached on the non-assert
+path only when `fSnapshotRequested` is set, which this recipe never does.
+
 
 ## The dylibToOrdinal defect, and what it is
 
@@ -78,3 +108,31 @@ coordinator's call.
 `ld64` also has exactly one in-tree dependent, `packages/i/iphoneos-sdk`, which uses it for four `-r`
 relocations of `crt1.o`, `crt1.3.1.o`, `dylib1.o` and `bundle1.o`. Everything else reaches it through the
 toolchain.
+
+## What the `-Wl,-no_implicit_dylibs` workaround actually produced
+
+It linked, and it was wrong in a way nothing in the band reported. On the reduced reproducer:
+
+```
+before (workaround):  _objc_getClass (from Foundation)   _class_getSuperclass (from Foundation)
+after  (fix):         _objc_getClass (from libobjc)      _class_getSuperclass (from libobjc)
+```
+
+`llvm-otool -L` counts 5 load commands for the workaround's dylib and 7 for the fix's; the two the fix adds
+are `/usr/lib/libobjc.A.dylib` and CoreFoundation. With implicit dylibs off there is no ordinal for the
+`File` that actually exports the ObjC runtime, so the symbols were bound to a library that does not export
+them — a link that succeeds and a binary that binds wrongly on the device. `packages/m/matter/xmake.lua`
+still carries that flag and should drop it.
+
+## The digest over patches/
+
+`add_configs("patches", ...)` hashes this package's `patches/*.patch` into the package identity, the shape
+`packages/a/apple-backports/xmake.lua` uses for its own sources. The reason is the same as the fix's: this
+is the linker every armv7 link in the fleet uses, so a rebuild in place changes the linker under every
+package at once, and a patch edited here was invisible until somebody happened to rebuild. With the digest,
+a changed linker is a different package that installs beside the old one and the old install path keeps
+working.
+
+The consequence to expect: the first build after this lands installs a **new** `ld64` installdir, and every
+package that depends on it re-resolves onto that one. That is a fleet-wide rebuild of the linked packages,
+coordinated rather than accidental.
