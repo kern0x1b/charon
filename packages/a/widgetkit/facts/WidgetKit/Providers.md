@@ -75,3 +75,25 @@ subscript returned `fatalError` — a crash in a library a port links, for a val
 framework's own subscript is optional (`[T]?`, `WidgetKit-ios.swiftinterface:1719`), so the honest
 answer for a variant this release has no record of is none, and the port now returns `nil` instead of
 trapping. It still does not count as placed, because the digester prints it as `subscript(_:)`.
+
+## The five declarations review 2 removed, and why each is not there
+
+`2026-09-28-api-appintents-kits-2.md` found five `fatalError`s in this module and one fabricated
+value. All six are gone (`grep -rn fatalError packages/a/{widgetkit,tipkit,activitykit}/Sources` is
+empty), and the rows below are the cost, stated rather than hidden:
+
+| removed | why it is not here | what it costs |
+| --- | --- | --- |
+| `ControlWidgetButton.init(_:action:actionLabel:)` | every constructor the framework declares on this type needs SwiftUI — the row is `where Label == SwiftUICore.Text` with an `AppIntent` action and an `actionLabel` closure (`WidgetKit-ios.swiftinterface:1334-1341`) — and this module's own label constructor is a trap, not a substitute | 1 placed row |
+| `ControlWidgetToggle.init(_:isOn:action:valueLabel:)` | the same, for the toggle (`:1231-1236`, `:1250-1258`) | 1 placed row |
+| `ControlWidgetButtonDefaultActionLabel.body`, `ControlWidgetToggleDefaultLabel.body`, `AccessoryWidgetBackground.body` | a `body: some SwiftUICore.View` row; the port had `body: Never { fatalError }`, and a `Never` has no value, so a non-trapping `body` cannot be one. These are SwiftUI rows, like TipKit's ten, and are in that list | 3 placed rows |
+| `EnvironmentVariants.subscript(dynamicMember:)` returned `true` for every name | it now takes the key path the framework's own `@dynamicMemberLookup` subscript takes (`WidgetKit-ios.swiftinterface:1714-1716`) and answers `[Value]?` — none — like the subscript beside it | no row: the old shape was not the framework's, the new one is |
+
+`ActivityViewContextPlaceholder.context(for:)` keeps its row and no longer traps: a context needs an
+`Attributes` instance and a `ContentState` instance, this release has neither, so the answer is
+optional and is none. WidgetKit is **240 of 340** placed, 100 missing, and the five rows above are
+why.
+
+`ControlWidgetButton` and `ControlWidgetToggle` keep the constructors that take the app's own label
+(`init(action:label:)`, and the `actionLabel:`/`valueLabel:` forms), which trap nowhere and need
+nothing this module does not have.

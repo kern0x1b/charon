@@ -94,12 +94,23 @@ public struct TimelineProviderContext {
     }
 
     /// The variants a widget is drawn at on one family: a light, a dark and an increased-contrast
-    /// drawing of the same widget, reached by the name the system knows it by.
+    /// drawing of the same widget. The system holds them; this release has no store of them, so a
+    /// variant asked for by name or by key path is answered with none rather than with a value the
+    /// system never produced. The framework's own subscripts are two, both over SwiftUI's
+    /// `EnvironmentValues` (`WidgetKit-ios.swiftinterface:1714-1721`); both are answered here with
+    /// none, and both take the key path over this type, because that is the one type this module
+    /// has.
     public struct EnvironmentVariants {
         public init() {}
 
-        /// The drawing the system asked for, by the name it knows the variant by.
-        public subscript(dynamicMember variant: String) -> Bool { return true }
+        /// The variants at a key path the drawing is reached by, which is the framework's own
+        /// `@dynamicMemberLookup` subscript (`WidgetKit-ios.swiftinterface:1714-1716`).
+        /// Its answer is the same none, for the same reason, and the key path is taken over this type
+        /// as the one below is.
+        public subscript<Value>(dynamicMember keyPath: KeyPath<EnvironmentVariants, Value>) -> [Value]? {
+            return nil
+        }
+
         /// The drawing at a key path into the widget's own environment.
         ///
         /// The interface takes a key path into `SwiftUI.EnvironmentValues` and answers `[T]?`

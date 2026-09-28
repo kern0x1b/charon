@@ -74,13 +74,6 @@ public struct ControlWidgetButton<Content: WidgetBody>: ControlWidgetConfigurati
     /// The label the system shows when the app named none.
     public let actionLabel: ControlWidgetButtonDefaultActionLabel?
 
-    public init(_ value: String, action: @escaping () -> Void, actionLabel: ControlWidgetButtonDefaultActionLabel? = nil) {
-        self.value = value
-        self.action = action
-        self.actionLabel = actionLabel
-        self.label = CharonControlLabel<Content>.empty
-    }
-
     public init(action: @escaping () -> Void, label: Content) {
         self.value = ""
         self.action = action
@@ -116,9 +109,7 @@ public struct ControlWidgetButtonDefaultActionLabel: WidgetBody {
 
     public init() {}
 
-    public var body: Never {
-        fatalError("the system draws the default label, and there is no system here to draw it")
-    }
+
 }
 
 extension ControlWidgetButtonDefaultActionLabel {
@@ -143,15 +134,6 @@ public struct ControlWidgetToggle<Value: ControlValueProvider, Content: WidgetBo
     public let label: Content
     /// The value label, which the app names when the control shows more than a name.
     public let valueLabel: ControlWidgetToggleDefaultLabel?
-
-    public init(_ valueProvider: Value, isOn: Bool, action: @escaping (Bool) -> Void,
-                valueLabel: ControlWidgetToggleDefaultLabel? = nil) {
-        self.named = valueProvider
-        self.isOn = isOn
-        self.action = action
-        self.label = CharonControlLabel<Content>.empty
-        self.valueLabel = valueLabel
-    }
 
     public init(isOn: Bool, action: @escaping (Bool) -> Void, label: Content) {
         self.named = nil
@@ -193,9 +175,7 @@ public struct ControlWidgetToggleDefaultLabel: WidgetBody {
 
     public init() {}
 
-    public var body: Never {
-        fatalError("the system draws the default value label, and there is no system here to draw it")
-    }
+
 }
 
 extension ControlWidgetToggleDefaultLabel {
@@ -224,9 +204,4 @@ public struct CharonControlLabel<Content>: WidgetBody {
         self.value = value
     }
 
-    public static var empty: Content { CharonControlLabel<Content>.emptyValue() }
-
-    private static func emptyValue() -> Content {
-        fatalError("a control's label is the app's own view; a control that has none draws no label")
-    }
 }

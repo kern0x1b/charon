@@ -164,10 +164,14 @@ public struct ActivityViewContextPlaceholder {
     public static var shared: ActivityViewContextPlaceholder { return ActivityViewContextPlaceholder() }
 
     /// A context of an activity of this kind that has no state yet, which is what a gallery draws.
-    public func context<Attributes: ActivityAttributes>(for type: Attributes.Type) -> ActivityViewContext<Attributes> {
-        // There is no Live Activity on this release and no context to build: the configuration's own
-        // `content` closure is the app's, and the app draws with the context it has.
-        fatalError("a Live Activity is drawn by the app's own surface, which holds the context")
+    ///
+    /// The framework's own answer is not optional (`WidgetKit-ios.swiftinterface:315-324`: an
+    /// `activityID`, the `attributes` and the `state` it was given). A context needs an
+    /// `Attributes` *instance* and a `ContentState` instance, and this release has neither: a Live
+    /// Activity is the system's own surface, and there is none. So the honest answer is none, and
+    /// the answer is optional here rather than a trap in a public method.
+    public func context<Attributes: ActivityAttributes>(for type: Attributes.Type) -> ActivityViewContext<Attributes>? {
+        return nil
     }
 }
 
@@ -177,7 +181,4 @@ public struct AccessoryWidgetBackground {
 
     public init() {}
 
-    public var body: Never {
-        fatalError("the accessory background is drawn by the app's own surface")
-    }
 }

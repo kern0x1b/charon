@@ -60,3 +60,37 @@ device without the service answers, with the surface still in place.
 ## Licence
 
 MIT, the repository's. `LICENSE` is the one at the root of the repository, copied into the package.
+
+## Building it on its own, and the one-at-a-time rule
+
+`xmake` resolves these packages out of the shared `~/.xmake` store, and that store takes a
+**machine-wide** lock per package: a second `xmake` that reaches the same package waits, and prints
+`package(swift-runtime) is being accessed by other processes, please wait!` until the first is done.
+So every `xmake` command that touches the store goes through `coordination/heavy.sh`, one at a time,
+or it hangs:
+
+    coordination/heavy.sh xmake f -c -y      # resolve
+    coordination/heavy.sh xmake -y            # build
+
+To build one of these Swift packages without a port, give `xmake` a project of its own, shaped as
+the gate's `resolve()` shapes one (`coordination/build-gate.lua:44-48`):
+
+    set_project("gate-tipkit")
+    add_repositories("charon <path to a checkout>")
+    add_addons("charon v0.8.13")             -- the newest version the checkout's recipe names
+    set_config("apple_minimum", "6.1.3")
+    includes("@addon/charon/apple-ios")
+    set_defaultplat("iphoneos")
+    set_defaultarchs("iphoneos|armv7")
+    add_requires("charon@swift-runtime", {alias = "swift-runtime"})
+    add_requires("charon@appintents", {alias = "appintents"})
+    add_requires("charon@tipkit", {alias = "tipkit"})
+
+A **fresh directory name per attempt** matters: xmake keeps a repository search index under
+`~/.xmake/cache/quick_search`, and a directory name it has seen before is answered from that index
+rather than from the checkout, so a stale entry makes a package that is present look absent. The
+projects must be built through `heavy.sh` even to resolve, because resolution alone takes the lock.
+
+`charon@activitykit`, `charon@tipkit` and `charon@widgetkit` are built the same way, each adding its
+own `add_requires("charon@<name>", {alias = "<name>"})`; `activitykit` needs `charon@appintents`
+first, `tipkit` needs `charon@appintents`, and `widgetkit` needs both.

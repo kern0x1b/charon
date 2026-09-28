@@ -82,40 +82,50 @@ public enum PredicateExpressions {
         }
     }
 
-    /// Whether the donations, grouped by a value, are as many as the rule's other side says.
+    /// The donations of the largest group, among the groups the rule's other side accepts.
     ///
-    /// How many is not an argument of its own: it is the comparison the rule wrote on the other side
-    /// of the condition, which is the `DonationFilter` this takes, so `#Predicate`-shaped code says
-    /// "at least three" and this reads that. The interface's builders are two-argument
-    /// (`TipKit-ios.swiftinterface:180,191`), and this is the shape that keeps them so.
+    /// A *selection*, not a comparison: the framework's own `Output` is
+    /// `[Tips.Event<DonationInfo>.Donation]` (`TipKit-ios.swiftinterface:173-177`), so a rule can go on
+    /// using what it hands back -- "the three most recent" is a selection and a comparison over it.
+    /// Which groups are candidates is the comparison the rule wrote on the other side of the
+    /// condition, which is the `DonationFilter` this takes; the interface's builders are two-argument
+    /// (`:180,191`), and this is the shape that keeps them so.
     public struct LargestSubset: EventPredicateExpression {
-        public typealias Output = Bool
+        public typealias Output = [Tips.Event<Tips.EmptyDonation>.Donation]
 
-        /// The comparison that says how many are wanted.
+        /// The comparison that says which groups are candidates.
         public let input: DonationFilter
         /// The name the donations are grouped by.
         public let keyPath: String
 
-        public func evaluate(_ donations: any Tips.RuleInput) -> Bool {
-            let groups = CharonDonationSubset.groups(donations.donations, eventID: input.eventID, keyPath: keyPath).count
-            return CharonDonationCompare.compare(String(groups), input.value, input.op)
+        /// The donations of the largest candidate group, or none when no group is a candidate.
+        public func select(_ donations: any Tips.RuleInput) -> [Tips.Event<Tips.EmptyDonation>.Donation] {
+            return CharonDonationSubset.largest(of: CharonDonationSubset.candidates(
+                donations.donations, eventID: input.eventID, keyPath: keyPath, value: input.value, op: input.op))
         }
+
+        /// Whether a candidate group is there at all, which is the `Bool` a rule asks for.
+        public func evaluate(_ donations: any Tips.RuleInput) -> Bool { return select(donations).isEmpty == false }
     }
 
-    /// Whether the donations, grouped by a value, are as few as the rule's other side says. The
-    /// mirror of `LargestSubset`, and read the same way.
+    /// The donations of the smallest group, among the groups the rule's other side accepts. The
+    /// mirror of `LargestSubset`, and a different selection: the smallest group, not the largest.
     public struct SmallestSubset: EventPredicateExpression {
-        public typealias Output = Bool
+        public typealias Output = [Tips.Event<Tips.EmptyDonation>.Donation]
 
-        /// The comparison that says how many are wanted.
+        /// The comparison that says which groups are candidates.
         public let input: DonationFilter
         /// The name the donations are grouped by.
         public let keyPath: String
 
-        public func evaluate(_ donations: any Tips.RuleInput) -> Bool {
-            let groups = CharonDonationSubset.groups(donations.donations, eventID: input.eventID, keyPath: keyPath).count
-            return CharonDonationCompare.compare(String(groups), input.value, input.op)
+        /// The donations of the smallest candidate group, or none when no group is a candidate.
+        public func select(_ donations: any Tips.RuleInput) -> [Tips.Event<Tips.EmptyDonation>.Donation] {
+            return CharonDonationSubset.smallest(of: CharonDonationSubset.candidates(
+                donations.donations, eventID: input.eventID, keyPath: keyPath, value: input.value, op: input.op))
         }
+
+        /// Whether a candidate group is there at all, which is the `Bool` a rule asks for.
+        public func evaluate(_ donations: any Tips.RuleInput) -> Bool { return select(donations).isEmpty == false }
     }
 
     /// The builders a rule is written with, one per condition.
@@ -199,14 +209,36 @@ enum CharonDonationSubset {
         return accept(0)
     }
 
+    /// The donations of every group, keyed by the group's own name.
     static func groups(_ donations: [Tips.Event<Tips.EmptyDonation>.Donation], eventID: String,
-                       keyPath: String) -> [String: Int] {
-        var counts: [String: Int] = [:]
+                       keyPath: String) -> [String: [Tips.Event<Tips.EmptyDonation>.Donation]] {
+        var grouped: [String: [Tips.Event<Tips.EmptyDonation>.Donation]] = [:]
         for donation in donations {
             guard let group: String = CharonDonationValue.read(donation, eventID: eventID, key: keyPath) else { continue }
-            counts[group, default: 0] += 1
+            grouped[group, default: []].append(donation)
         }
-        return counts
+        return grouped
+    }
+
+    /// The groups whose own name is one the rule's other side accepts, which is what a subset
+    /// condition chooses among.
+    static func candidates(_ donations: [Tips.Event<Tips.EmptyDonation>.Donation], eventID: String, keyPath: String,
+                           value: String,
+                           op: PredicateExpressions.DonationFilterOperator) -> [String: [Tips.Event<Tips.EmptyDonation>.Donation]] {
+        return groups(donations, eventID: eventID, keyPath: keyPath).filter {
+            CharonDonationCompare.compare($0.key, value, op)
+        }
+    }
+
+    /// The largest of the groups, by how many donations it holds. The groups are put in name order
+    /// first, so two of the same size are decided by the name and not by the dictionary's order.
+    static func largest(of grouped: [String: [Tips.Event<Tips.EmptyDonation>.Donation]]) -> [Tips.Event<Tips.EmptyDonation>.Donation] {
+        return grouped.sorted { $0.key < $1.key }.last.map { $0.value } ?? []
+    }
+
+    /// The smallest of the groups, by how many donations it holds, decided the same way.
+    static func smallest(of grouped: [String: [Tips.Event<Tips.EmptyDonation>.Donation]]) -> [Tips.Event<Tips.EmptyDonation>.Donation] {
+        return grouped.sorted { $0.key < $1.key }.first.map { $0.value } ?? []
     }
 }
 
