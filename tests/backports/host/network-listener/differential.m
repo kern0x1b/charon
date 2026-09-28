@@ -27,6 +27,7 @@
 #import <mach/mach_time.h>
 #include <stdio.h>
 #import <unistd.h>
+#import <dlfcn.h>
 #import "check.h"
 
 #define P(name) charonhost_##name
@@ -89,6 +90,11 @@ static void check(int condition, NSString *what)
 int main(void)
 {
     @autoreleasepool {
+        /* which implementation a bare call in this program reaches: the port's own Network symbols are
+           linked into this binary, so a name that is not renamed binds to the port and not to Apple's */
+        Dl_info where;
+        if (dladdr((void *)(uintptr_t)nw_connection_create, &where) && where.dli_fname)
+            printf("  nw_connection_create binds to %s\n", where.dli_fname);
         /* a port of our own: the loopback's, found by binding one and reading it back */
         int probe = socket(AF_INET, SOCK_STREAM, 0);
         struct sockaddr_in address;
