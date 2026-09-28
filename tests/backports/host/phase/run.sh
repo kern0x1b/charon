@@ -28,18 +28,25 @@ renames=""
 for name in PHASENumericPair PHASEDistanceModelParameters PHASEDistanceModelFadeOutParameters \
              PHASEGeometricSpreadingDistanceModelParameters PHASEDirectivityModelParameters \
              PHASECardioidDirectivityModelSubbandParameters PHASEConeDirectivityModelSubbandParameters \
-             PHASECardioidDirectivityModelParameters PHASEConeDirectivityModelParameters
+             PHASECardioidDirectivityModelParameters PHASEConeDirectivityModelParameters PHASEEngine
 do
     renames="$renames -D$name=charon_host_$name"
 done
 
-# shellcheck disable=SC2086
-xcrun clang -fobjc-arc -w $renames -I"$AVFAUDIO" -I"$root/modules" \
-    -c "$AVFAUDIO/PHASEValueTypes15.m" -o "$build/port.o" 2> "$build/port.err" || {
-        echo "FAIL compiling the port's PHASE value types"; head -6 "$build/port.err"; exit 1; }
+# One -c and one -o per source: a single -c with two inputs and one -o is rejected, which is what
+# this did the first time.
+port_objects=""
+for source in "$AVFAUDIO/PHASEValueTypes15.m" "$AVFAUDIO/PHASEEngine15.m"; do
+    name=$(basename "$source")
+    # shellcheck disable=SC2086
+    xcrun clang -fobjc-arc -w $renames -I"$AVFAUDIO" -I"$root/modules" \
+        -c "$source" -o "$build/$name.o" 2> "$build/$name.err" || {
+            echo "FAIL compiling $name"; head -6 "$build/$name.err"; exit 1; }
+    port_objects="$port_objects $build/$name.o"
+done
 
 # shellcheck disable=SC2086
-xcrun clang -fobjc-arc -Wall -Wno-deprecated-declarations "$here/values.m" "$build/port.o" \
+xcrun clang -fobjc-arc -Wall -Wno-deprecated-declarations "$here/values.m" $port_objects \
     -framework Foundation -framework PHASE -o "$build/values" 2> "$build/link.err" || {
         echo "FAIL linking"; head -8 "$build/link.err"; exit 1; }
 

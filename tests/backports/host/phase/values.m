@@ -115,6 +115,95 @@ static void compareDefaults(void)
     }
 }
 
+// The port's engine, renamed.
+@interface charon_host_PHASEEngine : NSObject
+- (instancetype)initWithUpdateMode:(NSInteger)updateMode;
+- (double)unitsPerSecond;
+- (double)unitsPerMeter;
+- (NSInteger)renderingState;
+- (NSInteger)outputSpatializationMode;
+- (NSInteger)defaultReverbPreset;
+- (id)defaultMedium;
+- (id)rootObject;
+- (NSArray *)soundEvents;
+- (NSDictionary *)groups;
+- (NSArray *)duckers;
+- (id)activeGroupPreset;
+- (id)assetRegistry;
+@end
+
+// The engine's own state, held between the port's fresh object and the host's fresh one. The six
+// documented defaults and the six empty answers, and a fresh engine is the only thing either can be
+// asked for: these are the values of an engine nobody has added anything to.
+static void compareEngine(void)
+{
+    Class portEngine = NSClassFromString(@"charon_host_PHASEEngine");
+    Class hostEngine = NSClassFromString(@"PHASEEngine");
+    if (portEngine == Nil || hostEngine == Nil) {
+        printf("skip the engine: %s\n", portEngine == Nil ? "the host's PHASE does not carry PHASEEngine"
+                                                            : "the port's PHASEEngine is not in this binary");
+        return;
+    }
+    printf("stage the host's engine: %s / the port's: %s\n",
+           NSStringFromClass(hostEngine).UTF8String, NSStringFromClass(portEngine).UTF8String);
+    // The host's engine is constructed inside a @try: Apple's PHASEEngine raises when a bare process
+    // makes one, because the engine expects a host that owns the audio system. That is a fact about
+    // the oracle's own circumstances and not about the port, so it is reported and the comparison is
+    // skipped rather than being allowed to take the value-type checks down with it - the same shape
+    // the avfaudio harness uses for a host unit that will not initialize outside an AUGraph.
+    id theirs = nil;
+    NSString *refused = nil;
+    @try {
+        theirs = [[hostEngine alloc] initWithUpdateMode:0];
+    } @catch (NSException *exception) {
+        refused = exception.reason;
+    }
+    if (theirs == nil) {
+        printf("skip the engine's defaults: the host's PHASEEngine refuses to be made here - %s\n",
+               refused ? refused.UTF8String : "(no reason given)");
+        return;
+    }
+    id mine = [[portEngine alloc] initWithUpdateMode:0];
+
+    checkClose(@"a fresh engine's unitsPerSecond is the header's 1.0",
+               [[mine valueForKey:@"unitsPerSecond"] doubleValue], [[theirs valueForKey:@"unitsPerSecond"] doubleValue], 0.0);
+    checkClose(@"a fresh engine's unitsPerMeter is the header's 1.0",
+               [[mine valueForKey:@"unitsPerMeter"] doubleValue], [[theirs valueForKey:@"unitsPerMeter"] doubleValue], 0.0);
+    check(@"a fresh engine's rendering state is the same on both",
+          [[mine valueForKey:@"renderingState"] integerValue] == [[theirs valueForKey:@"renderingState"] integerValue]);
+    check(@"a fresh engine's output spatialization mode is the same on both",
+          [[mine valueForKey:@"outputSpatializationMode"] integerValue] == [[theirs valueForKey:@"outputSpatializationMode"] integerValue]);
+    check(@"a fresh engine's default reverb preset is the same on both",
+          [[mine valueForKey:@"defaultReverbPreset"] integerValue] == [[theirs valueForKey:@"defaultReverbPreset"] integerValue]);
+    // The two are not the same kind of thing and the difference is deliberate: the port holds the
+    // preset as a number because PHASEMedium is a separate family of the corpus it does not carry,
+    // while the host holds a PHASEMedium object. So the *preset* is compared - the host's through its
+    // own medium - which is the value the header documents, and it is also the check that would catch
+    // the port answering the wrong preset.
+    id theirMedium = [theirs valueForKey:@"defaultMedium"];
+    NSInteger theirPreset = [theirMedium respondsToSelector:@selector(preset)]
+        ? [[theirMedium valueForKey:@"preset"] integerValue]
+        : [theirMedium integerValue];
+    check(@"a fresh engine's default medium is the header's air preset on both",
+          [[mine valueForKey:@"defaultMedium"] integerValue] == theirPreset);
+
+    // and the six that are the empty set, which a fresh engine really is
+    check(@"a fresh engine has no sound events on either",
+          [[mine soundEvents] count] == 0 && [[theirs valueForKey:@"soundEvents"] count] == 0);
+    check(@"a fresh engine has no groups on either",
+          [[mine groups] count] == 0 && [[theirs valueForKey:@"groups"] count] == 0);
+    check(@"a fresh engine has no duckers on either",
+          [[mine duckers] count] == 0 && [[theirs valueForKey:@"duckers"] count] == 0);
+    id theirRoot = [theirs valueForKey:@"rootObject"];
+    printf("stage a fresh engine's root object: host %s, port %s\n",
+           theirRoot ? NSStringFromClass([theirRoot class]).UTF8String : "nil",
+           [mine rootObject] ? NSStringFromClass([[mine rootObject] class]).UTF8String : "nil");
+    check(@"a fresh engine's root object is the same on both",
+          [mine rootObject] == nil ? theirRoot == nil : [[mine rootObject] isKindOfClass:[theirRoot class]]);
+    check(@"a fresh engine has no active group preset on either",
+          [mine activeGroupPreset] == nil && [theirs valueForKey:@"activeGroupPreset"] == nil);
+}
+
 int main(void)
 {
     @autoreleasepool {
@@ -202,6 +291,7 @@ int main(void)
         }
 
         compareDefaults();
+        compareEngine();
         printf("checks=%d failures=%d\n", checks, failures);
     }
     return failures == 0 ? 0 : 1;

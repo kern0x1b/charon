@@ -98,9 +98,11 @@
       "kind": "property",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "implemented",
+      "status": "absent",
       "facts": "facts/PHASE/PHASEEngine.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEEngine.h and PHASETypes.h, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own - unitsPerSecond and unitsPerMeter at PHASEEngine.h:123 and :134, the reverb preset at :112, the medium at :104, and the enumeration's own zero values for renderingState and outputSpatializationMode"
+      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEEngine.h and PHASETypes.h, byte-identical on the default lines; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either and every value is the header's own - unitsPerSecond and unitsPerMeter at PHASEEngine.h:123 and :134, the reverb preset at :112, the medium at :104, and the enumeration's own zero values for renderingState and outputSpatializationMode",
+      "reason": "a fresh engine has a root object and the host's is a PHASERootObject - measured, tests/backports/host/phase/run.sh, 'stage a fresh engine's root object: host PHASERootObject, port nil' - and PHASERootObject has no row in the PHASE corpus at all, so the port has no class to put there. PHASERootObject is a framework-internal class: the corpus names 59 PHASE classes and it is not among them",
+      "effect": "nil, and the oracle says so rather than passing: a caller reading a root object reads nil and can tell"
     },
     {
       "api": "PHASEEngine.soundEvents",

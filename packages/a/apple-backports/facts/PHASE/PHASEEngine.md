@@ -18,7 +18,7 @@ engine.
 | `defaultMedium` | `PHASEMediumPresetAir` | `:104` |
 | `renderingState` | `PHASERenderingStateStopped` | the enumeration's own zero (`PHASETypes.h`) |
 | `outputSpatializationMode` | `PHASESpatializationModeAutomatic` | see below |
-| `rootObject` | nil | a fresh engine has none |
+| `rootObject` | **absent** | the host has a `PHASERootObject`; see below |
 | `activeGroupPreset` | nil | the header marks it nullable |
 | `soundEvents` | `@[]` | a fresh engine has none |
 | `groups` | `@{}` | a fresh engine has none |
@@ -38,8 +38,21 @@ release would clamp would answer something the release does not.
 
 ## The three answers that are the empty set, and what they cost
 
-`soundEvents`, `groups` and `duckers` answer empty, and `rootObject`, `activeGroupPreset` and
-`assetRegistry` answer nil. That is the truth about a fresh engine, not a stub — an engine has none of
+The oracle caught one thing this delivery got wrong, and it is the reason the half exists: **a fresh
+engine's `rootObject` is not nil.** The host's is a `PHASERootObject`:
+
+```
+stage a fresh engine's root object: host PHASERootObject, port nil
+```
+
+`PHASERootObject` has **no row in the PHASE corpus at all** — the corpus names 59 PHASE classes and
+it is not among them — so the port has no class to put there. The row is `absent` with that
+measurement as its reason, and the oracle keeps saying so rather than passing. An engine whose root
+object is nil cannot take a sound event yet, which is the honest state of a framework whose root is
+not carried.
+
+`soundEvents`, `groups` and `duckers` answer empty, and `activeGroupPreset` and `assetRegistry`
+answer nil. That is the truth about a fresh engine, not a stub — an engine has none of
 them until objects are added. But the **classes** they would hold are separate families of the corpus
 this delivery does not carry: `PHASESoundEvent`, `PHASEGroup`, `PHASEDucker`, `PHASEObject`,
 `PHASEMedium`, `PHASEAssetRegistry` and `PHASEGroupPreset`. So a caller that adds a sound event to
@@ -57,10 +70,20 @@ would be the kind of invented value the brief is hardest about.
 
 ## The host differential
 
-`tests/backports/host/phase/run.sh` holds the port's own renamed classes to the host's PHASE for the
-**value** types. The engine is the next thing to add to it, and the properties that a host can settle
-are the six documented defaults above; the six empty ones it confirms by reading them off a fresh
-engine. The oracle is not yet extended to the engine, and this delivery does not claim it is.
+`tests/backports/host/phase/run.sh` holds the port's own renamed classes to the host's PHASE, for the
+**value** types and now for the engine:
+
+```
+stage the host's engine: PHASEEngine / the port's: charon_host_PHASEEngine
+stage a fresh engine's root object: host PHASERootObject, port nil
+checks=32 failures=1
+```
+
+The one failure is the root object above, and it is the port being behind rather than the check being
+wrong. The host's engine is constructed inside a `@try`: Apple's `PHASEEngine` raises when a bare
+process makes one, because it expects a host that owns the audio system, and that is reported and
+skipped rather than being allowed to take the value-type checks down with it — the same shape the
+avfaudio harness uses for a host unit that will not initialize outside an AUGraph.
 
 ## Reuse
 
