@@ -346,8 +346,9 @@ static NSString *compare(vImage_Buffer theirs, vImage_Buffer ours, unsigned word
             }
         }
     }
-    // the stated limit is not itself admitted: a difference of exactly `tolerance` is one unit too many
-    if (worst < (double)tolerance)
+    // The stated limit is the admitted one: a difference of exactly `tolerance` is inside it, so a case
+    // that differs by 514 at the full sixteen-bit range passes and one that differs by 515 does not.
+    if (worst <= (double)tolerance)
         return nil;
     return [NSString stringWithFormat:@"row %llu sample %llu differs by %d, past the last bit's %d",
                                       where / 1000000, where % 1000000, worst, tolerance];
