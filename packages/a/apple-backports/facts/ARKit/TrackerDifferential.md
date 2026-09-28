@@ -558,3 +558,36 @@ measurement worse is dead weight a reader will trust — and the built code stay
 `.agent-work/` for whoever picks the next piece up. The order of the three is what I would tell them:
 the rotation is solved and exact, the distance is not, and the distance needs a measurement of the
 baseline rather than an integration of one.
+
+## Open item: the distance, and its cause
+
+**Open. The distance is not solved, and the cause is known.** Every attempt so far has *integrated* a
+baseline; the distance needs one *measured*.
+
+The rotation is solved and exact: 0.002 degrees of mean error over a 100-frame sequence, a floor of
+0.01 degrees, and a mutation that puts the conjugated read-back back turns that floor red. The
+distance is not: 0.60488 m of mean error over a 4.95 m path, and four attempts have been measured
+against it and none has helped.
+
+| what | mean distance error |
+| --- | --- |
+| no filter | 0.65345 m |
+| three-state accelerometer bias filter | 0.60488 m |
+| Forster's nine-state filter, both measurements | 0.60850 m |
+| the landmarks' parallax against the exact rotation | 0.63329 m |
+
+**The cause.** Each of the four is an integration: a specific force, a bias-corrected specific force,
+a parallax between two rays whose baseline came from the first two. An accelerometer's integration
+drifts, and the drift is what the 0.60 m is - a baseline about 12% wrong by the end of the path. Once
+the baseline is that wrong the two rays meet in the wrong place, so a visual correction that makes the
+reprojection agree corrects *towards the wrong baseline*, which is why the parallax - the right idea,
+with the arithmetic checked - made the number worse rather than better.
+
+What is needed is a measurement of the baseline rather than an integration of one, and the piece that
+provides it is not in the delivery: a camera and a gyroscope cannot recover metric scale on their own,
+which is the ambiguity the depth-from-drift relation was an attempt at and which the rank measurement
+in the section above shows is not resolvable from a single interval.
+
+The one thing the sequence has and a device does not is its own path. That is what makes the
+differential able to measure a metric tracker at all, and it is also why the remaining gap is not
+closable inside the library: it needs a scale the hardware does not observe.
