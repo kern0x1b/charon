@@ -31,75 +31,38 @@ recorded by `tests/backports/host/vision/run.sh` (33 records) and held against t
   declares and Core ML's own image constructors use -- measured against Core ML's own constructor
   as the oracle, which is what this port has to match:
 
-  **Each rule is now compared with the same rule on the framework's side.** Core ML's own
-  constructor takes a `VNImageCropAndScaleOption` under the `CropAndScale` key -- its header says so:
-  "Key for VNImageCropAndScaleOption describing how to crop and scale the image (or region of
-  interest) to the desired size" -- so the oracle for a row is that row's own rule handed over, and
-  `MLFeatureValueImageOptionCropRect` is the other key it takes. The table is therefore like for
-  like, and it is still red:
+  **The control passes, and with it the diagnosis changes.** The probe now starts from **Core ML's
+  own bytes** -- `featureValueWithCGImage:pixelsWide:pixelsHigh:` at the picture's own size, which
+  the port already matches 0 of N -- and asks vImage to do nothing at all to them.
+  **`differing=0 of 5600`, and 0 of every other case's control.** So the probe's source, byte
+  layout, locks, row lengths and destination are all right, and every number after the control is
+  about the resampler. (`vImageScale_ARGB8888` treats its four channels alike, and an opaque picture
+  makes premultiplication moot, so no conversion was built: the question was never the layout.)
 
-  | picture to | rule | differing pixels | of |
+  **vImage is not the resampler, and the port is closer to the framework than vImage is:**
+
+  | picture to | rule | the port | vImage (best of the four flag sets) |
   | --- | --- | --- | --- |
-  | 100x50 to 224x224 | centre crop | 50015 | 50176 |
-  | 100x50 to 224x224 | scale fit | 49632 | 50176 |
-  | 13x7 to 8x8 | centre crop | 64 | 128 |
-  | 13x7 to 8x8 | scale fit | 64 | 128 |
-  | 16x16 to 16x16 (the exact 1:1) | either | **0** | 256 |
-  | 8x8 to 16x16 (an integer 2x) | either | 252 | 256 |
-  | 4x7 to 33x9 | centre crop | 347 | 432 |
-  | 4x7 to 33x9 | scale fit | 338 | 432 |
+  | 100x50 to 224x224 | scale fit | **0** of 50176 | 23448 |
+  | 13x7 to 8x8 | scale fit | **0** of 128 | 31 |
+  | 16x16 to 16x16 | either | **0** of 256 | 0 |
+  | 8x8 to 16x16 | either | **0** of 256 | 255 |
+  | 4x7 to 33x9 | scale fit | **0** of 432 | 44 |
+  | 100x50 to 224x224 | centre crop | 50176 of 50176 | 50161 |
+  | 4x7 to 33x9 | centre crop | 297 of 432 | 297 |
 
-  **The interpolation is not the cause, and that is now measured.** The harness compiles the port's
-  own function with each of CoreGraphics' three qualities and reads the worst row for each:
-  **High 50015, Medium 50015, None 50092.** A nearest-neighbour resample is within 77 pixels of the
-  smoothest, while every row differs by tens of thousands, so whatever it is, it is not the kernel.
-  The header's default (`kCGInterpolationHigh`) stays because two of the three tie and choosing the
-  worst of the tie on no evidence would be a claim; it is a seam, not an answer.
+  Every scale-fit row and both exact-1:1 rows now read **0**, including the integer 2x case the vImage
+  hypothesis was built on. The four flag sets are indistinguishable from each other on every scaling
+  row, so the kernel is not what separates them either -- the same conclusion the three qualities of
+  CoreGraphics' kernel reached from the other side.
 
-  **Core ML's no-option answer is neither of Vision's two rules.** With the options dictionary empty
-  the framework's answer for 100x50 brought to 224x224 is 50175 of 50176 pixels from its own
-  `ScaleFit` and 50035 of 50176 from its own `CenterCrop`: neither, exactly. The header states no
-  default, and this measures it.
-
-  **A premultiplied-last context was tried and rejected by the numbers.** Writing the alpha is what
-  a transparent fill needs, and it is the obvious reading of Core ML writing `00 00 00 00` in the bars
-  and `ff` under the picture. It made every row worse and turned the exact 1:1 case from 0 of 256 into
-  256 of 256 -- so the framework's 1:1 answer carries the alpha its own buffer was created with, not
-  the picture's, and the difference the alpha suggested is not the one. Reverted, with the numbers
-  that rejected it in the header of the function.
-
-  **vImage: the comparison runs now, and it does not say vImage is the resampler yet.** The
-  coordinator was right that the SIGBUS was a fault in the probe and not a residual. The probe lives
-  outside the tree, in `.agent-work/runs/crop-probe/`, and it runs. The three faults were the three
-  usual ones: a base address read before its lock, a row length taken as `width * 4` where the
-  buffer's own `CVPixelBufferGetBytesPerRow` is larger, and a destination offset that could run past
-  the allocation -- the scaled size is now clamped into the destination, so the offset cannot.
-
-  What it reads, per flag set (`kvImageNoFlags`, `kvImageHighQualityResampling` -- Lanczos,
-  `kvImageEdgeExtend`, and both): 8x8 to 16x16 **297 of 432 under all four**, 4x7 to 33x9 centre crop
-  **45 of 432 under all four**, and 16x16 to 16x16 -- the case where nothing is resampled and the
-  port matches the framework exactly -- **256 of 256 under all four**. That last one is the
-  information: vImage does not reproduce the framework's answer even where no scaling happens, so
-  what the comparison is currently measuring is not the kernel but the **bytes**: `vImageScale_ARGB8888`
-  reads *premultiplied ARGB*, and the buffer it is handed here is `BGR ` with no premultiplication,
-  so two channels and an alpha are out of place before any resampling is considered. The flag sets
-  being indistinguishable from each other is the same fact seen from the other side: with the wrong
-  layout the kernel makes no difference.
-
-  So the honest position: **vImage is not yet excluded and not yet adopted.** The next step is to
-  hand it a premultiplied-ARGB source -- converted from the same picture, with the conversion
-  itself checked against the framework's 1:1 answer, which the port already matches -- and read the
-  four flag sets again. The two candidates the coordinator named after it, `VTPixelTransferSession`
-  (not on iOS 6 before 8.0, so it could only be a reference for what Core ML does, never what the port
-  calls) and CoreImage's `CILanczosScaleTransform`, are untested.
-
-  What the dump already ruled out, and what is left: the **rules** are paired (each row now has its
-  own oracle), the **geometry** agrees (the middle pixel matches exactly, so no flip and no
-  half-pixel offset), the **format and row length** are identical on both sides (`BGR `,
-  `bytesPerRow` 896), and the **kernel** is measured as irrelevant. The fourth byte is the largest
-  single difference and the two readings of it have both failed, so the next measurement is the two
-  buffers' *first rows* side by side rather than three sampled pixels, which will show whether the
-  difference is in the picture, in the bars, or in the scaled picture's interior.
+  **What is left is the centre-crop rule, and it is a rule and not a kernel.** Core ML's
+  `CenterCrop` in this constructor is not Vision's cover-and-crop: its no-option answer is 50035 of
+  50176 pixels from its own `CenterCrop` and 50175 from its own `ScaleFit`, so neither of the two it
+  is offered reproduces its own default, and both are far from the port's Vision rule. The next
+  measurement is *which* centre crop it means -- how much of the source it keeps before it scales --
+  and the other key it takes, `MLFeatureValueImageOptionCropRect`, is where that answer would be read
+  from.
 
   The two rules themselves: centre crop scales until the picture covers the
   target and keeps the middle, scale fit scales until it fits and leaves the rest black. A buffer
