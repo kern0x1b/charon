@@ -197,7 +197,7 @@ static inline vImage_Error CharonShearRun(const vImage_Buffer *src, const vImage
             // centre tap is k = extent, so an offset of `k` from the first tap put the centre
             // `slope * extent` rows from its own row, which made the shear drift; and the row is the
             // DESTINATION's own row plus that offset, which is the piece an earlier version dropped.
-            double centre = ((double)along0 + (double)along + translate) / scale;
+            double centre = ((double)along0 + (double)along + (horizontal ? -translate : translate)) / scale;
             int base = (int)floor(centre);
             CharonResampleWeights(centre, base, extent, filter->lobes, filter->scale, weights);
             long first = (long)base - (long)extent;
@@ -212,8 +212,15 @@ static inline vImage_Error CharonShearRun(const vImage_Buffer *src, const vImage
                     // whole-pixel phase the out-of-range lobes are exactly zero, so the two cannot be
                     // told apart there.
                     if (at < 0 || at >= (long)srcAlong) {
-                        sum += weights[k] * backColor[channel];
-                        continue;
+                        // kvImageEdgeExtend is the header's own "the edge pixels of the source are
+                        // extended": the tap is pulled back to the edge and keeps its weight, where
+                        // kvImageBackgroundColorFill substitutes the backColor instead. The flag was
+                        // computed and never read, so every edging-mode case took the backColor.
+                        if (!extend) {
+                            sum += weights[k] * backColor[channel];
+                            continue;
+                        }
+                        at = at < 0 ? 0 : (srcAlong ? (long)srcAlong - 1 : 0);
                     }
                     // A tap outside ACROSS the shear is clamped to the edge, weight intact and with no
                     // renormalisation: that is the 5558 and 55579.2 overshoot, a value above the source's
