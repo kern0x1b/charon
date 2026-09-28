@@ -1287,7 +1287,7 @@ check("a cancelled subscription hears nothing more", began, raisedBefore)
             IKRig.Joint(name: name, parentID: parent,
                         restTransform: parent == nil ? .identity : Transform(translation: axis),
                         active: true, fkWeightPerAxis: weight, rotationStiffness: stiffness,
-                        limits: name == "mid" ? limits : nil) }
+                        limits: limits) }
         _ = rig.joints.set(joint("root", nil))
         _ = rig.joints.set(joint("mid", IKRig.JointID(name: "root")))
         _ = rig.joints.set(joint("tip", IKRig.JointID(name: "mid")))

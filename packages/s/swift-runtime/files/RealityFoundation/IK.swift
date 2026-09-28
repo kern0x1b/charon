@@ -914,8 +914,15 @@ func __IKClamp(_ rotation: simd_quatf, axis: SIMD3<Float>, minimum: Float, maxim
     let held = min(max(angle, minimum), maximum)
     let amount = angle + (held - angle) * strength
     guard amount != angle else { return rotation }
-    let twist = simd_quatf(angle: amount, axis: a)
-    return (rotation * twist.inverse) * twist
+    // The swing is what is left once the *original* twist is taken off, and the held twist goes
+    // back on in its place. Taking the held twist off instead - `(rotation * held.inverse) * held`
+    // - hands the rotation straight back, because held and original differ by exactly the
+    // correction: the product is the rotation again, and the limit does nothing. The identity case
+    // (the interface's own default limits, plus and minus two pi, where held == angle) is measured
+    // exact and never reaches this line, which is how that mistake survived the first two rounds.
+    let original = simd_quatf(angle: angle, axis: a)
+    let clamp = simd_quatf(angle: amount, axis: a)
+    return (rotation * original.inverse) * clamp
 }
 
 /// A rotation applied to a joint's own orientation, so that the joint's own axes are what turn.
