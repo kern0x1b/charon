@@ -986,6 +986,12 @@ local function link(opt, library, attach, objects, releases, outputdir, checked)
     if cxx then
         table.join2(arguments, cxx_runtime(opt, library, releases, path.join(opt.builddir, "stubs", path.filename(outputdir), library.name)))
     end
+    -- A system library the band's own sources call into, a SQLite the HealthKit store is: it is linked
+    -- as -l and the SDK carries its .tbd, and every release a band that keeps those sources runs on
+    -- has it, which the import check below reads off the cache and would otherwise name as unresolved.
+    for _, name in ipairs(library.system or {}) do
+        table.insert(arguments, "-l" .. name)
+    end
     -- A framework the band's release does not have is not linked: it could not load there. What the
     -- band keeps then needs none of it, or the link names the symbols that do.
     local real_paths = framework_install_path(library, releases)
