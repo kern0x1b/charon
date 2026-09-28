@@ -98,3 +98,17 @@ FPC=off sh tests/backports/host/vdspbiquad6/run.sh      # the same, with contrac
 `SAN=1` and `FPC=off` are in `run.sh`'s own flags on purpose: the renamed `_charon_host_*` objects have to be
 built the way the plain run builds them, or the comparison is between two different builds. An ad-hoc command
 that renames differently builds different objects and says nothing — which cost this shape a day.
+
+## N = 1 answers 0, on the target
+
+**A call of one sample writes nothing, and the release and the port agree bit for bit** that both answers
+are `0x0000000000000000` - measured on the 6.1.3 armv7 guest with `b0 * x[0]` by hand at
+`-0.0674551234` beside it. A single-section biquad has no history without two samples, so there is nothing
+to carry from a one-sample call, and the release does not invent a state for it. The port gets this right
+from a `__N < 2` early return that was written as a guard, not as a rule, and it happens to be the rule.
+
+This is also **not** the reason the float search's control fails. The control compares 32 samples, so a
+one-sample call never reaches it; that remains open, and the diagnostic beside it in the probe prints the
+coefficient order, the section count, the initial `Delay` and the input pointer and stride for both sides,
+because if the port agrees with the release and variant 0 does not, the evaluator is being fed something
+other than what the port gets.

@@ -358,6 +358,39 @@ static void run_search(const char *label, const double *coeffs, vDSP_Length sect
     search_all(leaves, 5, &forest);
     printf("  %d trees, variant 0 is the printed form\n", forest.count);
 
+    // The inputs, side by side, for sample 0 of the SAME 32-sample case the control fails on. If the port
+    // agrees with the release and variant 0 does not, the evaluator is being fed something other than what
+    // the port gets, so print what each is fed: the coefficient order, the section count, the initial Delay,
+    // and the input and its stride. The two likely mismatches are the order of the five coefficients and a
+    // Delay that is not the zero the port is given.
+    {
+        double zeros[2 * 9];
+        for (int i = 0; i < 2 * 9; i++) zeros[i] = 0.0;
+        printf("\n  what each side is fed, for sample 0 of the %d-sample case, %d sections:\n", SEARCH_SAMPLES,
+               (int)sections);
+        printf("    the evaluator: coefficients");
+        for (int k = 0; k < 5; k++) printf(" %s%.17g", k ? "," : "", all[k]);
+        printf("   (%s)\n", "b0 b1 b2 a1 a2");
+        printf("    the port's setup: coefficients");
+        {
+            // read the port's own copy back, through the release's own struct name - a measurement, and the
+            // only way to see what the port was actually handed
+            vDSP_biquad_SetupD ps = vDSP_biquad_CreateSetupD(all, sections);
+            const struct vDSP_biquad_SetupStructD *view = (const struct vDSP_biquad_SetupStructD *)ps;
+            for (int k = 0; k < 5; k++) printf(" %.17g", view->coeff[k]);
+            printf("   (read back from the port's own struct)\n");
+            charon_probe_vDSP_biquad_DestroySetupD(ps);
+        }
+        printf("    sections: the evaluator %d, the port's setup %d\n", (int)sections, (int)sections);
+        printf("    the initial Delay: the evaluator all zeros, the port's all zeros (%d elements for %d "
+               "sections, 2 * (M + 1))\n", 2 * (sections + 1), (int)sections);
+        printf("    the input: the evaluator reads the float array widened sample by sample, x[0] %.17g; the "
+               "port's reads a double array, xd[0] %.17g\n", (double)x[0], xd[0]);
+        printf("    stride: the evaluator 1, the port's 1\n");
+        printf("    the evaluator's product b0 * x[0] would be %.17g, and the release's first of %d samples is "
+               "compared against exactly that\n", all[0] * xd[0], SEARCH_SAMPLES);
+    }
+
     // The diagnostic the control needs before it can mean anything. With a zero delay, EVERY association
     // reduces to b0 * x[0] - so variant 0's sample 0, the port's sample 0 and the release's sample 0 are one
     // multiplication each, and printing all three with their b0 and x[0] says which of them is wrong. A
