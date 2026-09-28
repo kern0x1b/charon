@@ -75,6 +75,31 @@ checkEqual("the position of a column by name", frame.indexOfColumn("city"), 1)
 
 // A row, read three ways.
 checkEqual("a row's count", frame.rowSequence.count, 6)
+// A row's value must not be wrapped a second time. A frame's own column describes as
+// `Optional("berlin")` after the box, and a row that reads through it describes as
+// `Optional(Optional("berlin"))` - so the erasure is putting the `Any?` *into* an `Any` somewhere
+// between the column and the row. This check names the requirement; it is red, and the search for
+// the place is the commit message of the commit that adds it.
+let pRow = frame.rowSequence[0]
+// The box: the type it was made with, the type it hands back, and the refusal for a type it does
+// not hold. The last of the three is the one a value comparison cannot catch, and the one the
+// wrong-T mutant is written against.
+let pIn = PortTabularData.Column<String>(name: "city", ["berlin", "paris"])
+let pBox = PortTabularData.AnyColumn(pIn)
+checkEqual("the box reports the type the column was made with",
+           String(describing: pBox.wrappedElementType), "String")
+checkEqual("assumingType hands back the column's own values",
+           pBox.assumingType(String.self)?.values ?? [], ["berlin", "paris"])
+check("assumingType refuses a type the box does not hold",
+      pBox.assumingType(Int.self) == nil,
+      "the port answers \(String(describing: pBox.assumingType(Int.self)))")
+checkEqual("a box over a column of optionals reports the wrapped type",
+           String(describing: PortTabularData.AnyColumn(PortTabularData.Column<Int?>(name: "n", [1, nil])).wrappedElementType),
+           "Int")
+checkEqual("a missing cell is missing, not a value",
+           PortTabularData.AnyColumn(PortTabularData.Column<Int?>(name: "n", [1, nil])).missingCount, 1)
+check("a row's value carries no second optional", String(describing: pRow["city"]!) == "berlin",
+      "the port answers \(String(describing: pRow["city"]!))")
 checkEqual("a row by name", "\(frame.rowSequence[0]["city"]!)", "berlin")
 checkEqual("a row by ColumnID", frame.rowSequence[0][price]!, 100.0)
 checkEqual("a row by name and type", frame.rowSequence[3]["price", Double.self]!, 175.0)

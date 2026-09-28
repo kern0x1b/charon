@@ -268,32 +268,114 @@ extension DiscontiguousColumnSlice: Equatable where Element: Equatable {}
 /// when the caller has not asked for a type.
 public struct AnyColumn: @unchecked Sendable {
     public var name: String
-    private let storage: [Any]
+
+    /// The type the column's elements have, recorded when the column was made and with any
+    /// optional layer taken off.
+    ///
+    /// This is Apple's `wrappedElementType`, and it is the whole reason this type is a box rather
+    /// than a wrapper around `[Any]`. Inferred from the values it would be three different answers:
+    /// `nil` for an empty column, `nil` for one that mixes types, and `Optional<T>` rather than `T`
+    /// for a column of optionals — and the last of those is not an edge case here, because a `Row`
+    /// builds its own column out of `[Any?]`. So the type is recorded, and `wrapped` is what the
+    /// word means: a `Column<Any?>` reports `Any`.
+    public let wrappedElementType: Any.Type
+
+    /// The values, erased but not destroyed. `nil` survives as a nil, which is the only thing that
+    /// makes `missingCount` and `isNil(at:)` answerable at all.
+    private let storage: [Any?]
+
+    /// Builds the typed column back, under whatever name the box currently has.
+    ///
+    /// This is the box's inside. It is a closure rather than a stored `Column<T>` because Swift
+    /// cannot hold a `Column` of an unknown `T` in a non-generic type, and the alternative - dropping
+    /// the type and rebuilding the column from the erased values - is the failure this change exists
+    /// to remove: a rebuilt `Column<T>` would be a column of zeros and it would compile. The closure
+    /// takes the name so renaming the box renames the typed column it hands back.
+    private let makeTyped: (String) -> Any
 
     public init<T>(_ column: Column<T>) {
         self.name = column.name
-        self.storage = column.values.map { $0 as Any }
+        self.wrappedElementType = _wrappedType(of: T.self)
+        // An element that is already optional keeps its own nil and is not wrapped a second time.
+        // `Row` builds its column from `[Any?]`, so without this the row's values arrive as
+        // `Optional(Optional("berlin"))` and every row read describes as an optional of the value.
+        self.storage = column.values.map { value -> Any? in
+            if let alreadyOptional = (value as Any) as? _AlreadyOptional {
+                return alreadyOptional.anyValue
+            }
+            return value as Any?
+        }
+        self.makeTyped = { renamed in
+            var copy = column
+            copy.name = renamed
+            return copy
+        }
     }
 
     public init<T>(_ slice: ColumnSlice<T>) {
-        self.name = slice.name
-        self.storage = slice.values.map { $0 as Any }
+        self.init(Column(slice.base, name: slice.base.name)[slice.range])
     }
 
     public init<T>(_ slice: DiscontiguousColumnSlice<T>) {
-        self.name = slice.name
-        self.storage = slice.values.map { $0 as Any }
+        // A discontiguous slice's values are a copy of the columns it names, in that order, so the box
+        // holds a column of them. The indices are not kept: an `AnyColumn` is contiguous, which is why
+        // a caller that needs the positions asks the slice rather than the column.
+        self.init(Column(name: slice.name, slice.values))
     }
 
     public var count: Int { storage.count }
+
+    /// How many of the elements are nil, counted by asking each position rather than kept as a
+    /// tally: a tally would be a second answer to the same question, and a differential would only
+    /// ever compare the tally with itself.
+    public var missingCount: Int {
+        var missing = 0
+        for index in storage.indices where storage[index] == nil { missing += 1 }
+        return missing
+    }
+
+    /// Whether the element at a position is nil. A position outside the column is nil, so an index
+    /// past the end reads as missing rather than trapping.
+    public func isNil(at index: Int) -> Bool {
+        guard storage.indices.contains(index) else { return true }
+        return storage[index] == nil
+    }
+
+    /// The column as a `Column<T>`, or `nil` when the box does not hold a `T`.
+    ///
+    /// Apple's signature is non-optional, so a wrong `T` on Apple's type traps. The port answers nil
+    /// instead, for two reasons that are the same reason: a trap cannot be tested, and the port's box
+    /// is a value a caller can build, so the wrong `T` is reachable. A frame that handed out a
+    /// `Column<T>` of anything but `T` is the failure this guards, and the differential checks the
+    /// values that come back, not the type that came back.
+    public func assumingType<T>(_ type: T.Type) -> Column<T>? {
+        guard wrappedElementType == T.self else { return nil }
+        return makeTyped(name) as? Column<T>
+    }
 
     /// The values as `[Any]`, which is what a row lookup and a frame's own column-copying read. The
     /// column is erased on purpose — a frame holds `AnyColumn`s and a caller that knows the type
     /// asks for it through `values(as:)`, which answers nil for a column of another type rather than
     /// a value of the wrong one.
-    public var erasedValues: [Any] { storage }
+    /// The values as the frame stores them, and the payload of each rather than the box.
+    ///
+    /// `storage` is `[Any?]` so a nil element survives. Handing that back as `[Any]` goes through an
+    /// implicit `Any?` -> `Any` conversion that *boxes* the optional rather than taking it off, so
+    /// "berlin" arrives as `Optional(Optional("berlin"))` and a row that reads through here describes
+    /// as an optional of the value. The optional is taken off here, by hand, and a missing cell stays
+    /// a nil instead of becoming a value.
+    public var erasedValues: [Any] {
+        storage.map { element -> Any in
+            guard let element = element else { return Optional<Any>.none as Any }
+            return element
+        }
+    }
 
-    public subscript(position index: Int) -> Any { storage[index] }
+    public subscript(position index: Int) -> Any {
+        guard index >= 0 && index < storage.count else { return Optional<Any>.none as Any }
+        guard let element = storage[index] else { return Optional<Any>.none as Any }
+        return element
+    }
 
     /// The values as the type the caller names, or nil when the column is not of that type — which is
     /// the answer a caller needs, because a column of a different type read as this one is how a
@@ -308,15 +390,42 @@ public struct AnyColumn: @unchecked Sendable {
         return out
     }
 
-    /// The column's own type, when every value in it is of one type. A column that mixes types has
-    /// none, and answers nil rather than the first kind it found.
+    /// The type every *present* value has, or nil when the present values disagree. The storage is
+    /// `[Any?]` so a nil element survives, and the inference looks through the optional: a column that
+    /// is half nils is a column of one type with gaps, not a column of `Optional<Any>`.
     public var elementType: Any.Type? {
         var found: Any.Type?
         for value in storage {
+            guard let value = value else { continue }
             let type = Swift.type(of: value)
             if let found = found, found != type { return nil }
             found = type
         }
         return found
     }
+}
+
+/// The two questions the box has to ask about an element type, without a way to name the type itself.
+private protocol _AlreadyOptional {
+    /// The value with its optional taken off, so a `nil` arrives as a `nil` and not as a layer.
+    var anyValue: Any? { get }
+    /// The type underneath, which is what `wrappedElementType` reports.
+    static var wrappedElementType: Any.Type { get }
+}
+
+/// The type underneath an optional, or the type itself when it is not one.
+private func _wrappedType(of type: Any.Type) -> Any.Type {
+    guard let optional = type as? _AlreadyOptional.Type else { return type }
+    return optional.wrappedElementType
+}
+
+extension Optional: _AlreadyOptional {
+    var anyValue: Any? {
+        switch self {
+        case .none: return nil
+        case .some(let value): return value
+        }
+    }
+
+    static var wrappedElementType: Any.Type { Wrapped.self }
 }
