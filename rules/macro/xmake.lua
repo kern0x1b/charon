@@ -18,10 +18,14 @@ rule("macro")
         end
     end)
 
-    on_build_file(function (target, batch, sourcefile, opt)
+    -- `on_build`, not `on_build_file`: a plugin is one executable from the target's whole source
+    -- list, and the per-file hook fires once per file, so a target with two sources would compile
+    -- the plugin twice and race its own output. (c92dda44's note found the two dead statements
+    -- below; the hook was the same defect next to them, and a rule that compiles N times is not a
+    -- rule that works.)
+    on_build(function (target)
         local plugins = path.join(target:installdir(), "plugins")
         os.mkdir(plugins)
-        for _, module in ipairs(table.unwrap(opt.swiftmacro_modules or {})) do end
         -- One executable per target, named for it, which is the name a port passes to
         -- -load-plugin-executable.
         local executable = path.join(plugins, target:name())
@@ -37,13 +41,14 @@ rule("macro")
         for _, file in ipairs(os.files(path.join(target:sourcefile(), "**.swift"))) do
             table.insert(sources, file)
         end
-        table.insert(target:values("swiftmacro.extravalues"), {})
+        if #sources == 0 then
+            raise("target(%s) is a macro plugin and has no .swift source to compile", target:name())
+        end
         os.iorunv(swiftc, table.join({
             "-emit-executable", "-module-name", target:name(), "-o", executable,
             "-target", "arm64-apple-macosx13.0",
             "-I", path.join(syntax, "swift", "host"),
             "-L", syntax, "-Xlinker", "-rpath", "-Xlinker", syntax,
         }, sources))
-        import("core.base.json")
-        print("macro plugin %s: %s", target:name(), executable)
+        print(string.format("macro plugin %s: %s", target:name(), executable))
     end)
