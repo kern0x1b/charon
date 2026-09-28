@@ -19,12 +19,16 @@
    No certificate and no TLS: those are the other two rows and another test, because a TLS listener
    the test owns needs a certificate and a trust decision inside the test's own delegate.
 
-   IT DOES NOT PASS YET, and the reason is the host, not the port: the port's -resume ends in
-   [super resume], and the host's NSURLSessionTask carries that selector mangled to -_onqueue_resume,
-   so the superclass call cannot be exercised in a host differential for this class. The port's own
-   resume is a device question. What the run does prove is that it finishes: the listener writes a
-   byte, every wait is bounded, and a run that goes wrong fails with a line instead of hanging the
-   host test sweep. */
+   IT FAILS, and the failure is the host, not the port:
+
+       -[CharonHostNSURLSessionStreamTask _onqueue_resume]: unrecognized selector sent to instance
+
+   The port's -resume ends in [super resume], and the host's NSURLSessionTask carries that selector
+   mangled to -_onqueue_resume, so the superclass call cannot be exercised in a host differential for
+   this class at all, and the metrics delivery behind it cannot be observed here either. What the run
+   does prove is that it *finishes*: the listener writes a byte, every wait is bounded, and a run that
+   goes wrong fails with a line instead of hanging the host test sweep. The level that can hold the
+   delivery is the 6.1.3 emulator, where [super resume] is the release's own class. */
 
 void host_attach_prefixed(const char *prefix);
 
