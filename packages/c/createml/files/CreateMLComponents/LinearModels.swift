@@ -291,9 +291,18 @@ public struct LinearRegressor<Scalar: LinearScalar> {
         // right test for a proximal method on a non-smooth objective, and a run that cannot reach it
         // says so rather than answering the point it reached.
         if configuration.l1Penalty > 0 {
+            // **The penalty is scaled, and the scale is the framework's.** Measured against the host's
+            // own `MLLinearRegressor` over a grid of penalties on the same rows, recovering the host's
+            // coefficients from its own predictions by a least-squares solve on a full-rank design:
+            // the best factor on `l1Penalty` is **0.5 per sample** at every non-zero penalty, i.e. the
+            // term is `l1Penalty / (2n) |w|_1` — half the mean absolute deviation, which is the same
+            // `1/2` that is already on the squared term. `l1Penalty` and `l2Penalty` are therefore
+            // scaled alike, and a caller who sets both has set them in the units the framework means.
+            let l1 = configuration.l1Penalty / (2.0 * Double(observations.count))
+            let l2 = configuration.l2Penalty / (2.0 * Double(observations.count))
             let (weights, _, converged) = ProximalSolver.ridgeL1(
                 design: design, targets: observations,
-                l1Penalty: configuration.l1Penalty, l2Penalty: configuration.l2Penalty,
+                l1Penalty: l1, l2Penalty: l2,
                 iterations: configuration.maximumIterations,
                 step: configuration.stepSize > 0 ? configuration.stepSize : nil,
                 tolerance: configuration.convergenceThreshold > 0 ? configuration.convergenceThreshold : 1e-10)
@@ -302,8 +311,9 @@ public struct LinearRegressor<Scalar: LinearScalar> {
             }
             return (weights.map { Scalar($0) }, 0)
         }
-        let (solution, info) = RowMatrix.ridgeLeastSquares(design: design, targets: observations,
-                                                           penalty: configuration.l2Penalty)
+        let (solution, info) = RowMatrix.ridgeLeastSquares(
+            design: design, targets: observations,
+            penalty: configuration.l2Penalty / (2.0 * Double(observations.count)))
         if info != 0 { throw LinearModelError.singular(width) }
         return (solution.map { Scalar($0) }, info)
     }
@@ -471,9 +481,12 @@ public struct LogisticRegressionClassifier<Scalar: LinearScalar, Label: Hashable
             // `prediction(from:)` already says.
             let (solution, info): ([Double], Int)
             if configuration.l1Penalty > 0 {
+                // The same measured scale as the regression's: half the mean, for both penalties.
+                let samples = Double(targets.count)
                 let (weights, _, converged) = ProximalSolver.logisticL1(
                     design: design, targets: targets,
-                    l1Penalty: configuration.l1Penalty, l2Penalty: configuration.l2Penalty,
+                    l1Penalty: configuration.l1Penalty / (2.0 * samples),
+                    l2Penalty: configuration.l2Penalty / (2.0 * samples),
                     iterations: configuration.maximumIterations,
                     step: configuration.stepSize > 0 ? configuration.stepSize : nil,
                     tolerance: configuration.convergenceThreshold > 0

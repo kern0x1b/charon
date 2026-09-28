@@ -143,9 +143,31 @@ do {
     // the host's own `MLLinearRegressor` in the `l1` suite, which is where the host is reachable.
     let unpenalised = try PortCreateMLComponents.LinearRegressor<Double>(
         configuration: .init(l2Penalty: 0, l1Penalty: 0, maximumIterations: 500)).fitted(to: rows)
+    // The tolerance is the caller's and this is the caller: a few hundred thousand prox steps on two
+    // features reach a KKT residual of order 1e-8, so 1e-8 is what this table can be held to. A fit
+    // that cannot reach the tolerance it was given says so rather than answering the point it
+    // stopped at — and that is now checked below, because it is the claim that replaced a refusal.
     let penalised = try PortCreateMLComponents.LinearRegressor<Double>(
-        configuration: .init(l2Penalty: 0, l1Penalty: 0.5, maximumIterations: 2000,
-                             stepSize: 0.1, convergenceThreshold: 1e-12)).fitted(to: rows)
+        configuration: .init(l2Penalty: 0, l1Penalty: 0.5, maximumIterations: 200000,
+                             stepSize: 0.1, convergenceThreshold: 1e-8)).fitted(to: rows)
+
+    // And the same fit with a tolerance it cannot reach, which must say so. This is what a refused
+    // penalty used to do for every case; now it happens only when the caller asks for more than the
+    // iteration delivers, which is the difference that matters.
+    var reported = false
+    do {
+        let impatient = PortCreateMLComponents.LinearRegressor<Double>(
+            configuration: .init(l2Penalty: 0, l1Penalty: 0.5, maximumIterations: 50,
+                                 stepSize: 0.1, convergenceThreshold: 1e-14))
+        _ = try impatient.fitted(to: rows)
+    } catch let error as PortCreateMLComponents.LinearModelError {
+        reported = true
+        let text = "\(error)"
+        check("and the refusal says the coefficients are not the minimum", text.contains("minimum"),
+              "the port answers \(error)")
+    } catch {}
+    check("an L1 fit that cannot reach its tolerance says so rather than answering the point it reached",
+          reported)
     // Two features, so three coefficients: an intercept and two weights. Derived from the
     // width rather than written down, so it cannot drift from the fixture above.
     let width = rows.first?.feature.scalars.count ?? 0
