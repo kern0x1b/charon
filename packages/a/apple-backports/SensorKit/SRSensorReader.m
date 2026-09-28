@@ -30,21 +30,11 @@
 // does not redeclare them, it answers them. The store a reading would come from does not exist, so
 // there is nothing else to keep.
 
-@implementation SRSensorReader
+// SensorKit's error domain is the string the host's SensorKit gives it, read from the host's own
+// framework: `SRErrorDomain` is @"SRErrorDomain". The reader's errors are in it, so it is carried.
+NSErrorDomain const SRErrorDomain = @"SRErrorDomain";
 
-// -init and +new are NS_UNAVAILABLE in the header, and -initWithSensor: is the only way in - so the
-// shared reader is made the way the SDK makes one, with a sensor, rather than through a path the header
-// says an application may not use. A reader with no sensor is a reader that cannot be asked for data,
-// which is the honest state of this release, and that is what +sharedReader hands back.
-+ (instancetype)sharedReader
-{
-    static SRSensorReader *shared;
-    static dispatch_once_t once;
-    dispatch_once(&once, ^{
-        shared = [[self alloc] initWithSensor:SRSensorAccelerometer];
-    });
-    return shared;
-}
+@implementation SRSensorReader
 
 - (instancetype)initWithSensor:(SRSensor)sensor
 {

@@ -714,10 +714,10 @@
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
-      "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
+      "status": "implemented",
+      "reason": "the domain of the errors SRSensorReader hands its delegate and its completion; SRError.h declares it as a variable, and the host's SensorKit gives its value",
+      "effect": "the string SRErrorDomain, as the host's SensorKit has it, for the reader's errors",
+      "source": "the header of SRError.h in SDK 26.2 for the declaration; the host's /System/Library/Frameworks/SensorKit.framework for the string, read through dlsym"
     },
     {
       "api": "SRPhotoplethysmogramOpticalSampleConditionSignalSaturation",
