@@ -22,28 +22,70 @@ cd "$build"
 xmake f -p iphoneos -a armv7 -y > configure.log 2>&1
 xmake build -y > build.log 2>&1
 failed=0
-for release in $releases; do
-    DDR_ROOT=$root xmake emulate -d "$device" -r "$release" install > "install-$release.log" 2>&1
+# Clean first, then the same tree with the collection view's dropSessionDidEnter: moved past its
+# first dropSessionDidUpdate:, so the two verdicts come off one machine back to back rather than off
+# two that may not have been starved the same way.
+# The mutation, kept beside this script so the pair is reproducible: the collection view's half of the
+# drop sequence with dropSessionDidEnter: moved past its first dropSessionDidUpdate:withDestination-
+# IndexPath:. The same seven calls, two of them the other way round.
+seq=$W/packages/a/apple-backports/UIKit/CharonDropSequence11.m
+mutated=$here/CharonDropSequence11.m.mutated
+original=$here/CharonDropSequence11.m.original
+cp "$seq" "$original"
+python3 - "$original" "$mutated" <<'PYMUT'
+import sys
+src, dst = sys.argv[1], sys.argv[2]
+s = open(src).read()
+before = s
+s = s.replace("""    [self charon_tellDropDelegateDidEnter:session];
+    NSIndexPath *destination = [self indexPathForItemAtPoint:[self convertPoint:point fromView:nil]];
+    if (!destination)
+        return;
+    [self charon_dropProposalForSession:session atIndexPath:destination];""",
+"""    NSIndexPath *destination = [self indexPathForItemAtPoint:[self convertPoint:point fromView:nil]];
+    if (!destination)
+        return;
+    [self charon_dropProposalForSession:session atIndexPath:destination];
+    [self charon_tellDropDelegateDidEnter:session];""")
+assert s != before, "the mutation did not apply"
+open(dst, "w").write(s)
+PYMUT
+
+# The two halves: the tree as it is, then the mutated tree, then the tree back. Both run in the bulk
+# lane, back to back, so the two verdicts come off one machine.
+run_one() {
+    release=$1
     set +e
     DDR_ROOT=$root xmake emulate -d "$device" -r "$release" -k run /usr/libexec/dragdroprouting > "$release.log" 2>&1
     status=$?
     set -e
-    # 137 is SIGKILL, and a memory-starved machine kills things: that is a host that never got to
-    # the guest, not a verdict on the test, and it is reported as neither a pass nor a fail.
     if [ "$status" -eq 137 ]; then
-        echo "$release: killed (status 137) before the guest ran -- the machine was out of memory, not a verdict"
-        failed=1
-    elif [ "$status" -eq 0 ] && grep -Eq 'pass.{0,12} on iPhone' "$release.log"; then
-        echo "$release: pass"
-    else
-        echo "$release: not a pass (status $status)"
-        grep -aE '^FAIL|fail|crash|timeout|blocked|RED' "$release.log" || true
-        failed=1
+        echo "$2 $release: killed (status 137) before the guest ran -- the machine was out of memory, not a verdict"
+        return 1
     fi
-    # The guest's own log: what it was asked, in what order, and its verdict on the two sequences.
-    # The runner carries the program's stdout only in its own log file, so the checks' own lines --
-    # "ok <name>" and "FAIL <name>" -- are read back out of the image, which -k kept.
-    DDR_ROOT=$root xmake emulate -d "$device" -r "$release" log > "guest-$release.log" 2>&1 || true
-    grep -aE 'MATCH|RED|^FAIL|^asked|^ok ' "guest-$release.log" || true
+    if [ "$status" -eq 0 ] && grep -Eq 'pass.{0,12} on iPhone' "$release.log"; then
+        echo "$2 $release: pass"
+        return 0
+    fi
+    echo "$2 $release: not a pass (status $status)"
+    grep -aE '^FAIL|fail|crash|timeout|blocked|RED' "$release.log" || true
+    return 1
+}
+
+# The pair, in this order: the tree, then the mutated tree, then the tree back.
+# the guest's own lines, read out of the image the run kept
+guest_lines() {
+    DDR_ROOT=$root xmake emulate -d "$device" -r "$1" log > "guest-$2-$1.log" 2>&1 || true
+    grep -aE 'MATCH|RED|^FAIL|^asked|^ok ' "guest-$2-$1.log" || true
+}
+
+# Clean, then the mutated tree, then the tree back, all on this machine in this order.
+for release in $releases; do
+    run_one "$release" clean && guest_lines "$release" clean || failed=1
 done
+cp "$mutated" "$seq"
+for release in $releases; do
+    run_one "$release" mutated && guest_lines "$release" mutated || true
+done
+cp "$original" "$seq"
 exit $failed
