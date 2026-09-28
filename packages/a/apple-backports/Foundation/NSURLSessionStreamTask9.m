@@ -7,6 +7,7 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
+#include <dlfcn.h>
 #include <Security/SecureTransport.h>
 
 /* The four callbacks of NSURLSessionStreamDelegate that this file makes. The protocol is declared
@@ -67,9 +68,34 @@ static void charon_socket_name(int descriptor, BOOL local, NSString **address, N
    kCFStreamPropertySSLContext once -startSecureConnection has made one. Both are read through public
    SecureTransport (measured in the 6.1.3 armv7 cache as Security exports), so nothing here
    negotiates anything: the release's stream did that, and these are the two numbers it agreed on. */
+/* kCFStreamPropertySSLContext is a CFNetwork symbol -- measured in the 6.1.3 armv7 cache as a
+   CFNetwork export, and the 6.1.3 gate's link says the rest of it: the Foundation backports library
+   does not link CFNetwork, so a direct reference to the key does not resolve. The key is looked up by
+   name instead, which is what this package does for the release's own symbols elsewhere
+   (NSItemProvider.m for the UTType functions, NSOrthography+Default11.m for ICU's). A CFNetwork that
+   is not loaded leaves the key nil, and a connection with no TLS session has nothing to report
+   anyway. */
+static CFStringRef charon_ssl_context_key(void)
+{
+    static CFStringRef key;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        void *library = dlopen("/System/Library/Frameworks/CFNetwork.framework/CFNetwork", RTLD_LAZY);
+        if (!library)
+            library = RTLD_DEFAULT;
+        key = (CFStringRef)dlsym(library, "kCFStreamPropertySSLContext");
+        if (!key)
+            key = (CFStringRef)dlsym(RTLD_DEFAULT, "kCFStreamPropertySSLContext");
+    });
+    return key;
+}
+
 static void charon_negotiated_tls(CFReadStreamRef stream, NSNumber **version, NSNumber **cipher)
 {
-    CFTypeRef context = CFReadStreamCopyProperty(stream, kCFStreamPropertySSLContext);
+    CFStringRef key = charon_ssl_context_key();
+    if (!key)
+        return;
+    CFTypeRef context = CFReadStreamCopyProperty(stream, key);
     if (!context)
         return;
     SSLProtocol got = kSSLProtocolUnknown;
