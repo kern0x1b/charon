@@ -873,3 +873,42 @@ cross * dest->rowBytes` writes.
 The coordinator's ASan trace - `CharonShear.h:225`, `row` clamped to `srcCross - 1` where `srcCross` is the
 *width* for the vertical shear and so used as a row index - is the **vertical** one and remains real. The two
 axes are separate defects and the horizontal one is a mapping, not a memory error.
+
+## The axis sign, the edging flag, and the scale read off exact values
+
+Two more defects, both verified on the coordinator's copy and both confirmed here:
+
+- **The sign follows the axis.** `centre = (along0 + along + (horizontal ? -translate : translate)) / scale`.
+  The horizontal shear's translate pulls the source left and the vertical's pushes it the other way, each
+  read off a grid whose pixel values are their own coordinates (`probe-sign.m`).
+- **`kvImageEdgeExtend` was computed and never read.** Every out-of-range tap took the backColor, so every
+  edging-mode case was answered as `kvImageBackgroundColorFill`. With the flag the tap is pulled back to
+  the edge and keeps its weight, which is the header's own "the edge pixels of the source are extended".
+
+With both in: **212 checks, 75 failures**, and **every one of them at a scale other than 1** - all the
+scale-1 cases pass, which is the first time that has been true.
+
+**The scale, measured with exact values** (`probe-scale.m`: a one-row picture whose column `c` carries
+`c + 1`, so the answer is a weighted mean of the source columns and the host's and the port's sit side by
+side):
+
+    scale 1     host 1.0000 2.0000 3.0000 ... 12.0000    port the same, exactly
+    scale 2     host 0.5062 1.3635 1.8378 2.2001 2.7624 3.2302 3.7698 4.2302 ...
+                port 1.0000 2.0000 3.0000 4.0000 5.0000 6.0000 7.0000 8.0000 ...
+
+At a scale of 1 the two agree exactly. At a scale of 2 the **host resamples between the source columns** -
+its consecutive differences are 0.857, 0.474, 0.362, 0.562, 0.468, 0.540, irregular, so the position does
+not step uniformly - while **the port samples exact columns**, 1.0, 2.0, 3.0, which is what `x / scale`
+gives. And the host's value at `x = 0` is **0.5062**, below the source's first value of 1.0, so its mapped
+position for the first destination pixel is *before* the source's first column and part of its kernel is
+being answered with the backColor of −1. That is the half-pixel the coordinator pointed at:
+`(x + 0.5) / scale - 0.5`, which at `x = 0` and a scale of 2 is **−0.25**, and the position the two
+candidates print for `x = 0` are `0.000` and `−0.250` respectively.
+
+So the port's position is wrong by the half pixel, and the irregular differences say the mapped position is
+not even a constant step of 1/scale once the kernel is taken into account. What the next run has to pin is
+the *exact* position per destination pixel - solvable from this grid, since the source values are their own
+indices and the answer is a weighted mean of the columns the kernel covers - and then the extent the filter
+carries at a scale other than one, which the table in `CharonResampling.h` fixes as
+`ceil(lobes / min(1, scale))` on the strength of the *extent* measurement and has never been checked
+against a resample.
