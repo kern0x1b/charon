@@ -8,8 +8,8 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has, and the maths behind it, which is this tree's",
-      "effect": "the class is there and answers from the tracker; a call that asks for something this device has no sensor for answers NO or nil",
+      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has; the pose behind it is this tree's own visual-inertial tracker, measured on a 30-frame synthetic sequence at 78.13 degrees of mean rotation error and 0.666 m of mean distance error, which is not Apple's accuracy and is recorded in facts/ARKit/TrackerDifferential.md rather than claimed here",
+      "effect": "an anchor the application placed, carried into every frame at that pose: identifier, name and transform are what the caller set and the session carries; a copy is a new identity at the same pose, which is what -initWithAnchor: means",
       "source": "ARKit of the arm64 shared cache of iOS 12.0, read with the image's symbols: +[ARConfiguration isSupported] at 0x19d3b54a0 and +[ARWorldTrackingConfiguration isSupported] at 0x19d3cfaf4, both reaching ARDeviceSupported; and the armv7 shared cache of iOS 6.1.3, read with modules/apple/objc.lua: AVCaptureDevice with 100 instance methods, AVCaptureVideoDataOutput with 26, CMMotionManager with 74"
     },
     {
@@ -30,8 +30,8 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has, and the maths behind it, which is this tree's",
-      "effect": "the class is there and answers from the tracker; a call that asks for something this device has no sensor for answers NO or nil",
+      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has; the pose behind it is this tree's own visual-inertial tracker, measured on a 30-frame synthetic sequence at 78.13 degrees of mean rotation error and 0.666 m of mean distance error, which is not Apple's accuracy and is recorded in facts/ARKit/TrackerDifferential.md rather than claimed here",
+      "effect": "the pose of the camera in the world, with the intrinsics and the light: transform is the tracker's own pose, obtained by integrating the gyroscope and turning on the picture's matches; intrinsics is the camera's field of view and the frame's size; the projection, unprojection and hit test are the shared pinhole arithmetic over those two",
       "source": "ARKit of the arm64 shared cache of iOS 12.0, read with the image's symbols: +[ARConfiguration isSupported] at 0x19d3b54a0 and +[ARWorldTrackingConfiguration isSupported] at 0x19d3cfaf4, both reaching ARDeviceSupported; and the armv7 shared cache of iOS 6.1.3, read with modules/apple/objc.lua: AVCaptureDevice with 100 instance methods, AVCaptureVideoDataOutput with 26, CMMotionManager with 74"
     },
     {
@@ -63,8 +63,8 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has, and the maths behind it, which is this tree's",
-      "effect": "the class is there and answers from the tracker; a call that asks for something this device has no sensor for answers NO or nil",
+      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has; the pose behind it is this tree's own visual-inertial tracker, measured on a 30-frame synthetic sequence at 78.13 degrees of mean rotation error and 0.666 m of mean distance error, which is not Apple's accuracy and is recorded in facts/ARKit/TrackerDifferential.md rather than claimed here",
+      "effect": "one frame of a session: camera, anchors, rawFeaturePoints and the light estimate are what the tracker measured for that frame; projectPoint, unprojectPoint and hitTest are the shared pinhole arithmetic over the camera's intrinsics and pose; the display transform is the identity because there is no depth sensor to see a real surface by",
       "source": "ARKit of the arm64 shared cache of iOS 12.0, read with the image's symbols: +[ARConfiguration isSupported] at 0x19d3b54a0 and +[ARWorldTrackingConfiguration isSupported] at 0x19d3cfaf4, both reaching ARDeviceSupported; and the armv7 shared cache of iOS 6.1.3, read with modules/apple/objc.lua: AVCaptureDevice with 100 instance methods, AVCaptureVideoDataOutput with 26, CMMotionManager with 74"
     },
     {
@@ -74,8 +74,8 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has, and the maths behind it, which is this tree's",
-      "effect": "the class is there and answers from the tracker; a call that asks for something this device has no sensor for answers NO or nil",
+      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has; the pose behind it is this tree's own visual-inertial tracker, measured on a 30-frame synthetic sequence at 78.13 degrees of mean rotation error and 0.666 m of mean distance error, which is not Apple's accuracy and is recorded in facts/ARKit/TrackerDifferential.md rather than claimed here",
+      "effect": "where a hit test met a plane or a point: type is which feature was hit, worldTransform is the hit's pose, and the plane anchor is the plane it was against; the two types that need what only ARKit alone can see answer nil rather than a fabricated result",
       "source": "ARKit of the arm64 shared cache of iOS 12.0, read with the image's symbols: +[ARConfiguration isSupported] at 0x19d3b54a0 and +[ARWorldTrackingConfiguration isSupported] at 0x19d3cfaf4, both reaching ARDeviceSupported; and the armv7 shared cache of iOS 6.1.3, read with modules/apple/objc.lua: AVCaptureDevice with 100 instance methods, AVCaptureVideoDataOutput with 26, CMMotionManager with 74"
     },
     {
@@ -129,8 +129,8 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has, and the maths behind it, which is this tree's",
-      "effect": "the class is there and answers from the tracker; a call that asks for something this device has no sensor for answers NO or nil",
+      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has; the pose behind it is this tree's own visual-inertial tracker, measured on a 30-frame synthetic sequence at 78.13 degrees of mean rotation error and 0.666 m of mean distance error, which is not Apple's accuracy and is recorded in facts/ARKit/TrackerDifferential.md rather than claimed here",
+      "effect": "a plane the detector found, as a detection and never as a measurement: center and extent are the plane the region grower found; alignment is horizontal because that is the surface it grew, and Apple's \"not determined\" is not used because there is no depth sensor here to determine it from; isTracked is the detector's own confidence in that plane",
       "source": "ARKit of the arm64 shared cache of iOS 12.0, read with the image's symbols: +[ARConfiguration isSupported] at 0x19d3b54a0 and +[ARWorldTrackingConfiguration isSupported] at 0x19d3cfaf4, both reaching ARDeviceSupported; and the armv7 shared cache of iOS 6.1.3, read with modules/apple/objc.lua: AVCaptureDevice with 100 instance methods, AVCaptureVideoDataOutput with 26, CMMotionManager with 74"
     },
     {
@@ -140,8 +140,8 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has, and the maths behind it, which is this tree's",
-      "effect": "the class is there and answers from the tracker; a call that asks for something this device has no sensor for answers NO or nil",
+      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has; the pose behind it is this tree's own visual-inertial tracker, measured on a 30-frame synthetic sequence at 78.13 degrees of mean rotation error and 0.666 m of mean distance error, which is not Apple's accuracy and is recorded in facts/ARKit/TrackerDifferential.md rather than claimed here",
+      "effect": "the quad of one detected plane, as the C buffers the framework declares: vertices, textureCoordinates, triangleIndices and boundaryVertices are four corners and the six indices that join them, malloc'd and filled from the plane, with the counts beside them; a renderer reads them in place",
       "source": "ARKit of the arm64 shared cache of iOS 12.0, read with the image's symbols: +[ARConfiguration isSupported] at 0x19d3b54a0 and +[ARWorldTrackingConfiguration isSupported] at 0x19d3cfaf4, both reaching ARDeviceSupported; and the armv7 shared cache of iOS 6.1.3, read with modules/apple/objc.lua: AVCaptureDevice with 100 instance methods, AVCaptureVideoDataOutput with 26, CMMotionManager with 74"
     },
     {
@@ -151,8 +151,8 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has, and the maths behind it, which is this tree's",
-      "effect": "the class is there and answers from the tracker; a call that asks for something this device has no sensor for answers NO or nil",
+      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has; the pose behind it is this tree's own visual-inertial tracker, measured on a 30-frame synthetic sequence at 78.13 degrees of mean rotation error and 0.666 m of mean distance error, which is not Apple's accuracy and is recorded in facts/ARKit/TrackerDifferential.md rather than claimed here",
+      "effect": "the points the tracker is following, as the buffer the framework names itself: points is a pointer into a buffer of world positions with count beside it, malloc'd from the tracker's own samples and freed with the object",
       "source": "ARKit of the arm64 shared cache of iOS 12.0, read with the image's symbols: +[ARConfiguration isSupported] at 0x19d3b54a0 and +[ARWorldTrackingConfiguration isSupported] at 0x19d3cfaf4, both reaching ARDeviceSupported; and the armv7 shared cache of iOS 6.1.3, read with modules/apple/objc.lua: AVCaptureDevice with 100 instance methods, AVCaptureVideoDataOutput with 26, CMMotionManager with 74"
     },
     {
@@ -173,8 +173,8 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has, and the maths behind it, which is this tree's",
-      "effect": "the class is there and answers from the tracker; a call that asks for something this device has no sensor for answers NO or nil",
+      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has; the pose behind it is this tree's own visual-inertial tracker, measured on a 30-frame synthetic sequence at 78.13 degrees of mean rotation error and 0.666 m of mean distance error, which is not Apple's accuracy and is recorded in facts/ARKit/TrackerDifferential.md rather than claimed here",
+      "effect": "a ray in the world, which is what a caller asking for a raycast gives the framework: origin and direction come from the pixel through the camera's intrinsics and pose; target and alignment are the caller's, carried unchanged",
       "source": "ARKit of the arm64 shared cache of iOS 12.0, read with the image's symbols: +[ARConfiguration isSupported] at 0x19d3b54a0 and +[ARWorldTrackingConfiguration isSupported] at 0x19d3cfaf4, both reaching ARDeviceSupported; and the armv7 shared cache of iOS 6.1.3, read with modules/apple/objc.lua: AVCaptureDevice with 100 instance methods, AVCaptureVideoDataOutput with 26, CMMotionManager with 74"
     },
     {
@@ -184,8 +184,8 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has, and the maths behind it, which is this tree's",
-      "effect": "the class is there and answers from the tracker; a call that asks for something this device has no sensor for answers NO or nil",
+      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has; the pose behind it is this tree's own visual-inertial tracker, measured on a 30-frame synthetic sequence at 78.13 degrees of mean rotation error and 0.666 m of mean distance error, which is not Apple's accuracy and is recorded in facts/ARKit/TrackerDifferential.md rather than claimed here",
+      "effect": "where a ray met a plane the detector found: worldTransform is the hit in world coordinates, with the plane's normal; the distance is how far along the ray it lies, which is what stops a tracked raycast once the camera has moved further",
       "source": "ARKit of the arm64 shared cache of iOS 12.0, read with the image's symbols: +[ARConfiguration isSupported] at 0x19d3b54a0 and +[ARWorldTrackingConfiguration isSupported] at 0x19d3cfaf4, both reaching ARDeviceSupported; and the armv7 shared cache of iOS 6.1.3, read with modules/apple/objc.lua: AVCaptureDevice with 100 instance methods, AVCaptureVideoDataOutput with 26, CMMotionManager with 74"
     },
     {
@@ -195,8 +195,8 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has, and the maths behind it, which is this tree's",
-      "effect": "the class is there and answers from the tracker; a call that asks for something this device has no sensor for answers NO or nil",
+      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has; the pose behind it is this tree's own visual-inertial tracker, measured on a 30-frame synthetic sequence at 78.13 degrees of mean rotation error and 0.666 m of mean distance error, which is not Apple's accuracy and is recorded in facts/ARKit/TrackerDifferential.md rather than claimed here",
+      "effect": "the session that owns the camera and the gyroscope: run starts the tracker's capture session and gyroscope and answers isSupported from the hardware; every frame is handed to the delegate with the camera's pose, the anchors and the light estimate as the tracker's pipeline measured them",
       "source": "ARKit of the arm64 shared cache of iOS 12.0, read with the image's symbols: +[ARConfiguration isSupported] at 0x19d3b54a0 and +[ARWorldTrackingConfiguration isSupported] at 0x19d3cfaf4, both reaching ARDeviceSupported; and the armv7 shared cache of iOS 6.1.3, read with modules/apple/objc.lua: AVCaptureDevice with 100 instance methods, AVCaptureVideoDataOutput with 26, CMMotionManager with 74"
     },
     {
@@ -206,8 +206,8 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has, and the maths behind it, which is this tree's",
-      "effect": "the class is there and answers from the tracker; a call that asks for something this device has no sensor for answers NO or nil",
+      "reason": "carried: what this class needs is a camera and a gyroscope, which the release has; the pose behind it is this tree's own visual-inertial tracker, measured on a 30-frame synthetic sequence at 78.13 degrees of mean rotation error and 0.666 m of mean distance error, which is not Apple's accuracy and is recorded in facts/ARKit/TrackerDifferential.md rather than claimed here",
+      "effect": "a ray the session keeps casting, frame after frame: each frame's hits are handed to the caller's update handler; stopTracking drops them, and the session stops casting a ray the camera has moved further from than it is long",
       "source": "ARKit of the arm64 shared cache of iOS 12.0, read with the image's symbols: +[ARConfiguration isSupported] at 0x19d3b54a0 and +[ARWorldTrackingConfiguration isSupported] at 0x19d3cfaf4, both reaching ARDeviceSupported; and the armv7 shared cache of iOS 6.1.3, read with modules/apple/objc.lua: AVCaptureDevice with 100 instance methods, AVCaptureVideoDataOutput with 26, CMMotionManager with 74"
     },
     {
@@ -318,8 +318,8 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the session raises it, the tracker answers it",
-      "effect": "a conforming object is asked, and the class that conforms answers from the tracker",
+      "reason": "carried: the protocol is the SDK's and is weak-imported; a class of this library conforms to it",
+      "effect": "ARAnchor answers -initWithAnchor: and the protocol is declared as conforming in a class extension, so a caller holding an ARAnchorCopying gets an anchor copied to a new identity at the same pose",
       "source": "the SDK's own ARKit headers, and the armv7 cache of 6.1.3 for what the classes it names really carry"
     },
     {
@@ -329,8 +329,8 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the session raises it, the tracker answers it",
-      "effect": "a conforming object is asked, and the class that conforms answers from the tracker",
+      "reason": "carried: the protocol is the SDK's and is weak-imported; no class of this library conforms, and deliberately so",
+      "effect": "it is the protocol an application's delegate conforms to, and this library is the one asking: the session calls the twenty-two selectors below on whatever object the caller sets as its delegate, and this library provides no conforming class of its own",
       "source": "the SDK's own ARKit headers, and the armv7 cache of 6.1.3 for what the classes it names really carry"
     },
     {
@@ -340,8 +340,8 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the session raises it, the tracker answers it",
-      "effect": "a conforming object is asked, and the class that conforms answers from the tracker",
+      "reason": "carried: the protocol is the SDK's and is weak-imported; no class of this library conforms, and deliberately so",
+      "effect": "it is the protocol an application's observer conforms to, and this library is the one asking: the session calls the eight selectors below on whatever object the caller sets as its delegate, and this library provides no conforming class of its own",
       "source": "the SDK's own ARKit headers, and the armv7 cache of 6.1.3 for what the classes it names really carry"
     },
     {
@@ -351,8 +351,8 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "carried: the session raises it, the tracker answers it",
-      "effect": "a conforming object is asked, and the class that conforms answers from the tracker",
+      "reason": "carried: the protocol is the SDK's and is weak-imported; ARPlaneAnchor conforms to it",
+      "effect": "ARPlaneAnchor answers -isTracked from the plane detector's own confidence in that plane, and the conformance is declared in a class extension, so a caller holding an ARTrackable is told whether the session still sees it",
       "source": "the SDK's own ARKit headers, and the armv7 cache of 6.1.3 for what the classes it names really carry"
     },
     {

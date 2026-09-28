@@ -17,6 +17,12 @@
 // a runtime that predates them, and a caller reaching them is by definition on a release new enough.
 #pragma clang diagnostic ignored "-Wunguarded-availability-new"
 
+@interface ARAnchor (CharonConforms) <ARAnchorCopying>
+@end
+
+@interface ARPlaneAnchor (CharonConforms) <ARTrackable>
+@end
+
 @implementation ARAnchor
 {
     simd_float4x4 _transform;
@@ -135,6 +141,7 @@
     simd_float3 _center;
     simd_float3 _extent;
     ARPlaneGeometry *_geometry;
+    BOOL _isTracked;
 }
     @synthesize alignment = _alignment;
     @synthesize center = _center;
@@ -155,12 +162,22 @@
     _alignment = ARPlaneAnchorAlignmentHorizontal;
     _center = plane.center;
     _extent = plane.extent;
+    // The detector's own confidence in the plane is what says whether the session is still tracking
+    // it: a plane it no longer has any confidence in is not being seen, and the anchor stays in the
+    // world anyway because the framework keeps anchors the session has lost track of.
+    _isTracked = plane.alignment > 0.0f;
     return self;
 }
 
 - (ARPlaneAnchorAlignment)alignment { return _alignment; }
 - (simd_float3)center { return _center; }
 - (simd_float3)extent { return _extent; }
+
+/// Whether the session is still tracking this plane, which is the detector's confidence in it.
+- (BOOL)isTracked
+{
+    return _isTracked;
+}
 
 + (BOOL)isClassificationSupported
 {

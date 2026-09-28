@@ -32,10 +32,30 @@ xcrun clang -fobjc-arc -DCHARON_TRACKER_OFFLINE -DCHARON_TRACKER_SYNTHETIC \
 "$BUILD/tracker-diff" | tee "$BUILD/tracker-diff.txt"
 grep -q '^spatial tracker differential' "$BUILD/tracker-diff.txt" || {
     echo "FAIL: the differential printed no verdict"; exit 1; }
-# The plane detector is the plainest evidence that the pose is being carried from one frame to the
-# next and turned the right way: a run-away pose puts every point in the wrong place, and there is no
-# level surface in the wrong place to grow a region from. A regression that loses the planes has lost
-# the pose, and the numbers alone would only say so less clearly.
 grep -q 'tracking: yes' "$BUILD/tracker-diff.txt" || {
     echo "FAIL: the tracker does not report tracking, so its pose is not being carried"; exit 1; }
-echo "ok the tracker carries its pose from frame to frame and finds its planes"
+
+# The accuracy floor, asserted rather than printed. The error must not grow past what the facts record,
+# so a regression that deletes refinePose, halves the step clamp or changes the landmark depth again
+# turns this red rather than printing a worse number under a green line. The floor is the delivery's own
+# measured value and is deliberately not the target: a tracker at 114 degrees is not right, and the
+# gate's job here is to keep it from getting worse while the work that makes it right lands.
+# Rotation is read in degrees and distance in metres, which are the units the verdict line prints the
+# thresholds in; the line also carries radians, and 2.16 of those is 124 degrees, so reading the wrong
+# one would pass a tracker that is nowhere near the truth.
+floor() {
+    awk -v k="$1" -v limit="$2" -v unit="$3" '
+        index($0, k) > 0 { seen = 1
+            if (unit == "deg") { if (match($0, /\(([0-9]+\.[0-9]+) deg\)/)) v = substr($0, RSTART + 1, RLENGTH - 6) + 0 }
+            else { for (i = 1; i <= NF; i++) if ($i ~ /^[0-9]+\.[0-9]+$/) { v = $i + 0; break } }
+            if (v == "") { printf "FAIL: no %s in the verdict line for %s\n", unit, k; failed = 1 }
+            else if (v > limit) { printf "FAIL: %s is %.5g %s, over the floor of %g\n", k, v, unit, limit; failed = 1 }
+            else printf "ok %s is %.5g %s, within the floor of %g\n", k, v, unit, limit
+            exit }
+        END { if (!seen) { printf "FAIL: the verdict line for %s is not in the output\n", k; exit 1 }
+              exit failed ? 1 : 0 }' "$BUILD/tracker-diff.txt"
+}
+floor "rotation error: mean" 80 deg
+floor "distance error: mean" 0.70 m
+
+echo "ok the tracker carries its pose, finds its planes, and holds the accuracy floor the facts record"

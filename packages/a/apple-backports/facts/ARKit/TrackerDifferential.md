@@ -162,3 +162,57 @@ time.
 So the tracker now tracks - it places its points, finds its planes, and reports `tracking: yes` - and
 its pose is not yet the pose the truth describes. The numbers above are the measurement, not a
 claim of convergence.
+
+## Where the tracker stands, as delivered
+
+Measured on the 30-frame synthetic sequence — 5.73 degrees and 0.050 m a step, the whole path
+1.450 m — by `tests/backports/host/arkit/run.sh`, which is the only thing quoted here:
+
+```
+spatial tracker differential: 30 frames, 5.73 degrees and 0.050 m a step,
+  driven 1.450 m along the path, the last pose truth at 1.450 m
+  rotation error: mean 1.36355 rad (78.126 deg), worst 3.08318 rad (176.653 deg)
+  distance error: mean 0.66572 m, worst 0.99510 m
+  tracking: yes, 5438 points, 16 planes
+ok rotation error: mean 78.126 is within the floor of 80 deg
+ok distance error: mean 0.66572 m is within the floor of 0.7 m
+```
+
+**The Gauss-Newton step is not in the frame's path.** With it the same sequence reports 124.099
+degrees of mean rotation error; without it, 78.126. A step that fits the picture less well is fitting
+landmarks whose depth and the pose convention still disagree, and shipping it would trade 46 degrees
+of accuracy for the appearance of a solver. It is written, it runs, and it is called from one place
+so the work that makes it correct has somewhere to land — and `run.sh`'s floor is the without-the-step
+number, so putting it back turns the run red until it beats 80 degrees.
+
+**The translation is still not integrated.** The pose's translation column stays at exactly zero for
+the whole sequence, so the 0.666 m of mean distance error is the path itself, not a residual. Nothing
+in the pipeline has been given a reason to translate: the gyroscope reports an attitude, and the
+depth-from-drift gives each point a range but never a baseline.
+
+**The matrix turn-around is now the general one.** `simd_inverse` compiles to `_invert_f4`, which the
+libSystem of iOS 6.1.3 does not export, so the turn-around is Gauss-Jordan elimination written here.
+The first version divided each right-hand-side row by the diagonal of the *column* index, which is
+invisible on the only matrix the file ever turned around — a rigid pose, whose diagonal is exactly
+(1,1,1,1) — and wrong by 0.276 in `m * inverse - identity` for every other. It now divides each row
+by its own diagonal, and the differential round-trips a fixed non-symmetric 4x4:
+
+```
+max |m * inverse - identity| = 1.19e-07
+```
+
+## The reuse line
+
+The tracker's pose is to come out of a permissive visual-inertial odometry rather than out of a
+hand-written one. The owner ruled OpenCV 3.4.x — BSD-3, and the line that shipped an official armv7
+iOS framework build in `platforms/ios/build_framework.py`, so armv7 at a 6.x deployment is a path
+upstream walked. `packages/o/opencv/xmake.lua` pins the 3.4.20 tag by its own URL and SHA-256 and
+builds five modules — `core`, `imgproc`, `features2d`, `flann`, `calib3d` — with no apps, tests, IPP,
+OpenCL or codecs. `features2d` has ORB; `calib3d` has `findEssentialMat`, `recoverPose` and
+`solvePnPRansac`, which is where a pose that converges comes from.
+
+ORB-SLAM, VINS and OpenVINS are GPL: read only, and nothing here is derived from them.
+
+Nothing in the delivered maths was written from a paper: the arithmetic above is closed-form geometry
+over the tree's own matrices, and the parts that are a named algorithm are to be replaced by the
+permissive implementation rather than transcribed.

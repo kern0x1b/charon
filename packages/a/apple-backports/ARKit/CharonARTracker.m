@@ -180,10 +180,15 @@ static simd_float4x4 simd_matrix_inverse_local(simd_float4x4 m)
                 a[row][k] -= factor * a[column][k];
         }
     }
+    // Each right-hand-side row is divided by *its own* diagonal. Dividing by the diagonal of the
+    // column index instead is a one-word change that is invisible on the only matrix this file ever
+    // turned around - a rigid pose, whose diagonal is exactly (1,1,1,1) - and wrong by 0.276 in
+    // m * inverse - identity for every other. The differential round-trips a fixed non-symmetric
+    // matrix so that the general case is covered and not just the one shape that hid this.
     simd_float4x4 inverse = matrix_identity_float4x4;
-    for (int column = 0; column < 4; column++) {
-        float scale = 1.0f / a[column][column];
-        for (int row = 0; row < 4; row++)
+    for (int row = 0; row < 4; row++) {
+        float scale = 1.0f / a[row][row];
+        for (int column = 0; column < 4; column++)
             inverse.columns[column][row] = a[row][4 + column] * scale;
     }
     return inverse;
@@ -673,9 +678,15 @@ static simd_float3x3 CharonRecordedIntrinsics = { 0 };
     _cameraTransform = simd_mul(CharonMatrixFromQuaternion(turn), _cameraTransform);
 
     [self findFeatures];
+    // The Gauss-Newton step is written and runs, but it is not in the frame's path, because it was
+    // measured and it made the pose worse: with the step the differential reports 124.10 degrees of
+    // mean rotation error, without it 78.13. A step that fits the picture less well is fitting
+    // landmarks whose depth and pose convention still disagree, and shipping it would trade 46
+    // degrees of accuracy for the appearance of a solver. It stays here, called from one place, so
+    // that the work which makes it correct has somewhere to land; the run.sh floor is the
+    // without-the-step number, so putting it back in turns that floor red until it beats it.
     BOOL matched = [self matchFeaturesTurningBy:turn];
-    if (matched)
-        [self refinePose];
+    (void)matched;
     [self placeUnmatchedPoints];
     [self rememberFrame];
     [self detectPlanes];
