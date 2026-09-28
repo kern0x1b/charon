@@ -32,6 +32,7 @@ CHARON_SCALAR_PROPERTY(NSTimeInterval, usageTime)
 @end
 
 @implementation SRApplicationUsage (CharonSensorKitValue)
+CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
 @end
 
 @implementation SRDeletionRecord
@@ -39,9 +40,44 @@ CHARON_SCALAR_PROPERTY(NSTimeInterval, usageTime)
 CHARON_SCALAR_PROPERTY(SRAbsoluteTime, startTime)
 CHARON_SCALAR_PROPERTY(SRAbsoluteTime, endTime)
 CHARON_SCALAR_PROPERTY(SRDeletionReason, reason)
+// The SDK's own header declares this class conforming, so the port owes the three archiving methods,
+// and -copyWithZone: where the header says NSCopying. The archiver walks the same property list the
+// representation does, through CharonValueStore's own pair, so a value archived and read back lands in
+// the store under the property's own name and nothing has to be written out by hand for it.
++ (BOOL)supportsSecureCoding
+{
+    return YES;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    CharonValueEncode(self, coder);
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    if ((self = [super init]))
+        CharonValueDecode(self, coder, CharonValueDecodableClasses(@"SR"));
+    return self;
+}
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    // A value object: the copy is a new object with the same values under the same names. A copy that
+    // shared the store would be two names for one value, which is the opposite of what a copy is.
+    id copy = [[[self class] allocWithZone:zone] init];
+    NSDictionary *values = CharonValueStore(self);
+    for (NSString *key in [values.allKeys sortedArrayUsingSelector:@selector(compare:)]) {
+        id held = values[key];
+        CharonValueStore(copy)[key] = [held conformsToProtocol:@protocol(NSCopying)] ? [held copy] : held;
+    }
+    return copy;
+}
+
 @end
 
 @implementation SRDeletionRecord (CharonSensorKitValue)
+CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
 @end
 
 @implementation SRDevice
@@ -51,9 +87,44 @@ CHARON_VALUE_PROPERTY(NSString *, name)
 CHARON_VALUE_PROPERTY(NSString *, model)
 CHARON_VALUE_PROPERTY(NSString *, systemName)
 CHARON_VALUE_PROPERTY(NSString *, systemVersion)
+// The SDK's own header declares this class conforming, so the port owes the three archiving methods,
+// and -copyWithZone: where the header says NSCopying. The archiver walks the same property list the
+// representation does, through CharonValueStore's own pair, so a value archived and read back lands in
+// the store under the property's own name and nothing has to be written out by hand for it.
++ (BOOL)supportsSecureCoding
+{
+    return YES;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    CharonValueEncode(self, coder);
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    if ((self = [super init]))
+        CharonValueDecode(self, coder, CharonValueDecodableClasses(@"SR"));
+    return self;
+}
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    // A value object: the copy is a new object with the same values under the same names. A copy that
+    // shared the store would be two names for one value, which is the opposite of what a copy is.
+    id copy = [[[self class] allocWithZone:zone] init];
+    NSDictionary *values = CharonValueStore(self);
+    for (NSString *key in [values.allKeys sortedArrayUsingSelector:@selector(compare:)]) {
+        id held = values[key];
+        CharonValueStore(copy)[key] = [held conformsToProtocol:@protocol(NSCopying)] ? [held copy] : held;
+    }
+    return copy;
+}
+
 @end
 
 @implementation SRDevice (CharonSensorKitValue)
+CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
 @end
 
 @implementation SRDeviceUsageReport
@@ -68,6 +139,7 @@ CHARON_SCALAR_PROPERTY(NSTimeInterval, totalUnlockDuration)
 @end
 
 @implementation SRDeviceUsageReport (CharonSensorKitValue)
+CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
 @end
 
 @implementation SRFetchRequest
@@ -75,17 +147,81 @@ CHARON_SCALAR_PROPERTY(NSTimeInterval, totalUnlockDuration)
 CHARON_SCALAR_PROPERTY(SRAbsoluteTime, from)
 CHARON_SCALAR_PROPERTY(SRAbsoluteTime, to)
 CHARON_VALUE_PROPERTY(SRDevice *, device)
+// The SDK's own header declares this class conforming, so the port owes the three archiving methods,
+// and -copyWithZone: where the header says NSCopying - see the same block on SRDeletionRecord.
++ (BOOL)supportsSecureCoding
+{
+    return YES;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    CharonValueEncode(self, coder);
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    if ((self = [super init]))
+        CharonValueDecode(self, coder, CharonValueDecodableClasses(@"SR"));
+    return self;
+}
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    // A value object: the copy is a new object with the same values under the same names.
+    id copy = [[[self class] allocWithZone:zone] init];
+    NSDictionary *values = CharonValueStore(self);
+    for (NSString *key in [values.allKeys sortedArrayUsingSelector:@selector(compare:)]) {
+        id held = values[key];
+        CharonValueStore(copy)[key] = [held conformsToProtocol:@protocol(NSCopying)] ? [held copy] : held;
+    }
+    return copy;
+}
+
 @end
 
 @implementation SRFetchRequest (CharonSensorKitValue)
+CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
 @end
 
 @implementation SRFetchResult
 @dynamic timestamp;
 CHARON_SCALAR_PROPERTY(SRAbsoluteTime, timestamp)
+// The SDK's own header declares this class conforming, so the port owes the three archiving methods,
+// and -copyWithZone: where the header says NSCopying - see the same block on SRDeletionRecord.
++ (BOOL)supportsSecureCoding
+{
+    return YES;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    CharonValueEncode(self, coder);
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    if ((self = [super init]))
+        CharonValueDecode(self, coder, CharonValueDecodableClasses(@"SR"));
+    return self;
+}
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    // A value object: the copy is a new object with the same values under the same names.
+    id copy = [[[self class] allocWithZone:zone] init];
+    NSDictionary *values = CharonValueStore(self);
+    for (NSString *key in [values.allKeys sortedArrayUsingSelector:@selector(compare:)]) {
+        id held = values[key];
+        CharonValueStore(copy)[key] = [held conformsToProtocol:@protocol(NSCopying)] ? [held copy] : held;
+    }
+    return copy;
+}
+
 @end
 
 @implementation SRFetchResult (CharonSensorKitValue)
+CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
 @end
 
 @implementation SRKeyboardMetrics
@@ -243,6 +379,7 @@ CHARON_VALUE_PROPERTY(NSMeasurement *, height)
 @end
 
 @implementation SRKeyboardMetrics (CharonSensorKitValue)
+CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
 @end
 
 @implementation SRKeyboardProbabilityMetric
@@ -251,6 +388,7 @@ CHARON_VALUE_PROPERTY(NSArray<NSMeasurement *> *, distributionSampleValues)
 @end
 
 @implementation SRKeyboardProbabilityMetric (CharonSensorKitValue)
+CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
 @end
 
 @implementation SRMessagesUsageReport
@@ -261,6 +399,7 @@ CHARON_SCALAR_PROPERTY(NSInteger, totalUniqueContacts)
 @end
 
 @implementation SRMessagesUsageReport (CharonSensorKitValue)
+CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
 @end
 
 @implementation SRNotificationUsage
@@ -269,6 +408,7 @@ CHARON_SCALAR_PROPERTY(SRNotificationEvent, event)
 @end
 
 @implementation SRNotificationUsage (CharonSensorKitValue)
+CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
 @end
 
 @implementation SRPhoneUsageReport
@@ -279,6 +419,7 @@ CHARON_SCALAR_PROPERTY(NSTimeInterval, totalPhoneCallDuration)
 @end
 
 @implementation SRPhoneUsageReport (CharonSensorKitValue)
+CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
 @end
 
 @implementation SRVisit
@@ -291,6 +432,7 @@ CHARON_VALUE_PROPERTY(NSUUID *, identifier)
 @end
 
 @implementation SRVisit (CharonSensorKitValue)
+CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
 @end
 
 @implementation SRWebUsage
@@ -299,6 +441,7 @@ CHARON_SCALAR_PROPERTY(NSTimeInterval, totalUsageTime)
 @end
 
 @implementation SRWebUsage (CharonSensorKitValue)
+CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
 @end
 
 @implementation SRWristDetection
@@ -309,4 +452,5 @@ CHARON_SCALAR_PROPERTY(SRCrownOrientation, crownOrientation)
 @end
 
 @implementation SRWristDetection (CharonSensorKitValue)
+CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
 @end
