@@ -298,3 +298,56 @@ the error codes 4992/4993/4994.
 Documented and not holdable: the plist's two key names, the urgent priority, and the notification's
 name. Rule-as-ruled: every resolvable tag completes at once, an unknown one completes with 4994, no
 download ever happens, and `progress` is completed at once.
+
+---
+
+## The third measurement: the private initialiser answers, and the two NSBundle additions are inert
+
+`.agent-work/measure/brr-init.m`, and it decides three things the plan above left open.
+
+**1. `-init` raises, and the reason is the header's own phrase.** Measured, not inferred:
+
+```
+-init           -> NSInvalidArgumentException: init is unavailable
+-initWithTag:   -> an object
+```
+
+The header marks `-init` `API_UNAVAILABLE(macos, ios, watchos, tvos)`, and the host's copy of that
+unavailability is the exception above. So the port's `-init` raises `NSInvalidArgumentException` with
+the reason `init is unavailable` — which is a *row* of the corpus that the host answers by refusing, and
+the port answers the same way.
+
+**2. `-initWithTag:` (singular, private) *answers*, so there is a host oracle after all.** The public
+`-initWithTags:` forwards to it and the *forwarding* is what raises, but the private initialiser itself
+builds an object. **That is what the differential compares:** the port's public `-initWithTags:` and the
+host's private `-initWithTag:`, over all four properties — `tags`, `bundle`, `loadingPriority` and
+`progress`. The earlier conclusion in this file, that no host oracle exists for the class, is **too
+strong** and is corrected here: there is none for the *public* initialiser and one for the state.
+
+**3. The two `NSBundle` additions are inert on the host, and the port must follow the header instead.**
+Measured, on a bundle with no On-Demand Resources at all and on one that has a manifest:
+
+```
+setPreservationPriority:forTags: on a bundle with no tags      -> answered
+an out-of-range priority (2.0)                                  -> answered
+on a bundle with level1, for a tag the bundle does not have     -> answered
+preservationPriorityForTag: on a bundle with no tags            -> 0
+on a bundle with level1, reading level1 back                    -> 0
+```
+
+Every one of those answers, and every one reads back 0, where the header says "This method will throw
+an exception if the receiver bundle has no on demand resource tag information." The host is not
+implementing them — they are `API_UNAVAILABLE(macos)`, so what macOS ships is a stub. **So these two rows
+cannot be held to the host at all**: the port implements what the header says, and the facts file states
+that the host answers where the header promises a refusal. This is the "carried with a difference from the
+host" shape the package README already has for other classes, and it is the honest one here.
+
+## The counts, stated so they are not confused
+
+Thirteen rows: the class, six methods of it, four properties of it, the two `NSBundle` methods, and the
+two constants. Of those, **eleven are holdable and two are not**: `NSBundleResourceRequestLoadingPriorityUrgent`
+and `NSBundleResourceRequestLowDiskSpaceNotification` are constants behind `API_UNAVAILABLE(macos)`, which
+the macOS framework does not emit at all, so neither value can be measured on this host and both come
+from the header's own words. The two plist key names — `NSBundleResourceRequestTags` and
+`NSBundleResourceRequestPath` — are not API rows and are not measured; they are the documented
+asset-pack format, read out of the plist the ruling describes.
