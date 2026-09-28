@@ -131,9 +131,9 @@ after  (fix):         _objc_getClass (from libobjc)      _class_getSuperclass (f
 `llvm-otool -L` counts 5 load commands for the workaround's dylib and 7 for the fix's; the two the fix adds
 are `/usr/lib/libobjc.A.dylib` and CoreFoundation. With implicit dylibs off there is no ordinal for the
 `File` that actually exports the ObjC runtime, so the symbols were bound to a library that does not export
-them — a link that succeeds and a binary that binds wrongly on the device. The flag was in band
-4c10b17e's own copy of `packages/m/matter/xmake.lua`, never in `origin/main`, so nothing carries it today
-and the paragraph is the reason to distrust it if it ever comes back.
+them — a link that succeeds and a binary that binds wrongly on the device. The flag was in the Matter
+band's worktree copy of the recipe, never in `origin/main`, so nothing carries it today and the paragraph
+is the reason to distrust it if it ever comes back.
 
 ## The digest over patches/
 
