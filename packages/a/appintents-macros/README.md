@@ -30,3 +30,30 @@ Apple's own plugin is **not** on this machine — the toolchain ships `libObserv
 `libSwiftMacros` and nothing else — so the reference is the framework's interface declarations plus a
 hand-checked expansion, not a diff against Apple's output. `tests/Expansions.swift` says so in its own
 header, and says which two of its own errors are its own.
+
+## Building it, and the store rule that a run of it has to know
+
+`charon@swift-syntax` is a **host** package, and the rule that builds a plugin from it is
+`@addon/charon/macro`, not `rules/swift`: a plugin is compiled for the machine running the compiler
+and loaded with `-load-plugin-executable`, so it is neither a port target nor a device binary.
+
+**Use the shared `~/.xmake` store.** A run of mine set a private `XMAKE_GLOBALDIR` and the project
+then re-resolved the whole chain *from the network* into an empty store — the log of that run:
+
+```
+=> download https://github.com/theos/sdks/releases/download/master-146e41f/iPhoneOS16.5.sdk.tar.xz .. ok
+=> install iphoneos-sdk 16.4 .. failed
+clang: error: invalid linker name in argument '-fuse-ld=…/ld64/…/bin/ld'
+```
+
+A gigabyte-class download and then a toolchain install: network-bound, which is how it came to sit
+for 26 minutes at 0% CPU with no child processes, holding a slow slot. The repository's own trap
+says it: *a private store re-resolves the whole dependency chain from network, up to rebuilding LLVM
+from source — never do that either.* Nothing collides in the shared store anyway, because
+`charon@swift-syntax` installs under its own recipe digest (the recipe file's hash and the pinned
+commit, since its sources are upstream's and not in this tree).
+
+A gate that builds this should also **bound** its `xmake` calls and close stdin (`</dev/null`), so
+neither a hang nor a prompt can hold a slot again, and it should be launched only when the machine is
+below its load cap — a queued job that waits in heavy.sh is a job holding a slot, which is the thing
+the cap exists to prevent.
