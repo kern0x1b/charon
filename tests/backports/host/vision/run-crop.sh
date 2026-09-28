@@ -62,28 +62,30 @@ else
     echo "port: DIFFERS from the framework"
 fi
 
-# 5. the mutant: the default interpolation, which is the paste this delivery was measured against.
-#    It has to go red, or the check above is not holding anything.
+# 5. the mutant: the destination inset put back into the sample position, which is the bug the
+#    kernel had and the one this check exists to hold. It has to go red, or the check above is not
+#    holding anything -- and a patch that changes nothing is an error rather than a pass, because
+#    the mutant would then be the pristine kernel and a green run would prove nothing at all.
 rm -rf "$build/mutant"
 mkdir -p "$build/mutant"
-cp "$vision"/*.m "$vision"/*.h "$build/mutant/"
-python3 - "$build/mutant/CharonVisionImage.h" <<'PY'
+cp "$vision"/*.m "$vision"/*.h "$vision"/*.c "$build/mutant/"
+python3 - "$build/mutant/CharonVisionBilinear.c" <<'PY2'
+import hashlib
 import sys
+
 path = sys.argv[1]
 text = open(path).read()
-# the mutant: the destination inset back into the sample position, which is the bug the kernel
-# had and the one this check exists to hold.
-import re
-before = text
-text = re.sub(r"\(double\)y \+ 0\.5\) \* down", "(double)(insetY + y) + 0.5) * down", text, count=1)
-text = re.sub(r"\(double\)x \+ 0\.5\) \* across", "(double)(insetX + x) + 0.5) * across", text, count=1)
-assert text != before, "the mutant did not change anything"
-old = "double sx = charon_vision_clamp(((double)x + 0.5) * across - 0.5, (double)sourceWide);"
-new = "double sx = charon_vision_clamp(((double)(insetX + x) + 0.5) * across - 0.5, (double)sourceWide);"
-assert old in text, old
-print("the mutant is the inset back into the sample position")
-open(path, "w").write(text.replace(old, new, 1))
-PY
+before = hashlib.sha256(text.encode()).hexdigest()
+text = text.replace("charon_vision_clamp(((double)y + 0.5) * down",
+                    "charon_vision_clamp(((double)(insetY + y) + 0.5) * down", 1)
+text = text.replace("charon_vision_clamp(((double)x + 0.5) * across",
+                    "charon_vision_clamp(((double)(insetX + x) + 0.5) * across", 1)
+after = hashlib.sha256(text.encode()).hexdigest()
+if before == after:
+    raise SystemExit("the mutant changed nothing: its anchors do not match the library's own text")
+print("the mutant changed the file: %s -> %s" % (before[:12], after[:12]))
+open(path, "w").write(text)
+PY2
 xcrun clang $common -DCHARON_PORT_BUILD=1 -include "$build/rename.h" -I"$here" -I"$build/mutant" \
     "$here/crop.m" "$build/mutant/CharonVisionBilinear.c" $libs -o "$build/mutant/run"
 if "$build/mutant/run" > "$build/mutant/record.txt" 2>&1; then
