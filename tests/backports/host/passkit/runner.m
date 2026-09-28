@@ -240,15 +240,16 @@ int main(void)
         // answer is NotDetermined, and the case is here so a change to it shows in the transcript.
         say(@"PKPassLibrary.authorizationStatusForCapability:",
             [NSNumber numberWithInteger:((NSInteger (*)(id, SEL, NSInteger))objc_msgSend)(
-                portLib(), NSSelectorFromString(@"authorizationStatusForCapability:"), 0)], @"0");
-        __block NSInteger requested = -1;
+                portLib(), NSSelectorFromString(@"authorizationStatusForCapability:"), 0)], @"-1");
+        __block NSInteger requested = 1;
         e = nil;
         ((void (*)(id, SEL, NSInteger, id))objc_msgSend)(portLib(),
             NSSelectorFromString(@"requestAuthorizationForCapability:completion:"), 0,
-            ^(NSInteger status, NSError *error) { requested = status; e = error; });
+            ^(NSInteger status) { requested = status; });
         say(@"PKPassLibrary.requestAuthorizationForCapability: status",
-            [NSNumber numberWithInteger:requested], @"0");
-        say(@"  ... its error", shape(e), @"PKPassKitErrorDomain/2");
+            [NSNumber numberWithInteger:requested], @"-1");
+        say(@"PKPassKitErrorDomain still linked after the 26.0 pair",
+            [NSString stringWithFormat:@"%@", PKPassKitErrorDomain], @"PKPassKitErrorDomain");
 
         // The one thing the host IS the oracle for: the error domain must be the framework's own
         // bytes, so "linked, not defined" is measured and not asserted.

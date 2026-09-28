@@ -9,8 +9,9 @@
 # oracle for PKPassKitErrorDomain, and the last case uses it.
 #
 # The probe FAILS if the mutant does not differ, because a green mutant is a comparison that decides
-# nothing, and FAILS if the real run made fewer than 31 cases, because then it is not covering the
-# thirty-one members the registry rows name.
+# nothing, and FAILS if the real run made fewer than 31 members, because then it is not covering the
+# thirty-one the registry rows name. The floor counts the 31 MEMBERS, not the check lines: the
+# operations each take two lines (the ok flag and the error's shape) and that is the honest unit.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 port=${PORT:-$here/../../../../packages/a/apple-backports/PassKit}
@@ -61,11 +62,28 @@ new = """+ (BOOL)canMakePayments
 assert old in text, "the line the mutant changes is not there: the mutant would be the real run"
 open(path, "w").write(text.replace(old, new, 1))
 PY
+# A SECOND mutant, on the shared error rather than on a capability: one code changed, so the
+# comparison is shown to see the error's VALUE and not only the NO. Two mutants, because one kind of
+# mutation that goes red is not evidence that the other would.
+cp "$port/CharonPassKit.m" "$build/CharonPassKit.mutated.m"
+python3 - "$build/CharonPassKit.mutated.m" <<'PY2'
+import sys
+text = open(sys.argv[1]).read()
+old = "code:PKUnsupportedVersionError"
+new = "code:PKInvalidSignature"
+assert old in text, "the code the mutant changes is not there"
+open(sys.argv[1], "w").write(text.replace(old, new, 1))
+PY2
 xcrun clang -fobjc-arc -Wall -fPIC -dynamiclib $TARGET -DCHARON_HOST_PROBE=1 $RENAME \
     -I"$port" -framework Foundation -framework PassKit -framework UIKit \
     "$build/port-classes.o" "$port/CharonPassKit.m" "$build/PKSecureElement8.mutated.m" "$port/PKWallet.m" \
     -o "$build/libmutant.dylib" 2> "$build/ccmut.log" || {
         grep -m5 ': error:' "$build/ccmut.log" || true; exit 1; }
+xcrun clang -fobjc-arc -Wall -fPIC -dynamiclib $TARGET -DCHARON_HOST_PROBE=1 $RENAME \
+    -I"$port" -framework Foundation -framework PassKit -framework UIKit \
+    "$build/port-classes.o" "$build/CharonPassKit.mutated.m" "$port/PKSecureElement8.m" "$port/PKWallet.m" \
+    -o "$build/libmutant2.dylib" 2> "$build/ccmut2.log" || {
+        grep -m5 ': error:' "$build/ccmut2.log" || true; exit 1; }
 
 xcrun clang -fobjc-arc -Wall $TARGET -ldl -framework Foundation -framework PassKit -framework UIKit \
     "$here/runner.m" -o "$build/runner" 2> "$build/runner.log" || {
@@ -75,15 +93,26 @@ DYLD_FRAMEWORK_PATH="$MACOSX_SDK/System/iOSSupport/System/Library/Frameworks" \
     CHARON_PORT_DYLIB="$build/libport.dylib" "$build/runner" > "$build/real.txt" 2>&1 && true
 DYLD_FRAMEWORK_PATH="$MACOSX_SDK/System/iOSSupport/System/Library/Frameworks" \
     CHARON_PORT_DYLIB="$build/libmutant.dylib" "$build/runner" > "$build/mutant.txt" 2>&1 && true
-cat "$build/real.txt"; cat "$build/mutant.txt"
+DYLD_FRAMEWORK_PATH="$MACOSX_SDK/System/iOSSupport/System/Library/Frameworks" \
+    CHARON_PORT_DYLIB="$build/libmutant2.dylib" "$build/runner" > "$build/mutant2.txt" 2>&1 && true
+cat "$build/real.txt"; cat "$build/mutant.txt"; cat "$build/mutant2.txt"
 
-body() { grep -E '^  [A-Za-z]' "$1"; }
+# the member lines, and the continuation lines under them: an operation's error is checked in
+# a line of its own, and a filter that drops those checks six answers without a word
+body() { grep -E '^ +(\.|[A-Za-z])' "$1"; }
 body "$build/real.txt" > "$build/real.body"
 body "$build/mutant.txt" > "$build/mutant.body"
-cases=$(wc -l < "$build/real.body" | tr -d ' ')
-echo "--- the real run made $cases check line(s):"
-if [ "$cases" -lt 31 ]; then
-    echo "FAIL only $cases of the thirty-one members reached, so the probe is not covering them"
+body "$build/mutant2.txt" > "$build/mutant2.body"
+lines=$(wc -l < "$build/real.body" | tr -d ' ')
+# one case line per member, plus one extra for each operation, which reports its ok flag and then the
+# error's own shape on a continuation line. The six operations that answer with an error are the
+# eleven capability questions less five, plus the request and the refusal: counted from the transcript
+# rather than hard-coded, so a member that stops answering stops being counted
+ops=$(grep -c '^    \.\.\.' "$build/real.body" || true)
+members=$((lines - ops))
+echo "--- the real run made $members member case(s) over $lines check line(s):"
+if [ "$members" -lt 31 ]; then
+    echo "FAIL only $members of the thirty-one members reached, so the probe is not covering them"
     exit 1
 fi
 if grep -q 'FAIL$' "$build/real.body"; then
@@ -99,4 +128,11 @@ if diff -q "$build/real.body" "$build/mutant.body" >/dev/null 2>&1; then
 fi
 echo "ok the mutant differs, so the comparison does see the value it is checking"
 diff -u "$build/real.body" "$build/mutant.body" | sed -n '1,8p'
+if diff -q "$build/real.body" "$build/mutant2.body" >/dev/null 2>&1; then
+    echo "FAIL the second mutant -- a wrong error CODE, PKUnsupportedVersionError -> PKInvalidSignature"
+    echo "     -- does not differ, so nothing here checks the error's own value"
+    exit 1
+fi
+echo "ok the second mutant differs too, so the error's code is checked and not just its presence"
+diff -u "$build/real.body" "$build/mutant2.body" | sed -n '1,8p'
 exit 0

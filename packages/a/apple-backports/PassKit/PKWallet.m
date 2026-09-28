@@ -57,23 +57,36 @@
     return @[];
 }
 
-// -authorizationStatusForCapability:, 26.0, and its request beside it: the question is
-// PKPaymentAuthorizationStatusNotDetermined (0), which is the honest answer rather than
-// PKPaymentAuthorizationStatusRestricted, because nothing has been asked and nothing was refused.
-// The request therefore answers NotDetermined too, with the release's own error, rather than
-// pretending a decision was reached.
-- (NSInteger)authorizationStatusForCapability:(NSInteger)capability
+// -authorizationStatusForCapability: and -requestAuthorizationForCapability:completion:, 26.0.
+//
+// The header's OWN spelling, measured in the SDK 26.2 (iPhoneOS26.2.sdk):
+//   - (PKPassLibraryAuthorizationStatus)authorizationStatusForCapability:(PKPassLibraryCapability)capability
+//   - (void)requestAuthorizationForCapability:(PKPassLibraryCapability)capability
+//                                    completion:(void (^)(PKPassLibraryAuthorizationStatus status))
+// and the two enumerations are the header's too: PKPassLibraryCapability has ONE case
+// (PKPassLibraryCapabilityBackgroundAddPasses) and PKPassLibraryAuthorizationStatus has FOUR:
+//   NotDetermined = -1, Denied = 0, Authorized = 1, Restricted = 2.
+//
+// So the status is -1 and NOT 0. An earlier revision of this file returned 0 and wrote in the
+// registry that NotDetermined is 0; that was wrong, and 0 is Denied -- the answer that says the
+// hardware refused, which is the opposite of what nothing-having-been-asked means. The correct
+// answer is NotDetermined, and it is spelled here by the header's own enumerator.
+//
+// The request answers the same status with the release's own error: no decision was reached, so a
+// decision must not be reported. NOT Restricted, which claims a refusal, and NOT Denied, which is
+// the same claim in stronger words.
+- (PKPassLibraryAuthorizationStatus)authorizationStatusForCapability:(PKPassLibraryCapability)capability
 {
     (void)capability;
-    return 0;
+    return PKPassLibraryAuthorizationStatusNotDetermined;
 }
 
-- (void)requestAuthorizationForCapability:(NSInteger)capability
-                              completion:(void (^)(NSInteger status, NSError *error))completion
+- (void)requestAuthorizationForCapability:(PKPassLibraryCapability)capability
+                                   completion:(void (^)(PKPassLibraryAuthorizationStatus status))completion
 {
     (void)capability;
     if (completion) {
-        completion(0, CharonPassKitNoHardwareError());
+        completion(PKPassLibraryAuthorizationStatusNotDetermined);
     }
 }
 

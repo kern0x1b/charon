@@ -86,13 +86,47 @@ otherwise and was not:
 - `+passesOfType:` returns the **empty set, not `nil`**. `nil` says "we do not know", which is a
   different thing to say from "there are none".
 
-## What neither held SDK declares, and what that costs
+## The 26.0 pair, and a correction
 
-`-authorizationStatusForCapability:`, `-requestAuthorizationForCapability:completion:` and the
-`PKPaymentCapability` enumeration are in **no header of `PassKit.framework` in 16.4**, and the 26.2
-root holds **no SDK** at all (three roots under `i/iphoneos-sdk/16.4/`, none under `26.2/`). So the
-26.0 pair is typed `NSInteger` here, with no type available to name. The selectors are exact, and the
-selector is what the runtime matches on.
+**An earlier revision of this file was wrong and said so twice.** It claimed that
+`-authorizationStatusForCapability:` and `-requestAuthorizationForCapability:completion:` are in no
+held SDK, and it wrote that `PKPaymentCapability` is declared nowhere. Measured in the **SDK 26.2** —
+whose root is a *developer folder*, not a bare `.sdk`, which is why an earlier search under
+`i/iphoneos-sdk/26.2/` found nothing:
+
+```
+$ grep -n "authorizationStatusForCapability\|requestAuthorizationForCapability" \
+    .../iPhoneOS26.2.sdk/System/Library/Frameworks/PassKit.framework/Headers/PKPassLibrary.h
+121:- (PKPassLibraryAuthorizationStatus)authorizationStatusForCapability:(PKPassLibraryCapability)capability API_AVAILABLE(ios(26.0), watchos(26.0));
+124:- (void)requestAuthorizationForCapability:(PKPassLibraryCapability)capability completion:(void (^)(PKPassLibraryAuthorizationStatus status))completion API_AVAILABLE(ios(26.0), watchos(26.0));
+
+$ grep -rc "PKPaymentCapability" .../Headers
+count=0
+```
+
+**Both methods are real, and both types are real** — but the types are `PKPassLibraryCapability` and
+`PKPassLibraryAuthorizationStatus`, **not** `PKPaymentCapability`, which is in no header at all. So the
+selector was right and the type name in the row was invented.
+
+**And the value was wrong, which is the worse half.** The same file claimed
+`NotDetermined` is `0`. The 26.2 header (`PKPassLibrary.h:34-39`) says:
+
+| enumerator | value |
+| --- | --- |
+| `PKPassLibraryAuthorizationStatusNotDetermined` | **−1** |
+| `PKPassLibraryAuthorizationStatusDenied` | **0** |
+| `PKPassLibraryAuthorizationStatusAuthorized` | 1 |
+| `PKPassLibraryAuthorizationStatusRestricted` | 2 |
+
+The port returned `0` and the row said `0` is `NotDetermined`. **`0` is `Denied`** — the answer that
+says the hardware refused, the exact opposite of "nothing has been asked". Both are now
+`PKPassLibraryAuthorizationStatusNotDetermined` (−1), by the header's own enumerator, and the probe
+holds them to **−1**.
+
+`PKLibraryCapability` has one case, `PKPassLibraryCapabilityBackgroundAddPasses`. Both enumerations
+are declared in `CharonPassKit.h` **only when the build's SDK lacks them** (`#if !defined(__IPHONE_26_0)`),
+because a second typedef of the same enum is a hard error and an SDK that has them must keep its own.
+The 16.4 SDK this package is built against does not have them; the 26.2 SDK does.
 
 ## Two types the first pass of the objects named, and no SDK has
 
@@ -103,10 +137,45 @@ SDK anyway, so these were wrong in a way the build does not see; the probe's bui
 error) and `-encryptedServiceProviderDataForSecureElementPass:completion:` passes an **`NSDictionary`**
 — both from the headers, and both now matching them.
 
+## Every selector in the registry, checked against the SDK 26.2's own headers
+
+`tools/check-passkit-selectors.py` walks every method row of `registry/PassKit/` and asks the SDK 26.2
+whether it spells that selector. A dotted name like `PKPassLibrary.addPassesWithCompletionHandler` is
+not a selector, and a name no header declares is not real API — that is what r3 found, in eight rows,
+and this is the check that keeps it from coming back.
+
+The check is deliberately strict, because each of three weaker versions passed a name the review
+rejected:
+
+- grepping the joined selector fails on **every real** one — a header writes each keyword with its
+  parameter's type and name between, so `addPasses:withCompletionHandler:` is never contiguous text;
+- requiring only that each keyword occurs in the file passes the **joined** invented names, because
+  `addPasses:` and `withCompletionHandler:` are both there, on *different* lines;
+- requiring class and keyword on one line fails on Apple's real headers, which name the class once at
+  its `@interface` and never again.
+
+So the check takes the selector's keywords, requires them **all on one line with their colons**, and
+requires that line to sit under the `@interface` of the class the row names. A zero-colon selector is
+matched bare, because a method taking no argument is written `- (void)openPaymentSetup
+API_AVAILABLE(ios(8.3))` with no colon after the name at all.
+
+**31 method rows, 0 misses.** The negative control, which is the part that matters: the eleven invented
+spellings r3 found, injected at once, give **9 misses and exit 1** — the two that survive are the 26.0
+pair, which are real.
+
 ## The probe
 
 `tests/backports/host/passkit/run.sh` compiles the objects onto **renamed** classes
 (`charonHost_PKPassLibrary` and the rest, in `port-classes.m`) so the runner reaches the port through
-the runtime and never the host's PassKit. **43 check lines over 31 members, 0 failures**; the mutant
-is the same sources with one line changed (a `NO` that becomes `YES`) and it turns exactly one case
-red. The host is the oracle for the error domain alone. Build and transcripts: `.agent-work/runs/passkit/`.
+the runtime and never the host's PassKit. **43 check lines over 33 member cases, 0 failures**, and
+**two** mutants, because one kind of mutation going red is not evidence that another would:
+
+| mutant | the line | what turns red |
+| --- | --- | --- |
+| 1 | `+canMakePayments` returns `YES` | exactly one case, `PAC.canMakePayments` |
+| 2 | the shared error's code, `PKUnsupportedVersionError` → `PKInvalidSignature` | nine cases — the error's **value**, not just its presence |
+
+The second mutant is the one the transcript was not checking before: an operation's error was written
+on a continuation line indented four spaces, and the body filter wanted a letter after two spaces, so
+**nine error checks were running and being diffed without appearing in either transcript**. The host
+is the oracle for the error domain alone. Build and transcripts: `.agent-work/runs/passkit/`.
