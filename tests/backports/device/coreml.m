@@ -22,12 +22,6 @@
  * is 16.4 and has not got them: the declarations are Core ML's own, from its 17.0 header, and a
  * test that wants to call a method the port carries has to name it the way a caller compiled
  * against that header would. The port defines both, which is what the registry claims. */
-/* MLFeatureValue's own subscripting, also iOS 17's: an MLFeatureValue indexes as a flat array of
- * its own numbers, so a caller reads a multi array's elements through the value it was given. */
-@interface MLFeatureValue (CharonSeventeen)
-- (NSNumber *)objectAtIndexedSubscript:(NSInteger)index;
-@end
-
 @interface MLModelAsset (CharonEighteen)
 + (instancetype)modelAssetWithSpecificationData:(NSData *)specificationData
                                     blobMapping:(NSDictionary<NSURL *, NSData *> *)blobMapping
@@ -412,7 +406,7 @@ static void check_model(const charon_ml_embedded_model *embedded, int index)
                     charon_label(prediction, sizeof prediction, @"%s: %@ has room", embedded->name, name);
                     charon_check(array.count > 0, prediction, @"an empty array");
                     {
-                        NSNumber *first = [(MLFeatureValue *)value objectAtIndexedSubscript:0];
+                        NSNumber *first = [value.multiArrayValue objectAtIndexedSubscript:0];
                         [array setObject:first atIndexedSubscript:0];
                     }
                 }
