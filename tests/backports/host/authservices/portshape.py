@@ -23,15 +23,34 @@ import sys
 
 
 def methods_of(library):
-    """(class, selector, kind) for every method the built library binds, from otool's class dump."""
+    """(class, selector, kind) for every method the built library binds, from otool's class dump.
+
+    Only a class's own `baseMethods` counts. A property name, a protocol's member and a superclass's
+    member all appear in the dump as `name` lines too, and taking them all is how this read a removed
+    method as still bound.
+    """
     out = subprocess.run(["otool", "-oV", library], capture_output=True, text=True).stdout
     classes, current, inMetaclass = {}, None, False
     # The field names the dump prints. A line that starts with one of them is describing whatever class
     # is current, not declaring a class -- and "superclass 0x0 _OBJC_CLASS_$_NSObject" is how the
     # previous version lost the class it was in and reported every member of every class missing.
+    # Which list a `name` line belongs to. The dump prints the class's own method list under
+    # `baseMethods` and its property list under `baseProperties`, and a property list keeps the
+    # property's name whether or not an accessor was written -- `@dynamic provider;` leaves the name
+    # in baseProperties and takes the method out of baseMethods. Recording every `name` line therefore
+    # reported a property as a bound method, and the first version of this read
+    # "name 0x7b16 provider" under baseProperties as proof that a mutation had not taken when it had.
+    inMethods = False
     for line in out.split("\n"):
         stripped = line.strip()
         if not stripped:
+            continue
+        if stripped.startswith("baseMethods"):
+            inMethods = True
+            continue
+        if stripped.startswith(("baseProtocols", "ivars", "baseProperties", "baseClassMethods",
+                                "layout", "weakIvarLayout", "ro")):
+            inMethods = False
             continue
         # "_OBJC_CLASS_$_Name" opens an instance list; "_OBJC_METACLASS_$_Name" opens the class list.
         # The class line carries two address columns before the symbol, so the symbol is found rather
@@ -52,7 +71,7 @@ def methods_of(library):
                 current, inMetaclass = symbol[len("_OBJC_METACLASS_$_"):], True
             elif symbol.startswith("_OBJC_CLASS_$_"):
                 current, inMetaclass = symbol[len("_OBJC_CLASS_$_"):], False
-        elif stripped.startswith("name") and current:
+        elif stripped.startswith("name") and current and inMethods:
             # "name    0x3f08 copyWithZone:" -- the address and then the selector.
             parts = stripped.split(None, 2)
             if len(parts) == 3 and parts[1].startswith("0x"):

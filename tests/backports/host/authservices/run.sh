@@ -125,7 +125,6 @@ compare() {
     "$build/hostshape" "$framework" "$build/classes.txt" > "$build/$label-host.tsv" 2>"$build/$label-host.err"
     python3 "$here/portshape.py" "$library" "$build/classes.txt" > "$build/$label-port.tsv" 2>"$build/$label-port.err"
     portStatus=$?
-    set -e
     cat "$build/$label-host.err" "$build/$label-port.err"
     python3 - "$build/$label-host.tsv" "$build/$label-port.tsv" <<'PYTHON'
 import sys
@@ -204,12 +203,24 @@ PYTHON
     # A mutant that did not take is not a mutant: the method has to be gone from the binary's own method
     # list before the comparison is run, or the check is being asked to notice something that is still
     # there and its "passes" would mean nothing.
-    if otool -oV "$build/mutant/lib.dylib" | grep -qE "^ +name +0x[0-9a-f]+ +provider$"; then
-        echo "FAIL: the mutation did not take: the method is still in the mutant library's method list"
-        echo "      at:"
-        otool -oV "$build/mutant/lib.dylib" | grep -E "^ +name +0x[0-9a-f]+ +provider$" | sed 's/^/        /'
-        exit 1
-    fi
+    # The same rule the port side reads by, and not a grep: otool's dump keeps a property's name in
+    # baseProperties whether or not an accessor was written, so a grep over `name` lines reads a
+    # property as a bound method and refuses a mutation that took. The check is the parse's own.
+    if python3 - "$here/portshape.py" "$build/mutant/lib.dylib" ASAuthorizationRequest provider instance <<'PYTHON'
+import sys
+# The module sits beside this script, and the path has to be its directory rather than the current
+# one: the run happens from wherever the caller was, and "no module named portshape" from the
+# self-test is a broken witness, not a red one.
+import os
+sys.path.insert(0, os.path.dirname(os.path.abspath(sys.argv[1])))
+from portshape import methods_of
+library, className, selector, kind = sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5]
+if (selector, kind) in methods_of(library).get(className, set()):
+    sys.stderr.write("FAIL: the mutation did not take: %s still binds -%s\n" % (className, selector))
+    sys.exit(1)
+sys.stderr.write("ok: %s no longer binds -%s in the class's own method list\n" % (className, selector))
+PYTHON
+    then :; else exit 1; fi
     echo "   the method is gone from the mutant library's method list, so the check below can notice"
     set +e
     compare mutant "$build/mutant/lib.dylib" > "$build/mutant.txt" 2>&1
