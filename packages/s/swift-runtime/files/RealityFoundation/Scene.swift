@@ -2,6 +2,7 @@
 // entity one of them.
 
 import simd
+import CoreMedia
 import Foundation
 
 // MARK: - BoundingBox
@@ -318,6 +319,33 @@ open class Scene {
 
     /// A number that identifies this scene for the life of the process.
     public var id: ID { coreScene.identifier }
+
+    /// The timebase the scene's time is read from: `CMTimebase`, CoreMedia's own, reached through
+    /// the SDK's clang module because the port builds no CoreMedia overlay of its own.
+    ///
+    /// It is made on the first use, against the host clock, and kept: a timebase that were made and
+    /// dropped on each read would jump back to the clock every time, and a scene that steps would
+    /// lose the time it had accumulated. Apple's is a getter too (26.2:12118-12122), so there is no
+    /// way to set a scene's timebase from outside, only to read the one it has.
+    public var timebase: CMTimebase {
+        if let existing = coreScene.timebase { return existing }
+        var timebase: CMTimebase?
+        // A timebase with no master clock of its own is still a timebase: it counts from zero, which
+        // is what a scene that is stepped by its caller wants, and the host clock is what makes it
+        // move on its own for a scene that is not.
+        if CMTimebaseCreateWithMasterClock(allocator: kCFAllocatorDefault,
+                                           masterClock: CMClockGetHostTimeClock(),
+                                           timebaseOut: &timebase) == noErr, let made = timebase {
+            coreScene.timebase = made
+            return made
+        }
+        // CoreMedia would not give this scene a timebase of its own, so it shares the one that is
+        // made once for the process. A timebase is a few kilobytes of CoreMedia state, and a second
+        // failure here is the allocator failing, which is not something a scene can carry on with: it
+        // is said so rather than handed a value that is not a timebase.
+        coreScene.timebase = __REScene.sharedTimebase()
+        return coreScene.timebase!
+    }
 
     public static func __fromCore(_ coreScene: __SceneRef) -> Scene {
         coreScene.__as(Scene.self)

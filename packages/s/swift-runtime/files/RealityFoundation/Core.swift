@@ -13,6 +13,7 @@
 // Foundation overlay's do in packages/s/swift-runtime/patches/overlays.
 
 import simd
+import CoreMedia
 import Foundation
 
 // MARK: - The component registration
@@ -488,6 +489,10 @@ public struct __EntityRef: Equatable {
     public var name: String
     public var anchors: [__REEntity] = []
     public var synchronizationService: Any?
+    /// The timebase the scene's time is read from, made on the first use of it and kept. CoreMedia's
+    /// `CMTimebase` is a C type reached through the SDK's clang module, so the port names it without
+    /// an overlay of its own.
+    public var timebase: CMTimebase?
     /// The `Scene` that wraps this state, made on the first use and kept.
     public var wrapper: Scene?
     /// The pairs of nodes that were touching at the last step of the simulation, so that the
@@ -495,6 +500,23 @@ public struct __EntityRef: Equatable {
     public var collisions: Set<String>?
     private var counter: UInt64 = 0
     private let lock = NSLock()
+
+    /// The timebase every scene shares when CoreMedia would not make one of its own, made once.
+    /// `nil` here means the allocator failed, which is not a state a scene can be put in.
+    static var _sharedTimebase: CMTimebase?
+    static func sharedTimebase() -> CMTimebase {
+        if let made = _sharedTimebase { return made }
+        var timebase: CMTimebase?
+        // The Swift import types the master clock as a non-optional `CMClock`, so a timebase with
+        // no master clock is spelled by the clock the host time is read from, which is what a scene
+        // that is stepped by its caller does not want and this fallback is not the main path anyway.
+        precondition(CMTimebaseCreateWithMasterClock(allocator: kCFAllocatorDefault,
+                                                     masterClock: CMClockGetHostTimeClock(),
+                                                     timebaseOut: &timebase) == noErr && timebase != nil,
+                     "CoreMedia could not allocate a timebase, and a scene whose time has nowhere to read it from is not usable")
+        _sharedTimebase = timebase
+        return timebase!
+    }
 
     public init(name: String) {
         self.identifier = __REComponentRegistry.shared.nextEntityIdentifier()

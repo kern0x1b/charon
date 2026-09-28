@@ -1142,9 +1142,11 @@ check("a cancelled subscription hears nothing more", began, raisedBefore)
     check("the collection reads them back in order", sceneForFamily.anchors[0] === anchorA, true)
     check("a query over the scene answers with its entities",
           Array(sceneForFamily.performQuery(EntityQuery())).count, 2)
-    check("and one that names an entity it holds finds it",
+    check("and one that names an entity it holds finds that one",
           Array(sceneForFamily.performQuery(EntityQuery(where: QueryPredicate { $0.name == "anchorA" })))
-              .map { $0.name }.sorted(), ["anchorA", "anchorB"])
+              .map { $0.name }, ["anchorA"])
+    check("and a name nothing has finds nothing",
+          Array(sceneForFamily.performQuery(EntityQuery(where: QueryPredicate { $0.name == "nobody" }))).count, 0)
     sceneForFamily.removeAnchor(anchorA)
     check("one taken out leaves the other", sceneForFamily.anchors.count, 1)
     sceneForFamily.anchors.replaceAll([anchorA, anchorB])
@@ -1152,6 +1154,21 @@ check("a cancelled subscription hears nothing more", began, raisedBefore)
     sceneForFamily.anchors.removeAll(keepCapacity: true)
     check("and removeAll empties it", sceneForFamily.anchors.count, 0)
     check("a scene with no anchors has an empty description", sceneForFamily.anchors.description.isEmpty, false)
+
+    // The timebase, which is CoreMedia's own CMTimebase reached through the SDK's clang module - the
+    // port builds no CoreMedia overlay, and none is needed: the type is a C one.
+    let timed = Scene()
+    let first = timed.timebase
+    check("a scene's timebase is made on the first use", CMTimebaseGetTime(first), CMTime.zero)
+    check("and is the same one on the next read", timed.timebase === first, true)
+    check("and another scene has another", Scene().timebase === first, false)
+    // A timebase is a real object with a real time: set it, read it back, and put the time where it
+    // was so the rest of the suite steps from where it expects.
+    CMTimebaseSetTime(first, time: CMTime(seconds: 42, preferredTimescale: 600))
+    check("and its time is the time it is given",
+          CMTimebaseGetTime(first).seconds >= 41.9 && CMTimebaseGetTime(first).seconds <= 42.1, true)
+    check("so a scene reads its time from it", timed.timebase === first && CMTimebaseGetTime(timed.timebase).seconds >= 41.9, true)
+    CMTimebaseSetTime(first, time: .zero)
 
     // MARK: The emitter
 
