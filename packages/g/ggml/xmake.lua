@@ -74,13 +74,17 @@ package("ggml")
         end
         table.sort(objects)
         os.vrunv("xcrun", table.join({"libtool", "-static", "-o", path.join(package:installdir("lib"), "libggml.a")}, objects))
+        local include = path.join(package:installdir("include"), "ggml") .. "/"
+        local licences = path.join(package:installdir("licenses"), "ggml") .. "/"
+        os.mkdir(path.directory(include))
+        os.mkdir(path.directory(licences))
         for _, header in ipairs(HEADERS) do
             if os.isfile(path.join(root, "include", header)) then
-                os.vcp(path.join(root, "include", header), path.join(package:installdir("include"), "ggml"))
+                os.vcp(path.join(root, "include", header), include)
             end
         end
-        os.vcp(path.join(root, "build", "ggml-version.h"), path.join(package:installdir("include"), "ggml"))
-        os.vcp(path.join(root, "LICENSE"), path.join(package:installdir("licenses"), "ggml"))
+        os.vcp(path.join(root, "build", "ggml-version.h"), include)
+        os.vcp(path.join(root, "LICENSE"), licences)
     end)
 
     on_test(function (package)
