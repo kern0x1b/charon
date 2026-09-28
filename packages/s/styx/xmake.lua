@@ -5,7 +5,9 @@ package("styx")
     set_policy("package.strict_compatibility", true)
 
     add_urls("https://github.com/kern0x1b/styx.git")
-    add_versions("2026.09.20", "f5fe6511d963d1a21f23c0f3ec820135a69168ff")
+    -- The pin names the commit, and the licence it installs is the one at that commit: the upstream's
+    -- MIT notice first, byte for byte, then what the fork adds. aea2b911 is 8793ca9 with only that.
+    add_versions("2026.09.20", "aea2b9115261ddb201c3b6e50cf5a84060b87df3")
 
     -- Styx is compiled against the runtime a port takes, and the port links one build of it: what the port asks of the runtime
     -- it asks here too, and Styx passes it on, so that the modules are read against that runtime's own resource directory

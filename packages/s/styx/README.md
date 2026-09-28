@@ -11,8 +11,8 @@ beside the runtime and libcxx, and writes `import Combine`.
 | --- | --- |
 | Upstream | [OpenCombine](https://github.com/OpenCombine/OpenCombine), MIT — the reimplementation of Apple's Combine |
 | Upstream commit | `1c6f02c7ed8140c0ba7a783aaddb6e0685a0037b` (OpenCombine's `HEAD`; its `0.14.0` tag is `8576f0d579b27020beccbccc3ea6844f3ddfc2c2`) |
-| The fork | [kern0x1b/styx](https://github.com/kern0x1b/styx), MIT, `2026.09.20` — the upstream plus the fold of its three modules into one named `Combine`, the C++ helper, and the iOS 6 adaptations |
-| Pinned commit | `f5fe6511d963d1a21f23c0f3ec820135a69168ff` |
+| The fork | [kern0x1b/styx](https://github.com/kern0x1b/styx), MIT, `2026.09.20` — the upstream plus the fold of its three modules into one named `Combine`, the C++ helper, the iOS 6 adaptations, and the layer below |
+| Pinned commit | `aea2b9115261ddb201c3b6e50cf5a84060b87df3` |
 | The licence | the upstream's `LICENSE`, installed with the package under `licenses/LICENSE`: MIT License, Copyright (c) 2019 Sergej Jaskiewicz |
 | The fork's own terms | the fork changes the sources and adds the layer in `files/CombineKit`; it claims no new licence over Sergej Jaskiewicz's work, and the upstream's copyright and permission notice travel with the code unchanged |
 
