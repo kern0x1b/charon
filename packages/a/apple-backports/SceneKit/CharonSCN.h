@@ -95,3 +95,22 @@
 - (CharonSCNAnimations *)charonAnimations;
 - (SCNMatrix4)charonPresentedContentsTransform;
 @end
+
+/// Replacing what a geometry is made of, in place.
+///
+/// `SCNGeometry`'s `geometrySources` and `geometryElements` are readonly - `SCNGeometry.h:121` and
+/// `:135` - and the only public way to put data into a geometry is
+/// `+geometryWithSources:elements:`, which returns a *new* object. So an ARKit class that subclasses
+/// `SCNGeometry` and is handed new geometry to show has no public way to repopulate its receiver, which
+/// is what `-updateFromPlaneGeometry:` is for.
+///
+/// This is that way, and it is package-internal on purpose. It is declared here and in no public
+/// header, and it is not in the registry: it is not API, it adds nothing a caller can reach, and it
+/// exists because the storage is *this file's* - the port implements the class, so the values behind
+/// those two readonly properties are its own and nothing outside can see them. That is the difference
+/// between this and a private ivar: nothing private is being reached, the class is simply implemented
+/// here.
+@interface SCNGeometry (CharonReplace)
+- (void)charon_replaceSources:(NSArray<SCNGeometrySource *> *)sources
+                     elements:(NSArray<SCNGeometryElement *> *)elements;
+@end
