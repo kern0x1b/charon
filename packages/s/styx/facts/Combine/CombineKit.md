@@ -52,8 +52,20 @@ in ours, not apple: 272
 
 ## The 93 rows that are not covered, each with the reason
 
-73 + 8 + 4 + 3 + 1 + 4 = 93, counted from the same
-`corpus-missing.tsv` the coverage run wrote, and each part listed row by row below.
+The parts, which `tests/backports/host/combine/coverage.sh` recomputes from the built armv7
+module and fails on when they do not match — so this table is a check, not a claim:
+
+| family | rows not covered |
+| --- | --- |
+| optional and result publisher members | 73 |
+| witnesses the compiler derives | 8 |
+| async typealiases the compiler synthesises | 4 |
+| coding witnesses the compiler synthesises | 4 |
+| private(set) accessors where Apple declares a getter | 3 |
+| Published.wrappedValue | 1 |
+| total | 93 |
+
+Each part is listed row by row below.
 
 **73 rows — `Optional.Publisher.*` and `Result.Publisher.*` members.** The module
 declares Apple's names: `Optional.Publisher`, `Optional.publisher`, `Result.Publisher` and

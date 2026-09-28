@@ -46,6 +46,47 @@ The Foundation integration is not in the host copy — `Sources/Combine/Foundati
 and KVO live. Those are measured on the device instead, by the probe in
 `packages/s/styx/facts/Combine/CombineKit.md`.
 
+## One source of each file
+
+The layer is ours (`packages/s/styx/files/CombineKit`); the rest is the fork's. If the fork's
+tree also carried a file of one of the layer's names, the copy would put two different files
+at one name and the build would compile whichever the compiler picked — so a change to the
+fork's copy would be measured as if nothing had changed. `run.sh` refuses that, by name,
+before it builds anything:
+
+```
+the fork's sources carry a file of the layer's name, so one of them would be compiled
+in place of the other and the run would measure whichever the compiler picked:
+MergeKit.swift: .../Sources/Combine/Publishers/MergeKit.swift
+```
+
+and a module that does not build is `exit 1` with `the module did not build; there is nothing
+to compare`, checked where the build is made rather than left to the shell. A clean run
+prints how much it compiled, so the two sources are visible in the verdict:
+
+```
+module: 109 Swift files, 6 of them ours
+cases: cases 40
+DIFFERENTIAL: identical
+```
+
+## The coverage, against the facts
+
+`coverage.sh` builds the armv7 module the way the package builds it, synthesises the
+interface out of it, and counts the corpus rows it carries with the corpus's own tool on both
+sides. It then compares the count — and each family of the rows it does not carry — with the
+table in `packages/s/styx/facts/Combine/CombineKit.md`, and fails when they disagree. The
+numbers in the facts are a check, not a claim. With one family miscounted by one:
+
+```
+the facts file is stale:
+  the facts say 7 rows for 'witnesses the compiler derives', there are 8
+```
+
+`CHARON_SDK` and `CHARON_SWIFTC` are named rather than guessed: the store holds several
+builds of the toolchain and several of the 16.4 SDK, and only the pair the package used will
+accept `-target armv7-apple-ios6.1.3`.
+
 ## The mutation
 
 `MergeInner.request(_:)` with its demand pass-through loop emptied — nothing in it but a
@@ -67,6 +108,8 @@ DIFFERENTIAL: 21 differing lines, in .../charon-combine-differential/diff.txt
 +merge/demand/limited	upstream asked for none
 +merge/demand/limited	upstream asked for none
 ```
+
+`exit 1`. Line restored, `./run.sh` alone again: `DIFFERENTIAL: identical`.
 
 Line restored, `./run.sh` alone again: `DIFFERENTIAL: identical`.
 

@@ -22,13 +22,17 @@ clangxx=${CLANGXX:-clang++}
 
 # The fork's own sources are not in this repository - the recipe fetches them - so they come
 # from the xmake source cache when the package has been built, or from $COMBINE_SOURCES.
+# Both name the same thing: the directory that holds `Combine`, `CombineHelpers` and so on,
+# which is the repository's top-level `Sources` directory. The check below is that
+# "$sources/Combine" is a directory, and the message says exactly that.
 if [ -z "$sources" ]; then
     sources=$(ls -d "$HOME"/.xmake/cache/packages/*/s/styx/*/source/styx/Sources 2>/dev/null | head -1 || true)
 fi
 if [ -z "$sources" ] || [ ! -d "$sources/Combine" ]; then
-    echo "cannot find the fork's Combine sources."
-    echo "Build charon@styx once, or point COMBINE_SOURCES at the Sources/Combine directory of"
-    echo "kern0x1b/styx at the commit packages/s/styx/xmake.lua pins."
+    echo "COMBINE_SOURCES names $sources, which has no Combine/ directory in it."
+    echo "It must be the top-level Sources/ directory of kern0x1b/styx at the commit"
+    echo "packages/s/styx/xmake.lua pins - the one that holds Combine/ and CombineHelpers/."
+    echo "Build charon@styx once, and the xmake source cache is found without being named."
     exit 1
 fi
 if [ ! -d "$repo/packages/s/styx/files/CombineKit" ]; then
@@ -50,8 +54,29 @@ mkdir -p "$build/stage/Combine" "$build/swift/CombineKit.swiftmodule" "$build/ob
 # ends in the same six letters, so it is put aside for the moment the substitution happens.
 cp -R "$sources/Combine/." "$build/stage/Combine/"
 rm -rf "$build/stage/Combine/Foundation" "$build/stage/Combine/Schedulers"
+# One source of each file. The layer is ours and the fork's sources are the fork's; if the
+# fork's tree also carried a file of one of the layer's names, the copy below would put two
+# different files at one name and the build would compile whichever one the compiler picked -
+# so a change to the fork's copy would be measured as if nothing had changed. The run refuses
+# that instead of guessing.
+layer="$repo/packages/s/styx/files/CombineKit"
+clash=""
+for file in "$layer"/*.swift; do
+    name=$(basename "$file")
+    hit=$(find "$sources/Combine" -name "$name" -print -quit)
+    if [ -n "$hit" ]; then
+        clash="$clash$name: $hit
+"
+    fi
+done
+if [ -n "$clash" ]; then
+    echo "the fork's sources carry a file of the layer's name, so one of them would be compiled"
+    echo "in place of the other and the run would measure whichever the compiler picked:"
+    echo "$clash"
+    exit 1
+fi
 mkdir -p "$build/stage/Combine/CombineKit"
-cp "$repo"/packages/s/styx/files/CombineKit/*.swift "$build/stage/Combine/CombineKit/"
+cp "$layer"/*.swift "$build/stage/Combine/CombineKit/"
 find "$build/stage" -name '*.swift' -print0 \
     | xargs -0 sed -i '' -e 's/OCombine/@@NESTED@@/g' -e 's/Combine\./CombineKit./g' \
                           -e 's/@@NESTED@@/OCombine/g'
@@ -60,11 +85,18 @@ helpers="$sources/CombineHelpers"
 "$clangxx" -target arm64-apple-macosx11.0 -std=c++17 -O2 \
     -I "$helpers/include" \
     -c "$helpers/CombineHelpers.cpp" -o "$build/objects/CombineHelpers.o"
-"$swifc" -target arm64-apple-macosx11.0 -wmo -module-name CombineKit -O -parse-as-library \
-    -I "$build/stage" -I "$helpers/include" \
-    -Xcc -fmodule-map-file="$helpers/include/module.modulemap" \
-    -emit-module -emit-module-path "$build/swift/CombineKit.swiftmodule/arm64-apple-macos.swiftmodule" \
-    -c $(find "$build/stage/Combine" -name '*.swift') -o "$build/objects/Combine.o"
+# The module build's own exit status, checked where it is made: a module that does not
+# compile has no interface to compare, and a run that went on to the probes would be
+# comparing whatever the last good build left behind.
+if ! "$swifc" -target arm64-apple-macosx11.0 -wmo -module-name CombineKit -O -parse-as-library \
+        -I "$build/stage" -I "$helpers/include" \
+        -Xcc -fmodule-map-file="$helpers/include/module.modulemap" \
+        -emit-module -emit-module-path "$build/swift/CombineKit.swiftmodule/arm64-apple-macos.swiftmodule" \
+        -c $(find "$build/stage/Combine" -name '*.swift') -o "$build/objects/Combine.o"; then
+    echo "the module did not build; there is nothing to compare"
+    exit 1
+fi
+echo "module: $(find "$build/stage/Combine" -name '*.swift' | wc -l | tr -d ' ') Swift files, $(ls "$layer" | wc -l | tr -d ' ') of them ours"
 
 # ---------------------------------------------------------------- the two probes
 
