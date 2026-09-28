@@ -18,6 +18,7 @@
 // four template lifecycle messages the header declares. The scene it belongs to is the wall, and
 // that is the registry's, not this file's.
 #import <CarPlay/CarPlay.h>
+#import "CharonCarPlayHome.h"
 #import <UIKit/UIKit.h>
 #import <objc/message.h>
 #import <objc/runtime.h>
@@ -45,6 +46,13 @@
 @interface CPTemplate (CharonDrawing)
 - (UIViewController *)charon_viewControllerForInterfaceController:(CPInterfaceController *)controller;
 @end
+
+// The release's own plate, drawn, for the surfaces a UICollectionViewCell does not give. A C
+// function because it is a drawing and not a message, and the two it replaces are its own.
+static void CharonCarPlaySkin_drawPlate(CGRect rect, CGContextRef context)
+{
+    [CharonCarPlaySkin drawPlateInRect:CGRectInset(rect, 2.0, 2.0) context:context radius:8.0];
+}
 
 // A row's handler, as the object the header's handler type is: the call the list template makes
 // when a row is chosen, so the handler is a real object with a real message and not a cast block.
@@ -401,6 +409,10 @@
 + (instancetype)sourceForTemplate:(CPListTemplate *)template;
 @end
 
+// The list template's own navigation bar, kept so the leading bar buttons go into it rather than
+// into a controller that has no bar of its own on this release.
+static UINavigationBar *_listNavigationBar;
+
 // ============================ the list template ============================
 
 @interface CPListTemplate (CharonRows)
@@ -512,8 +524,37 @@
     }
     _list = [[UITableViewController alloc] initWithStyle:UITableViewStylePlain];
     _list.title = self.title;
+    // The release's own chrome, not a flat imitation of it: a UIBarStyleBlack bar, which on iOS 6 is
+    // the glossy black one with the release's own gradient and its own hairline, and the release's own
+    // grouped cells below it. The list template's own leading bar buttons go in the bar's leading side
+    // where a navigation bar puts them.
+    _list.navigationItem.title = self.title;
     _list.view.backgroundColor = [UIColor blackColor];
+    // A table view controller has no navigation bar of its own on this release, so the glossy black
+    // bar the list template needs is a real UINavigationBar the template owns and puts on top of its
+    // own view -- the release's own bar, drawn by the release, not a picture of one.
+    UINavigationBar *bar = [[UINavigationBar alloc] initWithFrame:CGRectMake(0.0, 0.0, 1024.0, 44.0)];
+    bar.barStyle = UIBarStyleBlack;
+    bar.translucent = NO;
+    [_list.view addSubview:bar];
+    _listNavigationBar = bar;
     _list.tableView.backgroundColor = [UIColor blackColor];
+    _list.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    NSMutableArray *barItems = [NSMutableArray array];
+    for (CPBarButton *button in self.barButtons) {
+        [barItems addObject:[[UIBarButtonItem alloc] initWithTitle:button.title
+                                                            style:UIBarButtonItemStylePlain
+                                                           target:button
+                                                           action:@selector(charon_tap)]];
+    }
+    barItems = [NSMutableArray array];
+    for (CPBarButton *button in self.barButtons) {
+        [barItems addObject:[[UIBarButtonItem alloc] initWithTitle:button.title
+                                                            style:UIBarButtonItemStylePlain
+                                                           target:button
+                                                           action:@selector(charon_tap)]];
+    }
+    _listNavigationBar.topItem.leftBarButtonItems = barItems;
     _list.tableView.dataSource = (id)[CharonListSource sourceForTemplate:self];
     _list.tableView.delegate = (id)[CharonListSource sourceForTemplate:self];
     if (_sections.count == 0) {
@@ -612,9 +653,15 @@
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle
                                       reuseIdentifier:cellIdentifier];
-        cell.backgroundColor = [UIColor clearColor];
-        cell.textLabel.textColor = [UIColor whiteColor];
-        cell.detailTextLabel.textColor = [UIColor colorWithWhite:1.0 alpha:0.6];
+        // The release's own cell: a grouped cell is the release's own gradient plate with a hairline
+        // under it, so nothing here is drawn to replace it -- the skin is only what the release's own
+        // cell does not give, which is the shadow the release draws per cell and this does not.
+        cell.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.92];
+        cell.textLabel.textColor = [CharonCarPlaySkin labelColour];
+        cell.detailTextLabel.textColor = [UIColor colorWithWhite:0.3 alpha:1.0];
+        cell.textLabel.font = [CharonCarPlaySkin fontOfSize:17.0 bold:NO];
+        cell.detailTextLabel.font = [CharonCarPlaySkin fontOfSize:12.0 bold:NO];
+        cell.selectionStyle = UITableViewCellSelectionStyleBlue;
     }
     NSArray<CPListSection *> *sections = _template.sections;
     if ((NSUInteger)indexPath.section < sections.count) {
@@ -766,7 +813,13 @@
     static NSString *const cellIdentifier = @"CharonCarPlayGridButton";
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier
                                                                           forIndexPath:indexPath];
+    // The release's own plate behind the button the button itself draws, so a grid button sits on an
+    // iOS 6 surface rather than on nothing.
     cell.backgroundColor = [UIColor clearColor];
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    if (context) {
+        CharonCarPlaySkin_drawPlate(cell.contentView.bounds, context);
+    }
     for (UIView *view in cell.contentView.subviews) {
         [view removeFromSuperview];
     }
@@ -869,6 +922,12 @@
     _charon_bar.charon_buttons = self.barButtons;
     _charon_bar.backgroundColor = [UIColor clearColor];
     [_mapView addSubview:_charon_bar];
+    // A map template's own chrome is the bar at the top, which on this release is the glossy black
+    // UIBarStyleBlack one, over the release's own MKMapView underneath it.
+    UINavigationBar *bar = [[UINavigationBar alloc] initWithFrame:CGRectMake(0.0, 0.0, 1024.0, 44.0)];
+    bar.barStyle = UIBarStyleBlack;
+    bar.translucent = YES;
+    [_mapView addSubview:bar];
     return (UIViewController *)_mapView;
 }
 
