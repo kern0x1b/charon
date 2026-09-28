@@ -553,21 +553,36 @@ It is wired the way the ruling says: `backports.lua`'s Accelerate row carries
 refuses with `apple-backports links the archive suitesparse-ordering and its recipe declares no dependency
 with that alias` — which is what it did, and the dep is the fix.
 
-**Where it stops, and the bare assertion answered.** The download succeeds — `download … v7.12.2.tar.gz
-.. ok`, the same URL and the same hash the machine's registry carries — and the **install step fails** with
-a bare `assertion failed!` and no message. The suspicion that it is `toolchain:tool("cc")` returning nil
-for apple-ios is **disproved by a print added ahead of it**, which is in the recipe and runs before
-anything else is assumed:
+**Where it stops, and the bare assertion answered by the compiler's own line.** A scratch project
+(`add_repositories` at the checkout, `add_addons("charon v0.1.0")`, `set_defaultplat("iphoneos")`,
+`add_requires("charon@suitesparse-ordering v7.12.2")`) and `xmake f -c -y` puts the failure where the
+`assertion failed!` hid it:
 
 ```
-suitesparse-ordering: toolchain table: 0x774f137cc0,
-  cc  = $HOME/.xmake/packages/l/llvm/23.1.1/<the store's hash>/bin/clang
-  cxx = $HOME/.xmake/packages/l/llvm/23.1.1/<the store's hash>/bin/clang++
+In file included from AMD/Source/amd_1.c:27:
+In file included from …/AMD/Include/amd_internal.h:43:
+In file included from …/AMD/Include/amd.h:38:
+…/SuiteSparse_config/SuiteSparse_config.h:26:10: fatal error: 'stdio.h' file not found
+   26 | #include <stdio.h>
 ```
 
-Both resolve, so the failure is after that point: in one of the five `os.isdir` checks that follow (whose
-messages name the directory) or in an xmake internal whose own assert carries no text. The next narrowing
-step is to print each of those five; the log to read is
+**The recipe's compile line had `-isysroot` and no C library with it**, so a C compile against an iOS SDK
+found no `stdio.h` at all. That is the bare assertion, and box2d's C++ sources never meet it — a C++
+compile resolves the library's own headers through the toolchain's include chain, a C one does not. The fix
+is `-isystem $sdkdir/usr/include` alongside the `-isysroot`, which is where a sysroot's own headers belong,
+and it is in the recipe.
+
+Two things the scratch project also showed, both of which the recipe does not yet have and which is why
+the package is still not building:
+
+- **The toolchain it resolves is not the pinned addon's.** The print reads
+  `cc = /usr/bin/clang, cxx = /usr/bin/clang` under the scratch project, where the gate's own resolve reads
+  the store's LLVM 23.1.1. `package:toolchains()[1]` is the wrong pick outside the gate, and with the system
+  clang on the path `toolchain:config("sdkdir")` is not what the compile line needs either. The recipe has to
+  ask the addon the way `backports.lua` does, not take the first entry.
+- So the `-isystem` fix is **the right fix, verified to reach the right header, and not yet proven to build
+  the archive** — the run above still ends on the same `stdio.h` line because the toolchain, not the
+  include path, is the remaining half.
 
 
 

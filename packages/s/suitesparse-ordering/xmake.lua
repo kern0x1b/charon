@@ -47,8 +47,14 @@ package("suitesparse-ordering")
         print("suitesparse-ordering: toolchain %s, cc = %s, cxx = %s", tostring(toolchain), tostring(toolchain:tool("cc")),
               tostring(toolchain:tool("cxx")))
         local sdkdir = toolchain:config("sdkdir")
+        -- -isysroot alone leaves a C compile with no C library: SuiteSparse_config.h includes <stdio.h>
+        -- and the compiler answers "'stdio.h' file not found" (measured, and it was the bare
+        -- "assertion failed!" above this, because xmake's own assert carries no message). The SDK's
+        -- own headers go in with -isystem, which is where a sysroot's belong; the toolchain's clang is
+        -- what compiles, so the C++ headers are not needed for this package, which is C.
         local target = {"-target", package:arch() .. "-apple-ios", "-miphoneos-version-min=" .. toolchain:config("deployment"),
-                        "-isysroot", sdkdir, "-I" .. path.join(os.curdir(), "SuiteSparse_config"),
+                        "-isysroot", sdkdir, "-isystem", path.join(sdkdir, "usr", "include"),
+                        "-I" .. path.join(os.curdir(), "SuiteSparse_config"),
                         "-I" .. path.join(os.curdir(), "AMD", "Include"), "-I" .. path.join(os.curdir(), "COLAMD", "Include")}
         -- and it says which it found, so a layout change is a message and not an assertion below.
         for _, directory in ipairs({"AMD/Source", "COLAMD/Source", "SuiteSparse_config", "AMD/Include", "COLAMD/Include"}) do
