@@ -42,22 +42,22 @@
       "kind": "property",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "inert",
+      "status": "implemented",
       "facts": "facts/AVFAudio/AVAudioUnitSampler.md",
       "source": "the emulated iPhone2,1 6.1.3 (10B329), verbatim in tests/backports/device/sampler-probe/run/run.log: Apple: AUSampler, type 'aumu' subtype 'samp' manufacturer 'appl' version 0x10000, entry 48 of the 55 the release registers, found by all three of the probe's queries; built over the release's own kAUSamplerProperty_LoadInstrument and kAUSamplerProperty_LoadAudioFiles (AudioUnitProperties.h:3636,3639,3651,3652) and its AUSamplerInstrumentData",
-      "reason": "the header declares it and the port holds and reads it back, but iOS 6.1.3's AudioToolbox property set names no property behind it: the sampler is a component the release registers (the emulator probe found Apple: AUSampler, type 'aumu' subtype 'samp' manufacturer 'appl'), and no AudioUnit property of that unit is named in the release's headers, so there is nothing to tell the unit and this member is the port's own state NOTE FOR THE REVIEWER: this status rests on a NEGATIVE, and it is the one thing to check. The four members are declared by the 26.2 SDK's AVAudioUnitSampler.h and the port holds and reads each back, but the case that they are not implemented is that no AudioUnit property behind them is named in the release's own headers: kAUSamplerProperty_LoadInstrument and kAUSamplerProperty_LoadAudioFiles are the ones the release does name, and nothing behind these four. A negative is weaker evidence than a positive, and if some other property of that unit does reach them and the header names it somewhere the port has not looked, these four are implemented after all. What settles it is AudioUnitGetPropertyInfo over kAudioUnitScope_Global on a real AUSampler for the property behind each accessor, which the emulator probe is already positioned to answer.",
-      "effect": "a host sets it and reads the same value back, and no audio changes: on this release there is no AudioUnit property behind it"
+      "reason": "implemented over the release's own parameter kAUSamplerParam_CoarseTuning (901): the sampler of iOS 6.1.3 is a registered component (the emulator probe found Apple: AUSampler, type 'aumu' subtype 'samp' manufacturer 'appl') and AudioToolbox names kAUSamplerParam_CoarseTuning (901) for it in AudioUnitParameters.h",
+      "effect": "the unit's coarse tuning in cents, so a value set on the object changes the sound"
     },
     {
       "api": "AVAudioUnitSampler.masterGain",
       "kind": "property",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "inert",
+      "status": "implemented",
       "facts": "facts/AVFAudio/AVAudioUnitSampler.md",
       "source": "the emulated iPhone2,1 6.1.3 (10B329), verbatim in tests/backports/device/sampler-probe/run/run.log: Apple: AUSampler, type 'aumu' subtype 'samp' manufacturer 'appl' version 0x10000, entry 48 of the 55 the release registers, found by all three of the probe's queries; built over the release's own kAUSamplerProperty_LoadInstrument and kAUSamplerProperty_LoadAudioFiles (AudioUnitProperties.h:3636,3639,3651,3652) and its AUSamplerInstrumentData",
-      "reason": "the header declares it and the port holds and reads it back, but iOS 6.1.3's AudioToolbox property set names no property behind it: the sampler is a component the release registers (the emulator probe found Apple: AUSampler, type 'aumu' subtype 'samp' manufacturer 'appl'), and no AudioUnit property of that unit is named in the release's headers, so there is nothing to tell the unit and this member is the port's own state NOTE FOR THE REVIEWER: this status rests on a NEGATIVE, and it is the one thing to check. The four members are declared by the 26.2 SDK's AVAudioUnitSampler.h and the port holds and reads each back, but the case that they are not implemented is that no AudioUnit property behind them is named in the release's own headers: kAUSamplerProperty_LoadInstrument and kAUSamplerProperty_LoadAudioFiles are the ones the release does name, and nothing behind these four. A negative is weaker evidence than a positive, and if some other property of that unit does reach them and the header names it somewhere the port has not looked, these four are implemented after all. What settles it is AudioUnitGetPropertyInfo over kAudioUnitScope_Global on a real AUSampler for the property behind each accessor, which the emulator probe is already positioned to answer.",
-      "effect": "a host sets it and reads the same value back, and no audio changes: on this release there is no AudioUnit property behind it"
+      "reason": "implemented over the release's own parameter kAUSamplerParam_Gain (900): the sampler of iOS 6.1.3 is a registered component (the emulator probe found Apple: AUSampler, type 'aumu' subtype 'samp' manufacturer 'appl') and AudioToolbox names kAUSamplerParam_Gain (900) for it in AudioUnitParameters.h",
+      "effect": "the unit's own gain, so a value set on the object changes the sound"
     },
     {
       "api": "AVAudioUnitSampler.overallGain",
@@ -67,19 +67,19 @@
       "status": "inert",
       "facts": "facts/AVFAudio/AVAudioUnitSampler.md",
       "source": "the emulated iPhone2,1 6.1.3 (10B329), verbatim in tests/backports/device/sampler-probe/run/run.log: Apple: AUSampler, type 'aumu' subtype 'samp' manufacturer 'appl' version 0x10000, entry 48 of the 55 the release registers, found by all three of the probe's queries; built over the release's own kAUSamplerProperty_LoadInstrument and kAUSamplerProperty_LoadAudioFiles (AudioUnitProperties.h:3636,3639,3651,3652) and its AUSamplerInstrumentData",
-      "reason": "the header declares it and the port holds and reads it back, but iOS 6.1.3's AudioToolbox property set names no property behind it: the sampler is a component the release registers (the emulator probe found Apple: AUSampler, type 'aumu' subtype 'samp' manufacturer 'appl'), and no AudioUnit property of that unit is named in the release's headers, so there is nothing to tell the unit and this member is the port's own state NOTE FOR THE REVIEWER: this status rests on a NEGATIVE, and it is the one thing to check. The four members are declared by the 26.2 SDK's AVAudioUnitSampler.h and the port holds and reads each back, but the case that they are not implemented is that no AudioUnit property behind them is named in the release's own headers: kAUSamplerProperty_LoadInstrument and kAUSamplerProperty_LoadAudioFiles are the ones the release does name, and nothing behind these four. A negative is weaker evidence than a positive, and if some other property of that unit does reach them and the header names it somewhere the port has not looked, these four are implemented after all. What settles it is AudioUnitGetPropertyInfo over kAudioUnitScope_Global on a real AUSampler for the property behind each accessor, which the emulator probe is already positioned to answer.",
-      "effect": "a host sets it and reads the same value back, and no audio changes: on this release there is no AudioUnit property behind it"
+      "reason": "the release's sampler names four parameters - kAUSamplerParam_Gain 900, _CoarseTuning 901, _FineTuning 902 and _Pan 903 - and none of them is an overall gain; the value is a level the object sums to rather than one the unit holds, so on this release it is the port's own state",
+      "effect": "a host sets it and reads the same value back, and no audio changes: the release's sampler has no parameter behind it"
     },
     {
       "api": "AVAudioUnitSampler.stereoPan",
       "kind": "property",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "inert",
+      "status": "implemented",
       "facts": "facts/AVFAudio/AVAudioUnitSampler.md",
       "source": "the emulated iPhone2,1 6.1.3 (10B329), verbatim in tests/backports/device/sampler-probe/run/run.log: Apple: AUSampler, type 'aumu' subtype 'samp' manufacturer 'appl' version 0x10000, entry 48 of the 55 the release registers, found by all three of the probe's queries; built over the release's own kAUSamplerProperty_LoadInstrument and kAUSamplerProperty_LoadAudioFiles (AudioUnitProperties.h:3636,3639,3651,3652) and its AUSamplerInstrumentData",
-      "reason": "the header declares it and the port holds and reads it back, but iOS 6.1.3's AudioToolbox property set names no property behind it: the sampler is a component the release registers (the emulator probe found Apple: AUSampler, type 'aumu' subtype 'samp' manufacturer 'appl'), and no AudioUnit property of that unit is named in the release's headers, so there is nothing to tell the unit and this member is the port's own state NOTE FOR THE REVIEWER: this status rests on a NEGATIVE, and it is the one thing to check. The four members are declared by the 26.2 SDK's AVAudioUnitSampler.h and the port holds and reads each back, but the case that they are not implemented is that no AudioUnit property behind them is named in the release's own headers: kAUSamplerProperty_LoadInstrument and kAUSamplerProperty_LoadAudioFiles are the ones the release does name, and nothing behind these four. A negative is weaker evidence than a positive, and if some other property of that unit does reach them and the header names it somewhere the port has not looked, these four are implemented after all. What settles it is AudioUnitGetPropertyInfo over kAudioUnitScope_Global on a real AUSampler for the property behind each accessor, which the emulator probe is already positioned to answer.",
-      "effect": "a host sets it and reads the same value back, and no audio changes: on this release there is no AudioUnit property behind it"
+      "reason": "implemented over the release's own parameter kAUSamplerParam_Pan (903): the sampler of iOS 6.1.3 is a registered component (the emulator probe found Apple: AUSampler, type 'aumu' subtype 'samp' manufacturer 'appl') and AudioToolbox names kAUSamplerParam_Pan (903) for it in AudioUnitParameters.h",
+      "effect": "the unit's own pan, so a value set on the object changes the sound"
     }
   ]
 }
