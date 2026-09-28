@@ -119,10 +119,10 @@ recorded by `tests/backports/host/vision/run.sh` (33 records) and held against t
   second time and now with the method that finds it. The Core ML no-option default is confirmed to
   be `ScaleFill`, exactly (its no-option row is its `ScaleFill` row, pixel for pixel).
 
-  **Magnitudes, not counts.** 25028 colour-differing pixels is the picture's own interior (224x112 =
-  25088), so the bars agree and the scaled picture differs -- which is why a count cannot decide:
-  the histogram of max |dB|,|dG|,|dR| per pixel over that region, in the buckets 0, 1, 2, 3-7 and
-  >=8, for every candidate, all fed from the same single source:
+  **Magnitudes, not counts, and then the uniform case, which rules colour management out.** 25028
+  colour-differing pixels is the picture's own interior (224x112 = 25088), so the bars agree and the
+  scaled picture differs. The histogram of max |dB|,|dG|,|dR| per pixel over that region, in the
+  buckets 0, 1, 2, 3-7 and >=8, for every candidate fed from the same single source:
 
   | candidate | 0 | 1 | 2 | 3-7 | >=8 | max abs |
   | --- | --- | --- | --- | --- | --- | --- |
@@ -132,19 +132,31 @@ recorded by `tests/backports/host/vision/run.sh` (33 records) and held against t
   | vImage, edge extend | 4 | 115 | 164 | 1970 | 22835 | 68 |
   | vImage, Lanczos + edge | 6 | 48 | 90 | 1311 | 23633 | 88 |
 
-  **None is in the 0 bucket, and the port is the closest of them** -- 19299 of the region's 25088 at
-  eight or more, with a maximum of 55 -- against vImage's 22835 and 23633 with maxima of 68 and 88.
-  vImage is therefore not dismissed on the count and is not adopted on the magnitudes either: it is
-  further from Core ML than the port already is.
+  None is in the 0 bucket and the port is the closest of them. **Core Image's
+  `CILanczosScaleTransform` is still unmeasured** -- the filter was handed a `CIVector` under
+  `kCIInputAspectRatioKey`, where it wants a number, and raised. The coordinator's condition for
+  chasing that was a residual left by the colour test, and there is none.
 
-  **Core Image's `CILanczosScaleTransform` is still unmeasured**, and the fault is this probe's
-  again: the filter was handed a `CIVector` under `kCIInputAspectRatioKey`, where it wants a number,
-  and raised `-[CIVector doubleValue]: unrecognized selector`. So of the three candidates the
-  coordinator named, two are measured and the third is not.
+  **The uniform case, and it decides it.** A single colour -- (200,100,50) -- over 100x50 brought to
+  224x224 under `ScaleFit`, read at the middle of the picture and of the bars on both sides:
 
-  **What the numbers decide, and what they do not.** A maximum of 55 on 77 per cent of the region is
-  not a rounding difference and not a kernel choice: it is a different image. So the fix is not a
-  kernel swap, and the geometry -- which one dump said agreed, on a *sampled* middle pixel and a
-  handful of columns -- has to be read across a whole row and column rather than at three points.
-  That is the next measurement, and this run does not reach it.
+  ```
+  coreML, middle of the picture   B=32 G=64 R=c8 A=ff
+  the port, middle of the picture B=32 G=64 R=c8 A=ff      <- identical
+  coreML, middle of the bars      B=00 G=00 R=00 A=00
+  the port, middle of the bars     B=00 G=00 R=00 A=ff      <- the fourth byte only
+  ```
+
+  The colour survives both paths exactly: 200 is c8, 100 is 64, 50 is 32, and the two agree to the
+  byte. **Core ML's buffer carries no colour space at all** -- `CVImageBufferGetColorSpace` answers
+  none -- and the port's context and the picture's are both plain RGB models, so there is nothing on
+  either side to convert. So a smooth difference of up to 55 over a *gradient* is **not** colour
+  management, and since geometry and a kernel cannot change a uniform image and the uniform case
+  agrees, it is not the geometry either. What is left is the resampling of a varying field: Core ML
+  interpolates a gradient differently from all three of CoreGraphics' qualities and all four of
+  vImage's flag sets, which are the seven measured.
+
+  The colour-space seam the probe needed for this is **reverted**: it measured nothing, and a dead
+  knob in the library is worse than no knob. The interpolation seam stays, because it is what let all
+  three qualities be measured against the same function.
 
