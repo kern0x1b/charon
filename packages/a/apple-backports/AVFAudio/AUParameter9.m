@@ -7,6 +7,23 @@
 // The value of a parameter is the unit's, not this object's: it is read with AudioUnitGetParameter
 // and written with AudioUnitSetParameter, both exported by AudioToolbox on iOS 6.1.3. That is what
 // makes an AUParameter change what the unit renders rather than only what a caller reads back.
+// The private initializer the tree builder makes its parameters with. It is declared in the
+// CharonImpl category in CharonAUAudioUnit.h and it was *sent* at :256 by CharonBuildParameterTree
+// and never defined, so the first parameter of the first unit raised "unrecognized selector sent to
+// instance". Nothing in the registry names it - it is Charon-prefixed - the linker does not complain
+// about an Objective-C message send, and check-private-selectors.py does not collect it because its
+// selector_of() looks for a lowercase "charon" and this one has a capital C. The port-versus-host half
+// of tests/backports/host/avfaudio found it the first time it built a tree.
+- (instancetype)initWithCharonImpl:(CharonAUParameterImpl *)impl
+{
+    if ((self = [super init])) {
+        _charon = impl;
+        [self charon_setIdentifier:impl.name];
+        [self charon_setDisplayName:impl.name];
+    }
+    return self;
+}
+
 - (AUValue)value
 {
     if (_charon.owner == nil || _charon.owner.audioUnit == NULL) {
@@ -253,7 +270,7 @@ AUParameterTree *CharonBuildParameterTree(AUAudioUnit *owner)
                 CFRelease(info.cfNameString);
             }
         }
-        AUParameter *parameter = [[AUParameter alloc] charon_parameterWithImpl:impl];
+        AUParameter *parameter = [[AUParameter alloc] initWithCharonImpl:impl];
         // The unit's published name is the parameter's display name and its identifier at once - the
         // C string is the only name the v2 format carries - and the localized name, when the unit
         // publishes one, is the display name.

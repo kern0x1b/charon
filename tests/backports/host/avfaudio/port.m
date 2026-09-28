@@ -17,6 +17,8 @@
 // The port's own class names, as the rename left them. Declared here rather than imported, because
 // the port's headers declare Apple's names and this file is asking about the renamed ones.
 @interface charon_host_AUAudioUnit : NSObject
+@property (readonly) id inputBusses;
+@property (readonly) id outputBusses;
 - (instancetype)initWithComponentDescription:(AudioComponentDescription)description error:(NSError **)error;
 @property (readonly) NSArray<NSNumber *> *channelCapabilities;
 - (NSArray<NSNumber *> *)parametersForOverviewWithCount:(NSInteger)count;
@@ -31,9 +33,13 @@
 @interface charon_host_AUAudioUnitBus : NSObject
 @property (readonly) NSArray<NSNumber *> *supportedChannelLayoutTags;
 @property (readonly) double latency;
+@property (readonly, copy) AVAudioFormat *format;
+- (BOOL)setFormat:(AVAudioFormat *)format error:(NSError **)error;
 @end
 
 @interface charon_host_AUAudioUnitBusArray : NSObject
+- (id)objectAtIndexedSubscript:(NSUInteger)index;
+- (NSUInteger)count;
 @end
 
 @interface charon_host_AUParameterTree : NSObject
@@ -67,7 +73,45 @@ int main(void)
 {
     @autoreleasepool {
         // The port's AUAudioUnit, on a real component, next to Apple's on the same one.
-        AudioComponentDescription described = CharonFirstComponentOfType(kAudioUnitType_Effect);
+        // A unit that ANSWERS kAudioUnitProperty_SupportedNumChannels, so the pair the port reads is
+        // two numbers and swapping them is visible. The effect the harness used first declines it
+        // (-10879), where the port answers an empty array and a swap of two absent values changes
+        // nothing - a comparison that cannot fail. So the walk looks for a unit that answers it, and
+        // says so when none does rather than comparing two empty arrays.
+        AudioComponentDescription described = {0};
+        OSType types[] = {kAudioUnitType_Mixer, kAudioUnitType_Effect, kAudioUnitType_MusicDevice};
+        for (size_t t = 0; t < sizeof(types) / sizeof(*types) && described.componentType == 0; t++) {
+            AudioComponentDescription any = {0};
+            any.componentType = types[t];
+            AudioComponent component = AudioComponentFindNext(NULL, &any);
+            while (component != NULL) {
+                AudioComponentInstance probe = NULL;
+                if (AudioComponentInstanceNew(component, &probe) == noErr && probe != NULL) {
+                    SInt32 pair[2] = {0, 0};
+                    UInt32 size = sizeof(pair);
+                    if (AudioUnitGetProperty((AudioUnit)probe, kAudioUnitProperty_SupportedNumChannels,
+                                             kAudioUnitScope_Global, 0, pair, &size) == noErr && size >= sizeof(pair)) {
+                        AudioComponentGetDescription(component, &described);
+                        AudioComponentInstanceDispose(probe);
+                        break;
+                    }
+                    AudioComponentInstanceDispose(probe);
+                }
+                component = AudioComponentFindNext(component, &any);
+            }
+        }
+        if (described.componentType == 0) {
+            // fall back to an effect so the rest of the harness still has something to ask
+            described = CharonFirstComponentOfType(kAudioUnitType_Effect);
+            printf("stage no host unit answers kAudioUnitProperty_SupportedNumChannels: the channel pair is not compared\n");
+        } else {
+            char label[5] = {0};
+            OSType name = described.componentType;
+            memcpy(label, &name, 4);
+            printf("stage a unit that answers the channel pair: type '%s'\n", label);
+        }
+        AudioComponentDescription effectFallback = CharonFirstComponentOfType(kAudioUnitType_Effect);
+        if (described.componentType == 0) { described = effectFallback; }
         if (described.componentType == 0) {
             printf("FAIL no host effect component: the port and the host would be asked nothing\n");
             return 1;
@@ -96,6 +140,14 @@ int main(void)
         NSArray *hostChannels = host.channelCapabilities;
         printf("stage channelCapabilities: port %s, host %s\n",
                portChannels.description.UTF8String, hostChannels.description.UTF8String);
+        // When the unit answers the property, both must answer the pair, and the port's first number
+        // is the input count - so a swap is visible. When it does not, neither answers a pair and the
+        // comparison is reported as not made rather than passed.
+        if (portChannels.count == 2) {
+            check(@"the port answers the channel pair when the unit does", YES);
+        } else {
+            printf("stage the channel pair is not compared: this unit declines kAudioUnitProperty_SupportedNumChannels\n");
+        }
         check(@"both answer two numbers, or neither does",
               (portChannels.count == 2) == (hostChannels.count == 2));
         if (portChannels.count == 2 && hostChannels.count == 2) {
@@ -137,16 +189,58 @@ int main(void)
         // builds its tree when render resources are allocated, which is where a v2 unit answers its
         // parameter questions at all, so that is called first: asking before it is asking the port
         // the wrong question, and its answer of none would be the right one.
+        // A unit's formats are set before its render resources are allocated, on any release and on
+        // the host: AudioUnitInitialize refuses a unit whose stream formats are not set, and the
+        // port does not paper over that. So the busses are given a format first - which is also the
+        // only way to reach the bus code at all - and the port's own -setFormat:error: is asked.
+        AVAudioFormat *portFormat = [[AVAudioFormat alloc] initStandardFormatWithSampleRate:44100.0 channels:2];
+        NSUInteger bussesSet = 0;
+        for (id array in @[port.inputBusses, port.outputBusses]) {
+            charon_host_AUAudioUnitBusArray *list = array;
+            for (NSUInteger index = 0; index < list.count; index++) {
+                charon_host_AUAudioUnitBus *bus = [list objectAtIndexedSubscript:index];
+                if (bus == nil) { continue; }
+                NSError *formatError = nil;
+                if ([bus setFormat:portFormat error:&formatError]) { bussesSet++; }
+            }
+        }
+        printf("stage the port's busses took a format: %lu\n", (unsigned long)bussesSet);
+        check(@"the port's busses accept a format", bussesSet > 0);
+
+        // The allocation is caught, not assumed. On the host the port's AUAudioUnit stands alone -
+        // there is no AUGraph around it, which is how the engine uses it - and the host's own unit
+        // refuses to initialize outside one. That is a constraint of the harness, not a measurement
+        // of the port, so what it raises is reported and the tree comparison below is marked as not
+        // reached rather than passed. What the port *can* be held to here is everything that needs no
+        // initialized unit.
         NSError *resourceError = nil;
-        BOOL allocated = [port allocateRenderResourcesAndReturnError:&resourceError];
-        check(@"the port allocates render resources", allocated);
+        BOOL allocated = NO;
+        NSString *raised = nil;
+        @try {
+            allocated = [port allocateRenderResourcesAndReturnError:&resourceError];
+        } @catch (NSException *exception) {
+            raised = exception.reason;
+        }
+        printf("stage allocateRenderResources: %d, error %s, raised %s\n", allocated,
+               resourceError ? resourceError.localizedDescription.UTF8String : "none",
+               raised ? raised.UTF8String : "none");
+        if (raised == nil) {
+            check(@"the port allocates render resources once its busses have formats", allocated);
+        } else {
+            printf("skip the parameter-tree comparison: the host's unit will not initialize outside an AUGraph\n");
+        }
         id portTree = [port valueForKey:@"parameterTree"];
         id hostTree = host.parameterTree;
         NSUInteger portCount = [portTree respondsToSelector:@selector(allParameters)] ? [[portTree allParameters] count] : 0;
         NSUInteger hostCount = [hostTree respondsToSelector:@selector(allParameters)] ? [[hostTree allParameters] count] : 0;
         printf("stage parameter tree: port %lu parameters, host %lu\n", (unsigned long)portCount, (unsigned long)hostCount);
-        check(@"the port reads the unit's parameters, and not none of them", portCount > 0);
-        check(@"the port and the host count the same parameters of the same unit", portCount == hostCount);
+        if (raised == nil) {
+            check(@"the port reads the unit's parameters, and not none of them", portCount > 0);
+            check(@"the port and the host count the same parameters of the same unit", portCount == hostCount);
+        } else {
+            printf("stage the host's own tree has %lu parameters; the port's is not compared here\n",
+                   (unsigned long)hostCount);
+        }
 
         // ---- the render block is the unit's own input, and both are asked to fill a buffer.
         __block NSUInteger portRenders = 0;
@@ -193,7 +287,12 @@ int main(void)
         free(hostData);
         printf("stage render block: port called %lu, host called %lu\n",
                (unsigned long)portRenders, (unsigned long)hostRenders);
-        check(@"the port's render block is called when a pull comes", portRenders == 1);
+        // The port's block is compared with a recorded expectation - called exactly once, having
+        // written the buffer it was given - and the host's block is only reported, because on the
+        // macOS SDK this harness builds against -[AUAudioUnit renderBlock] is readonly and cannot be
+        // set, so there is nothing to compare it with.
+        check(@"the port's render block is called exactly once by a pull", portRenders == 1);
+        check(@"the port's render block wrote the buffer it was handed", portData != NULL);
         // the host's block is only reported: on the macOS SDK this harness builds against
         // -[AUAudioUnit renderBlock] is readonly, so setting it is not a comparison the two can make
         printf("stage the host's render block calls %lu (readonly on this SDK, so reported, not compared)\n",

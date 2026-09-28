@@ -126,6 +126,18 @@
     _charon_keyPath = [keyPath copy];
 }
 
+// The tokens the node holds, which -charon_apply:... walks to see whether the change it is about to
+// announce was the originator's own. Declared in the CharonImpl category and never defined for the
+// same reason -[AUParameter charon_parameterWithImpl:] was, and found by the same harness: a send of a
+// declared selector that nothing implements, which no build step in the repository sees.
+- (NSArray<NSValue *> *)charon_observerTokens
+{
+    if (_charon_valueObservers == nil) {
+        return @[];
+    }
+    return _charon_valueObservers;
+}
+
 - (void)charon_addAutomationObserver:(id)observer
 {
     if (observer == nil) {

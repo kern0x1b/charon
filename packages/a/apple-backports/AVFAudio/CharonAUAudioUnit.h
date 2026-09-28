@@ -68,7 +68,7 @@ static inline AUParameterAddress CharonAddress(AudioUnitParameterID identifier, 
 @end
 
 @interface AUParameter (CharonImpl)
-- (instancetype _Nonnull)charon_parameterWithImpl:(CharonAUParameterImpl *_Nonnull)impl;
+- (instancetype _Nonnull)initWithCharonImpl:(CharonAUParameterImpl *_Nonnull)impl;
 - (AudioUnitParameterID)charon_identifier;
 - (AudioUnitScope)charon_scope;
 - (AudioUnitElement)charon_element;
