@@ -10,12 +10,17 @@
 CHARON_VALUE_PROPERTY(NSMeasurement *, scrollHitchTimeRatio)
 
 @end
+// The properties the lowered SDK does not declare, in a category because a property a
+// category declares is implemented in a category - and only there: a host build takes the
+// host's own, newer, declarations, and the host's own class supplies these accessors.
+#ifndef CHARON_HOST_DIFFERENTIAL
 @implementation MXAnimationMetric (CharonMetricKit)
 @dynamic hitchTimeRatio;
 
 CHARON_VALUE_PROPERTY(NSMeasurement *, hitchTimeRatio)
 
 @end
+#endif
 @implementation MXAppExitMetric
 @dynamic foregroundExitData, backgroundExitData;
 
@@ -67,12 +72,17 @@ CHARON_VALUE_PROPERTY(NSNumber *, exceptionCode)
 CHARON_VALUE_PROPERTY(NSNumber *, signal)
 
 @end
+// The properties the lowered SDK does not declare, in a category because a property a
+// category declares is implemented in a category - and only there: a host build takes the
+// host's own, newer, declarations, and the host's own class supplies these accessors.
+#ifndef CHARON_HOST_DIFFERENTIAL
 @implementation MXCrashDiagnostic (CharonMetricKit)
 @dynamic exceptionReason;
 
 CHARON_VALUE_PROPERTY(MXCrashDiagnosticObjectiveCExceptionReason *, exceptionReason)
 
 @end
+#endif
 @implementation MXDiagnostic
 @end
 @implementation MXDiagnosticPayload

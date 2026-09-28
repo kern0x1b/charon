@@ -3,6 +3,14 @@
 
 #import <Foundation/Foundation.h>
 #import "CharonMetricKit.h"
+#import "../CharonValueStore.h"
+
+// The property list, the two representations, the archiver walk and the store are the shared ones in
+// CharonValueStore.h, which this framework and every other whose classes are value objects include;
+// what is here is MetricKit's own shape - the sixteen roots that hold a store, and the accessors the
+// snapshot and the manager fill values in through. It is a header of static inlines rather than a
+// class in a library because a library of this package exports only the names the registry lists, and
+// nothing of ours is linkable from another of our libraries.
 
 @class MXSignpostMetric;
 
@@ -56,23 +64,10 @@
         return whole;                                                                       \
     }
 
-// One MetricKit value property of an object type: the readonly accessor the header declares, and the
-// port's own setter for it, which is what the store and the manager fill a value in with. The getter
-// casts, because the dictionary is untyped and the header's type is the promise.
-#define CHARON_VALUE_PROPERTY(Type, name)                                                   \
-    -(Type)name { return (Type)[self charon_valueForKey:@ #name]; }                          \
-    -(void)charon_set##name:(Type)value { [self charon_setValue:value forKey:@ #name]; }
-
-// A property whose value is not an object - a count, a flag - is boxed into the store as an NSNumber
-// and read back out of one, which is what the property walk sees through KVC as well.
-#define CHARON_SCALAR_PROPERTY(Type, name)                                                  \
-    -(Type)name { return (Type)[[self charon_valueForKey:@ #name] longLongValue]; }         \
-    -(void)charon_set##name:(Type)value { [self charon_setValue:@(value) forKey:@ #name]; }
-
-// The same for a double, which longLongValue would round.
-#define CHARON_DOUBLE_PROPERTY(Type, name)                                                  \
-    -(Type)name { return (Type)[[self charon_valueForKey:@ #name] doubleValue]; }           \
-    -(void)charon_set##name:(Type)value { [self charon_setValue:@(value) forKey:@ #name]; }
+// The three property macros - CHARON_VALUE_PROPERTY, CHARON_SCALAR_PROPERTY and
+// CHARON_DOUBLE_PROPERTY - are the shared ones in CharonValueStore.h: the accessor the SDK header
+// declares, and the port's own setter for it, which is what the store, a decoder and the manager fill
+// a value in through.
 
 @class MXMetric, MXDiagnostic, MXAverage, MXHistogram, MXHistogramBucket, MXMetaData, MXMetricPayload,
         MXDiagnosticPayload, MXCrashDiagnosticObjectiveCExceptionReason, MXSignpostRecord,
@@ -132,6 +127,8 @@
 - (void)charon_setValue:(id)value forKey:(NSString *)key;
 - (void)charon_encodePropertiesWithCoder:(NSCoder *)coder;
 - (BOOL)charon_decodePropertiesWithCoder:(NSCoder *)coder;
+- (NSData *)JSONRepresentation;
+- (NSDictionary *)dictionaryRepresentation;
 @end
 
 @interface MXMetricPayload (CharonMetricValue)
@@ -140,6 +137,8 @@
 - (void)charon_setValue:(id)value forKey:(NSString *)key;
 - (void)charon_encodePropertiesWithCoder:(NSCoder *)coder;
 - (BOOL)charon_decodePropertiesWithCoder:(NSCoder *)coder;
+- (NSData *)JSONRepresentation;
+- (NSDictionary *)dictionaryRepresentation;
 @end
 
 @interface MXDiagnosticPayload (CharonMetricValue)
@@ -260,13 +259,12 @@
 
 @end
 
-// The store's own implementation, one pair of functions for all sixteen roots. The dictionary is
-// created on first use, so an object the port only reads costs nothing, and it is keyed by the
-// property's own name - the same names the walk returns - so a value is found by name from either side.
+// CHARON_VALUE_STORE_IMPLEMENTATION - the three store methods, one line each over the shared
+// CharonValueStore() / CharonValueSet() pair - is the shared macro in CharonValueStore.h.
 #define CHARON_VALUE_STORE_IMPLEMENTATION                                                   \
-    -(NSMutableDictionary *)charon_values { return CharonValuesOf(self); }                  \
+    -(NSMutableDictionary *)charon_values { return CharonValueStore(self); }                \
     -(id)charon_valueForKey:(NSString *)key { return [self charon_values][key]; }            \
-    -(void)charon_setValue:(id)value forKey:(NSString *)key { CharonSetValueOf(self, value, key); }
+    -(void)charon_setValue:(id)value forKey:(NSString *)key { CharonValueSet(self, value, key); }
 
 // The classes the port fills a value in through, named so that a translation unit other than the one
 // the macro is used in can see the setters - the manager, which builds one MXAppLaunchMetric out of a

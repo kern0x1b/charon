@@ -15,6 +15,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+// The host's own MetricKit is newer than the SDK this package builds against and already declares
+// these, so a host comparison compiles with -DCHARON_HOST_DIFFERENTIAL and takes the host's
+// declarations instead of ours. That is the same macro Foundation/NSDirectoryEnumerator+PostOrder13.m
+// uses for exactly this - a source built differently for a host comparison, and here is what differs -
+// and it is why this header is the port's for the armv7 build and not for anybody's.
+#ifndef CHARON_HOST_DIFFERENTIAL
+
 @interface MXSignpostRecord : NSObject <NSSecureCoding>
 - (NSData *)JSONRepresentation;
 - (NSDictionary *)dictionaryRepresentation;
@@ -71,6 +78,8 @@ NS_ASSUME_NONNULL_BEGIN
 @interface MXAnimationMetric (CharonMetricKit)
 @property (nonatomic, readonly, strong) NSMeasurement<NSUnit *> *hitchTimeRatio;
 @end
+
+#endif // CHARON_HOST_DIFFERENTIAL
 
 NS_ASSUME_NONNULL_END
 

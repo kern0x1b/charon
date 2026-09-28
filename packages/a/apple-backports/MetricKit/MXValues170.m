@@ -15,6 +15,9 @@ CHARON_VALUE_PROPERTY(NSString *, className)
 CHARON_VALUE_PROPERTY(NSString *, exceptionName)
 
 
+// Its own header gives it the two representations.
+- (NSData *)JSONRepresentation { return [CharonMetricValue jsonOf:self]; }
+- (NSDictionary *)dictionaryRepresentation { return [CharonMetricValue dictionaryOf:self]; }
 @end
 @implementation MXSignpostRecord
 @dynamic subsystem, category, name, beginTimeStamp, endTimeStamp, duration, isInterval;
@@ -28,4 +31,7 @@ CHARON_VALUE_PROPERTY(NSMeasurement *, duration)
 CHARON_SCALAR_PROPERTY(BOOL, isInterval)
 
 
+// Its own header gives it the two representations.
+- (NSData *)JSONRepresentation { return [CharonMetricValue jsonOf:self]; }
+- (NSDictionary *)dictionaryRepresentation { return [CharonMetricValue dictionaryOf:self]; }
 @end

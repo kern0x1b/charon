@@ -110,7 +110,14 @@ CHARON_VALUE_PROPERTY(NSString *, deviceType)
 CHARON_VALUE_PROPERTY(NSString *, applicationBuildVersion)
 CHARON_VALUE_PROPERTY(NSString *, platformArchitecture)
 
+// Its own header gives it the two representations.
+- (NSData *)JSONRepresentation { return [CharonMetricValue jsonOf:self]; }
+- (NSDictionary *)dictionaryRepresentation { return [CharonMetricValue dictionaryOf:self]; }
 @end
+// The properties the lowered SDK does not declare, in a category because a property a
+// category declares is implemented in a category - and only there: a host build takes the
+// host's own, newer, declarations, and the host's own class supplies these accessors.
+#ifndef CHARON_HOST_DIFFERENTIAL
 @implementation MXMetaData (CharonMetricKit)
 @dynamic lowPowerModeEnabled, isTestFlightApp, pid, bundleIdentifier;
 
@@ -119,7 +126,11 @@ CHARON_SCALAR_PROPERTY(bool, isTestFlightApp)
 CHARON_SCALAR_PROPERTY(pid_t, pid)
 CHARON_VALUE_PROPERTY(NSString *, bundleIdentifier)
 
+// Its own header gives it the two representations.
+- (NSData *)JSONRepresentation { return [CharonMetricValue jsonOf:self]; }
+- (NSDictionary *)dictionaryRepresentation { return [CharonMetricValue dictionaryOf:self]; }
 @end
+#endif
 @implementation MXMetric
 @end
 
@@ -146,13 +157,24 @@ CHARON_VALUE_PROPERTY(MXAppExitMetric *, applicationExitMetrics)
 CHARON_VALUE_PROPERTY(NSArray *, signpostMetrics)
 CHARON_VALUE_PROPERTY(MXMetaData *, metaData)
 
+// Its own header gives it the two representations.
+- (NSData *)JSONRepresentation { return [CharonMetricValue jsonOf:self]; }
+- (NSDictionary *)dictionaryRepresentation { return [CharonMetricValue dictionaryOf:self]; }
 @end
+// The properties the lowered SDK does not declare, in a category because a property a
+// category declares is implemented in a category - and only there: a host build takes the
+// host's own, newer, declarations, and the host's own class supplies these accessors.
+#ifndef CHARON_HOST_DIFFERENTIAL
 @implementation MXMetricPayload (CharonMetricKit)
 @dynamic diskSpaceUsageMetrics;
 
 CHARON_VALUE_PROPERTY(MXDiskSpaceUsageMetric *, diskSpaceUsageMetrics)
 
+// Its own header gives it the two representations.
+- (NSData *)JSONRepresentation { return [CharonMetricValue jsonOf:self]; }
+- (NSDictionary *)dictionaryRepresentation { return [CharonMetricValue dictionaryOf:self]; }
 @end
+#endif
 @implementation MXNetworkTransferMetric
 @dynamic cumulativeWifiUpload, cumulativeWifiDownload, cumulativeCellularUpload, cumulativeCellularDownload;
 
