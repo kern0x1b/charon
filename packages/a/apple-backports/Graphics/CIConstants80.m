@@ -19,3 +19,11 @@ CIFormat kCIFormatRGBA16 = 1800;
 CIFormat kCIFormatRGBAf = 2312;
 CIFormat kCIFormatRGh = 2054;
 CIFormat kCIFormatRh = 2053;
+
+NSString *const CIDetectorAspectRatio = @"CIDetectorAspectRatio";
+NSString *const CIDetectorFocalLength = @"CIDetectorFocalLength";
+NSString *const CIDetectorTypeQRCode = @"CIDetectorTypeQRCode";
+NSString *const CIDetectorTypeRectangle = @"CIDetectorTypeRectangle";
+NSString *const kCIContextWorkingFormat = @"working_format";
+NSString *const kCIImageAutoAdjustCrop = @"kCIImageAutoAdjustCrop";
+NSString *const kCIImageAutoAdjustLevel = @"kCIImageAutoAdjustLevel";
