@@ -589,6 +589,10 @@ static void charon_readable(CharonNWConnection *connection)
     uint8_t buffer[16384];
     while (YES) {
         ssize_t got = read(connection->_socket, buffer, sizeof buffer);
+        if (getenv("CHARON_TRACE_FD"))
+            fprintf(stderr, "[charon] read: fd=%d connection=%p state=%d got=%zd errno=%d receives=%lu pendingRead=%lu\n",
+                    connection->_socket, (__bridge void *)connection, connection->_value, got, got < 0 ? errno : 0,
+                    (unsigned long)connection->_receives.count, (unsigned long)connection->_pendingRead.length);
         if (got > 0) {
             charon_received(connection, [NSData dataWithBytes:buffer length:(NSUInteger)got]);
             if (connection->_cancelled || connection->_finished)
