@@ -304,6 +304,9 @@ static int charon_native_descriptor(CFReadStreamRef stream)
 
 - (void)charon_tellDelegate:(SEL)selector input:(NSInputStream *)input
 {
+    NSURLSessionStreamTaskState *state = objc_getAssociatedObject(self, &CharonStreamTaskStateKey);
+    if (state.captured)
+        return; /* the task is completed, and the header says no more messages go to the delegate */
     id<NSURLSessionStreamDelegate> delegate = [self charon_delegate];
     if (!delegate)
         return;
@@ -406,11 +409,13 @@ static int charon_native_descriptor(CFReadStreamRef stream)
     NSURLSessionStreamTaskState *state = objc_getAssociatedObject(self, &CharonStreamTaskStateKey);
     if (state.captured)
         return;
-    state.captured = YES;
-    /* Capturing hands the two streams to the application and the task stops driving them: the read
-       side is closed, because the application owns it from here. */
     if (!state.started)
         [self charon_open];
+    /* Once, and then the task is finished: the header says the message is what completes the task
+       and that it will not receive any more delegate messages. So the streams leave this object's
+       run loop -- the application owns them from here and the task does not touch them again -- and
+       every callback this file sends is answered from now on by the flag below. */
+    state.captured = YES;
     [state.input removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
     [state.output removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
     [self charon_tellDelegate:@selector(URLSession:streamTask:didBecomeInputStream:outputStream:) input:state.input];
