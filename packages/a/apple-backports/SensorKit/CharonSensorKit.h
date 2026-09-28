@@ -221,8 +221,11 @@ typedef NSUInteger SRWristTemperatureCondition;
 @property (nonatomic, readonly, strong, nullable) NSDate *timestamp;
 @property (nonatomic, readonly, strong, nullable) SRAudioLevel *audioLevel;
 @property (nonatomic, readonly, strong, nullable) SRSpeechExpression *speechExpression;
-@property (nonatomic, readonly, assign) NSTimeInterval timeSinceAudioStart;
 @property (nonatomic, readonly, assign) SRSpeechMetricsSessionFlags sessionFlags;
+@end
+
+@interface SRSpeechMetrics (CharonSensorKit172)
+@property (nonatomic, readonly, assign) NSTimeInterval timeSinceAudioStart;
 @end
 
 // A wrist-temperature reading, and the session of readings that share a state. -temperatures is an

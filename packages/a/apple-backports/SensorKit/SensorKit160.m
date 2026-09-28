@@ -4,33 +4,21 @@
 
 // SensorKit of iOS 16.0, the classes that arrived then: an object carries API of one release, so
 // these are apart from 16.4's.
-@implementation SRDeviceUsageReport
+@implementation SRDeviceUsageReport (CharonSensorKit164)
 @dynamic version;
 CHARON_VALUE_PROPERTY(NSString *, version)
 @end
-@implementation SRDeviceUsageReport (CharonSensorKitValue)
-CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
-@end
-@implementation SRKeyboardMetrics
+@implementation SRKeyboardMetrics (CharonSensorKit164)
 CHARON_VALUE_PROPERTY(NSArray *, sessionIdentifiers)
 CHARON_VALUE_PROPERTY(SRKeyboardProbabilityMetric *, touchUpDown)
 CHARON_VALUE_PROPERTY(NSArray *, longWordTouchUpDown)
 @end
-@implementation SRKeyboardMetrics (CharonSensorKitValue)
-CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
-@end
-@implementation SRTextInputSession
+@implementation SRTextInputSession (CharonSensorKit164)
 @dynamic sessionIdentifier;
 CHARON_VALUE_PROPERTY(NSString *, sessionIdentifier)
 @end
-@implementation SRTextInputSession (CharonSensorKitValue)
-CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
-@end
-@implementation SRWristDetection
+@implementation SRWristDetection (CharonSensorKit164)
 @dynamic onWristDate, offWristDate;
 CHARON_VALUE_PROPERTY(NSDate *, onWristDate)
 CHARON_VALUE_PROPERTY(NSDate *, offWristDate)
-@end
-@implementation SRWristDetection (CharonSensorKitValue)
-CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
 @end

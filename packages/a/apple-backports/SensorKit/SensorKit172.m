@@ -3,15 +3,9 @@
 #import "../CharonValueStore.h"
 
 // SensorKit of iOS 17.2, the properties that arrived then.
-@implementation SRSpeechMetrics
-@dynamic sessionIdentifier, sessionFlags, timestamp, audioLevel, speechExpression, timeSinceAudioStart;
-CHARON_VALUE_PROPERTY(NSString *, sessionIdentifier)
-CHARON_SCALAR_PROPERTY(SRSpeechMetricsSessionFlags, sessionFlags)
-CHARON_VALUE_PROPERTY(NSDate *, timestamp)
-CHARON_VALUE_PROPERTY(SRAudioLevel *, audioLevel)
-CHARON_VALUE_PROPERTY(SRSpeechExpression *, speechExpression)
+// SRSpeechMetrics is a class of 17.0 (SensorKit170.m); the one member 17.2 added is a category, so
+// the class is implemented once.
+@implementation SRSpeechMetrics (CharonSensorKit172)
+@dynamic timeSinceAudioStart;
 CHARON_SCALAR_PROPERTY(NSTimeInterval, timeSinceAudioStart)
-@end
-@implementation SRSpeechMetrics (CharonSensorKitValue)
-CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
 @end

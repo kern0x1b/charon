@@ -11,7 +11,7 @@ CHARON_VALUE_PROPERTY(NSArray *, textInputSessions)
 @implementation SRApplicationUsage (CharonSensorKitValue)
 CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
 @end
-@implementation SRKeyboardMetrics
+@implementation SRKeyboardMetrics (CharonSensorKit150)
 CHARON_VALUE_PROPERTY(NSArray *, inputModes)
 -(NSInteger)totalPauses { NSNumber *boxed = [self charon_valueForKey:@"totalPauses"];
     return boxed ? (NSInteger)[boxed longLongValue] : (NSInteger)0; }
@@ -28,9 +28,6 @@ CHARON_VALUE_PROPERTY(NSArray *, inputModes)
 -(NSInteger)totalTypingEpisodes { NSNumber *boxed = [self charon_valueForKey:@"totalTypingEpisodes"];
     return boxed ? (NSInteger)[boxed longLongValue] : (NSInteger)0; }
 -(void)charon_setTotalTypingEpisodes:(NSInteger)value { [self charon_setValue:@(value) forKey:@"totalTypingEpisodes"]; }
-@end
-@implementation SRKeyboardMetrics (CharonSensorKitValue)
-CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
 @end
 @implementation SRTextInputSession
 @dynamic duration, sessionType;
