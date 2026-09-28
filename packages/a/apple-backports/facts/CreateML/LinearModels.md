@@ -144,6 +144,33 @@ solvers, and a test that makes the extrapolated point overshoot — a table wher
 holds — is the next strengthening. It is recorded here rather than left for someone to rediscover by
 running a mutation and seeing it pass.
 
+### The scale mutation cannot be made red against this host, and the reason is measured
+
+The mutation `l1Penalty / 2n` -> `l1Penalty / n` **passes every check in the suite**, on the
+fifteen-row table and on the wide one, and I have stopped trying to make it fail. The reason is a
+property of the host's optimiser, not of the port:
+
+- On the **fifteen-row** table the host's own fit plateaus **5.4e-4** above the minimum, and the
+  difference between the two scale factors is about **1e-3** there. They are the same size, so no
+  comparison against this host can separate them.
+- On the **wide** table (twelve features, three informative, one correlated, 160 rows) the host
+  plateaus **2e-2** above the minimum and its coefficients are up to **4.25** away from the port's —
+  and **every** factor, wrong ones included, beats the host's point at the port's objective. The host
+  is far enough off the minimum that any different point wins, so the objective comparison is
+  *satisfied by a wrong scale*.
+
+So the check that can verify a convention against this host does not exist, and asserting one would
+be asserting a falsehood. What is done instead, and is checkable:
+
+- **The factor grid is pinned.** Over a grid of `l1Penalty` factors on the same rows, **0.5 per
+  sample is the best at every one of eight penalties**, by a factor of five over its nearest rival. A
+  change to the port's own scaling in the solver moves the winner and this goes red.
+- **The support is pinned discretely.** On the wide fixture at a penalty of 1.0 the correct factor
+  zeroes strictly fewer weights than a doubled one, and a wrong factor gives a *different set* — a
+  difference of a set, not a fraction of a digit.
+- **And the estimator's scale is verified by construction**: it is `l1Penalty / (2n)` in one place, in
+  `LinearModels.swift`, with the factor's provenance in the comment above it.
+
 ### The convention, and the measurement that found it
 
 **The port minimises `1/(2n)|X(Xw - y)|² + l2/2 |w|² + l1 |w|₁`**, with the **intercept
