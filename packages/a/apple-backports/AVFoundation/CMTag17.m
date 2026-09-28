@@ -93,19 +93,42 @@ Boolean CMTagHasFloat64Value( CMTag tag )
     return tag.dataType == kCMTagDataType_Float64;
 }
 
+static BOOL charon_tag_is_nan( CMTag tag )
+{
+    if ( tag.dataType != kCMTagDataType_Float64 )
+        return NO;
+    double number;
+    uint64_t bits = tag.value;
+    memcpy(&number, &bits, sizeof number);
+    return number != number;
+}
+
 CFComparisonResult CMTagCompare( CMTag tag1, CMTag tag2 )
 {
-    // Category, then data type, then value, with the category compared as a SIGNED 32-bit integer and
-    // no validity tier at all. This is not a reading: .agent-work/runs/cmtag/fit.py runs every field
-    // order x signed/unsigned x value-as-number, plus memcmp of the struct's fields in both endiannesses,
-    // over the 78 measured pairs in pairs.tsv, and exactly one candidate has zero mismatches - this one.
-    // The next best, the same order with an unsigned category, misses 12.
+    // The rule the host's own answers fit, over 253 measured pairs with none wrong, and scored as a
+    // comparator over a pair because a NaN's equality is not an order and no key can carry it
+    // (facts/CoreMedia/cmtag-fixtures/).
     int32_t left = (int32_t)tag1.category, right = (int32_t)tag2.category;
-    if (left != right)
+    if ( left != right )
         return left < right ? kCFCompareLessThan : kCFCompareGreaterThan;
-    if (tag1.dataType != tag2.dataType)
+    if ( tag1.dataType != tag2.dataType )
         return tag1.dataType < tag2.dataType ? kCFCompareLessThan : kCFCompareGreaterThan;
-    if (tag1.value != tag2.value)
+    if ( charon_tag_is_nan( tag1 ) || charon_tag_is_nan( tag2 ) )
+        return kCFCompareEqualTo;
+    if ( tag1.dataType == kCMTagDataType_Float64 ) {
+        double one, two;
+        uint64_t lowBits = tag1.value, highBits = tag2.value;
+        memcpy(&one, &lowBits, sizeof one);
+        memcpy(&two, &highBits, sizeof two);
+        if ( one == 0.0 )
+            one = 0.0;   // -0.0 compares equal to 0.0, measured
+        if ( two == 0.0 )
+            two = 0.0;
+        if ( one != two )
+            return one < two ? kCFCompareLessThan : kCFCompareGreaterThan;
+        return kCFCompareEqualTo;
+    }
+    if ( tag1.value != tag2.value )
         return tag1.value < tag2.value ? kCFCompareLessThan : kCFCompareGreaterThan;
     return kCFCompareEqualTo;
 }

@@ -308,3 +308,26 @@ position — and the candidate that expresses it is the one the self-check says 
 
 That is the next step and it is small. The family is still not deliverable, no registry rows are written,
 and the approved series stands at 74 / 0, 464 / 0 and 7544 / 0.
+
+
+## The rule, implemented, and the two rows that are the probe's
+
+`CMTagCompare` now carries the comparator: category as a signed 32-bit integer, then data type, then -
+within one category and data type - a NaN on either side equal to the other, `-0.0` equal to `0.0`, a
+Float64 ordered as a signed double and an SInt64 ordered as an **unsigned** 64-bit. Every `Compare` row
+in the differential clears.
+
+**405 checks, 2 different**, and both are the probe's, not the port's:
+
+- `Hash consistent 5`: the case counts **any** repeat of an earlier tag's hash as a collision, and tags 4
+  and 5 - `kCMTagInvalid` and `(Undefined, Invalid, 0)` - are the **same tag by value**, so they must
+  hash equal. The case is wrong, and I wrote it knowing a duplicate was possible.
+- `CopyDescription 10`: the host printed `category:'ˇˇˇ' value:-1 <int64>` and the port
+  `category:'ÿÿÿ' value:-1 <int64>` - neither is the category of index 10 (`'svip'`), and the value
+  `-1 <int64>` is index 8's. Both sides described a different tag, because the probe's indices are off by
+  one, which is the **same** off-by-one that made me read `Compare 3 vs 7` as two unrelated tags an hour
+  ago. The argument bytes are printed in the probe now, and that is what finally found it.
+
+So the family is one renumbering of the probe's array and one corrected case away from green, and the 19
+functions are otherwise verified. The hash is still open: its own candidate set has not been fitted, and
+the two rows here show the probe needs its indices printed rather than counted.
