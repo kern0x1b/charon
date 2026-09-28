@@ -68,6 +68,14 @@ recorded by `tests/backports/host/vision/run.sh` (33 records) and held against t
   the picture's, and the difference the alpha suggested is not the one. Reverted, with the numbers
   that rejected it in the header of the function.
 
+  **vImage was not measured in this round.** The hypothesis is the strongest one left -- an exact
+  1:1 and 252 of 256 differing on an integer 2x is what you would expect of a resampler that is not
+  CoreGraphics' -- and vImage is in Accelerate and has been since iOS 5, so a port could call
+  `vImageScale_ARGB8888` natively. A comparison was written into the check and it **crashes
+  (SIGBUS) before it prints**, so it was taken back out rather than left in the tree unrunnable. It
+  is the first thing to try next, with the geometry of its centre crop right (the first attempt
+  scaled the whole source instead of cropping it, which is a different rule).
+
   What the dump already ruled out, and what is left: the **rules** are paired (each row now has its
   own oracle), the **geometry** agrees (the middle pixel matches exactly, so no flip and no
   half-pixel offset), the **format and row length** are identical on both sides (`BGR `,
