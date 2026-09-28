@@ -130,6 +130,11 @@
 // An event over a period rather than at an instant, which is what the routing events of 11.0 are: the
 // period the event covers is kept as the release keeps it, and the period's start is the same date the
 // one-argument factory takes.
+//
+// The release also validates the period's duration against the event's type and refuses an hour-long
+// pause, where this port accepts one. The bounds are Apple's and in no SDK header, so there is nothing
+// to read them out of and nothing is invented here: measured by tests/backports/host/healthkit, which
+// names the refusal in its output rather than passing over it.
 + (instancetype)workoutEventWithType:(HKWorkoutEventType)type
                        dateInterval:(NSDateInterval *)dateInterval
                             metadata:(nullable NSDictionary<NSString *, id> *)metadata

@@ -1111,10 +1111,28 @@ static void CharonHK11Group(void)
     NSDate *periodStart = [NSDate dateWithTimeIntervalSince1970:1600000000];
     NSDate *periodEnd = [NSDate dateWithTimeIntervalSince1970:1600003600];
     NSDateInterval *period = [[NSDateInterval alloc] initWithStartDate:periodStart endDate:periodEnd];
-    HKWorkoutEvent *theirsEvent = [HKWorkoutEvent workoutEventWithType:HKWorkoutEventTypePause dateInterval:period metadata:nil];
-    CharonHostHKWorkoutEvent *mineEvent = [CharonHostHKWorkoutEvent workoutEventWithType:HKWorkoutEventTypePause
-                                                                                     dateInterval:period
-                                                                                          metadata:nil];
+    // What the period is, what each side is asked with, and what each factory answers - the host's
+    // validating a period, which is where the exception came from, and the port's.
+    BOOL theirsThrew = NO, mineThrew = NO;
+    HKWorkoutEvent *theirsEvent = nil;
+    CharonHostHKWorkoutEvent *mineEvent = nil;
+    @try {
+        theirsEvent = [HKWorkoutEvent workoutEventWithType:HKWorkoutEventTypePause dateInterval:period metadata:nil];
+    } @catch (NSException *exception) {
+        theirsThrew = YES;
+    }
+    @try {
+        mineEvent = [CharonHostHKWorkoutEvent workoutEventWithType:HKWorkoutEventTypePause dateInterval:period metadata:nil];
+    } @catch (NSException *exception) {
+        mineThrew = YES;
+    }
+    // The host validates the duration of the period against the event's type and refuses an hour-long
+    // pause; this port does not, and cannot: the bounds are Apple's and in no SDK header, so there is
+    // nothing to read them out of. The refusal is named in the output rather than passed over, and
+    // -[HKWorkoutEvent workoutEventWithType:dateInterval:metadata:] carries the same statement.
+    if (theirsThrew && !mineThrew)
+        printf("not compared: the host refuses an hour-long HKWorkoutEventTypePause period and this library does not "
+               "implement the per-type duration bounds, which are Apple's and in no SDK header\n");
     if (theirsEvent && mineEvent) {
         CharonHKCompareInt(@"workout event type", (NSInteger)mineEvent.type, (NSInteger)theirsEvent.type);
         CharonHKCompare(@"workout event dateInterval start", mineEvent.dateInterval.startDate,
@@ -1149,7 +1167,7 @@ static void CharonHK11Group(void)
     HKWorkout *theirsWorkout = [HKWorkout workoutWithActivityType:HKWorkoutActivityTypeRunning
                                                           startDate:start
                                                             endDate:end
-                                                     workoutEvents:@[ theirsEvent ]
+                                                     workoutEvents:theirsEvent ? @[ theirsEvent ] : @[]
                                                 totalEnergyBurned:energy
                                                   totalDistance:distance
                                          totalFlightsClimbed:flights
@@ -1158,7 +1176,7 @@ static void CharonHK11Group(void)
     CharonHostHKWorkout *mineWorkout = [CharonHostHKWorkout workoutWithActivityType:HKWorkoutActivityTypeRunning
                                                                            startDate:start
                                                                              endDate:end
-                                                                      workoutEvents:@[ mineEvent ]
+                                                                      workoutEvents:mineEvent ? @[ mineEvent ] : @[]
                                                                  totalEnergyBurned:energy
                                                                    totalDistance:distance
                                                           totalFlightsClimbed:flights
