@@ -484,3 +484,48 @@ at all — so the *first* thing to check is that the trap's frame is still the s
 **The oracle question is still open**, so the holdable count is still 9-or-11. It becomes 11 the moment
 the private `-initWithTag:` answers in this process, and that measurement is one line away once the run
 completes.
+
+---
+
+## The frame, and it is not the port's
+
+One lldb run, a breakpoint on the stub rather than on the trap, because the trap has no frame #1 to
+unwind to — `objc_opt_respondsToSelector` is a leaf stub and lldb stops there and stops there:
+
+```
+Breakpoint 1: where = libobjc.A.dylib`objc_opt_respondsToSelector
+       frame #0: 0x18ab0c658 libobjc.A.dylib`objc_opt_respondsToSelector
+      Address: CoreFoundation[0x00000001808fb828] (CoreFoundation.__TEXT.__text + 184712)
+      Address: CoreFoundation[0x00000001808fb828] (same)
+      Address: CoreFoundation[0x00000001808fb828] (same)
+```
+
+**`$lr` is the same CoreFoundation address three times**, and it is not in the port and not in the
+differential. So the class-reference story is *finished* — the port's own asks are past, since the
+constructor's print appears and the two installs go through — and **the remaining trap is Foundation
+calling `-respondsToSelector:` on a receiver that is not an object, three times from one function of
+its own.** Something the port does makes Foundation send a message to a non-object, and the only
+message sends on a value the port computes are `bundle.bundlePath` in `CharonManifestForBundle` and
+`CharonPriorities()[...]`, both reached with a `bundle` that is a parameter: from the constructor's
+`objc_getClass`, or from an *installed* method whose self is an NSBundle.
+
+**So the next two commands are, in order:**
+
+```sh
+# 1. who is the receiver: the class, printed from the port at the point of use
+#    (dladdr in CharonManifestForBundle on the bundle it was handed, as the constructor does)
+# 2. the differential's own -[NSBundle ...] calls: both now go through objc_getClass, so if the
+#    receiver is still not an object it is the value the port passes on
+```
+
+and the most likely candidate, from reading the port rather than the trace: **`CharonManifestForBundle`
+is called with `self` in the installed methods, and `self` in a `class_addMethod` implementation is
+whatever was sent — the differential sends it on a `Class` (`objc_msgSend(bundle, setPriority, …)` with
+`bundle` a `Class`, not an instance) in one of its two paths.** That is a bug in the *test*, not the
+port, and it is the first thing to look at: one of the differential's two `setPreservationPriority:`
+sends passes `bundle` where an *instance* is meant, and Foundation answers the resulting forward with
+its own `respondsToSelector:`.
+
+**Everything after that is still undone:** the private initialiser's answer (9 or 11), the differential
+to green, the mutants, the 13 registry entries, the facts file, the light guard, and the gates on the
+final commit.
