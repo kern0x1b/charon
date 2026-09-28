@@ -2,42 +2,6 @@
   "framework": "AVFAudio",
   "entries": [
     {
-      "api": "AVAudioApplication",
-      "kind": "class",
-      "introduced": "17.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/AVFAudio/AVAudioApplication.md",
-      "source": "AVFAudio of the arm64e shared cache of iOS 18.0 and SDK 26.2, AVFAudio; the C base read from the real armv7 6.1.3 cache with dyld.load (AudioToolbox exports the whole AudioComponent and AudioUnit family and the whole AUGraph family, CoreAudio the whole AudioObject family)"
-    },
-    {
-      "api": "AVAudioApplicationInputMuteStateChangeNotification",
-      "kind": "constant",
-      "introduced": "17.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/AVFAudio/AVAudioApplication.md",
-      "source": "AVFAudio of the arm64e shared cache of iOS 18.0 and SDK 26.2, AVFAudio; the C base read from the real armv7 6.1.3 cache with dyld.load (AudioToolbox exports the whole AudioComponent and AudioUnit family and the whole AUGraph family, CoreAudio the whole AudioObject family)"
-    },
-    {
-      "api": "AVAudioApplicationMuteStateKey",
-      "kind": "constant",
-      "introduced": "17.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/AVFAudio/AVAudioApplication.md",
-      "source": "AVFAudio of the arm64e shared cache of iOS 18.0 and SDK 26.2, AVFAudio; the C base read from the real armv7 6.1.3 cache with dyld.load (AudioToolbox exports the whole AudioComponent and AudioUnit family and the whole AUGraph family, CoreAudio the whole AudioObject family)"
-    },
-    {
-      "api": "AVAudioSessionPortContinuityMicrophone",
-      "kind": "constant",
-      "introduced": "17.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/AVFAudio/AVAudioApplication.md",
-      "source": "AVFAudio of the arm64e shared cache of iOS 18.0 and SDK 26.2, AVFAudio; the C base read from the real armv7 6.1.3 cache with dyld.load (AudioToolbox exports the whole AudioComponent and AudioUnit family and the whole AUGraph family, CoreAudio the whole AudioObject family)"
-    },
-    {
       "api": "+[AVAudioApplication requestMicrophoneInjectionPermissionWithCompletionHandler:]",
       "kind": "method",
       "introduced": "18.2",
@@ -48,15 +12,6 @@
     },
     {
       "api": "+[AVAudioApplication requestRecordPermissionWithCompletionHandler:]",
-      "kind": "method",
-      "introduced": "17.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/AVFAudio/AVFAudioStrings.md",
-      "source": "AVFAudio of the arm64e shared cache of iOS 18.0 and SDK 26.2, AVFAudio; the C base read from the real armv7 6.1.3 cache with dyld.load (AudioToolbox exports the whole AudioComponent and AudioUnit family and the whole AUGraph family, CoreAudio the whole AudioObject family)"
-    },
-    {
-      "api": "-[AVAudioApplication init]",
       "kind": "method",
       "introduced": "17.0",
       "minimum": "6.0",
@@ -80,6 +35,15 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/AVFAudio/AVFAudioStrings.md",
+      "source": "AVFAudio of the arm64e shared cache of iOS 18.0 and SDK 26.2, AVFAudio; the C base read from the real armv7 6.1.3 cache with dyld.load (AudioToolbox exports the whole AudioComponent and AudioUnit family and the whole AUGraph family, CoreAudio the whole AudioObject family)"
+    },
+    {
+      "api": "AVAudioApplication",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFAudio/AVAudioApplication.md",
       "source": "AVFAudio of the arm64e shared cache of iOS 18.0 and SDK 26.2, AVFAudio; the C base read from the real armv7 6.1.3 cache with dyld.load (AudioToolbox exports the whole AudioComponent and AudioUnit family and the whole AUGraph family, CoreAudio the whole AudioObject family)"
     },
     {
@@ -112,6 +76,33 @@
     {
       "api": "AVAudioApplication.sharedInstance",
       "kind": "property",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFAudio/AVAudioApplication.md",
+      "source": "AVFAudio of the arm64e shared cache of iOS 18.0 and SDK 26.2, AVFAudio; the C base read from the real armv7 6.1.3 cache with dyld.load (AudioToolbox exports the whole AudioComponent and AudioUnit family and the whole AUGraph family, CoreAudio the whole AudioObject family)"
+    },
+    {
+      "api": "AVAudioApplicationInputMuteStateChangeNotification",
+      "kind": "constant",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFAudio/AVAudioApplication.md",
+      "source": "AVFAudio of the arm64e shared cache of iOS 18.0 and SDK 26.2, AVFAudio; the C base read from the real armv7 6.1.3 cache with dyld.load (AudioToolbox exports the whole AudioComponent and AudioUnit family and the whole AUGraph family, CoreAudio the whole AudioObject family)"
+    },
+    {
+      "api": "AVAudioApplicationMuteStateKey",
+      "kind": "constant",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFAudio/AVAudioApplication.md",
+      "source": "AVFAudio of the arm64e shared cache of iOS 18.0 and SDK 26.2, AVFAudio; the C base read from the real armv7 6.1.3 cache with dyld.load (AudioToolbox exports the whole AudioComponent and AudioUnit family and the whole AUGraph family, CoreAudio the whole AudioObject family)"
+    },
+    {
+      "api": "AVAudioSessionPortContinuityMicrophone",
+      "kind": "constant",
       "introduced": "17.0",
       "minimum": "6.0",
       "status": "implemented",

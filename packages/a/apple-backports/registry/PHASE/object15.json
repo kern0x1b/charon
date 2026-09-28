@@ -2,17 +2,6 @@
   "framework": "PHASE",
   "entries": [
     {
-      "api": "+[PHASEObject new]",
-      "kind": "method",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "facts": "facts/PHASE/PHASEObject.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEObject.h, byte-identical on the members; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either. The transform is a simd_float4x4 and both transforms start at the identity written out as a literal - the SDK's matrix_identity_float4x4 is a function the 6.1.3 gate names as a weak import the release does not export - and the world transform is the object's own composed with every ancestor's",
-      "reason": "the header marks both -init and +new NS_UNAVAILABLE: PHASEEngine.h's own header marks an object's -init and +new unavailable for the same reason, initWithEngine: is the designated initializer, and an object is always made against an engine",
-      "effect": "calling it raises, which is what unavailable means; -initWithEngine: is the way to make one"
-    },
-    {
       "api": "-[PHASEObject addChild:error:]",
       "kind": "method",
       "introduced": "15.0",
@@ -29,17 +18,6 @@
       "status": "implemented",
       "facts": "facts/PHASE/PHASEObject.md",
       "source": "SDK 16.4 and 26.2 PHASE.framework PHASEObject.h, byte-identical on the members; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either. The transform is a simd_float4x4 and both transforms start at the identity written out as a literal - the SDK's matrix_identity_float4x4 is a function the 6.1.3 gate names as a weak import the release does not export - and the world transform is the object's own composed with every ancestor's"
-    },
-    {
-      "api": "-[PHASEObject init]",
-      "kind": "method",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "facts": "facts/PHASE/PHASEObject.md",
-      "source": "SDK 16.4 and 26.2 PHASE.framework PHASEObject.h, byte-identical on the members; PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3, so there is no PHASE.framework on either. The transform is a simd_float4x4 and both transforms start at the identity written out as a literal - the SDK's matrix_identity_float4x4 is a function the 6.1.3 gate names as a weak import the release does not export - and the world transform is the object's own composed with every ancestor's",
-      "reason": "the header marks both -init and +new NS_UNAVAILABLE: PHASEEngine.h's own header marks an object's -init and +new unavailable for the same reason, initWithEngine: is the designated initializer, and an object is always made against an engine",
-      "effect": "calling it raises, which is what unavailable means; -initWithEngine: is the way to make one"
     },
     {
       "api": "-[PHASEObject removeChild:]",
