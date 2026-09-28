@@ -200,13 +200,14 @@ local function protocol_owner_step(backports, opt, found)
             function () backports.check_registry(root, {classes = classes, members = members, symbols = symbols or {}},
                                                   true, "6.1.3", {}, inventory) return true end,
     local inventory = {classes = {ARKitShapedView = {image = true, instance = {}, ["+"] = {}}}}
+    local inventory = {classes = {}}
     local function asked(sdkdir)
         io.writefile(path.join(root, "registry", "Fix.json"),
                      '{"framework": "Fix", "entries": ['
-                     .. '{"api": "-[ARKitShapedView anchor]", "kind": "method", "introduced": "9.0", "minimum": "6.0", "status": "implemented", "facts": "f"},'
+                     .. '{"api": "-[ARKitShapedDelegate shaped]", "kind": "method", "introduced": "9.0", "minimum": "6.0", "status": "implemented", "facts": "f"},'
                      .. '{"api": "ARKitShapedDelegate", "kind": "protocol", "introduced": "9.0", "minimum": "6.0", "status": "implemented", "facts": "f"}]}')
             function ()
-                backports.check_registry(root, {classes = {ARKitShapedView = true}, members = {},
+                backports.check_registry(root, {classes = {}, members = {},
                                                symbols = {}, defined = {}}, true, "6.1.3", {}, inventory, sdkdir, {})
                 return "passed"
             end,
@@ -421,12 +422,21 @@ local function real_object(backports, modules, found)
     end
     -- neither side declares ARKitShapedDelegate: the member must be reported
     local said = asked(nil)
-    if not said:find("ARKitShapedDelegate", 1, true) then
+    if not said:find("ARKitShapedDelegate shaped", 1, true) then
         table.insert(found, "a member of a protocol that neither a port header nor the SDK declares must be reported, and it is not: " .. said:gsub("\n", " | "):sub(1, 120))
     -- and with a declaration, the same member passes
     io.writefile(path.join(root, "CharonFixture.h"), "#import <Foundation/Foundation.h>\n@protocol ARKitShapedDelegate <NSObject>\n- (void)shaped;\n@end\n")
+    -- the memo regression in one root: a header written after the first answer must be seen
+    if backports.protocol_declared(root, "ARKitShapedDelayed", inventory, nil) then
+        table.insert(found, "a protocol no header declares yet must not be answered from one")
+    end
+    io.writefile(path.join(root, "CharonDelayed.h"), "@protocol ARKitShapedDelayed <NSObject>\n@end\n")
+    if not backports.protocol_declared(root, "ARKitShapedDelayed", inventory, nil) then
+        table.insert(found, "a protocol a header declares after the first answer is not seen: what protocol_declared memoises is keyed on the folder, not on what is in it")
+    end
+    os.tryrm(path.join(root, "CharonDelayed.h"))
     said = asked(nil)
-    if said:find("ARKitShapedDelegate", 1, true) then
+    if said:find("ARKitShapedDelegate shaped", 1, true) then
         table.insert(found, "a member of a protocol a port header declares must pass, and it is red: " .. said:gsub("\n", " | "):sub(1, 120))
     os.tryrm(root)
 end
