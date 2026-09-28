@@ -13,6 +13,17 @@
 // separate families of the corpus that this delivery does not carry, and the facts file says so
 // rather than the properties inventing objects of classes the port does not have.
 
+// rootObject is the SDK's own @property (readonly, strong, nonatomic), and this file used to declare
+// BOTH a @synthesize binding for it and a hand-written getter returning the port's ivar. Two
+// definitions of one method in one implementation: the object file carried a single
+// -[charon_host_PHASEEngine rootObject] and it was
+//
+//   mov x0, #0x0
+//
+// a constant nil with no load at all, while -initWithUpdateMode: stored the root into the ivar at
+// offset 72 and the slot held a live object at run time. One definition is what a property with a
+// hand-written accessor is supposed to have, and the harness reported the nil for as long as there were
+// two.
 @implementation PHASEEngine {
     double _charon_unitsPerSecond;
     double _charon_unitsPerMeter;
@@ -25,20 +36,6 @@
     PHASEObject *_charon_rootObject;
 }
 
-// The SDK declares rootObject as a @property (readonly, strong, nonatomic) on PHASEEngine, and the
-// port's hand-written getter was not the accessor the runtime called: the property's own synthesised
-// accessor read a different, empty slot, so a fresh engine answered nil while the root sat live in
-// _charon_rootObject. Measured in the harness, the slot at the ivar's offset and the getter the
-// message sent:
-//
-//   stage the property: rootObject attributes T@"charon_host_PHASEObject",R,N
-//   stage the ivar: _charon_rootObject at 72, type @"charon_host_PHASEObject",
-//       slot 0x7a558c8e00, getter 0x0
-//
-// Binding the property to the port's own ivar is what makes the accessor unambiguously this
-// implementation's, and @synthesize is required here anyway: the build compiles with
-// -Werror=objc-missing-property-synthesis.
-@synthesize rootObject = _charon_rootObject;
 
 - (instancetype)initWithUpdateMode:(PHASEUpdateMode)updateMode
 {
@@ -177,7 +174,11 @@
 
 - (PHASEObject *)rootObject
 {
-    return nil;
+    // The root, not nil. A rewrite of this method replaced the comment above it and left the body, so
+    // the accessor returned a constant nil - which is why the disassembly was `mov x0, #0x0` while
+    // -initWithUpdateMode: stored a live root in the ivar at offset 72, and why @synthesize changed
+    // nothing: a hand-written accessor wins over a synthesised one, and this one returned nil.
+    return _charon_rootObject;
 }
 
 - (id)assetRegistry
