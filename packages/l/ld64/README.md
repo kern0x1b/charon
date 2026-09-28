@@ -23,7 +23,7 @@ a port does, so this is the linker the whole fleet links with.
 `ld64`'s own options do not give what is wanted here, which is why this is a patch:
 
 - `-snapshot_dir <path>` sets the directory, but it also calls `setSnapshotMode(SNAPSHOT_DEBUG)` and
-  `fSnapshotSnapshotRequested = true` (`Options.cpp:4013`), so it *turns the snapshot on* for a link that
+  `fSnapshotRequested = true` (`Options.cpp:4013-4018`), so it *turns the snapshot on* for a link that
   would otherwise write nothing. It is the opposite of a way to keep the snapshot and move it.
 - The one environment route is `LD_TRACE_FILE`: `Snapshot::createSnapshot` uses the *directory* of it
   (`Snapshot.cpp:243`, rdar://89496214), and that is Apple's build system's, not ours to set.
@@ -64,11 +64,21 @@ no ordinal for dylib leaf=libobjc.tbd
 ```
 
 and the symbols `_objc_getClass`, `_class_getSuperclass`, `_object_getClass`, `_objc_getAssociatedObject`,
-`_objc_setAssociatedObject`. The ordinal table already holds `/usr/lib/libobjc.A.dylib` at ordinal 6, held
-by the *other* `File` for the same install name, `libobjc.A.tbd`: `InputFiles::addDylib` keys
-`_installPathToDylibs` by install path and keeps one file per path, while `InputFiles::searchLibraries`
-asks each implicitly linked file it finds there. A second `File` for an install path that is already
-loaded owns import proxies and never reaches `state.dylibs`, so it has no ordinal.
+`_objc_setAssociatedObject`. `state.dylibs` is filled from two lists, and `libobjc.tbd` is in neither:
+
+- `_inputFiles` (`InputFiles.cpp:1568-1574`), which holds only the files named on the command line —
+  `_inputFiles.push_back(makeFile(*entry, false))` at `:1053`, plus opaque sections and NULLs. A dylib
+  reached only through another one is made by `findDylib` through `makeFile(info, true)` (`:648`) and
+  registered with `addDylib` (`:653`), and never lands on `_inputFiles`. `libobjc.tbd` is never named on
+  the link line, so it is not there.
+- the implicitly linked entries of `_installPathToDylibs` (`InputFiles.cpp:1582-1607`). The
+  instrumentation says `implicit=1`, so this loop *would* add it — were it the file the map holds for
+  its install name. It is not: `addDylib` inserts into the map only when the path is absent
+  (`:1205-1208`), and `/usr/lib/libobjc.A.dylib` is already held by `libobjc.A.tbd`, which is the `File`
+  that holds ordinal 6.
+
+So the dylib that owns those proxies was never named on the command line, and is not the file the map
+holds for its install path. It gets no ordinal, and encoding its proxy aborts.
 
 The patch repairs the invariant where the encoder needs it: after the ordinal loop, sweep the
 import-proxies sections and give such a dylib the ordinal of the dylib already loaded under its install
@@ -121,8 +131,9 @@ after  (fix):         _objc_getClass (from libobjc)      _class_getSuperclass (f
 `llvm-otool -L` counts 5 load commands for the workaround's dylib and 7 for the fix's; the two the fix adds
 are `/usr/lib/libobjc.A.dylib` and CoreFoundation. With implicit dylibs off there is no ordinal for the
 `File` that actually exports the ObjC runtime, so the symbols were bound to a library that does not export
-them — a link that succeeds and a binary that binds wrongly on the device. `packages/m/matter/xmake.lua`
-still carries that flag and should drop it.
+them — a link that succeeds and a binary that binds wrongly on the device. The flag was in band
+4c10b17e's own copy of `packages/m/matter/xmake.lua`, never in `origin/main`, so nothing carries it today
+and the paragraph is the reason to distrust it if it ever comes back.
 
 ## The digest over patches/
 
