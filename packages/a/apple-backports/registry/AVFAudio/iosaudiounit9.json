@@ -429,9 +429,11 @@
       "kind": "method",
       "introduced": "9.0",
       "minimum": "6.0",
-      "status": "implemented",
+      "status": "absent",
       "facts": "facts/AVFAudio/AUAudioUnit.md",
-      "source": "SDK 16.4 and SDK 26.2 AUAudioUnit.h/AUParameters.h/AudioToolbox AUComponent.h, and the C base read from the real armv7 6.1.3 shared cache with dyld.load: AudioToolbox exports the whole AudioComponent family (ten functions), the whole AudioUnit family and the whole AUGraph family, and iOS 6.1.3 exports no AudioUnit.framework and no AUAudioUnit C entry point"
+      "source": "SDK 16.4 and SDK 26.2 AUAudioUnit.h/AUParameters.h/AudioToolbox AUComponent.h, and the C base read from the real armv7 6.1.3 shared cache with dyld.load: AudioToolbox exports the whole AudioComponent family (ten functions), the whole AudioUnit family and the whole AUGraph family, and iOS 6.1.3 exports no AudioUnit.framework and no AUAudioUnit C entry point",
+      "reason": "the header's own AudioUnitProperties.h marks kAudioUnitProperty_Latency \"Access: Read\"; measured against a real host AudioUnit, AudioUnitSetProperty on it is refused with kAudioUnitErr_InvalidProperty (-10879) and the read-back is unchanged",
+      "effect": "calling it raises an unrecognised selector, which is what absent means; the bus's own latency is read, as the Float64 the header names, and answers what the unit holds"
     },
     {
       "api": "-[AUAudioUnitBus setName:]",

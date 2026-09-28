@@ -11,15 +11,6 @@
       "source": "SDK 16.4 and 26.2 AVFAudio AVAudioMixing.h and the AVAudioUnit/TimeEffect/Generator headers, over the release's own k3DMixerParam_ set (AudioToolbox AudioUnitParameters.h, iOS 2.0) and kAudioUnitProperty_BypassEffect, the two the header itself names for these members"
     },
     {
-      "api": "-[AVAudioMixingDestination init]",
-      "kind": "method",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "SDK 16.4 and 26.2 AVFAudio AVAudioMixing.h and the AVAudioUnit/TimeEffect/Generator headers, over the release's own k3DMixerParam_ set (AudioToolbox AudioUnitParameters.h, iOS 2.0) and kAudioUnitProperty_BypassEffect, the two the header itself names for these members",
-      "source": "SDK 16.4 and 26.2 AVFAudio AVAudioMixing.h and the AVAudioUnit/TimeEffect/Generator headers, over the release's own k3DMixerParam_ set (AudioToolbox AudioUnitParameters.h, iOS 2.0) and kAudioUnitProperty_BypassEffect, the two the header itself names for these members"
-    },
-    {
       "api": "-[AVAudioMixingDestination obstruction]",
       "kind": "method",
       "introduced": "8.0",
