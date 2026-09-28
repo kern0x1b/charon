@@ -1,17 +1,21 @@
 --- a/cctools-port/cctools/ld64/src/ld/OutputFile.cpp
 +++ b/cctools-port/cctools/ld64/src/ld/OutputFile.cpp
-@@ -5313,6 +5313,33 @@ void OutputFile::buildDylibOrdinalMapping(ld::Internal& state)
+@@ -5312,6 +5312,37 @@
  		}
  	}
-
-+	// A dylib that is only reached through another dylib's re-export is not in state.dylibs unless
-+	// the resolver promoted it, and the loop above walks nothing but state.dylibs. An import proxy
-+	// atom whose file() is such a dylib is therefore left with no ordinal at all, and encoding it
-+	// aborts the link in dylibToOrdinal(). Give every dylib that owns a proxy an ordinal, and add
-+	// it to the load list unless some dylib already loaded carries that install path, so the
-+	// library the symbol came from is the one the output loads and the one the symbol binds to.
-+	// Nothing that links today changes: a dylib that already has an ordinal is skipped, and one
-+	// without an ordinal is exactly the case that used to abort.
+ 
++	// A dylib that owns an import proxy but is not in state.dylibs gets no ordinal from the loop
++	// above, and encoding that proxy then aborts in dylibToOrdinal() and in
++	// compressedOrdinalForAtom(). Two dylib files can carry the same install name and only one of
++	// them reaches state.dylibs: InputFiles::addDylib keys _installPathToDylibs by install path and
++	// keeps one file per path, while InputFiles::searchLibraries asks each implicitly linked file it
++	// finds there. The SDK's usr/lib/libobjc.tbd and usr/lib/libobjc.A.tbd are such a pair, and a
++	// client that imports _objc_getClass through the second owns a proxy whose ordinal does not
++	// exist. Give every dylib that owns a proxy an ordinal, and add it to the load list unless some
++	// dylib already loaded carries that install path, so the library the symbol came from is the one
++	// the output loads and the one the symbol binds to. Nothing that linked before changes: a dylib
++	// that already has an ordinal is skipped, and one without an ordinal is exactly the case that
++	// used to abort.
 +	for (const ld::Internal::FinalSection* sect : state.sections) {
 +		if ( sect->type() != ld::Section::typeImportProxies ) { continue; }
 +		for (const ld::Atom* rawAtom : sect->atoms) {
@@ -33,4 +37,4 @@
 +
  	_noReExportedDylibs = !hasReExports;
  }
-
+ 
