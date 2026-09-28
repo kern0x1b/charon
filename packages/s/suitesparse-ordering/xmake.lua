@@ -90,6 +90,10 @@ package("suitesparse-ordering")
         os.mkdir(path.join(package:installdir("licenses")))
         for from, to in pairs(HEADERS) do
             assert(os.isfile(from), "SuiteSparse " .. package:version() .. " has no " .. from)
+            -- every level of the destination made here rather than left to os.vcp, whose habit of
+            -- creating the last component and not the ones above it cost two runs: first
+            -- SuiteSparse_config/SuiteSparse_config.h, then COLAMD/Include/colamd.h.
+            os.mkdir(path.join(package:installdir("include"), to))
             assert(os.vcp(from, path.join(package:installdir("include"), to) .. "/"),
                    "suitesparse-ordering could not install " .. from)
         end
