@@ -77,18 +77,28 @@ NSDictionary *charon_CIImage_properties(id image, SEL _cmd)
     return @{};
 }
 
-CIImage *charon_CIImage_imageBySettingProperties(id image, SEL _cmd, NSDictionary *properties)
+CIImage *charon_CIImage_imageBySettingProperties(id source, SEL _cmd, NSDictionary *properties)
 {
-    // A distinct image, which is what the host hands back: the identity affine transform is the
-    // release's own and its output is a new image over the same pixels, so the properties belong to
-    // that image and not to the one they were set on.
-    if (!properties.count)
-        return image;
-    CIImage *made = [image imageByApplyingTransform:CGAffineTransformIdentity];
+    // A **copy**, and what the host does is measured rather than guessed:
+    //
+    //   source 0x...410 CIImage      returned 0x...760 CIImage   distinct 1
+    //   extent {{0, 0}, {6, 4}}     extent {{0, 0}, {6, 4}}
+    //   returned properties {k = v} source properties 0
+    //   empty dictionary -> distinct 1, a second call -> a third object again
+    //
+    // So it is a fresh CIImage over the same source and the same extent, with the properties on the
+    // copy and not on the image they were set from - always, an empty dictionary included.
+    //
+    // It is not a filter: measured on the system, an identity affine transform, an identity colour
+    // matrix and a crop to the image's own extent all hand back **the same object** (0, 0 and 0
+    // distinct), and a clamp gives a distinct one only by making the extent infinite. There is no
+    // filter that makes a distinct image with the same extent, and a copy is what a copy is for.
+    CIImage *made = [(CIImage *)source copy];
     if (!made)
-        return image;
+        return source;
     NSMutableDictionary *merged = [made.properties mutableCopy] ?: [NSMutableDictionary dictionary];
-    [merged addEntriesFromDictionary:properties];
+    if (properties.count)
+        [merged addEntriesFromDictionary:properties];
     objc_setAssociatedObject(made, CharonCIPropertiesKey, merged, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     return made;
 }

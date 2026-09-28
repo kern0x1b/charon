@@ -2,6 +2,7 @@
 #import <CoreGraphics/CoreGraphics.h>
 #import <objc/runtime.h>
 #import <stdio.h>
+#import <math.h>
 
 #pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
 
@@ -36,13 +37,15 @@ CIImage *charon_CIImage_imageByUnpremultiplyingAlpha(id image, SEL _cmd)
     uint8_t *pixels = bytes.mutableBytes;
     for (size_t k = 0; k < width * height; k++) {
         uint8_t *pixel = pixels + k * 4;
-        unsigned alpha = pixel[3];
-        if (!alpha)
+        if (!pixel[3])
             continue;
+        // In float, over the colour the alpha really is. Integer arithmetic on the stored channel
+        // rounds twice - once into the eight bits it divides and once into the eight it writes - and the
+        // host's is 255 153 255 128 where that was 255 149 255 128.
+        float alpha = (float)pixel[3] / 255.0f;
         for (int channel = 0; channel < 3; channel++) {
-            // each channel over its own alpha, a result over one is one
-            unsigned value = (unsigned)pixel[channel] * 255 / alpha;
-            pixel[channel] = (uint8_t)MIN(255, value);
+            float value = ((float)pixel[channel] / 255.0f) / alpha;
+            pixel[channel] = (uint8_t)lrintf(MIN(1.0f, value) * 255.0f);
         }
     }
     return [CIImage imageWithBitmapData:bytes bytesPerRow:width * 4 size:whole.size format:kCIFormatRGBA8
