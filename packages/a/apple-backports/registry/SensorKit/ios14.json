@@ -2438,10 +2438,10 @@
       "kind": "property",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "its type is SensorKit's own SampleType, which the 16.4 SDK does not declare and the port does not carry, and there is no such type here to answer with",
-      "effect": "not carried: respondsToSelector: answers NO for the accessor, and the row's value is a measurement of a sensor this release cannot report either - the 6.1.3 cache carries no SensorKit symbol at all, measured with objc.binary_inventory",
-      "source": "the header of SensorKit.framework in SDK 26.2 for the type; the release's armv7 6.1.3 cache, which has no SR* symbol"
+      "status": "implemented",
+      "reason": "SRFetchResult.h declares `@property (readonly, copy) SampleType sample` where SampleType is the class's lightweight generic parameter, so the value is an object and is held in the result's value store",
+      "effect": "a result answers the sample it holds; this release has no SensorKit store, so the reader produces no result, and a result decoded from an archive carries its sample back out",
+      "source": "the header of SRFetchResult.h in SDK 26.2"
     },
     {
       "api": "SRFetchResult.timestamp",

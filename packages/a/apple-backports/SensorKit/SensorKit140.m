@@ -185,8 +185,11 @@ CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
 @end
 
 @implementation SRFetchResult
-@dynamic timestamp;
+@dynamic timestamp, sample;
 CHARON_SCALAR_PROPERTY(SRAbsoluteTime, timestamp)
+// The header's SampleType is the class's lightweight generic parameter, an object; the value is held
+// in the store like every other member, so an archived result carries its sample through.
+CHARON_VALUE_PROPERTY(id, sample)
 // The SDK's own header declares this class conforming, so the port owes the three archiving methods,
 // and -copyWithZone: where the header says NSCopying - see the same block on SRDeletionRecord.
 + (BOOL)supportsSecureCoding
