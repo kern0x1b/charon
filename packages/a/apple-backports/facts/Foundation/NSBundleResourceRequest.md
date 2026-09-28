@@ -36,11 +36,15 @@ What the host answers, measured:
 | `-initWithTag:` (private) | **answers nil for every tag**, tried three ways |
 | `progress` of a host's request | never reached, the request is nil |
 
-**So there is no host oracle for the class's state, and there never was.** The private initialiser was
-tried as one and is not usable: the invocation's target was the class, then `-retainArguments` retained
-a target that is not an argument, then `-getReturnValue:` faulted in `objc_autoreleaseReturnValue`
-under ARC. The class is therefore held to the header's own words, and the differential says so rather
-than comparing the host with itself.
+**One thing, said once: the class's *state* has no host oracle, and the differential does not claim
+one.** The host is asked about the eleven members — which of them it implements — and about the
+`NSBundle` side, and those are measured. What it cannot produce is an *instance* to compare a port's
+state against, because its public initialiser refuses and its private one answers nil. So the class's
+four properties, the manifest, the error and the progress are held to the header's words and the
+ruling, and the differential says which is which in every line it prints. The private initialiser was
+tried as an oracle and is not usable: the invocation's target was the class, then `-retainArguments`
+retained a target that is not an argument, then `-getReturnValue:` faulted in
+`objc_autoreleaseReturnValue` under ARC.
 
 ## The rules, and where each one comes from
 
@@ -48,7 +52,7 @@ than comparing the host with itself.
 | --- | --- | --- |
 | `-init` | raises `NSInvalidArgumentException` with the reason `init is unavailable` | **measured** on the host, and the header marks it unavailable on every platform |
 | `-initWithTags:` | a request over the tags, in the main bundle | the header: "if no bundle is specified then the main bundle is used" |
-| `-initWithTags:bundle:` | the designated initialiser; the tags are a **copy** | the header, and the differential holds the copy against a set the caller changes afterwards |
+| `-initWithTags:bundle:` | the designated initialiser; the tags are a **copy** | the header for the arity and the default, and the differential for the copy |
 | `loadingPriority` | a `double` beginning at **0.5** | the header: "The default priority is 0.5" |
 | `progress` | `[[NSProgress alloc] init]`, counts left alone | **measured**: a fresh `NSProgress` is indeterminate and finished and its `fractionCompleted` reads 1. The differential holds the class, `isFinished`, `isIndeterminate`, both counts *and* the fraction |
 | `-beginAccessing…` | the handler runs once: no error when every tag the manifest names, `NSBundleOnDemandResourceInvalidTagError` **4994** in `NSCocoaErrorDomain` for one it does not | the ruling, and the code measured out of `FoundationErrors.h` |
@@ -63,15 +67,21 @@ than comparing the host with itself.
 ## The manifest
 
 Read out of the bundle with the release's own `-[NSBundle pathForResource:ofType:]`, which is an iOS 2
-call and answers on 6.1.3 — measured, on a bundle written on the spot:
+call and answers on a release of ours. **Measured**, by
+`tests/backports/host/bundlerequest/measure/host-plist.m` — which writes such a bundle on the spot and
+reads it back — and the line is in `.agent-work/runs/host-measurements/host-plist.log`:
 
 ```
-NSBundle reads it back: /tmp/…/brr/OnDemandResources.plist
+$ xcrun clang -fobjc-arc -Wno-deprecated-declarations -Wno-unguarded-availability -include dlfcn.h \
+      -o host-plist tests/backports/host/bundlerequest/measure/host-plist.m -framework Foundation
+$ ./host-plist | grep "reads it back"
+    NSBundle reads it back: …/brr/OnDemandResources.plist
 ```
 
-**Neither of the two plist key names is in any Foundation header on this machine, in the 16.4 SDK or
-the 26.2 one** — they are the documented asset-pack format, and the port reads what the ruling
-describes:
+**The two plist key names are not a header fact and are not a measurement**: they are in no Foundation
+header on this machine, in the 16.4 SDK or the 26.2 one, and nothing on the host emits them. They are
+the documented asset-pack format, and the port reads what the ruling describes. The host can be asked
+about everything else here — that a bundle's manifest is reachable through `NSBundle` — and is, above.
 
 | key | what it holds |
 | --- | --- |
@@ -86,9 +96,12 @@ ruling the band was given to implement.
 ## The two constants: documented, not measurable
 
 ```
-NSBundleResourceRequestLoadingPriorityUrgent:    no symbol on the host
-NSBundleResourceRequestLowDiskSpaceNotification: no symbol on the host
+$ ./host-plist | grep "no symbol on the host"
+  NSBundleResourceRequestLoadingPriorityUrgent: no symbol on the host
+  NSBundleResourceRequestLowDiskSpaceNotification: no symbol on the host
 ```
+
+(both lines in `.agent-work/runs/host-measurements/host-plist.log`, from the same program)
 
 A constant behind `API_UNAVAILABLE(macos)` is **not emitted in the macOS framework at all**, so there is
 no value of either to measure here. What the header gives is the meaning, and the port implements that:

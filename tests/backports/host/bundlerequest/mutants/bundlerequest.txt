@@ -11,4 +11,4 @@ the manifest is read from the bundle	NSBundleResourceRequest.m	s/charon_manifest
 the tag map is the manifest's tags key	NSBundleResourceRequest.m	s/charon_manifest_tags_key = @"NSBundleResourceRequestTags";/charon_manifest_tags_key = @"NSBundleResourceRequestTagsX";/
 the urgent priority is 1.0	NSBundleResourceRequest.m	s/double const NSBundleResourceRequestLoadingPriorityUrgent = 1\.0;/double const NSBundleResourceRequestLoadingPriorityUrgent = 0.5;/
 the notification is its own name	NSBundleResourceRequest.m	s/@"NSBundleResourceRequestLowDiskSpaceNotification";/@"LowDiskSpace";/
-the additions are asked with class_getInstanceMethod	NSBundleResourceRequest.m	s/class_getInstanceMethod(bundle, @selector(setPreservationPriority:forTags:))/class_getInstanceMethod([NSBundle class], @selector(init))/
+the additions are asked with class_getInstanceMethod	NSBundleResourceRequest.m	s/BOOL hasSet = class_getInstanceMethod(bundle, \@selector(setPreservationPriority:forTags:)) != NULL;/BOOL hasSet = [bundle instancesRespondToSelector:\@selector(setPreservationPriority:forTags:)];/

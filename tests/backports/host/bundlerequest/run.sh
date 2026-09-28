@@ -21,6 +21,7 @@ quiet="-Werror=format -Wno-deprecated-declarations -Wno-unguarded-availability-n
 
 if [ $mutants = yes ]; then
     missed=0
+    caught=0
     tab=$(printf '\t')
     mutant=$BUILD-mutant
     while IFS="$tab" read -r name file change; do
@@ -40,12 +41,23 @@ if [ $mutants = yes ]; then
             echo "BROKEN $name: the mutant does not compile"
             missed=1
         elif grep -q '^FAIL ' "$mutant.log"; then
+            caught=$((caught + 1))
             echo "caught $name: $(grep '^FAIL ' "$mutant.log" | head -1 | cut -c6- | cut -d: -f1)"
         else
+            caught=$((caught + 1))
             echo "caught $name: the port crashed"
         fi
     done < "$here/mutants/bundlerequest.txt"
     rm -rf "$mutant" "$mutant.log"
+    # The file must end in a newline and every row must be read: without this a dropped last line
+    # looks exactly like a file with one fewer mutant, and nothing said so.
+    entries=$(grep -c . "$here/mutants/bundlerequest.txt")
+    seen=$((caught + missed))
+    if [ "$seen" -ne "$entries" ]; then
+        echo "MISSED the runner read $seen of the file's $entries rows: check that it ends in a newline"
+        missed=1
+    fi
+    echo "$caught caught of $entries rows"
     exit $missed
 fi
 
