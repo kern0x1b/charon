@@ -207,6 +207,33 @@ Four more the corpus does not list at all, which the headers do declare and this
 that the port answers, and a row the corpus does not carry needs no registry entry; R4 constrains the
 other direction, a registered name no header declares, and none of the 407 is such a name.
 
+## The iOS 10.0 and 11.0 groups
+
+`ios100.json` carries 48 rows of iOS 10.0 - `HKDocumentType`, `HKDocumentSample`, `HKCDADocumentSample`,
+`HKDocumentQuery`, `HKWheelchairUseObject`, `HKWorkoutConfiguration`, the 12 properties and 10 methods
+that came with them, and the 20 exported constants of that release. `ios110.json` carries six rows of
+11.0: the CDA document and its five members.
+
+**The CDA document is of 11.0, not 10.0**, and the gate's release check found it: `HKDocument10.m`
+held `HKDocumentType`, `HKDocumentSample`, `HKCDADocumentSample`, `HKWheelchairUseObject` and
+`HKWorkoutConfiguration` from 10.0 and `HKCDADocument` from 11.0, which one object may not do. The
+document is its own file now, in its own group, and the corpus's dating of its five members to 10.0 -
+they took the version of the class they sit in - is corrected in the generator, which moves a member to
+its class's release.
+
+**The 20 constants of 10.0 came out of the arm64 cache of 10.0.1**, not an armv7 one: there is no
+10.0 or 10.0.1 armv7 cache in this workspace, and the armv7s slice's data pointers are tagged, so the
+32-bit reader cannot read that slice. Several of the twenty values are not their own names -
+`HKDocumentTypeIdentifierCDA` is `HKDocumentTypeCDA`, `HKMetadataKeyWeatherCondition` is
+`HKWeatherCondition`, `HKPredicateKeyPathCDAAuthorName` is `author_name`, and
+`HKPredicateKeyPathWorkoutTotalSwimmingStrokeCount` is `totalSwimmingStrokeCount`, the same string
+`HKWorkoutSortIdentifierTotalSwimmingStrokeCount` holds.
+
+**One wall in the 10.0 group**: `-startWatchAppWithWorkoutConfiguration:completion:` starts a workout on
+a paired watch, and this release has no watch application and no daemon that would start one. It is
+refused with the release's own no-data error, and the log says once why. A success there would be a
+success that started nothing.
+
 ## The device run
 
 None yet. Everything above is a read of a release image, a release cache, the SDK headers and the

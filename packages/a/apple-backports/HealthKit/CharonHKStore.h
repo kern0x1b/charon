@@ -83,6 +83,14 @@ NS_ASSUME_NONNULL_BEGIN
 // answers with. The store's own deleted table is where they come from.
 - (nullable NSArray *)deletedObjectsSinceSequence:(NSInteger)sequence;
 
+// The documents of one type, with their own data or without it, the way a document query asks.
+- (nullable NSArray *)documentsOfType:(HKDocumentType *)type
+                            predicate:(nullable NSPredicate *)predicate
+                               limit:(NSUInteger)limit
+                    sortDescriptors:(nullable NSArray *)sortDescriptors
+                 includeDocumentData:(BOOL)includeDocumentData
+                             error:(NSError **)error;
+
 // The activity summaries the store holds that a predicate matches. The rings are counted by the phone
 // and recorded by the Activity application of a release that has one; nothing writes this table on
 // this release, so the answer is an empty array and the reason is said once in the log.
@@ -169,6 +177,17 @@ extern Class _Nullable CharonHKClassForTypeKind(NSInteger kind);
 // The private surface of the classes of this framework that another of them needs. Declared here and
 // implemented in each class's own @implementation, so that none of it is a selector this port adds
 // to somebody else's class and none of it needs a category.
+@interface HKDocumentSample (CharonIOS100Internal)
+- (instancetype)charon_copyWithoutDocument:(nullable NSDictionary *)metadata;
+- (void)charon_setMetadata:(nullable NSDictionary *)metadata;
+@end
+
+@interface HKWorkoutEvent (CharonIOS100Internal)
+- (instancetype)charon_initWithType:(HKWorkoutEventType)type date:(NSDate *)date;
+- (nullable NSDictionary *)charon_storedMetadata;
+- (void)charon_setMetadata:(nullable NSDictionary *)metadata;
+@end
+
 @interface HKObject (CharonIOS9)
 - (nullable HKSourceRevision *)sourceRevision;
 - (nullable HKDevice *)device;
@@ -184,6 +203,7 @@ extern Class _Nullable CharonHKClassForTypeKind(NSInteger kind);
 - (instancetype)charon_copyForStore;
 - (nullable HKCorrelation *)charon_correlation;
 - (void)charon_setCorrelation:(nullable HKCorrelation *)correlation;
+- (void)charon_setMetadata:(nullable NSDictionary *)metadata;
 - (void)charon_setDevice:(nullable HKDevice *)device;
 - (nullable HKDevice *)charon_storedDevice;
 - (nullable HKSourceRevision *)charon_storedSourceRevision;
@@ -200,6 +220,10 @@ extern Class _Nullable CharonHKClassForTypeKind(NSInteger kind);
 @end
 
 
+@interface HKQuery (CharonInternalOperator)
++ (NSString *)charon_predicateOperatorSpellingFor:(NSPredicateOperatorType)type;
+@end
+
 @interface HKWorkout (CharonInternal)
 - (instancetype)charon_initWithType:(HKObjectType *)type
                            metadata:(nullable NSDictionary *)metadata
@@ -207,6 +231,9 @@ extern Class _Nullable CharonHKClassForTypeKind(NSInteger kind);
                             endDate:(NSDate *)endDate
                            duration:(NSTimeInterval)duration;
 - (void)charon_setWorkoutActivityType:(HKWorkoutActivityType)activityType;
+- (void)charon_setWorkoutEvents:(NSArray<HKWorkoutEvent *> *)workoutEvents;
+- (nullable HKQuantity *)charon_totalSwimmingStrokeCount;
+- (void)charon_setTotalSwimmingStrokeCount:(nullable HKQuantity *)count;
 - (void)charon_setTotalEnergyBurned:(nullable HKQuantity *)energy totalDistance:(nullable HKQuantity *)distance;
 @end
 
@@ -328,6 +355,44 @@ extern Class _Nullable CharonHKClassForTypeKind(NSInteger kind);
 
 @interface HKFitzpatrickSkinTypeObject (CharonInternal)
 + (instancetype)charon_fitzpatrickSkinTypeObject:(HKFitzpatrickSkinType)skinType;
+@end
+
+@interface HKWheelchairUseObject (CharonInternal)
++ (instancetype)charon_wheelchairUseObject:(HKWheelchairUse)wheelchairUse;
+@end
+
+@interface HKDocumentSample (CharonInternal10)
+- (instancetype)charon_initWithType:(HKDocumentType *)documentType
+                            metadata:(nullable NSDictionary *)metadata
+                           startDate:(NSDate *)startDate
+                             endDate:(NSDate *)endDate
+                            document:(nullable NSDictionary *)document;
+@end
+
+@interface HKCDADocument (CharonInternal10)
+- (instancetype)charon_initWithDocumentData:(NSData *)documentData
+                                      title:(nullable NSString *)title
+                                 patientName:(nullable NSString *)patientName
+                                  authorName:(nullable NSString *)authorName
+                               custodianName:(nullable NSString *)custodianName;
+@end
+
+@interface HKWorkoutConfiguration (CharonInternal10)
+- (instancetype)charon_initWithActivityType:(HKWorkoutActivityType)activityType
+                               locationType:(HKWorkoutSessionLocationType)locationType
+                                 lapLength:(nullable HKQuantity *)lapLength
+                       swimmingLocationType:(HKWorkoutSwimmingLocationType)swimmingLocationType;
+@end
+
+@interface HKDocumentSample (CharonIOS100Internal)
+- (instancetype)charon_copyWithoutDocument:(nullable NSDictionary *)metadata;
+- (void)charon_setMetadata:(nullable NSDictionary *)metadata;
+@end
+
+@interface HKWorkoutEvent (CharonIOS100Internal)
+- (instancetype)charon_initWithType:(HKWorkoutEventType)type date:(NSDate *)date;
+- (nullable NSDictionary *)charon_storedMetadata;
+- (void)charon_setMetadata:(nullable NSDictionary *)metadata;
 @end
 
 @interface HKObject (CharonIOS9)

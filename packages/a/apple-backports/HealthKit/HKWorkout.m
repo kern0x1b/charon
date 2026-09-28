@@ -4,9 +4,14 @@
 
 #import "CharonHKStore.h"
 
+@interface HKWorkoutEvent (CharonIOS100Internal)
+- (instancetype)charon_initWithType:(HKWorkoutEventType)type date:(NSDate *)date;
+@end
+
 @implementation HKWorkoutEvent {
     HKWorkoutEventType _type;
     NSDate *_date;
+    NSDictionary *_charonMetadata;
 }
 // -dateInterval of 11.0 and -metadata of 10.0 are of the releases after 8.0, which this delivery does
 // not carry, so both are @dynamic and no accessor is emitted for either.
@@ -66,6 +71,18 @@
     return _date;
 }
 
+// 10.0's metadata, kept under the port's own name and answered under the header's from
+// HKDocumentQuery10.m, so that this file carries the API of 8.0 alone.
+- (nullable NSDictionary *)charon_storedMetadata
+{
+    return _charonMetadata;
+}
+
+- (void)charon_setMetadata:(nullable NSDictionary *)metadata
+{
+    _charonMetadata = [metadata copy];
+}
+
 - (NSString *)description
 {
     return [NSString stringWithFormat:@"HKWorkoutEvent %ld at %@", (long)_type, _date];
@@ -87,7 +104,11 @@
     // those two dates say; a workout made with a duration takes that duration, and ends at the start
     // plus it.
     NSTimeInterval _duration;
+    HKQuantity *_charonStrokeCount;
 }
+// 10.0's -totalSwimmingStrokeCount, kept under the port's own name and answered under the header's
+// from HKDocumentQuery10.m, so that this file carries the API of 8.0 alone.
+
 // The members of the releases after 8.0 that this delivery does not carry: -totalSwimmingStrokeCount of
 // 10.0, -totalFlightsClimbed of 11.0 and -allStatistics of 16.0. All three are @dynamic, so no
 // accessor is emitted and the selector is not in the built library.
@@ -188,6 +209,21 @@
 - (void)charon_setWorkoutActivityType:(HKWorkoutActivityType)activityType
 {
     _workoutActivityType = activityType;
+}
+
+- (void)charon_setWorkoutEvents:(NSArray<HKWorkoutEvent *> *)workoutEvents
+{
+    _workoutEvents = [workoutEvents copy] ?: @[];
+}
+
+- (nullable HKQuantity *)charon_totalSwimmingStrokeCount
+{
+    return _charonStrokeCount;
+}
+
+- (void)charon_setTotalSwimmingStrokeCount:(nullable HKQuantity *)count
+{
+    _charonStrokeCount = (HKQuantity *)[count copy];
 }
 
 - (void)charon_setTotalEnergyBurned:(nullable HKQuantity *)energy totalDistance:(nullable HKQuantity *)distance

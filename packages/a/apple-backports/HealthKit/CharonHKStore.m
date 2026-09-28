@@ -899,6 +899,44 @@ typedef NS_ENUM(NSUInteger, CharonHKAuthorizationBits) {
     return uuids;
 }
 
+#pragma mark Documents
+
+// The documents of one type. A document sample is a sample, so it is read back out of the same table
+// through the same archive; what a document query adds is the flag that says whether the data of the
+// document comes back with it, which the header's -includeDocumentData asks for and which a caller
+// that reads the data needs.
+- (NSArray *)documentsOfType:(HKDocumentType *)type
+                   predicate:(nullable NSPredicate *)predicate
+                      limit:(NSUInteger)limit
+           sortDescriptors:(nullable NSArray *)sortDescriptors
+        includeDocumentData:(BOOL)includeDocumentData
+                    error:(NSError **)error
+{
+    NSArray *found = [self objectsOfType:type
+                    predicate:predicate
+                    startDate:nil
+                      endDate:nil
+            strictStartDate:NO
+              strictEndDate:NO
+                     limit:limit
+             sortDescriptors:sortDescriptors
+               fromSequence:0
+                      error:error];
+    if (!found)
+        return nil;
+    if (includeDocumentData)
+        return found;
+    NSMutableArray *without = [NSMutableArray arrayWithCapacity:found.count];
+    for (HKDocumentSample *sample in found) {
+        // The same sample with its document's facts left out, which is what the flag asks for: the
+        // sample and its type are kept, and the data, the title and the three names are not sent.
+        NSMutableDictionary *facts = [NSMutableDictionary dictionaryWithDictionary:[sample metadata]];
+        [facts removeObjectForKey:@"_charon_document"];
+        [without addObject:[sample charon_copyWithoutDocument:facts]];
+    }
+    return without;
+}
+
 #pragma mark Activity summaries
 
 // The days the store holds a ring for. Nothing writes that table on this release - see the header's
