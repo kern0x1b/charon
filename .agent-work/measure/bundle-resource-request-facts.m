@@ -64,8 +64,9 @@ int main(int argc, char **argv)
         Class request = NSClassFromString(@"NSBundleResourceRequest");
 
         if (step == 0) {  // the class, the keys and the constant
-            P(@"class %s, super %s, instances %s", class_getName(request), class_getName(class_getSuperclass(request)),
-              class_getName([request alloc]));
+            P(@"class %s", request ? class_getName(request) : "(no class)");
+            P(@"  super %s", request ? class_getName(class_getSuperclass(request)) : "(no class)");
+            P(@"  +alloc gives %s", request ? class_getName([request alloc]) : "(no class)");
             P(@"conforms to: NSProgressReporting=%d NSCopying=%d NSSecureCoding=%d",
               [request conformsToProtocol:@protocol(NSProgressReporting)], (int)[request instancesRespondToSelector:@selector(copyWithZone:)],
               (int)[request instancesRespondToSelector:@selector(supportsSecureCoding)]);
@@ -121,6 +122,7 @@ int main(int argc, char **argv)
             if (withBoth) {
                 P(@"  tags=%s bundle=%s", [[(id)[withBoth tags] description] UTF8String],
                   [[(id)[withBoth bundle] description] UTF8String]);
+                id givenBundle = (id)[withBoth bundle];
                 P(@"  the bundle is the one the caller gave: %d", (int)(givenBundle == [NSBundle mainBundle]));
                 P(@"  progress is another object against the other: %d", (int)((id)[withBoth progress] != (id)[withTags progress]));
                 P(@"  isEqual to the tags-only one: %d", (int)[withBoth isEqual:withTags]);
@@ -191,8 +193,9 @@ int main(int argc, char **argv)
             while (!called && [until timeIntervalSinceNow] > 0)
                 [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.05]];
             P(@"after waiting: called=%d", (int)called);
-            P(@"progress after: total=%ld completed=%ld fraction=%g", (long)[(id)[one progress].totalUnitCount],
-              (long)[(id)[one progress].completedUnitCount], [(id)[one progress].fractionCompleted]);
+            id after = (id)[one progress];
+            P(@"progress after: total=%lld completed=%lld fraction=%g", (long long)[after totalUnitCount],
+              (long long)[after completedUnitCount], [after fractionCompleted]);
             ((void (*)(id, SEL))objc_msgSend)(one, @selector(endAccessingResources));
             P(@"endAccessingResources answered");
             __block BOOL conditionally = NO;
@@ -212,8 +215,7 @@ int main(int argc, char **argv)
         if (step == 4) {  // the archive, and the setters the header declares as read-only
             NSSet *tags = [NSSet setWithObjects:@"one", @"two", nil];
             id one = [request alloc];
-            one = ((id (*)(id, SEL, id))objc_msgSend)(one, @selector(initWithTags:bundle:), tags, [NSBundle mainBundle]);
-            [(id)one setValue:@(0.75) forKey:@"loadingPriority"];
+            one = ((id (*)(id, SEL, id, id))objc_msgSend)(one, @selector(initWithTags:bundle:), tags, [NSBundle mainBundle]);
             NSMutableData *d = [NSMutableData data];
             NSKeyedArchiver *a = [[NSKeyedArchiver alloc] initForWritingWithMutableData:d];
             [a encodeObject:one forKey:NSKeyedArchiveRootObjectKey];

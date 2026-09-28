@@ -93,3 +93,69 @@ The fix is to give each a local (`id bundle = (id)[withBoth bundle];` and
 file already does, and the two `totalUnitCount` reads in step 3 need it too. Nothing else is wrong, and
 steps 0 to 5 have not run: **there is not one measured number for this family yet**, and the next session
 must not treat the header's "0.5" and "0 to 1" as measurements.
+
+---
+
+## The finding that changes the plan: the host's class is a stub
+
+The probe now compiles and steps 0 and 1 have run. Step 0 answers the question the header could not:
+
+```
+class NSBundleResourceRequest
+  super NSObject
+```
+
+so the class is there, with `NSObject` as its superclass. **And then it raises.**
+
+```
+$ ./.agent-work/runs/facts 1
+*** Terminating app due to uncaught exception 'NSInvalidArgumentException', reason: 'init is unavailable'
+	2   Foundation   -[NSBundleResourceRequest initWithTag:] + 0
+	3   facts        main + 1544
+```
+
+**The host's `-initWithTags:` forwards to an internal `-initWithTag:`, and that raises
+`NSInvalidArgumentException` with the reason `init is unavailable`** — the same reason string
+`-[NSPresentationIntent init]`'s unavailability would produce. The class is `API_UNAVAILABLE(macos)`,
+and on macOS it is a declaration's worth of class with a raising initialiser: there is no instance of it
+on the host to measure anything from.
+
+That is the same position the previous family was in with `-rangeInString:`, where the answer was to
+measure through the host's own Markdown parser. **There is no such second route here.** Nothing on the
+host produces an `NSBundleResourceRequest`, so:
+
+- the four properties, `-copy`, `-isEqual:` and the archive have **no host oracle**;
+- the three system methods call a resource system that does not exist on the host at all, and their
+  documented behaviour ("the completion block will be invoked on a non-main serial queue", "a cancel
+  calls it back with an `NSUserCancelledError` in the `NSCocoaErrorDomain`") is the *only* statement
+  available;
+- the only measured facts are structural: the class name, `NSObject` as its superclass, which
+  selectors it implements (step 0's `class_copyMethodList` half is written and has not run, because
+  `class_getMetaClass` will not compile in this file — see below), and the raising initialiser.
+
+**So the family needs a decision before code is written**, and it is the coordinator's:
+
+1. **Carry it as a declared value class with the header as its contract.** The four properties store
+   what a caller sets, `-copy` and `-isEqual:` are by the four, the archive carries the host's own keys
+   — but *which* keys is unmeasured, because no host archive exists, so the keys would come from the
+   26.2 lift's `NSKeyedArchiver` behaviour, which is a source of truth of a different kind. The proof
+   would be a call test on the emulator, not a host differential. That is honest and it is less than the
+   two families just delivered.
+2. **Leave the eleven rows `absent` with the reason measured here** — "the class is declared for iOS 9,
+   `API_UNAVAILABLE(macos)`, and the host's own initialiser raises, so there is nothing to hold a port
+   to" — and take the next family. The wall is real: the release has no on-demand resource system either,
+   so even a stored value class would hand an application a request object that can never complete.
+3. **Carry it with a written difference** (the registry's `implemented` with an `effect` that says the
+   three system methods complete immediately and the archive keys are the port's), which is the
+   "carried with a difference" shape the package README already has for other classes.
+
+I am not choosing this one. Option 2 is the reading the measurements support most plainly, and option 1
+is the reading the row count supports; the difference is 11 rows and whether a call test alone is a
+proof this package accepts for a Foundation value class.
+
+## The probe's state
+
+`.agent-work/measure/bundle-resource-request-facts.m` compiles; `.agent-work/measure/brr-step0.m` does
+not, and its only error is `class_getMetaClass` being undeclared in a file that imports
+`<objc/runtime.h>` — a toolchain oddity, not a logic error. Steps 0 and 1 of the first probe have run and
+their output is above; steps 2 to 5 have not run at all.
