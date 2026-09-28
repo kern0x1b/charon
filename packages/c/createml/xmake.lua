@@ -39,6 +39,17 @@ package("createml")
         -- disagree about which Swift they are.
         package:add("deps", "charon@swift-runtime", {alias = "swift-runtime", configs = {shared = package:config("shared") or nil,
                     backports = package:config("backports") or nil, backports_uikit = package:config("backports_uikit") or nil}})
+        -- The backports registry, as a direct dependency, and not only through swift-runtime. This
+        -- build reads it: the runtime lifts the SDK headers with whatever the backports say is
+        -- implemented, and `registry/CoreML/createml-shapedarray.json` is the row that makes
+        -- `MLMultiArrayDataType` - a header-only NS_ENUM, no runtime presence, which Apple's header
+        -- annotates ios(11.0) and so every release the port's armv7 can use is below - available at
+        -- 6.1.3 instead. Reached only through the runtime, that row does not reach the lift: the
+        -- runtime is a released package resolved by version, so the store keeps serving the
+        -- apple-backports it was built against, the lift finds no CoreML row, writes no CoreML
+        -- header, and this package's own `CoreML` module cannot see the type. Declaring the
+        -- dependency is what puts the row in front of the lift.
+        package:add("deps", "charon@apple-backports", {alias = "apple-backports"})
         for _, library in ipairs(libraries) do
             package:add("links", library)
         end
