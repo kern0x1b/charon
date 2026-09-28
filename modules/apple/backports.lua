@@ -1497,7 +1497,17 @@ local function declared_names(root, sdkdir)
         -- words are gathered, so a change here is a different file and nothing is ever invalidated by hand
         -- (the rule dyld.lua's own kept files are written to). Without the tag a fixed SDK path keeps serving
         -- the words an earlier reader gathered - and an earlier reader that gathered none.
-        local kept = path.join(dyld.root(), "cache", "sdk-header-names-v1-" .. hash.sha256(sdkdir):sub(1, 16) .. ".txt")
+        -- named by a key over everything its content depends on: the SDK's own path spelled as text,
+        -- and a tag for how the words are gathered. hash.sha256 of a table is the empty-string hash -
+        -- opt.sdkdir is a table where the build resolves it - so every SDK's words landed on one 51 MB
+        -- file and answered for a header they do not declare. Measured: e3b0c44298fc1c14 is sha256 of
+        -- the empty string, and that file was 51,197,631 bytes of a different SDK.
+        local spelling = type(sdkdir) == "table" and table.concat(sdkdir, " ") or tostring(sdkdir)
+        -- hash.sha256 takes bytes, and a Lua string hashed as one reads as no bytes at all: measured
+        -- 2026-09-28, sha256(spelling) is e3b0c44298fc1c14, the empty string, for every SDK - and the
+        -- one file that key names was 51,197,631 bytes of some other SDK's words.
+        local kept = path.join(dyld.root(), "cache", "sdk-header-names-v1-"
+                              .. hash.sha256(spelling, #spelling):sub(1, 16) .. ".txt")
         local text = os.isfile(kept) and io.readfile(kept) or nil
         if not text then
             -- os.execv's stdout is a file to write, not a buffer: grep's words go to a temporary file, and
