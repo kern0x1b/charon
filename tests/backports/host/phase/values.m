@@ -199,7 +199,7 @@ static void compareEngine(void)
     // name. So what is compared is that the port's root is a PHASEObject and that it stands as a root:
     // no parent, no children, the identity transform.
     id myRoot = [mine rootObject];
-    printf("stage the port engine: %p, its root: %p\n", mine, myRoot);
+
     id theirRoot = [theirs valueForKey:@"rootObject"];
     Class declared = NSClassFromString(@"charon_host_PHASEObject") ?: NSClassFromString(@"PHASEObject");
     printf("stage a fresh engine's root object: port %s, host %s, declared type PHASEObject\n",
