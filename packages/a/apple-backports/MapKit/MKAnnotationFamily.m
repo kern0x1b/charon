@@ -154,8 +154,16 @@ static CharonAnnotationState *CharonStateFor(id view)
 
 - (nullable UIView *)detailCalloutAccessoryView
 {
-    // The release's own LEFT callout accessory, which is the one slot it has; the header's one
-    // member is answered from the slot the release has, and the row says which.
+    // INERT, and it says so ONCE, the first time it is used: Apple's property is the view drawn
+    // UNDER THE TITLE inside the callout, and this release has no place for one. Measured: the selector
+    // and -calloutView are both absent from the armv7 cache of 6.1.3, and the release's own view has
+    // only the two side slots. The caller's view therefore goes in the LEFT one, which is BESIDE the
+    // callout, and the row says which. Recorded as open in coordination/crutches.md.
+    charon_sayOnce(@"MKAnnotationView.detailCalloutAccessoryView",
+                   @"it is answered from the release's LEFT callout accessory slot, which is beside the "
+                   @"callout and not under its title, because iOS 6 has no detail area: the selector and "
+                   @"-calloutView are both absent from the armv7 cache of 6.1.3, and the native fix -- a "
+                   @"callout of this port's own -- is open in coordination/crutches.md");
     return self.leftCalloutAccessoryView;
 }
 
