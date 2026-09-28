@@ -88,7 +88,7 @@ failing on the untyped cases, and the two halves of it were wrong in the same wa
 
 - `NWPathMonitor.m` dropped every interface it had typed `other` from a monitor that asked for `other`, which is
   the default one, and that was wrong: an `other` interface **with an address** is on the path, and a live
-
+  tunnel has one and a bridge has none.
 - a name cannot tell those apart from anything: `utun*` and `bridge*` both fell through to `other`
   because there was no branch for either, and a `pdp_ip*`-named interface was called cellular whatever
   it carried, which a tunnel over Wi-Fi is not.
