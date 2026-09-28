@@ -224,14 +224,31 @@ recorded by `tests/backports/host/vision/run.sh` (33 records) and held against t
   one**, and the rounding of the sample position to be read from the gradient -- round-half-up or
   truncation are not yet separated by a measurement.
 
-  **The implementation is written and is not yet in the library.** It is in
-  `.agent-work/runs/crop-probe/kernel.c` -- a separable bilinear over the BGRA buffer, two taps,
-  the half-pixel centre, taps clamped at the edges, no prefilter, rounding half up with a
-  `CHARON_VISION_TRUNCATE` seam for the other rounding -- and it compiles. It has **not** replaced
-  the CoreGraphics draw in `CharonVisionImage.h`: the edit was applied and reverted in the same
-  session, because the replacement of the draw's region took out more of the file than it meant to
-  and the header no longer compiled. So nothing about the kernel is claimed: not that it reads 0 on
-  the gradient table, not what the +1 inset does to the centre crop, and not a mutant. The order of
-  the rest is: paste the kernel in, run the gradient table, then the placement, then the mutant, then
-  the light guard and r7.
+  **The kernel is written, measured, and one bit of rounding from the table.** In
+  `.agent-work/runs/crop-probe/kernel.c`, linked beside the port's own geometry into
+  `kernel-probe.m` with the same single source and the same picture Core ML is given.
+
+  The first measurement was catastrophic -- 24834 of the region's 25088 at eight or more, maximum
+  255 -- and **unchanged by clamping the sample position**, which is what ruled out the edge and said
+  the error was the mapping. It was: the sample position was `(insetY + y + 0.5) * s - 0.5`, adding
+  the destination inset into the *source* coordinate as well as the store address, which offset every
+  row by 56 * 50/112 = 25 source rows. With the inset out of the sample position:
+
+  | variant | 0 | 1 | 2 | 3-7 | >=8 | max abs |
+  | --- | --- | --- | --- | --- | --- | --- |
+  | round half up, position and store | 5640 | 2229 | 524 | 1190 | 15505 | 171 |
+  | **truncate, position and store** | 3307 | 21781 | 0 | 0 | **0** | **1** |
+
+  So the kernel is structurally right: **every pixel is now within one**, where the CoreGraphics
+  draw it would replace had 19299 at eight or more and a maximum of 55, and the round-half-up
+  position is what produces the 171. The last bit is the remaining 21781 pixels being off by
+  **exactly one**, which is the store's rounding: the position wants truncation and the value has
+  not been separated from it yet. Splitting that seam -- truncate the position, round the value --
+  is one measurement from the 0 bucket.
+
+  **Not integrated.** The library is untouched and the tree is clean: `CharonVisionImage.h` still
+  draws with CoreGraphics, the gate is green as it was, and integrating a kernel one bit from the
+  table would be integrating an unmeasured claim. What is left in order: split the seam and re-run
+  the table, integrate `Vision/CharonVisionBilinear.c` with a two-line declaration and a single
+  changed call in the header, then the 137, the +1 inset, the mutant, the light guard and r7.
 
