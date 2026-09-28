@@ -436,3 +436,36 @@ what comes back is a weighted point rather than a source pixel, and the fit reco
 than the sample. The controls show the same thing from the other side -- a residual of zero only where
 nothing is blended. So the rule for the crop rect **cannot be read off this table** until the blend is
 accounted for, and doing that is the next piece of work, not a claim this table supports.
+
+## The crop rect, read with the blend inverted rather than fitted
+
+`tests/backports/host/vision/crop-probe/invert.m`, in the tree, with its build in its header. The
+source is a ramp with **R = the column and G = the row**, so each channel is a function of one axis,
+and a bilinear kernel puts a destination pixel between its two neighbours -- so for a ramp that *is*
+the index, the value that comes out is `(1 - f) * floor(s) + f * ceil(s) = s` exactly. The red channel
+of an output pixel **is** the fractional source column and the green channel **is** the fractional
+source row: no fit, no staircase, nothing to interpret. The quantisation is `1/k` of a source column,
+`k` being 255 over the largest position the case reaches.
+
+| case | the geometry | the first lit output pixel | the source it sampled |
+| --- | --- | --- | --- |
+| 16x8 to 32x8, scale fit | scale 1, drawn 16x8, k=17 | (8, 1) | column 0, row 1 |
+| 10x10 to 30x20, scale fit | scale 2, drawn 20x20, k=13 | (5, 1) | column 0, row 0.23 |
+| 100x50 to 224x224, scale fit | scale 2.24, drawn 224x112, k=1 | (0, 58) | column 0, row 1 |
+| 50x100 to 224x224, scale fit | scale 2.24, drawn 112x224, k=1 | (56, 2) | column 0, row 1 |
+| 20x10 to 20x20, centre crop | scale 2, drawn 40x20, k=6 | (0, 1) | **column 4.833**, row 0.33 |
+
+**Every scale fit starts exactly at `(target - drawn) / 2` on that axis**, which is the rule the port
+implements: drawn 16x8 inside 32x8 bars at 8, drawn 20x20 inside 30x20 at 5, drawn 224x112 inside
+224x224 at 56 vertically, drawn 112x224 at 56 horizontally. So the **-25 offsets in the fitted table
+were the fit's own bias, not the framework's** -- a least-squares line through a blended ramp is
+biased, and this reading, which needs no fit, contradicts them.
+
+**And the one centre crop with a usable reading agrees with the port too.** A cover of 20x10 into
+20x20: scale 2, drawn 40x20, the crop takes the middle 20 of the 40, so the source column at the
+target's edge is `10 / 2 = 5.0`, and the measurement is **4.833** -- one sixth of a column low, which is
+`1/k` at k=6, the quantisation and not a displacement.
+
+So the crop rect is **measured, and it is the rule the port already implements**, which moves the red
+centre-crop rows somewhere this probe has not looked: for a cover of a picture whose aspect differs,
+the geometry agrees and every pixel still differs.
