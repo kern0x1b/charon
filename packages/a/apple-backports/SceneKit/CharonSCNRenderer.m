@@ -1203,6 +1203,13 @@ static void CharonSCNLightColor(SCNLight *light, float scale, float out[3])
     SCNMatrix4 view = CharonSCNMatrixInvert(cameraWorld);
     SCNCamera *camera = pointOfView.camera;
     SCNMatrix4 projection = CharonSCNProjectionMatrix(pointOfView, width, height);
+    // The viewport this frame was rendered into, kept because that is the viewport a
+    // projectPoint: on the renderer answers with (measured on macOS SceneKit: an SCNRenderer that
+    // has not rendered answers every point unchanged, so before the first render there is no
+    // viewport to answer with and the point comes back as it went in).
+    self.lastRenderPointOfView = pointOfView;
+    self.lastRenderWidth = width;
+    self.lastRenderHeight = height;
     SCNMatrix4 viewProjection = CharonSCNMatrixMultiply(view, projection);
     float cameraPosition[3] = {cameraWorld.m41, cameraWorld.m42, cameraWorld.m43};
     float coatView[4] = {cameraWorld.m41, cameraWorld.m42, cameraWorld.m43, 1};

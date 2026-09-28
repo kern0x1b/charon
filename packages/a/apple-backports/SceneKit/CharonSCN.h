@@ -52,8 +52,24 @@
 
 // The OpenGL ES 2.0 renderer behind SCNView: it draws a scene from a point of view into the framebuffer bound when
 // it is called. One renderer belongs to one context and keeps that context's buffers, textures and programs.
+/// The projection a camera draws through, for a point of view and a viewport, shared by the frame
+/// that is drawn and the points a hit test projects.
+SCNMatrix4 CharonSCNProjectionMatrix(SCNNode *pointOfView, int width, int height);
+
+/// A point from the world to the viewport, and back. Implemented once, over the point of view and
+/// the viewport, and both SCNView and SCNRenderer answer with them - the view with its own point of
+/// view and bounds, the renderer with its own and the viewport of its last render.
+SCNVector3 CharonSCNProjectPoint(SCNNode *pointOfView, int width, int height, SCNVector3 point);
+SCNVector3 CharonSCNUnprojectPoint(SCNNode *pointOfView, int width, int height, SCNVector3 point);
+
 @interface CharonSCNRenderer : NSObject
 - (instancetype)initWithContext:(EAGLContext *)context;
+/// The point of view and the viewport of the last render, which is what projectPoint: and
+/// unprojectPoint: answer with: before the first render there is none, and the port answers a point
+/// unchanged, which is what macOS SceneKit's own renderer does (measured 2026-09-28).
+@property (nonatomic, strong) SCNNode *lastRenderPointOfView;
+@property (nonatomic, assign) int lastRenderWidth;
+@property (nonatomic, assign) int lastRenderHeight;
 - (void)renderScene:(SCNScene *)scene pointOfView:(SCNNode *)pointOfView width:(int)width height:(int)height;
 + (SCNNode *)defaultPointOfViewInScene:(SCNScene *)scene;
 @end
