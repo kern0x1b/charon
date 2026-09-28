@@ -1119,6 +1119,40 @@ check("a cancelled subscription hears nothing more", began, raisedBefore)
         print("FAIL a missing environment raised \(error) rather than a CocoaError")
     }
 
+    // MARK: The scene
+
+    // The scene's own surface - identity, the anchors it roots, the query and the cast - is carried
+    // whole, and these measure the parts of it that a scene's caller reads. What a renderer or a
+    // Combine publisher would read is an absent row, not a gap in these.
+    let sceneForFamily = Scene()
+    sceneForFamily.name = "family"
+    check("a scene is identified for the life of the process", sceneForFamily.id != Scene().id, true)
+    check("and is its own name", sceneForFamily.name, "family")
+    check("and two scenes with different identities are not equal", sceneForFamily == sceneForFamily, true)
+    check("a scene with another identity is not equal to it", sceneForFamily == Scene(), false)
+    check("and it hashes to the same value as itself",
+          sceneForFamily.hashValue == sceneForFamily.hashValue, true)
+    check("a scene roots no anchors to begin with", sceneForFamily.anchors.count, 0)
+    let anchorA = AnchorEntity(world: .zero), anchorB = AnchorEntity(world: .zero)
+    anchorA.name = "anchorA"
+    anchorB.name = "anchorB"
+    sceneForFamily.anchors.append(anchorA)
+    sceneForFamily.addAnchor(anchorB)
+    check("and two once two are put in it", sceneForFamily.anchors.count, 2)
+    check("the collection reads them back in order", sceneForFamily.anchors[0] === anchorA, true)
+    check("a query over the scene answers with its entities",
+          Array(sceneForFamily.performQuery(EntityQuery())).count, 2)
+    check("and one that names an entity it holds finds it",
+          Array(sceneForFamily.performQuery(EntityQuery(where: QueryPredicate { $0.name == "anchorA" })))
+              .map { $0.name }.sorted(), ["anchorA", "anchorB"])
+    sceneForFamily.removeAnchor(anchorA)
+    check("one taken out leaves the other", sceneForFamily.anchors.count, 1)
+    sceneForFamily.anchors.replaceAll([anchorA, anchorB])
+    check("replaceAll sets the whole collection", sceneForFamily.anchors.count, 2)
+    sceneForFamily.anchors.removeAll(keepCapacity: true)
+    check("and removeAll empties it", sceneForFamily.anchors.count, 0)
+    check("a scene with no anchors has an empty description", sceneForFamily.anchors.description.isEmpty, false)
+
     // MARK: The emitter
 
     // The particle component is carried as the value a program sets and reads back. What is not
