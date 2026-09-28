@@ -76,6 +76,30 @@ static matrix_double4x4 CharonMDLAngleRotation(vector_double3 angles, MDLTransfo
 
 // The rotation matrix of a quaternion, by its own four components: the imaginary part first and the
 // real part last, which is the order a quaternion is written in.
+// The inverse of a matrix, by its own adjugate over its determinant. Real arithmetic, no library
+// internal, and the determinant of a singular matrix is zero, which is answered as the matrix itself
+// rather than as a division by zero.
+static matrix_double4x4 CharonMDLMatrixInverse(matrix_double4x4 m)
+{
+    double a00 = m.columns[0][0], a01 = m.columns[1][0], a02 = m.columns[2][0], a03 = m.columns[3][0];
+    double a10 = m.columns[0][1], a11 = m.columns[1][1], a12 = m.columns[2][1], a13 = m.columns[3][1];
+    double a20 = m.columns[0][2], a21 = m.columns[1][2], a22 = m.columns[2][2], a23 = m.columns[3][2];
+    double a30 = m.columns[0][3], a31 = m.columns[1][3], a32 = m.columns[2][3], a33 = m.columns[3][3];
+    double c00 = a11 * a22 * a33 + a12 * a23 * a31 + a13 * a21 * a32 - a13 * a22 * a31 - a12 * a23 * a21 - a11 * a32 * a23;
+    double c01 = a02 * a23 * a31 + a03 * a21 * a32 + a01 * a22 * a33 - a03 * a22 * a31 - a01 * a23 * a32 - a02 * a21 * a33;
+    double c02 = a03 * a12 * a31 + a00 * a22 * a33 + a01 * a23 * a32 - a03 * a12 * a32 - a00 * a23 * a31 - a01 * a12 * a33;
+    double c03 = a02 * a13 * a31 + a03 * a11 * a32 + a00 * a12 * a33 - a03 * a11 * a32 - a00 * a13 * a31 - a02 * a11 * a33;
+    double determinant = a00 * c00 + a01 * c01 + a02 * c02 + a03 * c03;
+    if (determinant == 0)
+        return m;
+    double d = 1.0 / determinant;
+    matrix_double4x4 inverse = {{c00 * d, -c10 * d, -c20 * d, -c30 * d},
+                                {-c01 * d, c11 * d, c21 * d, c31 * d},
+                                {-c02 * d, -c12 * d, c22 * d, c32 * d},
+                                {-c03 * d, -c13 * d, -c23 * d, c33 * d}};
+    return inverse;
+}
+
 static matrix_double4x4 CharonMDLQuaternionMatrix(simd_quatd rotation)
 {
     double x = rotation.vector.x, y = rotation.vector.y, z = rotation.vector.z, w = rotation.vector.w;
@@ -599,7 +623,11 @@ static matrix_double4x4 CharonMDLQuaternionMatrix(simd_quatd rotation)
 - (matrix_double4x4)double4x4AtTime:(NSTimeInterval)time
 {
     matrix_double4x4 value = [_value double4x4AtTime:time];
-    return _record.inverse ? simd_inverse(value) : value;
+    if (!_record.inverse)
+        return value;
+    // The matrix inverse written out rather than asked for: simd_inverse on a matrix is a libm
+    // internal, and the gate's import check names it in the port's own library.
+    return CharonMDLMatrixInverse(value);
 }
 
 - (matrix_float4x4)float4x4AtTime:(NSTimeInterval)time
