@@ -1210,6 +1210,112 @@ check("a cancelled subscription hears nothing more", began, raisedBefore)
     emitterEntity.particleEmitter = nil
     check("taking it away leaves nothing", emitterEntity.particleEmitter == nil, true)
 
+    // MARK: Inverse kinematics
+
+    // The solve is cyclic coordinate descent, which is this module's own - Apple's is compiled and
+    // nothing of it is readable - and the interface fixes only the shape: a maximum number of
+    // passes, a forward-kinematics weight, a limits weight, per-axis weights, a per-joint
+    // stiffness, and a position demand that reaches up a chain. These measure that shape.
+    func threeJointChain(fkWeight: Float = 0) -> (Scene, Entity, Entity, IKRig, IKComponent.Constraint) {
+        // root at the origin, a mid joint one up, a tip one along - a three-joint chain whose
+        // lengths are known, so a target inside the reach is one a two-link arm can be put on.
+        var rig = IKRig(maxIterations: 64, globalFkWeight: fkWeight)
+        _ = rig.joints.set(IKRig.Joint(name: "root", restTransform: Transform()))
+        _ = rig.joints.set(IKRig.Joint(name: "mid", parentID: IKRig.JointID(name: "root"),
+                                       restTransform: Transform(translation: SIMD3<Float>(0, 1, 0))))
+        _ = rig.joints.set(IKRig.Joint(name: "tip", parentID: IKRig.JointID(name: "mid"),
+                                       restTransform: Transform(translation: SIMD3<Float>(0, 0, 1))))
+        _ = rig.constraints.set(.point(named: "reach", on: "tip"))
+
+        let scene = Scene()
+        let holder = AnchorEntity()
+        scene.addAnchor(holder)
+        let root = Entity()
+        root.name = "root"
+        holder.addChild(root)
+        let mid = Entity()
+        mid.name = "mid"
+        root.addChild(mid)
+        let tip = Entity()
+        tip.name = "tip"
+        mid.addChild(tip)
+
+        let resource = try! IKResource(rig: rig)
+        let component = IKComponent(resource: resource)
+        root.inverseKinematics = component
+        return (scene, root, tip, rig, component.solvers[0].constraints[0])
+    }
+
+    do {
+        let (scene, root, tip, _, constraint) = threeJointChain()
+        // A target in reach, away from the chain's rest pose: the tip is put on it.
+        constraint.target = Transform(translation: SIMD3<Float>(1, 0.5, 0.2))
+        scene.coreScene.__advancePhysics(deltaTime: 1.0 / 60.0)
+        let wanted = constraint.target.translation
+        check("a solve puts the end effector on a reachable target",
+              simd_distance(tip.position, wanted) < 0.02, true)
+        // The forward-kinematics weight is how much of the rig's own pose is kept, so at one the
+        // chain does not move at all.
+        // The weight is the rig's, and a solver reads it from the rig the resource holds, so it is
+        // set before the resource is made - the interface gives a solver no way to set it after.
+        let (heldScene, _, heldTip, _, heldConstraint) = threeJointChain(fkWeight: 1)
+        heldConstraint.target = Transform(translation: SIMD3<Float>(1, 0.5, 0.2))
+        heldScene.coreScene.__advancePhysics(deltaTime: 1.0 / 60.0)
+        check("a forward-kinematics weight of one keeps the whole chain still",
+              simd_distance(heldTip.position, simd_make_float3(heldTip.transform.matrix.columns.3)) < 1e-6, true)
+        _ = root
+    }
+
+    // A joint that is not active is not turned, and a rig with no joints is not a resource.
+    do {
+        var rig = IKRig()
+        _ = rig.joints.set(IKRig.Joint(name: "root"))
+        _ = rig.joints.set(IKRig.Joint(name: "tip", parentID: IKRig.JointID(name: "root"),
+                                       restTransform: Transform(translation: SIMD3<Float>(0, 1, 0))))
+        var threw = false
+        do { _ = try IKResource(rig: rig) } catch { threw = true }
+        check("a rig with joints makes a resource", threw, false)
+        threw = false
+        do { _ = try IKResource(rig: IKRig()) } catch { threw = true }
+        check("a rig with none is refused rather than made empty", threw, true)
+        check("and the component's demand options are only the raw ones the interface declares",
+              IKComponent.Constraint.DemandOptions(rawValue: 3).rawValue, 3)
+    }
+
+    // The collections are the interface's: looked up by identity or by name, set, and countable.
+    do {
+        var rig = IKRig()
+        let old = rig.joints.set(IKRig.Joint(name: "a", restTransform: Transform(translation: SIMD3<Float>(1, 0, 0))))
+        check("setting a joint that was not there returns nothing", old == nil, true)
+        check("and now it is there", rig.joints.count, 1)
+        check("by name", rig.joints["a"]?.restTransform.translation.x ?? -1, Float(1))
+        check("by identity", rig.joints.contains(IKRig.JointID(name: "a")), true)
+        check("setting it again returns the old one",
+              rig.joints.set(IKRig.Joint(name: "a", restTransform: Transform())) == nil, false)
+        check("and replaces it", rig.joints.count, 1)
+        check("a joint's identity is its name", IKRig.Joint(name: "a").id, IKRig.JointID(name: "a"))
+        check("a constraint's too", IKRig.Constraint.point(named: "c", on: "a").id, IKRig.ConstraintID(name: "c"))
+        check("the chain above a joint is its parents, nearest first", rig.chain(above: "b"), [])
+        // The five factories, and what each one makes.
+        let point = IKRig.Constraint.point(named: "p", on: "a", positionWeight: [0, 1, 0])
+        check("a point demand", point.positionDemand?.weight ?? .zero, SIMD3<Float>(0, 1, 0))
+        check("and no orientation demand", point.orientationDemand == nil, true)
+        let look = IKRig.Constraint.lookAtAbsolute(named: "l", on: "a", lookingAlong: [0, 0, 1])
+        if case .absoluteLookAt(let axis)? = look.orientationDemand?.mode { check("an absolute look-at keeps its axis", axis, SIMD3<Float>(0, 0, 1)) }
+        else { print("FAIL the absolute look-at did not keep its axis") }
+        // The limits' defaults are the interface's (:4790): no limit at all, on x, at full weight.
+        let limits = IKRig.Joint.LimitsDefinition()
+        check("a limit's axis defaults to x", limits.boneAxis, IKRig.Joint.LimitsDefinition.Axis.x)
+        check("and its weight to one", limits.weight, Float(1))
+        check("and its angles to plus and minus two pi", limits.maximumAngles.x, 2.0 * Float.pi)
+        check("a constraint literal is a collection", {
+            let collection: IKRig.ConstraintsCollection = [
+                .point(named: "one", on: "a"), .orient(named: "two", on: "a"),
+            ]
+            return collection.count
+        }(), 2)
+    }
+
     // MARK: Bounds
 
     let unit = Entity()

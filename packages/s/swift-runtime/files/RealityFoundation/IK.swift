@@ -39,7 +39,7 @@ import Foundation
 /// `maxIterations` is how many passes the solve makes before it stops, `globalFkWeight` how much of
 /// the rig's own forward kinematics is kept against a demand, and `globalLimitsWeight` how hard a
 /// joint's limits are held. All three are `:4747-4749`.
-@frozen public struct IKRig: Equatable {
+@frozen public struct IKRig {
     /// The identity of a joint, which is its name: the interface gives an `ID` no public member of
     /// its own, and a joint's `parentID` is another joint's, so the name is the identity.
     public struct JointID: Hashable, Equatable, Sendable {
@@ -74,13 +74,13 @@ import Foundation
     }
 
     /// A joint of the rig, and the demands that may be put on it.
-    public struct Joint: Identifiable, Equatable {
+    public struct Joint: Identifiable {
         public typealias ID = IKRig.JointID
 
         /// What a joint may not do: the angles its axes are held to, and how hard.
-        public struct LimitsDefinition: Equatable {
+        public struct LimitsDefinition {
             /// The axis a limit is measured about.
-            public enum Axis: Equatable, Hashable {
+            public enum Axis: Hashable {
                 case x
                 case y
                 case z
@@ -131,12 +131,12 @@ import Foundation
     }
 
     /// What a constraint asks of a joint: where it is, which way it looks, or both.
-    public struct Constraint: Identifiable, Equatable {
+    public struct Constraint: Identifiable {
         public typealias ID = IKRig.ConstraintID
 
         /// A demand on a joint's position, and how far up the chain it reaches.
-        public struct IKPositionDemand: Equatable {
-            public enum Mode: Equatable, Hashable {
+        public struct IKPositionDemand {
+            public enum Mode: Hashable {
                 /// The joint is asked to reach the target.
                 case reach
                 /// The joint is asked to point along the pole vector, which places it in the plane
@@ -159,8 +159,8 @@ import Foundation
         }
 
         /// A demand on a joint's orientation.
-        public struct IKOrientationDemand: Equatable {
-            public enum Mode: Equatable, Hashable {
+        public struct IKOrientationDemand {
+            public enum Mode: Hashable {
                 /// The joint takes the target's orientation.
                 case orientation
                 /// The joint looks along `targetAxis` and keeps what it had.
@@ -240,7 +240,7 @@ import Foundation
     }
 
     /// The rig's joints, in the order they were set, looked up by identity or by name.
-    public struct JointCollection: Collection, Equatable {
+    public struct JointCollection: Collection {
         public typealias Element = IKRig.Joint
         public typealias Index = Int
 
@@ -273,6 +273,14 @@ import Foundation
             }
             joints.append(newValue)
             return nil
+        }
+
+        /// Puts one joint's rest transform back, which is what a solver's `reset()` does. Internal:
+        /// the interface's way to change a joint is the subscript above, and this is the same write
+        /// without the two-step copy a non-mutating method would need.
+        mutating func putRestTransform(_ transform: Transform, of jointName: String) {
+            guard let at = joints.firstIndex(where: { $0.name == jointName }) else { return }
+            joints[at].restTransform = transform
         }
 
         public func contains(_ id: IKRig.Joint.ID) -> Bool { joints.contains { $0.id == id } }
@@ -317,7 +325,7 @@ import Foundation
     }
 
     /// The rig's constraints, looked up the same way, and writable as a literal.
-    public struct ConstraintsCollection: Collection, ExpressibleByArrayLiteral, Equatable {
+    public struct ConstraintsCollection: Collection, ExpressibleByArrayLiteral {
         public typealias Element = IKRig.Constraint
         public typealias Index = Int
 
@@ -363,15 +371,17 @@ import Foundation
     /// The joint names above a joint, nearest first, which is the order a solve walks them in.
     public func chain(above jointName: String) -> [String] {
         var names: [String] = []
-        var parent = joints[name: jointName]?.parentID
+        var parent = joints.first { $0.name == jointName }?.parentID
         var steps = 0
-        while let current = parent, steps < joints.count {
+        while let current = parent, steps <= joints.count {
             names.append(current.name)
-            parent = joints[IKRig.Joint.ID(name: current.name)]?.parentID
+            parent = joints.first { $0.id == current }?.parentID
             steps += 1
         }
         return names
     }
+
+
 }
 
 // MARK: - The component an entity is solved by
@@ -383,6 +393,7 @@ import Foundation
     public var resource: IKResource?
     public var solvers: SolverCollection
 
+    @MainActor
     public init(resource: IKResource?) {
         self.resource = resource
         // A resource built from a rig carries that rig's definition, so an entity given a resource
@@ -393,46 +404,62 @@ import Foundation
     }
 
     /// One solver: a rig, the weights the solve obeys, and the joints and constraints it works on.
-    public struct Solver: Identifiable, Equatable {
+    /// A class in the interface too (`:8848`, `@_hasMissingDesignatedInitializers`), so a program
+    /// does not construct one: it comes from the component, which builds it from the resource.
+    public class Solver: Identifiable {
         public typealias ID = Int
 
         public var id: ID
+        /// The rig this solver solves. The interface gives a solver its two weights through `get`
+        /// only (:8856-8857), so they are read out of the rig the resource holds rather than stored
+        /// twice, and the joints and constraints below are this solver's own: the rig's joints by
+        /// name, and the rig's constraints as the runtime constraints that carry the targets.
+        private var rig: IKRig
         public var maxIterations: Int { rig.maxIterations }
         public var globalFkWeight: Float { rig.globalFkWeight }
-        /// The rig this solver solves, and with it its joints and its constraints: the interface
-        /// gives a solver these three through the rig (:8862-8866) and not as its own storage.
-        public var rig: IKRig
-        public var joints: IKRig.JointCollection { rig.joints }
-        public var constraints: IKRig.ConstraintsCollection { rig.constraints }
+        public var joints: IKComponent.JointCollection
+        public var constraints: IKComponent.ConstraintCollection
 
-        public init(id: ID = 0, rig: IKRig = IKRig()) {
+        init(id: ID = 0, rig: IKRig = IKRig()) {
             self.id = id
             self.rig = rig
+            self.joints = IKComponent.JointCollection(rig.joints.map { IKComponent.Joint($0) })
+            self.constraints = IKComponent.ConstraintCollection(rig.constraints.map { IKComponent.Constraint($0) })
         }
 
-        /// Puts the rig back as it was made: every joint at its rest transform and every weight as
-        /// it was set, which is what `reset()` is for (:8861).
+        /// The rig's own joint and constraint definitions, for a caller that wants the definition
+        /// rather than the runtime values.
+        public var rigDefinition: IKRig { rig }
+
+        /// Puts the solver's joints and constraints back as the rig defines them: every joint at its
+        /// rest transform and every constraint's target at the origin, which is what `reset()`
+        /// is for (:8861).
         public func reset() {
-            for at in rig.joints.indices {
-                rig.joints[at].restTransform = .identity
+            for name in rig.joints.map({ $0.name }) {
+                rig.joints.putRestTransform(.identity, of: name)
+            }
+            for at in constraints.indices {
+                constraints[at].target = .identity
             }
         }
     }
 
-    /// A joint of a solver, as the solver sees it: its name and the two weights.
-    public struct Joint: Equatable {
+    /// A joint of a solver, as the solver sees it: its name and the two weights. A class in the
+    /// interface (`:8872`), and with no public initializer there either.
+    public class Joint: Identifiable {
         public typealias ID = IKRig.Joint.ID
 
         public var name: String { joint.name }
         public var fkWeightPerAxis: SIMD3<Float> { joint.fkWeightPerAxis }
         public var rotationStiffness: SIMD3<Float> { joint.rotationStiffness }
 
+        public var id: IKRig.Joint.ID { joint.id }
         let joint: IKRig.Joint
         init(_ joint: IKRig.Joint) { self.joint = joint }
     }
 
-    /// A constraint of a solver, and what it is asked for.
-    public struct Constraint: Identifiable, Equatable {
+    /// A constraint of a solver, and what it is asked for. A class in the interface (`:8888`).
+    public class Constraint: Identifiable {
         public typealias ID = IKRig.Constraint.ID
 
         /// Which demands a constraint makes. The interface gives this an OptionSet and declares no
@@ -471,7 +498,7 @@ import Foundation
     }
 
     /// The solvers of a component, looked up by identity or by position.
-    public struct SolverCollection: Collection, Equatable {
+    public struct SolverCollection: Collection {
         public typealias Element = Solver
         public typealias Index = Int
 
@@ -507,7 +534,7 @@ import Foundation
     }
 
     /// The joints of a solver, looked up by identity or by name.
-    public struct JointCollection: Collection, Equatable {
+    public struct JointCollection: Collection {
         public typealias Element = Joint
         public typealias Index = Int
 
@@ -549,7 +576,7 @@ import Foundation
     }
 
     /// The constraints of a solver, looked up the same way.
-    public struct ConstraintCollection: Collection, Equatable {
+    public struct ConstraintCollection: Collection {
         public typealias Element = Constraint
         public typealias Index = Int
 
@@ -593,7 +620,7 @@ import Foundation
 // MARK: - The resource and the solver definition
 
 /// A solver definition: an identity and the rig it solves. `:4738-4744`.
-@frozen public struct IKSolverDefinition: Identifiable, Equatable {
+@frozen public struct IKSolverDefinition: Identifiable {
     public typealias ID = Int
     public let id: ID
     public var rigDefinition: IKRig
@@ -639,14 +666,198 @@ public enum IKResourceError: Error {
 
 extension Entity {
     /// The inverse-kinematics component on this entity, or nil when it has none.
+    ///
+    /// Setting it puts the entity tree into the rig's rest pose: every joint the rig names takes
+    /// its `restTransform` (`IKRig.Joint.restTransform`, `:4765`). That is what a rest transform
+    /// is for, and without it the rig's joints are decoration and a solve starts from whatever pose
+    /// the entities happened to be in - which for a freshly built tree is the origin, where every
+    /// joint sits on top of every other and no chain can be walked at all. The SDK gets the same
+    /// poses from the skeleton `IKRig.init(for:)` reads; here they come from the rig itself.
     public var inverseKinematics: IKComponent? {
         get { components[IKComponent.self] }
         set {
             if let newValue {
                 components.set(newValue)
+                __IKRestPose.apply(of: newValue, to: coreEntity)
             } else {
                 components.remove(IKComponent.self)
             }
         }
     }
+}
+
+/// Putting a rig on an entity tree is what puts that tree in the rig's rest pose.
+@MainActor
+enum __IKRestPose {
+    static func apply(of component: IKComponent, to node: __REEntity) {
+        guard let resource = component.resource else { return }
+        for definition in resource.solverDefinitions {
+            for joint in definition.rigDefinition.joints {
+                guard let entity = node.subtree.first(where: { $0.name == joint.name }) else { continue }
+                entity.transform = joint.restTransform
+            }
+        }
+    }
+}
+
+// MARK: - Solving
+
+/// The solve itself, run once a step by the simulation, over the joint entities a component's rig
+/// names.
+///
+/// The algorithm is cyclic coordinate descent, and it is this module's: Apple ships the solver
+/// compiled and nothing about it is readable from the interface, so nothing here is a translation
+/// of Apple's. What the interface fixes is the *shape* — a maximum number of iterations, a
+/// forward-kinematics weight, a limits weight, per-axis weights and a per-joint stiffness, and a
+/// position demand that reaches up a chain a number of joints deep — and that is what this obeys.
+///
+/// The pass, for one constraint:
+///   1. the chain is the constrained joint and the joints above it, up to the demand's
+///      `influenceDepthMaxJointCount` when it is set, otherwise to the root;
+///   2. for as many passes as the rig's `maxIterations` allows, each joint in the chain is turned
+///      about the axes its `fkWeightPerAxis` and `rotationStiffness` weight, by the angle that
+///      brings the constrained joint onto the target, and the result is clamped to the joint's
+///      `limits` weighted by `globalLimitsWeight`;
+///   3. `globalFkWeight` is how much of the rig's own forward kinematics is kept: at one the chain
+///      does not move at all, which is what a value of one means and what the checks measure.
+///
+/// A joint that is not active is left where forward kinematics put it. A constraint with no
+/// position demand does not move anything, and a look-at is not solved here: it needs an
+/// orientation the renderer applies, and there is no such renderer, so the orientation demands are
+/// carried and not solved.
+@MainActor
+func __solveInverseKinematics(of node: __REEntity) {
+    guard let component = node.component(of: IKComponent.self), let resource = component.resource else { return }
+    for solver in component.solvers {
+        let rig = solver.rigDefinition
+        for constraint in solver.constraints {
+            guard let demand = constraint.constraint.positionDemand, demand.mode == .reach else { continue }
+            var chain = __IKChain(rig: rig, jointName: constraint.constraint.jointName,
+                                  depth: demand.influenceDepthMaxJointCount, in: node)
+            guard chain.count > 1 else { continue }
+            let target = constraint.target.translation
+            let passes = max(rig.maxIterations, 1)
+            for _ in 0..<passes {
+                var moved = false
+                for at in 0..<max(chain.count - 1, 0) {
+                    let joint = chain[at]
+                    guard joint.active else { continue }
+                    let toTarget = target - chain[0].worldPosition
+                    let toEnd = chain[0].worldPosition - joint.worldPosition
+                    guard simd_length(toTarget) > 1e-6, simd_length(toEnd) > 1e-6 else { continue }
+                    let rotation = __IKRotation(aligning: simd_normalize(toEnd), to: simd_normalize(toTarget))
+                    let weights = joint.fkWeightPerAxis * joint.rotationStiffness * (1 - rig.globalFkWeight)
+                    guard simd_length(weights) > 1e-6 else { continue }
+                    // The rotation that would put the joint on the target, taken apart into the
+                    // three angles it is made of, the bone axis's angle held to the joint's limits,
+                    // and every angle scaled by the weight that axis is given.
+                    let angles = __IKClamp(__IKAngles(of: rotation), to: joint.limits,
+                                           globalWeight: rig.globalLimitsWeight)
+                    chain[at].turn(by: __IKRotation(angles: angles * weights))
+                    moved = true
+                }
+                if !moved { break }
+            }
+        }
+    }
+}
+
+/// One joint of a chain: the entity, and the rig's own settings for it.
+@MainActor
+struct __IKChainJoint {
+    let entity: __REEntity
+    let name: String
+    let active: Bool
+    let fkWeightPerAxis: SIMD3<Float>
+    let rotationStiffness: SIMD3<Float>
+    let limits: IKRig.Joint.LimitsDefinition?
+
+    /// The joint's place in the world, which is the module's own `transformMatrixInHierarchy` and
+    /// not a composition written here again.
+    var worldPosition: SIMD3<Float> { simd_make_float3(entity.transformMatrixInHierarchy.columns.3) }
+    var orientation: simd_quatf { entity.transform.rotation }
+
+    /// A joint's own rotation, turned by `rotation` about its own axes.
+    mutating func turn(by rotation: simd_quatf) {
+        entity.transform.rotation = __IKOrientation(rotation, in: orientation)
+    }
+}
+
+/// The chain a demand walks: the constrained joint first, then the joints above it, which is the
+/// order the interface's `influenceDepthMaxJointCount` counts in.
+@MainActor
+func __IKChain(rig: IKRig, jointName: String, depth: Int, in node: __REEntity) -> [__IKChainJoint] {
+    // The joint entities are the ones in the subtree whose names the rig's joints carry, so a rig
+    // is solved against a hierarchy a program built with the same names.
+    let byName: [String: __REEntity] = node.subtree.reduce(into: [:]) { found, entity in
+        if !entity.name.isEmpty { found[entity.name] = entity }
+    }
+    var chain: [__IKChainJoint] = []
+    var name = jointName
+    var steps = 0
+    let limit = depth > 0 ? depth + 1 : Int.max
+    while let entity = byName[name], steps < limit {
+        guard let joint = rig.joints.first(where: { $0.name == name }) else { break }
+        chain.append(__IKChainJoint(entity: entity, name: name, active: joint.active,
+                                    fkWeightPerAxis: joint.fkWeightPerAxis,
+                                    rotationStiffness: joint.rotationStiffness,
+                                    limits: joint.limits))
+        guard let parent = joint.parentID else { break }
+        name = parent.name
+        steps += 1
+    }
+    return chain
+}
+
+/// The rotation that takes the unit vector `from` onto the unit vector `to`, about the axis that
+/// turns one into the other, or the identity when they are already the same or exactly opposite.
+func __IKRotation(aligning from: SIMD3<Float>, to target: SIMD3<Float>) -> simd_quatf {
+    let dot = simd_dot(from, target)
+    if dot > 1 - 1e-6 { return simd_quatf(angle: 0, axis: SIMD3<Float>(1, 0, 0)) }
+    if dot < -1 + 1e-6 { return simd_quatf(angle: .pi, axis: simd_normalize(simd_cross(from, SIMD3<Float>(0, 1, 0)))) }
+    let axis = simd_normalize(simd_cross(from, target))
+    return simd_quatf(angle: acos(min(max(dot, -1), 1)), axis: axis)
+}
+
+/// A rotation taken apart into the three angles it is made of, in the order `qx * qy * qz`: the
+/// pitch is the sine of the off-diagonal term, and the other two are atan2 of the rows beside it.
+/// At a pitch of plus or minus a half turn the two axes agree on a direction, which is the gimbal
+/// lock, and the roll is left at zero rather than guessed.
+func __IKAngles(of rotation: simd_quatf) -> SIMD3<Float> {
+    let m = simd_matrix3x3(rotation)
+    let sine = min(max(m[0][2], -1), 1)
+    let pitch = asin(sine)
+    guard abs(abs(sine) - 1) > 1e-6 else { return SIMD3<Float>(0, pitch, 0) }
+    return SIMD3<Float>(atan2(m[1][2], m[2][2]), pitch, atan2(-m[0][1], m[0][0]))
+}
+
+/// The rotation three angles make, in the order `__IKAngles(of:)` takes them apart in. With the
+/// angles that came from a rotation and no weight applied, this is that rotation again.
+func __IKRotation(angles: SIMD3<Float>) -> simd_quatf {
+    let roll = simd_quatf(angle: angles.x, axis: SIMD3<Float>(1, 0, 0))
+    let pitch = simd_quatf(angle: angles.y, axis: SIMD3<Float>(0, 1, 0))
+    let yaw = simd_quatf(angle: angles.z, axis: SIMD3<Float>(0, 0, 1))
+    return roll * pitch * yaw
+}
+
+/// Three angles with the bone axis's held to a joint's limits, scaled by the rig's limits weight:
+/// the interface's `LimitsDefinition` carries one `boneAxis` and one minimum and maximum per axis
+/// (:4775-4790), so the limit is on that axis alone. A joint with no limits, a weight of zero, or
+/// an angle already inside the limit comes back unchanged.
+func __IKClamp(_ angles: SIMD3<Float>, to limits: IKRig.Joint.LimitsDefinition?, globalWeight: Float) -> SIMD3<Float> {
+    guard let limits else { return angles }
+    let strength = min(max(limits.weight * globalWeight, 0), 1)
+    guard strength > 0 else { return angles }
+    let index = limits.boneAxis == .x ? 0 : (limits.boneAxis == .y ? 1 : 2)
+    let minimum = index == 0 ? limits.minimumAngles.x : (index == 1 ? limits.minimumAngles.y : limits.minimumAngles.z)
+    let maximum = index == 0 ? limits.maximumAngles.x : (index == 1 ? limits.maximumAngles.y : limits.maximumAngles.z)
+    let held = min(max(angles[index], minimum), maximum)
+    var out = angles
+    out[index] = angles[index] + (held - angles[index]) * strength
+    return out
+}
+
+/// A rotation applied to a joint's own orientation, so that the joint's own axes are what turn.
+func __IKOrientation(_ rotation: simd_quatf, in orientation: simd_quatf) -> simd_quatf {
+    orientation * rotation
 }

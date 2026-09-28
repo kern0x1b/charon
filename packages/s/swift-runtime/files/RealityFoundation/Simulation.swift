@@ -363,6 +363,8 @@ extension __REScene {
         // The animations advance first, so that a body placed by an animation is in the world
         // before the contacts are looked for.
         nodes.forEach { $0.__advanceAnimations(TimeInterval(dt)) }
+        // Then inverse kinematics, so that a joint an animation moved is where the solve starts.
+        nodes.forEach { __solveInverseKinematics(of: $0) }
         var bodies = self.bodies
         guard !bodies.isEmpty else { return }
         let gravity = SIMD3<Float>(0, -9.81, 0)
