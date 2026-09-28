@@ -27,6 +27,29 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+// MKLocalSearchCompleter and its delegate, which the RELEASE DOES NOT HAVE: measured with
+// apple.objc.inventory on the armv7 cache of 6.1.3 there are 0 occurrences of MKLocalSearchCompleter
+// and 0 of the two delegate selectors, so the completer this port carries is the PORT'S OWN, and so
+// is the protocol it calls. The 16.4 SDK headers declare both, and the shapes here are the headers'
+// own: the protocol's two optional members, and the two places the completer hands them over.
+#if !CHARON_HOST_PROBE
+@class MKLocalSearchCompleter;
+@class MKLocalSearchCompletion;
+
+@protocol MKLocalSearchCompleterDelegate <NSObject>
+@optional
+- (void)completerDidUpdateResults:(id)completer;
+- (void)completer:(id)completer didFailWithError:(nullable NSError *)error;
+@end
+
+// The two places the completer hands the delegate its answer, so the object that does it and the
+// object that is called agree without either naming the other's file. Charon's own, no API.
+@interface MKLocalSearchCompleter (CharonDelegate)
+- (void)charon_delegateDidUpdate;
+- (void)charon_delegateDidFail:(nullable NSError *)error;
+@end
+#endif
+
 @interface CharonMapKit : NSObject
 
 // The map size the whole world has at a zoom scale, and the zoom scale a map size is: the world is

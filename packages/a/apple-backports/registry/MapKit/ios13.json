@@ -51,10 +51,10 @@
       "introduced": "9.3",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the release's own protocol member, and the port's own completer already sends it",
-      "effect": "the error a search failed with, handed to the delegate; an error rather than an empty result list, so a delegate can tell finished from failed",
+      "reason": "the PORT'S OWN protocol, declared in CharonMapKit.h, and the port's own completer sends it -- measured, the release has neither the selector nor the class",
+      "effect": "the error a search failed with, handed to the delegate; a FAILED search empties the results AND sends this, so a delegate can tell a search that finished from one that failed, which is the whole of what this message is for",
       "facts": "facts/MapKit/MapKit.md",
-      "source": "apple.objc.inventory on the armv7 dyld shared cache of 6.1.3: the release's own MKLocalSearchRequest carries -naturalLanguageQuery, -region and their setters, its own MKLocalSearch carries -initWithRequest:, -startWithCompletionHandler:, -cancel and -isSearching, and its own MKDirectionsRequest carries -source, -destination, -transportType, -requestsAlternateRoutes, -departureDate and -arrivalDate"
+      "source": "apple.objc.inventory on the armv7 dyld shared cache of 6.1.3 (0 occurrences of MKLocalSearchCompleter) and the SDK 16.4 header MKLocalSearchCompleter.h"
     },
     {
       "api": "-[MKLocalSearchCompleterDelegate completerDidUpdateResults:]",
@@ -62,10 +62,10 @@
       "introduced": "9.3",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the release's own protocol member, and the port's own completer already sends it",
-      "effect": "the results the completer has, handed to the delegate when a search finished; the port's own MKLocalSearchCompleter sends this through the runtime, and this is where a delegate's implementation is reached",
+      "reason": "the PORT'S OWN protocol, declared in CharonMapKit.h: measured with apple.objc.inventory on the armv7 cache of 6.1.3 there are 0 occurrences of MKLocalSearchCompleter and 0 of this selector, so neither the class nor the protocol is the release's and both are carried here",
+      "effect": "the results the completer has, handed to the delegate when a search finished; the port's own MKLocalSearchCompleter sends this through the runtime, and the row's own -results is what the delegate reads",
       "facts": "facts/MapKit/MapKit.md",
-      "source": "apple.objc.inventory on the armv7 dyld shared cache of 6.1.3: the release's own MKLocalSearchRequest carries -naturalLanguageQuery, -region and their setters, its own MKLocalSearch carries -initWithRequest:, -startWithCompletionHandler:, -cancel and -isSearching, and its own MKDirectionsRequest carries -source, -destination, -transportType, -requestsAlternateRoutes, -departureDate and -arrivalDate"
+      "source": "apple.objc.inventory on the armv7 dyld shared cache of 6.1.3, which has 0 occurrences of MKLocalSearchCompleter; the SDK 16.4 header MKLocalSearchCompleter.h, which declares the protocol and the class, and the port's own declaration in CharonMapKit.h"
     },
     {
       "api": "-[MKLocalSearchRequest initWithCompletion:]",
@@ -74,7 +74,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "a CATEGORY on a class the release already carries: added_members() skips a class with an image, which is every class the release has, and a caller's member IS reached through the category, so the registry names each one -- the same rule the CPListItem rows needed",
-      "effect": "a request that is already finished rather than asked: the release's own empty query, and the caller's completion answered with nil and MKErrorDomain code 2 saying the request was made with a completion and no query, so the release's own search was never asked for anything",
+      "effect": "a request made over a completion that is ALREADY FINISHED -- the header's own type is a MKLocalSearchCompletion, not a block -- so the release's own search is not asked for anything, and the finished completion is held beside the request for the completer to read back",
       "facts": "facts/MapKit/MapKit.md",
       "source": "apple.objc.inventory on the armv7 dyld shared cache of 6.1.3: the release's own MKLocalSearchRequest carries -naturalLanguageQuery, -region and their setters, its own MKLocalSearch carries -initWithRequest:, -startWithCompletionHandler:, -cancel and -isSearching, and its own MKDirectionsRequest carries -source, -destination, -transportType, -requestsAlternateRoutes, -departureDate and -arrivalDate"
     },

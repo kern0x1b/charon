@@ -105,6 +105,12 @@ static const NSTimeInterval MKCharonCompleterPause = 0.35;
         }
         strong->_searching = NO;
         if (error) {
+            // A FAILED search: the delegate is told the error, and the results are emptied, so a
+            // delegate can tell a search that finished from one that failed -- which is the whole of
+            // what the protocol's second message is for.
+            strong->_searching = NO;
+            [strong charon_delegateDidUpdate];
+            [strong charon_delegateDidFail:error];
             [strong charon_finishWithResults:@[]];
             return;
         }
@@ -187,6 +193,18 @@ static const NSTimeInterval MKCharonCompleterPause = 0.35;
     if ([delegate respondsToSelector:updated]) {
         void (*send)(id, SEL, id) = (void (*)(id, SEL, id))objc_msgSend;
         send(delegate, updated, self);
+    }
+}
+
+// The protocol's second message: the error a search failed with, handed to the delegate. Charon's own
+// so it carries no API, and the port's own protocol (CharonMapKit.h) is what a delegate implements.
+- (void)charon_delegateDidFail:(NSError *)error
+{
+    id delegate = self.delegate;
+    SEL failed = NSSelectorFromString(@"completer:didFailWithError:");
+    if ([delegate respondsToSelector:failed]) {
+        void (*send)(id, SEL, id, id) = (void (*)(id, SEL, id, id))objc_msgSend;
+        send(delegate, failed, self, error);
     }
 }
 

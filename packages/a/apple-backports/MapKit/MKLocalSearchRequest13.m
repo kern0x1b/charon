@@ -83,20 +83,26 @@ NS_ASSUME_NONNULL_BEGIN
     return self;
 }
 
-- (instancetype)initWithCompletion:(void (^)(MKLocalSearchResponse *, NSError *))completionHandler
+- (instancetype)initWithCompletion:(MKLocalSearchCompletion *)completion
 {
-    // The header's own shape: a request that is already finished, for a caller that wants the
-    // completion rather than a query. The release's search has no such request, so this one is the
-    // empty query and the caller's completion is called with an EMPTY response and no error -- the
-    // release's own answer for a request with no query -- and a completion that is nil simply makes
-    // the empty request.
-    self = [self initWithNaturalLanguageQuery:@""];
-    if (self && completionHandler) {
-        completionHandler(nil, [NSError errorWithDomain:MKErrorDomain code:2 userInfo:
-            @{NSLocalizedDescriptionKey: @"the request was made with a completion and no query, so the release's "
-                                        @"own search was not asked for anything"}]);
+    // The header's own shape, which is NOT a block: a request made over a completion that is
+    // ALREADY FINISHED, so the release's own search is not asked for anything at all. The release
+    // has no such request, so the release's own empty query is the base and the completion is held,
+    // and the port's own MKLocalSearchCompleter reads it back through -[MKLocalSearchCompletion
+    // title] when the caller asks the completer for its results.
+    self = [self initWithNaturalLanguageQuery:completion ? @"" : @""];
+    if (self) {
+        objc_setAssociatedObject(self, (const void *)"charonFinishedCompletion", completion,
+                                 OBJC_ASSOCIATION_RETAIN);
     }
     return self;
+}
+
+// The finished completion this request was made over, which is what a search of it answers with
+// without the release's own search being asked. Charon's own, so it carries no API.
+- (nullable MKLocalSearchCompletion *)charon_finishedCompletion
+{
+    return objc_getAssociatedObject(self, (const void *)"charonFinishedCompletion");
 }
 
 #if !CHARON_HOST_PROBE
@@ -141,35 +147,6 @@ NS_ASSUME_NONNULL_BEGIN
     self = [self initWithRequest:empty];
     (void)request;
     return self;
-}
-
-@end
-
-@implementation MKLocalSearchCompleter (CharonRequest)
-
-// The two delegate messages, the port's own completer already sends both of them, and this is where
-// they are answered: the update message hands the caller the results it has, and the failure one
-// hands it the error. Declared and not implemented here, because the protocol the header declares is
-// the release's own and both of its methods are on the port's completer's CharonPriority category --
-// so this category exists to put the port's own answers where a delegate finds them.
-- (void)charon_tellDelegateDidUpdate
-{
-    id delegate = [self delegate];
-    SEL updated = NSSelectorFromString(@"completerDidUpdateResults:");
-    if ([delegate respondsToSelector:updated]) {
-        void (*send)(id, SEL, id) = (void (*)(id, SEL, id))objc_msgSend;
-        send(delegate, updated, self);
-    }
-}
-
-- (void)charon_tellDelegateDidFail:(NSError *)error
-{
-    id delegate = [self delegate];
-    SEL failed = NSSelectorFromString(@"completer:didFailWithError:");
-    if ([delegate respondsToSelector:failed]) {
-        void (*send)(id, SEL, id, id) = (void (*)(id, SEL, id, id))objc_msgSend;
-        send(delegate, failed, self, error);
-    }
 }
 
 @end
