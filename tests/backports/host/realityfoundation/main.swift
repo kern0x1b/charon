@@ -1413,6 +1413,46 @@ check("a cancelled subscription hears nothing more", began, raisedBefore)
         }(), 2)
     }
 
+    // MARK: Bind targets
+
+    // The paths are data and they compose; what a renderer reads is absent, and the absence is in
+    // the registry rather than a case standing in for it. These measure the composition, which is
+    // the only behaviour a path has.
+    check("a transform target is the interface's plain case", BindTarget.transform == .transform, true)
+    check("a parameter target names the parameter",
+          BindTarget.parameter("speed") == .parameter("speed"), true)
+    // `self` is the interface's own spelling for these (:545, :597). A caller has to write it in
+    // backticks: without them Swift reads `x.self` as the instance, which is a different thing with
+    // the same name.
+    check("a scene path reaches the scene itself",
+          BindTarget.scene("Main").`self`, BindTarget.path(BindPath(.scene("Main"))))
+    let plane = BindTarget.scene("Main").anchorEntity("Stage")
+    check("and on to an entity on it",
+          plane.entity("Plane").`self`, BindTarget.path(BindPath(.scene("Main"), .anchorEntity("Stage"), .entity("Plane"))))
+    check("a path ends in a transform",
+          plane.entity("Plane").transform,
+          BindTarget.path(BindPath(.scene("Main"), .anchorEntity("Stage"), .entity("Plane"), .transform)))
+    check("or in a named parameter",
+          plane.entity("Plane").parameter("opacity of the eye"),
+          BindTarget.path(BindPath(.scene("Main"), .anchorEntity("Stage"), .entity("Plane"),
+                                   .parameter("opacity of the eye"))))
+    check("and the parts are the path in order",
+          { if case .path(let path) = plane.entity("Plane").transform { return path.parts.count } else { return -1 } }(), 4)
+    // The IK solver path, which lands on the IK block this module carries.
+    check("a solver path reaches a constraint's target",
+          plane.entity("Rig").ikSolver().constraintTarget("reach"),
+          BindTarget.path(BindPath(.scene("Main"), .anchorEntity("Stage"), .entity("Rig"),
+                                   .parameter("ikSolver.constraintTarget.reach"))))
+    check("and its look-at target is a different parameter",
+          plane.entity("Rig").ikSolver(0).constraintLookAtTarget("reach")
+              == plane.entity("Rig").ikSolver(0).constraintTarget("reach"), false)
+    // The value protocol, whose conformances are what the interface declares.
+    check("a Float is bindable", Float(1) is any BindableData, true)
+    check("a SIMD3 is bindable", SIMD3<Float>(0, 0, 0) is any BindableData, true)
+    check("a transform is bindable", Transform() is any BindableData, true)
+    check("a string is not", "x" is any BindableData, false)
+    check("an entity's own target is its transform", Entity().bindTarget, BindTarget.transform)
+
     // MARK: Bounds
 
     let unit = Entity()
