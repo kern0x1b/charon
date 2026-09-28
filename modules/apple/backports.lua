@@ -374,6 +374,64 @@ end
 -- The flags one source is compiled with. A job may add include roots of its own: a source this build
 -- generated sits in the build directory, and its quoted import reaches a header of the tree only when the
 -- tree is on the path.
+local function unit(opt, source, object)
+    -- The source, absolute, and relative to this package rather than to wherever xmake happens to
+    -- be: path.absolute() on its own resolves a relative source against the working directory,
+    -- which inside package:on_install is xmake's own and not the checkout, so a caller that passed
+    -- "UIKit/Foo.mm" would be looked for under xmake's directory. Every caller here already passes
+    -- path.join(opt.root, ...), so this is the identity for all of them; it is here for the next one.
+    if not source:startswith("/") then
+        source = path.join(opt.root, source)
+    end
+    -- This does NOT close the one-object residue, and nothing a caller passes can. ccache rewrites
+    -- the compiler's own -c argument when base_dir is set - heavy.sh sets it in the cache's
+    -- ccache.conf - and hands the object back as that run wrote it, so a cached build records the
+    -- relative spelling whatever the caller passed and an uncached one the absolute. Measured the
+    -- same file three ways straight through ccache, so nothing else was in the way: no cache and
+    -- ccache with base_dir unset are byte for byte the same and both record the absolute path;
+    -- only base_dir set gives the relative one. That rewrite is the price of the cross-worktree
+    -- sharing hash_dir = false buys, and -ffile-prefix-map, which rules/apple-ios already applies
+    -- to this repository's own targets, is the follow-up that would collapse both spellings -
+    -- measured, and it does not: the map rewrites an absolute spelling and ccache hands the
+    -- compiler a relative one, so the gap falls from 84 bytes to 8 and stops
+    -- (band-api-prefixmap, d2e15520). What the two lines above close is the other half: a caller
+    -- that spelled the source two ways would be two objects under one key, and that is no longer
+    -- possible.
+    local objective_c = not source:endswith(".c")
+    local arguments = {"-Os", "-g0", "-Wall", "-Wno-unguarded-availability-new", "-Wno-unguarded-availability"}
+    if objective_c then
+        table.insert(arguments, "-Werror=objc-missing-property-synthesis")
+    else
+        table.insert(arguments, "-fvisibility=hidden")
+    end
+    if source:endswith(".mm") then
+        table.join2(arguments, {"-fno-rtti", "-fvisibility-inlines-hidden"})
+    end
+    -- Every archive's headers, for every file. A C archive is used by C files, so its headers
+    -- cannot wait for a .mm; and a C++ archive's headers are reached from a plain .m too, because
+    -- a header of ours can include one of them - measured at UIKit's CharonDynamics.h:15, which
+    -- includes <Box2D/Box2D.h> and is included from a .m, so the narrowing to .mm that a review
+    -- asked for breaks the 4.3 gate with "Box2D/Box2D.h file not found".
+    --
+    -- The width that costs is real and is the reason it is written this way: every library's
+    -- sources compile with every archive's include directory on the path. That is a few -I flags a
+    -- search walks over, and the alternative measured is a build that does not compile.
+    for _, name in ipairs(table.orderkeys(opt.archives or {})) do
+        table.insert(arguments, "-I" .. opt.archives[name].includedir)
+    end
+    -- __FILE__ spelled from the checkout, not with it: an object that names its own source (UIDynamicAnimator.mm's
+    -- assertion handler) otherwise carries the path of the worktree that built it, which the store's key leaves out on
+    -- purpose so every worktree shares one entry - measured, two worktrees, one key, two objects differing in that path.
+    if opt.root then
+        local checkout = path.normalize(path.join(path.absolute(opt.root), "..", "..", ".."))
+        table.insert(arguments, "-fmacro-prefix-map=" .. checkout .. "/=")
+    end
+    local program, arguments = clang(opt, table.join(arguments, {"-c", source, "-o", object}), objective_c)
+    local key = object_key(opt, program, arguments, source, object)
+    KEYS[object] = key
+    return program, arguments, key and path.join(opt.store, key:sub(1, 2), key .. ".o")
+end
+
 function compile_arguments(opt, source)
     local objective_c = not source:endswith(".c")
     local arguments = {"-Os", "-g0", "-Wall", "-Wno-unguarded-availability-new", "-Wno-unguarded-availability"}
