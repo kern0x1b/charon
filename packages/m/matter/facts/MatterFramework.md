@@ -121,6 +121,45 @@ the package installs are their coverage. 5 protocols and 1 property are rows no 
 **650 methods are the port's real gap**, of which 48 are ones the host's framework does carry and this library does
 not — the rest are rows neither framework has. Every one is named in `.agent-work/host/matter-host-diff.tsv`.
 
+## The 55 host-only methods: what they are, measured
+
+Against connectedhomeip **master** (`cbcf92f0`, after the 1.6.1.0 this package builds), fetched and searched:
+
+- `AppleAliro` — **0 occurrences anywhere in master**; `appleClearAliro` — **0**. Neither is in the tag either.
+- `src/darwin/Framework/CHIP/templates/availability.yaml` in master lists the Aliro names **unprefixed**:
+  `AliroReaderVerificationKey`, `AliroReaderGroupIdentifier`, `AliroReaderGroupSubIdentifier`,
+  `AliroExpeditedTransactionSupportedProtocolVersions`, `AliroGroupResolvingKey`, `AliroSupportedBLEUWBProtocolVersions`,
+  `AliroBLEAdvertisingVersion`, `NumberOfAliroCredentialIssuerKeysSupported`, `NumberOfAliroEndpointKeysSupported`,
+  and the command `SetAliroReaderConfig`.
+- This library's metadata carries the unprefixed methods: 21 Aliro selectors on `MTRBaseClusterDoorLock`, 12 on
+  `MTRClusterDoorLock`, and **0** of the `apple`-prefixed spellings.
+
+So the `apple` prefix is **Apple's own naming convention in Apple's closed-source framework**, over an open-source
+feature the port already carries under the model's spelling. Every one of the 48 is a forward to a method this
+library has: `readAttributeAppleAliroX` to `readAttributeAliroX`, `writeAttributeApple…` and
+`subscribeAttributeApple…` the same way, and `appleClearAliroReaderConfigWith…` to
+`clearAliroReaderConfigWith…` - the prefix on the *command* names, with the first word left lower-case, which is
+where the first pass of the mapping got it wrong. Nothing here is absent: each row has an attribute or a command
+behind it on this library.
+
+The other 7 host-only methods are `MTRClusterWakeOnLAN`, and those are **newer upstream**: master's
+`zap-generated/MTRBaseClusters.h` carries `WakeOnLAN`, and the 1.6.1.0 this package builds does not. So the WakeOnLAN
+cluster's rows come from taking a later tag, not from a rename.
+
+## The 603 rows that no framework carries
+
+658 methods are uncarried in all, over 278 owners: 55 the host carries and this library does not, and 603 that no
+framework of either kind carries. The 603 concentrate in the delegate and XPC protocol classes -
+`MTROTAProviderDelegate` (12), `MTRXPCServerProtocol_MTRDevice` (12), `MTRDeviceControllerDelegate` (10),
+`MTRCommissioningDelegate` (8), `MTRXPCClientProtocol_MTRDevice` (7), `MTRDeviceControllerStorageDelegate` (5),
+`MTRXPCServerProtocol_MTRDeviceController` (5), `MTRDeviceAttestationDelegate` (4), `MTRDevicePairingDelegate` (4),
+`MTRKeypair` (4), `MTRDeviceDelegate` (3), `MTRStorage` (3) - with the remainder two per `MTRBaseCluster<Cluster>`.
+
+A delegate protocol's methods are implemented by the **application**, not by the framework: what the port owes is the
+protocol's own metadata (which this library carries, the class rows above are 985 of 985) and the framework *calling*
+each delegate method at the moment upstream's Darwin framework does. The XPC protocols are the framework's own
+process boundary, and what upstream does with them is the question still open here.
+
 ## The 48 methods that are missing
 
 For every property row the host's framework answers and the port's does not, the port's own metadata was asked what it
