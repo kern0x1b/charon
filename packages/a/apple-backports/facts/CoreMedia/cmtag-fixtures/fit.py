@@ -6,12 +6,22 @@ Run from this directory: ./pairs > pairs.tsv, then python3 fit.py
 """
 import itertools, struct, sys
 
-TAGS = [  # the same tags pairs.m used, by value: (category, dataType, value)
-    (0, 0, 0), (0, 5, 0), (0, 2, (1 << 64) - 1), (1, 5, 0),
-    (0x6d646961, 0, 0), (0x6d646961, 5, 0x76696465), (0x7472616b, 2, 7),
-    (0x7472616b, 3, 0x3FF8000000000000), (0x70697866, 7, 3), (0x7a7a7a7a, 7, 3),
-    (0xffffffff, 5, 0), (0x6d646961, 2, 7), (0x6d646961, 5, 0),
-]
+def read_table(path):
+    """The tags come out of the table, never out of this file: two hand-maintained copies of the same
+    data is how the first derivation of this rule came out wrong."""
+    tags, pairs, hashes = {}, [], []
+    for line in open(path):
+        fields = line.split()
+        if not fields or fields[0].startswith("#"):
+            continue
+        if fields[0] == "T":
+            tags[int(fields[1])] = (int(fields[2]), int(fields[3]), int(fields[4]))
+        elif fields[0] == "H":
+            hashes.append((int(fields[1]), int(fields[2])))
+        else:
+            pairs.append((int(fields[0]), int(fields[1]), int(fields[2])))
+    return tags, pairs, hashes
+
 
 def signed(category): return category - (1 << 32) if category & 0x80000000 else category
 
@@ -41,16 +51,7 @@ def memcmp_fields(a, b, fields, big_endian):
     return 0 if ka == kb else (-1 if ka < kb else 1)
 
 def main():
-    pairs, hashes, reversed_pairs = [], [], []
-    for line in open("pairs.tsv"):
-        fields = line.split()
-        if not fields or fields[0].startswith("#"):
-            continue
-        if fields[0] == "H":
-            hashes.append((int(fields[1]), int(fields[2])))
-        else:
-            pairs.append((int(fields[0]), int(fields[1]), int(fields[2])))
-    reversed_pairs = [(b, a, host) for a, b, host in pairs]
+    TAGS, pairs, hashes = read_table("pairs.tsv")
 
     print("=== orders: %d pairs, both argument orders" % len(pairs))
     results = []

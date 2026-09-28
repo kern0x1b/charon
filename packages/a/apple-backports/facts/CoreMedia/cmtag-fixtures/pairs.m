@@ -22,6 +22,12 @@ int main(void){ setvbuf(stdout,NULL,_IONBF,0); @autoreleasepool {
         tag(0x6d646961, 5, 0),                                      // 12 'mdia' OSType 0
     };
     size_t count = sizeof t / sizeof *t;
+    // The tag values go into the table, so the fitter reads them and never restates them: two
+    // hand-maintained copies of the same data is how the last derivation went wrong.
+    printf("# index category dataType value\n");
+    for (size_t a = 0; a < count; a++)
+        printf("T %zu %u %u %llu\n", a, (unsigned)t[a].category, (unsigned)t[a].dataType,
+               (unsigned long long)t[a].value);
     printf("# a b host\n");
     for (size_t a = 0; a < count; a++)
         for (size_t b = a + 1; b < count; b++)

@@ -185,11 +185,19 @@ plus both argument orders for the pair the differential disagreed on, plus 13 ha
 orders x signed and unsigned category x the value as a number, and memcmp of the struct's fields in both
 endiannesses — and prints a mismatch count for each, with the better of the two argument orders.
 
-**Exactly one candidate has zero mismatches: category, then data type, then value, with the category
-compared as a signed 32-bit integer and no validity tier.** The same order with an unsigned category
-misses 12, and every other order misses at least 14. So the invalid rows in the sweep are not a tier at
-all: an invalid tag's category is 0, which is above the signed −1 of `0xffffffff` and below every
-positive category, and that is exactly what the host answers in both directions.
+**Over the 78 pairs `pairs.m` measures, exactly one candidate has zero mismatches: category, then data
+type, then value, with the category compared as a signed 32-bit integer and no validity tier.** The same
+order unsigned misses 12, and every other order misses at least 14.
+
+**That is not yet a derivation of the rule, and the reason is a second copy of the data.** `pairs.m`
+chooses its own thirteen tags; the differential chooses its own twelve; they are not the same set. The one
+pair the host answers `1` for — `(0, OSType, 0)` against `('trak', Float64, 1.5)` — is in the
+differential's set and **not** in `pairs.tsv`, so the fitter never saw it, and the signed order cannot
+explain it. `fit.py` used to retype the tags a third time, which is worse; it now reads them out of
+the table, and `pairs.m` writes them there. What is still needed is **one** table holding the pairs from all
+three sources — `m4`, `m5` and the differential — so the candidates are fitted against every pair the host
+has actually answered. Until that table exists, the compare order is a candidate with zero *known*
+mismatches, not a rule.
 
 Both of my earlier readings were wrong in the same way. "Validity first" came from two invalid tags, and
 "the value is a text sort" came from reading a `1` in a row whose meaning was "greater"; the value is
