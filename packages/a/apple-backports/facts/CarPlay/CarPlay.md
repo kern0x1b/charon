@@ -317,3 +317,37 @@ compilation-time one: the emulator's iPhone3,1 has no Siri and the plate will be
 decides it -- the release's own answer does.** The hardware gate itself is inside SpringBoard's
 assistant controller, which is the thing the cache cannot see, and that is the honest limit of this
 measurement.
+
+### The selector, and why it cannot be sent from here
+
+Read out of the 6.1.3 guest's own SpringBoard binary in the emulator rootfs, with `otool -oV` over its
+`__DATA,__objc_classlist` — the metadata, not a string scan:
+
+```
+SBAssistantController, 47 instance methods, 6 class methods
+  -[SBAssistantController activateIgnoringTouches]              types v8@0:4     (no argument, void)
+  -[SBAssistantController dismissAssistant]                     v8@0:4
+  -[SBAssistantController dismissAssistantWithFade]             v8@0:4
+  -[SBAssistantController dismissAssistantWithFadeOfDuration:]  v16@0:4d8
+  -[SBAssistantController dismissAssistantForAlertActivation:]  v12@0:4@8
+  the six class methods: debugDescription, four popover callbacks, and a protocol name
+```
+
+**`-[SBAssistantController activateIgnoringTouches]` is the selector** the plate would send: no
+argument, void, one message is the whole activation. Two things follow from the same metadata, and
+together they are why the plate is not an action:
+
+1. **There is no accessor.** None of the six class methods is `+sharedController`,
+   `+assistantController` or anything else that hands the instance out, so the controller is a
+   singleton **SpringBoard holds**; and the dismissal siblings are the proof of the shape, because
+   every activation-adjacent method here *dismisses*.
+2. **The class is not reachable by symbol.** It lives in SpringBoard, a bundled application and not a
+   dylib, so `NSClassFromString(@"SBAssistantController")` in any other process — a root daemon
+   included — finds nothing of it, and there is no image to `dlopen`.
+
+So the honest answer stands, and it is now the measured one: **this release offers no way to activate
+the assistant from another process.** Bringing Siri up needs **SpringBoard to send that message on the
+daemon's behalf**, over the port's existing path into SpringBoard. The metadata settles the selector
+and the reachability; the path is the one thing neither a cache nor a class list can decide, and it
+is the next measurement. The plate in the carplay port's `charon_apps.m` carries the same measurement
+in its own comment, where the plate is drawn, and the two agree.
