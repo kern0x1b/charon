@@ -447,6 +447,50 @@ factorisations and their pivoting.** Nothing copyleft enters the shipped library
 pure bookkeeping is reused rather than rewritten, and the part that is numerically delicate is written here
 against the release's LAPACK, which every band already links.
 
+### The host has none of this family, and that is measured
+
+The brief asks for this family to be held against the host's own Accelerate the way the `sparse_*` BLAS
+family is. **It cannot be**, and the reason is three independent measurements:
+
+1. **C cannot name it.** Every entry point in `Solve.h` is declared
+   `__attribute__((overloadable))` (`Solve.h:267`), which is a C++-only attribute. A C probe fails to
+   compile with "`call to undeclared function 'SparseConvertFromCoordinate_Double'`", and the compiler's own
+   note points at `_SparseConvertFromCoordinate_Double` — the old, pre-10.13 spelling.
+2. **C++ cannot name it either.** The macOS SDK's `SolveImplementationTyped.h` is the **old-style** header:
+   it exposes only the `SPARSE_OLDSTYLE(sparse_matrix)` path, and `SparseOpaqueSymbolicFactorization_Double`,
+   `SparseFactorSymbolic_Double`, `SparseFactorNumeric_Double` and `SparseGetStatusOfFactor_Double` are all
+   undeclared there. The 11.0-era transparent types are in the 26.2 SDK's copy of that header and not in
+   the host's.
+3. **`dlsym` finds none of them.** Asked on the running process for eight of the family's names —
+   `SparseConvertFromCoordinate_Double`, `SparseFactorSymbolic_Double`, `SparseFactorNumeric_Double`,
+   `SparseSolve_Double`, `SparseGetStatusOfFactor_Double`, `SparseCG_Double`, `SparseCleanup_Double`,
+   `SparseGetConjugateTranspose_Double` — every one answers **absent**.
+
+So there is **no host oracle for any of the 158 entry points**, and a "hold it against the host" instruction
+is unmeetable for them as written. That is a different situation from the `sparse_*` BLAS family beside
+them, where every name is a C symbol the host exports and where all 69 rows are compared element for
+element against it.
+
+**The oracles that do exist**, and the weaker guarantee they give:
+
+- **the arithmetic itself** — a Cholesky factor must reproduce `A = P L L' P'` to the tolerance that
+  identity demands, an LDLᵀ factor `A = P S L D L' S' P'`, a QR `A = Q R P`, an LU `A = P L U Q`; and a
+  solve must reproduce `A x = b`. Those are the definitions, and a factorisation that does not satisfy them
+  is wrong whatever it agrees with.
+- **the release's own LAPACK** — `dpotrf_`, `dsytrf_`, `dgeqrf_`, `dgetrf_` and the triangular solves are
+  independent implementations of each of these, and the ladder puts every one of them at **4.0**, so they
+  resolve on both ends of this port's ladder. That is a real cross-check, and a stronger one than an
+  invariant alone, but it checks the arithmetic and not the API: the `SparseStatus` answers, the
+  `SparseMatrixIsSingular` and `SparseFactorizationFailed` cases, the scaling and ordering behaviour, and
+  the subfactor algebra have no second implementation to be compared with at all.
+- **AMD and COLAMD**, for the orderings, which are the one part where two implementations agreeing is a
+  genuine check rather than a tautology.
+
+**So this family's differential has to be an invariant differential with the release's LAPACK as the
+cross-check, not a host-comparison differential** — which is a weaker guarantee than the other 69 rows
+carry, and the coordinator should rule on that before 158 rows are built against it. The plan is otherwise
+unchanged and the measurements above are why each step of it is in the order it is.
+
 **What is not done.** No code, no clone, no vendored file. The next three steps, in order: measure the
 host's `SparseFactor`/`SparseSolve` on a small SPD matrix, a symmetric indefinite one under each of the four
 LDLT pivoting options, a singular matrix and a matrix that is not positive definite fed to Cholesky, and a
