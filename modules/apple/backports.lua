@@ -613,12 +613,12 @@ function protocol_sources(root, library, folder, umbrella)
 // Every @protocol() below is named so clang emits __OBJC_PROTOCOL_$_<name> into this object, which is the
 // metadata the release carries for that protocol in %s.framework itself. One file per release the rows
 // arrived in, so every symbol here first appears in one release and release-split is clean.
-#import <%s/%s.h>
+#import "%sProtocols.h"
 
 static void charon_%s_protocols(void) __attribute__((used));
 static void charon_%s_protocols(void)
 {
-]], library.name, introduced, library.name, umbrella, umbrella, library.name, library.name)
+]], library.name, introduced, library.name, umbrella, library.name, library.name)
         for _, name in ipairs(names) do
             text = text .. string.format("    (void)@protocol(%s);\n", name)
         end
