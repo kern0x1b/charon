@@ -10,7 +10,7 @@
 #import <SceneKit/SceneKit.h>
 #import <simd/simd.h>
 
-#import "CharonSCN.h"
+#import "../SceneKit/CharonSCN.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
