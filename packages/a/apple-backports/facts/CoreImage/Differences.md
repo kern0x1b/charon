@@ -44,37 +44,41 @@ Material`; the port takes none of them), the `specular` property's type (a float
 physically plausible function, a colour in the older one in the port), and the clamped-family
 equivalents above. **None of them is a port feature the system lacks.**
 
-## Why the mutations did not go red: three of the four rows are shadowed on the host
+## Why the mutations did not go red: the two files were not in the probe's build
 
-`dladdr` on `method_getImplementation(class_getInstanceMethod(...))`, in both processes, from the
-probe's own `reportImplementations`:
+**Correction.** This section first said the three rows were *shadowed on the host* - that the macOS
+framework carries those selectors, so a category answering them loses, and the two processes measured
+the framework against itself. That was wrong. The two files were **copied into the probe's port build
+and never compiled**: `run.sh`'s `piece` list named `CIImageProperties` and `CIImageUnpremultiply` for
+the `cp` and not for the compile, so the port's probe had no `charon_CIImage_*` symbols at all. The
+`dladdr` I took as proof of shadowing was proof that the object was missing.
 
-    imp imageBySettingProperties:      0x198ccfe8c CoreImage   host
-    imp imageBySettingProperties:      0x198ccfe8c CoreImage   port
-    imp properties                    0x198cd0a94 CoreImage   host
-    imp properties                    0x198cd0a94 CoreImage   port
-    imp imageByUnpremultiplyingAlpha   0x198cce6b0 CoreImage   host
-    imp imageByUnpremultiplyingAlpha   0x198cce6b0 CoreImage   port
-    imp imageByClampingToExtent       0x198bc2d20 CoreImage   host
-    imp imageByClampingToExtent       0x1044f3e34 probe       port
+With the two pieces in the list, `dladdr` names the **probe's own image** for all three:
 
-**The three rows reach the same address in both processes.** The macOS framework carries
-`imageBySettingProperties:`, `properties` and `imageByUnpremultiplyingAlpha` - the 16.4 iOS header
-says iOS 6.1.3 has none of them, and the 6.1.3 cache has no CoreImage symbol for any of them - so the
-port's category is **shadowed on the host** and the two processes measure the framework against
-itself. The fourth row, the clamp, is not shadowed: the port reaches the probe's own code, because the
-framework has no such method under that name on this side.
+    imp properties                    0x100991a44 probe
+    imp imageByUnpremultiplyingAlpha   0x10099207c probe
+    imp imageByClampingToExtent       0x10098fea4 probe
 
-So the mutations were invisible for a reason, and it is not a stale build and not an insensitive
-probe: **the probe never calls the port's method.** These three rows cannot be held by this probe at
-all, and the fifteen measurements they contribute to the verdict line are the framework measured
-against itself. They must come out of the count, and the row must be recorded as measured on the
-release rather than on the host - which needs a device or emulator run, not another host probe.
+and the installer's own stderr says what it decided, which was the open question from that `dladdr`:
 
-The `properties` replacement is shadowed the same way, and for a second reason worth naming: the
-`+load` that installs it has not replaced anything either - the port's answer is the framework's
-address, not the replacement's. Whether that `+load` ran at all is the next thing to check, and it is
-one more line in the probe.
+    charon: replaced -[properties]
+    charon: replaced -[imageBySettingProperties:]
+    charon: replaced -[CIImage imageByUnpremultiplyingAlpha]
+
+So the `+load` runs and does replace, and the probe calls the port's own exported functions directly.
+The category was never shadowed and the `+load` was never broken.
+
+**And the port's probe then crashes**, in the first call, with
+
+    frame #0: libobjc.A.dylib`objc_storeStrong + 4
+    EXC_BAD_ACCESS (code=2, address=0x16f603fe0)
+
+and **no further frames** - so it is an ARC store to a wild pointer and there is **no recursion in the
+trace**. I had guessed recursion, from the captured-IMP-comes-after-the-install idea, and that guess
+is withdrawn: there is no evidence for it and the trace does not show it. Undiagnosed.
+
+The rows are therefore not measured yet, the mutations have not been re-run, and the `ciimage` count
+still carries measurements the probe does not make.
 
 ## The two mutations did not go red, and that is not a proof
 
