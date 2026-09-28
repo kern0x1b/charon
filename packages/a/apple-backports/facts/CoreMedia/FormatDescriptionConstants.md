@@ -45,8 +45,12 @@ CM_EXPORT const CFStringRef kCMFormatDescriptionTransferFunction_SMPTE_ST_428_1 
 so `-D` renaming that identifier cannot compile against either SDK, and
 `tests/backports/host/coremedia7` holds the other **74** to the host's own bytes. This one's value was
 read out of the host the same way as the rest and is in the table; it is simply not re-checked by the
-harness. The port's own build is unaffected: the 12 objects compile clean against the iOS 16.4 SDK for
-`armv7-apple-ios6.0`, which is what the gate does.
+harness. The port's own build is unaffected: every one of these objects compiles clean against the
+iOS 16.4 SDK for `armv7-apple-ios6.0`, which is what the gate does. The set is the constant carriers in
+the table below plus the two objects in this family that carry no constant - `CMFormatDescription11.m`,
+the HEVC parameter-set reader, and `CMFormatDescription260.m`, whose keys the 26.0 SDK declares - and
+`tools/release-split.lua` over the gate's objects is what checks the one-object-per-release rule, so a
+new file cannot leave this sentence out of date.
 
 ## The values
 

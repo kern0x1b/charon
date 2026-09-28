@@ -418,6 +418,237 @@
       "effect": "the collection such a record describes, and the host's own refusal for everything else: under 8 bytes kCMTagCollectionError_ParamErr, a total length, a sub-length or the 20 that does not check out -12894, a count the length cannot fit kCMTagCollectionError_InvalidTagCollectionData, either zero field kCMTagCollectionError_InvalidTagCollectionDataVersion, and an altered tag coll kCMTagCollectionError_InvalidTagCollectionData; the three magic tags are not compared, because the host does not compare them",
       "facts": "facts/CoreMedia/TagCollection.md",
       "source": "the host's own CoreMedia, held over 356 answers by tests/backports/host/coremedia7/tagcollectionimage.m under AddressSanitizer - the bytes the host writes and the port's compared byte for byte, each side's reader fed the other side's record, eight truncations and every one of the eleven header fields flipped, and every length from 0 to 48"
+    },
+    {
+      "api": "CMTaggedBufferGroupGetTypeID()",
+      "kind": "function",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "CMTagCollection arrived at iOS 17 and CMTaggedBufferGroup with it, and the SDK the toolchain resolves is 16.4, where none of CMTag, CMTagCollection or CMTaggedBufferGroup exists at all. CharonCMTag26.h transcribes 26.2's declarations for the tag collection and that half is carried; this type is not written, because nothing about the host's answers for it has been measured and a shape guessed from the header is what the brief forbids (facts/CoreMedia/TagCollection.md, the CMTaggedBufferGroup section)",
+      "facts": "facts/CoreMedia/TagCollection.md",
+      "source": "the host's own CMTaggedBufferGroup.h, which gives the fifteen signatures; nothing about the host's answers has been measured, which is why nothing is claimed",
+      "effect": "not carried: the type is not written, so there is no behaviour to describe. CMTaggedBufferGroupRef is a bridged Objective-C class like CMTagCollectionRef and its shape is two parallel CFArrays - tag collections and buffers - which every accessor walks together; what the host answers for any of it is unmeasured"
+    },
+    {
+      "api": "CMTaggedBufferGroupCreate()",
+      "kind": "function",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "CMTagCollection arrived at iOS 17 and CMTaggedBufferGroup with it, and the SDK the toolchain resolves is 16.4, where none of CMTag, CMTagCollection or CMTaggedBufferGroup exists at all. CharonCMTag26.h transcribes 26.2's declarations for the tag collection and that half is carried; this type is not written, because nothing about the host's answers for it has been measured and a shape guessed from the header is what the brief forbids (facts/CoreMedia/TagCollection.md, the CMTaggedBufferGroup section)",
+      "facts": "facts/CoreMedia/TagCollection.md",
+      "source": "the host's own CMTaggedBufferGroup.h, which gives the fifteen signatures; nothing about the host's answers has been measured, which is why nothing is claimed",
+      "effect": "not carried: the type is not written, so there is no behaviour to describe. CMTaggedBufferGroupRef is a bridged Objective-C class like CMTagCollectionRef and its shape is two parallel CFArrays - tag collections and buffers - which every accessor walks together; what the host answers for any of it is unmeasured"
+    },
+    {
+      "api": "CMTaggedBufferGroupCreateCombined()",
+      "kind": "function",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "CMTagCollection arrived at iOS 17 and CMTaggedBufferGroup with it, and the SDK the toolchain resolves is 16.4, where none of CMTag, CMTagCollection or CMTaggedBufferGroup exists at all. CharonCMTag26.h transcribes 26.2's declarations for the tag collection and that half is carried; this type is not written, because nothing about the host's answers for it has been measured and a shape guessed from the header is what the brief forbids (facts/CoreMedia/TagCollection.md, the CMTaggedBufferGroup section)",
+      "facts": "facts/CoreMedia/TagCollection.md",
+      "source": "the host's own CMTaggedBufferGroup.h, which gives the fifteen signatures; nothing about the host's answers has been measured, which is why nothing is claimed",
+      "effect": "not carried: the type is not written, so there is no behaviour to describe. CMTaggedBufferGroupRef is a bridged Objective-C class like CMTagCollectionRef and its shape is two parallel CFArrays - tag collections and buffers - which every accessor walks together; what the host answers for any of it is unmeasured"
+    },
+    {
+      "api": "CMTaggedBufferGroupGetCount()",
+      "kind": "function",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "CMTagCollection arrived at iOS 17 and CMTaggedBufferGroup with it, and the SDK the toolchain resolves is 16.4, where none of CMTag, CMTagCollection or CMTaggedBufferGroup exists at all. CharonCMTag26.h transcribes 26.2's declarations for the tag collection and that half is carried; this type is not written, because nothing about the host's answers for it has been measured and a shape guessed from the header is what the brief forbids (facts/CoreMedia/TagCollection.md, the CMTaggedBufferGroup section)",
+      "facts": "facts/CoreMedia/TagCollection.md",
+      "source": "the host's own CMTaggedBufferGroup.h, which gives the fifteen signatures; nothing about the host's answers has been measured, which is why nothing is claimed",
+      "effect": "not carried: the type is not written, so there is no behaviour to describe. CMTaggedBufferGroupRef is a bridged Objective-C class like CMTagCollectionRef and its shape is two parallel CFArrays - tag collections and buffers - which every accessor walks together; what the host answers for any of it is unmeasured"
+    },
+    {
+      "api": "CMTaggedBufferGroupGetTagCollectionAtIndex()",
+      "kind": "function",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "CMTagCollection arrived at iOS 17 and CMTaggedBufferGroup with it, and the SDK the toolchain resolves is 16.4, where none of CMTag, CMTagCollection or CMTaggedBufferGroup exists at all. CharonCMTag26.h transcribes 26.2's declarations for the tag collection and that half is carried; this type is not written, because nothing about the host's answers for it has been measured and a shape guessed from the header is what the brief forbids (facts/CoreMedia/TagCollection.md, the CMTaggedBufferGroup section)",
+      "facts": "facts/CoreMedia/TagCollection.md",
+      "source": "the host's own CMTaggedBufferGroup.h, which gives the fifteen signatures; nothing about the host's answers has been measured, which is why nothing is claimed",
+      "effect": "not carried: the type is not written, so there is no behaviour to describe. CMTaggedBufferGroupRef is a bridged Objective-C class like CMTagCollectionRef and its shape is two parallel CFArrays - tag collections and buffers - which every accessor walks together; what the host answers for any of it is unmeasured"
+    },
+    {
+      "api": "CMTaggedBufferGroupGetCVPixelBufferAtIndex()",
+      "kind": "function",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "CMTagCollection arrived at iOS 17 and CMTaggedBufferGroup with it, and the SDK the toolchain resolves is 16.4, where none of CMTag, CMTagCollection or CMTaggedBufferGroup exists at all. CharonCMTag26.h transcribes 26.2's declarations for the tag collection and that half is carried; this type is not written, because nothing about the host's answers for it has been measured and a shape guessed from the header is what the brief forbids (facts/CoreMedia/TagCollection.md, the CMTaggedBufferGroup section)",
+      "facts": "facts/CoreMedia/TagCollection.md",
+      "source": "the host's own CMTaggedBufferGroup.h, which gives the fifteen signatures; nothing about the host's answers has been measured, which is why nothing is claimed",
+      "effect": "not carried: the type is not written, so there is no behaviour to describe. CMTaggedBufferGroupRef is a bridged Objective-C class like CMTagCollectionRef and its shape is two parallel CFArrays - tag collections and buffers - which every accessor walks together; what the host answers for any of it is unmeasured"
+    },
+    {
+      "api": "CMTaggedBufferGroupGetCVPixelBufferForTag()",
+      "kind": "function",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "CMTagCollection arrived at iOS 17 and CMTaggedBufferGroup with it, and the SDK the toolchain resolves is 16.4, where none of CMTag, CMTagCollection or CMTaggedBufferGroup exists at all. CharonCMTag26.h transcribes 26.2's declarations for the tag collection and that half is carried; this type is not written, because nothing about the host's answers for it has been measured and a shape guessed from the header is what the brief forbids (facts/CoreMedia/TagCollection.md, the CMTaggedBufferGroup section)",
+      "facts": "facts/CoreMedia/TagCollection.md",
+      "source": "the host's own CMTaggedBufferGroup.h, which gives the fifteen signatures; nothing about the host's answers has been measured, which is why nothing is claimed",
+      "effect": "not carried: the type is not written, so there is no behaviour to describe. CMTaggedBufferGroupRef is a bridged Objective-C class like CMTagCollectionRef and its shape is two parallel CFArrays - tag collections and buffers - which every accessor walks together; what the host answers for any of it is unmeasured"
+    },
+    {
+      "api": "CMTaggedBufferGroupGetCVPixelBufferForTagCollection()",
+      "kind": "function",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "CMTagCollection arrived at iOS 17 and CMTaggedBufferGroup with it, and the SDK the toolchain resolves is 16.4, where none of CMTag, CMTagCollection or CMTaggedBufferGroup exists at all. CharonCMTag26.h transcribes 26.2's declarations for the tag collection and that half is carried; this type is not written, because nothing about the host's answers for it has been measured and a shape guessed from the header is what the brief forbids (facts/CoreMedia/TagCollection.md, the CMTaggedBufferGroup section)",
+      "facts": "facts/CoreMedia/TagCollection.md",
+      "source": "the host's own CMTaggedBufferGroup.h, which gives the fifteen signatures; nothing about the host's answers has been measured, which is why nothing is claimed",
+      "effect": "not carried: the type is not written, so there is no behaviour to describe. CMTaggedBufferGroupRef is a bridged Objective-C class like CMTagCollectionRef and its shape is two parallel CFArrays - tag collections and buffers - which every accessor walks together; what the host answers for any of it is unmeasured"
+    },
+    {
+      "api": "CMTaggedBufferGroupGetCMSampleBufferAtIndex()",
+      "kind": "function",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "CMTagCollection arrived at iOS 17 and CMTaggedBufferGroup with it, and the SDK the toolchain resolves is 16.4, where none of CMTag, CMTagCollection or CMTaggedBufferGroup exists at all. CharonCMTag26.h transcribes 26.2's declarations for the tag collection and that half is carried; this type is not written, because nothing about the host's answers for it has been measured and a shape guessed from the header is what the brief forbids (facts/CoreMedia/TagCollection.md, the CMTaggedBufferGroup section)",
+      "facts": "facts/CoreMedia/TagCollection.md",
+      "source": "the host's own CMTaggedBufferGroup.h, which gives the fifteen signatures; nothing about the host's answers has been measured, which is why nothing is claimed",
+      "effect": "not carried: the type is not written, so there is no behaviour to describe. CMTaggedBufferGroupRef is a bridged Objective-C class like CMTagCollectionRef and its shape is two parallel CFArrays - tag collections and buffers - which every accessor walks together; what the host answers for any of it is unmeasured"
+    },
+    {
+      "api": "CMTaggedBufferGroupGetCMSampleBufferForTag()",
+      "kind": "function",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "CMTagCollection arrived at iOS 17 and CMTaggedBufferGroup with it, and the SDK the toolchain resolves is 16.4, where none of CMTag, CMTagCollection or CMTaggedBufferGroup exists at all. CharonCMTag26.h transcribes 26.2's declarations for the tag collection and that half is carried; this type is not written, because nothing about the host's answers for it has been measured and a shape guessed from the header is what the brief forbids (facts/CoreMedia/TagCollection.md, the CMTaggedBufferGroup section)",
+      "facts": "facts/CoreMedia/TagCollection.md",
+      "source": "the host's own CMTaggedBufferGroup.h, which gives the fifteen signatures; nothing about the host's answers has been measured, which is why nothing is claimed",
+      "effect": "not carried: the type is not written, so there is no behaviour to describe. CMTaggedBufferGroupRef is a bridged Objective-C class like CMTagCollectionRef and its shape is two parallel CFArrays - tag collections and buffers - which every accessor walks together; what the host answers for any of it is unmeasured"
+    },
+    {
+      "api": "CMTaggedBufferGroupGetCMSampleBufferForTagCollection()",
+      "kind": "function",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "CMTagCollection arrived at iOS 17 and CMTaggedBufferGroup with it, and the SDK the toolchain resolves is 16.4, where none of CMTag, CMTagCollection or CMTaggedBufferGroup exists at all. CharonCMTag26.h transcribes 26.2's declarations for the tag collection and that half is carried; this type is not written, because nothing about the host's answers for it has been measured and a shape guessed from the header is what the brief forbids (facts/CoreMedia/TagCollection.md, the CMTaggedBufferGroup section)",
+      "facts": "facts/CoreMedia/TagCollection.md",
+      "source": "the host's own CMTaggedBufferGroup.h, which gives the fifteen signatures; nothing about the host's answers has been measured, which is why nothing is claimed",
+      "effect": "not carried: the type is not written, so there is no behaviour to describe. CMTaggedBufferGroupRef is a bridged Objective-C class like CMTagCollectionRef and its shape is two parallel CFArrays - tag collections and buffers - which every accessor walks together; what the host answers for any of it is unmeasured"
+    },
+    {
+      "api": "CMTaggedBufferGroupGetNumberOfMatchesForTagCollection()",
+      "kind": "function",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "CMTagCollection arrived at iOS 17 and CMTaggedBufferGroup with it, and the SDK the toolchain resolves is 16.4, where none of CMTag, CMTagCollection or CMTaggedBufferGroup exists at all. CharonCMTag26.h transcribes 26.2's declarations for the tag collection and that half is carried; this type is not written, because nothing about the host's answers for it has been measured and a shape guessed from the header is what the brief forbids (facts/CoreMedia/TagCollection.md, the CMTaggedBufferGroup section)",
+      "facts": "facts/CoreMedia/TagCollection.md",
+      "source": "the host's own CMTaggedBufferGroup.h, which gives the fifteen signatures; nothing about the host's answers has been measured, which is why nothing is claimed",
+      "effect": "not carried: the type is not written, so there is no behaviour to describe. CMTaggedBufferGroupRef is a bridged Objective-C class like CMTagCollectionRef and its shape is two parallel CFArrays - tag collections and buffers - which every accessor walks together; what the host answers for any of it is unmeasured"
+    },
+    {
+      "api": "CMTaggedBufferGroupFormatDescriptionCreateForTaggedBufferGroup()",
+      "kind": "function",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "CMTagCollection arrived at iOS 17 and CMTaggedBufferGroup with it, and the SDK the toolchain resolves is 16.4, where none of CMTag, CMTagCollection or CMTaggedBufferGroup exists at all. CharonCMTag26.h transcribes 26.2's declarations for the tag collection and that half is carried; this type is not written, because nothing about the host's answers for it has been measured and a shape guessed from the header is what the brief forbids (facts/CoreMedia/TagCollection.md, the CMTaggedBufferGroup section)",
+      "facts": "facts/CoreMedia/TagCollection.md",
+      "source": "the host's own CMTaggedBufferGroup.h, which gives the fifteen signatures; nothing about the host's answers has been measured, which is why nothing is claimed",
+      "effect": "not carried: the type is not written, so there is no behaviour to describe. CMTaggedBufferGroupRef is a bridged Objective-C class like CMTagCollectionRef and its shape is two parallel CFArrays - tag collections and buffers - which every accessor walks together; what the host answers for any of it is unmeasured"
+    },
+    {
+      "api": "CMTaggedBufferGroupFormatDescriptionCreateForTaggedBufferGroupWithExtensions()",
+      "kind": "function",
+      "introduced": "26.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "CMTagCollection arrived at iOS 17 and CMTaggedBufferGroup with it, and the SDK the toolchain resolves is 16.4, where none of CMTag, CMTagCollection or CMTaggedBufferGroup exists at all. CharonCMTag26.h transcribes 26.2's declarations for the tag collection and that half is carried; this type is not written, because nothing about the host's answers for it has been measured and a shape guessed from the header is what the brief forbids (facts/CoreMedia/TagCollection.md, the CMTaggedBufferGroup section)",
+      "facts": "facts/CoreMedia/TagCollection.md",
+      "source": "the host's own CMTaggedBufferGroup.h, which gives the fifteen signatures; nothing about the host's answers has been measured, which is why nothing is claimed",
+      "effect": "not carried: the type is not written, so there is no behaviour to describe. CMTaggedBufferGroupRef is a bridged Objective-C class like CMTagCollectionRef and its shape is two parallel CFArrays - tag collections and buffers - which every accessor walks together; what the host answers for any of it is unmeasured"
+    },
+    {
+      "api": "CMTaggedBufferGroupFormatDescriptionMatchesTaggedBufferGroup()",
+      "kind": "function",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "CMTagCollection arrived at iOS 17 and CMTaggedBufferGroup with it, and the SDK the toolchain resolves is 16.4, where none of CMTag, CMTagCollection or CMTaggedBufferGroup exists at all. CharonCMTag26.h transcribes 26.2's declarations for the tag collection and that half is carried; this type is not written, because nothing about the host's answers for it has been measured and a shape guessed from the header is what the brief forbids (facts/CoreMedia/TagCollection.md, the CMTaggedBufferGroup section)",
+      "facts": "facts/CoreMedia/TagCollection.md",
+      "source": "the host's own CMTaggedBufferGroup.h, which gives the fifteen signatures; nothing about the host's answers has been measured, which is why nothing is claimed",
+      "effect": "not carried: the type is not written, so there is no behaviour to describe. CMTaggedBufferGroupRef is a bridged Objective-C class like CMTagCollectionRef and its shape is two parallel CFArrays - tag collections and buffers - which every accessor walks together; what the host answers for any of it is unmeasured"
+    },
+    {
+      "api": "CMSampleBufferCreateForTaggedBufferGroup()",
+      "kind": "function",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "CMTagCollection arrived at iOS 17 and CMTaggedBufferGroup with it, and the SDK the toolchain resolves is 16.4, where none of CMTag, CMTagCollection or CMTaggedBufferGroup exists at all. CharonCMTag26.h transcribes 26.2's declarations for the tag collection and that half is carried; this type is not written, because nothing about the host's answers for it has been measured and a shape guessed from the header is what the brief forbids (facts/CoreMedia/TagCollection.md, the CMTaggedBufferGroup section)",
+      "facts": "facts/CoreMedia/TagCollection.md",
+      "source": "the host's own CMTaggedBufferGroup.h, which gives the fifteen signatures; nothing about the host's answers has been measured, which is why nothing is claimed",
+      "effect": "not carried: the type is not written, so there is no behaviour to describe. CMTaggedBufferGroupRef is a bridged Objective-C class like CMTagCollectionRef and its shape is two parallel CFArrays - tag collections and buffers - which every accessor walks together; what the host answers for any of it is unmeasured"
+    },
+    {
+      "api": "CMSampleBufferGetTaggedBufferGroup()",
+      "kind": "function",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "CMTagCollection arrived at iOS 17 and CMTaggedBufferGroup with it, and the SDK the toolchain resolves is 16.4, where none of CMTag, CMTagCollection or CMTaggedBufferGroup exists at all. CharonCMTag26.h transcribes 26.2's declarations for the tag collection and that half is carried; this type is not written, because nothing about the host's answers for it has been measured and a shape guessed from the header is what the brief forbids (facts/CoreMedia/TagCollection.md, the CMTaggedBufferGroup section)",
+      "facts": "facts/CoreMedia/TagCollection.md",
+      "source": "the host's own CMTaggedBufferGroup.h, which gives the fifteen signatures; nothing about the host's answers has been measured, which is why nothing is claimed",
+      "effect": "not carried: the type is not written, so there is no behaviour to describe. CMTaggedBufferGroupRef is a bridged Objective-C class like CMTagCollectionRef and its shape is two parallel CFArrays - tag collections and buffers - which every accessor walks together; what the host answers for any of it is unmeasured"
+    },
+    {
+      "api": "kCMTaggedBufferGroupError_AllocationFailed",
+      "kind": "constant",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a case of an enumeration the header declares, so the compiler writes the value into the application and nothing in the package carries it - the registry convention for a header-carried value",
+      "facts": "facts/CoreMedia/TagCollection.md",
+      "source": "the host's own CMTaggedBufferGroup.h, where the enumeration is declared",
+      "effect": "not carried: it is a case of an enumeration the header declares, so the compiler writes the value into the application and the package holds nothing of it"
+    },
+    {
+      "api": "kCMTaggedBufferGroupError_InternalError",
+      "kind": "constant",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a case of an enumeration the header declares, so the compiler writes the value into the application and nothing in the package carries it - the registry convention for a header-carried value",
+      "facts": "facts/CoreMedia/TagCollection.md",
+      "source": "the host's own CMTaggedBufferGroup.h, where the enumeration is declared",
+      "effect": "not carried: it is a case of an enumeration the header declares, so the compiler writes the value into the application and the package holds nothing of it"
+    },
+    {
+      "api": "kCMTaggedBufferGroupError_ParamErr",
+      "kind": "constant",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a case of an enumeration the header declares, so the compiler writes the value into the application and nothing in the package carries it - the registry convention for a header-carried value",
+      "facts": "facts/CoreMedia/TagCollection.md",
+      "source": "the host's own CMTaggedBufferGroup.h, where the enumeration is declared",
+      "effect": "not carried: it is a case of an enumeration the header declares, so the compiler writes the value into the application and the package holds nothing of it"
+    },
+    {
+      "api": "kCMTaggedBufferGroupFormatType_TaggedBufferGroup",
+      "kind": "constant",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a case of an enumeration the header declares, so the compiler writes the value into the application and nothing in the package carries it - the registry convention for a header-carried value",
+      "facts": "facts/CoreMedia/TagCollection.md",
+      "source": "the host's own CMTaggedBufferGroup.h, where the enumeration is declared",
+      "effect": "not carried: it is a case of an enumeration the header declares, so the compiler writes the value into the application and the package holds nothing of it"
     }
   ]
 }
