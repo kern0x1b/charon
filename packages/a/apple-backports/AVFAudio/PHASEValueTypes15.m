@@ -131,6 +131,13 @@
 
 @end
 
+// The base of the two directivity models' parameter sets. The header gives it no members - only
+// -init NS_UNAVAILABLE and +new NS_UNAVAILABLE - so the whole of it is that the class exists, which
+// it must, because its two subclasses refer to it and a release with no PHASE.framework provides
+// nothing else that does. It is in the corpus as a missing class of its own.
+@implementation PHASEDirectivityModelParameters
+@end
+
 @implementation PHASECardioidDirectivityModelSubbandParameters {
     double _charon_frequency;
     double _charon_pattern;
