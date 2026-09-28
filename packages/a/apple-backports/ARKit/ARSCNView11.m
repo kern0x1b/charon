@@ -38,8 +38,15 @@ NS_ASSUME_NONNULL_BEGIN
 /// weak values, because the session owns the anchors and the scene owns the nodes: a view that kept
 /// either alive past its owner's release of it would be holding a thing nothing owns. A node the
 /// caller built is simply not in the map, and an anchor with no node has none.
+///
+/// An `NSMapTable` the view holds is the only shape this can have: a category on the SDK's `SCNNode`
+/// cannot hold an ivar, because a category's `@synthesize` is rejected even on the non-fragile ABI
+/// armv7 has. So the pairing is the view's own and `SCNNode` needs nothing for it.
 @property (nonatomic, strong) NSMapTable<SCNNode *, ARAnchor *> *anchorsByNode;
 @property (nonatomic, strong) NSMapTable<ARAnchor *, SCNNode *> *nodesByAnchor;
+
+/// Both maps, made.
+- (void)charon_resetAnchorMaps;
 
 @end
 
