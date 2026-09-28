@@ -212,5 +212,30 @@ Every `…Out` is `CF_RETURNS_NOT_RETAINED`, so the port must not retain what it
 `FormatDescriptionCreate…` are the three 17.0 `CMFormatDescription` rows the corpus lists, which take
 this type and are therefore behind it.
 
-**Not written, and not measured beyond the surface.** Nothing about the host's answers for this type has
-been measured, so nothing about it is claimed.
+**Measured now, from the host's own CoreMedia** (`.agent-work/runs/taggroup/m4`, three entries whose
+tag collections are a subset chain — `cOne` = {video}, `cTwo` = {video, track}, `cThree` = {video, track,
+gone} — and three pixel buffers):
+
+| call | host |
+| --- | --- |
+| `Create` with one entry, with two, with three | 0, and the count is the number of entries |
+| `GetTagCollectionAtIndex` / `GetCVPixelBufferAtIndex` / `GetCMSampleBufferAtIndex` at -1 and 3 | NULL, and a NULL sample buffer for a pixel-buffer entry |
+| `CreateCombined` over two groups of three | 0, and the count is **6** — the concatenation |
+| `Create` with 3 collections and 2 buffers | **-15780**, which no SDK here names either |
+| `Create` with no entries, and with the two arrays the wrong way round | 0 |
+| `FormatDescriptionCreateForTaggedBufferGroup` | 0, and `MatchesTaggedBufferGroup` is true for the group it came from and false for an empty one |
+| `GetTypeID` | non-zero |
+
+**And one thing I cannot explain yet, which is why the six lookup functions are not written.** With that
+chain of collections, `GetCVPixelBufferForTag(video)` is **NULL** although `video` is in all three
+collections, `GetCVPixelBufferForTag(track)` is **NULL** although `track` is in two, and only `gone` — the
+tag held by the third entry alone — returns index 2. `GetCVPixelBufferForTagCollection` behaves the same
+way: NULL for `cOne` and `cTwo`, index 2 for `cThree`. Yet `GetNumberOfMatchesForTagCollection` answers
+3, 2 and 1 for `cOne`, `cTwo` and `cThree`, which is the number of entries whose collection *contains*
+the wanted one. So the counts and the lookups disagree in a way I cannot read off the header, and
+`indexOut` is left at its input value on every miss rather than being set to something. Six of the
+fifteen functions — the three `ForTag`, the two `ForTagCollection` and nothing else — cannot be written
+from what is measured, and the nine that can are not in the tree because there is no differential yet.
+
+**Not written.** Nothing about the six lookups is claimed, and the nine whose behaviour *is* measured
+are out of the tree until a differential can hold them.
