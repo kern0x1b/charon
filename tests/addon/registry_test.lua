@@ -215,11 +215,11 @@ local function member_and_protocol_rows(backports, found)
     -- the imported set instead - where a class's names live - the row stays unbuilt, which is how 73 rows
     -- stayed red while the objects carried 91 of their metadata symbols (measured 2026-09-28, nm on
     -- build/objects/*/protocols/*.o)
-    said = asked({}, nil, {["_OBJC_PROTOCOL_$_FixProtocol"] = true}, true)
+    said = asked({}, nil, {["__OBJC_PROTOCOL_$_FixProtocol"] = true}, true)
     if said:find("FixProtocol") then
         table.insert(found, "a protocol row whose objects define the protocol's metadata must pass, and it is red: " .. said)
     end
-    said = asked({}, {["_OBJC_PROTOCOL_$_FixProtocol"] = true}, nil, true)
+    said = asked({}, {["__OBJC_PROTOCOL_$_FixProtocol"] = true}, nil, true)
     if not said:find("FixProtocol", 1, true) then
         table.insert(found, "a protocol row whose metadata is only an import must not pass, and it does: " .. said)
     end
@@ -351,6 +351,54 @@ local function message_names(backports, found)
     end
 end
 
+
+-- The rule on a real object: the protocol objects a build compiled carry their protocols' metadata as
+-- non-external symbols, so nothing the library exports has it, and registry_step reads the objects for that
+-- reason. A case on a real object, when one is here: with the objects unread the row is reported, and with
+-- them read it is not. Skipped, never failed, where no build's objects are present.
+local function real_object(backports, modules, found)
+    local built
+    for _, run in ipairs(os.dirs(path.join(modules, "..", ".agent-work", "runs", "*"))) do
+        for _, folder in ipairs(os.dirs(path.join(run, "build", "objects", "*"))) do
+            for _, object in ipairs(os.files(path.join(run, "build", "objects", folder, "protocols", "*.o"))) do
+                built = {run = run, folder = folder, object = object}
+            end
+        end
+    end
+    if not built then
+        return
+    end
+    local root = fixtures.scratch()
+    os.tryrm(root)
+    os.mkdir(root)
+    os.mkdir(path.join(root, "registry"))
+    local name = nil
+    local symbols = os.iorunv("xcrun", {"nm", built.object}, {try = true}) or ""
+    for protocol in symbols:gmatch("__OBJC_PROTOCOL_$([A-Za-z0-9_]+)") do
+        name = protocol
+        break
+    end
+    if not name then
+        os.tryrm(root)
+        return
+    end
+    io.writefile(path.join(root, "registry", "Fix.json"),
+                 string.format('{"framework": "Fix", "entries": [{"api": "%s", "kind": "protocol", "introduced": "9.0", "minimum": "6.0", "status": "implemented", "facts": "f"}]}', name))
+    local message
+    local ok = try {
+        function ()
+            backports.registry_step({root = root, builddir = built.run, deployment = "6.1.3"},
+                                    {classes = {}, members = {}, symbols = {}, defined = {}}, true, {})
+            return "passed"
+        end,
+        catch {function (errors) message = tostring(errors) end}
+    }
+    if not ok and message:find("nothing of that name is built: " .. name, 1, true) then
+        table.insert(found, "the protocol metadata in " .. path.filename(built.object) .. " is not read, so " .. name .. " is reported unbuilt")
+    end
+    os.tryrm(root)
+end
+
 function failures(opt)
     local backports = import("apple.backports", {rootdir = opt.modules, anonymous = true})
     local found = {}
@@ -421,6 +469,7 @@ function failures(opt)
     own_rows(backports, found)
     generated_includes(backports, found)
     message_names(backports, found)
+    real_object(backports, opt.modules, found)
     return found
 end
 

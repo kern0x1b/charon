@@ -1524,6 +1524,19 @@ end
 -- build()'s own option shape is what keeps a wrong argument here from reaching a gate: the light guard's
 -- fixtures call check_registry directly and never did.
 function registry_step(opt, built, complete, exports)
+    -- A protocol's metadata is defined by an object and never exported by the library that holds it
+    -- (nm -m on build/objects/<folder>/protocols/*.o: every __OBJC_PROTOCOL_$_<name> and
+    -- __OBJC_LABEL_PROTOCOL_$_<name> is non-external), so the objects are the only place the
+    -- rule can see it. A protocol with neither members nor properties has no PROP_LIST_ and no
+    -- PROTOCOL_REFERENCE_ of its own, so the pair keyed on below is the one every protocol has.
+    local objects = path.join(opt.builddir, "objects")
+    for _, folder in ipairs(os.dirs(path.join(objects, "*"))) do
+        for _, object in ipairs(os.files(path.join(objects, folder, "*.o"))) do
+            for _, symbol in ipairs(defined_symbols(object)) do
+                built.defined["_" .. symbol:sub(2)] = true
+            end
+        end
+    end
     return check_registry(opt.root, built, complete, opt.deployment, exports,
                           release_inventory(opt.cache), opt.sdkdir)
 end
@@ -1580,8 +1593,8 @@ function check_registry(root, found, complete, deployment, exports, inventory, s
             -- A protocol has no accessors, so nothing else in this loop can answer for it: the row is
             -- implemented when the objects carry the protocol's own metadata and it names.
             local declared = entry.kind == "protocol" and
-                ((found.defined or {})["_OBJC_PROTOCOL_$_" .. name] ~= nil or
-                 (found.defined or {})["_OBJC_LABEL_PROTOCOL_$_" .. name] ~= nil) or
+                ((found.defined or {})["__OBJC_PROTOCOL_$_" .. name] ~= nil or
+                 (found.defined or {})["__OBJC_LABEL_PROTOCOL_$_" .. name] ~= nil) or
                 (owner and ((listed[owner] and listed[owner].kind == "protocol") or (inventory and inventory.protocols and inventory.protocols[owner] ~= nil)))
             if (entry.kind == "type" or entry.kind == "case") and not built then
                 -- no symbol will ever answer for a type or an enumeration case, so the header is the build
