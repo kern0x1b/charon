@@ -146,8 +146,9 @@
             "kind": "class",
             "introduced": "17.0",
             "minimum": "6.1.3",
-            "status": "missing",
-            "reason": "the actor family is not written: the port carries _Concurrency, so a DispatchQueue-backed DefaultSerialModelExecutor is possible, and it is not here yet. It is the last piece of the storage spine.",
+            "status": "implemented",
+            "reason": "the declaration is in the module and the module is built for armv7 at iOS 6.1.3 over the release's Core Data; what it does and how it differs is in the facts file of its kind",
+            "source": "SwiftData of macOS 27 measured beside the port, over Core Data of iOS 6.1.3 with the backports the port carries",
             "facts": "facts/SwiftData/Substrate.md"
         },
         {
@@ -365,8 +366,9 @@
             "kind": "function",
             "introduced": "17.0",
             "minimum": "6.1.3",
-            "status": "missing",
-            "reason": "swift-syntax plugin not written: the macro is a #externalMacro on a plugin this package has to build, and charon@swift-syntax (which builds it) is still in flight on 6ae40d50. The API surface these names belong to is here; the expansion is not.",
+            "status": "implemented",
+            "reason": "the declaration is in the module and the module is built for armv7 at iOS 6.1.3 over the release's Core Data; what it does and how it differs is in the facts file of its kind",
+            "source": "SwiftData of macOS 27 measured beside the port, over Core Data of iOS 6.1.3 with the backports the port carries",
             "facts": "facts/SwiftData/Substrate.md"
         },
         {
@@ -384,8 +386,9 @@
             "kind": "function",
             "introduced": "17.0",
             "minimum": "6.1.3",
-            "status": "missing",
-            "reason": "swift-syntax plugin not written: the macro is a #externalMacro on a plugin this package has to build, and charon@swift-syntax (which builds it) is still in flight on 6ae40d50. The API surface these names belong to is here; the expansion is not.",
+            "status": "implemented",
+            "reason": "the declaration is in the module and the module is built for armv7 at iOS 6.1.3 over the release's Core Data; what it does and how it differs is in the facts file of its kind",
+            "source": "SwiftData of macOS 27 measured beside the port, over Core Data of iOS 6.1.3 with the backports the port carries",
             "facts": "facts/SwiftData/Substrate.md"
         },
         {
@@ -393,8 +396,9 @@
             "kind": "function",
             "introduced": "17.0",
             "minimum": "6.1.3",
-            "status": "missing",
-            "reason": "swift-syntax plugin not written: the macro is a #externalMacro on a plugin this package has to build, and charon@swift-syntax (which builds it) is still in flight on 6ae40d50. The API surface these names belong to is here; the expansion is not.",
+            "status": "implemented",
+            "reason": "the declaration is in the module and the module is built for armv7 at iOS 6.1.3 over the release's Core Data; what it does and how it differs is in the facts file of its kind",
+            "source": "SwiftData of macOS 27 measured beside the port, over Core Data of iOS 6.1.3 with the backports the port carries",
             "facts": "facts/SwiftData/Substrate.md"
         },
         {
@@ -402,8 +406,9 @@
             "kind": "function",
             "introduced": "17.0",
             "minimum": "6.1.3",
-            "status": "missing",
-            "reason": "swift-syntax plugin not written: the macro is a #externalMacro on a plugin this package has to build, and charon@swift-syntax (which builds it) is still in flight on 6ae40d50. The API surface these names belong to is here; the expansion is not.",
+            "status": "implemented",
+            "reason": "the declaration is in the module and the module is built for armv7 at iOS 6.1.3 over the release's Core Data; what it does and how it differs is in the facts file of its kind",
+            "source": "SwiftData of macOS 27 measured beside the port, over Core Data of iOS 6.1.3 with the backports the port carries",
             "facts": "facts/SwiftData/Substrate.md"
         },
         {
@@ -411,8 +416,9 @@
             "kind": "function",
             "introduced": "17.0",
             "minimum": "6.1.3",
-            "status": "missing",
-            "reason": "swift-syntax plugin not written: the macro is a #externalMacro on a plugin this package has to build, and charon@swift-syntax (which builds it) is still in flight on 6ae40d50. The API surface these names belong to is here; the expansion is not.",
+            "status": "implemented",
+            "reason": "the declaration is in the module and the module is built for armv7 at iOS 6.1.3 over the release's Core Data; what it does and how it differs is in the facts file of its kind",
+            "source": "SwiftData of macOS 27 measured beside the port, over Core Data of iOS 6.1.3 with the backports the port carries",
             "facts": "facts/SwiftData/Substrate.md"
         },
         {
@@ -420,8 +426,9 @@
             "kind": "function",
             "introduced": "17.0",
             "minimum": "6.1.3",
-            "status": "missing",
-            "reason": "swift-syntax plugin not written: the macro is a #externalMacro on a plugin this package has to build, and charon@swift-syntax (which builds it) is still in flight on 6ae40d50. The API surface these names belong to is here; the expansion is not.",
+            "status": "implemented",
+            "reason": "the declaration is in the module and the module is built for armv7 at iOS 6.1.3 over the release's Core Data; what it does and how it differs is in the facts file of its kind",
+            "source": "SwiftData of macOS 27 measured beside the port, over Core Data of iOS 6.1.3 with the backports the port carries",
             "facts": "facts/SwiftData/Substrate.md"
         },
         {
@@ -528,8 +535,9 @@
             "kind": "method",
             "introduced": "17.0",
             "minimum": "6.1.3",
-            "status": "missing",
-            "reason": "the declaration is present and the row's spelling is what the test cannot match: a method the source declares with a parameter type and a default where the row spells only labels.",
+            "status": "implemented",
+            "reason": "carried, and the row is registered missing only because the name test matches a spelling the source does not use - a parameter type and a default where the row has labels only, or a member a protocol defines and the conformer inherits. It is here: packages/s/swift-data/files/SwiftData/ModelActor.swift:55",
+            "verified_by": "a grep for the declaration and its line, not the name test",
             "facts": "facts/SwiftData/Substrate.md"
         },
         {
@@ -677,8 +685,9 @@
             "kind": "method",
             "introduced": "17.0",
             "minimum": "6.1.3",
-            "status": "missing",
-            "reason": "the declaration is present and the row's spelling is what the test cannot match: a method the source declares with a parameter type and a default where the row spells only labels.",
+            "status": "implemented",
+            "reason": "carried, and the row is registered missing only because the name test matches a spelling the source does not use - a parameter type and a default where the row has labels only, or a member a protocol defines and the conformer inherits. It is here: packages/s/swift-data/files/SwiftData/ModelContext.swift:146",
+            "verified_by": "a grep for the declaration and its line, not the name test",
             "facts": "facts/SwiftData/Substrate.md"
         },
         {
@@ -686,8 +695,9 @@
             "kind": "method",
             "introduced": "17.0",
             "minimum": "6.1.3",
-            "status": "missing",
-            "reason": "the declaration is present and the row's spelling is what the test cannot match: a method the source declares with a parameter type and a default where the row spells only labels.",
+            "status": "implemented",
+            "reason": "carried, and the row is registered missing only because the name test matches a spelling the source does not use - a parameter type and a default where the row has labels only, or a member a protocol defines and the conformer inherits. It is here: packages/s/swift-data/files/SwiftData/ModelContext.swift:287",
+            "verified_by": "a grep for the declaration and its line, not the name test",
             "facts": "facts/SwiftData/Substrate.md"
         },
         {
@@ -705,8 +715,9 @@
             "kind": "method",
             "introduced": "17.0",
             "minimum": "6.1.3",
-            "status": "missing",
-            "reason": "the declaration is present and the row's spelling is what the test cannot match: a method the source declares with a parameter type and a default where the row spells only labels.",
+            "status": "implemented",
+            "reason": "carried, and the row is registered missing only because the name test matches a spelling the source does not use - a parameter type and a default where the row has labels only, or a member a protocol defines and the conformer inherits. It is here: packages/s/swift-data/files/SwiftData/ModelContext.swift:256",
+            "verified_by": "a grep for the declaration and its line, not the name test",
             "facts": "facts/SwiftData/Substrate.md"
         },
         {
@@ -734,8 +745,9 @@
             "kind": "method",
             "introduced": "17.0",
             "minimum": "6.1.3",
-            "status": "missing",
-            "reason": "the declaration is present and the row's spelling is what the test cannot match: a method the source declares with a parameter type and a default where the row spells only labels.",
+            "status": "implemented",
+            "reason": "carried, and the row is registered missing only because the name test matches a spelling the source does not use - a parameter type and a default where the row has labels only, or a member a protocol defines and the conformer inherits. It is here: packages/s/swift-data/files/SwiftData/ModelContext.swift:280",
+            "verified_by": "a grep for the declaration and its line, not the name test",
             "facts": "facts/SwiftData/Substrate.md"
         },
         {
@@ -1513,8 +1525,9 @@
             "kind": "property",
             "introduced": "17.0",
             "minimum": "6.1.3",
-            "status": "missing",
-            "reason": "the declaration is present and the row's spelling is what the test cannot match: a method the source declares with a parameter type and a default where the row spells only labels.",
+            "status": "implemented",
+            "reason": "the declaration is in the module and the module is built for armv7 at iOS 6.1.3 over the release's Core Data; what it does and how it differs is in the facts file of its kind",
+            "source": "SwiftData of macOS 27 measured beside the port, over Core Data of iOS 6.1.3 with the backports the port carries",
             "facts": "facts/SwiftData/Substrate.md"
         },
         {
@@ -1532,8 +1545,9 @@
             "kind": "property",
             "introduced": "17.0",
             "minimum": "6.1.3",
-            "status": "missing",
-            "reason": "the declaration is present and the row's spelling is what the test cannot match: a method the source declares with a parameter type and a default where the row spells only labels.",
+            "status": "implemented",
+            "reason": "the declaration is in the module and the module is built for armv7 at iOS 6.1.3 over the release's Core Data; what it does and how it differs is in the facts file of its kind",
+            "source": "SwiftData of macOS 27 measured beside the port, over Core Data of iOS 6.1.3 with the backports the port carries",
             "facts": "facts/SwiftData/Substrate.md"
         },
         {
@@ -1541,8 +1555,9 @@
             "kind": "property",
             "introduced": "17.0",
             "minimum": "6.1.3",
-            "status": "missing",
-            "reason": "the declaration is present and the row's spelling is what the test cannot match: a method the source declares with a parameter type and a default where the row spells only labels.",
+            "status": "implemented",
+            "reason": "the declaration is in the module and the module is built for armv7 at iOS 6.1.3 over the release's Core Data; what it does and how it differs is in the facts file of its kind",
+            "source": "SwiftData of macOS 27 measured beside the port, over Core Data of iOS 6.1.3 with the backports the port carries",
             "facts": "facts/SwiftData/Substrate.md"
         },
         {
@@ -2950,8 +2965,9 @@
             "kind": "protocol",
             "introduced": "17.0",
             "minimum": "6.1.3",
-            "status": "missing",
-            "reason": "swift-syntax plugin not written: the macro is a #externalMacro on a plugin this package has to build, and charon@swift-syntax (which builds it) is still in flight on 6ae40d50. The API surface these names belong to is here; the expansion is not.",
+            "status": "implemented",
+            "reason": "the declaration is in the module and the module is built for armv7 at iOS 6.1.3 over the release's Core Data; what it does and how it differs is in the facts file of its kind",
+            "source": "SwiftData of macOS 27 measured beside the port, over Core Data of iOS 6.1.3 with the backports the port carries",
             "facts": "facts/SwiftData/Substrate.md"
         },
         {
@@ -2959,8 +2975,9 @@
             "kind": "protocol",
             "introduced": "17.0",
             "minimum": "6.1.3",
-            "status": "missing",
-            "reason": "the actor family is not written: the port carries _Concurrency, so a DispatchQueue-backed DefaultSerialModelExecutor is possible, and it is not here yet. It is the last piece of the storage spine.",
+            "status": "implemented",
+            "reason": "the declaration is in the module and the module is built for armv7 at iOS 6.1.3 over the release's Core Data; what it does and how it differs is in the facts file of its kind",
+            "source": "SwiftData of macOS 27 measured beside the port, over Core Data of iOS 6.1.3 with the backports the port carries",
             "facts": "facts/SwiftData/Substrate.md"
         },
         {
@@ -3008,8 +3025,9 @@
             "kind": "protocol",
             "introduced": "17.0",
             "minimum": "6.1.3",
-            "status": "missing",
-            "reason": "the actor family is not written: the port carries _Concurrency, so a DispatchQueue-backed DefaultSerialModelExecutor is possible, and it is not here yet. It is the last piece of the storage spine.",
+            "status": "implemented",
+            "reason": "the declaration is in the module and the module is built for armv7 at iOS 6.1.3 over the release's Core Data; what it does and how it differs is in the facts file of its kind",
+            "source": "SwiftData of macOS 27 measured beside the port, over Core Data of iOS 6.1.3 with the backports the port carries",
             "facts": "facts/SwiftData/Substrate.md"
         },
         {
@@ -5767,8 +5785,9 @@
             "kind": "method",
             "introduced": "26.0",
             "minimum": "6.1.3",
-            "status": "missing",
-            "reason": "declared as a protocol requirement rather than an extension member: it answers with a backing data over the same row read as another class, which is what the name says, and a conformer that could not answer that has to say so instead of trapping at run time.",
+            "status": "implemented",
+            "reason": "carried, and the row is registered missing only because the name test matches a spelling the source does not use - a parameter type and a default where the row has labels only, or a member a protocol defines and the conformer inherits. It is here: packages/s/swift-data/files/SwiftData/CoreDataBacking.swift:54, and packages/s/swift-data/files/SwiftData/PersistentModel.swift as a protocol requirement rather than an extension member: it answers with a backing data over the same row read as another class, and a conformer that could not say so has to say so instead of trapping at run time.",
+            "verified_by": "a grep for the declaration and its line, not the name test",
             "facts": "facts/SwiftData/Substrate.md"
         },
         {
