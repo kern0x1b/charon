@@ -148,6 +148,19 @@ checkEqual("isNil(at:) past the end: the host says missing", hOptionals.isNil(at
 checkEqual("wrappedElementType of a column of optionals: the host's and the port's agree",
            String(describing: hOptionals.wrappedElementType), String(describing: pOptionals.wrappedElementType))
 
+// The probe runs here rather than at the top of the file because it reads `pOptionals`, and
+// this file is top-level code: a forward read of a top-level `let` is not a compile error and
+// is a segfault at run time. That is what the first run of this probe did.
+// PROBE: why String? survives and Int? does not.
+let pU = PortTabularData.Column<Int?>(name: "n", [1, nil, 3])
+let pS = PortTabularData.Column<String?>(name: "u", ["a", nil])
+let bU = PortTabularData.AnyColumn(pU)
+let bS = PortTabularData.AnyColumn(pS)
+print("PROBE Int?    wrapped=\(String(describing: bU.wrappedElementType)) missing=\(bU.missingCount) erased=\(bU.erasedValues.map { String(describing: $0) })")
+print("PROBE String? wrapped=\(String(describing: bS.wrappedElementType)) missing=\(bS.missingCount) erased=\(bS.erasedValues.map { String(describing: $0) })")
+print("PROBE diff-column wrapped=\(String(describing: pOptionals.wrappedElementType)) missing=\(pOptionals.missingCount) erased=\(pOptionals.erasedValues.map { String(describing: $0) })")
+print("PROBE types: diff=\(String(describing: type(of: pOptionals))) pU=\(String(describing: type(of: pU))) pS=\(String(describing: type(of: pS)))")
+
 // The box: the type it was made with, the type it hands back, and the refusal for a type it does
 // not hold. The last of the three is the one a value comparison cannot catch, and the one the
 // wrong-T mutant is written against.
