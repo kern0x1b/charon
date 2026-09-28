@@ -226,3 +226,31 @@ The hash candidates are the same shape of question and are not yet run: CFHash o
 of the dictionary, and a hash of the raw bytes, each against the 13 samples. The samples show a
 non-linear, string-shaped answer — a one-bit change in a field's low bits moves the whole value — so the
 first two are the likely ones, and the fixture holds the samples to fit them against.
+
+
+## The refuting pair, printed as bytes: my reading of the array was off by one
+
+The differential prints the sixteen bytes of each argument at the host's `CMTagCompare` call, and the
+call order:
+
+```
+compare arg 0 of all[3] vs all[7]: 6b 61 72 74 03 00 00 00 00 00 00 00 00 00 f8 3f
+compare arg 1 of all[3] vs all[7]: 6b 61 72 74 03 00 00 00 00 00 00 00 00 00 e0 bf
+the call is CMTagCompare(all[3], all[7]) and the port's the same way
+```
+
+So the two tags are **both** `'trak'` at data type 3 (Float64) — values `0x3FF8000000000000` = **1.5** and
+`0xBFE0000000000000` = **−0.5**. Not `(0, OSType, 0)` as I read the array: I counted entries from the
+`CMTag all[] = {` line, so every index after the first was one out.
+
+**And the host's answer of 1 is right, and so is the fitted rule — the missing piece is the value's
+signedness.** Comparing 1.5 with −0.5 gives *greater*, which is what a **signed** comparison of the two
+doubles says. The port answers −1 because it compares the raw 64-bit words unsigned, where
+`0x3FF8…` is below `0xBFE0…`. So the field order and the signed category are right, and the value is
+compared **as a signed number of the tag's own data type** — as a signed 64-bit for SInt64 and as a
+signed double for Float64.
+
+The fitter could not see that, and the reason is again the data: **none of the fifteen tags carries a
+negative Float64**, so its `value number` and `value raw` candidates were indistinguishable over every
+pair it held. One tag with a negative float value, and a `signed double` candidate, would make the
+table decide it. That is the next measurement, and it is a sample, not a rule.
