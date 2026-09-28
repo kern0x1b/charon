@@ -201,7 +201,16 @@ CMTag CMTagMakeFromDictionary( CFDictionaryRef dict )
 // brace** for an invalid tag, which is what the host prints and is measured byte by byte.
 static NSString *charon_category_text(CMTagCategory category)
 {
-    return [NSString stringWithFormat:@"%c%c%c%c", (char)(category >> 24), (char)(category >> 16), (char)(category >> 8), (char)category];
+    // One character per byte, and the string ENDS at a zero byte: it is a C string, which is why the
+    // host prints the Undefined category as '' and 0x7fffffff as one 0x7f and nothing beyond it.
+    NSMutableString *text = [NSMutableString stringWithCapacity:4];
+    for (int shift = 24; shift >= 0; shift -= 8) {
+        unsigned byte = (unsigned)((category >> shift) & 0xFF);
+        if (!byte)
+            break;
+        [text appendFormat:@"%C", (unichar)byte];
+    }
+    return text;
 }
 
 static NSString *charon_value_text(CMTag tag)
