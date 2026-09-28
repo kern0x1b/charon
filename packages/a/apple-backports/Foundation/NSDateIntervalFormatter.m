@@ -43,11 +43,17 @@ typedef double CharonUDate;
 typedef void *CharonUDateIntervalFormat;
 typedef int32_t CharonUErrorCode;
 
-extern CharonUDateIntervalFormat udtitvfmt_open(const char *locale, const uint16_t *skeleton, int32_t skeletonLength,
-                                               const uint16_t *tzID, int32_t tzIDLength, CharonUErrorCode *status);
-extern void udtitvfmt_close(CharonUDateIntervalFormat *formatter);
-extern int32_t udtitvfmt_format(const CharonUDateIntervalFormat *formatter, CharonUDate fromDate, CharonUDate toDate,
-                                 uint16_t *result, int32_t resultCapacity, void *position, CharonUErrorCode *status);
+/* Weak, because the release that carries the class is the one that has them and the one below the
+   floor has not: a strong reference would be an unsatisfied import on any release whose libicucore
+   lacks them, and a weak one is NULL there, which -charon_intervalFrom:to: answers rather than
+   faulting on. */
+extern __attribute__((weak_import)) CharonUDateIntervalFormat
+    udtitvfmt_open(const char *locale, const uint16_t *skeleton, int32_t skeletonLength,
+                   const uint16_t *tzID, int32_t tzIDLength, CharonUErrorCode *status);
+extern __attribute__((weak_import)) void udtitvfmt_close(CharonUDateIntervalFormat *formatter);
+extern __attribute__((weak_import)) int32_t
+    udtitvfmt_format(const CharonUDateIntervalFormat *formatter, CharonUDate fromDate, CharonUDate toDate,
+                     uint16_t *result, int32_t resultCapacity, void *position, CharonUErrorCode *status);
 
 /* The date and the time skeleton of each of the header's five styles, the way the release's own
    NSDateFormatter writes them. A style pair is the two skeletons joined, the date's fields first and
@@ -231,6 +237,10 @@ static NSString *CharonIntervalSkeleton(NSInteger dateStyle, NSInteger timeStyle
     for (NSUInteger index = 0; index < zone.length && index < 255; index++)
         zoneChars[zoneLength++] = (uint16_t)[zone characterAtIndex:index];
 
+    /* A release without the four answers nil, which is what the header documents for every answer it
+       cannot give. */
+    if (!udtitvfmt_open || !udtitvfmt_format || !udtitvfmt_close)
+        return nil;
     CharonUErrorCode status = 0;
     CharonUDateIntervalFormat formatter =
         udtitvfmt_open(self.locale.localeIdentifier.UTF8String, skeletonChars, skeletonLength,

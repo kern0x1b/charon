@@ -9,7 +9,10 @@ import("cache")
 
 -- A library stands after every library it names in `libraries`: link() finds those in the output folder, so they are built first.
 LIBRARIES = {
-    {name = "FoundationBackports", folder = "Foundation", frameworks = {"Foundation", "CoreFoundation", "SystemConfiguration"}},
+    -- libicucore carries the four udtitvfmt_* entry points NSDateIntervalFormatter is built on, exported by the
+    -- release from iOS 5.0 on and by none before it, so the class floor is 5.0; the imports are weak, so a
+    -- release whose libicucore lacks them binds NULL and the class answers nil rather than faulting.
+    {name = "FoundationBackports", folder = "Foundation", frameworks = {"Foundation", "CoreFoundation", "SystemConfiguration"}, libraries = {"icucore"}},
     {name = "UIKitBackports", folder = "UIKit", frameworks = {"UIKit", "Foundation", "CoreGraphics", "QuartzCore", "MobileCoreServices"}, libraries = {"FoundationBackports"}, archives = {"box2d"}},
     {name = "CoreLocationBackports", folder = "CoreLocation", frameworks = {"CoreLocation", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "CoreDataBackports", folder = "CoreData", frameworks = {"CoreData", "Foundation"}, libraries = {"FoundationBackports"}},
