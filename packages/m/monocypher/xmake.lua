@@ -31,8 +31,11 @@ package("monocypher")
         -- armv7-apple-ios at all. The 4.3 gate's resolve hit exactly that and the install failed
         -- with a runv of /usr/bin/clang. Naming the package, and refusing when it is not there,
         -- turns that silent fallback into a failure that says what it wants.
-        local required = package:required_packages() or {}
-        local llvm = required["llvm"]
+        -- The project, not the package: a package has no required_packages() in this xmake (it is
+        -- the project that holds the graph), and the toolchain reads llvm from the project the same
+        -- way -- toolchains/apple-ios/xmake.lua's parts() takes import("core.project.project").
+        local project = import("core.project.project")
+        local llvm = (project:required_packages() or {})["llvm"]
         if not llvm then
             raise("charon@monocypher is built with the charon toolchain's clang, which comes from the llvm package; this package's graph does not hold it")
         end
