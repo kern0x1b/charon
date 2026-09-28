@@ -20,6 +20,13 @@
 #import <objc/message.h>
 #import <objc/runtime.h>
 
+// The runtime's own method record, which the SDK declares opaque and the probe needs the shape of.
+struct objc_method {
+    SEL name;
+    const char *types;
+    IMP imp;
+};
+
 static int failures = 0;
 static int checked = 0;
 
@@ -46,6 +53,27 @@ static void reportImages(const char *name)
     Class theirs = objc_getClass("MKGeoJSONDecoder");
     printf("# %s: port decoder in %s, host decoder in %s\n", name,
            [imageOf(port) UTF8String], [imageOf(theirs) UTF8String]);
+}
+
+// The port's class's OWN method list, as the runtime holds it, so a selector that is not the one the
+// probe asks for is visible rather than inferred. The rename is a prefix on the CLASS name, so if it
+// has also touched a method name this is where it shows.
+static void reportPortMethods(Class port)
+{
+    unsigned count = 0;
+    Method *methods = class_copyMethodList(port, &count);
+    printf("# the port's class answers %u methods of its own:\n", count);
+    for (unsigned index = 0; index < count; index++) {
+        printf("#     -[%s %s]\n", class_getName(port), sel_getName(methods[index]->name));
+    }
+    free(methods);
+    unsigned classCount = 0;
+    Method *classMethods = class_copyMethodList(object_getClass(port), &classCount);
+    printf("# the port's METACLASS answers %u of its own:\n", classCount);
+    for (unsigned index = 0; index < classCount; index++) {
+        printf("#     +[%s %s]\n", class_getName(port), sel_getName(classMethods[index]->name));
+    }
+    free(classMethods);
 }
 
 // One case: the same document to the host and to the port, and the two answers compared. Every call
@@ -79,6 +107,7 @@ static void same(const char *name, const char *json, BOOL expectRefused)
             bad([label stringByAppendingString:@": the port"], @"charonHost_MKGeoJSONDecoder is not in the probe");
             return;
         }
+        reportPortMethods(port);
         SEL decode = NSSelectorFromString(@"geoJSONObjectsWithData:error:");
         if (![port respondsToSelector:decode]) {
             bad([label stringByAppendingString:@": the port"], @"it does not answer -geoJSONObjectsWithData:error:");
