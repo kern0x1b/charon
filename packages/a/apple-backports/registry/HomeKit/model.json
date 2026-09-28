@@ -212,108 +212,120 @@
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the home graph and the HAP transport that would reach an accessory, which this port does not carry: it has no HAP session with an accessory, and iOS 6 runs no home hub, no homekitd and no accessories daemon, so there is no system service to ask for a home graph either",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
+      "status": "implemented",
+      "effect": "the base of the events that fire at a time, with the uniqueIdentifier the trigger's own list is keyed by",
+      "facts": "facts/HomeKit/HMHome.md",
+      "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
     },
     {
       "api": "HMDurationEvent",
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the home graph and the HAP transport that would reach an accessory, which this port does not carry: it has no HAP session with an accessory, and iOS 6 runs no home hub, no homekitd and no accessories daemon, so there is no system service to ask for a home graph either",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
+      "status": "implemented",
+      "effect": "an event that fires after a duration, with -initWithDuration: and the duration it holds",
+      "facts": "facts/HomeKit/HMHome.md",
+      "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
     },
     {
       "api": "HMMutableDurationEvent",
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the home graph and the HAP transport that would reach an accessory, which this port does not carry: it has no HAP session with an accessory, and iOS 6 runs no home hub, no homekitd and no accessories daemon, so there is no system service to ask for a home graph either",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
+      "status": "implemented",
+      "effect": "the writable form of HMDurationEvent, with a settable duration",
+      "facts": "facts/HomeKit/HMHome.md",
+      "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
     },
     {
       "api": "HMCalendarEvent",
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the home graph and the HAP transport that would reach an accessory, which this port does not carry: it has no HAP session with an accessory, and iOS 6 runs no home hub, no homekitd and no accessories daemon, so there is no system service to ask for a home graph either",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
+      "status": "implemented",
+      "effect": "an event that fires on a date's components, with -initWithFireDateComponents:",
+      "facts": "facts/HomeKit/HMHome.md",
+      "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
     },
     {
       "api": "HMMutableCalendarEvent",
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the home graph and the HAP transport that would reach an accessory, which this port does not carry: it has no HAP session with an accessory, and iOS 6 runs no home hub, no homekitd and no accessories daemon, so there is no system service to ask for a home graph either",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
+      "status": "implemented",
+      "effect": "the writable form of HMCalendarEvent, with a settable fireDateComponents",
+      "facts": "facts/HomeKit/HMHome.md",
+      "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
     },
     {
       "api": "HMSignificantTimeEvent",
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the home graph and the HAP transport that would reach an accessory, which this port does not carry: it has no HAP session with an accessory, and iOS 6 runs no home hub, no homekitd and no accessories daemon, so there is no system service to ask for a home graph either",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
+      "status": "implemented",
+      "effect": "an event that fires at sunrise or sunset with an offset, with -initWithSignificantEvent:offset:",
+      "facts": "facts/HomeKit/HMHome.md",
+      "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
     },
     {
       "api": "HMMutableSignificantTimeEvent",
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the home graph and the HAP transport that would reach an accessory, which this port does not carry: it has no HAP session with an accessory, and iOS 6 runs no home hub, no homekitd and no accessories daemon, so there is no system service to ask for a home graph either",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
+      "status": "implemented",
+      "effect": "the writable form of HMSignificantTimeEvent, with a settable significantEvent and offset",
+      "facts": "facts/HomeKit/HMHome.md",
+      "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
     },
     {
       "api": "HMPresenceEvent",
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the home graph and the HAP transport that would reach an accessory, which this port does not carry: it has no HAP session with an accessory, and iOS 6 runs no home hub, no homekitd and no accessories daemon, so there is no system service to ask for a home graph either",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
+      "status": "implemented",
+      "effect": "an event that fires on a user's arrival or departure, with -initWithPresenceEventType:presenceUserType: and the two enumerations the header gives held as the numbers they are",
+      "facts": "facts/HomeKit/HMHome.md",
+      "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
     },
     {
       "api": "HMMutablePresenceEvent",
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the home graph and the HAP transport that would reach an accessory, which this port does not carry: it has no HAP session with an accessory, and iOS 6 runs no home hub, no homekitd and no accessories daemon, so there is no system service to ask for a home graph either",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
+      "status": "implemented",
+      "effect": "the writable form of HMPresenceEvent, with a settable presenceEventType and presenceUserType",
+      "facts": "facts/HomeKit/HMHome.md",
+      "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
     },
     {
       "api": "HMMutableCharacteristicEvent",
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the home graph and the HAP transport that would reach an accessory, which this port does not carry: it has no HAP session with an accessory, and iOS 6 runs no home hub, no homekitd and no accessories daemon, so there is no system service to ask for a home graph either",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
+      "status": "implemented",
+      "effect": "the writable form of HMCharacteristicEvent, with a settable characteristic and triggerValue",
+      "facts": "facts/HomeKit/HMHome.md",
+      "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
     },
     {
       "api": "HMCharacteristicThresholdRangeEvent",
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the home graph and the HAP transport that would reach an accessory, which this port does not carry: it has no HAP session with an accessory, and iOS 6 runs no home hub, no homekitd and no accessories daemon, so there is no system service to ask for a home graph either",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
+      "status": "implemented",
+      "effect": "an event that fires on a characteristic leaving a number range, with -initWithCharacteristic:thresholdRange:",
+      "facts": "facts/HomeKit/HMHome.md",
+      "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
     },
     {
       "api": "HMMutableCharacteristicThresholdRangeEvent",
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the home graph and the HAP transport that would reach an accessory, which this port does not carry: it has no HAP session with an accessory, and iOS 6 runs no home hub, no homekitd and no accessories daemon, so there is no system service to ask for a home graph either",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
+      "status": "implemented",
+      "effect": "the writable form of HMCharacteristicThresholdRangeEvent, with a settable characteristic and thresholdRange",
+      "facts": "facts/HomeKit/HMHome.md",
+      "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
     },
     {
       "api": "HMHomeAccessControl",

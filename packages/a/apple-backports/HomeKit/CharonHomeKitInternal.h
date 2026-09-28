@@ -29,7 +29,6 @@ HMAction *CharonHomeKitAction(NSString *identifier, NSString * _Nullable homeIde
 HMService *CharonHomeKitService(NSString *identifier, NSString * _Nullable accessoryIdentifier);
 HMCharacteristic *CharonHomeKitCharacteristic(NSString *identifier, NSString * _Nullable serviceIdentifier);
 HMAccessoryCategory *CharonHomeKitAccessoryCategory(NSString *categoryType);
-HMNumberRange *CharonHomeKitNumberRange(NSNumber * _Nullable minimum, NSNumber * _Nullable maximum);
 
 // The characteristic metadata belongs to the characteristic and has no identifier of its own, so it is
 // built from that characteristic's record rather than from a stored one of its own.
@@ -149,6 +148,24 @@ HMHomeAccessControl *CharonHomeKitHomeAccessControl(HMHome *home, HMUser *user);
 - (void)charon_applyPredicate:(NSPredicate * _Nullable)predicate;
 - (NSArray<HMEvent *> *)charon_eventsForKey:(NSString *)key;
 @end
+
+#pragma mark - the time events of iOS 11.0
+
+
+@interface HMDurationEvent () @property (nonatomic, strong, nullable) NSNumber *charon_duration; @end
+@interface HMMutableDurationEvent () @end
+@interface HMCalendarEvent () @property (nonatomic, strong, nullable) NSDateComponents *charon_fireDateComponents; @end
+@interface HMMutableCalendarEvent () @end
+@interface HMSignificantTimeEvent () @property (nonatomic, copy, nullable) NSString *charon_significantEvent;
+@property (nonatomic, strong, nullable) NSNumber *charon_offset; @end
+@interface HMMutableSignificantTimeEvent () @end
+@interface HMPresenceEvent () @property (nonatomic, strong, nullable) NSNumber *charon_presenceEventType;
+@property (nonatomic, strong, nullable) NSNumber *charon_presenceUserType; @end
+@interface HMMutablePresenceEvent () @end
+@interface HMMutableCharacteristicEvent () @end
+@interface HMCharacteristicThresholdRangeEvent () @property (nonatomic, strong, nullable) HMCharacteristic *charon_characteristic;
+@property (nonatomic, strong, nullable) HMNumberRange *charon_thresholdRange; @end
+@interface HMMutableCharacteristicThresholdRangeEvent () @end
 
 NS_ASSUME_NONNULL_END
 
