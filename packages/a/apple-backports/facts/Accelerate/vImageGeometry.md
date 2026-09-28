@@ -1087,6 +1087,28 @@ stretches, which is the header's "the support is scaled by 1/scale when downsamp
 alone. Those two grids are one run apart, and the twelve-row one is the measurement.
 
 
+## WITHDRAWN: the transpose probe failed its own sanity check
+
+The coordinator asked for a sanity check first, and it **fails**. At a slope of 0, a translate of 0 and a
+scale of 1 both sides must be the identity, so `vShear(src)` and `transpose(hShear(transpose(src)))` must
+both be `src`. Run exactly that case (`probe-transpose-id.m`):
+
+    host 5x12  slope 0 translate 0 scale 1:  58 of 60 differ, the widest by  2
+    host 12x5  slope 0 translate 0 scale 1:  55 of 60 differ, the widest by 11
+    host 9x5   slope 0 translate 0 scale 1:  40 of 45 differ, the widest by 11
+
+**So the composition in that probe is wrong** - a transposed buffer's `rowBytes`, or the `width` and `height`
+of the transposed `vImage_Buffer`, or the offset arguments - and **every "differs by 3.5 to 12.9" in the
+previous section is a probe artefact, not the host.** A difference of 11 on a picture whose values are
+`100 + r` is what reading the wrong row looks like, and that is what the probe was doing. The conclusion
+"the host's vertical is not the transpose of its own horizontal" is withdrawn, and the narrowing of the
+cause to "the edge, a limit, or a sign" goes with it, because it rested on the same numbers.
+
+What survives from that turn is only what was measured against a single function rather than a composition:
+the horizontal is exact at every scale and both edging modes, and the vertical is exact at a scale of 1 and
+wrong at 0.25, 0.5 and 2, in 36 of 212 cases - which is the table, and the table is from the differential
+rather than from a probe.
+
 ## The host's vertical is NOT the transpose of its own horizontal
 
 The decisive instrument, run on the host itself: transpose the source, run the host's **horizontal** shear on
