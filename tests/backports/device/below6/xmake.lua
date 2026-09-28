@@ -34,6 +34,10 @@ local PROGRAMS = {
     -- NSNumberFormatter and the system of units is read from the release's own locale, so what it holds is that every method
     -- answers on the device (tests/backports/host/unitformat holds the wording, on the host).
     unitfmt = {},
+    -- dateinterval.m runs the port's own NSDateIntervalFormatter - the release's DateIntervalFormat underneath - against
+    -- the golden file dateinterval/expected.txt, which is the host's own class's answers over 3375 cases. The class is
+    -- carried from 5.0, so the program's band names it and the file travels with it.
+    dateinterval = {extra = {"dateinterval/expected.txt"}},
 }
 for name, program in pairs(PROGRAMS) do
     target(name)
