@@ -1,4 +1,5 @@
 #import "CharonAVAudioEngine.h"
+#import "CharonAVAudioEngineManual.h"
 #import "CharonAVAudioBuffer.h"
 #import "CharonAVAudioUnit.h"
 #import <AVFAudio/AVAudioConnectionPoint.h>
@@ -38,6 +39,17 @@ static BOOL CharonOfflineOutput = NO;
     // actually landed on.
     NSMutableDictionary<NSValue *, NSArray *> *_charon_playerRoutes;
     BOOL _charon_offline;
+    // Manual rendering. The mode itself, the format the offline render is in, the largest pull the
+    // caller may ask for, the block that does the rendering, and the sample time the next pull is at.
+    AUNode _charon_outputAUNode;
+    AUNode _charon_mainMixerAUNode;
+    AudioUnit _charon_outputUnit;
+    BOOL _charon_manualRendering;
+    AVAudioEngineManualRenderingMode _charon_manualMode;
+    AVAudioFormat *_charon_manualFormat;
+    AVAudioFrameCount _charon_manualMaximumFrameCount;
+    AVAudioEngineManualRenderingBlock _charon_manualBlock;
+    AVAudioFramePosition _charon_manualSampleTime;
 }
 
 static OSStatus CharonAddUnit(AUGraph graph, OSType type, OSType subtype, AUNode *outNode)
@@ -59,10 +71,15 @@ static OSStatus CharonAddUnit(AUGraph graph, OSType type, OSType subtype, AUNode
         _charon_graph = graph;
 
         AUNode outputAUNode = 0, mixerAUNode = 0;
+    _charon_outputAUNode = 0;
+    _charon_outputUnit = NULL;
+    _charon_mainMixerAUNode = 0;
         CharonAddUnit(graph, kAudioUnitType_Output, CharonOfflineOutput ? kAudioUnitSubType_GenericOutput : kAudioUnitSubType_RemoteIO, &outputAUNode);
         CharonAddUnit(graph, kAudioUnitType_Mixer, kAudioUnitSubType_MultiChannelMixer, &mixerAUNode);
         AUGraphConnectNodeInput(graph, mixerAUNode, 0, outputAUNode, 0);
 
+        _charon_outputAUNode = outputAUNode;
+        _charon_mainMixerAUNode = mixerAUNode;
         AudioUnit outputUnit = NULL, mixerUnit = NULL;
         AUGraphNodeInfo(graph, outputAUNode, NULL, &outputUnit);
         AUGraphNodeInfo(graph, mixerAUNode, NULL, &mixerUnit);
@@ -296,6 +313,178 @@ static OSStatus CharonAddUnit(AUGraph graph, OSType type, OSType subtype, AUNode
 - (void)setAutoShutdownEnabled:(BOOL)autoShutdownEnabled
 {
     _charon_autoShutdown = autoShutdownEnabled;
+}
+
+
+// ---- manual rendering, iOS 11 ----
+//
+// The engine's output is a real unit either way, and the difference is which one. In realtime it is
+// the release's RemoteIO and an I/O thread drives it; in manual rendering it is a
+// kAudioUnitSubType_GenericOutput, which needs no mediaserverd and is never started - the caller
+// pulls it, and the pull is the release's own AudioUnitRender, the same call this file's offline
+// output already made by hand through CharonAudioEngineTestSupport. The switch replaces the output
+// node of the live graph, so an application gets manual rendering by calling the header's method and
+// not by setting a flag first.
+
+// Swaps the graph's output node for a generic output, re-connecting the main mixer to it. The mixer
+// is the only node the engine connects to its output in -init, so that is the one connection to make.
+- (BOOL)charon_replaceOutputWithGeneric
+{
+    if (_charon_outputAUNode == 0) {
+        return NO;
+    }
+    AUNode previous = _charon_outputAUNode;
+    AUGraphDisconnectNodeInput(_charon_graph, _charon_mainMixerAUNode, 0);
+    AUGraphRemoveNode(_charon_graph, previous);
+    AUNode output = 0;
+    AudioComponentDescription description = {0};
+    description.componentType = kAudioUnitType_Output;
+    description.componentSubType = kAudioUnitSubType_GenericOutput;
+    description.componentManufacturer = kAudioUnitManufacturer_Apple;
+    if (AUGraphAddNode(_charon_graph, &description, &output) != noErr || output == 0) {
+        return NO;
+    }
+    AUGraphConnectNodeInput(_charon_graph, _charon_mainMixerAUNode, 0, output, 0);
+    AudioUnit unit = NULL;
+    AUGraphNodeInfo(_charon_graph, output, NULL, &unit);
+    _charon_outputAUNode = output;
+    _charon_outputUnit = unit;
+    UInt32 maxFrames = 1024;
+    AudioUnitSetProperty(unit, kAudioUnitProperty_MaximumFramesPerSlice, kAudioUnitScope_Global, 0, &maxFrames, sizeof(maxFrames));
+    // The new output takes the format the chain is already carrying, asked of the main mixer, which is
+    // the node this graph connects to the output in -init. Both scopes are set, because AudioUnitRender
+    // formats ioData by the Output scope and a pull with only the Input scope set fails with -50.
+    AVAudioFormat *carried = [_charon_mainMixer outputFormatForBus:0];
+    if (carried != nil) {
+        AudioStreamBasicDescription described = *carried.streamDescription;
+        AudioUnitSetProperty(_charon_outputUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, 0,
+                             &described, sizeof(described));
+        AudioUnitSetProperty(_charon_outputUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Output, 0,
+                             &described, sizeof(described));
+    }
+    return YES;
+}
+
+- (BOOL)enableManualRenderingMode:(AVAudioEngineManualRenderingMode)mode
+                           format:(AVAudioFormat *)pcmFormat
+                maximumFrameCount:(AVAudioFrameCount)maximumFrameCount
+                           error:(NSError **)outError
+{
+    if (pcmFormat == nil || maximumFrameCount == 0) {
+        if (outError) {
+            *outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:kAudioUnitErr_InvalidPropertyValue userInfo:nil];
+        }
+        return NO;
+    }
+    if (!_charon_manualRendering) {
+        [self prepare];
+        if (![self charon_replaceOutputWithGeneric]) {
+            if (outError) {
+                *outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:kAudioUnitErr_FailedInitialization userInfo:nil];
+            }
+            return NO;
+        }
+    }
+    _charon_manualRendering = YES;
+    _charon_manualMode = mode;
+    _charon_manualFormat = pcmFormat;
+    _charon_manualMaximumFrameCount = maximumFrameCount;
+    _charon_manualSampleTime = 0;
+    return YES;
+}
+
+- (void)disableManualRenderingMode
+{
+    _charon_manualRendering = NO;
+    _charon_manualFormat = nil;
+    _charon_manualBlock = nil;
+    _charon_manualSampleTime = 0;
+}
+
+- (AVAudioEngineManualRenderingMode)manualRenderingMode
+{
+    return _charon_manualMode;
+}
+
+- (AVAudioFormat *)manualRenderingFormat
+{
+    return _charon_manualFormat;
+}
+
+- (AVAudioFrameCount)manualRenderingMaximumFrameCount
+{
+    return _charon_manualMaximumFrameCount;
+}
+
+- (AVAudioFramePosition)manualRenderingSampleTime
+{
+    return _charon_manualSampleTime;
+}
+
+- (AVAudioEngineManualRenderingBlock)manualRenderingBlock
+{
+    return _charon_manualBlock;
+}
+
+- (void)setManualRenderingBlock:(AVAudioEngineManualRenderingBlock)manualRenderingBlock
+{
+    // The block takes over the rendering: the caller's block is what the pull runs, and the output
+    // unit's own pull is not used while one is set. It is kept in the caller's thread and is called
+    // from the caller's pull, never from a thread of ours.
+    _charon_manualBlock = [manualRenderingBlock copy];
+}
+
+// The offline pull: the release's AudioUnitRender on the engine's own output unit, with the frame
+// count the caller asked for, and the sample time advanced by what was rendered. Nothing here is
+// started: the output unit is a generic output, which has no I/O thread to start.
+- (AVAudioEngineManualRenderingStatus)renderOffline:(AVAudioFrameCount)numberOfFrames
+                                          toBuffer:(AVAudioPCMBuffer *)buffer
+                                             error:(NSError **)outError
+{
+    if (!_charon_manualRendering) {
+        if (outError) {
+            *outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:kAudioUnitErr_InvalidPropertyValue userInfo:nil];
+        }
+        return AVAudioEngineManualRenderingStatusError;
+    }
+    if (buffer == nil || numberOfFrames == 0 || numberOfFrames > _charon_manualMaximumFrameCount) {
+        if (outError) {
+            *outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:kAudioUnitErr_InvalidPropertyValue userInfo:nil];
+        }
+        return AVAudioEngineManualRenderingStatusError;
+    }
+    AudioBufferList *destination = buffer.mutableAudioBufferList;
+    if (destination == NULL) {
+        return AVAudioEngineManualRenderingStatusError;
+    }
+    if (_charon_manualBlock != nil) {
+        // The caller's block does the rendering, in the header's own shape - a frame count, a buffer
+        // and an out error - so it is called on the caller's thread with the caller's buffer, and the
+        // engine's own pull is not used while one is set.
+        OSStatus blockError = noErr;
+        AVAudioEngineManualRenderingStatus status = _charon_manualBlock(numberOfFrames, destination, &blockError);
+        if (status == AVAudioEngineManualRenderingStatusSuccess) {
+            _charon_manualSampleTime += numberOfFrames;
+            buffer.frameLength = numberOfFrames;
+        } else if (outError) {
+            *outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:blockError userInfo:nil];
+        }
+        return status;
+    }
+    AudioUnitRenderActionFlags flags = 0;
+    AudioTimeStamp timestamp = {0};
+    timestamp.mFlags = kAudioTimeStampSampleTimeValid;
+    timestamp.mSampleTime = _charon_manualSampleTime;
+    OSStatus status = AudioUnitRender(_charon_outputUnit, &flags, &timestamp, 0, numberOfFrames, destination);
+    if (status != noErr) {
+        if (outError) {
+            *outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:status userInfo:nil];
+        }
+        return AVAudioEngineManualRenderingStatusError;
+    }
+    _charon_manualSampleTime += numberOfFrames;
+    buffer.frameLength = numberOfFrames;
+    return AVAudioEngineManualRenderingStatusSuccess;
 }
 
 @end
