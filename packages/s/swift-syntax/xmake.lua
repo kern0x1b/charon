@@ -56,22 +56,34 @@ package("swift-syntax")
         -- The fetch's own layout, read from the private store after the first run: the upstream root
         -- is `<cache>/<version>/source/swift-syntax`, and `Package.swift` and `Sources/` are in it.
         -- `sourcedir()` is that `source`, so the root is one level *down*, not up.
-        -- There is no `sourcedir()` in this context either -- it is nil here, and the run printed
-        -- `--package-path nil/swift-syntax` -- so the fetched root is *found* instead of derived:
-        -- the package's own name and version, under the store's cache, and the directory holding
-        -- `Package.swift` is the root. A path that does not exist is a refusal, not a build of
-        -- nothing.
-        local function fetched_root()
-            local global = os.getenv("XMAKE_GLOBALDIR") or path.join(os.getenv("HOME"), ".xmake")
-            local base = path.join(global, "cache", "packages", "2609", "s", "swift-syntax",
-                                   package:version_str())
-            if not os.isfile(path.join(base, "source", "swift-syntax", "Package.swift")) then
-                raise("%s fetches swift-syntax, and its fetched root is not at %s: the store's layout moved",
-                      package:name(), path.join(base, "source", "swift-syntax"))
-            end
-            return path.join(base, "source", "swift-syntax")
+        -- Where the source is: inside `on_install` the working directory *is* the package's
+        -- unpacked source -- that is how every recipe that runs `make` in its own tree works -- and
+        -- a tag that unpacks into a subfolder makes that subfolder the root. So the root is measured
+        -- here rather than assumed, and the reading goes into the log whether or not the build
+        -- after it succeeds:
+        --
+        --     print("swift-syntax: cwd = " .. os.curdir())
+        --     for _, entry in ipairs(os.files(path.join(os.curdir(), "*"))) do
+        --         print("swift-syntax:   " .. path.filename(entry))
+        --     end
+        print("%s: the source is unpacked in %s", package:name(), os.curdir())
+        for _, entry in ipairs(os.files(path.join(os.curdir(), "*"))) do
+            print("%s:   %s", package:name(), path.filename(entry))
         end
-        local source = fetched_root()
+        local function has_manifest(dir)
+            return os.isfile(path.join(dir, "Package.swift"))
+        end
+        local source = os.curdir()
+        if not has_manifest(source) then
+            local nested = path.join(source, "swift-syntax")
+            if has_manifest(nested) then
+                source = nested
+            else
+                raise("%s unpacks swift-syntax, and neither %s nor %s holds a Package.swift",
+                      package:name(), os.curdir(), nested)
+            end
+        end
+        print("%s: building from %s", package:name(), source)
         os.vrunv("swift", {"build", "--package-path", source, "--scratch-path", build,
                            "--triple", "arm64-apple-macosx13.0", "-c", "release"}, {curdir = source})
         -- The products: the modules under Modules/, the archives beside them, and the resources
