@@ -714,7 +714,7 @@ static void CharonMDLReadPLY(NSData *data, NSMutableArray<MDLObject *> *objects,
     NSString *format = @"";
     NSMutableArray<NSString *> *elements = [NSMutableArray array];
     NSMutableArray<NSNumber *> *elementCounts = [NSMutableArray array];
-    NSMutableArray<NSArray *> *elementProperties = [NSMutableArray array];
+    NSMutableArray *elementProperties = [NSMutableArray array];
     NSMutableArray<NSString *> *elementTypes = [NSMutableArray array];
     for (NSString *raw in lines) {
         NSArray<NSString *> *words = [[raw stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]
