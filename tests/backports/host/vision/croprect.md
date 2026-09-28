@@ -6,6 +6,12 @@
 # columns are the centre of the lit run, which is where the impulse landed, and the fifth is
 # where the port's own rule puts it: `inset + source * scale`.
 #
+#
+# `nothing lit` means the impulse was **cropped away**: it sat outside the crop, which at a
+# negative inset is where the rule puts the picture's own edge, so nothing of it reaches the
+# target. It is the expected outcome and it says nothing about the crop's start -- it is not a
+# black frame, and it is not a measurement of anything.
+#
 # The rule has to explain every row before anything in the library changes.
 
 | case | rule | scale | drawn | inset x, y | source column, row | across a row | down a column |
