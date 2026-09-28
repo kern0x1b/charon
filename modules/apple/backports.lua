@@ -1507,7 +1507,7 @@ local function declared_names(root, sdkdir)
         -- 2026-09-28, sha256(spelling) is e3b0c44298fc1c14, the empty string, for every SDK - and the
         -- one file that key names was 51,197,631 bytes of some other SDK's words.
         local kept = path.join(dyld.root(), "cache", "sdk-header-names-v1-"
-                              .. hash.sha256(spelling, #spelling):sub(1, 16) .. ".txt")
+                              .. hash.strhash128(spelling):sub(1, 16) .. ".txt")
         local text = os.isfile(kept) and io.readfile(kept) or nil
         if not text then
             -- os.execv's stdout is a file to write, not a buffer: grep's words go to a temporary file, and
