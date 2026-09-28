@@ -68,8 +68,8 @@ static void report(const char *label, int onHost, id providerForThisSide, Class 
     // from, and the address -init is actually reached at on it. Two addresses are two call targets.
     Method initMethod = class_getInstanceMethod([openID class], sel_registerName("init"));
     printf("%s\n", label);
-    printf("  built   request class %s\n", class_getName(openID));
-    printf("  built   -init imp      %p\n", initMethod ? (void *)method_getImplementation(initMethod) : (void *)0);
+    printf("  built   request class          %s\n", class_getName(openID));
+    printf("  built   -init imp            %p\n", initMethod ? (void *)method_getImplementation(initMethod) : (void *)0);
     // The host's request comes from its provider, which is the path the SDK gives and the one the
     // base's NS_UNAVAILABLE -init and +new are pointing at. The port's provider is not implemented yet,
     // so the port's request is made with [[cls alloc] init], which the port binds because its own
@@ -85,10 +85,10 @@ static void report(const char *label, int onHost, id providerForThisSide, Class 
         printf("  FAIL no request could be made from %s\n", class_getName(openID));
         return;
     }
-    printf("  fresh   requestedScopes   %s\n", ask(request, "requestedScopes") ? "set" : "nil");
-    printf("  fresh   state             %s\n", ask(request, "state") ? "set" : "nil");
-    printf("  fresh   nonce             %s\n", ask(request, "nonce") ? "set" : "nil");
-    printf("  fresh   requestedOperation %s\n", ask(request, "requestedOperation") ? "set" : "nil");
+    printf("  fresh   requestedScopes        %s\n", ask(request, "requestedScopes") ? "set" : "nil");
+    printf("  fresh   state                  %s\n", ask(request, "state") ? "set" : "nil");
+    printf("  fresh   nonce                  %s\n", ask(request, "nonce") ? "set" : "nil");
+    printf("  fresh   requestedOperation   %s\n", ask(request, "requestedOperation") ? "set" : "nil");
 
     set(request, "state", @"the state");
     set(request, "nonce", @"the nonce");
@@ -96,10 +96,10 @@ static void report(const char *label, int onHost, id providerForThisSide, Class 
     set(request, "requestedOperation", implicitOperation);
 
     id copy = ask(request, "copy");
-    printf("  copy    requestedScopes   %s\n", ask(copy, "requestedScopes") ? "set" : "nil");
-    printf("  copy    state             %s\n", ask(copy, "state") ? "set" : "nil");
-    printf("  copy    nonce             %s\n", ask(copy, "nonce") ? "set" : "nil");
-    printf("  copy    requestedOperation %s\n", ask(copy, "requestedOperation") ? "set" : "nil");
+    printf("  copy    requestedScopes         %s\n", ask(copy, "requestedScopes") ? "set" : "nil");
+    printf("  copy    state                   %s\n", ask(copy, "state") ? "set" : "nil");
+    printf("  copy    nonce                  %s\n", ask(copy, "nonce") ? "set" : "nil");
+    printf("  copy    requestedOperation    %s\n", ask(copy, "requestedOperation") ? "set" : "nil");
 
     if (appleID) {
         id apple = onHost
@@ -109,10 +109,10 @@ static void report(const char *label, int onHost, id providerForThisSide, Class 
             printf("  FAIL no request could be made from %s\n", class_getName(appleID));
             return;
         }
-        printf("  fresh   user              %s\n", ask(apple, "user") ? "set" : "nil");
+        printf("  fresh   user                   %s\n", ask(apple, "user") ? "set" : "nil");
         set(apple, "user", @"001234.abcdef.0000");
         id appleCopy = ask(apple, "copy");
-        printf("  copy    user              %s\n", ask(appleCopy, "user") ? "set" : "nil");
+        printf("  copy    user                    %s\n", ask(appleCopy, "user") ? "set" : "nil");
     }
 }
 
