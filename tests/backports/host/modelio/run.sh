@@ -12,7 +12,7 @@ MODELIO=${MODELIO:-$here/../../../../packages/a/apple-backports/ModelIO}
 BUILD=${BUILD:-$(mktemp -d)}
 quiet="-Wno-unknown-pragmas -Wno-unused-value -Wno-nonnull -Wno-deprecated-declarations -Wno-unguarded-availability-new -Wno-objc-protocol-method-implementation -Wno-nullability-completeness -Wno-availability -Wno-objc-missing-property-synthesis -Wno-incomplete-implementation"
 VERTICES=${VERTICES:-$here/../../../../packages/a/apple-backports/MetalKit/MDLVertexDescriptor9.m}
-carried="MDLAnimatedValue9.m MDLTransform9.m MDLTransformStack9.m MDLObject9.m MDLMeshBuffer9.m MDLSubmesh9.m MDLMesh9.m MDLMeshGenerators9.m MDLMaterial9.m MDLTexture9.m MDLVoxelArray9.m MDLAsset9.m"
+carried="MDLAnimatedValue11.m MDLAnimatedValue16.m MDLAssetResolver11.m MDLMaterial101.m MDLMeshBuffer11.m MDLTransformStack11.m MDLTransformStack16.m MDLTransform9.m MDLObject9.m MDLMeshBuffer9.m MDLSubmesh9.m MDLMesh9.m MDLMeshGenerators9.m MDLMaterial9.m MDLTexture9.m MDLVoxelArray9.m MDLAsset9.m"
 rm -rf "$BUILD/host" "$BUILD/port"
 mkdir -p "$BUILD/host" "$BUILD/port"
 
