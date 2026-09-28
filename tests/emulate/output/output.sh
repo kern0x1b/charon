@@ -55,19 +55,20 @@ for mode in end hang; do
     xmake emulate -d "$device" -r "$release" -s 60 -t 900 \
         run /usr/libexec/emulateoutput > "$log" 2>&1 || status=$?
   fi
-  mapfile -t found < <(verdicts)
-  if [ ${#found[@]} -eq 0 ]; then
+  verdicts > "$out/.verdicts"
+  count=$(grep -c . "$out/.verdicts" || true)
+  if [ "$count" -eq 0 ]; then
     echo "$mode: no run's verdict was written after this run; the log is $log" >&2
     status=1
     continue
   fi
-  if [ ${#found[@]} -gt 1 ]; then
-    echo "$mode: ${#found[@]} runs wrote a verdict after this run began, so which is this one is not known:" >&2
-    printf '  %s\n' "${found[@]}" >&2
+  if [ "$count" -gt 1 ]; then
+    echo "$mode: $count runs wrote a verdict after this run began, so which is this one is not known:" >&2
+    sed 's/^/  /' "$out/.verdicts" >&2
     status=1
     continue
   fi
-  v=${found[0]}
+  v=$(cat "$out/.verdicts")
   which_runner=$(runner "$v")
   echo "$mode: the runner was $which_runner ($v)"
   stdout=$(named "$v" stdout)
