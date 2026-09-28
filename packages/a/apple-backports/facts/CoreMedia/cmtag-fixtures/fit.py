@@ -34,8 +34,15 @@ def order(fields, category_signed, value_bits):
         category, dataType, value = tag
         if value_bits == "raw":
             third = struct.pack(">Q", value)
-        elif value_bits == "rendered" and dataType == 2:
-            third = "%d" % (value - (1 << 64) if value & 0x8000000000000000 else value)
+        elif value_bits == "own-type":
+            # the value as a signed number of the tag's OWN data type, which is what the refuting pair
+            # asked for: an int64 as int64, a float64 as a double, and the rest as the unsigned word
+            if dataType == 2:
+                third = value - (1 << 64) if value & 0x8000000000000000 else value
+            elif dataType == 3:
+                third = struct.unpack(">d", struct.pack(">Q", value))[0]
+            else:
+                third = value
         else:
             third = value
         raw = [signed(category) if category_signed else category, dataType, third]
@@ -68,7 +75,7 @@ def main():
     results = []
     for fields in itertools.permutations(range(3)):
         for category_signed in (True, False):
-            for value_bits in ("number", "raw"):
+            for value_bits in ("number", "raw", "own-type"):
                 mismatches = sum(1 for a, b, host in pairs
                                  if compare(TAGS[a], TAGS[b], fields, category_signed, value_bits) != host)
                 reversed_mismatches = sum(1 for a, b, host in pairs

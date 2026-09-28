@@ -14,6 +14,16 @@ int main(void){ setvbuf(stdout,NULL,_IONBF,0); @autoreleasepool {
         tag(0x7472616b, 3, 0x3FF8000000000000ULL), tag(0x70697866, 7, 3), tag(0x7a7a7a7a, 7, 3),
         tag(0xffffffff, 5, 0), tag(0x6d646961, 2, 7), tag(0x6d646961, 5, 0), tag(0x2147483647, 2, 0xFFFFFFFFFFFFFFFFULL),
         tag(0x73766970, 5, 0x6c667274),
+        // and the values whose ordering decides how the value is compared: negatives of each width, the
+        // two zeroes, and the three doubles whose order is the host's to decide
+        tag(0x7472616b, 3, 0xBFE0000000000000ULL),                 // -0.5
+        tag(0x7472616b, 2, (uint64_t)-1),                           // int64 -1
+        tag(0x7472616b, 3, 0x8000000000000000ULL),                 // -0.0
+        tag(0x7472616b, 3, 0x0000000000000000ULL),                 // +0.0
+        tag(0x7472616b, 3, 0x7FF0000000000000ULL),                 // +Inf
+        tag(0x7472616b, 3, 0xFFF0000000000000ULL),                 // -Inf
+        tag(0x7472616b, 3, 0x7FF8000000000000ULL),                 // NaN
+        tag(0x7472616b, 3, 0xFFF8000000000000ULL),                 // -NaN
     };
     size_t count = sizeof t / sizeof *t;
     printf("# index category dataType value\n");
