@@ -77,6 +77,48 @@ declared since 8.0, and the port implements the two ARSCNPlaneGeometry needs:
 
 Five rows this series has found the port implements and the registry did not carry.
 
+## Does SceneKit read an override of the two getters? Measured on the host: no
+
+`geometrySources` and `geometryElements` are readonly, so the only public way to put data into a
+geometry is `+geometryWithSources:elements:`, which returns a new object — and `-updateFromPlaneGeometry:`
+has to update its receiver. The way out without a setter is to override the two getters in a subclass
+and let SceneKit call them. Whether it does is a question only the host's SceneKit can answer, and the
+answer is no.
+
+The probe (`.agent-work/arkit/geometry-override-probe.m`) renders each case offscreen with `SCNRenderer`
+and counts the pixels an offscreen snapshot has that are not black. The geometry is drawn **black**, so
+it takes lit pixels *away* from the background, and what a case draws is how much less than the
+background it leaves.
+
+```
+  background, nothing in the scene:            14716
+  case 1  factory-built geometry draws:          11580 px
+  case 2  subclass, no override                  11580 px
+  case 3  only the getters hold the data:           0 px
+  case 4  the getters hold half a quad:             0 px
+  case 5  the getters hold nothing:                 0 px
+```
+
+**One reading fits all of them.** The control draws 11580 px, and a subclass that overrides nothing
+draws the same 11580 — so the subclass's mere existence changes nothing. A subclass whose data lives
+*only* in its getters draws **0**, the background untouched. And a subclass whose getters describe half
+a quad, and one whose getters describe nothing, both draw 0 as well — the shapes and sizes the getters
+return make no difference at all, which is what "SceneKit reads its own storage and never asks" looks
+like from the outside.
+
+**Consequences, per band.** On 6.x, where the SceneKit is this tree's, the port's `SCNGeometry` gets a
+package-internal `charon_replaceSources:elements:` declared in `CharonSCN.h` and in no public header,
+which `-updateFromPlaneGeometry:` calls; the port implements the storage, so this is not a private ivar
+and not new public API, and it needs no registry row. On 8.0–11.2, where SceneKit is the system's, there
+is no such storage to reach and no override is read, so `ARSCNPlaneGeometry` on that band is a
+**dependency** and the reason is this table.
+
+**What I could not do.** I did not reproduce this run. Re-running the row-2 configuration this turn
+failed to compile — an edit dropped two local declarations — and the stale binary gave different numbers
+on two consecutive invocations (0 px, then an unsigned underflow), so the harness as it stands is not
+reproducible and I am not presenting the table above as a repeat. It is one run, its control drew, and
+every case fits the same reading; that is the whole of its standing.
+
 ## The earlier gap, superseded
 
 Three SceneKit members it needs: `geometrySources` and `geometryElements` and
