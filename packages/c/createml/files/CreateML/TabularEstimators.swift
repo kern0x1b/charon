@@ -11,6 +11,7 @@
 // specification writer belongs to the CoreML package, and a table that wrote a file with the right
 // extension and the wrong bytes would be worse than one that says it cannot.
 
+import CoreML
 import Foundation
 import CreateMLComponents
 
@@ -1047,21 +1048,6 @@ public struct MLBoostedTreeClassifierModel {
 
     public func predictLabel(_ design: CreateMLComponents.RowMatrix, index: Int) -> String {
         forest.predictLabel(design, index: index)
-    }
-}
-
-/// What a written model carries about where it came from.
-public struct MLModelMetadata {
-    public var author: String
-    public var shortDescription: String
-    public var version: String
-
-    public init(author: String = Bundle.main.bundleIdentifier ?? "",
-                shortDescription: String = "",
-                version: String = "1.0") {
-        self.author = author
-        self.shortDescription = shortDescription
-        self.version = version
     }
 }
 

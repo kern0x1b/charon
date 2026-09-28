@@ -330,7 +330,15 @@ extension MLShapedArray where Scalar: CustomStringConvertible {
 ///
 /// This is Core ML's type, carried here because the exporter takes it: without it `write(to:)`
 /// would either invent an author or drop the caller's, and a model file with a fabricated author is
-/// worse than one that says nothing. The five properties are the ones Core ML itself declares.
+/// worse than one that says nothing.
+///
+/// **One declaration of it in the package, and this is the one.** The five properties are the ones
+/// Core ML declares, so a second copy anywhere in these modules would be a type the same name names
+/// twice with a different shape: `import CoreML` would give a caller five settable properties and
+/// `import CreateML` a different type of the same name that cannot carry `license` or `description`
+/// at all, and which of the two a caller's `write(to:metadata:)` accepted would depend on the
+/// imports rather than on the type. A copy with three of the five is not a smaller `MLModelMetadata`,
+/// it is a different type wearing its name, so the three-property one is gone rather than merged.
 public struct MLModelMetadata: Hashable {
     public var shortDescription: String
     public var author: String
