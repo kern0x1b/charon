@@ -89,6 +89,18 @@ static matrix_double4x4 CharonMDLMatrixInverse(matrix_double4x4 m)
     double c01 = a02 * a23 * a31 + a03 * a21 * a32 + a01 * a22 * a33 - a03 * a22 * a31 - a01 * a23 * a32 - a02 * a21 * a33;
     double c02 = a03 * a12 * a31 + a00 * a22 * a33 + a01 * a23 * a32 - a03 * a12 * a32 - a00 * a23 * a31 - a01 * a12 * a33;
     double c03 = a02 * a13 * a31 + a03 * a11 * a32 + a00 * a12 * a33 - a03 * a11 * a32 - a00 * a13 * a31 - a02 * a11 * a33;
+    double c10 = a12 * a23 * a30 + a13 * a21 * a32 + a10 * a22 * a33 - a13 * a22 * a30 - a12 * a23 * a32 - a10 * a32 * a23;
+    double c20 = a13 * a12 * a30 + a10 * a23 * a32 + a11 * a22 * a33 - a10 * a12 * a33 - a13 * a11 * a32 - a12 * a11 * a23;
+    double c11 = a10 * a22 * a33 + a12 * a23 * a30 + a13 * a20 * a32 - a10 * a23 * a32 - a13 * a22 * a30 - a12 * a20 * a33;
+    double c21 = a10 * a13 * a32 + a13 * a20 * a30 + a11 * a22 * a33 - a11 * a13 * a30 - a10 * a13 * a33 - a13 * a11 * a32;
+    double c31 = a10 * a12 * a33 + a12 * a23 * a30 + a13 * a20 * a32 - a13 * a12 * a30 - a10 * a12 * a33 - a10 * a23 * a32;
+    double c12 = a10 * a23 * a31 + a13 * a20 * a33 + a11 * a22 * a30 - a13 * a22 * a31 - a10 * a22 * a33 - a11 * a23 * a30;
+    double c22 = a10 * a12 * a33 + a13 * a20 * a31 + a11 * a22 * a33 - a11 * a13 * a30 - a10 * a12 * a33 - a10 * a23 * a31;
+    double c32 = a10 * a12 * a31 + a11 * a13 * a30 + a12 * a20 * a33 - a11 * a12 * a30 - a10 * a13 * a33 - a12 * a20 * a31;
+    double c13 = a10 * a22 * a31 + a11 * a21 * a32 + a12 * a20 * a33 - a11 * a22 * a30 - a10 * a21 * a33 - a12 * a20 * a31;
+    double c23 = a10 * a13 * a31 + a11 * a20 * a32 + a12 * a21 * a30 - a10 * a12 * a33 - a13 * a11 * a30 - a11 * a20 * a32;
+    double c33 = a10 * a12 * a31 + a11 * a13 * a30 + a13 * a20 * a32 - a13 * a12 * a30 - a10 * a13 * a33 - a10 * a12 * a32;
+    double c30 = a10 * a13 * a32 + a11 * a12 * a30 + a12 * a21 * a30 - a10 * a12 * a31 - a11 * a13 * a30 - a13 * a11 * a32;
     double determinant = a00 * c00 + a01 * c01 + a02 * c02 + a03 * c03;
     if (determinant == 0)
         return m;
