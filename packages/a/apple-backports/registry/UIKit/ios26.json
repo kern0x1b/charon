@@ -825,11 +825,12 @@
    "api": "UIActionNewFromPasteboard",
    "kind": "constant",
    "introduced": "26.0",
-   "minimum": "26.0",
+   "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants260.md",
    "effect": "the constant is exported under its own name and answers com.apple.action.newFromPasteboard",
-   "source": "UIKit/UIKitConstants260.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0"
+   "source": "UIKit/UIKitConstants260.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0",
+   "note": "the object carries only iOS 26 API and no band below 26.0 has it, but a 32-bit target's highest deployment version is 10.0, so the object cannot be floored past that: the band machinery would compile it with -target armv7-apple-ios26.0, which clang refuses (measured, both gates)"
   },
   {
    "api": "UIBackgroundExtensionView",
@@ -1005,21 +1006,23 @@
    "api": "UIDocumentDidMoveToWritableLocationNotification",
    "kind": "constant",
    "introduced": "26.0",
-   "minimum": "26.0",
+   "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants260.md",
    "effect": "the constant is exported under its own name and answers UIDocumentDidMoveToWritableLocationNotification",
-   "source": "UIKit/UIKitConstants260.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0"
+   "source": "UIKit/UIKitConstants260.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0",
+   "note": "the object carries only iOS 26 API and no band below 26.0 has it, but a 32-bit target's highest deployment version is 10.0, so the object cannot be floored past that: the band machinery would compile it with -target armv7-apple-ios26.0, which clang refuses (measured, both gates)"
   },
   {
    "api": "UIDocumentDidMoveToWritableLocationOldURLKey",
    "kind": "constant",
    "introduced": "26.0",
-   "minimum": "26.0",
+   "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants260.md",
    "effect": "the constant is exported under its own name and answers UIDocumentDidMoveToWritableLocationOldURLKey",
-   "source": "UIKit/UIKitConstants260.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0"
+   "source": "UIKit/UIKitConstants260.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0",
+   "note": "the object carries only iOS 26 API and no band below 26.0 has it, but a 32-bit target's highest deployment version is 10.0, so the object cannot be floored past that: the band machinery would compile it with -target armv7-apple-ios26.0, which clang refuses (measured, both gates)"
   },
   {
    "api": "UIGlassContainerEffect",
@@ -1065,21 +1068,23 @@
    "api": "UIMenuFindPanel",
    "kind": "constant",
    "introduced": "26.0",
-   "minimum": "26.0",
+   "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants260.md",
    "effect": "the constant is exported under its own name and answers com.apple.menu.find-panel",
-   "source": "UIKit/UIKitConstants260.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0"
+   "source": "UIKit/UIKitConstants260.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0",
+   "note": "the object carries only iOS 26 API and no band below 26.0 has it, but a 32-bit target's highest deployment version is 10.0, so the object cannot be floored past that: the band machinery would compile it with -target armv7-apple-ios26.0, which clang refuses (measured, both gates)"
   },
   {
    "api": "UIMenuNewItem",
    "kind": "constant",
    "introduced": "26.0",
-   "minimum": "26.0",
+   "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants260.md",
    "effect": "the constant is exported under its own name and answers com.apple.menu.new-item",
-   "source": "UIKit/UIKitConstants260.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0"
+   "source": "UIKit/UIKitConstants260.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0",
+   "note": "the object carries only iOS 26 API and no band below 26.0 has it, but a 32-bit target's highest deployment version is 10.0, so the object cannot be floored past that: the band machinery would compile it with -target armv7-apple-ios26.0, which clang refuses (measured, both gates)"
   },
   {
    "api": "UIMenuSystemFindElementGroupConfiguration",
@@ -1635,11 +1640,12 @@
    "api": "UIWindowSceneSessionRoleAssistiveAccessApplication",
    "kind": "constant",
    "introduced": "26.0",
-   "minimum": "26.0",
+   "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIKitConstants260.md",
    "effect": "the constant is exported under its own name and answers UIWindowSceneSessionRoleAssistiveAccessApplication",
-   "source": "UIKit/UIKitConstants260.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0"
+   "source": "UIKit/UIKitConstants260.m; read out of the Mac Catalyst UIKit of macOS 27, in the system's own dyld shared cache (/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e) with tools/corpus/cache-value.lua; no iOS release held on this machine carries it, the newest held cache being iOS 18.0",
+   "note": "the object carries only iOS 26 API and no band below 26.0 has it, but a 32-bit target's highest deployment version is 10.0, so the object cannot be floored past that: the band machinery would compile it with -target armv7-apple-ios26.0, which clang refuses (measured, both gates)"
   },
   {
    "api": "+[UIColorEffect effectWithColor:]",
