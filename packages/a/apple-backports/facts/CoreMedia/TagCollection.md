@@ -182,3 +182,35 @@ CoreMedia interpret the port's object as its own.
 Nothing external is taken here. FFmpeg's libavformat/libavcodec and GStreamer are LGPL and were not
 read; Media3 and Bento4 were not needed - the hvcC and the CMTag record are parsed from the format
 descriptions Apple hands over, and every value is measured against the host's own CoreMedia.
+
+## `CMTaggedBufferGroup` — the surface, measured, and not written
+
+Fifteen functions, and `CMTaggedBufferGroupRef` is another bridged Objective-C class like
+`CMTagCollectionRef`, so the port's is a class too. Its shape is two parallel CFArrays — tag collections
+and buffers — which every accessor walks together, and the full surface, with the arity as the host's own
+header gives it, is:
+
+```
+CFTypeID   CMTaggedBufferGroupGetTypeID(void)
+OSStatus   CMTaggedBufferGroupCreate(allocator, tagCollections, buffers, out)
+OSStatus   CMTaggedBufferGroupCreateCombined(allocator, taggedBufferGroups, out)
+CMItemCount CMTaggedBufferGroupGetCount(group)
+CMTagCollectionRef  GetTagCollectionAtIndex(group, index)
+CVPixelBufferRef    GetCVPixelBufferAtIndex(group, index)
+CVPixelBufferRef    GetCVPixelBufferForTag(group, tag, indexOut)
+CVPixelBufferRef    GetCVPixelBufferForTagCollection(group, tagCollection, indexOut)
+CMSampleBufferRef   GetCMSampleBufferAtIndex(group, index)
+CMSampleBufferRef   GetCMSampleBufferForTag(group, tag, indexOut)
+CMSampleBufferRef   GetCMSampleBufferForTagCollection(group, tagCollection, indexOut)
+CMItemCount GetNumberOfMatchesForTagCollection(group, tagCollection)
+OSStatus   FormatDescriptionCreateForTaggedBufferGroup(allocator, group, out)
+OSStatus   FormatDescriptionCreateForTaggedBufferGroupWithExtensions(allocator, group, extensions, out)
+Boolean    FormatDescriptionMatchesTaggedBufferGroup(desc, group)
+```
+
+Every `…Out` is `CF_RETURNS_NOT_RETAINED`, so the port must not retain what it hands back, and the two
+`FormatDescriptionCreate…` are the three 17.0 `CMFormatDescription` rows the corpus lists, which take
+this type and are therefore behind it.
+
+**Not written, and not measured beyond the surface.** Nothing about the host's answers for this type has
+been measured, so nothing about it is claimed.
