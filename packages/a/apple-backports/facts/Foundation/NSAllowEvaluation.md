@@ -10,6 +10,9 @@ state the method promises is the state that already holds, and calling it change
 the answer iOS 6 itself gives, and not a stub.
 
 The flag is kept beside the object rather than dropped, and it is read back through
-`-allowsEvaluation`, so the state travels with the object and an archive written by a newer system and
-read here answers the question the property asks. What the port does not have is a way to make an
-object that is *not* evaluable, because nothing on this release ever makes one.
+`-allowsEvaluation`, so it travels with the object as long as the object lives. **No archive carries
+it**: the flag is an associated object, and the release's own `NSPredicate` coding writes no
+allow-evaluation flag, so a predicate read back from any archive answers YES whatever it said --
+which on this release is right, because nothing here ever makes one that is not evaluable. What the
+port does not have is a way to make an object that is *not* evaluable, and until it does, the honest
+description of this property is "always YES", not "the flag travels".

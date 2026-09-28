@@ -34,9 +34,13 @@ completion handlers, the secure connection, and the four delegate callbacks -- t
 the write side closing, a better route, and the streams being handed over. Each callback is called only
 when the session's delegate answers to it, which is what the header's protocol is for.
 
-`-init` and `+new` are **not** carried. The header deprecates them both with "please use
-`-streamTaskWithHostName:port:` or other NSURLSession methods to create instances", and the reason is
-the port's too: a stream task is a connection, and a connection is a host and a port.
+`-init` is carried and `+new` is not. The header **deprecates** both with "please use
+`-streamTaskWithHostName:port:` or other NSURLSession methods to create instances", and a deprecation
+is a warning rather than a refusal: the port answers `-init`, which is what the release's own
+`-[NSURLSessionTask init]` does, and `NSURLSessionStreamTask9.m` calls it from its own factory. The
+registry says the same thing — `-[NSURLSessionStreamTask init]` is `implemented` with that reason, and
+`+[NSURLSessionStreamTask new]` is `absent` because the port does not define a `+new` that bypasses
+the factory. What an application should do is what the header says: ask the session for the task.
 
 `-stopSecureConnection` is carried and does nothing to a connection that has TLS, because TLS cannot be
 taken off a connection once it is on -- which is the header's own reason for deprecating it.
