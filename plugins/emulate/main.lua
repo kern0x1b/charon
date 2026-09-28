@@ -166,12 +166,7 @@ local function run(ctx, argv)
     if not ok then
         raise(errors)
     end
-    for _, name in ipairs({"test.stdout", "test.stderr"}) do
-        local file = path.join(folder, "results", name)
-        if os.isfile(file) and os.filesize(file) > 0 then
-            io.write(io.readfile(file))
-        end
-    end
+    emulator.report_output(folder, result.output)
     -- Where the run's own files are: a program writes what it has to say into /var/charon, and the
     -- image is under the emulator root, so the folder is named for whoever has to read them.
     print("run folder %s", folder)

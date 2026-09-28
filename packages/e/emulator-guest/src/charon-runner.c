@@ -157,7 +157,7 @@ int main(int argc, char** argv)
     int uikit = dlopen("/System/Library/Frameworks/UIKit.framework/UIKit", RTLD_LAZY) != NULL;
     int ui_application = objc_getClass("UIApplication") != NULL;
     int deadline = argc > 1 ? atoi(argv[1]) : 30;
-    int status = -1, spawned = 0, spawn_error = 0, timed_out = 0;
+    int status = -1, spawned = 0, spawn_error = 0, timed_out = 0, captured = 0;
     double duration = 0;
     if (argc > 2) {
         fflush(stdout);
@@ -165,10 +165,23 @@ int main(int argc, char** argv)
         int saved_out = dup(STDOUT_FILENO), saved_err = dup(STDERR_FILENO);
         int out = open("/private/var/charon/test.stdout", O_WRONLY | O_CREAT | O_TRUNC, 0644);
         int err = open("/private/var/charon/test.stderr", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+        captured = (out >= 0 && err >= 0);
+        if (!captured) {
+            // The program's own output has nowhere to go, and a run whose output is lost reads on the
+            // host as a program that printed nothing. Say so where the runner's own output is kept.
+            syslog(LOG_ERR, "charon-runner cannot open the program's output in %s: %s",
+                   verdict_directory, strerror(errno));
+            fprintf(stderr, "charon-runner: cannot open the program's stdout/stderr: %s\n", strerror(errno));
+        }
         if (out >= 0)
             dup2(out, STDOUT_FILENO);
         if (err >= 0)
             dup2(err, STDERR_FILENO);
+        // A program's stdio is block buffered once it is a file, and the deadline ends it with SIGKILL,
+        // which no buffer survives: what it printed between its last flush and the deadline is lost.
+        // libSystem's stdio honours this and the launcher already sets it for the application, so the
+        // program is spawned with it: its output reaches the file as it writes it, killed or not.
+        setenv("NSUnbufferedIO", "YES", 1);
         pid_t child;
         posix_spawnattr_t attributes;
         sigset_t defaults;
@@ -225,7 +238,7 @@ int main(int argc, char** argv)
     if (argc > 2) {
         fprintf(file, ",\"test\":{\"path\":");
         json_string(file, argv[2]);
-        fprintf(file, ",\"spawned\":%d,\"spawn_error\":%d,\"timed_out\":%d,\"seconds\":%.3f", spawned, spawn_error, timed_out, duration);
+        fprintf(file, ",\"spawned\":%d,\"spawn_error\":%d,\"timed_out\":%d,\"output\":%d,\"seconds\":%.3f", spawned, spawn_error, timed_out, captured, duration);
         if (spawned && WIFEXITED(status))
             fprintf(file, ",\"exit\":%d", WEXITSTATUS(status));
         if (spawned && WIFSIGNALED(status))

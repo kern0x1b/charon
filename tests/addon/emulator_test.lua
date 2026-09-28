@@ -986,6 +986,30 @@ local function launch_step(emulator, folder, found)
     end
 end
 
+-- A run's program output: the three states told apart, because silence reads as a program that
+-- printed nothing when it is a program whose output was lost. A run folder, a capture flag and what
+-- the two files hold, which is all the function looks at.
+local function output_step(emulator, folder, found)
+    local function run(stdout, output)
+        os.tryrm(folder)
+        os.mkdir(path.join(folder, "results"))
+        if stdout then
+            io.writefile(path.join(folder, "results", "test.stdout"), stdout)
+        end
+        local said = emulator.report_output(folder, output)
+        return said
+    end
+    if not run("hello from the guest\n", 1) then
+        table.insert(found, "a run whose program wrote to stdout prints it and says so")
+    end
+    if run("", 1) then
+        table.insert(found, "a program that wrote nothing is not reported as having written something")
+    end
+    if run("hello from the guest\n", 0) then
+        table.insert(found, "a verdict that says the output was not captured keeps the file's text off the host, whatever it holds")
+    end
+end
+
 function failures(opt)
     local emulator = import("emulator", {rootdir = opt.modules, anonymous = true})
     local debian = import("debian", {rootdir = opt.modules, anonymous = true})
@@ -1007,6 +1031,7 @@ function failures(opt)
     copy_step(opt, found)
     prune_step(emulator, folder, found)
     held_image_step(emulator, fixtures.scratch(), found)
+    output_step(emulator, folder, found)
     os.tryrm(folder)
     return found
 end

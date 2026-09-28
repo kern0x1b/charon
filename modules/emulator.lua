@@ -881,7 +881,8 @@ function verdict(state, results, opt)
     local result = table.join2({machine = recorded.machine, system = recorded.system,
                                 guest_seconds = test.seconds, seconds = test.seconds,
                                 stdout = path.join(results, "test.stdout"),
-                                stderr = path.join(results, "test.stderr")}, timing)
+                                stderr = path.join(results, "test.stderr"),
+                                output = test.output}, timing)
     if test.spawned ~= 1 then
         result.state = "fail"
         result.spawn_error = test.spawn_error
@@ -903,6 +904,32 @@ function verdict(state, results, opt)
         result.exit = test.exit
     end
     return result
+end
+
+-- What a run's program said, and which of the three states that is, so silence is never read as a
+-- program that printed nothing: it wrote something, it wrote nothing, or its output was not captured
+-- because the runner could not open the file. The last is the runner's own verdict field, so a lost
+-- output is told apart from an empty one instead of both printing nothing.
+function report_output(folder, output)
+    if output == 0 then
+        -- The runner's own word is the one to believe: it could not open the file, so whatever is
+        -- there is not the program's, and printing it would put the wrong text under its name.
+        cprint("${color.warning}the program's output was not captured${clear}: the runner could not open it, and it says why in %s",
+               path.join(folder, "results", "runner.stderr"))
+        return false
+    end
+    local said = false
+    for _, name in ipairs({"test.stdout", "test.stderr"}) do
+        local file = path.join(folder, "results", name)
+        if os.isfile(file) and os.filesize(file) > 0 then
+            io.write(io.readfile(file))
+            said = true
+        end
+    end
+    if not said then
+        cprint("${dim}the program wrote nothing to stdout or stderr${clear}")
+    end
+    return said
 end
 
 function describe(result)
