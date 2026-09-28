@@ -119,35 +119,27 @@ concrete blocker on the 43 QUIC transport-dependent rows, and the QUIC options a
   this differential is a plain BSD listener in the test program, and why the port's own listener - which
   is `nw_listener_*`, not in this delivery - has to be measured on the emulator rather than here.
 
-## The link gate's finding, and what it says the TLS of a connection has to be
+## The release's own TLS, with the names it actually has
 
-The 6.1.3 gate, run in the fast lane on the rebased tree, fails here and not at anything of ours:
+Measured out of the 6.1.3 cache, and the names matter more than the conclusion:
 
-    "_SSLContextCreate", referenced from:
-        _charon_ready in nw_connection.o
-    ld: symbol(s) not found for architecture armv7
-
-Measured, and the two facts behind it:
-
-- **iOS 6.1.3 exports `SSLContextCreate`** - it is the iOS 6 name of the context call, read out of that
-  release's own cache, and every other call this file uses is there under the name it has always had
-  (`SSLSetIOFuncs`, `SSLSetPeerDomainName`, `SSLSetCertificate`, `SSLSetSessionOption`, `SSLHandshake`,
-  `SSLRead`, `SSLWrite`, `SSLClose`). `SSLGetServerTrust`, `SSLSetProtocolVersion` and
-  `SSLGetNegotiatedProtocol` are not, which is why the release's TLS stops at 1.1.
-- **The SDK this port links against has no `SSLContextCreate` to find.** The 16.4 SDK's
-  `Security.tbd` declares `armv7-ios` and `armv7s-ios` (`targets:` on its first line) and lists
-  `_SSLCreateContext` - the name from iOS 7 on - and not the iOS 6 one. So a library that calls the
-  release's own call cannot be linked for 4.3 or 6.1.3 at all: whatever the device exports, ld64 has
-  nowhere in this SDK to find it.
-
-Two ways out, and which is which:
-
-- **Give the 16.4 SDK's Security stub the name the older releases exported** - a slice for
-  `armv7-ios, armv7s-ios` carrying `_SSLContextCreate`, which is what `packages/i/iphoneos-sdk`'s own
-  stub surgery already does for the 32-bit libSystem names the SDK dropped. That is a change to a
-  package every band shares, so it belongs to the coordinator and not to this band, and it is not
-  landed here unbuilt.
-- **Take the connection's TLS from picotls**, which this port now has as a package
-  (`packages/p/picotls`, a TLS 1.3 with a crypto backend of its own and no OpenSSL behind it) and which
-  links nothing. That is the same conclusion the QUIC row already reached from the other side - a QUIC
-  handshake cannot be made with a TLS 1.1 stack whatever it is - and it is where a connection's TLS goes.
+- **The context call is `SSLCreateContext`**, and it *is* exported by Security.framework at 6.1.3.
+  `SSLContextCreate` - the name a first reading of that cache suggested - is exported by no release
+  of this machine, and the 16.4 SDK declares and its `Security.tbd` lists `SSLCreateContext` for
+  `armv7-ios` and `armv7s-ios` as well as arm64. So a connection's TLS links **directly**, for every
+  release whose cache exports the call, and no stub has to be taught anything.
+- **The release speaks TLS 1.2.** `SSLSetProtocolVersionMin`, `SSLSetProtocolVersionMax`,
+  `SSLGetNegotiatedProtocolVersion` and `SSLCopyPeerTrust` are all exported at 6.1.3, so the
+  connection can ask for 1.2 and can take the peer trust with the call that exists on this release.
+  What is *not* there is `SSLSetProtocolVersion` and `SSLGetServerTrust`, the spellings those two
+  replaced, and TLS 1.3 is not in this stack at all.
+- **TLS 1.3 comes from picotls**, which the port has as a package (`packages/p/picotls`, a TLS 1.3
+  with a crypto backend of its own and no OpenSSL behind it, and a handshake proven on the host in
+  `tests/backports/host/picotls-tls13`). It is needed twice over: a QUIC handshake cannot be made
+  with a TLS 1.2 stack whatever the stack is, and a server that refuses 1.2 can only be answered with
+  1.3 by a stack of picotls's. Which of the two a connection ends up with, and the ALPN it negotiates,
+  is what `tests/backports/host/network-connection` is to measure against the host's own Network with
+  one local server answering both.
+- **4.3 has no SecureTransport context API at all** - `SSLCreateContext` is iOS 5.0 - so a connection
+  on 4.3 has to reach the call by name at run time, the way `packages/a/apple-backports/Foundation`'s
+  metrics reach SecureTransport, and 4.3 answers with what the release can: no TLS, a plain socket.

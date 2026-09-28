@@ -46,9 +46,7 @@ xcrun clang -fobjc-arc -fvisibility=hidden -w $renames -c "$BACKPORTS/Network/Ch
 
 # The port's TLS calls SSLContextCreate, the name the 6.1.3 cache exports; the host's framework has the
 # name from iOS 7 on, SSLCreateContext, and takes the connection type as a third argument. The two are
-# one call, and charonrelease.c is the host's answer under the port's name, so that the port's own file
 # links against the host's framework unaltered.
-xcrun clang -fno-objc-arc -w -c "$here/charonrelease.c" -o "$build/charonrelease.o"
 
 xcrun clang -fno-objc-arc -Wall -Wno-deprecated-declarations -Wno-incompatible-function-pointer-types -I"$harness" \
     "$here/differential.m" "$harness/check.m" "$build"/*.o \

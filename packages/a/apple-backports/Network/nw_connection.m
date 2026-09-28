@@ -888,12 +888,17 @@ static void charon_ready(CharonNWConnection *connection)
     charon_install_sources(connection);
 
     if (connection->_secure) {
-        connection->_ssl = SSLContextCreate(kCFAllocatorDefault, kSSLClientSide);
+        connection->_ssl = SSLCreateContext(kCFAllocatorDefault, kSSLClientSide, kSSLStreamType);
         if (!connection->_ssl) {
             charon_report_state(connection, nw_connection_state_failed, charon_error(nw_error_domain_tls, errSSLInternal));
             return;
         }
         SSLSetIOFuncs(connection->_ssl, charon_tls_read, charon_tls_write);
+        /* As high as this release's TLS goes: it has SSLSetProtocolVersionMin and Max (measured in
+           the 6.1.3 cache) and so speaks TLS 1.2, and TLS 1.3 is not in it at all - which is what
+           picotls is in the library for, when a server insists on 1.3. */
+        SSLSetProtocolVersionMin(connection->_ssl, kTLSProtocol1);
+        SSLSetProtocolVersionMax(connection->_ssl, kTLSProtocol12);
         NSString *peer = connection->_endpoint->_hostname.length ? connection->_endpoint->_hostname : nil;
         if (peer.length)
             SSLSetPeerDomainName(connection->_ssl, peer.UTF8String, (int)peer.length);
@@ -1080,6 +1085,10 @@ nw_connection_t nw_connection_create(nw_endpoint_t endpoint, nw_parameters_t par
     connection->_endpoint = (CharonNWEndpoint *)endpoint;
     connection->_parameters = (CharonNWParameters *)parameters;
     connection->_socket = -1;
+    /* No accepted descriptor: this is a connection of a program's own, which has to dial, and the
+       start path decides that on this number. Left at zero it would read as a descriptor and a
+       connection of the program's own would take the listener's path. */
+    connection->_acceptedSocket = -1;
     /* The connect is the one call that has to wait, so it waits on a queue of its own: the connection's
        queue carries the handlers and must never be held up by a peer that takes its time. */
     connection->_connectQueue = dispatch_queue_create("charon.connect", DISPATCH_QUEUE_SERIAL);
