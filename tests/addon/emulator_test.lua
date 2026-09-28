@@ -1010,6 +1010,31 @@ local function output_step(emulator, folder, found)
     end
 end
 
+-- What an install put in: every file, its size and its whole hash, which is what the caller prints
+-- and what a band holds against the build. The size is the part two installs can be compared on, a
+-- signature being not reproducible.
+local function files_step(emulator, folder, found)
+    os.tryrm(folder)
+    os.mkdir(path.join(folder, "usr", "libexec"))
+    io.writefile(path.join(folder, "usr", "libexec", "probe"), "probe\n")
+    io.writefile(path.join(folder, "usr", "libexec", "other"), "a longer payload\n")
+    local described = emulator.describe_files(folder)
+    if #described ~= 2 then
+        table.insert(found, "an install describes every file it put in, described " .. #described)
+    else
+        if described[1].path ~= "usr/libexec/other" or described[2].path ~= "usr/libexec/probe" then
+            table.insert(found, "the files an install describes are named in order, " .. described[1].path .. " then " .. described[2].path)
+        end
+        if described[1].size ~= 17 or described[2].size ~= 6 then
+            table.insert(found, "an install describes each file with the size it has, " .. described[1].size .. " and " .. described[2].size)
+        end
+        if #described[1].hash ~= 64 or described[1].hash == described[2].hash then
+            table.insert(found, "an install describes each file with its own whole hash, " .. described[1].hash)
+        end
+    end
+    os.tryrm(folder)
+end
+
 function failures(opt)
     local emulator = import("emulator", {rootdir = opt.modules, anonymous = true})
     local debian = import("debian", {rootdir = opt.modules, anonymous = true})
@@ -1032,6 +1057,7 @@ function failures(opt)
     prune_step(emulator, folder, found)
     held_image_step(emulator, fixtures.scratch(), found)
     output_step(emulator, folder, found)
+    files_step(emulator, folder, found)
     os.tryrm(folder)
     return found
 end

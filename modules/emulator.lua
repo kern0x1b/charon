@@ -610,6 +610,20 @@ local function maintainer_script(work, members, name, rootfs, deb, stage)
     end
 end
 
+-- What a package put in, and how big each file is, so an install can be compared with the build that
+-- fed it. The hashes are printed and are not to be compared across installs: a binary Charon installs is
+-- stripped and signed, and ldid's signature is not reproducible - two signatures of one input are the
+-- same size and different bytes. The size and the build's own output are what a caller can compare.
+function describe_files(folder)
+    local described = {}
+    for _, file in ipairs(os.files(path.join(folder, "**"))) do
+        table.insert(described, {path = path.relative(file, folder), size = os.filesize(file),
+                                 hash = hash.sha256(file)})
+    end
+    table.sort(described, function (a, b) return a.path < b.path end)
+    return described
+end
+
 function install_deb(deb, rootfs)
     local members = ar_members(io.readfile(deb, {encoding = "binary"}), deb)
     local data

@@ -102,6 +102,12 @@ local function install(ctx)
     for _, package in ipairs(written) do
         local placed = emulator.install_deb(package.deb, rootfs)
         cprint("${bright green}installed${clear} %s into %s %s", path.filename(package.deb), ctx.identifier, ctx.version)
+        -- What went in, so a caller can hold it against the build: a binary of this port is stripped and
+        -- signed on its way into the image, and ldid's signature is not reproducible, so its hash is
+        -- printed for the record and its size is what a comparison is made of.
+        for _, file in ipairs(emulator.describe_files(package.stage)) do
+            cprint("  %s %d B %s", file.path, file.size, file.hash:sub(1, 16))
+        end
         for _, relative in ipairs(placed) do
             local identifier = emulator.register_application(rootfs, relative)
             applications[identifier] = "/" .. relative
