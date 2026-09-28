@@ -294,10 +294,19 @@ package("swift-runtime")
             "-DSwiftCore_ENABLE_OBJC_INTEROP=ON", "-DSwiftCore_ENABLE_TYPE_PRINTING=ON", "-DSwiftCore_ENABLE_REFLECTION=ON",
             -- SIMD2/3/4/8/16 and the concrete vector operations. Swift's DefaultSettings.cmake only defaults
             -- SwiftCore_ENABLE_VECTOR_TYPES on for Windows and for the Apple vendor cache, which this build does
-            -- not use, so it is off here and the standard library this runtime installs has no vector types at
-            -- all: `SIMD4<Float>` is "cannot find type in scope", and with it the whole `simd` module is empty,
-            -- because the Clang importer maps a `__ext_vector_type__` typedef of the simd headers onto the
-            -- standard library's SIMD type rather than declaring one of its own.
+            -- not use, so it is off by default here and the flag below turns it on (6cdf1ca6, 2026-09-27).
+            -- Without it the standard library this runtime installs has no vector types at all:
+            -- `SIMD4<Float>` is "cannot find type in scope", and with it the whole `simd` module is empty, because
+            -- the Clang importer maps a `__ext_vector_type__` typedef of the simd headers onto the standard
+            -- library's SIMD type rather than declaring one of its own.
+            --
+            -- What an install older than that commit gives: this exact failure. Measured 2026-09-28 against
+            -- swift-runtime 0731ba0a, installed 2026-09-27 02:51, eleven hours before 6cdf1ca6: the SDK's own
+            -- simd interface fails to compile with 5610 errors of the shape "value of type 'simd_quatd' has no
+            -- member 'vector'" and "field 'vector' unavailable (cannot import)" against
+            -- usr/include/simd/types.h:125. An overlay that imports simd - swiftsimd, and so RealityFoundation
+            -- and RealityKit - cannot be built against such an install; against one built from this recipe it
+            -- can. So the question to ask of a runtime is its build date, not its option list.
             "-DSwiftCore_ENABLE_VECTOR_TYPES=ON",
             "-DSwiftCore_INSTALL_NESTED_SUBDIR=OFF"})
 
