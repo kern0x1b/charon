@@ -122,12 +122,13 @@ public enum ModelWriter {
         function.message(3, numericFeature(name: outputName, shape: [1, 1]))            // output = 3
         function.string(4, outputName)                                                 // predictedFeatureName = 4
 
-        // The function is there because the **validator** wants `predictedFeatureName`; the
-        // model-level `input`/`output` are there too because the **prediction path** reads them —
-        // with only the function, compiling succeeds and predicting throws out of Core ML's own
-        // `unordered_map::at` with a key that is not there. So a model that compiles and predicts
-        // carries both, and the schema's "use these fields below only when `functions` above is
-        // empty" is not what the 16.4 implementation does.
+        // The function is there because the **validator** wants `predictedFeatureName`, and the
+        // model-level `input`/`output` are there because the **prediction path** reads them. Which of
+        // the two is which is measured, not assumed: of sixteen compiled variants, every one *with*
+        // a function passes the validator and then throws out of Core ML's own `unordered_map::at`,
+        // and every one *without* one is rejected for the missing `predictedFeatureName`. So both are
+        // required, and neither is sufficient — the file is a correct protobuf that Core ML's compiler
+        // does not yet accept. `facts/CreateML/Export.md` has the table and the bisect.
         var modelDescription = ProtoWriter()
         modelDescription.message(20, function)                                         // functions = 20
         modelDescription.message(1, numericFeature(name: featureName, shape: [1, weights.count]))  // input = 1

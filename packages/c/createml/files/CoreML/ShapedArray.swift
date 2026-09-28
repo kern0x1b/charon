@@ -324,3 +324,26 @@ extension MLShapedArray where Scalar: CustomStringConvertible {
         "[" + scalars.map { $0.description }.joined(separator: ", ") + "]"
     }
 }
+
+
+/// A model's own description, the metadata a caller attaches when it writes a model out.
+///
+/// This is Core ML's type, carried here because the exporter takes it: without it `write(to:)`
+/// would either invent an author or drop the caller's, and a model file with a fabricated author is
+/// worse than one that says nothing. The five properties are the ones Core ML itself declares.
+public struct MLModelMetadata: Hashable {
+    public var shortDescription: String
+    public var author: String
+    public var version: String
+    public var license: String
+    public var description: String
+
+    public init(shortDescription: String = "", author: String = "",
+                version: String = "", license: String = "", description: String = "") {
+        self.shortDescription = shortDescription
+        self.author = author
+        self.version = version
+        self.license = license
+        self.description = description
+    }
+}

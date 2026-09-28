@@ -13,7 +13,8 @@
 // so, and the writer's own comment says which estimators it covers and which it refuses.
 
 import Foundation
-import PortProto
+import PortCoreML
+import PortCreateMLComponents
 
 var checks = 0
 var failures = 0
@@ -161,6 +162,58 @@ do {
 } catch {
     check("coremltools 9.0 could be run", false, "\(error)")
 }
+// The public `write(to:)` a caller actually calls, on a model that was fitted, read back by the same
+// independent reader. This is the check that the writer is reachable from the model rather than only
+// from the suite, and that the intercept is moved out of the front of the coefficient array into the
+// layer's bias field instead of being written as if it were a weight.
+let fitted = LinearRegressorModel<Double>(coefficients: [7.0, 2.0, -1.5])
+let publicPath = NSTemporaryDirectory() + "/createml-public-\(getpid()).mlmodel"
+try? FileManager.default.removeItem(atPath: publicPath)
+var wrote = false
+do {
+    try fitted.write(to: URL(fileURLWithPath: publicPath))
+    wrote = FileManager.default.fileExists(atPath: publicPath)
+} catch {
+    print("public write(to:) threw: \(error)")
+}
+check("the fitted model's own write(to:) produces a file", wrote)
+
+let publicRead = Process()
+publicRead.executableURL = URL(fileURLWithPath: "/usr/bin/python3")
+let publicScript = NSTemporaryDirectory() + "/createml-public-\(getpid()).py"
+publicRead.arguments = [publicScript]
+var publicSource = """
+import coremltools as ct
+s = ct.models.MLModel("\(publicPath)", skip_model_load=True).get_spec()
+ip = s.neuralNetworkRegressor.layers[0].innerProduct
+# The weight and bias vectors are joined with a comma and the fields with a bar: joining the vectors
+# with the bar too would split `2.0|-1.5` into two fields and shift every field after it, which is
+# the mistake a naive one-separator script makes.
+print("|".join([",".join(str(v) for v in ip.weights.floatValue),
+                ",".join(str(v) for v in ip.bias.floatValue),
+                str(ip.inputChannels), str(ip.outputChannels)]))
+"""
+try? publicSource.write(toFile: publicScript, atomically: true, encoding: .utf8)
+var out = ""
+let fittedPipe = Pipe()
+publicRead.standardOutput = fittedPipe
+try? publicRead.run()
+out = String(data: fittedPipe.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8) ?? ""
+publicRead.waitUntilExit()
+let fields = out.trimmingCharacters(in: .whitespacesAndNewlines).split(separator: "|").map(String.init)
+if fields.count == 4 {
+    checkEqual("the intercept is the layer's bias, not a weight",
+               fields[1].split(separator: ",").map(String.init), ["7.0"])
+    checkEqual("the weights are the coefficients, in order, without the intercept",
+               fields[0].split(separator: ",").map(String.init), ["2.0", "-1.5"])
+    checkEqual("inputChannels is the feature count", fields[2], "2")
+    checkEqual("outputChannels is one, a scalar prediction", fields[3], "1")
+} else {
+    check("coremltools read back the file write(to:) produced", false)
+}
+try? FileManager.default.removeItem(atPath: publicPath)
+try? FileManager.default.removeItem(atPath: publicScript)
+
 try? FileManager.default.removeItem(atPath: path)
 try? FileManager.default.removeItem(atPath: scriptPath)
 

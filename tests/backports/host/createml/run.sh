@@ -65,16 +65,17 @@ xcrun swiftc -swift-version 5 -wmo -parse-as-library -O \
 # The header is what gives the module the framework's declarations, exactly as the package's own
 # build does: the module is named `CoreML` and so is the SDK's clang module, and two modules cannot
 # share a name. `-import-objc-header` puts the header's declarations in the module directly.
-xcrun swiftc -swift-version 5 -wmo -parse-as-library -O \
-    -module-name PortProto \
-    -emit-module -emit-module-path "$out/modules/PortProto.swiftmodule" \
-    -c -o "$out/proto.o" "$out"/files/Protobuf/*.swift
 
+# The specification writer is part of the CoreML overlay, not a module of its own: on the device
+# `packages/c/createml/xmake.lua` builds every `files/CoreML/*.swift` as the one `CoreML` module, and
+# a writer that the package never compiles would be a file only the host test can see. It used to be a
+# separate `PortProto` module, which is why `CreateMLComponents` could not see it.
 xcrun swiftc -swift-version 5 -wmo -parse-as-library -O \
     -module-name PortCoreML \
     -import-objc-header "$out"/files/CoreML/CharonCoreML.h \
     -emit-module -emit-module-path "$out/modules/PortCoreML.swiftmodule" \
-    -c -o "$out/coreml.o" "$out"/files/CoreML/ShapedArray.swift
+    -c -o "$out/coreml.o" "$out"/files/CoreML/ShapedArray.swift \
+    "$out"/files/CoreML/Codec.swift "$out"/files/CoreML/ModelWriter.swift
 
 xcrun swiftc -swift-version 5 -wmo -parse-as-library -O \
     -module-name PortCreateMLComponents \
@@ -105,8 +106,11 @@ xcrun swiftc -swift-version 5 -O -I "$out/modules" \
 # this SDK's CoreML surface `prediction(fromFeatures:)` is unavailable on macOS, `prediction(from:)` is
 # async over `MLTensor`, and `MLTensor(shape:scalars:)` trips a compiler crash. The file says so and
 # makes no claim it did not make.
+# `cmc.o` is linked in as well as `coreml.o` so the suite calls the *public* `write(to:)` a caller
+# would call, rather than the writer underneath it: the writer is already checked, and what is new is
+# that a fitted model reaches it.
 xcrun swiftc -swift-version 5 -O -I "$out/modules" \
-    "$here/model/main.swift" "$out/proto.o" \
+    "$here/model/main.swift" "$out/coreml.o" "$out/cmc.o" \
     -framework Foundation \
     -o "$out/model"
 

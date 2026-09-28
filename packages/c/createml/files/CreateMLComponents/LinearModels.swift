@@ -122,6 +122,40 @@ public struct LinearRegressorModel<Scalar: LinearScalar>: Regressor {
         self.weights = values
     }
 
+    /// The model as a Core ML `.mlmodel`, written where the caller says.
+    ///
+    /// A linear model **is** a one-input, one-output neural network with a single inner-product layer,
+    /// because that layer computes `bias + weights \u{00b7} x` and Core ML executes it, so this writes
+    /// a model Core ML loads rather than a file with the right extension. The coefficients are
+    /// re-expressed in the order that layer expects \u{2014} feature 0 first \u{2014} with the intercept
+    /// moved out of the front of the array into the layer's bias, because the wire format stores them
+    /// in separate fields and the layout is the one thing that would silently be transposed.
+    ///
+    /// **Core ML's compiler does not accept the result yet**: it throws `std::out_of_range` out of its
+    /// own `unordered_map::at`, identically for a model coremltools 9.0 wrote with its own protobuf
+    /// classes, so this is a gap in the model *shape* and not in this writer. `facts/CreateML/Export.md`
+    /// has the sixteen-variant table. Writing the file is still the right behaviour over refusing:
+    /// the bytes are verified by two readers that are neither this port's nor Swift's Core ML.
+    public func write(to fileURL: URL,
+                      metadata: MLModelMetadata? = nil) throws {
+        let writer = ModelWriter.model(
+            featureName: "x",
+            outputName: "prediction",
+            weights: weights.dropFirst().map { Float($0) },
+            bias: Float(weights[0]),
+            author: metadata?.author ?? "charon CreateML",
+            version: metadata?.version ?? "1.0",
+            description: metadata?.shortDescription
+                ?? "a linear model fitted by charmon CreateML")
+        try Data(writer.bytes).write(to: fileURL)
+    }
+
+    /// The same model under a path rather than a URL, which is the spelling the framework's own
+    /// `write(toFile:)` takes, so a caller that already has a string does not build a URL by hand.
+    public func write(toFile path: String, metadata: MLModelMetadata? = nil) throws {
+        try write(to: URL(fileURLWithPath: path), metadata: metadata)
+    }
+
     init(weights: [Scalar]) {
         precondition(weights.count > 1,
                      "a linear regressor needs an intercept and at least one coefficient")

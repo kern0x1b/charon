@@ -415,7 +415,13 @@ public struct MLDecisionTreeRegressor {
         return MLRegressorMetrics(observations: set.targets, predictions: model.predictAll(set.design))
     }
 
-    /// The model's export. Refused on this build; see the file's header.
+    /// The model's export. **Refused, and the reason is which kind of model it is.** A forest and a
+    /// booster are a `TreeEnsembleRegressor` (field 302) with a different layer set, and a
+    /// classifier is a `NeuralNetworkClassifier` (field 403) with a string label output. A file that
+    /// said `NeuralNetworkRegressor` and carried one of those would be a model Core ML loads and
+    /// answers with the **wrong arithmetic** — so the writer is not used here. The one estimator it
+    /// *is* used by is the linear model, in `CreateMLComponents.LinearModels.swift`, because a linear
+    /// model *is* a single inner-product layer. See `facts/CreateML/Export.md`.
     public func write(to fileURL: URL, metadata: MLModelMetadata? = nil) throws {
         throw MLCreateErrorCode.cannotWriteModel.error
     }
