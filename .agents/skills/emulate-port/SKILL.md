@@ -109,4 +109,15 @@ xmake emulate -d iPhone4,1 -r 6.1.3 launch org.example.app tap 160 260
   build holds the lock. The lock is `~/.xmake/cache/packages/<xy>/<name>/<version>/package.lock` and
   `lsof` on it names the holder. Nothing in a port changes it; a configure that is waiting must not
   be left running, and a run whose log ends on that line has not configured.
+- A hash of the file in the image is not the hash of what `xmake build` wrote, and must not be compared.
+  Wrong: `shasum` of `rootfs/usr/libexec/<name>` against `build/<plat>/<arch>/<mode>/<name>`, read as
+  "the image is stale". Right: compare the **sizes**, and read the per-file lines `install` prints.
+  Reason, measured on `tests/backports/host/dragdroprouting` on 2026-09-28: the build output is
+  166296 B and the installed file 125776 B, because `platform.install_placed` copies the target file
+  into the stage and then `finish`es **that copy** - `xcrun strip -x` and `ldid -S` - leaving the
+  build output raw. And the installed file's hash can never be compared at all: two `ldid -S`
+  signatures of one input are the same size and different bytes. An install cannot leave an older file
+  behind either - `clone()` removes the image rootfs before copying the golden into it, and
+  `emulator.place` removes each target before copying - so a size that differs is the finishing, not
+  staleness.
 
