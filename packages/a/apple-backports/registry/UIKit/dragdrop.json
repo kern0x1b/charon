@@ -920,6 +920,86 @@
    "effect": "asked by the port",
    "facts": "facts/UIKit/DragAndDrop.md",
    "source": "asked by the port in UIDragInteraction.m and CharonDropSequence11.m, the two files that drive a drag and a drop; the order a drop is asked in is asserted against Apple's by tests/backports/device/dragdroprouting.m on an emulated 6.1.3, whose clean half passes and whose mutated half fails with failures=1"
+  },
+  {
+   "api": "-[UITextDragPreviewRenderer initWithLayoutManager:range:unifyRects:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a renderer for that range, the three rectangles measured from the release's own layout manager: the bounding rectangle of the range, the used rectangle of the line fragments at each end, and the body between them; unifying says whether a range of one line is drawn as a body rather than as a first line",
+   "facts": "facts/UIKit/TextDragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each question is and which type carries it; the renderer's geometry is the release's own NSLayoutManager, measured through its own line-fragment questions, and a range of no glyphs has no picture"
+  },
+  {
+   "api": "-[UITextDragPreviewRenderer initWithLayoutManager:range:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the same, with the rectangles left apart rather than unified",
+   "facts": "facts/UIKit/TextDragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each question is and which type carries it; the renderer's geometry is the release's own NSLayoutManager, measured through its own line-fragment questions, and a range of no glyphs has no picture"
+  },
+  {
+   "api": "-[UITextDragPreviewRenderer adjustFirstLineRect:bodyRect:lastLineRect:textOrigin:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "moves the three rectangles by the text's origin, in place, so a preview drawn where the text is not already begins at the caret rather than at its line's origin",
+   "facts": "facts/UIKit/TextDragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each question is and which type carries it; the renderer's geometry is the release's own NSLayoutManager, measured through its own line-fragment questions, and a range of no glyphs has no picture"
+  },
+  {
+   "api": "UITextDragPreviewRenderer.layoutManager",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the layout manager the rectangles were measured with",
+   "facts": "facts/UIKit/TextDragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each question is and which type carries it; the renderer's geometry is the release's own NSLayoutManager, measured through its own line-fragment questions, and a range of no glyphs has no picture"
+  },
+  {
+   "api": "UITextDragPreviewRenderer.image",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the picture of the text, drawn once by asking that layout manager to draw its glyphs, so the text in the picture is where the text is in the view; nil for a renderer with no layout manager or a range of no glyphs, and never a blank image",
+   "facts": "facts/UIKit/TextDragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each question is and which type carries it; the renderer's geometry is the release's own NSLayoutManager, measured through its own line-fragment questions, and a range of no glyphs has no picture"
+  },
+  {
+   "api": "UITextDragPreviewRenderer.firstLineRect",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the rectangle of the first line of the range",
+   "facts": "facts/UIKit/TextDragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each question is and which type carries it; the renderer's geometry is the release's own NSLayoutManager, measured through its own line-fragment questions, and a range of no glyphs has no picture"
+  },
+  {
+   "api": "UITextDragPreviewRenderer.bodyRect",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the rectangle between the first and the last lines, and the whole range when the rectangles were unified",
+   "facts": "facts/UIKit/TextDragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each question is and which type carries it; the renderer's geometry is the release's own NSLayoutManager, measured through its own line-fragment questions, and a range of no glyphs has no picture"
+  },
+  {
+   "api": "UITextDragPreviewRenderer.lastLineRect",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the rectangle of the last line of the range",
+   "facts": "facts/UIKit/TextDragAndDrop.md",
+   "source": "the header of SDK 26.2 for what each question is and which type carries it; the renderer's geometry is the release's own NSLayoutManager, measured through its own line-fragment questions, and a range of no glyphs has no picture"
   }
  ]
 }
