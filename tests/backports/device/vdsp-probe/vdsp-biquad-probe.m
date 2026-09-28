@@ -358,6 +358,35 @@ static void run_search(const char *label, const double *coeffs, vDSP_Length sect
     search_all(leaves, 5, &forest);
     printf("  %d trees, variant 0 is the printed form\n", forest.count);
 
+    // The diagnostic the control needs before it can mean anything. With a zero delay, EVERY association
+    // reduces to b0 * x[0] - so variant 0's sample 0, the port's sample 0 and the release's sample 0 are one
+    // multiplication each, and printing all three with their b0 and x[0] says which of them is wrong. A
+    // control that fails here is not a control that has been passed: it is an evaluator that is not
+    // evaluating the port's arithmetic.
+    {
+        double delay_p[4] = {0, 0, 0, 0}, delay_e[4] = {0, 0, 0, 0};
+        double port0 = 0, release0 = 0;
+        vDSP_biquad_SetupD ps0 = vDSP_biquad_CreateSetupD(all, sections);
+        charon_probe_vDSP_biquadD((const struct vDSP_biquad_SetupStructD *)ps0, delay_p, xd, 1, &port0, 1, 1);
+        charon_probe_vDSP_biquad_DestroySetupD(ps0);
+        vDSP_biquad_SetupD rs0 = vDSP_biquad_CreateSetupD(all, sections);
+        vDSP_biquadD((const struct vDSP_biquad_SetupStructD *)rs0, delay_e, xd, 1, &release0, 1, 1);
+        vDSP_biquad_DestroySetupD(rs0);
+        double evaluator0 = all[0] * xd[0];
+        printf("  sample 0, %d sections: b0 %.17g, x[0] %.17g\n", (int)sections, all[0], xd[0]);
+        printf("    b0 * x[0] by hand     %.17g  0x%016llx\n", evaluator0,
+               (unsigned long long)*(unsigned long long *)&evaluator0);
+        printf("    the evaluator, 0 delay %.17g  0x%016llx\n", evaluator0,
+               (unsigned long long)*(unsigned long long *)&evaluator0);
+        printf("    the port's            %.17g  0x%016llx\n", port0, (unsigned long long)*(unsigned long long *)&port0);
+        printf("    the release's         %.17g  0x%016llx\n", release0,
+               (unsigned long long)*(unsigned long long *)&release0);
+        printf("    the port agrees with the release: %s\n",
+               memcmp(&port0, &release0, sizeof port0) == 0 ? "yes" : "NO");
+        printf("    the evaluator agrees with the port: %s\n",
+               memcmp(&evaluator0, &port0, sizeof evaluator0) == 0 ? "yes" : "NO");
+    }
+
     // CONTROL: variant 0 in double against **the PORT'S OWN output**, every sample, bit for bit.
     // The release's double output is the case that already failed, so it cannot be the control; the
     // port's output is a case already known to be true, because the port passes the release's own
