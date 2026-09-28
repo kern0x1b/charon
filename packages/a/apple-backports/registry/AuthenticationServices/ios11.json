@@ -153,6 +153,16 @@
       "reason": "Sign in with Apple is not carried: the release has no Apple ID authorization service, no ASAuthorization controller and no way to reach the identity provider, so there is no credential to read a code from",
       "effect": "the class and the property are not there",
       "source": "the headers of SDK 16.4; nothing of a release was read, as the release has none of the classes"
+    },
+    {
+      "api": "ASAuthorizationRequest",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the base every request in this framework is: -provider, -copyWithZone:, -encodeWithCoder: and -initWithCoder:, and a -init that leaves a request with no provider, which is the state the release's own -init leaves it in. The release marks -init and +new unavailable, so the port's construction is -charon_initWithProvider: carrying objc_method_family(init), declared in CharonASConstruction.h",
+      "facts": "facts/AuthenticationServices/ASAuthorizationRequest.md",
+      "source": "macOS 27.0's own AuthenticationServices, dlopened and asked with class_getInstanceMethod for each member, by tests/backports/host/authservices; and the 26.2 header's contract"
     }
   ]
 }

@@ -96,6 +96,16 @@ __attribute__((constructor)) static void charon_aswebauth_recover_journal(void)
     [[NSURLCache sharedURLCache] removeAllCachedResponses];
 }
 
+// The host's own class answers -init, and this one did not: measured by
+// tests/backports/host/authservices, which compares the shape of every class the registry carries
+// against the host's and against this tree. A session with no URL and no scheme is a session that can
+// never call back, so -init here is the state the release leaves it in rather than something invented
+// to look complete: it runs the real flow, which fails to start and says so through the handler.
+- (instancetype)init
+{
+    return [self initWithURL:nil callbackURLScheme:nil completionHandler:nil];
+}
+
 - (instancetype)initWithURL:(NSURL *)URL callbackURLScheme:(NSString *)callbackURLScheme completionHandler:(ASWebAuthenticationSessionCompletionHandler)completionHandler
 {
     self = [super init];
