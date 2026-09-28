@@ -608,31 +608,81 @@ end
 -- An owner has no lock a running emulate takes: the run holds its image's lock, so a prune that asked for
 -- the owner's judged nothing and removed the images inside a live run's image. An image a live process holds
 -- is kept, and an owner is only removed when it holds nothing.
+-- A lock held by another process, which is the situation the prune's bug is about: this process opens the
+-- same file and its own openlock interacts with the holder differently. The child says "held" in a file when
+-- it has the lock, and the caller waits for that word.
+local function wait_for_the_lock(lock, word)
+    local script = path.join(path.directory(word), "holder.py")
+    io.writefile(script, string.format([[import fcntl, sys, time
+f = open(sys.argv[1], "a")
+fcntl.flock(f, fcntl.LOCK_EX)
+open(sys.argv[2], "w").write("held")
+time.sleep(60)
+]], path.absolute(lock), path.absolute(word)))
+    os.execv("python3", {script, lock, word}, {try = true, stdout = os.nul, stderr = os.nul, detach = true})
+    for attempt = 1, 60 do
+        if os.isfile(word) and io.readfile(word):find("held", 1, true) then
+            return true
+        end
+        os.sleep(100)
+    end
+    return false
+end
+
 local function held_image_step(emulator, folder, found)
+    -- o1: an owner aged 48h, an image aged 48h, and the image's lock held by *another process* - the case the
+    -- review measured red on the old code and green on this one, cross-process because a lock this process
+    -- took is not the situation the bug is about.
     local base = path.join(folder, "images.noindex")
-    local owner = path.join(base, "owner-held")
-    local image = path.join(owner, "iPhone3,1_7A")
+    local owner = path.join(base, "o1")
+    local image = path.join(owner, "iPhone3,1_1")
     os.mkdir(base)
     os.mkdir(owner)
     os.mkdir(image)
-    local held = io.openlock(image .. ".lock")
-    held:lock()
+    local when = os.date("%Y%m%d%H%M", os.time() - 48 * 3600)
+    for _, what in ipairs({image, owner}) do
+        os.execv("touch", {"-t", when, what}, {try = true, stdout = os.nul, stderr = os.nul})
+    end
+    local held = wait_for_the_lock(image .. ".lock", folder .. "/held.txt")
+    if not held then
+        table.insert(found, "the holder process did not take the image's lock")
+    end
+    os.execv("touch", {"-t", when, image .. ".lock"}, {try = true, stdout = os.nul, stderr = os.nul})
+    print(string.format("o1 image lock mtime=%s (old is %s)", os.mtime(image .. ".lock"), when))
+    print(string.format("o1 owner mtime=%s used=%s unlocks=%s", os.mtime(owner), tostring(emulator.used(owner, 24)),
+                       tostring(emulator.unlocks(owner))))
     local removed = emulator.prune({root = folder, hours = 24})
     if os.isdir(image) then
         -- kept, which is the point
     else
-        table.insert(found, "an image a live xmake emulate holds must survive the prune, and it was removed: " .. table.concat(removed, " "))
+        table.insert(found, "o1: an image a live xmake emulate holds must survive the prune, and it was removed: " .. table.concat(removed, " "))
     end
+    -- a lock beside an *owner* is the prune's: the run's real lock is the image's, which the holder made
+    local visited = path.join(base, "o3")
+    os.mkdir(visited)
+    os.mkdir(path.join(visited, "iPhone3,1_1"))
+    for _, what in ipairs({path.join(visited, "iPhone3,1_1"), visited}) do
+        os.execv("touch", {"-t", when, what}, {try = true, stdout = os.nul, stderr = os.nul})
+    end
+    emulator.prune({root = folder, hours = 24})
     for _, entry in ipairs(os.files(path.join(base, "*.lock"))) do
-        table.insert(found, "the prune left a stray lock beside an owner: " .. path.filename(entry))
+        if entry:find("o3") then
+            table.insert(found, "the prune left a lock beside an owner it visited: " .. path.filename(entry))
+        end
     end
-    held:unlock()
-    held:close()
-    -- and with nothing holding it and its age past, the same image goes, so the case is about the lock
-    os.execv("touch", {"-t", "202001010000", image}, {try = true, stdout = os.nul, stderr = os.nul})
-    removed = emulator.prune({root = folder, hours = 24})
-    if os.isdir(image) then
-        table.insert(found, "an image nothing holds must be pruned, and it was kept: " .. table.concat(removed, " "))
+    -- o2, the control: the owner is fresh, so nothing is pruned whatever the lock says
+    local owner2 = path.join(base, "o2")
+    local image2 = path.join(owner2, "iPhone3,1_1")
+    os.mkdir(owner2)
+    os.mkdir(image2)
+    for _, what in ipairs({image2}) do
+        os.execv("touch", {"-t", when, what}, {try = true, stdout = os.nul, stderr = os.nul})
+    end
+    wait_for_the_lock(image2 .. ".lock", folder .. "/held2.txt")
+    os.execv("touch", {"-t", when, image2 .. ".lock"}, {try = true, stdout = os.nul, stderr = os.nul})
+    local removed2 = emulator.prune({root = folder, hours = 24})
+    if #removed2 > 0 then
+        table.insert(found, "o2: a fresh owner with a held image must be left alone, and the prune removed: " .. table.concat(removed2, " "))
     end
     os.tryrm(folder)
 end
