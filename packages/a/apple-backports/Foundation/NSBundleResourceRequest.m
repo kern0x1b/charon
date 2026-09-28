@@ -217,6 +217,8 @@ static BOOL CharonTagIsResolvable(NSBundle *bundle, NSString *tag)
 
 @end
 
+/* The SDK declares this category itself, behind API_UNAVAILABLE(macOS), so redeclaring it would be a
+   duplicate; only the implementation is added here, against the SDK's own declaration. */
 /* The two additions, on NSBundle, in the header's own terms. macOS ships them as stubs that answer
    and read back 0 where the header promises an exception, so the host cannot hold the port to them and
    the port follows the header.
@@ -232,8 +234,12 @@ static BOOL CharonTagIsResolvable(NSBundle *bundle, NSString *tag)
    install needs and because a method's self would be a request rather than the bundle the caller
    asked about. They are used only here and live in the same object as the class, so no band's file
    can be left out from under them. */
-static void CharonSetPreservationPriority(NSBundle *bundle, SEL selector, double priority, NSSet<NSString *> *tags)
+@implementation NSBundle (NSBundleResourceRequestAdditions)
+
+- (void)setPreservationPriority:(double)priority forTags:(NSSet<NSString *> *)tags
 {
+    NSBundle *bundle = self;
+    SEL selector = _cmd;
     NSDictionary *manifest = CharonManifestForBundle(bundle);
     if ([manifest count] == 0) {
         [NSException raise:NSInvalidArgumentException
@@ -253,11 +259,13 @@ static void CharonSetPreservationPriority(NSBundle *bundle, SEL selector, double
     }
 }
 
-static double CharonPreservationPriorityForTag(NSBundle *bundle, SEL selector, NSString *tag)
+- (double)preservationPriorityForTag:(NSString *)tag
 {
-    NSNumber *held = CharonPriorities()[bundle.bundlePath ?: @""][tag];
+    NSNumber *held = CharonPriorities()[self.bundlePath ?: @""][tag];
     return held ? [held doubleValue] : 0.0;
 }
+
+@end
 
 /* A constructor, not +load: +load of a backport runs before the runtime has vended the framework's
    classes, and asking one then traps (charon/AGENTS.md, Traps: "+load in a backport", and
@@ -278,10 +286,12 @@ void CharonInstallNSBundleAdditions(Class bundle)
     BOOL hasGet = class_getInstanceMethod(bundle, @selector(preservationPriorityForTag:)) != NULL;
     if (!hasSet)
         class_addMethod(bundle, @selector(setPreservationPriority:forTags:),
-                        (IMP)CharonSetPreservationPriority, "v@:@d@");
+                        class_getMethodImplementation([NSBundle class], @selector(setPreservationPriority:forTags:)),
+                        "v@:@d@");
     if (!hasGet)
         class_addMethod(bundle, @selector(preservationPriorityForTag:),
-                        (IMP)CharonPreservationPriorityForTag, "d@:@@");
+                        class_getMethodImplementation([NSBundle class], @selector(preservationPriorityForTag:)),
+                        "d@:@@");
 }
 
 __attribute__((constructor)) static void CharonInstallOnNSBundle(void)
