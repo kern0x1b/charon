@@ -34,28 +34,53 @@
 @implementation CharonNWPathMonitor
 @end
 
-/* What an interface *is*, from what the kernel says about it rather than from what it is called.
+/* What an interface *is*, from the number the kernel classifies it with.
  *
- * Three things the kernel answers for every interface, and none of them a name:
+ * `getifaddrs` gives every interface a second entry whose address family is `AF_LINK`, and the
+ * `struct if_data` behind that address carries `ifi_type`: the IANA ifType number the interface was
+ * created with (the public registry, ianaiftype-mib). That is the classification the release itself
+ * reads, and this port reads the same number rather than a name. Measured on the host with
+ * `getifaddrs` beside `ifconfig -v`, and the table is in facts/Network/NWPath.md:
  *
- * - `IFF_LOOPBACK` on its flags: a loopback, and a path over it is the loopback however the interface
- *   spells that;
- * - `SIOCGIFDSTADDR` answering for it: a point-to-point link with a gateway, which on this release is
- *   the cellular radio. A tunnel is point-to-point too and has no gateway, and that is what tells the
- *   two apart - not `utun` in a name;
- * - anything else, which is a broadcast-capable link or a bridge: Wi-Fi on this release, which has no
- *   wired Ethernet, and `other` for what remains.
+ *   lo0       24  softwareLoopback   the loopback
+ *   en0       6  ethernetCsmacd     the Wi-Fi radio, on a release with no wired Ethernet
+ *   utun0     1  other              a tunnel - the kernel does *not* call it IANA `tunnel` (131)
+ *   bridge100 209 bridge             a bridge, and a Personal Hotspot hands one out over it
  *
- * The `struct if_data` behind the AF_LINK entry carries the kernel's own `ifi_type` as well, and that
- * is the classification the release itself reads - but the IFTYPE_* names for it live in XNU's
- * `net/if_types.h` and in no Apple SDK, so a port that spelled them out would be writing a mapping of
- * numbers it cannot measure. The three above are all measurable on a device without a header this
- * port has to invent.
+ * The cellular radio is the one number the registry does not carry: it is Apple's own
+ * `IFT_CELLULAR`, 0xff, in XNU's `net/if_types.h` (open source, APSL, the same header this port
+ * reads the SDK's own `net/if_types.h` for - and that file in the SDK has none of the constants in
+ * it, which is why this one is spelled out here and cited rather than taken).
  */
+#define CHARON_IFI_TYPE_OTHER       1     /* IANA other, and what a utun carries */
+#define CHARON_IFI_TYPE_ETHERNET    6     /* IANA ethernetCsmacd */
+#define CHARON_IFI_TYPE_SOFT_LOOPBACK 24  /* IANA softwareLoopback */
+#define CHARON_IFI_TYPE_CELLULAR    0xff  /* XNU's IFT_CELLULAR, which IANA does not carry */
+
 static nw_interface_type_t charon_type_of(const struct ifaddrs *item)
 {
-    if (item->ifa_flags & IFF_LOOPBACK)
-        return nw_interface_type_loopback;
+    for (const struct ifaddrs *link = item; link; link = link->ifa_next) {
+        if (!link->ifa_addr || link->ifa_addr->sa_family != AF_LINK || !link->ifa_data)
+            continue;
+        const struct if_data *data = (const struct if_data *)link->ifa_data;
+        switch (data->ifi_type) {
+        case CHARON_IFI_TYPE_SOFT_LOOPBACK:
+            return nw_interface_type_loopback;
+        case CHARON_IFI_TYPE_CELLULAR:
+            return nw_interface_type_cellular;
+        case CHARON_IFI_TYPE_ETHERNET:
+            return nw_interface_type_wifi;
+        default:
+            /* Everything else keeps its own kind and is `other` to a program: a tunnel and a bridge are
+               the interfaces a VPN and a Personal Hotspot put a path on, and a path that dropped them
+               would be a path that could not describe itself. */
+            return nw_interface_type_other;
+        }
+    }
+    /* No AF_LINK entry, so the kernel classified nothing: where `ifi_type` cannot decide, this asks
+     * whether the interface is a point-to-point link with a gateway, which is the cellular radio on
+     * this release. A tunnel is point-to-point too and has no gateway, so it answers `other` - the
+     * same answer its `ifi_type` gives, from the other end. */
     if (item->ifa_flags & IFF_POINTOPOINT) {
         int probe = socket(AF_INET, SOCK_DGRAM, 0);
         BOOL gateway = NO;
@@ -66,12 +91,19 @@ static nw_interface_type_t charon_type_of(const struct ifaddrs *item)
             gateway = ioctl(probe, SIOCGIFDSTADDR, &request) == 0;
             close(probe);
         }
-        /* A point-to-point link with a gateway is the cellular radio; one without is a tunnel, which
-           is `other` to a program and is how a VPN reaches the network. */
         return gateway ? nw_interface_type_cellular : nw_interface_type_other;
     }
+    /* IFF_LOOPBACK stays as the cross-check it always was: the flag and the number agree, and where
+       they do not, the flag is what the release's own path has always used. */
+    if (item->ifa_flags & IFF_LOOPBACK)
+        return nw_interface_type_loopback;
     return nw_interface_type_wifi;
 }
+
+/* The classifier, named for the objects differential: it is the only place the port decides what kind
+   of interface something is, and the differential asks it with the numbers measured on the host
+   (CHARON_TRACE_PATH aside) so that each branch of it is a check that can fail. */
+nw_interface_type_t charon_path_interface_type(const struct ifaddrs *item);
 
 static BOOL charon_usable_v4(const struct sockaddr *address)
 {
@@ -355,4 +387,9 @@ const char *nw_interface_get_name(nw_interface_t interface)
 uint32_t nw_interface_get_index(nw_interface_t interface)
 {
     return ((CharonNWInterface *)interface)->_index;
+}
+
+nw_interface_type_t charon_path_interface_type(const struct ifaddrs *item)
+{
+    return charon_type_of(item);
 }

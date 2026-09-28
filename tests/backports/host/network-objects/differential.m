@@ -17,6 +17,10 @@
 #import <Network/Network.h>
 #import <arpa/inet.h>
 #import <ctype.h>
+#include <ifaddrs.h>
+#include <net/if.h>
+#include <net/if_dl.h>
+#include <sys/socket.h>
 #import <netinet/in.h>
 #import <stdlib.h>
 #import <string.h>
@@ -60,6 +64,8 @@ extern bool charonhost_nw_path_is_constrained(nw_path_t);
 extern void charonhost_nw_path_enumerate_gateways(nw_path_t, void (^)(nw_endpoint_t));
 extern nw_path_unsatisfied_reason_t charonhost_nw_path_get_unsatisfied_reason(nw_path_t);
 extern int charonhost_nw_path_get_link_quality(nw_path_t);
+/* The port's own interface classifier, over the AF_LINK entry of an interface. */
+extern nw_interface_type_t charon_path_interface_type(const struct ifaddrs *item);
 extern int charonhost_nw_path_get_link_quality(nw_path_t);
 extern bool charonhost_nw_path_is_ultra_constrained(nw_path_t);
 extern void *P(nw_retain)(void *);
@@ -2093,6 +2099,56 @@ int main(void)
                         @(port.path_is_ultra_constrained(port_path)));
             }
             nw_path_monitor_cancel(system_monitor); port.monitor_cancel(port_monitor);
+        }
+
+        /* The interface classifier, over the numbers measured on the host with getifaddrs' AF_LINK
+           entries beside ifconfig -v (facts/Network/NWPath.md has the table). Each row is a
+           synthetic ifaddrs chain the port's own classifier reads, so flipping a branch of it turns
+           its own row red: the loopback number into cellular, the cellular number into loopback, the
+           ethernet number into other, or the default into loopback each fail one row here. */
+        {
+            struct if_data info;
+            unsigned char link[128];
+            memset(&info, 0, sizeof info);
+            memset(link, 0, sizeof link);
+            struct sockaddr_dl *dl = (struct sockaddr_dl *)link;
+            dl->sdl_len = (unsigned char)sizeof link;
+            dl->sdl_family = AF_LINK;
+            struct ifaddrs entry;
+            memset(&entry, 0, sizeof entry);
+            entry.ifa_addr = (struct sockaddr *)link;
+            entry.ifa_data = &info;
+            entry.ifa_flags = IFF_UP | IFF_RUNNING;
+
+            info.ifi_type = 24;   /* lo0: softwareLoopback */
+            entry.ifa_name = "lo0";
+            entry.ifa_flags |= IFF_LOOPBACK;
+            compare(@"path: the loopback number types the loopback", @(charon_path_interface_type(&entry)),
+                    @(nw_interface_type_loopback));
+            info.ifi_type = 6;    /* en0: ethernetCsmacd, which on this release is the Wi-Fi radio */
+            entry.ifa_name = "en0";
+            entry.ifa_flags = IFF_UP | IFF_RUNNING | IFF_BROADCAST;
+            compare(@"path: the ethernet number types Wi-Fi", @(charon_path_interface_type(&entry)),
+                    @(nw_interface_type_wifi));
+            info.ifi_type = 0xff; /* XNU's IFT_CELLULAR: the cellular radio */
+            entry.ifa_name = "pdp_ip0";
+            entry.ifa_flags = IFF_UP | IFF_RUNNING | IFF_POINTOPOINT;
+            compare(@"path: the cellular number types cellular", @(charon_path_interface_type(&entry)),
+                    @(nw_interface_type_cellular));
+            info.ifi_type = 1;    /* utun0: the kernel says `other`, and not IANA tunnel */
+            entry.ifa_name = "utun0";
+            entry.ifa_flags = IFF_UP | IFF_RUNNING | IFF_POINTOPOINT;
+            compare(@"path: a tunnel keeps its own kind and is other", @(charon_path_interface_type(&entry)),
+                    @(nw_interface_type_other));
+            info.ifi_type = 209;  /* bridge100: IANA bridge */
+            entry.ifa_name = "bridge100";
+            entry.ifa_flags = IFF_UP | IFF_RUNNING | IFF_BROADCAST;
+            compare(@"path: a bridge is other too", @(charon_path_interface_type(&entry)),
+                    @(nw_interface_type_other));
+            info.ifi_type = 0;    /* nothing the kernel classified: the point-to-point rule decides */
+            entry.ifa_name = "pdp_ip1";
+            compare(@"path: an unclassified point-to-point link is other without a gateway",
+                    @(charon_path_interface_type(&entry)), @(nw_interface_type_other));
         }
 
         /* the errors and their domains */

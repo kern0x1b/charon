@@ -27,6 +27,59 @@ interface, which is what a monitor not allowed to use that interface can honestl
 the Foundation library, in a file of its own (`NWPathMonitor14.m`) because an object that exports the
 symbols of two introductions is split by the build.
 
+### The measured table the classification reads
+
+`getifaddrs`' AF_LINK `ifi_type` for every interface of this host, beside `ifconfig -v`'s own type. One
+run, the same machine, `ifi_type` read from the `struct if_data` behind the `AF_LINK` address:
+
+```
+interface   ifi_type   what it is                            IANA ifType (ianaiftype-mib)
+lo0         24          the loopback                          softwareLoopback
+en0         6           the wired/whatever link               ethernetCsmacd
+en1..en6    6           the USB and the Thunderbolt links      ethernetCsmacd
+ap1         6           the access point                      ethernetCsmacd
+awdl0       6           Apple Wireless Direct Link            ethernetCsmacd
+llw0        6           low-latency WLAN                      ethernetCsmacd
+utun0,1,2   1           a tunnel                             other        (NOT 131, `tunnel`)
+bridge0,100 209         a bridge                              bridge
+gif0        55          a GIF tunnel                          propVirtual
+stf0        57          a six-to-four translator              ieee1394
+```
+
+Two things in it that a name rule could never have got and that the earlier guess got wrong:
+
+- **a tunnel is `other` (1) to the kernel, not IANA `tunnel` (131)** - so a rule that looked for 131
+  would have found nothing, and the `IFF_POINTOPOINT` flag is set on a utun exactly as it is on the
+  cellular radio, which is why the flag alone could not tell them apart either;
+- **a bridge is 209 (`bridge`)**, which is a real interface type of its own and not the loopback or
+  anything else.
+
+The cellular radio is the one number IANA does not carry: it is Apple's own `IFT_CELLULAR`, `0xff`, in
+XNU's `net/if_types.h` - open source, APSL - and this port's 16.4 SDK ships a `net/if_types.h` with
+none of the constants in it (measured: a grep for `IFTYPE` in it answers nothing), which is why that
+one is spelled out and cited here rather than taken from a header.
+
+The classification is therefore four branches over one number, and each of them is a check in
+`tests/backports/host/network-objects` that the port's own classifier answers, built over synthetic
+`AF_LINK` entries carrying the numbers above:
+
+| branch | check | mutation that turns it red |
+| --- | --- | --- |
+| 24 -> loopback | the loopback number types the loopback | typing 24 as cellular: `system 2 != port 4` |
+| 0xff -> cellular | the cellular number types cellular | typing 0xff as loopback: `system 4 != port 2` |
+| 6 -> Wi-Fi | the ethernet number types Wi-Fi | typing 6 as other: `system 0 != port 1` |
+| default -> other | a tunnel and a bridge are other | typing the default as loopback: both `system 4 != port 0` |
+| no AF_LINK entry, `IFF_POINTOPOINT` | an unclassified point-to-point link is other without a gateway | the rule is only reached when the kernel classified nothing |
+
+**Where `ifi_type` cannot decide, the destination-address rule decides, and only there:** when an
+interface has no AF_LINK entry at all, the kernel named nothing, and the classifier asks whether the
+interface is a point-to-point link **with** a gateway (`SIOCGIFDSTADDR` answering), which is the
+cellular radio on this release and which a tunnel does not have. That is the whole of the rule's reach,
+and it is why the earlier version of it - which used it for *every* point-to-point interface, on the
+theory that a tunnel has no gateway and a p2p link does - was a guess standing in for the fact: it
+happened to be right about the two and wrong about the ordering, and it could not have been wrong at
+all if it had not been asked `ifi_type` first.
+
 ## How an interface's type is decided, and what the name was wrong about
 
 `charon_type_of()` used to read the interface's **name**: `lo` for the loopback, `pdp_ip` for the
