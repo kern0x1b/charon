@@ -696,3 +696,31 @@ SAN=1 sh tests/backports/host/bundlerequest/run.sh 2>&1 | sed -n '/AddressSaniti
 `-[NSBundle instancesRespondToSelector:]`'s own path on a class the runtime signed, then the two asks
 have to go the way the class is obtained, one at a time; if it is in `class_addMethod`, then the
 install has to move behind `attach.c` the way the rest of the package's categories are attached.
+
+---
+
+## 99038dbf applied to both sites, and the trap is still there and still unnamed
+
+The other band's finding is the right reading of `brk #0xc472` — the runtime's deliberate trap for a
+selector nothing has registered, not a pointer authentication failure — and it is applied in both
+places that asked:
+
+- the port's constructor: `class_getInstanceMethod(bundle, sel) != NULL` instead of
+  `[bundle instancesRespondToSelector:sel]`, which walks the superclasses and never enters the stub;
+- the differential's own helper, the same change for the same reason.
+
+**The trap survives both**, at the same stub, and lldb will not name the caller: a breakpoint on
+`objc_opt_respondsToSelector` gives `frame #0` and no `frame #1`, because the stub is a leaf with no
+unwind information. The instrument that *did* name a caller before is `image lookup -a $lr` on each
+hit, one hit at a time, and that is what is left:
+
+```sh
+# on the stub's entry, once per hit, the caller's address and the image it is in
+breakpoint set -n objc_opt_respondsToSelector
+run
+image lookup -a $lr
+```
+
+and the hit that traps names the sender. **Until that is read, the oracle's verdict stays open —
+9 or 11 — and items 2 to 5 are undone.** Both changes above stand on the other band's measurement, not
+on mine, and are the right shape whether or not they are the whole of it.

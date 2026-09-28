@@ -282,8 +282,13 @@ __attribute__((constructor)) static void CharonInstallNSBundleAdditions(void)
     /* Both answers before either mutation: adding a method rewrites the class, and a class pointer
        held across that is not the one the runtime would hand out again - asking it afterwards is what
        traps (a pointer authentication failure, DA key, in the optimized -respondsToSelector stub). */
-    BOOL hasSet = [bundle instancesRespondToSelector:@selector(setPreservationPriority:forTags:)];
-    BOOL hasGet = [bundle instancesRespondToSelector:@selector(preservationPriorityForTag:)];
+    /* class_getInstanceMethod, not -instancesRespondToSelector:. The optimized stub behind
+       -instancesRespondToSelector: traps with brk #0xc472 for a selector that nothing has
+       registered, and on macOS these two are registered nowhere; class_getInstanceMethod walks the
+       superclasses and answers without that path (measured by the other band that hit the same trap,
+       99038dbf). */
+    BOOL hasSet = class_getInstanceMethod(bundle, @selector(setPreservationPriority:forTags:)) != NULL;
+    BOOL hasGet = class_getInstanceMethod(bundle, @selector(preservationPriorityForTag:)) != NULL;
     if (!hasSet)
         class_addMethod(bundle, @selector(setPreservationPriority:forTags:),
                         (IMP)CharonSetPreservationPriority, "v@:@d@");

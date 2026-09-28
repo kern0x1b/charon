@@ -93,7 +93,7 @@ static id host_privileged(Class subject, SEL selector, id first)
 {
     SEL firstSelector = NSSelectorFromString([NSString stringWithFormat:@"%@:", NSStringFromSelector(selector)]);
     SEL secondSelector = NSSelectorFromString([NSString stringWithFormat:@"%@::", NSStringFromSelector(selector)]);
-    SEL chosen = [subject instancesRespondToSelector:firstSelector] ? firstSelector : secondSelector;
+    SEL chosen = class_getInstanceMethod(subject, firstSelector) ? firstSelector : secondSelector;
     NSMethodSignature *signature = [subject instanceMethodSignatureForSelector:chosen];
     NSInvocation *call = [NSInvocation invocationWithMethodSignature:signature];
     call.selector = chosen;
@@ -237,9 +237,9 @@ int main(void)
         SEL setPriority = NSSelectorFromString(@"setPreservationPriority:forTags:");
         SEL priorityFor = NSSelectorFromString(@"preservationPriorityForTag:");
         Class bundleClass = objc_getClass("NSBundle");
-        same_bool([bundleClass instancesRespondToSelector:setPriority], YES,
+        same_bool(class_getInstanceMethod(bundleClass, setPriority) != NULL, YES,
                   @"the port adds -setPreservationPriority:forTags: to NSBundle");
-        same_bool([bundleClass instancesRespondToSelector:priorityFor], YES,
+        same_bool(class_getInstanceMethod(bundleClass, priorityFor) != NULL, YES,
                   @"the port adds -preservationPriorityForTag: to NSBundle");
         for (NSBundle *bundle in @[ withoutManifest, withManifest ]) {
             NSString *what = [NSString stringWithFormat:@"a bundle with%s tag information",
