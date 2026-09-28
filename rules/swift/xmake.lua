@@ -168,10 +168,19 @@ rule("swift")
             -- and needs none of the lowering Embedded Swift is put through. It reads the runtime's resource directory,
             -- and so takes that Swift rather than the one the SDK carries for the architecture.
             if target:pkg("swift-runtime") then
-                local modules = {}
+                local modules, plugins = {}, {}
                 for _, dependency in ipairs(target:orderpkgs()) do
                     for _, folder in ipairs(table.wrap((dependency:envs() or {}).CHARON_SWIFT_MODULES)) do
                         table.join2(modules, {"-I", folder})
+                    end
+                    -- A package that ships a macro plugin of its own says where it is, the same way
+                    -- it says where its modules are, and every one of those directories is its own
+                    -- -plugin-path: the runtime's own plugins (SwiftMacros, ObservationMacros) come
+                    -- in through runtime_flags' `plugins`, and a package that expands a macro of its
+                    -- own - SwiftData's @Model, for one - has no other way to be found by a port
+                    -- that uses it.
+                    for _, folder in ipairs(table.wrap((dependency:envs() or {}).CHARON_SWIFT_PLUGINS)) do
+                        table.join2(plugins, {"-plugin-path", folder})
                     end
                 end
                 local argv = table.join(swift.runtime_flags({
@@ -185,7 +194,7 @@ rule("swift")
                     symbols = table.contains(table.wrap(target:get("symbols")), "debug"),
                     prefix_map = os.projectdir() .. "=/port",
                     has_main = has_main
-                }), modules, table.wrap(target:values("swift.flags")), {"-c"}, sourcebatch.sourcefiles, {"-o", objectfile})
+                }), modules, plugins, table.wrap(target:values("swift.flags")), {"-c"}, sourcebatch.sourcefiles, {"-o", objectfile})
                 depend.on_changed(function ()
                     progress.show(jobopt.progress, "${color.build.object}compiling.swift %s", target:name())
                     os.mkdir(path.directory(objectfile))

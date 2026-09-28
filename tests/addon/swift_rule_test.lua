@@ -18,5 +18,19 @@ function failures(opt)
     if not text:find('target:set("policy", "build.fence", true)', 1, true) or not text:find("-emit-objc-header", 1, true) then
         table.insert(found, "a target that has the compiler write an Objective-C header must be built before what depends on it compiles, or the Objective-C finds no header")
     end
+    -- A package that expands a macro of its own - SwiftData's @Model, for one - is a plugin the
+    -- port's compiler has to be pointed at. The runtime's own plugins arrive through
+    -- runtime_flags' `plugins`; a package's own must arrive the way its modules do, from the
+    -- dependencies' environment, or a port can never use the macro it depends on.
+    local loop = text:match("for _, dependency in ipairs%(target:orderpkgs%(%)%) do(.-)\n                end") or ""
+    if not loop:find("CHARON_SWIFT_MODULES", 1, true) then
+        table.insert(found, "a port compiles against every dependency's Swift modules, read from the dependencies' CHARON_SWIFT_MODULES")
+    end
+    if not loop:find("CHARON_SWIFT_PLUGINS", 1, true) then
+        table.insert(found, "a port cannot expand a macro a dependency ships: the rule must read every dependency's CHARON_SWIFT_PLUGINS and pass each as a -plugin-path, the way it passes CHARON_SWIFT_MODULES as -I, or @Model and every other macro of ours is unreachable from a port")
+    end
+    if not text:find('{"-plugin-path", folder}', 1, true) then
+        table.insert(found, "a collected plugin directory must reach the compiler as -plugin-path, which is what a #externalMacro's module: name is resolved against")
+    end
     return found
 end
