@@ -1,6 +1,8 @@
 #import <Foundation/Foundation.h>
 #import <objc/message.h>
 #import <objc/runtime.h>
+#include <signal.h>
+#include <unistd.h>
 #import "check.h"
 
 /* NSTermOfAddress against the system's own, in one process.
@@ -43,6 +45,12 @@
    file states, so the harness is complete apart from that line. */
 
 void host_attach_prefixed(const char *prefix);
+
+static void charon_on_alarm(int number)
+{
+    fprintf(stderr, "\nFAIL the test ran past its thirty second bound\n");
+    _exit(1);
+}
 
 static int failures;
 static int checks;
@@ -87,10 +95,7 @@ static void expect(NSString *label, BOOL system, BOOL ours)
 int main(void)
 {
     @autoreleasepool {
-        signal(SIGALRM, ^(int number) {
-            fprintf(stderr, "\nFAIL the test ran past its thirty second bound\n");
-            _exit(1);
-        });
+        signal(SIGALRM, charon_on_alarm);
         alarm(30);
         ourClass = NSClassFromString(@"CharonHostNSTermOfAddress");
         systemClass = NSClassFromString(@"NSTermOfAddress");
@@ -112,17 +117,22 @@ int main(void)
         expect(@"the current user's term is not a gendered one",
                ![theirCurrent isEqual:theirNeutral] && ![theirCurrent isEqual:theirFeminine] && ![theirCurrent isEqual:theirMasculine],
                ![ourCurrent isEqual:ourNeutral] && ![ourCurrent isEqual:ourFeminine] && ![ourCurrent isEqual:ourMasculine]);
-        expect(@"the current user's term equals itself", [theirCurrent isEqual:[system_term("currentUser")]],
-               [ourCurrent isEqual:our_term("currentUser")]);
+        expect(@"the current user's term equals itself",
+               [theirCurrent isEqual:[system_term("currentUser")]],
+               [ourCurrent isEqual:((id (*)(id, SEL))objc_msgSend)(ourClass, NSSelectorFromString(@"currentUser"))]);
 
         /* No language and no pronouns on the gendered ones, which is what the host answers. */
         for (NSString *factory in @[@"neutral", @"feminine", @"masculine", @"currentUser"]) {
             id theirs = ((id (*)(id, SEL))objc_msgSend)(systemClass, NSSelectorFromString(factory));
             id ours = ((id (*)(id, SEL))objc_msgSend)(ourClass, NSSelectorFromString(factory));
+            id theirLanguage = ((id (*)(id, SEL))objc_msgSend)(theirs, @selector(languageIdentifier));
+            id ourLanguage = ((id (*)(id, SEL))objc_msgSend)(ours, @selector(languageIdentifier));
+            id theirPronouns = ((id (*)(id, SEL))objc_msgSend)(theirs, @selector(pronouns));
+            id ourPronouns = ((id (*)(id, SEL))objc_msgSend)(ours, @selector(pronouns));
             expect([@"the language of " stringByAppendingString:factory],
-                   [theirs.languageIdentifier length] == 0, [ours.languageIdentifier length] == 0);
+                   [theirLanguage length] == 0, [ourLanguage length] == 0);
             expect([@"the pronouns of " stringByAppendingString:factory],
-                   [theirs.pronouns count] == 0, [ours.pronouns count] == 0);
+                   [theirPronouns count] == 0, [ourPronouns count] == 0);
         }
 
         /* A localized term, and the equality rules the header and the facts file both state. */
@@ -130,27 +140,28 @@ int main(void)
             for (NSUInteger variant = 0; variant < 2; variant++) {
                 id pronouns = variant ? @[] : nil;
                 id theirs = system_localized(language, pronouns);
-                id ours = our_localized(language, pronouns);
+                id ours = our_localized(language, (id)pronouns);
+                id ourLanguage = ((id (*)(id, SEL))objc_msgSend)(ours, @selector(languageIdentifier));
                 expect([NSString stringWithFormat:@"a term for %@ keeps its language (%@)", language,
                         variant ? @"an empty array" : @"nil"],
-                       [theirs.languageIdentifier isEqualToString:language], [ours.languageIdentifier isEqualToString:language]);
+                       [theirs.languageIdentifier isEqualToString:language], [ourLanguage isEqualToString:language]);
                 expect([NSString stringWithFormat:@"a term for %@ equals another like it (%@)", language,
                         variant ? @"an empty array" : @"nil"],
-                       [theirs isEqual:system_localized(language, pronouns)], [ours isEqual:our_localized(language, pronouns)]);
+                       [theirs isEqual:system_localized(language, pronouns)], [ours isEqual:our_localized(language, (id)pronouns)]);
                 expect([NSString stringWithFormat:@"a term for %@ does not equal a gendered one", language],
                        ![theirs isEqual:theirNeutral], ![ours isEqual:ourNeutral]);
             }
             expect([NSString stringWithFormat:@"two languages are not the same term (%@)", language],
                    ![system_localized(language, nil) isEqual:system_localized(@"xx-YY", nil)],
-                   ![our_localized(language, nil) isEqual:our_localized(@"xx-YY", nil)]);
+                   ![our_localized(language, (id)nil) isEqual:our_localized(@"xx-YY", (id)nil)]);
         }
         expect(@"an empty array of pronouns is not nil",
                ![system_localized(@"de", nil) isEqual:system_localized(@"de", @[])],
-               ![our_localized(@"de", nil) isEqual:our_localized(@"de", @[])]);
+               ![our_localized(@"de", (id)nil) isEqual:our_localized(@"de", (id)@[])]);
 
         /* The hash, which is the other half of F4: equal terms hash alike, and that is the whole
            contract. */
-        id ourAgain = our_localized(@"de", nil), ourEmpty = our_localized(@"de", @[]);
+        id ourAgain = our_localized(@"de", (id)nil), ourEmpty = our_localized(@"de", (id)@[]);
         id theirAgain = system_localized(@"de", nil), theirEmpty = system_localized(@"de", @[]);
         expect(@"equal terms hash alike (de, nil)",
                [theirAgain hash] == [system_localized(@"de", nil) hash], [ourAgain hash] == [ourAgain hash]);

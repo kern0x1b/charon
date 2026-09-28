@@ -34,6 +34,19 @@
    17.0 this header goes away instead of shadowing the real one. AVAudioSessionCapability26.m and
    CharonAVFAudioNew.h are the same shape for the same reason. */
 
+/* Whether the build's own SDK declares the class is a question about the SDK's version, not about
+   whether a file of that name is reachable. NSTermOfAddress is iOS 17.0, so a build SDK whose newest
+   release is older than that has no declaration of its own and needs this one; a newer one has the
+   real declaration and this header must be silent rather than shadow it. The two are compared as the
+   SDK spells them, and an SDK only spells the versions it knows: the port's 16.4 SDK defines
+   __IPHONE_16_4 and no __IPHONE_17_0, and the host's 27.0 SDK defines __IPHONE_17_0. So "older than
+   17.0" is "does not define it", and that is the test -- comparing __IPHONE_OS_VERSION_MAX_ALLOWED
+   against 170000 is false on both, and against __IPHONE_17_0 is false on the 16.4 SDK too, because
+   the macro it compares to is not defined there and the whole condition drops out.
+   AVAudioSessionCapability26.m and CharonAVFAudioNew.h are the same shape for the same reason. */
+
+#if !defined(__IPHONE_17_0)
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface NSTermOfAddress : NSObject <NSCopying, NSSecureCoding>
@@ -78,3 +91,5 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif
