@@ -118,10 +118,15 @@ PYTHON
 # 3. The comparison. `must-be-unavailable` is a member the header marks NS_UNAVAILABLE: the port must
 #    not declare it, and the host answers it because NSObject has it -- which is why it is a state and
 #    not a question asked of the port as a member it must have.
+# compare() returns a verdict. It does not `set -e`, and it does not `exit`: a function that decides
+# whether the run passed has no business deciding whether the run continues, and a red here is the
+# mutant run's whole purpose. The caller reads $? and acts on it. This has been got wrong three times
+# in this family -- once as an `ok:` printed over a red table, once as a check that invented a
+# selector, and once as a script that exited 1 on a successful mutant with its verdict never printed --
+# so the rule is written here rather than left to the next reader.
 compare() {
     label="$1"
     library="$2"
-    set +e
     "$build/hostshape" "$framework" "$build/classes.txt" > "$build/$label-host.tsv" 2>"$build/$label-host.err"
     python3 "$here/portshape.py" "$library" "$build/classes.txt" > "$build/$label-port.tsv" 2>"$build/$label-port.err"
     portStatus=$?
@@ -227,15 +232,26 @@ PYTHON
     mutant=$?
     set -e
     cat "$build/mutant.txt"
-    redCase=$(grep -c "provider" "$build/mutant.txt" || true)
-    echo
+    # Two things, not one: the comparison has to have returned non-zero, AND it has to have said why.
+    # A run that is red because it crashed, or because it aborted before printing, is not a mutant
+    # that worked -- and the third of the three bugs above was exactly that, green in the summary and
+    # red in fact, and would have passed a check on the exit code alone.
     if [ "$mutant" -eq 0 ]; then
         echo "FAIL: the check passed with a method the port no longer defines"
         exit 1
     fi
-    echo "ok: the check went red ($redCase lines mention the removed method), and nothing else changed"
-    echo "    the port's own source and its library"
-    exit 0
+    if ! grep -q "^ASAuthorizationRequest	provider	instance	available	yes	no	the two sides differ$" "$build/mutant.txt"; then
+        echo "FAIL: the comparison went red without saying so: the line naming the removed method and the"
+        echo "      disagreement is not in its output, so this is a crash or an abort and not a mutant."
+        exit 1
+    fi
+    redLines=$(grep -c "	the two sides differ$" "$build/mutant.txt" || true)
+    if [ "$redLines" -ne 1 ]; then
+        echo "FAIL: $redLines cases are red, and the mutation removes one method: exactly one must be"
+        exit 1
+    fi
+    echo "ok: the check went red, it said so, and exactly $redLines case is red -- the removed method"
+    echo "    and nothing else. The port's own source and its library are untouched by this run."
 fi
 
 if [ "$status" -ne 0 ]; then

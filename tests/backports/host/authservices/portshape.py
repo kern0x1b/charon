@@ -84,8 +84,10 @@ def main(argv):
         raise SystemExit("usage: portshape <library> <cases-file>")
     library, cases_file = argv[1], argv[2]
     if not os.path.isfile(library):
-        sys.stderr.write("no built library at %s: point BUILT_AUTHENTICATIONSERVICES at a gate's "
-                         "libAuthenticationServicesBackports.dylib\n" % library)
+        # There is nothing to report, which is a failure of the run rather than a verdict about a
+        # member, so this one does stop: with no library there is no comparison to make.
+        sys.stderr.write("no built library at %s: point BUILT at a build of this worktree's sources\n"
+                         % library)
         sys.exit(1)
     bound = methods_of(library)
 
@@ -101,8 +103,12 @@ def main(argv):
         if not present:
             missing += 1
         print("%s\t%s\t%s\t%s\t%s" % (className, selector, kind, state, "yes" if present else "no"))
-    sys.stderr.write("portshape: %d cases, %d the library does not bind\n" % (asked, missing))
-    sys.exit(1 if missing else 0)
+    # The same standing rule as compare(): this reports, it does not decide. A member the library does
+    # not bind is not a failure here -- a member the header marks must-be-unavailable is *supposed* not
+    # to be bound -- so exiting non-zero here made the run abort before the comparison could say which
+    # of the missing ones are the four the release marks unavailable.
+    sys.stderr.write("portshape: %d cases, %d the library does not bind (a verdict is the comparison's "
+                     "to give, not this one's)\n" % (asked, missing))
 
 
 if __name__ == "__main__":
