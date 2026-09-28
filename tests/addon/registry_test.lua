@@ -163,6 +163,61 @@ local function type_rows(backports, found)
 end
 
 
+
+-- A member the port adds to a class the release itself carries needs a row of its own: UIView's row says
+-- nothing about -[UIView foo]. And a protocol has no accessors, so its row is implemented when the objects
+-- carry its metadata and named. Each is asked both ways here, with the inventory and the objects' symbols
+-- built by hand, so neither depends on a build.
+local function member_and_protocol_rows(backports, found)
+    local root = fixtures.scratch()
+    os.tryrm(root)
+    os.mkdir(root)
+    os.mkdir(path.join(root, "registry"))
+    local function rows(text)
+        io.writefile(path.join(root, "registry", "Fix.json"), '{"framework": "Fix", "entries": [' .. text .. ']}')
+    end
+    -- the release has FixClass and FixProtocol; the port defines neither
+    local inventory = {classes = {FixClass = {image = true, instance = {}, ["+"] = {}},
+                                   FixProtocol = {image = true, instance = {}, ["+"] = {}}}}
+    -- what the build carries: FixClass, which the release has and the port defines, and FixProtocol, which
+    -- neither the release nor the objects carry unless a case below says so
+    local function asked(members, symbols, withProtocol)
+        local classes = {FixClass = true}
+        if withProtocol then
+            classes.FixProtocol = true
+        end
+        local message
+        local ok = try {
+            function () backports.check_registry(root, {classes = classes, members = members, symbols = symbols or {}}, true, "6.1.3", {}, inventory) return true end,
+            catch {function (errors) message = tostring(errors) end}
+        }
+        return (ok and "passed" or message or "raised with no message")
+    end
+    local class = '{"api": "FixClass", "kind": "class", "introduced": "9.0", "minimum": "6.0", "status": "implemented", "facts": "f"}'
+    local protocol = '{"api": "FixProtocol", "kind": "protocol", "introduced": "9.0", "minimum": "6.0", "status": "implemented", "facts": "f"}'
+    rows(class)
+    local member = {["-[FixClass extra]"] = true}
+    if not asked(member):find("FixClass", 1, true) then
+        table.insert(found, "a category method on a class the release carries must be red without a row of its own, and it is not: " .. asked(member))
+    end
+    rows(class .. ',{"api": "-[FixClass extra]", "kind": "method", "introduced": "9.0", "minimum": "6.0", "status": "implemented", "facts": "f"}')
+    local said = asked(member)
+    if said:find("FixClass") then
+        table.insert(found, "a category method with a row of its own must pass, and it is red: " .. said)
+    end
+    rows(protocol)
+    local symbols = {["_OBJC_PROTOCOL_$_FixProtocol"] = true}
+    said = asked({}, symbols)
+    if said:find("FixProtocol") then
+        table.insert(found, "a protocol row whose objects carry the protocol's metadata must pass, and it is red: " .. said)
+    end
+    said = asked({}, {})
+    if not said:find("FixProtocol", 1, true) then
+        table.insert(found, "a protocol row nothing in the objects carries must be red, and it is not: " .. said)
+    end
+    os.tryrm(root)
+end
+
 function failures(opt)
     local backports = import("apple.backports", {rootdir = opt.modules, anonymous = true})
     local found = {}
@@ -228,6 +283,7 @@ function failures(opt)
     unreadable(backports, found)
     named_twice(backports, found)
     type_rows(backports, found)
+    member_and_protocol_rows(backports, found)
     return found
 end
 

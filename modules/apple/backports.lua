@@ -1407,14 +1407,25 @@ local function in_range(entry, deployment)
 end
 
 -- The registry entry a built name answers to: its own spelling, else the entry of the class that owns it.
-function entry_of(listed, name)
+local function entry_of(listed, name, inventory)
     for spelling in pairs(spellings(name)) do
         if listed[spelling] then
             return listed[spelling]
         end
     end
     local owner = name:match("^[-+]%[([%w_]+) ") or name:match("^([%u][%w_]*)%.")
-    return owner and listed[owner] or nil
+    if not owner then
+        return nil
+    end
+    -- A class row answers for the members of a class the port defines wholly. It does not answer for a class
+    -- the release itself carries: -[UIView foo] that the port adds in a category is API the port carries, and
+    -- UIView's row says nothing about foo, so the member needs its own row (measured 2026-09-28: with the
+    -- class row answering, 1,452 members of classes the port carries had no row of their own and passed).
+    local carried = inventory and inventory.classes and inventory.classes[owner]
+    if carried and carried.image then
+        return nil
+    end
+    return listed[owner]
 end
 
 -- Every name the headers the build reads declare: the tree's own - a Charon header, generated or written - and
@@ -1480,7 +1491,9 @@ function check_registry(root, found, complete, deployment, exports, inventory, s
     local unlisted, undocumented = {}, {}
     for _, carried in ipairs({found.classes, found.members, found.symbols}) do
         for name in pairs(carried) do
-            if not entry_of(listed, name) then
+            -- the protocol metadata symbols answer for the protocol rows and are not API of their own
+            local protocol_metadata = name:startswith("_OBJC_PROTOCOL_$_") or name:startswith("_OBJC_LABEL_PROTOCOL_$_")
+            if not protocol_metadata and not entry_of(listed, name, inventory) then
                 table.insert(unlisted, name)
             end
         end
@@ -1522,7 +1535,17 @@ function check_registry(root, found, complete, deployment, exports, inventory, s
             local carried = deployment and entry.introduced and dyld.compare_versions(entry.introduced, deployment) <= 0
             carried = carried or (exports and exports["_" .. name:gsub("%(%)$", "")]) or false
             local ours = not deployment or in_range(entry, deployment)
-            local declared = entry.kind == "protocol" or (owner and ((listed[owner] and listed[owner].kind == "protocol") or (inventory and inventory.protocols and inventory.protocols[owner] ~= nil)))
+            -- A protocol has no accessors, so nothing else in this loop can answer for it: the row is
+            -- implemented when the objects carry the protocol's own metadata and it names.
+            local declared = entry.kind == "protocol" and
+                ((found.symbols or {})["_OBJC_PROTOCOL_$_" .. name] ~= nil or
+                 (found.symbols or {})["_OBJC_LABEL_PROTOCOL_$_" .. name] ~= nil) or
+                (owner and ((listed[owner] and listed[owner].kind == "protocol") or (inventory and inventory.protocols and inventory.protocols[owner] ~= nil)))
+            if (entry.kind == "type" or entry.kind == "case") and not built then
+                -- no symbol will ever answer for a type or an enumeration case, so the header is the build
+                declared_by_header = declared_by_header or declared_names(root, sdkdir)
+                built = declared_by_header[name] or false
+            end
             if entry.status == "implemented" and not built and not carried and ours and not declared then
                 table.insert(unbuilt, name)
             elseif entry.status == "implemented" and not entry.facts then
