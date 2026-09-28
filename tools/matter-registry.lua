@@ -191,7 +191,7 @@ function main(binary, corpus, outdir, facts, architecture)
     end
     table.sort(types, function (left, right) return #left > #right end)
     local type_of_value = {}
-    for _, name in pairs(found.symbols) do
+    for name in pairs(found.symbols) do
         for _, name_type in ipairs(types) do
             if #name > #name_type and name:startswith(name_type) and not type_of_value[name] then
                 type_of_value[name] = name_type
@@ -202,14 +202,14 @@ function main(binary, corpus, outdir, facts, architecture)
     local families, carried, missing = {}, 0, {}
     for _, row in ipairs(rows) do
         local status
-        local class, selector = row.api:match("^([-+])%[([%w_]+) (.+)%]$")
+        local sign, owner_of = row.api:match("^([-+])%[([%w_]+) (.+)%]$")
         local owner, name = row.api:match("^([%u][%w_]*)%.(.+)$")
         if row.kind == "class" then
             status = found.classes[row.api]
         elseif row.kind == "protocol" then
             status = found.protocols[row.api]
         elseif row.kind == "method" then
-            if class then
+            if sign then
                 status = found.members[row.api]
             elseif owner and found.members["-[" .. owner .. " " .. name .. "]"] or found.members["+[" .. owner .. " " .. name .. "]"] then
                 status = true
@@ -229,7 +229,7 @@ function main(binary, corpus, outdir, facts, architecture)
         end
         if status then
             carried = carried + 1
-            local family = family_of(row.kind == "method" and (class or owner) or row.api)
+            local family = family_of(row.kind == "method" and (owner_of or owner) or row.api)
             families[family] = families[family] or {}
             table.insert(families[family], {api = row.api, kind = row.kind, introduced = row.introduced,
                                             minimum = MINIMUM, status = "implemented", source = SOURCE,

@@ -44,7 +44,16 @@ this measurement came from; the members could not be had at all until the framew
   app-layer C++ files its own Xcode target carries, read out of that target's Sources phase and not guessed. The
   objects are in the package's own source tree; `tools/matter-framework.sh` builds and links them there in minutes
   instead of a whole package resolve.
-- **The link fails in the linker, not in Matter**: charon's `ld64 956.6` aborts with
+**The link succeeds** with `-Wl,-no_implicit_dylibs` (see the flag's reason below): `libMatterBackports.dylib`,
+45 706 036 bytes, `MH_MAGIC ARM V7`, 1506 exported `MTR*` classes, 24 777 exported symbols, 382 undefined, install
+name `/usr/lib/charon/org.charon.apple-backports/libMatterBackports.dylib`.
+
+- The four link experiments that found it, each one a link: **dropping** the two sources the framework's target shares
+  with `libCHIP.a` (`DescriptorCluster.cpp`, `AttributePersistenceProviderInstance.cpp`) - asserts, so the duplicate
+  hypothesis is out; `-Wl,-no_implicit_dylibs` - **links**; only `-lc++` without `-lc++abi` - asserts; `-lc++abi` first -
+  asserts. So the miss is a symbol bound through a re-export that has no ordinal of its own, and libc++ re-exporting
+  libc++abi is that re-export.
+- The old state, for the record: **the link failed in the linker, not in Matter**: charon's `ld64 956.6` aborts with
   `Assertion failed: (it != _dylibToOrdinal.end()), function dylibToOrdinal, file OutputFile.cpp, line 5214` while
   encoding the symbol table. Measured, in order:
 
@@ -62,6 +71,30 @@ this measurement came from; the members could not be had at all until the framew
   `MTRDeviceControllerDataStore.mm`, `MTRDeviceControllerXPCConnection.mm`, `MTROperationalCredentialsDelegate.mm`
   among them - which is the signature of a defect in the linker rather than of any symbol in the input. `ld64` writes a
   snapshot of the run next to the output on each abort, which is the artefact to read next.
+
+## What the port carries, measured against the SDK 26.2 surface and against the host
+
+`tools/matter-registry.lua` against the linked dylib: **16 461 of 24 647 rows carried**, in 299 registry files.
+`tools/matter-host-diff.lua` over the same corpus, the host's own framework read from a live process, and the port's
+library read from its exports and metadata:
+
+| kind | both | host only | port only | neither |
+| --- | --- | --- | --- | --- |
+| classes | **985** | 0 | 0 | 0 |
+| methods | **13 136** | 48 | 0 | 830 |
+| properties | **2 278** | 372 | 0 | 1 |
+| protocols | **11** | 0 | 0 | 5 |
+| functions | **8** | 0 | 0 | 0 |
+| constants | 0 | 0 | 41 | 6 490 |
+
+Every class of the surface, and every function, is in the port's library and in the host's framework alike. 13 136 of
+the 14 014 methods are the same name in both; 48 are the host's alone and 830 are in neither framework, the rows an SDK
+release carries that its framework does not. The 372 properties the host has and the port does not are the honest gap:
+the port's classes are all there, but this library's metadata does not expose those accessors under the getter or setter
+name the answer is looked for by, so the property row is not answered from it. The 6490 constants and 442 enum types
+are in neither column because they are header-declared enumerations - they live in the importing program and are not
+symbols either library exports; the 41 the port exports and the host does not are the ones upstream's headers
+declare as `extern`.
 
 ## Behaviour, held to the host
 

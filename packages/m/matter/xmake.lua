@@ -255,6 +255,17 @@ package("matter")
         -- has no Network.framework, so the nw_* calls come from the backport that carries them over BSD sockets.
         local backports = package:dep("backports"):installdir("lib")
         local output = path.join(package:installdir("lib"), "libMatterBackports.dylib")
+        -- -Wl,-no_implicit_dylibs, and this is the linker's own bug worked around rather than ours worked around. ld64
+        -- 956.6 (charon's cctools-port) asserts in OutputFile's dylibToOrdinal - "it != _dylibToOrdinal.end()" - while
+        -- encoding this symbol table, because a symbol is bound to a library reached through another one's re-export
+        -- and that library has no ordinal of its own: libc++ re-exports libc++abi. Measured: the assertion comes and
+        -- goes with *which* of the 123 objects is present - dropping any one of at least a dozen of them links, and
+        -- neither the objects, nor libCHIP.a, nor the C++ runtime, nor the backports assert alone - which is the
+        -- signature of an encoder defect and not of any symbol in the input. Upstream ld64 maps a re-exported dylib to
+        -- its parent's ordinal; the flag says the same thing to this linker from the outside. With it the link
+        -- completes: 45 706 036 bytes, 1506 exported MTR* classes, and every symbol that needs one of those re-exported
+        -- libraries named explicitly on the line, so a missing one is an undefined symbol at the link rather than a
+        -- silent ordinal. The fix in cctools-port is the coordinator's to take, in its own commit.
         os.vrunv(assert(toolchain:tool("mxx"), "the apple-ios toolchain names no Objective-C++ compiler for %s", package:arch()),
                  table.join(flags, {"-fuse-ld=" .. path.join(package:dep("ld64"):installdir("bin"), "ld"),
                                     "-dynamiclib", "-install_name", "/usr/lib/charon/org.charon.apple-backports/libMatterBackports.dylib",
@@ -264,7 +275,7 @@ package("matter")
                             path.join(package:dep("apple-compat"):installdir("lib"), "libapple-compat.a"),
                             "-framework", "Foundation", "-framework", "Security", "-framework", "CoreData",
                             "-framework", "CoreBluetooth",
-                            "-Wl,-rpath," .. libcxx, "-Wl,-rpath,@loader_path"}))
+                            "-Wl,-rpath," .. libcxx, "-Wl,-rpath,@loader_path", "-Wl,-no_implicit_dylibs"}))
 
         package:add("links", "Matter")
     end)
