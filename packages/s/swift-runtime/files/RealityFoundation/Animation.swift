@@ -210,12 +210,17 @@ public final class AnimationPlaybackController: Hashable {
     let startTransform: Transform
     let animation: __REAnimation
     let node: __REEntity
-    init(entity: Entity, animation: __REAnimation, startsPaused: Bool) {
+    /// The parts of a group or a sequence, and nil for a single animation. This is what a
+    /// sequencer is for: the step asks it where in the group a time falls and applies that part.
+    let sequencer: __RESequencer?
+    init(entity: Entity, animation: __REAnimation, startsPaused: Bool,
+         sequencer: __RESequencer? = nil) {
         self.node = entity.coreEntity
         self.entity = entity
         self.animation = animation
+        self.sequencer = sequencer
         name = animation.name
-        duration = animation.duration
+        duration = sequencer.map { __RESequencer.duration(of: $0) } ?? animation.duration
         elapsed = 0
         isPaused = startsPaused
         isComplete = false
@@ -242,6 +247,17 @@ public final class AnimationPlaybackController: Hashable {
     public static func == (lhs: AnimationPlaybackController, rhs: AnimationPlaybackController) -> Bool {
         lhs === rhs
     }
+}
+
+/// Applies one part of a group or a sequence: the part's own timing over the time that falls
+/// inside it, from the state the entity was in when the group began.
+@MainActor
+func applyPart(_ definition: AnimationDefinition, to node: __REEntity, over local: TimeInterval,
+               from start: Transform) {
+    let length = max(definition.duration, 0)
+    let timed = length > 0 ? Float(local / length) : 1
+    __reAnimation(from: definition, name: definition.name)
+        .apply(to: node, at: definition.timing.value(at: min(max(timed, 0), 1)), from: start)
 }
 
 /// The animations playing on one node.
@@ -285,6 +301,29 @@ extension __REEntity {
             // The delay and the offset move the window the animation is timed over.
             let window = controller.elapsed - controller.animation.delay - controller.animation.offset
             guard window >= 0 else { continue }
+            if let sequencer = controller.sequencer {
+                // A group or a sequence has no definition of its own: the time belongs to its
+                // parts, and the sequencer is what divides it between them.
+                switch sequencer.kind {
+                case .sequence:
+                    // One part at a time: the division says which, and how far into it.
+                    let (part, local) = sequencer.placement(at: window)
+                    guard let definition = sequencer.parts[part].resource.definition else { continue }
+                    applyPart(definition, to: controller.node, over: local,
+                              from: controller.startTransform)
+                case .group:
+                    // Every part over the whole time. Two parts of a group that drive the same
+                    // property of the same entity are in conflict, and they are here as they are
+                    // in the system: the last one written holds, and the blend layer is what
+                    // separates them when a program needs both.
+                    for part in sequencer.parts {
+                        guard let definition = part.resource.definition else { continue }
+                        applyPart(definition, to: controller.node, over: window,
+                                  from: controller.startTransform)
+                    }
+                }
+                continue
+            }
             let timed = controller.duration > 0 ? Float(window / controller.duration) : 1
             controller.animation.apply(to: controller.node,
                                        at: controller.animation.timing.value(at: min(max(timed, 0), 1)),
@@ -347,8 +386,23 @@ open class AnimationResource {
     /// The sequencer behind a group or a sequence, and nil for one animation.
     let sequencer: __RESequencer?
 
-    /// The initializer a group or a sequence is made through; a caller makes a single animation
-    /// with the two-argument one.
+    /// The animation behind a definition, under a name a caller can look it up by.
+    ///
+    /// This one is public, and Apple's is not: in both SDKs read for this port (16.4:7028 and
+    /// 26.2:14980) `AnimationResource` carries `name` and no initializer and no public loader,
+    /// because there an animation is a compiled asset the system reads out of a bundle and the
+    /// format is closed. A program on a release this old cannot produce one of those, so the
+    /// module's own public definitions - `FromToByAnimation<Value>` and the rest of
+    /// `AnimationDefinition` - would have nothing to become: they could be written down and never
+    /// played. The definition is the input this port takes instead, and a group or a sequence is
+    /// made through the same initializer with a `sequencer` of its own.
+    public convenience init(name: String? = nil, definition: AnimationDefinition? = nil) {
+        self.init(name: name, definition: definition, sequencer: nil)
+    }
+
+    /// The initializer a group or a sequence is made through, which takes the sequencer that
+    /// makes it. Internal with its internal parameter: a caller makes those two with
+    /// `AnimationResource.group(_:)` and `AnimationResource.sequence(_:)`.
     internal init(name: String? = nil, definition: AnimationDefinition? = nil,
                   sequencer: __RESequencer? = nil) {
         self.name = name
@@ -387,10 +441,13 @@ extension Entity {
     @discardableResult
     public func playAnimation(_ animation: AnimationResource, transitionDuration: TimeInterval = 0,
                               startsPaused: Bool = false) -> AnimationPlaybackController {
-        guard let definition = animation.definition else {
-            // A resource with no definition - one loaded from a file this port cannot read -
-            // has nothing to apply, and the controller says so by being complete at once
-            // rather than by pretending to run.
+        // A group or a sequence has no definition of its own: what it plays is its parts, and
+        // the step reads them through the sequencer. A resource with neither a definition nor any
+        // part - one loaded from a file this port cannot read - has nothing to apply, and the
+        // controller says so by being complete at once rather than by pretending to run.
+        // Read before the local `animation` below shadows the resource the parameter names.
+        let sequencer = animation.sequencer
+        guard let definition = animation.definition ?? animation.__parts.first?.resource.definition else {
             let controller = AnimationPlaybackController(entity: self,
                                                         animation: __REAnimation(name: animation.name ?? "",
                                                                                 duration: 0, timing: .linear,
@@ -402,8 +459,13 @@ extension Entity {
             controller.stop()
             return controller
         }
+        // The controller's own animation is what the step times a single animation by; for a
+        // group or a sequence it is built from the first part, and the step's sequencer branch
+        // is what applies the part the time has reached.
         let animation = __reAnimation(from: definition, name: animation.name ?? definition.name)
-        let controller = AnimationPlaybackController(entity: self, animation: animation, startsPaused: startsPaused)
+        let controller = AnimationPlaybackController(entity: self, animation: animation,
+                                                     startsPaused: startsPaused,
+                                                     sequencer: sequencer)
         coreEntity.animations[controller.identifier] = controller
         return controller
     }
@@ -493,17 +555,28 @@ private func __reAnimation(from definition: AnimationDefinition, name: String) -
 
 // MARK: - Sequencers
 
-/// What a group of animations does to a value, taken from the open code and not invented here.
+/// What a group of animations does to a value: a divider of the group's time into its parts'
+/// own durations. This shape is ours alone.
 ///
-/// Both shapes were read before they were written. Filament's `Animator`
-/// (`libs/gltfio/src/Animator.cpp`, Apache-2.0) searches a channel's own times with a lower
-/// bound, uses the *same* index on both sides before the first key and after the last so the
-/// value holds at the ends, and takes the factor between the two neighbouring keys - local to the
-/// pair - rather than over the whole animation. Assimp's `AnimEvaluator`
-/// (`tools/assimp_view/code/AnimEvaluator.cpp`, BSD-3) remembers the frame it was on, reuses it
-/// while time moves forward and starts again when it goes back, and wraps the next frame modulo
-/// the key count, so a run that reaches its end continues into its first key rather than
-/// stopping. What is taken is that shape; the code is this module's.
+/// It used to claim Filament's and Assimp's keyframe samplers, and it claimed them wrongly. The
+/// text said a lower-bound search over a channel's own times, the *same* index on both sides
+/// before the first key and after the last, the factor taken local to the pair of neighbouring
+/// keys, a remembered frame reused while time moves forward, and the next frame wrapped modulo
+/// the key count - and none of it was in this file. It was a description of a sampler, and what
+/// is here is not a sampler: a group is a list of animations with a duration each, and asking
+/// where a time falls in it is a walk over those durations. There is nothing in Apple's own
+/// RealityFoundation for the cited machinery to sample either, measured on the 26.2 interface
+/// (`iPhoneOS26.2.sdk/System/Library/Frameworks/RealityFoundation.framework/Modules/
+/// RealityFoundation.swiftmodule/arm64e-apple-ios.swiftinterface`): the module declares no
+/// keyframe, sampler or track type at all, and `AnimationResource` carries no member but
+/// `__coreAsset`. So the sentences are gone and what remains is what the code does.
+///
+/// What is true of the two upstreams, and is why the division is by part rather than by a share
+/// of the whole: Filament's `Animator` (`libs/gltfio/src/Animator.cpp`, Apache-2.0) and Assimp's
+/// `AnimEvaluator` (`tools/assimp_view/code/AnimEvaluator.cpp`, BSD-3-Clause) both walk a list of
+/// spans whose lengths they know, and both hold the value at the ends rather than letting a time
+/// past the last span run off. That is all that is taken, and the licences are recorded in
+/// THIRD-PARTY.md.
 @MainActor
 struct __RESequencer {
     /// The animations in the order they run, and how long each one holds for.
@@ -519,10 +592,24 @@ struct __RESequencer {
     /// The names in the order a caller sees them.
     var names: [String] { parts.map { $0.name } }
 
-    /// Where in the group a time falls, and the fraction through the part that holds it.
+    /// How long the group runs for: a sequence is as long as its parts added together, and a
+    /// group is as long as its longest part, because every part of it runs over the whole time.
+    static func duration(of sequencer: __RESequencer) -> TimeInterval {
+        let lengths = sequencer.parts.map { max($0.resource.definition.map { $0.duration } ?? 0, 0) }
+        switch sequencer.kind {
+        case .group: return lengths.max() ?? 0
+        case .sequence: return lengths.reduce(0, +)
+        }
+    }
+
+    /// Where in a sequence a time falls, and how far through the part that holds it the time is.
     ///
-    /// A sequence divides its time by the lengths of its parts; a group gives every part the
-    /// whole time, which is what running them at once means.
+    /// A sequence subtracts each part's duration from the time until one is long enough to hold
+    /// what is left, so the answer is the index of that part and the time inside it; a time past
+    /// the last part is held by the last part, which is the holding at the ends the two upstreams
+    /// do. A group has no placement of its own - every part of it runs over the whole time - and
+    /// for one this answers the first part with the whole time, which is the same fraction each
+    /// part gets.
     func placement(at time: TimeInterval) -> (part: Int, local: TimeInterval) {
         switch kind {
         case .group:

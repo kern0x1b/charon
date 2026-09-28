@@ -427,27 +427,32 @@ extension Scene {
     ///
     /// The anchors that are already in the scene and are still seen keep their identity, so a
     /// program holding one does not lose it to a frame.
+    /// Written against the scene's own public API - `anchors`, `addAnchor`, `removeAnchor`, and
+    /// the anchoring component through `components` - because `coreScene`, `Entity.coreEntity`
+    /// and `anchoring` are internal to RealityFoundation or its core node, and a module that
+    /// cannot see them does not build. That was the shape it had: it reached for all three.
     public func syncAnchors(with session: (any SessionProviding)?) {
         guard let session else { return }
         let seen = __reSessionAnchors(of: session)
         for (identifier, anchor) in seen {
-            if let existing = coreScene.anchors.first(where: { node in
-                return node.anchoring.target == .anchor(identifier: identifier)
+            if let existing = anchors.first(where: { node in
+                return node.components[AnchoringComponent.self]?.target == .anchor(identifier: identifier)
             }) {
                 existing.transform = anchor.anchorTransform
-                existing.isTracked = anchor.isAnchorTracked
+                existing.isAnchorTracked = anchor.isAnchorTracked
                 continue
             }
             let entity = AnchorEntity(world: .zero)
             entity.name = "anchor-" + identifier.uuidString
-            entity.anchoring = AnchoringComponent(.anchor(identifier: identifier))
+            entity.components.set(AnchoringComponent(.anchor(identifier: identifier)))
             entity.transform = anchor.anchorTransform
-            entity.isTracked = anchor.isAnchorTracked
-            coreScene.add(anchor: entity.coreEntity)
+            entity.isAnchorTracked = anchor.isAnchorTracked
+            addAnchor(entity)
         }
-        for node in coreScene.anchors {
-            guard case .anchor(let identifier) = node.anchoring.target, seen[identifier] == nil else { continue }
-            coreScene.remove(anchor: node)
+        for node in anchors {
+            guard let target = node.components[AnchoringComponent.self]?.target,
+                  case .anchor(let identifier) = target, seen[identifier] == nil else { continue }
+            removeAnchor(node)
         }
     }
 }

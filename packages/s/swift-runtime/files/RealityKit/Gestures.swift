@@ -4,10 +4,15 @@
 // the touch landed; these are the same three, driving the entity's own transform, so that a
 // program's answer does not depend on a renderer being present to hit-test the touch.
 
-#if canImport(UIKit)
-import UIKit
+// The arithmetic below is the entity's own and needs no UIKit, so these two are imported
+// outside the guard: with them inside it, the guard closed at the end of the recognizers and
+// left the arithmetic without the module that names Entity, and the module failed to build on
+// every host without UIKit - the one platform the host differential runs on.
 import simd
 import RealityFoundation
+
+#if canImport(UIKit)
+import UIKit
 
 /// A gesture that acts on one entity.
 @MainActor

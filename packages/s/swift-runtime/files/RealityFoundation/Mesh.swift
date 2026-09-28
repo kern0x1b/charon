@@ -201,7 +201,7 @@ public struct MeshDescriptor: MeshBufferContainer {
 
 /// A mesh: the geometry an entity with a model is drawn with, and the shape it collides as.
 @MainActor
-open class MeshResource {
+open class MeshResource: Resource {
     /// The buffers the mesh is made of.
     public private(set) var descriptor: MeshDescriptor
 

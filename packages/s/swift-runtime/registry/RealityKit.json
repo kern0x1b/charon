@@ -9,7 +9,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
-            "source": "the host differential in .agent-work/rf-host-check/main.swift, against the MacOSX26.5 SDK, and the SDK interface each declaration was read from"
+            "source": "the host differential in the tree, tests/backports/host/realityfoundation, against the MacOSX26.5 SDK, and the SDK interface each declaration was read from"
         },
         {
             "api": "EntityRotationGestureRecognizer",
@@ -19,7 +19,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
-            "source": "the host differential in .agent-work/rf-host-check/main.swift, against the MacOSX26.5 SDK, and the SDK interface each declaration was read from"
+            "source": "the host differential in the tree, tests/backports/host/realityfoundation, against the MacOSX26.5 SDK, and the SDK interface each declaration was read from"
         },
         {
             "api": "EntityScaleGestureRecognizer",
@@ -29,7 +29,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
-            "source": "the host differential in .agent-work/rf-host-check/main.swift, against the MacOSX26.5 SDK, and the SDK interface each declaration was read from"
+            "source": "the host differential in the tree, tests/backports/host/realityfoundation, against the MacOSX26.5 SDK, and the SDK interface each declaration was read from"
         },
         {
             "api": "EntityTranslationGestureRecognizer",
@@ -39,7 +39,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
-            "source": "the host differential in .agent-work/rf-host-check/main.swift, against the MacOSX26.5 SDK, and the SDK interface each declaration was read from"
+            "source": "the host differential in the tree, tests/backports/host/realityfoundation, against the MacOSX26.5 SDK, and the SDK interface each declaration was read from"
         },
         {
             "api": "ARView.CameraMode",
@@ -49,7 +49,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
-            "source": "the host differential in .agent-work/rf-host-check/main.swift, against the MacOSX26.5 SDK, and the SDK interface each declaration was read from"
+            "source": "the host differential in the tree, tests/backports/host/realityfoundation, against the MacOSX26.5 SDK, and the SDK interface each declaration was read from"
         },
         {
             "api": "ARView.Environment.Reverb",
@@ -59,7 +59,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
-            "source": "the host differential in .agent-work/rf-host-check/main.swift, against the MacOSX26.5 SDK, and the SDK interface each declaration was read from"
+            "source": "the host differential in the tree, tests/backports/host/realityfoundation, against the MacOSX26.5 SDK, and the SDK interface each declaration was read from"
         },
         {
             "api": "ARView.Environment.Reverb.Preset",
@@ -69,7 +69,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
-            "source": "the host differential in .agent-work/rf-host-check/main.swift, against the MacOSX26.5 SDK, and the SDK interface each declaration was read from"
+            "source": "the host differential in the tree, tests/backports/host/realityfoundation, against the MacOSX26.5 SDK, and the SDK interface each declaration was read from"
         },
         {
             "api": "EntityGestureRecognizer",
@@ -79,7 +79,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
-            "source": "the host differential in .agent-work/rf-host-check/main.swift, against the MacOSX26.5 SDK, and the SDK interface each declaration was read from"
+            "source": "the host differential in the tree, tests/backports/host/realityfoundation, against the MacOSX26.5 SDK, and the SDK interface each declaration was read from"
         },
         {
             "api": "ARView.DebugOptions",
@@ -89,7 +89,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
-            "source": "the host differential in .agent-work/rf-host-check/main.swift, against the MacOSX26.5 SDK, and the SDK interface each declaration was read from"
+            "source": "the host differential in the tree, tests/backports/host/realityfoundation, against the MacOSX26.5 SDK, and the SDK interface each declaration was read from"
         },
         {
             "api": "ARView.EntityGestures",
@@ -99,7 +99,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
-            "source": "the host differential in .agent-work/rf-host-check/main.swift, against the MacOSX26.5 SDK, and the SDK interface each declaration was read from"
+            "source": "the host differential in the tree, tests/backports/host/realityfoundation, against the MacOSX26.5 SDK, and the SDK interface each declaration was read from"
         },
         {
             "api": "ARView.Environment",
@@ -109,7 +109,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
-            "source": "the host differential in .agent-work/rf-host-check/main.swift, against the MacOSX26.5 SDK, and the SDK interface each declaration was read from"
+            "source": "the host differential in the tree, tests/backports/host/realityfoundation, against the MacOSX26.5 SDK, and the SDK interface each declaration was read from"
         },
         {
             "api": "ARView.Environment.Background",
@@ -119,7 +119,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
-            "source": "the host differential in .agent-work/rf-host-check/main.swift, against the MacOSX26.5 SDK, and the SDK interface each declaration was read from"
+            "source": "the host differential in the tree, tests/backports/host/realityfoundation, against the MacOSX26.5 SDK, and the SDK interface each declaration was read from"
         },
         {
             "api": "ARView.RenderCallbacks",
@@ -129,7 +129,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
-            "source": "the host differential in .agent-work/rf-host-check/main.swift, against the MacOSX26.5 SDK, and the SDK interface each declaration was read from"
+            "source": "the host differential in the tree, tests/backports/host/realityfoundation, against the MacOSX26.5 SDK, and the SDK interface each declaration was read from"
         },
         {
             "api": "ARView.RenderOptions",
@@ -139,7 +139,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
-            "source": "the host differential in .agent-work/rf-host-check/main.swift, against the MacOSX26.5 SDK, and the SDK interface each declaration was read from"
+            "source": "the host differential in the tree, tests/backports/host/realityfoundation, against the MacOSX26.5 SDK, and the SDK interface each declaration was read from"
         }
     ]
 }
