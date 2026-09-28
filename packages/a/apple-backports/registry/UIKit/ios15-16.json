@@ -453,34 +453,31 @@
    "api": "NSDiffableDataSourceSnapshot.reconfiguredItemIdentifiers",
    "kind": "property",
    "introduced": "15.0",
-   "minimum": "5.0",
+   "minimum": "6.0",
    "status": "absent",
    "reason": "the items marked with reconfigureItemsWithIdentifiers:, which is not carried (see its row), so there would never be any to answer",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 16.4, UIKit",
-   "note": "the object holds API of a class that arrived in iOS 5.0 or stores its data in one, so a band below that release must leave it out"
+   "source": "SDK 16.4, UIKit"
   },
   {
    "api": "NSDiffableDataSourceSnapshot.reloadedItemIdentifiers",
    "kind": "property",
    "introduced": "15.0",
-   "minimum": "5.0",
+   "minimum": "6.0",
    "status": "implemented",
    "effect": "the items marked with reloadItemsWithIdentifiers:, once each, in the order first asked",
    "facts": "facts/UIKit/NSDiffableDataSourceSnapshot.md",
-   "source": "SDK 16.4, UIKit; the class is in neither the 6.1.3 nor the 12.0 cache, and the getter is in 16.0 and 18.0 (objc.inventory)",
-   "note": "the object holds API of a class that arrived in iOS 5.0 or stores its data in one, so a band below that release must leave it out"
+   "source": "SDK 16.4, UIKit; the class is in neither the 6.1.3 nor the 12.0 cache, and the getter is in 16.0 and 18.0 (objc.inventory)"
   },
   {
    "api": "NSDiffableDataSourceSnapshot.reloadedSectionIdentifiers",
    "kind": "property",
    "introduced": "15.0",
-   "minimum": "5.0",
+   "minimum": "6.0",
    "status": "implemented",
    "effect": "the sections marked with reloadSectionsWithIdentifiers:, once each, in the order first asked",
    "facts": "facts/UIKit/NSDiffableDataSourceSnapshot.md",
-   "source": "SDK 16.4, UIKit; the class is in neither the 6.1.3 nor the 12.0 cache, and the getter is in 16.0 and 18.0 (objc.inventory)",
-   "note": "the object holds API of a class that arrived in iOS 5.0 or stores its data in one, so a band below that release must leave it out"
+   "source": "SDK 16.4, UIKit; the class is in neither the 6.1.3 nor the 12.0 cache, and the getter is in 16.0 and 18.0 (objc.inventory)"
   },
   {
    "api": "NSMutableParagraphStyle.usesDefaultHyphenation",

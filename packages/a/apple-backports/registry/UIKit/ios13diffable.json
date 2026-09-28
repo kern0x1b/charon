@@ -5,12 +5,11 @@
    "api": "NSDiffableDataSourceSnapshot",
    "kind": "class",
    "introduced": "13.0",
-   "minimum": "5.0",
+   "minimum": "6.0",
    "status": "implemented",
    "effect": "the sections and items of a snapshot, edited, refused, copied, compared and described as UIKit's are, with the exceptions and their reasons; the members of iOS 15 are not there",
    "facts": "facts/UIKit/NSDiffableDataSourceSnapshot.md",
-   "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the diffable group); the header of SDK 16.4",
-   "note": "the object holds API of a class that arrived in iOS 5.0 or stores its data in one, so a band below that release must leave it out"
+   "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the diffable group); the header of SDK 16.4"
   },
   {
    "api": "UICollectionViewDiffableDataSource",
@@ -78,13 +77,12 @@
    "api": "NSDiffableDataSourceSectionSnapshot",
    "kind": "class",
    "introduced": "14.0",
-   "minimum": "5.0",
+   "minimum": "6.0",
    "status": "implemented",
    "reason": "-description groups the items in runs as long as they can be, where UIKit's are the runs the items were appended in; and replaceChildrenOfParentItem:withSnapshot: with items already in the tree raises where UIKit leaves a tree with the children under the wrong items",
    "effect": "the tree of one section's items, with its levels, its expanded items and its hierarchy description, edited, refused and copied as UIKit's is",
    "facts": "facts/UIKit/NSDiffableDataSourceSectionSnapshot.md",
-   "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the diffablesection group); the header of SDK 16.4",
-   "note": "the object holds API of a class that arrived in iOS 5.0 or stores its data in one, so a band below that release must leave it out"
+   "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the diffablesection group); the header of SDK 16.4"
   },
   {
    "api": "-[UICollectionViewDiffableDataSource applySnapshot:toSection:animatingDifferences:]",

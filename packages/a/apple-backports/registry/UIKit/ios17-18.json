@@ -1746,34 +1746,31 @@
    "api": "UITraitCollection.imageDynamicRange",
    "kind": "property",
    "introduced": "17.0",
-   "minimum": "5.0",
+   "minimum": "6.0",
    "status": "absent",
    "reason": "neither iOS 6 nor the backports give UITraitCollection a property like it: it arrived in iOS 17",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit",
-   "note": "the object holds API of a class that arrived in iOS 5.0 or stores its data in one, so a band below that release must leave it out"
+   "source": "SDK 26, Mac Catalyst, UIKit"
   },
   {
    "api": "UITraitCollection.sceneCaptureState",
    "kind": "property",
    "introduced": "17.0",
-   "minimum": "5.0",
+   "minimum": "6.0",
    "status": "absent",
    "reason": "neither iOS 6 nor the backports give UITraitCollection a property like it: it arrived in iOS 17",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit",
-   "note": "the object holds API of a class that arrived in iOS 5.0 or stores its data in one, so a band below that release must leave it out"
+   "source": "SDK 26, Mac Catalyst, UIKit"
   },
   {
    "api": "UITraitCollection.typesettingLanguage",
    "kind": "property",
    "introduced": "17.0",
-   "minimum": "5.0",
+   "minimum": "6.0",
    "status": "absent",
    "reason": "neither iOS 6 nor the backports give UITraitCollection a property like it: it arrived in iOS 17",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit",
-   "note": "the object holds API of a class that arrived in iOS 5.0 or stores its data in one, so a band below that release must leave it out"
+   "source": "SDK 26, Mac Catalyst, UIKit"
   },
   {
    "api": "UITraitDefinition",
@@ -3852,12 +3849,11 @@
    "api": "UITraitCollection.listEnvironment",
    "kind": "property",
    "introduced": "18.0",
-   "minimum": "5.0",
+   "minimum": "6.0",
    "status": "absent",
    "reason": "neither iOS 6 nor the backports give UITraitCollection a property like it: it arrived in iOS 18",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit",
-   "note": "the object holds API of a class that arrived in iOS 5.0 or stores its data in one, so a band below that release must leave it out"
+   "source": "SDK 26, Mac Catalyst, UIKit"
   },
   {
    "api": "UITraitListEnvironment",
