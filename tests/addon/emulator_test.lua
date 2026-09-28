@@ -526,9 +526,17 @@ local function prune_step(emulator, folder, found)
         io.writefile(path.join(here, "image.json"), "{}")
         return here
     end
+    -- stale means what used() reads: the folder and every direct child, so ageing only the folder left the
+    -- image.json written when the image was built looking like a use, and the image stayed
     local function stale(what)
+        local when = os.date("%Y%m%d%H%M", os.time() - 48 * 3600)
         if os.isdir(what) or os.isfile(what) then
-            os.execv("touch", {"-t", os.date("%Y%m%d%H%M", os.time() - 48 * 3600), what}, {try = true, stdout = os.nul, stderr = os.nul})
+            os.execv("touch", {"-t", when, what}, {try = true, stdout = os.nul, stderr = os.nul})
+        end
+        if os.isdir(what) then
+            for _, child in ipairs(os.files(path.join(what, "*"))) do
+                os.execv("touch", {"-t", when, child}, {try = true, stdout = os.nul, stderr = os.nul})
+            end
         end
     end
     -- a read-only directory holding a file, as the root filesystem holds the dyld cache
@@ -573,6 +581,9 @@ local function prune_step(emulator, folder, found)
     if not gone["owner-used/run"] and os.isdir(leftover) then
         table.insert(found, "the root filesystem a killed run left inside an image that is still wanted is pruned, not kept: " .. table.concat(removed, " "))
     end
+    if os.isdir(path.join(base, "owner-unused")) and not gone["owner-unused"] then
+        table.insert(found, "an owner that holds nothing after the prune goes with it, and it is still there: " .. table.concat(removed, " "))
+    end
     if (not gone["owner-unused/iPhone3,1_7A"] and not gone["owner-unused"]) or os.isdir(abandoned) then
         table.insert(found, "an image nothing has booted for the age is pruned with the owner that holds nothing else, not kept: " .. table.concat(removed, " "))
     end
@@ -593,6 +604,39 @@ local function prune_step(emulator, folder, found)
     end
 end
 
+
+-- An owner has no lock a running emulate takes: the run holds its image's lock, so a prune that asked for
+-- the owner's judged nothing and removed the images inside a live run's image. An image a live process holds
+-- is kept, and an owner is only removed when it holds nothing.
+local function held_image_step(emulator, folder, found)
+    local base = path.join(folder, "images.noindex")
+    local owner = path.join(base, "owner-held")
+    local image = path.join(owner, "iPhone3,1_7A")
+    os.mkdir(base)
+    os.mkdir(owner)
+    os.mkdir(image)
+    local held = io.openlock(image .. ".lock")
+    held:lock()
+    local removed = emulator.prune({root = folder, hours = 24})
+    if os.isdir(image) then
+        -- kept, which is the point
+    else
+        table.insert(found, "an image a live xmake emulate holds must survive the prune, and it was removed: " .. table.concat(removed, " "))
+    end
+    for _, entry in ipairs(os.files(path.join(base, "*.lock"))) do
+        table.insert(found, "the prune left a stray lock beside an owner: " .. path.filename(entry))
+    end
+    held:unlock()
+    held:close()
+    -- and with nothing holding it and its age past, the same image goes, so the case is about the lock
+    os.execv("touch", {"-t", "202001010000", image}, {try = true, stdout = os.nul, stderr = os.nul})
+    removed = emulator.prune({root = folder, hours = 24})
+    if os.isdir(image) then
+        table.insert(found, "an image nothing holds must be pruned, and it was kept: " .. table.concat(removed, " "))
+    end
+    os.tryrm(folder)
+end
+
 function failures(opt)
     local emulator = import("emulator", {rootdir = opt.modules, anonymous = true})
     local debian = import("debian", {rootdir = opt.modules, anonymous = true})
@@ -611,6 +655,7 @@ function failures(opt)
     naming_step(emulator, found)
     copy_step(opt, found)
     prune_step(emulator, folder, found)
+    held_image_step(emulator, fixtures.scratch(), found)
     os.tryrm(folder)
     return found
 end

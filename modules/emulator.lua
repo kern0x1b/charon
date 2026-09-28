@@ -983,25 +983,39 @@ function prune(opt)
     if not os.isdir(base) then
         return removed
     end
+    -- Judge an image by the lock a running xmake emulate really takes, plugins/emulate/main.lua:283's
+    -- ctx.image .. ".lock", and the owner only by what is left of it. An owner has no lock anything takes,
+    -- so asking for one judged nothing and then removed the images inside a live run's image, and asking
+    -- created a stray <owner>.lock beside every owner it visited.
     for _, owner in ipairs(os.dirs(path.join(base, "*"))) do
-        if used(owner, opt.hours) then
-            for _, image in ipairs(os.dirs(path.join(owner, "*"))) do
+        -- the owner's own staleness, read before anything is removed from it: deleting an image updates the
+        -- owner's mtime, so a check after the pass sees a fresh owner and keeps it
+        local stale_owner = not used(owner, opt.hours)
+        local empty = true
+        for _, image in ipairs(os.dirs(path.join(owner, "*"))) do
+            empty = false
+            -- the image first: an image nothing holds is removed as a directory, and its run/ and debug/
+            -- clones go with it as part of it, not as a second thing removed. A held image is a live run's
+            -- own working copy, and nothing inside it is touched.
+            if unlocks(image) then
                 if used(image, opt.hours) then
-                    -- the image itself is wanted; only what a killed run left inside it goes
                     for _, name in ipairs({"run", "debug"}) do
                         local clone = path.join(image, name)
-                        if os.isdir(clone) and not used(clone, opt.hours) and unlocks(image) then
+                        if os.isdir(clone) and not used(clone, opt.hours) then
                             remove(clone)
                             table.insert(removed, clone)
                         end
                     end
-                elseif unlocks(image) then
+                else
                     remove(image)
                     table.insert(removed, image)
                     os.tryrm(image .. ".lock")
                 end
             end
-        elseif unlocks(owner) then
+        end
+        -- empty as it is *after* the pass: an image removed above left nothing, and the owner's age was read
+        -- before that, because removing from a directory updates its mtime
+        if #os.dirs(path.join(owner, "*")) == 0 and stale_owner then
             remove(owner)
             table.insert(removed, owner)
         end
