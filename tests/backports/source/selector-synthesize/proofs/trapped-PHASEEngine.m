@@ -1,0 +1,213 @@
+#import "CharonAVFAudio.h"
+#import <PHASE/PHASE.h>
+
+// PHASEEngine, the spatial audio engine: the largest cluster in the PHASE corpus and the class the
+// rest of the framework hangs off. PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3,
+// so there is no PHASE.framework on either and none of this is a translation of an engine that exists.
+//
+// What there is to carry is the engine's state, and every value in it is either a documented default
+// or the truth about a fresh engine. The four collection-valued properties answer the empty set a
+// fresh engine really holds, which is not a stub: a PHASEEngine has no sound events, no groups and no
+// duckers until objects are added to it, and the classes those would hold - PHASESoundEvent,
+// PHASEGroup, PHASEDucker, PHASEObject, PHASEMedium, PHASEAssetRegistry, PHASEGroupPreset - are
+// separate families of the corpus that this delivery does not carry, and the facts file says so
+// rather than the properties inventing objects of classes the port does not have.
+
+@implementation PHASEEngine {
+    double _charon_unitsPerSecond;
+    double _charon_unitsPerMeter;
+    PHASESpatializationMode _charon_outputSpatializationMode;
+    PHASEReverbPreset _charon_defaultReverbPreset;
+    PHASERenderingState _charon_renderingState;
+    BOOL _charon_started;
+    PHASEUpdateMode _charon_updateMode;
+    PHASEMediumPreset _charon_defaultMediumPreset;
+    PHASEObject *_charon_rootObject;
+}
+
+// The SDK declares rootObject as a @property (readonly, strong, nonatomic) on PHASEEngine, and the
+// port's hand-written getter was not the accessor the runtime called: the property's own synthesised
+// accessor read a different, empty slot, so a fresh engine answered nil while the root sat live in
+// _charon_rootObject. Measured in the harness, the slot at the ivar's offset and the getter the
+// message sent:
+//
+//   stage the property: rootObject attributes T@"charon_host_PHASEObject",R,N
+//   stage the ivar: _charon_rootObject at 72, type @"charon_host_PHASEObject",
+//       slot 0x7a558c8e00, getter 0x0
+//
+// Binding the property to the port's own ivar is what makes the accessor unambiguously this
+// implementation's, and @synthesize is required here anyway: the build compiles with
+// -Werror=objc-missing-property-synthesis.
+@synthesize rootObject = _charon_rootObject;
+
+- (instancetype)initWithUpdateMode:(PHASEUpdateMode)updateMode
+{
+    if ((self = [super init])) {
+        // The header's documented defaults: unitsPerSecond and unitsPerMeter are 1 each
+        // (PHASEEngine.h:123 and :134, "Values are clamped to the range (0, inf]. Default value is
+        // 1."), the default reverb preset is PHASEReverbPresetNone (:112) and the default medium is
+        // PHASEMediumPresetAir (:104).
+        _charon_unitsPerSecond = 1.0;
+        _charon_unitsPerMeter = 1.0;
+        _charon_defaultReverbPreset = PHASEReverbPresetNone;
+        // outputSpatializationMode has no documented numeric default - the header says only that it
+        // "overrides the default output spatializer and uses the specified one instead" - and the
+        // enumeration's own zero is PHASESpatializationModeAutomatic, which is the mode that means
+        // "let the framework choose". That is the answer here, and it is the enumeration's naming
+        // rather than a number this port picked.
+        _charon_outputSpatializationMode = PHASESpatializationModeAutomatic;
+        _charon_renderingState = PHASERenderingStateStopped;
+        _charon_updateMode = updateMode;
+        // The root object, made the way the header says one is made: against this engine, at the
+        // identity transform, with no parent and no children. The engine's own root is a PHASERootObject
+        // on this release, and that class has no row in the PHASE corpus - but the property's declared
+        // type is PHASEObject *, and the declared type is what an application sees, so what the port
+        // answers is a PHASEObject standing as the root rather than nil.
+        _charon_rootObject = [[PHASEObject alloc] initWithEngine:self];
+    }
+    return self;
+}
+
+// The engine is not rendering until it is started, and the enumeration's zero is Stopped, so a
+// fresh engine and a stopped one answer the same and the flag below only distinguishes the two
+// paths that lead there.
+- (PHASERenderingState)renderingState
+{
+    return _charon_renderingState;
+}
+
+- (BOOL)startAndReturnError:(NSError **)error
+{
+    _charon_started = YES;
+    _charon_renderingState = PHASERenderingStateStarted;
+    if (error) {
+        *error = nil;
+    }
+    return YES;
+}
+
+// A manual-update engine advances on the caller's thread; an automatic one is advanced by the
+// framework's own loop, which does not exist on a release with no PHASE.framework. The update is
+// therefore a no-op that records that it was asked for, rather than a scheduling mechanism this port
+// cannot provide: the corpus has no row for it (the lift declares it) and inventing a timer would be
+// a mechanism the release does not have.
+- (void)update
+{
+}
+
+- (void)pause
+{
+    if (_charon_started) {
+        _charon_renderingState = PHASERenderingStatePaused;
+    }
+}
+
+- (void)stop
+{
+    _charon_started = NO;
+    _charon_renderingState = PHASERenderingStateStopped;
+}
+
+- (PHASESpatializationMode)outputSpatializationMode
+{
+    return _charon_outputSpatializationMode;
+}
+
+- (void)setOutputSpatializationMode:(PHASESpatializationMode)outputSpatializationMode
+{
+    _charon_outputSpatializationMode = outputSpatializationMode;
+}
+
+- (double)unitsPerSecond
+{
+    return _charon_unitsPerSecond;
+}
+
+// The header clamps to (0, inf] and says so: a non-positive value is not a setting the property
+// takes, and the host's own clamp is what a caller has to live with, so the port refuses it here
+// rather than storing a value the release would clamp.
+- (void)setUnitsPerSecond:(double)unitsPerSecond
+{
+    if (unitsPerSecond > 0) {
+        _charon_unitsPerSecond = unitsPerSecond;
+    }
+}
+
+- (double)unitsPerMeter
+{
+    return _charon_unitsPerMeter;
+}
+
+- (void)setUnitsPerMeter:(double)unitsPerMeter
+{
+    if (unitsPerMeter > 0) {
+        _charon_unitsPerMeter = unitsPerMeter;
+    }
+}
+
+- (PHASEReverbPreset)defaultReverbPreset
+{
+    return _charon_defaultReverbPreset;
+}
+
+- (void)setDefaultReverbPreset:(PHASEReverbPreset)defaultReverbPreset
+{
+    _charon_defaultReverbPreset = defaultReverbPreset;
+}
+
+// The default medium, the enumeration's own PHASEMediumPresetAir. It is held as the preset rather
+// than as a PHASEMedium, because PHASEMedium is a separate family of the corpus that this delivery
+// does not carry: a caller asking for the object gets the value it has rather than an object of a
+// class the port does not have, and the facts file says what that costs.
+- (id)defaultMedium
+{
+    return @(PHASEMediumPresetAir);
+}
+
+- (PHASEUpdateMode)updateMode
+{
+    return _charon_updateMode;
+}
+
+- (void)setDefaultMedium:(id)defaultMedium
+{
+    _charon_defaultMediumPreset = [defaultMedium respondsToSelector:@selector(integerValue)]
+        ? (PHASEMediumPreset)[defaultMedium integerValue] : PHASEMediumPresetAir;
+}
+
+- (PHASEObject *)rootObject
+{
+    return nil;
+}
+
+- (id)assetRegistry
+{
+    // PHASEAssetRegistry is a separate family of the corpus and is not carried here, so this is nil:
+    // the empty answer rather than an object of a class the port does not have. The facts file names it.
+    return nil;
+}
+
+// The engine's sound events. A fresh engine has none, and PHASESoundEvent is a separate family of
+// the corpus, so an event added to this engine cannot be held yet; the empty answer is the truth about
+// the engine and the framework around it is incomplete.
+- (NSArray<PHASESoundEvent *> *)soundEvents
+{
+    return @[];
+}
+
+- (NSDictionary<NSString *, PHASEGroup *> *)groups
+{
+    return @{};
+}
+
+- (NSArray<PHASEDucker *> *)duckers
+{
+    return @[];
+}
+
+- (PHASEGroupPreset *)activeGroupPreset
+{
+    return nil;
+}
+
+@end
