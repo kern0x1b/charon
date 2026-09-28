@@ -133,6 +133,31 @@ change of detail. The two cases that pin it are one per form: an optional-form c
 must match both, and a single test of one form cannot tell a port that keeps them apart from one that
 has merged them.
 
+### The difference that has to survive: no value, or a value that is nil
+
+The design answer, measured on Apple's own module with a frame and a `Row` read, is that **the `Row`
+path stores the ordinary form** — `WrappedElement` is the value's own type and a `nil` is a missing
+cell — and that a row's subscript is where the two forms become distinguishable:
+
+    var f1 = DataFrame(); f1.append(column: Column<Int>(name: "a", contents: [1, nil, 3]))
+    var f2 = DataFrame(); f2.append(column: Column<Int?>(name: "a", contents: [1, nil, 3]))
+    print(String(describing: f1.rows[1]["a"]), String(describing: f2.rows[1]["a"]))
+
+    ordinary row[1] = nil
+    optional row[1] = Optional(nil)
+    ordinary col missing=1 wrapped=Int
+    optional col missing=0 wrapped=Optional<Int>
+
+**`nil` and `Optional(nil)` are different answers and Apple's keeps them different.** The first is a
+cell with no value; the second is a cell whose value is `nil`. A port that strips the optional layer
+anywhere before this point cannot tell them apart afterwards, which is exactly what the port's
+`_withoutOptionalLayer` does to the storage line: it turns the second form into the first, and the
+`Row` read then answers `nil` where Apple answers `Optional(nil)`.
+
+So the two cases that pin this must both be read **through a `Row`**, not through a column: a check
+that reads a column cannot see the distinction at all, because a column reports `missingCount` and
+`wrappedElementType` and both forms are answerable there. `Row`'s subscript is where it shows.
+
 **`isNil(at:)` has no direct oracle.** It is `internal` in the SDK, so a program outside the module
 cannot call it and the control above cannot reach it. The port's `isNil(at:)` is therefore only
 comparable through the host differential, which is weaker evidence than a control on pure Apple, and
