@@ -96,6 +96,51 @@ static void run(const char *label, vDSP_Stride ia, vDSP_Stride ic, vDSP_Stride i
     report(label, 0, note);
 }
 
+// The precision of the arithmetic, measured rather than assumed. The first attempt at this case used the
+// ordinary inputs and found nothing, and the reason is a theorem and not a gap in the inputs: for a TWO-term
+// sum, a double add of two floats rounded once and a float add of the same two give the **correctly rounded
+// value of the same exact sum**, because the double add is exact. So no case set can separate "the add in
+// double" from "the add in float", and a mutation built on that is not a mutation. The one that does differ is
+// the **products** formed in double, and these are the inputs that separate it - B = 0.1f, D = 1/3f, and A and
+// C with full significands so no product is exact by luck.
+//
+// The two answers, and the release's:
+//
+//     float: (A*B) + (C*D)     0.333333313  0x3eaaaaaa
+//     double: the same, once   0.333333284  0x3eaaaaa9
+//     the real Accelerate says 0.333333313  0x3eaaaaaa
+//
+// **The release agrees with float**, so on this host it is the oracle for this bit. That is a statement about
+// this host and not about the target: the 6.1.3 armv7 guest still decides, and the reduction's order and the
+// biquad's one-ULP float difference are both cases where this host was wrong.
+static void precision_case(void)
+{
+    const float b[1] = {0.1f}, d[1] = {1.0f / 3.0f};
+    const float a[8] = {0x1.fffffep0f, 0x1.fffffep0f * 1.125f, 0x1.fffffep0f * 1.25f, 0x1.fffffep0f * 1.375f,
+                        0x1.fffffep0f * 1.5f,   0x1.fffffep0f * 1.625f, 0x1.fffffep0f * 1.75f, 0x1.fffffep0f * 1.875f};
+    const float c[8] = {0x1.55555p-3f, 0x1.55555p-3f * 1.25f, 0x1.55555p-3f * 1.5f, 0x1.55555p-3f * 1.75f,
+                        0x1.55555p-3f * 2.0f,   0x1.55555p-3f * 2.25f, 0x1.55555p-3f * 2.5f, 0x1.55555p-3f * 2.75f};
+    float mine[8], theirs[8];
+    charon_host_vDSP_vsmsma(a, 1, b, c, 1, d, mine, 1, 8);
+    vDSP_vsmsma(a, 1, b, c, 1, d, theirs, 1, 8);
+    report("the arithmetic's precision, on products that are not exact", memcmp(mine, theirs, sizeof mine) == 0,
+           "B = 0.1f, D = 1/3f, A and C with full significands - the release and the port bit for bit");
+    // and print the two candidates, so the bit that separates them is on the record
+    for (int i = 0; i < 8; i++) {
+        float pa = a[i] * b[0], pc = c[i] * d[0];
+        float in_float = pa + pc;
+        float in_double = (float)((double)a[i] * (double)b[0] + (double)c[i] * (double)d[0]);
+        if (memcmp(&in_float, &in_double, sizeof in_float) == 0) continue;
+        uint32_t f1, f2, f3;
+        memcpy(&f1, &in_float, sizeof f1);
+        memcpy(&f2, &in_double, sizeof f2);
+        memcpy(&f3, &theirs[i], sizeof f3);
+        printf("    element %d: float 0x%08x, all double 0x%08x, the release 0x%08x - it agrees with %s\n", i, f1, f2,
+               f3, f3 == f1 ? "FLOAT" : "DOUBLE");
+        break;
+    }
+}
+
 int main(void)
 {
     setbuf(stdout, NULL);
@@ -114,6 +159,7 @@ int main(void)
         run("A and C strided 2 and 5", 2, 5, 1, 6);
         run("E strided 3, A and C unit", 1, 1, 3, 6);
         run("all three strided 2, 3, 4", 2, 3, 4, 5);
+        precision_case();
         printf("%d checks, %d failures\n", checks, failures);
     }
     return failures == 0 ? 0 : 1;
