@@ -19,8 +19,28 @@ Everything else in `signpost.h` is a macro over these four, so carrying them car
   emit away, so a family that answered false would record nothing and the metrics over it would be
   empty by construction. The port's log records what it is handed at fault and above and keeps every
   signpost interval, so a mark is always worth making.
-- **The two id sources stay apart**, because the header says they must: a generated id carries the
-  high bit, a pointer's does not, and `OS_SIGNPOST_ID_NULL` is never returned by a generate.
+- **The two id sources stay apart**, and the way they are kept apart is *this port's own convention,
+  not the header's requirement** — which the review of this series measured and corrected. `os/signpost.h`
+  says a `uint64_t` "can be cast directly" if it uniquely identifies the begin/end pair, names only
+  `OS_SIGNPOST_ID_NULL` and `OS_SIGNPOST_ID_INVALID` as reserved, and says a generated value "is
+  guaranteed to be unique within the matching scope". There is no high bit anywhere in it. An earlier
+  version of this file claimed the header drew the distinction with the high bit, and the port set it;
+  the host does not: `os_signpost_id_generate` on the host answers `0x0000000000000001`, the bit clear,
+  and `os_signpost_id_make_with_pointer` does not mask a high bit either (measured twice, once with a top
+  bit already clear and once with it set, `0x8db22e1cc60a6dac`). **The port now follows the host on the
+  bit** — a generated id counts up from 1 with it clear, and nothing is masked off a pointer's address.
+
+  What the test then found is the *other* half of the same function, which the header settles on its own
+  words: "Mangles the pointer to create a valid os_signpost_id, **including removing address
+  randomization**." So a pointer's id is **not** the pointer, the host's round trip fails too, and the
+  review's "0x8db22e1cc60a6dac unmasked" is consistent with that rather than with an identity. The
+  header's own `@result` names only two failures — `OS_SIGNPOST_ID_NULL` when signposts are turned off and
+  `OS_SIGNPOST_ID_INVALID` for a system-scoped log — and **a NULL pointer is not one of them**, so the
+  port's earlier "a NULL pointer is `OS_SIGNPOST_ID_NULL`" was an invention the header does not license.
+  The port now mangles the address the only way it can, clearing the low three bits (where an arm64 malloc
+  writes nothing) and ORing in its own bit so a pointer's id cannot be mistaken for a generated one, and
+  what the test compares is what the header promises: a valid, stable id that is not one of the two
+  reserved values.
 - **The emit records.** An interval begin remembers a monotonic reading under its id, an interval end
   takes the difference and keeps it with the name and the subsystem and category of the handle it was
   marked through, and an event is kept at zero length. That store is what MetricKit's signpost metrics
@@ -56,11 +76,16 @@ address and nothing: it is the snapshot the metrics came from, carried on the ma
 emit path records that pointer on the interval it takes, so the signpost the application marked and the
 snapshot the metrics are read from are the same fact.
 
-## Not measured against a host
+## The host differential, and the one part of it that does not run
 
-The host's macOS has its own `os_signpost`, and a differential is worth writing — printing the host's
-`os_signpost_id_generate()` twice to show the ids differ and never come back NULL, a
-`os_signpost_id_make_with_pointer` round trip, and the description of a handle made with
-`os_log_create("com.apple.metrickit.log", "test")` against the port's — but it is not written, and the
-delivery says so. What *is* measured is the release side: that the four symbols are absent from the
-6.1.3 cache, which is why they are here at all.
+`tests/backports/host/signpost` compares the three answers a caller reads: whether signposts are
+enabled — the header's own emit macro compiles the whole call away when this is false, so it is not a
+small answer — the ids from both sources, and the reserved-value rule. Its three mutations are the
+enabled answer, the id counter, and the recorded duration.
+
+**The end-to-end interval is not covered, and the reason is measured.** The case wants to mark an
+interval the way an application does, with `os_signpost_emit_with_type`, and that path packs the format
+through `__builtin_os_log_format` (trace_base.h:94) — and that builtin faults under this host build
+(`lldb`: `_platform_strlen`, `EXC_BAD_ACCESS` at `0x7fffffff7ffffff0`) before any code of the port's
+runs. So the store's check is limited to the store being present and empty, and the two mutations of its
+arithmetic are what holds it. An interval marked end to end is the next thing to fix in this family.

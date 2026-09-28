@@ -60,6 +60,22 @@ CHARON_VALUE_STORE_IMPLEMENTATION
 
 @implementation MXDiagnostic (CharonMetricValue)
 CHARON_VALUE_STORE_IMPLEMENTATION
+// The one property the lowered SDK does not declare, and the reason this method is written out by
+// name rather than by the macro: the macro is per class, and this property lives in the gap category
+// the host build compiles out. Without it, -dictionaryRepresentation walked the declared property
+// through KVC, valueForUndefinedKey: raised, and every MXDiagnostic's representation threw - which
+// check_registry cannot see, because it collects the classes a library carries and the selectors its
+// categories add, and this is a method missing from a class the port defines rather than a missing
+// symbol. Found by tests/backports/host/metricvalue, which is the test the facts said would find it.
+- (NSArray<MXSignpostRecord *> *)signpostData
+{
+    return (NSArray<MXSignpostRecord *> *)[self charon_valueForKey:@"signpostData"];
+}
+
+- (void)charon_setSignpostData:(NSArray<MXSignpostRecord *> *)value
+{
+    [self charon_setValue:value forKey:@"signpostData"];
+}
 - (NSData *)JSONRepresentation { return [CharonMetricValue jsonOf:self]; }
 - (NSDictionary *)dictionaryRepresentation { return [CharonMetricValue dictionaryOf:self]; }
 + (BOOL)supportsSecureCoding { return YES; }

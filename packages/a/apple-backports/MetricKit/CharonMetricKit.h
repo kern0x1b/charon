@@ -65,6 +65,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface MXDiagnostic (CharonMetricKit)
 @property (nonatomic, readonly, strong) NSArray<MXSignpostRecord *> *signpostData;
+- (void)charon_setSignpostData:(NSArray<MXSignpostRecord *> *)value;
 @end
 
 @interface MXMetricPayload (CharonMetricKit)

@@ -56,6 +56,20 @@ static NSTimeInterval charon_monotonic(void)
     return (NSTimeInterval)seconds;
 }
 
+// The subsystem and category of the handle a signpost was marked through. The handle is an os_log_t
+// the port did not necessarily make - an application can hand it one this package did not create, and a
+// host comparison hands it the host's own - so the cast is checked before the ivars are read. Reading
+// CharonOSLog's ivars off a class that is not CharonOSLog is undefined, and the signpost differential
+// found it: lldb put the fault in [NSString stringWithUTF8String:] called from this file's line 90,
+// with the host's log object in hand.
+static void charon_handleNames(os_log_t log, NSString **subsystem, NSString **category)
+{
+    id handle = (CHARON_OS_LOG_BRIDGE id)log;
+    CharonOSLog *own = [handle isKindOfClass:[CharonOSLog class]] ? (CharonOSLog *)handle : nil;
+    *subsystem = own && own->_subsystem ? @(own->_subsystem) : @"";
+    *category = own && own->_category ? @(own->_category) : @"";
+}
+
 static CharonSignpostInterval *charon_begin_record(NSDictionary *begin, const char *name)
 {
     CharonSignpostInterval *interval = [[CharonSignpostInterval alloc] init];
@@ -85,10 +99,11 @@ static CharonSignpostInterval *charon_begin_record(NSDictionary *begin, const ch
 {
     // The open record carries the log's own subsystem and category, so an interval is attributed to
     // the handle that marked it - which is where an interval belongs when it is read back.
-    CharonOSLog *handle = (CHARON_OS_LOG_BRIDGE CharonOSLog *)log;
+    NSString *subsystem = nil, *category = nil;
+    charon_handleNames(log, &subsystem, &category);
     NSMutableDictionary *begin = [NSMutableDictionary dictionary];
-    begin[@"subsystem"] = handle && handle->_subsystem ? @(handle->_subsystem) : @"";
-    begin[@"category"] = handle && handle->_category ? @(handle->_category) : @"";
+    begin[@"subsystem"] = subsystem;
+    begin[@"category"] = category;
     begin[@"at"] = @(charon_monotonic());
     begin[@"name"] = name && *name ? @(name) : @"";
     @synchronized (charon_open()) {
@@ -116,9 +131,9 @@ static CharonSignpostInterval *charon_begin_record(NSDictionary *begin, const ch
 
 + (void)recordEventFor:(os_signpost_id_t)spid log:(os_log_t)log name:(const char *)name
 {
-    CharonOSLog *handle = (CHARON_OS_LOG_BRIDGE CharonOSLog *)log;
-    NSDictionary *begin = @{ @"subsystem": handle && handle->_subsystem ? @(handle->_subsystem) : @"",
-                             @"category": handle && handle->_category ? @(handle->_category) : @"" };
+    NSString *subsystem = nil, *category = nil;
+    charon_handleNames(log, &subsystem, &category);
+    NSDictionary *begin = @{ @"subsystem": subsystem, @"category": category };
     CharonSignpostInterval *event = charon_begin_record(begin, name);
     event.seconds = 0.0;
     event.count = 1;
@@ -142,6 +157,17 @@ static CharonSignpostInterval *charon_begin_record(NSDictionary *begin, const ch
 // The ids. OS_SIGNPOST_ID_NULL is zero and must never come back from a generate, so the counter starts
 // at one and every value carries the high bit that distinguishes a generated id from a pointer's - the
 // distinction signpost.h draws between the two id sources, and one the emit path below relies on.
+// A generated id, and the one convention this port keeps about the two id sources. The header does
+// NOT require it: os/signpost.h says a uint64_t "can be cast directly" if it uniquely identifies the
+// begin/end pair, names only OS_SIGNPOST_ID_NULL and OS_SIGNPOST_ID_INVALID as reserved, and says a
+// generated value "is guaranteed to be unique within the matching scope" - there is no high bit
+// anywhere in it. The host does not set one either: measured twice, os_signpost_id_generate on the
+// host's SensorKit answers 0x0000000000000001 with the bit clear.
+//
+// So the port follows the host and leaves the bit clear, and keeps the two sources apart the way the
+// header's own description of them does - a generated id counts up from 1, a pointer's id IS the
+// pointer, and the first two reserved values are never returned. A test reads the host's answer and
+// the port's and requires them to agree; see tests/backports/host/signpost.
 static os_signpost_id_t charon_next_id(void)
 {
     static uint64_t counter;
@@ -153,7 +179,7 @@ static os_signpost_id_t charon_next_id(void)
     @synchronized ([CharonSignpostStore class]) {
         value = counter++;
     }
-    return (os_signpost_id_t)(value | (1ull << 63));
+    return (os_signpost_id_t)value;
 }
 
 os_signpost_id_t os_signpost_id_generate(os_log_t log)
@@ -161,11 +187,23 @@ os_signpost_id_t os_signpost_id_generate(os_log_t log)
     return charon_next_id();
 }
 
+// The header says what this does and does not promise, and the M-Z review's measurement agrees with it:
+//
+//   "Mangles the pointer to create a valid os_signpost_id, including removing address randomization."
+//   "@result Returns a valid os_signpost_id_t. Returns OS_SIGNPOST_ID_NULL if signposts are turned
+//    off. Returns OS_SIGNPOST_ID_INVALID if the log handle is system-scoped."
+//
+// So the value is NOT the pointer - the host's own round trip fails, and it is meant to - and a NULL
+// pointer is not one of the two documented failures. The port therefore mangles the address the only way
+// it can, which is honestly: it clears the low three bits, where an arm64 malloc never puts anything
+// (the tag Apple's own allocator writes), and ORs in the port's own bit so the value cannot be mistaken
+// for a generated id. What the header does promise, and what the port gives, is a valid id that is
+// stable for the same pointer and never one of the two reserved values, which is what
+// "any pointer that disambiguates among concurrent intervals" needs.
 os_signpost_id_t os_signpost_id_make_with_pointer(os_log_t log, const void *ptr)
 {
-    if (!ptr)
-        return OS_SIGNPOST_ID_NULL;
-    return (os_signpost_id_t)((uintptr_t)ptr & ~(1ull << 63));
+    uintptr_t address = (uintptr_t)ptr;
+    return (os_signpost_id_t)((address & ~(uintptr_t)7) | (1ull << 2));
 }
 
 bool os_signpost_enabled(os_log_t log)
