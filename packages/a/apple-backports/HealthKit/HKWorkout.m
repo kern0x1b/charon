@@ -12,6 +12,7 @@
     HKWorkoutEventType _type;
     NSDate *_date;
     NSDictionary *_charonMetadata;
+    NSDateInterval *_charonDateInterval;
 }
 // -dateInterval of 11.0 and -metadata of 10.0 are of the releases after 8.0, which this delivery does
 // not carry, so both are @dynamic and no accessor is emitted for either.
@@ -83,6 +84,16 @@
     _charonMetadata = [metadata copy];
 }
 
+- (nullable NSDateInterval *)charon_storedDateInterval
+{
+    return _charonDateInterval;
+}
+
+- (void)charon_setDateInterval:(nullable NSDateInterval *)dateInterval
+{
+    _charonDateInterval = [dateInterval copy];
+}
+
 - (NSString *)description
 {
     return [NSString stringWithFormat:@"HKWorkoutEvent %ld at %@", (long)_type, _date];
@@ -105,6 +116,8 @@
     // plus it.
     NSTimeInterval _duration;
     HKQuantity *_charonStrokeCount;
+    // 11.0's flights climbed, beside the one of 10.0
+    HKQuantity *_charonFlightsClimbed;
 }
 // 10.0's -totalSwimmingStrokeCount, kept under the port's own name and answered under the header's
 // from HKDocumentQuery10.m, so that this file carries the API of 8.0 alone.
@@ -224,6 +237,16 @@
 - (void)charon_setTotalSwimmingStrokeCount:(nullable HKQuantity *)count
 {
     _charonStrokeCount = (HKQuantity *)[count copy];
+}
+
+- (nullable HKQuantity *)charon_storedTotalFlightsClimbed
+{
+    return _charonFlightsClimbed;
+}
+
+- (void)charon_setTotalFlightsClimbed:(nullable HKQuantity *)flights
+{
+    _charonFlightsClimbed = (HKQuantity *)[flights copy];
 }
 
 - (void)charon_setTotalEnergyBurned:(nullable HKQuantity *)energy totalDistance:(nullable HKQuantity *)distance

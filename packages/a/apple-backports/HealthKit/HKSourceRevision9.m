@@ -5,9 +5,38 @@
 
 #import "CharonHKStore.h"
 
+// The 11.0 members' storage, added here beside the 9.0 one's: the properties that read them are in
+// HKWorkoutRoute110.m, of the release that declares them, and the port's own accessors below are what
+// reach it from this file.
 @implementation HKSourceRevision {
     HKSource *_source;
     NSString *_version;
+    NSString *_charonProductType;
+    NSOperatingSystemVersion _charonOperatingSystemVersion;
+}
+
+// The port's own constructor, which the 11.0 initialiser of the class goes through, so that the two
+// release's forms share one path and the facts of the 9.0 one are set in one place.
+- (instancetype)charon_initWithSource:(HKSource *)source version:(nullable NSString *)version
+{
+    return [self initWithSource:source version:version];
+}
+
+- (void)charon_setProductType:(nullable NSString *)productType
+         operatingSystemVersion:(NSOperatingSystemVersion)operatingSystemVersion
+{
+    _charonProductType = [productType copy];
+    _charonOperatingSystemVersion = operatingSystemVersion;
+}
+
+- (nullable NSString *)charon_storedProductType
+{
+    return _charonProductType;
+}
+
+- (NSOperatingSystemVersion)charon_storedOperatingSystemVersion
+{
+    return _charonOperatingSystemVersion;
 }
 // iOS 11.0 added -productType and -operatingSystemVersion, and this delivery carries the 9.0 group,
 // so both are @dynamic and the compiler emits no accessor for either.
@@ -46,6 +75,10 @@
 {
     [coder encodeObject:_source forKey:@"source"];
     [coder encodeObject:_version forKey:@"version"];
+    [coder encodeObject:_charonProductType forKey:@"productType"];
+    [coder encodeDouble:(double)_charonOperatingSystemVersion.majorVersion forKey:@"osMajor"];
+    [coder encodeDouble:(double)_charonOperatingSystemVersion.minorVersion forKey:@"osMinor"];
+    [coder encodeDouble:(double)_charonOperatingSystemVersion.patchVersion forKey:@"osPatch"];
 }
 
 - (id)copyWithZone:(NSZone *)zone
@@ -92,6 +125,7 @@
 
 @implementation HKDeletedObject {
     NSUUID *_UUID;
+    NSDictionary *_charonDeletedMetadata;
 }
 // iOS 11.0 added -metadata, and this delivery carries the 9.0 group, so the member is @dynamic and
 // the compiler emits no accessor for it.
@@ -119,17 +153,28 @@
     HKDeletedObject *deleted = [super init];
     if (deleted)
         deleted->_UUID = [[coder decodeObjectOfClass:[NSUUID class] forKey:@"UUID"] copy];
+        NSDictionary *metadata = [coder decodeObjectOfClasses:[NSSet setWithObjects:[NSDictionary class], [NSString class],
+                                                                            [NSNumber class], [NSDate class], [NSData class], nil]
+                                                forKey:@"deletedMetadata"];
+        deleted->_charonDeletedMetadata = [metadata copy];
     return deleted;
 }
 
 - (void)encodeWithCoder:(NSCoder *)coder
 {
     [coder encodeObject:_UUID forKey:@"UUID"];
+    [coder encodeObject:_charonDeletedMetadata forKey:@"deletedMetadata"];
 }
 
 - (NSUUID *)UUID
 {
     return _UUID;
+}
+
+// 11.0's metadata, read by the property of that name in HKWorkoutRoute110.m
+- (nullable NSDictionary<NSString *, id> *)charon_deletedMetadata
+{
+    return _charonDeletedMetadata;
 }
 
 - (NSString *)description

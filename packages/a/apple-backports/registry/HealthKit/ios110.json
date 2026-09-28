@@ -7,10 +7,406 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "HealthKit arrived in iOS 8.0 and this release, iOS 6.1.3, has none of it: the armv7 shared cache of 6.1.3 and the one of 4.3 hold no HealthKit image and neither exports a name of it (measured: no string of either cache is HealthKit, with NSObject and PassKit as the controls that say the probe finds what is there). The store is this port's own SQLite database, not Apple's, so the class is carried whole. a CDA document: the data, the title and the three names it is about",
-      "effect": "each kept as it was given and read back as it was given, a nil stays a nil, and two documents are equal when their data and their four names are. NSSecureCoding and NSCopying carry the data and the four names",
+      "reason": "iOS 11.0 brought the CDA document itself, a release after the 10.0 document sample that holds it; the corpus dates the sample and the document's members to 10.0 by the sample's version and the document and its members to 11.0, and that is what each group carries, and a CDA document is the data, the title and the three names it is about",
+      "effect": "each member kept as it was given and read back as it was, a nil stays a nil, and two documents are equal when their data and their four names are. NSSecureCoding and NSCopying carry the data and the four names",
       "facts": "facts/HealthKit/HealthKit.md",
-      "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
+      "source": "the header of iOS 26.2 for the contract"
+    },
+    {
+      "api": "HKSeriesType",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 11.0 is the release of the workout route, of the source revision's product and operating system, of the flights climbed and of the event's period, and the first HealthKit image this workspace holds that has all of them. a type of a series: what a set of samples that belong together is a series of",
+      "effect": "one series type of 11.0, the route type, held as a shared object; an identifier no series type is declared for is refused, as the release refuses one it has no type for. NSSecureCoding and NSCopying carry the identifier, from HKObjectType",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 11.0, read with tools/cfconst.py; the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 11.0 for the values"
+    },
+    {
+      "api": "HKWorkoutRoute",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 11.0 is the release of the workout route, of the source revision's product and operating system, of the flights climbed and of the event's period, and the first HealthKit image this workspace holds that has all of them. the path a workout took",
+      "effect": "the bytes Apple encoded and the builder inserted, in the order they were inserted, kept as they were and read back as they were. The class has no initialiser and its superclass has none either, so the route is made the only way the release offers it: through -initWithCoder: over a real archive of its own facts. inherits NSSecureCoding from its superclass and carries the bytes in the archive",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 11.0, read with tools/cfconst.py; the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 11.0 for the values"
+    },
+    {
+      "api": "HKWorkoutRouteBuilder",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 11.0 is the release of the workout route, of the source revision's product and operating system, of the flights climbed and of the event's period, and the first HealthKit image this workspace holds that has all of them. a builder that collects a route and makes it",
+      "effect": "the bytes inserted, in order, and the metadata added; the route the two make is kept in the store against the workout, so a query of it is answered from there. The base allocation is the port's own, because the class is abstract in the header and its -init is closed off, and the public entry point is the declared -initWithHealthStore:device:. its own archive carries the two collections and the device, and there is no superclass archive because HKSeriesBuilder is not NSSecureCoding",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 11.0, read with tools/cfconst.py; the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 11.0 for the values"
+    },
+    {
+      "api": "HKWorkoutRouteQuery",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 11.0 is the release of the workout route, of the source revision's product and operating system, of the flights climbed and of the event's period, and the first HealthKit image this workspace holds that has all of them. a query of one route's bytes",
+      "effect": "the bytes, as the builder inserted them, to the caller's handler on the queue the query was given, and the release's own no-data error where there is nothing to hand. inherits NSSecureCoding's NO from HKQuery",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 11.0, read with tools/cfconst.py; the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 11.0 for the values"
+    },
+    {
+      "api": "HKMetadataKeyBloodGlucoseMealTime",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 11.0 is the release of the workout route, of the source revision's product and operating system, of the flights climbed and of the event's period, and the first HealthKit image this workspace holds that has all of them",
+      "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 11.0 through its own symbol table, rather than assumed",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 11.0, read with tools/cfconst.py"
+    },
+    {
+      "api": "HKMetadataKeyHeartRateMotionContext",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 11.0 is the release of the workout route, of the source revision's product and operating system, of the flights climbed and of the event's period, and the first HealthKit image this workspace holds that has all of them",
+      "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 11.0 through its own symbol table, rather than assumed",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 11.0, read with tools/cfconst.py"
+    },
+    {
+      "api": "HKMetadataKeyInsulinDeliveryReason",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 11.0 is the release of the workout route, of the source revision's product and operating system, of the flights climbed and of the event's period, and the first HealthKit image this workspace holds that has all of them",
+      "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 11.0 through its own symbol table, rather than assumed",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 11.0, read with tools/cfconst.py"
+    },
+    {
+      "api": "HKMetadataKeySyncIdentifier",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 11.0 is the release of the workout route, of the source revision's product and operating system, of the flights climbed and of the event's period, and the first HealthKit image this workspace holds that has all of them",
+      "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 11.0 through its own symbol table, rather than assumed",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 11.0, read with tools/cfconst.py"
+    },
+    {
+      "api": "HKMetadataKeySyncVersion",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 11.0 is the release of the workout route, of the source revision's product and operating system, of the flights climbed and of the event's period, and the first HealthKit image this workspace holds that has all of them",
+      "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 11.0 through its own symbol table, rather than assumed",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 11.0, read with tools/cfconst.py"
+    },
+    {
+      "api": "HKMetadataKeyVO2MaxTestType",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 11.0 is the release of the workout route, of the source revision's product and operating system, of the flights climbed and of the event's period, and the first HealthKit image this workspace holds that has all of them",
+      "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 11.0 through its own symbol table, rather than assumed",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 11.0, read with tools/cfconst.py"
+    },
+    {
+      "api": "HKPredicateKeyPathWorkoutTotalFlightsClimbed",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 11.0 is the release of the workout route, of the source revision's product and operating system, of the flights climbed and of the event's period, and the first HealthKit image this workspace holds that has all of them",
+      "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 11.0 through its own symbol table, rather than assumed",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 11.0, read with tools/cfconst.py"
+    },
+    {
+      "api": "HKQuantityTypeIdentifierHeartRateVariabilitySDNN",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 11.0 is the release of the workout route, of the source revision's product and operating system, of the flights climbed and of the event's period, and the first HealthKit image this workspace holds that has all of them",
+      "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 11.0 through its own symbol table, rather than assumed",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 11.0, read with tools/cfconst.py"
+    },
+    {
+      "api": "HKQuantityTypeIdentifierInsulinDelivery",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 11.0 is the release of the workout route, of the source revision's product and operating system, of the flights climbed and of the event's period, and the first HealthKit image this workspace holds that has all of them",
+      "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 11.0 through its own symbol table, rather than assumed",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 11.0, read with tools/cfconst.py"
+    },
+    {
+      "api": "HKQuantityTypeIdentifierRestingHeartRate",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 11.0 is the release of the workout route, of the source revision's product and operating system, of the flights climbed and of the event's period, and the first HealthKit image this workspace holds that has all of them",
+      "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 11.0 through its own symbol table, rather than assumed",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 11.0, read with tools/cfconst.py"
+    },
+    {
+      "api": "HKQuantityTypeIdentifierVO2Max",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 11.0 is the release of the workout route, of the source revision's product and operating system, of the flights climbed and of the event's period, and the first HealthKit image this workspace holds that has all of them",
+      "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 11.0 through its own symbol table, rather than assumed",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 11.0, read with tools/cfconst.py"
+    },
+    {
+      "api": "HKQuantityTypeIdentifierWaistCircumference",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 11.0 is the release of the workout route, of the source revision's product and operating system, of the flights climbed and of the event's period, and the first HealthKit image this workspace holds that has all of them",
+      "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 11.0 through its own symbol table, rather than assumed",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 11.0, read with tools/cfconst.py"
+    },
+    {
+      "api": "HKQuantityTypeIdentifierWalkingHeartRateAverage",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 11.0 is the release of the workout route, of the source revision's product and operating system, of the flights climbed and of the event's period, and the first HealthKit image this workspace holds that has all of them",
+      "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 11.0 through its own symbol table, rather than assumed",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 11.0, read with tools/cfconst.py"
+    },
+    {
+      "api": "HKSourceRevisionAnyOperatingSystem",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 11.0 is the release of the workout route, of the source revision's product and operating system, of the flights climbed and of the event's period, and the first HealthKit image this workspace holds that has all of them",
+      "effect": "no value is read for it and the reason is in HKConstants110.m's own header: the SDK header declares this one `NSOperatingSystemVersion const`, and in the arm64 caches of 11.0 and 12.0 the symbol under that name is a tagged CFString of HealthKit's private unit-parser separators rather than a struct of three integers, so the port declares the name with the header's type and the value a caller gets is the sentinel that matches any version, which is what the header's comment above all three names says they are for",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 11.0, read with tools/cfconst.py"
+    },
+    {
+      "api": "HKSourceRevisionAnyProductType",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 11.0 is the release of the workout route, of the source revision's product and operating system, of the flights climbed and of the event's period, and the first HealthKit image this workspace holds that has all of them",
+      "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 11.0 through its own symbol table, rather than assumed",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 11.0, read with tools/cfconst.py"
+    },
+    {
+      "api": "HKSourceRevisionAnyVersion",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 11.0 is the release of the workout route, of the source revision's product and operating system, of the flights climbed and of the event's period, and the first HealthKit image this workspace holds that has all of them",
+      "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 11.0 through its own symbol table, rather than assumed",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 11.0, read with tools/cfconst.py"
+    },
+    {
+      "api": "HKWorkoutRouteTypeIdentifier",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 11.0 is the release of the workout route, of the source revision's product and operating system, of the flights climbed and of the event's period, and the first HealthKit image this workspace holds that has all of them",
+      "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 11.0 through its own symbol table, rather than assumed",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 11.0, read with tools/cfconst.py"
+    },
+    {
+      "api": "HKWorkoutSortIdentifierTotalFlightsClimbed",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 11.0 is the release of the workout route, of the source revision's product and operating system, of the flights climbed and of the event's period, and the first HealthKit image this workspace holds that has all of them",
+      "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 11.0 through its own symbol table, rather than assumed",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the arm64 shared cache of iOS 11.0, read with tools/cfconst.py"
+    },
+    {
+      "api": "+[HKObjectType seriesTypeForIdentifier:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 11.0 is the release of the workout route, of the source revision's product and operating system, of the flights climbed and of the event's period, and the first HealthKit image this workspace holds that has all of them",
+      "effect": "the one series type, the route type, held as a shared object, and nil for an identifier no series type is declared for",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 11.0 for the values"
+    },
+    {
+      "api": "+[HKQuery predicateForWorkoutsWithOperatorType:totalFlightsClimbed:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 11.0 is the release of the workout route, of the source revision's product and operating system, of the flights climbed and of the event's period, and the first HealthKit image this workspace holds that has all of them",
+      "effect": "a predicate over the flights-climbed key path, whose value the 11.0 image holds as totalFlightsClimbed, and nil for anything that is not a quantity",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 11.0 for the values"
+    },
+    {
+      "api": "+[HKSeriesType workoutRouteType]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 11.0 is the release of the workout route, of the source revision's product and operating system, of the flights climbed and of the event's period, and the first HealthKit image this workspace holds that has all of them",
+      "effect": "the route type, which is the one series type of 11.0",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 11.0 for the values"
+    },
+    {
+      "api": "+[HKUnit internationalUnit]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 11.0 is the release of the workout route, of the source revision's product and operating system, of the flights climbed and of the event's period, and the first HealthKit image this workspace holds that has all of them",
+      "effect": "the international unit of a pharmacology, which the header's own comment gives as IU and which is a dimension of its own",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 11.0 for the values"
+    },
+    {
+      "api": "+[HKUnit largeCalorieUnit]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 11.0 is the release of the workout route, of the source revision's product and operating system, of the flights climbed and of the event's period, and the first HealthKit image this workspace holds that has all of them",
+      "effect": "the large calorie, which is 4184 J, the header's own comment",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 11.0 for the values"
+    },
+    {
+      "api": "+[HKUnit smallCalorieUnit]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 11.0 is the release of the workout route, of the source revision's product and operating system, of the flights climbed and of the event's period, and the first HealthKit image this workspace holds that has all of them",
+      "effect": "the small calorie, which is 4.184 J, the header's own comment",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 11.0 for the values"
+    },
+    {
+      "api": "+[HKWorkout workoutWithActivityType:startDate:endDate:workoutEvents:totalEnergyBurned:totalDistance:totalFlightsClimbed:device:metadata:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 11.0 is the release of the workout route, of the source revision's product and operating system, of the flights climbed and of the event's period, and the first HealthKit image this workspace holds that has all of them",
+      "effect": "the release's own form of 11.0, the form of 10.0 with the flights climbed added; the count is kept as it is given and the duration is the one the two dates say",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 11.0 for the values"
+    },
+    {
+      "api": "+[HKWorkoutEvent workoutEventWithType:dateInterval:metadata:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 11.0 is the release of the workout route, of the source revision's product and operating system, of the flights climbed and of the event's period, and the first HealthKit image this workspace holds that has all of them",
+      "effect": "an event over the period given, the routing events of 11.0, with the period's start the same date the one-argument factory takes; it raises for anything that is not a period",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 11.0 for the values"
+    },
+    {
+      "api": "-[HKSourceRevision initWithSource:version:productType:operatingSystemVersion:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 11.0 is the release of the workout route, of the source revision's product and operating system, of the flights climbed and of the event's period, and the first HealthKit image this workspace holds that has all of them",
+      "effect": "a revision of the source given, with the version, the product and the operating system, each kept as it is given, and the release's own refusal for anything that is not a source",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 11.0 for the values"
+    },
+    {
+      "api": "-[HKWorkoutRouteBuilder addMetadata:completion:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 11.0 is the release of the workout route, of the source revision's product and operating system, of the flights climbed and of the event's period, and the first HealthKit image this workspace holds that has all of them",
+      "effect": "the metadata added, merged into what is already there, and the release's own invalid-argument error for anything that is not a dictionary",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 11.0 for the values"
+    },
+    {
+      "api": "-[HKWorkoutRouteBuilder finishRouteWithWorkout:metadata:completion:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 11.0 is the release of the workout route, of the source revision's product and operating system, of the flights climbed and of the event's period, and the first HealthKit image this workspace holds that has all of them",
+      "effect": "the route the inserted bytes and the metadata make, kept in the store against the workout, and the release's own invalid-argument error where there is no workout or nothing was inserted",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 11.0 for the values"
+    },
+    {
+      "api": "-[HKWorkoutRouteBuilder initWithHealthStore:device:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 11.0 is the release of the workout route, of the source revision's product and operating system, of the flights climbed and of the event's period, and the first HealthKit image this workspace holds that has all of them",
+      "effect": "the builder of the release, made through its declared designated initialiser, with the base allocation the port's own because the class is abstract and its -init is closed off",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 11.0 for the values"
+    },
+    {
+      "api": "-[HKWorkoutRouteBuilder insertRouteData:completion:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 11.0 is the release of the workout route, of the source revision's product and operating system, of the flights climbed and of the event's period, and the first HealthKit image this workspace holds that has all of them",
+      "effect": "the bytes Apple encoded, kept in the order they were inserted, and the release's own invalid-argument error for empty or non-data",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 11.0 for the values"
+    },
+    {
+      "api": "-[HKWorkoutRouteQuery initWithRoute:dataHandler:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 11.0 is the release of the workout route, of the source revision's product and operating system, of the flights climbed and of the event's period, and the first HealthKit image this workspace holds that has all of them",
+      "effect": "a query of the route given, answered with that route's bytes on the query's own queue",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 11.0 for the values"
     },
     {
       "api": "HKCDADocument.authorName",
@@ -19,9 +415,9 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "iOS 11.0 brought the CDA document itself, a release after the 10.0 document sample that holds it; the corpus dates the sample and the document's members to 10.0 by the sample's version and the document and its members to 11.0, and that is what each group carries",
-      "effect": "the author's name, nil where none was given",
+      "effect": "the author's name, nil where the document names none",
       "facts": "facts/HealthKit/HealthKit.md",
-      "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
+      "source": "the header of iOS 26.2 for the contract"
     },
     {
       "api": "HKCDADocument.custodianName",
@@ -30,9 +426,9 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "iOS 11.0 brought the CDA document itself, a release after the 10.0 document sample that holds it; the corpus dates the sample and the document's members to 10.0 by the sample's version and the document and its members to 11.0, and that is what each group carries",
-      "effect": "the custodian's name, nil where none was given",
+      "effect": "the custodian's name, nil where the document names none",
       "facts": "facts/HealthKit/HealthKit.md",
-      "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
+      "source": "the header of iOS 26.2 for the contract"
     },
     {
       "api": "HKCDADocument.documentData",
@@ -41,9 +437,9 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "iOS 11.0 brought the CDA document itself, a release after the 10.0 document sample that holds it; the corpus dates the sample and the document's members to 10.0 by the sample's version and the document and its members to 11.0, and that is what each group carries",
-      "effect": "the data the document was made with",
+      "effect": "the data the document was made with, the XML a CDA document is",
       "facts": "facts/HealthKit/HealthKit.md",
-      "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
+      "source": "the header of iOS 26.2 for the contract"
     },
     {
       "api": "HKCDADocument.patientName",
@@ -52,9 +448,9 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "iOS 11.0 brought the CDA document itself, a release after the 10.0 document sample that holds it; the corpus dates the sample and the document's members to 10.0 by the sample's version and the document and its members to 11.0, and that is what each group carries",
-      "effect": "the patient's name, nil where none was given",
+      "effect": "the patient's name, nil where the document names none",
       "facts": "facts/HealthKit/HealthKit.md",
-      "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
+      "source": "the header of iOS 26.2 for the contract"
     },
     {
       "api": "HKCDADocument.title",
@@ -63,9 +459,75 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "iOS 11.0 brought the CDA document itself, a release after the 10.0 document sample that holds it; the corpus dates the sample and the document's members to 10.0 by the sample's version and the document and its members to 11.0, and that is what each group carries",
-      "effect": "the title it was made with, nil where none was given",
+      "effect": "the title it was made with, nil where the document names none",
       "facts": "facts/HealthKit/HealthKit.md",
-      "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
+      "source": "the header of iOS 26.2 for the contract"
+    },
+    {
+      "api": "HKDeletedObject.metadata",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 11.0 is the release of the workout route, of the source revision's product and operating system, of the flights climbed and of the event's period, and the first HealthKit image this workspace holds that has all of them",
+      "effect": "the metadata the object carried when it was deleted, kept with the identifier the store deleted, so a caller can say what has gone and not only that something has",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 11.0 for the values"
+    },
+    {
+      "api": "HKSourceRevision.operatingSystemVersion",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 11.0 is the release of the workout route, of the source revision's product and operating system, of the flights climbed and of the event's period, and the first HealthKit image this workspace holds that has all of them",
+      "effect": "the version of the operating system the source was on, as the three integers of the struct the header declares",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 11.0 for the values"
+    },
+    {
+      "api": "HKSourceRevision.productType",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 11.0 is the release of the workout route, of the source revision's product and operating system, of the flights climbed and of the event's period, and the first HealthKit image this workspace holds that has all of them",
+      "effect": "the product the source was on, as the header's own sentinel names are there to match against",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 11.0 for the values"
+    },
+    {
+      "api": "HKWorkout.totalFlightsClimbed",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 11.0 is the release of the workout route, of the source revision's product and operating system, of the flights climbed and of the event's period, and the first HealthKit image this workspace holds that has all of them",
+      "effect": "the flights climbed, kept as it is given, and nil where none was given",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 11.0 for the values"
+    },
+    {
+      "api": "HKWorkoutEvent.dateInterval",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 11.0 is the release of the workout route, of the source revision's product and operating system, of the flights climbed and of the event's period, and the first HealthKit image this workspace holds that has all of them",
+      "effect": "the period the event covers, and nil for an event made through the one-argument factory of 8.0, which is at an instant",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 11.0 for the values"
+    },
+    {
+      "api": "HKWorkoutRouteQuery.route",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the SDK header declares -route on HKWorkoutRouteQuery, the release carries it, and the corpus has no row for it - the same kind of row the corpus misses as HKStatisticsCollection's own anchorDate, which this library carries because a header declares it",
+      "effect": "the route the query was made with, kept as it was given and read back as it was",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the header of iOS 26.2 for the contract"
     }
   ]
 }

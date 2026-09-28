@@ -899,6 +899,71 @@ typedef NS_ENUM(NSUInteger, CharonHKAuthorizationBits) {
     return uuids;
 }
 
+#pragma mark Workout routes
+
+// The metadata of a route, as a property list, or NULL where it is not one - the header types the
+// dictionary as strings, and anything else is not a route's metadata and is not stored.
+static NSData *CharonHKRouteMetadataArchive(NSDictionary *metadata)
+{
+    if (!metadata)
+        return nil;
+    if (![NSPropertyListSerialization propertyList:metadata isValidForFormat:NSPropertyListBinaryFormat_v1_0])
+        return nil;
+    return [NSPropertyListSerialization dataWithPropertyList:metadata
+                                                     format:NSPropertyListBinaryFormat_v1_0
+                                                    options:0
+                                                      error:NULL];
+}
+
+- (void)setWorkoutRoute:(HKWorkoutRoute *)route
+             forWorkout:(HKWorkout *)workout
+                 device:(nullable HKDevice *)device
+              metadata:(nullable NSDictionary *)metadata
+                 error:(NSError **)error
+{
+    if (![route isKindOfClass:[HKWorkoutRoute class]] || ![workout isKindOfClass:[HKWorkout class]]) {
+        if (error)
+            *error = CharonHKError(HKErrorInvalidArgument, @"A route and a workout are both needed.", nil);
+        return;
+    }
+    NSMutableData *joined = [NSMutableData data];
+    NSData *bytes = [CharonHKStore charon_routeDataOf:route];
+    [joined appendData:bytes];
+    NSString *key = device.localIdentifier ?: @"";
+    __block BOOL ok = NO;
+    __block NSError *failure = nil;
+    [_lock lock];
+    @try {
+        ok = [self charon_runLocked:@"INSERT OR REPLACE INTO workout_route (workout, device, route, metadata) VALUES (?, ?, ?, ?)"
+                            bindings:@[workout.UUID.UUIDString, key, joined, CharonHKRouteMetadataArchive(metadata) ?: [NSNull null]]
+                               error:&failure];
+    } @finally {
+        [_lock unlock];
+    }
+    if (!ok && error)
+        *error = failure;
+}
+
+// The bytes of a route, read back out of the archive it was made with, so that what a query hands its
+// caller is what the builder inserted.
++ (NSData *)charon_routeDataOf:(HKWorkoutRoute *)route
+{
+    // The bytes are read back out of the route's own archive, which is the same round trip the release
+    // makes, so what a query hands its caller is what the builder inserted.
+    NSData *archive = [NSKeyedArchiver archivedDataWithRootObject:route];
+    if (!archive.length)
+        return [NSData data];
+    NSKeyedUnarchiver *reader = [[NSKeyedUnarchiver alloc] initForReadingWithData:archive];
+    NSData *bytes = [reader decodeObjectOfClass:[NSData class] forKey:@"routeData"];
+    [reader finishDecoding];
+    return bytes ?: [NSData data];
+}
+
+- (NSData *)routeDataOf:(HKWorkoutRoute *)route
+{
+    return [CharonHKStore charon_routeDataOf:route];
+}
+
 #pragma mark Documents
 
 // The documents of one type. A document sample is a sample, so it is read back out of the same table

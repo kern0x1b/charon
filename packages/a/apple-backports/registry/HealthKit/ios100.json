@@ -46,6 +46,28 @@
       "source": "the arm64 shared cache of iOS 10.0.1, HealthKit.framework, read with tools/cfconst.py, the first image of that release this workspace holds"
     },
     {
+      "api": "HKSeriesBuilder",
+      "kind": "class",
+      "introduced": "10.0.1",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "HKSeriesBuilder is the abstract superclass the release's own series builders inherit from, the SDK's headers declare it, the armv7 shared cache of 10.0.1 carries it, and the corpus has no row for it. It is carried so the inheritance is the release's and a caller that walks it with -isKindOfClass: gets the release's answer",
+      "effect": "no member of its own here: its -discard is of 12.0 and the 12.0 group answers it on the subclass that holds the data, so the class carries nothing and -discard is not in the library",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the armv7 shared cache of iOS 10.0.1; the header of iOS 26.2"
+    },
+    {
+      "api": "HKSeriesSample",
+      "kind": "class",
+      "introduced": "10.0.1",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "HKSeriesSample is the abstract superclass the release's own HKWorkoutRoute inherits from, the SDK's headers declare it, the armv7 shared cache of 10.0.1 carries it, and the corpus has no row for it. It is carried so the inheritance is the release's",
+      "effect": "no member of its own here: its count is of 12.0, so the property is @dynamic and the accessor is not in the library and -respondsToSelector: answers NO for it",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "the armv7 shared cache of iOS 10.0.1; the header of iOS 26.2"
+    },
+    {
       "api": "HKWheelchairUseObject",
       "kind": "class",
       "introduced": "10.0",

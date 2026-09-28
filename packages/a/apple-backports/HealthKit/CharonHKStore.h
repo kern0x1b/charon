@@ -83,6 +83,17 @@ NS_ASSUME_NONNULL_BEGIN
 // answers with. The store's own deleted table is where they come from.
 - (nullable NSArray *)deletedObjectsSinceSequence:(NSInteger)sequence;
 
+// A finished workout route, kept against the workout it belongs to and the device it was made on, and
+// the bytes of a route. The bytes are what the builder inserted, in the order it inserted them; this
+// port does not parse Apple's encoded path, and the header's own -insertRouteData: takes those bytes.
+- (void)setWorkoutRoute:(HKWorkoutRoute *)route
+             forWorkout:(HKWorkout *)workout
+                 device:(nullable HKDevice *)device
+              metadata:(nullable NSDictionary *)metadata
+                 error:(NSError **)error;
+- (NSData *)routeDataOf:(HKWorkoutRoute *)route;
++ (NSData *)charon_routeDataOf:(HKWorkoutRoute *)route;
+
 // The documents of one type, with their own data or without it, the way a document query asks.
 - (nullable NSArray *)documentsOfType:(HKDocumentType *)type
                             predicate:(nullable NSPredicate *)predicate
@@ -186,6 +197,8 @@ extern Class _Nullable CharonHKClassForTypeKind(NSInteger kind);
 - (instancetype)charon_initWithType:(HKWorkoutEventType)type date:(NSDate *)date;
 - (nullable NSDictionary *)charon_storedMetadata;
 - (void)charon_setMetadata:(nullable NSDictionary *)metadata;
+- (nullable NSDateInterval *)charon_storedDateInterval;
+- (void)charon_setDateInterval:(nullable NSDateInterval *)dateInterval;
 @end
 
 @interface HKObject (CharonIOS9)
@@ -234,6 +247,8 @@ extern Class _Nullable CharonHKClassForTypeKind(NSInteger kind);
 - (void)charon_setWorkoutEvents:(NSArray<HKWorkoutEvent *> *)workoutEvents;
 - (nullable HKQuantity *)charon_totalSwimmingStrokeCount;
 - (void)charon_setTotalSwimmingStrokeCount:(nullable HKQuantity *)count;
+- (nullable HKQuantity *)charon_storedTotalFlightsClimbed;
+- (void)charon_setTotalFlightsClimbed:(nullable HKQuantity *)flights;
 - (void)charon_setTotalEnergyBurned:(nullable HKQuantity *)energy totalDistance:(nullable HKQuantity *)distance;
 @end
 
@@ -347,10 +362,16 @@ extern Class _Nullable CharonHKClassForTypeKind(NSInteger kind);
 
 @interface HKSourceRevision (CharonInternal)
 - (instancetype)charon_initWithSource:(HKSource *)source version:(nullable NSString *)version;
+- (void)charon_setProductType:(nullable NSString *)productType
+     operatingSystemVersion:(NSOperatingSystemVersion)operatingSystemVersion;
+- (nullable NSString *)charon_storedProductType;
+- (NSOperatingSystemVersion)charon_storedOperatingSystemVersion;
+- (instancetype)charon_initWithSource:(HKSource *)source version:(nullable NSString *)version;
 @end
 
 @interface HKDeletedObject (CharonInternal)
 - (instancetype)charon_initWithUUID:(NSUUID *)uuid;
+- (nullable NSDictionary<NSString *, id> *)charon_deletedMetadata;
 @end
 
 @interface HKFitzpatrickSkinTypeObject (CharonInternal)
@@ -393,6 +414,8 @@ extern Class _Nullable CharonHKClassForTypeKind(NSInteger kind);
 - (instancetype)charon_initWithType:(HKWorkoutEventType)type date:(NSDate *)date;
 - (nullable NSDictionary *)charon_storedMetadata;
 - (void)charon_setMetadata:(nullable NSDictionary *)metadata;
+- (nullable NSDateInterval *)charon_storedDateInterval;
+- (void)charon_setDateInterval:(nullable NSDateInterval *)dateInterval;
 @end
 
 @interface HKObject (CharonIOS9)
