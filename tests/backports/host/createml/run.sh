@@ -16,6 +16,21 @@ here=$(cd "$(dirname "$0")" && pwd)
 charon=$(cd "$here/../../../.." && pwd)
 files="$charon/packages/c/createml/files"
 out="${TMPDIR:-/tmp}/createml-differential.$$"
+# `KEEP=1` leaves the build directory behind, so a suite that dies can be run again under a debugger:
+#
+#     KEEP=1 ./run.sh && lldb --batch -o run -o bt "$TMPDIR"/createml-differential.*/tabularframe
+#
+# The reason it is an option rather than a habit: Swift's `print` buffers when stdout is a pipe, and a
+# `precondition` or a bounds trap kills the process before the buffer is flushed - so a suite that
+# traps right after a diagnostic print prints **nothing at all**, and "printed nothing" says nothing
+# about where it trapped. Measured: the first attempt at this trap produced no output, was read as
+# "the trap is before the print", and was wrong.
+#
+# The suites are therefore run with stdout unbuffered, so a print that precedes a trap is evidence.
+if [ "${KEEP:-0}" = "1" ]; then
+    trap '' EXIT
+    echo "KEEP=1: keeping $out"
+fi
 mkdir -p "$out/modules"
 trap 'rm -rf "$out"' EXIT
 
@@ -159,7 +174,8 @@ xcrun swiftc -swift-version 5 -O -I "$out/modules" \
 # `transformers` line at all. Each binary's exit is collected and the first non-zero is the script's.
 status=0
 for suite in differential tabularframe linearmodels transformers metrics preprocessing l1 model; do
-    if ! "$out/$suite"; then
+    # `stdbuf` is belt and braces for the buffering above: the suites do their own unbuffering too.
+    if ! stdbuf -o0 -e0 "$out/$suite"; then
         echo "FAIL the $suite suite exited non-zero" >&2
         status=1
     fi

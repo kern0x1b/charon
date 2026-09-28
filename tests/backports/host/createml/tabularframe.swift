@@ -16,6 +16,11 @@
 //
 // Every number here is the port's own, and each check says which rule it is holding the frame to.
 import Foundation
+// Unbuffered, so a print that precedes a `precondition` or a bounds trap is still there. Swift's
+// `print` buffers on a pipe and a trap kills the process before the flush, so without this a suite
+// that traps immediately after a diagnostic print shows nothing at all - and "printed nothing" was
+// read as "the trap is before the print", which was wrong.
+setvbuf(stdout, nil, _IONBF, 0)
 // Both frames, in one process: the port's under its own module name, and Apple's as the SDK
 // declares it. The port's sources are compiled as `PortTabularData` by run.sh, and every reference
 // here is `PortTabularData.`-qualified, so the two `DataFrame`s and the two `Column`s coexist
