@@ -57,6 +57,33 @@ def order(fields, category_signed, value_bits):
         return tuple(raw[i] for i in fields)
     return key
 
+def pair_compare(a, b):
+    """The rule as a comparator over a pair, which is the shape the host's answer has: category as a
+    signed 32-bit integer, then data type, then the value - a NaN equal to the other within one category
+    and data type, and -0.0 equal to 0.0."""
+    # category and data type FIRST, and only then the NaN equality: the list of unexplained pairs is
+    # entirely a NaN against a different category or data type, where the host orders by those and the
+    # NaN does not override them. A NaN ties only within one category and data type.
+    left, right = signed(a[0]), signed(b[0])
+    if left != right:
+        return -1 if left < right else 1
+    if a[1] != b[1]:
+        return -1 if a[1] < b[1] else 1
+    if is_nan(a) or is_nan(b):
+        return 0
+    if a[1] == 2:  # SInt64: the value UNSIGNED - the last pair, 7 against 0xffffffffffffffff, is -1 on the
+        # host, and only an unsigned reading of an int64 gives that; signed would put 0xffff...ff at -1
+        va, vb = a[2], b[2]
+    elif a[1] == 3:  # Float64: the value as a signed double, with -0.0 equal to 0.0
+        va = struct.unpack(">d", struct.pack(">Q", a[2]))[0] or 0.0
+        vb = struct.unpack(">d", struct.pack(">Q", b[2]))[0] or 0.0
+    else:
+        va, vb = a[2], b[2]
+    if va != vb:
+        return -1 if va < vb else 1
+    return 0
+
+
 def is_nan(tag):
     """A NaN read out of the tag itself, not out of a key: a key cannot carry the fact, because the
     sentinel that would carry it is a number and the host's answer is an equality rather than a place."""
@@ -115,6 +142,15 @@ def main():
                                                                 "big" if big_endian else "little")))
     for best, forward, backward, name in sorted(results):
         print("  %4d mismatches  (%d forward, %d reversed)  %s" % (best, forward, backward, name))
+    comparator = [(a, b, host) for a, b, host in pairs if pair_compare(TAGS[a], TAGS[b]) != host]
+    comparator_reversed = [(a, b, host) for a, b, host in pairs if pair_compare(TAGS[b], TAGS[a]) != host]
+    print("=== the comparator as a pair function, over %d pairs: %d mismatched forward, %d reversed"
+          % (len(pairs), len(comparator), len(comparator_reversed)))
+    for a, b, host in comparator:
+        print("    %3d vs %3d  host %2d  cat %d/%d  type %d/%d  value 0x%016x / 0x%016x"
+              % (a, b, host, TAGS[a][0], TAGS[b][0], TAGS[a][1], TAGS[b][1], TAGS[a][2], TAGS[b][2]))
+    if comparator_reversed and len(comparator_reversed) < len(comparator):
+        print("    the reversed argument order fits better")
     signatures = {}
     for best, forward, backward, name in results:
         signatures.setdefault((best, forward, backward), []).append(name)
