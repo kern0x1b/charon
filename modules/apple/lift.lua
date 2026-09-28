@@ -288,14 +288,14 @@ local function dumper(opt, frameworks, headers)
         end
         return found
     end
-    local cache, alone = {}, {}
+    local dumps, alone = {}, {}
     local function dump(filter, vfs)
         local key = filter .. "|" .. (vfs or "")
-        if not cache[key] then
+        if not dumps[key] then
             table.insert(alone, key)
-            cache[key] = query(filter, vfs)
+            dumps[key] = query(filter, vfs)
         end
-        return cache[key]
+        return dumps[key]
     end
     -- What a declaration's subtree names, all in one string: a name a filter finds only below a declaration that does not match
     -- itself.
@@ -326,7 +326,7 @@ local function dumper(opt, frameworks, headers)
         local missing, seen, plain, names = {}, {}, {}, {}
         for _, filter in ipairs(filters) do
             local key = filter .. "|" .. (vfs or "")
-            if not cache[key] and not seen[key] then
+            if not dumps[key] and not seen[key] then
                 seen[key] = true
                 table.insert(filter:find("^[%a_][%w_]*$") and names or plain, filter)
             end
@@ -359,7 +359,7 @@ local function dumper(opt, frameworks, headers)
                 reliable = reliable and node._qualified ~= nil
             end
             if not job.names then
-                cache[job.filter .. "|" .. (vfs or "")] = answer
+                dumps[job.filter .. "|" .. (vfs or "")] = answer
             elseif not reliable then
                 for _, name in ipairs(job.names) do
                     table.insert(again, {filter = name})
@@ -379,7 +379,7 @@ local function dumper(opt, frameworks, headers)
                     if hidden then
                         table.insert(again, {filter = name})
                     else
-                        cache[name .. "|" .. (vfs or "")] = found
+                        dumps[name .. "|" .. (vfs or "")] = found
                     end
                 end
             end
@@ -388,7 +388,7 @@ local function dumper(opt, frameworks, headers)
             answers = {}
             ask(again)
             for index, job in ipairs(again) do
-                cache[job.filter .. "|" .. (vfs or "")] = answers[index]
+                dumps[job.filter .. "|" .. (vfs or "")] = answers[index]
             end
         end
     end

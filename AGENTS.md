@@ -170,9 +170,16 @@ Each entry: wrong pattern → right pattern → the mechanical reason.
   cache. At the default `hash_dir = true` the key carries each worktree's own directory instead, and
   every band builds alone with a cache that only ever misses: nothing fails, the fleet just keeps
   paying. `base_dir` is the weaker half of the same thing and buys nothing on its own. What ccache
-  replays is the object the compiler wrote, so identity is a measurement. `CCACHE_DISABLE` set at
-  all, empty included, takes the cache out for a build that has to show its own work; `CCACHE` names
-  a program and is checked before it is used, so a stale one costs the cache and not the build.
+  replays is the object the compiler wrote, so identity is a measurement — but measure it with
+  callers that spell the source the same way every time. The key is path-independent and the object
+  is not: a relative and an absolute spelling of one path are one key and two objects, and which one
+  a build gets is decided by whichever job stored the entry first. Measured over a gate, 981 of 982
+  objects byte-identical and one 84-byte difference that was exactly that string;
+  `backports.compile()` takes its source absolute so no caller can reintroduce it.
+  `CCACHE_DISABLE` set at all, empty included, takes the cache out for a build that has to show its
+  own work; `CCACHE` names a program and is checked before it is used, so a stale one costs the
+  cache and not the build. `apple.cache` says which call sites are routed and names the one in
+  `backports.lua`'s `releases_in()` that is not.
   No backport uses `__DATE__`/`__TIME__`, so no `time_macros` sloppiness is wanted: it would make a
   cached unit hand back another build's timestamp.
 

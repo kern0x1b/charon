@@ -161,6 +161,17 @@ end
 -- backport is compiled so: one that needs RTTI for another reason (typeid, dynamic_cast) cannot
 -- have it here.
 function compile(opt, source, object)
+    -- The source, absolute, whatever the caller passed. ccache keys an entry on the preprocessed
+    -- source with its paths rewritten (base_dir, hash_dir = false), so two spellings of one path are
+    -- one key - and it hands back the object verbatim as the run that stored it wrote it, that path
+    -- spelling included. A relative caller and an absolute caller therefore share a key and get two
+    -- different objects: measured over a whole gate, 981 of 982 objects byte-identical against a
+    -- CCACHE_DISABLE=1 build and one - UIKit/UIDynamicAnimator.o, 84 bytes - differing by exactly
+    -- the string "packages/a/apple-backports/UIKit/UIDynamicAnimator.mm" against its absolute form,
+    -- and which of the two a build gets is decided by whichever job stored the entry first. Both
+    -- production callers pass an absolute path already (the gate's checkout, the recipe's
+    -- scriptdir()); this makes it so for every caller, so the spelling cannot diverge again.
+    source = path.absolute(source)
     local objective_c = not source:endswith(".c")
     local arguments = {"-Os", "-g0", "-Wall", "-Wno-unguarded-availability-new", "-Wno-unguarded-availability"}
     if objective_c then
