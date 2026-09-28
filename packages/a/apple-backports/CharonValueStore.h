@@ -211,6 +211,23 @@ static inline BOOL CharonValueDecode(id value, NSCoder *coder, NSSet<Class> *all
 // it arrives: -charon_setValue:forKey: with the property's own name as the key. Every category
 // declares it, so a translation unit outside the class's file can fill a value in.
 
+// A property whose value is a STRUCT - CMTimeRange, a chromaticity, a CGRect - cannot be cast out of
+// the store the way an object can and cannot sit in a dictionary, so it is held as an NSValue over its
+// own bytes. That is real storage rather than a widened number, and the object comes back with the
+// layout the type declares.
+#define CHARON_STRUCT_PROPERTY(Type, name)                                                 \
+    -(Type)name {                                                                           \
+        Type value = {};                                                                     \
+        NSValue *boxed = [self charon_valueForKey:@ #name];                                 \
+        if (boxed)                                                                           \
+            [boxed getValue:&value size:sizeof(Type)];                                      \
+        return value;                                                                        \
+    }                                                                                        \
+    -(void)charon_set##name:(Type)value {                                                   \
+        [self charon_setValue:[NSValue valueWithBytes:&value objCType:@encode(Type)]          \
+                         forKey:@ #name];                                                    \
+    }
+
 // One value property: the accessor the SDK header declares, and nothing else. A per-property setter
 // generated here would be a SECOND place every property's name is spelled - the property here and the
 // selector a call site sends - and a second spelling is what the M-Z reviews caught twice: once with

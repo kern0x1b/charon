@@ -25,46 +25,46 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-// MARK: - The twenty-five types the build's SDK does not declare
+// MARK: - The types the build's SDK does not name, and the ones it does
 
-// The one plain typedef: a time in seconds since the reference date, which is what CFAbsoluteTime is.
+// Ten of the twenty-five this header once carried are already in the 16.4 SDK and are left to it -
+// SRAmbientLightSensorPlacement, SRAuthorizationStatus, SRCrownOrientation, SRDeletionReason,
+// SRLocationCategory, SRMediaEventType, SRNotificationEvent, SRTextInputSessionType, SRWristLocation and
+// the SRAmbientLightChromaticity struct - measured by compiling this header and reading which
+// declarations it collided with. The fifteen below are the ones it does not have.
+//
+// A value of any of them is produced by the system reading a sensor, and there is no system here that
+// does that, so the port never has to name one. That is why each of these is a typedef of its underlying
+// type with no enumerator list: the ENUMERATORS are Apple's, and copying them would be copying a header
+// to state a fact the port does not need. An application that receives a value in a payload and puts it
+// in one of these properties carries the value with it, and the type is what the header promises.
+
+// The one plain typedef: a time in seconds, the same type as the absolute time the four functions
+// return.
 typedef CFTimeInterval SRAbsoluteTime;
 
-// The one struct: a chromaticity reading as the two coordinates the sensor reports.
-typedef struct {
-    Float32 x;
-    Float32 y;
-} SRAmbientLightChromaticity;
-
-// The string enumerations, in the order the headers declare them.
+// The one string: the identifier of a stream in the store, which is a name and not a number.
 typedef NSString *SRSensor;
-typedef NSString *SRAmbientLightSensorPlacement;
-typedef NSString *SRAuthorizationStatus;
-typedef NSString *SRCrownOrientation;
-typedef NSString *SRDeletionReason;
-typedef NSString *SRLocationCategory;
-typedef NSString *SRMediaEventType;
-typedef NSString *SRNotificationEvent;
-typedef NSString *SRTextInputSessionType;
-typedef NSString *SRWristLocation;
-typedef NSString *SRAcousticSettingsSampleLifetime;
-typedef NSString *SRAcousticSettingsAccessibilityBackgroundSoundsName;
-typedef NSString *SRAcousticSettingsAccessibilityHeadphoneAccommodationsMediaEnhanceApplication;
-typedef NSString *SRAcousticSettingsAccessibilityHeadphoneAccommodationsMediaEnhanceBoosting;
-typedef NSString *SRAcousticSettingsAccessibilityHeadphoneAccommodationsMediaEnhanceTuning;
 
-// The integer enumerations.
-typedef NSInteger SRFaceMetricsContext;
+// Five integer enumerations.
+typedef NSInteger SRAcousticSettingsSampleLifetime;
+typedef NSInteger SRAcousticSettingsAccessibilityBackgroundSoundsName;
+typedef NSInteger SRAcousticSettingsAccessibilityHeadphoneAccommodationsMediaEnhanceApplication;
+typedef NSInteger SRAcousticSettingsAccessibilityHeadphoneAccommodationsMediaEnhanceBoosting;
+typedef NSInteger SRAcousticSettingsAccessibilityHeadphoneAccommodationsMediaEnhanceTuning;
+
+// Two more integer enumerations, on the recording rather than the reading.
 typedef NSInteger SRElectrocardiogramLead;
+typedef NSInteger SRElectrocardiogramSessionGuidance;
+typedef NSInteger SRElectrocardiogramSessionState;
 
-// The option masks.
+// One more, on a face reading.
+typedef NSInteger SRFaceMetricsContext;
+
+// The three option masks, which are the type an application ORs into rather than a value it compares.
 typedef NSUInteger SRElectrocardiogramDataFlags;
 typedef NSUInteger SRSpeechMetricsSessionFlags;
 typedef NSUInteger SRWristTemperatureCondition;
-
-// The two session-state enumerations, which the 26.2 headers spell with their own integer type.
-typedef NSInteger SRElectrocardiogramSessionGuidance;
-typedef NSInteger SRElectrocardiogramSessionState;
 
 // MARK: - The nineteen classes the build's SDK does not declare
 
@@ -102,7 +102,7 @@ typedef NSInteger SRElectrocardiogramSessionState;
 @end
 
 @interface SRAcousticSettingsAccessibilityBackgroundSounds : NSObject
-@property (nonatomic, readonly, strong, nullable) SRAcousticSettingsAccessibilityBackgroundSoundsName soundName;
+@property (nonatomic, readonly, assign) SRAcousticSettingsAccessibilityBackgroundSoundsName soundName;
 @property (nonatomic, readonly, assign) BOOL enabled;
 @property (nonatomic, readonly, assign) BOOL playWithMediaEnabled;
 @property (nonatomic, readonly, assign) BOOL stopOnLockEnabled;
@@ -111,9 +111,9 @@ typedef NSInteger SRElectrocardiogramSessionState;
 @end
 
 @interface SRAcousticSettingsAccessibilityHeadphoneAccommodations : NSObject
-@property (nonatomic, readonly, strong, nullable) SRAcousticSettingsAccessibilityHeadphoneAccommodationsMediaEnhanceApplication mediaEnhanceApplication;
-@property (nonatomic, readonly, strong, nullable) SRAcousticSettingsAccessibilityHeadphoneAccommodationsMediaEnhanceBoosting mediaEnhanceBoosting;
-@property (nonatomic, readonly, strong, nullable) SRAcousticSettingsAccessibilityHeadphoneAccommodationsMediaEnhanceTuning mediaEnhanceTuning;
+@property (nonatomic, readonly, assign) SRAcousticSettingsAccessibilityHeadphoneAccommodationsMediaEnhanceApplication mediaEnhanceApplication;
+@property (nonatomic, readonly, assign) SRAcousticSettingsAccessibilityHeadphoneAccommodationsMediaEnhanceBoosting mediaEnhanceBoosting;
+@property (nonatomic, readonly, assign) SRAcousticSettingsAccessibilityHeadphoneAccommodationsMediaEnhanceTuning mediaEnhanceTuning;
 @property (nonatomic, readonly, assign) BOOL enabled;
 @end
 
@@ -128,10 +128,12 @@ typedef NSInteger SRElectrocardiogramSessionState;
 @property (nonatomic, readonly, assign) CMTimeRange timeRange;
 @end
 
-// An electrocardiogram recording: the flags of the recording, and a channel of it.
+// An electrocardiogram recording: the flags of the recording, and a channel of it. -value is a
+// measurement, and the 16.4 SDK has no NSUnitVoltage, so the declaration is the bare measurement and a
+// reading that carries its unit is still carried as one.
 @interface SRElectrocardiogramData : NSObject
 @property (nonatomic, readonly, assign) SRElectrocardiogramDataFlags flags;
-@property (nonatomic, readonly, strong, nullable) NSMeasurement<NSUnitVoltage *> *value;
+@property (nonatomic, readonly, strong, nullable) NSMeasurement *value;
 @end
 
 @interface SRElectrocardiogramSample : NSObject
@@ -148,11 +150,11 @@ typedef NSInteger SRElectrocardiogramSessionState;
 @property (nonatomic, readonly, assign) SRElectrocardiogramSessionGuidance sessionGuidance;
 @end
 
-// The face metrics a TrueDepth camera reports. -faceAnchor is declared by ARKit, which this package
-// does not carry, so the port has no such type to answer with and that property is registered absent
-// (registry/SensorKit/ios14.json) rather than carried as a name that could only ever read nil.
+// The face metrics a TrueDepth camera reports. -faceAnchor is declared by ARKit, which this package does
+// not carry, so the port has no such type to answer with: the property is registered absent
+// (registry/SensorKit/ios14.json) and is not declared here, rather than carried as a name that could
+// only ever read nil.
 @interface SRFaceMetrics : NSObject
-@property (nonatomic, readonly, copy, nullable) NSString *identifier;
 @property (nonatomic, readonly, copy, nullable) NSString *version;
 @property (nonatomic, readonly, copy, nullable) NSString *sessionIdentifier;
 @property (nonatomic, readonly, assign) SRFaceMetricsContext context;
@@ -197,7 +199,7 @@ typedef NSInteger SRElectrocardiogramSessionState;
 
 // A night of sleep, and the speech the microphone heard in it. -soundClassification is declared by
 // SoundAnalysis and -speechRecognition by Speech, neither of which this package carries, so those two
-// are registered absent and the rest of the class is real.
+// are registered absent and are not declared here; the rest of the class is real.
 @interface SRSleepSession : NSObject
 @property (nonatomic, readonly, copy, nullable) NSString *identifier;
 @property (nonatomic, readonly, strong, nullable) NSDate *startDate;
@@ -234,10 +236,59 @@ typedef NSInteger SRElectrocardiogramSessionState;
 
 @interface SRWristTemperatureSession : NSObject
 @property (nonatomic, readonly, copy, nullable) NSString *version;
-@property (nonatomic, readonly, strong, nullable) NSDate *startDate;
 @property (nonatomic, readonly, strong, nullable) NSEnumerator<SRWristTemperature *> *temperatures;
+@property (nonatomic, readonly, strong, nullable) NSDate *startDate;
 @property (nonatomic, readonly, assign) NSTimeInterval duration;
 @end
+
+// MARK: - The six classes the SDK declares, and the properties only 26.2 gives them
+
+// Thirteen properties arrived after 16.4 on six classes those headers do declare, and a class that is
+// declared cannot be declared again - so each of these is a CATEGORY carrying the properties the older
+// headers lack. That is the same shape CharonMetricKit.h uses for the five properties it declares, and
+// it is where a property a category declares is implemented.
+@interface SRApplicationUsage (CharonSensorKit150)
+@property (nonatomic, readonly, strong, nullable) NSString *reportApplicationIdentifier;
+@property (nonatomic, readonly, strong, nullable) NSArray<SRTextInputSession *> *textInputSessions;
+@end
+
+@interface SRApplicationUsage (CharonSensorKit164)
+@property (nonatomic, readonly, assign) NSTimeInterval relativeStartTime;
+@property (nonatomic, readonly, strong, nullable) NSArray<NSString *> *supplementalCategories;
+@end
+
+
+@interface SRDevice (CharonSensorKit170)
+@property (nonatomic, readonly, copy, nullable) NSString *productType;
+@end
+
+
+@interface SRDeviceUsageReport (CharonSensorKit164)
+@property (nonatomic, readonly, copy, nullable) NSString *version;
+@end
+
+
+@interface SRKeyboardMetrics (CharonSensorKit150)
+@property (nonatomic, readonly, copy, nullable) NSArray<NSString *> *inputModes;
+@end
+
+@interface SRKeyboardMetrics (CharonSensorKit164)
+@property (nonatomic, readonly, copy, nullable) NSArray<NSString *> *sessionIdentifiers;
+@property (nonatomic, readonly, strong, nullable) NSArray<SRKeyboardProbabilityMetric *> *longWordTouchUpDown;
+@property (nonatomic, readonly, strong, nullable) SRKeyboardProbabilityMetric *touchUpDown;
+@end
+
+
+@interface SRTextInputSession (CharonSensorKit164)
+@property (nonatomic, readonly, copy, nullable) NSString *sessionIdentifier;
+@end
+
+
+@interface SRWristDetection (CharonSensorKit164)
+@property (nonatomic, readonly, strong, nullable) NSDate *offWristDate;
+@property (nonatomic, readonly, strong, nullable) NSDate *onWristDate;
+@end
+
 
 NS_ASSUME_NONNULL_END
 
