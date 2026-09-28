@@ -761,8 +761,14 @@ static void CharonHKQueryObjects(void)
     NSDate *anchor = [NSDate dateWithTimeIntervalSince1970:1600000000];
     NSDateComponents *interval = [[NSDateComponents alloc] init];
     interval.day = 1;
+    // One type per side, from that side's own factory. Built the other way round - the port's query on a
+    // host's type - the port's -sampleType answers nil, because a host's HKQuantityType is not a subclass
+    // of the port's HKSampleType, which is what measured mineIsKind=0 against a type the LAYOUT print
+    // had already measured as 1.
     HKQuantityType *stepCount = [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierStepCount];
     HKQuantityType *heartRate = [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeartRate];
+    CharonHostHKQuantityType *mineStepCount = [CharonHostHKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierStepCount];
+    CharonHostHKQuantityType *mineHeartRate = [CharonHostHKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeartRate];
     if (!stepCount || !heartRate)
         return;
 
@@ -795,6 +801,7 @@ static void CharonHKQueryObjects(void)
         // harness's declaration of the factory returns the host's HKQuantityType, so the class of what
         // comes back is the thing to look at.
         id mineType = [CharonHostHKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeartRate];
+        (void)mineType;
         id theirsType = [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeartRate];
         // The print that answers difference 1, through CharonHKDescribe.
         printf("LAYOUT mineType=%s portSampleType=%s mineIsKind=%d | theirsType=%s hostSampleType=%s theirsIsKind=%d\n",
@@ -817,7 +824,7 @@ static void CharonHKQueryObjects(void)
     // 16.4 header declares and the one it does carry raises, so nothing is compared here that the
     // host cannot answer, and the host's own members are asked of the queries it does build, below.
     CharonHostHKStatisticsCollectionQuery *mineCollection =
-        [[CharonHostHKStatisticsCollectionQuery alloc] initWithQuantityType:stepCount
+        [[CharonHostHKStatisticsCollectionQuery alloc] initWithQuantityType:mineStepCount
                                                       quantitySamplePredicate:predicate
                                                                    options:HKStatisticsOptionCumulativeSum
                                                                 anchorDate:anchor
@@ -842,7 +849,7 @@ static void CharonHKQueryObjects(void)
                                                                            limit:HKObjectQueryNoLimit
                                                                     sortDescriptors:nil
                                                                      resultsHandler:nil];
-    CharonHostHKSampleQuery *mineByPredicate = [[CharonHostHKSampleQuery alloc] initWithSampleType:stepCount
+    CharonHostHKSampleQuery *mineByPredicate = [[CharonHostHKSampleQuery alloc] initWithSampleType:mineStepCount
                                                                                            predicate:predicate
                                                                                                limit:HKObjectQueryNoLimit
                                                                                         sortDescriptors:nil
@@ -861,7 +868,7 @@ static void CharonHKQueryObjects(void)
                                                                      limit:42
                                                           sortDescriptors:@[ byDate ]
                                                            resultsHandler:nil];
-    CharonHostHKSampleQuery *mineSample = [[CharonHostHKSampleQuery alloc] initWithSampleType:heartRate
+    CharonHostHKSampleQuery *mineSample = [[CharonHostHKSampleQuery alloc] initWithSampleType:mineHeartRate
                                                                                predicate:predicate
                                                                                    limit:42
                                                                         sortDescriptors:@[ byDate ]
@@ -878,7 +885,7 @@ static void CharonHKQueryObjects(void)
                                                                     limit:HKObjectQueryNoLimit
                                                            sortDescriptors:nil
                                                             resultsHandler:nil];
-    CharonHostHKSampleQuery *mineBare = [[CharonHostHKSampleQuery alloc] initWithSampleType:stepCount
+    CharonHostHKSampleQuery *mineBare = [[CharonHostHKSampleQuery alloc] initWithSampleType:mineStepCount
                                                                                   predicate:nil
                                                                                       limit:HKObjectQueryNoLimit
                                                                            sortDescriptors:nil
@@ -894,7 +901,7 @@ static void CharonHKQueryObjects(void)
                                                           quantitySamplePredicate:predicate
                                                                            options:HKStatisticsOptionDiscreteAverage
                                                                     completionHandler:nil];
-    CharonHostHKStatisticsQuery *mineStats = [[CharonHostHKStatisticsQuery alloc] initWithQuantityType:heartRate
+    CharonHostHKStatisticsQuery *mineStats = [[CharonHostHKStatisticsQuery alloc] initWithQuantityType:mineHeartRate
                                                                                         quantitySamplePredicate:predicate
                                                                                                      options:HKStatisticsOptionDiscreteAverage
                                                                                               completionHandler:nil];
@@ -907,7 +914,7 @@ static void CharonHKQueryObjects(void)
     HKSourceQuery *theirsSource = [[HKSourceQuery alloc] initWithSampleType:stepCount
                                                              samplePredicate:predicate
                                                            completionHandler:nil];
-    CharonHostHKSourceQuery *mineSource = [[CharonHostHKSourceQuery alloc] initWithSampleType:stepCount
+    CharonHostHKSourceQuery *mineSource = [[CharonHostHKSourceQuery alloc] initWithSampleType:mineStepCount
                                                                                      samplePredicate:predicate
                                                                                    completionHandler:nil];
     CharonHKCompare(@"source query objectType identifier", mineSource.objectType.identifier,
