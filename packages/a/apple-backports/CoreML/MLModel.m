@@ -544,19 +544,27 @@
 - (id<MLFeatureProvider>)predictionFromFeatures:(id<MLFeatureProvider>)input
                                           error:(NSError **)error
 {
-    charon_ml_features inputs, outputs;
+    /* The set of values is 1.1 MB of struct -- a value holds a dictionary of 256 pairs and an
+     * array with its own shape -- and a model is 326 KB, so neither is an automatic variable on a
+     * thread whose stack is a device's: the emulated iPad 2 faulted four bytes below its own stack
+     * pointer on the first prediction, and the host, whose stack is eight megabytes, never would.
+     * Both are on the heap, and every path out releases and frees them. */
+    charon_ml_features *inputs = calloc(1, sizeof *inputs);
+    charon_ml_features *outputs = calloc(1, sizeof *outputs);
     NSMutableDictionary<NSString *, MLFeatureValue *> *answered;
     char message[1024];
     NSEnumerator *names;
     id name;
     size_t index;
 
-    if (input == nil) {
+    if (input == nil || inputs == NULL || outputs == NULL) {
+        free(inputs);
+        free(outputs);
         charon_ml_error(error, CHARON_ML_ERROR_FEATURE_TYPE, @"a prediction needs a provider of values");
         return nil;
     }
-    charon_ml_features_init(&inputs);
-    charon_ml_features_init(&outputs);
+    charon_ml_features_init(inputs);
+    charon_ml_features_init(outputs);
     /* A feature the caller did not supply, or supplied as the undefined value that stands for
      * having not supplied it. The description says whether the model may do without it, and the
      * ones it may not are reported here, by name, rather than being left to the interpreter.
@@ -573,8 +581,10 @@
             continue;
         }
         if (value == nil || value.isUndefined) {
-            charon_ml_features_release(&inputs);
-            charon_ml_features_release(&outputs);
+            charon_ml_features_release(inputs);
+            charon_ml_features_release(outputs);
+            free(inputs);
+            free(outputs);
             charon_ml_error(error, CHARON_ML_ERROR_GENERIC,
                             [NSString stringWithFormat:@"the model needs an input of type %ld for the feature "
                                                        @"'%@' and it was not given one",
@@ -592,23 +602,28 @@
             continue;
         }
         held = charon_ml_value_owned_copy([value charonValue]);
-        if (!charon_ml_features_put(&inputs, [name UTF8String], held)) {
-            charon_ml_features_release(&inputs);
+        if (!charon_ml_features_put(inputs, [name UTF8String], held)) {
+            charon_ml_features_release(inputs);
+            free(inputs);
+            free(outputs);
             charon_ml_error(error, CHARON_ML_ERROR_GENERIC,
                             [NSString stringWithFormat:@"there is no room for a feature named '%@'", name]);
             return nil;
         }
     }
-    if (!charon_ml_predict(&_model, &inputs, &outputs, message, sizeof message)) {
-        charon_ml_features_release(&inputs);
-        charon_ml_features_release(&outputs);
+    if (!charon_ml_predict(&_model, inputs, outputs, message, sizeof message)) {
+        charon_ml_features_release(inputs);
+        charon_ml_features_release(outputs);
+        free(inputs);
+        free(outputs);
         charon_ml_error(error, CHARON_ML_ERROR_GENERIC, @(message));
         return nil;
     }
-    charon_ml_features_release(&inputs);
-    answered = [NSMutableDictionary dictionaryWithCapacity:outputs.count];
-    for (index = 0; index < outputs.count; index++) {
-        const char *answer_name = outputs.entries[index].name;
+    charon_ml_features_release(inputs);
+    free(inputs);
+    answered = [NSMutableDictionary dictionaryWithCapacity:outputs->count];
+    for (index = 0; index < outputs->count; index++) {
+        const char *answer_name = outputs->entries[index].name;
         charon_ml_feature *described = NULL;
         MLFeatureValue *value;
         MLFeatureType type = MLFeatureTypeInvalid;
@@ -622,15 +637,17 @@
         if (described != NULL) {
             type = charon_ml_feature_type_of(described->type);
         }
-        value = [MLFeatureValue charon_featureValueWithOwned:&outputs.entries[index].value type:type];
+        value = [MLFeatureValue charon_featureValueWithOwned:&outputs->entries[index].value type:type];
         if (value == nil || answer_name == nil) {
-            charon_ml_features_release(&outputs);
+            charon_ml_features_release(outputs);
             charon_ml_error(error, CHARON_ML_ERROR_GENERIC, @"the model's answer had nowhere to go");
+            free(outputs);
             return nil;
         }
         answered[@(answer_name)] = value;
     }
-    charon_ml_features_release(&outputs);
+    charon_ml_features_release(outputs);
+    free(outputs);
     return [[MLDictionaryFeatureProvider alloc] initWithDictionary:answered error:error];
 }
 

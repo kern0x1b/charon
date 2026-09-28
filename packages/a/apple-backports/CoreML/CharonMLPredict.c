@@ -1013,46 +1013,52 @@ static int run_neural_network(const charon_ml_node *kind_node, const charon_ml_m
 static int run_one(const charon_ml_node *document, const char *bundle, charon_ml_features *values,
                    char *error, size_t error_size)
 {
-    charon_ml_model model;
+    /* A model is 326 KB of struct and a set of values is 1.1 MB, so neither is an automatic
+     * variable here: a device's main thread has a fraction of that, and a pipeline's run_one is
+     * recursive, so the stack a pipeline needs is the sum over its stages. The host, whose stack is
+     * eight megabytes, never noticed; the emulated iPad 2 faulted on the first prediction. */
+    charon_ml_model *model = calloc(1, sizeof *model);
     const char *kind_field = charon_ml_node_kind_name(document);
     const charon_ml_node *kind_node;
     int ok;
 
     if (kind_field == NULL) {
         snprintf(error, error_size, "the model names no kind of model the specification declares");
+        free(model);
         return 0;
     }
-    if (!charon_ml_model_from_node(&model, document, bundle, error, error_size)) {
+    if (!charon_ml_model_from_node(model, document, bundle, error, error_size)) {
+        free(model);
         return 0;
     }
     kind_node = charon_ml_get(document, kind_field);
-    switch (model.kind) {
+    switch (model->kind) {
     case CHARON_ML_KIND_NEURAL_NETWORK:
     case CHARON_ML_KIND_NEURAL_NETWORK_CLASSIFIER:
     case CHARON_ML_KIND_NEURAL_NETWORK_REGRESSOR:
-        ok = run_neural_network(kind_node, &model, values, error, error_size);
+        ok = run_neural_network(kind_node, model, values, error, error_size);
         break;
     case CHARON_ML_KIND_TREE_ENSEMBLE_CLASSIFIER:
     case CHARON_ML_KIND_TREE_ENSEMBLE_REGRESSOR:
-        ok = run_tree_ensemble(kind_node, &model, values, values, error, error_size);
+        ok = run_tree_ensemble(kind_node, model, values, values, error, error_size);
         break;
     case CHARON_ML_KIND_GLM_CLASSIFIER:
     case CHARON_ML_KIND_GLM_REGRESSOR:
-        ok = run_glm(kind_node, &model, values, values, error, error_size);
+        ok = run_glm(kind_node, model, values, values, error, error_size);
         break;
     case CHARON_ML_KIND_SCALER:
     case CHARON_ML_KIND_IMPUTER:
     case CHARON_ML_KIND_NORMALIZER:
     case CHARON_ML_KIND_ONE_HOT_ENCODER:
     case CHARON_ML_KIND_IDENTITY:
-        ok = run_preprocessing(&model, kind_node, values, values, error, error_size);
+        ok = run_preprocessing(model, kind_node, values, values, error, error_size);
         break;
     case CHARON_ML_KIND_PIPELINE:
     case CHARON_ML_KIND_PIPELINE_CLASSIFIER:
     case CHARON_ML_KIND_PIPELINE_REGRESSOR: {
         size_t index, total = charon_ml_count_field(kind_node, "models");
         if (total == 0) {
-            charon_ml_model_release(&model);
+            charon_ml_model_release(model);
             snprintf(error, error_size, "the pipeline has no models in it");
             return 0;
         }
@@ -1071,22 +1077,27 @@ static int run_one(const charon_ml_node *document, const char *bundle, charon_ml
     }
     default:
         snprintf(error, error_size, "the model is a %s, which this port does not run",
-                 charon_ml_kind_name(model.kind));
+                 charon_ml_kind_name(model->kind));
         ok = 0;
         break;
     }
-    charon_ml_model_release(&model);
+    charon_ml_model_release(model);
     return ok;
 }
 
 int charon_ml_predict(const charon_ml_model *model, charon_ml_features *inputs,
                       charon_ml_features *outputs, char *error, size_t error_size)
 {
-    charon_ml_features working;
+    /* The working set is 1.1 MB, so it is on the heap for the same reason run_one's model is. */
+    charon_ml_features *working = calloc(1, sizeof *working);
     char missing[256], mismatched[256];
     size_t index;
 
-    charon_ml_features_init(outputs);
+    if (working == NULL) {
+        snprintf(error, error_size, "there was no room for the values a run works in");
+        return 0;
+    }
+    charon_ml_features_init(working);
     if (!charon_ml_features_satisfy(model, inputs, missing, sizeof missing, mismatched, sizeof mismatched)) {
         if (missing[0] != 0) {
             snprintf(error, error_size, "the model needs the input '%s', which is not there", missing);
@@ -1094,29 +1105,32 @@ int charon_ml_predict(const charon_ml_model *model, charon_ml_features *inputs,
             snprintf(error, error_size, "the model needs the input '%s' to be a different shape or kind",
                      mismatched);
         }
+        free(working);
         return 0;
     }
-    charon_ml_features_init(&working);
+    charon_ml_features_init(working);
     for (index = 0; index < inputs->count; index++) {
         /* The caller's values are borrowed: the set inside is a view of them, not a second
          * owner, so releasing it frees nothing the caller still holds. */
         charon_ml_value borrowed = inputs->entries[index].value;
         borrowed.array.owns_data = 0;
-        if (!charon_ml_features_put(&working, inputs->entries[index].name, borrowed)) {
-            charon_ml_features_release(&working);
+        if (!charon_ml_features_put(working, inputs->entries[index].name, borrowed)) {
+            charon_ml_features_release(working);
+            free(working);
             snprintf(error, error_size, "the model's inputs have no room for all of them");
             return 0;
         }
     }
-    if (!run_one(&model->document, model->bundle, &working, error, error_size) ||
-        !charon_ml_features_take_outputs(model, &working, outputs)) {
+    if (!run_one(&model->document, model->bundle, working, error, error_size) ||
+        !charon_ml_features_take_outputs(model, working, outputs)) {
         if (error[0] == 0) {
             snprintf(error, error_size, "the model produced no value for one of the outputs it names");
         }
-        charon_ml_features_release(&working);
-        charon_ml_features_release(outputs);
+        charon_ml_features_release(working);
+        free(working);
         return 0;
     }
-    charon_ml_features_release(&working);
+    charon_ml_features_release(working);
+    free(working);
     return 1;
 }
