@@ -82,7 +82,17 @@ extern vImage_Error RENAME(vImageConvert_ARGB8888To422CbYpCrYp8_AA8)(const vImag
 static int checks, failures;
 static unsigned long long bytesCompared, bytesApart;
 static int widest;
-static char widestWhere[256] = "no case has differed at all";
+static char widestWhere[1024] = "no case has differed at all";
+
+// The bounds are EXCLUSIVE, and each is the measured maximum plus a margin of one: the eight-bit shapes'
+// measured maximum is 1, and the two sixteen-bit shapes' is 255. So a difference of exactly one, or of
+// exactly 255, is the last bit and is admitted, and one more than either is refused. The sixteen-bit
+// shapes' CEILING - 2 * (CbCrRangeMax - CbCr_bias) / 255, which is 514.0 at the full sixteen-bit range
+// and 224.88 at the 28672 chroma range - is deliberately NOT the bound: it is the largest a one-unit
+// difference in the dot product COULD be, and the reviewer's sweep has the suite green at 256, so 514 would
+// admit a real one-unit chroma error in silence.
+#define CharonYpCbCrBound 2
+#define CharonWideBound 256
 
 // The two functions whose source is a Q12 buffer are the one place where the system does not do what
 // Conversion.h says, and the measurement is what the port answers instead of the system's. These two
@@ -335,10 +345,10 @@ static NSString *compare(vImage_Buffer theirs, vImage_Buffer ours, unsigned word
             if (difference > widest) {
                 widest = difference;
                 snprintf(widestWhere, sizeof widestWhere, "a 16-bit sample: the port and the system rounded "
-                         "the eight-bit dot product's one unit differently, and 2 * (CbCrRangeMax - "
-                         "CbCr_bias) / 255 is what one unit of that sum is worth in a 16-bit sample - 514 at "
-                         "the full sixteen-bit range, 224.88 at the 28672 chroma range - so this is inside "
-                         "the 514 those shapes are compared at");
+                         "the eight-bit dot product's one unit differently. The ceiling for one unit of "
+                         "that sum in a 16-bit sample is 2 * (CbCrRangeMax - CbCr_bias) / 255, which is 514.0 "
+                         "at the full sixteen-bit range and 224.88 at the 28672 chroma range; the bound is "
+                         "the measured maximum plus one, not the ceiling.");
             }
             if (difference > worst) {
                 worst = difference;
@@ -348,7 +358,8 @@ static NSString *compare(vImage_Buffer theirs, vImage_Buffer ours, unsigned word
     }
     // The stated limit is the admitted one: a difference of exactly `tolerance` is inside it, so a case
     // that differs by 514 at the full sixteen-bit range passes and one that differs by 515 does not.
-    if (worst <= (double)tolerance)
+    // the stated limit is not itself admitted: a difference of exactly `tolerance` is refused
+    if (worst < (double)tolerance)
         return nil;
     return [NSString stringWithFormat:@"row %llu sample %llu differs by %d, past the last bit's %d",
                                       where / 1000000, where % 1000000, worst, tolerance];
@@ -728,7 +739,7 @@ int main(void)
                                    ([NSString stringWithFormat:@"%ld against %ld", (long)theirs, (long)ours]));
                             NSString *difference;
                             if (!header_only(example->type)) {
-                                NSString *difference = compare(theirDest, ourDest, example->wide ? 2 : 1, 1);
+                                NSString *difference = compare(theirDest, ourDest, example->wide ? 2 : 1, CharonYpCbCrBound);
                                 report(difference == nil,
                                        [what stringByAppendingString:@": Y'CbCr to ARGB is within the last bit"],
                                        difference ?: @"");
@@ -808,10 +819,14 @@ int main(void)
                                 // 2 * (CbCrRangeMax - CbCr_bias) / 255, which is 257 at the full 16-bit
                                 // range, so a one-unit difference in the eight-bit sum the header's rule
                                 // adds up is a 257 difference in the stored sample.
-                                // 2 * (CbCrRangeMax - CbCr_bias) / 255, taken at the full sixteen-bit
-                                // range where it is largest: 514.0, not 257.
+                                // The ceiling, 2 * (CbCrRangeMax - CbCr_bias) / 255, is 514.0 at the full
+                                // sixteen-bit range and 224.88 at the 28672 chroma range. The bound is NOT
+                                // that ceiling: the reviewer's sweep has the suite green at 256 with the
+                                // measured widest 255, so a difference of a whole 256 units is refused and
+                                // 514 would have admitted a real one-unit chroma error in silence.
                                 int shapeScale = (example->type == kvImage422CbYpCrYp16
-                                                  || example->type == kvImage444AYpCbCr16) ? 514 : 1;
+                                                  || example->type == kvImage444AYpCbCr16) ? CharonWideBound
+                                                                                           : CharonYpCbCrBound;
                                 difference = compare(theirBack[plane], ourBack[plane], example->wide ? 2 : 1,
                                                    example->wide ? (int)(full_of(example->argb) / 255.0f) : shapeScale);;
                                 NSString *which = [what stringByAppendingString:(plane ? @": the chroma plane"
@@ -932,7 +947,7 @@ int main(void)
                         report(theirs == ours && theirs == kvImageNoError,
                                [what stringByAppendingString:@": Y'CbCr to ARGB answers"],
                                ([NSString stringWithFormat:@"%ld against %ld", (long)theirs, (long)ours]));
-                        NSString *difference = compare(theirDest, ourDest, 1, 1);
+                        NSString *difference = compare(theirDest, ourDest, 1, CharonYpCbCrBound);
                         report(difference == nil,
                                [what stringByAppendingString:@": Y'CbCr to ARGB is within the last bit"], difference ?: @"");
 
@@ -948,10 +963,10 @@ int main(void)
                         report(theirs == ours && theirs == kvImageNoError,
                                [what stringByAppendingString:@": ARGB to Y'CbCr answers"],
                                ([NSString stringWithFormat:@"%ld against %ld", (long)theirs, (long)ours]));
-                        difference = compare(theirBack, ourBack, 1, 1);
+                        difference = compare(theirBack, ourBack, 1, CharonYpCbCrBound);
                         report(difference == nil,
                                [what stringByAppendingString:@": ARGB to Y'CbCr is within the last bit"], difference ?: @"");
-                        difference = compare(theirAlphaOut, ourAlphaOut, 1, 1);
+                        difference = compare(theirAlphaOut, ourAlphaOut, 1, CharonYpCbCrBound);
                         (void)difference;
                         report(difference == nil,
                                [what stringByAppendingString:@": the alpha plane is within the last bit"], difference ?: @"");
@@ -1021,7 +1036,7 @@ int main(void)
                                [what stringByAppendingString:@": ARGB to Y'CbCr answers"],
                                ([NSString stringWithFormat:@"%ld against %ld", (long)theirs, (long)ours]));
                         if (c < 2) {
-                            NSString *difference = compare(theirDest, ourDest, 2, 1);
+                            NSString *difference = compare(theirDest, ourDest, 2, CharonWideBound);
                             report(difference == nil,
                                    [what stringByAppendingString:@": ARGB to Y'CbCr is within the last bit"], difference ?: @"");
                             continue;

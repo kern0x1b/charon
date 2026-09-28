@@ -88,10 +88,23 @@ Six bugs came out of getting there, each found by a probe rather than by a readi
   `charon_v210_join` was handed a `uint32_t` array through a `float *` cast, so every chroma of a Q12
   source was a float's bit pattern read as an integer.
 
-The one tolerance that is not one: writing a Y'CbCr sample into a sixteen-bit shape multiplies the chroma by
-`2 * (CbCrRangeMax - CbCr_bias) / 255`, which is 257 at the full sixteen-bit range, so a one-unit difference
-in the eight-bit sum the header's rule adds up is a 257 difference in the stored sample. The differential
-compares a sixteen-bit shape at that tolerance and says so in the message, and every other case at one.
+The one tolerance that is not one, and what it is. A sixteen-bit shape stores the chroma multiplied by
+`2 * (CbCrRangeMax - CbCr_bias) / 255`, which is the **ceiling** on what a one-unit difference in the
+eight-bit dot product could be worth in a stored sample: **514.0** at the full sixteen-bit range and
+**224.88** at the 28672 chroma range. An earlier version of this page used that ceiling as the bound, and
+the reviewer's sweep is what shows it was wrong: the suite is green at 256 with the measured maximum 255, so
+a bound of 514 admitted a real one-unit chroma error in silence.
+
+So the bound is the **measured maximum plus a stated margin**, and both comparisons are **exclusive** so
+that the stated limit is not itself admitted:
+
+- the eight-bit shapes: measured maximum **1**, bound **2**, so a difference of 0 or 1 is the last bit and a
+  difference of 2 is refused;
+- the two sixteen-bit shapes `kvImage422CbYpCrYp16` and `kvImage444AYpCbCr16`: measured maximum **255**,
+  bound **256**, so 255 is the last bit and 256 is refused.
+
+The widest difference in the whole run is **255**, in a sixteen-bit sample, and the differential's own
+summary now says where it is, what the ceiling is, and that the bound is not the ceiling.
 
 ## The ten-bit shapes: measured, and not a layout
 
