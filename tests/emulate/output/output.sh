@@ -43,29 +43,47 @@ named() { python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get(sy
 xmake f -p iphoneos -a armv7 -y > "$out/configure.log" 2>&1
 xmake emulate install -d "$device" -r "$release" > "$out/install.log" 2>&1
 
+# The run's own exit is the emulator's, not this script's: a hang run ends in a timeout by design, so
+# folding its status into the exit made a run whose checks all passed exit 255. It is reported, and the
+# checks alone decide the exit. Each mode ends by its own checks and says so.
 status=0
+mode_failed=0
+report_mode() {  # one place says what a mode decided, and it decides the script's exit
+  if [ "$mode_failed" = 0 ]; then
+    echo "$mode: every check of this mode passed, so this mode exits 0"
+  else
+    echo "$mode: a check of this mode failed, so this mode exits 1" >&2
+    status=1
+  fi
+}
 for mode in end hang; do
   log=$out/$mode.log
   marker=$out/.marked
+  mode_failed=0
   : > "$marker"
+  ran=0
   if [ "$mode" = hang ]; then
     xmake emulate -d "$device" -r "$release" -s 6 -t 900 \
-        run /usr/libexec/emulateoutput --hang > "$log" 2>&1 || status=$?
+        run /usr/libexec/emulateoutput --hang > "$log" 2>&1 || ran=$?
   else
     xmake emulate -d "$device" -r "$release" -s 60 -t 900 \
-        run /usr/libexec/emulateoutput > "$log" 2>&1 || status=$?
+        run /usr/libexec/emulateoutput > "$log" 2>&1 || ran=$?
   fi
+  echo "$mode: the run itself exited $ran"
   verdicts > "$out/.verdicts"
   count=$(grep -c . "$out/.verdicts" || true)
   if [ "$count" -eq 0 ]; then
     echo "$mode: no run's verdict was written after this run; the log is $log" >&2
-    status=1
+    mode_failed=1
+    report_mode
     continue
   fi
   if [ "$count" -gt 1 ]; then
     echo "$mode: $count runs wrote a verdict after this run began, so which is this one is not known:" >&2
     sed 's/^/  /' "$out/.verdicts" >&2
-    status=1
+    mode_failed=1
+    mode_failed=1
+    mode_failed=1
     continue
   fi
   v=$(cat "$out/.verdicts")
@@ -79,7 +97,8 @@ for mode in end hang; do
   else
     echo "$mode: the control stderr is NOT there (${stderr:-no path}); the file was not captured at all" >&2
     control=no
-    status=1
+    mode_failed=1
+    mode_failed=1
   fi
   if [ -n "$stdout" ] && grep -q "$known: stdout line 1 reached the host" "$stdout"; then
     echo "$mode: the program's buffered stdout reached the file"
@@ -87,7 +106,7 @@ for mode in end hang; do
   else
     echo "$mode: the program's buffered stdout did NOT reach the file (${stdout:-no path})" >&2
     first=no
-    [ "$mode" = hang ] || status=1
+    mode_failed=1
   fi
   if [ "$mode" = hang ] && [ -n "$stdout" ] && grep -q "$known: stdout line 2 reached the host" "$stdout"; then
     second=yes
@@ -101,7 +120,7 @@ for mode in end hang; do
   else
     echo "$mode: the line does NOT come back through xmake emulate log" >&2
     logged=no
-    [ "$mode" = hang ] || status=1
+    mode_failed=1
   fi
   if [ "$mode" = hang ]; then
     # One expectation, taken from the run's own verdict, and all three hang checks behind it. The tree's
@@ -114,7 +133,8 @@ for mode in end hang; do
           echo "hang: with the tree's runner, nothing a program wrote and never flushed was lost"
         else
           echo "hang: THE TREE'S RUNNER LOST IT: control=$control first=$first second=$second logged=$logged" >&2
-          status=1
+          mode_failed=1
+          mode_failed=1
         fi
         ;;
       *)
@@ -125,10 +145,12 @@ for mode in end hang; do
         else
           echo "hang: the line survived under a runner that has no unbuffered spawn, so the verdict's" >&2
           echo "      runner key says installed but the behaviour says otherwise; not counting it." >&2
-          status=1
+          mode_failed=1
+          mode_failed=1
         fi
         ;;
     esac
   fi
+  report_mode
 done
 exit $status
