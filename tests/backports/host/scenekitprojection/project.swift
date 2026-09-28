@@ -68,7 +68,9 @@ let size = CGSize(width: 800, height: 600)
 let scene = SCNScene()
 let camera = SCNNode()
 let cam = SCNCamera()
-cam.fieldOfView = 60
+// fieldOfView is left at its default, 60, which is what the device test gets too: setting it is
+// iOS 11 and newer (measured on the store's clang at -target armv7-apple-ios6.1.3), and a test that
+// needed a value the release cannot set would be a test of nothing.
 cam.zNear = 1
 cam.zFar = 1000
 camera.camera = cam
