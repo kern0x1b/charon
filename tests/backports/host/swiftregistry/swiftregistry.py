@@ -2,7 +2,7 @@
 """swiftregistry.py — every row of packages/s/swift-runtime/registry/ that says `implemented` has a
 declaration in packages/s/swift-runtime/files/.
 
-Why this test exists: on 2026-09-28 the family review found `EnvironmentResource` used in four
+Why this test exists: on 2026-09-28 the family review found `EnvironmentResource` used in five
 places in `ARView.swift` and declared nowhere, with a registry row calling it
 `kind: class, status: implemented` — a row with no code behind it, in a module that did not
 compile. Nothing caught it: the light guard, both band gates and a 300-check host differential all

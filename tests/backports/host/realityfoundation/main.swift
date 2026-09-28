@@ -935,8 +935,12 @@ check("a cancelled subscription hears nothing more", began, raisedBefore)
 
     // MARK: The family: animation, the model, the anchor, the options, the gestures
 
-    // A sequence times its parts by their own durations, a group gives every part the whole
-    // time, and both name their parts in order.
+    // A sequence times its parts by their own durations and a group gives every part the whole
+    // time. Which is which is not a question the SDK's own surface can answer here - no release
+    // before iOS 13 carries either module and there is no counterpart to run - so this is what
+    // the module documents, checked against itself; the two members it is read from
+    // (AnimationResource.group(with:), :sequence(with:) and __RESequencer) are Apple's, and the
+    // division is ours.
     let familySlide = AnimationResource(name: "slide", definition: FromToByAnimation<Transform>(
         from: Transform(), to: Transform(translation: SIMD3<Float>(1, 0, 0)), duration: 1.0, timing: .linear))
     let familyLift = AnimationResource(name: "lift", definition: FromToByAnimation<Transform>(
