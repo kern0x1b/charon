@@ -12,7 +12,8 @@ set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 root=${DDR_ROOT:-$here/../../../..}
 build=${DDR_BUILD:-${TMPDIR:-/tmp}/charon-ddr-device}
-device=${DDR_DEVICE:-iPhone4,1}
+device=${DDR_DEVICE:-iPhone3,1}   # 6.1.3: the shade cache holds this profile; iPhone4,1 6.1.3 has no
+                                  # firmware and the boot is blocked before the guest ever runs
 releases=${DDR_RELEASES:-"6.1.3"}
 export DDR_ROOT=$root
 rm -rf "$build"
@@ -55,6 +56,12 @@ PYMUT
 # lane, back to back, so the two verdicts come off one machine.
 run_one() {
     release=$1
+    # The image carries the binary, so the half being run has to be installed first: without this a
+    # run would test whatever was installed before, and the mutation would report the tree's verdict.
+    DDR_ROOT=$root xmake build -r -y > "build-$2-$release.log" 2>&1 || {
+        echo "$2 $release: BUILD-FAIL"; tail -3 "build-$2-$release.log"; return 1; }
+    DDR_ROOT=$root xmake emulate -d "$device" -r "$release" install > "install-$2-$release.log" 2>&1 || {
+        echo "$2 $release: INSTALL-FAIL"; tail -3 "install-$2-$release.log"; return 1; }
     set +e
     DDR_ROOT=$root xmake emulate -d "$device" -r "$release" -k run /usr/libexec/dragdroprouting > "$release.log" 2>&1
     status=$?
