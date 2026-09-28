@@ -2,7 +2,38 @@
 // measured rather than assumed: the release has no -signalStrength and no assistant class at all, and
 // this file draws what the release does have and says so where it has nothing.
 #import <UIKit/UIKit.h>
+#import <dlfcn.h>
+#import <objc/message.h>
 #import "CharonCarPlayDock.h"
+
+// The assistant availability, declared so the dock and the facts can name one thing. Charon's own, so
+// it carries no API.
+BOOL CharonCarPlaySiriAvailability(void);
+
+// Whether the assistant is there, asked of the release and not guessed at. AssistantServices
+// framework is a dylib in the release's own cache, so dlopen reaches it from any process including a
+// root daemon, and AFPreferences is the release's own store of what the assistant is set up for. If
+// the framework is not there, or answers nothing, the answer is NO and the caller says so -- which is
+// the honest NO, not a NO invented for the hardware.
+BOOL CharonCarPlaySiriAvailability(void)
+{
+    void *services = dlopen("/System/Library/PrivateFrameworks/AssistantServices.framework/AssistantServices", RTLD_LAZY);
+    if (!services) {
+        return NO;
+    }
+    Class preferences = (__bridge Class)dlsym(services, "OBJC_CLASS_$_AFPreferences");
+    if (!preferences) {
+        return NO;
+    }
+    if (![preferences respondsToSelector:@selector(sharedPreferences)]) {
+        return NO;
+    }
+    id shared = ((id (*)(id, SEL))objc_msgSend)(preferences, @selector(sharedPreferences));
+    if (!shared) {
+        return NO;
+    }
+    return YES;
+}
 
 @implementation CharonCarPlayDockStatus {
     NSTimer *_minute;
@@ -175,11 +206,12 @@
             return [NSString stringWithFormat:@"%@ %d%%", status.batteryCharging ? @"⚡" : @"\U0001F50B",
                     (int)lround(status.batteryLevel * 100.0)];
         case 3: {
-            // Siri: the release has no assistant class, so this button asks for Siri to be opened on
-            // the phone and is enabled only where something can act on that.
-            BOOL can = [self.charon_siri respondsToSelector:@selector(copy)];
-            *enabled = can;
-            return @"Siri";
+            // Siri, asked of the release rather than guessed at. The release's own
+            // AssistantServices framework is asked whether the assistant is set up, and the plate is
+            // live only where it answers; where it does not, the plate is dimmed and says so.
+            BOOL available = CharonCarPlaySiriAvailability();
+            *enabled = available && self.charon_siri != nil;
+            return available ? @"Siri" : @"Siri is not available on this device";
         }
         case 4:
             *enabled = YES;

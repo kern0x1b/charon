@@ -12,11 +12,20 @@
 //             ACCESS TECHNOLOGY and the carrier's own name, and NOT a bar count it cannot measure.
 //   BATTERY    UIDevice's own: -batteryMonitoringEnabled, -setBatteryMonitoringEnabled:, -batteryLevel
 //             and -batteryState. All four measured present.
-//   SIRI      **There is no assistant class on this release at all**: neither SiriShortcut nor
-//             Assistant is in the cache (measured), and the `Siri` selector in it is a notification
-//             category, not a way to ask. Siri on 6.1.3 is an APP, and the release's only way to
-//             reach an app is UIApplication, which a daemon is not. So the button asks the listener
-//             to open Siri on the phone, and disables itself where nothing can.
+//   SIRI      **The thing that brings Siri up is not in the shared cache at all**: measured with
+//             apple.objc.inventory over the whole 6.1.3 armv7 cache, AssistantServices.framework
+//             holds 22 classes and every one of them is AF* or DK* -- the speech and DICTATION
+//             transport, with no AssistantController and no AssistantSession in the image -- and
+//             AssistantUI's 24 classes are AFUI* plus the lock screen's SBAssistantAwayBottomView
+//             and SBDeviceLockKeypadSiri. SpringBoard, where the controller is, is a bundled
+//             application and not a cache image, so no cache inventory can see it.
+//
+//             So the button ASKS rather than claims. -siriAvailability asks the release, through
+//             the release's own AFPreferences, whether the assistant is there; where something
+//             answers, the plate is live and the action asks the daemon to bring Siri up over the
+//             SpringBoard path; where nothing answers, the plate is drawn dimmed and says Siri is
+//             not available on this device, which is a measurement and not a guess at the hardware.
+//             The full measurement is in facts/CarPlay/CarPlay.md.
 //   RECENTS    the port's own list of what this screen launched, and nothing else; Apple's recents
 //             come from the scene, and the scene is the wall.
 #import <UIKit/UIKit.h>

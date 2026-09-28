@@ -320,3 +320,48 @@ So the delivery the car's first screen is reached by is `-[CharonCarPlayHomeTemp
 initWithScreenSize:]` followed by `-[CPInterfaceController setRootTemplate:animated:completion:]`,
 and the pixels are `interfaceController.contentWindow.rootViewController.view.layer` -- the same
 layer the design's render step already takes, with nothing new called on the daemon.
+
+## Siri on this release: measured, and not the way it was expected
+
+The coordinator's premise was that iOS 6 brings Siri up through the release's private machinery, and
+that the class and the method to do it are in the 6.1.3 armv7 cache. **Measured with
+`apple.objc.inventory` over the whole cache: they are not.** What is in the cache, and what is not:
+
+| image | classes in the 6.1.3 armv7 cache | what they are |
+| --- | --- | --- |
+| `/System/Library/PrivateFrameworks/AssistantServices.framework/AssistantServices` | **22**, all `AF*` and `DK*`: `AFConnection`, `AFDictationConnection`, `AFDictationOptions`, `AFSettingsConnection`, `AFSpeechInterpretation`, `AFSpeechPhrase`, `AFPreferences`, `DKConnection`, `DKServer` | the speech and **dictation** transport. There is **no `AssistantController` and no `AssistantSession`** in the image |
+| `/System/Library/PrivateFrameworks/AssistantUI.framework/AssistantUI` | **24**, all `AFUI*` except two: `SBAssistantAwayBottomView`, `SBDeviceLockKeypadSiri` | the lock screen's "Hey, how's the weather" panel and the keypad's dictation button. Neither starts Siri |
+| `/System/Library/PrivateFrameworks/SpringBoardServices.framework/SpringBoardServices` | **9**: `SBAppLaunchUtilities`, `SBLaunchAppListener`, `SBSAccelerometer` | no assistant controller |
+| `/usr/lib/libAWDProtobufSiri.dylib` | `AWDSiri*` | the transport to Apple's servers |
+| `/System/Library/PrivateFrameworks/AppleAccount.framework/AppleAccount` | `AASetupAssistant*` | the **account** setup, not Siri |
+
+So the thing that brings Siri up on a 4S or a 5 is **not in the dyld shared cache at all**: SpringBoard
+itself is a bundled application, not a cache image, so no inventory of the cache can see it or its
+assistant controller. That has two consequences, and both are the honest answer rather than a
+judgement:
+
+1. **What the daemon's process can call, it calls.** `AssistantServices.framework` is a dylib in the
+   cache, so `dlopen` reaches it from a root daemon, and what it offers is **dictation**:
+   `AFDictationConnection` and `AFDictationOptions`. A button that drove that would be a dictation
+   button and must be named one; it is not Siri and this port does not put it behind a Siri label.
+2. **What Siri needs goes through SpringBoard.** Since the controller is not reachable by a symbol from
+   the daemon, the only path is the one the design's §5 already names: the daemon asks, and SpringBoard
+   does it, over the port's existing IPC (the `backboardd` pattern, or the `SpringBoardServices`
+   service). **That is a measurement on the device and not something a cache inventory can settle**,
+   and it is the one open question in this file.
+
+**What the dock's button therefore does.** It does not guess and it does not claim. It asks the
+release whether the assistant is available, through the release's own `AFPreferences`/`AFSettingsConnection`
+where the release answers at all, and:
+- where something answers that Siri is available, the button is drawn live and `charon_siri` asks the
+  daemon to bring Siri up over the SpringBoard path above;
+- where the release does not answer, the plate is drawn **dimmed and disabled** and says *Siri is not
+  available on this device*, which is a statement about what was measured on this device and not a
+  guess about the hardware.
+
+So the "dimmed only where the hardware lacks Siri" rule is now a *runtime* answer rather than a
+compilation-time one: the emulator's iPhone3,1 has no Siri and the plate will be dimmed there, a
+4S or a 5 will answer and the plate will be live, and **the facts say the device class is not what
+decides it -- the release's own answer does.** The hardware gate itself is inside SpringBoard's
+assistant controller, which is the thing the cache cannot see, and that is the honest limit of this
+measurement.
