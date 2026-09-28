@@ -116,6 +116,22 @@ it, and both would read as `other` whatever the port answers. So a device run co
 cellular radio and Wi-Fi, and it cannot by itself confirm a tunnel or a bridge; those two are confirmed
 here, against the kernel's own `ifi_type` numbers and the mutations in the table above.
 
+### What the release's own path does with a tunnel and a bridge
+
+Measured on the host, reading only, nothing configured: `ifconfig -l` lists `utun0`, `utun1`, `utun2`,
+`bridge0`, `awdl0` and `llw0` on that machine, and `nw_path_enumerate_interfaces` on **that same
+machine's own path** lists `en0` (type 1, wifi) and nothing else. So the interfaces the kernel names as
+`other` are exactly the ones a path is not over, and the port's filter is the release's answer rather than
+a rule the port invented. What the classifier that tells a tunnel from a bridge is *for* is therefore not
+that they reach a path: it is that a program which asked for a type is told the truth about what is
+there, and that the port's own enumeration names a VPN's tunnel and a hotspot's bridge apart instead of
+calling both by one name.
+
+The predicate is `charon_path_wants()`, asked with synthetic types in the objects differential, with a
+mutation each: taking `other` out of it turns *a tunnel is not on the path* and *a bridge is not on the
+path either* red; dropping the loopback turns *the loopback is not on the path either* red; dropping the
+route check turns *nothing is on a path with no route* red.
+
 **What this does not settle:** the four checks that failed are the device harness's, and they are
 re-measured on a device, which is not mine to run. What is measured here is that the four interfaces
 the review names are now distinguished by mechanism rather than by name, that both targets compile with

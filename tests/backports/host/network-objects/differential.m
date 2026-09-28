@@ -63,6 +63,10 @@ extern void charonhost_nw_path_monitor_cancel(nw_path_monitor_t);
 extern bool charonhost_nw_path_is_constrained(nw_path_t);
 extern void charonhost_nw_path_enumerate_gateways(nw_path_t, void (^)(nw_endpoint_t));
 extern nw_path_unsatisfied_reason_t charonhost_nw_path_get_unsatisfied_reason(nw_path_t);
+/* The path's own decision about an interface, asked with synthetic types: what the release's
+   path does with a tunnel and a bridge is measured on the host and is the same. */
+extern bool charon_path_wants_interface(nw_interface_type_t required, nw_interface_type_t type,
+                                        bool reachable, bool cellular);
 extern int charonhost_nw_path_get_link_quality(nw_path_t);
 /* The port's own interface classifier, over the AF_LINK entry of an interface. */
 extern nw_interface_type_t charon_path_interface_type(const struct ifaddrs *item);
@@ -2149,6 +2153,30 @@ int main(void)
             entry.ifa_name = "pdp_ip1";
             compare(@"path: an unclassified point-to-point link is other without a gateway",
                     @(charon_path_interface_type(&entry)), @(nw_interface_type_other));
+            /* What the path does with an interface the kernel names `other`, which is a tunnel and a
+               bridge: not on the path. Measured on the host - ifconfig -l lists utun0, utun1, utun2,
+               bridge0, awdl0 and llw0 there, and nw_path_enumerate_interfaces on that same machine's own
+               path lists en0 and nothing else - so the drop is the release's answer and not a rule the
+               port invented. Removing the `other` from the predicate turns this row red, and so does
+               calling the path with a loopback or with a monitor that has no route. */
+            compare(@"path: a tunnel is not on the path",
+                    @(charon_path_wants_interface(nw_interface_type_other, nw_interface_type_other, true, false)), @NO);
+            compare(@"path: a bridge is not on the path either",
+                    @(charon_path_wants_interface(nw_interface_type_other, nw_interface_type_other, true, true)), @NO);
+            compare(@"path: the loopback is not on the path either",
+                    @(charon_path_wants_interface(nw_interface_type_other, nw_interface_type_loopback, true, false)), @NO);
+            compare(@"path: Wi-Fi is on the path when there is a route",
+                    @(charon_path_wants_interface(nw_interface_type_other, nw_interface_type_wifi, true, false)), @YES);
+            compare(@"path: the cellular radio is on it when the route is cellular",
+                    @(charon_path_wants_interface(nw_interface_type_other, nw_interface_type_cellular, true, true)), @YES);
+            compare(@"path: the cellular radio is not on it when the route is Wi-Fi",
+                    @(charon_path_wants_interface(nw_interface_type_other, nw_interface_type_cellular, true, false)), @NO);
+            compare(@"path: nothing is on a path with no route",
+                    @(charon_path_wants_interface(nw_interface_type_other, nw_interface_type_wifi, false, false)), @NO);
+            compare(@"path: a monitor asked for Wi-Fi takes only Wi-Fi",
+                    @(charon_path_wants_interface(nw_interface_type_wifi, nw_interface_type_cellular, true, false)), @NO);
+            compare(@"path: and a monitor asked for the cellular radio takes that",
+                    @(charon_path_wants_interface(nw_interface_type_cellular, nw_interface_type_cellular, true, true)), @YES);
         }
 
         /* the errors and their domains */
