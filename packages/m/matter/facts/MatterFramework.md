@@ -96,6 +96,27 @@ are in neither column because they are header-declared enumerations - they live 
 symbols either library exports; the 41 the port exports and the host does not are the ones upstream's headers
 declare as `extern`.
 
+## The 372 properties and the 48 methods, told apart
+
+For every property row the host's framework answers and the port's does not, the port's own metadata was asked what it
+carries for that class. Measured, over all 372: the **class is present in every one of them** (the port carries all
+985 of the surface's classes), and in **none** of them is there an accessor — not the plain getter `-[C name]`, not the
+setter `-[C setName:]`, and not a prefixed getter (`isName`, `hasName`, `canName`, `asName`, `shouldName`, `willName`,
+`didName`), which is the third shape an SDK spells a getter in. So this is not a metadata artefact of a property that
+behaves and is not declared: there is no method to find either.
+
+That is the shape of the rows themselves: they are the **event argument classes** of the model — 
+`MTRAccessControlClusterAccessControlEntry`, `MTRAccessControlClusterExtensionEntry`, `MTRAccessControlClusterTarget`,
+`MTRApplicationLauncherClusterApplicationEP`, `MTRAudioOutputClusterOutputInfo` — and the property is a field of the
+event (`endpoint`, `fabricIndex`, `privilege`, `authMode`, `index`). In connectedhomeip the accessors for those live
+in the class's own `@interface` in the zap-generated `MTRCommandPayloadsObjc.h`, and what the SDK's surface calls a
+property is answered by the host through a *category* or a protocol the class adopts. Which of the two it is for any
+given row is a source question, and it is not answered yet.
+
+So: 48 methods and 372 properties are **missing methods**, not undeclared ones, and the fix is to implement them from
+upstream's sources, not to declare what is already there. `tools/matter-host-diff.lua` names every one of them in
+`.agent-work/host/matter-host-diff.tsv`.
+
 ## Behaviour, held to the host
 
 `tests/backports/host/matter/pure.m` is one program with no device on the other end, written so it compiles against
