@@ -1449,7 +1449,10 @@ local function in_range(entry, deployment)
 end
 
 -- The registry entry a built name answers to: its own spelling, else the entry of the class that owns it.
-local function entry_of(listed, name, inventory)
+-- Exported, not local: modules/apple/backports.lua's own registry_test reads backports.entry_of, and a
+-- forward declaration main added reads it too. The inventory is optional and defaults to what the
+-- caller has: a name whose class the release itself carries needs a row of its own.
+function entry_of(listed, name, inventory)
     for spelling in pairs(spellings(name)) do
         if listed[spelling] then
             return listed[spelling]
