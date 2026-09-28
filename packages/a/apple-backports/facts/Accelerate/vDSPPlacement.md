@@ -28,24 +28,32 @@ control holds in double.
 the host wrote 32 64 96 128 into the even positions and **left the odd ones at the `0x5a3a3a3a` they were
 filled with**. A test that checks only the elements the port is meant to write would miss that entirely.
 
-## What the guest must decide before any of these five rows is written
+## Two of the four are defined by the header, and I did not read past the signature
 
-None of this is guessed, and none of it is guessed *in advance* — each is a question only the release can answer,
-on the release that has the function, at load under 12 and with a free slot.
+Each declaration carries a **Maps** comment giving the computation in one line, and I took the signature as
+the whole specification. That was the mistake, and it cost two of my four open questions:
 
-1. **`vDSP_normalize` with a zero spread.** `C` is `(x - mean) / sd` and `sd` is 0 for a constant input, so the
+    vDSP_distancesq / vDSP_distancesqD:   C[0] = sum((A[n] - B[n]) ** 2, 0 <= n < N);
+    vDSP_vsmsma / vDSP_vsmsmaD:           E[n] = A[n]*B[0] + C[n]*D[0];
+
+So **`vDSP_distancesq` writes one scalar**: the squared distance summed over a window of N, with `IA` and `IB`
+the strides of the two inputs and no inner count because there is no inner dimension. A port that wrote one
+`C` per element would be wrong in a way no test of the input strides would catch.
+
+And **`B` and `D` in `vDSP_vsmsma` are one scalar each** — `B[0]` and `D[0]`. There are no channels. That idea
+came from reading `const float *__B` and imagining an array of per-channel scalars; the formula says
+otherwise, and the ports are one multiply-add per element with two scalars read once.
+
+## What the guest must still decide
+
+1. **`vDSP_normalize` with a zero spread.** `C = (x - mean) / sd` and `sd` is 0 for a constant input, so the
    division has no answer to copy. Zero, a NaN, or something else — and whether `C == NULL` changes it, since
    `C` is `__nullable` and the header says so deliberately. **The row is not implemented until the guest answers
    both.**
-2. **`vDSP_vsmsma`'s channel indexing.** The signature takes `const float *__B` and `__D` with no channel count,
-   and the header gives one line and no pseudocode. A single scalar per side is measured; how more than one
-   channel is expressed is not, and a port that assumes an array of one would be right on the control and wrong
-   on everything else.
-3. **`vDSP_distancesq`'s window.** The signature is `(A, IA, B, IB, C, N)` with two input strides, one output
-   and no inner count, so what one element of `C` sums over is exactly the thing not to assume. A squared
-   distance implies a window and the declaration does not say how wide.
-4. **`vDSP_distancesqD` at 8.0**, which needs an 8.0 guest; the emulator's releases are what decides whether
-   that is the nearest one available, and if it is not, that gets said rather than glossed.
+2. **`vDSP_distancesqD` at 8.0.** The emulator's images are 3.x, 4.3, 5.1.1 and the 6.1.3 this band uses
+   (`iPhone2,1_10B329`). **There is no 8.0 image**, so this row has no oracle here at all and waits - and
+   `vDSP_distancesq` at 5.0 is answered on the 5.1.1 guest, which is the nearest release this emulator holds
+   that has it, said rather than glossed.
 
 The macOS arm64 host's answers are candidates for all of this and the oracle for none of it: it has been wrong
 twice on rows that are native on 6.0 armv7 — the reduction's order, and the biquad's one-ULP float difference.
