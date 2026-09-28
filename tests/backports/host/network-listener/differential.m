@@ -94,7 +94,9 @@ int main(void)
            linked into this binary, so a name that is not renamed binds to the port and not to Apple's */
         Dl_info where;
         if (dladdr((void *)(uintptr_t)nw_connection_create, &where) && where.dli_fname)
-            printf("  nw_connection_create binds to %s\n", where.dli_fname);
+            printf("  the host's side, nw_connection_create, binds to %s\n", where.dli_fname);
+        if (dladdr((void *)(uintptr_t)P(nw_connection_create), &where) && where.dli_fname)
+            printf("  the port's side, charonhost_nw_connection_create, binds to %s\n", where.dli_fname);
         /* a port of our own: the loopback's, found by binding one and reading it back */
         int probe = socket(AF_INET, SOCK_STREAM, 0);
         struct sockaddr_in address;
