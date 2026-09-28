@@ -175,3 +175,29 @@ claim happened in this family.
 
 So: `CMTagCompare` is **not** derived, `CMTagHash` is **not** derived, `CMTagCopyDescription` is fixed
 byte-exact against the host's own bytes, and the family is not deliverable.
+
+
+## The compare order, derived rather than read
+
+`cmtag-fixtures/pairs.m` writes `pairs.tsv`: 13 tags and the host's answer for all 78 unordered pairs,
+plus both argument orders for the pair the differential disagreed on, plus 13 hash samples.
+`cmtag-fixtures/fit.py` reads that one table and runs every candidate over it at once — the six field
+orders x signed and unsigned category x the value as a number, and memcmp of the struct's fields in both
+endiannesses — and prints a mismatch count for each, with the better of the two argument orders.
+
+**Exactly one candidate has zero mismatches: category, then data type, then value, with the category
+compared as a signed 32-bit integer and no validity tier.** The same order with an unsigned category
+misses 12, and every other order misses at least 14. So the invalid rows in the sweep are not a tier at
+all: an invalid tag's category is 0, which is above the signed −1 of `0xffffffff` and below every
+positive category, and that is exactly what the host answers in both directions.
+
+Both of my earlier readings were wrong in the same way. "Validity first" came from two invalid tags, and
+"the value is a text sort" came from reading a `1` in a row whose meaning was "greater"; the value is
+numeric, which `m5.m`'s 289 pairs settle with 19 between 11 and 20. The rule the fitter picks is the one
+I wrote once and then reverted because the differential disagreed — and the disagreement was the
+implementation going through the helper's unsigned comparison, not the rule.
+
+The hash candidates are the same shape of question and are not yet run: CFHash of the description, CFHash
+of the dictionary, and a hash of the raw bytes, each against the 13 samples. The samples show a
+non-linear, string-shaped answer — a one-bit change in a field's low bits moves the whole value — so the
+first two are the likely ones, and the fixture holds the samples to fit them against.

@@ -95,20 +95,19 @@ Boolean CMTagHasFloat64Value( CMTag tag )
 
 CFComparisonResult CMTagCompare( CMTag tag1, CMTag tag2 )
 {
-    // Validity first, then category, then data type, then value. That is the host's answer on the
-    // five-tag matrix and on the category sweep in .agent-work/runs/cmtag/m4.m, and it is what the port
-    // implements.
-    //
-    // It does NOT explain every pair, and that is deliberate. The differential's case 3 against case 7 -
-    // 'trak' at Float64 1.5 against a zero-category OSType tag - is 1 on the host, and both a signed and
-    // an unsigned category order put the zero category below 'trak', so the two sweeps and the
-    // differential disagree. The disagreement is in facts/CoreMedia/CMTag.md and the rule is left at
-    // what the table supports rather than at a guess one more case would break.
-    if (CMTagIsValid(tag1) != CMTagIsValid(tag2))
-        return CMTagIsValid(tag1) ? kCFCompareGreaterThan : kCFCompareLessThan;
-    if (charon_tag_is_less(tag1, tag2))
-        return kCFCompareLessThan;
-    return charon_tag_equal(tag1, tag2) ? kCFCompareEqualTo : kCFCompareGreaterThan;
+    // Category, then data type, then value, with the category compared as a SIGNED 32-bit integer and
+    // no validity tier at all. This is not a reading: .agent-work/runs/cmtag/fit.py runs every field
+    // order x signed/unsigned x value-as-number, plus memcmp of the struct's fields in both endiannesses,
+    // over the 78 measured pairs in pairs.tsv, and exactly one candidate has zero mismatches - this one.
+    // The next best, the same order with an unsigned category, misses 12.
+    int32_t left = (int32_t)tag1.category, right = (int32_t)tag2.category;
+    if (left != right)
+        return left < right ? kCFCompareLessThan : kCFCompareGreaterThan;
+    if (tag1.dataType != tag2.dataType)
+        return tag1.dataType < tag2.dataType ? kCFCompareLessThan : kCFCompareGreaterThan;
+    if (tag1.value != tag2.value)
+        return tag1.value < tag2.value ? kCFCompareLessThan : kCFCompareGreaterThan;
+    return kCFCompareEqualTo;
 }
 
 CFHashCode CMTagHash( CMTag tag )
