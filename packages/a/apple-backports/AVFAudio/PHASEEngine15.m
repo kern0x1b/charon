@@ -22,6 +22,7 @@
     BOOL _charon_started;
     PHASEUpdateMode _charon_updateMode;
     PHASEMediumPreset _charon_defaultMediumPreset;
+    PHASEObject *_charon_rootObject;
 }
 
 - (instancetype)initWithUpdateMode:(PHASEUpdateMode)updateMode
@@ -42,6 +43,12 @@
         _charon_outputSpatializationMode = PHASESpatializationModeAutomatic;
         _charon_renderingState = PHASERenderingStateStopped;
         _charon_updateMode = updateMode;
+        // The root object, made the way the header says one is made: against this engine, at the
+        // identity transform, with no parent and no children. The engine's own root is a PHASERootObject
+        // on this release, and that class has no row in the PHASE corpus - but the property's declared
+        // type is PHASEObject *, and the declared type is what an application sees, so what the port
+        // answers is a PHASEObject standing as the root rather than nil.
+        _charon_rootObject = [[PHASEObject alloc] initWithEngine:self];
     }
     return self;
 }
@@ -153,19 +160,21 @@
         ? (PHASEMediumPreset)[defaultMedium integerValue] : PHASEMediumPresetAir;
 }
 
-- (id)rootObject
+- (PHASEObject *)rootObject
 {
     return nil;
 }
 
 - (id)assetRegistry
 {
-    // A fresh engine holds an empty registry. PHASEAssetRegistry is a separate family of the corpus
-    // and is not carried here, so this is the empty answer rather than an object of a class the port
-    // does not have; the facts file names it.
+    // PHASEAssetRegistry is a separate family of the corpus and is not carried here, so this is nil:
+    // the empty answer rather than an object of a class the port does not have. The facts file names it.
     return nil;
 }
 
+// The engine's sound events. A fresh engine has none, and PHASESoundEvent is a separate family of
+// the corpus, so an event added to this engine cannot be held yet; the empty answer is the truth about
+// the engine and the framework around it is incomplete.
 - (NSArray<PHASESoundEvent *> *)soundEvents
 {
     return @[];

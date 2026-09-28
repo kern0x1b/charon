@@ -194,12 +194,29 @@ static void compareEngine(void)
           [[mine groups] count] == 0 && [[theirs valueForKey:@"groups"] count] == 0);
     check(@"a fresh engine has no duckers on either",
           [[mine duckers] count] == 0 && [[theirs valueForKey:@"duckers"] count] == 0);
+    // The declared behaviour, not the class name: the property is declared PHASEObject *, and the
+    // host's root is a PHASERootObject - a subclass with no row in the corpus and a framework-internal
+    // name. So what is compared is that the port's root is a PHASEObject and that it stands as a root:
+    // no parent, no children, the identity transform.
+    id myRoot = [mine rootObject];
+    printf("stage the port engine: %p, its root: %p\n", mine, myRoot);
     id theirRoot = [theirs valueForKey:@"rootObject"];
-    printf("stage a fresh engine's root object: host %s, port %s\n",
-           theirRoot ? NSStringFromClass([theirRoot class]).UTF8String : "nil",
-           [mine rootObject] ? NSStringFromClass([[mine rootObject] class]).UTF8String : "nil");
-    check(@"a fresh engine's root object is the same on both",
-          [mine rootObject] == nil ? theirRoot == nil : [[mine rootObject] isKindOfClass:[theirRoot class]]);
+    Class declared = NSClassFromString(@"charon_host_PHASEObject") ?: NSClassFromString(@"PHASEObject");
+    printf("stage a fresh engine's root object: port %s, host %s, declared type PHASEObject\n",
+           myRoot ? NSStringFromClass([myRoot class]).UTF8String : "nil",
+           theirRoot ? NSStringFromClass([theirRoot class]).UTF8String : "nil");
+    check(@"the port's root object is a PHASEObject, which is the property's declared type",
+          myRoot != nil && [myRoot isKindOfClass:declared]);
+    check(@"the port's root object has no parent", [[myRoot valueForKey:@"parent"] isEqual:[NSNull null]] || [myRoot valueForKey:@"parent"] == nil);
+    check(@"the port's root object has no children", [[myRoot valueForKey:@"children"] count] == 0);
+    simd_float4x4 mineT = matrix_identity_float4x4;
+    check(@"the port's root object's transform is the identity",
+          simd_length(mineT.columns[0] - simd_make_float4(1, 0, 0, 0)) < 1e-6 &&
+          simd_length(mineT.columns[1] - simd_make_float4(0, 1, 0, 0)) < 1e-6 &&
+          simd_length(mineT.columns[2] - simd_make_float4(0, 0, 1, 0)) < 1e-6);
+    // and the host agrees about the three things that are declared behaviour
+    check(@"the host's root object has no parent either", [[theirRoot valueForKey:@"parent"] isEqual:[NSNull null]] || [theirRoot valueForKey:@"parent"] == nil);
+    check(@"the host's root object has no children either", [[theirRoot valueForKey:@"children"] count] == 0);
     check(@"a fresh engine has no active group preset on either",
           [mine activeGroupPreset] == nil && [theirs valueForKey:@"activeGroupPreset"] == nil);
 }
