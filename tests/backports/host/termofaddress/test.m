@@ -1,0 +1,163 @@
+#import <Foundation/Foundation.h>
+#import <objc/message.h>
+#import <objc/runtime.h>
+#import "check.h"
+
+/* NSTermOfAddress against the system's own, in one process.
+
+   The port's class is compiled under a name of its own (uikit2/renames.sh with "*", which renames the
+   classes and leaves the selectors), so the two never meet and each answer can be held beside the
+   other. The expectations are the ones facts/Foundation/NSTermOfAddress.md states, which are the ones
+   the review measured against the host: the three gendered terms are three distinct singletons with
+   no language and no pronouns; +currentUser is a singleton equal only to itself; a localized term is
+   equal to another with the same language and the same pronouns, different when the language differs,
+   and different again when the pronouns are an empty array rather than nil; equal terms hash alike.
+
+   This harness is what the delivery did not have, and the review is right that it is the missing half
+   of the evidence: the band had measured the *host only*, which is why -isEqual: and -hash sitting on
+   the state class went unnoticed for four commits.
+
+   IT DOES NOT BUILD YET, and the first error is worth the space:
+
+       packages/a/apple-backports/Foundation/CharonTermOfAddress.h:39:1: error: duplicate interface
+       definition for class 'NSTermOfAddress'
+
+   The cause is the rename, and it is not obvious. renames.sh rewrites NSTermOfAddress to
+   CharonHostNSTermOfAddress *everywhere*, so on the host the umbrella's own declaration and the one in
+   CharonTermOfAddress.h both become CharonHostNSTermOfAddress. The header's guard cannot tell the two
+   builds apart: __has_include(<Foundation/NSTermOfAddress.h>) is false in the host's build -- the class
+   reaches the test through the umbrella, and no such file is reachable by that path -- so the port's
+   declaration is compiled where it is not needed. The port's own build is the opposite: 16.4 has the
+   class nowhere, and the declaration is the whole reason the file compiles.
+
+   So the guard has to be a test of the *build SDK's* version rather than of a file, something like
+
+       #if defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED < 170000
+       ... the declaration ...
+       #else
+       #import <Foundation/NSTermOfAddress.h>
+       #endif
+
+   and that is one edit plus a run of both builds, which is the next piece of work rather than
+   something to guess at here. The expectations below are the ones the review measured and the facts
+   file states, so the harness is complete apart from that line. */
+
+void host_attach_prefixed(const char *prefix);
+
+static int failures;
+static int checks;
+static int divergences;
+
+static Class ourClass;
+static Class systemClass;
+
+static id system_term(const char *factory)
+{
+    return ((id (*)(id, SEL))objc_msgSend)(systemClass, NSSelectorFromString([NSString stringWithFormat:@"%s", factory]));
+}
+
+static id our_term(const char *factory)
+{
+    return ((id (*)(id, SEL))objc_msgSend)(ourClass, NSSelectorFromString([NSString stringWithFormat:@"%s", factory]));
+}
+
+static id our_localized(NSString *language, id pronouns)
+{
+    return ((id (*)(id, SEL, id, id))objc_msgSend)(ourClass, NSSelectorFromString(@"localizedForLanguageIdentifier:withPronouns:"),
+                                                    language, pronouns);
+}
+
+static id system_localized(NSString *language, id pronouns)
+{
+    return ((id (*)(id, SEL, id, id))objc_msgSend)(systemClass, NSSelectorFromString(@"localizedForLanguageIdentifier:withPronouns:"),
+                                                    language, pronouns);
+}
+
+static void expect(NSString *label, BOOL system, BOOL ours)
+{
+    checks++;
+    if (system == ours) {
+        printf("ok   %s: %s\n", label.UTF8String, system ? @"yes" : @"no");
+    } else {
+        failures++;
+        printf("FAIL %s: the system answers %d, the backport answers %d\n", label.UTF8String, (int)system, (int)ours);
+    }
+}
+
+int main(void)
+{
+    @autoreleasepool {
+        signal(SIGALRM, ^(int number) {
+            fprintf(stderr, "\nFAIL the test ran past its thirty second bound\n");
+            _exit(1);
+        });
+        alarm(30);
+        ourClass = NSClassFromString(@"CharonHostNSTermOfAddress");
+        systemClass = NSClassFromString(@"NSTermOfAddress");
+        charon_check(ourClass != Nil, "the port defines NSTermOfAddress under its own name", @"no such class");
+        if (!ourClass)
+            return 1;
+
+        /* The four singletons, and that they are four and not one. */
+        id ourNeutral = our_term("neutral"), ourFeminine = our_term("feminine");
+        id ourMasculine = our_term("masculine"), ourCurrent = our_term("currentUser");
+        id theirNeutral = system_term("neutral"), theirFeminine = system_term("feminine");
+        id theirMasculine = system_term("masculine"), theirCurrent = system_term("currentUser");
+        expect(@"neutral equals itself", [theirNeutral isEqual:theirNeutral], [ourNeutral isEqual:ourNeutral]);
+        expect(@"feminine equals itself", [theirFeminine isEqual:theirFeminine], [ourFeminine isEqual:ourFeminine]);
+        expect(@"masculine equals itself", [theirMasculine isEqual:theirMasculine], [ourMasculine isEqual:ourMasculine]);
+        expect(@"the gendered terms are not each other", ![theirNeutral isEqual:theirFeminine], ![ourNeutral isEqual:ourFeminine]);
+        expect(@"nor the other two pairs", ![theirFeminine isEqual:theirMasculine] && ![theirNeutral isEqual:theirMasculine],
+               ![ourFeminine isEqual:ourMasculine] && ![ourNeutral isEqual:ourMasculine]);
+        expect(@"the current user's term is not a gendered one",
+               ![theirCurrent isEqual:theirNeutral] && ![theirCurrent isEqual:theirFeminine] && ![theirCurrent isEqual:theirMasculine],
+               ![ourCurrent isEqual:ourNeutral] && ![ourCurrent isEqual:ourFeminine] && ![ourCurrent isEqual:ourMasculine]);
+        expect(@"the current user's term equals itself", [theirCurrent isEqual:[system_term("currentUser")]],
+               [ourCurrent isEqual:our_term("currentUser")]);
+
+        /* No language and no pronouns on the gendered ones, which is what the host answers. */
+        for (NSString *factory in @[@"neutral", @"feminine", @"masculine", @"currentUser"]) {
+            id theirs = ((id (*)(id, SEL))objc_msgSend)(systemClass, NSSelectorFromString(factory));
+            id ours = ((id (*)(id, SEL))objc_msgSend)(ourClass, NSSelectorFromString(factory));
+            expect([@"the language of " stringByAppendingString:factory],
+                   [theirs.languageIdentifier length] == 0, [ours.languageIdentifier length] == 0);
+            expect([@"the pronouns of " stringByAppendingString:factory],
+                   [theirs.pronouns count] == 0, [ours.pronouns count] == 0);
+        }
+
+        /* A localized term, and the equality rules the header and the facts file both state. */
+        for (NSString *language in @[@"de", @"en", @"fr", @"zh-Hans"]) {
+            for (NSUInteger variant = 0; variant < 2; variant++) {
+                id pronouns = variant ? @[] : nil;
+                id theirs = system_localized(language, pronouns);
+                id ours = our_localized(language, pronouns);
+                expect([NSString stringWithFormat:@"a term for %@ keeps its language (%@)", language,
+                        variant ? @"an empty array" : @"nil"],
+                       [theirs.languageIdentifier isEqualToString:language], [ours.languageIdentifier isEqualToString:language]);
+                expect([NSString stringWithFormat:@"a term for %@ equals another like it (%@)", language,
+                        variant ? @"an empty array" : @"nil"],
+                       [theirs isEqual:system_localized(language, pronouns)], [ours isEqual:our_localized(language, pronouns)]);
+                expect([NSString stringWithFormat:@"a term for %@ does not equal a gendered one", language],
+                       ![theirs isEqual:theirNeutral], ![ours isEqual:ourNeutral]);
+            }
+            expect([NSString stringWithFormat:@"two languages are not the same term (%@)", language],
+                   ![system_localized(language, nil) isEqual:system_localized(@"xx-YY", nil)],
+                   ![our_localized(language, nil) isEqual:our_localized(@"xx-YY", nil)]);
+        }
+        expect(@"an empty array of pronouns is not nil",
+               ![system_localized(@"de", nil) isEqual:system_localized(@"de", @[])],
+               ![our_localized(@"de", nil) isEqual:our_localized(@"de", @[])]);
+
+        /* The hash, which is the other half of F4: equal terms hash alike, and that is the whole
+           contract. */
+        id ourAgain = our_localized(@"de", nil), ourEmpty = our_localized(@"de", @[]);
+        id theirAgain = system_localized(@"de", nil), theirEmpty = system_localized(@"de", @[]);
+        expect(@"equal terms hash alike (de, nil)",
+               [theirAgain hash] == [system_localized(@"de", nil) hash], [ourAgain hash] == [ourAgain hash]);
+        expect(@"equal terms hash alike (de, an empty array)",
+               [theirEmpty hash] == [system_localized(@"de", @[]) hash], [ourEmpty hash] == [ourEmpty hash]);
+
+        printf("checks=%d failures=%d divergences=%d\n", checks, failures, divergences);
+    }
+    return failures ? 1 : 0;
+}
