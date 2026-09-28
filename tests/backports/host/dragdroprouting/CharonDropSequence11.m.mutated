@@ -1,4 +1,5 @@
 #import <UIKit/UIKit.h>
+#import <objc/message.h>
 #import <UIKit/UICollectionView.h>
 #import <UIKit/UITableView.h>
 
@@ -79,29 +80,6 @@
 
 @end
 
-// What each view asks, in the order it asks it.
-NSArray *charon_collection_drop_order(void)
-{
-    return @[@"canHandleDropSession",
-             @"dropSessionDidEnter",
-             @"dropSessionDidUpdate:withDestinationIndexPath:",
-             @"dropPreviewParametersForItemAtIndexPath:",
-             @"performDropWithCoordinator:",
-             @"dropSessionDidExit",
-             @"dropSessionDidEnd"];
-}
-
-NSArray *charon_table_drop_order(void)
-{
-    return @[@"canHandleDropSession",
-             @"dropSessionDidEnter",
-             @"dropSessionDidUpdate:withDestinationIndexPath:",
-             @"dropPreviewParametersForRowAtIndexPath:",
-             @"performDropWithCoordinator:",
-             @"dropSessionDidExit",
-             @"dropSessionDidEnd"];
-}
-
 @interface UICollectionView (CharonDropSequence11)
 - (BOOL)charon_canHandleDropSession:(id<UIDropSession>)session;
 - (void)charon_tellDropDelegateDidEnter:(id<UIDropSession>)session;
@@ -124,40 +102,76 @@ NSArray *charon_table_drop_order(void)
 
 @implementation UICollectionView (CharonDropSequence11)
 
+// One drop over this view: the interaction over it is asked, in the order the header gives, and the
+// interaction is what calls its delegate. The sequence lives here rather than in the interaction so
+// that a view's own routing and the interaction's are two things that can both be wrong, and so the
+// order is one list a test can be written against.
 - (void)charon_driveDropSessionAtPoint:(CGPoint)point
 {
     CharonTestDropSession *session = [[CharonTestDropSession alloc] initWithPoint:point];
-    if (![self charon_canHandleDropSession:session])
+    UIDropInteraction *interaction = [self charon_dropInteraction];
+    if (!interaction)
+        return;
+    id<UIDropInteractionDelegate> delegate = interaction.delegate;
+    SEL canHandle = @selector(dropInteraction:canHandleSession:);
+    if (![delegate respondsToSelector:canHandle])
+        return;
+    if (!((BOOL (*)(id, SEL, id, id))objc_msgSend)(delegate, canHandle, interaction, session))
         return;
     NSIndexPath *destination = [self indexPathForItemAtPoint:[self convertPoint:point fromView:nil]];
-    if (!destination)
-        return;
-    [self charon_dropProposalForSession:session atIndexPath:destination];
-    [self charon_tellDropDelegateDidEnter:session];
-    [self charon_dropPreviewParametersForItemAtIndexPath:destination];
-    [self charon_performDropOfSession:session];
-    [self charon_tellDropDelegateDidExit:session];
-    [self charon_tellDropDelegateDidEnd:session];
+    if (destination) {
+        ((UIDropProposal * (*)(id, SEL, id, id))objc_msgSend)(delegate, @selector(dropInteraction:sessionDidUpdate:), interaction, session);
+        ((void (*)(id, SEL, id, id))objc_msgSend)(delegate, @selector(dropInteraction:sessionDidEnter:), interaction, session);
+        ((UITargetedDragPreview * (*)(id, SEL, id, id, id))objc_msgSend)(delegate, @selector(dropInteraction:previewForDroppingItem:withDefault:), interaction, session.items.firstObject, (id)[UITargetedDragPreview class]);
+        ((void (*)(id, SEL, id, id))objc_msgSend)(delegate, @selector(dropInteraction:performDrop:), interaction, session);
+    }
+    ((void (*)(id, SEL, id, id))objc_msgSend)(delegate, @selector(dropInteraction:sessionDidExit:), interaction, session);
+    ((void (*)(id, SEL, id, id))objc_msgSend)(delegate, @selector(dropInteraction:sessionDidEnd:), interaction, session);
+}
+
+// The drop interaction over this view, which is the one whose delegate the sequence asks.
+- (UIDropInteraction *)charon_dropInteraction
+{
+    for (id<UIInteraction> interaction in self.interactions)
+        if ([interaction isKindOfClass:[UIDropInteraction class]])
+            return (UIDropInteraction *)interaction;
+    return nil;
 }
 
 @end
 
 @implementation UITableView (CharonDropSequence11)
 
+// One drop over a table, the same order and through the same interaction's delegate.
 - (void)charon_driveDropSessionAtPoint:(CGPoint)point
 {
     CharonTestDropSession *session = [[CharonTestDropSession alloc] initWithPoint:point];
-    if (![self charon_canHandleDropSession:session])
+    UIDropInteraction *interaction = [self charon_dropInteraction];
+    if (!interaction)
         return;
-    [self charon_tellDropDelegateDidEnter:session];
+    id<UIDropInteractionDelegate> delegate = interaction.delegate;
+    SEL canHandle = @selector(dropInteraction:canHandleSession:);
+    if (![delegate respondsToSelector:canHandle])
+        return;
+    if (!((BOOL (*)(id, SEL, id, id))objc_msgSend)(delegate, canHandle, interaction, session))
+        return;
+    ((void (*)(id, SEL, id, id))objc_msgSend)(delegate, @selector(dropInteraction:sessionDidEnter:), interaction, session);
     NSIndexPath *destination = [self indexPathForRowAtPoint:[self convertPoint:point fromView:nil]];
-    if (!destination)
-        return;
-    [self charon_dropProposalForSession:session atIndexPath:destination];
-    [self charon_dropPreviewParametersForRowAtIndexPath:destination];
-    [self charon_performDropOfSession:session];
-    [self charon_tellDropDelegateDidExit:session];
-    [self charon_tellDropDelegateDidEnd:session];
+    if (destination) {
+        ((UIDropProposal * (*)(id, SEL, id, id))objc_msgSend)(delegate, @selector(dropInteraction:sessionDidUpdate:), interaction, session);
+        ((UITargetedDragPreview * (*)(id, SEL, id, id, id))objc_msgSend)(delegate, @selector(dropInteraction:previewForDroppingItem:withDefault:), interaction, session.items.firstObject, (id)[UITargetedDragPreview class]);
+        ((void (*)(id, SEL, id, id))objc_msgSend)(delegate, @selector(dropInteraction:performDrop:), interaction, session);
+    }
+    ((void (*)(id, SEL, id, id))objc_msgSend)(delegate, @selector(dropInteraction:sessionDidExit:), interaction, session);
+    ((void (*)(id, SEL, id, id))objc_msgSend)(delegate, @selector(dropInteraction:sessionDidEnd:), interaction, session);
+}
+
+- (UIDropInteraction *)charon_dropInteraction
+{
+    for (id<UIInteraction> interaction in self.interactions)
+        if ([interaction isKindOfClass:[UIDropInteraction class]])
+            return (UIDropInteraction *)interaction;
+    return nil;
 }
 
 @end

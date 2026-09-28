@@ -38,16 +38,16 @@ import sys
 src, dst = sys.argv[1], sys.argv[2]
 s = open(src).read()
 before = s
-s = s.replace("""    [self charon_tellDropDelegateDidEnter:session];
+# The sequence now asks the interaction through objc_msgSend, so the mutation is the order of the
+# two sends themselves: the update is asked before the enter, where the header has it after.
+s = s.replace("""    ((void (*)(id, SEL, id, id))objc_msgSend)(delegate, @selector(dropInteraction:sessionDidEnter:), interaction, session);
     NSIndexPath *destination = [self indexPathForItemAtPoint:[self convertPoint:point fromView:nil]];
-    if (!destination)
-        return;
-    [self charon_dropProposalForSession:session atIndexPath:destination];""",
+    if (destination) {
+        ((UIDropProposal * (*)(id, SEL, id, id))objc_msgSend)(delegate, @selector(dropInteraction:sessionDidUpdate:), interaction, session);""",
 """    NSIndexPath *destination = [self indexPathForItemAtPoint:[self convertPoint:point fromView:nil]];
-    if (!destination)
-        return;
-    [self charon_dropProposalForSession:session atIndexPath:destination];
-    [self charon_tellDropDelegateDidEnter:session];""")
+    if (destination) {
+        ((UIDropProposal * (*)(id, SEL, id, id))objc_msgSend)(delegate, @selector(dropInteraction:sessionDidUpdate:), interaction, session);
+        ((void (*)(id, SEL, id, id))objc_msgSend)(delegate, @selector(dropInteraction:sessionDidEnter:), interaction, session);""")
 assert s != before, "the mutation did not apply"
 open(dst, "w").write(s)
 PYMUT

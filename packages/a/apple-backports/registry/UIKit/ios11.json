@@ -434,10 +434,9 @@
    "introduced": "11.0",
    "minimum": "6.0",
    "status": "implemented",
-   "reason": "a departure from 11.0, which returns quietly for a nil interaction and re-adds one the view already holds",
-   "effect": "the port follows the current implementation: a nil interaction raises NSInternalInconsistencyException with 'Invalid parameter not satisfying: interaction != nil', and an interaction this view already holds is left where it is",
+   "effect": "the interaction is held once however many times it is added: one the view already holds leaves the list as it was and is told its view again, and one held by another view is moved rather than duplicated; a nil interaction raises NSInternalInconsistencyException with the host's own message",
    "facts": "facts/UIKit/UIViewInteractions.md",
-   "source": "UIKit of iOS 11.0 arm64 at 0x18a294394, 0x18a29459c, 0x18a2946e4, 0x18a294748 and 0x18a29452c; the current behaviour from the differential test against the host's UIKit"
+   "source": "measured against the host's own UIKit under Mac Catalyst by tests/backports/host/uiviewinteractions, fifteen cases: the list before and after an add, a re-add, a remove of one not held, a move from another view, and what the interaction's willMoveToView: and didMoveToView: see on each"
   },
   {
    "api": "-[UIView removeInteraction:]",
@@ -445,10 +444,9 @@
    "introduced": "11.0",
    "minimum": "6.0",
    "status": "implemented",
-   "reason": "the same departure from 11.0 for a nil interaction",
-   "effect": "a nil interaction raises NSInternalInconsistencyException as the current implementation does; an interaction the view does not hold is neither an error nor a change",
+   "effect": "the interaction is dropped and told willMoveToView:nil then didMoveToView:nil; removing one the view does not hold is quietly nothing, and a nil one raises the same exception as adding a nil one, with the host's own message",
    "facts": "facts/UIKit/UIViewInteractions.md",
-   "source": "UIKit of iOS 11.0 arm64 at 0x18a294394, 0x18a29459c, 0x18a2946e4, 0x18a294748 and 0x18a29452c; the current behaviour from the differential test against the host's UIKit"
+   "source": "measured against the host's own UIKit under Mac Catalyst by tests/backports/host/uiviewinteractions, fifteen cases: the list before and after an add, a re-add, a remove of one not held, a move from another view, and what the interaction's willMoveToView: and didMoveToView: see on each"
   },
   {
    "api": "UIView.interactions",
@@ -457,9 +455,9 @@
    "minimum": "6.0",
    "status": "implemented",
    "reason": "a departure from 11.0, which returns quietly when the list it is given is nil",
-   "effect": "the getter answers a copy, and an empty array for a view that never held one; setting nil raises NSInternalInconsistencyException with 'Invalid parameter not satisfying: interactions', as the current implementation does",
+   "effect": "a copy of the interactions the view holds, and an empty array for one that holds none; a nil list raises NSInternalInconsistencyException with the host's own message",
    "facts": "facts/UIKit/UIViewInteractions.md",
-   "source": "UIKit of iOS 11.0 arm64 at 0x18a294394, 0x18a29459c, 0x18a2946e4, 0x18a294748 and 0x18a29452c; the current behaviour from the differential test against the host's UIKit"
+   "source": "measured against the host's own UIKit under Mac Catalyst by tests/backports/host/uiviewinteractions, fifteen cases: the list before and after an add, a re-add, a remove of one not held, a move from another view, and what the interaction's willMoveToView: and didMoveToView: see on each"
   },
   {
    "api": "NSObject.accessibilityAttributedLabel",

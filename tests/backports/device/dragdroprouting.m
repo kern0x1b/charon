@@ -249,6 +249,10 @@ static NSMutableArray<NSString *> *_order = nil;
     [probe setDestinationForView:probe.tableView atPoint:CGPointMake(20, 20)];
     [probe.tableView charon_driveDropSessionAtPoint:CGPointMake(20, 20)];
 
+    // The interactions the two views actually hold, which is what the real addInteraction: gave them.
+    record(@"collection.interactionsHeld", [NSString stringWithFormat:@"%lu", (unsigned long)probe.collectionView.interactions.count]);
+    record(@"table.interactionsHeld", [NSString stringWithFormat:@"%lu", (unsigned long)probe.tableView.interactions.count]);
+
     // What was asked, against the sequence the port names, with the arguments each carried.
     NSArray *collectionAsked = [probe.log subarrayWithRange:NSMakeRange(0, afterCollection)];
     NSArray *tableAsked = [probe.log subarrayWithRange:NSMakeRange(afterCollection,
