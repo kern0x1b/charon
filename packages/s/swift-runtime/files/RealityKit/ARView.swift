@@ -256,6 +256,9 @@ open class ARView: RealityViewBase {
         scnView.frame = bounds
         addSubview(scnView)
         scnView.scene = scene.scnScene
+        // The scene knows which view shows it, which is what a pixel cast projects through: a scene
+        // with no view is one that is not shown.
+        scene.view = scnView
         __updateDisplayLink()
     }
 
@@ -283,6 +286,9 @@ open class ARView: RealityViewBase {
         __syncAnchors()
         scene.coreScene.__advancePhysics(deltaTime: deltaTime)
         scnView.scene = scene.scnScene
+        // The scene knows which view shows it, which is what a pixel cast projects through: a scene
+        // with no view is one that is not shown.
+        scene.view = scnView
         frameCount += 1
         renderCallbacks.didRenderFrame()
     }

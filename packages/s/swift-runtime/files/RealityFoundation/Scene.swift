@@ -3,6 +3,7 @@
 
 import simd
 import CoreMedia
+import SceneKit
 import Foundation
 
 // MARK: - BoundingBox
@@ -319,6 +320,15 @@ open class Scene {
 
     /// A number that identifies this scene for the life of the process.
     public var id: ID { coreScene.identifier }
+
+    /// The view this scene is shown in, set by `ARView` when it puts the scene into its own.
+    ///
+    /// Weak on both sides' account: a view does not keep a scene alive, and a scene that outlived
+    /// the view that showed it would keep a handle on a view whose camera and frame are gone. A
+    /// scene with no view is a scene that is not shown, and the things that need a camera - a pixel
+    /// cast, and nothing else this module has - answer nil for it, as the interface does for a scene
+    /// that is not on screen.
+    public weak var view: SCNView?
 
     /// The timebase the scene's time is read from: `CMTimebase`, CoreMedia's own, reached through
     /// the SDK's clang module because the port builds no CoreMedia overlay of its own.
