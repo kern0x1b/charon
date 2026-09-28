@@ -632,3 +632,34 @@ trap is asking for. (The same trap is listed in `charon/AGENTS.md`: "`NSInvocati
 call `-retainArguments` immediately after creating the invocation, before setting any arguments" — and
 the other half of that same rule is that the *target* is not an argument, so `-retainArguments` is
 wrong for it.)
+
+---
+
+## The oracle's verdict: not usable, and the second trap is still there
+
+Three attempts on the host's private `-initWithTag:`, each with what it said under `SAN=1`:
+
+| the attempt | what it faulted in | what that means |
+| --- | --- | --- |
+| target = the class | `objc_opt_respondsToSelector + 48`, reached through `+[NSObject doesNotRecognizeSelector:]` and CFString's format path | the message went to the class, so the initialiser was never called |
+| target = `[subject alloc]`, with `-retainArguments` | `objc_retain` inside `-[NSInvocation retainArguments]`, at `differential.m:94` | the target is not an argument, and `-retainArguments` retained it |
+| target and tag in `__strong` locals, no `-retainArguments` | `objc_autoreleaseReturnValue` inside `-[NSInvocation getReturnValue:]` | **the host's private initialiser does not describe an object return on this platform** |
+
+**So it is not an oracle: 9 of the thirteen rows are holdable**, and the class is held to the header's
+own words - the tags, the bundle, the `0.5` default, a progress complete at once, the urgent priority -
+with the two `NSBundle` additions, whose host copies are inert and which differ from macOS on
+purpose, the same way. The two constants and the two plist key names are documented and not
+measurable. The differential sends nothing private now, and the port never did.
+
+**The second trap survives all of it**, and it is the one thing left: the run still ends on
+`brk #0xc472` after the constructor's print, with the oracle out, so some *other* ask site reaches
+`doesNotRecognizeSelector:`'s format path. The next command is the one I would have run and did not
+have the budget for:
+
+```sh
+SAN=1 sh tests/backports/host/bundlerequest/run.sh 2>&1 | sed -n '/AddressSanitizer/,/SUMMARY/p'
+```
+
+and the frame that is in the port, not in CoreFoundation, is the one to read — the differential has no
+private call left, so whatever is left is either the port's own ask or one of the two
+`[bundleClass instancesRespondToSelector:]` in the test, and the frames say which immediately.

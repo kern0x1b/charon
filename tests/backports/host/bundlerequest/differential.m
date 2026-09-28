@@ -1,13 +1,16 @@
 // differential.m - NSBundleResourceRequest against the host's own, and the two rules the host cannot
 // be asked about against the header's own words.
 //
-// The host's public -initWithTags: forwards to a private -initWithTag:, and that is the state oracle:
-// the port's public initialiser is compared with the host's private one, over the bundle, the
-// priority and the progress. The trap that interrupted this was this test's own bug - the invocation's
-// target was the class, so the message reached the class method +doesNotRecognizeSelector: and the
-// pointer authentication failure was inside CoreFoundation's format path, not the port's. The private
-// initialiser is used here and nowhere else: the port calls nothing private, and neither does any other
-// test in this tree.
+// The host's private -initWithTag: is not an oracle and this test does not send it. Tried, in this
+// order, with what each attempt said: the invocation's target was the class, so the message reached
+// +[NSObject doesNotRecognizeSelector:] and the pointer authentication failure was inside
+// CoreFoundation's format path; with the target an instance, -retainArguments retained the target,
+// which is not an argument, and faulted in objc_retain; and with neither, -getReturnValue: faults in
+// objc_autoreleaseReturnValue, so the host's private initialiser does not describe an object return
+// on this platform. So the class is held to the header's own words - the tags, the bundle, the 0.5
+// default, a progress complete at once, the urgent priority - and the two NSBundle additions, whose
+// host copies are inert, the same way. That is nine of the thirteen rows held to something, and two
+// constants and the two plist key names that are documented and not measurable.
 #import <Foundation/Foundation.h>
 #import <objc/message.h>
 #import <objc/runtime.h>
@@ -77,31 +80,6 @@ static void same_string(NSString *ours, NSString *theirs, NSString *what)
 extern double const CharonHostNSBundleResourceRequestLoadingPriorityUrgent;
 extern NSString *const CharonHostNSBundleResourceRequestLowDiskSpaceNotification;
 
-// The host's private initialiser. The target is the *instance*: set to the class it asks the class
-// method +doesNotRecognizeSelector:, which is what the stack showed, and then the trap, inside
-// CoreFoundation's own format path. The private initialiser was never tested before this.
-static id host_initWithTag(Class subject, NSString *tag)
-{
-    SEL factory = NSSelectorFromString(@"initWithTag:");
-    NSMethodSignature *signature = [subject instanceMethodSignatureForSelector:factory];
-    if (!signature)
-        return nil;
-    NSInvocation *call = [NSInvocation invocationWithMethodSignature:signature];
-    call.selector = factory;
-    call.target = [subject alloc];
-    id held = tag;
-    [call setArgument:&held atIndex:2];
-    [call retainArguments];
-    @try {
-        [call invoke];
-    } @catch (NSException *exception) {
-        return nil;
-    }
-    id result = nil;
-    [call getReturnValue:&result];
-    return result;
-}
-
 static id host_privileged(Class subject, SEL selector, id first)
 {
     SEL firstSelector = NSSelectorFromString([NSString stringWithFormat:@"%@:", NSStringFromSelector(selector)]);
@@ -161,7 +139,6 @@ int main(void)
         for (NSSet *tags in @[ known, unknown ])
             for (NSBundle *bundle in @[ withManifest, withoutManifest ]) {
                 id request = [[ours alloc] initWithTags:tags bundle:bundle];
-                id theirRequest = host_initWithTag(theirs, [[tags allObjects] firstObject]);
                 NSString *what = [NSString stringWithFormat:@"%@ in %@",
                                                             [[tags allObjects] componentsJoinedByString:@","],
                                                             [bundle.bundlePath lastPathComponent]];
@@ -185,21 +162,6 @@ int main(void)
                              [what stringByAppendingString:@" progress completedUnitCount"]);
                 same_double([request progress].fractionCompleted, 1.0,
                             [what stringByAppendingString:@" progress fractionCompleted"]);
-                if (theirRequest) {
-                    /* the state, against the host's own instance: this is the only private selector
-                       the test sends, and the port calls nothing private */
-                    same_string([request bundle].bundlePath, [theirRequest bundle].bundlePath,
-                                [what stringByAppendingString:@" the bundle, against the host's"]);
-                    same_double([request loadingPriority], [theirRequest loadingPriority],
-                                [what stringByAppendingString:@" the priority, against the host's"]);
-                    same_integer([request progress].totalUnitCount, [theirRequest progress].totalUnitCount,
-                                 [what stringByAppendingString:@" progress totalUnitCount, against the host's"]);
-                    same_integer([request progress].completedUnitCount, [theirRequest progress].completedUnitCount,
-                                 [what stringByAppendingString:@" progress completedUnitCount, against the host's"]);
-                } else {
-                    printf("note: the host's private -initWithTag: did not answer for %@ in %@\n",
-                           [[tags allObjects] firstObject], [bundle.bundlePath lastPathComponent]);
-                }
                 [request setLoadingPriority:0.25];
                 same_double([request loadingPriority], 0.25, [what stringByAppendingString:@" the priority set"]);
                 [request setLoadingPriority:NSBundleResourceRequestUrgent];
