@@ -19,6 +19,7 @@
 #import <Network/Network.h>
 #import <arpa/inet.h>
 #import <netinet/in.h>
+#include <poll.h>
 #import <stdio.h>
 #import <stdlib.h>
 #import <string.h>
@@ -198,7 +199,27 @@ int main(void)
         CHECK(system_ready, "and so does the host's");
 
         /* the peer takes both connections; which is which is settled by what each writes first */
-        int first = accept(peer.listener, NULL, NULL), second = accept(peer.listener, NULL, NULL);
+        /* The peer takes the two connections, and it does not wait for ever for them: a port that
+           never connects is a failure this program must report, not a hang a gate waits on. */
+        int first = -1, second = -1;
+        for (int side = 0; side < 2; side++) {
+            struct pollfd waiting = {peer.listener, POLLIN, 0};
+            if (poll(&waiting, 1, 5000) <= 0) {
+                CHECK(NO, @"the peer was given both connections");
+                printf("checks=%d failures=%d\n", charon_checks, charon_failures + 1);
+                return 1;
+            }
+            int handle = accept(peer.listener, NULL, NULL);
+            if (handle < 0) {
+                CHECK(NO, @"the peer was given both connections");
+                printf("checks=%d failures=%d\n", charon_checks, charon_failures + 1);
+                return 1;
+            }
+            if (side == 0)
+                first = handle;
+            else
+                second = handle;
+        }
         /* The two sockets the peer holds are non-blocking: the relay reads them in a loop and must not
            sit in one of them waiting for a byte the other side has not written yet. */
         for (int handle = first; handle >= 0; handle = handle == first ? second : -1)

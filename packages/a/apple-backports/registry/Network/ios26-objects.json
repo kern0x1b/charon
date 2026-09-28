@@ -19,7 +19,7 @@
       "status": "implemented",
       "effect": "whether a connection of these parameters may go over an ultra-constrained network",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_parameters_set_allow_ultra_constrained()",
@@ -29,7 +29,7 @@
       "status": "implemented",
       "effect": "whether a connection of these parameters may go over an ultra-constrained network",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_path_get_link_quality()",

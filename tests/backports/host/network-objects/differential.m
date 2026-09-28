@@ -2068,21 +2068,18 @@ int main(void)
             if (system_path && port_path) {
                 compare(@"path: whether it is a constrained network", @(system.path_is_constrained(system_path)),
                         @(port.path_is_constrained(port_path)));
-                __block NSMutableString *system_gateways = [NSMutableString string], *port_gateways = [NSMutableString string];
-                system.path_enumerate_gateways(system_path, ^(nw_endpoint_t gateway) {
-                    [system_gateways appendFormat:@"%@ ", @(nw_endpoint_get_port(gateway))];
-                });
+                /* The port's answer, and it is an answer rather than a shape: this device's path is
+                   not over a point-to-point interface, and SIOCGIFDSTADDR - the one ioctl that names
+                   a router with no privilege - answers for those only, so the port enumerates nothing
+                   and says so (facts/Network/NWPath.md). That is what is asserted. The host's own
+                   enumeration is not asserted at all: what the host's routers are is not a fact this
+                   program can check, and a check that cannot fail is worse than none. */
+                __block int port_gateways = 0;
                 port.path_enumerate_gateways(port_path, ^(nw_endpoint_t gateway) {
-                    [port_gateways appendFormat:@"%@ ", @(nw_endpoint_get_port(gateway))];
+                    port_gateways++;
                 });
-                /* What the port can name and what the host can name are different networks: the host
-                   sees its own routers, the port sees the ones this device's release can name, which
-                   is the point-to-point interface's (facts/Network/NWPath.md). So what is compared is
-                   the shape of the answer - that both are enumerations of endpoints - and the port's
-                   own answer is checked against that file. */
-                CHECK([system_gateways isEqualToString:@""] || [system_gateways length] > 0,
-                      "the host's gateways enumerate as endpoints");
-                CHECK(port_gateways != nil, "and so do the port's");
+                CHECK(port_gateways == 0,
+                      "the port enumerates no gateway on a path that is not point-to-point");
                 compare(@"path: why it is unsatisfied", @(system.path_unsatisfied_reason(system_path)),
                         @(port.path_unsatisfied_reason(port_path)));
                 /* The link quality is the port's own check, and the host's answer is not one to

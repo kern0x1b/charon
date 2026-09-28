@@ -102,8 +102,16 @@ host is not what happened say so in their own words rather than in a note elsewh
   its own network - the host names its own routers, the port names the ones this release's ioctl can -
   and the link quality is the port's own check, because two different machines' links are not one
   measurement (`NWPath.md`).
-- **The framer's engine and the two reports** are the connection's, and are compared in
-  `tests/backports/host/network-connection` over a real loopback pair (`NWConnection.md`).
+- **The framer's engine (24 rows) and the two reports (15 rows) are the port's own and are NOT
+  compared with the host.** A framer object is made by a connection and no differential here puts one
+  in a stack, so the engine's `parse_input`/`parse_output`, its `deliver_input`, its three writes, its
+  pass-through, its wakeups, its handlers and its endpoint and parameter copies have no comparison
+  behind them; the framer's *definitions, options and messages* are compared (36 of its rows are), and
+  so are the path monitor and the parameters. The reports are filled when a program asks a connection
+  for them, and no differential drives that call. What each of those rows says is the effect, and what
+  was done is what its `source` now says - implemented and read, not measured. The framer's engine is
+  a real state machine, and the reports are real accessors; the claim that is *not* made is that they
+  have been compared with Apple's.
 
 ## Where the port answers for itself, and says so
 

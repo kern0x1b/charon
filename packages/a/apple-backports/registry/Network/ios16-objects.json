@@ -9,7 +9,7 @@
       "status": "implemented",
       "effect": "an advertisement of an application service",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_advertise_descriptor_get_application_service_name()",
@@ -19,7 +19,7 @@
       "status": "implemented",
       "effect": "the application service that is advertised",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_browse_descriptor_create_application_service()",
@@ -29,7 +29,7 @@
       "status": "implemented",
       "effect": "a browse of an application service",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_browse_descriptor_get_application_service_name()",
@@ -39,7 +39,7 @@
       "status": "implemented",
       "effect": "the application service a browse is for",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_endpoint_copy_txt_record()",
@@ -49,7 +49,7 @@
       "status": "implemented",
       "effect": "the TXT record the Bonjour service carries",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_endpoint_get_signature()",
@@ -59,7 +59,7 @@
       "status": "implemented",
       "effect": "the bytes that name which kind of service a Bonjour name is",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_parameters_create_application_service()",
@@ -69,7 +69,7 @@
       "status": "implemented",
       "effect": "parameters of a connection to an application service",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_parameters_requires_dnssec_validation()",
@@ -79,7 +79,7 @@
       "status": "implemented",
       "effect": "whether the names a connection of these parameters resolves must be validated with DNSSEC",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_parameters_set_requires_dnssec_validation()",
@@ -89,7 +89,7 @@
       "status": "implemented",
       "effect": "whether the names a connection of these parameters resolves must be validated with DNSSEC",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_proxy_config_set_username_and_password()",
@@ -109,7 +109,7 @@
       "status": "implemented",
       "effect": "the QUIC setting max datagram frame size",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_quic_get_stream_is_datagram()",
@@ -119,7 +119,7 @@
       "status": "implemented",
       "effect": "the QUIC setting stream is datagram",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_quic_get_stream_usable_datagram_frame_size()",
@@ -129,7 +129,7 @@
       "status": "implemented",
       "effect": "the QUIC setting stream usable datagram frame size",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_quic_set_max_datagram_frame_size()",
@@ -139,7 +139,7 @@
       "status": "implemented",
       "effect": "sets the QUIC setting max datagram frame size",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_quic_set_stream_is_datagram()",
@@ -149,7 +149,7 @@
       "status": "implemented",
       "effect": "sets the QUIC setting stream is datagram",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     }
   ]
 }

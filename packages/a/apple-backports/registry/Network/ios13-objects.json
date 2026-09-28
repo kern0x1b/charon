@@ -19,7 +19,7 @@
       "status": "implemented",
       "effect": "the TXT record a listener publishes, as an object",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_advertise_descriptor_set_txt_record_object()",
@@ -29,7 +29,7 @@
       "status": "implemented",
       "effect": "the TXT record a listener publishes, as an object",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_browse_descriptor_get_bonjour_service_domain()",
@@ -39,7 +39,7 @@
       "status": "implemented",
       "effect": "the domain a browse is in",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_browse_descriptor_get_bonjour_service_type()",
@@ -49,7 +49,7 @@
       "status": "implemented",
       "effect": "the service type a browse is for",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_browse_descriptor_get_include_txt_record()",
@@ -59,7 +59,7 @@
       "status": "implemented",
       "effect": "whether the records found come with their TXT record",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_browse_descriptor_set_include_txt_record()",
@@ -69,7 +69,7 @@
       "status": "implemented",
       "effect": "whether the records found come with their TXT record",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_connection_access_establishment_report()",
@@ -99,7 +99,7 @@
       "status": "implemented",
       "effect": "marks a report complete and calls the block once it is",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_data_transfer_report_copy_path_interface()",
@@ -109,7 +109,7 @@
       "status": "implemented",
       "effect": "the interface the connection's data went over",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_data_transfer_report_get_duration_milliseconds()",
@@ -119,7 +119,7 @@
       "status": "implemented",
       "effect": "how long the connection was up",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_data_transfer_report_get_path_count()",
@@ -129,7 +129,7 @@
       "status": "implemented",
       "effect": "how many paths the connection's data went over",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_data_transfer_report_get_received_application_byte_count()",
@@ -139,7 +139,7 @@
       "status": "implemented",
       "effect": "the bytes the program received",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_data_transfer_report_get_received_ip_packet_count()",
@@ -149,7 +149,7 @@
       "status": "implemented",
       "effect": "the IP packets the connection received",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_data_transfer_report_get_received_transport_byte_count()",
@@ -159,7 +159,7 @@
       "status": "implemented",
       "effect": "the bytes the transport received",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_data_transfer_report_get_received_transport_duplicate_byte_count()",
@@ -169,7 +169,7 @@
       "status": "implemented",
       "effect": "the bytes the transport received twice",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_data_transfer_report_get_received_transport_out_of_order_byte_count()",
@@ -179,7 +179,7 @@
       "status": "implemented",
       "effect": "the bytes the transport received out of order",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_data_transfer_report_get_sent_application_byte_count()",
@@ -189,7 +189,7 @@
       "status": "implemented",
       "effect": "the bytes the program sent",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_data_transfer_report_get_sent_ip_packet_count()",
@@ -199,7 +199,7 @@
       "status": "implemented",
       "effect": "the IP packets the connection sent",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_data_transfer_report_get_sent_transport_byte_count()",
@@ -209,7 +209,7 @@
       "status": "implemented",
       "effect": "the bytes the transport sent",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_data_transfer_report_get_sent_transport_retransmitted_byte_count()",
@@ -219,7 +219,7 @@
       "status": "implemented",
       "effect": "the bytes the transport had to send again",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_data_transfer_report_get_state()",
@@ -229,7 +229,7 @@
       "status": "implemented",
       "effect": "whether a report has been collected and its values can be read",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_data_transfer_report_get_transport_minimum_rtt_milliseconds()",
@@ -239,7 +239,7 @@
       "status": "implemented",
       "effect": "the transport's smallest round trip time",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_data_transfer_report_get_transport_rtt_variance()",
@@ -249,7 +249,7 @@
       "status": "implemented",
       "effect": "how much the transport's round trip time varies",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_data_transfer_report_get_transport_smoothed_rtt_milliseconds()",
@@ -259,7 +259,7 @@
       "status": "implemented",
       "effect": "the transport's smoothed round trip time",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_endpoint_create_url()",
@@ -269,7 +269,7 @@
       "status": "implemented",
       "effect": "an endpoint of a URL, keeping the URL and answering its host and its port",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_endpoint_get_url()",
@@ -279,7 +279,7 @@
       "status": "implemented",
       "effect": "the URL the endpoint was made of",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_establishment_report_copy_proxy_endpoint()",
@@ -289,7 +289,7 @@
       "status": "implemented",
       "effect": "the proxy the connection went through",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the connection's own measurements, filled when a program asks the connection for its report; no differential in the tree drives that call, so the accessors are implemented and read, not measured (facts/Network/NWObjects.md, NWConnection.md)"
     },
     {
       "api": "nw_establishment_report_enumerate_protocols()",
@@ -299,7 +299,7 @@
       "status": "implemented",
       "effect": "each protocol of the connection, with the time its handshake took",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the connection's own measurements, filled when a program asks the connection for its report; no differential in the tree drives that call, so the accessors are implemented and read, not measured (facts/Network/NWObjects.md, NWConnection.md)"
     },
     {
       "api": "nw_establishment_report_enumerate_resolutions()",
@@ -309,7 +309,7 @@
       "status": "implemented",
       "effect": "each resolution the connection's endpoint went through",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the connection's own measurements, filled when a program asks the connection for its report; no differential in the tree drives that call, so the accessors are implemented and read, not measured (facts/Network/NWObjects.md, NWConnection.md)"
     },
     {
       "api": "nw_establishment_report_get_attempt_started_after_milliseconds()",
@@ -319,7 +319,7 @@
       "status": "implemented",
       "effect": "how long after the first start the attempt that worked began",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the connection's own measurements, filled when a program asks the connection for its report; no differential in the tree drives that call, so the accessors are implemented and read, not measured (facts/Network/NWObjects.md, NWConnection.md)"
     },
     {
       "api": "nw_establishment_report_get_duration_milliseconds()",
@@ -329,7 +329,7 @@
       "status": "implemented",
       "effect": "how long the connection took to become ready",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the connection's own measurements, filled when a program asks the connection for its report; no differential in the tree drives that call, so the accessors are implemented and read, not measured (facts/Network/NWObjects.md, NWConnection.md)"
     },
     {
       "api": "nw_establishment_report_get_previous_attempt_count()",
@@ -339,7 +339,7 @@
       "status": "implemented",
       "effect": "how many attempts came before this one",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the connection's own measurements, filled when a program asks the connection for its report; no differential in the tree drives that call, so the accessors are implemented and read, not measured (facts/Network/NWObjects.md, NWConnection.md)"
     },
     {
       "api": "nw_establishment_report_get_proxy_configured()",
@@ -349,7 +349,7 @@
       "status": "implemented",
       "effect": "whether a proxy was configured for the connection",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the connection's own measurements, filled when a program asks the connection for its report; no differential in the tree drives that call, so the accessors are implemented and read, not measured (facts/Network/NWObjects.md, NWConnection.md)"
     },
     {
       "api": "nw_establishment_report_get_used_proxy()",
@@ -359,7 +359,7 @@
       "status": "implemented",
       "effect": "whether the connection went through a proxy",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the connection's own measurements, filled when a program asks the connection for its report; no differential in the tree drives that call, so the accessors are implemented and read, not measured (facts/Network/NWObjects.md, NWConnection.md)"
     },
     {
       "api": "nw_framer_async()",
@@ -369,7 +369,7 @@
       "status": "implemented",
       "effect": "runs a block on the framer's own queue, where the framer's state may be touched",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_copy_local_endpoint()",
@@ -379,7 +379,7 @@
       "status": "implemented",
       "effect": "the local endpoint of the connection the framer is in",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_copy_parameters()",
@@ -389,7 +389,7 @@
       "status": "implemented",
       "effect": "the parameters of the connection the framer is in",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_copy_remote_endpoint()",
@@ -399,7 +399,7 @@
       "status": "implemented",
       "effect": "the remote endpoint of the connection the framer is in",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_create_definition()",
@@ -409,7 +409,7 @@
       "status": "implemented",
       "effect": "the definition of a protocol a program writes, of that name and those flags",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_create_options()",
@@ -419,7 +419,7 @@
       "status": "implemented",
       "effect": "the options of a protocol a program writes",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_framer_deliver_input()",
@@ -429,7 +429,7 @@
       "status": "implemented",
       "effect": "hands a whole message to the application, copied",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_deliver_input_no_copy()",
@@ -439,7 +439,7 @@
       "status": "implemented",
       "effect": "hands a whole message to the application out of the framer's own buffer",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_mark_failed_with_error()",
@@ -449,7 +449,7 @@
       "status": "implemented",
       "effect": "ends the parse with an error, and the connection fails with it",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_mark_ready()",
@@ -459,7 +459,7 @@
       "status": "implemented",
       "effect": "ends the parse: the framer has what it was waiting for",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_message_access_value()",
@@ -469,7 +469,7 @@
       "status": "implemented",
       "effect": "a value a framer's message carries, read through the caller's block",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_framer_message_copy_object_value()",
@@ -479,7 +479,7 @@
       "status": "implemented",
       "effect": "an object a framer's message carries, by name",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_framer_message_create()",
@@ -489,7 +489,7 @@
       "status": "implemented",
       "effect": "a message of a framer of a connection",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_framer_message_set_object_value()",
@@ -499,7 +499,7 @@
       "status": "implemented",
       "effect": "an object a framer's message carries, by name",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_framer_message_set_value()",
@@ -509,7 +509,7 @@
       "status": "implemented",
       "effect": "a value a framer's message carries, with the block that frees it",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_framer_parse_input()",
@@ -519,7 +519,7 @@
       "status": "implemented",
       "effect": "parses the bytes that have arrived, running the caller's block once over a contiguous buffer",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_parse_output()",
@@ -529,7 +529,7 @@
       "status": "implemented",
       "effect": "parses the bytes the program has written, running the caller's block once over a contiguous buffer",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_pass_through_input()",
@@ -539,7 +539,7 @@
       "status": "implemented",
       "effect": "stops parsing the input: the bytes go on as they are",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_pass_through_output()",
@@ -549,7 +549,7 @@
       "status": "implemented",
       "effect": "stops building the output: the bytes go out as they are",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_prepend_application_protocol()",
@@ -559,7 +559,7 @@
       "status": "implemented",
       "effect": "a protocol to sit above this one in the connection's stack",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_protocol_create_message()",
@@ -569,7 +569,7 @@
       "status": "implemented",
       "effect": "a message of a protocol a program writes",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_framer_schedule_wakeup()",
@@ -579,7 +579,7 @@
       "status": "implemented",
       "effect": "asks for the wakeup handler to be called after that many milliseconds, or takes it back",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_set_cleanup_handler()",
@@ -589,7 +589,7 @@
       "status": "implemented",
       "effect": "the block called when the framer is torn down",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_set_input_handler()",
@@ -599,7 +599,7 @@
       "status": "implemented",
       "effect": "the block called when new input has arrived to be parsed",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_set_output_handler()",
@@ -609,7 +609,7 @@
       "status": "implemented",
       "effect": "the block called instead of the program when output is written",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_set_stop_handler()",
@@ -619,7 +619,7 @@
       "status": "implemented",
       "effect": "the block called when the connection stops using the framer",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_set_wakeup_handler()",
@@ -629,7 +629,7 @@
       "status": "implemented",
       "effect": "the block called when the framer's own wakeup comes",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_write_output()",
@@ -639,7 +639,7 @@
       "status": "implemented",
       "effect": "adds bytes for the connection to send",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_write_output_data()",
@@ -649,7 +649,7 @@
       "status": "implemented",
       "effect": "adds a dispatch data for the connection to send",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_framer_write_output_no_copy()",
@@ -659,7 +659,7 @@
       "status": "implemented",
       "effect": "whether what the program wrote is there to be sent",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "a program's own protocol in a connection, and the state machine that parses and writes for it, which no differential in the tree drives: a framer object is made by a connection, and no comparison here puts one in a stack. Implemented and read, not measured (tests/backports/host/network-objects does compare the framer's definitions, options and messages; facts/Network/NWObjects.md)"
     },
     {
       "api": "nw_ip_options_set_local_address_preference()",
@@ -669,7 +669,7 @@
       "status": "implemented",
       "effect": "sets the IP options setting local address preference",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_parameters_get_prohibit_constrained()",
@@ -679,7 +679,7 @@
       "status": "implemented",
       "effect": "whether a connection of these parameters refuses a constrained path",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_parameters_set_prohibit_constrained()",
@@ -689,7 +689,7 @@
       "status": "implemented",
       "effect": "whether a connection of these parameters refuses a constrained path",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_path_enumerate_gateways()",
@@ -719,7 +719,7 @@
       "status": "implemented",
       "effect": "the definition of WebSocket",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_protocol_metadata_is_framer_message()",
@@ -729,7 +729,7 @@
       "status": "implemented",
       "effect": "whether a message is one of a program's own protocols",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_protocol_metadata_is_ws()",
@@ -739,7 +739,7 @@
       "status": "implemented",
       "effect": "whether ws",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_txt_record_access_bytes()",
@@ -749,7 +749,7 @@
       "status": "implemented",
       "effect": "the record as the bytes a service publishes",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_txt_record_access_key()",
@@ -759,7 +759,7 @@
       "status": "implemented",
       "effect": "one key of the record, read through the caller's block",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_txt_record_apply()",
@@ -769,7 +769,7 @@
       "status": "implemented",
       "effect": "every key of the record, read through the caller's block",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_txt_record_copy()",
@@ -779,7 +779,7 @@
       "status": "implemented",
       "effect": "a copy of the record that changes apart from the original",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_txt_record_create_dictionary()",
@@ -789,7 +789,7 @@
       "status": "implemented",
       "effect": "an empty TXT record, built from the keys a program sets",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_txt_record_create_with_bytes()",
@@ -799,7 +799,7 @@
       "status": "implemented",
       "effect": "a TXT record of the bytes a service published",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_txt_record_find_key()",
@@ -809,7 +809,7 @@
       "status": "implemented",
       "effect": "what kind of key a name is in the record: absent, of no value, empty or not",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_txt_record_get_key_count()",
@@ -819,7 +819,7 @@
       "status": "implemented",
       "effect": "how many keys the record has",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_txt_record_is_dictionary()",
@@ -829,7 +829,7 @@
       "status": "implemented",
       "effect": "whether the record is a dictionary of keys rather than raw bytes",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_txt_record_is_equal()",
@@ -839,7 +839,7 @@
       "status": "implemented",
       "effect": "whether two records say the same",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_txt_record_remove_key()",
@@ -849,7 +849,7 @@
       "status": "implemented",
       "effect": "a key taken out of the record",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_txt_record_set_key()",
@@ -859,7 +859,7 @@
       "status": "implemented",
       "effect": "a key of the record, with its value or with none at all",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_ws_create_metadata()",
@@ -869,7 +869,7 @@
       "status": "implemented",
       "effect": "what a WebSocket message of a connection says about itself",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_ws_create_options()",
@@ -879,7 +879,7 @@
       "status": "implemented",
       "effect": "the options of the WebSocket of a connection, of that version",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_ws_metadata_copy_server_response()",
@@ -889,7 +889,7 @@
       "status": "implemented",
       "effect": "a copy of the server response",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_ws_metadata_get_close_code()",
@@ -899,7 +899,7 @@
       "status": "implemented",
       "effect": "the WebSocket metadata setting close code",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_ws_metadata_get_opcode()",
@@ -909,7 +909,7 @@
       "status": "implemented",
       "effect": "the WebSocket metadata setting opcode",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_ws_metadata_set_close_code()",
@@ -919,7 +919,7 @@
       "status": "implemented",
       "effect": "sets the WebSocket metadata setting close code",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_ws_metadata_set_pong_handler()",
@@ -929,7 +929,7 @@
       "status": "implemented",
       "effect": "sets the WebSocket metadata setting pong handler",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_ws_options_add_additional_header()",
@@ -939,7 +939,7 @@
       "status": "implemented",
       "effect": "adds additional header",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_ws_options_add_subprotocol()",
@@ -949,7 +949,7 @@
       "status": "implemented",
       "effect": "adds subprotocol",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_ws_options_set_auto_reply_ping()",
@@ -959,7 +959,7 @@
       "status": "implemented",
       "effect": "sets the WebSocket options setting auto reply ping",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_ws_options_set_client_request_handler()",
@@ -969,7 +969,7 @@
       "status": "implemented",
       "effect": "sets the WebSocket options setting client request handler",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_ws_options_set_maximum_message_size()",
@@ -979,7 +979,7 @@
       "status": "implemented",
       "effect": "sets the WebSocket options setting maximum message size",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_ws_options_set_skip_handshake()",
@@ -989,7 +989,7 @@
       "status": "implemented",
       "effect": "sets the WebSocket options setting skip handshake",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_ws_request_enumerate_additional_headers()",
@@ -999,7 +999,7 @@
       "status": "implemented",
       "effect": "each of additional headers, until the block says stop",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_ws_request_enumerate_subprotocols()",
@@ -1009,7 +1009,7 @@
       "status": "implemented",
       "effect": "each of subprotocols, until the block says stop",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_ws_response_add_additional_header()",
@@ -1019,7 +1019,7 @@
       "status": "implemented",
       "effect": "adds additional header",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_ws_response_create()",
@@ -1029,7 +1029,7 @@
       "status": "implemented",
       "effect": "a new ",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_ws_response_enumerate_additional_headers()",
@@ -1039,7 +1039,7 @@
       "status": "implemented",
       "effect": "each of additional headers, until the block says stop",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_ws_response_get_selected_subprotocol()",
@@ -1049,7 +1049,7 @@
       "status": "implemented",
       "effect": "the WebSocket response setting selected subprotocol",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     },
     {
       "api": "nw_ws_response_get_status()",
@@ -1059,7 +1059,7 @@
       "status": "implemented",
       "effect": "the WebSocket response setting status",
       "facts": "facts/Network/NWObjects.md",
-      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 176 checks)"
+      "source": "the host's own Network.framework (macOS 27.0, build 26A428), asked the same question of the port's implementation compiled beside it with its names changed, and the two answers compared (tests/backports/host/network-objects, 188 checks)"
     }
   ]
 }
