@@ -24,3 +24,24 @@ object api-upstreams brought, which is told the same in the delivery note.
 
 `SSLCreateContext` being iOS 5.0 API is therefore moot for this port: the TLS of a connection is
 never reached on a release that has no Network.
+
+## Where the 4.3 gate's failing compile actually is
+
+Measured, and it is not the 4.3 band. `xmake l -v` on the 4.3 gate prints the argv of every compile,
+and the compile that fails names its own target:
+
+    ccache …/clang -target armv7-apple-ios6.0 -isysroot …/iPhoneOS16.4.sdk … -c …/Network/nw26-path.m
+
+**ios6.0.** The 4.3 gate stages the bands between the deployment and the highest minimum, so it builds a
+6.0 band as well as the 4.3 one; the objects placed at 6.0 are compiled for that band, and the first one
+that includes `CharonNW.h` is the first that fails. The 4.3 band's own `build/objects/` has no Network
+directory, so nothing of Network is compiled at the 4.3 target at all, and the 6.1.3 gate compiles the
+same 41 objects at 6.1.3 without an error.
+
+So: every Network object is placed at the 6.0 floor this file measures, none is compiled for 4.3, and
+the failure is a 6.0 band whose header set does not carry Network's own protocols - `<Network/Network.h>`
+resolves to nothing there, so every `OS_nw_*` is undefined. That is the lift being given a different set
+of frameworks per band (`cc435f9d Let a lift read the frameworks its caller names`), and it is the same
+family of question as f76910d1's registry-spelling fix rather than a row or a declaration of this
+band's. The two things to check next, both outside this tree: whether the 6.0 band's lift is given
+Network, and whether a band may name a framework its own minimums place objects at.
