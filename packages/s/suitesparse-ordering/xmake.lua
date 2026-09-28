@@ -85,7 +85,16 @@ package("suitesparse-ordering")
         local function install_file(source, destination)
             print("suitesparse-ordering: %s -> %s", source, destination)
             assert(os.isfile(source), "SuiteSparse " .. package:version() .. " has no " .. source)
-            os.mkdir(path.directory(destination))
+            -- every level of the destination's directory, made one at a time: os.mkdir is not recursive
+            -- either, so include/SuiteSparse/COLAMD needs include/SuiteSparse to exist first and the copy
+            -- fails without a word if it does not.
+            local directory = path.directory(destination)
+            local made = package:installdir()
+            for part in directory:gsub("^" .. made:gsub("%p", "%%%0") .. "/", ""):gmatch("[^/]+") do
+                made = path.join(made, part)
+                print("suitesparse-ordering:   mkdir %s", made)
+                os.mkdir(made)
+            end
             assert(os.cp(source, destination), "suitesparse-ordering could not copy " .. source .. " to " .. destination)
             assert(os.isfile(destination), "suitesparse-ordering copied " .. source .. " somewhere other than " .. destination)
         end
