@@ -18,7 +18,6 @@
 // four template lifecycle messages the header declares. The scene it belongs to is the wall, and
 // that is the registry's, not this file's.
 #import <CarPlay/CarPlay.h>
-#import "CharonCarPlayHome.h"
 #import <UIKit/UIKit.h>
 #import <objc/message.h>
 #import <objc/runtime.h>
@@ -46,13 +45,6 @@
 @interface CPTemplate (CharonDrawing)
 - (UIViewController *)charon_viewControllerForInterfaceController:(CPInterfaceController *)controller;
 @end
-
-// The release's own plate, drawn, for the surfaces a UICollectionViewCell does not give. A C
-// function because it is a drawing and not a message, and the two it replaces are its own.
-static void CharonCarPlaySkin_drawPlate(CGRect rect, CGContextRef context)
-{
-    [CharonCarPlaySkin drawPlateInRect:CGRectInset(rect, 2.0, 2.0) context:context radius:8.0];
-}
 
 // A row's handler, as the object the header's handler type is: the call the list template makes
 // when a row is chosen, so the handler is a real object with a real message and not a cast block.
@@ -657,10 +649,10 @@ static UINavigationBar *_listNavigationBar;
         // under it, so nothing here is drawn to replace it -- the skin is only what the release's own
         // cell does not give, which is the shadow the release draws per cell and this does not.
         cell.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.92];
-        cell.textLabel.textColor = [CharonCarPlaySkin labelColour];
+        cell.textLabel.textColor = [UIColor colorWithWhite:0.05f alpha:1.0f];
         cell.detailTextLabel.textColor = [UIColor colorWithWhite:0.3 alpha:1.0];
-        cell.textLabel.font = [CharonCarPlaySkin fontOfSize:17.0 bold:NO];
-        cell.detailTextLabel.font = [CharonCarPlaySkin fontOfSize:12.0 bold:NO];
+        cell.textLabel.font = [UIFont systemFontOfSize:17.0];
+        cell.detailTextLabel.font = [UIFont systemFontOfSize:12.0];
         cell.selectionStyle = UITableViewCellSelectionStyleBlue;
     }
     NSArray<CPListSection *> *sections = _template.sections;
@@ -818,7 +810,7 @@ static UINavigationBar *_listNavigationBar;
     cell.backgroundColor = [UIColor clearColor];
     CGContextRef context = UIGraphicsGetCurrentContext();
     if (context) {
-        CharonCarPlaySkin_drawPlate(cell.contentView.bounds, context);
+        cell.contentView.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.92f];
     }
     for (UIView *view in cell.contentView.subviews) {
         [view removeFromSuperview];
