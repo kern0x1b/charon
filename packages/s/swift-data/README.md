@@ -21,9 +21,14 @@ order are `Foundation.Predicate` and `Foundation.SortDescriptor`, which arrive w
 `ModelContext.fetchHistory(_:)` and `ModelContext.deleteHistory(_:)`: both are declared as
 requirements of `HistoryProviding` and implemented nowhere — `DefaultStore` does not conform to it —
 and the substrate for them is carried, so they are written and not yet written, and the registry
-says so with the grep that shows it. The six macros are declared with Apple's own `@attached` roles
-and compile with no plugin on the machine, because `#externalMacro` is only resolved when a macro
-is *used*.
+says so with the grep that shows it. The **seven** macros are declared with Apple's own `@attached`
+roles and compile with no plugin on the machine, because `#externalMacro` is only resolved when a
+macro is *used*.
+
+All seven are `kind=function` rows, `Model()` among them: the corpus records a macro as a function
+whatever it attaches, so `@Model` is a `function` row and not a `class` row — `@attached(member)`
+generates a class, and the row's kind is about how the API table records the declaration, not what
+the expansion produces.
 
 **What is not done is the expansion, not the API.** `SwiftDataMacros` - the host executable
 `@Model` and the rest expand through - is not written, and it is waiting on `charon@swift-syntax`

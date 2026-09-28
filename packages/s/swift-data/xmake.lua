@@ -117,31 +117,23 @@ package("swift-data")
                    ", so a Core Data API was added without a fact behind it")
         end
 
-        -- The ten symbols FetchDescriptor.predicate, .sortBy, HistoryDescriptor's and
-        -- DataStoreBatchDeleteRequest.predicate are swift-foundation's, and while
-        -- charon@swift-foundation is not in the store there is no library that declares them, so
-        -- the link fails on exactly these and nothing else. They are named here so that the day
-        -- the library lands - or the day one of them stops being used - this is a failure with a
-        -- name, not a link that moved for a reason nobody wrote down.
-        local pending = {
-            "_$s20FoundationEssentials9PredicateV8evaluateySbxxQpKF",
-            "_$s20FoundationEssentials9PredicateVMa",
-            "_$s20FoundationEssentials9PredicateVMn",
-            "_$s20FoundationEssentials4DateVMn",
-            "_$s20FoundationEssentials4UUIDVACycfC",
-            "_$s20FoundationEssentials4UUIDVMn",
-            "_$s20FoundationEssentials4UUIDVSHAAWP",
-            "_$s30FoundationInternationalization14SortDescriptorV7keyPaths010PartialKeyF0CyxGSgvg",
-            "_$s30FoundationInternationalization14SortDescriptorVMa",
-            "_$s30FoundationInternationalization14SortDescriptorVMn"
-        }
-        local still = 0
-        for _, symbol in ipairs(pending) do
-            if not exported:find(symbol, 1, true) then
-                still = still + 1
-            end
+        -- The ten symbols FetchDescriptor's predicate and sortBy, HistoryDescriptor's and
+        -- DataStoreBatchDeleteRequest's are swift-foundation's, and while charon@swift-foundation
+        -- is not in the store there is no library that declares them, so the link fails on exactly
+        -- these and nothing else. The check is two-sided and in harness/symbols.lua: a NAMED symbol
+        -- that is no longer undefined means the library landed or the code stopped using it, and an
+        -- UNLISTED symbol of either of the two modules means a new one is used. The previous version
+        -- counted the symbols not found and compared that to the number in the list, which is
+        -- always true and so was a tautology - the review was right about it.
+        os.envs("CHARON_SWIFTDATA_OBJECT", path.join(package:installdir(), "lib", "libSwiftData.a"))
+        import("@self.harness.symbols")
+        local names = symbols.undefined_names(exported)
+        local ok, why = symbols.check_pending(names)
+        assert(ok, why)
+        local counts, order = symbols.classify(names)
+        print("SwiftData: %d undefined, %d defined; pending %d swift-foundation symbols",
+              #names, #exported - #names, #symbols.pending)
+        for _, owner in ipairs(order) do
+            print("SwiftData: %5d  %s", counts[owner], owner)
         end
-        assert(still <= #pending,
-               "libSwiftData.a imports swift-foundation symbols this list does not name, " ..
-               "so a new one was added: rerun nm -u and extend the list in on_test")
     end)
