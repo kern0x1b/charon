@@ -152,3 +152,65 @@ SDK=$(python3 -c 'import json,sys; o=json.load(open(sys.argv[1])); print(next(r[
 A package's own build resolves the SDK from the toolchain, so a store whose SDK differs from the
 runtime's would compile the module against unlowered headers; `on_test` should assert the
 overlay's root and the build's `sdkdir` are the same path.
+
+## The model executor: where a job runs, and what is not measured
+
+`DefaultSerialModelExecutor` enqueues a job with
+
+```swift
+let unowned = UnownedJob(job)
+let serial = self.asUnownedSerialExecutor()
+context.perform { unowned.runSynchronously(on: serial) }
+```
+
+`UnownedJob(job)` is the standard library's own form of a job that is copyable and escapable: an
+`ExecutorJob` is noncopyable and `~Escapable`, so `context.perform { job.runSynchronously(on:) }`
+is rejected at SILGen with *"noncopyable 'job' cannot be consumed when captured by an escaping
+closure"* — and a **typecheck does not diagnose that while the compile does**, which is how the
+module was once green under `swiftc -typecheck` and not under `swiftc -c`. The compile is the check
+that matters for this file.
+
+`context.perform`, and not a `DispatchQueue` of the executor's own, because one queue is what
+serialises the actor's work against the context's own operations. A second queue is the bug: a job
+could read a row while the context was saving it. The release has **no way to ask an
+`NSManagedObjectContext` for its queue** — `perform` and `performAndWait` are the whole of it — so
+`perform` is the answer rather than a fallback.
+
+**Where this differs from Apple's.** Apple's `DefaultSerialModelExecutor` is declared over the same
+`ModelContext`, and the interface gives no way to see which queue it uses, so whether it uses the
+context's or one of its own is not measurable from the interface — only the code, which is closed.
+This port uses the context's. The observable consequence either way: a job runs off the caller's
+thread, and a job that touches the context's rows does so on the same queue the context saves on.
+
+**What is NOT measured.** That the job *in fact* runs on the context's queue. The compile says the
+code is well formed; it does not say which queue the closure lands on. A probe for it needs a real
+job, which means an actor using this executor and a way to read back the thread; the first draft of
+one needed API that does not exist (`ExecutorJob` cannot be constructed from outside) and was
+deleted rather than shipped looking right. So the claim rests on `perform` being the context's
+queue, which is what its documentation says, and on this port's code **not** being run — the run is
+the 6.1.3 emulator step, after `lib_FoundationEssentials.dylib` and the v0.8.14 runtime
+re-measurement. A job on the wrong queue would show up there as a Core Data concurrency violation
+or a hang, which is a run and not a typecheck.
+
+## What the link still wants, and how it is watched
+
+`swiftc -c` over the module for `armv7-apple-ios6.1.3` gives a `Mach-O object arm_v7` of 867740
+bytes: **2786 defined, 425 undefined**. Of the undefined, 118 are the Swift standard library's and
+62 the Swift runtime's (both in `libswiftCore`, which a program links), 39 are objc classes and C
+symbols the frameworks carry, 6 are `Observation`'s, 3 the port's own `Foundation` overlay — and
+**exactly 10** are swift-foundation's, which is `lib_FoundationEssentials.dylib`, which does not
+exist because f25214c6's run output is its typecheck-only `check.sh` path:
+
+```
+_$s20FoundationEssentials9PredicateV8evaluateySbxxQpKF   ModelContext.fetch
+_$s20FoundationEssentials9PredicateVMa / VMn              FetchDescriptor.predicate
+_$s20FoundationEssentials4DateVMn                         HistoryTransaction.timestamp
+_$s20FoundationEssentials4UUIDVACycfC / UUIDVMn          EditingState
+_$s20FoundationEssentials4UUIDVSHAAWP                     EditingState: Identifiable
+_$s30FoundationInternationalization14SortDescriptorV7keyPaths...   FetchDescriptor.sortBy
+_$s30FoundationInternationalization14SortDescriptorVMa / VMn
+```
+
+The package's `on_test` names all ten, so the day the library lands — or the day one of them stops
+being used — that is a failure with a name rather than a link that moved for a reason nobody wrote
+down.
