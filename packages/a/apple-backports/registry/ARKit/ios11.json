@@ -1384,7 +1384,7 @@
       "effect": "whether the view lights its scene from the session's own light estimate, which is what makes an estimate the tracker measured reach the picture"
     },
     {
-      "api": "ARSCNView.anchorForNode:",
+      "api": "-[ARSCNView anchorForNode:]",
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
@@ -1395,7 +1395,7 @@
       "effect": "the anchor the node stands for, found by walking the node's parents and taking the first ancestor the map knows; nil for a node the caller built, and a node put inside a placed node is the placed node's anchor for this purpose"
     },
     {
-      "api": "ARSCNView.nodeForAnchor:",
+      "api": "-[ARSCNView nodeForAnchor:]",
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
@@ -1406,7 +1406,7 @@
       "effect": "the node the anchor is shown by, or nil when the anchor has none - a map the view owns needs nothing of the SDK's SCNNode, which a category ivar would and cannot have"
     },
     {
-      "api": "ARSCNView.hitTest:types:",
+      "api": "-[ARSCNView hitTest:types:]",
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
@@ -1417,7 +1417,7 @@
       "effect": "the ARHitTestResults the session's current frame answers for a point and the types asked for, which is the shared pinhole arithmetic in ARFrame.m rather than a second copy of it"
     },
     {
-      "api": "ARSCNView.raycastQueryFromPoint:allowingTarget:alignment:",
+      "api": "-[ARSCNView raycastQueryFromPoint:allowingTarget:alignment:]",
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
@@ -1450,7 +1450,7 @@
       "effect": "whether the renderer blurs a moving camera's frame; carried, and the renderer answers what the setting says"
     },
     {
-      "api": "ARSCNView.unprojectPoint:ontoPlaneWithTransform:",
+      "api": "-[ARSCNView unprojectPoint:ontoPlaneWithTransform:]",
       "kind": "method",
       "introduced": "12.0",
       "minimum": "6.0",
@@ -1461,7 +1461,7 @@
       "effect": "where a point in the view's pixels meets a plane in the world, with the view's own size as the viewport; the declaration is visible at a 6.1.3 target because API_AVAILABLE gives a warning the build silences and NS_REFINED_FOR_SWIFT is a Swift-side rename - what makes the member 12.0's is the release it arrived in"
     },
     {
-      "api": "ARSCNViewDelegate.renderer:nodeForAnchor:",
+      "api": "-[ARSCNViewDelegate renderer:nodeForAnchor:]",
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
@@ -1472,7 +1472,7 @@
       "effect": "the view tells the delegate when it has placed, is about to update, has updated and has removed the node for an anchor, and asks it for a node when an anchor has none of the view's own"
     },
     {
-      "api": "ARSCNViewDelegate.renderer:didAddNode:forAnchor:",
+      "api": "-[ARSCNViewDelegate renderer:didAddNode:forAnchor:]",
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
@@ -1483,7 +1483,7 @@
       "effect": "the view tells the delegate when it has placed, is about to update, has updated and has removed the node for an anchor, and asks it for a node when an anchor has none of the view's own"
     },
     {
-      "api": "ARSCNViewDelegate.renderer:willUpdateNode:forAnchor:",
+      "api": "-[ARSCNViewDelegate renderer:willUpdateNode:forAnchor:]",
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
@@ -1494,7 +1494,7 @@
       "effect": "the view tells the delegate when it has placed, is about to update, has updated and has removed the node for an anchor, and asks it for a node when an anchor has none of the view's own"
     },
     {
-      "api": "ARSCNViewDelegate.renderer:didUpdateNode:forAnchor:",
+      "api": "-[ARSCNViewDelegate renderer:didUpdateNode:forAnchor:]",
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
@@ -1505,7 +1505,7 @@
       "effect": "the view tells the delegate when it has placed, is about to update, has updated and has removed the node for an anchor, and asks it for a node when an anchor has none of the view's own"
     },
     {
-      "api": "ARSCNViewDelegate.renderer:didRemoveNode:forAnchor:",
+      "api": "-[ARSCNViewDelegate renderer:didRemoveNode:forAnchor:]",
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
@@ -1516,7 +1516,7 @@
       "effect": "the view tells the delegate when it has placed, is about to update, has updated and has removed the node for an anchor, and asks it for a node when an anchor has none of the view's own"
     },
     {
-      "api": "ARSCNPlaneGeometry.planeGeometryWithDevice:",
+      "api": "-[ARSCNPlaneGeometry planeGeometryWithDevice:]",
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
@@ -1527,7 +1527,7 @@
       "effect": "an empty plane geometry, which -updateFromPlaneGeometry: then fills; nil when the device is nil, which is what the framework answers"
     },
     {
-      "api": "ARSCNPlaneGeometry.updateFromPlaneGeometry:",
+      "api": "-[ARSCNPlaneGeometry updateFromPlaneGeometry:]",
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
