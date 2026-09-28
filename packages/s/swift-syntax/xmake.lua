@@ -22,10 +22,13 @@ package("swift-syntax")
     -- The modules a macro plugin needs, and the ones an expansion test needs on top of them. The C
     -- shims are in the list because SwiftParser and SwiftSyntax are built on them; they are not
     -- modules, and the SwiftPM build makes them as part of the same graph.
+    -- The fourteen a plugin needs. `SwiftSyntaxMacrosTestSupport` is deliberately NOT in this list:
+    -- it pulls `_SwiftSyntaxTestSupport`, which imports XCTest, and this machine's Command Line
+    -- Tools ship none -- measured, and the facts record what that costs the expansion tests.
     local modules = {
         "SwiftBasicFormat", "SwiftCompilerPlugin", "SwiftCompilerPluginMessageHandling", "SwiftDiagnostics",
         "SwiftIDEUtils", "SwiftParser", "SwiftParserDiagnostics", "SwiftSyntax", "SwiftSyntaxBuilder",
-        "SwiftSyntaxMacroExpansion", "SwiftSyntaxMacros", "SwiftSyntaxMacrosTestSupport",
+        "SwiftSyntaxMacroExpansion", "SwiftSyntaxMacros", "SwiftLibraryPluginProvider",
     }
 
     on_load("@macosx", function (package)
@@ -92,10 +95,23 @@ package("swift-syntax")
         -- band, so it takes its share of the cores (FLEET_HEAVY_CPUS when the caller sets it) and the
         -- lowered priority heavy.sh exports, and nothing else.
         local jobs = os.getenv("FLEET_HEAVY_CPUS") or "2"
-        os.vrunv("nice", {"-n", "10", "swift", "build", "--package-path", source, "--scratch-path", build,
-                          "--triple", "arm64-apple-macosx13.0", "-c", "release", "--jobs", jobs},
-                 {curdir = source})
-        print("%s: built with --jobs %s", package:name(), jobs)
+        -- Per target, not the whole package. `swift build` with no target builds every product
+        -- swift-syntax declares, and two of them need XCTest: the run measured it --
+        -- "Sources/_SwiftSyntaxTestSupport/AssertEqualWithDiff.swift:15:16 unable to resolve module
+        -- dependency: 'XCTest'", because the Command Line Tools on this machine ship no XCTest and
+        -- the package's own graph carries it. A macro plugin needs the fourteen modules below and
+        -- none of the test-support ones, so the build is asked for those by name and the XCTest
+        -- targets stay out of the graph. What that costs is `SwiftSyntaxMacrosTestSupport` itself,
+        -- which is the XCTest-dependent one: the expansion tests it provides cannot be built on a
+        -- machine without XCTest, and the facts say so rather than the package pretending to ship it.
+        local argv = {"nice", "-n", "10", "swift", "build", "--package-path", source, "--scratch-path", build,
+                      "--triple", "arm64-apple-macosx13.0", "-c", "release", "--jobs", jobs}
+        for _, module in ipairs(modules) do
+            table.insert(argv, "--target")
+            table.insert(argv, module)
+        end
+        os.vrunv(argv[1], table.slice(argv, 2), {curdir = source})
+        print("%s: built %s targets with --jobs %s", package:name(), #modules, jobs)
         -- The products: the modules under Modules/, the archives beside them, and the resources
         -- SwiftSyntax keeps as files.
         -- The configuration is named `release` (SwiftPM has no `release-only`: "error: The value
