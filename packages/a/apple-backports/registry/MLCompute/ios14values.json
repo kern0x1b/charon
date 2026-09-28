@@ -567,7 +567,7 @@
    "introduced": "14.0",
    "minimum": "4.3",
    "status": "implemented",
-   "effect": "the tensor answers what the host answers, down to the data a nil one leaves and the name it is given",
+   "effect": "answers the value the host answers for it, and a case in tests/backports/host/mlcompute asks the host and the port for it - measured",
    "facts": "facts/MLCompute/Tensors.md",
    "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
   },
@@ -577,7 +577,7 @@
    "introduced": "14.0",
    "minimum": "4.3",
    "status": "implemented",
-   "effect": "the tensor answers what the host answers, down to the data a nil one leaves and the name it is given",
+   "effect": "answers the value the host answers for it, and a case in tests/backports/host/mlcompute asks the host and the port for it - measured",
    "facts": "facts/MLCompute/Tensors.md",
    "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
   },
@@ -587,7 +587,7 @@
    "introduced": "14.0",
    "minimum": "4.3",
    "status": "implemented",
-   "effect": "the tensor answers what the host answers, down to the data a nil one leaves and the name it is given",
+   "effect": "answers the value the host answers for it, and a case in tests/backports/host/mlcompute asks the host and the port for it - measured",
    "facts": "facts/MLCompute/Tensors.md",
    "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
   },
@@ -597,7 +597,7 @@
    "introduced": "14.0",
    "minimum": "4.3",
    "status": "implemented",
-   "effect": "the tensor answers what the host answers, down to the data a nil one leaves and the name it is given",
+   "effect": "answers the value the host answers for it, and a case in tests/backports/host/mlcompute asks the host and the port for it - measured",
    "facts": "facts/MLCompute/Tensors.md",
    "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
   },
@@ -607,7 +607,7 @@
    "introduced": "14.0",
    "minimum": "4.3",
    "status": "implemented",
-   "effect": "the tensor answers what the host answers, down to the data a nil one leaves and the name it is given",
+   "effect": "answers the value the host answers for it, and a case in tests/backports/host/mlcompute asks the host and the port for it - measured",
    "facts": "facts/MLCompute/Tensors.md",
    "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
   },
@@ -617,7 +617,7 @@
    "introduced": "14.0",
    "minimum": "4.3",
    "status": "implemented",
-   "effect": "the tensor answers what the host answers, down to the data a nil one leaves and the name it is given",
+   "effect": "answers the value the host answers for it, and a case in tests/backports/host/mlcompute asks the host and the port for it - measured",
    "facts": "facts/MLCompute/Tensors.md",
    "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
   },
@@ -627,7 +627,7 @@
    "introduced": "14.0",
    "minimum": "4.3",
    "status": "implemented",
-   "effect": "the tensor answers what the host answers, down to the data a nil one leaves and the name it is given",
+   "effect": "answers the value the host answers for it, and a case in tests/backports/host/mlcompute asks the host and the port for it - measured",
    "facts": "facts/MLCompute/Tensors.md",
    "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
   },
@@ -637,7 +637,7 @@
    "introduced": "14.0",
    "minimum": "4.3",
    "status": "implemented",
-   "effect": "the tensor answers what the host answers, down to the data a nil one leaves and the name it is given",
+   "effect": "answers the value the host answers for it, and a case in tests/backports/host/mlcompute asks the host and the port for it - measured",
    "facts": "facts/MLCompute/Tensors.md",
    "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
   },
@@ -647,7 +647,7 @@
    "introduced": "14.0",
    "minimum": "4.3",
    "status": "implemented",
-   "effect": "the tensor answers what the host answers, down to the data a nil one leaves and the name it is given",
+   "effect": "answers the value the host answers for it, and a case in tests/backports/host/mlcompute asks the host and the port for it - measured",
    "facts": "facts/MLCompute/Tensors.md",
    "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
   },
@@ -657,7 +657,7 @@
    "introduced": "14.0",
    "minimum": "4.3",
    "status": "implemented",
-   "effect": "the tensor answers what the host answers, down to the data a nil one leaves and the name it is given",
+   "effect": "answers the value the host answers for it, and a case in tests/backports/host/mlcompute asks the host and the port for it - measured",
    "facts": "facts/MLCompute/Tensors.md",
    "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
   },
@@ -667,7 +667,7 @@
    "introduced": "14.0",
    "minimum": "4.3",
    "status": "implemented",
-   "effect": "the tensor answers what the host answers, down to the data a nil one leaves and the name it is given",
+   "effect": "answers the value the host answers for it, and a case in tests/backports/host/mlcompute asks the host and the port for it - measured",
    "facts": "facts/MLCompute/Tensors.md",
    "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
   },
@@ -677,7 +677,7 @@
    "introduced": "14.0",
    "minimum": "4.3",
    "status": "implemented",
-   "effect": "the tensor answers what the host answers, down to the data a nil one leaves and the name it is given",
+   "effect": "answers the value the host answers for it, and a case in tests/backports/host/mlcompute asks the host and the port for it - measured",
    "facts": "facts/MLCompute/Tensors.md",
    "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
   },
@@ -687,7 +687,7 @@
    "introduced": "14.0",
    "minimum": "4.3",
    "status": "implemented",
-   "effect": "the tensor answers what the host answers, down to the data a nil one leaves and the name it is given",
+   "effect": "answers the value the host answers for it, and a case in tests/backports/host/mlcompute asks the host and the port for it - measured",
    "facts": "facts/MLCompute/Tensors.md",
    "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
   },
@@ -697,7 +697,7 @@
    "introduced": "14.0",
    "minimum": "4.3",
    "status": "implemented",
-   "effect": "the tensor answers what the host answers, down to the data a nil one leaves and the name it is given",
+   "effect": "answers the value the host answers for it, and a case in tests/backports/host/mlcompute asks the host and the port for it - measured",
    "facts": "facts/MLCompute/Tensors.md",
    "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
   },
@@ -707,7 +707,7 @@
    "introduced": "14.0",
    "minimum": "4.3",
    "status": "implemented",
-   "effect": "the tensor answers what the host answers, down to the data a nil one leaves and the name it is given",
+   "effect": "answers the value the host answers for it, and a case in tests/backports/host/mlcompute asks the host and the port for it - measured",
    "facts": "facts/MLCompute/Tensors.md",
    "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
   },
@@ -717,7 +717,7 @@
    "introduced": "14.0",
    "minimum": "4.3",
    "status": "implemented",
-   "effect": "the tensor answers what the host answers, down to the data a nil one leaves and the name it is given",
+   "effect": "answers the value the host answers for it, and a case in tests/backports/host/mlcompute asks the host and the port for it - measured",
    "facts": "facts/MLCompute/Tensors.md",
    "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
   },
@@ -727,7 +727,7 @@
    "introduced": "14.0",
    "minimum": "4.3",
    "status": "implemented",
-   "effect": "the tensor answers what the host answers, down to the data a nil one leaves and the name it is given",
+   "effect": "answers the value the host answers for it, and a case in tests/backports/host/mlcompute asks the host and the port for it - measured",
    "facts": "facts/MLCompute/Tensors.md",
    "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
   },
@@ -737,7 +737,7 @@
    "introduced": "14.0",
    "minimum": "4.3",
    "status": "implemented",
-   "effect": "the tensor answers what the host answers, down to the data a nil one leaves and the name it is given",
+   "effect": "answers the value the host answers for it, and a case in tests/backports/host/mlcompute asks the host and the port for it - measured",
    "facts": "facts/MLCompute/Tensors.md",
    "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
   },
@@ -747,7 +747,7 @@
    "introduced": "14.0",
    "minimum": "4.3",
    "status": "implemented",
-   "effect": "the tensor answers what the host answers, down to the data a nil one leaves and the name it is given",
+   "effect": "answers the value the host answers for it, and a case in tests/backports/host/mlcompute asks the host and the port for it - measured",
    "facts": "facts/MLCompute/Tensors.md",
    "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
   },
@@ -757,7 +757,7 @@
    "introduced": "14.0",
    "minimum": "4.3",
    "status": "implemented",
-   "effect": "the tensor answers what the host answers, down to the data a nil one leaves and the name it is given",
+   "effect": "answers the value the host answers for it, and a case in tests/backports/host/mlcompute asks the host and the port for it - measured",
    "facts": "facts/MLCompute/Tensors.md",
    "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
   },
@@ -767,7 +767,7 @@
    "introduced": "14.0",
    "minimum": "4.3",
    "status": "implemented",
-   "effect": "the tensor answers what the host answers, down to the data a nil one leaves and the name it is given",
+   "effect": "answers the value the host answers for it, and a case in tests/backports/host/mlcompute asks the host and the port for it - measured",
    "facts": "facts/MLCompute/Tensors.md",
    "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
   },
@@ -1037,7 +1037,7 @@
    "introduced": "14.0",
    "minimum": "4.3",
    "status": "implemented",
-   "effect": "the tensor answers what the host answers, down to the data a nil one leaves and the name it is given",
+   "effect": "answers the value the host answers for it, and a case in tests/backports/host/mlcompute asks the host and the port for it - measured",
    "facts": "facts/MLCompute/Tensors.md",
    "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
   },
@@ -1047,7 +1047,7 @@
    "introduced": "14.0",
    "minimum": "4.3",
    "status": "implemented",
-   "effect": "the tensor answers what the host answers, down to the data a nil one leaves and the name it is given",
+   "effect": "answers the value the host answers for it, and a case in tests/backports/host/mlcompute asks the host and the port for it - measured",
    "facts": "facts/MLCompute/Tensors.md",
    "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
   },
@@ -1057,7 +1057,7 @@
    "introduced": "14.0",
    "minimum": "4.3",
    "status": "implemented",
-   "effect": "the tensor answers what the host answers, down to the data a nil one leaves and the name it is given",
+   "effect": "answers the value the host answers for it, and a case in tests/backports/host/mlcompute asks the host and the port for it - measured",
    "facts": "facts/MLCompute/Tensors.md",
    "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
   },
@@ -1067,7 +1067,7 @@
    "introduced": "14.0",
    "minimum": "4.3",
    "status": "implemented",
-   "effect": "the tensor answers what the host answers, down to the data a nil one leaves and the name it is given",
+   "effect": "answers the value the host answers for it, and a case in tests/backports/host/mlcompute asks the host and the port for it - measured",
    "facts": "facts/MLCompute/Tensors.md",
    "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
   },
@@ -1077,7 +1077,7 @@
    "introduced": "14.0",
    "minimum": "4.3",
    "status": "implemented",
-   "effect": "the tensor answers what the host answers, down to the data a nil one leaves and the name it is given",
+   "effect": "answers the value the host answers for it, and a case in tests/backports/host/mlcompute asks the host and the port for it - measured",
    "facts": "facts/MLCompute/Tensors.md",
    "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
   },
@@ -1087,7 +1087,7 @@
    "introduced": "14.0",
    "minimum": "4.3",
    "status": "implemented",
-   "effect": "the tensor answers what the host answers, down to the data a nil one leaves and the name it is given",
+   "effect": "answers the value the host answers for it, and a case in tests/backports/host/mlcompute asks the host and the port for it - measured",
    "facts": "facts/MLCompute/Tensors.md",
    "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
   },
@@ -1097,7 +1097,7 @@
    "introduced": "15",
    "minimum": "4.3",
    "status": "implemented",
-   "effect": "the tensor answers what the host answers, down to the data a nil one leaves and the name it is given",
+   "effect": "answers the value the host answers for it, and a case in tests/backports/host/mlcompute asks the host and the port for it - measured",
    "facts": "facts/MLCompute/Tensors.md",
    "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
   },
@@ -1107,7 +1107,7 @@
    "introduced": "15",
    "minimum": "4.3",
    "status": "implemented",
-   "effect": "the tensor answers what the host answers, down to the data a nil one leaves and the name it is given",
+   "effect": "answers the value the host answers for it, and a case in tests/backports/host/mlcompute asks the host and the port for it - measured",
    "facts": "facts/MLCompute/Tensors.md",
    "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
   },
@@ -1117,7 +1117,7 @@
    "introduced": "15",
    "minimum": "4.3",
    "status": "implemented",
-   "effect": "the tensor answers what the host answers, down to the data a nil one leaves and the name it is given",
+   "effect": "answers the value the host answers for it, and a case in tests/backports/host/mlcompute asks the host and the port for it - measured",
    "facts": "facts/MLCompute/Tensors.md",
    "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
   },
@@ -1127,7 +1127,7 @@
    "introduced": "15",
    "minimum": "4.3",
    "status": "implemented",
-   "effect": "the tensor answers what the host answers, down to the data a nil one leaves and the name it is given",
+   "effect": "answers the value the host answers for it, and a case in tests/backports/host/mlcompute asks the host and the port for it - measured",
    "facts": "facts/MLCompute/Tensors.md",
    "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
   },
@@ -1977,7 +1977,7 @@
    "introduced": "14.0",
    "minimum": "4.3",
    "status": "implemented",
-   "effect": "the tensor answers what the host answers, down to the data a nil one leaves and the name it is given",
+   "effect": "answers the value the host answers for it, and a case in tests/backports/host/mlcompute asks the host and the port for it - measured",
    "facts": "facts/MLCompute/Tensors.md",
    "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
   },
@@ -1987,7 +1987,7 @@
    "introduced": "14.0",
    "minimum": "4.3",
    "status": "implemented",
-   "effect": "the tensor answers what the host answers, down to the data a nil one leaves and the name it is given",
+   "effect": "answers the value the host answers for it, and a case in tests/backports/host/mlcompute asks the host and the port for it - measured",
    "facts": "facts/MLCompute/Tensors.md",
    "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
   },
@@ -1997,7 +1997,7 @@
    "introduced": "14.0",
    "minimum": "4.3",
    "status": "implemented",
-   "effect": "the tensor answers what the host answers, down to the data a nil one leaves and the name it is given",
+   "effect": "answers the value the host answers for it, and a case in tests/backports/host/mlcompute asks the host and the port for it - measured",
    "facts": "facts/MLCompute/Tensors.md",
    "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
   },
@@ -2007,7 +2007,7 @@
    "introduced": "14.0",
    "minimum": "4.3",
    "status": "implemented",
-   "effect": "the tensor answers what the host answers, down to the data a nil one leaves and the name it is given",
+   "effect": "answers the value the host answers for it, and a case in tests/backports/host/mlcompute asks the host and the port for it - measured",
    "facts": "facts/MLCompute/Tensors.md",
    "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
   },
@@ -2017,7 +2017,7 @@
    "introduced": "14.0",
    "minimum": "4.3",
    "status": "implemented",
-   "effect": "the tensor answers what the host answers, down to the data a nil one leaves and the name it is given",
+   "effect": "answers the value the host answers for it, and a case in tests/backports/host/mlcompute asks the host and the port for it - measured",
    "facts": "facts/MLCompute/Tensors.md",
    "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
   },
@@ -2027,7 +2027,7 @@
    "introduced": "14.0",
    "minimum": "4.3",
    "status": "implemented",
-   "effect": "the tensor answers what the host answers, down to the data a nil one leaves and the name it is given",
+   "effect": "answers the value the host answers for it, and a case in tests/backports/host/mlcompute asks the host and the port for it - measured",
    "facts": "facts/MLCompute/Tensors.md",
    "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
   },
@@ -2037,7 +2037,7 @@
    "introduced": "14.0",
    "minimum": "4.3",
    "status": "implemented",
-   "effect": "the tensor answers what the host answers, down to the data a nil one leaves and the name it is given",
+   "effect": "answers the value the host answers for it, and a case in tests/backports/host/mlcompute asks the host and the port for it - measured",
    "facts": "facts/MLCompute/Tensors.md",
    "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
   },
@@ -2047,7 +2047,7 @@
    "introduced": "14.0",
    "minimum": "4.3",
    "status": "implemented",
-   "effect": "the tensor answers what the host answers, down to the data a nil one leaves and the name it is given",
+   "effect": "answers the value the host answers for it, and a case in tests/backports/host/mlcompute asks the host and the port for it - measured",
    "facts": "facts/MLCompute/Tensors.md",
    "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
   },
@@ -2537,7 +2537,7 @@
    "introduced": "14.0",
    "minimum": "4.3",
    "status": "implemented",
-   "effect": "the class is carried whole, with every member the newest SDK declares on it, and the tensor answers what the host answers, down to the data a nil one leaves and the name it is given",
+   "effect": "answers the number, the descriptor, the data, the name and the device the host answers for each, and a case asks the host and the port for every one of them - measured",
    "facts": "facts/MLCompute/Tensors.md",
    "source": "the host's own MLCompute on macOS, read through Mac Catalyst and held case by case by tests/backports/host/mlcompute, which compiles one program of 377 cases beside the framework and beside the port's own translation units and compares the two runs; the headers of SDK 16.4 for the declarations and the spelling of the names"
   },
