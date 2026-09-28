@@ -200,3 +200,28 @@ A hand compile is not a measurement of the tree's own files, and the rule is to 
 package's own rules or reuse the gate's compile line verbatim. The flags are recorded here so the next
 person does not have to find them.
 
+## `ARSCNView`: what is built and what is not
+
+`ARSCNView11.m` **builds clean** under the gate's own flags. The pairing between a node and its anchor
+is an `NSMapTable` the view holds, weak in both directions, because a category's `@synthesize` is
+rejected even on the non-fragile ABI armv7 has - so the pairing is a map the view owns and the
+SDK's `SCNNode` needs nothing for. `anchorForNode:` walks the parents and takes the first ancestor the
+map knows; `nodeForAnchor:` is the other direction. `hitTest:types:` and
+`raycastQueryFromPoint:allowingTarget:alignment:` forward to the frame, whose answers are the shared
+pinhole arithmetic.
+
+`ARSCNView12.m` does **not** yet build, and the reason is one missing declaration rather than a design
+problem. `-unprojectPoint:ontoPlaneWithTransform:` on both the view and the frame is
+`NS_REFINED_FOR_SWIFT` and `API_AVAILABLE(ios(12.0))`, so at a 6.1.3 target neither declaration is visible
+and neither selector resolves. The frame's two-argument one is the SDK's C name for the five-argument
+one the port already implements - so the 12.0 object needs
+
+1. a declaration of the five-argument `-[ARFrame unprojectPoint:ontoPlaneWithTransform:orientation:viewportSize:]`
+   in a header the port owns, because the SDK's own `ARFrame.h` declares only the two-argument form and
+   that one is invisible below 12.0; and
+2. the frame's two-argument method implemented against that five-argument one, using the frame's own
+   camera's image resolution as the viewport, in the same 12.0 object.
+
+Both are one declaration and one forward. The draft is `.agent-work/ARSCNView12-draft.m` and it is not in
+the delivery because it does not build.
+
