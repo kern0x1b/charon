@@ -85,17 +85,6 @@
    "source": "UIKit of iOS 11.0 arm64, getter at 0x18a329618 and setter at 0x18a30d224"
   },
   {
-   "api": "-[UIView safeAreaInsetsDidChange]",
-   "kind": "method",
-   "introduced": "11.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the callback comes from the moment the insets change, and reaching that moment means replacing -layoutSubviews, -setFrame: or -didMoveToSuperview, which the port does not do",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly; an override in a subclass is never called, and nothing pretends otherwise",
-   "facts": "facts/UIKit/UIViewSafeArea.md",
-   "source": "UIKit of iOS 11.0 arm64, -[UIView _safeAreaInsetsDidChangeFromOldInsets:] at 0x18a27d178"
-  },
-  {
    "api": "-[UIViewController viewSafeAreaInsetsDidChange]",
    "kind": "method",
    "introduced": "11.0",
@@ -647,15 +636,6 @@
    "source": "UIKit of iOS 12.0 arm64 (the accessor and the ivar it reads) and the host's UIKit through Mac Catalyst, tests/backports/device/traits11-cases.m on an iPad 2 on iOS 6.1.3"
   },
   {
-   "api": "+[UIColor colorNamed:]",
-   "kind": "method",
-   "introduced": "11.0",
-   "status": "absent",
-   "reason": "a named colour lives in the compiled asset catalogue, which CoreUI reads; this release's CoreUI knows no such file",
-   "effect": "the method is not there: an application falls back to the colour it builds in code rather than getting a black or nil one",
-   "source": "UIKit of iOS 11.0 arm64"
-  },
-  {
    "api": "UIView.accessibilityIgnoresInvertColors",
    "kind": "property",
    "introduced": "11.0",
@@ -1116,15 +1096,6 @@
    "status": "implemented",
    "source": "UIKit of iOS 11.0 and 12.0 arm64, -[UICollectionViewFlowLayout _adjustedSectionInsetForSectionInset:forAxis:] and its caller read at their addresses, and the host's own UIKit under Mac Catalyst through tests/backports/host/insetref (32 records of a flow layout), and tests/backports/device/insetref-cases.m on iOS 6",
    "facts": "facts/UIKit/UICollectionViewSectionInsetReference.md"
-  },
-  {
-   "api": "+[UIColor colorNamed:inBundle:compatibleWithTraitCollection:]",
-   "kind": "method",
-   "introduced": "11.0",
-   "status": "absent",
-   "reason": "the same asset catalogue as the plain +colorNamed:, read by a CoreUI that knows no such file",
-   "effect": "the method is not there",
-   "source": "UIKit of iOS 11.0 arm64"
   },
   {
    "api": "NSLayoutManager.limitsLayoutForSuspiciousContents",

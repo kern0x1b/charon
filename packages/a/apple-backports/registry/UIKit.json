@@ -379,28 +379,6 @@
   "source": "UIKit of the armv7s cache of iOS 10.3.4, read method by method and the Pasteboard framework it calls"
  },
  {
-  "api": "+[UIColor colorWithDisplayP3Red:green:blue:alpha:]",
-  "kind": "method",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "absent",
-  "reason": "the color is a private subclass holding its components in the Display P3 color space, which iOS 6 has not; a color made from sRGB values answers other components than the release does, so it would be a different color under the same name",
-  "effect": "the method is not declared, so respondsToSelector: answers NO",
-  "facts": "facts/UIKit/UIColorDisplayP3.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, read method by method"
- },
- {
-  "api": "-[UIColor initWithDisplayP3Red:green:blue:alpha:]",
-  "kind": "method",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "absent",
-  "reason": "the color is a private subclass holding its components in the Display P3 color space, which iOS 6 has not; a color made from sRGB values answers other components than the release does, so it would be a different color under the same name",
-  "effect": "the method is not declared, so respondsToSelector: answers NO",
-  "facts": "facts/UIKit/UIColorDisplayP3.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, read method by method"
- },
- {
   "api": "-[UISelectionFeedbackGenerator selectionChanged]",
   "kind": "method",
   "introduced": "10.0",
