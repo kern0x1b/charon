@@ -80,14 +80,14 @@
     // RUN: a caller waiting for a prompt this release never shows would wait forever otherwise. The
     // code is SensorKit's own SRErrorDataInaccessible, which is "Data is not accessible at this time".
     if (completion)
-        completion([self storeUnavailableError]);
+        completion([SRSensorReader storeUnavailableError]);
 }
 
 - (void)startRecording
 {
     id<SRSensorReaderDelegate> delegate = self.delegate;
     if ([delegate respondsToSelector:@selector(sensorReader:startRecordingFailedWithError:)]) {
-        [delegate sensorReader:self startRecordingFailedWithError:[self storeUnavailableError]];
+        [delegate sensorReader:self startRecordingFailedWithError:[SRSensorReader storeUnavailableError]];
     }
 }
 
@@ -97,7 +97,7 @@
     // the failure callback rather than the one that says recording stopped.
     id<SRSensorReaderDelegate> delegate = self.delegate;
     if ([delegate respondsToSelector:@selector(sensorReader:stopRecordingFailedWithError:)]) {
-        [delegate sensorReader:self stopRecordingFailedWithError:[self storeUnavailableError]];
+        [delegate sensorReader:self stopRecordingFailedWithError:[SRSensorReader storeUnavailableError]];
     }
 }
 
@@ -113,7 +113,7 @@
 {
     id<SRSensorReaderDelegate> delegate = self.delegate;
     if ([delegate respondsToSelector:@selector(sensorReader:fetchDevicesDidFailWithError:)]) {
-        [delegate sensorReader:self fetchDevicesDidFailWithError:[self storeUnavailableError]];
+        [delegate sensorReader:self fetchDevicesDidFailWithError:[SRSensorReader storeUnavailableError]];
     }
 }
 
@@ -121,7 +121,7 @@
 {
     id<SRSensorReaderDelegate> delegate = self.delegate;
     if ([delegate respondsToSelector:@selector(sensorReader:fetchingRequest:failedWithError:)]) {
-        [delegate sensorReader:self fetchingRequest:request failedWithError:[self storeUnavailableError]];
+        [delegate sensorReader:self fetchingRequest:request failedWithError:[SRSensorReader storeUnavailableError]];
     }
 }
 
@@ -145,7 +145,7 @@
     return objc_getAssociatedObject(self, @selector(sensor));
 }
 
-- (NSError *)storeUnavailableError
++ (NSError *)storeUnavailableError
 {
     // SensorKit's own domain and its own code for this, read out of SRError.h: SRErrorDataInaccessible
     // is "Data is not accessible at this time", which is exactly the wall - there is no store. The
