@@ -235,23 +235,17 @@ function compile(opt, source, object, library)
     if source:endswith(".mm") then
         table.join2(arguments, {"-fno-rtti", "-fvisibility-inlines-hidden"})
     end
-    -- The headers of the archives whose API is C, for every file: they are used by C files, and
-    -- before this an archive's headers reached a .mm only. A C++ archive's headers are added below,
-    -- for a .mm only, which is the only thing a C++ archive's API is used by - so the C++ rule and
-    -- the C one are each applied where they belong, rather than every archive reaching every file.
-    for _, name in ipairs(library and library.c_archives or {}) do
-        local archive = archive_of(opt.archives, name)
-        if archive then
-            table.insert(arguments, "-I" .. archive.includedir)
-        end
-    end
-    if source:endswith(".mm") then
-        for _, name in ipairs(library and library.archives or {}) do
-            local archive = archive_of(opt.archives, name)
-            if archive then
-                table.insert(arguments, "-I" .. archive.includedir)
-            end
-        end
+    -- Every archive's headers, for every file. A C archive is used by C files, so its headers
+    -- cannot wait for a .mm; and a C++ archive's headers are reached from a plain .m too, because
+    -- a header of ours can include one of them - measured at UIKit's CharonDynamics.h:15, which
+    -- includes <Box2D/Box2D.h> and is included from a .m, so the narrowing to .mm that a review
+    -- asked for breaks the 4.3 gate with "Box2D/Box2D.h file not found".
+    --
+    -- The width that costs is real and is the reason it is written this way: every library's
+    -- sources compile with every archive's include directory on the path. That is a few -I flags a
+    -- search walks over, and the alternative measured is a build that does not compile.
+    for _, name in ipairs(table.orderkeys(opt.archives or {})) do
+        table.insert(arguments, "-I" .. opt.archives[name].includedir)
     end
     local program, arguments = clang(opt, table.join(arguments, {"-c", source, "-o", object}), objective_c)
     -- Through the cache, which is apple.cache: it puts the compiler in as the wrapper's first
