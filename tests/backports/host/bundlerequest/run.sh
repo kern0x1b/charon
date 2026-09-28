@@ -82,7 +82,8 @@ if [ $mutants = yes ]; then
         echo "$missed of the host rows went the wrong way"
     fi
     echo "$caught caught of $host_rows host rows, $device device-only"
-    exit $missed
+    # the count, not the count as an exit status: 256 rows going the wrong way would exit 0
+    [ "$missed" -eq 0 ] || exit 1
 fi
 
 rm -rf "$BUILD/plain" "$BUILD/renamed"
