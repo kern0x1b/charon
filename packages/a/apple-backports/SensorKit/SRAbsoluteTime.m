@@ -1,5 +1,9 @@
-#import "CharonSensorKit.h"
-#import <CoreFoundation/CoreFoundation.h>
+// Only the time declarations, from the framework's own header: this file is the four time functions and
+// needs nothing the port declares. That also keeps it buildable beside the host's own SensorKit, which is
+// what the differential in tests/backports/host/sensorkit does - the port's class header would collide
+// with the host's newer one.
+#import <Foundation/Foundation.h>
+#import <SensorKit/SRAbsoluteTime.h>
 #import <mach/mach_time.h>
 
 // The four time functions, over the clocks this release actually has.

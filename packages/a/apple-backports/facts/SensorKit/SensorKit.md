@@ -108,8 +108,19 @@ reader**: its answers cannot be held to anything but the header, and this file s
 claiming a comparison that is not possible.
 
 What the host *does* answer is the four time functions, and that is the differential that exists
-(`tests/backports/host/sensorkit`): the host's own answers read first, the port's against them, and a
-mutation of either must change a record.
+(`tests/backports/host/sensorkit`): one binary carries both, the port's four renamed, and three
+relations from the header are asked of each — never backwards, the pair naming the same instant as
+`CFAbsoluteTimeGetCurrent` within a second, and the round trip within a microsecond. Two mutations of
+the port's file must each change a record.
+
+Two things the host's own answers measured, which is why those relations are the ones chosen:
+
+- **the round trip is not bit-exact, on the host either.** Its measured drift is `1.162e-07` seconds,
+  and that is not a defect: an `SRAbsoluteTime` is a `CFTimeInterval`, and a double near 8·10⁸ cannot
+  resolve better than about 120 ns. A value that comes back within a microsecond came back exactly as
+  far as these clocks can tell, which is all the header claims.
+- **two readings in a row may be equal.** The host's own do it, for the same 120 ns. So the relation
+  is "never less", and a third reading after a nap must be greater — which both halves satisfy.
 
 **The device call test has not been run.** It would be the one thing that could catch a mistake in the
 store's key for a property, and the delivery says so.
