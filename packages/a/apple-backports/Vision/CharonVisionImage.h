@@ -26,6 +26,16 @@
 #define CHARON_VISION_IMAGE_H
 
 #import <CoreGraphics/CoreGraphics.h>
+
+#include <stddef.h>
+#include <stdint.h>
+
+/* The resampler, in CharonVisionBilinear.c: separable bilinear, two taps, the half-pixel sample
+ * centre, a truncated position and a value rounded half up, all chosen by the gradient table. */
+extern void charon_vision_bilinear(const uint8_t *source, size_t sourceStride, size_t sourceWide,
+                                   size_t sourceHigh, uint8_t *target, size_t targetStride, long insetX,
+                                   long insetY, long drawWide, long drawHigh, long targetWide, long targetHigh);
+
 #import <CoreVideo/CoreVideo.h>
 
 /* The interpolation Core ML's own image constructor uses, as a macro so the check can compile this
@@ -124,7 +134,12 @@ static inline CVPixelBufferRef charon_vision_pixels(CVPixelBufferRef source, siz
                                (CGFloat)sh * scale);
         }
         if (picture != NULL) {
-            CGContextDrawImage(context, where, picture);
+            /* The draw, by the kernel: the rect `where` is the picture's placement, and the
+             * resampler writes exactly the region of the target that lies inside it. */
+            charon_vision_bilinear(bytes, stride, sw, sh, (uint8_t *)CVPixelBufferGetBaseAddress(buffer),
+                                   CVPixelBufferGetBytesPerRow(buffer), (long)where.origin.x,
+                                   (long)where.origin.y, (long)where.size.width, (long)where.size.height,
+                                   (long)wide, (long)high);
         }
     }
     if (picture != NULL) {
