@@ -162,18 +162,6 @@ BOOL charon_tag_carries(const CMTag *held, CMItemCount heldCount, const CMTag *w
     return count;
 }
 
-
-- (CMTag *)charon_copyAllTags:(CMItemCount *)countOut
-{
-    CMTag *copy = _count ? malloc(_count * sizeof *copy) : NULL;
-    if (_count && !copy)
-        return NULL;
-    if (_count)
-        memcpy(copy, _tags, _count * sizeof *copy);
-    if (countOut)
-        *countOut = (CMItemCount)_count;
-    return copy;
-}
 @end
 
 // The class method that hands a collection's tags to another object, in the helper so the group never

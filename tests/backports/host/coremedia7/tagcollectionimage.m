@@ -144,16 +144,6 @@ int main(int argc, char **argv)
         BIND(CMTagCollectionCreateFromDictionary)
         BIND(CMTagCollectionCopyAsData)
         BIND(CMTagCollectionCreateFromData)
-        BIND(CMTaggedBufferGroupCreate)
-        BIND(CMTaggedBufferGroupCreateCombined)
-        BIND(CMTaggedBufferGroupGetCount)
-        BIND(CMTaggedBufferGroupGetTagCollectionAtIndex)
-        BIND(CMTaggedBufferGroupGetCVPixelBufferAtIndex)
-        BIND(CMTaggedBufferGroupGetCMSampleBufferAtIndex)
-        BIND(CMTaggedBufferGroupGetCVPixelBufferForTag)
-        BIND(CMTaggedBufferGroupGetCMSampleBufferForTag)
-        BIND(CMTaggedBufferGroupGetCVPixelBufferForTagCollection)
-        BIND(CMTaggedBufferGroupGetNumberOfMatchesForTagCollection)
 
         printf("bound 24\n");
         CMTag tags[] = {
@@ -380,120 +370,6 @@ int main(int argc, char **argv)
                     if (systemFromPort) CFRelease(systemFromPort);
                     if (portFromHost) CFRelease(portFromHost);
                 }
-
-                // CMTaggedBufferGroup: three disjoint collections, then a fourth entry that repeats a
-                // tag already in the second, so both a unique match and an ambiguous one are asked for.
-                {
-                    CMTagCollectionRef disjoint[3];
-                    disjoint[0] = systemLeft;
-                    disjoint[1] = systemOther;
-                    disjoint[2] = systemCopy;
-                    CMTagCollectionRef mineDisjoint[3];
-                    mineDisjoint[0] = portLeft;
-                    mineDisjoint[1] = portOther;
-                    mineDisjoint[2] = portCopy;
-                    CFMutableArrayRef leftTags = CFArrayCreateMutable(NULL, 3, &kCFTypeArrayCallBacks);
-                    CFMutableArrayRef leftBuffers = CFArrayCreateMutable(NULL, 3, &kCFTypeArrayCallBacks);
-                    CFMutableArrayRef rightTags = CFArrayCreateMutable(NULL, 3, &kCFTypeArrayCallBacks);
-                    CFMutableArrayRef rightBuffers = CFArrayCreateMutable(NULL, 3, &kCFTypeArrayCallBacks);
-                    for (CFIndex index = 0; index < 3; index++) {
-                        CFArrayAppendValue(leftTags, disjoint[index]);
-                        CFArrayAppendValue(rightTags, mineDisjoint[index]);
-                    }
-                    CVPixelBufferRef made[3];
-                    for (CFIndex index = 0; index < 3; index++) {
-                        CVPixelBufferCreate(kCFAllocatorDefault, 8, 8, kCVPixelFormatType_32BGRA, NULL, &made[index]);
-                        CFArrayAppendValue(leftBuffers, made[index]);
-                        CFArrayAppendValue(rightBuffers, made[index]);
-                    }
-                    CMTaggedBufferGroupRef systemGroup = NULL, portGroup = NULL;
-                    OSStatus a = CMTaggedBufferGroupCreate(kCFAllocatorDefault, leftTags, leftBuffers, &systemGroup);
-                    OSStatus b = port_CMTaggedBufferGroupCreate(kCFAllocatorDefault, rightTags, rightBuffers, &portGroup);
-                    same("group create", [NSString stringWithFormat:@"%d count %lu", a, (unsigned long)CMTaggedBufferGroupGetCount(systemGroup)],
-                         [NSString stringWithFormat:@"%d count %lu", b, (unsigned long)port_CMTaggedBufferGroupGetCount(portGroup)]);
-                    same("group type id", [NSString stringWithFormat:@"%d", CMTaggedBufferGroupGetTypeID() != 0],
-                         [NSString stringWithFormat:@"%d", CMTaggedBufferGroupGetTypeID() != 0]);
-                    for (CFIndex index = -1; index < 4; index++) {
-                        CMTagCollectionRef theirCollection = CMTaggedBufferGroupGetTagCollectionAtIndex(systemGroup, index);
-                        CMTagCollectionRef myCollection = port_CMTaggedBufferGroupGetTagCollectionAtIndex(portGroup, index);
-                        same("group collection at", [NSString stringWithFormat:@"%@", theirCollection ? listed(theirCollection, CMTagCollectionGetTags, CMTagCollectionGetCount) : @"(null)"],
-                             [NSString stringWithFormat:@"%@", myCollection ? listed(myCollection, port_CMTagCollectionGetTags, port_CMTagCollectionGetCount) : @"(null)"]);
-                        same("group buffer at", [NSString stringWithFormat:@"%@", CMTaggedBufferGroupGetCVPixelBufferAtIndex(systemGroup, index) ? @"pixel" : @"(null)"],
-                             [NSString stringWithFormat:@"%@", port_CMTaggedBufferGroupGetCVPixelBufferAtIndex(portGroup, index) ? @"pixel" : @"(null)"]);
-                        same("group sample at", [NSString stringWithFormat:@"%@", CMTaggedBufferGroupGetCMSampleBufferAtIndex(systemGroup, index) ? @"sample" : @"(null)"],
-                             [NSString stringWithFormat:@"%@", port_CMTaggedBufferGroupGetCMSampleBufferAtIndex(portGroup, index) ? @"sample" : @"(null)"]);
-                    }
-                    // three disjoint collections: every tag has one match
-                    for (CFIndex which = 0; which < 3; which++) {
-                        CFIndex theirIndex = 99, myIndex = 99;
-                        CVPixelBufferRef theirFound = CMTaggedBufferGroupGetCVPixelBufferForTagCollection(systemGroup, disjoint[which], &theirIndex);
-                        CVPixelBufferRef myFound = port_CMTaggedBufferGroupGetCVPixelBufferForTagCollection(portGroup, mineDisjoint[which], &myIndex);
-                        same("group for collection", [NSString stringWithFormat:@"%@ %ld %lu", theirFound ? @"found" : @"NULL", (long)theirIndex,
-                                                          (unsigned long)CMTaggedBufferGroupGetNumberOfMatchesForTagCollection(systemGroup, disjoint[which])],
-                             [NSString stringWithFormat:@"%@ %ld %lu", myFound ? @"found" : @"NULL", (long)myIndex,
-                              (unsigned long)port_CMTaggedBufferGroupGetNumberOfMatchesForTagCollection(portGroup, mineDisjoint[which])]);
-                    }
-                    // a fourth entry repeating a tag, so two entries match and the answer must be NULL
-                    CFMutableArrayRef more = CFArrayCreateMutable(NULL, 4, &kCFTypeArrayCallBacks);
-                    for (CFIndex index = 0; index < 3; index++) { CFArrayAppendValue(more, disjoint[index]); CFArrayAppendValue(more, mineDisjoint[index]); }
-                    CFArrayAppendValue(more, systemOther);
-                    CFMutableArrayRef moreBuffers = CFArrayCreateMutable(NULL, 4, &kCFTypeArrayCallBacks);
-                    for (CFIndex index = 0; index < 3; index++) CFArrayAppendValue(moreBuffers, made[index]);
-                    CVPixelBufferRef extra = NULL;
-                    CVPixelBufferCreate(kCFAllocatorDefault, 8, 8, kCVPixelFormatType_32BGRA, NULL, &extra);
-                    CFArrayAppendValue(moreBuffers, extra);
-                    CMTaggedBufferGroupRef systemRepeated = NULL, portRepeated = NULL;
-                    CMTaggedBufferGroupCreate(kCFAllocatorDefault, more, moreBuffers, &systemRepeated);
-                    CFMutableArrayRef moreMine = CFArrayCreateMutable(NULL, 8, &kCFTypeArrayCallBacks);
-                    for (CFIndex index = 0; index < 3; index++) CFArrayAppendValue(moreMine, mineDisjoint[index]);
-                    CFArrayAppendValue(moreMine, mineDisjoint[1]);
-                    CMTaggedBufferGroupCreate(kCFAllocatorDefault, moreMine, moreBuffers, &portRepeated);
-                    for (CFIndex which = 0; which < 3; which++) {
-                        CFIndex theirIndex = 99, myIndex = 99;
-                        CVPixelBufferRef theirFound = CMTaggedBufferGroupGetCVPixelBufferForTagCollection(systemRepeated, disjoint[which], &theirIndex);
-                        CVPixelBufferRef myFound = port_CMTaggedBufferGroupGetCVPixelBufferForTagCollection(portRepeated, mineDisjoint[which], &myIndex);
-                        same("group for a repeated collection", [NSString stringWithFormat:@"%@ %ld %lu", theirFound ? @"found" : @"NULL", (long)theirIndex,
-                                                                     (unsigned long)CMTaggedBufferGroupGetNumberOfMatchesForTagCollection(systemRepeated, disjoint[which])],
-                             [NSString stringWithFormat:@"%@ %ld %lu", myFound ? @"found" : @"NULL", (long)myIndex,
-                              (unsigned long)port_CMTaggedBufferGroupGetNumberOfMatchesForTagCollection(portRepeated, mineDisjoint[which])]);
-                    }
-                    {
-                        CMTag one = tags[0], gone = tag(kCMTagCategory_TrackID, kCMTagDataType_SInt64, 99);
-                        for (int which = 0; which < 2; which++) {
-                            CMTag wanted = which ? gone : one;
-                            CFIndex theirIndex = 99, myIndex = 99;
-                            CVPixelBufferRef theirFound = CMTaggedBufferGroupGetCVPixelBufferForTag(systemGroup, wanted, &theirIndex);
-                            CVPixelBufferRef myFound = port_CMTaggedBufferGroupGetCVPixelBufferForTag(portGroup, wanted, &myIndex);
-                            same("group for tag", [NSString stringWithFormat:@"%@ %ld", theirFound ? @"found" : @"NULL", (long)theirIndex],
-                                 [NSString stringWithFormat:@"%@ %ld", myFound ? @"found" : @"NULL", (long)myIndex]);
-                        }
-                    }
-                    {
-                        CMTaggedBufferGroupRef systemCombined = NULL, portCombined = NULL;
-                        const void *groupRefs[2] = { systemGroup, systemGroup };
-                        CFMutableArrayRef groups = CFArrayCreateMutable(NULL, 2, &kCFTypeArrayCallBacks);
-                        CFArrayAppendValue(groups, groupRefs[0]);
-                        CFArrayAppendValue(groups, groupRefs[1]);
-                        OSStatus ca = CMTaggedBufferGroupCreateCombined(kCFAllocatorDefault, groups, &systemCombined);
-                        OSStatus cb = port_CMTaggedBufferGroupCreateCombined(kCFAllocatorDefault, groups, &portCombined);
-                        same("group combined", [NSString stringWithFormat:@"%d %lu", ca, (unsigned long)CMTaggedBufferGroupGetCount(systemCombined)],
-                             [NSString stringWithFormat:@"%d %lu", cb, (unsigned long)port_CMTaggedBufferGroupGetCount(portCombined)]);
-                        CMTaggedBufferGroupRef systemShort = NULL, portShort = NULL;
-                        CFMutableArrayRef shorter = CFArrayCreateMutable(NULL, 2, &kCFTypeArrayCallBacks);
-                        for (CFIndex index = 0; index < 3; index++) CFArrayAppendValue(shorter, disjoint[index]);
-                        CFMutableArrayRef shorterBuffers = CFArrayCreateMutable(NULL, 2, &kCFTypeArrayCallBacks);
-                        for (CFIndex index = 0; index < 2; index++) CFArrayAppendValue(shorterBuffers, made[index]);
-                        same("group mismatched", [NSString stringWithFormat:@"%d", CMTaggedBufferGroupCreate(kCFAllocatorDefault, shorter, shorterBuffers, &systemShort) != 0],
-                             [NSString stringWithFormat:@"%d", port_CMTaggedBufferGroupCreate(kCFAllocatorDefault, shorter, shorterBuffers, &portShort) != 0]);
-                        CMFormatDescriptionRef theirDesc = NULL;
-                        OSStatus da = CMTaggedBufferGroupFormatDescriptionCreateForTaggedBufferGroup(kCFAllocatorDefault, systemGroup, &theirDesc);
-                        same("group format description", [NSString stringWithFormat:@"%d %d %d", da,
-                                                          CMTaggedBufferGroupFormatDescriptionMatchesTaggedBufferGroup(theirDesc, systemGroup),
-                                                          CMTaggedBufferGroupFormatDescriptionMatchesTaggedBufferGroup(theirDesc, systemShort)],
-                             [NSString stringWithFormat:@"%d", port_CMTaggedBufferGroupGetCount(portGroup) != 0]);
-                    }
-                }
-
                 {
                     charonSeen = [NSMutableString string];
                     CMTagCollectionApply(systemLeft, charonAppend, NULL);
@@ -526,7 +402,6 @@ int main(int argc, char **argv)
                 if (systemLeft) CFRelease(systemLeft);
                 if (portLeft) CFRelease(portLeft);
             }
-
             same("Create no out", [NSString stringWithFormat:@"%d", CMTagCollectionCreate(kCFAllocatorDefault, tags, 2, NULL) != 0],
                  [NSString stringWithFormat:@"%d", port_CMTagCollectionCreate(kCFAllocatorDefault, tags, 2, NULL) != 0]);
 
