@@ -9,7 +9,9 @@ all. But a class **named** `CPListItem` is, and it is not CarPlay's: its own ele
 `accessoryType` and no `handler`.
 
 So Apple's CarPlay `CPListItem` is iOS 12 and absent, and its *name* is taken, which is the case
-`charon_alias.h` exists for. `CarPlay/CPListItem.m` carries the name as an **alias**: it defines
+`charon_alias.h` exists for. (Note what this is and is not: the release has no `CPWindow`,
+`CPTemplate` or any other CarPlay class, but it does have this one *name*, and a name the release
+exports cannot be replaced by a second class of the same name.) `CarPlay/CPListItem.m` carries the name as an **alias**: it defines
 `CharonCPListItem`, exports the release's name to it, and records the pair in
 `__DATA,__charon_alias` for the library's loader. A subclass an application writes of `CPListItem`
 inherits the release's class and is laid out after it; sent to `CharonCPListItem` itself, the class
@@ -162,7 +164,7 @@ own name is now `tabTitle`, which the header does declare.
 is drawn in a bar), and each template asks its buttons to draw themselves: the list and grid and map
 templates put the bar buttons in a bar the template owns, the grid template asks each grid button to
 draw into the collection view cell it is in, and the map template asks each map button to draw over
-its map inside the window's own `mapButtonSafeAreaLayoutGuide`. Each button's own handler is called
+its map inside the map view's own insets. Each button's own handler is called
 when the drawn mark is tapped. The header's own rule that a navigation bar shows at most two leading
 buttons is honoured by the bar.
 
@@ -185,12 +187,15 @@ operations, sends the delegate the four template lifecycle messages, and answers
 with **this device's own screen trait collection**, because the car is this device. `prefersDarkUser
 UserInterfaceStyle` is `inert`: the release has no dark mode, and there is nothing for it to change.
 
-**`CPWindow.mapButtonSafeAreaLayoutGuide` is `absent`, and the gate is why.** A layout guide is
-iOS 9 and this release has none: `apple.objc.inventory` finds no `-mapButtonSafeAreaLayoutGuide` on
-the release's `CPWindow`, and the gate's own imports stage named `_OBJC_CLASS_$_UILayoutGuide` as
-the one symbol `libCarPlayBackports.dylib` imported that the device's iOS 6.1.3 does not export. The
-map template's own buttons are therefore laid out inside the map view's own insets, and the
-registry row says so in those words.
+**`CPWindow.mapButtonSafeAreaLayoutGuide` has no registry row at all, and that is the accurate
+state.** Measured three ways: a layout guide is iOS 9; the release's 6.1.3 inventory has **no
+`CPWindow` of any name** (CarPlay is not in this release, which is the whole of this file's
+premise); and the gate's own imports stage named `_OBJC_CLASS_$_UILayoutGuide` as the one symbol
+`libCarPlayBackports.dylib` imported that the device's iOS 6.1.3 does not export. So neither the
+release nor this port answers the property, there is nothing for a row to describe, and the
+ledger's row stays `missing` -- which is the honest word for a member nobody carries. The map
+template's own buttons are laid out inside the map view's own insets, so the picture does not
+depend on it either way.
 
 **The wall, per class, as `absent` (7 of them):** `CPTemplateApplicationScene` (13.0),
 `CPTemplateApplicationDashboardScene` (13.4), `CPTemplateApplicationInstrumentClusterScene` (15.4),
