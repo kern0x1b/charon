@@ -70,9 +70,18 @@ NSUInteger CharonMLCWidthOfDataType(MLCDataType dataType)
         case MLCDataTypeCount:
             return 0;
     }
-    // The host gives one byte for the two values between the enumerated ones that are neither, and no
-    // storage at all for the value 2. Both are reproduced, because both are what the host answers.
-    return dataType == 2 ? 0 : 1;
+    // The table is the measurement, entry by entry. The two values between the enumerated ones that are
+    // neither are not alike: the value 2 has no storage and the framework answers no descriptor for it,
+    // while the value 6 has one byte and answers a 4 by 4 of it as 16 bytes. Nothing outside the
+    // enumeration and that one has any - measured for -1, 3, 11, 12, 13 and 14, all nil.
+    //
+    // An earlier version of this generalised the gap into a rule for both of its values, which happened to
+    // be right for the pair it was written from and wrong for 6; the cases now ask for each of these
+    // values, so it cannot be a two-sample reading again.
+    if (dataType == 6) {
+        return 1;
+    }
+    return 0;
 }
 
 NSUInteger CharonMLCElementCount(NSArray<NSNumber *> *shape)
@@ -638,16 +647,11 @@ static double CharonMLCRandomNormal(CharonMLCRandom *random, double *spare)
                     featureChannelCount:(NSUInteger)featureChannelCount
                               batchSize:(NSUInteger)batchSize
 {
-    // One sequence of the given length per batch entry, which is the shape and the lengths the host
-    // answers (measured: a length of 3, two channels and a batch of 2 is a shape of 2, 3, 2 with the
-    // lengths 3, 3).
-    NSMutableArray *lengths = [NSMutableArray arrayWithCapacity:batchSize];
-    for (NSUInteger index = 0; index < batchSize; index++) {
-        [lengths addObject:@(sequenceLength)];
-    }
-    // A sequence tensor with no data and no initializer is filled, as the framework fills it (measured: its
-    // values are random and every one of them differs), while the form that is given a nil data object is
-    // not.
+    // One sequence of the given length per batch entry, which is the shape and the lengths the framework
+    // answers (measured: a length of 3, two channels and a batch of 2 is a shape of 2, 3, 2 with the lengths
+    // 3, 3), and the private path below builds it. A sequence tensor with no data and no initializer is
+    // filled, as the framework fills it (measured: its values are random and every one of them differs),
+    // while the form that is given a nil data object is not.
     MLCTensor *tensor = [self charon_tensorWithSequenceLength:sequenceLength
                                           featureChannelCount:featureChannelCount
                                                     batchSize:batchSize
@@ -855,8 +859,9 @@ static double CharonMLCRandomNormal(CharonMLCRandom *random, double *spare)
 - (id)copyWithZone:(NSZone *)zone
 {
     // A copy is another tensor over the same descriptor and the same numbers, with a number and a name of
-    // its own (measured: the copy of a tensor has the same shape, its own tensorID and no data of its own
-    // until one is written).
+    // its own, and it keeps the data: a copy of a tensor holding 1.5 holds 1.5, and answers a name of its
+    // own (measured). An earlier version of this comment said the copy has no data of its own, which the
+    // framework does not do, and the case that should have shown it was copying a tensor that had none.
     MLCTensor *copy = [[[self class] allocWithZone:zone] init];
     copy->_tensorID = CharonMLCNextTensorID();
     copy->_descriptor = [_descriptor copy];
@@ -1047,6 +1052,9 @@ static double CharonMLCRandomNormal(CharonMLCRandom *random, double *spare)
                                       batchSize:(NSUInteger)batchSize
                                          filled:(BOOL)filled
 {
+    // One sequence of the given length per batch entry, which is the shape and the lengths the framework
+    // answers (measured: a length of 3, two channels and a batch of 2 is a shape of 2, 3, 2 with the
+    // lengths 3, 3).
     NSMutableArray *lengths = [NSMutableArray arrayWithCapacity:batchSize];
     for (NSUInteger index = 0; index < batchSize; index++) {
         [lengths addObject:@(sequenceLength)];

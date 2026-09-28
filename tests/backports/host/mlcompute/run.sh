@@ -63,16 +63,19 @@ fi
 # differ. A GPU through Metal and the Neural Engine: the host has both, the port has neither, and each side
 # answers as a machine with what it has. The cases record the difference rather than hide it, and the facts
 # say what the port answers and why.
-names="gpuDevice|aneDevice|deviceWithType (GPU|CPU|Any|Any multiple)|cpuDevice|cpuDevice copy|deviceWithGPUDevices empty|lstm with (peepholes|gates)"
+names="gpuDevice|aneDevice|deviceWithType (GPU|CPU|Any|Any multiple)|cpuDevice|cpuDevice copy|deviceWithGPUDevices empty"
 allowed="^($names)$"
 tab=$(printf '\t')
 diffout=$(diff "$build/system.log" "$build/port.log" || true)
 system_only=$(echo "$diffout" | grep "^<" | sed "s/^< //" || true)
-unexpected=$(echo "$system_only" | cut -f1 | grep -v -E "$allowed" || true)
+# Both sides of the diff, not only the left one: a case the port answered and the host did not is as much a
+# divergence as the other way round, and looking at one side alone passed it.
+port_only=$(echo "$diffout" | grep "^>" | sed "s/^> //" || true)
+unexpected=$(printf '%s\n%s\n' "$system_only" "$port_only" | cut -f1 | grep -v -E "$allowed" | grep -v '^$' || true)
 if [ -n "$unexpected" ]; then
     echo "the port answers differently where it should not:"
     echo "$unexpected" | while IFS= read -r name; do
-        printf '%s\n' "$system_only" | grep -F "$(printf '%s\t' "$name")"
+        printf '%s\n%s\n' "$system_only" "$port_only" | grep -F "$(printf '%s\t' "$name")"
     done | head -40
     echo "log=$build/system.log $build/port.log"
     exit 1

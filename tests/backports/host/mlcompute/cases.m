@@ -220,13 +220,18 @@ static void initializer(NSString *name, MLCRandomInitializerType type)
         }
         sum += value;
     }
-    // The range is compared to the bound and the mean to half of it, both with a tolerance wide enough for
-    // four thousand samples and narrow enough that a bound of one instead of sqrt(3) would not pass.
+    // Two facts about the initializer, both checked against a four-thousand-sample window, and the second
+    // one is the one that distinguishes the bounds: the sample stays inside the bound the initializer
+    // documents, and it *reaches* that bound rather than sitting well inside it. A bound of one where
+    // sqrt(3) is the truth would fail the second, because a Glorot sample fills 0 to 1.732 and a sample
+    // capped at one cannot have a high above 1.0 - and the first check alone would have passed it, which is
+    // what the earlier version of this case did.
     double bound = type == MLCRandomInitializerTypeUniform ? 1.0 : 1.7320508075688772;
     double center = type == MLCRandomInitializerTypeUniform ? 0.5 : 0.0;
     BOOL withinBound = low >= -bound - 0.05 && high <= bound + 0.05;
+    BOOL reachesBound = high > bound * 0.9 || low < -bound * 0.9;
     BOOL meanNear = fabs(sum / 4096.0 - center) < 0.1;
-    key(name, [NSString stringWithFormat:@"withinBound=%d meanNear=%d", (int)withinBound, (int)meanNear]);
+    key(name, [NSString stringWithFormat:@"withinBound=%d reachesBound=%d meanNear=%d", (int)withinBound, (int)reachesBound, (int)meanNear]);
 }
 
 void charon_mlcompute_cases(void)
@@ -297,6 +302,25 @@ void charon_mlcompute_cases(void)
         }
         for (int type = 0; type < 3; type++) {
             record([NSString stringWithFormat:@"MLCGradientClippingTypeDebugDescription(%d)", type], MLCGradientClippingTypeDebugDescription(type));
+        }
+
+        // A value outside each enumeration. The framework names the first case for a value that
+        // is not one of its cases, and the port was answering nil: thirteen default arms that no
+        // case reached. Both sides now answer the same thing for a value neither is a case of.
+        for (int value = -1; value <= 999; value += 1000) {
+            record([NSString stringWithFormat:@"MLCActivationTypeDebugDescription(%d)", value], MLCActivationTypeDebugDescription((MLCActivationType)value));
+            record([NSString stringWithFormat:@"MLCArithmeticOperationDebugDescription(%d)", value], MLCArithmeticOperationDebugDescription((MLCArithmeticOperation)value));
+            record([NSString stringWithFormat:@"MLCReductionTypeDebugDescription(%d)", value], MLCReductionTypeDebugDescription((MLCReductionType)value));
+            record([NSString stringWithFormat:@"MLCLossTypeDebugDescription(%d)", value], MLCLossTypeDebugDescription((MLCLossType)value));
+            record([NSString stringWithFormat:@"MLCPaddingTypeDebugDescription(%d)", value], MLCPaddingTypeDebugDescription((MLCPaddingType)value));
+            record([NSString stringWithFormat:@"MLCConvolutionTypeDebugDescription(%d)", value], MLCConvolutionTypeDebugDescription((MLCConvolutionType)value));
+            record([NSString stringWithFormat:@"MLCPoolingTypeDebugDescription(%d)", value], MLCPoolingTypeDebugDescription((MLCPoolingType)value));
+            record([NSString stringWithFormat:@"MLCSoftmaxOperationDebugDescription(%d)", value], MLCSoftmaxOperationDebugDescription((MLCSoftmaxOperation)value));
+            record([NSString stringWithFormat:@"MLCSampleModeDebugDescription(%d)", value], MLCSampleModeDebugDescription((MLCSampleMode)value));
+            record([NSString stringWithFormat:@"MLCLSTMResultModeDebugDescription(%d)", value], MLCLSTMResultModeDebugDescription((MLCLSTMResultMode)value));
+            record([NSString stringWithFormat:@"MLCPaddingPolicyDebugDescription(%d)", value], MLCPaddingPolicyDebugDescription((MLCPaddingPolicy)value));
+            record([NSString stringWithFormat:@"MLCComparisonOperationDebugDescription(%d)", value], MLCComparisonOperationDebugDescription((MLCComparisonOperation)value));
+            record([NSString stringWithFormat:@"MLCGradientClippingTypeDebugDescription(%d)", value], MLCGradientClippingTypeDebugDescription((MLCGradientClippingType)value));
         }
 
         printf("== MLCPlatform\n");
@@ -419,6 +443,11 @@ void charon_mlcompute_cases(void)
         record(@"label after setting", tensor.label);
         MLCTensor *copy = [tensor copy];
         showTensor(@"tensor copy", copy);
+        // A copy of a tensor that *has* data, which is the only case that can show whether it keeps it.
+        MLCTensor *filled3 = [MLCTensor tensorWithDescriptor:[MLCTensorDescriptor descriptorWithShape:@[@2, @2] dataType:MLCDataTypeFloat32] fillWithData:@(1.5)];
+        filled3.label = @"named";
+        MLCTensor *filledCopy = [filled3 copy];
+        showTensor(@"tensor copy with data", filledCopy);
         MLCTensor *filled = [MLCTensor tensorWithDescriptor:[MLCTensorDescriptor descriptorWithShape:@[@2, @2] dataType:MLCDataTypeFloat32] fillWithData:@(3.5)];
         if (filled.data) {
             const float *filledBytes = filled.data.bytes;
@@ -546,7 +575,13 @@ void charon_mlcompute_cases(void)
         MLCTensorParameter *newParameter = CharonNewOf(NSStringFromClass([MLCTensorParameter class]));
         key(@"parameter init", newParameter ? [NSString stringWithFormat:@"tensor=%@ updatable=%d", newParameter.tensor, (int)newParameter.isUpdatable] : @"(nil)");
         MLCTensorParameter *newParameter2 = CharonNewOf(NSStringFromClass([MLCTensorParameter class]));
-        (void)newParameter2;
+        // The device-side optimizer buffers: the class the two rows are, which had no case.
+        id optimizerDeviceData = CharonNewOf(NSStringFromClass([MLCTensorOptimizerDeviceData class]));
+        // The class and the copy, not -description: this class has no description of its own, so the two
+        // sides spell one differently and that is not a behaviour of the port.
+        flag(@"MLCTensorOptimizerDeviceData new is of the class",
+             [optimizerDeviceData isKindOfClass:[MLCTensorOptimizerDeviceData class]]);
+        flag(@"MLCTensorOptimizerDeviceData copies", [optimizerDeviceData copy] ? @"yes" : @"no");
 
         printf("== MLCLayer\n");
         MLCLayer *layer0 = CharonNewOf(NSStringFromClass([MLCLayer class]));

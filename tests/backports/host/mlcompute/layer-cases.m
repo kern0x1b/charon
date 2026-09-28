@@ -277,6 +277,20 @@ void charon_mlcompute_layer_cases(void)
         row(@"layer norm refused, shape", wrongNormalized.normalizedShape);
         row(@"layer norm refused, beta", wrongNormalized.beta ? @"kept" : @"no");
 
+        // The multihead attention factory, which had no case: the host answers nil for every arrangement
+        // tried, and the port now does too.
+        MLCMultiheadAttentionDescriptor *attentionDescriptor = [MLCMultiheadAttentionDescriptor descriptorWithModelDimension:4 headCount:2];
+        MLCTensor *attentionWeights = [MLCTensor tensorWithDescriptor:shape_(@[ @4, @4 ]) fillWithData:@(1)];
+        MLCTensor *attentionBiases = [MLCTensor tensorWithDescriptor:shape_(@[ @4 ]) fillWithData:@(1)];
+        MLCMultiheadAttentionLayer *attention = [MLCMultiheadAttentionLayer layerWithDescriptor:attentionDescriptor
+                                                                                   weights:@[ attentionWeights ]
+                                                                                    biases:@[ attentionBiases ]
+                                                                        attentionBiases:@[ attentionBiases ]];
+        row(@"attention factory", attention);
+        MLCMultiheadAttentionLayer *attentionEmpty = [MLCMultiheadAttentionLayer layerWithDescriptor:attentionDescriptor
+                                                                                        weights:@[] biases:@[] attentionBiases:@[]];
+        row(@"attention factory with no weights", attentionEmpty);
+
         MLCTensor *gateIn = [MLCTensor tensorWithDescriptor:shape_(@[ @5, @4 ]) fillWithData:@(1)];
         MLCTensor *gateHidden = [MLCTensor tensorWithDescriptor:shape_(@[ @5, @5 ]) fillWithData:@(1)];
         MLCTensor *gateBias = [MLCTensor tensorWithDescriptor:shape_(@[ @5 ]) fillWithData:@(1)];

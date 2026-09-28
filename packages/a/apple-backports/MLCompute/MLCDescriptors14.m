@@ -121,8 +121,10 @@ scalesGradientByFrequency:(BOOL)scales;
 // The default every activation carries for the parameter its type does not use, and the default the
 // factories of the two- and three-argument forms keep for the ones they do not name. Measured: a
 // descriptor of any type made with no argument has a = b = c = 1 except ReLU (a = 0), linear (b = 0), hard
-// sigmoid (a = 0.2, b = 0.5), the ReLUN (a = 0), hard shrink and soft shrink (a = 0.5) and tanh shrink
-// (a = 0); the longer forms take what they are given and keep 1 for the rest.
+// sigmoid (a = 0.2, b = 0.5), hard shrink and soft shrink (a = 0.5) - and nothing else, so the ReLUN and
+// the tanh shrink carry 1, as does the GELU. The a of 0 belongs to +[MLCActivationLayer relu6Layer] and
+// +[MLCActivationLayer tanhShrinkLayer], which name a and give it, not to the descriptor's default; the
+// longer forms take what they are given and keep 1 for the rest.
 static void CharonMLCDefaultActivation(MLCActivationType type, float *a, float *b, float *c)
 {
     *a = 1.0f;

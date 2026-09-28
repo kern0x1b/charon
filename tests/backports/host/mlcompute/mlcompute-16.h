@@ -1,17 +1,15 @@
-// The members of MLCompute 14 that MLCompute 26's headers no longer declare, put back so that one program
-// can be written against the surface this port carries and run beside both the host's framework and the
-// port's own. Each is a category with declarations and no implementation, so the framework's own code
-// answers for the system build and the port's answers for the port build, and nothing here is a second
-// copy of a declaration that still exists: where the SDK still declares a member, this file says nothing
-// about it.
+// What the cases reach for that the current header does not name. There is no member of MLCompute 14 that
+// MLCompute 26's headers dropped and that the corpus of SDK 26.2 still names: +[MLCTensor tensorWithShape:]
+// and +[MLCTensorDescriptor descriptorWithShape:] are in both SDKs, and the one-argument forms the
+// framework no longer declares - +descriptorWithShape: on its own, +tensorWithShape:data:,
+// +tensorWithShape:fillWithData: - are in neither the corpus nor the framework, which answers
+// unrecognised selector for them. So this file declares no member of its own.
+//
+// What it does carry is the second half: the initialisers MLCompute's own header marks unavailable, on
+// the classes below. A program cannot name them through the class, so the cases reach them through a
+// Class, which is a runtime lookup and not a link-time reference.
 #import <Foundation/Foundation.h>
 #import <MLCompute/MLCompute.h>
-
-@interface MLCTensor (CharonSixteen)
-// Removed in MLCompute 26, present in 14 and still in the framework on the host (measured: the class
-// responds to it and answers a tensor labelled data0).
-+ (instancetype)tensorWithShape:(NSArray<NSNumber *> *)shape;
-@end
 
 // MLCompute's own header marks +new and -init unavailable on the classes below. The framework carries them
 // all and a program can reach them through a Class, so the cases ask that way rather than by a name the

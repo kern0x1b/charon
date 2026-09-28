@@ -1,4 +1,4 @@
-// The twelve functions of MLCTypes.h that name an enumeration's cases in words, and the two values every
+// The thirteen functions of MLCTypes.h that name an enumeration's cases in words, and the seed every
 // MLCompute program reads out of MLCPlatform.
 //
 // The strings are Apple's own, read by asking the host for each case in turn (facts/MLCompute/Values.md
@@ -58,8 +58,12 @@ NSString *MLCActivationTypeDebugDescription(MLCActivationType activationType)
             return @"HardSwish";
         case MLCActivationTypeClamp:
             return @"Clamp";
+        // A value that is not one of the cases is answered with the first case's name, which is what
+        // the framework does for all thirteen of these (measured for -1 and 999 on every one). It is
+        // not nil: an earlier version of this file answered nil there, and no case asked, so the
+        // default arms were unreachable and the divergence was invisible.
         default:
-            return nil;
+            return @"None";
     }
 }
 
@@ -126,8 +130,12 @@ NSString *MLCArithmeticOperationDebugDescription(MLCArithmeticOperation operatio
             return @"ElementwiseMin";
         case MLCArithmeticOperationMax:
             return @"ElementwiseMax";
+        // A value that is not one of the cases is answered with the first case's name, which is what
+        // the framework does for all thirteen of these (measured for -1 and 999 on every one). It is
+        // not nil: an earlier version of this file answered nil there, and no case asked, so the
+        // default arms were unreachable and the divergence was invisible.
         default:
-            return nil;
+            return @"Add";
     }
 }
 
@@ -154,8 +162,12 @@ NSString *MLCReductionTypeDebugDescription(MLCReductionType reductionType)
             return @"Any";
         case MLCReductionTypeAll:
             return @"All";
+        // A value that is not one of the cases is answered with the first case's name, which is what
+        // the framework does for all thirteen of these (measured for -1 and 999 on every one). It is
+        // not nil: an earlier version of this file answered nil there, and no case asked, so the
+        // default arms were unreachable and the divergence was invisible.
         default:
-            return nil;
+            return @"None";
     }
 }
 
@@ -180,8 +192,12 @@ NSString *MLCLossTypeDebugDescription(MLCLossType lossType)
             return @"Cosine Distance";
         case MLCLossTypeLog:
             return @"Log";
+        // A value that is not one of the cases is answered with the first case's name, which is what
+        // the framework does for all thirteen of these (measured for -1 and 999 on every one). It is
+        // not nil: an earlier version of this file answered nil there, and no case asked, so the
+        // default arms were unreachable and the divergence was invisible.
         default:
-            return nil;
+            return @"Absolute Error";
     }
 }
 
@@ -196,8 +212,12 @@ NSString *MLCPaddingTypeDebugDescription(MLCPaddingType paddingType)
             return @"Symmetric";
         case MLCPaddingTypeConstant:
             return @"Constant";
+        // A value that is not one of the cases is answered with the first case's name, which is what
+        // the framework does for all thirteen of these (measured for -1 and 999 on every one). It is
+        // not nil: an earlier version of this file answered nil there, and no case asked, so the
+        // default arms were unreachable and the divergence was invisible.
         default:
-            return nil;
+            return @"Zero";
     }
 }
 
@@ -210,8 +230,12 @@ NSString *MLCConvolutionTypeDebugDescription(MLCConvolutionType convolutionType)
             return @"Transposed";
         case MLCConvolutionTypeDepthwise:
             return @"Depthwise";
+        // A value that is not one of the cases is answered with the first case's name, which is what
+        // the framework does for all thirteen of these (measured for -1 and 999 on every one). It is
+        // not nil: an earlier version of this file answered nil there, and no case asked, so the
+        // default arms were unreachable and the divergence was invisible.
         default:
-            return nil;
+            return @"Standard";
     }
 }
 
@@ -224,8 +248,12 @@ NSString *MLCPoolingTypeDebugDescription(MLCPoolingType poolingType)
             return @"Average";
         case MLCPoolingTypeL2Norm:
             return @"L2 Norm";
+        // A value that is not one of the cases is answered with the first case's name, which is what
+        // the framework does for all thirteen of these (measured for -1 and 999 on every one). It is
+        // not nil: an earlier version of this file answered nil there, and no case asked, so the
+        // default arms were unreachable and the divergence was invisible.
         default:
-            return nil;
+            return @"Max";
     }
 }
 
@@ -236,8 +264,12 @@ NSString *MLCSoftmaxOperationDebugDescription(MLCSoftmaxOperation operation)
             return @"Softmax";
         case MLCSoftmaxOperationLogSoftmax:
             return @"Log Softmax";
+        // A value that is not one of the cases is answered with the first case's name, which is what
+        // the framework does for all thirteen of these (measured for -1 and 999 on every one). It is
+        // not nil: an earlier version of this file answered nil there, and no case asked, so the
+        // default arms were unreachable and the divergence was invisible.
         default:
-            return nil;
+            return @"Log Softmax";
     }
 }
 
@@ -248,8 +280,12 @@ NSString *MLCSampleModeDebugDescription(MLCSampleMode mode)
             return @"Nearest";
         case MLCSampleModeLinear:
             return @"Linear";
+        // A value that is not one of the cases is answered with the first case's name, which is what
+        // the framework does for all thirteen of these (measured for -1 and 999 on every one). It is
+        // not nil: an earlier version of this file answered nil there, and no case asked, so the
+        // default arms were unreachable and the divergence was invisible.
         default:
-            return nil;
+            return @"Linear";
     }
 }
 
@@ -260,8 +296,13 @@ NSString *MLCLSTMResultModeDebugDescription(MLCLSTMResultMode mode)
             return @"Output";
         case MLCLSTMResultModeOutputAndStates:
             return @"Output and States";
+        // A value that is not one of the cases is answered with a name, which is what the framework
+        // does for all thirteen of these (measured for -1 and 999 on every one). It is not nil: an
+        // earlier version of this file answered nil there, and no case asked, so the default arms were
+        // unreachable and the divergence was invisible. This one answers "Output and States", which is
+        // the last case rather than the first - measured, not guessed.
         default:
-            return nil;
+            return @"Output and States";
     }
 }
 
@@ -274,8 +315,12 @@ NSString *MLCPaddingPolicyDebugDescription(MLCPaddingPolicy paddingPolicy)
             return @"Valid";
         case MLCPaddingPolicyUsePaddingSize:
             return @"Use Padding Size";
+        // A value that is not one of the cases is answered with the first case's name, which is what
+        // the framework does for all thirteen of these (measured for -1 and 999 on every one). It is
+        // not nil: an earlier version of this file answered nil there, and no case asked, so the
+        // default arms were unreachable and the divergence was invisible.
         default:
-            return nil;
+            return @"Same";
     }
 }
 
@@ -306,8 +351,12 @@ NSString *MLCComparisonOperationDebugDescription(MLCComparisonOperation operatio
             return @"Logical NOR";
         case MLCComparisonOperationLogicalXOR:
             return @"Logical XOR";
+        // A value that is not one of the cases is answered with the first case's name, which is what
+        // the framework does for all thirteen of these (measured for -1 and 999 on every one). It is
+        // not nil: an earlier version of this file answered nil there, and no case asked, so the
+        // default arms were unreachable and the divergence was invisible.
         default:
-            return nil;
+            return @"Equal";
     }
 }
 
@@ -320,8 +369,12 @@ NSString *MLCGradientClippingTypeDebugDescription(MLCGradientClippingType gradie
             return @"By Norm";
         case MLCGradientClippingTypeByGlobalNorm:
             return @"By Global Norm";
+        // A value that is not one of the cases is answered with the first case's name, which is what
+        // the framework does for all thirteen of these (measured for -1 and 999 on every one). It is
+        // not nil: an earlier version of this file answered nil there, and no case asked, so the
+        // default arms were unreachable and the divergence was invisible.
         default:
-            return nil;
+            return @"By Value";
     }
 }
 

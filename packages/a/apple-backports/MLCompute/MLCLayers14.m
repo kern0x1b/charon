@@ -1689,13 +1689,15 @@ static BOOL CharonMLCNormalized(MLCTensor *tensor, NSArray<NSNumber *> *shape)
                      peepholeWeights:(NSArray<MLCTensor *> *)peepholeWeights
                              biases:(NSArray<MLCTensor *> *)biases
 {
-    return [self charon_layerWithDescriptor:descriptor
-                              inputWeights:inputWeights
-                             hiddenWeights:hiddenWeights
-                            peepholeWeights:peepholeWeights
-                                     biases:biases
-                             gateActivations:nil
-                        outputResultActivation:nil];
+    // nil, as the framework answers. This form and the one that also takes both activation arrays refuse
+    // every peephole weight and gate arrangement tried - four gates of the hidden size, one, three, none,
+    // with and without biases, the biases declared and not - and answer nil every time, while the three
+    // shorter forms keep what they are given (measured, facts/MLCompute/Layers.md). The port answers nil
+    // for the same reason: a factory that answered a layer the framework would not is a row whose
+    // behaviour is not the framework's, and the rule that accepts them is not measured. Both are cases in
+    // tests/backports/host/mlcompute, so a framework that starts accepting weights shows up there rather
+    // than in a silence.
+    return nil;
 }
 
 + (instancetype)layerWithDescriptor:(MLCLSTMDescriptor *)descriptor
@@ -1706,13 +1708,7 @@ static BOOL CharonMLCNormalized(MLCTensor *tensor, NSArray<NSNumber *> *shape)
                      gateActivations:(NSArray<MLCActivationDescriptor *> *)gateActivations
                 outputResultActivation:(MLCActivationDescriptor *)outputResultActivation
 {
-    return [self charon_layerWithDescriptor:descriptor
-                              inputWeights:inputWeights
-                             hiddenWeights:hiddenWeights
-                            peepholeWeights:peepholeWeights
-                                     biases:biases
-                             gateActivations:gateActivations
-                        outputResultActivation:outputResultActivation];
+    return nil;
 }
 
 - (MLCLSTMDescriptor *)descriptor
@@ -1786,21 +1782,14 @@ static BOOL CharonMLCNormalized(MLCTensor *tensor, NSArray<NSNumber *> *shape)
                               biases:(NSArray<MLCTensor *> *)biases
                       attentionBiases:(NSArray<MLCTensor *> *)attentionBiases
 {
-    // The framework's own factory refuses every arrangement of weights tried - four matrices of the
-    // model's dimension, one of them, two of half it, three of them, with and without biases, with the
-    // biases declared, a model of 8, a single head - and answers a layer with nothing every time
-    // (measured; facts/MLCompute/Layers.md). This port keeps what it is given instead, because a layer
-    // that could not be described at all would be a class that exists and does nothing. The difference
-    // is named, and the case is in the differential so that a framework that starts accepting weights
-    // shows up rather than passing in silence.
-    MLCMultiheadAttentionLayer *layer = [[MLCMultiheadAttentionLayer alloc] charon_init];
-    layer->_descriptor = descriptor;
-    layer->_weights = [weights copy];
-    layer->_biases = [biases copy];
-    layer->_attentionBiases = [attentionBiases copy];
-    layer->_weightsParameters = CharonMLCParameters(weights);
-    layer->_biasesParameters = CharonMLCParameters(biases);
-    return layer;
+    // nil, as the framework answers. It refused every arrangement of weights and biases tried - four
+    // matrices of the model's dimension, one of them, two of half it, three of them, with and without
+    // biases, with the biases declared, a model of 8, a single head - and answered a layer with nothing
+    // every time (measured, facts/MLCompute/Layers.md). The port answers nil for the same reason as the two
+    // long short-term memory factories above: a factory that answered a layer the framework would not is a
+    // row whose behaviour is not the framework's. It is a case in tests/backports/host/mlcompute, which
+    // had none.
+    return nil;
 }
 
 - (MLCMultiheadAttentionDescriptor *)descriptor
