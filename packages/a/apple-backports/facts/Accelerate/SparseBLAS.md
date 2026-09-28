@@ -380,6 +380,21 @@ table's transpose values were all in the enumeration, and the host's own answer 
 to hand the parameter to `cblas_cgemv` and end the process, so the port's status is checked against the
 header and not against the host.
 
+**The mutation, on the new cases.** Two, one per kind of case the r4 review named:
+
+- `CharonSparseMake`'s `totalColumns += width[j];` given a second `totalColumns += 1;` →
+  **360 checks, 8 failures**, and the new `a double variable block matrix` is one of the eight
+  (`FAIL a double variable block matrix: rows, columns and every block dimension`), with five
+  `block create` and one `variable block create` and one `a block entry` beside it. Restored: 365 / 0.
+- The transpose guard in `sparse_matrix_vector_product_dense_float` removed →
+  **365 checks, 2 failures**, both of them the new refusal case
+  (`FAIL a transpose outside the enumeration, the vector product`). Restored: 365 / 0, and the source
+  byte-identical to the committed one each time.
+
+The two dense-product and triangular-solve refusal cases are not moved by either mutation, which is
+right: one changes a column count and the other a transpose argument, and each case can only be held by a
+mutation that touches what it tests.
+
 **Reuse.** The complex half reuses the real half's whole row structure and its whole scalar storage —
 `CharonSparseRow`, `CharonSparseSearch`, `CharonSparseGrow` and the four matrix bodies all live in
 `CharonSparseBLAS.h` and are shared, so there is one row machinery in this family and not two — and it
