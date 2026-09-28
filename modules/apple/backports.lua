@@ -57,7 +57,6 @@ LIBRARIES = {
     {name = "IntentsUIBackports", folder = "IntentsUI", frameworks = {"IntentsUI", "Intents", "UIKit", "Foundation", "CoreGraphics"}, libraries = {"FoundationBackports", "IntentsBackports"}}
     {name = "HealthKitBackports", folder = "HealthKit", frameworks = {"Foundation"}, libraries = {"FoundationBackports"}, system = {"sqlite3"}},
 =======
-    {name = "HealthKitBackports", folder = "HealthKit", frameworks = {"UIKit", "Foundation"}, libraries = {"FoundationBackports"}, system = {"sqlite3"}},
 >>>>>>> 0bf687334 (Restore the comma the rebase's resolution dropped, and the closing brace it doubled)
 }
 
