@@ -53,12 +53,18 @@ package("swift-syntax")
         -- before it ran a single compile -- "attempt to call a nil value (method 'sourcefile')",
         -- `.agent-work/runs/swift-syntax/globaldir/.xmake/cache/…/logs/install.txt`. The upstream
         -- root is the fetch's own directory, one level up from the package's `src/`.
-        local source = package:sourcedir()
-        os.vrunv("swift", {"build", "--package-path", path.join(source, ".."), "--scratch-path", build,
-                           "--triple", "arm64-apple-macosx13.0", "-c", "release-only"}, {curdir = source})
+        -- The fetch's own layout, read from the private store after the first run: the upstream root
+        -- is `<cache>/<version>/source/swift-syntax`, and `Package.swift` and `Sources/` are in it.
+        -- `sourcedir()` is that `source`, so the root is one level *down*, not up.
+        local source = path.join(package:sourcedir(), "swift-syntax")
+        os.vrunv("swift", {"build", "--package-path", source, "--scratch-path", build,
+                           "--triple", "arm64-apple-macosx13.0", "-c", "release"}, {curdir = source})
         -- The products: the modules under Modules/, the archives beside them, and the resources
         -- SwiftSyntax keeps as files.
-        local products = path.join(build, "release-only")
+        -- The configuration is named `release` (SwiftPM has no `release-only`: "error: The value
+        -- 'release-only' is invalid for '-c <configuration>'. Please provide one of 'debug'
+        -- and 'release'"), and the products are under that name in the scratch path.
+        local products = path.join(build, "release")
         for _, name in ipairs(modules) do
             local module = path.join(products, "Modules", name)
             if os.isfile(module) then
