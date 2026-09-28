@@ -163,6 +163,18 @@ static const CLLocationCoordinate2D *CharonGeoJSONCoordinates(NSArray<NSValue *>
         return point;
     }
     if ([type isEqualToString:@"MultiPoint"]) {
+        // The release's own MKMultiPoint CANNOT BE BUILT on this release, and that is measured: its
+        // whole surface in the armv7 cache of 6.1.3 is -points, -pointCount, -getCoordinates:range:,
+        // -boundingMapRect, -coordinate and -intersectsMapRect: -- no +polylineWithCoordinates:count:
+        // and no -initWithMapPoints:count:, so there is no public route to an instance at all. (And
+        // the host's own decoder raises NSInvalidArgumentException on a MultiPoint for the same
+        // reason on a host build, which is how this was found.)
+        //
+        // So a MultiPoint is REFUSED, with the reason, rather than handed back as a MKPolyline: an
+        // MKPolyline is a different class with a different meaning, and a caller that asked for a
+        // MultiPoint would not know it had been given one. The registry row for the MultiPoint case
+        // says this, and the host differential does not compare the case -- the host can make one and
+        // this device cannot, so the two are not the same question.
         NSArray<NSValue *> *values = CharonGeoJSONPositions([object objectForKey:@"coordinates"], 1, NO);
         if (values.count == 0) {
             if (error) {
@@ -170,24 +182,11 @@ static const CLLocationCoordinate2D *CharonGeoJSONCoordinates(NSArray<NSValue *>
             }
             return nil;
         }
-        // A MultiPoint is the release's own, and it takes map points, so each coordinate goes
-        // through the release's own projection first -- the same one the release's tiles are on.
-        NSUInteger count = values.count;
-        MKMapPoint *points = (MKMapPoint *)calloc(count, sizeof(MKMapPoint));
-        if (points == NULL) {
-            if (error) {
-                *error = CharonGeoJSONError(@"a MultiPoint's points would not fit in memory");
-            }
-            return nil;
+        if (error) {
+            *error = CharonGeoJSONError(@"a MultiPoint cannot be decoded on this release: its MKMultiPoint "
+                                        "has no public initialiser at all, measured in the armv7 cache of 6.1.3");
         }
-        for (NSUInteger index = 0; index < count; index++) {
-            CLLocationCoordinate2D coordinate;
-            [values[index] getValue:&coordinate];
-            points[index] = MKMapPointForCoordinate(coordinate);
-        }
-        MKMultiPoint *made = [[MKMultiPoint alloc] initWithMapPoints:points count:count];
-        free(points);
-        return made;
+        return nil;
     }
     if ([type isEqualToString:@"LineString"]) {
         NSArray<NSValue *> *values = CharonGeoJSONPositions([object objectForKey:@"coordinates"], 2, NO);
@@ -221,6 +220,8 @@ static const CLLocationCoordinate2D *CharonGeoJSONCoordinates(NSArray<NSValue *>
             }
             return nil;
         }
+        // MKMultiPolyline is NOT in the 6.1.3 cache (measured: absent), so this is the class this
+        // library carries, not the release's, and a caller is getting one of ours.
         return [[MKMultiPolyline alloc] initWithPolylines:lines];
     }
     if ([type isEqualToString:@"Polygon"]) {
@@ -242,6 +243,8 @@ static const CLLocationCoordinate2D *CharonGeoJSONCoordinates(NSArray<NSValue *>
             }
             return nil;
         }
+        // As with the MultiLineString: MKMultiPolygon is absent from the 6.1.3 cache, so this is the
+        // class this library carries.
         return [[MKMultiPolygon alloc] initWithPolygons:polygons];
     }
     if (error) {
