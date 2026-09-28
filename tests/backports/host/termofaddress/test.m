@@ -44,6 +44,12 @@
    something to guess at here. The expectations below are the ones the review measured and the facts
    file states, so the harness is complete apart from that line. */
 
+/* The one cast the whole file uses. A typedef'd pointer is what clang accepts here: a bare
+   ((id (*)(id, SEL))objc_msgSend) in a message argument is where the parse gives up. */
+typedef id (*CharonSend0)(id, SEL);
+typedef id (*CharonSend1)(id, SEL, id);
+typedef id (*CharonSend2)(id, SEL, id, id);
+
 void host_attach_prefixed(const char *prefix);
 
 static void charon_on_alarm(int number)
@@ -61,24 +67,24 @@ static Class systemClass;
 
 static id system_term(const char *factory)
 {
-    return ((id (*)(id, SEL))objc_msgSend)(systemClass, NSSelectorFromString([NSString stringWithFormat:@"%s", factory]));
+    return ((CharonSend0)objc_msgSend)(systemClass, NSSelectorFromString([NSString stringWithFormat:@"%s", factory]));
 }
 
 static id our_term(const char *factory)
 {
-    return ((id (*)(id, SEL))objc_msgSend)(ourClass, NSSelectorFromString([NSString stringWithFormat:@"%s", factory]));
+    return ((CharonSend0)objc_msgSend)(ourClass, NSSelectorFromString([NSString stringWithFormat:@"%s", factory]));
 }
 
 static id our_localized(NSString *language, id pronouns)
 {
-    return ((id (*)(id, SEL, id, id))objc_msgSend)(ourClass, NSSelectorFromString(@"localizedForLanguageIdentifier:withPronouns:"),
-                                                    language, pronouns);
+    return ((CharonSend2)objc_msgSend)(ourClass, NSSelectorFromString(@"localizedForLanguageIdentifier:withPronouns:"),
+                                        language, pronouns);
 }
 
 static id system_localized(NSString *language, id pronouns)
 {
-    return ((id (*)(id, SEL, id, id))objc_msgSend)(systemClass, NSSelectorFromString(@"localizedForLanguageIdentifier:withPronouns:"),
-                                                    language, pronouns);
+    return ((CharonSend2)objc_msgSend)(systemClass, NSSelectorFromString(@"localizedForLanguageIdentifier:withPronouns:"),
+                                        language, pronouns);
 }
 
 static void expect(NSString *label, BOOL system, BOOL ours)
@@ -117,18 +123,19 @@ int main(void)
         expect(@"the current user's term is not a gendered one",
                ![theirCurrent isEqual:theirNeutral] && ![theirCurrent isEqual:theirFeminine] && ![theirCurrent isEqual:theirMasculine],
                ![ourCurrent isEqual:ourNeutral] && ![ourCurrent isEqual:ourFeminine] && ![ourCurrent isEqual:ourMasculine]);
+        id theirCurrentAgain = system_term("currentUser");
         expect(@"the current user's term equals itself",
-               [theirCurrent isEqual:[system_term("currentUser")]],
-               [ourCurrent isEqual:((id (*)(id, SEL))objc_msgSend)(ourClass, NSSelectorFromString(@"currentUser"))]);
+               [theirCurrent isEqual:theirCurrentAgain],
+               [ourCurrent isEqual:((CharonSend0)objc_msgSend)(ourClass, NSSelectorFromString(@"currentUser"))]);
 
         /* No language and no pronouns on the gendered ones, which is what the host answers. */
         for (NSString *factory in @[@"neutral", @"feminine", @"masculine", @"currentUser"]) {
-            id theirs = ((id (*)(id, SEL))objc_msgSend)(systemClass, NSSelectorFromString(factory));
-            id ours = ((id (*)(id, SEL))objc_msgSend)(ourClass, NSSelectorFromString(factory));
-            id theirLanguage = ((id (*)(id, SEL))objc_msgSend)(theirs, @selector(languageIdentifier));
-            id ourLanguage = ((id (*)(id, SEL))objc_msgSend)(ours, @selector(languageIdentifier));
-            id theirPronouns = ((id (*)(id, SEL))objc_msgSend)(theirs, @selector(pronouns));
-            id ourPronouns = ((id (*)(id, SEL))objc_msgSend)(ours, @selector(pronouns));
+            id theirs = ((CharonSend0)objc_msgSend)(systemClass, NSSelectorFromString(factory));
+            id ours = ((CharonSend0)objc_msgSend)(ourClass, NSSelectorFromString(factory));
+            id theirLanguage = ((CharonSend0)objc_msgSend)(theirs, @selector(languageIdentifier));
+            id ourLanguage = ((CharonSend0)objc_msgSend)(ours, @selector(languageIdentifier));
+            id theirPronouns = ((CharonSend0)objc_msgSend)(theirs, @selector(pronouns));
+            id ourPronouns = ((CharonSend0)objc_msgSend)(ours, @selector(pronouns));
             expect([@"the language of " stringByAppendingString:factory],
                    [theirLanguage length] == 0, [ourLanguage length] == 0);
             expect([@"the pronouns of " stringByAppendingString:factory],
@@ -141,10 +148,11 @@ int main(void)
                 id pronouns = variant ? @[] : nil;
                 id theirs = system_localized(language, pronouns);
                 id ours = our_localized(language, (id)pronouns);
-                id ourLanguage = ((id (*)(id, SEL))objc_msgSend)(ours, @selector(languageIdentifier));
+                id ourLanguage = ((CharonSend0)objc_msgSend)(ours, @selector(languageIdentifier));
                 expect([NSString stringWithFormat:@"a term for %@ keeps its language (%@)", language,
                         variant ? @"an empty array" : @"nil"],
-                       [theirs.languageIdentifier isEqualToString:language], [ourLanguage isEqualToString:language]);
+                       [((CharonSend0)objc_msgSend)(theirs, @selector(languageIdentifier)) isEqualToString:language],
+                       [ourLanguage isEqualToString:language]);
                 expect([NSString stringWithFormat:@"a term for %@ equals another like it (%@)", language,
                         variant ? @"an empty array" : @"nil"],
                        [theirs isEqual:system_localized(language, pronouns)], [ours isEqual:our_localized(language, (id)pronouns)]);

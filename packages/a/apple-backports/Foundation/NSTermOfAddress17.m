@@ -116,7 +116,7 @@ static char CharonTermOfAddressStateKey;
     static NSTermOfAddress *term;
     static dispatch_once_t once;
     dispatch_once(&once, ^{
-        term = [self charon_termWithLanguage:nil pronouns:nil currentUser:NO origin:@"neutral"];
+        term = [self charon_termWithLanguage:nil pronouns:nil currentUser:NO origin:@"feminine"];
     });
     return term;
 }
@@ -126,7 +126,7 @@ static char CharonTermOfAddressStateKey;
     static NSTermOfAddress *term;
     static dispatch_once_t once;
     dispatch_once(&once, ^{
-        term = [self charon_termWithLanguage:nil pronouns:nil currentUser:NO origin:@"neutral"];
+        term = [self charon_termWithLanguage:nil pronouns:nil currentUser:NO origin:@"masculine"];
     });
     return term;
 }
