@@ -487,3 +487,39 @@ as well as here, so the next reader does not spend the measurement again.
 **The distance error is unchanged at 0.60488 m over a 4.95 m path**, which is the honest consequence:
 the preintegration plus this filter is still not a translation. The rotation remains 0.002 degrees and
 its floor and the conjugated-read-back mutation are unaffected.
+
+## The nine-state version, measured, and taken out
+
+The coordinator's ruling was to write the paper's nine-state version with both preintegrated
+measurements as updates and the gyroscope-bias coupling, rather than carry a three-state filter
+measured to do nothing. It is written, it compiles clean under the gate's flags, and it is measured.
+
+**It does not fix the distance either:**
+
+```
+  rotation error: mean 0.00004 rad (0.002 deg), worst 0.00069 rad (0.040 deg)
+  distance error:  mean 0.60850 m, worst 1.07830 m
+  tracking: yes, 28184 points, 16 planes
+```
+
+against 0.60488 m for the three-state version and 0.65345 m for no filter at all. So the sequence of
+what the filter buys is 0.65345, then 0.60488, then 0.60850 - the first version moved the number by
+half a centimetre, the paper's version not at all, and neither is a translation of a 4.95 m path.
+
+Both forms are therefore measured and neither works, so by the same rule that removed the three-state
+one - a filter that cannot move the state is dead weight a reader will trust - the nine-state version
+is taken out of the delivery as well, in a forward commit, and this section is what remains of it.
+
+**What the two measurements together say.** The rank of the three-state Jacobian was the reason it
+could not move, and the nine-state version removes that reason: six independent rows against nine
+states, two measurements of different derivative shape, and the gyroscope bias coupled to the
+accelerometer's through the `b_g x a_m` term. The state moves - the filter is no longer the thing that
+is broken - and the number does not, which puts the shortfall somewhere the bias state is not: the
+preintegrated displacement of a single interval on a path whose acceleration is almost entirely
+centripetal does not accumulate the straight-line distance, and correcting a bias inside that does not
+change what is being integrated. The landmarks' parallax, which measures a baseline rather than
+integrating one, is the measurement that is missing, and the tracker has the poses for it now that the
+rotation is exact.
+
+The nine-state code is kept in this band's worktree under `.agent-work/` rather than in the delivery,
+so the derivation is available without being mistaken for working code.
