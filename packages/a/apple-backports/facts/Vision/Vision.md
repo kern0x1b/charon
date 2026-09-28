@@ -204,11 +204,30 @@ recorded by `tests/backports/host/vision/run.sh` (33 records) and held against t
     side. It is also the shape that a half-pixel convention gives and an align-corners one does
     not.
 
-  So the parameters, as measured: a separable kernel, **eight taps per axis**, weights
-  `32/1020, 96/1020, 159/1020, 223/1020, 223/1020, 159/1020, 96/1020, 32/1020` scaled by the
-  factor, the **half-pixel** sample-centre convention `dst = (x + 0.5) * s - 0.5`, and a **point
-  sample** on a downscale rather than an area average. What has *not* been done: implementing them.
-  A separable resampler in C over the BGRA buffer is the shape of the fix and it works on iOS 6, but
-  it is not written, and writing it against a kernel that has not been checked on the gradient table
-  would be exactly the kind of claim this row has already produced twice.
+  **The coordinator's reading of those numbers is right, and it checks out against the arithmetic:**
+  the kernel is **separable bilinear with half-pixel centres and no antialiasing on a downscale**,
+  and what reads as eight taps at 4x is a two-source-pixel tent mirrored about the centre between
+  two destination pixels.
+
+  * **4x up.** A tent two source pixels wide covers eight destination pixels, and half-pixel centres
+    give the weights 0.125, 0.375, 0.625, 0.875 -- which times 255 is 32, 96, 159, 223, exactly the
+    row, mirrored by the symmetric half of the tent.
+  * **1.5x.** `src = (x + 0.5) / 1.5 - 0.5` gives 3.167, 3.833 and 4.5 for x = 5, 6, 7, and the
+    weights `1 - |src - 4|` are 0.167, 0.833, 0.5 -- 43, 212, 128, again exactly the row.
+  * **4x down.** Bilinear with no prefilter point-samples, which is the "no spread" the row shows.
+    The printed 137 is one row of a two-dimensional sample and the exact factor for it is the one
+    number in this account that has not been computed here; it is a bilinear sample at the
+    half-pixel position with both axes, and the 4x-up and 1.5x rows are what identify the kernel.
+
+  So the parameters, as measured and as derived: **separable bilinear, the sample centre at
+  `(x + 0.5) * s - 0.5` (half-pixel, not align-corners), no area averaging when the scale is below
+  one**, and the rounding of the sample position to be read from the gradient -- round-half-up or
+  truncation are not yet separated by a measurement.
+
+  **What has not been done: the implementation.** A separable bilinear resampler over the BGRA buffer
+  is about thirty lines of C and works on iOS 6, and it is the fix this row has been reaching for. It
+  is not written, so nothing about it is claimed here: not that it reads 0 on the gradient table, not
+  what the +1 inset does to the centre crop, and not the mutant. The next step is the kernel in C,
+  then the gradient table, then the placement, then the mutant, then the light guard and r7 -- in
+  that order, and the check decides each.
 
