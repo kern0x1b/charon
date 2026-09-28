@@ -257,15 +257,14 @@
                                         FHIRResourceType:(HKFHIRResourceType)resourceType
                                              identifier:(NSString *)identifier
 {
-    if (!source && !resourceType && !identifier)
-        return nil;
+    // A term for each of the three, whatever was given, and one that is a term for a value that was
+    // not given: the host's own answers keep the nil terms, so a query with a resource type and an
+    // identifier and no source is `source == nil AND …` and not the two terms alone. Measured by
+    // tests/backports/host/healthkit, where the port's format was the two terms and the host's three.
     NSMutableArray<NSPredicate *> *parts = [NSMutableArray array];
-    if (source)
-        [parts addObject:[NSPredicate predicateWithFormat:@"%K == %@", HKPredicateKeyPathSource, source]];
-    if (resourceType)
-        [parts addObject:[NSPredicate predicateWithFormat:@"%K == %@", HKPredicateKeyPathClinicalRecordFHIRResourceType, resourceType]];
-    if (identifier)
-        [parts addObject:[NSPredicate predicateWithFormat:@"%K == %@", HKPredicateKeyPathClinicalRecordFHIRResourceIdentifier, identifier]];
+    [parts addObject:[NSPredicate predicateWithFormat:@"%K == %@", HKPredicateKeyPathSource, source]];
+    [parts addObject:[NSPredicate predicateWithFormat:@"%K == %@", HKPredicateKeyPathClinicalRecordFHIRResourceType, resourceType]];
+    [parts addObject:[NSPredicate predicateWithFormat:@"%K == %@", HKPredicateKeyPathClinicalRecordFHIRResourceIdentifier, identifier]];
     if (parts.count == 1)
         return parts[0];
     return [NSCompoundPredicate andPredicateWithSubpredicates:parts];
