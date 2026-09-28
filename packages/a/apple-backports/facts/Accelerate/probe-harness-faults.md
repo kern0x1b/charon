@@ -53,6 +53,7 @@ run rather than after one. **Check that the binary under test is the binary that
 | a `planned` registry status that is not one of the four answers, failing the light guard for a commit | committing, which requires a clean guard - and **reading the guard's exit code, not its tail** |
 | a `"utf-8".join` where `"\n".join` was meant, corrupting a source file | the link failing |
 | `/tmp` scratch files after being told nothing goes there | being told again |
+| `nm -gU` over a raw `dyld_shared_cache_armv7` finding **nothing at all**, read as "these names appear in no release" - for names that include one already measured at 6.0 | the control: a name already placed must come out at that release, so a run that finds nothing is a broken run |
 
 ## What to carry into the next probe
 
@@ -64,3 +65,5 @@ run rather than after one. **Check that the binary under test is the binary that
   says they agree.
 - **Check the binary before the run**, by UUID, every time.
 - **The gate's exit code, not its last line.**
+
+- **The ladder through the house tool**: `release-split` over an object that defines the names, or the emulate plugin's own `dyld.first_releases` cache - never by scraping the cache file. Every such run carries a control name, so a run that finds nothing about a name already placed is known to be broken rather than believed.
