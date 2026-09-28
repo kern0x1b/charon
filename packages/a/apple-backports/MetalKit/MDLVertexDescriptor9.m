@@ -1,5 +1,9 @@
 #import <ModelIO/ModelIO.h>
 
+// The fifteen vertex-attribute names are defined in the ModelIO library
+// (ModelIO/MDLVertexAttributes9.m), which is always linked; they are exported data symbols, so a band
+// at iOS 9 or later takes them from the release and this library only asks for them.
+
 #pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
 
 static NSUInteger CharonMDLComponentSize(MDLVertexFormat format)
