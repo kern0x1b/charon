@@ -5,6 +5,13 @@
 #import <UIKit/UIKit.h>
 #import "CharonCarPlayHome.h"
 #import "CharonCarPlayDock.h"
+#import "CharonCarPlayHomeSettings.h"
+
+// The four actions the dock raises, declared so the home template can bind them once it has the
+// interface controller. Charon's own, so none of it is API the package carries.
+@interface CharonCarPlayHomeViewController (CharonDockActions)
+- (void)charon_bindToInterfaceController:(CPInterfaceController *)controller;
+@end
 
 @implementation CharonCarPlayHomeView {
     NSArray<CharonCarPlayApp *> *_apps;
@@ -206,6 +213,15 @@
     NSMutableArray<NSString *> *_recents;
 }
 
+- (UIViewController *)charon_viewControllerForInterfaceController:(CPInterfaceController *)controller
+{
+    CharonCarPlayHomeViewController *built = [[CharonCarPlayHomeViewController alloc] initWithTemplate:self];
+    [built view];
+    [built charon_bindToInterfaceController:controller];
+    return built;
+}
+
+
 @synthesize screenSize = _screenSize;
 @synthesize apps = _apps;
 
@@ -262,17 +278,63 @@
     return visible;
 }
 
-- (UIViewController *)charon_viewControllerForInterfaceController:(CPInterfaceController *)controller
-{
-    return [[CharonCarPlayHomeViewController alloc] initWithTemplate:self];
-}
-
 @end
 
 @implementation CharonCarPlayHomeViewController {
     CharonCarPlayHomeTemplate *_home;
     CharonCarPlayHomeView *_view_;
-    UIScrollView *_scroll;
+    CPInterfaceController *_charonController;
+}
+
+// The dock's three actions, bound once the interface controller is known: the recents show the
+// port's own list of what this screen launched, the settings pane is a CPListTemplate pushed by the
+// same controller, and Siri asks for it to be opened on the phone -- which is all that can be asked
+// of this release, where there is no assistant class at all (measured), and the dock's button is
+// dimmed where nothing can act on it.
+- (void)charon_bindToInterfaceController:(CPInterfaceController *)controller
+{
+    _charonController = controller;
+    _view_.charon_openRecents = ^{
+        [self charon_showRecents];
+    };
+    _view_.charon_openSettings = ^{
+        [self charon_showSettings];
+    };
+    _view_.charon_siri = ^{
+        [self charon_askForSiri];
+    };
+}
+
+
+- (void)charon_showRecents
+{
+    NSMutableArray *rows = [NSMutableArray array];
+    for (id app_ in [_home recents]) {
+        CharonCarPlayApp *app = app_;
+        [rows addObject:[[CPListSection alloc]
+                        initWithItems:@[[[CPListItem alloc] initWithText:app.displayName
+                                                                detailText:app.bundleIdentifier
+                                                                     image:app.icon
+                                                            accessoryImage:nil
+                                                             accessoryType:CPListItemAccessoryTypeNone]]]];
+    }
+    [_charonController pushTemplate:[[CPListTemplate alloc] initWithTitle:@"Recents" sections:rows]
+                          animated:YES
+                        completion:nil];
+}
+
+- (void)charon_showSettings
+{
+    [_charonController pushTemplate:[[CharonCarPlayHomeSettingsTemplate alloc] initWithApps:_home.apps]
+                          animated:YES
+                        completion:nil];
+}
+
+- (void)charon_askForSiri
+{
+    // A REQUEST and not an action: the release has no assistant class, and the daemon is the only
+    // thing here that could open Siri. Nothing is claimed to have happened.
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"CharonCarPlayRequestSiri" object:nil];
 }
 
 - (instancetype)initWithTemplate:(CharonCarPlayHomeTemplate *)template_
