@@ -26,35 +26,22 @@ static char CharonTermOfAddressStateKey;
 @property NSString *languageIdentifier;
 @property NSArray *pronouns;
 @property BOOL currentUser;
+/* Which factory built it, so that two terms from different factories are never equal even when
+   their state is the same -- the three gendered terms all carry no language and no pronouns. */
+@property NSString *origin;
 @end
 
 @implementation CharonTermOfAddressState
 
+/* Two terms are equal when the same factory made them and their state is equal, so +neutral,
+   +feminine, +masculine and +currentUser stay four singletons that are equal only to themselves --
+   which is what the header promises for +currentUser, and what the host answers for all four
+   (measured: the three gendered terms are mutually unequal with distinct hashes, 3, 1 and 2). */
+
 @synthesize languageIdentifier = _languageIdentifier;
 @synthesize pronouns = _pronouns;
 @synthesize currentUser = _currentUser;
-
-- (BOOL)isEqual:(id)object
-{
-    if (object == self)
-        return YES;
-    if (![object isKindOfClass:[NSTermOfAddress class]])
-        return NO;
-    CharonTermOfAddressState *mine = objc_getAssociatedObject(self, &CharonTermOfAddressStateKey);
-    CharonTermOfAddressState *theirs = objc_getAssociatedObject(object, &CharonTermOfAddressStateKey);
-    if (!mine || !theirs || mine.currentUser != theirs.currentUser)
-        return NO;
-    if (mine.languageIdentifier != theirs.languageIdentifier &&
-        ![mine.languageIdentifier isEqualToString:theirs.languageIdentifier])
-        return NO;
-    return mine.pronouns == theirs.pronouns || [mine.pronouns isEqualToArray:theirs.pronouns];
-}
-
-- (NSUInteger)hash
-{
-    CharonTermOfAddressState *state = objc_getAssociatedObject(self, &CharonTermOfAddressStateKey);
-    return state.languageIdentifier.hash ^ state.pronouns.count ^ (state.currentUser ? 1u : 0u);
-}
+@synthesize origin = _origin;
 
 @end
 
@@ -69,6 +56,11 @@ static char CharonTermOfAddressStateKey;
 
 + (instancetype)charon_termWithLanguage:(NSString *)language pronouns:(NSArray *)pronouns currentUser:(BOOL)currentUser
 {
+    return [self charon_termWithLanguage:language pronouns:pronouns currentUser:currentUser origin:nil];
+}
+
++ (instancetype)charon_termWithLanguage:(NSString *)language pronouns:(NSArray *)pronouns currentUser:(BOOL)currentUser origin:(NSString *)origin
+{
     NSTermOfAddress *term = [NSTermOfAddress alloc];
     /* -init and +new are NS_UNAVAILABLE in the SDK's own header, and the compiler refuses them here
        as it refuses them there, so the superclass's -init is run the way a factory's would. */
@@ -78,8 +70,35 @@ static char CharonTermOfAddressStateKey;
     state.languageIdentifier = [language copy];
     state.pronouns = [pronouns copy];
     state.currentUser = currentUser;
+    state.origin = origin;
     objc_setAssociatedObject(term, &CharonTermOfAddressStateKey, state, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     return term;
+}
+
+- (BOOL)isEqual:(id)object
+{
+    if (object == self)
+        return YES;
+    if (![object isKindOfClass:[NSTermOfAddress class]])
+        return NO;
+    CharonTermOfAddressState *mine = objc_getAssociatedObject(self, &CharonTermOfAddressStateKey);
+    CharonTermOfAddressState *theirs = objc_getAssociatedObject(object, &CharonTermOfAddressStateKey);
+    if (!mine || !theirs)
+        return NO;
+    if (mine.currentUser != theirs.currentUser)
+        return NO;
+    if (mine.origin != theirs.origin && ![mine.origin isEqualToString:theirs.origin])
+        return NO;
+    if (mine.languageIdentifier != theirs.languageIdentifier &&
+        ![mine.languageIdentifier isEqualToString:theirs.languageIdentifier])
+        return NO;
+    return mine.pronouns == theirs.pronouns || [mine.pronouns isEqualToArray:theirs.pronouns];
+}
+
+- (NSUInteger)hash
+{
+    CharonTermOfAddressState *state = objc_getAssociatedObject(self, &CharonTermOfAddressStateKey);
+    return state.languageIdentifier.hash ^ state.pronouns.count ^ (state.currentUser ? 2u : 0u) ^ state.origin.hash;
 }
 
 + (instancetype)neutral
@@ -87,7 +106,7 @@ static char CharonTermOfAddressStateKey;
     static NSTermOfAddress *term;
     static dispatch_once_t once;
     dispatch_once(&once, ^{
-        term = [self charon_termWithLanguage:nil pronouns:nil currentUser:NO];
+        term = [self charon_termWithLanguage:nil pronouns:nil currentUser:NO origin:@"neutral"];
     });
     return term;
 }
@@ -97,7 +116,7 @@ static char CharonTermOfAddressStateKey;
     static NSTermOfAddress *term;
     static dispatch_once_t once;
     dispatch_once(&once, ^{
-        term = [self charon_termWithLanguage:nil pronouns:nil currentUser:NO];
+        term = [self charon_termWithLanguage:nil pronouns:nil currentUser:NO origin:@"neutral"];
     });
     return term;
 }
@@ -107,7 +126,7 @@ static char CharonTermOfAddressStateKey;
     static NSTermOfAddress *term;
     static dispatch_once_t once;
     dispatch_once(&once, ^{
-        term = [self charon_termWithLanguage:nil pronouns:nil currentUser:NO];
+        term = [self charon_termWithLanguage:nil pronouns:nil currentUser:NO origin:@"neutral"];
     });
     return term;
 }
@@ -117,14 +136,15 @@ static char CharonTermOfAddressStateKey;
     static NSTermOfAddress *term;
     static dispatch_once_t once;
     dispatch_once(&once, ^{
-        term = [self charon_termWithLanguage:nil pronouns:nil currentUser:YES];
+        term = [self charon_termWithLanguage:nil pronouns:nil currentUser:YES origin:@"currentUser"];
     });
     return term;
 }
 
 + (instancetype)localizedForLanguageIdentifier:(NSString *)language withPronouns:(NSArray *)pronouns
 {
-    return [self charon_termWithLanguage:language pronouns:pronouns currentUser:NO];
+    return [self charon_termWithLanguage:language pronouns:pronouns currentUser:NO
+                                   origin:[NSString stringWithFormat:@"localized %@", language ?: @""]];
 }
 
 - (NSString *)languageIdentifier
