@@ -469,3 +469,26 @@ target's edge is `10 / 2 = 5.0`, and the measurement is **4.833** -- one sixth o
 So the crop rect is **measured, and it is the rule the port already implements**, which moves the red
 centre-crop rows somewhere this probe has not looked: for a cover of a picture whose aspect differs,
 the geometry agrees and every pixel still differs.
+
+### The same ramp through both sides, and the difference
+
+`tests/backports/host/vision/crop-probe/delta.m`, in the tree, links the port's own resampler beside
+Core ML's constructor and decodes both answers back into source coordinates, then subtracts. For
+**100x50 to 224x224 centre crop** (scale 4.48, drawn 448x224, inset -112, 0, k=1):
+
+| axis | min | max | mean | spread | the difference along the middle row, every sixteenth |
+| --- | --- | --- | --- | --- | --- |
+| x (red) | 8 | 73 | 48.600 | 65 | 13 28 32 35 38 42 46 49 53 56 59 63 67 70 0 0 |
+| y (green) | 1 | 49 | 24.712 | 48 | |
+| pixels compared | | 49275 of 50176 | | | |
+
+**Linear, and not either of the other two things.** A pixel-centre convention would be flat; this
+runs from 8 at the target's left edge to 70 near its right, about 3.4 every sixteen output columns,
+with a mean of 48.6 and a spread that covers the whole range -- so it is neither a constant nor noise.
+(The last two samples fold to zero because the ramp wraps at 256 and the difference is taken modulo
+it; the fold is at the source's far edge, which is itself the sign that the gap has grown by a whole
+ramp.)
+
+**The vertical is the alarming one**: the difference spans 1 to 49 -- the picture's whole height --
+on an axis where the cover fits **exactly**, drawn 224 against a target of 224, so there is no crop
+on that axis to differ about. Whatever is going on, it is not a placement.
