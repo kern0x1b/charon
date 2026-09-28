@@ -28,24 +28,38 @@
 // on a release that has that method is this category, so each clamp asked for another until the stack
 // ran out. Measured under -fsanitize=address as a stack overflow with those two frames repeating. A
 // thread already inside the port's clamp is answering the framework's own question, and the answer is
-// the image it has; a thread that is not is the caller and gets the clamp. The depth is per thread, so
-// a clamp on one thread never short-circuits a clamp on another.
-static _Thread_local NSInteger CharonCIClampDepth;
+// the image it has; a thread that is not is the caller and gets the clamp.
+//
+// The depth is per thread, in the thread's own dictionary and not in a thread-local: the armv7 target
+// has no thread-local storage, and clang says so - "thread-local storage is not supported for the
+// current target" - so a clamp on one thread never short-circuits a clamp on another because nothing
+// is shared at all.
+static NSString *const CharonCIClampDepthKey = @"charon.ciimage.clampDepth";
+
+static NSInteger CharonCIClampDepth(void)
+{
+    return [[[[NSThread currentThread] threadDictionary] objectForKey:CharonCIClampDepthKey] integerValue];
+}
+
+static void CharonSetCIClampDepth(NSInteger depth)
+{
+    [[[NSThread currentThread] threadDictionary] setObject:@(depth) forKey:CharonCIClampDepthKey];
+}
 
 // One clamp of the image to the rectangle, or the image itself when the ask is the framework's own
 // and this thread is already inside the port's clamp.
 static CIImage *CharonCIClamp(CIImage *image, CGRect rect)
 {
-    if (CharonCIClampDepth > 0)
+    if (CharonCIClampDepth() > 0)
         return image;
-    CharonCIClampDepth++;
+    CharonSetCIClampDepth(CharonCIClampDepth() + 1);
     CIImage *clamped = image;
     if (!CGRectIsNull(rect) && !CGRectIsEmpty(rect)) {
         CIFilter *filter = [CIFilter filterWithName:@"CIAffineClamp"];
         [filter setValue:[image imageByCroppingToRect:rect] forKey:kCIInputImageKey];
         clamped = filter.outputImage ?: [image imageByCroppingToRect:rect];
     }
-    CharonCIClampDepth--;
+    CharonSetCIClampDepth(CharonCIClampDepth() - 1);
     return clamped;
 }
 
