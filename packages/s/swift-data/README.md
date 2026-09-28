@@ -38,7 +38,7 @@ this package will name it and nothing more.
 Built, measured: `swiftc -target armv7-apple-ios6.1.3` over the whole module, the swift-runtime
 built with the Core Data backports and swift-foundation's `FoundationEssentials` and
 `FoundationInternationalization` on the search path: **0 errors**, a `Mach-O object arm_v7` of
-**867740 bytes, 2836 defined and 433 undefined symbols**, the ten swift-foundation ones named in
+**895464 bytes, 2836 defined and 433 undefined symbols**, the ten swift-foundation ones named in
 `facts/SwiftData/Substrate.md` and in `on_test`. `-wmo -c` on its own writes that object;
 the bitcode wrapper an earlier run produced came from asking for the module interface in the same
 invocation, and a `-emit-library` link of it "succeeded" into a 16428-byte library with **zero**
