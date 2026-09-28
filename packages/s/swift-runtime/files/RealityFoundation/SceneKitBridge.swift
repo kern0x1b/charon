@@ -174,3 +174,27 @@ extension Scene {
         return scene
     }
 }
+
+// MARK: - What a hit test answers
+
+@MainActor
+extension SCNNode {
+    /// The entity of this node in the given scene: the nearest node up the chain whose name is an
+    /// entity's name there.
+    ///
+    /// A hit test answers with a node, and a *geometry* node carries a mesh part's name, not its
+    /// entity's - so the walk goes up to the nearest ancestor that names an entity, and a node the
+    /// bridge did not build (a camera, a light, anything the view added) has no answer and returns
+    /// nil rather than an entity it cannot know.
+    ///
+    /// This is the resolution `ARView.gestureRecognizerShouldBegin` (ARView.swift:364) did inline
+    /// for a touch, so a touch and a pixel cast cannot disagree about what was hit.
+    public func entity(in scene: Scene) -> Entity? {
+        var current: SCNNode? = self
+        while let node = current {
+            if let name = node.name, !name.isEmpty, let found = scene.findEntity(named: name) { return found }
+            current = node.parent
+        }
+        return nil
+    }
+}
