@@ -287,11 +287,11 @@ checkEqual("a column written through its position subscript", writable.values, [
 // Apple's `map` answers a `Column` of the *same length* with a nil cell mapped to nil in place, and a
 // transform that answers nil puts a nil in place too. Measured on Apple's own: `Column<Int>` of 5 for
 // a 5-cell column, and five nils for a transform that always answers nil.
-checkEqual("a column mapped", writable.map { $0 * 2 }.values, [10, 2, 8, 40, 6])
-checkEqual("a column mapped keeps its length, as Apple's does", writable.map { $0 * 2 }.count, 5)
+checkEqual("a column mapped", writable.map { (cell: Int?) -> Int? in cell.map { $0 * 2 } }.values, [10, 2, 8, 40, 6])
+checkEqual("a column mapped keeps its length, as Apple's does", writable.map { (cell: Int?) -> Int? in cell.map { $0 * 2 } }.count, 5)
 checkEqual("a map whose transform answers nil is nils in place, as Apple's are",
            writable.map { _ -> Int? in nil }.values, [nil, nil, nil, nil, nil])
-checkEqual("a column mapped keeps its name", writable.map { $0 * 2 }.name, "n")
+checkEqual("a column mapped keeps its name", writable.map { (cell: Int?) -> Int? in cell.map { $0 * 2 } }.name, "n")
 checkEqual("a column compact-mapped is compacted, as Apple's is",
            writable.compactMap { (cell: Int?) -> Int? in guard let v = cell else { return nil }; return v > 3 ? v : nil }, [5, 4, 20])
 let keptPositions = writable.filter { (cell: Int?) -> Bool in guard let v = cell else { return false }; return v > 3 }

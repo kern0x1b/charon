@@ -181,33 +181,53 @@ public struct Column<Element>: ColumnProtocol {
     /// The cells, transformed. A missing cell stays missing: the transform sees the present values
     /// and the gap is carried through, so `map` over a column that is missing a cell does not
     /// invent one and does not lose the place.
-    public func map<T>(_ transform: (Element) throws -> T) rethrows -> Column<T> {
+    /// The cells, transformed. The closure is given the **cell**, which is `Element?` and for the
+    /// optional form `Element??`, and answers `T?`; the result is a `Column<T>` whose element type is
+    /// the transform's *unwrapped* return.
+    ///
+    /// Measured on Apple's own, with a transform answering a different type than the base's:
+    ///
+    ///     Column<Int>.map { cell -> String? in … }   ->  type Column<String>, wrappedElementType String
+    ///     Column<Int>.map { cell -> Int?    in … }   ->  type Column<Int>,    wrappedElementType Int
+    ///
+    /// so `T` is **inferred from the transform, not pinned to the base**, and the optional in the
+    /// transform's answer is the "may be absent" part rather than the column's element type. With the
+    /// old `(Element) -> T` the same closure inferred `T == Int?` and produced a `Column<Int?>` whose
+    /// `values` is `[Int??]`, so a caller reading `[0]` got a doubly optional where Apple's gives one.
+    /// `map` does not compact: a five-cell column maps to five cells, with the gaps in place.
+    public func map<T>(_ transform: (Element?) throws -> T?) rethrows -> Column<T> {
         var mapped = [T?]()
-        for cell in storage.values {
-            if let value = cell { mapped.append(try transform(value)) } else { mapped.append(nil) }
-        }
+        for cell in storage.values { mapped.append(try transform(cell)) }
         return Column<T>(name: name, contents: mapped)
     }
 
     /// The cells, transformed, with the results that are nil dropped **and** the missing cells
     /// dropped: both are absent, which is what `compactMap` has always meant.
-    public func compactMap<T>(_ transform: (Element) throws -> T?) rethrows -> [T] {
+    ///
+    /// Measured on Apple's own: a three-cell optional column whose transform doubles answers
+    /// `Array<Int>` of length 2. So this **compacts**, where `map` does not, and the result is a
+    /// plain array rather than a column.
+    public func compactMap<T>(_ transform: (Element?) throws -> T?) rethrows -> [T] {
         var out = [T]()
         for cell in storage.values {
-            guard let value = cell else { continue }
-            if let result = try transform(value) { out.append(result) }
+            if let result = try transform(cell) { out.append(result) }
         }
         return out
     }
 
-    /// The cells the predicate keeps. A missing cell is not a value to ask about, so it is dropped
-    /// rather than passed to the predicate: a predicate over `Element` cannot be given a cell that
-    /// has none.
-    public func filter(_ isIncluded: (Element) throws -> Bool) rethrows -> DiscontiguousColumnSlice<Element> {
+    /// The cells the predicate keeps, as a **discontiguous slice of the kept positions**.
+    ///
+    /// Measured on Apple's own: `Column<Int>` of `[5, 1, 4, 20, 3]` filtered on `> 3` answers
+    /// `DiscontiguousColumnSlice<Int>` of count 3, and the slice is indexed by the *base's* positions -
+    /// `kept[0]` is 5 and `kept[3]` is 20, while `kept[1]` traps with
+    /// `Fatal error: position 1 is not a valid slice index`.
+    ///
+    /// The element type here is the base's, not one inferred from a closure: there is no closure return
+    /// to infer it from, and Apple's answers `DiscontiguousColumnSlice<Int>` for a `Column<Int>`.
+    public func filter(_ isIncluded: (Element?) throws -> Bool) rethrows -> DiscontiguousColumnSlice<Element> {
         var kept = [Int]()
         for (position, cell) in storage.values.enumerated() {
-            guard let value = cell else { continue }
-            if try isIncluded(value) { kept.append(position) }
+            if try isIncluded(cell) { kept.append(position) }
         }
         return DiscontiguousColumnSlice(name: name, base: self, indices: kept)
     }
