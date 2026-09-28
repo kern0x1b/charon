@@ -1622,6 +1622,38 @@ function declared_protocols(root)
                 for name in line:gmatch("@protocol%s+([%w_]+)") do
                     if not line:find("@protocol%s+" .. name .. "%s*;") then
                         declared[name] = true
+-- Whether the protocol a member's owner names is declared - with a body, not a forward declaration - by a
+-- header this package installs or by the SDK the backport is compiled against. The owner's being a protocol
+-- is not the answer: a protocol nothing declares answers nothing, and the member of one is then implemented
+-- nowhere. The release's own inventory answers for a protocol the release itself carries.
+local SDK_DECLARATIONS = {}
+-- The SDK's own protocol declarations, once per SDK: 51 MB of words over tens of thousands of headers, and
+-- the SDK at a given path does not change under us. Keyed by that path and nothing else.
+function sdk_protocol_declarations(sdkdir)
+    if not sdkdir or not os.isdir(sdkdir) then
+    local seen = SDK_DECLARATIONS[sdkdir]
+    if not seen then
+        seen = {}
+        for _, folder in ipairs({path.join(sdkdir, "usr/include"),
+                                 path.join(sdkdir, "System/Library/Frameworks", "*", "Headers")}) do
+            for _, file in ipairs(os.files(path.join(folder, "*.h"))) do
+                for line in io.lines(file) do
+                    for protocol in line:gmatch("@protocol%s+([%w_]+)") do
+                        if not line:find("@protocol%s+" .. protocol .. "%s*;") then
+                            seen[protocol] = true
+                        end
+        SDK_DECLARATIONS[sdkdir] = seen
+-- header this package installs or by the SDK the backport is compiled against. The owner's being a protocol is
+-- not the answer: a protocol nothing declares answers nothing, and the member of one is then implemented
+-- nowhere (ef271700 on ARKit, 5a505a9b on MXDiagnostic). The release's own inventory answers for a protocol
+-- the release itself carries. The tree's own headers are read every call: 87 files, and they change under a
+-- build, which a memo keyed on the folder cannot see.
+function protocol_declared(root, owner, inventory, sdkdir)
+    if inventory and inventory.protocols and inventory.protocols[owner] ~= nil then
+    if sdk_protocol_declarations(sdkdir)[owner] then
+                for protocol in line:gmatch("@protocol%s+([%w_]+)") do
+                    if protocol == owner and not line:find("@protocol%s+" .. protocol .. "%s*;") then
+                        return true
                     end
                 end
             end
@@ -1636,6 +1668,7 @@ function registry_step(opt, built, complete, exports)
 end
 
 function check_registry(root, found, complete, deployment, exports, inventory, sdkdir, declared)
+function check_registry(root, found, complete, deployment, exports, inventory)
     local listed, incomplete = registry(root)
     local unlisted, undocumented = {}, {}
     -- per call, not a module global: an earlier check in the same process filled it from a tree with no SDK
@@ -1696,6 +1729,9 @@ function check_registry(root, found, complete, deployment, exports, inventory, s
                 declared_by_header = declared_by_header or declared_names(root, sdkdir)
                 built = declared_by_header[name] or false
             end
+            local declared = entry.kind == "protocol" or
+                (owner and listed[owner] and listed[owner].kind == "protocol" and
+                 protocol_declared(root, owner, inventory, sdkdir))
             if entry.status == "implemented" and not built and not carried and ours and not declared then
                 table.insert(unbuilt, name)
             elseif entry.status == "implemented" and not entry.facts then
