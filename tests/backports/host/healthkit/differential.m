@@ -328,22 +328,22 @@ typedef struct {
 // against. The reference is the first name of the dimension, so the factor of every other unit of it is
 // read off the host through the host's own conversion.
 static HKUnitCase CharonHKUnits[] = {
-    {@"g", @"g", NO}, {@"kg", @"g", NO}, {@"mg", @"g", NO}, {@"ug", @"g", NO}, {@"ng", @"g", NO},
+    {@"g", @"g", NO}, {@"kg", @"g", NO}, {@"mg", @"g", NO}, {@"mcg", @"g", NO}, {@"ng", @"g", NO},
     {@"pg", @"g", NO}, {@"fg", @"g", NO}, {@"oz", @"g", NO}, {@"lb", @"g", NO}, {@"st", @"g", NO},
-    {@"m", @"m", NO}, {@"km", @"m", NO}, {@"cm", @"m", NO}, {@"mm", @"m", NO}, {@"um", @"m", NO},
+    {@"m", @"m", NO}, {@"km", @"m", NO}, {@"cm", @"m", NO}, {@"mm", @"m", NO}, {@"mcm", @"m", NO},
     {@"nm", @"m", NO}, {@"in", @"m", NO}, {@"ft", @"m", NO}, {@"yd", @"m", NO}, {@"mi", @"m", NO},
-    {@"L", @"L", NO}, {@"mL", @"L", NO}, {@"uL", @"L", NO}, {@"nL", @"L", NO}, {@"pL", @"L", NO},
+    {@"L", @"L", NO}, {@"mL", @"L", NO}, {@"mcL", @"L", NO}, {@"nL", @"L", NO}, {@"pL", @"L", NO},
     {@"fL", @"L", NO}, {@"dL", @"L", NO}, {@"cL", @"L", NO}, {@"daL", @"L", NO}, {@"hL", @"L", NO},
     {@"fl_oz_us", @"L", NO}, {@"pt_us", @"L", NO}, {@"cup_us", @"L", NO},
     {@"fl_oz_imp", @"L", NO}, {@"pt_imp", @"L", NO}, {@"cup_imp", @"L", NO},
     {@"Pa", @"Pa", NO}, {@"kPa", @"Pa", NO}, {@"hPa", @"Pa", NO}, {@"daPa", @"Pa", NO}, {@"MPa", @"Pa", NO},
     {@"mmHg", @"Pa", NO}, {@"cmAq", @"Pa", NO}, {@"atm", @"Pa", NO}, {@"inHg", @"Pa", NO},
-    {@"s", @"s", NO}, {@"ms", @"s", NO}, {@"us", @"s", NO}, {@"ns", @"s", NO}, {@"min", @"s", NO},
+    {@"s", @"s", NO}, {@"ms", @"s", NO}, {@"mcs", @"s", NO}, {@"ns", @"s", NO}, {@"min", @"s", NO},
     {@"hr", @"s", NO}, {@"d", @"s", NO},
     {@"J", @"J", NO}, {@"kJ", @"J", NO}, {@"MJ", @"J", NO}, {@"cal", @"J", NO}, {@"kcal", @"J", NO},
     {@"Cal", @"J", NO}, {@"kWh", @"J", NO},
     {@"K", @"K", YES}, {@"degC", @"K", YES}, {@"degF", @"K", YES},
-    {@"S", @"S", NO}, {@"mS", @"S", NO}, {@"uS", @"S", NO}, {@"nS", @"S", NO}, {@"pS", @"S", NO},
+    {@"S", @"S", NO}, {@"mS", @"S", NO}, {@"mcS", @"S", NO}, {@"nS", @"S", NO}, {@"pS", @"S", NO},
     {@"count", @"count", NO}, {@"%", @"%", NO},
     // the products the SDK's own type table names for its types
     {@"count/s", @"count/s", NO}, {@"count/min", @"count/min", NO}, {@"m/s", @"m/s", NO},
@@ -1161,6 +1161,14 @@ static void CharonHK11Group(void)
     // The workout's flights climbed, through the release's own factory of 11.0.
     NSDate *start = [NSDate dateWithTimeIntervalSince1970:1600000000];
     NSDate *end = [NSDate dateWithTimeIntervalSince1970:1600003600];
+    // Each side's workout is given quantities of its own. Handing the host's HKQuantity to this port's
+    // factory stores a host quantity in a port workout, and reading it back with a port HKUnit makes
+    // the host's own -[HKQuantity doubleValueForUnit:] call its private -[HKUnit _isCompatibleWithUnit:],
+    // which messages the port's unit with the private -_dimensionReduction this library does not have
+    // and must not: that is the abort. It is the rule difference one taught, each side its own objects.
+    CharonHostHKQuantity *mineFlights = [CharonHostHKQuantity quantityWithUnit:[CharonHostHKUnit countUnit] doubleValue:17.0];
+    CharonHostHKQuantity *mineEnergy = [CharonHostHKQuantity quantityWithUnit:[CharonHostHKUnit kilocalorieUnit] doubleValue:400.0];
+    CharonHostHKQuantity *mineDistance = [CharonHostHKQuantity quantityWithUnit:[CharonHostHKUnit meterUnit] doubleValue:5000.0];
     HKQuantity *flights = [HKQuantity quantityWithUnit:[HKUnit countUnit] doubleValue:17.0];
     HKQuantity *energy = [HKQuantity quantityWithUnit:[HKUnit kilocalorieUnit] doubleValue:400.0];
     HKQuantity *distance = [HKQuantity quantityWithUnit:[HKUnit meterUnit] doubleValue:5000.0];
@@ -1177,16 +1185,23 @@ static void CharonHK11Group(void)
                                                                            startDate:start
                                                                              endDate:end
                                                                       workoutEvents:mineEvent ? @[ mineEvent ] : @[]
-                                                                 totalEnergyBurned:energy
-                                                                   totalDistance:distance
-                                                          totalFlightsClimbed:flights
+                                                                 totalEnergyBurned:mineEnergy
+                                                                   totalDistance:mineDistance
+                                                          totalFlightsClimbed:mineFlights
                                                                              device:nil
                                                                            metadata:nil];
     CharonHKCompareInt(@"workout activity type", (NSInteger)mineWorkout.workoutActivityType, (NSInteger)theirsWorkout.workoutActivityType);
     CharonHKCompare(@"workout startDate", mineWorkout.startDate, theirsWorkout.startDate);
     CharonHKCompare(@"workout endDate", mineWorkout.endDate, theirsWorkout.endDate);
     CharonHKCompare(@"workout duration", @(mineWorkout.duration), @(theirsWorkout.duration));
-    CharonHKCompare(@"workout events", @(mineWorkout.workoutEvents.count), @(theirsWorkout.workoutEvents.count));
+    // The event count is compared only where the host's release can carry an event at all. Its
+    // HealthKit answers no -workoutEventWithType:dateInterval:metadata:, printed above, so its
+    // workout is built with none and the two counts would say only that the host's release is older
+    // than the API. A selector the host has dropped is not compared, and this is that case.
+    if (theirsEvent)
+        CharonHKCompare(@"workout events", @(mineWorkout.workoutEvents.count), @(theirsWorkout.workoutEvents.count));
+    else
+        printf("not compared: the host's workout carries no event, its HealthKit having no -workoutEventWithType:dateInterval:metadata:, so there is no count of its own to compare with\n");
     CharonHKCompareDouble(@"workout totalEnergyBurned", [mineWorkout.totalEnergyBurned doubleValueForUnit:[CharonHostHKUnit kilocalorieUnit]],
                           [theirsWorkout.totalEnergyBurned doubleValueForUnit:[HKUnit kilocalorieUnit]]);
     CharonHKCompareDouble(@"workout totalDistance", [mineWorkout.totalDistance doubleValueForUnit:[CharonHostHKUnit meterUnit]],
