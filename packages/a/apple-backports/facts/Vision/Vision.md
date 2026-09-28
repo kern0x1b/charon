@@ -252,24 +252,42 @@ recorded by `tests/backports/host/vision/run.sh` (33 records) and held against t
   branches already computed handed to it as the placement. Everything around it is untouched, and
   the library compiles for armv7 at 6.1.3 with the file that includes the header.
 
-  **And the "0" that came back through the library was not a measurement of the library.** The
-  coordinator caught the contradiction and it is worth writing down exactly, because it is worse than
-  a tolerance hiding a one: it is a comparison that could only ever read zero.
+  **The check measures the port, and the table through it is now the port's own.** Three defects in
+  the check are fixed: the port build compiles `CharonVisionBilinear.c`; each side's origin is printed
+  with `dladdr` and the run **fails** if the two resolve to the same image, so a comparison that has
+  collapsed into the framework against itself cannot read zero; and the verdict and the mutants are
+  counted separately, with the mutants running whatever the verdict was. The mutant is the
+  destination inset put back into the sample position, it hashes the file before and after and fails
+  the run if the patch changed nothing, and it is caught: `the mutant changed the file:
+  642746bd7e11 -> 8a45ff6e29b8`, `mutants: 1 run, 0 surviving`.
 
-  The tree's crop check, `tests/backports/host/vision/run-crop.sh`, builds its **system** binary from
-  `crop.m` alone, and in that build `main()` answers *both* sides of the comparison with
-  `oracle(...)` -- the framework's own constructor, twice. So every row of the system build's table is
-  the framework against itself, and reads 0 of whatever it compares. The rows I reported as "the
-  library's own code path" were those: the port build in that script compiles `crop.m` and the
-  header but **not** `Vision/CharonVisionBilinear.c`, so after the integration it cannot even link,
-  and the numbers that came back were the system build's.
+  Two native fixes came out of running it:
 
-  So the honest state is: the **only** measurement of the integrated kernel is the probe's table --
-  18295 of 25088 exact, 6793 off by exactly one, maximum one, in the picture region, for
-  100x50 to 224x224 scale fit -- and the tree's crop check must be fixed before it can measure
-  anything. Two things it needs: the port build must compile `CharonVisionBilinear.c`, and the system
-  build must print its rows as the control they are rather than as a verdict, or not print them at
-  all. The comparison in `differing()` itself is sound -- it walks every byte of the whole buffer
-  including the fourth, with no tolerance -- so it would have shown a one; it was simply never handed
-  the port's answer.
+  - **The geometry.** The library handed the kernel a `long` cast of the placement's double, and the
+    bars were drawn by a CoreGraphics context *underneath* the kernel's output -- two resamplers,
+    with the CG one winning wherever they disagreed. The placement is now rounded the way the probe
+    rounds it, and the bars are the kernel's own memset, whose value is Core ML's measured
+    `00 00 00 00`.
+  - **A cover is not clamped to the target.** Clamping the drawn size instead is a scale fit
+    wearing a cover's name: a 100x50 picture at 224x224 is drawn 448 wide with an inset of -112 and
+    the kernel writes only the 224 columns that land inside. That is what left the square
+    centre-crop rows red, and removing the clamp made them exact.
+
+  Through the check, the port against Core ML's own option for the same rule:
+
+  | picture to | scale fit | centre crop |
+  | --- | --- | --- |
+  | 16x16 to 16x16 | **0** of 256 | **0** of 256 |
+  | 8x8 to 16x16 | **0** of 256 | **0** of 256 |
+  | 13x7 to 8x8 | 1 of 128 | 64 of 128 |
+  | 4x7 to 33x9 | **0** of 432 | 297 of 432 |
+  | 100x50 to 224x224 | 3208 of 50176 | 50176 of 50176 |
+
+  So the scale fit is exact on three of the five and one count off on a fourth, the **square
+  centre crops are exact**, and what is left is the **centre crop of a picture whose aspect does not
+  match the target's** -- recorded with its numbers rather than claimed as fixed. The question is
+  where the crop *starts*: the datum from the impulse rows is that Core ML's horizontal inset is one
+  more than `(W - w) / 2` (`16x8` to `32x8` put source column 5 at output 14, where bar + 5 is 13),
+and this is the row that would settle it. The kernel is exact for the fit rule and for a cover of a
+matching aspect, so the kernel is not what is left.
 

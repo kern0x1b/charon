@@ -95,14 +95,13 @@ static inline CVPixelBufferRef charon_vision_pixels(CVPixelBufferRef source, siz
     if (drawHigh < 1) {
         drawHigh = 1;
     }
-    if (drawWide > wide) {
-        drawWide = wide;
-    }
-    if (drawHigh > high) {
-        drawHigh = high;
-    }
-    insetX = (long)wide > (long)drawWide ? ((long)wide - (long)drawWide) / 2 : 0;
-    insetY = (long)high > (long)drawHigh ? ((long)high - (long)drawHigh) / 2 : 0;
+    /* A cover is *not* clamped to the target: the picture is scaled past the target's edge and the
+     * crop is what takes the middle out of it, so a 100x50 picture at 224x224 is drawn 448 wide with
+     * an inset of -112 and the kernel writes only the 224 columns that land inside. Clamping the
+     * drawn size instead is a scale fit wearing a cover's name, and it is what left the centre-crop
+     * rows at 50029 of 50176. The kernel clips, so the overflow costs nothing. */
+    insetX = ((long)wide - (long)drawWide) / 2;
+    insetY = ((long)high - (long)drawHigh) / 2;
     out = (uint8_t *)CVPixelBufferGetBaseAddress(buffer);
     outStride = CVPixelBufferGetBytesPerRow(buffer);
     memset(out, 0, outStride * high);
