@@ -69,7 +69,11 @@ struct vDSP_DFT_Interleaved_SetupStructD {
 static int charon_dft_length_supported(vDSP_Length length)
 {
     static const vDSP_Length factors[5] = {2, 3, 5, 9, 15};
-    for (int i = 0; i < 5; i++) {
+    /* sizeof factors / sizeof *factors, and not a literal 5: the bound IS the table's size. A mutant that
+     * grew the table to the header's f = 5*5 = 25 and left this at 5 was INERT - it landed, and changed
+     * nothing, because index 5 was never read. The two could drift apart silently, and a check that cannot be
+     * broken by growing the table is not covering the table. */
+    for (int i = 0; i < (int)(sizeof factors / sizeof *factors); i++) {
         vDSP_Length n = length / factors[i];
         if (length % factors[i] == 0 && n >= 4 && (n & (n - 1)) == 0)
             return 1;
