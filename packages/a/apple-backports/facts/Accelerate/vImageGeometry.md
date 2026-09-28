@@ -1137,3 +1137,14 @@ So the three candidates the transpose test leaves, and each is one run: read a d
 picture with the vertical at a slope of 1 and a scale of 1, and the destination row's weight names the
 source row it read - which separates a sign from a limit from an edge in one grid. That is where this family
 stands, and it is a smaller question than the one this turn started with.
+
+searched: **stb_image_resize** (MIT/Apache-2.0) for the Lanczos3 filter, and **nothing reused**.
+`stbir__lanczos` is `sinc(x) * sinc(x / 3)` with the weights normalised per phase, which is what
+`CharonResampling.h` computes and what the host's own weights match to five decimal places — the phase-0.5
+set `+0.02446, -0.13587, +0.61141, +0.61141, -0.13587, +0.02446` is that kernel's, and the extent rule
+`ceil(lobes / min(1, scale))` is the support stb uses. It is not reusable here: stb_image_resize is integer
+throughout, has **no alpha channel**, no planar or interleaved-chroma layouts, and **no edging mode at all** —
+and the edging is the thing this family had to get right, since the host substitutes the backColor with the
+weight intact and does not renormalise over the survivors, which is exactly the case stb does not have. It is
+also a whole-image resampler with no shear, rotate or affine transform, so 87 of this family's functions
+have no counterpart in it. There is no code from stb_image_resize in this package.

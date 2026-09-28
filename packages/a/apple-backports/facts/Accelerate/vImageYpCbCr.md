@@ -180,3 +180,14 @@ port cannot do that. The differential prints both answers rather than asserting 
 
 Nothing of this family. Every name Conversion.h declares for Y'CbCr is here; the four the first delivery
 carried are the 4:2:0 8-bit pair and are counted in the same table.
+
+searched: **libyuv** (BSD-3-Clause, `third_party/libyuv` under `libyuv/`) for the Y'CbCr layouts and the
+ten-bit bit positions, and **nothing reused**. libyuv's `I420ToARGB` and its v210 and v410 readers were read
+for the channel order and the field positions, and the layout this package uses agrees with them and with
+the header's own drawing — `probe-bits.m` confirmed the drawing bit by bit against the host's answers, and
+libyuv puts its fields in the same places. None of it is usable here beyond that: libyuv converts **8-bit 4:2:0
+only**, and this family is 4:2:2 in three byte layouts, 4:2:0 in two plane layouts, 4:4:4 in five byte
+layouts and one 16-bit, the 10-bit v410 and v210, the 16-bit v216 and y416, and a Q12 source — so four
+fifths of the family has no counterpart to borrow, and the one fifth that has differs in its argument shape
+rather than its arithmetic. What was taken is the *confirmation* that the bit positions are the conventional
+ones, not a line of code: there is no code from libyuv in this package.
