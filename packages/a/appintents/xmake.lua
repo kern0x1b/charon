@@ -93,7 +93,12 @@ package("appintents")
         -- with a probe, not assumed, and the file is taken out of the source list either way - two
         -- types of one name in one image is not something a caller could use.
         local sources, carries = {}, false
-        for _, file in ipairs(os.files(path.join("Sources", "AppIntents", "**.swift"))) do
+        -- Absolute, not relative: the glob's relative names resolve against the compiler's working
+        -- directory, which is not this one, so the compile was handed a path it could not open --
+        -- "error opening input file 'Sources/AppIntents/LocalizedStringResource.swift'" under
+        -- `xmake f`, where every other band was told the package installed
+        -- (.agent-work/runs/packages/emulate/build/configure.log).
+        for _, file in ipairs(os.files(path.join(package:scriptdir(), "Sources", "AppIntents", "**.swift"))) do
             if path.filename(file) ~= "LocalizedStringResource.swift" then
                 table.insert(sources, file)
             end
@@ -116,7 +121,7 @@ package("appintents")
             print("%s: this runtime's Foundation has LocalizedStringResource, the module uses the platform's and carries none",
                   package:name())
         else
-            table.insert(sources, path.join("Sources", "AppIntents", "LocalizedStringResource.swift"))
+            table.insert(sources, path.join(package:scriptdir(), "Sources", "AppIntents", "LocalizedStringResource.swift"))
             print("%s: this runtime's Foundation has no LocalizedStringResource, the module carries it (AppIntents' whole API is written in it)",
                   package:name())
         end
