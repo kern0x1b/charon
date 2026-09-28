@@ -1,6 +1,8 @@
 #import <Foundation/Foundation.h>
 #import "CharonMethodProem.h"
 #import <objc/runtime.h>
+#import <dlfcn.h>
+#include <string.h>
 
 /* NSBundleResourceRequest (iOS 9.0) over the port's release.
 
@@ -261,10 +263,31 @@ static double CharonPreservationPriorityForTag(NSBundle *bundle, SEL selector, N
    same reason). */
 __attribute__((constructor)) static void CharonInstallNSBundleAdditions(void)
 {
-    if (![NSBundle instancesRespondToSelector:@selector(setPreservationPriority:forTags:)])
-        class_addMethod([NSBundle class], @selector(setPreservationPriority:forTags:),
+    /* The class by name, not by reference. A class *reference* to NSBundle is a weak import in this
+       package - the class does not exist on the release it is built for - and on arm64e the optimized
+       stub that answers -respondsToSelector: authenticates whatever that reference holds, so a
+       reference the link did not sign the way the host signs it is a brk #0xc472 (a pointer
+       authentication failure, DA key) before any message is sent. Asking the runtime for the class by
+       name gives a pointer the runtime itself signed. */
+    Class bundle = objc_getClass("NSBundle");
+    Dl_info where;
+    memset(&where, 0, sizeof(where));
+    dladdr((__bridge const void *)bundle, &where);
+    fprintf(stderr, "charon: NSBundle is %p, in %s, and objc_getClass agrees: %d\n", (__bridge void *)bundle,
+            where.dli_fname ? where.dli_fname : "(nowhere)", bundle == objc_getClass("NSBundle"));
+    if (bundle == Nil) {
+        fprintf(stderr, "charon: no NSBundle in this process; the two additions are not installed\n");
+        return;
+    }
+    /* Both answers before either mutation: adding a method rewrites the class, and a class pointer
+       held across that is not the one the runtime would hand out again - asking it afterwards is what
+       traps (a pointer authentication failure, DA key, in the optimized -respondsToSelector stub). */
+    BOOL hasSet = [bundle instancesRespondToSelector:@selector(setPreservationPriority:forTags:)];
+    BOOL hasGet = [bundle instancesRespondToSelector:@selector(preservationPriorityForTag:)];
+    if (!hasSet)
+        class_addMethod(bundle, @selector(setPreservationPriority:forTags:),
                         (IMP)CharonSetPreservationPriority, "v@:@d@");
-    if (![NSBundle instancesRespondToSelector:@selector(preservationPriorityForTag:)])
-        class_addMethod([NSBundle class], @selector(preservationPriorityForTag:),
+    if (!hasGet)
+        class_addMethod(bundle, @selector(preservationPriorityForTag:),
                         (IMP)CharonPreservationPriorityForTag, "d@:@@");
 }

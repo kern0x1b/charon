@@ -432,3 +432,55 @@ into the image. `attach.c` is what the tree uses to get past that, and this file
 `-Wall -Werror=objc-missing-property-synthesis` and exports the class, its metaclass and the two
 constants; the differential is written and red; there are no mutants, no registry entries and no facts
 file; the gates are on the wrong commit.
+
+---
+
+## The trap: your PAC reading is right, and the class reference is what was unsigned
+
+`brk #0xc472` is a pointer authentication failure, not a non-object receiver. The three prints, one run,
+from the constructor before it asks anything:
+
+```
+charon: NSBundle is 0x1f0ab0e08, in /System/Library/Frameworks/Foundation.framework/Versions/C/Foundation,
+        and objc_getClass agrees: 1
+```
+
+and the renamed object, the same source compiled with `-DNSBundleResourceRequest=CharonHost…`:
+
+```
+$ xcrun nm -u  …/plain/NSBundleResourceRequest.m.o | grep NSBundle
+                (undefined) external _OBJC_CLASS_$_NSBundle
+$ xcrun nm -m  …/plain/NSBundleResourceRequest.m.o | grep classrefs
+                (no __objc_classrefs entry for NSBundle)
+```
+
+**The rename does not touch `NSBundle` — it renames the class token only — and the symbol is a plain
+external, not a weak one.** So the harness was not pointing it at something else; the *reference itself*
+was the problem: the compiler emits a class reference for a `Class` expression and the optimized
+`-respondsToSelector:` stub authenticates what that reference holds, and in this process it is not signed
+the way the host signs it. **`objc_getClass("NSBundle")` at run time gives a pointer the runtime signed,
+and the trap goes** — the print above is the proof, because the print happens on the path that used to
+trap.
+
+**And one more of the same shape, found by the same run:** the *second* ask, after the first
+`class_addMethod`, traps too. Adding a method rewrites the class, and a class pointer held across that
+is not the one the runtime hands out again, so **both answers are now read before either mutation**:
+
+```objc
+BOOL hasSet = [bundle instancesRespondToSelector:@selector(setPreservationPriority:forTags:)];
+BOOL hasGet = [bundle instancesRespondToSelector:@selector(preservationPriorityForTag:)];
+if (!hasSet) class_addMethod(...);
+if (!hasGet) class_addMethod(...);
+```
+
+**Where it stands:** the trap is *not* cleared — the run still ends on a SIGTRAP (rc 133) after the
+constructor's print, so a third `respondsToSelector:` traps, and the next step is the same instrument
+again: print each of the remaining ask sites with the pointer it sends and `dladdr` on it. The candidates
+are the differential's own two (`[bundleClass instancesRespondToSelector:…]`, already by name) and
+`CharonManifestForBundle`'s `bundle.bundlePath`, which is a property send and not a `respondsToSelector`
+at all — so the *first* thing to check is that the trap's frame is still the stub and that
+`objc_getClass` is not itself the thing being authenticated a second time.
+
+**The oracle question is still open**, so the holdable count is still 9-or-11. It becomes 11 the moment
+the private `-initWithTag:` answers in this process, and that measurement is one line away once the run
+completes.

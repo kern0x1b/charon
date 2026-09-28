@@ -238,9 +238,10 @@ int main(void)
         // where the header promises an exception, so the host cannot be the oracle for either
         SEL setPriority = NSSelectorFromString(@"setPreservationPriority:forTags:");
         SEL priorityFor = NSSelectorFromString(@"preservationPriorityForTag:");
-        same_bool([[NSBundle class] instancesRespondToSelector:setPriority], YES,
+        Class bundleClass = objc_getClass("NSBundle");
+        same_bool([bundleClass instancesRespondToSelector:setPriority], YES,
                   @"the port adds -setPreservationPriority:forTags: to NSBundle");
-        same_bool([[NSBundle class] instancesRespondToSelector:priorityFor], YES,
+        same_bool([bundleClass instancesRespondToSelector:priorityFor], YES,
                   @"the port adds -preservationPriorityForTag: to NSBundle");
         for (NSBundle *bundle in @[ withoutManifest, withManifest ]) {
             NSString *what = [NSString stringWithFormat:@"a bundle with%s tag information",
