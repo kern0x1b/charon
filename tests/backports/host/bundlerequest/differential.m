@@ -191,6 +191,24 @@ int main(void)
                 same_double([request loadingPriority], 1.0, [what stringByAppendingString:@" the urgent priority"]);
             }
 
+        // the two things the header says about the initialisers that no check held before: no bundle
+        // means the main bundle, and the set is the caller's own, not what the caller keeps
+        for (Class subject in @[ ours, theirs ]) {
+            id noBundle = nil;
+            if (subject == ours)
+                noBundle = [[ours alloc] initWithTags:known];
+            checks++;
+            if (noBundle) {
+                same_string([noBundle bundle].bundlePath, [NSBundle mainBundle].bundlePath,
+                            @"a request with no bundle resolves in the main bundle");
+            }
+        }
+        NSMutableSet *mutable = [NSMutableSet setWithObjects:@"level1", nil];
+        id copied = [[ours alloc] initWithTags:mutable bundle:withManifest];
+        [mutable addObject:@"level2"];
+        same_integer((long long)[[copied tags] count], 1,
+                     @"a request keeps its own set, not the caller's after it changes");
+
         // -init, which the header marks unavailable on every platform and both answer by refusing
         for (Class subject in @[ ours, theirs ]) {
             NSString *reason = nil, *name = nil;
