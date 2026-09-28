@@ -22,6 +22,17 @@ public protocol AppEntity: AppValue, DisplayRepresentable, Identifiable
     static var defaultQuery: Self.DefaultQuery { get }
 }
 
+/// The resolver specification an entity of this kind is asked through, which is the
+/// framework's own default. It is an `extension AppEntity` member and not a requirement
+/// (`arm64e-apple-macos.swiftinterface:423-425`), so a port that declares it on individual
+/// types is writing a different thing: the framework gives *every* entity this, and a
+/// conformance that wants another specification names its own beside it.
+extension AppEntity {
+    public static var defaultResolverSpecification: EmptyResolverSpecification<Self> {
+        return EmptyResolverSpecification()
+    }
+}
+
 /// An enum: a closed set of cases the app names, which a parameter carries.
 public protocol AppEnum: AppValue, StaticDisplayRepresentable, RawRepresentable where RawValue: LosslessStringConvertible {}
 

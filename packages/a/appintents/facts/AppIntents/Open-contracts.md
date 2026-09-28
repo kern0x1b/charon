@@ -30,10 +30,26 @@ that the declaration is absent.
 | --- | --- |
 | `AppEntity.defaultResolverSpecification` | an `AppEntity` **extension** member, `public static var defaultResolverSpecification: EmptyResolverSpecification<Self> { get }` (`:423-425`), with a second, `some ResolverSpecification` one for `Self: AppEnum` (`:427-430`). It is not a protocol requirement, so it belongs in an `extension AppEntity`, and the port declares it on individual types instead |
 
-**This one is implementable and is not written yet**: an `extension AppEntity` carrying
-`defaultResolverSpecification` returning `EmptyResolverSpecification()` is the interface's shape, and
-the row is the port's. It is not in this turn's commits because the coordinator's ruling was to hold
-everything until the swift-syntax build returns.
+**This one is implementable and is now written**: `extension AppEntity` carries
+`defaultResolverSpecification` returning `EmptyResolverSpecification()`, which is the interface's shape
+(`Entity.swift`, after the `AppEntity` protocol's own body). It matters that it is an *extension*
+member: the port had `defaultResolverSpecification` on nine individual types — an entity's identifier,
+its schema, a parameter, a donation, and the resolvers — and the framework gives it to **every**
+entity once, with a second, `some ResolverSpecification` one for `Self: AppEnum` (`:427-430`). A
+conformance that wants another specification names its own beside it.
+
+**The other three rows of the family, and their status:**
+
+| row | status |
+| --- | --- |
+| `AppEntity.displayRepresentation` | covered through the declaring protocol (`Display.swift:19-20`, `InstanceDisplayRepresentable`), and it is a *measurement* row, not a missing declaration — see §1 |
+| `AppEntity.id` | covered through `Identifiable`, which the port's own `AppEntity` refines; nothing to add, and nothing to find in this module's sources |
+| `AppEntity(schema:)` | open by the coordinator's ruling of 2026-09-28, with the reason in `Macros.md`: the interface names the `memberAttribute` role and not the attribute it adds, and Apple's expansion is not on this machine |
+
+**The family's count is not measured yet.** The module compile is queued through `heavy.sh` with no
+timeout on the job (`heavy.sh` waits for a slot by design) and its verdict is what decides whether
+`AppEntity.defaultResolverSpecification` places. The digester has never printed an extension member
+for this owner, so I am not predicting the number.
 
 ## 3. Rows the digester never prints — 41 rows, and three refuted ways of making them print
 
