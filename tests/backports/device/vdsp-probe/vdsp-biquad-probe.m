@@ -358,8 +358,16 @@ static void run_search(const char *label, const double *coeffs, vDSP_Length sect
     search_all(leaves, 5, &forest);
     printf("  %d trees, variant 0 is the printed form\n", forest.count);
 
-    // CONTROL: variant 0 in double against the release's double output, every sample, bit for bit
+    // CONTROL: variant 0 in double against **the PORT'S OWN output**, every sample, bit for bit.
+    // The release's double output is the case that already failed, so it cannot be the control; the
+    // port's output is a case already known to be true, because the port passes the release's own
+    // comparison on the double cases on this same guest.
     {
+        double port_d[SEARCH_SAMPLES], port_dd[4] = {0, 0, 0, 0};
+        vDSP_biquad_SetupD ps = vDSP_biquad_CreateSetupD(all, sections);
+        charon_probe_vDSP_biquadD((const struct vDSP_biquad_SetupStructD *)ps, port_dd, xd, 1, port_d, 1,
+                                   SEARCH_SAMPLES);
+        charon_probe_vDSP_biquad_DestroySetupD(ps);
         double delay[4] = {0, 0, 0, 0};
         int bad = -1;
         for (int n = 0; n < SEARCH_SAMPLES; n++) {
@@ -375,7 +383,7 @@ static void run_search(const char *label, const double *coeffs, vDSP_Length sect
                 v[i] = t->node[i].leaf >= 0 ? fa[t->node[i].leaf][0] * fa[t->node[i].leaf][1]
                                             : v[t->node[i].a] + v[t->node[i].b];
             double out = v[t->used - 1];
-            if (memcmp(&out, &host_d[n], sizeof out) != 0) { bad = n; break; }
+            if (memcmp(&out, &port_d[n], sizeof out) != 0) { bad = n; break; }
             delay[0] = delay[1]; delay[1] = x[n]; delay[2] = delay[3]; delay[3] = out;
         }
         if (bad >= 0) {
@@ -383,8 +391,8 @@ static void run_search(const char *label, const double *coeffs, vDSP_Length sect
                    "reports nothing\n", bad);
             return;
         }
-        printf("  control passed: variant 0 in double reproduces the release bit for bit on all %d samples\n",
-               SEARCH_SAMPLES);
+        printf("  control passed: variant 0 in double reproduces the PORT'S OWN output bit for bit on all %d "
+               "samples\n", SEARCH_SAMPLES);
     }
 
     // every association, in float
@@ -399,7 +407,7 @@ static void run_search(const char *label, const double *coeffs, vDSP_Length sect
         if (first < 0) { matched++; printf("  MATCHES every sample: tree %d of %d\n", t, forest.count); }
         else if (first < best) { best = first; best_tree = t; }
     }
-    printf("  the %d associations in float: %s; the best, tree %d, first differs at sample %d\n", forest.count,
+    printf("  the %d associations in float against the release's FLOAT output: %s; the best, tree %d, first differs at sample %d\n", forest.count,
            matched ? "some match" : "NONE match", best_tree, best);
     printf("  the fused masks are not candidates here: armv7 VFP before VFPv4 has no fused multiply-add\n");
 
