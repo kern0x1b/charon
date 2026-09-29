@@ -231,16 +231,11 @@ package("apple-backports")
                         archives = {["box2d"] = {linkdir = package:dep("box2d"):installdir("lib"), link = "Box2D", includedir = package:dep("box2d"):installdir("include")},
                                     ["charon-coding"] = {linkdir = package:dep("charon-coding"):installdir("lib"), link = "charon-coding", includedir = package:dep("charon-coding"):installdir("include")},
                                     ["ggml"] = {linkdir = package:dep("ggml"):installdir("lib"), link = "ggml", includedir = package:dep("ggml"):installdir("include")},
+                                    ["micro-ecc"] = {linkdir = package:dep("micro-ecc"):installdir("lib"), link = "micro-ecc", includedir = package:dep("micro-ecc"):installdir("include")}
                         }}
         -- no width here on purpose: on_install runs inside a job of xmake's own, and
         -- backports.lua's width() sees that and compiles one unit at a time, for this call and for
         -- write_deb() below, without either of them having to remember
-=======
-                        archives = {
-                            box2d = {linkdir = package:dep("box2d"):installdir("lib"), link = "Box2D", includedir = package:dep("box2d"):installdir("include")},
-                            ["micro-ecc"] = {linkdir = package:dep("micro-ecc"):installdir("lib"), link = "micro-ecc", includedir = package:dep("micro-ecc"):installdir("include")}
-                        }}
->>>>>>> d4b5810b (Sign, verify, exchange and answer for a P-256 key, over charon@micro-ecc)
         backports.build(table.join(common, {cache = cache, builddir = path.absolute("link"), outputdir = package:installdir("lib")}))
         local released
         for version in io.readfile(path.join(package:scriptdir(), "..", "..", "..", "addons", "c", "charon", "xmake.lua")):gmatch('add_versions%("v(%d[%d%.]*)"') do
