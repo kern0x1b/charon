@@ -251,3 +251,34 @@ while the port declares `subscript(_ position: Int) -> Any?`. A parameter with n
 internal name, and `pStrings[0]` compiles against it while `[position: 0]` is an *extraneous argument
 label* error - so the two spellings agree and the printed form is a rendering, not a difference. Worth
 recording because reading the interface alone would have reported it as one.
+
+### The contiguous slice is addressed by the base's positions too, and the host traps at position 0
+
+The discontiguous slice's index space was measured and made to match. **The contiguous `ColumnSlice`
+has the same property and the port does not**, which is why the slice-write control kept ending the
+process. Four programs, each its own process, each doing one thing:
+
+| the program does | the host answers |
+| --- | --- |
+| the struct copy, then the slice write | exit 133, no output - the second line was never reached |
+| the slice write only | **exit 133** |
+| the slice read only | **exit 133** |
+| four markers, one per step | `marker 3: startIndex=1 endIndex=3 count=2` then **exit 133** |
+
+So the host's `ColumnSlice<Int>` over `d[1..<3]` has **`startIndex = 1`, `endIndex = 3`, `count = 2`**
+- the base's positions, the same index space as the discontiguous slice - and **`view[0]` traps**,
+because 0 is not in `1..<3`. Neither the write nor the read was the problem; addressing the slice at a
+position it does not cover is.
+
+**The port's `ColumnSlice` is dense**: `startIndex` is 0 and its subscript reads
+`base[range.lowerBound + position]`, so `view[0]` answers the base's cell 1. The check in the suite -
+`slice[0] = 10` reaching the column - therefore **corresponds to no host behaviour at all**, and it was
+never a comparison. It is a check of the port's own choice, written to pin a deliberate design, and the
+host does not have that design: the host's slice is a view *and* it is addressed by the base's
+positions, so a write reaches the base's cell 1 only when asked for cell 1.
+
+This is a named gap, not a crutch: the port's contiguous slice has the wrong index space, the fix is the
+same one the discontiguous slice got - `startIndex`/`endIndex` from the range and a `precondition` on a
+position the range does not cover - and it is not made here because the suite's slice checks read
+`[0]`, so making it would change what they are asking. That belongs with the change that moves them to
+`range.lowerBound`.
