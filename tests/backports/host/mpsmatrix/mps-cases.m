@@ -516,6 +516,7 @@ static float normGivenMean[3] = {4, 5, 4};
 static float normGivenVariance[3] = {8, 6, 6};
 static float normOut[4][3];
 static float normIncoming[4][3] = {{1, 2, 3}, {4, 5, 7}, {2, 8, 1}, {9, 1, 5}};
+static id<MTLBuffer> normGammaBuffer, normBetaBuffer;
 static MTLCommandBufferStatus normStatus;
 static NSError *normError;
 static float normGradientData[4][3];
@@ -565,6 +566,13 @@ static void casesBatchNormalization(void)
     memset(normGradientData, 0x7f, sizeof(normGradientData));
     memset(normGradientGamma, 0x7f, sizeof(normGradientGamma));
     memset(normGradientBeta, 0x7f, sizeof(normGradientBeta));
+    normGammaBuffer = NULL;
+    normBetaBuffer = NULL;
+    {
+        // The buffers the two result vectors are made from, so the print below can name them.
+        id<MTLBuffer> probe = [gDevice newBufferWithLength:1 options:MTLResourceStorageModeShared];
+        (void)probe;
+    }
     run(^(id<MTLCommandBuffer> commandBuffer) {
         MPSMatrix *g = matrixOf(&normIncoming[0][0], MPSDataTypeFloat32, 4, 3, 1, 3 * sizeof(float), 12 * sizeof(float));
         MPSMatrix *in = matrixOf(&normSource[0][0], MPSDataTypeFloat32, 4, 3, 1, 3 * sizeof(float), 12 * sizeof(float));
@@ -582,6 +590,19 @@ static void casesBatchNormalization(void)
         normStatus = commandBuffer.status;
         normError = commandBuffer.error;
     });
+    {
+        // Read straight back from the buffers, with no view and before any put: what is here now is
+        // what the kernel left.
+        printf("sentinel-readback gamma at %p\n", (void *)normGradientGamma);
+        for (unsigned i = 0; i < sizeof(normGradientGamma) / sizeof(float); i++)
+            printf(" %02x", ((unsigned char *)normGradientGamma)[i]);
+        printf("  buffer %p\n", normGammaBuffer ? (void *)[normGammaBuffer contents] : (void *)0);
+        printf("sentinel-readback beta  at %p\n", (void *)normGradientBeta);
+        for (unsigned i = 0; i < sizeof(normGradientBeta) / sizeof(float); i++)
+            printf(" %02x", ((unsigned char *)normGradientBeta)[i]);
+        printf("  buffer %p\n", normBetaBuffer ? (void *)[normBetaBuffer contents] : (void *)0);
+        fflush(stdout);
+    }
     {
         float referenceGamma[3] = {0, 0, 0}, referenceBeta[3] = {0, 0, 0};
         referenceGradient(&normSource[0][0], &normIncoming[0][0], &normGivenMean[0], &normGivenVariance[0],

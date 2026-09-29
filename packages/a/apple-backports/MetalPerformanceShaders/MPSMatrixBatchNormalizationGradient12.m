@@ -52,6 +52,7 @@
 
 #import "CharonMPS.h"
 
+#include <stdio.h>
 #pragma clang diagnostic ignored "-Wprotocol"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
@@ -146,11 +147,19 @@ CHARON_MPS_NEURON_COMMON
             double scaledSum = vectors ? sum / (double)vectors : 0.0;
             if (resultGradientForGammaVector) {
                 CharonMPSVectorView view = CharonMPSVectorViewOf(resultGradientForGammaVector);
+#ifdef CHARON_BN_TRACE
+                fprintf(stderr, "BNW gamma ch%lu bytes %p length %lu stride %lu\n", (unsigned long)column,
+                        view.bytes ? view.bytes : (void *)0, (unsigned long)view.length, (unsigned long)view.vectorBytes);
+#endif
                 if (view.length > column)
                     CharonMPSStore(CharonMPSVectorElement(&view, 0, column), view.dataType, 0, gammaGradient);
             }
             if (resultGradientForBetaVector) {
                 CharonMPSVectorView view = CharonMPSVectorViewOf(resultGradientForBetaVector);
+#ifdef CHARON_BN_TRACE
+                fprintf(stderr, "BNW beta  ch%lu bytes %p length %lu stride %lu\n", (unsigned long)column,
+                        view.bytes ? view.bytes : (void *)0, (unsigned long)view.length, (unsigned long)view.vectorBytes);
+#endif
                 if (view.length > column)
                     CharonMPSStore(CharonMPSVectorElement(&view, 0, column), view.dataType, 0, betaGradient);
             }
