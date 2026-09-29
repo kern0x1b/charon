@@ -60,26 +60,39 @@ int main(int argc, char **argv)
         printf("max\tabsent\n");
     }
 
-    // Per protocol, by the SDK's own enumerators. kTLSProtocol13 is asked on purpose: the 16.4 SDK
-    // declares it, and whether 6.1.3 enables it is the open question the four rows turn on.
-    struct { const char *name; SSLProtocol protocol; } asked[] = {
-        { "enabled-ssl3",  kSSLProtocol3  },
-        { "enabled-tls1",  kTLSProtocol1  },
-        { "enabled-tls11", kTLSProtocol11 },
-        { "enabled-tls12", kTLSProtocol12 },
-        { "enabled-tls13", kTLSProtocol13 },
-        { "enabled-dtls1", kDTLSProtocol1 },
-    };
-    for (unsigned i = 0; i < sizeof asked / sizeof asked[0]; i++) {
-        if (SSLGetProtocolVersionEnabled == NULL) {
-            printf("%s\tabsent\n", asked[i].name);
-            continue;
+    // Per protocol. THERE IS NO GETTER: the release declares SSLSetProtocolVersionEnabled
+    // (SecureTransport.h:513) and no SSLGetProtocolVersionEnabled, so asking "is this one enabled" has
+    // no call behind it. That is a finding about the API, and it is reported rather than worked around.
+    printf("per-protocol-getter\tabsent\n");
+    //
+    // So the question is asked the only way it can be: ENABLE each protocol and see whether the reported
+    // maximum moves. A protocol the stack honours shows up in the range; one it does not, leaves it
+    // where it was. The value is then put back, so the report is of the range and not of the fiddling.
+    SSLProtocol before = 0;
+    if (SSLGetProtocolVersionMax != NULL && SSLGetProtocolVersionMax(context, &before) == noErr) {
+        struct { const char *name; SSLProtocol protocol; } asked[] = {
+            { "enable-ssl3",  kSSLProtocol3  },
+            { "enable-tls1",  kTLSProtocol1  },
+            { "enable-tls11", kTLSProtocol11 },
+            { "enable-tls12", kTLSProtocol12 },
+            { "enable-tls13", kTLSProtocol13 },
+            { "enable-dtls1", kDTLSProtocol1 },
+        };
+        for (unsigned i = 0; i < sizeof asked / sizeof asked[0]; i++) {
+            SSLProtocol moved = 0;
+            if (SSLSetProtocolVersionEnabled == NULL) {
+                printf("%s\tabsent\n", asked[i].name);
+                continue;
+            }
+            // turn it on, read the range, turn it back off - and report what the range said
+            SSLSetProtocolVersionEnabled(context, asked[i].protocol, true);
+            if (SSLGetProtocolVersionMax(context, &moved) == noErr)
+                report(asked[i].name, (long)moved);
+            else
+                printf("%s\tunavailable\n", asked[i].name);
+            SSLSetProtocolVersionEnabled(context, asked[i].protocol, false);
         }
-        Boolean on = false;
-        if (SSLGetProtocolVersionEnabled(context, asked[i].protocol, &on) == noErr)
-            report(asked[i].name, on ? 1 : 0);
-        else
-            printf("%s\tunavailable\n", asked[i].name);
+        report("max-again", (long)before);
     }
 
     SSLClose(context);
