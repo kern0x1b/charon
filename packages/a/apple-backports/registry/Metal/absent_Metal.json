@@ -186,9 +186,10 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the protocol arrived in iOS 11, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, Metal"
+      "reason": "the protocol arrived in iOS 11, and nothing in iOS 6 sends or asks for what it declares; the factory is vendored and answers nil, and no encoder object is ever handed out",
+      "effect": "the port vends no MTLArgumentEncoder class, so NSClassFromString answers nil and a caller has no object and no members to call - measured, with the port's class set in a binary linking the binding object alone being exactly its five bindings; the PROTOCOL query answers non-nil on a host and does not measure the port, since a binary linking only Foundation already has Apple's protocol names registered; the two -newArgumentEncoderWithBufferIndex: methods on the function return nil, so a call returns nil rather than raising",
+      "source": "SDK 16.4 MTLDevice.h:32-354 for the protocol and MTLLibrary.h:156-169 for the factories; the port's own nil answers at Metal/CharonMetalLibrary.m:113 and :118; the measured runtime answers from tests/backports/host/metal-census/argencoder.m",
+      "facts": "facts/Metal/ArgumentBindings.md"
     },
     {
       "api": "MTLPipelineBufferDescriptor",
@@ -1112,20 +1113,22 @@
       "kind": "protocol",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "one binding, as the plain data holder it is: a kind, an access, an index, a name and two flags",
+      "effect": "the port vends CharonMetalBinding and it answers all six properties; the host has no argument encoder, so no host binding exists and the case measures the header-fixed constants and the port's own values rather than comparing against a host",
+      "source": "SDK 16.4 MTLArgument.h:335-343; SDK 16.4 MTLArgument.h:169-171 for the three kinds and 218-220 for the three accesses, both read from the header's own enumerators and not chosen here; the cache ladder's band for this symbol is 16.0, and it reports that no release is held between 12.0 and 16.0, so 16.0 means after 12.0 and by 16.0, not a measured first release",
+      "facts": "facts/Metal/ArgumentBindings.md"
     },
     {
       "api": "MTLBufferBinding",
       "kind": "protocol",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "one buffer binding, over the base it shares with the other three",
+      "effect": "the port vends CharonMetalBufferBinding, and its -type is the buffer kind; the host has no argument encoder, so no host binding exists and the case measures the header-fixed constants and the port's own values rather than comparing against a host",
+      "source": "SDK 16.4 MTLArgument.h:346-352; SDK 16.4 MTLArgument.h:169-171 for the three kinds and 218-220 for the three accesses, both read from the header's own enumerators and not chosen here; the cache ladder's band for this symbol is 16.0, and it reports that no release is held between 12.0 and 16.0, so 16.0 means after 12.0 and by 16.0, not a measured first release",
+      "facts": "facts/Metal/ArgumentBindings.md"
     },
     {
       "api": "MTLIOCommandBuffer",
@@ -1242,30 +1245,33 @@
       "kind": "protocol",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "one object-payload binding, over the base it shares with the other three",
+      "effect": "the port vends CharonMetalObjectPayloadBinding; the header gives the payload no kind of its own, so it rides in the buffer it belongs to, and the case says so; the host has no argument encoder, so no host binding exists and the case measures the header-fixed constants and the port's own values rather than comparing against a host",
+      "source": "SDK 16.4 MTLArgument.h:369-372; SDK 16.4 MTLArgument.h:169-171 for the three kinds and 218-220 for the three accesses, both read from the header's own enumerators and not chosen here; the cache ladder's band for this symbol is 16.0, and it reports that no release is held between 12.0 and 16.0, so 16.0 means after 12.0 and by 16.0, not a measured first release",
+      "facts": "facts/Metal/ArgumentBindings.md"
     },
     {
       "api": "MTLTextureBinding",
       "kind": "protocol",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "one texture binding, over the base it shares with the other three",
+      "effect": "the port vends CharonMetalTextureBinding, and its -type is the texture kind; the host has no argument encoder, so no host binding exists and the case measures the header-fixed constants and the port's own values rather than comparing against a host",
+      "source": "SDK 16.4 MTLArgument.h:361-366; SDK 16.4 MTLArgument.h:169-171 for the three kinds and 218-220 for the three accesses, both read from the header's own enumerators and not chosen here; the cache ladder's band for this symbol is 16.0, and it reports that no release is held between 12.0 and 16.0, so 16.0 means after 12.0 and by 16.0, not a measured first release",
+      "facts": "facts/Metal/ArgumentBindings.md"
     },
     {
       "api": "MTLThreadgroupBinding",
       "kind": "protocol",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "one threadgroup-memory binding, over the base it shares with the other three",
+      "effect": "the port vends CharonMetalThreadgroupBinding, and its -type is the threadgroup kind; the host has no argument encoder, so no host binding exists and the case measures the header-fixed constants and the port's own values rather than comparing against a host",
+      "source": "SDK 16.4 MTLArgument.h:355-358; SDK 16.4 MTLArgument.h:169-171 for the three kinds and 218-220 for the three accesses, both read from the header's own enumerators and not chosen here; the cache ladder's band for this symbol is 16.0, and it reports that no release is held between 12.0 and 16.0, so 16.0 means after 12.0 and by 16.0, not a measured first release",
+      "facts": "facts/Metal/ArgumentBindings.md"
     },
     {
       "api": "-[MTLComputeCommandEncoder useHeap:]",

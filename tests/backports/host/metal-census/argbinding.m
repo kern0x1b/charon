@@ -58,15 +58,45 @@ int main(void)
             CharonMakeBinding(CharonMetalObjectPayloadBinding.class, @"charonPayload", 6,
                               MTLArgumentAccessReadOnly, NO, YES);
 
+        // The base is a row of its own, and it is asked directly: the four subclasses all OVERRIDE
+        // -type, so a break in the base's own -type reaches nothing else, and nothing else reaches it.
+        // Without an instance of the base there is nothing that could catch a mutant there at all.
+        CharonMetalBinding *base = (CharonMetalBinding *)
+            CharonMakeBinding(CharonMetalBinding.class, @"charonBase", 2,
+                              MTLArgumentAccessReadWrite, YES, NO);
+
         // WHAT THE HEADER FIXES, compared against a host binding of the same kind and index.
-        check(buffer.type == MTLBindingTypeBuffer, @"a buffer binding's type is MTLBindingTypeBuffer");
-        check(texture.type == MTLBindingTypeTexture, @"a texture binding's type is MTLBindingTypeTexture");
-        check(group.type == MTLBindingTypeThreadgroupMemory, @"a threadgroup binding's type is MTLBindingTypeThreadgroupMemory");
-        check(buffer.access == MTLArgumentAccessReadWrite, @"a read-write access is MTLArgumentAccessReadWrite");
-        check(texture.access == MTLArgumentAccessReadOnly, @"a read-only access is MTLArgumentAccessReadOnly");
-        check(buffer.index == 3 && texture.index == 4 && group.index == 5 && payload.index == 6,
-              @"each binding reads back the index it was given");
-        check([buffer.name isEqualToString:@"charonBuffer"], @"a binding reads back its name");
+        // ONE assertion per class. A mutant that breaks only one class must be caught by that class's
+        // own line and by no other, or the case cannot say WHICH row the break belongs to.
+        check(base.type == MTLBindingTypeBuffer,
+              @"MTLBinding: the base answers the kind it was built as");
+        check([base.name isEqualToString:@"charonBase"] && base.index == 2 &&
+              base.access == MTLArgumentAccessReadWrite && base.isUsed == NO && base.isArgument == YES,
+              @"MTLBinding: it reads back its name, index, access and both flags");
+
+        check(buffer.type == MTLBindingTypeBuffer, @"MTLBufferBinding: its type is MTLBindingTypeBuffer");
+        check([buffer.name isEqualToString:@"charonBuffer"] && buffer.index == 3 &&
+              buffer.access == MTLArgumentAccessReadWrite,
+              @"MTLBufferBinding: it reads back its name, index and access");
+
+        check(texture.type == MTLBindingTypeTexture, @"MTLTextureBinding: its type is MTLBindingTypeTexture");
+        check([texture.name isEqualToString:@"charonTexture"] && texture.index == 4 &&
+              texture.access == MTLArgumentAccessReadOnly,
+              @"MTLTextureBinding: it reads back its name, index and access");
+
+        check(group.type == MTLBindingTypeThreadgroupMemory,
+              @"MTLThreadgroupBinding: its type is MTLBindingTypeThreadgroupMemory");
+        check([group.name isEqualToString:@"charonGroup"] && group.index == 5,
+              @"MTLThreadgroupBinding: it reads back its name and index");
+
+        // The header has NO object-payload case of its own, so the payload rides in the buffer it
+        // belongs to - and the case must COVER that, or a mutant that changes it would be green.
+        check(payload.type == MTLBindingTypeBuffer,
+              @"MTLObjectPayloadBinding: it rides in the buffer, the only kind the header gives it");
+        check(payload.index == 6 && payload.access == MTLArgumentAccessReadOnly,
+              @"MTLObjectPayloadBinding: it reads back its index and access");
+        check([payload.name isEqualToString:@"charonPayload"],
+              @"MTLObjectPayloadBinding: it reads back its name");
 
         // PER-PROPERTY AGAINST A HOST BINDING IS NOT POSSIBLE, and the case says so instead of
         // pretending. A host MTLDevice here has no `newArgumentEncoderWithBufferIndex:` - the whole
