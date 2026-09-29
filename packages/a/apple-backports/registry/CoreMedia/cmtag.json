@@ -198,6 +198,17 @@
       "effect": "{category:'<four>' value:<v> <type>} with the category through kCFStringEncodingMacRoman and the string ending at its first zero byte, and {category:'<four>'{INVALID} for a tag with no data type",
       "facts": "facts/CoreMedia/CMTag.md",
       "source": "the host's own CoreMedia, held over 665 answers by tests/backports/host/coremedia7/cmtag.m - the port's object reached through dlopen(RTLD_LOCAL | RTLD_FIRST) - with the compare rule fitted over 253 measured pairs and both of its mutants red"
+    },
+    {
+      "api": "CMTagHash()",
+      "kind": "function",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "CMTag arrived at iOS 17 and the SDK the toolchain resolves is 16.4, where no CoreMedia header has Tag in its name; CharonCMTag26.h transcribes 26.2's own declaration and CMTag17.m the definition",
+      "effect": "CONSISTENT, AND NOT THE HOST'S VALUE. Equal tags hash equal and the six measured tags do not collide, so it is a usable hash of a tag. It is not the host's mixing: the host's six are 242338807774, 930912231118, 175247075667, 175254150787, 175196967445 and 175247284034, all inside a ~40-bit band, and nine candidates were evaluated in C against the host - the category, data type and low or high 32 bits of the value XORed together, multiply-and-mix by 31 and by 33, FNV-1a 32 and 64 over the struct's 16 bytes, CFHash of a dictionary of the three fields as CFNumbers, and CFHash of a CFNumber of the value. None reproduces the host's values, and the self-check rejects four of the nine before comparison because they cannot tell two of the six apart - the two XOR forms that fold the value's low half, CFHash of the dictionary (a constant 3, the dictionary's own hash) and CFHash of the number (0 for both zero values). The table is facts/CoreMedia/cmtag-fixtures/hashfit.txt and the program that produced it is beside it; the host's mixing is not identified, and the gap is recorded in coordination/crutches.md",
+      "facts": "facts/CoreMedia/CMTag.md",
+      "source": "the host's own CoreMedia, measured in C by facts/CoreMedia/cmtag-fixtures/hashfit.m, which is built against the host SDK because CFHash does not exist in Python and every candidate that involves it has to run against the real CFHash"
     }
   ]
 }
