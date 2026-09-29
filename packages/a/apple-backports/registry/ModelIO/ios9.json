@@ -33,6 +33,16 @@
       "effect": "stride holds what is set",
       "facts": "facts/ModelIO/VertexDescriptor.md",
       "source": "the header of iOS 16.4 for the contract"
+    },
+    {
+      "api": "MDLMeshBufferMap",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "carried as MTKMeshBuffer's own dependency: MTKMeshBuffer's -map hands one out, and the release has no ModelIO to supply the class (the 6.1.3 gate stopped on the link with the class undefined)",
+      "effect": "holds the bytes it is made with and runs the block it is given when it is deallocated, which is what the header says of it (a reference to a mapped buffer's memory, unmapped on deallocation)",
+      "source": "the header of iOS 16.4 for the contract"
     }
   ]
 }
