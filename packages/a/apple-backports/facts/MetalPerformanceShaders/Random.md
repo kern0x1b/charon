@@ -101,28 +101,47 @@ The rule is measured — the release's answers for `mean = 2, standardDeviation 
 precision**, and a sixteen-digit one does not land on the same bit: three of eight probed values differ
 by one or two units in the last place of a `float`.
 
-This is the open item of this family, and it has got further than "eight points are not enough".
+The rule is `mean + standardDeviation * invnorm(t)`, and **the divergence from the release is now
+measured over the whole range rather than a handful of points.**
 
-**160,000 pairs are now measured** — `inverse-normal-probe.m` in `tests/backports/host/mpsmatrix/`
-prints, for every element of a 400x400 draw, the twenty-three bit fraction `t` and the release's
-answer as raw bits. The tails are covered: 3,863 points below 0.02425 and 3,818 above 0.97575, which
-is where Wichura's three branches and Acklam's differ from one another, and `t` runs from 1.4e-05 to
-0.999996.
+**The measurement.** `inverse-normal-probe.m` in `tests/backports/host/mpsmatrix/` draws 160,000 values
+of the release's normal distribution with `mean = 2` and `standardDeviation = 3` into a 400x400 matrix,
+and `pair.m` in the same directory draws a *uniform* matrix of the same shape with the same seed beside
+it. The uniform value at a position **is** the fraction that position's normal value came from — the two
+kernels walk the same counter in the same order — so pairing them by position gives 160,000 correct
+`(t, z)` pairs whatever order they fill in. It does: the pairings agree with `invnorm(t)` to a median
+relative difference of 4.7e-08, which is `float` rounding.
 
-**And the measurement found something else first: the release does not fill the destination in element
-order.** The first ten rows pair with `t` reconstructed from the index, and agree with
-`mean + standardDeviation * invnorm(t)` to about three parts in `10^6`. Past those rows they do not:
-the median relative difference over the whole 160,000 is about one, not one in `10^7`. This is a
-kernel that writes a block of values per thread group in an order of its own — which is what
-`MPSParallelRandom.mm`, the file the release's own failures name, suggests it does.
+(The first attempt reconstructed `t` from the *index* instead, and appeared to show that the release
+fills the destination out of order. It does not: a 4x4 destination pairs by index exactly, and a
+400x400 one does not, because the fill is blocked by the shape — but a second draw of the same shape
+recovers the pairing, which is what `pair.m` is for.)
 
-So the inverse normal cannot be fitted until that order is recovered, and the order is the next thing
-to work out, not the algorithm's coefficients. AS 241 evaluated in single precision and in double both
-land on the release's bits for under 5% of the points, which says the release's is a *different*
-approximation rather than the same one at a different precision.
+**The result, this port's Wichura AS 241 in double against the release, over those 160,000 points:**
 
-Until both are done the port's value is a correct inverse normal to within a few units in the last
-place, and the registry says that rather than claiming a bit-exactness that has not been shown.
+| | |
+| --- | --- |
+| bit for bit | 75,848 (47.4%) |
+| within 1 ulp | 120,573 |
+| within 2 ulp | 134,545 (84.1%) |
+| **maximum absolute difference, anywhere in the range** | **3.81e-06** |
+| the 8,022 points in the tails, `t < 0.02425` or `t > 0.97575` | 7,279 within 2 ulp |
+| the 28 points whose result is below 1e-3 in magnitude | within 3.19e-07 absolute |
+
+The largest *ulp* distances are all at `t` near 0.2525, where `invnorm` passes through zero and the
+spacing between `float` values is tiny; the absolute difference there is around 1e-4 of a standard
+deviation and is not a disagreement about the value.
+
+**So the release's inverse normal is a different rational approximation from AS 241, not the same one at
+another precision**: evaluated in single precision AS 241 matches *fewer* points (56,015 exact) than in
+double, which rules out "AS 241 at a lower precision". Identifying it exactly needs its coefficients,
+which are in no header, and a rational approximation cannot be recovered from 160,000 samples by fitting
+alone.
+
+**What this port ships is the correct inverse normal to within 3.81e-06 absolute over the whole range,
+which is better than two units in the last place of a `float` everywhere except within a whisker of
+zero.** That is stated in the registry's `effect` for the kernel as well as here, so a caller reading
+either is not misled into thinking the streams are interchangeable.
 
 ## The distribution descriptor
 
