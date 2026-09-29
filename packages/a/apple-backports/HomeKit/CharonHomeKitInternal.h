@@ -163,6 +163,15 @@ HMHomeAccessControl *CharonHomeKitHomeAccessControl(HMHome *home, HMUser *user);
 @property (nonatomic, strong, nullable) NSNumber *charon_presenceUserType; @end
 @interface HMMutablePresenceEvent () @end
 @interface HMMutableCharacteristicEvent () @end
+
+// HMAccessorySetupPayload holds the one thing the header does not expose as a property: the setup
+// payload URL it was made from, and -- from 13.0 -- the ownership token. The header declares no property
+// on this class at all, so these are the port's own and stay here; the URL is declared once, in the
+// shared header, because the 11.3 object synthesises it and the 13.0 object only reads it, which is how
+// HMAccessory's own charon_homeIdentifier is shared between HMAccessoryServiceCharacteristic8_0.m and
+// HMAccessoryHome10_0.m.
+@interface HMAccessorySetupPayload () @property (nonatomic, strong, nullable) NSURL *charon_setupPayloadURL;
+@end
 @interface HMCharacteristicThresholdRangeEvent () @property (nonatomic, strong, nullable) HMCharacteristic *charon_characteristic;
 @property (nonatomic, strong, nullable) HMNumberRange *charon_thresholdRange; @end
 @interface HMMutableCharacteristicThresholdRangeEvent () @end
