@@ -1,0 +1,137 @@
+{
+  "framework": "CoreData",
+  "entries": [
+    {
+      "api": "NSPersistentStoreCoordinatorStoresWillChangeNotification",
+      "kind": "constant",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 6's CoreData exports no such name, and an application that writes one is killed by dyld before its main; the name is carried with the text CoreData of iOS 18.0 gives it",
+      "effect": "the symbol is there and holds the string 'NSPersistentStoreCoordinatorStoresWillChangeNotification'",
+      "facts": "facts/CoreData/Names.md",
+      "source": "CoreData of the arm64e shared cache of iOS 18.0, read through the symbol with tools/cfconst.py; the headers of the SDK 16.4 for the type; the host's own CoreData, which exports it, as the second source (tests/backports/host/coredatanames)"
+    },
+    {
+      "api": "NSPersistentStoreDeferredLightweightMigrationOptionKey",
+      "kind": "constant",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 6's CoreData exports no such name, and an application that writes one is killed by dyld before its main; the name is carried with the text CoreData of iOS 18.0 gives it",
+      "effect": "the symbol is there and holds the string 'NSPersistentStoreDeferredLightweightMigrationOptionKey'",
+      "facts": "facts/CoreData/Names.md",
+      "source": "CoreData of the arm64e shared cache of iOS 18.0, read through the symbol with tools/cfconst.py; the headers of the SDK 16.4 for the type; the host's own CoreData, which exports it, as the second source (tests/backports/host/coredatanames)"
+    },
+    {
+      "api": "NSPersistentStoreModelVersionChecksumKey",
+      "kind": "constant",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 6's CoreData exports no such name, and an application that writes one is killed by dyld before its main; the name is carried with the text CoreData of iOS 18.0 gives it",
+      "effect": "the symbol is there and holds the string 'NSStoreModelVersionChecksumKey'",
+      "facts": "facts/CoreData/Names.md",
+      "source": "CoreData of the arm64e shared cache of iOS 18.0, read through the symbol with tools/cfconst.py; the headers of the SDK 16.4 for the type; the host's own CoreData, which exports it, as the second source (tests/backports/host/coredatanames)"
+    },
+    {
+      "api": "NSPersistentStoreStagedMigrationManagerOptionKey",
+      "kind": "constant",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 6's CoreData exports no such name, and an application that writes one is killed by dyld before its main; the name is carried with the text CoreData of iOS 18.0 gives it",
+      "effect": "the symbol is there and holds the string 'NSPersistentStoreStagedMigrationManagerOptionKey'",
+      "facts": "facts/CoreData/Names.md",
+      "source": "CoreData of the arm64e shared cache of iOS 18.0, read through the symbol with tools/cfconst.py; the headers of the SDK 16.4 for the type; the host's own CoreData, which exports it, as the second source (tests/backports/host/coredatanames)"
+    },
+    {
+      "api": "NSCoreDataCoreSpotlightDelegateIndexDidUpdateNotification",
+      "kind": "constant",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 6's CoreData exports no such name, and an application that writes one is killed by dyld before its main; the name is carried with the text CoreData of iOS 18.0 gives it",
+      "effect": "the symbol is there and holds the string 'NSCoreDataCoreSpotlightDelegateIndexDidUpdateNotification'",
+      "facts": "facts/CoreData/Names.md",
+      "source": "CoreData of the arm64e shared cache of iOS 18.0, read through the symbol with tools/cfconst.py; the headers of the SDK 16.4 for the type; the host's own CoreData, which exports it, as the second source (tests/backports/host/coredatanames)"
+    },
+    {
+      "api": "NSPersistentCloudKitContainerEventChangedNotification",
+      "kind": "constant",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 6's CoreData exports no such name, and an application that writes one is killed by dyld before its main; the name is carried with the text CoreData of iOS 18.0 gives it",
+      "effect": "the symbol is there and holds the string 'NSPersistentCloudKitContainerEventChangedNotification'",
+      "facts": "facts/CoreData/Names.md",
+      "source": "CoreData of the arm64e shared cache of iOS 18.0, read through the symbol with tools/cfconst.py; the headers of the SDK 16.4 for the type; the host's own CoreData, which exports it, as the second source (tests/backports/host/coredatanames)"
+    },
+    {
+      "api": "NSPersistentCloudKitContainerEventUserInfoKey",
+      "kind": "constant",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 6's CoreData exports no such name, and an application that writes one is killed by dyld before its main; the name is carried with the text CoreData of iOS 18.0 gives it",
+      "effect": "the symbol is there and holds the string 'event'",
+      "facts": "facts/CoreData/Names.md",
+      "source": "CoreData of the arm64e shared cache of iOS 18.0, read through the symbol with tools/cfconst.py; the headers of the SDK 16.4 for the type; the host's own CoreData, which exports it, as the second source (tests/backports/host/coredatanames)"
+    },
+    {
+      "api": "NSPersistentStoreRebuildFromUbiquitousContentOption",
+      "kind": "constant",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "iOS 6 has no iCloud and no ubiquitous container at all, and the sibling names of this family are already decided absent in registry/CoreData.json with that reason; a dictionary of this shape changes nothing here",
+      "effect": "the symbol is not there: a weak reference to it is NULL, and a caller that checks for it before writing is told the truth",
+      "facts": "facts/CoreData/Names.md",
+      "source": "the sibling entries of registry/CoreData.json, which decide the other iCloud names of this family absent with that reason; the armv7 shared cache of iOS 6.1.3, whose CoreData exports no iCloud name; the SDK 16.4 header, which declares it"
+    },
+    {
+      "api": "NSPersistentStoreRemoveUbiquitousMetadataOption",
+      "kind": "constant",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "iOS 6 has no iCloud and no ubiquitous container at all, and the sibling names of this family are already decided absent in registry/CoreData.json with that reason; a dictionary of this shape changes nothing here",
+      "effect": "the symbol is not there: a weak reference to it is NULL, and a caller that checks for it before writing is told the truth",
+      "facts": "facts/CoreData/Names.md",
+      "source": "the sibling entries of registry/CoreData.json, which decide the other iCloud names of this family absent with that reason; the armv7 shared cache of iOS 6.1.3, whose CoreData exports no iCloud name; the SDK 16.4 header, which declares it"
+    },
+    {
+      "api": "NSPersistentStoreUbiquitousContainerIdentifierKey",
+      "kind": "constant",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "iOS 6 has no iCloud and no ubiquitous container at all, and the sibling names of this family are already decided absent in registry/CoreData.json with that reason; a dictionary of this shape changes nothing here",
+      "effect": "the symbol is not there: a weak reference to it is NULL, and a caller that checks for it before writing is told the truth",
+      "facts": "facts/CoreData/Names.md",
+      "source": "the sibling entries of registry/CoreData.json, which decide the other iCloud names of this family absent with that reason; the armv7 shared cache of iOS 6.1.3, whose CoreData exports no iCloud name; the SDK 16.4 header, which declares it"
+    },
+    {
+      "api": "NSPersistentStoreUbiquitousPeerTokenOption",
+      "kind": "constant",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "iOS 6 has no iCloud and no ubiquitous container at all, and the sibling names of this family are already decided absent in registry/CoreData.json with that reason; a dictionary of this shape changes nothing here",
+      "effect": "the symbol is not there: a weak reference to it is NULL, and a caller that checks for it before writing is told the truth",
+      "facts": "facts/CoreData/Names.md",
+      "source": "the sibling entries of registry/CoreData.json, which decide the other iCloud names of this family absent with that reason; the armv7 shared cache of iOS 6.1.3, whose CoreData exports no iCloud name; the SDK 16.4 header, which declares it"
+    },
+    {
+      "api": "NSPersistentStoreUbiquitousTransitionTypeKey",
+      "kind": "constant",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "iOS 6 has no iCloud and no ubiquitous container at all, and the sibling names of this family are already decided absent in registry/CoreData.json with that reason; a dictionary of this shape changes nothing here",
+      "effect": "the symbol is not there: a weak reference to it is NULL, and a caller that checks for it before writing is told the truth",
+      "facts": "facts/CoreData/Names.md",
+      "source": "the sibling entries of registry/CoreData.json, which decide the other iCloud names of this family absent with that reason; the armv7 shared cache of iOS 6.1.3, whose CoreData exports no iCloud name; the SDK 16.4 header, which declares it"
+    }
+  ]
+}

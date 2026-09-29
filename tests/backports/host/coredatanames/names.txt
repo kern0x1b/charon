@@ -1,0 +1,10 @@
+The 7 CoreData names this band carries, one per line, as the port's source spells them. The
+differential walks this list, so the test and the four generated files cannot drift apart: a name the
+source does not carry is a failure, not a skip.
+NSCoreDataCoreSpotlightDelegateIndexDidUpdateNotification
+NSPersistentCloudKitContainerEventChangedNotification
+NSPersistentCloudKitContainerEventUserInfoKey
+NSPersistentStoreCoordinatorStoresWillChangeNotification
+NSPersistentStoreDeferredLightweightMigrationOptionKey
+NSPersistentStoreModelVersionChecksumKey
+NSPersistentStoreStagedMigrationManagerOptionKey
