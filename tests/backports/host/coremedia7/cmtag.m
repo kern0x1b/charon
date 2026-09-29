@@ -58,6 +58,14 @@ int main(int argc, char **argv)
             tag(0, kCMTagDataType_SInt64, -1),
             tag(2147483647, kCMTagDataType_SInt64, 18446744073709551615ULL),
             tag(kCMTagCategory_StereoViewInterpretation, kCMTagDataType_OSType, 'lfrt'),
+            // The tags the two subtlest rules were derived from, which this probe did not have and should
+            // have: without them CMTagCompare's NaN tie and its int64's unsigned order are never reached,
+            // and both mutants of them stay green. All four share one category and data type with the
+            // tags above, so the value is what gets compared.
+            tag(kCMTagCategory_TrackID, kCMTagDataType_Float64, 0xBFE0000000000000ULL),
+            tag(kCMTagCategory_TrackID, kCMTagDataType_Float64, 0x8000000000000000ULL),
+            tag(kCMTagCategory_TrackID, kCMTagDataType_Float64, 0x7FF8000000000000ULL),
+            tag(kCMTagCategory_TrackID, kCMTagDataType_SInt64, 0xFFFFFFFFFFFFFFFFULL),
         };
         size_t count = sizeof all / sizeof *all;
         for (size_t index = 0; index < count; index++)
