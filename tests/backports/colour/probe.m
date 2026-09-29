@@ -19,7 +19,9 @@
 // set. Nothing is read out of the framework's binary or its resources; the names are facts of the
 // answers the function returned.
 //
-// This probe is the host's own function and reads no user data: a colour in, a name out.
+// This probe is the host's own function and reads no user data: a colour in, a name out. What its
+// answers mean - the pairs a component lookup could not produce - is in this directory's README, which
+// is the one place that reading is written down, and the five steps of the fit are under Owed there.
 
 #import <Foundation/Foundation.h>
 #import <Accessibility/Accessibility.h>
