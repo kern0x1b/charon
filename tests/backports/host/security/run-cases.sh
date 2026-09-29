@@ -23,11 +23,14 @@ mkdir -p "$build"
 sdk=$(xcrun --show-sdk-path --sdk macosx)
 S="$work/packages/a/apple-backports/Security"
 H="$here"
-common="-target arm64-apple-ios15.0-macabi -isysroot $sdk -F $sdk/System/Library/Frameworks"
+# -Werror=implicit-function-declaration, so a call to a name no header declares is a BUILD
+# FAILURE and not a silently int-returning call that reads garbage.
+common="-target arm64-apple-ios15.0-macabi -Werror=implicit-function-declaration -isysroot $sdk -F $sdk/System/Library/Frameworks"
 common="$common -iframework $sdk/System/iOSSupport/System/Library/Frameworks -fobjc-arc"
 frameworks="-framework Foundation -framework Security -framework CoreFoundation"
 failures=0
 cases=0
+missing=0
 mutants=0
 mutants_noticed=0
 
@@ -47,6 +50,28 @@ run_case() {
     # whole of exit 134 - the attributes mutant segfaulted, and the driver died on it before it could say
     # so. `|| status=$?` is the form that survives, and the verdict block already used it.
     status=0
+    # THE PORT'S SYMBOLS MUST BE IN THE BINARY. A case that links only SOME of the sources it needs does
+    # not fail: the missing names resolve to the HOST framework, the case runs, and it measures the host
+    # while looking exactly like a port measurement. nm -m does not catch it - it prints an address for a
+    # symbol the binary does not define - and nm -u does: "(undefined) ... (from Security)" is the tell.
+    # So every sec_* function each source DEFINES is checked to be DEFINED here. nm cannot read a
+    # source file, so the definitions are read out of the source text.
+    missing=0
+    for src in "$@"; do
+        [ -f "$src" ] || continue
+        for sym in $(grep -oE '^[A-Za-z_][A-Za-z0-9_ ]*\b(sec_[a-z_]+)\(' "$src" 2>/dev/null \
+                     | grep -oE 'sec_[a-z_]+' | sort -u); do
+            if ! nm "$build/$name" 2>/dev/null | awk '$2=="T"{print $3}' | grep -qx "_$sym"; then
+                echo "MISSING $name  _$sym is not DEFINED in the binary - it resolved to a dylib, so this case would measure the HOST and not the port. Source: $src"
+                missing=$((missing + 1))
+            fi
+        done
+    done
+    if [ "$missing" -ne 0 ]; then
+        echo "BUILD  $name FAILED: $missing port symbol(s) came from a dylib instead of the sources"
+        failures=$((failures + 1))
+        return
+    fi
     ( cd "$work" && "$build/$name" ) > "$build/$name.out" 2>&1 || status=$?
     # A SIGNAL IS NOT A DIFFERENCE. exit 128+N is death by signal N, and the output is whatever was
     # printed before the process died - so running the comparison on it would say "the port's class was
@@ -186,8 +211,13 @@ else
 fi
 # --- the ten sec_protocol_* cases, each with the port source it links and its own comparator ---
 protocol_case() {
-    name=$1; sources=$2
-    run_case "$name" "compare-$name.py" "$H/$name.m" $sources
+    # THE SOURCES ARE "$*" AND NOT "$2". A case that needs SEVERAL port objects passed them as
+    # separate arguments, and a function that read only $2 DROPPED THE REST ON THE FLOOR: the build
+    # succeeded, the missing names resolved to the HOST, and the case measured the host while looking
+    # exactly like a port measurement. It failed on four rows and the driver could not say why.
+    name=$1; shift
+    run_case "$name" "compare-$name.py" "$H/$name.m" "$@"
+    sources=$*
     cases=$((cases + 1))
 }
 protocol_case protocol-metadata            $PM
