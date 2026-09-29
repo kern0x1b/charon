@@ -103,6 +103,25 @@ def _registry_name(kind, class_name, member):
     return "%s.%s" % (class_name, member)
 
 
+def class_block(header, class_name):
+    """This class's own block, from its @interface to the line BEFORE the next declaration.
+
+    A non-greedy .*?@end was wrong: it ends at the FIRST @end, so a class whose block is preceded by a
+    shorter match loses its tail - which is how VTMotionBlurConfiguration's initialiser, declared at line
+    172 of the header, produced no row at all while both counts still agreed. A line scan for the next
+    @interface, @protocol or @end is what the structure actually is.
+    """
+    lines = header.split("\n")
+    start = None
+    for index, line in enumerate(lines):
+        if start is None:
+            if re.match(r'@interface\s+' + re.escape(class_name) + r'\b', line):
+                start = index
+        elif re.match(r'@(interface|protocol|end)\b', line):
+            return "\n".join(lines[start:index])
+    return "\n".join(lines[start:]) if start is not None else None
+
+
 def members_of(class_name):
     """(kind, registry name) for everything this class implements, and the accessor map beside it.
 
@@ -112,10 +131,9 @@ def members_of(class_name):
     header = open(HEADER).read()
     source = open(_value_file_for(class_name)).read()
 
-    block = re.search(r'@interface\s+%s\b.*?@end' % re.escape(class_name), header, re.S)
-    if not block:
+    body = class_block(header, class_name)
+    if body is None:
         raise ValueError("%s: the port's header declares no such class" % class_name)
-    body = block.group(0)
 
     entries = {("class", _registry_name("class", class_name, class_name))}
     accessors = {}
