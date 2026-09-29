@@ -110,6 +110,106 @@
    "effect": "the object that drives a document browser transition, carrying where it is going and how far the load has got, and naming -init unavailable as the header does",
    "facts": "facts/UIKit/DocumentBrowser.md",
    "source": "the header of SDK 26.2, checked by tests/backports/host/documentbrowser/ast_check.py"
+  },
+  {
+   "api": "UIDocumentBrowserViewController.additionalLeadingNavigationBarButtonItems",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the browser's additionalLeadingNavigationBarButtonItems, as the header declares it",
+   "facts": "facts/UIKit/DocumentBrowser.md",
+   "source": "the header of SDK 26.2, checked by tests/backports/host/documentbrowser/ast_check.py, which reads the property's type and attributes from the AST on both sides and has a control that drops weak and nullable from delegate"
+  },
+  {
+   "api": "UIDocumentBrowserViewController.additionalTrailingNavigationBarButtonItems",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the browser's additionalTrailingNavigationBarButtonItems, as the header declares it",
+   "facts": "facts/UIKit/DocumentBrowser.md",
+   "source": "the header of SDK 26.2, checked by tests/backports/host/documentbrowser/ast_check.py, which reads the property's type and attributes from the AST on both sides and has a control that drops weak and nullable from delegate"
+  },
+  {
+   "api": "UIDocumentBrowserViewController.allowedContentTypes",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the browser's allowedContentTypes, as the header declares it",
+   "facts": "facts/UIKit/DocumentBrowser.md",
+   "source": "the header of SDK 26.2, checked by tests/backports/host/documentbrowser/ast_check.py, which reads the property's type and attributes from the AST on both sides and has a control that drops weak and nullable from delegate"
+  },
+  {
+   "api": "UIDocumentBrowserViewController.allowsDocumentCreation",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the browser's allowsDocumentCreation, as the header declares it",
+   "facts": "facts/UIKit/DocumentBrowser.md",
+   "source": "the header of SDK 26.2, checked by tests/backports/host/documentbrowser/ast_check.py, which reads the property's type and attributes from the AST on both sides and has a control that drops weak and nullable from delegate"
+  },
+  {
+   "api": "UIDocumentBrowserViewController.allowsPickingMultipleItems",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the browser's allowsPickingMultipleItems, as the header declares it",
+   "facts": "facts/UIKit/DocumentBrowser.md",
+   "source": "the header of SDK 26.2, checked by tests/backports/host/documentbrowser/ast_check.py, which reads the property's type and attributes from the AST on both sides and has a control that drops weak and nullable from delegate"
+  },
+  {
+   "api": "UIDocumentBrowserViewController.browserUserInterfaceStyle",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the browser's browserUserInterfaceStyle, as the header declares it",
+   "facts": "facts/UIKit/DocumentBrowser.md",
+   "source": "the header of SDK 26.2, checked by tests/backports/host/documentbrowser/ast_check.py, which reads the property's type and attributes from the AST on both sides and has a control that drops weak and nullable from delegate"
+  },
+  {
+   "api": "UIDocumentBrowserViewController.customActions",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the browser's customActions, as the header declares it",
+   "facts": "facts/UIKit/DocumentBrowser.md",
+   "source": "the header of SDK 26.2, checked by tests/backports/host/documentbrowser/ast_check.py, which reads the property's type and attributes from the AST on both sides and has a control that drops weak and nullable from delegate"
+  },
+  {
+   "api": "UIDocumentBrowserViewController.delegate",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the browser's delegate, as the header declares it",
+   "facts": "facts/UIKit/DocumentBrowser.md",
+   "source": "the header of SDK 26.2, checked by tests/backports/host/documentbrowser/ast_check.py, which reads the property's type and attributes from the AST on both sides and has a control that drops weak and nullable from delegate"
+  },
+  {
+   "api": "UIDocumentBrowserViewController.recentDocumentsContentTypes",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the browser's recentDocumentsContentTypes, as the header declares it",
+   "facts": "facts/UIKit/DocumentBrowser.md",
+   "source": "the header of SDK 26.2, checked by tests/backports/host/documentbrowser/ast_check.py, which reads the property's type and attributes from the AST on both sides and has a control that drops weak and nullable from delegate"
+  },
+  {
+   "api": "UIDocumentBrowserViewController",
+   "kind": "class",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the browser itself, declared as the 26.2 header declares it: the document types it opens, what the user may do in it, the buttons it carries, and the nib initialiser unavailable as the header says. The class is implemented because its nine properties are; the instance methods are not yet, and are named in the facts as not claimed",
+   "facts": "facts/UIKit/DocumentBrowser.md",
+   "source": "the header of SDK 26.2, checked by tests/backports/host/documentbrowser/ast_check.py"
   }
  ]
 }

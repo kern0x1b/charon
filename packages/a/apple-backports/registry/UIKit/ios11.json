@@ -1015,15 +1015,6 @@
    "source": "UIKit of iOS 12.0 arm64"
   },
   {
-   "api": "UIDocumentBrowserViewController",
-   "kind": "class",
-   "introduced": "11.0",
-   "status": "absent",
-   "reason": "the document browser is a view of the Files world: it shows what file providers offer and hands back documents through a daemon this release does not run",
-   "effect": "the name is not there; an application picks documents with the picker this release has, inside its own container",
-   "source": "UIKit of iOS 11.0 arm64"
-  },
-  {
    "api": "UIDocumentBrowserAction",
    "kind": "class",
    "introduced": "11.0",

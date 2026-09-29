@@ -5,7 +5,15 @@
 // something has to say what the protocol's questions refer to; this says it, in one place, with no
 // condition on which SDK is in use.
 
-@class UIDocumentBrowserViewController, UIActivity, UIActivityViewController;
+@class UIDocumentBrowserViewController, UIActivity, UIActivityViewController, UIBarButtonItem,
+       UIDocumentBrowserAction, UIDocumentBrowserViewControllerDelegate,
+       UIDocumentBrowserTransitionController, UIViewController;
+
+typedef NS_ENUM(NSInteger, UIDocumentBrowserUserInterfaceStyle) {
+    UIDocumentBrowserUserInterfaceStyleAutomatic = 0,
+    UIDocumentBrowserUserInterfaceStyleLight,
+    UIDocumentBrowserUserInterfaceStyleDark,
+};
 
 typedef NS_ENUM(NSUInteger, UIDocumentBrowserImportMode) {
     UIDocumentBrowserImportModeNone,

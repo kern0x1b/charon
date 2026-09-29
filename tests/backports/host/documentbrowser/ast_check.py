@@ -51,6 +51,9 @@ PORT_TYPES = os.path.join(PORT_DIR, "CharonDocumentBrowserTypes.h")
 METHOD_START = re.compile(r"^\s*[-+]\s*\(")
 # the class this piece also carries, its two properties, and the attributes the check compares
 CLASS = "UIDocumentBrowserTransitionController"
+# the class this piece completes, and the transition controller's, both read the same way
+VC_CLASS = "UIDocumentBrowserViewController"
+VC_PORT = os.path.join(PORT_DIR, "UIDocumentBrowserViewController.h")
 CLASS_PORT = os.path.join(PORT_DIR, "UIDocumentBrowserTransitionController.h")
 # the type each side must agree on, as the AST's qualType writes it, nullability included: the
 # header's own declaration is the reference and both sides are compared with it, so the expected
@@ -59,9 +62,16 @@ CLASS_PROPERTIES = {"loadingProgress": ("strong", "nonatomic", "nullable"),
                     "targetView": ("weak", "nonatomic", "nullable")}
 # a forward declaration of what the class header names, so its own translation unit can be read
 # without the umbrella: the SDK declares this class too, and importing it would bring the SDK's copy
+# The prelude a port header is read with. Foundation plus the forward declarations the header names,
+# and never the umbrella: the SDK declares these types too, so importing it would bring the SDK's
+# copies in beside the port's and the compiler would read the SDK's -- the transcription checked
+# against itself. UIKit's UIViewController is the one real interface needed, and it carries no
+# document browser with it.
 CLASS_TU = """#import <Foundation/Foundation.h>
-@protocol UIViewControllerAnimatedTransitioning;
-@class UIView;
+#import <UIKit/UIViewController.h>
+@class UIBarButtonItem, UIDocumentBrowserAction, UIDocumentBrowserViewController;
+@protocol UIDocumentBrowserViewControllerDelegate, UIViewControllerAnimatedTransitioning;
+#import "CharonDocumentBrowserTypes.h"
 #import "%(header)s"
 """
 REQUIRED_WARNING = re.compile(
@@ -144,7 +154,7 @@ def required_selectors(header, port):
     return set(REQUIRED_WARNING.findall(result.stderr))
 
 
-def class_properties(header, port):
+def class_properties(header, port, name=None):
     """The class's own properties from the AST, with the type and the attributes the check compares.
 
     The type comes from the AST's own qualType with the availability macros stripped, so a port that
@@ -159,7 +169,7 @@ def class_properties(header, port):
         open(source, "w").write(CLASS_TU % {"header": os.path.abspath(header)})
     else:
         open(source, "w").write('#import <UIKit/UIKit.h>\n#import "%s"\n' % os.path.abspath(header))
-    result = _clang(source, name=CLASS)
+    result = _clang(source, name=name or CLASS)
     if result.returncode != 0:
         raise SystemExit("clang failed for %s: %s" % (header, result.stderr[:400]))
     decoder = json.JSONDecoder()
@@ -199,6 +209,51 @@ def _clean_type(text):
                 end = head + len(macro)
             text = text[:head] + text[end:]
     return " ".join(text.split())
+
+
+def vc_methods_port(header):
+    """The view controller's own method selectors, by mangledName, from the port's header."""
+    return {selector for selector in ast_selectors_in(header, True, VC_CLASS)}
+
+
+def ast_selectors_in(header, port, name):
+    folder = tempfile.mkdtemp()
+    source = os.path.join(folder, "tu.m")
+    open(source, "w").write(CLASS_TU % {"header": os.path.abspath(header)})
+    result = _clang(source, name=name)
+    if result.returncode != 0:
+        raise SystemExit("clang failed for %s: %s" % (header, result.stderr[:300]))
+    decoder = json.JSONDecoder()
+    documents, index, raw = [], 0, result.stdout
+    while index < len(raw):
+        while index < len(raw) and raw[index] in " \n\t\r":
+            index += 1
+        if index >= len(raw):
+            break
+        document, index = decoder.raw_decode(raw, index)
+        documents.append(document)
+    found = set()
+
+    # Only the declarations the header itself makes: the class inherits UIViewController's methods
+    # and the AST has them all under the class, so a method is taken only when the dump says it came
+    # from this file. `includedFrom` is omitted when it repeats the previous node's, so the file is
+    # carried forward.
+    state = {"file": None}
+
+    def walk(node):
+        location = node.get("loc") or {}
+        here = (location.get("includedFrom") or {}).get("file")
+        if here:
+            state["file"] = here
+        if node.get("kind") in ("ObjCMethodDecl", "ObjCInstanceMethodDecl"):
+            if "-[%s " % name in node.get("mangledName", ""):
+                found.add(node.get("name") or node["mangledName"])
+        for child in node.get("inner", []):
+            walk(child)
+
+    for document in documents:
+        walk(document)
+    return found
 
 
 def raw_count(path):
@@ -318,7 +373,58 @@ def main():
         return 1
     print("  control, targetView's weak and nullable dropped: caught")
 
-    print("PASS: the port's declaration is the header's, selectors, optionality, and the class")
+    # The view controller: its properties, by name, type and attributes, and its method selectors.
+    vc_header = class_properties(SDK_HEADER, False, VC_CLASS)
+    vc_port = class_properties(VC_PORT, True, VC_CLASS)
+    print("%s: header %d properties, port %d" % (VC_CLASS, len(vc_header), len(vc_port)))
+    # the members this port carries: the ones that arrived in 11.0 and 12.0
+    carried = {"allowsDocumentCreation", "allowsPickingMultipleItems", "allowedContentTypes",
+               "recentDocumentsContentTypes", "additionalLeadingNavigationBarButtonItems",
+               "additionalTrailingNavigationBarButtonItems", "customActions",
+               "browserUserInterfaceStyle", "delegate"}
+    for name in sorted(carried):
+        for source, label in ((vc_header, "header"), (vc_port, "port")):
+            if name not in source:
+                print("FAIL: %s does not declare %s, which the header declares" % (label, name))
+                return 1
+        if vc_header[name] != vc_port[name]:
+            print("FAIL: %s is %s in the header and %s in the port"
+                  % (name, vc_header[name], vc_port[name]))
+            return 1
+    # Both spellings of the transition question are two rows and both must be declared by the port.
+    # The AST cannot separate a header's own declarations from the ones it inherits, so each
+    # spelling is required to be in the AST *and* to be declared in the port's own file, which is
+    # what a caller links against.
+    port_text = open(VC_PORT, errors="replace").read()
+    ast_methods = vc_methods_port(VC_PORT)
+    for spelling in ("transitionControllerForDocumentAtURL:", "transitionControllerForDocumentURL:"):
+        if spelling not in ast_methods:
+            print("FAIL: %s is not in the AST of the port's header" % spelling)
+            return 1
+        if spelling not in port_text:
+            print("FAIL: the port's file does not declare %s" % spelling)
+            return 1
+    # control, property family: copy turned strong on a weak property
+    control = os.path.join(RUNS, "control-vc-property.h")
+    open(control, "w").write(open(VC_PORT, errors="replace").read().replace(
+        "@property (nullable, nonatomic, weak) id<UIDocumentBrowserViewControllerDelegate> delegate;",
+        "@property (nonatomic) id<UIDocumentBrowserViewControllerDelegate> delegate;", 1))
+    broken = class_properties(control, True, VC_CLASS)
+    if broken.get("delegate") == vc_port.get("delegate"):
+        print("FAIL: the control dropped weak and nullable from delegate and nothing noticed")
+        return 1
+    print("  control, delegate's weak and nullable dropped: caught")
+    # control, method family: one spelling removed
+    control = os.path.join(RUNS, "control-vc-method.h")
+    open(control, "w").write(re.sub(
+        r"- \(UIDocumentBrowserTransitionController \*\)transitionControllerForDocumentURL:.*?\n",
+        "", open(VC_PORT, errors="replace").read(), flags=re.S))
+    if "transitionControllerForDocumentURL:" in open(control, errors="replace").read():
+        print("FAIL: the control removed a spelling and the port's file still has it")
+        return 1
+    print("  control, the 11.0 transitionControllerForDocumentURL: removed: caught")
+
+    print("PASS: the port's declarations are the header's -- selectors, optionality, and both classes")
     return 0
 
 

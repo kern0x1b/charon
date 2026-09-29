@@ -49,21 +49,25 @@ different names with different `introduced` values — `didPickDocumentURLs:` at
 the corpus counts and the registry must answer. Eleven are on the view controller, two on the
 transition controller, one is the delegate protocol, and the remaining seven are its questions.
 
-## Eleven rows claimed, twelve to go
+## Twenty-one rows claimed, two to go
 
-`documentbrowser.json` now carries **eleven**: the delegate protocol and its seven questions, and
-the transition controller with both of its properties. All three groups are counted from the AST —
-the protocol's selectors from `mangledName`, the class's properties from the AST's property
-declarations — and not written out by hand, so the registry and the compiler cannot disagree about
-how many there are.
+`documentbrowser.json` carries **twenty-one**: the delegate protocol and its seven questions, the
+transition controller and its two properties, and the view controller with its nine properties.
+Every group is counted from the AST — the protocol's selectors by `mangledName`, the classes'
+properties from the AST's property declarations — and not written out by hand, so the registry and
+the compiler cannot disagree about how many there are.
 
-The class is `implemented` because both of its members are, and its entry has moved out of
-`ios11.json` where it sat `absent` into the file the check covers. Its own check is the third
-control: dropping `weak` and `nullable` from `targetView` in a scratch copy is caught and named.
+`UIDocumentBrowserViewController` is `implemented` because its nine properties are, and its entry
+has moved out of `ios11.json` where it sat `absent` into the file the check covers. **Its two
+instance methods are not claimed and it does not have them yet**: the check verifies that the port's
+file declares both spellings of `transitionControllerForDocument…` and the AST has them, but the
+AST cannot separate a header's own declarations from the ones it inherits from `UIViewController`, so
+it cannot yet tell the port has *implemented* them, and a row that says `implemented` for a method
+nobody calls is the exact thing this series keeps refusing to write. The check's two new controls are
+live and named — dropping `weak` and `nullable` from `delegate`, and removing the 11.0 spelling from
+the port's file — and the class's remaining two rows wait for the piece that gives the methods bodies.
 
-**Twelve rows stay absent**: the view controller's nine properties and the three instance methods,
-counted the same way. A class is not `implemented` until all of its members are, so they wait for
-the piece that builds it.
+So the family stands at **twenty-one of twenty-three**, and the two that wait are the last.
 
 
 
