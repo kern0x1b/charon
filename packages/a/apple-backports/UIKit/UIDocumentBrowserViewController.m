@@ -72,6 +72,16 @@
     return [self initForOpeningFilesWithContentTypes:nil];
 }
 
+// The superclass's designated initialiser, which a class claiming a designated initialiser of its
+// own has to override. The header marks -initWithNibName:bundle: unavailable to an application
+// anyway, so a browser is only ever made through initForOpeningFilesWithContentTypes:, and this
+// routes the rest of UIViewController's ways in there rather than leaving a second browser that
+// opens nothing.
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    return [self initForOpeningFilesWithContentTypes:nil];
+}
+
 // Where this browser keeps what it imports: the application's Documents directory, which is the only
 // place on this release an application may put a document the user is shown.
 // importDocumentAtURL:nextToDocumentAtURL:mode:completionHandler:, in the order the header gives:
