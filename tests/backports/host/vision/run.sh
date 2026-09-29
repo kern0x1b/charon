@@ -35,13 +35,39 @@ xcrun clang $common -I"$device" "$here/record.m" "$device/vision-cases.m" $libs 
 VISION_COREML_MODELS="$models" VISION_RECORDS="$build/system.json" "$build/system"
 python3 "$here/../foundation2/embed.py" "$build/system.json" "$device/vision-expectations.h"
 sed -i.bak 's/foundation2_expectations/vision_expectations/' "$device/vision-expectations.h" && rm -f "$device/vision-expectations.h.bak"
+# The record is committed (device/vision-expectations.h), so it may not carry this machine's home
+# path -- and the file is already written by the line above, so this is checked before anything reads
+# it. It happened once: a case recorded failure.localizedDescription, which is a framework sentence
+# naming the model's file URL, and the run went on to print a pass. The cases now record the error's
+# domain and code instead; this is the check that says that is not enough on its own.
+home=$(grep -c '/Users/' "$device/vision-expectations.h" || true)
+if [ "$home" != "0" ]; then
+    echo "$device/vision-expectations.h holds $home line(s) with this machine's home path in it, and that file is committed"
+    echo "a case is recording a framework message that names a file URL; record the error's domain and code instead"
+    git -C "$here/../../.." checkout -- "${device#"$here/../../../"}" 2>/dev/null || true
+    exit 1
+fi
+echo "no home path in vision-expectations.h"
+
 recorded=$(python3 -c "import json; print(len(json.load(open('$build/system.json'))))")
+# A container the cases name failing to compile is a case going wrong. vision_image is the one they
+# expect to fail -- this host's Core ML does not run an image model -- and it is listed, with its
+# reason, in vision-cases.m beside the compile. Anything else that fails is recorded under
+# coreml.compile.unexpected and fails here: a run that skips a case must not be a run that passes.
+unexpected=$(python3 -c "import json; print(json.load(open('$build/system.json')).get('coreml.compile.unexpected',''))" 2>/dev/null || echo "")
+if [ -n "$unexpected" ]; then
+    echo "a container the cases name failed to compile, and no case expects it to: $unexpected"
+    echo "the expected ones are listed with their reasons in $device/vision-cases.m, at compile_failure_expected"
+    exit 1
+fi
+
 echo "records: $recorded of $expected_records expected"
 if [ "$recorded" -lt "$expected_records" ]; then
     echo "this run recorded $recorded records and expected $expected_records: the picture cases did not all run, and everything below would compare a smaller record than the one the device test holds"
     echo "check the corpus above, then the cases in $device/vision-cases.m that are being skipped"
     exit 1
 fi
+
 
 python3 - "$registry" "$build/rename.h" <<'PY'
 import json, sys
@@ -137,4 +163,5 @@ mutant VNHandlers.m "if (handler)
 # 13x7 to 8x8 against a paste, and the interpolation quality in CharonVisionImage.h is the change
 # made for it, unverified here.
 echo "mutants: $ran run, $survived surviving"
+
 [ "$survived" -eq 0 ]
