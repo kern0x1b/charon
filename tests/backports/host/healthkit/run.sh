@@ -29,7 +29,7 @@ mkdir -p "$BUILD/plain" "$BUILD/renamed"
 # live (the error it answers with and the line it says once in the log) and which is the only file that
 # defines them. Nothing in this test opens a database: the store is compiled so that what the unit and
 # quantity code calls exists, not so that the store is measured.
-sources="HKUnit.m HKQuantity.m HKQuantityType.m HKQuantityTypes.m HKObjectType.m HKObject.m HKSource.m HKSample.m HKWorkout.m HKStatistics.m HKQuery.m HKQueries.m HKQueryAnchor9.m HKSourceRevision9.m HKSamples.m HKWorkoutRoute110.m HKWorkoutRouteQuery110.m HKCDADocument11.m HKClinicalRecord120.m HKWorkoutBuilder120.m HKQuantitySeriesSampleBuilder120.m HKQuantitySeriesSampleQuery120.m HKCumulativeQuantitySample130.m HKDocument10.m HKObject9.m HKSource9.m HKHealthStore.m CharonHKStore.m"
+sources="HKUnit.m HKQuantity.m HKQuantityType.m HKQuantityTypes.m HKObjectType.m HKObject.m HKSource.m HKSample.m HKWorkout.m HKStatistics.m HKQuery.m HKQueries.m HKQueryAnchor9.m HKSourceRevision9.m HKSamples.m HKWorkoutRoute110.m HKWorkoutRouteQuery110.m HKCDADocument11.m HKClinicalRecord120.m HKWorkoutBuilder120.m HKQuantitySeriesSampleBuilder120.m HKQuantitySeriesSampleQuery120.m HKCumulativeQuantitySample130.m HKCumulativeQuantitySeriesSample120.m HKDocument10.m HKObject9.m HKSource9.m HKHealthStore.m CharonHKStore.m"
 
 for source in $sources; do
     xcrun clang -fobjc-arc $quiet -I"$healthkit" -c "$healthkit/$source" -o "$BUILD/plain/$source.o"
@@ -136,3 +136,7 @@ mutant HKStatistics.m '== NSOrderedDescending) {
 # its superclass. A sample that comes back from the store without it is a quantity sample that has lost
 # everything that made it cumulative.
 mutant HKCumulativeQuantitySample130.m 'return _sumQuantity;' 'return nil;'
+# A mutant of the series sample of 12.0: its own sum, which is the one fact this class adds to its 13.0
+# superclass. The kind is not used here - since the archive's root is decoded by the unarchiver, the kind
+# does not decide what comes back - so a mutant on it would test nothing.
+mutant HKCumulativeQuantitySeriesSample120.m 'return _sum;' 'return nil;'
