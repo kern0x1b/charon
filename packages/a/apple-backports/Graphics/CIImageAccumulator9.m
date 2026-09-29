@@ -156,17 +156,66 @@ static CIFormat CharonCIAccumulatorStoredFormat(void)
 
 - (void)setImage:(CIImage *)image dirtyRect:(CGRect)dirtyRect
 {
-    if (!image || !_context)
+    if (!image)
         return;
     CGRect rect = CGRectIntersection(dirtyRect, _extent);
     if (CGRectIsNull(rect) || CGRectIsEmpty(rect))
         return;
-    // The context renders into the bytes of the accumulator, over the rectangle that changed, in the
-    // byte order the format names.
-    // The bytes are in the order the caller named; the context renders in the order CoreGraphics
-    // hands over, so the two agree only where the two orders do.
-    [_context render:image toBitmap:_pixels.mutableBytes rowBytes:_rowBytes bounds:rect format:kCIFormatRGBA8
-                     colorSpace:_colorSpace];
+    // The context is made here, not read: -charon_context is what creates it and nothing else in the
+    // class does, so asking for _context here returned nil on every accumulator whose -charon_context
+    // nobody had called yet - which is every one of them, because it is not an API - and this method
+    // returned without rendering anything. Measured: the port's "rgba set pixels" was byte for byte
+    // its own untouched accumulator, 128 a7b537c5, where the system's is 128 4fcd0585, and the four
+    // pixels spelled out were 0 0 0 0 against 255 0 0 255.
+    CIContext *context = [self charon_context];
+    if (!context)
+        return;
+    // The bytes are the accumulator's own and the format is the one the host answers, BGRA8, so the
+    // row the context renders is red first and the buffer is blue first. The context hands over the
+    // order it always hands over, so the two outer channels are exchanged as the row is written; a
+    // picture stored red first and reported blue first comes back with red and blue the wrong way
+    // round, and this is the whole of what the format normalisation costs.
+    NSMutableData *row = [NSMutableData dataWithLength:(NSUInteger)(_rowBytes * _pixelHeight)];
+    [context render:image toBitmap:row.mutableBytes rowBytes:_rowBytes bounds:rect format:kCIFormatRGBA8
+            colorSpace:_colorSpace];
+    // A rectangle is written only when it is a whole number of pixels at a whole pixel, and
+    // measured, not assumed.  The buffer is the whole pixels of the extent at the origin, so a
+    // rectangle whose origin or whose far side falls between two pixels has no row of the buffer it
+    // maps onto; and the system writes nothing at all for one: measured over an extent of
+    // 1.5 -2.25 5.5 3.5, "odd set pixels" is 60 0 0 0 0 on the system and on an accumulator of a
+    // whole extent 0 0 8 4 the same call gives 255 0 0 255.  So a rectangle that is not whole is
+    // left alone rather than clipped into something the system would not have written - clipping
+    // it put a row of red into a buffer the system leaves empty, and the checksum said so:
+    // 60 73191c6b against the system's 60 f6009964.
+    if (CGRectGetMinX(rect) != floor(CGRectGetMinX(rect)) || CGRectGetMinY(rect) != floor(CGRectGetMinY(rect)) ||
+        CGRectGetWidth(rect) != floor(CGRectGetWidth(rect)) || CGRectGetHeight(rect) != floor(CGRectGetHeight(rect)))
+        return;
+    size_t offsetX = (size_t)(CGRectGetMinX(rect) - CGRectGetMinX(_extent));
+    size_t offsetY = (size_t)(CGRectGetMinY(rect) - CGRectGetMinY(_extent));
+    size_t rows = (size_t)CGRectGetHeight(rect);
+    size_t columns = (size_t)CGRectGetWidth(rect);
+    if (offsetX + columns > (size_t)_pixelWidth || offsetY + rows > (size_t)_pixelHeight)
+        return;
+    uint8_t *from = row.mutableBytes;
+    uint8_t *to = _pixels.mutableBytes;
+    // The rendered row is the rectangle's own width wide, not the buffer's: copying the buffer's
+    // width out of a four-pixel row read the six pixels after it - whatever the allocator left -
+    // into the right half of the accumulator.  Measured, with the dirty rect of 0 0 4 4 over a
+    // buffer of 8 by 4: the port's "dirty after" was 128 015ce025 where the system's is 128
+    // c2bab905, and the system's is the four blue columns of the rectangle and the four red ones
+    // that were already there.
+    for (size_t y = 0; y < rows; y++) {
+        for (size_t x = 0; x < columns; x++) {
+            size_t inPixel = y * (size_t)_pixelWidth + x;
+            size_t outPixel = (offsetY + y) * (size_t)_pixelWidth + (offsetX + x);
+            uint8_t *src = from + inPixel * 4;
+            uint8_t *dst = to + outPixel * 4;
+            dst[0] = src[0];
+            dst[1] = src[1];
+            dst[2] = src[2];
+            dst[3] = src[3];
+        }
+    }
 }
 
 - (void)clear
