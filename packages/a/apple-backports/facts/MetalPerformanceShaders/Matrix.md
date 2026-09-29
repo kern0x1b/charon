@@ -29,6 +29,27 @@ where both sides wrote and the values differ, and 12 where the host writes zeros
 Each run prints the tree it measured, so a count cannot outlive its code. The counts are in flux while
 the families are worked through and this paragraph is the one to re-measure, not to trust.
 
+## MPSMatrixSum's bias is broadcast, and the port indexes it
+
+The header writes the operation out itself:
+
+    A = empty matrix;
+    for (i = 0; i < N; ++i)  A += alpha[i] * B[i];
+    if (bias)                A += broadcast(bias);
+    if (neuron)              A = neuron(A);
+
+**`broadcast(bias)` is one value added to every element.** The port indexes the bias by the column —
+`bias[column]` — which is a per-column bias and a different function. Element 0 agrees, because for
+column 0 the broadcast value and the column's own value are the same element of the vector; the
+columns after it cannot agree, and measured they do not:
+
+    sum 0   host  1.25  -0.5   8.25  50.25  5.5   8
+            port  1.25   1.5   4     10.25  3.5   6
+
+The first element matching and the rest not is the signature of a per-column bias read where a
+broadcast one is meant, and it is the lead for this family of fifteen. **Not yet fixed** - the
+count is unchanged and this is the reading the header supports, measured, for whoever takes it next.
+
 ## The batch range, and how the release reads it
 
 `MPSMatrixMultiplication` has two passes over the batch: one that checks every matrix holds the region
