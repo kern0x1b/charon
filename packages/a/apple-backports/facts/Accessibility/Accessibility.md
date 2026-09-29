@@ -278,9 +278,9 @@ to a height or lowered, and a size. The release has neither the class nor the pr
 all three), and it needs no Charon header: `AXBrailleMap.h` is in the SDK the package compiles against
 and is byte-identical to 26.2's copy.
 
-`tests/backports/host/accessibilitymap/run.sh` asks the system's class and the port's class the same 48
-questions and compares the two outputs line by line. **47 answer the same; one is a declared
-difference** in the case's own `expected-differences.tsv`, and each of those three says in one column
+`tests/backports/host/accessibilitymap/run.sh` asks the system's class and the port's class the same
+number of questions and compares the two outputs line by line. **On the branch this series was rebased
+onto: 52 questions, 51 of them answering the same and one a declared difference** in the case's own `expected-differences.tsv`, and each of those three says in one column
 what each side answers and in a third why.
 
 **The pin store keeps whatever it is given.** Measured on the host: a height of 2.0 reads back 2.0, one
