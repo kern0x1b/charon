@@ -28,6 +28,7 @@
 # or loses a key is caught by the arithmetic rather than by a reader counting rows.
 
 import argparse
+import collections
 import re
 import sys
 
@@ -72,6 +73,28 @@ def read_differences(path):
                 out.append((m.group(1) if m else host, host, port))
                 host = port = None
     return out
+
+
+def read_one_sided(path):
+    """The one-sided lines, by which side answers, keyed the same way differences are.
+
+    A one-sided line is a measurement the other side does not have: the probe did not ask it,
+    or that side answers nothing for it.  It is not a disagreement, and the direction matters -
+    "the port has bytes where the system has none" and "the system has bytes where the port
+    has none" are opposite facts, and a sentence about one of them must not quote the other's
+    count.  That is the one prose number in the differences page that no arithmetic caught, so
+    it is counted here and checked by --page.
+    """
+    out = collections.Counter()
+    keys = collections.defaultdict(list)
+    for line in open(path, encoding="utf-8"):
+        line = line.rstrip("\n")
+        for side, tag in (("only the system answers: ", "system"), ("only the port answers: ", "port")):
+            if line.startswith(side):
+                key = line[len(side):].split(" ")[0]
+                out[tag] += 1
+                keys[tag].append(line[len(side):])
+    return out, keys
 
 
 def read_total(path):
@@ -138,12 +161,22 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("ci")
     parser.add_argument("modelio")
-    parser.add_argument("--page")
+    # --page may be given more than once; every page that quotes a count is checked
+    parser.add_argument("--page", action="append", default=[])
     opts = parser.parse_args()
 
     failed = False
     for path, groups, label, want in ((opts.ci, CIIMAGE_GROUPS, "CoreImage", 40),
                                       (opts.modelio, MODELIO_GROUPS, "ModelIO", 41)):
+        sided, keys = read_one_sided(path)
+        print("    one-sided lines in the %s run, by which side answers: system %d, port %d"
+              % (label, sided["system"], sided["port"]))
+        for tag in ("system", "port"):
+            for name, prefixes in groups:
+                n = sum(1 for k in keys[tag] if any(k.startswith(p) for p in prefixes))
+                if n:
+                    print("        one-sided on the %s's side in %r: %d" % (tag, name, n))
+        print()
         total, unattributed = table(read_differences(path), groups, label)
         run = read_total(path)
         if run is None:
@@ -164,6 +197,32 @@ def main():
         print()
 
     if opts.page:
+        for page in opts.page:
+            # The page is written with hard wraps, so a sentence about a figure can have a newline
+            # in the middle of it; read the text as one line before matching any pattern in it.
+            text = re.sub(r"\s+", " ", open(page, encoding="utf-8").read())
+            keys = read_one_sided(opts.ci)[1]
+            n_port = sum(1 for k in keys["port"] if k.startswith("repr"))
+            n_system = sum(1 for k in keys["system"] if k.startswith("repr"))
+            # The one-sided repr lines are the one number in these pages that no arithmetic
+            # checked, and it was wrong: it said 30, the run says 33, and the three it left out
+            # are the only ones in that family where the SYSTEM answers and the port is silent -
+            # so a sentence about the port's side alone was half the fact.  Every page that
+            # quotes either figure has to quote the right one, in the form this reads back.
+            # A page that says nothing about the one-sided repr lines is not checked for them; a
+            # page that says half of it is, because half of it is what was wrong.
+            if "further `repr` lines" not in text:
+                continue
+            for want, what in ((n_port, "one-sided on the port's side"),
+                               (n_system, "one-sided on the system's side")):
+                m = re.search(r"(\d+) further `repr` lines (?:are )?" + re.escape(what), text)
+                if not m:
+                    print("FAIL %s: the page quotes the one-sided `repr` lines but not how many are %s" % (page, what))
+                    failed = True
+                elif int(m.group(1)) != want:
+                    print("FAIL %s: the page says %d `repr` lines are %s and the run has %d"
+                          % (page, int(m.group(1)), what, want))
+                    failed = True
         for path, groups, label in ((opts.ci, CIIMAGE_GROUPS, "CoreImage"),
                                     (opts.modelio, MODELIO_GROUPS, "ModelIO")):
             differences = read_differences(path)

@@ -38,11 +38,18 @@ number of a line - reported. They are the two `rgba8` formats and the write:
 
 **The direction is the other way round from what this page first said, and it matters: the PORT
 encodes and the SYSTEM answers that it cannot.** `repr rgba8 png` is `none` on the system and 161
-bytes in the port; `writePNGRepresentationOfImage:` answers 0 on the system and 1 in the port. Thirty
-further `repr` lines are one-sided on the port's side - the port has bytes, a decoded picture and
-four named pixels for `rgba8`, `rgbaf` and `jpeg` in PNG and TIFF, where the system has none of them.
-The bytes the port does produce decode to the same picture the sentence above is about, and that is
-still true of them; what is different is that the port answers where the system does not.
+bytes in the port; `writePNGRepresentationOfImage:` answers 0 on the system and 1 in the port. **33
+further `repr` lines one-sided on the port's side** - the port has bytes, a decoded picture and four
+named pixels for `rgba8`, `rgbaf` and `jpeg` in PNG and TIFF, where the system has none of them - and
+**3 further `repr` lines one-sided on the system's side**, which are the three that keep the sentence
+from being one-way: `repr rgbaf png none`, `repr rgbaf png tiff none` and `repr jpeg none`, the only
+lines in the family where the system answers and the port is silent. So the port is not simply
+louder than the system: it is louder for the byte formats it writes and quiet for the two it cannot
+read back. The bytes the port does produce decode to the same picture the sentence above is about,
+and that is still true of them.
+
+Both figures are counted by `tools/corpus/differences-table.py --page`, which refuses a page that
+quotes either of them wrong, and it read 30 for the port's side until this was written.
 
 ## Not carried here, and named
 
