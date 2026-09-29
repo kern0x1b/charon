@@ -3,7 +3,7 @@
 // header of this folder does, is forward-declared and its body comes from that import; any other is
 // transcribed from the SDK that declares it: the base list, each member with its kind and types,
 // @required and @optional as sections, and API_AVAILABLE(ios(<introduced>)). Facts only.
-#import <LocalAuthentication/LocalAuthentication.h>
+// Every protocol in this file is transcribed here, so it imports no framework header: their members name classes this header forward-declares. A file with a forward-declared protocol in it does import <LocalAuthentication/LocalAuthentication.h>, for that one body.
 #import <Foundation/Foundation.h>
 #import <objc/NSObject.h>
 

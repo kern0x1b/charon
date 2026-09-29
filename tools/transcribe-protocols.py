@@ -347,15 +347,30 @@ def render(members, prefix):
 
 
 for (folder, framework), entries in sorted(per_library.items()):
+    # A framework header is imported only when a body has to come from somewhere, which is the
+    # forward-declared case: there the body is the SDK's own, and this header's job is to reach it.
+    # A file whose protocols are ALL transcribed here does not import it, and that is not tidiness - on a
+    # HOST SDK the umbrella declares classes this package also declares, and a host case that renames the
+    # port's class (tests/backports/host/localauth18/run.sh renames LAEnvironmentMechanism and the rest)
+    # collapses the host's class and the port's onto the renamed name, with twenty errors before the
+    # differential runs. Measured, and the fix is here rather than in the port file that imports this
+    # header: the transcribed body needs nothing but its own @class lines and NSObject.
+    wants_framework = any(len(entry) == 2 for entry in entries)
     lines = ["// Charon%sProtocols.h — the %s protocols the generated protocol sources name, written by"
              % (folder, framework),
              "// tools/transcribe-protocols.py. One the SDK this package compiles against already defines, or a",
              "// header of this folder does, is forward-declared and its body comes from that import; any other is",
              "// transcribed from the SDK that declares it: the base list, each member with its kind and types,",
              "// @required and @optional as sections, and API_AVAILABLE(ios(<introduced>)). Facts only.",
-             "#import <%s/%s.h>" % (framework, framework),
+             ("// This file has a forward-declared protocol in it, so it imports <%s/%s.h> for that body, and"
+              % (framework, framework) if wants_framework else
+              "// Every protocol in this file is transcribed here, so it imports no framework header: their"
+              " members name classes this header forward-declares. A file with a forward-declared protocol in"
+              " it does import <%s/%s.h>, for that one body." % (framework, framework)),
              "#import <Foundation/Foundation.h>",
              "#import <objc/NSObject.h>"]
+    if wants_framework:
+        lines.insert(len(lines) - 2, "#import <%s/%s.h>" % (framework, framework))
     # a protocol a header of the library's own folder defines is supplied by that header, which the generated
     # source reaches through the folder on its include path; a forward declaration alone gives @protocol() an
     # empty protocol, with no base and no member
