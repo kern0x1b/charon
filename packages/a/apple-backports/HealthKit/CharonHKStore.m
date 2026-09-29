@@ -557,7 +557,15 @@ typedef NS_ENUM(NSUInteger, CharonHKAuthorizationBits) {
                                                                       NSStringFromClass([object class])], nil);
                     return NO;
                 }
-                HKObjectType *type = [self typeWithIdentifier:identifier];
+                // The gate is asked about the type the object carries, not about the row this save has
+                // not written yet. -typeWithIdentifier: returns nil for a type the type table has no row
+                // for, and that row is inserted further down, after this check - so a type the store had
+                // never seen was asked about as nil and refused as unauthorised, and could then never be
+                // saved at all. The workout path below already asks with the type the object carries; this
+                // is the same question asked the same way.
+                HKObjectType *type = [storable respondsToSelector:@selector(charon_typeForSaving)]
+                                       ? [(id)storable charon_typeForSaving]
+                                       : [self typeWithIdentifier:identifier];
                 if (![self mayShareType:type]) {
                     *inner = CharonHKError(HKErrorAuthorizationDenied,
                                            [NSString stringWithFormat:@"Sharing %@ data has not been authorized.", identifier],

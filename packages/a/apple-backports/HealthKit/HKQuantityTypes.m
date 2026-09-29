@@ -61,6 +61,10 @@ Class CharonHKClassForObjectKind(NSInteger kind)
         return NSClassFromString(@"HKCorrelation");
     case 3:
         return NSClassFromString(@"HKWorkout");
+    // The clinical record of 12.0, whose kind the store writes and which the table could not name, so a
+    // record could be saved and never read back.
+    case 4:
+        return NSClassFromString(@"HKClinicalRecord");
     default:
         return Nil;
     }
