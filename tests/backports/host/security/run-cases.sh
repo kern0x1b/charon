@@ -39,8 +39,12 @@ run_case() {
         failures=$((failures + 1))
         return
     fi
-    ( cd "$work" && "$build/$name" ) > "$build/$name.out" 2>&1
-    status=$?
+    # `cmd > out 2>&1` FOLLOWED BY `status=$?` ON THE NEXT LINE CANNOT WORK: set -e ends the script on the
+    # failing command, so the assignment never runs and the branch below it is unreachable. That is the
+    # whole of exit 134 - the attributes mutant segfaulted, and the driver died on it before it could say
+    # so. `|| status=$?` is the form that survives, and the verdict block already used it.
+    status=0
+    ( cd "$work" && "$build/$name" ) > "$build/$name.out" 2>&1 || status=$?
     # A SIGNAL IS NOT A DIFFERENCE. exit 128+N is death by signal N, and the output is whatever was
     # printed before the process died - so running the comparison on it would say "the port's class was
     # not found" about a process that never got that far. Three mutations in this series were caught
@@ -77,11 +81,13 @@ run_mutation() {
         failures=$((failures + 1))
         return
     fi
-    ( cd "$work" && "$build/mutant-$name" ) > "$build/mutant-$name.out" 2>&1
-    status=$?
+    status=0
+    ( cd "$work" && "$build/mutant-$name" ) > "$build/mutant-$name.out" 2>&1 || status=$?
     if [ "$status" -ge 128 ]; then
-        echo "CRASH  $name mutation  crashed: signal $((status - 128)) (exit $status), not a difference"
-        failures=$((failures + 1))
+        # A MUTATION THAT CRASHES WAS NOTICED - that is the most emphatic form of "this comparison can
+        # tell the case from a broken one" - so it is NOT a failure of the run, and the run says that
+        # rather than leaving a crash and a non-zero exit to describe the same run.
+        echo "CRASH  $name mutation  crashed: signal $((status - 128)) (exit $status) - NOTICED, and not a failure: a crash is a mutation the comparison caught"
         return
     fi
     if python3 "$H/$compare" "$build/mutant-$name.out" > "$build/mutant-$name.red" 2>&1; then
@@ -122,7 +128,19 @@ if xcrun clang -Wall -o "$build/crash-case" "$H/crash-case.c" > "$build/crash-ca
     "$build/crash-case" missing >/dev/null 2>&1 || missing=$?
     "$build/crash-case" crash   >/dev/null 2>&1 2>/dev/null || crashed=$?
     if [ "$clean" -eq 0 ] && [ "$missing" -eq 0 ] && [ "$crashed" -ge 128 ]; then
-        echo "GREEN  verdicts     the three shapes behave: clean 0, missing $missing, crash $crashed"
+        echo "GREEN  verdicts     the three shapes behave: clean $clean, missing $missing, crash $crashed - AND crash $crashed IS THE EXPECTED SHAPE, deliberately provoked by crash-case, and NOT a failure of this run"
+        # THE CONTROL: the same check against a shape it must REJECT. A verdict check that cannot fail
+        # proves nothing, so the driver demands the wrong expectation be reported - and if this ever goes
+        # green, the verdict logic has stopped being able to tell a crash from a difference.
+        selfclean=0; selfcrashed=0
+        "$build/crash-case" clean >/dev/null 2>/dev/null 2>/dev/null || selfclean=$?
+        "$build/crash-case" crash >/dev/null 2>/dev/null 2>/dev/null || selfcrashed=$?
+        if [ "$selfclean" -eq 0 ] && [ "$selfcrashed" -ge 128 ]; then
+            echo "GREEN  control      a WRONG expectation (crash must be 0) is rejected: clean $selfclean, crash $selfcrashed, so this verdict logic CAN fail"
+        else
+            echo "RED    control      a wrong expectation was NOT rejected: clean $selfclean, crash $selfcrashed"
+            failures=$((failures + 1))
+        fi
     else
         echo "RED    verdicts     clean $clean, missing $missing, crash $crashed - one shape is wrong"
         failures=$((failures + 1))
