@@ -29,11 +29,13 @@
 // THE QUEUE BACK - a mutation that deleted `_verifyQueue = queue;` passes this case, because nothing
 // looks at the queue. So the queue's holding is the DESIGN and is untested, and the row says that.
 //
-// THE VERIFY BLOCK IS THE ONLY ONE OF THE THREE THAT RECEIVES A sec_trust_t, and that is recorded rather
-// than smoothed over: the port holds a type it does not itself supply, because the sec_trust_t wrapper is
-// one of the NINE ROWS STILL OWED. Holding a value whose producing type is owed is honest - the value is
-// whatever the caller passes - but nothing here can be exercised end to end until that type exists, and
-// the row says so.
+// THE VERIFY BLOCK IS THE ONLY ONE OF THE THREE THAT RECEIVES a sec_trust_t, and the port supplies that
+// type ITSELF: sec_trust_create and sec_trust_copy_ref are BUILT and MEASURED, in
+// SecObjectWrappers12_0.m, with the retain balance 1 2 3 2 1 and pointer identity checked on a real
+// SecTrustRef. An earlier note here said the wrapper was one of the nine rows still owed; that was
+// written before the wrapper family landed and is corrected rather than left to mislead. What is still
+// NOT exercised is this block's queue: the case sets each of the three alone with its neighbours read
+// back, and no test reads a queue back.
 
 @interface CharonSecProtocolBlocks : NSObject <OS_sec_protocol_options>
 {

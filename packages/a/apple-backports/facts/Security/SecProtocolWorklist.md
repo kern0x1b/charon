@@ -83,7 +83,7 @@ while nothing in 6.1.3 ever reads it, because the release has no TLS stack that 
 `sec_protocol_options_t`. Every row is therefore **`inert`**: callable, the value held, and the effect
 stated as *the handshake ignores it*.
 
-**The two that are NOT this shape** are the four `get_default_*_protocol_version` accessors, which take
+**The FOUR that are NOT this shape** are the `get_default_*_protocol_version` accessors, which take
 no options object and are pure: they answer a documented default and are `implemented` rather than
 `inert`, because the value they return is a fact rather than a setting nobody reads.
 
@@ -131,6 +131,6 @@ returned nothing, so there was no release-side constant to defer to and the fall
 `sec_protocol_options_are_equal` (`:86`) reads back the settings the port **holds**, so it is
 `implemented` — it is the one thing the port can answer truthfully. The equality is its own state and
 nothing else: a comparison against the release's stack would compare nothing, because there is no such
-stack.The four are no longer the owed set: the three block setters are built, and the four
-certificate/trust wrapper rows are built and measured, so the one row still owed is
-`sec_protocol_options_set_local_identity`.
+stack. Nothing in the list above is owed except the one row the status line names; the
+certificate/trust wrapper rows belong to a different family and are counted in
+`SecObjectWrappers.md`, not here.
