@@ -74,8 +74,6 @@ def main(argv):
     # written by hand in a registry string is a number no run checks.
     per_family = {}
     print("%-42s %-9s %11s %11s  %s" % ("case", "class", "max ulp", "max rel", "verdict"))
-    graded = {}
-
     def family_of(case_name):
         head = case_name.rsplit(" ", 1)
         return head[0] if len(head) == 2 and head[1].isdigit() else case_name
@@ -131,8 +129,6 @@ def main(argv):
         print("%-42s %-9s %11s %11s  %s"
               % (sname, grade, ulp if ulp is not None else "-",
                  ("%.3g" % rel) if rel is not None else "-", verdict))
-        if grade != "identical":
-            graded[name] = (grade, ulp, rel)
 
     print("")
     print("%-38s %6s %7s %11s %11s %8s"
