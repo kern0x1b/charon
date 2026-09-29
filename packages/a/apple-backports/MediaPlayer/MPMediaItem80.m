@@ -42,8 +42,6 @@
 @property (nonatomic, readonly) NSURL * assetURL;
 @end
 
-// The property-key constants this release declares, each the same-named string, so a caller can spell a
-// key the way Apple spells it.
 
 @implementation MPMediaItem (Charon80)
 
@@ -109,4 +107,3 @@
 
 @end
 
-#undef MPMediaItemPropertyKey

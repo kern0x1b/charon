@@ -54,7 +54,7 @@ int main(void) {
                             @"composerPersistentID": @15, @"podcastPersistentID": @16, @"albumTrackCount": @3,
                             @"discCount": @1, @"beatsPerMinute": @128, @"compilation": @YES, @"cloudItem": @YES,
                             @"lyrics": @"words", @"comments": @"note", @"userGrouping": @"group",
-                            @"assetURL": [NSURL URLWithString:@"file:///a"], @"hasProtectedAsset": @YES,
+                            @"assetURL": [NSURL URLWithString:@"file:///a"], @"protectedAsset": @YES,
                             @"dateAdded": added, @"explicitItem": @YES, @"playbackStoreID": @"store",
                             @"preorder": @YES};
     MPMediaItem *item = [[MPMediaItem alloc] init];

@@ -41,7 +41,7 @@ GROUP_80 = [
 
 # The three groups after 8.0, with the release as the header writes it and as the file names it. Two of
 # the four are declared with a getter=, so the property name is the first field and the selector the third.
-GROUP_92 = [("protectedAsset", "BOOL", "hasProtectedAsset", "hasProtectedAsset")]
+GROUP_92 = [("protectedAsset", "BOOL", "hasProtectedAsset", "protectedAsset")]
 GROUP_100 = [("dateAdded", "NSDate *", "dateAdded", "dateAdded"),
               ("explicitItem", "BOOL", "isExplicitItem", "explicitItem")]
 GROUP_103 = [("playbackStoreID", "NSString *", "playbackStoreID", "playbackStoreID"),
@@ -50,7 +50,17 @@ GROUP_103 = [("playbackStoreID", "NSString *", "playbackStoreID", "playbackStore
 # The property-key constants, each the same-named string: the header declares them NSString * const and
 # the dictionary is keyed by the property's name, so a constant that named anything else would name a key
 # nothing reads. The release each arrived in is its own group's, per the header's MP_API.
-CONSTANTS = {70: [], 80: [], 92: [], 100: [], 103: [], 145: []}
+# The property-key constants, one per release, emitted as the globals the header declares: a
+# `NSString * const` at file scope, outside the @implementation, so a caller that spells the constant the
+# way Apple spells it links against a data symbol. A class property would be a method and would not.
+CONSTANTS = {
+    70: [("MPMediaItemPropertyIsExplicit", "explicitItem")],
+    80: [],
+    92: [("MPMediaItemPropertyHasProtectedAsset", "protectedAsset")],
+    100: [("MPMediaItemPropertyDateAdded", "dateAdded")],
+    103: [("MPMediaItemPropertyPlaybackStoreID", "playbackStoreID")],
+    145: [("MPMediaItemPropertyIsPreorder", "preorder")],
+}
 # MPMediaItemPropertyIsExplicit is 7.0 and MPMediaItemPropertyIsPreorder is 14.5, so each needs a group
 # of its own rather than a neighbour's file: one object, one release, per band()'s own rule.
 GROUP_145 = []
@@ -100,15 +110,12 @@ HEADER = """// MPMediaItem's %(count)d %(release)s members, the ones this releas
 @interface MPMediaItem (Charon%(name)s)
 %(declarations)s@end
 
-// The property-key constants this release declares, each the same-named string, so a caller can spell a
-// key the way Apple spells it.
 %(constants_decl)s
 @implementation MPMediaItem (Charon%(name)s)
 
-%(bodies)s%(constants_def)s@end
+%(bodies)s@end
 
-#undef MPMediaItemPropertyKey
-"""
+%(constants_def)s"""
 
 
 def emit(release, members, root):
@@ -116,9 +123,10 @@ def emit(release, members, root):
     library = os.path.join(root, "packages", "a", "apple-backports", "MediaPlayer", "MPMediaItem%s.m" % release)
     declarations, bodies = [], []
     constants = CONSTANTS.get(release, [])
-    constants_decl = "".join('@property (class, nonatomic, readonly) NSString * %s;\n' % c for c, _k in constants)
-    constants_def = "".join(
-        '+ (NSString *)%s { return @"%s"; }\n' % (c, k) for c, k in constants)
+    # The value is the property's own name, which is the dictionary key - the same convention the
+    # getters use and the same one coordination/crutches.md records as unverified.
+    constants_decl = "".join('extern NSString * const %s;\n' % c for c, _k in constants)
+    constants_def = "".join('NSString * const %s = @"%s";\n' % (c, k) for c, k in constants)
     for name, kind, getter, key in members:
         if kind not in CONVERSION:
             raise SystemExit("%s has type %s, which this generator cannot read" % (name, kind))

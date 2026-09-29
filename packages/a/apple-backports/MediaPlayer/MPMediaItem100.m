@@ -29,8 +29,7 @@
 @property (nonatomic, readonly) BOOL explicitItem;
 @end
 
-// The property-key constants this release declares, each the same-named string, so a caller can spell a
-// key the way Apple spells it.
+extern NSString * const MPMediaItemPropertyDateAdded;
 
 @implementation MPMediaItem (Charon100)
 
@@ -44,4 +43,4 @@
 
 @end
 
-#undef MPMediaItemPropertyKey
+NSString * const MPMediaItemPropertyDateAdded = @"dateAdded";

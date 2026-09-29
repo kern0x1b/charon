@@ -27,13 +27,10 @@
 @interface MPMediaItem (Charon145)
 @end
 
-// The property-key constants this release declares, each the same-named string, so a caller can spell a
-// key the way Apple spells it.
-@property (class, nonatomic, readonly) NSString * MPMediaItemPropertyIsPreorder;
+extern NSString * const MPMediaItemPropertyIsPreorder;
 
 @implementation MPMediaItem (Charon145)
 
-+ (NSString *)MPMediaItemPropertyIsPreorder { return @"preorder"; }
 @end
 
-#undef MPMediaItemPropertyKey
+NSString * const MPMediaItemPropertyIsPreorder = @"preorder";

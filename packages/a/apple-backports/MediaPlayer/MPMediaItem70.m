@@ -29,8 +29,7 @@
 @property (nonatomic, readonly) NSUInteger discNumber;
 @end
 
-// The property-key constants this release declares, each the same-named string, so a caller can spell a
-// key the way Apple spells it.
+extern NSString * const MPMediaItemPropertyIsExplicit;
 
 @implementation MPMediaItem (Charon70)
 
@@ -44,4 +43,4 @@
 
 @end
 
-#undef MPMediaItemPropertyKey
+NSString * const MPMediaItemPropertyIsExplicit = @"explicitItem";

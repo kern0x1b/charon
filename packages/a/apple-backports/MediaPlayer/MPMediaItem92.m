@@ -28,15 +28,14 @@
 @property (nonatomic, readonly) BOOL protectedAsset;
 @end
 
-// The property-key constants this release declares, each the same-named string, so a caller can spell a
-// key the way Apple spells it.
+extern NSString * const MPMediaItemPropertyHasProtectedAsset;
 
 @implementation MPMediaItem (Charon92)
 
 - (BOOL)hasProtectedAsset {
-    return [[self valueForProperty:@"hasProtectedAsset"] boolValue];
+    return [[self valueForProperty:@"protectedAsset"] boolValue];
 }
 
 @end
 
-#undef MPMediaItemPropertyKey
+NSString * const MPMediaItemPropertyHasProtectedAsset = @"protectedAsset";
