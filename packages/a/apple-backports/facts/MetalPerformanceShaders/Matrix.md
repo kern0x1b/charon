@@ -117,29 +117,32 @@ The neuron results are one or two units in the last place of a `float` and are t
 bias gradient was a rule this port had wrong, and `bias-probe.m` now reads the release's answer one
 element at a time.
 
-**What the one-hot incoming gradient says.** With `dY[0][0] = 1` and nothing else, the release writes:
+**The rule, read from the release.** With the incoming gradient held to one element at a time and
+then to a general one, the release writes, for each feature channel `j` and feature vector `i`:
 
-| neuron type | `resultGradientForBiasVector[0]` | `resultGradientForDataMatrix[0][0]` |
-| --- | --- | --- |
-| None | 1 | 0.5 |
-| ReLU | 1.5 | 0.75 |
-| Linear | 1.5 | 0.75 |
-| Sigmoid | 0.217894986 | 0.108947493 |
+```
+    resultGradientForBiasVector[j]  =  sum over i of   dY[i][j] * f'( alpha * x[i][j] + bias[j] )
+    resultGradientForDataMatrix[i][j] =  dY[i][j] * f'( alpha * x[i][j] + bias[j] ) * alpha
+```
 
-The intermediate value at that element is `alpha * x + bias = 0.5 * (-2) + 0.25 = -0.75`, and each of
-those is the neuron's own derivative there: 1 for the identity, `a = 1.5` for ReLU below zero and for
-Linear, and `0.2178949` for the sigmoid, which is `s(1-s)` at `s = 1/(1+e^0.75)`. **So the bias gradient
-is the derivative-weighted sum of the incoming gradient over the feature vectors, and the data gradient
-is that same quantity times `alpha`** — the two differ by exactly the scale factor, which is what the
-intermediate value implies. This port was writing the plain column sum of the incoming gradient into
-the bias vector, which is right only for a neuron whose derivative is one everywhere.
+**The two differ by exactly the scale factor**, because `alpha` scales the input and not the bias, and
+`f'` is the neuron's own derivative at the intermediate value. This port was writing the plain column
+sum of the incoming gradient into the bias vector, which is that formula only when `f'` is one
+everywhere — true of the identity and of nothing else.
 
-**What is not settled:** that rule is read off single-element incoming gradients. It does not yet
-extrapolate to the differential's own case — for Linear with an incoming gradient whose column sums are
-`3.5, 4.25, 5.125, 6.0625`, the rule gives `5.25, 6.375, 7.6875, 9.09` and the release answers
-`5, 6, 7, 9.75` — so some second term is involved that a one-hot cannot see. The next step is the
-`incoming=2` column of `bias-probe.m`'s output, which is that case, and then a two-element incoming
-gradient to separate a per-element term from a per-column one.
+The evidence, all of it the release's own answers (`bias-probe.m`):
+
+* a single one in the first column, at the intermediate value `0.5 * (-2) + 0.25 = -0.75`, gives 1 for
+  the identity, `a = 1.5` for ReLU below zero and for Linear, and `0.217894986` for the sigmoid, which
+  is `s(1-s)` at `s = 1/(1+e^0.75)` — each exactly that neuron's derivative there;
+* a general incoming gradient reproduces the formula for ReLU (`5, 5.25, 5.125, 8.0625`, which is the
+  per-element derivative changing across the column), for the absolute value (`-2.5, 0.25, 5.125,
+  -1.9375`, which is the sign of the intermediate), and for the identity, where it collapses back to
+  the column sums.
+
+A claim I made in the same round — that the rule "does not extrapolate" to a general incoming gradient
+— was wrong, and came from reading a run whose inputs had not been read back out of their buffers. The
+four general cases above are the check.
 
 `-[MPSState resourceSize]`, and with it `MPSStateBatchResourceSize`, answer this port's own number of
 bytes — what the state's description implies, or the length of a resource the caller supplied. The

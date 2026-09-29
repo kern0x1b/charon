@@ -145,10 +145,22 @@ CHARON_MPS_NEURON_COMMON
     }
     CharonMPSNeuron neuron = [self charon_mps_neuron];
     for (NSUInteger b = start; b < start + count; b++) {
+        // The bias gradient is the incoming gradient weighted by the neuron's own derivative at the
+        // intermediate value, and the data gradient is that same quantity times alpha: the two differ by
+        // exactly the scale factor, because alpha is what scales the input and not the bias. Read off
+        // the release with a one-hot incoming gradient and with a general one, element by element, in
+        // tests/backports/host/mpsmatrix/bias-probe.m; it is the plain column sum only when the
+        // derivative is one everywhere, which is true of the identity and of nothing else.
         for (NSUInteger column = 0; column < channels; column++) {
             double total = 0.0;
             for (NSUInteger row = 0; row < vectors; row++) {
-                total += CharonMPSLoad(CharonMPSMatrixElement(&gradient, b, _primarySourceMatrixOrigin.x + row, _primarySourceMatrixOrigin.y + column), gradient.dataType, 0);
+                double g = CharonMPSLoad(CharonMPSMatrixElement(&gradient, b, _primarySourceMatrixOrigin.x + row, _primarySourceMatrixOrigin.y + column), gradient.dataType, 0);
+                double x = CharonMPSLoad(CharonMPSMatrixElement(&in, b, _secondarySourceMatrixOrigin.x + row, _secondarySourceMatrixOrigin.y + column), in.dataType, 0);
+                double b0 = bias.length > column ? CharonMPSLoad(CharonMPSVectorElement(&bias, 0, column), bias.dataType, 0) : 0.0;
+                double intermediate = _alpha * x + b0;
+                double y = CharonMPSApplyNeuron(neuron.type, intermediate, neuron.a, neuron.b, neuron.c, CharonMPSNeuronA(&neuron, column));
+                double d = CharonMPSApplyNeuronGradient(neuron.type, intermediate, y, neuron.a, neuron.b, neuron.c, CharonMPSNeuronA(&neuron, column));
+                total += g * d;
             }
             if (biasGradient.length > column)
                 CharonMPSStore(CharonMPSVectorElement(&biasGradient, 0, column), biasGradient.dataType, 0, total);
