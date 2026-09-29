@@ -403,6 +403,101 @@ the size and a factory that answered the wrong size. It asserts now, and both di
 is carried, it is `inert`, and it says once in the log that there is no display to show the image on -
 counted by the run, which calls it once and fails if the port wrote a line per call.
 
+## The settings of 17.0, 18.0 and 26.1, and the hearing functions of 15.0
+
+Twelve rows, in four objects, one release a piece, and every answer in them comes from one measurement.
+`CharonAXSettings.h` declares the real names the port's applications write; `AXColorUtilities.h` and
+`AXHearingUtilities.h` are in the SDK the package compiles against, so the hearing group needed no
+header at all.
+
+**The measurement**, `tests/backports/settings/axs-census.lua` over the 6.1.3 armv7 cache, 580 libraries:
+
+```
+the release's Accessibility libraries:
+  AX-prefixed exports: 543
+  of which its own AXS/kAXS preference names: 339
+  of which anything else: 204
+
+every library of the release, which is a different question:
+  AX-prefixed exports: 1204, of which AXS-named: 362
+
+CONTROL __AXSInvertColorsEnabled, a name that is in the surface: found
+CONTROL __AXSCharonPlanted, a name that is not:                nil
+```
+
+And the five subjects, by the words a preference about them would be named with, every match printed:
+```
+  Blink 0   Border 0   Slider 0   Horizontal 0
+  Motion     1   _AXUTLEventIsMotion                            an event flag, not a preference
+  Vertical   1   _kAXSVoiceOverTouchRotorItemVerticalNavigation  a VoiceOver rotor item
+  Cursor     4   __AXSVoiceOverTouchCursorStyle and three       the shape of the VoiceOver cursor
+  Image      7   __AXSVoiceOverTouchNavigateImages and six      VoiceOver's image navigation
+```
+
+**The Cursor ones are the near-miss, and they are why the names are printed.** They are VoiceOver's
+*cursor style* - the shape of the selection cursor it draws - and not a preference about a text insertion
+indicator blinking. So the release holds no accessibility preference about motion, a blinking or insertion
+cursor, horizontal text layout, borders or a slider alternative, and each of those five functions answers
+**NO**, the answer cannot change in the life of a process, and each of the five notifications is carried
+so a caller can name the change and is **never posted** because there is nothing to announce. The check
+proves the last part with an observer, not by the absence of a post in its own output.
+
+**Three answers are "there is nothing to be on" rather than "off",** and two of them must never touch
+the host:
+
+  * `AXAssistiveAccessEnabled` answers NO for the same measurement, and its own header's contract - that
+    the value cannot change in a process's lifetime - is what makes that a reading of the release and not
+    a placeholder for work not done.
+  * `AXMFiHearingDevicePairedUUIDs` answers an **empty array** and not nil: a caller that iterates it gets
+    zero devices, and a nil would make it read the answer as a failure to ask.
+    `AXMFiHearingDeviceStreamingEar` answers the enumeration's own no-device case at 0, which is what a
+    caller checks before drawing a left/right indicator. Both declarations are `API_UNAVAILABLE(macos)` -
+    the header's own statement that a Mac has no such device - and the answer would be the signed-in
+    user's accessory list, so **the host is never called for these two**, or for the third,
+    `AXSupportsBidirectionalAXMFiHearingDeviceStreaming`, which answers NO because there is no hearing
+    device and so nothing that could stream in either direction.
+  * `AXOpenSettingsFeature` calls its completion **once, synchronously, before returning**, with an error
+    in the port's own domain naming the section and saying nothing was opened. Calling it synchronously
+    is a decision and it is forced: the API takes a completion and a caller that waits for one that does
+    not come waits forever. A null completion is accepted and ignored; a feature outside the enumeration
+    is still answered with an error rather than crashing. **The host is never called for this row**: the
+    call opens the Settings app, which would put a window on somebody's screen.
+
+### Owed
+
+**`AXNameFromColor()` — a black-box fit, and not yet done.** The host answers a curated named-colour
+vocabulary with a nearest-match rule, not the components of the colour: `(128,128,128)` and `(200,200,200)`
+both answer `gray`, `(255,165,0)` answers `bright orange`, `(0,0,255)` answers `very dark blue`, and
+`(128,0,128)` and `(255,0,255)` both answer `dark magenta`. Nineteen such answers are in
+`.agent-work/runs/settings/colour-probe.txt` (sha256 `01cdefc918d5b94d930e94817661736abd14ca9e0220a7e690e1e62e366fb296`).
+The work agreed for it: probe the host densely - a regular 17x17x17 sRGB grid, 20,000 random colours, the
+named edge cases, and the neighbours of every grid point where the answer changes - identify the
+vocabulary and the decision rule by fitting candidate spaces (sRGB, linear, Lab, OKLab) with per-name
+prototypes and boundaries found by bisection, implement the port's own rule and the port's own prototype
+table from those measurements, and report the agreement over a held-out sample of at least 200,000 colours
+that were not in the fit set, with the disagreements counted and where they cluster. Nothing is read out
+of the framework's binary or its resources; the names are facts of the answers the function returned.
+**The registry has no row for it and there is no `absent` row pretending otherwise**: it is owed, and it
+is owed to that series, `accessibility-color`.
+
+**The three hearing rows are held by less than the other twenty, and the run says so.** They are not run
+here: their declarations are unavailable on macOS and this machine has no iOS runtime. What holds them is
+the compiler checking their signatures against the SDK's and `nm` confirming the port defines all three
+for `armv7-apple-ios6.0`, with the answers as readings of the census. The command that settles the rest is
+an emulator run of `tests/backports/settings/hearing-check.m` against the built library, and the run prints
+`hearing: OWED` rather than passing quietly over it.
+
+### What the check is, and what it caught
+
+`tests/backports/settings/check.m` is port-only, and the reason for each row is in its own header. It
+runs twenty-three assertions and its first ten **failed while printing the same value on both sides**,
+because an `@(0)` and a `@"0"` are not equal however they print: the check comparing a number with a
+string is worth nothing until it can be seen to fail, and its sixth control was worse - it compared a
+literal with itself. Eleven mutations now cover the assertions: ten killed, one control green, none
+surviving, none run-failed. Three of the four things the harness found were real: a mutation that
+posted from a function nothing called and so broke nothing, a check that printed three symbols and
+asserted nothing about them, and a mutation that broke two behaviours at once so a crash hid the first.
+
 ## What the registry holds, and the rows it does not
 
 **119 entries** are written. Of the 114 the Accessibility framework started with, 39 rows became

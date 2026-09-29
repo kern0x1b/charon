@@ -906,67 +906,60 @@
       "reason": "the property is read by the class's own hand-written getter over the NSString the initialiser stored, and it is an **instance** property, not a class property: the runtime holds the object, not the class"
     },
     {
-      "api": "AccessibilitySettings.animatedImagesEnabled",
-      "kind": "property",
-      "introduced": "18.0",
+      "api": "AXAnimatedImagesEnabled()",
+      "kind": "function",
+      "introduced": "17.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "implemented",
+      "source": "the value is the release's and the release has no such preference: tests/backports/settings/axs-census.lua over 6.1.3 armv7, run and pasted: 543 AX-prefixed exports in the release's three Accessibility libraries, 339 of them its own AXS/kAXS preference names, and not one preference among them about motion, a blinking or insertion cursor, horizontal text layout, borders or a slider alternative; the four near-miss names are printed in that output and are an event flag, a VoiceOver rotor item, VoiceOver's cursor style and its image navigation. Control: __AXSInvertColorsEnabled resolves and __AXSCharonPlanted is nil, so the \"none\" is a measurement and not a walk that could not look. Carried by Accessibility/CharonAXSettings17.m and held by tests/backports/settings/check.m"
     },
     {
-      "api": "AccessibilitySettings.animatedImagesEnabledDidChangeNotification",
-      "kind": "property",
-      "introduced": "18.0",
+      "api": "AXAnimatedImagesEnabledDidChangeNotification",
+      "kind": "constant",
+      "introduced": "17.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "implemented",
+      "source": "carried so a caller can name the change, and never posted because the value it announces cannot change: tests/backports/settings/axs-census.lua over 6.1.3 armv7, run and pasted: 543 AX-prefixed exports in the release's three Accessibility libraries, 339 of them its own AXS/kAXS preference names, and not one preference among them about motion, a blinking or insertion cursor, horizontal text layout, borders or a slider alternative; the four near-miss names are printed in that output and are an event flag, a VoiceOver rotor item, VoiceOver's cursor style and its image navigation. Control: __AXSInvertColorsEnabled resolves and __AXSCharonPlanted is nil, so the \"none\" is a measurement and not a walk that could not look. Held by tests/backports/settings/check.m"
     },
     {
-      "api": "AccessibilitySettings.prefersActionSliderAlternative",
-      "kind": "property",
+      "api": "AXPrefersActionSliderAlternative()",
+      "kind": "function",
       "introduced": "26.1",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "implemented",
+      "source": "the value is the release's and the release has no such preference: tests/backports/settings/axs-census.lua over 6.1.3 armv7, run and pasted: 543 AX-prefixed exports in the release's three Accessibility libraries, 339 of them its own AXS/kAXS preference names, and not one preference among them about motion, a blinking or insertion cursor, horizontal text layout, borders or a slider alternative; the four near-miss names are printed in that output and are an event flag, a VoiceOver rotor item, VoiceOver's cursor style and its image navigation. Control: __AXSInvertColorsEnabled resolves and __AXSCharonPlanted is nil, so the \"none\" is a measurement and not a walk that could not look. Carried by Accessibility/CharonAXSettings26.m and held by tests/backports/settings/check.m"
     },
     {
-      "api": "AccessibilitySettings.prefersHorizontalTextLayout",
-      "kind": "property",
+      "api": "AXPrefersHorizontalTextLayout()",
+      "kind": "function",
+      "introduced": "17.0",
+      "facts": "facts/Accessibility/Accessibility.md",
+      "status": "implemented",
+      "source": "the value is the release's and the release has no such preference: tests/backports/settings/axs-census.lua over 6.1.3 armv7, run and pasted: 543 AX-prefixed exports in the release's three Accessibility libraries, 339 of them its own AXS/kAXS preference names, and not one preference among them about motion, a blinking or insertion cursor, horizontal text layout, borders or a slider alternative; the four near-miss names are printed in that output and are an event flag, a VoiceOver rotor item, VoiceOver's cursor style and its image navigation. Control: __AXSInvertColorsEnabled resolves and __AXSCharonPlanted is nil, so the \"none\" is a measurement and not a walk that could not look. Carried by Accessibility/CharonAXSettings17.m and held by tests/backports/settings/check.m"
+    },
+    {
+      "api": "AXPrefersHorizontalTextLayoutDidChangeNotification",
+      "kind": "constant",
+      "introduced": "17.0",
+      "facts": "facts/Accessibility/Accessibility.md",
+      "status": "implemented",
+      "source": "carried so a caller can name the change, and never posted because the value it announces cannot change: tests/backports/settings/axs-census.lua over 6.1.3 armv7, run and pasted: 543 AX-prefixed exports in the release's three Accessibility libraries, 339 of them its own AXS/kAXS preference names, and not one preference among them about motion, a blinking or insertion cursor, horizontal text layout, borders or a slider alternative; the four near-miss names are printed in that output and are an event flag, a VoiceOver rotor item, VoiceOver's cursor style and its image navigation. Control: __AXSInvertColorsEnabled resolves and __AXSCharonPlanted is nil, so the \"none\" is a measurement and not a walk that could not look. Held by tests/backports/settings/check.m"
+    },
+    {
+      "api": "AXPrefersNonBlinkingTextInsertionIndicator()",
+      "kind": "function",
       "introduced": "18.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "implemented",
+      "source": "the value is the release's and the release has no such preference: tests/backports/settings/axs-census.lua over 6.1.3 armv7, run and pasted: 543 AX-prefixed exports in the release's three Accessibility libraries, 339 of them its own AXS/kAXS preference names, and not one preference among them about motion, a blinking or insertion cursor, horizontal text layout, borders or a slider alternative; the four near-miss names are printed in that output and are an event flag, a VoiceOver rotor item, VoiceOver's cursor style and its image navigation. Control: __AXSInvertColorsEnabled resolves and __AXSCharonPlanted is nil, so the \"none\" is a measurement and not a walk that could not look. Carried by Accessibility/CharonAXSettings18.m and held by tests/backports/settings/check.m"
     },
     {
-      "api": "AccessibilitySettings.prefersHorizontalTextLayoutDidChangeNotification",
-      "kind": "property",
-      "introduced": "18.0",
-      "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
-    },
-    {
-      "api": "AccessibilitySettings.prefersNonBlinkingTextInsertionIndicator",
-      "kind": "property",
-      "introduced": "18.0",
-      "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
-    },
-    {
-      "api": "AccessibilitySettings.showBordersEnabled",
-      "kind": "property",
+      "api": "AXShowBordersEnabled()",
+      "kind": "function",
       "introduced": "26.1",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "implemented",
+      "source": "the value is the release's and the release has no such preference: tests/backports/settings/axs-census.lua over 6.1.3 armv7, run and pasted: 543 AX-prefixed exports in the release's three Accessibility libraries, 339 of them its own AXS/kAXS preference names, and not one preference among them about motion, a blinking or insertion cursor, horizontal text layout, borders or a slider alternative; the four near-miss names are printed in that output and are an event flag, a VoiceOver rotor item, VoiceOver's cursor style and its image navigation. Control: __AXSInvertColorsEnabled resolves and __AXSCharonPlanted is nil, so the \"none\" is a measurement and not a walk that could not look. Carried by Accessibility/CharonAXSettings26.m and held by tests/backports/settings/check.m"
     },
     {
       "api": "AXChart",
@@ -1027,6 +1020,70 @@
       "reason": "presenting an image needs a braille display to show it on, and this release has none: the whole Accessibility surface it holds is the AXS* preference library, measured, with no display service in it. The pin grid and the size work and the image has nowhere to go",
       "effect": "the method is there, it does nothing, and it writes exactly one line to the log however many times it is called - which is what the case holds it to: it calls the method once and counts the port's log lines, and a port that wrote a line per call fails the run",
       "facts": "facts/Accessibility/Accessibility.md"
+    },
+    {
+      "api": "AXPrefersNonBlinkingTextInsertionIndicatorDidChangeNotification",
+      "kind": "constant",
+      "introduced": "18.0",
+      "status": "implemented",
+      "facts": "facts/Accessibility/Accessibility.md",
+      "source": "carried so a caller can name the change, and never posted because the value it announces cannot change: tests/backports/settings/axs-census.lua over 6.1.3 armv7, run and pasted: 543 AX-prefixed exports in the release's three Accessibility libraries, 339 of them its own AXS/kAXS preference names, and not one preference among them about motion, a blinking or insertion cursor, horizontal text layout, borders or a slider alternative; the four near-miss names are printed in that output and are an event flag, a VoiceOver rotor item, VoiceOver's cursor style and its image navigation. Control: __AXSInvertColorsEnabled resolves and __AXSCharonPlanted is nil, so the \"none\" is a measurement and not a walk that could not look. Held by tests/backports/settings/check.m"
+    },
+    {
+      "api": "AXPrefersActionSliderAlternativeDidChangeNotification",
+      "kind": "constant",
+      "introduced": "26.1",
+      "status": "implemented",
+      "facts": "facts/Accessibility/Accessibility.md",
+      "source": "carried so a caller can name the change, and never posted because the value it announces cannot change: tests/backports/settings/axs-census.lua over 6.1.3 armv7, run and pasted: 543 AX-prefixed exports in the release's three Accessibility libraries, 339 of them its own AXS/kAXS preference names, and not one preference among them about motion, a blinking or insertion cursor, horizontal text layout, borders or a slider alternative; the four near-miss names are printed in that output and are an event flag, a VoiceOver rotor item, VoiceOver's cursor style and its image navigation. Control: __AXSInvertColorsEnabled resolves and __AXSCharonPlanted is nil, so the \"none\" is a measurement and not a walk that could not look. Held by tests/backports/settings/check.m"
+    },
+    {
+      "api": "AXShowBordersEnabledStatusDidChangeNotification",
+      "kind": "constant",
+      "introduced": "26.1",
+      "status": "implemented",
+      "facts": "facts/Accessibility/Accessibility.md",
+      "source": "carried so a caller can name the change, and never posted because the value it announces cannot change: tests/backports/settings/axs-census.lua over 6.1.3 armv7, run and pasted: 543 AX-prefixed exports in the release's three Accessibility libraries, 339 of them its own AXS/kAXS preference names, and not one preference among them about motion, a blinking or insertion cursor, horizontal text layout, borders or a slider alternative; the four near-miss names are printed in that output and are an event flag, a VoiceOver rotor item, VoiceOver's cursor style and its image navigation. Control: __AXSInvertColorsEnabled resolves and __AXSCharonPlanted is nil, so the \"none\" is a measurement and not a walk that could not look. Held by tests/backports/settings/check.m"
+    },
+    {
+      "api": "AXAssistiveAccessEnabled()",
+      "kind": "function",
+      "introduced": "18.0",
+      "status": "implemented",
+      "facts": "facts/Accessibility/Accessibility.md",
+      "source": "the answer is the release's: tests/backports/settings/axs-census.lua over 6.1.3 armv7, run and pasted: 543 AX-prefixed exports in the release's three Accessibility libraries, 339 of them its own AXS/kAXS preference names, and not one preference among them about motion, a blinking or insertion cursor, horizontal text layout, borders or a slider alternative; the four near-miss names are printed in that output and are an event flag, a VoiceOver rotor item, VoiceOver's cursor style and its image navigation. Control: __AXSInvertColorsEnabled resolves and __AXSCharonPlanted is nil, so the \"none\" is a measurement and not a walk that could not look Carried by Accessibility/CharonAXSettings18.m and held by tests/backports/settings/check.m The value cannot change in the life of a process, which is its own header's contract and is what makes NO a reading of the release rather than a placeholder."
+    },
+    {
+      "api": "AXOpenSettingsFeature()",
+      "kind": "function",
+      "introduced": "18.0",
+      "status": "implemented",
+      "facts": "facts/Accessibility/Accessibility.md",
+      "source": "the answer is the release's: tests/backports/settings/axs-census.lua over 6.1.3 armv7, run and pasted: 543 AX-prefixed exports in the release's three Accessibility libraries, 339 of them its own AXS/kAXS preference names, and not one preference among them about motion, a blinking or insertion cursor, horizontal text layout, borders or a slider alternative; the four near-miss names are printed in that output and are an event flag, a VoiceOver rotor item, VoiceOver's cursor style and its image navigation. Control: __AXSInvertColorsEnabled resolves and __AXSCharonPlanted is nil, so the \"none\" is a measurement and not a walk that could not look Carried by Accessibility/CharonAXSettings18.m and held by tests/backports/settings/check.m The release's Settings app has none of the sections the enumeration names - the first two arrived with 18.0 and 18.2 and the last three with 26.0 - so the call cannot begin; the completion is called once, synchronously, with an error in the port's own domain naming the section. THE HOST IS NEVER CALLED FOR THIS ROW: the call opens the Settings app."
+    },
+    {
+      "api": "AXMFiHearingDevicePairedUUIDs()",
+      "kind": "function",
+      "introduced": "15.0",
+      "status": "implemented",
+      "facts": "facts/Accessibility/Accessibility.md",
+      "source": "the answer is the release's: tests/backports/settings/axs-census.lua over 6.1.3 armv7, run and pasted: 543 AX-prefixed exports in the release's three Accessibility libraries, 339 of them its own AXS/kAXS preference names, and not one preference among them about motion, a blinking or insertion cursor, horizontal text layout, borders or a slider alternative; the four near-miss names are printed in that output and are an event flag, a VoiceOver rotor item, VoiceOver's cursor style and its image navigation. Control: __AXSInvertColorsEnabled resolves and __AXSCharonPlanted is nil, so the \"none\" is a measurement and not a walk that could not look Carried by Accessibility/CharonHearing15.m and held by tests/backports/settings/check.m An empty array, not nil: a caller that iterates it gets zero devices, and a nil would make it read the answer as a failure to ask. THE HOST IS NEVER CALLED FOR THIS ROW: the declaration is API_UNAVAILABLE(macos) and the answer would be the signed-in user's own accessory list."
+    },
+    {
+      "api": "AXMFiHearingDeviceStreamingEar()",
+      "kind": "function",
+      "introduced": "15.0",
+      "status": "implemented",
+      "facts": "facts/Accessibility/Accessibility.md",
+      "source": "the answer is the release's: tests/backports/settings/axs-census.lua over 6.1.3 armv7, run and pasted: 543 AX-prefixed exports in the release's three Accessibility libraries, 339 of them its own AXS/kAXS preference names, and not one preference among them about motion, a blinking or insertion cursor, horizontal text layout, borders or a slider alternative; the four near-miss names are printed in that output and are an event flag, a VoiceOver rotor item, VoiceOver's cursor style and its image navigation. Control: __AXSInvertColorsEnabled resolves and __AXSCharonPlanted is nil, so the \"none\" is a measurement and not a walk that could not look Carried by Accessibility/CharonHearing15.m and held by tests/backports/settings/check.m The enumeration's own no-device case at 0, which is what a caller checks before drawing a left/right indicator. THE HOST IS NEVER CALLED FOR THIS ROW, for the same reason as the row above."
+    },
+    {
+      "api": "AXSupportsBidirectionalAXMFiHearingDeviceStreaming()",
+      "kind": "function",
+      "introduced": "15.0",
+      "status": "implemented",
+      "facts": "facts/Accessibility/Accessibility.md",
+      "source": "the answer is the release's: tests/backports/settings/axs-census.lua over 6.1.3 armv7, run and pasted: 543 AX-prefixed exports in the release's three Accessibility libraries, 339 of them its own AXS/kAXS preference names, and not one preference among them about motion, a blinking or insertion cursor, horizontal text layout, borders or a slider alternative; the four near-miss names are printed in that output and are an event flag, a VoiceOver rotor item, VoiceOver's cursor style and its image navigation. Control: __AXSInvertColorsEnabled resolves and __AXSCharonPlanted is nil, so the \"none\" is a measurement and not a walk that could not look Carried by Accessibility/CharonHearing15.m and held by tests/backports/settings/check.m No, because there is no hearing device and so nothing that could stream in either direction. THE HOST IS NEVER CALLED FOR THIS ROW, for the same reason as the row above."
     }
   ]
 }
