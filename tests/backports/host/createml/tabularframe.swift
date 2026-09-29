@@ -146,8 +146,23 @@ func check(_ what: String, _ equal: Bool, _ detail: @autoclosure () -> String = 
     }
 }
 
+/// Two things, compared, with **neither of them named by this helper**.
+///
+/// The previous wording - "the port answers \(a)" - was the reason four commits of reports were wrong:
+/// it attributed the *first* argument to the port, and the differential passes the **host** first, so
+/// every one of its failure messages reported the host's answer with the port's name on it. Four turns
+/// were spent reading those messages as statements about the port.
+///
+/// So the message names both sides by position and claims nothing. Where the two sides *are* a host and
+/// a port, the call says so itself with `host:` and `port:` labels - see `checkEqualAgainstHost`.
 func checkEqual<T: Equatable>(_ what: String, _ a: T, _ b: T) {
-    check(what, a == b, "the port answers \(a)")
+    check(what, a == b, "a=\(a) b=\(b)")
+}
+
+/// The same comparison, for the differential, where the two sides *are* a host and a port and saying so
+/// is the point of the call.
+func checkEqualAgainstHost<T: Equatable>(_ what: String, host: T, port: T) {
+    check(what, host == port, "host=\(host) port=\(port)")
 }
 
 func checkClose(_ what: String, _ a: Double, _ b: Double, _ tolerance: Double) {
@@ -284,31 +299,31 @@ let directPort0 = pStrings[0]
 print("DIRECT host [0]=\(String(describing: directHost0)) port [0]=\(String(describing: directPort0))")
 print("PROBE-BEFORE missing=\(pOptionals.missingCount) wrapped=\(String(describing: pOptionals.wrappedElementType))")
 
-checkEqual("count: the host's and the port's agree", hStrings.count, pStrings.count)
-checkEqual("name: the host's and the port's agree", hStrings.name, pStrings.name)
-checkEqual("wrappedElementType: the host's and the port's agree",
-           String(describing: hStrings.wrappedElementType), String(describing: pStrings.wrappedElementType))
+checkEqualAgainstHost("count: the host's and the port's agree", host: hStrings.count, port: pStrings.count)
+checkEqualAgainstHost("name: the host's and the port's agree", host: hStrings.name, port: pStrings.name)
+checkEqualAgainstHost("wrappedElementType: the host's and the port's agree",
+           host: String(describing: hStrings.wrappedElementType), port: String(describing: pStrings.wrappedElementType))
 let hostCell0 = hStrings[0]
 let portCell0 = pStrings[0]
 let hostCell2 = hStrings[2]
 let portCell2 = pStrings[2]
-checkEqual("subscript: position 0 reads the same through both",
-           String(describing: hostCell0), String(describing: portCell0))
-checkEqual("subscript: the last position reads the same through both",
-           String(describing: hostCell2), String(describing: portCell2))
-checkEqual("missingCount: the host's and the port's agree on no nils", hStrings.missingCount, pStrings.missingCount)
-checkEqual("missingCount: the host's and the port's agree on one nil",
-           hOptionals.missingCount, pOptionals.missingCount)
+checkEqualAgainstHost("subscript: position 0 reads the same through both",
+                      host: String(describing: hostCell0), port: String(describing: portCell0))
+checkEqualAgainstHost("subscript: the last position reads the same through both",
+                      host: String(describing: hostCell2), port: String(describing: portCell2))
+checkEqualAgainstHost("missingCount: the host's and the port's agree on no nils", host: hStrings.missingCount, port: pStrings.missingCount)
+checkEqualAgainstHost("missingCount: the host's and the port's agree on one nil",
+           host: hOptionals.missingCount, port: pOptionals.missingCount)
 // Apple's own answer, measured: a frame-stored `Column<Int?>` of `[1, nil, 3]` reports 0. The
     // check's name used to say the host says one; the host says 0.
-    checkEqual("missingCount: the host says 0 for the optional form, so the port must too", hOptionals.missingCount, 0)
-checkEqual("isNil(at:): the host's and the port's agree on a present cell",
-           hOptionals.isNil(at: 0), pOptionals.isNil(at: 0))
-checkEqual("isNil(at:): the host's and the port's agree on a missing cell",
-           hOptionals.isNil(at: 1), pOptionals.isNil(at: 1))
+    checkEqualAgainstHost("missingCount: the host says 0 for the optional form, so the port must too", host: hOptionals.missingCount, port: 0)
+checkEqualAgainstHost("isNil(at:): the host's and the port's agree on a present cell",
+           host: hOptionals.isNil(at: 0), port: pOptionals.isNil(at: 0))
+checkEqualAgainstHost("isNil(at:): the host's and the port's agree on a missing cell",
+           host: hOptionals.isNil(at: 1), port: pOptionals.isNil(at: 1))
 checkEqual("isNil(at:) past the end: the host says missing", hOptionals.isNil(at: 99), pOptionals.isNil(at: 99))
-checkEqual("wrappedElementType of a column of optionals: the host's and the port's agree",
-           String(describing: hOptionals.wrappedElementType), String(describing: pOptionals.wrappedElementType))
+checkEqualAgainstHost("wrappedElementType of a column of optionals: the host's and the port's agree",
+           host: String(describing: hOptionals.wrappedElementType), port: String(describing: pOptionals.wrappedElementType))
 print("PROBE-AFTER  missing=\(pOptionals.missingCount) wrapped=\(String(describing: pOptionals.wrappedElementType))")
 
 // The probe runs here rather than at the top of the file because it reads `pOptionals`, and
