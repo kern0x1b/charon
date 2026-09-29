@@ -136,7 +136,20 @@
     if (!archive.length || ![self supportsSecureCoding])
         return nil;
     NSKeyedUnarchiver *coder = [[NSKeyedUnarchiver alloc] initForReadingWithData:archive];
-    id object = [[self alloc] charon_objectWithCoder:coder];
+    // The root object is decoded by the unarchiver, under the root key, and it is the unarchiver that
+    // allocates the class and calls its -initWithCoder: with a coder scoped to that object's own keys.
+    // This used to do that itself - [[self alloc] charon_objectWithCoder:coder] - which hands the class a
+    // coder sitting at the top level of the archive, where the root's keys are not visible at all: every
+    // decodeObject(forKey:) then answers nil, and -charon_initWithUUID:source:metadata: mints a fresh UUID
+    // for the nil that comes back, so the object came out with no type, no dates, no quantity and an
+    // identity that had never been stored. The round trip read an empty object for every sample it had
+    // saved, and nothing said so.
+    //
+    // The root key is read with -decodeObjectForKey: and not -decodeObjectOfClass:forKey:, because the
+    // writer is +[NSKeyedArchiver archivedDataWithRootObject:], which does not write a secure-coding
+    // archive; the class-constrained reader expects one and refuses this. The class is the one the
+    // archive names, which is the same class this method was called on.
+    id object = [coder decodeObjectForKey:NSKeyedArchiveRootObjectKey];
     [coder finishDecoding];
     return object;
 }

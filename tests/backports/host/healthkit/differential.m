@@ -1695,14 +1695,14 @@ static void CharonHKStoreRoundTrip(void)
     NSDate *end = [NSDate dateWithTimeIntervalSince1970:1600000060];
     CharonHostHKHealthStore *store = [[CharonHostHKHealthStore alloc] init];
     CharonHostHKQuantityType *energy = [CharonHostHKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierActiveEnergyBurned];
-    CharonHostHKWorkoutType *workouts = [CharonHostHKObjectType workoutType];
+    CharonHostHKWorkoutType *workoutType = [CharonHostHKObjectType workoutType];
 
     // The store keeps what it is authorised for, and it says so: a save before the request is answered
     // is refused with "Sharing ... data has not been authorized". So the round trip asks for what it
     // writes, through the store's own request, and waits for the answer before saving anything.
     __block BOOL authorised = NO;
-    [store requestAuthorizationToShareTypes:[NSSet setWithObjects:energy, workouts, nil]
-                                  readTypes:[NSSet setWithObject:energy]
+    [store requestAuthorizationToShareTypes:[NSSet setWithObjects:energy, workoutType, nil]
+                                  readTypes:[NSSet setWithObjects:energy, nil]
                                  completion:^(BOOL success, NSError *error) { authorised = success; }];
     CharonHKWaitFor(&authorised);
     CharonHKCompareBool(@"the store is asked for what it writes", authorised, YES);
@@ -1777,8 +1777,8 @@ static void CharonHKStoreRoundTrip(void)
         CharonHKCompareDouble(@"the finished workout has the period it was given", workout.duration, 60.0);
         CharonHKCompareInt(@"the finished workout has the totals its samples sum to",
                            (NSInteger)(workout.totalEnergyBurned ? 1 : 0), (NSInteger)1);
-        NSArray *workouts = [database objectsWithUUIDs:@[ workout.UUID ] ofType:workouts error:NULL];
-        CharonHKCompareInt(@"the finished workout is in the store", (NSInteger)workouts.count, (NSInteger)1);
+        NSArray *workoutRows = [database objectsWithUUIDs:@[ workout.UUID ] ofType:workoutType error:NULL];
+        CharonHKCompareInt(@"the finished workout is in the store", (NSInteger)workoutRows.count, (NSInteger)1);
     }
 
     // The series builder of 12.0, the same question asked of the other class that saves.
