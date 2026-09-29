@@ -189,6 +189,17 @@
       "status": "inert"
     },
     {
+      "api": "sec_protocol_options_add_pre_shared_key()",
+      "effect": "the value is HELD with ARC ownership, so the caller's own reference can go and the port's remains. A pre-shared key is a PAIR and BOTH halves are held, appended together so they cannot fall out of step, and a pair with a missing half is NOT STORED: a key without an identity names nothing, and an identity without a key is not a pre-shared key, so half a pair in the list would be read back later as though it were whole. The effect: the handshake ignores all of it - 6.1.3 offers neither a Diffie-Hellman parameter to set nor a pre-shared key to use, and 0-RTT did not exist in 2011",
+      "facts": "facts/Security/SecProtocolWorklist.md",
+      "introduced": "13.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "6.1.3 HAS NO STACK THAT TAKES a sec_protocol_options_t, so nothing reads what the port holds. dispatch_data_t IS AN OBJC OBJECT HERE, so it is held with a __strong ivar and ARC does the retain; dispatch_retain and dispatch_release are ARC-FORBIDDEN on it, the same rule that forbids CFRelease and -release on an ObjC pointer",
+      "source": "SDK 16.4, Security",
+      "status": "inert"
+    },
+    {
       "api": "sec_protocol_options_add_tls_application_protocol()",
       "effect": "the string is held AS A COPY the port owns, not as the caller's pointer. Measured by setting from a frame that RETURNS and then reading the held text: both the server name and the first application protocol still read as the caller's strings. The application protocol is APPENDED because the header names it add and ALPN is a LIST - three added are three held in the order they were offered, and a NULL adds nothing rather than storing a NULL mid-list. The server name REPLACES, and setting twice frees the first copy rather than leaking it. The effect: the handshake ignores all of it - 6.1.3 speaks no ALPN and the release's own name resolution is not reachable through this object",
       "facts": "facts/Security/SecProtocolWorklist.md",
@@ -339,6 +350,17 @@
       "kind": "function",
       "minimum": "6.0",
       "reason": "6.1.3 has NO STACK THAT TAKES a sec_protocol_options_t, so nothing ever reads what is held: the port supplies CharonSecProtocolOptions, the setter holds the value, and the effect is that the handshake ignores it. A port that returned an error would break a caller that sets options before it connects, and a port that pretended the setting took effect would be a lie about a handshake it cannot perform",
+      "source": "SDK 16.4, Security",
+      "status": "inert"
+    },
+    {
+      "api": "sec_protocol_options_set_tls_diffie_hellman_parameters()",
+      "effect": "the value is HELD with ARC ownership, so the caller's own reference can go and the port's remains. A pre-shared key is a PAIR and BOTH halves are held, appended together so they cannot fall out of step, and a pair with a missing half is NOT STORED: a key without an identity names nothing, and an identity without a key is not a pre-shared key, so half a pair in the list would be read back later as though it were whole. The effect: the handshake ignores all of it - 6.1.3 offers neither a Diffie-Hellman parameter to set nor a pre-shared key to use, and 0-RTT did not exist in 2011",
+      "facts": "facts/Security/SecProtocolWorklist.md",
+      "introduced": "13.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "6.1.3 HAS NO STACK THAT TAKES a sec_protocol_options_t, so nothing reads what the port holds. dispatch_data_t IS AN OBJC OBJECT HERE, so it is held with a __strong ivar and ARC does the retain; dispatch_retain and dispatch_release are ARC-FORBIDDEN on it, the same rule that forbids CFRelease and -release on an ObjC pointer",
       "source": "SDK 16.4, Security",
       "status": "inert"
     },

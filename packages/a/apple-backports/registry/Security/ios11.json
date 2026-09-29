@@ -329,16 +329,6 @@
    "source": "the SDK 16.4 headers of Security"
   },
   {
-   "api": "sec_protocol_options_add_pre_shared_key()",
-   "kind": "function",
-   "introduced": "12.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
-   "effect": "the function is not there: a weak reference to it is NULL",
-   "source": "the SDK 16.4 headers of Security"
-  },
-  {
    "api": "sec_protocol_options_set_challenge_block()",
    "kind": "function",
    "introduced": "12.0",
@@ -360,16 +350,6 @@
   },
   {
    "api": "sec_protocol_options_set_local_identity()",
-   "kind": "function",
-   "introduced": "12.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
-   "effect": "the function is not there: a weak reference to it is NULL",
-   "source": "the SDK 16.4 headers of Security"
-  },
-  {
-   "api": "sec_protocol_options_set_tls_diffie_hellman_parameters()",
    "kind": "function",
    "introduced": "12.0",
    "minimum": "6.0",
