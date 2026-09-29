@@ -53,7 +53,9 @@ if cmp -s "$mutated" "$original"; then
     exit 1
 fi
 echo "   cmp: the mutant differs from the source, as it must"
-diff -u "$original" "$mutated" | sed -n '3,12p' | sed 's/^/   /'
+# diff exits 1 when the files differ, which is what must have happened here, so its status is
+# discarded rather than left to stop the script at the point where it proved the point.
+diff -u "$original" "$mutated" | sed -n '3,12p' | sed 's/^/   /' || true
 
 export DDR_UIKIT=$scratch
 xmake f -p iphoneos -a armv7 -y > configure.log 2>&1
