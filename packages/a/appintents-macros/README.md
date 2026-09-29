@@ -20,7 +20,7 @@ records what each macro's contract is, read off the framework's own `@attached` 
 
 | macro | roles | state |
 | --- | --- | --- |
-| `ComputedProperty()` | peer + accessor | written, and both roles **typecheck** against the toolchain's own swift-syntax; the entry point and the expansion test are blocked on the package |
+| `ComputedProperty()` | peer + accessor | written, and both roles **typecheck** against the toolchain's own swift-syntax. The entry point and the expansion harness are **not** done: the rule that builds the plugin ships in the next addon release cut from main, and until it does `tests/Expansions.swift` **asserts nothing** -- it is a hand-written reference, and `tests/Mutation.md` says so and carries the mutant that must go red |
 | `DeferredProperty()` | peer + accessor | not started |
 | `AppEntity<T>(schema:)`, `AppIntent<T>(schema:)`, `AppEnum<T>(schema:)` | memberAttribute + extension | not started |
 | `AssistantEntity/Enum/Intent<T>(schema:)` | memberAttribute + extension | not started |
