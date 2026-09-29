@@ -5,6 +5,10 @@
 // measuring the host and would look like a clobber.
 #import <Foundation/Foundation.h>
 
+// The framework spells the identifier type as a typedef over NSNumber; the stand-in must too,
+// or the generated getters do not compile off-target.
+typedef NSNumber *MPMediaEntityPersistentID;
+
 @interface MPMediaItem : NSObject
 - (id)valueForProperty:(NSString *)property;
 @end

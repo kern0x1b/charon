@@ -28,3 +28,36 @@ port-created item answers from its own dictionary.
 Contract, in `tests/backports/host/mediaplayeritem/contract.m`: the port's own source compiled against a
 stand-in that answers `valueForProperty:`, checking a present key, a missing key (nil, so 0) and the
 header's conversion, with a wrong-key and a wrong-conversion mutant each shown red.
+<!-- generated: 80 -->
+
+## 80 - `MPMediaItem80.m`
+
+The 15 members the 26.2 header declares `MP_API(ios(80))`, generated from the one list in
+`tests/backports/host/mediaplayeritem/generate.py` together with the getters and the check's table:
+
+    @property (nonatomic, readonly) MPMediaEntityPersistentID albumPersistentID MP_API(ios(80));
+    @property (nonatomic, readonly) MPMediaEntityPersistentID artistPersistentID MP_API(ios(80));
+    @property (nonatomic, readonly) MPMediaEntityPersistentID albumArtistPersistentID MP_API(ios(80));
+    @property (nonatomic, readonly) MPMediaEntityPersistentID genrePersistentID MP_API(ios(80));
+    @property (nonatomic, readonly) MPMediaEntityPersistentID composerPersistentID MP_API(ios(80));
+    @property (nonatomic, readonly) MPMediaEntityPersistentID podcastPersistentID MP_API(ios(80));
+    @property (nonatomic, readonly) NSUInteger albumTrackCount MP_API(ios(80));
+    @property (nonatomic, readonly) NSUInteger discCount MP_API(ios(80));
+    @property (nonatomic, readonly) NSUInteger beatsPerMinute MP_API(ios(80));
+    @property (nonatomic, readonly, getter = isCompilation) BOOL compilation MP_API(ios(80));
+    @property (nonatomic, readonly, getter = isCloudItem) BOOL cloudItem MP_API(ios(80));
+    @property (nonatomic, readonly) NSString * lyrics MP_API(ios(80));
+    @property (nonatomic, readonly) NSString * comments MP_API(ios(80));
+    @property (nonatomic, readonly) NSString * userGrouping MP_API(ios(80));
+    @property (nonatomic, readonly) NSURL * assetURL MP_API(ios(80));
+
+Each member's dictionary key is the property's own name, which is the documented convention for
+MPMediaItem's property constants and the only reading the header's spelling supports. It is **not**
+verified against a populated item, because neither this Mac nor 6.1.3 can be given one without a
+media library; what *is* measured is that the release carries none of these members, so a
+port-created item - one built from a dictionary, which is exactly what the stand-in in the contract
+check is - is the only thing that can answer them here.
+
+Declared with a `getter=` attribute, so the property name is not the selector: `compilation` is implemented as `isCompilation`, `cloudItem` is implemented as `isCloudItem`.
+<!-- /generated: 80 -->
+
