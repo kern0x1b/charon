@@ -335,7 +335,8 @@ must_not_compile blocks-challenge-into-keyupdate "$PK" protocol-options-blocks
 # data-halfpair IS SecProtocolOptionsData13_0.m, so it REPLACES the case's source and is not added beside
 # it - passing it again as an extra source is a duplicate symbol, which is what it did first.
 run_mutation data-halfpair compare-protocol-options-data.py protocol-options-data
-# held-nocopy comes from SecProtocolOptionsBlocks13_0.m, which the case does not link, so it needs it.
+# held-nocopy mutates the IVAR in SecProtocolOptions13_0.m, which IS the case's own source, so it
+# REPLACES it and is not added beside it - adding it is a duplicate symbol, which is what it did first.
 run_mutation held-nocopy   compare-protocol-options-held.py  protocol-options-held
 run_mutation trust-result      compare-trust-result.py
 
