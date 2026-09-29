@@ -29,6 +29,32 @@ setvbuf(stdout, nil, _IONBF, 0)
 import PortTabularData
 import TabularData
 
+// The distinguishing test for a discontiguous slice, behind a flag so the suite's own run is untouched.
+// Whether `kept[1]` traps or `Array(kept)` traps says whether the index space or the walk is the
+// problem, and they are different fixes. Run it as:
+//
+//     KEEP=1 ./run.sh && "$TMPDIR"/createml-differential.*/tabularframe --slice-probe
+//
+// The prints are unbuffered, so whichever read traps still leaves the reads before it on the output.
+if CommandLine.arguments.contains("--slice-probe") {
+    let base = PortTabularData.Column<Int>(name: "n", [5, 1, 4, 20, 3])
+    let kept = base.filter { (cell: Int?) -> Bool in
+        guard let value = cell else { return false }
+        return value > 3
+    }
+    print("PROBE indices=\(kept.indices) count=\(kept.count) startIndex=\(kept.startIndex) endIndex=\(kept.endIndex)")
+    // Read in the order the host was read in: the two the host answers, then the one it traps on, then
+    // the walk. The trap ends the process, so the order is the order of what can be measured.
+    print("PROBE kept[0]=\(String(describing: kept[0]))")
+    print("PROBE kept[3]=\(String(describing: kept[3]))")
+    print("PROBE kept.values=\(kept.values)")
+    print("PROBE Array(kept)=\(Array(kept).map { String(describing: $0) })")
+    print("PROBE about to read kept[1], which the host refuses")
+    print("PROBE kept[1]=\(String(describing: kept[1]))")
+    print("PROBE reached the end - so kept[1] did NOT trap, which the host does")
+    exit(0)
+}
+
 var checks = 0
 var failures = 0
 
@@ -302,6 +328,14 @@ checkEqual("a column compact-mapped is compacted, as Apple's is",
 let keptPositions = writable.filter { (cell: Int?) -> Bool in guard let v = cell else { return false }; return v > 3 }
 checkEqual("a column filtered keeps its positions, as Apple's does",
            keptPositions.indices, [0, 2, 3])
+// The index space is the *base's positions*: `kept[0]` and `kept[3]` read the base's 0 and 3, and
+// `kept[1]` is not a position at all - the host traps on it, and `--slice-probe` is that trap in a
+// child process, because a trap ends the process that would check it.
+checkEqual("a kept position reads the base's cell at that position", keptPositions[0], 5)
+checkEqual("the last kept position reads the base's last kept cell", keptPositions[3], 20)
+checkEqual("a discontiguous slice walks its kept positions, not a run",
+           keptPositions.map { String(describing: $0) },
+           ["Optional(5)", "Optional(4)", "Optional(20)"])
 checkEqual("a column filtered reads back through the slice",
            keptPositions.values, [5, 4, 20])
 checkEqual("a column's slice", writable[1..<4].values, [1, 4, 20])

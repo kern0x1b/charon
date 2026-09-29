@@ -324,21 +324,55 @@ public struct DiscontiguousColumnSlice<Element>: ColumnProtocol, BidirectionalCo
 
     public var count: Int { indices.count }
     public var isEmpty: Bool { indices.isEmpty }
-    public var startIndex: Int { 0 }
-    public var endIndex: Int { indices.count }
-    public func index(after i: Int) -> Int { i + 1 }
-    public func index(before i: Int) -> Int { i - 1 }
+    /// The slice's index set is the **kept positions of the base**, so iteration walks them and never
+    /// asks for one that is not kept: over a base of `[5, 1, 4, 20, 3]` filtered on `> 3` the indices
+    /// are `[0, 2, 3]`, so the walk is 0, 2, 3 and `endIndex` is 4. `startIndex` and `endIndex` are
+    /// the sentinels on either side of that set, and `index(after:)` returns `endIndex` at the end so
+    /// a forward walk stops rather than trapping.
+    public var startIndex: Int { indices.first ?? 0 }
+    public var endIndex: Int { (indices.last ?? -1) + 1 }
+    public func index(after i: Int) -> Int { indices.first { $0 > i } ?? endIndex }
+    /// The previous kept position, or `startIndex` when there is none. A sentinel rather than a trap,
+    /// because the walk over this slice is forward and a backward walk from the first position has no
+    /// answer; the subscript is where a position that is not kept is refused.
+    public func index(before i: Int) -> Int { indices.last { $0 < i } ?? startIndex }
 
+    /// A cell of the **base**, addressed by the base's own position.
+    ///
+    /// Not `base[indices[position]]`. Measured on the port, over a base of `[5, 1, 4, 20, 3]` filtered
+    /// on `> 3` - the same filter and the same data the host was run on:
+    ///
+    ///     kept[0] = 5      kept[1] = 4      kept[2] = 20      kept[3] traps
+    ///
+    /// The host answers `kept[0]` and `kept[3]` and **traps on `kept[1]`**, with
+    /// `Fatal error: position 1 is not a valid slice index`. So the index space is the base's positions
+    /// and a position the slice does not keep is not a position at all. The port's `indices`-indexed
+    /// read is a *different slice with the same positions*: it answers `kept[1]` with the cell at base
+    /// position 2, and traps at `kept[3]` because the indices array ends first.
     public subscript(position: Int) -> Element? {
-        get { base[indices[position]] }
-        set { base[indices[position]] = newValue }
+        get {
+            precondition(indices.contains(position),
+                         "position \(position) is not a valid slice index")
+            return base[position]
+        }
+        set {
+            precondition(indices.contains(position),
+                         "position \(position) is not a valid slice index")
+            base[position] = newValue
+        }
     }
 
     public subscript(bounds: Range<Int>) -> DiscontiguousColumnSlice<Element> {
         DiscontiguousColumnSlice(base: base, indices: Array(indices[bounds]))
     }
 
-    public var values: [Element] { Array(self).compactMap { $0 } }
+    /// The cells this slice keeps, read through the base's own positions.
+    ///
+    /// Not `Array(self)`: the index space is the base's kept positions, so a walk from `startIndex` to
+    /// `endIndex` is 0, 2, 3 rather than three consecutive indices. Reading the kept positions is the
+    /// same answer without asking the standard library to iterate a sparse space - and it is *not* the
+    /// same code as a contiguous slice's `values`, which walks a run and needs no help.
+    public var values: [Element] { indices.compactMap { base[$0] } }
 
     public var column: Column<Element> { Column<Element>(name: name, values) }
 }
