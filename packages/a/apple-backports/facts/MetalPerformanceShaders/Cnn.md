@@ -354,3 +354,27 @@ variance, gamma or aggregation choices, not the same over the other axis, and no
 the untouched per-parameter vectors do: the port writes the header's formula, the host writes something
 else that no variant here reproduces, and no case should be marked matching on a guess. The probe is the
 fixture, and it re-runs the whole search and the two-part check in one program.
+
+### The Jacobian, and the axis it answers
+
+`tests/backports/host/mpsmatrix/fixtures/gradient-jacobian.m`, with its output beside it in
+`fixtures/gradient-jacobian.txt`. For a fixed source dX is linear in dY, so one run per unit matrix
+gives the twelve columns of the Jacobian, and linearity is checked rather than assumed:
+
+    linearity: dY = e_0 + e_1 against the sum of the two columns, largest difference 0 - linear
+
+**The axis is the feature channel.** `dX[0]` has non-zeros only in columns 0, 3 and 9 — the four
+elements of dY's channel 0 — and `dX[1]` only in columns 1, 4 and 10, the four of channel 1. So
+`dX[r][c]` depends on every element of `dY[·][c]` and on nothing in the other channels. That is the
+axis the standard formula has, and it is now measured rather than inferred from a formula that did not
+fit.
+
+**And the host does not fill the whole destination.** Several entries come back `-inf` or
+`258130233550829509922521088.0000` — an unwritten shared buffer's contents, not a computed value. The
+unwritten entries are whole channels of `dX`, the same signature as the per-parameter vectors it
+leaves untouched: the release writes some of its output and not all of it.
+
+So the host's data gradient is **block diagonal on the feature channel**, **linear**, and **partly
+unwritten** — and the block itself is still not the standard form, since the sixteen variants of it did
+not fit. The next step is the block alone, one channel at a time, which removes the coupling between
+channels and leaves a four by four operator to identify.
