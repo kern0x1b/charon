@@ -648,27 +648,27 @@
    "kind": "class",
    "introduced": "15.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "performing a setup is a HAP pair-setup, which this port carries none of",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
+   "status": "implemented",
+   "effect": "the object an application asks to add an accessory to a home, and the entry point of the whole setup family. -init is carried, because the release declares it available on an NSObject subclass and a port that did not answer it would be missing API the device has. -performAccessorySetupUsingRequest:completionHandler: is NOT bound: it is API_AVAILABLE(ios(15.4)) on an API_AVAILABLE(ios(15.0)) class, and it launches the system UI to add accessories that are physically present over HomeKit's own transport to them -- a real accessory has to be there, and the system's setup UI is what launches the pairing. That is hardware, so it is the family's one documented-error member and its own row",
+   "source": "HMAccessorySetupManager15_0.m: HMAccessorySetupManager.h:23-39 read by clang's AST, one release per object"
   },
   {
    "api": "HMAccessorySetupRequest",
    "kind": "class",
    "introduced": "15.4",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "a setup request names an accessory to be set up, which needs a session with it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
+   "status": "implemented",
+   "effect": "what an application fills in and hands to the manager, and the class that now CARRIES the family's properties rather than standing in for them. All five of the header's properties are storage and all five are carried: payload, homeUniqueIdentifier, suggestedRoomUniqueIdentifier, suggestedAccessoryName and matterPayload, each copied as the header's copy says, with -copyWithZone: carrying all of them. matterPayload holds a Matter setup payload -- the port keeps the object under the SDK's own MTRSetupPayload * type and does not look inside it, because the payload IS the accessory's commissioning data and inspecting it would claim a check the port never made. What the port does not do is COMMISSION anything over Matter, and that belongs to the member that does the commissioning, not to the slot that holds its object",
+   "source": "HMAccessorySetupRequest15_4.m: HMAccessorySetupRequest.h:18-59 read by clang's AST, one release per object"
   },
   {
    "api": "HMAccessorySetupResult",
    "kind": "class",
    "introduced": "15.4",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "a setup result is what a HAP pair-setup returns",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
+   "status": "implemented",
+   "effect": "what a successful setup hands back: the home it went into and the accessories it added. Both properties are readonly and both are carried; -init and +new stay unbound, which is the release's own NS_UNAVAILABLE, so the graph's entry point -charon_initWithHomeIdentifier:accessoryIdentifiers: is the only way one is made, and -copyWithZone: copies the two into a new object rather than sharing self, because a result the caller can push accessories into is not the report the header describes",
+   "source": "HMAccessorySetupResult15_4.m: HMAccessorySetupResult.h:14-30 read by clang's AST, one release per object"
   },
   {
    "api": "HMNetworkConfigurationProfile",
@@ -694,8 +694,9 @@
    "introduced": "15.4",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "a HAP pair-setup",
-   "effect": "the message is not there: respondsToSelector: answers NO"
+   "reason": "HARDWARE, and the family's one documented-error member: it launches the system UI to add an accessory that is physically present, over HomeKit's own transport to it. A real accessory has to be there and the system has the setup UI; the port has neither, so the member is not bound, the class around it IS carried, and the check asserts the absence by name rather than passing over it",
+   "effect": "NOT bound, deliberately, and the class around it is carried: the release's method works by reaching a physical accessory, and the port has no radio for one",
+   "source": "HMAccessorySetupManager.h:39 read by clang's AST: API_AVAILABLE(ios(15.4)) on an API_AVAILABLE(ios(15.0)) class"
   },
   {
    "api": "-[HMHome addAndSetupAccessoriesWithCompletionHandler:]",
@@ -1219,6 +1220,15 @@
    "effect": "nothing of its own: it is a promise a conformer may leave out, and the contract check fails if the port declared it required where the header says optional",
    "facts": "facts/HomeKit/HMHomeDelegate.md",
    "source": "the HomeKit header of SDK 26.2 for the contract: the member's selector from clang's AST, its declaration copied from the header's own line, and its @optional/@required from the header's marker lines, joined by the line both give; the check is tests/backports/host/homekit/ast_check.py, which reads both sides and carries a control per protocol, and protocols.py, whose independent regex count must agree with the AST's"
+  },
+  {
+   "api": "-[HMAccessorySetupRequest matterPayload]",
+   "kind": "property",
+   "introduced": "15.4",
+   "minimum": "7.0",
+   "status": "implemented",
+   "effect": "HELD AND READ BACK, and that is the whole of it: the property is storage, so the port keeps the Matter setup payload object a caller sets under the SDK's own MTRSetupPayload * type and hands the same object back. The port does not look inside it -- the payload IS the accessory's commissioning data, and reading it would claim a check the port never made -- and the commissioning itself, the pairing and the transport, is what the port does not do, which is recorded on the member that does it and not here",
+   "source": "HMAccessorySetupRequest15_4.m: the 15.4 object's API, from HMAccessorySetupRequest.h:59 read by clang's AST; the binding is the explicit @synthesize, which is what the member-level check measures"
   }
  ]
 }

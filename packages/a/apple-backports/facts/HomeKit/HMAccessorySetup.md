@@ -37,6 +37,38 @@ hardware. The port therefore does not carry the class, and the 13.0 payload init
 **opaquely** — the SDK's own type, read only for its presence. Copying its bytes or inspecting what is
 inside would claim a check the port never made.
 
+## `HMAccessorySetupManager` — 15.0, `HMAccessorySetupRequest` — 15.4, `HMAccessorySetupResult` — 15.4
+
+Each in an object of its own release, the cache ladder deciding which a band links. All three are carried,
+and the one thing they cannot do is stated rather than registered absent.
+
+**The manager's interesting member is not its class's.** `-init` is carried, because the header declares it
+available on an `NSObject` subclass.
+`-performAccessorySetupUsingRequest:completionHandler:` is **not** bound, and the header is why: it is
+`API_AVAILABLE(ios(15.4))` on an `API_AVAILABLE(ios(15.0))` class, and it launches the system UI to add
+accessories that are physically present, over HomeKit's own transport to them. A real accessory has to be
+there and the system has the setup UI. That is hardware, so it is the family's one documented-error member,
+and the check asserts its absence by name.
+
+**The request carries all five of the header's properties, `matterPayload` included.** This corrects an
+earlier account in this file's history and in the object: a first version held that `matterPayload` was not
+carried because Matter commissioning is a transport the port does not speak. That conflated two different
+things. **A property is storage**, and the port keeps the Matter setup payload a caller sets under the
+SDK's own `MTRSetupPayload *` type and hands the same object back; what it does not do is *commission*
+anything over Matter, and the commissioning is the pairing and the transport, not the slot that holds the
+object. Drawing the line at the slot left a header property unsynthesised — a member of the release's
+surface answered with nothing at all — and the member-level check is what caught it.
+
+The port does not look inside a Matter payload. The payload *is* the accessory's commissioning data, and
+reading it would claim a check the port never made. The three graph edges — `payload`,
+`homeUniqueIdentifier`, `suggestedRoomUniqueIdentifier` — are copied as the header's `copy` says, and
+`-copyWithZone:` carries all five, because a request copied with some of the caller's values and some of its
+own is a request nobody asked for.
+
+**The result is a report, not a handle.** Two `readonly` properties, no public initialiser, and a graph
+entry point `-charon_initWithHomeIdentifier:accessoryIdentifiers:` that is the only way one is made — a
+result that could be conjured empty would name a home it added nothing to.
+
 ## What a device does that this port does not
 
 - **Reading the payload.** A real device reads the setup code's bytes and the accessory's identity out
@@ -44,6 +76,8 @@ inside would claim a check the port never made.
 - **Proving ownership.** With a token, the device checks it before adding the accessory; without one it
   adds on the strength of the setup code alone. The port records which of the two a payload carries and
   verifies neither.
+- **Commissioning over Matter.** A device pairs a Matter accessory and brings it up over that transport;
+  the port holds the payload object and does none of it.
 - **Adding the accessory.** `-[HMHome addAndSetupAccessoriesWithPayload:completionHandler:]` is the
   home's side of it and is a separate row; it needs a HomeKit daemon to add an accessory to and a
   transport to reach it with, and this port has neither.
