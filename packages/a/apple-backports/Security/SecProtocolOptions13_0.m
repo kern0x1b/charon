@@ -51,9 +51,20 @@
 // min TLS 0x0301 (TLSv10), max TLS 0x0303 (TLSv12), min DTLS 0xfeff, max DTLS 0xfeff - the release's
 // stack has kTLSProtocol12 as its top and DTLS 1.0 only.
 //
-// NOT MEASURED ON 6.1.3. These four numbers are a decision from the release's stack constants, and a
-// guest measurement - SSLCreateContext then SSLGetProtocolVersionMin/Max on a fresh context, which needs
-// no identity - would replace them. Until that runs they are recorded as a crutch, and the row says so.
+// MEASURED, on 6.1.3 and on 6.0, and the two runs agree exactly. The probe asked the release: a fresh
+// SSLCreateContext STREAM context and SSLGetProtocolVersionMin/Max for TLS, a DATAGRAM context for DTLS
+// (a stream context answers about TLS only, so asking it about DTLS would have measured nothing), and
+// SSLSetProtocolVersionMax(kTLSProtocol13) for the 1.3 question. The logs' sha256 are in
+// facts/Security/SecProtocolDefaults.md.
+//
+// WHAT IT FOUND, and one of these contradicted the numbers this file used to carry:
+//
+//   min TLS   2  = kSSLProtocol3, i.e. the release's default floor is SSL 3.0. tls_protocol_version_t has
+//                 NO SSLv3 member, so the row returns the enum's LOWEST member, TLSv10, and the
+//                 difference is recorded as a crutch rather than papered over.
+//   max TLS   8  = kTLSProtocol12, and 1.3 is REFUSED: SSLSetProtocolVersionMax(kTLSProtocol13) returns
+//                 -9830 errSSLIllegalParam and the maximum still reads 8 afterwards.
+//   min DTLS  9  = kDTLSProtocol1        max DTLS 9 = kDTLSProtocol1 - one version, at both ends.
 
 //    211  tls_protocol_version_t sec_protocol_options_get_default_min_tls_protocol_version(void);
 tls_protocol_version_t sec_protocol_options_get_default_min_tls_protocol_version(void)
@@ -70,13 +81,13 @@ tls_protocol_version_t sec_protocol_options_get_default_min_dtls_protocol_versio
 //    268  tls_protocol_version_t sec_protocol_options_get_default_max_tls_protocol_version(void);
 tls_protocol_version_t sec_protocol_options_get_default_max_tls_protocol_version(void)
 {
-    return tls_protocol_version_TLSv12;   // TLSv13 is NEVER returned: 6.1.3 cannot negotiate it
+    return tls_protocol_version_TLSv12;   // measured; 1.3 is refused by the release (errSSLIllegalParam): 6.1.3 cannot negotiate it
 }
 
 //    280  tls_protocol_version_t sec_protocol_options_get_default_max_dtls_protocol_version(void);
 tls_protocol_version_t sec_protocol_options_get_default_max_dtls_protocol_version(void)
 {
-    return tls_protocol_version_DTLSv10;  // DTLSv12 is NEVER returned: the release has DTLS 1.0 only
+    return tls_protocol_version_DTLSv10;  // measured at both ends: DTLS 1.0, and only 1.0: the release has DTLS 1.0 only
 }
 
 //    86   bool sec_protocol_options_are_equal(sec_protocol_options_t optionsA,
