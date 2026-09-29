@@ -987,7 +987,7 @@
       "status": "implemented",
       "reason": "a plain data container the port carries: an attribute applied to a produced stitched function; the port's is a marker with no attribute to apply, so the object exists and carries the name. WHAT THE PORT CANNOT DO IS STITCH: it translates each kernel to its own object, so a graph given to it describes a function it will never produce. The OBJECTS are carried and real - an argument index, a name, two node lists - and none of them asks the device anything, so none of them is absent. Only the production of a stitched function is out of reach, and that is a property of the port's output, not of these objects.",
       "effect": "a marker protocol for an attribute applied to a produced stitched function; this port carries the marker and the port's own attribute is the one concrete class; a caller can adopt the protocol and hand the object to a graph; the protocol itself has no members to call",
-      "source": "the cache ladder's band for this symbol is 16.0, which it reports as 'after 12.0, by 16.0, not a measured first release' - the header annotates 15.0, and the band is the ladder's, not a measured first export",
+      "source": "the cache ladder's band for this symbol is 16.0, and it reports that no release is held between 12.0 and 16.0, so 16.0 means after 12.0 and by 16.0, not a measured first release - the header annotates 15.0, and the band is the ladder's",
       "facts": "facts/Metal/FunctionStitching.md"
     },
     {
@@ -998,7 +998,7 @@
       "status": "implemented",
       "reason": "a plain data container the port carries: the always_inline attribute: a real flag, default off, and the port never inlines because each kernel is already its own object. WHAT THE PORT CANNOT DO IS STITCH: it translates each kernel to its own object, so a graph given to it describes a function it will never produce. The OBJECTS are carried and real - an argument index, a name, two node lists - and none of them asks the device anything, so none of them is absent. Only the production of a stitched function is out of reach, and that is a property of the port's output, not of these objects.",
       "effect": "the always_inline attribute, which applies the corresponding attribute to a produced stitched function; a real and settable flag that defaults to off, and the port never inlines because each kernel is already its own object",
-      "source": "the cache ladder's band for this symbol is 16.0, which it reports as 'after 12.0, by 16.0, not a measured first release' - the header annotates 15.0, and the band is the ladder's, not a measured first export",
+      "source": "the cache ladder's band for this symbol is 16.0, and it reports that no release is held between 12.0 and 16.0, so 16.0 means after 12.0 and by 16.0, not a measured first release - the header annotates 15.0, and the band is the ladder's",
       "facts": "facts/Metal/FunctionStitching.md"
     },
     {
@@ -1009,7 +1009,7 @@
       "status": "implemented",
       "reason": "a plain data container the port carries: a function node: name, arguments and controlDependencies, all settable, and a copy that is a new node with the same three. WHAT THE PORT CANNOT DO IS STITCH: it translates each kernel to its own object, so a graph given to it describes a function it will never produce. The OBJECTS are carried and real - an argument index, a name, two node lists - and none of them asks the device anything, so none of them is absent. Only the production of a stitched function is out of reach, and that is a property of the port's output, not of these objects.",
       "effect": "a function node calling the named function with its arguments and its control dependencies; name, arguments and controlDependencies are all readable and writable, the node is constructible from all three, and a copy is a NEW node with the same three",
-      "source": "the cache ladder's band for this symbol is 16.0, which it reports as 'after 12.0, by 16.0, not a measured first release' - the header annotates 15.0, and the band is the ladder's, not a measured first export",
+      "source": "the cache ladder's band for this symbol is 16.0, and it reports that no release is held between 12.0 and 16.0, so 16.0 means after 12.0 and by 16.0, not a measured first release - the header annotates 15.0, and the band is the ladder's",
       "facts": "facts/Metal/FunctionStitching.md"
     },
     {
@@ -1020,7 +1020,7 @@
       "status": "implemented",
       "reason": "a plain data container the port carries: a graph: functionName, nodes, an OPTIONAL outputNode and attributes, all settable, and a copy with the same five. WHAT THE PORT CANNOT DO IS STITCH: it translates each kernel to its own object, so a graph given to it describes a function it will never produce. The OBJECTS are carried and real - an argument index, a name, two node lists - and none of them asks the device anything, so none of them is absent. Only the production of a stitched function is out of reach, and that is a property of the port's output, not of these objects.",
       "effect": "a function graph, and the return value of the OUTPUT NODE is what the stitched function returns, so the output node is what makes the graph produce anything; functionName, nodes, attributes and the OPTIONAL outputNode are all readable and writable, and a copy is a NEW graph with the same five - an outputNode that was not set stays nil",
-      "source": "the cache ladder's band for this symbol is 16.0, which it reports as 'after 12.0, by 16.0, not a measured first release' - the header annotates 15.0, and the band is the ladder's, not a measured first export",
+      "source": "the cache ladder's band for this symbol is 16.0, and it reports that no release is held between 12.0 and 16.0, so 16.0 means after 12.0 and by 16.0, not a measured first release - the header annotates 15.0, and the band is the ladder's",
       "facts": "facts/Metal/FunctionStitching.md"
     },
     {
@@ -1031,7 +1031,7 @@
       "status": "implemented",
       "reason": "a plain data container the port carries: an indexed input node: argumentIndex, set and get, and a copy that is a new node with the same index. WHAT THE PORT CANNOT DO IS STITCH: it translates each kernel to its own object, so a graph given to it describes a function it will never produce. The OBJECTS are carried and real - an argument index, a name, two node lists - and none of them asks the device anything, so none of them is absent. Only the production of a stitched function is out of reach, and that is a property of the port's output, not of these objects.",
       "effect": "an indexed input node of a produced stitched function, and it is a node as well as an input; argumentIndex is readable and writable, the node is constructible from one, and a copy is a NEW node with the same index",
-      "source": "the cache ladder's band for this symbol is 16.0, which it reports as 'after 12.0, by 16.0, not a measured first release' - the header annotates 15.0, and the band is the ladder's, not a measured first export",
+      "source": "the cache ladder's band for this symbol is 16.0, and it reports that no release is held between 12.0 and 16.0, so 16.0 means after 12.0 and by 16.0, not a measured first release - the header annotates 15.0, and the band is the ladder's",
       "facts": "facts/Metal/FunctionStitching.md"
     },
     {
@@ -1042,7 +1042,7 @@
       "status": "implemented",
       "reason": "a plain data container the port carries: a node in a stitching graph; the port carries it as a data holder - an argument index, a name, two node lists. WHAT THE PORT CANNOT DO IS STITCH: it translates each kernel to its own object, so a graph given to it describes a function it will never produce. The OBJECTS are carried and real - an argument index, a name, two node lists - and none of them asks the device anything, so none of them is absent. Only the production of a stitched function is out of reach, and that is a property of the port's output, not of these objects.",
       "effect": "a marker protocol for a node in a stitching graph, and it also carries NSCopying, so a node is copyable as well as identifiable; a caller can type a node by the protocol and copy it; the two concrete node classes carry the data",
-      "source": "the cache ladder's band for this symbol is 16.0, which it reports as 'after 12.0, by 16.0, not a measured first release' - the header annotates 15.0, and the band is the ladder's, not a measured first export",
+      "source": "the cache ladder's band for this symbol is 16.0, and it reports that no release is held between 12.0 and 16.0, so 16.0 means after 12.0 and by 16.0, not a measured first release - the header annotates 15.0, and the band is the ladder's",
       "facts": "facts/Metal/FunctionStitching.md"
     },
     {
@@ -1063,7 +1063,7 @@
       "status": "implemented",
       "reason": "a plain data container the port carries: the same shape for a render pipeline's functions: a list of stitched functions and a list of resolved ones. WHAT THE PORT CANNOT DO IS STITCH: it translates each kernel to its own object, so a graph given to it describes a function it will never produce. The OBJECTS are carried and real - an argument index, a name, two node lists - and none of them asks the device anything, so none of them is absent. Only the production of a stitched function is out of reach, and that is a property of the port's output, not of these objects.",
       "effect": "the additional binary functions a render pipeline's vertex, fragment and tile functions may access, as three SEPARATE nullable lists; all three lists are readable and writable, a fresh descriptor has all three nil as the header's nullable says, and a copy is a NEW descriptor with the same three",
-      "source": "the cache ladder's band for this symbol is 16.0, which it reports as 'after 12.0, by 16.0, not a measured first release' - the header annotates 15.0, and the band is the ladder's, not a measured first export",
+      "source": "the cache ladder's band for this symbol is 16.0, and it reports that no release is held between 12.0 and 16.0, so 16.0 means after 12.0 and by 16.0, not a measured first release - the header annotates 15.0, and the band is the ladder's",
       "facts": "facts/Metal/FunctionStitching.md"
     },
     {
@@ -1074,7 +1074,7 @@
       "status": "implemented",
       "reason": "a plain data container the port carries: a descriptor: functionGraphs and functions, both settable, and a copy with the same two. WHAT THE PORT CANNOT DO IS STITCH: it translates each kernel to its own object, so a graph given to it describes a function it will never produce. The OBJECTS are carried and real - an argument index, a name, two node lists - and none of them asks the device anything, so none of them is absent. Only the production of a stitched function is out of reach, and that is a property of the port's output, not of these objects.",
       "effect": "the descriptor a stitched library is built from: the graphs to stitch and the functions the result resolves to; functionGraphs and functions are both readable and writable, and a copy is a NEW descriptor with the same two",
-      "source": "the cache ladder's band for this symbol is 16.0, which it reports as 'after 12.0, by 16.0, not a measured first release' - the header annotates 15.0, and the band is the ladder's, not a measured first export",
+      "source": "the cache ladder's band for this symbol is 16.0, and it reports that no release is held between 12.0 and 16.0, so 16.0 means after 12.0 and by 16.0, not a measured first release - the header annotates 15.0, and the band is the ladder's",
       "facts": "facts/Metal/FunctionStitching.md"
     },
     {
