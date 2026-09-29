@@ -15,6 +15,12 @@ for script in "$here"/*.sh; do
     bash -n "$script" || { echo "harness script does not parse: $script" >&2; exit 1; }
 done
 mps=${MPS:-$here/../../../../packages/a/apple-backports/MetalPerformanceShaders}
+# The grader's self-test first, because it needs no transcripts and a run of it is a second: it is the
+# check that the four-argument form of rank.py - the form its own help documents - works, and that the
+# 2026-09-29 form of it, which died with UnboundLocalError on that form, does not. Wired here because a
+# check nothing invokes is not a check.
+sh "$here/rank-selftest.sh" || { echo "rank-selftest failed; the grader is not measuring" >&2; exit 1; }
+
 build=${BUILD:-$here/../../../../.agent-work/runs/host/mpsmatrix}
 candidate=${CANDIDATE:+-DCHARON_BN_CANDIDATE=$CANDIDATE}
 system=${SYSTEM_TXT:-}
@@ -149,17 +155,33 @@ done
 #
 #   rank.py <system-prefix> <port-prefix> <ulp-bound> [owed.tsv]
 #
-# The bound is 64 units in the last place, which is 7.6e-06 relative near 1.0: the largest distance
-# among the cases that are rounding is 26 (batch-normalization 12, at 2.93e-06), and the defects this
-# bound has to catch are 7.5e+08 units away. The bound is named here, in the grader's own output and
-# in Matrix.md, so a reader can see what it is rather than infer it from a count.
+# The bound is 64 units in the last place, which is 7.6e-06 relative near 1.0. The two distances it sits
+# between are the run's own and are checked by page-check.py below against the facts file: the largest
+# among the cases that are rounding, and the smallest among those that are not. The bound is named here,
+# in the grader's output and in Matrix.md, so a reader can see it rather than infer it.
 ULP_BOUND=64
 
 python3 "$here/rank.py" "$build/system.prefix" "$build/port.prefix" "$ULP_BOUND" "$here/owed.tsv"
 rank_status=$?
-if [ "$rank_status" -eq 0 ]; then
-    echo "port: every case is bit-identical to the system or within $ULP_BOUND units in the last place, or is named as owed"
-    exit 0
+
+# Every figure the facts page and the registry state about this run, checked against this run. Wired
+# here so the page cannot outlive the numbers it quotes: page-check.py recomputes them from the two
+# transcripts rather than reading a log, and a page that states a figure this run does not produce makes
+# the run red. Two files, both named rather than globbed, so a page that moves is a line to change here
+# and not a glob that silently checks nothing.
+FACTS=$here/../../../../packages/a/apple-backports/facts/MetalPerformanceShaders/Matrix.md
+REGISTRY=$here/../../../../packages/a/apple-backports/registry/MetalPerformanceShaders/matrix.json
+page_status=0
+python3 "$here/page-check.py" "$build" "$FACTS" "$REGISTRY" || page_status=$?
+
+if [ "$rank_status" -ne 0 ]; then
+    echo "the grader found a case that differs beyond $ULP_BOUND units in the last place and is not named in $here/owed.tsv"
+    exit 1
 fi
-echo "the grader found a case that differs beyond $ULP_BOUND units in the last place and is not named in $here/owed.tsv"
-exit 1
+if [ "$page_status" -ne 0 ]; then
+    echo "a figure in $FACTS or in the MPSMatrixFullyConnected effect is not what this run produced"
+    exit 1
+fi
+echo "port: every case is bit-identical to the system or within $ULP_BOUND units in the last place, or is named as owed"
+echo "page: every figure the facts file and the registry state about this run is what this run produced"
+exit 0
