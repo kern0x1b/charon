@@ -106,24 +106,22 @@ static CIImage *CharonCIClamp(CIImage *image, CGRect rect)
 // and respondsToSelector: answers NO.  What would carry it is a per-pixel kernel or the port's own
 // renderer; the release has neither, and facts/CoreImage/ImageAlgebra.md carries the measurement.
 
-- (CIImage *)imageBySettingAlphaOneInExtent:(CGRect)rect
-{
-    // The image masked to that rectangle and the alpha of what is left set to one: a colour matrix
-    // whose alpha vector is a one, over the image masked by a white field of the rectangle's size.
-    CIImage *mask = [[[CIImage alloc] initWithColor:[[CIColor alloc] initWithRed:1 green:1 blue:1 alpha:1]]
-        imageByCroppingToRect:rect];
-    CIFilter *maskFilter = [CIFilter filterWithName:@"CIBlendWithMask"];
-    [maskFilter setValue:self forKey:kCIInputImageKey];
-    [maskFilter setValue:mask forKey:kCIInputMaskImageKey];
-    CIFilter *alpha = [CIFilter filterWithName:@"CIColorMatrix"];
-    [alpha setValue:maskFilter.outputImage forKey:kCIInputImageKey];
-    [alpha setValue:[CIVector vectorWithX:1 Y:0 Z:0 W:0] forKey:@"inputRVector"];
-    [alpha setValue:[CIVector vectorWithX:0 Y:1 Z:0 W:0] forKey:@"inputGVector"];
-    [alpha setValue:[CIVector vectorWithX:0 Y:0 Z:1 W:0] forKey:@"inputBVector"];
-    [alpha setValue:[CIVector vectorWithX:0 Y:0 Z:0 W:0] forKey:@"inputAVector"];
-    [alpha setValue:[CIVector vectorWithX:0 Y:0 Z:0 W:1] forKey:@"inputBiasVector"];
-    return alpha.outputImage ?: self;
-}
+// -imageBySettingAlphaOneInExtent: is NOT here, and the reason is measured.  The implementation
+// this file had put the image through CIBlendWithMask with a white field cropped to the rectangle and
+// then a colour matrix that takes the alpha from the bias, and the two problems that made are the
+// same shape as the premultiply's: over a field of 0.6 0.3 0.9 at alpha 0.5
+//
+//   the system  extent 0.0000 0.0000 6.0000 4.0000   pixels 96 7ded0a95   pixel 0 77 38 115 255
+//   the port    extent +/1.8e308 (infinite)          pixels 96 b6ce03c5   pixel 0 153 77 229 255
+//
+// The extent is infinite because a white constant-colour generator is, and the picture is the
+// un-premultiplied colour where the system's is the premultiplied one: an infinite extent where the
+// receiver's is finite is a different shape, not a difference of a unit or two, and a caller that
+// asked for this and got an infinite image back has been given something else.  The release has no
+// filter that sets an alpha over part of an image - CIBlendWithAlphaMask is not in the 6.1.3 cache
+// and there is no kernel it can compile one from - so there is no native construction for it here
+// either, and the row is `absent` in registry/CoreImage/algebra10.json for the same reason
+// -imageByPremultiplyingAlpha is: quiet inexactness on a colour channel is worse than no answer.
 
 - (CIImage *)imageByApplyingTransform:(CGAffineTransform)transform highQualityDownsample:(BOOL)highQualityDownsample
 {

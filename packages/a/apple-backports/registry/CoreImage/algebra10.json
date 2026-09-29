@@ -83,11 +83,11 @@
       "kind": "method",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "iOS 6 has the filters this is made of - CIAffineClamp, CIColorMatrix, CIGaussianBlur, CILanczosScaleTransform, CIMaskToAlpha and CIConstantColorGenerator, all read out of the release's own cache - and not the operation, so an application naming it finds nothing",
-      "effect": "the image masked to that rectangle and the alpha of what is left set to one, through a colour matrix",
+      "status": "absent",
+      "reason": "iOS 6 carries no CIBlendWithAlphaMask and no kernel it can compile one from, so no filter of the release sets the alpha over part of an image. The implementation this row had put the image through CIBlendWithMask with a white field cropped to the rectangle and then a colour matrix, and it gave back a different shape and a different picture: measured over a field of 0.6 0.3 0.9 at alpha 0.5, the system answers extent 0 0 6 4 with pixels 96 7ded0a95 and pixel 0 77 38 115 255, and the port answered an infinite extent with pixels 96 b6ce03c5 and pixel 0 153 77 229 255 - the extent infinite because a white constant-colour generator is, and the picture the un-premultiplied colour where the system's is the premultiplied one",
+      "effect": "nothing: respondsToSelector: answers NO, which is the truth on a release with no alpha-over-a-region filter, and no caller gets an infinite image where it asked for one of the receiver's own extent",
       "facts": "facts/CoreImage/ImageAlgebra.md",
-      "source": "the header of the iOS 16.4 SDK for the contract; the host's own CoreImage over the same calls, by tests/backports/host/ciimage/pixel, which prints the extent of what comes out and the bytes it renders to; the 6.1.3 armv7 dyld cache, read for which filters the release carries and which it does not, and for the selectors it has and has not"
+      "source": "the header of the iOS 16.4 SDK for the contract; the host's own CoreImage over the same call, by tests/backports/host/ciimage/pixel; the 6.1.3 armv7 dyld cache, which carries neither filter"
     },
     {
       "api": "CIImage.blackImage",

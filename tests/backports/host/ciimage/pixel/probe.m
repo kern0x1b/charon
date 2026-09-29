@@ -218,8 +218,10 @@ static void reportAlgebra(void)
     // source built twice, and the port process is the framework's own CoreImage with the port's
     // categories on it, so a selector the port does not carry is still answered YES in both
     // processes and the two answers would be identical whatever the port does.
-    put_algebra(@"alg alpha one", [image imageBySettingAlphaOneInExtent:bounds], bounds);
-    put_algebra(@"alg alpha one half", [image imageBySettingAlphaOneInExtent:CGRectMake(0, 0, 3, 2)], bounds);
+    // -imageBySettingAlphaOneInExtent: is `absent` in registry/CoreImage/algebra10.json and is not
+    // asked here, for the reason the other three absent rows are not: this probe is one source built
+    // twice, and the port process carries the framework's own CoreImage, so a call here would reach
+    // the framework and the two processes would be asked the same question about the same code.
     put_algebra(@"alg transformed", [image imageByApplyingTransform:CGAffineTransformMakeScale(2, 2) highQualityDownsample:NO],
                  CGRectMake(0, 0, 12, 8));
     put_algebra(@"alg transformed hq",
@@ -258,9 +260,10 @@ static void reportContextOwner(void)
     }
 }
 
-// The three rows the port does not carry are not asked here: -imageBySettingProperties: and
-// -imageByUnpremultiplyingAlpha are `absent` in registry/CoreImage/ctxowner9.json and
-// -imageByPremultiplyingAlpha in registry/CoreImage/algebra10.json.  They are not called and they
+// The four rows the port does not carry are not asked here: -imageBySettingProperties: and
+// -imageByUnpremultiplyingAlpha are `absent` in registry/CoreImage/ctxowner9.json, and
+// -imageByPremultiplyingAlpha and -imageBySettingAlphaOneInExtent: in
+// registry/CoreImage/algebra10.json.  They are not called and they
 // are not asked through respondsToSelector: either, because this probe is one source built twice
 // and the port process carries the framework's own CoreImage: a selector the port does not add is
 // answered YES in both processes, so the two answers would be identical whatever the port does.
