@@ -30,11 +30,23 @@ in-memory one, and an iPad 2 running 6.1.3.
   NSManagedObjectContext that does not have a coordinator". A token of another coordinator is
   taken, as it is in iOS 12.
 
-## Where iOS 6 differs
+## Where iOS 6 differs, and what is not known
 
-The store of iOS 6 keeps a rollback journal, and reads the latest rows. A context pinned to
-the current generation therefore sees what another context saved afterwards, where a
-store with generations shows it the snapshot. The newest Core Data behaves the same for a store
-that keeps no generations - the in-memory store answers YES to the pinning and reads the latest
-rows - and the package follows that, since a call that failed would stop every application that
-pins its contexts at start-up. An application that needs the isolation gets none.
+**The store's default journal is not the reason, and an earlier version of this file said it was.** The
+SQLite of 6.1.3 is 3.7.x and takes `journal_mode=WAL`, and a store opens one through
+`NSSQLitePragmasOption` — iOS 5 API the release carries. So "the store keeps a rollback journal and
+reads the latest rows only" is a statement about a *default*, not about what the release can do.
+
+**What is not known:** whether a second connection's read stays on its snapshot after a write on the
+release, with a store opened that way. That is the one thing the answer turns on, and it is asked of the
+release by `tests/backports/device/coredata-wal-snapshot.m` (run by
+`tests/backports/host/coredatanames/emulate.sh`, a `daemon` target on the 6.1.3 emulator).
+
+**What the port does meanwhile:** a context pinned to the current generation is answered YES and reads
+the latest rows, which is what the newest Core Data does for a store that keeps no generations — the
+in-memory store answers YES to the pinning and reads the latest rows. A call that failed would stop
+every application that pins its contexts at start-up, and the token itself resolves so that such an
+application loads. **An application that needs the isolation does not get it, and this file does not
+claim that the release cannot provide it.** Apple's own `swift-corelibs-foundation` carries no Core
+Data, and the `sqlite3_snapshot_*` family needs 3.10 or later, so if the release's 3.7 does not hold the
+read transaction, a vendored snapshot layer is the next step rather than a rewrite of the reason.
