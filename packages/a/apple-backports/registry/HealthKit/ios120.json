@@ -327,7 +327,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "reason": "iOS 12.0 is the release of the workout builder, and the arm64 shared cache of 12.0 carries the class with all ten of these selectors",
-   "effect": "the start date and the opening of the period, and the host's refusal when one is already begun or the workout is finished",
+   "effect": "the start date and the opening of the period, and its own refusal when one is already begun or the workout is finished",
    "facts": "facts/HealthKit/HealthKit.md",
    "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 12.0 for the values"
   },
@@ -338,7 +338,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "reason": "iOS 12.0 is the release of the workout builder, and the arm64 shared cache of 12.0 carries the class with all ten of these selectors",
-   "effect": "the samples added to the workout, and the host's refusal outside the period",
+   "effect": "the samples added to the workout, and its refusal outside the period",
    "facts": "facts/HealthKit/HealthKit.md",
    "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 12.0 for the values"
   },
@@ -349,7 +349,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "reason": "iOS 12.0 is the release of the workout builder, and the arm64 shared cache of 12.0 carries the class with all ten of these selectors",
-   "effect": "the events added to the workout, and the host's refusal outside the period",
+   "effect": "the events added to the workout, and its refusal outside the period",
    "facts": "facts/HealthKit/HealthKit.md",
    "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 12.0 for the values"
   },
@@ -371,7 +371,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "reason": "iOS 12.0 is the release of the workout builder, and the arm64 shared cache of 12.0 carries the class with all ten of these selectors",
-   "effect": "the end date and the closing of the period, and the host's refusal of an end before the start",
+   "effect": "the end date and the closing of the period, and its own refusal of an end before the start",
    "facts": "facts/HealthKit/HealthKit.md",
    "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 12.0 for the values"
   },
@@ -382,7 +382,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "reason": "iOS 12.0 is the release of the workout builder, and the arm64 shared cache of 12.0 carries the class with all ten of these selectors",
-   "effect": "the workout the period describes, saved through the store, or nothing and the host's error",
+   "effect": "the workout the period describes, saved through the store, or nothing and an error this library answers, whose code it does not claim",
    "facts": "facts/HealthKit/HealthKit.md",
    "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 12.0 for the values"
   },
