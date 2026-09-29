@@ -1,4 +1,4 @@
-[
+{"framework": "CoreData", "entries": [
  {
   "api": "NSPersistentContainer",
   "kind": "class",
@@ -270,4 +270,4 @@
   "reason": "the Core Data of iOS 6 posts NSManagedObjectContextDidSaveNotification with the objects themselves, and the notifications of object IDs iOS 10 added beside it are not posted by the release or by this port",
   "effect": "the symbol is not there: a weak reference to it is NULL"
  }
-]
+]}

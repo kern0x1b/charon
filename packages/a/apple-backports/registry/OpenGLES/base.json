@@ -1,4 +1,4 @@
-[
+{"framework": "OpenGLES", "entries": [
   {
     "api": "glReadBuffer()",
     "kind": "function",
@@ -949,4 +949,4 @@
     "effect": "the name is there and asked for in a drawable's properties like any other, and the drawable is the format it would have been without it",
     "source": "the SDK header for the name; the release's EAGL for the drawable"
   }
-]
+]}

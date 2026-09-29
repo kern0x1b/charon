@@ -1,4 +1,4 @@
-[
+{"framework": "Foundation", "entries": [
  {
   "api": "NSUnit",
   "kind": "class",
@@ -358,4 +358,4 @@
   "source": "Foundation of the armv7s cache of iOS 10.3.4, read method by method, and the host's own Foundation run beside the port",
   "maximum": "10.0"
  }
-]
+]}

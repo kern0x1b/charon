@@ -1,4 +1,4 @@
-[
+{"framework": "PassKit", "entries": [
   {
     "api": "PKPass.userInfo",
     "kind": "property",
@@ -824,4 +824,4 @@
     "facts": "facts/PassKit/PassKit.md",
     "source": "the SDK 26.2 (iPhoneOS26.2.sdk under the iphoneos-sdk 26.2 package), PassKit.framework headers: every method row's selector is grep'd in them by tools/check-passkit-selectors.py, which is the check the review asked for and is what found the invented spellings. And apple.objc.inventory against the armv7 dyld shared cache of 6.1.3: PKPass, PKPassLibrary and PKAddPassesViewController are there (90, 34 and 26 instance methods), and PKPaymentAuthorizationController and PKPaymentAuthorizationViewController are absent entirely"
   }
-]
+]}

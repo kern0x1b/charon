@@ -1,4 +1,4 @@
-[
+{"framework": "UIKit", "entries": [
   {
     "api": "+[NSLayoutConstraint activateConstraints:]",
     "kind": "method",
@@ -2614,4 +2614,4 @@
     "facts": "facts/UIKit/TransitionInteractive.md",
     "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/customtransition, and tests/backports/device/customtransition.m and interactivepan.m (real touches) on iOS 6"
   }
-]
+]}

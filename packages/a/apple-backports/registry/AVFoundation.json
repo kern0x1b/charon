@@ -1,4 +1,4 @@
-[
+{"framework": "AVFoundation", "entries": [
  {
   "api": "AVCaptureDeviceDiscoverySession",
   "kind": "class",
@@ -72,4 +72,4 @@
   "source": "AVFoundation of the armv7s cache of iOS 10.3.4, read method by method, and the host's own AVFoundation run beside the port through Mac Catalyst",
   "maximum": "10.2"
  }
-]
+]}

@@ -1,4 +1,4 @@
-[
+{"framework": "SafariServices", "entries": [
   {
     "api": "SFSafariViewController",
     "kind": "class",
@@ -194,4 +194,4 @@
     "source": "SafariServices as facts/SafariServices/SFSafariViewController.md records; the members of later releases are carried by the classes of this package",
     "facts": "facts/SafariServices/SFSafariViewController.md"
   }
-]
+]}

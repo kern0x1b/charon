@@ -1,4 +1,4 @@
-[
+{"framework": "Foundation", "entries": [
   {
     "api": "_os_log_internal",
     "kind": "function",
@@ -172,4 +172,4 @@
     "facts": "facts/Foundation/OSLogSignpost.md",
     "source": "signpost.h in the lowered 16.4 SDK the port builds against, for the signature; the port's own log from 6.0 (Foundation/OSLog9.m, OSLog10.m, Foundation/CharonOSLogCore.m), which the family sits on"
   }
-]
+]}

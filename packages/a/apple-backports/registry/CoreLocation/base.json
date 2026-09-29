@@ -1,4 +1,4 @@
-[
+{"framework": "CoreLocation", "entries": [
   {
     "api": "-[CLLocationManager requestAlwaysAuthorization]",
     "kind": "method",
@@ -15,4 +15,4 @@
     "reason": "the release asks for location when a manager starts updating, so the request starts one of its own at the coarsest accuracy and stops it as soon as the status is decided",
     "facts": "facts/CoreLocation/CLLocationManagerAuthorization.md"
   }
-]
+]}

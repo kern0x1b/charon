@@ -1,4 +1,4 @@
-[
+{"framework": "UIKit", "entries": [
  {
   "api": "UIGraphicsRendererFormat",
   "kind": "class",
@@ -705,4 +705,4 @@
   "source": "UIKitCore of the arm64 cache of iOS 12.0, the string one-time-code; the host's UIKit through Mac Catalyst",
   "maximum": "12.0"
  }
-]
+]}

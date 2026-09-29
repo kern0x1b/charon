@@ -1,4 +1,4 @@
-[
+{"framework": "LocalAuthentication", "entries": [
   {
     "api": "LAContext",
     "kind": "class",
@@ -144,4 +144,4 @@
     "source": "the host's own LocalAuthentication under Mac Catalyst and the shared cache of iOS 8.0, as facts/LocalAuthentication/LAContext.md records; the members of later releases are carried by the class of this package",
     "facts": "facts/LocalAuthentication/LAContext.md"
   }
-]
+]}

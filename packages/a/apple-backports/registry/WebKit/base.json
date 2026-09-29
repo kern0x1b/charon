@@ -1,4 +1,4 @@
-[
+{"framework": "WebKit", "entries": [
   {
     "api": "-[WKNavigationDelegate webView:decidePolicyForNavigationResponse:decisionHandler:]",
     "kind": "method",
@@ -376,4 +376,4 @@
     "facts": "facts/WebKit/WKWebView.md",
     "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
   }
-]
+]}
