@@ -80,15 +80,20 @@ would have to carry an `introduced` this SDK does not say. The ledger is not wro
 it records the 16.4 surface — and the disagreement is recorded here rather than settled by picking
 one of the two.
 
-## The seven rows whose release is inferred from the class
+## The nine rows whose release is inferred from the class
 
 A member of `NSFileProviderManager` takes its release from its **own** `AvailabilityAttr`; failing
 that, from the **enclosing category's**; failing that, from the **class's**, which is `ios 11.0` — the
-attribute at line 4 of the dump. Seven rows resolve that way and the table's `source` column says so
-for each: `addDomain:completionHandler:`, `getDomainsWithCompletionHandler:`,
-`managerForDomain:`, `removeAllDomainsWithCompletionHandler:`, `removeDomain:completionHandler:`,
-`registerURLSessionTask:forItemWithIdentifier:completionHandler:` and
-`signalEnumeratorForContainerItemIdentifier:completionHandler:`.
+attribute at line 4 of the dump. **Nine** rows resolve that way, and the table's `source` column says so for each:
+`defaultManager`, `addDomain:completionHandler:`, `getDomainsWithCompletionHandler:`,
+`init`, `managerForDomain:`, `removeAllDomainsWithCompletionHandler:`,
+`removeDomain:completionHandler:`, `registerURLSessionTask:forItemWithIdentifier:completionHandler:`
+and `signalEnumeratorForContainerItemIdentifier:completionHandler:`.
+
+The count is **nine** and the review said seven. The arithmetic is in the table: the raw scanner
+output had **ten** `none` rows, one of which belongs to `MaterializedSet` and resolves to 16.0 by
+its own category, leaving nine for the class. I wrote seven into this paragraph first and
+corrected it against the table rather than against the review's number.
 
 The reason they need it is a fact about the dump, not about the header: `-ast-dump-filter` prints a
 category's methods as **top-level declarations with no category above them**, so a member declared in
