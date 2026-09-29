@@ -107,60 +107,37 @@ name — the driver constructs it as `compare-$name.py`, so a literal grep for
 `compare-protocol-options-blocks.py` returns **0 while the case runs and is green**. Grep for the
 `protocol_case` line, or read the summary line, which names how many cases were driven.
 
-## Owed
+## The guard, and its measured limits
 
-**The `MISSING` guard does not cover every case, and a case can still measure the host and pass.** It was
-rated medium and is recorded here rather than fixed; three defects were found by reading the tree, all in
-`run_case`'s guard:
+**The guard covers a case that reaches the port through a `sec_*` name, when the source defining that
+name is linked.** It matches `sec_*` in the case and in the port sources and requires `_name` in the
+case's own binary.
 
-1. **The reference set is built from the case's own link line**, `for src in "$@"`. That is the very
-   argument the guard is meant to be independent of: drop a source and its symbols leave the reference
-   set, the guard skips exactly what it should have caught, and the case links the host's copy and
-   passes. It must be built once over every port source in `Security/`, not from `"$@"`.
-2. **The `MISSING` line is silent.** `run_case` detects the situation and prints `NOTRUN`, but the
-   `MISSING $name $sym would measure the HOST` echo is not in the function, so the guard fires without
-   naming anything. This is the same defect class as the one the driver itself had — a check that
-   examines nothing beside a summary that says everything is covered — one level down.
-3. **The `dlsym(RTLD_DEFAULT, "NAME")` path is unguarded.** A case that resolves the port's entry point
-   by name at runtime leaves no link-time reference for the guard to find: the name is a string and the
-   host's dylib supplies it. `trust-result.m` does this on purpose, with the reason in its own header
-   comment — it defines the same name, so calling it would compare the port with itself — and it is
-   therefore the case that cannot currently be caught. A guard for it has to recognise the
-   `dlsym(RTLD_DEFAULT, …)` string and require the matching `_NAME` in the case's own binary. The
-   `dlsym(system, …)` calls must stay unchecked: those are the *host* side of a differential and are
-   supposed to resolve from the system framework.
+**It does NOT cover** `supported`, `attributes`, `certificate-name` and `trust-result` — which reach the
+port through `Charon*` helpers or through `dlsym(RTLD_DEFAULT, …)` — and it does not cover a case that
+calls no `sec_*` name at all. Those cases are neither checked nor claimed to be.
 
-4. **The stale-mutant sweep is NOT LANDED.** Removing every `mutant-*.m` before any is written is the
-   right fix, and it is written, but `make-mutants.py` is called by the driver *after* the early
-   `mutate()` invocations, so a sweep there deletes the mutants this run has just written and the suite
-   goes red — measured: `3 failure(s) - 19 cases, 14 mutants, 10 noticed`. It has to run **before**
-   `make-mutants` and before the first `mutate()`, which means the driver's ordering changes. **OWED.**
-   The hazard is real and has already happened here: a stale `held-nocopy` was built between two runs
-   and reported `NOT BUILT` for a reason that had nothing to do with the script.
-5. **The missing-mutant-file check is OWED.** `must_not_compile` is required to see a build *fail*, and a
-   mutant file that is simply absent makes the compiler fail for the wrong reason — "refused by the
-   compiler", which is what the expectation requires, cannot be told from a mutant nobody wrote. The check
-   that distinguishes them was written and then **reverted, unproven**: its control removed a file that
-   `make-mutants.py` rewrites at the start of every run, so the control could not fail. Proving it needs
-   a function-level test that calls `must_not_compile` on a path that cannot exist, without going through
-   the generator at all. **OWED.**
+**`nm`'s own status is now captured where `set -e` cannot intercept it.** The earlier form
+(`nm … > file` then `nmstatus=$?` on the next line) never reached the assignment: the script ended on the
+failing command, so the branch was unreachable and an `nm` failure killed the run silently. A stub `nm`
+that exits 1 now produces 19 `BUILD … nm -gU on the linked binary exited 1` lines, 0 cases counted, and
+a non-zero exit, where the real run is unchanged at 19/14/13.
 
-Until all five are fixed, the honest statement is: **the guard covers the `sec_*` and `Charon*` symbols a
-case calls by name, when the sources that define them are in the link line the guard was handed.** Nothing
-here claims otherwise, and none of the five is done.
+Still owed, none of it done:
 
-## Digests of the evidence this directory cites
-
-Taken from the files as they are in this branch's tree, after every content change - recomputed
-for this export, not copied from an earlier one. The README itself is deliberately NOT one of them:
-a file cannot carry its own digest.
-
-```
-shasum -a 256 tests/backports/host/security/sec-object-wrappers.m \
-         tests/backports/host/security/compare-sec-object-wrappers.py \
-         packages/a/apple-backports/Security/SecObjectWrappers12_0.m
-```
-
-    0e134f43b64166c4e55a12f1f000cd36b1ad422922c937c49ee27487b11ad00c  tests/backports/host/security/sec-object-wrappers.m
-    47e215633006060820d6a7e6ce53797bc371889b79f35d0e3d06e08bee6f7354  tests/backports/host/security/compare-sec-object-wrappers.py
-    b3f86193a9e0860a6ac52e277875d8e90f4003645649850f0e03fecd7094e3e0  packages/a/apple-backports/Security/SecObjectWrappers12_0.m
+1. **A source dropped from the link line is caught, and this was checked rather than assumed**: dropping
+   `$PD`, `$PMA` or the 16.0 accessor source makes the case call a `sec_*` name the reference set no longer
+   contains, the symbol is absent from the binary, and the guard fires. What it does **not** do is notice a
+   source that was never linked because **nobody called its function** — the case has to reach the port
+   through a `sec_*` name for the guard to have anything to check.
+2. **The stale-mutant sweep is not landed**: `make-mutants.py` runs after the early `mutate()` calls, so a
+   sweep there deletes the mutants this run has just written and the suite goes red
+   (3 failures, 19 cases, 14 mutants, 10 noticed). It has to run before `make-mutants` and before the
+   first `mutate()`.
+3. **The missing-mutant-file check is reverted as unproven**: `must_not_compile` is required to see a
+   build FAIL, and a mutant file that is simply absent makes the compiler fail for the wrong reason. Its
+   control removed a file `make-mutants.py` rewrites at the start of every run, so the control could not
+   fail. Proving it needs a function-level test on a path that cannot exist.
+4. **F2 — the guard builds its reference set from the case's own link line** and does not cover a case
+   that resolves the port by `dlsym(RTLD_DEFAULT, …)`, so `trust-result` can still measure the host and
+   pass.

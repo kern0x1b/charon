@@ -61,7 +61,12 @@ run_case() {
         return
     fi
 
-    # THE GUARD, AND ITS KNOWN LIMIT: the sec_*/Charon* symbols this case CALLS BY NAME must be DEFINED in
+    # THE GUARD, AND EXACTLY WHAT IT DOES NOT COVER. It matches \bsec_[a-z0-9_]+\( in the CASE and in
+    # the port sources, so it covers a case that reaches the port through a sec_* name AND that source
+    # being linked. IT DOES NOT COVER: supported, attributes, certificate-name and trust-result, which
+    # reach the port through Charon* helpers or through dlsym(RTLD_DEFAULT, ...); and a case that calls no
+    # sec_* name at all. A case outside that set is not guarded - it is neither checked nor claimed to be.
+ the sec_*/Charon* symbols this case CALLS BY NAME must be DEFINED in
     # the binary it linked, and the reference set is built from the very "$@" the guard is given, so a
     # source dropped from the link line also leaves the reference set. A case that resolves the port by
     # dlsym(RTLD_DEFAULT, ...) is not caught at all. Both are recorded as OWED in the README beside this
