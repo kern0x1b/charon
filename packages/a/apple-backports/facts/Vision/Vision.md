@@ -3,7 +3,7 @@
 Vision came in iOS 11.0 with a request handler that runs requests - detect rectangles, barcodes, text, faces and face landmarks, the horizon, track an object, register two
 images, run a Core ML model - on an image, and observations that the requests fill. iOS 12.0 added revisions to every request and the observation of a recognized object.
 
-Source: Vision of the arm64 shared cache of iOS 12.0 - the constants `VNErrorDomain` (`com.apple.vis`) and `VNVisionVersionNumber` (2.0) as data, the six geometry
+Source: Vision of the arm64 shared cache of iOS 12.0 - the constant `VNVisionVersionNumber` (2.0) as data, the six geometry
 functions as code, `-[VNRequest initWithCompletionHandler:]`, `-setRevision:` and `+defaultRevision`, the defaults of `VNDetectRectanglesRequestConfiguration`, the
 setter of `VNTrackingRequest`, `+[VNFaceObservation faceObservationWithRequestRevision:boundingBox:roll:yaw:]` and `+[VNError errorWithCode:message:]` - and the host's own Vision under Mac Catalyst,
 recorded by `tests/backports/host/vision/run.sh` (33 records) and held against the port on the iPad 2 by `tests/backports/device/vision.m`.
@@ -12,7 +12,14 @@ recorded by `tests/backports/host/vision/run.sh` (33 records) and held against t
 
 - The constants, the barcode symbologies of iOS 11 as strings, `VNNormalizedIdentityRect` and the six geometry functions answer what the release's do, to the last digit: a normalized point
   or rectangle scaled by the size of the image, a rectangle of an image normalized by it with an image of no width or height giving zero there, and a landmark point placed in a face box. The host
-  gives the same. The error domain and the version number are those of iOS 12, and not of the host, whose Vision is newer (`com.apple.Vision`, 10.0).
+  gives the same. The version number is that of iOS 12. The error domain is `com.apple.Vision`, which
+  is what the host's own Vision answers (the `errorDomain` the harness records, and a case in
+  `tests/backports/host/vision/run.sh`), and it is the value `VNConstants.m` carries. An earlier
+  version of this line named `com.apple.vis`, read once out of the iOS 12 cache, and the port now
+  answers the host's value instead: the two disagree, and the host's is the one a case here holds the
+  port to. The iOS 12 image was not re-read for this line -- there is no dyld cache on the machine
+  that wrote it -- so the row's `source` still names that cache while the constant carries the host's
+  value, and a device measurement is what would close that.
 - The classes of iOS 11 and 12 are all there, with the defaults of iOS 12: a rectangles request looks for one rectangle of an aspect ratio between 0.5 and 1 that is
   at least 0.2 of the image and within 30 degrees of square, a barcode request for every symbology the release knows, an object tracker at the fast level, a request in the whole image, and a new request
   takes the latest revision of its class, of which there are two for faces and for the object tracker and one for the rest. A request copies with its settings and without its results. An
@@ -20,7 +27,9 @@ recorded by `tests/backports/host/vision/run.sh` (33 records) and held against t
   and archives (`NSSecureCoding`) with its fields, in keys of the port's own.
 - A request handler takes an image as a pixel buffer, a `CGImage`, a `CIImage`, a URL or data, with an orientation and options, and keeps it. `-performRequests:error:` of it and of the sequence handler
   call the completion handler of each request once, with the error of that request, before it returns, and answer NO with the error of the first request that failed, as Vision does.
-  A revision the class has not fails as `VNErrorUnsupportedRevision`, a Core ML request without a model as `VNErrorInvalidModel`, and every other request as `VNErrorNotImplemented`.
+  A revision the class has not fails as `VNErrorUnsupportedRevision`, a Core ML request without a model as `VNErrorOperationFailed` (the host answers
+  `com.apple.Vision/3` for that case, and `VNErrorOperationFailed` is 3 in the 16.4 SDK's `VNError.h`; `VNErrorInvalidModel` is 15, and it is the code
+  for the other Core ML refusal below, a model that has no image input, which is a case a caller may handle differently), and every other request as `VNErrorNotImplemented`.
 - **Core ML is in this release now, through the CoreML backport this band carries**, so the Core ML
   request is the one request Vision here really runs: `+[VNCoreMLModel modelForMLModel:error:]` holds
   a real `MLModel`, refuses a model that takes no image in any of its inputs with `VNErrorInvalidModel`
