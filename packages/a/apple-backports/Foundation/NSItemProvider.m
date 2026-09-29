@@ -524,13 +524,12 @@ static id charon_coerce(id item, NSString *type, Class expected, NSInteger *code
 - (NSItemProviderRepresentationVisibility)itemProviderVisibilityForRepresentationWithTypeIdentifier:(NSString *)typeIdentifier
 {
     (void)typeIdentifier;
-    NSItemProviderRepresentationVisibility widest = NSItemProviderRepresentationVisibilityAll;
+    /* The narrowest of the registered visibilities, and nothing else: the widest one was computed
+       here and never read, which is a variable that lies about what the method does. */
     NSItemProviderRepresentationVisibility narrowest = NSItemProviderRepresentationVisibilityAll;
     BOOL any = NO;
     for (CharonRepresentation *representation in _representations) {
         any = YES;
-        if (representation->_visibility < widest)
-            widest = representation->_visibility;
         if (representation->_visibility > narrowest)
             narrowest = representation->_visibility;
     }

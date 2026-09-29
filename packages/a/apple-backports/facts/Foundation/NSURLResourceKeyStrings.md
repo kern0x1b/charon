@@ -142,11 +142,19 @@ shapes the registry README gives — and refuses a path with no registry under i
 zero of zero.
 
 ```
-$ python3 tools/registry-absent.py            # the tree these fifteen landed in
-Foundation                 116         9           786         48               116
-16269 rows, 3340 absent, over 65 frameworks
+The first block is written by `tools/registry-absent.py --write-facts`, so it is this tree and cannot
+be anything else; the second names the tree it was measured on, and `git archive 6fcdc631b
+packages/a/apple-backports/registry` reproduces it.
 
-$ python3 tools/registry-absent.py <the base's registry>    # 6fcdc631b, before them
+<!-- framework: Foundation -->
+<!-- count:begin -->
+```
+Foundation   110 absent   9 ignored   792 implemented   48 inert      (16271 rows, 3283 absent, over 65 frameworks)
+```
+<!-- count:end -->
+
+```
+$ python3 tools/registry-absent.py <6fcdc631b's registry>
 Foundation                 131         9           771         48               131
 16269 rows, 3355 absent, over 65 frameworks
 ```
@@ -174,4 +182,11 @@ than a silence. The host's own Foundation is therefore the only oracle for fourt
 and for the two 17.0 names the ladder gives an upper bound (18.0) while the availability gives 17.0,
 which is the sibling `NSURLFileProtectionCompleteWhenUserInactive`'s own `maximum` in this tree and the
 value `NSFileProtectionCompleteWhenUserInactive` now carries. `tools/registry-maximum.py` is green on
-this tree with that value: `16269 rows, 261 with a maximum, 0 not at the release that has the API`.
+this tree with that value:
+
+<!-- maximum -->
+<!-- maximum:begin -->
+```
+16271 rows, 261 with a maximum, 0 not at the release that has the API, 99 members of a class the backports carries this rule does not judge
+```
+<!-- maximum:end -->

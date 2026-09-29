@@ -8,13 +8,22 @@ run in the delivery it belongs to.
 ## The count, and how to reproduce it
 
 `tools/registry-absent.py` counts the registry files by path (`registry/<Framework>.json` and
-`registry/<Framework>/<part>.json`) and refuses a path with no registry under it. The export is not the
-instrument for this: its framework column is empty for every file whose JSON carries no `framework`
-key, so counting by framework there drops rows and the number does not reproduce.
+`registry/<Framework>/<part>.json`, the two shapes the registry README gives) and refuses a path with
+no registry under it. The export is not the instrument for this: its framework column is empty for
+every file whose JSON carries no `framework` key, so counting by framework there drops rows and the
+number does not reproduce.
 
+The line below is **written by that script** (`--write-facts`, between the two markers) and nothing
+else writes it, so it cannot drift from the tree it describes. Every other number in this file names
+the tree it was measured on, because a number that says "this tree" is a number that goes stale the
+next time anything lands.
+
+<!-- framework: Foundation -->
+<!-- count:begin -->
 ```
-Foundation   115 absent   9 ignored   771 implemented   48 inert   (16269 rows, 3355 absent)
+Foundation   110 absent   9 ignored   792 implemented   48 inert      (16271 rows, 3283 absent, over 65 frameworks)
 ```
+<!-- count:end -->
 
 ## Which of them the host does not answer, and the control that says so
 
@@ -34,25 +43,43 @@ statement about Apple. That is measured, not assumed:
 (`NSClassFromString`, `NSProtocolFromString`, `class_getInstanceMethod`, `class_getClassMethod`, and
 `dlsym` for a constant or a C function), with four controls - a selector the host has, a planted
 selector, a class the host has, a planted class - so a run that examined nothing cannot pass. Over the
-115 rows: **36 the host lacks, 78 it has, 0 malformed**, and the controls read `HAS / LACKS / HAS /
-LACKS` as they must.
+110 rows of `820a21f76` plus this slice: **30 the host lacks, 80 it has, 0 malformed, 0 unparsed**,
+and the controls read `HAS / LACKS / HAS / LACKS` as they must. The probe is `tools/host-has-row.m`,
+its input is `tools/registry-absent.py --list Foundation` - the same walk the count above comes from -
+and it counts every line it reads: a line it cannot parse is counted and refused
+(`input_lines=111 parsed=110 ... unparsed=1`, `FAIL 1 line(s) did not parse`, exit 1) rather than
+skipped, because a summary over 109 of 110 rows says nothing about the one it dropped. An earlier run
+of it did exactly that: the row in `registry/Foundation.json` (a *file*, not a directory) was missed by
+the ad-hoc list writer, which is why both the list and the count come from the one script now.
 
 ## The families, by what the host lacks
+
+The groups are `tools/host-has-row.m --by-owner` over `tools/registry-absent.py --list Foundation`,
+both of which are in the tree, so this table is printed rather than remembered:
+
+```
+$ tools/host-has-row.m --by-owner <(tools/registry-absent.py --list Foundation)   # grouped
+   4 NSURLSessionStreamDelegate      3 NSURLSessionTaskDelegate     2 NSXPCInterface
+   2 NSUserActivityDelegate          1 NSUserActivity               1 NSFilePresenter
+   1 NSPredicateValidating           5 _os_log_*                    11 the constants
+# 30 rows the host lacks, over this tree
+```
 
 | the host lacks | rows | what the port has to build |
 | --- | --- | --- |
 | `NSURLSessionStreamDelegate` (4) + `NSURLSessionTaskDelegate` (3) | 7 | the port's own loader and stream task, which have to *call* seven delegate members at the right moments |
-| `NSItemProviderReading` (2) + `NSItemProviderWriting` (4) | 6 | this package's own `NSItemProvider`, which can answer all six itself |
-| `NSUserActivityDelegate` (2) + `NSUserActivity` (1) | 3 | the port's own `NSUserActivity` class |
 | `NSXPCInterface` (2) | 2 | Mach XPC on 4.3 and 6.1.3 - the class itself is the wall |
-| `NSFilePresenter` (1), `NSPredicateValidating` (1), `_os_log_*` (5), 12 constants | 20 | each its own line below |
+| `NSUserActivityDelegate` (2) + `NSUserActivity` (1) | 3 | the port's own `NSUserActivity` class |
+| the item-provider six | 0 | **answered**: this slice's six rows, which the port's own provider answers (see below) |
+| `NSFilePresenter` (1), `NSPredicateValidating` (1), `_os_log_*` (5), the 11 constants | 18 | each its own line below |
 
-The **seven session-delegate rows are the largest group**, and they are not the slice that came next,
+The **seven session-delegate rows are the largest group the host still lacks**, and they are not the slice that came next,
 for a reason that is a limit of the instrument rather than of the work: the code that would call those
 seven members is `NSURLSession.m` and `NSURLSessionStreamTask9.m`, which are written against the
 device's Foundation (its `NSURLConnection`, its private ivars, `attach.c`) and are not a host
-translation unit. The item-provider group is the largest one whose port code is a self-contained class
-the port itself implements, so it is the one that could be landed with its evidence.
+translation unit. The item-provider six were the largest such group whose port code is a self-contained class the
+port itself implements, and this slice is them; they are answered, and the host-lacks column is 0 for
+them now. The next group of that shape is the three `NSUserActivity` rows.
 
 ## Owed, with the blocker
 

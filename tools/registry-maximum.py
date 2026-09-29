@@ -36,6 +36,13 @@ A run that read no row is a run that proved nothing, so a path with no registry 
 says so, rather than reporting zero of zero and passing.
 
     tools/registry-maximum.py [registry-root]     exit 0 and a count, or exit 1 and the rows
+    tools/registry-maximum.py --write-facts F      rewrite F's generated block from this run
+
+The generated block is the only number in a facts file about *this* tree that does not have to be
+pasted by hand: `<!-- maximum:begin -->` / `<!-- maximum:end -->` around it, and a
+`<!-- maximum -->` line naming what the block is about. A number that says "this tree" and is typed by
+a porter is a number that goes stale the next time anything lands, and this has now been the third
+defect of that family in this facts area.
 """
 import collections
 import glob
@@ -45,7 +52,18 @@ import re
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-REGISTRY = sys.argv[1] if len(sys.argv) > 1 else os.path.join(ROOT, "packages/a/apple-backports/registry")
+DEFAULT_REGISTRY = os.path.join(ROOT, "packages/a/apple-backports/registry")
+WRITE_FACTS = None
+REGISTRY = DEFAULT_REGISTRY
+BEGIN = "<!-- maximum:begin -->"
+END = "<!-- maximum:end -->"
+for argument in sys.argv[1:]:
+    if argument == "--write-facts":
+        WRITE_FACTS = ""
+    elif WRITE_FACTS == "":
+        WRITE_FACTS = argument
+    elif not argument.startswith("--"):
+        REGISTRY = argument
 
 
 def version(text):
@@ -112,9 +130,20 @@ def main():
     if rows == 0:
         print("no registry row under %s: nothing was checked, so nothing is claimed" % REGISTRY)
         return 1
-    print("%d rows, %d with a maximum, %d not at the release that has the API, "
-          "%d members of a class the backports carries this rule does not judge"
-          % (rows, with_maximum, len(wrong), len(by_class)))
+    line = ("%d rows, %d with a maximum, %d not at the release that has the API, "
+            "%d members of a class the backports carries this rule does not judge"
+            % (rows, with_maximum, len(wrong), len(by_class)))
+    print(line)
+    if WRITE_FACTS:
+        text = open(WRITE_FACTS).read()
+        if BEGIN not in text or END not in text:
+            raise SystemExit("%s has no %s / %s markers" % (WRITE_FACTS, BEGIN, END))
+        if "<!-- maximum -->" not in text:
+            raise SystemExit("%s has no <!-- maximum --> line naming what the block is about" % WRITE_FACTS)
+        head, _, rest = text.partition(BEGIN)
+        _, _, tail = rest.partition(END)
+        open(WRITE_FACTS, "w").write(head + BEGIN + "\n```\n" + line + "\n```\n" + END + tail)
+        print("rewrote the generated block in %s: %s" % (WRITE_FACTS, line))
     return 1 if wrong else 0
 
 
