@@ -1,121 +1,130 @@
-"""portshape -- what the BUILT library answers for a class's members.
+"""portshape -- what the PORT's built library binds, and with what argument types.
 
-The port's side of the AuthenticationServices shape check, read out of the linked binary rather than out
-of the source text. Two reasons, and the second is the one that matters:
+Two questions, one instrument, because they are read from the same place: is this selector bound, and
+is it bound with the types the release has. The types matter -- a method that takes the right number of
+arguments of the wrong kinds is a different method -- and comparing them needs care, which the raw dump
+shows:
 
-  * the port's objects are armv7 and this host is arm64, so the library cannot be dlopen'd here and the
-    runtime cannot be asked about it -- the file has to be read;
-  * a check that reads the source text is a check on the *text*. The first version searched for a
-    selector's spelling and reported selectors the file did not contain, and missed selectors it did.
+    the host, arm64:            v32@0:8@16@?24
+    this port's object, armv7:   v16@0:4@8@?12
 
-`otool -oV` prints each class's method list out of the binary: the selector, its types and its
-implementation address, for the instance list and the metaclass's own list. That is the runtime's view of
-the class as the linker left it, which is what an application will call.
-
-An inherited method is visible here too, because the dump lists what the class resolves, which is the
-control: `+new` comes from NSObject, and a port that does not declare it still has it.
-
-Usage: portshape <library> <cases-file>
+Four-byte pointers against eight, and the frame offsets differ with them. **The rule is to remove every
+digit, not to keep the letters**: `v32@0:8@16@?24` and `v16@0:4@8@?12` both become `v@:@@?`, and a
+completion typed as a block (`@?`) becomes `@:` -- a SEL -- which is exactly the difference the
+comparison has to see. Keeping only the letters loses the `:` and compares the wrong thing, which is
+what the first version of this did.
 """
 import os
-import subprocess
 import sys
 
 
-def methods_of(library):
-    """(class, selector, kind) for every method the built library binds, from otool's class dump.
+def letters(encoding):
+    """The type encoding with every digit removed: the return type and the argument types, in order,
+    with the frame offsets gone."""
+    return "".join(c for c in encoding if not c.isdigit())
 
-    Only a class's own `baseMethods` counts. A property name, a protocol's member and a superclass's
-    member all appear in the dump as `name` lines too, and taking them all is how this read a removed
-    method as still bound.
+
+def methods_of(library):
+    """(selector, kind) for every method in a built binary's own method lists, and the types with it.
+
+    The layout, read from the raw dump rather than assumed:
+
+        name    0x17a4 saveCredentialIdentities:completion:
+        types   0x1b70 v16@0:4@8@?12
+        imp     0x9e0 -[ASCredentialIdentityStore saveCredentialIdentities:completion:]
+
+    `name` / `types` / `imp` per method, in that order, each with an address and then its text, and a
+    `baseMethods` line opening each list. A class's own list and its metaclass's are both called
+    `baseMethods`, and which is which is in the symbol the line names.
     """
-    out = subprocess.run(["otool", "-oV", library], capture_output=True, text=True).stdout
-    classes, current, inMetaclass = {}, None, False
-    # The field names the dump prints. A line that starts with one of them is describing whatever class
-    # is current, not declaring a class -- and "superclass 0x0 _OBJC_CLASS_$_NSObject" is how the
-    # previous version lost the class it was in and reported every member of every class missing.
-    # Which list a `name` line belongs to. The dump prints the class's own method list under
-    # `baseMethods` and its property list under `baseProperties`, and a property list keeps the
-    # property's name whether or not an accessor was written -- `@dynamic provider;` leaves the name
-    # in baseProperties and takes the method out of baseMethods. Recording every `name` line therefore
-    # reported a property as a bound method, and the first version of this read
-    # "name 0x7b16 provider" under baseProperties as proof that a mutation had not taken when it had.
+    import subprocess
+    out = subprocess.run(["otool", "-ov", library], capture_output=True, text=True).stdout
+    bound, types = {}, {}
+    current = None
     inMethods = False
     methodsAreClass = False
+    lastName = None
     for line in out.split("\n"):
         stripped = line.strip()
         if not stripped:
             continue
-        if stripped.startswith("baseMethods"):
-            # The class prints TWO baseMethods lines: the class's own instance list and the metaclass's
-            # own list of class methods. Reading only the first is how +identityWithServiceIdentifier:...
-            # came back as unbound while the source defines it. Which list this is is in the symbol the
-            # line names: __OBJC_$_INSTANCE_METHODS_ or __OBJC_$_CLASS_METHODS_.
-            inMethods = True
-            methodsAreClass = "CLASS_METHODS" in stripped
-            continue
-        if stripped.startswith(("baseProtocols", "ivars", "baseProperties", "baseClassMethods",
-                                "layout", "weakIvarLayout", "ro")):
-            inMethods = False
-            continue
-        # "_OBJC_CLASS_$_Name" opens an instance list; "_OBJC_METACLASS_$_Name" opens the class list.
-        # The class line carries two address columns before the symbol, so the symbol is found rather
-        # than tested for at the start of the line: requiring it there found no classes at all, which
-        # is a check that reports every member missing and reads like a port that implements nothing.
-        # A class-list entry is a line of two bare addresses and then the class symbol, and nothing
-        # else in the dump has that shape: the isa and superclass lines carry a field name and one
-        # address before the symbol, and treating those as entries is what lost the class entirely.
-        # A class-list entry is "<address> <address> <class symbol>" and the first address is printed
-        # bare, without 0x, so testing the columns for the 0x prefix found no entries at all. The
-        # discriminator that does hold is the field name: every other line carrying a class symbol in
-        # this dump is an isa, a superclass or a data pointer, and "name" is the selector line -- which
-        # has to be excluded here or it is consumed as a class entry and no method is ever recorded.
-        parts = stripped.split()
-        if len(parts) >= 3 and parts[0] not in ("isa", "superclass", "data", "cache", "vtable", "name"):
+        parts = stripped.split(None, 2)
+        # A class-list entry is two bare addresses and then the class symbol; the isa and superclass
+        # lines are named, which is what tells a class from a pointer to one.
+        if len(parts) >= 3 and not parts[0].isalpha() and parts[2].startswith("_OBJC_"):
             symbol = parts[2]
             if symbol.startswith("_OBJC_METACLASS_$_"):
                 current, inMetaclass = symbol[len("_OBJC_METACLASS_$_"):], True
             elif symbol.startswith("_OBJC_CLASS_$_"):
                 current, inMetaclass = symbol[len("_OBJC_CLASS_$_"):], False
-        elif stripped.startswith("name") and current and inMethods:
-            # "name    0x3f08 copyWithZone:" -- the address and then the selector.
-            parts = stripped.split(None, 2)
-            if len(parts) == 3 and parts[1].startswith("0x"):
-                classes.setdefault(current, set()).add((parts[2], "class" if methodsAreClass else "instance"))
-    return classes
+            continue
+        if stripped.startswith("baseMethods"):
+            inMethods = True
+            methodsAreClass = "CLASS_METHODS" in stripped
+            lastName = None
+            continue
+        if stripped.startswith(("baseProtocols", "ivars", "baseProperties", "baseClassMethods",
+                                "layout", "weakIvarLayout", "ro")):
+            inMethods = False
+            lastName = None
+            continue
+        if not current or not inMethods:
+            continue
+        if stripped.startswith("name") and len(parts) == 3 and parts[1].startswith("0x"):
+            lastName = parts[2]
+            bound.setdefault(current, set()).add((lastName, "class" if methodsAreClass else "instance"))
+        elif stripped.startswith("types") and lastName and len(parts) == 3 and parts[1].startswith("0x"):
+            # The types text may be quoted; the quotes are not part of it.
+            text = parts[2].strip('"')
+            types.setdefault(current, {})[(lastName, "class" if methodsAreClass else "instance")] = letters(text)
+    globals()["_last_types"] = types
+    return bound
+
+
+def one_method(library, className, selectorName):
+    """The types of ONE method of ONE class, printed. A separate path so that "the types come out" can
+    be seen on its own before anything depends on it."""
+    bound = methods_of(library)
+    for kind in ("instance", "class"):
+        if (selectorName, kind) in bound.get(className, set()):
+            encoded = globals()["_last_types"].get(className, {}).get((selectorName, kind), "")
+            if not encoded:
+                raise SystemExit("%s binds -%s but no types line was read for it" % (className, selectorName))
+            print("%s %s -%s types %s" % (className, kind, selectorName, encoded))
+            return 0
+    raise SystemExit("%s binds no -%s" % (className, selectorName))
 
 
 def main(argv):
+    if len(argv) == 4:
+        return one_method(argv[1], argv[2], argv[3])
     if len(argv) != 3:
-        raise SystemExit("usage: portshape <library> <cases-file>")
+        raise SystemExit("usage: portshape <library> <cases-file>\n"
+                         "       portshape <library> <class> <selector>    one method's types")
     library, cases_file = argv[1], argv[2]
     if not os.path.isfile(library):
-        # There is nothing to report, which is a failure of the run rather than a verdict about a
-        # member, so this one does stop: with no library there is no comparison to make.
-        sys.stderr.write("no built library at %s: point BUILT at a build of this worktree's sources\n"
-                         % library)
-        sys.exit(1)
+        sys.stderr.write("no built library at %s: point BUILT at a build of this worktree's sources\n" % library)
+        return 1
     bound = methods_of(library)
-
-    print("class\tselector\tkind\tstate\tport")
+    types = globals().get("_last_types", {})
+    print("class\tselector\tkind\tstate\tport\tportTypes")
     asked = missing = 0
-    for line in open(cases_file).read().split("\n"):
-        if not line or line[0] == "#":
+    for line in open(cases_file):
+        if not line.strip():
             continue
-        className, selector, kind, state = line.split("\t")[:4]
+        fields = line.rstrip("\n").split("\t")
+        className, selector, kind, state = fields[0], fields[1], fields[2], fields[3]
         asked += 1
-        have = bound.get(className, set())
-        present = (selector, kind) in have
+        present = (selector, kind) in bound.get(className, set())
         if not present:
             missing += 1
-        print("%s\t%s\t%s\t%s\t%s" % (className, selector, kind, state, "yes" if present else "no"))
-    # The same standing rule as compare(): this reports, it does not decide. A member the library does
-    # not bind is not a failure here -- a member the header marks must-be-unavailable is *supposed* not
-    # to be bound -- so exiting non-zero here made the run abort before the comparison could say which
-    # of the missing ones are the four the release marks unavailable.
+        print("%s\t%s\t%s\t%s\t%s\t%s" % (className, selector, kind, state,
+                                             "yes" if present else "no",
+                                             types.get(className, {}).get((selector, kind), "")))
     sys.stderr.write("portshape: %d cases, %d the library does not bind (a verdict is the comparison's "
                      "to give, not this one's)\n" % (asked, missing))
+    return 0
 
 
 if __name__ == "__main__":
-    main(sys.argv)
+    sys.exit(main(sys.argv))
