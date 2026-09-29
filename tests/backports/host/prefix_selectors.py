@@ -109,6 +109,9 @@ class Rewriter:
         self.unresolved = []
         self.candidates = []
         self.signatures = []
+        # literal insertions, for a rewrite that is not a rename: the cast a receiver of no class needs, see
+        # main() and the note there
+        self.replacements = {}
 
     def owns(self, kind, receiver, selector):
         while receiver:
@@ -194,8 +197,23 @@ class Rewriter:
                     token = re.compile(r"\s*[A-Za-z_][A-Za-z0-9_]*").match(self.source, start)
                     self.inserts.add(self.keyword_after(token.end()))
                 else:
-                    inner = node["inner"][0]["range"]["end"]
-                    self.inserts.add(self.keyword_after(inner["offset"] + inner["tokLen"]))
+                    # The prefix goes at the **first keyword** of the send, found from the message
+                    # expression's own range. A message expression's range does not reliably begin at the
+                    # receiver - in UIContextMenuInteraction.m it begins five characters into it - so the
+                    # end of `inner[0]` is the end of a *token*, not of the receiver, and a prefix inserted
+                    # from there lands inside the keyword. The `[` is the anchor, the receiver is what
+                    # follows it, and the keyword is the first occurrence of the selector's own first
+                    # keyword from there.
+                    begin = self.source.rfind("[", 0, node["range"]["begin"]["offset"])
+                    begin = begin + 1 if begin >= 0 else node["range"]["begin"]["offset"]
+                    first = selector.split(":")[0]
+                    match = re.compile(r"\b" + re.escape(first) + r"\b").search(self.source, begin)
+                    if match:
+                        self.inserts.add(match.start())
+                    else:
+                        self.unresolved.append(
+                            (node["range"]["begin"]["offset"],
+                             "%s, whose first keyword the rewrite cannot find" % selector))
             elif sign and not receiver and any(entry[2] == selector for entry in self.carried):
                 # A receiver of no class: the send may still be the port's own method, which the host's class
                 # of that name does not answer. Whether the host declares the selector at all decides, and
@@ -231,11 +249,18 @@ class Rewriter:
                 self.walk(value, context)
 
     def result(self, prefix):
+        # One pass, from the back, over the renames and the literals together: a rename below a literal shifts
+        # its offset, so the two cannot be applied one set after the other.
+        edits = [(offset, "rename") for offset in self.inserts if offset is not None]
+        edits += [(offset, "literal") for offset in self.replacements]
         text = self.source
-        for offset in sorted((offset for offset in self.inserts if offset is not None), reverse=True):
-            keyword = re.compile(r"[A-Za-z_][A-Za-z0-9_]*").match(text, offset).group(0)
-            renamed = prefixed(keyword, prefix)
-            text = text[:offset] + renamed + text[offset + len(keyword):]
+        for offset, kind in sorted(edits, reverse=True):
+            if kind == "literal":
+                end, literal = self.replacements[offset]
+                text = text[:offset] + literal + text[end:]
+            else:
+                keyword = re.compile(r"[A-Za-z_][A-Za-z0-9_]*").match(text, offset).group(0)
+                text = text[:offset] + prefixed(keyword, prefix) + text[offset + len(keyword):]
         return text
 
 
@@ -337,6 +362,17 @@ def main():
                 rewriter.unresolved.append((offset, "%s, which the host's %s declares"
                                              % (selector, ", ".join(sorted(others)) or "headers")))
             else:
+                # A receiver the port alone defines, and the receiver is not a class this rewrite can name, so
+                # the renamed selector is one the receiver does not declare. A receiver of type `id` accepts any
+                # selector declared anywhere, so the receiver is cast in the rewritten copy - which is the only
+                # place it changes, and the port's own source is untouched.
+                begin = rewriter.source.rfind("[", 0, offset)
+                begin = begin + 1 if begin >= 0 else offset
+                selector_first = selector.split(":")[0]
+                renamed_first = prefixed(selector_first, prefix)
+                found = re.compile(re.escape(renamed_first)).search(rewriter.source, begin)
+                if found is not None and found.start() < offset:
+                    rewriter.replacements[begin] = (offset, "(id)(%s)" % rewriter.source[begin:offset].strip())
                 rewriter.inserts.add(offset)
     for offset, selector in sorted(set(rewriter.unresolved)):
         line = source.count("\n", 0, offset) + 1
