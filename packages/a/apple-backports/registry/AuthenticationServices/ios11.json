@@ -37,10 +37,10 @@
       "kind": "class",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the release has no credential provider extension or identity store for the system's AutoFill to consult, and a password that only looks kept would mislead",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "the SDK 16.4 headers of AuthenticationServices"
+      "status": "implemented",
+      "effect": "whether the credential identity store can be written to and whether it takes changes or the whole set: -isEnabled and -supportsIncrementalUpdates, both readonly, both copied in and out, and NSSecureCoding through a coder carrying both. The header is explicit that enabled is a gate on writing, so this is the value a caller needs before it writes anything",
+      "source": "macOS 27.0's own AuthenticationServices, asked with class_copyMethodList for the class's method list by tests/backports/host/authservices; the 26.2 header's contract; and the class's members as the header declares them, read by clang's AST",
+      "facts": "facts/AuthenticationServices/ASCredentialIdentity.md"
     },
     {
       "api": "ASCredentialProviderExtensionContext",

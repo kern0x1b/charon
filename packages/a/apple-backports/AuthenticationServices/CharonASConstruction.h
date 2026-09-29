@@ -60,6 +60,15 @@ extern NSString *const ASCharonProviderCodingKey;
     __attribute__((objc_method_family(init)));
 @end
 
+// Whether the store can be written to and whether it takes changes or the whole set. This class does
+// NOT mark -init unavailable, so the port's construction is the extra way in and the release's own -init
+// is left alone.
+@interface ASCredentialIdentityStoreState (CharonASConstruction)
+- (instancetype)charon_initWithEnabled:(BOOL)enabled
+           supportsIncrementalUpdates:(BOOL)supportsIncrementalUpdates
+    __attribute__((objc_method_family(init)));
+@end
+
 @interface ASAuthorizationAppleIDProvider (CharonASConstruction)
 - (instancetype)charon_initWithCredentialState:(id)store
     __attribute__((objc_method_family(init)));
