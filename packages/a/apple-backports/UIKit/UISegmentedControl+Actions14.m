@@ -6,6 +6,23 @@
 
 static const char charon_actions_key, charon_trigger_key;
 
+// The class an action has to be a kind of, which is **not** always the name in this file.
+//
+// Where the host has UIAction of its own - iOS 13 and up - the port's own class is CharonHostUIAction, and a
+// host action is not a kind of it, so a comparison against `[UIAction class]` written here would reject every
+// action the host hands this control, and the host hands it host actions freely: its own
+// -initWithFrame:actions: builds them. Where the host has no UIAction the name in this file is the port's own
+// class, and the runtime lookup finds it under its own name because the band's flags are not in play on a
+// device. So the class is asked for at run time, and both a host action and a port action pass.
+// YES between the host's -initWithFrame:actions: entering and leaving. The host's initialiser calls the
+// port's -insertSegmentWithAction: from inside itself, and anything the port does to the control then lands in
+// the middle of the host's own construction of it.
+static Class charon_action_class(void)
+{
+    Class host = objc_getClass("UIAction");
+    return host ?: [UIAction class];
+}
+
 @interface CharonSegmentTrigger : NSObject
 - (instancetype)initWithControl:(UISegmentedControl *)control;
 - (void)charon_changed:(UISegmentedControl *)sender;
@@ -31,13 +48,13 @@ static const char charon_actions_key, charon_trigger_key;
     if (index < 0 || (NSUInteger)index >= actions.count)
         return;
     id held = actions[(NSUInteger)index];
-    if ([held isKindOfClass:[UIAction class]])
+    if ([held isKindOfClass:charon_action_class()])
         [(UIAction *)held charon_performWithSender:control];
 }
 
 @end
 
-static NSMutableArray *charon_segment_actions(UISegmentedControl *control, BOOL create)
+static NSMutableArray *charon_segment_actions(UISegmentedControl *control, BOOL create, BOOL bind)
 {
     NSMutableArray *actions = objc_getAssociatedObject(control, &charon_actions_key);
     if (!actions && create) {
@@ -45,9 +62,16 @@ static NSMutableArray *charon_segment_actions(UISegmentedControl *control, BOOL 
         for (NSInteger index = 0; index < control.numberOfSegments; index++)
             [actions addObject:[NSNull null]];
         objc_setAssociatedObject(control, &charon_actions_key, actions, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-        CharonSegmentTrigger *trigger = [[CharonSegmentTrigger alloc] initWithControl:control];
-        objc_setAssociatedObject(control, &charon_trigger_key, trigger, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-        [control addTarget:trigger action:@selector(charon_changed:) forControlEvents:UIControlEventValueChanged];
+        // The target is bound only where the port owns the control, and **never** from
+        // -insertSegmentWithAction: - because the host's -initWithFrame:actions: calls that while it is still
+        // building the control, and a control given a target in the middle of its own initialisation is a control
+        // the host is still writing. A control the host builds with its own initializer therefore carries no
+        // port target at all, and the host's own value-changed handling is what fires for it.
+        if (bind) {
+            CharonSegmentTrigger *trigger = [[CharonSegmentTrigger alloc] initWithControl:control];
+            objc_setAssociatedObject(control, &charon_trigger_key, trigger, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+            [control addTarget:trigger action:@selector(charon_changed:) forControlEvents:UIControlEventValueChanged];
+        }
     }
     return actions;
 }
@@ -56,7 +80,7 @@ static void charon_check_identifier(NSMutableArray *actions, UIAction *action, N
 {
     for (NSUInteger index = 0; index < actions.count; index++) {
         UIAction *held = actions[index];
-        if (index != except && [held isKindOfClass:[UIAction class]] && [held.identifier isEqual:action.identifier])
+        if (index != except && [held isKindOfClass:charon_action_class()] && [held.identifier isEqual:action.identifier])
             [NSException raise:NSInternalInconsistencyException
                         format:@"Attempting to set the action of segment at index %lu with an action whose identifier is the same as the segment at index %lu (action=%@). Identifiers are required to be unique.",
                                (unsigned long)except, (unsigned long)index, action];
@@ -79,7 +103,7 @@ static void (*charon_remove_all)(id, SEL);
 
 static void charon_shift_in(UISegmentedControl *control, NSUInteger index)
 {
-    NSMutableArray *actions = charon_segment_actions(control, NO);
+    NSMutableArray *actions = charon_segment_actions(control, NO, NO);
     if (actions)
         [actions insertObject:[NSNull null] atIndex:MIN(index, actions.count)];
 }
@@ -125,13 +149,13 @@ static void charon_shift_in(UISegmentedControl *control, NSUInteger index)
     method_setImplementation(remove, imp_implementationWithBlock(^(UISegmentedControl *control, NSUInteger index, BOOL animated) {
         NSInteger before = control.numberOfSegments;
         charon_remove(control, @selector(removeSegmentAtIndex:animated:), index, animated);
-        NSMutableArray *actions = charon_segment_actions(control, NO);
+        NSMutableArray *actions = charon_segment_actions(control, NO, NO);
         if (actions && control.numberOfSegments < before && index < actions.count)
             [actions removeObjectAtIndex:index];
     }));
     method_setImplementation(removeAll, imp_implementationWithBlock(^(UISegmentedControl *control) {
         charon_remove_all(control, @selector(removeAllSegments));
-        [charon_segment_actions(control, NO) removeAllObjects];
+        [charon_segment_actions(control, NO, NO) removeAllObjects];
     }));
 }
 
@@ -141,6 +165,12 @@ static void charon_shift_in(UISegmentedControl *control, NSUInteger index)
 
 - (instancetype)initWithFrame:(CGRect)frame actions:(NSArray<UIAction *> *)actions
 {
+    // Where the host has an initialiser of its own, the port does not step in at all: the host's is the one the
+    // release intends, and on 13 and up that is the path an application takes. The port's is for the releases
+    // that have none, and it binds the actions **after** -initWithFrame: has returned, because a control the
+    // host is still constructing must not be given a target or a segment.
+    if ([UISegmentedControl instancesRespondToSelector:@selector(initWithFrame:actions:)])
+        return [self initWithFrame:frame];
     if ((self = [self initWithFrame:frame])) {
         self.selectedSegmentIndex = UISegmentedControlNoSegment;
         for (UIAction *action in actions)
@@ -151,16 +181,16 @@ static void charon_shift_in(UISegmentedControl *control, NSUInteger index)
 
 - (UIAction *)actionForSegmentAtIndex:(NSUInteger)segment
 {
-    NSMutableArray *actions = charon_segment_actions(self, NO);
+    NSMutableArray *actions = charon_segment_actions(self, NO, NO);
     if (segment >= actions.count)
         return nil;
     id held = actions[segment];
-    return [held isKindOfClass:[UIAction class]] ? held : nil;
+    return [held isKindOfClass:charon_action_class()] ? held : nil;
 }
 
 - (void)setAction:(UIAction *)action forSegmentAtIndex:(NSUInteger)segment
 {
-    NSMutableArray *actions = charon_segment_actions(self, YES);
+    NSMutableArray *actions = charon_segment_actions(self, YES, YES);
     charon_check_identifier(actions, action, segment);
     if (segment >= actions.count)
         return;
@@ -170,7 +200,7 @@ static void charon_shift_in(UISegmentedControl *control, NSUInteger index)
 
 - (void)insertSegmentWithAction:(UIAction *)action atIndex:(NSUInteger)segment animated:(BOOL)animated
 {
-    NSMutableArray *actions = charon_segment_actions(self, YES);
+    NSMutableArray *actions = charon_segment_actions(self, YES, NO);
     charon_check_identifier(actions, action, segment);
     [self insertSegmentWithTitle:action.image ? nil : action.title atIndex:segment animated:animated];
     NSUInteger index = MIN(segment, actions.count - 1);
@@ -181,10 +211,10 @@ static void charon_shift_in(UISegmentedControl *control, NSUInteger index)
 
 - (NSInteger)segmentIndexForActionIdentifier:(UIActionIdentifier)identifier
 {
-    NSMutableArray *actions = charon_segment_actions(self, NO);
+    NSMutableArray *actions = charon_segment_actions(self, NO, NO);
     for (NSUInteger index = 0; index < actions.count; index++) {
         UIAction *held = actions[index];
-        if ([held isKindOfClass:[UIAction class]] && [held.identifier isEqual:identifier])
+        if ([held isKindOfClass:charon_action_class()] && [held.identifier isEqual:identifier])
             return (NSInteger)index;
     }
     return NSNotFound;
