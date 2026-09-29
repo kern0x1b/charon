@@ -69,6 +69,8 @@ def parameters(declaration):
         first, second = head.group(1), head.group(2)
         if first is not None:                      # `label:` -- one token, so it is both
             out.append((first, first, text))
+        elif second == "_":                       # `_ internal:` -- the *label* is the wildcard `_`
+            out.append(("_", head.group(3), text))
         else:                                      # `label internal:`
             out.append((second, head.group(3), text))
     return out
