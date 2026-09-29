@@ -66,7 +66,10 @@ for source in "$mps"/*.m; do
     fi
     python3 "$here/../prefix_selectors.py" "$source" "$build/$name.m" ccharonHost_ \
         --declarations="$build/declarations.h" -fobjc-arc $target $quiet -include "$build/rename.h" -- "$build/$name.plain.o"
-    if ! xcrun clang -fobjc-arc -fvisibility=hidden $target $quiet -I"$mps" -include "$build/rename.h" \
+    # The define belongs here and not only on the plain compile: prefix_selectors.py turns the plain
+    # object back into source, and this is the compile whose object is linked, so a define left off
+    # here is a trace that is compiled in and then thrown away.
+    if ! xcrun clang -fobjc-arc -fvisibility=hidden -DCHARON_BN_TRACE $target $quiet -I"$mps" -include "$build/rename.h" \
         -include "$build/declarations.h" -c "$build/$name.m" -o "$build/$name.o"; then
         echo "the prefixed port source $build/$name.m did not compile; stopping"
         exit 1
