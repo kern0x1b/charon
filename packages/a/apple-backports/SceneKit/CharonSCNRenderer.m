@@ -567,6 +567,7 @@ SCNMatrix4 CharonSCNProjectionMatrix(SCNNode *pointOfView, int width, int height
     NSURL *_sceneURL;
     NSHashTable<SCNScene *> *_surveyed;
 }
+@synthesize lastRenderPointOfView = _lastRenderPointOfView, lastRenderWidth = _lastRenderWidth, lastRenderHeight = _lastRenderHeight;
 
 - (instancetype)initWithContext:(EAGLContext *)context
 {
