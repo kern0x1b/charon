@@ -76,6 +76,33 @@ def parameters(declaration):
     return out
 
 
+def declaration_at(text, name, start=0):
+    """The whole declaration of `name` beginning at or after `start`, matched by **balanced
+    parentheses**.
+
+    A bounded window ending at the first `->` is wrong for any declaration whose *parameter type*
+    contains one -- an `async` closure does: `continuation: (@MainActor () async throws -> Void)?`
+    has its `->` inside the parameter, so the window ends there and the parameters parse as none.
+    """
+    at = text.find("func " + name, start)
+    if at < 0:
+        return None
+    open_paren = text.find("(", at)
+    if open_paren < 0:
+        return None
+    depth, i = 0, open_paren
+    while i < len(text):
+        if text[i] == "(":
+            depth += 1
+        elif text[i] == ")":
+            depth -= 1
+            if depth == 0:
+                break
+        i += 1
+    end = text.find("\n", i)
+    return text[at:end if end > 0 else i + 1]
+
+
 def external_labels(declaration):
     """Just the labels, in order -- the part a caller writes."""
     return [label for label, _internal, _text in parameters(declaration)]
