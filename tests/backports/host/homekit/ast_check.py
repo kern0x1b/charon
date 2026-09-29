@@ -806,7 +806,8 @@ def compare_setup(verbose=True):
                         header, member["line"]))
     if verbose:
         for object_name, selector, release, row_header, line in rows:
-            print("  %-36s %-34s %-6s %s:%d" % (object_name, selector, release, row_header, line))
+            print("  %-36s %-34s %-6s %s" % (object_name, selector, release,
+                                             "%s:%d" % (row_header, line) if line else row_header))
         # The unavailable members are NAMED, not merely absent: a check that says nothing about -init and
         # +new cannot be read as having looked at them, and they are the two members of this class the
         # release refuses to let a caller use.
@@ -844,8 +845,8 @@ def main():
     # The setup family: methods, and one object per release. This is here because the check above is
     # property-shaped and HMAccessorySetupPayload declares no property at all, so without this section
     # two initialisers and two unavailable members would be measured by nothing.
-    print("\nthe setup family: methods, one object per release, from %s" % HEADER_OF_CLASS[
-        "HMAccessorySetupPayload"])
+    print("\nthe setup family: methods, one object per release, from %s"
+          % ", ".join(sorted(HEADER_OF_CLASS[c] for c in SETUP_CLASSES)))
     setup_failures, _ = compare_setup()
     failures.extend(setup_failures)
 
