@@ -131,6 +131,7 @@ bool sec_protocol_options_are_equal(sec_protocol_options_t optionsA, sec_protoco
 - (void)charonSetPSKIdentityHint:(dispatch_data_t)hint;
 - (void)charonSetPSKSelection:(sec_protocol_pre_shared_key_selection_t)block
                              queue:(dispatch_queue_t)queue;
+- (sec_protocol_pre_shared_key_selection_t)charonPSKSelection;
 @end
 
 @implementation CharonSecProtocolOptionsHeld
@@ -182,6 +183,7 @@ bool sec_protocol_options_are_equal(sec_protocol_options_t optionsA, sec_protoco
     _pskSelection = block;
     _pskQueue = queue;
 }
+- (sec_protocol_pre_shared_key_selection_t)charonPSKSelection { return _pskSelection; }
 - (void)dealloc
 {
     free(_ciphersuites);
