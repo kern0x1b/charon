@@ -153,14 +153,25 @@ Foundation   110 absent   9 ignored   792 implemented   48 inert      (16271 row
 ```
 <!-- count:end -->
 
+Two historical pairs, each naming the tree it was measured on and reproducible with
+`git archive <tree> packages/a/apple-backports/registry`:
+
 ```
-$ python3 tools/registry-absent.py <6fcdc631b's registry>
+$ python3 tools/registry-absent.py <6fcdc631b's registry>      # before the fifteen
 Foundation                 131         9           771         48               131
 16269 rows, 3355 absent, over 65 frameworks
+
+$ python3 tools/registry-absent.py <e641e4d37's registry>      # with them
+Foundation                 116         9           786         48               116
+16269 rows, 3340 absent, over 65 frameworks
 ```
 
-So the fifteen are `131 -> 116` absent and `771 -> 786` implemented, measured on `6fcdc631b` and on
-this tree by the same script, and nothing else moved.
+So the fifteen took Foundation from `131 absent / 771 implemented` at `6fcdc631b` to
+`116 / 786` at `e641e4d37`, and nothing else moved between those two trees. The block at the top of
+this section is the tree this file is in and says `110 / 792`, which is the same script reading a tree
+that has moved since `e641e4d37`: this file's own family has taken the six item-provider rows, and
+another band has landed rows of its own. A number that said "this tree" here would have been wrong
+within a day, which is why the live one is generated and these two name their trees.
 
 ## What the release ladder can and cannot answer for these fifteen
 
