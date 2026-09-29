@@ -144,12 +144,19 @@ CHARON_MPS_NEURON_COMMON
             if (_computeStatistics && variance.length > column)
                 CharonMPSStore(CharonMPSVectorElement(&variance, 0, column), variance.dataType, 0, v);
             double given = variance.length > column ? CharonMPSLoad(CharonMPSVectorElement(&variance, 0, column), variance.dataType, 0) : v;
+            // The mean to normalise by is the one the caller gives, not the one computed from the data.
+            // The formula is gamma * (x - mean) / sqrt(variance + epsilon) + beta, and the mean there is
+            // the caller's. The port used the computed one, which is only the same when they agree - and
+            // for this case's column 1 the two differ (given 5, computed 4), which is why that column was
+            // out and the others exact. With computeStatistics the store happens first, so what is read
+            // back for the mean is the computed one, which is the intended behaviour and not this.
+            double mu = mean.length > column ? CharonMPSLoad(CharonMPSVectorElement(&mean, 0, column), mean.dataType, 0) : m;
             double g = gamma.length > column ? CharonMPSLoad(CharonMPSVectorElement(&gamma, 0, column), gamma.dataType, 0) : 1.0;
             double b0 = beta.length > column ? CharonMPSLoad(CharonMPSVectorElement(&beta, 0, column), beta.dataType, 0) : 0.0;
             for (NSUInteger row = 0; row < vectors; row++) {
                 double x = CharonMPSLoad(CharonMPSMatrixElement(&in, b, _sourceMatrixOrigin.x + row, _sourceMatrixOrigin.y + column), in.dataType, 0);
                 // gamma * (x - mean) / sqrt(variance + epsilon) + beta: the root, not the variance.
-                double y = CharonMPSApplyNeuron(neuron.type, g * (x - m) / sqrt(given + (double)_epsilon) + b0, neuron.a, neuron.b, neuron.c, CharonMPSNeuronA(&neuron, column));
+                double y = CharonMPSApplyNeuron(neuron.type, g * (x - mu) / sqrt(given + (double)_epsilon) + b0, neuron.a, neuron.b, neuron.c, CharonMPSNeuronA(&neuron, column));
                 CharonMPSStore(CharonMPSMatrixElement(&out, b, _resultMatrixOrigin.x + row, _resultMatrixOrigin.y + column), out.dataType, 0, y);
             }
         }
