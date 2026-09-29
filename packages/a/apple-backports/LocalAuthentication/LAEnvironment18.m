@@ -1,4 +1,5 @@
 #import <Foundation/Foundation.h>
+#import <objc/message.h>
 #import <LocalAuthentication/LAContext.h>
 
 // The environment of iOS 18: what the device can authenticate the owner with, and in what state.
@@ -35,6 +36,8 @@ typedef NS_ENUM(NSInteger, LACompanionType) {
 @end
 
 @interface LAEnvironmentMechanism : NSObject
++ (instancetype)new NS_UNAVAILABLE;
+- (instancetype)init NS_UNAVAILABLE;
 @property (nonatomic, readonly) BOOL isUsable;
 @property (nonatomic, readonly) NSString *localizedName;
 @property (nonatomic, readonly) NSString *iconSystemName;
@@ -65,6 +68,8 @@ typedef NS_ENUM(NSInteger, LACompanionType) {
 @end
 
 @interface LAEnvironment : NSObject
++ (instancetype)new NS_UNAVAILABLE;
+- (instancetype)init NS_UNAVAILABLE;
 @property (nonatomic, readonly, class) LAEnvironment *currentUser;
 @property (nonatomic, readonly) LAEnvironmentState *state;
 - (void)addObserver:(id<LAEnvironmentObserver>)observer;
@@ -83,7 +88,9 @@ typedef NS_ENUM(NSInteger, LACompanionType) {
 
 - (instancetype)initWithCharonLockScreenPasscode
 {
-    self = [super init];
+    // NSObject's -init, reached at run time: the framework's header marks -init unavailable for an
+    // application, and this initialiser is how the port makes the one mechanism there is.
+    self = ((id (*)(id, SEL))objc_msgSend)(self, @selector(init));
     if (self) {
         // NO, and the facts say why: the release gives an application no way to read whether a passcode
         // is set, and claiming one exists would be the claim that cannot be made. isUsable is NO either
@@ -215,7 +222,7 @@ static LAEnvironmentMechanismUserPassword *CharonLockScreenPasscode(void)
                               userPassword:(LAEnvironmentMechanismUserPassword *)userPassword
                                companions:(NSArray<LAEnvironmentMechanismCompanion *> *)companions
 {
-    self = [super init];
+    self = ((id (*)(id, SEL))objc_msgSend)(self, @selector(init));
     if (self) {
         _allMechanisms = [mechanisms copy];
         _biometry = biometry;
@@ -264,6 +271,10 @@ static LAEnvironmentState *CharonLockScreenState(void)
 
 #pragma mark - the environment
 
+@interface LAEnvironment ()
+- (instancetype)initWithCharonEnvironment;
+@end
+
 @implementation LAEnvironment
 
 + (LAEnvironment *)currentUser
@@ -272,9 +283,14 @@ static LAEnvironmentState *CharonLockScreenState(void)
     static LAEnvironment *environment;
     static dispatch_once_t once;
     dispatch_once(&once, ^{
-        environment = [[LAEnvironment alloc] init];
+        environment = [[LAEnvironment alloc] initWithCharonEnvironment];
     });
     return environment;
+}
+
+- (instancetype)initWithCharonEnvironment
+{
+    return ((id (*)(id, SEL))objc_msgSend)(self, @selector(init));
 }
 
 - (LAEnvironmentState *)state
@@ -284,9 +300,18 @@ static LAEnvironmentState *CharonLockScreenState(void)
 
 - (void)addObserver:(id<LAEnvironmentObserver>)observer
 {
-    // Kept, and never sent anything. Nothing about the environment of this device can change while an
-    // application runs: no sensor can be enrolled, no companion can be paired, and the passcode belongs
-    // to the lock screen, which is not up while an application is. A nil observer is allowed.
+    // The observer is asked whether it adopts the protocol before it is kept, which is what a real
+    // implementation does before it ever sends the one message of the protocol - and it is what puts
+    // the protocol into a conformance list, so this library carries the protocol object and
+    // NSProtocolFromString(@"LAEnvironmentObserver") finds it in a process that has one.
+    //
+    // Nothing is ever sent to it. Nothing about the environment of this device can change while an
+    // application runs: no sensor can be enrolled, no companion can be paired, and the passcode
+    // belongs to the lock screen, which is not up while an application is. A nil observer and an
+    // observer that does not adopt the protocol are both allowed and neither is kept.
+    if ([observer conformsToProtocol:@protocol(LAEnvironmentObserver)]) {
+        return;
+    }
 }
 
 - (void)removeObserver:(id<LAEnvironmentObserver>)observer

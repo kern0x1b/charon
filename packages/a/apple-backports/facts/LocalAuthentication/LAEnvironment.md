@@ -67,15 +67,39 @@ hash is invented.
 
 ## Where the port answers outside what the header promises
 
-Three properties are declared non-nullable and this port answers nil for them, all of them
-unreachable on this port:
+Three properties are declared non-nullable and this port answers nil for them. They are unreachable on
+this port, and the reason is the port's own declarations rather than Apple's alone:
 
 - `LAEnvironmentMechanism.localizedName` and `.iconSystemName` on the base class and on the biometry
   and companion kinds. The system names a mechanism after the sensor it is — the host's are
   "Touch ID" with the `touchid` symbol — and a device with no sensor has no such name; naming one
-  would be a claim. Nothing reaches them: `-state.biometry` is nil, `-state.companions` is empty, and
-  the headers mark `+new`/`-init` unavailable, so no application can ask for a mechanism either.
+  would be a claim. **The port's own `LAEnvironmentMechanism` declaration carries the
+  `+new`/`-init` `NS_UNAVAILABLE` pair the 26.2 header has**, so an application cannot make one of
+  these to ask; the two other paths are `-state.biometry` (nil, there is no sensor) and
+  `-state.companions` (empty, the release pairs with none).
 - `LAEnvironmentMechanismBiometry.stateHash`, for the same reason: no biometry state to identify.
+
+`LAEnvironment` carries the same pair, so the one environment is made the way Apple's is: through
+`+currentUser`. The one mechanism of this release, the lock screen's passcode, and the one state, are
+made through initialisers of their own in a class extension, each of which is NSObject's `-init`
+reached at run time — the framework's header marks `-init` unavailable for an application, and a
+backport that made its own class through the same selector would be one call away from an object
+nothing should make.
+
+**One thing the fallback declaration does not have.** The port's `LACompanionType`, written in this
+file because the 16.4 SDK the port builds against has no `LACompanionType.h`, names `Watch` and `Mac`
+but not `LACompanionTypeVision` (26.0, `1 << 2`, in the SDK 26.2's `LAPublicDefines.h`). The
+corpus files that case under 26.0, which is not this band's row, but the declaration an application
+compiles against here is this one, and it is named in `LAEnvironmentMechanismCompanion.type`'s
+registry entry.
+
+**The observer protocol is carried, not only declared.** `-[LAEnvironment addObserver:]` asks
+`[observer conformsToProtocol:@protocol(LAEnvironmentObserver)]` before it keeps the observer, which is
+what a real implementation does before it ever sends the protocol's one message — and it is what puts
+the protocol into a conformance list, so this library **defines**
+`__OBJC_PROTOCOL_$_LAEnvironmentObserver` and `NSProtocolFromString(@"LAEnvironmentObserver")` finds
+it in a process that has one. A nil observer, and an observer that does not adopt the protocol, are
+both allowed and neither is kept.
 
 The one mechanism that *is* reachable carries the host's real strings, so nothing an application can
 actually see on this port is nil.

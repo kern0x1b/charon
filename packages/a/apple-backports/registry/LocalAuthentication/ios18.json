@@ -17,9 +17,9 @@
     "minimum": "6.0",
     "status": "implemented",
     "reason": "an application that names this names the API of iOS 18, which the release does not carry; the class is here so the name resolves and the answer is an honest one",
-    "effect": "the protocol is declared and no object of it is ever sent a message: -environment:stateDidChangeFromOldState: is the one method of it, and the state of this device never changes while an application runs",
+    "effect": "the protocol object is carried and a class that adopts it is found by the runtime: -[LAEnvironment addObserver:] asks conformsToProtocol: before it keeps an observer, which puts the protocol into a conformance list. No message is ever sent to one, because nothing about this device's environment can change while an application runs; a nil observer, and one that does not adopt the protocol, are both allowed and neither is kept",
     "facts": "facts/LocalAuthentication/LAEnvironment.md",
-    "source": "the host's own LocalAuthentication under MacOSX.sdk, measured for the shapes below (tests/backports/host/localauth18); the armv7 shared cache of iOS 6.1.3 for what the release has: the state of a device with no sensor and no companion, and the strings the port carries verbatim; the protocol is declared by LAEnvironment.h in the SDK 26.2, which the port's own SDK 16.4 does not have"
+    "source": "the header of LocalAuthentication/LAEnvironment.h in the SDK 26.2, which declares the protocol and its one method; measured on the object this package compiles for armv7 at 6.1.3, which now defines __OBJC_PROTOCOL_$_LAEnvironmentObserver, where before this round it held no protocol object of that name at all"
   },
   {
     "api": "+[LAEnvironment new]",
@@ -335,8 +335,8 @@
     "introduced": "18.0",
     "minimum": "6.0",
     "status": "implemented",
-    "reason": "an application that names this names the API of iOS 18, which the release does not carry; the class is here so the name resolves and the answer is an honest one",
-    "effect": "0, the LACompanionTypeNone value of the SDK 26.2's LAPublicDefines.h; nothing on this port reaches it",
+    "reason": "the companion type of a mechanism the release has none of; the port's fallback declaration of LACompanionType names Watch and Mac and not LACompanionTypeVision (26.0), which is not this band's row and is named in facts/LocalAuthentication/LAEnvironment.md",
+    "effect": "0, the LACompanionTypeNone value of LAPublicDefines.h; nothing on this port reaches it, because the port's own LAEnvironmentMechanism declaration carries the +new/-init NS_UNAVAILABLE pair the 26.2 header has and the state's -companions is empty",
     "facts": "facts/LocalAuthentication/LAEnvironment.md",
     "source": "the SDK 26.2 headers, kLACompanionTypeNone"
   },
