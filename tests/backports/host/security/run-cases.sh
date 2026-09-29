@@ -19,7 +19,7 @@ set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 work=$(cd "$here/../../../.." && pwd)
 build=${BUILD:-$work/.agent-work/runs/run-cases}
-mkdir -p "$build"
+mkdir -p "$build"; rm -f "$build/cases-entered" "$build"/verdict-*
 sdk=$(xcrun --show-sdk-path --sdk macosx)
 S="$work/packages/a/apple-backports/Security"
 H="$here"
@@ -51,9 +51,11 @@ run_case() {
     # DIFFERS. So the increment belongs here, after the verdict, and not anywhere above it.
     name=$1; shift
     compare=$1; shift
+    echo "$name" >> "$build/cases-entered"
+    : > "$build/verdict-$name"
 
     if ! xcrun clang $common "$@" $frameworks -o "$build/$name" > "$build/$name.log" 2>&1; then
-        echo "BUILD  $name FAILED to build"
+        echo "NOTRUN $name  the build failed, so the case never ran" > "$build/verdict-$name"; echo "BUILD  $name FAILED to build"
         sed -n '1,5p' "$build/$name.log" | sed 's/^/       /'
         failures=$((failures + 1))
         return
@@ -76,14 +78,14 @@ run_case() {
         nm -gU "$build/$name" > "$build/$name.nm" 2>/dev/null
         nmstatus=$?
         if [ "$nmstatus" -ne 0 ]; then
-            echo "BUILD  $name FAILED: nm -gU on the linked binary exited $nmstatus"
+            echo "NOTRUN $name  nm -gU failed, so the case was never compared" > "$build/verdict-$name"; echo "BUILD  $name FAILED: nm -gU on the linked binary exited $nmstatus"
             failures=$((failures + 1))
             return
         fi
         for sym in $called; do
             grep -qx "$sym" "$build/port-defines.txt" || continue
             if [ "$(awk -v s="_$sym" '$NF==s' "$build/$name.nm" | wc -l)" -lt 1 ]; then
-                echo "MISSING $name $sym would measure the HOST: _$sym is not defined in the binary this case linked"
+                echo "NOTRUN $name  a port symbol came from a dylib, so the case was never compared" > "$build/verdict-$name"; echo "MISSING $name $sym would measure the HOST: _$sym is not defined in the binary this case linked"
                 failures=$((failures + 1))
                 return
             fi
@@ -95,16 +97,16 @@ run_case() {
     ( cd "$work" && "$build/$name" ) > "$build/$name.out" 2>&1 || status=$?
     cases=$((cases + 1))
     if [ "$status" -ge 128 ]; then
-        echo "CRASH  $name  crashed: signal $((status - 128)) (exit $status), not a comparison"
+        echo "CRASH $name" > "$build/verdict-$name"; echo "CRASH  $name  crashed: signal $((status - 128)) (exit $status), not a comparison"
         sed 's/^/       /' "$build/$name.out" | tail -3
         failures=$((failures + 1))
         return
     fi
     if python3 "$H/$compare" "$build/$name.out" > "$build/$name.verdict" 2>&1; then
         green=$((green + 1))
-        echo "GREEN  $name  $(tail -1 "$build/$name.verdict")"
+        echo "GREEN $name" > "$build/verdict-$name"; echo "GREEN  $name  $(tail -1 "$build/$name.verdict")"
     else
-        echo "RED    $name  $(tail -1 "$build/$name.verdict")"
+        echo "RED $name" > "$build/verdict-$name"; echo "RED    $name  $(tail -1 "$build/$name.verdict")"
         sed 's/^/       /' "$build/$name.verdict" | head -4
         failures=$((failures + 1))
     fi
@@ -416,6 +418,14 @@ fi
 # THE SUMMARY MUST AGREE WITH ITS OWN LINES. A run whose GREEN count differs from the case count has
 # described a set it did not measure, which is the defect class this whole hunt is for: the tail looked
 # fine while run_case built binaries and never compared them.
+# EVERY CASE GETS EXACTLY ONE VERDICT LINE. Any case that entered and has no verdict is named NOT-RUN,
+# so a missing line is impossible rather than something a reader has to infer from a count.
+for c in $(cat "$build/cases-entered" 2>/dev/null); do
+    if [ ! -s "$build/verdict-$c" ]; then
+        echo "NOTRUN  $c  entered the driver and printed no verdict at all"
+        failures=$((failures + 1))
+    fi
+done
 echo
 if [ "$green" -ne "$cases" ]; then
     echo "run-cases: $green GREEN verdict lines for $cases cases - the summary does not match the lines it printed"
