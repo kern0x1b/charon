@@ -1,5 +1,14 @@
+#if defined(CHARON_MEDIAPLAYER_STANDIN)
+// The host checks compile this file with the stand-in in place of the frameworks, so the port's own
+// source is measured and not this Mac's MediaPlayer - whose MPMediaItem and MPMediaEntityPersistentID
+// collide with the stand-in's. The macro is defined by nothing in the library build, so the armv7 object
+// this file produces is unchanged: the preprocessed text without the macro is byte for byte the same
+// before and after this branch was added.
+#import "MPMediaItemStandin.h"
+#else
 #import <MediaPlayer/MediaPlayer.h>
 #import <UIKit/UIKit.h>
+#endif
 #import <objc/runtime.h>
 #import <objc/message.h>
 
