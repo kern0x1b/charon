@@ -2243,7 +2243,16 @@ local function measured_names(opt, source, object)
     end
     for _, name in ipairs(names) do
         if not earliest[name] then
-            local dump = os.iorunv(clang(opt, {"-fsyntax-only", "-w", "-Xclang", "-ast-dump", "-Xclang", "-ast-dump-filter", "-Xclang", name, source}, true))
+            -- The include roots the compile of this source had, archives' included: a source that
+            -- imports an archive's header (CharonMLCGraph.mm: <ggml/ggml.h>) does not parse without them,
+            -- and the dump of a file that does not parse is empty, so the symbol got no release.
+            local includes = {}
+            for _, flag in ipairs(compile_arguments(opt, source)) do
+                if flag:startswith("-I") then
+                    table.insert(includes, flag)
+                end
+            end
+            local dump = os.iorunv(clang(opt, table.join(includes, {"-fsyntax-only", "-w", "-Xclang", "-ast-dump", "-Xclang", "-ast-dump-filter", "-Xclang", name, source}), true))
             earliest[name] = introduced_version(dump, name) or false
         end
     end
