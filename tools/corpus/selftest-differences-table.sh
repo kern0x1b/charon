@@ -109,7 +109,6 @@ PY
     run 1 --page "$broken"
     echo "  -- a figure wrong by one, on $(basename "$p"):"
     wrong=$scratch/$(basename "$p" .md)-wrong.md
-    sed 's/one-sided on the port'"'"'s side/one-sided on the port'"'"'s side/; s/`repr` lines one-sided on the port'"'"'s side/`repr` lines one-sided on the port'"'"'s side/' "$p" > /dev/null
     python3 - "$p" "$wrong" <<'PY'
 import re, sys
 src, dst = sys.argv[1], sys.argv[2]
@@ -121,6 +120,74 @@ PY
     echo "  -- and the page itself, unchanged:"
     run 0 --page "$p"
 done
+
+echo '== the four cases that are one `continue` and one backtick apart'
+# The page that carries the group table is the one that accounts for the run, so the checks on it
+# must not depend on how it spells anything.  fin6 read the family label with backticks only, and the
+# group-table check sat below a `continue` that fired when the family clauses were not found, so a
+# page that spelled the figures the other way had its group counts skipped as well.
+#
+#   bare          the figures written without backticks, nothing else wrong  -> 0 after the fix
+#   bare + figure the same page, un-backticked, with one figure wrong        -> 1, and 0 on fin6
+#   bare + group  the same page, un-backticked, with one group count wrong   -> 1, and 0 on fin6
+#   group         a wrong group count, the figures backticked                -> 1, and 1 on fin6
+#
+# The two marked "0 on fin6" are the ones the review measured as passing when they should not have.
+table_page=""
+for p in "${pages[@]}"; do
+    if grep -q '^| *group *| *n *|' "$p" 2>/dev/null; then table_page=$p; fi
+done
+if [ -z "$table_page" ]; then
+    echo "  no page given carries a group table; the four cases need one and are skipped"
+else
+    name=$(basename "$table_page" .md)
+    scratchpage=$scratch/$name
+
+    unbacktick() { sed 's/further `\([a-z]*\)` lines/further \1 lines/g' "$1" > "$2"; }
+
+    break_group() {   # the first group row's count becomes 7
+        python3 - "$1" "$2" <<'PYGROUP'
+import re, sys
+src, dst = sys.argv[1], sys.argv[2]
+lines = open(src, encoding="utf-8").read().split("\n")
+for i, line in enumerate(lines):
+    m = re.match(r'\| `([a-z ]+)` \| (\d+) \|', line)
+    if m:
+        lines[i] = line.replace("| %s |" % m.group(2), "| 7 |", 1)
+        break
+open(dst, "w", encoding="utf-8").write("\n".join(lines))
+PYGROUP
+    }
+
+    break_figure() {  # the first port-side figure becomes 99
+        python3 - "$1" "$2" <<'PYFIG'
+import re, sys
+src, dst = sys.argv[1], sys.argv[2]
+text = open(src, encoding="utf-8").read()
+text = re.sub(r"(\d+) further (`?)repr\2 lines one-sided on the port's side", r"99 further \2repr\2 lines one-sided on the port's side", text, count=1)
+open(dst, "w", encoding="utf-8").write(text)
+PYFIG
+    }
+
+    unbacktick "$table_page" "$scratchpage-bare.md"
+    echo "  -- bare: the figures written WITHOUT backticks, nothing else wrong:"
+    run 0 --page "$scratchpage-bare.md"
+
+    break_figure "$scratchpage-bare.md" "$scratchpage-barefigure.md"
+    echo "  -- bare + figure: un-backticked AND one figure wrong (0 findings on fin6):"
+    run 1 --page "$scratchpage-barefigure.md"
+
+    break_group "$scratchpage-bare.md" "$scratchpage-baregroup.md"
+    echo "  -- bare + group: un-backticked AND one group count wrong (0 findings on fin6):"
+    run 1 --page "$scratchpage-baregroup.md"
+
+    break_group "$table_page" "$scratchpage-group.md"
+    echo "  -- group: a wrong group count, the figures backticked:"
+    run 1 --page "$scratchpage-group.md"
+
+    echo "  -- and the page itself, unchanged:"
+    run 0 --page "$table_page"
+fi
 
 echo "== a page or a run the tool cannot read is exit 2 with a tool error, not exit 1"
 missing=$scratch/not-there.md
