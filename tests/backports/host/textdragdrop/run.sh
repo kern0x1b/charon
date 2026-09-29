@@ -16,6 +16,9 @@ export DDR_ROOT=$root
 # read from a file beside this script: a checked-in fixture drifts from the source it was made from and
 # then asserts nothing, which is exactly what happened here.
 port=$root/packages/a/apple-backports/UIKit
+rm -rf "$build"
+mkdir -p "$build"
+cp "$here/xmake.lua" "$here/control" "$build/"
 scratch=$build/port-sources
 rm -rf "$scratch"
 mkdir -p "$scratch"
