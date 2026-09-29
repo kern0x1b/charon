@@ -136,12 +136,21 @@ end
 local KEYS, SYMBOLS = {}, {}
 
 local function internal_symbol(name)
-    -- A protocol object is registered by the image that carries it, through __objc_protolist, and
-    -- is found at run time by name through objc_getProtocol -- so a program links no symbol to
-    -- reach one and does not need the library to export it. Apple's own frameworks keep their
-    -- protocols local for that reason, and this library does the same: an exported
-    -- _OBJC_PROTOCOL_$_X would put a name in the library's exports that is not an API, which the
-    -- registry check reads as a symbol with no entry.
+    -- A protocol object is internal, for the reason tools/release-split.lua gives in its own EXCLUDED
+    -- table: a program reaches a protocol by NAME, through objc_getProtocol, and links no symbol to
+    -- reach one, so the object is metadata rather than an API a caller can bind to. Apple's own
+    -- frameworks keep theirs local for the same reason.
+    --
+    -- It is NOT internal because the registry check would read an exported one as a symbol with no
+    -- entry. check_registry has exempted exactly this prefix since before this rule existed
+    -- (protocol_metadata, c4f6fcdb7:1806), so that was never what turned anything red.
+    --
+    -- What this rule does is stop exported_symbols() from counting a protocol object towards a
+    -- release, and it must not be the reason a second definition of one goes unseen. The gate for
+    -- that is in tests/addon/registry_test.lua: a library's own sources may not DECLARE a protocol
+    -- that has an implemented protocol row, because the generated <Library>Protocols<release>.m
+    -- emits that protocol's object too, and two definitions of one protocol that disagree are
+    -- resolved by ld64 silently, in link order.
     if name:startswith("_OBJC_IVAR_$_") or name:startswith("_OBJC_PROTOCOL_$_") or name:find("$shim", 1, true) then
         return true
     end

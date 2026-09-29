@@ -333,6 +333,47 @@ local function protocol_headers(backports, root, found)
 end
 
 
+-- A library's own sources may not DECLARE a protocol that has an implemented protocol row. The
+-- generated <Library>Protocols<release>.m emits that protocol's object, and a translation unit that
+-- also declares it emits a second one; ld64 keeps whichever of two weak definitions comes first on
+-- the link line and says nothing, so which of the two a runtime sees is a function of link order.
+-- It was measured: CoreML's MLFeatureProvider.m declared the protocol with the base <NSObject> and
+-- the 16.4 SDK's header declares it with none, and the surviving base list read 0x0 in build()'s
+-- order and 0x3dd18 reversed. A forward declaration (@protocol X;) does not define a protocol and is
+-- what a Charon<Folder>Protocols.h carries, so only a definition is refused here.
+local function protocol_declarations(backports, root, found)
+    local out = fixtures.scratch()
+    for _, library in ipairs(backports.libraries()) do
+        local folder = path.join(root, library.folder)
+        if os.isdir(folder) then
+            -- the names the generated sources emit, read from what the build itself generates
+            local carried, count = {}, 0
+            for _, written in ipairs(backports.protocol_sources(root, library, out, library.folder)) do
+                for line in io.lines(written) do
+                    local name = line:match("@protocol%(([%w_]+)%)")
+                    if name then carried[name] = true; count = count + 1 end
+                end
+            end
+            if count > 0 then
+                for _, name in ipairs(os.files(path.join(folder, "*.m"), path.join(folder, "*.mm"),
+                                              path.join(folder, "*.h"), path.join(folder, "*.c"))) do
+                    local relative = name:sub(#folder + 2)
+                    for line in io.lines(name) do
+                        local declared = line:match("^%s*@protocol%s+([%w_]+)%s*[:<]")
+                        if declared and carried[declared] then
+                            table.insert(found, string.format(
+                                "%s declares @protocol %s, which the generated protocol source defines too, so two objects define that protocol object and ld64 keeps whichever of the two comes first: %s",
+                                relative, declared, relative))
+                        end
+                    end
+                end
+            end
+        end
+    end
+    os.tryrm(out)
+end
+
+
 -- The check's messages are read by a machine - the gap list is what the bands are handed - and a member's
 -- name holds a space (-[FixMapView setDelegate:]), so the names are joined with "; " and split back here. One
 -- question only: does the list split into the names it names.
@@ -720,6 +761,7 @@ function failures(opt)
     own_rows(backports, found)
     generated_includes(backports, found)
     protocol_headers(backports, root, found)
+    protocol_declarations(backports, root, found)
     message_names(backports, found)
     real_object(backports, opt.modules, found)
     protocol_owner_step(backports, opt, found)
