@@ -46,5 +46,40 @@ else
     printf 'case 3 anchor absent   : aborted but the file changed -> FAILED\n'; fail=1
 fi
 
+
+# an anchor carrying the three characters that are metacharacters as a shell word: the transport is
+# the environment, so they arrive as themselves
+printf 'alpha (x) "q" $x\nbeta\n' > "$scratch/meta.txt"
+before=$(md5 -q "$scratch/meta.txt")
+ANCHOR='alpha (x) "q" $x' REPL='alpha (y) "q" $x' mutate "$scratch/meta.txt"
+case4=$(md5 -q "$scratch/meta.txt")
+if [ "$before" != "$case4" ] && grep -qF 'alpha (y) "q" $x' "$scratch/meta.txt"; then
+    printf 'case 4 anchor with ) " $x: the metacharacters survived, file changed -> ok\n'
+else
+    printf 'case 4 anchor with ) " $x: FAILED\n'; fail=1
+fi
+
+# a mutation of two lines when one is expected: it refuses, and the file is byte-identical, because
+# it refuses by writing first and putting back second
+printf 'alpha\nbeta\ngamma\n' > "$scratch/two-lines.txt"
+before=$(md5 -q "$scratch/two-lines.txt")
+if ANCHOR='beta' REPL='B1
+B2' mutate "$scratch/two-lines.txt" 2>"$scratch/two-lines.err"; then
+    printf 'case 5 two lines, one wanted: it did NOT abort -> FAILED\n'; fail=1
+elif [ "$before" = "$(md5 -q "$scratch/two-lines.txt")" ]; then
+    printf 'case 5 two lines, one wanted: aborted, file byte-identical (%s) -> ok\n' "$before"
+    printf '                         message: %s\n' "$(head -1 "$scratch/two-lines.err")"
+else
+    printf 'case 5 two lines, one wanted: aborted but the file changed -> FAILED\n'; fail=1
+fi
+
+# and the same two lines accepted when the caller says 2 1, which is what the gradient site is
+if ANCHOR='beta' REPL='B1
+B2' mutate "$scratch/two-lines.txt" 2 1 >"$scratch/ok.out" 2>&1; then
+    printf 'case 6 the same two lines declared: %s\n' "$(cat "$scratch/ok.out")"
+else
+    printf 'case 6 the same two lines declared: FAILED\n'; fail=1
+fi
+
 [ "$fail" -eq 0 ] || { echo "mutate() cannot be trusted to refuse"; exit 1; }
-echo "mutate() changes one line for one anchor and refuses both a doubled and an absent one, leaving the file alone"
+echo "mutate() carries metacharacters through the environment, changes what it is told to, and refuses a doubled, an absent, and a wrong-sized anchor leaving the file alone"
