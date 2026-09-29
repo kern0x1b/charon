@@ -15,6 +15,31 @@
 typedef struct CM_BRIDGED_TYPE(id) OpaqueCMTaggedBufferGroup * CMTaggedBufferGroupRef
     CF_REFINED_FOR_SWIFT CF_SWIFT_UNAVAILABLE("Unavailable in Swift");
 
+// The format description for a group. Unlike the group, this is not an Objective-C class: what a caller
+// gets back is the platform's own CMFormatDescription, with media subtype 'tbgr' and the group's per-entry
+// tag collections travelling in its extensions dictionary under a key of the port's own. So there is no
+// opaque class behind this name - it is an alias, and the alias is deliberate.
+typedef CMFormatDescriptionRef CMTaggedBufferGroupFormatDescriptionRef
+    CF_REFINED_FOR_SWIFT CF_SWIFT_UNAVAILABLE("Unavailable in Swift");
+
+CF_EXPORT OSStatus CMTaggedBufferGroupFormatDescriptionCreateForTaggedBufferGroup(
+    CFAllocatorRef CM_NULLABLE allocator, CMTaggedBufferGroupRef CM_NONNULL taggedBufferGroup,
+    CMTaggedBufferGroupFormatDescriptionRef CM_NULLABLE * CM_NONNULL formatDescriptionOut) CF_REFINED_FOR_SWIFT;
+CF_EXPORT OSStatus CMTaggedBufferGroupFormatDescriptionCreateForTaggedBufferGroupWithExtensions(
+    CFAllocatorRef CM_NULLABLE allocator, CMTaggedBufferGroupRef CM_NONNULL taggedBufferGroup,
+    CFDictionaryRef CM_NULLABLE extensions,
+    CMTaggedBufferGroupFormatDescriptionRef CM_NULLABLE * CM_NONNULL formatDescriptionOut) CF_REFINED_FOR_SWIFT;
+CF_EXPORT Boolean CMTaggedBufferGroupFormatDescriptionMatchesTaggedBufferGroup(
+    CMTaggedBufferGroupFormatDescriptionRef CM_NONNULL desc,
+    CMTaggedBufferGroupRef CM_NONNULL taggedBufferGroup) CF_REFINED_FOR_SWIFT;
+CF_EXPORT OSStatus CMSampleBufferCreateForTaggedBufferGroup(
+    CFAllocatorRef CM_NULLABLE allocator, CMTaggedBufferGroupRef CM_NONNULL taggedBufferGroup,
+    CMTime sbufPTS, CMTime sbufDuration,
+    CMTaggedBufferGroupFormatDescriptionRef CM_NONNULL formatDescription,
+    CMSampleBufferRef CM_NULLABLE * CM_NONNULL sBufOut) CF_REFINED_FOR_SWIFT;
+CF_EXPORT CMTaggedBufferGroupRef CM_NULLABLE CMSampleBufferGetTaggedBufferGroup(
+    CMSampleBufferRef CM_NONNULL sbuf) CF_REFINED_FOR_SWIFT;
+
 CF_EXPORT CFTypeID CMTaggedBufferGroupGetTypeID(void);
 
 CF_EXPORT OSStatus CMTaggedBufferGroupCreate(CFAllocatorRef allocator, CFArrayRef tagCollections, CFArrayRef buffers,

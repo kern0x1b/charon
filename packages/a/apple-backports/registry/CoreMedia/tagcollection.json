@@ -556,55 +556,55 @@
       "kind": "function",
       "introduced": "17.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
       "reason": "CMTagCollection arrived at iOS 17 and CMTaggedBufferGroup with it, and the SDK the toolchain resolves is 16.4, where none of CMTag, CMTagCollection or CMTaggedBufferGroup exists at all. CharonCMTag26.h transcribes 26.2's declarations for the tag collection and that half is carried; this type is not written, because nothing about the host's answers for it has been measured and a shape guessed from the header is what the brief forbids (facts/CoreMedia/TagCollection.md, the CMTaggedBufferGroup section)",
       "facts": "facts/CoreMedia/TagCollection.md",
-      "source": "the host's own CoreMedia, measured over a group of three entries and an empty one; the family's differential tests the other thirteen functions and does not yet cover these two, so they stay absent with the host's answers recorded here",
-      "effect": "not carried: the type is not written, so there is no behaviour to describe. CMTaggedBufferGroupRef is a bridged Objective-C class like CMTagCollectionRef and its shape is two parallel CFArrays - tag collections and buffers - which every accessor walks together; what the host answers for any of it is unmeasured. The host's own answers, measured: creating one from a group of three pixel-buffer entries answers 0, MatchesTaggedBufferGroup is true for the group it came from and false for a group with no entries, and the format type is the string \"TaggedBufferGroup\""
+      "source": "the host's own CoreMedia over the chain the group's 464/0 fixture already builds - a subset chain of three entries {video}, {video,track}, {video,track,gone} over three pixel buffers - measured in facts/CoreMedia/cmtag-fixtures/taggedgroup-measure.m, answers beside it, commit 2fbdb758c, and held by tests/backports/host/coremedia7/taggedgroupdescription.m at 28 checks, 0 different under AddressSanitizer, with the count-only and count-only and dropped-attachment mutants both red for their own case",
+      "effect": "a format description for the group, made with CMFormatDescriptionCreate at media type video and media subtype 'tbgr' - measured 1952606066, and its CFTypeID is CMFormatDescriptionGetTypeID()'s, so a caller gets the platform's own type - carrying the group's per-entry tag collections in its extensions dictionary as CFData, a CMItemCount and that collection's tags per entry in order. A NULL group is not a failure: the host answers 0 and hands back a real description matching nothing, and the reason is visible - there are no entries to record"
     },
     {
       "api": "CMTaggedBufferGroupFormatDescriptionCreateForTaggedBufferGroupWithExtensions()",
       "kind": "function",
       "introduced": "26.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
       "reason": "CMTagCollection arrived at iOS 17 and CMTaggedBufferGroup with it, and the SDK the toolchain resolves is 16.4, where none of CMTag, CMTagCollection or CMTaggedBufferGroup exists at all. CharonCMTag26.h transcribes 26.2's declarations for the tag collection and that half is carried; this type is not written, because nothing about the host's answers for it has been measured and a shape guessed from the header is what the brief forbids (facts/CoreMedia/TagCollection.md, the CMTaggedBufferGroup section)",
       "facts": "facts/CoreMedia/TagCollection.md",
-      "source": "the host's own CoreMedia, measured over a group of three entries and an empty one; the family's differential tests the other thirteen functions and does not yet cover these two, so they stay absent with the host's answers recorded here",
-      "effect": "not carried: the type is not written, so there is no behaviour to describe. CMTaggedBufferGroupRef is a bridged Objective-C class like CMTagCollectionRef and its shape is two parallel CFArrays - tag collections and buffers - which every accessor walks together; what the host answers for any of it is unmeasured. The host's own answers, measured: creating one from a group of three pixel-buffer entries answers 0, MatchesTaggedBufferGroup is true for the group it came from and false for a group with no entries, and the format type is the string \"TaggedBufferGroup\""
+      "source": "the host's own CoreMedia over the chain the group's 464/0 fixture already builds - a subset chain of three entries {video}, {video,track}, {video,track,gone} over three pixel buffers - measured in facts/CoreMedia/cmtag-fixtures/taggedgroup-measure.m, answers beside it, commit 2fbdb758c, and held by tests/backports/host/coremedia7/taggedgroupdescription.m at 28 checks, 0 different under AddressSanitizer, with the count-only and count-only and dropped-attachment mutants both red for their own case",
+      "effect": "the same description with the caller's extensions kept under their own keys alongside the port's. The host takes NULL and a dictionary alike, and both match the group, so what it stores is not observable on this surface; the port keeps the caller's keys rather than replacing them"
     },
     {
       "api": "CMTaggedBufferGroupFormatDescriptionMatchesTaggedBufferGroup()",
       "kind": "function",
       "introduced": "17.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
       "reason": "CMTagCollection arrived at iOS 17 and CMTaggedBufferGroup with it, and the SDK the toolchain resolves is 16.4, where none of CMTag, CMTagCollection or CMTaggedBufferGroup exists at all. CharonCMTag26.h transcribes 26.2's declarations for the tag collection and that half is carried; this type is not written, because nothing about the host's answers for it has been measured and a shape guessed from the header is what the brief forbids (facts/CoreMedia/TagCollection.md, the CMTaggedBufferGroup section)",
       "facts": "facts/CoreMedia/TagCollection.md",
-      "source": "the host's own CMTaggedBufferGroup.h, which gives the fifteen signatures; nothing about the host's answers has been measured, which is why nothing is claimed",
-      "effect": "not carried: the type is not written, so there is no behaviour to describe. CMTaggedBufferGroupRef is a bridged Objective-C class like CMTagCollectionRef and its shape is two parallel CFArrays - tag collections and buffers - which every accessor walks together; what the host answers for any of it is unmeasured"
+      "source": "the host's own CoreMedia over the chain the group's 464/0 fixture already builds - a subset chain of three entries {video}, {video,track}, {video,track,gone} over three pixel buffers - measured in facts/CoreMedia/cmtag-fixtures/taggedgroup-measure.m, answers beside it, commit 2fbdb758c, and held by tests/backports/host/coremedia7/taggedgroupdescription.m at 28 checks, 0 different under AddressSanitizer, with the count-only and count-only and dropped-attachment mutants both red for their own case",
+      "effect": "true when the group's per-entry tag collections equal the description's, in order and by content, and nothing else. Three cases fix that: the group it came from is 1; a group of the same tags over different buffers is 1, so buffers are not part of it; a group of the same entry SIZES over different tags is 0, so it is not a count; two entries is 0 and NULL is 0. The comparison is the port's own tag equality over each collection's sorted storage, because CFEqual has nothing to say about a bridged Objective-C class"
     },
     {
       "api": "CMSampleBufferCreateForTaggedBufferGroup()",
       "kind": "function",
       "introduced": "17.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
       "reason": "CMTagCollection arrived at iOS 17 and CMTaggedBufferGroup with it, and the SDK the toolchain resolves is 16.4, where none of CMTag, CMTagCollection or CMTaggedBufferGroup exists at all. CharonCMTag26.h transcribes 26.2's declarations for the tag collection and that half is carried; this type is not written, because nothing about the host's answers for it has been measured and a shape guessed from the header is what the brief forbids (facts/CoreMedia/TagCollection.md, the CMTaggedBufferGroup section)",
       "facts": "facts/CoreMedia/TagCollection.md",
-      "source": "the host's own CMTaggedBufferGroup.h, which gives the fifteen signatures; nothing about the host's answers has been measured, which is why nothing is claimed",
-      "effect": "not carried: the type is not written, so there is no behaviour to describe. CMTaggedBufferGroupRef is a bridged Objective-C class like CMTagCollectionRef and its shape is two parallel CFArrays - tag collections and buffers - which every accessor walks together; what the host answers for any of it is unmeasured"
+      "source": "the host's own CoreMedia over the chain the group's 464/0 fixture already builds - a subset chain of three entries {video}, {video,track}, {video,track,gone} over three pixel buffers - measured in facts/CoreMedia/cmtag-fixtures/taggedgroup-measure.m, answers beside it, commit 2fbdb758c, and held by tests/backports/host/coremedia7/taggedgroupdescription.m at 28 checks, 0 different under AddressSanitizer, with the count-only and count-only and dropped-attachment mutants both red for their own case",
+      "effect": "0 and a real CMSampleBuffer - one sample, data ready, the given presentation timestamp and duration kept (measured 1/2 and 2/1) and numSamples 1 - created with that description over an empty CMBlockBuffer, with the group attached to it. The attachment is what carries the group and it retains it, under kCMAttachmentMode_ShouldNotPropagate so a copied buffer does not hand its group to the copy; the group is released with the buffer, which is CF's ownership and not a choice made here"
     },
     {
       "api": "CMSampleBufferGetTaggedBufferGroup()",
       "kind": "function",
       "introduced": "17.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
       "reason": "CMTagCollection arrived at iOS 17 and CMTaggedBufferGroup with it, and the SDK the toolchain resolves is 16.4, where none of CMTag, CMTagCollection or CMTaggedBufferGroup exists at all. CharonCMTag26.h transcribes 26.2's declarations for the tag collection and that half is carried; this type is not written, because nothing about the host's answers for it has been measured and a shape guessed from the header is what the brief forbids (facts/CoreMedia/TagCollection.md, the CMTaggedBufferGroup section)",
       "facts": "facts/CoreMedia/TagCollection.md",
-      "source": "the host's own CMTaggedBufferGroup.h, which gives the fifteen signatures; nothing about the host's answers has been measured, which is why nothing is claimed",
-      "effect": "not carried: the type is not written, so there is no behaviour to describe. CMTaggedBufferGroupRef is a bridged Objective-C class like CMTagCollectionRef and its shape is two parallel CFArrays - tag collections and buffers - which every accessor walks together; what the host answers for any of it is unmeasured"
+      "source": "the host's own CoreMedia over the chain the group's 464/0 fixture already builds - a subset chain of three entries {video}, {video,track}, {video,track,gone} over three pixel buffers - measured in facts/CoreMedia/cmtag-fixtures/taggedgroup-measure.m, answers beside it, commit 2fbdb758c, and held by tests/backports/host/coremedia7/taggedgroupdescription.m at 28 checks, 0 different under AddressSanitizer, with the count-only and count-only and dropped-attachment mutants both red for their own case",
+      "effect": "the group the buffer was created with, the same pointer; NULL for a sample buffer not created this way, measured on one built over an image buffer, which is what makes the pair specific to this kind of sample buffer rather than a property of sample buffers in general"
     },
     {
       "api": "kCMTaggedBufferGroupError_AllocationFailed",

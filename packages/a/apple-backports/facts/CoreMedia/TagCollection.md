@@ -284,3 +284,50 @@ The consequence for the differential is that **each side's group must be built f
 collections**, and a mixed group is not constructible here at all. The case was written, run, and removed
 rather than left to abort the suite; a caller on 6.1.3 can only hold port collections anyway, so the limit
 does not reach the port's users, but it is the reason the probe's arrays are per side.
+
+## The group's format description and the two sample-buffer functions
+
+Five rows, measured in `cmtag-fixtures/taggedgroup-measure.m` with its answers beside it (commit
+`2fbdb758c`) and held by `tests/backports/host/coremedia7/taggedgroupdescription.m`: **28 checks, 0
+different**, under AddressSanitizer.
+
+**What a format description is here: the platform's own.** `CMFormatDescriptionCreate` at media type
+video and media subtype `'tbgr'` — measured `1952606066` — with the group's per-entry tag collections in
+its extensions dictionary. Its `CFTypeID` is `CMFormatDescriptionGetTypeID()`'s, which is what the host's
+own answer measures, so a caller gets something the platform understands and no new opaque type exists.
+
+**The payload is `CFData`, and that was not the first shape tried.** An array of the collection objects
+was, and 16.4 refuses it: `CMFormatDescriptionCreate` answers `kCMFormatDescriptionError_InvalidParameter`
+(`-12710`) for an extensions dictionary holding bridged Objective-C values, while the same call for a NULL
+group — the same dictionary with no such value in it — answers `0`. The modern framework that took the
+measurement tolerates them, so this is the old platform's constraint and the port is the one that has to
+live with it. What travels instead is, per entry in order, a `CMItemCount` and that collection's tags as
+they sit in memory: a `CMTag` is three machine words with no lifetime of its own, so copying its bytes
+copies all of it.
+
+**`Matches` compares the per-entry collections in order and by content, and nothing else.** The group it
+came from is 1; the same tags over different buffers is 1, so buffers are not part of it; the same entry
+*sizes* over different tags is 0, so it is not a count; two entries is 0 and NULL is 0. The comparison is
+the port's own tag equality over each collection's sorted storage, because `CFEqual` has nothing to say
+about a bridged Objective-C class.
+
+**A NULL group is not a failure.** The host answers `0` and hands back a real description with the same
+subtype that matches nothing, and the reason is visible in the port's own code: there are no entries to
+record, so the payload is empty. It is a description of nothing rather than an error, and it releases
+without an AddressSanitizer report.
+
+**The sample buffer is a real one and the group rides on it as an attachment.** `CMSampleBufferCreate`
+with one sample over an empty `CMBlockBuffer`, the given timing kept (measured `1/2` and `2/1`),
+`numSamples 1`, data ready; then `CMSetAttachment` under
+`kCMAttachmentMode_ShouldNotPropagate`. **Retention follows CF ownership and is not a decision made
+here:** the attachment retains the group and the group is released with the buffer, which is why the
+differential runs under AddressSanitizer — a missing retain or an over-release is a report there rather
+than a crash later. `CMSampleBufferGetTaggedBufferGroup` hands back the same pointer, and NULL for a
+sample buffer built over an image buffer, which is what makes the pair specific to this kind.
+
+**Two mutants, each red for its own case.** Comparing counts instead of tags flips *same entry sizes over
+different tags* from 0 to 1 and nothing else. Never attaching the group flips *the buffer hands the same
+group back* and nothing else.
+
+**The 26.0 one is declarable.** `…WithExtensions` takes a plain `CFDictionaryRef` and needs no type 16.4
+lacks, so it compiles for `armv7-apple-ios6.0` against the 16.4 SDK and owes no `crutches.md` entry.

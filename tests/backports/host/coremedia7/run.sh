@@ -42,13 +42,20 @@ xcrun clang -c -fobjc-arc $quiet $san -I"$AV" -o "$BUILD/CMTaggedBufferGroup17.o
 xcrun clang -dynamiclib -fobjc-arc $quiet $san -I"$AV" -DkCMTagInvalid=port_kCMTagInvalid \
     -DkCMTagCategoryKey=port_kCMTagCategoryKey -DkCMTagValueKey=port_kCMTagValueKey -DkCMTagDataTypeKey=port_kCMTagDataTypeKey \
     -framework Foundation -framework CoreMedia -framework CoreVideo \
-    -o "$BUILD/libCharonCMTag.dylib" "$AV/CMTagCollection17.m" "$AV/CMTag17.m" "$BUILD/CharonCMTagSupport.o" "$BUILD/CMTaggedBufferGroup17.o"
+    -o "$BUILD/libCharonCMTag.dylib" "$AV/CMTagCollection17.m" "$AV/CMTag17.m" "$AV/CMTaggedBufferGroupDescription17.m" "$BUILD/CharonCMTagSupport.o" "$BUILD/CMTaggedBufferGroup17.o"
 xcrun clang -fobjc-arc $quiet $san -I"$AV" "$here/tagcollectionimage.m" -framework CoreMedia -framework CoreVideo -framework Foundation \
     -o "$BUILD/tagcollectionimage"
 "$BUILD/tagcollectionimage" "$BUILD/libCharonCMTag.dylib"
 xcrun clang -fobjc-arc $quiet $san "$here/cmtag.m" -framework CoreMedia -framework Foundation \
     -o "$BUILD/cmtag"
 "$BUILD/cmtag" "$BUILD/libCharonCMTag.dylib"
+# The group's format description and the two sample-buffer functions. Same shape as cmtag.m: the port's
+# file is its own image reached through dlopen(RTLD_LOCAL | RTLD_FIRST), so nothing is renamed and no
+# system header is touched. The chain is built twice - once from the host's collections, once from the
+# port's - because Matches reads a representation only its own side wrote.
+xcrun clang -fobjc-arc $quiet $san -I"$AV" "$here/taggedgroupdescription.m" \
+    -framework CoreMedia -framework CoreVideo -framework Foundation -o "$BUILD/taggedgroupdescription"
+"$BUILD/taggedgroupdescription" "$BUILD/libCharonCMTag.dylib"
 # The HEVC reader is held against a real hvcC - the record of an ffmpeg/libx265 stream, committed here
 # beside the test that reads it - every truncation of it, and single-byte flips of it. Under
 # AddressSanitizer, because a reader that walks off the end of a record is exactly the bug this is for.
