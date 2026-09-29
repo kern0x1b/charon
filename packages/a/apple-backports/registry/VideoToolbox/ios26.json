@@ -10,7 +10,7 @@
    "kind": "class",
    "reason": "the release has no VTFrameProcessor framework: iOS 6.1.3 carries VideoToolbox.framework at /System/Library/Frameworks with the whole compression and decompression session API, and none of the seventeen frame-processor classes on the armv7 cache ladder",
    "effect": "the class exists, the release has no such class, and every member below is answered from the port's own store",
-   "source": "SDK 26.2, VTFrameProcessor.h:3495, the class declaration's API_AVAILABLE line"
+   "source": "SDK 26.2, VTFrameProcessor.h:3495"
   },
   {
    "introduced": "26.0",
@@ -21,7 +21,7 @@
    "kind": "class",
    "reason": "the release has no VTFrameProcessor framework: iOS 6.1.3 carries VideoToolbox.framework at /System/Library/Frameworks with the whole compression and decompression session API, and none of the seventeen frame-processor classes on the armv7 cache ladder",
    "effect": "the class exists, the release has no such class, and every member below is answered from the port's own store",
-   "source": "SDK 26.2, VTFrameProcessorFrame.h:3739, the class declaration's API_AVAILABLE line"
+   "source": "SDK 26.2, VTFrameProcessorFrame.h:3739"
   },
   {
    "introduced": "26.0",
@@ -32,7 +32,7 @@
    "kind": "class",
    "reason": "the release has no VTFrameProcessor framework: iOS 6.1.3 carries VideoToolbox.framework at /System/Library/Frameworks with the whole compression and decompression session API, and none of the seventeen frame-processor classes on the armv7 cache ladder",
    "effect": "the class exists, the release has no such class, and every member below is answered from the port's own store",
-   "source": "SDK 26.2, VTFrameProcessorFrame.h:3766, the class declaration's API_AVAILABLE line"
+   "source": "SDK 26.2, VTFrameProcessorFrame.h:3766"
   },
   {
    "introduced": "26.0",
@@ -43,7 +43,7 @@
    "kind": "class",
    "reason": "the release has no VTFrameProcessor framework: iOS 6.1.3 carries VideoToolbox.framework at /System/Library/Frameworks with the whole compression and decompression session API, and none of the seventeen frame-processor classes on the armv7 cache ladder",
    "effect": "the class exists, the release has no such class, and every member below is answered from the port's own store",
-   "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h:3916, the class declaration's API_AVAILABLE line"
+   "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h:3916"
   },
   {
    "introduced": "26.0",
@@ -54,7 +54,7 @@
    "kind": "class",
    "reason": "the release has no VTFrameProcessor framework: iOS 6.1.3 carries VideoToolbox.framework at /System/Library/Frameworks with the whole compression and decompression session API, and none of the seventeen frame-processor classes on the armv7 cache ladder",
    "effect": "the class exists, the release has no such class, and every member below is answered from the port's own store",
-   "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h:3992, the class declaration's API_AVAILABLE line"
+   "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h:3992"
   },
   {
    "introduced": "26.0",
@@ -65,7 +65,7 @@
    "kind": "class",
    "reason": "the release has no VTFrameProcessor framework: iOS 6.1.3 carries VideoToolbox.framework at /System/Library/Frameworks with the whole compression and decompression session API, and none of the seventeen frame-processor classes on the armv7 cache ladder",
    "effect": "the class exists, the release has no such class, and every member below is answered from the port's own store",
-   "source": "SDK 26.2, VTFrameProcessor_LowLatencyFrameInterpolation.h:4091, the class declaration's API_AVAILABLE line"
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencyFrameInterpolation.h:4091"
   },
   {
    "introduced": "26.0",
@@ -76,7 +76,7 @@
    "kind": "class",
    "reason": "the release has no VTFrameProcessor framework: iOS 6.1.3 carries VideoToolbox.framework at /System/Library/Frameworks with the whole compression and decompression session API, and none of the seventeen frame-processor classes on the armv7 cache ladder",
    "effect": "the class exists, the release has no such class, and every member below is answered from the port's own store",
-   "source": "SDK 26.2, VTFrameProcessor_LowLatencyFrameInterpolation.h:4165, the class declaration's API_AVAILABLE line"
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencyFrameInterpolation.h:4165"
   },
   {
    "introduced": "26.0",
@@ -87,7 +87,7 @@
    "kind": "class",
    "reason": "the release has no VTFrameProcessor framework: iOS 6.1.3 carries VideoToolbox.framework at /System/Library/Frameworks with the whole compression and decompression session API, and none of the seventeen frame-processor classes on the armv7 cache ladder",
    "effect": "the class exists, the release has no such class, and every member below is answered from the port's own store",
-   "source": "SDK 26.2, VTFrameProcessor_LowLatencySuperResolutionScaler.h:4241, the class declaration's API_AVAILABLE line"
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencySuperResolutionScaler.h:4241"
   },
   {
    "introduced": "26.0",
@@ -98,7 +98,7 @@
    "kind": "class",
    "reason": "the release has no VTFrameProcessor framework: iOS 6.1.3 carries VideoToolbox.framework at /System/Library/Frameworks with the whole compression and decompression session API, and none of the seventeen frame-processor classes on the armv7 cache ladder",
    "effect": "the class exists, the release has no such class, and every member below is answered from the port's own store",
-   "source": "SDK 26.2, VTFrameProcessor_LowLatencySuperResolutionScaler.h:4302, the class declaration's API_AVAILABLE line"
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencySuperResolutionScaler.h:4302"
   },
   {
    "introduced": "26.0",
@@ -109,7 +109,7 @@
    "kind": "class",
    "reason": "the release has no VTFrameProcessor framework: iOS 6.1.3 carries VideoToolbox.framework at /System/Library/Frameworks with the whole compression and decompression session API, and none of the seventeen frame-processor classes on the armv7 cache ladder",
    "effect": "the class exists, the release has no such class, and every member below is answered from the port's own store",
-   "source": "SDK 26.2, VTFrameProcessor_MotionBlur.h:4393, the class declaration's API_AVAILABLE line"
+   "source": "SDK 26.2, VTFrameProcessor_MotionBlur.h:4393"
   },
   {
    "introduced": "26.0",
@@ -120,7 +120,7 @@
    "kind": "class",
    "reason": "the release has no VTFrameProcessor framework: iOS 6.1.3 carries VideoToolbox.framework at /System/Library/Frameworks with the whole compression and decompression session API, and none of the seventeen frame-processor classes on the armv7 cache ladder",
    "effect": "the class exists, the release has no such class, and every member below is answered from the port's own store",
-   "source": "SDK 26.2, VTFrameProcessor_MotionBlur.h:4469, the class declaration's API_AVAILABLE line"
+   "source": "SDK 26.2, VTFrameProcessor_MotionBlur.h:4469"
   },
   {
    "introduced": "26.0",
@@ -131,7 +131,7 @@
    "kind": "class",
    "reason": "the release has no VTFrameProcessor framework: iOS 6.1.3 carries VideoToolbox.framework at /System/Library/Frameworks with the whole compression and decompression session API, and none of the seventeen frame-processor classes on the armv7 cache ladder",
    "effect": "the class exists, the release has no such class, and every member below is answered from the port's own store",
-   "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h:4601, the class declaration's API_AVAILABLE line"
+   "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h:4601"
   },
   {
    "introduced": "26.0",
@@ -142,7 +142,7 @@
    "kind": "class",
    "reason": "the release has no VTFrameProcessor framework: iOS 6.1.3 carries VideoToolbox.framework at /System/Library/Frameworks with the whole compression and decompression session API, and none of the seventeen frame-processor classes on the armv7 cache ladder",
    "effect": "the class exists, the release has no such class, and every member below is answered from the port's own store",
-   "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h:4671, the class declaration's API_AVAILABLE line"
+   "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h:4671"
   },
   {
    "introduced": "26.0",
@@ -153,7 +153,7 @@
    "kind": "class",
    "reason": "the release has no VTFrameProcessor framework: iOS 6.1.3 carries VideoToolbox.framework at /System/Library/Frameworks with the whole compression and decompression session API, and none of the seventeen frame-processor classes on the armv7 cache ladder",
    "effect": "the class exists, the release has no such class, and every member below is answered from the port's own store",
-   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:4796, the class declaration's API_AVAILABLE line"
+   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:4796"
   },
   {
    "introduced": "26.0",
@@ -164,7 +164,7 @@
    "kind": "class",
    "reason": "the release has no VTFrameProcessor framework: iOS 6.1.3 carries VideoToolbox.framework at /System/Library/Frameworks with the whole compression and decompression session API, and none of the seventeen frame-processor classes on the armv7 cache ladder",
    "effect": "the class exists, the release has no such class, and every member below is answered from the port's own store",
-   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:4905, the class declaration's API_AVAILABLE line"
+   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:4905"
   },
   {
    "introduced": "26.0",
@@ -175,7 +175,7 @@
    "kind": "class",
    "reason": "the release has no VTFrameProcessor framework: iOS 6.1.3 carries VideoToolbox.framework at /System/Library/Frameworks with the whole compression and decompression session API, and none of the seventeen frame-processor classes on the armv7 cache ladder",
    "effect": "the class exists, the release has no such class, and every member below is answered from the port's own store",
-   "source": "SDK 26.2, VTFrameProcessor_TemporalNoiseFilter.h:4994, the class declaration's API_AVAILABLE line"
+   "source": "SDK 26.2, VTFrameProcessor_TemporalNoiseFilter.h:4994"
   },
   {
    "introduced": "26.0",
@@ -186,194 +186,7 @@
    "kind": "class",
    "reason": "the release has no VTFrameProcessor framework: iOS 6.1.3 carries VideoToolbox.framework at /System/Library/Frameworks with the whole compression and decompression session API, and none of the seventeen frame-processor classes on the armv7 cache ladder",
    "effect": "the class exists, the release has no such class, and every member below is answered from the port's own store",
-   "source": "SDK 26.2, VTFrameProcessor_TemporalNoiseFilter.h:5063, the class declaration's API_AVAILABLE line"
-  },
-  {
-   "introduced": "26.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
-   "api": "-[VTFrameProcessorFrame initWithBuffer:presentationTimeStamp:]",
-   "kind": "method",
-   "reason": "the designated initialiser of a class the release does not have; each argument is stored under the property the SDK declares for it, resolved per class",
-   "effect": "constructs the object and puts each argument in the store under that property's own name, so the value comes back out of the property's own accessor",
-   "source": "SDK 26.2, the class's own header"
-  },
-  {
-   "introduced": "26.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
-   "api": "-[VTFrameProcessorOpticalFlow initWithForwardFlow:backwardFlow:]",
-   "kind": "method",
-   "reason": "the designated initialiser of a class the release does not have; each argument is stored under the property the SDK declares for it, resolved per class",
-   "effect": "constructs the object and puts each argument in the store under that property's own name, so the value comes back out of the property's own accessor",
-   "source": "SDK 26.2, the class's own header"
-  },
-  {
-   "introduced": "26.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
-   "api": "-[VTFrameRateConversionConfiguration initWithFrameWidth:frameHeight:usePrecomputedFlow:qualityPrioritization:revision:]",
-   "kind": "method",
-   "reason": "the designated initialiser of a class the release does not have; each argument is stored under the property the SDK declares for it, resolved per class",
-   "effect": "constructs the object and puts each argument in the store under that property's own name, so the value comes back out of the property's own accessor",
-   "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h:87"
-  },
-  {
-   "introduced": "26.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
-   "api": "-[VTFrameRateConversionParameters initWithSourceFrame:nextFrame:opticalFlow:interpolationPhase:submissionMode:destinationFrames:]",
-   "kind": "method",
-   "reason": "the designated initialiser of a class the release does not have; each argument is stored under the property the SDK declares for it, resolved per class",
-   "effect": "constructs the object and puts each argument in the store under that property's own name, so the value comes back out of the property's own accessor",
-   "source": "SDK 26.2, the class's own header"
-  },
-  {
-   "introduced": "26.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
-   "api": "-[VTLowLatencyFrameInterpolationConfiguration initWithFrameWidth:frameHeight:numberOfInterpolatedFrames:]",
-   "kind": "method",
-   "reason": "the designated initialiser of a class the release does not have; each argument is stored under the property the SDK declares for it, resolved per class",
-   "effect": "constructs the object and puts each argument in the store under that property's own name, so the value comes back out of the property's own accessor",
-   "source": "SDK 26.2, the class's own header"
-  },
-  {
-   "introduced": "26.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
-   "api": "-[VTLowLatencyFrameInterpolationConfiguration initWithFrameWidth:frameHeight:spatialScaleFactor:]",
-   "kind": "method",
-   "reason": "the designated initialiser of a class the release does not have; each argument is stored under the property the SDK declares for it, resolved per class",
-   "effect": "constructs the object and puts each argument in the store under that property's own name, so the value comes back out of the property's own accessor",
-   "source": "SDK 26.2, the class's own header"
-  },
-  {
-   "introduced": "26.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
-   "api": "-[VTLowLatencyFrameInterpolationParameters initWithSourceFrame:previousFrame:interpolationPhase:destinationFrames:]",
-   "kind": "method",
-   "reason": "the designated initialiser of a class the release does not have; each argument is stored under the property the SDK declares for it, resolved per class",
-   "effect": "constructs the object and puts each argument in the store under that property's own name, so the value comes back out of the property's own accessor",
-   "source": "SDK 26.2, the class's own header"
-  },
-  {
-   "introduced": "26.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
-   "api": "-[VTLowLatencySuperResolutionScalerConfiguration initWithFrameWidth:frameHeight:scaleFactor:]",
-   "kind": "method",
-   "reason": "the designated initialiser of a class the release does not have; each argument is stored under the property the SDK declares for it, resolved per class",
-   "effect": "constructs the object and puts each argument in the store under that property's own name, so the value comes back out of the property's own accessor",
-   "source": "SDK 26.2, the class's own header"
-  },
-  {
-   "introduced": "26.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
-   "api": "-[VTLowLatencySuperResolutionScalerParameters initWithSourceFrame:destinationFrame:]",
-   "kind": "method",
-   "reason": "the designated initialiser of a class the release does not have; each argument is stored under the property the SDK declares for it, resolved per class",
-   "effect": "constructs the object and puts each argument in the store under that property's own name, so the value comes back out of the property's own accessor",
-   "source": "SDK 26.2, the class's own header"
-  },
-  {
-   "introduced": "26.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
-   "api": "-[VTMotionBlurConfiguration initWithFrameWidth:frameHeight:usePrecomputedFlow:qualityPrioritization:revision:]",
-   "kind": "method",
-   "reason": "the designated initialiser of a class the release does not have; each argument is stored under the property the SDK declares for it, resolved per class",
-   "effect": "constructs the object and puts each argument in the store under that property's own name, so the value comes back out of the property's own accessor",
-   "source": "SDK 26.2, VTFrameProcessor_MotionBlur.h:80"
-  },
-  {
-   "introduced": "26.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
-   "api": "-[VTMotionBlurParameters initWithSourceFrame:nextFrame:previousFrame:nextOpticalFlow:previousOpticalFlow:motionBlurStrength:submissionMode:destinationFrame:]",
-   "kind": "method",
-   "reason": "the designated initialiser of a class the release does not have; each argument is stored under the property the SDK declares for it, resolved per class",
-   "effect": "constructs the object and puts each argument in the store under that property's own name, so the value comes back out of the property's own accessor",
-   "source": "SDK 26.2, VTFrameProcessor_MotionBlur.h:158"
-  },
-  {
-   "introduced": "26.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
-   "api": "-[VTOpticalFlowConfiguration initWithFrameWidth:frameHeight:qualityPrioritization:revision:]",
-   "kind": "method",
-   "reason": "the designated initialiser of a class the release does not have; each argument is stored under the property the SDK declares for it, resolved per class",
-   "effect": "constructs the object and puts each argument in the store under that property's own name, so the value comes back out of the property's own accessor",
-   "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h:78"
-  },
-  {
-   "introduced": "26.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
-   "api": "-[VTOpticalFlowParameters initWithSourceFrame:nextFrame:submissionMode:destinationOpticalFlow:]",
-   "kind": "method",
-   "reason": "the designated initialiser of a class the release does not have; each argument is stored under the property the SDK declares for it, resolved per class",
-   "effect": "constructs the object and puts each argument in the store under that property's own name, so the value comes back out of the property's own accessor",
-   "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h:145"
-  },
-  {
-   "introduced": "26.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
-   "api": "-[VTSuperResolutionScalerConfiguration initWithFrameWidth:frameHeight:scaleFactor:inputType:usePrecomputedFlow:qualityPrioritization:revision:]",
-   "kind": "method",
-   "reason": "the designated initialiser of a class the release does not have; each argument is stored under the property the SDK declares for it, resolved per class",
-   "effect": "constructs the object and puts each argument in the store under that property's own name, so the value comes back out of the property's own accessor",
-   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:109"
-  },
-  {
-   "introduced": "26.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
-   "api": "-[VTSuperResolutionScalerParameters initWithSourceFrame:previousFrame:previousOutputFrame:opticalFlow:submissionMode:destinationFrame:]",
-   "kind": "method",
-   "reason": "the designated initialiser of a class the release does not have; each argument is stored under the property the SDK declares for it, resolved per class",
-   "effect": "constructs the object and puts each argument in the store under that property's own name, so the value comes back out of the property's own accessor",
-   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:208"
-  },
-  {
-   "introduced": "26.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
-   "api": "-[VTTemporalNoiseFilterConfiguration initWithFrameWidth:frameHeight:sourcePixelFormat:]",
-   "kind": "method",
-   "reason": "the designated initialiser of a class the release does not have; each argument is stored under the property the SDK declares for it, resolved per class",
-   "effect": "constructs the object and puts each argument in the store under that property's own name, so the value comes back out of the property's own accessor",
-   "source": "SDK 26.2, the class's own header"
-  },
-  {
-   "introduced": "26.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
-   "api": "-[VTTemporalNoiseFilterParameters initWithSourceFrame:nextFrames:previousFrames:destinationFrame:filterStrength:hasDiscontinuity:]",
-   "kind": "method",
-   "reason": "the designated initialiser of a class the release does not have; each argument is stored under the property the SDK declares for it, resolved per class",
-   "effect": "constructs the object and puts each argument in the store under that property's own name, so the value comes back out of the property's own accessor",
-   "source": "SDK 26.2, the class's own header"
+   "source": "SDK 26.2, VTFrameProcessor_TemporalNoiseFilter.h:5063"
   },
   {
    "introduced": "26.0",
@@ -383,8 +196,8 @@
    "api": "VTFrameProcessorFrame.buffer",
    "kind": "property",
    "reason": "a property of a class the release does not have",
-   "effect": "answers from the port's own store under this property's name, retained, because the SDK declares no ownership annotation",
-   "source": "SDK 26.2, VTFrameProcessorFrame.h:28"
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessorFrame.h:3739"
   },
   {
    "introduced": "26.0",
@@ -395,7 +208,7 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, the class's own header"
+   "source": "SDK 26.2, VTFrameProcessorFrame.h:3739"
   },
   {
    "introduced": "26.0",
@@ -405,8 +218,8 @@
    "api": "VTFrameProcessorOpticalFlow.backwardFlow",
    "kind": "property",
    "reason": "a property of a class the release does not have",
-   "effect": "answers from the port's own store under this property's name, retained, because the SDK declares no ownership annotation",
-   "source": "SDK 26.2, the class's own header"
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessorFrame.h:3766"
   },
   {
    "introduced": "26.0",
@@ -416,8 +229,8 @@
    "api": "VTFrameProcessorOpticalFlow.forwardFlow",
    "kind": "property",
    "reason": "a property of a class the release does not have",
-   "effect": "answers from the port's own store under this property's name, retained, because the SDK declares no ownership annotation",
-   "source": "SDK 26.2, the class's own header"
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessorFrame.h:3766"
   },
   {
    "introduced": "26.0",
@@ -426,9 +239,20 @@
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "VTFrameRateConversionConfiguration.defaultRevision",
    "kind": "property",
-   "reason": "a property of a class the release does not have, a class property",
+   "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h:32"
+   "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h:3916"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTFrameRateConversionConfiguration.destinationPixelBufferAttributes",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h:3916"
   },
   {
    "introduced": "26.0",
@@ -439,7 +263,18 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, the class's own header"
+   "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h:3916"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTFrameRateConversionConfiguration.frameSupportedPixelFormats",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h:3916"
   },
   {
    "introduced": "26.0",
@@ -450,7 +285,51 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h:87"
+   "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h:3916"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTFrameRateConversionConfiguration.maximumDimensions",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h:3916"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTFrameRateConversionConfiguration.minimumDimensions",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h:3916"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTFrameRateConversionConfiguration.nextFrameCount",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h:3916"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTFrameRateConversionConfiguration.previousFrameCount",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h:3916"
   },
   {
    "introduced": "26.0",
@@ -461,7 +340,7 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h:108"
+   "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h:3916"
   },
   {
    "introduced": "26.0",
@@ -472,7 +351,29 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h:29"
+   "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h:3916"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTFrameRateConversionConfiguration.sourcePixelBufferAttributes",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h:3916"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTFrameRateConversionConfiguration.supported",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h:3916"
   },
   {
    "introduced": "26.0",
@@ -481,9 +382,9 @@
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "VTFrameRateConversionConfiguration.supportedRevisions",
    "kind": "property",
-   "reason": "a property of a class the release does not have, a class property",
+   "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, the class's own header"
+   "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h:3916"
   },
   {
    "introduced": "26.0",
@@ -494,7 +395,29 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, the class's own header"
+   "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h:3916"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTFrameRateConversionParameters.destinationFrame",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h:3992"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTFrameRateConversionParameters.destinationFrames",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h:3992"
   },
   {
    "introduced": "26.0",
@@ -505,7 +428,7 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h:152"
+   "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h:3992"
   },
   {
    "introduced": "26.0",
@@ -516,7 +439,7 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h:152"
+   "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h:3992"
   },
   {
    "introduced": "26.0",
@@ -527,7 +450,18 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, the class's own header"
+   "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h:3992"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTFrameRateConversionParameters.sourceFrame",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h:3992"
   },
   {
    "introduced": "26.0",
@@ -538,7 +472,18 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, the class's own header"
+   "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h:3992"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTLowLatencyFrameInterpolationConfiguration.destinationPixelBufferAttributes",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencyFrameInterpolation.h:4091"
   },
   {
    "introduced": "26.0",
@@ -549,7 +494,18 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, the class's own header"
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencyFrameInterpolation.h:4091"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTLowLatencyFrameInterpolationConfiguration.frameSupportedPixelFormats",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencyFrameInterpolation.h:4091"
   },
   {
    "introduced": "26.0",
@@ -560,7 +516,40 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, the class's own header"
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencyFrameInterpolation.h:4091"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTLowLatencyFrameInterpolationConfiguration.maximumDimensions",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencyFrameInterpolation.h:4091"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTLowLatencyFrameInterpolationConfiguration.minimumDimensions",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencyFrameInterpolation.h:4091"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTLowLatencyFrameInterpolationConfiguration.nextFrameCount",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencyFrameInterpolation.h:4091"
   },
   {
    "introduced": "26.0",
@@ -571,7 +560,29 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, the class's own header"
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencyFrameInterpolation.h:4091"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTLowLatencyFrameInterpolationConfiguration.previousFrameCount",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencyFrameInterpolation.h:4091"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTLowLatencyFrameInterpolationConfiguration.sourcePixelBufferAttributes",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencyFrameInterpolation.h:4091"
   },
   {
    "introduced": "26.0",
@@ -582,7 +593,40 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, the class's own header"
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencyFrameInterpolation.h:4091"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTLowLatencyFrameInterpolationConfiguration.supported",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencyFrameInterpolation.h:4091"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTLowLatencyFrameInterpolationParameters.destinationFrame",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencyFrameInterpolation.h:4165"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTLowLatencyFrameInterpolationParameters.destinationFrames",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencyFrameInterpolation.h:4165"
   },
   {
    "introduced": "26.0",
@@ -593,7 +637,7 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, the class's own header"
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencyFrameInterpolation.h:4165"
   },
   {
    "introduced": "26.0",
@@ -604,7 +648,29 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, the class's own header"
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencyFrameInterpolation.h:4165"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTLowLatencyFrameInterpolationParameters.sourceFrame",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencyFrameInterpolation.h:4165"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTLowLatencySuperResolutionScalerConfiguration.destinationPixelBufferAttributes",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencySuperResolutionScaler.h:4241"
   },
   {
    "introduced": "26.0",
@@ -615,7 +681,18 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, the class's own header"
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencySuperResolutionScaler.h:4241"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTLowLatencySuperResolutionScalerConfiguration.frameSupportedPixelFormats",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencySuperResolutionScaler.h:4241"
   },
   {
    "introduced": "26.0",
@@ -626,7 +703,51 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, the class's own header"
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencySuperResolutionScaler.h:4241"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTLowLatencySuperResolutionScalerConfiguration.maximumDimensions",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencySuperResolutionScaler.h:4241"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTLowLatencySuperResolutionScalerConfiguration.minimumDimensions",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencySuperResolutionScaler.h:4241"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTLowLatencySuperResolutionScalerConfiguration.nextFrameCount",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencySuperResolutionScaler.h:4241"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTLowLatencySuperResolutionScalerConfiguration.previousFrameCount",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencySuperResolutionScaler.h:4241"
   },
   {
    "introduced": "26.0",
@@ -637,7 +758,62 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, the class's own header"
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencySuperResolutionScaler.h:4241"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTLowLatencySuperResolutionScalerConfiguration.sourcePixelBufferAttributes",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencySuperResolutionScaler.h:4241"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTLowLatencySuperResolutionScalerConfiguration.supported",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencySuperResolutionScaler.h:4241"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTLowLatencySuperResolutionScalerParameters.destinationFrame",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencySuperResolutionScaler.h:4302"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTLowLatencySuperResolutionScalerParameters.destinationFrames",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencySuperResolutionScaler.h:4302"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTLowLatencySuperResolutionScalerParameters.sourceFrame",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencySuperResolutionScaler.h:4302"
   },
   {
    "introduced": "26.0",
@@ -646,9 +822,9 @@
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "VTMotionBlurConfiguration.defaultRevision",
    "kind": "property",
-   "reason": "a property of a class the release does not have, a class property",
+   "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, VTFrameProcessor_MotionBlur.h:33"
+   "source": "SDK 26.2, VTFrameProcessor_MotionBlur.h:4393"
   },
   {
    "introduced": "26.0",
@@ -659,7 +835,7 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, the class's own header"
+   "source": "SDK 26.2, VTFrameProcessor_MotionBlur.h:4393"
   },
   {
    "introduced": "26.0",
@@ -670,7 +846,7 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, VTFrameProcessor_MotionBlur.h:80"
+   "source": "SDK 26.2, VTFrameProcessor_MotionBlur.h:4393"
   },
   {
    "introduced": "26.0",
@@ -681,7 +857,7 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, VTFrameProcessor_MotionBlur.h:101"
+   "source": "SDK 26.2, VTFrameProcessor_MotionBlur.h:4393"
   },
   {
    "introduced": "26.0",
@@ -692,18 +868,7 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, VTFrameProcessor_MotionBlur.h:30"
-  },
-  {
-   "introduced": "26.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
-   "api": "VTMotionBlurConfiguration.supportedRevisions",
-   "kind": "property",
-   "reason": "a property of a class the release does not have, a class property",
-   "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, the class's own header"
+   "source": "SDK 26.2, VTFrameProcessor_MotionBlur.h:4393"
   },
   {
    "introduced": "26.0",
@@ -714,7 +879,29 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, the class's own header"
+   "source": "SDK 26.2, VTFrameProcessor_MotionBlur.h:4393"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTMotionBlurParameters.destinationFrame",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_MotionBlur.h:4469"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTMotionBlurParameters.destinationFrames",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_MotionBlur.h:4469"
   },
   {
    "introduced": "26.0",
@@ -725,7 +912,7 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, the class's own header"
+   "source": "SDK 26.2, VTFrameProcessor_MotionBlur.h:4469"
   },
   {
    "introduced": "26.0",
@@ -736,7 +923,7 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, the class's own header"
+   "source": "SDK 26.2, VTFrameProcessor_MotionBlur.h:4469"
   },
   {
    "introduced": "26.0",
@@ -747,7 +934,7 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, the class's own header"
+   "source": "SDK 26.2, VTFrameProcessor_MotionBlur.h:4469"
   },
   {
    "introduced": "26.0",
@@ -758,7 +945,7 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, the class's own header"
+   "source": "SDK 26.2, VTFrameProcessor_MotionBlur.h:4469"
   },
   {
    "introduced": "26.0",
@@ -769,7 +956,18 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, the class's own header"
+   "source": "SDK 26.2, VTFrameProcessor_MotionBlur.h:4469"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTMotionBlurParameters.sourceFrame",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_MotionBlur.h:4469"
   },
   {
    "introduced": "26.0",
@@ -780,7 +978,7 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, the class's own header"
+   "source": "SDK 26.2, VTFrameProcessor_MotionBlur.h:4469"
   },
   {
    "introduced": "26.0",
@@ -789,9 +987,20 @@
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "VTOpticalFlowConfiguration.defaultRevision",
    "kind": "property",
-   "reason": "a property of a class the release does not have, a class property",
+   "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h:33"
+   "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h:4601"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTOpticalFlowConfiguration.destinationPixelBufferAttributes",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h:4601"
   },
   {
    "introduced": "26.0",
@@ -802,7 +1011,18 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, the class's own header"
+   "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h:4601"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTOpticalFlowConfiguration.frameSupportedPixelFormats",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h:4601"
   },
   {
    "introduced": "26.0",
@@ -813,7 +1033,51 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h:78"
+   "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h:4601"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTOpticalFlowConfiguration.maximumDimensions",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h:4601"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTOpticalFlowConfiguration.minimumDimensions",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h:4601"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTOpticalFlowConfiguration.nextFrameCount",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h:4601"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTOpticalFlowConfiguration.previousFrameCount",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h:4601"
   },
   {
    "introduced": "26.0",
@@ -824,7 +1088,7 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h:95"
+   "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h:4601"
   },
   {
    "introduced": "26.0",
@@ -835,7 +1099,29 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h:30"
+   "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h:4601"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTOpticalFlowConfiguration.sourcePixelBufferAttributes",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h:4601"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTOpticalFlowConfiguration.supported",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h:4601"
   },
   {
    "introduced": "26.0",
@@ -844,9 +1130,31 @@
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "VTOpticalFlowConfiguration.supportedRevisions",
    "kind": "property",
-   "reason": "a property of a class the release does not have, a class property",
+   "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, the class's own header"
+   "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h:4601"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTOpticalFlowParameters.destinationFrame",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h:4671"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTOpticalFlowParameters.destinationFrames",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h:4671"
   },
   {
    "introduced": "26.0",
@@ -857,7 +1165,7 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h:144"
+   "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h:4671"
   },
   {
    "introduced": "26.0",
@@ -868,7 +1176,18 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h:137"
+   "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h:4671"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTOpticalFlowParameters.sourceFrame",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h:4671"
   },
   {
    "introduced": "26.0",
@@ -879,7 +1198,7 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, the class's own header"
+   "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h:4671"
   },
   {
    "introduced": "26.0",
@@ -890,7 +1209,7 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:171"
+   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:4796"
   },
   {
    "introduced": "26.0",
@@ -901,7 +1220,7 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, the class's own header"
+   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:4796"
   },
   {
    "introduced": "26.0",
@@ -910,9 +1229,20 @@
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "VTSuperResolutionScalerConfiguration.defaultRevision",
    "kind": "property",
-   "reason": "a property of a class the release does not have, a class property",
+   "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, the class's own header"
+   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:4796"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTSuperResolutionScalerConfiguration.destinationPixelBufferAttributes",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:4796"
   },
   {
    "introduced": "26.0",
@@ -923,7 +1253,18 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:99"
+   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:4796"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTSuperResolutionScalerConfiguration.frameSupportedPixelFormats",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:4796"
   },
   {
    "introduced": "26.0",
@@ -934,7 +1275,7 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:109"
+   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:4796"
   },
   {
    "introduced": "26.0",
@@ -945,7 +1286,40 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:103"
+   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:4796"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTSuperResolutionScalerConfiguration.maximumDimensions",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:4796"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTSuperResolutionScalerConfiguration.minimumDimensions",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:4796"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTSuperResolutionScalerConfiguration.nextFrameCount",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:4796"
   },
   {
    "introduced": "26.0",
@@ -954,9 +1328,20 @@
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "VTSuperResolutionScalerConfiguration.precomputedFlow",
    "kind": "property",
-   "reason": "a property of a class the release does not have, a getter=usesPrecomputedFlow",
+   "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:130"
+   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:4796"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTSuperResolutionScalerConfiguration.previousFrameCount",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:4796"
   },
   {
    "introduced": "26.0",
@@ -967,7 +1352,7 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:114"
+   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:4796"
   },
   {
    "introduced": "26.0",
@@ -978,7 +1363,7 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:29"
+   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:4796"
   },
   {
    "introduced": "26.0",
@@ -989,7 +1374,29 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:102"
+   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:4796"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTSuperResolutionScalerConfiguration.sourcePixelBufferAttributes",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:4796"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTSuperResolutionScalerConfiguration.supported",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:4796"
   },
   {
    "introduced": "26.0",
@@ -998,9 +1405,9 @@
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "VTSuperResolutionScalerConfiguration.supportedRevisions",
    "kind": "property",
-   "reason": "a property of a class the release does not have, a class property",
+   "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, the class's own header"
+   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:4796"
   },
   {
    "introduced": "26.0",
@@ -1009,9 +1416,31 @@
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "VTSuperResolutionScalerConfiguration.supportedScaleFactors",
    "kind": "property",
-   "reason": "a property of a class the release does not have, a class property",
+   "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, the class's own header"
+   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:4796"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTSuperResolutionScalerParameters.destinationFrame",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:4905"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTSuperResolutionScalerParameters.destinationFrames",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:4905"
   },
   {
    "introduced": "26.0",
@@ -1022,7 +1451,7 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, the class's own header"
+   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:4905"
   },
   {
    "introduced": "26.0",
@@ -1033,7 +1462,7 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, the class's own header"
+   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:4905"
   },
   {
    "introduced": "26.0",
@@ -1044,7 +1473,18 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, the class's own header"
+   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:4905"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTSuperResolutionScalerParameters.sourceFrame",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:4905"
   },
   {
    "introduced": "26.0",
@@ -1055,7 +1495,18 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, the class's own header"
+   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:4905"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTTemporalNoiseFilterConfiguration.destinationPixelBufferAttributes",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_TemporalNoiseFilter.h:4994"
   },
   {
    "introduced": "26.0",
@@ -1066,7 +1517,18 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, VTFrameProcessor_TemporalNoiseFilter.h:44"
+   "source": "SDK 26.2, VTFrameProcessor_TemporalNoiseFilter.h:4994"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTTemporalNoiseFilterConfiguration.frameSupportedPixelFormats",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_TemporalNoiseFilter.h:4994"
   },
   {
    "introduced": "26.0",
@@ -1077,7 +1539,73 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, VTFrameProcessor_TemporalNoiseFilter.h:44"
+   "source": "SDK 26.2, VTFrameProcessor_TemporalNoiseFilter.h:4994"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTTemporalNoiseFilterConfiguration.maximumDimensions",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_TemporalNoiseFilter.h:4994"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTTemporalNoiseFilterConfiguration.minimumDimensions",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_TemporalNoiseFilter.h:4994"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTTemporalNoiseFilterConfiguration.nextFrameCount",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_TemporalNoiseFilter.h:4994"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTTemporalNoiseFilterConfiguration.previousFrameCount",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_TemporalNoiseFilter.h:4994"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTTemporalNoiseFilterConfiguration.sourcePixelBufferAttributes",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_TemporalNoiseFilter.h:4994"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTTemporalNoiseFilterConfiguration.supported",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_TemporalNoiseFilter.h:4994"
   },
   {
    "introduced": "26.0",
@@ -1086,9 +1614,31 @@
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "VTTemporalNoiseFilterConfiguration.supportedSourcePixelFormats",
    "kind": "property",
-   "reason": "a property of a class the release does not have, a class property",
+   "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, the class's own header"
+   "source": "SDK 26.2, VTFrameProcessor_TemporalNoiseFilter.h:4994"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTTemporalNoiseFilterParameters.destinationFrame",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_TemporalNoiseFilter.h:5063"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTTemporalNoiseFilterParameters.destinationFrames",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_TemporalNoiseFilter.h:5063"
   },
   {
    "introduced": "26.0",
@@ -1099,7 +1649,7 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, the class's own header"
+   "source": "SDK 26.2, VTFrameProcessor_TemporalNoiseFilter.h:5063"
   },
   {
    "introduced": "26.0",
@@ -1110,7 +1660,7 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, the class's own header"
+   "source": "SDK 26.2, VTFrameProcessor_TemporalNoiseFilter.h:5063"
   },
   {
    "introduced": "26.0",
@@ -1121,7 +1671,7 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, VTFrameProcessor_TemporalNoiseFilter.h:112"
+   "source": "SDK 26.2, VTFrameProcessor_TemporalNoiseFilter.h:5063"
   },
   {
    "introduced": "26.0",
@@ -1132,7 +1682,18 @@
    "kind": "property",
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
-   "source": "SDK 26.2, the class's own header"
+   "source": "SDK 26.2, VTFrameProcessor_TemporalNoiseFilter.h:5063"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTTemporalNoiseFilterParameters.sourceFrame",
+   "kind": "property",
+   "reason": "a property of a class the release does not have",
+   "effect": "answers from the port's own store under this property's name",
+   "source": "SDK 26.2, VTFrameProcessor_TemporalNoiseFilter.h:5063"
   }
  ]
 }

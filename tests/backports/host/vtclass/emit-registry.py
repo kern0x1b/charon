@@ -54,6 +54,18 @@ def _availability():
     return module
 
 
+def _members():
+    """members.py, by explicit path, with its __file__ asserted - the same rule as everywhere else here,
+    and for the same reason: a module named import once loaded a different copy and every count agreed."""
+    import importlib.util
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "members.py")
+    spec = importlib.util.spec_from_file_location("vt_members", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    assert os.path.abspath(module.__file__) == path, "loaded a members.py that is not this one"
+    return module
+
+
 def _introduction(sdk_text, class_name):
     """(ios version, line) for this class, from availability_of() and NOTHING ELSE.
 
@@ -85,13 +97,13 @@ def _header_line(sdk_text, class_name, needle):
 
 
 def build_rows(gen_body, sdk_text, protocols, classes, order):
-    """Every row: one per class, one per initialiser, one per property."""
+    """Every row, and the members come from members_of() - ONE derivation, reading the declaration and
+    the value file. A row therefore cannot describe a member the file does not implement, and an
+    INHERITED property the class restates is a member, because the class implements its accessor. That
+    was 69 rows: the emitter wrote a class's own properties and the value files implement the protocol's
+    as well."""
     rows = []
-    # _introduction() walks the headers per FILE so a row can name one; gen_body.initialisers() wants
-    # them joined, because it matches a class across all of them at once.
-    joined = "\n".join(sdk_text.values())
     for class_name in order:
-        entry = classes[class_name]
         introduced, header = _introduction(sdk_text, class_name)
         release = "ios%s.json" % introduced.split(".")[0]
         base = {
@@ -100,46 +112,25 @@ def build_rows(gen_body, sdk_text, protocols, classes, order):
             "status": CLASS_ROW_STATUS,
             "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
         }
-        source_class = "SDK 26.2, %s, the class declaration's API_AVAILABLE line" % (header or "?")
-        rows.append((release, dict(base, **{
-            "api": class_name,
-            "kind": "class",
-            "reason": "the release has no VTFrameProcessor framework: iOS 6.1.3 carries "
-                      "VideoToolbox.framework at /System/Library/Frameworks with the whole compression "
-                      "and decompression session API, and none of the seventeen frame-processor classes "
-                      "on the armv7 cache ladder",
-            "effect": "the class exists, the release has no such class, and every member below is "
-                      "answered from the port's own store",
-            "source": source_class,
-        })))
-        for selector, arguments, _returns in gen_body.initialisers(joined, class_name):
-            line = _header_line(sdk_text, class_name, selector.split(":")[0] + ":")
-            rows.append((release, dict(base, **{
-                "api": "-[%s %s]" % (class_name, selector),
-                "kind": "method",
-                "reason": "the designated initialiser of a class the release does not have; each argument "
-                          "is stored under the property the SDK declares for it, resolved per class",
-                "effect": "constructs the object and puts each argument in the store under that property's "
-                          "own name, so the value comes back out of the property's own accessor",
-                "source": "SDK 26.2, %s" % (line or "the class's own header"),
-            })))
-        for name, prop in entry["own"].items():
-            line = _header_line(sdk_text, class_name, name)
-            kinds = []
-            if prop["class"]:
-                kinds.append("class property")
-            if prop["getter"] and prop["getter"] != name:
-                kinds.append("getter=%s" % prop["getter"])
-            rows.append((release, dict(base, **{
-                "api": "%s.%s" % (class_name, name),
-                "kind": "property",
-                "reason": "a property of a class the release does not have%s"
-                          % (", a " + " and a ".join(kinds) if kinds else ""),
-                "effect": "answers from the port's own store under this property's name"
-                          + (", retained, because the SDK declares no ownership annotation"
-                             if _is_cf(gen_body, prop) else ""),
-                "source": "SDK 26.2, %s" % (line or "the class's own header"),
-            })))
+        source = "SDK 26.2, %s" % (header or "the class's own header")
+        for kind, api in sorted(_members().members_of(class_name)["entries"]):
+            if kind == "class":
+                reason = ("the release has no VTFrameProcessor framework: iOS 6.1.3 carries "
+                          "VideoToolbox.framework at /System/Library/Frameworks with the whole "
+                          "compression and decompression session API, and none of the seventeen "
+                          "frame-processor classes on the armv7 cache ladder")
+                effect = ("the class exists, the release has no such class, and every member below is "
+                          "answered from the port's own store")
+            elif kind == "method":
+                reason = ("the designated initialiser of a class the release does not have; each argument "
+                          "is stored under the property the SDK declares for it, resolved per class")
+                effect = ("constructs the object and puts each argument in the store under that property's "
+                          "own name, so the value comes back out of the property's own accessor")
+            else:
+                reason = "a property of a class the release does not have"
+                effect = "answers from the port's own store under this property's name"
+            rows.append((release, dict(base, api=api, kind=kind, reason=reason, effect=effect,
+                                       source=source)))
     return rows
 
 
