@@ -21,6 +21,7 @@ package("musickit")
     for _, file in ipairs(os.files(path.join(os.scriptdir(), "files", "**", "*.swift"))) do
         table.insert(sources, file)
     end
+    table.insert(sources, path.join(os.scriptdir(), "files", "CharonC.c"))
     local digests = {path.join(os.scriptdir(), "xmake.lua"), path.join(os.scriptdir(), "README.md")}
     for _, file in ipairs(sources) do
         table.insert(digests, path.filename(file) .. "=" .. hash.sha256(file))
@@ -44,21 +45,34 @@ package("musickit")
         local minimum = toolchain:config("deployment")
         local triple = package:arch() .. "-apple-ios" .. minimum
         local sdk = toolchain:config("sdkdir")
+        local target = {"-target", package:arch() .. "-apple-ios", "-miphoneos-version-min=" .. minimum,
+                        "-isysroot", sdk}
         local swiftdir = path.join(package:installdir("lib"), "swift", "iphoneos")
         local module = path.join(swiftdir, "MusicKit.swiftmodule")
         os.mkdir(module)
         local files = os.files(path.join("files", "MusicKit", "**.swift"))
         assert(#files > 0, "the module has no sources")
+        os.mkdir(path.absolute("objects"))
+        -- The C shim, against micro-ecc's headers: the ES256 signature of a developer token is the
+        -- same curve work the CloudKit family does, and one implementation of it is the point.
+        local micro = assert(package:dep("micro-ecc"), "MusicKit signs its developer token with charon@micro-ecc")
+        package:add("deps", "charon@micro-ecc", {alias = "micro-ecc"})
+        os.vrunv(toolchain:tool("cc"), table.join(target, {"-I" .. path.join(os.scriptdir(), "files", "include"),
+                 "-I" .. path.join(micro:installdir("include")), "-I" .. path.join("files"),
+                 "-Os", "-fvisibility=hidden", "-c", path.join("files", "CharonC.c"),
+                 "-o", path.absolute(path.join("objects", "CharonC.o"))})
         os.vrunv(swiftc, table.join(swift.runtime_flags({
             architecture = package:arch(), deployment = minimum, sdk = sdk,
             resources = path.join(runtime:installdir(), "lib", "swift"),
             plugins = table.wrap((runtime:envs() or {}).SWIFT_PLUGIN_PATH)[1],
             module = "MusicKit", optimize = "fastest", prefix_map = os.curdir() .. "=/musickit"}),
-            {"-emit-module", "-emit-module-path", path.join(module, package:arch() .. "-apple-ios.swiftmodule"), "-c"}, files,
+            {"-import-objc-header", path.join("files", "include", "MusicKitC.h"),
+             "-I", path.join("files", "include"),
+             "-emit-module", "-emit-module-path", path.join(module, package:arch() .. "-apple-ios.swiftmodule"), "-c"}, files,
             {"-o", path.absolute(path.join("objects", "MusicKit.o"))}))
-        os.mkdir(path.absolute("objects"))
         os.vrunv(toolchain:tool("ar"), {"-rcs", path.join(package:installdir("lib"), "libMusicKit.a"),
-                                       path.absolute(path.join("objects", "MusicKit.o"))})
+                                       path.absolute(path.join("objects", "MusicKit.o")),
+                                       path.absolute(path.join("objects", "CharonC.o"))})
         package:setenv("CHARON_SWIFT_MODULES", swiftdir)
         os.cp("LICENSE", package:installdir("licenses"))
     end)
