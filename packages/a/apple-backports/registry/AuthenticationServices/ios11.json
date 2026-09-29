@@ -149,10 +149,10 @@
       "kind": "property",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "Sign in with Apple is not carried: the release has no Apple ID authorization service, no ASAuthorization controller and no way to reach the identity provider, so there is no credential to read a code from",
-      "effect": "the class and the property are not there",
-      "source": "the headers of SDK 16.4; nothing of a release was read, as the release has none of the classes"
+      "status": "implemented",
+      "effect": "the short-lived code the server exchanges for the identity token, the other half of the pair identityToken makes. The getter is at ASAuthorizationAppleIDCredential.m:85 and its storage is declared by the @synthesize at :31, and the shape check compares it against the host's own class -- so this row is a measurement, not a reading of the header",
+      "source": "macOS 27.0's own AuthenticationServices, asked with class_copyMethodList for the method list by tests/backports/host/authservices, and the declaration in ASAuthorizationAppleIDCredential.m",
+      "facts": "facts/AuthenticationServices/ASAuthorizationRequest.md"
     },
     {
       "api": "ASAuthorizationRequest",
