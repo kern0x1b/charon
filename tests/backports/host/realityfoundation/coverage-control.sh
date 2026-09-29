@@ -1,57 +1,33 @@
 #!/bin/sh
-# coverage.py's control: a row whose `source` is edited by hand must be caught, and --write must
-# regenerate it.
+# The guard's own control: three assertions, and every one of them fails the suite if it does not hold.
 #
-# The review measured that the old coverage.py could not do this - it printed a report and exited 0
-# with a hand-edited row's blanket claim still in the file, so the property the sources have (each one
-# saying what actually measures it) was true by hand and unguarded. The control is the same edit the
-# reviewer made, in a copy under the worktree's run directory, and the two verdicts it must produce:
+#   1. the pre-repair guard - the tracked fixture beside this script - accepts a tree where a row the
+#      differential measures says nothing measures it. That is the r3 bug, kept as a fixture so the
+#      comparison cannot drift with the history: `git show HEAD:`, which r4 used, names the repair
+#      commit itself and so compared the repaired guard with itself while claiming otherwise.
+#   2. the real guard rejects that same tree.
+#   3. and the rows it flags are exactly the covered ones.
 #
-#   red   --check on the hand-edited copy exits non-zero, and says the row claims a measurement the
-#          loop did not find
-#   green --write on that copy, then --check, exits 0
+# Nothing here echoes a failure and carries on. A premise that does not hold exits non-zero, because
+# the r4 review's finding was a branch that only echoed and left the suite green on a comparison that
+# was not the one it named.
 #
-# Nothing here touches the registries: the copy is the subject, and it is rewritten every run, so the
-# control is the same experiment each time rather than a one-off.
+# The pre-repair copy is built here, every implemented row carrying the declaration sentence, because
+# that is the state the bug lived in and a repaired tree would make the fixture look wrong for the
+# wrong reason.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 repo=$(cd "$here/../../../.." && pwd)
 runs="$repo/.agent-work/runs/realityfoundation"
 mkdir -p "$runs"
 coverage="$here/coverage.py"
+fixture="$here/coverage-guard-pre-repair.py"
 registry="$repo/packages/s/swift-runtime/registry/RealityFoundation.json"
-copy="$runs/control-realityfoundation.json"
+pre="$runs/control-pre-repair.json"
 
-cp "$registry" "$copy"
-python3 - "$copy" <<'PY'
-import json, sys
-path = sys.argv[1]
-document = json.load(open(path))
-for entry in document["entries"]:
-    if entry.get("status") == "implemented":
-        entry["source"] = ("HAND EDITED BY THE CONTROL: the host differential measures every one of "
-                           "these")
-        break
-json.dump(document, open(path, "w"), indent=4)
-open(path, "a").write("\n")
-PY
-
-# The control for the guard's own bug: its expected text for a *covered* row was the declaration
-# sentence, because what_this_row_should_say tested the verdict in slot 0 and the hit carried the
-# token. So the tree's 140 covered rows all said "No check measures it" and the guard agreed with
-# them: exit 0 on a tree where a measured row claimed no measurement.
-#
-# Reproducing that needs the pre-repair state, so the copy is built with every implemented row saying
-# the declaration sentence, and then two guards are run on it:
-#
-#   the guard as it was  exit 0 - it agrees with the dead branch, which is the bug
-#   the guard as it is   exit non-zero, and the mismatches are exactly the covered rows
-#
-# The old guard sits beside main.swift for the run - it resolves the differential relative to its own
-# path - and is removed after.
 declaration_sentence="the declaration in packages/s/swift-runtime/files/, which tests/backports/host/swiftregistry holds to a name, and the interface line it was read from. No check in this series measures it"
-cp "$registry" "$runs/control-covered.json"
-python3 - "$runs/control-covered.json" "$declaration_sentence" <<'PYEOF'
+cp "$registry" "$pre"
+python3 - "$pre" "$declaration_sentence" <<'PY'
 import json, sys
 path, sentence = sys.argv[1], sys.argv[2]
 document = json.load(open(path))
@@ -60,46 +36,66 @@ for entry in document["entries"]:
         entry["source"] = sentence
 json.dump(document, open(path, "w"), indent=4)
 open(path, "a").write("\n")
-PYEOF
-covered_count=$(python3 "$coverage" "$registry" 2>/dev/null | grep -c '^covered  ' || true)
-[ -n "$covered_count" ] || covered_count=0
-git -C "$repo" show HEAD:tests/backports/host/realityfoundation/coverage.py > "$here/.coverage-old.py"
-echo "control: a copy where every row says no measurement, $covered_count of them covered"
-if python3 "$here/.coverage-old.py" --check "$runs/control-covered.json" > "$runs/control-covered-old.txt" 2>&1; then
-    echo "  the guard as it was exits 0: it agrees with a covered row that claims no measurement, which is the bug"
-else
-    echo "  the old guard exited $? on that tree, which is NOT the failure the review describes:"
-    head -3 "$runs/control-covered-old.txt" | sed 's/^/    /'
-fi
-rm -f "$here/.coverage-old.py"
-if python3 "$coverage" --check "$runs/control-covered.json" > "$runs/control-covered-new.txt" 2>&1; then
-    echo "  CONTROL FAILED: the guard as it is also accepts a covered row that claims no measurement"
+PY
+
+covered=$(python3 "$coverage" "$registry" 2>/dev/null | grep -c '^covered  ' || true)
+[ -n "$covered" ] || covered=0
+echo "control: a copy where all $covered covered rows say no measurement"
+
+# 1. the fixture must accept that tree: the bug, as shipped
+python3 "$here/coverage-fixture-check.py" "$fixture" "$coverage" "$pre" > "$runs/control-fixture.txt" 2>&1 || {
+    echo "PREMISE FAILED: the pre-repair fixture does not accept the pre-repair tree, so this control"
+    echo "  is not comparing what it names. Fixture output:"
+    sed 's/^/    /' "$runs/control-fixture.txt" | head -6
+    exit 1
+}
+echo "  the pre-repair fixture accepts it: $(tail -1 "$runs/control-fixture.txt") - the bug, as shipped"
+
+# 2. the real guard must reject that same tree
+if python3 "$coverage" --check "$pre" > "$runs/control-real.txt" 2>&1; then
+    echo "PREMISE FAILED: the real guard accepts a covered row that claims no measurement, which is"
+    echo "  the r3 defect the fixture is here to demonstrate. Nothing to see."
     exit 1
 fi
-flagged=$(grep -c "^  MISMATCH" "$runs/control-covered-new.txt" || true)
+echo "  the real guard rejects it: $(grep -m 1 'whose source is not what this loop decides' "$runs/control-real.txt")"
+
+# 3. and it must flag exactly the covered rows
+flagged=$(grep -c '^  MISMATCH' "$runs/control-real.txt" || true)
 [ -n "$flagged" ] || flagged=0
-echo "  the guard as it is exits non-zero, and flags $flagged rows - the covered ones, each one a row"
-echo "    that says no check measures it while the differential names it"
-if [ "$flagged" != "$covered_count" ]; then
-    echo "    and that is not the $covered_count the report calls covered - read the two numbers"
+if [ "$flagged" != "$covered" ]; then
+    echo "PREMISE FAILED: the real guard flags $flagged rows and the report calls $covered covered."
+    echo "  Those are meant to be the same set, and they are not."
     exit 1
 fi
-rm -f "$runs/control-covered.json"
+echo "  and it flags $flagged rows, which is exactly the $covered the report calls covered"
 
-printf 'control: a hand-edited row, red first\n'
+rm -f "$pre"
+
+# 4. and the original ask: a hand-edited row, red first, repaired by --write
+copy="$runs/control-hand-edit.json"
+cp "$registry" "$copy"
+python3 - "$copy" <<'PY'
+import json, sys
+path = sys.argv[1]
+document = json.load(open(path))
+for entry in document["entries"]:
+    if entry.get("status") == "implemented":
+        entry["source"] = "HAND EDITED BY THE CONTROL: the host differential measures every one of these"
+        break
+json.dump(document, open(path, "w"), indent=4)
+open(path, "a").write("\n")
+PY
+echo "control: a hand-edited row, red first"
 if python3 "$coverage" --check "$copy" > "$runs/control-red.txt" 2>&1; then
-    echo "CONTROL FAILED: --check exited 0 on a hand-edited row, so the guard is not guarding"
+    echo "PREMISE FAILED: --check exited 0 on a hand-edited row, so the guard is not guarding"
     exit 1
 fi
-echo "  --check exited non-zero, and it says so here:"
-grep -E "MISMATCH|CLAIMS A MEASUREMENT|not what this loop decides" "$runs/control-red.txt" | head -3 | sed 's/^/    /'
-
-printf 'control: --write regenerates it, green after\n'
-python3 "$coverage" --write "$copy" > "$runs/control-write.txt" 2>&1
+echo "  --check exits non-zero, and says so: $(grep -m 1 'CLAIMS A MEASUREMENT' "$runs/control-red.txt" | sed 's/^ *//')"
+python3 "$coverage" --write "$copy" > /dev/null 2>&1
 if ! python3 "$coverage" --check "$copy" > "$runs/control-green.txt" 2>&1; then
-    echo "CONTROL FAILED: --check exited non-zero after --write regenerated the row"
+    echo "PREMISE FAILED: --check is still failing after --write regenerated the row"
     exit 1
 fi
-echo "  --check exits 0 after --write: the row now says what the loop decides"
+echo "  --write regenerates it and --check exits 0"
 rm -f "$copy"
-echo "control: OK - the guard catches the edit and the generator repairs it"
+echo "control: OK - the fixture accepts what the real guard rejects, and both arms of the guard hold"
