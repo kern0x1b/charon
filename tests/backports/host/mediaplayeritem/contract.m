@@ -52,11 +52,11 @@ int main(void) {
     NSDictionary *given = @{@"albumTrackNumber": @7, @"discNumber": @2, @"albumPersistentID": @11,
                             @"artistPersistentID": @12, @"albumArtistPersistentID": @13, @"genrePersistentID": @14,
                             @"composerPersistentID": @15, @"podcastPersistentID": @16, @"albumTrackCount": @3,
-                            @"discCount": @1, @"beatsPerMinute": @128, @"compilation": @YES, @"cloudItem": @NO,
+                            @"discCount": @1, @"beatsPerMinute": @128, @"compilation": @YES, @"cloudItem": @YES,
                             @"lyrics": @"words", @"comments": @"note", @"userGrouping": @"group",
                             @"assetURL": [NSURL URLWithString:@"file:///a"], @"hasProtectedAsset": @YES,
                             @"dateAdded": added, @"explicitItem": @YES, @"playbackStoreID": @"store",
-                            @"preorder": @NO};
+                            @"preorder": @YES};
     MPMediaItem *item = [[MPMediaItem alloc] init];
     [item charon_set_properties:given];
     // 7.0
@@ -67,7 +67,7 @@ int main(void) {
     check("albumTrackCount", item.albumTrackCount == 3, "3", number(item.albumTrackCount, 1));
     check("beatsPerMinute", item.beatsPerMinute == 128, "128", number(item.beatsPerMinute, 1));
     check("isCompilation", item.isCompilation == YES, "1", item.isCompilation ? "1" : "0");
-    check("isCloudItem", item.isCloudItem == NO, "0", item.isCloudItem ? "1" : "0");
+    check("isCloudItem", item.isCloudItem == YES, "1", item.isCloudItem ? "1" : "0");
     check("lyrics", [item.lyrics isEqual:@"words"], "words", text(item.lyrics));
     check("comments", [item.comments isEqual:@"note"], "note", text(item.comments));
     check("userGrouping", [item.userGrouping isEqual:@"group"], "group", text(item.userGrouping));
@@ -79,7 +79,7 @@ int main(void) {
     check("isExplicitItem", item.isExplicitItem == YES, "1", item.isExplicitItem ? "1" : "0");
     // 10.3
     check("playbackStoreID", [item.playbackStoreID isEqual:@"store"], "store", text(item.playbackStoreID));
-    check("isPreorder", item.isPreorder == NO, "0", item.isPreorder ? "1" : "0");
+    check("isPreorder", item.isPreorder == YES, "1", item.isPreorder ? "1" : "0");
     // A key the dictionary does not hold: nil, so every conversion answers its zero and nothing raises.
     MPMediaItem *empty = [[MPMediaItem alloc] init];
     [empty charon_set_properties:@{}];
