@@ -82,7 +82,7 @@ Fresh **defaults** are compared as well as written values, because a port that i
 would pass every written value and still be wrong — and extending that comparison from three members
 to all of them is what found the twelve below.
 
-## The fresh defaults: seven the header warrants, five it does not
+## The fresh defaults: the ones the header warrants, and the one it does not
 
 `MTLAccelerationStructureDescriptor.usage` is the only fresh value the header *enumerates*
 (`MTLAccelerationStructureUsageNone = 0`). Three more are warranted in the header's own words and
@@ -90,7 +90,7 @@ the port now carries them:
 
 | member | the header's warrant | value |
 | --- | --- | --- |
-| `…BoundingBoxGeometryDescriptor.boundingBoxStride` | `MTLAccelerationStructure.h:180`, at least 24 | 24 |
+| `…BoundingBoxGeometryDescriptor.boundingBoxStride` | `MTLAccelerationStructure.h:277-281`, at least 24 | 24 |
 | the six `…SampleBufferAttachmentDescriptor` `…SampleIndex` members | `MTLCounterDontSample`, which `MTLCounters.h:20` defines as `((NSUInteger)-1)` | `MTLCounterDontSample` |
 | `MTLInstanceAccelerationStructureDescriptor.instanceDescriptorStride` | `MTLAccelerationStructure.h:184-187`, the size of the descriptor type | 64, **measured** for `…DescriptorTypeDefault`, not assumed |
 | `…GeometryDescriptor.allowDuplicateIntersectionFunctionInvocation` | `MTLAccelerationStructure.h:101-103`, YES | `YES` |

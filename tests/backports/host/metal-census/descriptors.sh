@@ -81,7 +81,7 @@ if [ -n "${SELF_TEST:-}" ]; then
     fake="$selfdir/symbols"
     for name in $class_list; do
         if [ "$name" = "MTLLinkedFunctions" ]; then continue; fi   # the one that is missing
-        printf '%s S %s%s\n' "0000000000000100" "$prefix" "$name" >> "$fake"
+        printf '%s S %s%s%s\n' "0000000000000100" "$prefix" "charonHost_" "$name" >> "$fake"
     done
     if prove_defined "$(cat "$fake")"; then
         echo "FAIL: the self-test passed with a class missing from the symbol table" >&2
@@ -89,7 +89,7 @@ if [ -n "${SELF_TEST:-}" ]; then
     fi
     echo "  ok   the self-test's NEGATIVE: the class that is not defined is named"
     : > "$fake"
-    for name in $class_list; do printf '%s S %s%s\n' "0000000000000100" "$prefix" "$name" >> "$fake"; done
+    for name in $class_list; do printf '%s S %s%s%s\n' "0000000000000100" "$prefix" "charonHost_" "$name" >> "$fake"; done
     if ! prove_defined "$(cat "$fake")"; then
         echo "FAIL: the self-test's full list was refused, so prove_defined is not usable" >&2
         rm -rf "$selfdir"; exit 1
