@@ -1,125 +1,115 @@
 {
-  "framework": "Security",
   "entries": [
     {
       "api": "SecPolicyCopyProperties()",
-      "kind": "function",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
       "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
+      "introduced": "7.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "source": "SDK 16.4, Security",
+      "status": "absent"
     },
     {
       "api": "SecPolicyCreateWithProperties()",
-      "kind": "function",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
       "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
+      "introduced": "7.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "source": "SDK 16.4, Security",
+      "status": "absent"
     },
     {
       "api": "SecTrustCopyCustomAnchorCertificates()",
-      "kind": "function",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
       "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
+      "introduced": "7.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "source": "SDK 16.4, Security",
+      "status": "absent"
     },
     {
       "api": "SecTrustCopyPolicies()",
-      "kind": "function",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
       "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
+      "introduced": "7.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "source": "SDK 16.4, Security",
+      "status": "absent"
     },
     {
       "api": "SecTrustCopyResult()",
-      "kind": "function",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
       "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
+      "introduced": "7.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "source": "SDK 16.4, Security",
+      "status": "absent"
     },
     {
       "api": "SecTrustEvaluateAsync()",
-      "kind": "function",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
       "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
+      "introduced": "7.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "source": "SDK 16.4, Security",
+      "status": "absent"
     },
     {
       "api": "SecTrustSetOCSPResponse()",
-      "kind": "function",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
       "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
+      "introduced": "7.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
+      "source": "SDK 16.4, Security",
+      "status": "absent"
     },
     {
       "api": "SecAccessControlGetTypeID()",
-      "kind": "function",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 8, and nothing in iOS 6 has what it names",
       "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
+      "introduced": "8.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "the function arrived in iOS 8, and nothing in iOS 6 has what it names",
+      "source": "SDK 16.4, Security",
+      "status": "absent"
     },
     {
       "api": "SecTrustEvaluateAsyncWithError()",
-      "kind": "function",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 13, and nothing in iOS 6 has what it names",
       "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
+      "introduced": "13.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "the function arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "source": "SDK 16.4, Security",
+      "status": "absent"
     },
     {
       "api": "kSecUseDataProtectionKeychain",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
       "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
-    },
-    {
-      "api": "sec_identity_access_certificates()",
-      "kind": "function",
       "introduced": "13.0",
+      "kind": "constant",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
+      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
+      "source": "SDK 16.4, Security",
+      "status": "absent"
     },
     {
       "api": "SecTrustCopyCertificateChain()",
-      "kind": "function",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 15, and nothing in iOS 6 has what it names",
       "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
+      "introduced": "15.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "the function arrived in iOS 15, and nothing in iOS 6 has what it names",
+      "source": "SDK 16.4, Security",
+      "status": "absent"
     }
-  ]
+  ],
+  "framework": "Security"
 }
