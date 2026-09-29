@@ -8,7 +8,8 @@ overlay named after it, and this file is what the five rows for that overlay are
 
 The measurements are in `tests/backports/host/createml/tabularframe.swift`, which builds the same
 frame twice — once with the port's overlay and once with Apple's own on the host — and compares
-shape, contents, selection and slicing. **86 checks, 0 failures.**
+shape, contents, selection and slicing. **132 checks, 0 failures.** Counts are not typed: `python3 tests/backports/host/createml/suite-counts.py` runs the suite,
+prints the per-suite figures and the total, and checks this file's number against them.
 
 ## The shape is a shape, not a buffer
 

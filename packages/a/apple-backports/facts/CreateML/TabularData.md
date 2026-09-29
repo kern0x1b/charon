@@ -8,7 +8,8 @@ those rows live.
 Every number here was read off **Apple's own `MLDataTable` on the host**, not off the port, by
 `tests/backports/host/createml/differential.swift` — a differential that runs the same table through
 both implementations in one process and compares what comes out. That suite is **100 checks, 0
-failures**, and the port's own suite is at **425 checks across 8 suites**. Where the two disagree the
+failures**, and the port's own suite is at **489 checks across 8 suites**. Counts are not typed: `python3 tests/backports/host/createml/suite-counts.py` runs the suite,
+prints the per-suite figures and the total, and checks this file's number against them. Where the two disagree the
 differential is what caught it, and the four defects it found are named below with the check that
 found them.
 

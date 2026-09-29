@@ -118,7 +118,7 @@ written copy would be the second copy of a declaration that exists, and the port
 original rather than to add a parallel one.
 
 The writer itself does not need the type: it emits the numbers, and the two independent readers check
-them. So this blocks the **package build** and nothing in the host suites, which is why 425 checks
+them. So this blocks the **package build** and nothing in the host suites, which is why 489 checks
 pass on the host while the device build does not compile.
 
 ## The error the six refusals give, and why the rows are `absent`
