@@ -141,3 +141,20 @@ Still owed, none of it done:
 4. **F2 — the guard builds its reference set from the case's own link line** and does not cover a case
    that resolves the port by `dlsym(RTLD_DEFAULT, …)`, so `trust-result` can still measure the host and
    pass.
+
+## Digests of the evidence this directory cites
+
+Recomputed with `shasum -a 256` AFTER the last content change, on this tree, and checked here by
+`check-digests.py` - which exits non-zero when this block is missing, when it covers fewer files
+than the command below cites, or when any digest does not match.
+
+```
+shasum -a 256 tests/backports/host/security/sec-object-wrappers.m \
+         tests/backports/host/security/compare-sec-object-wrappers.py \
+         packages/a/apple-backports/Security/SecObjectWrappers12_0.m
+```
+
+    0e134f43b64166c4e55a12f1f000cd36b1ad422922c937c49ee27487b11ad00c  tests/backports/host/security/sec-object-wrappers.m
+    47e215633006060820d6a7e6ce53797bc371889b79f35d0e3d06e08bee6f7354  tests/backports/host/security/compare-sec-object-wrappers.py
+    94407e64ae0b098a09adb42eccee3c24833638792ee19d23ae4318272b4f59ca  packages/a/apple-backports/Security/SecObjectWrappers12_0.m
+
