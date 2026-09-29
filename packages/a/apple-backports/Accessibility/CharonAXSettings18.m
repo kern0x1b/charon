@@ -47,9 +47,22 @@ void AXOpenSettingsFeature(AXSettingsFeature feature, void (^completionHandler)(
     if (!completionHandler) {
         return;
     }
-    NSString *reason = [NSString stringWithFormat:
-        @"the Settings app of this release has no section for AXSettingsFeature %ld, so nothing was opened",
-        (long)feature];
+    // The section's own name and not its number. A caller reading this error wants to know which section
+    // it asked for and could not get, and a number is not that; the names are the enumeration's own cases
+    // and the table is here because a C function has nowhere else to keep them. A feature outside the
+    // enumeration has no name, and the error then says so rather than naming a section that does not
+    // exist.
+    static NSString *const names[] = {@"PersonalVoiceAllowAppsToRequestToUse", @"AllowAppsToAddAudioToCalls",
+                                      @"AssistiveTouch", @"AssistiveTouchDevices", @"DwellControl"};
+    BOOL known = feature >= AXSettingsFeaturePersonalVoiceAllowAppsToRequestToUse &&
+                 feature <= AXSettingsFeatureDwellControl;
+    NSString *section = known ? names[feature - 1] : nil;
+    NSString *reason = section
+        ? [NSString stringWithFormat:
+            @"the Settings app of this release has no section for %@, so nothing was opened", section]
+        : [NSString stringWithFormat:
+            @"the Settings app of this release has no section for AXSettingsFeature %ld, which is not one "
+            @"of the sections this API names, so nothing was opened", (long)feature];
     completionHandler([NSError errorWithDomain:CharonAXSettingsErrorDomain code:feature userInfo:@{
         NSLocalizedDescriptionKey: reason,
         @"AXSettingsFeature": @(feature),

@@ -109,8 +109,15 @@ static void checkOpenSettings(void)
           @(AXSettingsFeatureDwellControl));
     checkNo(@"the error's description names the section and says nothing was opened",
             [seen.localizedDescription rangeOfString:@"nothing was opened"].location != NSNotFound);
-    checkNo(@"the description names the feature it was asked for",
-            [seen.localizedDescription rangeOfString:@"5"].location != NSNotFound);
+    // The feature's own name, and not the number 5: the first version of this looked for "5", which any
+    // description naming an OS version would satisfy, so it would have passed a call that said nothing
+    // about which section was asked for.
+    static NSString *const CharonSectionNames[] = {@"PersonalVoiceAllowAppsToRequestToUse",
+                                                  @"AllowAppsToAddAudioToCalls", @"AssistiveTouch",
+                                                  @"AssistiveTouchDevices", @"DwellControl"};
+    checkNo(@"the description names the section it was asked for by name",
+            [seen.localizedDescription rangeOfString:CharonSectionNames[AXSettingsFeatureDwellControl - 1]]
+                .location != NSNotFound);
     // A NULL completion must return without touching it, which is what the header's own nullability says.
     AXOpenSettingsFeature(AXSettingsFeaturePersonalVoiceAllowAppsToRequestToUse, NULL);
     check(@"a null completion is accepted and ignored", @"yes", @"yes");
