@@ -315,6 +315,44 @@ written here would be this library's invention wearing Apple's name. The wording
 so each side of the differential is built the way its own class can be: the host's through `-init` and
 its `assign` property, this port's through the initialiser this library carries.
 
+## The quantity series builder of 12.0, and the host's own four answers
+
+`HKQuantitySeriesSampleBuilder` is of 12.0, and the arm64 shared cache of 12.0 carries the class with
+`initWithHealthStore:quantityType:startDate:device:`, `finishSeriesWithMetadata:completion:` and
+`discard`, and with the insert spelled `insertQuantity:date:error:`.
+
+**A header and image disagreement, recorded rather than resolved silently.** The 26.2 header gives the
+insert as `-insertQuantity:dateInterval:completion:` alongside `-insertQuantity:date:error:`, and
+`-insertQuantity:dateInterval:error:` carries `API_AVAILABLE(ios(13.0))` while the `date:error:` form
+carries none. The image settles it: 12.0's own insert spellings are `insertQuantity:date:error:` and
+`insertQuantity:dateInterval:error:`, and it has neither of the completion forms. So the 12.0 insert is
+the `BOOL`-and-`NSError` one, and that is what this library carries. The same disagreement is on the
+finish: the header gives `-finishSeriesWithMetadata:completion:` and
+`-finishSeriesWithMetadata:endDate:completion:` both at the class's own level, and the image carries only
+the first. The form the 12.0 image does not carry is not carried here.
+
+**What the host answers, measured on this machine.** Four of the five selectors, and each answer is the
+port's:
+
+| call | the host answers |
+|---|---|
+| `initWithHealthStore:quantityType:startDate:device:` | a builder; `quantityType` and `startDate` set, `device` nil |
+| a quantity of a unit the type does not accept | `NO`, `com.apple.healthkit` 3, "Quantity (5 m) does not have a unit compatible with quantity series builder quantity type HKQuantityTypeIdentifierHeartRate" |
+| a date before the builder's start | `NO`, code 3, "Date interval (<_NSConcreteDateInterval: 0x…> (Start Date) … + (Duration) 0.000000 seconds = (End Date) …) is before builder's start date …" |
+| an insert after the finish | `NO`, code 3, "Quantity series sample builder already finished" |
+| an insert after `-discard` | **raises** `NSGenericException`, "HKQuantitySeriesSampleBuilder already discarded." |
+
+The discarded case is a raise and not a refusal, which is a different kind of answer, and it is why this
+port raises there and writes an `NSError` everywhere else. The date refusal embeds the description of
+an `NSDateInterval`, which carries a pointer: the whole string cannot be compared twice and so is not
+comparable at all. Its stable tail is compared and the host's full text is printed by the differential.
+
+**Not measured: what the finish returns.** The host answers it with samples nil and
+`com.apple.healthkit` 1, "Health data is unavailable on this device", so the shape of the series is this
+port's own reading of the header - one quantity sample per inserted quantity, from the builder's start
+date to the date that quantity was inserted at, in the order it was inserted - and the device test is
+what would settle it.
+
 ## The device run
 
 None yet. Everything above is a read of a release image, a release cache, the SDK headers and the

@@ -29,7 +29,7 @@ mkdir -p "$BUILD/plain" "$BUILD/renamed"
 # live (the error it answers with and the line it says once in the log) and which is the only file that
 # defines them. Nothing in this test opens a database: the store is compiled so that what the unit and
 # quantity code calls exists, not so that the store is measured.
-sources="HKUnit.m HKQuantity.m HKQuantityType.m HKQuantityTypes.m HKObjectType.m HKObject.m HKSource.m HKSample.m HKWorkout.m HKStatistics.m HKQuery.m HKQueries.m HKQueryAnchor9.m HKSourceRevision9.m HKSamples.m HKWorkoutRoute110.m HKWorkoutRouteQuery110.m HKCDADocument11.m HKClinicalRecord120.m HKWorkoutBuilder120.m HKDocument10.m HKHealthStore.m CharonHKStore.m"
+sources="HKUnit.m HKQuantity.m HKQuantityType.m HKQuantityTypes.m HKObjectType.m HKObject.m HKSource.m HKSample.m HKWorkout.m HKStatistics.m HKQuery.m HKQueries.m HKQueryAnchor9.m HKSourceRevision9.m HKSamples.m HKWorkoutRoute110.m HKWorkoutRouteQuery110.m HKCDADocument11.m HKClinicalRecord120.m HKWorkoutBuilder120.m HKQuantitySeriesSampleBuilder120.m HKDocument10.m HKObject9.m HKHealthStore.m CharonHKStore.m"
 
 for source in $sources; do
     xcrun clang -fobjc-arc $quiet -I"$healthkit" -c "$healthkit/$source" -o "$BUILD/plain/$source.o"
@@ -116,3 +116,6 @@ mutant HKWorkoutBuilder120.m 'return [date timeIntervalSinceDate:_startDate];' '
 mutant HKWorkoutBuilder120.m 'if (_collecting) {' 'if (NO) {'
 echo "mutants surviving: $survived"
 [ "$survived" -eq 0 ]
+# A mutant of the 12.0 series builder: the date refusal, which the differential compares against the
+# host's own answer for a date before the builder's start.
+mutant HKQuantitySeriesSampleBuilder120.m 'if ([date compare:_startDate] == NSOrderedAscending) {' 'if (NO) {'

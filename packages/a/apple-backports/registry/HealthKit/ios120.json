@@ -418,6 +418,61 @@
    "effect": "the cumulative sum of the samples of that type added to the workout, and nil where there are none",
    "facts": "facts/HealthKit/HealthKit.md",
    "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 12.0 for the values"
+  },
+  {
+   "api": "HKQuantitySeriesSampleBuilder",
+   "kind": "class",
+   "introduced": "12.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "iOS 12.0 is the release of the quantity series builder, and the arm64 shared cache of 12.0 carries the class with the insert, the finish and the discard the header declares of that release",
+   "effect": "a series of quantity samples, built one quantity at a time and saved through the store it was made with when the series is finished",
+   "facts": "facts/HealthKit/HealthKit.md",
+   "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 12.0 for the values and for the host's own wording of each refusal"
+  },
+  {
+   "api": "-[HKQuantitySeriesSampleBuilder initWithHealthStore:quantityType:startDate:device:]",
+   "kind": "method",
+   "introduced": "12.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "iOS 12.0 is the release of the quantity series builder, and the arm64 shared cache of 12.0 carries the class with the insert, the finish and the discard the header declares of that release",
+   "effect": "the builder, holding the store the samples are saved through, the type they are of, the date they start at and the device they came from",
+   "facts": "facts/HealthKit/HealthKit.md",
+   "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 12.0 for the values and for the host's own wording of each refusal"
+  },
+  {
+   "api": "-[HKQuantitySeriesSampleBuilder insertQuantity:date:error:]",
+   "kind": "method",
+   "introduced": "12.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "iOS 12.0 is the release of the quantity series builder, and the arm64 shared cache of 12.0 carries the class with the insert, the finish and the discard the header declares of that release",
+   "effect": "YES and the quantity kept, or NO and the host's own refusal: a unit the type does not accept, a date before the builder's start, or a builder already finished",
+   "facts": "facts/HealthKit/HealthKit.md",
+   "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 12.0 for the values and for the host's own wording of each refusal"
+  },
+  {
+   "api": "-[HKQuantitySeriesSampleBuilder finishSeriesWithMetadata:completion:]",
+   "kind": "method",
+   "introduced": "12.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "iOS 12.0 is the release of the quantity series builder, and the arm64 shared cache of 12.0 carries the class with the insert, the finish and the discard the header declares of that release",
+   "effect": "the samples the series is, saved through the store, or nothing and an error",
+   "facts": "facts/HealthKit/HealthKit.md",
+   "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 12.0 for the values and for the host's own wording of each refusal"
+  },
+  {
+   "api": "-[HKQuantitySeriesSampleBuilder discard]",
+   "kind": "method",
+   "introduced": "12.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "iOS 12.0 is the release of the quantity series builder, and the arm64 shared cache of 12.0 carries the class with the insert, the finish and the discard the header declares of that release",
+   "effect": "nothing: what was inserted is dropped and the series is invalid, which is the host's own raise on the next use",
+   "facts": "facts/HealthKit/HealthKit.md",
+   "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 12.0 for the values and for the host's own wording of each refusal"
   }
  ]
 }

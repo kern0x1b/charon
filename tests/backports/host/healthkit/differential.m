@@ -1276,6 +1276,28 @@ static void CharonHKWaitForAnswer(volatile BOOL *answered)
         [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
 }
 
+// The iOS 12.0 series builder, the class this delivery adds next. The refusals are the host's own
+// answers, read off it: each one's code and wording are compared, not just that one refused.
+@interface CharonHostHKQuantitySample : NSObject
+@property (readonly, copy) HKQuantityType *sampleType;
+@property (readonly, copy) NSDate *startDate;
+@property (readonly, copy) NSDate *endDate;
+@end
+
+@interface CharonHostHKQuantitySeriesSampleBuilder : NSObject
+- (instancetype)initWithHealthStore:(HKHealthStore *)healthStore
+                       quantityType:(HKQuantityType *)quantityType
+                          startDate:(NSDate *)startDate
+                             device:(nullable HKDevice *)device;
+@property (readonly, copy) HKQuantityType *quantityType;
+@property (readonly, copy) NSDate *startDate;
+@property (readonly, copy, nullable) HKDevice *device;
+- (BOOL)insertQuantity:(HKQuantity *)quantity date:(NSDate *)date error:(NSError **)error;
+- (void)finishSeriesWithMetadata:(nullable NSDictionary<NSString *, id> *)metadata
+                      completion:(void (^)(NSArray *samples, NSError *error))completion;
+- (void)discard;
+@end
+
 // The iOS 12.0 workout builder.
 //
 // The host is the oracle, and on this machine the host answers every call of this class that touches
@@ -1391,6 +1413,117 @@ static void CharonHKWorkoutBuilder12(void)
                theirs.startDate ? "set" : "nil");
 }
 
+// The iOS 12.0 quantity series builder. The host answers four of this class's five selectors here - the
+// three inserts and the raise a discarded builder gives - and refuses the fifth, the finish, with "Health
+// data is unavailable on this device" because its HealthKit has no entitlement on this machine. So the
+// three refusals are compared with the host's own code and wording, the raise is compared as a raise,
+// and the finish is stated with the measurement that says why it is not compared.
+static void CharonHKSeriesBuilder12(void)
+{
+    NSDate *start = [NSDate dateWithTimeIntervalSince1970:1600000000];
+    HKQuantityType *theirsType = [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeartRate];
+    CharonHostHKQuantityType *mineType = [CharonHostHKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeartRate];
+    HKHealthStore *theirsStore = [[HKHealthStore alloc] init];
+    CharonHostHKHealthStore *mineStore = [[CharonHostHKHealthStore alloc] init];
+
+    HKQuantitySeriesSampleBuilder *theirs = [[HKQuantitySeriesSampleBuilder alloc] initWithHealthStore:theirsStore
+                                                                                          quantityType:theirsType
+                                                                                             startDate:start
+                                                                                                device:nil];
+    CharonHostHKQuantitySeriesSampleBuilder *mine = [[CharonHostHKQuantitySeriesSampleBuilder alloc] initWithHealthStore:mineStore
+                                                                                                          quantityType:mineType
+                                                                                                             startDate:start
+                                                                                                                device:nil];
+    CharonHKCompareBool(@"the series builder's initialiser answers", !!mine, !!theirs);
+    if (!mine || !theirs)
+        return;
+
+    CharonHKCompare(@"series builder quantityType", mine.quantityType.identifier, theirs.quantityType.identifier);
+    CharonHKCompare(@"series builder startDate", mine.startDate, theirs.startDate);
+    CharonHKCompare(@"series builder device is nil", mine.device, theirs.device);
+
+    // A quantity of a unit the type does not accept: the host's refusal names both the unit and the type.
+    HKQuantity *theirsWrong = [HKQuantity quantityWithUnit:[HKUnit meterUnit] doubleValue:5.0];
+    CharonHostHKQuantity *mineWrong = [CharonHostHKQuantity quantityWithUnit:[CharonHostHKUnit meterUnit] doubleValue:5.0];
+    NSError *theirsError = nil, *mineError = nil;
+    BOOL theirsWrongOK = [theirs insertQuantity:theirsWrong date:start error:&theirsError];
+    BOOL mineWrongOK = [mine insertQuantity:mineWrong date:start error:&mineError];
+    CharonHKCompareBool(@"a unit the type does not accept is refused", mineWrongOK, theirsWrongOK);
+    CharonHKCompare(@"the unit refusal's domain", mineError.domain, theirsError.domain);
+    CharonHKCompareInt(@"the unit refusal's code", (NSInteger)mineError.code, (NSInteger)theirsError.code);
+    CharonHKCompare(@"the unit refusal's wording", mineError.localizedDescription, theirsError.localizedDescription);
+
+    // A date before the builder's own start: the host's refusal names both dates.
+    HKQuantity *theirsBeat = [HKQuantity quantityWithUnit:[HKUnit unitFromString:@"count/min"] doubleValue:60.0];
+    CharonHostHKQuantity *mineBeat = [CharonHostHKQuantity quantityWithUnit:[CharonHostHKUnit unitFromString:@"count/min"] doubleValue:60.0];
+    NSDate *earlier = [start dateByAddingTimeInterval:-60];
+    theirsError = nil; mineError = nil;
+    BOOL theirsEarlyOK = [theirs insertQuantity:theirsBeat date:earlier error:&theirsError];
+    BOOL mineEarlyOK = [mine insertQuantity:mineBeat date:earlier error:&mineError];
+    CharonHKCompareBool(@"a date before the start is refused", mineEarlyOK, theirsEarlyOK);
+    CharonHKCompareInt(@"the date refusal's code", (NSInteger)mineError.code, (NSInteger)theirsError.code);
+    // The host's date refusal embeds the description of an NSDateInterval, which carries a pointer, so
+    // the whole string cannot be compared twice and is not comparable at all. What is stable is its tail
+    // - the two dates and the clause between them - and that is what is compared; the host's full text is
+    // printed so the part that is not compared is on the record rather than quietly dropped.
+    NSString *theirsTail = [theirsError.localizedDescription hasSuffix:[NSString stringWithFormat:@"is before builder's start date %@", start]]
+                             ? [NSString stringWithFormat:@"is before builder's start date %@", start] : theirsError.localizedDescription;
+    CharonHKCompare(@"the date refusal's stable tail",
+                    [mineError.localizedDescription hasSuffix:theirsTail] ? theirsTail : mineError.localizedDescription,
+                    theirsTail);
+    printf("not compared: the whole of the date refusal's wording. The host writes %s\n",
+           theirsError.localizedDescription.UTF8String);
+
+    // A quantity the type does accept: the host takes it, and so does this port.
+    theirsError = nil; mineError = nil;
+    BOOL theirsGoodOK = [theirs insertQuantity:theirsBeat date:start error:&theirsError];
+    BOOL mineGoodOK = [mine insertQuantity:mineBeat date:start error:&mineError];
+    CharonHKCompareBool(@"a unit the type accepts is taken", mineGoodOK, theirsGoodOK);
+
+    // The finish, and then an insert after it, which the host refuses with its own wording.
+    __block NSArray *theirsSamples = nil;
+    __block NSError *theirsFinishError = nil;
+    __block BOOL theirsFinishRan = NO;
+    [theirs finishSeriesWithMetadata:@{ @"k" : @"v" } completion:^(NSArray<HKQuantitySample *> *samples, NSError *error) {
+        theirsFinishRan = YES; theirsSamples = samples; theirsFinishError = error;
+    }];
+    [mine finishSeriesWithMetadata:@{ @"k" : @"v" } completion:^(NSArray *samples, NSError *error) {}];
+    CharonHKWaitForAnswer(&theirsFinishRan);
+    CharonHKCompare(@"the finish's domain", @"com.apple.healthkit", theirsFinishError.domain);
+    CharonHKCompareInt(@"the finish's code", (NSInteger)1, (NSInteger)theirsFinishError.code);
+    printf("not compared: what -finishSeriesWithMetadata:completion: returns for a series. The host "
+           "answers it with samples nil and %s, having an entitlement this machine does not give it, so "
+           "the shape of the samples is this port's own reading of the header and the device test is what "
+           "would settle it.\n", theirsFinishError.localizedDescription.UTF8String);
+
+    theirsError = nil; mineError = nil;
+    BOOL theirsAfterFinish = [theirs insertQuantity:theirsBeat date:start error:&theirsError];
+    BOOL mineAfterFinish = [mine insertQuantity:mineBeat date:start error:&mineError];
+    CharonHKCompareBool(@"an insert after the finish is refused", mineAfterFinish, theirsAfterFinish);
+    CharonHKCompare(@"the finished refusal's wording", mineError.localizedDescription, theirsError.localizedDescription);
+
+    // A discarded builder raises, and the raise is compared as a raise, with its own text: it is a
+    // different kind of answer from a refusal, and this port raises there rather than returning an error.
+    HKQuantitySeriesSampleBuilder *theirsDiscarded = [[HKQuantitySeriesSampleBuilder alloc] initWithHealthStore:theirsStore
+                                                                                                 quantityType:theirsType
+                                                                                                    startDate:start
+                                                                                                       device:nil];
+    CharonHostHKQuantitySeriesSampleBuilder *mineDiscarded = [[CharonHostHKQuantitySeriesSampleBuilder alloc] initWithHealthStore:mineStore
+                                                                                                                   quantityType:mineType
+                                                                                                                      startDate:start
+                                                                                                                         device:nil];
+    [theirsDiscarded discard];
+    [mineDiscarded discard];
+    BOOL theirsRaised = NO, mineRaised = NO;
+    NSString *theirsText = nil, *mineText = nil;
+    @try { [theirsDiscarded insertQuantity:theirsBeat date:start error:NULL]; }
+    @catch (NSException *exception) { theirsRaised = YES; theirsText = exception.reason; }
+    @try { [mineDiscarded insertQuantity:mineBeat date:start error:NULL]; }
+    @catch (NSException *exception) { mineRaised = YES; mineText = exception.reason; }
+    CharonHKCompareBool(@"an insert after a discard raises on both sides", mineRaised, theirsRaised);
+    CharonHKCompare(@"the raise's text", mineText, theirsText);
+}
+
 int main(void)
 {
     CharonHKUnitCases();
@@ -1401,6 +1534,7 @@ int main(void)
     CharonHKQueryObjects();
     CharonHK11Group();
     CharonHKWorkoutBuilder12();
+    CharonHKSeriesBuilder12();
     printf("healthkit: %lu comparisons, %lu differences\n", (unsigned long)CharonHKComparisons,
            (unsigned long)CharonHKDifferences);
     return CharonHKDifferences == 0 ? 0 : 1;
