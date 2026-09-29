@@ -455,7 +455,7 @@ featureChannelInfo:(MPSImageReadWriteParams)featureChannelInfo
 - (NSString *)description
 {
     return [NSString stringWithFormat:@"<MPSImage %lux%lu, %lu feature channels, %lu images, format %lu, "
-            @"pixel %d, %@>", (unsigned long)self.width, (unsigned long)self.height,
+            @"pixel %d, %s>", (unsigned long)self.width, (unsigned long)self.height,
             (unsigned long)_featureChannels, (unsigned long)_numberOfImages, (unsigned long)_channelFormat,
             (int)[self pixelFormat], _texture ? "with a texture" : "without a texture"];
 }
