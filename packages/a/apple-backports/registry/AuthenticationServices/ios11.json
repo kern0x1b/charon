@@ -57,10 +57,10 @@
       "kind": "class",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the release has no credential provider extension or identity store for the system's AutoFill to consult, and a password that only looks kept would mislead",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "the SDK 16.4 headers of AuthenticationServices"
+      "status": "implemented",
+      "effect": "the UIViewController subclass a password-manager EXTENSION subclasses so the system can ask it for a credential. Its five members are the release's own overridables and each is a documented no-op default, which is what a base class does for an extension that overrides none: -prepareCredentialListForServiceIdentifiers:, -prepareInterfaceToProvideCredentialForIdentity:, -prepareInterfaceForExtensionConfiguration and -provideCredentialWithoutUserInteractionForIdentity: prepare or provide nothing, because inventing a credential the extension never said it had would be offering one, and -extensionContext answers nil because the port has no system-provided context and will not stand in one that cannot complete anything",
+      "source": "macOS 27.0's own AuthenticationServices, asked with class_copyMethodList for the method list by tests/backports/host/authservices, and the 26.2 header's five declarations read by clang's AST at ios(12.0)",
+      "facts": "facts/AuthenticationServices/ASCredentialProvider.md"
     },
     {
       "api": "ASCredentialServiceIdentifier",
