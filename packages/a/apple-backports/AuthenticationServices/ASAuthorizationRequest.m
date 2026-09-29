@@ -19,7 +19,10 @@
 #import <AuthenticationServices/AuthenticationServices.h>
 #import "CharonASConstruction.h"
 
-NSString *const ASCharonProviderCodingKey = @"org.charon.authservices.provider";
+// The key -encodeWithCoder: and -initWithCoder: use for the provider. It is the port's own: the
+// release's coder key is not in the public header, and a key two implementations choose differently is
+// a key neither can read. File-local: nothing else reads it, and a global would be API no release named.
+static NSString *const ASCharonProviderCodingKey = @"org.charon.authservices.provider";
 
 @implementation ASAuthorizationRequest
 
