@@ -25,9 +25,17 @@
 #import <MediaPlayer/MediaPlayer.h>
 #endif
 
+#if defined(CHARON_MEDIAPLAYER_STANDIN)
 @interface MPSkipIntervalCommandEvent : MPRemoteCommandEvent
 @property (nonatomic, assign, readwrite) NSTimeInterval interval;
 @end
+#else
+// The SDK declares this class with its property readonly; the port's events have to be built carrying
+// theirs, so it is made writable here, in an extension, and not declared a second time.
+@interface MPSkipIntervalCommandEvent ()
+@property (nonatomic, assign, readwrite) NSTimeInterval interval;
+@end
+#endif
 
 @implementation MPSkipIntervalCommandEvent
 @synthesize interval = _interval;

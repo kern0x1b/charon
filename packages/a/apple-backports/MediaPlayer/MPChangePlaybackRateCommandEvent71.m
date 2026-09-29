@@ -26,9 +26,17 @@
 #import <MediaPlayer/MediaPlayer.h>
 #endif
 
+#if defined(CHARON_MEDIAPLAYER_STANDIN)
 @interface MPChangePlaybackRateCommandEvent : MPRemoteCommandEvent
 @property (nonatomic, assign, readwrite) float playbackRate;
 @end
+#else
+// The SDK declares this class with its property readonly; the port's events have to be built carrying
+// theirs, so it is made writable here, in an extension, and not declared a second time.
+@interface MPChangePlaybackRateCommandEvent ()
+@property (nonatomic, assign, readwrite) float playbackRate;
+@end
+#endif
 
 @implementation MPChangePlaybackRateCommandEvent
 @synthesize playbackRate = _playbackRate;

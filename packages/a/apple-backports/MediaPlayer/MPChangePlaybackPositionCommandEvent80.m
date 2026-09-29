@@ -27,9 +27,17 @@
 #import <MediaPlayer/MediaPlayer.h>
 #endif
 
+#if defined(CHARON_MEDIAPLAYER_STANDIN)
 @interface MPChangePlaybackPositionCommandEvent : MPRemoteCommandEvent
 @property (nonatomic, assign, readwrite) NSTimeInterval positionTime;
 @end
+#else
+// The SDK declares this class with its property readonly; the port's events have to be built carrying
+// theirs, so it is made writable here, in an extension, and not declared a second time.
+@interface MPChangePlaybackPositionCommandEvent ()
+@property (nonatomic, assign, readwrite) NSTimeInterval positionTime;
+@end
+#endif
 
 @implementation MPChangePlaybackPositionCommandEvent
 @synthesize positionTime = _positionTime;
