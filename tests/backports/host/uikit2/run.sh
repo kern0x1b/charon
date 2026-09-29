@@ -38,17 +38,16 @@ carried() {
     nm $1 | sed -n 's/.*[-+]\[[A-Za-z_]*(\(Charon[A-Za-z0-9_]*\)) \([A-Za-z_][A-Za-z0-9_:]*\)\]$/\2/p' | sort -u > "$build/$name.carried"
 }
 
-prefixed_group() {
-    # $1: group name, $2: sources, $3: test source. A group whose port sources add categories to classes the
-    # system owns cannot use the plain path: renames() renames whole identifiers, and a selector is not one
-    # (setObject:forTrait: is three), so the port's method would take the name the system's already has and the
-    # two sides would be one. Each file is compiled once plain, to learn the classes, the C symbols and the
-    # selectors its Charon categories carry, then rewritten by prefix_selectors.py, which prefixes those
-    # selectors whole, then compiled again with the class renames and the declarations of the prefixed
-    # selectors. Every group of this file that adds no category to a system class stays on the plain path.
+prefixed_build() {
+    # $1: group name, $2: sources. A group whose port sources add categories to classes the system owns cannot
+    # use the plain path: renames() renames whole identifiers, and a selector is not one (setObject:forTrait: is
+    # three), so the port's method would take the name the system's already has and the two sides would be one.
+    # Each file is compiled once plain, to learn the classes, the C symbols and the selectors its Charon
+    # categories carry, then rewritten by prefix_selectors.py, which prefixes those selectors whole, then
+    # compiled again with the class renames and the declarations of the prefixed selectors. Every group of this
+    # file that adds no category to a system class stays on the plain path. The objects are left in $built.
     name=$1
     files=$2
-    test=$3
     objects=""
     rm -f "$build/$name.declarations.h"
     for file in $files; do
@@ -97,10 +96,37 @@ prefixed_group() {
         fi
         built="$built $build/$name/$base"
     done
+}
+
+prefixed_group() {
+    # $1: group name, $2: sources, $3: test source
+    name=$1
+    built=""
+    prefixed_build "$name" "$2" || return 0
+    test=$3
     xcrun clang $target -fobjc-arc -Wall -I"$harness" "$here/$test" "$harness/check.m" $built $frameworks -o "$build/$name-test"
     defines_what_it_calls "$build/$name-test" $built
     if "$build/$name-test" > "$build/$name.log" 2>&1; then result=0; else result=$?; fi
     grep -v '^ok ' "$build/$name.log" || true
+    echo "$name: exit=$result log=$build/$name.log"
+    [ "$result" = 0 ] || status=1
+}
+
+prefixed_windowed() {
+    # $1: group name, $2: sources, $3: test source; as windowed, over the prefixed build
+    name=$1
+    built=""
+    prefixed_build "$name" "$2" || return 0
+    test=$3
+    bundle="$build/$name.app"
+    rm -rf "$bundle"
+    mkdir -p "$bundle/Contents/MacOS"
+    xcrun clang $target -fobjc-arc -Wall -I"$harness" "$here/windowed.m" "$here/$test" "$harness/check.m" $built $frameworks -o "$bundle/Contents/MacOS/app"
+    cp "$here/windowed.plist" "$bundle/Contents/Info.plist"
+    codesign -s - --force "$bundle" > /dev/null 2>&1
+    defines_what_it_calls "$bundle/Contents/MacOS/app" $built
+    if "$bundle/Contents/MacOS/app" > "$build/$name.log" 2>&1; then result=0; else result=$?; fi
+    grep -v '^ok ' "$build/$name.log" | grep -a 'FAIL\|checks=\|info' || true
     echo "$name: exit=$result log=$build/$name.log"
     [ "$result" = 0 ] || status=1
 }
@@ -364,7 +390,7 @@ windowed_expected images13 "UIImage+iOS13.m UIImage+Baseline13.m UIImageConfigur
 
 windowed_expected colors13 "UIColorDynamic.m" colors13_test.m colors13_system.m
 
-windowed listmenus "UIMenuElement.m UIAction.m UIAction+iOS14.m UIMenu.m UIMenu+iOS14.m UIDeferredMenuElement.m UIMenuIdentifiers.m UIMenuIdentifiers14.m UIMenuSystem.m UIContextMenuConfiguration.m UIContextMenuInteraction.m UIContextMenuInteraction+iOS14.m UIPreviewParameters.m UIPreviewParameters+iOS14.m UIPreviewTarget.m UITargetedPreview.m UICommand.m CharonListMenu.m UITableView+ContextMenu14.m UICollectionView+ContextMenu132.m" listmenus_test.m
+prefixed_windowed listmenus "UIMenuElement.m UIAction.m UIAction+iOS14.m UIMenu.m UIMenu+iOS14.m UIDeferredMenuElement.m UIMenuIdentifiers.m UIMenuIdentifiers14.m UIMenuSystem.m UIContextMenuConfiguration.m UIContextMenuInteraction.m UIContextMenuInteraction+iOS14.m UIPreviewParameters.m UIPreviewParameters+iOS14.m UIPreviewTarget.m UITargetedPreview.m UICommand.m CharonListMenu.m UITableView+ContextMenu14.m UICollectionView+ContextMenu132.m" listmenus_test.m
 
 windowed appearing "UIViewController+Appearing13.m" appearing_test.m
 
