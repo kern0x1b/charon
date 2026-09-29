@@ -1504,6 +1504,53 @@ check("a cancelled subscription hears nothing more", began, raisedBefore)
     check("a string is not", "x" is any BindableData, false)
     check("an entity's own target is its transform", Entity().bindTarget, BindTarget.transform)
 
+    // MARK: Configuration catalogs
+
+    // A catalog is data with one question in it: which configuration of a set does an entity start
+    // in. The interface's initializers throw and say nothing about why, so the contract here is a
+    // reading and is written down as one: a set names a default, and naming one it does not hold is
+    // the error. These are that contract's refusals and its two defaults.
+    do {
+        typealias Catalog = Entity.ConfigurationCatalog
+        let probe = Entity()
+        let alpha = Catalog.Configuration(id: "alpha")
+        let beta = Catalog.Configuration(id: "beta")
+        check("a configuration is its name", alpha.id, "alpha")
+        check("and its identity is the name's type", Catalog.Configuration.ID.self, String.self)
+        let named = try! Catalog.ConfigurationSet(id: "shapes", configurations: ["beta": beta, "alpha": alpha],
+                                                 defaultConfigurationId: "beta")
+        check("a set takes the default it names", named.defaultConfiguration.id, "beta")
+        check("and holds both", named.configurations.count, 2)
+        let unnamed = try! Catalog.ConfigurationSet(id: "shapes", configurations: ["beta": beta, "alpha": alpha])
+        check("a set that names none takes the first by name", unnamed.defaultConfiguration.id, "alpha")
+        check("which is the same whichever order the dictionary is built in",
+              try! Catalog.ConfigurationSet(id: "s", configurations: ["alpha": alpha, "beta": beta]).defaultConfiguration.id, "alpha")
+        check("a set with no configurations is refused", {
+            do { _ = try Catalog.ConfigurationSet(id: "empty", configurations: [:], defaultConfigurationId: nil); return false }
+            catch { return true }
+        }(), true)
+        check("a set naming a default it does not hold is refused", {
+            do { _ = try Catalog.ConfigurationSet(id: "s", configurations: ["alpha": alpha], defaultConfigurationId: "beta"); return false }
+            catch { return true }
+        }(), true)
+        check("a combination naming a set the catalog does not hold is refused", {
+            let combination = Catalog.ConfigurationCombination(entity: probe, configurationSpecifications: ["nope": "alpha"])
+            do { _ = try Entity.ConfigurationCatalog(configurationSets: ["s": named], combinations: [combination]); return false }
+            catch { return true }
+        }(), true)
+        check("one naming a configuration its set does not hold is refused", {
+            let combination = Catalog.ConfigurationCombination(entity: probe, configurationSpecifications: ["s": "nope"])
+            do { _ = try Entity.ConfigurationCatalog(configurationSets: ["s": named], combinations: [combination]); return false }
+            catch { return true }
+        }(), true)
+        let combination = Catalog.ConfigurationCombination(entity: probe, configurationSpecifications: ["s": "beta"])
+        let catalog = try! Entity.ConfigurationCatalog(configurationSets: ["s": named], combinations: [combination])
+        check("a catalog holds its sets", catalog.configurationSets.count, 1)
+        check("and its combinations", catalog.combinations.count, 1)
+        check("and the combination carries its entity", catalog.combinations[0].entity === probe, true)
+        check("and its specifications", catalog.combinations[0].configurationSpecifications["s"] ?? "", "beta")
+    }
+
     // MARK: Bounds
 
     let unit = Entity()
