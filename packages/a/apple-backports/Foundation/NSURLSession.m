@@ -1030,20 +1030,6 @@ static void charon_task_data(NSURLSessionTask *task, NSData *data)
     }
 }
 
-/* The length of a request's body, which is the number "before encoding" means: the bytes the
-   application handed over, whatever the connection then did with them. nil for a GET, and 0 for a
-   body that is a stream or a file, which is what the release answers for those too. */
-static int64_t charon_request_body_length(NSURLRequest *request)
-{
-    if (!request)
-        return 0;
-    id body = request.HTTPBody;
-    if ([body isKindOfClass:[NSData class]])
-        return (int64_t)((NSData *)body).length;
-    NSString *bodyStream = [request valueForHTTPHeaderField:@"Content-Length"];
-    return bodyStream ? (int64_t)bodyStream.longLongValue : 0;
-}
-
 static void charon_task_sent(NSURLSessionTask *task, int64_t written, int64_t total, int64_t expectedByConnection)
 {
     NSURLSession *session = task->_session;
@@ -1051,11 +1037,14 @@ static void charon_task_sent(NSURLSessionTask *task, int64_t written, int64_t to
     int64_t expected = 0;
     @synchronized (task) {
         task->_countOfBytesSent = total;
-        /* "Before encoding" is the body the caller handed over, which is a property of the request
-           rather than of the connection: the connection reports what went and what it expected, and
-           the two are not the same number. It is read before the note, because the note used to be
-           given an int64_t that had not been assigned yet. */
-        int64_t beforeEncoding = charon_request_body_length(task.currentRequest);
+        /* "Before encoding" is the body the caller handed over, which is a property of the
+           request rather than of the connection: the connection reports what went and what it
+           expected, and the two are not the same number. It is read from the task's own body,
+           under the same lock and with the same function the expected-total path reads at
+           charon_task_start, so a file body answers its size and a stream with no
+           Content-Length answers NSURLSessionTransferSizeUnknown - and it is read before the
+           note, because the note used to be given an int64_t that had not been assigned yet. */
+        int64_t beforeEncoding = charon_expected_body_length(task, task->_currentRequest);
         [task->_metricsTransactions.lastObject charon_noteBytesSent:total
                                                      beforeEncoding:beforeEncoding
                                                             received:task->_countOfBytesReceived];
