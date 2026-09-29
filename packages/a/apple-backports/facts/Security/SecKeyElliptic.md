@@ -146,11 +146,13 @@ for byte — after checking that the scalar and the point OpenSSL printed are on
 the point OpenSSL published for it) and not the other. The exchange is then made in both directions and
 a third pair of keys is shown to give a third secret.
 
-**Not measured yet: the release's own answers.** The probe above is queued behind every other heavy
-job on the machine (`$HOME/Git/projects/ios/coordination/heavy.sh sh
-tests/backports/host/seckeycurve/emulate.sh`, log `.agent-work/runs/seckeyecraw.log`), so which padding
-an EC key of the release takes and whether it answers the halves or the DER is written down as "both
-are read" rather than as a fact. The gate that would build this file has not run either.
+**Not measured yet: the release's own answers.** The probe that settles them is
+`tests/backports/host/seckeycurve/emulate.sh`, which builds `tests/backports/device/seckey-ecraw.m` for
+6.1.3 and runs it in the emulator, and it has not run: this session did not run it and no log of it
+exists in this tree, which is the honest state of it. Until it does, which padding an EC key of the
+release takes and whether it answers the halves or the DER is written down as "both are read" rather
+than as a fact, and no path above may be read as a claim about the device. The gate that would build
+this file has not run either.
 
 **What was here before, and why it is gone.** The first version of this file found the private scalar
 by scanning every 32 byte window of the release's keychain blob and keeping the one whose derived
