@@ -189,6 +189,17 @@
       "status": "inert"
     },
     {
+      "api": "sec_protocol_options_add_tls_application_protocol()",
+      "effect": "the string is held AS A COPY the port owns, not as the caller's pointer. Measured by setting from a frame that RETURNS and then reading the held text: both the server name and the first application protocol still read as the caller's strings. The application protocol is APPENDED because the header names it add and ALPN is a LIST - three added are three held in the order they were offered, and a NULL adds nothing rather than storing a NULL mid-list. The server name REPLACES, and setting twice frees the first copy rather than leaking it. The effect: the handshake ignores all of it - 6.1.3 speaks no ALPN and the release's own name resolution is not reachable through this object",
+      "facts": "facts/Security/SecProtocolWorklist.md",
+      "introduced": "13.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "6.1.3 HAS NO STACK THAT TAKES a sec_protocol_options_t, so nothing reads what the port holds. A C STRING IS COPIED, and the copy is the whole difference from every other setter in this family: the caller owns the bytes, a `const char *` on iOS is a UTF-8 pointer with no lifetime attached, and a caller that hands over a buffer on its own stack and then returns has left the object holding a pointer into a dead frame. strdup, and free at dealloc",
+      "source": "SDK 16.4, Security",
+      "status": "inert"
+    },
+    {
       "api": "sec_protocol_options_add_tls_ciphersuite()",
       "effect": "the value is held AS GIVEN, in the caller's own numbering, and never translated. Measured: 0x0001 reads back 1 and 0x002F reads back 0x002F, with two rows of their own asserting the values are NOT 0x1301 and NOT 0xC02F - because a count, a status or a length would not notice a translation and only the value does. The list is grown with realloc and a failed allocation holds nothing rather than a half-written list, which is measured by appending past the first capacity (23 held, the 23rd read back). The effect: the handshake ignores the list, and 6.1.3 cannot offer a TLS 1.3 ciphersuite whatever the caller appends",
       "facts": "facts/Security/SecProtocolWorklist.md",
@@ -427,6 +438,17 @@
       "kind": "function",
       "minimum": "6.0",
       "reason": "6.1.3 HAS NO STACK THAT TAKES a sec_protocol_options_t, so nothing ever reads a flag the port holds. The port supplies CharonSecProtocolFlags and the setter holds the flag. A port that returned an error would break a caller that sets options before it connects, and a port that pretended the setting took effect would be a lie about a handshake it cannot perform",
+      "source": "SDK 16.4, Security",
+      "status": "inert"
+    },
+    {
+      "api": "sec_protocol_options_set_tls_server_name()",
+      "effect": "the string is held AS A COPY the port owns, not as the caller's pointer. Measured by setting from a frame that RETURNS and then reading the held text: both the server name and the first application protocol still read as the caller's strings. The application protocol is APPENDED because the header names it add and ALPN is a LIST - three added are three held in the order they were offered, and a NULL adds nothing rather than storing a NULL mid-list. The server name REPLACES, and setting twice frees the first copy rather than leaking it. The effect: the handshake ignores all of it - 6.1.3 speaks no ALPN and the release's own name resolution is not reachable through this object",
+      "facts": "facts/Security/SecProtocolWorklist.md",
+      "introduced": "13.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "6.1.3 HAS NO STACK THAT TAKES a sec_protocol_options_t, so nothing reads what the port holds. A C STRING IS COPIED, and the copy is the whole difference from every other setter in this family: the caller owns the bytes, a `const char *` on iOS is a UTF-8 pointer with no lifetime attached, and a caller that hands over a buffer on its own stack and then returns has left the object holding a pointer into a dead frame. strdup, and free at dealloc",
       "source": "SDK 16.4, Security",
       "status": "inert"
     },
