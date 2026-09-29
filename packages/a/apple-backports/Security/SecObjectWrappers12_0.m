@@ -69,11 +69,18 @@
 
 //    303  sec_certificate_t sec_certificate_create(SecCertificateRef certificate)
 //
-// THE HEADER SAYS THIS NEVER RETURNS NULL, and returning NULL for a NULL argument is a contract
-// violation the compiler names - "null returned from function that should not return NULL". So the
-// wrapper is ALWAYS created, holding the ref it was given, and a caller that passed NULL finds out at
-// copy_ref, which answers NULL. That keeps the promise the header makes and keeps the failure visible,
-// where returning NULL would have broken the promise and hidden nothing.
+// THE COMPILER SAYS THE RESULT IS NON-NULL AND THE HEADER LINE SAYS NOTHING ABOUT NULLABILITY:
+//   "null returned from function that requires a non-null return value [-Wnonnull]" at this file's line
+//   86, which is the `return NULL` INSIDE sec_certificate_copy_ref - not in this creator. The creator
+//   is declared as sec_certificate_create(SecCertificateRef certificate) and the two -Wnonnull warnings
+//   in this file are both in the two copy_ref functions, at their own `return NULL` for an object that
+//   holds nothing. So the wrapper is ALWAYS created, holding the ref it was given, and a caller that
+//   passed NULL finds out at copy_ref, which answers NULL - the annotation is on the getter, and the
+//   getter has nothing to return for an object that was never given a ref.
+//
+// A claim here that the header "says these never return NULL" was wrong: -Wnonnull is the compiler's
+// inference from the nullability annotations on the copy_ref declarations, and reading it as a property
+// of the creators sent me looking at the wrong two functions.
 sec_certificate_t sec_certificate_create(SecCertificateRef certificate)
 {
     return (sec_certificate_t)[[CharonSecCertificate alloc] initWithCertificate:certificate];
@@ -89,7 +96,8 @@ SecCertificateRef sec_certificate_copy_ref(sec_certificate_t certificate)
 }
 
 //    188  sec_trust_t sec_trust_create(SecTrustRef trust)
-//  Non-nullable result, for the reason given above.
+//  Always returns a wrapper, for the reason given above: the -Wnonnull warnings in this file are in the
+//  two copy_ref functions, not in these creators.
 sec_trust_t sec_trust_create(SecTrustRef trust)
 {
     return (sec_trust_t)[[CharonSecTrust alloc] initWithTrust:trust];
