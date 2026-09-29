@@ -1,11 +1,27 @@
 // traitOverrides, registerForTraitChanges: and updateTraitsIfNeeded - the three ways iOS 17 gives an object its
 // own traits, the two private classes the host answers with, and the delivery that calls a registration back.
 //
-// What the host's own UIKit answers was measured first (facts/UIKit/UITrait17.md, M5 and M6). Both classes carry
-// the host's own names, _UITraitOverrides and _UITraitRegistration, because an application that prints one sees
-// that name; no SDK header declares either, which is what a delivery says under rule R4. The overrides object is
-// per owner - a view, a view controller, a presentation controller and a scene each have their own, and two
-// views never share one, which M5 measured.
+// What the host's own UIKit answers was measured first (facts/UIKit/UITrait17.md, M5 and M6). The host answers
+// with two classes it does not declare in any header, _UITraitOverrides and _UITraitRegistration, and this
+// file answers with two of its own, CharonOverrides and CharonRegistration.
+//
+// The names are different on purpose. A class a library defines under a name nobody owns is that library's own
+// type, it is not Apple's API, and it therefore carries no release - which is what every other private helper in
+// this library is called, from CharonHomeViewController to CharonTraitMutations. A class defined under Apple's
+// private name is the other thing entirely: it looks like Apple's API, nothing says which iOS release it
+// arrived in. A 6.1.3 gate run against a tree where this file did define those two names said, of
+// that tree and not of this one:
+//
+//   neither the SDK, the registry nor a held release's own cache says which iOS release _UITraitOverrides
+//   _UITraitRegistration arrived in, and UITraitOverrides17.m defines it, so no band can hold it
+//
+// The clause about this file defining them is the gate's, about that tree; this file no longer does.
+//
+// The one thing the different names cost is the class name inside a printed description, which is the only
+// difference between the string the host prints and the string this file prints. The rest of that string is
+// behaviour, so the differential compares the two with the leading class name left out, and says so where it
+// does. The overrides object is per owner - a view, a view controller, a presentation controller and a scene
+// each have their own, and two views never share one, which M5 measured.
 //
 // A registration is not a token: it is called when the traits it names change in the environment it was made on,
 // which is why UITraitCollection.m's own delivery asks this file for the call. The port's traits change when the
@@ -33,14 +49,14 @@ static NSMutableArray *charon_registrations_of(id observable, BOOL make)
     return registrations;
 }
 
-@interface _UITraitRegistration : NSObject <UITraitChangeRegistration>
+@interface CharonRegistration : NSObject <UITraitChangeRegistration>
 @property (nonatomic, copy) NSArray *traits;
 @property (nonatomic, copy) void (^handler)(id, UITraitCollection *);
 @property (nonatomic, assign) id target;
 @property (nonatomic, assign) SEL action;
 @end
 
-@implementation _UITraitRegistration
+@implementation CharonRegistration
 
 @synthesize traits = _traits;
 @synthesize handler = _handler;
@@ -89,10 +105,10 @@ static NSMutableArray *charon_registrations_of(id observable, BOOL make)
 
 // The overrides of one owner: a trait collection to begin from, and the trait values put over it. The host's
 // description is two forms, "no overrides" and the list of what is set, and this prints both.
-@interface _UITraitOverrides : CharonTraitMutations <UITraitOverrides>
+@interface CharonOverrides : CharonTraitMutations <UITraitOverrides>
 @end
 
-@implementation _UITraitOverrides
+@implementation CharonOverrides
 
 // The delivery this file registers below, defined at the foot of it. It is a C function, not a category method,
 // so +load may name it whatever the categories' +load ordering is.
@@ -215,17 +231,17 @@ static id<UITraitOverrides> charon_overrides_for(id owner)
 {
     id<UITraitOverrides> overrides = objc_getAssociatedObject(owner, &charon_trait_overrides_key);
     if (!overrides) {
-        overrides = [[_UITraitOverrides alloc] initWithCollection:nil];
+        overrides = [[CharonOverrides alloc] initWithCollection:nil];
         objc_setAssociatedObject(owner, &charon_trait_overrides_key, overrides, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
     return overrides;
 }
 
-static id<UITraitChangeRegistration> charon_register(id observable, NSArray *traits, _UITraitRegistration *(^make)(void))
+static id<UITraitChangeRegistration> charon_register(id observable, NSArray *traits, CharonRegistration *(^make)(void))
 {
     if (![traits count])
         [NSException raise:NSInternalInconsistencyException format:@"Must pass one or more traits to register for"];
-    _UITraitRegistration *registration = make();
+    CharonRegistration *registration = make();
     registration.traits = traits;
     [charon_registrations_of(observable, YES) addObject:registration];
     return registration;
@@ -255,7 +271,7 @@ void charon_deliver_trait_registrations(NSArray *environments, NSArray *previous
         NSSet<UITrait> *changed = [environment.traitCollection changedTraitsFromTraitCollection:before];
         if (![changed count])
             continue;
-        for (_UITraitRegistration *registration in [registrations copy]) {
+        for (CharonRegistration *registration in [registrations copy]) {
             for (Class trait in registration.traits) {
                 if (![changed containsObject:trait])
                     continue;
@@ -281,8 +297,8 @@ void charon_deliver_trait_registrations(NSArray *environments, NSArray *previous
 
 - (id<UITraitChangeRegistration>)registerForTraitChanges:(NSArray<UITrait> *)traits withHandler:(UITraitChangeHandler)handler
 {
-    return charon_register(self, traits, ^_UITraitRegistration * {
-        _UITraitRegistration *registration = [[_UITraitRegistration alloc] init];
+    return charon_register(self, traits, ^CharonRegistration * {
+        CharonRegistration *registration = [[CharonRegistration alloc] init];
         registration.handler = handler;
         return registration;
     });
@@ -290,8 +306,8 @@ void charon_deliver_trait_registrations(NSArray *environments, NSArray *previous
 
 - (id<UITraitChangeRegistration>)registerForTraitChanges:(NSArray<UITrait> *)traits withTarget:(id)target action:(SEL)action
 {
-    return charon_register(self, traits, ^_UITraitRegistration * {
-        _UITraitRegistration *registration = [[_UITraitRegistration alloc] init];
+    return charon_register(self, traits, ^CharonRegistration * {
+        CharonRegistration *registration = [[CharonRegistration alloc] init];
         registration.target = target;
         registration.action = action;
         return registration;
@@ -303,8 +319,8 @@ void charon_deliver_trait_registrations(NSArray *environments, NSArray *previous
     // The registrar itself, as the three methods above it: the target is self, which is what
     // -registerForTraitChanges:withTarget:action: with self says, and a send to self here is a send no
     // host differential can place - the port's own method on a class the system owns.
-    return charon_register(self, traits, ^_UITraitRegistration * {
-        _UITraitRegistration *registration = [[_UITraitRegistration alloc] init];
+    return charon_register(self, traits, ^CharonRegistration * {
+        CharonRegistration *registration = [[CharonRegistration alloc] init];
         registration.target = self;
         registration.action = action;
         return registration;

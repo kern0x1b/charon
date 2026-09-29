@@ -106,8 +106,20 @@ The port raises the same three, word for word, with the trait named by its `+nam
 ## M5 — traitOverrides
 
 A view, a view controller, a presentation controller and a scene each have their own, and two views
-never share one. The host's is a class named `_UITraitOverrides`, and the port's carries that name,
-so an application that prints one sees what the host's prints:
+never share one. The host's class is named `_UITraitOverrides`; the port's is named `CharonOverrides`,
+and the two names are different on purpose. A class a library defines under a name nobody owns is
+that library's own type, is not Apple's API, and carries no release - which is how every other private
+helper in this library is named. Defined under Apple's private name it is the other thing: it looks
+like Apple's API, nothing dates it, and the 6.1.3 gate refuses to build a tree holding one:
+
+```
+neither the SDK, the registry nor a held release's own cache says which iOS release _UITraitOverrides
+_UITraitRegistration arrived in, and UITraitOverrides17.m defines it, so no band can hold it
+```
+
+What that costs is the class name inside a printed description, so the differential compares the two
+descriptions with the leading class name left out. What the host prints, and what the port's object
+holds:
 
 ```
 <_UITraitOverrides: 0x...; no overrides>
@@ -129,8 +141,8 @@ taken away, and the force touch capability goes to Unknown.
 ## M6 — the registration
 
 A view, a view controller, a window and a scene answer the four methods of `UITraitChangeObservable`.
-The host's registration is a class named `_UITraitRegistration` and the port's carries that name. It
-conforms to `UITraitChangeRegistration`, which is `NSCopying`, and a copy is the same registration:
+The host's registration is a class named `_UITraitRegistration`; the port's is `CharonRegistration`,
+for the reason M5 gives. It conforms to `UITraitChangeRegistration`, which is `NSCopying`, and a copy is the same registration:
 two calls asking for the same traits are two registrations and a copy is not a second of them.
 Unregistering is quiet twice over, and unregistering a registration that is not the observable's is
 quiet as well. Two refusals, word for word:
@@ -187,9 +199,10 @@ Two findings, and both are the reason a header is not enough:
 ## What is not carried
 
 - The four private trait classes of M3, and the two private class methods of M1. No SDK header
-  declares any of the six, so nothing here answers them, and rule R4's note applies to this delivery
-  for the two private classes the port *adds*, `_UITraitOverrides` and `_UITraitRegistration`, which
-  the host also has and no header declares.
+  declares any of the six, so nothing here answers them.
+- The host's two private classes, `_UITraitOverrides` and `_UITraitRegistration`. No header declares
+  either, and the port does not define them: the port's own classes for the two jobs are
+  `CharonOverrides` and `CharonRegistration`, and M5 gives why the names are not shared.
 - The Swift-only `UIKit.Trait` and its twenty-two case names, which are a typealias and enum cases in
   the corpus and carry no code at run time.
 - The traits of a scene the release does not have: a scene capture state, an HDR headroom usage limit

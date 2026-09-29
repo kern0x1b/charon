@@ -24,7 +24,7 @@
 - (UITraitCollection *)charon_collection;
 @end
 
-@interface CharonHost_UITraitOverrides : CharonHostCharonTraitMutations <UITraitOverrides>
+@interface CharonHost_CharonOverrides : CharonHostCharonTraitMutations <UITraitOverrides>
 @end
 
 // The port's trait classes. Each is a token, so what is compared is what the class says about itself.
@@ -572,6 +572,20 @@ static void compare_refusals(void)
             "a class that is not a trait at all");
 }
 
+// The class name a description opens with, dropped: "<Name: " and what follows it up to the first ": ". The
+// port's two classes are its own where the host's two are the host's private ones, and that is the one
+// difference between the two sides' descriptions that is deliberate - so a comparison that holds a whole
+// description to the host's drops the name and keeps the rest, and says so in the check's own name.
+static NSString *without_class_name(NSString *description)
+{
+    if (![description hasPrefix:@"<"])
+        return description;
+    NSRange colon = [description rangeOfString:@": "];
+    if (colon.location == NSNotFound)
+        return description;
+    return [description substringFromIndex:NSMaxRange(colon)];
+}
+
 static NSString *shape_of(NSString *description)
 {
     // The two private classes print their own address, which differs between two runs and between the two sides,
@@ -626,23 +640,30 @@ static void compare_overrides(void)
     id<UITraitOverrides> system = systemView.traitOverrides;
     id<UITraitOverrides> port = [portView charonHostTraitOverrides];
     charon_check(system != nil && port != nil, "both sides have a traitOverrides" , @"one side has none");
-    COMPARE(shape_of([port description]), shape_of([system description]), "an overrides object with nothing set");
+    // without_class_name() is what the two descriptions need: the host prints <_UITraitOverrides: 0x...> and the
+    // port prints <CharonOverrides: 0x...>, which is the one deliberate difference, and the check's name says
+    // so. Everything after the class name is behaviour, and that is compared.
+    COMPARE(without_class_name(shape_of([port description])), without_class_name(shape_of([system description])),
+            "an overrides object with nothing set, its class name aside");
     [system setNSIntegerValue:UIUserInterfaceStyleDark forTrait:[UITraitUserInterfaceStyle class]];
     [port setNSIntegerValue:UIUserInterfaceStyleDark forTrait:port_trait(@"UITraitUserInterfaceStyle")];
     charon_check([system containsTrait:[UITraitUserInterfaceStyle class]] ==
                       [port containsTrait:port_trait(@"UITraitUserInterfaceStyle")], "containsTrait: answers the same on both sides after a set" , @"the two sides disagree");
-    COMPARE(unwrapped_overrides([port description]), unwrapped_overrides([system description]),
-            "an overrides object with one override");
+    COMPARE(without_class_name(unwrapped_overrides([port description])),
+            without_class_name(unwrapped_overrides([system description])),
+            "an overrides object with one override, its class name aside");
     [system removeTrait:[UITraitUserInterfaceStyle class]];
     [port removeTrait:port_trait(@"UITraitUserInterfaceStyle")];
-    COMPARE(unwrapped_overrides([port description]), unwrapped_overrides([system description]),
-            "an overrides object with the override removed");
+    COMPARE(without_class_name(unwrapped_overrides([port description])),
+            without_class_name(unwrapped_overrides([system description])),
+            "an overrides object with the override removed, its class name aside");
     [system setCGFloatValue:2 forTrait:[UITraitDisplayScale class]];
     [port setCGFloatValue:2 forTrait:port_trait(@"UITraitDisplayScale")];
     [system setObject:@"fr" forTrait:[UITraitTypesettingLanguage class]];
     [port setObject:@"fr" forTrait:port_trait(@"UITraitTypesettingLanguage")];
-    COMPARE(unwrapped_overrides([port description]), unwrapped_overrides([system description]),
-            "an overrides object with a CGFloat and an object");
+    COMPARE(without_class_name(unwrapped_overrides([port description])),
+            without_class_name(unwrapped_overrides([system description])),
+            "an overrides object with a CGFloat and an object, its class name aside");
     UIView *other = [[UIView alloc] init];
     charon_check(other.traitOverrides != system, "two views have different overrides in the system" , @"the system shares one");
     charon_check([portView charonHostTraitOverrides] != [other charonHostTraitOverrides], "two views have different overrides in the port" , @"the port shares one");
@@ -668,11 +689,21 @@ static void check_registration(void)
                                                                                     calls++;
                                                                                 }];
     charon_check(registration != nil, "the port registers for a trait change" , @"it answered nothing");
-    COMPARE(unprefix(NSStringFromClass([registration class])), @"_UITraitRegistration",
-            "the class a registration is");
+    // A registration is a class on both sides, and the two sides' classes have different names on purpose.
+    // The host's is the private _UITraitRegistration, which no header declares and which the port therefore
+    // does not define either: a class defined under that name is Apple's API to every tool that reads the
+    // symbols, nothing dates it, and the 6.1.3 gate refuses to build a tree holding one. The port's is
+    // CharonRegistration, its own type, carrying no release. Both names are asked of the side that owns one.
+    COMPARE(unprefix(NSStringFromClass([registration class])), @"CharonRegistration",
+            "a registration is a class of the port's own, by name");
+    id<UITraitChangeRegistration> systemRegistration =
+        [view registerForTraitChanges:@[[UITraitUserInterfaceStyle class]]
+                           withHandler:^(id<UITraitEnvironment> environment, UITraitCollection *previous) {}];
+    COMPARE(systemRegistration != nil ? NSStringFromClass([systemRegistration class]) : nil, @"_UITraitRegistration",
+            "and the host's registration is the host's own private class, which this library does not define");
     charon_check([registration conformsToProtocol:@protocol(UITraitChangeRegistration)], "a registration adopts UITraitChangeRegistration" , @"it does not");
     charon_check([registration respondsToSelector:@selector(copy)], "a registration is copyable" , @"it is not");
-    COMPARE(shape_of([(id)registration description]), @"<_UITraitRegistration: >", "a registration, described");
+    COMPARE(shape_of([(id)registration description]), @"<CharonRegistration: >", "a registration, described");
     [view charonHostUnregisterForTraitChanges:registration];
     [view charonHostUnregisterForTraitChanges:registration];
     charon_check(calls == 0, "unregistering calls nothing" , @"a handler ran");
