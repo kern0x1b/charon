@@ -24,14 +24,45 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", "..", "..", ".."))
 
 # The packages this series ships, and the interface each one's names are checked against.
+#
+# **The paths are SDK paths in the shared store, not this worktree's scratch.** The first version
+# pointed TipKit, WidgetKit and ActivityKit at `.agent-work/kits/*-ios.swiftinterface`, which exists
+# only in the band worktree that extracted them: on any other checkout the script scored those three
+# modules as *absent from every interface* and the counts came out 700/425/44/223 against the
+# 648/573/44/75 it prints here (kits r4, finding 1). Each path is now a glob under
+# `charon@iphoneos-sdk`'s install, so it is the machine's own copy of the release the rows are written
+# against -- and a glob that matches **not exactly one** file is a hard error naming the pattern, never
+# a silent absence.
+SDK = os.path.join(os.path.expanduser("~"), ".xmake/packages/i/iphoneos-sdk/26.2",
+                   "*/Developer.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs",
+                   "iPhoneOS26.2.sdk/System/Library/Frameworks/%s.framework/Modules/%s.swiftmodule/"
+                   "arm64e-apple-ios.swiftinterface")
+
 PACKAGES = [
-    ("AppIntents", "packages/a/appintents/Sources/AppIntents",
-     "/Library/Developer/CommandLineTools/SDKs/MacOSX27.sdk/System/Library/Frameworks/AppIntents.framework/Modules/AppIntents.swiftmodule/arm64e-apple-macos.swiftinterface"),
-    ("TipKit", "packages/t/tipkit/Sources/TipKit", ".agent-work/kits/TipKit-ios.swiftinterface"),
-    ("WidgetKit", "packages/w/widgetkit/Sources/WidgetKit", ".agent-work/kits/WidgetKit-ios.swiftinterface"),
-    ("ActivityKit", "packages/a/activitykit/Sources/ActivityKit", ".agent-work/kits/ActivityKit-ios.swiftinterface"),
+    ("AppIntents", "packages/a/appintents/Sources/AppIntents", SDK % ("AppIntents", "AppIntents")),
+    ("TipKit", "packages/t/tipkit/Sources/TipKit", SDK % ("TipKit", "TipKit")),
+    ("WidgetKit", "packages/w/widgetkit/Sources/WidgetKit", SDK % ("WidgetKit", "WidgetKit")),
+    ("ActivityKit", "packages/a/activitykit/Sources/ActivityKit", SDK % ("ActivityKit", "ActivityKit")),
     ("AppIntentsMacros", "packages/a/appintents-macros/Sources", None),
 ]
+
+
+def one(pattern, override=None):
+    """Exactly one match, or a hard error naming the pattern. A missing input is never an absence."""
+    if override:
+        if not os.path.isfile(override):
+            sys.exit("invented-names: the interface %s does not exist; refusing to score the module" % override)
+        return [override]
+    import glob as _glob
+    found = sorted(_glob.glob(os.path.expanduser(pattern)))
+    if not found:
+        sys.exit("invented-names: %s matches no file; a missing interface is a hard error and never an "
+                 "absent module" % pattern)
+    if len(found) > 1:
+        print("invented-names: %s matches %d installs of the SDK, all read: %s"
+              % (os.path.basename(os.path.dirname(pattern)), len(found), ", ".join(os.path.basename(os.path.dirname(os.path.dirname(f))) for f in found)))
+    return found
+
 
 # `public (kind) NAME`, plus the `extension NAME` and nested `public typealias Builder = ...` forms.
 DECL = re.compile(
@@ -63,19 +94,18 @@ def declared(directory):
 
 
 def interface_names(path):
-    if not path or not os.path.isfile(os.path.join(ROOT, path)):
+    if not path:
         return set(), 0
-    text = open(os.path.join(ROOT, path), encoding="utf-8", errors="replace").read()
     names = set()
-    for m in re.finditer(
-            r"\b(?:struct|enum|class|actor|protocol|typealias|func|var|let|init|macro|case|subscript)\s+([A-Za-z_][A-Za-z0-9_]*)",
-            text):
-        names.add(m.group(1))
-    for m in re.finditer(r"\bextension\s+([A-Za-z_][A-Za-z0-9_.]*)", text):
-        names.add(m.group(1).split(".")[-1])
-    # stdlib and system types the port only *names*, never declares
+    for resolved in one(path):
+        text = open(resolved, encoding="utf-8", errors="replace").read()
+        names |= set(re.findall(
+            r"\b(?:struct|enum|class|actor|protocol|typealias|func|var|let|init|macro|case|subscript)\s+([A-Za-z_][A-Za-z0-9_]*)", text))
+        for m in re.finditer(r"\bextension\s+([A-Za-z_][A-Za-z0-9_.]*)", text):
+            names.add(m.group(1).split(".")[-1])
     names.update("Array Dict Set Optional String Int Double Bool Data URL Date Error".split())
-    return names, text.count("\n")
+    return names, 0
+    return names, 0
 
 
 # The wider search: every `.swiftinterface` and header the machine's SDKs carry, so a name's
@@ -157,7 +187,7 @@ def load_interfaces():
     texts = {}
     for _package, _directory, interface in PACKAGES:
         if interface and os.path.isfile(os.path.join(ROOT, interface)):
-            texts[os.path.basename(interface)] = open(os.path.join(ROOT, interface), encoding="utf-8", errors="replace").read()
+            texts[os.path.basename(interface)] = "\n".join(open(p, encoding="utf-8", errors="replace").read() for p in one(interface))
     return texts
 
 
@@ -175,6 +205,16 @@ def kind_of(name, text_of_interface, files):
 
 
 def main():
+    if "--control" in sys.argv:
+        # The review's control (kits r4, finding 1): a path that does not exist has to be a hard
+        # error, so that a missing input can never again be scored as an absent module.
+        try:
+            one("/nonexistent/sdk/AppIntents.framework/Modules/AppIntents.swiftmodule/x.swiftinterface")
+        except SystemExit as error:
+            print("control: a missing interface exits non-zero: %s" % error)
+            return 0
+        print("control FAILED: a missing interface was accepted")
+        return 1
     table = "--table" in sys.argv
     said = statements()
     interfaces = load_interfaces()
@@ -223,4 +263,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main() or 0)
