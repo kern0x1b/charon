@@ -93,18 +93,31 @@ if sorted(a) != sorted(b):
     raise SystemExit(1)
 print("cases: %d, tolerance %g absolute or relative" % (len(a), tolerance))
 bad = 0
+# The largest distance each case came to, as a fraction of the tolerance it was allowed, so the
+# number the tolerance is compared against is printed rather than implied: a case that lands at a
+# thousandth of the bound and a case that lands on it read the same in "differing cases: 0".
+worst = []
 for name in sorted(a):
     exact = name.startswith("pooling-")
     limit = 0.0 if exact else tolerance
+    used = 0.0
     for index, (x, y) in enumerate(zip(a[name], b[name])):
         if limit == 0.0:
             close = x == y
+            used = 0.0 if close else float("inf")
         else:
             close = abs(x - y) <= limit * max(1.0, abs(x), abs(y))
+            used = max(used, abs(x - y) / (limit * max(1.0, abs(x), abs(y))))
         if not close:
             print("  DIFFERS %-28s [%d] system %.9g port %.9g" % (name, index, x, y))
             bad += 1
             break
+    if not exact:
+        worst.append((used, name))
+worst.sort(reverse=True)
+print("closest to the tolerance, as a fraction of it:")
+for used, name in worst[:5]:
+    print("  %-28s %.3g" % (name, used))
 print("differing cases: %d" % bad)
 raise SystemExit(1 if bad else 0)
 PY

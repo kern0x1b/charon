@@ -92,6 +92,21 @@ a CPU, and **exact** for pooling, whose cases are named as such.
 **Four of the five cases agree bit for bit**: `pooling-max`, `pooling-average-pad0`,
 `pooling-average-pad1` and `batch-normalization`.
 
+**The fifth, and the width of the tolerance.** The convolution case is the one the tolerance is for,
+and the harness now prints how close each case came to it rather than only how many failed:
+
+    cases: 5, tolerance 0.0001 absolute or relative
+    closest to the tolerance, as a fraction of it:
+      batch-normalization          0.00118
+    differing cases: 0
+
+So the largest distance anywhere in the five cases is 1.18e-07, and the 1e-4 bound is 847 times
+wider than the number it is compared against. That is a real margin and it is worth saying out loud
+rather than leaving to a reader: five cases back 82 rows, and a wrong answer smaller than 1e-7 would
+not be noticed by them. The same comparison run at 1e-7 fails - `differing cases: 1`, and the case
+reads `1.18` of the bound - so the bound is the only thing between this slice and a silent small
+wrong answer, and it is 847 times wider than the measurement.
+
 **All five cases agree bit for bit.**
 
 Getting there took two defects, and the second was found only because the first had made a measurement
