@@ -112,36 +112,6 @@
       "source": "SDK 16.4, Security"
     },
     {
-      "api": "sec_protocol_metadata_access_pre_shared_keys()",
-      "kind": "function",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
-    },
-    {
-      "api": "sec_protocol_metadata_get_negotiated_tls_ciphersuite()",
-      "kind": "function",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
-    },
-    {
-      "api": "sec_protocol_metadata_get_negotiated_tls_protocol_version()",
-      "kind": "function",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
-    },
-    {
       "api": "sec_protocol_options_append_tls_ciphersuite()",
       "kind": "function",
       "introduced": "13.0",

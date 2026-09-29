@@ -1,0 +1,38 @@
+{
+  "framework": "Security",
+  "entries": [
+    {
+      "api": "sec_protocol_metadata_get_negotiated_tls_protocol_version()",
+      "effect": "0, and 0 IS NOT A MEMBER of tls_protocol_version_t: the enum is TLSv10 0x0301, TLSv12 0x0303, TLSv13 0x0304, DTLSv12 0xfefd, every one a REAL version (SecProtocolTypes.h:58-66). The header promises only \"A tls_protocol_version_t value\" and names no absence, so this is a sentinel the port manufactures, and the cost is stated: A CALLER CANNOT TELL IT FROM A VALUE THE ENUM DOES NOT DEFINE. It never reports a negotiated version, because nothing on 6.1.3 negotiates one",
+      "facts": "facts/Security/SecProtocolMetadata.md",
+      "introduced": "13.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "the header declares a TYPE and a function and the port supplies the object under its own name: as clang -E emits it, sec_protocol_metadata_t is `NSObject<OS_sec_protocol_metadata> * __attribute__((objc_independent_class))`. The class is DELIBERATELY EMPTY - this header has no setter and nothing in 6.1.3 ever produces a metadata, one being handed to a TLS callback by the handshake that negotiated it - so a held value would be a number that LOOKS negotiated with no caller able to have set it",
+      "source": "SDK 16.4, Security",
+      "status": "inert"
+    },
+    {
+      "api": "sec_protocol_metadata_get_negotiated_tls_ciphersuite()",
+      "effect": "0, and 0 IS NOT A MEMBER of tls_ciphersuite_t either - every member is a real ciphersuite (SecProtocolTypes.h:101-151). Same stated cost, and it never reports a negotiated ciphersuite, because nothing on 6.1.3 negotiates one",
+      "facts": "facts/Security/SecProtocolMetadata.md",
+      "introduced": "13.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "the header declares a TYPE and a function and the port supplies the object under its own name: as clang -E emits it, sec_protocol_metadata_t is `NSObject<OS_sec_protocol_metadata> * __attribute__((objc_independent_class))`. The class is DELIBERATELY EMPTY - this header has no setter and nothing in 6.1.3 ever produces a metadata, one being handed to a TLS callback by the handshake that negotiated it - so a held value would be a number that LOOKS negotiated with no caller able to have set it",
+      "source": "SDK 16.4, Security",
+      "status": "inert"
+    },
+    {
+      "api": "sec_protocol_metadata_access_pre_shared_keys()",
+      "effect": "false - the header's own @return, \"Returns true if the PSKs were accessible, false otherwise\" (SecProtocolMetadata.h:267) - AND THE HANDLER IS NOT RUN. A block that ran here would hand the caller a PSK and a psk_identity that were never negotiated, and the caller would act on a secret that does not exist. Nothing on 6.1.3 produces a metadata object, so there is never anything to hand over",
+      "facts": "facts/Security/SecProtocolMetadata.md",
+      "introduced": "13.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "the header declares a TYPE and a function and the port supplies the object under its own name: as clang -E emits it, sec_protocol_metadata_t is `NSObject<OS_sec_protocol_metadata> * __attribute__((objc_independent_class))`. The class is DELIBERATELY EMPTY - this header has no setter and nothing in 6.1.3 ever produces a metadata, one being handed to a TLS callback by the handshake that negotiated it - so a held value would be a number that LOOKS negotiated with no caller able to have set it",
+      "source": "SDK 16.4, Security",
+      "status": "inert"
+    }
+  ]
+}
