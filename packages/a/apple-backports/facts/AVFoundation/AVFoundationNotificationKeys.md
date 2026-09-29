@@ -57,13 +57,20 @@ singles are the same case: `introduced` is corrected to the rung for them, becau
 `introduced <= deployment` and Apple's header annotation is later than its own export.
 
 **23 of the 33 answer their own symbol's name and 10 do not**, and which 10 is a measurement and not a
-rule: `AVMediaCharacteristicContainsAlphaChannel` is `public.contains-alpha-channel`,
-`AVMediaCharacteristicContainsHDRVideo` is `public.contains-hdr-video`,
-`AVMediaCharacteristicIsOriginalContent` is `public.original-content`, the four
-`AVPlayerInterstitialEventMonitor...` names drop the monitor's own prefix, and
-`AVVideoAppleProRAWBitDepthKey` answers `AppleProRAWBitDepthKey`. An earlier note in these objects
-claimed all 33 were their own name; the host says otherwise for those ten and the port follows the
-host, which is why the values are read at runtime rather than composed from the symbol.
+**23 of the 33 answer their own symbol's name and 10 do not**, and both numbers are counted from the
+tree - each definition's symbol against the value it is given - rather than written from memory. Of
+those 10, **6 are `AVPlayerInterstitialEventMonitor*` names** that drop the monitor's own prefix
+(`AVPlayerInterstitialEventMonitorCurrentEventDidChangeNotification` answers
+`CurrentEventDidChangeNotification`; `…EventsDidChange…` answers `EventsDidChangeNotification`; and
+the four `…AssetListResponseStatusDidChange…` names answer their suffixes). The three
+`AVMediaCharacteristic` names answer `public.` strings, and `AVVideoAppleProRAWBitDepthKey` answers
+`AppleProRAWBitDepthKey`.
+
+An earlier version of this paragraph said "the four AVPlayerInterstitialEventMonitor... names" while
+the headline count came from the tree and that list from memory, so the two disagreed and a reader
+checking one against the other found a different number in each. **The list is six.** An earlier note
+also claimed all 33 were their own name; the host says otherwise for ten, and the port follows the
+host, which is why the values are read at run time rather than composed from the symbol.
 
 ## The values
 
