@@ -52,16 +52,6 @@
    "source": "SDK 16.4, MediaPlayer"
   },
   {
-   "api": "MPChangePlaybackRateCommandEvent",
-   "kind": "class",
-   "introduced": "7.1",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 7, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, MediaPlayer"
-  },
-  {
    "api": "MPContentItem",
    "kind": "class",
    "introduced": "7.1",
@@ -103,26 +93,6 @@
   },
   {
    "api": "MPPlayableContentManager",
-   "kind": "class",
-   "introduced": "7.1",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 7, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, MediaPlayer"
-  },
-  {
-   "api": "MPRatingCommandEvent",
-   "kind": "class",
-   "introduced": "7.1",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 7, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, MediaPlayer"
-  },
-  {
-   "api": "MPSkipIntervalCommandEvent",
    "kind": "class",
    "introduced": "7.1",
    "minimum": "6.0",
@@ -188,16 +158,6 @@
    "minimum": "6.0",
    "status": "absent",
    "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, MediaPlayer"
-  },
-  {
-   "api": "MPChangeLanguageOptionCommandEvent",
-   "kind": "class",
-   "introduced": "9.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
    "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
    "source": "SDK 16.4, MediaPlayer"
   },

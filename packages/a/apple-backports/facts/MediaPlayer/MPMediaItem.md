@@ -1340,11 +1340,11 @@ removed is short by exactly one member.
 | MPMediaEntity | 5 | 1 | 4 |
 | MPMediaItem | 42 | 17 | 25 |
 | MPMediaItemAnimatedArtwork | 3 | 0 | 3 |
-| MPMediaItemArtwork | 7 | 0 | 7 |
+| MPMediaItemArtwork | 7 | 1 | 6 |
 | MPMediaItemCollection | 6 | 0 | 6 |
-| MPMediaLibrary | 8 | 0 | 8 |
+| MPMediaLibrary | 8 | 4 | 4 |
 | MPMediaPickerController | 12 | 1 | 11 |
-| MPMediaPlaylist | 9 | 4 | 5 |
+| MPMediaPlaylist | 9 | 6 | 3 |
 | MPMediaPlaylistCreationMetadata | 8 | 0 | 8 |
 | MPMediaPredicate | 0 | 0 | 0 |
 | MPMediaPropertyPredicate | 5 | 0 | 5 |
@@ -1382,77 +1382,103 @@ removed is short by exactly one member.
 | MPTimedMetadata | 5 | 0 | 5 |
 | MPVolumeView | 19 | 1 | 18 |
 
-421 members across 57 classes, 370 with no row. The classes in the order of the
-fewest missing members are the next pieces.
+## 9.0 - `MPChangeLanguageOptionCommandEvent90.m`
 
-## What the 26.2 header declares that no row covers
+    @property (nonatomic, readonly) MPNowPlayingInfoLanguageOption *languageOption;
+    @property (nonatomic, readonly) MPChangeLanguageOptionSetting setting;
 
-Counted from clang's JSON AST of MediaPlayer's umbrella, per class: the
-`ObjCInterfaceDecl` and every `ObjCCategoryDecl` whose interface is that class,
-unioned by member name, against every row the registry holds. Three controls: a
-member known to be declared is found (valueForProperty: in 1 class(es)), a name no header
-declares is found zero times, and a scratch copy of the AST with one declaration
-removed is short by exactly one member.
+New code over the base `MPRemoteCommandCenter71.m` already carries, and **carried, not absent**: 6.1.3 has
+no class whose name holds `CommandEvent` in any of its 236, none of its 41 categories, and a nonsense
+selector is absent as the control. A class the release does not have cannot shadow anything, so there is
+nothing native for it to be; `absent` is for a member whose answer needs hardware the device lacks, and
+none of this family needs any. The base gains `timestamp` beside the `command` it already had, at the
+header's `MP_API(ios(7.1))`; this class's two are `MP_API(ios(9.0))`.
 
-| class | declared | a row covers | no row |
-| --- | ---: | ---: | ---: |
-| MPAdTimeRange | 5 | 0 | 5 |
-| MPChangeLanguageOptionCommandEvent | 2 | 0 | 2 |
-| MPChangePlaybackPositionCommand | 0 | 0 | 0 |
-| MPChangePlaybackPositionCommandEvent | 1 | 0 | 1 |
-| MPChangePlaybackRateCommand | 2 | 0 | 2 |
-| MPChangePlaybackRateCommandEvent | 1 | 0 | 1 |
-| MPChangeRepeatModeCommand | 2 | 0 | 2 |
-| MPChangeRepeatModeCommandEvent | 2 | 0 | 2 |
-| MPChangeShuffleModeCommand | 2 | 0 | 2 |
-| MPChangeShuffleModeCommandEvent | 2 | 0 | 2 |
-| MPContentItem | 18 | 0 | 18 |
-| MPFeedbackCommand | 6 | 0 | 6 |
-| MPFeedbackCommandEvent | 1 | 0 | 1 |
-| MPMediaEntity | 5 | 1 | 4 |
-| MPMediaItem | 42 | 17 | 25 |
-| MPMediaItemAnimatedArtwork | 3 | 0 | 3 |
-| MPMediaItemArtwork | 7 | 0 | 7 |
-| MPMediaItemCollection | 6 | 0 | 6 |
-| MPMediaLibrary | 8 | 0 | 8 |
-| MPMediaPickerController | 12 | 1 | 11 |
-| MPMediaPlaylist | 9 | 4 | 5 |
-| MPMediaPlaylistCreationMetadata | 8 | 0 | 8 |
-| MPMediaPredicate | 0 | 0 | 0 |
-| MPMediaPropertyPredicate | 5 | 0 | 5 |
-| MPMediaQuery | 20 | 0 | 20 |
-| MPMediaQuerySection | 2 | 0 | 2 |
-| MPMovieAccessLog | 3 | 0 | 3 |
-| MPMovieAccessLogEvent | 14 | 0 | 14 |
-| MPMovieErrorLog | 3 | 0 | 3 |
-| MPMovieErrorLogEvent | 7 | 0 | 7 |
-| MPMoviePlayerController | 44 | 0 | 44 |
-| MPMoviePlayerViewController | 2 | 0 | 2 |
-| MPMusicPlayerApplicationController | 1 | 0 | 1 |
-| MPMusicPlayerController | 28 | 6 | 22 |
-| MPMusicPlayerControllerMutableQueue | 2 | 0 | 2 |
-| MPMusicPlayerControllerQueue | 3 | 0 | 3 |
-| MPMusicPlayerMediaItemQueueDescriptor | 8 | 0 | 8 |
-| MPMusicPlayerPlayParameters | 2 | 0 | 2 |
-| MPMusicPlayerPlayParametersQueueDescriptor | 7 | 0 | 7 |
-| MPMusicPlayerQueueDescriptor | 2 | 0 | 2 |
-| MPMusicPlayerStoreQueueDescriptor | 7 | 0 | 7 |
-| MPNowPlayingInfoCenter | 8 | 1 | 7 |
-| MPNowPlayingInfoLanguageOption | 8 | 0 | 8 |
-| MPNowPlayingInfoLanguageOptionGroup | 4 | 0 | 4 |
-| MPNowPlayingSession | 15 | 0 | 15 |
-| MPPlayableContentManager | 11 | 0 | 11 |
-| MPPlayableContentManagerContext | 5 | 0 | 5 |
-| MPRatingCommand | 4 | 0 | 4 |
-| MPRatingCommandEvent | 1 | 0 | 1 |
-| MPRemoteCommand | 8 | 0 | 8 |
-| MPRemoteCommandCenter | 23 | 20 | 3 |
-| MPRemoteCommandEvent | 2 | 0 | 2 |
-| MPSeekCommandEvent | 1 | 0 | 1 |
-| MPSkipIntervalCommand | 2 | 0 | 2 |
-| MPSkipIntervalCommandEvent | 1 | 0 | 1 |
-| MPTimedMetadata | 5 | 0 | 5 |
-| MPVolumeView | 19 | 1 | 18 |
+The AST says the header declares exactly `languageOption` and `setting` for the class, and the port
+declares exactly those and their setters, so a header member the port would not have is **none**.
 
-421 members across 57 classes, 370 with no row. The classes in the order of the
-fewest missing members are the next pieces.
+Contract, in `tests/backports/host/mediaplayeritem/languageoption.m`:
+
+    ok   the event is a kind of the base the port carries: an MPRemoteCommandEvent
+    ok   the base's command is what the event was built with: the command
+    ok   languageOption reads back what was set: the option
+    ok   setting reads back what was set: 3
+    languageoption: OK (0 failures)
+
+and the mutant that stops the accessor answering what was set is red:
+
+    RED  languageOption reads back what was set: other
+    languageoption: 1 RED
+
+**A first mutant here was not a mutant at all**, and that is worth recording: removing the `@synthesize`
+left ARC to synthesise exactly the same property, the check correctly stayed green, and the file *had*
+changed. `mutate.py` gates on the bytes differing, not on the behaviour differing, so it caught the
+no-op replacement and not the no-op behaviour. The accessors are written out for that reason - the
+header's readonly ones are the port's own code, and mutating them changes what a caller reads.
+
+## 8.0 - `MPChangePlaybackPositionCommandEvent80.m`
+
+    @property (nonatomic, readonly) NSTimeInterval positionTime;
+
+Carried, for the reason the 9.0 event above gives and the same measurement stands on: 6.1.3 has no
+class whose name holds `CommandEvent` in any of its 236, none of its 41 categories, nonsense selector
+absent. New code over the base the port already carries, so nothing can be shadowed. The AST says the
+header declares exactly `positionTime`, the port declares that and its setter, and a header member the
+port would not have is **none**.
+
+Contract, in `tests/backports/host/mediaplayeritem/playbackposition.m`:
+
+    ok   the event is a kind of the base the port carries: an MPRemoteCommandEvent
+    ok   the base's command is what the event was built with: the command
+    ok   positionTime reads back what was set: 42.5
+    ok   an event nothing set answers the type's zero: 0
+    playbackposition: OK (0 failures)
+
+and the mutant, whose verdict is printed on **both** sides because `mutate.py` cannot enforce that for
+itself (a1d86395a):
+
+    mutated MPChangePlaybackPositionCommandEvent80.m: 'return _positionTime;' -> 'return 0;'
+      RED  positionTime reads back what was set: other
+      playbackposition: 1 RED
+    against the source tree: playbackposition: OK (0 failures)
+
+An earlier version of this check was green with **nothing tested**: writing it by editing a copy of the
+9.0 event's check dropped its own assertion, and the two remaining checks passed. That is the same
+failure the byte-only `cmp` gate cannot see, and it is why the verdict on both sides is printed above
+rather than just the mutated run.
+
+## 7.1 - `MPChangePlaybackRateCommandEvent71.m`
+
+    @property (nonatomic, readonly) float playbackRate;
+
+Carried, on the measurement the two events above rest on: 6.1.3 has no class whose name holds
+`CommandEvent` in any of its 236, none of its 41 categories, nonsense selector absent. The AST says the
+header declares exactly `playbackRate` for this class, the port declares that and its setter, and a
+header member the port would not have is **none**.
+
+    ok   the event is a kind of the base the port carries: an MPRemoteCommandEvent
+    ok   the base's command is what the event was built with: the command
+    ok   playbackRate reads back what was set: 1.5
+    ok   an event nothing set answers the type's zero: 0
+    playbackrate: OK (0 failures)
+
+    mutated: 'return _playbackRate;' -> 'return 0;'
+      RED  playbackRate reads back what was set: other
+      playbackrate: 1 RED
+    against the source tree: playbackrate: OK (0 failures)
+
+## 7.1 - `MPSeekCommandEvent`: carried, with no host check yet
+
+    @property (nonatomic, readonly) MPSeekCommandEventType type;
+
+The one member of this family the 7.1 file already carried, so the piece is a status row and a check
+rather than new code. The class and its `type` are in
+`packages/a/apple-backports/MediaPlayer/MPRemoteCommandCenter71.m`, which the bridge uses to turn an
+`UIEventSubtypeRemoteControl*` into a seek event.
+
+**The check is not written, and the reason is in the row.** `MPRemoteCommandCenter71.m` imports the
+real `<MediaPlayer/MediaPlayer.h>` and has no `CHARON_MEDIAPLAYER_STANDIN` seam, so a host check for it
+pulls this Mac's own MediaPlayer and collides with the stand-in's declarations - `MPMediaItem` twice and
+`MPMediaEntityPersistentID` as a different type. Giving that file the same seam the generated files take
+is the next thing, and it is a file stack 15 already merged, so it wants its own review rather than
+riding in a status row.
