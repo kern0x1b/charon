@@ -52,9 +52,31 @@ printf 'forward before   %s\n' "$fbefore"
 printf 'forward mutated  %s\n' "$fduring"
 restore_forward
 fafter=$(count)
+sbefore=$(count)
 printf 'forward reverted %s\n' "$fafter"
 if [ "$fbefore" = "$fduring" ] || [ "$fduring" = "$fafter" ]; then
     echo "the forward mutation did not move the count either"
     exit 1
 fi
-echo "both mutations move the count and both reverts move them back: the harness can fail"
+# A third mutant, on the sum's transposed clip: the release writes the intersection of the transposed
+# shape with the result descriptor and leaves the rest untouched, which a -1 sentinel in the result
+# shows. The mutant writes the whole shape, which is what the port did before the fix.
+sumkernel=$root/packages/a/apple-backports/MetalPerformanceShaders/MPSMatrixSum11.m
+sline='    NSUInteger extent = _transpose ? (_rows < _columns ? _rows : _columns) : _rows;'
+smutated='    NSUInteger extent = _rows;  // MUTATION: the whole shape, not the intersection'
+soriginal=$(cat "$sumkernel")
+restore_sum() { printf '%s\n' "$soriginal" > "$sumkernel"; }
+trap 'restore; restore_forward; restore_sum' EXIT INT TERM
+grep -q "$sline" "$sumkernel" || { echo "the sum anchor is gone"; exit 1; }
+printf '%s\n' "$smutated" > "$sumkernel"
+sduring=$(count)
+printf 'sum before   %s\n' "$sbefore"
+printf 'sum mutated  %s\n' "$sduring"
+restore_sum
+safter=$(count)
+printf 'sum reverted %s\n' "$safter"
+if [ "$sbefore" = "$sduring" ] || [ "$sduring" = "$safter" ]; then
+    echo "the sum mutation did not move the count either"
+    exit 1
+fi
+echo "all three mutations move the count and all three reverts move them back: the harness can fail"

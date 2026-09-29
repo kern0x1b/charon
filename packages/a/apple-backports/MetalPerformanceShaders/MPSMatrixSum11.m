@@ -127,8 +127,15 @@ CHARON_MPS_NEURON_COMMON
     if (offsetVector)
         offsets = (const MPSMatrixOffset *)((const char *)[offsetVector.data contents] + offsetVector.offset);
     CharonMPSNeuron neuron = [self charon_mps_neuron];
-    for (NSUInteger row = 0; row < _rows; row++) {
-        for (NSUInteger column = 0; column < _columns; column++) {
+    // Under transpose the answer is the columns-by-rows shape, and the release writes only what the
+    // result descriptor has room for - min(rows, columns) in each direction - and leaves the rest of
+    // the destination alone. Measured with a -1 sentinel in every element: for a 2 x 3 result the
+    // release writes 11 44 -1 / 22 55 -1, so the third column is a byte it never touched and not a
+    // zero it wrote.
+    NSUInteger extent = _transpose ? (_rows < _columns ? _rows : _columns) : _rows;
+    NSUInteger extentAcross = _transpose ? extent : _columns;
+    for (NSUInteger row = 0; row < extent; row++) {
+        for (NSUInteger column = 0; column < extentAcross; column++) {
             double sum = 0.0;
             for (NSUInteger index = 0; index < _count; index++) {
                 if (index >= sourceMatrices.count) {

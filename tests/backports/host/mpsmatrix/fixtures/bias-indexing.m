@@ -9,7 +9,11 @@ static float runWith(id<MTLDevice> d, id<MTLCommandQueue> q, const float *bias, 
     float out[6]; memset(out, 0, sizeof(out));
     id<MTLBuffer> ab=[d newBufferWithBytes:A length:24 options:MTLResourceStorageModeShared];
     id<MTLBuffer> bb=[d newBufferWithBytes:B length:24 options:MTLResourceStorageModeShared];
-    id<MTLBuffer> ob=[d newBufferWithLength:24 options:MTLResourceStorageModeShared];
+    // A sentinel in every element, so a zero in the answer is a value the release wrote and a -1 is a
+    // byte it never touched. The transposed case's third column reads zero, and zero is what a fresh
+    // buffer already contains, so without this the two cannot be told apart.
+    float sentinel[6] = {-1, -1, -1, -1, -1, -1};
+    id<MTLBuffer> ob=[d newBufferWithBytes:sentinel length:24 options:MTLResourceStorageModeShared];
     MPSMatrixDescriptor *md=[MPSMatrixDescriptor matrixDescriptorWithRows:2 columns:3 matrices:1 rowBytes:12 matrixBytes:24 dataType:MPSDataTypeFloat32];
     MPSVector *bv = bias ? [[MPSVector alloc] initWithBuffer:[d newBufferWithBytes:bias length:biasLen*4 options:MTLResourceStorageModeShared]
                                  descriptor:[MPSVectorDescriptor vectorDescriptorWithLength:biasLen vectors:1 vectorBytes:biasLen*4 dataType:MPSDataTypeFloat32]] : nil;
