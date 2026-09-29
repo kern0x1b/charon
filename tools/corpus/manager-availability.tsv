@@ -1,0 +1,22 @@
+-init	none	-	
+?	none	-	macos-unavailable
++managerForDomain:	none	-	
+-signalEnumeratorForContainerItemIdentifier:completionHandler:	none	-	
+-getUserVisibleURLForItemIdentifier:completionHandler:	16.0	member	
++getIdentifierForUserVisibleFileAtURL:completionHandler:	16.0	member	
+-registerURLSessionTask:forItemWithIdentifier:completionHandler:	none	-	
+?	11.0	member	macos-unavailable
+?	11.0	member	macos-unavailable
+-temporaryDirectoryURLWithError:	16.0	member	
++writePlaceholderAtURL:withMetadata:error:	11.0	member	macos-unavailable
++placeholderURLForURL:	11.0	member	macos-unavailable
++addDomain:completionHandler:	none	-	
++removeDomain:completionHandler:	none	-	
++removeDomain:mode:completionHandler:	16.0	member	
++getDomainsWithCompletionHandler:	none	-	
++removeAllDomainsWithCompletionHandler:	none	-	
+-signalErrorResolved:completionHandler:	16.0	member	
+-globalProgressForKind:	16.0	member	
++defaultManager	none	-	macos-unavailable
+-providerIdentifier	11.0	member	macos-unavailable
+-documentStorageURL	11.0	member	macos-unavailable
