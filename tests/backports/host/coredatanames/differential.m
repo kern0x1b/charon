@@ -40,7 +40,7 @@ int main(int argc, char **argv)
             [names addObject:line];
         }
     }
-    check_named(names.count == 7, @"the list holds the 7 names this band carries", [NSString stringWithFormat:@"%lu", (unsigned long)names.count]);
+    check_named(names.count == 21, @"the list holds the 21 names this band carries", [NSString stringWithFormat:@"%lu", (unsigned long)names.count]);
 
     NSUInteger agreed = 0, absent = 0, differed = 0, missingHere = 0;
     for (NSString *name in names) {

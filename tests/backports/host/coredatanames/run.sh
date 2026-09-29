@@ -14,7 +14,7 @@ for name in $(sed -e '1,3d' "$here/names.txt"); do
     renames="$renames -D$name=charonHost_$name"
 done
 objects=""
-for source in CoreDataNames70 CoreDataNames140 CoreDataNames170 CoreDataNames180; do
+for source in CoreDataNames70 CoreDataNames100 CoreDataNames103 CoreDataNames140 CoreDataNames170 CoreDataNames180; do
     # shellcheck disable=SC2086
     xcrun clang -fobjc-arc -fvisibility=hidden -w $renames -c "$port/$source.m" -o "$build/$source.o"
     objects="$objects $build/$source.o"

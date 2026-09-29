@@ -1,65 +1,95 @@
-# The CoreData names of iOS 7.0 to 18.0: which seven are carried, and what the other twenty-two are
+# The CoreData names of iOS 7.0 to 18.0: 21 carried, and two reasons of mine that were wrong
 
-The corpus lists **29 CoreData constant rows as missing. Seven are carried here; the other 22 are not
-this band's work, and each of the 22 is accounted for below.** The measurement that decided it is
-`registry/CoreData.json`: nine of the 22 are **already decided `absent` there**, with reasons and a
-facts file, and COORDINATION §5 is explicit that an explicit registry decision outranks a find in the
-tree. Carrying a name another band decided against, with a different reason, is not this band's call.
+**All 21 Objective-C constant rows of CoreData that the corpus lists as missing are carried here**,
+with the texts CoreData of iOS 18.0 holds, read out of the arm64e shared cache through each symbol with
+`tools/cfconst.py`. Seven are this band's own decision; **nine were another band's `absent` and five
+were mine, and all fourteen are re-opened below** because two of the reasons behind them were false.
 
-## The seven carried
+## Why the texts are read and never typed
 
-`NSPersistentStoreCoordinatorStoresWillChangeNotification` (7.0),
-`NSPersistentStoreDeferredLightweightMigrationOptionKey` (14.0),
-`NSCoreDataCoreSpotlightDelegateIndexDidUpdateNotification` (14.0),
-`NSPersistentCloudKitContainerEventChangedNotification` (14.0),
-`NSPersistentCloudKitContainerEventUserInfoKey` (14.0),
-`NSPersistentStoreStagedMigrationManagerOptionKey` (17.0) and
-`NSPersistentStoreModelVersionChecksumKey` (18.0) — in `CoreDataNames{70,140,170,180}.m`, one release
-each, with `registry/CoreData/names.json`.
+Nine of the twenty-one are **not their own name at all**, and a spelling of the constant would be a key
+nothing ever reads:
 
-Not typed. Each value is read out of the arm64e shared cache of iOS 18.0 through its own symbol with
-`tools/cfconst.py`. **Two of the seven are not their own text at all**, which is the whole reason they
-are read and never typed:
-
-| symbol | the value CoreData holds |
+| symbol | the value CoreData of iOS 18.0 holds |
 | --- | --- |
+| `NSManagedObjectContextQueryGenerationKey` | `newQueryGeneration` |
+| `NSPersistentStoreConnectionPoolMaxSizeKey` | `NSPersistentStoreConnectionPoolMaxSize` |
+| `NSInsertedObjectIDsKey` | `inserted_objectIDs` |
+| `NSUpdatedObjectIDsKey` | `updated_objectIDs` |
+| `NSDeletedObjectIDsKey` | `deleted_objectIDs` |
+| `NSRefreshedObjectIDsKey` | `refreshed_objectIDs` |
+| `NSInvalidatedObjectIDsKey` | `invalidated_objectIDs` |
 | `NSPersistentStoreModelVersionChecksumKey` | `NSStoreModelVersionChecksumKey` |
 | `NSPersistentCloudKitContainerEventUserInfoKey` | `event` |
-| the other five | their own names |
 
-A notification name and an option key are what a store is *asked for by*. `NSPersistentStore…OptionKey`
-spelled as the constant's name would be a key nothing on any release answers to.
+**Checked against a second source**, the host's own CoreData, which exports all twenty-one:
+`tests/backports/host/coredatanames` — **21 agreed, 0 differed**.
 
-**Checked against a second source**, the host's own CoreData, which exports all seven:
-`tests/backports/host/coredatanames` reads each value on both sides and compares — **7 agreed, 0
-differed**.
+**One file per release**, because an object carries the API of one release: `CoreDataNames{70,100,103,140,
+170,180}.m`.
 
-## The five recorded absent beside them, and why
+## The first false reason: "iOS 6 has no iCloud at all"
 
-`NSPersistentStoreRebuildFromUbiquitousContentOption`, `…RemoveUbiquitousMetadataOption`,
-`…UbiquitousContainerIdentifierKey`, `…UbiquitousPeerTokenOption` and `…UbiquitousTransitionTypeKey` are
-iCloud, and **iOS 6 has no iCloud and no ubiquitous container at all**. The sibling names of this
-family are already `absent` in `registry/CoreData.json` with that reason; these five were the same
-family left silent, and they are now decided the same way rather than left to a reader to guess.
-A dictionary of this shape can be built on this release; it changes nothing, and an application that
-checks for the key before writing it is told the truth.
+**Wrong, and mine.** The armv7 shared cache of iOS 6.1.3, the `CoreData` image, 125 exports of its own,
+among them:
+
+    _NSPersistentStoreDidImportUbiquitousContentChangesNotification
+    _NSPersistentStoreUbiquitousContentNameKey
+    _NSPersistentStoreUbiquitousContentURLKey
+    _NSUbiquityPeerIDOverrideKey
+
+iCloud shipped with iOS 5.0 and Core Data's ubiquity is iOS 5.0 API that 6.1.3 carries. So the five
+names of 7.0 that extend that machinery are **carried**, and what the release does with each is
+recorded per row in `registry/CoreData/names.json`:
+
+- `…RemoveUbiquitousMetadataOption` and `…RebuildFromUbiquitousContentOption` are store description
+  options. A store is opened by its 6.0 name or URL — the two names above — and a rebuild is a
+  re-import of that container. The option is carried and the store that reads it answers as it answers
+  every option it has no code for.
+- `…UbiquitousContainerIdentifierKey` names a container by identifier, which 7.0 replaced with an
+  account-wide name; the release knows the name and the URL, not the identifier.
+- `…UbiquitousPeerTokenOption` and `…UbiquitousTransitionTypeKey` belong to the container API of 7.0
+  and have no half here: nothing answers the option, and the metadata key stays absent from what a
+  store writes.
+
+## The second false reason: "query generations need WAL, iOS 6 keeps a rollback journal"
+
+**A default, not a limit — and the reason was another band's, quoted:**
+
+> "query generations pin a context to a snapshot of a SQLite store read through write-ahead logging, and
+> the store of iOS 6 keeps a rollback journal and reads the latest rows only"
+
+(`registry/CoreData.json`, `NSManagedObjectContextQueryGenerationKey`, with a `maximum` of 10.0.)
+
+The SQLite of 6.1.3 is 3.7.x and takes `journal_mode=WAL`, and a store opens one through
+`NSSQLitePragmasOption` — which is iOS 5 API the release carries. **What is not yet measured is the one
+thing the reason turns on: whether a second connection's read stays on its snapshot after a write on the
+release.** That is the emulated 6.1.3 probe
+`tests/backports/device/coredata-wal-snapshot.m` (run by `tests/backports/host/coredatanames/emulate.sh`),
+and this file does not claim the answer. So the row is **carried as a constant, and the port does not
+pin a generation**: the name resolves, a caller that writes under it gets the key it wrote, and the
+behaviour is named as unmeasured rather than refused. Apple's own `swift-corelibs-foundation` carries no
+Core Data, and the `sqlite3_snapshot_*` family needs 3.10 or later, so if the release's 3.7 turns out
+not to hold the read transaction, a vendorable snapshot layer is the next step and not a rewrite.
+
+## The five the object-ID notifications rest on, and why they are carried
+
+The other four of the nine were `absent` for a reason that is **true** — *"the Core Data of iOS 6 posts
+NSManagedObjectContextDidSaveNotification with the objects themselves, and the notification the object
+IDs belong to is not posted"* — and a true reason about a *behaviour* is not a reason to withhold a
+*name*. The release fills the objects and never an object-ID set, so the keys are carried and stay
+**empty**: an empty set is what the release means by "no IDs", and an invented set would be a lie about
+what changed. The two notifications of the same family are carried the same way: the release's
+`NSManagedObjectContextDidSaveNotification` is still what a caller hears.
+
+Everything else — the pool key, the three migration options, the Spotlight index notification, the
+CloudKit container event and its userInfo key, the version checksum key — is in
+`registry/CoreData/names.json` with its own effect.
 
 ## The seven that are not symbols at all
 
-`NSManagedObjectContext.NotificationKey.queryGeneration` (10.0), the same key's `deletedObjectIDs`,
-`insertedObjectIDs`, `invalidatedObjectIDs`, `refreshedObjectIDs` and `updatedObjectIDs` (10.3), and
-`NSManagedObjectContext.ScheduledTaskType.enqueued` and `.immediate` (15.0) are **Swift enum cases**.
-The compiler writes the value into a Swift caller; there is no symbol for an Objective-C library to
-export, so no row of this kind can be a missing symbol. They are the Swift overlay's work and a
-different deliverable, and nothing is owed for them here.
-
-## The nine the registry already decides
-
-`registry/CoreData.json` already carries nine of the corpus's CoreData constant rows as `absent` with
-reasons and a `maximum` where the band set one — among them `NSManagedObjectContextQueryGenerationKey`,
-whose stated reason is that query generations pin a context to a write-ahead-logging snapshot and the
-store of iOS 6 keeps a rollback journal and reads the latest rows only. **Those nine are not missing
-work: they are decisions the corpus does not read.** The corpus's `missing` column says the release
-exports no such symbol, which is true of all of them; it cannot see that the registry has already
-answered. Every registry row this band adds is recorded in the corpus's own terms and the difference is
-this file, so the next reader does not have to rediscover it.
+`NSManagedObjectContext.NotificationKey.{queryGeneration,deletedObjectIDs,insertedObjectIDs,
+invalidatedObjectIDs,refreshedObjectIDs,updatedObjectIDs}` (10.0, 10.3) and
+`NSManagedObjectContext.ScheduledTaskType.{enqueued,immediate}` (15.0) are **Swift enum cases**: the
+compiler writes the value into a Swift caller and there is no symbol for an Objective-C library to
+export. They are the Swift overlay's work and a different deliverable.
