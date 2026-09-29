@@ -45,7 +45,9 @@
 @implementation CharonHandlerMediaItemArtwork
 
 - (instancetype)initWithCharonBounds:(CGSize)bounds handler:(UIImage *(^)(CGSize))handler {
-    self = [super init];
+    // The header marks -init unavailable on the class (it is not the way to make one), and this subclass is
+    // the way: the base's -init is NSObject's, reached without the header's compile-time refusal.
+    self = [super performSelector:@selector(init)];
     if (self) {
         _charonBounds = bounds;
         _charonHandler = [handler copy];
