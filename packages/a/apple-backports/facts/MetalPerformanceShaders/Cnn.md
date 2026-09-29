@@ -463,3 +463,35 @@ a named divergence** - not that a Newton iteration would have closed it.
 This also means the host's rounding, whatever produces it, is not `rsqrtf` as this SDK names it: the
 answer has to be found in what the four give, and if none of them is a fit the conclusion stands as
 stated rather than as a missing arm.
+
+### The forward's residual is not a rounding choice: the four candidates are value-equal
+
+Scored over the forward's 15 cases, 90 elements, against `cand0/system.txt`:
+
+| candidate | root | gamma | products | total ulp | worst | sign flips |
+| --- | --- | --- | --- | --- | --- | --- |
+| b0 | division | before the divide | plain | 120 | 26 | 0 |
+| b2 | division | after the divide | plain | 120 | 26 | 0 |
+| b4 | division | before the divide | fused | 120 | 26 | 0 |
+| b6 | division | after the divide | fused | 120 | 26 | 0 |
+
+**All four score the same, which is the stop: two candidates with the same score.** The search is over and
+has no winner, so the forward's residual is not a rounding-choice defect.
+
+**And the check that closes it: the four `port.txt` files differ in four lines, all of them addresses.**
+
+    1247c1247
+    <   REF-CASE filled  gamma 0x16d2c6a78 beta 0x16d2c6a68 ...
+    >   REF-CASE filled  gamma 0x16fa02a78 beta 0x16fa02a68 ...
+    1250c1250
+    <   REF-CASE put prints array 0x16d2c6a68: 16 16 16
+    >   REF-CASE put prints array 0x16fa02a68: 16 16 16
+
+No case value differs. So the scorer's 90 elements are not missing anything, and the two files being
+distinct by md5 is not evidence of distinct arithmetic: **gamma's order and the fused products give
+bit-identical forward output**, which is stronger than the equal scores and is the same class of ASLR noise
+that made three identical host samples hash three ways, now on the port side.
+
+**So `batch-normalization-forward` is a named question, not a search:** the host forms the value in a way
+none of the three knobs reaches, and finding it needs a different probe - what the host does to the value
+*before* the root - rather than another variant of the last operation.
