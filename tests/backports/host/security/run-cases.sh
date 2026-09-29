@@ -172,7 +172,11 @@ run_mutation() {
     # THE CONTROL, on the IDENTICAL line with the unmutated source where the mutant's copy goes. This
     # is the run_mutation link line with one argument changed, so a control that is red cannot be
     # blamed on anything the mutation did.
-    if ! xcrun clang $common "$H/$casefile.m" "$origin" "$@" \
+    # $@ IS UNQUOTED ON PURPOSE, and it is the one place in this file where a list of files is
+    # splatted: a case names its own extra objects ("$curve" above is three of them), and a quoted
+    # "$@" hands clang ONE argument whose name is three paths and a space, which fails to build
+    # for a reason that has nothing to do with the case. run_case's own link line has always splatted.
+    if ! xcrun clang $common "$H/$casefile.m" "$origin" $@ \
          -framework Foundation -framework Security -framework CoreFoundation \
          -o "$build/control-$name" > "$build/control-$name.log" 2>&1; then
         echo "INVALID MUTANT $name  the control did not BUILD, so a verdict from this line would be the link's: $(grep -m1 'error:' "$build/control-$name.log" | cut -c9-)"
@@ -191,7 +195,7 @@ run_mutation() {
         failures=$((failures + 1))
         return
     fi
-    if ! xcrun clang $common "$H/$casefile.m" "$build/mutant-$name.m" "$@" \
+    if ! xcrun clang $common "$H/$casefile.m" "$build/mutant-$name.m" $@ \
          -framework Foundation -framework Security -framework CoreFoundation \
          -o "$build/mutant-$name" > "$build/mutant-$name.log" 2>&1; then
         echo "BUILD  $name mutation FAILED to build"
@@ -346,10 +350,6 @@ protocol_case protocol-options-flags      $PF
 protocol_case protocol-options-data       $PD
 run_case sec-identity         compare-sec-identity.py        $H/sec-identity.m $SI $SI16 $LI $O
 protocol_case protocol-options-blocks     $PK
-run_case supported          compare-supported.py          $H/supported.m $F
-run_case padding           compare-padding.py           $H/padding.m $F
-run_case verify-pairs      compare-verify-pairs.py      $H/verify-pairs.m $F
-run_case attributes        compare-attributes.py        $H/attributes.m $F
 run_case certificate-name  compare-certificate-name.py  $H/certificate-name.m $D
 run_case certificate-fields compare-certificate-fields.py $H/certificate-fields.m $D
 run_case network-fetch     compare-network-fetch.py     $H/network-fetch.m $N
@@ -416,10 +416,39 @@ mutate "$G" "$build/mutant-trust-result.m" \
     return errSecSuccess;' \
 'a verdict is invented instead of the releases own'
 
-run_mutation supported          compare-supported.py          supported          $F
-run_mutation padding           compare-padding.py           padding           $F
-run_mutation verify-pairs      compare-verify-pairs.py      verify-pairs      $F
-run_mutation attributes        compare-attributes.py        attributes        $F
+# THE FOUR MUTATIONS BELOW PATCH SecurityFunctions10_0_1.m, AND THAT FILE DISPATCHES INTO
+# Security/SecKeyElliptic10.m: it holds the curve for the keys this package makes itself, so the four
+# public names live in one file and the code they call lives in the other. A driver that links the first
+# alone has six undefined CharonSecKeyEC*/CharonSecurity* symbols and reports INVALID MUTANT for the
+# control, which is the LINK's failure read as the suite's. The two files and charon@micro-ecc's wrapper
+# go on the line together, the way tests/backports/host/seckeycurve/run.sh links them.
+#
+# BUILT WITH $common AND NOT WITH seckeycurve's OWN FLAGS, and that is the one detail that bites: this
+# driver targets arm64-apple-ios15.0-macabi against the iOSSupport frameworks, so an object compiled
+# for the host is a different architecture and the link says "ld: building for 'macCatalyst', but
+# linking in object file .../uECC.o built for 'macOS'".
+package=${SECURITY_MICRO_ECC:-$here/../../../../packages/m/micro-ecc}
+clone="$build/micro-ecc"
+[ -f "$clone/uECC.h" ] || git clone --quiet --depth 1 https://github.com/kmackay/micro-ecc.git "$clone" > /dev/null 2>&1
+[ -f "$clone/uECC.h" ] || { echo "FAIL micro-ecc did not clone: no uECC.h in $clone"; exit 1; }
+xcrun clang $common -I"$clone" -I"$package/files" -c "$clone/uECC.c" -o "$build/uECC.o"
+xcrun clang $common -I"$clone" -I"$package/files" -c "$package/files/CharonCKWebAuth.c" -o "$build/wrapper.o"
+xcrun clang $common -I"$package/files" -I"$clone" -c "$S/SecKeyElliptic10.m" -o "$build/elliptic.o"
+curve="$build/elliptic.o $build/uECC.o $build/wrapper.o"
+
+# THE FOUR CASES NAME \$curve FOR THE SAME REASON THE FOUR MUTATIONS DO: they link
+# SecurityFunctions10_0_1.m, which dispatches into the curve. They were declared above the objects are
+# built, and so they linked that one file alone and failed with the same six undefined Charon names - four
+# BUILD lines in a run whose tail looked otherwise finished.
+run_case supported          compare-supported.py          $H/supported.m $F $curve
+run_case padding           compare-padding.py           $H/padding.m $F $curve
+run_case verify-pairs      compare-verify-pairs.py      $H/verify-pairs.m $F $curve
+run_case attributes        compare-attributes.py        $H/attributes.m $F $curve
+
+run_mutation supported          compare-supported.py          supported          $F $curve
+run_mutation padding           compare-padding.py           padding           $F $curve
+run_mutation verify-pairs      compare-verify-pairs.py      verify-pairs      $F $curve
+run_mutation attributes        compare-attributes.py        attributes        $F $curve
 run_mutation certificate-name  compare-certificate-name.py  certificate-name  $D
 run_mutation certificate-fields compare-certificate-fields.py certificate-fields $D
 run_mutation network-fetch     compare-network-fetch.py     network-fetch     $N

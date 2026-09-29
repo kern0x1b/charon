@@ -16,7 +16,13 @@ EXPECTED = {
     "rsa-sign-sha1": "YES",
     "rsa-encrypt-oaep": "YES",    # SecKeyEncrypt
     "rsa-decrypt-pkcs1": "YES",   # SecKeyDecrypt
-    "ec-sign-sha256": "NO",       # the release has no EC primitive to sign with
+    # YES, and it was NO until this series' merge: the release has an EC KEY TYPE -
+    # kSecAttrKeyTypeEC, SecItem.h:802-803, API_AVAILABLE(macos(10.9), ios(4.0)) - and its own
+    # SecKeyRawSign takes such a key and a digest. The old row read "no EC primitive to sign with" off
+    # kSecAttrKeyTypeECSECPrimeRandom, which is the 10.0 name for a different class and sits two lines
+    # further down the same header. The padding the port checks an elliptic signature with is
+    # kSecPaddingNone, which is 0, and compare-verify-pairs.py's own pair says so.
+    "ec-sign-sha256": "YES",
     "rsa-keyexchange": "NO",      # and no key-exchange primitive at all
     "rsa-sign-unknown": "NO",     # an EC algorithm asked of an RSA key is not a thing it carries
 }

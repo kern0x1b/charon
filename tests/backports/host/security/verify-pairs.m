@@ -31,8 +31,14 @@ int main(void)
              kSecKeyAlgorithmRSASignatureMessagePKCS1v15SHA256, true, false, true);
         pair("verify-rsa-sha384", kSecKeyOperationTypeVerify,
              kSecKeyAlgorithmRSASignatureMessagePKCS1v15SHA384, true, false, true);
+        // CARRIED, and it was not until this series' merge: the release has an EC key type
+        // (kSecAttrKeyTypeEC, SecItem.h:802-803, API_AVAILABLE(macos(10.9), ios(4.0))) and its own
+        // SecKeyRawVerify takes such a key and a digest, with kSecPaddingNone - which is 0, and what
+        // the padding column below reads. The old `false` here was the pre-merge table's, and while it
+        // stood this case printed its own WRONG line against a table that had changed underneath it, so
+        // the comparator above read a red control and the mutation proved nothing.
         pair("verify-ec-sha256", kSecKeyOperationTypeVerify,
-             kSecKeyAlgorithmECDSASignatureMessageX962SHA256, false, true, false);
+             kSecKeyAlgorithmECDSASignatureMessageX962SHA256, false, true, true);
         pair("verify-rsa-ecdsa", kSecKeyOperationTypeVerify,
              kSecKeyAlgorithmECDSASignatureMessageX962SHA256, true, false, false);
     }

@@ -14,7 +14,11 @@ import sys
 EXPECTED = {
     "verify-rsa-sha256": (True, 32772),    # 0x8004, the release carries it
     "verify-rsa-sha384": (True, 32773),    # 0x8005
-    "verify-ec-sha256": (False, 0),        # kSecPaddingNone: no EC primitive on 6.1.3
+    # CARRIED, for the same measured reason as compare-supported.py's ec-sign-sha256: the release has
+    # an EC key type (kSecAttrKeyTypeEC, ios(4.0), SecItem.h:802-803) and SecKeyRawVerify takes it. The
+    # padding stays kSecPaddingNone, which is 0 - a curve has no padding scheme - and this pair is the
+    # one that says so.
+    "verify-ec-sha256": (True, 0),
     "verify-rsa-ecdsa": (False, 0),        # an ECDSA algorithm asked of an RSA key is not a thing
 }
 
