@@ -239,4 +239,3 @@ CHARON_TRAIT(16, UITraitSceneCaptureState, @"SceneCaptureState", CharonTraitValu
 + (BOOL)affectsColorAppearance { return charon_appearance_of(self); }
 + (NSInteger)defaultValue { return charon_integer_default_of(self); }
 @end
-
