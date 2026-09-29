@@ -23,6 +23,22 @@ the bytes it renders to.
 
 **`ciimage: 530 measurements, 530 the same, 0 different, 0 one side only`**, at a tolerance of 5e-4.
 
+**And the tree's own run gives twenty-three differences in this family**, over
+
+    ciimage: 527 measurements, 479 the same, 40 different, 42 one side only (tolerance 0.0005)
+
+against the `0 different` above, which is what the old comparator - the one that read only the first
+number of a line - reported. Twenty of them are two groups: the eight `alg clamped` lines, where the
+system's clamped image is the infinite extent and 96 bytes and the port's is `0 0 3 2` and 24, and the
+twelve `alg intermediate` lines, off by one unit in the green channel of every pixel in both spellings
+of `-imageByInsertingIntermediate:`. The other five are `alg transformed hq`, the high-quality
+downsample, one or two units in two channels.
+
+Two rows that used to be here are not, and the reasons are the rows' own: `-imageByPremultiplyingAlpha`
+(d255cf714) and `-imageBySettingAlphaOneInExtent:` (78b6730f2) are both `absent`, the port answers
+neither, and the probe does not ask them. The second of those was the worst of the differences - an
+infinite extent where the system's is `0 0 6 4` - and it is gone with the row.
+
 ## Not carried, and why - read the release's own selector table
 
 - **`+[CIContext contextWithCGContext:options:]`.** Checked rather than assumed: the 6.1.3 selector

@@ -105,45 +105,56 @@ pixel tuples and one checksum changed after the first number - reported
 reports `551 measurements, 410 the same, 141 different, 0 one side only`, exit 1. That gap is what the
 count was not seeing.
 
-### The 77, grouped, and what each group is
+### The differences, grouped, and what each group is
 
 Every one of them is a measurement of the port: the port process is the framework's own CoreImage
 with the port's categories on it, and `run.sh:69-72` refuses a port probe that is not the port.
 
+    ciimage: 527 measurements, 479 the same, 40 different, 42 one side only (tolerance 0.0005)
+    modelio: 317 measurements, 264 the same, 41 different, 55 one side only (tolerance 0.0005)
+
 | group | n | what it is | whose to fix |
 | --- | --- | --- | --- |
-| `shape` | 28 | `CIFilterShape` under a transform and a crop: the host's bounds of a rotated rectangle and the port's differ by about a pixel, and the pixel counts of the cropped ones follow | ours, or a documented divergence: `CGRectApplyAffineTransform` bounds the four corners, the host appears to bound the edges |
-| `alg alpha` | 12 | `-imageBySettingAlphaOneInExtent:`, extent and pixels: the host sets the alpha to one and keeps the colour, the port's blend-and-colour-matrix gives a different picture | ours |
-| `alg intermediate` | 10 | both spellings of `-imageByInsertingIntermediate`, off by one unit in the green channel of every pixel | ours |
-| `alg clamped` | 8 | `-imageByClampingToExtent` and `-imageByClampingToRect:`: the host's clamped image is the infinite extent and its 96 bytes, the port's is `0 0 3 2` and 24 | ours |
-| `alg transformed` | 5 | the high-quality downsample, off by one or two in two channels | ours, one rounding step |
-| `repr` | 4 | the representations: `repr rgba8 png` is `none` on the host and a file on the port, and `repr write png` is 0 against 1 | ours |
-| `ctx space` | 2 | the context's working format: the host answers 2056 (`kCIFormatRGBAh`) with a named working colour space, the port 264 (`kCIFormatRGBA8`) | ours, and see `ContextOwner.md` for the two properties that are not carried at all |
-| `color` | 6 | the named colours: three components off by one unit on some of the ten | ours |
-| `imp` | 1 | the address of `-imageByClampingToExtent`: the framework's in the host process, the port's in the port's. The label says which, and that it is the port is the point | not a difference at all: an address cannot be equal across two processes, and the line is here so a reader sees that |
+| `alg` | 23 | the clamped family (8): the system's clamped image is the infinite extent and 96 bytes, the port's is `0 0 3 2` and 24. The intermediates (10): both spellings, one unit off in the green channel of every pixel. The high-quality downsample (5): one or two units in two channels | ours |
+| `shape` | 9 | `-[CIFilterShape transformBy:interior:]` with `interior:YES`: the system moves the extent and the port does not - `shape moved interior` is `4 -6 10 10` against `4 0 6 4`, `shape turned interior` is `-5 0 13 13` against `0 0 9 10`, `shape scaled interior` is `0 0 20 5` against `0 0 10 5`, and the three cropped pixel counts follow the extents (400/96, 676/360, 400/200). Every other operation, with `interior:NO` and without, is equal | ours, and it is one flag: the extents and their pixels are nine lines and nothing else |
+| `repr` | 4 | the two `rgba8` formats and the write: `charon_representationOfImage:` returns nil where the system encodes a file, and `writePNGRepresentationOfImage:` answers 0 where the system writes one. The bytes that are produced are the same and decode to the same picture | ours |
+| `ctx` | 2 | the context's working format: the host answers 2056 (`kCIFormatRGBAh`) with a named working colour space, the port 264 (`kCIFormatRGBA8`) | ours, and see `ContextOwner.md` for the two properties that are not carried at all |
+| `imp` | 1 | the address of `-imageByClampingToExtent`: the framework's in the host process, the port's in the port's. An address cannot be equal across two processes, and the line is here so a reader sees that the port really is the port | not a difference at all, and it is a permanent red line in the count |
 | `odd set` | 1 | an accumulator of a fractional extent, `1.5 -2.25 5.5 3.5`: the system writes nothing into it (`60 f6009964`, four pixels `0 0 0 0`) and the port writes the whole-pixel part of the rectangle it is given | ours, and named in `ImageAccumulator.md` |
 
-Three of these were bugs in the port and are fixed, with the numbers in the commits that fixed them:
-the accumulator wrote nothing at all (`075f0d2f5`), the premultiply was a grey image of the alpha
-(`d255cf714`), and the whole family of 4x4 matrices was built by a braced initialiser that is not an
-initialiser (`6c0b43d89`).
+**No colour line is in the table.** There were six, and `d63a8af20` closed them: the accessors were
+answering a converted component for a colour in a space that is not sRGB - a green the caller passed
+as 0.0000 came back 0.1491 - and the colour now keeps the caller's components in the caller's space,
+with the conversion where it belongs, at render time. The rendered pixels were and are `0 811c9dc5`
+on both sides, which is why the whole family was invisible to the old comparator.
 
-### What the 42 one-sided lines are
+**And the two rows that were the worst of it are `absent` rather than different:**
+`-imageByPremultiplyingAlpha` (`d255cf714`, a grey image of the alpha) and
+`-imageBySettingAlphaOneInExtent:` (`78b6730f2`, an infinite extent where the system's is `0 0 6 4`).
+The port answers neither and the probe does not ask them.
+
+### The 42 one-sided lines
 
 42 of them, and they are measurements the host cannot be asked, not disagreements: the names each
 process gives itself, the lines over a format the framework's own accumulator does not accept, and
-the per-pixel lines of the clamped family, whose extent differs and so whose line count does too. The
-old count said 44; the two that left are the premultiply's four pixels, gone with the row.
+the per-pixel lines of the clamped family, whose extent differs and so whose line count does too.
 
-### The ModelIO differential, on the same comparator
+### The ModelIO differences, all forty-one of them named
 
-    modelio: 317 measurements, 263 the same, 42 different, 55 one side only (tolerance 0.0005)
-
-against `300 the same, 5 different` with the old one, which read only the first number. The 42 are the
-generators' index counts under a transform (the host shares a vertex where the port does not), the
-voxel array's index extent, the meshes' bounds, and `+canImportFileExtension:` for `usd`, which the
-host answers YES and the port NO. The transform stack's four matrix columns, which the old comparator
-called the same because the first number is 0 either way, are equal now - `6c0b43d89` carries that.
+| group | n | what it is | whose to fix |
+| --- | --- | --- | --- |
+| `cube mesh` | 14 | the submesh attributes and index ranges of the cube: the system carries 31 attributes where the port carries the one it was given | Apple's own internal attributes; a port cannot read them, and it is documented as a divergence |
+| `share cylinder` | 8 | the index count of a tube, over the ten sizes the probe samples. The vertex count and the box agree on every one of them; the index count does not, and it is not one way: the port has more in nine and fewer in one (r3 v3 90 against 96, r4 v2 96 against 90, r6 v2 144 against 126, r8 v2 192 against 162, r12 v3 360 against 312) | owed, and it is the cap triangulation: the header does not say where the triangles go, the port emits a centre vertex and a fan per end, and the vertex count - what a caller sizes its buffers from - is right on all ten |
+| `tri mesh`, `tribin mesh` | 4 | the vertex normals of the two triangle meshes: the system writes one where the port writes the average of the face's | owed |
+| `voxrule` | 8 | the voxel array's index extent and the union and difference over it: the system answers `INT_MAX` for a small array and the port derives the extent from the box and the voxel size, and the union follows the extent (three voxels on the system, two in the port) | a named divergence: the system's answer carries no information about the division |
+| `stack matrix` | 4 | the transform stack, and all four columns are equal now (`6c0b43d89`) | fixed |
+| `cylinder min` | 1 | the cylinder's box: the port's was a third taller, `3.33333` against `2.00000`, because the pole ring past each end was placed past the end instead of at it | fixed, `c8c72cfcc` |
+| `cylinder vertices` | 1 | the index count of the same cylinder, 192 against 162 | owed, with the `share cylinder` row above |
+| `mesh min` | 1 | a mesh built from buffers: the system answers a zero box, the port the box it was given | owed |
+| `canImport obj` | 1 | `+canImportFileExtension:` for `usd`: the host answers YES, the port NO | owed |
 
 `tests/backports/host/modelio/run.sh` defaulted its tolerance in `d915b4927`; before that the
-differential could not be run as shipped.
+differential could not be run as shipped. The whole-tail comparator is `ce246b428`, and the two
+controls that show it can fail are in `Differences.md` and in that commit: on a green pair with 216
+ModelIO lines changed after the first number, the comparator it replaced said `317 the same, 0
+different`, exit 0, and this one says `101 the same, 216 different`, exit 1.

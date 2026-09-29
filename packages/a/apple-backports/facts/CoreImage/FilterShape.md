@@ -21,6 +21,28 @@ bytes that image renders to.
 **`ciimage: 252 measurements, 252 the same, 0 different, 0 one side only`**, at a tolerance of 5e-4.
 That is every extent and every rendered pixel, for every operation, matching the framework.
 
+**That was the count the old comparator gave, and the tree's own run gives nine differences in this
+family, all of them the `interior:` flag:**
+
+    ciimage: 527 measurements, 479 the same, 40 different, 42 one side only (tolerance 0.0005)
+
+`-[CIFilterShape transformBy:interior:]` with `interior:YES` moves the extent on the system and does
+not move it in the port:
+
+    shape moved interior      the system  4.0000 -6.0000 10.0000 10.0000   the port 4.0000 0.0000 6.0000 4.0000
+    shape turned interior     the system -5.0000  0.0000 13.0000 13.0000   the port 0.0000 0.0000 9.0000 10.0000
+    shape scaled interior     the system  0.0000  0.0000 20.0000  5.0000   the port 0.0000 0.0000 10.0000 5.0000
+
+and the three cropped pixel counts follow the extents: 400 against 96, 676 against 360, 400 against
+200. Every other operation, with `interior:NO` and without, is equal - including the two the first
+review named, which `dec31f42e` fixed: `shape 0 2 intersect` is `0 2 0 7` on both sides and
+`shape 2 0 left` is `-4 2 4 7` on both, because `+shapeWithRect:` now rounds the rectangle to the
+whole pixels the system rounds it to (CIFilterShape.h:61 declares `extent`, and the system's rule
+measured over seven rectangles is CGRectIntegral's).
+
+**This is owed, not claimed.** Nine lines, all one flag, and the row is `implemented`; the difference
+is in `facts/CoreImage/Differences.md` and it says the same thing.
+
 ## What the probe found, which the header settles
 
 `-insetByX:Y:` was written as `insetByX:y:` with floating-point amounts. Selectors are case-sensitive

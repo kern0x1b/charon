@@ -24,6 +24,23 @@ depth, and the file `writePNGRepresentationOfImage:…` writes — its bytes rea
 **`ciimage: 398 measurements, 398 the same, 0 different, 0 one side only`**, at a tolerance of 5e-4. The
 encoded bytes are the same, and so is the picture they decode to.
 
+**And four lines of this family are different in the tree's own run**, over
+
+    ciimage: 527 measurements, 479 the same, 40 different, 42 one side only (tolerance 0.0005)
+
+against the `0 different` above, which is what the old comparator - the one that read only the first
+number of a line - reported. They are the two `rgba8` formats and the write:
+
+    repr rgba8 png none        the port repr rgba8 png 161 155f579e
+    repr rgba8 png tiff none    the port repr rgba8 png type public.png size 6 4 bits 8 32
+    repr write png 0            the port repr write png 1
+    repr write png file 0 811c9dc5   the port repr write png file 161 155f579e
+
+`charon_representationOfImage:` returns nil where the system encodes a file, for the two byte formats
+that are not RGBA8 or L8, and `writePNGRepresentationOfImage:` answers 0 where the system writes one.
+The bytes that ARE produced are the same and decode to the same picture, which is what the sentence
+above says and is still true of them; it is the four lines above that the `0 different` hid.
+
 ## Not carried here, and named
 
 - `+[CIContext contextWithCGContext:options:]` needs a context that draws into a `CGContext`, which is a
