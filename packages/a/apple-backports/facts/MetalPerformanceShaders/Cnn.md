@@ -439,3 +439,27 @@ not fit; and the operator is linear, block diagonal by channel, and writes every
 `batch-normalization-gradient-data` stays unclaimed**, with all of it in this section — the port writes
 the header's formula, the host writes something outside the family tried, and nothing is marked matching
 on a guess.
+
+### `rsqrtf` is not in Apple's libm, on either side
+
+`rsqrtf` is **not declared in Apple's libm on the host or on the device**, and the error says so where it is
+matters:
+
+    MPSMatrixBatchNormalization12.m:172:30: error: call to undeclared function 'rsqrtf';
+      ISO C99 and later do not support implicit function declarations
+
+This came from compiling the **host's own** harness, on macOS 26.5, with the system clang and the system
+SDK, so it is a fact about the whole Apple libm and not about the iOS SDK this port builds against and not
+about a missing include: adding `<math.h>` leaves the call undeclared. The file compiles without the
+include, so it does not have one.
+
+**So the ulp search is four candidates, not eight.** The root is taken by division or not taken at all
+here, and what remains is `1 x 2 x 2`: the root by division, gamma before or after the divide, and the two
+products fused or not. A hand-written Newton step would make the eighth arm build, and it is not wanted: an
+inverse root that is not a call the platform makes is a guess wearing a primitive's name. **If the four do
+not reach the host, the finding is that the host's root is not reproducible natively here, and the case is
+a named divergence** - not that a Newton iteration would have closed it.
+
+This also means the host's rounding, whatever produces it, is not `rsqrtf` as this SDK names it: the
+answer has to be found in what the four give, and if none of them is a fit the conclusion stands as
+stated rather than as a missing arm.
