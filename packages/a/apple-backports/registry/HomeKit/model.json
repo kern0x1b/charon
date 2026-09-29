@@ -602,18 +602,22 @@
    "kind": "class",
    "introduced": "10.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "a profile is a set of services an accessory presents, which only a paired accessory can present",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
+   "status": "implemented",
+   "reason": "the class is carried: the graph's accessories hold profiles, and the members that are the graph's are implemented rows of their own below; what a paired accessory alone can present stays with the accessory",
+   "effect": "an instance answers its identity, its services and its accessory from the graph; NSClassFromString finds the class",
+   "facts": "facts/HomeKit/HMAccessoryProfile.md",
+   "source": "the SDK's HomeKit headers, and the members' own rows in this file"
   },
   {
    "api": "HMCameraProfile",
    "kind": "class",
    "introduced": "10.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the camera surface is the accessory's own stream, which only a paired accessory has",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
+   "status": "implemented",
+   "reason": "the class is carried: a camera profile is an accessory profile whose controls are the accessory's own stream, which this library has no accessory to give",
+   "effect": "the class exists and answers its four control properties nil, which is how the header's nullable says a camera does not publish a control; NSClassFromString finds the class",
+   "facts": "facts/HomeKit/HMAccessoryProfile.md",
+   "source": "the SDK's HomeKit headers, and the members' own rows in this file"
   },
   {
    "api": "HMAccessControl",
