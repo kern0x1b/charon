@@ -1641,6 +1641,18 @@ static void CharonHKSeriesQuery12(void)
     // The port's query, over a sample this harness saves through the port's own store. The sample is over
     // a real period, so a query that reported the end date instead of the start one would answer a
     // different date than the one it was given - which is the change the mutant makes.
+    // The store keeps what it is authorised for, and this section saves a sample of a type the round trip
+    // above did not ask about, so it asks for its own - through the store's request, not by assumption.
+    __block BOOL queryAuthorised = NO;
+    [mineStore requestAuthorizationToShareTypes:[NSSet setWithObject:mineType]
+                                       readTypes:[NSSet setWithObject:mineType]
+                                      completion:^(BOOL success, NSError *error) { queryAuthorised = success; }];
+    CharonHKWaitFor(&queryAuthorised);
+    if (!queryAuthorised) {
+        printf("skipped: the port's store was not authorised for the type this query saves\n");
+        return;
+    }
+
     CharonHostHKQuantity *mineQuantity = [CharonHostHKQuantity quantityWithUnit:[CharonHostHKUnit unitFromString:@"count/min"] doubleValue:60.0];
     CharonHostHKQuantitySample *mineSample = [CharonHostHKQuantitySample quantitySampleWithType:mineType
                                                                                         quantity:mineQuantity
@@ -1657,23 +1669,29 @@ static void CharonHKSeriesQuery12(void)
         return;
     }
 
-    __block NSInteger mineCalls = 0, mineDone = 0;
+    __block NSInteger mineCalls = 0, mineDone = 0, mineWithQuantity = 0;
+    __block BOOL mineDoneWasLast = NO, mineDoneSeen = NO;
     __block CharonHostHKQuantity *mineDelivered = nil;
     __block NSDate *mineDate = nil;
     CharonHostHKQuantitySeriesSampleQuery *mine = [[CharonHostHKQuantitySeriesSampleQuery alloc] initWithSample:mineSample
                                                                                                    quantityHandler:^(CharonHostHKQuantitySeriesSampleQuery *query, CharonHostHKQuantity *quantity, NSDate *date, BOOL done, NSError *error) {
         mineCalls++;
-        if (quantity) mineDelivered = quantity;
-        if (date) mineDate = date;
-        if (done) mineDone++;
+        if (quantity) { mineDelivered = quantity; mineWithQuantity++; mineDate = date; }
+        if (done) { mineDone++; mineDoneSeen = YES; mineDoneWasLast = YES; }
+        else mineDoneWasLast = NO;
     }];
     [mineStore executeQuery:mine];
     NSDate *mineUntil = [NSDate dateWithTimeIntervalSinceNow:2.0];
     while (mineCalls == 0 && [mineUntil timeIntervalSinceNow] > 0)
         [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
 
-    CharonHKCompareInt(@"the port calls the handler once", (NSInteger)mineCalls, (NSInteger)1);
-    CharonHKCompareInt(@"the port's call is finished", (NSInteger)mineDone, (NSInteger)1);
+    // The header's own shape: called repeatedly with the quantities, and once more with done. The host
+    // makes a single call here because it delivers nothing - it has no entitlement - so the count is not
+    // a host comparison; the shape is the header's, and one sample means one quantity and one done.
+    CharonHKCompareInt(@"the port delivers the sample's one quantity", (NSInteger)mineWithQuantity, (NSInteger)1);
+    CharonHKCompareInt(@"the port finishes with one done", (NSInteger)mineDone, (NSInteger)1);
+    CharonHKCompareInt(@"the port calls the handler once per quantity and once for done", (NSInteger)mineCalls, (NSInteger)2);
+    CharonHKCompareBool(@"the port's done is its last call", mineDoneSeen && mineDoneWasLast, YES);
     CharonHKCompare(@"the quantity delivered is the one the sample holds", mineDelivered, mineSample.quantity);
     CharonHKCompareDouble(@"the quantity's value in the unit it was given",
                           [mineDelivered doubleValueForUnit:[CharonHostHKUnit unitFromString:@"count/min"]], 60.0);
@@ -1851,6 +1869,7 @@ int main(void)
     CharonHKWorkoutBuilder12();
     CharonHKSeriesBuilder12();
     CharonHKStoreRoundTrip();
+    CharonHKSeriesQuery12();
     printf("healthkit: %lu comparisons, %lu differences\n", (unsigned long)CharonHKComparisons,
            (unsigned long)CharonHKDifferences);
     return CharonHKDifferences == 0 ? 0 : 1;
