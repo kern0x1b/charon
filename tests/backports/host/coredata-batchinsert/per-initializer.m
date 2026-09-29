@@ -99,8 +99,11 @@ int main(void) { @autoreleasepool {
     @try {
         NSBatchInsertRequest *a = [[NSBatchInsertRequest alloc] initWithEntity:entity dictionaryHandler:dictionaryHandler];
         report("initWithEntity:dictionaryHandler:", a, nil, "-");
-        printf("initWithEntity:dictionaryHandler:.detail\tentity=%s\thandler=%s\n",
-               a.entity ? a.entity.name.UTF8String : "-", a.dictionaryHandler ? "set" : "unset");
+        // BOTH handler ivars, because the defect was that a request built here had BOTH set and
+        // nothing said so: one key would not have seen it.
+        printf("initWithEntity:dictionaryHandler:.detail\tentity=%s\tdictionaryHandler=%s\tmanagedObjectHandler=%s\n",
+               a.entity ? a.entity.name.UTF8String : "-",
+               a.dictionaryHandler ? "set" : "unset", a.managedObjectHandler ? "set" : "unset");
     } @catch (NSException *e) {
         report("initWithEntity:dictionaryHandler:", nil, e, e.reason.UTF8String);
     }
@@ -109,8 +112,11 @@ int main(void) { @autoreleasepool {
     @try {
         NSBatchInsertRequest *a = [[NSBatchInsertRequest alloc] initWithEntity:entity managedObjectHandler:managedObjectHandler];
         report("initWithEntity:managedObjectHandler:", a, nil, "-");
-        printf("initWithEntity:managedObjectHandler:.detail\tentity=%s\thandler=%s\n",
-               a.entity ? a.entity.name.UTF8String : "-", a.managedObjectHandler ? "set" : "unset");
+        // BOTH handler ivars, because the defect was that a request built here had BOTH set and
+        // nothing said so: one key would not have seen it.
+        printf("initWithEntity:managedObjectHandler:.detail\tentity=%s\tdictionaryHandler=%s\tmanagedObjectHandler=%s\n",
+               a.entity ? a.entity.name.UTF8String : "-",
+               a.dictionaryHandler ? "set" : "unset", a.managedObjectHandler ? "set" : "unset");
     } @catch (NSException *e) {
         report("initWithEntity:managedObjectHandler:", nil, e, e.reason.UTF8String);
     }

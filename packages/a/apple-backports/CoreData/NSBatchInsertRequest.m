@@ -24,10 +24,10 @@
 #import "CharonCoreData.h"
 
 // The storage. The SDK declares the class with an EMPTY ivar block (NSBatchInsertRequest.h:17),
-// so this extension is where its five properties are kept, and it is here rather than in
-// CharonCoreData.h because an ivar block may only appear in a class's one interface and the SDK has
-// that one - a second @interface for NSBatchInsertRequest is "duplicate interface definition", which
-// is what the shared header produced.
+// so this extension is where its SIX properties are kept (NSBatchInsertRequest.h:20,21,23,24,25,28).
+// It is here rather than in CharonCoreData.h because an ivar block may only appear in a class's one
+// interface and the SDK has that one: a second @interface for NSBatchInsertRequest is "duplicate
+// interface definition", which is exactly what the shared header produced.
 @interface NSBatchInsertRequest () {
     NSString *_charonEntityName;
     NSEntityDescription *_charonEntity;
@@ -125,15 +125,9 @@
 {
     self = [self initWithEntity:entity objects:@[]];
     if (self) {
-        _charonEntityName = [entity.name copy];
-        _charonManagedObjectHandler = [handler copy];
-    }
-    if (self) {
-        _charonEntityName = [entity.name copy];
-        _charonDictionaryHandler = [handler copy];
-    }
-    if (self) {
-        _charonEntity = entity;
+        // ONE block, ONE assignment. This carried three, and the first put the handler in the
+        // OTHER ivar, so a request built here had BOTH handler ivars set and nothing said so.
+        // initWithEntity:objects: has already stored the entity and its name.
         _charonDictionaryHandler = [handler copy];
     }
     return self;
@@ -144,15 +138,9 @@
 {
     self = [self initWithEntity:entity objects:@[]];
     if (self) {
-        _charonEntityName = [entity.name copy];
-        _charonManagedObjectHandler = [handler copy];
-    }
-    if (self) {
-        _charonEntityName = [entity.name copy];
-        _charonDictionaryHandler = [handler copy];
-    }
-    if (self) {
-        _charonEntity = entity;
+        // ONE block, ONE assignment. This carried three, and the first put the handler in the
+        // OTHER ivar, so a request built here had BOTH handler ivars set and nothing said so.
+        // initWithEntity:objects: has already stored the entity and its name.
         _charonManagedObjectHandler = [handler copy];
     }
     return self;
