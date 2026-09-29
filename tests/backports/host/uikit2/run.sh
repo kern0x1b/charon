@@ -45,10 +45,13 @@ prefixed_build() {
     # Each file is compiled once plain, to learn the classes, the C symbols and the selectors its Charon
     # categories carry, then rewritten by prefix_selectors.py, which prefixes those selectors whole, then
     # compiled again with the class renames and the declarations of the prefixed selectors. Every group of this
-    # file that adds no category to a system class stays on the plain path. The objects are left in $built.
+    # file that adds no category to a system class stays on the plain path.
+    # It leaves the objects in $built and returns 0, or prints what failed, sets status and returns 1; each
+    # caller answers that with `|| return 0`, which reports the group and lets the run continue.
     name=$1
     files=$2
     objects=""
+    built=""
     rm -f "$build/$name.declarations.h"
     for file in $files; do
         if ! xcrun clang $target $flags -w -c "$sources/$file" -o "$build/plain/$name-$(basename "$file").o" \
@@ -56,7 +59,7 @@ prefixed_build() {
             printf 'FAIL %s: %s does not compile\n' "$name" "$file"
             grep -m1 'error:' "$build/plain/$name-$(basename "$file").o.diagnostic" | sed 's|^|  |'
             status=1
-            return 0
+            return 1
         fi
         objects="$objects $build/plain/$name-$(basename "$file").o"
     done
@@ -76,7 +79,7 @@ prefixed_build() {
                 -- $objects; then
                 printf 'FAIL %s: %s cannot be rewritten\n' "$name" "$file"
                 status=1
-                return 0
+                return 1
             fi
         else
             cp "$sources/$file" "$source"
@@ -92,7 +95,7 @@ prefixed_build() {
             printf 'FAIL %s: the rewritten %s does not compile\n' "$name" "$file"
             grep -m1 'error:' "$build/$name/$base.diagnostic" | sed "s|$source|$file|; s|^|  |"
             status=1
-            return 0
+            return 1
         fi
         built="$built $build/$name/$base"
     done
@@ -101,7 +104,6 @@ prefixed_build() {
 prefixed_group() {
     # $1: group name, $2: sources, $3: test source
     name=$1
-    built=""
     prefixed_build "$name" "$2" || return 0
     test=$3
     xcrun clang $target -fobjc-arc -Wall -I"$harness" "$here/$test" "$harness/check.m" $built $frameworks -o "$build/$name-test"
@@ -115,7 +117,6 @@ prefixed_group() {
 prefixed_windowed() {
     # $1: group name, $2: sources, $3: test source; as windowed, over the prefixed build
     name=$1
-    built=""
     prefixed_build "$name" "$2" || return 0
     test=$3
     bundle="$build/$name.app"
