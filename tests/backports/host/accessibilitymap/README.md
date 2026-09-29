@@ -1,8 +1,9 @@
 # accessibilitymap - what this case covers, and what it owes
 
 `run.sh` is a two-sided differential: the system's `AXBrailleMap` and the port's, compiled into one
-program under two names, compared line by line. It is 48 questions, 47 of which answer the same and one
-of which is a declared difference with both answers and a reason in `expected-differences.tsv`.
+program under two names, compared line by line. It is 52 questions, 51 of which answer the same and one
+of which is a declared difference with both answers and a reason in `expected-differences.tsv`. The
+number is printed by the run itself, so it is read rather than kept.
 
 Two checks run beside it, each in its own program and each for a reason this file records rather than a
 comment:
