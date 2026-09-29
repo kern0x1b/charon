@@ -548,6 +548,23 @@ static float normGradientData[4][3];
 static float normGradientGamma[3];
 static float normGradientBeta[3];
 
+
+// The forward normalisation, computed by hand from the header's formula: gamma * (x - mean) /
+// sqrt(variance + epsilon) + beta, one channel at a time, so the comparison has a third opinion.
+static void referenceForward(const float *source, const float *mean, const float *variance,
+                             const float *gamma, const float *beta, float epsilon,
+                             int rows, int channels, float *out)
+{
+    for (int c = 0; c < channels; c++) {
+        double g = gamma[c], b = beta[c], m = mean[c];
+        double root = sqrt((double)variance[c] + epsilon);
+        for (int i = 0; i < rows; i++) {
+            double x = source[i * channels + c];
+            out[i * channels + c] = (float)(g * (x - m) / root + b);
+        }
+    }
+}
+
 static void casesBatchNormalization(void)
 {
     for (unsigned t = 0; t < gTypeCount; t++) {
@@ -581,6 +598,12 @@ static void casesBatchNormalization(void)
         kernel.computeStatistics = YES;
         [kernel encodeToCommandBuffer:commandBuffer inputMatrix:in meanVector:m varianceVector:v gammaVector:nil betaVector:nil resultMatrix:out];
     });
+    {
+        float referenceForwardOut[12] = {0};
+        referenceForward(&normSource[0][0], &normGivenMean[0], &normGivenVariance[0], &normGamma[0], &normBeta[0],
+                          0.001f, 4, 3, referenceForwardOut);
+        put("forward-reference", referenceForwardOut, sizeof(referenceForwardOut));
+    }
     put("batch-normalization-statistics-mean", normMean, sizeof(normMean));
     put("batch-normalization-statistics-variance", normVariance, sizeof(normVariance));
     put("batch-normalization-statistics-result", &normOut[0][0], sizeof(normOut));

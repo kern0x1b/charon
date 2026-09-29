@@ -104,7 +104,7 @@ CHARON_MPS_NEURON_COMMON
         CharonMPSRefuse(@"MPSMatrixBatchNormalization: a matrix of a data type that is not one of the eight element types was given");
         return;
     }
-    // y[i,j] = gamma[j] * (x[i,j] - mean(x[:,j])) / (variance(x[:,j]) + epsilon) + beta[j], the
+    // y[i,j] = gamma[j] * (x[i,j] - mean(x[:,j])) / sqrt(variance(x[:,j]) + epsilon) + beta[j], the
     // normalisation along the columns of the input, each column a feature channel's values across the
     // feature vectors. computeStatistics asks for the mean and variance to be written back, which is
     // what a training pass needs; the mean and variance the call gives are used either way.
@@ -148,7 +148,8 @@ CHARON_MPS_NEURON_COMMON
             double b0 = beta.length > column ? CharonMPSLoad(CharonMPSVectorElement(&beta, 0, column), beta.dataType, 0) : 0.0;
             for (NSUInteger row = 0; row < vectors; row++) {
                 double x = CharonMPSLoad(CharonMPSMatrixElement(&in, b, _sourceMatrixOrigin.x + row, _sourceMatrixOrigin.y + column), in.dataType, 0);
-                double y = CharonMPSApplyNeuron(neuron.type, g * (x - m) / (given + (double)_epsilon) + b0, neuron.a, neuron.b, neuron.c, CharonMPSNeuronA(&neuron, column));
+                // gamma * (x - mean) / sqrt(variance + epsilon) + beta: the root, not the variance.
+                double y = CharonMPSApplyNeuron(neuron.type, g * (x - m) / sqrt(given + (double)_epsilon) + b0, neuron.a, neuron.b, neuron.c, CharonMPSNeuronA(&neuron, column));
                 CharonMPSStore(CharonMPSMatrixElement(&out, b, _resultMatrixOrigin.x + row, _resultMatrixOrigin.y + column), out.dataType, 0, y);
             }
         }
