@@ -27,6 +27,9 @@ common="-target arm64-apple-ios15.0-macabi -isysroot $sdk -F $sdk/System/Library
 common="$common -iframework $sdk/System/iOSSupport/System/Library/Frameworks -fobjc-arc"
 frameworks="-framework Foundation -framework Security -framework CoreFoundation"
 failures=0
+cases=0
+mutants=0
+mutants_noticed=0
 
 # run NAME PORT-SOURCES... -- COMPARE-SCRIPT ; a mutation is applied by mutate_NAME below
 run_case() {
@@ -99,6 +102,8 @@ run_mutation() {
         failures=$((failures + 1))
     else
         echo "RED    $name mutation  $(grep -m1 DIFFERS "$build/mutant-$name.red" | cut -c9-)"
+        mutants=$((mutants + 1))
+        mutants_noticed=$((mutants_noticed + 1))
     fi
 }
 
@@ -120,6 +125,15 @@ D=$S/SecCertificateNameDER10_3.m
 N=$S/SecTrustNetworkFetch7_0.m
 G=$S/SecTrustGetTrustResult7_0.m
 O=$S/SecObjectWrappers12_0.m
+PM=$S/SecProtocolMetadata13_0.m
+PMA="$S/SecProtocolMetadataAccessors13_0.m $S/SecProtocolMetadataAccessors16_0.m"
+PO=$S/SecProtocolOptions13_0.m
+PC=$S/SecProtocolOptionsCiphersuite13_0.m
+PR=$S/SecProtocolOptionsStrings13_0.m
+PK=$S/SecProtocolOptionsBlocks13_0.m
+PF=$S/SecProtocolOptionsFlags13_0.m
+PD=$S/SecProtocolOptionsData13_0.m
+PS=$S/SecProtocolOptionsSSLProtocol13_0.m
 
 echo "== the Security host cases, from $(git -C "$work" rev-parse --short HEAD 2>/dev/null || echo '?') =="
 # The two verdicts a driver must keep apart, checked first so a driver that has conflated them says so
@@ -170,6 +184,22 @@ else
     echo "BUILD  crash-case FAILED to build"
     failures=$((failures + 1))
 fi
+# --- the ten sec_protocol_* cases, each with the port source it links and its own comparator ---
+protocol_case() {
+    name=$1; sources=$2
+    run_case "$name" "compare-$name.py" "$H/$name.m" $sources
+    cases=$((cases + 1))
+}
+protocol_case protocol-metadata            $PM
+protocol_case protocol-metadata-accessors   $PM $PMA
+protocol_case protocol-options             $PO
+protocol_case protocol-options-held       $PO
+protocol_case protocol-options-sslprotocol $PS
+protocol_case protocol-options-ciphersuite $PC
+protocol_case protocol-options-strings    $PR
+protocol_case protocol-options-flags      $PF
+protocol_case protocol-options-data       $PD
+protocol_case protocol-options-blocks     $PK
 run_case supported          compare-supported.py          $H/supported.m $F
 run_case padding           compare-padding.py           $H/padding.m $F
 run_case verify-pairs      compare-verify-pairs.py      $H/verify-pairs.m $F
@@ -238,6 +268,22 @@ run_mutation attributes        compare-attributes.py
 run_mutation certificate-name  compare-certificate-name.py
 run_mutation certificate-fields compare-certificate-fields.py
 run_mutation network-fetch     compare-network-fetch.py
+must_not_compile() {
+    name=$1; sources=$2
+    mutants=$((mutants + 1))
+    if xcrun clang $common "$H/$3.m" "$build/mutant-$name.m" $sources \
+         -framework Foundation -framework Security -framework CoreFoundation \
+         -o "$build/mustfail-$name" > "$build/mustfail-$name.log" 2>&1; then
+        echo "NOTICED  $name mutation  it BUILT, and the type system was supposed to refuse it"
+        failures=$((failures + 1))
+    else
+        echo "NOTICED  $name mutation  refused by the compiler, as it must: $(grep -m1 'error:' "$build/mustfail-$name.log" | cut -c9-)"
+        mutants_noticed=$((mutants_noticed + 1))
+    fi
+}
+
+python3 "$H/make-mutants.py" "$build" 2>/dev/null || true
+must_not_compile blocks-challenge-into-keyupdate "$PK" protocol-options-blocks
 run_mutation sec-object-otherref compare-sec-object-wrappers.py sec-object-wrappers
 run_mutation sec-object-noretain compare-sec-object-wrappers.py sec-object-wrappers
 run_mutation trust-result      compare-trust-result.py
@@ -259,10 +305,15 @@ else
     failures=$((failures + 1))
 fi
 
+# A MUTATION THAT MUST NOT COMPILE is a mutation the type system caught, and it is noticed - so it is
+# expected to FAIL TO BUILD rather than to fail a comparison. The challenge-into-key-update mutation
+# assigns one block typedef to another's slot, which is a conflicting-type error, and a driver that only
+# knows "it built, so run it" would report the build failure as a case that did not run.
+
 echo
 if [ "$failures" -eq 0 ]; then
-    echo "run-cases: OK - every case compared, and every mutation noticed"
+    echo "run-cases: OK - $cases cases, $mutants mutants, $mutants_noticed noticed"
 else
-    echo "run-cases: $failures failure(s)"
+    echo "run-cases: $failures failure(s) - $cases cases, $mutants mutants, $mutants_noticed noticed"
 fi
 exit "$failures"

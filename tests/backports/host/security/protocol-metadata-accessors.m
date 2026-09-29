@@ -16,6 +16,10 @@ static void want(const char *what, long got, long expect)
 
 int main(void)
 {
+    // UNBUFFERED, so output SURVIVES A CRASH: a mutant that segfaults mid-case would otherwise lose every
+    // row printed before it, and the comparator would then say the rows "did not measure" and name the
+    // wrong thing. This is what lets a crash name the assertion it reached.
+    setvbuf(stdout, NULL, _IONBF, 0);
     __weak id weakA = nil, weakB = nil;
     @autoreleasepool {
         Class cls = NSClassFromString(@"CharonSecProtocolMetadata");
