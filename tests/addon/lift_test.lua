@@ -547,6 +547,38 @@ function failures(opt)
         end
     end
 
+    -- The three spellings that name a carried property, and the case that is the whole of this change: a row
+    -- spelled with the getter the SDK declares for the property - UITextField.isTextDragActive, which names
+    -- UITextDraggable's textDragActive whose getter is isTextDragActive - carries the property, where before
+    -- this the property's own spelling was asked and found in no row, and the four rows of the stack were
+    -- refused for an accessor the class would have answered. The kept guard is unchanged: a property whose own
+    -- name a row keeps is not carried by the getter's row.
+    local drag = {kind = "ObjCPropertyDecl", name = "textDragActive", type = {qualType = "BOOL"}, readonly = true,
+                  getter = {name = "isTextDragActive"}}
+    local by_getter = {["UITextField.isTextDragActive"] = true, ["-[UITextField isTextDragActive]"] = true}
+    local own = {["UITextField.textDragActive"] = true}
+    local nothing = {}   -- no row names the property in any of the three spellings
+    local kept = {}
+    local is_carried = function (rows)
+        return function (api)
+            return rows[api] == true
+        end
+    end
+    expect_equal(found, "a row spelled with the getter carries the property",
+                 table.concat(lift.property_accessors_uncarried("UITextField", drag, is_carried(by_getter), kept), ","), "")
+    expect_equal(found, "and a row spelled with the property's own name does too",
+                 table.concat(lift.property_accessors_uncarried("UITextField", drag, is_carried(own), kept), ","), "")
+    expect_equal(found, "and no row spelling it at all is still refused",
+                 table.concat(lift.property_accessors_uncarried("UITextField", drag, is_carried(nothing), kept), ","),
+                 "-[UITextField isTextDragActive]")
+    -- kept is the guard the original code had, on the accessor: a row that keeps the accessor means the port
+    -- does not answer it, and the getter's row does not carry it then
+    expect_equal(found, "a property whose accessor is kept is not carried by the getter's row",
+                 table.concat(lift.property_accessors_uncarried("UITextField", drag,
+                                                               is_carried({["UITextField.isTextDragActive"] = true}),
+                                                               {["-[UITextField isTextDragActive]"] = true}), ","),
+                 "-[UITextField isTextDragActive]")
+
     expect_equal(found, "both spellings carried", #lift.accessor_conflicts(kept, listed, answers, where_of), 0)
 
     -- A macro that expands to two declarations writes both their availability attributes at one place, so a

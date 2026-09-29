@@ -1347,6 +1347,33 @@ end
 
 local CARRIED_ATTRIBUTES = {AvailabilityAttr = true, SwiftPrivateAttr = true}
 
+-- The accessors of a carried property that no row carries, and so which the class would not answer.
+--
+-- A property brings both its accessors down, and the class has to answer both or the redeclaration is a lie. A
+-- property is carried when some row names it, and the spellings that name it are the accessors themselves, the
+-- property under its own name, and the property under the getter the SDK declares for it. The last is the one a row
+-- must use when the property has a custom getter, because that is the name the registry check matches and the name
+-- the port builds: UITextField.isTextDragActive names UITextDraggable's textDragActive, whose getter is
+-- isTextDragActive, and the property's own spelling is in none of the rows. A property whose own name a row *keeps*
+-- is not carried by the getter's row either: kept means the port does not answer it.
+function property_accessors_uncarried(owner, node, carried, kept)
+    local left = {}
+    local sign = node.class and "+" or "-"
+    local getter = node.getter and node.getter.name or node.name
+    local setter = node.setter and node.setter.name or "set" .. node.name:sub(1, 1):upper() .. node.name:sub(2) .. ":"
+    local accessors = {string.format("%s[%s %s]", sign, owner, getter)}
+    if not node.readonly then
+        table.insert(accessors, string.format("%s[%s %s]", sign, owner, setter))
+    end
+    for _, accessor in ipairs(accessors) do
+        if not (carried(accessor) or carried(owner .. "." .. node.name) and not kept[accessor]
+                    or carried(owner .. "." .. getter) and not kept[accessor]) then
+            table.insert(left, accessor)
+        end
+    end
+    return left
+end
+
 function uncarried_attributes(node)
     local left = {}
     for _, kind in ipairs(attributes_of(node)) do
@@ -2148,19 +2175,9 @@ local function computed(opt)
                     table.insert(unreachable, string.format("%s is declared by %s in a form this cannot write again", api, by))
                 end
                 if node.kind == "ObjCPropertyDecl" then
-                    -- a property brings both its accessors down: each has to be carried for the class
-                    local sign = node.class and "+" or "-"
-                    local getter = node.getter and node.getter.name or node.name
-                    local setter = node.setter and node.setter.name or "set" .. node.name:sub(1, 1):upper() .. node.name:sub(2) .. ":"
-                    local accessors = {string.format("%s[%s %s]", sign, owner, getter)}
-                    if not node.readonly then
-                        table.insert(accessors, string.format("%s[%s %s]", sign, owner, setter))
-                    end
-                    for _, accessor in ipairs(accessors) do
-                        if not (carried(accessor) or carried(owner .. "." .. node.name) and not kept[accessor]) then
-                            table.insert(unreachable, string.format("%s is %s's property %s, whose accessor %s is not carried",
-                                                                    api, by, node.name, accessor))
-                        end
+                    for _, accessor in ipairs(property_accessors_uncarried(owner, node, carried, kept)) do
+                        table.insert(unreachable, string.format("%s is %s's property %s, whose accessor %s is not carried",
+                                                              api, by, node.name, accessor))
                     end
                 end
             end
