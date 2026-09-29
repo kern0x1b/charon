@@ -1,6 +1,6 @@
 #!/bin/sh
-# counters.sh - the 18 string constants of the 14.0 counter family, against Apple's own, and the
-# mutation each one must notice.
+# counters.sh - the 21 string constants of the 14.0 counter family, against Apple's own, and
+# the mutation each one must notice.
 #
 #     sh tests/backports/host/metal-census/counters.sh
 #
@@ -34,7 +34,7 @@ common="-target arm64-apple-ios16.0-macabi -isysroot $sdk -F $sdk/System/Library
 common="$common -iframework $sdk/System/iOSSupport/System/Library/Frameworks -fobjc-arc"
 common="$common -I $S/Metal -I $S -I $S/MetalKit -I $root/tests/backports/host/metalblit/gl-stub"
 
-# The eighteen, in the order the header declares them.
+# The twenty-one, in the order the header declares them.
 constants="MTLCommonCounterTimestamp MTLCommonCounterTessellationInputPatches \
 MTLCommonCounterVertexInvocations MTLCommonCounterPostTessellationVertexInvocations \
 MTLCommonCounterClipperInvocations MTLCommonCounterClipperPrimitivesOut \
@@ -43,7 +43,8 @@ MTLCommonCounterComputeKernelInvocations MTLCommonCounterTotalCycles \
 MTLCommonCounterVertexCycles MTLCommonCounterTessellationCycles \
 MTLCommonCounterPostTessellationVertexCycles MTLCommonCounterFragmentCycles \
 MTLCommonCounterRenderTargetWriteCycles MTLCommonCounterSetTimestamp \
-MTLCommonCounterSetStageUtilization MTLCommonCounterSetStatistic"
+MTLCommonCounterSetStageUtilization MTLCommonCounterSetStatistic \
+MTLBinaryArchiveDomain MTLCounterErrorDomain MTLDynamicLibraryDomain"
 
 renames=""
 for name in $constants; do renames="$renames -D$name=charonHost_$name"; done
@@ -62,7 +63,7 @@ prove_defined() {   # $1 nm output of the HOST binary, which holds the port's RE
         for name in $missing; do echo "    $name" >&2; done
         return 1
     fi
-    echo "  the port's constants are DEFINED in the host binary under the renamed names: 18 of 18"
+    echo "  the port's constants are DEFINED in the host binary under the renamed names: 21 of 21"
 }
 
 # AND THE OTHER SIDE OF IT: on the DEVICE, where nothing is renamed, the eighteen must be defined
@@ -79,7 +80,7 @@ prove_named_on_device() {   # $1 an object built for the device
         for name in $missing; do echo "    $name" >&2; done
         return 1
     fi
-    echo "  the DEVICE object defines all 18 under Apple's own names: _MTLCommonCounterTimestamp and 17 more"
+    echo "  the DEVICE object defines all 21 under Apple's own names: _MTLCommonCounterTimestamp and 20 more"
 }
 
 # $1 output name, $2 port source. ALWAYS REBUILDS.
@@ -115,7 +116,7 @@ import re, sys
 path, name, value = sys.argv[1], sys.argv[2], sys.argv[3]
 text = open(path).read()
 # the constant's own DEFINITION, which is the line the name starts the statement on
-pattern = re.compile(r"^(MTLCommonCounter(?:Set)?\w*) const %s = @\"[^\"]*\";$" % re.escape(name),
+pattern = re.compile(r"^(MTLCommonCounter(?:Set)?\w*|NSErrorDomain) const %s = @\"[^\"]*\";$" % re.escape(name),
                      re.M)
 # the DEFINITION line, which is the one that assigns the string
 assert pattern.search(text), "the mutation must match the constant it is mutating: %s" % name
@@ -184,6 +185,6 @@ for name in $constants; do
     expect_red "M$i $name" "mutant-m$i"
 done
 
-echo "counters: the eighteen are green, the control is RUN FAILED, and all 18 mutants are red"
+echo "counters: the twenty-one are green, the control is RUN FAILED, and all 21 mutants are red"
 # THE SCRATCH IS REMOVED HERE.
 rm -rf "$work"

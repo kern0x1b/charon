@@ -104,3 +104,16 @@ MTLCommonCounterSet const MTLCommonCounterSetStageUtilization = @"stageutilizati
 //   SDK 16.4 MTLCounters.h:71 - a common counter
 MTL_EXTERN MTLCommonCounterSet const MTLCommonCounterSetStatistic;
 MTLCommonCounterSet const MTLCommonCounterSetStatistic = @"statistic";
+
+// THE THREE ERROR DOMAINS OF THE SAME BAND. Each is an NSErrorDomain: the header declares the
+// name and never the string, and Metal.apinotes is where the SDK says which error class each
+// one belongs to, so the STRING is Apple's own, measured, as the eighteen above are.
+// MTLBinaryArchiveDomain - SDK 16.4 MTLBinaryArchive.h:17; the domain of MTLBinaryArchiveError in Metal.apinotes.
+MTL_EXTERN NSErrorDomain const MTLBinaryArchiveDomain;
+NSErrorDomain const MTLBinaryArchiveDomain = @"MTLBinaryArchiveDomain";
+// MTLCounterErrorDomain - SDK 16.4 MTLCounters.h:202; the domain of MTLCounterSampleBufferError in Metal.apinotes.
+MTL_EXTERN NSErrorDomain const MTLCounterErrorDomain;
+NSErrorDomain const MTLCounterErrorDomain = @"MTLCounterErrorDomain";
+// MTLDynamicLibraryDomain - SDK 16.4 MTLDynamicLibrary.h:14; the domain of MTLDynamicLibraryError in Metal.apinotes.
+MTL_EXTERN NSErrorDomain const MTLDynamicLibraryDomain;
+NSErrorDomain const MTLDynamicLibraryDomain = @"MTLDynamicLibraryDomain";

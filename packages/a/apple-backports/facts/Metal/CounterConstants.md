@@ -1,6 +1,6 @@
-# The 14.0 counter family: eighteen names the header declares and never spells
+# The 14.0 counter family: twenty-one names the header declares and never spells
 
-Fifteen `MTLCommonCounter` and three `MTLCommonCounterSet`, in
+Fifteen `MTLCommonCounter`, three `MTLCommonCounterSet` and three `NSErrorDomain`, in
 `Metal/MTLCounterConstants14.m`, all introduced in **14.0**. They are here because a caller that
 builds a counter set writes them by name, and iOS 6 carries no constant of any of them.
 
@@ -70,10 +70,31 @@ mutation is **scoped to the constant's own definition line**, so changing one va
 another's, and a mutation that does not build is `RUN FAILED` with a non-zero exit and is never
 counted as red.
 
+## The three error domains
+
+| constant | declared | the string Apple holds | the error class it belongs to |
+| --- | --- | --- | --- |
+| `MTLBinaryArchiveDomain` | `MTLBinaryArchive.h:17` | `MTLBinaryArchiveDomain` (22 bytes) | `MTLBinaryArchiveError` |
+| `MTLCounterErrorDomain` | `MTLCounters.h:202` | `MTLCounterErrorDomain` (21 bytes) | `MTLCounterSampleBufferError` |
+| `MTLDynamicLibraryDomain` | `MTLDynamicLibrary.h:14` | `MTLDynamicLibraryDomain` (23 bytes) | `MTLDynamicLibraryError` |
+
+The same shape as the eighteen: the header declares the name and never the string, and
+**`Metal.apinotes` is where the SDK says which error class each domain belongs to** — it binds
+`MTLBinaryArchiveError`, `MTLCounterSampleBufferError` and `MTLDynamicLibraryError` to these three.
+So the string is Apple's own, measured by dlsym, and the case compares the bytes and the length. An
+`NSError` the port builds therefore carries the same domain string an Apple-built one does, which is
+the whole point of the row.
+
+## The mutants
+
+One per constant, **twenty-one in all**, each changing exactly one value and each red on its own
+line. The mutation is **scoped to the constant's own definition line** — for a counter that is
+`MTLCommonCounter const <name> = @"…";` and for a domain `NSErrorDomain const <name> = @"…";` — so
+changing one value cannot change another's, and a mutation that does not build is `RUN FAILED` with a
+non-zero exit and is never counted as red.
+
 ## What is NOT here
 
-The three **domain** constants — `MTLBinaryArchiveDomain`, `MTLCounterErrorDomain`,
-`MTLDynamicLibraryDomain` — are the same kind of string and are measured by the same machinery, but
-they are **not in this object** and their rows are not flipped. The two 14.0 `useHeap:` methods are
-device work and belong to the acceleration-structure family. Both are named in the next slice rather
-than folded in here, so this one's claim is exactly what its tree holds.
+The two 14.0 `useHeap:` methods are device work belonging to the acceleration-structure family, and
+the 13.0 rasterization-rate and 15.0 motion-geometry classes are their own families. All are named
+in the next slice, so this one's claim is exactly what its tree holds.

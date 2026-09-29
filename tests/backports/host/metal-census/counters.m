@@ -48,6 +48,10 @@ extern MTLCommonCounter const charonHost_MTLCommonCounterTimestamp;
 extern MTLCommonCounter const charonHost_MTLCommonCounterTotalCycles;
 extern MTLCommonCounter const charonHost_MTLCommonCounterVertexCycles;
 extern MTLCommonCounter const charonHost_MTLCommonCounterVertexInvocations;
+extern NSErrorDomain const charonHost_MTLBinaryArchiveDomain;
+extern NSErrorDomain const charonHost_MTLCounterErrorDomain;
+extern NSErrorDomain const charonHost_MTLDynamicLibraryDomain;
+
 static int failures;
 static int checks;
 
@@ -125,6 +129,10 @@ int main(void)
         same_bytes(apple_metal, "MTLCommonCounterTotalCycles", charonHost_MTLCommonCounterTotalCycles);
         same_bytes(apple_metal, "MTLCommonCounterVertexCycles", charonHost_MTLCommonCounterVertexCycles);
         same_bytes(apple_metal, "MTLCommonCounterVertexInvocations", charonHost_MTLCommonCounterVertexInvocations);
+
+        same_bytes(apple_metal, "MTLBinaryArchiveDomain", charonHost_MTLBinaryArchiveDomain);
+        same_bytes(apple_metal, "MTLCounterErrorDomain", charonHost_MTLCounterErrorDomain);
+        same_bytes(apple_metal, "MTLDynamicLibraryDomain", charonHost_MTLDynamicLibraryDomain);
 
         printf("no device was created: %d checks, every constant read from Apple's own Metal by name\n",
                checks);

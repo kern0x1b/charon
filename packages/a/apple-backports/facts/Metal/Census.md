@@ -151,7 +151,7 @@ check-facts-pointers.sh  (nothing in the tree)
 check-harness-invokers.sh (nothing in the tree)
 check-protocol-rows.sh   (nothing in the tree)
 check-split-control.sh   packages/a/apple-backports/facts/Metal/FunctionStitching.md
-counters.sh              (nothing in the tree)
+counters.sh              packages/a/apple-backports/facts/Metal/CounterConstants.md
 descriptors.sh           packages/a/apple-backports/facts/Metal/Descriptors14.md
 pre-export.sh            packages/a/apple-backports/facts/Metal/FunctionStitching.md tests/backports/host/metal-census/check-split-control.sh
 reflection.sh            packages/a/apple-backports/facts/Metal/TypeTree.md tests/backports/host/metal-census/reflection.m
