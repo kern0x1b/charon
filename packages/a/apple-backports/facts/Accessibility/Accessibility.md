@@ -56,6 +56,26 @@ because it cost a compile and would cost the next person the same: an ivar of `A
 *const pointer* and can never be assigned, so the class's storage is an `NSString *` and the property's
 accessor answers it unchanged.
 
+**The band a chart object lands in is measured, not read from the header.**
+`tools/release-split.lua` over the built objects answers 16.0 for all fourteen class symbols of
+`CharonChartDescriptors.o`, while Apple's header and the corpus both say 15.0:
+
+```
+release-split: clean, every object file's symbols first-appear in one release (5 files, 26 symbols, 50 releases checked)
+CharonChartDescriptors.o	_OBJC_CLASS_$_AXChartDescriptor	16.0
+CharonChartDescriptors.o	_OBJC_METACLASS_$_AXChartDescriptor	16.0
+```
+
+The 16.0 is what the SDK the objects were compiled against can prove: its own interface file for the
+16.0 Accessibility framework exports these names, and no earlier release on the held ladder is held with
+a cache that does. That is the same rule the tool's own header describes - a header can name a later
+release than the one that already exports the symbol - read the other way round. The consequence is the
+one that matters and it is not a gap: `band()` keeps an object in every band whose release is older than
+the object's own, so an object placed at 16.0 is carried on 6.1.3, 4.3 and 12.0 and is left out from
+16.0 up, where the system has the class itself. The classes of 18.0 and 26.0 in the same library have
+no export in that interface file at all and come out `none`, and are placed by the registry and the
+header instead - which is why the two are named here and the 15.0 classes are not.
+
 **Not transcribed yet, and the next groups of this framework are them**: `AXMathExpression.h` (fifteen
 classes, 39 rows) and `AXSettings.h` (five functions and five notification constants, 7 rows).
 
@@ -112,9 +132,10 @@ out of dot patterns. A table an *application* builds is real and is kept, coded 
 
 ## The chart and data classes of 15.0
 
-Eight of the nine are containers. An application fills them in and an assistive technology reads them
-back, and neither half has to reach anything on this release, so the value each one keeps is the value
-it was given. Every rule below was measured against the host's own `Accessibility.framework` by
+The group is seven classes and the two protocols that declare an axis, of which the class
+`AXLiveAudioGraph` is the one that asks for something; the other six are containers. An application
+fills a container in and an assistive technology reads it back, and neither half has to reach anything
+on this release, so the value each one keeps is the value it was given. Every rule below was measured against the host's own `Accessibility.framework` by
 `tests/backports/host/accessibilitychart/run.sh`, which builds the same 138 questions against the
 system's classes and against the port's - compiled under names the system does not use, so neither can
 answer for the other - and compares the two outputs line by line. 135 of the 138 answer the same; the

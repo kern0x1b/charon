@@ -58,7 +58,13 @@ mutant() {
         survived=$((survived + 1))
         return 0
     fi
-    reason=$(grep -m1 -E 'UNDECLARED DIFFERENCE|DECLARED DIFFERENCE' "$dir/out.txt" || true)
+    # The line that caught it, and the reason it has to be one of the comparison's own verdicts: a
+    # mutant that stops the build or crashes has told the case nothing about the answer.
+    if reason=$(grep -m1 -E 'UNDECLARED DIFFERENCE|DECLARED DIFFERENCE' "$dir/out.txt"); then
+        :
+    else
+        reason=
+    fi
     if [ -z "$reason" ]; then
         echo "MUTANT DIED FOR THE WRONG REASON: $name"
         tail -5 "$dir/out.txt"

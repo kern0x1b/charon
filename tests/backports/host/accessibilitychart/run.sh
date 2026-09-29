@@ -106,7 +106,11 @@ python3 "$here/compare.py" "$build/host.tsv" "$build/port.tsv" "$here/expected-d
 result=$?
 if [ "$result" -ne 0 ]; then
     echo "the two answers do not match what this case declares"
-    diff -u "$build/host.tsv" "$build/port.tsv" || true
+    if ! diff -u "$build/host.tsv" "$build/port.tsv"; then
+        # The whole diff, and not a summary of it: the point of printing it is that a reader can see
+        # which case moved without re-running anything.
+        :
+    fi
     exit 1
 fi
 echo "identical on all $((cases - declared)) other cases: the system and the port answer the same"
