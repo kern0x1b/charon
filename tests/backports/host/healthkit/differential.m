@@ -118,6 +118,7 @@
 
 @interface CharonHostHKObjectType : NSObject
 + (nullable HKQuantityType *)quantityTypeForIdentifier:(NSString *)identifier;
++ (nullable HKWorkoutType *)workoutType;
 + (nullable CharonHostHKSeriesType *)seriesTypeForIdentifier:(NSString *)identifier;
 + (nullable CharonHostHKClinicalType *)clinicalTypeForIdentifier:(NSString *)identifier;
 @end
@@ -166,7 +167,14 @@
 @property (readonly, copy) NSDictionary *metadata;
 @end
 
+// The port's workout type, which the store keeps as a shareable type. The harness needs the class to
+// exist by name to ask the store for authorisation over it; it holds no member of its own here.
+@interface CharonHostHKWorkoutType : NSObject
+@property (readonly, copy) NSString *identifier;
+@end
+
 @interface CharonHostHKWorkout : NSObject
+@property (readonly, copy) NSUUID *UUID;
 + (instancetype)workoutWithActivityType:(long)activityType
                               startDate:(NSDate *)startDate
                                 endDate:(NSDate *)endDate
@@ -234,6 +242,7 @@
 @end
 
 @interface CharonHostHKQuantityType : CharonHostHKObjectType
+@property (readonly, copy) NSString *identifier;
 @property (readonly) NSInteger aggregationStyle;
 - (BOOL)isCompatibleWithUnit:(CharonHostHKUnit *)unit;
 @end
@@ -960,12 +969,25 @@ static void CharonHKQueryObjects(void)
 @property (readonly) long activityType;
 @end
 
+@interface CharonHostCharonHKStore : NSObject
++ (instancetype)sharedStore;
+- (nullable NSArray *)objectsWithUUIDs:(NSArray<NSUUID *> *)uuids ofType:(HKObjectType *)type error:(NSError **)error;
+@end
+
 @interface CharonHostHKHealthStore : NSObject
+- (void)requestAuthorizationToShareTypes:(nullable NSSet<HKSampleType *> *)typesToShare
+                               readTypes:(nullable NSSet<HKObjectType *> *)typesToRead
+                              completion:(void (^)(BOOL success, NSError *error))completion;
+- (void)saveObject:(HKObject *)object withCompletion:(void (^)(BOOL success, NSError *error))completion;
+- (void)executeQuery:(HKQuery *)query;
+- (HKAuthorizationStatus)authorizationStatusForType:(HKObjectType *)type;
 @end
 
 // The iOS 12.0 workout builder, the class this delivery adds here. The header's contract is the
 // 26.2 header's and the values are the 12.0 image's; what each call answers is measured below.
 @interface CharonHostHKWorkoutBuilder : NSObject
+@property (readonly) NSTimeInterval duration;
+@property (readonly, copy) CharonHostHKQuantity *totalEnergyBurned;
 - (instancetype)initWithHealthStore:(HKHealthStore *)healthStore
                       configuration:(HKWorkoutConfiguration *)configuration
                              device:(nullable HKDevice *)device;
@@ -980,7 +1002,7 @@ static void CharonHKQueryObjects(void)
 - (void)addWorkoutEvents:(NSArray<HKWorkoutEvent *> *)workoutEvents completion:(void (^)(BOOL, NSError *))completion;
 - (void)addMetadata:(NSDictionary<NSString *, id> *)metadata completion:(void (^)(BOOL, NSError *))completion;
 - (void)endCollectionWithEndDate:(NSDate *)endDate completion:(void (^)(BOOL, NSError *))completion;
-- (void)finishWorkoutWithCompletion:(void (^)(HKWorkout *, NSError *))completion;
+- (void)finishWorkoutWithCompletion:(void (^)(CharonHostHKWorkout *, NSError *))completion;
 - (void)discardWorkout;
 - (NSTimeInterval)elapsedTimeAtDate:(NSDate *)date;
 - (nullable HKStatistics *)statisticsForType:(HKQuantityType *)quantityType;
@@ -1279,9 +1301,15 @@ static void CharonHKWaitForAnswer(volatile BOOL *answered)
 // The iOS 12.0 series builder, the class this delivery adds next. The refusals are the host's own
 // answers, read off it: each one's code and wording are compared, not just that one refused.
 @interface CharonHostHKQuantitySample : NSObject
++ (instancetype)quantitySampleWithType:(CharonHostHKQuantityType *)type
+                             quantity:(CharonHostHKQuantity *)quantity
+                            startDate:(NSDate *)startDate
+                              endDate:(NSDate *)endDate;
 @property (readonly, copy) HKQuantityType *sampleType;
 @property (readonly, copy) NSDate *startDate;
 @property (readonly, copy) NSDate *endDate;
+@property (readonly, copy) CharonHostHKQuantity *quantity;
+@property (readonly, copy) NSUUID *UUID;
 @end
 
 @interface CharonHostHKQuantitySeriesSampleBuilder : NSObject
@@ -1297,6 +1325,22 @@ static void CharonHKWaitForAnswer(volatile BOOL *answered)
                       completion:(void (^)(NSArray *samples, NSError *error))completion;
 - (void)discard;
 @end
+
+// The iOS 12.0 series query. The host's HealthKit is asked about it, and what it can answer here is
+// only the shape of the answer, because it has no entitlement: one call, done YES, and the refusal.
+@interface CharonHostHKQuantitySeriesSampleQuery : NSObject
+- (instancetype)initWithSample:(CharonHostHKQuantitySample *)quantitySample
+               quantityHandler:(void (^)(CharonHostHKQuantitySeriesSampleQuery *query,
+                                        CharonHostHKQuantity *_Nullable quantity,
+                                        NSDate *_Nullable date, BOOL done, NSError *error))quantityHandler;
+@end
+
+static void CharonHKWaitFor(volatile BOOL *answered)
+{
+    NSDate *deadline = [NSDate dateWithTimeIntervalSinceNow:2.0];
+    while (!*answered && [deadline timeIntervalSinceNow] > 0)
+        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
+}
 
 // The iOS 12.0 workout builder.
 //
@@ -1524,6 +1568,231 @@ static void CharonHKSeriesBuilder12(void)
     CharonHKCompare(@"the raise's text", mineText, theirsText);
 }
 
+// The iOS 12.0 quantity series query.
+//
+// Two things are compared against the host and two are not, and the line between them is measured.
+//
+// Against the host: that the class answers, and what running it does. The host's HealthKit on this
+// machine has no entitlement, so executing the query calls the handler once with a nil quantity, a nil
+// date, done YES and com.apple.healthkit 1, "Health data is unavailable on this device" - the same
+// refusal the two builders of this group meet. That shape is compared, because both sides give it.
+//
+// Not against the host: the quantities themselves, and which date each is reported at. The host will not
+// answer those without a store that has data, so the port's delivery is compared against the inputs this
+// harness itself builds - a sample over a real period, saved through the port's own store, and the start
+// and end dates it chose - and that is what makes a query that answered the end date instead of the start
+// one a difference rather than a silence.
+static void CharonHKSeriesQuery12(void)
+{
+    NSDate *start = [NSDate dateWithTimeIntervalSince1970:1600000000];
+    NSDate *end = [NSDate dateWithTimeIntervalSince1970:1600000060];
+    HKQuantityType *theirsType = [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeartRate];
+    CharonHostHKQuantityType *mineType = [CharonHostHKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeartRate];
+    HKHealthStore *theirsStore = [[HKHealthStore alloc] init];
+    CharonHostHKHealthStore *mineStore = [[CharonHostHKHealthStore alloc] init];
+
+    // The host's query, and what running it does.
+    HKQuantitySample *theirsSample = [HKQuantitySample quantitySampleWithType:theirsType
+                                                                     quantity:[HKQuantity quantityWithUnit:[HKUnit unitFromString:@"count/min"] doubleValue:60.0]
+                                                                    startDate:start endDate:end device:nil metadata:nil];
+    __block NSInteger theirsCalls = 0, theirsDone = 0;
+    __block BOOL theirsHadQuantity = YES, theirsHadDate = YES;
+    __block NSError *theirsError = nil;
+    HKQuantitySeriesSampleQuery *theirs = [[HKQuantitySeriesSampleQuery alloc] initWithSample:theirsSample
+                                                                              quantityHandler:^(HKQuantitySeriesSampleQuery *query, HKQuantity *quantity, NSDate *date, BOOL done, NSError *error) {
+        theirsCalls++;
+        if (quantity == nil) theirsHadQuantity = NO;
+        if (date == nil) theirsHadDate = NO;
+        if (done) theirsDone++;
+        if (error) theirsError = error;
+    }];
+    CharonHKCompareBool(@"the host's series query answers", !!theirs, YES);
+    if (theirs) {
+        [theirsStore executeQuery:theirs];
+        NSDate *until = [NSDate dateWithTimeIntervalSinceNow:2.0];
+        while (theirsCalls == 0 && [until timeIntervalSinceNow] > 0)
+            [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
+        CharonHKCompareInt(@"the host calls the handler once", (NSInteger)theirsCalls, (NSInteger)1);
+        CharonHKCompareBool(@"the host's call is finished", theirsDone > 0, YES);
+        CharonHKCompareBool(@"the host hands over no quantity", theirsHadQuantity, NO);
+        CharonHKCompareBool(@"the host hands over no date", theirsHadDate, NO);
+        CharonHKCompare(@"the host's error domain", theirsError.domain, @"com.apple.healthkit");
+        CharonHKCompareInt(@"the host's error code", (NSInteger)theirsError.code, (NSInteger)1);
+    }
+    printf("not compared: the quantities the host's query delivers and the date each is reported at. Its "
+           "HealthKit answers %s, so there is no delivery of its own to compare with; the port's delivery "
+           "is compared against the sample and the dates this harness built below.\n",
+           theirsError.localizedDescription.UTF8String);
+
+    // The port's query, over a sample this harness saves through the port's own store. The sample is over
+    // a real period, so a query that reported the end date instead of the start one would answer a
+    // different date than the one it was given - which is the change the mutant makes.
+    CharonHostHKQuantity *mineQuantity = [CharonHostHKQuantity quantityWithUnit:[CharonHostHKUnit unitFromString:@"count/min"] doubleValue:60.0];
+    CharonHostHKQuantitySample *mineSample = [CharonHostHKQuantitySample quantitySampleWithType:mineType
+                                                                                        quantity:mineQuantity
+                                                                                       startDate:start
+                                                                                         endDate:end];
+    __block BOOL mineSaved = NO;
+    __block NSError *mineSaveError = nil;
+    [mineStore saveObject:mineSample withCompletion:^(BOOL success, NSError *error) { mineSaved = success; mineSaveError = error; }];
+    CharonHKWaitForAnswer((volatile BOOL *)&mineSaved);
+    if (!mineSaved) {
+        printf("skipped: the port's store did not take the sample (%s), so the series query has nothing to deliver\n",
+               mineSaveError ? [[NSString stringWithFormat:@"%@ %ld %@", mineSaveError.domain,
+                                 (long)mineSaveError.code, mineSaveError.localizedDescription] UTF8String] : "(no error)");
+        return;
+    }
+
+    __block NSInteger mineCalls = 0, mineDone = 0;
+    __block CharonHostHKQuantity *mineDelivered = nil;
+    __block NSDate *mineDate = nil;
+    CharonHostHKQuantitySeriesSampleQuery *mine = [[CharonHostHKQuantitySeriesSampleQuery alloc] initWithSample:mineSample
+                                                                                                   quantityHandler:^(CharonHostHKQuantitySeriesSampleQuery *query, CharonHostHKQuantity *quantity, NSDate *date, BOOL done, NSError *error) {
+        mineCalls++;
+        if (quantity) mineDelivered = quantity;
+        if (date) mineDate = date;
+        if (done) mineDone++;
+    }];
+    [mineStore executeQuery:mine];
+    NSDate *mineUntil = [NSDate dateWithTimeIntervalSinceNow:2.0];
+    while (mineCalls == 0 && [mineUntil timeIntervalSinceNow] > 0)
+        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
+
+    CharonHKCompareInt(@"the port calls the handler once", (NSInteger)mineCalls, (NSInteger)1);
+    CharonHKCompareInt(@"the port's call is finished", (NSInteger)mineDone, (NSInteger)1);
+    CharonHKCompare(@"the quantity delivered is the one the sample holds", mineDelivered, mineSample.quantity);
+    CharonHKCompareDouble(@"the quantity's value in the unit it was given",
+                          [mineDelivered doubleValueForUnit:[CharonHostHKUnit unitFromString:@"count/min"]], 60.0);
+    CharonHKCompare(@"the date delivered is the sample's start, not its end", mineDate, start);
+}
+
+// The store's own round trip, and the outcome of the two builders' finishes.
+//
+// The host cannot be the oracle for any of this: its HealthKit keeps its data in a healthd behind an
+// entitlement this machine does not give it, and it answers "Health data is unavailable on this device"
+// to anything that writes. So the oracle is the store itself and the inputs this harness builds - an
+// object with a known UUID, type, dates and value, saved and then read back - and a save counts only if
+// the object comes back and carries what went in. That is the check the earlier sections did not make:
+// they watched a save's completion run and did not look at what it left behind, which is how a store
+// that refused every object read as a passing delivery.
+static void CharonHKStoreRoundTrip(void)
+{
+    NSDate *start = [NSDate dateWithTimeIntervalSince1970:1600000000];
+    NSDate *end = [NSDate dateWithTimeIntervalSince1970:1600000060];
+    CharonHostHKHealthStore *store = [[CharonHostHKHealthStore alloc] init];
+    CharonHostHKQuantityType *energy = [CharonHostHKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierActiveEnergyBurned];
+    CharonHostHKWorkoutType *workouts = [CharonHostHKObjectType workoutType];
+
+    // The store keeps what it is authorised for, and it says so: a save before the request is answered
+    // is refused with "Sharing ... data has not been authorized". So the round trip asks for what it
+    // writes, through the store's own request, and waits for the answer before saving anything.
+    __block BOOL authorised = NO;
+    [store requestAuthorizationToShareTypes:[NSSet setWithObjects:energy, workouts, nil]
+                                  readTypes:[NSSet setWithObject:energy]
+                                 completion:^(BOOL success, NSError *error) { authorised = success; }];
+    CharonHKWaitFor(&authorised);
+    CharonHKCompareBool(@"the store is asked for what it writes", authorised, YES);
+    // What the store now says about the type it was asked for, through its own status, and whether that
+    // is the identifier the sample will be saved under. A save refused as unauthorised with the request
+    // answered is either a different identifier or a status that was not recorded, and this says which.
+    if (!authorised) {
+        printf("the port's store granted no authorisation, so the round trip cannot be measured here\n");
+        return;
+    }
+
+    // A quantity sample: saved, then read back by its own UUID, and the read must be the same object.
+    CharonHostCharonHKStore *database = [CharonHostCharonHKStore sharedStore];
+    CharonHostHKQuantity *quantity = [CharonHostHKQuantity quantityWithUnit:[CharonHostHKUnit kilocalorieUnit] doubleValue:250.0];
+    CharonHostHKQuantitySample *sample = [CharonHostHKQuantitySample quantitySampleWithType:energy
+                                                                                   quantity:quantity
+                                                                                  startDate:start
+                                                                                    endDate:end];
+    CharonHKCompare(@"the type the request named is the type the sample is saved under", energy.identifier, sample.sampleType.identifier);
+    CharonHKCompareInt(@"the store's own status for the type it was asked for", (NSInteger)[store authorizationStatusForType:energy], (NSInteger)2);
+
+    __block BOOL saved = NO;
+    __block NSError *saveError = nil;
+    [store saveObject:sample withCompletion:^(BOOL success, NSError *error) { saved = success; saveError = error; }];
+    CharonHKWaitFor(&saved);
+    if (!saved) {
+        printf("the port's store took no quantity sample: %s\n", saveError.localizedDescription.UTF8String);
+    }
+    CharonHKCompareBool(@"the store keeps a quantity sample", saved, YES);
+    if (saved) {
+        NSError *readError = nil;
+        NSArray *found = [database objectsWithUUIDs:@[ sample.UUID ] ofType:energy error:&readError];
+        CharonHKCompareInt(@"the saved sample is found again", (NSInteger)found.count, (NSInteger)1);
+        CharonHostHKQuantitySample *back = found.firstObject;
+        if (back) {
+            CharonHKCompare(@"the sample read back has the UUID it was saved with", back.UUID, sample.UUID);
+            CharonHKCompare(@"the sample read back has the type it was saved with", back.sampleType.identifier, energy.identifier);
+            CharonHKCompare(@"the sample read back has its start date", back.startDate, start);
+            CharonHKCompare(@"the sample read back has its end date", back.endDate, end);
+            CharonHKCompareDouble(@"the sample read back has its quantity",
+                                  [back.quantity doubleValueForUnit:[CharonHostHKUnit kilocalorieUnit]], 250.0);
+        }
+    }
+
+    // A workout through the builder of 12.0: the whole point of the class is that finishing it keeps
+    // the workout, so the workout has to be in the store afterwards with what was added to it.
+    CharonHostHKWorkoutBuilder *builder = [[CharonHostHKWorkoutBuilder alloc] initWithHealthStore:store
+                                                                                   configuration:[[CharonHostHKWorkoutConfiguration alloc] charon_initWithActivityType:HKWorkoutActivityTypeRunning
+                                                                                                                                    locationType:0
+                                                                                                                                      lapLength:nil
+                                                                                                                            swimmingLocationType:0]
+                                                                                          device:nil];
+    [builder beginCollectionWithStartDate:start completion:^(BOOL ok, NSError *error) {}];
+    CharonHostHKQuantitySample *insideSample = [CharonHostHKQuantitySample quantitySampleWithType:energy
+                                                                                          quantity:quantity
+                                                                                         startDate:start
+                                                                                           endDate:end];
+    [builder addSamples:@[ insideSample ] completion:^(BOOL ok, NSError *error) {}];
+    [builder endCollectionWithEndDate:end completion:^(BOOL ok, NSError *error) {}];
+    __block CharonHostHKWorkout *workout = nil;
+    __block NSError *finishError = nil;
+    __block BOOL workoutRan = NO;
+    [builder finishWorkoutWithCompletion:^(CharonHostHKWorkout *finished, NSError *error) {
+        workout = finished; finishError = error; workoutRan = YES;
+    }];
+    CharonHKWaitFor(&workoutRan);
+    if (!workout) {
+        printf("the workout builder's finish kept nothing: %s\n", finishError.localizedDescription.UTF8String);
+    }
+    CharonHKCompareBool(@"the workout builder's finish hands back the workout", workout != nil, YES);
+    if (workout) {
+        CharonHKCompareDouble(@"the finished workout has the period it was given", workout.duration, 60.0);
+        CharonHKCompareInt(@"the finished workout has the totals its samples sum to",
+                           (NSInteger)(workout.totalEnergyBurned ? 1 : 0), (NSInteger)1);
+        NSArray *workouts = [database objectsWithUUIDs:@[ workout.UUID ] ofType:workouts error:NULL];
+        CharonHKCompareInt(@"the finished workout is in the store", (NSInteger)workouts.count, (NSInteger)1);
+    }
+
+    // The series builder of 12.0, the same question asked of the other class that saves.
+    CharonHostHKQuantitySeriesSampleBuilder *seriesBuilder =
+        [[CharonHostHKQuantitySeriesSampleBuilder alloc] initWithHealthStore:store
+                                                                 quantityType:energy
+                                                                    startDate:start
+                                                                       device:nil];
+    NSError *insertError = nil;
+    BOOL inserted = [seriesBuilder insertQuantity:quantity date:start error:&insertError];
+    CharonHKCompareBool(@"the series builder takes a quantity of the type", inserted, YES);
+    __block NSArray *seriesSamples = nil;
+    __block NSError *seriesError = nil;
+    __block BOOL seriesRan = NO;
+    [seriesBuilder finishSeriesWithMetadata:nil completion:^(NSArray *samples, NSError *error) {
+        seriesSamples = samples; seriesError = error; seriesRan = YES;
+    }];
+    CharonHKWaitFor(&seriesRan);
+    if (!seriesSamples.count) {
+        printf("the series builder's finish kept nothing: %s\n", seriesError.localizedDescription.UTF8String);
+    }
+    CharonHKCompareInt(@"the series builder's finish hands back its samples", (NSInteger)seriesSamples.count, (NSInteger)1);
+    for (CharonHostHKQuantitySample *each in seriesSamples) {
+        NSArray *back2 = [database objectsWithUUIDs:@[ each.UUID ] ofType:energy error:NULL];
+        CharonHKCompareInt(@"a sample the series builder made is in the store", (NSInteger)back2.count, (NSInteger)1);
+    }
+}
+
 int main(void)
 {
     CharonHKUnitCases();
@@ -1535,6 +1804,7 @@ int main(void)
     CharonHK11Group();
     CharonHKWorkoutBuilder12();
     CharonHKSeriesBuilder12();
+    CharonHKStoreRoundTrip();
     printf("healthkit: %lu comparisons, %lu differences\n", (unsigned long)CharonHKComparisons,
            (unsigned long)CharonHKDifferences);
     return CharonHKDifferences == 0 ? 0 : 1;

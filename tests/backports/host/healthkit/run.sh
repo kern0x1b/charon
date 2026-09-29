@@ -29,7 +29,7 @@ mkdir -p "$BUILD/plain" "$BUILD/renamed"
 # live (the error it answers with and the line it says once in the log) and which is the only file that
 # defines them. Nothing in this test opens a database: the store is compiled so that what the unit and
 # quantity code calls exists, not so that the store is measured.
-sources="HKUnit.m HKQuantity.m HKQuantityType.m HKQuantityTypes.m HKObjectType.m HKObject.m HKSource.m HKSample.m HKWorkout.m HKStatistics.m HKQuery.m HKQueries.m HKQueryAnchor9.m HKSourceRevision9.m HKSamples.m HKWorkoutRoute110.m HKWorkoutRouteQuery110.m HKCDADocument11.m HKClinicalRecord120.m HKWorkoutBuilder120.m HKQuantitySeriesSampleBuilder120.m HKDocument10.m HKObject9.m HKHealthStore.m CharonHKStore.m"
+sources="HKUnit.m HKQuantity.m HKQuantityType.m HKQuantityTypes.m HKObjectType.m HKObject.m HKSource.m HKSample.m HKWorkout.m HKStatistics.m HKQuery.m HKQueries.m HKQueryAnchor9.m HKSourceRevision9.m HKSamples.m HKWorkoutRoute110.m HKWorkoutRouteQuery110.m HKCDADocument11.m HKClinicalRecord120.m HKWorkoutBuilder120.m HKQuantitySeriesSampleBuilder120.m HKDocument10.m HKObject9.m HKSource9.m HKHealthStore.m CharonHKStore.m"
 
 for source in $sources; do
     xcrun clang -fobjc-arc $quiet -I"$healthkit" -c "$healthkit/$source" -o "$BUILD/plain/$source.o"
@@ -119,3 +119,11 @@ echo "mutants surviving: $survived"
 # A mutant of the 12.0 series builder: the date refusal, which the differential compares against the
 # host's own answer for a date before the builder's start.
 mutant HKQuantitySeriesSampleBuilder120.m 'if ([date compare:_startDate] == NSOrderedAscending) {' 'if (NO) {'
+# A mutant of the 12.0 series query: the date a delivered quantity is reported at. The differential
+# builds a sample over a real period, saves it through the port's own store, and compares the date the
+# query delivers against the start date it built the sample with, so a query that answered the end date
+# instead, or no date at all, is a difference.
+mutant HKQuantitySeriesSampleQuery120.m 'charon_deliverQuantity:quantitySample.quantity date:quantitySample.startDate done:NO error:nil' 'charon_deliverQuantity:quantitySample.quantity date:quantitySample.endDate done:NO error:nil'
+# A mutant of the store's gate: one class's adoption of CharonHKStorable removed, which must turn the
+# round trip red - the store refuses that class again, and a save that is not checked would pass.
+mutant HKSamples.m '@interface HKQuantitySample (CharonHKStorable) <CharonHKStorable>' '@interface HKQuantitySample (CharonHKStorableNotAdopted)'
