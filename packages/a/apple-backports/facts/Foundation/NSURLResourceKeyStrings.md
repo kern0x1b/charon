@@ -72,3 +72,61 @@ protection keys, the volume keys and the canonical path are readable on 6.1.3 th
 and `statfs`; the iCloud container's own state (whether an item is shared, who its owner is, whether
 a download was asked for) is the `cloudd` daemon's state, and 6.1.3 has no API that reports it, so
 those keys answer the documented "no value" rather than a guess.
+
+## The fifteen that arrived after the SDK this package builds against
+
+The build resolves `charon@iphoneos-sdk` to 16.4, and these fifteen arrived after it: eleven
+calendar identifiers and the two sync-control keys of 26.0, the cookie attribute of 18.2 and the file
+protection level of 17.0. None of them has an `extern` declaration in that SDK, so
+`Foundation/CharonFoundationIdentifiers.h` declares the three groups, each gated on the version
+macro the SDK spells (`__IPHONE_17_0`, `__IPHONE_18_2`, `__IPHONE_26_0`, none of which 16.4 defines),
+and three objects carry the values, one per release group, for the reason "one object per group"
+above.
+
+Their values were read out of the **host's own Foundation** by `dlsym` rather than out of a release's
+shared cache, and that is a departure from the method the rest of this file uses, so it is named
+here rather than left to be discovered: no `dyld_shared_cache` is held on this machine (none under
+`~/.xmake/packages/i` or `~/.charon/cache`), and the ladder has no release new enough to export
+thirteen of the fifteen. The instrument is in the tree and it is the one this file's own test for a
+wrong value needs — `tests/backports/host/foundation-constants/` asks the host for every name the
+package carries, compares it with the port's, and mutates each value in turn to show the comparison
+notices that constant (15 mutants, 15 noticed, 0 failures). What the host's answer is not is a
+*release's* answer, and the difference is exactly the gap the ladder would close: the reading below
+is the host's, and a release that spelled one of these differently would be caught only by a ladder
+read.
+
+| the constant | the value the host's Foundation exports |
+| --- | --- |
+| `NSCalendarIdentifierBangla` | `bangla` |
+| `NSCalendarIdentifierDangi` | `dangi` |
+| `NSCalendarIdentifierGujarati` | `gujarati` |
+| `NSCalendarIdentifierKannada` | `kannada` |
+| `NSCalendarIdentifierMalayalam` | `malayalam` |
+| `NSCalendarIdentifierMarathi` | `marathi` |
+| `NSCalendarIdentifierOdia` | `odia` |
+| `NSCalendarIdentifierTamil` | `tamil` |
+| `NSCalendarIdentifierTelugu` | `telugu` |
+| `NSCalendarIdentifierVietnamese` | `vietnamese` |
+| `NSCalendarIdentifierVikram` | `vikram` |
+| `NSHTTPCookieSetByJavaScript` | `SetInJavaScript` |
+| `NSFileProtectionCompleteWhenUserInactive` | `NSFileProtectionCompleteWhenUserInactive` |
+| `NSURLUbiquitousItemIsSyncPausedKey` | `NSURLUbiquitousItemIsSyncPausedKey` |
+| `NSURLUbiquitousItemSupportedSyncControlsKey` | `NSURLUbiquitousItemSupportedSyncControlsKey` |
+
+Twelve of the fifteen are not what their own name suggests, which is the whole reason they were read:
+the eleven calendar identifiers hold the lower-case calendar name the release uses rather than the
+`NSCalendarIdentifier…` spelling, and `NSHTTPCookieSetByJavaScript` holds `SetInJavaScript`. Writing
+the own name for any of the twelve would have been a value no release ships, and the mutation in
+that suite is what notices it.
+
+### The band of the one whose ladder reading disagrees with its annotation
+
+`NSFileProtectionCompleteWhenUserInactive` is a 17.0 API by its availability, and the ladder puts the
+first release that exports the symbol at **18.0** (`tools/release-split.lua` over the held caches,
+`_NSFileProtectionCompleteWhenUserInactive  18.0`), so the port's `maximum` is **16.0** — the band
+below 18.0 — and not 17.0. That is the same shape this file already records for
+`NSURLFileProtectionCompleteWhenUserInactive` and the five names beside it, and it is the one case in
+this file where `maximum` is *below* `introduced`: `tools/registry-maximum.py` compares the two and
+reports this row, correctly, because its rule is the availability and the ladder's answer is the
+band. The rule and the ladder are both right about different things, and which one a given row owes
+its `maximum` to is the question the table above answers.

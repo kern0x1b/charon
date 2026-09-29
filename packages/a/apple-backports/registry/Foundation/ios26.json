@@ -6,10 +6,10 @@
       "kind": "constant",
       "introduced": "18.2",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 18, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 26.5, Mac Catalyst, Foundation"
+      "maximum": "18.2",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLResourceKeyStrings.md",
+      "source": "SDK 26.2 headers for the declaration and its availability; the value read out of the host's own Foundation by dlsym in tests/backports/host/foundation-constants/, which compares every value it carries against the host's and mutates each one to show the comparison notices that constant; no dyld_shared_cache is held on this machine, so the first release that exports the name is not measured here and the port carries it in every band below 26.0"
     },
     {
       "api": "NSMutableURLRequest.cookiePartitionIdentifier",
@@ -96,110 +96,110 @@
       "kind": "constant",
       "introduced": "26.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 26, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 26.5, Mac Catalyst, Foundation"
+      "maximum": "26.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLResourceKeyStrings.md",
+      "source": "SDK 26.2 headers for the declaration and its availability; the value read out of the host's own Foundation by dlsym in tests/backports/host/foundation-constants/, which compares every value it carries against the host's and mutates each one to show the comparison notices that constant; no dyld_shared_cache is held on this machine, so the first release that exports the name is not measured here and the port carries it in every band below 26.0"
     },
     {
       "api": "NSCalendarIdentifierDangi",
       "kind": "constant",
       "introduced": "26.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 26, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 26.5, Mac Catalyst, Foundation"
+      "maximum": "26.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLResourceKeyStrings.md",
+      "source": "SDK 26.2 headers for the declaration and its availability; the value read out of the host's own Foundation by dlsym in tests/backports/host/foundation-constants/, which compares every value it carries against the host's and mutates each one to show the comparison notices that constant; no dyld_shared_cache is held on this machine, so the first release that exports the name is not measured here and the port carries it in every band below 26.0"
     },
     {
       "api": "NSCalendarIdentifierGujarati",
       "kind": "constant",
       "introduced": "26.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 26, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 26.5, Mac Catalyst, Foundation"
+      "maximum": "26.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLResourceKeyStrings.md",
+      "source": "SDK 26.2 headers for the declaration and its availability; the value read out of the host's own Foundation by dlsym in tests/backports/host/foundation-constants/, which compares every value it carries against the host's and mutates each one to show the comparison notices that constant; no dyld_shared_cache is held on this machine, so the first release that exports the name is not measured here and the port carries it in every band below 26.0"
     },
     {
       "api": "NSCalendarIdentifierKannada",
       "kind": "constant",
       "introduced": "26.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 26, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 26.5, Mac Catalyst, Foundation"
+      "maximum": "26.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLResourceKeyStrings.md",
+      "source": "SDK 26.2 headers for the declaration and its availability; the value read out of the host's own Foundation by dlsym in tests/backports/host/foundation-constants/, which compares every value it carries against the host's and mutates each one to show the comparison notices that constant; no dyld_shared_cache is held on this machine, so the first release that exports the name is not measured here and the port carries it in every band below 26.0"
     },
     {
       "api": "NSCalendarIdentifierMalayalam",
       "kind": "constant",
       "introduced": "26.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 26, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 26.5, Mac Catalyst, Foundation"
+      "maximum": "26.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLResourceKeyStrings.md",
+      "source": "SDK 26.2 headers for the declaration and its availability; the value read out of the host's own Foundation by dlsym in tests/backports/host/foundation-constants/, which compares every value it carries against the host's and mutates each one to show the comparison notices that constant; no dyld_shared_cache is held on this machine, so the first release that exports the name is not measured here and the port carries it in every band below 26.0"
     },
     {
       "api": "NSCalendarIdentifierMarathi",
       "kind": "constant",
       "introduced": "26.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 26, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 26.5, Mac Catalyst, Foundation"
+      "maximum": "26.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLResourceKeyStrings.md",
+      "source": "SDK 26.2 headers for the declaration and its availability; the value read out of the host's own Foundation by dlsym in tests/backports/host/foundation-constants/, which compares every value it carries against the host's and mutates each one to show the comparison notices that constant; no dyld_shared_cache is held on this machine, so the first release that exports the name is not measured here and the port carries it in every band below 26.0"
     },
     {
       "api": "NSCalendarIdentifierOdia",
       "kind": "constant",
       "introduced": "26.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 26, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 26.5, Mac Catalyst, Foundation"
+      "maximum": "26.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLResourceKeyStrings.md",
+      "source": "SDK 26.2 headers for the declaration and its availability; the value read out of the host's own Foundation by dlsym in tests/backports/host/foundation-constants/, which compares every value it carries against the host's and mutates each one to show the comparison notices that constant; no dyld_shared_cache is held on this machine, so the first release that exports the name is not measured here and the port carries it in every band below 26.0"
     },
     {
       "api": "NSCalendarIdentifierTamil",
       "kind": "constant",
       "introduced": "26.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 26, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 26.5, Mac Catalyst, Foundation"
+      "maximum": "26.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLResourceKeyStrings.md",
+      "source": "SDK 26.2 headers for the declaration and its availability; the value read out of the host's own Foundation by dlsym in tests/backports/host/foundation-constants/, which compares every value it carries against the host's and mutates each one to show the comparison notices that constant; no dyld_shared_cache is held on this machine, so the first release that exports the name is not measured here and the port carries it in every band below 26.0"
     },
     {
       "api": "NSCalendarIdentifierTelugu",
       "kind": "constant",
       "introduced": "26.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 26, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 26.5, Mac Catalyst, Foundation"
+      "maximum": "26.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLResourceKeyStrings.md",
+      "source": "SDK 26.2 headers for the declaration and its availability; the value read out of the host's own Foundation by dlsym in tests/backports/host/foundation-constants/, which compares every value it carries against the host's and mutates each one to show the comparison notices that constant; no dyld_shared_cache is held on this machine, so the first release that exports the name is not measured here and the port carries it in every band below 26.0"
     },
     {
       "api": "NSCalendarIdentifierVietnamese",
       "kind": "constant",
       "introduced": "26.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 26, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 26.5, Mac Catalyst, Foundation"
+      "maximum": "26.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLResourceKeyStrings.md",
+      "source": "SDK 26.2 headers for the declaration and its availability; the value read out of the host's own Foundation by dlsym in tests/backports/host/foundation-constants/, which compares every value it carries against the host's and mutates each one to show the comparison notices that constant; no dyld_shared_cache is held on this machine, so the first release that exports the name is not measured here and the port carries it in every band below 26.0"
     },
     {
       "api": "NSCalendarIdentifierVikram",
       "kind": "constant",
       "introduced": "26.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 26, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 26.5, Mac Catalyst, Foundation"
+      "maximum": "26.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLResourceKeyStrings.md",
+      "source": "SDK 26.2 headers for the declaration and its availability; the value read out of the host's own Foundation by dlsym in tests/backports/host/foundation-constants/, which compares every value it carries against the host's and mutates each one to show the comparison notices that constant; no dyld_shared_cache is held on this machine, so the first release that exports the name is not measured here and the port carries it in every band below 26.0"
     },
     {
       "api": "NSDateComponents.repeatedDay",
@@ -226,20 +226,20 @@
       "kind": "constant",
       "introduced": "26.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 26, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 26.5, Mac Catalyst, Foundation"
+      "maximum": "26.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLResourceKeyStrings.md",
+      "source": "SDK 26.2 headers for the declaration and its availability; the value read out of the host's own Foundation by dlsym in tests/backports/host/foundation-constants/, which compares every value it carries against the host's and mutates each one to show the comparison notices that constant; no dyld_shared_cache is held on this machine, so the first release that exports the name is not measured here and the port carries it in every band below 26.0"
     },
     {
       "api": "NSURLUbiquitousItemSupportedSyncControlsKey",
       "kind": "constant",
       "introduced": "26.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 26, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 26.5, Mac Catalyst, Foundation"
+      "maximum": "26.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLResourceKeyStrings.md",
+      "source": "SDK 26.2 headers for the declaration and its availability; the value read out of the host's own Foundation by dlsym in tests/backports/host/foundation-constants/, which compares every value it carries against the host's and mutates each one to show the comparison notices that constant; no dyld_shared_cache is held on this machine, so the first release that exports the name is not measured here and the port carries it in every band below 26.0"
     },
     {
       "api": "NSMutableURLRequest.allowsUltraConstrainedNetworkAccess",

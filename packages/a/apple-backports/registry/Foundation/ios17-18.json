@@ -106,10 +106,10 @@
       "kind": "constant",
       "introduced": "17.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 26, Mac Catalyst, Foundation"
+      "maximum": "16.0",
+      "status": "implemented",
+      "facts": "facts/Foundation/NSURLResourceKeyStrings.md",
+      "source": "SDK 26.2 headers for the declaration and its availability, which give 17.0; the value read out of the host's own Foundation by dlsym in tests/backports/host/foundation-constants/, which compares every value it carries against the host's and mutates each one to show the comparison notices that constant. The band is the ladder's answer and not the annotation's: tools/release-split.lua over the held caches puts the first release that exports _NSFileProtectionCompleteWhenUserInactive at 18.0, and the band below that one ends at 16.0, so the port's maximum is 16.0 and not the 17.0 its annotation gives - the same shape this file already records for NSURLFileProtectionCompleteWhenUserInactive, NSURLVolumeMountFromLocationKey, NSURLVolumeSubtypeKey, NSURLVolumeTypeNameKey, NSURLFileIdentifierKey and NSURLDirectoryEntryCountKey"
     },
     {
       "api": "NSInflectionAgreementArgumentAttributeName",
