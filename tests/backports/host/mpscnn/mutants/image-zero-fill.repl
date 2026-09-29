@@ -1,1 +1,2 @@
-        void *zero = malloc(rowBytes * descriptor.height * descriptor.numberOfImages);  // MUTATION: a fresh image left with whatever was in it
+        void *zero = malloc(rowBytes * descriptor.height * descriptor.numberOfImages);  // MUTATION: a fresh image filled with 0x7F7F7F7F rather than asked for as zeros
+        memset(zero, 0x7F, rowBytes * descriptor.height * descriptor.numberOfImages);

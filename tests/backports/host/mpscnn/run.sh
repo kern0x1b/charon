@@ -147,4 +147,17 @@ for used, name in worst[:5]:
 print("differing cases: %d" % bad)
 raise SystemExit(1 if bad else 0)
 PY
+cnn_status=$?
+# Every claim the facts page makes about this run, checked against this run: which cases are
+# bit-identical, and the largest distance the page quotes. Wired here because a page that names a case
+# among the identical ones and prints that case's differing element lower down is a page written from
+# memory, and this is the transcript that says otherwise. The page is named, not globbed.
+FACTS_CNN=$here/../../../../packages/a/apple-backports/facts/MetalPerformanceShaders/Cnn.md
+page_status=0
+python3 "$here/page-check.py" "$build" "$FACTS_CNN" || page_status=$?
+if [ "$page_status" -ne 0 ]; then
+    echo "a claim in $FACTS_CNN is not what this run produced"
+    exit 1
+fi
+echo "page: the CNN facts page agrees with this run, claim for claim"
 echo "port: within the tolerance, case for case"

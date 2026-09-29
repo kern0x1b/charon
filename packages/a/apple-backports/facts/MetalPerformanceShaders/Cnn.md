@@ -89,25 +89,35 @@ and compares with a tolerance written down before the numbers were read: **1e-4 
 for a single-precision result, because a convolution accumulates in a different order on a GPU than on
 a CPU, and **exact** for pooling, whose cases are named as such.
 
-**Four of the five cases agree bit for bit**: `pooling-max`, `pooling-average-pad0`,
-`pooling-average-pad1` and `batch-normalization`.
+**Five of the six cases are bit-identical**, and they are the run's own list: `pooling-max`,
+`pooling-average-pad0`, `pooling-average-pad1`, `pooling-average-2x2` and `fresh-image`.
+`batch-normalization` is **not** one of them and does not agree bit for bit: eight of its nine elements
+do, and the ninth is 8.05928898 on the release against 8.05928993 on this port, which is the largest
+distance anywhere in the slice at 1.18e-07 relative. A page that lists a case among the identical ones and
+then prints that case's one differing element twelve lines later is a page written from memory; the list
+above is the run's, and `tests/backports/host/mpscnn/page-check.py` checks it on every run.
 
-**The fifth, and the width of the tolerance.** The convolution case is the one the tolerance is for,
-and the harness now prints how close each case came to it rather than only how many failed:
+**`fresh-image` is the sixth case and it is here because the other five could not see it.** Every other
+case writes its image before it reads it, so none of them can see what a fresh image holds, and a port
+that left one with whatever its texture carried would pass all five. `fresh-image` makes no image hold a
+written value at all: it builds one and reads it straight back, and both sides must answer zeros.
+
+**The width of the tolerance.** The normalisation case is the one the tolerance is for, and the harness
+prints how close each case came to it rather than only how many failed:
 
     cases: 5, tolerance 0.0001 absolute or relative
     closest to the tolerance, as a fraction of it:
       batch-normalization          0.00118
     differing cases: 0
 
-So the largest distance anywhere in the five cases is 1.18e-07, and the 1e-4 bound is 847 times
+So the largest distance anywhere in the six cases is 1.18e-07, and the 1e-4 bound is 847 times
 wider than the number it is compared against. That is a real margin and it is worth saying out loud
-rather than leaving to a reader: five cases back 82 rows, and a wrong answer smaller than 1e-7 would
+rather than leaving to a reader: six cases back 82 rows, and a wrong answer smaller than 1e-7 would
 not be noticed by them. The same comparison run at 1e-7 fails - `differing cases: 1`, and the case
 reads `1.18` of the bound - so the bound is the only thing between this slice and a silent small
 wrong answer, and it is 847 times wider than the measurement.
 
-**All five cases agree bit for bit.**
+**Five of six bit-identical; the normalisation case within 1.18e-07 on one of nine elements.**
 
 Getting there took two defects, and the second was found only because the first had made a measurement
 look like a result.

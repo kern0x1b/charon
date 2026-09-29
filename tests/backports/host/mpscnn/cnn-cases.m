@@ -237,6 +237,30 @@ static void casesBatchNormalization(void)
     put("batch-normalization", out, 9, sizeof(float));
 }
 
+// A fresh image, read before anything has written to it.
+//
+// Every other case writes its image and then reads it, so none of them can see what a fresh image
+// holds, and a port that left a fresh image with whatever its texture carried would pass all five. This
+// one makes no image hold a written value at all: it builds one and reads it straight back, and the
+// answer both sides must give is zeros - the release's fresh images are zeros, and this port's are,
+// because MPSImage13.m zeroes a texture it made. A mutant that fills that buffer with 0xA5 instead of
+// asking for zeros is the deterministic form of "left with whatever it held", and this case is what
+// notices it.
+static void casesFreshImage(void)
+{
+    if (!require("fresh-image", "MPSImage") || !require("fresh-image", "MPSImageDescriptor")) {
+        counted(NO);
+        return;
+    }
+    counted(YES);
+    MPSImageDescriptor *descriptor = [MPSImageDescriptor imageDescriptorWithChannelFormat:MPSImageFeatureChannelFormatFloat32
+                                                                                       width:3 height:3 featureChannels:1];
+    MPSImage *fresh = [[MPSImage alloc] initWithDevice:gDevice imageDescriptor:descriptor];
+    float out[9] = {0};
+    [[fresh texture] getBytes:out bytesPerRow:3 * sizeof(float) fromRegion:MTLRegionMake2D(0, 0, 3, 3) mipmapLevel:0];
+    put("fresh-image", out, 9, sizeof(float));
+}
+
 int main(void)
 {
     @autoreleasepool {
@@ -245,6 +269,7 @@ int main(void)
         printClassImages();
         casesPooling();
         casesBatchNormalization();
+        casesFreshImage();
         printf("compared: %lu cases, %lu not compared\n", (unsigned long)gCompared, (unsigned long)gNotCompared);
         if (gCompared == 0) {
             printf("this run compared nothing: every case needs a class the port does not have, and a run"

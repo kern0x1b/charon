@@ -47,6 +47,18 @@ line, on the tree as it stood before this class:
       port side: batch-normalization: the port has no MPSImage, so this case reached the host's class on both sides and compared the host with itself
       a case that did not run is not a case that passed; this comparison is red
 
+**A case that reads a fresh image, because the other five could not see it.** Every other case writes
+its image before it reads it, so none of them can see what a fresh image holds, and a port that left one
+with whatever its texture carried would pass all five. `fresh-image` makes no image hold a written value
+at all: it builds one and reads it straight back, and both sides must answer zeros. It was added on
+2026-09-29 because the zero-fill mutant below was invisible for two separate reasons, and the case is
+what makes it visible at all: no case read a fresh image, and the mutant's fill, `0xA5` in every byte, is
+`0xA5A5A5A5` as a little-endian float32, which is **-2.87e-16** and sits a thousand million times
+inside a 1e-4 tolerance. The fill is `0x7F` now, `0x7F7F7F7F` as a float32, which is 3.4e+38 and which no
+tolerance forgives:
+
+    0xA5A5A5A5 as float32: -2.87e-16   0x7F7F7F7F as float32: 3.4e+38
+
 **That the comparison can fail.** `tests/backports/host/mpscnn/mutation.sh` mutates a copy of the
 library under `.agent-work` and points the run at it with `MPS=`, so no tracked file is written. Every
 anchor is resolved before the first harness run, in one python process that prints a line per site and
@@ -63,14 +75,19 @@ and the control, with one site's anchor replaced by the other's:
       pooling-divisor occurs 0 times in MPSCNNPooling10.m, and a mutation needs exactly one
     the campaign is not startable: an anchor does not resolve exactly once     exit 1
 
-The campaign, with a control on each side of the mutation:
+The campaign, with a control on each side of each mutation, and `CAMPAIGN=all` green:
 
-    pooling divisor      before   cases: 5, tolerance 0.0001 absolute or relative differing cases: 0
-    pooling divisor      mutated  cases: 5, tolerance 0.0001 absolute or relative differing cases: 3
-    pooling divisor      reverted cases: 5, tolerance 0.0001 absolute or relative differing cases: 0
+    pooling divisor      before   cases: 6, tolerance 0.0001 absolute or relative differing cases: 0
+    pooling divisor      mutated  cases: 6, tolerance 0.0001 absolute or relative differing cases: 3
+    pooling divisor      reverted cases: 6, tolerance 0.0001 absolute or relative differing cases: 0
+    image zero fill      before   cases: 6, tolerance 0.0001 absolute or relative differing cases: 0
+    image zero fill      mutated  cases: 6, tolerance 0.0001 absolute or relative differing cases: 1
+    image zero fill      reverted cases: 6, tolerance 0.0001 absolute or relative differing cases: 0
+    CAMPAIGN=all exit: 0
 
-A divisor one short takes three of the five cases red and the revert takes them back, so the five green
-cases above are measuring this port's arithmetic over this port's image.
+A divisor one short takes three of the six cases red and a fresh image that is not zeros takes the sixth,
+and each revert takes them back, so the green cases above are measuring this port's arithmetic over this
+port's image and not the release's twice.
 
 **A fresh image reads as zeros.** The port zeroes a texture it made, because a texture's contents are
 whatever was in it and a kernel reads them; the release zeroes a fresh image too, and a caller that
