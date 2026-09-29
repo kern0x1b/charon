@@ -447,7 +447,10 @@ run_mutation sec-identity-nohandler compare-sec-identity.py sec-identity
 make_mutant "$build/mutant-defaults-below-enum.m" "$PO" \
     '    return tls_protocol_version_TLSv10;' \
     '    return (tls_protocol_version_t)0x0300;   // MUTANT: below the enum'"'"'s lowest member'
-MUTANT_EXTRA=$SI
+# NO EXTRA SOURCE HERE, and the line above it used to say MUTANT_EXTRA=$SI: the mutant IS a copy of
+# SecProtocolOptions13_0.m, which IS the case's own source, so the link line is the case and the mutant
+# and nothing else. The identity object that line added has nothing to do with these four rows, and
+# `sh -x` showed it on the link: the mutant was being built from an object its comparison cannot see.
 run_mutation defaults-below-enum compare-protocol-options.py protocol-options
 must_not_compile blocks-challenge-into-keyupdate "$PK" protocol-options-blocks
 # data-halfpair IS SecProtocolOptionsData13_0.m, so it REPLACES the case's source and is not added beside
