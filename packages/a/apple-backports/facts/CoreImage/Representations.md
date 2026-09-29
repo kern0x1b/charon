@@ -31,15 +31,18 @@ encoded bytes are the same, and so is the picture they decode to.
 against the `0 different` above, which is what the old comparator - the one that read only the first
 number of a line - reported. They are the two `rgba8` formats and the write:
 
-    repr rgba8 png none        the port repr rgba8 png 161 155f579e
-    repr rgba8 png tiff none    the port repr rgba8 png type public.png size 6 4 bits 8 32
-    repr write png 0            the port repr write png 1
-    repr write png file 0 811c9dc5   the port repr write png file 161 155f579e
+    repr rgba8 png none              the port repr rgba8 png 161 155f579e
+    repr rgba8 png tiff none          the port repr rgba8 png type public.png size 6 4 bits 8 32
+    repr write png 0                  the port repr write png 1
+    repr write png file 0 811c9dc5    the port repr write png file 161 155f579e
 
-`charon_representationOfImage:` returns nil where the system encodes a file, for the two byte formats
-that are not RGBA8 or L8, and `writePNGRepresentationOfImage:` answers 0 where the system writes one.
-The bytes that ARE produced are the same and decode to the same picture, which is what the sentence
-above says and is still true of them; it is the four lines above that the `0 different` hid.
+**The direction is the other way round from what this page first said, and it matters: the PORT
+encodes and the SYSTEM answers that it cannot.** `repr rgba8 png` is `none` on the system and 161
+bytes in the port; `writePNGRepresentationOfImage:` answers 0 on the system and 1 in the port. Thirty
+further `repr` lines are one-sided on the port's side - the port has bytes, a decoded picture and
+four named pixels for `rgba8`, `rgbaf` and `jpeg` in PNG and TIFF, where the system has none of them.
+The bytes the port does produce decode to the same picture the sentence above is about, and that is
+still true of them; what is different is that the port answers where the system does not.
 
 ## Not carried here, and named
 

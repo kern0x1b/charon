@@ -21,12 +21,29 @@ the RGBA bytes the image renders to, with four pixels spelled out. The port's co
 name of its own, because it re-implements a class the framework has; the framework's accumulator is in
 that process and is never asked, so the two never touch the same object.
 
-**`ciimage: 93 measurements, 90 the same, 2 different, 2 one side only`, at a tolerance of 5e-4.** The
-two one-sided lines are the name each process gives itself. That was the count with the comparator
-that read only the first number of a line; the tree's own count is in
-`facts/CoreImage/Differences.md` and it is `539 measurements, 454 the same, 77 different, 42 one side
-only` - the two numbers here are this file's, written when the accumulator was measured on its own,
-and the full-run count covers every family the probe asks about.
+**The tree's own run, and the count this page's family is inside it:**
+
+    ciimage: 527 measurements, 479 the same, 40 different, 42 one side only (tolerance 0.0005)
+
+Forty differences in all, and the accumulator family is **one** of them: `odd set pixels`, the
+fractional-extent case below. The other accumulator measurements are equal, and four of them are
+byte-identical to the system's:
+
+    rgba set pixels 128 4fcd0585      the system and the port
+    bgra set pixels 128 4fcd0585      the system and the port
+    spaced pixels 128 4fcd0585        the system and the port
+    dirty after 128 c2bab905          the system and the port
+
+This page used to carry a per-page count of its own - `93 measurements, 90 the same, 2 different, 2 one
+side only` - and then the whole run as `539 measurements, 454 the same, 77 different, 42 one side
+only`, which was the previous pass's run. Neither is a number this page can be held to: the probe asks
+about every family in one run, so a per-page figure can only be one somebody subtracted by hand, and a
+hand-subtracted one drifted - the first was a count of a comparator that read only the first number of a
+line, and the second belonged to a tree two fixes ago. What is quoted here is the run, the group, and
+the command that prints the group out of the run, so the number cannot be restated by hand:
+
+    python3 tools/corpus/differences-table.py ci-diff.txt modelio-diff.txt
+    | `odd set` | 1 | `odd set pixels` | odd set pixels 60 f6009964 | odd set pixels 60 f1fc1875 |
 
 **Three defects it found on its first run, all fixed.**
 
