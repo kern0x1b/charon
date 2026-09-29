@@ -20,6 +20,7 @@
 // After Foundation: the runtime header declares things in terms of NSString, and importing it first is
 // an error that reads like a broken SDK rather than an include order.
 #import <dlfcn.h>
+#include "port-store-rule.h"
 #import <objc/runtime.h>
 #include <objc/message.h>
 #include <stdio.h>
@@ -126,6 +127,44 @@ static NSInteger self_identities(const char *path)
     return [held isKindOfClass:[NSArray class]] ? (NSInteger)[held count] : 0;
 }
 
+/* The one place in this probe a writing selector is dispatched, and the check the host-write rule is.
+ *
+ * On this Mac the host's ASCredentialIdentityStore writes to the USER's AutoFill. Every send that could
+ * touch a store therefore goes through this function, which reads the receiver's class out of the
+ * runtime and refuses anything the harness has not renamed to the port's. The check is not a spelling
+ * test on this file -- a probe that sends selectors as strings through a cast objc_msgSend passes every
+ * check that reads words, which is what the first two static guards did.
+ *
+ * The four selectors are spelled here and in the table below, and the static scan
+ * (writing-selectors-scan.py) allows exactly these two places and nothing else. The self-test in
+ * port-store-selftest.m asks the same predicate about this machine's own class object and sends nothing.
+ */
+static const char *const kWritingSelectors[] = {
+    "saveCredentialIdentities:completion:",
+    "removeCredentialIdentities:completion:",
+    "removeAllCredentialIdentitiesWithCompletion:",
+    "replaceCredentialIdentitiesWithIdentities:completion:",
+    NULL
+};
+
+/* The prefix the harness renames the port's classes under, and the one the rule compares against. */
+#define PORT_STORE_PREFIX "Port"
+
+static void port_store_send(id receiver, SEL selector, id first, void (^completion)(BOOL, NSError *))
+{
+    if (!port_store_receiver_is_the_ports(receiver, PORT_STORE_PREFIX)) {
+        for (int index = 0; kWritingSelectors[index]; ++index) {
+            if (strcmp(kWritingSelectors[index], sel_getName(selector)) == 0) {
+                fprintf(stderr, "REFUSED: -%s was about to be sent to %s, which is not the port's "
+                                "store, and this machine's store writes this Mac's AutoFill\n",
+                        sel_getName(selector), port_store_receiver_class(receiver));
+                abort();
+            }
+        }
+    }
+    ((void (*)(id, SEL, id, id))objc_msgSend)(receiver, selector, first, completion);
+}
+
 /* The port's store, exercised: what it holds, a replace, and what it holds afterwards.
  *
  * This is the one case in this file that writes, and it writes the PORT's store -- a property list under
@@ -170,19 +209,16 @@ static int store_case(void)
     // objc_retain inside saveCredentialIdentities:completion:. The first frame was in the runtime and
     // the second in the port's save, and the port was right to be there: it had been handed a selector
     // and told to call it.
-    void (*save)(id, SEL, id, void (^)(BOOL, NSError *)) =
-        (void (*)(id, SEL, id, void (^)(BOOL, NSError *)))objc_msgSend;
-    SEL saveSel = sel_registerName("saveCredentialIdentities:completion:");
-    save(store, saveSel, [NSArray arrayWithObject:first], ^(BOOL ok, NSError *error) { (void)ok; (void)error; });
-    save(store, saveSel, [NSArray arrayWithObject:second], ^(BOOL ok, NSError *error) { (void)ok; (void)error; });
+    port_store_send(store, sel_registerName("saveCredentialIdentities:completion:"),
+                    [NSArray arrayWithObject:first], ^(BOOL ok, NSError *error) { (void)ok; (void)error; });
+    port_store_send(store, sel_registerName("saveCredentialIdentities:completion:"),
+                    [NSArray arrayWithObject:second], ^(BOOL ok, NSError *error) { (void)ok; (void)error; });
     // Before the replace the store holds a set that is NOT what the replace will be given. A test that
     // replaced an empty store could not tell a superset from a replacement.
     printf("  store   before replace  %d identities\n", (int)self_identities(path));
 
-    void (*replace)(id, SEL, id, void (^)(BOOL, NSError *)) =
-        (void (*)(id, SEL, id, void (^)(BOOL, NSError *)))objc_msgSend;
-    replace(store, sel_registerName("replaceCredentialIdentitiesWithIdentities:completion:"),
-            [NSArray arrayWithObject:third], ^(BOOL ok, NSError *error) { (void)ok; (void)error; });
+    port_store_send(store, sel_registerName("replaceCredentialIdentitiesWithIdentities:completion:"),
+                    [NSArray arrayWithObject:third], ^(BOOL ok, NSError *error) { (void)ok; (void)error; });
     NSInteger after = self_identities(path);
     printf("  store   after replace   %d identities\n", (int)after);
     // The set is exactly the array: one identity, and it is the one that was given. A superset would be
