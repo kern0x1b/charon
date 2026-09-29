@@ -29,6 +29,7 @@ common="-target arm64-apple-ios15.0-macabi -Werror=implicit-function-declaration
 common="$common -iframework $sdk/System/iOSSupport/System/Library/Frameworks -fobjc-arc"
 frameworks="-framework Foundation -framework Security -framework CoreFoundation"
 failures=0
+green=0
 MUTANT_SRC=""
 # THE CONTROL IS MARKED, NOT THE CHECK WEAKENED. A mutant named here is EXPECTED to survive its
 # comparison; every other one that survives is a failure. The list is not a hole in the check - it is one
@@ -41,47 +42,36 @@ mutants_noticed=0
 
 # run NAME PORT-SOURCES... -- COMPARE-SCRIPT ; a mutation is applied by mutate_NAME below
 run_case() {
-    # THE COUNTER IS HERE, NOT IN THE CALLER. A caller that increments after the call reports fewer cases
-    # than ran whenever a case returns early, and "every case compared" then describes a set the summary
-    # never counted. It is incremented FIRST, so it counts what ran.
-    cases=$((cases + 1))
+    # A CASE IS COUNTED ONLY AFTER IT HAS BEEN RUN AND COMPARED. The counter used to sit at the TOP of this
+    # function, on the reasoning that a caller incrementing after the call undercounts early returns - and
+    # that was true, but it fixed the wrong thing: it counted BUILDS. The driver built 19 binaries, checked
+    # that the port's symbols were linked into each, and printed "every case compared" without ever asking
+    # what any of them DID. The reviewer's control is what showed it: pointing the driver at a source with
+    # its half-pair refusal removed changed nothing it printed, while the same binary compared by hand said
+    # DIFFERS. So the increment belongs here, after the verdict, and not anywhere above it.
     name=$1; shift
     compare=$1; shift
-    if ! xcrun clang $common "$@" -framework Foundation -framework Security -framework CoreFoundation \
-         -o "$build/$name" > "$build/$name.log" 2>&1; then
-        echo "BUILD  $name FAILED - $build/$name.log"
+
+    if ! xcrun clang $common "$@" $frameworks -o "$build/$name" > "$build/$name.log" 2>&1; then
+        echo "BUILD  $name FAILED to build"
         sed -n '1,5p' "$build/$name.log" | sed 's/^/       /'
         failures=$((failures + 1))
         return
     fi
-    # `cmd > out 2>&1` FOLLOWED BY `status=$?` ON THE NEXT LINE CANNOT WORK: set -e ends the script on the
-    # failing command, so the assignment never runs and the branch below it is unreachable. That is the
-    # whole of exit 134 - the attributes mutant segfaulted, and the driver died on it before it could say
-    # so. `|| status=$?` is the form that survives, and the verdict block already used it.
-    status=0
-    # THE GUARD NEEDS NO TRUST IN THE LINK LINE. It reads what the case's OWN SOURCE CALLS, keeps the
-    # names a port source under Security/ DEFINES, and requires each to be DEFINED in the binary this
-    # case linked. A source dropped from the command line cannot hide, because the case still calls it:
-    # the name resolves to the host framework, the case runs, and it measures the host while looking
-    # exactly like a port measurement. That is the bug this guards, and a case of ours did it.
-    #
-    # nm -gU, AND nm's OWN EXIT STATUS rather than a pipe's: `nm ... | grep` reports grep's status, so a
-    # failed nm reads as "no symbols found" and the guard passes on a binary it never inspected.
+
+    # THE GUARD: the port's symbols this case CALLS must be DEFINED in the binary it linked. A source
+    # dropped from the command line cannot hide, because the case still calls it - the name resolves to the
+    # host framework, and the case measures the host while looking exactly like a port measurement.
     casefile=""
     for a in "$@"; do
         case "$a" in *.m) casefile="$a"; break;; esac
     done
     if [ -n "$casefile" ]; then
-        strip() { sed -e 's://.*::' -e 's:/\*[^*]*\*/::g' "$1"; }
-        # CALLED identifiers: every sec_* followed by ( in the BODY, whether or not the line starts with
-        # one - a call is usually mid-line, and requiring the line to start is how the old regex missed
-        # calls and picked up return types instead.
-        called=$(strip "$casefile" | grep -oE '\bsec_[a-z0-9_]+[[:space:]]*\(' \
-                 | sed -E 's/[[:space:]]*\($//' | sort -u)
+        strip() { sed -e 's://.*::' -e 's:/*[^*]* */::g' "$1"; }
+        called=$(strip "$casefile" | grep -oE '\bsec_[a-z0-9_]+[[:space:]]*\(' | sed -E 's/[[:space:]]*\($//' | sort -u)
         for src in "$@"; do
             [ -f "$src" ] || continue
-            strip "$src" | grep -E '\bsec_[a-z0-9_]+\(' \
-            | sed -nE 's/.*[^A-Za-z0-9_](sec_[a-z0-9_]+)\(.*/\1/p'
+            strip "$src" | grep -E '\bsec_[a-z0-9_]+\(' | sed -nE 's/.*[^A-Za-z0-9_](sec_[a-z0-9_]+)\(.*/\1/p'
         done | sort -u > "$build/port-defines.txt"
         nm -gU "$build/$name" > "$build/$name.nm" 2>/dev/null
         nmstatus=$?
@@ -91,15 +81,32 @@ run_case() {
             return
         fi
         for sym in $called; do
-            grep -qx "$sym" "$build/port-defines.txt" || continue    # not a port symbol: not ours
-            # nm -gU PRINTS "ADDRESS TYPE _NAME", so the symbol is the LAST FIELD and not at the start
-            # of the line. Anchoring on ^_sym$ matched nothing ever, and every symbol looked missing.
+            grep -qx "$sym" "$build/port-defines.txt" || continue
             if [ "$(awk -v s="_$sym" '$NF==s' "$build/$name.nm" | wc -l)" -lt 1 ]; then
                 echo "MISSING $name $sym would measure the HOST: _$sym is not defined in the binary this case linked"
                 failures=$((failures + 1))
                 return
             fi
         done
+    fi
+
+    # RUN IT, COMPARE IT, SAY WHAT HAPPENED.
+    status=0
+    ( cd "$work" && "$build/$name" ) > "$build/$name.out" 2>&1 || status=$?
+    cases=$((cases + 1))
+    if [ "$status" -ge 128 ]; then
+        echo "CRASH  $name  crashed: signal $((status - 128)) (exit $status), not a comparison"
+        sed 's/^/       /' "$build/$name.out" | tail -3
+        failures=$((failures + 1))
+        return
+    fi
+    if python3 "$H/$compare" "$build/$name.out" > "$build/$name.verdict" 2>&1; then
+        green=$((green + 1))
+        echo "GREEN  $name  $(tail -1 "$build/$name.verdict")"
+    else
+        echo "RED    $name  $(tail -1 "$build/$name.verdict")"
+        sed 's/^/       /' "$build/$name.verdict" | head -4
+        failures=$((failures + 1))
     fi
 }
 
@@ -406,7 +413,14 @@ fi
 # assigns one block typedef to another's slot, which is a conflicting-type error, and a driver that only
 # knows "it built, so run it" would report the build failure as a case that did not run.
 
+# THE SUMMARY MUST AGREE WITH ITS OWN LINES. A run whose GREEN count differs from the case count has
+# described a set it did not measure, which is the defect class this whole hunt is for: the tail looked
+# fine while run_case built binaries and never compared them.
 echo
+if [ "$green" -ne "$cases" ]; then
+    echo "run-cases: $green GREEN verdict lines for $cases cases - the summary does not match the lines it printed"
+    exit 1
+fi
 if [ "$failures" -eq 0 ]; then
     echo "run-cases: OK - $cases cases, $mutants mutants, $mutants_noticed noticed"
 else
