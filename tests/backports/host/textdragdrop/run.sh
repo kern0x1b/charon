@@ -58,6 +58,7 @@ echo "   cmp: the mutant differs from the source, as it must"
 diff -u "$original" "$mutated" | sed -n '3,12p' | sed 's/^/   /' || true
 
 export DDR_UIKIT=$scratch
+cd "$build"
 xmake f -p iphoneos -a armv7 -y > configure.log 2>&1
 xmake build -y > build.log 2>&1
 
