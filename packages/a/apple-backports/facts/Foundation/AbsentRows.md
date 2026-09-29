@@ -21,7 +21,7 @@ next time anything lands.
 <!-- framework: Foundation -->
 <!-- count:begin -->
 ```
-Foundation   110 absent   9 ignored   792 implemented   48 inert      (16279 rows, 3263 absent, over 65 frameworks)
+Foundation   110 absent   9 ignored   792 implemented   48 inert      (16718 rows, 3209 absent, over 75 frameworks)
 ```
 <!-- count:end -->
 
