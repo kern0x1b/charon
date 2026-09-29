@@ -33,7 +33,11 @@
 
 - (void)acceptEventVisitor:(id<CNChangeHistoryEventVisitor>)visitor
 {
-    [visitor visitDropEverythingEvent:self];
+    // The protocol is asked for before the event is handed over, so the protocol object is one this
+    // library carries and a visitor that does not adopt it is not sent a message it does not have.
+    if ([visitor conformsToProtocol:@protocol(CNChangeHistoryEventVisitor)]) {
+        [visitor visitDropEverythingEvent:self];
+    }
 }
 
 @end
@@ -58,7 +62,11 @@
 
 - (void)acceptEventVisitor:(id<CNChangeHistoryEventVisitor>)visitor
 {
-    [visitor visitAddContactEvent:self];
+    // The protocol is asked for before the event is handed over, so the protocol object is one this
+    // library carries and a visitor that does not adopt it is not sent a message it does not have.
+    if ([visitor conformsToProtocol:@protocol(CNChangeHistoryEventVisitor)]) {
+        [visitor visitAddContactEvent:self];
+    }
 }
 
 @end
@@ -80,7 +88,11 @@
 
 - (void)acceptEventVisitor:(id<CNChangeHistoryEventVisitor>)visitor
 {
-    [visitor visitUpdateContactEvent:self];
+    // The protocol is asked for before the event is handed over, so the protocol object is one this
+    // library carries and a visitor that does not adopt it is not sent a message it does not have.
+    if ([visitor conformsToProtocol:@protocol(CNChangeHistoryEventVisitor)]) {
+        [visitor visitUpdateContactEvent:self];
+    }
 }
 
 @end
@@ -102,7 +114,11 @@
 
 - (void)acceptEventVisitor:(id<CNChangeHistoryEventVisitor>)visitor
 {
-    [visitor visitDeleteContactEvent:self];
+    // The protocol is asked for before the event is handed over, so the protocol object is one this
+    // library carries and a visitor that does not adopt it is not sent a message it does not have.
+    if ([visitor conformsToProtocol:@protocol(CNChangeHistoryEventVisitor)]) {
+        [visitor visitDeleteContactEvent:self];
+    }
 }
 
 @end

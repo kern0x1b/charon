@@ -145,3 +145,52 @@ is the release those three objects are carried from.
 it, exactly as the ten keys of `registry/Contacts/ios10.json` already do. What is *not* claimed is a
 label the release never made: the release's own address book stores the labels it had, and this port
 adds no others to it.
+
+## What is left of Contacts, and what each remaining row turned out to be
+
+The framework's twenty-one rows that were not labels turned out to be five different things, and only
+one of them is work:
+
+- **Six are the corpus's property reader looking for an accessor that is NSObject's.**
+  `+[CNContactFetchRequest new]`, `-[CNContactFetchRequest init]`, `+[CNFetchResult new]`,
+  `-[CNFetchResult init]`, `+[CNPhoneNumber new]` and `-[CNPhoneNumber init]` are declared by the
+  headers of `CNContactFetchRequest`, `CNFetchResult` and `CNPhoneNumber`, and every class inherits
+  them from `NSObject`. They want an entry saying so and **no code**, which is what
+  `registry/Contacts/remaining.json` gives them.
+
+- **Eleven are the methods of `CNChangeHistoryEventVisitor`,** and they are real but for a smaller
+  reason than it looks. The three concrete history events of this package already hand themselves to a
+  visitor (`-[CNChangeHistoryAddContactEvent acceptEventVisitor:]` calls `visitAddContactEvent:`), so
+  the *sends* were there; what was missing was the **protocol object** itself. Measured: an object that
+  names a protocol only in a method signature emits no reference to it — `id<CNChangeHistoryEventVisitor>`
+  is erased at run time — so the compiled `CNChangeHistoryEvent13.o` held no
+  `__OBJC_PROTOCOL_$_CNChangeHistoryEventVisitor` at all, defined or undefined, and nothing carrying
+  the library could answer `conformsToProtocol:` with it. The three dispatch sites now ask
+  `if ([visitor conformsToProtocol:@protocol(CNChangeHistoryEventVisitor)])` before handing the event
+  over, which is what the framework's own code does, which makes the protocol object one this library
+  defines (measured: `D __OBJC_PROTOCOL_$_CNChangeHistoryEventVisitor`), and which also means a
+  visitor that does not adopt the protocol is no longer sent a message it does not have.
+
+- **Three are not iOS APIs at all.** `+[CNGroup predicateForSubgroupsInGroupWithIdentifier:]` is
+  `NS_AVAILABLE(10_11, NA)` — unavailable on iOS whatever its version — and
+  `-[CNSaveRequest addSubgroup:toGroup:]` and `-[CNSaveRequest removeSubgroup:fromGroup:]` are
+  `API_AVAILABLE(macos(10.11)) API_UNAVAILABLE(ios)`. The same is true of the SDK 26.2. Nested groups
+  are a macOS feature of Contacts. So these are recorded **absent**, with the annotation that says why,
+  and no port of them exists or should: an iOS application cannot name them, the compiler refuses them
+  against the header, and there is no selector to answer. The corpus lists them as missing iOS rows
+  because its scanner reads the declaration rather than the annotation.
+
+- **One is work, and is the "me" card:** `-[CNContactStore unifiedMeContactWithKeysToFetch:error:]`
+  (iOS 10.11). The release has no me card — no Contacts framework, and no record of the person who owns
+  the device in the AddressBook it does have — so it answers **nil** with an `NSError` in
+  `CNErrorDomain` and code **`CNErrorCodeRecordDoesNotExist` (200)**, and the keys are not read, since
+  there is no contact to read them out of.
+
+  **What the host answers here, measured, and why the port does not copy it.** Asked on the host for a
+  me card, `-[CNContactStore unifiedMeContactWithKeysToFetch:error:]` returns nil with
+  `CNErrorCodeAuthorizationDenied` (**100**, "Access Denied") and two userInfo keys. That is a
+  *refusal of access*, which is a different case from the absence of a card: on that machine the me
+  card exists and the process may not read it, and 100 says so. The port has no card and nothing to
+  refuse, so 200 — the record does not exist — is what it says, and the description says which of the
+  two cases this is. The host's own `CNError.h` gives `CNErrorCodeRecordDoesNotExist` as 200 and
+  `CNErrorCodeAuthorizationDenied` as 100.
