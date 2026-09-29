@@ -16,6 +16,8 @@ Four things fail here, and each is a failure of the case rather than a detail it
   * a declared case whose system-side answer has moved
   * a declared case whose port-side answer has moved
   * a declared case that no longer differs at all, so the declaration is stale
+  * a side that holds no case at all, which is not a pass and the first version of this reader called it
+    one: two empty files are equal, and it printed "0 undeclared or moved" and exited 0
 
 A check that examined nothing would pass every one of these, so the summary line counts the cases it
 read and the differences it compared, and both come from the two files on disk.
@@ -67,7 +69,22 @@ def main():
     port = read_rows(port_path)
     declared, why = read_declarations(expected_path)
 
+    # A side with no cases at all is not a pass. The first version of this read two empty files, found no
+    # difference between nothing and nothing, and printed "0 undeclared or moved" and exited 0 - a
+    # comparison that examined nothing reporting that everything matched. Both counts are printed, and a
+    # case that asks nothing has to be told apart from a case that agrees.
     failures = 0
+    if not host:
+        print("FAIL: %s holds no case, so there is nothing to compare and the run is not a pass" % host_path)
+        failures += 1
+    if not port:
+        print("FAIL: %s holds no case, so there is nothing to compare and the run is not a pass" % port_path)
+        failures += 1
+    if failures:
+        print("cases read: %d a side; declared differences: %d; undeclared or moved: %d"
+              % (len(host), len(declared), failures))
+        return 1
+
     for label in sorted(set(host) | set(port)):
         system, mine = host.get(label), port.get(label)
         if label in declared:

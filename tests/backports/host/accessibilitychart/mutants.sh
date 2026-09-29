@@ -39,6 +39,17 @@
 #  M17  the chart's -setSummary: does nothing, and no other mutant in this list touches a setter of a
 #       string-typed property
 #  M18  the say-once guard is gone, so the port writes a line for every call
+#  M19  a copy of a chart drops the series, where the six vacuous probes made that invisible
+#  M20  a copy of a chart drops the additional axes
+#  M21  a copy of a chart drops the summary
+#  M22  a copy of a numeric axis drops the gridline positions
+#  M23  a copy of a point drops the additional values
+#  M24  a copy of a point drops the y value
+#
+# M19 to M24 exist because six of the twenty-three share probes answered "both-nil": the case had set
+# those six fields to nil before it made the copy, two nils compare equal, and a port that dropped the
+# field entirely printed the same line as one that shared it. The case now sets each of the six before the
+# copy, and each of these six mutants drops one, so each has to turn its own line red.
 
 # Usage: sh tests/backports/host/accessibilitychart/mutants.sh
 set -eu
@@ -262,6 +273,33 @@ else
     tail -5 "$work/M18-say-once/out.txt"
     died_wrong=$((died_wrong + 1))
 fi
+
+# The six drops. Each one is a field the case's copy block now sets before it copies, so the copy has
+# something to share and the probe has a question; before the case was fixed, each of these six was a
+# no-op the comparison could not see.
+mutant M19-chart-copy-series-drop 1 \
+    '                                                                          series:_series];' \
+    '                                                                          series:nil];'
+
+mutant M20-chart-copy-axes-drop 1 \
+    '    copy->_additionalAxes = _additionalAxes;' \
+    '    copy->_additionalAxes = nil;'
+
+mutant M21-chart-copy-summary-drop 1 \
+    '                                                                           summary:_summary' \
+    '                                                                           summary:nil'
+
+mutant M22-numeric-copy-gridlines-drop 1 \
+    '       gridlinePositions:_gridlinePositions valueDescriptionProvider:_valueDescriptionProvider];' \
+    '       gridlinePositions:nil valueDescriptionProvider:_valueDescriptionProvider];'
+
+mutant M23-point-copy-additional-drop 1 \
+    '    copy->_additionalValues = _additionalValues;' \
+    '    copy->_additionalValues = nil;'
+
+mutant M24-point-copy-yvalue-drop 1 \
+    '    AXDataPoint *copy = [[AXDataPoint allocWithZone:zone] initWithX:_xValue y:_yValue];' \
+    '    AXDataPoint *copy = [[AXDataPoint allocWithZone:zone] initWithX:_xValue y:nil];'
 
 echo "mutants run: $ran, killed by the diff: $killed_by_diff, killed by the once-only count: $killed_by_say_once, died for another reason: $died_wrong, survived: $survived"
 # The diff is a promise the case makes on every failure, so the suite has to have exercised it at least

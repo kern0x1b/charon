@@ -43,7 +43,7 @@
 //    x or y value answers a copy, because that class has a -copy of its own. Both measured per
 //    property by the case.
 //
-//  The ninth class, AXLiveAudioGraph, is the one member of this group that asks for something this
+//  The seventh class, AXLiveAudioGraph, is the one member of this group that asks for something this
 //  release does not have: a graph an assistive technology renders as sound. Nothing on 6.1.3
 //  publishes one - the release's whole Accessibility surface is the AXS* preference library, measured,
 //  with no publisher in it - so the three class methods carry the class and say once each that there

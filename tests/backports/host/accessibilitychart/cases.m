@@ -115,6 +115,11 @@ static void sayClass(NSString *label, Class value)
 // Whether two values are the same object, answered the same way on both sides and printed as a word,
 // so the addresses stay out of the output and a copy of the port cannot be told from a copy of the
 // system by anything but the answer.
+//
+// "both-nil" is a vacuous answer and the six probes that produced it are the reason every copy block
+// sets the fields it will be asked about before it makes the copy: two nils are equal, so a port that
+// dropped the field entirely printed the same line as one that shared it. A probe that answers
+// "both-nil" is not a check, and the six mutants that drop one of the six fields are what says so.
 static void same(NSString *label, id a, id b)
 {
     say(label, (a != nil && a == b) ? @"shared" : (a == nil && b == nil ? @"both-nil" : @"copied"));
@@ -192,9 +197,13 @@ int main(void)
         say(@"point.additionalValues.set", @(point.additionalValues.count));
         point.additionalValues = nil;
         say(@"point.additionalValues.nilled", point.additionalValues ? @"present" : @"(nil)");
-        // The pair is set to something before the copy, because a copy of a point whose label was set to
-        // nil has no attributed face to be asked about and the identity probe would be vacuous.
+        // Everything the copy is asked about is set first, because a copy of a point whose label or y
+        // value or additional values was set to nil answers "both-nil" on both sides and the identity
+        // probe asks nothing at all. Six of the twenty-three share probes were vacuous in the first
+        // version for exactly this reason, and a port that dropped any of the six answered the same.
         point.attributedLabel = attributed(@"PA");
+        point.yValue = category;
+        point.additionalValues = @[number, category];
         AXDataPoint *pointCopy = [point copy];
         sayClass(@"point.copy.xValue.class", [pointCopy.xValue class]);
         say(@"point.copy.label", pointCopy.label ?: @"(nil)");
@@ -268,7 +277,10 @@ int main(void)
         say(@"numericNoGridlines.title", numericNoGridlines.title);
         say(@"numericNoGridlines.gridlinePositions", numericNoGridlines.gridlinePositions ? @"present" : @"(nil)");
         sayNumber(@"numericNoGridlines.lowerBound", numericNoGridlines.lowerBound);
+        // The gridline positions were set to nil above, so a copy of that axis has none to share and the
+        // probe answers "both-nil"; they are set back before the copy so the question is real.
         numeric.attributedTitle = attributed(@"NA");
+        numeric.gridlinePositions = @[@0, @1];
         AXNumericDataAxisDescriptor *numericCopy = [numeric copy];
         say(@"numeric.copy.title", numericCopy.title);
         // The scale is the field the system's own copy drops, so this answers the linear case whatever
@@ -360,7 +372,13 @@ int main(void)
         say(@"chart.axes.additionalAxes.count", @(axesChart.additionalAxes.count));
         say(@"chart.axes.summary", axesChart.summary ?: @"(nil)");
         say(@"chart.axes.series.count", @(axesChart.series.count));
+        // Three more: the summary, the series and the additional axes were all set to nil above, and a
+        // copy of a chart with none of them has nothing to share. The identity probes below are about
+        // whether the copy answers the very objects, and that question needs the objects to be there.
         chart.attributedTitle = attributed(@"CHA");
+        chart.summary = @"COPY-S";
+        chart.series = @[series, attributedSeries];
+        chart.additionalAxes = @[ordered, numeric];
         AXChartDescriptor *chartCopy = [chart copy];
         say(@"chart.copy.title", chartCopy.title);
         say(@"chart.copy.series.count", @(chartCopy.series.count));
