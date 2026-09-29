@@ -76,6 +76,10 @@ Class CharonHKClassForObjectKind(NSInteger kind)
     // record could be saved and never read back.
     case 4:
         return resolve(@"HKClinicalRecord");
+    // The cumulative quantity sample of 13.0, which is a quantity sample and not one, so it has a kind
+    // of its own rather than its superclass's.
+    case 5:
+        return resolve(@"HKCumulativeQuantitySample");
     default:
         return Nil;
     }

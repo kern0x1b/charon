@@ -354,6 +354,32 @@ port's own reading of the header - one quantity sample per inserted quantity, fr
 date to the date that quantity was inserted at, in the order it was inserted - and the device test is
 what would settle it.
 
+## The cumulative quantity sample of 13.0, and the header/image disagreement about it
+
+`HKCumulativeQuantitySample` is of **13.0**, not of 8.0: the 26.2 header carries
+`API_AVAILABLE(ios(13.0), watchos(6.0), macCatalyst(13.0), macos(13.0))` above
+`@interface HKCumulativeQuantitySample : HKQuantitySample`, and the header's whole surface is one readonly
+`sumQuantity` over the 8.0 base's own type and dates. The host agrees the class is of a later release than
+this band has been carrying: it answers NO for `-initWithType:quantity:startDate:endDate:` on the class, so
+a cumulative sample is made through the superclass's path with the sum given to this library's own
+initialiser.
+
+**The disagreement, measured and recorded rather than resolved silently.** By exact string count, with
+`startDate` and `endDate` at 2 in the same image as the control:
+
+| image | `HKCumulativeQuantitySample` | `HKCumulativeQuantitySeriesSample` |
+|---|---|---|
+| 8.0 armv7 | 0 | - |
+| 12.0 arm64 | 0 | 2, and as a real class (`_OBJC_CLASS_$_`, `_OBJC_METACLASS_$_`) |
+
+So at 12.0 the subclass of this class exists and this class's own name is nowhere in the image: it was
+either private at 12.0 or unnamed there, and Apple documented it at 13.0. The header decides which group a
+member is in, so this class is of 13.0 - in `registry/HealthKit/ios130.json` - and the 12.0 subclass that
+needs it is of 12.0.
+
+The store's kind table gained a case for it: kind 5, because it is a quantity sample and not one, and the
+table has to read one back as this class rather than as its superclass.
+
 ## The device run
 
 None yet. Everything above is a read of a release image, a release cache, the SDK headers and the

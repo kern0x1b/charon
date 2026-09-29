@@ -1,0 +1,27 @@
+{
+ "framework": "HealthKit",
+ "entries": [
+  {
+   "api": "HKCumulativeQuantitySample",
+   "kind": "class",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "iOS 13.0 is the release of the cumulative quantity sample: the 26.2 header marks it 13.0, and the arm64 image of 12.0 carries its name 0 times while carrying the 12.0 subclass that needs it",
+   "effect": "a quantity sample whose value is the running total over a period, carrying a sum as well as its own type and dates",
+   "facts": "facts/HealthKit/HealthKit.md",
+   "source": "the header of iOS 26.2 for the contract, its API_AVAILABLE(ios(13.0)) line quoted in the facts; the arm64 image of 12.0 for the values, which carries this class's name 0 times and its 12.0 subclass twice"
+  },
+  {
+   "api": "-[HKCumulativeQuantitySample sumQuantity]",
+   "kind": "property",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "iOS 13.0 is the release of the cumulative quantity sample: the 26.2 header marks it 13.0, and the arm64 image of 12.0 carries its name 0 times while carrying the 12.0 subclass that needs it",
+   "effect": "the sum, exactly as the library's own initialiser was given it",
+   "facts": "facts/HealthKit/HealthKit.md",
+   "source": "the header of iOS 26.2 for the contract, its API_AVAILABLE(ios(13.0)) line quoted in the facts; the arm64 image of 12.0 for the values, which carries this class's name 0 times and its 12.0 subclass twice"
+  }
+ ]
+}
