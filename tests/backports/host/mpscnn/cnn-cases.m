@@ -3,6 +3,7 @@
 // case owns, so the two runs are compared exactly for the results that are exact, and against a
 // written-down float tolerance for the ones that are not.
 #import <Foundation/Foundation.h>
+#import <objc/runtime.h>
 #import <Metal/Metal.h>
 #import <MetalPerformanceShaders/MetalPerformanceShaders.h>
 #include <stdio.h>
@@ -10,6 +11,31 @@
 #include <math.h>
 
 static id<MTLDevice> gDevice;
+
+// Which image every compared class came out of, printed before anything else. A class of the port's
+// with the same name as one of the host's is registered once, and a message sent to it reaches whichever
+// loaded first - so the comparison says which that was, on every run, rather than leaving it to be
+// inferred from a number that came out wrong.
+static void printClassImages(void)
+{
+    NSString *names[] = {
+        @"MPSKernel", @"MPSCNNKernel", @"MPSCNNPooling", @"MPSCNNPoolingAverage", @"MPSCNNPoolingMax",
+        @"MPSCNNConvolution", @"MPSCNNConvolutionDescriptor", @"MPSCNNConvolutionWeightsAndBiasesState",
+        @"MPSCNNBatchNormalization", @"MPSState", @"MPSStateResourceList", @"MPSPredicate", @"MPSCommandBuffer",
+        @"MPSImage", @"MPSImageDescriptor", @"MPSMatrix", @"MPSVector",
+    };
+    for (unsigned i = 0; i < sizeof(names) / sizeof(names[0]); i++) {
+        Class cls = NSClassFromString(names[i]);
+        const char *image = cls ? (class_getImageName(cls) ?: "(none)") : "(absent)";
+        printf("image %-38s %s\n", names[i].UTF8String, image);
+        // And the name the port's own copy is registered under, which is what the cases call: if it is
+        // absent, the cases reached the host's class and the comparison is not a comparison.
+        NSString *charon = [@"Charon" stringByAppendingString:names[i]];
+        Class mine = NSClassFromString(charon);
+        const char *where = mine ? (class_getImageName(mine) ?: "(none)") : "(absent)";
+        printf("image %-38s %s\n", charon.UTF8String, where);
+    }
+}
 
 static void put(const char *name, const void *bytes, size_t count, size_t element)
 {
@@ -162,6 +188,7 @@ int main(void)
     @autoreleasepool {
         gDevice = MTLCreateSystemDefaultDevice();
         if (!gDevice) { printf("no device\n"); return 1; }
+        printClassImages();
         casesPooling();
         casesBatchNormalization();
     }

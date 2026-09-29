@@ -21,27 +21,31 @@ xcrun clang -fobjc-arc $target $quiet "$here/cnn-cases.m" \
 "$build/system" > "$build/system.txt" 2> "$build/system.err" || true
 echo "system: $(wc -l < "$build/system.txt") lines"
 
-# The names this library carries, each under a name of its own: every class its sources implement that
-# this file's cases reach.
-python3 - "$mps" "$build/rename.h" <<'PY'
-import os, re, sys
-names = set()
-for entry in sorted(os.listdir(sys.argv[1])):
-    if not entry.endswith('.m'):
-        continue
-    for line in open(os.path.join(sys.argv[1], entry), errors='ignore'):
-        m = re.match(r'@implementation\s+(MPSCNN\w+)', line)
-        if m:
-            names.add(m.group(1))
+# The names this library carries, each under a name of its own. The list is every class the port
+# *defines*, read out of its compiled objects and not the subset a case happens to reach: the host's
+# MPS framework defines nearly all of them, so a class left unrenamed is two classes of one name in
+# the port's process, and which one a superclass pointer or a message reaches is then decided by load
+# order rather than by anything here. The same shape of defect ba5df243 found in NetworkExtension.
+rm -rf "$build/plain"
+mkdir -p "$build/plain"
+for source in "$mps"/*.m; do
+    xcrun clang -fobjc-arc -w $target -c "$source" -o "$build/plain/$(basename "$source" .m).o" 2>/dev/null
+done
+for object in "$build/plain"/*.o; do xcrun nm -g --defined-only "$object"; done \
+    | grep -oE '_OBJC_CLASS_\$_[A-Za-z0-9_]+' | sed 's/_OBJC_CLASS_\$_//' | sort -u > "$build/port-defines.txt"
+python3 - "$build/port-defines.txt" "$build/rename.h" <<'PY'
+import sys
+names = [line.strip() for line in open(sys.argv[1]) if line.strip()]
 with open(sys.argv[2], 'w') as out:
-    for name in sorted(names):
+    for name in names:
         out.write("#define %s Charon%s\n" % (name, name))
+print("classes the port defines: %d" % len(names))
 PY
 echo "renamed: $(grep -c define "$build/rename.h") classes"
 
-printf '#import <MetalPerformanceShaders/MetalPerformanceShaders.h>\n#import "CharonMPSCnn.h"\n' > "$build/declarations.h"
+printf '#import <MetalPerformanceShaders/MetalPerformanceShaders.h>\n#import "CharonMPSCnn.h"\n#import <objc/runtime.h>\n#include <stdio.h>\n' > "$build/declarations.h"
 objects=""
-for source in "$mps"/MPSCNN*.m; do
+for source in "$mps"/*.m; do
     name=$(basename "$source" .m)
     xcrun clang -fobjc-arc -fvisibility=hidden $target $quiet -c "$source" -o "$build/$name.plain.o"
     python3 "$here/../prefix_selectors.py" "$source" "$build/$name.m" ccharonHost_ \
@@ -68,7 +72,10 @@ import sys
 system_path, port_path, tolerance = sys.argv[1], sys.argv[2], float(sys.argv[3])
 def read(path):
     cases, name, values = {}, None, []
+    skip_image = True
     for line in open(path):
+        if line.startswith("image "):
+            continue
         parts = line.split()
         if len(parts) == 2 and parts[1].isdigit():
             if name: cases[name] = values
