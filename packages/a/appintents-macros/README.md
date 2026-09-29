@@ -71,7 +71,12 @@ $STORE/s/swift-syntax/<version>/<digest>/lib/SwiftSyntax.o                      
 
 Three things are **not** there, and the recipe looked for all three before that run: no `Modules/`
 subdirectory under `release/`, no `.a` archives (a target-scoped build links no library product), and
-nothing under `release/PackageFrameworks`. The `release/` directory held **19 `.swiftmodule` files**
+nothing under `release/PackageFrameworks`.
+
+And each `X.swiftmodule` is a **directory**, not a file — `SwiftSyntax.swiftmodule/` holds
+`arm64-apple-macos.swiftmodule` with its `.abi.json` and `.swiftdoc` beside it. `os.files("*.swiftmodule")`
+returns none of them, so a copy step written with `os.files` copies nothing at all; the recipe uses
+`os.filedirs` for the modules and `os.files` for the objects, and copies the modules whole. The `release/` directory held **19 `.swiftmodule` files**
 and **21 objects** — the twelve the package's module list names, plus the versioned
 `SwiftSyntaxNNN` modules SwiftPM emits alongside them, which are the same sources under their
 release names and which a consumer may equally import. The recipe copies all of them and **raises**

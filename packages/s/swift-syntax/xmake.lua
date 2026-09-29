@@ -120,16 +120,21 @@ package("swift-syntax")
         -- them: the twelve the plugin's module list names, and the versioned `SwiftSyntaxNNN`
         -- modules SwiftPM emits alongside them, which are the same sources under their release
         -- names and which a consumer may equally import.
+        -- A module is a **directory**, not a file: `SwiftSyntax.swiftmodule/` holds
+        -- `arm64-apple-macos.swiftmodule` with the `.abi.json` and `.swiftdoc` beside it, and the
+        -- compiler finds it through `-I <dir>`. Measured: 19 such directories and 21 objects, and
+        -- `os.files("*.swiftmodule")` returns none of them -- the first version of this step copied
+        -- files and copied nothing, which is the same failure the install showed and one level
+        -- further down. So the modules come from `os.filedirs` and are copied whole, and the
+        -- objects from `os.files`.
         local copied = 0
-        for _, entry in ipairs(os.files(path.join(products, "*"))) do
-            local base = path.filename(entry)
-            if base:endswith(".swiftmodule") then
-                os.cp(entry, path.join(package:installdir("lib"), "swift", "host", base))
-                copied = copied + 1
-            elseif base:endswith(".o") then
-                os.cp(entry, path.join(package:installdir("lib"), base))
-                copied = copied + 1
-            end
+        for _, entry in ipairs(os.filedirs(path.join(products, "*.swiftmodule"))) do
+            os.cp(entry, path.join(package:installdir("lib"), "swift", "host", path.filename(entry)))
+            copied = copied + 1
+        end
+        for _, entry in ipairs(os.files(path.join(products, "*.o"))) do
+            os.cp(entry, path.join(package:installdir("lib"), path.filename(entry)))
+            copied = copied + 1
         end
         for _, dir in ipairs({"SwiftSyntax", "_SwiftSyntaxCShims", "SwiftSyntaxPrivate"}) do
             local resources = path.join(products, "..", dir)
