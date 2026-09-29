@@ -48,7 +48,7 @@
     {
       "api": "-[CIColor initWithRed:green:blue:]",
       "kind": "method",
-      "introduced": "10.0",
+      "introduced": "9.0",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "iOS 6 has a CIColor but not this: the release's CoreImage has no way to name the colour space a colour was measured in, so an application that names one of these does not find it",
