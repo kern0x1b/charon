@@ -71,7 +71,13 @@ mutant() {
     # A factory that answers the wrong size fails its own probe, and that probe is part of the run.
     if grep -q 'the factory probe did not pass' "$dir/out.txt"; then
         killed=$((killed + 1))
-        echo "killed by the factory probe: $name: $(grep -m1 'factory: sized.dimensions' "$dir/out.txt" || true)"
+        # The branch is a condition and not `|| true`: the empty answer is the signal that the probe
+        # failed for a reason this script does not name, and it is reported two lines below.
+        if line=$(grep -m1 'FAILED' "$dir/out.txt"); then
+            echo "killed by the factory probe: $name: $line"
+        else
+            echo "killed by the factory probe: $name: (the probe failed before it named a check)"
+        fi
         return 0
     fi
     echo "MUTANT DIED FOR THE WRONG REASON: $name"
