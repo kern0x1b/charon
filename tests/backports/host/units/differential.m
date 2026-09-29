@@ -1,8 +1,17 @@
 #import <Foundation/Foundation.h>
+#import <string.h>
+#import <stdio.h>
+#import <stdlib.h>
 #import <objc/runtime.h>
 #import <objc/message.h>
 
 static int failures;
+// -v prints the numbers the mapper's host kind cites: both halves, both directions, as %.17g
+// and as the 64-bit pattern, so "equal to the bit" is a thing a reader can see and not a claim
+static int verbose = 0;
+// -v writes what it prints to $HOST_VALUES as well: the mapper's host kind reads that file
+// and a row that claims the port holds Apple's constant has to be able to point at the run that said so
+static FILE *host_values = NULL;
 static int checks;
 
 static void fail(NSString *format, ...)
@@ -91,6 +100,23 @@ static void compare_units(NSString *name)
         if (![unit isKindOfClass:[NSDimension class]])
             continue;
         NSUnitConverter *converter = [(NSDimension *)unit converter], *converterOurs = [(NSDimension *)unitOurs converter];
+        static const double SHOWN[] = {0, 1, 100};
+        for (unsigned shown = 0; verbose && shown < sizeof(SHOWN) / sizeof(*SHOWN); shown++) {
+            double v = SHOWN[shown], h = [converter baseUnitValueFromValue:v], p = [converterOurs baseUnitValueFromValue:v];
+            double hback = [converter valueFromBaseUnitValue:v], pback = [converterOurs valueFromBaseUnitValue:v];
+            const char *verdict = memcmp(&h, &p, sizeof(double)) == 0 ? "==" : "!=";
+            printf("%-44s v=%-5g base host %.17g [%016llx]  port %.17g [%016llx]  %s\n", what.UTF8String, v,
+                   h, *(unsigned long long *)&h, p, *(unsigned long long *)&p, verdict);
+            if (host_values)
+                fprintf(host_values, "%s\t%s\tbase\t%.17g\t%.17g\t%016llx\t%016llx\t%s\n", name.UTF8String,
+                        [unit symbol].UTF8String, v, h, *(unsigned long long *)&h, *(unsigned long long *)&p, verdict);
+            verdict = memcmp(&hback, &pback, sizeof(double)) == 0 ? "==" : "!=";
+            printf("%-44s v=%-5g back host %.17g [%016llx]  port %.17g [%016llx]  %s\n", what.UTF8String, v,
+                   hback, *(unsigned long long *)&hback, pback, *(unsigned long long *)&pback, verdict);
+            if (host_values)
+                fprintf(host_values, "%s\t%s\tback\t%.17g\t%.17g\t%016llx\t%016llx\t%s\n", name.UTF8String,
+                        [unit symbol].UTF8String, v, hback, *(unsigned long long *)&hback, *(unsigned long long *)&pback, verdict);
+        }
         for (unsigned sample = 0; sample < sizeof(SAMPLES) / sizeof(*SAMPLES); sample++) {
             same_double([converterOurs baseUnitValueFromValue:SAMPLES[sample]], [converter baseUnitValueFromValue:SAMPLES[sample]],
                         [NSString stringWithFormat:@"%@ baseUnitValueFromValue:%g", what, SAMPLES[sample]]);
@@ -317,8 +343,20 @@ static void compare_edges(void)
     same_object(error_of(ourError), error_of(theirError), @"an archive of a unit with no symbol error");
 }
 
-int main(void)
+int main(int argc, char **argv)
 {
+    for (int i = 1; i < argc; i++)
+        if (strcmp(argv[i], "-v") == 0) {
+            verbose = 1;
+            const char *path = getenv("HOST_VALUES");
+            if (path) {
+                host_values = fopen(path, "w");
+                if (!host_values) {
+                    fprintf(stderr, "cannot write %s\n", path);
+                    return 2;
+                }
+            }
+        }
     @autoreleasepool {
         for (NSString *name in @[@"NSUnitAcceleration", @"NSUnitAngle", @"NSUnitArea", @"NSUnitConcentrationMass",
                                  @"NSUnitDispersion", @"NSUnitDuration", @"NSUnitElectricCharge", @"NSUnitElectricCurrent",
