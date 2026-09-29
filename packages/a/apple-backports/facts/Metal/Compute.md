@@ -53,7 +53,7 @@ That is the whole output of `WORK=<dir> sh tests/backports/host/air2cpu/compare.
 **twelve** kernels. Its verdict block, as recorded at the time and not independently checkable from
 this repository:
 
-    refused atomicFamilyKernel the port did not translate this kernel, so there is no answer
+    refused atomicFamilyKernel the port did not translate this kernel, so there is no answer to compare
     match   atomicAddKernel  64 values agree with Metal
     match   atomicKernel     64 values agree with Metal
     match   grid2Kernel      64 values agree with Metal
