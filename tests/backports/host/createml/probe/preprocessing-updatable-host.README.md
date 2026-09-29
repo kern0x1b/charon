@@ -12,8 +12,18 @@ can only happen at the first update, or never.
 The port's answer, from `Preprocessing.swift:168` and `:174`, is **never**: `makeTransformer()` hands
 the preprocessor to `ComposedTransformer.init` (line 33) which stores it as given, and `update(_:with:)`
 transforms through it after removing the target. The port therefore feeds the inner estimator the raw
-column, and the case `a supervised updatable pipeline's estimator is fed the preprocessed feature` in
-`preprocessing/main.swift` is **red** on that.
+column.
+
+**There is no red case here, and there is not one to look for.** A case named `a supervised updatable
+pipeline's estimator is fed the preprocessed feature` was written from the reasoning above and it
+*was* red - it expected a preprocessed -7 for x = 1...8, which is what a fitting pipeline gives. That
+expectation was **wrong**: the host's answer is 1.0, the raw column, so the port was right and the -7 was
+this file's error in reasoning. The case in `preprocessing/main.swift` is now
+
+    a supervised updatable pipeline's estimator is fed the raw column, as the host feeds it
+
+which passes with this probe cited. The -7 was never committed as a failure, and a reader going looking
+for a red preprocessed-feature case will not find one.
 
 ## What the host's API requires, learned
 
