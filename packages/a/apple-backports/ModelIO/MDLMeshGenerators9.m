@@ -320,7 +320,16 @@ static void CharonMDLTaperedTube(CharonMDLBuilder *builder, float lower, float u
     NSUInteger rings = up + 3;
     for (NSUInteger ring = 0; ring < rings; ring++) {
         BOOL pole = ring == 0 || ring >= up + 1;
-        float v = (float)ring / (float)(up + 1), y = (v - 0.5f) * height, radius = lower + (upper - lower) * v;
+        // v runs 0 .. (up+2)/(up+1) over the rings, because there is a pole ring beyond each end,
+        // and the extra rings are AT the ends and not past them: a cylinder of height 4 measured
+        // 5.33333 tall against the system's 4.00000, which is (4/3 - 1/2) * 4 - the fourth ring of
+        // five placed a third of a height above the top of the tube. Clamped, the last ring is the
+        // top one and the cylinder is the height that was asked for.
+        float v = (float)ring / (float)(up + 1), y, radius;
+        if (v > 1.0f)
+            v = 1.0f;
+        y = (v - 0.5f) * height;
+        radius = lower + (upper - lower) * v;
         for (NSUInteger column = 0; column <= around; column++) {
             float u = (float)column / (float)around, theta = u * 2 * (float)M_PI;
             vector_float3 outward = {cosf(theta), 0, sinf(theta)};
