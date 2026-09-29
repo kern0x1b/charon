@@ -66,7 +66,7 @@ run_case() {
     # being linked. IT DOES NOT COVER: supported, attributes, certificate-name and trust-result, which
     # reach the port through Charon* helpers or through dlsym(RTLD_DEFAULT, ...); and a case that calls no
     # sec_* name at all. A case outside that set is not guarded - it is neither checked nor claimed to be.
- the sec_*/Charon* symbols this case CALLS BY NAME must be DEFINED in
+    # the sec_*/Charon* symbols this case CALLS BY NAME must be DEFINED in
     # the binary it linked, and the reference set is built from the very "$@" the guard is given, so a
     # source dropped from the link line also leaves the reference set. A case that resolves the port by
     # dlsym(RTLD_DEFAULT, ...) is not caught at all. Both are recorded as OWED in the README beside this
@@ -138,7 +138,6 @@ run_mutation() {
         MUTANT_SRC=""
 # comparison; every other one that survives is a failure. The list is not a hole in the check - it is one
 # entry, and adding to it would turn the run green in a way nobody can read back.
-EXPECTED_UNNOTICED="identity"
         return
     fi
     if [ ! -f "$build/mutant-$name.m" ]; then
@@ -163,7 +162,6 @@ EXPECTED_UNNOTICED="identity"
         MUTANT_SRC=""
 # comparison; every other one that survives is a failure. The list is not a hole in the check - it is one
 # entry, and adding to it would turn the run green in a way nobody can read back.
-EXPECTED_UNNOTICED="identity"
         return
     fi
     if python3 "$H/$compare" "$build/mutant-$name.out" > "$build/mutant-$name.red" 2>&1; then
@@ -177,14 +175,12 @@ EXPECTED_UNNOTICED="identity"
         MUTANT_SRC=""
 # comparison; every other one that survives is a failure. The list is not a hole in the check - it is one
 # entry, and adding to it would turn the run green in a way nobody can read back.
-EXPECTED_UNNOTICED="identity"
     else
         echo "RED    $name mutation  $(grep -m1 DIFFERS "$build/mutant-$name.red" | cut -c9-)"
         mutants_noticed=$((mutants_noticed + 1))
         MUTANT_SRC=""
 # comparison; every other one that survives is a failure. The list is not a hole in the check - it is one
 # entry, and adding to it would turn the run green in a way nobody can read back.
-EXPECTED_UNNOTICED="identity"
     fi
 }
 
