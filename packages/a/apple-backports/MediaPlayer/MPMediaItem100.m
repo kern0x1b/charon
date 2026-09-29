@@ -38,7 +38,7 @@ extern NSString * const MPMediaItemPropertyDateAdded;
 }
 
 - (BOOL)isExplicitItem {
-    return [[self valueForProperty:@"explicitItem"] boolValue];
+    return [[self valueForProperty:@"isExplicit"] boolValue];
 }
 
 @end

@@ -25,8 +25,8 @@ static void check(const char *what, int held, const char *got) {
 }
 
 int main(void) {
-    NSDictionary *given = @{@"explicitItem": @YES, @"protectedAsset": @YES, @"dateAdded": @1000,
-                            @"playbackStoreID": @"store", @"preorder": @YES};
+    NSDictionary *given = @{@"isExplicit": @YES, @"hasProtectedAsset": @YES, @"dateAdded": @1000,
+                            @"playbackStoreID": @"store", @"isPreorder": @YES};
     MPMediaItem *item = [[MPMediaItem alloc] init];
     [item charon_set_properties:given];
     check("MPMediaItemPropertyIsExplicit is the key the getter reads",

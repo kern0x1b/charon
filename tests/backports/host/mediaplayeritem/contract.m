@@ -52,11 +52,11 @@ int main(void) {
     NSDictionary *given = @{@"albumTrackNumber": @7, @"discNumber": @2, @"albumPersistentID": @11,
                             @"artistPersistentID": @12, @"albumArtistPersistentID": @13, @"genrePersistentID": @14,
                             @"composerPersistentID": @15, @"podcastPersistentID": @16, @"albumTrackCount": @3,
-                            @"discCount": @1, @"beatsPerMinute": @128, @"compilation": @YES, @"cloudItem": @YES,
+                            @"discCount": @1, @"beatsPerMinute": @128, @"isCompilation": @YES, @"isCloudItem": @YES,
                             @"lyrics": @"words", @"comments": @"note", @"userGrouping": @"group",
-                            @"assetURL": [NSURL URLWithString:@"file:///a"], @"protectedAsset": @YES,
-                            @"dateAdded": added, @"explicitItem": @YES, @"playbackStoreID": @"store",
-                            @"preorder": @YES};
+                            @"assetURL": [NSURL URLWithString:@"file:///a"], @"hasProtectedAsset": @YES,
+                            @"dateAdded": added, @"isExplicit": @YES, @"playbackStoreID": @"store",
+                            @"isPreorder": @YES};
     MPMediaItem *item = [[MPMediaItem alloc] init];
     [item charon_set_properties:given];
     // 7.0

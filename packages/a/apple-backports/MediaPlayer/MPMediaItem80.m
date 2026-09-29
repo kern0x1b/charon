@@ -82,11 +82,11 @@
 }
 
 - (BOOL)isCompilation {
-    return [[self valueForProperty:@"compilation"] boolValue];
+    return [[self valueForProperty:@"isCompilation"] boolValue];
 }
 
 - (BOOL)isCloudItem {
-    return [[self valueForProperty:@"cloudItem"] boolValue];
+    return [[self valueForProperty:@"isCloudItem"] boolValue];
 }
 
 - (NSString *)lyrics {

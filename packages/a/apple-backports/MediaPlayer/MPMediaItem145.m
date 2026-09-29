@@ -33,4 +33,4 @@ extern NSString * const MPMediaItemPropertyIsPreorder;
 
 @end
 
-NSString * const MPMediaItemPropertyIsPreorder = @"preorder";
+NSString * const MPMediaItemPropertyIsPreorder = @"isPreorder";

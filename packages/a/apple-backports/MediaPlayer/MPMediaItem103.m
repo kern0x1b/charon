@@ -38,7 +38,7 @@ extern NSString * const MPMediaItemPropertyPlaybackStoreID;
 }
 
 - (BOOL)isPreorder {
-    return [[self valueForProperty:@"preorder"] boolValue];
+    return [[self valueForProperty:@"isPreorder"] boolValue];
 }
 
 @end

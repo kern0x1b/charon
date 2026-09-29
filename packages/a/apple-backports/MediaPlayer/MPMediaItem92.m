@@ -33,9 +33,9 @@ extern NSString * const MPMediaItemPropertyHasProtectedAsset;
 @implementation MPMediaItem (Charon92)
 
 - (BOOL)hasProtectedAsset {
-    return [[self valueForProperty:@"protectedAsset"] boolValue];
+    return [[self valueForProperty:@"hasProtectedAsset"] boolValue];
 }
 
 @end
 
-NSString * const MPMediaItemPropertyHasProtectedAsset = @"protectedAsset";
+NSString * const MPMediaItemPropertyHasProtectedAsset = @"hasProtectedAsset";

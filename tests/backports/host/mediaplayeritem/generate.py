@@ -31,8 +31,8 @@ GROUP_80 = [
     ("albumTrackCount", "NSUInteger", "albumTrackCount", "albumTrackCount"),
     ("discCount", "NSUInteger", "discCount", "discCount"),
     ("beatsPerMinute", "NSUInteger", "beatsPerMinute", "beatsPerMinute"),
-    ("compilation", "BOOL", "isCompilation", "compilation"),
-    ("cloudItem", "BOOL", "isCloudItem", "cloudItem"),
+    ("compilation", "BOOL", "isCompilation", "isCompilation"),
+    ("cloudItem", "BOOL", "isCloudItem", "isCloudItem"),
     ("lyrics", "NSString *", "lyrics", "lyrics"),
     ("comments", "NSString *", "comments", "comments"),
     ("userGrouping", "NSString *", "userGrouping", "userGrouping"),
@@ -41,30 +41,35 @@ GROUP_80 = [
 
 # The three groups after 8.0, with the release as the header writes it and as the file names it. Two of
 # the four are declared with a getter=, so the property name is the first field and the selector the third.
-GROUP_92 = [("protectedAsset", "BOOL", "hasProtectedAsset", "protectedAsset")]
+GROUP_92 = [("protectedAsset", "BOOL", "hasProtectedAsset", "hasProtectedAsset")]
 GROUP_100 = [("dateAdded", "NSDate *", "dateAdded", "dateAdded"),
-              ("explicitItem", "BOOL", "isExplicitItem", "explicitItem")]
+              ("explicitItem", "BOOL", "isExplicitItem", "isExplicit")]
 GROUP_103 = [("playbackStoreID", "NSString *", "playbackStoreID", "playbackStoreID"),
-             ("preorder", "BOOL", "isPreorder", "preorder")]
+             ("preorder", "BOOL", "isPreorder", "isPreorder")]
 
 # The property-key constants, each the same-named string: the header declares them NSString * const and
 # the dictionary is keyed by the property's name, so a constant that named anything else would name a key
 # nothing reads. The release each arrived in is its own group's, per the header's MP_API.
+# A member's dictionary key is what the constant of that name holds, and this Mac's own MediaPlayer says
+# what that is: the property's own name, except where the 26.2 header declares a getter=, where the value
+# is the getter's name. Measured, not assumed - see constant-values.m, and the five keys it moved are the
+# ones with a getter= (isCompilation, isCloudItem, hasProtectedAsset, isExplicit, isPreorder).
+#
 # The property-key constants, one per release, emitted as the globals the header declares: a
 # `NSString * const` at file scope, outside the @implementation, so a caller that spells the constant the
 # way Apple spells it links against a data symbol. A class property would be a method and would not.
 CONSTANTS = {
-    70: [("MPMediaItemPropertyIsExplicit", "explicitItem")],
+    70: [("MPMediaItemPropertyIsExplicit", "isExplicit")],
     80: [],
-    92: [("MPMediaItemPropertyHasProtectedAsset", "protectedAsset")],
+    92: [("MPMediaItemPropertyHasProtectedAsset", "hasProtectedAsset")],
     100: [("MPMediaItemPropertyDateAdded", "dateAdded")],
     103: [("MPMediaItemPropertyPlaybackStoreID", "playbackStoreID")],
-    145: [("MPMediaItemPropertyIsPreorder", "preorder")],
+    145: [("MPMediaItemPropertyIsPreorder", "isPreorder")],
 }
 # MPMediaItemPropertyIsExplicit is 7.0 and MPMediaItemPropertyIsPreorder is 14.5, so each needs a group
 # of its own rather than a neighbour's file: one object, one release, per band()'s own rule.
 GROUP_145 = []
-CONSTANTS[145] = [("MPMediaItemPropertyIsPreorder", "preorder")]
+CONSTANTS[145] = [("MPMediaItemPropertyIsPreorder", "isPreorder")]
 
 GROUPS = {70: GROUP_70, 80: GROUP_80, 92: GROUP_92, 100: GROUP_100, 103: GROUP_103, 145: GROUP_145}
 # The file and the table are named for the release without its dot; the header line quotes it with.

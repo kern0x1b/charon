@@ -43,4 +43,4 @@ extern NSString * const MPMediaItemPropertyIsExplicit;
 
 @end
 
-NSString * const MPMediaItemPropertyIsExplicit = @"explicitItem";
+NSString * const MPMediaItemPropertyIsExplicit = @"isExplicit";
