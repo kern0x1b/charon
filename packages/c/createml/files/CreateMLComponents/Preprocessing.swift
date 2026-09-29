@@ -54,12 +54,12 @@ public struct PreprocessingEstimator<Preprocessor: ColumnarTransformer, Base: Es
     /// The table the preprocessor turns the input into, with the preprocessor fitted and applied.
     /// The fitted preprocessor itself is `Transformer.preprocessor`.
     public func preprocessed(from training: Input) throws -> Intermediate {
-        try preprocessor.fitted(on: training).transformed(training)
+        try preprocessor.transformed(training)
     }
 
     /// The whole pipeline fitted: the preprocessor first, and the estimator on its output.
     public func fitted(on training: Input) throws -> Transformer {
-        let fitted = try preprocessor.fitted(on: training)
+        let fitted = preprocessor
         // The estimator's own fit takes the preprocessed table, and calling it here is what makes the
         // pipeline a pipeline rather than two things side by side.
         return Transformer(fitted, try estimator.fitted(on: fitted.transformed(training)))
@@ -134,7 +134,7 @@ public struct PreprocessingUpdatableEstimator<Preprocessor: ColumnarTransformer,
 
     /// The table the preprocessor turns the input into, with the preprocessor fitted and applied.
     public func preprocessed(from training: Input) throws -> Intermediate {
-        try preprocessor.fitted(on: training).transformed(training)
+        try preprocessor.transformed(training)
     }
 
     /// The update: the input is preprocessed **by the preprocessor the fit produced**, and the inner

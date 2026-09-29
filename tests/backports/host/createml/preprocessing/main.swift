@@ -95,10 +95,28 @@ do {
     let pipeline = PortCreateMLComponents.PreprocessingEstimator(PortCreateMLComponents.StandardScaler(),
                                                               MeanEstimator(annotationColumn: "y"))
     let fitted = try pipeline.fitted(on: table())
-    check("a fitted pipeline carries the preprocessor's statistics", fitted.preprocessor.statistics.rows == 2,
+    // **The host does not fit a pipeline's preprocessor**, measured with the host's own
+    // `LinearTransformer` as the instrument (a fitted one has non-identity `scale` and `offset`):
+    //
+    //     after fitted(to:): preprocessor scale=1.0 offset=0.0
+    //     after preprocessed(from:): the values are [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0]
+    //
+    // `probe/preprocessing-estimator-host.swift` and its `.txt`. A pipeline holds a `Transformer`,
+    // and `Transformer` has no `fitted(to:)` of its own, so the preprocessor it was handed is the one it
+    // transforms through; fitting it is the caller's separate step.
+    check("an unsupervised pipeline's fit does NOT fit the preprocessor, as the host's does not",
+          fitted.preprocessor.statistics.rows == 0,
           "the port answers \(fitted.preprocessor.statistics.rows) rows of statistics")
     check("and the estimator the fit produced", fitted.estimator.columns.contains("x"),
           "the port answers \(fitted.estimator.columns)")
+
+    // The host's recorded value for the preprocessed column, from the same probe: the raw `1...8`,
+    // because the identity preprocessor was used. A port that fitted answers standardised values here.
+    let unsupervisedPreprocessed = try pipeline.preprocessed(from: featuresOnly())
+    let unsupervisedX = (unsupervisedPreprocessed.column("x")?.numeric ?? []).compactMap { $0 }
+    check("an unsupervised pipeline's preprocessed values are the host's: the raw 1...8",
+          unsupervisedX == [1, 2, 3, 4, 5, 6, 7, 8],
+          "the port answers \(String(describing: unsupervisedX))")
 
     // The preprocessor's own arithmetic, unchanged by being in a pipeline: a standard scaler over
     // `1...8` has mean 4.5 and the unbiased deviation sqrt(6), so the first value is
@@ -107,16 +125,23 @@ do {
     let spread = 6.0.squareRoot()
     let transformed = fitted.preprocessor.transformed(table())
     let x: [Double] = (transformed.column("x")?.numeric ?? []).compactMap { $0 }
-    checkClose("a pipeline's scaler still standardises its column", x.first ?? 0, (1 - 4.5) / spread, 1e-9)
-    checkClose("and the last value too", x.last ?? .nan, (8 - 4.5) / spread, 1e-9)
+    // These two used to expect the *standardised* values, which is what the port produced by fitting
+    // the preprocessor inside the pipeline. The host does not fit it, so it passes the caller's
+    // transformer through: over `1...8` with the identity preprocessor the values are the raw ones, and
+    // that is the host's recorded answer (probe/preprocessing-estimator-host.txt).
+    checkClose("a pipeline passes its preprocessor through, so the column is the host's raw 1...8",
+               x.first ?? 0, 1, 1e-9)
+    checkClose("and the last value too", x.last ?? .nan, 8, 1e-9)
 
     // The two halves separately, because a caller who wants to look at the intermediate calls them.
     let intermediate = try pipeline.preprocessed(from: table())
     check("preprocessed(from:) transforms every column, the target included, for the *unsupervised* one",
           intermediate.columnNames == ["y", "x"],
           "the port answers \(intermediate.columnNames)")
-    checkEqual("and its y column really is standardised",
-           port: (intermediate.column("y")?.numeric ?? []).compactMap { $0 }.reduce(0, +), is: 0)
+    // The y column is the target and this pipeline is unsupervised, so there is nothing to hold it out -
+    // and the preprocessor is not fitted, so the column is raw too: 10...24 sums to 136.
+    checkEqual("and its y column is raw as well, as the host's is",
+           port: (intermediate.column("y")?.numeric ?? []).compactMap { $0 }.reduce(0, +), is: 136)
 
     // A supervised pipeline, which keeps its target column out of the scaler: scaling a target is a
     // different model, and the wrapper is not that.
