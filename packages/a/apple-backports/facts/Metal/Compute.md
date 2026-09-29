@@ -8,12 +8,37 @@ on this hardware. `tools/air2cpu` turns the AIR of a compute kernel into C when 
 built, the way `tools/air2es` turns a render function into a shader, and this file is what runs the
 result.
 
-## What the port has proved, and where
+## What the port has proved, and what it has not been able to measure
 
-`tests/backports/host/air2cpu/compare.sh` compiles `kernels.metal` with Apple's own compiler on the
-host — twice, once as an ordinary library to dispatch and once as a dynamic library to serialise — runs
-each kernel on the host's GPU, and turns the AIR that compiler wrote into C with `tools/air2cpu` and
-runs that through the same call convention the encoder here uses. Both answers are compared:
+`tests/backports/host/air2cpu/compare.sh` is the test: it compiles `kernels.metal` with Apple's own
+compiler on the host, runs each kernel, turns the AIR that compiler wrote into C with `tools/air2cpu`, and
+runs that through the same call convention this encoder uses. **It compares two answers, and one of the
+two is Apple's.**
+
+**As of 2026-09-29 that comparison does not run on this machine, so most of what follows is a PAST
+measurement and is marked as one.** The host's `MTLCompilerService` is in a crash loop —
+`EXC_BAD_ACCESS / SIGSEGV / KERN_INVALID_ADDRESS at 0x8`, four reports inside one second, sixteen in all
+— so the oracle produces no library and `compare.sh` stops at
+
+    the oracle did not produce …/kernels.metallib, so there is no AIR to read and the differential has
+    nothing to compare.
+
+### MEASURED, and still reproducible
+
+* `tools/air2cpu` translates every kernel in the fixture and refuses none. Reproduced on 2026-09-29 with
+  the ordinary compile path alone, one kernel at a time and all of them together:
+
+      one   →  ok 1 kernel(s)   for each of twenty single-kernel files, and no crash report added
+      whole →  ok 21 kernel(s)  on the ordinary path, and on the dynamic path
+
+* The port's **call convention** is one header that the tool's output, this encoder and the harness all
+  include, and a mismatch is a compile error rather than a kernel reading its arguments out of the wrong
+  registers.
+
+* The **comparison summary can fail**: it refuses a duplicate row, a kernel Metal answered and the tool
+  refused, and a kernel the source has that neither side answered.
+
+### MEASURED ON AN EARLIER TREE, NOT NOW — do not read this as current
 
     match   grid2Kernel      64 values agree with Metal
     match   grid3Kernel      64 values agree with Metal
@@ -22,10 +47,20 @@ runs that through the same call convention the encoder here uses. Both answers a
     match   sumSharedKernel  64 values agree with Metal
     compare: 6 kernel(s) Metal answered, 0 differ
 
-So the translation, the threadgrid arithmetic, the threadgroup block and the cross-thread barrier are
-all measured against Apple's own implementation rather than asserted. The three kernels are a
-reduction, a reduction through threadgroup memory with two barriers, and a scan with a
-read-barrier-write step.
+### UNMEASURED
+
+* **The threadgroup block and the cross-thread barrier** — `sumSharedKernel` (a reduction through
+  threadgroup memory with two barriers) and `scanKernel` (a scan with a read-barrier-write step) — are
+  the two kernels that exercise them, and **neither has an answer from Apple's side on the current
+  machine**. What the last run before the service went down showed is that on real Metal a threadgroup
+  write was read back as zero, own slot and neighbour's alike, while the port read its own write
+  correctly; that was put down to the oracle and the next probe was never run. So the port's behaviour
+  here is **not established**, and no claim about threadgroup memory sharing, about the barrier, or about
+  either of those kernels' answers is made in this file until the oracle answers again.
+* The three-way probe that would have settled it — one thread writing a slot and reading its own back, to
+  separate a lost write from a lost share — was written and never run.
+* `atomicFamilyKernel`, `spillKernel`, `shareProbe`, `blockProbe`, `argNoBar`, `argBarrier` and
+  `localArray` were added after the last good run; their answers are unmeasured.
 
 ## What the atomics do not yet reach, and why
 

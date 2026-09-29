@@ -73,7 +73,9 @@ to encode, against 130 before the pipeline's bindings were worked out once when 
   shader is dispatched with. There is nowhere to dispatch a kernel into, so the port runs it where the resources already
   are, which is memory both sides can read - the same unified-memory model this whole file describes.
   `facts/Metal/Compute.md` has the rest, including what a kernel `tools/air2cpu` refuses answers, and
-  `tests/backports/host/air2cpu/compare.sh` holds the translation against Apple's own Metal on three kernels.
+  `tests/backports/host/air2cpu/compare.sh` holds the translation against Apple's own Metal where that
+  comparison still runs - it does not on this machine while the Metal compiler service crash-loops, so what it
+  has shown is a past measurement and `facts/Metal/Compute.md` says which parts are still unmeasured - and on three kernels.
 * Tessellation, texture arrays, cubes, 3D textures, sampling with an offset or gradients, and a function constant of a vector type
   are not translated, and a function that needs one is not in the library.
 * A vertex texture: the SGX 543 has none.
