@@ -3,7 +3,41 @@
 
 Reads a `-dump-sdk` JSON and a `<F>-missing.tsv`, and sorts every row into: printed under another
 name, owner not printed at all, member not printed, or a row with no owner (a top-level function or
-a macro). `.agent-work/handoffs/2026-09-28-ledger-swift-digester-naming.md` is the writeup.
+a macro). `.agent-work/handoffs/2026-09-28-ledger-swift-digester-naming.md` is the writeup, and
+`packages/a/appintents/facts/AppIntents/ShapeChecks.md` is the current one.
+
+**The invocation, with the three arguments it needs** -- the dump, the TSV, the module name:
+
+    DIG=$HOME/.xmake/packages/s/swift/6.4.0/f1d0e4f9eebe477396350986a88081e5/bin/swift-api-digester
+    RT=$HOME/.xmake/packages/s/swift-runtime/6.4.0/0731ba0aad3e4c26b4fb904a6012cd24
+    SDK=$HOME/.xmake/packages/i/iphoneos-sdk/16.4/109415a4ec3443eb8ba96fc960304cbc/Developer.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.4.sdk
+    cd <this worktree>
+    mkdir -p .agent-work/runs/classify
+    "$DIG" -dump-sdk -module AppIntents -I <the module built for armv7-apple-ios6.1.3> \
+        -I "$RT/lib/swift/iphoneos" -Xcc -fmodule-map-file="$RT/lib/swift/shims/module.modulemap" \
+        -target armv7-apple-ios6.1.3 -sdk "$SDK" -Xcc -Wno-incompatible-sysroot \
+        -o .agent-work/runs/classify/AppIntents.json
+    python3 packages/a/appintents/tests/classify-rows.py \
+        .agent-work/runs/classify/AppIntents.json            # the dump above
+        .agent-work/runs/kits/AppIntents-missing.tsv          # this band's measured missing rows
+        AppIntents                                           # the module's name
+
+Run once, as written, on 2026-09-28 (the dump is 5914763 bytes, the TSV is the 261 rows the last
+measurement left):
+
+    $ python3 packages/a/appintents/tests/classify-rows.py .agent-work/runs/classify/AppIntents.json \
+        .agent-work/runs/kits/AppIntents-missing.tsv AppIntents
+    AppIntents {'member not printed': 128, 'bare (macro or top-level function)': 16,
+                'digester naming': 97, 'owner not printed': 20} unexplained: 164
+        IntentItemSection.Builder
+        AppEntity(schema:)
+        AppEnum(schema:)
+        AppIntent(schema:)
+        AssistantEntity(schema:)
+
+The dump is scratch by construction -- it is the toolchain's own output for a module built here -- so
+it is written under `.agent-work/runs/` and the command that makes it is in this header, rather than
+the file being committed.
 """
 import collections, json, os, re, sys
 
