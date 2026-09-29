@@ -1,2 +1,0 @@
-MUTANT FAILED: the copy is byte-identical to the file before the mutation, so nothing was
-mutated and a green verdict would prove nothing. The sed target is not in the file.
