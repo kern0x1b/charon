@@ -136,7 +136,6 @@ static void CharonMDLBounds(MDLAxisAlignedBoundingBox *box, vector_float3 point)
     uint8_t *base = map.bytes;
     if (!base)
         return nil;
-    NSUInteger from = CharonMDLVertexComponentSize(attribute.format) * (attribute.format & 0x1F);
     NSUInteger to = CharonMDLVertexComponentSize(format) * (format & 0x1F);
     if (!layoutStride)
         return nil;

@@ -134,7 +134,7 @@ static float CharonMDLChannelAt(const uint8_t *texels, NSInteger stride, NSInteg
 {
     if (level < 0 || (NSUInteger)level >= _mipLevelCount)
         return nil;
-    NSUInteger width = (NSUInteger)MAX(_dimensions.x, 0), rows = (NSUInteger)MAX(_dimensions.y, 0);
+    NSUInteger rows = (NSUInteger)MAX(_dimensions.y, 0);
     NSUInteger row = (NSUInteger)_rowStride;
     NSUInteger size = row * rows;
     if (!_texels || size > _texels.length)

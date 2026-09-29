@@ -450,7 +450,7 @@ static void CharonMDLReadOBJ(NSData *data, NSMutableArray<MDLObject *> *objects,
             // it, each with a material of the name the file gave it.
             [built.submeshes removeAllObjects];
             for (NSUInteger k = 0; k < submeshNames.count; k++) {
-                NSUInteger first = [submeshFirst[k] unsignedIntegerValue], count = [submeshCount[k] unsignedIntegerValue];
+                NSUInteger count = [submeshCount[k] unsignedIntegerValue];
                 if (!count)
                     continue;
                 NSString *name = submeshNames[k], *material = submeshMaterials[k];
