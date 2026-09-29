@@ -379,6 +379,14 @@ windowed fontpicker "UIFontPickerViewController.m" fontpicker_test.m
 
 windowed inert "UILargeContentViewer.m UIScreenshotService.m UITextFormattingCoordinator.m UITextPlaceholder.m UIScribbleInteraction.m UIPointerLockState.m" inert_test.m
 
+# This group is on the plain path and its test is not green: UITraitCollection.m sends
+# traitCollectionDidChange: to a receiver prefix_selectors.py cannot place, and the rewriter refuses
+# rather than renaming half of it ("a carried selector the rewrite cannot rename:
+# traitCollectionDidChange:, which the host's UITraitEnvironment declares"), so the prefixed path
+# stops the group at the rewrite. On the plain path the run aborts instead, on
+# -[CharonHostUITraitCollection _hasSpecifiedEssentialTraits]: unrecognized selector. Both are that
+# one send in that file, which is main's and not this branch's; the group goes on prefixed_windowed
+# when the send can be placed.
 windowed traits13 "UITraitCollection.m UITraitCollection+UserInterfaceStyle.m UITraitCollection+Appearance13.m UITraitCollection+Appearance14.m UIScreen+TraitEnvironment.m UIImageConfiguration.m UIImageSymbolConfiguration.m UIImageSymbolWeight.m UIImageSymbolGlyphs.m UIImage+Baseline13.m UIImage+iOS13.m UIImage+Symbols.m UIImageView+SymbolConfiguration.m UITraitCollection+ForceTouch.m UITraitCollection+TraitStore.m" traits13_test.m
 
 windowed_expected controlactions "UIMenuElement.m UIAction.m UIAction+iOS14.m UIMenu.m UIMenu+iOS14.m UIDeferredMenuElement.m UIMenuIdentifiers.m UIMenuIdentifiers14.m UIMenuSystem.m UIContextMenuConfiguration.m UIContextMenuInteraction.m UIContextMenuInteraction+iOS14.m UIPreviewParameters.m UIPreviewParameters+iOS14.m UIPreviewTarget.m UITargetedPreview.m UICommand.m UIControl+Actions14.m UIControl+Menus14.m UIButton+Actions14.m" controlactions_test.m controlactions_system.m
