@@ -17,6 +17,25 @@ what a pass or an acceleration structure is built from, and none of it asks the 
 port with no ray tracing still has to hand these back when a caller asks what it would build, and
 the values a caller reads back are the values it wrote.
 
+## The twenty class names, written out, for a grep
+
+A reader who has a row's API from the registry and greps this file must find it, so the names the
+ellipses above stand for are written out here in full:
+
+`MTLAccelerationStructureDescriptor`, `MTLAccelerationStructureGeometryDescriptor`,
+`MTLAccelerationStructureBoundingBoxGeometryDescriptor`,
+`MTLAccelerationStructureTriangleGeometryDescriptor`,
+`MTLPrimitiveAccelerationStructureDescriptor`, `MTLInstanceAccelerationStructureDescriptor`,
+`MTLVisibleFunctionTableDescriptor`, `MTLIntersectionFunctionTableDescriptor`,
+`MTLCounterSampleBufferDescriptor`, `MTLComputePassSampleBufferAttachmentDescriptor`,
+`MTLComputePassSampleBufferAttachmentDescriptorArray`,
+`MTLResourceStatePassSampleBufferAttachmentDescriptor`,
+`MTLResourceStatePassSampleBufferAttachmentDescriptorArray`,
+`MTLRenderPassSampleBufferAttachmentDescriptor`,
+`MTLRenderPassSampleBufferAttachmentDescriptorArray`, `MTLComputePassDescriptor`,
+`MTLResourceStatePassDescriptor`, `MTLBinaryArchiveDescriptor`, `MTLLinkedFunctions`,
+`MTLIntersectionFunctionDescriptor`.
+
 ## The hierarchy is the header's, and getting it wrong was caught by the compiler
 
 All twenty are `@interface`, **not** `@protocol`, so none carries a conformance list. And
@@ -49,13 +68,55 @@ GPU — it was measured hanging and killed — so nothing in this family calls i
 the port against *itself* would prove only that the port agrees with the port.
 
 Fresh **defaults** are compared as well as written values, because a port that invented a default
-would pass every written value and still be wrong.
+would pass every written value and still be wrong — and extending that comparison from three members
+to all of them is what found the twelve below.
 
-Each mutant breaks one class and must go red on that class's line:
+## The fresh defaults: seven the header warrants, five it does not
 
-| mutant | red line |
-| --- | --- |
-| `MTLVisibleFunctionTableDescriptor`'s `-functionCount` dropped | `FAIL MTLVisibleFunctionTableDescriptor.functionCount: the port 0 and Apple's own object 5` |
+`MTLAccelerationStructureDescriptor.usage` is the only fresh value the header *enumerates*
+(`MTLAccelerationStructureUsageNone = 0`). Three more are warranted in the header's own words and
+the port now carries them:
+
+| member | the header's warrant | value |
+| --- | --- | --- |
+| `…BoundingBoxGeometryDescriptor.boundingBoxStride` | `MTLAccelerationStructure.h:180`, at least 24 | 24 |
+| the six `…SampleBufferAttachmentDescriptor` `…SampleIndex` members | `MTLCounterDontSample`, which `MTLCounters.h:20` defines as `((NSUInteger)-1)` | `MTLCounterDontSample` |
+| `MTLInstanceAccelerationStructureDescriptor.instanceDescriptorStride` | `MTLAccelerationStructure.h:184-187`, the size of the descriptor type | 64, **measured** for `…DescriptorTypeDefault`, not assumed |
+| `…GeometryDescriptor.allowDuplicateIntersectionFunctionInvocation` | `MTLAccelerationStructure.h:101-103`, YES | `YES` |
+| `MTLPrimitiveAccelerationStructureDescriptor.motionEndTime` | `MTLAccelerationStructure.h:181-182`, 1.0f | 1.0f |
+| `MTLPrimitiveAccelerationStructureDescriptor.motionKeyframeCount` | `MTLAccelerationStructure.h:186-187`, 1 | 1 |
+| `…TriangleGeometryDescriptor.vertexFormat` | `MTLAccelerationStructure.h:213-215`, `MTLAttributeFormatFloat3` packed | 30, from `MTLStageInputOutputDescriptor.h` |
+
+**One more, where the header states no default at all and the two sides differ.** Its doc says
+nothing but its name. It is recorded by name rather than asserted equal, because making them equal
+would be the port copying a private default it has no warrant for:
+
+| member | the port answers | Apple's own object answers |
+| --- | --- | --- |
+| `…TriangleGeometryDescriptor.indexType` | unset (0) | `UInt32` (1) |
+
+**This file previously called five members unwritten and four of the five was false.**
+`allowDuplicateIntersectionFunctionInvocation`, `motionEndTime`, `motionKeyframeCount` and
+`vertexFormat` are each stated in `MTLAccelerationStructure.h`, and the port now carries all four
+so a caller reading a fresh descriptor gets the specified value rather than a zero. Only `indexType`
+is genuinely left open.
+
+The two pass descriptors' `sampleBufferAttachments` are the opposite case: the header declares them
+**readonly** and Apple hands one back on a fresh object, so the port makes one too — its own array
+class, no device needed — and the case compares that the array exists on both sides.
+
+Each mutant breaks one class and must go red on that class's line. `descriptors.sh` runs these
+three, and the table is the harness's own output rather than a list kept beside it:
+
+| mutant | breaks | red line |
+| --- | --- | --- |
+| `M1` | `CharonMetalVisibleFunctionTableDescriptor`'s `-functionCount` | `MTLVisibleFunctionTableDescriptor.functionCount: the port 0 and Apple's own object 5` |
+| `M2` | `CharonMetalIntersectionFunctionTableDescriptor`'s `-functionCount` | `MTLIntersectionFunctionTableDescriptor.functionCount: the port 0 and Apple's own object 7` |
+| `M3` | `CharonMetalCounterSampleBufferDescriptor`'s `-sampleCount` | `MTLCounterSampleBufferDescriptor.sampleCount: the port 0 and Apple's own object 12` |
+
+An earlier revision of this table listed **one** mutant while the runner ran **three** — the same
+disagreement between a claim and the thing that produced it that this file keeps running into, and
+the reason every table in it is either generated or checked.
 
 ## What is NOT measured, by name
 

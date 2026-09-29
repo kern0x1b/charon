@@ -132,3 +132,10 @@ hidden here.
   and the 26.0 counter methods are **absent**: the counter heaps arrived with the 26.0 SDK, whose types
   the backports of this package do not build against (it builds against 16.4), and they are counters,
   which is the counter sample buffers' group.
+
+## The two compute-encoder heap rows, named as the registry names them
+
+`-[MTLComputeCommandEncoder useHeap:]` and `-[MTLComputeCommandEncoder useHeaps:count:]` are
+implemented rows, and their `facts` pointer is this file, so the row's own API has to be greppable
+here. Both take a heap the port's encoder answers for, and both are the compute-encoder forms of the
+`-useHeap:` family written above; the render-encoder and resource-state forms are separate rows.

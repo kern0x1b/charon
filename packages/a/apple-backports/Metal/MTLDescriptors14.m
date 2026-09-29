@@ -60,7 +60,9 @@
     : CharonMetalAccelerationStructureGeometryDescriptor
 {
     NSUInteger _boundingBoxBufferOffset, _boundingBoxStride, _boundingBoxCount;
+    id <MTLBuffer> _boundingBoxBuffer;
 }
+@property (nonatomic, retain) id <MTLBuffer> boundingBoxBuffer;
 @property (nonatomic) NSUInteger boundingBoxBufferOffset;
 @property (nonatomic) NSUInteger boundingBoxStride;
 @property (nonatomic) NSUInteger boundingBoxCount;
@@ -73,7 +75,11 @@
     NSUInteger _transformationMatrixBufferOffset;
     MTLAttributeFormat _vertexFormat;
     MTLIndexType _indexType;
+    id <MTLBuffer> _vertexBuffer, _indexBuffer, _transformationMatrixBuffer;
 }
+@property (nonatomic, retain) id <MTLBuffer> vertexBuffer;
+@property (nonatomic, retain) id <MTLBuffer> indexBuffer;
+@property (nonatomic, retain) id <MTLBuffer> transformationMatrixBuffer;
 @property (nonatomic) NSUInteger vertexBufferOffset;
 @property (nonatomic) MTLAttributeFormat vertexFormat;
 @property (nonatomic) NSUInteger vertexStride;
@@ -88,7 +94,9 @@
     MTLMotionBorderMode _motionStartBorderMode, _motionEndBorderMode;
     float _motionStartTime, _motionEndTime;
     NSUInteger _motionKeyframeCount;
+    NSArray *_geometryDescriptors;
 }
+@property (nonatomic, retain) NSArray *geometryDescriptors;
 @property (nonatomic) MTLMotionBorderMode motionStartBorderMode;
 @property (nonatomic) MTLMotionBorderMode motionEndBorderMode;
 @property (nonatomic) float motionStartTime;
@@ -101,7 +109,12 @@
     NSUInteger _instanceDescriptorBufferOffset, _instanceDescriptorStride, _instanceCount;
     NSUInteger _motionTransformBufferOffset, _motionTransformCount;
     MTLAccelerationStructureInstanceDescriptorType _instanceDescriptorType;
+    id <MTLBuffer> _instanceDescriptorBuffer, _motionTransformBuffer;
+    NSArray *_instancedAccelerationStructures;
 }
+@property (nonatomic, retain) id <MTLBuffer> instanceDescriptorBuffer;
+@property (nonatomic, retain) id <MTLBuffer> motionTransformBuffer;
+@property (nonatomic, retain) NSArray *instancedAccelerationStructures;
 @property (nonatomic) NSUInteger instanceDescriptorBufferOffset;
 @property (nonatomic) NSUInteger instanceDescriptorStride;
 @property (nonatomic) NSUInteger instanceCount;
@@ -117,6 +130,13 @@
 @synthesize usage = _usage;
 @end
 
+// THE FRESH DEFAULTS ARE THE HEADER'S, and four of the five this file once claimed the header did
+// not state DO state it. MTLAccelerationStructure.h gives allowDuplicateIntersectionFunction-
+// Invocation the default YES (:101-103), motionEndTime 1.0f (:181-182), motionKeyframeCount 1
+// (:186-187) and vertexFormat Float3 packed (:213-215, and MTLAttributeFormatFloat3 is 30 in
+// MTLStageInputOutputDescriptor.h). An earlier revision of this file called all five unwritten and
+// left the port at zero; that was wrong, and a caller reading a fresh descriptor was getting five
+// zeroes where the header specifies four values and one it genuinely leaves open.
 @implementation CharonMetalAccelerationStructureGeometryDescriptor
 @synthesize intersectionFunctionTableOffset = _intersectionFunctionTableOffset;
 @synthesize opaque = _opaque;
@@ -126,17 +146,47 @@
 @synthesize primitiveDataElementSize = _primitiveDataElementSize;
 @synthesize primitiveDataBuffer = _primitiveDataBuffer;
 @synthesize label = _label;
+// MTLAccelerationStructure.h:101-103 - the header's default for
+// allowDuplicateIntersectionFunctionInvocation is YES, so a fresh geometry descriptor answers YES.
+- (instancetype)init
+{
+    if ((self = [super init]))
+        _allowDuplicate = YES;
+    return self;
+}
 @end
 
+// THE HEADER WARRANTS 24 for the bounding box stride and no other value: "Stride, in bytes,
+// between bounding boxes in the bounding box buffer. Must be at least 24" (MTLAccelerationStructure.h).
+// Apple's own fresh object answers 24, which is the header's floor rather than a private default,
+// so the port starts there and the case compares it.
 @implementation CharonMetalAccelerationStructureBoundingBoxGeometryDescriptor
+@synthesize boundingBoxBuffer = _boundingBoxBuffer;
 @synthesize boundingBoxBufferOffset = _boundingBoxBufferOffset;
 @synthesize boundingBoxStride = _boundingBoxStride;
 @synthesize boundingBoxCount = _boundingBoxCount;
+- (instancetype)init
+{
+    if ((self = [super init]))
+        _boundingBoxStride = 24;   // the header's own floor: "Must be at least 24"
+    return self;
+}
 @end
 
 @implementation CharonMetalAccelerationStructureTriangleGeometryDescriptor
+@synthesize vertexBuffer = _vertexBuffer;
+@synthesize indexBuffer = _indexBuffer;
+@synthesize transformationMatrixBuffer = _transformationMatrixBuffer;
 @synthesize vertexBufferOffset = _vertexBufferOffset;
 @synthesize vertexFormat = _vertexFormat;
+// MTLAccelerationStructure.h:213-215 - the header's default for vertexFormat is
+// MTLAttributeFormatFloat3 packed, and that is 30 (MTLStageInputOutputDescriptor.h).
+- (instancetype)init
+{
+    if ((self = [super init]))
+        _vertexFormat = MTLAttributeFormatFloat3;
+    return self;
+}
 @synthesize vertexStride = _vertexStride;
 @synthesize indexBufferOffset = _indexBufferOffset;
 @synthesize indexType = _indexType;
@@ -145,14 +195,38 @@
 @end
 
 @implementation CharonMetalPrimitiveAccelerationStructureDescriptor
+@synthesize geometryDescriptors = _geometryDescriptors;
 @synthesize motionStartBorderMode = _motionStartBorderMode;
 @synthesize motionEndBorderMode = _motionEndBorderMode;
 @synthesize motionStartTime = _motionStartTime;
 @synthesize motionEndTime = _motionEndTime;
 @synthesize motionKeyframeCount = _motionKeyframeCount;
+// MTLAccelerationStructure.h:181-182 and :186-187 - motionEndTime defaults to 1.0f and
+// motionKeyframeCount to 1, and the header says the second means no motion.
+- (instancetype)init
+{
+    if ((self = [super init])) {
+        _motionEndTime = 1.0f;
+        _motionKeyframeCount = 1;
+    }
+    return self;
+}
 @end
 
 @implementation CharonMetalInstanceAccelerationStructureDescriptor
+// The header does not write a number here - "Defaults to the size of the instance descriptor type"
+// (MTLAccelerationStructure.h) - and that size is 64 for MTLAccelerationStructureInstanceDescriptor-
+// TypeDefault, MEASURED on the host rather than assumed, so the port starts there and the case
+// compares it rather than leaving a bare zero that means nothing.
+- (instancetype)init
+{
+    if ((self = [super init]))
+        _instanceDescriptorStride = 64;
+    return self;
+}
+@synthesize instanceDescriptorBuffer = _instanceDescriptorBuffer;
+@synthesize motionTransformBuffer = _motionTransformBuffer;
+@synthesize instancedAccelerationStructures = _instancedAccelerationStructures;
 @synthesize instanceDescriptorBufferOffset = _instanceDescriptorBufferOffset;
 @synthesize instanceDescriptorStride = _instanceDescriptorStride;
 @synthesize instanceCount = _instanceCount;
@@ -192,7 +266,9 @@
     NSString *_label;
     MTLStorageMode _storageMode;
     NSUInteger _sampleCount;
+    id _counterSet;
 }
+@property (nonatomic, retain) id counterSet;
 @property (nonatomic, copy) NSString *label;
 @property (nonatomic) MTLStorageMode storageMode;
 @property (nonatomic) NSUInteger sampleCount;
@@ -201,7 +277,9 @@
 @interface CharonMetalComputePassSampleBufferAttachmentDescriptor : NSObject
 {
     NSUInteger _startOfEncoderSampleIndex, _endOfEncoderSampleIndex;
+    id _sampleBuffer;
 }
+@property (nonatomic, retain) id sampleBuffer;
 @property (nonatomic) NSUInteger startOfEncoderSampleIndex;
 @property (nonatomic) NSUInteger endOfEncoderSampleIndex;
 @end
@@ -209,7 +287,9 @@
 @interface CharonMetalResourceStatePassSampleBufferAttachmentDescriptor : NSObject
 {
     NSUInteger _startOfEncoderSampleIndex, _endOfEncoderSampleIndex;
+    id _sampleBuffer;
 }
+@property (nonatomic, retain) id sampleBuffer;
 @property (nonatomic) NSUInteger startOfEncoderSampleIndex;
 @property (nonatomic) NSUInteger endOfEncoderSampleIndex;
 @end
@@ -218,7 +298,9 @@
 {
     NSUInteger _startOfVertexSampleIndex, _endOfVertexSampleIndex;
     NSUInteger _startOfFragmentSampleIndex, _endOfFragmentSampleIndex;
+    id _sampleBuffer;
 }
+@property (nonatomic, retain) id sampleBuffer;
 @property (nonatomic) NSUInteger startOfVertexSampleIndex;
 @property (nonatomic) NSUInteger endOfVertexSampleIndex;
 @property (nonatomic) NSUInteger startOfFragmentSampleIndex;
@@ -226,6 +308,7 @@
 @end
 
 @implementation CharonMetalCounterSampleBufferDescriptor
+@synthesize counterSet = _counterSet;
 @synthesize label = _label;
 @synthesize storageMode = _storageMode;
 // MTLStorageModeShared is 0 in MTLResource.h, the enumeration's own zero.
@@ -239,32 +322,73 @@
 @end
 
 @implementation CharonMetalComputePassSampleBufferAttachmentDescriptor
+- (instancetype)init
+{
+    if ((self = [super init])) {
+        _startOfEncoderSampleIndex = MTLCounterDontSample;
+        _endOfEncoderSampleIndex = MTLCounterDontSample;
+    }
+    return self;
+}
+@synthesize sampleBuffer = _sampleBuffer;
 @synthesize startOfEncoderSampleIndex = _startOfEncoderSampleIndex;
 @synthesize endOfEncoderSampleIndex = _endOfEncoderSampleIndex;
 @end
 
 @implementation CharonMetalResourceStatePassSampleBufferAttachmentDescriptor
+- (instancetype)init
+{
+    if ((self = [super init])) {
+        _startOfEncoderSampleIndex = MTLCounterDontSample;
+        _endOfEncoderSampleIndex = MTLCounterDontSample;
+    }
+    return self;
+}
+@synthesize sampleBuffer = _sampleBuffer;
 @synthesize startOfEncoderSampleIndex = _startOfEncoderSampleIndex;
 @synthesize endOfEncoderSampleIndex = _endOfEncoderSampleIndex;
 @end
 
 @implementation CharonMetalRenderPassSampleBufferAttachmentDescriptor
+- (instancetype)init
+{
+    if ((self = [super init])) {
+        _startOfVertexSampleIndex = MTLCounterDontSample;
+        _endOfVertexSampleIndex = MTLCounterDontSample;
+        _startOfFragmentSampleIndex = MTLCounterDontSample;
+        _endOfFragmentSampleIndex = MTLCounterDontSample;
+    }
+    return self;
+}
+@synthesize sampleBuffer = _sampleBuffer;
 @synthesize startOfVertexSampleIndex = _startOfVertexSampleIndex;
 @synthesize endOfVertexSampleIndex = _endOfVertexSampleIndex;
 @synthesize startOfFragmentSampleIndex = _startOfFragmentSampleIndex;
 @synthesize endOfFragmentSampleIndex = _endOfFragmentSampleIndex;
 @end
 
+
+// Declared here because the two pass descriptors CREATE one in -init, and the header declares the
+// property readonly: a caller asking for it gets a real array, not nil, on both sides.
+@class CharonMetalComputePassSampleBufferAttachmentDescriptorArray;
+@class CharonMetalResourceStatePassSampleBufferAttachmentDescriptorArray;
+
 #pragma mark - the pass descriptors and the binary archive
 
 @interface CharonMetalComputePassDescriptor : NSObject
 {
     MTLDispatchType _dispatchType;
+    CharonMetalComputePassSampleBufferAttachmentDescriptorArray *_sampleBufferAttachments;
 }
 @property (nonatomic) MTLDispatchType dispatchType;
+@property (nonatomic, retain) CharonMetalComputePassSampleBufferAttachmentDescriptorArray *sampleBufferAttachments;
 @end
 
 @interface CharonMetalResourceStatePassDescriptor : NSObject
+{
+    CharonMetalResourceStatePassSampleBufferAttachmentDescriptorArray *_sampleBufferAttachments;
+}
+@property (nonatomic, retain) CharonMetalResourceStatePassSampleBufferAttachmentDescriptorArray *sampleBufferAttachments;
 @end
 
 @interface CharonMetalBinaryArchiveDescriptor : NSObject
@@ -274,15 +398,6 @@
 @property (nonatomic, copy) NSURL *url;
 @end
 
-@implementation CharonMetalComputePassDescriptor
-// MTLDispatchTypeNonUniform is 0, the enumeration's own zero.
-@synthesize dispatchType = _dispatchType;
-@end
-
-// The resource-state pass descriptor declares no member of its own but for the attachment array,
-// which holds the counter sample buffers of a device this port has no facility to make.
-@implementation CharonMetalResourceStatePassDescriptor
-@end
 
 @implementation CharonMetalBinaryArchiveDescriptor
 @synthesize url = _url;
@@ -418,4 +533,34 @@
 @end
 
 @implementation CharonMetalIntersectionFunctionDescriptor
+@end
+
+// THE TWO PASS DESCRIPTORS COME LAST, because each -init creates its attachment array and needs
+// that class's interface to be complete - a @class forward declaration is not enough to send
+// it alloc. Their interfaces are above with the rest.
+@implementation CharonMetalComputePassDescriptor
+// MTLDispatchTypeNonUniform is 0, the enumeration's own zero.
+@synthesize dispatchType = _dispatchType;
+@synthesize sampleBufferAttachments = _sampleBufferAttachments;
+// THE HEADER DECLARES THIS PROPERTY READONLY and Apple's own object hands one back on a fresh
+// descriptor, so the port makes one too: the array is the port's own class and needs no device.
+- (instancetype)init
+{
+    if ((self = [super init]))
+        _sampleBufferAttachments = [[CharonMetalComputePassSampleBufferAttachmentDescriptorArray alloc] init];
+    return self;
+}
+@end
+
+// The resource-state pass descriptor declares no member of its own but for the attachment array,
+// which holds the counter sample buffers of a device this port has no facility to make - but the
+// ARRAY itself the port can and does make, because the header declares it readonly.
+@implementation CharonMetalResourceStatePassDescriptor
+@synthesize sampleBufferAttachments = _sampleBufferAttachments;
+- (instancetype)init
+{
+    if ((self = [super init]))
+        _sampleBufferAttachments = [[CharonMetalResourceStatePassSampleBufferAttachmentDescriptorArray alloc] init];
+    return self;
+}
 @end

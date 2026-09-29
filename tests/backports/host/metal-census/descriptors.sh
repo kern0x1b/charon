@@ -31,7 +31,12 @@ rm -rf "$work"
 mkdir -p "$work"
 
 sdk=$(xcrun --show-sdk-path --sdk macosx)
-common="-target arm64-apple-ios15.0-macabi -isysroot $sdk -F $sdk/System/Library/Frameworks"
+# ios16.0, not 15.0: the case compares members the header gives iOS 16 - primitiveDataBuffer,
+# primitiveDataBufferOffset, primitiveDataStride, primitiveDataElementSize, vertexFormat and
+# transformationMatrixBufferOffset - and at a 15.0 target each of them is an unguarded-availability
+# warning, eleven of them. The port implements them, so the honest target is the release that
+# declares them, and a warning is not silenced with -Wno to make a number look better.
+common="-target arm64-apple-ios16.0-macabi -isysroot $sdk -F $sdk/System/Library/Frameworks"
 common="$common -iframework $sdk/System/iOSSupport/System/Library/Frameworks -fobjc-arc"
 common="$common -I $S/Metal -I $S -I $S/MetalKit -I $root/tests/backports/host/metalblit/gl-stub"
 
