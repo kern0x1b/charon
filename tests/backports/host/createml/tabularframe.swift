@@ -73,15 +73,22 @@ if CommandLine.arguments.contains("--anycolumn-probe") {
     print("1  count                       = \(pStrings.count)")
     print("2  name                        = \(pStrings.name)")
     print("3  wrappedElementType (present)= \(String(describing: pStrings.wrappedElementType))")
-    print("4  subscript(position: 0)      = \(String(describing: pStrings[position: 0]))")
-    print("5  subscript(position: 2)      = \(String(describing: pStrings[position: 2]))")
+    // Each read goes into a `let` first, so no subscript brackets sit inside a string interpolation:
+    // inside `\( ... )` both brackets have to be escaped, and a rewrite that misses the second one ends
+    // the interpolation early. The names carry the answers and the prints carry the labels.
+    let probeCity0 = pStrings[0]
+    let probeCity2 = pStrings[2]
+    let probeOpt0 = pOptionals[0]
+    let probeOrd1 = pOrdCol[1]
+    print("4  subscript(position: 0)      = \(String(describing: probeCity0))")
+    print("5  subscript(position: 2)      = \(String(describing: probeCity2))")
     print("6  missingCount, no nils       = \(pStrings.missingCount)")
     print("7  missingCount, optional form = \(pOptionals.missingCount)")
     print("8  missingCount, ordinary form = \(pOrdCol.missingCount)")
     print("9  wrappedElementType (option) = \(String(describing: pOptionals.wrappedElementType))")
-    print("10 subscript of the optional   = \(String(describing: pOptionals[position: 0]))")
-    print("11 the present form's own subscript as Any? = \((pStrings[position: 0] as Any?) == nil)")
-    print("12 the ordinary form's cell    = \(String(describing: pOrdCol[position: 1]))  nil?=\((pOrdCol[position: 1] as Any?) == nil)")
+    print("10 subscript of the optional   = \(String(describing: probeOpt0))")
+    print("11 the present form's own subscript as Any? = \(probeCity0 as Any? == nil)")
+    print("12 the ordinary form's cell    = \(String(describing: probeOrd1))  nil?=\(probeOrd1 as Any? == nil)")
     exit(0)
 }
 if CommandLine.arguments.contains("--slice-probe") {
@@ -243,17 +250,23 @@ let pOptionals = PortTabularData.AnyColumn(PortTabularData.Column<Int?>(name: "n
 print("DIRECT host missingCount=\(hOptionals.missingCount) host wrapped=\(String(describing: hOptionals.wrappedElementType))")
 print("DIRECT port missingCount=\(pOptionals.missingCount) port wrapped=\(String(describing: pOptionals.wrappedElementType))")
 print("DIRECT host isNil(at:1)=\(hOptionals.isNil(at: 1)) port isNil(at:1)=\(pOptionals.isNil(at: 1))")
-print("DIRECT host [0]=\(String(describing: hStrings[0])) port [0]=\(String(describing: pStrings[position: 0]))")
+let directHost0 = hStrings[0]
+let directPort0 = pStrings[0]
+print("DIRECT host [0]=\(String(describing: directHost0)) port [0]=\(String(describing: directPort0))")
 print("PROBE-BEFORE missing=\(pOptionals.missingCount) wrapped=\(String(describing: pOptionals.wrappedElementType))")
 
 checkEqual("count: the host's and the port's agree", hStrings.count, pStrings.count)
 checkEqual("name: the host's and the port's agree", hStrings.name, pStrings.name)
 checkEqual("wrappedElementType: the host's and the port's agree",
            String(describing: hStrings.wrappedElementType), String(describing: pStrings.wrappedElementType))
+let hostCell0 = hStrings[0]
+let portCell0 = pStrings[0]
+let hostCell2 = hStrings[2]
+let portCell2 = pStrings[2]
 checkEqual("subscript: position 0 reads the same through both",
-           String(describing: hStrings[0]), String(describing: pStrings[position: 0]))
+           String(describing: hostCell0), String(describing: portCell0))
 checkEqual("subscript: the last position reads the same through both",
-           String(describing: hStrings[2]), String(describing: pStrings[position: 2]))
+           String(describing: hostCell2), String(describing: portCell2))
 checkEqual("missingCount: the host's and the port's agree on no nils", hStrings.missingCount, pStrings.missingCount)
 checkEqual("missingCount: the host's and the port's agree on one nil",
            hOptionals.missingCount, pOptionals.missingCount)

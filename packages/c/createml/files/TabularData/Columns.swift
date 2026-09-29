@@ -507,10 +507,24 @@ public struct AnyColumn: @unchecked Sendable {
         }
     }
 
-    public subscript(position index: Int) -> Any {
-        guard index >= 0 && index < storage.count else { return Optional<Any>.none as Any }
-        guard let element = storage[index] else { return Optional<Any>.none as Any }
-        return element
+    /// A cell, as `Any?` and **unlabelled**, which is the host's form in both respects.
+    ///
+    /// Measured on Apple's own, over a present-form `Column<String>` of `["berlin", "paris", "madrid"]`:
+    ///
+    ///     hostStrings[0]  =  Optional("berlin")
+    ///     hostStrings[2]  =  Optional("madrid")
+    ///
+    /// The value *describes* as an optional because the subscript answers `Any?`, and the port's
+    /// answered a bare `Any`, so `berlin` where the host has `Optional("berlin")`. The label is the
+    /// other half: `[position: 0]` is an **extraneous argument label** on the host, so Apple's
+    /// subscript is `subscript(_ position: Int) -> Any?` and the port's `subscript(position:) -> Any`
+    /// was wrong in the label and in the type.
+    ///
+    /// A cell that is missing is `nil` here rather than a boxed none, which is what makes a caller's
+    /// `if let` take the same branch it would on the host.
+    public subscript(_ position: Int) -> Any? {
+        guard position >= 0 && position < storage.count else { return nil }
+        return storage[position]
     }
 
     /// The values as the type the caller names, or nil when the column is not of that type — which is
