@@ -963,11 +963,360 @@ std::vector<Function *> entryPoints(Module &module) {
     return found;
 }
 
+
+// The type tree, written as a property list beside the translated source.
+//
+// Why a file and not a re-parse: the device never sees AIR. This tool runs at build time on the host
+// and only what it writes ships, so a reflection object on the device has nothing to re-read but this
+// file. The format is a property list because NSPropertyListSerialization has read one since iOS 2,
+// so the 6.0 port reads it with no parser of its own.
+//
+// The walk is the SAME one the C emitter uses - vectorOf() and typeOf() - so the tree written and the
+// C emitted cannot disagree about what a type is: one function, one answer, two outputs.
+namespace plist {
+
+static std::string escape(const std::string &text) {
+    std::string out;
+    for (char c : text) {
+        if (c == '<' || c == '>') { out += "&lt;"; continue; }   // XML, and these are the two
+        if (c == '&') { out += "&amp;"; continue; }              // characters a Metal type spells
+        if (c == '"') { out += "&quot;"; continue; }
+        out += c;
+    }
+    return out;
+}
+
+static void indent(std::string &out, unsigned depth) { out.append(depth * 2, ' '); }
+
+// A type as a dictionary, in the words MTLType.h uses: a kind, and for a vector the length, and for a
+// struct the members, and for a pointer what it points at. A type this walk cannot name is written
+// with kind "unknown" and its own name, which is what a caller sees as MTLUnknown - better than a
+// missing entry, and it says so.
+static void typeNode(std::string &out, Type *node, unsigned depth);
+
+static void typeNode(std::string &out, Type *node, unsigned depth) {
+    indent(out, depth);
+    out += "<dict>\n";
+    std::string name;
+    uint64_t size = 0;
+    unsigned count = 0;
+    if (Emitter::vectorOf(node, name, size, count)) {
+        indent(out, depth + 1); out += "<key>kind</key>\n";
+        indent(out, depth + 1); out += "<string>vector</string>\n";
+        indent(out, depth + 1); out += "<key>length</key>\n";
+        indent(out, depth + 1); out += "<integer>" + std::to_string(count) + "</integer>\n";
+        indent(out, depth + 1); out += "<key>elementType</key>\n";
+        Type *element = nullptr;
+        if (auto *vector = dyn_cast<VectorType>(node)) element = vector->getElementType();
+        typeNode(out, element ? element : Type::getInt32Ty(node->getContext()), depth + 1);
+    } else if (auto *array = dyn_cast<ArrayType>(node)) {
+        indent(out, depth + 1); out += "<key>kind</key>\n";
+        indent(out, depth + 1); out += "<string>array</string>\n";
+        indent(out, depth + 1); out += "<key>length</key>\n";
+        indent(out, depth + 1); out += "<integer>" + std::to_string(array->getNumElements()) + "</integer>\n";
+        indent(out, depth + 1); out += "<key>elementType</key>\n";
+        typeNode(out, array->getElementType(), depth + 1);
+    } else if (node->isPointerTy()) {
+        // A pointer, and the AIR says nothing about what it points at. LLVM has used opaque pointers
+        // since 15: PointerType carries no pointee type to ask for, which is why there is no accessor
+        // to call here. So the entry is written as a pointer with no pointee, and the reader answers
+        // MTLUnknown for it - the absence is in the data, not in the reader.
+        indent(out, depth + 1); out += "<key>kind</key>\n";
+        indent(out, depth + 1); out += "<string>pointer</string>\n";
+        indent(out, depth + 1); out += "<key>pointee</key>\n";
+        indent(out, depth + 1); out += "<string></string>\n";
+    } else if (auto *structure = dyn_cast<StructType>(node)) {
+        indent(out, depth + 1); out += "<key>kind</key>\n";
+        indent(out, depth + 1); out += "<string>struct</string>\n";
+        indent(out, depth + 1); out += "<key>members</key>\n";
+        indent(out, depth + 1); out += "<array>\n";
+        for (unsigned i = 0; i < structure->getNumElements(); i++) {
+            indent(out, depth + 2); out += "<dict>\n";
+            // A struct in the AIR has element TYPES but, in LLVM 23, no per-element NAME to read:
+            // StructType::getName() is the struct's own name and that is all it carries. So the member
+            // is named for its position, which is what a reader can honestly report, and the reader
+            // answers MTLUnknown for the name rather than inventing one.
+            indent(out, depth + 3); out += "<key>name</key>\n";
+            indent(out, depth + 3); out += "<string></string>\n";
+            indent(out, depth + 3); out += "<key>index</key>\n";
+            indent(out, depth + 3); out += "<integer>" + std::to_string(i) + "</integer>\n";
+            indent(out, depth + 3); out += "<key>type</key>\n";
+            typeNode(out, structure->getElementType(i), depth + 3);
+            indent(out, depth + 2); out += "</dict>\n";
+        }
+        indent(out, depth + 1); out += "</array>\n";
+    } else if (Emitter::typeOf(node, name, size)) {
+        indent(out, depth + 1); out += "<key>kind</key>\n";
+        indent(out, depth + 1); out += "<string>scalar</string>\n";
+        indent(out, depth + 1); out += "<key>scalar</key>\n";
+        indent(out, depth + 1); out += "<string>" + escape(name) + "</string>\n";
+    } else {
+        indent(out, depth + 1); out += "<key>kind</key>\n";
+        indent(out, depth + 1); out += "<string>unknown</string>\n";
+    }
+    indent(out, depth);
+    out += "</dict>\n";
+}
+
+// The AIR's own node for one argument: a flat list of alternating strings, as sum.ll spells it -
+// !{!"air.read_write", !"air.arg_type_name", !"device float *"}. The first key is the access, and the
+// rest are the type's own keys. A value that is not a string (a nested struct member list) is
+// handled where it is read and nowhere else.
+struct ArgumentMetadata {
+    std::string access;
+    std::string argName;
+    std::string typeName;
+    bool hasIndex = false;
+    uint64_t index = 0;
+    bool hasSize = false, hasAlignSize = false;
+    uint64_t size = 0, alignSize = 0;
+    MDNode *structTypeInfo = nullptr;
+};
+
+static ArgumentMetadata argumentMetadata(MDNode *node) {
+    ArgumentMetadata metadata;
+    if (!node || node->getNumOperands() < 2)
+        return metadata;
+    // A REAL argument node begins with an i32 index and then key/value pairs; the older sum.ll
+    // shape begins with a string key. Both are read, because both are in this repository's own
+    // fixtures, and the index is taken from the node when it is there rather than from the position.
+    // Both shapes put something BEFORE the key/value pairs: a real node puts an i32 index there and
+    // the older one puts a bare access marker with no value of its own. So the pairs start at 1 in
+    // both, and operand 0 is the index or the marker - never a key.
+    // Both shapes put something before the key/value pairs: a real node an i32 index, the older one
+    // a bare access marker. So the pairs start at operand 1 either way, and operand 0 is never a key.
+    unsigned start = 1;
+    if (auto *index = mdconst::dyn_extract<ConstantInt>(node->getOperand(0))) {
+        metadata.index = index->getZExtValue();
+        metadata.hasIndex = true;
+    } else if (auto *marker = dyn_cast<MDString>(node->getOperand(0))) {
+        metadata.access = marker->getString().str();
+    }
+    // A key may be BARE: a real node opens with its type class - !"air.buffer" - and the access is
+    // bare too - !"air.read" with no value after it. A bare key is told from a paired one by what
+    // follows: another "air." string means this key stands alone, and consuming that string as its
+    // value would swallow the next key. So a bare key advances by one and a paired one by two.
+    for (unsigned i = start; i < node->getNumOperands(); i++) {
+        auto *key = dyn_cast<MDString>(node->getOperand(i));
+        if (!key)
+            continue;
+        std::string name = key->getString().str();
+        bool bare = i + 1 >= node->getNumOperands();
+        if (!bare)
+            if (auto *next = dyn_cast<MDString>(node->getOperand(i + 1)))
+                bare = next->getString().starts_with("air.");
+        // The access is a BARE key wherever it appears in the stream, so it is read the same way as
+        // every other key here and not from one operand in particular. A node carries at most one.
+        if (name == "air.read" || name == "air.write" || name == "air.read_write" ||
+            name == "air.read_only") {
+            metadata.access = name;
+            if (bare)
+                continue;
+        }
+        if (bare)
+            continue;
+        if (name == "air.arg_name") {
+            if (auto *value = dyn_cast<MDString>(node->getOperand(i + 1)))
+                metadata.argName = value->getString().str();
+        } else if (name == "air.arg_type_name") {
+            if (auto *value = dyn_cast<MDString>(node->getOperand(i + 1)))
+                metadata.typeName = value->getString().str();
+        } else if (name == "air.arg_type_size") {
+            if (auto *value = mdconst::dyn_extract<ConstantInt>(node->getOperand(i + 1))) {
+                metadata.size = value->getZExtValue();
+                metadata.hasSize = true;
+            }
+        } else if (name == "air.arg_type_align_size") {
+            if (auto *value = mdconst::dyn_extract<ConstantInt>(node->getOperand(i + 1))) {
+                metadata.alignSize = value->getZExtValue();
+                metadata.hasAlignSize = true;
+            }
+        } else if (name == "air.struct_type_info") {
+            // The members of a struct an argument points at: a nested node, not a string, so it is
+            // the one key whose value is walked rather than copied.
+            metadata.structTypeInfo = dyn_cast_or_null<MDNode>(node->getOperand(i + 1));
+        }
+        i += 1;   // the value this key's value is
+    }
+    return metadata;
+}
+
+// Is this node an argument node? A REAL one begins with an i32 index - !{i32 0, !"air.buffer", ...}
+// - and the older sum.ll one begins with an "air." key that is not a threadgroup size.
+static bool isArgumentNode(MDNode *node) {
+    if (!node || node->getNumOperands() < 2)
+        return false;
+    if (mdconst::dyn_extract<ConstantInt>(node->getOperand(0)))
+        return true;
+    auto *first = dyn_cast<MDString>(node->getOperand(0));
+    return first && first->getString().starts_with("air.") &&
+           first->getString() != StringRef("air.threads_per_threadgroup") &&
+           first->getString() != StringRef("air.threads_per_grid");
+}
+
+// air.kernel's argument nodes, by the REAL shape first: a function, then an empty node, then ONE
+// node that NESTS them all. The older shape - the size nodes and the argument nodes as siblings of
+// the function - is read too, because two of this repository's own fixtures are in it and air2cpu's
+// entryPoints() is what decides the entry points for both.
+static std::vector<MDNode *> argumentNodes(MDNode *kernel) {
+    std::vector<MDNode *> nodes;
+    for (unsigned i = 1; i < kernel->getNumOperands(); i++) {
+        MDNode *node = dyn_cast_or_null<MDNode>(kernel->getOperand(i));
+        if (!node)
+            continue;
+        if (isArgumentNode(node)) {
+            nodes.push_back(node);
+            continue;
+        }
+        for (const MDOperand &nested : node->operands())
+            if (MDNode *inner = dyn_cast_or_null<MDNode>(nested))
+                if (isArgumentNode(inner))
+                    nodes.push_back(inner);
+    }
+    return nodes;
+}
+
+// The members of a struct an argument points at, as the metadata spells them: a flat list of
+// alternating name, offset, type, in that order, repeated per member.
+static void structMembers(std::string &out, MDNode *info, unsigned depth) {
+    indent(out, depth);
+    out += "<array>\n";
+    for (unsigned i = 0; i + 2 < info->getNumOperands(); i += 3) {
+        auto *name = dyn_cast<MDString>(info->getOperand(i));
+        auto *offset = mdconst::dyn_extract<ConstantInt>(info->getOperand(i + 1));
+        auto *type = dyn_cast<MDString>(info->getOperand(i + 2));
+        indent(out, depth + 1); out += "<dict>\n";
+        indent(out, depth + 2); out += "<key>name</key>\n";
+        indent(out, depth + 2);
+        out += "<string>" + escape(name ? name->getString().str() : "") + "</string>\n";
+        indent(out, depth + 2); out += "<key>offset</key>\n";
+        indent(out, depth + 2);
+        out += "<integer>" + std::to_string(offset ? offset->getZExtValue() : 0) + "</integer>\n";
+        indent(out, depth + 2); out += "<key>type</key>\n";
+        indent(out, depth + 2);
+        out += "<string>" + escape(type ? type->getString().str() : "") + "</string>\n";
+        indent(out, depth + 1); out += "</dict>\n";
+    }
+    indent(out, depth);
+    out += "</array>\n";
+}
+
+// One function: its name, and each argument with its index, its name, its access, its type and -
+// for a buffer the port binds by reference - whether the AIR says the pointer is read-only.
+static void function(std::string &out, Function *entry, MDNode *kernel, unsigned depth) {
+    indent(out, depth);
+    out += "<dict>\n";
+    indent(out, depth + 1); out += "<key>name</key>\n";
+    indent(out, depth + 1); out += "<string>" + escape(entry->getName().str()) + "</string>\n";
+    indent(out, depth + 1); out += "<key>arguments</key>\n";
+    indent(out, depth + 1); out += "<array>\n";
+    std::vector<MDNode *> nodes = argumentNodes(kernel);
+    unsigned index = 0;
+    for (Argument &argument : entry->args()) {
+        ArgumentMetadata metadata = index < nodes.size() ? argumentMetadata(nodes[index])
+                                                        : ArgumentMetadata();
+        indent(out, depth + 2); out += "<dict>\n";
+        indent(out, depth + 3); out += "<key>index</key>\n";
+        indent(out, depth + 3); out += "<integer>" + std::to_string(index) + "</integer>\n";
+        indent(out, depth + 3); out += "<key>name</key>\n";
+        indent(out, depth + 3); out += "<string>" + escape(argument.getName().str()) + "</string>\n";
+        // The AIR's own words for the access - air.read_write or air.read_only - which is what the
+        // header calls MTLArgumentAccessReadWrite and MTLArgumentAccessReadOnly. When the metadata
+        // node is absent there is nothing to read, and the argument is written without an access
+        // rather than with one guessed from whether the type is a pointer.
+        // The access spellings, mapped to the header's OWN enumerators rather than to a pair of
+        // words. MTLArgument.h:214 declares MTLArgumentAccess as ReadOnly = 0, ReadWrite = 1 and
+        // WriteOnly = 2, and :296 documents all three: "read, write, read-write". So air.write is
+        // WRITE-ONLY and not read-write: a texture declared access::write is neither, and calling
+        // it read-write would be a real argument described wrongly, which is what a guess always is.
+        const char *access = nullptr;
+        if (metadata.access == "air.read" || metadata.access == "air.read_only")
+            access = "read-only";
+        else if (metadata.access == "air.write")
+            access = "write-only";
+        else if (metadata.access == "air.read_write")
+            access = "read-write";
+        if (access) {
+            indent(out, depth + 3); out += "<key>access</key>\n";
+            indent(out, depth + 3);
+            out += std::string("<string>") + access + "</string>\n";
+        }
+        indent(out, depth + 3); out += "<key>textureDataType</key>\n";
+        indent(out, depth + 3);
+        bool pointer = argument.getType()->isPointerTy();
+        out += pointer ? "<string>texture</string>\n" : "<string>none</string>\n";
+        indent(out, depth + 3); out += "<key>type</key>\n";
+        typeNode(out, argument.getType(), depth + 3);
+        // The type's OWN keys, which is where the element type of a buffer lives: LLVM's opaque
+        // pointers carry no pointee, and "device float *" is a string in this metadata. Absent keys
+        // are not written at all, so the reader answers MTLUnknown for what the AIR does not say.
+        if (!metadata.typeName.empty()) {
+            indent(out, depth + 3); out += "<key>typeName</key>\n";
+            indent(out, depth + 3);
+            out += "<string>" + escape(metadata.typeName) + "</string>\n";
+        }
+        if (metadata.hasSize) {
+            indent(out, depth + 3); out += "<key>size</key>\n";
+            indent(out, depth + 3);
+            out += "<integer>" + std::to_string(metadata.size) + "</integer>\n";
+        }
+        if (metadata.hasAlignSize) {
+            indent(out, depth + 3); out += "<key>alignSize</key>\n";
+            indent(out, depth + 3);
+            out += "<integer>" + std::to_string(metadata.alignSize) + "</integer>\n";
+        }
+        if (metadata.structTypeInfo) {
+            indent(out, depth + 3); out += "<key>members</key>\n";
+            structMembers(out, metadata.structTypeInfo, depth + 3);
+        }
+        indent(out, depth + 2); out += "</dict>\n";
+        index++;
+    }
+    indent(out, depth + 1); out += "</array>\n";
+    indent(out, depth + 1); out += "<key>threadgroupSize</key>\n";
+    indent(out, depth + 1); out += "<array>\n";
+    for (unsigned axis = 0; axis < 3; axis++) {
+        indent(out, depth + 2);
+        out += "<integer>0</integer>\n";   // the AIR carries no threadgroup size; the header calls it a hint
+    }
+    indent(out, depth + 1); out += "</array>\n";
+    indent(out, depth);
+    out += "</dict>\n";
+}
+
+// The whole file: a version this tool owns, and the functions in the order the module has them.
+static std::string document(Module &module) {
+    std::string out = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+    out += "<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n";
+    out += "<plist version=\"1.0\">\n<dict>\n";
+    out += "  <key>version</key>\n  <integer>1</integer>\n";
+    out += "  <key>functions</key>\n  <array>\n";
+    NamedMDNode *named = module.getNamedMetadata("air.kernel");
+    unsigned kernel = 0;
+    for (Function *entry : entryPoints(module)) {
+        // the entry's own air.kernel operand, so the argument nodes are the ones that belong to THIS
+        // function and not the first function's
+        MDNode *node = nullptr;
+        if (named)
+            for (MDNode *candidate : named->operands()) {
+                if (candidate->getNumOperands() &&
+                    mdconst::dyn_extract<Function>(candidate->getOperand(0)) == entry)
+                    node = candidate;
+            }
+        function(out, entry, node, 2);
+        kernel++;
+    }
+    out += "  </array>\n</dict>\n</plist>\n";
+    return out;
+}
+
+}  // namespace plist
+
 }  // namespace
 
 int main(int argc, char **argv) {
     if (argc < 3) {
-        fprintf(stderr, "usage: air2cpu MODULE.bc OUT.c\n");
+        fprintf(stderr, "usage: air2cpu MODULE.bc OUT.c [OUT.plist]\n");
         return 2;
     }
     LLVMContext context;
@@ -996,6 +1345,22 @@ int main(int argc, char **argv) {
         table.push_back(row);
         translated++;
         printf("%s: OK %s\n", argv[1], emitter.entryName().c_str());
+    }
+
+    // The type tree, beside the source. Optional on the command line, and refused rather than
+    // skipped when it was asked for and cannot be written: a reflection object that finds no file
+    // answers nothing, and a tool that says nothing about that is not honest.
+    if (argc > 3) {
+        std::string plistPath = argv[3];
+        FILE *plist = fopen(plistPath.c_str(), "wb");
+        if (!plist) {
+            fprintf(stderr, "air2cpu: cannot write %s\n", plistPath.c_str());
+            return 2;
+        }
+        std::string document = plist::document(*module);
+        fwrite(document.data(), 1, document.size(), plist);
+        fclose(plist);
+        printf("air2cpu: the type tree of %u function(s) written to %s\n", translated, plistPath.c_str());
     }
 
     if (bodies.empty()) {
@@ -1043,6 +1408,7 @@ int main(int argc, char **argv) {
     fputs("};\nconst unsigned air2cpu_kernel_count = ", out);
     fprintf(out, "%u;\n", (unsigned)table.size());
     fclose(out);
+
 
     for (const Refusal &refusal : refusals)
         printf("%s: REFUSED %s: %s\n", argv[1], refusal.name.c_str(), refusal.reason.c_str());
