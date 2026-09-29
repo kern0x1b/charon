@@ -1000,6 +1000,83 @@
    "effect": "the rectangle of the last line of the range",
    "facts": "facts/UIKit/TextDragAndDrop.md",
    "source": "the header of SDK 26.2 for what each question is and which type carries it; the renderer's geometry is the release's own NSLayoutManager, measured through its own line-fragment questions, and a range of no glyphs has no picture"
+  },
+  {
+   "api": "UIView.textDragDelegate",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "text drag and drop hang off the drag session this port carries; the category in UITextView+TextDragDrop11.m builds it on UIView today (the SDK adopts it on UITextField and UITextView through the UITextDraggable/UITextDroppable protocols; the carrier is under review in uikit-r17)",
+   "effect": "the delegate the drag asks, held weakly",
+   "facts": "facts/UIKit/TextDragAndDrop.md",
+   "source": "SDK 26.2 UITextDraggable.h / UITextDroppable.h; UIKit/UITextView+TextDragDrop11.m"
+  },
+  {
+   "api": "UIView.textDragInteraction",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "text drag and drop hang off the drag session this port carries; the category in UITextView+TextDragDrop11.m builds it on UIView today (the SDK adopts it on UITextField and UITextView through the UITextDraggable/UITextDroppable protocols; the carrier is under review in uikit-r17)",
+   "effect": "the port's own drag interaction, created with the view",
+   "facts": "facts/UIKit/TextDragAndDrop.md",
+   "source": "SDK 26.2 UITextDraggable.h / UITextDroppable.h; UIKit/UITextView+TextDragDrop11.m"
+  },
+  {
+   "api": "UIView.textDragOptions",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "text drag and drop hang off the drag session this port carries; the category in UITextView+TextDragDrop11.m builds it on UIView today (the SDK adopts it on UITextField and UITextView through the UITextDraggable/UITextDroppable protocols; the carrier is under review in uikit-r17)",
+   "effect": "the options word, as set",
+   "facts": "facts/UIKit/TextDragAndDrop.md",
+   "source": "SDK 26.2 UITextDraggable.h / UITextDroppable.h; UIKit/UITextView+TextDragDrop11.m"
+  },
+  {
+   "api": "UIView.isTextDragActive",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "text drag and drop hang off the drag session this port carries; the category in UITextView+TextDragDrop11.m builds it on UIView today (the SDK adopts it on UITextField and UITextView through the UITextDraggable/UITextDroppable protocols; the carrier is under review in uikit-r17)",
+   "effect": "YES while a drag of this view's text is in flight",
+   "facts": "facts/UIKit/TextDragAndDrop.md",
+   "source": "SDK 26.2 UITextDraggable.h / UITextDroppable.h; UIKit/UITextView+TextDragDrop11.m"
+  },
+  {
+   "api": "UIView.textDropDelegate",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "text drag and drop hang off the drag session this port carries; the category in UITextView+TextDragDrop11.m builds it on UIView today (the SDK adopts it on UITextField and UITextView through the UITextDraggable/UITextDroppable protocols; the carrier is under review in uikit-r17)",
+   "effect": "the delegate the drop asks, held weakly",
+   "facts": "facts/UIKit/TextDragAndDrop.md",
+   "source": "SDK 26.2 UITextDraggable.h / UITextDroppable.h; UIKit/UITextView+TextDragDrop11.m"
+  },
+  {
+   "api": "UIView.textDropInteraction",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "text drag and drop hang off the drag session this port carries; the category in UITextView+TextDragDrop11.m builds it on UIView today (the SDK adopts it on UITextField and UITextView through the UITextDraggable/UITextDroppable protocols; the carrier is under review in uikit-r17)",
+   "effect": "the port's own drop interaction, created with the view",
+   "facts": "facts/UIKit/TextDragAndDrop.md",
+   "source": "SDK 26.2 UITextDraggable.h / UITextDroppable.h; UIKit/UITextView+TextDragDrop11.m"
+  },
+  {
+   "api": "UIView.isTextDropActive",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "text drag and drop hang off the drag session this port carries; the category in UITextView+TextDragDrop11.m builds it on UIView today (the SDK adopts it on UITextField and UITextView through the UITextDraggable/UITextDroppable protocols; the carrier is under review in uikit-r17)",
+   "effect": "YES while a drop over this view is in flight",
+   "facts": "facts/UIKit/TextDragAndDrop.md",
+   "source": "SDK 26.2 UITextDraggable.h / UITextDroppable.h; UIKit/UITextView+TextDragDrop11.m"
   }
  ]
 }

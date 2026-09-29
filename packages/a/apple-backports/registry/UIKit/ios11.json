@@ -882,11 +882,12 @@
    "api": "UITextDragPreviewRenderer",
    "kind": "class",
    "introduced": "11.0",
-   "status": "absent",
-   "reason": "text dragging, dropping and pasting hang off the same drag session, and the text input of this release knows nothing of them",
-   "effect": "the name is not there; a text view keeps the selection, the magnifier and the paste menu this release draws",
-   "source": "UIKit of iOS 11.0 arm64",
-   "minimum": "6.0"
+   "status": "implemented",
+   "reason": "the class is carried: it measures three rectangles from the layout manager of this release, which has everything that needs",
+   "effect": "a renderer for a range, with the bounding rectangle, the two end-line rectangles and the body between them measured from the release's own layout manager; the eight members are rows of their own in dragdrop.json",
+   "source": "UIKit of iOS 11.0 arm64, and the members' own rows in dragdrop.json",
+   "minimum": "6.0",
+   "facts": "facts/UIKit/TextDragAndDrop.md"
   },
   {
    "api": "UITextPasteConfigurationSupporting",
