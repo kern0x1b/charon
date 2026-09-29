@@ -54,7 +54,7 @@
 /// that is what an unconfigured one is.
 - (instancetype)init
 {
-    return [self initWithEntityName:nil objects:@[]];
+    return [self initWithEntityName:@"" objects:@[]];
 }
 
 - (instancetype)initWithEntityName:(NSString *)entityName
