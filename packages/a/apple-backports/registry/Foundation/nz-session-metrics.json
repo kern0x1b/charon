@@ -360,7 +360,7 @@
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
       "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values",
-      "measured": "read through the port's own note calls, which the loader makes; the values are the port's and not a release's, and what the release cannot be asked for is NO by design and says so in its own row"
+      "measured": "read through the port's own note call -charon_noteInterfaceFlags:expensive:constrained:proxy:, which charon_metrics_response makes at NSURLSession.m:676 out of SystemConfiguration, the same question the session already asks before it enqueues. It is the port's own reading of the interface, not a value the release reports about a connection. Not watched on a release either: the only level that could is the 6.1.3 emulator, whose [super resume] is the release's own class, and that probe does not exist."
     },
     {
       "api": "NSURLSessionTaskTransactionMetrics.constrained",
@@ -382,7 +382,7 @@
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
       "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values",
-      "measured": "read through the port's own note calls, which the loader makes; the values are the port's and not a release's, and what the release cannot be asked for is NO by design and says so in its own row"
+      "measured": "the body the caller handed over, read through the port's own note call -charon_noteBytesSent:beforeEncoding:received:, which charon_task_sent makes at NSURLSession.m:1048 with the loader's own totals; the number is the port's and not a release's. It is the task's own body, which is why a file body answers its size and a stream with no Content-Length answers NSURLSessionTransferSizeUnknown. Not watched on a release either: the only level that could is the 6.1.3 emulator, whose [super resume] is the release's own class, and that probe does not exist."
     },
     {
       "api": "NSURLSessionTaskTransactionMetrics.countOfRequestBodyBytesSent",
@@ -393,7 +393,7 @@
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
       "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values",
-      "measured": "read through the port's own note calls, which the loader makes; the values are the port's and not a release's, and what the release cannot be asked for is NO by design and says so in its own row"
+      "measured": "what went on the wire, read through the port's own note call -charon_noteBytesSent:beforeEncoding:received:, which charon_task_sent makes at NSURLSession.m:1048 with the loader's own totals; the number is the port's and not a release's. It is the connection's own total, which is a different number from the one before encoding and is kept apart from it for that reason. Not watched on a release either: the only level that could is the 6.1.3 emulator, whose [super resume] is the release's own class, and that probe does not exist."
     },
     {
       "api": "NSURLSessionTaskTransactionMetrics.countOfRequestHeaderBytesSent",
@@ -401,10 +401,11 @@
       "introduced": "13.0",
       "minimum": "5.0",
       "maximum": "13.0",
-      "status": "implemented",
+      "status": "absent",
       "facts": "facts/Foundation/NSURLSessionStreamTaskSocketMetrics.md",
-      "source": "the port's own stream task over the release's CFStream pair: kCFStreamPropertySocketNativeHandle and getsockname/getpeername for the four names, and kCFStreamPropertySSLContext with SSLGetNegotiatedProtocolVersion and SSLGetNegotiatedCipher for the two negotiated values, all measured in the 6.1.3 armv7 cache and all reached by name where the library links no CFNetwork and no Security",
-      "measured": "read through the port's own note calls, which the loader makes; the values are the port's and not a release's, and what the release cannot be asked for is NO by design and says so in its own row"
+      "source": "SDK 26.2 headers for what the property is, and the port's own search of its tree for an accessor: NSURLSessionTaskMetrics.m:21 lists it @dynamic and nothing defines it, so there is no code path that could answer it",
+      "reason": "the data task's transaction is the release's own connection, and its request and response header bytes reach the release's parser and stop there. A stream task cannot stand in for it: it is a raw TCP connection that sends no request and receives no response, so the socket path that closes the other six has no header to count either (facts/Foundation/NSURLSessionStreamTaskSocketMetrics.md, section 4, measures both halves)",
+      "effect": "the port's class lists the property @dynamic and defines no accessor for it, so respondsToSelector: answers NO for the getter and an unchecked read raises unrecognized selector rather than answering a count"
     },
     {
       "api": "NSURLSessionTaskTransactionMetrics.countOfResponseBodyBytesAfterDecoding",
@@ -415,7 +416,7 @@
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
       "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values",
-      "measured": "read through the port's own note calls, which the loader makes; the values are the port's and not a release's, and what the release cannot be asked for is NO by design and says so in its own row"
+      "measured": "the received count again: read through the port's own note call -charon_noteBytesSent:beforeEncoding:received:, which charon_task_sent makes at NSURLSession.m:1048 with the loader's own totals; the number is the port's and not a release's. The port records the same number for both on purpose - the release's own connection decodes the body and hands a port nothing it decoded - so this row says that instead of claiming a decoding step that was not measured. Not watched on a release either: the only level that could is the 6.1.3 emulator, whose [super resume] is the release's own class, and that probe does not exist."
     },
     {
       "api": "NSURLSessionTaskTransactionMetrics.countOfResponseBodyBytesReceived",
@@ -426,7 +427,7 @@
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
       "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values",
-      "measured": "read through the port's own note calls, which the loader makes; the values are the port's and not a release's, and what the release cannot be asked for is NO by design and says so in its own row"
+      "measured": "what came back, read through the port's own note call -charon_noteBytesSent:beforeEncoding:received:, which charon_task_sent makes at NSURLSession.m:1048 with the loader's own totals; the number is the port's and not a release's. Not watched on a release either: the only level that could is the 6.1.3 emulator, whose [super resume] is the release's own class, and that probe does not exist."
     },
     {
       "api": "NSURLSessionTaskTransactionMetrics.countOfResponseHeaderBytesReceived",
@@ -434,10 +435,11 @@
       "introduced": "13.0",
       "minimum": "5.0",
       "maximum": "13.0",
-      "status": "implemented",
+      "status": "absent",
       "facts": "facts/Foundation/NSURLSessionStreamTaskSocketMetrics.md",
-      "source": "the port's own stream task over the release's CFStream pair: kCFStreamPropertySocketNativeHandle and getsockname/getpeername for the four names, and kCFStreamPropertySSLContext with SSLGetNegotiatedProtocolVersion and SSLGetNegotiatedCipher for the two negotiated values, all measured in the 6.1.3 armv7 cache and all reached by name where the library links no CFNetwork and no Security",
-      "measured": "read through the port's own note calls, which the loader makes; the values are the port's and not a release's, and what the release cannot be asked for is NO by design and says so in its own row"
+      "source": "SDK 26.2 headers for what the property is, and the port's own search of its tree for an accessor: NSURLSessionTaskMetrics.m:21 lists it @dynamic and nothing defines it, so there is no code path that could answer it",
+      "reason": "the data task's transaction is the release's own connection, and its request and response header bytes reach the release's parser and stop there. A stream task cannot stand in for it: it is a raw TCP connection that sends no request and receives no response, so the socket path that closes the other six has no header to count either (facts/Foundation/NSURLSessionStreamTaskSocketMetrics.md, section 4, measures both halves)",
+      "effect": "the port's class lists the property @dynamic and defines no accessor for it, so respondsToSelector: answers NO for the getter and an unchecked read raises unrecognized selector rather than answering a count"
     },
     {
       "api": "NSURLSessionTaskTransactionMetrics.domainResolutionProtocol",
@@ -448,7 +450,7 @@
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
       "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values",
-      "measured": "read through the port's own note calls, which the loader makes; the values are the port's and not a release's, and what the release cannot be asked for is NO by design and says so in its own row"
+      "measured": "a literal, by design, and not read through a note call: the release's own connection resolves and connects with whatever it uses and hands a port nothing that says which, so the answer is the enumeration's own unknown rather than a guess."
     },
     {
       "api": "NSURLSessionTaskTransactionMetrics.expensive",
@@ -470,7 +472,7 @@
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionStreamTaskSocketMetrics.md",
       "source": "the port's own stream task over the release's CFStream pair: kCFStreamPropertySocketNativeHandle and getsockname/getpeername for the four names, and kCFStreamPropertySSLContext with SSLGetNegotiatedProtocolVersion and SSLGetNegotiatedCipher for the two values -- all measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua, and all reached by name where this library links no CFNetwork and no Security",
-      "measured": "read through the port's own note calls, which the loader makes; the values are the port's and not a release's, and what the release cannot be asked for is NO by design and says so in its own row"
+      "measured": "handed to the transaction by the stream task that owns the socket - NSURLSessionStreamTask9.m:271 calls -charon_noteSocketLocalAddress:port:remoteAddress:remotePort:tlsProtocolVersion:cipherSuite:, and a stream task runs no loader, so the loader is not what makes this one. NOT YET OBSERVED. The only level that could observe these is the 6.1.3 emulator, where [super resume] is the release's own class, and that probe does not exist in this series; the host cannot hold it, because the host's NSURLSessionTask carries -resume mangled to -_onqueue_resume and a stream task cannot be run beside the system's in one process at all (tests/backports/host/streammetrics/ says so in its own header and exits 134 by design). The code is in the library and the 6.1.3 link is green; the measurement is not taken, and this line says so where a porter will read it."
     },
     {
       "api": "NSURLSessionTaskTransactionMetrics.localPort",
@@ -481,7 +483,7 @@
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionStreamTaskSocketMetrics.md",
       "source": "the port's own stream task over the release's CFStream pair: kCFStreamPropertySocketNativeHandle and getsockname/getpeername for the four names, and kCFStreamPropertySSLContext with SSLGetNegotiatedProtocolVersion and SSLGetNegotiatedCipher for the two values -- all measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua, and all reached by name where this library links no CFNetwork and no Security",
-      "measured": "read through the port's own note calls, which the loader makes; the values are the port's and not a release's, and what the release cannot be asked for is NO by design and says so in its own row"
+      "measured": "handed to the transaction by the stream task that owns the socket - NSURLSessionStreamTask9.m:271 calls -charon_noteSocketLocalAddress:port:remoteAddress:remotePort:tlsProtocolVersion:cipherSuite:, and a stream task runs no loader, so the loader is not what makes this one. NOT YET OBSERVED. The only level that could observe these is the 6.1.3 emulator, where [super resume] is the release's own class, and that probe does not exist in this series; the host cannot hold it, because the host's NSURLSessionTask carries -resume mangled to -_onqueue_resume and a stream task cannot be run beside the system's in one process at all (tests/backports/host/streammetrics/ says so in its own header and exits 134 by design). The code is in the library and the 6.1.3 link is green; the measurement is not taken, and this line says so where a porter will read it."
     },
     {
       "api": "NSURLSessionTaskTransactionMetrics.multipath",
@@ -492,7 +494,7 @@
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
       "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values",
-      "measured": "read through the port's own note calls, which the loader makes; the values are the port's and not a release's, and what the release cannot be asked for is NO by design and says so in its own row"
+      "measured": "a literal, by design, and not read through a note call: 6.1.3 has no multipath, so nothing here is one and a system without the feature answers the default, false."
     },
     {
       "api": "NSURLSessionTaskTransactionMetrics.negotiatedTLSCipherSuite",
@@ -503,7 +505,7 @@
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionStreamTaskSocketMetrics.md",
       "source": "the port's own stream task over the release's CFStream pair: kCFStreamPropertySocketNativeHandle and getsockname/getpeername for the four names, and kCFStreamPropertySSLContext with SSLGetNegotiatedProtocolVersion and SSLGetNegotiatedCipher for the two values -- all measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua, and all reached by name where this library links no CFNetwork and no Security",
-      "measured": "read through the port's own note calls, which the loader makes; the values are the port's and not a release's, and what the release cannot be asked for is NO by design and says so in its own row"
+      "measured": "handed to the transaction by the stream task that owns the socket - NSURLSessionStreamTask9.m:271 calls -charon_noteSocketLocalAddress:port:remoteAddress:remotePort:tlsProtocolVersion:cipherSuite:, and a stream task runs no loader, so the loader is not what makes this one. NOT YET OBSERVED. The only level that could observe these is the 6.1.3 emulator, where [super resume] is the release's own class, and that probe does not exist in this series; the host cannot hold it, because the host's NSURLSessionTask carries -resume mangled to -_onqueue_resume and a stream task cannot be run beside the system's in one process at all (tests/backports/host/streammetrics/ says so in its own header and exits 134 by design). The code is in the library and the 6.1.3 link is green; the measurement is not taken, and this line says so where a porter will read it."
     },
     {
       "api": "NSURLSessionTaskTransactionMetrics.negotiatedTLSProtocolVersion",
@@ -514,7 +516,7 @@
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionStreamTaskSocketMetrics.md",
       "source": "the port's own stream task over the release's CFStream pair: kCFStreamPropertySocketNativeHandle and getsockname/getpeername for the four names, and kCFStreamPropertySSLContext with SSLGetNegotiatedProtocolVersion and SSLGetNegotiatedCipher for the two values -- all measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua, and all reached by name where this library links no CFNetwork and no Security",
-      "measured": "read through the port's own note calls, which the loader makes; the values are the port's and not a release's, and what the release cannot be asked for is NO by design and says so in its own row"
+      "measured": "handed to the transaction by the stream task that owns the socket - NSURLSessionStreamTask9.m:271 calls -charon_noteSocketLocalAddress:port:remoteAddress:remotePort:tlsProtocolVersion:cipherSuite:, and a stream task runs no loader, so the loader is not what makes this one. NOT YET OBSERVED. The only level that could observe these is the 6.1.3 emulator, where [super resume] is the release's own class, and that probe does not exist in this series; the host cannot hold it, because the host's NSURLSessionTask carries -resume mangled to -_onqueue_resume and a stream task cannot be run beside the system's in one process at all (tests/backports/host/streammetrics/ says so in its own header and exits 134 by design). The code is in the library and the 6.1.3 link is green; the measurement is not taken, and this line says so where a porter will read it."
     },
     {
       "api": "NSURLSessionTaskTransactionMetrics.proxyConnection",
@@ -536,7 +538,7 @@
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionStreamTaskSocketMetrics.md",
       "source": "the port's own stream task over the release's CFStream pair: kCFStreamPropertySocketNativeHandle and getsockname/getpeername for the four names, and kCFStreamPropertySSLContext with SSLGetNegotiatedProtocolVersion and SSLGetNegotiatedCipher for the two values -- all measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua, and all reached by name where this library links no CFNetwork and no Security",
-      "measured": "read through the port's own note calls, which the loader makes; the values are the port's and not a release's, and what the release cannot be asked for is NO by design and says so in its own row"
+      "measured": "handed to the transaction by the stream task that owns the socket - NSURLSessionStreamTask9.m:271 calls -charon_noteSocketLocalAddress:port:remoteAddress:remotePort:tlsProtocolVersion:cipherSuite:, and a stream task runs no loader, so the loader is not what makes this one. NOT YET OBSERVED. The only level that could observe these is the 6.1.3 emulator, where [super resume] is the release's own class, and that probe does not exist in this series; the host cannot hold it, because the host's NSURLSessionTask carries -resume mangled to -_onqueue_resume and a stream task cannot be run beside the system's in one process at all (tests/backports/host/streammetrics/ says so in its own header and exits 134 by design). The code is in the library and the 6.1.3 link is green; the measurement is not taken, and this line says so where a porter will read it."
     },
     {
       "api": "NSURLSessionTaskTransactionMetrics.remotePort",
@@ -547,7 +549,7 @@
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionStreamTaskSocketMetrics.md",
       "source": "the port's own stream task over the release's CFStream pair: kCFStreamPropertySocketNativeHandle and getsockname/getpeername for the four names, and kCFStreamPropertySSLContext with SSLGetNegotiatedProtocolVersion and SSLGetNegotiatedCipher for the two values -- all measured in the 6.1.3 armv7 cache with tools/corpus/cache-value.lua, and all reached by name where this library links no CFNetwork and no Security",
-      "measured": "read through the port's own note calls, which the loader makes; the values are the port's and not a release's, and what the release cannot be asked for is NO by design and says so in its own row"
+      "measured": "handed to the transaction by the stream task that owns the socket - NSURLSessionStreamTask9.m:271 calls -charon_noteSocketLocalAddress:port:remoteAddress:remotePort:tlsProtocolVersion:cipherSuite:, and a stream task runs no loader, so the loader is not what makes this one. NOT YET OBSERVED. The only level that could observe these is the 6.1.3 emulator, where [super resume] is the release's own class, and that probe does not exist in this series; the host cannot hold it, because the host's NSURLSessionTask carries -resume mangled to -_onqueue_resume and a stream task cannot be run beside the system's in one process at all (tests/backports/host/streammetrics/ says so in its own header and exits 134 by design). The code is in the library and the 6.1.3 link is green; the measurement is not taken, and this line says so where a porter will read it."
     },
     {
       "api": "NSURLSessionTaskTransactionMetrics.reusedConnection",
@@ -558,7 +560,7 @@
       "status": "implemented",
       "facts": "facts/Foundation/NSURLSessionTaskMetricsCounts.md",
       "source": "swift-corelibs-foundation's URLSessionTaskMetrics.swift (Apache-2.0) for the shape, and the port's own loader for the values",
-      "measured": "read through the port's own note calls, which the loader makes; the values are the port's and not a release's, and what the release cannot be asked for is NO by design and says so in its own row"
+      "measured": "read through the port's own note call -charon_noteConnectionReused:, which charon_task_release_slot makes at NSURLSession.m:652 out of the session's own per-host table: whether a connection to that host was already open when this task needed one. Not watched on a release either: the only level that could is the 6.1.3 emulator, whose [super resume] is the release's own class, and that probe does not exist."
     }
   ]
 }

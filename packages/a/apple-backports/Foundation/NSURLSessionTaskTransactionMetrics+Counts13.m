@@ -16,10 +16,13 @@
    host it is talking to already had a connection open (the session's own per-host table), whether the
    interface it is on is cellular and whether the link is expensive or constrained (SystemConfiguration,
    which the session already asks), and that nothing here is a proxy connection when the release's own
-   connection was used. What it cannot reach is the socket itself, and with it the two addresses, the
-   two ports, the negotiated TLS values and the two header byte counts: the release's NSURLConnection
-   hands a port a request and a response and nothing in between. Those are `absent`, and the reason
-   names the wall rather than answering nil. */
+   connection was used. The socket itself the loader cannot reach - the release's NSURLConnection hands
+   a port a request and a response and nothing in between - but a stream task runs no loader and owns
+   a socket of its own over the release's CFStream pair, so the two addresses, the two ports and the
+   negotiated TLS values are handed in from there (see -charon_noteSocketLocalAddress: below). What
+   nothing reaches are the two header byte counts: they are a property of a data task's connection,
+   which is the release's own. Those two are `absent`, and the reason names the wall rather than
+   answering nil. */
 
 static char CharonTransactionCountsKey;
 static char CharonTransactionFlagsKey;
