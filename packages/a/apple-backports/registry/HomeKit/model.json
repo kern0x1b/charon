@@ -1,725 +1,813 @@
 {
-  "framework": "HomeKit",
-  "entries": [
-    {
-      "api": "HMAccessory",
-      "kind": "class",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes",
-      "effect": "an accessory of the graph: identifier, uniqueIdentifier, name, category, room, manufacturer, model, firmwareVersion, services, profiles, cameraProfiles, bridged state and delegate are the graph's and are answered from the store. The value of a characteristic, whether the accessory is reachable and -identifyWithCompletionHandler: are the accessory's: with no HAP session to an accessory this port answers HMErrorCodeAccessoryNotReachable, and -reachable is NO",
-      "facts": "facts/HomeKit/HMHome.md",
-      "source": "HomeKit of the arm64e shared caches of 16.0 and 18.0 and the arm64 one of 12.0, read through modules/apple/dyld.lua, and the documented contract of each class"
-    },
-    {
-      "api": "HMService",
-      "kind": "class",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes",
-      "effect": "a service of an accessory: name, serviceType, associatedServiceType, characteristics, linkedServices, primaryService, userInteractive and localizedDescription are answered from the store, and -updateName: and -updateAssociatedServiceType: write it and report through HMAccessoryDelegate",
-      "facts": "facts/HomeKit/HMHome.md",
-      "source": "HomeKit of the arm64e shared caches of 16.0 and 18.0 and the arm64 one of 12.0, read through modules/apple/dyld.lua, and the documented contract of each class"
-    },
-    {
-      "api": "HMCharacteristic",
-      "kind": "class",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes",
-      "effect": "a characteristic of a service: characteristicType, properties, metadata, value, localizedDescription and notificationEnabled are answered from the store. -readValueWithCompletionHandler:, -writeValue:completionHandler:, -enableNotification:completionHandler: and -updateAuthorizationData:completionHandler: are the accessory's own and answer the documented error: HMErrorCodeReadOnlyCharacteristic, HMErrorCodeNotificationNotSupported, HMErrorCodeInvalidOrMissingAuthorizationData, and HMErrorCodeAccessoryNotReachable when the characteristic does allow it but there is no session",
-      "facts": "facts/HomeKit/HMHome.md",
-      "source": "HomeKit of the arm64e shared caches of 16.0 and 18.0 and the arm64 one of 12.0, read through modules/apple/dyld.lua, and the documented contract of each class"
-    },
-    {
-      "api": "HMCharacteristicMetadata",
-      "kind": "class",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes",
-      "effect": "the metadata of the characteristic that holds it: format, units, minimumValue, maximumValue, stepValue, maxLength, validValues and manufacturerDescription, read out of that characteristic's own record",
-      "facts": "facts/HomeKit/HMHome.md",
-      "source": "HomeKit of the arm64e shared caches of 16.0 and 18.0 and the arm64 one of 12.0, read through modules/apple/dyld.lua, and the documented contract of each class"
-    },
-    {
-      "api": "HMCharacteristicWriteAction",
-      "kind": "class",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes",
-      "effect": "a write of a value to a characteristic, with -updateTargetValue:completionHandler: replacing the value",
-      "facts": "facts/HomeKit/HMHome.md",
-      "source": "HomeKit of the arm64e shared caches of 16.0 and 18.0 and the arm64 one of 12.0, read through modules/apple/dyld.lua, and the documented contract of each class"
-    },
-    {
-      "api": "HMRoom",
-      "kind": "class",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "effect": "a room of a home: name, uniqueIdentifier and the accessories assigned to it, with -updateName:completionHandler: writing the name to the store",
-      "facts": "facts/HomeKit/HMHome.md",
-      "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
-    },
-    {
-      "api": "HMZone",
-      "kind": "class",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "effect": "a zone of a home: name, uniqueIdentifier and its rooms. -addRoom:completionHandler: refuses a room already in another zone of the same home with HMErrorCodeObjectAlreadyAssociatedToHome, the way the release does",
-      "facts": "facts/HomeKit/HMHome.md",
-      "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
-    },
-    {
-      "api": "HMUser",
-      "kind": "class",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "effect": "a user of a home: name and uniqueIdentifier from the store",
-      "facts": "facts/HomeKit/HMHome.md",
-      "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
-    },
-    {
-      "api": "HMServiceGroup",
-      "kind": "class",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "effect": "a group of an accessory's services, with -addService: and -removeService: editing the store's own membership and reporting through HMHomeDelegate",
-      "facts": "facts/HomeKit/HMHome.md",
-      "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
-    },
-    {
-      "api": "HMHome",
-      "kind": "class",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "effect": "a home: name, primary, uniqueIdentifier, rooms, zones, users, serviceGroups, accessories, triggers, actionSets, currentUser, homeHubState, servicesWithTypes:, roomForEntireHome and the whole of the add/remove/update methods write the store and report through HMHomeDelegate. -homeHubState is HMHomeHubStateNotAvailable, which is what a home with no hub answers. -addAccessory:completionHandler: answers HMErrorCodeAccessoryPairingFailed and changes nothing, because adding an accessory to a home is a HAP pair-setup and this port carries none",
-      "facts": "facts/HomeKit/HMHome.md",
-      "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
-    },
-    {
-      "api": "HMHomeManager",
-      "kind": "class",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "effect": "the manager: homes, primaryHome, authorizationStatus, delegate, and -addHomeWithName:completionHandler:, -removeHome:completionHandler: and -updatePrimaryHome:completionHandler: writing the store and reporting through HMHomeManagerDelegate. authorizationStatus is HMHomeManagerAuthorizationStatusDetermined, because the port's graph is the application's own store, which no other application can reach",
-      "facts": "facts/HomeKit/HMHome.md",
-      "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
-    },
-    {
-      "api": "HMTrigger",
-      "kind": "class",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "effect": "a trigger of a home: name, enabled, lastFireDate and actionSets, with -updateName:completionHandler:, -enable:completionHandler:, -addActionSet:completionHandler: and -removeActionSet:completionHandler: writing the store",
-      "facts": "facts/HomeKit/HMHome.md",
-      "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
-    },
-    {
-      "api": "HMTimerTrigger",
-      "kind": "class",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "effect": "a trigger that fires at a time: fireDate, timeZone, recurrence and recurrenceCalendar, with -updateFireDate:completionHandler: refusing a date in the past with HMErrorCodeFireDateInPast, and the recurrence stored as the numbers a date component is made of so it crosses a property list",
-      "facts": "facts/HomeKit/HMHome.md",
-      "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
-    },
-    {
-      "api": "HMActionSet",
-      "kind": "class",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "effect": "a set of actions: name, actionSetType, executing, lastExecutionDate and actions, with -addAction: and -removeAction: writing the store and reporting through HMHomeDelegate",
-      "facts": "facts/HomeKit/HMHome.md",
-      "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
-    },
-    {
-      "api": "HMAction",
-      "kind": "class",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "effect": "an action of an action set, with the uniqueIdentifier the set's own list of actions is keyed by",
-      "facts": "facts/HomeKit/HMHome.md",
-      "source": "HomeKit of the arm64e shared caches of 16.0 and 18.0 and the arm64 one of 12.0, read through modules/apple/dyld.lua, and the documented contract of each class"
-    },
-    {
-      "api": "HMEvent",
-      "kind": "class",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "effect": "an event of an event trigger, with the uniqueIdentifier the trigger's own list is keyed by",
-      "facts": "facts/HomeKit/HMHome.md",
-      "source": "HomeKit of the arm64e shared caches of 16.0 and 18.0 and the arm64 one of 12.0, read through modules/apple/dyld.lua, and the documented contract of each class"
-    },
-    {
-      "api": "HMCharacteristicEvent",
-      "kind": "class",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "effect": "an event that fires on a characteristic reaching a value, with -initWithCharacteristic:triggerValue: and -updateTriggerValue:completionHandler: replacing the value",
-      "facts": "facts/HomeKit/HMHome.md",
-      "source": "HomeKit of the arm64e shared caches of 16.0 and 18.0 and the arm64 one of 12.0, read through modules/apple/dyld.lua, and the documented contract of each class"
-    },
-    {
-      "api": "HMLocationEvent",
-      "kind": "class",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "effect": "an event that fires on a circular region, with -initWithRegion: and -updateRegion:completionHandler: replacing it",
-      "facts": "facts/HomeKit/HMHome.md",
-      "source": "HomeKit of the arm64e shared caches of 16.0 and 18.0 and the arm64 one of 12.0, read through modules/apple/dyld.lua, and the documented contract of each class"
-    },
-    {
-      "api": "HMEventTrigger",
-      "kind": "class",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "effect": "a trigger that fires on events: events, endEvents, recurrences, predicate, executeOnce and triggerActivationState from the store, and -addEvent:, -removeEvent:, -updateEvents:, -updateEndEvents:, -updateRecurrences:, -updatePredicate: and -updateExecuteOnce: writing it. triggerActivationState is HMEventTriggerActivationStateDisabledNoHomeHub, which HMEventTriggerActivationState.h:27 names for exactly this condition: a home hub is the one thing this release has none of",
-      "facts": "facts/HomeKit/HMHome.md",
-      "source": "HomeKit of the arm64e shared caches of 16.0 and 18.0 and the arm64 one of 12.0, read through modules/apple/dyld.lua, and the documented contract of each class"
-    },
-    {
-      "api": "HMNumberRange",
-      "kind": "class",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes",
-      "effect": "a range of numbers, made the way the release makes it, through +numberRangeWithMinValue:maxValue:; -init is NS_UNAVAILABLE in the release's own header and here too",
-      "facts": "facts/HomeKit/HMHome.md",
-      "source": "HomeKit of the arm64e shared caches of 16.0 and 18.0 and the arm64 one of 12.0, read through modules/apple/dyld.lua, and the documented contract of each class"
-    },
-    {
-      "api": "HMTimeEvent",
-      "kind": "class",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "effect": "the base of the events that fire at a time, with the uniqueIdentifier the trigger's own list is keyed by",
-      "facts": "facts/HomeKit/HMHome.md",
-      "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
-    },
-    {
-      "api": "HMDurationEvent",
-      "kind": "class",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "effect": "an event that fires after a duration, with -initWithDuration: and the duration it holds",
-      "facts": "facts/HomeKit/HMHome.md",
-      "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
-    },
-    {
-      "api": "HMMutableDurationEvent",
-      "kind": "class",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "effect": "the writable form of HMDurationEvent, with a settable duration",
-      "facts": "facts/HomeKit/HMHome.md",
-      "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
-    },
-    {
-      "api": "HMCalendarEvent",
-      "kind": "class",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "effect": "an event that fires on a date's components, with -initWithFireDateComponents:",
-      "facts": "facts/HomeKit/HMHome.md",
-      "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
-    },
-    {
-      "api": "HMMutableCalendarEvent",
-      "kind": "class",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "effect": "the writable form of HMCalendarEvent, with a settable fireDateComponents",
-      "facts": "facts/HomeKit/HMHome.md",
-      "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
-    },
-    {
-      "api": "HMSignificantTimeEvent",
-      "kind": "class",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "effect": "an event that fires at sunrise or sunset with an offset, with -initWithSignificantEvent:offset:",
-      "facts": "facts/HomeKit/HMHome.md",
-      "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
-    },
-    {
-      "api": "HMMutableSignificantTimeEvent",
-      "kind": "class",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "effect": "the writable form of HMSignificantTimeEvent, with a settable significantEvent and offset",
-      "facts": "facts/HomeKit/HMHome.md",
-      "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
-    },
-    {
-      "api": "HMPresenceEvent",
-      "kind": "class",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "effect": "an event that fires on a user's arrival or departure, with -initWithPresenceEventType:presenceUserType: and the two enumerations the header gives held as the numbers they are",
-      "facts": "facts/HomeKit/HMHome.md",
-      "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
-    },
-    {
-      "api": "HMMutablePresenceEvent",
-      "kind": "class",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "effect": "the writable form of HMPresenceEvent, with a settable presenceEventType and presenceUserType",
-      "facts": "facts/HomeKit/HMHome.md",
-      "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
-    },
-    {
-      "api": "HMMutableCharacteristicEvent",
-      "kind": "class",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "effect": "the writable form of HMCharacteristicEvent, with a settable characteristic and triggerValue",
-      "facts": "facts/HomeKit/HMHome.md",
-      "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
-    },
-    {
-      "api": "HMCharacteristicThresholdRangeEvent",
-      "kind": "class",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "effect": "an event that fires on a characteristic leaving a number range, with -initWithCharacteristic:thresholdRange:",
-      "facts": "facts/HomeKit/HMHome.md",
-      "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
-    },
-    {
-      "api": "HMMutableCharacteristicThresholdRangeEvent",
-      "kind": "class",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "effect": "the writable form of HMCharacteristicThresholdRangeEvent, with a settable characteristic and thresholdRange",
-      "facts": "facts/HomeKit/HMHome.md",
-      "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
-    },
-    {
-      "api": "HMHomeAccessControl",
-      "kind": "class",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "effect": "what a home says about one user's rights. -administrator is YES, because the port's home graph is the application's own store, which no other application can read or write: saying otherwise would tell an application its own store is writable by somebody else",
-      "facts": "facts/HomeKit/HMHome.md",
-      "source": "HomeKit of the arm64e shared caches of 16.0 and 18.0 and the arm64 one of 12.0, read through modules/apple/dyld.lua, and the documented contract of each class"
-    },
-    {
-      "api": "HMAccessoryCategory",
-      "kind": "class",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes",
-      "effect": "-categoryType is the accessory's category type, the HAP UUID this library's constants carry. -localizedDescription is registered absent: it is a localized string, the host has no HomeKit in its dyld cache and no release on this machine ships a HomeKit resource bundle this port can read, and a name written here would be one no release ships",
-      "facts": "facts/HomeKit/HMAccessoryCategory.md",
-      "source": "HomeKit of the arm64e shared caches of 16.0 and 18.0 and the arm64 one of 12.0, read through modules/apple/dyld.lua, and the documented contract of each class"
-    },
-    {
-      "api": "HMAccessory.reachable",
-      "kind": "property",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the graph does not hold reachability: an accessory that was reachable when the last session ended is not reachable now, and a YES an application acted on would be a lie",
-      "effect": "NO",
-      "facts": "facts/HomeKit/HMHome.md"
-    },
-    {
-      "api": "-[HMAccessory identifyWithCompletionHandler:]",
-      "kind": "method",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "identify is the accessory's own light, beep or display",
-      "effect": "HMErrorCodeAccessoryNotReachable, which is what the release answers for an accessory it cannot reach",
-      "facts": "facts/HomeKit/HMHome.md"
-    },
-    {
-      "api": "HMAccessory.home",
-      "kind": "property",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the home graph and the HAP transport that would reach an accessory, which this port does not carry: it has no HAP session with an accessory, and iOS 6 runs no home hub, no homekitd and no accessories daemon, so there is no system service to ask for a home graph either",
-      "effect": "the message is not there: respondsToSelector: answers NO"
-    },
-    {
-      "api": "HMAccessory.firmwareVersion",
-      "kind": "property",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the accessory's own state, which a HAP session with the accessory is needed for and this port carries none; the graph's own fields stay readable",
-      "effect": "the firmware version the graph holds, from the accessory's Accessory Information service",
-      "facts": "facts/HomeKit/HMHome.md"
-    },
-    {
-      "api": "HMAccessory.manufacturer",
-      "kind": "property",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the accessory's own state, which a HAP session with the accessory is needed for and this port carries none; the graph's own fields stay readable",
-      "effect": "the manufacturer the graph holds, from the accessory's Accessory Information service",
-      "facts": "facts/HomeKit/HMHome.md"
-    },
-    {
-      "api": "HMAccessory.model",
-      "kind": "property",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the accessory's own state, which a HAP session with the accessory is needed for and this port carries none; the graph's own fields stay readable",
-      "effect": "the model the graph holds, from the accessory's Accessory Information service",
-      "facts": "facts/HomeKit/HMHome.md"
-    },
-    {
-      "api": "HMAccessory.supportsIdentify",
-      "kind": "property",
-      "introduced": "11.3",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the accessory's own state, which a HAP session with the accessory is needed for and this port carries none; the graph's own fields stay readable",
-      "effect": "whether the graph holds an Identify characteristic on the accessory, which is what the property is",
-      "facts": "facts/HomeKit/HMHome.md"
-    },
-    {
-      "api": "HMAccessory.profiles",
-      "kind": "property",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "effect": "the accessory's profiles, one per set of services, from the store's own list; a profile is a set of services an accessory presents, and this port's graph holds whatever the store recorded",
-      "facts": "facts/HomeKit/HMHome.md",
-      "source": "HomeKit of the arm64e shared caches of 16.0 and 18.0 and the arm64 one of 12.0, and the documented contract of each member"
-    },
-    {
-      "api": "HMAccessory.cameraProfiles",
-      "kind": "property",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the home graph and the HAP transport that would reach an accessory, which this port does not carry: it has no HAP session with an accessory, and iOS 6 runs no home hub, no homekitd and no accessories daemon, so there is no system service to ask for a home graph either",
-      "effect": "the message is not there: respondsToSelector: answers NO"
-    },
-    {
-      "api": "HMAccessory.bridgedAccessories",
-      "kind": "property",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the accessory's own state, which a HAP session with the accessory is needed for and this port carries none; the graph's own fields stay readable",
-      "effect": "the accessories the graph holds as bridged behind this one",
-      "facts": "facts/HomeKit/HMHome.md"
-    },
-    {
-      "api": "HMAccessory.bridged",
-      "kind": "property",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the accessory's own state, which a HAP session with the accessory is needed for and this port carries none; the graph's own fields stay readable",
-      "effect": "whether the graph holds this accessory as a bridge",
-      "facts": "facts/HomeKit/HMHome.md"
-    },
-    {
-      "api": "HMAccessory.blocked",
-      "kind": "property",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the accessory's own state, which a HAP session with the accessory is needed for and this port carries none; the graph's own fields stay readable",
-      "effect": "whether the graph has this accessory blocked, which -[HMHome unblockAccessory:completionHandler:] clears",
-      "facts": "facts/HomeKit/HMHome.md"
-    },
-    {
-      "api": "HMAccessory.uniqueIdentifier",
-      "kind": "property",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the accessory's own state, which a HAP session with the accessory is needed for and this port carries none; the graph's own fields stay readable",
-      "effect": "the identifier that survives a re-pair, which the store holds beside the accessory's own",
-      "facts": "facts/HomeKit/HMHome.md"
-    },
-    {
-      "api": "HMAccessory.uniqueIdentifiersForBridgedAccessories",
-      "kind": "property",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the accessory's own state, which a HAP session with the accessory is needed for and this port carries none; the graph's own fields stay readable",
-      "effect": "the unique identifiers of the bridged accessories, in the graph's own order",
-      "facts": "facts/HomeKit/HMHome.md"
-    },
-    {
-      "api": "HMAccessory.identifiersForBridgedAccessories",
-      "kind": "property",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the accessory's own state, which a HAP session with the accessory is needed for and this port carries none; the graph's own fields stay readable",
-      "effect": "the identifiers of the bridged accessories, in the graph's own order",
-      "facts": "facts/HomeKit/HMHome.md"
-    },
-    {
-      "api": "HMAccessory.category",
-      "kind": "property",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the accessory's own state, which a HAP session with the accessory is needed for and this port carries none; the graph's own fields stay readable",
-      "effect": "the accessory category type, the HAP UUID this library's constants carry",
-      "facts": "facts/HomeKit/HMHome.md"
-    },
-    {
-      "api": "HMAccessory.matterNodeID",
-      "kind": "property",
-      "introduced": "16.1",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "a Matter node identifier is assigned by a Matter controller, and there is none on this release",
-      "effect": "nil",
-      "facts": "facts/HomeKit/HMHome.md"
-    },
-    {
-      "api": "HMAccessory.HAPInstanceID",
-      "kind": "property",
-      "introduced": "26.1",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "a vendor accessory's HAP instance identifier comes from the vendor, which publishes it for an accessory it has paired",
-      "effect": "nil",
-      "facts": "facts/HomeKit/HMHome.md"
-    },
-    {
-      "api": "HMAccessory.vendorAccessory",
-      "kind": "property",
-      "introduced": "26.1",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "a vendor accessory is one whose HAP public key the vendor has published, and this port holds no vendor service to ask",
-      "effect": "nil",
-      "facts": "facts/HomeKit/HMHome.md"
-    },
-    {
-      "api": "HMAccessory.matterControllerXPCConnectBlock",
-      "kind": "property",
-      "introduced": "16.1",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "it is what hands a Matter controller over, and there is no Matter controller on this release to hand over",
-      "effect": "a settable block, kept and read back, that the port never calls",
-      "facts": "facts/HomeKit/HMHome.md"
-    },
-    {
-      "api": "HMAccessory.matterStartupParametersXPCConnectBlock",
-      "kind": "property",
-      "introduced": "18.2",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "it hands over a Matter controller's startup parameters, and there is no Matter controller on this release",
-      "effect": "a settable block, kept and read back, that the port never calls, for the same reason",
-      "facts": "facts/HomeKit/HMHome.md"
-    },
-    {
-      "api": "HMHomeDelegate",
-      "kind": "protocol",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the home graph and the HAP transport that would reach an accessory, which this port does not carry: it has no HAP session with an accessory, and iOS 6 runs no home hub, no homekitd and no accessories daemon, so there is no system service to ask for a home graph either",
-      "effect": "the protocol's messages are not sent, because the objects that report through it are not in the tree: an application's own class adopting it finds that no message of the protocol is ever sent"
-    },
-    {
-      "api": "HMHomeManagerDelegate",
-      "kind": "protocol",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the home graph and the HAP transport that would reach an accessory, which this port does not carry: it has no HAP session with an accessory, and iOS 6 runs no home hub, no homekitd and no accessories daemon, so there is no system service to ask for a home graph either",
-      "effect": "the protocol's messages are not sent, because the objects that report through it are not in the tree: an application's own class adopting it finds that no message of the protocol is ever sent"
-    },
-    {
-      "api": "HMAccessoryDelegate",
-      "kind": "protocol",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "an application's own class adopts this protocol; the port's part is sending its messages, and the SDK's own headers already declare the protocol",
-      "effect": "the delegate an accessory reports through: accessoryDidUpdateName:, accessoryDidUpdateServices:, accessoryDidUpdateReachability:, accessory:service:didUpdateValueForCharacteristic:, accessory:didUpdateNameForService:, accessory:didUpdateAssociatedServiceTypeForService:, accessory:didAddProfile:, accessory:didRemoveProfile: and accessory:didUpdateFirmwareVersion:, on the main queue",
-      "facts": "facts/HomeKit/HMHome.md"
-    },
-    {
-      "api": "HMAccessoryBrowser",
-      "kind": "class",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "discovery needs a HAP transport this port does not carry: no Bonjour browse of _hap._tcp and no Bluetooth LE scan of the HAP GATT service",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
-    },
-    {
-      "api": "HMAccessoryProfile",
-      "kind": "class",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "a profile is a set of services an accessory presents, which only a paired accessory can present",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
-    },
-    {
-      "api": "HMCameraProfile",
-      "kind": "class",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the camera surface is the accessory's own stream, which only a paired accessory has",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
-    },
-    {
-      "api": "HMAccessControl",
-      "kind": "class",
-      "introduced": "11.2",
-      "minimum": "6.0",
-      "status": "implemented",
-      "effect": "the generic base of HomeKit's two access controls, carrying nothing of its own -- the header declares a class and an unavailable -init. It is here because HMHomeAccessControl is a subclass of it, and a subclass cannot link without its base",
-      "facts": "facts/HomeKit/HMHome.md",
-      "source": "HomeKit of the arm64e shared caches of 16.0 and 18.0 and the arm64 one of 12.0, and HMAccessControl.h:18, which is the class and its one unavailable initialiser"
-    },
-    {
-      "api": "HMAccessorySetupPayload",
-      "kind": "class",
-      "introduced": "11.3",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "a setup payload is read out of an accessory's own QR code, which needs a session with it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
-    },
-    {
-      "api": "HMAccessoryOwnershipToken",
-      "kind": "class",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "an ownership token comes from the accessory's own QR code, which needs a session with it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
-    },
-    {
-      "api": "HMAccessorySetupManager",
-      "kind": "class",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "performing a setup is a HAP pair-setup, which this port carries none of",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
-    },
-    {
-      "api": "HMAccessorySetupRequest",
-      "kind": "class",
-      "introduced": "15.4",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "a setup request names an accessory to be set up, which needs a session with it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
-    },
-    {
-      "api": "HMAccessorySetupResult",
-      "kind": "class",
-      "introduced": "15.4",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "a setup result is what a HAP pair-setup returns",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
-    },
-    {
-      "api": "HMNetworkConfigurationProfile",
-      "kind": "class",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the network access of a home is the system's own knowledge of what its accessories are on",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
-    },
-    {
-      "api": "HMMediaSourceDisplayOrderProfile",
-      "kind": "class",
-      "introduced": "18.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the display order of a television's sources is the accessory's own",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
-    },
-    {
-      "api": "-[HMAccessorySetupManager performAccessorySetupUsingRequest:completionHandler:]",
-      "kind": "method",
-      "introduced": "15.4",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "a HAP pair-setup",
-      "effect": "the message is not there: respondsToSelector: answers NO"
-    },
-    {
-      "api": "-[HMHome addAndSetupAccessoriesWithCompletionHandler:]",
-      "kind": "method",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "a HAP pair-setup with every accessory on the network",
-      "effect": "the message is not there: respondsToSelector: answers NO"
-    },
-    {
-      "api": "-[HMHome addAndSetupAccessoriesWithPayload:completionHandler:]",
-      "kind": "method",
-      "introduced": "11.3",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "a HAP pair-setup with one accessory",
-      "effect": "the message is not there: respondsToSelector: answers NO"
-    },
-    {
-      "api": "-[HMHomeManager findVendorAccessoryWithHAPPublicKey:completionHandler:]",
-      "kind": "method",
-      "introduced": "26.1",
-      "minimum": "6.0",
-      "status": "implemented",
-      "effect": "the accessory whose stored HAP public key is that one, and HMErrorCodeNotFound for a key the store does not hold. Looking a vendor accessory up is a search of what the port holds, and this port pairs with no accessory, so the store's pairings are empty and the answer for any key is the not-found one, which is what an empty store answers",
-      "facts": "facts/HomeKit/HMHome.md",
-      "source": "HomeKit of the arm64e shared caches of 16.0 and 18.0 and the arm64 one of 12.0, and the documented contract of each member"
-    }
-  ]
+ "framework": "HomeKit",
+ "entries": [
+  {
+   "api": "HMAccessory",
+   "kind": "class",
+   "introduced": "8.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes",
+   "effect": "an accessory of the graph: identifier, uniqueIdentifier, name, category, room, manufacturer, model, firmwareVersion, services, profiles, cameraProfiles, bridged state and delegate are the graph's and are answered from the store. The value of a characteristic, whether the accessory is reachable and -identifyWithCompletionHandler: are the accessory's: with no HAP session to an accessory this port answers HMErrorCodeAccessoryNotReachable, and -reachable is NO",
+   "facts": "facts/HomeKit/HMHome.md",
+   "source": "HomeKit of the arm64e shared caches of 16.0 and 18.0 and the arm64 one of 12.0, read through modules/apple/dyld.lua, and the documented contract of each class"
+  },
+  {
+   "api": "HMService",
+   "kind": "class",
+   "introduced": "8.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes",
+   "effect": "a service of an accessory: name, serviceType, associatedServiceType, characteristics, linkedServices, primaryService, userInteractive and localizedDescription are answered from the store, and -updateName: and -updateAssociatedServiceType: write it and report through HMAccessoryDelegate",
+   "facts": "facts/HomeKit/HMHome.md",
+   "source": "HomeKit of the arm64e shared caches of 16.0 and 18.0 and the arm64 one of 12.0, read through modules/apple/dyld.lua, and the documented contract of each class"
+  },
+  {
+   "api": "HMCharacteristic",
+   "kind": "class",
+   "introduced": "8.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes",
+   "effect": "a characteristic of a service: characteristicType, properties, metadata, value, localizedDescription and notificationEnabled are answered from the store. -readValueWithCompletionHandler:, -writeValue:completionHandler:, -enableNotification:completionHandler: and -updateAuthorizationData:completionHandler: are the accessory's own and answer the documented error: HMErrorCodeReadOnlyCharacteristic, HMErrorCodeNotificationNotSupported, HMErrorCodeInvalidOrMissingAuthorizationData, and HMErrorCodeAccessoryNotReachable when the characteristic does allow it but there is no session",
+   "facts": "facts/HomeKit/HMHome.md",
+   "source": "HomeKit of the arm64e shared caches of 16.0 and 18.0 and the arm64 one of 12.0, read through modules/apple/dyld.lua, and the documented contract of each class"
+  },
+  {
+   "api": "HMCharacteristicMetadata",
+   "kind": "class",
+   "introduced": "8.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes",
+   "effect": "the metadata of the characteristic that holds it: format, units, minimumValue, maximumValue, stepValue, maxLength, validValues and manufacturerDescription, read out of that characteristic's own record",
+   "facts": "facts/HomeKit/HMHome.md",
+   "source": "HomeKit of the arm64e shared caches of 16.0 and 18.0 and the arm64 one of 12.0, read through modules/apple/dyld.lua, and the documented contract of each class"
+  },
+  {
+   "api": "HMCharacteristicWriteAction",
+   "kind": "class",
+   "introduced": "8.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes",
+   "effect": "a write of a value to a characteristic, with -updateTargetValue:completionHandler: replacing the value",
+   "facts": "facts/HomeKit/HMHome.md",
+   "source": "HomeKit of the arm64e shared caches of 16.0 and 18.0 and the arm64 one of 12.0, read through modules/apple/dyld.lua, and the documented contract of each class"
+  },
+  {
+   "api": "HMRoom",
+   "kind": "class",
+   "introduced": "8.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a room of a home: name, uniqueIdentifier and the accessories assigned to it, with -updateName:completionHandler: writing the name to the store",
+   "facts": "facts/HomeKit/HMHome.md",
+   "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
+  },
+  {
+   "api": "HMZone",
+   "kind": "class",
+   "introduced": "8.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a zone of a home: name, uniqueIdentifier and its rooms. -addRoom:completionHandler: refuses a room already in another zone of the same home with HMErrorCodeObjectAlreadyAssociatedToHome, the way the release does",
+   "facts": "facts/HomeKit/HMHome.md",
+   "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
+  },
+  {
+   "api": "HMUser",
+   "kind": "class",
+   "introduced": "8.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a user of a home: name and uniqueIdentifier from the store",
+   "facts": "facts/HomeKit/HMHome.md",
+   "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
+  },
+  {
+   "api": "HMServiceGroup",
+   "kind": "class",
+   "introduced": "8.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a group of an accessory's services, with -addService: and -removeService: editing the store's own membership and reporting through HMHomeDelegate",
+   "facts": "facts/HomeKit/HMHome.md",
+   "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
+  },
+  {
+   "api": "HMHome",
+   "kind": "class",
+   "introduced": "8.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a home: name, primary, uniqueIdentifier, rooms, zones, users, serviceGroups, accessories, triggers, actionSets, currentUser, homeHubState, servicesWithTypes:, roomForEntireHome and the whole of the add/remove/update methods write the store and report through HMHomeDelegate. -homeHubState is HMHomeHubStateNotAvailable, which is what a home with no hub answers. -addAccessory:completionHandler: answers HMErrorCodeAccessoryPairingFailed and changes nothing, because adding an accessory to a home is a HAP pair-setup and this port carries none",
+   "facts": "facts/HomeKit/HMHome.md",
+   "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
+  },
+  {
+   "api": "HMHomeManager",
+   "kind": "class",
+   "introduced": "8.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the manager: homes, primaryHome, authorizationStatus, delegate, and -addHomeWithName:completionHandler:, -removeHome:completionHandler: and -updatePrimaryHome:completionHandler: writing the store and reporting through HMHomeManagerDelegate. authorizationStatus is HMHomeManagerAuthorizationStatusDetermined, because the port's graph is the application's own store, which no other application can reach",
+   "facts": "facts/HomeKit/HMHome.md",
+   "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
+  },
+  {
+   "api": "HMTrigger",
+   "kind": "class",
+   "introduced": "8.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a trigger of a home: name, enabled, lastFireDate and actionSets, with -updateName:completionHandler:, -enable:completionHandler:, -addActionSet:completionHandler: and -removeActionSet:completionHandler: writing the store",
+   "facts": "facts/HomeKit/HMHome.md",
+   "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
+  },
+  {
+   "api": "HMTimerTrigger",
+   "kind": "class",
+   "introduced": "8.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a trigger that fires at a time: fireDate, timeZone, recurrence and recurrenceCalendar, with -updateFireDate:completionHandler: refusing a date in the past with HMErrorCodeFireDateInPast, and the recurrence stored as the numbers a date component is made of so it crosses a property list",
+   "facts": "facts/HomeKit/HMHome.md",
+   "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
+  },
+  {
+   "api": "HMActionSet",
+   "kind": "class",
+   "introduced": "8.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a set of actions: name, actionSetType, executing, lastExecutionDate and actions, with -addAction: and -removeAction: writing the store and reporting through HMHomeDelegate",
+   "facts": "facts/HomeKit/HMHome.md",
+   "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
+  },
+  {
+   "api": "HMAction",
+   "kind": "class",
+   "introduced": "8.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "an action of an action set, with the uniqueIdentifier the set's own list of actions is keyed by",
+   "facts": "facts/HomeKit/HMHome.md",
+   "source": "HomeKit of the arm64e shared caches of 16.0 and 18.0 and the arm64 one of 12.0, read through modules/apple/dyld.lua, and the documented contract of each class"
+  },
+  {
+   "api": "HMEvent",
+   "kind": "class",
+   "introduced": "9.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "an event of an event trigger, with the uniqueIdentifier the trigger's own list is keyed by",
+   "facts": "facts/HomeKit/HMHome.md",
+   "source": "HomeKit of the arm64e shared caches of 16.0 and 18.0 and the arm64 one of 12.0, read through modules/apple/dyld.lua, and the documented contract of each class"
+  },
+  {
+   "api": "HMCharacteristicEvent",
+   "kind": "class",
+   "introduced": "9.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "an event that fires on a characteristic reaching a value, with -initWithCharacteristic:triggerValue: and -updateTriggerValue:completionHandler: replacing the value",
+   "facts": "facts/HomeKit/HMHome.md",
+   "source": "HomeKit of the arm64e shared caches of 16.0 and 18.0 and the arm64 one of 12.0, read through modules/apple/dyld.lua, and the documented contract of each class"
+  },
+  {
+   "api": "HMLocationEvent",
+   "kind": "class",
+   "introduced": "9.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "an event that fires on a circular region, with -initWithRegion: and -updateRegion:completionHandler: replacing it",
+   "facts": "facts/HomeKit/HMHome.md",
+   "source": "HomeKit of the arm64e shared caches of 16.0 and 18.0 and the arm64 one of 12.0, read through modules/apple/dyld.lua, and the documented contract of each class"
+  },
+  {
+   "api": "HMEventTrigger",
+   "kind": "class",
+   "introduced": "9.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a trigger that fires on events: events, endEvents, recurrences, predicate, executeOnce and triggerActivationState from the store, and -addEvent:, -removeEvent:, -updateEvents:, -updateEndEvents:, -updateRecurrences:, -updatePredicate: and -updateExecuteOnce: writing it. triggerActivationState is HMEventTriggerActivationStateDisabledNoHomeHub, which HMEventTriggerActivationState.h:27 names for exactly this condition: a home hub is the one thing this release has none of",
+   "facts": "facts/HomeKit/HMHome.md",
+   "source": "HomeKit of the arm64e shared caches of 16.0 and 18.0 and the arm64 one of 12.0, read through modules/apple/dyld.lua, and the documented contract of each class"
+  },
+  {
+   "api": "HMNumberRange",
+   "kind": "class",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes",
+   "effect": "a range of numbers, made the way the release makes it, through +numberRangeWithMinValue:maxValue:; -init is NS_UNAVAILABLE in the release's own header and here too",
+   "facts": "facts/HomeKit/HMHome.md",
+   "source": "HomeKit of the arm64e shared caches of 16.0 and 18.0 and the arm64 one of 12.0, read through modules/apple/dyld.lua, and the documented contract of each class"
+  },
+  {
+   "api": "HMTimeEvent",
+   "kind": "class",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the base of the events that fire at a time, with the uniqueIdentifier the trigger's own list is keyed by",
+   "facts": "facts/HomeKit/HMHome.md",
+   "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
+  },
+  {
+   "api": "HMDurationEvent",
+   "kind": "class",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "an event that fires after a duration, with -initWithDuration: and the duration it holds",
+   "facts": "facts/HomeKit/HMHome.md",
+   "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
+  },
+  {
+   "api": "HMMutableDurationEvent",
+   "kind": "class",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the writable form of HMDurationEvent, with a settable duration",
+   "facts": "facts/HomeKit/HMHome.md",
+   "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
+  },
+  {
+   "api": "HMCalendarEvent",
+   "kind": "class",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "an event that fires on a date's components, with -initWithFireDateComponents:",
+   "facts": "facts/HomeKit/HMHome.md",
+   "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
+  },
+  {
+   "api": "HMMutableCalendarEvent",
+   "kind": "class",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the writable form of HMCalendarEvent, with a settable fireDateComponents",
+   "facts": "facts/HomeKit/HMHome.md",
+   "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
+  },
+  {
+   "api": "HMSignificantTimeEvent",
+   "kind": "class",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "an event that fires at sunrise or sunset with an offset, with -initWithSignificantEvent:offset:",
+   "facts": "facts/HomeKit/HMHome.md",
+   "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
+  },
+  {
+   "api": "HMMutableSignificantTimeEvent",
+   "kind": "class",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the writable form of HMSignificantTimeEvent, with a settable significantEvent and offset",
+   "facts": "facts/HomeKit/HMHome.md",
+   "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
+  },
+  {
+   "api": "HMPresenceEvent",
+   "kind": "class",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "an event that fires on a user's arrival or departure, with -initWithPresenceEventType:presenceUserType: and the two enumerations the header gives held as the numbers they are",
+   "facts": "facts/HomeKit/HMHome.md",
+   "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
+  },
+  {
+   "api": "HMMutablePresenceEvent",
+   "kind": "class",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the writable form of HMPresenceEvent, with a settable presenceEventType and presenceUserType",
+   "facts": "facts/HomeKit/HMHome.md",
+   "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
+  },
+  {
+   "api": "HMMutableCharacteristicEvent",
+   "kind": "class",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the writable form of HMCharacteristicEvent, with a settable characteristic and triggerValue",
+   "facts": "facts/HomeKit/HMHome.md",
+   "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
+  },
+  {
+   "api": "HMCharacteristicThresholdRangeEvent",
+   "kind": "class",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "an event that fires on a characteristic leaving a number range, with -initWithCharacteristic:thresholdRange:",
+   "facts": "facts/HomeKit/HMHome.md",
+   "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
+  },
+  {
+   "api": "HMMutableCharacteristicThresholdRangeEvent",
+   "kind": "class",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the writable form of HMCharacteristicThresholdRangeEvent, with a settable characteristic and thresholdRange",
+   "facts": "facts/HomeKit/HMHome.md",
+   "source": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes"
+  },
+  {
+   "api": "HMHomeAccessControl",
+   "kind": "class",
+   "introduced": "9.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "what a home says about one user's rights. -administrator is YES, because the port's home graph is the application's own store, which no other application can read or write: saying otherwise would tell an application its own store is writable by somebody else",
+   "facts": "facts/HomeKit/HMHome.md",
+   "source": "HomeKit of the arm64e shared caches of 16.0 and 18.0 and the arm64 one of 12.0, read through modules/apple/dyld.lua, and the documented contract of each class"
+  },
+  {
+   "api": "HMAccessoryCategory",
+   "kind": "class",
+   "introduced": "9.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "CharonHomeKitStore.m: one property list per table under the application's own Application Support directory, written atomically when a table changes",
+   "effect": "-categoryType is the accessory's category type, the HAP UUID this library's constants carry. -localizedDescription is registered absent: it is a localized string, the host has no HomeKit in its dyld cache and no release on this machine ships a HomeKit resource bundle this port can read, and a name written here would be one no release ships",
+   "facts": "facts/HomeKit/HMAccessoryCategory.md",
+   "source": "HomeKit of the arm64e shared caches of 16.0 and 18.0 and the arm64 one of 12.0, read through modules/apple/dyld.lua, and the documented contract of each class"
+  },
+  {
+   "api": "HMAccessory.reachable",
+   "kind": "property",
+   "introduced": "8.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "the graph does not hold reachability: an accessory that was reachable when the last session ended is not reachable now, and a YES an application acted on would be a lie",
+   "effect": "NO",
+   "facts": "facts/HomeKit/HMHome.md"
+  },
+  {
+   "api": "-[HMAccessory identifyWithCompletionHandler:]",
+   "kind": "method",
+   "introduced": "8.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "identify is the accessory's own light, beep or display",
+   "effect": "HMErrorCodeAccessoryNotReachable, which is what the release answers for an accessory it cannot reach",
+   "facts": "facts/HomeKit/HMHome.md"
+  },
+  {
+   "api": "HMAccessory.home",
+   "kind": "property",
+   "introduced": "10.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "the home graph and the HAP transport that would reach an accessory, which this port does not carry: it has no HAP session with an accessory, and iOS 6 runs no home hub, no homekitd and no accessories daemon, so there is no system service to ask for a home graph either",
+   "effect": "the message is not there: respondsToSelector: answers NO"
+  },
+  {
+   "api": "HMAccessory.firmwareVersion",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "the accessory's own state, which a HAP session with the accessory is needed for and this port carries none; the graph's own fields stay readable",
+   "effect": "the firmware version the graph holds, from the accessory's Accessory Information service",
+   "facts": "facts/HomeKit/HMHome.md"
+  },
+  {
+   "api": "HMAccessory.manufacturer",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "the accessory's own state, which a HAP session with the accessory is needed for and this port carries none; the graph's own fields stay readable",
+   "effect": "the manufacturer the graph holds, from the accessory's Accessory Information service",
+   "facts": "facts/HomeKit/HMHome.md"
+  },
+  {
+   "api": "HMAccessory.model",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "the accessory's own state, which a HAP session with the accessory is needed for and this port carries none; the graph's own fields stay readable",
+   "effect": "the model the graph holds, from the accessory's Accessory Information service",
+   "facts": "facts/HomeKit/HMHome.md"
+  },
+  {
+   "api": "HMAccessory.supportsIdentify",
+   "kind": "property",
+   "introduced": "11.3",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "the accessory's own state, which a HAP session with the accessory is needed for and this port carries none; the graph's own fields stay readable",
+   "effect": "whether the graph holds an Identify characteristic on the accessory, which is what the property is",
+   "facts": "facts/HomeKit/HMHome.md"
+  },
+  {
+   "api": "HMAccessory.profiles",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the accessory's profiles, one per set of services, from the store's own list; a profile is a set of services an accessory presents, and this port's graph holds whatever the store recorded",
+   "facts": "facts/HomeKit/HMHome.md",
+   "source": "HomeKit of the arm64e shared caches of 16.0 and 18.0 and the arm64 one of 12.0, and the documented contract of each member"
+  },
+  {
+   "api": "HMAccessory.cameraProfiles",
+   "kind": "property",
+   "introduced": "10.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "the home graph and the HAP transport that would reach an accessory, which this port does not carry: it has no HAP session with an accessory, and iOS 6 runs no home hub, no homekitd and no accessories daemon, so there is no system service to ask for a home graph either",
+   "effect": "the message is not there: respondsToSelector: answers NO"
+  },
+  {
+   "api": "HMAccessory.bridgedAccessories",
+   "kind": "property",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "the accessory's own state, which a HAP session with the accessory is needed for and this port carries none; the graph's own fields stay readable",
+   "effect": "the accessories the graph holds as bridged behind this one",
+   "facts": "facts/HomeKit/HMHome.md"
+  },
+  {
+   "api": "HMAccessory.bridged",
+   "kind": "property",
+   "introduced": "8.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "the accessory's own state, which a HAP session with the accessory is needed for and this port carries none; the graph's own fields stay readable",
+   "effect": "whether the graph holds this accessory as a bridge",
+   "facts": "facts/HomeKit/HMHome.md"
+  },
+  {
+   "api": "HMAccessory.blocked",
+   "kind": "property",
+   "introduced": "8.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "the accessory's own state, which a HAP session with the accessory is needed for and this port carries none; the graph's own fields stay readable",
+   "effect": "whether the graph has this accessory blocked, which -[HMHome unblockAccessory:completionHandler:] clears",
+   "facts": "facts/HomeKit/HMHome.md"
+  },
+  {
+   "api": "HMAccessory.uniqueIdentifier",
+   "kind": "property",
+   "introduced": "9.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "the accessory's own state, which a HAP session with the accessory is needed for and this port carries none; the graph's own fields stay readable",
+   "effect": "the identifier that survives a re-pair, which the store holds beside the accessory's own",
+   "facts": "facts/HomeKit/HMHome.md"
+  },
+  {
+   "api": "HMAccessory.uniqueIdentifiersForBridgedAccessories",
+   "kind": "property",
+   "introduced": "9.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "the accessory's own state, which a HAP session with the accessory is needed for and this port carries none; the graph's own fields stay readable",
+   "effect": "the unique identifiers of the bridged accessories, in the graph's own order",
+   "facts": "facts/HomeKit/HMHome.md"
+  },
+  {
+   "api": "HMAccessory.identifiersForBridgedAccessories",
+   "kind": "property",
+   "introduced": "8.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "the accessory's own state, which a HAP session with the accessory is needed for and this port carries none; the graph's own fields stay readable",
+   "effect": "the identifiers of the bridged accessories, in the graph's own order",
+   "facts": "facts/HomeKit/HMHome.md"
+  },
+  {
+   "api": "HMAccessory.category",
+   "kind": "property",
+   "introduced": "9.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "the accessory's own state, which a HAP session with the accessory is needed for and this port carries none; the graph's own fields stay readable",
+   "effect": "the accessory category type, the HAP UUID this library's constants carry",
+   "facts": "facts/HomeKit/HMHome.md"
+  },
+  {
+   "api": "HMAccessory.matterNodeID",
+   "kind": "property",
+   "introduced": "16.1",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "a Matter node identifier is assigned by a Matter controller, and there is none on this release",
+   "effect": "nil",
+   "facts": "facts/HomeKit/HMHome.md"
+  },
+  {
+   "api": "HMAccessory.HAPInstanceID",
+   "kind": "property",
+   "introduced": "26.1",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "a vendor accessory's HAP instance identifier comes from the vendor, which publishes it for an accessory it has paired",
+   "effect": "nil",
+   "facts": "facts/HomeKit/HMHome.md"
+  },
+  {
+   "api": "HMAccessory.vendorAccessory",
+   "kind": "property",
+   "introduced": "26.1",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "a vendor accessory is one whose HAP public key the vendor has published, and this port holds no vendor service to ask",
+   "effect": "nil",
+   "facts": "facts/HomeKit/HMHome.md"
+  },
+  {
+   "api": "HMAccessory.matterControllerXPCConnectBlock",
+   "kind": "property",
+   "introduced": "16.1",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "it is what hands a Matter controller over, and there is no Matter controller on this release to hand over",
+   "effect": "a settable block, kept and read back, that the port never calls",
+   "facts": "facts/HomeKit/HMHome.md"
+  },
+  {
+   "api": "HMAccessory.matterStartupParametersXPCConnectBlock",
+   "kind": "property",
+   "introduced": "18.2",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "it hands over a Matter controller's startup parameters, and there is no Matter controller on this release",
+   "effect": "a settable block, kept and read back, that the port never calls, for the same reason",
+   "facts": "facts/HomeKit/HMHome.md"
+  },
+  {
+   "api": "HMHomeDelegate",
+   "kind": "protocol",
+   "introduced": "8.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "the home graph and the HAP transport that would reach an accessory, which this port does not carry: it has no HAP session with an accessory, and iOS 6 runs no home hub, no homekitd and no accessories daemon, so there is no system service to ask for a home graph either",
+   "effect": "the protocol's messages are not sent, because the objects that report through it are not in the tree: an application's own class adopting it finds that no message of the protocol is ever sent"
+  },
+  {
+   "api": "HMHomeManagerDelegate",
+   "kind": "protocol",
+   "introduced": "8.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "the home graph and the HAP transport that would reach an accessory, which this port does not carry: it has no HAP session with an accessory, and iOS 6 runs no home hub, no homekitd and no accessories daemon, so there is no system service to ask for a home graph either",
+   "effect": "the protocol's messages are not sent, because the objects that report through it are not in the tree: an application's own class adopting it finds that no message of the protocol is ever sent"
+  },
+  {
+   "api": "HMAccessoryDelegate",
+   "kind": "protocol",
+   "introduced": "8.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "an application's own class adopts this protocol; the port's part is sending its messages, and the SDK's own headers already declare the protocol",
+   "effect": "the delegate an accessory reports through: accessoryDidUpdateName:, accessoryDidUpdateServices:, accessoryDidUpdateReachability:, accessory:service:didUpdateValueForCharacteristic:, accessory:didUpdateNameForService:, accessory:didUpdateAssociatedServiceTypeForService:, accessory:didAddProfile:, accessory:didRemoveProfile: and accessory:didUpdateFirmwareVersion:, on the main queue",
+   "facts": "facts/HomeKit/HMHome.md"
+  },
+  {
+   "api": "HMAccessoryBrowser",
+   "kind": "class",
+   "introduced": "8.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "discovery needs a HAP transport this port does not carry: no Bonjour browse of _hap._tcp and no Bluetooth LE scan of the HAP GATT service",
+   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
+  },
+  {
+   "api": "HMAccessoryProfile",
+   "kind": "class",
+   "introduced": "10.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "a profile is a set of services an accessory presents, which only a paired accessory can present",
+   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
+  },
+  {
+   "api": "HMCameraProfile",
+   "kind": "class",
+   "introduced": "10.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "the camera surface is the accessory's own stream, which only a paired accessory has",
+   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
+  },
+  {
+   "api": "HMAccessControl",
+   "kind": "class",
+   "introduced": "11.2",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the generic base of HomeKit's two access controls, carrying nothing of its own -- the header declares a class and an unavailable -init. It is here because HMHomeAccessControl is a subclass of it, and a subclass cannot link without its base",
+   "facts": "facts/HomeKit/HMHome.md",
+   "source": "HomeKit of the arm64e shared caches of 16.0 and 18.0 and the arm64 one of 12.0, and HMAccessControl.h:18, which is the class and its one unavailable initialiser"
+  },
+  {
+   "api": "HMAccessorySetupPayload",
+   "kind": "class",
+   "introduced": "11.3",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "a setup payload is read out of an accessory's own QR code, which needs a session with it",
+   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
+  },
+  {
+   "api": "HMAccessoryOwnershipToken",
+   "kind": "class",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "an ownership token comes from the accessory's own QR code, which needs a session with it",
+   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
+  },
+  {
+   "api": "HMAccessorySetupManager",
+   "kind": "class",
+   "introduced": "15.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "performing a setup is a HAP pair-setup, which this port carries none of",
+   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
+  },
+  {
+   "api": "HMAccessorySetupRequest",
+   "kind": "class",
+   "introduced": "15.4",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "a setup request names an accessory to be set up, which needs a session with it",
+   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
+  },
+  {
+   "api": "HMAccessorySetupResult",
+   "kind": "class",
+   "introduced": "15.4",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "a setup result is what a HAP pair-setup returns",
+   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
+  },
+  {
+   "api": "HMNetworkConfigurationProfile",
+   "kind": "class",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "the network access of a home is the system's own knowledge of what its accessories are on",
+   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
+  },
+  {
+   "api": "HMMediaSourceDisplayOrderProfile",
+   "kind": "class",
+   "introduced": "18.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "the display order of a television's sources is the accessory's own",
+   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
+  },
+  {
+   "api": "-[HMAccessorySetupManager performAccessorySetupUsingRequest:completionHandler:]",
+   "kind": "method",
+   "introduced": "15.4",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "a HAP pair-setup",
+   "effect": "the message is not there: respondsToSelector: answers NO"
+  },
+  {
+   "api": "-[HMHome addAndSetupAccessoriesWithCompletionHandler:]",
+   "kind": "method",
+   "introduced": "10.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "a HAP pair-setup with every accessory on the network",
+   "effect": "the message is not there: respondsToSelector: answers NO"
+  },
+  {
+   "api": "-[HMHome addAndSetupAccessoriesWithPayload:completionHandler:]",
+   "kind": "method",
+   "introduced": "11.3",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "a HAP pair-setup with one accessory",
+   "effect": "the message is not there: respondsToSelector: answers NO"
+  },
+  {
+   "api": "-[HMHomeManager findVendorAccessoryWithHAPPublicKey:completionHandler:]",
+   "kind": "method",
+   "introduced": "26.1",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the accessory whose stored HAP public key is that one, and HMErrorCodeNotFound for a key the store does not hold. Looking a vendor accessory up is a search of what the port holds, and this port pairs with no accessory, so the store's pairings are empty and the answer for any key is the not-found one, which is what an empty store answers",
+   "facts": "facts/HomeKit/HMHome.md",
+   "source": "HomeKit of the arm64e shared caches of 16.0 and 18.0 and the arm64 one of 12.0, and the documented contract of each member"
+  },
+  {
+   "api": "-[HMAccessory home]",
+   "kind": "property",
+   "introduced": "10.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "iOS 10.0 is the release of HMAccessory.home, which the 26.2 header marks API_AVAILABLE(ios(10.0)) and API_UNAVAILABLE(macos) on HMAccessory.h:37",
+   "effect": "the home the accessory belongs to, and nil for one that belongs to none, which is what the header's own nullable allows",
+   "facts": "facts/HomeKit/HMAccessory.md",
+   "source": "the HomeKit header of SDK 26.2 for the contract, HMAccessory.h:37 quoted in the facts for its attributes and its nullability; no host HomeKit exists in any macOS SDK on this machine, so the check is the header's contract and the 12.0/16.0 caches' selector presence, not a host's answer"
+  },
+  {
+   "api": "-[HMAccessoryProfile uniqueIdentifier]",
+   "kind": "property",
+   "introduced": "10.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "iOS 10.0 is the release of the accessory profile and of the camera profile that subclasses it, which the 26.2 header marks API_AVAILABLE(ios(10.0)) and API_UNAVAILABLE(macos)",
+   "effect": "the profile's own identity, never nil, which is what the header's nonnull says",
+   "facts": "facts/HomeKit/HMAccessoryProfile.md",
+   "source": "the HomeKit header of SDK 26.2 for the contract, each property's line quoted in the facts; the check is ast_check.py, which compares the port's declarations with the header's from clang's AST for arm64-apple-ios12.0, and oracle.py, which counts the selector names in the 12.0 and 16.0 arm64 caches"
+  },
+  {
+   "api": "-[HMAccessoryProfile services]",
+   "kind": "property",
+   "introduced": "10.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "iOS 10.0 is the release of the accessory profile and of the camera profile that subclasses it, which the 26.2 header marks API_AVAILABLE(ios(10.0)) and API_UNAVAILABLE(macos)",
+   "effect": "the services the profile lists, always an array and empty when it lists none, which the header's nonnull allows",
+   "facts": "facts/HomeKit/HMAccessoryProfile.md",
+   "source": "the HomeKit header of SDK 26.2 for the contract, each property's line quoted in the facts; the check is ast_check.py, which compares the port's declarations with the header's from clang's AST for arm64-apple-ios12.0, and oracle.py, which counts the selector names in the 12.0 and 16.0 arm64 caches"
+  },
+  {
+   "api": "-[HMAccessoryProfile accessory]",
+   "kind": "property",
+   "introduced": "10.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "iOS 10.0 is the release of the accessory profile and of the camera profile that subclasses it, which the 26.2 header marks API_AVAILABLE(ios(10.0)) and API_UNAVAILABLE(macos)",
+   "effect": "the accessory the profile belongs to, weakly held, and nil for a profile that has none",
+   "facts": "facts/HomeKit/HMAccessoryProfile.md",
+   "source": "the HomeKit header of SDK 26.2 for the contract, each property's line quoted in the facts; the check is ast_check.py, which compares the port's declarations with the header's from clang's AST for arm64-apple-ios12.0, and oracle.py, which counts the selector names in the 12.0 and 16.0 arm64 caches"
+  },
+  {
+   "api": "-[HMCameraProfile streamControl]",
+   "kind": "property",
+   "introduced": "10.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "iOS 10.0 is the release of the accessory profile and of the camera profile that subclasses it, which the 26.2 header marks API_AVAILABLE(ios(10.0)) and API_UNAVAILABLE(macos)",
+   "effect": "nil: this library carries no camera control class, and the header's nullable is how a camera says which controls it does not publish",
+   "facts": "facts/HomeKit/HMAccessoryProfile.md",
+   "source": "the HomeKit header of SDK 26.2 for the contract, each property's line quoted in the facts; the check is ast_check.py, which compares the port's declarations with the header's from clang's AST for arm64-apple-ios12.0, and oracle.py, which counts the selector names in the 12.0 and 16.0 arm64 caches"
+  },
+  {
+   "api": "-[HMCameraProfile snapshotControl]",
+   "kind": "property",
+   "introduced": "10.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "iOS 10.0 is the release of the accessory profile and of the camera profile that subclasses it, which the 26.2 header marks API_AVAILABLE(ios(10.0)) and API_UNAVAILABLE(macos)",
+   "effect": "nil, as above",
+   "facts": "facts/HomeKit/HMAccessoryProfile.md",
+   "source": "the HomeKit header of SDK 26.2 for the contract, each property's line quoted in the facts; the check is ast_check.py, which compares the port's declarations with the header's from clang's AST for arm64-apple-ios12.0, and oracle.py, which counts the selector names in the 12.0 and 16.0 arm64 caches"
+  },
+  {
+   "api": "-[HMCameraProfile settingsControl]",
+   "kind": "property",
+   "introduced": "10.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "iOS 10.0 is the release of the accessory profile and of the camera profile that subclasses it, which the 26.2 header marks API_AVAILABLE(ios(10.0)) and API_UNAVAILABLE(macos)",
+   "effect": "nil, as above",
+   "facts": "facts/HomeKit/HMAccessoryProfile.md",
+   "source": "the HomeKit header of SDK 26.2 for the contract, each property's line quoted in the facts; the check is ast_check.py, which compares the port's declarations with the header's from clang's AST for arm64-apple-ios12.0, and oracle.py, which counts the selector names in the 12.0 and 16.0 arm64 caches"
+  },
+  {
+   "api": "-[HMCameraProfile speakerControl]",
+   "kind": "property",
+   "introduced": "10.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "iOS 10.0 is the release of the accessory profile and of the camera profile that subclasses it, which the 26.2 header marks API_AVAILABLE(ios(10.0)) and API_UNAVAILABLE(macos)",
+   "effect": "nil, as above",
+   "facts": "facts/HomeKit/HMAccessoryProfile.md",
+   "source": "the HomeKit header of SDK 26.2 for the contract, each property's line quoted in the facts; the check is ast_check.py, which compares the port's declarations with the header's from clang's AST for arm64-apple-ios12.0, and oracle.py, which counts the selector names in the 12.0 and 16.0 arm64 caches"
+  }
+ ]
 }
