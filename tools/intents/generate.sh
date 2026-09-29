@@ -42,12 +42,30 @@ mkdir -p "$work" "$registry"
 echo "#import <Intents/Intents.h>" > "$work/umbrella.m"
 port_version=$(basename "$PORT_SDK" | sed 's/iPhoneOS//; s/\.sdk//')
 newer_version=$(basename "$SDK_262" | sed 's/iPhoneOS//; s/\.sdk//')
-[ -f "$work/ast-port.json" ] || xcrun clang -target "arm64-apple-ios$port_version" -isysroot "$PORT_SDK" \
-    -fsyntax-only -x objective-c -Wno-everything -Xclang -ast-dump=json "$work/umbrella.m" \
-    > "$work/ast-port.json"
-[ -f "$work/ast-262.json" ] || xcrun clang -target "arm64-apple-ios$newer_version" -isysroot "$SDK_262" \
-    -fsyntax-only -x objective-c -Wno-everything -Xclang -ast-dump=json "$work/umbrella.m" \
-    > "$work/ast-262.json"
+# The dump is keyed by what it was read from: the SDK's own header mtimes and the umbrella that
+# imports them.  The plain `[ -f ]` test that was here meant that a run with a different SDK, or
+# after a header changed, read a dump of something else and generated from it, and it meant that a
+# second run in the same turn paid the parse again - measured, 10 minutes for the pair, and it is
+# the whole cost of a rerun.  So the key is written beside the dump and compared, and a mismatch
+# re-reads.
+ast_dump() {           # ast_dump SDK VERSION OUT
+    # The key is the newest header mtime, the number of headers, and the umbrella's own: a
+    # changed header or a changed import list re-reads, and nothing else does.
+    key=$( { find "$1/System/Library/Frameworks" -name '*.h' -print0 | xargs -0 stat -f '%m' 2>/dev/null | sort -rn | head -1
+             find "$1/System/Library/Frameworks" -name '*.h' | wc -l
+             stat -f '%m' "$work/umbrella.m"; } | tr '\n' ' ')
+    if [ -f "$3" ] && [ -f "$3.key" ] && [ "$(cat "$3.key")" = "$key" ]; then
+        echo "    ast $3: reused, $(wc -c < "$3" | tr -d ' ') bytes"
+        return 0
+    fi
+    echo "    ast $3: reading $1"
+    xcrun clang -target "arm64-apple-ios$2" -isysroot "$1" \
+        -fsyntax-only -x objective-c -Wno-everything -Xclang -ast-dump=json "$work/umbrella.m" \
+        > "$3"
+    echo "$key" > "$3.key"
+}
+ast_dump "$PORT_SDK" "$port_version" "$work/ast-port.json"
+ast_dump "$SDK_262" "$newer_version" "$work/ast-262.json"
 
 carried=$groups/intents-classes.txt
 # The generator's own vocabulary of why a member is not answered, written out so an absent entry's
