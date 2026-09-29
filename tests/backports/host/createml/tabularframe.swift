@@ -366,6 +366,19 @@ checkEqual("the last kept position reads the base's last kept cell", keptPositio
 checkEqual("a discontiguous slice walks its kept positions, not a run",
            keptPositions.map { String(describing: $0) },
            ["Optional(5)", "Optional(4)", "Optional(20)"])
+// The backward walk, and the host's own answer for it, measured on Apple's own with the backward walk
+// **first** so nothing before it could end the process:
+//
+//     host reversed() = ["Optional(20)", "Optional(4)", "Optional(5)"]
+//     host reached the end of the backward walk without trapping
+//
+// So a sparse slice walks backwards, and only the boundary is a trap: `index(before: startIndex)` is
+// refused, and a walk that ends at the last kept position is not. The port answers the same three
+// values in the same order, which is what the earlier control was missing - it had died on the
+// boundary before reaching this.
+checkEqual("a discontiguous slice walks backwards over its kept positions",
+           keptPositions.reversed().map { String(describing: $0) },
+           ["Optional(20)", "Optional(4)", "Optional(5)"])
 checkEqual("a column filtered reads back through the slice",
            keptPositions.values, [5, 4, 20])
 checkEqual("a column's slice", writable[1..<4].values, [1, 4, 20])
