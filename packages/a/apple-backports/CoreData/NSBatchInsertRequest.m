@@ -49,12 +49,25 @@
 
 #pragma mark - The initialiser the header deprecates -init in favour of
 
-/// -init is API_DEPRECATED_WITH_REPLACEMENT("initWithEntityName", ios(13.0,14.0)), so it exists
-/// and it leaves the request with no entity: a request with no entity is one no store can run, and
-/// that is what an unconfigured one is.
+/// -init raises, and that is not a choice the port makes. Measured on the host, with
+/// [[NSBatchInsertRequest alloc] init] inside @try/@catch:
+///
+///   init  raised=1  answer=nil  reason=-init results in undefined behavior for NSBatchInsertRequest
+///
+/// and the other NINE initialisers and constructors in the same listing answer raised=0 with a
+/// non-nil request. So a batch insert request is made through initWithEntityName: or initWith: and
+/// never through -init, and the reason text is Apple's own, word for word, because a program that
+/// catches this reads it.
 - (instancetype)init
 {
-    return [self initWithEntityName:@"" objects:@[]];
+    // The reason is the LITERAL, and not NSStringFromClass: the port binary renames the class
+    // with -DNSBatchInsertRequest=CharonBatchInsertRequest so nothing links two definitions of it,
+    // and a class-name substitution would then spell CharonBatchInsertRequest where Apple spells
+    // NSBatchInsertRequest - a different answer for the same exception. Measured, the host's is
+    // exactly: -init results in undefined behavior for NSBatchInsertRequest
+    [NSException raise:NSInternalInconsistencyException
+                format:@"-init results in undefined behavior for NSBatchInsertRequest"];
+    return nil;
 }
 
 - (instancetype)initWithEntityName:(NSString *)entityName
@@ -74,6 +87,10 @@
     self = [super init];
     if (self) {
         _charonEntity = entity;
+        // Measured on the host: initWithEntity:objects: answers entityName=Row, so the NAME is set
+        // from the entity's and not only the entity. The dictionaryHandler and managedObjectHandler
+        // entity forms are checked the same way by the per-initialiser listing.
+        _charonEntityName = [entity.name copy];
         _charonObjectsToInsert = [dictionaries copy];
     }
     return self;
@@ -108,6 +125,14 @@
 {
     self = [self initWithEntity:entity objects:@[]];
     if (self) {
+        _charonEntityName = [entity.name copy];
+        _charonManagedObjectHandler = [handler copy];
+    }
+    if (self) {
+        _charonEntityName = [entity.name copy];
+        _charonDictionaryHandler = [handler copy];
+    }
+    if (self) {
         _charonEntity = entity;
         _charonDictionaryHandler = [handler copy];
     }
@@ -118,6 +143,14 @@
             managedObjectHandler:(BOOL (^)(NSManagedObject *))handler
 {
     self = [self initWithEntity:entity objects:@[]];
+    if (self) {
+        _charonEntityName = [entity.name copy];
+        _charonManagedObjectHandler = [handler copy];
+    }
+    if (self) {
+        _charonEntityName = [entity.name copy];
+        _charonDictionaryHandler = [handler copy];
+    }
     if (self) {
         _charonEntity = entity;
         _charonManagedObjectHandler = [handler copy];

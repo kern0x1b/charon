@@ -37,34 +37,36 @@ sed -i.bak '/#import "CharonCoreData.h"/d' "$build/port.m" 2>/dev/null || true
 rm -f "$build"/*.bak
 
 
+# Two builds of the SAME probe: once against the port's class, once against the framework's own.
+# The host Mac has a real NSBatchInsertRequest from the same header, so the two runs are the same
+# thirteen questions asked of two implementations, and the verdict is the diff between them.
+# Nothing is persisted: the store is NSInMemoryStoreType, and there is no CloudKit here.
 xcrun clang -fobjc-arc -w -I"$FP/CoreData" -c "$build/port.m" -o "$build/port.o"
 xcrun clang -fobjc-arc -w "$here/differential.m" "$build/port.o" \
-    -framework Foundation -framework CoreData -o "$build/differential"
-"$build/differential" > "$build/port.tsv" 2>/dev/null || true
+    -framework Foundation -framework CoreData -o "$build/differential-port"
+xcrun clang -fobjc-arc -w "$here/differential-host.m" \
+    -framework Foundation -framework CoreData -o "$build/differential-host"
+"$build/differential-port" > "$build/port.tsv"
+"$build/differential-host" > "$build/host.tsv"
+# Both runs must have answered: `diff` of two empty files is equal, and two silent runs would
+# print a green that measured nothing. The line count is the check.
+for side in port host; do
+    lines=$(wc -l < "$build/$side.tsv" | tr -d ' ')
+    if [ "$lines" -lt 13 ]; then
+        echo "NO ANSWER: the $side run printed $lines line(s) and thirteen were asked for, so a"
+        echo "diff of two empty or short files would be a green that measured nothing."
+        exit 3
+    fi
+done
 
-# The expected, written down: what Apple's own answers are, and the class's own default. The
-# verdict is a diff against it, so a port that answers something else is red.
-cat > "$build/expected.tsv" <<'EXPECTED'
-byEntity.entity	Row
-byEntity.entityName	(nil)
-byName.entityName	Row
-byName.firstRow.name	one
-byName.objects	2
-byName.resultType.set	1
-dictionaryHandler.called	0
-dictionaryHandler.present	true
-init.entityName	
-init.objects	0
-init.resultType	0
-in-memory store	added
-managedObjectHandler.called	0
-managedObjectHandler.present	true
-ResultTypeCount	2
-EXPECTED
+# The verdict is the host's answers against the port's. The table of expected values only
+# DOCUMENTS the run now; it is not what green means.
 LC_ALL=C sort "$build/port.tsv" > "$build/port.sorted"
-LC_ALL=C sort "$build/expected.tsv" > "$build/expected.sorted"
-if diff "$build/expected.sorted" "$build/port.sorted" > "$build/diff"; then
-    echo "VERDICT: green - the port answers what Apple's answers on every line"
+LC_ALL=C sort "$build/host.tsv" > "$build/host.sorted"
+echo "--- host.tsv"; cat "$build/host.tsv"
+if diff "$build/host.sorted" >/dev/null 2>&1; then :; fi
+if diff "$build/host.sorted" "$build/port.sorted" > "$build/diff"; then
+    echo "VERDICT: green - the port answers exactly what Apple's own answers, on all 13 lines"
     exit 0
 fi
 cat "$build/diff"
