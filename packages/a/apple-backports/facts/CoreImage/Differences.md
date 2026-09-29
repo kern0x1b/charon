@@ -8,28 +8,49 @@ run is `ciimage: 551 measurements, 525 the same, 17 different, 44 one side only`
 what it measures now that two rows came out" at the end, which also carries the control that shows the
 comparator can fail. The 17 are the same 17.
 
-## CoreImage, the 17 different
+## CoreImage, the 17 the first-number view found
+
+**This table is the first-number view and it undercounts.** `compare.py` read only the number behind the key, so a line was the same whatever followed it, and the count it gave was 17. The count of what is actually different is 77 and it is grouped at the end of this file. One row of this table is corrected in place where the whole-tail comparison refutes it; the others are left as they were written, because they are the record of what was seen then and not a claim about the tree now.
 
 | group | n | what the two sides say | whose |
 | --- | --- | --- | --- |
-| the clamped family | 6 | `alg clamped extent/rect` print an extent of +/-1.8e308 on the port and the box of the crop on the host. `CharonCIClamp` hands the framework's own nested ask - the one `-[CIAffineClamp outputImage]` makes while the filter is producing its output - an image that is not yet clamped, and the framework's answer for a half-built image is an unbounded one. The *pixels* of `alg clamped extent` agree (`6821f505`); only the extent is wrong. | ours: the clamp has to hand back a clamped image for the nested ask, not the input |
+| the clamped family | 6 | `alg clamped extent/rect` print an extent of +/-1.8e308 on the port and the box of the crop on the host. `CharonCIClamp` hands the framework's own nested ask - the one `-[CIAffineClamp outputImage]` makes while the filter is producing its output - an image that is not yet clamped, and the framework's answer for a half-built image is an unbounded one. The *pixels* do not agree either, and the old comparator said they did because it read only the length: the host renders 96 bytes with checksum `6821f505` and the port 24 with `63fe7f63`, and the port's own four pixels are `153 76 229 80`, `153 76 229 30` and so on against the host's uniform `153 77 229 128`. | ours: the clamp has to hand back a clamped image for the nested ask, not the input |
 | the context's working format | 2 | `ctx space nil/srgb working format 2056` against the port's `kCIFormatRGBA8`. A context made with a colour space and no format is not an 8-bit RGBA working format on the host; the port answers its own default. | ours: the default is the release's, and it is not the port's |
 | the shapes under a transform | 7 | `shape turned`, `shape turned interior` and their cropped pixels: the host's bounds of a rotated rectangle and the port's differ by a pixel. `CGRectApplyAffineTransform` bounds the four corners; the host appears to bound the edges. | ours, or a documented divergence: it is one pixel on a rotated bound |
 | the representations, one-sided | 36 | `repr rgba8/l8/rgbaf` PNG, TIFF and JPEG, and `repr jpeg`, are on the host and on neither side on the port, and `repr write png` is 0 where the host's is 1. `charon_representationOfImage:` is returning nil. | ours |
 | the clamped family, one-sided | 4 | the per-pixel lines of `alg clamped rect`, which the port has fewer of because its clamped image has a different extent. | follows from the first row |
 
-## CoreImage, the round trip: a defect of ours, found and not fixed
+## CoreImage, the round trip: both halves of it are `absent` now
 
-`unpre round trip` is `6821f505` on the host and `3c04ef85` in the port. `6821f505` is the source
-checksum, so on the host a premultiply followed by an unpremultiply is **the identity**. In the port it
-is not, and the reason is the kind of unpremultiply the port has: the release's is **lazy** and
-composes, and the port's is an **eager** render into bytes, so the second pass quantises what the first
-already quantised. Composing an unpremultiply needs a filter that divides by alpha, which the release
-does not have, so the port cannot be lazy here. This is the one place in the two rows where the port is
-measurably wrong, and it belongs in `crutches.md` as a named eager-render crutch rather than in a
-facts file as a difference.
+This section first said `unpre round trip` was `6821f505` on the host and `3c04ef85` in the port, and
+read the difference as the unpremultiply's: "the release's is lazy and composes, and the port's is an
+eager render into bytes". Two things were wrong with that, and the whole-tail comparison is what
+showed them.
 
-## ModelIO, the 5 different
+The line never measured the unpremultiply. Its source was
+`put_bytes(@"unpre round trip", render([[finite imageByPremultiplyingAlpha] imageByCroppingToRect:bounds]));`,
+which asks `-[CIImage imageByPremultiplyingAlpha]` and nothing else - so the divergence belonged to the
+premultiply row, not to either of the two rows this file's neighbours were about.
+
+And the two rows themselves are both `absent` now, and neither is a crutch in `crutches.md`:
+
+  - `-[CIImage imageByPremultiplyingAlpha]` is `absent` in `registry/CoreImage/algebra10.json`. The
+    port's implementation was a colour matrix whose vectors took the alpha into red, green and blue,
+    which is a grey image of the alpha, not a premultiplied one: measured, the system renders
+    `96 487584e5` with pixel 0 `77 38 115 128` and the port rendered `96 fd3b7745` with pixel 0
+    `128 128 128 128`. A colour matrix is linear over the four channels it is given, so no filter of
+    the release scales a channel by the alpha of the same pixel, and the release carries neither
+    premultiply filter. `facts/CoreImage/ImageAlgebra.md` carries the measurement.
+
+  - `-[CIImage imageByUnpremultiplyingAlpha]` and `-[CIImage imageBySettingProperties:]` were taken
+    out one commit earlier, for the reasons in `facts/CoreImage/ContextOwner.md`.
+
+The probe does not ask any of the three, and `reportPremultiply` is gone with them. The diff on this
+page is what remains, and every number in it is a measurement of the port.
+
+## ModelIO, the 5 the first-number view found
+
+The same: the whole-tail count for the ModelIO differential is 42, grouped at the end of this file, and this table is what the first-number view saw.
 
 | group | n | what the two sides say | whose |
 | --- | --- | --- | --- |
@@ -38,7 +59,7 @@ facts file as a difference.
 | the voxel index extent | 1 | the system answers `INT_MAX` for small arrays and zero for larger, the same on every run; the port derives the extent from the box and the voxel size. | a named divergence, the system's answer carrying no information about the division |
 | the union over such an array | 1 | follows from the extent: two voxels in the port, three on the system. | follows |
 
-## ModelIO, the 55 one-sided
+## ModelIO, the one-sided lines, the first-number view
 
 96 of the original 111 were the per-vertex lines of a mesh the two sides built with a different number
 of vertices, and they follow from the tessellation row. The rest are the OBJ submesh naming and index
@@ -47,70 +68,6 @@ and material names an asset takes from its file (the system takes `tri` and `tri
 Material`; the port takes none of them), the `specular` property's type (a float on the system in the
 physically plausible function, a colour in the older one in the port), and the clamped-family
 equivalents above. **None of them is a port feature the system lacks.**
-
-## Why the mutations did not go red: the two files were not in the probe's build
-
-**Correction.** This section first said the three rows were *shadowed on the host* - that the macOS
-framework carries those selectors, so a category answering them loses, and the two processes measured
-the framework against itself. That was wrong. The two files were **copied into the probe's port build
-and never compiled**: `run.sh`'s `piece` list named `CIImageProperties` and `CIImageUnpremultiply` for
-the `cp` and not for the compile, so the port's probe had no `charon_CIImage_*` symbols at all. The
-`dladdr` I took as proof of shadowing was proof that the object was missing.
-
-With the two pieces in the list, `dladdr` names the **probe's own image** for all three:
-
-    imp properties                    0x100991a44 probe
-    imp imageByUnpremultiplyingAlpha   0x10099207c probe
-    imp imageByClampingToExtent       0x10098fea4 probe
-
-and the installer's own stderr says what it decided, which was the open question from that `dladdr`:
-
-    charon: replaced -[properties]
-    charon: replaced -[imageBySettingProperties:]
-    charon: replaced -[CIImage imageByUnpremultiplyingAlpha]
-
-So the `+load` runs and does replace, and the probe calls the port's own exported functions directly.
-The category was never shadowed and the `+load` was never broken.
-
-**And the port's probe then crashes** - and the crash is a stack overflow, measured:
-
-    breakpoint set -n charon_CIImage_properties -i 500, then run
-    stop reason: breakpoint 1.1
-    frame #0: probe`charon_CIImage_properties
-    hit count = 501
-
-`EXC_BAD_ACCESS (code=2)` at `0x16f603fe0` is the main thread's **guard page** just below its stack,
-which is what a stack overflow faults on; `bt` shows only frame #0 because the stack is gone, so the
-recursion is invisible to an unwind. The breakpoint count is what shows it, and it is 501 and counting.
-
-**The mechanism, and it is not the one I first guessed.** The installer captures the release's `-properties`
-IMP with
-
-    Method method = class_getInstanceMethod([CIImage class], @selector(properties));
-    CharonCIPropertiesRelease = method_getImplementation(method);
-
-but **the runtime attaches a file's categories before it runs that file's `+load`**, so
-`class_getInstanceMethod` returns this same file's own `-[CIImage properties]`, not the framework's. The
-captured "release IMP" is therefore the category's method, which calls `charon_CIImage_properties`, which
-calls the captured IMP - a two-frame cycle, and the stack goes.
-
-The guard that would have caught it is not `captured != replacement`, which is true here and passes:
-the captured is the *category's* method, a third thing. It is **"the captured IMP is not in this image"**,
-which is what `dladdr` is for, asserted at install.
-
-The rows are therefore not measured yet, the mutations have not been re-run, and the `ciimage` count
-still carries measurements the probe does not make.
-
-## The two mutations did not go red, and that is not a proof
-
-Flipping one line in each of the two new files - `imageBySettingProperties:` returning the image it was
-called on, and the unpremultiply dropping its clamp - left the verdict at exactly `559/534/17/42`, with
-`props distinct 1` and `unpre finite 96 07488805` unchanged on both sides. The probe is reading the rows
-(lines present in both answers files, and the values agree with the host), so the mutations either did
-not reach the built sources or the rows are insensitive to them. I could not determine which in this
-pass, and I am not claiming either row is proved: this is the same failure mode as the first
-"four mutations still gave 252/252", where the port process was the host. **The next thing to do is to
-find out which, before either row is claimed as held.**
 
 ## The 4.3 lower bound, measured: CoreImage arrives in 5.0
 
@@ -131,74 +88,62 @@ The `image.exports` accessor inside `apple.dyld` did not resolve from an `open_c
 this establishes the **image's presence** and not which of the two releases first exports the four
 classes from it. The presence is what the placement needs.
 
-## The 4.3 gate, and what it means for the two new files
+## The count, and what it measures now that the whole tail is compared
 
-`4.3` fails on two symbols, and the reason is the release's:
+    ciimage: 539 measurements, 454 the same, 77 different, 42 one side only (tolerance 0.0005)
 
-```
-Undefined symbols for architecture armv7:
-  "_OBJC_CLASS_$_CIContext", referenced from:
-      objc-class-ref in CIImageUnpremultiply11.o
-  "_OBJC_CLASS_$_CIImage", referenced from: ...
-```
+`tests/backports/host/modelio/compare.py` used to read only the first number of a line, keyed by the
+text in front of it, and count the line as the same whatever followed. Everything after that number -
+the pixel tuples, the checksums, the extents, the bounds - was never compared, and the count above
+was `551 measurements, 525 the same, 17 different, 42 one side only`, which said "17 different" about
+a tree that had five whole families of them wrong. The measurement is now the first number **and the
+rest of the line**.
 
-iOS 4.3 **has** CIImage and CIContext. So at that band the release supplies the classes, the port's own
-`CIImage+FilterParameters.m` is dropped as carrying API the release has, and the two new files - which
-define only selectors the release lacks, so they are kept - are left referencing classes no port object
-defines. That is the "a file whose exports a band's release already has is left out of that band" trap
-arriving through the class rather than through a C function, and it is why neither new file may name a
-class without the band carrying it. Not fixed; the next step is to see which of the port's files is
-dropped at 4.3 and to decide between keeping the arithmetic in a file the band keeps and having the
-class come from the release.
+The old comparator on a green pair - the host's own answers against a copy of themselves with 140
+pixel tuples and one checksum changed after the first number - reported
+`551 measurements, 551 the same, 0 different, 0 one side only`, exit 0. The new one on the same pair
+reports `551 measurements, 410 the same, 141 different, 0 one side only`, exit 1. That gap is what the
+count was not seeing.
 
-## The count, and what it measures now that two rows came out
+### The 77, grouped, and what each group is
 
-    ciimage: 551 measurements, 525 the same, 17 different, 44 one side only (tolerance 0.0005)
+Every one of them is a measurement of the port: the port process is the framework's own CoreImage
+with the port's categories on it, and `run.sh:69-72` refuses a port probe that is not the port.
 
-That is this tree's own run of `tests/backports/host/ciimage/pixel/run.sh`, on the two processes the
-script builds. The comparator can fail, which is what makes the numbers worth reading: with one number
-the two sides agree on changed on the port side, the same comparator on the same two files reports
+| group | n | what it is | whose to fix |
+| --- | --- | --- | --- |
+| `shape` | 28 | `CIFilterShape` under a transform and a crop: the host's bounds of a rotated rectangle and the port's differ by about a pixel, and the pixel counts of the cropped ones follow | ours, or a documented divergence: `CGRectApplyAffineTransform` bounds the four corners, the host appears to bound the edges |
+| `alg alpha` | 12 | `-imageBySettingAlphaOneInExtent:`, extent and pixels: the host sets the alpha to one and keeps the colour, the port's blend-and-colour-matrix gives a different picture | ours |
+| `alg intermediate` | 10 | both spellings of `-imageByInsertingIntermediate`, off by one unit in the green channel of every pixel | ours |
+| `alg clamped` | 8 | `-imageByClampingToExtent` and `-imageByClampingToRect:`: the host's clamped image is the infinite extent and its 96 bytes, the port's is `0 0 3 2` and 24 | ours |
+| `alg transformed` | 5 | the high-quality downsample, off by one or two in two channels | ours, one rounding step |
+| `repr` | 4 | the representations: `repr rgba8 png` is `none` on the host and a file on the port, and `repr write png` is 0 against 1 | ours |
+| `ctx space` | 2 | the context's working format: the host answers 2056 (`kCIFormatRGBAh`) with a named working colour space, the port 264 (`kCIFormatRGBA8`) | ours, and see `ContextOwner.md` for the two properties that are not carried at all |
+| `color` | 6 | the named colours: three components off by one unit on some of the ten | ours |
+| `imp` | 1 | the address of `-imageByClampingToExtent`: the framework's in the host process, the port's in the port's. The label says which, and that it is the port is the point | not a difference at all: an address cannot be equal across two processes, and the line is here so a reader sees that |
+| `odd set` | 1 | an accumulator of a fractional extent, `1.5 -2.25 5.5 3.5`: the system writes nothing into it (`60 f6009964`, four pixels `0 0 0 0`) and the port writes the whole-pixel part of the rectangle it is given | ours, and named in `ImageAccumulator.md` |
 
-    ciimage: 551 measurements, 524 the same, 18 different, 44 one side only (tolerance 0.0005)
-    different: rgba extent 0.0000 0.0000 8.0000 4.0000
-            the port: rgba extent 12345 0.0000 8.0000 4.0000
+Three of these were bugs in the port and are fixed, with the numbers in the commits that fixed them:
+the accumulator wrote nothing at all (`075f0d2f5`), the premultiply was a grey image of the alpha
+(`d255cf714`), and the whole family of 4x4 matrices was built by a braced initialiser that is not an
+initialiser (`6c0b43d89`).
 
-### The 17 are the 17 that were there before, and the two rows that left are not among them
+### What the 42 one-sided lines are
 
-Before, the count was `564 measurements, 532 the same, 19 different, 52 one side only`. The thirteen
-measurements that went with `-imageBySettingProperties:` and `-imageByUnpremultiplyingAlpha` are out of
-the probe with the rows: both are `absent` in `registry/CoreImage/ctxowner9.json`, the port answers
-neither selector, and a probe that called them would have been measuring the host framework in both
-processes. The full reason, both measurements and why neither row is one of the four statuses, is in
-`facts/CoreImage/ContextOwner.md`. Nothing was dropped to make the count smaller: 551 is what the script
-prints.
+42 of them, and they are measurements the host cannot be asked, not disagreements: the names each
+process gives itself, the lines over a format the framework's own accumulator does not accept, and
+the per-pixel lines of the clamped family, whose extent differs and so whose line count does too. The
+old count said 44; the two that left are the premultiply's four pixels, gone with the row.
 
-### The two rows that left, in one line each
+### The ModelIO differential, on the same comparator
 
-- `-imageBySettingProperties:` — `props distinct 0` where the system gives `1`, and **no public
-  construction reaches a distinct image**: `-copy`, `-mutableCopy`, an identity affine transform, a crop
-  to the image's own extent, an identity `CIColorMatrix` and a `CIGammaAdjust` at power 1 and at power 2
-  all return the same object, seven of seven, the last of which visibly changes the image. The identity is
-  built inside the framework and is not reachable from outside it.
-- `-imageByUnpremultiplyingAlpha` — `unpre finite pixel 0` is `255 153 255 128` on the system and
-  `255 151 255 128` in the port: the division is over an 8-bit render of an already premultiplied buffer,
-  and `kCIFormatRGBAh` (iOS 6.0, `CIImage.h:51`) is **linear**, so it trades a quantisation for a colour
-  conversion rather than removing either.
+    modelio: 317 measurements, 263 the same, 42 different, 55 one side only (tolerance 0.0005)
 
-### A correction: `unpre round trip` never measured the unpremultiply
+against `300 the same, 5 different` with the old one, which read only the first number. The 42 are the
+generators' index counts under a transform (the host shares a vertex where the port does not), the
+voxel array's index extent, the meshes' bounds, and `+canImportFileExtension:` for `usd`, which the
+host answers YES and the port NO. The transform stack's four matrix columns, which the old comparator
+called the same because the first number is 0 either way, are equal now - `6c0b43d89` carries that.
 
-Its source is `put_bytes(@"unpre round trip", render([[finite imageByPremultiplyingAlpha] imageByCroppingToRect:bounds]));`
-— it asks `-[CIImage imageByPremultiplyingAlpha]` and nothing else, so the divergence
-`487584e5` (the source checksum, so the system's is exactly the identity) against `fd3b7745` belongs to
-the premultiply row in `registry/CoreImage/algebra10.json`, and never to the two rows above. The earlier
-pass read it as "a premultiply followed by an unpremultiply is not the identity" and used it to justify
-their status. The probe now asks the premultiply under its own name, `premul`, so the line says what it
-measures.
-
-### UNMEASURED, and it is a claim about the host, not about the release
-
-Everything above is the macOS 26 host's CoreImage; the port runs against the **release's**. CoreImage
-arrives with iOS 5.0 (measured against the armv7 caches: the image is absent from 4.3 and 4.3.5, present
-in 5.0), so on iOS 6.1.3 the seven constructions would have to be measured again before anyone may say
-the release behaves as the host does. Nothing in this file is a claim about what iOS 6.1.3 returns, and
-nothing has run on a device or under `xmake emulate`.
+`tests/backports/host/modelio/run.sh` defaulted its tolerance in `d915b4927`; before that the
+differential could not be run as shipped.
