@@ -172,6 +172,17 @@ HMHomeAccessControl *CharonHomeKitHomeAccessControl(HMHome *home, HMUser *user);
 // HMAccessoryHome10_0.m.
 @interface HMAccessorySetupPayload () @property (nonatomic, strong, nullable) NSURL *charon_setupPayloadURL;
 @end
+
+// HMAccessorySetupResult is the other setup class with no public initialiser -- the header marks -init
+// and +new NS_UNAVAILABLE -- and a result is made by the graph that ran the setup, not by a caller. The
+// two values it reports are therefore the construction's parameters, in the init family under a name of
+// the port's own, and there is no other way to make one: a result that could be conjured empty would
+// name a home it did not add anything to.
+@interface HMAccessorySetupResult (CharonHomeKitSetup)
+- (instancetype)charon_initWithHomeIdentifier:(NSUUID *)homeIdentifier
+                       accessoryIdentifiers:(NSArray<NSUUID *> *)accessoryIdentifiers
+    __attribute__((objc_method_family(init)));
+@end
 @interface HMCharacteristicThresholdRangeEvent () @property (nonatomic, strong, nullable) HMCharacteristic *charon_characteristic;
 @property (nonatomic, strong, nullable) HMNumberRange *charon_thresholdRange; @end
 @interface HMMutableCharacteristicThresholdRangeEvent () @end
