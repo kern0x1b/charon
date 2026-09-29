@@ -1146,10 +1146,15 @@ function wiring(backports, root, found)
         end
     end
     if count > 0 then
-        print(string.format("        the arm found %d such gaps, %d of them in the table of main's", count, (function()
-            local n = 0
-            for _ in pairs(owed) do n = n + 1 end
-            return n
-        end)()))
+        -- Two figures, and two numbers: how many gaps the arm found, and how many entries the
+        -- table holds.  1354f2c9c said this print was now "two separate figures over the two
+        -- tables it counts" and it was not - it was one string, and read as 13 of the 11.  The
+        -- third figure is the two entries the arm cannot see, so that the table and the finding
+        -- account for each other: found + invisible = the table.
+        local tabulated, invisible_count = 0, 0
+        for _ in pairs(owed) do tabulated = tabulated + 1 end
+        for _ in pairs(invisible) do invisible_count = invisible_count + 1 end
+        print(string.format("        the arm found %d gaps and the table of main's holds %d entries: %d found, %d the arm cannot see, %d neither found nor explained",
+                            count, tabulated, count, invisible_count, tabulated - count - invisible_count))
     end
 end
