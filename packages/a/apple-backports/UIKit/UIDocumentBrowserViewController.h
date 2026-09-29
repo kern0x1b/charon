@@ -72,15 +72,13 @@ API_AVAILABLE(ios(11.0)) API_UNAVAILABLE(watchos, tvos)
 
 /* The same transition in the 11.0 spelling, which is two rows and not one. */
 - (UIDocumentBrowserTransitionController *)transitionControllerForDocumentURL:(NSURL *)documentURL
-    API_DEPRECATED_WITH_REPLACEMENT("transitionControllerForDocumentAtURL:", ios(11.0, 12.0))
-    API_UNAVAILABLE(visionos);
+    API_DEPRECATED_WITH_REPLACEMENT("transitionControllerForDocumentAtURL:", ios(11.0, 12.0));
 
 /* The actions the user may take on a document. */
 @property (copy, nonatomic) NSArray<UIDocumentBrowserAction *> *customActions;
 
 /* How the browser looks. */
-@property (assign, nonatomic) UIDocumentBrowserUserInterfaceStyle browserUserInterfaceStyle
-    API_UNAVAILABLE(visionos);
+@property (assign, nonatomic) UIDocumentBrowserUserInterfaceStyle browserUserInterfaceStyle;
 
 @end
 
