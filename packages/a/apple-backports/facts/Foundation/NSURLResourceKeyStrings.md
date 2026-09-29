@@ -130,3 +130,48 @@ this file where `maximum` is *below* `introduced`: `tools/registry-maximum.py` c
 reports this row, correctly, because its rule is the availability and the ladder's answer is the
 band. The rule and the ladder are both right about different things, and which one a given row owes
 its `maximum` to is the question the table above answers.
+
+## How many rows this family still owes, counted by a script in the tree
+
+The count a report quotes has to be repeatable, and the number that circulated for this series
+("131 absent Foundation rows, 116 remain") does not reproduce: it was read off a corpus export, and
+the export's framework column is empty for every registry file whose JSON carries no `framework` key,
+so counting by framework there silently drops rows. `tools/registry-absent.py` counts the registry
+files themselves, by path — `registry/<Framework>.json` and `registry/<Framework>/<part>.json`, the two
+shapes the registry README gives — and refuses a path with no registry under it rather than printing
+zero of zero.
+
+```
+$ python3 tools/registry-absent.py            # the tree these fifteen landed in
+Foundation                 116         9           786         48               116
+16269 rows, 3340 absent, over 65 frameworks
+
+$ python3 tools/registry-absent.py <the base's registry>    # 6fcdc631b, before them
+Foundation                 131         9           771         48               131
+16269 rows, 3355 absent, over 65 frameworks
+```
+
+So the fifteen are `131 -> 116` absent and `771 -> 786` implemented, measured on `6fcdc631b` and on
+this tree by the same script, and nothing else moved.
+
+## What the release ladder can and cannot answer for these fifteen
+
+The ladder on this machine holds 50 rungs, the newest 18.0, and nothing between 12.0 and 16.0, so a
+name it dates at 18.0 is an upper bound and not a measurement of 18.0. Read through
+`tools/release-split.lua` over an object that defines the names, with the two controls a reading needs
+— a name a held rung exports, and a planted name no release has:
+
+```
+_NSFileProtectionCompleteWhenUserInactive                  18.0
+_NSURLFileProtectionCompleteWhenUserInactive               18.0
+_NSCalendarIdentifierCharonPlantedNoSuchName               none
+_NSHomeDirectory                                           3.0        (the control: a rung this machine holds exports it)
+```
+
+So: the thirteen names of 26.0 and the one of 18.2 are exported by **no** rung this machine holds —
+`none` is the answer, and a planted name reads the same `none`, which is what makes it a reading rather
+than a silence. The host's own Foundation is therefore the only oracle for fourteen of the fifteen,
+and for the two 17.0 names the ladder gives an upper bound (18.0) while the availability gives 17.0,
+which is the sibling `NSURLFileProtectionCompleteWhenUserInactive`'s own `maximum` in this tree and the
+value `NSFileProtectionCompleteWhenUserInactive` now carries. `tools/registry-maximum.py` is green on
+this tree with that value: `16269 rows, 261 with a maximum, 0 not at the release that has the API`.

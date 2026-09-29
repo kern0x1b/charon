@@ -106,10 +106,10 @@
       "kind": "constant",
       "introduced": "17.0",
       "minimum": "6.0",
-      "maximum": "16.0",
+      "maximum": "17.0",
       "status": "implemented",
       "facts": "facts/Foundation/NSURLResourceKeyStrings.md",
-      "source": "SDK 26.2 headers for the declaration and its availability, which give 17.0; the value read out of the host's own Foundation by dlsym in tests/backports/host/foundation-constants/, which compares every value it carries against the host's and mutates each one to show the comparison notices that constant. The band is the ladder's answer and not the annotation's: tools/release-split.lua over the held caches puts the first release that exports _NSFileProtectionCompleteWhenUserInactive at 18.0, and the band below that one ends at 16.0, so the port's maximum is 16.0 and not the 17.0 its annotation gives - the same shape this file already records for NSURLFileProtectionCompleteWhenUserInactive, NSURLVolumeMountFromLocationKey, NSURLVolumeSubtypeKey, NSURLVolumeTypeNameKey, NSURLFileIdentifierKey and NSURLDirectoryEntryCountKey"
+      "source": "SDK 26.2 headers for the declaration and its availability, which give 17.0; the value read out of the host's own Foundation by dlsym in tests/backports/host/foundation-constants/, which compares every value it carries against the host's and mutates each one to show the comparison notices that constant. The band is the ladder's answer and not the annotation's: tools/release-split.lua over the held caches puts the first release that exports _NSFileProtectionCompleteWhenUserInactive at 18.0, and 18.0 is that first rung rather than the release it arrived in - 18.0 is the newest rung the ladder holds and nothing is held between 12.0 and 16.0, so 18.0 is an upper bound and the release in it is 17.0 by the annotation, which is the sibling NSURLFileProtectionCompleteWhenUserInactive's own maximum in the same tree"
     },
     {
       "api": "NSInflectionAgreementArgumentAttributeName",
