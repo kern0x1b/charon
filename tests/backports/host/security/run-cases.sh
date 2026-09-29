@@ -336,7 +336,7 @@ must_not_compile blocks-challenge-into-keyupdate "$PK" protocol-options-blocks
 # it - passing it again as an extra source is a duplicate symbol, which is what it did first.
 run_mutation data-halfpair compare-protocol-options-data.py protocol-options-data
 # held-nocopy comes from SecProtocolOptionsBlocks13_0.m, which the case does not link, so it needs it.
-# IT STILL DOES NOT BUILD - see the report - so the call is NOT made, rather than left red.
+run_mutation held-nocopy   compare-protocol-options-held.py  protocol-options-held
 run_mutation trust-result      compare-trust-result.py
 
 # --- the fuzz: no comparison, it must simply not crash, and it is built with the sanitizers on ---

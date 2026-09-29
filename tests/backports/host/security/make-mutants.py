@@ -46,13 +46,11 @@ if data_src.count(old_pair) != 1:
 open(os.path.join(build, "mutant-data-halfpair.m"), "w").write(data_src.replace(old_pair, new_pair))
 print("  mutant data-halfpair.m: the pair is stored with one half standing in for the other")
 
-held_src = open(os.path.join(src, "SecProtocolOptionsBlocks13_0.m")).read()
-old_block = """    _keyUpdate = block;
-    _keyUpdateQueue = queue;"""
-new_block = """    // MUTANT: the POINTER is stored, not the block. A stack block is dead when this returns, so calling
-    // it later is a silent wrong answer at best.
-    _keyUpdate = (__bridge sec_protocol_key_update_t)(__bridge id)block;
-    _keyUpdateQueue = queue;"""
+held_src = open(os.path.join(src, "SecProtocolOptions13_0.m")).read()
+old_block = """    if (name)
+        _serverName = strdup(name);"""
+new_block = """    if (name)
+        _serverName = (char *)name;   // MUTANT: the caller's POINTER, not a copy."""
 if held_src.count(old_block) != 1:
     sys.exit("make-mutants: FAILED - the held anchor matched %d times, not once" % held_src.count(old_block))
 open(os.path.join(build, "mutant-held-nocopy.m"), "w").write(held_src.replace(old_block, new_block))
