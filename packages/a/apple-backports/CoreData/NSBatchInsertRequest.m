@@ -3,10 +3,11 @@
 // The release's Core Data arrived in iOS 3.0, its batch DELETE and batch UPDATE arrived with the
 // iOS 9.0 backports beside it - NSBatchDeleteRequest.m and NSBatchUpdateRequest.m are in this
 // package - and the batch INSERT arrived at iOS 13.0 with nothing carrying it. The 16.4 header the
-// port lifts DECLARES the class, with an empty ivar block and five properties it has nowhere to
-// keep, so the storage is in CharonCoreData.h and this file is only what that declaration does not
-// carry.
-//
+// port lifts DECLARES the class, with an empty ivar block and SIX properties it has nowhere
+// to keep (NSBatchInsertRequest.h:20,21,23,24,25,28), so the storage is in the class
+// extension below and this file is only what that declaration does not carry. It is NOT in
+// CharonCoreData.h: an ivar block may only appear in a class's one interface, the SDK has it, and a
+// second @interface for this class is a duplicate definition.
 // The types are the header's own (NSBatchInsertRequest.h:17-43), not the corpus's selector list,
 // which spells labels and not types: both handlers RETURN BOOL, and objects: takes dictionaries on
 // both the name and the entity form. The enum and NSBatchInsertRequestResultTypeCount are
