@@ -101,10 +101,28 @@ The rule is measured — the release's answers for `mean = 2, standardDeviation 
 precision**, and a sixteen-digit one does not land on the same bit: three of eight probed values differ
 by one or two units in the last place of a `float`.
 
-This is the open item of this family. What is needed is the release's own single-precision inverse
-normal, which is not in any header; identifying it needs more probe points than this round had, and a
-wrong guess would be worse than the honest divergence. Until it is found the port's value is the
-correct one to within a couple of units in the last place, and that is what the registry says.
+This is the open item of this family, and it has got further than "eight points are not enough".
+
+**160,000 pairs are now measured** — `inverse-normal-probe.m` in `tests/backports/host/mpsmatrix/`
+prints, for every element of a 400x400 draw, the twenty-three bit fraction `t` and the release's
+answer as raw bits. The tails are covered: 3,863 points below 0.02425 and 3,818 above 0.97575, which
+is where Wichura's three branches and Acklam's differ from one another, and `t` runs from 1.4e-05 to
+0.999996.
+
+**And the measurement found something else first: the release does not fill the destination in element
+order.** The first ten rows pair with `t` reconstructed from the index, and agree with
+`mean + standardDeviation * invnorm(t)` to about three parts in `10^6`. Past those rows they do not:
+the median relative difference over the whole 160,000 is about one, not one in `10^7`. This is a
+kernel that writes a block of values per thread group in an order of its own — which is what
+`MPSParallelRandom.mm`, the file the release's own failures name, suggests it does.
+
+So the inverse normal cannot be fitted until that order is recovered, and the order is the next thing
+to work out, not the algorithm's coefficients. AS 241 evaluated in single precision and in double both
+land on the release's bits for under 5% of the points, which says the release's is a *different*
+approximation rather than the same one at a different precision.
+
+Until both are done the port's value is a correct inverse normal to within a few units in the last
+place, and the registry says that rather than claiming a bit-exactness that has not been shown.
 
 ## The distribution descriptor
 
