@@ -3,30 +3,30 @@
 #
 #     sh tests/backports/host/protocol-conformance.sh
 #
-# A protocol row marked `implemented` is a CLAIM that the port's class really answers the protocol, and
-# backports.lua:664 turns that claim into a BAND FLOOR. So the claim is measured, and this is the
-# measurement: for every class behind such a row, the stripped compile is run IN PLACE - the
-# library's own flags, no -I, from packages/a/apple-backports - with BOTH diagnostics that make a
-# conformance a callable gap:
+# A protocol row marked `implemented` claims every member of the protocol is callable, and
+# backports.lua:664 turns that claim into a BAND FLOOR. So the claim is measured, and THE CRITERION IS
+# AN AST COMPARISON, not a warning:
 #
-#   -Wprotocol                        a required METHOD nobody implements
-#   -Wobjc-protocol-property-synthesis a required PROPERTY nobody synthesizes, which is a selector
-#                                     that RAISES unrecognized-selector when read
+#   an `implemented` row  <=>  for every protocol member - required and optional instance and class
+#   methods, and every property's getter and (when readwrite) its setter - the class's
+#   @implementation, its category implementations or its @synthesize bindings DEFINE that selector.
 #
-# The second is why an earlier run of this by hand was wrong: it checked -Wprotocol only, and two
-# rows passed that do not conform.
+# That is protocol-members.py, which reads the SDK's members through the file's own import and the
+# class's definitions from the same translation unit. It reads IN PLACE and writes nothing, and it
+# needs no pragma stripped: a suppressed warning hides a message, and a declaration is not a message.
 #
-# The pragmas are stripped IN A COPY, and the copy is made INSIDE .agent-work/runs with the whole
-# package tree beside it, because a copy of one file breaks its relative `#import "Sibling.h"` and
-# then fails for a reason that has nothing to do with the protocol. That is not a hypothetical: an
-# earlier attempt did exactly that and measured nothing at all.
+# -Wprotocol is KEPT as a cross-check, because it is right about METHODS and catches an inherited one
+# the AST comparison would accept. It is not the criterion and it is not sufficient: it does not
+# inspect property accessors, and a property whose getter is on the wrong class produces nothing.
+# -Wobjc-protocol-property-synthesis is GONE: it cannot tell a hand-written getter from a missing one,
+# so it reported the same six warnings on a tree with the six getters written and on one without.
 #
-# It exits 1 when any row marked `implemented` has any diagnostic, and it exits 1 when the mutant
-# does not go red.
+# Every row is printed with the class file and the flags it used, and the rows are read FROM THE
+# REGISTRY rather than from a list copied into this script, so a row flipped without a class here fails
+# loudly instead of passing unexamined.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 root=$(cd "$here/../../.." && pwd)
-SDK=${LIBRARY_SDK:-$HOME/.xmake/packages/i/iphoneos-sdk/16.4}
 SDK=""
 for candidate in "$HOME"/.xmake/packages/i/iphoneos-sdk/16.4/*/Developer.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.4.sdk; do
     if [ -f "$candidate/SDKSettings.json" ]; then SDK="$candidate"; break; fi
@@ -34,107 +34,141 @@ done
 [ -n "$SDK" ] || { echo "FAIL: no iOS 16.4 SDK; set LIBRARY_SDK" >&2; exit 1; }
 work=${WORK:-$root/.agent-work/runs/protocol-conformance}
 rm -rf "$work"
-mkdir -p "$work"
+mkdir -p "$work/tree"
+cp -R "$root/packages/a/apple-backports" "$work/tree/apple-backports"
 
 flags="-target armv7-apple-ios6.1.3 -isysroot $SDK -fobjc-arc -Os -g0 -Wall
--Wno-unguarded-availability-new -Wno-unguarded-availability
--Wprotocol -Wobjc-protocol-property-synthesis"
+-Wno-unguarded-availability-new -Wno-unguarded-availability -Wprotocol"
 
-# The whole package tree, so relative quoted imports still resolve, and the classes that back an
-# `implemented` protocol row.
-tree="$work/tree"
-mkdir -p "$tree"
-cp -R "$root/packages/a/apple-backports" "$tree/apple-backports"
-# NOT > "$1": the shell truncates the output before grep reads the input, and the file comes out
-# empty - which is why this script produced no output at all until it was run with -x.
-strip() {
-    grep -v 'clang diagnostic ignored "-Wprotocol"\|clang diagnostic ignored "-Wincomplete-implementation"' "$1" > "$1.stripped"
-    mv "$1.stripped" "$1"
-}
-
-# The rows that claim `implemented`, and the class each one claims is behind it. This list IS the
-# registry's - read from it, not copied, so a row flipped without a class here fails loudly below.
-classes=$(python3 - "$root" <<'PY'
-import json, os, sys
+# PROTOCOL CLASS FILE -- from the registry, and from the class names the sources declare.
+rows=$(python3 - "$root" <<'PY'
+import json, os, re, sys
 root = sys.argv[1]
-pairs = {
-    "MTLSamplerState": "CharonMetalSampler",
-    "MTLFunction": "CharonMetalLibrary",
-    "MTLDepthStencilState": "CharonMetalDepthStencil",
-    "MTLDrawable": "CharonMetalDrawable",
-    "MTLCaptureScope": "CharonMTLCaptureScope",
-}
-found = {}
 base = os.path.join(root, "packages/a/apple-backports/registry/Metal")
+# The three rows with no @interface of their own, and the protocols 16.4 says each inherits FROM:
+# MTLBuffer.h:32 and MTLTexture.h:264 make MTLResource, MTLRenderCommandEncoder.h:131 and
+# MTLComputeCommandEncoder.h:41 make MTLCommandEncoder, and CAMetalDrawable is <MTLDrawable> in
+# QuartzCore's CAMetalLayer.h:28.
+INHERITED_BY = {
+    "MTLResource": ("MTLBuffer", "MTLTexture"),
+    "MTLCommandEncoder": ("MTLRenderCommandEncoder", "MTLComputeCommandEncoder"),
+    "MTLDrawable": ("CAMetalDrawable",),
+}
+# EVERY source, headers included: the @interface that adopts the protocol is in CharonMetal.h, and a
+# scan of the .m files alone finds nine of the fifteen rows nowhere. The .m is then located by the
+# class name, or - for a class that is a secondary @implementation - by a search for its declaration.
+sources = {}
+for folder, _, files in os.walk(os.path.join(root, "packages/a/apple-backports")):
+    for name in files:
+        if name.endswith((".m", ".h")):
+            sources[name] = os.path.join(folder, name)
 for name in sorted(os.listdir(base)):
     if not name.endswith(".json"):
         continue
     document = json.load(open(os.path.join(base, name)))
     for entry in (document["entries"] if isinstance(document, dict) else document):
-        if entry.get("kind") == "protocol" and entry.get("status") == "implemented" and entry["api"] in pairs:
-            found[entry["api"]] = pairs[entry["api"]]
-for protocol, cls in sorted(found.items()):
-    print("%s:%s" % (protocol, cls))
+        if entry.get("kind") != "protocol" or entry["api"] not in (
+                "MTLDevice", "MTLResource", "MTLBuffer", "MTLTexture", "MTLSamplerState", "MTLFunction",
+                "MTLLibrary", "MTLRenderPipelineState", "MTLCommandQueue", "MTLCommandBuffer",
+                "MTLCommandEncoder", "MTLRenderCommandEncoder", "MTLDrawable",
+                "MTLDepthStencilState", "MTLCaptureScope"):
+            continue
+        # The class that declares this protocol, found by its @interface. The protocol list is
+        # matched with [,\s>] and not with a closing angle alone, because "<MTLBuffer, MTLResource>"
+        # is as common as a single protocol and a pattern that insists on the closing bracket finds
+        # none of them - which is how nine rows came out with no class at all in an earlier run.
+        pattern = r"^@interface (\w+) : NSObject <%s[,\s>]" % re.escape(entry["api"])
+        cls = None
+        for path in sources.values():
+            found = re.search(pattern, open(path, errors="ignore").read(), re.M)
+            if found:
+                cls = found.group(1)
+                break
+        if cls is None:
+            # A row implemented BY INHERITANCE: no @interface adopts it directly, so the class to ask
+            # is the one that adopts a protocol INHERITING it. The criterion is the same question -
+            # does that class answer every member of the protocol - and the SDK's own headers say which
+            # protocols inherit which, so the search is over the port's @interface lines only.
+            for path in sources.values():
+                text = open(path, errors="ignore").read()
+                for found in re.finditer(r"^@interface (\w+) : NSObject <([A-Za-z, ]+)>", text, re.M):
+                    adopted = [a.strip() for a in found.group(2).split(",")]
+                    # the class adopts a protocol that INHERITS the row's protocol
+                    if any(a in adopted for a in INHERITED_BY.get(entry["api"], ())):
+                        cls = found.group(1)
+                        break
+                if cls:
+                    break
+        if cls is None:
+            print("%s\t?\t?" % entry["api"])
+            continue
+        path = sources.get(cls + ".m")
+        if path is None:                      # a secondary @implementation in another class's file
+            for other, candidate in sources.items():
+                if re.search(r"^@implementation %s\b" % re.escape(cls), open(candidate, errors="ignore").read(), re.M):
+                    path = candidate
+                    break
+        rel = os.path.relpath(path or ".", os.path.join(root, "packages/a/apple-backports"))
+        print("%s\t%s\t%s" % (entry["api"], cls, rel))
 PY
 )
 
-[ -n "$classes" ] || { echo "FAIL: no protocol row is marked implemented, so this checks nothing" >&2; exit 1; }
-
 fail=0
-for line in $classes; do
-    protocol=${line%%:*}
-    class=${line#*:}
-    source=$(find "$tree/apple-backports" -name "$class.m" | head -1)
-    if [ -z "$source" ]; then
-        # a secondary @implementation: the class is inside another class's file, so find the file
-        # that declares it. CharonMTLCaptureScope is inside MTLCaptureManager11.m.
-        source=$(grep -rl "@implementation $class\\b" "$tree/apple-backports" 2>/dev/null | head -1)
-    fi
-    if [ -z "$source" ]; then
-        echo "FAIL: $protocol is marked implemented and $class.m is not in the tree" >&2
-        fail=1
-        continue
-    fi
-    strip "$source"
-    count=$( (cd "$tree/apple-backports" && xcrun clang $flags -fsyntax-only "$source") 2>&1 \
-             | grep -cE "not implemented|not synthesized" || true)
-    # EVERY diagnostic, with its text: a count cannot be acted on, and the point of this check is
-    # that the text names the member so a row can be fixed or the gap can be recorded.
-    # Only the diagnostics naming THIS row's protocol. CharonMetalLibrary implements MTLFunction AND
-    # MTLLibrary, and CharonMetalTexture implements MTLTexture AND MTLResource, so a class behind two
-    # rows reports both: counting every one of its diagnostics would make a row fail on gaps that
-    # belong to a different row - and the rows that DO own those gaps are already inert.
-    diagnostics=$( (cd "$tree/apple-backports" && xcrun clang $flags -fsyntax-only "$source") 2>&1 \
-                  | grep -E "not implemented|not synthesized" | grep -F "in protocol '$protocol'" || true)
-    count=$(printf '%s' "$diagnostics" | grep -c . || true)
-    if [ "$count" -eq 0 ]; then
-        echo "  ok   $protocol via $class: no -Wprotocol, no -Wobjc-protocol-property-synthesis"
-    else
-        echo "  FAIL $protocol via $class: $count diagnostic(s) - a callable gap, so the row must be inert" >&2
-        printf '%s\n' "$diagnostics" | sed "s|.*Metal/$class.m|$class.m|" | sed 's/^/         /' >&2
-        fail=1
-    fi
-done
-
-# THE MUTANT: a class missing one method for an implemented row must make this go red, or the test
-# is not testing anything. CharonMetalDrawable is conformant, so renaming one of its methods is a
-# conformance failure the test has to notice.
+echo "the criterion: clang -Xclang -ast-dump=json, library flags, no -I, read in place"
+echo "  flags: $flags"
 echo
-echo "the mutant: one method removed from a class behind an implemented row"
-mutant=$(find "$tree/apple-backports" -name "MTLCaptureManager11.m" | head -1)
-before=$(grep -c "^- " "$mutant" || true)
-python3 "$here/mutate-conformance.py" "$mutant" || { echo "FAIL: the mutant could not be made" >&2; exit 1; }
-mutant_count=$( (cd "$tree/apple-backports" && xcrun clang $flags -fsyntax-only "$mutant") 2>&1 \
-                | grep -cE "not implemented|not synthesized|error:" || true)
-if [ "$mutant_count" -eq 0 ]; then
-    echo "FAIL: the mutant is NOT red, so this check no longer tests anything" >&2
-    fail=1
-else
-    echo "  ok   the mutant is RED: $mutant_count diagnostic(s) from one renamed method"
-fi
-
+for line in $(printf '%s\n' "$rows" | tr '\t' ':'); do
+    protocol=${line%%:*}
+    rest=${line#*:}
+    cls=${rest%%:*}
+    file=${rest#*:}
+    out=$(cd "$root/packages/a/apple-backports" && python3 "$here/protocol-members.py" \
+            "$protocol" "$cls" "$SDK" "$file" 2>&1) || true
+    printf '%s\n' "$out"
+    printf '%s\n' "$out" | grep -q "missing:" && fail=1
+    # the cross-check: -Wprotocol, for methods, which the AST comparison would accept if inherited
+    if [ "$cls" != "?" ] && [ "$file" != "?" ]; then
+        (cd "$root/packages/a/apple-backports" && xcrun clang $flags -fsyntax-only "$file") 2>&1 \
+            | grep "in protocol '$protocol' not implemented" | sed 's/^/      -Wprotocol: /' || true
+    fi
+    echo
+done
+# THE MUTANTS. Two, because the criterion has two halves and a check that only exercises one is a
+# check that would pass with the other half broken: a class missing a METHOD for an implemented row,
+# and a class whose property GETTER is missing - the case neither warning could see, and the one this
+# criterion exists for.
+echo "the mutants"
+for mutation in method getter; do
+    for probe in CharonMetalLibrary CharonMetalDepthStencil; do
+        dir="$work/tree/apple-backports"
+        file=$(find "$dir" -name "$probe.m" | head -1)
+        [ -n "$file" ] || continue
+        cp "$file" "$work/$probe.$mutation.orig"
+        if [ "$mutation" = method ]; then
+            python3 "$here/mutate-conformance.py" "$file" || { echo "FAIL: cannot make a method mutant" >&2; exit 1; }
+        else
+            python3 "$here/mutate-getter.py" "$file" || { echo "FAIL: cannot make a getter mutant" >&2; exit 1; }
+        fi
+        red=$( (cd "$dir" && xcrun clang $flags -fsyntax-only "$(basename "$(dirname "$file")")/$(basename "$file")") >/dev/null 2>&1; echo $? )
+        # the criterion must NOTICE: a class with a missing member has to be reported as such
+        cls=$(basename "$probe")
+        noticed=$( (cd "$dir" && python3 "$here/protocol-members.py" MTLFunction "$cls" "$SDK" \
+                       "$(basename "$(dirname "$file")")/$(basename "$file")") 2>&1 | grep -c "missing:" || true)
+        if [ "$mutation" = method ] && [ "$red" = "0" ]; then
+            echo "  FAIL the method mutant still compiled clean, so the check is not testing methods" >&2
+            fail=1
+        elif [ "$mutation" = getter ] && [ "$noticed" = "0" ]; then
+            echo "  FAIL the getter mutant went unnoticed, which is the case the criterion exists for" >&2
+            fail=1
+        else
+            echo "  ok   the $mutation mutant in $cls is red"
+        fi
+        cp "$work/$probe.$mutation.orig" "$file"
+    done
+done
+echo
 if [ "$fail" -ne 0 ]; then
     echo "protocol-conformance: FAILED" >&2
     exit 1
 fi
-echo "protocol-conformance: every implemented protocol row is conformant, and the mutant is red"
+echo "protocol-conformance: every implemented protocol row is conformant, and both mutants are red"

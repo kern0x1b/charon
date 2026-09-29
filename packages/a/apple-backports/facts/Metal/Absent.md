@@ -221,3 +221,55 @@ forms the port does not carry, and the `MTLLibrary` row stays `inert` naming the
 **And the citation corrected once more:** `MTLTexture.h` does not declare `<MTLResource>` at all — it
 imports `MTLResource.h` at `MTLTexture.h:10` and `MTLTexture.h:32` reads `MTLTextureType3D = 7,`. The
 base declaration is `MTLResource` in **`MTLResource.h`**, reached from `MTLTexture.h:10`'s import.
+
+### update 2026-09-29: r4 — the criterion is an AST comparison, and every list is the tool's
+
+Two reviews in a row caught the same class of mistake and the second one is the fix. The acceptance
+test was built on two warnings, and **each is wrong in a different way**:
+
+  - `-Wprotocol` does not inspect property ACCESSORS. It is about methods, so a property whose getter
+    is on the wrong class produces nothing at all.
+  - `-Wobjc-protocol-property-synthesis` cannot tell a HAND-WRITTEN getter from a missing one. It is
+    emitted for any protocol property the `@implementation` does not `@synthesize`, so a tree with all
+    six of `MTLFunction`'s getters written reports the same six warnings as one with none.
+
+Both were clean while **two rows were not conformant at all**, and `backports.lua:664` turns an
+`implemented` protocol row into a band floor. The six `MTLFunction` property getters were on
+`CharonMetalLibrary`, which declares `<MTLLibrary>`, instead of `CharonMetalFunction`; and
+`MTLSamplerState`'s `gpuResourceID` was on `CharonMetalTexture` instead of `CharonMetalSampler`.
+
+**The criterion is now: an `implemented` row <=> for every protocol member — required and optional
+instance and class methods, and every property's getter and, when readwrite, its setter — the class's
+`@implementation`, its category implementations or its `@synthesize` bindings DEFINE that selector.**
+`tests/backports/host/protocol-members.py` reads the SDK's members through the file's own import and
+the class's definitions from the same translation unit, off `-Xclang -ast-dump=json`. No pragma is
+stripped, because nothing there is a warning: a suppressed warning hides a message, and a declaration
+is not a message. `-Wprotocol` is kept as a cross-check for methods, which the AST comparison would
+otherwise accept if inherited.
+
+**The fifteen rows, as the tool now measures them** — every list below is the tool's, not prose:
+
+| row | class | missing | state |
+| --- | --- | ---: | --- |
+| MTLCaptureScope | `CharonMTLCaptureScope` | 0 | **implemented** |
+| MTLSamplerState | `CharonMetalSampler` | 0 | **implemented** |
+| MTLFunction | `CharonMetalFunction` | 0 | **implemented** |
+| MTLDrawable | `CharonMetalDrawable` | 0 | **implemented** |
+| MTLDepthStencilState | `CharonMetalDepthStencil` | 0 | **implemented** |
+| MTLCommandQueue | `CharonMetalQueue` | 2 | inert |
+| MTLResource | `CharonMetalBuffer` | 4 | inert |
+| MTLBuffer | `CharonMetalBuffer` | 4 | inert |
+| MTLLibrary | `CharonMetalLibrary` | 6 | inert |
+| MTLCommandEncoder | `CharonMetalComputeEncoder` | 3 | inert |
+| MTLRenderPipelineState | `CharonMetalPipeline` | 15 | inert |
+| MTLCommandBuffer | `CharonMetalCommandBuffer` | 19 | inert |
+| MTLTexture | `CharonMetalTexture` | 25 | inert |
+| MTLDevice | `CharonMetalDevice` | 84 | inert |
+| MTLRenderCommandEncoder | `CharonMetalEncoder` | 104 | inert |
+
+**Three of the ten need no class of their own and are still measured.** `MTLResource` is answered
+through `CharonMetalBuffer` (`MTLBuffer.h:32` makes `MTLBuffer` a `MTLResource`),
+`MTLCommandEncoder` through `CharonMetalComputeEncoder` (`MTLComputeCommandEncoder.h:41`), and
+`MTLDrawable` through `CharonMetalDrawable`, which adopts `CAMetalDrawable` and that is `<MTLDrawable>`
+in QuartzCore's `CAMetalLayer.h:28`. The tool resolves each by asking which `@interface` adopts a
+protocol inheriting the row's, so these are measured on a real class rather than asserted.
