@@ -332,6 +332,28 @@
       "status": "inert"
     },
     {
+      "api": "sec_protocol_options_set_tls_max_version()",
+      "effect": "the SSLProtocol value is held AS GIVEN, in the caller's own numbering, and never translated. Measured: kTLSProtocol1 (4) reads back 4 and kTLSProtocol12 (8) reads back 8, with two rows of their own asserting the value is NOT 0x0301 and NOT 0x0303 - because a length, a status or a count would not notice a translation, and only the value does. The effect: the handshake ignores the range, and the release's own stack tops out at kTLSProtocol12 and cannot negotiate 1.3 whatever number the caller wrote",
+      "facts": "facts/Security/SecProtocolWorklist.md",
+      "introduced": "13.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "6.1.3 HAS NO STACK THAT TAKES a sec_protocol_options_t, so nothing reads a version the port holds. THE VALUE IS HELD IN THE CALLER'S OWN ENUM AND IS NOT TRANSLATED: the same concept has two numbers - kTLSProtocol1 is 4 and tls_protocol_version_TLSv10 is 0x0301, kTLSProtocol12 is 8 and TLSv12 is 0x0303 - and the two are separate CF_ENUMs with separate values, so a translation would be the port asserting a correspondence NO HEADER MAKES. Both enums are deprecated in the same direction (kSSLProtocol3 and kTLSProtocol1 are both CF_ENUM_DEPRECATED(..., 5_0, 13_0)) and the whole SSLProtocol family is replaced by tls_protocol_version_t, so preferring the enum the header tells callers to stop using would be the wrong preference too",
+      "source": "SDK 16.4, Security",
+      "status": "inert"
+    },
+    {
+      "api": "sec_protocol_options_set_tls_min_version()",
+      "effect": "the SSLProtocol value is held AS GIVEN, in the caller's own numbering, and never translated. Measured: kTLSProtocol1 (4) reads back 4 and kTLSProtocol12 (8) reads back 8, with two rows of their own asserting the value is NOT 0x0301 and NOT 0x0303 - because a length, a status or a count would not notice a translation, and only the value does. The effect: the handshake ignores the range, and the release's own stack tops out at kTLSProtocol12 and cannot negotiate 1.3 whatever number the caller wrote",
+      "facts": "facts/Security/SecProtocolWorklist.md",
+      "introduced": "13.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "6.1.3 HAS NO STACK THAT TAKES a sec_protocol_options_t, so nothing reads a version the port holds. THE VALUE IS HELD IN THE CALLER'S OWN ENUM AND IS NOT TRANSLATED: the same concept has two numbers - kTLSProtocol1 is 4 and tls_protocol_version_TLSv10 is 0x0301, kTLSProtocol12 is 8 and TLSv12 is 0x0303 - and the two are separate CF_ENUMs with separate values, so a translation would be the port asserting a correspondence NO HEADER MAKES. Both enums are deprecated in the same direction (kSSLProtocol3 and kTLSProtocol1 are both CF_ENUM_DEPRECATED(..., 5_0, 13_0)) and the whole SSLProtocol family is replaced by tls_protocol_version_t, so preferring the enum the header tells callers to stop using would be the wrong preference too",
+      "source": "SDK 16.4, Security",
+      "status": "inert"
+    },
+    {
       "api": "sec_protocol_options_set_tls_ocsp_enabled()",
       "effect": "the flag is HELD on the port's own object, and it is the ONLY flag it touches: each of the eight has its OWN ivar, because a shared flags word would make this one and its neighbour the same setting wearing two names, and reading one back would report the other. 6.1.3 STAPLED NO OCSP RESPONSE, so a peer whose certificate is revoked is not detected as such; the flag is held and the check is NOT performed",
       "facts": "facts/Security/SecProtocolWorklist.md",
