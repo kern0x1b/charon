@@ -105,9 +105,19 @@ static void referenceGradient(const float *source, const float *incoming, const 
         double g = 0.0, b = 0.0;
         for (int i = 0; i < rows; i++) {
             double xhat = ((double)source[i * channels + c] - mean[c]) / sqrt((double)variance[c] + epsilon);
-            g += (double)incoming[i * channels + c] * xhat;
-            b += (double)incoming[i * channels + c];
+            double term = (double)incoming[i * channels + c];
+            g += term * xhat;
+            b += term;
+#ifdef CHARON_REFERENCE_TRACE
+            printf("  ref ch%d row%d src[%d][%d]=%g inc[%d][%d]=%g xhat=%g term=%g\n", c, i,
+                   i, c, (double)source[i * channels + c], i, c, term, xhat, term);
+#endif
         }
+#ifdef CHARON_REFERENCE_TRACE
+        printf("  ref ch%d gamma %g beta %g  (rows %d channels %d, stride %d floats, mean %g %g %g, var %g %g %g)\n",
+               c, g, b, rows, channels, channels, mean[0], mean[1], mean[2],
+               variance[0], variance[1], variance[2]);
+#endif
         gradGamma[c] = (float)g;
         gradBeta[c] = (float)b;
     }
