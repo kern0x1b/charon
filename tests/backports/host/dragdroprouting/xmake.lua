@@ -18,7 +18,9 @@ set_defaultarchs("iphoneos|armv7")
 -- port's own objects go in by path -- the routing, the drop sequence and the coordinators it asks --
 -- rather than as the addon, which would be a different build of them.
 if os.getenv("DDR_ROOT") and os.getenv("DDR_ROOT") ~= "" then root = os.getenv("DDR_ROOT") end
-local ui = path.join(root, "packages/a/apple-backports/UIKit")
+-- The port sources come from DDR_UIKIT, which the run script points at a scratch copy, so a
+-- mutant never overwrites a tracked file in the worktree.
+local ui = os.getenv("DDR_UIKIT") or path.join(root, "packages/a/apple-backports/UIKit")
 target("dragdroprouting")
     add_rules("@addon/charon/daemon")
     add_files(path.join(ui, "ViewDragDropRouting11.m"),

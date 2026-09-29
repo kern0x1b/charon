@@ -21,6 +21,7 @@ export DDR_ROOT=$root
 rm -rf "$build"
 mkdir -p "$build"
 cp "$here/xmake.lua" "$here/control" "$build/"
+export DDR_UIKIT=$scratch
 cd "$build"
 xmake f -p iphoneos -a armv7 -y > configure.log 2>&1
 xmake build -y > build.log 2>&1
@@ -34,10 +35,18 @@ failed=0
 # The mutant is generated from the LIVE source into the build tree on every run, not read from a file
 # beside this script: a checked-in fixture drifts from the source it was made from and then asserts
 # nothing, and the text family had exactly that failure.
-seq=$root/packages/a/apple-backports/UIKit/CharonDropSequence11.m
-original=$build/CharonDropSequence11.m.original
+# The port's own sources are copied into a scratch tree and the build is pointed at that, so the
+# mutant is a file in the scratch tree and no tracked source is ever written. There is therefore
+# nothing to restore and no trap: a kill leaves the worktree exactly as it was.
+port=$root/packages/a/apple-backports/UIKit
+scratch=$build/port-sources
+rm -rf "$scratch"
+mkdir -p "$scratch"
+cp "$port"/*.m "$port"/*.h "$scratch/" 2>/dev/null || true
+rm -f "$scratch/CharonDropSequence11.m"
+cp "$port/CharonDropSequence11.m" "$scratch/CharonDropSequence11.m"
+original=$scratch/CharonDropSequence11.m
 mutated=$build/CharonDropSequence11.m.mutated
-cp "$seq" "$original"
 python3 - "$original" "$mutated" <<'PYMUT'
 import sys
 src, dst = sys.argv[1], sys.argv[2]
@@ -132,12 +141,9 @@ for release in $releases; do
     :
     run_one "$release" clean "$(basename "$image")" && guest_lines "$release" "$(basename "$image")" clean || failed=1
 done
-cp "$mutated" "$seq"
-restore() { cp "$original" "$seq"; }
-trap restore EXIT INT TERM
+# the mutant, in the scratch tree only
+cp "$mutated" "$scratch/CharonDropSequence11.m"
 for release in $releases; do
     run_one "$release" mutated "$(basename "$image")" && guest_lines "$release" "$(basename "$image")" mutated || true
 done
-cp "$original" "$seq"
-trap - EXIT INT TERM
 exit $failed
