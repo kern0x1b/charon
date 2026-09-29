@@ -79,4 +79,25 @@ if [ "$sbefore" = "$sduring" ] || [ "$sduring" = "$safter" ]; then
     echo "the sum mutation did not move the count either"
     exit 1
 fi
-echo "all three mutations move the count and all three reverts move them back: the harness can fail"
+# A fourth mutant, on the sum's scale indexing: startIndex is a position in the flat list of scale
+# factors, so it is a component of the vector and not a vector index. The mutant reads it as a vector
+# index, which is what the port did before the fix and what answered all zeros.
+scale_line='                    NSUInteger which = (startIndex + index) / MAX((NSUInteger)1, scales.length);'
+scale_mut='                    NSUInteger which = startIndex + index;  // MUTATION: a vector index'
+soriginal2=$(cat "$sumkernel")
+restore_sum2() { printf '%s\n' "$soriginal2" > "$sumkernel"; }
+trap 'restore; restore_forward; restore_sum; restore_sum2' EXIT INT TERM
+grep -q "$scale_line" "$sumkernel" || { echo "the scale anchor is gone"; exit 1; }
+scbefore=$(count)
+printf '%s\n' "$scale_mut" > "$sumkernel"
+scduring=$(count)
+printf 'scale before   %s\n' "$scbefore"
+printf 'scale mutated  %s\n' "$scduring"
+restore_sum2
+scafter=$(count)
+printf 'scale reverted %s\n' "$scafter"
+if [ "$scbefore" = "$scduring" ] || [ "$scduring" = "$scafter" ]; then
+    echo "the scale mutation did not move the count either"
+    exit 1
+fi
+echo "all four mutations move the count and all four reverts move them back: the harness can fail"

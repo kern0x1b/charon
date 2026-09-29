@@ -159,9 +159,18 @@ CHARON_MPS_NEURON_COMMON
                     return;
                 }
                 double value = CharonMPSLoad(CharonMPSMatrixElement(&view, 0, sourceRow, sourceColumn), view.dataType, 0);
+                // startIndex + index is a position in the flat list of scale factors - the header says
+                // startIndex is "the starting index into the scale and offset vectors" - so it is the
+                // component, and the vector it belongs to is the one holding this many factors. Read as
+                // a vector index it walked past the end of a single-vector scale buffer, which is why
+                // sum-start-index answered all zeros and no refusal fired.
                 double scale = 1.0;
-                if (scales.length > startIndex + index)
-                    scale = CharonMPSLoad(CharonMPSVectorElement(&scales, startIndex + index, 0), scales.dataType, 0);
+                if (scales.length > startIndex + index) {
+                    NSUInteger which = (startIndex + index) / MAX((NSUInteger)1, scales.length);
+                    NSUInteger component = (startIndex + index) % MAX((NSUInteger)1, scales.length);
+                    if (which < scales.vectors)
+                        scale = CharonMPSLoad(CharonMPSVectorElement(&scales, which, component), scales.dataType, 0);
+                }
                 sum += scale * value;
             }
             if (bias.length > column)
