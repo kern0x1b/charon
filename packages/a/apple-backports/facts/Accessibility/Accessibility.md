@@ -136,10 +136,20 @@ The group is seven classes and the two protocols that declare an axis, of which 
 `AXLiveAudioGraph` is the one that asks for something; the other six are containers. An application
 fills a container in and an assistive technology reads it back, and neither half has to reach anything
 on this release, so the value each one keeps is the value it was given. Every rule below was measured against the host's own `Accessibility.framework` by
-`tests/backports/host/accessibilitychart/run.sh`, which builds the same 138 questions against the
+`tests/backports/host/accessibilitychart/run.sh`, which builds the same 200 questions against the
 system's classes and against the port's - compiled under names the system does not use, so neither can
-answer for the other - and compares the two outputs line by line. 135 of the 138 answer the same; the
-three that do not are named below and are written out in the case's own `expected-differences.tsv`.
+answer for the other - and compares the two outputs line by line. **187 of them are behaviour cases and
+all 187 answer the same; 13 check a declaration** (the two protocols and their members, which come from
+whichever header each side compiled against and are counted apart for that reason) **and there is no
+declared difference left.** The case's own `expected-differences.tsv` is empty and says why, and the
+summary line `run.sh` prints says which of the two kinds each case is:
+
+```
+=== the two answers: 200 cases a side (187 behaviour, 13 declaration), 0 declared to differ
+cases read: 200 a side; declared differences: 0; undeclared or moved: 0
+identical on all 187 behaviour cases: the system and the port answer the same
+declaration cases: 13, which check a header and not the port's code
+```
 
 **A name and an attributed name are one value.** The header declares `title` and `attributedTitle` (and
 `label`/`attributedLabel`, and `name`/`attributedName`) as two readwrite properties each. On the host,
@@ -161,25 +171,42 @@ nil gridline positions answers nil, and answers nil again after a set to nil.
 rectangle and its `contentDirection` is the zero case of its own enumeration, and both are set and read
 back when a caller sets them.
 
-**`-copy` is shallow and shares.** A copy of a chart answers the very series array and the very x-axis
-object its original does, a copy of a series answers the very points array, and a copy of a point
-answers the very x value - measured by pointer identity, not by equality. The port's `copyWithZone:`
-hands its storage over unchanged rather than copying what it points at.
+**`-copy` is shallow, and which objects it shares was measured one field at a time.** The case asks
+every copy whether it answers the very object its original does, and prints shared-or-copied for each -
+the addresses stay out of the output and the question is the same on both sides. Measured on the host:
+a copy of a chart, a series, a categorical axis, a numeric axis and a value shares its arrays, its axes,
+its block and both faces of its name pair, and a copy of a data point shares the plain label and answers
+a **new** attributed string. So four of the five copies hand their storage over, and the point's copy is
+built through its own pair's setter, which is what makes the attributed string a new one.
 
-### The three lines the port does not answer the same, and why
+That last rule was found by the identity probe and not by reading: the first version of this file said
+the copies share, the case could not see whether they did, and when the probe went in it turned up four
+copies in this port that rebuilt the attributed face through an initialiser where the system shares it.
+All four are fixed, and a mutant per class now holds each of them.
 
-The host's own `-copyWithZone:` drops three fields. Measured twice on the host: a chart set to direction
-5 and frame (1, 2, 3, 4) and a numeric axis set to scale case 2, and of the copies of those objects the
-host answers the zero case, the zero rectangle and the zero case again, while every object-typed field
-of the same copies is carried - the title, the summary, the shared series array, both axes, the
-additional axes, the gridline positions, the caller's own description block. The three fields it loses
-are the three value-typed ones, and it loses the same three in both runs.
+### The three fields the port's copies drop, because the system's do
 
-The port carries all three. A copy that answers a zero rectangle and the linear case for values the
-caller set would be a defect in the port rather than the system behaving as documented, and the
-difference is not hidden: the case prints all three on both sides, `expected-differences.tsv` writes
-out what each side answers and why, and `compare.py` fails if any of the three moves or if the two
-start agreeing.
+The host's own `-copyWithZone:` drops three fields, and the port drops the same three. Measured twice on
+the host: a chart set to direction 5 and frame (1, 2, 3, 4) and a numeric axis set to scale case 2, and
+of the copies of those objects the host answers the zero case, the zero rectangle and the zero case
+again, while every object-typed field of the same copies is carried - the title, the summary, the shared
+series array, both axes, the additional axes, the gridline positions, the caller's own description
+block. The three fields it loses are the three value-typed ones, and it loses the same three in both
+runs.
+
+**The policy of this framework is the system's behaviour, so a copy here answers the same.** A copy that
+kept them would be a port that is better than the system, and that is a thing to decide on purpose and
+record, not to arrive at by writing a careful copyWithZone:. What a copy that kept them would be good
+for is written down in the ledger the coordinator keeps
+(`.agent-work/handoffs/better-than-system-accessibility.md`): a port application that sets a chart's
+content frame, copies the descriptor and reads the copy's frame would get the frame back here and a
+zero rectangle on the device, which is a difference a port should not have introduced quietly.
+
+What pins the parity is three mutants, one per field, each of which puts the field back into the copy
+and has to turn that one case red. The three rows of `expected-differences.tsv` that used to declare
+these differences are gone and the file says in its own lines why it is empty: a declaration could not
+have held this, because a port that quietly started *agreeing* with the host would have passed a
+"the two must not agree" check and told nobody anything about the parity the policy asks for.
 
 ### AXLiveAudioGraph, the one member of the group that asks for something
 
@@ -197,9 +224,26 @@ What the case compares for this class is the shape both sides can answer - the t
 instance size, the ivar count, that the calls survive - and the sound itself, which a program cannot
 read, is not compared and is not claimed.
 
+**The once-only part of the `inert` contract is held by a count, not by a comparison.** "Declared, does
+nothing, and says so once in the log the first time it is used" is most of what the four `inert` rows
+here claim, and a log line is not a value: the host writes none, because the system's three methods
+publish sound. So the case calls each of the three members several times and prints how many times, and
+`run.sh` counts the port's own log lines against exactly those numbers and fails if any member wrote
+more than one:
+
+```
+say-once: +[AXLiveAudioGraph start] called 3 times, 1 line in the port's log
+say-once: +[AXLiveAudioGraph updateValue] called 5 times, 1 line in the port's log
+say-once: +[AXLiveAudioGraph stop] called 2 times, 1 line in the port's log
+```
+
+A mutant that takes the guard out of `CharonSayOnce.h` writes a line per call, and the run fails with
+"the port wrote 3 lines for +[AXLiveAudioGraph start], and the case called it 3 times". That is what the
+`inert` status now rests on rather than on a sentence.
+
 ## What the registry holds, and the rows it does not
 
-**117 entries** are written. Of the 114 the Accessibility framework started with, 36 rows became
+**117 entries** are written. Of the 114 the Accessibility framework started with, 35 rows became
 `implemented` with the chart group and one became `inert` (`AXLiveAudioGraph` and its three class
 methods, which the registry now names one by one), two rows were **removed** rather than left `absent`,
 and five rows were added that the registry had no answer for at all: the two protocols of 15.0 and the

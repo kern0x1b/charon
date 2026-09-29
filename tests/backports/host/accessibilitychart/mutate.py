@@ -1,20 +1,29 @@
 #!/usr/bin/env python3
 """accessibilitychart/mutate.py - change one line of a copy of the port's source, for mutants.sh.
 
-The copy is a mutant's own, so the change is written to it and never to the tree's file. The line that
-is replaced has to be there: a mutant whose line has moved on is not a mutant that survived, it is a
-mutant that tested nothing, and the assert is what tells the two apart.
+The copy is a mutant's own, so the change is written to it and never to the tree's file. Two things
+about that are checked rather than assumed:
 
-MUTATE_NTH is required and says which occurrence is the mutant's, counted from the front. The three
-chart classes each write the same two-line title setter, so a text that matches all three and changed
-the first would break one rule and look like it had broken three; naming the occurrence keeps a mutant
-to one line and one rule.
+  * the line has to be there, and MUTATE_NTH says which occurrence. The three chart classes each write
+    the same two-line title setter, so a text that matches all three and changed the first would break
+    one rule and look like it had broken three.
+  * the result has to be the whole file. The first version of this read `parts[nth]` as the text after
+    the nth occurrence and took only the second piece of it, so a line that occurred twice lost
+    everything from the second occurrence to the end of the file - and the mutant then failed to compile
+    for a reason that had nothing to do with the rule under test, which is a mutant that tested nothing.
+    A mutation whose result is shorter than the change accounts for is refused, and the end of the file
+    is compared before anything is written.
 
-    Usage: MUTATE=<file> MUTATE_OLD=<text> MUTATE_NEW=<text> MUTATE_NTH=<n> mutate.py
+Usage: MUTATE=<file> MUTATE_OLD=<text> MUTATE_NEW=<text> MUTATE_NTH=<n> mutate.py
 """
 
 import os
 import sys
+
+# How much of the end of the file has to survive a mutation, and how much shorter the result may be
+# than the text it was made from, counted in lines.
+TAIL = 200
+SLACK = 4
 
 
 def main():
@@ -33,13 +42,25 @@ def main():
         print("the mutant's line is in the file %d times and the mutant wants the %d of them: %r"
               % (found, nth, old), file=sys.stderr)
         return 1
-    # Everything before the nth occurrence, then the occurrence is replaced, then everything after it.
+
+    # Everything before the nth occurrence, then the occurrence replaced, then everything after it.
     parts = text.split(old)
     head = parts[0]
     for part in parts[1:nth]:
         head += old + part
-    tail = parts[nth]
-    open(path, "w").write(head + new + tail)
+    tail = old.join(parts[nth:])
+    result = head + new + tail
+
+    # The whole file has to be there. The end of the original is the part a slicing mistake loses, and a
+    # line count that fell by more than the mutation's own lines is the other half of the same check.
+    if not text.strip().endswith(tail.strip()[-TAIL:]) and tail.strip()[-TAIL:] not in text:
+        print("the mutation dropped the end of the file, so it is refused rather than written", file=sys.stderr)
+        return 1
+    if len(result.splitlines()) < len(text.splitlines()) - abs(len(new.splitlines()) - len(old.splitlines())) - SLACK:
+        print("the mutation made the file %d lines shorter than the change accounts for, so it is refused"
+              % (len(text.splitlines()) - len(result.splitlines())), file=sys.stderr)
+        return 1
+    open(path, "w").write(result)
     return 0
 
 

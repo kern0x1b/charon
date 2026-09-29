@@ -1,4 +1,15 @@
 label	system	port	why
-chart.copy.contentDirection	0	5	AXChartDescriptor's own -copyWithZone: on the host leaves contentDirection at the zero case of its enumeration. Measured on the host: the original set to 5 by the case above, the copy answering 0, while every object-typed field of that same copy is carried - the title, the summary, the series array shared with the original, both axes and the additional axes. Measured again with six fields moved at once (a second host run, .agent-work/runs/accessibility/copyprobe.txt), and the only three the host's copies lose are contentDirection, contentFrame and AXNumericDataAxisDescriptor' scaleType: all three value-typed, every object-typed field carried. The port carries all three, because a copy that answers a zero rectangle and the linear case for values the caller set is a defect in the port, not the system behaving as documented. This row is that difference written out: the system column is what the host prints, the port column is what the port prints, and compare.py fails if either moves or if the two start agreeing.
-chart.copy.contentFrame	{{0, 0}, {0, 0}}	{{1, 2}, {3, 4}}	As above, the same measured omission for the content frame. The frame is readwrite and the case sets it before it copies, so the port's copy answers what was set.
-numeric.copy.scaleType	0	2	As above, the same measured omission for a numeric axis' scale type. No initialiser of that class takes a scale, so the port's -copyWithZone: sets the copy's own after the initialiser; the host's leaves it at the linear case. The bounds, the gridline positions, the title and the caller's own block are carried by both, and the case checks each of them on the copy.
+# There is no row in this file, and that is the point of it.
+#
+# The three differences that were here on 2026-09-29 are gone: the chart's -copyWithZone: answered
+# contentDirection and contentFrame where the system's answers the zero case and a zero rectangle, and a
+# numeric axis' copy answered the scale where the system's answers the linear case. The family carries
+# the system's behaviour, so the port's copies now drop the same three value-typed fields, and there is
+# nothing left to declare.
+#
+# The mechanism stays: compare.py reads this file, and a row added to it has to carry what the system
+# answers, what the port answers and why - the last column is not optional, and the reader fails without
+# it. What pins those three answers is not a declaration but three mutants, one per field, each of which
+# puts the field back into the port's copy and has to turn the case red on that one line. A declared
+# difference cannot fail that way: a port that quietly started agreeing with the host passed a
+# "the two start agreeing" check and told nobody anything about the parity the policy asks for.

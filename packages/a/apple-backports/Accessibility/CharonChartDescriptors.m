@@ -3,19 +3,19 @@
 //  Accessibility
 //
 //  The chart and data classes of iOS 15.0, in one object because one object carries the API of one
-//  release and all nine of these arrived together. The release does not have any of them
+//  release and all of them arrived together: seven classes, of which six are containers, and the two
+//  protocols whose rows are answered by the metadata object the build generates from them. The release
+//  does not have any of them
 //  (tools/intents/measure-release-carries.lua: 6.1.3 armv7 carries 0 of the framework's 30 classes,
 //  with the control symbol found, and so do 4.3 and 3.0), so every band builds this file whole.
 //
-//  Eight of the nine are containers: an application fills them in and an assistive technology reads
-//  them back, and nothing on this release has to be reached for either. The value each one keeps is
-//  the value it was given, which is the whole of its behaviour, and every rule below is one the host's
-//  own Accessibility.framework was measured to answer - the cases and their outputs are in
-//  facts/Accessibility/Accessibility.md and the check that holds them to it is
+//  The value each one keeps is the value it was given, which is the whole of its behaviour, and every
+//  rule below is one the host's own Accessibility.framework was measured to answer - the cases and
+//  their outputs are in facts/Accessibility/Accessibility.md and the check that holds them to it is
 //  tests/backports/host/accessibilitychart/run.sh.
 //
-//  Three of those rules are not what the header's spelling suggests, and each was measured rather
-//  than read:
+//  Five of those rules are not what the header's spelling suggests, and each was measured rather than
+//  read:
 //
 //  * **A name and an attributed name are one value.** Setting either face of a chart's title, a
 //    series' name, a point's label or an axis' title leaves the other face holding the same
@@ -24,9 +24,24 @@
 //  * **A data point value's two faces are independent.** The factory for a number leaves the category
 //    nil, the factory for a category leaves the number 0, and setting one afterwards does not disturb
 //    the other.
-//  * **-copy is shallow and shares.** A copy of a chart answers the very array and the very axis
-//    object its original does, not copies of them, so copyWithZone: hands the ivars over unchanged
-//    rather than copying what they point at.
+//  * **-copy shares its objects, and one class's copy is the exception.** A copy of a chart, a series,
+//    an axis or a value answers the very array, the very axis and the very string its original does,
+//    including both faces of the name pair. A copy of a data point shares the plain label and answers a
+//    *new* attributed string, so that one copy is built through the pair's own setter and the other
+//    four assign the pair. Measured by pointer identity, case by case, and the four that assign it are
+//    the four that would otherwise have rebuilt the attributed face and been told apart here.
+//  * **-copy drops the value-typed fields.** A copy of a chart answers the zero case of the direction
+//    and a zero rectangle, and a copy of a numeric axis answers the linear case, because the system's
+//    own -copyWithZone: drops exactly those three and keeps every object-typed field. This is
+//    deliberate: the family carries the system's behaviour, and a copy that answered a zero rectangle
+//    for a frame the caller had set would be a port that is better than the system and would hide the
+//    difference. What a copy that kept them would be good for is in
+//    .agent-work/handoffs/better-than-system-accessibility.md, and the two objects' own answers are
+//    pinned by three mutants of the case.
+//  * **What a setter keeps.** A setter of an object-typed property keeps the very object it was given -
+//    an immutable string or an immutable array, whose -copy is itself - and a setter of a data point's
+//    x or y value answers a copy, because that class has a -copy of its own. Both measured per
+//    property by the case.
 //
 //  The ninth class, AXLiveAudioGraph, is the one member of this group that asks for something this
 //  release does not have: a graph an assistive technology renders as sound. Nothing on 6.1.3
@@ -88,7 +103,8 @@
 
 - (id)copyWithZone:(NSZone *)zone
 {
-    // Shared, measured: the value a copy answers for its category is the original's own string.
+    // Shared, measured by pointer identity: the value a copy answers for its category is the original's
+    // own string, and the number is a double.
     AXDataPointValue *copy = [[AXDataPointValue allocWithZone:zone] init];
     copy->_number = _number;
     copy->_category = _category;
@@ -198,11 +214,14 @@
 
 - (id)copyWithZone:(NSZone *)zone
 {
-    // Shared, measured: the copy answers the original's own x value object.
     AXDataPoint *copy = [[AXDataPoint allocWithZone:zone] initWithX:_xValue y:_yValue];
+    // Shared, measured: the x value, the y value, the additional values and the plain label are the
+    // original's own objects. The attributed label is NOT, and the system's copy is the one class here
+    // whose copy answers a different object for the attributed face - so this copy is built through the
+    // pair's own setter, which is what makes the attributed string a new one and leaves the plain label
+    // the very string it was, both measured by pointer identity.
     copy->_additionalValues = _additionalValues;
-    copy->_label = _label;
-    copy->_attributedLabel = _attributedLabel;
+    [copy setLabel:_label];
     return copy;
 }
 
@@ -288,10 +307,14 @@
 
 - (id)copyWithZone:(NSZone *)zone
 {
-    // Shared, measured: the copy answers the original's own points array.
+    // Shared, measured by pointer identity: the points array is the original's own, and so are the name
+    // and the attributed name. The pair is assigned rather than rebuilt through the name's setter,
+    // because the setter derives the attributed face and would answer a new string where the system's
+    // copy answers the original's own. A data point's copy is the other way round and says so.
     AXDataSeriesDescriptor *copy = [[AXDataSeriesDescriptor allocWithZone:zone] initWithName:_name
                                                                               isContinuous:_isContinuous
                                                                                  dataPoints:_dataPoints];
+    copy->_attributedName = _attributedName;
     return copy;
 }
 
@@ -424,16 +447,15 @@
 
 - (id)copyWithZone:(NSZone *)zone
 {
-    AXNumericDataAxisDescriptor *copy = [[AXNumericDataAxisDescriptor allocWithZone:zone] initWithTitle:_title
-                                                                                                 lowerBound:_lowerBound
-                                                                                                 upperBound:_upperBound
-                                                                                           gridlinePositions:_gridlinePositions
-                                                                                   valueDescriptionProvider:_valueDescriptionProvider];
-    // The scale is set here and not by the initialiser, which does not take one: no initialiser does.
-    // A copy that answered the linear case whatever the original was set to would be a copy that
-    // changes the value it is copying, and the host's own copy dropping it is measured and written
-    // down in the facts rather than copied - see tests/backports/host/accessibilitychart.
-    copy->_scaleType = _scaleType;
+    // Shared, measured by pointer identity: the title, the attributed title, the gridline positions and
+    // the caller's own block are the original's objects. The scale is not carried, and the reason is the
+    // same as the chart's two: the system's own copy drops it, no initialiser of this class takes one,
+    // and a copy that answered the linear case whatever the original was set to would be a port that is
+    // better than the system. The case holds that with a mutant that sets it again.
+    AXNumericDataAxisDescriptor *copy = [[AXNumericDataAxisDescriptor allocWithZone:zone]
+        initWithTitle:_title lowerBound:_lowerBound upperBound:_upperBound
+       gridlinePositions:_gridlinePositions valueDescriptionProvider:_valueDescriptionProvider];
+    copy->_attributedTitle = _attributedTitle;
     return copy;
 }
 
@@ -456,6 +478,7 @@
     }
     return self;
 }
+
 
 - (instancetype)initWithAttributedTitle:(NSAttributedString *)attributedTitle
                           categoryOrder:(NSArray<NSString *> *)categoryOrder
@@ -502,8 +525,13 @@
 
 - (id)copyWithZone:(NSZone *)zone
 {
-    return [[AXCategoricalDataAxisDescriptor allocWithZone:zone] initWithTitle:_title
-                                                                  categoryOrder:_categoryOrder];
+    // Shared, measured by pointer identity: the order is the original's own array and the title and the
+    // attributed title are its own strings. The pair is assigned rather than rebuilt through the title's
+    // setter, for the reason the series' copy above gives.
+    AXCategoricalDataAxisDescriptor *copy = [[AXCategoricalDataAxisDescriptor allocWithZone:zone]
+        initWithTitle:_title categoryOrder:_categoryOrder];
+    copy->_attributedTitle = _attributedTitle;
+    return copy;
 }
 
 @end
@@ -684,13 +712,18 @@
 - (id)copyWithZone:(NSZone *)zone
 {
     // Shared, measured: the copy answers the original's own series array and its own x axis.
+    // Shared, measured: the title, the summary, the series, both axes and the additional axes are the
+    // original's own objects. The direction and the frame are not carried, and the reason is that the
+    // system's own copy drops them too - measured twice, with the same two fields lost in both runs and
+    // every object-typed field of the same copy kept. The policy of this family is the system's
+    // behaviour, so a copy here answers the zero case of the direction and a zero rectangle, and the
+    // case holds that with a mutant that puts the two lines back.
     AXChartDescriptor *copy = [[AXChartDescriptor allocWithZone:zone] initWithTitle:_title
                                                                            summary:_summary
                                                                   xAxisDescriptor:_xAxis
                                                                  yAxisDescriptor:_yAxis
                                                                             series:_series];
-    copy->_contentDirection = _contentDirection;
-    copy->_contentFrame = _contentFrame;
+    copy->_attributedTitle = _attributedTitle;
     copy->_additionalAxes = _additionalAxes;
     return copy;
 }

@@ -116,7 +116,7 @@
       "facts": "facts/Accessibility/Accessibility.md",
       "status": "inert",
       "reason": "a live audio graph is drawn by an assistive technology, and this release runs none: the whole Accessibility surface it holds is the AXS* preference library, measured, and no publisher of a graph is in it. The class is carried, its three class methods keep it and say once each that nothing draws the graph, and the class holds no state - the host own instance has no ivar at all, measured with class_copyIvarList",
-      "effect": "the class is there and NSClassFromString finds it, the three class methods do nothing and write one line each to the log, and no value reaches an assistive technology because none on this release would draw it"
+      "effect": "the class is there and NSClassFromString finds it, the method does nothing, and it writes exactly one line to the log however many times it is called - which is what the case holds it to: it calls each member of the graph several times and counts the port's log lines against the counts it printed, and a port that wrote a line per call fails the run"
     },
     {
       "api": "AXMathExpression",
@@ -996,7 +996,7 @@
       "introduced": "15.0",
       "status": "inert",
       "reason": "begins a graph of a graph an assistive technology draws, and this release runs none that does: the whole Accessibility surface it holds is the AXS* preference library, measured, with no publisher in it",
-      "effect": "the method is there, it does nothing, and it writes one line to the log the first time it is used; the value a caller publishes reaches no assistive technology, because none on this release would draw it",
+      "effect": "the class is there and NSClassFromString finds it, the method does nothing, and it writes exactly one line to the log however many times it is called - which is what the case holds it to: it calls each member of the graph several times and counts the port's log lines against the counts it printed, and a port that wrote a line per call fails the run",
       "facts": "facts/Accessibility/Accessibility.md"
     },
     {
@@ -1005,7 +1005,7 @@
       "introduced": "15.0",
       "status": "inert",
       "reason": "publishes one value of it of a graph an assistive technology draws, and this release runs none that does: the whole Accessibility surface it holds is the AXS* preference library, measured, with no publisher in it",
-      "effect": "the method is there, it does nothing, and it writes one line to the log the first time it is used; the value a caller publishes reaches no assistive technology, because none on this release would draw it",
+      "effect": "the class is there and NSClassFromString finds it, the method does nothing, and it writes exactly one line to the log however many times it is called - which is what the case holds it to: it calls each member of the graph several times and counts the port's log lines against the counts it printed, and a port that wrote a line per call fails the run",
       "facts": "facts/Accessibility/Accessibility.md"
     },
     {
@@ -1014,7 +1014,7 @@
       "introduced": "15.0",
       "status": "inert",
       "reason": "ends it of a graph an assistive technology draws, and this release runs none that does: the whole Accessibility surface it holds is the AXS* preference library, measured, with no publisher in it",
-      "effect": "the method is there, it does nothing, and it writes one line to the log the first time it is used; the value a caller publishes reaches no assistive technology, because none on this release would draw it",
+      "effect": "the class is there and NSClassFromString finds it, the method does nothing, and it writes exactly one line to the log however many times it is called - which is what the case holds it to: it calls each member of the graph several times and counts the port's log lines against the counts it printed, and a port that wrote a line per call fails the run",
       "facts": "facts/Accessibility/Accessibility.md"
     }
   ]

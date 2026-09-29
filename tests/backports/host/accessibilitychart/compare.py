@@ -1,10 +1,14 @@
 #!/usr/bin/env python3
 """accessibilitychart/compare.py - the two answers against what the case declares.
 
-Three of the cases the port's differential asks are expected to differ: the host's own -copyWithZone:
-drops three value-typed fields, which was measured and is written down in
-facts/Accessibility/Accessibility.md, and expected-differences.tsv carries what each side answers on
-each of them. Everything else must answer the same.
+The file the port's differential reads, expected-differences.tsv, holds the cases the two answers are
+expected to differ on, and **it currently holds none**: the three rows it had are gone, because the
+family carries the system's behaviour and the port's copies now drop the same three value-typed fields
+the system's do. The file is kept because the mechanism is worth keeping - a row added to it has to
+carry what the system answers, what the port answers and why - and because a file that says in its own
+lines why it is empty is a record where a deleted file is not. What pins those three answers is three
+mutants of the case, one per field, not a declaration: a declaration cannot catch a port that starts
+agreeing with the host, which is exactly the direction the parity policy cares about.
 
 Four things fail here, and each is a failure of the case rather than a detail it can pass over:
 
@@ -42,6 +46,10 @@ def read_declarations(path):
     declared, why = {}, {}
     for number, line in enumerate(open(path), 1):
         if number == 1 or not line.strip():
+            continue
+        if line.startswith("#"):
+            # A line that says why the file has no rows is not a row. Skipping it here is what lets the
+            # file record the decision that emptied it without the reader failing on every line.
             continue
         parts = line.rstrip("\n").split("\t")
         if len(parts) < 4:
