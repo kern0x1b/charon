@@ -16,6 +16,7 @@ import struct
 import sys
 
 import dyldcache
+from dyldcache import CacheError
 
 
 def read_class(cache, image, class_name):
@@ -40,21 +41,31 @@ def read_class(cache, image, class_name):
 def methods(cache, ro, base_off, limit):
     """The selectors in the method list at class_ro + base_off.
 
-    A method_list_t is {entsize_and_flags, count} and the entries FOLLOW, so the COUNT IS THE SECOND WORD.
-    Reading count from the first word read entsize_and_flags - 0x0000000f, fifteen - and then walked
-    fifteen methods off the end of the list, which is why both lists came back empty while the raw dump
-    of the same address showed 110 and 23.
+    baseMethods is a POINTER (an address): it goes through the per-mapping off() to a file offset. There
+    the list is {entsize_and_flags, count} and the entries FOLLOW, so THE COUNT IS THE SECOND WORD -
+    reading it from the first reads entsize_and_flags, 0x0000000f, and walks off the end of the list.
+    Each entry is a method_t of {name, types, imp} and its name is a pointer, read back the same way.
+
+    The small-method-list flag bits do not exist in a 6.1.3 cache, so a nonzero flag word is a layout we
+    do not understand: this FAILS rather than reporting selectors it invented.
     """
-    ptr = cache.u32_at(ro + base_off) & ~3
-    if not ptr or ptr < limit:
+    base = cache.u32_at(ro + base_off)
+    if not base or base < limit:
         return []
-    entsize = cache.u32_at(ptr)
-    count = cache.u32_at(ptr + 4)
+    mo = cache.require_off(base, 'method list at ro+%d' % base_off)
+    entsize, count = struct.unpack_from('<II', cache._m, mo)
+    # The first word is NOT a stride and NOT a zero flag word: on this 6.1.3 cache it reads 0x0000000f
+    # for lists whose entries are plainly 12 bytes apart, so deriving the stride from it - or asserting
+    # the small-method-list flag bits are zero - would both refuse a list this tool can read. It is
+    # REPORTED instead, and the stride is the 12 bytes the raw dump measured.
+    step = 12
+    if entsize & 0xFFFF0000:
+        raise CacheError('a method list at 0x%x carries a word 0x%08x whose high bits I do not read'
+                         % (mo, entsize))
     out = []
-    step = 12 if not (entsize & 0xFFFF0000) and (entsize & 0xFFFF) in (12, 24) else (entsize & 0xFFFF)
     for i in range(count):
-        m = ptr + 8 + i * step
-        out.append(cache.string_at(cache.u32_at(m)))
+        m = mo + 8 + i * step
+        out.append(cache.string_at(struct.unpack_from('<I', cache._m, m)[0]))
     return out
 
 
