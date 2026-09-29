@@ -40,7 +40,7 @@ run_one() {
     DDR_ROOT=$root xmake emulate -d "$device" -r "$release" install > "install-$half-$release.log" 2>&1 || {
         echo "$half $release: INSTALL-FAIL"; tail -3 "install-$half-$release.log"; return 1; }
     set +e
-    DDR_ROOT=$root xmake emulate -d "$device" -r "$release" -k run /usr/libexec/textdragdrop > "$release-$half.log" 2>&1
+    DDR_ROOT=$root xmake emulate -d "$device" -r "$release" -k launch /usr/libexec/textdragdrop > "$release-$half.log" 2>&1
     status=$?
     set -e
     if [ "$status" -eq 137 ]; then
