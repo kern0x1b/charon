@@ -29,6 +29,7 @@ common="-target arm64-apple-ios15.0-macabi -Werror=implicit-function-declaration
 common="$common -iframework $sdk/System/iOSSupport/System/Library/Frameworks -fobjc-arc"
 frameworks="-framework Foundation -framework Security -framework CoreFoundation"
 failures=0
+MUTANT_SRC=""
 cases=0
 missing=0
 mutants=0
@@ -106,13 +107,14 @@ run_mutation() {
     if [ ! -f "$build/mutant-$name.m" ]; then
         echo "RED    $name mutation NOT BUILT - nothing proved the case can fail"
         failures=$((failures + 1))
+        MUTANT_SRC=""
         return
     fi
     if [ ! -f "$build/mutant-$name.m" ]; then
         echo "RED    $name mutation NOT BUILT - nothing proved the case can fail"
         failures=$((failures + 1)); return
     fi
-    if ! xcrun clang $common "$H/$casefile.m" "$build/mutant-$name.m" \
+    if ! xcrun clang $common "$H/$casefile.m" "$build/mutant-$name.m" ${MUTANT_SRC:+"$MUTANT_SRC"} \
          -framework Foundation -framework Security -framework CoreFoundation \
          -o "$build/mutant-$name" > "$build/mutant-$name.log" 2>&1; then
         echo "BUILD  $name mutation FAILED to build"
@@ -127,14 +129,17 @@ run_mutation() {
         # rather than leaving a crash and a non-zero exit to describe the same run.
         echo "CRASH  $name mutation  crashed: signal $((status - 128)) (exit $status) - NOTICED, and not a failure: a crash is a mutation the comparison caught"
         mutants_noticed=$((mutants_noticed + 1))
+        MUTANT_SRC=""
         return
     fi
     if python3 "$H/$compare" "$build/mutant-$name.out" > "$build/mutant-$name.red" 2>&1; then
         echo "RED    $name MUTATION WENT UNNOTICED - the comparison cannot tell this case from a broken one"
         failures=$((failures + 1))
+        MUTANT_SRC=""
     else
         echo "RED    $name mutation  $(grep -m1 DIFFERS "$build/mutant-$name.red" | cut -c9-)"
         mutants_noticed=$((mutants_noticed + 1))
+        MUTANT_SRC=""
     fi
 }
 
@@ -324,6 +329,9 @@ python3 "$H/make-mutants.py" "$build" 2>/dev/null || true
 run_case sec-object-wrappers compare-sec-object-wrappers.py $H/sec-object-wrappers.m $O
 run_mutation sec-object-otherref compare-sec-object-wrappers.py sec-object-wrappers
 run_mutation sec-object-noretain compare-sec-object-wrappers.py sec-object-wrappers
+# THE BLOCKS MUTATION MUST NOT COMPILE, and its call was LOST in the F3 revert - only the function
+# definition survived, so a run quietly stopped proving that. It is restored here beside the other two.
+must_not_compile blocks-challenge-into-keyupdate "$PK" protocol-options-blocks
 run_mutation trust-result      compare-trust-result.py
 
 # --- the fuzz: no comparison, it must simply not crash, and it is built with the sanitizers on ---
