@@ -112,9 +112,34 @@ initialiser to use.
 
 ## What differs
 
-`MPSMatrixNeuronGradient`'s bias gradient and several of the neuron results differ from the release's by
-one or two units in the last place of a `float`, and the sigmoid and exponential cases differ in the
-last bit of the sigmoid itself. Those are the open items of this family, not settled facts.
+`MPSMatrixNeuronGradient`'s bias gradient and several of the neuron results differ from the release's.
+The neuron results are one or two units in the last place of a `float` and are the rounding work. The
+bias gradient was a rule this port had wrong, and `bias-probe.m` now reads the release's answer one
+element at a time.
+
+**What the one-hot incoming gradient says.** With `dY[0][0] = 1` and nothing else, the release writes:
+
+| neuron type | `resultGradientForBiasVector[0]` | `resultGradientForDataMatrix[0][0]` |
+| --- | --- | --- |
+| None | 1 | 0.5 |
+| ReLU | 1.5 | 0.75 |
+| Linear | 1.5 | 0.75 |
+| Sigmoid | 0.217894986 | 0.108947493 |
+
+The intermediate value at that element is `alpha * x + bias = 0.5 * (-2) + 0.25 = -0.75`, and each of
+those is the neuron's own derivative there: 1 for the identity, `a = 1.5` for ReLU below zero and for
+Linear, and `0.2178949` for the sigmoid, which is `s(1-s)` at `s = 1/(1+e^0.75)`. **So the bias gradient
+is the derivative-weighted sum of the incoming gradient over the feature vectors, and the data gradient
+is that same quantity times `alpha`** — the two differ by exactly the scale factor, which is what the
+intermediate value implies. This port was writing the plain column sum of the incoming gradient into
+the bias vector, which is right only for a neuron whose derivative is one everywhere.
+
+**What is not settled:** that rule is read off single-element incoming gradients. It does not yet
+extrapolate to the differential's own case — for Linear with an incoming gradient whose column sums are
+`3.5, 4.25, 5.125, 6.0625`, the rule gives `5.25, 6.375, 7.6875, 9.09` and the release answers
+`5, 6, 7, 9.75` — so some second term is involved that a one-hot cannot see. The next step is the
+`incoming=2` column of `bias-probe.m`'s output, which is that case, and then a two-element incoming
+gradient to separate a per-element term from a per-column one.
 
 `-[MPSState resourceSize]`, and with it `MPSStateBatchResourceSize`, answer this port's own number of
 bytes — what the state's description implies, or the length of a resource the caller supplied. The
