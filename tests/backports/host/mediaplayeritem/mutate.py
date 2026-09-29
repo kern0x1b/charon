@@ -8,6 +8,24 @@ the mutant, **compares it with the source, and fails if they are the same** - th
 other harnesses use - and prints the difference so what was mutated is on the record.
 
     python3 tests/backports/host/mediaplayeritem/mutate.py <file> <from> <to> <scratch>
+    python3 tests/backports/host/mediaplayeritem/mutate.py <file> <from> <to> <scratch>
+
+**A mutation that changes the bytes is not yet a mutant.** Removing an @synthesize
+changes the file and leaves ARC synthesising the same property, and a check that
+correctly stays green is not a failure of the check - that is how one of these
+mutants was nearly reported as a red line here. So the gate above is a `cmp` on
+the file, and **it is not enough on its own**: a caller must also show that the
+check's verdict moved. There was a `--check` mode that ran the check against the
+source tree and against the mutated copy and compared the two verdicts, and it
+was dropped rather than shipped half-working - it refused every mutation,
+because the run it made of the check could not find the stand-in header, and a
+control that refuses everything is worse than none. Until it comes back, the
+verdict change is printed by hand:
+
+    # with the mutation, the check must answer differently than it does without
+    xcrun clang -fobjc-arc -framework Foundation -I tests/backports/host/mediaplayeritem \
+        -I <the tree carrying the mutation> -o .agent-work/runs/mutate/mutant <the check>.m
+    .agent-work/runs/mutate/mutant | grep -E "RED|: OK"      # and the same against the source tree
 """
 import difflib
 import os
@@ -17,6 +35,30 @@ import sys
 
 LIBRARY = os.path.join("packages", "a", "apple-backports", "MediaPlayer")
 GROUPS = ("MPMediaItem70.m", "MPMediaItem80.m", "MPMediaItem92.m", "MPMediaItem100.m", "MPMediaItem103.m")
+
+
+def verdict(command, directory, tag):
+    """Run the check against one tree and return (exit status, its own verdict lines).
+
+    Each run gets its own output path under this worktree's .agent-work/runs, not /tmp and not a shared
+    name: one path for both meant the second run clobbered the first's binary, and the baseline the
+    comparison is made against was whatever the previous run left there.
+    """
+    import os as _os
+    import subprocess as _subprocess
+    # the worktree root, from git, and its own run directory - two levels up from this script is
+    # tests/backports/runs, which is neither the worktree's .agent-work nor gitignored.
+    top = _subprocess.check_output(["git", "rev-parse", "--show-toplevel"],
+                                  text=True, cwd=_os.path.dirname(_os.path.abspath(__file__))).strip()
+    runs = _os.path.join(top, ".agent-work", "runs", "mutate")
+    _os.makedirs(runs, exist_ok=True)
+    out = os.path.join(runs, "check-%s" % tag)
+    environment = dict(_os.environ, MUTANT_DIR=directory, MUTANT_OUT=out)
+    done = _subprocess.run(["/bin/sh", "-c", command], capture_output=True, text=True, env=environment)
+    lines = [line for line in (done.stdout + done.stderr).splitlines() if "RED" in line or ": OK" in line]
+    # every line, for a run that produced no verdict at all: a check that crashes says so here, and
+    # swallowing its output is what made the first two attempts of this undiagnosable.
+    return done.returncode, lines, (done.stdout + done.stderr).splitlines()
 
 
 def main(argv):

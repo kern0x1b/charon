@@ -32,7 +32,10 @@ FRAMEWORK = "MediaPlayer"
 PREFIX = "MP"                     # MediaPlayer's own classes, and no other framework's
 REGISTRY = os.path.join("packages", "a", "apple-backports", "registry", FRAMEWORK)
 FACTS = os.path.join("packages", "a", "apple-backports", "facts", FRAMEWORK, "MPMediaItem.md")
-DECL = re.compile(r"-\[|@\[")
+# A method row, of either sign and either form. The class-method sign was missing here, so
+# every +[MPMediaLibrary authorizationStatus] row was mis-read as a bare class name - the
+# blind spot the normaliser's controls are now here to keep closed.
+DECL = re.compile(r"[-+@]\[")
 
 
 def sdk_header_path():
@@ -105,33 +108,98 @@ def members_from_ast(path):
             if interface and interface.startswith(PREFIX) and name:
                 categories.setdefault(interface, set()).add(name)
                 for child in walk(node):
-                    if child.get("kind") == "ObjCMethodDecl" and child.get("name"):
+                    if child.get("kind") in ("ObjCMethodDecl", "ObjCPropertyDecl") and child.get("name"):
                         categories[interface].add(child["name"])
     return {name: classes.get(name, set()) | categories.get(name, set()) for name in set(classes) | set(categories)}
 
 
 def selector_of(name):
-    return name.split(":", 1)[0] + (":" if ":" in name else "")
+    """The member as clang spells it, which is the whole selector - a truncation here would match nothing."""
+    return name.strip()
 
 
-def rows_by_class():
+def split_api(api):
+    """(class, member) for a row's api, or a refusal.
+
+    This has to be loud. A row whose api this cannot parse used to be skipped, which made a class look
+    as though the header's members had no rows at all - a number that reads as work and is really a
+    blind spot. So an unparseable api is an error naming the api and the file, never a silent skip.
+    """
+    if DECL.search(api):
+        match = re.match(r"^([-+])\[([A-Za-z_][A-Za-z0-9_]*)\s+(.+?)\]?$", api)
+        if not match:
+            raise ValueError("cannot read the api %r: it looks like a method and is not one" % api)
+        return match.group(2), selector_of(match.group(3))
+    if "." in api:
+        klass, member = api.split(".", 1)
+        if not re.match(r"^[A-Za-z_][A-Za-z0-9_]*$", klass) or not member:
+            raise ValueError("cannot read the api %r: it is neither a class.method nor a method" % api)
+        return klass, selector_of(member)
+    if re.match(r"^[A-Za-z_][A-Za-z0-9_]*$", api):
+        return api, api
+    raise ValueError("cannot read the api %r: not a class, a class.member, or a method" % api)
+
+
+def rows_by_class(directory=None):
     """Every api the registry holds for MediaPlayer, per class, implemented and absent alike."""
     out = {}
-    if not os.path.isdir(REGISTRY):
+    directory = directory or REGISTRY
+    if not os.path.isdir(directory):
         return out
-    for entry in sorted(os.listdir(REGISTRY)):
+    for entry in sorted(os.listdir(directory)):
         if not entry.endswith(".json"):
             continue
-        for row in json.load(open(os.path.join(REGISTRY, entry))).get("entries", []):
+        path = os.path.join(directory, entry)
+        for row in json.load(open(path)).get("entries", []):
             api = row.get("api", "")
-            match = re.match(r"(?:\+|\-)?\[?([A-Za-z_][A-Za-z0-9_]*)", api)
-            if not match:
-                continue
-            klass = match.group(1)
-            member = selector_of(re.sub(r"^\+?\[?-?\[?", "", api).split(None, 1)[-1].rstrip("]")) \
-                if DECL.search(api) else selector_of(api.split(".", 1)[-1])
+            try:
+                klass, member = split_api(api)
+            except ValueError as refused:
+                raise ValueError("%s: %s" % (path, refused))
             out.setdefault(klass, set()).add(member)
     return out
+
+
+def check_normaliser():
+    """The blind spot this had, as a control: a shape it must parse, and one it must refuse loudly.
+
+    A synthetic registry directory, so the control does not depend on what the real one happens to hold
+    today, and a refusal is a non-zero exit with the offending api in the message rather than a class
+    quietly counting as uncovered.
+    """
+    import shutil
+    import tempfile
+    scratch = tempfile.mkdtemp(prefix="media-uncovered-")
+    try:
+        good = os.path.join(scratch, "good.json")
+        with open(good, "w") as out:
+            json.dump({"framework": FRAMEWORK, "entries": [
+                {"api": "MPMediaItem.albumTrackNumber"}, {"api": "MPMediaItemPropertyIsExplicit"},
+                {"api": "-[MPMediaItemArtwork initWithBoundsSize:requestHandler:]"},
+                {"api": "+[MPMediaLibrary authorizationStatus]"}, {"api": "MPNowPlayingSession"}]}, out)
+        parsed = rows_by_class(good and scratch)
+        want = {("MPMediaItem", "albumTrackNumber"),
+                ("MPMediaItemPropertyIsExplicit", "MPMediaItemPropertyIsExplicit"),
+                ("MPMediaItemArtwork", "initWithBoundsSize:requestHandler:"),
+                ("MPMediaLibrary", "authorizationStatus"), ("MPNowPlayingSession", "MPNowPlayingSession")}
+        got = {(klass, member) for klass, members in parsed.items() for member in members}
+        if want <= got:
+            print("control 4: five row shapes parsed, %d api(s)" % len(got))
+        else:
+            sys.stderr.write("FAIL: control 4, these shapes were not parsed: %s\n" % sorted(want - got))
+            return 1
+        bad = os.path.join(scratch, "bad.json")
+        with open(bad, "w") as out:
+            json.dump({"framework": FRAMEWORK, "entries": [{"api": "<<not an api>>"}]}, out)
+        try:
+            rows_by_class(scratch)
+        except ValueError as refused:
+            print("control 5: an unreadable api is refused loudly: %s" % refused)
+            return 0
+        sys.stderr.write("FAIL: control 5, an unreadable api was accepted and its class counted as uncovered\n")
+        return 1
+    finally:
+        shutil.rmtree(scratch, ignore_errors=True)
 
 
 def main():
@@ -139,10 +207,13 @@ def main():
     parser.add_argument("--ast", help="a clang JSON AST to read instead of dumping one")
     parser.add_argument("--facts", default=FACTS)
     parser.add_argument("--write-facts", action="store_true")
+    parser.add_argument("--check-normaliser", action="store_true")
     parser.add_argument("--known", default="valueForProperty:",
                         help="a member the header certainly declares, for the first control")
     options = parser.parse_args()
 
+    if options.check_normaliser:
+        return check_normaliser()
     ast = options.ast or dump_ast()
     declared = members_from_ast(ast)
     rows = rows_by_class()
@@ -170,8 +241,11 @@ def main():
         table.append({"class": klass, "declared": len(members), "a_row_covers": len(covered),
                       "no_row": len(missing), "members": missing})
     for row in table:
-        print("  %-32s %4d declared  %4d with a row  %4d with none" %
+        print("  %-32s %4d in the AST  %4d with a row  %4d with none" %
               (row["class"], row["declared"], row["a_row_covers"], row["no_row"]))
+    for klass in sorted(set(rows) - set(declared)):
+        print("  %-32s not in the AST  %4d with a row  (its %d row(s) cannot be checked here)"
+              % (klass, len(rows[klass]), len(rows[klass])))
     print("total: %d declared across %d classes, %d with no row" % (total_members, len(table), total_missing))
 
     # control 3: removing one declaration moves the count by exactly one
@@ -196,6 +270,8 @@ def main():
             out.write("| class | declared | a row covers | no row |\n| --- | ---: | ---: | ---: |\n")
             for row in table:
                 out.write("| %s | %d | %d | %d |\n" % (row["class"], row["declared"], row["a_row_covers"], row["no_row"]))
+        for klass in sorted(set(rows) - set(declared)):
+            out.write("| %s | not in the AST | %d | not checkable here |\n" % (klass, len(rows[klass])))
             out.write("\n%d members across %d classes, %d with no row. The classes in the order of the\n"
                       "fewest missing members are the next pieces.\n" % (total_members, len(table), total_missing))
     return 0
