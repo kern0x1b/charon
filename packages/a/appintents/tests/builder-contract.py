@@ -41,6 +41,21 @@ ROWS = [
 ]
 
 
+def _port_block(source, owner):
+    """The port's own `IntentItemBuilder` / `IntentItemSectionBuilder` block, and nothing else.
+
+    The alias `IntentItem.Builder = IntentItemBuilder<Value>` puts the framework's name on a
+    differently-named type, so the block to read is the **builder's**, not the type's.
+    """
+    builder = {"IntentItem": "IntentItemBuilder", "IntentItemSection": "IntentItemSectionBuilder"}[owner]
+    start = re.search(r"public enum %s<" % re.escape(builder), source)
+    if not start:
+        return ""
+    rest = source[start.start():]
+    end = rest.find("\n}\n")
+    return rest[:end] if end > 0 else rest
+
+
 def _type_block(interface, owner):
     """The interface's text for one type, so a twin is that type's declaration and not another's."""
     lines = interface.split("\n")
@@ -55,7 +70,9 @@ def _type_block(interface, owner):
         if line.strip() and not line.startswith((" ", "\t")):
             break
         out.append(line)
-    return re.sub(r"\n", "\n    ", "\n".join(out)) if out else interface
+    # **No fallback to the whole interface**: a type whose block is not found is an error, because
+    # searching everything is how another builder's `buildBlock` gets compared against this row.
+    return re.sub(r"\n", "\n    ", "\n".join(out))
 
 
 def one_interface():
@@ -96,48 +113,46 @@ def main():
                 print("ok  %-44s the type: a typealias to %s, and the interface nests an enum named Builder"
                       % (name, alias.group(1)))
             continue
-        # The declaration *and* the row's own label: `buildBlock()` and `buildBlock(_:)` are one
-        # name with two spellings, and a search on the name alone finds the first of them for both.
-        label = member[member.index("(") + 1:].split(":")[0] if ":" in member else ""
-        pattern = (r"public static func %s\(\s*%s\b[^\n]*" % (re.escape(member.split("(")[0]), re.escape(label))
-                   if label else r"public static func %s\(\s*\)[^\n]*" % re.escape(member.split("(")[0]))
-        # **Both sides** need the row's own declaration, picked the same way: `buildBlock` is declared
-        # three times in this module's builder too (no argument, variadic, and the section builder's
-        # two), so a first match reads the no-argument one for the `(_:)` row and compares nothing.
-        # That is what let the review's external-label mutation through with the row green.
-        want_labels = external_labels("func " + member.split("(", 1)[1].join(("(", ")"))) if "(" in member else []
-        port_candidates = [c.group(0) for c in re.finditer(
-            r"public static func %s\(.{0,200}?(?:->|\n    )" % re.escape(member.split("(")[0]),
-            sources[where], re.S)]
-        m = next((c for c in port_candidates if external_labels(c) == want_labels),
-                 port_candidates[0] if port_candidates else None)
-        decl = m or ""
-        # the twin has to be **this row's** declaration on **this type**: `buildBlock` is declared
-        # three times in that block (no argument, one variadic, one array) and on other builders
-        # entirely, so the candidate is the first one whose own external labels are the row's labels
-        want_labels = external_labels("func " + member.split("(", 1)[1].join(("(", ")"))) \
-            if "(" in member else []
+        # The row's own labels, read off its **spelling**: `buildBlock(_:)` -> ['_'],
+        # `buildBlock()` -> [], `buildExpression(_:)` -> ['_']. No Swift parse, because the spelling
+        # *is* the row.
+        row_labels = []
+        if "(" in member and ")" in member:
+            parts = member[member.index("(") + 1:member.rindex(")")].split(":")
+            while parts and not parts[-1]:
+                parts.pop()
+            row_labels = parts
+        func = member.split("(")[0]
+        # **Existence on each side, never a first match.** `buildBlock` is declared three times in the
+        # framework's block and three times in this module's builder, and picking one of them is how an
+        # external-label mutation went through green (kits r7). So every declaration of that name is
+        # collected, per side, as a list of label lists, and the row is green iff the row's labels are
+        # in **both**.
+        decl_re = r"public static func %s\(.{0,220}?(?:->|\n    )" % re.escape(func)
         block = _type_block(interface, where)
-        candidates = [m.group(0) for m in re.finditer(
-            r"public static func %s\(.{0,200}?(?:->|\n    )" % re.escape(member.split("(")[0]), block, re.S)]
-        twin = next((c for c in candidates if external_labels(c) == want_labels),
-                    candidates[0] if candidates else None)
-        if not m:
-            failures.append("%s: no static func by that name in %s" % (name, SOURCES[where]))
+        if not block:
+            failures.append("%s: the interface has no %s block to read, and reading the whole file "
+                            "instead is how the wrong overload gets compared" % (name, where))
             continue
-        decl = m.group(0) if hasattr(m, "group") else (m or "")
-        want = external_labels(twin) if twin else want_labels
-        got = external_labels(decl)
-        red = want != got
+        framework_side = [c.group(0) for c in re.finditer(decl_re, block, re.S)]
+        # **per type on the port side too**: this file declares `buildBlock` five times across three
+        # builders, so reading the whole file made the row `['_']` present somewhere and the check
+        # green whatever one builder did. The owner is the *builder*, not the type the alias is in.
+        port_block = _port_block(sources[where], where)
+        port_side = [c.group(0) for c in re.finditer(decl_re, port_block, re.S)]
+        framework_labels = [external_labels(d) for d in framework_side]
+        port_labels = [external_labels(d) for d in port_side]
+        red = row_labels not in framework_labels or row_labels not in port_labels
         if not re.search(r"@resultBuilder", sources[where]):
             failures.append("%s: the type is not a @resultBuilder here" % name)
         if red:
-            failures.append("%s: the framework's external labels are %s and this module's are %s"
-                            % (name, want, got))
+            failures.append("%s: the row's labels %s are not declared on both sides (port=%s framework=%s)"
+                            % (name, row_labels, port_labels, framework_labels))
         generic_of = lambda d: bool(re.search(r"func\s+\w+\s*<", d or ""))
-        if generic_of(twin) != generic_of(decl):
-            failures.append("%s: the framework's declaration is generic and this one is not, or the other way" % name)
-        print("%-4s %-42s labels port=%s framework=%s" % ("RED" if red else "ok", name, got, want))
+        if any(generic_of(d) for d in framework_side) != any(generic_of(d) for d in port_side):
+            failures.append("%s: the framework declares it generic and this module does not, or the other way" % name)
+        print("%-4s %-42s row=%s port=%s framework=%s"
+              % ("RED" if red else "ok", name, row_labels, port_labels, framework_labels))
     print("checked %d row(s), %d failure(s)" % (checked, len(failures)))
     for f in failures:
         print("FAIL %s" % f)
