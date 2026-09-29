@@ -554,6 +554,46 @@ def ancestor_property(interface, property, interfaces):
     return None
 
 
+def inherited_readonly(interface, interfaces, spellings):
+    """The read-only values of a superclass that this class's own initialisers name.
+
+    A subclass initialiser that takes a value a superclass declares read-only has nowhere to put
+    it: the superclass offers no designated initialiser that would take it (INReservation and
+    INPerson declare none at all, so the chain ends at NSObject's -initWithCoder: and nothing in
+    the SDK says where a coder would come from), and the property cannot be written from here.
+    So the class keeps its own copy, in its own ivar, and answers the getter with it. A caller
+    holding a superclass-typed pointer and sending the getter gets the subclass's answer, because
+    the getter is the subclass's own - which is what a caller would see on the system, where the
+    object is one object and the value is one value.
+    """
+    found = {}
+    for method in interface.methods:
+        selector = method.get("name") or ""
+        if method.get("instance") is False or not selector.startswith("init") or ":" not in selector:
+            continue
+        for kind, parameter in parameters_of(method):
+            name = spellings.get(parameter, parameter)
+            member = ancestor_property(interface, name, interfaces)
+            if member is None or not member.get("readonly") or member.get("category"):
+                continue
+            if ancestor_property_owner(interface, name, interfaces) == interface.name:
+                continue
+            found.setdefault(name, (type_of(member), member, member.get("name")))
+    return found
+
+
+def ancestor_property_owner(interface, property, interfaces):
+    """Which class of the chain declares the property."""
+    seen, name = set(), interfaces.get(interface.superclass)
+    while name and name.name not in seen:
+        seen.add(name.name)
+        for member in name.properties:
+            if member.get("name") == property:
+                return name.name
+        name = interfaces.get(name.superclass)
+    return None
+
+
 def zero_of(qual):
     kind = spelled(qual)
     if kind.rstrip().endswith("*") or kind == "id" or kind == "instancetype":
@@ -618,9 +658,8 @@ def initialiser(interface, method, states, spellings, interfaces):
         parent = designated(interface, interfaces)
         if not parent:
             # The value is the superclass's, it is read-only, and the superclass offers no
-            # initialiser to put it in. A body would have to store it in this class's own copy of
-            # a property it does not own, so the initialiser is left out and the registry says why
-            # rather than the value being quietly dropped.
+            # initialiser to put it in - INReservation and INPerson declare none, so the chain
+            # has nothing to call.
             return None
         # A parameter the header does not mark nullable cannot be handed a nil, and nothing in the
         # header says where the value would come from: the port refuses to chain rather than make
@@ -756,6 +795,22 @@ def implementation(interface, protocols, carried, intents, interfaces, forward=(
         if not member.get("readonly") and setter_name(name) not in accessors:
             setters.append((name, kind, member))
 
+    # The read-only values of a superclass that this class's own initialisers take.  The
+    # superclass offers no initialiser that could hold one - INReservation and INPerson declare
+    # no designated initialiser at all, so the chain ends at NSObject's -initWithCoder: and
+    # nothing in the SDK says where a coder would come from - and the property cannot be written
+    # from here.  So the class keeps a copy in its own ivar, the initialiser stores the value it
+    # was given in it, and the getter below answers with it.  A caller holding a superclass-typed
+    # pointer and sending the getter gets this class's copy, because the getter is this class's
+    # own: one object, one value, which is what a caller sees on the system.
+    spellings = property_names(interface.properties)
+    kept = {}
+    for name, (kind, member, _) in sorted(inherited_readonly(interface, interfaces, spellings).items()):
+        if name in own or ("_" + name) in {ivar for ivar, _, _ in stored}:
+            continue
+        kept[name] = kind
+        stored.append(("_" + name, spelled(kind), name))
+
     inherited = []
     for protocol_name in conformed:
         protocol = protocols.get(protocol_name)
@@ -809,8 +864,16 @@ def implementation(interface, protocols, carried, intents, interfaces, forward=(
     states = {}
     for ivar, kind, name in stored:
         member = own.get(name)
+        if member is None and name in kept:
+            # a value this class keeps a copy of for a superclass: a pointer is copied, a value
+            # is retained, which is the same rule is_copy() gives for the class's own
+            states[ivar] = "copy" if kind.rstrip().endswith("*") else "retain"
+            continue
         states[ivar] = "copy" if member and is_copy(member, kind) else "retain"
     spellings = property_names(interface.properties)
+
+    for name, kind in sorted(kept.items()):
+        out += ["- (%s)%s" % (kind, name), "{", "    return _%s;" % name, "}", ""]
 
     for name, kind, member in setters:
         kind = spelled(kind)
