@@ -21,6 +21,10 @@ set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 root=$(cd "$here/../../../.." && pwd)
 work=${WORK:-$root/.agent-work/runs/metal-census/pre-export}
+# CHECK 2 TAKES ITS OWN OBJECTS DIRECTORY, so it runs on ANY library: the gate's mixed-release object
+# was SecProtocolMetadataAccessors13_0.m in Security, and a check that can only look at Metal cannot
+# see it. The compile loop above is Metal and MetalKit; this is whatever you point it at.
+split_dir=${SPLIT_DIR:-$work}
 SDK=""
 for candidate in "$HOME"/.xmake/packages/i/iphoneos-sdk/16.4/*/Developer.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.4.sdk; do
     if [ -f "$candidate/SDKSettings.json" ]; then SDK="$candidate"; break; fi
@@ -28,6 +32,23 @@ done
 [ -n "$SDK" ] || { echo "FAIL: no iOS 16.4 SDK; set it in the script" >&2; exit 1; }
 rm -rf "$work"
 mkdir -p "$work/Metal" "$work/MetalKit"
+
+# CHECK 2 ALONE, for a library that is not Metal: SPLIT_DIR says whose objects, and ONLY_SPLIT=1
+# skips the compile loop so the check can be run on any library's objects. The gate's mixed-release
+# object was in Security, and a check that can only reach Metal cannot see it.
+if [ -n "${ONLY_SPLIT:-}" ]; then
+    split=${SPLIT_OUT:-$work/split.txt}
+    ( cd "$root" && xmake l tools/release-split.lua "$split_dir" "$split" "$SDK" ) > "$work/split.log" 2>&1 || true
+    mixed=$(sed 's/\x1b\[[0-9;]*m//g' "$work/split.log" | grep -E "^error: release-split" || true)
+    if [ -n "$mixed" ]; then
+        echo "$mixed" >&2
+        echo "pre-export: an object in $(cd "$split_dir" && pwd) carries two releases' API" >&2
+        exit 1
+    fi
+    echo "release-split: every object in $(cd "$split_dir" && pwd) holds one release's API"
+    echo "pre-export: OK (split only)"
+    exit 0
+fi
 
 # THE COMPILE, on clang's own exit status, and a count line.
 count=0
@@ -63,14 +84,14 @@ done
 [ "$unresolved" -eq 0 ] || { echo "pre-export: $unresolved unresolved _Charon* symbol(s)" >&2; exit 1; }
 echo "no unresolved _Charon* symbol in $(ls "$work"/Metal/*.o "$work"/MetalKit/*.o | wc -l | tr -d ' ') object(s)"
 
-# 2. release-split on the same objects: one release each
-split=$root/.agent-work/runs/metal-census/pre-export-split.txt
-( cd "$root" && xmake l tools/release-split.lua "$work" "$split" "$SDK" ) > "$work/split.log" 2>&1 || true
+# 2. release-split on SPLIT_DIR, whatever library that is: one release each
+split=${SPLIT_OUT:-$work/split.txt}
+( cd "$root" && xmake l tools/release-split.lua "$split_dir" "$split" "$SDK" ) > "$work/split.log" 2>&1 || true
 mixed=$(sed 's/\x1b\[[0-9;]*m//g' "$work/split.log" | grep -E "^error: release-split" || true)
 if [ -n "$mixed" ]; then
     echo "$mixed" >&2
     echo "pre-export: an object carries two releases' API" >&2
     exit 1
 fi
-echo "release-split: every object holds one release's API"
+echo "release-split: every object in $(cd "$split_dir" && pwd) holds one release's API"
 echo "pre-export: OK"
