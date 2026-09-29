@@ -42,17 +42,22 @@ mkdir -p "$work"
 # very file: the host build used none of these, and -Werror=objc-missing-property-synthesis plus the
 # armv7 target are what caught it. The list is modules/apple/backports.lua's compile() at line 162 and
 # clang() below it, copied rather than approximated.
+# BOTH reader objects, because an object carries one release's API and the reader is two of them now.
+# The invocation is the gate's own: NO -I, run from the package directory, because the sources reach
+# the port's headers by relative quoted imports. An earlier version of this check added -I roots of its
+# own and failed for that reason alone.
 library_compile() {
-    xcrun clang -target armv7-apple-ios6.1.3 -isysroot "$SDK" -fobjc-arc -Os -g0 -Wall \
-        -Wno-unguarded-availability-new -Wno-unguarded-availability \
-        -Werror=objc-missing-property-synthesis -Werror=incompatible-pointer-types \
-        -I"$root/packages/a/apple-backports/Metal" -I"$root/packages/a/apple-backports" \
-        -c "$root/packages/a/apple-backports/Metal/MTLTypeReflection.m" -o "$work/reader.o" \
-        > "$work/reader.log" 2>&1 || true
-    if grep -qE "MTLTypeReflection\.m.*(error|warning):" "$work/reader.log" \
-       || grep -qE "^.*(error|warning):" "$work/reader.log"; then
-        echo "FAIL: MTLTypeReflection.m does not compile with the library's own flags:" >&2
-        grep -E "error:|warning:" "$work/reader.log" | sed 's/^/  /' >&2
+    ( cd "$root/packages/a/apple-backports" && \
+      for object in Metal/MTLTypeReflection8.m Metal/MTLTypeReflection11.m; do
+        xcrun clang -target armv7-apple-ios6.1.3 -isysroot "$SDK" -fobjc-arc -Os -g0 -Wall \
+            -Wno-unguarded-availability-new -Wno-unguarded-availability \
+            -Werror=objc-missing-property-synthesis -fsyntax-only "$object" 2>&1
+      done ) > "$work/reader.log" || true
+    # The reader's OWN diagnostics only. air2cpu is built in the same log and LLVM 23 deprecates
+    # several of its APIs, and a check that greps the whole log fails on somebody else's warnings.
+    if grep -E "error:" "$work/reader.log" | grep -q "MTLTypeReflection"; then
+        echo "FAIL: a reader object does not compile with the library's own flags:" >&2
+        grep -E "error:" "$work/reader.log" | grep "MTLTypeReflection" | sed 's/^/  /' >&2
         exit 1
     fi
 }
@@ -93,23 +98,25 @@ fi
 [ $# -gt 0 ] || { echo "no property list to read; build air2cpu and pass one"; exit 2; }
 
 # The real reader, and the mutant: one line apart.
-cp "$root/packages/a/apple-backports/Metal/MTLTypeReflection.m" "$work/mutant.m"
+cp "$root/packages/a/apple-backports/Metal/MTLTypeReflection8.m" "$work/mutant.m"
 python3 - "$work/mutant.m" <<'PY'
 import sys
 path = sys.argv[1]
 source = open(path).read()
-old = """    NSString *access = _argument[@"access"];
-    if ([access isEqualToString:@"read-write"])
-        return MTLArgumentAccessReadWrite;
-    if ([access isEqualToString:@"write-only"])
-        return MTLArgumentAccessWriteOnly;
-    return MTLArgumentAccessReadOnly;"""
-new = """    // THE MUTATION: anything this build does not recognise becomes read-write, which is the guess the
-    // port must not make - an argument declared write-only is neither readable nor read-write.
-    NSString *access = _argument[@"access"];
-    if ([access isEqualToString:@"read-only"])
-        return MTLArgumentAccessReadOnly;
-    return MTLArgumentAccessReadWrite;"""
+# THE MUTATION is in the 8.0 object now - the reader is two objects since the release split - and it
+# is MTLArgument's -access, which is where the guess lived. Anything the build does not recognise
+# becomes read-write, and an argument declared write-only is neither readable nor read-write.
+old = """- (MTLArgumentAccess)access
+{
+    return CharonAccessFromWord(_argument[@"access"]);
+}"""
+new = """- (MTLArgumentAccess)access
+{
+    // THE MUTATION: anything this build does not recognise becomes read-write, which is the guess the
+    // port must not make.
+    return [_argument[@"access"] isEqualToString:@"read-only"] ? MTLArgumentAccessReadOnly
+                                                               : MTLArgumentAccessReadWrite;
+}"""
 assert old in source, "the mutation must match the real code it is mutating"
 open(path, "w").write(source.replace(old, new))
 PY
@@ -128,7 +135,7 @@ p = sys.argv[1]
 s = open(p).read()
 # the mutant test includes the MUTANT reader, and its own assertions are the same ones - so the only
 # difference between the two binaries is the reader, which is the point
-s = s.replace('#import "MTLTypeReflection.m"', '#import "mutant.m"')
+s = s.replace('#import "MTLTypeReflection.m"', '#import "mutant.m"\n#import "mutant11.m"')
 open(p, "w").write(s)
 PY2
 

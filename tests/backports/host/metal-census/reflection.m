@@ -16,7 +16,9 @@
  * device. It is a host check that the reader reads what the writer wrote.
  */
 #import <Foundation/Foundation.h>
-#import "MTLTypeReflection.m"
+#import "MTLTypeReflectionInternal.h"
+#import "MTLTypeReflection11.m"
+#import "MTLTypeReflection8.m"
 
 static int failures;
 
