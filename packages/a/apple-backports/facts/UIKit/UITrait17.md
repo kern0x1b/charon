@@ -198,16 +198,22 @@ Two findings, and both are the reason a header is not enough:
 
 ## One path the differential does not reach
 
-`UITraitCollection+Traits17.m` carries the collection's CGFloat reader,
-`-valueForCGFloatTrait:` and the `-valueForCGFloatTraitClass:` that forwards to it, beside the
-integer and object pair. `UITraitCollection.m` declares `-displayScale` and `-setDisplayScale:`
-of its own on the class itself, and a category method of the same name is the one the class
-answers with, so the differential's read of `-displayScale` never reaches the category's reader.
-The two paths are not two answers to one question: the category's reader is how a caller with a
-trait *class* asks, and the class's own is how the one named property asks. Measured, by putting
-one into the category's reader over a copy of the package and running the group:
-`checks=355 failures=0`, exit 0 - the read the port makes for a CGFloat trait is not held by
-anything, and a case that asks for it through `-valueForCGFloatTraitClass:` is what would.
+`UITraitCollection.m` declares `-displayScale` and `-setDisplayScale:` on the collection itself,
+and `UITraitCollection+Traits17.m` declares the same pair as a category beside the integer and
+object readers. A category method of a name the class has is the one the class answers with, so
+the differential's read of `-displayScale` never reaches the category's pair - and neither does
+the one existing case that calls `-valueForCGFloatTrait:` directly on the collection, because it
+asks the reader and not the pair.
+
+The pair is `-valueForCGFloatTraitClass:` and `-setCGFloatValueForTraitClass:value:`, and they are
+not on the collection: `nm` over the built object has them on
+`-[CharonHostCharonTraitMutations …]`, the port's own category on `NSObject`, and the collection's
+own `-valueForCGFloatTrait:` on `-[CharonHostUITraitCollection(CharonTraits) …]`. So the two ways
+in are two classes, and nothing in the group asks the `NSObject` one. Measured, by putting one
+into the forwarding reader over a copy of the package and running the group: `checks=355
+failures=0`, exit 0. Nothing is wrong with what the port answers - both paths reach the one
+ivar - and a case asking `-valueForCGFloatTraitClass:` through the mutations category is what
+would hold that path.
 
 ## The device run that has not happened
 
