@@ -49,9 +49,17 @@ does not.
 The constant is `0.7978845608f` and its float is `0x3f4c422a`, which is what the framework's own
 `+geluLayer` descriptor carries - measured against it, bit for bit, together with `b = 0.044715f` =
 `0x3d372713`. The rounded spelling `0.797885f` is `0x3f4c4231` and is not the framework's value, and it
-costs two ulps on the GELU, which is why the differential's own tolerance is per case: the GELU is held
-to zero and the two cases that go through the framework's tanh are held to four, the whole of what that
-transcendental's own error carries.
+costs two ulps on the GELU, which is why the differential's own tolerance is per case and is each
+case's own measured bound rather than one number for the file:
+
+- the GELU is held to **zero** - with the right constant it is bit-identical, so nothing about it is
+  loose;
+- `tanh` is held to **1**, which is all the framework's own tanh is off the correctly rounded value at 1
+  (`3f42f7d5` against `3f42f7d6` for `tanhf`, for `tanh` in double and for `tanhf` in double);
+- `tanhShrink` is held to **4**, because it subtracts that value, and the subtraction is what carries the
+  error from one ulp to four at 1.
+
+Every other case is held to zero as well.
 
 ## What was measured about it
 

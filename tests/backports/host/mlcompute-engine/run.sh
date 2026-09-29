@@ -113,17 +113,21 @@ xcrun clang $common "$here/system.m" $libs -framework MLCompute -o "$build/syste
 #
 #   tanh, tanhShrink - the framework's own tanh is one ulp off the correctly rounded value at 1, where it
 #   answers 3f42f7d5 and tanhf, tanh in double and tanhf in double all answer 3f42f7d6; its tanhShrink
-#   subtracts that value, which carries the error to four ulps at 1. Four is the whole of the allowance.
+#   subtracts that value, and the subtraction is what carries the error from one ulp to four at 1. So the
+#   two bounds are one each, and each is the case's own measurement.
 #
 # It is per case and not one number for the file because a number wide enough for those two would be
 # wide enough to hide a wrong constant: 0.797885f - the rounded spelling of the GELU's own multiplier,
 # and what this file carried until the review measured it against the framework's descriptor - costs two
-# ulps on the GELU, and would pass a four-ulp rule. With the GELU held to zero the wrong constant fails,
-# and the mutant below is that exact value.
+# ulps on the GELU, and a rule of four anywhere would pass it. With the GELU held to zero the wrong
+# constant fails, and the mutant below is that exact value.
 python3 - "$build/system.log" "$build/port.log" <<'CMP'
 import re, sys
 
-ULPS_ALLOWED = {"activation tanh": 4, "activation tanhShrink": 4}
+ULPS_ALLOWED = {"activation tanh": 1, "activation tanhShrink": 4}
+# Each is the case's own measured bound and not one number for the file: the framework's tanh is one ulp
+# off the correctly rounded value at 1, and its tanhShrink subtracts that value, which is what carries the
+# error from one ulp to four.
 
 def read(path):
     cases = {}
