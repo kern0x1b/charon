@@ -77,3 +77,32 @@ typedef NS_OPTIONS(NSUInteger, NSFileProviderKnownFolders) {
 
 
 #endif
+/**
+ The reason a domain is disconnected, and the options it is disconnected with.
+
+ UNGUARDED, and the reason is measured: neither SDK has them. The iOS 16.4 SDK the port builds
+ with declares -disconnectWithReason:options:completionHandler: in NSFileProviderManager.h and names
+ two types it does not define; and the macOS SDK the host differential builds against has neither
+ the types nor the method -
+
+   $ grep -rn "NSFileProviderDisconnectReason\|disconnectWithReason" <macOS SDK>/…/FileProvider.framework/Headers
+   (no output)
+   $ ls <macOS SDK>/…/FileProvider.framework/Headers | grep -i disconnect
+   (no header named for it)
+
+ so there is no file to test with __has_include and nothing to guard against: both builds need
+ these, and the port's own -disconnectWithReason:options:completionHandler: is the only declaration
+ of it either of them has. Spelled as 26.2 spells them - the port's header carries the spellings,
+ the macro and the behaviour.
+ */
+typedef NS_ENUM(NSInteger, NSFileProviderDisconnectReason) {
+    NSFileProviderDisconnectReasonUnknown = 0,
+    NSFileProviderDisconnectReasonSignedOut = 1,
+    NSFileProviderDisconnectReasonQuotaExceeded = 2,
+    NSFileProviderDisconnectReasonServerUnreachable = 3
+};
+
+typedef NS_OPTIONS(NSUInteger, NSFileProviderDisconnectOptions) {
+    NSFileProviderDisconnectOptionNone = 0,
+    NSFileProviderDisconnectOptionDropPending = 1 << 0
+};
