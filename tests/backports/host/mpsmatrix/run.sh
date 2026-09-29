@@ -12,7 +12,9 @@
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 mps=${MPS:-$here/../../../../packages/a/apple-backports/MetalPerformanceShaders}
-build=${BUILD:-$(mktemp -d)}
+build=${BUILD:-$here/../../../.agent-work/runs/host/mpsmatrix}
+rm -rf "$build"
+mkdir -p "$build"
 sdk=$(xcrun --show-sdk-path)
 target="-target arm64-apple-macos13.0 -isysroot $sdk"
 quiet="-Wno-deprecated-declarations -Wno-unguarded-availability-new -Wno-unguarded-availability -Wno-incomplete-implementation -Wno-nullability-completeness -Wno-objc-protocol-method-implementation"
@@ -29,18 +31,25 @@ set -e
 echo "system: $(wc -l < "$build/system.txt") lines, exit $system_status"
 [ "$system_status" -ne 0 ] && echo "system: stopped at: $(tail -1 "$build/system.txt" | cut -c1-60)"
 
-# The names this port carries, each under a name of its own. Every class the registry's matrix.json
-# names as implemented is here, and nothing else: a class the port does not carry is left as the
-# system's, which is what a case that reaches one is testing.
-python3 - "$here/../../../../packages/a/apple-backports/registry/MetalPerformanceShaders/matrix.json" "$build/rename.h" <<'PY'
-import json, sys
-names = set()
-for entry in json.load(open(sys.argv[1]))["entries"]:
-    if entry["kind"] == "class":
-        names.add(entry["api"])
-with open(sys.argv[2], "w") as out:
-    for name in sorted(names):
+# The names this port carries, each under a name of its own. This is every class the port *defines*,
+# derived from nm -g --defined-only of its objects and not from one registry file: the matrix file
+# named only the classes that family carries, so MPSMatrixRandomPhilox, MPSMatrixRandomDistributionDescriptor,
+# MPSState, MPSPredicate, MPSCommandBuffer and every CNN class were registered under the host's names, and
+# a case reaching one of those was comparing the host with itself.
+rm -rf "$build/plain"
+mkdir -p "$build/plain"
+for source in "$mps"/*.m; do
+    xcrun clang -fobjc-arc -w $target -c "$source" -o "$build/plain/$(basename "$source" .m).o" 2>/dev/null
+done
+for object in "$build/plain"/*.o; do xcrun nm -g --defined-only "$object"; done \
+    | grep -oE '_OBJC_CLASS_\$_[A-Za-z0-9_]+' | sed 's/_OBJC_CLASS_\$_//' | sort -u > "$build/port-defines.txt"
+python3 - "$build/port-defines.txt" "$build/rename.h" <<'PY'
+import sys
+names = [line.strip() for line in open(sys.argv[1]) if line.strip()]
+with open(sys.argv[2], 'w') as out:
+    for name in names:
         out.write("#define %s Charon%s\n" % (name, name))
+print("classes the port defines: %d" % len(names))
 PY
 echo "renamed: $(grep -c define "$build/rename.h") classes"
 
@@ -94,8 +103,8 @@ fi
 grep -v '^divergent ' "$build/system.prefix" > "$build/system.strict"
 grep -v '^divergent ' "$build/port.prefix" > "$build/port.strict"
 echo "compared: $(wc -l < "$build/system.strict") cases"
-grep '^divergent ' "$build/system.prefix" > "$build/system.divergent"
-grep '^divergent ' "$build/port.prefix" > "$build/port.divergent"
+grep '^divergent ' "$build/system.prefix" > "$build/system.divergent" || true
+grep '^divergent ' "$build/port.prefix" > "$build/port.divergent" || true
 paste "$build/system.divergent" "$build/port.divergent" | while read -r line; do
     echo "documented divergence: $line"
 done
