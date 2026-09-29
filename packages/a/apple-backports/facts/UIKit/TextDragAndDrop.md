@@ -128,10 +128,23 @@ the `UIImage.isHighDynamicRange` convention, and the setters follow from the pro
 being rows of their own. The adaptor's control is typed `UIView<UITextDraggable, UITextDroppable> *`,
 so the members are reached through the protocol the SDK declares them on.
 
-**The delegates are associated without retaining them.** The header declares both delegates `weak`;
-the port's categories store them with `OBJC_ASSOCIATION_ASSIGN`, which is unowned rather than
-zeroing, and the rows and this file say so rather than repeating the header's word for a storage
-policy the port does not have. That is a known difference from the SDK, not a claim of equality.
+**The delegates are weak and zeroing, as both headers say.** `UITextDragging.h:35` and
+`UITextDropping.h:24` declare their delegate `weak`, and they are: the port associates a small box
+that holds the delegate weakly, so a delegate deallocated before its control reads back `nil`
+rather than leaving a slot that would be messaged. The box is a private `CharonWeakDelegateBox` with
+a `__weak id target`, the association retains the box with `RETAIN_NONATOMIC`, the getter returns
+`box.target`, and the setter builds a fresh box so a replaced delegate leaves nothing pointing at the
+old one; `nil` clears the slot outright. Both delegates share it, and `UITextView` and `UITextField`
+share it because they share the macro.
+
+This is measured, not asserted: `tests/backports/host/textdragweak/` sets a delegate, reads it back
+while it lives, drops it and requires `nil`, then asks the adaptor for a drag and requires an answer
+rather than a message to a stale address, and also requires that a second delegate replaces the
+first and that `nil` clears. The mutation puts the delegates back in an unowned associated slot and
+the test goes red on *"a deallocated drag delegate reads back nil, as the header's weak says"*. The
+test includes the port's `.m` and passes a `UIView` that adopts the two protocols to the port's own
+static storage functions, because a guest that cannot construct a `UITextView` or a `UITextField`
+cannot otherwise reach them; it measures the port's storage code, not a stand-in for a member.
 
 **The seven interim `UIView.*` rows are removed**, and their removal is intended: they described
 members on a class that has neither protocol, and the same check is what named them. Where a control

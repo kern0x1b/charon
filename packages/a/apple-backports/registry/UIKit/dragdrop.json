@@ -1007,7 +1007,7 @@
    "introduced": "11.0",
    "minimum": "6.0",
    "status": "implemented",
-   "effect": "the text control's drag delegate, which is the delegate asked what a drag of a range of this text carries; the port associates it without retaining it, and the header's weak is the SDK's own storage",
+   "effect": "the text control's drag delegate, which is the delegate asked what a drag of a range of this text carries; it is held weakly, as the header declares it, so a delegate deallocated first reads back nil rather than a stale address",
    "facts": "facts/UIKit/TextDragAndDrop.md",
    "source": "the header of SDK 26.2, which declares these on the UITextDraggable and UITextDroppable protocols, adopted by UITextField and UITextView in their class extensions; the port's own categories on those two classes, compiled with the library's flags"
   },
@@ -1047,7 +1047,7 @@
    "introduced": "11.0",
    "minimum": "6.0",
    "status": "implemented",
-   "effect": "the text control's drop delegate, which is asked whether this control will take a drop and what it would do with it; the port associates it without retaining it, and the header's weak is the SDK's own storage",
+   "effect": "the text control's drop delegate, which is asked whether this control will take a drop and what it would do with it; it is held weakly, as the header declares it, so a delegate deallocated first reads back nil rather than a stale address",
    "facts": "facts/UIKit/TextDragAndDrop.md",
    "source": "the header of SDK 26.2, which declares these on the UITextDraggable and UITextDroppable protocols, adopted by UITextField and UITextView in their class extensions; the port's own categories on those two classes, compiled with the library's flags"
   },
@@ -1077,7 +1077,7 @@
    "introduced": "11.0",
    "minimum": "6.0",
    "status": "implemented",
-   "effect": "the text control's drag delegate, which is the delegate asked what a drag of a range of this text carries; the port associates it without retaining it, and the header's weak is the SDK's own storage",
+   "effect": "the text control's drag delegate, which is the delegate asked what a drag of a range of this text carries; it is held weakly, as the header declares it, so a delegate deallocated first reads back nil rather than a stale address",
    "facts": "facts/UIKit/TextDragAndDrop.md",
    "source": "the header of SDK 26.2, which declares these on the UITextDraggable and UITextDroppable protocols, adopted by UITextField and UITextView in their class extensions; the port's own categories on those two classes, compiled with the library's flags"
   },
@@ -1117,7 +1117,7 @@
    "introduced": "11.0",
    "minimum": "6.0",
    "status": "implemented",
-   "effect": "the text control's drop delegate, which is asked whether this control will take a drop and what it would do with it; the port associates it without retaining it, and the header's weak is the SDK's own storage",
+   "effect": "the text control's drop delegate, which is asked whether this control will take a drop and what it would do with it; it is held weakly, as the header declares it, so a delegate deallocated first reads back nil rather than a stale address",
    "facts": "facts/UIKit/TextDragAndDrop.md",
    "source": "the header of SDK 26.2, which declares these on the UITextDraggable and UITextDroppable protocols, adopted by UITextField and UITextView in their class extensions; the port's own categories on those two classes, compiled with the library's flags"
   },
