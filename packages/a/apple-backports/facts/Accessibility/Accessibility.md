@@ -511,7 +511,9 @@ mixed object; the numbers are here so the next band does not have to discover th
 ### What the check is, and what it caught
 
 `tests/backports/settings/check.m` is port-only, and the reason for each row is in its own header. It
-runs twenty-three assertions and its first ten **failed while printing the same value on both sides**,
+runs **twenty-five** assertions - counted, not written down, and the number the program used to end with
+was 23, so the summary line had been under-reporting its own coverage by two for as long as it was
+there - and its first ten **failed while printing the same value on both sides**,
 because an `@(0)` and a `@"0"` are not equal however they print: the check comparing a number with a
 string is worth nothing until it can be seen to fail, and its sixth control was worse - it compared a
 literal with itself. Eleven mutations now cover the assertions: ten killed, one control green, none
