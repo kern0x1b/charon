@@ -44,11 +44,21 @@ rule("macro")
         if #sources == 0 then
             raise("target(%s) is a macro plugin and has no .swift source to compile", target:name())
         end
+        -- The two include paths, as the install measured them: the modules are copied into
+        -- `lib/swift/host/` and the objects into `lib/` beside them, so `-I` takes the first and the
+        -- objects are named on the command line. (There is no `libswiftSyntax.a` to link: a
+        -- target-scoped `swift build` emits one object per module.)
+        local objects = {}
+        for _, object in ipairs(os.files(path.join(syntax, "*.o"))) do
+            table.insert(objects, object)
+        end
+        if #objects == 0 then
+            raise("target(%s) is a macro plugin and %s holds no swift-syntax object; install charon@swift-syntax", target:name(), syntax)
+        end
         os.iorunv(swiftc, table.join({
             "-emit-executable", "-module-name", target:name(), "-o", executable,
             "-target", "arm64-apple-macosx13.0",
             "-I", path.join(syntax, "swift", "host"),
-            "-L", syntax, "-Xlinker", "-rpath", "-Xlinker", syntax,
-        }, sources))
+        }, sources, objects))
         print(string.format("macro plugin %s: %s", target:name(), executable))
     end)

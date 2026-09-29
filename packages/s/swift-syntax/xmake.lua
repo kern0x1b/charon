@@ -112,27 +112,32 @@ package("swift-syntax")
         end
         os.vrunv(argv[1], table.slice(argv, 2), {curdir = source})
         print("%s: built %s targets with --jobs %s", package:name(), #modules, jobs)
-        -- The products: the modules under Modules/, the archives beside them, and the resources
-        -- SwiftSyntax keeps as files.
-        -- The configuration is named `release` (SwiftPM has no `release-only`: "error: The value
-        -- 'release-only' is invalid for '-c <configuration>'. Please provide one of 'debug'
-        -- and 'release'"), and the products are under that name in the scratch path.
-        local products = path.join(build, "release")
-        for _, name in ipairs(modules) do
-            local module = path.join(products, "Modules", name)
-            if os.isfile(module) then
-                os.cp(module, path.join(package:installdir("lib"), "swift", "host", path.basename(module)))
-            end
-        end
-        for _, pattern in ipairs({"*.a", "*.dylib", "lib*.so"}) do
-            for _, archive in ipairs(os.files(path.join(products, pattern))) do
-                os.cp(archive, path.join(package:installdir("lib"), path.filename(archive)))
+        -- The products, and where they are: **measured**, by the run that installed this package
+        -- for the first time. SwiftPM with `--target` puts each module's `.swiftmodule` and its
+        -- object *flat* in `<scratch>/release/` -- there is no `Modules/` subdirectory, and there are
+        -- no `.a` archives either, because a target-scoped build links no library product. What
+        -- 19 `.swiftmodule` files and 21 objects are in there, and the recipe copies every one of
+        -- them: the twelve the plugin's module list names, and the versioned `SwiftSyntaxNNN`
+        -- modules SwiftPM emits alongside them, which are the same sources under their release
+        -- names and which a consumer may equally import.
+        local copied = 0
+        for _, entry in ipairs(os.files(path.join(products, "*"))) do
+            local base = path.filename(entry)
+            if base:endswith(".swiftmodule") then
+                os.cp(entry, path.join(package:installdir("lib"), "swift", "host", base))
+                copied = copied + 1
+            elseif base:endswith(".o") then
+                os.cp(entry, path.join(package:installdir("lib"), base))
+                copied = copied + 1
             end
         end
         for _, dir in ipairs({"SwiftSyntax", "_SwiftSyntaxCShims", "SwiftSyntaxPrivate"}) do
             local resources = path.join(products, "..", dir)
             if os.isdir(resources) then os.cp(resources, path.join(package:installdir("share"), dir)) end
         end
-        print("%s: %s at %s, %s modules for the host", package:name(), package:version_str(),
-              package:installdir("lib"), #modules)
+        if copied == 0 then
+            raise("%s built, and %s holds no .swiftmodule and no object: the products moved", package:name(), products)
+        end
+        print("%s: %s installed at %s -- %s files: %s modules under lib/swift/host, the objects beside them",
+              package:name(), package:version_str(), package:installdir("lib"), copied)
     end)

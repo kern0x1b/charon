@@ -57,3 +57,26 @@ A gate that builds this should also **bound** its `xmake` calls and close stdin 
 neither a hang nor a prompt can hold a slot again, and it should be launched only when the machine is
 below its load cap — a queued job that waits in heavy.sh is a job holding a slot, which is the thing
 the cap exists to prevent.
+
+## Where `charon@swift-syntax`'s products land — measured, not derived
+
+`charon@swift-syntax` **installs**, and the run that first did so is what fixed the paths the recipe
+copies and the rule includes. With a target-scoped `swift build`, SwiftPM writes each module's
+`.swiftmodule` and its object **flat** in the scratch path's `release/`:
+
+```
+$STORE/s/swift-syntax/<version>/<digest>/lib/swift/host/SwiftSyntax.swiftmodule   <- the rule's -I
+$STORE/s/swift-syntax/<version>/<digest>/lib/SwiftSyntax.o                       <- the rule links it
+```
+
+Three things are **not** there, and the recipe looked for all three before that run: no `Modules/`
+subdirectory under `release/`, no `.a` archives (a target-scoped build links no library product), and
+nothing under `release/PackageFrameworks`. The `release/` directory held **19 `.swiftmodule` files**
+and **21 objects** — the twelve the package's module list names, plus the versioned
+`SwiftSyntaxNNN` modules SwiftPM emits alongside them, which are the same sources under their
+release names and which a consumer may equally import. The recipe copies all of them and **raises**
+if the directory holds neither a module nor an object, so a product that moves again is a refusal
+with a message rather than an install that installed nothing.
+
+The install also leaves `lib/pkgconfig/swift-syntax.pc`, `manifest.txt` and `references.txt`, and its
+own `build/` scratch beside them; only `lib/` and `share/` are the package's interface.
