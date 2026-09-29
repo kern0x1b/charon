@@ -29,6 +29,34 @@ where both sides wrote and the values differ, and 12 where the host writes zeros
 Each run prints the tree it measured, so a count cannot outlive its code. The counts are in flux while
 the families are worked through and this paragraph is the one to re-measure, not to trust.
 
+## The batch range, and how the release reads it
+
+`MPSMatrixMultiplication` has two passes over the batch: one that checks every matrix holds the region
+its origin names, and one that computes. Both start at the batch's **first** index, which is what
+`batchStart` is - "the index of the first matrix to process" - and `CharonMPSBatch` implements the
+header's rule that a `batchSize` of 0 means all of them.
+
+**The release does not.** Measured over three matrices, right-hand side scaled so matrix *i* writes its
+own index, so a written matrix is unmistakable:
+
+| `batchStart` | `batchSize` | matrices the release writes |
+| --- | --- | --- |
+| 0 | 0 | none |
+| 1 | 0 | none |
+| 0 | 2 | 0, 1, 2 |
+| 1 | 2 | 0, 1, 2 |
+| 1 | 1 | 0, 1, 2 |
+| 2 | 1 | 0, 1, 2 |
+
+**Two divergences from its own header, both measured.** `batchStart` is **ignored** - every combination
+writes the same three matrices - and a `batchSize` of 0 processes **none**, where the header says "0 to
+process all of them".
+
+This port follows the header: it starts at `batchStart`, and a `batchSize` of 0 processes everything
+available. That is the correct reading and it is not changed to match the host, because the host's
+behaviour is not a rule that generalises - it is the same answer for every input, which is what a
+property that is read and discarded looks like.
+
 ## Where the arithmetic happens
 
 `MPSMatrix` and `MPSVector` are an `MTLBuffer` and a shape. On this port an `MTLBuffer` is host memory
