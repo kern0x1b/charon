@@ -19,46 +19,45 @@
 // The values below are the header's own facts, not chosen numbers: MTLBindingTypeBuffer is 0,
 // MTLThreadgroupMemory 1, MTLTexture 2, MTLArgumentAccessReadOnly is 0 and ReadWrite 1.
 
-@interface CharonMetalBufferBinding : NSObject <MTLBufferBinding>
-{
-    NSString *_name;
-    NSUInteger _alignment, _dataSize;
-    MTLDataType _dataType;
-}
-@end
-
-@interface CharonMetalTextureBinding : NSObject <MTLTextureBinding>
-{
-    NSString *_name;
-    MTLTextureType _textureType;
-    MTLDataType _dataType;
-    NSUInteger _arrayLength;
-}
-@end
-
-@interface CharonMetalThreadgroupBinding : NSObject <MTLThreadgroupBinding>
-{
-    NSString *_name;
-    NSUInteger _alignment, _dataSize;
-}
-@end
-
-@interface CharonMetalObjectPayloadBinding : NSObject <MTLObjectPayloadBinding>
-{
-    NSString *_name;
-    NSUInteger _alignment, _dataSize;
-}
-@end
-
 // The base both pairs of readers share, so `name`, `type`, `access`, `index` and the two flags have ONE
-// implementation: a copy of either that changed one of them would not see the other's copy, and the
-// round trip would be testing two code paths where the header declares one.
+// implementation: the four subclasses INHERIT these five and declare only the memory numbers that
+// are their own. They used to re-synthesize all five as well, which under ARC gave each of them its
+// own shadowing ivars - five implementations where the header declares one, and a change in one
+// invisible to the others. Only `-type` is overridden per class, because only the kind differs, and
+// that override is what each row's own mutant breaks.
 @interface CharonMetalBinding : NSObject <MTLBinding>
 {
     NSString *_name;
     NSUInteger _index;
     MTLArgumentAccess _access;
     BOOL _used, _argument;
+}
+@end
+
+@interface CharonMetalBufferBinding : CharonMetalBinding <MTLBufferBinding>
+{
+    NSUInteger _alignment, _dataSize;
+    MTLDataType _dataType;
+}
+@end
+
+@interface CharonMetalTextureBinding : CharonMetalBinding <MTLTextureBinding>
+{
+    MTLTextureType _textureType;
+    MTLDataType _dataType;
+    NSUInteger _arrayLength;
+}
+@end
+
+@interface CharonMetalThreadgroupBinding : CharonMetalBinding <MTLThreadgroupBinding>
+{
+    NSUInteger _alignment, _dataSize;
+}
+@end
+
+@interface CharonMetalObjectPayloadBinding : CharonMetalBinding <MTLObjectPayloadBinding>
+{
+    NSUInteger _alignment, _dataSize;
 }
 @end
 
@@ -98,7 +97,6 @@ CharonMetalBinding *CharonMakeBinding(Class kind, NSString *name, NSUInteger ind
 
 @implementation CharonMetalBufferBinding
 
-@synthesize name = _name, index = _index, access = _access, used = _used, argument = _argument;
 @synthesize bufferAlignment = _alignment, bufferDataSize = _dataSize, bufferDataType = _dataType;
 
 - (MTLBindingType)type
@@ -138,7 +136,6 @@ CharonMetalBinding *CharonMakeBinding(Class kind, NSString *name, NSUInteger ind
 
 @implementation CharonMetalTextureBinding
 
-@synthesize name = _name, index = _index, access = _access, used = _used, argument = _argument;
 @synthesize textureType = _textureType, textureDataType = _dataType, arrayLength = _arrayLength;
 
 - (MTLBindingType)type
@@ -172,7 +169,6 @@ CharonMetalBinding *CharonMakeBinding(Class kind, NSString *name, NSUInteger ind
 
 @implementation CharonMetalThreadgroupBinding
 
-@synthesize name = _name, index = _index, access = _access, used = _used, argument = _argument;
 @synthesize threadgroupMemoryAlignment = _alignment, threadgroupMemoryDataSize = _dataSize;
 
 - (MTLBindingType)type
@@ -194,13 +190,14 @@ CharonMetalBinding *CharonMakeBinding(Class kind, NSString *name, NSUInteger ind
 
 @implementation CharonMetalObjectPayloadBinding
 
-@synthesize name = _name, index = _index, access = _access, used = _used, argument = _argument;
 @synthesize objectPayloadAlignment = _alignment, objectPayloadDataSize = _dataSize;
 
 - (MTLBindingType)type
 {
-    // The header has no separate object-payload case; a payload rides in the buffer it belongs to.
-    return MTLBindingTypeBuffer;
+    // The header gives an object payload a kind of ITS OWN: MTLBindingTypeObjectPayload is 34
+    // (MTLArgument.h:179 in 16.4, :76 in 26.2), documented as "This binding represents an object
+    // payload." It is not a buffer and nothing says it is one, so this answers 34.
+    return MTLBindingTypeObjectPayload;
 }
 
 - (NSUInteger)objectPayloadAlignment

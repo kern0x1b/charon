@@ -5,7 +5,11 @@ it is read, and the numbers that describe the memory behind it. Those bindings a
 None of them asks the device anything, which is the whole case for carrying them — a port that
 dispatches a device pointer and the three thread identifiers still has to hand these back when a
 caller asks what a kernel binds. They are in `Metal/MTLArgumentBinding16.m`, one object, which
-`release-split` measures in the **16.0 band**.
+`release-split` on it reports `clean, every object file's symbols first-appear in one release
+(1 files, 0 symbols, 50 releases checked)`. **The 16.0 the rows carry is the ladder's band, not a
+measurement of this object**: the tool placed **0 symbols**, because every symbol the object defines
+is port-internal (`CharonMetal`-prefixed, which the tool excludes by design), so there is nothing in
+it for the tool to place in any release.
 
 ## The rows
 
@@ -15,10 +19,20 @@ caller asks what a kernel binds. They are in `Metal/MTLArgumentBinding16.m`, one
 | `MTLBufferBinding` | `MTLArgument.h:346-352` | `CharonMetalBufferBinding` | `MTLBindingTypeBuffer` (0) |
 | `MTLTextureBinding` | `MTLArgument.h:361-366` | `CharonMetalTextureBinding` | `MTLBindingTypeTexture` (2) |
 | `MTLThreadgroupBinding` | `MTLArgument.h:355-358` | `CharonMetalThreadgroupBinding` | `MTLBindingTypeThreadgroupMemory` (1) |
-| `MTLObjectPayloadBinding` | `MTLArgument.h:369-372` | `CharonMetalObjectPayloadBinding` | the header gives it none of its own, so it rides in the buffer |
+| `MTLObjectPayloadBinding` | `MTLArgument.h:369-372` | `CharonMetalObjectPayloadBinding` | `MTLBindingTypeObjectPayload` (34) |
 
 `MTLBinding` declares `name`, `type`, `access`, `index`, `used` (`isUsed`) and `argument`
-(`isArgument`); the four derive from it and add only their own memory numbers.
+(`isArgument`); the four derive from it and add only their own memory numbers. The base carries ONE
+implementation of those six and the four **inherit** it; only `-type` is overridden per class,
+because only the kind differs. (They used to re-synthesize all five as well, which under ARC gave
+each its own shadowing ivars — five implementations where the header declares one.)
+
+**An earlier revision of these facts was wrong about the payload's kind.** It said the header gives
+an object payload no kind of its own and that a payload rides in the buffer. The header does the
+opposite: `MTLBindingTypeObjectPayload = 34` (`MTLArgument.h:179` in 16.4, `:76` in 26.2),
+documented "This binding represents an object payload." The object, the case, the table and the
+registry all carried that wrong claim; all four now say 34, and `M4` is red on an object answering
+the buffer kind.
 
 ## The numbers are the header's, not chosen here
 
@@ -28,7 +42,7 @@ caller asks what a kernel binds. They are in `Metal/MTLArgumentBinding16.m`, one
 
 ## Why 16.0, and what that word means
 
-The cache ladder's band for this object is 16.0, and it reports that **no release is held between
+The 16.0 is the cache ladder's band for this family, and the ladder reports that **no release is held between
 12.0 and 16.0**, so 16.0 means **"after 12.0, and by 16.0" — a band, not a measured first
 release**. The object's name carries 16 because the family is the 16.0 API. The rows say 16.0
 because that is the band the ladder chose.
@@ -43,20 +57,53 @@ there is no host binding to compare against. What is measured instead is the hea
 constants above, plus each class's own values.
 
 Each row is proved by a mutant that breaks **only that class** and goes red on **that class's own
-assertion** and on no other (`tests/backports/host/metal-census/argbinding.m`):
+assertion** and on no other. The harness is committed, in-tree, and is the only way these numbers are
+produced:
 
-| mutant | red line |
-| --- | --- |
-| `MTLBinding` `-type` | `FAIL MTLBinding: the base answers the kind it was built as` |
-| `MTLBufferBinding` `-type` | `FAIL MTLBufferBinding: its type is MTLBindingTypeBuffer` |
-| `MTLTextureBinding` `-type` | `FAIL MTLTextureBinding: its type is MTLBindingTypeTexture` |
-| `MTLThreadgroupBinding` `-type` | `FAIL MTLThreadgroupBinding: its type is MTLBindingTypeThreadgroupMemory` |
-| `MTLObjectPayloadBinding` `-type` | `FAIL MTLObjectPayloadBinding: it rides in the buffer, the only kind the header gives it` |
+```
+sh tests/backports/host/metal-census/argbinding.sh
+```
 
-The base row needed a case of its own: all four subclasses **override** `-type`, so before it was
-asked directly a break in the base's own `-type` reached nothing and no mutant there could ever go
-red. `MTLObjectPayloadBinding` needed one for the same reason in reverse — nothing asserted that
-it rides in the buffer, so a mutant changing it stayed green until the case said so.
+| mutant | breaks | red line |
+| --- | --- | --- |
+| `M0` | the base's `-type` | `MTLBinding: the base answers the kind it was built as` |
+| `M1` | `CharonMetalBufferBinding`'s `-type` | `MTLBufferBinding: its type is MTLBindingTypeBuffer` |
+| `M2` | `CharonMetalTextureBinding`'s `-type` | `MTLTextureBinding: its type is MTLBindingTypeTexture` |
+| `M3` | `CharonMetalThreadgroupBinding`'s `-type` | `MTLThreadgroupBinding: its type is MTLBindingTypeThreadgroupMemory` |
+| `M4` | `CharonMetalObjectPayloadBinding`'s `-type` | `MTLObjectPayloadBinding: its type is MTLBindingTypeObjectPayload (34)` |
+| `M5` | the shared `used` write | `MTLBinding: it reads back its name, index, access and both flags` |
+
+Three things in the harness exist because they failed here once:
+
+- **A mutation that does not build is `RUN FAILED`, never red.** It reported a green run: a mutation
+  compiled with a wrong `-I` depth left the previous binary in place, so the case ran against an
+  object that no longer existed. Every build removes its outputs first, and the broken mutation is a
+  permanent control in the script.
+- **A mutation is scoped to its class, not matched by text.** The five `-type` getters answer three
+  different constants, so a plain text replace hits whichever comes first — an early revision
+  "mutated" the base and reported green.
+- **The port's classes must be defined in the binary** (`prove_defined`, `SELF_TEST=1` for both
+  halves), or the case measures Apple's Metal, which is on the host too.
+
+Two rows were uncovered when this was first written and the case had to be corrected rather than the
+mutants explained away. All four subclasses **override** `-type`, so before the base was asked
+directly a break in the base's own `-type` reached nothing and no mutant there could go red. And
+nothing asserted that the payload had a kind, so `M4` stayed green — and when it was finally asked,
+the answer it found was **wrong**: 34, not the buffer.
+
+## What is measured, and what is not
+
+Measured, each by its own mutant in `argbinding.sh`: the kind (`-type`) of all five rows, and the
+base's `name`, `index`, `access`, `used` and `argument` — the last two through the one shared
+implementation, so `M5` breaks the shared write and the base's own flag assertion names it.
+
+**Not measured, by name:** `bufferAlignment`, `bufferDataSize`, `bufferDataType`,
+`bufferStructType`, `bufferPointerType`, `textureType`, `textureDataType`, `isDepthTexture`,
+`arrayLength`, `threadgroupMemoryAlignment`, `threadgroupMemoryDataSize`,
+`objectPayloadAlignment` and `objectPayloadDataSize`. The header declares them `readonly` and fixes
+no value for any of them, so there is no oracle to compare against, and a round trip of the port's
+own object against itself would prove only that the port agrees with the port. They are carried, and
+the case and the registry's effects say so rather than leaving it to be guessed.
 
 ## `MTLArgumentEncoder`: still owed, and what the port answers
 

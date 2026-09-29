@@ -1115,7 +1115,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "one binding, as the plain data holder it is: a kind, an access, an index, a name and two flags",
-      "effect": "the port vends CharonMetalBinding and it answers all six properties; the host has no argument encoder, so no host binding exists and the case measures the header-fixed constants and the port's own values rather than comparing against a host",
+      "effect": "the port vends CharonMetalBinding and it answers all six of the header's properties, in ONE implementation the four subclasses inherit; only -type is overridden per class, so the base is asked directly by its own mutant; the host has no argument encoder, so no host binding exists and the case measures the header-fixed constants and the port's own values rather than comparing against a host",
       "source": "SDK 16.4 MTLArgument.h:335-343; SDK 16.4 MTLArgument.h:169-171 for the three kinds and 218-220 for the three accesses, both read from the header's own enumerators and not chosen here; the cache ladder's band for this symbol is 16.0, and it reports that no release is held between 12.0 and 16.0, so 16.0 means after 12.0 and by 16.0, not a measured first release",
       "facts": "facts/Metal/ArgumentBindings.md"
     },
@@ -1126,7 +1126,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "one buffer binding, over the base it shares with the other three",
-      "effect": "the port vends CharonMetalBufferBinding, and its -type is the buffer kind; the host has no argument encoder, so no host binding exists and the case measures the header-fixed constants and the port's own values rather than comparing against a host",
+      "effect": "the port vends CharonMetalBufferBinding, and its -type is the buffer kind; the host has no argument encoder, so no host binding exists and the case measures the header-fixed constants and the port's own values rather than comparing against a host; its memory numbers - bufferAlignment, bufferDataSize, bufferDataType, bufferStructType, bufferPointerType - are carried but NOT measured: the header declares them readonly and fixes no value, so there is no oracle, and a round trip of the port's own object against itself would prove only that the port agrees with the port; the host has no argument encoder, so no host binding exists and the case measures the header-fixed constants and the port's own values rather than comparing against a host",
       "source": "SDK 16.4 MTLArgument.h:346-352; SDK 16.4 MTLArgument.h:169-171 for the three kinds and 218-220 for the three accesses, both read from the header's own enumerators and not chosen here; the cache ladder's band for this symbol is 16.0, and it reports that no release is held between 12.0 and 16.0, so 16.0 means after 12.0 and by 16.0, not a measured first release",
       "facts": "facts/Metal/ArgumentBindings.md"
     },
@@ -1247,8 +1247,8 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "one object-payload binding, over the base it shares with the other three",
-      "effect": "the port vends CharonMetalObjectPayloadBinding; the header gives the payload no kind of its own, so it rides in the buffer it belongs to, and the case says so; the host has no argument encoder, so no host binding exists and the case measures the header-fixed constants and the port's own values rather than comparing against a host",
-      "source": "SDK 16.4 MTLArgument.h:369-372; SDK 16.4 MTLArgument.h:169-171 for the three kinds and 218-220 for the three accesses, both read from the header's own enumerators and not chosen here; the cache ladder's band for this symbol is 16.0, and it reports that no release is held between 12.0 and 16.0, so 16.0 means after 12.0 and by 16.0, not a measured first release",
+      "effect": "the port vends CharonMetalObjectPayloadBinding, and its -type is MTLBindingTypeObjectPayload (34), the kind the header gives an object payload and documents as 'This binding represents an object payload' - an earlier revision of this row said the header gave it none and that it rides in the buffer, which was wrong; its memory numbers - objectPayloadAlignment, objectPayloadDataSize - are carried but NOT measured: the header declares them readonly and fixes no value, so there is no oracle, and a round trip of the port's own object against itself would prove only that the port agrees with the port; the host has no argument encoder, so no host binding exists and the case measures the header-fixed constants and the port's own values rather than comparing against a host",
+      "source": "SDK 16.4 MTLArgument.h:369-372 for the protocol and :179 for MTLBindingTypeObjectPayload = 34, the same value at :76 in SDK 26.2; the kind and access constants at :169-171 and :218-220; the cache ladder's band for this symbol is 16.0, and it reports that no release is held between 12.0 and 16.0, so 16.0 means after 12.0 and by 16.0, not a measured first release",
       "facts": "facts/Metal/ArgumentBindings.md"
     },
     {
@@ -1258,7 +1258,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "one texture binding, over the base it shares with the other three",
-      "effect": "the port vends CharonMetalTextureBinding, and its -type is the texture kind; the host has no argument encoder, so no host binding exists and the case measures the header-fixed constants and the port's own values rather than comparing against a host",
+      "effect": "the port vends CharonMetalTextureBinding, and its -type is the texture kind; the host has no argument encoder, so no host binding exists and the case measures the header-fixed constants and the port's own values rather than comparing against a host; its memory numbers - textureType, textureDataType, isDepthTexture, arrayLength - are carried but NOT measured: the header declares them readonly and fixes no value, so there is no oracle, and a round trip of the port's own object against itself would prove only that the port agrees with the port; the host has no argument encoder, so no host binding exists and the case measures the header-fixed constants and the port's own values rather than comparing against a host",
       "source": "SDK 16.4 MTLArgument.h:361-366; SDK 16.4 MTLArgument.h:169-171 for the three kinds and 218-220 for the three accesses, both read from the header's own enumerators and not chosen here; the cache ladder's band for this symbol is 16.0, and it reports that no release is held between 12.0 and 16.0, so 16.0 means after 12.0 and by 16.0, not a measured first release",
       "facts": "facts/Metal/ArgumentBindings.md"
     },
@@ -1269,7 +1269,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "one threadgroup-memory binding, over the base it shares with the other three",
-      "effect": "the port vends CharonMetalThreadgroupBinding, and its -type is the threadgroup kind; the host has no argument encoder, so no host binding exists and the case measures the header-fixed constants and the port's own values rather than comparing against a host",
+      "effect": "the port vends CharonMetalThreadgroupBinding, and its -type is the threadgroup kind; the host has no argument encoder, so no host binding exists and the case measures the header-fixed constants and the port's own values rather than comparing against a host; its memory numbers - threadgroupMemoryAlignment, threadgroupMemoryDataSize - are carried but NOT measured: the header declares them readonly and fixes no value, so there is no oracle, and a round trip of the port's own object against itself would prove only that the port agrees with the port; the host has no argument encoder, so no host binding exists and the case measures the header-fixed constants and the port's own values rather than comparing against a host",
       "source": "SDK 16.4 MTLArgument.h:355-358; SDK 16.4 MTLArgument.h:169-171 for the three kinds and 218-220 for the three accesses, both read from the header's own enumerators and not chosen here; the cache ladder's band for this symbol is 16.0, and it reports that no release is held between 12.0 and 16.0, so 16.0 means after 12.0 and by 16.0, not a measured first release",
       "facts": "facts/Metal/ArgumentBindings.md"
     },

@@ -76,27 +76,43 @@ int main(void)
 
         check(buffer.type == MTLBindingTypeBuffer, @"MTLBufferBinding: its type is MTLBindingTypeBuffer");
         check([buffer.name isEqualToString:@"charonBuffer"] && buffer.index == 3 &&
-              buffer.access == MTLArgumentAccessReadWrite,
-              @"MTLBufferBinding: it reads back its name, index and access");
+              buffer.access == MTLArgumentAccessReadWrite && buffer.isUsed == YES &&
+              buffer.isArgument == YES,
+              @"MTLBufferBinding: it reads back its name, index, access and both flags");
 
         check(texture.type == MTLBindingTypeTexture, @"MTLTextureBinding: its type is MTLBindingTypeTexture");
         check([texture.name isEqualToString:@"charonTexture"] && texture.index == 4 &&
-              texture.access == MTLArgumentAccessReadOnly,
-              @"MTLTextureBinding: it reads back its name, index and access");
+              texture.access == MTLArgumentAccessReadOnly && texture.isUsed == YES &&
+              texture.isArgument == NO,
+              @"MTLTextureBinding: it reads back its name, index, access and both flags");
 
         check(group.type == MTLBindingTypeThreadgroupMemory,
               @"MTLThreadgroupBinding: its type is MTLBindingTypeThreadgroupMemory");
-        check([group.name isEqualToString:@"charonGroup"] && group.index == 5,
-              @"MTLThreadgroupBinding: it reads back its name and index");
+        check([group.name isEqualToString:@"charonGroup"] && group.index == 5 &&
+              group.isUsed == YES && group.isArgument == NO,
+              @"MTLThreadgroupBinding: it reads back its name, index and both flags");
 
-        // The header has NO object-payload case of its own, so the payload rides in the buffer it
-        // belongs to - and the case must COVER that, or a mutant that changes it would be green.
-        check(payload.type == MTLBindingTypeBuffer,
-              @"MTLObjectPayloadBinding: it rides in the buffer, the only kind the header gives it");
+        // The header gives an object payload a kind of ITS OWN - MTLBindingTypeObjectPayload is 34
+        // (MTLArgument.h:179 in 16.4, :76 in 26.2) - and an earlier revision of this case claimed
+        // the header had no such case and that a payload rides in the buffer. That was wrong, and it
+        // was wrong in the object too; both are fixed, and the mutant below is the one that keeps it
+        // fixed: an object answering the buffer kind is now red.
+        check(payload.type == MTLBindingTypeObjectPayload,
+              @"MTLObjectPayloadBinding: its type is MTLBindingTypeObjectPayload (34)");
         check(payload.index == 6 && payload.access == MTLArgumentAccessReadOnly,
               @"MTLObjectPayloadBinding: it reads back its index and access");
-        check([payload.name isEqualToString:@"charonPayload"],
-              @"MTLObjectPayloadBinding: it reads back its name");
+        check([payload.name isEqualToString:@"charonPayload"] && payload.isUsed == YES &&
+              payload.isArgument == NO,
+              @"MTLObjectPayloadBinding: it reads back its name and both flags");
+
+        // WHAT IS NOT MEASURED, said here so it is not guessed at: the memory numbers -
+        // bufferAlignment, bufferDataSize, bufferDataType, bufferStructType, bufferPointerType,
+        // textureType, textureDataType, isDepthTexture, arrayLength, threadgroupMemoryAlignment,
+        // threadgroupMemoryDataSize, objectPayloadAlignment and objectPayloadDataSize - are NOT
+        // asserted anywhere. The header declares them readonly and gives none of them a fixed
+        // value, so there is no oracle to compare against, and a round trip of the port's own
+        // object against itself would prove only that the port agrees with the port. They are
+        // carried, not measured, and the facts file and the registry's effects say so by name.
 
         // PER-PROPERTY AGAINST A HOST BINDING IS NOT POSSIBLE, and the case says so instead of
         // pretending. A host MTLDevice here has no `newArgumentEncoderWithBufferIndex:` - the whole
