@@ -105,9 +105,9 @@
       "kind": "protocol",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the port ships CharonMetalDevice, which conforms to this protocol; the earlier reason quoted CharonMetalProtocols.h:51:35, a build error about MTLAllocation that the header no longer produces and that line no longer contains - the header compiles with the library's own flags and does not name MTLAllocation at all",
-      "effect": "the port's device: -newBufferWithLength:options:, -newTextureWithDescriptor:, -newDefaultLibrary, the heap calls and the command queue, over the port's Metal-over-OpenGL-ES-2.0 path the 8.0 debug-marker and texture-descriptor members the SDK's protocol declares are not carried, and the stripped compile names them: no debug markers, and -newTextureWithDescriptor:offset:bytesPerRow: over a region rather than a descriptor",
+      "status": "inert",
+      "reason": "the port carries CharonMetalDevice, but the class misses required members of MTLDevice, so the conformance is not callable and the row must not raise a band floor through backports.lua:664",
+      "effect": "the members the class does implement are callable; these are NOT, and are owed: heapBufferSizeAndAlignWithLength:options:, heapTextureSizeAndAlignWithDescriptor:, minimumLinearTextureAlignmentForPixelFormat:, minimumTextureBufferAlignmentForPixelFormat:, newBufferWithBytesNoCopy:length:options:deallocator:, newComputePipelineStateWithDescriptor:options:completionHandler: and 13 more named by -Wprotocol",
       "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
     },
     {
@@ -115,9 +115,9 @@
       "kind": "protocol",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the port ships CharonMetalBuffer and CharonMetalTexture, which conforms to this protocol; the earlier reason quoted CharonMetalProtocols.h:51:35, a build error about MTLAllocation that the header no longer produces and that line no longer contains - the header compiles with the library's own flags and does not name MTLAllocation at all",
-      "effect": "through them: both declare <MTLResource> in 16.4's MTLBuffer.h:32 and MTLTexture.h:264, and a class conforming to MTLBuffer conforms to everything it inherits - which is why this is implemented without a class of its own the debug-marker members MTLResource inherits are not carried, and the stripped compile of each concrete class names them",
+      "status": "inert",
+      "reason": "the port carries CharonMetalBuffer and CharonMetalTexture, but the class misses required members of MTLResource, declared forward at MTLBuffer.h:17, so the conformance is not callable and the row must not raise a band floor through backports.lua:664",
+      "effect": "the members the class does implement are callable; these are NOT, and are owed: isAliasable and makeAliasable, which the buffer and the texture each miss - and the debug markers MTLResource declares",
       "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
     },
     {
@@ -125,9 +125,9 @@
       "kind": "protocol",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the port ships CharonMetalBuffer, which conforms to this protocol; the earlier reason quoted CharonMetalProtocols.h:51:35, a build error about MTLAllocation that the header no longer produces and that line no longer contains - the header compiles with the library's own flags and does not name MTLAllocation at all",
-      "effect": "the port's buffer: CPU-resident bytes, -contents, -length, -newTextureWithDescriptor:, and the blits the host differential in facts/Metal/Blits.md measures the SDK's debug markers and its offset texture constructor are not carried, and the stripped compile names both",
+      "status": "inert",
+      "reason": "the port carries CharonMetalBuffer, but the class misses required members of MTLBuffer, MTLBuffer.h:17's forward and MTLBuffer.h:32's base, so the conformance is not callable and the row must not raise a band floor through backports.lua:664",
+      "effect": "the members the class does implement are callable; these are NOT, and are owed: addDebugMarker:range:, removeAllDebugMarkers, newTextureWithDescriptor:offset:bytesPerRow: and the MTLResource pair",
       "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
     },
     {
@@ -135,9 +135,9 @@
       "kind": "protocol",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the port ships CharonMetalTexture, which conforms to this protocol; the earlier reason quoted CharonMetalProtocols.h:51:35, a build error about MTLAllocation that the header no longer produces and that line no longer contains - the header compiles with the library's own flags and does not name MTLAllocation at all",
-      "effect": "the port's texture: -replaceRegion:mipmapLevel:withBytes:bytesPerRow:, -generateMipmapsForLevel:, -newTextureWithDescriptor:, and the mip chain facts/Metal/Blits.md measures the SDK's debug markers are not carried, and the stripped compile names them",
+      "status": "inert",
+      "reason": "the port carries CharonMetalTexture, but the class misses required members of MTLTexture, so the conformance is not callable and the row must not raise a band floor through backports.lua:664",
+      "effect": "the members the class does implement are callable; these are NOT, and are owed: getBytes:bytesPerRow:bytesPerImage:fromRegion:mipmapLevel:slice:, newTextureViewWithPixelFormat:, newTextureViewWithPixelFormat:textureType:levels:slices:, newSharedTextureHandle and the MTLResource pair",
       "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
     },
     {
@@ -165,9 +165,9 @@
       "kind": "protocol",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the port ships CharonMetalLibrary, which conforms to this protocol; the earlier reason quoted CharonMetalProtocols.h:51:35, a build error about MTLAllocation that the header no longer produces and that line no longer contains - the header compiles with the library's own flags and does not name MTLAllocation at all",
-      "effect": "the port's library, and -newFunctionWithName: is how a kernel is reached the function-level constants and the -newFunctionWithConstantValues: form are not carried, and the stripped compile names them",
+      "status": "inert",
+      "reason": "the port carries CharonMetalLibrary, but the class misses required members of MTLLibrary, so the conformance is not callable and the row must not raise a band floor through backports.lua:664",
+      "effect": "the members the class does implement are callable; these are NOT, and are owed: on MTLFunction: newArgumentEncoderWithBufferIndex:, newArgumentEncoderWithBufferIndex:reflection:; on MTLLibrary: newFunctionWithDescriptor:error: and the intersection-function and completion-handler forms",
       "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
     },
     {
@@ -175,9 +175,9 @@
       "kind": "protocol",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the port ships CharonMetalPipeline, which conforms to this protocol; the earlier reason quoted CharonMetalProtocols.h:51:35, a build error about MTLAllocation that the header no longer produces and that line no longer contains - the header compiles with the library's own flags and does not name MTLAllocation at all",
-      "effect": "the port's render pipeline state, which the encoder binds and draws from its binary and the stage-input accessors are not carried, and the stripped compile names them",
+      "status": "inert",
+      "reason": "the port carries CharonMetalPipeline, but the class misses required members of MTLRenderPipelineState, so the conformance is not callable and the row must not raise a band floor through backports.lua:664",
+      "effect": "the members the class does implement are callable; these are NOT, and are owed: imageblockMemoryLengthForDimensions:, functionHandleWithFunction:stage:, newIntersectionFunctionTableWithDescriptor:stage:, newVisibleFunctionTableWithDescriptor:stage: and one more",
       "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
     },
     {
@@ -185,9 +185,9 @@
       "kind": "protocol",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the port ships CharonMetalQueue, which conforms to this protocol; the earlier reason quoted CharonMetalProtocols.h:51:35, a build error about MTLAllocation that the header no longer produces and that line no longer contains - the header compiles with the library's own flags and does not name MTLAllocation at all",
-      "effect": "the port's command queue, and -newCommandBuffer is how a dispatch is begun the -insertDebugBoundary: and handler members are not carried, and the stripped compile names them",
+      "status": "inert",
+      "reason": "the port carries CharonMetalQueue, but the class misses required members of MTLCommandQueue, so the conformance is not callable and the row must not raise a band floor through backports.lua:664",
+      "effect": "the members the class does implement are callable; these are NOT, and are owed: commandBufferWithDescriptor:, and on MTLCommandBuffer the blit/compute encoders with a descriptor, encodeSignalEvent:value:, encodeWaitForEvent:value: and the acceleration-structure one",
       "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
     },
     {
@@ -195,9 +195,9 @@
       "kind": "protocol",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the port ships CharonMetalQueue, which conforms to this protocol; the earlier reason quoted CharonMetalProtocols.h:51:35, a build error about MTLAllocation that the header no longer produces and that line no longer contains - the header compiles with the library's own flags and does not name MTLAllocation at all",
-      "effect": "through CharonMetalCommandBuffer, which the queue builds and the encoder runs",
+      "status": "inert",
+      "reason": "the port carries CharonMetalCommandBuffer, but the class misses required members of MTLCommandBuffer.h:236, so the conformance is not callable and the row must not raise a band floor through backports.lua:664",
+      "effect": "the members the class does implement are callable; these are NOT, and are owed: blitCommandEncoderWithDescriptor:, computeCommandEncoderWithDescriptor:, computeCommandEncoderWithDispatchType:, accelerationStructureCommandEncoder, encodeSignalEvent:value:, encodeWaitForEvent:value: and more",
       "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
     },
     {
@@ -205,9 +205,9 @@
       "kind": "protocol",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the port ships CharonMetalEncoder and CharonMetalComputeEncoder, which conforms to this protocol; the earlier reason quoted CharonMetalProtocols.h:51:35, a build error about MTLAllocation that the header no longer produces and that line no longer contains - the header compiles with the library's own flags and does not name MTLAllocation at all",
-      "effect": "through them: 16.4's MTLRenderCommandEncoder.h:131 and MTLComputeCommandEncoder.h:41 both declare <MTLCommandEncoder, and a class conforming to either conforms to it - so no class of its own is needed",
+      "status": "inert",
+      "reason": "the port carries CharonMetalEncoder and CharonMetalComputeEncoder, but the class misses required members of MTLCommandEncoder, the base of MTLRenderCommandEncoder.h:131 and MTLComputeCommandEncoder.h:41, so the conformance is not callable and the row must not raise a band floor through backports.lua:664",
+      "effect": "the members the class does implement are callable; these are NOT, and are owed: whatever their own protocols miss: setScissorRects:count:, setVertexBufferOffset:atIndex:, setFragmentBufferOffset:atIndex: and more on the render side; setBufferOffset:atIndex: and more on the compute side",
       "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
     },
     {
@@ -215,9 +215,9 @@
       "kind": "protocol",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the port ships CharonMetalEncoder, which conforms to this protocol; the earlier reason quoted CharonMetalProtocols.h:51:35, a build error about MTLAllocation that the header no longer produces and that line no longer contains - the header compiles with the library's own flags and does not name MTLAllocation at all",
-      "effect": "the port's render encoder, which holds the pipeline and the vertex buffers and issues the blits its -setViewport and debug-marking members are not carried, and the stripped compile names them",
+      "status": "inert",
+      "reason": "the port carries CharonMetalEncoder, but the class misses required members of MTLRenderCommandEncoder, MTLRenderCommandEncoder.h:131, so the conformance is not callable and the row must not raise a band floor through backports.lua:664",
+      "effect": "the members the class does implement are callable; these are NOT, and are owed: setVertexBufferOffset:atIndex:, setFragmentBufferOffset:atIndex:, setFragmentBuffers:offsets:withRange:, setScissorRects:count:, setDepthClipMode: and 15 more",
       "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
     },
     {

@@ -133,3 +133,60 @@ gap. **The remaining partial conformances are work owed, and this file now names
 `minimum: 6.0`, which is where the port's Metal starts, so flipping a protocol row to `implemented`
 adds it to `bands[introduced]` (backports.lua:664) without raising any file's floor. `MTLCaptureScope`
 is `introduced: 11.0`, so it lands in that band; every other one is `introduced: 8.0`.
+
+### update 2026-09-29: r2 — ten of the fifteen are inert, not implemented, and the citations are corrected
+
+A review of `metal-alloc` found the fifteen flipped to unqualified `implemented` while their classes
+demonstrably miss required members, and it is right: `backports.lua:664` turns a protocol row with
+`status == "implemented"` into a **band floor** through `bands[introduced]`, so claiming a conformance
+that is not callable claims a floor this port cannot support. A missing required protocol method is a
+callable gap — owed, not carried.
+
+**The rule now applied: `implemented` only where the stripped compile is clean.** Ten rows are
+`inert` — the class is carried and the members it does implement are callable, but these are not, and
+each row names them:
+
+| row | the port's class | the exact selectors owed |
+| --- | --- | --- |
+| MTLDevice | `CharonMetalDevice` | `heapBufferSizeAndAlignWithLength:options:`, `heapTextureSizeAndAlignWithDescriptor:`, `minimumLinearTextureAlignmentForPixelFormat:`, `minimumTextureBufferAlignmentForPixelFormat:`, `newBufferWithBytesNoCopy:length:options:deallocator:`, `newComputePipelineStateWithDescriptor:options:completionHandler:` and 13 more |
+| MTLResource | `CharonMetalBuffer`, `CharonMetalTexture` | `isAliasable`, `makeAliasable`, and the debug markers `MTLResource` declares |
+| MTLBuffer | `CharonMetalBuffer` | `addDebugMarker:range:`, `removeAllDebugMarkers`, `newTextureWithDescriptor:offset:bytesPerRow:`, the `MTLResource` pair |
+| MTLTexture | `CharonMetalTexture` | `getBytes:bytesPerRow:bytesPerImage:fromRegion:mipmapLevel:slice:`, `newTextureViewWithPixelFormat:`, `newTextureViewWithPixelFormat:textureType:levels:slices:`, `newSharedTextureHandle`, the `MTLResource` pair |
+| MTLFunction | `CharonMetalLibrary` | `newArgumentEncoderWithBufferIndex:`, `newArgumentEncoderWithBufferIndex:reflection:` |
+| MTLLibrary | `CharonMetalLibrary` | `newFunctionWithDescriptor:error:` and the intersection-function and completion-handler forms |
+| MTLRenderPipelineState | `CharonMetalPipeline` | `imageblockMemoryLengthForDimensions:`, `functionHandleWithFunction:stage:`, `newIntersectionFunctionTableWithDescriptor:stage:`, `newVisibleFunctionTableWithDescriptor:stage:` |
+| MTLCommandQueue | `CharonMetalQueue` | `commandBufferWithDescriptor:` |
+| MTLCommandBuffer | `CharonMetalCommandBuffer` | `blitCommandEncoderWithDescriptor:`, `computeCommandEncoderWithDescriptor:`, `computeCommandEncoderWithDispatchType:`, `accelerationStructureCommandEncoder`, `encodeSignalEvent:value:`, `encodeWaitForEvent:value:` and more |
+| MTLCommandEncoder, MTLRenderCommandEncoder | `CharonMetalEncoder`, `CharonMetalComputeEncoder` | `setVertexBufferOffset:atIndex:`, `setFragmentBufferOffset:atIndex:`, `setScissorRects:count:`, `setDepthClipMode:`, and on the compute side `setBufferOffset:atIndex:` and more |
+
+**Four stay `implemented`, because the stripped compile is clean for their classes:**
+`MTLSamplerState` (`CharonMetalSampler`), `MTLDepthStencilState` (`CharonMetalDepthStencil`),
+`MTLDrawable` (`CharonMetalDrawable`) and `MTLCaptureScope` (`CharonMTLCaptureScope`).
+
+**The floors, computed from the registry as it now stands.** `protocol_sources` (backports.lua:656)
+reads every `implemented` protocol row and raises `floors_of[introduced]` to the row's `minimum`:
+
+| file | implemented protocol rows | their `introduced` | floor raised |
+| --- | --- | --- | --- |
+| `ios8render.json` | `MTLSamplerState`, `MTLDrawable`, `MTLDepthStencilState` | 8.0 | **6.0** |
+| `ios11capturemanager.json` | `MTLCaptureScope` | 11.0 | **6.0** |
+
+Every row in both files is `minimum: 6.0`, and 6.0 is where the port's Metal starts, so **no floor
+moves**: the ten `inert` rows contribute none, and the four that do would not raise a floor even if
+they were higher.
+
+**Three citations corrected, each verified by `grep -n` against the 16.4 SDK rather than recalled.**
+`MTLResource` is forward-declared at **`MTLBuffer.h:17`**, and it is the base of `MTLBuffer` at
+**`MTLBuffer.h:32`**. `MTLDrawable` is declared at **`MTLDrawable.h:26`** and forward-declared at
+**`MTLCommandBuffer.h:20`**; `CharonMetalDrawable` conforms to `CAMetalDrawable`, whose inheritance
+from `MTLDrawable` is in **`QuartzCore/…/CAMetalLayer.h:28`** — QuartzCore, not a Metal header, which
+is what the earlier entry implied by citing the Metal headers for it. `MTLCommandEncoder` is the base
+of **`MTLRenderCommandEncoder.h:131`** and **`MTLComputeCommandEncoder.h:41`**.
+
+**And the count was wrong: TWELVE classes keep the pragma, not thirteen.** Ten had it removed, and
+twelve keep theirs — `CharonMetalBuffer`, `CharonMetalDevice`, `CharonMetalEncoder`,
+`CharonMetalLibrary`, `CharonMetalPipeline`, `CharonMetalQueue`, `CharonMetalTexture`,
+`MTLBlitCommandEncoder8`, `MTLComputeCommandEncoder8`, `MTLComputePipeline8`, `MTLHeap10` and
+`MTLSharedEvent12`. A reviewer's independent run measured the same twelve refusing with
+`-Wprotocol` naming a member in each, and the control — the same tree with the pragmas in place —
+compiles clean.
