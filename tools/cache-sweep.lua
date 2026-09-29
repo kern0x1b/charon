@@ -44,6 +44,41 @@ local function sdkdirs()
     return found
 end
 
+-- What one live checkout reads: the files its own modules name, under try so that a checkout whose
+-- modules/apple/backports.lua does not load is named and skipped rather than stopping the sweep. The xmake
+-- sandbox has no pcall. Returns {files = } for a checkout that reads, {reason = } with the load's first line
+-- for one that cannot be read, and {} for a checkout whose code names no files. The cache root and the SDKs
+-- are arguments so that a test can hand it a fixture checkout and a cache folder of its own.
+function sweep_checkout(checkout, sdks, cache_root)
+    local modules = path.join(checkout, "modules")
+    local names, failure
+    local ok = try {
+        function ()
+            local dyld = import("apple.dyld", {rootdir = modules, anonymous = true})
+            local backports = import("apple.backports", {rootdir = modules, anonymous = true})
+            local architectures = import("apple.architectures", {rootdir = modules, anonymous = true})
+            local ladders = {}
+            for _, architecture in ipairs(architectures.names()) do
+                table.insert(ladders, dyld.held_ladder(backports.compatible(architecture)))
+            end
+            names = dyld.kept_files(sdks or sdkdirs(), ladders, cache_root)
+            return true
+        end,
+        catch {
+            function (errors)
+                failure = tostring(errors)
+                return false
+            end
+        }
+    }
+    if ok and names then
+        return {files = names, checkout = checkout}
+    elseif failure then
+        return {checkout = checkout, reason = failure:match("([^\n]+)") or failure}
+    end
+    return {checkout = checkout}
+end
+
 function main(...)
     local dry, given = false, {}
     for _, argument in ipairs({...}) do
@@ -58,37 +93,17 @@ function main(...)
     local folder = path.join(path.directory(import("apple.dyld", {rootdir = path.join(os.scriptdir(), "..", "modules"), anonymous = true}).root()), "cache")
     local skipped = {}
     for _, checkout in ipairs(live_checkouts(given)) do
-        local modules = path.join(checkout, "modules")
-        local names, failure
-        local ok = try {
-            function ()
-                local dyld = import("apple.dyld", {rootdir = modules, anonymous = true})
-                local backports = import("apple.backports", {rootdir = modules, anonymous = true})
-                local architectures = import("apple.architectures", {rootdir = modules, anonymous = true})
-                local ladders = {}
-                for _, architecture in ipairs(architectures.names()) do
-                    table.insert(ladders, dyld.held_ladder(backports.compatible(architecture)))
-                end
-                names = dyld.kept_files(sdks, ladders)
-                return true
-            end,
-            catch {
-                function (errors)
-                    failure = tostring(errors)
-                    return false
-                end
-            }
-        }
-        if ok and names then
-            for _, file in ipairs(names) do
+        local outcome = sweep_checkout(checkout, sdks, folder)
+        if outcome.files then
+            for _, file in ipairs(outcome.files) do
                 read[path.filename(file)] = true
             end
-        elseif failure then
+        elseif outcome.reason then
             -- a checkout that cannot be read is named, and its cache kept whole: this code cannot know what a
             -- checkout it cannot load needs, and a wrong removal costs a measurement rather than a wrong answer
-            table.insert(skipped, {checkout = checkout, reason = failure:match("([^\n]+)") or failure})
+            table.insert(skipped, {checkout = outcome.checkout, reason = outcome.reason})
         else
-            table.insert(older, checkout)
+            table.insert(older, outcome.checkout)
         end
     end
     local removed, kept, failed = 0, 0, {}
