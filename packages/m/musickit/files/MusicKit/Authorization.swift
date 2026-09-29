@@ -59,32 +59,95 @@ public enum MusicDeveloperToken {
     /// which is `charon@micro-ecc` through the shim above: the same curve work the CloudKit family
     /// does, and one implementation of it.
     ///
+    /// All three parts are base64url, and the signature is over the *encoded* first two joined by a
+    /// dot, because that is what a JOSE verifier hashes. The first version of this returned the header
+    /// and the payload as the JSON text and encoded only the signature, which is a dot-joined string
+    /// no verifier will read; tests/backports/host/musickit/run.sh is what found it, and it could only
+    /// find it because that run had never been able to reach its own checker.
+    ///
     /// The base64url is this module's own rather than `Data.base64EncodedString(options:)`, which
     /// this release's Swift Foundation overlay marks iOS 7. The port's lift lowers the availability of
     /// the Objective-C headers, where the backports put their marks, and not the Swift overlay's own,
     /// so that mark is still there with the lift applied. A JOSE token's three parts are base64url of
     /// bytes this module already has; encoding them is not a place to wait for a Foundation.
     public static func mint(keyIdentifier: String, teamIdentifier: String, privateKeyPEM: String) -> String? {
-        let key = Array(privateKeyPEM.utf8)
-        guard !key.isEmpty else { return nil }
+        // The key is a .p8, which is a PEM, and micro-ecc signs with the 32 bytes inside it. So the
+        // body is decoded here, where the base64 table already is, and the shim is handed the DER.
+        // The first version passed the PEM's own text where the scalar belonged, and the end-to-end
+        // check answered "Error Verifying Data" over a signature of the wrong bytes entirely.
+        guard let key = CharonBase64URL.decode(CharonBase64URL.pemBody(privateKeyPEM)),
+              key.count > 0 else { return nil }
         let now = Int(Date().timeIntervalSince1970)
         let header = #"{"alg":"ES256","kid":"\#(keyIdentifier)"}"#
         let payload = #"{"iss":"\#(teamIdentifier)","iat":\#(now),"exp":\#(now + 3600)}"#
-        let signing = "\(header).\(payload)"
+        // The three parts of a JOSE token are base64url of the bytes, and the signature is over the
+        // encoded first two joined by a dot - not over the JSON text, which is what the first version
+        // of this signed and returned, so what it minted was not a token at all.
+        let encodedHeader = CharonBase64URL.encode(Data(header.utf8))
+        let encodedPayload = CharonBase64URL.encode(Data(payload.utf8))
+        let signing = "\(encodedHeader).\(encodedPayload)"
         let message = Array(signing.utf8)
-        var der = [UInt8](repeating: 0, count: 80)
-        let length = key.withUnsafeBufferPointer { privateKey in
+        var der = [UInt8](repeating: 0, count: 72)
+        let keyBytes = Array(key)
+        let length = keyBytes.withUnsafeBufferPointer { privateKey in
             message.withUnsafeBufferPointer { body in
-                CharonMusicKitSignES256(privateKey.baseAddress, body.baseAddress, body.count, &der, der.count)
+                CharonMusicKitSignES256(privateKey.baseAddress, privateKey.count,
+                                       body.baseAddress, body.count, &der, der.count)
             }
         }
         guard length > 0 else { return nil }
-        return "\(header).\(payload).\(CharonBase64URL.encode(Data(der[0..<Int(length)])))"
+        return "\(signing).\(CharonBase64URL.encode(Data(der[0..<Int(length)])))"
     }
 }
 
 /// Base64url without the padding, which is what a JOSE token is made of.
 enum CharonBase64URL {
+    /// The base64 body of a PEM, or nil when the text carries no such pair of lines. A .p8 is
+    /// "-----BEGIN PRIVATE KEY-----" and its end line, and what is between them is the DER; the line
+    /// breaks inside are the writer's, not the key's, and the decoder skips them.
+    static func pemBody(_ pem: String) -> String {
+        guard let begin = pem.range(of: "-----BEGIN"),
+              let end = pem.range(of: "-----END", range: begin.upperBound ..< pem.endIndex) else {
+            return ""
+        }
+        let afterHeader = pem[begin.upperBound...].drop(while: { $0 != "\n" })
+        return String(afterHeader[..<end.lowerBound].filter { !$0.isWhitespace })
+    }
+
+    /// The one value of a base64 character in either alphabet, or nil for what is not one. A .p8 is
+    /// standard base64 and a JOSE part is base64url; the two characters that differ are each other's
+    /// alias here, so one reader serves both and neither has to be told which it has.
+    private static func value(of byte: UInt8) -> Int? {
+        switch byte {
+        case UInt8(ascii: "A")...UInt8(ascii: "Z"): return Int(byte - UInt8(ascii: "A"))
+        case UInt8(ascii: "a")...UInt8(ascii: "z"): return Int(byte - UInt8(ascii: "a")) + 26
+        case UInt8(ascii: "0")...UInt8(ascii: "9"): return Int(byte - UInt8(ascii: "0")) + 52
+        case UInt8(ascii: "+"), UInt8(ascii: "-"): return 62
+        case UInt8(ascii: "/"), UInt8(ascii: "_"): return 63
+        default: return nil
+        }
+    }
+
+    /// The inverse of `encode`, and the reason a .p8 can be read at all: the module has the table,
+    /// so the decoder is the other direction of the same one.
+    static func decode(_ text: String) -> Data? {
+        var out = Data()
+        out.reserveCapacity(text.count * 3 / 4)
+        var buffer: UInt32 = 0
+        var bits = 0
+        for byte in Array(text.utf8) {
+            if byte == UInt8(ascii: "=") { break }         // the padding ends the body
+            guard let value = value(of: byte) else { continue }   // a line break, or a space
+            buffer = (buffer << 6) | UInt32(value)
+            bits += 6
+            if bits >= 8 {
+                bits -= 8
+                out.append(UInt8((buffer >> UInt32(bits)) & 0xFF))
+            }
+        }
+        return out.isEmpty ? nil : out
+    }
+
     /// The table and the three output steps: the alphabet without the two characters that need
     /// escaping in a URL, and no padding.
     static func encode(_ data: Data) -> String {

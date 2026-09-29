@@ -15,7 +15,10 @@
 
 set -e
 here=$(cd "$(dirname "$0")" && pwd)
-root=$(cd "$here/../../../../.." && pwd)
+# Four levels up is the repository root, as in every other suite under tests/backports/host: five is
+# its parent, and the run as written looked for packages/m/musickit there and found the worktrees
+# directory - "clang: error: no such file or directory: '.../worktrees/packages/m/musickit/files/CharonC.c'".
+root=$(cd "$here/../../../../" && pwd)
 musickit=${CHARON_ROOT:-$root}/packages/m/musickit
 charon=${CHARON_ROOT:-$root}
 openssl=${OPENSSL:-openssl}
@@ -23,15 +26,48 @@ work=${TMPDIR:-/tmp}/musickit-jose-$$
 mkdir -p "$work"
 trap 'rm -rf "$work"' EXIT
 
-# uECC's sources, wherever they are: the package fetches them, so a checkout that has not built the
-# package has none. micro-ecc upstream is the same file and the recipe pins the commit.
+# uECC's headers, from the package the recipe installs: that is what CharonCKWebAuth.h and uECC.h are
+# included against, and the installed include/ is exactly the set the recipe chose to install.
 uecc=$(ls -d "$HOME"/.xmake/packages/m/micro-ecc/*/* 2>/dev/null | head -1)
 if [ -z "$uecc" ]; then
     echo "SKIP: charon@micro-ecc is not installed; build it once and this runs"
     exit 0
 fi
-swiftc=${SWIFTC:-$(xcrun -sdk macosx --find swiftc 2>/dev/null)}
-[ -n "$swiftc" ] || { echo "SKIP: no macOS swiftc"; exit 1; }
+swiftc=${SWIFTC:-}
+# Which swiftc: the one that can load a standard library for the host, found by trying rather than by
+# asking xcrun which one is first. Two are on this machine and they report the same version, and the
+# one xcrun names cannot be used:
+#   $ /Library/Developer/CommandLineTools/usr/bin/swiftc -O -o probe probe.swift
+#   error: unable to load standard library for target 'arm64-apple-macosx27.0.0'
+# while /usr/bin/swiftc compiles the same file. The module is Swift, so a compiler that cannot load
+# the standard library is not a compiler for this check.
+if [ -z "$swiftc" ]; then
+    printf 'let _ = 0\n' > "$work/probe.swift"
+    for candidate in /usr/bin/swiftc "$(xcrun -sdk macosx --find swiftc 2>/dev/null)"; do
+        [ -x "$candidate" ] || continue
+        if "$candidate" -O -o "$work/probe" "$work/probe.swift" >/dev/null 2>&1; then
+            swiftc=$candidate
+            break
+        fi
+    done
+    [ -n "$swiftc" ] || { echo "SKIP: no swiftc here can load a standard library for the host"; exit 0; }
+    echo "swiftc: $swiftc"
+fi
+
+# uECC's *sources*, at the commit packages/m/micro-ecc/xmake.lua pins. They are not in the installed
+# package - it ships include/ (headers) and lib/ (the archive), and the archive is armv7 because the
+# recipe builds it for the device, so a host link cannot use it either. The three paths this run tried
+# before - include/uECC.c and two guesses beside the package - all miss, and the error was "no such file
+# or directory". A clone of the pinned commit is the same bytes the recipe builds its archive from, and
+# it is the same thing the other two suites that need the curve do (microecc/run.sh, seckeycurve/run.sh).
+commit=541b3a78026420a3e369c4c9281c396b5e531113
+[ -f "$work/uECC/uECC.c" ] || git clone --quiet --filter=blob:none --no-checkout https://github.com/kmackay/micro-ecc.git "$work/uECC" 2>/dev/null &&
+    git -C "$work/uECC" fetch --quiet --depth 1 origin "$commit" 2>/dev/null &&
+    git -C "$work/uECC" checkout --quiet "$commit" 2>/dev/null
+if [ ! -f "$work/uECC/uECC.c" ]; then
+    echo "SKIP: micro-ecc at $commit could not be fetched, so uECC.c is not here to compile"
+    exit 0
+fi
 
 "$openssl" ecparam -name prime256v1 -genkey -noout -out "$work/key.pem" 2>/dev/null
 "$openssl" pkcs8 -topk8 -nocrypt -in "$work/key.pem" -out "$work/key8.pem" 2>/dev/null
@@ -40,16 +76,16 @@ xcrun -sdk macosx clang -O1 -w -I "$musickit/files/include" -I "$charon/packages
      -I "$uecc/include" -c "$musickit/files/CharonC.c" -o "$work/shim.o"
 xcrun -sdk macosx clang -O1 -w -I "$charon/packages/m/micro-ecc/files" -I "$uecc/include" \
      -c "$charon/packages/m/micro-ecc/files/CharonCKWebAuth.c" -o "$work/web.o"
-xcrun -sdk macosx clang -O1 -w -I "$uecc/include" -c "$uecc/include/uECC.c" -o "$work/u.o"
-[ -f "$work/u.o" ] || xcrun -sdk macosx clang -O1 -w -I "$uecc/include" -c "$uecc/../../../uECC.c" -o "$work/u.o" 2>/dev/null || \
-    xcrun -sdk macosx clang -O1 -w -I "$uecc/include" -c "$uecc"/uECC.c -o "$work/u.o"
+xcrun -sdk macosx clang -O1 -w -I "$work/uECC" -c "$work/uECC/uECC.c" -o "$work/u.o"
 
 "$swiftc" -O -module-name M -import-objc-header "$musickit/files/include/MusicKitC.h" \
      -I "$musickit/files/include" -Xcc -I"$uecc/include" -Xcc -I"$charon/packages/m/micro-ecc/files" \
-     -o "$work/mint" "$here/mint.mint.swift" "$musickit/files/MusicKit/Authorization.swift" \
+     -o "$work/mint" "$here/main.swift" "$musickit/files/MusicKit/Authorization.swift" \
      "$work/shim.o" "$work/u.o" "$work/web.o"
 
-"$work/mint" "$work/key8.pem" ABCDE12345 TEAMID9999
+# The four arguments: the key, the two identifiers the token is minted for, and the directory the
+# three parts are written into - this run's scratch directory, which is what the checker below reads.
+"$work/mint" "$work/key8.pem" ABCDE12345 TEAMID9999 "$work"
 
 python3 - "$work" <<'PY'
 import base64, subprocess, sys, os
