@@ -86,8 +86,8 @@ build_library "$sources $shared" "$build/libAuthenticationServicesBackports.dyli
 echo "built:    $(ls "$package"/*.m | wc -l | tr -d ' ') AuthenticationServices sources, $(echo $shared | wc -w | tr -d ' ') shared"
 
 # 2. The cases: every class the registry carries, with the public members clang reads out of its header.
-python3 - "$registry" "$build/classes.txt" "$here/members.py" "$headers" "$sdk" <<'PYTHON'
-import json, os, subprocess, sys
+AUTHORSERVICES_SOURCES="$package" python3 - "$registry" "$build/classes.txt" "$here/members.py" "$headers" "$sdk" <<'PYTHON'
+import json, os, re, subprocess, sys
 registry, out, members_py, headers, sdk = sys.argv[1:6]
 rows = []
 for name in sorted(os.listdir(registry)):
@@ -113,11 +113,47 @@ if not cases:
 # Every class the registry carries must have produced at least one case. A class that produced none is
 # a class the check is silently not looking at -- the same silent narrowing the member table used to
 # allow, and the reason a class can be registered, reported as implemented, and never measured.
-seen = {line.split("\t")[0] for line in cases}
-silent = sorted(set(rows) - seen)
-if silent:
+asked = {}
+for line in cases:
+    name = line.split("\t")[0]
+    asked[name] = asked.get(name, 0) + 1
+produced = {name: asked.get(name, 0) for name in sorted(set(rows))}
+# The other direction: a class this library DEFINES that the registry does not carry as implemented is
+# a class that is written, reported as absent, and never measured -- the same false claim the row below
+# was, with the sides swapped. Found here that way: the row for ASCredentialServiceIdentifier said
+# absent while the class was in the tree, and the run quietly measured six classes instead of seven.
+defined = set()
+for source in sorted(os.listdir(os.environ["AUTHORSERVICES_SOURCES"])):
+    if not source.endswith(".m"):
+        continue
+    text = open(os.path.join(os.environ["AUTHORSERVICES_SOURCES"], source)).read()
+    for found in re.findall(r"@implementation\s+(\w+)", text):
+        defined.add(found)
+unclaimed = sorted(defined - set(rows))
+if unclaimed:
+    sys.stderr.write("these classes are DEFINED in the tree and the registry does not carry them as "
+                     "implemented, so they are not measured at all: %s\n" % ", ".join(unclaimed))
+    sys.exit(1)
+print("   per class, members asked of clang and cases built:")
+for name in sorted(set(rows)):
+    print("     %-44s %d" % (name, produced[name]))
+missingClasses = sorted(set(rows) - set(asked))
+if missingClasses:
     sys.stderr.write("these classes produced no case and would not be measured at all: %s\n"
-                     % ", ".join(silent))
+                     % ", ".join(missingClasses))
+    sys.exit(1)
+# Per MEMBER as well as per class: a class that produced a case can still have lost members, and that is
+# what happened to ASCredentialServiceIdentifier's three -- the class was counted, the members were not.
+raw = run.stdout
+perHeader = {}
+for name in sorted(set(rows)):
+    perHeader[name] = len([line for line in raw.split("\n")
+                            if line.startswith(name + "\t")])
+short = [name for name in sorted(set(rows)) if perHeader[name] != produced[name]]
+if short:
+    for name in short:
+        sys.stderr.write("FAIL: %s: clang read %d members, %d cases were built\n"
+                         % (name, perHeader[name], produced[name]))
     sys.exit(1)
 with open(out, "w") as f:
     f.write("\n".join(cases) + "\n")
