@@ -2,6 +2,8 @@
 #import <Security/SecProtocolTypes.h>
 #import <Security/SecProtocolOptions.h>
 #import <CoreFoundation/CoreFoundation.h>
+#import <dispatch/dispatch.h>
+#include <stdlib.h>
 
 // The sec_protocol_options family, from Security/SecProtocolOptions.h. This file carries the five
 // functions whose answer is a FACT rather than a setting: the four defaults and the comparator.
@@ -100,4 +102,152 @@ bool sec_protocol_options_are_equal(sec_protocol_options_t optionsA, sec_protoco
     if (!a.charonHasVersionSettings)
         return true;                        // neither has been given a range: nothing to disagree about
     return a.charonMinTLS == b.charonMinTLS && a.charonMaxTLS == b.charonMaxTLS;
+}
+
+// --- the six setters, which HOLD what they are given ---
+//
+// Every one of these is INERT in the registry's sense: callable, the value held on the port's own
+// object, and the effect stated as "the handshake ignores it". The reason is one sentence and it is the
+// same for all six: 6.1.3 has no stack that takes a sec_protocol_options_t, so nothing ever reads what
+// is held. A port that returned an error here would break a caller that sets options before it connects;
+// a port that pretended the setting took effect would be a lie about a handshake it cannot perform.
+
+@interface CharonSecProtocolOptionsHeld : CharonSecProtocolOptions
+{
+    // the ciphersuites are HELD, not aliased: a caller that appends twice gets both, and a caller that
+    // frees its own array afterwards does not empty the object's copy
+    tls_ciphersuite_t *_ciphersuites;
+    size_t _ciphersuiteCount, _ciphersuiteCapacity;
+    tls_ciphersuite_group_t *_groups;
+    size_t _groupCount, _groupCapacity;
+    __strong dispatch_data_t _pskIdentityHint;   // ARC-managed: libdispatch objects ARE ObjC here
+    __strong sec_protocol_pre_shared_key_selection_t _pskSelection;   // ARC COPIES a block into a strong ivar
+    __strong dispatch_queue_t _pskQueue;
+}
+- (void)charonAppendCiphersuite:(tls_ciphersuite_t)ciphersuite;
+- (void)charonAppendCiphersuiteGroup:(tls_ciphersuite_group_t)group;
+- (size_t)charonCiphersuiteCount;
+- (size_t)charonGroupCount;
+- (void)charonSetPSKIdentityHint:(dispatch_data_t)hint;
+- (void)charonSetPSKSelection:(sec_protocol_pre_shared_key_selection_t)block
+                             queue:(dispatch_queue_t)queue;
+@end
+
+@implementation CharonSecProtocolOptionsHeld
+- (void)charonAppendCiphersuite:(tls_ciphersuite_t)ciphersuite
+{
+    if (_ciphersuiteCount == _ciphersuiteCapacity) {
+        size_t room = _ciphersuiteCapacity ? _ciphersuiteCapacity * 2 : 4;
+        tls_ciphersuite_t *bigger = realloc(_ciphersuites, room * sizeof(tls_ciphersuite_t));
+        if (!bigger)
+            return;   // a failed allocation holds nothing rather than a half-written list
+        _ciphersuites = bigger;
+        _ciphersuiteCapacity = room;
+    }
+    _ciphersuites[_ciphersuiteCount++] = ciphersuite;
+}
+- (void)charonAppendCiphersuiteGroup:(tls_ciphersuite_group_t)group
+{
+    if (_groupCount == _groupCapacity) {
+        size_t room = _groupCapacity ? _groupCapacity * 2 : 4;
+        tls_ciphersuite_group_t *bigger = realloc(_groups, room * sizeof(tls_ciphersuite_group_t));
+        if (!bigger)
+            return;
+        _groups = bigger;
+        _groupCapacity = room;
+    }
+    _groups[_groupCount++] = group;
+}
+- (size_t)charonCiphersuiteCount { return _ciphersuiteCount; }
+- (size_t)charonGroupCount { return _groupCount; }
+- (void)charonSetPSKIdentityHint:(dispatch_data_t)hint
+{
+    // The hint is HELD across the setter's return, which is the whole point, and a __strong ivar does
+    // that: dispatch_data_t is an ObjC object, so assigning it retains. dispatch_retain/dispatch_release
+    // are ARC-FORBIDDEN on it - the same rule that forbids CFRelease and -release on an ObjC pointer.
+    _pskIdentityHint = hint;
+}
+- (void)charonSetPSKSelection:(sec_protocol_pre_shared_key_selection_t)block
+                        queue:(dispatch_queue_t)queue
+{
+    // A BLOCK IS COPIED, not held by pointer: a stack block would be dead when the setter returned and
+    // the port would later call into a frame that no longer exists. Block_copy is the C form. The QUEUE
+    // goes with it and is dispatch_retained, because a block held without the queue it was given for
+    // would be held for a queue nobody owns any more.
+    // A BLOCK IS COPIED, not held by pointer: a stack block would be dead when the setter returned and
+    // the port would later call into a frame that no longer exists. Assigning a block to a __strong ivar
+    // COPIES it, which is what makes the held block safe to call later - and the QUEUE goes with it and
+    // is retained the same way, because a block held without the queue it was given for would be held
+    // for a queue nobody owns any more.
+    _pskSelection = block;
+    _pskQueue = queue;
+}
+- (void)dealloc
+{
+    free(_ciphersuites);
+    free(_groups);
+    // The C buffers are freed by hand because ARC does not manage them, and the strong ivars are
+    // released by ARC itself - which is why there is no dispatch_release, no Block_release and no
+    // [super dealloc] here, all three of which are forbidden or redundant under ARC.
+}
+@end
+
+//   118  void sec_protocol_options_append_tls_ciphersuite(sec_protocol_options_t, tls_ciphersuite_t)
+void sec_protocol_options_append_tls_ciphersuite(sec_protocol_options_t options,
+                                                tls_ciphersuite_t ciphersuite)
+{
+    if (![options isKindOfClass:CharonSecProtocolOptionsHeld.class])
+        return;
+    [(CharonSecProtocolOptionsHeld *)options charonAppendCiphersuite:ciphersuite];
+}
+
+//   150  void sec_protocol_options_append_tls_ciphersuite_group(sec_protocol_options_t,
+//                                                               tls_ciphersuite_group_t)
+void sec_protocol_options_append_tls_ciphersuite_group(sec_protocol_options_t options,
+                                                      tls_ciphersuite_group_t group)
+{
+    if (![options isKindOfClass:CharonSecProtocolOptionsHeld.class])
+        return;
+    [(CharonSecProtocolOptionsHeld *)options charonAppendCiphersuiteGroup:group];
+}
+
+//   199  void sec_protocol_options_set_min_tls_protocol_version(sec_protocol_options_t,
+//                                                              tls_protocol_version_t)
+void sec_protocol_options_set_min_tls_protocol_version(sec_protocol_options_t options,
+                                                       tls_protocol_version_t version)
+{
+    if (![options isKindOfClass:CharonSecProtocolOptions.class])
+        return;
+    [(CharonSecProtocolOptions *)options charonSetMinTLS:version];
+}
+
+//   256  void sec_protocol_options_set_max_tls_protocol_version(sec_protocol_options_t,
+//                                                              tls_protocol_version_t)
+void sec_protocol_options_set_max_tls_protocol_version(sec_protocol_options_t options,
+                                                       tls_protocol_version_t version)
+{
+    if (![options isKindOfClass:CharonSecProtocolOptions.class])
+        return;
+    [(CharonSecProtocolOptions *)options charonSetMaxTLS:version];
+}
+
+//   390  void sec_protocol_options_set_tls_pre_shared_key_identity_hint(sec_protocol_options_t,
+//                                                                       dispatch_data_t)
+void sec_protocol_options_set_tls_pre_shared_key_identity_hint(sec_protocol_options_t options,
+                                                               dispatch_data_t hint)
+{
+    if (![options isKindOfClass:CharonSecProtocolOptionsHeld.class])
+        return;
+    [(CharonSecProtocolOptionsHeld *)options charonSetPSKIdentityHint:hint];
+}
+
+//   439  void sec_protocol_options_set_pre_shared_key_selection_block(sec_protocol_options_t,
+//                                                                     sec_protocol_pre_shared_key_selection_block)
+void sec_protocol_options_set_pre_shared_key_selection_block(
+    sec_protocol_options_t options, sec_protocol_pre_shared_key_selection_t block,
+    dispatch_queue_t queue)
+{
+    if (![options isKindOfClass:CharonSecProtocolOptionsHeld.class])
+        return;
+    [(CharonSecProtocolOptionsHeld *)options charonSetPSKSelection:block queue:queue];
 }
