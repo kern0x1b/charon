@@ -15,11 +15,15 @@ import os
 import re
 import sys
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from paramlabels import external_labels, parameters  # noqa: E402
+
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", ".."))
-SOURCES = {
-    "IntentItem": "packages/a/appintents/Sources/AppIntents/Items.swift",
-    "IntentItemSection": "packages/a/appintents/Sources/AppIntents/Items.swift",
-}
+SOURCES = {"IntentItem": "Items.swift", "IntentItemSection": "Items.swift"}
+# where the port's declarations are, relative to the repository root; `--mutate` points the check at
+# a scratch copy of that file instead
+SOURCE_REL = "packages/a/appintents/Sources/AppIntents/Items.swift"
+SOURCE = os.environ.get("BUILDER_CONTRACT_SOURCE") or SOURCE_REL
 SDK = os.path.join(os.path.expanduser("~"), ".xmake/packages/i/iphoneos-sdk/26.2",
                    "*/Developer.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs",
                    "iPhoneOS26.2.sdk/System/Library/Frameworks/AppIntents.framework/Modules/"
@@ -37,6 +41,23 @@ ROWS = [
 ]
 
 
+def _type_block(interface, owner):
+    """The interface's text for one type, so a twin is that type's declaration and not another's."""
+    lines = interface.split("\n")
+    start, out = None, []
+    for i, line in enumerate(lines):
+        if start is None:
+            if re.match(r"\s*(public|extension)\s+(\S+\.)?%s\b" % re.escape(owner), line):
+                start = i
+            continue
+        # the block ends at the next **unindented** line: `@available` and `@backDeployed` appear
+        # inside it, indented, and stopping at them cut the block after its first member
+        if line.strip() and not line.startswith((" ", "\t")):
+            break
+        out.append(line)
+    return re.sub(r"\n", "\n    ", "\n".join(out)) if out else interface
+
+
 def one_interface():
     import glob
     found = sorted(glob.glob(os.path.expanduser(SDK)))
@@ -49,8 +70,13 @@ def one_interface():
 
 def main():
     interface = one_interface()
-    sources = {k: open(os.path.join(ROOT, v), encoding="utf-8", errors="replace").read()
-               for k, v in SOURCES.items()}
+    # Both sides, per row: the framework's declaration **and this module's**. The review's
+    # `_ item:` -> `item:` mutation is a change of *external label* and is a defect; the
+    # `_ item:` -> `_ item2:` mutation changes only the internal name, which no caller can see and is
+    # not a defect, so that one stays green. `paramlabels` is what tells the two apart.
+    port = open(SOURCE if os.path.isabs(SOURCE) else os.path.join(ROOT, SOURCE), encoding="utf-8",
+                errors="replace").read()
+    sources = {"IntentItem": port, "IntentItemSection": port}
     wanted = sys.argv[1:]
     failures, checked = [], 0
     for owner, member in ROWS:
@@ -75,18 +101,27 @@ def main():
         label = member[member.index("(") + 1:].split(":")[0] if ":" in member else ""
         pattern = (r"public static func %s\(\s*%s\b[^\n]*" % (re.escape(member.split("(")[0]), re.escape(label))
                    if label else r"public static func %s\(\s*\)[^\n]*" % re.escape(member.split("(")[0]))
-        m = re.search(pattern, sources[where])
+        m = re.search(r"public static func %s\(.{0,200}?(?:->|\n    )" % re.escape(member.split("(")[0]),
+                     sources[where], re.S)
+        # the twin has to be the declaration **on this type**: `buildBlock` is declared on several
+        # builders in that interface, and the first one in the file is not this row's
+        twin = re.search(r"public static func %s\(.{0,200}?(?:->|\n    )" % re.escape(member.split("(")[0]),
+                         _type_block(interface, where), re.S)
         if not m:
             failures.append("%s: no static func by that name in %s" % (name, SOURCES[where]))
             continue
         decl = m.group(0)
-        labels_in_code = re.findall(r"(\w+):", decl)
+        want = external_labels(twin.group(0)) if twin else external_labels(member)
+        got = external_labels(decl)
+        red = want != got
         if not re.search(r"@resultBuilder", sources[where]):
             failures.append("%s: the type is not a @resultBuilder here" % name)
-        if not labels_in_code and "(" in member and "()" not in member:
-            failures.append("%s: the framework's row has labels %s and the declaration has none"
-                            % (name, member))
-        print("ok  %-44s %s" % (name, decl.strip()[:110]))
+        if red:
+            failures.append("%s: the framework's external labels are %s and this module's are %s"
+                            % (name, want, got))
+        if (twin and "<" in twin.group(0)) != ("<" in decl):
+            failures.append("%s: the framework's declaration is generic and this one is not, or the other way" % name)
+        print("%-4s %-42s labels port=%s framework=%s" % ("RED" if red else "ok", name, got, want))
     print("checked %d row(s), %d failure(s)" % (checked, len(failures)))
     for f in failures:
         print("FAIL %s" % f)
