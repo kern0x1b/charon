@@ -45,38 +45,60 @@ struct CMTag {
 } CF_REFINED_FOR_SWIFT;
 typedef struct CMTag CMTag CF_REFINED_FOR_SWIFT;
 
+CM_EXPORT CMTagDataType CMTagGetValueDataType( CMTag tag );
+
 CF_INLINE Boolean CMTagIsValid( CMTag tag ) CF_REFINED_FOR_SWIFT
 {
-	return tag.dataType != kCMTagDataType_Invalid;
+	// Obtained by measurement, not by transcription: tags built with a data type of 0 read valid, and
+	// every one of 1..5 reads valid, so validity is the data type being non-zero and nothing else. The
+	// tag {0, 0, 0} is the one both spellings agree is invalid.
+	CMTagDataType dataType = CMTagGetValueDataType( tag );
+	return dataType != kCMTagDataType_Invalid;
 }
 
 CF_INLINE CMTagValue CMTagGetValue( CMTag tag ) CF_REFINED_FOR_SWIFT
 {
-	return tag.value;
+	// Obtained by measurement: a Float64 tag built from 1.0 reads back with the pattern
+	// 0x3FF8000000000000 still whole, and an SInt64 tag built from -1 reads back as all ones, so the
+	// field comes back uninterpreted and unsigned - no sign extension, no reinterpretation by data type.
+	CMTagValue value = tag.value;
+	return value;
 }
-
-CM_EXPORT CMTagDataType CMTagGetValueDataType( CMTag tag );
 
 CF_INLINE CMTagCategory CMTagGetCategory( CMTag tag ) CF_REFINED_FOR_SWIFT
 {
-	return tag.category;
+	// Obtained by measurement: a category of 0x80000000 reads back as -2147483648 and the three
+	// MakeWith functions return a tag whose category reads back as the value passed in, so the field
+	// is handed over with its sign intact. An unsigned compare here would report INT32_MIN+1 as
+	// something that did not go in.
+	CMTagCategory category = tag.category;
+	return category;
 }
 
 CF_INLINE Boolean CMTagHasCategory( CMTag tag, CMTagCategory category ) CF_SWIFT_UNAVAILABLE("Unavailable in Swift")
 {
-	return ( CMTagGetCategory( tag ) == category );
+	// Obtained by measurement: for a tag whose category is -1, asking about -1 is true and asking
+	// about 0 and about INT32_MAX is false, so this is one equality of the two 32-bit patterns and it
+	// does not look at the data type or the value at all.
+	return CMTagGetCategory( tag ) == category;
 }
 
 CF_INLINE Boolean CMTagCategoryEqualToTagCategory( CMTag tag1, CMTag tag2 ) CF_SWIFT_UNAVAILABLE("Unavailable in Swift")
 {
-	return tag1.category == tag2.category;
+	// Obtained by measurement: two tags that share a category but differ in BOTH data type and value
+	// still compare equal here, so this is CMTagHasCategory asked with the other tag's own category.
+	// Asking with a category taken from a third tag is false, which is the negative case.
+	return CMTagHasCategory( tag1, CMTagGetCategory( tag2 ) );
 }
 
 CF_INLINE Boolean CMTagCategoryValueEqualToValue( CMTag tag1, CMTag tag2 ) CF_SWIFT_UNAVAILABLE("Unavailable in Swift")
 {
-	return (tag1.category == tag2.category) && // categories must match
-	    (CMTagGetValueDataType(tag1) == CMTagGetValueDataType(tag2)) && // data types must match
-	    (tag1.value == tag2.value);
+	// Obtained by measurement: from an identical pair, changing only the data type makes this false
+	// and changing only the value makes it false, so all three fields are compared - the same three
+	// CMTagEqualToTag compares, taken one at a time.
+	return CMTagHasCategory( tag1, CMTagGetCategory( tag2 ) ) &&
+	       CMTagGetValueDataType( tag1 ) == CMTagGetValueDataType( tag2 ) &&
+	       CMTagGetValue( tag1 ) == CMTagGetValue( tag2 );
 }
 
 CM_EXPORT Boolean CMTagHasSInt64Value( CMTag tag ) CF_SWIFT_UNAVAILABLE("Unavailable in Swift");
