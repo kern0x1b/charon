@@ -87,9 +87,13 @@ harness rather than in the library:
   release answers `1, 1.41421, 1.73205, 2` and then four NaNs. It is a NaN, and it is one again.
 
 **Where it stands, measured on macOS 27.0 build 26A428: `tests/backports/host/mpsgraph/run.sh` exits 1
-with `port: DIFFERS in 1 cases` over `compared: 15 cases`.** Fourteen of the fifteen agree with the
-release, bit for bit - the binary family, most of the unary family, a chain and an integer division.
-The one that does not is `sqrt`, and it does not agree in the way the sentence above used to claim:
+with `port: DIFFERS in 1 cases` over `compared: 15 cases`.** The run compares fifteen cases and thirteen
+of them print a result buffer; **twelve of those thirteen are byte-identical to the release** and one,
+`sqrt`, is not. The twelve are `square`, `reciprocal`, **`rsqrt`**, `log`, `abs`, `sign`,
+`integer-divide`, `add`, `subtract`, `multiply`, `divide` and `chain` - named here because the square
+root's neighbour is the row that once carried its divergence, and `rsqrt`'s case is one of the twelve
+that agree. The one that does not is `sqrt`, and it does not agree in the way the sentence above used
+to claim:
 
     release  1  0.8333  0.4641  2  NaN  NaN  NaN  NaN
     port     1  0.8333  0.4641  2  1    0.8333  0.4641  2
