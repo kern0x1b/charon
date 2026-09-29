@@ -57,6 +57,17 @@ assert s != before, "the mutation did not apply"
 open(dst, "w").write(s)
 PYMUT
 
+# The mutant has to differ from the source, or the mutated half is the clean half and asserts
+# nothing. cmp says so, and the diff is printed so the two can be read rather than trusted. diff
+# exits 1 for finding the difference it should find, so its status is discarded.
+if cmp -s "$mutated" "$original"; then
+    echo "FAIL: the mutant is byte-identical to the source, so the mutated half asserts nothing"
+    exit 1
+fi
+echo "== the mutant against the live source:"
+echo "   cmp: the mutant differs from the source, as it must"
+diff -u "$original" "$mutated" | sed -n '3,12p' | sed 's/^/   /' || true
+
 # The two halves: the tree as it is, then the mutated tree, then the tree back. Both run in the bulk
 # lane, back to back, so the two verdicts come off one machine.
 run_one() {
