@@ -14,6 +14,11 @@
 // not before, so a link against the 4.3 band said they were not exported. Rounding is to nearest, ties to
 // even; a NaN stays a NaN, an overflow is an infinity and an underflow is a signed zero.
 //
+// clock_gettime: libSystem exports it from iOS 10 and not before, and ggml.c calls it, unguarded, for its
+// time counters (ggml_time_ms, ggml_time_us). The recipe renames the call to charon_ggml_clock_gettime and this
+// archive defines that: the monotonic clock is the Mach absolute time in nanoseconds, the wall clock is
+// gettimeofday. Only the two clocks ggml asks for are answered; any other clock id is EINVAL.
+//
 // The release's own operator new and delete, the terminate handlers and the personality of the C++
 // ABI stay the band's runtime: libstdc++.6 on 4.3 exports them, and libc++ from 5.0.
 #include <mutex>
@@ -23,6 +28,10 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
+#include <errno.h>
+#include <time.h>
+#include <sys/time.h>
+#include <mach/mach_time.h>
 
 // The header declares these extern templates, whose definitions live in libc++.dylib; an explicit
 // instantiation here puts the members this archive calls into this archive instead.
@@ -165,4 +174,28 @@ uint16_t __truncsfhf2(float value)
     return (uint16_t)(sign | half);
 }
 
+
+int charon_ggml_clock_gettime(clockid_t clock, struct timespec *out) {
+    if (clock == CLOCK_REALTIME) {
+        struct timeval now;
+        if (gettimeofday(&now, NULL) != 0) {
+            return -1;
+        }
+        out->tv_sec = now.tv_sec;
+        out->tv_nsec = (long)now.tv_usec * 1000;
+        return 0;
+    }
+    if (clock != CLOCK_MONOTONIC) {
+        errno = EINVAL;
+        return -1;
+    }
+    mach_timebase_info_data_t base;
+    mach_timebase_info(&base);
+    uint64_t ticks = mach_absolute_time();
+    // ticks * numer / denom, split so a long uptime cannot overflow the product
+    uint64_t nanos = (ticks / base.denom) * base.numer + (ticks % base.denom) * base.numer / base.denom;
+    out->tv_sec = (time_t)(nanos / 1000000000ull);
+    out->tv_nsec = (long)(nanos % 1000000000ull);
+    return 0;
+}
 }

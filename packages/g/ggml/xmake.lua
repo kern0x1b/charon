@@ -41,7 +41,8 @@ package("ggml")
     -- Hidden, so the engine is never API of the image that links it in: libMLComputeBackports.dylib
     -- exports what MLCompute does and nothing a second copy of ggml in the process could bind to. The
     -- library is built without RTTI and without exceptions, which it does not use.
-    local FLAGS = {"-Os", "-fvisibility=hidden", "-fno-exceptions", "-fno-rtti", "-D_GNU_SOURCE", "-Dggml_EXPORTS", "-DGGML_CPU_GENERIC"}
+    local FLAGS = {"-Os", "-fvisibility=hidden", "-fno-exceptions", "-fno-rtti", "-D_GNU_SOURCE", "-Dggml_EXPORTS", "-DGGML_CPU_GENERIC",
+        "-Dclock_gettime=charon_ggml_clock_gettime"}
     local CXXFLAGS = {"-std=c++17", "-fvisibility-inlines-hidden"}
     local SOURCES = {"ggml.c", "ggml-alloc.c", "ggml-quants.c", "ggml-cpu/ggml-cpu.c", "ggml-cpu/quants.c",
                      "ggml.cpp", "ggml-backend.cpp", "ggml-backend-meta.cpp", "ggml-threading.cpp", "ggml-opt.cpp",

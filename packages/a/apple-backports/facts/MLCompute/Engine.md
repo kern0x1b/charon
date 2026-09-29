@@ -148,3 +148,10 @@ the objects still import is libc, compiler-rt (`__divdi3`, `__extendhfsf2`, `__t
 (`operator new`/`delete`, `std::__1::mutex`, `std::__1::basic_string`, `std::__1::to_string`), which is the
 band's C++ runtime (`cxx_runtime`): libc++ from iOS 5.0. Whether the 4.3 band, which has libstdc++ only, can
 resolve the `std::__1` symbols is what the 4.3 gate of this stack decides.
+
+Update: the recipe answers `clock_gettime` itself. libSystem exports it from iOS 10, and ggml.c calls it
+without a check for its two time counters, so a link against the 6.1.3 band left it a weak import that is
+NULL there (the gate warned of it). The recipe renames the call to `charon_ggml_clock_gettime`, which the
+runtime shim defines with hidden visibility: the monotonic clock is the Mach absolute time in nanoseconds,
+the wall clock is `gettimeofday`, and any other clock id is `EINVAL`. Checked on the host against the
+system's own uptime and wall clocks, and against an unsupported clock id.
