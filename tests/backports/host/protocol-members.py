@@ -164,6 +164,14 @@ def main():
         return 2
     document = ast_for(path, sdk)
     members = protocol_members(document, protocol)
+    # ZERO MEMBERS IS A FAILURE, not a pass. A protocol name that is not in the SDK yields no
+    # members, and "no member is missing" is then true of nothing - which is the same defect as a
+    # comparison that checked zero rows and said it passed.
+    if not members:
+        print("protocol-members: %s is not declared by the SDK, or the headers were not read; "
+              "that is 0 members and 0 missing, which is a pass about nothing"
+              % protocol)
+        raise SystemExit(3)
     defines = class_defines(document, cls) | synthesised(document, cls)
     missing = sorted(members - defines)
     print("  %-26s via %-28s %s" % (protocol, cls, os.path.basename(path)))

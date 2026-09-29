@@ -157,7 +157,7 @@ for row in "MTLFunction:CharonMetalFunction:Metal/CharonMetalLibrary.m" \
         # from the tree afterwards, so a run leaves no change behind
         tree="$work/tree/apple-backports"
         cp "$root/packages/a/apple-backports/$file" "$tree/$file"
-        removed=$(cd "$tree" && python3 "$here/mutate-member.py" "$protocol" "$cls" "$SDK" \
+        removed=$(cd "$tree" && python3 "$here/${MUTATOR:-mutate-member.py}" "$protocol" "$cls" "$SDK" \
                       "$file" "$mutation" 2>&1 | head -1)
         reported=$( (cd "$tree" && python3 "$here/protocol-members.py" "$protocol" "$cls" "$SDK" \
                        "$file") 2>&1 | grep -c "missing:" || true)
@@ -180,6 +180,14 @@ conformant=$(grep -c "every protocol member is defined" "$work/sweep.txt" 2>/dev
 gapped=$((checked - conformant))
 selectors=$(grep -c "missing:" "$work/sweep.txt" 2>/dev/null || echo 0)
 summary="protocol-conformance: $checked row(s) checked, $conformant conformant, $gapped inert with $selectors selector(s) owed; $mutant_runs mutant run(s), $mutant_red red"
+# EXIT 1 IS OWED WORK: inert rows with gaps, the state the review found correct.
+# EXIT 3 IS A BROKEN CHECK: a mutant went unnoticed, so nothing the run says about conformant rows can
+# be trusted. Two codes rather than one, because "some rows have gaps" and "the instrument is lying"
+# are not the same statement and a reader should not have to read the message to tell them apart.
+if [ "$mutant_red" -ne "$mutant_runs" ]; then
+    echo "$summary; EXIT 3 - THE CHECK IS BROKEN: $((mutant_runs - mutant_red)) mutant(s) went unnoticed, so its verdict on a conformant row is not evidence" >&2
+    exit 3
+fi
 if [ "$fail" -ne 0 ]; then
     echo "$summary; EXIT 1 - the gap rows are inert by the rule, and every mutant was red, so the check is working" >&2
     exit 1
