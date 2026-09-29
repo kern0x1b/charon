@@ -11,7 +11,9 @@
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 root=${DDR_ROOT:-$here/../../../..}
-build=${DDR_BUILD:-${TMPDIR:-/tmp}/charon-ddr-device}
+# The build tree is under the worktree: a harness may not default into /tmp, and the run
+# output is kept with the other runs rather than in a directory the system wipes.
+build=${DDR_BUILD:-$root/.agent-work/runs/dragdroprouting-build}
 device=${DDR_DEVICE:-iPhone3,1}   # 6.1.3: the shade cache holds this profile; iPhone4,1 6.1.3 has no
                                   # firmware and the boot is blocked before the guest ever runs
 releases=${DDR_RELEASES:-"6.1.3"}
