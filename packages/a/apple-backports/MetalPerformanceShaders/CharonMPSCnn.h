@@ -11,6 +11,17 @@
 #import "CharonMPS.h"
 #import "CharonMPS26.h"
 
+@interface MPSCNNKernel (CharonMPSCnn)
+// The window a kernel walks, set by its own initialiser and read by the walk, so a subclass does not
+// keep a second copy of what its superclass already answers.
+- (void)charon_mps_setWindowWidth:(NSUInteger)width
+                           height:(NSUInteger)height
+                    strideInPixelsX:(NSUInteger)strideX
+                    strideInPixelsY:(NSUInteger)strideY
+                     dilationRateX:(NSUInteger)dilationX
+                     dilationRateY:(NSUInteger)dilationY;
+@end
+
 @interface MPSCNNPooling (CharonMPSCnn)
 - (void)charon_mps_setMaximum:(BOOL)maximum;
 - (NSUInteger)charon_mps_zeroPadSizeX;

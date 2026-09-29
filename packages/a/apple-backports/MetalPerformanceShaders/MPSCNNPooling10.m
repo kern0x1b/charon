@@ -18,8 +18,6 @@
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
 @implementation MPSCNNPooling {
-    NSUInteger _kernelWidth, _kernelHeight, _strideInPixelsX, _strideInPixelsY;
-    MPSImageEdgeMode _edgeMode;
     NSUInteger _zeroPadSizeX, _zeroPadSizeY;
     BOOL _maximum;
 }
@@ -31,11 +29,9 @@
                strideInPixelsY:(NSUInteger)strideInPixelsY
 {
     if ((self = [super initWithDevice:device])) {
-        _kernelWidth = kernelWidth;
-        _kernelHeight = kernelHeight;
-        _strideInPixelsX = strideInPixelsX ? strideInPixelsX : 1;
-        _strideInPixelsY = strideInPixelsY ? strideInPixelsY : 1;
-        _edgeMode = MPSImageEdgeModeClamp;
+        [self charon_mps_setWindowWidth:kernelWidth height:kernelHeight
+                        strideInPixelsX:strideInPixelsX strideInPixelsY:strideInPixelsY
+                         dilationRateX:1 dilationRateY:1];
     }
     return self;
 }
@@ -47,11 +43,7 @@
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder device:(id<MTLDevice>)device
 {
-    if ((self = [super initWithDevice:device])) {
-        _strideInPixelsX = 1;
-        _strideInPixelsY = 1;
-    }
-    return self;
+    return [super initWithDevice:device];
 }
 
 - (instancetype)initWithDevice:(id<MTLDevice>)device
@@ -60,16 +52,6 @@
     return nil;
 }
 
-- (NSUInteger)kernelWidth { return _kernelWidth; }
-- (void)setKernelWidth:(NSUInteger)value { _kernelWidth = value; }
-- (NSUInteger)kernelHeight { return _kernelHeight; }
-- (void)setKernelHeight:(NSUInteger)value { _kernelHeight = value; }
-- (NSUInteger)strideInPixelsX { return _strideInPixelsX; }
-- (void)setStrideInPixelsX:(NSUInteger)value { _strideInPixelsX = value; }
-- (NSUInteger)strideInPixelsY { return _strideInPixelsY; }
-- (void)setStrideInPixelsY:(NSUInteger)value { _strideInPixelsY = value; }
-- (MPSImageEdgeMode)edgeMode { return _edgeMode; }
-- (void)setEdgeMode:(MPSImageEdgeMode)value { _edgeMode = value; }
 - (NSUInteger)charon_mps_zeroPadSizeX { return _zeroPadSizeX; }
 - (NSUInteger)charon_mps_zeroPadSizeY { return _zeroPadSizeY; }
 
@@ -94,8 +76,8 @@
     // The window is the kernel and the divisor is its area, always. Setting zeroPadSize on the
     // average kernel changes nothing here: the release answers the same values with it set as
     // without, over the same shape, so the pad is carried and is not applied to the window.
-    NSUInteger windowWidth = _kernelWidth;
-    NSUInteger windowHeight = _kernelHeight;
+    NSUInteger windowWidth = self.kernelWidth;
+    NSUInteger windowHeight = self.kernelHeight;
     double divisor = (double)windowWidth * (double)windowHeight;
     NSUInteger leftPad = windowWidth / 2, topPad = windowHeight / 2;
     (void)[self charon_mps_zeroPadSizeX];
@@ -106,14 +88,14 @@
                 double best = -INFINITY, sum = 0.0;
                 for (NSUInteger wy = 0; wy < windowHeight; wy++) {
                     for (NSUInteger wx = 0; wx < windowWidth; wx++) {
-                        long sx = (long)ox * (long)_strideInPixelsX + (long)wx - (long)leftPad;
-                        long sy = (long)oy * (long)_strideInPixelsY + (long)wy - (long)topPad;
+                        long sx = (long)ox * (long)self.strideInPixelsX + (long)wx - (long)leftPad;
+                        long sy = (long)oy * (long)self.strideInPixelsY + (long)wy - (long)topPad;
                         double value = 0.0;
                         if (sx >= 0 && sy >= 0 && (NSUInteger)sx < inWidth && (NSUInteger)sy < inHeight) {
                             value = CharonMPSLoad(CharonMPSCnnPixel(&from, (size_t)sx, (size_t)sy,
                                                                       channel < inChannels ? channel : inChannels - 1),
                                                   MPSDataTypeFloat32, 0);
-                        } else if (_edgeMode == MPSImageEdgeModeClamp) {
+                        } else if (self.edgeMode == MPSImageEdgeModeClamp) {
                             long cx = sx < 0 ? 0 : ((NSUInteger)sx >= inWidth ? (long)inWidth - 1 : sx);
                             long cy = sy < 0 ? 0 : ((NSUInteger)sy >= inHeight ? (long)inHeight - 1 : sy);
                             value = CharonMPSLoad(CharonMPSCnnPixel(&from, (size_t)cx, (size_t)cy,
