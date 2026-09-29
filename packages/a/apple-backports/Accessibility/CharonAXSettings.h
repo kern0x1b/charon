@@ -5,7 +5,8 @@
 //  The settings functions of 18.0, 17.0 and 26.1, and the Settings-section enumeration of 18.0, under
 //  the names an application writes. AXSettings.h is not in the SDK this package compiles against - it
 //  arrived after 16.4 - so these are transcribed: the names, the kinds, the parameter and return types
-//  and the availability, and nothing else. No line of Apple's prose is reproduced here and no body of
+//  and the availability - the type's, and each enumeration case's own, which is not the same thing and
+//  is why the cases carry theirs individually. Nothing else is transcribed. No line of Apple's prose is reproduced here and no body of
 //  Apple's is copied; every body is in CharonAXSettings17.m, CharonAXSettings18.m or
 //  CharonAXSettings26.m and is the port's own.
 //
