@@ -8,6 +8,11 @@
 - (instancetype)charon_initWithType:(HKWorkoutEventType)type date:(NSDate *)date;
 @end
 
+// This class is one the store keeps, so it adopts the protocol the store's gate tests for. Every
+// member of that protocol is inherited from HKObject - the row's own facts, the archive and the
+// class method that reads one back through this class's own -initWithCoder:. The declaration was
+// missing, so -[CharonHKStore saveObjects:error:] refused this class and every other, with
+// "is not a health object this database can keep".
 @implementation HKWorkoutEvent {
     HKWorkoutEventType _type;
     NSDate *_date;
@@ -319,3 +324,23 @@
 }
 
 @end
+
+// This class is one the store keeps, so it adopts the protocol the store's gate tests for. Every
+// member of that protocol is inherited from HKObject - the row's own facts, the archive and the
+// class method that reads one back through this class's own -initWithCoder:. The adoption was
+// missing, so -[CharonHKStore saveObjects:error:] refused this class and every other, with
+// "is not a health object this database can keep".
+
+// These classes are ones the store keeps, so each adopts the protocol the store's gate tests for.
+// Every member of that protocol is inherited from HKObject - the row's own facts, the archive and
+// the class method that reads one back through the class's own -initWithCoder:. The adoption was
+// missing, so -[CharonHKStore saveObjects:error:] refused these classes and every other, with
+// "is not a health object this database can keep", and the two builders of 12.0 saved into a
+// store that took nothing. Conformance is declared on a category interface and not repeated on
+// its implementation, which is where Objective-C takes it.
+@interface HKWorkout (CharonHKStorable) <CharonHKStorable>
+@end
+
+@implementation HKWorkout (CharonHKStorable)
+@end
+
