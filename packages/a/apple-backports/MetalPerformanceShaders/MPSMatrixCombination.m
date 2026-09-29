@@ -11,8 +11,6 @@
     NSMutableArray *_destinations;
     NSMutableArray *_offsets;
     NSUInteger _count;
-    MPSVector *_offsetVector;
-    NSUInteger _offset;
 }
 
 - (instancetype)init
@@ -21,21 +19,27 @@
     return nil;
 }
 
+// A copy descriptor holds no storage and runs on no device, so it is made from its count alone; the
+// initialiser its header declares takes a device because the release's descriptor is a kernel-adjacent
+// object, and this one takes the device and does not keep it.
+- (id)charon_mps_withCount:(NSUInteger)count
+{
+    _sources = [NSMutableArray array];
+    _destinations = [NSMutableArray array];
+    _offsets = [NSMutableArray array];
+    _count = count;
+    return self;
+}
+
 - (instancetype)initWithDevice:(id<MTLDevice>)device count:(NSUInteger)count
 {
-    if ((self = [super init])) {
-        _sources = [NSMutableArray array];
-        _destinations = [NSMutableArray array];
-        _offsets = [NSMutableArray array];
-        _count = count;
-        (void)device;
-    }
-    return self;
+    (void)device;
+    return [[[self class] alloc] charon_mps_withCount:count];
 }
 
 + (instancetype)descriptorWithSourceMatrix:(MPSMatrix *)sourceMatrix destinationMatrix:(MPSMatrix *)destinationMatrix offsets:(MPSMatrixCopyOffsets)offsets
 {
-    MPSMatrixCopyDescriptor *descriptor = [[self alloc] initWithDevice:nil count:1];
+    MPSMatrixCopyDescriptor *descriptor = [[[self class] alloc] charon_mps_withCount:1];
     [descriptor setCopyOperationAtIndex:0 sourceMatrix:sourceMatrix destinationMatrix:destinationMatrix offsets:offsets];
     return descriptor;
 }
@@ -63,10 +67,7 @@
                                 offset:(NSUInteger)byteOffset
 {
     NSUInteger count = sourceMatrices.count < destinationMatrices.count ? sourceMatrices.count : destinationMatrices.count;
-    if (!(self = [self initWithDevice:nil count:count]))
-        return nil;
-    _offsetVector = offsets;
-    _offset = byteOffset;
+    MPSMatrixCopyDescriptor *descriptor = [[[self class] alloc] charon_mps_withCount:count];
     for (NSUInteger index = 0; index < count; index++) {
         MPSMatrixCopyOffsets zero = {0, 0, 0, 0};
         if (offsets) {
@@ -76,9 +77,9 @@
             zero.sourceRowOffset = packed->rowOffset;
             zero.sourceColumnOffset = packed->columnOffset;
         }
-        [self setCopyOperationAtIndex:index sourceMatrix:sourceMatrices[index] destinationMatrix:destinationMatrices[index] offsets:zero];
+        [descriptor setCopyOperationAtIndex:index sourceMatrix:sourceMatrices[index] destinationMatrix:destinationMatrices[index] offsets:zero];
     }
-    return self;
+    return descriptor;
 }
 
 - (NSUInteger)charon_mps_count
@@ -555,29 +556,25 @@
     }
     for (NSUInteger b = 0; b < count; b++) {
         for (NSUInteger row = 0; row < rows; row++) {
-            // A selection over the row's columns, keeping the k largest in order. Insertion keeps the
-            // order exact, which a partial sort of equal values would not.
-            NSUInteger *order = (NSUInteger *)calloc(columns ? columns : 1, sizeof(NSUInteger));
+            // The k largest of the row, in order. Each column is inserted into the list the row has
+            // built so far, which keeps the order exact where a partial sort of equal values would not
+            // decide it, and what falls off the end is the k-th largest seen so far.
+            NSUInteger *order = (NSUInteger *)calloc(wanted ? wanted : 1, sizeof(NSUInteger));
             double *best = (double *)calloc(wanted ? wanted : 1, sizeof(double));
             NSUInteger filled = 0;
             for (NSUInteger column = 0; column < columns; column++) {
                 double v = CharonMPSLoad(CharonMPSMatrixElement(&in, b, _sourceMatrixOrigin.x + row, _sourceMatrixOrigin.y + column), in.dataType, 0);
-                NSUInteger place = filled;
-                while (place > 0 && best[place - 1] < v) {
-                    if (place < wanted) {
-                        best[place] = best[place - 1];
-                        order[place] = order[place - 1];
-                    }
-                    place--;
+                NSUInteger place = filled < wanted ? filled : wanted - 1;
+                NSUInteger last = place;
+                while (last > 0 && best[last - 1] < v) {
+                    best[last] = best[last - 1];
+                    order[last] = order[last - 1];
+                    last--;
                 }
-                if (filled < wanted || place < wanted) {
-                    if (place >= wanted)
-                        continue;
-                    best[place] = v;
-                    order[place] = column;
-                    if (filled < wanted)
-                        filled++;
-                }
+                best[last] = v;
+                order[last] = column;
+                if (filled < wanted)
+                    filled++;
             }
             for (NSUInteger place = 0; place < filled; place++) {
                 CharonMPSStore(CharonMPSMatrixElement(&indices, b, _resultMatrixOrigin.x + row, _resultMatrixOrigin.y + place), indices.dataType, 0, (double)(order[place] + _indexOffset));

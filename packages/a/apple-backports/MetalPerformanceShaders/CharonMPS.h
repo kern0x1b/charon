@@ -315,11 +315,6 @@ static inline double CharonMPSNeuronA(const CharonMPSNeuron *neuron, NSUInteger 
     return neuron->prelu ? (double)neuron->prelu[channel] : (double)neuron->a;
 }
 
-static inline double CharonMPSNeuronParameterA(const CharonMPSNeuron *neuron, NSUInteger channel)
-{
-    return neuron->prelu ? (double)neuron->prelu[channel] : (double)neuron->a;
-}
-
 @interface MPSMatrixNeuron (CharonMPS)
 - (CharonMPSNeuron)charon_mps_neuron;
 @end
@@ -346,10 +341,10 @@ static inline double CharonMPSNeuronParameterA(const CharonMPSNeuron *neuron, NS
 
 @interface MPSMatrixSoftMax (CharonMPS)
 - (void)charon_mps_setLogarithmic:(BOOL)logarithmic;
-- (BOOL)charon_mps_logarithmic;
 @end
 
 @interface MPSMatrixCopyDescriptor (CharonMPS)
+- (id)charon_mps_withCount:(NSUInteger)count;
 - (NSUInteger)charon_mps_count;
 - (MPSMatrix *)charon_mps_sourceAtIndex:(NSUInteger)index;
 - (MPSMatrix *)charon_mps_destinationAtIndex:(NSUInteger)index;
