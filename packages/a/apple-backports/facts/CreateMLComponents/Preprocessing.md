@@ -81,3 +81,34 @@ preprocessor's statistics as the fit left them.
 Two estimators the test supplies, because a pipeline needs something to wrap: a mean-of-the-target one,
 and a counter that records whether the column it read was the preprocessed one — which is how a caller
 can see that the pipeline fed the estimator what it meant to.
+
+## OPEN: does a pipeline *use* the preprocessor it was given?
+
+**The claim the probes support is "does not fit". Whether it *uses* the preprocessor is unmeasured, and
+the difference matters.**
+
+All four preprocessing probes use the host's own `LinearTransformer` as the instrument, and three of
+them use it at **`scale: 1, offset: 0` — the identity**. With an identity preprocessor, "the pipeline
+transforms through the preprocessor it was handed" and "the pipeline ignores the preprocessor and hands
+the input back" are **indistinguishable**: both answer `[1, 2, ..., 8]`, which is what the probes
+recorded. So the three answers are real and they do not settle this.
+
+A **non-identity** preprocessor separates the two: `scale: 2` doubles and an `offset` shifts, so
+unchanged values would mean the preprocessor is ignored. The probe written for that is
+`tests/backports/host/createml/probe/preprocessor-applied-host.swift` and **it does not build**:
+
+    $ xcrun swiftc -typecheck preprocessor-applied-host.swift     # passes - the conformers are right
+    $ xcrun swiftc -O      -o … preprocessor-applied-host.swift
+    error: compile command failed due to signal 6 (use -v to see invocation)
+    $ xcrun swiftc -Onone  -o … preprocessor-applied-host.swift
+    error: compile command failed due to signal 6 (use -v to see invocation)
+
+So this is a swiftc crash and not a type error, and the probe is committed as a **question rather than
+as evidence** - its `.txt` says so in the same words. Which construct crashes swiftc is itself
+unmeasured and is the next thing to bisect.
+
+**What turns on it.** The port's pipelines now transform through the preprocessor they were handed -
+that is the measured behaviour for the two the probes covered, and the third is unmeasured. A caller who
+passes an **unfitted** preprocessor is the case where the two readings differ: if the host applies it,
+the values move; if the host ignores it, they do not. The port cannot be shown right for that caller
+until the probe builds.
