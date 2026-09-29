@@ -17,6 +17,16 @@ import sys
 MODIFIERS = ("very", "light", "dark", "pastel", "grayish", "vibrant", "bright")
 
 
+# The floor lives in sample-floor.py, beside the other fit, because two fits read the same
+# sample and a disagreement between two copies of the decision would be silent.
+import sample_floor
+
+GRID_ROWS = sample_floor.GRID_ROWS
+refuse_small_sample = sample_floor.refuse_small_sample
+
+
+
+
 def split(name):
     words = name.split()
     while words and words[0] in MODIFIERS:
@@ -46,6 +56,8 @@ def angle(r, g, b):
 
 
 def main():
+    if not refuse_small_sample(sys.argv[1]):
+        return 1
     points = {}
     for line in open(sys.argv[1]):
         if line.startswith("#"):
@@ -94,4 +106,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

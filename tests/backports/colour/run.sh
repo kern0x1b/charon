@@ -118,9 +118,24 @@ if [ "$wrong" -eq 1 ]; then
 fi
 known_answer_check
 
+# Each fit writes its own output to a file, its own status is checked, and only then is the file
+# grepped. A fit behind a pipe takes grep's status instead of its own, so a fit that crashes or that
+# refuses its sample left the run running and exiting 0 with a block of figures on screen; this shape is
+# the one the rest of this tree's runners use, because it is the only one where a tool's failure is the
+# script's failure.
+fit() {
+    # $1 the tool, $2 the file its output goes to, $3 the lines to show
+    if ! python3 "$1" "$build/fit.tsv" > "$build/$2.txt" 2>&1; then
+        echo "$1 failed, and this run stops here:" >&2
+        cat "$build/$2.txt" >&2
+        exit 1
+    fi
+    grep -E "$3" "$build/$2.txt"
+}
+
 echo
 echo "=== the four spaces, nearest prototype per hue word"
-python3 "$here/fit.py" "$build/fit.tsv" | grep -E "^fit rows|^distinct|^space|^near-neutral"
+fit "$here/fit.py" fit "^fit rows|^distinct|^space|^near-neutral|^refused"
 echo
 echo "=== the hue angle as a partition"
-python3 "$here/fit-angle.py" "$build/fit.tsv" | grep -E "distinct colours|chromatic points|contiguous runs"
+fit "$here/fit-angle.py" fit-angle "^distinct colours|^chromatic points|^contiguous runs|^refused"
