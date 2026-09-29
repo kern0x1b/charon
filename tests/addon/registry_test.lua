@@ -1056,7 +1056,7 @@ function wiring(backports, root, found)
         ["arkit/AccelerateBackports"] = true,
         ["arkit/GraphicsBackports"] = true,
     }
-    local count = 0
+    local count, gaps = 0, {}
     for _, name in ipairs(order) do
         if name ~= "sources" then
             local built = builds_for(name)
@@ -1079,11 +1079,28 @@ function wiring(backports, root, found)
             table.sort(names)
             for _, dep in ipairs(names) do
                 count = count + 1
+                gaps[name .. "/" .. dep] = true
                 if not owed[name .. "/" .. dep] then
                     table.insert(found, string.format('the config "%s" builds a library that links -l%s, and no clause of the recipe builds it: Undefined symbols at link time. Add the clause and this goes',
                                                       name, dep))
                 end
             end
+        end
+    end
+    -- A table entry the arm no longer finds is either a gap the arm cannot see - the arm takes the
+    -- UNION of the recipe's two lists, so a gap confined to the links list alone is invisible to it -
+    -- or a row that has gone stale, and a stale row is silently inert: nothing goes red, and the
+    -- table rots until it is decoration.  Each one is therefore named, and a row that is neither
+    -- found nor named is a failure.  e30cc19dc put the two unfindable entries at
+    -- metalkit/MetalBackports and modelio/MetalKitBackports, which this series fixed; the two the
+    -- arm does not find are avfoundation/Accelerate and avfoundation/Graphics.
+    local invisible = {
+        ["avfoundation/AccelerateBackports"] = "a gap in the links list alone, which the arm cannot see because it takes the union of the two recipe lists",
+        ["avfoundation/GraphicsBackports"] = "a gap in the links list alone, which the arm cannot see because it takes the union of the two recipe lists",
+    }
+    for entry in pairs(owed) do
+        if not gaps[entry] and not invisible[entry] then
+            table.insert(found, string.format('the table of main\'s gaps lists "%s" and the arm does not find it and cannot see why: it is either fixed, in which case the row goes, or a gap in one of the recipe\'s two lists alone, in which case it is named below', entry))
         end
     end
     if count > 0 then
