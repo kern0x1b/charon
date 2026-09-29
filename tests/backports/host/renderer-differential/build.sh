@@ -114,8 +114,8 @@ nocondition_differing=$(grep -c DIFFER "$build/mutant-nocondition.log" || true)
 # system, or the port is wrong; the no-condition mutant must not, or the fix is not what the mutant
 # removes. The rect+1 mutant is inert by construction -- every recorded first-line rect is empty,
 # so an offset inside the guarded branch has nothing to act on -- and is not asserted on.
-clean_compared=$(awk '/^compared/ {print $2}' "$build/clean.log")
-nocondition_compared=$(awk '/^compared/ {print $2}' "$build/mutant-nocondition.log")
+clean_compared=$(awk '/^compared/ {gsub(/,/,"",$2); print $2}' "$build/clean.log")
+nocondition_compared=$(awk '/^compared/ {gsub(/,/,"",$2); print $2}' "$build/mutant-nocondition.log")
 status=0
 if [ "$clean_differing" != "0" ]; then
     echo "FAIL: the clean pair differs from the system in $clean_differing of $clean_compared values"
