@@ -11,6 +11,9 @@
 # chooses after seeing the numbers.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+for script in "$here"/*.sh; do
+    bash -n "$script" || { echo "harness script does not parse: $script" >&2; exit 1; }
+done
 mps=${MPS:-$here/../../../../packages/a/apple-backports/MetalPerformanceShaders}
 build=${BUILD:-$here/../../../../.agent-work/runs/host/mpsmatrix}
 candidate=${CANDIDATE:+-DCHARON_BN_CANDIDATE=$CANDIDATE}
