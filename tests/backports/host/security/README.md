@@ -18,6 +18,11 @@ on a case whose expected symbols are missing from its own binary, and on a diges
 matches the file it is pinned to. The digest line is a check, not a case: it is deliberately not in the
 case or `GREEN` counts, so `N cases` still means the cases and nothing else.
 
+**Every mutant is judged against a control on its own link line**, and that is a fourth thing the run
+fails on: a mutant whose control is not green is reported `INVALID MUTANT` and is **not** counted as
+noticed. The section below is the trap it exists for, and the numbers it produced on this tree are
+`20 cases, 18 mutants, 17 noticed` with 18 green controls.
+
 ## The trap: a case that links too little measures the HOST, silently
 
 A case compiled without one of the port sources it needs does not fail to build. The names it calls
@@ -50,6 +55,46 @@ nm case | grep ' T _sec_protocol'
 `run-cases.sh` now checks, after every build, that every function each source defines is **defined** in
 the binary, and fails with `MISSING <case> _<sym> ... it resolved to a dylib` when one did not. The
 lesson generalises: **a case proves the port only if you check the port is in the process.**
+
+## The same trap, one level up: a MUTANT linked against less than its case
+
+A mutation is evidence that a comparison can tell a case from a broken one — and only if the mutant
+was built the way the case is built. The three `sec-identity` mutants were not: `run_mutation` linked
+the case, the mutant and at most one extra, while the case itself is built
+`$H/sec-identity.m $SI $SI16 $LI $O`. So each mutant ran a binary missing three of its case's sources,
+printed rows the case never produces, and went RED on **those**:
+
+```
+holder-class   MISSING
+DIFFERS access-empty-true: got 0 and the port claims 1
+DIFFERS holder-class: the port's options holder was not found
+DIFFERS local-identity-holds: the case did not measure it
+```
+
+and the proof that this has nothing to do with any mutation: **a byte-identical copy of the unmutated
+source on that same line is RED too**, while on the case's full line it is green. The counter was
+reading the link and calling it coverage. One of them was worse than unattributable —
+`sec-identity-noretain` drops the `CFRetain` in `sec_identity_copy_ref`, and mutated and unmutated
+outputs were byte-identical, so the mutation was invisible to the case and its RED was entirely the link.
+
+So `run_mutation` now takes the mutant's link line as arguments — `NAME COMPARE CASEFILE ORIGIN
+[EXTRA...]`, where `ORIGIN` is the port source the mutant is a copy of and `EXTRA` is the rest of what
+the case links — and builds the control first: the same line with the unmutated `ORIGIN` put back where
+the mutant's copy goes. `must_not_compile`, the eighteenth mutant, is held to the same rule with the
+sign flipped, because its verdict is a build FAILING and so its control is the unmutated line
+BUILDING.
+
+The F1 shape fed to the new driver, so the check is shown failing and not only passing:
+
+```
+INVALID MUTANT sec-identity-nocopy  the CONTROL is red …: access-empty-true: got 0 and the port claims 1
+INVALID MUTANT sec-identity-noretain the CONTROL is red …: access-empty-true: got 0 and the port claims 1
+INVALID MUTANT defaults-below-enum  the CONTROL is red …: port-class: the port's CharonSecProtocolOptions was not found
+run-cases: 3 failure(s) - 20 cases, 18 mutants, 14 noticed          EXIT=3
+```
+
+Three mutants, and `noticed` falls from 17 to 14: a mutation whose own line is wrong is not counted as
+noticed, because the count is the run's claim about what it measured.
 
 ## Two more things that look like findings and are not
 
@@ -121,13 +166,29 @@ name — the driver constructs it as `compare-$name.py`, so a literal grep for
 name is linked.** It matches `sec_*` in the case and in the port sources and requires `_name` in the
 case's own binary.
 
-**It does NOT cover five cases**, and the list is what the code enforces, not what would be nice:
+**It does NOT cover nine of the twenty cases**, and the list is what the code enforces, not what would
+be nice. This section said "five" until this tree: five cases were named and four more were outside the
+guard with an empty `called` set and no name anywhere. Measured per case, the way `run_case` builds
+the set, eleven are inside the guard and nine are outside it — and the nine are the table:
 
 | case | why it is outside the guard | proven by |
 | --- | --- | --- |
 | `network-fetch` | the port's functions are named as the HEADER names them (`SecTrustSetNetworkFetchAllowed`, …), and the guard matches only `sec_*` | dropping `$N` leaves the case **GREEN, exit 0**, with `nm -u` showing those symbols undefined — the host answered |
 | `supported`, `attributes`, `certificate-name` | they reach the port through `Charon*` helpers, which the guard does not match | same shape as `network-fetch` |
 | `trust-result` | it resolves the port by `dlsym(RTLD_DEFAULT, …)`, so there is no link-time reference to find at all | reading the case: the name is a **string** |
+| `padding`, `verify-pairs` | the port's entry points are `Charon*` class names the host does not export, so a dropped source is caught by the LINK and not by the guard | dropping `$F`: `BUILD padding FAILED to build` on the undefined `_CharonSecurityPaddingFor`, and `BUILD verify-pairs FAILED to build` on `_CharonSecurityCarries` |
+| `certificate-fields`, `certificate-name` | the same empty `called` set, and here the build still succeeds — the host answers the names the case uses — so what catches the drop is the COMPARISON | dropping `$D`: `RED certificate-fields DIFFERS null-out: a NULL out-parameter is errSecParam (-50)` |
+| `protocol-options-flags` | it reaches the port through a `Charon*` holder class rather than a `sec_*` name, so its `called` set is empty; the drop is again caught by the comparison | dropping `$PF`: `RED protocol-options-flags DIFFERS port-class: the port's CharonSecProtocolFlags was not found` |
+
+Four of those drops were run at once — `$F` from `padding` and from `verify-pairs`, `$D` from
+`certificate-fields`, `$PF` from `protocol-options-flags` — and the run ends non-zero with the driver's
+own tail check naming it: `16 GREEN verdict lines for 18 cases - the summary does not match the lines it
+printed`, exit 1. The shape matters and it is not the same for all of them: for `padding` and
+`verify-pairs` the LINK refuses the binary, and for `certificate-fields` and `protocol-options-flags` the
+binary builds and the COMPARISON notices. In none of the four did the guard's `MISSING` branch fire,
+which is exactly what an empty `called` set means. `certificate-name` is in the same row as
+`certificate-fields` because its `called` set is empty for the same reason; the drop was not run for it
+here and the row does not claim it was.
 
 **And the newest case is inside the guard, by the same rule the list above is measured with.**
 `sec-identity` calls six `sec_*` names — `sec_identity_create`,
