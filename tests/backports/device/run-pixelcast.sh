@@ -54,7 +54,11 @@ fi
 echo "=== $(date '+%H:%M:%S %Z') ==="
 uptime | tee "$work/uptime.log"
 load1=$(uptime | sed -E 's/.*load averages: ([0-9.]+).*/\1/')
-slots=$(ls /tmp/fleet-heavy/machine/ 2>/dev/null | wc -l | tr -d ' ')
+# The lock directory is heavy.sh's, and it is named by its variable rather than written
+# down: FLEET_HEAVY_DIR defaults to /tmp/fleet-heavy, and a suite that hardcoded that
+# would read the wrong lock when a run sets the variable.
+heavy_dir=${FLEET_HEAVY_DIR:-/tmp/fleet-heavy}
+slots=$(ls "$heavy_dir/machine/" 2>/dev/null | wc -l | tr -d ' ')
 echo "load1 = $load1, machine slots in use = $slots"
 # uptime prints a float; [ cannot compare one, and the error left the gate doing nothing at all.
 if awk -v load="$load1" 'BEGIN { exit !(load >= 12) }'; then
