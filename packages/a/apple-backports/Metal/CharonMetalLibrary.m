@@ -5,9 +5,9 @@
 
 
 // DEFINED in MTLReflection8.m, beside MTLVertexAttribute, which this body builds one of: a
-// definition here could not see that class, and a static function is visible only after its
-// definition, so the declaration is here and the body is with what it needs.
-static NSArray *CharonAttributesFromFunction(CharonMetalFunction *function);
+// definition here could not see that class. The declaration is external and hidden, like the definition: a
+// static here would be a second function with no body of its own, and the library would not link.
+__attribute__((visibility("hidden"))) NSArray *CharonAttributesFromFunction(CharonMetalFunction *function);
 
 // The plist node this function was built from, which is the argument list its attributes come from.
 // It is the ivar the initializer already stores, named for what it is: -charonArgumentNode was lost
