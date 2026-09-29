@@ -3,7 +3,9 @@
 # elliptic key, which is the release side of facts/Security/SecKeyElliptic.md. One heavy job - a build
 # and an emulated boot of 6.1.3 - so it runs in a slot of the machine:
 #     $HOME/Git/projects/ios/coordination/heavy.sh sh tests/backports/host/seckeycurve/emulate.sh
-# The log is left in $SECKEYECRAW_BUILD, and the lines that matter are the ones that begin "release ".
+# The log is left in $SECKEYECRAW_BUILD - the script prints where - and the lines that matter are the
+# ones that begin "release ". It has not run: nothing in this tree holds a run of it, and a path quoted
+# for a run that never happened is a claim the tree cannot support.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 export SECKEYECRAW_ROOT=$(cd "$here/../../../.." && pwd)
