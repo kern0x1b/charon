@@ -10,7 +10,7 @@
 // when it draws, which is where a conversion belongs: converting here changed what the accessors
 // answer, and the caller reads those.
 
-static CGColorRef CharonCIColorConvert(CGFloat red, CGFloat green, CGFloat blue, CGFloat alpha, CGColorSpaceRef space)
+static CGColorRef CharonCIColorInSpace(CGFloat red, CGFloat green, CGFloat blue, CGFloat alpha, CGColorSpaceRef space)
 {
     // The colour in the space the caller named, and NOT matched into the space the renderer works
     // in.  Matching it here is what this function used to do, and it made the accessors answer a
@@ -29,24 +29,24 @@ static CGColorRef CharonCIColorConvert(CGFloat red, CGFloat green, CGFloat blue,
 
 + (instancetype)colorWithRed:(CGFloat)red green:(CGFloat)green blue:(CGFloat)blue colorSpace:(CGColorSpaceRef)colorSpace
 {
-    return [self colorWithCGColor:CharonCIColorConvert(red, green, blue, 1, colorSpace)];
+    return [self colorWithCGColor:CharonCIColorInSpace(red, green, blue, 1, colorSpace)];
 }
 
 + (instancetype)colorWithRed:(CGFloat)red green:(CGFloat)green blue:(CGFloat)blue alpha:(CGFloat)alpha
                    colorSpace:(CGColorSpaceRef)colorSpace
 {
-    return [self colorWithCGColor:CharonCIColorConvert(red, green, blue, alpha, colorSpace)];
+    return [self colorWithCGColor:CharonCIColorInSpace(red, green, blue, alpha, colorSpace)];
 }
 
 - (instancetype)initWithRed:(CGFloat)red green:(CGFloat)green blue:(CGFloat)blue colorSpace:(CGColorSpaceRef)colorSpace
 {
-    return [self initWithCGColor:CharonCIColorConvert(red, green, blue, 1, colorSpace)];
+    return [self initWithCGColor:CharonCIColorInSpace(red, green, blue, 1, colorSpace)];
 }
 
 - (instancetype)initWithRed:(CGFloat)red green:(CGFloat)green blue:(CGFloat)blue alpha:(CGFloat)alpha
                   colorSpace:(CGColorSpaceRef)colorSpace
 {
-    return [self initWithCGColor:CharonCIColorConvert(red, green, blue, alpha, colorSpace)];
+    return [self initWithCGColor:CharonCIColorInSpace(red, green, blue, alpha, colorSpace)];
 }
 
 - (instancetype)initWithRed:(CGFloat)red green:(CGFloat)green blue:(CGFloat)blue
