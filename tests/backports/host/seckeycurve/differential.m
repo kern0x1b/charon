@@ -10,6 +10,13 @@ extern bool charonHost_SecKeyVerifySignature(SecKeyRef, SecKeyAlgorithm, CFDataR
 extern CFDataRef charonHost_SecKeyCopyKeyExchangeResult(SecKeyRef, SecKeyAlgorithm, SecKeyRef, CFDictionaryRef, CFErrorRef *);
 extern bool charonHost_SecKeyIsAlgorithmSupported(SecKeyRef, SecKeyOperationType, SecKeyAlgorithm);
 
+// The harness's own two entry points into port-shims.h, declared here rather than included, for the
+// reason that header states: it is pulled in with -include and with the -D renames of the four names
+// above, and a -D renames every mention of a name in it too, so a direct call through it would call
+// back into the port. These two are only ever called from here.
+extern void CharonShimMarkPortKey(SecKeyRef, const uint8_t *, size_t);
+extern void CharonShimMarkPortPublicKey(SecKeyRef);
+
 // The port's P-256 against the host's own Security.framework, in both directions.
 //
 // The host is the oracle: SecKeyCreateSignature, SecKeyVerifySignature and SecKeyCopyKeyExchangeResult
@@ -130,6 +137,102 @@ static BOOL hostVerifies(SecKeyRef publicKey, NSData *data, NSData *signature, S
         CFRelease(error);
     }
     return valid;
+}
+
+// The private scalar OpenSSL printed for one of the two keys run.sh made, as 32 bytes.
+//
+// OpenSSL's text form is one hex byte per line and sign-padded to 33 bytes when the top bit is set, so
+// the newlines go first and a leading 00 that is not part of the number goes with them. One function
+// because two cases in this file need the same reading: the one that checks micro-ecc's arithmetic
+// against the scalars, and the one that hands the port a key made of them.
+static NSData *opensslScalar(NSString *folder, NSString *name)
+{
+    NSData *text = [NSData dataWithContentsOfFile:[folder stringByAppendingPathComponent:
+                                                     [name stringByAppendingPathExtension:@"scalar"]]];
+    if (!text) {
+        return nil;
+    }
+    NSMutableString *hex = [NSMutableString string];
+    for (NSUInteger index = 0; index < text.length; index++) {
+        char c = (char)((const char *)text.bytes)[index];
+        if ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F')) {
+            [hex appendFormat:@"%c", c];
+        }
+    }
+    if (hex.length == 66) {
+        [hex deleteCharactersInRange:NSMakeRange(0, 2)];
+    }
+    NSData *digits = [hex dataUsingEncoding:NSASCIIStringEncoding];
+    NSMutableData *scalar = [NSMutableData dataWithCapacity:32];
+    for (NSUInteger digit = 0; digit + 1 < digits.length; digit += 2) {
+        unsigned value = 0;
+        for (NSUInteger half = 0; half < 2; half++) {
+            char c = (char)((const char *)digits.bytes)[digit + half];
+            unsigned nibble = (c >= '0' && c <= '9') ? (unsigned)(c - '0')
+                            : (c >= 'a' && c <= 'f') ? (unsigned)(c - 'a' + 10)
+                            : (c >= 'A' && c <= 'F') ? (unsigned)(c - 'A' + 10) : 16u;
+            if (nibble > 15) {
+                nibble = 0;
+            }
+            value = (value << 4) | nibble;
+        }
+        uint8_t byte = (uint8_t)value;
+        [scalar appendBytes:&byte length:1];
+    }
+    return scalar;
+}
+
+// A private key of the host's own, made in memory from a scalar, and never anywhere else: the host's
+// SecKeyCreateWithData with kSecAttrKeyType ECSECPrimeRandom, a class of Private and no
+// kSecAttrIsPermanent, which is what makes the key live only as long as this process. No keychain, no
+// SecItem* call, nothing written to disk - the review's condition for putting such a key in a harness,
+// and the reason the key the port is handed here is a better one than the host's own random key: its
+// scalar is a value OpenSSL also knows, so the port's answers can be compared with a third party's.
+// A key of the host's own, made in memory and never anywhere else.
+//
+// The host's SecKeyCreateWithData takes the key material as its first argument and, for
+// kSecAttrKeyTypeECSECPrimeRandom, in ANSI X9.63 form: 04 || X || Y for a public key and
+// 04 || X || Y || K for a private one (SecKey.h:826). Apple's own note on the function is the reason
+// this is the call the review asked for: "This function does not add keys to any keychain" - no
+// kSecAttrIsPermanent, no SecItemAdd, no SecItem* of any kind, and the object dies with this process.
+//
+// The material is the point and the scalar OpenSSL printed for one of the two keys run.sh made, so the
+// key the port is handed is one whose scalar a third party also knows, and every answer the port gives
+// for it can be compared with that third party's derivation.
+static SecKeyRef inMemoryKey(NSData *point, NSData *scalar, bool wantPrivate)
+{
+    if (point.length != 65 || ((const uint8_t *)point.bytes)[0] != 0x04) {
+        return NULL;
+    }
+    if (wantPrivate && scalar.length != 32) {
+        return NULL;
+    }
+    NSMutableData *material = [NSMutableData dataWithData:point];
+    if (wantPrivate) {
+        [material appendData:scalar];
+    }
+    CFMutableDictionaryRef attributes = CFDictionaryCreateMutable(kCFAllocatorDefault, 0,
+                                                                  &kCFTypeDictionaryKeyCallBacks,
+                                                                  &kCFTypeDictionaryValueCallBacks);
+    if (!attributes) {
+        return NULL;
+    }
+    CFDictionarySetValue(attributes, kSecAttrKeyType, kSecAttrKeyTypeECSECPrimeRandom);
+    CFDictionarySetValue(attributes, kSecAttrKeyClass,
+                         wantPrivate ? kSecAttrKeyClassPrivate : kSecAttrKeyClassPublic);
+    CFDataRef bytes = CFDataCreate(kCFAllocatorDefault, material.bytes, (CFIndex)material.length);
+    if (bytes) {
+        CFErrorRef error = NULL;
+        SecKeyRef key = SecKeyCreateWithData(bytes, attributes, &error);
+        if (error) {
+            CFRelease(error);
+        }
+        CFRelease(bytes);
+        CFRelease(attributes);
+        return key;
+    }
+    CFRelease(attributes);
+    return NULL;
 }
 
 int main(int argc, char **argv)
@@ -280,37 +383,7 @@ int main(int argc, char **argv)
         // The oracle is OpenSSL's own derivation over the same two keys, read from the files run.sh
         // made; the host's SecKeyCopyKeyExchangeResult reads through an in-memory key and dies, which
         // is why the file is the oracle here and the host's is not.
-        NSData *oneHex = [NSData dataWithContentsOfFile:[folder stringByAppendingPathComponent:@"one.scalar"]];
-        // OpenSSL's text form is one hex byte per line; the newlines are dropped first.
-        NSMutableString *hex = [NSMutableString string];
-        for (NSUInteger index = 0; index < oneHex.length; index++) {
-            char c = (char)((const char *)oneHex.bytes)[index];
-            if ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F')) {
-                [hex appendFormat:@"%c", c];
-            }
-        }
-        // OpenSSL prints the scalar sign-padded to 33 bytes when the top bit is set, so 66 hex digits
-        // where 32 bytes are wanted means a leading 00 that is not part of the number.
-        if (hex.length == 66) {
-            [hex deleteCharactersInRange:NSMakeRange(0, 2)];
-        }
-        NSData *hexData = [hex dataUsingEncoding:NSASCIIStringEncoding];
-        NSMutableData *oneScalar = [NSMutableData dataWithCapacity:32];
-        for (NSUInteger digit = 0; digit + 1 < hexData.length; digit += 2) {
-            unsigned value = 0;
-            for (NSUInteger half = 0; half < 2; half++) {
-                char c = (char)((const char *)hexData.bytes)[digit + half];
-                unsigned nibble = (c >= '0' && c <= '9') ? (unsigned)(c - '0')
-                                : (c >= 'a' && c <= 'f') ? (unsigned)(c - 'a' + 10)
-                                : (c >= 'A' && c <= 'F') ? (unsigned)(c - 'A' + 10) : 16u;
-                if (nibble > 15) {
-                    nibble = 0;
-                }
-                value = (value << 4) | nibble;
-            }
-            uint8_t byte = (uint8_t)value;
-            [oneScalar appendBytes:&byte length:1];
-        }
+        NSData *oneScalar = opensslScalar(folder, @"one");
         NSData *onePoint = [NSData dataWithContentsOfFile:[folder stringByAppendingPathComponent:@"one.point"]];
         NSData *twoPoint = [NSData dataWithContentsOfFile:[folder stringByAppendingPathComponent:@"two.point"]];
         NSData *openssl = [NSData dataWithContentsOfFile:[folder stringByAppendingPathComponent:@"openssl.secret"]];
@@ -411,6 +484,160 @@ int main(int argc, char **argv)
             check_named(wrong, [NSString stringWithFormat:@"and answers false for a signature of another message, for a %lu byte message", (unsigned long)length],
                         @"the port accepted a signature of a different message");
         }
+    }
+
+    // A key of the port's own kind, and the only case in this file that reaches the curve.
+    //
+    // SecKeyElliptic10.m tells the two kinds of key apart by one attribute - the marker beside the 32
+    // byte private scalar - and only SecKeyCreateWithData, the entry point of that family the port has
+    // not written, would put it there. So this case builds the key the port would have built, from the
+    // scalar OpenSSL printed for one of the two keys run.sh made, with the host's own in-memory
+    // SecKeyCreateWithData (no keychain, no kSecAttrIsPermanent, no SecItem* call: the key lives as
+    // long as this process), and registers it as the port's kind through CharonShimMarkPortKey, which
+    // answers SecKeyCopyAttributeDictionary with the marker and the scalar the release's own contract
+    // says such a key carries. From there the port's three CharonCK* calls run, and what they are held
+    // to is the host's own Security and OpenSSL's own derivation - not the port against itself.
+    //
+    // Without this case nothing executed that code, and a mutant in it passed: a sign that returned half
+    // the DER left the run byte-identical, which is what the mutation under this case is for.
+    printf("port: the port's own key, and the curve underneath it\n"); fflush(stdout);
+    NSData *oneKeyScalar = opensslScalar(folder, @"one");
+    NSData *oneKeyPoint = [NSData dataWithContentsOfFile:[folder stringByAppendingPathComponent:@"one.point"]];
+    NSData *twoKeyPoint = [NSData dataWithContentsOfFile:[folder stringByAppendingPathComponent:@"two.point"]];
+    SecKeyRef curvePrivate = inMemoryKey(oneKeyPoint, oneKeyScalar, true);
+    SecKeyRef curvePublic = curvePrivate ? SecKeyCopyPublicKey(curvePrivate) : NULL;
+    SecKeyRef peerOfTwoPublic = inMemoryKey(twoKeyPoint, nil, false);
+    check_named(curvePrivate != NULL && curvePublic != NULL && peerOfTwoPublic != NULL,
+                @"a private key made in memory from OpenSSL's own point and scalar, and the other key's public point",
+                @"the host made no key from the material");
+    // The key the host made out of that material must be the key the files describe, or every answer
+    // below would be about a key nobody else has. Checked against the point OpenSSL published, which
+    // the block above has already matched to the scalar above.
+    if (curvePrivate && curvePublic) {
+        NSData *madePoint = pointOf(curvePublic);
+        check_named(madePoint.length == 65 && [madePoint isEqualToData:oneKeyPoint],
+                    @"and the key it made publishes OpenSSL's own point for that key",
+                    [NSString stringWithFormat:@"%lu bytes", (unsigned long)madePoint.length]);
+    }
+    if (peerOfTwoPublic) {
+        NSData *madePeer = pointOf(peerOfTwoPublic);
+        check_named(madePeer.length == 65 && [madePeer isEqualToData:twoKeyPoint],
+                    @"and the peer's key publishes the other point",
+                    [NSString stringWithFormat:@"%lu bytes", (unsigned long)madePeer.length]);
+    }
+    if (curvePrivate && curvePublic && peerOfTwoPublic) {
+        CharonShimMarkPortKey(curvePrivate, oneKeyScalar.bytes, oneKeyScalar.length);
+        CharonShimMarkPortPublicKey(curvePublic);
+        check_named(charonHost_SecKeyIsAlgorithmSupported(curvePrivate, kSecKeyOperationTypeKeyExchange, charonHostECDH),
+                    @"a key of the port's own kind says it exchanges, where the release's key said it cannot",
+                    @"the port refuses the exchange for a key it made");
+        for (NSUInteger length = 0; length <= 130; length += 65) {
+            NSMutableData *message = [NSMutableData dataWithLength:length];
+            if (length > 0) {
+                arc4random_buf(message.mutableBytes, length);
+            }
+            NSData *digest = digestOf(message);
+            CFErrorRef portError = NULL;
+            CFDataRef made = charonHost_SecKeyCreateSignature(curvePrivate, digestAlgorithm,
+                                                              (__bridge CFDataRef)digest, &portError);
+            if (portError) {
+                CFRelease(portError);
+            }
+            check_named(made != NULL, [NSString stringWithFormat:@"the port signs over the curve with a key of its own, for a %lu byte message", (unsigned long)length],
+                        @"the port refused to sign with its own key");
+            if (made) {
+                NSData *signature = CFBridgingRelease(made);
+                check_named(hostVerifies(curvePublic, digest, signature, digestAlgorithm),
+                            [NSString stringWithFormat:@"and micro-ecc's signature verifies under the host's own SecKeyVerifySignature, for a %lu byte message", (unsigned long)length],
+                            @"the host refused a signature the curve made");
+                // The host's own signature of the same digest, read by the port: its point comes from
+                // the shimmed SecKeyCopyPublicBytes, so this is micro-ecc's verifier over the DER that
+                // Apple's writer produces, not the port's writer read by itself.
+                NSData *hostMade = hostSignature(curvePrivate, digest, digestAlgorithm);
+                check_named(hostMade != nil, @"and the host made a signature of the same digest",
+                            @"the host's SecKeyCreateSignature made nothing");
+                if (hostMade) {
+                    CFErrorRef verifyError = NULL;
+                    bool verified = charonHost_SecKeyVerifySignature(curvePublic, digestAlgorithm,
+                                                                    (__bridge CFDataRef)digest,
+                                                                    (__bridge CFDataRef)hostMade, &verifyError);
+                    if (verifyError) {
+                        CFRelease(verifyError);
+                    }
+                    check_named(verified, [NSString stringWithFormat:@"and a signature the host made verifies through the port's own reader, for a %lu byte message", (unsigned long)length],
+                                @"the port's reader refused the host's signature");
+                }
+            }
+        }
+        // The exchange, through the port's own entry point, against the secret OpenSSL derives from the
+        // same two scalars in run.sh: neither the port nor the host computed the value it is compared
+        // with.
+        //
+        // The algorithm is the plain ECDH.standardX963, because that is the one whose answer is the X
+        // coordinate OpenSSL's pkeyutl writes: a name that ends in a digest means the port hands back
+        // SHA-256 of that coordinate, which is checked separately below and compared the same way.
+        SecKeyAlgorithm standardECDH = (SecKeyAlgorithm)CFSTR("ECDH.standardX963");
+        CFErrorRef curveError = NULL;
+        CFDataRef portSecret = charonHost_SecKeyCopyKeyExchangeResult(curvePrivate, standardECDH,
+                                                                      peerOfTwoPublic, NULL, &curveError);
+        if (curveError) {
+            CFRelease(curveError);
+        }
+        check_named(portSecret != NULL, @"the port exchanges over the curve with a key of its own",
+                    @"the port answered no secret for its own key");
+        if (portSecret) {
+            NSData *secret = CFBridgingRelease(portSecret);
+            check_named(secret.length == 32, @"and the secret is the 32 bytes a P-256 agreement makes",
+                        [NSString stringWithFormat:@"%lu bytes", (unsigned long)secret.length]);
+            NSData *opensslSecret = [NSData dataWithContentsOfFile:[folder stringByAppendingPathComponent:@"openssl.secret"]];
+            check_named(opensslSecret.length == 32, @"and OpenSSL's own derivation of these two keys is there to compare with",
+                        [NSString stringWithFormat:@"%lu bytes", (unsigned long)opensslSecret.length]);
+            if (secret.length == 32 && opensslSecret.length == 32) {
+                check_named(memcmp(secret.bytes, opensslSecret.bytes, 32) == 0,
+                            @"and the port's secret is OpenSSL's, byte for byte",
+                            [NSString stringWithFormat:@"port %02x.., openssl %02x..",
+                             ((const uint8_t *)secret.bytes)[0], ((const uint8_t *)opensslSecret.bytes)[0]]);
+            }
+        }
+        // The digest-named exchange is the same secret hashed, which is what the name says Security
+        // does with it - and it is checked against SHA-256 of OpenSSL's own bytes, not against the
+        // port's own answer to the same question.
+        CFErrorRef hashedError = NULL;
+        CFDataRef hashedSecret = charonHost_SecKeyCopyKeyExchangeResult(curvePrivate, charonHostECDH,
+                                                                       peerOfTwoPublic, NULL, &hashedError);
+        if (hashedError) {
+            CFRelease(hashedError);
+        }
+        NSData *opensslSecret = [NSData dataWithContentsOfFile:[folder stringByAppendingPathComponent:@"openssl.secret"]];
+        check_named(hashedSecret != NULL && opensslSecret.length == 32, @"the digest-named exchange answers too",
+                    @"the port answered no secret for ECDH.standardX963SHA256");
+        if (hashedSecret && opensslSecret.length == 32) {
+            NSData *hashed = CFBridgingRelease(hashedSecret);
+            NSData *expected = digestOf(opensslSecret);
+            check_named(hashed.length == 32 && memcmp(hashed.bytes, expected.bytes, 32) == 0,
+                        @"and it is SHA-256 of OpenSSL's own secret, byte for byte",
+                        [NSString stringWithFormat:@"port %02x.., sha256 %02x..",
+                         ((const uint8_t *)hashed.bytes)[0], ((const uint8_t *)expected.bytes)[0]]);
+        } else if (hashedSecret) {
+            CFRelease(hashedSecret);
+        }
+        // A key of the release's own kind is still refused the same exchange, beside one that is
+        // answered: the marker is what tells the two apart, so both answers together say the branch was
+        // entered on the marker and not on something else.
+        CFErrorRef refusedError = NULL;
+        CFDataRef refused = charonHost_SecKeyCopyKeyExchangeResult(hostPrivate, charonHostECDH,
+                                                                   curvePublic, NULL, &refusedError);
+        check_named(refused == NULL, @"a key of the release's own kind is still refused for the same exchange",
+                    @"it answered one");
+        if (refused) {
+            CFRelease(refused);
+        }
+        if (refusedError) {
+            CFRelease(refusedError);
+        }
+        CFRelease(curvePublic);
+        CFRelease(peerOfTwoPublic);
+        CFRelease(curvePrivate);
     }
 
     // What the port says it can do. The exchange is the one it cannot: the release has no elliptic key
