@@ -10,10 +10,23 @@ Of the 96 rows the ledger had as missing, **eleven were already routed by the po
 undescribed** — the questions a drag and a drop ask its *interaction* delegate, in
 `UIDragInteraction.m` and `CharonDropSequence11.m`. Those are registered where the routing is, and the
 order a drop is asked in is asserted by `tests/backports/device/textdragdrop.m`. It has been **RUN on
-an emulated iPhone3,1 6.1.3 and it CRASHED in the guest with signal 5 before its first check**, so it
-establishes nothing about the order and no verdict is claimed for it here or anywhere in this series.
-What is on the record is the crash, not a pass: `verdict.json` reads `state: crash, signal: 5,
-reason: reached, guest_seconds: 0.126`, and the program wrote no `textdragdrop.done`.
+an emulated iPhone3,1 6.1.3, both halves, and both CRASHED in the guest with signal 5 before the
+first check** -- `verdict.json` reads `state: crash, signal: 5, reason: reached, guest_seconds: 0.366`
+-- and the program wrote no `textdragdrop.done`, so the device half asserts nothing about the order
+and no verdict is claimed for it here or anywhere in this series.
+
+**What did run is the host-side half**, and it is the half that matters for what the mutant is: the
+run generates the mutant from the live source, stops with a non-zero exit if `cmp` says the result is
+identical, and prints the diff when it is not:
+
+    cmp: the mutant differs from the source, as it must
+    -    if ([delegate respondsToSelector:perform])     # the drop first, as the header has it
+    +    if ([delegate respondsToSelector:preview])     # the preview first, the mutant
+
+That is what found the defect: the live source had the preview before the drop, which is the order
+`UITextDropping.h` puts the other way round, so the fixture and the source were the same wrong thing
+and the mutated half was installing the unmutated source. The source is now the header's order, and
+the fix is argued from the header and not from a gate that cannot run.
 
 The rest are the text family proper: the two request types, the text delegates, the droppable and
 draggable protocols' properties, the paste configuration, and the spring-loaded interaction. **Most
