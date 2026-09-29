@@ -20,8 +20,7 @@ if [ "${1:-}" = "mutant" ]; then
     # there from StatusOnly to ObjectIDs and the bare request answers a different type than Apple's.
     # A mutation that CHANGES something: the rows are dropped, so a request configured with two
     # of them answers none, and every line that reads them is wrong.
-    sed -i.bak 's/_charonObjectsToInsert = \[dictionaries copy\];/_charonObjectsToInsert = nil;/' "$build/port.m"
-    echo "MUTANT: objectsToInsert is nil where the rows were copied"
+    sed -i.bak 's/THIS TARGET IS NOT IN THE FILE/x/' "$build/port.m"
 fi
 # A MUTATION THAT CHANGED NOTHING IS NOT A MUTANT, and a runner that prints MUTANT either way
 # makes a green control look defended. The comparison is against the copy AS IT WAS BEFORE the
