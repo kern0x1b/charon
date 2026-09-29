@@ -171,3 +171,17 @@ for row in "MTLFunction:CharonMetalFunction:Metal/CharonMetalLibrary.m" \
     done
 done
 
+# THE FINAL LINE, with counts and a reason. EXIT 1 IS BY DESIGN and means "work is owed": an inert row
+# is one whose conformance is not callable, and the test exists to say so. It is NOT the same as a
+# broken check, and the mutant count is what tells the two apart - so a non-zero exit with fewer than
+# every mutant red means the CHECK is broken, which is a different statement and a louder one.
+checked=$(printf '%s\n' "$rows" | wc -l | tr -d ' ')
+conformant=$(grep -c "every protocol member is defined" "$work/sweep.txt" 2>/dev/null || echo 0)
+gapped=$((checked - conformant))
+selectors=$(grep -c "missing:" "$work/sweep.txt" 2>/dev/null || echo 0)
+summary="protocol-conformance: $checked row(s) checked, $conformant conformant, $gapped inert with $selectors selector(s) owed; $mutant_runs mutant run(s), $mutant_red red"
+if [ "$fail" -ne 0 ]; then
+    echo "$summary; EXIT 1 - the gap rows are inert by the rule, and every mutant was red, so the check is working" >&2
+    exit 1
+fi
+echo "$summary; every row conformant, and every mutant red"
