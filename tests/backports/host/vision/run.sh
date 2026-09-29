@@ -33,10 +33,10 @@ PY
 port() {
     dir=$1
     xcrun clang $common -include "$build/rename.h" -I"$device" -I"$vision" "$here/record.m" "$device/vision-cases.m" \
-        "$dir/VNConstants.m" "$dir/VNObservations.m" "$dir/VNRecognizedObjectObservation.m" "$dir/VNRequests.m" "$dir/VNHandlers.m" $libs -o "$dir/run"
+        "$dir/CharonVisionBilinear.c" "$dir/VNConstants.m" "$dir/VNObservations.m" "$dir/VNRecognizedObjectObservation.m" "$dir/VNRequests.m" "$dir/VNHandlers.m" $libs -o "$dir/run"
 }
 mkdir -p "$build/port"
-cp "$vision"/*.m "$vision"/*.h "$build/port/"
+cp "$vision"/*.c "$vision"/*.m "$vision"/*.h "$build/port/"
 port "$build/port"
 VISION_COREML_MODELS="$here/../../../../.agent-work/runs/coreml-models-2" VISION_RECORDS="$build/port.json" "$build/port/run"
 # The scores of a Core ML prediction are reported and not failed on: the model they come from is
@@ -53,7 +53,7 @@ mutant() {
     ran=$((ran + 1))
     file=$1; from=$2; to=$3
     rm -rf "$build/mutant"; mkdir -p "$build/mutant"
-    cp "$vision"/*.m "$vision"/*.h "$build/mutant/"
+    cp "$vision"/*.c "$vision"/*.m "$vision"/*.h "$build/mutant/"
     python3 - "$build/mutant/$file" "$from" "$to" <<'PY'
 import sys
 path, old, new = sys.argv[1:4]
