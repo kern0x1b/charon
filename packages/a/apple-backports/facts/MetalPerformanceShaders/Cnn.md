@@ -50,10 +50,41 @@ release answers -4.0356 for the first value with epsilon 0.25, which is a fold t
 made when the state was created answers -4.3990, which is a fold that did not. `-setEpsilon:` folds
 again.
 
-## What the host differential says, and the one case it does not settle
+## The output shape, measured
 
-`tests/backports/host/mpscnn/` compiles `cnn-cases.m` twice — once against the system's MPS, once
-against this port's classes with the MPS names mapped to `Charon` names and their selectors prefixed —
+The release's pooling output is **not cropped to the window arithmetic**. Over a 4x4 source of 1..16, a
+2x2 window and a stride of one, the whole destination read back with a 4-wide row stride answers sums
+over the window's area of
+
+    1   3   5   7
+    6   14  18  22
+    14  30  34  38
+    22  46  50  54
+
+and every one is **the 2x2 window whose top-left is one row and one column before the output pixel**,
+with what lies outside the source counted as zero but still in the divisor: the output is the
+source-sized result, shifted a row and a column, its first row and column partial. A 3x3 window over a
+3x3 image has the whole image in every interior window, which is why the maximum and the 3x3-average
+cases agreed with a cropped walk all along.
+
+**This port answers the same values.** Measured on both sides of a standalone program over a 3x3 source
+of 1..9, a 2x2 window, a stride of one, the zero edge mode:
+
+| destination | release | this port |
+| --- | --- | --- |
+| 2x2 | `0.25  0.75  1.25  3` | `0.25  0.75  1.25  3` |
+| 3x3 | `0.25  0.75  1.25  1.25  3  4  2.75  6  7` | `0.25  0.75  1.25  1.25  3  4  2.75  6  7` |
+
+So the window is centred, the divisor is its area, and what falls outside is zero - which is what
+`MPSCNNPooling10.m` does, and there is no second, source-sized path to add: one rule answers both
+destination sizes the release answers. The stride-1 offset in the table above is the centred one, not a
+separate shift; a 2x2 window centred on the first pixel takes the first pixel alone, and a 3x3 one takes
+the first three.
+
+## What the host differential says
+
+`tests/backports/host/mpscnn/` compiles `cnn-cases.m` twice - once against the system's MPS, once
+against this port's classes with the MPS names mapped to `Charon` names and their selectors prefixed -
 and compares with a tolerance written down before the numbers were read: **1e-4 absolute or relative**
 for a single-precision result, because a convolution accumulates in a different order on a GPU than on
 a CPU, and **exact** for pooling, whose cases are named as such.
@@ -61,28 +92,11 @@ a CPU, and **exact** for pooling, whose cases are named as such.
 **Four of the five cases agree bit for bit**: `pooling-max`, `pooling-average-pad0`,
 `pooling-average-pad1` and `batch-normalization`.
 
-`pooling-average-2x2` does not, and the probe that isolates it says what the release is doing. A 4x4
-source of 1..16, a 2x2 window, a stride of one, the whole destination read back with a 4-wide row
-stride, gives sums over the window's area of
-
-    1   3   5   7
-    6   14  18  22
-    14  30  34  38
-    22  46  50  54
-
-and every one of them is **the 2x2 window whose top-left is one row and one column before the output
-pixel**, with what lies outside the source counted as zero but still in the divisor. So the release's
-pooling output is **not cropped to the window arithmetic**: it is the source-sized output, shifted a row
-and a column, its first row and column partial. A 3x3 window over a 3x3 image has the whole image in
-every interior window, which is why this was invisible until a 2x2 window with a source-sized
-destination was tried.
-
-The 3x3 source into a 3x3 destination is fully explained by that rule — the release's nine values carry
-3, 4, 6 and 7 at the offsets it predicts. The 2x2 destination is not: the rule predicts 0.25, 0.75,
-1.5, 3.5 and the release answers 0.25, 0.75, 1.25, 3, which is what a 3x3 result written into a 2x2
-texture would look like.
-
-**The kernel is left cropped deliberately.** A caller who sized the destination to the window asked for
-the cropped arithmetic, four of the five cases agree exactly, and fitting the one unopened case would
-break the three that agree. What the port should do for a *source-sized* destination is shift, and that
-is a change with its own cases on both sides.
+`pooling-average-2x2` is reported as differing, and **it does not**: the standalone program above has
+both sides answering the release's `0.25 0.75 1.25 3` for that shape. The difference is in the harness,
+not in the kernel, and where to look is the rename: the port's objects are compiled with `rename.h`, so
+`CharonMPSCNNPooling` derives from `CharonMPSCNNKernel`, which derives from the **system's**
+`MPSKernel` - a class of the port's tree that the rename does not cover, and one the port's `MPSKernel`
+also defines. The harness's port build and the standalone link therefore have two different
+`MPSKernel` classes in the process. Which of them the pooling walk ends up using is the thing to check
+first, and it is a harness defect to fix before the case is read as a kernel defect.
