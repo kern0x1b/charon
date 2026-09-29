@@ -163,20 +163,33 @@ static void charon_shift_in(UISegmentedControl *control, NSUInteger index)
 
 @implementation UISegmentedControl (CharonActions14)
 
+// The port's own implementation of a control made of actions, as a name of its own.
+//
+// Two callers, and the difference between them is the whole of it. On a release with no
+// -initWithFrame:actions: of its own, the method below calls this after -initWithFrame: has returned, and it is
+// how a control is built there. Where the host has one, that method is the one that must run - its own, with its
+// own UIAction - and this is reachable only by name, which is what a differential needs: there the port's classes
+// and the host's are in one process, and the public name is the host's.
+//
+// It is exported so that the harness can reach it. The package builds with hidden visibility, and a differential
+// is a caller in the same process, not a linker of the package.
+__attribute__((visibility("default"))) UISegmentedControl *charon_control_init_with_actions(UISegmentedControl *control, CGRect frame, NSArray<UIAction *> *actions)
+{
+    if (!(control = [control initWithFrame:frame]))
+        return nil;
+    control.selectedSegmentIndex = UISegmentedControlNoSegment;
+    for (UIAction *action in actions)
+        [control insertSegmentWithAction:action atIndex:(NSUInteger)control.numberOfSegments animated:NO];
+    return control;
+}
+
 - (instancetype)initWithFrame:(CGRect)frame actions:(NSArray<UIAction *> *)actions
 {
     // Where the host has an initialiser of its own, the port does not step in at all: the host's is the one the
-    // release intends, and on 13 and up that is the path an application takes. The port's is for the releases
-    // that have none, and it binds the actions **after** -initWithFrame: has returned, because a control the
-    // host is still constructing must not be given a target or a segment.
+    // release intends, and on 13 and up that is the path an application takes, with a real UIAction.
     if ([UISegmentedControl instancesRespondToSelector:@selector(initWithFrame:actions:)])
         return [self initWithFrame:frame];
-    if ((self = [self initWithFrame:frame])) {
-        self.selectedSegmentIndex = UISegmentedControlNoSegment;
-        for (UIAction *action in actions)
-            [self insertSegmentWithAction:action atIndex:(NSUInteger)self.numberOfSegments animated:NO];
-    }
-    return self;
+    return charon_control_init_with_actions(self, frame, actions);
 }
 
 - (UIAction *)actionForSegmentAtIndex:(NSUInteger)segment

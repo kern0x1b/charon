@@ -1,5 +1,6 @@
 #import "uirest.h"
 #import <objc/message.h>
+#import <dlfcn.h>
 
 // A control made of actions, on whichever side this binary is.
 //
@@ -18,8 +19,14 @@ static BOOL charon_has_method(Class cls, const char *name)
 {
     if (!cls)
         return NO;
+    // `sel_registerName` first, and that is the whole of it: NSSelectorFromString on a name nobody registers
+    // produces an **unregistered** selector, and the runtime's optimised -respondsToSelector: traps on one -
+    // the recorder's exit 133, whose crash report put the trap under
+    // _NSDescriptionWithStringProxyFunc and the frame in this file's own block. Registering is a no-op for a
+    // name that is already registered, and it makes the question safe to ask for one that is not.
+    SEL selector = sel_registerName(name);
     for (Class c = cls; c; c = class_getSuperclass(c))
-        if (class_getInstanceMethod(c, NSSelectorFromString(@(name))))
+        if (class_getInstanceMethod(c, selector))
             return YES;
     return NO;
 }
@@ -34,11 +41,21 @@ static void charon_insert_action(UISegmentedControl *control, UIAction *action, 
 
 static UISegmentedControl *charon_control_with_actions(CGRect frame, NSArray *actions)
 {
-    const char *renamed = "charonHostInitWithFrame:actions:";
-    SEL chosen = NSSelectorFromString(@(charon_has_method([UISegmentedControl class], renamed)
-                                           ? renamed
-                                           : "initWithFrame:actions:"));
-    return ((id (*)(id, SEL, CGRect, NSArray *))objc_msgSend)([UISegmentedControl alloc], chosen, frame, actions);
+    // The port publishes its own implementation as a name of its own, and this is what a differential calls: the
+    // public initialiser is the **host's** on the port's side, because the port's is a carried selector the
+    // harness renamed, and a host initialiser given a port action builds a segment from the action and hands it
+    // to the host's label - a mix of classes that never happens on a device. The recorder has no such symbol and
+    // takes the public initialiser, which is the host's own and the right answer on that side.
+    typedef UISegmentedControl *(*CharonControlWithActions)(UISegmentedControl *, CGRect, NSArray *);
+    static CharonControlWithActions entry = NULL;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        entry = (CharonControlWithActions)dlsym(dlopen(NULL, RTLD_NOW), "charon_control_init_with_actions");
+    });
+    if (entry)
+        return entry([UISegmentedControl alloc], frame, actions);
+    SEL published = NSSelectorFromString(@"initWithFrame:actions:");
+    return ((id (*)(id, SEL, CGRect, NSArray *))objc_msgSend)([UISegmentedControl alloc], published, frame, actions);
 }
 
 static NSString *charon_insert_action_name(UISegmentedControl *control)
