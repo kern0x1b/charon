@@ -19,6 +19,75 @@ step, behaviors and the contact delegate are kept and read back and never act, a
 an application sets one the log says so once. Its queries answer an empty array, which is the true
 answer with no body to hit.
 
+### Metal's blits, mip chains and fences, over OpenGL ES 2.0
+
+A blit is a copy, and every resource the port has is already CPU memory: a buffer is its own bytes, a
+texture is an OpenGL ES 2.0 texture the port reads and writes a region at a time. So `MTLBlitCommandEncoder`
+is real: buffer to buffer is a `memmove`, buffer to texture writes the region in the texture's own
+format, texture to buffer reads it back and repacks it into the texture's own channel count, texture to
+texture reads the source first and writes the destination from it, `fillBuffer:range:value:` is a `memset`,
+and `generateMipmapsForTexture:` is `glGenerateMipmap` over a chain the texture was really made with —
+textures carry the mip levels their descriptor asked for, each allocated at its own size, so a level below
+the first is a texture the driver can sample, blit to and read back. The 9.0 `options:` variants, the 10.0
+fences and the 13.0 whole-surface copies are carried with them, and every range is checked against the
+resource it names before a byte moves: a copy the port cannot make writes one line in the log naming the
+reason and copies nothing.
+
+A fence here is the signal value of a shared event, and `updateFence:` records how many commands the
+encoder has encoded — which is how far the work has been brought on a device where a command is a call
+into OpenGL ES 2.0 that has already been made. `MTLSharedEvent` and `MTLSharedEventListener` are carried
+as that value and the queue its notifications run on, so a value signalled on one thread ends a wait on
+another for real. A handle round-trips: the value and the wait live in a state of their own,
+`MTLSharedEventHandle` is carried and names that state, and `newSharedEventWithHandle:` hands
+back a different event over the same one — so a value signalled through the first is seen by the
+second. `-newSharedEventHandle` is not nullable in Apple's header, and the port answers it with a
+handle rather than with nil. What a handle cannot do is be opened in another process, because the
+port runs one; nothing else about it is affected.
+
+`optimizeContentsFor{CPU,GPU}Access:` are **inert**, and say so once in the log: the API is a hint to a
+memory migrator, and every resource of the port is CPU-resident already, so there is no residency to move
+between. The API asks for a performance, not for a value, and the performance is the one it asks for.
+
+`-[MTLCommandEncoder barrierAfterQueueStages:beforeStages:]` (26.0) is **absent** for a mechanical reason
+worth naming: it takes an `MTLStages`, a type that arrived with the SDK of iOS 26, and the backports of this
+package build against the SDK of 16.4, where the type does not exist to be written. It would have been a
+no-op on this device in any case. `facts/Metal/Blits.md` has the whole of it, including the blits of 12.0,
+13.0, 14.0 and 26.0 that wait for the indirect command buffers, the counter sample buffers and the tensors.
+
+### Heaps, one allocation resources are taken out of
+
+`MTLHeap` and `MTLHeapDescriptor` (10.0) are carried, and on this device a heap is literally what a heap
+can be where every resource is already CPU memory: one allocation, out of which a buffer is a view and a
+texture takes its size. That is not a reduced stand-in for a GPU heap — a GPU heap exists to place
+resources in memory the GPU reads, and every resource here *is* memory the GPU reads, because it is one
+address space — and it is why the accounting is exact: `size` is the size asked for, `usedSize` is the
+offset the next allocation starts at, `currentAllocatedSize` is the sum of what was handed out,
+`maxAvailableSizeWithAlignment:` is what is left, and an explicit offset (13.0) is the offset asked for
+once it is aligned to the heap's 256 bytes and once it fits. An allocation that does not fit is refused
+with a line in the log, not made past the end of the memory.
+
+A **placement** heap is carried and behaves as one: the two allocations that carry no offset refuse, and
+say why, because a placement heap that quietly allocated anyway would hand the application a resource at
+an offset it did not choose. A **sparse** heap is refused at creation with an error: a sparse heap maps
+its pages in on demand, and one allocation of the size asked for is not that.
+
+`hazardTrackingMode` and `storageMode` are stored and read back, and `resourceOptions` is the storage mode
+as a resource's options say the same thing. Nothing tracks hazards with the first, because a command here
+is a call into OpenGL ES 2.0 that has already been made by the time it is encoded, so no resource can be
+read while another writes it; `stages` changes nothing for the same reason, which `facts/Metal/Heaps.md`
+says rather than leaving the argument ignored silently. `-setPurgeableState:` answers NO, as a buffer's
+does: this device has no purgeable memory.
+
+**One difference, named rather than hidden:** a texture taken out of a heap is a real texture whose
+pixels are the texture's own, and the heap's span it was given holds nothing — an ES 2.0 texture is
+copied into and cannot be backed by memory the heap hands out, which is what a placement heap buys on a
+Metal device. The size taken out of the heap, the offset and the accounting are all exact, and the port
+says the rest once per texture in the log. `facts/Metal/Heaps.md` names what a native fix would be (the
+pixels living in the span, with the ES 2.0 texture kept in step at every boundary) and what it would
+cost. `-useHeap:`/`-useHeaps:count:` (11.0, 13.0) record the heaps, and a resource bound afterwards that
+came from another one is named in the log with them, because Metal leaves that case undefined and passing
+it by in silence would be worse.
+
 ## iOS 9
 
 ### Contacts, over the address book the release already has
