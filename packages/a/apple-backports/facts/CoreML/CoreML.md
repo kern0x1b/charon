@@ -86,6 +86,29 @@ Each of these is refused with a line naming the layer, not approximated:
   is not in the set, because the runtime refuses a rank-3 input to a convolution ("expects
   rank at least 4") and a rank-5 one as a network input.
 
+Two more, and both are about what the build measures rather than what it carries:
+
+- **`vision_image` is written and never compared.** `tools/coreml/make-models.py` emits it and
+  reports it as `no host input`: this host's Core ML does not run an image model, so its
+  description keys are in the host's record and not in the port's, and the run reports 48 of
+  them missing and is red. The image constructors this port DOES carry are measured a different
+  way -- against Core ML's own image constructor, by pixels, in
+  `tests/backports/host/vision/run-crop.sh` -- and that measurement is red for the crop-and-scale
+  rules; `registry/CoreML/absent_CoreML.json` states which cells differ. What is unmeasured is
+  the container, not the conversion.
+- **`__OBJC_PROTOCOL_$_MLFeatureProvider` is defined by two objects.** `MLFeatureProvider.m` and
+  the generated `CoreMLBackportsProtocols11.0.m` both emit it, because any translation unit that
+  sees a protocol's definition and references it emits the object, and `MLFeatureProvider.m`
+  must import `<CoreML/CoreML.h>` for the enums `CharonMLBridge.h` needs (`MLFeatureType`,
+  `MLFeatureTypeInt64`; without it the first error is `unknown type name 'MLFeatureType'`). The
+  two used to DISAGREE -- the port's own declaration gave the protocol the base `<NSObject>` and
+  the SDK's header gives it none -- and ld64 kept whichever weak definition came first on the
+  link line, silently; the surviving base list read 0x0 in the build's order and 0x3dd18
+  reversed. The port's declaration is gone, both now come from the SDK header, and the surviving
+  base list is 0x0 in both orders. What is left is the duplicate itself, which nothing in the
+  build checks for a protocol with no `implemented` registry row -- the case added to
+  `tests/addon/registry_test.lua` only sees the ones the generator emits.
+
 ## What the host differential found, and what it changed
 
 `tests/backports/host/coreml` records what a real Core ML answers for the same containers -- every
