@@ -39,6 +39,11 @@ if [ "$system_status" -ne 0 ]; then echo "system: stopped at: $(tail -1 "$build/
 # named only the classes that family carries, so MPSMatrixRandomPhilox, MPSMatrixRandomDistributionDescriptor,
 # MPSState, MPSPredicate, MPSCommandBuffer and every CNN class were registered under the host's names, and
 # a case reaching one of those was comparing the host with itself.
+if grep -Eq '0x[0-9a-f]{6,}' "$build/system.txt" "$build/port.txt" 2>/dev/null; then
+    echo "an address is in the output, so this comparison cannot be reproduced:" >&2
+    grep -Eon '[0-9a-zA-Z_.-]*0x[0-9a-f]{6,}[0-9a-zA-Z_ .,]*' "$build/system.txt" "$build/port.txt" | head -5 >&2
+    exit 1
+fi
 rm -rf "$build/plain"
 mkdir -p "$build/plain"
 for source in "$mps"/*.m; do

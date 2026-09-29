@@ -87,7 +87,7 @@ static void put(const char *name, const void *bytes, size_t length)
 {
     if (strcmp(name, "gradient-reference-beta") == 0) {
         const float *shown = (const float *)bytes;
-        printf("  REF-CASE put prints array %p:", (const void *)bytes);
+        printf("  REF-CASE put prints array:");
         for (size_t i = 0; i < length / sizeof(float); i++)
             printf(" %g", (double)shown[i]);
         printf("\n");
@@ -667,7 +667,7 @@ static void casesBatchNormalization(void)
         // order has already produced three confident wrong numbers in this file.
         put("gradient-reference-text-gamma", referenceGamma, sizeof(referenceGamma));
         put("gradient-reference-text-beta", referenceBeta, sizeof(referenceBeta));
-        printf("  REF-CASE filled  gamma %p beta %p  gamma %g %g %g  beta %g %g %g\n",
+        printf("  REF-CASE filled  gamma   gamma %g %g %g  beta %g %g %g\n",
                (const void *)referenceGamma, (const void *)referenceBeta,
                (double)referenceGamma[0], (double)referenceGamma[1], (double)referenceGamma[2],
                (double)referenceBeta[0], (double)referenceBeta[1], (double)referenceBeta[2]);
