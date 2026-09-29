@@ -4,18 +4,30 @@
 #import <stdlib.h>
 #import <CommonCrypto/CommonDigest.h>
 
-// The four Security calls of iOS 10 that sign, verify, exchange and say what a key can do.
+// The EC half of three of the four Security calls of iOS 10, for the keys this package makes itself.
 //
-// The signing is the release's own. iOS 6.1.3 has SecKeyRawSign and SecKeyRawVerify (iOS 2.0, the two
-// are in the armv7 shared cache of that release), and they take an elliptic key and a digest, so a
-// signature of a key the release made needs no curve here at all: SecKeyRawSign does the arithmetic and
-// this file only reads what it hands back. The curve is needed for the keys this package makes itself
-// and for nothing else - charon@micro-ecc, BSD-2, through the JOSE and the ECDH that package carries
-// (facts/Security/SecKeyElliptic.md).
+// THIS FILE DEFINES NO PUBLIC SecKey* SYMBOL. The four public names live in
+// Security/SecurityFunctions10_0_1.m, which had them first, and it dispatches: a key of the release's
+// own keychain is signed and verified by the release's own SecKeyRawSign and SecKeyRawVerify there,
+// and a key of this package's kind - one that carries its own scalar and that the release's keychain
+// does not hold - comes here for the curve. That is one public symbol per function with both
+// behaviours behind it, instead of two files each defining the same four and the linker refusing the
+// library (measured: "ld: 4 duplicate symbols for architecture armv7", the four being
+// _SecKeyCreateSignature, _SecKeyVerifySignature, _SecKeyCopyKeyExchangeResult and
+// _SecKeyIsAlgorithmSupported in these two objects).
+//
+// The arrangement also settles the band boundary. A file whose exports a band's release already has is
+// left out of that band, and the call is then undefined in that band only; this file exports nothing a
+// release can already have, so no band can drop it, while the public file was in every band already.
+//
+// Every name below that is not static begins with Charon, which is what backports.lua's
+// internal_symbol() keys on: the curve and the marker stay out of this library's API, and what an
+// application links is the four Security names and nothing else.
+//
+// The curve is charon@micro-ecc, BSD-2, through the JOSE and the ECDH that package carries; the
+// measurement is in facts/Security/SecKeyElliptic.md, and the host differential that takes it is
+// tests/backports/host/seckeycurve.
 
-// The release's own keychain, which is where a key of an application lives: SecKeyCreateRandomKey
-// (Security/SecKey100.m) makes one with the release's SecKeyGeneratePair, and these are the same private
-// entry points that file uses to read one back.
 extern CFIndex SecKeyGetAlgorithmID(SecKeyRef key);
 extern CFDictionaryRef SecKeyCopyAttributeDictionary(SecKeyRef key);
 extern OSStatus SecKeyCopyPublicBytes(SecKeyRef key, CFDataRef *serialized);
@@ -41,7 +53,11 @@ static void charon_elliptic_sha256(const uint8_t *message, size_t length, uint8_
     CC_SHA256(message, (CC_LONG)length, digest);
 }
 
-static void charon_elliptic_fail(CFErrorRef *error, OSStatus status, NSString *description)
+// The one way this library builds a CFError, exported because the other file of this library needs it
+// too and a second CFErrorCreate beside it is a second answer to the same question. The domain is
+// NSOSStatusErrorDomain and the code is the OSStatus, which is the shape the release's own
+// SecKeyRawSign answers in and the shape the seckeycurve differential reads.
+void CharonSecKeyFail(CFErrorRef *error, OSStatus status, NSString *description)
 {
     if (!error) {
         return;
@@ -57,7 +73,7 @@ static void charon_elliptic_fail(CFErrorRef *error, OSStatus status, NSString *d
 // the marker below is what a key of the port's would carry in its attributes.
 #define kCharonSecKeyMarker "CharonSecKeyScalar"
 
-static BOOL charon_elliptic_is_port_key(SecKeyRef key)
+bool CharonSecurityKeyIsPortEC(SecKeyRef key)
 {
     CFDictionaryRef attributes = SecKeyCopyAttributeDictionary(key);
     if (!attributes) {
@@ -195,7 +211,7 @@ static int charon_elliptic_der_integer(uint8_t *out, const uint8_t value[32])
 static CFDataRef charon_elliptic_der(CFDataRef raw, CFErrorRef *error)
 {
     if (!raw) {
-        charon_elliptic_fail(error, errSecInternalError, @"the release's own signing handed back nothing");
+        CharonSecKeyFail(error, errSecInternalError, @"the release's own signing handed back nothing");
         return NULL;
     }
     const uint8_t *bytes = CFDataGetBytePtr(raw);
@@ -205,7 +221,7 @@ static CFDataRef charon_elliptic_der(CFDataRef raw, CFErrorRef *error)
         return (CFDataRef)CFRetain(raw);
     }
     if (length != 64) {
-        charon_elliptic_fail(error, errSecInternalError,
+        CharonSecKeyFail(error, errSecInternalError,
                              [NSString stringWithFormat:@"the release's own signing answered %lu bytes for a P-256 signature, which is neither the two 32 byte halves nor their DER",
                                                       (unsigned long)length]);
         return NULL;
@@ -246,44 +262,46 @@ static BOOL charon_elliptic_exchange(SecKeyAlgorithm algorithm, BOOL *hashed)
     return YES;
 }
 
-Boolean SecKeyIsAlgorithmSupported(SecKeyRef key, SecKeyOperationType operation, SecKeyAlgorithm algorithm)
+// What the curve carries for a key of this package's kind, as a pure function of the operation and
+// the algorithm, so a host with no key and no keychain can drive it. The sign and verify half agrees
+// with the release table in SecurityFunctions10_0_1.m - the two ECDSA digest algorithms and nothing
+// else - and the exchange half is what the release cannot do at all, so a key this package made is the
+// only kind that answers it. That agreement is a check, not a hope: the seckeycurve differential asks
+// both functions the same question and fails if the two answers differ.
+bool CharonSecKeyECCarries(SecKeyOperationType operation, SecKeyAlgorithm algorithm)
 {
-    if (!key || !algorithm) {
+    if (!operation || !algorithm) {
         return false;
     }
-    BOOL hashed = NO;
-    BOOL exchange = charon_elliptic_exchange(algorithm, &hashed);
-    if (CFEqual(algorithm, kSecKeyAlgorithmECDSASignatureDigestX962SHA256)) {
-        // Signing and verifying: the release signs with its own SecKeyRawSign for a key of its own
-        // keychain, and this package signs with the curve for a key it made.
+    if (CFEqual(algorithm, kSecKeyAlgorithmECDSASignatureDigestX962SHA256) ||
+        CFEqual(algorithm, kSecKeyAlgorithmECDSASignatureMessageX962SHA256)) {
         return operation == kSecKeyOperationTypeSign || operation == kSecKeyOperationTypeVerify;
     }
-    if (!exchange) {
-        // Everything else is the release's own keychain's business, and Security/SecKey100.m answers
-        // for the RSA algorithms it carries; an algorithm this port does not carry is false.
-        return false;
+    BOOL hashed = NO;
+    if (!charon_elliptic_exchange(algorithm, &hashed)) {
+        return false;   // P-256 has no other vocabulary in Security, and the RSA ones are not this key's
     }
-    if (operation != kSecKeyOperationTypeKeyExchange) {
-        return false;   // P-256 has no encryption in Security's own vocabulary either
-    }
-    // The exchange is the one operation the release cannot do for an elliptic key, and this is
-    // measured rather than assumed: the armv7 shared cache of iOS 6.1.3 exports SecKeyRawSign and
-    // SecKeyRawVerify and no elliptic exchange at all - its only key agreement is the finite-field
-    // SecDH* family (SecDHComputeKey, SecDHGenerateKeypair), which is not a curve. So a key of the
-    // release's keychain cannot exchange, and says so; a key of this package can, over the curve.
-    return charon_elliptic_is_port_key(key);
+    // The exchange is the one operation the release cannot do for an elliptic key, and that is measured
+    // rather than assumed: the armv7 shared cache of iOS 6.1.3 exports SecKeyRawSign and SecKeyRawVerify
+    // and no elliptic exchange at all - its only key agreement is the finite-field SecDH* family
+    // (SecDHComputeKey, SecDHGeneratePair), which is not a curve.
+    return operation == kSecKeyOperationTypeKeyExchange;
 }
 
-CFDataRef SecKeyCreateSignature(SecKeyRef key, SecKeyAlgorithm algorithm, CFDataRef data, CFErrorRef *error)
+// The curve's signing, for a key that carries the marker. A key of the release's keychain is not here:
+// it is signed by the release's own SecKeyRawSign in SecurityFunctions10_0_1.m, beside the RSA one,
+// because that is the release's own primitive for a key of its keychain whatever the key's class, and
+// one place is where that is said.
+CFDataRef CharonSecKeyECSign(SecKeyRef key, SecKeyAlgorithm algorithm, CFDataRef data, CFErrorRef *error)
 {
     if (!key || !data) {
-        charon_elliptic_fail(error, errSecParam, @"a signature needs a key and the data to sign");
+        CharonSecKeyFail(error, errSecParam, @"a signature needs a key and the data to sign");
         return NULL;
     }
     BOOL digest = CFEqual(algorithm, kSecKeyAlgorithmECDSASignatureMessageX962SHA256)
         || CFEqual(algorithm, kSecKeyAlgorithmECDSASignatureDigestX962SHA256);
     if (!digest) {
-        charon_elliptic_fail(error, errSecParam,
+        CharonSecKeyFail(error, errSecParam,
                              [NSString stringWithFormat:@"algid:sign:%@: this port signs P-256 with SHA-256 and nothing else", algorithm]);
         return NULL;
     }
@@ -295,166 +313,113 @@ CFDataRef SecKeyCreateSignature(SecKeyRef key, SecKeyAlgorithm algorithm, CFData
         charon_elliptic_sha256(CFDataGetBytePtr(data), (size_t)CFDataGetLength(data), hashed);
     } else {
         if (CFDataGetLength(data) != 32) {
-            charon_elliptic_fail(error, errSecParam,
+            CharonSecKeyFail(error, errSecParam,
                                  [NSString stringWithFormat:@"a P-256 signature is of a 32 byte digest and %ld were given", (long)CFDataGetLength(data)]);
             return NULL;
         }
         memcpy(hashed, CFDataGetBytePtr(data), 32);
     }
-    if (charon_elliptic_is_port_key(key)) {
-        uint8_t scalar[32];
-        if (!charon_elliptic_port_scalar(key, scalar)) {
-            charon_elliptic_fail(error, errSecParam, @"this key of the port's keeps no private scalar to sign with");
-            return NULL;
-        }
-        uint8_t der[72];
-        int written = CharonCKDigestSignES256(scalar, hashed, der, sizeof der);
-        if (written <= 0) {
-            charon_elliptic_fail(error, errSecInternalError, @"micro-ecc made no signature of the digest");
-            return NULL;
-        }
-        return CFDataCreate(kCFAllocatorDefault, der, (CFIndex)written);
-    }
-    // The release's own signing. An elliptic key has no padding, so kSecPaddingNone is what it takes
-    // and kSecPaddingPKCS1 is the RSA one; the emulator probe of facts/Security/SecKeyElliptic.md
-    // measures which of them an EC key of the release accepts, and the answer is passed on as the
-    // release gives it. The buffer is the release's own size for a P-256 signature and its two halves
-    // or their DER, whichever it is that it fills, so nothing here is a guess about the shape.
-    uint8_t raw[128];
-    size_t written = sizeof raw;
-    memset(raw, 0, sizeof raw);
-    OSStatus status = SecKeyRawSign(key, kSecPaddingNone, hashed, sizeof hashed, raw, &written);
-    if (status == errSecParam) {
-        // Some releases want the RSA padding name for the same call and hand the padding on; that is
-        // their own answer to a question, not a different key, so it is asked once and reported.
-        written = sizeof raw;
-        status = SecKeyRawSign(key, kSecPaddingPKCS1, hashed, sizeof hashed, raw, &written);
-    }
-    if (status != errSecSuccess) {
-        charon_elliptic_fail(error, status != errSecSuccess ? status : errSecInternalError,
-                             [NSString stringWithFormat:@"algid:sign:%@: the release's own SecKeyRawSign answered %d", algorithm, (int)status]);
+    if (!CharonSecurityKeyIsPortEC(key)) {
+        // The public function dispatches on the marker before it calls this, so a key that is not the
+        // port's cannot arrive; the refusal is here so that a caller of this name from inside the
+        // library is answered rather than quietly signed with the wrong key's curve.
+        CharonSecKeyFail(error, errSecParam, @"this is the curve's own signing, and the key is not one of the port's");
         return NULL;
     }
-    if (written > sizeof raw) {
-        written = sizeof raw;
+    uint8_t scalar[32];
+    if (!charon_elliptic_port_scalar(key, scalar)) {
+        CharonSecKeyFail(error, errSecParam, @"this key of the port's keeps no private scalar to sign with");
+        return NULL;
     }
-    CFDataRef exact = CFDataCreate(kCFAllocatorDefault, raw, (CFIndex)written);
-    CFDataRef der = charon_elliptic_der(exact, error);
-    CFRelease(exact);
-    return der;
+    uint8_t der[72];
+    int written = CharonCKDigestSignES256(scalar, hashed, der, sizeof der);
+    if (written <= 0) {
+        CharonSecKeyFail(error, errSecInternalError, @"micro-ecc made no signature of the digest");
+        return NULL;
+    }
+    return CFDataCreate(kCFAllocatorDefault, der, (CFIndex)written);
 }
 
-Boolean SecKeyVerifySignature(SecKeyRef key, SecKeyAlgorithm algorithm, CFDataRef data, CFDataRef signature, CFErrorRef *error)
+// The curve's verification, for a key that carries the marker. The DER a caller may pass is read back
+// into its two halves first, so that a signature either shape is verified; the release-key path is in
+// SecurityFunctions10_0_1.m for the reason CharonSecKeyECSign gives.
+Boolean CharonSecKeyECVerify(SecKeyRef key, SecKeyAlgorithm algorithm, CFDataRef data, CFDataRef signature, CFErrorRef *error)
 {
     if (!key || !data || !signature) {
-        charon_elliptic_fail(error, errSecParam, @"a verification needs a key, the data and a signature");
+        CharonSecKeyFail(error, errSecParam, @"a verification needs a key, the data and the signature");
         return false;
     }
     BOOL digest = CFEqual(algorithm, kSecKeyAlgorithmECDSASignatureMessageX962SHA256)
         || CFEqual(algorithm, kSecKeyAlgorithmECDSASignatureDigestX962SHA256);
     if (!digest) {
-        charon_elliptic_fail(error, errSecParam,
+        CharonSecKeyFail(error, errSecParam,
                              [NSString stringWithFormat:@"algid:verify:%@: this port verifies P-256 with SHA-256 and nothing else", algorithm]);
         return false;
     }
-    BOOL ofMessage = CFEqual(algorithm, kSecKeyAlgorithmECDSASignatureMessageX962SHA256);
+    if (!CharonSecurityKeyIsPortEC(key)) {
+        // As in CharonSecKeyECSign: the public function has already dispatched on the marker.
+        CharonSecKeyFail(error, errSecParam, @"this is the curve's own verification, and the key is not one of the port's");
+        return false;
+    }
+    CFIndex length = CFDataGetLength(data);
     uint8_t hashed[32];
-    if (ofMessage) {
-        charon_elliptic_sha256(CFDataGetBytePtr(data), (size_t)CFDataGetLength(data), hashed);
+    if (CFEqual(algorithm, kSecKeyAlgorithmECDSASignatureMessageX962SHA256)) {
+        charon_elliptic_sha256(CFDataGetBytePtr(data), (size_t)length, hashed);
     } else {
-        if (CFDataGetLength(data) != 32) {
-            charon_elliptic_fail(error, errSecParam,
-                                 [NSString stringWithFormat:@"a P-256 signature is of a 32 byte digest and %ld were given", (long)CFDataGetLength(data)]);
+        if (length != 32) {
+            CharonSecKeyFail(error, errSecParam,
+                                 [NSString stringWithFormat:@"a P-256 signature is of a 32 byte digest and %ld were given", (long)length]);
             return false;
         }
         memcpy(hashed, CFDataGetBytePtr(data), 32);
     }
     uint8_t point[65];
-    if (charon_elliptic_is_port_key(key)) {
-        if (!charon_elliptic_point(key, point)) {
-            charon_elliptic_fail(error, errSecParam, @"this key publishes no uncompressed public point to verify with");
-            return false;
-        }
-        return CharonCKDigestVerifyES256(point, sizeof point, hashed, CFDataGetBytePtr(signature),
-                                         (size_t)CFDataGetLength(signature)) != 0;
-    }
-    // The release's own verification, over the DER as the release's own signing gave it. The two
-    // halves are handed on as well, so that a signature the release made is verified by the release
-    // whichever of the two shapes it answers.
-    size_t length = (size_t)CFDataGetLength(signature);
-    const uint8_t *bytes = CFDataGetBytePtr(signature);
-    uint8_t raw[64];
-    size_t halves = 0;
-    if (length == 64) {
-        memcpy(raw, bytes, 64);
-        halves = 64;
-    } else if (length > 8 && bytes[0] == 0x30) {
-        // The SEQUENCE of two INTEGERs, read where DER puts them: each is at most 33 bytes and a value
-        // shorter than 32 has leading zeros. Anything that is not that shape is left to the release.
-        size_t offset = 2, inner = bytes[1];
-        for (int which = 0; which < 2; which++) {
-            if (offset + 2 > length || bytes[offset] != 0x02) {
-                break;
-            }
-            size_t size = bytes[offset + 1];
-            if (size == 0 || size > 33 || offset + 2 + size > length) {
-                break;
-            }
-            memset(raw + which * 32, 0, 32);
-            size_t skip = size > 32 ? 1u : 0u;
-            memcpy(raw + which * 32 + (32 - (size - skip)), bytes + offset + 2 + skip, size - skip);
-            offset += 2 + size;
-        }
-        halves = offset == inner + 2 ? 64 : 0;
-    }
-    OSStatus status;
-    if (halves) {
-        status = SecKeyRawVerify(key, kSecPaddingNone, hashed, sizeof hashed, raw, halves);
-    } else {
-        status = SecKeyRawVerify(key, kSecPaddingNone, hashed, sizeof hashed, bytes, length);
-    }
-    if (status != errSecSuccess) {
-        // A signature that is not a signature is a false and not an error, which is what the host does
-        // and what a caller of a verify loop relies on; only a refusal of the call itself is an error.
+    if (!charon_elliptic_point(key, point)) {
+        CharonSecKeyFail(error, errSecParam, @"this key publishes no uncompressed public point to verify with");
         return false;
     }
-    return true;
+    // The signature goes to micro-ecc's verifier as the caller gave it, and that verifier reads the DER
+    // SEQUENCE of two INTEGERs - which is what Apple's own SecKeyCreateSignature produces and therefore
+    // what a caller of a JOSE-verified token holds. The two raw halves are the release's shape, and
+    // reading them is the release path's work in SecurityFunctions10_0_1.m, not this file's.
+    return CharonCKDigestVerifyES256(point, sizeof point, hashed, CFDataGetBytePtr(signature),
+                                     (size_t)CFDataGetLength(signature)) != 0;
 }
 
-CFDataRef SecKeyCopyKeyExchangeResult(SecKeyRef privateKey, SecKeyAlgorithm algorithm, SecKeyRef publicKey,
-                                      CFDictionaryRef options, CFErrorRef *error)
+// The exchange, for a key that carries the marker. A key of the release's own keychain never reaches
+// here: SecurityFunctions10_0_1.m answers that one, because the refusal is a fact about the release
+// and not about this package's curve.
+CFDataRef CharonSecKeyECExchange(SecKeyRef privateKey, SecKeyAlgorithm algorithm, SecKeyRef publicKey,
+                                  CFDictionaryRef options, CFErrorRef *error)
 {
+    (void)options;
     if (!privateKey || !publicKey) {
-        charon_elliptic_fail(error, errSecParam, @"an exchange needs both keys");
+        CharonSecKeyFail(error, errSecParam, @"an exchange needs both keys");
         return NULL;
     }
     BOOL hashed = NO;
     if (!charon_elliptic_exchange(algorithm, &hashed)) {
-        charon_elliptic_fail(error, errSecParam, [NSString stringWithFormat:@"algid:exchange:%@: this port exchanges over P-256 and nothing else", algorithm]);
+        CharonSecKeyFail(error, errSecParam, [NSString stringWithFormat:@"algid:exchange:%@: this port exchanges over P-256 and nothing else", algorithm]);
         return NULL;
     }
-    // A key of the release's own keychain cannot exchange, and that is measured: the armv7 shared
-    // cache of iOS 6.1.3 exports no elliptic key agreement at all, its only one being the finite-field
-    // SecDH* family, which is not a curve. SecKeyIsAlgorithmSupported says so for the same key; this
-    // is the answer the call itself has to give.
-    if (!charon_elliptic_is_port_key(privateKey)) {
-        charon_elliptic_fail(error, errSecParam,
+    if (!CharonSecurityKeyIsPortEC(privateKey)) {
+        CharonSecKeyFail(error, errSecParam,
                              @"the release has no elliptic key agreement: its Security exports SecKeyRawSign and SecKeyRawVerify and only the finite-field SecDH family, so a key of its keychain cannot exchange");
         return NULL;
     }
     uint8_t scalar[32];
     if (!charon_elliptic_port_scalar(privateKey, scalar)) {
-        charon_elliptic_fail(error, errSecParam, @"this key of the port's keeps no private scalar to exchange with");
+        CharonSecKeyFail(error, errSecParam, @"this key of the port's keeps no private scalar to exchange with");
         return NULL;
     }
     uint8_t peer[65];
     if (!charon_elliptic_point(publicKey, peer)) {
-        charon_elliptic_fail(error, errSecParam, @"the peer's key publishes no uncompressed public point to exchange with");
+        CharonSecKeyFail(error, errSecParam, @"the peer's key publishes no uncompressed public point to exchange with");
         return NULL;
     }
     uint8_t secret[32];
     if (!CharonCKSharedSecretES256(scalar, peer, sizeof peer, secret)) {
-        charon_elliptic_fail(error, errSecInternalError, @"micro-ecc made no shared secret of the two keys");
+        CharonSecKeyFail(error, errSecInternalError, @"micro-ecc made no shared secret of the two keys");
         return NULL;
     }
     // A "Standard" name hands back the X coordinate of the shared point as it is, and a name that ends

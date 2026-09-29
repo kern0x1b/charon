@@ -16,6 +16,7 @@ extern bool charonHost_SecKeyIsAlgorithmSupported(SecKeyRef, SecKeyOperationType
 // back into the port. These two are only ever called from here.
 extern void CharonShimMarkPortKey(SecKeyRef, const uint8_t *, size_t);
 extern void CharonShimMarkPortPublicKey(SecKeyRef);
+extern void CharonShimMarkReleaseKey(SecKeyRef, CFStringRef);
 
 // The port's P-256 against the host's own Security.framework, in both directions.
 //
@@ -159,8 +160,11 @@ static NSData *opensslScalar(NSString *folder, NSString *name)
             [hex appendFormat:@"%c", c];
         }
     }
-    if (hex.length == 66) {
-        [hex deleteCharactersInRange:NSMakeRange(0, 2)];
+    // run.sh's pad_scalar has already left exactly the 64 digits of a 32 byte scalar, so the sign
+    // padding OpenSSL may print is normalised away there and never reaches here; a length that is not 64
+    // is a file the run did not write, and the read below says so rather than guessing at it.
+    if (hex.length != 64) {
+        return nil;
     }
     NSData *digits = [hex dataUsingEncoding:NSASCIIStringEncoding];
     NSMutableData *scalar = [NSMutableData dataWithCapacity:32];
@@ -240,12 +244,35 @@ int main(int argc, char **argv)
     NSString *folder = argc > 1 ? @(argv[1]) : @".";
     setvbuf(stdout, NULL, _IOLBF, 0);
 
+    // The two algorithm names the matrix's cells ask with. The host SDK names no ECDH algorithm:
+    // kSecKeyAlgorithmECDH is the device-side one (iOS 10 and later), and the port matches on the
+    // ECDH family's own prefix, so the name is spelled here. The ECDSA digest name is the one the port's
+    // table admits for an elliptic key.
+    SecKeyAlgorithm charonHostECDH = (SecKeyAlgorithm)CFSTR("ECDH.standardX963");
+    SecKeyAlgorithm hashedECDH = (SecKeyAlgorithm)CFSTR("ECDH.standardX963SHA256");
+    SecKeyAlgorithm digestAlgorithm = kSecKeyAlgorithmECDSASignatureDigestX962SHA256;
+
     SecKeyRef hostPrivatePublic = NULL;
     SecKeyRef hostPrivate = randomKey((__bridge id)kSecAttrKeyTypeECSECPrimeRandom, &hostPrivatePublic);
     if (hostPrivate == NULL || hostPrivatePublic == NULL) {
         printf("FAIL the host made no P-256 key pair: nothing to compare against\n");
         return 1;
     }
+    // This pair is a key of the RELEASE'S OWN KEYCHAIN, and saying so is what puts the release's
+    // keychain answer behind it: an in-memory key is in no keychain, and the host answers
+    // errSecItemNotFound (-25300) for every one, so the port's release-key path cannot be reached at all
+    // until the harness says which class the key is of. It says the release's own EC type - not the
+    // 10.0 ECSECPrimeRandom, which is the type of a key of THIS PORT's kind, and not a marker either.
+    //
+    // With this line removed the run below answers 8 failures, every one of them the release-key half,
+    // and they are the 22 checks of the matrix's release-EC row: the sign loop over 0, 65 and 130 byte
+    // messages, the 24 low-s samples, and both exchange directions. That is the failing-first case.
+    CharonShimMarkReleaseKey(hostPrivate, kSecAttrKeyTypeECSECPrimeRandom);
+    // The public half of the same pair is a key of the release's keychain as well, and the port reads
+    // the class of whatever key it is handed - the differential verifies a signature with the public key,
+    // and the release's keychain holds the pair, not one half of it. Without this the class lookup for the
+    // public key answers "no such item" and every verification through the merged symbol answers false.
+    CharonShimMarkReleaseKey(hostPrivatePublic, kSecAttrKeyTypeECSECPrimeRandom);
     NSData *hostScalar = scalarOf(hostPrivate, hostPrivatePublic);
     NSData *hostPoint = pointOf(hostPrivatePublic);
     charon_check(hostScalar.length == 32, @"the host's private key exports a 32 byte scalar",
@@ -442,11 +469,98 @@ int main(int argc, char **argv)
     // The port's own four functions, asked about the host's real P-256 key. The shims in port-shims.h
     // answer the release's SecKeyRawSign and SecKeyRawVerify with the host's own signing and
     // verification, so what runs here is the port's code over a key that is really a key.
+    // The release-RSA cell of the matrix: a key of the release's own keychain, of the RSA type, which
+    // takes the padding CharonSecurityPaddingFor maps and the release's own SecKeyRawSign - the path
+    // this file's own band took before the two files were merged, and the one a program written against
+    // Security 10 actually exercises first, because RSA is what the release can do.
+    printf("port: the release's own RSA key, through the same four functions\n"); fflush(stdout);
+    {
+        NSDictionary *attributes = @{(__bridge id)kSecAttrKeyType: (__bridge id)kSecAttrKeyTypeRSA,
+                                     (__bridge id)kSecAttrKeySizeInBits: @2048,
+                                     (__bridge id)kSecAttrIsPermanent: @NO};
+        CFErrorRef rsaError = NULL;
+        SecKeyRef rsaPrivate = SecKeyCreateRandomKey((__bridge CFDictionaryRef)attributes, &rsaError);
+        if (rsaError) { CFRelease(rsaError); }
+        SecKeyRef rsaPublic = rsaPrivate ? SecKeyCopyPublicKey(rsaPrivate) : NULL;
+        check_named(rsaPrivate != NULL && rsaPublic != NULL, @"the host made an RSA key pair",
+                    @"the host's SecKeyCreateRandomKey made no RSA key");
+        if (rsaPrivate && rsaPublic) {
+            CharonShimMarkReleaseKey(rsaPrivate, kSecAttrKeyTypeRSA);
+            CharonShimMarkReleaseKey(rsaPublic, kSecAttrKeyTypeRSA);
+            SecKeyAlgorithm rsaAlgorithm = kSecKeyAlgorithmRSASignatureMessagePKCS1v15SHA256;
+            check_named(charonHost_SecKeyIsAlgorithmSupported(rsaPrivate, kSecKeyOperationTypeSign, rsaAlgorithm),
+                        @"the port says an RSA key signs with PKCS1 v1.5 over a digest",
+                        @"the port says it cannot sign an RSA key it is handed");
+            check_named(!charonHost_SecKeyIsAlgorithmSupported(rsaPrivate, kSecKeyOperationTypeKeyExchange, charonHostECDH),
+                        @"and that it cannot exchange an RSA key either, which the release has no primitive for",
+                        @"the port claims an RSA exchange");
+            check_named(charonHost_SecKeyCopyKeyExchangeResult(rsaPrivate, charonHostECDH, rsaPublic,
+                                                                NULL, NULL) == NULL,
+                        @"and the exchange for that RSA key answers no secret",
+                        @"it answered a secret for an RSA key");
+            // A 32 byte digest, named with a Message algorithm: the port's RSA row is a digest, not a
+            // pre-hashed value, so what it hands the release's raw call is the digest itself.
+            NSData *rsaDigest = digestOf([NSData dataWithBytes:"the RSA cell of the matrix" length:19]);
+            CFErrorRef rsaSignError = NULL;
+            CFDataRef rsaSignature = charonHost_SecKeyCreateSignature(rsaPrivate, rsaAlgorithm,
+                                                                    (__bridge CFDataRef)rsaDigest, &rsaSignError);
+            if (rsaSignError) { CFRelease(rsaSignError); }
+            check_named(rsaSignature != NULL, @"and it signs an RSA key with the release's own SecKeyRawSign",
+                        @"the port refused to sign an RSA key");
+            if (rsaSignature) {
+                NSData *made = CFBridgingRelease(rsaSignature);
+                check_named(hostVerifies(rsaPublic, rsaDigest, made,
+                                         kSecKeyAlgorithmRSASignatureDigestPKCS1v15SHA256),
+                            @"and the host's own SecKeyVerifySignature accepts that signature",
+                            @"the host refused the RSA signature the port made");
+                check_named(charonHost_SecKeyVerifySignature(rsaPublic, rsaAlgorithm,
+                                                            (__bridge CFDataRef)rsaDigest,
+                                                            (__bridge CFDataRef)made, NULL),
+                            @"and the port's own reader verifies it too",
+                            @"the port refused its own RSA signature");
+                // The same signature against another digest must be refused, through the merged symbol.
+                uint8_t otherDigest[CC_SHA256_DIGEST_LENGTH];
+                memset(otherDigest, 0x2b, sizeof otherDigest);
+                check_named(!charonHost_SecKeyVerifySignature(rsaPublic, rsaAlgorithm,
+                                                             (__bridge CFDataRef)[NSData dataWithBytes:otherDigest
+                                                                                              length:sizeof otherDigest],
+                                                             (__bridge CFDataRef)made, NULL),
+                            @"and the port answers false for that signature of another digest",
+                            @"the port accepted an RSA signature of a different message");
+            }
+            // A key of a class the release's signing primitives do not take: the class is there, and
+            // every row of the table is unreachable through it, which is the matrix's fourth column.
+            NSDictionary *otherAttributes = @{(__bridge id)kSecAttrKeyType: (__bridge id)kSecAttrKeyTypeAES,
+                                             (__bridge id)kSecAttrKeySizeInBits: @128,
+                                             (__bridge id)kSecAttrIsPermanent: @NO};
+            CFErrorRef otherError = NULL;
+            SecKeyRef otherKey = SecKeyCreateRandomKey((__bridge CFDictionaryRef)otherAttributes, &otherError);
+            if (otherError) { CFRelease(otherError); }
+            check_named(otherKey != NULL, @"the host made a key of a class the release cannot sign with",
+                        @"the host's SecKeyCreateRandomKey made no such key");
+            if (otherKey) {
+                CharonShimMarkReleaseKey(otherKey, kSecAttrKeyTypeAES);
+                check_named(!charonHost_SecKeyIsAlgorithmSupported(otherKey, kSecKeyOperationTypeSign, digestAlgorithm),
+                            @"and the port says such a key signs nothing",
+                            @"the port claims a signature for a key class it does not carry");
+                CFErrorRef otherSignError = NULL;
+                check_named(charonHost_SecKeyCreateSignature(otherKey, digestAlgorithm,
+                                                            (__bridge CFDataRef)digestOf([NSData data]), &otherSignError) == NULL,
+                            @"and refuses to sign with it",
+                            @"the port signed with a key of a class it does not carry");
+                if (otherSignError) { CFRelease(otherSignError); }
+                check_named(charonHost_SecKeyCopyKeyExchangeResult(otherKey, charonHostECDH, otherKey,
+                                                                    NULL, NULL) == NULL,
+                            @"and exchanges nothing with it",
+                            @"the port answered a secret for a key class it does not carry");
+                CFRelease(otherKey);
+            }
+            CFRelease(rsaPublic);
+            CFRelease(rsaPrivate);
+        }
+    }
+
     printf("port: the port's own four functions, over the host's real P-256 key\n"); fflush(stdout);
-    SecKeyAlgorithm digestAlgorithm = kSecKeyAlgorithmECDSASignatureDigestX962SHA256;
-    // The ECDH algorithm's name: no SDK the host builds against declares kSecKeyAlgorithmECDH, only
-    // the family whose names are these strings, which is what the port matches on.
-    SecKeyAlgorithm charonHostECDH = (SecKeyAlgorithm)CFSTR("ECDH.standardX963SHA256");
     for (NSUInteger length = 0; length <= 130; length += 65) {
         NSMutableData *message = [NSMutableData dataWithLength:length];
         if (length > 0) {
@@ -473,15 +587,26 @@ int main(int argc, char **argv)
             }
             check_named(verified, [NSString stringWithFormat:@"and the port's own SecKeyVerifySignature accepts it too, for a %lu byte message", (unsigned long)length],
                         @"the port refused its own signature");
+            // The digest of ANOTHER message, which is what this check has to verify against: it built
+            // `other` and then passed `digest`, so what it measured was that the same signature verifies
+            // twice, under a name that said the opposite. 32 bytes is a digest whatever produced it, and
+            // the signature is of a different one, so the port must answer false.
             uint8_t other[CC_SHA256_DIGEST_LENGTH];
             memset(other, 0x3c, sizeof other);
+            NSData *otherDigest = [NSData dataWithBytes:other length:sizeof other];
             CFErrorRef wrongError = NULL;
-            bool wrong = charonHost_SecKeyVerifySignature(hostPrivatePublic, digestAlgorithm, (__bridge CFDataRef)digest,
+            bool wrong = charonHost_SecKeyVerifySignature(hostPrivatePublic, digestAlgorithm,
+                                                         (__bridge CFDataRef)otherDigest,
                                                          (__bridge CFDataRef)signature, &wrongError);
             if (wrongError) {
                 CFRelease(wrongError);
             }
-            check_named(wrong, [NSString stringWithFormat:@"and answers false for a signature of another message, for a %lu byte message", (unsigned long)length],
+            // NOT `check_named(wrong, ...)`, which is what this said and which asserted the opposite of
+            // its own name: the port is required to answer FALSE here, and the check passed while the port
+            // was answering false - because it was handed the same digest and the same signature, so what
+            // it measured was that the port verifies the same thing twice. With the other digest the
+            // polarity became visible, and the assertion is the one the name says.
+            check_named(!wrong, [NSString stringWithFormat:@"and answers false for a signature of another message, for a %lu byte message", (unsigned long)length],
                         @"the port accepted a signature of a different message");
         }
     }
@@ -566,7 +691,22 @@ int main(int argc, char **argv)
                     }
                     check_named(verified, [NSString stringWithFormat:@"and a signature the host made verifies through the port's own reader, for a %lu byte message", (unsigned long)length],
                                 @"the port's reader refused the host's signature");
+
+                // The negative the matrix's verify column needs for a key of the PORT'S OWN kind: the
+                // same signature over another digest must be refused. Without it this cell had no red of
+                // its own - a reader that answered true to everything would pass every check here.
+                uint8_t anotherDigest[CC_SHA256_DIGEST_LENGTH];
+                memset(anotherDigest, 0x5b, sizeof anotherDigest);
+                CFErrorRef otherError = NULL;
+                bool wrong = charonHost_SecKeyVerifySignature(curvePublic, digestAlgorithm,
+                                                             (__bridge CFDataRef)[NSData dataWithBytes:anotherDigest
+                                                                                              length:sizeof anotherDigest],
+                                                             (__bridge CFDataRef)hostMade, &otherError);
+                if (otherError) {
+                    CFRelease(otherError);
                 }
+                check_named(!wrong, [NSString stringWithFormat:@"and the port's own reader refuses a signature of another digest, for a %lu byte message", (unsigned long)length],
+                            @"the port's reader accepted a signature of a different message");                }
             }
         }
         // The exchange, through the port's own entry point, against the secret OpenSSL derives from the
@@ -603,7 +743,7 @@ int main(int argc, char **argv)
         // does with it - and it is checked against SHA-256 of OpenSSL's own bytes, not against the
         // port's own answer to the same question.
         CFErrorRef hashedError = NULL;
-        CFDataRef hashedSecret = charonHost_SecKeyCopyKeyExchangeResult(curvePrivate, charonHostECDH,
+        CFDataRef hashedSecret = charonHost_SecKeyCopyKeyExchangeResult(curvePrivate, hashedECDH,
                                                                        peerOfTwoPublic, NULL, &hashedError);
         if (hashedError) {
             CFRelease(hashedError);

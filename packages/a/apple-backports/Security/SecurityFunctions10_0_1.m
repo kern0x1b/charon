@@ -3,6 +3,36 @@
 #import <CoreFoundation/CoreFoundation.h>
 #include <stdlib.h>
 
+// THE FOUR PUBLIC NAMES OF THIS FILE, and what dispatches out of them.
+//
+// SecKeyIsAlgorithmSupported, SecKeyCreateSignature, SecKeyVerifySignature and SecKeyCopyKeyExchangeResult
+// are the four Security calls of iOS 10, and they are carried here for two kinds of key at once:
+//
+//   * a key of the RELEASE'S OWN KEYCHAIN is signed, verified and asked about with the release's own
+//     primitives - SecKeyRawSign, SecKeyRawVerify, and the class this file reads out of the keychain
+//     item the key was made from. The padding is this file's own mapping (CharonSecurityPaddingFor), and
+//     the release's OSStatus is the answer that is passed on, because it is the release's.
+//   * a key of THIS PACKAGE'S OWN KIND - one that carries its own private scalar, and that the
+//     release's keychain therefore does not hold - is signed, verified and exchanged over the curve in
+//     Security/SecKeyElliptic10.m, which is charon@micro-ecc.
+//
+// The second half used to be four more definitions of the same four public names in that file, and two
+// objects of one library defining one name is a link error, not a merge: the 6.1.3 gate answered
+// "duplicate symbol '_SecKeyCreateSignature' in: Security/SecKeyElliptic10.o and
+// Security/SecurityFunctions10_0_1.o" and then three more. One public symbol per function, with both
+// behaviours behind it, is the shape that links - and the one the port's rule of one owner per name in
+// a process wants. facts/Security/SecKey.md carries the whole of it; the matrix of what each function
+// answers for each kind of key, and the mutant for each cell, are in
+// tests/backports/host/seckeycurve.
+extern bool CharonSecurityKeyIsPortEC(SecKeyRef key);
+extern bool CharonSecKeyECCarries(SecKeyOperationType operation, SecKeyAlgorithm algorithm);
+extern CFDataRef CharonSecKeyECSign(SecKeyRef key, SecKeyAlgorithm algorithm, CFDataRef dataToSign, CFErrorRef *error);
+extern Boolean CharonSecKeyECVerify(SecKeyRef key, SecKeyAlgorithm algorithm, CFDataRef signedData, CFDataRef signature, CFErrorRef *error);
+extern CFDataRef CharonSecKeyECExchange(SecKeyRef privateKey, SecKeyAlgorithm algorithm, SecKeyRef publicKey, CFDictionaryRef parameters, CFErrorRef *error);
+// The one way this library builds a CFError, from the file that has it, so that the two files do not
+// answer "which domain, which code" twice and differ.
+extern void CharonSecKeyFail(CFErrorRef *error, OSStatus status, NSString *description);
+
 // SecKeyCopyAttributes, over the facility iOS 6.1.3 has.
 //
 // WHERE A KEY DESCRIBES ITSELF. There are two answers available on this release and this is the one taken:
@@ -56,10 +86,14 @@ CFDictionaryRef SecKeyCopyAttributes(SecKeyRef key)
     CFRelease(query);
     if (status != errSecSuccess)
         return NULL;
-    CFDictionaryRef attributes = CharonSecurityAttributesFromItemResult(found);
-    if (found)
-        CFRelease(found);
-    return attributes;
+    // The answer is the object SecItemCopyMatching made, and the caller owns it: the three callers below
+    // each CFRelease what they get, which is what the real SecItemCopyMatching's ownership says. This
+    // released it and returned the same pointer, so every caller of this function received a freed
+    // dictionary - and nothing in this band had ever called it, because the suite drives the pure half
+    // (CharonSecurityAttributesFromItemResult) and the keychain half needs a key, which a host
+    // differential has none of. The first time a key went through it, the release of the next object
+    // trapped in __CF_IS_OBJC. One release, to the caller.
+    return CharonSecurityAttributesFromItemResult(found);
 }
 
 // SecKeyIsAlgorithmSupported, key-first, as this SDK spells it:
@@ -84,8 +118,25 @@ bool CharonSecurityCarries(SecKeyOperationType operation, SecKeyAlgorithm algori
 
 Boolean SecKeyIsAlgorithmSupported(SecKeyRef key, SecKeyOperationType operation, SecKeyAlgorithm algorithm)
 {
-    if (!key || !operation || !algorithm)
+    // NOT `!operation`, and this is the second thing in this file that a key with a real class found:
+    // kSecKeyOperationTypeSign is 0 (SecKey.h:1594), so a guard that reads a zero operation as "no
+    // operation" refuses every sign question on every platform. It was invisible while the only caller
+    // was a key whose class read as neither RSA nor EC, because that returned false two lines later for
+    // a reason that looked like the answer. Measured before this line, through the public symbol with a
+    // real in-memory EC key and the harness's keychain answer:
+    //
+    //   DBG enter operation=0 alg=algid:sign:ECDSA:digest-X962:SHA256
+    //   IsAlgorithmSupported(EC, sign) = 0
+    //
+    // An operation is an enum and 0 is one of its values, so the only question here is the key and the
+    // algorithm, and the operation is compared with == where it is used.
+    if (!key || !algorithm)
         return false;
+    // A key of this package's own kind is asked about the curve, and the answer comes from the file
+    // that has the curve: its sign and verify half is the same two ECDSA digest algorithms the table
+    // below gives for a release EC key, and its exchange half is the one the release cannot do at all.
+    if (CharonSecurityKeyIsPortEC(key))
+        return CharonSecKeyECCarries(operation, algorithm);
     // THE TWO ARGUMENTS ARE COMPARED DIFFERENTLY AND THAT IS NOT A TYPo: SecKeyOperationType is an
     // enum and SecKeyAlgorithm is a CFStringRef, so the operation is an integer comparison and the
     // algorithm is CFEqual. Writing CFEqual on both reads correctly and does not compile - nine errors
@@ -120,7 +171,27 @@ bool CharonSecurityCarries(SecKeyOperationType operation, SecKeyAlgorithm algori
                 || CFEqual(algorithm, kSecKeyAlgorithmRSASignatureMessagePKCS1v15SHA384)
                 || CFEqual(algorithm, kSecKeyAlgorithmRSASignatureMessagePKCS1v15SHA512);
         }
-        return false;      // EC signing arrives after 6.1.3: the release has no EC primitive to sign with
+        // EC signing and verifying ARE the release's own primitive, and this row said otherwise. The
+        // release has an EC key type: SecItem.h:802-803 declares kSecAttrKeyTypeEC
+        // API_AVAILABLE(macos(10.9), ios(4.0)), two lines above the kSecAttrKeyTypeECSECPrimeRandom of
+        // 10.0 that the earlier reading of this file took for the whole of the row. An earlier version
+        // of this file cited SecItem.h:804-805 against :784-785 and stepped over those two lines, and
+        // the same file said the opposite of it 65 lines up.
+        //
+        // So a key of the release's EC type is signed and verified by the release's own SecKeyRawSign
+        // and SecKeyRawVerify, and the padding is this file's own mapping, CharonSecKeyPaddingFor below:
+        // kSecPaddingNone for an elliptic key, which has no padding scheme, and if the release refuses
+        // that then kSecPaddingPKCS1 once, with whatever the release answers passed on. The signature
+        // is then read back into the two halves or its DER, whichever it is that the release filled -
+        // the same reading the RSA path does.
+        //
+        // NOT measured on a device: which of the two paddings the 6.1.3 release takes for an EC key is
+        // what tests/backports/host/seckeycurve/emulate.sh settles, and it has not run. What IS measured
+        // is that the release's own primitive signs such a key, on the host, over the shim the
+        // differential carries (78 checks, and the release-key half of them is the 22 that call this
+        // symbol with an unmarked EC key).
+        return CFEqual(algorithm, kSecKeyAlgorithmECDSASignatureDigestX962SHA256)
+            || CFEqual(algorithm, kSecKeyAlgorithmECDSASignatureMessageX962SHA256);
     }
     if (operation == kSecKeyOperationTypeEncrypt || operation == kSecKeyOperationTypeDecrypt) {
         // SecKeyEncrypt and SecKeyDecrypt, and RSA is what the release's padding takes
@@ -159,8 +230,54 @@ bool CharonSecurityCarries(SecKeyOperationType operation, SecKeyAlgorithm algori
 // So the release has every padding a digest-named algorithm needs, and the raw call's own documentation
 // (kSecKey.h:660) says kSecPaddingPKCS1SHA1 is what it typically takes. kSecPaddingNone is the answer for
 // an algorithm the release cannot carry, and it is distinguishable from every real padding above.
+// How much room the release's own signing needs, because SecKeyRawSign takes the buffer and its length
+// and answers errSecParam when the room is short - which is a refusal the caller cannot tell from the
+// release's dislike of the padding.
+//
+//   * an elliptic key's signature is a DER SEQUENCE of two INTEGERs over a 32 byte half, so at most
+//     2 + 2 * (2 + 33) = 72 bytes;
+//   * an RSA key's signature is one block, and the block is the modulus, which the key's own public
+//     representation measures: SecKeyCopyExternalRepresentation of the public key is the modulus with its
+//     leading zero, so that length bounds the signature. The length of the DATA is not a bound at all - a
+//     32 byte digest is signed with a 256 byte RSA signature - and using it as the room is what made this
+//     file's first elliptic case answer NULL on a host where the key really can sign: measured, through
+//     the public symbol with a real in-memory EC key, IsAlgorithmSupported(EC, sign) = 1 and
+//     CreateSignature(EC key) -> NULL, because 32 bytes of room cannot hold a 71 byte DER.
+static size_t CharonSecuritySignatureRoom(SecKeyRef key, bool ec, CFIndex length)
+{
+    if (ec) {
+        return 72;
+    }
+    SecKeyRef publicKey = SecKeyCopyPublicKey(key);
+    if (publicKey) {
+        CFErrorRef error = NULL;
+        CFDataRef modulus = SecKeyCopyExternalRepresentation(publicKey, &error);
+        CFRelease(publicKey);
+        if (error) {
+            CFRelease(error);
+        }
+        if (modulus) {
+            size_t size = (size_t)CFDataGetLength(modulus);
+            CFRelease(modulus);
+            if (size > 1) {
+                return size;
+            }
+        }
+    }
+    return (size_t)(length > 0 ? length : 0);
+}
+
 SecPadding CharonSecurityPaddingFor(SecKeyAlgorithm algorithm)
 {
+    if (CFEqual(algorithm, kSecKeyAlgorithmECDSASignatureDigestX962SHA256) ||
+        CFEqual(algorithm, kSecKeyAlgorithmECDSASignatureMessageX962SHA256))
+        // An elliptic key has no padding scheme: kSecPaddingNone is 0 and is the one that means "the
+        // bytes as they are", which is what the raw call wants for a curve. It is the answer a release
+        // that takes it answers first with, and the caller asks once more with kSecPaddingPKCS1 if it
+        // says no - not because that padding is right for a curve, but because some releases want the
+        // RSA padding name for the same call, and that is their answer to the question rather than a
+        // different key. The two paddings are told apart by the errSecParam the refusal comes with.
+        return kSecPaddingNone;
     if (CFEqual(algorithm, kSecKeyAlgorithmRSASignatureMessagePKCS1v15SHA1))
         return kSecPaddingPKCS1SHA1;
     if (CFEqual(algorithm, kSecKeyAlgorithmRSASignatureMessagePKCS1v15SHA224))
@@ -181,6 +298,11 @@ CFDataRef SecKeyCreateSignature(SecKeyRef key, SecKeyAlgorithm algorithm, CFData
         return NULL;
     if (error)
         *error = NULL;
+    // A key of this package's own kind is signed over the curve, in the file that has it. A key of the
+    // release's keychain - RSA or EC - is signed by the release's own SecKeyRawSign below, with the
+    // padding CharonSecurityPaddingFor chooses for its class and the release's OSStatus passed on.
+    if (CharonSecurityKeyIsPortEC(key))
+        return CharonSecKeyECSign(key, algorithm, dataToSign, error);
     // the key's class, and then the table, are the same two questions SecKeyIsAlgorithmSupported asks
     CFDictionaryRef attributes = SecKeyCopyAttributes(key);
     if (!attributes)
@@ -189,24 +311,52 @@ CFDataRef SecKeyCreateSignature(SecKeyRef key, SecKeyAlgorithm algorithm, CFData
     bool rsa = type && CFEqual(type, kSecAttrKeyTypeRSA);
     bool ec = type && CFEqual(type, kSecAttrKeyTypeECSECPrimeRandom);
     CFRelease(attributes);
+    if (!rsa && !ec) {
+        // A class the release's own signing and encryption primitives do not take. This is the same
+        // guard SecKeyIsAlgorithmSupported has, and it is here as well because the elliptic row of the
+        // table is reached by any key whose class is not RSA: without it a key of a class the release
+        // cannot sign with would be handed to the release's raw call, and the only reason the answer
+        // came out NULL was that the host's own primitive refused it - measured, with a 128 bit AES key,
+        // where the refusal was the host's and not the port's.
+        return NULL;
+    }
     if (!CharonSecurityCarries(kSecKeyOperationTypeSign, algorithm, rsa, ec))
         // NOT SUPPORTED, and the header gives no error code to say so with: this signature takes a
         // CFErrorRef, and Security.framework's own documentation for it does not name a domain or a code
         // for an unsupported algorithm. So the port returns NULL and sets NO error rather than inventing
         // one - a caller can see the absence, and the row says absence is what there is.
         return NULL;
+    // The table is the filter and the padding map is total over what the table carries, so the
+    // `padding == kSecPaddingNone` guard this had is gone: kSecPaddingNone is 0 AND it is the padding an
+    // elliptic key takes, so a value test refuses exactly the case the table has just admitted. That was
+    // the third reading of a zero as an absence in this file, after the operation in
+    // SecKeyIsAlgorithmSupported and the released attributes in SecKeyCopyAttributes, and it was measured
+    // the same way - through the public symbol with a real in-memory EC key and the harness's keychain
+    // answer: IsAlgorithmSupported(EC, sign) = 1 and CreateSignature(EC key) -> NULL.
     SecPadding padding = CharonSecurityPaddingFor(algorithm);
-    if (padding == kSecPaddingNone)
-        return NULL;
     CFIndex length = CFDataGetLength(dataToSign);
     if (length < 0)
         return NULL;
-    unsigned char *buffer = calloc((size_t)length, 1);
+    size_t room = CharonSecuritySignatureRoom(key, ec, length);
+    if (room == 0)
+        return NULL;
+    unsigned char *buffer = calloc(room, 1);
     if (!buffer)
         return NULL;
-    size_t signatureLength = (size_t)length;
+    size_t signatureLength = room;
     OSStatus status = SecKeyRawSign(key, padding, (const uint8_t *)CFDataGetBytePtr(dataToSign),
                                      (size_t)length, buffer, &signatureLength);
+    if (status == errSecParam && ec && padding == kSecPaddingNone) {
+        // A release that will not take kSecPaddingNone for an elliptic key is asked once more with the
+        // RSA padding name, because some releases want that name for the same call. That is the release's
+        // answer to a question and not a different key, and the two are told apart by the errSecParam the
+        // refusal carries. Which of the two the 6.1.3 release takes is what
+        // tests/backports/host/seckeycurve/emulate.sh settles and it has not run: the host takes
+        // kSecPaddingNone, which is the branch measured here.
+        signatureLength = room;
+        status = SecKeyRawSign(key, kSecPaddingPKCS1, (const uint8_t *)CFDataGetBytePtr(dataToSign),
+                               (size_t)length, buffer, &signatureLength);
+    }
     if (status != errSecSuccess) {
         free(buffer);
         return NULL;
@@ -236,6 +386,10 @@ Boolean SecKeyVerifySignature(SecKeyRef key, SecKeyAlgorithm algorithm, CFDataRe
         return false;
     if (error)
         *error = NULL;
+    // The mirror of the signing: a key of this package's kind is verified over the curve, and every
+    // other key by the release's own SecKeyRawVerify.
+    if (CharonSecurityKeyIsPortEC(key))
+        return CharonSecKeyECVerify(key, algorithm, signedData, signature, error);
     CFDictionaryRef attributes = SecKeyCopyAttributes(key);
     if (!attributes)
         return false;
@@ -243,11 +397,13 @@ Boolean SecKeyVerifySignature(SecKeyRef key, SecKeyAlgorithm algorithm, CFDataRe
     bool rsa = type && CFEqual(type, kSecAttrKeyTypeRSA);
     bool ec = type && CFEqual(type, kSecAttrKeyTypeECSECPrimeRandom);
     CFRelease(attributes);
+    if (!rsa && !ec) {
+        return false;   // as in the signing: a class the release takes nothing from
+    }
     if (!CharonSecurityCarries(kSecKeyOperationTypeVerify, algorithm, rsa, ec))
         return false;   // not carried, and for the reason the sibling gives: no error is invented
+    // As in the signing: the table is the filter, and kSecPaddingNone is a padding and not an absence.
     SecPadding padding = CharonSecurityPaddingFor(algorithm);
-    if (padding == kSecPaddingNone)
-        return false;
     CFIndex signedLength = CFDataGetLength(signedData);
     CFIndex signatureLength = CFDataGetLength(signature);
     if (signedLength < 1 || signatureLength < 1)
@@ -286,11 +442,20 @@ Boolean SecKeyVerifySignature(SecKeyRef key, SecKeyAlgorithm algorithm, CFDataRe
 CFDataRef SecKeyCopyKeyExchangeResult(SecKeyRef privateKey, SecKeyAlgorithm algorithm, SecKeyRef publicKey,
                                       CFDictionaryRef parameters, CFErrorRef *error)
 {
-    (void)privateKey;
-    (void)algorithm;
-    (void)publicKey;
-    (void)parameters;
-    if (error)
-        *error = NULL;   // no error is invented for the same reason as the two siblings above
-    return NULL;         // and the row says why, and what the effect of the absence is
+    // A key of this package's own kind exchanges over the curve, in the file that has it. The
+    // parameter dictionary is carried through and the curve reads nothing from it, because the two
+    // families Security names for an agreement - "Standard", and the same with a digest - are the only
+    // two there are to read, and the algorithm's name says which.
+    if (privateKey && CharonSecurityKeyIsPortEC(privateKey))
+        return CharonSecKeyECExchange(privateKey, algorithm, publicKey, parameters, error);
+
+    // Every other key is refused, and now with the reason and the error the caller can tell a refusal
+    // from an absence - which the first version of this function did not do, and which
+    // tests/backports/host/seckeycurve has asserted since it was written. The reason is the same
+    // measurement the table's key-exchange row rests on: the 6.1.3 release has no key-exchange
+    // primitive of any name, its only agreement being the finite-field SecDH* family, which is not a
+    // curve and not what this call takes.
+    CharonSecKeyFail(error, errSecParam,
+                     @"the release has no elliptic key agreement: its Security exports SecKeyRawSign and SecKeyRawVerify and only the finite-field SecDH family, so a key of its keychain cannot exchange");
+    return NULL;
 }
