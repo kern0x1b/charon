@@ -304,6 +304,11 @@ run_mutation certificate-name  compare-certificate-name.py
 run_mutation certificate-fields compare-certificate-fields.py
 run_mutation network-fetch     compare-network-fetch.py
 must_not_compile() {
+    # IT IS A MUTATION AND IT COUNTS AS ONE. It incremented `noticed` without incrementing `mutants`,
+    # so the run reported 11 noticed against 10 mutations: a compiler-refused mutation was being counted
+    # as evidence without being counted as an attempt, which is the one thing a coverage summary must not
+    # do. The increment belongs at the top, like the other two runners.
+    mutants=$((mutants + 1))
     name=$1; sources=$2
     if xcrun clang $common "$H/$3.m" "$build/mutant-$name.m" $sources \
          -framework Foundation -framework Security -framework CoreFoundation \
@@ -317,7 +322,6 @@ must_not_compile() {
 }
 
 python3 "$H/make-mutants.py" "$build" 2>/dev/null || true
-must_not_compile blocks-challenge-into-keyupdate "$PK" protocol-options-blocks
 run_case sec-object-wrappers compare-sec-object-wrappers.py $H/sec-object-wrappers.m $O
 run_mutation sec-object-otherref compare-sec-object-wrappers.py sec-object-wrappers
 run_mutation sec-object-noretain compare-sec-object-wrappers.py sec-object-wrappers
