@@ -15,11 +15,23 @@
 //  that returns an element fewer - so the table is shown going red on the device and not argued
 //  about. The mutant is a source swap in the tree, restored afterwards and checked with git status.
 //
+//  Run with "counts" as the first argument it prints the numbers alone under a fixed title, which
+//  is what run-collection.sh compares. Two things have to come out of the comparison for that to
+//  work, and neither is the label alone: the program writes the label it was given into the first
+//  line, so two transcripts of one table differ there whatever the counts say, and the element
+//  lines carry -[NSObject description] of the port's INMediaItem, which overrides no description
+//  and so answers with its address - measured, two of them in one process print two addresses, so
+//  dropping the first line in the shell would still compare a run against itself. This is the
+//  argument the host half already takes (tests/backports/callgen/collection-test.m, and the .counts
+//  files collection-test.sh compares), so both halves of the measurement answer in one shape.
+//
 
 #import <Foundation/Foundation.h>
 #import <Intents/Intents.h>
 #import <objc/message.h>
 #import <objc/runtime.h>
+
+static BOOL charon_countsOnly;
 
 static NSArray *items(void)
 {
@@ -51,6 +63,9 @@ static void probe(NSString *name, NSArray *input)
     id results = ((id (*)(id, SEL, id))objc_msgSend)(cls, factory, input);
     printf("  %-42s count=%lu %s\n", [name UTF8String], (unsigned long)[results count],
            input ? "" : "(nil input)");
+    if (charon_countsOnly) {
+        return;
+    }
     for (id element in results) {
         id value = [element valueForKey:@"resolvedValue"];
         printf("      element %-38s resolvedValue %s\n", class_getName([element class]),
@@ -61,7 +76,13 @@ static void probe(NSString *name, NSArray *input)
 int main(int argc, const char *argv[])
 {
     @autoreleasepool {
-        const char *title = argc > 1 ? argv[1] : "the port's own body";
+        charon_countsOnly = argc > 1 && strcmp(argv[1], "counts") == 0;
+        const char *title = "the port's own body";
+        if (charon_countsOnly) {
+            title = "counts";
+        } else if (argc > 1) {
+            title = argv[1];
+        }
         NSArray *both = items();
         if (!both) {
             printf("%s: this build has no INMediaItem to hand the factories\n", title);
