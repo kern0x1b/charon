@@ -457,7 +457,12 @@ the host:
     `AXSupportsBidirectionalAXMFiHearingDeviceStreaming`, which answers NO because there is no hearing
     device and so nothing that could stream in either direction.
   * `AXOpenSettingsFeature` calls its completion **once, synchronously, before returning**, with an error
-    in the port's own domain naming the section and saying nothing was opened. Calling it synchronously
+    in the port's own domain naming **the section by its own name** and saying nothing was opened. The
+    name rather than the number is a fix the check asked for: an assertion that the description names the
+    section was first written to look for the number 5, and every description naming an OS version
+    satisfied it; looking for the case name turned the check red, and the port was the thing that had to
+    change. A feature outside the enumeration gets an error that says so rather than naming a section that
+    does not exist. Calling it synchronously
     is a decision and it is forced: the API takes a completion and a caller that waits for one that does
     not come waits forever. A null completion is accepted and ignored; a feature outside the enumeration
     is still answered with an error rather than crashing. **The host is never called for this row**: the
