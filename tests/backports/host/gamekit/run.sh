@@ -18,9 +18,19 @@ mkdir -p "$build"
 # The objects are built first, without a rename, so the rename list can be read off them: the names a
 # -D would change are the names the objects are compiled from in the first place.
 for source in GKLeaderboardSet7 GKBasePlayer10; do
-    xcrun clang -fobjc-arc -fvisibility=hidden -w -x objective-c -c "$port/$source.m.notcarried" -o "$build/$source.o"
+    xcrun clang -fobjc-arc -fvisibility=hidden -w -x objective-c -c "$port/$source.m" -o "$build/$source.o"
 done
 
+# `--mutated` builds the PORT with a compile-time switch, not the probe with a different argument: a
+# probe that perturbs its own arguments cannot make any answer of this surface differ, because every one
+# of them is that the release has no such call. So the switch is in the port, and this run is red because
+# the port answers something else.
+if [ "${1:-}" = "--mutated" ]; then
+    mutate="-DCHARON_MUTATE_SETLOAD"
+    printf '%s\n' "the port is built with CHARON_MUTATE_SETLOAD, and the checks below must fail"
+else
+    mutate=""
+fi
 renames=""
 classes=$(for object in "$build"/*.o; do
     nm "$object" 2>/dev/null | awk '/_OBJC_CLASS_\$_GK/ {sub(/^_OBJC_CLASS_\$_/, "", $3); print $3}'
@@ -36,7 +46,7 @@ printf 'the port objects carry: %s\n' "$(echo $classes | tr '\n' ' ')"
 objects=""
 for source in GKLeaderboardSet7 GKBasePlayer10; do
     # shellcheck disable=SC2086
-    xcrun clang -fobjc-arc -fvisibility=hidden -w -x objective-c $renames -c "$port/$source.m.notcarried" -o "$build/renamed-$source.o"
+    xcrun clang -fobjc-arc -fvisibility=hidden -w -x objective-c $renames $mutate -c "$port/$source.m" -o "$build/renamed-$source.o"
     objects="$objects $build/renamed-$source.o"
 done
 xcrun clang -fobjc-arc -Wall -Wno-deprecated-declarations -I"$harness" \

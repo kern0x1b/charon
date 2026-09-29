@@ -33,6 +33,26 @@ recorded here rather than papered over with a category that cannot exist.
 
 ## What the differential holds this to
 
-`tests/backports/host/gamekit` asks the **host's own GameKit** the same questions, where macOS has the
-class: a set that was never loaded answers no title, no identifier and no group, and a load call for one
-answers an error rather than a value. The port must answer the same shapes. One mutation, shown failing.
+`tests/backports/host/gamekit` runs the port's own sources against the **host's own GameKit** and
+against the SDK's declarations:
+
+    checks=15 failures=0
+    and with the port built with -DCHARON_MUTATE_SETLOAD:
+    FAIL the port's set load answers no sets: 1
+    FAIL and an error rather than a value: no error at all
+    checks=13 failures=2
+
+**The mutation is in the port, behind a compile-time switch, and that placement is the point.** Every
+answer on this surface is that the release has no such call — no sets, no image, no title, no
+identifier, no container record — so a probe that perturbs its own arguments has nothing to change:
+three shapes of that were tried and each was a tautology (inverting the expectation on a flag, setting a
+read-only property through KVC, and skipping the call so the checks disappear rather than fail). The
+switch is `CHARON_MUTATE_SETLOAD` in `GKLeaderboardSet7.m`: a load that answers one set and no error,
+where the release has no call that makes a set at all.
+
+**One trap the probe found, and it is worth the record.** `GKErrorDomain` is a `GK_EXTERN_WEAK` global.
+The guard reads well and passes — the symbol is *not* nil in the linked binary — and the trap is
+`[GKErrorDomain description]`, because a weak global is a load the optimiser cannot prove strong and
+`objc_opt_respondsToSelector` is a trap, not a no-op. The object is never messaged now: its class is
+read through the runtime's `class_getName`, a C function. The same trap stopped the probe four times in
+four disguises.

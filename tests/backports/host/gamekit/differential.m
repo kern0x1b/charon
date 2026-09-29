@@ -1,5 +1,7 @@
 #import <Foundation/Foundation.h>
 #import <GameKit/GameKit.h>
+#import <objc/message.h>
+#import <objc/runtime.h>
 #import "check.h"
 
 // The port's three Game Center value classes against the host's own GameKit, which has all three.
@@ -48,8 +50,13 @@ static void hostSetShapes(void (^report)(NSString *name, NSString *detail))
     // no-op - which is what this probe kept stopping on, three times and in three ways. So the address
     // is read, the symbol is never messaged, and what comes back is recorded whether it is the string
     // or the absence of one.
-    if (&GKErrorDomain != NULL && GKErrorDomain != nil) {
-        report(@"the host's error domain", [NSString stringWithFormat:@"%@", [[GKErrorDomain description] UTF8String]]);
+    if (GKErrorDomain != nil) {
+        // The guard is not the point: the symbol is not nil here and the *message* is what traps,
+        // because a weak global is a load the optimiser cannot prove strong. So the object is not
+        // messaged at all - its class is read through the runtime, which is a C function.
+        Class domain = object_getClass(GKErrorDomain);
+        report(@"the host's error domain", [NSString stringWithFormat:@"the class is %s, read through the runtime and not messaged",
+                                               class_getName(domain)]);
     } else {
         // A fact, not a failure: the host does not carry the symbol, so its GameKit has no error domain to
         // answer with, and the port's own answers are held to the SDK's declarations below.
@@ -92,8 +99,14 @@ int main(int argc, char **argv)
         sets = loaded.count;
         setsError = error;
     }];
-    check_named(sets == 0, @"the port's set load answers no sets", [NSString stringWithFormat:@"%lu", (unsigned long)sets]);
-    check_named(setsError != nil, @"and an error rather than a value", @"no error at all");
+    if (mutated) {
+        printf("probe: the port is built with CHARON_MUTATE_SETLOAD, and the checks that say it answers "
+               "no sets with GKErrorCommunicationsFailure are the ones that have to fail\n");
+    }
+    check_named(sets == 0,
+                @"the port's set load answers no sets", [NSString stringWithFormat:@"%lu", (unsigned long)sets]);
+    check_named(setsError != nil,
+                @"and an error rather than a value", @"no error at all");
     if (setsError) {
         check_named([setsError.domain isEqualToString:@"GKErrorDomain"], @"in Game Center's own domain",
                     setsError.domain);
@@ -102,14 +115,10 @@ int main(int argc, char **argv)
     }
 
     CharonHostGKLeaderboardSet *portSet = [[CharonHostGKLeaderboardSet alloc] init];
+
     check_named(portSet.title == nil && portSet.identifier == nil && portSet.groupIdentifier == nil,
                 @"a set nobody loaded has no title, no identifier and no group", portSet.title);
-    if (mutated) {
-        // the mutation: a set that claims a name it was never given
-        check_named(portSet.title != nil, @"MUTATED: a set nobody loaded claims a title", portSet.title);
-    } else {
-        check_named(portSet.title == nil, @"a set nobody loaded has no title", portSet.title);
-    }
+    check_named(portSet.title == nil, @"a set nobody loaded has no title", portSet.title);
 
     __block NSUInteger boards = 99;
     [portSet loadLeaderboardsWithCompletionHandler:^(NSArray *loaded, NSError *error) { boards = loaded.count; }];
@@ -130,17 +139,19 @@ int main(int argc, char **argv)
     // optimiser turns a message to either of them into objc_opt_respondsToSelector - a trap, not a
     // no-op - which is where this probe stopped last. So both are read as pointers and asked about
     // through the runtime's class_getName, and every question about them is guarded by that.
+    printf("probe: before the cloud player's call\n"); fflush(stdout);
     __block void *cloud = NULL;
     __block void *cloudError = NULL;
     [CharonHostGKCloudPlayer getCurrentSignedInPlayerForContainer:@"i.com.charon.probe" completionHandler:^(CharonHostGKCloudPlayer *player, NSError *error) {
         cloud = (__bridge_retained void *)player;
         cloudError = (__bridge_retained void *)error;
     }];
-    id player = (__bridge id)cloud;
-    id failure = (__bridge id)cloudError;
+    printf("probe: the call returned, cloud %p\n", cloud); fflush(stdout);
+    id player = (__bridge_transfer id)cloud; cloud = NULL;
+    id failure = (__bridge_transfer id)cloudError; cloudError = NULL;
     if (player) {
         check_named(failure == nil, @"and a player comes with no error",
-                    failure ? [[[(__bridge NSError *)failure localizedDescription] UTF8String] UTF8String] : @"");
+                    failure ? (NSString *)[failure localizedDescription] : @"");
         // the two properties a base player carries, read as selectors on a guarded object
         for (NSString *property in (NSArray<NSString *> *)@[@"playerID", @"displayName"]) {
             SEL getter = NSSelectorFromString(property);
@@ -153,7 +164,7 @@ int main(int argc, char **argv)
     } else {
         check_named(failure != nil, @"and an error rather than no answer", @"neither a player nor an error");
         if (failure) {
-            NSError *error = (__bridge NSError *)failure;
+            NSError *error = (NSError *)failure;
             check_named([error.domain isEqualToString:@"GKErrorDomain"], @"in Game Center's own domain", error.domain);
             check_named(error.code == GKErrorNotAuthenticated, @"with GKErrorNotAuthenticated, the SDK's own constant",
                         [NSString stringWithFormat:@"%ld", (long)error.code]);

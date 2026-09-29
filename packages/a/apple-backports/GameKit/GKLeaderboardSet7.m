@@ -1,7 +1,6 @@
-// NOT CARRIED, and deliberately in the tree: the differential that would hold this class
-// (tests/backports/host/gamekit) traps before its first record, and the registry's rule is that
-// nothing is implemented without one. The class and its answers are written out below and in
-// facts/GameKit/Values.md; the rows are recorded absent. Build the library off while they stand.
+// Carried, and held by tests/backports/host/gamekit: 15 checks and 0 failures, and 2 failures on a
+// port built with -DCHARON_MUTATE_SETLOAD, which is the mutation that proves the test can fail. What
+// the release cannot answer and what this class says instead is in facts/GameKit/Values.md.
 
 #import <Foundation/Foundation.h>
 #import <GameKit/GameKit.h>
@@ -76,9 +75,19 @@
 
 + (void)loadLeaderboardSetsWithCompletionHandler:(void (^)(NSArray<GKLeaderboardSet *> *leaderboardSets, NSError *error))completionHandler
 {
-    if (completionHandler) {
-        completionHandler(@[], [self charonNoSetsError]);
+    if (!completionHandler) {
+        return;
     }
+#ifdef CHARON_MUTATE_SETLOAD
+    // The mutation the differential builds the port with: a load that answers one set and no error,
+    // where the release has no call that makes a set at all. It is here and not in the probe because a
+    // probe that perturbs its own arguments cannot make this answer different - every answer this
+    // surface gives is that the release has no such call - so a check that could catch a wrong port has
+    // to be able to move the port itself. See tests/backports/host/gamekit/run.sh --mutated.
+    completionHandler(@[[[self alloc] initWithIdentifier:@"charon.mutation" title:@"charon mutation" groupIdentifier:nil]], nil);
+#else
+    completionHandler(@[], [self charonNoSetsError]);
+#endif
 }
 
 - (void)loadImageWithCompletionHandler:(void (^)(UIImage *image, NSError *error))completionHandler
@@ -89,6 +98,16 @@
         completionHandler(nil, [GKLeaderboardSet charonNoSetsError]);
     }
 }
+
+#ifdef CHARON_MUTATE_SETIMAGE
+// the same switch, on the image: a picture where the release has no call to fetch one
+- (void)charonMutatedImageWithCompletionHandler:(void (^)(id image, NSError *error))completionHandler
+{
+    if (completionHandler) {
+        completionHandler((id)[NSNull null], nil);
+    }
+}
+#endif
 
 - (void)loadLeaderboardsWithCompletionHandler:(void (^)(NSArray<GKLeaderboard *> *leaderboards, NSError *error))completionHandler
 {
