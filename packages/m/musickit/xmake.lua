@@ -33,6 +33,9 @@ package("musickit")
         package:add("deps", "charon@swift-runtime", {alias = "swift-runtime", configs = {shared = package:config("shared") or nil,
                     backports = package:config("backports") or nil}})
         package:add("frameworks", "Foundation", "CoreGraphics")
+        -- The developer token is signed with the same P-256 implementation the CloudKit family links,
+        -- so the curve arithmetic exists once in the port rather than twice.
+        package:add("deps", "charon@micro-ecc", {alias = "micro-ecc"})
     end)
 
     on_install("iphoneos", function (package)
@@ -56,7 +59,6 @@ package("musickit")
         -- The C shim, against micro-ecc's headers: the ES256 signature of a developer token is the
         -- same curve work the CloudKit family does, and one implementation of it is the point.
         local micro = assert(package:dep("micro-ecc"), "MusicKit signs its developer token with charon@micro-ecc")
-        package:add("deps", "charon@micro-ecc", {alias = "micro-ecc"})
         os.vrunv(toolchain:tool("cc"), table.join(target, {"-I" .. path.join(os.scriptdir(), "files", "include"),
                  "-I" .. path.join(micro:installdir("include")), "-I" .. path.join("files"),
                  "-Os", "-fvisibility=hidden", "-c", path.join("files", "CharonC.c"),

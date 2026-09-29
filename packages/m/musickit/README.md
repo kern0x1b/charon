@@ -85,11 +85,27 @@ under the Swift 6 language mode, a warning here. The conformances are kept becau
 has them, and the warnings are the honest cost of that at this release. The alternative — dropping
 `Sendable` — would be a smaller surface than a caller of MusicKit 26 writes.
 
-**The token can be handed over but not yet minted.** The signature is reached (the shim calls exactly
-what `CharonCKWebAuth.c` calls, so there is one implementation of the curve in the port), and a base64url
-is carried in the module, but a JOSE token's *encoding* would rather use
-`Data.base64EncodedString(options:)` and this release's Swift Foundation overlay marks it iOS 7. The
-lift lowers the Objective-C headers, where the backports put their marks, and not the Swift overlay's
-own. So `MusicDeveloperToken.developerToken` is carried and `mint` is not, and the comment in
-`Authorization.swift` names the two small ways out. A token minted elsewhere is one of the two
-documented ways to authenticate the API and needs nothing of this port but the request.
+**The token is minted, and measured end to end.** `MusicDeveloperToken.mint` takes what Apple hands
+an application — a `.p8`, which is a PEM — reads the 32 private-scalar bytes out of the DER its body
+decodes to, signs the base64url of the header and of the payload joined by a dot, and returns the
+three base64url parts. The curve is `charon@micro-ecc` through a shim that calls exactly what
+`CharonCKWebAuth.c` calls, so there is one implementation of the curve in the port, and the answer is
+the raw `r || s` a JOSE verifier reads, converted from the DER micro-ecc produces with that package's
+own reader.
+
+The base64 is the module's own in both directions, because `Data.base64EncodedString(options:)` and its
+inverse are marked iOS 7 by this release's Swift Foundation overlay: the lift lowers the Objective-C
+headers, where the backports put their marks, and not the Swift overlay's own. So the table is
+`CharonBase64URL`, with a decoder beside the encoder it inverts.
+
+`tests/backports/host/musickit/run.sh` is the end-to-end check: it mints a token from a key OpenSSL
+made and asks OpenSSL to verify the signature over the first two parts joined by a dot, which is what a
+JOSE verifier does. The last line it prints is `OpenSSL  : Verified OK`. Three mutations of the module
+turn it red — the two ways of getting the token's shape wrong, and a signing input one byte off — and
+that check could not run at all until this round, which is why the first version of this section said
+the token could not be minted: the run never reached its own checker.
+
+**What that check is not**: a device run. The module is built for the host there, and no emulator has
+run it, so "this mints a token on 6.1.3" is measured on a Mac and nowhere else. A token minted
+elsewhere is the other of the two documented ways to authenticate the API, and needs nothing of this
+port but the request.
