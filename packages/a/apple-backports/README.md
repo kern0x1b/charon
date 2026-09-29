@@ -857,6 +857,147 @@ has: forty-seven checks in one run, no failures. That run is where the font cach
 of this release showed up - a font scaled to the size it already has comes back
 as the same object, which no host can show.
 
+## Libraries that carry a later release's names, and two that carry no radio
+
+Eleven libraries exist because a name a later release declared is a name an application links
+strongly. `CFNetwork.framework` is on the release this port runs on, so an application that names
+one of CFNetwork's later additions binds a symbol nothing provides and dyld kills it before `main` -
+measured, in `facts/CFNetwork/Names.md`, and the reason each of these libraries exists. Where the value
+behind a name is a string, it is the framework's own text, read out of a shared cache rather than
+typed, and each family below is held against the host's own copy of the same framework. Where the
+name is a class, the question is different, and the answer is what the release can really do.
+
+### Game Center's value classes, over the Game Center the release has
+
+`GKBasePlayer`, `GKCloudPlayer` and `GKLeaderboardSet` (7.0, 8.0) are carried whole. The armv7 cache of
+6.1.3 holds 304 GameKit classes and the *modern* selectors - `displayName`, `playerID`, `score`,
+`rank` - so iOS 6 already answers what the iOS 7 API asks of a player. What it has none of is the
+**set**: `loadLeaderboardsWithIDs` is not in its selector list. So a set the port holds is the port's
+own, kept in memory and empty until something is loaded into it, and every call on a set that was
+never loaded answers no set and the SDK's own `GKError`. A leaderboard set nobody loaded has no
+title, no identifier, no group and no image, which is the true answer with nothing loaded.
+`facts/GameKit/Values.md`, and the host's own GameKit, which has all three classes, is the oracle in
+`tests/backports/host/gamekit/`.
+
+### The account names iOS 7 added, and the name behind them
+
+`ACAccountTypeIdentifierTencentWeibo` and `ACTencentWeiboAppIdKey` (7.0) name an account type and the
+key an options dictionary carries a Tencent App ID under; both were deprecated in iOS 11.
+`ACAccount.userFullName` (7.0) is the owner's name as the service knows it, and the account store the
+release reads has one kind of account - Sina Weibo - whose record holds a handle and a name and
+nothing that names the owner, so the answer is the documented nil and not a name made up.
+`facts/Accounts/`.
+
+### The 54 uniform type identifiers CoreServices added
+
+52 arrived in 8.0 and one each in 9.0 and 9.1. Each value is read out of the arm64e shared cache of
+iOS 18.0 through its own symbol with `tools/cfconst.py`, and the host's own CoreServices agrees with
+every one of them. What stays the release's own is the classification of a file: the release knows
+none of these types, so a file it recognises is classified as it always was.
+`facts/CoreServices/Names.md`.
+
+### The seven names CFNetwork added
+
+Two HTTP versions, one call-signalling network service type and four stream properties, none of which
+6.1.3 exports: it has `kCFHTTPVersion1_1` and 225 `kCF*` names, and not these seven. They live in
+three objects, one release each, because an object carries the API of a single release.
+`facts/CFNetwork/Names.md`.
+
+### The registry paths of IOKit, and its main port
+
+A registry path is a plane name followed by the `/`-separated names from the root down to the entry.
+Four names arrived after this release: the two functions of 9.0 that take and return a path, and
+`kIOMainPortDefault` and `IOMainPort` of 15.0. The two functions are written over the release's own
+`IORegistryEntryFromPath` and `IORegistryEntryGetPath`, which the armv7 cache of 6.1.3 does export. A path the release's own `IORegistryEntryGetPath` fails
+for is nil here too, and the host shows the same for an entry of its own, so nil means the entry is
+not there rather than that the port gave up. `facts/IOKit/IORegistryPaths.md`.
+
+### The NDEF value classes, with no radio
+
+`NFCNDEFMessage` and `NFCNDEFPayload` (11.0) are two value classes: a payload is a type, an
+identifier and bytes, a message is a list of payloads, and both are made, encoded, parsed and
+compared here with no tag anywhere near them - which is why they are carried whole while the
+sessions of the framework, which need one, are not. `facts/CoreNFC/NDEF.md`.
+
+### The property keys IOSurface added
+
+33 keys, from the surface of 11.0 to the four releases that added one each after it. The keys are
+carried with the texts IOSurface itself gives them, so a strong reference to one resolves; the surface
+is still the release's own, which answers for the properties it has. The class itself, its
+properties, its methods and its functions are named at the end of the facts file as the next piece of
+this framework, not left to look like an oversight. `facts/IOSurface/Names.md`.
+
+### The 207 CNLabel names Contacts added
+
+The relation labels of a contact - the text a relationship is written as - run to 207 names between
+11.0 and 14.3, and all of them are carried, with the texts **Contacts' own**: a label is what a
+contact is stored under, and a spelling of the constant would be a different label. The host's own
+Contacts exports all 207 and agrees with every one. `facts/Contacts/Values.md`.
+
+### The four Security calls that sign, verify, exchange and say what a key can do
+
+`SecKeyCreateSignature`, `SecKeyVerifySignature`, `SecKeyCopyKeyExchangeResult` and
+`SecKeyIsAlgorithmSupported` (10.0) are carried over `charon@micro-ecc` - Kenneth MacKay's P-256
+arithmetic, BSD-2, taken as a package of its own rather than written here - because iOS 6.1.3 has no
+way to make an ECDSA signature: `SecKeyCreateRandomKey` and `SecKeyCreateSignature` are both iOS 8.
+A key of the **release's own keychain** needs no curve at all: the armv7 cache of 6.1.3 exports
+`SecKeyRawSign` and `SecKeyRawVerify`, so the signing of such a key is the release's own arithmetic
+and the port only reads back what it hands over. The curve is reached for the keys the port makes
+itself, and the exchange answers the documented error, because that cache has no elliptic key
+agreement of any kind. `facts/Security/SecKeyElliptic.md`, and the probes that take the measurement
+again are `tests/backports/host/seckeycurve/` and `tests/backports/host/microecc/`.
+
+### DCAppAttestService, the second half of DeviceCheck
+
+App Attest mints a key pair in the Secure Enclave and has Apple certify it. An iPhone 4S and an iPad 2
+have no Secure Enclave - it came with the A7 of the iPhone 5s - and no daemon of the release runs the
+service, so the questions are answered as a device without it answers them: not supported, no key,
+and the error the framework documents. Every completion is called from a background queue after the
+method has returned, the way the release's own `DCDevice` token path does.
+`facts/DeviceCheck/DCAppAttestService.md`.
+
+### The App Clip payload
+
+`APActivationPayload`, the payload an `NSUserActivity` carries, and
+`+[NSUserActivity appClipActivationPayload]` (14.0) are carried, and the release launches no App Clip:
+there is no App Clip binary, no registered App Clip URL, and no NFC tag or visual code to invoke one.
+So no payload is ever made, every payload has no URL, and `-confirmAcquiredInRegion:completionHandler:`
+refuses with the error the framework documents for an invocation that did not come from a tag or a
+code. `facts/AppClip/APActivationPayload.md`.
+
+### The tracking authorization question
+
+`ATTrackingManager` (14.0) asks the owner for permission to track the user across apps, and asks what
+the answer is. The release runs no `tccd`, has no per-bundle record of an answer and no privacy
+setting for one, so the status is `NotDetermined` and stays there, a request calls back with it and no
+prompt goes up, and a second request calls the handler again the same way: nothing is remembered
+between requests, because there is nothing to remember.
+`facts/AppTrackingTransparency/ATTrackingManager.md`.
+
+### The attribution token
+
+`+[AAAttribution attributionTokenWithError:]` (14.3) is one method that asks Apple's own attribution
+service for a token tying an install to the advertisement that brought it in. The token is not
+computed on the device: it is minted over the network, against an application registered with the
+service. So the class stands where the host's does, an application that asks finds it, and the answer
+is the documented error rather than a token of the port's own making.
+`facts/AdServices/AAAttribution.md`.
+
+### The environment and the domain state of iOS 18
+
+`LAEnvironment`, its mechanisms and its state, and `-domainState` on the `LAContext` this package
+already carries (18.0), are carried as one shared `LADomainState` per context. On a device with no
+biometry enrolled and no companion paired, the state hashes are empty, and nil is the port's own
+answer for a state with nothing in it - which is what the host's own fresh context shows as well, so
+the comparison is one that can be made. `facts/LocalAuthentication/LAEnvironment.md`.
+
+### Whether this device may run a browser engine of its own
+
+`+[BEAvailability isEligibleForContext:completionHandler:]` (18.4) asks whether a browser built with
+its own engine may run here, and hands the answer to a handler. The answer is the system's to give,
+from an entitlement and a release that support it; iOS 6 carries neither, so nothing is eligible and
+the call says so at once rather than waiting. `facts/BrowserKit/BEAvailability.md`.
+
 ## iOS 17
 
 ### CMTag, and the three bodies that are the SDK's
