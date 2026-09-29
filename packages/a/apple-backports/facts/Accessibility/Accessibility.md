@@ -502,9 +502,10 @@ M9 turns red on - and the census the answers are readings of. The run prints `he
 passing quietly over it.
 
 **And the program that can run them now exists: `tests/backports/device/hearing.m`.** It is the tree's
-own device-program shape, it compiles clean for `armv7-apple-ios6.0`, and it asks the port's three
-functions for the answers the census says they must give while printing the release's own where the
-release has the functions at all. It is not run by anything in a band: the gate is what runs a device
+own device-program shape, it compiles clean for `armv7-apple-ios6.0`, it resolves each of the three
+names through `dlsym` and `dladdr` first so a reader can see which implementation it reached, and it
+asks the port's three functions for the answers the census says they must give while printing the
+release's own where the release has the functions at all. It is not run by anything in a band: the gate is what runs a device
 program, and when it does, this one turns the three rows from held-by-three-measurements into
 held-by-a-run. That is the whole of what could be done here, and it is a program rather than a promise.
 
