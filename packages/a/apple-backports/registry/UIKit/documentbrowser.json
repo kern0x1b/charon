@@ -206,10 +206,11 @@
    "kind": "class",
    "introduced": "11.0",
    "minimum": "6.0",
-   "status": "implemented",
-   "effect": "the browser itself, declared as the 26.2 header declares it: the document types it opens, what the user may do in it, the buttons it carries, and the nib initialiser unavailable as the header says. The class is implemented because its nine properties are; the instance methods are not yet, and are named in the facts as not claimed",
+   "status": "absent",
+   "effect": "the browser itself, declared as the 26.2 header declares it: the document types it opens, what the user may do in it, and the buttons it carries. Its nine properties are carried in this file and its two instance methods are not, so the class is absent here until they are",
    "facts": "facts/UIKit/DocumentBrowser.md",
-   "source": "the header of SDK 26.2, checked by tests/backports/host/documentbrowser/ast_check.py"
+   "source": "the header of SDK 26.2, checked by tests/backports/host/documentbrowser/ast_check.py",
+   "reason": "the class declares nine properties the port carries and five instance methods it does not: importDocumentAtURL:... and revealDocumentAtURL:... have no bodies, so the class is not implemented until they do, and a row that says implemented for a method nothing calls is the one thing this registry will not say"
   }
  ]
 }

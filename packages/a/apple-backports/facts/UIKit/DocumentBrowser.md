@@ -57,9 +57,13 @@ Every group is counted from the AST — the protocol's selectors by `mangledName
 properties from the AST's property declarations — and not written out by hand, so the registry and
 the compiler cannot disagree about how many there are.
 
-`UIDocumentBrowserViewController` is `implemented` because its nine properties are, and its entry
-has moved out of `ios11.json` where it sat `absent` into the file the check covers. **Its two
-instance methods are not claimed and it does not have them yet**: the check verifies that the port's
+`UIDocumentBrowserViewController` is **`absent`**, and that is the whole point: its nine properties
+are carried, its five instance methods are not — `importDocumentAtURL:…` and
+`revealDocumentAtURL:…` have no bodies and `initForOpeningFilesWithContentTypes:` and the two
+spellings of `transitionControllerForDocument…` are declared but unclaimed — so a class is not
+implemented until all of its members are, and the row says so in the same file that carries its
+properties. An earlier report of this piece called the class `implemented` on the strength of its
+properties; that contradicted the rule stated in the same paragraph, and the row now follows the rule.: the check verifies that the port's
 file declares both spellings of `transitionControllerForDocument…` and the AST has them, but the
 AST cannot separate a header's own declarations from the ones it inherits from `UIViewController`, so
 it cannot yet tell the port has *implemented* them, and a row that says `implemented` for a method
