@@ -166,110 +166,121 @@
    "kind": "constant",
    "introduced": "9.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, MediaPlayer"
+   "status": "implemented",
+   "reason": "the release does not carry it at all: 6.1.3 exports none of the 36 MediaPlayer constants, and this name first appears at 9.0",
+   "effect": "the string Apple's own MediaPlayer holds, which the port carries because this release exports no such symbol. It is NOT this symbol's own name: ten of these thirteen are dotted public.* strings and MPNowPlayingInfoPropertyCurrentLanguageOptions holds the SINGULAR form of its name, so writing the convention would have been wrong for twelve of the thirteen",
+   "source": "the string Apple's own MediaPlayer holds on this Mac, read with dlsym and printed as text and as bytes by tests/backports/host/mediaplayer-constants, which fails the moment a name is missing there; and 0 of the 36 MediaPlayer constants are exported by iOS 6.1.3, read from that release's own armv7 cache with the tools in charon/tools",
+   "facts": "facts/MediaPlayer/MediaPlayerConstants.md"
   },
   {
    "api": "MPLanguageOptionCharacteristicDescribesMusicAndSound",
    "kind": "constant",
    "introduced": "9.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, MediaPlayer"
+   "status": "implemented",
+   "reason": "the release does not carry it at all: 6.1.3 exports none of the 36 MediaPlayer constants, and this name first appears at 9.0",
+   "effect": "the string Apple's own MediaPlayer holds, which the port carries because this release exports no such symbol. It is NOT this symbol's own name: ten of these thirteen are dotted public.* strings and MPNowPlayingInfoPropertyCurrentLanguageOptions holds the SINGULAR form of its name, so writing the convention would have been wrong for twelve of the thirteen",
+   "source": "the string Apple's own MediaPlayer holds on this Mac, read with dlsym and printed as text and as bytes by tests/backports/host/mediaplayer-constants, which fails the moment a name is missing there; and 0 of the 36 MediaPlayer constants are exported by iOS 6.1.3, read from that release's own armv7 cache with the tools in charon/tools",
+   "facts": "facts/MediaPlayer/MediaPlayerConstants.md"
   },
   {
    "api": "MPLanguageOptionCharacteristicDescribesVideo",
    "kind": "constant",
    "introduced": "9.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, MediaPlayer"
+   "status": "implemented",
+   "reason": "the release does not carry it at all: 6.1.3 exports none of the 36 MediaPlayer constants, and this name first appears at 9.0",
+   "effect": "the string Apple's own MediaPlayer holds, which the port carries because this release exports no such symbol. It is NOT this symbol's own name: ten of these thirteen are dotted public.* strings and MPNowPlayingInfoPropertyCurrentLanguageOptions holds the SINGULAR form of its name, so writing the convention would have been wrong for twelve of the thirteen",
+   "source": "the string Apple's own MediaPlayer holds on this Mac, read with dlsym and printed as text and as bytes by tests/backports/host/mediaplayer-constants, which fails the moment a name is missing there; and 0 of the 36 MediaPlayer constants are exported by iOS 6.1.3, read from that release's own armv7 cache with the tools in charon/tools",
+   "facts": "facts/MediaPlayer/MediaPlayerConstants.md"
   },
   {
    "api": "MPLanguageOptionCharacteristicDubbedTranslation",
    "kind": "constant",
    "introduced": "9.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, MediaPlayer"
+   "status": "implemented",
+   "reason": "the release does not carry it at all: 6.1.3 exports none of the 36 MediaPlayer constants, and this name first appears at 9.0",
+   "effect": "the string Apple's own MediaPlayer holds, which the port carries because this release exports no such symbol. It is NOT this symbol's own name: ten of these thirteen are dotted public.* strings and MPNowPlayingInfoPropertyCurrentLanguageOptions holds the SINGULAR form of its name, so writing the convention would have been wrong for twelve of the thirteen",
+   "source": "the string Apple's own MediaPlayer holds on this Mac, read with dlsym and printed as text and as bytes by tests/backports/host/mediaplayer-constants, which fails the moment a name is missing there; and 0 of the 36 MediaPlayer constants are exported by iOS 6.1.3, read from that release's own armv7 cache with the tools in charon/tools",
+   "facts": "facts/MediaPlayer/MediaPlayerConstants.md"
   },
   {
    "api": "MPLanguageOptionCharacteristicEasyToRead",
    "kind": "constant",
    "introduced": "9.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, MediaPlayer"
+   "status": "implemented",
+   "reason": "the release does not carry it at all: 6.1.3 exports none of the 36 MediaPlayer constants, and this name first appears at 9.0",
+   "effect": "the string Apple's own MediaPlayer holds, which the port carries because this release exports no such symbol. It is NOT this symbol's own name: ten of these thirteen are dotted public.* strings and MPNowPlayingInfoPropertyCurrentLanguageOptions holds the SINGULAR form of its name, so writing the convention would have been wrong for twelve of the thirteen",
+   "source": "the string Apple's own MediaPlayer holds on this Mac, read with dlsym and printed as text and as bytes by tests/backports/host/mediaplayer-constants, which fails the moment a name is missing there; and 0 of the 36 MediaPlayer constants are exported by iOS 6.1.3, read from that release's own armv7 cache with the tools in charon/tools",
+   "facts": "facts/MediaPlayer/MediaPlayerConstants.md"
   },
   {
    "api": "MPLanguageOptionCharacteristicIsAuxiliaryContent",
    "kind": "constant",
    "introduced": "9.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, MediaPlayer"
+   "status": "implemented",
+   "reason": "the release does not carry it at all: 6.1.3 exports none of the 36 MediaPlayer constants, and this name first appears at 9.0",
+   "effect": "the string Apple's own MediaPlayer holds, which the port carries because this release exports no such symbol. It is NOT this symbol's own name: ten of these thirteen are dotted public.* strings and MPNowPlayingInfoPropertyCurrentLanguageOptions holds the SINGULAR form of its name, so writing the convention would have been wrong for twelve of the thirteen",
+   "source": "the string Apple's own MediaPlayer holds on this Mac, read with dlsym and printed as text and as bytes by tests/backports/host/mediaplayer-constants, which fails the moment a name is missing there; and 0 of the 36 MediaPlayer constants are exported by iOS 6.1.3, read from that release's own armv7 cache with the tools in charon/tools",
+   "facts": "facts/MediaPlayer/MediaPlayerConstants.md"
   },
   {
    "api": "MPLanguageOptionCharacteristicIsMainProgramContent",
    "kind": "constant",
    "introduced": "9.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, MediaPlayer"
+   "status": "implemented",
+   "reason": "the release does not carry it at all: 6.1.3 exports none of the 36 MediaPlayer constants, and this name first appears at 9.0",
+   "effect": "the string Apple's own MediaPlayer holds, which the port carries because this release exports no such symbol. It is NOT this symbol's own name: ten of these thirteen are dotted public.* strings and MPNowPlayingInfoPropertyCurrentLanguageOptions holds the SINGULAR form of its name, so writing the convention would have been wrong for twelve of the thirteen",
+   "source": "the string Apple's own MediaPlayer holds on this Mac, read with dlsym and printed as text and as bytes by tests/backports/host/mediaplayer-constants, which fails the moment a name is missing there; and 0 of the 36 MediaPlayer constants are exported by iOS 6.1.3, read from that release's own armv7 cache with the tools in charon/tools",
+   "facts": "facts/MediaPlayer/MediaPlayerConstants.md"
   },
   {
    "api": "MPLanguageOptionCharacteristicLanguageTranslation",
    "kind": "constant",
    "introduced": "9.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, MediaPlayer"
+   "status": "implemented",
+   "reason": "the release does not carry it at all: 6.1.3 exports none of the 36 MediaPlayer constants, and this name first appears at 9.0",
+   "effect": "the string Apple's own MediaPlayer holds, which the port carries because this release exports no such symbol. It is NOT this symbol's own name: ten of these thirteen are dotted public.* strings and MPNowPlayingInfoPropertyCurrentLanguageOptions holds the SINGULAR form of its name, so writing the convention would have been wrong for twelve of the thirteen",
+   "source": "the string Apple's own MediaPlayer holds on this Mac, read with dlsym and printed as text and as bytes by tests/backports/host/mediaplayer-constants, which fails the moment a name is missing there; and 0 of the 36 MediaPlayer constants are exported by iOS 6.1.3, read from that release's own armv7 cache with the tools in charon/tools",
+   "facts": "facts/MediaPlayer/MediaPlayerConstants.md"
   },
   {
    "api": "MPLanguageOptionCharacteristicTranscribesSpokenDialog",
    "kind": "constant",
    "introduced": "9.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, MediaPlayer"
+   "status": "implemented",
+   "reason": "the release does not carry it at all: 6.1.3 exports none of the 36 MediaPlayer constants, and this name first appears at 9.0",
+   "effect": "the string Apple's own MediaPlayer holds, which the port carries because this release exports no such symbol. It is NOT this symbol's own name: ten of these thirteen are dotted public.* strings and MPNowPlayingInfoPropertyCurrentLanguageOptions holds the SINGULAR form of its name, so writing the convention would have been wrong for twelve of the thirteen",
+   "source": "the string Apple's own MediaPlayer holds on this Mac, read with dlsym and printed as text and as bytes by tests/backports/host/mediaplayer-constants, which fails the moment a name is missing there; and 0 of the 36 MediaPlayer constants are exported by iOS 6.1.3, read from that release's own armv7 cache with the tools in charon/tools",
+   "facts": "facts/MediaPlayer/MediaPlayerConstants.md"
   },
   {
    "api": "MPLanguageOptionCharacteristicVoiceOverTranslation",
    "kind": "constant",
    "introduced": "9.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, MediaPlayer"
+   "status": "implemented",
+   "reason": "the release does not carry it at all: 6.1.3 exports none of the 36 MediaPlayer constants, and this name first appears at 9.0",
+   "effect": "the string Apple's own MediaPlayer holds, which the port carries because this release exports no such symbol. It is NOT this symbol's own name: ten of these thirteen are dotted public.* strings and MPNowPlayingInfoPropertyCurrentLanguageOptions holds the SINGULAR form of its name, so writing the convention would have been wrong for twelve of the thirteen",
+   "source": "the string Apple's own MediaPlayer holds on this Mac, read with dlsym and printed as text and as bytes by tests/backports/host/mediaplayer-constants, which fails the moment a name is missing there; and 0 of the 36 MediaPlayer constants are exported by iOS 6.1.3, read from that release's own armv7 cache with the tools in charon/tools",
+   "facts": "facts/MediaPlayer/MediaPlayerConstants.md"
   },
   {
    "api": "MPMediaPlaylistPropertyCloudGlobalID",
    "kind": "constant",
-   "introduced": "9.0",
+   "introduced": "8.2",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, MediaPlayer"
+   "status": "implemented",
+   "reason": "the release does not carry it at all: 6.1.3 exports none of the 36 MediaPlayer constants, and this name first appears at 8.2. THE BAND IS 8.2 AND THE HEADER SAYS 9.0, and both are kept because the disagreement is real and the tool settles it: release-split walks the release caches symbol by symbol and finds this name exported at 8.2, while the SDK header declares it MP_API(ios(9.0)). The corpus filed it under the 9.0 band with the other twelve, so one object carrying all thirteen mixed two releases' symbols; it has its own object now, and this row says 8.2 so it agrees with the object, the facts file and the build rather than only with the header",
+   "effect": "the string Apple's own MediaPlayer holds, which the port carries because this release exports no such symbol. It is NOT this symbol's own name: ten of these thirteen are dotted public.* strings and MPNowPlayingInfoPropertyCurrentLanguageOptions holds the SINGULAR form of its name, so writing the convention would have been wrong for twelve of the thirteen",
+   "source": "the string Apple's own MediaPlayer holds on this Mac, read with dlsym and printed as text and as bytes by tests/backports/host/mediaplayer-constants, which fails the moment a name is missing there; and 0 of the 36 MediaPlayer constants are exported by iOS 6.1.3, read from that release's own armv7 cache with the tools in charon/tools",
+   "facts": "facts/MediaPlayer/MediaPlayerConstants.md"
   },
   {
    "api": "MPNowPlayingInfoLanguageOption",
@@ -296,20 +307,22 @@
    "kind": "constant",
    "introduced": "9.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, MediaPlayer"
+   "status": "implemented",
+   "reason": "the release does not carry it at all: 6.1.3 exports none of the 36 MediaPlayer constants, and this name first appears at 9.0",
+   "effect": "the string Apple's own MediaPlayer holds, which the port carries because this release exports no such symbol. It is NOT this symbol's own name: ten of these thirteen are dotted public.* strings and MPNowPlayingInfoPropertyCurrentLanguageOptions holds the SINGULAR form of its name, so writing the convention would have been wrong for twelve of the thirteen",
+   "source": "the string Apple's own MediaPlayer holds on this Mac, read with dlsym and printed as text and as bytes by tests/backports/host/mediaplayer-constants, which fails the moment a name is missing there; and 0 of the 36 MediaPlayer constants are exported by iOS 6.1.3, read from that release's own armv7 cache with the tools in charon/tools",
+   "facts": "facts/MediaPlayer/MediaPlayerConstants.md"
   },
   {
    "api": "MPNowPlayingInfoPropertyCurrentLanguageOptions",
    "kind": "constant",
    "introduced": "9.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, MediaPlayer"
+   "status": "implemented",
+   "reason": "the release does not carry it at all: 6.1.3 exports none of the 36 MediaPlayer constants, and this name first appears at 9.0",
+   "effect": "the string Apple's own MediaPlayer holds, which the port carries because this release exports no such symbol. It is NOT this symbol's own name: ten of these thirteen are dotted public.* strings and MPNowPlayingInfoPropertyCurrentLanguageOptions holds the SINGULAR form of its name, so writing the convention would have been wrong for twelve of the thirteen",
+   "source": "the string Apple's own MediaPlayer holds on this Mac, read with dlsym and printed as text and as bytes by tests/backports/host/mediaplayer-constants, which fails the moment a name is missing there; and 0 of the 36 MediaPlayer constants are exported by iOS 6.1.3, read from that release's own armv7 cache with the tools in charon/tools",
+   "facts": "facts/MediaPlayer/MediaPlayerConstants.md"
   },
   {
    "api": "MPMediaPickerController.showsItemsWithProtectedAssets",
