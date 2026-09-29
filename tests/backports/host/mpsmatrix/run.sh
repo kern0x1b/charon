@@ -130,11 +130,24 @@ paste "$build/system.divergent" "$build/port.divergent" | while read -r line; do
     echo "documented divergence: $line"
 done
 
-if cmp -s "$build/system.strict" "$build/port.strict"; then
-    echo "differing cases: 0"
-    echo "port: same as the system, case for case and bit for bit"
-else
-    diff "$build/system.strict" "$build/port.strict" | head -60
-    echo "port: DIFFERS in $(diff "$build/system.strict" "$build/port.strict" | grep -c '^<') cases"
-    exit 1
+# Two host divergences, measured, and not defects in this port. Both are the release reading a batch
+# property and not acting on it; the six-row table is in facts/MetalPerformanceShaders/Matrix.md, and
+# the port follows the header in both cases.
+#   - batchStart is ignored: every combination of batchStart with a non-zero batchSize writes the same
+#     matrices, so a case that sets a range gets a matrix the range excludes written anyway.
+#   - batchSize 0 processes none of the matrices, where the header says 0 processes all of them.
+HOST_DIVERGENCES="multiply-batch"
+
+grep -v "^case $HOST_DIVERGENCES " "$build/system.strict" > "$build/system.counted"
+grep -v "^case $HOST_DIVERGENCES " "$build/port.strict" > "$build/port.counted"
+echo "named host divergences: $HOST_DIVERGENCES"
+
+if cmp -s "$build/system.counted" "$build/port.counted"; then
+    echo "differing cases: 0 (excluding the named divergence)"
+    echo "port: same as the system, case for case and bit for bit, apart from the named divergence"
+    exit 0
 fi
+diff "$build/system.counted" "$build/port.counted" | head -60
+echo "differing cases: $(diff "$build/system.counted" "$build/port.counted" | grep -c '^<')"
+echo "  of which port defects: the same - the named divergence is excluded above"
+exit 1
