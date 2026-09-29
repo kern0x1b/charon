@@ -69,8 +69,36 @@ and a symbol EXPORTED BY 6.1.3 are different facts: the `#if` is the SDK's view 
 release can export a name the SDK no longer declares. What the header establishes is only that a symbol
 declared there for macOS cannot be *called through a declaration* by a binary built against that SDK.
 
-Whether 6.1.3 exports it is **open**. It is being read from the release's dyld shared cache export trie —
-a string hit in that cache is not an export, and `SSLSetProtocolVersionEnabled` appears in the cache's
-strings, which proves nothing either way. Until the trie says otherwise, no row here may claim the
-release lacks a symbol, and the eight `sec_protocol_options_*` block setters are `inert` for the reason
-already given — 6.1.3 has no stack that takes a `sec_protocol_options_t` — which does not depend on it.
+## Measured: what 6.1.3 EXPORTS, and the one real absence
+
+Read out of iOS 6.1.3's own dyld shared cache by walking the export trie of the Security image, which is
+at **`0x32e79000`, UUID `FBC24F15BD9E37539CDD6E3576BDE938`, 660 exports**:
+
+| symbol | on 6.1.3 |
+| --- | --- |
+| `_SSLCreateContext` | **exported** — the control, and it appears |
+| `_SSLGetProtocolVersionMin` | **exported** |
+| `_SSLGetProtocolVersionMax` | **exported** |
+| `_SSLSetProtocolVersionMin` | **exported** |
+| `_SSLSetProtocolVersionMax` | **exported** |
+| `_SSLSetProtocolVersionEnabled` | **exported** |
+| `_SSLGetNegotiatedProtocolVersion` | **exported** |
+| `_SSLGetProtocolVersionEnabled` | **not exported** |
+| `_SSLGetProtocolVersion` | **not exported** |
+| `_SSLNoSuchFunctionForControl` | **not exported** — the negative control, and it does not |
+
+Evidence, cited not copied:
+`charon/.agent-work/runs-archive/coord-exports/exports.py` sha256
+`6f550db0400871de3999dfd31de39dac67374d9440d67176ffb08f4528d5224f`; `exports-613.txt` sha256
+`a3aa4fa2aee74efcafbcb5a22a392878ef7c6c5ff8e7852518727acfa368fb51`. This band reproduced all three
+numbers by running that script itself.
+
+**So the earlier statement stands, stated as an EXPORT FACT and not as a header fact: 6.1.3 does not
+export `SSLGetProtocolVersionEnabled`,** and a string hit in the cache is not an export — the trie is.
+**And the conclusion I drew from the header was wrong in the other direction:** `SSLSetProtocolVersionEnabled`
+is declared for macOS only in the 16.4 SDK and is nevertheless **exported by 6.1.3**, so the SDK's `#if`
+stopped a call that the release can make. The guest measurement therefore uses the **Min/Max getters and
+the Set\* calls**, and has no way to enumerate one protocol at a time.
+
+The eight `sec_protocol_options_*` block setters are unaffected either way: they are `inert` because 6.1.3
+has no stack that takes a `sec_protocol_options_t`, which does not depend on any of this.

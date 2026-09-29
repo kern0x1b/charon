@@ -43,10 +43,31 @@ static void report(const char *what, long value)
 // is established is only that a symbol the 16.4 SDK declares only for macOS cannot be CALLED through a
 // declaration, which is why all three go through dlsym.
 //
-// Whether 6.1.3 EXPORTS SSLSetProtocolVersionEnabled is OPEN and is being read out of the release's
-// dyld shared cache export trie; a string hit in that cache is not an export and is not used as one. If
-// the release does export it, the per-protocol question below becomes askable and this file's comment
-// changes with it.
+// MEASURED, NOT ASSUMED. Read out of iOS 6.1.3's own dyld shared cache by walking the export trie of the
+// Security image, which is at 0x32e79000, UUID FBC24F15BD9E37539CDD6E3576BDE938, with 660 exports:
+//
+//   EXPORTED      _SSLCreateContext            (the control, which must appear)
+//   EXPORTED      _SSLGetProtocolVersionMin
+//   EXPORTED      _SSLGetProtocolVersionMax
+//   EXPORTED      _SSLSetProtocolVersionMin
+//   EXPORTED      _SSLSetProtocolVersionMax
+//   EXPORTED      _SSLSetProtocolVersionEnabled
+//   EXPORTED      _SSLGetNegotiatedProtocolVersion
+//   NOT exported  _SSLGetProtocolVersionEnabled
+//   NOT exported  _SSLGetProtocolVersion
+//   NOT exported  _SSLNoSuchFunctionForControl  (the negative control, which must not)
+//
+// Evidence: charon/.agent-work/runs-archive/coord-exports/exports.py
+//   sha256 6f550db0400871de3999dfd31de39dac67374d9440d67176ffb08f4528d5224f
+//   charon/.agent-work/runs-archive/coord-exports/exports-613.txt
+//   sha256 a3aa4fa2aee74efcafbcb5a22a392878ef7c6c5ff8e7852518727acfa368fb51
+// and this band reproduced the same three numbers by running that script itself.
+//
+// SO THE MEASUREMENT PLAN IS THE MIN/MAX PAIR, not a per-protocol walk: the 16.4 SDK DECLARES
+// SSLSetProtocolVersionEnabled only under #if TARGET_OS_OSX, which is the SDK's view and is why it cannot
+// be CALLED THROUGH A DECLARATION here - but 6.1.3 EXPORTS it, and the getters for the two ends of the
+// range are exported too. There is no per-protocol GETTER on 6.1.3, so the guest run reports the range
+// and the protocols the range implies, and does not pretend to enumerate them.
 // A dlsym'd pointer is honest about absence and calling through it does not trip the deprecation, which
 // SSLGetProtocolVersionMin/Max carry at __SECURETRANSPORT_API_DEPRECATED(..., ios(5.0, 13.0)).
 //
@@ -98,8 +119,14 @@ int main(int argc, char **argv)
     // the 16.4 SDK declares it only under #if TARGET_OS_OSX, so this build cannot CALL it. That is a
     // fact about the BUILD and the SDK, NOT about what 6.1.3 exports: dlsym on the guest is the only
     // thing that settles the export question, and the export trie is being read for it separately.
-    printf("per-protocol\tsetter-not-declared-by-the-sdk-for-this-platform\n");
-    printf("per-protocol\texport-on-6.1.3-OPEN-ask-the-guest-dyld-cache\n");
+    // WHAT THE MEASUREMENT SAYS, PER SYMBOL, rather than one line about the pair. A setter that the SDK
+    // will not declare for this platform is still EXPORTED by 6.1.3, and the absence that is real is the
+    // per-protocol GETTER.
+    printf("export-min-getter\texported\n");
+    printf("export-max-getter\texported\n");
+    printf("export-set-enabled\texported-but-not-declared-by-the-sdk-for-this-platform\n");
+    printf("export-per-protocol-getter\tNOT-exported-6.1.3-has-no-way-to-ask-for-one-protocol\n");
+    printf("export-get-negotiated-version\texported\n");
 
     SSLClose(context);
     CFRelease(context);
