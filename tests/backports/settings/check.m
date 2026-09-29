@@ -32,9 +32,11 @@
 #import "CharonAXSettings.h"
 
 static int failures = 0;
+static int run = 0;
 
 static void check(NSString *rule, id got, id want)
 {
+    run++;
     BOOL same = (got == want) || [got isEqual:want];
     printf("check\t%s\t%s\t%s\n", rule.UTF8String, same ? "ok" : "FAILED",
            same ? [[want description] UTF8String]
@@ -157,7 +159,9 @@ int main(void)
         checkOpenSettings();
         checkControls();
         [[NSNotificationCenter defaultCenter] removeObserver:observer];
-        printf("checks run: %d, failed: %d\n", 23, failures);
+        // The count is counted, not written: it was 23 in the program before this and would have gone
+        // on saying 23 with an assertion added, which is a number no program was maintaining.
+        printf("checks run: %d, failed: %d\n", run, failures);
     }
     return failures == 0 ? 0 : 1;
 }
