@@ -312,17 +312,47 @@ grid	0,-1	7	7      and every point outside the three columns written answers 0 -
 grid	1,-1	8	8      well as on the copy, so this is the store and not the copy
 ```
 
-Two narrower probes separate it from the alternatives:
+**Three narrower probes, and the third of the first version of them could not fail.** It read the same
+expression twice - once, after both writes - so whatever the two models disagreed about, the two numbers
+it printed were the same number. And its binary was wrong in a way that hid even that: it applied the
+differential's alias to every file, so the system class was referenced by nobody, was never loaded, and
+`NSClassFromString` could not find it - the probe was reading the port's own class twice, and printed
+"the same" on every line, which is the signature of a probe that cannot fail. The measurement below is
+the same sequence in a binary with the two classes distinctly named, the port's source compiled under
+the alias and the probe compiled without it:
 
 ```
-one-column	(4,0)=33	(4,1)=33	(4,2)=33     three writes down one column are one pin; the last wins
-one-row	(0,4)=11	(1,4)=22	(2,4)=33        three writes along one row are three pins
-moved	(2,0) before=2 after=2                  a write to a second row of a column moves the first row's
+the two classes are distinct: system=AXBrailleMap port=CharonPortAXBrailleMap
+(2,0) after three writes in column 2	host=33	port=11	DIFFERENT, so this line can fail
+(2,1) after three writes in column 2	host=33	port=22	DIFFERENT, so this line can fail
+(2,9) after three writes in column 2	host=33	port=33	the same
+(0,0), never written	host=0	port=0	the same
+(4,0) after 5 then 0 in column 4	host=0	port=5	DIFFERENT, so this line can fail
 ```
 
-So the second coordinate is not part of the key, the last write to a column wins, and a copy is a
-frozen snapshot of that column-keyed store - which is why the copy answers the height written at (5, 5)
-when asked about (5, 6): the two points are one key.
+Three writes down one column, at rows 0, 1 and 9, and the host answers the **last** of them at all three
+rows while the port answers each at its own point. The five-then-zero line is the one that separates
+them most sharply: a column-keyed store answers 0, a point-keyed one answers 5. And two lines *do*
+agree - the last write, and a point never written - which is what a discriminating probe looks like
+rather than a probe where everything differs or nothing does.
+
+The host's answers alone, across four columns and three row sets, with no model in the file:
+
+```
+col=4 rows=0,1,2  ->  (4,0)=33  (4,1)=33  (4,2)=33
+col=4 rows=0,1,9  ->  (4,0)=33  (4,1)=33  (4,9)=33
+col=2 rows=0,1,2  ->  (2,0)=33  (2,1)=33  (2,2)=33
+col=0 rows=0,1,2  ->  (0,0)=33  (0,1)=33  (0,2)=33
+col=9 rows=0,1,2  ->  (9,0)=33  (9,1)=33  (9,2)=33
+col=4 rows=0,1 hB=2  ->  (4,0)=2  (4,1)=2
+col=4 rows=0,1 hB=0  ->  (4,0)=0  (4,1)=0
+```
+
+So the second coordinate is not part of the key, the last write to a column wins whatever its height,
+and a copy is a frozen snapshot of that column-keyed store - which is why the copy answers the height
+written at (5, 5) when asked about (5, 6): the two points are one key. The probe sources and their
+output are in `.agent-work/runs/map5/` (`key-probe2.m` is the one with the port's answer beside the
+system's, `key-probe3.m` the one with the system alone).
 
 The port's store is keyed by the point, which is what the header's API says - a height at a point - and
 **this one line is where the two differ**, and it is the only declared difference left. Everything else

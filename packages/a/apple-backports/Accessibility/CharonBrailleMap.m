@@ -174,8 +174,16 @@ static NSString *CharonBrailleMapKey(CGPoint point)
     if (self) {
         _size = CGSizeMake([coder decodeDoubleForKey:@"sizeWidth"],
                            [coder decodeDoubleForKey:@"sizeHeight"]);
-        // Unarchived as an immutable store, for the same reason a copy is: what comes back is not
-        // something a caller is going to raise pins on, and the host's own round trip is not either.
+        // A WRITABLE store, which is the opposite of what the first version of this comment said: it
+        // called an unarchived store frozen, as an intent. Measured on the host, a map that came out of an
+        // archive took a write and answered the new height, so the two now agree - a COPY is frozen on
+        // both sides, an ARCHIVED map is not on either.
+        //
+        // The store is the decoder's own dictionary and nothing is copied, and that is a measurement
+        // rather than a saving: what an unarchiver hands back for a dictionary is a mutable instance, so
+        // a mutableCopy of it here would be a line that changes nothing - and the first version of the
+        // mutant for this rule survived because of it, the frozen store it produced behaving exactly like
+        // the mutable one. The store that IS frozen is the one a copy hands over, and M14 breaks that.
         _pins = [coder decodeObjectOfClass:[NSDictionary class] forKey:@"pins"];
     }
     return self;

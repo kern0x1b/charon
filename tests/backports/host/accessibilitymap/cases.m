@@ -160,16 +160,32 @@ int main(void)
             num(@"unarchive.empty.height(0,0)", [emptyBack heightAtPoint:CGPointMake(0, 0)]);
         }
 
-        // The protocol, and the fact that the map does not adopt it: the renderer protocol is a
-        // protocol an *element* adopts, and a class that claimed it would be claiming something the
-        // system's own class does not.
-        // The renderer protocol is NOT compared here, and the reason is in factory-probe.m, which checks
-        // it on the port alone: the port's copy of the protocol is not in its own image's protocol list,
-        // so objc_getProtocol by name answers on the host and not on the port, and a two-sided lookup
-        // would be comparing a name that resolves against one that does not. The member list the host
-        // reports is in facts/Accessibility/Accessibility.md.
+        // The map does not adopt the renderer protocol, and a class that claimed it would be claiming
+        // something the system's own class does not: the renderer protocol is something an *element*
+        // adopts. The two-sided comparison of the protocol's NAME is not here and is not coming here
+        // while the alias renames the protocol with the class; protocol-check.sh asks it on the port
+        // alone, against the registry's own rows, and the reason and the three ways it could be done
+        // are in this directory's README.md under Owed.
         printf("map.conformsToRenderer\t%d\n",
                [mapClass conformsToProtocol:@protocol(AXBrailleMapRenderer)]);
+
+        // The archive, and then a write to what came back. The second half is the assertion that matters:
+        // the first version of this case only read the unarchived map, and the port's unarchived store
+        // was frozen while the host's is not - measured, and a difference the case could not have seen
+        // because it never wrote to either. The host's answers, on this build:
+        //   before  the host's unarchived store: (1,2)=0.5
+        //   write   the host's unarchived store took a write: (1,2)=0.9
+        id roundTrip = [NSKeyedUnarchiver unarchivedObjectOfClass:mapClass fromData:archive error:&archiveError];
+        say(@"unarchive.write.error", archiveError ? [archiveError description] : @"(none)");
+        num(@"unarchive.height(1,2).beforeWrite", [roundTrip heightAtPoint:CGPointMake(1, 2)]);
+        NSString *unarchivedWrite = @"accepted";
+        @try {
+            [roundTrip setHeight:0.9f atPoint:CGPointMake(1, 2)];
+        } @catch (NSException *raised) {
+            unarchivedWrite = [NSString stringWithFormat:@"raised %@", [raised name]];
+        }
+        say(@"unarchive.write", unarchivedWrite);
+        num(@"unarchive.height(1,2).afterWrite", [roundTrip heightAtPoint:CGPointMake(1, 2)]);
 
         // The image: a real one, so the call is a call and not a null. What comes back from it is not
         // read, because there is nothing on either side a program can read back.

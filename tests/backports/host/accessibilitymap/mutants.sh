@@ -20,6 +20,13 @@
 #  M10  a registry protocol row names a protocol that does not exist, so the name does not resolve
 #  M11  the control for M10: the registry copied through the same path with nothing changed, which must
 #       stay green - without it, a check that was red for any reason at all would pass M10
+#  M12  a sized map's archive drops its pins, which nothing checked before 2026-09-29
+#  M13  a sized map's archive drops its size
+#  M14  an unarchived map's store is frozen, which is what the port's was and the host's is not
+#
+# Each mutation runs against a copy of the tree's own file with one line changed, so the unmutated
+# counterpart of every one of them is the tree, which the run before them holds green; M11 is the
+# explicit control for the path itself.
 #
 # Usage: sh tests/backports/host/accessibilitymap/mutants.sh
 set -eu
@@ -42,6 +49,8 @@ mutant() {
     nth=$2
     old=$3
     new=$4
+    is_control=0
+    if [ "$old" = "$new" ]; then is_control=1; fi
     if [ -z "$nth" ]; then
         echo "mutant $name does not say which occurrence of its line it changes" >&2
         return 1
@@ -192,6 +201,23 @@ REGISTRY
 registry_mutant M10-protocol-row-renamed AXBrailleMapRenderer AXBrailleMapCharonDoesNotExist
 registry_mutant M11-protocol-row-control AXBrailleMapRenderer AXBrailleMapRenderer
 
+# M12, M13, M14: the two holes the reviewer found in the check - no archive of a sized map, and a comment
+# asserting a frozen unarchived store that the host's does not honour. Each is one assertion.
+mutant M12-sized-archive-drops-pins 1 \
+    '    [coder encodeObject:_pins forKey:@"pins"];' \
+    '    (void)coder;'
+
+mutant M13-sized-archive-drops-size 1 \
+    '    [coder encodeDouble:_size.width forKey:@"sizeWidth"];' \
+    '    (void)coder;'
+
+# M14: a store that really is frozen where the archive's is not. The first version of this mutation
+# removed a mutableCopy from the decoder's dictionary - which changes nothing, because what an unarchiver
+# hands back is already mutable - so it survived, and the comment that said an unarchived store is frozen
+# had been an intent rather than a measurement for the whole time.
+mutant M14-unarchived-store-frozen 1 \
+    '        _pins = [coder decodeObjectOfClass:[NSDictionary class] forKey:@"pins"];' \
+    '        _pins = [NSDictionary dictionaryWithDictionary:[coder decodeObjectOfClass:[NSDictionary class] forKey:@"pins"]];'
 echo "mutants run: $ran, killed: $killed, controls stayed green: $control_green, died for another reason: $died_wrong, survived: $survived"
 # Every mutant is either killed or is the control that must stay green, and the control is counted as a
 # separate thing so that a check which was red for any reason at all cannot pass the control.

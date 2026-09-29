@@ -103,7 +103,35 @@ int main(void)
         num(@"zero.height(0,0)", [zero heightAtPoint:CGPointMake(0, 0)]);
         expect(@"a zero-sized map still keeps a pin", @([zero heightAtPoint:CGPointMake(0, 0)]), @(1.0f));
 
-        printf("checks run: 7, failed: %d\n", failures);
+        // A SIZED map through an archive. Nothing checks this and the system's half cannot: it has no
+        // way to make a map with a size, so every case about a sized map is port-only, and the archive
+        // of one was one of the two things that fell through - the unarchive of a zero-sized map is in
+        // cases.m, and this is the sized one. Both halves of it: the size has to come back and so has
+        // every pin, because a store that kept the pins and lost the size would answer 0 for the first
+        // grid column and nothing else would notice.
+        NSError *archiveError = nil;
+        NSData *sizedArchive = [NSKeyedArchiver archivedDataWithRootObject:sized requiringSecureCoding:YES
+                                                                   error:&archiveError];
+        expect(@"a sized map archives without an error", archiveError == nil ? @"ok" : @"error", @"ok");
+        AXBrailleMap *sizedBack = [NSKeyedUnarchiver unarchivedObjectOfClass:[AXBrailleMap class]
+                                                                   fromData:sizedArchive error:&archiveError];
+        expect(@"the size comes back through an archive", NSStringFromSize([sizedBack dimensions]), @"{3, 2}");
+        float archivedSum = 0.0f;
+        for (int column = 0; column < 3; column++) {
+            for (int row = 0; row < 2; row++) {
+                archivedSum += [sizedBack heightAtPoint:CGPointMake(column, row)];
+            }
+        }
+        expect(@"every pin of the sized grid comes back through an archive", @(archivedSum), @(1.5));
+        expect(@"and the pin at one point of it is the one that was written",
+               @([sizedBack heightAtPoint:CGPointMake(1, 1)]), @(0.3f));
+        // And a write to what came out of the archive, because the host's unarchived store is writable -
+        // measured, and the first version of this class's comment said otherwise.
+        [sizedBack setHeight:0.05f atPoint:CGPointMake(0, 0)];
+        expect(@"a map out of an archive takes a write, as the host's does",
+               @([sizedBack heightAtPoint:CGPointMake(0, 0)]), @(0.05f));
+
+        printf("checks run: 15, failed: %d\n", failures);
     }
     return failures == 0 ? 0 : 1;
 }

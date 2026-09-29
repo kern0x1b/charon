@@ -15,13 +15,14 @@
 #
 #   * how a map of a given size behaves. The header gives no way to make one, so the port adds
 #     `+charon_mapWithDimensions:` and factory-probe.m checks that, building the port half alone.
-#   * whether the renderer protocol's name resolves. The port emits the protocol's metadata - nm finds
-#     its instance-methods and property lists in the built library - and objc_getProtocol answers nil for
-#     the name anyway, while the same call on the host answers the framework's own protocol. A lookup by
-#     name therefore answers on one side and not the other, and three cases that asked it were taken out
-#     of the comparison; the registry rows for the protocol and its two members are `absent` with that
-#     measurement as their reason. Establishing why an emitted protocol is not in its image's protocol
-#     list is open.
+#   * whether every protocol the registry claims resolves by the name the registry gives it. The port
+#     emits the protocol's metadata and the name DOES resolve: protocol-check.sh looks up every
+#     `kind: protocol` / `status: implemented` row of registry/Accessibility, with a control that a name
+#     the registry does not hold answers nil, and the registry rows for the protocol and its two members
+#     are `implemented` with that check as their source. It is not a second half of this differential
+#     because the alias that keeps the two halves apart renames the protocol as well as the class, so a
+#     lookup by name cannot be compared across them; the reason and the three ways it could be done are
+#     in this directory's README.md under Owed.
 #   * what -presentImage: shows. A program cannot read a display, so nothing is compared about it; the
 #     port's one line about having no display is counted instead.
 #
