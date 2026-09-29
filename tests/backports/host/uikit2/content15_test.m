@@ -345,5 +345,5 @@ int main(void)
         compare_storage();
         printf("checks=%d failures=%d\n", charon_checks, charon_failures);
     }
-    return 0;
+    return charon_failures;
 }

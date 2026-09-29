@@ -578,11 +578,36 @@ static NSString *shape_of(NSString *description);
 // An overrides object prints an object trait's value inside a Swift optional on the host, Optional(fr), and this
 // release has no Swift optional and no way to make one, so the port prints the value. The wrapper is taken off
 // the host's text and the check above fails if the host ever stops printing it.
+// The braces of an overrides description hold a dictionary, and a dictionary prints in hash order, which is not
+// an order: the same two sides print the same pairs in a different order from one run to the next, and the case
+// flaked on exactly that - three runs, two green and one with the pairs the other way round. The pairs are
+// sorted before the two descriptions are compared, which is not a widened tolerance: the pairs themselves are
+// still compared, only their order is dropped, and their order is not part of the answer.
+static NSString *sorted_pairs(NSString *text)
+{
+    NSRange open = [text rangeOfString:@"{"];
+    NSRange close = [text rangeOfString:@"}"];
+    if (open.location == NSNotFound || close.location == NSNotFound || close.location < NSMaxRange(open))
+        return text;
+    // The text inside the braces is " a = 1, b = 2 ", so the split leaves a space on the first pair and on the
+    // last, and a space sorts before every letter - which made the sort a no-op and the case flaky. Each pair
+    // is trimmed before it is compared, and the spaces are put back when they are joined.
+    NSCharacterSet *space = [NSCharacterSet whitespaceCharacterSet];
+    NSMutableArray *pairs = [NSMutableArray array];
+    for (NSString *pair in [[text substringWithRange:NSMakeRange(NSMaxRange(open), close.location - NSMaxRange(open))]
+        componentsSeparatedByString:@", "])
+        [pairs addObject:[pair stringByTrimmingCharactersInSet:space]];
+    [pairs sortUsingSelector:@selector(compare:)];
+    return [NSString stringWithFormat:@"%@{ %@ }%@", [text substringToIndex:open.location],
+                                      [pairs componentsJoinedByString:@", "],
+                                      [text substringFromIndex:NSMaxRange(close)]];
+}
+
 static NSString *unwrapped_overrides(NSString *description)
 {
     NSString *text = [[unprefix(description) stringByReplacingOccurrencesOfString:@"Optional(" withString:@""]
         stringByReplacingOccurrencesOfString:@")" withString:@""];
-    return shape_of(text);
+    return sorted_pairs(shape_of(text));
 }
 
 static void compare_overrides(void)
@@ -700,5 +725,5 @@ int main(void)
         compare_refusals();
         printf("checks=%d failures=%d\n", charon_checks, charon_failures);
     }
-    return 0;
+    return charon_failures;
 }

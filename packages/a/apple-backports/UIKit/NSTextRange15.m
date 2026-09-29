@@ -4,14 +4,11 @@
 // NSTextElement.h; what the host's own UIKit answers is in facts/UIKit/NSTextRange15.md.
 //
 // An NSTextLocation is a protocol with one method, a comparison, and a range is two of them. Every question a
-// range is asked - does it contain this location, does it contain that range, do they intersect, what is the
-// intersection, what is the union - is a comparison of the two locations the ranges are made of, so that is all
-// this file has to know about a location, and it is why a range works over any document type at all: the
-// content manager's own location, the paragraph's, a test's. CharonTextLocation is the port's own concrete
-// location over an offset, which is what the tests and a content manager without a private location use.
+// range is asked is a comparison of the two locations the ranges are made of, so that is all this file has to
+// know about a location, and it is why a range works over any document type at all: the content manager's own
+// location, the paragraph's, a test's.
 
 #import <UIKit/UIKit.h>
-#import "CharonTextLocation.h"
 
 #pragma clang diagnostic ignored "-Wobjc-protocol-qualifiers"
 
@@ -37,9 +34,24 @@
     return [self initWithLocation:location endLocation:nil];
 }
 
+- (instancetype)init
+{
+    // The header marks this one unavailable, and a range is two locations: there is no range without them. The
+    // host faults on it (M9), which is not an answer a caller can survive or read, so this raises instead - a
+    // catchable refusal that names the initialiser to use, and never a range with no locations in it.
+    [NSException raise:NSInternalInconsistencyException
+                format:@"%@ cannot be made without two locations: use -initWithLocation:endLocation:",
+                       NSStringFromClass([self class])];
+    return nil;
+}
+
 - (BOOL)isEmpty
 {
-    return _endLocation == _location;
+    // By value and not by identity: a range is empty when its two locations are the same place, and two
+    // location objects that stand for the same place are one place. The identity test says a range made of two
+    // equal locations is not empty, and the grid of forty-nine pairs in facts/UIKit/NSTextRange15.md is what
+    // found it (M1).
+    return [_location isEqual:_endLocation];
 }
 
 - (BOOL)isEqualToTextRange:(NSTextRange *)textRange
@@ -62,31 +74,42 @@
 
 - (BOOL)containsRange:(NSTextRange *)textRange
 {
-    if (!textRange)
+    if (!textRange || [self isEmpty])
         return NO;
-    if (![self containsLocation:textRange.location])
+    if ([textRange.location compare:_location] == NSOrderedAscending)
         return NO;
-    return [self containsLocation:textRange.endLocation];
+    // An empty range is in this one exactly when its one location is, which is the rule for a location: so
+    // 0...10 holds 3...3 and 0...0 and does not hold 10...10, whose location is at its end (M1). A range with
+    // contents is held whole, closed at both ends: 0...10 holds 0...10 and 0...5, and 0...15 holds 0...10.
+    if ([textRange isEmpty])
+        return [self containsLocation:textRange.location];
+    return [textRange.endLocation compare:_endLocation] != NSOrderedDescending;
 }
 
 - (BOOL)intersectsWithTextRange:(NSTextRange *)textRange
 {
-    if (!textRange)
+    if (!textRange || [self isEmpty] || [textRange isEmpty])
         return NO;
-    // Two empty ranges share no contents, so they do not intersect, and an empty range is in none.
-    if ([self isEmpty] || [textRange isEmpty])
+    // Two ranges share contents exactly when each one starts before the other one ends, from the same grid
+    // (M1). Ranges that touch at a boundary share nothing - 0...5 and 5...15 do not - and an empty range is in
+    // no range, so it shares nothing with any.
+    if ([textRange.location compare:_endLocation] != NSOrderedAscending)
         return NO;
-    if ([textRange.location compare:_location] == NSOrderedAscending)
-        return [textRange.location compare:_endLocation] == NSOrderedAscending;
     return [_location compare:textRange.endLocation] == NSOrderedAscending;
 }
 
 - (instancetype)textRangeByIntersectingWithTextRange:(NSTextRange *)textRange
 {
-    if (![self intersectsWithTextRange:textRange])
+    if (!textRange)
         return nil;
-    id<NSTextLocation> start = [textRange.location compare:_location] == NSOrderedAscending ? textRange.location : _location;
-    id<NSTextLocation> end = [_endLocation compare:textRange.endLocation] == NSOrderedAscending ? _endLocation : textRange.endLocation;
+    // The overlap is the later of the two starts and the earlier of the two ends, and there is one whenever the
+    // ranges share contents or one of them is inside the other - which is why the intersection of 0...10 and
+    // 0...15 is 0...10 and of 0...10 and 5...5 is 5...5 (M1). Ranges that only touch share nothing and neither
+    // is inside the other, so 0...5 with 5...10 has no intersection at all, and 0...10 with 20...25 has none.
+    if (![self containsRange:textRange] && ![textRange containsRange:self] && ![self intersectsWithTextRange:textRange])
+        return nil;
+    id<NSTextLocation> start = [textRange.location compare:_location] == NSOrderedAscending ? _location : textRange.location;
+    id<NSTextLocation> end = [textRange.endLocation compare:_endLocation] == NSOrderedAscending ? textRange.endLocation : _endLocation;
     return [[[self class] alloc] initWithLocation:start endLocation:end];
 }
 
@@ -94,9 +117,16 @@
 {
     if (!textRange)
         return self;
-    if ([self isEmpty] && [textRange isEmpty])
+    // An empty range has nothing to add, so a union with one is the range that has contents: 0...0 with 5...10
+    // is 5...10, and 3...3 with 0...10 is 0...10 (M1). Two of them have nothing between them either, and the
+    // host answers the range it was handed rather than one spanning the gap: 0...0 with 3...3 is 3...3, and in
+    // the other order it is 0...0.
+    if ([self isEmpty])
+        return textRange;
+    if ([textRange isEmpty])
         return self;
-    id<NSTextLocation> start = [textRange.location compare:_location] == NSOrderedAscending ? _location : textRange.location;
+    // Otherwise the envelope: the earlier of the two starts and the later of the two ends.
+    id<NSTextLocation> start = [textRange.location compare:_location] == NSOrderedAscending ? textRange.location : _location;
     id<NSTextLocation> end = [_endLocation compare:textRange.endLocation] == NSOrderedAscending ? textRange.endLocation : _endLocation;
     return [[[self class] alloc] initWithLocation:start endLocation:end];
 }

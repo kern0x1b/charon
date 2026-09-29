@@ -20,6 +20,90 @@ if [ -n "${CHARON_DATA_ASSET_CATALOG:-}" ] && [ -f "$CHARON_DATA_ASSET_CATALOG" 
 fi
 
 . "$here/renames.sh"
+prefixer="$here/../prefix_selectors.py"
+
+defines_what_it_calls() {
+    # $1: the test's binary, rest: the port's objects. A prefixed selector the test names and no object
+    # defines is a link-time no-op and an unrecognized selector when the test reaches it, which nothing in
+    # the gate sees; check-private-selectors.py is the check, and it runs over what this group just built.
+    if ! python3 "$here/../check-private-selectors.py" "$@"; then
+        status=1
+    fi
+}
+
+carried() {
+    # $1: every object of the group. The selectors the port's Charon categories carry, in the whole group and
+    # not per file: a file that sends one of them without defining it needs the prefix as much as the file
+    # that defines it, and a send left unprefixed is an unrecognized selector at run time.
+    nm $1 | sed -n 's/.*[-+]\[[A-Za-z_]*(\(Charon[A-Za-z0-9_]*\)) \([A-Za-z_][A-Za-z0-9_:]*\)\]$/\2/p' | sort -u > "$build/$name.carried"
+}
+
+prefixed_group() {
+    # $1: group name, $2: sources, $3: test source. A group whose port sources add categories to classes the
+    # system owns cannot use the plain path: renames() renames whole identifiers, and a selector is not one
+    # (setObject:forTrait: is three), so the port's method would take the name the system's already has and the
+    # two sides would be one. Each file is compiled once plain, to learn the classes, the C symbols and the
+    # selectors its Charon categories carry, then rewritten by prefix_selectors.py, which prefixes those
+    # selectors whole, then compiled again with the class renames and the declarations of the prefixed
+    # selectors. Every group of this file that adds no category to a system class stays on the plain path.
+    name=$1
+    files=$2
+    test=$3
+    objects=""
+    rm -f "$build/$name.declarations.h"
+    for file in $files; do
+        if ! xcrun clang $target $flags -w -c "$sources/$file" -o "$build/plain/$name-$(basename "$file").o" \
+            2> "$build/plain/$name-$(basename "$file").o.diagnostic"; then
+            printf 'FAIL %s: %s does not compile\n' "$name" "$file"
+            grep -m1 'error:' "$build/plain/$name-$(basename "$file").o.diagnostic" | sed 's|^|  |'
+            status=1
+            return 0
+        fi
+        objects="$objects $build/plain/$name-$(basename "$file").o"
+    done
+    renames "$objects" > "$build/$name.flags"
+    carried "$objects" || : > "$build/$name.carried"
+    [ -s "$build/$name.carried" ] || printf 'note %s carries no selector a category adds\n' "$name"
+    mkdir -p "$build/rewritten/$name" "$build/$name"
+    printf '#import <UIKit/UIKit.h>\n' > "$build/$name.declarations.h"
+    for file in $files; do
+        base=$(basename "$file")
+        source=$build/rewritten/$name/$base
+        if [ -s "$build/$name.carried" ]; then
+            if ! python3 "$prefixer" "$sources/$file" "$source" charonHost \
+                --declarations="$build/$name.declarations.h" $flags -I"$sources" \
+                -I"$(dirname "$sources/$file")" \
+                -target arm64-apple-ios15.0-macabi -isysroot "$sdk" -iframework "$sdk/System/iOSSupport/System/Library/Frameworks" \
+                -- $objects; then
+                printf 'FAIL %s: %s cannot be rewritten\n' "$name" "$file"
+                status=1
+                return 0
+            fi
+        else
+            cp "$sources/$file" "$source"
+        fi
+    done
+    built=""
+    for file in $files; do
+        base=$(basename "$file").o
+        source=$build/rewritten/$name/${base%.o}
+        if ! xcrun clang $target $flags -I"$sources" -I"$(dirname "$sources/$file")" \
+            -include "$build/$name.declarations.h" $(cat "$build/$name.flags") -c "$source" -o "$build/$name/$base" \
+            2> "$build/$name/$base.diagnostic"; then
+            printf 'FAIL %s: the rewritten %s does not compile\n' "$name" "$file"
+            grep -m1 'error:' "$build/$name/$base.diagnostic" | sed "s|$source|$file|; s|^|  |"
+            status=1
+            return 0
+        fi
+        built="$built $build/$name/$base"
+    done
+    xcrun clang $target -fobjc-arc -Wall -I"$harness" "$here/$test" "$harness/check.m" $built $frameworks -o "$build/$name-test"
+    defines_what_it_calls "$build/$name-test" $built
+    if "$build/$name-test" > "$build/$name.log" 2>&1; then result=0; else result=$?; fi
+    grep -v '^ok ' "$build/$name.log" || true
+    echo "$name: exit=$result log=$build/$name.log"
+    [ "$result" = 0 ] || status=1
+}
 
 group() {
     # $1: group name, $2: sources, $3: test source. The keep list is gone with the renamer that read it:
@@ -336,7 +420,7 @@ group foundation14resourcekeys "../Foundation/NSURLResourceKeys14.m" foundation1
 group foundation14useractivity "../Foundation/NSUserActivity.m ../Foundation/NSUserActivity+TargetContent13.m" foundation14_useractivity_test.m
 
 group foundation14urlcache "../Foundation/NSURLCache+DirectoryURL13.m" foundation14_urlcache_test.m
-group traits17 "UITraitCollection.m UITraitCollection+UserInterfaceStyle.m UITraitCollection+Appearance13.m UITraitCollection+Appearance14.m UITraitCollection+Traits10.m UITraitCollection+ForceTouch.m UITrait17.m UITraitList18.m UITrait26.m UITraitCollection+TraitStore.m UITraitCollection+Traits17.m UITraitOverrides17.m" traits17_test.m
+prefixed_group traits17 "UITraitCollection.m UITraitCollection+UserInterfaceStyle.m UITraitCollection+Appearance13.m UITraitCollection+Appearance14.m UITraitCollection+Traits10.m UITraitCollection+ForceTouch.m UITrait17.m UITraitList18.m UITrait26.m UITraitCollection+TraitStore.m UITraitCollection+Traits17.m UITraitOverrides17.m" traits17_test.m
 group textkit2 "NSTextRange15.m NSTextSelection15.m NSTextElement15.m NSTextElement16.m NSTextSelectionNavigation15.m" textkit2_test.m
 group content15 "NSTextContentManager15.m NSTextContentStorage15.m NSTextListElement16.m NSTextElement15.m NSTextElement16.m CharonTextLocation.m" content15_test.m
 

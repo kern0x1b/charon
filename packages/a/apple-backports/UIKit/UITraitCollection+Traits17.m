@@ -15,6 +15,13 @@
 
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
+// The table the three files that carry the twenty-two trait classes register into, one file per release because
+// an object carries the API of exactly one. It lives here, in the file of the release the table's own lookup
+// functions belong to, and the registration is what the other two files call.
+
+
+
+
 static const CharonTraitDefinition *charon_definition_for(Class trait, CharonTraitValue kind);
 
 static NSString *charon_kind_name(CharonTraitValue kind)
@@ -66,47 +73,7 @@ static UITraitCollection *charon_trait_copy(UITraitCollection *collection)
     return result;
 }
 
-BOOL charon_trait_is_default(UITraitCollection *collection, const CharonTraitDefinition *definition)
-{
-    switch (definition->home) {
-    case CharonTraitHomeIvar:
-        if (definition->trait == (Class)[UITraitUserInterfaceIdiom class])
-            return collection.userInterfaceIdiom == UIUserInterfaceIdiomUnspecified;
-        if (definition->trait == (Class)[UITraitDisplayScale class])
-            return collection.displayScale == 0;
-        if (definition->trait == (Class)[UITraitHorizontalSizeClass class])
-            return collection.horizontalSizeClass == UIUserInterfaceSizeClassUnspecified;
-        return collection.verticalSizeClass == UIUserInterfaceSizeClassUnspecified;
-    case CharonTraitHomeStyle:
-        return charon_trait_style(collection) == UIUserInterfaceStyleUnspecified;
-    case CharonTraitHomeForceTouch:
-        return collection.forceTouchCapability == UIForceTouchCapabilityUnknown;
-    default:
-        return charon_trait_extra_object(collection, definition->name) == nil;
-    }
-}
 
-id charon_trait_value(UITraitCollection *collection, const CharonTraitDefinition *definition)
-{
-    if (charon_trait_is_default(collection, definition))
-        return nil;
-    switch (definition->home) {
-    case CharonTraitHomeIvar:
-        if (definition->trait == (Class)[UITraitUserInterfaceIdiom class])
-            return @((NSInteger)collection.userInterfaceIdiom);
-        if (definition->trait == (Class)[UITraitDisplayScale class])
-            return @((double)collection.displayScale);
-        if (definition->trait == (Class)[UITraitHorizontalSizeClass class])
-            return @((NSInteger)collection.horizontalSizeClass);
-        return @((NSInteger)collection.verticalSizeClass);
-    case CharonTraitHomeStyle:
-        return @((NSInteger)charon_trait_style(collection));
-    case CharonTraitHomeForceTouch:
-        return @((NSInteger)collection.forceTouchCapability);
-    default:
-        return charon_trait_extra_object(collection, definition->name);
-    }
-}
 
 UITraitCollection *charon_trait_collection_with(UITraitCollection *collection, const CharonTraitDefinition *definition, id value)
 {

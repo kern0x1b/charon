@@ -42,6 +42,11 @@ static NSMutableArray *charon_registrations_of(id observable, BOOL make)
 
 @implementation _UITraitRegistration
 
+@synthesize traits = _traits;
+@synthesize handler = _handler;
+@synthesize target = _target;
+@synthesize action = _action;
+
 - (id)copyWithZone:(NSZone *)zone
 {
     // A registration is what unregisterForTraitChanges: takes back, and a copy of one is the same registration
@@ -88,6 +93,20 @@ static NSMutableArray *charon_registrations_of(id observable, BOOL make)
 @end
 
 @implementation _UITraitOverrides
+
+// The delivery this file registers below, defined at the foot of it. It is a C function, not a category method,
+// so +load may name it whatever the categories' +load ordering is.
+void charon_deliver_trait_registrations(NSArray *environments, NSArray *previous);
+
+// The delivery of a trait change is UITraitCollection.m's, and that object is carried from 5.0 while this file is
+// carried from 6.0, so the registration of iOS 17 is not called there by name: this file registers it as a
+// listener of the delivery instead, and a release that carries no 6.0 band has no listener and delivers to
+// nobody. +load on this class - a class this file defines, not one a category adds - is what runs the
+// registration, and it calls a C function, which is why the categories' +load ordering does not reach it.
++ (void)load
+{
+    charon_add_trait_change_observer(charon_deliver_trait_registrations);
+}
 
 - (BOOL)containsTrait:(UITrait)trait
 {
@@ -281,7 +300,15 @@ void charon_deliver_trait_registrations(NSArray *environments, NSArray *previous
 
 - (id<UITraitChangeRegistration>)registerForTraitChanges:(NSArray<UITrait> *)traits withAction:(SEL)action
 {
-    return [self registerForTraitChanges:traits withTarget:self action:action];
+    // The registrar itself, as the three methods above it: the target is self, which is what
+    // -registerForTraitChanges:withTarget:action: with self says, and a send to self here is a send no
+    // host differential can place - the port's own method on a class the system owns.
+    return charon_register(self, traits, ^_UITraitRegistration * {
+        _UITraitRegistration *registration = [[_UITraitRegistration alloc] init];
+        registration.target = self;
+        registration.action = action;
+        return registration;
+    });
 }
 
 - (void)unregisterForTraitChanges:(id<UITraitChangeRegistration>)registration

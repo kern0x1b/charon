@@ -10,58 +10,6 @@
 
 #import "CharonTraits17.h"
 #import "CharonTraitStyle.h"
-#import <objc/runtime.h>
-
-
-// The table, in the order UITrait.h and the three environment headers declare the twenty-two, which is the
-// order the host lists systemTraitsAffectingColorAppearance in. Its entries are put there by the +load below,
-// because a definition names its class with [Class class] and no static initializer may send a message. A
-// lookup is a walk of twenty-two entries, which is nothing beside the message a caller has already paid to
-// reach it. What a collection that sets none of a trait answers is its class's defaultValue; the two object
-// traits the host measured with a nil default keep it, so a collection answers nil for a typesetting language
-// as the host does, and the one BOOL trait is the exception UITraitCollection+Traits17.m says more of.
-static const CharonTraitDefinition *charon_definitions[22];
-static int charon_definition_count;
-
-static void charon_register_trait_definition(CharonTraitDefinition *definition)
-{
-    if (charon_definition_count == (int)(sizeof(charon_definitions) / sizeof(charon_definitions[0])))
-        [NSException raise:NSInternalInconsistencyException format:@"more trait definitions than the table holds"];
-    charon_definitions[charon_definition_count++] = definition;
-}
-
-const CharonTraitDefinition *charon_trait_definition(Class trait)
-{
-    if (!trait)
-        return NULL;
-    for (int i = 0; i < charon_definition_count; i++) {
-        if (charon_definitions[i]->trait == trait)
-            return charon_definitions[i];
-    }
-    return NULL;
-}
-
-const CharonTraitDefinition *charon_trait_definition_for_name(NSString *name)
-{
-    for (int i = 0; i < charon_definition_count; i++) {
-        if ([charon_definitions[i]->name isEqualToString:name])
-            return charon_definitions[i];
-    }
-    return NULL;
-}
-
-NSArray *charon_trait_classes(void)
-{
-    static NSArray *classes;
-    static dispatch_once_t once;
-    dispatch_once(&once, ^{
-        NSMutableArray *found = [NSMutableArray arrayWithCapacity:(NSUInteger)charon_definition_count];
-        for (int i = 0; i < charon_definition_count; i++)
-            [found addObject:(id)charon_definitions[i]->trait];
-        classes = found;
-    });
-    return classes;
-}
 
 // The table is the one place a trait's identity is written: the class, the name the port stores the value under,
 // the kind of value, where that value lives, the default and whether the trait decides appearance. The name is
@@ -72,7 +20,7 @@ NSArray *charon_trait_classes(void)
 // A trait definition is written by a function, not by a static initializer, because a definition names its
 // class with [Class class] and no initializer may send a message. The function fills the one static of its
 // class and puts its address in the table; +load calls them in the order the headers declare the twenty-two.
-#define CHARON_TRAIT(ClassName, StoredName, ValueKind, Home, Default, Appearance)                                                        \
+#define CHARON_TRAIT(Index, ClassName, StoredName, ValueKind, Home, Default, Appearance)                                                 \
     static CharonTraitDefinition charon_held_##ClassName;                                                                               \
     static void charon_define_##ClassName(void)                                                                                        \
     {                                                                                                                                   \
@@ -82,34 +30,29 @@ NSArray *charon_trait_classes(void)
         charon_held_##ClassName.home = Home;                                                                                           \
         charon_held_##ClassName.defaultValue = Default;                                                                                \
         charon_held_##ClassName.affectsColorAppearance = Appearance;                                                                   \
-        charon_register_trait_definition(&charon_held_##ClassName);                                                                    \
+        charon_register_trait_definition(Index, &charon_held_##ClassName);                                                             \
     }
 
-CHARON_TRAIT(UITraitUserInterfaceIdiom, @"UserInterfaceIdiom", CharonTraitValueNSInteger, CharonTraitHomeIvar, @(-1), YES)
-CHARON_TRAIT(UITraitUserInterfaceStyle, @"UserInterfaceStyle", CharonTraitValueNSInteger, CharonTraitHomeStyle, @(0), YES)
-CHARON_TRAIT(UITraitLayoutDirection, @"UserInterfaceLayoutDirection", CharonTraitValueNSInteger, CharonTraitHomeExtras, @(-1), NO)
-CHARON_TRAIT(UITraitDisplayScale, @"DisplayScale", CharonTraitValueCGFloat, CharonTraitHomeIvar, @(0), NO)
-CHARON_TRAIT(UITraitHorizontalSizeClass, @"HorizontalSizeClass", CharonTraitValueNSInteger, CharonTraitHomeIvar, @(0), NO)
-CHARON_TRAIT(UITraitVerticalSizeClass, @"VerticalSizeClass", CharonTraitValueNSInteger, CharonTraitHomeIvar, @(0), NO)
-CHARON_TRAIT(UITraitForceTouchCapability, @"ForceTouchCapability", CharonTraitValueNSInteger, CharonTraitHomeForceTouch, @(0), NO)
+CHARON_TRAIT(0, UITraitUserInterfaceIdiom, @"UserInterfaceIdiom", CharonTraitValueNSInteger, CharonTraitHomeIvar, @(-1), YES)
+CHARON_TRAIT(1, UITraitUserInterfaceStyle, @"UserInterfaceStyle", CharonTraitValueNSInteger, CharonTraitHomeStyle, @(0), YES)
+CHARON_TRAIT(2, UITraitLayoutDirection, @"UserInterfaceLayoutDirection", CharonTraitValueNSInteger, CharonTraitHomeExtras, @(-1), NO)
+CHARON_TRAIT(3, UITraitDisplayScale, @"DisplayScale", CharonTraitValueCGFloat, CharonTraitHomeIvar, @(0), NO)
+CHARON_TRAIT(4, UITraitHorizontalSizeClass, @"HorizontalSizeClass", CharonTraitValueNSInteger, CharonTraitHomeIvar, @(0), NO)
+CHARON_TRAIT(5, UITraitVerticalSizeClass, @"VerticalSizeClass", CharonTraitValueNSInteger, CharonTraitHomeIvar, @(0), NO)
+CHARON_TRAIT(6, UITraitForceTouchCapability, @"ForceTouchCapability", CharonTraitValueNSInteger, CharonTraitHomeForceTouch, @(0), NO)
 // The one object trait with a default that is not nil: the port's own UIContentSizeCategoryUnspecified, which is
 // the string UIKitCore 26.2 answers (M1).
-CHARON_TRAIT(UITraitPreferredContentSizeCategory, @"PreferredContentSizeCategory", CharonTraitValueObject, CharonTraitHomeExtras,
+CHARON_TRAIT(7, UITraitPreferredContentSizeCategory, @"PreferredContentSizeCategory", CharonTraitValueObject, CharonTraitHomeExtras,
              UIContentSizeCategoryUnspecified, NO)
-CHARON_TRAIT(UITraitDisplayGamut, @"DisplayGamut", CharonTraitValueNSInteger, CharonTraitHomeExtras, @(-1), YES)
-CHARON_TRAIT(UITraitAccessibilityContrast, @"AccessibilityContrast", CharonTraitValueNSInteger, CharonTraitHomeExtras, @(-1), YES)
-CHARON_TRAIT(UITraitUserInterfaceLevel, @"UserInterfaceLevel", CharonTraitValueNSInteger, CharonTraitHomeExtras, @(-1), YES)
-CHARON_TRAIT(UITraitLegibilityWeight, @"LegibilityWeight", CharonTraitValueNSInteger, CharonTraitHomeExtras, @(-1), NO)
-CHARON_TRAIT(UITraitActiveAppearance, @"ActiveAppearance", CharonTraitValueNSInteger, CharonTraitHomeExtras, @(-1), YES)
-CHARON_TRAIT(UITraitToolbarItemPresentationSize, @"ToolbarItemPresentationSize", CharonTraitValueNSInteger, CharonTraitHomeExtras, @(-1), NO)
-CHARON_TRAIT(UITraitImageDynamicRange, @"ImageDynamicRange", CharonTraitValueNSInteger, CharonTraitHomeExtras, @(-1), NO)
-CHARON_TRAIT(UITraitTypesettingLanguage, @"TypesettingLanguage", CharonTraitValueObject, CharonTraitHomeExtras, nil, NO)
-CHARON_TRAIT(UITraitSceneCaptureState, @"SceneCaptureState", CharonTraitValueNSInteger, CharonTraitHomeExtras, @(-1), NO)
-CHARON_TRAIT(UITraitHDRHeadroomUsageLimit, @"HDRHeadroomUsageLimit", CharonTraitValueNSInteger, CharonTraitHomeExtras, @(-1), NO)
-CHARON_TRAIT(UITraitResolvesNaturalAlignmentWithBaseWritingDirection, @"ResolvesNaturalAlignmentWithBaseWritingDirection", CharonTraitValueObject, CharonTraitHomeExtras, nil, NO)
-CHARON_TRAIT(UITraitListEnvironment, @"ListEnvironment", CharonTraitValueNSInteger, CharonTraitHomeExtras, @(0), YES)
-CHARON_TRAIT(UITraitTabAccessoryEnvironment, @"TabAccessoryEnvironment", CharonTraitValueNSInteger, CharonTraitHomeExtras, @(0), NO)
-CHARON_TRAIT(UITraitSplitViewControllerLayoutEnvironment, @"SplitViewControllerLayoutEnvironment", CharonTraitValueNSInteger, CharonTraitHomeExtras, @(0), NO)
+CHARON_TRAIT(8, UITraitDisplayGamut, @"DisplayGamut", CharonTraitValueNSInteger, CharonTraitHomeExtras, @(-1), YES)
+CHARON_TRAIT(9, UITraitAccessibilityContrast, @"AccessibilityContrast", CharonTraitValueNSInteger, CharonTraitHomeExtras, @(-1), YES)
+CHARON_TRAIT(10, UITraitUserInterfaceLevel, @"UserInterfaceLevel", CharonTraitValueNSInteger, CharonTraitHomeExtras, @(-1), YES)
+CHARON_TRAIT(11, UITraitLegibilityWeight, @"LegibilityWeight", CharonTraitValueNSInteger, CharonTraitHomeExtras, @(-1), NO)
+CHARON_TRAIT(12, UITraitActiveAppearance, @"ActiveAppearance", CharonTraitValueNSInteger, CharonTraitHomeExtras, @(-1), YES)
+CHARON_TRAIT(13, UITraitToolbarItemPresentationSize, @"ToolbarItemPresentationSize", CharonTraitValueNSInteger, CharonTraitHomeExtras, @(-1), NO)
+CHARON_TRAIT(14, UITraitImageDynamicRange, @"ImageDynamicRange", CharonTraitValueNSInteger, CharonTraitHomeExtras, @(-1), NO)
+CHARON_TRAIT(15, UITraitTypesettingLanguage, @"TypesettingLanguage", CharonTraitValueObject, CharonTraitHomeExtras, nil, NO)
+CHARON_TRAIT(16, UITraitSceneCaptureState, @"SceneCaptureState", CharonTraitValueNSInteger, CharonTraitHomeExtras, @(-1), NO)
 
 @interface CharonTraitDefinitions17 : NSObject
 @end
@@ -135,11 +78,6 @@ CHARON_TRAIT(UITraitSplitViewControllerLayoutEnvironment, @"SplitViewControllerL
     charon_define_UITraitImageDynamicRange();
     charon_define_UITraitTypesettingLanguage();
     charon_define_UITraitSceneCaptureState();
-    charon_define_UITraitHDRHeadroomUsageLimit();
-    charon_define_UITraitResolvesNaturalAlignmentWithBaseWritingDirection();
-    charon_define_UITraitListEnvironment();
-    charon_define_UITraitTabAccessoryEnvironment();
-    charon_define_UITraitSplitViewControllerLayoutEnvironment();
 
     // The traits the older collections never had are named and described here, so a collection that holds one
     // prints it as the host prints it and codes it under the name the host's coder uses. The traits that
@@ -169,201 +107,136 @@ CHARON_TRAIT(UITraitSplitViewControllerLayoutEnvironment, @"SplitViewControllerL
     charon_register_trait_kind((CharonTraitKind){@"PreferredContentSizeCategory", 0, 2,
                                                    @"XS,S,M,L,XL,XXL,XXXL,AccessibilityM,AccessibilityL,AccessibilityXL,"
                                                    @"AccessibilityXXL,AccessibilityXXXL", nil});
+    // The description of a collection is carried from 5.0 and the trait table from 6.0, so the table is
+    // reached through a reader this file registers rather than named there.
+    charon_add_trait_value_reader(charon_read_trait_value);
 }
+
 
 @end
 
 // One implementation for all twenty-two: the class property a caller names decides what the table holds for it.
-static NSString *charon_identifier(Class self)
-{
-    return NSStringFromClass(self);
-}
 
 // +name is the class's own name without its UITrait prefix on every one of the twenty-two, measured; it is not
 // the name the port stores the value under, which for UITraitLayoutDirection is the longer
 // UserInterfaceLayoutDirection the collection has always printed. The two are separate on purpose, and
 // charon_trait_public_name in the header is the one place the rule is written.
-static NSString *charon_trait_name(Class self)
-{
-    const CharonTraitDefinition *definition = charon_trait_definition(self);
-    return definition ? charon_trait_public_name(definition) : NSStringFromClass(self);
-}
-
-static BOOL charon_affects_color_appearance(Class self)
-{
-    const CharonTraitDefinition *definition = charon_trait_definition(self);
-    return definition ? definition->affectsColorAppearance : NO;
-}
-
-static id charon_object_default(Class self)
-{
-    const CharonTraitDefinition *definition = charon_trait_definition(self);
-    return definition ? definition->defaultValue : nil;
-}
-
-static NSInteger charon_integer_default(Class self)
-{
-    const CharonTraitDefinition *definition = charon_trait_definition(self);
-    if (!definition)
-        return -1;
-    return definition->defaultValue ? [definition->defaultValue integerValue] : -1;
-}
-
-static CGFloat charon_cgfloat_default(Class self)
-{
-    const CharonTraitDefinition *definition = charon_trait_definition(self);
-    return definition && definition->defaultValue ? (CGFloat)[definition->defaultValue doubleValue] : 0;
-}
 
 @implementation UITraitUserInterfaceIdiom
-+ (NSString *)identifier { return charon_identifier(self); }
-+ (NSString *)name { return charon_trait_name(self); }
-+ (BOOL)affectsColorAppearance { return charon_affects_color_appearance(self); }
-+ (NSInteger)defaultValue { return charon_integer_default(self); }
++ (NSString *)identifier { return charon_identifier_of(self); }
++ (NSString *)name { return charon_trait_name_of(self); }
++ (BOOL)affectsColorAppearance { return charon_appearance_of(self); }
++ (NSInteger)defaultValue { return charon_integer_default_of(self); }
 @end
 
 @implementation UITraitUserInterfaceStyle
-+ (NSString *)identifier { return charon_identifier(self); }
-+ (NSString *)name { return charon_trait_name(self); }
-+ (BOOL)affectsColorAppearance { return charon_affects_color_appearance(self); }
-+ (NSInteger)defaultValue { return charon_integer_default(self); }
++ (NSString *)identifier { return charon_identifier_of(self); }
++ (NSString *)name { return charon_trait_name_of(self); }
++ (BOOL)affectsColorAppearance { return charon_appearance_of(self); }
++ (NSInteger)defaultValue { return charon_integer_default_of(self); }
 @end
 
 @implementation UITraitLayoutDirection
-+ (NSString *)identifier { return charon_identifier(self); }
-+ (NSString *)name { return charon_trait_name(self); }
-+ (BOOL)affectsColorAppearance { return charon_affects_color_appearance(self); }
-+ (NSInteger)defaultValue { return charon_integer_default(self); }
++ (NSString *)identifier { return charon_identifier_of(self); }
++ (NSString *)name { return charon_trait_name_of(self); }
++ (BOOL)affectsColorAppearance { return charon_appearance_of(self); }
++ (NSInteger)defaultValue { return charon_integer_default_of(self); }
 @end
 
 @implementation UITraitDisplayScale
-+ (NSString *)identifier { return charon_identifier(self); }
-+ (NSString *)name { return charon_trait_name(self); }
-+ (BOOL)affectsColorAppearance { return charon_affects_color_appearance(self); }
-+ (CGFloat)defaultValue { return charon_cgfloat_default(self); }
++ (NSString *)identifier { return charon_identifier_of(self); }
++ (NSString *)name { return charon_trait_name_of(self); }
++ (BOOL)affectsColorAppearance { return charon_appearance_of(self); }
++ (CGFloat)defaultValue { return charon_cgfloat_default_of(self); }
 @end
 
 @implementation UITraitHorizontalSizeClass
-+ (NSString *)identifier { return charon_identifier(self); }
-+ (NSString *)name { return charon_trait_name(self); }
-+ (BOOL)affectsColorAppearance { return charon_affects_color_appearance(self); }
-+ (NSInteger)defaultValue { return charon_integer_default(self); }
++ (NSString *)identifier { return charon_identifier_of(self); }
++ (NSString *)name { return charon_trait_name_of(self); }
++ (BOOL)affectsColorAppearance { return charon_appearance_of(self); }
++ (NSInteger)defaultValue { return charon_integer_default_of(self); }
 @end
 
 @implementation UITraitVerticalSizeClass
-+ (NSString *)identifier { return charon_identifier(self); }
-+ (NSString *)name { return charon_trait_name(self); }
-+ (BOOL)affectsColorAppearance { return charon_affects_color_appearance(self); }
-+ (NSInteger)defaultValue { return charon_integer_default(self); }
++ (NSString *)identifier { return charon_identifier_of(self); }
++ (NSString *)name { return charon_trait_name_of(self); }
++ (BOOL)affectsColorAppearance { return charon_appearance_of(self); }
++ (NSInteger)defaultValue { return charon_integer_default_of(self); }
 @end
 
 @implementation UITraitForceTouchCapability
-+ (NSString *)identifier { return charon_identifier(self); }
-+ (NSString *)name { return charon_trait_name(self); }
-+ (BOOL)affectsColorAppearance { return charon_affects_color_appearance(self); }
-+ (NSInteger)defaultValue { return charon_integer_default(self); }
++ (NSString *)identifier { return charon_identifier_of(self); }
++ (NSString *)name { return charon_trait_name_of(self); }
++ (BOOL)affectsColorAppearance { return charon_appearance_of(self); }
++ (NSInteger)defaultValue { return charon_integer_default_of(self); }
 @end
 
 @implementation UITraitPreferredContentSizeCategory
-+ (NSString *)identifier { return charon_identifier(self); }
-+ (NSString *)name { return charon_trait_name(self); }
-+ (BOOL)affectsColorAppearance { return charon_affects_color_appearance(self); }
-+ (id)defaultValue { return charon_object_default(self); }
++ (NSString *)identifier { return charon_identifier_of(self); }
++ (NSString *)name { return charon_trait_name_of(self); }
++ (BOOL)affectsColorAppearance { return charon_appearance_of(self); }
++ (id)defaultValue { return charon_object_default_of(self); }
 @end
 
 @implementation UITraitDisplayGamut
-+ (NSString *)identifier { return charon_identifier(self); }
-+ (NSString *)name { return charon_trait_name(self); }
-+ (BOOL)affectsColorAppearance { return charon_affects_color_appearance(self); }
-+ (NSInteger)defaultValue { return charon_integer_default(self); }
++ (NSString *)identifier { return charon_identifier_of(self); }
++ (NSString *)name { return charon_trait_name_of(self); }
++ (BOOL)affectsColorAppearance { return charon_appearance_of(self); }
++ (NSInteger)defaultValue { return charon_integer_default_of(self); }
 @end
 
 @implementation UITraitAccessibilityContrast
-+ (NSString *)identifier { return charon_identifier(self); }
-+ (NSString *)name { return charon_trait_name(self); }
-+ (BOOL)affectsColorAppearance { return charon_affects_color_appearance(self); }
-+ (NSInteger)defaultValue { return charon_integer_default(self); }
++ (NSString *)identifier { return charon_identifier_of(self); }
++ (NSString *)name { return charon_trait_name_of(self); }
++ (BOOL)affectsColorAppearance { return charon_appearance_of(self); }
++ (NSInteger)defaultValue { return charon_integer_default_of(self); }
 @end
 
 @implementation UITraitUserInterfaceLevel
-+ (NSString *)identifier { return charon_identifier(self); }
-+ (NSString *)name { return charon_trait_name(self); }
-+ (BOOL)affectsColorAppearance { return charon_affects_color_appearance(self); }
-+ (NSInteger)defaultValue { return charon_integer_default(self); }
++ (NSString *)identifier { return charon_identifier_of(self); }
++ (NSString *)name { return charon_trait_name_of(self); }
++ (BOOL)affectsColorAppearance { return charon_appearance_of(self); }
++ (NSInteger)defaultValue { return charon_integer_default_of(self); }
 @end
 
 @implementation UITraitLegibilityWeight
-+ (NSString *)identifier { return charon_identifier(self); }
-+ (NSString *)name { return charon_trait_name(self); }
-+ (BOOL)affectsColorAppearance { return charon_affects_color_appearance(self); }
-+ (NSInteger)defaultValue { return charon_integer_default(self); }
++ (NSString *)identifier { return charon_identifier_of(self); }
++ (NSString *)name { return charon_trait_name_of(self); }
++ (BOOL)affectsColorAppearance { return charon_appearance_of(self); }
++ (NSInteger)defaultValue { return charon_integer_default_of(self); }
 @end
 
 @implementation UITraitActiveAppearance
-+ (NSString *)identifier { return charon_identifier(self); }
-+ (NSString *)name { return charon_trait_name(self); }
-+ (BOOL)affectsColorAppearance { return charon_affects_color_appearance(self); }
-+ (NSInteger)defaultValue { return charon_integer_default(self); }
++ (NSString *)identifier { return charon_identifier_of(self); }
++ (NSString *)name { return charon_trait_name_of(self); }
++ (BOOL)affectsColorAppearance { return charon_appearance_of(self); }
++ (NSInteger)defaultValue { return charon_integer_default_of(self); }
 @end
 
 @implementation UITraitToolbarItemPresentationSize
-+ (NSString *)identifier { return charon_identifier(self); }
-+ (NSString *)name { return charon_trait_name(self); }
-+ (BOOL)affectsColorAppearance { return charon_affects_color_appearance(self); }
-+ (NSInteger)defaultValue { return charon_integer_default(self); }
++ (NSString *)identifier { return charon_identifier_of(self); }
++ (NSString *)name { return charon_trait_name_of(self); }
++ (BOOL)affectsColorAppearance { return charon_appearance_of(self); }
++ (NSInteger)defaultValue { return charon_integer_default_of(self); }
 @end
 
 @implementation UITraitImageDynamicRange
-+ (NSString *)identifier { return charon_identifier(self); }
-+ (NSString *)name { return charon_trait_name(self); }
-+ (BOOL)affectsColorAppearance { return charon_affects_color_appearance(self); }
-+ (NSInteger)defaultValue { return charon_integer_default(self); }
++ (NSString *)identifier { return charon_identifier_of(self); }
++ (NSString *)name { return charon_trait_name_of(self); }
++ (BOOL)affectsColorAppearance { return charon_appearance_of(self); }
++ (NSInteger)defaultValue { return charon_integer_default_of(self); }
 @end
 
 @implementation UITraitTypesettingLanguage
-+ (NSString *)identifier { return charon_identifier(self); }
-+ (NSString *)name { return charon_trait_name(self); }
-+ (id)defaultValue { return charon_object_default(self); }
++ (NSString *)identifier { return charon_identifier_of(self); }
++ (NSString *)name { return charon_trait_name_of(self); }
++ (id)defaultValue { return charon_object_default_of(self); }
 @end
 
 @implementation UITraitSceneCaptureState
-+ (NSString *)identifier { return charon_identifier(self); }
-+ (NSString *)name { return charon_trait_name(self); }
-+ (BOOL)affectsColorAppearance { return charon_affects_color_appearance(self); }
-+ (NSInteger)defaultValue { return charon_integer_default(self); }
++ (NSString *)identifier { return charon_identifier_of(self); }
++ (NSString *)name { return charon_trait_name_of(self); }
++ (BOOL)affectsColorAppearance { return charon_appearance_of(self); }
++ (NSInteger)defaultValue { return charon_integer_default_of(self); }
 @end
 
-@implementation UITraitHDRHeadroomUsageLimit
-+ (NSString *)identifier { return charon_identifier(self); }
-+ (NSString *)name { return charon_trait_name(self); }
-+ (BOOL)affectsColorAppearance { return charon_affects_color_appearance(self); }
-+ (NSInteger)defaultValue { return charon_integer_default(self); }
-@end
-
-@implementation UITraitResolvesNaturalAlignmentWithBaseWritingDirection
-+ (NSString *)identifier { return charon_identifier(self); }
-+ (NSString *)name { return charon_trait_name(self); }
-+ (BOOL)affectsColorAppearance { return charon_affects_color_appearance(self); }
-+ (id)defaultValue { return charon_object_default(self); }
-@end
-
-@implementation UITraitListEnvironment
-+ (NSString *)identifier { return charon_identifier(self); }
-+ (NSString *)name { return charon_trait_name(self); }
-+ (BOOL)affectsColorAppearance { return charon_affects_color_appearance(self); }
-+ (NSInteger)defaultValue { return charon_integer_default(self); }
-@end
-
-@implementation UITraitTabAccessoryEnvironment
-+ (NSString *)identifier { return charon_identifier(self); }
-+ (NSString *)name { return charon_trait_name(self); }
-+ (BOOL)affectsColorAppearance { return charon_affects_color_appearance(self); }
-+ (NSInteger)defaultValue { return charon_integer_default(self); }
-@end
-
-@implementation UITraitSplitViewControllerLayoutEnvironment
-+ (NSString *)identifier { return charon_identifier(self); }
-+ (NSString *)name { return charon_trait_name(self); }
-+ (BOOL)affectsColorAppearance { return charon_affects_color_appearance(self); }
-+ (NSInteger)defaultValue { return charon_integer_default(self); }
-@end
