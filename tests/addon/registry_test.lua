@@ -1016,8 +1016,14 @@ function wiring(backports, root, found)
     -- series left in `modelio` was of exactly this kind and none of the first three arms could see
     -- it, which is what this arm is for.
     --
-    -- Seven configs in main have the gap, measured one config at a time with this same arm, and
-    -- they are main's rather than this series':
+    -- Thirteen gaps across seven configs, all in main and none in this series.  Measured one config
+    -- at a time over these same library declarations, this arm finds a gap in SIX of the series'
+    -- base's configs - metalkit, arkit, scenekit, avkit, usernotificationsui, notificationcenter -
+    -- and in FIVE of this tree's, the same minus metalkit, which 64a681dbc closed by oring metalkit
+    -- and modelio into the metal clause.  So the series removed one pre-existing gap and added none.
+    -- An earlier commit of this series reported two, and the number came from the reach script run
+    -- over six config names rather than over the recipe's; it is here now so it cannot drift again
+    -- without this check moving.  What each of the thirteen is:
     --
     --   uikit, avkit, usernotificationsui, notificationcenter   UIKitBackports needs GraphicsBackports
     --   avkit, usernotificationsui, notificationcenter           ... and the links list does not name it
