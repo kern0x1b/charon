@@ -6,7 +6,7 @@ images, run a Core ML model - on an image, and observations that the requests fi
 Source: Vision of the arm64 shared cache of iOS 12.0 - the constant `VNVisionVersionNumber` (2.0) as data, the six geometry
 functions as code, `-[VNRequest initWithCompletionHandler:]`, `-setRevision:` and `+defaultRevision`, the defaults of `VNDetectRectanglesRequestConfiguration`, the
 setter of `VNTrackingRequest`, `+[VNFaceObservation faceObservationWithRequestRevision:boundingBox:roll:yaw:]` and `+[VNError errorWithCode:message:]` - and the host's own Vision under Mac Catalyst,
-recorded by `tests/backports/host/vision/run.sh` (33 records) and held against the port on the iPad 2 by `tests/backports/device/vision.m`.
+recorded by `tests/backports/host/vision/run.sh` (45 records) and held against the port on the iPad 2 by `tests/backports/device/vision.m`.
 
 ## What the port does
 
