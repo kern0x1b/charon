@@ -8,7 +8,7 @@ package("ggml")
     add_versions("0.25.3", "cd9b92d5652f5e4abb41603bf59e269f8fec1b2d05ce22fded981064dd25fb89")
     add_links("ggml")
 
-    add_configs("recipe", {description = "The digest of this recipe, so a changed flag is a different library.", default = hash.strhash128(hash.sha256(path.join(os.scriptdir(), "xmake.lua"))), type = "string", readonly = true})
+    add_configs("recipe", {description = "The digest of this recipe, so a changed flag is a different library.", default = hash.strhash128(hash.sha256(path.join(os.scriptdir(), "xmake.lua")) .. hash.sha256(path.join(os.scriptdir(), "ggml-libcxx.cpp"))), type = "string", readonly = true})
 
     -- Why this one, of the three the owner named, and what is taken from it:
     --
@@ -72,7 +72,7 @@ package("ggml")
                         "-I" .. path.join(root, "include"), "-I" .. path.join(root, "include", "ggml"),
                         "-I" .. path.join(root, "src"), "-I" .. path.join(root, "src", "ggml-cpu")}
 
-        -- Eighteen translation units, and not the library's few: the CPU backend's own carry the operators
+        -- Eighteen translation units and the runtime shim, and not the library's few: the CPU backend's own carry the operators
         -- (ops.cpp, vec.cpp, binary-ops.cpp, unary-ops.cpp), the kernels and the wrappers ggml.c only
         -- declares - ggml_sigmoid, ggml_new_f32, ggml_set_f32 and the graph compute - and ggml-backend.cpp the
         -- tensor writes and the buffer usage the graph allocator calls; without them the archive links with
@@ -85,6 +85,19 @@ package("ggml")
             local cxx = source:endswith(".cpp")
             os.vrunv(toolchain:tool(cxx and "cxx" or "cc"), table.join(target, FLAGS, cxx and CXXFLAGS or {}, {"-c", path.join(root, "src", source), "-o", object}))
             table.insert(objects, object)
+        end
+        -- The C++ runtime entry points the units above call and iOS 4.3's libstdc++ does not export
+        -- (ggml-libcxx.cpp says which and why), defined in the archive. Every symbol of that object is
+        -- made private after it is compiled: some of what it defines is declared with default visibility
+        -- by the standard library's own headers, which an -fvisibility flag does not override, and none
+        -- of it may be API of the image that links this in.
+        do
+            local shim = path.absolute(path.join("objects", "ggml-libcxx.o"))
+            local shim_public = path.absolute(path.join("objects", "ggml-libcxx-public.o"))
+            os.vrunv(toolchain:tool("cxx"), table.join(target, FLAGS, CXXFLAGS, {"-c", path.join(package:scriptdir(), "ggml-libcxx.cpp"), "-o", shim_public}))
+            os.vrunv("xcrun", {"ld", "-r", "-arch", package:arch(), "-platform_version", "ios", toolchain:config("deployment"), "16.4",
+                               "-keep_private_externs", "-unexported_symbol", "*", shim_public, "-o", shim})
+            table.insert(objects, shim)
         end
         table.sort(objects)
         os.vrunv("xcrun", table.join({"libtool", "-static", "-o", path.join(package:installdir("lib"), "libggml.a")}, objects))
