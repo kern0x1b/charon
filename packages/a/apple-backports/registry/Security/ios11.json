@@ -399,37 +399,7 @@
    "source": "the SDK 16.4 headers of Security"
   },
   {
-   "api": "sec_protocol_options_set_peer_authentication_required()",
-   "kind": "function",
-   "introduced": "12.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
-   "effect": "the function is not there: a weak reference to it is NULL",
-   "source": "the SDK 16.4 headers of Security"
-  },
-  {
    "api": "sec_protocol_options_set_tls_diffie_hellman_parameters()",
-   "kind": "function",
-   "introduced": "12.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
-   "effect": "the function is not there: a weak reference to it is NULL",
-   "source": "the SDK 16.4 headers of Security"
-  },
-  {
-   "api": "sec_protocol_options_set_tls_false_start_enabled()",
-   "kind": "function",
-   "introduced": "12.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
-   "effect": "the function is not there: a weak reference to it is NULL",
-   "source": "the SDK 16.4 headers of Security"
-  },
-  {
-   "api": "sec_protocol_options_set_tls_is_fallback_attempt()",
    "kind": "function",
    "introduced": "12.0",
    "minimum": "6.0",
@@ -459,57 +429,7 @@
    "source": "the SDK 16.4 headers of Security"
   },
   {
-   "api": "sec_protocol_options_set_tls_ocsp_enabled()",
-   "kind": "function",
-   "introduced": "12.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
-   "effect": "the function is not there: a weak reference to it is NULL",
-   "source": "the SDK 16.4 headers of Security"
-  },
-  {
-   "api": "sec_protocol_options_set_tls_renegotiation_enabled()",
-   "kind": "function",
-   "introduced": "12.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
-   "effect": "the function is not there: a weak reference to it is NULL",
-   "source": "the SDK 16.4 headers of Security"
-  },
-  {
-   "api": "sec_protocol_options_set_tls_resumption_enabled()",
-   "kind": "function",
-   "introduced": "12.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
-   "effect": "the function is not there: a weak reference to it is NULL",
-   "source": "the SDK 16.4 headers of Security"
-  },
-  {
-   "api": "sec_protocol_options_set_tls_sct_enabled()",
-   "kind": "function",
-   "introduced": "12.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
-   "effect": "the function is not there: a weak reference to it is NULL",
-   "source": "the SDK 16.4 headers of Security"
-  },
-  {
    "api": "sec_protocol_options_set_tls_server_name()",
-   "kind": "function",
-   "introduced": "12.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the security types Network.framework hands its TLS callbacks, and this release has no Network.framework",
-   "effect": "the function is not there: a weak reference to it is NULL",
-   "source": "the SDK 16.4 headers of Security"
-  },
-  {
-   "api": "sec_protocol_options_set_tls_tickets_enabled()",
    "kind": "function",
    "introduced": "12.0",
    "minimum": "6.0",

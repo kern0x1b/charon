@@ -288,6 +288,17 @@
       "status": "inert"
     },
     {
+      "api": "sec_protocol_options_set_peer_authentication_required()",
+      "effect": "the flag is HELD on the port's own object, and it is the ONLY flag it touches: each of the eight has its OWN ivar, because a shared flags word would make this one and its neighbour the same setting wearing two names, and reading one back would report the other. the flag is held and NOBODY READS IT: a caller that sets it and connects with no peer certificate is NOT stopped, which is stated because it is a security-relevant absence rather than a preference",
+      "facts": "facts/Security/SecProtocolWorklist.md",
+      "introduced": "13.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "6.1.3 HAS NO STACK THAT TAKES a sec_protocol_options_t, so nothing ever reads a flag the port holds. The port supplies CharonSecProtocolFlags and the setter holds the flag. A port that returned an error would break a caller that sets options before it connects, and a port that pretended the setting took effect would be a lie about a handshake it cannot perform",
+      "source": "SDK 16.4, Security",
+      "status": "inert"
+    },
+    {
       "api": "sec_protocol_options_set_pre_shared_key_selection_block()",
       "effect": "the block is COPIED, not held by pointer - a stack block would be dead when the setter returned and the port would later call into a frame that no longer exists. Assigning to a __strong ivar copies it. The QUEUE the header takes alongside it is held the same way, because a block held without the queue it was given for would be held for a queue nobody owns. The effect: nothing dispatches it, because no handshake will",
       "facts": "facts/Security/SecProtocolWorklist.md",
@@ -299,6 +310,39 @@
       "status": "inert"
     },
     {
+      "api": "sec_protocol_options_set_tls_false_start_enabled()",
+      "effect": "the flag is HELD on the port's own object, and it is the ONLY flag it touches: each of the eight has its OWN ivar, because a shared flags word would make this one and its neighbour the same setting wearing two names, and reading one back would report the other. the flag is held; 0-RTT did not exist in 2011 and the release cannot send it",
+      "facts": "facts/Security/SecProtocolWorklist.md",
+      "introduced": "13.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "6.1.3 HAS NO STACK THAT TAKES a sec_protocol_options_t, so nothing ever reads a flag the port holds. The port supplies CharonSecProtocolFlags and the setter holds the flag. A port that returned an error would break a caller that sets options before it connects, and a port that pretended the setting took effect would be a lie about a handshake it cannot perform",
+      "source": "SDK 16.4, Security",
+      "status": "inert"
+    },
+    {
+      "api": "sec_protocol_options_set_tls_is_fallback_attempt()",
+      "effect": "the flag is HELD on the port's own object, and it is the ONLY flag it touches: each of the eight has its OWN ivar, because a shared flags word would make this one and its neighbour the same setting wearing two names, and reading one back would report the other. the flag is held; the release's stack has its own fallback behaviour that a caller cannot reach through this object",
+      "facts": "facts/Security/SecProtocolWorklist.md",
+      "introduced": "13.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "6.1.3 HAS NO STACK THAT TAKES a sec_protocol_options_t, so nothing ever reads a flag the port holds. The port supplies CharonSecProtocolFlags and the setter holds the flag. A port that returned an error would break a caller that sets options before it connects, and a port that pretended the setting took effect would be a lie about a handshake it cannot perform",
+      "source": "SDK 16.4, Security",
+      "status": "inert"
+    },
+    {
+      "api": "sec_protocol_options_set_tls_ocsp_enabled()",
+      "effect": "the flag is HELD on the port's own object, and it is the ONLY flag it touches: each of the eight has its OWN ivar, because a shared flags word would make this one and its neighbour the same setting wearing two names, and reading one back would report the other. 6.1.3 STAPLED NO OCSP RESPONSE, so a peer whose certificate is revoked is not detected as such; the flag is held and the check is NOT performed",
+      "facts": "facts/Security/SecProtocolWorklist.md",
+      "introduced": "13.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "6.1.3 HAS NO STACK THAT TAKES a sec_protocol_options_t, so nothing ever reads a flag the port holds. The port supplies CharonSecProtocolFlags and the setter holds the flag. A port that returned an error would break a caller that sets options before it connects, and a port that pretended the setting took effect would be a lie about a handshake it cannot perform",
+      "source": "SDK 16.4, Security",
+      "status": "inert"
+    },
+    {
       "api": "sec_protocol_options_set_tls_pre_shared_key_identity_hint()",
       "effect": "the hint is HELD across the setter's return. dispatch_data_t is an ObjC object, so a __strong ivar retains it on assignment; dispatch_retain and dispatch_release are ARC-FORBIDDEN on it. The effect: the handshake ignores the hint",
       "facts": "facts/Security/SecProtocolWorklist.md",
@@ -306,6 +350,50 @@
       "kind": "function",
       "minimum": "6.0",
       "reason": "6.1.3 has NO STACK THAT TAKES a sec_protocol_options_t, so nothing ever reads what is held: the port supplies CharonSecProtocolOptions, the setter holds the value, and the effect is that the handshake ignores it. A port that returned an error would break a caller that sets options before it connects, and a port that pretended the setting took effect would be a lie about a handshake it cannot perform",
+      "source": "SDK 16.4, Security",
+      "status": "inert"
+    },
+    {
+      "api": "sec_protocol_options_set_tls_renegotiation_enabled()",
+      "effect": "the flag is HELD on the port's own object, and it is the ONLY flag it touches: each of the eight has its OWN ivar, because a shared flags word would make this one and its neighbour the same setting wearing two names, and reading one back would report the other. the flag is held; renegotiation is the release's own and not reachable through this object",
+      "facts": "facts/Security/SecProtocolWorklist.md",
+      "introduced": "13.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "6.1.3 HAS NO STACK THAT TAKES a sec_protocol_options_t, so nothing ever reads a flag the port holds. The port supplies CharonSecProtocolFlags and the setter holds the flag. A port that returned an error would break a caller that sets options before it connects, and a port that pretended the setting took effect would be a lie about a handshake it cannot perform",
+      "source": "SDK 16.4, Security",
+      "status": "inert"
+    },
+    {
+      "api": "sec_protocol_options_set_tls_resumption_enabled()",
+      "effect": "the flag is HELD on the port's own object, and it is the ONLY flag it touches: each of the eight has its OWN ivar, because a shared flags word would make this one and its neighbour the same setting wearing two names, and reading one back would report the other. the release's own TLS resumes through SecureTransport, which nothing a sec_protocol_options_t can reach, so a caller asking for resumption does not get it",
+      "facts": "facts/Security/SecProtocolWorklist.md",
+      "introduced": "13.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "6.1.3 HAS NO STACK THAT TAKES a sec_protocol_options_t, so nothing ever reads a flag the port holds. The port supplies CharonSecProtocolFlags and the setter holds the flag. A port that returned an error would break a caller that sets options before it connects, and a port that pretended the setting took effect would be a lie about a handshake it cannot perform",
+      "source": "SDK 16.4, Security",
+      "status": "inert"
+    },
+    {
+      "api": "sec_protocol_options_set_tls_sct_enabled()",
+      "effect": "the flag is HELD on the port's own object, and it is the ONLY flag it touches: each of the eight has its OWN ivar, because a shared flags word would make this one and its neighbour the same setting wearing two names, and reading one back would report the other. 6.1.3 has no signed-certificate-timestamp support at all, so a peer whose SCTs are absent is not detected; the flag is held and nothing consults it",
+      "facts": "facts/Security/SecProtocolWorklist.md",
+      "introduced": "13.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "6.1.3 HAS NO STACK THAT TAKES a sec_protocol_options_t, so nothing ever reads a flag the port holds. The port supplies CharonSecProtocolFlags and the setter holds the flag. A port that returned an error would break a caller that sets options before it connects, and a port that pretended the setting took effect would be a lie about a handshake it cannot perform",
+      "source": "SDK 16.4, Security",
+      "status": "inert"
+    },
+    {
+      "api": "sec_protocol_options_set_tls_tickets_enabled()",
+      "effect": "the flag is HELD on the port's own object, and it is the ONLY flag it touches: each of the eight has its OWN ivar, because a shared flags word would make this one and its neighbour the same setting wearing two names, and reading one back would report the other. tickets belong to the same unreachable stack; the flag is held and no ticket is issued",
+      "facts": "facts/Security/SecProtocolWorklist.md",
+      "introduced": "13.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "6.1.3 HAS NO STACK THAT TAKES a sec_protocol_options_t, so nothing ever reads a flag the port holds. The port supplies CharonSecProtocolFlags and the setter holds the flag. A port that returned an error would break a caller that sets options before it connects, and a port that pretended the setting took effect would be a lie about a handshake it cannot perform",
       "source": "SDK 16.4, Security",
       "status": "inert"
     }
