@@ -171,14 +171,21 @@ def main():
         json.dump(data, open(victim, "w"), indent=1)
         after = registered_names(scratch)
         target = (removed["kind"], removed["api"])
-        named = [r for r in after[removed["kind"]] if r == removed["api"]]
+        # the comparison is RE-RUN against the scratch copy, because asserting that the row is absent
+        # from the copy I deleted it from proves nothing. What has to be shown is that the same question,
+        # asked with one row missing, ANSWERS differently - and names that row.
+        scratch_registered = {(k, a) for k in after for a in after[k]}
+        scratch_missing = ["built, but no entry in registry: %s (%s)" % (api, kind)
+                           for kind, api in sorted(entries - scratch_registered)]
         print("  control: removed %s from %s on a scratch copy"
               % (removed["api"], os.path.basename(victim)))
-        if not named:
-            print("FAIL the control did NOT change what this script finds: deleting a row changed nothing")
+        if not any(target[1] in line for line in scratch_missing):
+            print("FAIL the control did NOT change the answer: with %s missing, the script reports %d "
+                  "built without a row and does not name it" % (target[1], len(scratch_missing)))
             return 1
-        print("  control: the script now reports it: built, but no entry in registry: %s (%s)"
-              % (target[1], target[0]))
+        print("  control: with that row gone the same question answers differently, and names it:")
+        for line in scratch_missing:
+            print("      %s" % line)
         return 0
     if missing or extra:
         print("registry stand-in: NOT clean")
