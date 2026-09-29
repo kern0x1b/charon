@@ -1002,81 +1002,144 @@
    "source": "the header of SDK 26.2 for what each question is and which type carries it; the renderer's geometry is the release's own NSLayoutManager, measured through its own line-fragment questions, and a range of no glyphs has no picture"
   },
   {
-   "api": "UIView.textDragDelegate",
+   "api": "UITextView.textDragDelegate",
    "kind": "property",
    "introduced": "11.0",
    "minimum": "6.0",
    "status": "implemented",
-   "reason": "text drag and drop hang off the drag session this port carries; the category in UITextView+TextDragDrop11.m builds it on UIView today (the SDK adopts it on UITextField and UITextView through the UITextDraggable/UITextDroppable protocols; the carrier is under review in uikit-r17)",
-   "effect": "the delegate the drag asks, held weakly",
+   "effect": "the text control's drag delegate, held weakly as the header says, and the delegate that is asked what a drag of a range of this text carries",
    "facts": "facts/UIKit/TextDragAndDrop.md",
-   "source": "SDK 26.2 UITextDraggable.h / UITextDroppable.h; UIKit/UITextView+TextDragDrop11.m"
+   "source": "the header of SDK 26.2, which declares these on the UITextDraggable and UITextDroppable protocols, adopted by UITextField and UITextView in their class extensions; the port's own categories on those two classes, compiled with the library's flags"
   },
   {
-   "api": "UIView.textDragInteraction",
+   "api": "UITextView.textDragInteraction",
    "kind": "property",
    "introduced": "11.0",
    "minimum": "6.0",
    "status": "implemented",
-   "reason": "text drag and drop hang off the drag session this port carries; the category in UITextView+TextDragDrop11.m builds it on UIView today (the SDK adopts it on UITextField and UITextView through the UITextDraggable/UITextDroppable protocols; the carrier is under review in uikit-r17)",
-   "effect": "the port's own drag interaction, created with the view",
+   "effect": "the interaction that lifts a range of this text, made once per control; nil until an application asks for one, which is what the header's nullable property allows",
    "facts": "facts/UIKit/TextDragAndDrop.md",
-   "source": "SDK 26.2 UITextDraggable.h / UITextDroppable.h; UIKit/UITextView+TextDragDrop11.m"
+   "source": "the header of SDK 26.2, which declares these on the UITextDraggable and UITextDroppable protocols, adopted by UITextField and UITextView in their class extensions; the port's own categories on those two classes, compiled with the library's flags"
   },
   {
-   "api": "UIView.textDragOptions",
+   "api": "UITextView.isTextDragActive",
    "kind": "property",
    "introduced": "11.0",
    "minimum": "6.0",
    "status": "implemented",
-   "reason": "text drag and drop hang off the drag session this port carries; the category in UITextView+TextDragDrop11.m builds it on UIView today (the SDK adopts it on UITextField and UITextView through the UITextDraggable/UITextDroppable protocols; the carrier is under review in uikit-r17)",
-   "effect": "the options word, as set",
+   "effect": "whether a drag of this text is under way, which is whether the interaction is carrying a session; a control with no interaction is not being dragged",
    "facts": "facts/UIKit/TextDragAndDrop.md",
-   "source": "SDK 26.2 UITextDraggable.h / UITextDroppable.h; UIKit/UITextView+TextDragDrop11.m"
+   "source": "the header of SDK 26.2, which declares these on the UITextDraggable and UITextDroppable protocols, adopted by UITextField and UITextView in their class extensions; the port's own categories on those two classes, compiled with the library's flags"
   },
   {
-   "api": "UIView.isTextDragActive",
+   "api": "UITextView.textDragOptions",
    "kind": "property",
    "introduced": "11.0",
    "minimum": "6.0",
    "status": "implemented",
-   "reason": "text drag and drop hang off the drag session this port carries; the category in UITextView+TextDragDrop11.m builds it on UIView today (the SDK adopts it on UITextField and UITextView through the UITextDraggable/UITextDroppable protocols; the carrier is under review in uikit-r17)",
-   "effect": "YES while a drag of this view's text is in flight",
+   "effect": "the options a drag of this text is made under, none by default",
    "facts": "facts/UIKit/TextDragAndDrop.md",
-   "source": "SDK 26.2 UITextDraggable.h / UITextDroppable.h; UIKit/UITextView+TextDragDrop11.m"
+   "source": "the header of SDK 26.2, which declares these on the UITextDraggable and UITextDroppable protocols, adopted by UITextField and UITextView in their class extensions; the port's own categories on those two classes, compiled with the library's flags"
   },
   {
-   "api": "UIView.textDropDelegate",
+   "api": "UITextView.textDropDelegate",
    "kind": "property",
    "introduced": "11.0",
    "minimum": "6.0",
    "status": "implemented",
-   "reason": "text drag and drop hang off the drag session this port carries; the category in UITextView+TextDragDrop11.m builds it on UIView today (the SDK adopts it on UITextField and UITextView through the UITextDraggable/UITextDroppable protocols; the carrier is under review in uikit-r17)",
-   "effect": "the delegate the drop asks, held weakly",
+   "effect": "the text control's drop delegate, held weakly, and the delegate asked whether this control will take a drop and what it would do with it",
    "facts": "facts/UIKit/TextDragAndDrop.md",
-   "source": "SDK 26.2 UITextDraggable.h / UITextDroppable.h; UIKit/UITextView+TextDragDrop11.m"
+   "source": "the header of SDK 26.2, which declares these on the UITextDraggable and UITextDroppable protocols, adopted by UITextField and UITextView in their class extensions; the port's own categories on those two classes, compiled with the library's flags"
   },
   {
-   "api": "UIView.textDropInteraction",
+   "api": "UITextView.textDropInteraction",
    "kind": "property",
    "introduced": "11.0",
    "minimum": "6.0",
    "status": "implemented",
-   "reason": "text drag and drop hang off the drag session this port carries; the category in UITextView+TextDragDrop11.m builds it on UIView today (the SDK adopts it on UITextField and UITextView through the UITextDraggable/UITextDroppable protocols; the carrier is under review in uikit-r17)",
-   "effect": "the port's own drop interaction, created with the view",
+   "effect": "the interaction that receives a drop on this control, made once per control; nil until an application asks for one",
    "facts": "facts/UIKit/TextDragAndDrop.md",
-   "source": "SDK 26.2 UITextDraggable.h / UITextDroppable.h; UIKit/UITextView+TextDragDrop11.m"
+   "source": "the header of SDK 26.2, which declares these on the UITextDraggable and UITextDroppable protocols, adopted by UITextField and UITextView in their class extensions; the port's own categories on those two classes, compiled with the library's flags"
   },
   {
-   "api": "UIView.isTextDropActive",
+   "api": "UITextView.isTextDropActive",
    "kind": "property",
    "introduced": "11.0",
    "minimum": "6.0",
    "status": "implemented",
-   "reason": "text drag and drop hang off the drag session this port carries; the category in UITextView+TextDragDrop11.m builds it on UIView today (the SDK adopts it on UITextField and UITextView through the UITextDraggable/UITextDroppable protocols; the carrier is under review in uikit-r17)",
-   "effect": "YES while a drop over this view is in flight",
+   "effect": "whether a drop is under way on this control, which is whether its interaction is holding a session; a control with no interaction is not receiving a drop",
    "facts": "facts/UIKit/TextDragAndDrop.md",
-   "source": "SDK 26.2 UITextDraggable.h / UITextDroppable.h; UIKit/UITextView+TextDragDrop11.m"
+   "source": "the header of SDK 26.2, which declares these on the UITextDraggable and UITextDroppable protocols, adopted by UITextField and UITextView in their class extensions; the port's own categories on those two classes, compiled with the library's flags"
+  },
+  {
+   "api": "UITextField.textDragDelegate",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the text control's drag delegate, held weakly as the header says, and the delegate that is asked what a drag of a range of this text carries",
+   "facts": "facts/UIKit/TextDragAndDrop.md",
+   "source": "the header of SDK 26.2, which declares these on the UITextDraggable and UITextDroppable protocols, adopted by UITextField and UITextView in their class extensions; the port's own categories on those two classes, compiled with the library's flags"
+  },
+  {
+   "api": "UITextField.textDragInteraction",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the interaction that lifts a range of this text, made once per control; nil until an application asks for one, which is what the header's nullable property allows",
+   "facts": "facts/UIKit/TextDragAndDrop.md",
+   "source": "the header of SDK 26.2, which declares these on the UITextDraggable and UITextDroppable protocols, adopted by UITextField and UITextView in their class extensions; the port's own categories on those two classes, compiled with the library's flags"
+  },
+  {
+   "api": "UITextField.isTextDragActive",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "whether a drag of this text is under way, which is whether the interaction is carrying a session; a control with no interaction is not being dragged",
+   "facts": "facts/UIKit/TextDragAndDrop.md",
+   "source": "the header of SDK 26.2, which declares these on the UITextDraggable and UITextDroppable protocols, adopted by UITextField and UITextView in their class extensions; the port's own categories on those two classes, compiled with the library's flags"
+  },
+  {
+   "api": "UITextField.textDragOptions",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the options a drag of this text is made under, none by default",
+   "facts": "facts/UIKit/TextDragAndDrop.md",
+   "source": "the header of SDK 26.2, which declares these on the UITextDraggable and UITextDroppable protocols, adopted by UITextField and UITextView in their class extensions; the port's own categories on those two classes, compiled with the library's flags"
+  },
+  {
+   "api": "UITextField.textDropDelegate",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the text control's drop delegate, held weakly, and the delegate asked whether this control will take a drop and what it would do with it",
+   "facts": "facts/UIKit/TextDragAndDrop.md",
+   "source": "the header of SDK 26.2, which declares these on the UITextDraggable and UITextDroppable protocols, adopted by UITextField and UITextView in their class extensions; the port's own categories on those two classes, compiled with the library's flags"
+  },
+  {
+   "api": "UITextField.textDropInteraction",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the interaction that receives a drop on this control, made once per control; nil until an application asks for one",
+   "facts": "facts/UIKit/TextDragAndDrop.md",
+   "source": "the header of SDK 26.2, which declares these on the UITextDraggable and UITextDroppable protocols, adopted by UITextField and UITextView in their class extensions; the port's own categories on those two classes, compiled with the library's flags"
+  },
+  {
+   "api": "UITextField.isTextDropActive",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "whether a drop is under way on this control, which is whether its interaction is holding a session; a control with no interaction is not receiving a drop",
+   "facts": "facts/UIKit/TextDragAndDrop.md",
+   "source": "the header of SDK 26.2, which declares these on the UITextDraggable and UITextDroppable protocols, adopted by UITextField and UITextView in their class extensions; the port's own categories on those two classes, compiled with the library's flags"
   }
  ]
 }

@@ -107,3 +107,28 @@ What the 19 are, by file and kind:
 - 11 `UIDragInteractionDelegate` and `UIDropInteractionDelegate` questions the port already routed
   and this series registers;
 - 8 `UITextDragPreviewRenderer` members: three methods and the five properties.
+
+
+## Who owns these members, and who owned them wrongly
+
+The 26.2 SDK declares `textDragDelegate`, `textDragInteraction`, `textDragActive`,
+`textDragOptions`, `textDropDelegate`, `textDropInteraction` and `textDropActive` on the
+**`UITextDraggable` and `UITextDroppable` protocols**, and `UITextField` and `UITextView` adopt those
+two protocols in their class extensions (`UITextField.h:116`, `UITextView.h:329`). **No class declares
+them, and `UIView` has neither protocol.**
+
+The first version of this put a category on `UIView`, so thirteen members were built on a class that
+has no claim to any of them, seven registry rows on `UIView.*` were the only rows that existed, and
+the stack's 6.1.3 registry check named the built-but-unregistered members. The file's own name —
+`UITextView+TextDragDrop11.m` — had been saying which class they belonged to all along.
+
+They are on **`UITextView` and `UITextField`**, one row per class per member: fourteen rows, with the
+two custom getters spelled as the header spells them, `isTextDragActive` and `isTextDropActive`, after
+the `UIImage.isHighDynamicRange` convention, and the setters follow from the property row rather than
+being rows of their own. The adaptor's control is typed `UIView<UITextDraggable, UITextDroppable> *`,
+so the members are reached through the protocol the SDK declares them on.
+
+**The seven interim `UIView.*` rows are removed**, and their removal is intended: they described
+members on a class that has neither protocol, and the same check is what named them. Where a control
+has no interaction the answer is nil, which is what the header's nullable properties allow and what
+`isTextDragActive` and `isTextDropActive` then report as no.
