@@ -126,19 +126,38 @@ int main(int argc, char **argv)
     CharonHostGKBasePlayer *base = [[CharonHostGKBasePlayer alloc] init];
     check_named(base.playerID == nil && base.displayName == nil, @"a base player nobody built has no identifier and no name",
                 base.displayName);
-    __block id cloud = @"unset";
-    __block NSError *cloudError = nil;
+    // The cloud player's one call. Its handler's arguments come back as void* through a block, and the
+    // optimiser turns a message to either of them into objc_opt_respondsToSelector - a trap, not a
+    // no-op - which is where this probe stopped last. So both are read as pointers and asked about
+    // through the runtime's class_getName, and every question about them is guarded by that.
+    __block void *cloud = NULL;
+    __block void *cloudError = NULL;
     [CharonHostGKCloudPlayer getCurrentSignedInPlayerForContainer:@"i.com.charon.probe" completionHandler:^(CharonHostGKCloudPlayer *player, NSError *error) {
-        cloud = player;
-        cloudError = error;
+        cloud = (__bridge_retained void *)player;
+        cloudError = (__bridge_retained void *)error;
     }];
-    check_named(cloud != nil || cloudError != nil, @"the cloud player's call answers a player or an error", @"neither");
-    if (cloud) {
-        check_named(cloudError == nil, @"and a player comes with no error", cloudError ? [cloudError localizedDescription] : @"no error");
+    id player = (__bridge id)cloud;
+    id failure = (__bridge id)cloudError;
+    if (player) {
+        check_named(failure == nil, @"and a player comes with no error",
+                    failure ? [[[(__bridge NSError *)failure localizedDescription] UTF8String] UTF8String] : @"");
+        // the two properties a base player carries, read as selectors on a guarded object
+        for (NSString *property in (NSArray<NSString *> *)@[@"playerID", @"displayName"]) {
+            SEL getter = NSSelectorFromString(property);
+            if (player && [player respondsToSelector:getter]) {
+                id value = ((id (*)(id, SEL))objc_msgSend)(player, getter);
+                check_named(value == nil, [NSString stringWithFormat:@"and the player's %@ is nil when the release has no container record", property],
+                            value ? [value description] : @"");
+            }
+        }
     } else {
-        check_named([cloudError.domain isEqualToString:@"GKErrorDomain"] && cloudError.code == GKErrorNotAuthenticated,
-                    @"and an error in Game Center's domain with GKErrorNotAuthenticated",
-                    [NSString stringWithFormat:@"%@ %ld", [[cloudError.domain description] UTF8String], (long)cloudError.code]);
+        check_named(failure != nil, @"and an error rather than no answer", @"neither a player nor an error");
+        if (failure) {
+            NSError *error = (__bridge NSError *)failure;
+            check_named([error.domain isEqualToString:@"GKErrorDomain"], @"in Game Center's own domain", error.domain);
+            check_named(error.code == GKErrorNotAuthenticated, @"with GKErrorNotAuthenticated, the SDK's own constant",
+                        [NSString stringWithFormat:@"%ld", (long)error.code]);
+        }
     }
 
     printf("checks=%d failures=%d\n", charon_checks, charon_failures);

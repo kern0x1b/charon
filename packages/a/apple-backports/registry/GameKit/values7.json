@@ -1,0 +1,148 @@
+{
+  "framework": "GameKit",
+  "entries": [
+    {
+      "api": "GKBasePlayer",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "The class is not carried: the differential that would hold it (tests/backports/host/gamekit) traps before its first record, and nothing is implemented without one. The sources are in the tree as the next step - the release's Game Center has the selectors displayName, playerID, score, rank, isAuthenticated and loadImage among 304 classes, and no loadLeaderboardsWithIDs - and the shape of each answer is written out in facts/GameKit/Values.md",
+      "facts": "facts/GameKit/Values.md",
+      "source": "the headers of GameKit in the SDK 16.4, which declare the three classes and GKErrorDomain with GKErrorCommunicationsFailure = 3; the armv7 shared cache of iOS 6.1.3, whose GameKit image carries 304 classes and the selectors displayName, playerID, score, rank, isAuthenticated and loadImage, and no loadLeaderboardsWithIDs; tests/backports/host/gamekit, which asks the host's own GameKit the same questions",
+      "effect": "nothing is carried: a weak reference to the class is NULL, and a caller that checks before use is told the truth"
+    },
+    {
+      "api": "GKBasePlayer.playerID",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "The class is not carried: the differential that would hold it (tests/backports/host/gamekit) traps before its first record, and nothing is implemented without one. The sources are in the tree as the next step - the release's Game Center has the selectors displayName, playerID, score, rank, isAuthenticated and loadImage among 304 classes, and no loadLeaderboardsWithIDs - and the shape of each answer is written out in facts/GameKit/Values.md",
+      "facts": "facts/GameKit/Values.md",
+      "source": "the headers of GameKit in the SDK 16.4, which declare the three classes and GKErrorDomain with GKErrorCommunicationsFailure = 3; the armv7 shared cache of iOS 6.1.3, whose GameKit image carries 304 classes and the selectors displayName, playerID, score, rank, isAuthenticated and loadImage, and no loadLeaderboardsWithIDs; tests/backports/host/gamekit, which asks the host's own GameKit the same questions",
+      "effect": "nothing is carried: a weak reference to the class is NULL, and a caller that checks before use is told the truth"
+    },
+    {
+      "api": "GKBasePlayer.displayName",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "The class is not carried: the differential that would hold it (tests/backports/host/gamekit) traps before its first record, and nothing is implemented without one. The sources are in the tree as the next step - the release's Game Center has the selectors displayName, playerID, score, rank, isAuthenticated and loadImage among 304 classes, and no loadLeaderboardsWithIDs - and the shape of each answer is written out in facts/GameKit/Values.md",
+      "facts": "facts/GameKit/Values.md",
+      "source": "the headers of GameKit in the SDK 16.4, which declare the three classes and GKErrorDomain with GKErrorCommunicationsFailure = 3; the armv7 shared cache of iOS 6.1.3, whose GameKit image carries 304 classes and the selectors displayName, playerID, score, rank, isAuthenticated and loadImage, and no loadLeaderboardsWithIDs; tests/backports/host/gamekit, which asks the host's own GameKit the same questions",
+      "effect": "nothing is carried: a weak reference to the class is NULL, and a caller that checks before use is told the truth"
+    },
+    {
+      "api": "GKCloudPlayer",
+      "kind": "class",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "The class is not carried: the differential that would hold it (tests/backports/host/gamekit) traps before its first record, and nothing is implemented without one. The sources are in the tree as the next step - the release's Game Center has the selectors displayName, playerID, score, rank, isAuthenticated and loadImage among 304 classes, and no loadLeaderboardsWithIDs - and the shape of each answer is written out in facts/GameKit/Values.md",
+      "facts": "facts/GameKit/Values.md",
+      "source": "the headers of GameKit in the SDK 16.4, which declare the three classes and GKErrorDomain with GKErrorCommunicationsFailure = 3; the armv7 shared cache of iOS 6.1.3, whose GameKit image carries 304 classes and the selectors displayName, playerID, score, rank, isAuthenticated and loadImage, and no loadLeaderboardsWithIDs; tests/backports/host/gamekit, which asks the host's own GameKit the same questions",
+      "effect": "nothing is carried: a weak reference to the class is NULL, and a caller that checks before use is told the truth"
+    },
+    {
+      "api": "+[GKCloudPlayer getCurrentSignedInPlayerForContainer:completionHandler:]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "The class is not carried: the differential that would hold it (tests/backports/host/gamekit) traps before its first record, and nothing is implemented without one. The sources are in the tree as the next step - the release's Game Center has the selectors displayName, playerID, score, rank, isAuthenticated and loadImage among 304 classes, and no loadLeaderboardsWithIDs - and the shape of each answer is written out in facts/GameKit/Values.md",
+      "facts": "facts/GameKit/Values.md",
+      "source": "the headers of GameKit in the SDK 16.4, which declare the three classes and GKErrorDomain with GKErrorCommunicationsFailure = 3; the armv7 shared cache of iOS 6.1.3, whose GameKit image carries 304 classes and the selectors displayName, playerID, score, rank, isAuthenticated and loadImage, and no loadLeaderboardsWithIDs; tests/backports/host/gamekit, which asks the host's own GameKit the same questions",
+      "effect": "nothing is carried: a weak reference to the class is NULL, and a caller that checks before use is told the truth"
+    },
+    {
+      "api": "GKLeaderboardSet",
+      "kind": "class",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "The class is not carried: the differential that would hold it (tests/backports/host/gamekit) traps before its first record, and nothing is implemented without one. The sources are in the tree as the next step - the release's Game Center has the selectors displayName, playerID, score, rank, isAuthenticated and loadImage among 304 classes, and no loadLeaderboardsWithIDs - and the shape of each answer is written out in facts/GameKit/Values.md",
+      "facts": "facts/GameKit/Values.md",
+      "source": "the headers of GameKit in the SDK 16.4, which declare the three classes and GKErrorDomain with GKErrorCommunicationsFailure = 3; the armv7 shared cache of iOS 6.1.3, whose GameKit image carries 304 classes and the selectors displayName, playerID, score, rank, isAuthenticated and loadImage, and no loadLeaderboardsWithIDs; tests/backports/host/gamekit, which asks the host's own GameKit the same questions",
+      "effect": "nothing is carried: a weak reference to the class is NULL, and a caller that checks before use is told the truth"
+    },
+    {
+      "api": "GKLeaderboardSet.identifier",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "The class is not carried: the differential that would hold it (tests/backports/host/gamekit) traps before its first record, and nothing is implemented without one. The sources are in the tree as the next step - the release's Game Center has the selectors displayName, playerID, score, rank, isAuthenticated and loadImage among 304 classes, and no loadLeaderboardsWithIDs - and the shape of each answer is written out in facts/GameKit/Values.md",
+      "facts": "facts/GameKit/Values.md",
+      "source": "the headers of GameKit in the SDK 16.4, which declare the three classes and GKErrorDomain with GKErrorCommunicationsFailure = 3; the armv7 shared cache of iOS 6.1.3, whose GameKit image carries 304 classes and the selectors displayName, playerID, score, rank, isAuthenticated and loadImage, and no loadLeaderboardsWithIDs; tests/backports/host/gamekit, which asks the host's own GameKit the same questions",
+      "effect": "nothing is carried: a weak reference to the class is NULL, and a caller that checks before use is told the truth"
+    },
+    {
+      "api": "GKLeaderboardSet.title",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "The class is not carried: the differential that would hold it (tests/backports/host/gamekit) traps before its first record, and nothing is implemented without one. The sources are in the tree as the next step - the release's Game Center has the selectors displayName, playerID, score, rank, isAuthenticated and loadImage among 304 classes, and no loadLeaderboardsWithIDs - and the shape of each answer is written out in facts/GameKit/Values.md",
+      "facts": "facts/GameKit/Values.md",
+      "source": "the headers of GameKit in the SDK 16.4, which declare the three classes and GKErrorDomain with GKErrorCommunicationsFailure = 3; the armv7 shared cache of iOS 6.1.3, whose GameKit image carries 304 classes and the selectors displayName, playerID, score, rank, isAuthenticated and loadImage, and no loadLeaderboardsWithIDs; tests/backports/host/gamekit, which asks the host's own GameKit the same questions",
+      "effect": "nothing is carried: a weak reference to the class is NULL, and a caller that checks before use is told the truth"
+    },
+    {
+      "api": "GKLeaderboardSet.groupIdentifier",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "The class is not carried: the differential that would hold it (tests/backports/host/gamekit) traps before its first record, and nothing is implemented without one. The sources are in the tree as the next step - the release's Game Center has the selectors displayName, playerID, score, rank, isAuthenticated and loadImage among 304 classes, and no loadLeaderboardsWithIDs - and the shape of each answer is written out in facts/GameKit/Values.md",
+      "facts": "facts/GameKit/Values.md",
+      "source": "the headers of GameKit in the SDK 16.4, which declare the three classes and GKErrorDomain with GKErrorCommunicationsFailure = 3; the armv7 shared cache of iOS 6.1.3, whose GameKit image carries 304 classes and the selectors displayName, playerID, score, rank, isAuthenticated and loadImage, and no loadLeaderboardsWithIDs; tests/backports/host/gamekit, which asks the host's own GameKit the same questions",
+      "effect": "nothing is carried: a weak reference to the class is NULL, and a caller that checks before use is told the truth"
+    },
+    {
+      "api": "+[GKLeaderboardSet loadLeaderboardSetsWithCompletionHandler:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "The class is not carried: the differential that would hold it (tests/backports/host/gamekit) traps before its first record, and nothing is implemented without one. The sources are in the tree as the next step - the release's Game Center has the selectors displayName, playerID, score, rank, isAuthenticated and loadImage among 304 classes, and no loadLeaderboardsWithIDs - and the shape of each answer is written out in facts/GameKit/Values.md",
+      "facts": "facts/GameKit/Values.md",
+      "source": "the headers of GameKit in the SDK 16.4, which declare the three classes and GKErrorDomain with GKErrorCommunicationsFailure = 3; the armv7 shared cache of iOS 6.1.3, whose GameKit image carries 304 classes and the selectors displayName, playerID, score, rank, isAuthenticated and loadImage, and no loadLeaderboardsWithIDs; tests/backports/host/gamekit, which asks the host's own GameKit the same questions",
+      "effect": "nothing is carried: a weak reference to the class is NULL, and a caller that checks before use is told the truth"
+    },
+    {
+      "api": "-[GKLeaderboardSet loadImageWithCompletionHandler:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "The class is not carried: the differential that would hold it (tests/backports/host/gamekit) traps before its first record, and nothing is implemented without one. The sources are in the tree as the next step - the release's Game Center has the selectors displayName, playerID, score, rank, isAuthenticated and loadImage among 304 classes, and no loadLeaderboardsWithIDs - and the shape of each answer is written out in facts/GameKit/Values.md",
+      "facts": "facts/GameKit/Values.md",
+      "source": "the headers of GameKit in the SDK 16.4, which declare the three classes and GKErrorDomain with GKErrorCommunicationsFailure = 3; the armv7 shared cache of iOS 6.1.3, whose GameKit image carries 304 classes and the selectors displayName, playerID, score, rank, isAuthenticated and loadImage, and no loadLeaderboardsWithIDs; tests/backports/host/gamekit, which asks the host's own GameKit the same questions",
+      "effect": "nothing is carried: a weak reference to the class is NULL, and a caller that checks before use is told the truth"
+    },
+    {
+      "api": "-[GKLeaderboardSet loadLeaderboardsWithCompletionHandler:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "The class is not carried: the differential that would hold it (tests/backports/host/gamekit) traps before its first record, and nothing is implemented without one. The sources are in the tree as the next step - the release's Game Center has the selectors displayName, playerID, score, rank, isAuthenticated and loadImage among 304 classes, and no loadLeaderboardsWithIDs - and the shape of each answer is written out in facts/GameKit/Values.md",
+      "facts": "facts/GameKit/Values.md",
+      "source": "the headers of GameKit in the SDK 16.4, which declare the three classes and GKErrorDomain with GKErrorCommunicationsFailure = 3; the armv7 shared cache of iOS 6.1.3, whose GameKit image carries 304 classes and the selectors displayName, playerID, score, rank, isAuthenticated and loadImage, and no loadLeaderboardsWithIDs; tests/backports/host/gamekit, which asks the host's own GameKit the same questions",
+      "effect": "nothing is carried: a weak reference to the class is NULL, and a caller that checks before use is told the truth"
+    },
+    {
+      "api": "-[GKLeaderboardSet loadLeaderboardsWithHandler:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "The class is not carried: the differential that would hold it (tests/backports/host/gamekit) traps before its first record, and nothing is implemented without one. The sources are in the tree as the next step - the release's Game Center has the selectors displayName, playerID, score, rank, isAuthenticated and loadImage among 304 classes, and no loadLeaderboardsWithIDs - and the shape of each answer is written out in facts/GameKit/Values.md",
+      "facts": "facts/GameKit/Values.md",
+      "source": "the headers of GameKit in the SDK 16.4, which declare the three classes and GKErrorDomain with GKErrorCommunicationsFailure = 3; the armv7 shared cache of iOS 6.1.3, whose GameKit image carries 304 classes and the selectors displayName, playerID, score, rank, isAuthenticated and loadImage, and no loadLeaderboardsWithIDs; tests/backports/host/gamekit, which asks the host's own GameKit the same questions",
+      "effect": "nothing is carried: a weak reference to the class is NULL, and a caller that checks before use is told the truth"
+    }
+  ]
+}
