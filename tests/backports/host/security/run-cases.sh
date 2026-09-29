@@ -119,7 +119,10 @@ G=$S/SecTrustGetTrustResult7_0.m
 echo "== the Security host cases, from $(git -C "$work" rev-parse --short HEAD 2>/dev/null || echo '?') =="
 # The two verdicts a driver must keep apart, checked first so a driver that has conflated them says so
 # before it goes on to report anything else.
-if xcrun clang -Wall -o "$build/crash-case" "$H/crash-case.c" > "$build/crash-case.log" 2>&1; then
+# Security.framework IS LINKED, and without it the control is WORTHLESS: the first build did not link it,
+# so SSLGetProtocolVersionMin did not resolve either and the real symbol and SSLNoSuchFunctionForControl
+# both read missing 1 - indistinguishable, which is the exact failure the counter is meant to catch.
+if xcrun clang -Wall -o "$build/crash-case" "$H/crash-case.c"      -framework Security -framework Foundation > "$build/crash-case.log" 2>&1; then
     # set -e EXITS ON A FAILING SIMPLE COMMAND, so "cmd; status=$?" never reaches the assignment: the
     # script died on the segfault before it could record the exit code it was trying to record, which is
     # the same class of bug as the one this commit fixes. `cmd || status=$?` is the form that survives.
@@ -129,6 +132,19 @@ if xcrun clang -Wall -o "$build/crash-case" "$H/crash-case.c" > "$build/crash-ca
     "$build/crash-case" crash   >/dev/null 2>&1 2>/dev/null || crashed=$?
     if [ "$clean" -eq 0 ] && [ "$missing" -eq 0 ] && [ "$crashed" -ge 128 ]; then
         echo "GREEN  verdicts     the three shapes behave: clean $clean, missing $missing, crash $crashed - AND crash $crashed IS THE EXPECTED SHAPE, deliberately provoked by crash-case, and NOT a failure of this run"
+        # THE missing COUNTER, resolved through dlsym so it can actually become 1, and the CONTROL: the
+        # same resolution pointed at a symbol that does not exist. A counter that reads 0 because nothing
+        # can increment it is not a check.
+        "$build/crash-case" SSLGetProtocolVersionMin resolve > "$build/present.txt" 2>&1 || true
+        "$build/crash-case" SSLNoSuchFunctionForControl resolve > "$build/absent.txt" 2>&1 || true
+        present=$(sed -n 's/.*\t\([01]\)$/\1/p' "$build/present.txt" | head -1)
+        absent=$(sed -n 's/.*\t\([01]\)$/\1/p' "$build/absent.txt" | head -1)
+        if [ "$present" = "0" ] && [ "$absent" = "1" ]; then
+            echo "GREEN  missing     a real symbol resolves (missing 0) and SSLNoSuchFunctionForControl does not (missing 1), so the counter CAN fail"
+        else
+            echo "RED    missing     present=$present absent=$absent - the counter cannot tell the two apart"
+            failures=$((failures + 1))
+        fi
         # THE CONTROL: the same check against a shape it must REJECT. A verdict check that cannot fail
         # proves nothing, so the driver demands the wrong expectation be reported - and if this ever goes
         # green, the verdict logic has stopped being able to tell a crash from a difference.

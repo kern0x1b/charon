@@ -2,6 +2,7 @@
 #import <Security/Security.h>
 #import <Security/SecureTransport.h>
 #import <stdio.h>
+#import <dlfcn.h>
 
 // THE MEASUREMENT, ON 6.1.3, OF WHAT THE RELEASE'S OWN STACK WILL NEGOTIATE BY DEFAULT.
 //
@@ -27,32 +28,53 @@ static void report(const char *what, long value)
     printf("%s\t%ld\n", what, value);
 }
 
+// EVERY SYMBOL IS RESOLVED WITH dlsym AND CALLED THROUGH THE POINTER, and that is not a style choice:
+//   - `if (SSLGetProtocolVersionMin != NULL)` COMPARES A FUNCTION NAME WITH NULL and is therefore ALWAYS
+//     FALSE, so the missing-symbol branch could never fire and a program written that way cannot tell
+//     "the release has no such call" from "the release has one and it answered nothing".
+//   - SSLSetProtocolVersionEnabled IS INSIDE #if TARGET_OS_OSX (SecureTransport.h:511), so it has NEVER
+//     been on iOS. Calling it from an iOS binary does not compile, and the first version of this probe
+//     did exactly that.
+// A dlsym'd pointer is honest about absence and calling through it does not trip the deprecation, which
+// SSLGetProtocolVersionMin/Max carry at __SECURETRANSPORT_API_DEPRECATED(..., ios(5.0, 13.0)).
+//
+// THE PROTOTYPES BELOW ARE DECLARED FROM THE HEADER'S FACTS - the signature lines and nothing else - and
+// no Apple body is transcribed.
+
+typedef OSStatus (*SSLGetVersionOne)(SSLContextRef, SSLProtocol *);
+typedef OSStatus (*SSLSetOneProtocol)(SSLContextRef, SSLProtocol, Boolean);
+
 int main(int argc, char **argv)
 {
     (void)argc; (void)argv;
-    // one line first, so a run that produces nothing else is still a report rather than silence
     printf("ssl-defaults-probe\tstart\n");
 
     SSLContextRef context = SSLCreateContext(NULL, kSSLClientSide, kSSLStreamType);
-    if (!context) {
-        printf("context\tNULL\n");
-        return 1;
-    }
+    if (!context) { printf("context\tNULL\n"); return 1; }
     printf("context\tok\n");
 
-    // the two ends of the range. Either may be absent on this release, and that is a result.
-    if (SSLGetProtocolVersionMin != NULL) {
+    SSLGetVersionOne getMin = (SSLGetVersionOne)dlsym(RTLD_DEFAULT, "SSLGetProtocolVersionMin");
+    SSLGetVersionOne getMax = (SSLGetVersionOne)dlsym(RTLD_DEFAULT, "SSLGetProtocolVersionMax");
+    SSLSetOneProtocol setEnabled =
+        (SSLSetOneProtocol)dlsym(RTLD_DEFAULT, "SSLSetProtocolVersionEnabled");
+
+    // PRESENCE IS NOW A REAL ANSWER, and each of the three is reported whether or not it is found.
+    printf("has-min\t%s\n", getMin ? "yes" : "no");
+    printf("has-max\t%s\n", getMax ? "yes" : "no");
+    printf("has-set-enabled\t%s\n", setEnabled ? "yes" : "no");
+
+    if (getMin) {
         SSLProtocol min = 0;
-        if (SSLGetProtocolVersionMin(context, &min) == noErr)
+        if (getMin(context, &min) == noErr)
             report("min", (long)min);
         else
             printf("min\tunavailable\n");
     } else {
         printf("min\tabsent\n");
     }
-    if (SSLGetProtocolVersionMax != NULL) {
+    if (getMax) {
         SSLProtocol max = 0;
-        if (SSLGetProtocolVersionMax(context, &max) == noErr)
+        if (getMax(context, &max) == noErr)
             report("max", (long)max);
         else
             printf("max\tunavailable\n");
@@ -60,40 +82,10 @@ int main(int argc, char **argv)
         printf("max\tabsent\n");
     }
 
-    // Per protocol. THERE IS NO GETTER: the release declares SSLSetProtocolVersionEnabled
-    // (SecureTransport.h:513) and no SSLGetProtocolVersionEnabled, so asking "is this one enabled" has
-    // no call behind it. That is a finding about the API, and it is reported rather than worked around.
-    printf("per-protocol-getter\tabsent\n");
-    //
-    // So the question is asked the only way it can be: ENABLE each protocol and see whether the reported
-    // maximum moves. A protocol the stack honours shows up in the range; one it does not, leaves it
-    // where it was. The value is then put back, so the report is of the range and not of the fiddling.
-    SSLProtocol before = 0;
-    if (SSLGetProtocolVersionMax != NULL && SSLGetProtocolVersionMax(context, &before) == noErr) {
-        struct { const char *name; SSLProtocol protocol; } asked[] = {
-            { "enable-ssl3",  kSSLProtocol3  },
-            { "enable-tls1",  kTLSProtocol1  },
-            { "enable-tls11", kTLSProtocol11 },
-            { "enable-tls12", kTLSProtocol12 },
-            { "enable-tls13", kTLSProtocol13 },
-            { "enable-dtls1", kDTLSProtocol1 },
-        };
-        for (unsigned i = 0; i < sizeof asked / sizeof asked[0]; i++) {
-            SSLProtocol moved = 0;
-            if (SSLSetProtocolVersionEnabled == NULL) {
-                printf("%s\tabsent\n", asked[i].name);
-                continue;
-            }
-            // turn it on, read the range, turn it back off - and report what the range said
-            SSLSetProtocolVersionEnabled(context, asked[i].protocol, true);
-            if (SSLGetProtocolVersionMax(context, &moved) == noErr)
-                report(asked[i].name, (long)moved);
-            else
-                printf("%s\tunavailable\n", asked[i].name);
-            SSLSetProtocolVersionEnabled(context, asked[i].protocol, false);
-        }
-        report("max-again", (long)before);
-    }
+    // THE PER-PROTOCOL QUESTION CANNOT BE ASKED ON iOS. SSLSetProtocolVersionEnabled is macOS-only
+    // (#if TARGET_OS_OSX at SecureTransport.h:511), so there is no setter to enable a protocol with and no
+    // getter to read one back - the release offers NEITHER half of the pair, and that is the finding.
+    printf("per-protocol\tno-setter-and-no-getter-on-ios\n");
 
     SSLClose(context);
     CFRelease(context);
