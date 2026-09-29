@@ -92,11 +92,24 @@ a CPU, and **exact** for pooling, whose cases are named as such.
 **Four of the five cases agree bit for bit**: `pooling-max`, `pooling-average-pad0`,
 `pooling-average-pad1` and `batch-normalization`.
 
-`pooling-average-2x2` is reported as differing, and **it does not**: the standalone program above has
-both sides answering the release's `0.25 0.75 1.25 3` for that shape. The difference is in the harness,
-not in the kernel, and where to look is the rename: the port's objects are compiled with `rename.h`, so
-`CharonMPSCNNPooling` derives from `CharonMPSCNNKernel`, which derives from the **system's**
-`MPSKernel` - a class of the port's tree that the rename does not cover, and one the port's `MPSKernel`
-also defines. The harness's port build and the standalone link therefore have two different
-`MPSKernel` classes in the process. Which of them the pooling walk ends up using is the thing to check
-first, and it is a harness defect to fix before the case is read as a kernel defect.
+**All five cases agree bit for bit.**
+
+Getting there took two defects, and the second was found only because the first had made a measurement
+look like a result.
+
+* **The harness was comparing the host with itself.** The port's objects were compiled under a rename
+  that covered only the `MPSCNN` names the cases reached, so every other class this library defines was
+  registered under the host's names and the port's `MPSKernel` was the host's. The rename now covers
+  every class the port defines - derived from `nm -g --defined-only` of its objects, not from the
+  sources - and the port link is the whole library, so a superclass pointer resolves to the class that
+  is present. Every run prints `class_getImageName` for each compared class under both names.
+* **The pooling kernels defaulted their outside taps to clamp.** With no edge mode set, a corner window
+  clamped every outside tap to the nearest interior value - the same pixel four times - and answered
+  `1` where the release answers `0.25`. The three cases that set `MPSImageEdgeModeZero` explicitly were
+  green throughout, which is why only the one case that did not set it exposed this. The release's
+  default is zero, measured on that same case, and the kernels now default to it.
+
+The lesson worth keeping, because it happened twice in this family: **a link without the rename does not
+measure the port at all** - it measures the host, and agrees with it perfectly. A harness that cannot
+show, on its own output, which classes it is talking to will report a false agreement.
+
