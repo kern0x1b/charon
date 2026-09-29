@@ -6,20 +6,22 @@
       "kind": "class",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "one argument, as its own metadata node reads",
+      "effect": "its name, index, type and access from the node, with the access mapped from the header's own enumerators - read-only, write-only and read-write - and an access the AIR did not say is read-only, never read-write",
+      "source": "SDK 16.4 MTLArgument.h:196-306; the three access spellings measured across 25 real libraries",
+      "facts": "facts/Metal/TypeTree.md"
     },
     {
       "api": "MTLArrayType",
       "kind": "class",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "not corpus-demanded this pass (coordination/corpus, 2026-09-23 Tier 2 verdict); it describes compiled-shader reflection metadata, which this port's own library pipeline (CharonMetalLibrary.m) carries as a plain NSDictionary manifest read from library.json, not as live objects of this shape produced by a runtime compiler - there is none (facts/Metal/CompileOptions.md). Wrapping the manifest in the real reflection classes is real, scoped work for when demand asks for it, not a hardware wall.",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a vector or a fixed array argument, which the plist carries as a length and an element",
+      "effect": "the element and the length; the stride is 0 because the AIR carries a size and an alignment and no stride, and a stride computed from them would be wrong for a padded element",
+      "source": "SDK 16.4 MTLArgument.h:261; a float4 by value reads length 4 and a float element, measured",
+      "facts": "facts/Metal/TypeTree.md"
     },
     {
       "api": "MTLCommandBufferErrorDomain",
@@ -96,20 +98,22 @@
       "kind": "class",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "not corpus-demanded this pass (coordination/corpus, 2026-09-23 Tier 2 verdict); it describes compiled-shader reflection metadata, which this port's own library pipeline (CharonMetalLibrary.m) carries as a plain NSDictionary manifest read from library.json, not as live objects of this shape produced by a runtime compiler - there is none (facts/Metal/CompileOptions.md). Wrapping the manifest in the real reflection classes is real, scoped work for when demand asks for it, not a hardware wall.",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "each member of a struct an argument points at, from the air.struct_type_info node the plist carries",
+      "effect": "the name, the offset and the dataType the metadata gave, and the four typed accessors return the subclass the kind names and nil where it names none",
+      "source": "SDK 16.4 MTLArgument.h:234; the member list is the air.struct_type_info node, measured present in a real library",
+      "facts": "facts/Metal/TypeTree.md"
     },
     {
       "api": "MTLStructType",
       "kind": "class",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "not corpus-demanded this pass (coordination/corpus, 2026-09-23 Tier 2 verdict); it describes compiled-shader reflection metadata, which this port's own library pipeline (CharonMetalLibrary.m) carries as a plain NSDictionary manifest read from library.json, not as live objects of this shape produced by a runtime compiler - there is none (facts/Metal/CompileOptions.md). Wrapping the manifest in the real reflection classes is real, scoped work for when demand asks for it, not a hardware wall.",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a struct an argument points at, from the air.struct_type_info node",
+      "effect": "its members by position, and memberByName: over them; a member the AIR did not name is present with an empty name, because an LLVM 23 StructType has element types and no per-element names",
+      "source": "SDK 16.4 MTLArgument.h:252; air.struct_type_info confirmed in a real library's argument node",
+      "facts": "facts/Metal/TypeTree.md"
     },
     {
       "api": "MTLVertexAttribute",
@@ -206,20 +210,22 @@
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "not corpus-demanded this pass (coordination/corpus, 2026-09-23 Tier 2 verdict); it describes compiled-shader reflection metadata, which this port's own library pipeline (CharonMetalLibrary.m) carries as a plain NSDictionary manifest read from library.json, not as live objects of this shape produced by a runtime compiler - there is none (facts/Metal/CompileOptions.md). Wrapping the manifest in the real reflection classes is real, scoped work for when demand asks for it, not a hardware wall.",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a pointer argument, whose pointee the AIR does not carry at all",
+      "effect": "the pointee is nil, always: LLVM has used opaque pointers since 15, so the absence is in the data and a pointee invented here would name a type the shader does not have",
+      "source": "SDK 16.4 MTLArgument.h:277; the empty pointee is in the file the reader is tested against",
+      "facts": "facts/Metal/TypeTree.md"
     },
     {
       "api": "MTLTextureReferenceType",
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "not corpus-demanded this pass (coordination/corpus, 2026-09-23 Tier 2 verdict); it describes compiled-shader reflection metadata, which this port's own library pipeline (CharonMetalLibrary.m) carries as a plain NSDictionary manifest read from library.json, not as live objects of this shape produced by a runtime compiler - there is none (facts/Metal/CompileOptions.md). Wrapping the manifest in the real reflection classes is real, scoped work for when demand asks for it, not a hardware wall.",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a texture argument",
+      "effect": "the texture data type is MTLDataTypeNone, the header's own no-type case, because the plist carries none for an argument of this kind",
+      "source": "SDK 16.4 MTLArgument.h:292",
+      "facts": "facts/Metal/TypeTree.md"
     },
     {
       "api": "MTLTileRenderPipelineColorAttachmentDescriptor",
@@ -256,10 +262,11 @@
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "not corpus-demanded this pass (coordination/corpus, 2026-09-23 Tier 2 verdict); it describes compiled-shader reflection metadata, which this port's own library pipeline (CharonMetalLibrary.m) carries as a plain NSDictionary manifest read from library.json, not as live objects of this shape produced by a runtime compiler - there is none (facts/Metal/CompileOptions.md). Wrapping the manifest in the real reflection classes is real, scoped work for when demand asks for it, not a hardware wall.",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "the type tree the port now reads: air2cpu writes it beside the translation and MTLTypeReflection.m reads it with NSPropertyListSerialization, so the device gets a kernel's argument types without seeing AIR, which it never does",
+      "effect": "the plist's own kind, its dataType from the scalar name the emitter's typeOf gave it, and MTLDataTypeNone where the AIR carried neither",
+      "source": "SDK 16.4 and 26.2 Metal MTLArgument.h:229 declares MTLType as a class; the shape of the file is facts/Metal/TypeTree.md, and every value is read from the plist rather than invented",
+      "facts": "facts/Metal/TypeTree.md"
     },
     {
       "api": "MTLEvent",
@@ -1240,8 +1247,7 @@
       "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
       "source": "SDK 16.4, Metal"
-    }
-,
+    },
     {
       "api": "-[MTLComputeCommandEncoder useHeap:]",
       "kind": "method",
