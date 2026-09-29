@@ -22,11 +22,12 @@ fi
 . "$here/renames.sh"
 
 group() {
-    # $1: group name, $2: sources, $3: selectors to keep, $4: test source
+    # $1: group name, $2: sources, $3: test source. The keep list is gone with the renamer that read it:
+    # prefix_selectors.py derives the carried selectors from the objects, so nothing is lost by not passing one,
+    # and every group line in this file - main's own included - passes three arguments.
     name=$1
     files=$2
-    keep=$3
-    test=$4
+    test=$3
     objects=""
     for file in $files; do
         xcrun clang $target $flags -w -c "$sources/$file" -o "$build/plain/$name-$(basename "$file").o"
