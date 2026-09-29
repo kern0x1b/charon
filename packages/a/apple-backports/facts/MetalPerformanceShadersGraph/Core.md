@@ -1,0 +1,87 @@
+# The graph framework on this port: the builder side and the arithmetic family
+
+`MPSGraphObject`, `MPSGraphType`, `MPSGraphShapedType`, `MPSGraphDevice`, `MPSGraphTensor`,
+`MPSGraphOperation`, `MPSGraphTensorData`, `MPSGraph`, `MPSGraphExecutable`,
+`MPSGraphExecutionDescriptor` and `MPSGraphExecutableExecutionDescriptor`, and the arithmetic family of
+`MPSGraph`'s factory methods.
+
+Source: the headers of `MetalPerformanceShadersGraph` in the SDK of iOS 16.4, which is the SDK this
+package compiles against, for every signature; the 26.2 headers under
+`charon/.agent-work/sdk-26.2/` for what 16.4 does not declare. The behaviour is measured against the
+system's own MPSGraph by `tests/backports/host/mpsgraph/run.sh`.
+
+## The model, and why it is a walk rather than a compiler
+
+A graph is a description of work, and a tensor is a description of a result. Running a graph therefore
+means walking the operations **in the order they were added** and asking each to fill its outputs from
+its inputs and from the feeds: an operation can only read what an earlier one wrote, and the order they
+were added is the order that guarantees it. A tensor's value is found by looking it up — a placeholder's
+comes from the feeds, any other one's from the operation that produced it.
+
+`MPSGraphExecutable` is then the graph itself. The release compiles a graph into device code and holds
+the results on the device; this port holds them in the host memory behind an `MTLBuffer`, so there is
+nothing to compile ahead of time and the executable is the graph plus the targets the compile named.
+That is not a shortcut around the graph, it is the same graph with the storage the device already has.
+
+## Where the arithmetic happens, and in what precision
+
+Over the host memory behind an `MTLBuffer`, on the CPU, exactly as the matrix kernels in
+`../MetalPerformanceShaders` do (`facts/MetalPerformanceShaders/Matrix.md`). The data type of the
+operands decides the arithmetic, as it does there, through the same `CharonMPSStore` and `CharonMPSLoad`:
+`CharonMPSGraph.h` **includes** `CharonMPS.h` rather than restating it, so an `MPSDataType` means one
+thing in both families rather than two.
+
+A result tensor's storage is a buffer of its own, made when the operation runs, so a run never writes
+into a buffer the caller fed it.
+
+## Four names the build's SDK does not declare
+
+The iPhoneOS 16.4 SDK predates four names of the 26.2 surface:
+
+* **`MPSGraphObject`** arrived in iOS 17, and every class of that surface descends from it there,
+  while 16.4 has them descending from `NSObject`. It is declared in `CharonMPSGraph.h` and implemented
+  here, so a graph's objects have the root the 26.2 headers give them.
+* `MPSGraphFFTDescriptor`, `MPSGraphImToColOpDescriptor` and
+  `MPSGraphExecutableSerializationDescriptor` are in the 26.2 surface and not in the 16.4 headers.
+
+The declarations are guarded on a host SDK that already has them — where redeclaring would be a
+duplicate, and where the host's own classes are what a comparison must be against.
+
+**Four registered names that no header the build compiles against declares** is a rule R4 item: the
+lift's sets have to be re-measured in the same push as these land.
+
+## The measuring, and where it stands
+
+`tests/backports/host/mpsgraph/` compiles the same cases twice — once against the system's own
+MPSGraph, once against these classes with the MPSGraph names mapped to `Charon` names and their
+selectors prefixed — and compares the bytes of a buffer the case owns.
+
+**Both execution routes work on this host**, measured directly:
+
+* compiling with a shaped-type feed and running through
+  `-[MPSGraphExecutable runWithMTLCommandQueue:inputsArray:resultsArray:executionDescriptor:]` over a
+  result buffer the caller owns answers `[11 22 33 44]` for two 2x2 placeholders and one addition. This
+  is the route the differential uses, because it is the only one where the answer lands somewhere the
+  case can read: `MPSGraphTensorData` has no accessor for its bytes in either the 16.4 or the 26.2 SDK.
+* `-[MPSGraph runWithFeeds:targetTensors:targetOperations:]` answers too, and is one call.
+
+**What is not yet measured:** the differential agrees on the cases that do not execute and then both
+sides die at the first executed operation — the system inside its own kernel, this port inside its own.
+That is this harness's state and it is the next thing to fix; see the handoff in
+`.agent-work/plan-and-analysis/mps-solve/status.md`.
+
+One thing the harness did teach, and which is written into the case file: **reading a shaped type's
+equality, or a placeholder's `dataType`, takes the release down** — it calls
+`-[MPSGraphTensor tensorDataType]`, a selector its own `MPSGraphTensor` does not declare. So those
+answers are not comparable on this host and the case file does not ask for them.
+
+## The arithmetic family, and the rest
+
+Addition, subtraction, multiplication, division, and the unary operations negation, square,
+reciprocal, square root, reverse square root, exponential, logarithm, absolute and sign. Each is a kind
+in `CharonMPSGraphOperationKind` and a case in the interpreter, so a family lands by adding a kind and a
+function rather than by touching every other operation.
+
+Not written: reductions, matmul, convolution, pooling, normalization, activation, shape operations,
+control flow, random, optimizers, and the rest of the surface. Each is a family of the same shape, and
+each wants the differential to run a graph end to end first.

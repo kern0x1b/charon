@@ -1,0 +1,639 @@
+{
+  "framework": "MetalPerformanceShadersGraph",
+  "entries": [
+    {
+      "api": "MPSGraph",
+      "kind": "class",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "MPSGraphDevice",
+      "kind": "class",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "MPSGraphExecutable",
+      "kind": "class",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "MPSGraphExecutableExecutionDescriptor",
+      "kind": "class",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "MPSGraphExecutionDescriptor",
+      "kind": "class",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "MPSGraphObject",
+      "kind": "class",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "MPSGraphOperation",
+      "kind": "class",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "MPSGraphShapedType",
+      "kind": "class",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "MPSGraphTensor",
+      "kind": "class",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "MPSGraphTensorData",
+      "kind": "class",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "MPSGraphType",
+      "kind": "class",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "MPSGraph.options",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "MPSGraph.placeholderTensors",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "MPSGraphDevice.metalDevice",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "MPSGraphDevice.type",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "MPSGraphExecutable.feedTensors",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "MPSGraphExecutable.options",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "MPSGraphExecutable.targetTensors",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "MPSGraphOperation.controlDependencies",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "MPSGraphOperation.graph",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "MPSGraphOperation.inputTensors",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "MPSGraphOperation.name",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "MPSGraphOperation.outputTensors",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "MPSGraphShapedType.dataType",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "MPSGraphShapedType.shape",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "MPSGraphTensor.dataType",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "MPSGraphTensor.operation",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "MPSGraphTensor.shape",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "MPSGraphTensorData.dataType",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "MPSGraphTensorData.device",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "MPSGraphTensorData.shape",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "+[MPSGraph new]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "+[MPSGraphDevice deviceWithMTLDevice:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "-[MPSGraph absoluteWithTensor:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "-[MPSGraph additionWithPrimaryTensor:secondaryTensor:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "-[MPSGraph charon_mps_addOperationOfKind:name:inputs:outputs:parameters:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: the graph's interpreter, its kinds and its element accessors, which its own files share and an application never calls",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the private surface this library's own files share, read out of the compiled objects; the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 declare none of them"
+    },
+    {
+      "api": "-[MPSGraph charon_mps_arithmetic:operands:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: the graph's interpreter, its kinds and its element accessors, which its own files share and an application never calls",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the private surface this library's own files share, read out of the compiled objects; the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 declare none of them"
+    },
+    {
+      "api": "-[MPSGraph charon_mps_device]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: the graph's interpreter, its kinds and its element accessors, which its own files share and an application never calls",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the private surface this library's own files share, read out of the compiled objects; the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 declare none of them"
+    },
+    {
+      "api": "-[MPSGraph charon_mps_operation:inputs:parameters:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: the graph's interpreter, its kinds and its element accessors, which its own files share and an application never calls",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the private surface this library's own files share, read out of the compiled objects; the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 declare none of them"
+    },
+    {
+      "api": "-[MPSGraph compileWithDevice:feeds:targetTensors:targetOperations:compilationDescriptor:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "-[MPSGraph divisionWithPrimaryTensor:secondaryTensor:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "-[MPSGraph identityWithTensor:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "-[MPSGraph init]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "-[MPSGraph logarithmWithTensor:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "-[MPSGraph multiplicationWithPrimaryTensor:secondaryTensor:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "-[MPSGraph placeholderWithShape:dataType:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "-[MPSGraph reciprocalWithTensor:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "-[MPSGraph reverseSquareRootWithTensor:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "-[MPSGraph runWithFeeds:targetTensors:targetOperations:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "-[MPSGraph signWithTensor:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "-[MPSGraph squareRootWithTensor:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "-[MPSGraph squareWithTensor:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "-[MPSGraph subtractionWithPrimaryTensor:secondaryTensor:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "-[MPSGraphExecutable runWithMTLCommandQueue:inputsArray:resultsArray:executionDescriptor:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "-[MPSGraphOperation charon_mps_kind]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: the graph's interpreter, its kinds and its element accessors, which its own files share and an application never calls",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the private surface this library's own files share, read out of the compiled objects; the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 declare none of them"
+    },
+    {
+      "api": "-[MPSGraphOperation charon_mps_parameters]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: the graph's interpreter, its kinds and its element accessors, which its own files share and an application never calls",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the private surface this library's own files share, read out of the compiled objects; the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 declare none of them"
+    },
+    {
+      "api": "-[MPSGraphOperation charon_mps_setOutputTensors:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: the graph's interpreter, its kinds and its element accessors, which its own files share and an application never calls",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the private surface this library's own files share, read out of the compiled objects; the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 declare none of them"
+    },
+    {
+      "api": "-[MPSGraphOperation charon_mps_setParameters:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: the graph's interpreter, its kinds and its element accessors, which its own files share and an application never calls",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the private surface this library's own files share, read out of the compiled objects; the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 declare none of them"
+    },
+    {
+      "api": "-[MPSGraphOperation init]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "-[MPSGraphShapedType initWithShape:dataType:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "-[MPSGraphShapedType isEqualTo:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "-[MPSGraphTensor charon_mps_elementCount]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: the graph's interpreter, its kinds and its element accessors, which its own files share and an application never calls",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the private surface this library's own files share, read out of the compiled objects; the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 declare none of them"
+    },
+    {
+      "api": "-[MPSGraphTensor charon_mps_index]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: the graph's interpreter, its kinds and its element accessors, which its own files share and an application never calls",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the private surface this library's own files share, read out of the compiled objects; the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 declare none of them"
+    },
+    {
+      "api": "-[MPSGraphTensor init]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "-[MPSGraphTensorData charon_mps_buffer]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: the graph's interpreter, its kinds and its element accessors, which its own files share and an application never calls",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the private surface this library's own files share, read out of the compiled objects; the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 declare none of them"
+    },
+    {
+      "api": "-[MPSGraphTensorData charon_mps_bytes]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: the graph's interpreter, its kinds and its element accessors, which its own files share and an application never calls",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the private surface this library's own files share, read out of the compiled objects; the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 declare none of them"
+    },
+    {
+      "api": "-[MPSGraphTensorData charon_mps_elementCount]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: the graph's interpreter, its kinds and its element accessors, which its own files share and an application never calls",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the private surface this library's own files share, read out of the compiled objects; the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 declare none of them"
+    },
+    {
+      "api": "-[MPSGraphTensorData initWithDevice:data:shape:dataType:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "-[MPSGraphTensorData initWithMTLBuffer:shape:dataType:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    }
+  ]
+}
