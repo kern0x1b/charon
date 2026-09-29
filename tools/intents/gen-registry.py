@@ -160,6 +160,10 @@ NOT_ANSWERED = {
         "imageNamed: answers no image for a name the app has none of",
 }
 
+# The two protocols the corpus names and no header declares, held rather than answered.  See the
+# branch that uses it.
+HELD_PROTOCOLS = ("INIntentSetImageKeyPath", "_INIntentSetImageKeyPath")
+
 SOURCE = ("the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the "
           "release each object file is carried from (tools/intents/measure-intents.lua)")
 
@@ -309,6 +313,27 @@ def main():
             # A protocol is the framework's, not one group's: it is written once, in the file of
             # the group whose classes first conform to it, because two files naming one protocol
             # stop the build with both names.
+            #
+            # INIntentSetImageKeyPath and _INIntentSetImageKeyPath are the two the corpus names
+            # and no header of either SDK declares as a protocol: what it names are the two
+            # methods of INSetImageIntent that carry NS_REFINED_FOR_SWIFT, which is a Swift
+            # name for an Objective-C one, and a Swift refinement is not a protocol a header
+            # declares.  The tree carried them `absent` with the reason "the SDK declares it in
+            # no header" - which this branch cannot write, and which no member cause writes
+            # either, so the tree's row came from an older generator than this one.  That is the
+            # honest history: the tree was stale against the generator, not the other way round,
+            # and it is measured in the harness before either row moves.  Until that measurement
+            # exists they are held here, with the reason the tree gave, rather than flipped on
+            # the strength of a reason that changed by itself.
+            if api in HELD_PROTOCOLS:
+                entries.append({"api": api, "kind": "protocol", "introduced": intro,
+                                "minimum": "6.0", "status": "absent", "facts": options.facts,
+                                "reason": "the SDK declares it in no header: the two methods it "
+                                          "refines carry NS_REFINED_FOR_SWIFT, which names a Swift "
+                                          "refinement and not a protocol any header declares, so "
+                                          "there is nothing here for a header to carry",
+                                "source": SOURCE})
+                continue
             if options.no_protocols:
                 missing["protocol of another group"] += 1
                 continue

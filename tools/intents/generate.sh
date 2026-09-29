@@ -51,9 +51,12 @@ newer_version=$(basename "$SDK_262" | sed 's/iPhoneOS//; s/\.sdk//')
 ast_dump() {           # ast_dump SDK VERSION OUT
     # The key is the newest header mtime, the number of headers, and the umbrella's own: a
     # changed header or a changed import list re-reads, and nothing else does.
+    # The umbrella's own **content hash**, not its mtime: generate.sh rewrites the umbrella on
+    # every run, so an mtime in the key is always new and the dump is never reused.  Measured, one
+    # rerun paid the 10-minute parse for exactly that reason.
     key=$( { find "$1/System/Library/Frameworks" -name '*.h' -print0 | xargs -0 stat -f '%m' 2>/dev/null | sort -rn | head -1
              find "$1/System/Library/Frameworks" -name '*.h' | wc -l
-             stat -f '%m' "$work/umbrella.m"; } | tr '\n' ' ')
+             shasum "$work/umbrella.m" | cut -d' ' -f1; } | tr '\n' ' ')
     if [ -f "$3" ] && [ -f "$3.key" ] && [ "$(cat "$3.key")" = "$key" ]; then
         echo "    ast $3: reused, $(wc -c < "$3" | tr -d ' ') bytes"
         return 0
