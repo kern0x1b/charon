@@ -30,6 +30,7 @@ worktree's .agent-work/runs.
 """
 import json
 import os
+import re
 import subprocess
 import sys
 
@@ -130,12 +131,19 @@ def ast_for(path, sdk):
          "-Werror=objc-missing-property-synthesis",
          "-Xclang", "-ast-dump=json", "-fsyntax-only", path],
         cwd=os.getcwd(), capture_output=True, text=True)
-    errors = [line for line in result.stderr.split("\n") if " error:" in line]
-    if errors:
+    # CLANG'S OWN EXIT STATUS, and a diagnostic matched by its FORMAT and not by a substring.
+    # A substring search for " error:" is wrong in a way this very file was bitten by: the SDK's own
+    # declaration - (BOOL)startCaptureWithDescriptor:(...) error:(NSError **)error - contains that
+    # text, and clang echoes the declaration line in a warning's excerpt, so a file that compiles
+    # with exit 0 was reported as not compiling. The format of a diagnostic is
+    # <file>:<line>:<column>: (fatal )?error:, and the exit status is the authority besides it.
+    errors = [line for line in result.stderr.split("\n")
+              if re.match(r"^\S+:\d+:\d+: (fatal )?error:", line)]
+    if result.returncode != 0 or errors:
         print("protocol-members: %s DOES NOT COMPILE, so its declarations cannot be trusted:"
               % os.path.basename(path))
-        for line in errors[:6]:
-            print("      %s" % line.split(" error:")[0].split("/")[-1] + " error:" + line.split(" error:")[1])
+        for line in (errors[:6] or [l for l in result.stderr.split("\n") if " error" in l][:6]):
+            print("      %s" % line[:150])
         raise SystemExit(2)
     if not result.stdout.strip():
         raise SystemExit("protocol-members: %s produced no AST:\n%s" % (path, result.stderr[-800:]))

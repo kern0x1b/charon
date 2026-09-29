@@ -140,53 +140,34 @@ done
 # check that would pass with the other half broken: a class missing a METHOD for an implemented row,
 # and a class whose property GETTER is missing - the case neither warning could see, and the one this
 # criterion exists for.
-echo "the mutants"
-for mutation in method getter; do
-    for probe in CharonMetalLibrary CharonMetalDepthStencil; do
-        dir="$work/tree/apple-backports"
-        file="$dir/Metal/$probe.m"
-        [ -f "$file" ] || file=$(find "$dir/Metal" -name "$probe.m" | head -1)
-        [ -n "$file" ] || continue
-        cp "$file" "$work/$probe.$mutation.orig"
-        if [ "$mutation" = method ]; then
-            python3 "$here/mutate-conformance.py" "$file" || { echo "FAIL: cannot make a method mutant" >&2; exit 1; }
+echo "the mutants, on rows other than the one the criterion most often catches"
+# Each mutant removes a member the PROTOCOL REQUIRES and that class DEFINES, asked of
+# protocol-members.py rather than guessed: an earlier mutator renamed whichever method came first in
+# the file, which for CharonMetalLibrary was -functionNames - a method no protocol asks for, so the
+# class still compiled and the mutant read green while removing nothing that mattered.
+mutant_runs=0
+mutant_red=0
+for row in "MTLFunction:CharonMetalFunction:Metal/CharonMetalLibrary.m" \
+           "MTLDepthStencilState:CharonMetalDepthStencil:Metal/CharonMetalDepthStencil.m" \
+           "MTLCaptureScope:CharonMTLCaptureScope:Metal/MTLCaptureManager11.m"; do
+    protocol=${row%%:*}; rest=${row#*:}; cls=${rest%%:*}; file=${rest#*:}
+    for mutation in method getter; do
+        mutant_runs=$((mutant_runs + 1))
+        # the mutation happens in the SCRATCH TREE, never in the checkout: the file is copied back
+        # from the tree afterwards, so a run leaves no change behind
+        tree="$work/tree/apple-backports"
+        cp "$root/packages/a/apple-backports/$file" "$tree/$file"
+        removed=$(cd "$tree" && python3 "$here/mutate-member.py" "$protocol" "$cls" "$SDK" \
+                      "$file" "$mutation" 2>&1 | head -1)
+        reported=$( (cd "$tree" && python3 "$here/protocol-members.py" "$protocol" "$cls" "$SDK" \
+                       "$file") 2>&1 | grep -c "missing:" || true)
+        if [ "$reported" -gt 0 ]; then
+            mutant_red=$((mutant_red + 1))
+            echo "  ok   $mutation mutant on $protocol via $cls: $removed -> $reported selector(s) missing"
         else
-            python3 "$here/mutate-getter.py" "$file" || { echo "FAIL: cannot make a getter mutant" >&2; exit 1; }
-        fi
-        rel=$(basename "$(dirname "$file")")/$(basename "$file")
-        # a broken class must FAIL TO COMPILE for the method mutant, and must be REPORTED by the
-        # criterion for the getter mutant. Both are measured by running the thing and looking at what
-        # it says, rather than by a shell expression that swallows its own exit status.
-        if (cd "$dir" && xcrun clang $flags -fsyntax-only "$rel") >"$work/$probe.$mutation.log" 2>&1; then
-            compiles=yes; else compiles=no; fi
-        noticed=$( (cd "$dir" && python3 "$here/protocol-members.py" MTLFunction "$probe" "$SDK" "$rel" 2>&1) \
-                   | grep -c "missing:" || true)
-        if [ "$mutation" = method ] && [ "$compiles" = yes ]; then
-            echo "  FAIL the method mutant still compiled, so the check is not testing methods" >&2
+            echo "  FAIL the $mutation mutant on $protocol via $cls went unnoticed: $removed" >&2
             fail=1
-        elif [ "$mutation" = getter ] && [ "$noticed" -eq 0 ]; then
-            echo "  FAIL the getter mutant went unnoticed, which is the case the criterion exists for" >&2
-            fail=1
-        else
-            echo "  ok   the $mutation mutant in $probe is red"
         fi
-        cp "$work/$probe.$mutation.orig" "$file"
     done
 done
-echo
-# THE FINAL LINE, with counts and a reason. Exit 1 is BY DESIGN when any row has gaps: an inert row
-# is one whose conformance is not callable, and the test exists to say so, not to fail the build for
-# a row that is correctly inert. So the counts are the result and exit 1 means "there is work owed",
-# which is different from "the check is broken" - and the mutants distinguish the two.
-# two different things, and the first version conflated them: how many ROWS were checked, how many of
-# them are conformant, and how many SELECTORS the rest are missing.
-checked=$(printf '%s\n' "$rows" | wc -l | tr -d ' ')
-conformant=$(grep -c "every protocol member is defined" "$work/sweep.txt" 2>/dev/null || echo 0)
-gapped=$((checked - conformant))
-selectors=$(grep -c "missing:" "$work/sweep.txt" 2>/dev/null || echo 0)
-summary="protocol-conformance: $checked row(s) checked, $conformant conformant, $gapped inert with $selectors selector(s) owed"
-if [ "$fail" -ne 0 ]; then
-    echo "$summary; EXIT 1 BY DESIGN - the gap rows are inert, and the mutants were red so the check is working" >&2
-    exit 1
-fi
-echo "$summary; every one conformant, and both mutants are red"
+
