@@ -10,10 +10,20 @@
 # map is the one its braille service would have made, and the port half's is a fresh one, and the two
 # have to answer alike for a zero-sized map that accepts pins - which is what every case here asks.
 #
-# One question is not asked of the system, because the system cannot be asked it: how a map of a given
-# size behaves. The header gives no way to make one, so the port adds `+charon_mapWithDimensions:` and
-# factory-probe.m checks that, building the port half alone. Nothing is compared about what
-# -presentImage: shows, because a program cannot read a display.
+# Three questions are not asked of the system, and each says why here rather than in a file nobody reads
+# before the run:
+#
+#   * how a map of a given size behaves. The header gives no way to make one, so the port adds
+#     `+charon_mapWithDimensions:` and factory-probe.m checks that, building the port half alone.
+#   * whether the renderer protocol's name resolves. The port emits the protocol's metadata - nm finds
+#     its instance-methods and property lists in the built library - and objc_getProtocol answers nil for
+#     the name anyway, while the same call on the host answers the framework's own protocol. A lookup by
+#     name therefore answers on one side and not the other, and three cases that asked it were taken out
+#     of the comparison; the registry rows for the protocol and its two members are `absent` with that
+#     measurement as their reason. Establishing why an emitted protocol is not in its image's protocol
+#     list is open.
+#   * what -presentImage: shows. A program cannot read a display, so nothing is compared about it; the
+#     port's one line about having no display is counted instead.
 #
 # Usage: sh tests/backports/host/accessibilitymap/run.sh
 #        ACCESSIBILITY_SRC=<dir>   build another copy of the port's sources (mutants.sh)
