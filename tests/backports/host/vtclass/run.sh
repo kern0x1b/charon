@@ -61,7 +61,7 @@ export VT_SDK
 rm -f "$gen/roundtrip-cases.h" "$gen/mutants.tsv"
 python3 "$here/probe-types.py" || exit 1
 runs=$here/../../../../.agent-work/runs/vt
-[ -s "$runs/type-branches.tsv" ] || { echo "probe-types.py produced no $runs/type-branches.tsv"; exit 1; }
+[ -s "$here/type-branches.tsv" ] || { echo "the committed type-branches.tsv is missing, and the generator reads that one"; exit 1; }
 python3 "$here/emit.py" "$VT_SDK" || exit 1
 for generated in roundtrip-cases.h mutants.tsv summary.json; do
     [ -s "$gen/$generated" ] || { echo "emit.py produced no $generated"; exit 1; }
@@ -77,6 +77,10 @@ else
 fi
 
 python3 "$here/check-declarations.py" "$VT_SDK" --quiet
+# A NAME IN NEITHER TABLE must be refused, and the refusal is run here rather than left to a reader:
+# DECLARED_KEYS is the only way past the check that a property exists, so it is where a generator's own
+# mistake would hide, and a control that is only ever run by hand is a control that is not run.
+python3 "$here/decoy_test.py" || { echo "the decoy name was accepted"; exit 1; }
 
 # 1. the host's own VideoToolbox
 # every build's exit status is checked, and the binary is removed first: a run.sh that reuses the last
