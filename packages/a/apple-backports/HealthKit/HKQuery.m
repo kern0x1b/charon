@@ -34,6 +34,15 @@ static NSString *CharonHKOperatorSpelling(NSPredicateOperatorType type)
     }
 }
 
+// Every query of this library is answered by the store through -charon_run, and the store's
+// -executeQuery: asks each one whether it conforms to <CharonHKRunnableQuery> before running it. No
+// class adopted that protocol, so -executeQuery: raised "is not a query this store can execute" for
+// every query this port has, and the six of 8.0 to 11.0 were never executed by anything that checked.
+// The base class adopts it once, here, and every subclass inherits the conformance: the members are the
+// four the protocol names, and HKQuery implements all four.
+@interface HKQuery (CharonHKRunnable) <CharonHKRunnableQuery>
+@end
+
 @implementation HKQuery {
     HKObjectType *_objectType;
     NSPredicate *_predicate;
@@ -269,4 +278,7 @@ static NSString *CharonHKOperatorSpelling(NSPredicateOperatorType type)
 {
 }
 
+@end
+
+@implementation HKQuery (CharonHKRunnable)
 @end
