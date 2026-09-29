@@ -44,3 +44,52 @@ is visible rather than inferred:
 
 The per-*member* guard came with it: a class can produce a case and still lose members, which is the
 other half of what was unexplained.
+
+## The store, and the rule about the host's writing half
+
+`ASCredentialIdentityStore` is the first class in this family with state behind it, and it is the one
+where a differential could do real harm, so the rule is written here as well as enforced.
+
+On a Mac these four methods change the **user's** AutoFill state:
+
+    -saveCredentialIdentities:completion:
+    -removeCredentialIdentities:completion:
+    -removeAllCredentialIdentitiesWithCompletion:
+    -replaceCredentialIdentitiesWithIdentities:completion:
+
+A differential that called them to see what they return would be writing to the reviewer's passwords. So
+the host side of this family is **read-only**: only
+`-getCredentialIdentityStoreStateWithCompletion:`, and only because it asks the system what it already
+holds. The writing half's behaviour is documented from the header, and the port's own save-then-query
+runs against the port's own store, whose property list lives under `.agent-work/runs/` and never in
+`~/Library`.
+
+`tests/backports/host/authservices/host-write-guard.sh` greps the host probe for the four names before
+anything is built and refuses to start if any of them appears, and `values.sh` runs it first. Before
+this round's first run:
+
+    saveCredentialIdentities                    values.m 0
+    removeCredentialIdentities                  values.m 0
+    replaceCredentialIdentitiesWithIdentities   values.m 0
+    removeAllCredentialIdentities               values.m 0
+
+and the port's own sources, which are the only place any of them is called: 5, 2, 2, 2.
+
+## What the port's store does, and where it differs from the system one
+
+A save replaces an identity already held — matched on the service identifier, the user and the record
+identifier, and deliberately **not** on the rank, which is the order the system offers them in and not
+part of what they are. A remove takes only the named records, because the header restricts that method
+to a store that takes incremental updates and this one does.
+
+`replaceCredentialIdentitiesWithIdentities:` is where the port deliberately differs, and the facts say
+so rather than the code quietly: the header restricts it to a store that does **not** take incremental
+updates, and this one does, so the port saves the new set as a superset and leaves anything not in it
+alone. An application that expected the set to become exactly the array would be surprised. The
+alternative — emptying the store to satisfy the letter of a method the header confines to the other kind
+of store — would destroy the application's own records.
+
+`-getCredentialIdentityStoreStateWithCompletion:` reports **enabled** and **incremental**, and that is
+about the *application's* store, not the system's autofill database. There is no daemon behind this one
+and nothing outside the process reads it, which is the honest answer for a port that has no system
+credential store to ask.

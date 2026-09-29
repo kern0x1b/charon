@@ -27,10 +27,10 @@
       "kind": "class",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the release has no credential provider extension or identity store for the system's AutoFill to consult, and a password that only looks kept would mislead",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "the SDK 16.4 headers of AuthenticationServices"
+      "status": "implemented",
+      "effect": "+sharedStore and the header's five methods over a property list of the port's own, under .agent-work/runs/ and never in the user's Library: -getCredentialIdentityStoreStateWithCompletion: reporting enabled and incremental for the application's own store, -saveCredentialIdentities:completion: and -removeCredentialIdentities:completion: matching an identity on its service identifier, user and record identifier and NOT its rank, -removeAllCredentialIdentitiesWithCompletion: emptying it, and -replaceCredentialIdentitiesWithIdentities:completion: saving the new set as a superset because the header restricts that call to a store that does not take incremental updates and this one does. A write that fails is reported as the (NO, ASCredentialIdentityStoreErrorDomain error) the header defines, never swallowed. The host's writing half is never called: on a Mac those four change the user's AutoFill state, so the host side is read-only and the writing half's behaviour is documented from the header",
+      "source": "the 26.2 header's contract for the writing half, which is deliberately NOT measured on the host because those four methods change this Mac's AutoFill state (tests/backports/host/authservices/host-write-guard.sh refuses to start a probe that names them); the 26.2 header for every member; and the port's own property list, whose save-then-query the value differential exercises",
+      "facts": "facts/AuthenticationServices/ASCredentialIdentity.md"
     },
     {
       "api": "ASCredentialIdentityStoreState",

@@ -63,6 +63,13 @@ extern NSString *const ASCharonProviderCodingKey;
 // Whether the store can be written to and whether it takes changes or the whole set. This class does
 // NOT mark -init unavailable, so the port's construction is the extra way in and the release's own -init
 // is left alone.
+// The store is a shared object on the release and +sharedStore here; the path is where its file goes
+// and the class marks plain -init unavailable, so the port names its own way in.
+@interface ASCredentialIdentityStore (CharonASConstruction)
+- (instancetype)charon_initWithStorePath:(NSString *)path
+    __attribute__((objc_method_family(init)));
+@end
+
 @interface ASCredentialIdentityStoreState (CharonASConstruction)
 - (instancetype)charon_initWithEnabled:(BOOL)enabled
            supportsIncrementalUpdates:(BOOL)supportsIncrementalUpdates
