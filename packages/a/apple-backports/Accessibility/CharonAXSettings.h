@@ -48,12 +48,29 @@ FOUNDATION_EXPORT NSNotificationName const _Nonnull AXPrefersNonBlinkingTextInse
 // The sections the Settings app of 18.0 opens at. The cases are names and numbers from the header, and
 // they are here because AXOpenSettingsFeature takes one: a caller on this release has nothing to open
 // whatever it asks for, and the case is what the caller's switch matched.
+//
+// **The availability is per case, and the first version of this file had it only on the type**, which
+// is what this file's own preamble says it transcribes and what it did not do. The type arrived with
+// 18.0; one case with 18.2; and the last three with 26.0. Given only the type's annotation, a caller
+// whose deployment target is 18.0 could use the 26.0 cases with no diagnostic at all, where the same
+// caller against the SDK is told to guard the use:
+//
+//   warning: 'AXSettingsFeatureDwellControl' is only available on iOS 26.0 or newer
+//            [-Wunguarded-availability-new]
+//
+// The knowledge was in a comment in CharonAXSettings18.m and nowhere in the declaration, which is the
+// one place a compiler reads. The annotations are facts from the header: the case name, its number, and
+// the iOS release that release attaches to that case.
 typedef NS_ENUM(NSInteger, AXSettingsFeature) {
     AXSettingsFeaturePersonalVoiceAllowAppsToRequestToUse = 1,
-    AXSettingsFeatureAllowAppsToAddAudioToCalls = 2,
-    AXSettingsFeatureAssistiveTouch = 3,
-    AXSettingsFeatureAssistiveTouchDevices = 4,
-    AXSettingsFeatureDwellControl = 5,
+    // The annotation goes between the name and the comma, and an annotated case carries no explicit
+    // value and numbers itself from the one before. Written the other way round - the value first, then
+    // the annotation - clang stops at the case with "expected '}' or ','"; and the two forms are not
+    // interchangeable, so this is the shape the header has and the shape that compiles.
+    AXSettingsFeatureAllowAppsToAddAudioToCalls API_AVAILABLE(ios(18.2)),
+    AXSettingsFeatureAssistiveTouch API_AVAILABLE(ios(26.0)),
+    AXSettingsFeatureAssistiveTouchDevices API_AVAILABLE(ios(26.0)),
+    AXSettingsFeatureDwellControl API_AVAILABLE(ios(26.0))
 } API_AVAILABLE(ios(18.0));
 
 API_AVAILABLE(ios(18.0))

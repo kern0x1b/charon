@@ -492,6 +492,41 @@ for `armv7-apple-ios6.0`, with the answers as readings of the census. The comman
 an emulator run of `tests/backports/settings/hearing-check.m` against the built library, and the run prints
 `hearing: OWED` rather than passing quietly over it.
 
+### The Settings sections' availability, which is per case and was transcribed as if it were not
+
+`AXSettingsFeature` arrived with 18.0 as a type, and its cases did not all arrive with it: the second
+with **18.2** and the last three with **26.0**. The first version of `CharonAXSettings.h` gave the type
+its 18.0 and every case nothing, which is what its own preamble says it transcribes and what it did not
+do - and the knowledge sat in a comment in `CharonAXSettings18.m`, which is the one place a compiler
+never reads. Given the type's annotation alone, a caller whose deployment target is 18.0 could use the
+26.0 cases and hear nothing at all, where the same caller against the SDK is told to guard the use.
+Measured on this tree, the same file, the same flags, before and after:
+
+```
+against the port's header, deployment 18.0, before:   0 diagnostics
+against the SDK 26.2,     deployment 18.0, before:
+warning: 'AXSettingsFeatureDwellControl' is only available on iOS 26.0 or newer [-Wunguarded-availability-new]
+against the port's header, deployment 18.0, after:
+warning: 'AXSettingsFeatureDwellControl' is only available on iOS 26.0 or newer [-Wunguarded-availability-new]
+against the port's header, deployment 18.2, after:   the same warning
+against the port's header, deployment 26.0, after:   clean
+against the port's header, deployment 18.0, after, the 18.2 case:
+warning: 'AXSettingsFeatureAllowAppsToAddAudioToCalls' is only available on iOS 18.2 or newer [-Wunguarded-availability-new]
+```
+
+The port now answers as the SDK does at every one of those deployments. Two things about the shape of
+the declaration are worth writing down, because the obvious form of it does not compile and the
+difference is not interchangeable: an annotated case carries **no explicit value** and numbers itself
+from the one before, and the annotation goes **between the name and the comma**. Written the other way
+round - the value first and the annotation after it - clang stops at the case with `expected '}' or ','`.
+
+**There are no registry rows for the cases, and that is the convention rather than an omission.** The
+whole registry is 2319 class rows, 358 protocol rows, 3835 constant rows, 4198 property rows, 4167 method
+rows, one type row, 1224 function rows and 6 symbol rows, and **not one row of kind `case`**. An
+enumeration is covered by the function that takes it - here `AXOpenSettingsFeature()` - and its cases are
+names inside that function's declaration, so adding four rows for four case names would be four rows the
+rest of the tree does not have.
+
 ### Where the four objects land, measured rather than read from the header
 
 `tools/release-split.lua` over the nine objects of this library, built with the library flags for
