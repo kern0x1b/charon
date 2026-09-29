@@ -1,9 +1,9 @@
 # VideoToolbox's 135 string constants, and the release each arrived in
 
-VideoToolboxConstants26.m defines 135 string constants. Until the 6.1.3 gate stopped on this
+The VideoToolboxConstants<release>.m files define 135 string constants. Until the 6.1.3 gate stopped on this
 family none of them had a registry row, and the gate says what that sounds like: "neither
 the SDK, the registry nor a held release's own cache says which iOS release <name> arrived
-in, and VideoToolboxConstants26.m defines it".
+in, and a VideoToolboxConstants file defines it".
 
 The release each one is placed at is the SDK's OWN, read from its declaration: the
 availability on the declaration's line where it is there, the line below where a // comment
@@ -37,7 +37,7 @@ there. Nothing is assigned from a neighbour, and nothing is left unsaid.
 ## What this does not cover
 
 A constant of an early release that 6.1.3 EXPORTS NATIVELY is not the port's to define, and
-this file does not decide that: it is the cache that says, and the split of the object per
-release is the next piece. Until that is done the object carries the API of several releases,
-and a registry row that says when each constant arrived does not by itself make the object
-right.
+this file does not decide that: it is the cache that says, and that measurement is still owed.
+The objects are split per release (VideoToolboxConstants<major>_<minor>.m), each holding the
+constants its registry rows place at that release; check-constant-files.py holds that both ways,
+with a control that a constant moved into another release's file is caught by name.

@@ -3,9 +3,9 @@
 
     VT_SDK=<an iPhoneOS*.sdk> python3 registry-constants.py [--dry-run]
 
-VideoToolboxConstants26.m defines 135 string constants and the registry had a row for none of them, which
+The VideoToolboxConstants<release>.m files define 135 string constants and the registry had a row for none of them, which
 is what the 6.1.3 gate stops on: "neither the SDK, the registry nor a held release's own cache says
-which iOS release <name> arrived in, and VideoToolboxConstants26.m defines it".
+which iOS release <name> arrived in, and <a VideoToolboxConstants file> defines it".
 
 THE RELEASE IS THE HEADER'S OWN, read by availability.py, and the row is placed in that release's group
 file - ios26.json for a constant the header marks ios(26.0), ios14.json for one it marks ios(14.0), and so
@@ -29,7 +29,7 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 WORKTREE = os.path.abspath(os.path.join(HERE, "..", "..", "..", ".."))
 CONSTANTS = os.path.join(WORKTREE, "packages", "a", "apple-backports", "VideoToolbox",
-                         "VideoToolboxConstants26.m")
+                         "VideoToolboxConstants*.m")
 REGISTRY = os.path.join(WORKTREE, "packages", "a", "apple-backports", "registry", "VideoToolbox")
 FACTS = os.path.join(WORKTREE, "packages", "a", "apple-backports", "facts", "VideoToolbox",
                     "FrameProcessorConstants.md")
@@ -59,7 +59,8 @@ def load_availability():
 
 
 def defined_constants():
-    return re.findall(r"^const CFStringRef (\w+) = CFSTR", open(CONSTANTS).read(), re.M)
+    text = "".join(open(path).read() for path in sorted(glob.glob(CONSTANTS)))
+    return re.findall(r"^const CFStringRef (\w+) = CFSTR", text, re.M)
 
 
 def group_file(release):
@@ -151,10 +152,10 @@ def write_facts(groups, undecided):
     """The file every row points at, and the DECISIONS in it - not silence."""
     lines = ["# VideoToolbox's 135 string constants, and the release each arrived in",
              "",
-             "VideoToolboxConstants26.m defines 135 string constants. Until the 6.1.3 gate stopped on this",
+             "The VideoToolboxConstants<release>.m files define 135 string constants. Until the 6.1.3 gate stopped on this",
              "family none of them had a registry row, and the gate says what that sounds like: \"neither",
              "the SDK, the registry nor a held release's own cache says which iOS release <name> arrived",
-             "in, and VideoToolboxConstants26.m defines it\".",
+             "in, and <a VideoToolboxConstants file> defines it\".",
              "",
              "The release each one is placed at is the SDK's OWN, read from its declaration: the",
              "availability on the declaration's line where it is there, the line below where a // comment",
@@ -179,10 +180,10 @@ def write_facts(groups, undecided):
             lines.append("  this is a reading of where the SDK put it, not a judgement about the release.")
     lines += ["", "## What this does not cover", "",
               "A constant of an early release that 6.1.3 EXPORTS NATIVELY is not the port's to define, and",
-              "this file does not decide that: it is the cache that says, and the split of the object per",
-              "release is the next piece. Until that is done the object carries the API of several releases,",
-              "and a registry row that says when each constant arrived does not by itself make the object",
-              "right.", ""]
+              "this file does not decide that: it is the cache that says, and that measurement is still owed.",
+              "The objects are split per release (VideoToolboxConstants<major>_<minor>.m), each holding the",
+              "constants its registry rows place at that release; check-constant-files.py holds that both ways,",
+              "with a control that a constant moved into another release's file is caught by name.", ""]
     os.makedirs(os.path.dirname(FACTS), exist_ok=True)
     with open(FACTS, "w") as handle:
         handle.write("\n".join(lines))

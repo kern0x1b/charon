@@ -25,7 +25,7 @@ echo "the host answered: $(python3 -c "import json; print(len(json.load(open('$b
 
 python3 "$here/rename.py" "$build/rename.h" "$here/names.txt"
 xcrun clang $common -DCHARON_VIDEOTOOLBOX_PORT=1 -include "$build/rename.h" -I"$here" -I"$appledir/VideoToolbox" \
-    "$here/record.m" "$here/cases.m" "$appledir/VideoToolbox/VideoToolboxConstants26.m" $libs -o "$build/port"
+    "$here/record.m" "$here/cases.m" "$appledir"/VideoToolbox/VideoToolboxConstants*.m $libs -o "$build/port"
 VIDEOTOOLBOX_RECORDS="$build/port.json" "$build/port"
 python3 "$here/compare.py" "$build/system.json" "$build/port.json"
 
@@ -35,12 +35,13 @@ survived=0
 mutant() {
     label=$1; from=$2; to=$3
     rm -rf "$build/mutant"; mkdir -p "$build/mutant"
-    cp "$appledir/VideoToolbox/VideoToolboxConstants26.m" "$build/mutant/"
-    if ! python3 "$here/mutate.py" "$build/mutant/VideoToolboxConstants26.m" "$from" "$to" >/dev/null; then
+    cp "$appledir"/VideoToolbox/VideoToolboxConstants*.m "$build/mutant/"
+    holder=$(grep -l -F -- "$from" "$build"/mutant/VideoToolboxConstants*.m | head -n 1)
+    if [ -z "$holder" ] || ! python3 "$here/mutate.py" "$holder" "$from" "$to" >/dev/null; then
         echo "MUTATION DID NOT APPLY: $label"; survived=$((survived + 1)); return
     fi
     xcrun clang $common -DCHARON_VIDEOTOOLBOX_PORT=1 -include "$build/rename.h" -I"$here" -I"$build/mutant" \
-        "$here/record.m" "$here/cases.m" "$build/mutant/VideoToolboxConstants26.m" $libs -o "$build/mutant/run"
+        "$here/record.m" "$here/cases.m" "$build"/mutant/VideoToolboxConstants*.m $libs -o "$build/mutant/run"
     rm -f "$build/mutant.json"
     VIDEOTOOLBOX_RECORDS="$build/mutant.json" timeout 90 "$build/mutant/run" >/dev/null 2>&1 || true
     if cmp -s "$build/port.json" "$build/mutant.json"; then
