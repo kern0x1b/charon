@@ -643,66 +643,60 @@
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a member of a protocol that an application's own class implements: the release does not carry the protocol and the port implements no class that adopts it, so there is nothing here to answer it",
-      "effect": "the protocol is declared by the header and the application's class answers the selector; the port's NSItemProvider calls it on instances of that class (registerObject:visibility: and loadObjectOfClass:completionHandler: read the type identifiers and load the data through it), and NSString, NSURL and the classes the port carries answer it in their own rows",
+      "status": "implemented",
       "facts": "facts/Foundation/NSItemProvider.md",
-      "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)"
+      "reason": "a class method of a protocol the SDK's headers declare: the receiver is a class that adopts NSItemProviderReading, and this package's own NSItemProvider is such a class, so the port answers it rather than asking an application for it",
+      "effect": "the port's own NSItemProvider builds a provider over the data, and hands out the documented failure - nil and an NSError - when the type identifier is empty or the data is nil (Foundation/NSItemProvider.m:547)"
     },
     {
       "api": "+[NSItemProviderWriting itemProviderVisibilityForRepresentationWithTypeIdentifier:]",
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a member of a protocol that an application's own class implements: the release does not carry the protocol and the port implements no class that adopts it, so there is nothing here to answer it",
-      "effect": "the protocol is declared by the header and the application's class answers the selector; the port's NSItemProvider calls it on instances of that class (registerObject:visibility: and loadObjectOfClass:completionHandler: read the type identifiers and load the data through it), and NSString, NSURL and the classes the port carries answer it in their own rows",
+      "status": "implemented",
       "facts": "facts/Foundation/NSItemProvider.md",
-      "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)"
+      "reason": "a class method of a protocol the SDK's headers declare, answered by the port's own provider",
+      "effect": "NSItemProviderRepresentationVisibilityAll: a class that registers nothing narrower is visible everywhere, which is the enumeration's own reading of the default (Foundation/NSItemProvider.m:518)"
     },
     {
       "api": "-[NSItemProviderWriting itemProviderVisibilityForRepresentationWithTypeIdentifier:]",
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a member of a protocol that an application's own class implements: the release does not carry the protocol and the port implements no class that adopts it, so there is nothing here to answer it",
-      "effect": "the protocol is declared by the header and the application's class answers the selector; the port's NSItemProvider calls it on instances of that class (registerObject:visibility: and loadObjectOfClass:completionHandler: read the type identifiers and load the data through it), and NSString, NSURL and the classes the port carries answer it in their own rows",
+      "status": "implemented",
       "facts": "facts/Foundation/NSItemProvider.md",
-      "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)"
+      "reason": "an instance method of a protocol the SDK's headers declare, answered by the port's own provider",
+      "effect": "the narrowest visibility among the representations this provider was registered with, and All when it has none; the registration keeps the visibility the caller handed it, which the port used to take and drop (Foundation/NSItemProvider.m:524)"
     },
     {
       "api": "-[NSItemProviderWriting loadDataWithTypeIdentifier:forItemProviderCompletionHandler:]",
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a member of a protocol that an application's own class implements: the release does not carry the protocol and the port implements no class that adopts it, so there is nothing here to answer it",
-      "effect": "the protocol is declared by the header and the application's class answers the selector; the port's NSItemProvider calls it on instances of that class (registerObject:visibility: and loadObjectOfClass:completionHandler: read the type identifiers and load the data through it), and NSString, NSURL and the classes the port carries answer it in their own rows",
+      "status": "implemented",
       "facts": "facts/Foundation/NSItemProvider.md",
-      "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)"
+      "reason": "an instance method of a protocol the SDK's headers declare, answered by the port's own provider",
+      "effect": "the same load -loadDataRepresentationForTypeIdentifier:completionHandler: performs, in the protocol's shape, with the progress the loader reports (Foundation/NSItemProvider.m:542)"
     },
     {
       "api": "NSItemProviderReading.readableTypeIdentifiersForItemProvider",
       "kind": "property",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a member of a protocol that an application's own class implements: the release does not carry the protocol and the port implements no class that adopts it, so there is nothing here to answer it",
-      "effect": "the protocol is declared by the header and the application's class answers the selector; the port's NSItemProvider calls it on instances of that class (registerObject:visibility: and loadObjectOfClass:completionHandler: read the type identifiers and load the data through it), and NSString, NSURL and the classes the port carries answer it in their own rows",
+      "status": "implemented",
       "facts": "facts/Foundation/NSItemProvider.md",
-      "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)"
+      "reason": "a property of a protocol the SDK's headers declare, answered by the port's own provider",
+      "effect": "the type identifiers this provider has registered, and an empty array when it has none (Foundation/NSItemProvider.m:508)"
     },
     {
       "api": "NSItemProviderWriting.writableTypeIdentifiersForItemProvider",
       "kind": "property",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a member of a protocol that an application's own class implements: the release does not carry the protocol and the port implements no class that adopts it, so there is nothing here to answer it",
-      "effect": "the protocol is declared by the header and the application's class answers the selector; the port's NSItemProvider calls it on instances of that class (registerObject:visibility: and loadObjectOfClass:completionHandler: read the type identifiers and load the data through it), and NSString, NSURL and the classes the port carries answer it in their own rows",
+      "status": "implemented",
       "facts": "facts/Foundation/NSItemProvider.md",
-      "source": "the host's own Foundation, through the differential runs of tests/backports/host/uikit2 (itemprovider and itemproviderbuiltins)"
+      "reason": "a property of a protocol the SDK's headers declare, answered by the port's own provider",
+      "effect": "the type identifiers this provider has registered, and an empty array when it has none (Foundation/NSItemProvider.m:513)"
     },
     {
       "api": "NSDateComponentsFormatter.referenceDate",

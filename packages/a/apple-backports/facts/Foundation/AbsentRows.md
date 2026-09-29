@@ -1,0 +1,86 @@
+# The absent rows, what they owe, and how the next family was chosen
+
+This is not a facts file for an API. It is the state of the registry's own `absent` rows: how many
+there are, which of them a host differential can and cannot prove, which family each slice took, and
+what is still owed with the exact blocker. Every number is the output of a script in the tree or of a
+run in the delivery it belongs to.
+
+## The count, and how to reproduce it
+
+`tools/registry-absent.py` counts the registry files by path (`registry/<Framework>.json` and
+`registry/<Framework>/<part>.json`) and refuses a path with no registry under it. The export is not the
+instrument for this: its framework column is empty for every file whose JSON carries no `framework`
+key, so counting by framework there drops rows and the number does not reproduce.
+
+```
+Foundation   115 absent   9 ignored   771 implemented   48 inert   (16269 rows, 3355 absent)
+```
+
+## Which of them the host does not answer, and the control that says so
+
+A host differential can only prove the port's own code for an API **the host does not answer**. When
+the host answers it too, its implementation is the one that runs, and every assertion becomes a
+statement about Apple. That is measured, not assumed:
+
+* the five `NSMutableURLRequest` properties (15.0-26.1) are answered by the host, so a category
+  carrying the port's answer is not what runs;
+* the mutation that only the port's code can produce - moving the port's own key string - is
+  **invisible** in a host binary: `key-moved mutant: ok fresh allowsPersistentDNS NO … ok set
+  allowsPersistentDNS YES … exit=0`;
+* the three flag mutations came back `NOT NOTICED` for the same reason, and the differential that
+  found them would have been a claim about Apple's class.
+
+`.agent-work`-only instrument of that round: a host probe that asks the runtime about each row
+(`NSClassFromString`, `NSProtocolFromString`, `class_getInstanceMethod`, `class_getClassMethod`, and
+`dlsym` for a constant or a C function), with four controls - a selector the host has, a planted
+selector, a class the host has, a planted class - so a run that examined nothing cannot pass. Over the
+115 rows: **36 the host lacks, 78 it has, 0 malformed**, and the controls read `HAS / LACKS / HAS /
+LACKS` as they must.
+
+## The families, by what the host lacks
+
+| the host lacks | rows | what the port has to build |
+| --- | --- | --- |
+| `NSURLSessionStreamDelegate` (4) + `NSURLSessionTaskDelegate` (3) | 7 | the port's own loader and stream task, which have to *call* seven delegate members at the right moments |
+| `NSItemProviderReading` (2) + `NSItemProviderWriting` (4) | 6 | this package's own `NSItemProvider`, which can answer all six itself |
+| `NSUserActivityDelegate` (2) + `NSUserActivity` (1) | 3 | the port's own `NSUserActivity` class |
+| `NSXPCInterface` (2) | 2 | Mach XPC on 4.3 and 6.1.3 - the class itself is the wall |
+| `NSFilePresenter` (1), `NSPredicateValidating` (1), `_os_log_*` (5), 12 constants | 20 | each its own line below |
+
+The **seven session-delegate rows are the largest group**, and they are not the slice that came next,
+for a reason that is a limit of the instrument rather than of the work: the code that would call those
+seven members is `NSURLSession.m` and `NSURLSessionStreamTask9.m`, which are written against the
+device's Foundation (its `NSURLConnection`, its private ivars, `attach.c`) and are not a host
+translation unit. The item-provider group is the largest one whose port code is a self-contained class
+the port itself implements, so it is the one that could be landed with its evidence.
+
+## Owed, with the blocker
+
+- **The five `NSMutableURLRequest` properties** (`allowsPersistentDNS`, `allowsUltraConstrainedNetworkAccess`,
+  `requiresDNSSECValidation`, `attribution`, `cookiePartitionIdentifier`). The code is written and
+  compiles clean with the library flags; the defaults and the round trip were read out of the host
+  (`NO`, `NO`, `NO`, `0`, `nil`, and every set sticks and survives a copy). Blocker: **the proving
+  instrument is the 6.1.3 call test** (`xmake emulate`), the coordinator's gate, because the host's own
+  Foundation answers the same five properties and a mutation only the port's code can produce is
+  invisible (above). A two-process host probe is the alternative. Not a registry row: the rows stay
+  `absent` until something proves them, and this line is what they owe.
+- **The five `NSFileManager` ubiquity and file-provider methods** (11.0, four of 26.0). The oracle is
+  already measured: for a local path with no provider and no iCloud the host answers nil plus
+  `NSCocoaErrorDomain 3328` for `fetchLatestRemoteVersionOfItemAtURL:`, `pauseSyncForUbiquitousItemAtURL:`,
+  `resumeSyncForUbiquitousItemAtURL:withBehavior:` and `uploadLocalVersionOfUbiquitousItemAtURL:withConflictResolutionPolicy:`,
+  and nil plus `NSFileProviderInternalErrorDomain 0` for `getFileProviderServicesForItemAtURL:`. The
+  port's category is small; the proof has the same blocker as the five above.
+- **The seven session-delegate members**: the port's own `NSURLSession.m` and `NSURLSessionStreamTask9.m`
+  have to call them, and neither is a host translation unit. Owed with the 6.1.3 call test.
+- **The inflection, morphology, markdown and attributed-string names (24 rows), `NSURLSessionUploadTaskResumeData`,
+  `NSListItemDelimiterAttributeName`, `NSLocalizedNumberFormatAttributeName`**: the *values*. The host
+  lacks these thirteen names outright, so there is no host oracle either, and the facts file that
+  carries this family refuses a header comment as a source. Blocker: `xmake firmware --arch=<a> fetch
+  <a release new enough to export them>` and one `tools/corpus/cache-value.lua` run each - the
+  network, not a slot. **`cachetools-fix3` is on this path**: `cfconst.py`'s 32-bit reads are what a
+  cache value read goes through.
+- **The five `NSUndoManager` rows**: a policy question, not a build. The release's own manager keeps
+  its stack private and exposes no count, so a category cannot answer `undoCount` truthfully and a
+  count answering 0 is the silent fake the worker brief forbids; `inert` against `ignored` is the
+  owner's call.
+- **The seven `NSXPC*` rows**: Mach XPC on 4.3 and 6.1.3 is a real port of the machinery, not a slice.

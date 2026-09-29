@@ -144,6 +144,9 @@ static id charon_coerce(id item, NSString *type, Class expected, NSInteger *code
     NSProgress *(^_dataLoader)(void (^)(NSData *, NSError *));
     NSProgress *(^_fileLoader)(void (^)(NSURL *, BOOL, NSError *));
     NSItemProviderFileOptions _fileOptions;
+    /* The visibility the caller handed the registration. The port took the argument and dropped it,
+       so -itemProviderVisibilityForRepresentationWithTypeIdentifier: had nothing true to answer with. */
+    NSItemProviderRepresentationVisibility _visibility;
     BOOL _itemBacked;
 }
 @end
@@ -393,6 +396,7 @@ static id charon_coerce(id item, NSString *type, Class expected, NSInteger *code
 {
     CharonRepresentation *representation = [self charon_representationForType:typeIdentifier];
     representation->_dataLoader = loadHandler;
+    representation->_visibility = visibility;
 }
 
 - (void)registerFileRepresentationForTypeIdentifier:(NSString *)typeIdentifier fileOptions:(NSItemProviderFileOptions)fileOptions visibility:(NSItemProviderRepresentationVisibility)visibility loadHandler:(NSProgress *(^)(void (^)(NSURL *, BOOL, NSError *)))loadHandler
@@ -400,6 +404,7 @@ static id charon_coerce(id item, NSString *type, Class expected, NSInteger *code
     CharonRepresentation *representation = [self charon_representationForType:typeIdentifier];
     representation->_fileLoader = loadHandler;
     representation->_fileOptions = fileOptions;
+    representation->_visibility = visibility;
 }
 
 - (NSProgress *)loadDataRepresentationForTypeIdentifier:(NSString *)typeIdentifier completionHandler:(void (^)(NSData *, NSError *))completionHandler
@@ -485,6 +490,75 @@ static id charon_coerce(id item, NSString *type, Class expected, NSInteger *code
         reply(URL, NO, error);
     }];
     return progress;
+}
+
+/* The six members of the two provider protocols, answered by the provider itself: this class *is* the
+   port's item provider, so it can answer them rather than only read through an application's object.
+   The two protocols stay `ignored` in the registry and their own effect says why - an application's
+   class adopts them and -registerObject:visibility: and -loadObjectOfClass:completionHandler: read
+   the four members a conforming object has to answer.
+
+   The type identifiers are the ones this provider has registered, which is the only thing either
+   member can mean of an object that carries nothing else. The visibility is the one the caller handed
+   the registration, which the port used to take and drop. The class answer is All, the enumeration's
+   own case for a class that registers nothing narrower. +objectWithItemProviderData:...: builds a
+   provider over the data and hands out the documented failure rather than raising when the type
+   identifier is empty or the data is nil. */
+
+- (NSArray<NSString *> *)readableTypeIdentifiersForItemProvider
+{
+    return [self registeredTypeIdentifiers];
+}
+
+- (NSArray<NSString *> *)writableTypeIdentifiersForItemProvider
+{
+    return [self registeredTypeIdentifiers];
+}
+
++ (NSItemProviderRepresentationVisibility)itemProviderVisibilityForRepresentationWithTypeIdentifier:(NSString *)typeIdentifier
+{
+    (void)typeIdentifier;
+    return NSItemProviderRepresentationVisibilityAll;
+}
+
+- (NSItemProviderRepresentationVisibility)itemProviderVisibilityForRepresentationWithTypeIdentifier:(NSString *)typeIdentifier
+{
+    (void)typeIdentifier;
+    NSItemProviderRepresentationVisibility widest = NSItemProviderRepresentationVisibilityAll;
+    NSItemProviderRepresentationVisibility narrowest = NSItemProviderRepresentationVisibilityAll;
+    BOOL any = NO;
+    for (CharonRepresentation *representation in _representations) {
+        any = YES;
+        if (representation->_visibility < widest)
+            widest = representation->_visibility;
+        if (representation->_visibility > narrowest)
+            narrowest = representation->_visibility;
+    }
+    /* A provider registered with mixed visibilities is only as visible as its least visible member:
+       anything else would claim a representation the receiver is not allowed to see. */
+    return any ? narrowest : NSItemProviderRepresentationVisibilityAll;
+}
+
+- (NSProgress *)loadDataWithTypeIdentifier:(NSString *)typeIdentifier forItemProviderCompletionHandler:(void (^)(NSData *, NSError *))completionHandler
+{
+    return [self loadDataRepresentationForTypeIdentifier:typeIdentifier completionHandler:completionHandler];
+}
+
++ (instancetype)objectWithItemProviderData:(NSData *)data typeIdentifier:(NSString *)typeIdentifier error:(NSError **)error
+{
+    if (!typeIdentifier.length || !data) {
+        if (error)
+            *error = charon_error(-1000);
+        return nil;
+    }
+    NSItemProvider *provider = [[NSItemProvider alloc] init];
+    [provider registerDataRepresentationForTypeIdentifier:typeIdentifier
+                                               visibility:NSItemProviderRepresentationVisibilityAll
+                                             loadHandler:^NSProgress *(void (^done)(NSData *, NSError *)) {
+        done(data, nil);
+        return [NSProgress progressWithTotalUnitCount:1];
+    }];
+    return provider;
 }
 
 - (instancetype)initWithObject:(id<NSItemProviderWriting>)object
