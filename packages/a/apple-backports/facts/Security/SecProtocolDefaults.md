@@ -2,7 +2,7 @@
 
 `sec_protocol_options_get_default_{min,max}_{tls,dtls}_protocol_version` answer what the release's own
 SSL stack negotiates by default. These numbers were **measured**, on 6.1.3 and on 6.0, and the two runs
-agree exactly.
+agree on every measurement row.
 
 ## The probe, and its evidence
 
@@ -12,10 +12,29 @@ so asking it about DTLS would have measured nothing. It also asks the release th
 by calling `SSLSetProtocolVersionMax(kTLSProtocol13)` and printing both the status and what the maximum
 then reads.
 
-| run | log | sha256 |
+| run | log, under the probe worktree's `.agent-work/` | sha256 |
 | --- | --- | --- |
-| 6.1.3 | `.agent-work/runs/p613/run.log` | `055fc9f3a914c2065fe9cb9ad850d329f6fed47ab5d22e299b866ca28f90a00a` |
-| 6.0 | `.agent-work/runs/p60/run.log` | `0edb2075612936a22a45ee1d46297f289eb46e7c79471410faa3a6e22bd4482e` |
+| 6.1.3 | `ssl-defaults/runs/defaults-6.1.3-20260929-152459/run.log` | `03d047d62f6de5a52ce158c91936fc402b61043c1526b39bf684122fc6e03081` |
+| 6.0 | `ssl-defaults/runs/defaults-6.0-20260929-152939/run.log` | `e3f14403219210e57db131ec83cc85ab5e11654d0f4e03cd258c4793a2993eb0` |
+
+**These are the logs that carry the rows below, and the first version of this table named two that do
+not.** The `runs/p613/run.log` and `runs/p60/run.log` pair holds only `min 2`, `max 8`,
+`max-after-set-13 8` and `max-after-set-13-is-13 0` - `grep -c 'dgram\|set-max-13'` returns **0** for
+both - so the datagram and 1.3 rows quoted here were not in the evidence the table cited, and the
+`055fc9f3...` digest under the name `probe2` is a third file's. For the record, all four:
+
+| log | sha256 | carries the rows below? |
+| --- | --- | --- |
+| `ssl-defaults/runs/defaults-6.1.3-20260929-152459/run.log` | `03d047d62f6de5a52ce158c91936fc402b61043c1526b39bf684122fc6e03081` | yes |
+| `ssl-defaults/runs/defaults-6.0-20260929-152939/run.log` | `e3f14403219210e57db131ec83cc85ab5e11654d0f4e03cd258c4793a2993eb0` | yes |
+| `runs/p613/run.log` | `055fc9f3a914c2065fe9cb9ad850d329f6fed47ab5d22e299b866ca28f90a00a` | no |
+| `runs/probe2/run.log` | `cc08039de523b2a2153fa8a5e0625f4b1459fb929fc016b1ed2b567f338c73d6` | no |
+
+Each log names the release it ran on - `pass on iPhone2,1 6.1.3 (10B329)` and
+`pass on iPhone2,1 6.0 (10A403)` - so which is which does not rest on the directory name. The two that
+carry the rows **agree on every measurement line**: diffed on the rows, they are identical. They differ
+in one host-side line, the emulator's "waiting for the machine to quiet down", which is about the Mac and
+not about the release.
 
 ## What it found
 
