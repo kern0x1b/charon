@@ -18,14 +18,11 @@ mutate() {
             return 1
         fi
     done
-    _n=$(grep -c -F -f "$_anchor_file" "$_file" || true)
-    if [ "$_n" -ne 1 ]; then
-        echo "the anchor of $_site occurs $_n times in $_file, and a mutation needs exactly one:" >&2
-        sed 's/^/  /' "$_anchor_file" >&2
-        return 1
-    fi
     _copy="$work/$(basename "$_file").original"
-    python3 - "$_file" "$_copy" "$_anchor_file" "$_repl_file" <<'PYEOF'
+    # the count and the substitution are the same question, so python answers both: a line-oriented
+    # grep -f counts matching LINES, and a three-line anchor then reads as three occurrences in a file
+    # that holds it once
+    if ! python3 - "$_file" "$_copy" "$_anchor_file" "$_repl_file" "$_site" <<'PYEOF'
 import sys
 path, copy, anchor_path, repl_path = sys.argv[1:5]
 # exactly one trailing newline is the file's, not the text's
@@ -34,9 +31,18 @@ repl = open(repl_path).read()
 if anchor.endswith('\n'): anchor = anchor[:-1]
 if repl.endswith('\n'): repl = repl[:-1]
 text = open(path).read()
+n = text.count(anchor)
+if n != 1:
+    sys.stderr.write('the anchor of %s occurs %d times in %s, and a mutation needs exactly one:\n'
+                     % (sys.argv[5], n, path))
+    sys.stderr.write(''.join('  %s\n' % l for l in anchor.split('\n')))
+    sys.exit(1)
 open(copy, 'w').write(text)
 open(path, 'w').write(text.replace(anchor, repl, 1))
 PYEOF
+    then
+        return 1
+    fi
     _ins=$(diff "$_copy" "$_file" | grep -c '^>')
     _del=$(diff "$_copy" "$_file" | grep -c '^<')
     if [ "$_ins" -ne "$_want_ins" ] || [ "$_del" -ne "$_want_del" ]; then

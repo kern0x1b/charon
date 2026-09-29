@@ -68,7 +68,7 @@ fi
 # it refuses by writing first and putting back second
 printf 'alpha\nbeta\ngamma\n' > "$scratch/two-lines.txt"
 before=$(md5 -q "$scratch/two-lines.txt")
-printf 'B1\nB2\n' > "$scratch/mutants/selftest-two.anchor"; printf 'B1\nB2\n' > "$scratch/mutants/selftest-two.repl"
+printf 'beta\n' > "$scratch/mutants/selftest-two.anchor"; printf 'B1\nB2\n' > "$scratch/mutants/selftest-two.repl"
 if mutate "$scratch/two-lines.txt" selftest-two 2>"$scratch/two-lines.err"; then
     printf 'case 5 two lines, one wanted: it did NOT abort -> FAILED\n'; fail=1
 elif [ "$before" = "$(md5 -q "$scratch/two-lines.txt")" ]; then
