@@ -83,6 +83,28 @@ reading it out of the headers is `tools/corpus/sdk-introduced.py`'s walk, and
 until a row's `introduced` is measured against the SDK, a release that is one
 too low passes this check and hides the API in the band above it.
 
+That comparison is the rule for a member of a class **the release carries**,
+where the port hands the member over as soon as the release answers it. The two
+other cases are not that rule, and the tool says so rather than guessing:
+
+- a member of a class **the backports carry** leaves the bands where the *class*
+  stops being the port's, which can be earlier than the member's own
+  `introduced`. `NSURLSessionTaskTransactionMetrics`'s two header byte counts
+  are the case in the tree: `introduced 13.0` from the SDK header and
+  `maximum 10.0`, because the release ladder gives the class its first release
+  at 10.0.1. A band at 10.0 where the release's own class *does* export the
+  getter then answers the property, so the row must already be out of the bands
+  by then - which is what `maximum 10.0` says, and what `maximum 13.0` would get
+  a gate to report as "listed as absent, but the release carries it itself".
+- a member of a class the backports carry **and the release lays out itself**
+  may go earlier still, down to the release that took the API away:
+  `NSURLSessionStreamTask`'s `-init`, `+new` and `-stopSecureConnection` sit at
+  `introduced 7.0, maximum 7.0` against a class the port carries to 9.0.
+
+The tool counts those two shapes apart and never counts them as right: a run
+prints how many members of a class the backports carries it did **not** judge,
+so a green line with a large number there says "not judged", not "checked".
+
 `status` is one of four, and there is no fifth:
 
 - `implemented` — the real behaviour, with facts behind it and tests in

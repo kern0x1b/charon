@@ -400,12 +400,12 @@
       "kind": "property",
       "introduced": "13.0",
       "minimum": "5.0",
-      "maximum": "13.0",
+      "maximum": "10.0",
       "status": "absent",
       "facts": "facts/Foundation/NSURLSessionStreamTaskSocketMetrics.md",
       "source": "SDK 26.2 headers for what the property is, and the port's own search of its tree for an accessor: NSURLSessionTaskMetrics.m:21 lists it @dynamic and nothing defines it, so there is no code path that could answer it",
       "reason": "the data task's transaction is the release's own connection, and its request and response header bytes reach the release's parser and stop there. A stream task cannot stand in for it: it is a raw TCP connection that sends no request and receives no response, so the socket path that closes the other six has no header to count either (facts/Foundation/NSURLSessionStreamTaskSocketMetrics.md, section 4, measures both halves)",
-      "effect": "the port's class lists the property @dynamic and defines no accessor for it, so respondsToSelector: answers NO for the getter and an unchecked read raises unrecognized selector rather than answering a count"
+      "effect": "below 10.0 - the bands where the port's own NSURLSessionTaskTransactionMetrics is the class in charge - the port's class lists the property @dynamic and defines no accessor for it, so respondsToSelector: answers NO for the getter and an unchecked read raises unrecognized selector. From 10.0 the release's own class is in charge and answers it: the release ladder gives _OBJC_CLASS_$_NSURLSessionTaskTransactionMetrics its first release at 10.0.1, and this row leaves the bands there because that is where the class stops being the port's. Whether the 10.x to 12.x class exports this particular getter is NOT measured on this machine - the 16.4 SDK header annotates the property ios(13.0) and there is no dyld_shared_cache here to read a 10.x inventory from."
     },
     {
       "api": "NSURLSessionTaskTransactionMetrics.countOfResponseBodyBytesAfterDecoding",
@@ -434,12 +434,12 @@
       "kind": "property",
       "introduced": "13.0",
       "minimum": "5.0",
-      "maximum": "13.0",
+      "maximum": "10.0",
       "status": "absent",
       "facts": "facts/Foundation/NSURLSessionStreamTaskSocketMetrics.md",
       "source": "SDK 26.2 headers for what the property is, and the port's own search of its tree for an accessor: NSURLSessionTaskMetrics.m:21 lists it @dynamic and nothing defines it, so there is no code path that could answer it",
       "reason": "the data task's transaction is the release's own connection, and its request and response header bytes reach the release's parser and stop there. A stream task cannot stand in for it: it is a raw TCP connection that sends no request and receives no response, so the socket path that closes the other six has no header to count either (facts/Foundation/NSURLSessionStreamTaskSocketMetrics.md, section 4, measures both halves)",
-      "effect": "the port's class lists the property @dynamic and defines no accessor for it, so respondsToSelector: answers NO for the getter and an unchecked read raises unrecognized selector rather than answering a count"
+      "effect": "below 10.0 - the bands where the port's own NSURLSessionTaskTransactionMetrics is the class in charge - the port's class lists the property @dynamic and defines no accessor for it, so respondsToSelector: answers NO for the getter and an unchecked read raises unrecognized selector. From 10.0 the release's own class is in charge and answers it: the release ladder gives _OBJC_CLASS_$_NSURLSessionTaskTransactionMetrics its first release at 10.0.1, and this row leaves the bands there because that is where the class stops being the port's. Whether the 10.x to 12.x class exports this particular getter is NOT measured on this machine - the 16.4 SDK header annotates the property ios(13.0) and there is no dyld_shared_cache here to read a 10.x inventory from."
     },
     {
       "api": "NSURLSessionTaskTransactionMetrics.domainResolutionProtocol",
