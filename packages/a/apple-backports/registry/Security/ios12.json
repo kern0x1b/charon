@@ -1,0 +1,49 @@
+{
+  "framework": "Security",
+  "entries": [
+    {
+      "api": "sec_certificate_copy_ref()",
+      "effect": "the object's own state, not the release's: the CFTypeRef is a strong ivar, so ARC retains at init and releases at dealloc, and copy_ref hands back +1 OVER THE REF THE OBJECT HOLDS, so releasing the copy leaves the object still holding its own. Measured pending the host case in this same round",
+      "facts": "facts/Security/SecObjectWrappers.md",
+      "introduced": "12.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "the header declares a TYPE and a function, and the port supplies the object under its own name: SecProtocolTypes.h:41-43 declares the three with SEC_OBJECT_DECL, and as the preprocessor emits it sec_certificate_t is `NSObject<OS_sec_certificate> * __attribute__((objc_independent_class))`, so there is no class to add a method to and no ivar to add to one. A SecCertificateRef and a SecTrustRef BOTH EXIST ON 6.1.3 and both are made WITHOUT A KEYCHAIN - SecCertificateCreateWithData from DER, SecTrustCreateWithCertificates from a certificate and a policy - so these four are REAL WRAPPERS OF REAL REFS, not answers reporting an absence",
+      "source": "SDK 16.4, Security",
+      "status": "implemented"
+    },
+    {
+      "api": "sec_certificate_create()",
+      "effect": "the object's own state, not the release's: the CFTypeRef is a strong ivar, so ARC retains at init and releases at dealloc, and copy_ref hands back +1 OVER THE REF THE OBJECT HOLDS, so releasing the copy leaves the object still holding its own. Measured pending the host case in this same round",
+      "facts": "facts/Security/SecObjectWrappers.md",
+      "introduced": "12.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "the header declares a TYPE and a function, and the port supplies the object under its own name: SecProtocolTypes.h:41-43 declares the three with SEC_OBJECT_DECL, and as the preprocessor emits it sec_certificate_t is `NSObject<OS_sec_certificate> * __attribute__((objc_independent_class))`, so there is no class to add a method to and no ivar to add to one. A SecCertificateRef and a SecTrustRef BOTH EXIST ON 6.1.3 and both are made WITHOUT A KEYCHAIN - SecCertificateCreateWithData from DER, SecTrustCreateWithCertificates from a certificate and a policy - so these four are REAL WRAPPERS OF REAL REFS, not answers reporting an absence",
+      "source": "SDK 16.4, Security",
+      "status": "implemented"
+    },
+    {
+      "api": "sec_trust_copy_ref()",
+      "effect": "the object's own state, not the release's: the CFTypeRef is a strong ivar, so ARC retains at init and releases at dealloc, and copy_ref hands back +1 OVER THE REF THE OBJECT HOLDS, so releasing the copy leaves the object still holding its own. Measured pending the host case in this same round",
+      "facts": "facts/Security/SecObjectWrappers.md",
+      "introduced": "12.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "the header declares a TYPE and a function, and the port supplies the object under its own name: SecProtocolTypes.h:41-43 declares the three with SEC_OBJECT_DECL, and as the preprocessor emits it sec_certificate_t is `NSObject<OS_sec_certificate> * __attribute__((objc_independent_class))`, so there is no class to add a method to and no ivar to add to one. A SecCertificateRef and a SecTrustRef BOTH EXIST ON 6.1.3 and both are made WITHOUT A KEYCHAIN - SecCertificateCreateWithData from DER, SecTrustCreateWithCertificates from a certificate and a policy - so these four are REAL WRAPPERS OF REAL REFS, not answers reporting an absence",
+      "source": "SDK 16.4, Security",
+      "status": "implemented"
+    },
+    {
+      "api": "sec_trust_create()",
+      "effect": "the object's own state, not the release's: the CFTypeRef is a strong ivar, so ARC retains at init and releases at dealloc, and copy_ref hands back +1 OVER THE REF THE OBJECT HOLDS, so releasing the copy leaves the object still holding its own. Measured pending the host case in this same round",
+      "facts": "facts/Security/SecObjectWrappers.md",
+      "introduced": "12.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "the header declares a TYPE and a function, and the port supplies the object under its own name: SecProtocolTypes.h:41-43 declares the three with SEC_OBJECT_DECL, and as the preprocessor emits it sec_certificate_t is `NSObject<OS_sec_certificate> * __attribute__((objc_independent_class))`, so there is no class to add a method to and no ivar to add to one. A SecCertificateRef and a SecTrustRef BOTH EXIST ON 6.1.3 and both are made WITHOUT A KEYCHAIN - SecCertificateCreateWithData from DER, SecTrustCreateWithCertificates from a certificate and a policy - so these four are REAL WRAPPERS OF REAL REFS, not answers reporting an absence",
+      "source": "SDK 16.4, Security",
+      "status": "implemented"
+    }
+  ]
+}

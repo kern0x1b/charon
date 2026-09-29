@@ -62,3 +62,37 @@ macros for the very API it provides. That much is in the build log either way.
 
 The nine rows stay as they are. This file records the header facts, the exact error, and the two design
 options, so the next attempt starts from the measurement instead of from the nine greps.
+
+## The nine rows, measured from the registry, and which of them is a `sec_identity_t`
+
+| api | kind | introduced | state | file |
+| --- | --- | --- | --- | --- |
+| `sec_identity_access_certificates()` | function | 13.0 | absent | `absent_Security.json` |
+| `sec_certificate_copy_ref()` | function | 12.0 | absent | `ios11.json` |
+| `sec_certificate_create()` | function | 12.0 | absent | `ios11.json` |
+| `sec_identity_copy_certificates_ref()` | function | 12.0 | absent | `ios11.json` |
+| `sec_identity_copy_ref()` | function | 12.0 | absent | `ios11.json` |
+| `sec_identity_create()` | function | 12.0 | absent | `ios11.json` |
+| `sec_identity_create_with_certificates()` | function | 12.0 | absent | `ios11.json` |
+| `sec_trust_copy_ref()` | function | 12.0 | absent | `ios11.json` |
+| `sec_trust_create()` | function | 12.0 | absent | `ios11.json` |
+
+Eight of the nine are introduced at **12.0**, not 13.0; the ninth, `sec_identity_access_certificates`, is
+13.0. The `sec_identity_*` five are declared in `SecProtocolTypes.h` at `:218` (create), `:237`
+(create_with_certificates), `:256` (access_certificates), `:273` (copy_ref) and `:288`
+(copy_certificates_ref), in the same header that declares the three types at `:41-43`.
+
+## Why the identity half cannot be built, exactly
+
+**A `SecIdentityRef` cannot exist on iOS without a keychain, so the five `sec_identity_*` rows and
+`set_local_identity` stay owed.** Every factory in `SecIdentity.h` is unavailable on iOS:
+`SecIdentityCreateWithCertificate` at `:65` is `__OSX_AVAILABLE_STARTING(__MAC_10_5, __IPHONE_NA)`, and
+the preference, preferred and system-identity calls at `:126`, `:150` and `:174` are
+`__IPHONE_NA` too. `SecIdentityCreate` — the one that takes a key or a certificate directly and so would
+be the in-memory path — **is not among the factories the header declares**. So an identity built from an
+ephemeral in-memory key is not possible on this release by any public route, and the test the coordinator
+asked for cannot be written rather than merely being hard.
+
+The slice that IS buildable is the two types whose refs are made without a keychain, and those four rows
+(`sec_certificate_create`, `sec_certificate_copy_ref`, `sec_trust_create`, `sec_trust_copy_ref`) are
+REAL WRAPPERS OF REAL REFS rather than answers that report an absence.

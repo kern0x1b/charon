@@ -5,13 +5,16 @@ rather than a search. **48 rows: 17 `sec_protocol_metadata_*` and 31 `sec_protoc
 every one of the 48 has a declaration in `SecProtocolMetadata.h` or `SecProtocolOptions.h` - none of
 them is a name the headers do not have, which is why none of them is `absent` for that reason.
 
-**Status: 3 done, 44 built, 1 owed.** The three block setters were built this round
+**Status: 3 done, 44 built, 1 owed** (`sec_protocol_options_set_local_identity`). The three block setters were built this round
 (`sec_protocol_options_set_key_update_block`, `set_challenge_block`, `set_verify_block`),
 so the ONE row still owed is `sec_protocol_options_set_local_identity` — and that one is
 blocked behind the `sec_identity_t` wrapper, which is one of the nine wrapper rows with no
 source. Its signature is read: `void sec_protocol_options_set_local_identity(
 sec_protocol_options_t options, sec_identity_t identity)` (SecProtocolOptions.h:101-102), so
-only the type is missing, not the shape. The list below was written at the start of the series,
+only the type is missing, not the shape — and the type CANNOT be supplied, because every
+`SecIdentity.h` factory is `__IPHONE_NA` on iOS and `SecIdentityCreate` (the in-memory route) is not
+declared at all, so there is no public way to make a `SecIdentityRef` on 6.1.3. See
+`facts/Security/SecObjectWrappers.md`. The list below was written at the start of the series,
 when 45 rows were owed; the wrappers since written build 41 of them (`nm -gU` of the gated
 `libSecurityBackports.dylib` defines each), marked **built**. **Built** means the entry point exists and answers what
 its row says; only the three **done** ones are measured on the release. **Owed** is what is left: the four whose
