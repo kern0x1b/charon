@@ -24,6 +24,17 @@
       "facts": "facts/MetalKit/Mesh.md"
     },
     {
+      "api": "MTKMeshBufferZone",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the zone MTKMeshBufferAllocator hands out: ModelIO's MDLMeshBufferZone is a protocol, and the class that conforms to it is MetalKit's own and is not in the 16.4 headers, so the port defines it wholly (MTKMeshBuffer9.m); the gate found it built with no row",
+      "effect": "holds the MTLBuffer it was made with, its capacity and how much of it the allocator has handed out, and gives the allocator the buffers it carves from it",
+      "source": "SDK 16.4, MetalKit and ModelIO: MDLMeshBufferZone's contract (capacity, allocator); the class itself is not declared by any header",
+      "facts": "facts/MetalKit/Mesh.md"
+    },
+    {
       "api": "MTKMetalVertexDescriptorFromModelIO()",
       "kind": "function",
       "introduced": "9.0",
