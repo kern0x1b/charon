@@ -43,17 +43,28 @@ common="$common -I $S/Metal -I $S -I $S/MetalKit -I $root/tests/backports/host/m
 # THE PORT'S CLASSES MUST BE DEFINED IN THE BINARY. Metal has an API on the host too, so a case can
 # pass by measuring Apple's class instead of the port's.
 prefix='_OBJC_CLASS_$_'
-class_list="CharonMetalAccelerationStructureDescriptor CharonMetalAccelerationStructureGeometryDescriptor CharonMetalAccelerationStructureBoundingBoxGeometryDescriptor CharonMetalAccelerationStructureTriangleGeometryDescriptor CharonMetalPrimitiveAccelerationStructureDescriptor CharonMetalInstanceAccelerationStructureDescriptor CharonMetalVisibleFunctionTableDescriptor CharonMetalIntersectionFunctionTableDescriptor CharonMetalCounterSampleBufferDescriptor CharonMetalComputePassSampleBufferAttachmentDescriptor CharonMetalResourceStatePassSampleBufferAttachmentDescriptor CharonMetalRenderPassSampleBufferAttachmentDescriptor CharonMetalComputePassDescriptor CharonMetalResourceStatePassDescriptor CharonMetalBinaryArchiveDescriptor CharonMetalComputePassSampleBufferAttachmentDescriptorArray CharonMetalRenderPassSampleBufferAttachmentDescriptorArray CharonMetalResourceStatePassSampleBufferAttachmentDescriptorArray CharonMetalLinkedFunctions CharonMetalIntersectionFunctionDescriptor"
+# THE PORT'S TWENTY CLASSES CARRY APPLE'S OWN NAMES, because iOS 6 carries no class of any of those
+# names and an application that does [[MTLComputePassDescriptor alloc] init] must find one. An
+# earlier revision of this series defined them as MTL<Name>, and the 6.1.3 gate refused the
+# result: the registry listed MTLComputePassDescriptor as implemented and NOTHING defined that name.
+# The nm check below is the proof, and it is on the DEVICE object where the names are NOT renamed.
+class_list="MTLAccelerationStructureDescriptor MTLAccelerationStructureGeometryDescriptor MTLAccelerationStructureBoundingBoxGeometryDescriptor MTLAccelerationStructureTriangleGeometryDescriptor MTLPrimitiveAccelerationStructureDescriptor MTLInstanceAccelerationStructureDescriptor MTLVisibleFunctionTableDescriptor MTLIntersectionFunctionTableDescriptor MTLCounterSampleBufferDescriptor MTLComputePassSampleBufferAttachmentDescriptor MTLResourceStatePassSampleBufferAttachmentDescriptor MTLRenderPassSampleBufferAttachmentDescriptor MTLComputePassDescriptor MTLResourceStatePassDescriptor MTLBinaryArchiveDescriptor MTLComputePassSampleBufferAttachmentDescriptorArray MTLRenderPassSampleBufferAttachmentDescriptorArray MTLResourceStatePassSampleBufferAttachmentDescriptorArray MTLLinkedFunctions MTLIntersectionFunctionDescriptor"
+
+# ON THE HOST BOTH COPIES EXIST, so the port's twenty are RENAMED while they are compiled for it and
+# the host framework keeps the Apple names - the mapkit differential's arrangement, and the reason a
+# comparison can be made at all rather than the case reading the host's class and calling it the port's.
+renames=""
+for name in $class_list; do renames="$renames -D$name=charonHost_$name"; done
 prove_defined() {   # $1 nm output
     for name in $class_list; do
-        symbol="${prefix}${name}"
+        symbol="${prefix}charonHost_${name}"
         defined=$(printf '%s\n' "$1" | awk -v s="$symbol" 'index($0, s){n++} END{print n+0}')
         if [ "$defined" -eq 0 ]; then
             echo "MISSING $symbol - the case would measure the HOST's Metal, not the port's" >&2
             return 1
         fi
     done
-    count=$(printf '%s\n' "$1" | awk -v p="$prefix" 'index($0, p "CharonMetal"){n++} END{print n+0}')
+    count=$(printf '%s\n' "$1" | awk -v p="$prefix" 'index($0, p "charonHost_MTL"){n++} END{print n+0}')
     expected=0
     for symbol in $class_list; do expected=$((expected + 1)); done
     if [ "$count" -ne "$expected" ]; then
@@ -69,7 +80,7 @@ if [ -n "${SELF_TEST:-}" ]; then
     rm -rf "$selfdir"; mkdir -p "$selfdir" || exit 1
     fake="$selfdir/symbols"
     for name in $class_list; do
-        if [ "$name" = "CharonMetalLinkedFunctions" ]; then continue; fi   # the one that is missing
+        if [ "$name" = "MTLLinkedFunctions" ]; then continue; fi   # the one that is missing
         printf '%s S %s%s\n' "0000000000000100" "$prefix" "$name" >> "$fake"
     done
     if prove_defined "$(cat "$fake")"; then
@@ -89,13 +100,30 @@ if [ -n "${SELF_TEST:-}" ]; then
 fi
 
 # $1 output name, $2 case source, $3 port source. ALWAYS REBUILDS.
+# THE PORT IS COMPILED WITH THE RENAMES AND THE CASE IS NOT, and that is the whole point: the
+# renames exist so the port's twenty classes can carry Apple's own NAMES in the port and a different
+# name on this host, and applying them to the case as well would rename Apple's OWN declarations
+# inside <Metal/Metal.h> into the same names the case declares - a duplicate interface, which is
+# exactly what it did when the two were compiled in one command.
 build() {   # $1 output name, $2 case source, $3 port source
-    rm -f "$work/$1" "$work/$1.o"
+    rm -f "$work/$1" "$work/$1.o" "$work/$1-case.o" "$work/$1-port.o"
     # shellcheck disable=SC2086
-    xcrun clang $common -framework Foundation -framework Metal -o "$work/$1" "$2" "$3" \
-        > "$work/$1.link" 2>&1 || {
-        echo "RUN FAILED  $1 does not build - this is a build failure, not a red test" >&2
+    xcrun clang $common $renames -c "$3" -o "$work/$1-port.o" > "$work/$1.link" 2>&1 || {
+        echo "RUN FAILED  $1 (the port, renamed) does not build" >&2
         sed -n '/error:/,$p' "$work/$1.link" | head -1 | sed 's/^/    /' >&2
+        exit 1
+    }
+    # shellcheck disable=SC2086
+    xcrun clang $common -c "$2" -o "$work/$1-case.o" >> "$work/$1.link" 2>&1 || {
+        echo "RUN FAILED  $1 (the case) does not build" >&2
+        sed -n '/error:/,$p' "$work/$1.link" | head -1 | sed 's/^/    /' >&2
+        exit 1
+    }
+    # shellcheck disable=SC2086
+    xcrun clang $common -framework Foundation -framework Metal -o "$work/$1" \
+        "$work/$1-case.o" "$work/$1-port.o" >> "$work/$1.link" 2>&1 || {
+        echo "RUN FAILED  $1 does not link" >&2
+        sed -n '/Undefined symbols/,$p' "$work/$1.link" | sed -n '2,5p' | sed 's/^/    /' >&2
         exit 1
     }
     # A case that linked a device could hang or measure something else, and this family must not.
@@ -134,7 +162,44 @@ expect_red() {   # $1 label, $2 output name
     echo "  red  $line"
 }
 
+# THE GATE'S OWN CHECK, in the harness that proves the rows: the 6.1.3 gate refused this series once
+# because the registry listed these twenty as implemented while NOTHING defined those names - the
+# port called them CharonMetal<Name>. So the DEVICE object, where the names are NOT renamed, must
+# define all twenty under Apple's own names, and that is checked here rather than left to a gate.
+prove_named_on_device() {
+    sdk=$1; objs=$2
+    missing=""
+    for name in $class_list; do
+        if ! xcrun nm -gU $objs 2>/dev/null | grep -q "_OBJC_CLASS_\$_$name"; then
+            missing="$missing $name"
+        fi
+    done
+    if [ -n "$missing" ]; then
+        echo "FAIL: the device object does not define these classes under APPLE'S names:" >&2
+        for name in $missing; do echo "    _OBJC_CLASS_\$_$name" >&2; done
+        echo "  a caller doing [[$name alloc] init] would find no class at all" >&2
+        return 1
+    fi
+    echo "  the DEVICE object defines all 20 under Apple's own names: _OBJC_CLASS_\$_MTLComputePassDescriptor and 19 more"
+}
+
 echo "the differential, against Apple's own objects, with no device created:"
+SDK16=""
+for candidate in "$HOME"/.xmake/packages/i/iphoneos-sdk/16.4/*/Developer.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.4.sdk; do
+    if [ -f "$candidate/SDKSettings.json" ]; then SDK16="$candidate"; break; fi
+done
+if [ -n "$SDK16" ]; then
+    xcrun clang -target armv7-apple-ios6.1.3 -isysroot "$SDK16" -fobjc-arc -Os -g0 -Wall \
+        -Wno-unguarded-availability-new -Wno-unguarded-availability \
+        -Werror=objc-missing-property-synthesis -Werror=incomplete-implementation \
+        -I "$S/Metal" -I "$S" -I "$S/MetalKit" -c "$SRC" -o "$work/device.o" 2>"$work/device.log" || {
+        echo "RUN FAILED  the device object does not build" >&2
+        sed -n '/error:/,$p' "$work/device.log" | head -1 | sed 's/^/    /' >&2
+        exit 1
+    }
+    prove_named_on_device "$SDK16" "$work/device.o" || exit 1
+fi
+
 build real "$here/descriptors.m" "$SRC"
 prove_defined "$(nm -g "$work/real" 2>/dev/null)" || exit 1
 timeout 120 "$work/real" || { echo "FAIL: the descriptor differential failed" >&2; exit 1; }
@@ -158,19 +223,19 @@ fi
 echo "  ok   RUN FAILED: the broken mutation did not build, and no binary was left to run"
 
 echo "the mutations: one per class that owns a member no other class shares"
-mutate_scoped m1 CharonMetalVisibleFunctionTableDescriptor \
+mutate_scoped m1 MTLVisibleFunctionTableDescriptor \
     "@synthesize functionCount = _functionCount;" \
     "- (NSUInteger)functionCount { return 0; }   // MUTATION: the count is dropped"
 build mutant-m1 "$here/descriptors.m" "$work/m1.m"
 expect_red "M1 MTLVisibleFunctionTableDescriptor -functionCount" mutant-m1
 
-mutate_scoped m2 CharonMetalIntersectionFunctionTableDescriptor \
+mutate_scoped m2 MTLIntersectionFunctionTableDescriptor \
     "@synthesize functionCount = _functionCount;" \
     "- (NSUInteger)functionCount { return 0; }   // MUTATION: the count is dropped"
 build mutant-m2 "$here/descriptors.m" "$work/m2.m"
 expect_red "M2 MTLIntersectionFunctionTableDescriptor -functionCount" mutant-m2
 
-mutate_scoped m3 CharonMetalCounterSampleBufferDescriptor \
+mutate_scoped m3 MTLCounterSampleBufferDescriptor \
     "@synthesize sampleCount = _sampleCount;" \
     "- (NSUInteger)sampleCount { return 0; }   // MUTATION: the count is dropped"
 build mutant-m3 "$here/descriptors.m" "$work/m3.m"

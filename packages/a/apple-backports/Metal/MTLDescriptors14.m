@@ -1,6 +1,10 @@
 #import "CharonMetal.h"
 #import "CharonMetalProtocols.h"
 
+#pragma clang diagnostic ignored "-Wprotocol"
+#pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
+#pragma clang diagnostic ignored "-Wincomplete-implementation"
+
 // The DESCRIPTORS that arrived in iOS 14: the acceleration-structure family, the two ray-tracing
 // function tables, the counter-sample descriptors, the pass descriptors and the binary archive.
 //
@@ -27,103 +31,8 @@
 
 #pragma mark - the acceleration-structure family
 
-@interface CharonMetalAccelerationStructureDescriptor : NSObject
-{
-    MTLAccelerationStructureUsage _usage;
-}
-@property (nonatomic) MTLAccelerationStructureUsage usage;
-@end
-
 // The header's own hierarchy: a sibling of the base above, not a subclass of it.
-@interface CharonMetalAccelerationStructureGeometryDescriptor : NSObject
-{
-    NSUInteger _intersectionFunctionTableOffset, _primitiveDataBufferOffset;
-    NSUInteger _primitiveDataStride, _primitiveDataElementSize;
-    BOOL _opaque, _allowDuplicate;
-    id <MTLBuffer> _primitiveDataBuffer;
-    NSString *_label;
-}
-@property (nonatomic) NSUInteger intersectionFunctionTableOffset;
-@property (nonatomic) BOOL opaque;
-@property (nonatomic) BOOL allowDuplicateIntersectionFunctionInvocation;
-@property (nonatomic) NSUInteger primitiveDataBufferOffset;
-@property (nonatomic) NSUInteger primitiveDataStride;
-@property (nonatomic) NSUInteger primitiveDataElementSize;
-// primitiveDataBuffer is declared in the header and CARRIED: it is an MTLBuffer, which only a device
-// makes, so it reads nil and is not measured. Declared so that a caller asking for it gets the
-// port's nil rather than a doesNotRecognizeSelector crash.
-@property (nonatomic, retain) id <MTLBuffer> primitiveDataBuffer;
-@property (nonatomic, copy) NSString *label;
-@end
-
-@interface CharonMetalAccelerationStructureBoundingBoxGeometryDescriptor
-    : CharonMetalAccelerationStructureGeometryDescriptor
-{
-    NSUInteger _boundingBoxBufferOffset, _boundingBoxStride, _boundingBoxCount;
-    id <MTLBuffer> _boundingBoxBuffer;
-}
-@property (nonatomic, retain) id <MTLBuffer> boundingBoxBuffer;
-@property (nonatomic) NSUInteger boundingBoxBufferOffset;
-@property (nonatomic) NSUInteger boundingBoxStride;
-@property (nonatomic) NSUInteger boundingBoxCount;
-@end
-
-@interface CharonMetalAccelerationStructureTriangleGeometryDescriptor
-    : CharonMetalAccelerationStructureGeometryDescriptor
-{
-    NSUInteger _vertexBufferOffset, _vertexStride, _indexBufferOffset, _triangleCount;
-    NSUInteger _transformationMatrixBufferOffset;
-    MTLAttributeFormat _vertexFormat;
-    MTLIndexType _indexType;
-    id <MTLBuffer> _vertexBuffer, _indexBuffer, _transformationMatrixBuffer;
-}
-@property (nonatomic, retain) id <MTLBuffer> vertexBuffer;
-@property (nonatomic, retain) id <MTLBuffer> indexBuffer;
-@property (nonatomic, retain) id <MTLBuffer> transformationMatrixBuffer;
-@property (nonatomic) NSUInteger vertexBufferOffset;
-@property (nonatomic) MTLAttributeFormat vertexFormat;
-@property (nonatomic) NSUInteger vertexStride;
-@property (nonatomic) NSUInteger indexBufferOffset;
-@property (nonatomic) MTLIndexType indexType;
-@property (nonatomic) NSUInteger triangleCount;
-@property (nonatomic) NSUInteger transformationMatrixBufferOffset;
-@end
-
-@interface CharonMetalPrimitiveAccelerationStructureDescriptor : CharonMetalAccelerationStructureDescriptor
-{
-    MTLMotionBorderMode _motionStartBorderMode, _motionEndBorderMode;
-    float _motionStartTime, _motionEndTime;
-    NSUInteger _motionKeyframeCount;
-    NSArray *_geometryDescriptors;
-}
-@property (nonatomic, retain) NSArray *geometryDescriptors;
-@property (nonatomic) MTLMotionBorderMode motionStartBorderMode;
-@property (nonatomic) MTLMotionBorderMode motionEndBorderMode;
-@property (nonatomic) float motionStartTime;
-@property (nonatomic) float motionEndTime;
-@property (nonatomic) NSUInteger motionKeyframeCount;
-@end
-
-@interface CharonMetalInstanceAccelerationStructureDescriptor : CharonMetalAccelerationStructureDescriptor
-{
-    NSUInteger _instanceDescriptorBufferOffset, _instanceDescriptorStride, _instanceCount;
-    NSUInteger _motionTransformBufferOffset, _motionTransformCount;
-    MTLAccelerationStructureInstanceDescriptorType _instanceDescriptorType;
-    id <MTLBuffer> _instanceDescriptorBuffer, _motionTransformBuffer;
-    NSArray *_instancedAccelerationStructures;
-}
-@property (nonatomic, retain) id <MTLBuffer> instanceDescriptorBuffer;
-@property (nonatomic, retain) id <MTLBuffer> motionTransformBuffer;
-@property (nonatomic, retain) NSArray *instancedAccelerationStructures;
-@property (nonatomic) NSUInteger instanceDescriptorBufferOffset;
-@property (nonatomic) NSUInteger instanceDescriptorStride;
-@property (nonatomic) NSUInteger instanceCount;
-@property (nonatomic) MTLAccelerationStructureInstanceDescriptorType instanceDescriptorType;
-@property (nonatomic) NSUInteger motionTransformBufferOffset;
-@property (nonatomic) NSUInteger motionTransformCount;
-@end
-
-@implementation CharonMetalAccelerationStructureDescriptor
+@implementation MTLAccelerationStructureDescriptor
 // MTLAccelerationStructureUsageNone is 0, the enumeration's own zero, so a fresh descriptor reads
 // back the case the header names first. The base's ONLY member is the usage; the geometry members
 // belong to the sibling above, and this class answers none of them.
@@ -137,7 +46,7 @@
 // MTLStageInputOutputDescriptor.h). An earlier revision of this file called all five unwritten and
 // left the port at zero; that was wrong, and a caller reading a fresh descriptor was getting five
 // zeroes where the header specifies four values and one it genuinely leaves open.
-@implementation CharonMetalAccelerationStructureGeometryDescriptor
+@implementation MTLAccelerationStructureGeometryDescriptor
 @synthesize intersectionFunctionTableOffset = _intersectionFunctionTableOffset;
 @synthesize opaque = _opaque;
 @synthesize allowDuplicateIntersectionFunctionInvocation = _allowDuplicate;
@@ -160,7 +69,7 @@
 // between bounding boxes in the bounding box buffer. Must be at least 24" (MTLAccelerationStructure.h).
 // Apple's own fresh object answers 24, which is the header's floor rather than a private default,
 // so the port starts there and the case compares it.
-@implementation CharonMetalAccelerationStructureBoundingBoxGeometryDescriptor
+@implementation MTLAccelerationStructureBoundingBoxGeometryDescriptor
 @synthesize boundingBoxBuffer = _boundingBoxBuffer;
 @synthesize boundingBoxBufferOffset = _boundingBoxBufferOffset;
 @synthesize boundingBoxStride = _boundingBoxStride;
@@ -173,7 +82,7 @@
 }
 @end
 
-@implementation CharonMetalAccelerationStructureTriangleGeometryDescriptor
+@implementation MTLAccelerationStructureTriangleGeometryDescriptor
 @synthesize vertexBuffer = _vertexBuffer;
 @synthesize indexBuffer = _indexBuffer;
 @synthesize transformationMatrixBuffer = _transformationMatrixBuffer;
@@ -194,7 +103,7 @@
 @synthesize transformationMatrixBufferOffset = _transformationMatrixBufferOffset;
 @end
 
-@implementation CharonMetalPrimitiveAccelerationStructureDescriptor
+@implementation MTLPrimitiveAccelerationStructureDescriptor
 @synthesize geometryDescriptors = _geometryDescriptors;
 @synthesize motionStartBorderMode = _motionStartBorderMode;
 @synthesize motionEndBorderMode = _motionEndBorderMode;
@@ -213,7 +122,7 @@
 }
 @end
 
-@implementation CharonMetalInstanceAccelerationStructureDescriptor
+@implementation MTLInstanceAccelerationStructureDescriptor
 // The header does not write a number here - "Defaults to the size of the instance descriptor type"
 // (MTLAccelerationStructure.h) - and that size is 64 for MTLAccelerationStructureInstanceDescriptor-
 // TypeDefault, MEASURED on the host rather than assumed, so the port starts there and the case
@@ -237,77 +146,17 @@
 
 #pragma mark - the two ray-tracing function tables
 
-@interface CharonMetalIntersectionFunctionTableDescriptor : NSObject
-{
-    NSUInteger _functionCount;
-}
-@property (nonatomic) NSUInteger functionCount;
-@end
-
-@interface CharonMetalVisibleFunctionTableDescriptor : NSObject
-{
-    NSUInteger _functionCount;
-}
-@property (nonatomic) NSUInteger functionCount;
-@end
-
-@implementation CharonMetalIntersectionFunctionTableDescriptor
+@implementation MTLIntersectionFunctionTableDescriptor
 @synthesize functionCount = _functionCount;
 @end
 
-@implementation CharonMetalVisibleFunctionTableDescriptor
+@implementation MTLVisibleFunctionTableDescriptor
 @synthesize functionCount = _functionCount;
 @end
 
 #pragma mark - the counter-sample descriptors
 
-@interface CharonMetalCounterSampleBufferDescriptor : NSObject
-{
-    NSString *_label;
-    MTLStorageMode _storageMode;
-    NSUInteger _sampleCount;
-    id _counterSet;
-}
-@property (nonatomic, retain) id counterSet;
-@property (nonatomic, copy) NSString *label;
-@property (nonatomic) MTLStorageMode storageMode;
-@property (nonatomic) NSUInteger sampleCount;
-@end
-
-@interface CharonMetalComputePassSampleBufferAttachmentDescriptor : NSObject
-{
-    NSUInteger _startOfEncoderSampleIndex, _endOfEncoderSampleIndex;
-    id _sampleBuffer;
-}
-@property (nonatomic, retain) id sampleBuffer;
-@property (nonatomic) NSUInteger startOfEncoderSampleIndex;
-@property (nonatomic) NSUInteger endOfEncoderSampleIndex;
-@end
-
-@interface CharonMetalResourceStatePassSampleBufferAttachmentDescriptor : NSObject
-{
-    NSUInteger _startOfEncoderSampleIndex, _endOfEncoderSampleIndex;
-    id _sampleBuffer;
-}
-@property (nonatomic, retain) id sampleBuffer;
-@property (nonatomic) NSUInteger startOfEncoderSampleIndex;
-@property (nonatomic) NSUInteger endOfEncoderSampleIndex;
-@end
-
-@interface CharonMetalRenderPassSampleBufferAttachmentDescriptor : NSObject
-{
-    NSUInteger _startOfVertexSampleIndex, _endOfVertexSampleIndex;
-    NSUInteger _startOfFragmentSampleIndex, _endOfFragmentSampleIndex;
-    id _sampleBuffer;
-}
-@property (nonatomic, retain) id sampleBuffer;
-@property (nonatomic) NSUInteger startOfVertexSampleIndex;
-@property (nonatomic) NSUInteger endOfVertexSampleIndex;
-@property (nonatomic) NSUInteger startOfFragmentSampleIndex;
-@property (nonatomic) NSUInteger endOfFragmentSampleIndex;
-@end
-
-@implementation CharonMetalCounterSampleBufferDescriptor
+@implementation MTLCounterSampleBufferDescriptor
 @synthesize counterSet = _counterSet;
 @synthesize label = _label;
 @synthesize storageMode = _storageMode;
@@ -321,7 +170,7 @@
 @synthesize sampleCount = _sampleCount;
 @end
 
-@implementation CharonMetalComputePassSampleBufferAttachmentDescriptor
+@implementation MTLComputePassSampleBufferAttachmentDescriptor
 - (instancetype)init
 {
     if ((self = [super init])) {
@@ -335,7 +184,7 @@
 @synthesize endOfEncoderSampleIndex = _endOfEncoderSampleIndex;
 @end
 
-@implementation CharonMetalResourceStatePassSampleBufferAttachmentDescriptor
+@implementation MTLResourceStatePassSampleBufferAttachmentDescriptor
 - (instancetype)init
 {
     if ((self = [super init])) {
@@ -349,7 +198,7 @@
 @synthesize endOfEncoderSampleIndex = _endOfEncoderSampleIndex;
 @end
 
-@implementation CharonMetalRenderPassSampleBufferAttachmentDescriptor
+@implementation MTLRenderPassSampleBufferAttachmentDescriptor
 - (instancetype)init
 {
     if ((self = [super init])) {
@@ -370,36 +219,13 @@
 
 // Declared here because the two pass descriptors CREATE one in -init, and the header declares the
 // property readonly: a caller asking for it gets a real array, not nil, on both sides.
-@class CharonMetalComputePassSampleBufferAttachmentDescriptorArray;
-@class CharonMetalResourceStatePassSampleBufferAttachmentDescriptorArray;
+@class MTLComputePassSampleBufferAttachmentDescriptorArray;
+@class MTLResourceStatePassSampleBufferAttachmentDescriptorArray;
 
 #pragma mark - the pass descriptors and the binary archive
 
-@interface CharonMetalComputePassDescriptor : NSObject
-{
-    MTLDispatchType _dispatchType;
-    CharonMetalComputePassSampleBufferAttachmentDescriptorArray *_sampleBufferAttachments;
-}
-@property (nonatomic) MTLDispatchType dispatchType;
-@property (nonatomic, retain) CharonMetalComputePassSampleBufferAttachmentDescriptorArray *sampleBufferAttachments;
-@end
 
-@interface CharonMetalResourceStatePassDescriptor : NSObject
-{
-    CharonMetalResourceStatePassSampleBufferAttachmentDescriptorArray *_sampleBufferAttachments;
-}
-@property (nonatomic, retain) CharonMetalResourceStatePassSampleBufferAttachmentDescriptorArray *sampleBufferAttachments;
-@end
-
-@interface CharonMetalBinaryArchiveDescriptor : NSObject
-{
-    NSURL *_url;
-}
-@property (nonatomic, copy) NSURL *url;
-@end
-
-
-@implementation CharonMetalBinaryArchiveDescriptor
+@implementation MTLBinaryArchiveDescriptor
 @synthesize url = _url;
 @end
 
@@ -409,36 +235,15 @@
 // members rather than inheriting them. They are real storage, not a stand-in: objectAtIndexedSubscript:
 // reads what setObject:atIndex: wrote, and the differential sets and reads the same indices on both
 // sides. The sample buffer each attachment carries is a device-made object, so it stays nil.
-@interface CharonMetalComputePassSampleBufferAttachmentDescriptorArray : NSObject
-{
-    NSMutableArray *_attachments;
-}
-- (MTLComputePassSampleBufferAttachmentDescriptor *)objectAtIndexedSubscript:(NSUInteger)index;
-- (void)setObject:(nullable MTLComputePassSampleBufferAttachmentDescriptor *)attachment
-          atIndex:(NSUInteger)index;
-@end
-
-@interface CharonMetalRenderPassSampleBufferAttachmentDescriptorArray : NSObject
-{
-    NSMutableArray *_attachments;
-}
-- (MTLRenderPassSampleBufferAttachmentDescriptor *)objectAtIndexedSubscript:(NSUInteger)index;
-- (void)setObject:(nullable MTLRenderPassSampleBufferAttachmentDescriptor *)attachment
-          atIndex:(NSUInteger)index;
-@end
-
-@interface CharonMetalResourceStatePassSampleBufferAttachmentDescriptorArray : NSObject
-{
-    NSMutableArray *_attachments;
-}
-- (MTLResourceStatePassSampleBufferAttachmentDescriptor *)objectAtIndexedSubscript:(NSUInteger)index;
-- (void)setObject:(nullable MTLResourceStatePassSampleBufferAttachmentDescriptor *)attachment
-          atIndex:(NSUInteger)index;
-@end
-
 // The header's own storage for all three: an array that grows to the index written, so an index
 // beyond the end reads nil rather than trapping, which is what NSArray's own behaviour is.
-@implementation CharonMetalComputePassSampleBufferAttachmentDescriptorArray
+@interface MTLComputePassSampleBufferAttachmentDescriptorArray ()
+{
+    NSMutableArray *_attachments;
+}
+@end
+
+@implementation MTLComputePassSampleBufferAttachmentDescriptorArray
 - (instancetype)init
 {
     if ((self = [super init]))
@@ -458,7 +263,13 @@
 }
 @end
 
-@implementation CharonMetalRenderPassSampleBufferAttachmentDescriptorArray
+@interface MTLRenderPassSampleBufferAttachmentDescriptorArray ()
+{
+    NSMutableArray *_attachments;
+}
+@end
+
+@implementation MTLRenderPassSampleBufferAttachmentDescriptorArray
 - (instancetype)init
 {
     if ((self = [super init]))
@@ -478,7 +289,13 @@
 }
 @end
 
-@implementation CharonMetalResourceStatePassSampleBufferAttachmentDescriptorArray
+@interface MTLResourceStatePassSampleBufferAttachmentDescriptorArray ()
+{
+    NSMutableArray *_attachments;
+}
+@end
+
+@implementation MTLResourceStatePassSampleBufferAttachmentDescriptorArray
 - (instancetype)init
 {
     if ((self = [super init]))
@@ -503,26 +320,12 @@
 // which this port has no facility to make, so their four and zero members are CARRIED AND NOT
 // MEASURED: the arrays read empty, which is a real answer, and the function's own descriptor type
 // is carried in the class the header derives it from.
-@interface CharonMetalLinkedFunctions : NSObject
-{
-    NSArray *_functions, *_binaryFunctions, *_privateFunctions;
-    NSDictionary *_groups;
-}
-@property (nonatomic, copy) NSArray *functions;
-@property (nonatomic, copy) NSArray *binaryFunctions;
-@property (nonatomic, copy) NSDictionary *groups;
-@property (nonatomic, copy) NSArray *privateFunctions;
-@end
-
 // THE HEADER GIVES THIS CLASS NO MEMBER OF ITS OWN: MTLIntersectionFunctionDescriptor declares
 // nothing, and everything it answers is inherited from MTLFunctionDescriptor, which is a different
 // row and a different object's business. An earlier revision of this file gave it
 // functionBufferOffset, functionBufferOffsetAlignment and functionStride, and NO SUCH MEMBER EXISTS
 // in any SDK header - they were invented, and they are gone.
-@interface CharonMetalIntersectionFunctionDescriptor : NSObject
-@end
-
-@implementation CharonMetalLinkedFunctions
+@implementation MTLLinkedFunctions
 // The four are readwrite in the header and the port carries them, but a caller can only fill them
 // with MTLFunction objects, and none can be made without a device - so a fresh one is EMPTY, which
 // is what the differential compares against Apple's own fresh object.
@@ -532,13 +335,19 @@
 @synthesize privateFunctions = _privateFunctions;
 @end
 
-@implementation CharonMetalIntersectionFunctionDescriptor
+@implementation MTLIntersectionFunctionDescriptor
 @end
 
 // THE TWO PASS DESCRIPTORS COME LAST, because each -init creates its attachment array and needs
 // that class's interface to be complete - a @class forward declaration is not enough to send
 // it alloc. Their interfaces are above with the rest.
-@implementation CharonMetalComputePassDescriptor
+@interface MTLComputePassDescriptor ()
+{
+    MTLComputePassSampleBufferAttachmentDescriptorArray *_sampleBufferAttachments;
+}
+@end
+
+@implementation MTLComputePassDescriptor
 // MTLDispatchTypeNonUniform is 0, the enumeration's own zero.
 @synthesize dispatchType = _dispatchType;
 @synthesize sampleBufferAttachments = _sampleBufferAttachments;
@@ -547,7 +356,7 @@
 - (instancetype)init
 {
     if ((self = [super init]))
-        _sampleBufferAttachments = [[CharonMetalComputePassSampleBufferAttachmentDescriptorArray alloc] init];
+        _sampleBufferAttachments = [[MTLComputePassSampleBufferAttachmentDescriptorArray alloc] init];
     return self;
 }
 @end
@@ -555,12 +364,18 @@
 // The resource-state pass descriptor declares no member of its own but for the attachment array,
 // which holds the counter sample buffers of a device this port has no facility to make - but the
 // ARRAY itself the port can and does make, because the header declares it readonly.
-@implementation CharonMetalResourceStatePassDescriptor
+@interface MTLResourceStatePassDescriptor ()
+{
+    MTLResourceStatePassSampleBufferAttachmentDescriptorArray *_sampleBufferAttachments;
+}
+@end
+
+@implementation MTLResourceStatePassDescriptor
 @synthesize sampleBufferAttachments = _sampleBufferAttachments;
 - (instancetype)init
 {
     if ((self = [super init]))
-        _sampleBufferAttachments = [[CharonMetalResourceStatePassSampleBufferAttachmentDescriptorArray alloc] init];
+        _sampleBufferAttachments = [[MTLResourceStatePassSampleBufferAttachmentDescriptorArray alloc] init];
     return self;
 }
 @end

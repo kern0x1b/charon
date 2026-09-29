@@ -36,6 +36,17 @@ ellipses above stand for are written out here in full:
 `MTLResourceStatePassDescriptor`, `MTLBinaryArchiveDescriptor`, `MTLLinkedFunctions`,
 `MTLIntersectionFunctionDescriptor`.
 
+**Every one of the twenty is defined under APPLE'S OWN NAME**, and that is not a naming preference:
+iOS 6 carries no class of any of those twenty names, so a caller writing
+`[[MTLComputePassDescriptor alloc] init]` must find one, and an earlier revision of this series
+defined them as `CharonMetal<Name>`. The 6.1.3 gate refused that series for exactly this reason -
+the registry listed `MTLComputePassDescriptor` as implemented while nothing defined that name - and
+the differential had not noticed, because the harness renamed the port's copy with `-D` and the case
+compared the host's class with the port's under a name only the test knew. The harness now compiles
+the port with the renames and the case WITHOUT them, and `descriptors.sh` proves on the DEVICE
+object, where the names are not renamed, that all twenty are defined as
+`_OBJC_CLASS_$_MTLComputePassDescriptor` and nineteen more.
+
 ## The hierarchy is the header's, and getting it wrong was caught by the compiler
 
 All twenty are `@interface`, **not** `@protocol`, so none carries a conformance list. And
@@ -110,9 +121,9 @@ three, and the table is the harness's own output rather than a list kept beside 
 
 | mutant | breaks | red line |
 | --- | --- | --- |
-| `M1` | `CharonMetalVisibleFunctionTableDescriptor`'s `-functionCount` | `MTLVisibleFunctionTableDescriptor.functionCount: the port 0 and Apple's own object 5` |
-| `M2` | `CharonMetalIntersectionFunctionTableDescriptor`'s `-functionCount` | `MTLIntersectionFunctionTableDescriptor.functionCount: the port 0 and Apple's own object 7` |
-| `M3` | `CharonMetalCounterSampleBufferDescriptor`'s `-sampleCount` | `MTLCounterSampleBufferDescriptor.sampleCount: the port 0 and Apple's own object 12` |
+| `M1` | `MTLVisibleFunctionTableDescriptor`'s `-functionCount` | `MTLVisibleFunctionTableDescriptor.functionCount: the port 0 and Apple's own object 5` |
+| `M2` | `MTLIntersectionFunctionTableDescriptor`'s `-functionCount` | `MTLIntersectionFunctionTableDescriptor.functionCount: the port 0 and Apple's own object 7` |
+| `M3` | `MTLCounterSampleBufferDescriptor`'s `-sampleCount` | `MTLCounterSampleBufferDescriptor.sampleCount: the port 0 and Apple's own object 12` |
 
 An earlier revision of this table listed **one** mutant while the runner ran **three** — the same
 disagreement between a claim and the thing that produced it that this file keeps running into, and

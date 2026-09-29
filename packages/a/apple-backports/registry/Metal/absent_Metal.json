@@ -29,7 +29,7 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "not corpus-demanded this pass; it is the domain a command buffer execution error is documented to use. This port's command buffers, when they fail, report it through CharonMetalErrorDomain (CharonMetalDevice.m) instead - adopting the release's own domain name is real, scoped work for later, not a wall.",
+      "reason": "not corpus-demanded this pass; it is the domain a command buffer execution error is documented to use. This port's command buffers, when they fail, report it through ErrorDomain (Device.m) instead - adopting the release's own domain name is real, scoped work for later, not a wall.",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, Metal"
     },
@@ -72,7 +72,7 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "not corpus-demanded this pass; it is the domain a library compile error is documented to use. This port's -[CharonMetalDevice newLibraryWithSource:options:error:] (facts/Metal/CompileOptions.md) already reports its honest refusal through CharonMetalErrorDomain instead - adopting the release's own domain name is real, scoped work for later, not a wall.",
+      "reason": "not corpus-demanded this pass; it is the domain a library compile error is documented to use. This port's -[Device newLibraryWithSource:options:error:] (facts/Metal/CompileOptions.md) already reports its honest refusal through ErrorDomain instead - adopting the release's own domain name is real, scoped work for later, not a wall.",
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, Metal"
     },
@@ -146,7 +146,7 @@
       "introduced": "10.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "CharonMetalAttribute",
+      "reason": "Attribute",
       "effect": "name, attributeIndex and attributeType are read from the argument node the type tree carries, the same way MTLVertexAttribute reads them, and active is YES; the two patch-data getters answer NO; the patch-data getters answer NO because the plist carries no patch or control-point flag, and a kernel this port dispatches is neither compute nor tessellated - the header's own absence",
       "source": "SDK 16.4, Metal",
       "facts": "facts/Metal/TypeTree.md"
@@ -167,7 +167,7 @@
       "introduced": "10.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "CharonMetalFunctionConstant",
+      "reason": "FunctionConstant",
       "effect": "name, type, index and isRequired are read from the node a caller hands it, and required is NO; a constant the plist has no record of is not required, and the dictionary that would hand these out is the empty one MTLFunction.functionConstantsDictionary already returns - the absence is the plist's, which writes arguments and no constants",
       "source": "SDK 16.4, Metal",
       "facts": "facts/Metal/TypeTree.md"
@@ -405,7 +405,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the protocol the 14.0 family is declared in, resolvable by its own name",
-      "effect": "the port declares the protocol in CharonMetalProtocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
+      "effect": "the port declares the protocol in Protocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
       "source": "written by tools/transcribe-protocols.py from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release",
       "facts": "facts/Metal/Descriptors14.md"
     },
@@ -427,7 +427,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the protocol the 14.0 family is declared in, resolvable by its own name",
-      "effect": "the port declares the protocol in CharonMetalProtocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
+      "effect": "the port declares the protocol in Protocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
       "source": "written by tools/transcribe-protocols.py from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release",
       "facts": "facts/Metal/Descriptors14.md"
     },
@@ -471,7 +471,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the protocol the 14.0 family is declared in, resolvable by its own name",
-      "effect": "the port declares the protocol in CharonMetalProtocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
+      "effect": "the port declares the protocol in Protocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
       "source": "written by tools/transcribe-protocols.py from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release",
       "facts": "facts/Metal/Descriptors14.md"
     },
@@ -503,7 +503,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the protocol the 14.0 family is declared in, resolvable by its own name",
-      "effect": "the port declares the protocol in CharonMetalProtocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
+      "effect": "the port declares the protocol in Protocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
       "source": "written by tools/transcribe-protocols.py from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release",
       "facts": "facts/Metal/Descriptors14.md"
     },
@@ -727,7 +727,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the protocol the 14.0 family is declared in, resolvable by its own name",
-      "effect": "the port declares the protocol in CharonMetalProtocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
+      "effect": "the port declares the protocol in Protocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
       "source": "written by tools/transcribe-protocols.py from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release",
       "facts": "facts/Metal/Descriptors14.md"
     },
@@ -748,7 +748,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the protocol the 14.0 family is declared in, resolvable by its own name",
-      "effect": "the port declares the protocol in CharonMetalProtocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
+      "effect": "the port declares the protocol in Protocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
       "source": "written by tools/transcribe-protocols.py from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release",
       "facts": "facts/Metal/Descriptors14.md"
     },
@@ -770,7 +770,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the protocol the 14.0 family is declared in, resolvable by its own name",
-      "effect": "the port declares the protocol in CharonMetalProtocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
+      "effect": "the port declares the protocol in Protocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
       "source": "written by tools/transcribe-protocols.py from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release",
       "facts": "facts/Metal/Descriptors14.md"
     },
@@ -781,7 +781,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the protocol the 14.0 family is declared in, resolvable by its own name",
-      "effect": "the port declares the protocol in CharonMetalProtocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
+      "effect": "the port declares the protocol in Protocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
       "source": "written by tools/transcribe-protocols.py from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release",
       "facts": "facts/Metal/Descriptors14.md"
     },
@@ -801,7 +801,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "CharonMetalFunctionDescriptor",
+      "reason": "FunctionDescriptor",
       "effect": "name, specializedName, constantValues, options and binaryArchives are all carried and settable; options starts at MTLFunctionOptionNone, the enumeration's own zero, and the constant values are whatever a caller sets - the 16.4 SDK declares this class, so there is nothing to declare here",
       "source": "SDK 16.4, Metal",
       "facts": "facts/Metal/TypeTree.md"
@@ -813,7 +813,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the protocol the 14.0 family is declared in, resolvable by its own name",
-      "effect": "the port declares the protocol in CharonMetalProtocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
+      "effect": "the port declares the protocol in Protocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
       "source": "written by tools/transcribe-protocols.py from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release",
       "facts": "facts/Metal/Descriptors14.md"
     },
@@ -823,7 +823,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "CharonMetalFunctionLog, behind the port's own @protocol MTLFunctionLog",
+      "reason": "FunctionLog, behind the port's own @protocol MTLFunctionLog",
       "effect": "type, encoderLabel, function and debugLocation are all carried and nil or the enumeration's zero: a function log is the GPU's own record of a kernel's execution, and this port dispatches through its AIR translation over OpenGL ES 2.0 on a driver that records nothing per invocation; so there IS no log, and the header's answer for a function with no logs is what these return; the members are real and the VALUE is absent by the device, which is the documented answer rather than a stub",
       "source": "SDK 16.4, Metal",
       "facts": "facts/Metal/TypeTree.md"
@@ -834,7 +834,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "CharonMetalFunctionLogDebugLocation, behind the port's own @protocol",
+      "reason": "FunctionLogDebugLocation, behind the port's own @protocol",
       "effect": "functionName, URL, line and column are all carried, built by an initializer a caller supplies; a debug location names where a log says something went wrong, and there is no log, so the value a caller gets is the one it passed and nothing the port invented",
       "source": "SDK 16.4, Metal",
       "facts": "facts/Metal/TypeTree.md"
@@ -868,7 +868,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the protocol the 14.0 family is declared in, resolvable by its own name",
-      "effect": "the port declares the protocol in CharonMetalProtocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
+      "effect": "the port declares the protocol in Protocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
       "source": "written by tools/transcribe-protocols.py from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release",
       "facts": "facts/Metal/Descriptors14.md"
     },
@@ -900,7 +900,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "CharonMetalLogContainer, behind the port's own @protocol MTLLogContainer",
+      "reason": "LogContainer, behind the port's own @protocol MTLLogContainer",
       "effect": "an array of logs that is empty, plus the two NSFastEnumeration methods 26.2's declaration asks for; an EMPTY container is what a command buffer with no function logs has, and NSFastEnumeration over it returns nothing - 26.2 declares MTLLogContainer as <NSObject, NSFastEnumeration> at MTLFunctionLog.h:19",
       "source": "SDK 16.4, Metal",
       "facts": "facts/Metal/TypeTree.md"
@@ -978,7 +978,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the protocol the 14.0 family is declared in, resolvable by its own name",
-      "effect": "the port declares the protocol in CharonMetalProtocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
+      "effect": "the port declares the protocol in Protocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
       "source": "written by tools/transcribe-protocols.py from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release",
       "facts": "facts/Metal/Descriptors14.md"
     },
@@ -1148,7 +1148,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "one binding, as the plain data holder it is: a kind, an access, an index, a name and two flags",
-      "effect": "the port vends CharonMetalBinding and it answers all six of the header's properties, in ONE implementation the four subclasses inherit; only -type is overridden per class, so the base is asked directly by its own mutant; the host has no argument encoder, so no host binding exists and the case measures the header-fixed constants and the port's own values rather than comparing against a host",
+      "effect": "the port vends MTLBinding and it answers all six of the header's properties, in ONE implementation the four subclasses inherit; only -type is overridden per class, so the base is asked directly by its own mutant; the host has no argument encoder, so no host binding exists and the case measures the header-fixed constants and the port's own values rather than comparing against a host",
       "source": "SDK 16.4 MTLArgument.h:335-343; SDK 16.4 MTLArgument.h:169-171 for the three kinds and 218-220 for the three accesses, both read from the header's own enumerators and not chosen here; the cache ladder's band for this symbol is 16.0, and it reports that no release is held between 12.0 and 16.0, so 16.0 means after 12.0 and by 16.0, not a measured first release",
       "facts": "facts/Metal/ArgumentBindings.md"
     },
@@ -1159,7 +1159,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "one buffer binding, over the base it shares with the other three",
-      "effect": "the port vends CharonMetalBufferBinding, and its -type is the buffer kind; the host has no argument encoder, so no host binding exists and the case measures the header-fixed constants and the port's own values rather than comparing against a host; its memory numbers - bufferAlignment, bufferDataSize, bufferDataType, bufferStructType, bufferPointerType - are carried but NOT measured: the header declares them readonly and fixes no value, so there is no oracle, and a round trip of the port's own object against itself would prove only that the port agrees with the port; the host has no argument encoder, so no host binding exists and the case measures the header-fixed constants and the port's own values rather than comparing against a host",
+      "effect": "the port vends MTLBufferBinding, and its -type is the buffer kind; the host has no argument encoder, so no host binding exists and the case measures the header-fixed constants and the port's own values rather than comparing against a host; its memory numbers - bufferAlignment, bufferDataSize, bufferDataType, bufferStructType, bufferPointerType - are carried but NOT measured: the header declares them readonly and fixes no value, so there is no oracle, and a round trip of the port's own object against itself would prove only that the port agrees with the port; the host has no argument encoder, so no host binding exists and the case measures the header-fixed constants and the port's own values rather than comparing against a host",
       "source": "SDK 16.4 MTLArgument.h:346-352; SDK 16.4 MTLArgument.h:169-171 for the three kinds and 218-220 for the three accesses, both read from the header's own enumerators and not chosen here; the cache ladder's band for this symbol is 16.0, and it reports that no release is held between 12.0 and 16.0, so 16.0 means after 12.0 and by 16.0, not a measured first release",
       "facts": "facts/Metal/ArgumentBindings.md"
     },
@@ -1280,7 +1280,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "one object-payload binding, over the base it shares with the other three",
-      "effect": "the port vends CharonMetalObjectPayloadBinding, and its -type is MTLBindingTypeObjectPayload (34), the kind the header gives an object payload and documents as 'This binding represents an object payload' - an earlier revision of this row said the header gave it none and that it rides in the buffer, which was wrong; its memory numbers - objectPayloadAlignment, objectPayloadDataSize - are carried but NOT measured: the header declares them readonly and fixes no value, so there is no oracle, and a round trip of the port's own object against itself would prove only that the port agrees with the port; the host has no argument encoder, so no host binding exists and the case measures the header-fixed constants and the port's own values rather than comparing against a host",
+      "effect": "the port vends MTLObjectPayloadBinding, and its -type is MTLBindingTypeObjectPayload (34), the kind the header gives an object payload and documents as 'This binding represents an object payload' - an earlier revision of this row said the header gave it none and that it rides in the buffer, which was wrong; its memory numbers - objectPayloadAlignment, objectPayloadDataSize - are carried but NOT measured: the header declares them readonly and fixes no value, so there is no oracle, and a round trip of the port's own object against itself would prove only that the port agrees with the port; the host has no argument encoder, so no host binding exists and the case measures the header-fixed constants and the port's own values rather than comparing against a host",
       "source": "SDK 16.4 MTLArgument.h:369-372 for the protocol and :179 for MTLBindingTypeObjectPayload = 34, the same value at :76 in SDK 26.2; the kind and access constants at :169-171 and :218-220; the cache ladder's band for this symbol is 16.0, and it reports that no release is held between 12.0 and 16.0, so 16.0 means after 12.0 and by 16.0, not a measured first release",
       "facts": "facts/Metal/ArgumentBindings.md"
     },
@@ -1291,7 +1291,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "one texture binding, over the base it shares with the other three",
-      "effect": "the port vends CharonMetalTextureBinding, and its -type is the texture kind; the host has no argument encoder, so no host binding exists and the case measures the header-fixed constants and the port's own values rather than comparing against a host; its memory numbers - textureType, textureDataType, isDepthTexture, arrayLength - are carried but NOT measured: the header declares them readonly and fixes no value, so there is no oracle, and a round trip of the port's own object against itself would prove only that the port agrees with the port; the host has no argument encoder, so no host binding exists and the case measures the header-fixed constants and the port's own values rather than comparing against a host",
+      "effect": "the port vends MTLTextureBinding, and its -type is the texture kind; the host has no argument encoder, so no host binding exists and the case measures the header-fixed constants and the port's own values rather than comparing against a host; its memory numbers - textureType, textureDataType, isDepthTexture, arrayLength - are carried but NOT measured: the header declares them readonly and fixes no value, so there is no oracle, and a round trip of the port's own object against itself would prove only that the port agrees with the port; the host has no argument encoder, so no host binding exists and the case measures the header-fixed constants and the port's own values rather than comparing against a host",
       "source": "SDK 16.4 MTLArgument.h:361-366; SDK 16.4 MTLArgument.h:169-171 for the three kinds and 218-220 for the three accesses, both read from the header's own enumerators and not chosen here; the cache ladder's band for this symbol is 16.0, and it reports that no release is held between 12.0 and 16.0, so 16.0 means after 12.0 and by 16.0, not a measured first release",
       "facts": "facts/Metal/ArgumentBindings.md"
     },
@@ -1302,7 +1302,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "one threadgroup-memory binding, over the base it shares with the other three",
-      "effect": "the port vends CharonMetalThreadgroupBinding, and its -type is the threadgroup kind; the host has no argument encoder, so no host binding exists and the case measures the header-fixed constants and the port's own values rather than comparing against a host; its memory numbers - threadgroupMemoryAlignment, threadgroupMemoryDataSize - are carried but NOT measured: the header declares them readonly and fixes no value, so there is no oracle, and a round trip of the port's own object against itself would prove only that the port agrees with the port; the host has no argument encoder, so no host binding exists and the case measures the header-fixed constants and the port's own values rather than comparing against a host",
+      "effect": "the port vends MTLThreadgroupBinding, and its -type is the threadgroup kind; the host has no argument encoder, so no host binding exists and the case measures the header-fixed constants and the port's own values rather than comparing against a host; its memory numbers - threadgroupMemoryAlignment, threadgroupMemoryDataSize - are carried but NOT measured: the header declares them readonly and fixes no value, so there is no oracle, and a round trip of the port's own object against itself would prove only that the port agrees with the port; the host has no argument encoder, so no host binding exists and the case measures the header-fixed constants and the port's own values rather than comparing against a host",
       "source": "SDK 16.4 MTLArgument.h:355-358; SDK 16.4 MTLArgument.h:169-171 for the three kinds and 218-220 for the three accesses, both read from the header's own enumerators and not chosen here; the cache ladder's band for this symbol is 16.0, and it reports that no release is held between 12.0 and 16.0, so 16.0 means after 12.0 and by 16.0, not a measured first release",
       "facts": "facts/Metal/ArgumentBindings.md"
     },
