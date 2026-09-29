@@ -22,16 +22,6 @@
       "source": "SDK 16.4, Metal"
     },
     {
-      "api": "MTLBlitCommandEncoder",
-      "kind": "protocol",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "not corpus-demanded this pass; this port's CharonMetalEncoder implements only render commands - no blit command encoder is built at all, a real, separate gap in the command encoder surface, not a reason tied to the absence of a GPU driver.",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, Metal"
-    },
-    {
       "api": "MTLCommandBufferErrorDomain",
       "kind": "constant",
       "introduced": "8.0",
@@ -46,9 +36,9 @@
       "kind": "protocol",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol arrived in iOS 8, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "status": "implemented",
+      "reason": "the protocol is carried by the classes of the port that answer for it: -[MTLCommandBuffer computeCommandEncoder] answers a real encoder and -[MTLDevice newComputePipelineStateWithFunction:error:] a real pipeline, so a process that asks NSProtocolFromString for it gets the protocol",
+      "effect": "the protocol is there, and the members of it this device cannot answer are absent with the reason in this file; facts/Metal/Compute.md lists them",
       "source": "SDK 16.4, Metal"
     },
     {
@@ -66,9 +56,9 @@
       "kind": "protocol",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol arrived in iOS 8, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "status": "implemented",
+      "reason": "the protocol is carried by the classes of the port that answer for it: -[MTLCommandBuffer computeCommandEncoder] answers a real encoder and -[MTLDevice newComputePipelineStateWithFunction:error:] a real pipeline, so a process that asks NSProtocolFromString for it gets the protocol",
+      "effect": "the protocol is there, and the members of it this device cannot answer are absent with the reason in this file; facts/Metal/Compute.md lists them",
       "source": "SDK 16.4, Metal"
     },
     {
@@ -168,26 +158,6 @@
       "minimum": "6.0",
       "status": "absent",
       "reason": "not corpus-demanded this pass (coordination/corpus, 2026-09-23 Tier 2 verdict); it describes compiled-shader reflection metadata, which this port's own library pipeline (CharonMetalLibrary.m) carries as a plain NSDictionary manifest read from library.json, not as live objects of this shape produced by a runtime compiler - there is none (facts/Metal/CompileOptions.md). Wrapping the manifest in the real reflection classes is real, scoped work for when demand asks for it, not a hardware wall.",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
-    },
-    {
-      "api": "MTLHeap",
-      "kind": "protocol",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol arrived in iOS 10, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, Metal"
-    },
-    {
-      "api": "MTLHeapDescriptor",
-      "kind": "class",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, Metal"
     },
@@ -329,36 +299,6 @@
       "status": "absent",
       "reason": "the protocol arrived in iOS 12, and nothing in iOS 6 sends or asks for what it declares",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, Metal"
-    },
-    {
-      "api": "MTLSharedEvent",
-      "kind": "protocol",
-      "introduced": "12.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol arrived in iOS 12, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, Metal"
-    },
-    {
-      "api": "MTLSharedEventHandle",
-      "kind": "class",
-      "introduced": "12.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
-    },
-    {
-      "api": "MTLSharedEventListener",
-      "kind": "class",
-      "introduced": "12.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, Metal"
     },
     {
@@ -1300,6 +1240,137 @@
       "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
       "source": "SDK 16.4, Metal"
+    }
+,
+    {
+      "api": "-[MTLComputeCommandEncoder useHeap:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the encoder of the port answers a real one, so a compute dispatch has an encoder to name its heaps to; a heap of the port is one allocation resources are taken out of, and naming it is what the two methods do",
+      "effect": "the heaps are recorded, and a resource bound afterwards from another heap is named in the log, as -useHeap: on the render encoder does; facts/Metal/Heaps.md and facts/Metal/Compute.md",
+      "source": "SDK 16.4, Metal"
+    },
+    {
+      "api": "-[MTLComputeCommandEncoder useHeaps:count:]",
+      "kind": "method",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the encoder of the port answers a real one, so a compute dispatch has an encoder to name its heaps to; a heap of the port is one allocation resources are taken out of, and naming it is what the two methods do",
+      "effect": "the heaps are recorded, and a resource bound afterwards from another heap is named in the log, as -useHeap: on the render encoder does; facts/Metal/Heaps.md and facts/Metal/Compute.md",
+      "source": "SDK 16.4, Metal"
+    },
+    {
+      "api": "-[MTLAccelerationStructureCommandEncoder useHeap:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "an acceleration structure command encoder is a ray tracing encoder, and this device has no ray tracing; the acceleration structure protocols themselves are absent here (facts/Metal/Heaps.md)",
+      "effect": "the selector is not there: respondsToSelector: answers NO and a call through a compile time reference crashes",
+      "source": "SDK 16.4, Metal"
+    },
+    {
+      "api": "-[MTLAccelerationStructureCommandEncoder useHeaps:count:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "an acceleration structure command encoder is a ray tracing encoder, and this device has no ray tracing (facts/Metal/Heaps.md)",
+      "effect": "the selector is not there: respondsToSelector: answers NO and a call through a compile time reference crashes",
+      "source": "SDK 16.4, Metal"
+    },
+    {
+      "api": "-[MTLHeap newAccelerationStructureWithDescriptor:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "an acceleration structure is a ray tracing resource, and this device has no ray tracing; a heap's acceleration structures are absent with the acceleration structures themselves (facts/Metal/Heaps.md)",
+      "effect": "the selector is not there: respondsToSelector: answers NO and a call through a compile time reference crashes",
+      "source": "SDK 16.4, Metal"
+    },
+    {
+      "api": "-[MTLHeap newAccelerationStructureWithDescriptor:offset:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "an acceleration structure is a ray tracing resource, and this device has no ray tracing (facts/Metal/Heaps.md)",
+      "effect": "the selector is not there: respondsToSelector: answers NO and a call through a compile time reference crashes",
+      "source": "SDK 16.4, Metal"
+    },
+    {
+      "api": "-[MTLHeap newAccelerationStructureWithSize:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "an acceleration structure is a ray tracing resource, and this device has no ray tracing (facts/Metal/Heaps.md)",
+      "effect": "the selector is not there: respondsToSelector: answers NO and a call through a compile time reference crashes",
+      "source": "SDK 16.4, Metal"
+    },
+    {
+      "api": "-[MTLHeap newAccelerationStructureWithSize:offset:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "an acceleration structure is a ray tracing resource, and this device has no ray tracing (facts/Metal/Heaps.md)",
+      "effect": "the selector is not there: respondsToSelector: answers NO and a call through a compile time reference crashes",
+      "source": "SDK 16.4, Metal"
+    },
+    {
+      "api": "-[MTLDevice newCounterHeapWithDescriptor:error:]",
+      "kind": "method",
+      "introduced": "26.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the counter heaps arrived with the SDK of iOS 26 and the backports of this package build against the SDK of 16.4, where MTL4CounterHeap and its descriptor do not exist to be written; the counters themselves are the counter sample buffers' group (facts/Metal/Blits.md)",
+      "effect": "the selector is not there: respondsToSelector: answers NO and a call through a compile time reference crashes",
+      "source": "SDK 26.2, Metal, MTLDevice.h; and the SDK of 16.4 this package builds against, which has no counter heap"
+    },
+    {
+      "api": "-[MTLDevice sizeOfCounterHeapEntry:]",
+      "kind": "method",
+      "introduced": "26.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a counter heap's entry size is a property of the counter hardware and of the 26.0 types, which the backports of this package do not build against (facts/Metal/Blits.md)",
+      "effect": "the selector is not there: respondsToSelector: answers NO and a call through a compile time reference crashes",
+      "source": "SDK 26.2, Metal, MTLDevice.h; and the SDK of 16.4 this package builds against"
+    },
+    {
+      "api": "MTL4CounterHeap",
+      "kind": "protocol",
+      "introduced": "26.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the protocol arrived with the SDK of iOS 26 and the backports of this package build against the SDK of 16.4, where the counters it declares do not exist; the counters themselves are the counter sample buffers' group (facts/Metal/Blits.md)",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 26.2, Metal; and the SDK of 16.4 this package builds against"
+    },
+    {
+      "api": "MTL4CounterHeapDescriptor",
+      "kind": "class",
+      "introduced": "26.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the class arrived with the SDK of iOS 26 and the backports of this package build against the SDK of 16.4, where it does not exist to be written (facts/Metal/Blits.md)",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 26.2, Metal; and the SDK of 16.4 this package builds against"
+    },
+    {
+      "api": "MTL4MachineLearningPipelineState.intermediatesHeapSize",
+      "kind": "property",
+      "introduced": "26.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the machine learning pipeline state arrived with the SDK of iOS 26 and the backports of this package build against the SDK of 16.4, where it does not exist; the machine learning command encoder is compute, which this device has none of (facts/Metal/Heaps.md)",
+      "effect": "the class is not there: the pipeline state itself is absent, and an application that holds one has nothing to ask",
+      "source": "SDK 26.2, Metal; and the SDK of 16.4 this package builds against"
     }
   ]
 }

@@ -64,7 +64,16 @@ to encode, against 130 before the pipeline's bindings were worked out once when 
 ## What is not
 
 * Vertex formats of half floats, 32 bit integers, the packed 10 bit formats and the BGRA one: a pipeline that uses one is refused, since ES 2.0 has no attribute of them. A layout whose step function is per vertex with a step rate other than one, or per patch, is refused too.
-* Compute: a compute pipeline answers an error, and the compute encoder answers nil. The graphics of the A5 run no compute functions.
+* Compute: a compute kernel runs, on the CPU. `-[MTLCommandBuffer computeCommandEncoder]` answers an encoder and
+  `-[MTLDevice newComputePipelineStateWithFunction:error:]` answers a pipeline over the kernel `tools/air2cpu` translated out of
+  the AIR of the library, and a workgroup is one thread per thread of it with a rendezvous of a mutex and a condition variable,
+  because iOS 6 has no `pthread_barrier`. The CPU is not a fallback: `facts/OpenGLES/ES3Functions.md` has it measured on an
+  iPhone 4S at 6.1.3 that the drivers of iOS 6 are OpenGL ES 2.0, that `-initWithAPI:kEAGLRenderingAPIOpenGLES3` answers `nil`,
+  and that 74 of the 99 functions ES 3.0 added have no ES 2.0 extension on this hardware, among them the ones a compute
+  shader is dispatched with. There is nowhere to dispatch a kernel into, so the port runs it where the resources already
+  are, which is memory both sides can read - the same unified-memory model this whole file describes.
+  `facts/Metal/Compute.md` has the rest, including what a kernel `tools/air2cpu` refuses answers, and
+  `tests/backports/host/air2cpu/compare.sh` holds the translation against Apple's own Metal on three kernels.
 * Tessellation, texture arrays, cubes, 3D textures, sampling with an offset or gradients, and a function constant of a vector type
   are not translated, and a function that needs one is not in the library.
 * A vertex texture: the SGX 543 has none.

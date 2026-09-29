@@ -1,0 +1,45 @@
+{
+  "framework": "Metal",
+  "entries": [
+    {
+      "api": "-[MTLBlitCommandEncoder optimizeContentsForCPUAccess:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "every resource of this port is CPU-resident already, a buffer being its own bytes and a texture an OpenGL ES 2.0 texture the port reads and writes on the CPU, so there is no residency to move between",
+      "effect": "the call returns and the resource is left as it is, and the log says so once the first time; the API asks for a performance and not for a value, and the performance is the one it asks for (facts/Metal/Blits.md)",
+      "source": "SDK 26.2, Metal, MTLBlitCommandEncoder.h; the access hints have no observable result in Metal either"
+    },
+    {
+      "api": "-[MTLBlitCommandEncoder optimizeContentsForCPUAccess:slice:level:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "every resource of this port is CPU-resident already, so there is no residency to move between",
+      "effect": "the call returns and the resource is left as it is, and the log says so once the first time; the API asks for a performance and not for a value, and the performance is the one it asks for (facts/Metal/Blits.md)",
+      "source": "SDK 26.2, Metal, MTLBlitCommandEncoder.h; the access hints have no observable result in Metal either"
+    },
+    {
+      "api": "-[MTLBlitCommandEncoder optimizeContentsForGPUAccess:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "every resource of this port is CPU-resident already, so there is no residency to move between",
+      "effect": "the call returns and the resource is left as it is, and the log says so once the first time; the API asks for a performance and not for a value, and the performance is the one it asks for (facts/Metal/Blits.md)",
+      "source": "SDK 26.2, Metal, MTLBlitCommandEncoder.h; the access hints have no observable result in Metal either"
+    },
+    {
+      "api": "-[MTLBlitCommandEncoder optimizeContentsForGPUAccess:slice:level:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "every resource of this port is CPU-resident already, so there is no residency to move between",
+      "effect": "the call returns and the resource is left as it is, and the log says so once the first time; the API asks for a performance and not for a value, and the performance is the one it asks for (facts/Metal/Blits.md)",
+      "source": "SDK 26.2, Metal, MTLBlitCommandEncoder.h; the access hints have no observable result in Metal either"
+    }
+  ]
+}

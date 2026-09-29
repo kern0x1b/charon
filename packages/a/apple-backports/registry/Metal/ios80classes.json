@@ -1,0 +1,165 @@
+{
+  "framework": "Metal",
+  "entries": [
+    {
+      "api": "CharonMetalBlitEncoder",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a class of the port's own, under a name no SDK header declares, and compiled with hidden visibility: so no such name is in the built library's symbol table, which is what the gate reads a name out of. The entry is here for the minimum it carries \u2014 6.0, the release the API it answers arrived \u2014 because the band machinery places an object that NAMES such a class by the minimum of the names it carries, and a category has no symbol of its own to be placed by",
+      "effect": "nothing is claimed to be built under this name, and nothing needs to be: the class is the port's own and the objects that name it are placed above 6.0, so no band below that links against it (facts/Metal/Compute.md, facts/Metal/Heaps.md, facts/Metal/Blits.md)",
+      "source": "SDK 16.4, Metal, the header of MTLBlitCommandEncoder, whose API arrived in 8.0"
+    },
+    {
+      "api": "CharonMetalBuffer",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a class of the port's own, under a name no SDK header declares, and compiled with hidden visibility: so no such name is in the built library's symbol table, which is what the gate reads a name out of. The entry is here for the minimum it carries \u2014 6.0, the release the API it answers arrived \u2014 because the band machinery places an object that NAMES such a class by the minimum of the names it carries, and a category has no symbol of its own to be placed by",
+      "effect": "nothing is claimed to be built under this name, and nothing needs to be: the class is the port's own and the objects that name it are placed above 6.0, so no band below that links against it (facts/Metal/Compute.md, facts/Metal/Heaps.md, facts/Metal/Blits.md)",
+      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
+    },
+    {
+      "api": "CharonMetalCommandBuffer",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a class of the port's own, under a name no SDK header declares, and compiled with hidden visibility: so no such name is in the built library's symbol table, which is what the gate reads a name out of. The entry is here for the minimum it carries \u2014 6.0, the release the API it answers arrived \u2014 because the band machinery places an object that NAMES such a class by the minimum of the names it carries, and a category has no symbol of its own to be placed by",
+      "effect": "nothing is claimed to be built under this name, and nothing needs to be: the class is the port's own and the objects that name it are placed above 6.0, so no band below that links against it (facts/Metal/Compute.md, facts/Metal/Heaps.md, facts/Metal/Blits.md)",
+      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
+    },
+    {
+      "api": "CharonMetalComputeEncoder",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a class of the port's own, under a name no SDK header declares, and compiled with hidden visibility: so no such name is in the built library's symbol table, which is what the gate reads a name out of. The entry is here for the minimum it carries \u2014 6.0, the release the API it answers arrived \u2014 because the band machinery places an object that NAMES such a class by the minimum of the names it carries, and a category has no symbol of its own to be placed by",
+      "effect": "nothing is claimed to be built under this name, and nothing needs to be: the class is the port's own and the objects that name it are placed above 6.0, so no band below that links against it (facts/Metal/Compute.md, facts/Metal/Heaps.md, facts/Metal/Blits.md)",
+      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
+    },
+    {
+      "api": "CharonMetalComputePipeline",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a class of the port's own, under a name no SDK header declares, and compiled with hidden visibility: so no such name is in the built library's symbol table, which is what the gate reads a name out of. The entry is here for the minimum it carries \u2014 6.0, the release the API it answers arrived \u2014 because the band machinery places an object that NAMES such a class by the minimum of the names it carries, and a category has no symbol of its own to be placed by",
+      "effect": "nothing is claimed to be built under this name, and nothing needs to be: the class is the port's own and the objects that name it are placed above 6.0, so no band below that links against it (facts/Metal/Compute.md, facts/Metal/Heaps.md, facts/Metal/Blits.md)",
+      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
+    },
+    {
+      "api": "CharonMetalDepthStencil",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a class of the port's own, under a name no SDK header declares, and compiled with hidden visibility: so no such name is in the built library's symbol table, which is what the gate reads a name out of. The entry is here for the minimum it carries \u2014 6.0, the release the API it answers arrived \u2014 because the band machinery places an object that NAMES such a class by the minimum of the names it carries, and a category has no symbol of its own to be placed by",
+      "effect": "nothing is claimed to be built under this name, and nothing needs to be: the class is the port's own and the objects that name it are placed above 6.0, so no band below that links against it (facts/Metal/Compute.md, facts/Metal/Heaps.md, facts/Metal/Blits.md)",
+      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
+    },
+    {
+      "api": "CharonMetalDevice",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a class of the port's own, under a name no SDK header declares, and compiled with hidden visibility: so no such name is in the built library's symbol table, which is what the gate reads a name out of. The entry is here for the minimum it carries \u2014 6.0, the release the API it answers arrived \u2014 because the band machinery places an object that NAMES such a class by the minimum of the names it carries, and a category has no symbol of its own to be placed by",
+      "effect": "nothing is claimed to be built under this name, and nothing needs to be: the class is the port's own and the objects that name it are placed above 6.0, so no band below that links against it (facts/Metal/Compute.md, facts/Metal/Heaps.md, facts/Metal/Blits.md)",
+      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
+    },
+    {
+      "api": "CharonMetalDrawable",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a class of the port's own, under a name no SDK header declares, and compiled with hidden visibility: so no such name is in the built library's symbol table, which is what the gate reads a name out of. The entry is here for the minimum it carries \u2014 6.0, the release the API it answers arrived \u2014 because the band machinery places an object that NAMES such a class by the minimum of the names it carries, and a category has no symbol of its own to be placed by",
+      "effect": "nothing is claimed to be built under this name, and nothing needs to be: the class is the port's own and the objects that name it are placed above 6.0, so no band below that links against it (facts/Metal/Compute.md, facts/Metal/Heaps.md, facts/Metal/Blits.md)",
+      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
+    },
+    {
+      "api": "CharonMetalEncoder",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a class of the port's own, under a name no SDK header declares, and compiled with hidden visibility: so no such name is in the built library's symbol table, which is what the gate reads a name out of. The entry is here for the minimum it carries \u2014 6.0, the release the API it answers arrived \u2014 because the band machinery places an object that NAMES such a class by the minimum of the names it carries, and a category has no symbol of its own to be placed by",
+      "effect": "nothing is claimed to be built under this name, and nothing needs to be: the class is the port's own and the objects that name it are placed above 6.0, so no band below that links against it (facts/Metal/Compute.md, facts/Metal/Heaps.md, facts/Metal/Blits.md)",
+      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
+    },
+    {
+      "api": "CharonMetalFunction",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a class of the port's own, under a name no SDK header declares, and compiled with hidden visibility: so no such name is in the built library's symbol table, which is what the gate reads a name out of. The entry is here for the minimum it carries \u2014 6.0, the release the API it answers arrived \u2014 because the band machinery places an object that NAMES such a class by the minimum of the names it carries, and a category has no symbol of its own to be placed by",
+      "effect": "nothing is claimed to be built under this name, and nothing needs to be: the class is the port's own and the objects that name it are placed above 6.0, so no band below that links against it (facts/Metal/Compute.md, facts/Metal/Heaps.md, facts/Metal/Blits.md)",
+      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
+    },
+    {
+      "api": "CharonMetalLayerState",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a class of the port's own, under a name no SDK header declares, and compiled with hidden visibility: so no such name is in the built library's symbol table, which is what the gate reads a name out of. The entry is here for the minimum it carries \u2014 6.0, the release the API it answers arrived \u2014 because the band machinery places an object that NAMES such a class by the minimum of the names it carries, and a category has no symbol of its own to be placed by",
+      "effect": "nothing is claimed to be built under this name, and nothing needs to be: the class is the port's own and the objects that name it are placed above 6.0, so no band below that links against it (facts/Metal/Compute.md, facts/Metal/Heaps.md, facts/Metal/Blits.md)",
+      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
+    },
+    {
+      "api": "CharonMetalLibrary",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a class of the port's own, under a name no SDK header declares, and compiled with hidden visibility: so no such name is in the built library's symbol table, which is what the gate reads a name out of. The entry is here for the minimum it carries \u2014 6.0, the release the API it answers arrived \u2014 because the band machinery places an object that NAMES such a class by the minimum of the names it carries, and a category has no symbol of its own to be placed by",
+      "effect": "nothing is claimed to be built under this name, and nothing needs to be: the class is the port's own and the objects that name it are placed above 6.0, so no band below that links against it (facts/Metal/Compute.md, facts/Metal/Heaps.md, facts/Metal/Blits.md)",
+      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
+    },
+    {
+      "api": "CharonMetalPipeline",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a class of the port's own, under a name no SDK header declares, and compiled with hidden visibility: so no such name is in the built library's symbol table, which is what the gate reads a name out of. The entry is here for the minimum it carries \u2014 6.0, the release the API it answers arrived \u2014 because the band machinery places an object that NAMES such a class by the minimum of the names it carries, and a category has no symbol of its own to be placed by",
+      "effect": "nothing is claimed to be built under this name, and nothing needs to be: the class is the port's own and the objects that name it are placed above 6.0, so no band below that links against it (facts/Metal/Compute.md, facts/Metal/Heaps.md, facts/Metal/Blits.md)",
+      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
+    },
+    {
+      "api": "CharonMetalQueue",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a class of the port's own, under a name no SDK header declares, and compiled with hidden visibility: so no such name is in the built library's symbol table, which is what the gate reads a name out of. The entry is here for the minimum it carries \u2014 6.0, the release the API it answers arrived \u2014 because the band machinery places an object that NAMES such a class by the minimum of the names it carries, and a category has no symbol of its own to be placed by",
+      "effect": "nothing is claimed to be built under this name, and nothing needs to be: the class is the port's own and the objects that name it are placed above 6.0, so no band below that links against it (facts/Metal/Compute.md, facts/Metal/Heaps.md, facts/Metal/Blits.md)",
+      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
+    },
+    {
+      "api": "CharonMetalSampler",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a class of the port's own, under a name no SDK header declares, and compiled with hidden visibility: so no such name is in the built library's symbol table, which is what the gate reads a name out of. The entry is here for the minimum it carries \u2014 6.0, the release the API it answers arrived \u2014 because the band machinery places an object that NAMES such a class by the minimum of the names it carries, and a category has no symbol of its own to be placed by",
+      "effect": "nothing is claimed to be built under this name, and nothing needs to be: the class is the port's own and the objects that name it are placed above 6.0, so no band below that links against it (facts/Metal/Compute.md, facts/Metal/Heaps.md, facts/Metal/Blits.md)",
+      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
+    },
+    {
+      "api": "CharonMetalTexture",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "a class of the port's own, under a name no SDK header declares, and compiled with hidden visibility: so no such name is in the built library's symbol table, which is what the gate reads a name out of. The entry is here for the minimum it carries \u2014 6.0, the release the API it answers arrived \u2014 because the band machinery places an object that NAMES such a class by the minimum of the names it carries, and a category has no symbol of its own to be placed by",
+      "effect": "nothing is claimed to be built under this name, and nothing needs to be: the class is the port's own and the objects that name it are placed above 6.0, so no band below that links against it (facts/Metal/Compute.md, facts/Metal/Heaps.md, facts/Metal/Blits.md)",
+      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
+    }
+  ]
+}
