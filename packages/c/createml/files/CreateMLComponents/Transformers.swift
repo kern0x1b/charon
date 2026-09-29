@@ -281,20 +281,32 @@ public struct MaxAbsScaler: ColumnarTransformer {
 /// deviation and leaves every other row standardised to nearly the same number, which is a column
 /// that has thrown away the information about which rows are which.
 public struct RobustScaler: ColumnarTransformer {
+    /// The quantile range, and **the only configuration input**. Its width is the scale the host
+    /// reports as `interQuartileRange`, measured over five integers, 200 skewed non-integers and a
+    /// constant column: 0.5 in all three, and 0.2, 0.25, 0.8 and 1.0 for those widths.
+    ///
+    /// `ClosedRange` brings its own contract: the host traps on a range with `lower > upper` and on a
+    /// NaN bound, and the top frame of both is the caller's `main` rather than anything inside
+    /// `RobustScaler`, so the trap is the standard library's and the port inherits it by using the same
+    /// `ClosedRange<Double>`. Infinite bounds are *not* a trap: the host answers an infinite scale and
+    /// leaves the value as the unscaled deviation, which the guards in `transformed` reproduce.
+    public private(set) var quantileRange: ClosedRange<Double>
     public private(set) var statistics: RowMatrix
     public private(set) var fittedColumns: [String]
 
-    public init() {
+    public init(quantileRange: ClosedRange<Double> = 0.25...0.75) {
+        self.quantileRange = quantileRange
         statistics = RowMatrix(rows: 0, columns: 2)
         fittedColumns = []
     }
 
-    init(centre: [Double], spread: [Double], columns: [String]) {
+    init(quantileRange: ClosedRange<Double>, centre: [Double], spread: [Double], columns: [String]) {
         var matrix = RowMatrix(rows: columns.count, columns: 2)
         for index in 0..<columns.count {
             matrix[index, 0] = centre[index]
             matrix[index, 1] = spread[index]
         }
+        self.quantileRange = quantileRange
         self.statistics = matrix
         self.fittedColumns = columns
     }
@@ -305,21 +317,34 @@ public struct RobustScaler: ColumnarTransformer {
 
     public func fitted(on table: ColumnarTable) throws -> Self {
         var centre = [Double](repeating: 0, count: table.columnNames.count)
-        var spread = [Double](repeating: 1, count: table.columnNames.count)
+        // The scale is the **width of the quantile range**, not a statistic of the data. Measured on
+        // Apple's `RobustScaler` over five integers, over 200 skewed non-integers, and over a constant
+        // column: `interQuartileRange` is 0.5 for `quantileRange 0.25...0.75` in every one, and it is 0.5
+        // for the constant column too, where a data statistic would be 0. It is 0.2, 0.25, 0.8 and 1.0
+        // for widths 0.2, 0.25, 0.8 and 1.0. So the port is a data statistic where the host is a
+        // configuration value, and that is not a constant to correct.
+        let scale = Double(quantileRange.upperBound - quantileRange.lowerBound)
+        var spread = [Double](repeating: scale, count: table.columnNames.count)
         for (position, name) in table.columnNames.enumerated() {
             guard let column = table.column(name), let values = column.numeric else { continue }
             let present = values.compactMap { $0 }
-            let median = Self.median(present)
-            centre[position] = median
-            let mad = Self.median(present.map { abs($0 - median) })
-            spread[position] = mad > 0 ? mad * 1.4826 : 1
+            centre[position] = Self.median(present)
         }
-        return RobustScaler(centre: centre, spread: spread, columns: table.columnNames)
+        return RobustScaler(quantileRange: quantileRange, centre: centre, spread: spread, columns: table.columnNames)
     }
 
     public func transformed(_ table: ColumnarTable) -> ColumnarTable {
+        // The two guards the host applies, measured rather than assumed. A median that is not finite is
+        // **not subtracted** and the scale is still applied: on data containing NaN the host answers
+        // `applied(1) = 2.0` for a scale of 0.5, where subtracting the NaN would give NaN. A scale that
+        // is zero leaves the value as the **unscaled deviation**: over `quantileRange 0.5...0.5` the
+        // host answers `applied(4) = 1.0` for a median of 3, which is `4 - 3`.
         Self.apply(to: table, statistics: statistics, fittedColumns: fittedColumns) { value, row, column in
-            (value - statistics[column, 0]) / statistics[column, 1]
+            let centre = statistics[column, 0]
+            let spread = statistics[column, 1]
+            var result = centre.isFinite ? value - centre : value
+            if spread.isFinite && spread != 0 { result /= spread }
+            return result
         }
     }
 
