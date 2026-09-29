@@ -36,6 +36,10 @@ mutants_noticed=0
 
 # run NAME PORT-SOURCES... -- COMPARE-SCRIPT ; a mutation is applied by mutate_NAME below
 run_case() {
+    # THE COUNTER IS HERE, NOT IN THE CALLER. A caller that increments after the call reports fewer cases
+    # than ran whenever a case returns early, and "every case compared" then describes a set the summary
+    # never counted. It is incremented FIRST, so it counts what ran.
+    cases=$((cases + 1))
     name=$1; shift
     compare=$1; shift
     if ! xcrun clang $common "$@" -framework Foundation -framework Security -framework CoreFoundation \
@@ -59,8 +63,8 @@ run_case() {
     missing=0
     for src in "$@"; do
         [ -f "$src" ] || continue
-        for sym in $(grep -oE '^[A-Za-z_][A-Za-z0-9_ ]*\b(sec_[a-z_]+)\(' "$src" 2>/dev/null \
-                     | grep -oE 'sec_[a-z_]+' | sort -u); do
+        for sym in $(grep -E '^[A-Za-z_].*\bsec_[a-z_]+\(' "$src" 2>/dev/null \
+                     | sed -nE 's/.*[^A-Za-z0-9_](sec_[a-z_]+)\(.*/\1/p' | sort -u); do
             if ! nm "$build/$name" 2>/dev/null | awk '$2=="T"{print $3}' | grep -qx "_$sym"; then
                 echo "MISSING $name  _$sym is not DEFINED in the binary - it resolved to a dylib, so this case would measure the HOST and not the port. Source: $src"
                 missing=$((missing + 1))
@@ -96,6 +100,9 @@ run_case() {
 # A mutation must make its comparison FAIL. A mutation that still passes is a useless mutation, and a run
 # that accepted one would be reporting coverage it does not have - so that is an error, not a pass.
 run_mutation() {
+    # Same rule: counted where it runs, BEFORE the early return a crashing mutant takes. It was counted
+    # after, so a mutation that segfaulted - the most emphatic "noticed" there is - was not counted at all.
+    mutants=$((mutants + 1))
     name=$1; compare=$2; casefile=${3:-$name}
     if [ ! -f "$build/mutant-$name.m" ]; then
         echo "RED    $name mutation NOT BUILT - nothing proved the case can fail"
@@ -120,6 +127,7 @@ run_mutation() {
         # tell the case from a broken one" - so it is NOT a failure of the run, and the run says that
         # rather than leaving a crash and a non-zero exit to describe the same run.
         echo "CRASH  $name mutation  crashed: signal $((status - 128)) (exit $status) - NOTICED, and not a failure: a crash is a mutation the comparison caught"
+        mutants_noticed=$((mutants_noticed + 1))
         return
     fi
     if python3 "$H/$compare" "$build/mutant-$name.out" > "$build/mutant-$name.red" 2>&1; then
@@ -127,7 +135,6 @@ run_mutation() {
         failures=$((failures + 1))
     else
         echo "RED    $name mutation  $(grep -m1 DIFFERS "$build/mutant-$name.red" | cut -c9-)"
-        mutants=$((mutants + 1))
         mutants_noticed=$((mutants_noticed + 1))
     fi
 }
@@ -217,8 +224,6 @@ protocol_case() {
     # exactly like a port measurement. It failed on four rows and the driver could not say why.
     name=$1; shift
     run_case "$name" "compare-$name.py" "$H/$name.m" "$@"
-    sources=$*
-    cases=$((cases + 1))
 }
 protocol_case protocol-metadata            $PM
 protocol_case protocol-metadata-accessors   $PM $PMA
@@ -300,7 +305,6 @@ run_mutation certificate-fields compare-certificate-fields.py
 run_mutation network-fetch     compare-network-fetch.py
 must_not_compile() {
     name=$1; sources=$2
-    mutants=$((mutants + 1))
     if xcrun clang $common "$H/$3.m" "$build/mutant-$name.m" $sources \
          -framework Foundation -framework Security -framework CoreFoundation \
          -o "$build/mustfail-$name" > "$build/mustfail-$name.log" 2>&1; then
@@ -314,6 +318,7 @@ must_not_compile() {
 
 python3 "$H/make-mutants.py" "$build" 2>/dev/null || true
 must_not_compile blocks-challenge-into-keyupdate "$PK" protocol-options-blocks
+run_case sec-object-wrappers compare-sec-object-wrappers.py $H/sec-object-wrappers.m $O
 run_mutation sec-object-otherref compare-sec-object-wrappers.py sec-object-wrappers
 run_mutation sec-object-noretain compare-sec-object-wrappers.py sec-object-wrappers
 run_mutation trust-result      compare-trust-result.py
