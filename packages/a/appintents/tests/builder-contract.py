@@ -101,8 +101,17 @@ def main():
         label = member[member.index("(") + 1:].split(":")[0] if ":" in member else ""
         pattern = (r"public static func %s\(\s*%s\b[^\n]*" % (re.escape(member.split("(")[0]), re.escape(label))
                    if label else r"public static func %s\(\s*\)[^\n]*" % re.escape(member.split("(")[0]))
-        m = re.search(r"public static func %s\(.{0,200}?(?:->|\n    )" % re.escape(member.split("(")[0]),
-                     sources[where], re.S)
+        # **Both sides** need the row's own declaration, picked the same way: `buildBlock` is declared
+        # three times in this module's builder too (no argument, variadic, and the section builder's
+        # two), so a first match reads the no-argument one for the `(_:)` row and compares nothing.
+        # That is what let the review's external-label mutation through with the row green.
+        want_labels = external_labels("func " + member.split("(", 1)[1].join(("(", ")"))) if "(" in member else []
+        port_candidates = [c.group(0) for c in re.finditer(
+            r"public static func %s\(.{0,200}?(?:->|\n    )" % re.escape(member.split("(")[0]),
+            sources[where], re.S)]
+        m = next((c for c in port_candidates if external_labels(c) == want_labels),
+                 port_candidates[0] if port_candidates else None)
+        decl = m or ""
         # the twin has to be **this row's** declaration on **this type**: `buildBlock` is declared
         # three times in that block (no argument, one variadic, one array) and on other builders
         # entirely, so the candidate is the first one whose own external labels are the row's labels
@@ -116,7 +125,7 @@ def main():
         if not m:
             failures.append("%s: no static func by that name in %s" % (name, SOURCES[where]))
             continue
-        decl = m.group(0)
+        decl = m.group(0) if hasattr(m, "group") else (m or "")
         want = external_labels(twin) if twin else want_labels
         got = external_labels(decl)
         red = want != got
