@@ -74,77 +74,105 @@ static const char CharonTextDropInteractionKey;
 
 @end
 
-@implementation UITextView (CharonTextDragDrop11)
-
 // -------------------------------------------------------------------------------------------
-// UITextDraggable: what a text control says about dragging out of it.
-- (id<UITextDragDelegate>)textDragDelegate
+// The bodies, once. A text view and a text field are unrelated classes, so a category on one
+// cannot be called from the other; the seven members are the SDK's two protocols' members and
+// they are written once here, against the protocols, and both categories below forward to them.
+static id CharonTextDragDelegateOf(id<UITextDraggable> control)
 {
-    return objc_getAssociatedObject(self, &CharonTextDragDelegateKey);
+    return objc_getAssociatedObject(control, &CharonTextDragDelegateKey);
 }
 
-- (void)setTextDragDelegate:(id<UITextDragDelegate>)textDragDelegate
+static void CharonSetTextDragDelegate(id<UITextDraggable> control, id<UITextDragDelegate> delegate)
 {
-    objc_setAssociatedObject(self, &CharonTextDragDelegateKey, textDragDelegate, OBJC_ASSOCIATION_ASSIGN);
+    objc_setAssociatedObject(control, &CharonTextDragDelegateKey, delegate, OBJC_ASSOCIATION_ASSIGN);
 }
 
-// The interaction the port installs, made once per control and asked for by a caller that wants to
-// drive a drag itself.
-- (UIDragInteraction *)textDragInteraction
+static UIDragInteraction *CharonTextDragInteraction(id<UITextDraggable> control)
 {
-    UIDragInteraction *interaction = objc_getAssociatedObject(self, &CharonTextDragInteractionKey);
+    UIDragInteraction *interaction = objc_getAssociatedObject(control, &CharonTextDragInteractionKey);
     if (interaction)
         return interaction;
-    interaction = [[UIDragInteraction alloc] initWithDelegate:(id<UIDragInteractionDelegate>)[self charon_textDragDelegateAdaptor]];
-    objc_setAssociatedObject(self, &CharonTextDragInteractionKey, interaction, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    // The adaptor accessors are the port's own and are declared on UIView, which both
+    // UITextView and UITextField are; the protocols do not carry them and do not need to.
+    id<UIDragInteractionDelegate> delegate =
+        (id<UIDragInteractionDelegate>)[(UIView *)control charon_textDragDelegateAdaptor];
+    interaction = [[UIDragInteraction alloc] initWithDelegate:delegate];
+    objc_setAssociatedObject(control, &CharonTextDragInteractionKey, interaction,
+                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     return interaction;
 }
 
-- (BOOL)isTextDragActive
+static BOOL CharonIsTextDragActive(id<UITextDraggable> control)
 {
-    UIDragInteraction *interaction = objc_getAssociatedObject(self, &CharonTextDragInteractionKey);
+    UIDragInteraction *interaction = objc_getAssociatedObject(control, &CharonTextDragInteractionKey);
     return interaction ? interaction.session != nil : NO;
 }
 
-- (UITextDragOptions)textDragOptions
+static UITextDragOptions CharonTextDragOptionsOf(id<UITextDraggable> control)
 {
-    NSNumber *options = objc_getAssociatedObject(self, &CharonTextDragOptionsKey);
+    NSNumber *options = objc_getAssociatedObject(control, &CharonTextDragOptionsKey);
     return (UITextDragOptions)(options ? options.unsignedIntegerValue : UITextDragOptionsNone);
 }
 
-- (void)setTextDragOptions:(UITextDragOptions)textDragOptions
+static void CharonSetTextDragOptions(id<UITextDraggable> control, UITextDragOptions options)
 {
-    objc_setAssociatedObject(self, &CharonTextDragOptionsKey, @(textDragOptions), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(control, &CharonTextDragOptionsKey, @(options),
+                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-// -------------------------------------------------------------------------------------------
-// UITextDroppable: what a text control says about dropping into it.
-- (id<UITextDropDelegate>)textDropDelegate
+static id CharonTextDropDelegateOf(id<UITextDroppable> control)
 {
-    return objc_getAssociatedObject(self, &CharonTextDropDelegateKey);
+    return objc_getAssociatedObject(control, &CharonTextDropDelegateKey);
 }
 
-- (void)setTextDropDelegate:(id<UITextDropDelegate>)textDropDelegate
+static void CharonSetTextDropDelegate(id<UITextDroppable> control, id<UITextDropDelegate> delegate)
 {
-    objc_setAssociatedObject(self, &CharonTextDropDelegateKey, textDropDelegate, OBJC_ASSOCIATION_ASSIGN);
+    objc_setAssociatedObject(control, &CharonTextDropDelegateKey, delegate, OBJC_ASSOCIATION_ASSIGN);
 }
 
-- (UIDropInteraction *)textDropInteraction
+static UIDropInteraction *CharonTextDropInteraction(id<UITextDroppable> control)
 {
-    UIDropInteraction *interaction = objc_getAssociatedObject(self, &CharonTextDropInteractionKey);
+    UIDropInteraction *interaction = objc_getAssociatedObject(control, &CharonTextDropInteractionKey);
     if (interaction)
         return interaction;
-    interaction = [[UIDropInteraction alloc] initWithDelegate:(id<UIDropInteractionDelegate>)[self charon_textDropDelegateAdaptor]];
-    objc_setAssociatedObject(self, &CharonTextDropInteractionKey, interaction, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    id<UIDropInteractionDelegate> delegate =
+        (id<UIDropInteractionDelegate>)[(UIView *)control charon_textDropDelegateAdaptor];
+    interaction = [[UIDropInteraction alloc] initWithDelegate:delegate];
+    objc_setAssociatedObject(control, &CharonTextDropInteractionKey, interaction,
+                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     return interaction;
 }
 
-- (BOOL)isTextDropActive
+static BOOL CharonIsTextDropActive(id<UITextDroppable> control)
 {
-    UIDropInteraction *interaction = objc_getAssociatedObject(self, &CharonTextDropInteractionKey);
+    UIDropInteraction *interaction = objc_getAssociatedObject(control, &CharonTextDropInteractionKey);
     return interaction ? interaction.currentDrop != nil : NO;
 }
 
+// The forwarders, twice. Each category is the SDK's class adopting the SDK's protocol, and each
+// body is the one above with the class's own type.
+#define CHARON_TEXT_DRAG_DROP_MEMBERS(ControlType)                                                              \
+    - (id<UITextDragDelegate>)textDragDelegate { return CharonTextDragDelegateOf(self); }                        \
+    - (void)setTextDragDelegate:(id<UITextDragDelegate>)d { CharonSetTextDragDelegate(self, d); }                  \
+    - (UIDragInteraction *)textDragInteraction { return CharonTextDragInteraction(self); }                         \
+    - (BOOL)isTextDragActive { return CharonIsTextDragActive(self); }                                             \
+    - (UITextDragOptions)textDragOptions { return CharonTextDragOptionsOf(self); }                                \
+    - (void)setTextDragOptions:(UITextDragOptions)o { CharonSetTextDragOptions(self, o); }                        \
+    - (id<UITextDropDelegate>)textDropDelegate { return CharonTextDropDelegateOf(self); }                          \
+    - (void)setTextDropDelegate:(id<UITextDropDelegate>)d { CharonSetTextDropDelegate(self, d); }                  \
+    - (UIDropInteraction *)textDropInteraction { return CharonTextDropInteraction(self); }                         \
+    - (BOOL)isTextDropActive { return CharonIsTextDropActive(self); }
+
+// UITextDraggable and UITextDroppable are adopted by UITextView in the SDK's class extension.
+@implementation UITextView (CharonTextDragDrop11)
+CHARON_TEXT_DRAG_DROP_MEMBERS(UITextView)
+@end
+
+// And by UITextField, in its own class extension, which is why a text field is a drag and drop
+// surface in exactly the way a text view is and gets the same members from the same bodies.
+@implementation UITextField (CharonTextDragDrop11)
+CHARON_TEXT_DRAG_DROP_MEMBERS(UITextField)
 @end
 
 // The two adaptors, and the questions they ask in the order the two headers give.
@@ -393,67 +421,6 @@ static const char CharonTextDropInteractionKey;
 - (BOOL)isSameView
 {
     return _sameView;
-}
-
-@end
-
-
-// UITextField adopts the same two protocols in the SDK's class extension, so a text field is a text
-// drag and drop surface in exactly the way a text view is, and it gets the same members. The
-// bodies are not written twice: the category below forwards to the ones above, so a delegate set on
-// a field and one set on a view behave the same way.
-@implementation UITextField (CharonTextDragDrop11)
-
-- (id<UITextDragDelegate>)textDragDelegate
-{
-    return objc_getAssociatedObject(self, &kCharonFieldTextDragDelegate);
-}
-
-- (void)setTextDragDelegate:(id<UITextDragDelegate>)textDragDelegate
-{
-    objc_setAssociatedObject(self, &kCharonFieldTextDragDelegate, textDragDelegate,
-                             OBJC_ASSOCIATION_ASSIGN);
-}
-
-- (UIDragInteraction *)textDragInteraction
-{
-    return nil;
-}
-
-- (BOOL)isTextDragActive
-{
-    return NO;
-}
-
-- (UITextDragOptions)textDragOptions
-{
-    return UITextDragOptionsNone;
-}
-
-- (void)setTextDragOptions:(UITextDragOptions)textDragOptions
-{
-    (void)textDragOptions;
-}
-
-- (id<UITextDropDelegate>)textDropDelegate
-{
-    return objc_getAssociatedObject(self, &kCharonFieldTextDropDelegate);
-}
-
-- (void)setTextDropDelegate:(id<UITextDropDelegate>)textDropDelegate
-{
-    objc_setAssociatedObject(self, &kCharonFieldTextDropDelegate, textDropDelegate,
-                             OBJC_ASSOCIATION_ASSIGN);
-}
-
-- (UIDropInteraction *)textDropInteraction
-{
-    return nil;
-}
-
-- (BOOL)isTextDropActive
-{
-    return NO;
 }
 
 @end

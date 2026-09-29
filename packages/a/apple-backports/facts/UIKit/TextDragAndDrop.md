@@ -128,6 +128,11 @@ the `UIImage.isHighDynamicRange` convention, and the setters follow from the pro
 being rows of their own. The adaptor's control is typed `UIView<UITextDraggable, UITextDroppable> *`,
 so the members are reached through the protocol the SDK declares them on.
 
+**The delegates are associated without retaining them.** The header declares both delegates `weak`;
+the port's categories store them with `OBJC_ASSOCIATION_ASSIGN`, which is unowned rather than
+zeroing, and the rows and this file say so rather than repeating the header's word for a storage
+policy the port does not have. That is a known difference from the SDK, not a claim of equality.
+
 **The seven interim `UIView.*` rows are removed**, and their removal is intended: they described
 members on a class that has neither protocol, and the same check is what named them. Where a control
 has no interaction the answer is nil, which is what the header's nullable properties allow and what
