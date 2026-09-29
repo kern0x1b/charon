@@ -16,7 +16,6 @@
 #import "CharonTraitStyle.h"
 #import <objc/runtime.h>
 
-#if !__has_include(<UIKit/UITrait.h>)
 
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
@@ -96,6 +95,37 @@ static NSMutableArray *charon_registrations_of(id observable, BOOL make)
     return definition ? charon_trait_value([self charon_collection], definition) != nil : NO;
 }
 
+// A trait overrides object answers a trait it does not override with the exception the host's answers with, and
+// not with the trait's default: the object is asked what it was told, and it was told nothing. The mutations
+// object a mutations block is given is the same class and does answer the default, because a block that reads a
+// trait it has not set is reading the environment's, and that is what the host's mutations do (M5).
+- (const CharonTraitDefinition *)charon_overridden_definition:(Class)trait kind:(CharonTraitValue)kind
+{
+    const CharonTraitDefinition *definition = charon_trait_definition(trait);
+    if (!definition || definition->kind != kind)
+        [NSException raise:NSInternalInconsistencyException
+                    format:@"Trait class '%@' does not implement the required defaultValue class property", NSStringFromClass(trait)];
+    if (![self containsTrait:trait])
+        [NSException raise:NSInternalInconsistencyException
+                    format:@"Can't return value for trait %@ that has no override", charon_trait_public_name(definition)];
+    return definition;
+}
+
+- (CGFloat)valueForCGFloatTrait:(UICGFloatTrait)trait
+{
+    return [super valueForCGFloatTrait:(UICGFloatTrait)[self charon_overridden_definition:trait kind:CharonTraitValueCGFloat]];
+}
+
+- (NSInteger)valueForNSIntegerTrait:(UINSIntegerTrait)trait
+{
+    return [super valueForNSIntegerTrait:(UINSIntegerTrait)[self charon_overridden_definition:trait kind:CharonTraitValueNSInteger]];
+}
+
+- (id)objectForTrait:(UIObjectTrait)trait
+{
+    return [super objectForTrait:(UIObjectTrait)[self charon_overridden_definition:trait kind:CharonTraitValueObject]];
+}
+
 - (void)removeTrait:(UITrait)trait
 {
     // Removing an override puts the trait back to what the environment itself says, which is the trait's
@@ -146,7 +176,13 @@ static NSMutableArray *charon_registrations_of(id observable, BOOL make)
     for (Class trait in [self charon_overriddenTraits]) {
         const CharonTraitDefinition *definition = charon_trait_definition(trait);
         id value = charon_trait_value([self charon_collection], definition);
-        [parts addObject:[NSString stringWithFormat:@"%@ = %@", charon_trait_public_name(definition), value]];
+        // The style keeps its value beside the collection and the collection's own description already knows how
+        // to print it, so the overrides object prints it the same way rather than through the name lists.
+        NSString *text = definition->home == CharonTraitHomeStyle
+                             ? (value ? (charon_trait_style([self charon_collection]) == UIUserInterfaceStyleDark ? @"Dark" : @"Light") : nil)
+                             : charon_trait_value_text(definition, value);
+        if (text)
+            [parts addObject:[NSString stringWithFormat:@"%@ = %@", charon_trait_public_name(definition), text]];
     }
     if (!parts.count)
         return [NSString stringWithFormat:@"<%@: %p; no overrides>", [self class], self];
@@ -215,14 +251,14 @@ void charon_deliver_trait_registrations(NSArray *environments, NSArray *previous
 // is a controller rather than a view. A category on NSObject carries the four registration methods, because
 // UITraitChangeObservable is a protocol the SDK's own UITrait.h declares and the build SDK does not, and every
 // one of the four must answer them.
-@interface NSObject (CharonTraitChange17)
+@interface NSObject (CharonTraitChange)
 - (id<UITraitChangeRegistration>)registerForTraitChanges:(NSArray<UITrait> *)traits withHandler:(UITraitChangeHandler)handler;
 - (id<UITraitChangeRegistration>)registerForTraitChanges:(NSArray<UITrait> *)traits withTarget:(id)target action:(SEL)action;
 - (id<UITraitChangeRegistration>)registerForTraitChanges:(NSArray<UITrait> *)traits withAction:(SEL)action;
 - (void)unregisterForTraitChanges:(id<UITraitChangeRegistration>)registration;
 @end
 
-@implementation NSObject (CharonTraitChange17)
+@implementation NSObject (CharonTraitChange)
 
 - (id<UITraitChangeRegistration>)registerForTraitChanges:(NSArray<UITrait> *)traits withHandler:(UITraitChangeHandler)handler
 {
@@ -255,7 +291,7 @@ void charon_deliver_trait_registrations(NSArray *environments, NSArray *previous
 
 @end
 
-@implementation UIView (CharonTraitOverrides17)
+@implementation UIView (CharonTraitOverrides)
 
 - (id<UITraitOverrides>)traitOverrides
 {
@@ -271,7 +307,7 @@ void charon_deliver_trait_registrations(NSArray *environments, NSArray *previous
 
 @end
 
-@implementation UIViewController (CharonTraitOverrides17)
+@implementation UIViewController (CharonTraitOverrides)
 
 - (id<UITraitOverrides>)traitOverrides
 {
@@ -284,7 +320,7 @@ void charon_deliver_trait_registrations(NSArray *environments, NSArray *previous
 
 @end
 
-@implementation UIPresentationController (CharonTraitOverrides17)
+@implementation UIPresentationController (CharonTraitOverrides)
 
 - (id<UITraitOverrides>)traitOverrides
 {
@@ -293,7 +329,7 @@ void charon_deliver_trait_registrations(NSArray *environments, NSArray *previous
 
 @end
 
-@implementation UIWindowScene (CharonTraitOverrides17)
+@implementation UIWindowScene (CharonTraitOverrides)
 
 - (id<UITraitOverrides>)traitOverrides
 {
@@ -305,5 +341,3 @@ void charon_deliver_trait_registrations(NSArray *environments, NSArray *previous
 }
 
 @end
-
-#endif

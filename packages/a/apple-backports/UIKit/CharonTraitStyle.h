@@ -38,8 +38,10 @@ id charon_trait_extra_object(UITraitCollection *collection, NSString *name);
 void charon_set_trait_extra_object(UITraitCollection *collection, NSString *name, id value);
 
 // The force touch capability's own storage, written from UITraitCollection+Traits17.m, which keeps a
-// collection carrying a new value for that trait beside the file that reads it.
+// collection carrying a new value for that trait beside the file that reads it, and from UITraitCollection.m,
+// which gives the screen's own traits the answer this device's hardware gives.
 void charon_set_trait_force_touch(UITraitCollection *collection, UIForceTouchCapability capability);
+void charon_set_screen_trait_force_touch(UITraitCollection *collection);
 
 // The registrations an observable made, and the delivery that calls them back when the traits they named change.
 // UITraitCollection.m's own trait change delivery asks for the call, so a handler fires on the paths the port

@@ -1,4 +1,5 @@
 #import "CharonTraitStyle.h"
+#import "CharonTraits17.h"
 #import "CharonSymbols.h"
 #import <objc/runtime.h>
 
@@ -130,28 +131,73 @@ NSUInteger charon_trait_extras_hash(UITraitCollection *collection)
     return hash;
 }
 
+// The name one trait's enumeration gives one value, or nil where it has none: the name lists the registered kinds
+// hold, read by the trait's own stored name.
+static NSString *charon_trait_value_text_for_name(NSString *name, NSInteger number)
+{
+    if (!name)
+        return nil;
+    __block NSString *found = nil;
+    charon_each_kind(^(CharonTraitKind kind) {
+        if (found || ![kind.name isEqualToString:name])
+            return;
+        if (kind.described == 2 && kind.first) {
+            NSArray *names = [kind.first componentsSeparatedByString:@","];
+            if (number >= 0 && number < (NSInteger)names.count)
+                found = names[number];
+        } else if (kind.described == 1 && number >= 0)
+            found = number == 0 ? kind.first : (number == 1 ? kind.second : nil);
+    });
+    return found;
+}
+
+NSString *charon_trait_value_text(const CharonTraitDefinition *definition, id value)
+{
+    if (!value)
+        return nil;
+    // A kind with no trait class behind it - one of the older traits that has no class of its own yet - is a
+    // number, which is what it was before the traits of 17 and what its own entry already prints.
+    if (definition && definition->kind == CharonTraitValueObject)
+        return [value description];
+    NSInteger number = [value integerValue];
+    // A value the trait's enumeration has no name for, and a name that is an empty entry in a list with a hole
+    // in it, are both the number the value is, which is what the host prints (M7).
+    NSString *name = charon_trait_value_text_for_name(definition ? definition->name : nil, number);
+    return name.length ? name : [NSString stringWithFormat:@"%ld", (long)number];
+}
+
+// What a collection prints for a trait, measured on the host (facts/UIKit/UITrait17.md, M7): a trait whose value
+// is the one its own class calls the default is not printed at all, and any other value is printed as the name
+// the trait's enumeration gives that case, or as the number where the enumeration has no name for it. The name
+// list of a kind is therefore read only for the values that are in it, and every other value prints as a number.
+static void charon_add_trait(UITraitCollection *collection, NSMutableArray *traits, CharonTraitKind kind)
+{
+    if (!kind.described)
+        return;
+    // A trait reads through the table, which knows where each one lives: four of them are not in the extras
+    // dictionary at all, and a value read from the wrong place is no value.
+    const CharonTraitDefinition *definition = charon_trait_definition_for_name(kind.name);
+    id stored = definition ? charon_trait_value(collection, definition) : charon_trait_extras(collection)[kind.name];
+    // A trait whose value is its own class default is a collection that sets nothing for it, and the host prints
+    // nothing for that: the two paths that reach one value must print the same, whichever set it. A trait with no
+    // value at all is the same case seen from the other side.
+    if (!stored || (definition && charon_trait_is_default(collection, definition)))
+        return;
+    if (kind.described == 3) {
+        // The object traits of iOS 17: what a collection carries for a language or for the one BOOL, printed as
+        // the value is held.
+        [traits addObject:[NSString stringWithFormat:@"%@ = %@", kind.name, stored]];
+        return;
+    }
+    NSString *text = charon_trait_value_text(definition, stored);
+    if (text)
+        [traits addObject:[NSString stringWithFormat:@"%@ = %@", kind.name, text]];
+}
+
 void charon_add_trait_extras_description(UITraitCollection *collection, NSMutableArray *traits)
 {
     charon_each_kind(^(CharonTraitKind kind) {
-        if (!kind.described)
-            return;
-        id stored = charon_trait_extras(collection)[kind.name];
-        if (!stored)
-            return;
-        if (kind.described == 3) {
-            // The object traits of iOS 17: what a collection carries for a language or for the one BOOL, printed
-            // as the value is held. A typesetting language is the string; the flag is its number, so a
-            // collection that resolves natural alignment from the writing direction says so.
-            [traits addObject:[NSString stringWithFormat:@"%@ = %@", kind.name, stored]];
-            return;
-        }
-        NSInteger value = [stored integerValue];
-        if (kind.described == 2) {
-            NSArray *names = [kind.first componentsSeparatedByString:@","];
-            if (value >= 0 && value < (NSInteger)names.count)
-                [traits addObject:[NSString stringWithFormat:@"%@ = %@", kind.name, names[value]]];
-        } else if (value == 0 || value == 1)
-            [traits addObject:[NSString stringWithFormat:@"%@ = %@", kind.name, value ? kind.second : kind.first]];
+        charon_add_trait(collection, traits, kind);
     });
 }
 

@@ -337,6 +337,7 @@ group foundation14resourcekeys "../Foundation/NSURLResourceKeys14.m" foundation1
 group foundation14useractivity "../Foundation/NSUserActivity.m ../Foundation/NSUserActivity+TargetContent13.m" foundation14_useractivity_test.m
 
 group foundation14urlcache "../Foundation/NSURLCache+DirectoryURL13.m" foundation14_urlcache_test.m
+group traits17 "UITraitCollection.m UITraitCollection+UserInterfaceStyle.m UITraitCollection+Appearance13.m UITraitCollection+Appearance14.m UITraitCollection+Traits10.m UITraitCollection+ForceTouch.m UITrait17.m UITraitCollection+Traits17.m UITraitOverrides17.m" traits17_test.m
 
 
 # the spring curve: UIKit's own parameters, our solver, and a real CASpringAnimation

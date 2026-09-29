@@ -45,6 +45,7 @@ static UITraitCollection *charon_trait_collection_for(UIUserInterfaceIdiom scree
     UITraitCollection *collection = charon_make([UITraitCollection class], screenIdiom, scale, charon_horizontal_class(device, bounds.width), charon_vertical_class(device, bounds.height));
     charon_set_trait_style(collection, UIUserInterfaceStyleLight);
     charon_apply_screen_trait_extras(collection);
+    charon_set_screen_trait_force_touch(collection);
     return collection;
 }
 
@@ -126,7 +127,7 @@ static void charon_deliver_trait_changes(NSArray *environments, void (^change)(v
     change();
     // The registrations of iOS 17 are called here, once per environment that was told, with the collection it
     // had before the change: the port's trait change delivery is the one place a trait moves on this release.
-    charon_deliver_trait_registrations(found, previous);
+    charon_deliver_trait_registrations([found array], previous);
     NSUInteger index = 0;
     for (id<UITraitEnvironment> environment in found) {
         UITraitCollection *before = [previous objectAtIndex:index++];

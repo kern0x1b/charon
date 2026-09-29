@@ -12,7 +12,6 @@
 #import "CharonTraitStyle.h"
 #import <objc/runtime.h>
 
-#if !__has_include(<UIKit/UITrait.h>)
 
 // The table, in the order UITrait.h and the three environment headers declare the twenty-two, which is the
 // order the host lists systemTraitsAffectingColorAppearance in. Its entries are put there by the +load below,
@@ -37,6 +36,15 @@ const CharonTraitDefinition *charon_trait_definition(Class trait)
         return NULL;
     for (int i = 0; i < charon_definition_count; i++) {
         if (charon_definitions[i]->trait == trait)
+            return charon_definitions[i];
+    }
+    return NULL;
+}
+
+const CharonTraitDefinition *charon_trait_definition_for_name(NSString *name)
+{
+    for (int i = 0; i < charon_definition_count; i++) {
+        if ([charon_definitions[i]->name isEqualToString:name])
             return charon_definitions[i];
     }
     return NULL;
@@ -84,7 +92,10 @@ CHARON_TRAIT(UITraitDisplayScale, @"DisplayScale", CharonTraitValueCGFloat, Char
 CHARON_TRAIT(UITraitHorizontalSizeClass, @"HorizontalSizeClass", CharonTraitValueNSInteger, CharonTraitHomeIvar, @(0), NO)
 CHARON_TRAIT(UITraitVerticalSizeClass, @"VerticalSizeClass", CharonTraitValueNSInteger, CharonTraitHomeIvar, @(0), NO)
 CHARON_TRAIT(UITraitForceTouchCapability, @"ForceTouchCapability", CharonTraitValueNSInteger, CharonTraitHomeForceTouch, @(0), NO)
-CHARON_TRAIT(UITraitPreferredContentSizeCategory, @"PreferredContentSizeCategory", CharonTraitValueObject, CharonTraitHomeExtras, nil, NO)
+// The one object trait with a default that is not nil: the port's own UIContentSizeCategoryUnspecified, which is
+// the string UIKitCore 26.2 answers (M1).
+CHARON_TRAIT(UITraitPreferredContentSizeCategory, @"PreferredContentSizeCategory", CharonTraitValueObject, CharonTraitHomeExtras,
+             UIContentSizeCategoryUnspecified, NO)
 CHARON_TRAIT(UITraitDisplayGamut, @"DisplayGamut", CharonTraitValueNSInteger, CharonTraitHomeExtras, @(-1), YES)
 CHARON_TRAIT(UITraitAccessibilityContrast, @"AccessibilityContrast", CharonTraitValueNSInteger, CharonTraitHomeExtras, @(-1), YES)
 CHARON_TRAIT(UITraitUserInterfaceLevel, @"UserInterfaceLevel", CharonTraitValueNSInteger, CharonTraitHomeExtras, @(-1), YES)
@@ -134,19 +145,30 @@ CHARON_TRAIT(UITraitSplitViewControllerLayoutEnvironment, @"SplitViewControllerL
     // prints it as the host prints it and codes it under the name the host's coder uses. The traits that
     // already had a description keep the one they have: charon_register_trait_kind refuses a second entry for a
     // name, so nothing carried changes.
-    charon_register_trait_kind((CharonTraitKind){@"ImageDynamicRange", 0, YES, @"Standard", @"High"});
-    charon_register_trait_kind((CharonTraitKind){@"SceneCaptureState", 0, YES, @"Inactive", @"Active"});
-    charon_register_trait_kind((CharonTraitKind){@"HDRHeadroomUsageLimit", 0, YES, @"Active", @"Inactive"});
-    charon_register_trait_kind((CharonTraitKind){@"ListEnvironment", 0, 2,
-                                                   @"None,Plain,Grouped,InsetGrouped,Sidebar,SidebarPlain", nil});
-    charon_register_trait_kind((CharonTraitKind){@"TabAccessoryEnvironment", 0, 2, @"None,Regular,Inline", nil});
-    charon_register_trait_kind((CharonTraitKind){@"SplitViewControllerLayoutEnvironment", 0, 2, @"Expanded,Collapsed", nil});
-    charon_register_trait_kind((CharonTraitKind){@"ToolbarItemPresentationSize", 0, 2, @"Small,Medium,Large", nil});
+    // The name lists are the ones the host prints, read value by value in M7: a trait whose enumeration the host
+    // names, named; one it does not, with no list at all, so every value prints as its number. The toolbar item
+    // presentation size is the one list with a hole in it, at 2, which is why a hole prints the number too.
+    charon_register_trait_kind((CharonTraitKind){@"ImageDynamicRange", 0, 2, nil, nil});
+    charon_register_trait_kind((CharonTraitKind){@"SceneCaptureState", 0, 2, nil, nil});
+    charon_register_trait_kind((CharonTraitKind){@"HDRHeadroomUsageLimit", 0, 2, nil, nil});
+    charon_register_trait_kind((CharonTraitKind){@"ListEnvironment", 0, 2, nil, nil});
+    charon_register_trait_kind((CharonTraitKind){@"TabAccessoryEnvironment", 0, 2, nil, nil});
+    charon_register_trait_kind((CharonTraitKind){@"SplitViewControllerLayoutEnvironment", 0, 2, nil, nil});
+    charon_register_trait_kind((CharonTraitKind){@"ToolbarItemPresentationSize", 0, 2, @"Regular,Small,,Large", nil});
+    charon_register_trait_kind((CharonTraitKind){@"ForceTouchCapability", 0, 2, @"Unknown,Unavailable,Available", nil});
     // The two object traits and the one BOOL trait have no pair of names to print, so code 3 prints what is
     // held: the typesetting language a collection carries, and whether it resolves natural alignment from the
     // base writing direction rather than from the user's language.
     charon_register_trait_kind((CharonTraitKind){@"TypesettingLanguage", 0, 3, nil, nil});
+    // The content size category is a name in a list, and a collection that set one is described by the name the
+    // list gives it, which is the one the older collections have always printed.
     charon_register_trait_kind((CharonTraitKind){@"ResolvesNaturalAlignmentWithBaseWritingDirection", 0, 3, nil, nil});
+    // The content size category is a name in a list, and the port has always printed the short name the older
+    // collections used; the entry is here so the rule that hides a trait at its own default reaches it, which
+    // the port already does by never storing the unspecified category.
+    charon_register_trait_kind((CharonTraitKind){@"PreferredContentSizeCategory", 0, 2,
+                                                   @"XS,S,M,L,XL,XXL,XXXL,AccessibilityM,AccessibilityL,AccessibilityXL,"
+                                                   @"AccessibilityXXL,AccessibilityXXXL", nil});
 }
 
 @end
@@ -345,5 +367,3 @@ static CGFloat charon_cgfloat_default(Class self)
 + (BOOL)affectsColorAppearance { return charon_affects_color_appearance(self); }
 + (NSInteger)defaultValue { return charon_integer_default(self); }
 @end
-
-#endif

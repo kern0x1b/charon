@@ -3,16 +3,22 @@
 
 // The traits of iOS 17, 18 and 26, declared where the SDK a backport builds against does not have them.
 // UITrait.h and the three environment headers reached UIKit in 17.0 and 26.0, and the build SDK (16.4) stops
-// before both, so the surface is written here from the 26.2 headers, in Apple's own idiom: the whole file is
-// empty where the SDK's own UITrait.h is there, so a build against a newer SDK takes its declarations from the
-// SDK and this file adds nothing. What the port implements is in UITrait17.m, UITraitCollection+Traits17.m and
-// UITraitOverrides17.m; the values live in the store the older trait collections already keep, under the same
-// names (facts/UIKit/UITrait17.md has the measurements and the routing table).
+// before both, so the surface is written here from the 26.2 headers. What the port implements is in
+// UITrait17.m, UITraitCollection+Traits17.m and UITraitOverrides17.m; the values live in the store the older
+// trait collections already keep, under the same names (facts/UIKit/UITrait17.md has the measurements and the
+// routing table).
+//
+// Only the SDK's own declarations are conditional, on __has_include, so the three files that implement this
+// surface compile against either: on a build SDK of 16.4 against what is written here, on a newer SDK and in
+// the host differential against the SDK's own UITrait.h, which is the same surface word for word. Nothing below
+// the declarations is conditional, because the port's own table and helpers are the same on both.
 
 #import <UIKit/UIKit.h>
 #import "../CharonSayOnce.h"
 
 #if !__has_include(<UIKit/UITrait.h>)
+
+@protocol UIMutableTraits;
 
 #pragma clang diagnostic ignored "-Wobjc-protocol-qualifiers"
 
@@ -126,6 +132,8 @@ typedef Class<UIObjectTraitDefinition> UIObjectTrait;
 @interface UITraitSplitViewControllerLayoutEnvironment : NSObject <UINSIntegerTraitDefinition>
 @end
 
+typedef void (^UITraitMutations)(id<UIMutableTraits> mutableTraits);
+
 @protocol UIMutableTraits <NSObject>
 - (void)setCGFloatValue:(CGFloat)value forTrait:(UICGFloatTrait)trait;
 - (CGFloat)valueForCGFloatTrait:(UICGFloatTrait)trait;
@@ -156,8 +164,6 @@ typedef Class<UIObjectTraitDefinition> UIObjectTrait;
 @property (nonatomic) BOOL resolvesNaturalAlignmentWithBaseWritingDirection;
 @end
 
-typedef void (^UITraitMutations)(id<UIMutableTraits> mutableTraits);
-
 @protocol UITraitOverrides <UIMutableTraits>
 - (BOOL)containsTrait:(UITrait)trait;
 - (void)removeTrait:(UITrait)trait;
@@ -175,7 +181,7 @@ typedef void (^UITraitChangeHandler)(__kindof id<UITraitEnvironment> traitEnviro
 - (void)unregisterForTraitChanges:(id<UITraitChangeRegistration>)registration;
 @end
 
-@interface UITraitCollection (CharonTraits17)
+@interface UITraitCollection (CharonTraits)
 + (UITraitCollection *)traitCollectionWithTraits:(UITraitMutations NS_NOESCAPE)mutations;
 - (UITraitCollection *)traitCollectionByModifyingTraits:(UITraitMutations NS_NOESCAPE)mutations;
 + (UITraitCollection *)traitCollectionWithCGFloatValue:(CGFloat)value forTrait:(UICGFloatTrait)trait;
@@ -192,9 +198,38 @@ typedef void (^UITraitChangeHandler)(__kindof id<UITraitEnvironment> traitEnviro
 @property (nonatomic, readonly, class) NSArray<UITrait> *systemTraitsAffectingImageLookup;
 @end
 
-// The trait a class stands for, and where this port keeps the value of it. kind is the protocol the class adopts,
-// which is also the type forTrait: is given it by: a trait class asked through the wrong one is refused, as
-// UIKitCore 26.2 refuses it (facts/UIKit/UITrait17.md, M4).
+#else
+
+// The SDK's own UITrait.h, reached through UIKit.h, declares every one of the protocols, the four class
+// typedefs and the trait classes, so nothing is declared again here; only the collection category, whose
+// members the SDK hides in a class extension, is spelled out.
+@protocol UIMutableTraits;
+@protocol UITraitOverrides;
+@protocol UITraitChangeRegistration;
+@protocol UITraitChangeObservable;
+
+@interface UITraitCollection (CharonTraits)
++ (UITraitCollection *)traitCollectionWithTraits:(UITraitMutations NS_NOESCAPE)mutations;
+- (UITraitCollection *)traitCollectionByModifyingTraits:(UITraitMutations NS_NOESCAPE)mutations;
++ (UITraitCollection *)traitCollectionWithCGFloatValue:(CGFloat)value forTrait:(UICGFloatTrait)trait;
+- (UITraitCollection *)traitCollectionByReplacingCGFloatValue:(CGFloat)value forTrait:(UICGFloatTrait)trait;
+- (CGFloat)valueForCGFloatTrait:(UICGFloatTrait)trait;
++ (UITraitCollection *)traitCollectionWithNSIntegerValue:(NSInteger)value forTrait:(UINSIntegerTrait)trait;
+- (UITraitCollection *)traitCollectionByReplacingNSIntegerValue:(NSInteger)value forTrait:(UINSIntegerTrait)trait;
+- (NSInteger)valueForNSIntegerTrait:(UINSIntegerTrait)trait;
++ (UITraitCollection *)traitCollectionWithObject:(nullable id<NSObject>)object forTrait:(UIObjectTrait)trait;
+- (UITraitCollection *)traitCollectionByReplacingObject:(nullable id<NSObject>)object forTrait:(UIObjectTrait)trait;
+- (nullable __kindof id<NSObject>)objectForTrait:(UIObjectTrait)trait;
+- (NSSet<UITrait> *)changedTraitsFromTraitCollection:(nullable UITraitCollection *)traitCollection;
+@property (nonatomic, readonly, class) NSArray<UITrait> *systemTraitsAffectingColorAppearance;
+@property (nonatomic, readonly, class) NSArray<UITrait> *systemTraitsAffectingImageLookup;
+@end
+
+#endif
+
+// The trait a class stands for. valueKind is the protocol the class adopts, which is also the type forTrait: is
+// given it by: a trait class asked through the wrong one is refused, as UIKitCore 26.2 refuses it
+// (facts/UIKit/UITrait17.md, M4).
 typedef NS_ENUM(NSInteger, CharonTraitValue) {
     CharonTraitValueCGFloat = 0,
     CharonTraitValueNSInteger = 1,
@@ -228,9 +263,13 @@ typedef struct {
 const CharonTraitDefinition *charon_trait_definition(Class trait);
 
 // The twenty-two classes, in the order UITrait.h and the three environment headers declare them, which is the
-// order the host lists systemTraitsAffectingColorAppearance in. A class is read with the runtime rather than
-// named, so nothing here depends on a link-time reference that a release might not answer.
+// order the host lists systemTraitsAffectingColorAppearance in.
 NSArray *charon_trait_classes(void);
+
+// The definition of the trait a collection's store holds a value under this name, or NULL when the name is one
+// of the older traits that has no class of its own yet, which is how the description reaches a trait's value
+// through the one place that knows where each of them lives.
+const CharonTraitDefinition *charon_trait_definition_for_name(NSString *name);
 
 // +name on every one of the twenty-two is the class's own name without its UITrait prefix, measured on the host
 // (M1). It is not the name the port stores a value under, which for UITraitLayoutDirection is the longer
@@ -238,7 +277,10 @@ NSArray *charon_trait_classes(void);
 static inline NSString *charon_trait_public_name(const CharonTraitDefinition *definition)
 {
     NSString *identifier = NSStringFromClass(definition->trait);
-    return [identifier hasPrefix:@"UITrait"] ? [identifier substringFromIndex:7] : identifier;
+    NSRange prefix = [identifier rangeOfString:@"UITrait"];
+    if (prefix.location == NSNotFound)
+        return identifier;
+    return [identifier substringFromIndex:NSMaxRange(prefix)];
 }
 
 // Whether a collection says nothing about a trait, which is what makes an absent value the trait's default
@@ -250,8 +292,14 @@ BOOL charon_trait_is_default(UITraitCollection *collection, const CharonTraitDef
 // object itself for an object trait, and nil where the collection sets none. Not a copy: a caller may hold it.
 id charon_trait_value(UITraitCollection *collection, const CharonTraitDefinition *definition);
 
+// The text a trait's value is printed with, wherever a description prints one: the name the trait's
+// enumeration gives the value, the object itself for an object trait, and the number where the enumeration has
+// no name for it. Both descriptions of a trait collection and of a trait overrides object go through this, so
+// the two never print the same value two ways.
+NSString *charon_trait_value_text(const CharonTraitDefinition *definition, id value);
+
 // A copy of the collection with the trait set to a value of its own kind. A value of the wrong kind for the
-// trait is refused here, as UIKitCore 26.2 refuses it at the trait's own boundary.
+// trait is refused by the caller, which is the boundary UIKitCore 26.2 refuses it at.
 UITraitCollection *charon_trait_collection_with(UITraitCollection *collection, const CharonTraitDefinition *definition, id value);
 
 // The dictionary that holds the extras, read and written for a trait whose value is not one of the five ivars.
@@ -292,7 +340,5 @@ static inline void charon_traits_say_once(NSString *key, NSString *text)
 {
     charon_say_once_for(key, text);
 }
-
-#endif
 
 #endif

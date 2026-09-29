@@ -12,9 +12,10 @@
 #import "CharonTraitStyle.h"
 #import <objc/runtime.h>
 
-#if !__has_include(<UIKit/UITrait.h>)
 
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+
+static const CharonTraitDefinition *charon_definition_for(Class trait, CharonTraitValue kind);
 
 static NSString *charon_kind_name(CharonTraitValue kind)
 {
@@ -29,8 +30,14 @@ static NSString *charon_kind_name(CharonTraitValue kind)
 }
 
 // UIKitCore 26.2 refuses a trait class the caller reached through the wrong protocol, and a class that is not a
-// trait at all, in NSInternalInconsistencyException with these words (M4). The port refuses them the same way:
-// an application that mistypes a trait would otherwise store a value nothing can read back.
+// trait at all, in NSInternalInconsistencyException with these words (M4). The port refuses them the same way: an
+// application that mistypes a trait would otherwise store a value nothing can read back.
+//
+// The two traits whose default the system does not know - the typesetting language and the natural alignment
+// flag - are not among them. A host whose trait metadata has already raised once answers "does not implement the
+// required defaultValue class property" for them too, and that answer is a sign that the store is in a state it
+// does not come back from, not a rule: asked first, in a process where nothing has raised, the system takes
+// both. So the port takes them too, and the two facts record what was seen in which order (M8).
 static const CharonTraitDefinition *charon_definition_for(Class trait, CharonTraitValue kind)
 {
     if (!trait)
@@ -73,7 +80,7 @@ BOOL charon_trait_is_default(UITraitCollection *collection, const CharonTraitDef
     case CharonTraitHomeStyle:
         return charon_trait_style(collection) == UIUserInterfaceStyleUnspecified;
     case CharonTraitHomeForceTouch:
-        return collection.forceTouchCapability == UIForceTouchCapabilityUnavailable;
+        return collection.forceTouchCapability == UIForceTouchCapabilityUnknown;
     default:
         return charon_trait_extra_object(collection, definition->name) == nil;
     }
@@ -94,6 +101,8 @@ id charon_trait_value(UITraitCollection *collection, const CharonTraitDefinition
         return @((NSInteger)collection.verticalSizeClass);
     case CharonTraitHomeStyle:
         return @((NSInteger)charon_trait_style(collection));
+    case CharonTraitHomeForceTouch:
+        return @((NSInteger)collection.forceTouchCapability);
     default:
         return charon_trait_extra_object(collection, definition->name);
     }
@@ -188,6 +197,10 @@ UITraitCollection *charon_trait_collection_with(UITraitCollection *collection, c
 {
     [self charon_set:[self charon_definition:trait kind:CharonTraitValueObject] value:object];
 }
+
+// The two traits whose default the system does not know are set here and not through the object's forTrait:,
+// which is the only route the host takes for them as well (M8). The set and the read are the same as for any
+// other trait; what differs is only that nothing is asked of the trait's default first.
 
 - (id)objectForTrait:(UIObjectTrait)trait
 {
@@ -303,7 +316,7 @@ CHARON_TRAIT_PROPERTY([UITraitSplitViewControllerLayoutEnvironment class], UISpl
 
 @end
 
-@implementation UITraitCollection (CharonTraits17)
+@implementation UITraitCollection (CharonTraits)
 
 + (UITraitCollection *)traitCollectionWithTraits:(UITraitMutations NS_NOESCAPE)mutations
 {
@@ -450,9 +463,10 @@ CHARON_TRAIT_PROPERTY([UITraitSplitViewControllerLayoutEnvironment class], UISpl
 // carry, so they are not named here and an application that reads the list sees the ones it can name.
 + (NSArray<UITrait> *)systemTraitsAffectingColorAppearance
 {
+    // The six the host names, in its order, and not the seven: UITraitListEnvironment is a trait class the host
+    // carries and does not list here, and the port's list is the host's (M1).
     return @[ (id)[UITraitUserInterfaceIdiom class], (id)[UITraitUserInterfaceStyle class], (id)[UITraitDisplayGamut class],
-              (id)[UITraitAccessibilityContrast class], (id)[UITraitUserInterfaceLevel class], (id)[UITraitActiveAppearance class],
-              (id)[UITraitListEnvironment class] ];
+              (id)[UITraitAccessibilityContrast class], (id)[UITraitUserInterfaceLevel class], (id)[UITraitActiveAppearance class] ];
 }
 
 + (NSArray<UITrait> *)systemTraitsAffectingImageLookup
@@ -464,5 +478,3 @@ CHARON_TRAIT_PROPERTY([UITraitSplitViewControllerLayoutEnvironment class], UISpl
 }
 
 @end
-
-#endif
