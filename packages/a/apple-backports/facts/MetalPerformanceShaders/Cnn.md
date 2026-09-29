@@ -105,7 +105,7 @@ written value at all: it builds one and reads it straight back, and both sides m
 **The width of the tolerance.** The normalisation case is the one the tolerance is for, and the harness
 prints how close each case came to it rather than only how many failed:
 
-    cases: 5, tolerance 0.0001 absolute or relative
+    cases: 6, tolerance 0.0001 absolute or relative
     closest to the tolerance, as a fraction of it:
       batch-normalization          0.00118
     differing cases: 0
