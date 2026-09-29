@@ -39,13 +39,6 @@ const char * _Nullable sec_protocol_metadata_get_negotiated_protocol(sec_protoco
     return NULL;   // the return type is _Nullable, so NULL is the header's own answer
 }
 
-//   287   const char * _Nullable sec_protocol_metadata_get_server_name(sec_protocol_metadata_t)
-const char * _Nullable sec_protocol_metadata_get_server_name(sec_protocol_metadata_t metadata)
-{
-    (void)metadata;
-    return NULL;
-}
-
 //    94   SEC_RETURNS_RETAINED _Nullable dispatch_data_t sec_protocol_metadata_copy_peer_public_key(...)
 dispatch_data_t sec_protocol_metadata_copy_peer_public_key(sec_protocol_metadata_t metadata)
 {
