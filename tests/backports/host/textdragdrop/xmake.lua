@@ -4,7 +4,7 @@ set_version("0.0.1")
 -- plugins/emulate. A working copy is never installed as the addon (charon/AGENTS.md, Traps).
 local root = os.getenv("DDR_ROOT") or path.join(os.scriptdir(), "../../../..")
 add_repositories("charon " .. root)
-add_addons("charon v0.8.13")
+add_addons("charon v0.8.14")
 set_config("apple_minimum", "6.1.3")
 includes("@addon/charon/apple-ios")
 includes("@addon/charon/emulate")
