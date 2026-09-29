@@ -13,6 +13,7 @@
 #import <Foundation/Foundation.h>
 #import <PassKit/PassKit.h>
 #import <objc/message.h>
+#import <objc/runtime.h>
 #import <dlfcn.h>
 
 static NSUInteger gChecks = 0;
@@ -93,6 +94,37 @@ int main(void)
         Class pac = PORT_CLASS(@"PKPaymentAuthorizationController");
         Class pavc = PORT_CLASS(@"PKPaymentAuthorizationViewController");
         Class papvc = PORT_CLASS(@"PKAddPassesViewController");
+
+        // THE TWO CLASSES, and the case that matters for each is not that a member answers: it is
+        // that the class EXISTS at all. The 6.1.3 gate refused the categories these six members were
+        // built in -- "categories whose class neither iOS 6.1.3 nor the package exports" -- because a
+        // category on a class nobody carries is dead code. So each class is asked for by name, and a
+        // nil there is a failure, not a detail.
+        {
+            Class controller = PORT_CLASS(@"PKPaymentAuthorizationController");
+            Class viewController = PORT_CLASS(@"PKPaymentAuthorizationViewController");
+            check(@"the controller class is carried, not absent",
+                  controller != Nil);
+            check(@"  ... and is a class this port defines, not the host's",
+                  controller != Nil && class_getSuperclass(controller) == [NSObject class]);
+            check(@"the view controller class is carried, not absent", viewController != Nil);
+            check(@"  ... and descends from UIViewController",
+                  viewController != Nil &&
+                  [viewController isSubclassOfClass:[UIViewController class]]);
+            // And the three questions each answers, through the runtime, on the port's own class.
+            for (Class c in @[controller ?: [NSObject class], viewController ?: [NSObject class]]) {
+                NSString *which = c == controller ? @"controller" : @"view controller";
+                say([NSString stringWithFormat:@"%@.canMakePayments", which],
+                    [NSNumber numberWithBool:((BOOL (*)(id, SEL))objc_msgSend)(c,
+                        NSSelectorFromString(@"canMakePayments"))], @"0");
+                say([NSString stringWithFormat:@"%@.canMakePaymentsUsingNetworks:", which],
+                    [NSNumber numberWithBool:((BOOL (*)(id, SEL, id))objc_msgSend)(c,
+                        NSSelectorFromString(@"canMakePaymentsUsingNetworks:"), @[])], @"0");
+            }
+            say(@"the view controller's 9.0 member",
+                [NSNumber numberWithBool:((BOOL (*)(id, SEL, id, long))objc_msgSend)(viewController,
+                    NSSelectorFromString(@"canMakePaymentsUsingNetworks:capabilities:"), @[], 0L)], @"0");
+        }
 
         // The eleven capability questions, each NO.
         say(@"PAC.canMakePayments",

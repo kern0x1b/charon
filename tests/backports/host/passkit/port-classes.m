@@ -5,12 +5,15 @@
 // host's class would be a second implementation of a class the host already has, and the runner
 // would be measuring Apple rather than the port.
 //
-// Three of the four are the release's own classes (PKPass, PKPassLibrary, PKAddPassesViewController
-// are in 6.1.3, measured), so here they are the host's, subclassed, which is what lets a category add
-// to them without re-implementing what the host has. PKPaymentAuthorizationController and
-// PKPaymentAuthorizationViewController are absent from 6.1.3 entirely, so they are the port's own and
-// get their own classes here; the probe's cases are about the fifteen members the port adds, and
-// none of the runner's cases sends a message to a host method of either class.
+// PKPassLibrary and PKAddPassesViewController are the release's own (in 6.1.3, measured), so here
+// they are the host's, subclassed, which is what lets a category add to them without re-implementing
+// what the host has.
+//
+// The two payment controllers are the port's own and are declared EMPTY here rather than subclassed:
+// they are absent from 6.1.3, the port now CARRIES them as classes, and a subclass of the host's
+// would be a class the release never had -- the exact thing the release-split gate and the 6.1.3
+// gate both object to. So the probe measures a class the port defines, with the host's own
+// untouched and reachable by its header name.
 #import <Foundation/Foundation.h>
 #import <PassKit/PassKit.h>
 
@@ -24,12 +27,11 @@
 @implementation charonHost_PKAddPassesViewController
 @end
 
+// Declared, and NOT implemented: the port's own PKPaymentAuthorizationController10.m and
+// PKPaymentAuthorizationViewController8.m implement them, and a second @implementation of either
+// name here is the duplicate the stand-in exists to avoid.
 @interface charonHost_PKPaymentAuthorizationController : NSObject
-@end
-@implementation charonHost_PKPaymentAuthorizationController
 @end
 
 @interface charonHost_PKPaymentAuthorizationViewController : UIViewController
-@end
-@implementation charonHost_PKPaymentAuthorizationViewController
 @end

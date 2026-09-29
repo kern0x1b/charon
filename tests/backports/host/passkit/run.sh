@@ -39,15 +39,22 @@ build_port() {
     shift
     xcrun clang -fobjc-arc -Wall -fPIC -dynamiclib $TARGET -DCHARON_HOST_PROBE=1 $RENAME \
         -I"$port" -framework Foundation -framework PassKit -framework UIKit \
-        "$build/port-classes.o" "$port/CharonPassKit.m" "$port/PKSecureElement8.m" "$port/PKWallet.m" -o "$out" 2> "$build/cc.log" || {
+        -DCHARON_PASSKIT_STANDIN=1 \
+        "$build/port-classes.o" "$port/CharonPassKit.m" "$port/PKSecureElement8.m" "$port/PKWallet.m" \
+        "$port/PKPaymentAuthorizationController10.m" "$port/PKPaymentAuthorizationViewController8.m" \
+        "$port/PKPaymentAuthorizationViewController9.m" -o "$out" 2> "$build/cc.log" || {
             grep -m5 ': error:' "$build/cc.log" || true; exit 1; }
 }
 build_port "$build/libport.dylib"
 # The mutant: the SAME source, one line changed -- a NO that becomes YES, which is the answer a row
 # forbids. mutate.py asserts the line is there, so a renamed line fails the build rather than
 # producing a mutant that is quietly identical to the real run.
-cp "$port/PKSecureElement8.m" "$build/PKSecureElement8.mutated.m"
-python3 - "$build/PKSecureElement8.mutated.m" <<'PY'
+# The NO that becomes YES now lives in the class object, since that is where the class and its
+# capability answers are: the two controller categories left PKSecureElement8.m in the previous commit,
+# so mutating THAT file is mutating a file that no longer has the line -- and the assert below is what
+# says so instead of producing a mutant that is quietly the real run.
+cp "$port/PKPaymentAuthorizationController10.m" "$build/PKPaymentAuthorizationController10.mutated.m"
+python3 - "$build/PKPaymentAuthorizationController10.mutated.m" <<'PY'
 import sys
 path = sys.argv[1]
 text = open(path).read()
@@ -81,8 +88,10 @@ xcrun clang -fobjc-arc -Wall -fPIC -dynamiclib $TARGET -DCHARON_HOST_PROBE=1 $RE
         grep -m5 ': error:' "$build/ccmut.log" || true; exit 1; }
 xcrun clang -fobjc-arc -Wall -fPIC -dynamiclib $TARGET -DCHARON_HOST_PROBE=1 $RENAME \
     -I"$port" -framework Foundation -framework PassKit -framework UIKit \
+    -DCHARON_PASSKIT_STANDIN=1 \
     "$build/port-classes.o" "$build/CharonPassKit.mutated.m" "$port/PKSecureElement8.m" "$port/PKWallet.m" \
-    -o "$build/libmutant2.dylib" 2> "$build/ccmut2.log" || {
+    "$port/PKPaymentAuthorizationController10.m" "$port/PKPaymentAuthorizationViewController8.m" \
+    "$port/PKPaymentAuthorizationViewController9.m" -o "$build/libmutant2.dylib" 2> "$build/ccmut2.log" || {
         grep -m5 ': error:' "$build/ccmut2.log" || true; exit 1; }
 
 xcrun clang -fobjc-arc -Wall $TARGET -ldl -framework Foundation -framework PassKit -framework UIKit \
@@ -105,13 +114,13 @@ body "$build/mutant.txt" > "$build/mutant.body"
 body "$build/mutant2.txt" > "$build/mutant2.body"
 lines=$(wc -l < "$build/real.body" | tr -d ' ')
 # one case line per member, plus one extra for each operation, which reports its ok flag and then the
-# error's own shape on a continuation line. The six operations that answer with an error are the
-# eleven capability questions less five, plus the request and the refusal: counted from the transcript
-# rather than hard-coded, so a member that stops answering stops being counted
+# error's own shape on a continuation line, plus the six CLASS cases the two payment controllers add.
+# Counted from the transcript rather than hard-coded, so a member or a class that stops being answered
+# stops being counted
 ops=$(grep -c '^    \.\.\.' "$build/real.body" || true)
 members=$((lines - ops))
 echo "--- the real run made $members member case(s) over $lines check line(s):"
-if [ "$members" -lt 31 ]; then
+if [ "$members" -lt 37 ]; then
     echo "FAIL only $members of the thirty-one members reached, so the probe is not covering them"
     exit 1
 fi
