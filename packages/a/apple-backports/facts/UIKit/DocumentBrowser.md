@@ -16,24 +16,39 @@ Why a transcription at all: the 16.4 SDK this package builds against does not ca
 UIDocumentBrowserViewController, so the names are not visible to a translation unit here and an
 application compiled against the lifted header links the protocol through this declaration.
 
-## The rows stay absent until the check is green
+## Eight rows, and the check that justifies them
 
-**No registry row in this series claims any of the twenty-three document browser rows, and none is
-`implemented` yet.** They are: the seven questions of this protocol, the transition controller's two
-properties (`loadingProgress`, `targetView`), the view controller's nine properties, and the five
-instance methods, with the two `transitionControllerForDocument…` spellings counting as two rows for
-one method.
+`registry/UIKit/documentbrowser.json` carries **eight**: the protocol and its seven questions, at the
+header's own availability of 11.0. The seven are **counted from the AST's selector set**, not written
+out by hand, so the file and the compiler cannot disagree about how many there are.
 
-The contract check in `tests/backports/host/documentbrowser/ast_check.py` is the gate for the first
-eight, and it is **written but not yet green**: its main path compares the two sides and agrees —
-seven selectors on each, none required on either, and the independent count of the port file's method
-lines agrees at seven — while its two controls, which run against scratch copies of the port's
-header, do not yet compile. So the declaration is committed and the rows are not, and the next turn
-starts from a tracked file rather than from untracked work.
+`tests/backports/host/documentbrowser/ast_check.py` is the gate, and it is green with both controls
+named:
 
-A class is not `implemented` until all of its members are, so the view controller's own rows wait for
-the pieces that build it: the transition controller's two properties, then the nine properties, then
-the instance methods, each with its own rows at the header's own availability and its own check.
+    UIDocumentBrowserViewControllerDelegate: header 7 selectors, port 7
+      required: header 0, port 0
+      the independent count of the port's method lines: 7
+      control, @optional flipped: documentBrowser:didRequestDocumentCreationWithHandler: is now required
+      control, documentBrowser:applicationActivitiesForDocumentURLs: removed: the AST went 7 -> 6 and named it
+    PASS: the port's declaration is the header's, selectors and optionality
+
+The optionality is read from the compiler and not from the file: an empty conformer compiled with
+`-Wprotocol` is warned about for every `@required` method and for none of the optional ones, so the
+selectors those warnings name are the required set. Measured directly on the flipped copy, seven
+warnings appear and none appear unflipped, and **all seven of this protocol's questions are
+optional**, so the required set is empty on both sides — which is what the header says and what the
+port now agrees with.
+
+## The fifteen rows that stay absent
+
+The other **fifteen** of the twenty-three are not claimed: the transition controller's two properties
+(`loadingProgress`, `targetView`), the view controller's nine properties, and the four instance
+methods, with the two `transitionControllerForDocument…` spellings counting as two rows for one
+method. A class is not `implemented` until all of its members are, so those wait for the pieces that
+build it: the transition controller's two properties, then the nine properties, then the instance
+methods, each with its own rows at the header's own availability and its own check.
+
+
 
 ## What the check compares, and what it cannot
 

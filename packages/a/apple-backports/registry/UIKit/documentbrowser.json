@@ -1,0 +1,85 @@
+{
+ "framework": "UIKit",
+ "entries": [
+  {
+   "api": "-[UIDocumentBrowserViewControllerDelegate documentBrowser:applicationActivitiesForDocumentURLs:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a question the document browser's delegate is asked, and the answer the browser acts on; the port declares the protocol, so a delegate that implements this is asked",
+   "facts": "facts/UIKit/DocumentBrowser.md",
+   "source": "the header of SDK 26.2, and checked against it by tests/backports/host/documentbrowser/ast_check.py: the same AST read on both sides, the optionality from the compiler's -Wprotocol warnings on an empty conformer, and the independent count of the port file's method lines agreeing; the two controls name the selector each way"
+  },
+  {
+   "api": "-[UIDocumentBrowserViewControllerDelegate documentBrowser:didImportDocumentAtURL:toDestinationURL:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a question the document browser's delegate is asked, and the answer the browser acts on; the port declares the protocol, so a delegate that implements this is asked",
+   "facts": "facts/UIKit/DocumentBrowser.md",
+   "source": "the header of SDK 26.2, and checked against it by tests/backports/host/documentbrowser/ast_check.py: the same AST read on both sides, the optionality from the compiler's -Wprotocol warnings on an empty conformer, and the independent count of the port file's method lines agreeing; the two controls name the selector each way"
+  },
+  {
+   "api": "-[UIDocumentBrowserViewControllerDelegate documentBrowser:didPickDocumentURLs:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a question the document browser's delegate is asked, and the answer the browser acts on; the port declares the protocol, so a delegate that implements this is asked",
+   "facts": "facts/UIKit/DocumentBrowser.md",
+   "source": "the header of SDK 26.2, and checked against it by tests/backports/host/documentbrowser/ast_check.py: the same AST read on both sides, the optionality from the compiler's -Wprotocol warnings on an empty conformer, and the independent count of the port file's method lines agreeing; the two controls name the selector each way"
+  },
+  {
+   "api": "-[UIDocumentBrowserViewControllerDelegate documentBrowser:didPickDocumentsAtURLs:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a question the document browser's delegate is asked, and the answer the browser acts on; the port declares the protocol, so a delegate that implements this is asked",
+   "facts": "facts/UIKit/DocumentBrowser.md",
+   "source": "the header of SDK 26.2, and checked against it by tests/backports/host/documentbrowser/ast_check.py: the same AST read on both sides, the optionality from the compiler's -Wprotocol warnings on an empty conformer, and the independent count of the port file's method lines agreeing; the two controls name the selector each way"
+  },
+  {
+   "api": "-[UIDocumentBrowserViewControllerDelegate documentBrowser:didRequestDocumentCreationWithHandler:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a question the document browser's delegate is asked, and the answer the browser acts on; the port declares the protocol, so a delegate that implements this is asked",
+   "facts": "facts/UIKit/DocumentBrowser.md",
+   "source": "the header of SDK 26.2, and checked against it by tests/backports/host/documentbrowser/ast_check.py: the same AST read on both sides, the optionality from the compiler's -Wprotocol warnings on an empty conformer, and the independent count of the port file's method lines agreeing; the two controls name the selector each way"
+  },
+  {
+   "api": "-[UIDocumentBrowserViewControllerDelegate documentBrowser:failedToImportDocumentAtURL:error:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a question the document browser's delegate is asked, and the answer the browser acts on; the port declares the protocol, so a delegate that implements this is asked",
+   "facts": "facts/UIKit/DocumentBrowser.md",
+   "source": "the header of SDK 26.2, and checked against it by tests/backports/host/documentbrowser/ast_check.py: the same AST read on both sides, the optionality from the compiler's -Wprotocol warnings on an empty conformer, and the independent count of the port file's method lines agreeing; the two controls name the selector each way"
+  },
+  {
+   "api": "-[UIDocumentBrowserViewControllerDelegate documentBrowser:willPresentActivityViewController:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a question the document browser's delegate is asked, and the answer the browser acts on; the port declares the protocol, so a delegate that implements this is asked",
+   "facts": "facts/UIKit/DocumentBrowser.md",
+   "source": "the header of SDK 26.2, and checked against it by tests/backports/host/documentbrowser/ast_check.py: the same AST read on both sides, the optionality from the compiler's -Wprotocol warnings on an empty conformer, and the independent count of the port file's method lines agreeing; the two controls name the selector each way"
+  },
+  {
+   "api": "UIDocumentBrowserViewControllerDelegate",
+   "kind": "protocol",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the document browser's delegate, declared as the 26.2 header declares it: seven questions, all of them optional, with the pick pair spelled two ways at 11.0 and 12.0",
+   "facts": "facts/UIKit/DocumentBrowser.md",
+   "source": "the header of SDK 26.2, checked by tests/backports/host/documentbrowser/ast_check.py"
+  }
+ ]
+}
