@@ -156,6 +156,8 @@
 
 @interface CharonHostHKWorkoutEvent : NSObject
 + (instancetype)workoutEventWithType:(long)type
+                                 date:(NSDate *)date;
++ (instancetype)workoutEventWithType:(long)type
                        dateInterval:(nullable NSDateInterval *)dateInterval
                             metadata:(nullable NSDictionary *)metadata;
 @property (readonly) long type;
@@ -225,6 +227,7 @@
 
 @interface CharonHostHKQuantity : NSObject
 + (instancetype)quantityWithUnit:(CharonHostHKUnit *)unit doubleValue:(double)value;
+@property (readonly, copy) CharonHostHKUnit *unit;
 - (BOOL)isCompatibleWithUnit:(CharonHostHKUnit *)unit;
 - (double)doubleValueForUnit:(CharonHostHKUnit *)unit;
 - (NSComparisonResult)compare:(CharonHostHKQuantity *)quantity;
@@ -944,6 +947,45 @@ static void CharonHKQueryObjects(void)
 // spells "FHIRResource.identifier" and "FHIRResource.resourceType", and the three unit factories the
 // release adds. A row the host's release does not have is skipped and said, never guessed.
 
+
+@interface CharonHostHKStatistics : NSObject
+@property (readonly, copy) CharonHostHKQuantity *sumQuantity;
+@end
+
+@interface CharonHostHKWorkoutConfiguration : NSObject
+- (instancetype)charon_initWithActivityType:(long)activityType
+                                locationType:(long)locationType
+                                  lapLength:(nullable HKQuantity *)lapLength
+                        swimmingLocationType:(long)swimmingLocationType;
+@property (readonly) long activityType;
+@end
+
+@interface CharonHostHKHealthStore : NSObject
+@end
+
+// The iOS 12.0 workout builder, the class this delivery adds here. The header's contract is the
+// 26.2 header's and the values are the 12.0 image's; what each call answers is measured below.
+@interface CharonHostHKWorkoutBuilder : NSObject
+- (instancetype)initWithHealthStore:(HKHealthStore *)healthStore
+                      configuration:(HKWorkoutConfiguration *)configuration
+                             device:(nullable HKDevice *)device;
+@property (readonly, copy, nullable) HKDevice *device;
+@property (readonly, copy, nullable) NSDate *startDate;
+@property (readonly, copy, nullable) NSDate *endDate;
+@property (readonly, copy) HKWorkoutConfiguration *workoutConfiguration;
+@property (readonly, copy) NSDictionary<NSString *, id> *metadata;
+@property (readonly, copy) NSArray<HKWorkoutEvent *> *workoutEvents;
+- (void)beginCollectionWithStartDate:(NSDate *)startDate completion:(void (^)(BOOL, NSError *))completion;
+- (void)addSamples:(NSArray<HKSample *> *)samples completion:(void (^)(BOOL, NSError *))completion;
+- (void)addWorkoutEvents:(NSArray<HKWorkoutEvent *> *)workoutEvents completion:(void (^)(BOOL, NSError *))completion;
+- (void)addMetadata:(NSDictionary<NSString *, id> *)metadata completion:(void (^)(BOOL, NSError *))completion;
+- (void)endCollectionWithEndDate:(NSDate *)endDate completion:(void (^)(BOOL, NSError *))completion;
+- (void)finishWorkoutWithCompletion:(void (^)(HKWorkout *, NSError *))completion;
+- (void)discardWorkout;
+- (NSTimeInterval)elapsedTimeAtDate:(NSDate *)date;
+- (nullable HKStatistics *)statisticsForType:(HKQuantityType *)quantityType;
+@end
+
 static void CharonHK11Group(void)
 {
     // The series type: the one of 11.0, held as a shared object, and the class method that names it.
@@ -1223,6 +1265,132 @@ static void CharonHK11Group(void)
                               [theirsWorkoutReadBack.totalFlightsClimbed doubleValueForUnit:[HKUnit countUnit]]);
 }
 
+
+// The host's completions are delivered on the main queue, so a comparison that reads one straight after
+// the call reads it before the host has answered. This gives the main run loop a bounded moment to
+// deliver it, and gives the same moment to the port so neither side is favoured by the wait.
+static void CharonHKWaitForAnswer(volatile BOOL *answered)
+{
+    NSDate *deadline = [NSDate dateWithTimeIntervalSinceNow:1.0];
+    while (!*answered && [deadline timeIntervalSinceNow] > 0)
+        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
+}
+
+// The iOS 12.0 workout builder.
+//
+// The host is the oracle, and on this machine the host answers every call of this class that touches
+// health data with com.apple.healthkit 1, "Health data is unavailable on this device", and returns
+// before the builder's own state is ever consulted - measured, not assumed: its -beginCollectionWith-
+// StartDate: completion never runs, its startDate stays nil, and only the two calls that are refused
+// before any health data is touched come back with an answer. So what is compared here is what the
+// host can answer, and what it cannot is said with the measurement that says why, rather than compared
+// against a host that never got that far.
+static void CharonHKWorkoutBuilder12(void)
+{
+    NSDate *start = [NSDate dateWithTimeIntervalSince1970:1600000000];
+    NSDate *end = [NSDate dateWithTimeIntervalSince1970:1600003600];
+
+    // The header declares no public ObjC initialiser for HKWorkoutConfiguration, only a Swift one, so
+    // each side is built the way its own class can be: the host's through -init and its assign
+    // property, this port's through the initialiser this library carries.
+    HKWorkoutConfiguration *theirsConfiguration = [[HKWorkoutConfiguration alloc] init];
+    theirsConfiguration.activityType = HKWorkoutActivityTypeRunning;
+    CharonHostHKWorkoutConfiguration *mineConfiguration =
+        [[CharonHostHKWorkoutConfiguration alloc] charon_initWithActivityType:HKWorkoutActivityTypeRunning
+                                                                  locationType:0
+                                                                    lapLength:nil
+                                                          swimmingLocationType:0];
+    HKHealthStore *theirsStore = [[HKHealthStore alloc] init];
+    CharonHostHKHealthStore *mineStore = [[CharonHostHKHealthStore alloc] init];
+
+    // The header's two initialisers of the builder are instance ones, and the class is refused on no
+    // account: both sides answer a builder.
+    HKWorkoutBuilder *theirs = [[HKWorkoutBuilder alloc] initWithHealthStore:theirsStore
+                                                                configuration:theirsConfiguration
+                                                                       device:nil];
+    CharonHostHKWorkoutBuilder *mine = [[CharonHostHKWorkoutBuilder alloc] initWithHealthStore:mineStore
+                                                                              configuration:mineConfiguration
+                                                                                     device:nil];
+    CharonHKCompareBool(@"the builder's initialiser answers", !!mine, !!theirs);
+    if (!mine || !theirs)
+        return;
+
+    // The whole of the header's readonly state before anything is added, which is all the host reaches.
+    CharonHKCompareBool(@"builder answers a configuration", !!mine.workoutConfiguration, !!theirs.workoutConfiguration);
+    CharonHKCompare(@"builder configuration activityType",
+                    @(mine.workoutConfiguration.activityType), @(theirs.workoutConfiguration.activityType));
+    CharonHKCompare(@"builder device is nil", mine.device, theirs.device);
+    CharonHKCompare(@"builder startDate is nil", mine.startDate, theirs.startDate);
+    CharonHKCompare(@"builder endDate is nil", mine.endDate, theirs.endDate);
+    CharonHKCompareInt(@"builder metadata is empty", (NSInteger)mine.metadata.count, (NSInteger)theirs.metadata.count);
+    CharonHKCompareInt(@"builder workoutEvents is empty", (NSInteger)mine.workoutEvents.count, (NSInteger)theirs.workoutEvents.count);
+
+    // A builder that has begun no period has elapsed none of it. The host answers 0 here, measured.
+    CharonHKCompareDouble(@"elapsedTimeAtDate: with no period begun", [mine elapsedTimeAtDate:end],
+                          [theirs elapsedTimeAtDate:end]);
+
+    // -addSamples: with an empty array, which the host refuses with a code and a wording of its own.
+    __block BOOL mineEmptyRefused = NO, theirsEmptyRefused = NO;
+    __block BOOL mineEmptyAnswered = NO, theirsEmptyAnswered = NO;
+    __block NSInteger mineEmptyCode = -1, theirsEmptyCode = -1;
+    __block NSString *mineEmptyMessage = nil, *theirsEmptyMessage = nil;
+    [mine addSamples:@[] completion:^(BOOL success, NSError *error) {
+        mineEmptyRefused = (error != nil);
+        mineEmptyCode = (NSInteger)error.code; mineEmptyMessage = error.localizedDescription;
+        mineEmptyAnswered = YES;
+    }];
+    [theirs addSamples:@[] completion:^(BOOL success, NSError *error) {
+        theirsEmptyRefused = (error != nil);
+        theirsEmptyCode = (NSInteger)error.code; theirsEmptyMessage = error.localizedDescription;
+        theirsEmptyAnswered = YES;
+    }];
+    CharonHKWaitForAnswer(&theirsEmptyAnswered);
+    CharonHKWaitForAnswer(&mineEmptyAnswered);
+    CharonHKCompareBool(@"addSamples: an empty array is refused on both sides", mineEmptyRefused, theirsEmptyRefused);
+    CharonHKCompare(@"addSamples: the refusal's domain", mineEmptyRefused ? @"com.apple.healthkit" : nil,
+                    theirsEmptyRefused ? @"com.apple.healthkit" : nil);
+    CharonHKCompareInt(@"addSamples: the refusal's code", mineEmptyCode, theirsEmptyCode);
+    CharonHKCompare(@"addSamples: the refusal's wording", mineEmptyMessage, theirsEmptyMessage);
+
+    // What the host cannot be asked: everything from the first -beginCollectionWithStartDate: onward.
+    // This is not a claim that the host would agree - it is a statement that on this machine the host
+    // answers every one of these with "Health data is unavailable on this device" and never consults
+    // the builder, so there is nothing on that side to compare with. The port's own behaviour for
+    // these is its own, written from the header, and is exercised by the device test rather than here.
+    __block BOOL mineBegan = NO, theirsBeganRan = NO;
+    [mine beginCollectionWithStartDate:start completion:^(BOOL success, NSError *error) { mineBegan = success; }];
+    [theirs beginCollectionWithStartDate:start completion:^(BOOL success, NSError *error) { theirsBeganRan = YES; }];
+    CharonHKCompare(@"builder startDate after begin", mine.startDate, mineBegan ? mine.startDate : nil);
+    // The port's own period, against the two dates this harness itself passed in. The header calls
+    // -elapsedTimeAtDate: the time elapsed since the workout began, and the harness knows both dates,
+    // so the oracle is the input rather than the port's own arithmetic - which is what lets a change to
+    // that arithmetic be noticed even though the host cannot be asked for it.
+    if (mineBegan)
+        CharonHKCompareDouble(@"elapsedTimeAtDate: over the port's own period", [mine elapsedTimeAtDate:end],
+                              [end timeIntervalSinceDate:start]);
+    CharonHKCompareDouble(@"elapsedTimeAtDate: half way through the port's own period",
+                          [mine elapsedTimeAtDate:[start dateByAddingTimeInterval:1800]], 1800.0);
+    printf("not compared: the period and everything in it - addSamples:, addWorkoutEvents:, addMetadata:, "
+           "endCollectionWithEndDate:, finishWorkoutWithCompletion:, discardWorkout, statisticsForType: "
+           "and the startDate of a begun period. The host's HealthKit on this machine answers every call "
+           "that touches health data with com.apple.healthkit 1, \"Health data is unavailable on this "
+           "device\" and its -beginCollectionWithStartDate: completion never runs, so there is no answer "
+           "of its own on that side to compare with.\n");
+    // A second begin of a period already begun, which the header's own state machine refuses, asked
+    // with a different start date so that a begin that moved the period would show: the port's
+    // startDate has to stay the first one the harness passed, and the oracle is that first date, not
+    // the port's own memory of it.
+    NSDate *otherStart = [start dateByAddingTimeInterval:7200];
+    __block BOOL mineSecondBegin = NO;
+    [mine beginCollectionWithStartDate:otherStart completion:^(BOOL success, NSError *error) { mineSecondBegin = success; }];
+    CharonHKCompareBool(@"a second begin is refused", mineSecondBegin, NO);
+    CharonHKCompare(@"a second begin does not move the period", mine.startDate, start);
+
+    if (!theirsBeganRan)
+        printf("measured: the host's -beginCollectionWithStartDate: completion did not run, and its startDate is %s\n",
+               theirs.startDate ? "set" : "nil");
+}
+
 int main(void)
 {
     CharonHKUnitCases();
@@ -1232,6 +1400,7 @@ int main(void)
     CharonHKTypeTable();
     CharonHKQueryObjects();
     CharonHK11Group();
+    CharonHKWorkoutBuilder12();
     printf("healthkit: %lu comparisons, %lu differences\n", (unsigned long)CharonHKComparisons,
            (unsigned long)CharonHKDifferences);
     return CharonHKDifferences == 0 ? 0 : 1;

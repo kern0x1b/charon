@@ -29,7 +29,7 @@ mkdir -p "$BUILD/plain" "$BUILD/renamed"
 # live (the error it answers with and the line it says once in the log) and which is the only file that
 # defines them. Nothing in this test opens a database: the store is compiled so that what the unit and
 # quantity code calls exists, not so that the store is measured.
-sources="HKUnit.m HKQuantity.m HKQuantityType.m HKQuantityTypes.m HKObjectType.m HKObject.m HKSource.m HKSample.m HKWorkout.m HKStatistics.m HKQuery.m HKQueries.m HKQueryAnchor9.m HKSourceRevision9.m HKSamples.m HKWorkoutRoute110.m HKWorkoutRouteQuery110.m HKCDADocument11.m HKClinicalRecord120.m CharonHKStore.m"
+sources="HKUnit.m HKQuantity.m HKQuantityType.m HKQuantityTypes.m HKObjectType.m HKObject.m HKSource.m HKSample.m HKWorkout.m HKStatistics.m HKQuery.m HKQueries.m HKQueryAnchor9.m HKSourceRevision9.m HKSamples.m HKWorkoutRoute110.m HKWorkoutRouteQuery110.m HKCDADocument11.m HKClinicalRecord120.m HKWorkoutBuilder120.m HKDocument10.m HKHealthStore.m CharonHKStore.m"
 
 for source in $sources; do
     xcrun clang -fobjc-arc $quiet -I"$healthkit" -c "$healthkit/$source" -o "$BUILD/plain/$source.o"
@@ -108,5 +108,11 @@ mutant() {
 mutant HKUnit.m '{@"mmHg", CharonHKDimensionPressure, 133.32236842105263, 0.0},' '{@"mmHg", CharonHKDimensionPressure, 133.322387415, 0.0},'
 mutant HKUnit.m 'return @"mc";' 'return @"u";'
 mutant HKUnit.m '@"appleEffortScore", CharonHKDimensionEffortScore, 1.0, 0.0},' '@"appleEffortScore2", CharonHKDimensionEffortScore, 1.0, 0.0},'
+# A mutant of the 12.0 builder: the elapsed time a begun period answers, which the differential
+# compares twice, and the refusal a second begin answers, which it compares once.
+mutant HKWorkoutBuilder120.m 'return [date timeIntervalSinceDate:_startDate];' 'return [date timeIntervalSinceDate:_startDate] + 1.0;'
+# A second begin of a period the host refuses, which this port refuses with a completion of its own and
+# the test compares against the second begin of the host's own builder.
+mutant HKWorkoutBuilder120.m 'if (_collecting) {' 'if (NO) {'
 echo "mutants surviving: $survived"
 [ "$survived" -eq 0 ]

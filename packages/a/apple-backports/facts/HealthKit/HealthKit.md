@@ -281,6 +281,40 @@ a paired watch, and this release has no watch application and no daemon that wou
 refused with the release's own no-data error, and the log says once why. A success there would be a
 success that started nothing.
 
+## The workout builder of 12.0, and what the host can be asked
+
+`HKWorkoutBuilder` is of 12.0, and the arm64 shared cache of 12.0 carries the class with all ten of the
+selectors the 26.2 header declares of that release: `initWithHealthStore:configuration:device:`,
+`beginCollectionWithStartDate:completion:`, `addSamples:completion:`, `addWorkoutEvents:completion:`,
+`addMetadata:completion:`, `endCollectionWithEndDate:completion:`, `finishWorkoutWithCompletion:`,
+`discardWorkout`, `elapsedTimeAtDate:` and `statisticsForType:`. The five members of 16.0 -
+`workoutActivities`, `allStatistics`, `addWorkoutActivity:completion:` and the two
+`updateActivityWithUUID:...` - are @dynamic here, so their selectors are not in the library at all.
+
+The host's HealthKit answers two of the ten with an answer of its own on this machine, and both are in
+the differential:
+
+- `-addSamples:` with an empty array is refused with `com.apple.healthkit` code 3, "HKWorkout: HKSample
+  data cannot be nil or empty." That code and that wording are the port's as well, read off the host.
+- `-elapsedTimeAtDate:` on a builder that has begun no period answers 0.
+
+Everything from `-beginCollectionWithStartDate:` onward the host here will not answer at all: it replies
+`com.apple.healthkit` code 1, "Health data is unavailable on this device", to anything that touches
+health data, and its `-beginCollectionWithStartDate:completion:` never runs at all, its `startDate`
+staying nil. So the period, the samples, the events, the metadata, the statistics, the finish and the
+discard are **not compared** against the host, and the differential prints that with the measurement
+rather than passing them silently. What is compared for those is the port against the inputs the harness
+itself passes - the two dates, and the fact that a second begin is refused and does not move the period
+- so that a change to the port's own state machine is still a difference the test notices.
+
+The code of a refusal about the builder's own state is zero, and that is a statement rather than a gap.
+No SDK header of 16.4 or 26.2 declares a code for those, and the host could not be asked, so a code
+written here would be this library's invention wearing Apple's name. The wording carries the refusal.
+
+`HKWorkoutConfiguration` has no public Objective-C initialiser in the 26.2 header - only a Swift one -
+so each side of the differential is built the way its own class can be: the host's through `-init` and
+its `assign` property, this port's through the initialiser this library carries.
+
 ## The device run
 
 None yet. Everything above is a read of a release image, a release cache, the SDK headers and the
