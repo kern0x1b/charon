@@ -648,14 +648,14 @@ static void casesBatchNormalization(void)
     {
         // Read straight back from the buffers, with no view and before any put: what is here now is
         // what the kernel left.
-        printf("sentinel-readback gamma at %p\n", (void *)normGradientGamma);
+        printf("sentinel-readback gamma\n");
         for (unsigned i = 0; i < sizeof(normGradientGamma) / sizeof(float); i++)
             printf(" %02x", ((unsigned char *)normGradientGamma)[i]);
-        printf("  buffer %p\n", normGammaBuffer ? (void *)[normGammaBuffer contents] : (void *)0);
-        printf("sentinel-readback beta  at %p\n", (void *)normGradientBeta);
+        printf("  buffer\n");
+        printf("sentinel-readback beta \n");
         for (unsigned i = 0; i < sizeof(normGradientBeta) / sizeof(float); i++)
             printf(" %02x", ((unsigned char *)normGradientBeta)[i]);
-        printf("  buffer %p\n", normBetaBuffer ? (void *)[normBetaBuffer contents] : (void *)0);
+        printf("  buffer\n");
         fflush(stdout);
     }
     {
