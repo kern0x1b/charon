@@ -14,6 +14,9 @@ static float runWith(id<MTLDevice> d, id<MTLCommandQueue> q, const float *bias, 
     MPSVector *bv = bias ? [[MPSVector alloc] initWithBuffer:[d newBufferWithBytes:bias length:biasLen*4 options:MTLResourceStorageModeShared]
                                  descriptor:[MPSVectorDescriptor vectorDescriptorWithLength:biasLen vectors:1 vectorBytes:biasLen*4 dataType:MPSDataTypeFloat32]] : nil;
     MPSMatrixSum *k=[[MPSMatrixSum alloc] initWithDevice:d count:2 rows:2 columns:3 transpose:transpose];
+    P("    kernel rows %lu columns %lu transpose %d; result descriptor %lu x %lu rowBytes %lu\n",
+      (unsigned long)k.rows, (unsigned long)k.columns, (int)transpose,
+      (unsigned long)md.columns, (unsigned long)md.rows, (unsigned long)md.rowBytes);
     id<MTLCommandBuffer> cb=[q commandBufferWithUnretainedReferences];
     [k encodeToCommandBuffer:cb sourceMatrices:@[[[MPSMatrix alloc] initWithBuffer:ab descriptor:md],
                                                      [[MPSMatrix alloc] initWithBuffer:bb descriptor:md]]

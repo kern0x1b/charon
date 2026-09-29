@@ -29,26 +29,50 @@ where both sides wrote and the values differ, and 12 where the host writes zeros
 Each run prints the tree it measured, so a count cannot outlive its code. The counts are in flux while
 the families are worked through and this paragraph is the one to re-measure, not to trust.
 
+## A named divergence is not an exemption
+
+This was written the other way round and the coordinator was right to correct it. A case may be
+*named* in the runner so that a recount is a number about this port rather than about a property the
+release happens to have; it may not be *exempted* from being reproduced. The bar for a genuine host
+divergence is a proof that the behaviour is the macOS GPU or driver's and not MPS's own kernel, with
+that proof in this file. **None of the thirteen currently named meets that bar, and the port has work
+to do on all of them.**
+
+The kernel's own parameters settle what the transposed line is. The probe prints them:
+
+    kernel rows 2 columns 3 transpose 0;  result descriptor 3 x 2 rowBytes 12
+    kernel rows 2 columns 3 transpose 1;  result descriptor 3 x 2 rowBytes 12
+
+The kernel takes **the same 2 x 3 in both cases**, and the result descriptor is 3 x 2 with a three-float
+row stride either way. Under `transpose` the result is the **3 x 2** shape, so the release lays a 3 x 2
+answer into a buffer the descriptor calls 2 x 3, and each row's third column is simply not part of the
+answer:
+
+    bias 0 0 0     ->  11 44 0 / 22 55 0
+    bias 7 7 7     ->  18 51 0 / 29 62 0
+    bias 1 10 100  ->  12 45 0 / 32 65 0
+
+`11 44 0` is not "the release writes zero". It is the transposed 2 x 3 answer `11 44 / 22 55` written
+in the transposed shape, whose third column the 2 x 3 descriptor never asked for. **This is a question
+of the result's dimensions under transpose and the port must reproduce it** — it is MPS's own kernel
+behaviour, so there is no host proof available and none is claimed.
+
 ## MPSMatrixSum indexes its bias by column, and the port already did
 
-Measured, not read. `tests/backports/host/mpsmatrix/fixtures/bias-indexing.m` sums `A + B` for a 2x3
-result - `11 22 33 / 44 55 66` - with four bias vectors and prints what comes out:
+Measured, not read. `tests/backports/host/mpsmatrix/fixtures/bias-indexing.m` sums `A + B` for a 2 x 3
+result - `11 22 33 / 44 55 66` - with three bias vectors:
 
-| bias | transpose NO | transpose YES |
-| --- | --- | --- |
-| `0 0 0` | `11 22 33 44 55 66` | `11 44 0 22 55 0` |
-| `7 7 7` | `18 29 40 51 62 73` | `18 51 0 29 62 0` |
-| `1 10 100` | `12 32 133 45 65 166` | `12 45 0 32 65 0` |
+| bias | answer |
+| --- | --- |
+| `0 0 0` | `11 22 33 44 55 66` |
+| `7 7 7` | `18 29 40 51 62 73` |
+| `1 10 100` | `12 32 133 45 65 166` |
 
-**The bias is indexed by column.** A constant vector adds that constant to every element - which is
-what "broadcast" in the header's pseudocode means, broadcast *across the rows* - and a vector that
-differs per position adds its own value per column. The port indexed it by column all along, and the
-change I made and reverted was wrong.
-
-**And the probe names a thirteenth host divergence.** With `transpose` YES the release writes **zero**
-for the third column of every row, where a column index of two is a bias element it does not take. That
-is exactly the `sum-transpose` signature - four of six elements agree and the release writes zero for
-the other two - and it is a property of the release's kernel, not of this port.
+**The bias is indexed by column.** A constant vector adds that constant to every element, which is what
+`broadcast(bias)` in the header's pseudocode means - broadcast across the rows, not one value - and a
+vector that differs per position adds its own value per column. The port did that already; the change I
+made and reverted was wrong, and the coordinator's reading - that a bias cannot zero an output, so the
+edit broke the kernel rather than refuting the header - was the right one.
 
 ## The batch range, and how the release reads it
 
