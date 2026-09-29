@@ -680,6 +680,19 @@ static BOOL wrapFor(MTLSamplerAddressMode mode, GLint *out)
     return [CharonMetalDevice shared];
 }
 
+
+// MTLSamplerState's gpuResourceID, which a review of my own work measured and I had put on the
+// WRONG CLASS: the criterion in tests/backports/host/protocol-members.py reads the protocol's members
+// from the AST rather than from warnings, and it is what found this - -Wprotocol does not see property
+// accessors, and -Wobjc-protocol-property-synthesis cannot tell a hand-written getter from a missing
+// one, so both were clean while the getter sat on the texture. The header calls it a handle of the
+// GPU resource suitable for storing in an Argument Buffer (MTLTexture.h:424) and this device is the
+// port's own over OpenGL ES 2.0, so the answer is a typed zero rather than a selector that raises.
+- (MTLResourceID)gpuResourceID
+{
+    return (MTLResourceID)0;
+}
+
 @end
 
 // MTLTexture's gpuResourceID, at MTLTexture.h:427, which is a "Handle of the GPU resource suitable for
