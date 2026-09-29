@@ -59,3 +59,18 @@ Two rows in `ios11.json` state a *release* fact rather than an arrival one — `
 ("the keychain of iOS 6 was not read for this attribute"). Those are honest reasons and the spelling pair
 is deliberate, but "not read" is a measurement that was never taken, so they are owed measurements rather
 than absences.
+
+## A claim withdrawn: "the release offers neither half of the pair"
+
+An earlier version of this file, and of the probe beside it, said the release has no
+`SSLSetProtocolVersionEnabled` because the 16.4 SDK declares it inside `#if TARGET_OS_OSX`
+(`SecureTransport.h:511`). **That was an over-claim and it is withdrawn.** A symbol DECLARED IN THE SDK
+and a symbol EXPORTED BY 6.1.3 are different facts: the `#if` is the SDK's view of `TARGET_OS_OSX`, and a
+release can export a name the SDK no longer declares. What the header establishes is only that a symbol
+declared there for macOS cannot be *called through a declaration* by a binary built against that SDK.
+
+Whether 6.1.3 exports it is **open**. It is being read from the release's dyld shared cache export trie —
+a string hit in that cache is not an export, and `SSLSetProtocolVersionEnabled` appears in the cache's
+strings, which proves nothing either way. Until the trie says otherwise, no row here may claim the
+release lacks a symbol, and the eight `sec_protocol_options_*` block setters are `inert` for the reason
+already given — 6.1.3 has no stack that takes a `sec_protocol_options_t` — which does not depend on it.

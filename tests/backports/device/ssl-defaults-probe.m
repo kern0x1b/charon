@@ -32,9 +32,21 @@ static void report(const char *what, long value)
 //   - `if (SSLGetProtocolVersionMin != NULL)` COMPARES A FUNCTION NAME WITH NULL and is therefore ALWAYS
 //     FALSE, so the missing-symbol branch could never fire and a program written that way cannot tell
 //     "the release has no such call" from "the release has one and it answered nothing".
-//   - SSLSetProtocolVersionEnabled IS INSIDE #if TARGET_OS_OSX (SecureTransport.h:511), so it has NEVER
-//     been on iOS. Calling it from an iOS binary does not compile, and the first version of this probe
-//     did exactly that.
+//   - SSLSetProtocolVersionEnabled IS DECLARED INSIDE #if TARGET_OS_OSX (SecureTransport.h:511) IN THE
+//     16.4 SDK, so calling it from a binary built against that SDK does not compile - and the first
+//     version of this probe did exactly that.
+//
+// A PRECISE WORDING POINT, because the distinction decides what this file may claim: A SYMBOL DECLARED IN
+// THE SDK AND A SYMBOL EXPORTED BY 6.1.3 ARE DIFFERENT FACTS. The #if above is the first and says
+// nothing about the second: the 16.4 header's view of TARGET_OS_OSX is the SDK's, and a release can
+// export a name the SDK no longer declares. So NOTHING HERE CLAIMS THAT 6.1.3 LACKS ANY OF THESE. What
+// is established is only that a symbol the 16.4 SDK declares only for macOS cannot be CALLED through a
+// declaration, which is why all three go through dlsym.
+//
+// Whether 6.1.3 EXPORTS SSLSetProtocolVersionEnabled is OPEN and is being read out of the release's
+// dyld shared cache export trie; a string hit in that cache is not an export and is not used as one. If
+// the release does export it, the per-protocol question below becomes askable and this file's comment
+// changes with it.
 // A dlsym'd pointer is honest about absence and calling through it does not trip the deprecation, which
 // SSLGetProtocolVersionMin/Max carry at __SECURETRANSPORT_API_DEPRECATED(..., ios(5.0, 13.0)).
 //
@@ -82,10 +94,12 @@ int main(int argc, char **argv)
         printf("max\tabsent\n");
     }
 
-    // THE PER-PROTOCOL QUESTION CANNOT BE ASKED ON iOS. SSLSetProtocolVersionEnabled is macOS-only
-    // (#if TARGET_OS_OSX at SecureTransport.h:511), so there is no setter to enable a protocol with and no
-    // getter to read one back - the release offers NEITHER half of the pair, and that is the finding.
-    printf("per-protocol\tno-setter-and-no-getter-on-ios\n");
+    // WHAT THIS RUN CAN AND CANNOT SAY. The setter did not resolve through dlsym on this platform and
+    // the 16.4 SDK declares it only under #if TARGET_OS_OSX, so this build cannot CALL it. That is a
+    // fact about the BUILD and the SDK, NOT about what 6.1.3 exports: dlsym on the guest is the only
+    // thing that settles the export question, and the export trie is being read for it separately.
+    printf("per-protocol\tsetter-not-declared-by-the-sdk-for-this-platform\n");
+    printf("per-protocol\texport-on-6.1.3-OPEN-ask-the-guest-dyld-cache\n");
 
     SSLClose(context);
     CFRelease(context);
