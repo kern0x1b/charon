@@ -36,22 +36,52 @@ import TabularData
 //     KEEP=1 ./run.sh && "$TMPDIR"/createml-differential.*/tabularframe --slice-probe
 //
 // The prints are unbuffered, so whichever read traps still leaves the reads before it on the output.
-if CommandLine.arguments.contains("--slice-probe") {
+// The slice cases that are supposed to trap each end the process, so each is its own invocation:
+//
+//     "$TMPDIR"/createml-differential.*/tabularframe --slice-probe
+//     "$TMPDIR"/createml-differential.*/tabularframe --slice-probe-before
+//     "$TMPDIR"/createml-differential.*/tabularframe --slice-probe-reversed
+//
+// The prints are unbuffered, so whichever read traps still leaves the reads before it on the output.
+// The host's own answers, over a base of `[5, 1, 4, 20, 3]` filtered on `> 3`:
+//
+//     kept[0] = 5    kept[3] = 20    kept[1] -> Fatal error, not a valid slice index
+//     kept.index(before: kept.startIndex) -> Fatal error: Can't move index before startIndex
+//
+// The third case is the consequence: a `reversed()` walk has to reach that same boundary, so it cannot
+// be answered without reaching the trap - and a sentinel that leaves the walk in place would instead
+// spin, which is the failure this replaces.
+func makeKeptSlice() -> PortTabularData.DiscontiguousColumnSlice<Int> {
     let base = PortTabularData.Column<Int>(name: "n", [5, 1, 4, 20, 3])
-    let kept = base.filter { (cell: Int?) -> Bool in
+    return base.filter { (cell: Int?) -> Bool in
         guard let value = cell else { return false }
         return value > 3
     }
+}
+if CommandLine.arguments.contains("--slice-probe") {
+    let kept = makeKeptSlice()
     print("PROBE indices=\(kept.indices) count=\(kept.count) startIndex=\(kept.startIndex) endIndex=\(kept.endIndex)")
-    // Read in the order the host was read in: the two the host answers, then the one it traps on, then
-    // the walk. The trap ends the process, so the order is the order of what can be measured.
     print("PROBE kept[0]=\(String(describing: kept[0]))")
     print("PROBE kept[3]=\(String(describing: kept[3]))")
     print("PROBE kept.values=\(kept.values)")
     print("PROBE Array(kept)=\(Array(kept).map { String(describing: $0) })")
     print("PROBE about to read kept[1], which the host refuses")
     print("PROBE kept[1]=\(String(describing: kept[1]))")
-    print("PROBE reached the end - so kept[1] did NOT trap, which the host does")
+    print("PROBE reached the end - so kept[1] did NOT trap, which the host says it does")
+    exit(0)
+}
+if CommandLine.arguments.contains("--slice-probe-before") {
+    let kept = makeKeptSlice()
+    print("PROBE about to ask index(before: startIndex), which the host refuses")
+    print("PROBE index(before: startIndex)=\(String(describing: kept.index(before: kept.startIndex)))")
+    print("PROBE reached the end - so it did NOT trap, and the host traps")
+    exit(0)
+}
+if CommandLine.arguments.contains("--slice-probe-reversed") {
+    let kept = makeKeptSlice()
+    print("PROBE about to walk backwards with reversed()")
+    print("PROBE reversed()=\(kept.reversed().map { String(describing: $0) })")
+    print("PROBE reached the end - so it did NOT trap; a backward walk must not spin")
     exit(0)
 }
 

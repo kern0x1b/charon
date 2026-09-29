@@ -332,10 +332,23 @@ public struct DiscontiguousColumnSlice<Element>: ColumnProtocol, BidirectionalCo
     public var startIndex: Int { indices.first ?? 0 }
     public var endIndex: Int { (indices.last ?? -1) + 1 }
     public func index(after i: Int) -> Int { indices.first { $0 > i } ?? endIndex }
-    /// The previous kept position, or `startIndex` when there is none. A sentinel rather than a trap,
-    /// because the walk over this slice is forward and a backward walk from the first position has no
-    /// answer; the subscript is where a position that is not kept is refused.
-    public func index(before i: Int) -> Int { indices.last { $0 < i } ?? startIndex }
+    /// The previous kept position, or a **trap** when there is none.
+    ///
+    /// Measured on Apple's own, over a base of `[5, 1, 4, 20, 3]` filtered on `> 3`:
+    ///
+    ///     kept.index(before: kept.startIndex)
+    ///     TabularData/DiscontiguousColumnSlice.swift:128: Fatal error: Can't move index before startIndex
+    ///
+    /// An earlier version answered `startIndex` instead, which leaves a backward walk *in place*: the
+    /// walk does not terminate, and a `reversed()` over such a slice would spin rather than fail. A
+    /// trap is the honest answer and is what the host gives, and it is why a backward walk ends the
+    /// same way a forward walk ends - at a boundary it cannot cross.
+    public func index(before i: Int) -> Int {
+        guard let previous = indices.last(where: { $0 < i }) else {
+            preconditionFailure("Can't move index before startIndex")
+        }
+        return previous
+    }
 
     /// A cell of the **base**, addressed by the base's own position.
     ///
