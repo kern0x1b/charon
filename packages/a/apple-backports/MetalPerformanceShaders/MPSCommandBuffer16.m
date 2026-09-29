@@ -32,16 +32,6 @@ id<MTLDevice> MPSGetPreferredDevice(MPSDeviceOptions options)
 - (void)memoryBarrierWithResources:(NSArray<id<MTLResource>> *)resources;
 @end
 
-const MTLRegion MPSRectNoClip = {{0, 0, 0}, {-1, -1, -1}};
-BOOL MPSSupportsMTLDevice(id<MTLDevice> device)
-{
-    // The release answers YES for a device whose hardware it can run its kernels on. Every MTLDevice
-    // this port has is its own OpenGL ES 2.0 bridge, and every kernel in this framework runs on it,
-    // so the answer is the same question the release asks - can this device run an MPS kernel - and
-    // the port's answer is yes. nil is not a device and is refused as the release refuses it.
-    return device != nil;
-}
-
 @implementation MPSCommandBuffer {
     id<MTLCommandBuffer> _buffer;
     MPSPredicate *_predicate;
