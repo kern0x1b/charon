@@ -33,7 +33,7 @@ group() {
         xcrun clang $target $flags -w -c "$sources/$file" -o "$build/plain/$name-$(basename "$file").o"
         objects="$objects $build/plain/$name-$(basename "$file").o"
     done
-    renames "$objects" "$keep" > "$build/$name.flags"
+    renames "$objects" > "$build/$name.flags"
     mkdir -p "$build/$name"
     built=""
     for file in $files; do
@@ -48,17 +48,16 @@ group() {
 }
 
 windowed() {
-    # $1: group name, $2: sources, $3: selectors to keep, $4: test source; the test runs in an application with a window
+    # $1: group name, $2: sources, $3: test source; the test runs in an application with a window, against the system
     name=$1
     files=$2
-    keep=$3
-    test=$4
+    test=$3
     objects=""
     for file in $files; do
         xcrun clang $target $flags -w -c "$sources/$file" -o "$build/plain/$name-$(basename "$file").o"
         objects="$objects $build/plain/$name-$(basename "$file").o"
     done
-    renames "$objects" "$keep" > "$build/$name.flags"
+    renames "$objects" > "$build/$name.flags"
     mkdir -p "$build/$name"
     built=""
     for file in $files; do
@@ -78,12 +77,11 @@ windowed() {
 }
 
 windowed_expected() {
-    # $1: group name, $2: sources, $3: selectors to keep, $4: test source run against the port, $5: source that records what the system answers, in a process with none of the port's code
+    # $1: group name, $2: sources, $3: test source run against the port, $4: the source that records what the system answers
     name=$1
     files=$2
-    keep=$3
-    test=$4
-    recorder=$5
+    test=$3
+    recorder=$4
     bundle="$build/$name-system.app"
     rm -rf "$bundle"
     mkdir -p "$bundle/Contents/MacOS"
@@ -96,7 +94,7 @@ windowed_expected() {
     [ "$result" = 0 ] || status=1
     CHARON_EXPECTED="$expected"
     export CHARON_EXPECTED
-    windowed "$name" "$files" "$keep" "$test"
+    windowed "$name" "$files" "$test"
 }
 
 renamed_keep() {
@@ -110,7 +108,7 @@ windowed_renamed() {
     name=$1
     files=$2
     renamed=$3
-    test=$4
+    test=$3
     objects=""
     for file in $files; do
         xcrun clang $target $flags -w -c "$sources/$file" -o "$build/plain/$name-$(basename "$file").o"
@@ -140,7 +138,7 @@ renamed() {
     name=$1
     files=$2
     renamed=$3
-    test=$4
+    test=$3
     objects=""
     for file in $files; do
         xcrun clang $target $flags -w -c "$sources/$file" -o "$build/plain/$name-$(basename "$file").o"
@@ -165,7 +163,7 @@ windowed_renamed_expected() {
     name=$1
     files=$2
     renamed=$3
-    test=$4
+    test=$3
     recorder=$5
     bundle="$build/$name-system.app"
     rm -rf "$bundle"
