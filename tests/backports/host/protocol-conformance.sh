@@ -141,7 +141,8 @@ echo "the mutants"
 for mutation in method getter; do
     for probe in CharonMetalLibrary CharonMetalDepthStencil; do
         dir="$work/tree/apple-backports"
-        file=$(find "$dir" -name "$probe.m" | head -1)
+        file="$dir/Metal/$probe.m"
+        [ -f "$file" ] || file=$(find "$dir/Metal" -name "$probe.m" | head -1)
         [ -n "$file" ] || continue
         cp "$file" "$work/$probe.$mutation.orig"
         if [ "$mutation" = method ]; then
@@ -149,19 +150,22 @@ for mutation in method getter; do
         else
             python3 "$here/mutate-getter.py" "$file" || { echo "FAIL: cannot make a getter mutant" >&2; exit 1; }
         fi
-        red=$( (cd "$dir" && xcrun clang $flags -fsyntax-only "$(basename "$(dirname "$file")")/$(basename "$file")") >/dev/null 2>&1; echo $? )
-        # the criterion must NOTICE: a class with a missing member has to be reported as such
-        cls=$(basename "$probe")
-        noticed=$( (cd "$dir" && python3 "$here/protocol-members.py" MTLFunction "$cls" "$SDK" \
-                       "$(basename "$(dirname "$file")")/$(basename "$file")") 2>&1 | grep -c "missing:" || true)
-        if [ "$mutation" = method ] && [ "$red" = "0" ]; then
-            echo "  FAIL the method mutant still compiled clean, so the check is not testing methods" >&2
+        rel=$(basename "$(dirname "$file")")/$(basename "$file")
+        # a broken class must FAIL TO COMPILE for the method mutant, and must be REPORTED by the
+        # criterion for the getter mutant. Both are measured by running the thing and looking at what
+        # it says, rather than by a shell expression that swallows its own exit status.
+        if (cd "$dir" && xcrun clang $flags -fsyntax-only "$rel") >"$work/$probe.$mutation.log" 2>&1; then
+            compiles=yes; else compiles=no; fi
+        noticed=$( (cd "$dir" && python3 "$here/protocol-members.py" MTLFunction "$probe" "$SDK" "$rel" 2>&1) \
+                   | grep -c "missing:" || true)
+        if [ "$mutation" = method ] && [ "$compiles" = yes ]; then
+            echo "  FAIL the method mutant still compiled, so the check is not testing methods" >&2
             fail=1
-        elif [ "$mutation" = getter ] && [ "$noticed" = "0" ]; then
+        elif [ "$mutation" = getter ] && [ "$noticed" -eq 0 ]; then
             echo "  FAIL the getter mutant went unnoticed, which is the case the criterion exists for" >&2
             fail=1
         else
-            echo "  ok   the $mutation mutant in $cls is red"
+            echo "  ok   the $mutation mutant in $probe is red"
         fi
         cp "$work/$probe.$mutation.orig" "$file"
     done
