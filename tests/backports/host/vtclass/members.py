@@ -45,8 +45,47 @@ HEADER = os.path.join(VT_DIR, "CharonVideoToolbox.h")
 TEMPLATE_CLASS = "VTMotionBlurConfiguration"
 TEMPLATE_FILE = "VideoToolboxValue26.m"
 
-INITIALISER = re.compile(r'^[+-]\s*\([^)]*instancetype[^)]*\)\s*(init\w*[:\w]*)', re.M)
+INITIALISER = re.compile(r'^[+-]\s*\([^)]*instancetype[^)]*\)([^;]*);', re.M)
+SELECTOR_KEYWORD = re.compile(r'(\w+):')
+
+
+def selector_of(declaration_span):
+    """The whole selector: every keyword between the return type and the ';'."""
+    return "".join(k + ":" for k in SELECTOR_KEYWORD.findall(declaration_span))
 PROPERTY_ROW = re.compile(r'@property\s*\(([^)]*)\)\s*[^;]*?\s(\w+)\s*(?:[A-Z_][A-Z_0-9]*\s*(?:\([^)]*\))?)?;', re.S)
+METHOD_DECL = re.compile(r'^([+-])\s*\(([^)]*)\)\s*(\w*[:\w]*)', re.M)
+
+
+def joined_declarations(text):
+    """Every declaration, as one string, from its first line to the ';' that ends it.
+
+    A selector is NOT one line. SDK 26.2 writes
+
+        - (nullable instancetype)initWithFrameWidth:(NSInteger)frameWidth
+                               frameHeight:(NSInteger)frameHeight
+                      numberOfInterpolatedFrames:(NSInteger)numberOfInterpolatedFrames;
+
+    and matching the first line captures initWithFrameWidth: - the HEAD of every selector and not the
+    whole of any. That put sixteen truncated selectors in the registry and collapsed two of the seventeen
+    real ones into one string, because a SET cannot hold the same truncated head twice. The join is
+    applied to every declaration here, not only to initialisers, and the same fact is a shape the
+    availability rule met on VT_EXPORT.
+    """
+    out, buffer, start = [], None, 0
+    for index, line in enumerate(text.split("\n"), start=1):
+        if buffer is None and not line.strip():
+            continue
+        if buffer is None:
+            start = index
+            buffer = line
+        else:
+            buffer += " " + line.strip()
+        if ";" in buffer:
+            out.append((start, " ".join(buffer.split())))
+            buffer = None
+    if buffer is not None:
+        out.append((start, " ".join(buffer.split())))
+    return out
 MACRO_ACCESSOR = re.compile(r'CHARON_\w+_PROPERTY\((.*)\)', re.S)
 HAND_ACCESSOR = re.compile(r'([-+])\s*\([^)]*\)\s*(\w+)')
 INITIALISER_KEYWORD = re.compile(r'@"(charon\.private\.)?(\w+)"')
@@ -80,21 +119,24 @@ def members_of(class_name):
 
     entries = {("class", _registry_name("class", class_name, class_name))}
     accessors = {}
+    joined_body = [d for _n, d in joined_declarations(body)]
     # properties: the PROPERTY name, with its getter if it has one
-    for attrs, name in PROPERTY_ROW.findall(body):
+    for attrs, name in PROPERTY_ROW.findall(";\n".join(joined_body)):
         entries.add(("property", _registry_name("property", class_name, name)))
         getter = re.search(r'getter\s*=\s*(\w+)', attrs)
         accessors[getter.group(1) if getter else name] = name
-    # initialisers, as the SDK spells the selector
-    for selector in INITIALISER.findall(body):
+    # initialisers, as the SDK spells the selector - WHOLE, after the join AND after reading every
+    # keyword in the span, because a character class cannot cross the '(' of an argument's type
+    for span in INITIALISER.findall("\n".join(joined_body)):
+        selector = selector_of(span)
         entries.add(("method", _registry_name("method", class_name, selector)))
         accessors[selector] = None
     # the accessors the value file actually implements, and the properties they belong to
-    for call in MACRO_ACCESSOR.findall(source):
+    for call in MACRO_ACCESSOR.findall("\n".join(d for _n, d in joined_declarations(source))):
         last = call.split(",")[-1].strip()
         if re.match(r'^\w+$', last):
             accessors[last] = accessors.get(last)
-    for _sign, selector in HAND_ACCESSOR.findall(source):
+    for _sign, selector in HAND_ACCESSOR.findall("\n".join(d for _n, d in joined_declarations(source))):
         if selector in accessors or re.match(r'^(init|initWith)', selector):
             continue
         accessors[selector] = None
