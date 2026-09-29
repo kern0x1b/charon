@@ -53,6 +53,7 @@
 #import "CharonMPS.h"
 
 #include <stdio.h>
+#include <stdio.h>
 #pragma clang diagnostic ignored "-Wprotocol"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
@@ -133,6 +134,11 @@ CHARON_MPS_NEURON_COMMON
             double m = mean.length > column ? CharonMPSLoad(CharonMPSVectorElement(&mean, 0, column), mean.dataType, 0) : 0.0;
             double v = variance.length > column ? CharonMPSLoad(CharonMPSVectorElement(&variance, 0, column), variance.dataType, 0) : 0.0;
             double g = gamma.length > column ? CharonMPSLoad(CharonMPSVectorElement(&gamma, 0, column), gamma.dataType, 0) : 1.0;
+#ifdef CHARON_BN_TRACE
+            fprintf(stderr, "BNP ch%lu  mean %g variance %g gamma %g  -> divisor %g  rowBytes(in) %lu\n",
+                    (unsigned long)column, m, v, g, g / (v + (double)_epsilon),
+                    (unsigned long)in.rowBytes);
+#endif
             double divisor = g / (v + (double)_epsilon);
             double sum = 0.0, gammaGradient = 0.0, betaGradient = 0.0;
             for (NSUInteger row = 0; row < vectors; row++) {

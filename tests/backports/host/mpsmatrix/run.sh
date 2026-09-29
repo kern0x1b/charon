@@ -60,7 +60,7 @@ printf '#import <MetalPerformanceShaders/MetalPerformanceShaders.h>\n' > "$build
 objects=""
 for source in "$mps"/*.m; do
     name=$(basename "$source" .m)
-    if ! xcrun clang -fobjc-arc -fvisibility=hidden $target $quiet -c "$source" -o "$build/$name.plain.o"; then
+    if ! xcrun clang -fobjc-arc -fvisibility=hidden -DCHARON_BN_TRACE $target $quiet -c "$source" -o "$build/$name.plain.o"; then
         echo "the port source $source did not compile; stopping, because a count from a stale build is not a count"
         exit 1
     fi
