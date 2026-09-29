@@ -88,6 +88,24 @@ static NSArray *menu_scenario(Class actionClass, Class menuClass)
     [lines addObject:ur_line(@"segment removed", @[@([sg segmentIndexForActionIdentifier:@"idx"]), @([sg segmentIndexForActionIdentifier:@"id9"])])];
     [lines addObject:ur_line(@"no action", @[[sg actionForSegmentAtIndex:9] ?: @"nil", [[[UISegmentedControl alloc] initWithItems:@[@"q"]] actionForSegmentAtIndex:0] ?: @"nil"])];
     [lines addObject:ur_line(@"unique on insert", ur_raised(^id { [sg insertSegmentWithAction:cc atIndex:0 animated:NO]; return @"no"; }))];
+    // The two action classes side by side in one window. `UIAction` is the host's own on both sides of a
+    // differential - the port's is renamed to CharonHostUIAction - so the first pair is the same class in both
+    // binaries and the second is the one this binary carries, and the host's comes first so that a side which
+    // cannot take the second one has printed the first one's answer before it stops. Which of the two the
+    // segment takes is the whole of the difference the -[CharonHostUIAction length] fault turns on.
+    for (NSArray *pair in @[ @[ @"the host's", NSClassFromString(@"UIAction") ], @[ @"this binary's", actionClass ] ]) {
+        UIAction *one = [pair[1] actionWithTitle:@"AT" image:nil
+                                       identifier:[NSString stringWithFormat:@"id-%@", pair[0]]
+                                          handler:^(id x) {}];
+        UISegmentedControl *own = [[UISegmentedControl alloc] initWithItems:@[ @"seed" ]];
+        NSString *outcome = ur_raised(^id {
+            [own insertSegmentWithAction:one atIndex:0 animated:NO];
+            return [NSString stringWithFormat:@"segments=%ld title=%@ back=%@", (long)own.numberOfSegments,
+                                              [own titleForSegmentAtIndex:0] ?: @"nil",
+                                              [own actionForSegmentAtIndex:0].title ?: @"nil"];
+        });
+        [lines addObject:ur_line([@"an action from " stringByAppendingString:pair[0]], @[outcome])];
+    }
     NSMutableArray *flat = [NSMutableArray array];
     for (NSString *entry in lines)
         [flat addObject:[entry stringByReplacingOccurrencesOfString:@"\n" withString:@" "]];
