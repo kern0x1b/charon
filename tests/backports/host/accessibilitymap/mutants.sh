@@ -17,6 +17,9 @@
 #   M7  the size is not carried through the copy
 #   M8  the factory answers the size it was asked for
 #   M9  a copy's store is mutable again, where the system's is frozen and a write to a copy raises
+#  M10  a registry protocol row names a protocol that does not exist, so the name does not resolve
+#  M11  the control for M10: the registry copied through the same path with nothing changed, which must
+#       stay green - without it, a check that was red for any reason at all would pass M10
 #
 # Usage: sh tests/backports/host/accessibilitymap/mutants.sh
 set -eu
@@ -31,6 +34,7 @@ survived=0
 ran=0
 killed=0
 died_wrong=0
+control_green=0
 
 mutant() {
     # name, which occurrence of the line, the line, what it becomes
@@ -49,6 +53,7 @@ mutant() {
     mkdir -p "$dir/pkg/Accessibility"
     cp "$sources/CharonBrailleMap.m" "$dir/pkg/Accessibility/"
     cp "$sources/CharonBrailleMap.h" "$dir/pkg/Accessibility/"
+    cp "$sources/CharonAccessibilityProtocols.h" "$dir/pkg/Accessibility/"
     cp "$package/CharonSayOnce.h" "$dir/pkg/"
     MUTATE="$dir/pkg/Accessibility/CharonBrailleMap.m" MUTATE_OLD="$old" MUTATE_NEW="$new" \
         MUTATE_NTH="$nth" python3 "$here/../common/mutate.py"
@@ -127,5 +132,67 @@ mutant M9-copy-not-frozen 1 \
     '    copy->_pins = _pins ? (id<CharonBrailleMapPinStore>)[NSDictionary dictionaryWithDictionary:(NSDictionary *)_pins] : nil;' \
     '    copy->_pins = _pins ? (id<CharonBrailleMapPinStore>)[(NSDictionary *)_pins mutableCopy] : nil;'
 
-echo "mutants run: $ran, killed: $killed, died for another reason: $died_wrong, survived: $survived"
-[ "$survived" -eq 0 ] && [ "$died_wrong" -eq 0 ] && [ "$killed" -eq "$ran" ]
+# The protocol name, changed in the registry and nowhere else. The generated source for a name that does
+# not exist is a forward reference, which clang makes a label and the linker accepts, so nothing in the
+# build complains: this is the only thing in the group that notices, which is why the check reads its
+# names from the registry instead of carrying them.
+registry_mutant() {
+    # name, the row to change, what its name becomes
+    name=$1
+    row=$2
+    replaced=$3
+    dir="$work/$name"
+    # The package's own shape, because the source reaches ../CharonSayOnce.h and the generated source
+    # reaches CharonAccessibilityProtocols.h by relative and include paths respectively.
+    mkdir -p "$dir/pkg/registry/Accessibility" "$dir/pkg/Accessibility"
+    cp "$sources/CharonBrailleMap.m" "$sources/CharonBrailleMap.h" \
+       "$sources/CharonAccessibilityProtocols.h" "$dir/pkg/Accessibility/"
+    cp "$package/CharonSayOnce.h" "$dir/pkg/"
+    cp "$package/registry/Accessibility/ios26.json" "$dir/pkg/registry/Accessibility/"
+    REGISTRY="$dir/pkg/registry/Accessibility/ios26.json" ROW="$row" REPLACED="$replaced" \
+        python3 - <<'REGISTRY'
+import json, os
+path = os.environ["REGISTRY"]
+rows = json.load(open(path))
+changed = 0
+for entry in rows["entries"]:
+    if entry["api"] == os.environ["ROW"] and entry["kind"] == "protocol":
+        entry["api"] = os.environ["REPLACED"]
+        changed += 1
+assert changed == 1, "the mutant's row is in the registry %d times" % changed
+open(path, "w").write(json.dumps(rows, indent=2, ensure_ascii=False) + "\n")
+REGISTRY
+    ran=$((ran + 1))
+    if ACCESSIBILITY_SRC="$dir/pkg/Accessibility" REGISTRY_ROOT="$dir/pkg" PROTOCOL_BUILD="$dir/build" \
+       sh "$here/protocol-check.sh" > "$dir/out.txt" 2>&1; then
+        if [ "$replaced" = "$row" ]; then
+            control_green=$((control_green + 1))
+            echo "control stayed green through the same path: $name"
+        else
+            echo "MUTANT SURVIVED: $name"
+            survived=$((survived + 1))
+        fi
+    elif grep -q 'FAILED' "$dir/out.txt"; then
+        killed=$((killed + 1))
+        echo "killed by the protocol check: $name: $(grep -m1 'FAILED' "$dir/out.txt")"
+    elif grep -q 'did not build' "$dir/out.txt"; then
+        # A row naming a protocol that is declared nowhere is refused by the compiler before the check
+        # runs, and that is where it is caught: the generated source names it and clang will not make a
+        # forward reference to a protocol that does not exist. So a renamed row never reaches the lookup
+        # loop - the two ways of being wrong cannot both be exercised by one row.
+        killed=$((killed + 1))
+        echo "killed by the compiler, before the check could look it up: $name: $(grep -m1 -o 'cannot find protocol declaration for .*' "$dir/out.txt" || grep -m1 'error:' "$dir/out.txt")"
+    else
+        echo "MUTANT DIED FOR THE WRONG REASON: $name"
+        tail -5 "$dir/out.txt"
+        died_wrong=$((died_wrong + 1))
+    fi
+}
+
+registry_mutant M10-protocol-row-renamed AXBrailleMapRenderer AXBrailleMapCharonDoesNotExist
+registry_mutant M11-protocol-row-control AXBrailleMapRenderer AXBrailleMapRenderer
+
+echo "mutants run: $ran, killed: $killed, controls stayed green: $control_green, died for another reason: $died_wrong, survived: $survived"
+# Every mutant is either killed or is the control that must stay green, and the control is counted as a
+# separate thing so that a check which was red for any reason at all cannot pass the control.
+[ "$survived" -eq 0 ] && [ "$died_wrong" -eq 0 ] && [ $((killed + control_green)) -eq "$ran" ]
