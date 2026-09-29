@@ -310,6 +310,28 @@
       "status": "implemented"
     },
     {
+      "api": "sec_protocol_options_set_challenge_block()",
+      "effect": "the block is HELD AS A COPY with its dispatch queue, and the three are THREE SEPARATE SETTINGS: a key-update block, a challenge block and a verify block each have their own slot, and setting one leaves the other two unset. Measured: each set alone with its two neighbours read back, and all three set together. A NULL block CLEARS rather than leaving the previous one, and the neighbours are untouched when it does. The effect: nothing dispatches any of them, because no handshake will",
+      "facts": "facts/Security/SecProtocolWorklist.md",
+      "introduced": "13.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "6.1.3 HAS NO STACK THAT TAKES a sec_protocol_options_t, so nothing ever reads what the port holds. A BLOCK IS COPIED AND ITS QUEUE IS HELD: a stack block is dead when the setter returns, and a block held without the queue it was given for is a block held for a queue nobody owns. Assigning to a __strong ivar copies; dispatch_retain and dispatch_release are ARC-FORBIDDEN on a dispatch object. The block TYPES are declared in SecProtocolOptions.h (:652, :680, :710) and not in SecProtocolTypes.h, so a grep of the wrong header finds only the parameter types and not the typedefs",
+      "source": "SDK 16.4, Security",
+      "status": "inert"
+    },
+    {
+      "api": "sec_protocol_options_set_key_update_block()",
+      "effect": "the block is HELD AS A COPY with its dispatch queue, and the three are THREE SEPARATE SETTINGS: a key-update block, a challenge block and a verify block each have their own slot, and setting one leaves the other two unset. Measured: each set alone with its two neighbours read back, and all three set together. A NULL block CLEARS rather than leaving the previous one, and the neighbours are untouched when it does. The effect: nothing dispatches any of them, because no handshake will",
+      "facts": "facts/Security/SecProtocolWorklist.md",
+      "introduced": "13.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "6.1.3 HAS NO STACK THAT TAKES a sec_protocol_options_t, so nothing ever reads what the port holds. A BLOCK IS COPIED AND ITS QUEUE IS HELD: a stack block is dead when the setter returns, and a block held without the queue it was given for is a block held for a queue nobody owns. Assigning to a __strong ivar copies; dispatch_retain and dispatch_release are ARC-FORBIDDEN on a dispatch object. The block TYPES are declared in SecProtocolOptions.h (:652, :680, :710) and not in SecProtocolTypes.h, so a grep of the wrong header finds only the parameter types and not the typedefs",
+      "source": "SDK 16.4, Security",
+      "status": "inert"
+    },
+    {
       "api": "sec_protocol_options_set_max_tls_protocol_version()",
       "effect": "the version range is HELD on the object, and sec_protocol_options_are_equal on the same object reads it back - which is what makes that comparator a real answer. The effect: the handshake ignores the range; the release's own stack tops out at kTLSProtocol12 and cannot negotiate 1.3, so a value the port holds is never a value the release honours",
       "facts": "facts/Security/SecProtocolWorklist.md",
@@ -482,6 +504,17 @@
       "kind": "function",
       "minimum": "6.0",
       "reason": "6.1.3 HAS NO STACK THAT TAKES a sec_protocol_options_t, so nothing ever reads a flag the port holds. The port supplies CharonSecProtocolFlags and the setter holds the flag. A port that returned an error would break a caller that sets options before it connects, and a port that pretended the setting took effect would be a lie about a handshake it cannot perform",
+      "source": "SDK 16.4, Security",
+      "status": "inert"
+    },
+    {
+      "api": "sec_protocol_options_set_verify_block()",
+      "effect": "the block is HELD AS A COPY with its dispatch queue, and the three are THREE SEPARATE SETTINGS: a key-update block, a challenge block and a verify block each have their own slot, and setting one leaves the other two unset. Measured: each set alone with its two neighbours read back, and all three set together. A NULL block CLEARS rather than leaving the previous one, and the neighbours are untouched when it does. The effect: nothing dispatches any of them, because no handshake will The VERIFY block is the only one of the three that RECEIVES a sec_trust_t, and the port holds a type it does not itself supply - the sec_trust_t wrapper is one of the nine rows STILL OWED - so this row is not exercised end to end until that type exists, and the row says so rather than implying a run",
+      "facts": "facts/Security/SecProtocolWorklist.md",
+      "introduced": "13.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "6.1.3 HAS NO STACK THAT TAKES a sec_protocol_options_t, so nothing ever reads what the port holds. A BLOCK IS COPIED AND ITS QUEUE IS HELD: a stack block is dead when the setter returns, and a block held without the queue it was given for is a block held for a queue nobody owns. Assigning to a __strong ivar copies; dispatch_retain and dispatch_release are ARC-FORBIDDEN on a dispatch object. The block TYPES are declared in SecProtocolOptions.h (:652, :680, :710) and not in SecProtocolTypes.h, so a grep of the wrong header finds only the parameter types and not the typedefs",
       "source": "SDK 16.4, Security",
       "status": "inert"
     }
