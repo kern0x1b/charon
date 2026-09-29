@@ -1687,6 +1687,38 @@ end
 -- nowhere (ef271700 on ARKit, 5a505a9b on MXDiagnostic). The release's own inventory answers for a protocol
 -- the release itself carries. The tree's own headers are read every call: 87 files, and they change under a
 -- build, which a memo keyed on the folder cannot see.
+-- Whether a header of the package defines the function with a body, in the shape a real definition has:
+-- a return type, the name, a balanced (…), then a brace - with whatever sits between the parameter list and
+-- the brace, a CF_REFINED_FOR_SWIFT or a CF_SWIFT_UNAVAILABLE("..."), being an attribute. Apple's own inlines
+-- are not counted: an SDK inline is Apple's code in the consumer and the port carries none of it, and a
+-- declaration without a body is not a definition. The name is the registry's spelling without its ().
+-- This reads and writes nothing: it cannot reorder a declaration, and a header that stops compiling is a
+-- different check.
+local INLINE_BODIES = {}
+
+function inline_defined(root, name)
+    local seen = INLINE_BODIES[root]
+    if not seen then
+        seen = {}
+        local function normalise(text)
+            text = text:gsub("/%*.-%*/", " "):gsub("//[^\n]*", " ")
+            return (text:gsub("%s+", " "))
+        end
+        local function scan(folder)
+            for _, file in ipairs(os.files(path.join(folder, "*.h"))) do
+                for before, after in normalise(io.readfile(file) or ""):gmatch(
+                        "([%w_<>%* ]+)%s+([%w_]+)%s*%b()%s*[%w_(),\"%s]*{") do
+                    seen[after] = true
+                end
+            end
+        end
+        scan(root)
+        scan(path.join(root, "*"))
+        INLINE_BODIES[root] = seen
+    end
+    return seen[name] or false
+end
+
 function protocol_declared(root, owner, inventory, sdkdir)
     if inventory and inventory.protocols and inventory.protocols[owner] ~= nil then
         return true
@@ -1797,6 +1829,10 @@ function check_registry(root, found, complete, deployment, exports, inventory, s
                 (owner and listed[owner] and listed[owner].kind == "protocol" and
                  protocol_declared(root, owner, inventory, sdkdir)) or
                 (owner and inventory and inventory.protocols and inventory.protocols[owner] ~= nil) or false
+            if entry.kind == "function" and not built and inline_defined(root, name:gsub("%(%)$", "")) then
+                -- the port's own body, in a header of the package: a symbol will never answer for an inline
+                built = true
+            end
             if (entry.kind == "type" or entry.kind == "case") and not built then
                 -- no symbol will ever answer for a type or an enumeration case, so the header is the build
                 declared_by_header = declared_by_header or declared_names(root, sdkdir)

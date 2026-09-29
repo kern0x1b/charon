@@ -581,6 +581,81 @@ end
     os.tryrm(root)
 end
 
+
+-- A function row is answered by a definition with a body in a header of the package - never by the SDK, whose
+-- inlines are Apple's code in the consumer, and never by a name that only appears in a comment or in a call.
+-- The six shapes are the CMTag band's, copied from packages/a/apple-backports/AVFoundation/CharonCMTag26.h,
+-- which is ours; the other three are the cases that must stay red.
+local function inline_rows_step(backports, found)
+    local root = fixtures.scratch()
+    os.tryrm(root)
+    os.mkdir(root)
+    os.mkdir(path.join(root, "registry"))
+    local function asked(name, text)
+        io.writefile(path.join(root, "Store.h"), text or "")
+        io.writefile(path.join(root, "registry", "Fix.json"), string.format(
+            '{"framework": "Fix", "entries": [{"api": "%s()", "kind": "function", "introduced": "13.0", "minimum": "6.0", "status": "implemented", "facts": "f"}]}', name))
+        local message
+        local ok = try {
+            function () backports.check_registry(root, {classes = {}, members = {}, symbols = {}, defined = {}},
+                                                true, "6.1.3", {}, {classes = {}}, nil, {}) return true end,
+            catch {function (e) message = tostring(e) end}
+        }
+        return (ok and "passed" or (message or "raised"))
+    end
+    local header = [[
+#import <Foundation/Foundation.h>
+CF_EXPORT CMTagDataType CMTagGetValueDataType( CMTag tag );
+CF_INLINE Boolean CMTagIsValid( CMTag tag ) CF_REFINED_FOR_SWIFT
+{
+	CMTagDataType dataType = CMTagGetValueDataType( tag );
+	return dataType != kCMTagDataType_Invalid;
+}
+CF_INLINE CMTagValue CMTagGetValue( CMTag tag ) CF_SWIFT_UNAVAILABLE("Unavailable in Swift")
+{
+	return CMTagGetValueDataType( tag ) ? 1 : 0;
+}
+CF_INLINE CMTagCategory CMTagGetCategory( CMTag tag ) CF_REFINED_FOR_SWIFT { return 0; }
+CF_INLINE Boolean CMTagHasCategory( CMTag tag, CMTagCategory category ) CF_REFINED_FOR_SWIFT { return 0; }
+CF_INLINE Boolean CMTagCategoryEqualToTagCategory( CMTag tag1, CMTag tag2 ) CF_REFINED_FOR_SWIFT { return 0; }
+CF_INLINE Boolean CMTagCategoryValueEqualToValue( CMTag tag1, CMTag tag2 ) CF_REFINED_FOR_SWIFT { return 0; }
+]]
+    for _, name in ipairs({"CMTagIsValid", "CMTagGetValue", "CMTagGetCategory", "CMTagHasCategory",
+                           "CMTagCategoryEqualToTagCategory", "CMTagCategoryValueEqualToValue"}) do
+        if asked(name, header):find(name, 1, true) then
+            table.insert(found, "an inline the port defines with a body must answer its row, and it does not: " .. name)
+        end
+    end
+    -- a declaration with no body is not a definition
+    local declared = [[
+#import <Foundation/Foundation.h>
+CF_INLINE Boolean CMTagDeclaredOnly( CMTag tag ) CF_REFINED_FOR_SWIFT;
+]]
+    if asked("CMTagDeclaredOnly", declared):find("CMTagDeclaredOnly", 1, true) == nil then
+        table.insert(found, "a declaration without a body must not answer a function row, and it does")
+    end
+    -- a name that only appears in a comment
+    local commented = [[
+#import <Foundation/Foundation.h>
+/* CMTagCommentedOnly( CMTag tag ) CF_REFINED_FOR_SWIFT { return 1; } */
+]]
+    if asked("CMTagCommentedOnly", commented):find("CMTagCommentedOnly", 1, true) == nil then
+        table.insert(found, "a name that only appears in a comment must not answer a function row, and it does")
+    end
+    -- a call inside another body is not a definition
+    local called = [[
+#import <Foundation/Foundation.h>
+CF_INLINE Boolean CMTagCaller( CMTag tag ) CF_REFINED_FOR_SWIFT
+{
+	return CMTagCalledFromABody( tag );
+}
+]]
+    if asked("CMTagCalledFromABody", called):find("CMTagCalledFromABody", 1, true) == nil then
+        table.insert(found, "a name only called inside another body must not answer a function row, and it does")
+    end
+    os.tryrm(root)
+end
+
 function failures(opt)
     local backports = import("apple.backports", {rootdir = opt.modules, anonymous = true})
     local found = {}
@@ -646,6 +721,7 @@ function failures(opt)
     unreadable(backports, found)
     named_twice(backports, found)
     type_rows(backports, found)
+    inline_rows_step(backports, found)
     member_and_protocol_rows(backports, found)
     two_readers(backports, found)
     own_rows(backports, found)
