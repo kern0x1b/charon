@@ -56,7 +56,9 @@ for source in "$mps"/*.m; do
 done
 echo "compiled: $(echo "$objects" | wc -w) objects"
 
-xcrun clang -fobjc-arc $target $quiet -include "$build/rename.h" "$here/cnn-cases.m" $objects \
+# -DCHARON_PORT_BUILD: this is the port's own build, and the guard below is a statement about it. The
+# system build has no rename header and no port classes, and there is nothing for the guard to ask of it.
+xcrun clang -fobjc-arc $target $quiet -DCHARON_PORT_BUILD=1 -include "$build/rename.h" "$here/cnn-cases.m" $objects \
     -framework Foundation -framework Metal -framework MetalPerformanceShaders -o "$build/port"
 "$build/port" > "$build/port.txt" 2> "$build/port.err" || true
 
@@ -71,20 +73,44 @@ python3 - "$build/system.txt" "$build/port.txt" "$TOLERANCE" <<'PY'
 import sys
 system_path, port_path, tolerance = sys.argv[1], sys.argv[2], float(sys.argv[3])
 def read(path):
+    """The transcript's cases, and the cases that were not compared.
+
+    A line that names a class the port does not have is a case the harness refused to compare, and it
+    is a result: the run said so instead of printing an answer. It is collected here and fails the
+    comparison below, because a case that did not run is not a case that passed.
+    """
     cases, name, values = {}, None, []
-    skip_image = True
+    skipped = []
     for line in open(path):
         if line.startswith("image "):
+            continue
+        if " NOT COMPARED:" in line:
+            if name: cases[name] = values
+            name, values = None, []
+            parts = line.split()
+            skipped.append((parts[1] if len(parts) > 1 else "?", line.strip().split("NOT COMPARED:", 1)[1].strip()))
+            continue
+        if line.startswith("compared: "):
+            if name: cases[name] = values
+            name, values = None, []
             continue
         parts = line.split()
         if len(parts) == 2 and parts[1].isdigit():
             if name: cases[name] = values
             name, values = parts[0], []
-        elif parts:
+        elif parts and name is not None:
             values.extend(float(v) for v in parts)
     if name: cases[name] = values
-    return cases
-a, b = read(system_path), read(port_path)
+    return cases, skipped
+a, a_skipped = read(system_path)
+b, b_skipped = read(port_path)
+if a_skipped or b_skipped:
+    print("cases the harness refused to compare: %d" % len({n for n, _ in a_skipped} | {n for n, _ in b_skipped}))
+    for who, skipped in (("system", a_skipped), ("port", b_skipped)):
+        for name, why in skipped:
+            print("  %s side: %s: %s" % (who, name, why))
+    print("a case that did not run is not a case that passed; this comparison is red")
+    raise SystemExit(1)
 if not a:
     print("the system answered no case at all:", open(system_path).read()[:200], open(system_path + ".err").read()[:200] if __import__('os').path.exists(system_path + ".err") else "")
     raise SystemExit(1)
