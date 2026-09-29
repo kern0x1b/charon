@@ -15,14 +15,14 @@ fail=0
 # one occurrence: exactly one line changes
 printf 'alpha\nbeta\ngamma\n' > "$scratch/one.txt"
 printf 'one.txt before: %s\n' "$(md5 -q "$scratch/one.txt")"
-mutate "$scratch/one.txt" 'beta' 'BETA'
+ANCHOR='beta' REPL='BETA' mutate "$scratch/one.txt"
 changed=$(diff "$work/one.txt.original" "$scratch/one.txt" | grep -c '^>')
 printf 'case 1 anchor once     : diff lines %s, want 1 -> %s\n' "$changed" "$([ "$changed" -eq 1 ] && echo ok || { fail=1; echo FAILED; })"
 
 # two occurrences: refuses, and leaves the file exactly as it was
 printf 'alpha\nbeta\ngamma\nbeta\n' > "$scratch/two.txt"
 before=$(md5 -q "$scratch/two.txt")
-if mutate "$scratch/two.txt" 'beta' 'BETA' 2>"$scratch/two.err"; then
+if ANCHOR='beta' REPL='BETA' mutate "$scratch/two.txt" 2>"$scratch/two.err"; then
     printf 'case 2 anchor twice    : it did NOT abort -> FAILED\n'; fail=1
 else
     after=$(md5 -q "$scratch/two.txt")
@@ -37,7 +37,7 @@ fi
 # no occurrence: refuses too, so the refusal is the count and not the accident of one input
 printf 'alpha\ngamma\n' > "$scratch/zero.txt"
 before=$(md5 -q "$scratch/zero.txt")
-if mutate "$scratch/zero.txt" 'beta' 'BETA' 2>"$scratch/zero.err"; then
+if ANCHOR='beta' REPL='BETA' mutate "$scratch/zero.txt" 2>"$scratch/zero.err"; then
     printf 'case 3 anchor absent   : it did NOT abort -> FAILED\n'; fail=1
 elif [ "$before" = "$(md5 -q "$scratch/zero.txt")" ]; then
     printf 'case 3 anchor absent   : aborted, file byte-identical -> ok\n'
