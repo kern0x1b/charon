@@ -48,11 +48,11 @@ recorded by `tests/backports/host/vision/run.sh` (33 records) and held against t
   | --- | --- | --- |
   | 16x16 to 16x16 | either | **0** of 256 |
   | 8x8 to 16x16 | either | 7 of 256 |
-  | 4x7 to 33x9 | scale fit | **0** of 432 |
+  | 4x7 to 33x9 | scale fit | 6 of 432 |
   | 13x7 to 8x8 | scale fit | 1 of 128 |
   | 100x50 to 224x224 | scale fit | 3208 of 50176 |
 
-  Two rows at zero and three within a handful of pixels, with the geometry, the format, the row
+  One row at zero and three within a handful of pixels, with the geometry, the format, the row
   length and the kernel all unchanged from the runs that reported them red. **Withdrawn:** 49632 of 50176 and 50015 of 50176 for
   100x50 to 224x224, 64 of 128 for 13x7 to 8x8, 252 of 256 for 8x8 to 16x16, 338 and 347 of 432 for
   4x7 to 33x9, and "the kernel reads 50015 / 50015 / 50092" for the three CoreGraphics qualities --
@@ -280,20 +280,23 @@ recorded by `tests/backports/host/vision/run.sh` (33 records) and held against t
   - **A cover is not clamped to the target.** Clamping the drawn size instead is a scale fit
     wearing a cover's name: a 100x50 picture at 224x224 is drawn 448 wide with an inset of -112 and
     the kernel writes only the 224 columns that land inside. That is what left the square
-    centre-crop rows red, and removing the clamp made them exact.
+    centre-crop rows red, and removing the clamp is what moved 8x8 to 16x16 from every pixel
+    differing to 7 of 256 -- not to none, which is what an earlier version of this line said.
 
   Through the check, the port against Core ML's own option for the same rule:
 
   | picture to | scale fit | centre crop |
   | --- | --- | --- |
   | 16x16 to 16x16 | **0** of 256 | **0** of 256 |
-  | 8x8 to 16x16 | **0** of 256 | **0** of 256 |
+  | 8x8 to 16x16 | 7 of 256 | 7 of 256 |
   | 13x7 to 8x8 | 1 of 128 | 64 of 128 |
-  | 4x7 to 33x9 | **0** of 432 | 297 of 432 |
+  | 4x7 to 33x9 | 6 of 432 | 297 of 432 |
   | 100x50 to 224x224 | 3208 of 50176 | 50176 of 50176 |
 
-  So the scale fit is exact on three of the five and one count off on a fourth, and the **square
-  centre crops are exact**.
+  So one of the five is exact and three are within a handful of pixels, and the **square centre
+  crops are not exact**: 8x8 to 16x16 is 7 of 256 under both rules. The check itself is red, which is
+  the honest state of the port here -- `sh tests/backports/host/vision/run-crop.sh` prints
+  `port: DIFFERS from the framework` and exits 1, and the mutant below it is caught.
 
   **Where the crop starts: the complete table, committed as a fixture**
   (`tests/backports/host/vision/croprect.md`, written by `.agent-work/runs/crop-probe/croprect.m`).
