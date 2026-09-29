@@ -1,4 +1,4 @@
-// MPMediaItem's 15 80 members, the ones this release does not have at all.
+// MPMediaItem's 15 8.0 members, the ones this release does not have at all.
 //
 // Generated from the one list in tests/backports/host/mediaplayeritem/generate.py, with the facts rows
 // and the host check's table, so the three cannot drift. Do not edit by hand: change the list and run the
@@ -13,7 +13,7 @@
 // because a subclass's own method wins over a category on its public ancestor.
 //
 // Split by introduced release, per band()'s own rule: this file holds the 15 the 26.2 header
-// declares MP_API(ios(80)).
+// declares MP_API(ios(8.0)).
 
 #import <Foundation/Foundation.h>
 #if defined(CHARON_MEDIAPLAYER_STANDIN)

@@ -36,7 +36,17 @@ GROUP_80 = [
     ("assetURL", "NSURL *", "assetURL", "assetURL"),
 ]
 
-GROUPS = {80: GROUP_80}
+# The three groups after 8.0, with the release as the header writes it and as the file names it. Two of
+# the four are declared with a getter=, so the property name is the first field and the selector the third.
+GROUP_92 = [("protectedAsset", "BOOL", "hasProtectedAsset", "hasProtectedAsset")]
+GROUP_100 = [("dateAdded", "NSDate *", "dateAdded", "dateAdded"),
+              ("explicitItem", "BOOL", "isExplicitItem", "explicitItem")]
+GROUP_103 = [("playbackStoreID", "NSString *", "playbackStoreID", "playbackStoreID"),
+             ("preorder", "BOOL", "isPreorder", "preorder")]
+
+GROUPS = {80: GROUP_80, 92: GROUP_92, 100: GROUP_100, 103: GROUP_103}
+# The file and the table are named for the release without its dot; the header line quotes it with.
+LABEL = {80: "8.0", 92: "9.2", 100: "10.0", 103: "10.3"}
 
 # How each type is read out of the property dictionary. A type with no entry is not carried.
 CONVERSION = {
@@ -74,16 +84,17 @@ HEADER = """// MPMediaItem's %(count)d %(release)s members, the ones this releas
 #import <MediaPlayer/MediaPlayer.h>
 #endif
 
-@interface MPMediaItem (Charon%(release)s)
+@interface MPMediaItem (Charon%(name)s)
 %(declarations)s@end
 
-@implementation MPMediaItem (Charon%(release)s)
+@implementation MPMediaItem (Charon%(name)s)
 
 %(bodies)s@end
 """
 
 
 def emit(release, members, root):
+    label = LABEL[release]
     library = os.path.join(root, "packages", "a", "apple-backports", "MediaPlayer", "MPMediaItem%s.m" % release)
     declarations, bodies = [], []
     for name, kind, getter, key in members:
@@ -93,7 +104,7 @@ def emit(release, members, root):
         bodies.append("- (%s)%s {\n    return %s;\n}\n\n"
                       % (kind, getter, CONVERSION[kind] % key))
     with open(library, "w") as out:
-        out.write(HEADER % {"count": len(members), "release": release,
+        out.write(HEADER % {"count": len(members), "release": label, "name": release,
                             "declarations": "".join(declarations), "bodies": "".join(bodies)})
 
     table = os.path.join(root, "tests", "backports", "host", "mediaplayeritem", "members%s.h" % release)
@@ -103,7 +114,7 @@ def emit(release, members, root):
         for name, kind, getter, key in members:
             out.write('    {"%s", "%s", "%s"},\n' % (getter, kind, key))
     facts = os.path.join(root, "packages", "a", "apple-backports", "facts", "MediaPlayer", "MPMediaItem.md")
-    write_facts(facts, release, members)
+    write_facts(facts, release, members, label)
     print("wrote %s, %s and the facts rows from %d members" % (library, table, len(members)))
 
 
@@ -111,7 +122,7 @@ BEGIN = "<!-- generated: %s -->"
 END = "<!-- /generated: %s -->"
 
 
-def write_facts(facts, release, members):
+def write_facts(facts, release, members, label):
     """The facts rows for a release, written by this script and only by it.
 
     They live between markers so a re-run replaces them rather than appending a second copy: two writers
@@ -119,16 +130,16 @@ def write_facts(facts, release, members):
     """
     header = "\n".join(
         "    @property (nonatomic, readonly%s) %s %s MP_API(ios(%s));"
-        % (", getter = %s" % getter if getter != name else "", kind, name, release)
+        % (", getter = %s" % getter if getter != name else "", kind, name, LABEL[release])
         for name, kind, getter, _key in members)
     renamed = [(name, getter) for name, _kind, getter, _key in members if getter != name]
     body = [
         BEGIN % release,
         "",
-        "## %s - `MPMediaItem%s.m`" % (release, release),
+        "## %s - `MPMediaItem%s.m`" % (LABEL[release], release),
         "",
         "The %d members the 26.2 header declares `MP_API(ios(%s))`, generated from the one list in"
-        % (len(members), release),
+        % (len(members), LABEL[release]),
         "`tests/backports/host/mediaplayeritem/generate.py` together with the getters and the check's table:",
         "",
         header,
@@ -146,7 +157,7 @@ def write_facts(facts, release, members):
                  + ", ".join("`%s` is implemented as `%s`" % (n, g) for n, g in renamed) + "."]
     body += [END % release, ""]
     text = pathlib.Path(facts).read_text() if os.path.exists(facts) else "# MPMediaItem\n"
-    begin, end = BEGIN % release, END % release
+    begin, end = BEGIN % label, END % label
     if begin in text:
         head = text[:text.index(begin)]
         tail = text[text.index(end) + len(end):]

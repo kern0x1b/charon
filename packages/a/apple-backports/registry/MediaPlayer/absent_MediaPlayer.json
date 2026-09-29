@@ -362,16 +362,6 @@
    "source": "SDK 16.4, MediaPlayer"
   },
   {
-   "api": "MPMediaItem.protectedAsset",
-   "kind": "property",
-   "introduced": "9.2",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give MPMediaItem a property like it: it arrived in iOS 9",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 16.4, MediaPlayer"
-  },
-  {
    "api": "MPMediaItemPropertyHasProtectedAsset",
    "kind": "constant",
    "introduced": "9.2",
@@ -542,26 +532,6 @@
    "source": "SDK 16.4, MediaPlayer"
   },
   {
-   "api": "MPMediaItem.dateAdded",
-   "kind": "property",
-   "introduced": "10.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give MPMediaItem a property like it: it arrived in iOS 10",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 16.4, MediaPlayer"
-  },
-  {
-   "api": "MPMediaItem.explicitItem",
-   "kind": "property",
-   "introduced": "10.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give MPMediaItem a property like it: it arrived in iOS 10",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 16.4, MediaPlayer"
-  },
-  {
    "api": "MPMediaItemPropertyDateAdded",
    "kind": "constant",
    "introduced": "10.0",
@@ -699,26 +669,6 @@
    "status": "absent",
    "reason": "neither iOS 6 nor the backports give MPMusicPlayerController a method like it: it arrived in iOS 10",
    "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 16.4, MediaPlayer"
-  },
-  {
-   "api": "MPMediaItem.playbackStoreID",
-   "kind": "property",
-   "introduced": "10.3",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give MPMediaItem a property like it: it arrived in iOS 10",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 16.4, MediaPlayer"
-  },
-  {
-   "api": "MPMediaItem.preorder",
-   "kind": "property",
-   "introduced": "10.3",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give MPMediaItem a property like it: it arrived in iOS 10",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
    "source": "SDK 16.4, MediaPlayer"
   },
   {
