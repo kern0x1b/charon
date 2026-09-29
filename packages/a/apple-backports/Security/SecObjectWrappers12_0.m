@@ -71,9 +71,9 @@
 //
 // -Wall REPORTS -Wnonnull TWICE IN THIS FILE, AND NOT IN EITHER CREATOR. Re-run and the lines are:
 //
-//   SecObjectWrappers12_0.m: 93:  null returned from function that requires a non-null return value
+//   SecObjectWrappers12_0.m:102:  null returned from function that requires a non-null return value
 //       inside SecCertificateRef sec_certificate_copy_ref(sec_certificate_t)
-//   SecObjectWrappers12_0.m:110:  the same warning
+//   SecObjectWrappers12_0.m:119:  the same warning
 //       inside SecTrustRef     sec_trust_copy_ref(sec_trust_t)
 //
 // The header DECLARES THE CREATORS WITHOUT A NULLABILITY ANNOTATION, and the getter pair with one:
