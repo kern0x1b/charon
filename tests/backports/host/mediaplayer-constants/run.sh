@@ -153,6 +153,40 @@ grep -E '^(MISSING|NO-ORACLE)' "$build/green.txt" | sed 's/^/    /'
 # WHICH ORACLE JUDGED WHICH NAME is printed, so a name no oracle judged is visible rather than green.
 grep '^OK' "$build/green.txt" | awk -F'\t' '$4=="oracle=cache" {printf "    judged by a RELEASE CACHE\t%s\t%s\n", $2, $3}'
 
+# THE WHOLE FAMILY, NOT ONE FILE. The check compares every implemented constant row in
+# registry/MediaPlayer/*.json against every constant the port's objects define, in BOTH directions. The
+# defect it exists for is one a single-file series cannot see: a row in mpitemconstants.json left
+# `implemented` with nothing behind it while the series that touched absent_MediaPlayer.json passed. The
+# media harness above cannot catch that either - it asserts declared == defined WITHIN the files it can
+# see, and a file that is missing from the commit is invisible to it, so it passed at 30 of 30 against 31
+# rows once already.
+reg=$root/packages/a/apple-backports/registry/MediaPlayer
+python3 "$here/rows-vs-objects.py" "$reg" "$port" | sed 's/^/ /'
+
+# THE CONTROL: on the REAL tree the comparison must pass, and it must have examined something. A checker
+# that compared nothing passes silently, so a nonzero count is part of what is asserted here.
+ctl=$(python3 "$here/rows-vs-objects.py" "$reg" "$port" 2>&1) || { echo "FAIL  the real tree does not satisfy the row/object comparison"; exit 1; }
+case "$ctl" in *"examined, so nothing was proved"*) echo "FAIL  the comparison examined nothing"; exit 1;; esac
+examined=$(printf '%s\n' "$ctl" | sed -n 's/.*[^0-9]\([0-9][0-9]*\) implemented constant rows.*/\1/p')
+[ "${examined:-0}" -gt 0 ] || { echo "FAIL  the comparison reported ${examined:-0} rows examined"; exit 1; }
+echo "  rows-vs-objects: CONTROL passed on the real tree, $examined rows examined"
+
+# THE MUTANT: the same comparison with ONE OBJECT FILE REMOVED must FAIL, and must name a constant. A
+# check that cannot fail here would have passed on the real tree for the wrong reason, which is the same
+# class of mistake as a control that only asserted a nonzero exit.
+drop=$build/rows-dropped
+rm -rf "$drop"; mkdir -p "$drop"
+for f in "$port"/MediaPlayerConstants*.m; do cp "$f" "$drop/"; done
+victim=$(ls "$drop" | head -1)
+rm "$drop/$victim"
+lost=$(python3 "$here/rows-vs-objects.py" "$reg" "$drop" 2>&1) && {
+  echo "FAIL  dropping $victim did not fail the comparison, so the check cannot see a missing object"; exit 1; }
+case "$lost" in
+  *UNBACKED*) : ;;
+  *) echo "FAIL  dropping $victim failed the comparison but named no unbacked constant:"; printf '%s\n' "$lost" | head -3 | sed 's/^/    /'; exit 1;;
+esac
+echo "  rows-vs-objects: MUTANT caught - removing $victim was reported, by name"
+
 # THE MUTANTS: one per constant. A mutant directory must hold BOTH objects, because a port's constants
 # live in more than one object and a mutant that changes the 9.0 object still has to LINK against the
 # 8.2 one. The untouched object is copied unchanged. A build that produces no binary is a FAILURE and not
