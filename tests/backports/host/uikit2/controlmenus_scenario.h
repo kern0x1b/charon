@@ -24,11 +24,14 @@ static BOOL charon_has_method(Class cls, const char *name)
     // the recorder's exit 133, whose crash report put the trap under
     // _NSDescriptionWithStringProxyFunc and the frame in this file's own block. Registering is a no-op for a
     // name that is already registered, and it makes the question safe to ask for one that is not.
+    // `sel_registerName` first, so the selector is **known** even on the side that has no such method, and the
+    // runtime's optimised -respondsToSelector: cannot trap on it - the recorder's exit 133 was exactly that trap,
+    // with the frame in this file's own block. Then the question is asked of an **object**, because
+    // class_getInstanceMethod does not search a class's **categories**, and every method the port adds to a host
+    // class is a category's: walking the method lists answered NO for all of them, so the scenario fell back to
+    // the host's own method every time and compared the host's answers with themselves.
     SEL selector = sel_registerName(name);
-    for (Class c = cls; c; c = class_getSuperclass(c))
-        if (class_getInstanceMethod(c, selector))
-            return YES;
-    return NO;
+    return [cls instancesRespondToSelector:selector];
 }
 
 static void charon_insert_action(UISegmentedControl *control, UIAction *action, NSUInteger index)
@@ -77,6 +80,73 @@ static NSString *charon_insert_action_name(UISegmentedControl *control)
 static NSString *bar_line(UIBarButtonItem *item)
 {
     return [NSString stringWithFormat:@"title=%@ image=%d menu=%d pa=%d width=%g style=%ld system=%@", item.title ?: @"nil", item.image != nil, item.menu != nil, item.primaryAction != nil, item.width, (long)item.style, @""];
+}
+
+// What the control is holding, slot by slot, after each step: the identifier of the action in each slot, or
+// NSNull for a slot with none. Printed to stderr so it is not one of the compared lines, and printed on both
+// sides so the two can be read against each other - the one disagreement in this group is an identifier the port
+// can no longer resolve, and this is where it goes missing.
+// A method the port carries, called under the harness's own name when the control has it. `prefixed` is the
+// renamer's rule - the first **keyword** camel-cased with the prefix glued inside it - so
+// `actionForSegmentAtIndex:` is `charonHostActionForSegmentAtIndex:` and
+// `segmentIndexForActionIdentifier:` is `charonHostSegmentIndexForActionIdentifier:`.
+static SEL charon_carried(Class cls, const char *published)
+{
+    // The renamer's rule is the prefix glued inside the first **keyword**, with that keyword's first letter
+    // capitalised: `actionForSegmentAtIndex:` is `charonHostActionForSegmentAtIndex:`. Plain concatenation
+    // gives `charonHostactionForSegmentAtIndex:`, which nothing defines, so the question answered NO and the
+    // scenario fell back to the host's method - the very mix this whole line of work is about.
+    char *name = malloc(strlen(published) + 16);
+    strcpy(name, "charonHost");
+    // Index **10**, not 9: "charonHost" is ten characters, so index 9 is its own `t` - writing the capitalised
+    // letter there built `charonHosActionForSegmentAtIndex:`, which is why the port's method was never reached.
+    name[10] = (char)(published[0] >= 'a' && published[0] <= 'z' ? published[0] - 'a' + 'A' : published[0]);
+    strcat(name, published + 1);
+    SEL prefixed = sel_registerName(name);
+    // The question is asked **before** the name is freed. Asked after, it is about freed memory and answers
+    // whatever that memory happens to say - which is why every version of this helper fell back to the host's
+    // method and the compared line compared the host's answers with themselves.
+    BOOL has = charon_has_method(cls, name);
+    free(name);
+    return has ? prefixed : sel_registerName(published);
+}
+
+// The two lookups, asked under the harness's own name when the control has them. On the port's side the
+// public name is the **host's** method - the port's are carried selectors the harness renamed - and the host's
+// reads the host's store, which the port never writes; so a line built from the public calls compares the
+// host's answers with themselves. The recorder has neither prefixed method and takes the public one, which is
+// the host's own and the right answer on that side.
+static id charon_action_at(UISegmentedControl *control, NSUInteger index)
+{
+    SEL selector = charon_carried([UISegmentedControl class], "actionForSegmentAtIndex:");
+    return ((id (*)(id, SEL, NSUInteger))objc_msgSend)(control, selector, index);
+}
+
+static void charon_set_action(UISegmentedControl *control, UIAction *action, NSUInteger index)
+{
+    SEL selector = charon_carried([UISegmentedControl class], "setAction:forSegmentAtIndex:");
+    ((void (*)(id, SEL, UIAction *, NSUInteger))objc_msgSend)(control, selector, action, index);
+}
+
+static NSInteger charon_index_of(UISegmentedControl *control, NSString *identifier)
+{
+    SEL selector = charon_carried([UISegmentedControl class], "segmentIndexForActionIdentifier:");
+    return ((NSInteger (*)(id, SEL, NSString *))objc_msgSend)(control, selector, identifier);
+}
+
+static void charon_dump_slots(const char *tag, UISegmentedControl *control)
+{
+    NSMutableString *text = [NSMutableString string];
+    for (NSUInteger index = 0; index < control.numberOfSegments; index++) {
+        id held = charon_action_at(control, index);
+        if (index)
+            [text appendString:@" | "];
+        [text appendFormat:@"%lu=%@", (unsigned long)index,
+                                 [held respondsToSelector:@selector(identifier)]
+                                     ? ([held identifier] ?: @"nil")
+                                     : ([held isKindOfClass:[NSNull class]] ? @"NSNull" : @"not an action")];
+    }
+    fprintf(stderr, "[controlmenus] %-22s %s\n", tag, [text UTF8String]);
 }
 
 static NSArray *menu_scenario(Class actionClass, Class menuClass, CharonControlWithActions entry)
@@ -142,20 +212,25 @@ static NSArray *menu_scenario(Class actionClass, Class menuClass, CharonControlW
     UIAction *b1 = [actionClass actionWithTitle:@"B" image:nil identifier:@"idy" handler:^(id x) {}];
     UISegmentedControl *sg = charon_control_with_actions(entry, CGRectMake(0, 0, 200, 30), @[ a, b1 ]);
     [lines addObject:ur_line(@"segments", @[@(sg.numberOfSegments), @(sg.selectedSegmentIndex), [sg titleForSegmentAtIndex:0] ?: @"nil", [sg titleForSegmentAtIndex:1] ?: @"nil", ur_yes([sg imageForSegmentAtIndex:0] != nil),
-                                           ur_yes([sg actionForSegmentAtIndex:0] != a), ur_yes([[sg actionForSegmentAtIndex:0] isEqual:a]), @([sg segmentIndexForActionIdentifier:@"idy"]), @([sg segmentIndexForActionIdentifier:@"nope"])])];
+                                           ur_yes(charon_action_at(sg, 0) != a), ur_yes([charon_action_at(sg, 0) isEqual:a]), @(charon_index_of(sg, @"idy")), @(charon_index_of(sg, @"nope"))])];
     UIAction *cc = [actionClass actionWithTitle:@"C" image:nil identifier:@"idz" handler:^(id x) {}];
-    [sg insertSegmentWithAction:cc atIndex:1 animated:NO];
-    [lines addObject:ur_line(@"inserted", @[@(sg.numberOfSegments), [sg titleForSegmentAtIndex:1], @([sg segmentIndexForActionIdentifier:@"idz"]), @([sg segmentIndexForActionIdentifier:@"idy"])])];
-    [lines addObject:ur_line(@"set a taken identifier", ur_raised(^id { [sg setAction:a forSegmentAtIndex:1]; return @"no"; }))];
+    charon_dump_slots("built", sg);
+    charon_insert_action(sg, cc, 1);
+    charon_dump_slots("after the insert", sg);
+    [lines addObject:ur_line(@"inserted", @[@(sg.numberOfSegments), [sg titleForSegmentAtIndex:1], @(charon_index_of(sg, @"idz")), @(charon_index_of(sg, @"idy"))])];
+    [lines addObject:ur_line(@"set a taken identifier", ur_raised(^id { charon_set_action(sg, a, 1); return @"no"; }))];
     UIAction *n9 = [actionClass actionWithTitle:@"N9" image:nil identifier:@"id9" handler:^(id x) {}];
-    [sg setAction:n9 forSegmentAtIndex:1];
+    charon_set_action(sg, n9, 1);
+    charon_dump_slots("after setAction", sg);
     [lines addObject:ur_line(@"set an action", @[[sg titleForSegmentAtIndex:1], ur_yes([sg imageForSegmentAtIndex:1] != nil)])];
     [sg insertSegmentWithTitle:@"plain" atIndex:0 animated:NO];
-    [lines addObject:ur_line(@"a plain segment", @[[sg actionForSegmentAtIndex:0] ?: @"nil", @([sg segmentIndexForActionIdentifier:@"idx"]), @([sg segmentIndexForActionIdentifier:@"id9"])])];
+    charon_dump_slots("after a plain insert", sg);
+    [lines addObject:ur_line(@"a plain segment", @[charon_action_at(sg, 0) ?: @"nil", @(charon_index_of(sg, @"idx")), @(charon_index_of(sg, @"id9"))])];
     [sg removeSegmentAtIndex:0 animated:NO];
-    [lines addObject:ur_line(@"segment removed", @[@([sg segmentIndexForActionIdentifier:@"idx"]), @([sg segmentIndexForActionIdentifier:@"id9"])])];
-    [lines addObject:ur_line(@"no action", @[[sg actionForSegmentAtIndex:9] ?: @"nil", [[[UISegmentedControl alloc] initWithItems:@[@"q"]] actionForSegmentAtIndex:0] ?: @"nil"])];
-    [lines addObject:ur_line(@"unique on insert", ur_raised(^id { [sg insertSegmentWithAction:cc atIndex:0 animated:NO]; return @"no"; }))];
+    charon_dump_slots("after the removal", sg);
+    [lines addObject:ur_line(@"segment removed", @[@(charon_index_of(sg, @"idx")), @(charon_index_of(sg, @"id9"))])];
+    [lines addObject:ur_line(@"no action", @[charon_action_at(sg, 9) ?: @"nil", charon_action_at([[UISegmentedControl alloc] initWithItems:@[@"q"]], 0) ?: @"nil"])];
+    [lines addObject:ur_line(@"unique on insert", ur_raised(^id { charon_insert_action(sg, cc, 0); return @"no"; }))];
     // The two action classes side by side in one window. `UIAction` is the host's own on both sides of a
     // differential - the port's is renamed to CharonHostUIAction - so the first pair is the same class in both
     // binaries and the second is the one this binary carries, and the host's comes first so that a side which
