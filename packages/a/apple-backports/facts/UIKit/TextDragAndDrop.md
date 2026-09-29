@@ -9,9 +9,11 @@ is not offered, which is what a device of this era answers and what the sessions
 Of the 96 rows the ledger had as missing, **eleven were already routed by the port and only
 undescribed** — the questions a drag and a drop ask its *interaction* delegate, in
 `UIDragInteraction.m` and `CharonDropSequence11.m`. Those are registered where the routing is, and the
-order a drop is asked in is asserted by `tests/backports/device/textdragdrop.m`, which is
-**WRITTEN, NOT RUN**: it needs an emulated 6.1.3 and no run of it exists, so no verdict is claimed for
-it here or anywhere in this series.
+order a drop is asked in is asserted by `tests/backports/device/textdragdrop.m`. It has been **RUN on
+an emulated iPhone3,1 6.1.3 and it CRASHED in the guest with signal 5 before its first check**, so it
+establishes nothing about the order and no verdict is claimed for it here or anywhere in this series.
+What is on the record is the crash, not a pass: `verdict.json` reads `state: crash, signal: 5,
+reason: reached, guest_seconds: 0.126`, and the program wrote no `textdragdrop.done`.
 
 The rest are the text family proper: the two request types, the text delegates, the droppable and
 draggable protocols' properties, the paste configuration, and the spring-loaded interaction. **Most

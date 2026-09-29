@@ -13,8 +13,8 @@ set_allowedarchs("iphoneos|armv7")
 set_defaultplat("iphoneos")
 set_defaultarchs("iphoneos|armv7")
 
-# The port sources are taken from DDR_UIKIT, which the run script points at a scratch copy of,
-# so a mutant never overwrites a tracked file in the worktree.
+-- The port sources are taken from DDR_UIKIT, which the run script points at a scratch copy of,
+-- so a mutant never overwrites a tracked file in the worktree.
 local ui = os.getenv("DDR_UIKIT") or path.join(root, "packages/a/apple-backports/UIKit")
 target("textdragdrop")
     add_rules("@addon/charon/daemon")
@@ -26,7 +26,6 @@ target("textdragdrop")
               path.join(ui, "CharonDropSequence11.m"),
               path.join(ui, "CharonDropCoordinatorObjects.m"),
               path.join(ui, "UIDropCoordinators.m"),
-              path.join(ui, "CharonDragSession.m"),
               path.join(ui, "UIDropSession.m"),
               path.join(ui, "UIDropProposal.m"),
               path.join(ui, "UIDropInteraction.m"),
