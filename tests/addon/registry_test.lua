@@ -97,9 +97,11 @@ local function type_rows(backports, found)
     os.mkdir(root)                       -- os.mkdir takes one directory: its parents must already be there
     os.mkdir(path.join(root, "Charon"))
     os.mkdir(path.join(root, "registry"))
-    -- a Charon header of the tree's own, the shape a generated header declaring a type has
+    -- a Charon header of the tree's own, the shape a generated header declaring a type has; its comment holds
+    -- the word "pairs", which a header of the package does (HomeKit's CharonHapCrypto.h) and which made the
+    -- word table answer xmake's pairs() as a method and raise
     io.writefile(path.join(root, "Charon", "CharonFixture.h"),
-                 "#import <Foundation/Foundation.h>\ntypedef NSUInteger FixturedType;\ntypedef NS_ENUM(NSInteger, FixturedKind) {\n    FixturedCaseOne = 1,\n    FixturedCaseTwo = 2,\n};\n")
+                 "#import <Foundation/Foundation.h>\n// key pairs\ntypedef NSUInteger FixturedType;\ntypedef NS_ENUM(NSInteger, FixturedKind) {\n    FixturedCaseOne = 1,\n    FixturedCaseTwo = 2,\n};\n")
     -- xmake's try() returns values only when the block succeeds: it calls the catch and discards whatever
     -- that returns, so a message taken from try's second value is nil on a raise. The catch therefore writes
     -- into this, and told() says which of the two happened.

@@ -1614,7 +1614,11 @@ local function declared_names(root, sdkdir)
             names[word] = true
         end
     end
-    for word in pairs(ours) do
+    -- table.keys, not pairs: xmake's pairs(t) calls t:pairs() when t has a field of that name, and a header
+    -- of this package holds the word "pairs" (HomeKit's CharonHapCrypto.h), so ours.pairs is true and pairs(ours)
+    -- raised "attempt to call a boolean value (method 'pairs')" - the stack 14 gate at 6.1.3, the first run
+    -- with a type row to ask
+    for _, word in ipairs(table.keys(ours)) do
         names[word] = true
     end
     return names
