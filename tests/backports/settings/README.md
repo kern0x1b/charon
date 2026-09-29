@@ -8,8 +8,10 @@ Settings app, so calling it there puts a window on somebody's screen; and the th
 would be the signed-in user's own accessory list.
 
 So the oracle for every answer here is `axs-census.lua` - the release's own accessibility preferences,
-with two controls - and the reading is named next to the assertion it holds. `check.m` runs twenty-five
-counted assertions and `mutants.sh` covers them with eleven mutations: ten killed and one control green.
+with two controls - and the reading is named next to the assertion it holds. `check.m` counts its own
+assertions as it runs them and prints the total - it is never written down here, because a number in a
+file is a number no run maintains - and `mutants.sh` covers them with eleven mutations: ten killed and
+one control green.
 The census is its own tool and its own output, and it is committed with the rows that depend on it.
 
 ## Owed
