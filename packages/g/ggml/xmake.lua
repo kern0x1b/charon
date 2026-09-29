@@ -12,8 +12,11 @@ package("ggml")
 
     -- Why this one, of the three the owner named, and what is taken from it:
     --
-    --   - it is C. MLCompute's graph, its tensors and its optimizers are a C-shaped API, and a C engine
-    --     reaches an old release's C runtime rather than its C++ one, which the 4.3 band does not have.
+    --   - its tensors, its graph and its quantization are C, and a C engine reaches an old release's C
+    --     runtime. Since the 0.2x series the operators and the graph's compute are C++ (ops.cpp, vec.cpp and
+    --     the rest of the CPU backend's translation units) and the backend and the optimizer use the
+    --     standard library's vector, map, string and mutex; so the archive holds objects of both, and the
+    --     C++ runtime it needs is the band's (libc++ from iOS 5.0, cxx_runtime in modules/apple/backports.lua).
     --   - its graph is a list of nodes over named tensors, which is what MLCGraph builds and what
     --     MLCInferenceGraph executes.
     --   - ggml_opt's steps are SGD and AdamW over a parameter's moments, which is what MLCSGDOptimizer,
@@ -30,14 +33,20 @@ package("ggml")
     -- No GGML_USE_* at all, and that is deliberate: every backend of the library is behind an #ifdef, so
     -- naming one with -D turns it on whatever value it is given - -DGGML_USE_OPENMP=0 included, which is
     -- how the first attempt of this recipe failed on a missing omp.h. With none named the library builds
-    -- its plain C CPU path, which is what an armv7 release has.
+    -- its plain CPU path, which is what an armv7 release has. GGML_CPU_GENERIC is the one define the CPU
+    -- backend itself asks for when there is no native kernel of its own: without it arch-fallback.h takes
+    -- an ARM target to have arm/quants.c and renames every generic kernel (ggml_vec_dot_*, quantize_row_q8_*)
+    -- to <name>_generic, so the archive links with them undefined - the first gate that linked it said so.
     --
     -- Hidden, so the engine is never API of the image that links it in: libMLComputeBackports.dylib
     -- exports what MLCompute does and nothing a second copy of ggml in the process could bind to. The
-    -- library is built without RTTI and without exceptions, which it does not use, so it needs of the
-    -- C++ runtime nothing at all - it is C, and it links libc only.
-    local FLAGS = {"-Os", "-fvisibility=hidden", "-fno-exceptions", "-fno-rtti", "-D_GNU_SOURCE", "-Dggml_EXPORTS"}
-    local SOURCES = {"ggml.c", "ggml-alloc.c", "ggml-quants.c", "ggml-cpu/ggml-cpu.c", "ggml-cpu/quants.c"}
+    -- library is built without RTTI and without exceptions, which it does not use.
+    local FLAGS = {"-Os", "-fvisibility=hidden", "-fno-exceptions", "-fno-rtti", "-D_GNU_SOURCE", "-Dggml_EXPORTS", "-DGGML_CPU_GENERIC"}
+    local CXXFLAGS = {"-std=c++17", "-fvisibility-inlines-hidden"}
+    local SOURCES = {"ggml.c", "ggml-alloc.c", "ggml-quants.c", "ggml-cpu/ggml-cpu.c", "ggml-cpu/quants.c",
+                     "ggml.cpp", "ggml-backend.cpp", "ggml-backend-meta.cpp", "ggml-threading.cpp", "ggml-opt.cpp",
+                     "ggml-cpu/ops.cpp", "ggml-cpu/vec.cpp", "ggml-cpu/binary-ops.cpp", "ggml-cpu/unary-ops.cpp",
+                     "ggml-cpu/traits.cpp", "ggml-cpu/ggml-cpu.cpp", "ggml-cpu/repack.cpp", "ggml-cpu/iqp.cpp"}
     local HEADERS = {"ggml.h", "ggml-alloc.h", "ggml-cpu.h", "ggml-opt.h", "ggml-backend.h"}
 
     on_install("iphoneos", function (package)
@@ -63,16 +72,18 @@ package("ggml")
                         "-I" .. path.join(root, "include"), "-I" .. path.join(root, "include", "ggml"),
                         "-I" .. path.join(root, "src"), "-I" .. path.join(root, "src", "ggml-cpu")}
 
-        -- Five translation units, and not the library's three: the CPU backend's own two carry the
-        -- convenience wrappers that ggml.c only declares - ggml_sigmoid, ggml_new_f32, ggml_set_f32 and the
-        -- graph compute - and without them the archive links with undefined symbols the first time
-        -- anything calls one. The other backends and the examples are their own targets and are not
-        -- needed by an image that links this in.
+        -- Eighteen translation units, and not the library's few: the CPU backend's own carry the operators
+        -- (ops.cpp, vec.cpp, binary-ops.cpp, unary-ops.cpp), the kernels and the wrappers ggml.c only
+        -- declares - ggml_sigmoid, ggml_new_f32, ggml_set_f32 and the graph compute - and ggml-backend.cpp the
+        -- tensor writes and the buffer usage the graph allocator calls; without them the archive links with
+        -- undefined symbols the first time anything calls one (143 of them, at MLCompute's link). The other
+        -- backends and the examples are their own targets and are not needed by an image that links this in.
         local objects = {}
         for _, source in ipairs(SOURCES) do
             local object = path.absolute(path.join("objects", source:gsub("[/.]", "_") .. ".o"))
             os.mkdir(path.directory(object))
-            os.vrunv(toolchain:tool("cc"), table.join(target, FLAGS, {"-c", path.join(root, "src", source), "-o", object}))
+            local cxx = source:endswith(".cpp")
+            os.vrunv(toolchain:tool(cxx and "cxx" or "cc"), table.join(target, FLAGS, cxx and CXXFLAGS or {}, {"-c", path.join(root, "src", source), "-o", object}))
             table.insert(objects, object)
         end
         table.sort(objects)

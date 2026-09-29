@@ -125,3 +125,26 @@ It has been put back: the record for `v0.1.0` is out of `~/.xmake/addons/addons.
 gone, `active` is `v0.8.12` and the gate resolves `charon v0.8.13` again, which is what it resolved before.
 The lesson is in the recipe's own build: a scratch project must take the *highest* `add_versions` from
 the checkout's addon recipe, exactly as `coordination/build-gate.lua` does, and not the first.
+
+## Update: the recipe builds the C++ units too, and asks for GGML_CPU_GENERIC
+
+The text above says the recipe compiles the three (then five) C units. That held for the recipe's own
+install and its test, which never linked the archive; the first gate that linked `libMLComputeBackports`
+against it (6.1.3, stack 15) failed with 143 undefined symbols from `libggml.a`. Two causes, both in
+`packages/g/ggml/xmake.lua`:
+
+- ggml 0.25.3's operators and its graph compute are C++ (`ggml-cpu/ops.cpp`, `vec.cpp`, `binary-ops.cpp`,
+  `unary-ops.cpp`, `traits.cpp`, `repack.cpp`, `iqp.cpp`, `ggml-cpu/ggml-cpu.cpp`), and so are the backend and
+  the optimizer (`ggml.cpp`, `ggml-backend.cpp`, `ggml-backend-meta.cpp`, `ggml-threading.cpp`,
+  `ggml-opt.cpp`). The recipe now builds all eighteen units, the C ones with the C compiler and the C++ ones
+  with `-std=c++17`, `-fno-exceptions`, `-fno-rtti` and hidden visibility. The host differential already
+  compiled this set (`tests/backports/host/mlcompute-engine/run.sh`, `ENGINE_CXX`).
+- for an ARM target `ggml-cpu/arch-fallback.h` takes a native `arch/arm/quants.c` to exist and renames each
+  generic kernel to `<name>_generic`; the recipe builds no arch unit, so `-DGGML_CPU_GENERIC` selects the
+  generic kernels under their plain names (`ggml_vec_dot_*`, `quantize_row_q8_*`).
+
+Measured: with the eighteen objects and the define, every one of the 143 symbols the gate named is defined; what
+the objects still import is libc, compiler-rt (`__divdi3`, `__extendhfsf2`, `__truncsfhf2`) and the C++ runtime
+(`operator new`/`delete`, `std::__1::mutex`, `std::__1::basic_string`, `std::__1::to_string`), which is the
+band's C++ runtime (`cxx_runtime`): libc++ from iOS 5.0. Whether the 4.3 band, which has libstdc++ only, can
+resolve the `std::__1` symbols is what the 4.3 gate of this stack decides.
