@@ -1,6 +1,7 @@
 #import "uirest.h"
 #import <objc/message.h>
 #import <dlfcn.h>
+#import <stdio.h>
 
 // A control made of actions, on whichever side this binary is.
 //
@@ -52,6 +53,10 @@ static UISegmentedControl *charon_control_with_actions(CGRect frame, NSArray *ac
     dispatch_once(&once, ^{
         entry = (CharonControlWithActions)dlsym(dlopen(NULL, RTLD_NOW), "charon_control_init_with_actions");
     });
+    // The one line the coordinator asked for: whether the port's own implementation is reachable in this
+    // process, which is the difference between running the port's code and falling back to the host's.
+    fprintf(stderr, "[controlmenus] the port's own control-with-actions entry point %s\n",
+            entry ? "was found" : "is NOT in this process");
     if (entry)
         return entry([UISegmentedControl alloc], frame, actions);
     SEL published = NSSelectorFromString(@"initWithFrame:actions:");
