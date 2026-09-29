@@ -89,10 +89,12 @@ stitch: the round trip is green and all three mutants are red
 open findings B1..B5 of the `metal-owed-r7` round, and it is **not** part of `metal-stitch`.
 
 What is parked: `tests/backports/host/metal-census/pre-export.sh`, `check-split-control.sh` and
-`failure-matrix.sh`. They guard the release-split and the link, and the coordinator's gate, the
-release-split run Two holes are open in them, and they are recorded here rather than fixed in this delivery: a stub in the matrix cannot find `work-guard.sh`, so six rows pass on a
-missing file, and the FAIL-noise filters can be defeated; and `pre-export.sh:207` lost its `fail`, so a
-non-compiling source on the `SYMBOL_DIR` path exits 0 with an OK line.
+`failure-matrix.sh`. They guard the release-split and the link, and two holes in them are open and are
+recorded here rather than fixed in this delivery. A stub in the matrix cannot find `work-guard.sh`, so
+six of its rows pass on a missing file, and the FAIL-noise filters can be defeated. Separately,
+`pre-export.sh:207` lost its `fail`, so a non-compiling source on the `SYMBOL_DIR` path exits 0 with an
+OK line. The branch is `band-api-metal/owed` at `bb688396a` and the reviewer's findings are the
+`metal-owed-r7` round.
 
 This delivery carries the stitching objects, their rows, this file, and the host test that proves the
 port's own classes are defined rather than Apple's — which is the part that cannot be re-derived from

@@ -88,14 +88,22 @@ if [ -n "${SELF_TEST:-}" ]; then
     exit 0
 fi
 
-build() {   # $1 output name, $2 stitching source, $3 object name
-    xcrun clang $common "$here/stitch.m" "$2" -c -o "$work/$3" 2> "$work/$1.log" || true
+# $1 output binary, $2 stitching source. The DEVICE object this function used to compile is gone: two
+# sources with -c and a single -o is a hard error on every run, its log was written and read by
+# nothing, and `|| true` hid both. Nothing consumed it - prove_defined reads the LINKED BINARY below,
+# and every mutant links its own - so the step is DROPPED rather than repaired.
+build() {   # $1 output binary, $2 stitching source
     xcrun clang $common -o "$work/$1" "$here/stitch.m" "$2" > "$work/$1.link" 2>&1 || {
-        echo "FAIL: $1 does not build" >&2; sed 's/^/    /' "$work/$1.link" | sed -n '/error:/,$p' | head -1 >&2; exit 1; }
+        echo "FAIL: $1 does not build" >&2
+        # the FIRST compiler error, and the LINKER's block, which is where the missing symbol is NAMED
+        sed -n '/error:/,$p' "$work/$1.link" | head -1 | sed 's/^/    /' >&2
+        sed -n '/Undefined symbols/,$p' "$work/$1.link" | sed -n '2,6p' | sed 's/^/    /' >&2
+        exit 1
+    }
 }
 
 echo "the round trip:"
-build real "$SRC" real-device.o
+build real "$SRC"
 prove_defined "$(nm -g "$work/real" 2>/dev/null)" || exit 1
 "$work/real" || { echo "FAIL: the stitching round trip failed" >&2; exit 1; }
 
