@@ -30,6 +30,10 @@ common="$common -iframework $sdk/System/iOSSupport/System/Library/Frameworks -fo
 frameworks="-framework Foundation -framework Security -framework CoreFoundation"
 failures=0
 MUTANT_SRC=""
+# THE CONTROL IS MARKED, NOT THE CHECK WEAKENED. A mutant named here is EXPECTED to survive its
+# comparison; every other one that survives is a failure. The list is not a hole in the check - it is one
+# entry, and adding to it would turn the run green in a way nobody can read back.
+EXPECTED_UNNOTICED="identity"
 cases=0
 missing=0
 mutants=0
@@ -108,6 +112,10 @@ run_mutation() {
         echo "RED    $name mutation NOT BUILT - nothing proved the case can fail"
         failures=$((failures + 1))
         MUTANT_SRC=""
+# THE CONTROL IS MARKED, NOT THE CHECK WEAKENED. A mutant named here is EXPECTED to survive its
+# comparison; every other one that survives is a failure. The list is not a hole in the check - it is one
+# entry, and adding to it would turn the run green in a way nobody can read back.
+EXPECTED_UNNOTICED="identity"
         return
     fi
     if [ ! -f "$build/mutant-$name.m" ]; then
@@ -130,16 +138,33 @@ run_mutation() {
         echo "CRASH  $name mutation  crashed: signal $((status - 128)) (exit $status) - NOTICED, and not a failure: a crash is a mutation the comparison caught"
         mutants_noticed=$((mutants_noticed + 1))
         MUTANT_SRC=""
+# THE CONTROL IS MARKED, NOT THE CHECK WEAKENED. A mutant named here is EXPECTED to survive its
+# comparison; every other one that survives is a failure. The list is not a hole in the check - it is one
+# entry, and adding to it would turn the run green in a way nobody can read back.
+EXPECTED_UNNOTICED="identity"
         return
     fi
     if python3 "$H/$compare" "$build/mutant-$name.out" > "$build/mutant-$name.red" 2>&1; then
-        echo "RED    $name MUTATION WENT UNNOTICED - the comparison cannot tell this case from a broken one"
-        failures=$((failures + 1))
+        if [ "$name" = "$EXPECTED_UNNOTICED" ]; then
+            echo "EXPECTED  $name mutation  NOT noticed, and that is REQUIRED: it is a byte-identical copy, so
+        the comparison passing is the whole point - and it is what proves the noticed count can go LOWER"
+        else
+            echo "RED    $name MUTATION WENT UNNOTICED - the comparison cannot tell this case from a broken one"
+            failures=$((failures + 1))
+        fi
         MUTANT_SRC=""
+# THE CONTROL IS MARKED, NOT THE CHECK WEAKENED. A mutant named here is EXPECTED to survive its
+# comparison; every other one that survives is a failure. The list is not a hole in the check - it is one
+# entry, and adding to it would turn the run green in a way nobody can read back.
+EXPECTED_UNNOTICED="identity"
     else
         echo "RED    $name mutation  $(grep -m1 DIFFERS "$build/mutant-$name.red" | cut -c9-)"
         mutants_noticed=$((mutants_noticed + 1))
         MUTANT_SRC=""
+# THE CONTROL IS MARKED, NOT THE CHECK WEAKENED. A mutant named here is EXPECTED to survive its
+# comparison; every other one that survives is a failure. The list is not a hole in the check - it is one
+# entry, and adding to it would turn the run green in a way nobody can read back.
+EXPECTED_UNNOTICED="identity"
     fi
 }
 
@@ -338,6 +363,7 @@ run_mutation data-halfpair compare-protocol-options-data.py protocol-options-dat
 # held-nocopy mutates the IVAR in SecProtocolOptions13_0.m, which IS the case's own source, so it
 # REPLACES it and is not added beside it - adding it is a duplicate symbol, which is what it did first.
 run_mutation held-nocopy   compare-protocol-options-held.py  protocol-options-held
+run_mutation identity       compare-protocol-options-held.py  protocol-options-held
 run_mutation trust-result      compare-trust-result.py
 
 # --- the fuzz: no comparison, it must simply not crash, and it is built with the sanitizers on ---

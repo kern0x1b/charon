@@ -74,3 +74,12 @@ if held_src.count(old_block) != 1:
     fail("make-mutants: FAILED - the held anchor matched %d times, not once" % held_src.count(old_block))
 wrote("mutant-held-nocopy.m", held_src.replace(old_block, new_block))
 print("  mutant held-nocopy.m: the block is stored by pointer, so the stack frame it lived in is gone")
+
+
+# THE IDENTITY CONTROL, and it is the only mutant that is NOT expected to change anything. It is a
+# BYTE-IDENTICAL copy of a port source the case links, so the build succeeds, the comparison PASSES, and
+# the driver must report it as UNNOTICED. That is the point: a counter that can only go up is a ratchet
+# rather than a measurement, and this is what proves the counter can read LOWER.
+identity_src = open(os.path.join(src, "SecProtocolOptions13_0.m")).read()
+wrote("mutant-identity.m", identity_src)
+print("  mutant identity.m: a byte-identical copy of SecProtocolOptions13_0.m - nothing is changed")
