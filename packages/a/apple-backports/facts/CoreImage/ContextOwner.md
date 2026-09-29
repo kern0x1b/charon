@@ -17,14 +17,15 @@ a context the port did not give a surface is still drawn by the release.
 ## The two rows the port answers with NO, and why each is `absent`
 
 Both were carried at one point and both came out. What follows is what was measured, and every number
-here is an output line of `tests/backports/host/ciimage/pixel/run.sh` on this tree or of the seven-line
-probe in that directory's log, run against the host's own CoreImage.
+here is an output line of a probe in `tests/backports/host/ciimage/pixel/`: the differential the band runs
+through that directory's `run.sh`, and `distinct.m`, which is the seven-line one and is in the tree.
 
 **`-imageBySettingProperties:`** — the port returned a copy with the caller's dictionary merged onto it.
 The values read back correctly (`props count 1`, `props value one` on both sides) and the pixels
 matched, but the object was not distinct: `props distinct 0` where the system gives `1`. A copy is the
 obvious way to get a second image and it does not work, because `CIImage` is immutable. Measured, over
-one image, seven public constructions and **all seven hand back the same object**:
+one image, seven public constructions and **all seven hand back the same object** — the output of
+`tests/backports/host/ciimage/pixel/distinct.m`, which is the probe and is in the tree:
 
     copy                                           distinct 0
     mutableCopy                                    distinct 0
