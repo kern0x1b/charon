@@ -30,7 +30,6 @@ common="$common -iframework $sdk/System/iOSSupport/System/Library/Frameworks -fo
 frameworks="-framework Foundation -framework Security -framework CoreFoundation"
 failures=0
 green=0
-MUTANT_SRC=""
 # THE CONTROL IS MARKED, NOT THE CHECK WEAKENED. A mutant named here is EXPECTED to survive its
 # comparison; every other one that survives is a failure. The list is not a hole in the check - it is one
 # entry, and adding to it would turn the run green in a way nobody can read back.
@@ -138,16 +137,9 @@ run_mutation() {
     if [ ! -f "$build/mutant-$name.m" ]; then
         echo "RED    $name mutation NOT BUILT - nothing proved the case can fail"
         failures=$((failures + 1))
-        MUTANT_SRC=""
-# comparison; every other one that survives is a failure. The list is not a hole in the check - it is one
-# entry, and adding to it would turn the run green in a way nobody can read back.
         return
     fi
-    if [ ! -f "$build/mutant-$name.m" ]; then
-        echo "RED    $name mutation NOT BUILT - nothing proved the case can fail"
-        failures=$((failures + 1)); return
-    fi
-    if ! xcrun clang $common "$H/$casefile.m" "$build/mutant-$name.m" ${MUTANT_SRC:+"$MUTANT_SRC"} \
+    if ! xcrun clang $common "$H/$casefile.m" "$build/mutant-$name.m" \
          -framework Foundation -framework Security -framework CoreFoundation \
          -o "$build/mutant-$name" > "$build/mutant-$name.log" 2>&1; then
         echo "BUILD  $name mutation FAILED to build"
@@ -162,9 +154,6 @@ run_mutation() {
         # rather than leaving a crash and a non-zero exit to describe the same run.
         echo "CRASH  $name mutation  crashed: signal $((status - 128)) (exit $status) - NOTICED, and not a failure: a crash is a mutation the comparison caught"
         mutants_noticed=$((mutants_noticed + 1))
-        MUTANT_SRC=""
-# comparison; every other one that survives is a failure. The list is not a hole in the check - it is one
-# entry, and adding to it would turn the run green in a way nobody can read back.
         return
     fi
     if python3 "$H/$compare" "$build/mutant-$name.out" > "$build/mutant-$name.red" 2>&1; then
@@ -175,15 +164,9 @@ run_mutation() {
             echo "RED    $name MUTATION WENT UNNOTICED - the comparison cannot tell this case from a broken one"
             failures=$((failures + 1))
         fi
-        MUTANT_SRC=""
-# comparison; every other one that survives is a failure. The list is not a hole in the check - it is one
-# entry, and adding to it would turn the run green in a way nobody can read back.
     else
         echo "RED    $name mutation  $(grep -m1 DIFFERS "$build/mutant-$name.red" | cut -c9-)"
         mutants_noticed=$((mutants_noticed + 1))
-        MUTANT_SRC=""
-# comparison; every other one that survives is a failure. The list is not a hole in the check - it is one
-# entry, and adding to it would turn the run green in a way nobody can read back.
     fi
 }
 
