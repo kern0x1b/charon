@@ -68,6 +68,21 @@ entry; a record that only says where an API begins or ends, for a symbol this
 release has nothing of, needs `reason` and `source` instead. `source`
 names the library, release and architecture the behaviour was read from.
 
+A `maximum` below `introduced` is the dangerous direction, and quietly so. It
+does not make a build red: the entry is simply off for every band between the
+two, which are the bands where the release does **not** have the API and the
+port is the only source of it, so the band loses an API it was carrying and the
+gap shows up on a device rather than in a gate. `modules/apple/backports.lua`'s
+`in_range` is `minimum <= deployment < maximum`, and its `ours = in_range(entry,
+deployment)` gates the "listed as implemented, but nothing of that name is
+built" report, so a band that never asks about the row never hears about it.
+`tools/registry-maximum.py` compares `maximum` against `introduced` and refuses
+the rest, which catches a wrong `maximum` and **cannot** catch a wrong
+`introduced`, because that field is written by hand from the SDK's availability:
+reading it out of the headers is `tools/corpus/sdk-introduced.py`'s walk, and
+until a row's `introduced` is measured against the SDK, a release that is one
+too low passes this check and hides the API in the band above it.
+
 `status` is one of four, and there is no fifth:
 
 - `implemented` — the real behaviour, with facts behind it and tests in

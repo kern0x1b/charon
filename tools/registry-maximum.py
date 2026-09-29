@@ -9,6 +9,18 @@ drops the row a band early, and the band it drops it in is the one band where th
 have the API and the port is the only source of it; and a `maximum` above `introduced` keeps it in a
 band the release already answers for itself.
 
+What this cannot catch, and what does: `introduced` is itself written by hand (registry/README.md:
+"the release the SDK's availability gives"), so a row whose `introduced` is one release too low
+satisfies this check and hides the API in exactly the band a low `maximum` would. Reading the
+availability out of the SDK's own headers is tools/corpus/sdk-introduced.py's walk, and the gate
+catches the consequence rather than the field: modules/apple/backports.lua's `ours = in_range(entry,
+deployment)` gates the "listed as implemented, but nothing of that name is built" report, so a wrong
+`maximum` is only noticed in a band where the row is off, and a wrong `introduced` is noticed nowhere
+by this script.
+
+A run that read no row is a run that proved nothing, so a path with no registry under it exits 1 and
+says so, rather than reporting zero of zero and passing.
+
     tools/registry-maximum.py [registry-root]     exit 0 and a count, or exit 1 and the rows
 """
 import collections
@@ -42,6 +54,9 @@ def main():
                 wrong.append((entry.get("api"), maximum, introduced, os.path.basename(path)))
     for api, maximum, introduced, where in wrong:
         print("%-64s maximum %-8s introduced %-8s  %s" % (api, maximum, introduced, where))
+    if rows == 0:
+        print("no registry row under %s: nothing was checked, so nothing is claimed" % REGISTRY)
+        return 1
     print("%d rows, %d with a maximum, %d not at the release that has the API"
           % (rows, with_maximum, len(wrong)))
     return 1 if wrong else 0
