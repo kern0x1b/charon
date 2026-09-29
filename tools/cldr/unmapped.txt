@@ -1,0 +1,65 @@
+# The port's unit declarations CLDR's own data does not agree with.
+#
+# These are NOT guessed. Each carries the reason: the class names no base
+# unit or its base carries no factor, the declaration carries no linear
+# coefficient or a non-linear converter, no CLDR identifier of that
+# quantity is the port's own spelling, or none of the identifiers that are
+# has the port's factor as a double. A row is here only after the factor was
+# compared and did not agree.
+#
+# class	symbol	+[the method]	file	reason
+NSUnitAcceleration	g	gravity	NSUnitAcceleration.m	no CLDR identifier of acceleration has the display name g - the port's own spelling, as with the imperial and troy units
+NSUnitAngle	ʹ	arcMinutes	NSUnitAngle.m	no CLDR identifier of angle has the display name ʹ - the port's own spelling, as with the imperial and troy units
+NSUnitAngle	ʺ	arcSeconds	NSUnitAngle.m	no CLDR identifier of angle has the display name ʺ - the port's own spelling, as with the imperial and troy units
+NSUnitArea	km²	squareKilometers	NSUnitArea.m	1 CLDR identifiers of area carry the display name km² and 0 of them carry a conversion, but none has the port's factor 1000000.0 as a double
+NSUnitArea	cm²	squareCentimeters	NSUnitArea.m	1 CLDR identifiers of area carry the display name cm² and 0 of them carry a conversion, but none has the port's factor 0.0001 as a double
+NSUnitArea	in²	squareInches	NSUnitArea.m	1 CLDR identifiers of area carry the display name in² and 0 of them carry a conversion, but none has the port's factor 0.00064516 as a double
+NSUnitArea	ft²	squareFeet	NSUnitArea.m	1 CLDR identifiers of area carry the display name ft² and 0 of them carry a conversion, but none has the port's factor 0.09290304 as a double
+NSUnitArea	yd²	squareYards	NSUnitArea.m	1 CLDR identifiers of area carry the display name yd² and 0 of them carry a conversion, but none has the port's factor 0.83612736 as a double
+NSUnitArea	mi²	squareMiles	NSUnitArea.m	1 CLDR identifiers of area carry the display name mi² and 0 of them carry a conversion, but none has the port's factor 2589988.110336 as a double
+NSUnitConcentrationMass	mg/dL	milligramsPerDeciliter	NSUnitConcentrationMass.m	the class names no base unit, so there is no display name to look a quantity up by (the table's guess for it was concentr)
+NSUnitElectricResistance	Ω	ohms	NSUnitElectricResistance.m	no CLDR quantity has a unit spelled Ω, the class's base unit; the quantities whose units are spelled that way are none
+NSUnitEnergy	kCal	kilocalories	NSUnitEnergy.m	no CLDR identifier of energy has the display name kCal - the port's own spelling, as with the imperial and troy units
+NSUnitEnergy	kWh	kilowattHours	NSUnitEnergy.m	1 CLDR identifiers of energy carry the display name kWh and 0 of them carry a conversion, but none has the port's factor 3600000.0 as a double
+NSUnitLength	µm	micrometers	NSUnitLength.m	no CLDR identifier of length has the display name µm - the port's own spelling, as with the imperial and troy units
+NSUnitLength	NM	nauticalMiles	NSUnitLength.m	no CLDR identifier of length has the display name NM - the port's own spelling, as with the imperial and troy units
+NSUnitLength	ftm	fathoms	NSUnitLength.m	no CLDR identifier of length has the display name ftm - the port's own spelling, as with the imperial and troy units
+NSUnitLength	ua	astronomicalUnits	NSUnitLength.m	no CLDR identifier of length has the display name ua - the port's own spelling, as with the imperial and troy units
+NSUnitMass	µg	micrograms	NSUnitMass.m	no CLDR identifier of mass has the display name µg - the port's own spelling, as with the imperial and troy units
+NSUnitMass	oz	ounces	NSUnitMass.m	1 CLDR identifiers of mass carry the display name oz and 1 of them carry a conversion, but none has the port's factor 0.0283495 as a double
+NSUnitMass	lb	poundsMass	NSUnitMass.m	1 CLDR identifiers of mass carry the display name lb and 1 of them carry a conversion, but none has the port's factor 0.453592 as a double
+NSUnitMass	st	stones	NSUnitMass.m	1 CLDR identifiers of mass carry the display name st and 1 of them carry a conversion, but none has the port's factor 6.35029 as a double
+NSUnitMass	ton	shortTons	NSUnitMass.m	no CLDR identifier of mass has the display name ton - the port's own spelling, as with the imperial and troy units
+NSUnitMass	ct	carats	NSUnitMass.m	no CLDR identifier of mass has the display name ct - the port's own spelling, as with the imperial and troy units
+NSUnitPower	hp	horsepower	NSUnitPower.m	1 CLDR identifiers of power carry the display name hp and 1 of them carry a conversion, but none has the port's factor 745.7 as a double
+NSUnitPressure	hPa	hectopascals	NSUnitPressure.m	the class names no base unit, so there is no display name to look a quantity up by (the table's guess for it was pressure)
+NSUnitPressure	inHg	inchesOfMercury	NSUnitPressure.m	the class names no base unit, so there is no display name to look a quantity up by (the table's guess for it was pressure)
+NSUnitPressure	mbar	millibars	NSUnitPressure.m	the class names no base unit, so there is no display name to look a quantity up by (the table's guess for it was pressure)
+NSUnitPressure	mmHg	millimetersOfMercury	NSUnitPressure.m	the class names no base unit, so there is no display name to look a quantity up by (the table's guess for it was pressure)
+NSUnitPressure	psi	poundsForcePerSquareInch	NSUnitPressure.m	the class names no base unit, so there is no display name to look a quantity up by (the table's guess for it was pressure)
+NSUnitSpeed	km/h	kilometersPerHour	NSUnitSpeed.m	1 CLDR identifiers of speed carry the display name km/h and 0 of them carry a conversion, but none has the port's factor 0.277778 as a double
+NSUnitSpeed	mph	milesPerHour	NSUnitSpeed.m	1 CLDR identifiers of speed carry the display name mph and 0 of them carry a conversion, but none has the port's factor 0.44704 as a double
+NSUnitSpeed	kn	knots	NSUnitSpeed.m	1 CLDR identifiers of speed carry the display name kn and 1 of them carry a conversion, but none has the port's factor 0.514444 as a double
+NSUnitVolume	km³	cubicKilometers	NSUnitVolume.m	1 CLDR identifiers of volume carry the display name km³ and 0 of them carry a conversion, but none has the port's factor 1000000000000.0 as a double
+NSUnitVolume	cm³	cubicCentimeters	NSUnitVolume.m	1 CLDR identifiers of volume carry the display name cm³ and 0 of them carry a conversion, but none has the port's factor 0.001 as a double
+NSUnitVolume	mm³	cubicMillimeters	NSUnitVolume.m	no CLDR identifier of volume has the display name mm³ - the port's own spelling, as with the imperial and troy units
+NSUnitVolume	in³	cubicInches	NSUnitVolume.m	1 CLDR identifiers of volume carry the display name in³ and 0 of them carry a conversion, but none has the port's factor 0.0163871 as a double
+NSUnitVolume	ft³	cubicFeet	NSUnitVolume.m	1 CLDR identifiers of volume carry the display name ft³ and 0 of them carry a conversion, but none has the port's factor 28.3168 as a double
+NSUnitVolume	yd³	cubicYards	NSUnitVolume.m	1 CLDR identifiers of volume carry the display name yd³ and 0 of them carry a conversion, but none has the port's factor 764.555 as a double
+NSUnitVolume	mi³	cubicMiles	NSUnitVolume.m	1 CLDR identifiers of volume carry the display name mi³ and 0 of them carry a conversion, but none has the port's factor 4168000000000.0 as a double
+NSUnitVolume	af	acreFeet	NSUnitVolume.m	no CLDR identifier of volume has the display name af - the port's own spelling, as with the imperial and troy units
+NSUnitVolume	bsh	bushels	NSUnitVolume.m	no CLDR identifier of volume has the display name bsh - the port's own spelling, as with the imperial and troy units
+NSUnitVolume	tsp	teaspoons	NSUnitVolume.m	1 CLDR identifiers of volume carry the display name tsp and 1 of them carry a conversion, but none has the port's factor 0.00492892 as a double
+NSUnitVolume	tbsp	tablespoons	NSUnitVolume.m	1 CLDR identifiers of volume carry the display name tbsp and 1 of them carry a conversion, but none has the port's factor 0.0147868 as a double
+NSUnitVolume	fl oz	fluidOunces	NSUnitVolume.m	1 CLDR identifiers of volume carry the display name fl oz and 1 of them carry a conversion, but none has the port's factor 0.0295735 as a double
+NSUnitVolume	cup	cups	NSUnitVolume.m	no CLDR identifier of volume has the display name cup - the port's own spelling, as with the imperial and troy units
+NSUnitVolume	pt	pints	NSUnitVolume.m	1 CLDR identifiers of volume carry the display name pt and 1 of them carry a conversion, but none has the port's factor 0.473176 as a double
+NSUnitVolume	qt	quarts	NSUnitVolume.m	1 CLDR identifiers of volume carry the display name qt and 1 of them carry a conversion, but none has the port's factor 0.946353 as a double
+NSUnitVolume	gal	gallons	NSUnitVolume.m	1 CLDR identifiers of volume carry the display name gal and 1 of them carry a conversion, but none has the port's factor 3.78541 as a double
+NSUnitVolume	tsp	imperialTeaspoons	NSUnitVolume.m	1 CLDR identifiers of volume carry the display name tsp and 1 of them carry a conversion, but none has the port's factor 0.00591939 as a double
+NSUnitVolume	tbsp	imperialTablespoons	NSUnitVolume.m	1 CLDR identifiers of volume carry the display name tbsp and 1 of them carry a conversion, but none has the port's factor 0.0177582 as a double
+NSUnitVolume	fl oz	imperialFluidOunces	NSUnitVolume.m	1 CLDR identifiers of volume carry the display name fl oz and 1 of them carry a conversion, but none has the port's factor 0.0284131 as a double
+NSUnitVolume	pt	imperialPints	NSUnitVolume.m	1 CLDR identifiers of volume carry the display name pt and 1 of them carry a conversion, but none has the port's factor 0.568261 as a double
+NSUnitVolume	qt	imperialQuarts	NSUnitVolume.m	1 CLDR identifiers of volume carry the display name qt and 1 of them carry a conversion, but none has the port's factor 1.13652 as a double
+NSUnitVolume	gal	imperialGallons	NSUnitVolume.m	1 CLDR identifiers of volume carry the display name gal and 1 of them carry a conversion, but none has the port's factor 4.54609 as a double
+NSUnitVolume	metric cup	metricCups	NSUnitVolume.m	no CLDR identifier of volume has the display name metric cup - the port's own spelling, as with the imperial and troy units

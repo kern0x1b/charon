@@ -1,0 +1,91 @@
+# The port's unit declarations CLDR's own data agrees with.
+#
+# Keyed on (class, symbol): eight symbols are declared by two classes or two
+# methods, so a symbol alone is not a key.
+#
+# A row is here only where the port's converter coefficient - a double, relative
+# to the port's own base unit - equals the RATIO of CLDR's factor for this
+# identifier over CLDR's factor for the identifier the base unit matched, with the
+# offsets equal too. The two scales differ: the port's volume base is the litre and
+# CLDR's is the cubic meter.
+#
+# agreement: exact, where the rational equals the port's value as a rational;
+# double, where they are equal only after rounding, and the rational difference
+# is kept beside it so the difference the rule allowed stays visible.
+#
+# width matched: the width at which the port's spelling is CLDR's own - short, narrow
+# or long. The port's 's' is CLDR's narrow form of the second and its 'hr' the short
+# form of the hour.
+#
+# class	symbol	+[the method]	file	CLDR identifier	display name	factor	offset	agreement	rational difference	width matched
+NSUnitAcceleration	m/s²	+[metersPerSecondSquared]	NSUnitAcceleration.m	acceleration-meter-per-square-second	m/s²	1	0	exact	0	short
+NSUnitAngle	°	+[degrees]	NSUnitAngle.m	angle-degree	deg	1	0	exact	0	narrow
+NSUnitAngle	rad	+[radians]	NSUnitAngle.m	angle-radian	rad	23580535680/411557987	0	double	0.0	short
+NSUnitAngle	rev	+[revolutions]	NSUnitAngle.m	angle-revolution	rev	360	0	exact	0	short
+NSUnitArea	m²	+[squareMeters]	NSUnitArea.m	area-square-meter	m²	1	0	exact	0	short
+NSUnitArea	ac	+[acres]	NSUnitArea.m	area-acre	acre	316160658/78125	0	double	0.0	short
+NSUnitArea	ha	+[hectares]	NSUnitArea.m	area-hectare	hectare	10000	0	exact	0	short
+NSUnitDispersion	ppm	+[partsPerMillion]	NSUnitDispersion.m	concentr-part-per-1e6	ppm	1	0	exact	0	short
+NSUnitDuration	hr	+[hours]	NSUnitDuration.m	duration-hour	hr	3600	0	exact	0	short
+NSUnitDuration	min	+[minutes]	NSUnitDuration.m	duration-minute	min	60	0	exact	0	short
+NSUnitDuration	s	+[seconds]	NSUnitDuration.m	duration-second	sec	1	0	exact	0	narrow
+NSUnitElectricCurrent	A	+[amperes]	NSUnitElectricCurrent.m	electric-ampere	amp	1	0	exact	0	short
+NSUnitElectricCurrent	mA	+[milliamperes]	NSUnitElectricCurrent.m	electric-milliampere	mA	1/1000	0	double	0.0	short
+NSUnitElectricPotentialDifference	V	+[volts]	NSUnitElectricPotentialDifference.m	electric-volt	volt	1	0	exact	0	short
+NSUnitEnergy	kJ	+[kilojoules]	NSUnitEnergy.m	energy-kilojoule	kJ	1000	0	exact	0	short
+NSUnitEnergy	J	+[joules]	NSUnitEnergy.m	energy-joule	joule	1	0	exact	0	short
+NSUnitEnergy	cal	+[calories]	NSUnitEnergy.m	energy-calorie	cal	523/125	0	double	0.0	short
+NSUnitFrequency	GHz	+[gigahertz]	NSUnitFrequency.m	frequency-gigahertz	GHz	1000000000	0	exact	0	short
+NSUnitFrequency	MHz	+[megahertz]	NSUnitFrequency.m	frequency-megahertz	MHz	1000000	0	exact	0	short
+NSUnitFrequency	kHz	+[kilohertz]	NSUnitFrequency.m	frequency-kilohertz	kHz	1000	0	exact	0	short
+NSUnitFrequency	Hz	+[hertz]	NSUnitFrequency.m	frequency-hertz	Hz	1	0	exact	0	short
+NSUnitFuelEfficiency	L/100km	+[litersPer100Kilometers]	NSUnitFuelEfficiency.m	consumption-liter-per-100-kilometer	L/100km	1	0	exact	0	narrow
+NSUnitFuelEfficiency	mpg	+[milesPerImperialGallon]	NSUnitFuelEfficiency.m	consumption-mile-per-gallon-imperial	mpg Imp.	56826125/201168	0	reciprocal decimal	-1601/25146000	short
+NSUnitFuelEfficiency	mpg	+[milesPerGallon]	NSUnitFuelEfficiency.m	consumption-mile-per-gallon	mpg US	112903/480	0	reciprocal decimal	-1/2400	short
+NSUnitIlluminance	lx	+[lux]	NSUnitIlluminance.m	light-lux	lx	1	0	exact	0	short
+NSUnitInformationStorage	bit	+[bits]	NSUnitInformationStorage.m	digital-bit	bit	1/8	0	exact	0	short
+NSUnitInformationStorage	B	+[bytes]	NSUnitInformationStorage.m	digital-byte	byte	1	0	exact	0	narrow
+NSUnitInformationStorage	kb	+[kilobits]	NSUnitInformationStorage.m	digital-kilobit	kb	125	0	exact	0	short
+NSUnitInformationStorage	kB	+[kilobytes]	NSUnitInformationStorage.m	digital-kilobyte	kB	1000	0	exact	0	short
+NSUnitInformationStorage	Mb	+[megabits]	NSUnitInformationStorage.m	digital-megabit	Mb	125000	0	exact	0	short
+NSUnitInformationStorage	MB	+[megabytes]	NSUnitInformationStorage.m	digital-megabyte	MB	1000000	0	exact	0	short
+NSUnitInformationStorage	Gb	+[gigabits]	NSUnitInformationStorage.m	digital-gigabit	Gb	125000000	0	exact	0	short
+NSUnitInformationStorage	GB	+[gigabytes]	NSUnitInformationStorage.m	digital-gigabyte	GB	1000000000	0	exact	0	short
+NSUnitInformationStorage	Tb	+[terabits]	NSUnitInformationStorage.m	digital-terabit	Tb	125000000000	0	exact	0	short
+NSUnitInformationStorage	TB	+[terabytes]	NSUnitInformationStorage.m	digital-terabyte	TB	1000000000000	0	exact	0	short
+NSUnitInformationStorage	PB	+[petabytes]	NSUnitInformationStorage.m	digital-petabyte	PB	1000000000000000	0	exact	0	short
+NSUnitLength	km	+[kilometers]	NSUnitLength.m	length-kilometer	km	1000	0	exact	0	short
+NSUnitLength	m	+[meters]	NSUnitLength.m	length-meter	meter	1	0	exact	0	short
+NSUnitLength	dm	+[decimeters]	NSUnitLength.m	length-decimeter	dm	1/10	0	double	0.0	short
+NSUnitLength	cm	+[centimeters]	NSUnitLength.m	length-centimeter	cm	1/100	0	double	0.0	short
+NSUnitLength	mm	+[millimeters]	NSUnitLength.m	length-millimeter	mm	1/1000	0	double	0.0	short
+NSUnitLength	nm	+[nanometers]	NSUnitLength.m	length-nanometer	nm	1/1000000000	0	double	0.0	short
+NSUnitLength	pm	+[picometers]	NSUnitLength.m	length-picometer	pm	1/1000000000000	0	double	0.0	short
+NSUnitLength	in	+[inches]	NSUnitLength.m	length-inch	in	127/5000	0	double	0.0	short
+NSUnitLength	ft	+[feet]	NSUnitLength.m	length-foot	ft	381/1250	0	double	0.0	short
+NSUnitLength	yd	+[yards]	NSUnitLength.m	length-yard	yd	1143/1250	0	double	0.0	short
+NSUnitLength	mi	+[miles]	NSUnitLength.m	length-mile	mi	201168/125	0	double	0.0	short
+NSUnitLength	smi	+[scandinavianMiles]	NSUnitLength.m	length-mile-scandinavian	smi	10000	0	exact	0	short
+NSUnitLength	ly	+[lightyears]	NSUnitLength.m	length-light-year	ly	9460730472580800	0	exact	0	short
+NSUnitLength	fur	+[furlongs]	NSUnitLength.m	length-furlong	fur	25146/125	0	double	0.0	short
+NSUnitLength	pc	+[parsecs]	NSUnitLength.m	length-parsec	pc	12699352539696155673600000/411557987	0	double	0.0	short
+NSUnitMass	kg	+[kilograms]	NSUnitMass.m	mass-kilogram	kg	1	0	exact	0	short
+NSUnitMass	g	+[grams]	NSUnitMass.m	mass-gram	gram	1/1000	0	double	0.0	short
+NSUnitMass	mg	+[milligrams]	NSUnitMass.m	mass-milligram	mg	1/1000000	0	double	0.0	short
+NSUnitMass	t	+[metricTons]	NSUnitMass.m	mass-tonne	t	1000	0	exact	0	short
+NSUnitMass	oz t	+[ouncesTroy]	NSUnitMass.m	mass-ounce-troy	oz t	777587/25000000	0	double	0.0	short
+NSUnitPower	GW	+[gigawatts]	NSUnitPower.m	power-gigawatt	GW	1000000000	0	exact	0	short
+NSUnitPower	MW	+[megawatts]	NSUnitPower.m	power-megawatt	MW	1000000	0	exact	0	short
+NSUnitPower	kW	+[kilowatts]	NSUnitPower.m	power-kilowatt	kW	1000	0	exact	0	short
+NSUnitPower	W	+[watts]	NSUnitPower.m	power-watt	watt	1	0	exact	0	short
+NSUnitPower	mW	+[milliwatts]	NSUnitPower.m	power-milliwatt	mW	1/1000	0	double	0.0	short
+NSUnitSpeed	m/s	+[metersPerSecond]	NSUnitSpeed.m	speed-meter-per-second	m/s	1	0	exact	0	short
+NSUnitTemperature	K	+[kelvin]	NSUnitTemperature.m	temperature-kelvin	K	1	0	exact	0	short
+NSUnitTemperature	°C	+[celsius]	NSUnitTemperature.m	temperature-celsius	°C	1	5463/20	affine exact	0	short
+NSUnitTemperature	°F	+[fahrenheit]	NSUnitTemperature.m	temperature-fahrenheit	°F	5/9	45967/180	port = host to the bit at every sample (units/run.sh, checks 5315 failures 0 run 2026-09-29 cmd sh tests/backports/host/units/run.sh -v); differs from CLDR release-48 by 463/225000000000000; the host is the oracle for this row	463/225000000000000	short
+NSUnitVolume	ML	+[megaliters]	NSUnitVolume.m	volume-megaliter	ML	1000000	0	exact	0	short
+NSUnitVolume	L	+[liters]	NSUnitVolume.m	volume-liter	liter	1	0	exact	0	short
+NSUnitVolume	dL	+[deciliters]	NSUnitVolume.m	volume-deciliter	dL	1/10	0	double	0.0	short
+NSUnitVolume	cL	+[centiliters]	NSUnitVolume.m	volume-centiliter	cL	1/100	0	double	0.0	short
+NSUnitVolume	mL	+[milliliters]	NSUnitVolume.m	volume-milliliter	mL	1/1000	0	double	0.0	short
+NSUnitVolume	m³	+[cubicMeters]	NSUnitVolume.m	volume-cubic-meter	m³	1000	0	exact	0	short
