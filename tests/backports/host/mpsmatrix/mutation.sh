@@ -122,4 +122,4 @@ if [ "$bbefore" = "$bduring" ] || [ "$bduring" = "$bafter" ]; then
     echo "the gradient mutation did not move the count either"
     exit 1
 fi
-echo "all five mutations move the count and all five reverts move them back: the harness can fail" and all four reverts move them back: the harness can fail"
+echo "all five mutations move the count and all four reverts move them back: the harness can fail"
