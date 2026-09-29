@@ -7,17 +7,41 @@ here=$(cd "$(dirname "$0")" && pwd)
 device=${DEVICE:-$here/../../device}
 vision=${VISION:-$here/../../../../packages/a/apple-backports/Vision}
 registry=${REGISTRY:-$here/../../../../packages/a/apple-backports/registry/Vision/ios11.json}
+# The Core ML containers the picture cases run against. Without them the picture cases are NOT
+# SKIPPED, they are simply not there: the same command then records 37 keys instead of 45, still
+# prints "port: same as the system", and lets the mutant of VNRequests.m that removes the wrapper's
+# refusal survive -- so a missing corpus read as a defect in the port. It is a corpus, and a check
+# that cannot see its cases must say so before it reports anything.
+models=${MODELS:-$here/../../../../.agent-work/runs/coreml-models-2}
+# resolved so the failure below names a path a reader can paste, and so the count does not depend on
+# how the run was invoked
+models=$(cd "$(dirname "$models")" 2>/dev/null && pwd)/$(basename "$models")
+expected_records=45
 build=${BUILD:-$(mktemp -d)}
 sdk=$(xcrun --show-sdk-path)
 frameworks="-iframework $sdk/System/iOSSupport/System/Library/Frameworks"
 common="-target arm64-apple-ios15.0-macabi -isysroot $sdk $frameworks -fobjc-arc -w"
 libs="-framework Foundation -framework CoreGraphics -framework CoreImage -framework CoreVideo -framework ImageIO -framework CoreML"
 
+if [ ! -d "$models" ]; then
+    echo "no Core ML containers in $models"
+    echo "the picture cases need them, and without them this run records $((expected_records - 8)) records instead of $expected_records and lets a mutant survive: write them with"
+    echo "    python3 $here/../../../../tools/coreml/make-models.py --out $models"
+    exit 1
+fi
+echo "corpus: $(ls "$models" | grep -c '\.mlmodel$') Core ML containers in $models"
+
 xcrun clang $common -I"$device" "$here/record.m" "$device/vision-cases.m" $libs -framework Vision -o "$build/system"
-VISION_COREML_MODELS="$here/../../../../.agent-work/runs/coreml-models-2" VISION_RECORDS="$build/system.json" "$build/system"
+VISION_COREML_MODELS="$models" VISION_RECORDS="$build/system.json" "$build/system"
 python3 "$here/../foundation2/embed.py" "$build/system.json" "$device/vision-expectations.h"
 sed -i.bak 's/foundation2_expectations/vision_expectations/' "$device/vision-expectations.h" && rm -f "$device/vision-expectations.h.bak"
-echo "records: $(python3 -c "import json; print(len(json.load(open('$build/system.json'))))")"
+recorded=$(python3 -c "import json; print(len(json.load(open('$build/system.json'))))")
+echo "records: $recorded of $expected_records expected"
+if [ "$recorded" -lt "$expected_records" ]; then
+    echo "this run recorded $recorded records and expected $expected_records: the picture cases did not all run, and everything below would compare a smaller record than the one the device test holds"
+    echo "check the corpus above, then the cases in $device/vision-cases.m that are being skipped"
+    exit 1
+fi
 
 python3 - "$registry" "$build/rename.h" <<'PY'
 import json, sys
@@ -38,7 +62,7 @@ port() {
 mkdir -p "$build/port"
 cp "$vision"/*.c "$vision"/*.m "$vision"/*.h "$build/port/"
 port "$build/port"
-VISION_COREML_MODELS="$here/../../../../.agent-work/runs/coreml-models-2" VISION_RECORDS="$build/port.json" "$build/port/run"
+VISION_COREML_MODELS="$models" VISION_RECORDS="$build/port.json" "$build/port/run"
 # The scores of a Core ML prediction are reported and not failed on: the model they come from is
 # nn_image, whose prediction the port and this host are a recorded divergence apart
 # (facts/CoreML/CoreML.md). Everything else -- the classes of observation, their identifiers, how
@@ -63,7 +87,7 @@ open(path, "w").write(text.replace(old, new, 1))
 PY
     port "$build/mutant"
     rm -f "$build/mutant.json"
-    VISION_COREML_MODELS="$here/../../../../.agent-work/runs/coreml-models-2" \
+    VISION_COREML_MODELS="$models" \
         VISION_RECORDS="$build/mutant.json" timeout 60 "$build/mutant/run" > /dev/null 2>&1 || true
     # Judged against the PORT's own record: the port already differs from this host on the recorded
     # divergences, so "mutant == system" can never hold and its failing is what would make every
