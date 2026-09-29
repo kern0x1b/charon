@@ -23,6 +23,7 @@ target("textdragweak")
     add_files(path.join(root, "tests/backports/device/textdragweak.m"),
               path.join(root, "tests/backports/device/check.m"))
     add_includedirs(path.join(root, "tests/backports/device"))
+    add_includedirs(ui)
     add_mflags("-fobjc-arc", "-fvisibility=hidden", "-Wno-deprecated-declarations")
     add_ldflags("-fobjc-arc")
     add_frameworks("UIKit", "Foundation", "CoreGraphics", "QuartzCore")

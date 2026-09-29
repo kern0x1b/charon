@@ -11,7 +11,10 @@
 #import <objc/runtime.h>
 #import "check.h"
 
-@interface CharonWeakProbe : NSObject <UITextDraggable, UITextDroppable>
+// A UIView, because the adaptor is typed against one, and nothing more: it is not a text view and
+// it is not a label, so the guest's inability to construct those is not touched. A UIView allocates
+// on this guest, which the control table measured.
+@interface CharonWeakProbe : UIView <UITextDraggable, UITextDroppable>
 @end
 @implementation CharonWeakProbe
 @synthesize textDragDelegate = _textDragDelegate;
@@ -68,7 +71,7 @@ int main(int argc, char **argv)
         CharonTextDragAdaptor *adaptor = [[CharonTextDragAdaptor alloc] initWithControl:control];
         NSArray *items = nil;
         @try {
-            items = [adaptor charon_itemsForDragSession:nil];
+            items = (NSArray *)[adaptor charon_itemsForDragSession:nil];
             charon_check(YES, "starting a drag with a deallocated delegate does not crash", nil);
         } @catch (NSException *e) {
             charon_check(NO, "starting a drag with a deallocated delegate does not crash",
@@ -90,5 +93,5 @@ int main(int argc, char **argv)
         CharonSetTextDragDelegate(control, nil);
         charon_check(CharonTextDragDelegateOf(control) == nil, "nil clears the drag delegate", nil);
     }
-    return gCharonExit;
+    return charon_failures ? 1 : 0;
 }
