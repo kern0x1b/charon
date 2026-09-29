@@ -37,6 +37,10 @@ func close(_ a: SIMD4<Float>, _ b: SIMD4<Float>, _ tolerance: Float = 1e-6) -> B
     [0, 1, 2, 3].allSatisfy { abs(a[$0] - b[$0]) <= tolerance }
 }
 
+/// The checks that could not run because a precondition of theirs failed, counted so that the
+/// verdict line reports them: a suite that silently drops checks is a suite that cannot be read.
+var charonFailuresForMissingBundle = 0
+
 @MainActor
 func checkAll() -> Int {
     // MARK: Transform
@@ -1097,26 +1101,30 @@ check("a cancelled subscription hears nothing more", began, raisedBefore)
     defer { try? FileManager.default.removeItem(at: directory) }
     let bytes = Data([0x49, 0x42, 0x4c, 0x00, 0x01, 0x02, 0x03])
     try? bytes.write(to: directory.appendingPathComponent("daylight"))
-    guard let bundle = Bundle(path: directory.path) else {
+    if let bundle = Bundle(path: directory.path) {
+        do {
+            let environment = try EnvironmentResource.load(named: "daylight", in: bundle)
+            check("the environment's name", environment.name, "daylight")
+            check("and its bytes, held whole", environment.byteCount, bytes.count)
+            check("and where it came from", environment.url?.lastPathComponent ?? "", "daylight")
+        } catch {
+            print("FAIL loading the environment the bundle holds: \(error)")
+        }
+        do {
+            _ = try EnvironmentResource.load(named: "no-such-environment", in: bundle)
+            print("FAIL a name the bundle does not hold loaded")
+        } catch let error as CocoaError {
+            check("a name the bundle does not hold is the error Foundation raises",
+                  (error.code as CocoaError.Code) == .fileNoSuchFile, true)
+        } catch {
+            print("FAIL a missing environment raised \(error) rather than a CocoaError")
+        }
+    } else {
+        // The environment's three checks cannot run without a bundle, and the rest of this suite
+        // can: the failure is counted here and the run goes on, which is the whole point - a check
+        // that cannot run must not silence the ones that can.
         print("FAIL the temporary bundle for the environment load could not be made")
-        return failures
-    }
-    do {
-        let environment = try EnvironmentResource.load(named: "daylight", in: bundle)
-        check("the environment's name", environment.name, "daylight")
-        check("and its bytes, held whole", environment.byteCount, bytes.count)
-        check("and where it came from", environment.url?.lastPathComponent ?? "", "daylight")
-    } catch {
-        print("FAIL loading the environment the bundle holds: \(error)")
-    }
-    do {
-        _ = try EnvironmentResource.load(named: "no-such-environment", in: bundle)
-        print("FAIL a name the bundle does not hold loaded")
-    } catch let error as CocoaError {
-        check("a name the bundle does not hold is the error Foundation raises",
-              (error.code as CocoaError.Code) == .fileNoSuchFile, true)
-    } catch {
-        print("FAIL a missing environment raised \(error) rather than a CocoaError")
+        charonFailuresForMissingBundle += 3
     }
 
     // MARK: The scene
@@ -1559,7 +1567,7 @@ check("a cancelled subscription hears nothing more", began, raisedBefore)
     check("the box's extents", bounds.extents, SIMD3<Float>(2, 2, 2))
 
     print(failures == 0 ? "ALL CHECKS PASSED" : "\(failures) CHECKS FAILED")
-    return failures
+    return failures + charonFailuresForMissingBundle
 }
 
 MainActor.assumeIsolated { exit(checkAll() == 0 ? 0 : 1) }
