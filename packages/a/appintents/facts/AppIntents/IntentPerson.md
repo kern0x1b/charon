@@ -17,7 +17,7 @@ one of the four nested types:
 still unidentified after three refuted attempts (`Open-contracts.md` §3, and the handoff's finding 6).
 
 So they are measured the way the coordinator set for exactly this case: a **call site in the
-framework's spelling**, `.agent-work/host/probe-intentperson-coding.swift`, which takes each type and
+framework's spelling**, `the coding probe, **now `packages/a/appintents/tests/probe-intentperson-coding.swift`**`, which takes each type and
 references `type.encode(to:)`. A reference is the test — it proves the member exists, with that name
 and that signature, without inventing a value to encode — and it **typechecks with 0 errors** against
 this module for `armv7-apple-ios6.1.3` with the recipe's own flags. By the criterion the coordinator

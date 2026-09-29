@@ -17,7 +17,7 @@ instance the widget is configured with, which is what the `for:` of those two sp
 
 These are the rows the module's next pass writes; the rest of WidgetKit's surface is declared and
 measured (**240 of 340 placed, and the 100 that are not** are listed in
-`.agent-work/runs/kits/WidgetKit-missing.tsv`, and the counts section below says where the 245 came
+`the missing-rows list, **regenerated** from the corpus ledger and a digester dump, not kept`, and the counts section below says where the 245 came
 from and what took the five).
 
 ## What landed after the TipKit differential, and what the ledger can see of it
@@ -60,8 +60,8 @@ placed before only because it was an empty refinement, with no member of its own
 
 ## The 95 rows, classified against the digester's own dump
 
-`.agent-work/host/classify.py` reads the `-dump-sdk` dump of the built module and
-`.agent-work/runs/kits/WidgetKit-missing.tsv` and sorts every row; the writeup for the ledger band is
+`the row classifier, **now `packages/a/appintents/tests/classify-rows.py`**` reads the `-dump-sdk` dump of the built module and
+`the missing-rows list, **regenerated** from the corpus ledger and a digester dump, not kept` and sorts every row; the writeup for the ledger band is
 `.agent-work/handoffs/2026-09-28-ledger-swift-digester-naming.md`. Of the 95:
 
 | how the digester prints it | rows | whose work it is |

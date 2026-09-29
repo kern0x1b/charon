@@ -18,7 +18,7 @@ sources with the recipe's own flags. `.agent-work/host/classify.py` against the 
 ```
 
 which are the ledger's three rows *exactly*, and the rows are still in
-`.agent-work/runs/kits/ActivityKit-missing.tsv`. So a member that the dump prints under the ledger's
+`the missing-rows list, **regenerated** from the corpus ledger and a digester dump, not kept`. So a member that the dump prints under the ledger's
 own name can still read `missing`, and this is the smallest reproducer in the four modules: three
 rows, one type, no spelling difference. The likely cause is that the two are keyed on something the
 dump does not carry for a type whose members are typed with another module's (`LocalizedStringResource`

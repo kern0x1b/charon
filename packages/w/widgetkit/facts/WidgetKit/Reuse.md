@@ -35,4 +35,4 @@ things a port of it would most likely be built from, and found nothing reusable:
 * **Apple's own `.swiftinterface` and the toolchain's `swift-api-digester`** — as the reference for
   the declarations and the measurement. Nothing from either is vendored, and the host differential
   compares against Apple's *own* `TipKit` on the macOS 27 SDK rather than a port of it
-  (`.agent-work/host/README.md`).
+  (`the host-differential writeup, **not kept**; its results are in the facts beside this`).

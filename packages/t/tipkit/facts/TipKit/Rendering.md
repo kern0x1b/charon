@@ -32,7 +32,7 @@ What is *not* there and why:
 ## What the host differential found, and the three rows that are declared but unreachable
 
 `MacOSX27.sdk` carries `TipKit.framework`, so this module's differential ran against Apple's own
-(`.agent-work/host/README.md`, `.agent-work/host/tipkit-diff.txt`): the same probe against Apple's
+(`the host-differential writeup, **not kept**; its results are in the facts beside this`, `.agent-work/host/tipkit-diff.txt`): the same probe against Apple's
 `TipKit` and against this module built as `CharonTipKit`, 37 lines each, **37 of 37 identical** after
 the module name is normalised. What it changed:
 
@@ -45,7 +45,7 @@ the module name is normalised. What it changed:
    code got wrong (it reported `.invalidated` for any shown tip, with nothing to explain it).
 2. **`TipKitError` exists** (`Sources/TipKit/Errors.swift`, the ten rows the ledger listed as
    missing). Its `description` and `errorDescription` are the case's own name, which is what Apple's
-   own `TipKit` returns — measured, not guessed (`.agent-work/host/apple-tipkit.txt`, the `error.`
+   own `TipKit` returns — measured, not guessed (`the differential's output, **not kept** (37 of 37, 2026-09-28)`, the `error.`
    rows). The `~=` operator the interface declares is there, so a port may catch a case by name.
    `Tips.configure` matches the interface now: an array (`TipKit-ios.swiftinterface:921`), `throws`,
    and `tipsDatastoreAlreadyConfigured` when the app configures its datastore twice — the datastore
@@ -71,7 +71,7 @@ the other side (`input.value` is how many, `input.op` is which way) and the key 
 TipKit from 245 to **247 of 321 placed**.
 
 **What the remaining 73 rows are** (`.agent-work/handoffs/2026-09-28-ledger-swift-digester-naming.md`,
-classifier `.agent-work/host/classify.py`, run against the digester's own dump):
+classifier `the row classifier, **now `packages/a/appintents/tests/classify-rows.py`**`, run against the digester's own dump):
 
 | how the digester prints it | rows | whose work it is |
 | --- | --- | --- |

@@ -7,7 +7,7 @@
     python3 packages/a/appintents/tests/invented-names.py --table     # this table
 
 **Where the interfaces come from, and why it is a real path.** The first version read three of the
-four from `.agent-work/kits/*-ios.swiftinterface` -- files that exist only in the band worktree that
+four from `the 26.2 interface copies, **no longer read**: the census reads the machine's own `charon@iphoneos-sdk` 26.2 install*-ios.swiftinterface` -- files that exist only in the band worktree that
 extracted them. The review measured the consequence on a **fresh detached checkout**, where those
 paths do not exist: the script silently scored TipKit, WidgetKit and ActivityKit as absent from every
 interface, and the counts came out **425 in the interfaces / 223 to explain** against the 573/75 it
@@ -19,7 +19,7 @@ three installs of 26.2, so a glob matching several is read in full and the count
 were read is never a silent choice either.
 
 **The counts, from a fresh detached checkout at the previous commit** (the run the review asked for,
-in `charon/.agent-work/worktrees/verify-r5`, a checkout with none of my `.agent-work/` in it):
+in `charon/a fresh detached worktree used to re-record the counts, 2026-09-28; **not kept**`, a checkout with none of my `.agent-work/` in it):
 
 | | |
 | --- | --- |
