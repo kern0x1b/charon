@@ -264,3 +264,31 @@ from the other side: passing it changes nothing.
 
 **So the system wins, and the port is to write what the host writes.** The per-parameter gradients are
 left untouched rather than computed, and the facts say so with the program that shows it.
+
+### The data gradient: the self-check fires, so the port is not changed
+
+Sixteen variants of the data gradient were computed against the host's own answer for
+`batch-normalization-gradient-data` — the mean from the given vector or from the batch, the
+variance from the given vector or from the batch, with and without gamma, and the aggregation as
+means or as sums — and **two of them score identically**:
+
+    0.41152  batch mean, given var, with gamma, mean(dY) and mean(dY*xhat)
+    0.41152  given mean, given var, with gamma, mean(dY) and mean(dY*xhat)
+
+That is the self-check's stop condition and **the port is not changed on this**. The tie is not a
+coincidence either: for column 0 the given mean and the batch mean are both 4, so every variant that
+distinguishes them collapses to the same number here, and this case cannot separate them.
+
+What the variants do show is that the host's answer is not this family at all. The best of the sixteen
+matches the host on element 0 exactly — `0.298056` — and then misses the other two of that column
+badly:
+
+    row 0   host  0.298056   variant  0.298056
+    row 1   host -0.076629   variant  0.000000
+    row 2   host -0.136185   variant  0.198704
+
+Row 1 coming out exactly zero is the tell: the variant's mean subtraction is exact there, and the
+host's is not. So the host's data gradient is not `(gamma/sqrt(variance+eps)) * (dY - mean(dY) -
+xhat * mean(dY*xhat))` under any of the sixteen choices, and the difference is structural rather than
+a rounding. The formula needs a probe of its own, on inputs chosen so that each of the sixteen
+separates — different given and batch means, and a batch whose variance differs from the one given.
