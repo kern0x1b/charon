@@ -933,18 +933,66 @@ int main(void)
             return 1;
         }
         printf("device %d\n", MPSSupportsMTLDevice(gDevice));
-        casesDevice();
-        casesDescriptors();
-        casesMultiplication();
-        casesVectorMultiplication();
-        casesCopy();
-        casesSoftMax();
-        casesNeuron();
-        casesFullyConnected();
-        casesBatchNormalization();
-        casesSum();
-        casesState();
-        casesRandom();
+        @autoreleasepool {
+            printf("group casesDevice\n");
+            fflush(stdout);
+            casesDevice();
+        }
+        @autoreleasepool {
+            printf("group casesDescriptors\n");
+            fflush(stdout);
+            casesDescriptors();
+        }
+        @autoreleasepool {
+            printf("group casesMultiplication\n");
+            fflush(stdout);
+            casesMultiplication();
+        }
+        @autoreleasepool {
+            printf("group casesVectorMultiplication\n");
+            fflush(stdout);
+            casesVectorMultiplication();
+        }
+        @autoreleasepool {
+            printf("group casesCopy\n");
+            fflush(stdout);
+            casesCopy();
+        }
+        @autoreleasepool {
+            printf("group casesSoftMax\n");
+            fflush(stdout);
+            casesSoftMax();
+        }
+        @autoreleasepool {
+            printf("group casesNeuron\n");
+            fflush(stdout);
+            casesNeuron();
+        }
+        @autoreleasepool {
+            printf("group casesFullyConnected\n");
+            fflush(stdout);
+            casesFullyConnected();
+        }
+        @autoreleasepool {
+            printf("group casesBatchNormalization\n");
+            fflush(stdout);
+            casesBatchNormalization();
+        }
+        @autoreleasepool {
+            printf("group casesSum\n");
+            fflush(stdout);
+            casesSum();
+        }
+        @autoreleasepool {
+            printf("group casesState\n");
+            fflush(stdout);
+            casesState();
+        }
+        @autoreleasepool {
+            printf("group casesRandom\n");
+            fflush(stdout);
+            casesRandom();
+        }
     }
     return 0;
 }
