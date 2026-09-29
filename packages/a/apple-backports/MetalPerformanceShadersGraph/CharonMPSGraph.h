@@ -74,30 +74,12 @@ typedef NS_ENUM(NSInteger, CharonMPSGraphOperationKind) {
 @class MPSGraphExecutable;
 @class MPSGraphExecutableExecutionDescriptor;
 
-// The SDK this package compiles against is the iPhoneOS 16.4 one, whose MetalPerformanceShadersGraph
-// headers predate four names of the 26.2 surface: MPSGraphObject, which arrived in iOS 17 and which
-// every class of that surface descends from there while 16.4 has them descending from NSObject, and
-// MPSGraphFFTDescriptor, MPSGraphImToColOpDescriptor and MPSGraphExecutableSerializationDescriptor.
-// They are declared here and implemented in this library, so a graph's objects have the root the 26.2
-// headers give them rather than the one the older SDK names; see
-// facts/MetalPerformanceShadersGraph/Core.md.
-//
-// The declarations are for an SDK that lacks them, which is what the package builds against, and are
-// left out on a host whose own SDK already has them - where redeclaring would be a duplicate, and
-// where the host's own classes are the ones a comparison must be against.
-#if !defined(__MAC_OS_X_VERSION_MAX_ALLOWED) || __MAC_OS_X_VERSION_MAX_ALLOWED < 260000
-@interface MPSGraphObject : NSObject
-@end
+// Four names of the 26.2 surface are in no 16.4 header - MPSGraphObject among them - and they are
+// transcribed in ../MetalPerformanceShaders/CharonMPS26.h, which is where the whole set lives now, so
+// they are not declared a second time here. That header leaves them out on a host whose own SDK
+// already declares them, and keeps them where the SDK the port builds against does not.
 
-@interface MPSGraphFFTDescriptor : NSObject
-@end
-
-@interface MPSGraphImToColOpDescriptor : NSObject
-@end
-
-@interface MPSGraphExecutableSerializationDescriptor : NSObject
-@end
-#endif
+#import "../MetalPerformanceShaders/CharonMPS26.h"
 
 @interface MPSGraphObject (CharonMPSGraph)
 @end
