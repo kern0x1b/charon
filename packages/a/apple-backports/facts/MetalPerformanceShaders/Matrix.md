@@ -29,35 +29,26 @@ where both sides wrote and the values differ, and 12 where the host writes zeros
 Each run prints the tree it measured, so a count cannot outlive its code. The counts are in flux while
 the families are worked through and this paragraph is the one to re-measure, not to trust.
 
-## MPSMatrixSum's bias is broadcast, and the port indexes it
+## MPSMatrixSum indexes its bias by column, and the port already did
 
-The header writes the operation out itself:
+Measured, not read. `tests/backports/host/mpsmatrix/fixtures/bias-indexing.m` sums `A + B` for a 2x3
+result - `11 22 33 / 44 55 66` - with four bias vectors and prints what comes out:
 
-    A = empty matrix;
-    for (i = 0; i < N; ++i)  A += alpha[i] * B[i];
-    if (bias)                A += broadcast(bias);
-    if (neuron)              A = neuron(A);
+| bias | transpose NO | transpose YES |
+| --- | --- | --- |
+| `0 0 0` | `11 22 33 44 55 66` | `11 44 0 22 55 0` |
+| `7 7 7` | `18 29 40 51 62 73` | `18 51 0 29 62 0` |
+| `1 10 100` | `12 32 133 45 65 166` | `12 45 0 32 65 0` |
 
-**`broadcast(bias)` is one value added to every element.** The port indexes the bias by the column —
-`bias[column]` — which is a per-column bias and a different function. Element 0 agrees, because for
-column 0 the broadcast value and the column's own value are the same element of the vector; the
-columns after it cannot agree, and measured they do not:
+**The bias is indexed by column.** A constant vector adds that constant to every element - which is
+what "broadcast" in the header's pseudocode means, broadcast *across the rows* - and a vector that
+differs per position adds its own value per column. The port indexed it by column all along, and the
+change I made and reverted was wrong.
 
-    sum 0   host  1.25  -0.5   8.25  50.25  5.5   8
-            port  1.25   1.5   4     10.25  3.5   6
-
-The first element matching and the rest not is the signature of a per-column bias read where a
-broadcast one is meant, and it was the lead for this family of fifteen. **It is wrong, and the
-measurement says so.** Making the bias broadcast - the header's own word - changes the count not at
-all and turns `sum-start-index` into all zeros where the host has values. So the release reads the
-bias per column after all, or broadcasts something else, and `broadcast(bias)` in the header's
-pseudocode does not describe what its kernel does. The port is back on the per-column bias it had,
-which is the state the count of 72 was taken in.
-
-What is still unexplained here, and is a measurement rather than a reading: `sum-transpose` agrees on
-four of its six elements and the release writes **zero** for the other two, where the port has 14 and
-16. A zero where the port has a value is the shape of the twelve named divergences, and this one is not
-among them. It may be a thirteenth.
+**And the probe names a thirteenth host divergence.** With `transpose` YES the release writes **zero**
+for the third column of every row, where a column index of two is a bias element it does not take. That
+is exactly the `sum-transpose` signature - four of six elements agree and the release writes zero for
+the other two - and it is a property of the release's kernel, not of this port.
 
 ## The batch range, and how the release reads it
 
