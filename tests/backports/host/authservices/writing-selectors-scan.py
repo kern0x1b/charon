@@ -15,9 +15,10 @@ protects it. This one is a scan, deliberately: a statement reader is what four p
 guard turned into, and each of those read the wrong thing — a name, a line, a receiver three statements
 from its binding. A `grep -n` over four fixed names cannot be wrong in any of those ways.
 
-So: grep the four names over every harness source. A hit line is allowed when it is a comment, when the
-name is inside a string literal, or when the file and line are listed in `writing-selectors.allow` with
-a reason. Anything else is red, and it is red *by file and line*:
+So: grep the four names over every harness source AND over the port's own AuthenticationServices
+sources. A hit line is allowed when it is a comment, when the name is inside a string literal, or when
+the file and line are listed in an allowlist with a reason. Anything else is red, and it is red *by file
+and line*:
 
     FAIL values.m:184 sends a writing selector to the host's store
         [ASCredentialIdentityStore.sharedStore saveCredentialIdentities:@[] completion:nil];
@@ -40,13 +41,19 @@ FORBIDDEN = (
     "removeAllCredentialIdentities",
 )
 ALLOWLIST = "writing-selectors.allow"
+# The port's own sources get their own allowlist because the two sets have different reasons, not
+# different rules: a harness file is excused because its sends go through the chokepoint, and a port
+# file is excused because it is the DEFINITION of the port's own store rather than a send to a real one.
+PORT_ALLOWLIST = "writing-selectors.port-allow"
+PORT_ROOT = "packages/a/apple-backports/AuthenticationServices"
 HERE = os.path.dirname(os.path.abspath(__file__))
+REPO = os.path.abspath(os.path.join(HERE, "..", "..", "..", ".."))
 
 
-def allowed():
+def allowed(name=ALLOWLIST):
     """{(path, line): reason} from the allowlist, keyed by the 1-based line number."""
     entries = {}
-    path = os.path.join(HERE, ALLOWLIST)
+    path = os.path.join(HERE, name)
     if not os.path.isfile(path):
         return entries
     for number, raw in enumerate(open(path, encoding="utf-8"), 1):
@@ -77,11 +84,13 @@ def comment_or_string(line):
     return before.count('"') % 2 == 1 or before.count("'") % 2 == 1
 
 
-def scan(probes):
-    excused = allowed()
+def scan(probes, port_root=None):
+    harness, port = allowed(ALLOWLIST), allowed(PORT_ALLOWLIST)
     failures = []
     for probe in probes:
         name = os.path.basename(probe)
+        is_port = port_root is not None and os.path.abspath(probe).startswith(port_root + os.sep)
+        excused = port if is_port else harness
         try:
             text = open(probe, encoding="utf-8", errors="replace").read().split("\n")
         except OSError:
@@ -97,7 +106,8 @@ def scan(probes):
             elif comment_or_string(line):
                 print("ok    %s:%d is a comment or a string" % (name, number))
             else:
-                print("FAIL  %s:%d names a writing selector outside the chokepoint" % (name, number))
+                where = "the port's own sources" if is_port else "the chokepoint"
+                print("FAIL  %s:%d names a writing selector outside %s" % (name, number, where))
                 print("        %s" % line.strip())
                 failures.append((name, number))
         if not hits:
@@ -112,17 +122,23 @@ def main(argv):
     # scanning a file for failing to be scanned is the same class of mistake as a check that reads the
     # wrong thing. A file named on the command line is scanned whatever it is.
     probes = argv[1:]
-    if not probes:
-        probes = sorted(os.path.join(HERE, name) for name in ("values.m", "hostshape.c")
-                        if os.path.isfile(os.path.join(HERE, name)))
-    failures = scan(probes)
+    # The port's own sources are in the default set, and that is a fix rather than an addition: the
+    # scan's property is "no source of this port sends a writing selector to a real store", and it
+    # read only the harness -- so a base class DEFAULT that reached for the store, in a file that
+    # runs on the port and on a device, was invisible to the one check that is supposed to name it.
+    port_root = os.path.join(REPO, PORT_ROOT)
+    if os.path.isdir(port_root):
+        probes.extend(sorted(os.path.join(port_root, name) for name in os.listdir(port_root)
+                             if name.endswith(".m")))
+    failures = scan(probes, port_root)
     if failures:
         print("FAIL: %d line(s) name a writing selector with no comment, no string and no allowlist entry"
               % len(failures))
         print("      A send the chokepoint cannot see is the failure this whole arrangement exists to stop,")
         print("      and the runtime rule in port-store-rule.h is what stops it; this names the line.")
         return 1
-    print("ok: no harness source names a writing selector outside a comment, a string or the allowlist")
+    print("ok: no harness or port source names a writing selector outside a comment, a string"
+          " or an allowlist entry")
     return 0
 
 

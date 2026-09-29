@@ -246,6 +246,40 @@ status=0
 run_mutant operation ASAuthorizationOpenIDRequest.m "_requestedOperation = nil;" "_requestedOperation = [ASAuthorizationOperationImplicit copy];" "a fresh request's default operation becomes the implicit one" || status=1
 run_mutant credential_from_file "$here/credential.anchor" "$here/credential.repl" ASPasswordCredential.m \
     "a credential's copy drops the password, which is what makes it a copy of nothing" || status=1
+# A mutant whose check is the SCAN, not a value comparison, because a class that cannot be built for
+# the host has no value table: the only thing a value comparison could say about it is nothing. The
+# mutation is applied to a COPY of the port's sources, exactly as the other mutants are, so the tracked
+# tree is never dirtied and there is nothing to restore; and the check is required to go RED by naming
+# this class's file and line, which is the verdict.
+run_scan_mutant() {
+    tag=$1; anchorFile=$2; replFile=$3; target=$4; what=$5
+    echo
+    echo "-- $tag: $what"
+    rm -rf "$build/$tag"
+    mkdir -p "$build/$tag"
+    for source in $sources; do cp "$package/$source" "$build/$tag/$source"; done
+    cp "$package"/*.h "$build/$tag/" 2>/dev/null || true
+    cp "$package/$target" "$build/$tag/$target"
+    python3 "$here/apply-anchor.py" "$anchorFile" "$replFile" "$build/$tag/$target" \
+        || { echo "FAIL: the $tag mutation did not apply, and nothing was written"; return 1; }
+    cmp -s "$build/$tag/$target" "$package/$target" && { echo "FAIL: the mutation changed nothing"; return 1; }
+    diff "$package/$target" "$build/$tag/$target" | grep -E "^[<>]" | sed 's/^/     /' | head -4
+    set +e
+    python3 "$here/writing-selectors-scan.py" "$build/$tag/$target" > "$build/$tag-scan.txt" 2>&1
+    set -e
+    sed 's/^/     /' "$build/$tag-scan.txt" | grep -E "FAIL|ok:" | head -4
+    if ! grep -qE "^FAIL  $target:[0-9]+" "$build/$tag-scan.txt"; then
+        echo "FAIL: the $tag mutation left the scan green -- the scan is the defect, not the mutant"
+        return 1
+    fi
+    echo "     VERDICT the scan is red by this class's file and line, which is the row it measures"
+    return 0
+}
+
+run_scan_mutant provider_from_file "$here/provider.anchor" "$here/provider.repl" \
+    ASCredentialProviderViewController.m \
+    "a base class default that reaches for the store" || status=1
+
 run_mutant replace_from_file "$here/replace.anchor" "$here/replace.repl" ASCredentialIdentityStore.m \
     "replace keeps the old identities: the set it starts from is what the store already held" || status=1
 exit "$status"
