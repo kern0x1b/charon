@@ -68,14 +68,17 @@ run_case() {
     # trust-result, which resolves the port by dlsym(RTLD_DEFAULT, ...) and so has no link-time reference
     # to find. A SOURCE DROPPED FROM THE LINK LINE CAN THEREFORE HIDE: dropping $N leaves network-fetch
     # GREEN with exit 0 while the host answered. The README beside this file carries the control.
-    # the sec_*/Charon* symbols this case CALLS BY NAME must be DEFINED in
-    # the binary it linked, and the reference set is built from the very "$@" the guard is given, so a
-    # source dropped from the link line also leaves the reference set. A case that resolves the port by
-    # dlsym(RTLD_DEFAULT, ...) is not caught at all. Both are recorded as OWED in the README beside this
-    # script, with the three defects, rather than left for a reader to assume away.
-    # A source
-    # dropped from the command line cannot hide, because the case still calls it - the name resolves to the
-    # host framework, and the case measures the host while looking exactly like a port measurement.
+    # THE THREE LISTS, SO THE SENTENCE ABOVE CAN BE READ AGAINST THE CODE. `called` is every sec_* name the
+    # CASE mentions; the reference set is every sec_* name mentioned in any file on "$@", THE CASE FILE
+    # INCLUDED; a name is checked only when it is in BOTH, and then only if _name is not defined in the
+    # binary this case linked. Two consequences, both measured, and the first is the one that surprises:
+    # dropping a source from the line does NOT take the name out of the reference set - the case still
+    # mentions it - so a name reached through sec_* is still caught: protocol-options-data without $PD
+    # gives MISSING ... would measure the HOST and exit 1, with nm -u showing the symbol undefined. That
+    # is also why the one case that hides, network-fetch above, hides: it never mentions a sec_* name.
+    # What the guard cannot see is a name the case never mentions in that shape (the five cases above, and
+    # a source nothing links because nothing called its function). The OWED list in the README beside this
+    # script carries these two limits, the stale-mutant sweep and the missing-mutant-file check.
     casefile=""
     for a in "$@"; do
         case "$a" in *.m) casefile="$a"; break;; esac

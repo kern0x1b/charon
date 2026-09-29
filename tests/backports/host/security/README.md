@@ -139,8 +139,9 @@ a non-zero exit, where the real run is unchanged at 19/14/13.
 Still owed, none of it done:
 
 1. **A source dropped from the link line is caught, and this was checked rather than assumed**: dropping
-   `$PD`, `$PMA` or the 16.0 accessor source makes the case call a `sec_*` name the reference set no longer
-   contains, the symbol is absent from the binary, and the guard fires. What it does **not** do is notice a
+   `$PD`, `$PMA` or the 16.0 accessor source leaves the case calling a `sec_*` name, that name is still in
+   the reference set **because the case file is itself on the link line**, the symbol is absent from the
+   binary, and the guard fires. What it does **not** do is notice a
    source that was never linked because **nobody called its function** — the case has to reach the port
    through a `sec_*` name for the guard to have anything to check.
 2. **The stale-mutant sweep is not landed**: `make-mutants.py` runs after the early `mutate()` calls, so a
