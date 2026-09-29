@@ -382,32 +382,35 @@ every element — and the block is still not the standard form, since the sixtee
 fit. The next step is the block alone, one channel at a time, which removes the coupling between
 channels and leaves a four by four operator to identify.
 
-### Where the host's `-inf` and its 2.58e26 come from: a mean that is already centred
+### Where the host's `-inf` and its 2.58e26 come from: the gradient's own mean, not the source's
 
-The sentinel showed the host writes every element, so those two values are its own arithmetic. Every
-input has a non-zero variance, so the divisor is not `sqrt(var + eps)`. Printing the quantities that
-could be zero, per channel, against the inputs the Jacobian used:
+The sentinel showed the host writes every element, so those two values are its own arithmetic. I then
+computed the per-channel statistics and found an exact zero in channel 1, and **concluded the block
+degenerates when the data is already centred.**
+
+**That conclusion was wrong, and the way it was wrong is worth recording.** The batch normalisation's
+statistics are of the **source `x`**, and my table had computed the mean and variance of **`dY`** while
+the reasoning talked about the source. Recomputed over `x`:
 
 | quantity | channel 0 | channel 1 | channel 2 |
 | --- | --- | --- | --- |
+| `x` batch mean | 4.0 | 4.75 | 6.0 |
+| `x` batch var | 7.5 | 9.1875 | 11.5 |
 | given mean | 2 | 5 | 4 |
-| batch mean of dY | 3.25 | **5** | 4.5 |
-| **difference** | −1.25 | **0** | −0.5 |
-| given var | 7 | 3 | 9 |
-| batch var of dY | 3.6875 | 6.5 | 8.75 |
-| `sum (x - given mean)` | 8 | −1 | 8 |
-| `sum (x - given mean) * dY` | 26 | 20 | 60 |
-| `sum dY` | 13 | 20 | 18 |
+| **given mean − `x` batch mean** | −2.0 | **+0.25** | −2.0 |
+| given var − `x` batch var | −0.5 | −6.1875 | −2.5 |
+| **mean(dY) − given mean** | +1.25 | **0.0** | +0.5 |
+| `sum (x − given mean)` | +8 | −1 | +8 |
 
-**Channel 1 is the one whose given mean and batch mean are both 5** — a difference of exactly zero,
-where channels 0 and 2 differ. And the degenerate columns in the Jacobian are channel 1's and channel
-2's, with channel 1 the cleanly infinite one.
+**There is no exact zero among the source's statistics** — the closest is +0.25 in channel 1. The only
+exact zero in the whole table is `mean(dY) − given mean` in channel 1, where `dY`'s mean is 5 and the
+given mean is 5.
 
-So the host's block **degenerates exactly when the data is already centred**: it uses the given mean
-and the batch's own mean in a way that divides by, or cancels against, their difference, and a
-difference of zero is what produces `-inf` and the astronomical values. The standard formula has no
-such term, which is consistent with none of the sixteen fitting.
+So the degeneracy is not about the source being centred at all. It is that **the host's block has a
+term that divides by, or cancels against, the incoming gradient's own mean minus the given mean** — a
+quantity the standard formula has no use for, and which is exactly why none of the sixteen variants
+fitted.
 
-That is the mechanism to look for, and it is one the four by four block of channel 1 will show
-directly: its entries either degenerate as a function of the two means or they do not, and the probe
-does not have to guess the form to ask.
+The next probe is then not about the source at all: it is the four by four block of channel 1 with
+`dY`'s mean moved by ±δ around the given mean, three runs, to see the divergence as a function of that
+one quantity.
