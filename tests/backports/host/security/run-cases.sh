@@ -41,6 +41,7 @@ EXPECTED_UNNOTICED="identity"
 cases=0
 missing=0
 mutants=0
+declared=0
 mutants_noticed=0
 
 # run NAME PORT-SOURCES... -- COMPARE-SCRIPT ; a mutation is applied by mutate_NAME below
@@ -156,6 +157,12 @@ run_mutation() {
     # Same rule: counted where it runs, BEFORE the early return a crashing mutant takes. It was counted
     # after, so a mutation that segfaulted - the most emphatic "noticed" there is - was not counted at all.
     mutants=$((mutants + 1))
+    # DECLARED is counted HERE and not where the mutant is written, because every run_mutation call is a
+    # mutation this script means to judge - including the sec-identity trio and the one that must fail to
+    # compile, which `mutate` never writes. Counting declarations where they are written would report a
+    # smaller declared than run, and the line that says whether the matrix is whole would be the one
+    # thing in the tail that cannot be trusted.
+    declared=$((declared + 1))
     name=$1; compare=$2; casefile=$3; origin=$4; shift 4
     if [ ! -f "$build/mutant-$name.m" ]; then
         echo "RED    $name mutation NOT BUILT - nothing proved the case can fail"
@@ -216,8 +223,14 @@ run_mutation() {
 }
 
 # --- the mutants, written by patching the port source in the tree and keeping the copy ---
+# A MUTATION THAT COULD NOT BE WRITTEN IS A MUTATION THAT WILL NOT RUN, AND THE RUN SAYS SO at the end
+# rather than stopping there. This helper used to sys.exit, which under `set -eu` ended the whole run at
+# the first anchor that no longer matched the file: a stale anchor is then a run that verifies two
+# mutations, prints a tail shaped like a finished one, and never mentions the other sixteen. A suite that
+# aborts silently is the defect class, so the write is allowed to fail, the mutation is still DECLARED,
+# and the summary below is what says one did not run.
 mutate() {
-    python3 - "$@" <<'PY'
+    if ! python3 - "$@" <<'PY'
 import sys
 src, out, old, new, why = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5]
 s = open(src).read()
@@ -226,6 +239,9 @@ if s.count(old) != 1:
 open(out, 'w').write(s.replace(old, new))
 print("  mutant %s: %s" % (out.rsplit('/', 1)[-1], why))
 PY
+    then
+        failures=$((failures + 1))
+    fi
 }
 
 F=$S/SecurityFunctions10_0_1.m
@@ -353,10 +369,19 @@ mutate "$F" "$build/mutant-padding.m" \
 '    if (CFEqual(algorithm, kSecKeyAlgorithmRSASignatureMessagePKCS1v15SHA256))
         return kSecPaddingPKCS1SHA384;   // MUTANT: SHA-384s padding for a SHA-256 algorithm' \
 'a SHA-256 algorithm gets the SHA-384 padding'
+# The EC row of the table, as it stands: the release DOES sign an elliptic key (kSecAttrKeyTypeEC is
+# ios(4.0), SecItem.h:802-803), so the row is an allow-list of the two ECDSA digest algorithms rather
+# than a refusal. The anchor is the WHOLE statement, not its first line, because a one-line anchor
+# cannot express a replacement that covers both and a half-replaced statement does not compile - and
+# this is what the anchor used to be, stale, after the row changed: the line it named (the
+# `return false;      // EC signing arrives after 6.1.3` one) is gone, mutate matched it zero times, and
+# under `set -eu` that ended the run at the second mutation of eighteen. The cell is the same one the
+# old mutation held: the EC answer becomes the release's EC answer's opposite.
 mutate "$F" "$build/mutant-verify-pairs.m" \
-'        return false;      // EC signing arrives after 6.1.3: the release has no EC primitive to sign with' \
-'        return ec;         // MUTANT: an EC key is held to sign and verify as well' \
-'an EC key is held to carry verification'
+'        return CFEqual(algorithm, kSecKeyAlgorithmECDSASignatureDigestX962SHA256)
+            || CFEqual(algorithm, kSecKeyAlgorithmECDSASignatureMessageX962SHA256);' \
+'        return false;   // MUTANT: the EC allow-list is dropped, so an EC key is refused again' \
+'the EC allow-list is dropped'
 mutate "$F" "$build/mutant-attributes.m" \
 '    if (CFGetTypeID(result) != CFDictionaryGetTypeID())' \
 '    if (0)   // MUTANT: anything at all is passed off as an attributes dictionary' \
@@ -402,8 +427,11 @@ must_not_compile() {
     # IT IS A MUTATION AND IT COUNTS AS ONE. It incremented `noticed` without incrementing `mutants`,
     # so the run reported 11 noticed against 10 mutations: a compiler-refused mutation was being counted
     # as evidence without being counted as an attempt, which is the one thing a coverage summary must not
-    # do. The increment belongs at the top, like the other two runners.
+    # do. The increment belongs at the top, like the other two runners. `declared` is incremented with
+    # it, for the same reason: this runner is a mutation this script means to judge, and a coverage line
+    # that counted it as an attempt but not as a declaration would say the matrix is smaller than it is.
     mutants=$((mutants + 1))
+    declared=$((declared + 1))
     name=$1; sources=$2
     # THE CONTROL, and for this runner it is the other way round: the verdict here is a build FAILING,
     # so what has to be shown first is that the UNMUTATED line BUILDS. Without it a source that does not
@@ -541,6 +569,13 @@ for c in $(cat "$build/cases-entered" 2>/dev/null); do
     fi
 done
 echo
+# EVERY DECLARED MUTATION MUST BE ONE THAT RAN. A mutation declared and not run is the silent abort
+# this suite was found to have, and the count is the only place it shows.
+echo "run-cases: $mutants mutations run of $declared declared"
+if [ "$mutants" -ne "$declared" ]; then
+    echo "run-cases: $((declared - mutants)) declared mutation(s) did not run - the matrix above is not the whole one"
+    failures=$((failures + 1))
+fi
 if [ "$green" -ne "$cases" ]; then
     echo "run-cases: $green GREEN verdict lines for $cases cases - the summary does not match the lines it printed"
     exit 1
