@@ -6,8 +6,12 @@ split into VideoToolboxConstants<release>.m, one file per release. This holds th
 
   * every constant a file defines has a registry row (kind constant) whose `introduced` is the release in
     that file's name, and
-  * every constant is defined exactly once. (The registry also holds constants no file of these defines,
-    the ones the framework itself exports, so rows without a definition are not this check's.)
+  * every constant is defined exactly once.
+  Every constant ROW now also has a definition: what a held release first exports after 6.0 - which is
+  what this package answers for - is a constant the port carries, and the ladder measures when. An earlier
+  version of this file excused rows without a definition as "the ones the framework itself exports", and
+  that was wrong for the kVTProfileLevel levels: the ladder places them at 7.0, so 6.0 lacks them and the
+  port owes them like any other.
 
     python3 tests/backports/host/videotoolbox/check-constant-files.py            # the tree
     python3 tests/backports/host/videotoolbox/check-constant-files.py --control  # and the control below

@@ -135,7 +135,19 @@ def build_rows(gen_body, sdk_text, protocols, classes, order):
 
 
 def write(registry_dir, facts_dir, rows, order):
-    """The group files, and the facts file every row above points at."""
+    """The group files, and the facts file every row above points at.
+
+    MERGES, and the reason is a defect this function caused: it used to write each group file whole, so
+    running the CLASS suite after the CONSTANTS suite deleted the 45 constant rows the ladder had placed
+    in ios26.json - 451 lines, no error, and the constants suite had passed a moment earlier. Two writers
+    for one file, the second silently overwriting the first, which is the same two-implementations
+    failure as the object that held fifteen releases.
+
+    So this writes ONLY the rows it owns - kind class, method or property - and carries every other row
+    through unchanged, in whatever file it touches. registry-constants.py already merges the same way for
+    ios7.json and ios8.json, and the two must agree.
+    """
+    OURS = ("class", "method", "property")
     groups = {}
     for release, row in rows:
         groups.setdefault(release, []).append(row)
@@ -143,10 +155,22 @@ def write(registry_dir, facts_dir, rows, order):
     written = []
     for release, entries in sorted(groups.items()):
         path = os.path.join(registry_dir, release)
+        # ORDER IS PRESERVED, and it is not cosmetic: a merge that re-sorts rewrites bytes it did not
+        # own, and then every run of this suite is a diff. The existing order is the coordinator's
+        # ladder output and is not this file's to rearrange.
+        existing = json.load(open(path))["entries"] if os.path.exists(path) else []
+        mine = {(e["kind"], e["api"]): e for e in entries}
+        merged, used = [], set()
+        for row in existing:
+            key = (row.get("kind"), row.get("api"))
+            if key in mine:
+                merged.append(mine.pop(key))     # ours, replaced IN PLACE
+                used.add(key)
+            else:
+                merged.append(row)               # somebody else's, carried
+        merged += [e for _k, e in sorted(mine.items(), key=lambda kv: (kv[0][0], kv[0][1]))]
         with open(path, "w") as handle:
-            json.dump({"framework": "VideoToolbox",
-                       "entries": sorted(entries, key=lambda e: (e["kind"], e["api"]))},
-                      handle, indent=1)
+            json.dump({"framework": "VideoToolbox", "entries": merged}, handle, indent=1)
             handle.write("\n")
         written.append((os.path.basename(path), len(entries)))
     os.makedirs(facts_dir, exist_ok=True)
