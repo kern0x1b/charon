@@ -138,7 +138,7 @@ CHARON_MPS_NEURON_COMMON
             for (NSUInteger row = 0; row < vectors; row++) {
                 double d = CharonMPSLoad(CharonMPSMatrixElement(&gradient, b, _primarySourceMatrixOrigin.x + row, _primarySourceMatrixOrigin.y + column), gradient.dataType, 0);
                 double x = CharonMPSLoad(CharonMPSMatrixElement(&in, b, _secondarySourceMatrixOrigin.x + row, _secondarySourceMatrixOrigin.y + column), in.dataType, 0);
-                double normalised = (x - m) / (v + (double)_epsilon);
+                double normalised = (x - m) / sqrt(v + (double)_epsilon);
                 sum += d;
                 gammaGradient += d * normalised;
                 betaGradient += d;
@@ -166,7 +166,7 @@ CHARON_MPS_NEURON_COMMON
             for (NSUInteger row = 0; row < vectors; row++) {
                 double d = CharonMPSLoad(CharonMPSMatrixElement(&gradient, b, _primarySourceMatrixOrigin.x + row, _primarySourceMatrixOrigin.y + column), gradient.dataType, 0);
                 double x = CharonMPSLoad(CharonMPSMatrixElement(&in, b, _secondarySourceMatrixOrigin.x + row, _secondarySourceMatrixOrigin.y + column), in.dataType, 0);
-                double normalised = (x - m) / (v + (double)_epsilon);
+                double normalised = (x - m) / sqrt(v + (double)_epsilon);
                 double gradientForData = divisor * (d - meanGradient - normalised * scaledSum);
                 CharonMPSStore(CharonMPSMatrixElement(&out, b, _resultMatrixOrigin.x + row, _resultMatrixOrigin.y + column), out.dataType, 0, gradientForData);
             }
