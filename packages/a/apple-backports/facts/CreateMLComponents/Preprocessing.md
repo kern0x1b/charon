@@ -117,11 +117,11 @@ until the probe builds.
 
 `preprocessor-applied-host.swift` type-checks and then aborts the compiler. Bisected from a copy under `.agent-work/runs/probe-bisect/`, with the same `xcrun swiftc -Onone`
 the other probes use, and **from the full path of the probe in this tree** -
-`tests/backports/host/creematl/probe/preprocessor-applied-host.swift`:
+`tests/backports/host/createml/probe/preprocessor-applied-host.swift`:
 
     $ head -34 tests/backports/host/createml/probe/preprocessor-applied-host.swift > ctl.swift && xcrun swiftc -Onone -o ctl ctl.swift     # the control: BUILDS
     $ head -40 tests/backports/host/createml/probe/preprocessor-applied-host.swift > p40.swift  && xcrun swiftc -Onone -o p40 p40.swift     # expected '}' in struct
-    $ head -56 tests/backports/host/creematl/probe/preprocessor-applied-host.swift > p56.swift  && xcrun swiftc -Onone -o p56 p56.swift     # signal 6
+    $ head -56 tests/backports/host/createml/probe/preprocessor-applied-host.swift > p56.swift  && xcrun swiftc -Onone -o p56 p56.swift     # signal 6
 
 **The control is the first conformer alone** - the `Estimator` one, lines 23-34, closed at 34 - and it
 compiles. Adding the second conformer, `struct SupervisedRecorder: UpdatableSupervisedEstimator` at
