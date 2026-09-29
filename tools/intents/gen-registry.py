@@ -339,12 +339,22 @@ def main():
             # exists they are held here, with the reason the tree gave, rather than flipped on
             # the strength of a reason that changed by itself.
             if api in HELD_PROTOCOLS:
+                # Written once, in the file of the group whose classes first conform to it, on
+                # the same rule the --no-protocols branch below uses: a protocol named by two
+                # files stops the build with both names, and holding it in all three of them
+                # did exactly that - "INIntentSetImageKeyPath is named by both
+                # registry/Intents/ios10.json and registry/Intents/ios11.json", which is what
+                # the light guard said the first time this ran.
+                if options.no_protocols:
+                    continue
                 entries.append({"api": api, "kind": "protocol", "introduced": intro,
                                 "minimum": "6.0", "status": "absent", "facts": options.facts,
                                 "reason": "the SDK declares it in no header: the two methods it "
                                           "refines carry NS_REFINED_FOR_SWIFT, which names a Swift "
                                           "refinement and not a protocol any header declares, so "
                                           "there is nothing here for a header to carry",
+                                "effect": "nothing: the port does not declare the protocol and a "
+                                          "conforming class is not given one to conform to",
                                 "source": SOURCE})
                 continue
             if options.no_protocols:
@@ -397,12 +407,17 @@ def main():
                                                      % owner if owner in hand_written else None))
                     continue
                 if api.endswith("] init") or api == "-[%s init]" % owner:
+                    # The fourth of the four lookups, and the busiest branch in the file: it
+                    # carries the 51 rows whose class marks -init unavailable.  It had its own
+                    # inline causes.get(api) and its own copy of the fallback, so a cause recorded
+                    # under a bare selector was honoured in three of the four places and not here.
+                    # The fallback is the argument, which is the whole point of reason_for.
                     entries.append(absent(api, "method", intro,
-                                          vocabulary.get(causes.get(api),
-                                                        "the header marks the class's -init "
-                                                        "unavailable, so a port cannot call it and "
-                                                        "the class answers the initialiser the "
-                                                        "header does declare"), options.facts))
+                                          reason_for(causes, vocabulary, api,
+                                                     "the header marks the class's -init "
+                                                     "unavailable, so a port cannot call it and "
+                                                     "the class answers the initialiser the "
+                                                     "header does declare"), options.facts))
                     missing["init"] += 1
                     continue
                 entries.append(absent(api, "method", intro,
@@ -440,7 +455,7 @@ def main():
         # "a class of the same name" no: "X" is the class and "selector]" is the member, so the
         # selector is what follows the LAST space with the closing bracket off.
         selector = api.rsplit(" ", 1)[-1][:-1] if " " in api else None
-        reason = vocabulary.get(causes.get(api) or causes.get(selector))
+        reason = reason_for(causes, vocabulary, api, None)
         if reason is None and owner in answered:
             # The generator read every header of the SDK this port compiles against and wrote
             # down every member it declared, implemented, withheld or did not find. A member of a
