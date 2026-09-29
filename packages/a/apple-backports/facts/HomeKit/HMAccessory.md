@@ -22,7 +22,7 @@ The port's accessory already carries the identifier of its home in `charon_homeI
 field the home graph's entry points are given, so the answer reuses the graph and there is no second way
 to reach a home in this library.
 
-## `-cameraProfiles`, of 10.0 — not carried, and not absent
+## `-cameraProfiles`, of 10.0 — carried
 
 `HMAccessory+Camera.h:28`, quoted:
 
@@ -31,16 +31,21 @@ to reach a home in this library.
     API_AVAILABLE(ios(10.0), watchos(3.0), tvos(10.0), macCatalyst(14.0)) API_UNAVAILABLE(macos);
 ```
 
-Note the attribute difference from `home`, which the contract check would notice if both were carried:
-`cameraProfiles` is **copy** where `home` is **weak**, and it is an `NSArray` where `home` is a single
-object. The reason it is not carried is its **element type**: `HMCameraProfile` is a class this port does
-not have yet, so an accessor could not be written — the type of what it would return would not exist. It
-comes with its type.
+The attribute difference from `home` above is real and the check compares each of them: `cameraProfiles` is
+**copy** where `home` is **weak**, and it is an `NSArray` where `home` is a single object.
 
-It is **not** marked `absent` in the registry, because `absent` means the release does not export the
-member and the release does: the 10.0 header declares it. A caller asking this port for camera profiles is
-answered by `-respondsToSelector:`, which is the honest answer for a member this library does not carry,
-and the row is left for the piece that carries `HMCameraProfile`.
+The element type is `HMCameraProfile`, which this port carries in `HMAccessoryProfile10_0.m` of the same
+release, so the answer's type exists and the accessor is written with it. It is **not** marked `absent` in
+the registry: `absent` means the release does not export the member, and the 10.0 header declares it. The
+row was flipped to `implemented` in place, keeping one spelling of the API — a second row in the selector
+form would be one API in two spellings, which the light guard refuses and which would be lifted and
+lowered together.
+
+The profiles are the ones the graph holds for this accessory, read from the accessory's own record through
+the graph's own list field — the same helper a home's rooms and zones are read with — and each is built by
+`HMAccessoryProfile`'s own graph initialiser, so there is no second way to make a profile in this library.
+An accessory that publishes none answers an **empty array**: the header's nullable allows it, and an array
+is what the property is, so a caller can iterate the answer without first asking whether there is one.
 
 ## What is not checked here, and why
 

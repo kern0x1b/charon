@@ -46,6 +46,10 @@ EXPECTED = {
         "services": "HMAccessoryProfile.h:32",
         "accessory": "HMAccessoryProfile.h:37",
     },
+    "HMAccessory": {
+        "home": "HMAccessory.h:37",
+        "cameraProfiles": "HMAccessory+Camera.h:28",
+    },
     "HMCameraProfile": {
         "streamControl": "HMCameraProfile.h:33",
         "snapshotControl": "HMCameraProfile.h:38",
@@ -88,6 +92,28 @@ def ast(root, name):
     return documents
 
 
+MACROS = ("API_AVAILABLE", "API_UNAVAILABLE", "API_DEPRECATED", "NS_SWIFT_UNAVAILABLE",
+          "NS_REFINED_FOR_SWIFT", "NS_SWIFT_NAME", "NS_SWIFT_SENDABLE", "NS_SWIFT_ASYNC_NAME",
+          "NS_EXTENSION_UNAVAILABLE_IOS", "API_DEPRECATED_WITH_REPLACEMENT")
+
+
+def clean_type(text):
+    """The property's own type, with the availability macros the header writes after it removed: they land
+    in the AST's type string, and what is being compared is the type and its nullability, not the release
+    annotation - which the registry row carries and the check reads from the header's own line."""
+    out = text
+    for macro in MACROS:
+        while macro in out:
+            head = out.index(macro)
+            # the macro and its parenthesised argument, or the bare name
+            if "(" in out[head:head + 80] and ")" in out[head:head + 120]:
+                end = out.index(")", head) + 1
+            else:
+                end = head + len(macro)
+            out = out[:head] + out[end:]
+    return " ".join(out.split())
+
+
 def properties(documents):
     """Every property in the dump, with the file it came from, so the header's and the port's can be told
     apart: the header's decls carry an includedFrom of the SDK."""
@@ -112,7 +138,7 @@ def properties(documents):
             found.setdefault(node.get("name"), []).append(
                 {
                     "file": source,
-                    "type": (node.get("type") or {}).get("qualType", ""),
+                    "type": clean_type((node.get("type") or {}).get("qualType", "")),
                     "attrs": tuple(a for a in ATTRIBUTES if node.get(a)),
                     "line": (node.get("loc") or {}).get("line"),
                 }
@@ -188,12 +214,39 @@ def main():
     print("header contract, from clang's AST of the SDK and of the port, for %s" % TARGET[0])
     failures = []
     for name, expected in sorted(EXPECTED.items()):
-        both = properties(ast(source, name))
+        # each class's own file: the properties arrive through that file's import, tagged with the SDK
+        # header they came from, and the port's own declaration of them is in the same dump
+        path = os.path.join(port, "HMAccessoryHome10_0.m") if name == "HMAccessory" else source
+        both = properties(ast(path, name))
         header_props = {k: v for k, v in both.items()}
         port_props = {k: [p for p in v if not p["file"].endswith(".h")] for k, v in both.items()}
         failures.extend(compare(name, expected, header_props, port_props))
 
     # The control: a scratch copy with one attribute flipped. This must be caught, or nothing above is.
+    # A missing member, not a flipped attribute: this port writes its accessors out by hand, and a method
+    # carries no attributes for the AST to compare, so deleting the accessor is the failure this piece
+    # could actually have.
+    print("\ncontrol: the same check with HMAccessory's cameraProfiles accessor removed")
+    control_failures = []
+    with tempfile.TemporaryDirectory() as scratch:
+        broken = os.path.join(scratch, "HMAccessoryHome10_0.m")
+        with open(os.path.join(port, "HMAccessoryHome10_0.m")) as handle:
+            text = handle.read()
+        with open(broken, "w") as handle:
+            handle.write(text.replace("- (NSArray<HMCameraProfile *> *)cameraProfiles",
+                                      "- (NSArray<HMCameraProfile *> *)charon_cameraProfilesRemoved"))
+        seen = properties(ast(broken, "HMAccessory"))
+        for member, line in sorted(EXPECTED["HMAccessory"].items()):
+            header = next((x for x in seen.get(member, []) if x["file"].endswith(".h")), None)
+            port = next((x for x in seen.get(member, []) if not x["file"].endswith(".h")), None)
+            if header and port is None:
+                control_failures.append("%s: the port declares no such member" % member)
+        if control_failures:
+            print("  control caught: %s" % "; ".join(control_failures))
+        else:
+            print("  control NOT caught: this piece's check cannot fail")
+            failures.append("the HMAccessory control was not caught")
+
     print("\ncontrol: the same check with HMCameraProfile's weak removed from streamControl")
     with tempfile.TemporaryDirectory() as scratch:
         broken = os.path.join(scratch, "HMAccessoryProfile10_0.m")

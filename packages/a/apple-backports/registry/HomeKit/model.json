@@ -373,9 +373,11 @@
    "kind": "property",
    "introduced": "10.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the home graph and the HAP transport that would reach an accessory, which this port does not carry: it has no HAP session with an accessory, and iOS 6 runs no home hub, no homekitd and no accessories daemon, so there is no system service to ask for a home graph either",
-   "effect": "the message is not there: respondsToSelector: answers NO"
+   "status": "implemented",
+   "reason": "iOS 10.0 is the release of the two properties that say where an accessory is, which the 26.2 header marks API_AVAILABLE(ios(10.0)) and API_UNAVAILABLE(macos): home on HMAccessory.h:37 and cameraProfiles on HMAccessory+Camera.h:28",
+   "effect": "the home the accessory belongs to, and nil for one that belongs to none, which is what the header's own nullable allows",
+   "facts": "facts/HomeKit/HMAccessory.md",
+   "source": "the HomeKit header of SDK 26.2 for the contract, each property's line quoted in the facts; the check is tests/backports/host/homekit/ast_check.py, which compares the port's declarations with the header's from clang's AST for arm64-apple-ios12.0, and oracle.py, which counts the selector names in the 12.0 and 16.0 arm64 caches"
   },
   {
    "api": "HMAccessory.firmwareVersion",
@@ -432,9 +434,11 @@
    "kind": "property",
    "introduced": "10.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the home graph and the HAP transport that would reach an accessory, which this port does not carry: it has no HAP session with an accessory, and iOS 6 runs no home hub, no homekitd and no accessories daemon, so there is no system service to ask for a home graph either",
-   "effect": "the message is not there: respondsToSelector: answers NO"
+   "status": "implemented",
+   "reason": "iOS 10.0 is the release of the two properties that say where an accessory is, which the 26.2 header marks API_AVAILABLE(ios(10.0)) and API_UNAVAILABLE(macos): home on HMAccessory.h:37 and cameraProfiles on HMAccessory+Camera.h:28",
+   "effect": "the camera profiles the accessory publishes, an array always and empty when it publishes none, each profile made by the graph's own initialiser",
+   "facts": "facts/HomeKit/HMAccessory.md",
+   "source": "the HomeKit header of SDK 26.2 for the contract, each property's line quoted in the facts; the check is tests/backports/host/homekit/ast_check.py, which compares the port's declarations with the header's from clang's AST for arm64-apple-ios12.0, and oracle.py, which counts the selector names in the 12.0 and 16.0 arm64 caches"
   },
   {
    "api": "HMAccessory.bridgedAccessories",

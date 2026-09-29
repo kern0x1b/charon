@@ -12,18 +12,35 @@
 // second way to reach a home in this library, and nothing is invented: an accessory with no home
 // identifier answers nil, which is what nullable allows.
 //
-// **HMAccessory.cameraProfiles is not here, and the reason is a type, not a choice.** The header
-// declares it in HMAccessory+Camera.h:28:
+// **HMAccessory.cameraProfiles.** The header declares it in HMAccessory+Camera.h:28:
 //   @property (nullable, nonatomic, readonly, copy) NSArray<HMCameraProfile *> *cameraProfiles
 //       API_AVAILABLE(ios(10.0), ...) API_UNAVAILABLE(macos);
-// The type names HMCameraProfile, which this port does not carry yet, so an accessor for it could not be
-// written: the element type of the answer would not exist. It comes with its type. Until then the property
-// is not answered, and a caller asking this port for camera profiles is answered by -respondsToSelector:,
-// which is the honest answer for a member this library does not carry. It is not marked absent in the
-// registry, because absent means the release does not export it and the release does: see
-// facts/HomeKit/HMAccessory.md.
+// **copy**, where home above is **weak**, and an NSArray where home is a single object - the two
+// attributes differ and the AST check compares each of them. The element type is HMCameraProfile, which
+// this port carries in HMAccessoryProfile10_0.m of the same release, so the answer's type exists and this
+// accessor is written with it.
+//
+// The profiles are the ones the graph holds for this accessory, read from the accessory's own record
+// through the graph's own list field - the same helper the home's rooms and zones are read with - and each
+// is built by HMAccessoryProfile's own graph initialiser, so there is no second way to make a profile in
+// this library. An accessory that publishes none answers an empty array: the header's nullable allows it
+// and an array is what the property is, so a caller can iterate the answer without asking whether there
+// is one.
 
 #import "CharonHomeKitInternal.h"
+#import "CharonHomeKitModel.h"
+#import "CharonHomeKitStore.h"
+
+// The element type of the answer. The class is of the same release, in the file named above; the
+// declaration here is only so the compiler knows the name before that file is read.
+@class HMCameraProfile;
+
+// The graph's own way of making a profile, so the accessor below does not invent a second one.
+@interface HMAccessoryProfile (CharonHomeKit10Internal)
++ (instancetype)charon_profileInStore:(CharonHomeKitStore *)store
+                            identifier:(NSUUID *)identifier
+                             accessory:(nullable HMAccessory *)accessory;
+@end
 
 @implementation HMAccessory
 
@@ -36,6 +53,24 @@
     if (!homeIdentifier.length)
         return nil;
     return CharonHomeKitHome(homeIdentifier);
+}
+
+// HMAccessory+Camera.h:28 - nullable, readonly, copy, and an NSArray. The accessory's own record holds
+// the order of its profiles, the way a home's record holds the order of its rooms, and each profile is
+// made by the graph's own initialiser for that class.
+- (NSArray<HMCameraProfile *> *)cameraProfiles
+{
+    CharonHomeKitStore *store = [CharonHomeKitStore shared];
+    NSMutableArray<HMCameraProfile *> *found = [NSMutableArray array];
+    for (NSString *identifier in CharonHomeKitStringListField(CharonHomeKitRecord(@"accessories", self.charon_identifier),
+                                                             @"cameraProfiles")) {
+        HMCameraProfile *profile = [HMCameraProfile charon_profileInStore:store
+                                                              identifier:CharonHomeKitUUID(identifier)
+                                                               accessory:self];
+        if (profile)
+            [found addObject:profile];
+    }
+    return found;
 }
 
 @end

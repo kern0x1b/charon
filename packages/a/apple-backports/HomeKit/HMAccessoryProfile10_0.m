@@ -46,6 +46,15 @@
 @property (nullable, nonatomic, readonly, strong) HMCameraAudioControl *speakerControl;
 @end
 
+// The graph's one way of making a profile that already exists: the accessory accessor in
+// HMAccessoryHome10_0.m asks for it, so a profile is never built a second way. The four camera controls
+// are not asked for here - a profile built for the graph publishes none, which is the header's nullable.
+@interface HMAccessoryProfile (CharonHomeKit10Internal)
++ (instancetype)charon_profileInStore:(CharonHomeKitStore *)store
+                            identifier:(NSUUID *)identifier
+                             accessory:(nullable HMAccessory *)accessory;
+@end
+
 @interface HMAccessoryProfile (CharonHKConstruction)
 - (instancetype)charon_initWithStore:(CharonHomeKitStore *)store
                           identifier:(NSUUID *_Nullable)identifier
@@ -75,6 +84,19 @@
         profile->_services = [services copy] ?: @[];
     }
     return profile;
+}
+
+// The class form of the same path, so a caller holding a class rather than a profile - a subclass, which
+// is what -cameraProfiles answers - gets a subclass. +[self alloc] is that subclass, so this is one way
+// of making a profile and not two.
++ (instancetype)charon_profileInStore:(CharonHomeKitStore *)store
+                            identifier:(NSUUID *)identifier
+                             accessory:(HMAccessory *)accessory
+{
+    return [[self alloc] charon_initWithStore:store
+                                   identifier:identifier
+                                    accessory:accessory
+                                     services:nil];
 }
 
 // HMAccessoryProfile.h:27 - nonnull, readonly, copy. A profile always has an identity of its own.
