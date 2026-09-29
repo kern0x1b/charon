@@ -241,3 +241,26 @@ its gradient kernel, writes one of its three outputs and leaves the other two at
 is not a harness artifact, and it is not a driver property to be excused as one — it is what MPS does,
 measured, and the port writes the header's formula for those two vectors. The facts say so and the
 registry carries the effect; nothing is changed to match zeros.
+
+### And there is no switch: the class dump
+
+`tests/backports/host/mpsmatrix/fixtures/gradient-class.m` walks the host's own class, printing the
+accessors it declares, and the answer is closed:
+
+    MPSMatrixBatchNormalizationGradient   super MPSMatrixBinaryKernel
+      epsilon  neuronA  neuronB  neuronC  neuronType
+      neuronParameterA  neuronParameterB  neuronParameterC
+      sourceInputFeatureChannels  sourceNumberOfFeatureVectors
+    MPSMatrixBinaryKernel   super MPSKernel
+      batchStart  batchSize  primarySourceMatrixOrigin  secondarySourceMatrixOrigin
+      resultMatrixOrigin
+
+**No switch, and no flag that could be one.** Note the shape of the difference from the forward, which
+*does* declare `computeStatistics`: the gradient has no equivalent, so there is nothing to set.
+
+**And the gamma vector does not have to be passed.** The probe in `batchnorm-gradient.m` passes a
+`gammaVector` and still gets zeros, so the "without it the gradient is not computed" reading is closed
+from the other side: passing it changes nothing.
+
+**So the system wins, and the port is to write what the host writes.** The per-parameter gradients are
+left untouched rather than computed, and the facts say so with the program that shows it.
