@@ -160,16 +160,29 @@ static int store_case(void)
     id second = makeIdentity(identityClass, make, serviceB, @"bob", nil);
     id third = makeIdentity(identityClass, make, serviceA, @"carol", nil);
 
-    // Before: save two of the three, so the store holds a set that is NOT what the replace will be
-    // given. A test that replaced an empty store would not tell a superset from a replacement.
-    ((void (*)(id, SEL, id, SEL))objc_msgSend)(store, sel_registerName("saveCredentialIdentities:completion:"),
-        ((id)first), sel_registerName("saveCredentialIdentities:completion:"));
-    ((void (*)(id, SEL, id, SEL))objc_msgSend)(store, sel_registerName("saveCredentialIdentities:completion:"),
-        ((id)second), sel_registerName("saveCredentialIdentities:completion:"));
+    // The path, printed before anything is saved: the store's file belongs under .agent-work/runs/ and
+    // a test that cannot say where it wrote is a test that should not be trusted with a write.
+    id pathObject = ((id (*)(id, SEL))objc_msgSend)(store, sel_registerName("charon_storePath"));
+    printf("  store   path            %s\n", [[pathObject description] UTF8String]);
+
+    // The completions are BLOCKS, not selectors. The first version passed sel_registerName(...) where
+    // the completion goes, and the port -- correctly -- called it, and the crash was
+    // objc_retain inside saveCredentialIdentities:completion:. The first frame was in the runtime and
+    // the second in the port's save, and the port was right to be there: it had been handed a selector
+    // and told to call it.
+    void (*save)(id, SEL, id, void (^)(BOOL, NSError *)) =
+        (void (*)(id, SEL, id, void (^)(BOOL, NSError *)))objc_msgSend;
+    SEL saveSel = sel_registerName("saveCredentialIdentities:completion:");
+    save(store, saveSel, [NSArray arrayWithObject:first], ^(BOOL ok, NSError *error) { (void)ok; (void)error; });
+    save(store, saveSel, [NSArray arrayWithObject:second], ^(BOOL ok, NSError *error) { (void)ok; (void)error; });
+    // Before the replace the store holds a set that is NOT what the replace will be given. A test that
+    // replaced an empty store could not tell a superset from a replacement.
     printf("  store   before replace  %d identities\n", (int)self_identities(path));
 
-    ((void (*)(id, SEL, id, SEL))objc_msgSend)(store, sel_registerName("replaceCredentialIdentitiesWithIdentities:completion:"),
-        [NSArray arrayWithObject:third], sel_registerName("replaceCredentialIdentitiesWithIdentities:completion:"));
+    void (*replace)(id, SEL, id, void (^)(BOOL, NSError *)) =
+        (void (*)(id, SEL, id, void (^)(BOOL, NSError *)))objc_msgSend;
+    replace(store, sel_registerName("replaceCredentialIdentitiesWithIdentities:completion:"),
+            [NSArray arrayWithObject:third], ^(BOOL ok, NSError *error) { (void)ok; (void)error; });
     NSInteger after = self_identities(path);
     printf("  store   after replace   %d identities\n", (int)after);
     // The set is exactly the array: one identity, and it is the one that was given. A superset would be
@@ -224,7 +237,7 @@ int main(int argc, char **argv)
     // sources that make the port's four identity classes live alongside the host's, and the one line
     // where it stops. The port's -replaceCredentialIdentitiesWithIdentities: is the reviewed change and
     // it is in the source; this is the case that will prove it, and it is not yet proved.
-    if (getenv("AS_STORE_CASE") && store_case() != 0)
+    if (store_case() != 0)
         return 1;
     return 0;
 }

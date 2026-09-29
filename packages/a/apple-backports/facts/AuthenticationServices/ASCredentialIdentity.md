@@ -96,3 +96,47 @@ which is the method that means it.
 about the *application's* store, not the system's autofill database. There is no daemon behind this one
 and nothing outside the process reads it, which is the honest answer for a port that has no system
 credential store to ask.
+
+## The store case, and the two bugs it found
+
+The case the coordinator asked for — the set before, the replace, the set equals the array — is in
+`tests/backports/host/authservices/values.m` and is **green**:
+
+    store   path            .agent-work/runs/authservices-values/credential-store.plist
+    store   before replace  2 identities
+    store   after replace   1 identities
+
+It writes the **port's** store, under `.agent-work/runs/`, and the write guard passes on it: the case
+resolves only `PortASCredentialIdentityStore` and never the host's class.
+
+It found two bugs, and the first one is the more interesting because nothing pointed at it.
+
+**1. `NSNull` is not a property-list value.** A record with no record identifier was written as
+`identity.recordIdentifier ?: [NSNull null]`, and one `NSNull` in a record made the whole
+`NSPropertyListSerialization` return nil — so the store saved *nothing at all*, every save reported the
+failure its completion handler exists for, and the shape check was green throughout because nothing in
+it writes. "No record identifier" in a property list is the absence of the key, which is what the
+comparison against a held record already expected; the key is now omitted. A class that appears to
+work, reports its failures correctly, and stores nothing is a worse failure than one that crashes, and
+only a case that writes and reads back finds it.
+
+**2. The test passed a selector where a block belongs.** The first version called
+`-saveCredentialIdentities:completion:` with `sel_registerName("saveCredentialIdentities:completion:")` as
+the completion, because the port's declaration spells the completion as a `SEL`. The port did what it
+was told and called it, and the crash was:
+
+    frame #0: objc_retain
+    frame #1: -[PortASCredentialIdentityStore saveCredentialIdentities:completion:] + 76
+    frame #2: store_case + 768
+    frame #3: main
+
+Neither hypothesis of mine was the cause: `+sharedStore` had already been reached, and the store path
+had already been read. The first frame is in the runtime and the second is in the port's save — and the
+port was right to be there.
+
+## The store mutant
+
+The value differential mutates two things and requires both red. The **operation** mutant is red with a
+differing table. The **replace** mutant — which restores the superset behaviour — is red by *crashing*,
+not by differing, and a crash is not the red this self-test wants: it shows the code path changed and
+nothing more. It is left in the run and the fact is recorded here rather than dressed as a pass.

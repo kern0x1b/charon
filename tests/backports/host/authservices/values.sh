@@ -142,36 +142,60 @@ if [ "$mutate" != "--mutate" ]; then
     exit 0
 fi
 
-# The value mutant, in the port's own source: a fresh request's default operation becomes the implicit
-# one, which is what this port shipped until the host was asked what it actually holds. The copy is
-# built the same way from the same list, so the mutant and the original differ in one value and in
-# nothing else.
-echo "== mutant: the port's fresh requestedOperation becomes the implicit operation"
-rm -rf "$build/mutant"
-mkdir -p "$build/mutant"
-for name in $sources; do cp "$package/$name" "$build/mutant/$name"; done
-cp "$package"/*.h "$build/mutant/" 2>/dev/null || true
-before=$(cksum < "$package/ASAuthorizationOpenIDRequest.m")
-perl -pi -e 's/_requestedOperation = nil;/_requestedOperation = [ASAuthorizationOperationImplicit copy];/' \
-    "$build/mutant/ASAuthorizationOpenIDRequest.m"
-after=$(cksum < "$build/mutant/ASAuthorizationOpenIDRequest.m")
-if [ "$before" = "$after" ]; then
-    echo "FAIL: the mutation did not apply: the pattern is not what the source has"
-    exit 1
-fi
-echo "   the source changed: cksum $before -> $after"
-grep -n "requestedOperation = \[" "$build/mutant/ASAuthorizationOpenIDRequest.m" | sed 's/^/     /'
-cmp -s "$package/ASAuthorizationOpenIDRequest.m" "$build/mutant/ASAuthorizationOpenIDRequest.m" \
-    && { echo "FAIL: cmp says the mutant and the original are the same file"; exit 1; }
-echo "   cmp: the mutant differs from the port's source"
+# The mutants, in the port's own source. Two, because the two claims each have one: a fresh request's
+# default operation becomes the implicit one, which is what this port shipped until the host was asked
+# what it actually holds; and the store's replace keeps the old set instead of replacing it, which is
+# the behaviour the coordinator had rejected. Each copy is built the same way from the same list, so a
+# mutant and the original differ in one value and in nothing else.
+#
+#   $1 is the case: "operation" or "replace"
+echo "== mutants: each one has to be red, and neither is the other's"
 
-build_and_run "$build/mutant" mutant
-echo
-diff "$build/plain-table.txt" "$build/mutant-table.txt" | sed 's/^/   /'
-if cmp -s "$build/plain-table.txt" "$build/mutant-table.txt"; then
-    echo "FAIL: the mutation changed nothing the check can see"
-    exit 1
-fi
-echo
-echo "ok: the mutation changed a value and the check noticed, and the port's own source and library"
-echo "    were not touched by this run"
+# run_mutant <tag> <file> <old> <new> <what it is>
+run_mutant() {
+    tag=$1
+    target=$2
+    old=$3
+    new=$4
+    what=$5
+    echo
+    echo "-- $tag: $what"
+    rm -rf "$build/$tag"
+    mkdir -p "$build/$tag"
+    for source in $sources; do cp "$package/$source" "$build/$tag/$source"; done
+    cp "$package"/*.h "$build/$tag/" 2>/dev/null || true
+    if [ ! -f "$build/$tag/$target" ]; then
+        echo "FAIL: the mutation names $target, which is not one of the port's sources"
+        return 1
+    fi
+    OLDPATTERN="$old" NEWPATTERN="$new" python3 -c '
+import os, sys
+path = sys.argv[1]
+text = open(path).read()
+old, new = os.environ["OLDPATTERN"], os.environ["NEWPATTERN"]
+if old not in text:
+    sys.stderr.write("the pattern is not in %s\n" % path)
+    sys.exit(1)
+open(path, "w").write(text.replace(old, new, 1))
+' "$build/$tag/$target" || { echo "FAIL: the $tag mutation did not apply"; return 1; }
+    cmp -s "$build/$tag/$target" "$package/$target" && { echo "FAIL: the mutation changed nothing"; return 1; }
+    echo "   $target changed:"
+    diff "$package/$target" "$build/$tag/$target" | grep -E "^[<>]" | sed 's/^/     /' | head -4
+    set +e
+    build_and_run "$build/$tag" "$tag"
+    built=$?
+    set -e
+    [ "$built" -eq 0 ] || { echo "FAIL: the $tag build did not complete"; return 1; }
+    if cmp -s "$build/plain-table.txt" "$build/$tag-table.txt"; then
+        echo "FAIL: the $tag mutation changed nothing the check can see"
+        return 1
+    fi
+    echo "   the $tag table differs from the port's:"
+    diff "$build/plain-table.txt" "$build/$tag-table.txt" | grep -E "^[<>]" | sed 's/^/     /' | head -4
+    return 0
+}
+
+status=0
+run_mutant operation ASAuthorizationOpenIDRequest.m "_requestedOperation = nil;" "_requestedOperation = [ASAuthorizationOperationImplicit copy];" "a fresh request's default operation becomes the implicit one" || status=1
+run_mutant replace ASCredentialIdentityStore.m "NSMutableArray *records = [NSMutableArray array];" "NSMutableArray *records = [self charon_records];" "the store's replace keeps the old set instead of replacing it" || status=1
+exit "$status"

@@ -154,11 +154,16 @@
         NSDictionary *existing = [self charon_recordFor:identity];
         if (existing)
             [records removeObject:existing];
-        [records addObject:@{@"identifier": identity.serviceIdentifier.identifier ?: @"",
-                             @"type": @(identity.serviceIdentifier.type),
-                             @"user": identity.user ?: @"",
-                             @"recordIdentifier": identity.recordIdentifier ?: [NSNull null],
-                             @"rank": @(identity.rank)}];
+        NSMutableDictionary *record = [@{@"identifier": identity.serviceIdentifier.identifier ?: @"",
+                                         @"type": @(identity.serviceIdentifier.type),
+                                         @"user": identity.user ?: @"",
+                                         @"rank": @(identity.rank)} mutableCopy];
+        // Omitted, not [NSNull null]: NSNull is not a property-list value, and one of them in a record
+        // made the whole write unserializable, so the store saved nothing and the completion reported
+        // the failure it exists for. "No record identifier" is the absence of the key.
+        if (identity.recordIdentifier)
+            record[@"recordIdentifier"] = identity.recordIdentifier;
+        [records addObject:record];
     }
     BOOL written = [self charon_writeRecords:records];
     if (completion)
@@ -200,11 +205,16 @@
     // would be handing back a set the caller did not ask for and cannot see.
     NSMutableArray *records = [NSMutableArray array];
     for (ASPasswordCredentialIdentity *identity in newCredentialIdentities) {
-        [records addObject:@{@"identifier": identity.serviceIdentifier.identifier ?: @"",
-                             @"type": @(identity.serviceIdentifier.type),
-                             @"user": identity.user ?: @"",
-                             @"recordIdentifier": identity.recordIdentifier ?: [NSNull null],
-                             @"rank": @(identity.rank)}];
+        NSMutableDictionary *record = [@{@"identifier": identity.serviceIdentifier.identifier ?: @"",
+                                         @"type": @(identity.serviceIdentifier.type),
+                                         @"user": identity.user ?: @"",
+                                         @"rank": @(identity.rank)} mutableCopy];
+        // Omitted, not [NSNull null]: NSNull is not a property-list value, and one of them in a record
+        // made the whole write unserializable, so the store saved nothing and the completion reported
+        // the failure it exists for. "No record identifier" is the absence of the key.
+        if (identity.recordIdentifier)
+            record[@"recordIdentifier"] = identity.recordIdentifier;
+        [records addObject:record];
     }
     BOOL written = [self charon_writeRecords:records];
     if (completion)
