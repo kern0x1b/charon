@@ -9,6 +9,16 @@ that describes a real absence.
 *removed* rows from `absent_Security.json` and `ios11.json`, and *added* rows to `ios13.json`. So per the
 rule they are **left in place and listed as crutches with a fix path**, not deleted.
 
+**Update, and the table below is a record of the past, not the present state.** The fix path the nine
+wrapper rows were given here has been taken: all nine are `implemented` now, in `ios12.json` — and
+`sec_identity_access_certificates` in `ios16.json`, in its own object because `release-split` puts it in a
+different rung. The `file` column below is where each row sat when this audit was written, which is why it
+says `ios11.json` and `absent_Security.json` for rows that have since moved; what each row is now is in
+the registry, and the identity half is measured in
+[SecObjectWrappersIdentity.md](SecObjectWrappersIdentity.md). Nothing below is edited to match: this file
+is the record of the decision and of the reasoning that produced it, and the one sentence that would now
+read as a claim about the tree — the fix path's "then flip the nine to `implemented`" — is what happened.
+
 ## The nine wrapper rows, and the "Network.framework" reason
 
 | api | file | why `absent` is the wrong word |

@@ -60,35 +60,41 @@ macros for the very API it provides. That much is in the build log either way.
 
 ## State of the nine
 
-**Four are built and five are owed**, as the table below says: `sec_certificate_create`,
-`sec_certificate_copy_ref`, `sec_trust_create` and `sec_trust_copy_ref` are measured on real refs, and
-the five `sec_identity_*` rows are owed. This section records the header facts, the exact error and the
-two design options, so the next attempt at the five starts from the measurement rather than from the
-nine greps again.
+**All nine are built**, as the table below says: the four `sec_certificate_*` and `sec_trust_*` rows are
+measured on real refs, and the five `sec_identity_*` rows are measured on a STAND-IN `CFTypeRef` — the
+wrapper's own ownership, with a real `SecIdentityRef` an owed GUEST measurement. That second half moved
+with the identity series and is recorded where it was measured, in
+[SecObjectWrappersIdentity.md](SecObjectWrappersIdentity.md); this section keeps the header facts, the
+exact error and the two design options, so the next attempt at the guest measurement starts from the
+measurement rather than from the nine greps again.
 
 ## The nine rows, measured from the registry, and which of them is a `sec_identity_t`
 
 | api | kind | introduced | state | file |
 | --- | --- | --- | --- | --- |
-| `sec_identity_access_certificates()` | function | 13.0 | **owed** | `absent_Security.json` |
+| `sec_identity_access_certificates()` | function | 16.0 | **built** | `ios16.json` |
 | `sec_certificate_copy_ref()` | function | 12.0 | **built** | `ios12.json` |
 | `sec_certificate_create()` | function | 12.0 | **built** | `ios12.json` |
-| `sec_identity_copy_certificates_ref()` | function | 12.0 | **owed** | `ios11.json` |
-| `sec_identity_copy_ref()` | function | 12.0 | **owed** | `ios11.json` |
-| `sec_identity_create()` | function | 12.0 | **owed** | `ios11.json` |
-| `sec_identity_create_with_certificates()` | function | 12.0 | **owed** | `ios11.json` |
+| `sec_identity_copy_certificates_ref()` | function | 12.0 | **built** | `ios12.json` |
+| `sec_identity_copy_ref()` | function | 12.0 | **built** | `ios12.json` |
+| `sec_identity_create()` | function | 12.0 | **built** | `ios12.json` |
+| `sec_identity_create_with_certificates()` | function | 12.0 | **built** | `ios12.json` |
 | `sec_trust_copy_ref()` | function | 12.0 | **built** | `ios12.json` |
 | `sec_trust_create()` | function | 12.0 | **built** | `ios12.json` |
 
 Eight of the nine are introduced at **12.0**, not 13.0; the ninth, `sec_identity_access_certificates`, is
-13.0. The `sec_identity_*` five are declared in `SecProtocolTypes.h` at `:218` (create), `:237`
+16.0, and it is in `ios16.json` for that reason — `release-split` puts it in a different rung from the
+other eight, which is why there are two identity objects. The `sec_identity_*` five are declared in
+`SecProtocolTypes.h` at `:218` (create), `:237`
 (create_with_certificates), `:256` (access_certificates), `:273` (copy_ref) and `:288`
 (copy_certificates_ref), in the same header that declares the three types at `:41-43`.
 
-## Why the identity half cannot be built, exactly
+## Why no REAL identity can be measured here, exactly
 
-**A `SecIdentityRef` cannot exist on iOS without a keychain, so the five `sec_identity_*` rows and
-`set_local_identity` stay owed.** Every factory in `SecIdentity.h` is unavailable on iOS:
+**A real `SecIdentityRef` cannot be made on this Mac without the Mac's keychain**, which is why the five
+`sec_identity_*` rows and `set_local_identity` are measured on a stand-in and not on an identity. The
+rows themselves are NOT owed — they are built, and what is owed is the guest measurement. Every factory
+in `SecIdentity.h` is unavailable on iOS:
 `SecIdentityCreateWithCertificate` at `:65` is `__OSX_AVAILABLE_STARTING(__MAC_10_5, __IPHONE_NA)`, and
 the preference, preferred and system-identity calls at `:126`, `:150` and `:174` are
 `__IPHONE_NA` too. `SecIdentityCreate` — the one that takes a key or a certificate directly and so would
@@ -100,14 +106,15 @@ The slice that IS buildable is the two types whose refs are made without a keych
 (`sec_certificate_create`, `sec_certificate_copy_ref`, `sec_trust_create`, `sec_trust_copy_ref`) are
 REAL WRAPPERS OF REAL REFS rather than answers that report an absence.
 
-**Four built, five owed.** The four are measured: a real `SecCertificateRef` from
+**Nine built; the real-identity measurement is what is owed.** The four certificate and trust rows are
+measured on real refs: a real `SecCertificateRef` from
 `SecCertificateCreateWithData` and a real `SecTrustRef` from `SecTrustCreateWithCertificates`, neither
 touching a keychain, with the retain balance **1 2 3 2 1**, `copy_ref` answering the same ref by pointer
 equality, and the weak-reference release reading nil after the scope drains.
 
-**The five identity rows are owed, and NOT because a wrapper is impossible** — a previous claim of mine
-said so and it is withdrawn: `sec_identity_create` and its siblings take a `SecIdentityRef` the caller
-already has and wrap it, exactly as `sec_certificate_create` wraps a `SecCertificateRef`, and no sentence
-of the header forbids it. What is missing is the TEST: a real `SecIdentityRef` cannot be made on this
-Mac without the Mac's keychain, so the case uses a stand-in `CFTypeRef` and says it is one, and a real
-identity is a guest measurement.
+**The five identity rows are built, and they were never impossible** — a claim of mine said otherwise and
+it is withdrawn: `sec_identity_create` and its siblings take a `SecIdentityRef` the caller already has and
+wrap it, exactly as `sec_certificate_create` wraps a `SecCertificateRef`, and no sentence of the header
+forbids it. What was missing was the TEST, and it is now written: the case uses a stand-in `CFTypeRef`,
+says in every row that it is one, and a real `SecIdentityRef` stays a guest measurement that the
+[identity facts file](SecObjectWrappersIdentity.md) carries as owed.
