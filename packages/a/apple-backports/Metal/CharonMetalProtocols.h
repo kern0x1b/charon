@@ -7,15 +7,29 @@
 #import <Foundation/Foundation.h>
 #import <objc/NSObject.h>
 
+@protocol MTLAccelerationStructure;
+
+@protocol MTLAccelerationStructureCommandEncoder;
+
+@protocol MTLBinaryArchive;
+
 @protocol MTLBuffer;
 
 @protocol MTLCaptureScope;
 
 @protocol MTLCommandBuffer;
 
+@protocol MTLCommandBufferEncoderInfo;
+
 @protocol MTLCommandEncoder;
 
 @protocol MTLCommandQueue;
+
+@protocol MTLCounter;
+
+@protocol MTLCounterSampleBuffer;
+
+@protocol MTLCounterSet;
 
 @protocol MTLDepthStencilState;
 
@@ -23,7 +37,13 @@
 
 @protocol MTLDrawable;
 
+@protocol MTLDynamicLibrary;
+
 @protocol MTLFunction;
+
+@protocol MTLFunctionHandle;
+
+@protocol MTLIntersectionFunctionTable;
 
 @protocol MTLLibrary;
 
@@ -36,3 +56,5 @@
 @protocol MTLSamplerState;
 
 @protocol MTLTexture;
+
+@protocol MTLVisibleFunctionTable;
