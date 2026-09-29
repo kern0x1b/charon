@@ -14,10 +14,14 @@ source. Its signature is read: `void sec_protocol_options_set_local_identity(
 sec_protocol_options_t options, sec_identity_t identity)` (SecProtocolOptions.h:101-102), so
 only the type is missing, not the shape — and the type CANNOT be supplied, because every
 `SecIdentity.h` factory is `__IPHONE_NA` on iOS and `SecIdentityCreate` (the in-memory route) is not
-declared at all, so there is no public way to make a `SecIdentityRef` on 6.1.3. See
+declared at all, so no SecPKCS12Import-based path reaches a `SecIdentityRef` on 6.1.3 without touching a
+keychain - `SecPKCS12Import` is `API_AVAILABLE(macos(10.0), ios(2.0))` and returns
+`kSecImportItemIdentity`, so an identity CAN be made here, and it costs a keychain. The true claim is
+"not without touching a keychain", not "no public way". See
 `facts/Security/SecObjectWrappers.md`. The list below was written at the start of the series,
-when 45 rows were owed; the wrappers since written build 41 of them (`nm -gU` of the gated
-`libSecurityBackports.dylib` defines each), marked **built**. **Built** means the entry point exists and answers what
+when 45 rows were owed; the wrappers since written build 44 of them (`nm -gU` of the gated
+`libSecurityBackports.dylib` defines each), marked **built** - the table below counts 3 done, 44 built and
+1 owed, and those three numbers are the same ones. **Built** means the entry point exists and answers what
 its row says; only the three **done** ones are measured on the release. **Owed** is what is left: the four whose
 entry point does not exist yet (`sec_protocol_options_set_local_identity` and the challenge, key-update and verify
 block setters). The section "Why each group is owed" below is the plan those wrappers were written from.

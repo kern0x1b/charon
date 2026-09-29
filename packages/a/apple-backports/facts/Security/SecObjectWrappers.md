@@ -60,8 +60,11 @@ macros for the very API it provides. That much is in the build log either way.
 
 ## State of the nine
 
-The nine rows stay as they are. This file records the header facts, the exact error, and the two design
-options, so the next attempt starts from the measurement instead of from the nine greps.
+**Four are built and five are owed**, as the table below says: `sec_certificate_create`,
+`sec_certificate_copy_ref`, `sec_trust_create` and `sec_trust_copy_ref` are measured on real refs, and
+the five `sec_identity_*` rows are owed. This section records the header facts, the exact error and the
+two design options, so the next attempt at the five starts from the measurement rather than from the
+nine greps again.
 
 ## The nine rows, measured from the registry, and which of them is a `sec_identity_t`
 
