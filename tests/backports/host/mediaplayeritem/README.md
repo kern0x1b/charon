@@ -16,10 +16,11 @@ Measured on this host (16.4-era MediaPlayer, 2026-09-28):
   `valueForProperty:` gives. That is the mapping the properties are: a convenience over the item's own
   property dictionary under the identically named key.
 - **none of the 22 declares a setter**. They are read-only, so the backport needs getters only.
-- **5 declare no accessor at all** and are the family's only absent candidates, because Apple's own
-  current framework does not have them either: `cloudItem`, `compilation`, `protectedAsset`,
-  `explicitItem`, `preorder`. The registry's `effect` column already says what that means - the accessor
-  is not declared, so `respondsToSelector:` answers honestly and an unchecked call raises.
+- that "5 declare no accessor" was **my probe's fault, not Apple's**. The iOS header declares five of
+  them with a `getter=` attribute - `isExplicitItem`, `isCompilation`, `isCloudItem`,
+  `hasProtectedAsset`, `isPreorder` - so the property name is not a selector on any platform. The probe now
+  reads the header and asks for the getter the header writes, which is the only thing that could ever have
+  answered. See the run below for where that stands.
 
 The five are absent by Apple's own account, not by hardware: nothing here needs a sensor or a radio.
 
