@@ -550,66 +550,6 @@
       "source": "SDK 16.4, UIKit"
     },
     {
-      "api": "NSTextContentManager",
-      "kind": "class",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the abstract Text Kit 2 owner of a document's content, split into elements; the release carries Text Kit 1 in its private UIFoundation - NSTextStorage, NSLayoutManager, NSTextContainer (objc.inventory on 6.1.3), over which a content manager could be built, but the port carries no Text Kit 2 (NSTextLayoutManager and NSTextContentStorage absent) to use one - real work, no demand",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit"
-    },
-    {
-      "api": "NSTextContentManagerDelegate",
-      "kind": "protocol",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the delegate of the Text Kit 2 content manager, asked about the elements it makes; the port carries no Text Kit 2 (NSTextLayoutManager and NSTextContentStorage absent), so nothing would ask",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, UIKit"
-    },
-    {
-      "api": "NSTextContentStorage",
-      "kind": "class",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the Text Kit 2 content manager over an NSTextStorage; the release carries Text Kit 1 in its private UIFoundation - NSTextStorage, NSLayoutManager, NSTextContainer (objc.inventory on 6.1.3), so the storage it wraps is there, but a content storage is real work and nothing in the port would read it - no demand",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit"
-    },
-    {
-      "api": "NSTextContentStorageDelegate",
-      "kind": "protocol",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the delegate of NSTextContentStorage, asked for the paragraphs it makes; the port carries no Text Kit 2 (NSTextLayoutManager and NSTextContentStorage absent), so nothing would ask",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, UIKit"
-    },
-    {
-      "api": "NSTextContentStorageUnsupportedAttributeAddedNotification",
-      "kind": "constant",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "posted when an attribute Text Kit 2 cannot lay out is added to its storage; the port carries no Text Kit 2 (NSTextLayoutManager and NSTextContentStorage absent), so there is no storage to post it",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, UIKit"
-    },
-    {
-      "api": "NSTextElementProvider",
-      "kind": "protocol",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol through which Text Kit 2 asks a content manager for its elements; the port carries no Text Kit 2 (NSTextLayoutManager and NSTextContentStorage absent), so nothing would ask",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, UIKit"
-    },
-    {
       "api": "NSTextLayoutFragment",
       "kind": "class",
       "introduced": "15.0",
@@ -657,16 +597,6 @@
       "status": "absent",
       "reason": "the Text Kit 2 content storage watching a text storage; the release's NSTextStorage is there (objc.inventory on 6.1.3), but the port carries no Text Kit 2 (NSTextLayoutManager and NSTextContentStorage absent), so no observer exists to answer",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
-    },
-    {
-      "api": "NSTextStorageObserving",
-      "kind": "protocol",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol a Text Kit 2 content storage takes to watch an NSTextStorage; the port carries no Text Kit 2 (NSTextLayoutManager and NSTextContentStorage absent), so nothing takes it",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
       "source": "SDK 16.4, UIKit"
     },
     {
@@ -2378,16 +2308,6 @@
       "status": "absent",
       "reason": "whether the list is numbered rather than bulleted; the release's own NSTextList (UIFoundation) has the marker format this follows from, though no isOrdered of its own (objc.inventory on 6.1.3) - not built for lack of demand, not a wall",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
-    },
-    {
-      "api": "NSTextListElement",
-      "kind": "class",
-      "introduced": "16.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the Text Kit 2 element for one item of a list; the port carries no Text Kit 2 (NSTextLayoutManager and NSTextContentStorage absent), so nothing splits text into list elements",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, UIKit"
     },
     {
