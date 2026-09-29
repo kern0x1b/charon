@@ -8,11 +8,25 @@ package("swift-syntax")
     add_urls("https://github.com/swiftlang/swift-syntax.git")
     add_versions("604.0.0", "050f1a346fbbac0ca2cfb15a95274f7bd1cf0ccf")
 
-    -- The digest covers the recipe *and* the upstream it pins: the sources are not in this tree, so
-    -- the commit is the only thing that identifies them, and a recipe that changed its pin has to be
-    -- a different package or a port keeps linking the modules of another release.
-    add_configs("recipe", {description = "The digest of this recipe and the upstream commit it pins, so a changed flag or pin is a different package.",
-                           default = "", type = "string", readonly = true})
+    -- The package's identity, the way `charon@apple-backports` does it with `sources`: a **load-time**
+    -- digest of the recipe file and of every patch beside it, so a changed recipe is a different
+    -- install directory and nothing has to be removed from the shared store. It cannot be computed in
+    -- `on_load` -- that is what kits r4 found, `package:commit()` is not callable while the recipe
+    -- body is read -- and the upstream's own sources are not in this tree to hash either; **the
+    -- pinned commit is covered by the version** (`add_versions("604.0.0", <commit>)`), so a
+    -- different pin is a different version and a different directory, which is the half of the
+    -- identity that is not this file.
+    local digests = {}
+    local inputs = {os.scriptdir() .. "/xmake.lua"}
+    for _, patch in ipairs(os.files(os.scriptdir() .. "/patches/*")) do
+        table.insert(inputs, patch)
+    end
+    table.sort(inputs)
+    for _, file in ipairs(inputs) do
+        table.insert(digests, path.filename(file) .. "=" .. hash.sha256(file))
+    end
+    add_configs("sources", {description = "The digest of this recipe and the patches it applies, so a changed flag or a changed copy step is a different package.",
+                            default = hash.strhash128(table.concat(digests, ";")), type = "string", readonly = true})
 
     -- Where a dependent finds the modules and the archives: `rules/macro` reads this to compile a
     -- plugin executable, and the Swift side reads it to typecheck an expansion test.
@@ -32,12 +46,6 @@ package("swift-syntax")
     }
 
     on_load("@macosx", function (package)
-        -- The digest is computed here and not in the config's default, because `package:commit()` is
-        -- not callable while the recipe body is being read -- it is `attempt to call a nil value
-        -- (global 'package')`, which is how this recipe did not load (kits r4). libcxx and llvm
-        -- compute theirs in on_load for the same reason.
-        package:set("recipe", hash.strhash128(path.join(hash.sha256(path.join(os.scriptdir(), "xmake.lua")),
-                                                       package:commit() or package:revision())))
         -- The host compiler goes out with the modules: a plugin is built for the host, and nothing
         -- else in the fleet publishes one (rules/macro reads it, and there is no producer for it
         -- before this), so it is named here beside what it is for.
@@ -127,6 +135,7 @@ package("swift-syntax")
         -- files and copied nothing, which is the same failure the install showed and one level
         -- further down. So the modules come from `os.filedirs` and are copied whole, and the
         -- objects from `os.files`.
+        local products = path.join(build, "release")
         local copied = 0
         for _, entry in ipairs(os.filedirs(path.join(products, "*.swiftmodule"))) do
             os.cp(entry, path.join(package:installdir("lib"), "swift", "host", path.filename(entry)))
