@@ -1,0 +1,60 @@
+# The CLDR release this family's unit-name table is generated from.
+
+A pin is the whole thing or it is not a pin: the tag, where the archive came
+from, its size, its full sha256, the licence the data is under, and the files the
+generator reads out of it. Anything here that changes changes the table, so the
+table is not rebuilt without it.
+
+## The release
+
+- tag: `release-48`
+- url: https://github.com/unicode-org/cldr/archive/refs/tags/release-48.zip
+local: .agent-work/downloads/cldr-release-48.zip   (the generator reads it here, or from a path
+        given as an argument; nothing is kept in /tmp)
+- bytes: 70006707
+- sha256: fa6d331e52d59771009c424bd1c9df311b6b2bf0bf2f6c1ddf6c952c32da4702
+- published: 2025-10-23 (the files in the archive carry that date)
+- licence: **UNICODE LICENSE V3**, verbatim beside this file as `LICENSE`, which that licence requires of
+  anything redistributing the data
+
+The archive's top directory is `cldr-release-48/`, and every path below is inside it.
+
+## The files the generator reads
+
+- **`common/supplemental/units.xml`** — 45 651 bytes. The unit *types* and their patterns. There is no
+  `common/main/units.xml` in this release: the unit data moved to `supplemental/` well before 48, and
+  reading a file that does not exist is how a generator silently produces an empty table.
+- **`common/main/<locale>.xml`** for each of the **533** locales the release itself presents, in
+  `tools/cldr/locales-6.1.3.txt` — the list is `+[NSLocale availableLocaleIdentifiers]` read on iOS 6.1.3
+  (10B329) by `tools/locales-probe.m`, because the set the port must serve is the release's own and not
+  the host's, and the release's ICU data is not the same set (259 identifiers in `icudt49l.dat` that the
+  release does not present, and 168 it presents that the data does not carry in that shape).
+
+So the read set is **1 + 533 files**, and nothing else: not CLDR's `common/secondary/`, not its
+`common/testData/`, and not the release's own `icudt49l.dat`, which is provenance for what the port
+would consult at run time and is not the list.
+
+## What the table is a translation of
+
+Each row is a port `NSUnit` symbol (`tools/cldr-units.py --print-port-symbols` prints all 196 with the
+class and file each came from), the CLDR unit identifier it maps to, and that identifier's pattern and
+display name in each of the 533 locales. **The port's symbol is the join key; nothing is copied from a
+host.** Apple's own formatted strings are not redistributable, and CLDR is the data the host is reading
+(its answers — `km`, `meters`, `deg. C`, `miles/hour`, the `1,234` grouping, the `12 000` French
+separator — are CLDR's), under a licence that permits redistribution with this notice.
+
+## The kinds a row can carry, and how many carry each
+
+A row's kind is column 9, the agreement, and its value is one of **four the mapper can produce**:
+`exact`, `double`, `decimal` and `reciprocal`. The brief that asked for this work listed **six**, and the
+other two are not kinds at all: `affine` and `host` are the **°C and °F fixtures** in `cldr-map-test.py`
+and `tools/cldr/fixtures/` - ways a row is *judged*, not a fifth and sixth value of a column. A brief's
+six are four kinds and two fixtures, and a row that is judged by a fixture carries the whole sentence in
+column 9, so a reader is not left looking up what "affine" is.
+
+Of the 71 rows this series measures the distribution is **45 `exact`, 22 `double`, 2 `reciprocal decimal`,
+1 `affine exact` and 1 `host`**, and **no plain `decimal` row**: every conversion the port writes as a
+rounding of CLDR's rational also equals it as a double, so the digits rule is the last resort and nothing
+here needed it. The four kinds are therefore pinned by four rows, `affine` and `host` by the two fixtures,
+and `decimal` by a fixture of its own - `rounded_matches` on the port's `0.00492892` against CLDR's
+`0.0049289216` - because no committed row carries it to name.
