@@ -18,8 +18,13 @@ func check(_ what: String, _ equal: Bool, _ detail: @autoclosure () -> String = 
     }
 }
 
-func checkEqual<T: Equatable>(_ what: String, _ a: T, _ b: T) {
-    check(what, a == b, "the port answers \(a)")
+/// `port:` and `is:` because both arguments here are the port's - the first is what it produced and
+/// the second is what it should be, and neither is a host. The differential's own calls in
+/// `tabularframe.swift` name their sides `host:` and `port:`, which is why this helper's names differ:
+/// a file that compares against Apple's uses the other pair, and a message that said "the port answers"
+/// for *both* sides is how four turns of reports went wrong in the other suite.
+func checkEqual<T: Equatable>(_ what: String, port: T, is expected: T) {
+    check(what, port == expected, "port=\(port) expected=\(expected)")
 }
 
 func checkClose(_ what: String, _ a: Double, _ b: Double, _ tolerance: Double) {
@@ -110,8 +115,8 @@ do {
     check("preprocessed(from:) transforms every column, the target included, for the *unsupervised* one",
           intermediate.columnNames == ["y", "x"],
           "the port answers \(intermediate.columnNames)")
-    checkEqual("and its y column really is standardised", (intermediate.column("y")?.numeric ?? [])
-        .compactMap { $0 }.reduce(0, +), 0)
+    checkEqual("and its y column really is standardised",
+           port: (intermediate.column("y")?.numeric ?? []).compactMap { $0 }.reduce(0, +), is: 0)
 
     // A supervised pipeline, which keeps its target column out of the scaler: scaling a target is a
     // different model, and the wrapper is not that.
@@ -157,7 +162,7 @@ do {
     check("and the update read the preprocessed column", transformer.estimator.preprocessorScale != nil,
           "the port answers \(String(describing: transformer.estimator.preprocessorScale))")
     checkEqual("and the preprocessor kept exactly the statistics the fit gave it",
-               transformer.preprocessor.statistics.values, before)
+               port: transformer.preprocessor.statistics.values, is: before)
 
     // The supervised updatable one, same semantic.
     let supervisedUpdatable = PortCreateMLComponents.PreprocessingUpdatableSupervisedEstimator(
