@@ -1,10 +1,17 @@
-# registry-ios15textrange.py — the registry entries for the range layer of TextKit 2, generated from the corpus
-# rows so that no row is missed and none is spelled by hand twice, with the effect and the reason of each row
-# written here rather than in the JSON. Run from packages/a/apple-backports.
+# registry-textrange15.py — the registry entries for the range layer of TextKit 2, generated from the corpus
+# rows so that no row is missed and none is spelled by hand twice, with the effect of each row written here
+# rather than in the JSON, and a row this script has no effect for is a hard error rather than a generic line.
+#
+#   python3 tools/corpus/registry-textrange.py
+#
+# The effects are the rules facts/UIKit/NSTextRange15.md records, and they are the only thing in this file that
+# is not mechanical: a reader who wants to know why an entry says what it says is sent there. The rows, their
+# kinds, their releases and the shape of an entry all come from the corpus and from the registry's own README.
 import csv, json, os, re, sys
 
 CORPUS = os.path.expanduser("~/Git/projects/ios/coordination/corpus/sdk-26.2-surface.tsv")
-OUT = "registry/UIKit/ios15textrange.json"
+OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "packages", "a",
+                   "apple-backports", "registry", "UIKit", "ios15textrange.json")
 FACTS = "facts/UIKit/NSTextRange15.md"
 SOURCE = ("UIKitCore 26.2 arm64e under Mac Catalyst, the host's own UIKit, measured by the probes under "
           ".agent-work/runs/textkit2 and held by tests/backports/host/uikit2/textkit2_test.m")
@@ -98,14 +105,10 @@ METHODS = {
     "-[NSTextSelectionDataSource textLayoutOrientationAtLocation:]": "the orientation of the layout at a location; the navigation object assumes horizontal when a data source does not implement it, which is what the header says",
 }
 
-# Rows the port does not carry, with the reason and the effect, keyed by corpus spelling.
-NOT_CARRIED = {
-    "NSTextSelectionDataSource.documentRange":
-        ("the navigation object reads the data source's -documentRange, and a paragraph asks the content "
-         "manager for the document it is in, but neither answers a question of its own about it", None),
-}
-
 def load_rows():
+    """The corpus rows this group owns: a row of one of the five classes, or of one of the two protocols the
+    range layer is written against. NSTextElementProvider is NSTextContentManager's protocol and is left to
+    the group that carries that class."""
     with open(CORPUS, newline="") as handle:
         rows = list(csv.DictReader(handle, delimiter="\t"))
     keep = []

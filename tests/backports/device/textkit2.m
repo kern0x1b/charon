@@ -241,7 +241,7 @@ static void check_ranges(void)
                      [[range(0, 0) textRangeByFormingUnionWithTextRange:range(3, 3)] description] == @"3...3",
                  @"the union is the envelope, or the range that has contents", "the rule differs");
     charon_check([a isEqualToTextRange:range(0, 10)] && ![a isEqualToTextRange:b] && [a isEqual:a] &&
-                     ![a isKindOfClass:[NSObject class]] == NO,
+                     [a isKindOfClass:[NSObject class]],
                  @"a range is equal to a range over the same two places", "the rule differs");
     charon_check([a hash] == [range(0, 10) hash], "and hashes by its value", "two equal ranges hash differently");
     charon_check([[NSTextRange class] instancesRespondToSelector:@selector(copyWithZone:)] == NO,

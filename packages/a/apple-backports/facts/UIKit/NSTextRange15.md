@@ -257,13 +257,14 @@ differential's own log beside them.
 
 | File | What it measured |
 | --- | --- |
-| `probe-range-grid.m` | `-containsRange:` and `-intersectsWithTextRange:` over forty-nine pairs, and the first answers for a range's descriptions and equality |
-| `probe-selection-element.m` | the typing attributes through the setter, the copy, both element descriptions, and what a selection answers for itself |
-| `probe-descriptions.m` | the paragraph's own text with and without attributes, and equality and hashing for all three classes |
-| `probe-selection-equality.m` | which keys of a selection decide `-isEqual:`, one pair per key |
-| `probe-initializers.m` | the unavailable initialisers, in one process |
-| `probe-initializers-out-of-process.m` | the same, one call per process, which is the only way a fault can be attributed |
-| `probe-navigation.m` | the union rule over twenty-five pairs, and the navigation object with no data source |
+| `probe-range-grid.m` / `.out` | `-containsRange:` and `-intersectsWithTextRange:` over forty-nine pairs, and the first answers for a range's descriptions and equality |
+| `probe-selection-element.m` / `.out` | the typing attributes through the setter, the copy, both element descriptions, and what a selection answers for itself |
+| `probe-paragraph-ranges.m` / `.out` | a paragraph's two derived ranges bare, with an element range at 100 and at 0, and the reason there is no case with a content manager: `-[NSTextContentManager initWithTextStorage:]` is not on the measured host |
+| `probe-descriptions.m` / `.out` | the paragraph's own text with and without attributes, and equality and hashing for all three classes |
+| `probe-selection-equality.m` / `.out` | which keys of a selection decide `-isEqual:`, one pair per key |
+| `probe-initializers.m` | the unavailable initialisers, in one process, which is lost on the first fault |
+| `probe-initializers-out-of-process.m` / `.out` | the same, one call per process, which is the only way a fault can be attributed: eight faults, all exit 139, and the archive a trap at exit 133 |
+| `probe-navigation.m` / `.out` | the union rule over twenty-five pairs, the two flags' defaults, and every answer of the navigation object with no data source |
 | `differential.log` | the differential's own run: `checks=2011 failures=0` |
 
 `probe.out` beside this file is the first probe, from the session before. Its reading
