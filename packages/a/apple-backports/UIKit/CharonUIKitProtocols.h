@@ -3,9 +3,11 @@
 // header of this folder does, is forward-declared and its body comes from that import; any other is
 // transcribed from the SDK that declares it: the base list, each member with its kind and types,
 // @required and @optional as sections, and API_AVAILABLE(ios(<introduced>)). Facts only.
+// This file has a forward-declared protocol in it, so it imports <UIKit/UIKit.h> for that body, and
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 #import <objc/NSObject.h>
+#import "CharonTraits17.h"
 
 @protocol NSCollectionLayoutContainer;
 
@@ -13,9 +15,17 @@
 
 @protocol NSCollectionLayoutVisibleItem;
 
+@protocol NSTextElementProvider;
+
+@protocol NSTextLocation;
+
+@protocol NSTextStorageObserving;
+
 @protocol UIActivityItemsConfigurationReading;
 
 @protocol UIAdaptivePresentationControllerDelegate;
+
+@protocol UICGFloatTraitDefinition;
 
 @protocol UICollectionViewDataSourcePrefetching;
 
@@ -47,6 +57,8 @@
 
 @protocol UICoordinateSpace;
 
+@protocol UIDocumentBrowserViewControllerDelegate;
+
 @protocol UIDocumentMenuDelegate;
 
 @protocol UIDocumentPickerDelegate;
@@ -58,6 +70,12 @@
 @protocol UILayoutSupport;
 
 @protocol UIMenuLeaf;
+
+@protocol UIMutableTraits;
+
+@protocol UINSIntegerTraitDefinition;
+
+@protocol UIObjectTraitDefinition;
 
 @protocol UIPopoverPresentationControllerDelegate;
 
@@ -88,6 +106,14 @@
 @protocol UITextInputTraits;
 
 @protocol UITextInteractionDelegate;
+
+@protocol UITraitChangeObservable;
+
+@protocol UITraitChangeRegistration;
+
+@protocol UITraitDefinition;
+
+@protocol UITraitOverrides;
 
 @protocol UIViewAnimating;
 
