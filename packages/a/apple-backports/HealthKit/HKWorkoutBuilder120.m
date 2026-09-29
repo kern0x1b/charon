@@ -197,14 +197,14 @@
             completion(nil, [self charon_errorWithReason:@"workoutAlreadyFinished" code:0]);
         return;
     }
-    if (!_collecting) {
-        if (completion)
-            completion(nil, [self charon_errorWithReason:@"workoutCollectionNotStarted" code:0]);
-        return;
-    }
+    // The header's state machine is begin, add, end, finish - and -endCollectionWithEndDate: is what
+    // closes the period, so at the finish _collecting is already NO for a builder that was used the way
+    // the header says. This gate used to ask for _collecting, which made a workout impossible to finish:
+    // the one case the header describes, a period begun and ended, was the one case refused. What the
+    // finish needs is a period that has been ended, which is the next check.
     if (!_endDate) {
         if (completion)
-            completion(nil, [self charon_errorWithReason:@"workoutCollectionNotEnded" code:0]);
+            completion(nil, [self charon_errorWithReason:@"workoutCollectionNotStartedOrNotEnded" code:0]);
         return;
     }
 
