@@ -22,6 +22,28 @@ per failure.
 
 ## 2. Full gate (minutes to tens of minutes)
 
+An `implemented` **protocol** row also has a header behind it, and a gate is the first thing that
+looks. `modules/apple/backports.lua` writes one source per release a library's protocol rows arrived
+in, naming each row with `@protocol(<name>)` and importing `Charon<Folder>Protocols.h`; a row that
+header does not declare is a source that does not compile, and nothing before the gate reads that
+header. So before the gate, after a round that adds or changes a protocol row:
+
+```
+sh tests/addon/protocol-sources.sh <the 16.4 SDK> "$PWD/.agent-work/runs/<task>/protocols"
+```
+
+43 sources over 17 libraries at the time of writing; it prints `gate-shape: N source(s), M failed`
+and exits with M. The light guard's `protocol_headers_test` catches the same class in seconds and
+names the rows, so run it too — it is the check that makes the failure cheap rather than the one
+that finds it first.
+
+To *declare* a protocol the 16.4 SDK does not have, regenerate the library's header rather than
+editing it — `tools/transcribe-protocols.py` over the 26.2 and 16.4 SDK sysroots, with the wanted
+list read from the registry. It forward-declares a protocol a header of the library's own folder
+declares and imports that header, so the eight trait protocols of UIKit come from
+`CharonTraits17.h`; the command and the row list are in the commit that regenerated them
+(`7a073c987`).
+
 Every edit for the round is done and committed first; then, from the checkout being gated:
 
 ```
