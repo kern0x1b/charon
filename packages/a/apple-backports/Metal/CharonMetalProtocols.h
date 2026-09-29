@@ -13,7 +13,11 @@
 
 @protocol MTLBinaryArchive;
 
+@protocol MTLBinding;
+
 @protocol MTLBuffer;
+
+@protocol MTLBufferBinding;
 
 @protocol MTLCaptureScope;
 
@@ -24,6 +28,10 @@
 @protocol MTLCommandEncoder;
 
 @protocol MTLCommandQueue;
+
+@protocol MTLComputeCommandEncoder;
+
+@protocol MTLComputePipelineState;
 
 @protocol MTLCounter;
 
@@ -43,9 +51,21 @@
 
 @protocol MTLFunctionHandle;
 
+@protocol MTLFunctionLog;
+
+@protocol MTLFunctionLogDebugLocation;
+
+@protocol MTLFunctionStitchingAttribute;
+
+@protocol MTLFunctionStitchingNode;
+
 @protocol MTLIntersectionFunctionTable;
 
 @protocol MTLLibrary;
+
+@protocol MTLLogContainer;
+
+@protocol MTLObjectPayloadBinding;
 
 @protocol MTLRenderCommandEncoder;
 
@@ -56,5 +76,9 @@
 @protocol MTLSamplerState;
 
 @protocol MTLTexture;
+
+@protocol MTLTextureBinding;
+
+@protocol MTLThreadgroupBinding;
 
 @protocol MTLVisibleFunctionTable;
