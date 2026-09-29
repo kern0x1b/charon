@@ -225,8 +225,21 @@ for k in set(host) | set(port):
         differs += 1
         continue
     if k in allowed_more:
-        allowed += 1
-        say("ALLOWED    %-70s host=[%s] port=[%s] - %s\n" % (k, hv, pv, allowed_more[k]))
+        # An allowed row is still a row. The exemption is about WHAT may differ between the host and
+        # the port, not about whether the port's answer is watched, so this row gets the same baseline
+        # test the port-only rows get: unchanged against the port's own unmutated table means nothing
+        # is counted, and a change is reported and the run goes red. Without it the exemption
+        # `continue`d before any comparison at all, so a mutation of the port's OWN added members -
+        # the two this exemption exists for, and the ones the next slice is most likely to touch - was
+        # invisible while the run reported itself green.
+        if bv is not None and pv == bv:
+            allowed += 1
+            say("ALLOWED    %-70s host=[%s] port=[%s] unchanged against the baseline - %s\n"
+                % (k, hv, pv, allowed_more[k]))
+            continue
+        say("ALLOWED-BUT-CHANGED %-58s host=[%s] port=[%s] baseline=[%s] - %s\n"
+            % (k, hv, pv, bv, allowed_more[k]))
+        differs += 1
         continue
     if hv != pv:
         say("DIFFERS    %-70s host=[%s] port=[%s] baseline=[%s]\n" % (k, hv, pv, bv))
