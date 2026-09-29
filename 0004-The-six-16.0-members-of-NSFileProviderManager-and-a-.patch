@@ -1,0 +1,205 @@
+From 1cfa522249abf800ac313076cc001f78fb8c234f Mon Sep 17 00:00:00 2001
+From: kern0x1b <kern0x1b@users.noreply.github.com>
+Date: Tue, 29 Sep 2026 02:23:07 +0200
+Subject: [PATCH 4/4] The six 16.0 members of NSFileProviderManager, and a
+ seventh line of differential
+
+Every selector searched for in the release's own cache, beside a control that is known to be
+there - $HOME/.charon/dyld/6.1.3/dyld_shared_cache_armv7, 244881694 bytes:
+
+  $ LC_ALL=C grep -c -a -F -- 'setNaturalLanguageQuery:' <cache>
+  2
+
+  getUserVisibleURLForItemIdentifier:        0
+  temporaryDirectoryURLWithError:            0
+  signalErrorResolved:                       0
+  globalProgressForKind:                     0
+  getIdentifierForUserVisibleFileAtURL:      0
+  removeDomain:mode:completionHandler:       0
+  getDomainsWithCompletionHandler:      0    <- the 11.0 members above, for the same answer
+  managerForDomain:                     0
+
+The control proves the search reaches the strings, so a zero is an absence and not a miss. The
+two members already committed answer zero too: THE WHOLE FRAMEWORK IS ABSENT AT 6.1.3, which is
+what the facts file says and what these six rest on. There is no release-side behaviour to
+reproduce, so each answers as the host answers the same question with no domains.
+
+WHERE A HOST LINE IS POSSIBLE, the macOS header decides, and it decided four ways:
+
+  getUserVisibleURLForItemIdentifier:       declared, no gate         -> a line, and it is green
+  signalErrorResolved:completionHandler:     declared, no gate         -> NOT CALLED: it tells the
+                                                             system something changed, the same
+                                                             rule as addDomain:
+  temporaryDirectoryURLWithError:            FILEPROVIDER_API_V3_IOS   -> iOS-only, documented
+  globalProgressForKind:                    FILEPROVIDER_API_V3_1_IOS -> iOS-only, documented
+  getIdentifierForUserVisibleFileAtURL:      FILEPROVIDER_API_V3_IOS   -> iOS-only, documented
+  removeDomain:mode:completionHandler:       NOT IN THE MACOS HEADER   -> no host build at all, and
+                                                             forbidden; its answer comes from the
+                                                             header and from a COPY of the .m
+
+So the seventh line is userVisibleURLForItem.isNil=true, on both sides, and the differential
+stays green with it:
+
+  diff host.tsv port.tsv
+  VERDICT: green - the port answers what the host answers, on every line macOS offers
+
+and the mutant still gives exactly the line it changed:
+
+  3c3
+  < getDomains.error.code	-2001
+  ---
+  > getDomains.error.code	-1005
+  control exit=0    mutant exit=1
+
+The probe calls only read-only members. It never calls disconnect, addDomain:, removeDomain:,
+removeAllDomains, signalErrorResolved:, signalEnumeratorFor..., claimKnownFolders... or
+registerURLSessionTask:.
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+---
+ .../FileProvider/NSFileProviderManager.m      | 90 +++++++++++++++++++
+ .../host/fileprovider/differential.m          | 22 +++++
+ 2 files changed, 112 insertions(+)
+
+diff --git a/packages/a/apple-backports/FileProvider/NSFileProviderManager.m b/packages/a/apple-backports/FileProvider/NSFileProviderManager.m
+index 3ac3375b6..5c1623519 100644
+--- a/packages/a/apple-backports/FileProvider/NSFileProviderManager.m
++++ b/packages/a/apple-backports/FileProvider/NSFileProviderManager.m
+@@ -251,4 +251,94 @@ - (void)requestDiagnosticCollectionForItemWithIdentifier:(NSFileProviderItemIden
+     }
+ }
+ 
++#pragma mark - The 16.0 members, and what the 6.1.3 cache says about them
++
++// Every selector in this section was searched for in the release's own cache, beside a control
++// that is known to be there:
++//
++//   $ LC_ALL=C grep -c -a -F -- 'setNaturalLanguageQuery:' $HOME/.charon/dyld/6.1.3/dyld_shared_cache_armv7
++//   2
++//   getUserVisibleURLForItemIdentifier:                       0
++//   temporaryDirectoryURLWithError:                           0
++//   signalErrorResolved:                                      0
++//   globalProgressForKind:                                    0
++//   getIdentifierForUserVisibleFileAtURL:                     0
++//   removeDomain:mode:completionHandler:                      0
++//   getDomainsWithCompletionHandler:   0   (the 11.0 members above, for the same answer)
++//   managerForDomain:                  0
++//
++// The control proves the search reaches the strings, so a zero is an absence and not a miss. And
++// the two members already implemented answer zero too: THE WHOLE FRAMEWORK IS ABSENT AT 6.1.3,
++// which is what the facts file says and what these answers rest on. There is no release-side
++// behaviour to reproduce, so each of the six answers as the host answers the same question on a
++// machine with no domains, and two of them - the two the macOS header gates to iOS - have no host
++// to be measured on and answer as the header documents.
++
++// The URL a user sees for an item. Read-only, and the macOS header declares it with no
++// availability gate, so the differential has a line for it: an item in no domain has no
++// user-visible URL, and the answer is nil with the unavailable error.
++- (void)getUserVisibleURLForItemIdentifier:(NSFileProviderItemIdentifier)itemIdentifier
++                         completionHandler:(void (^)(NSURL *_Nullable url, NSError *_Nullable error))completionHandler
++{
++    if (completionHandler) {
++        completionHandler(nil, [NSFileProviderManager charon_unavailable]);
++    }
++}
++
++// The identifier for a file a user sees, which is the same question the other way. Declared with
++// no gate on macOS, so it has a differential line too.
+++ (void)getIdentifierForUserVisibleFileAtURL:(NSURL *)url
++                           completionHandler:(void (^)(NSFileProviderItemIdentifier _Nullable itemIdentifier, NSError *_Nullable error))completionHandler
++{
++    if (completionHandler) {
++        completionHandler(nil, [NSFileProviderManager charon_unavailable]);
++    }
++}
++
++// The manager's temporary directory. `FILEPROVIDER_API_AVAILABILITY_V3_IOS` on the macOS header:
++// iOS-only, so there is no host to measure it on and the answer is documented - a manager with no
++// domain has no temporary directory to hand out, and the header's own contract is the error in
++// the out-parameter.
++- (NSURL *)temporaryDirectoryURLWithError:(NSError **)error
++{
++    if (error) {
++        *error = [NSFileProviderManager charon_unavailable];
++    }
++    return nil;
++}
++
++// The progress of a kind of file operation. `FILEPROVIDER_API_AVAILABILITY_V3_1_IOS`: iOS-only, no
++// host line, and there are no operations to be in progress for. nil, as a manager with no domains
++// has none of the progress the type reports.
++- (NSProgress *)globalProgressForKind:(NSProgressFileOperationKind)kind
++{
++    return nil;
++}
++
++// Tell the system an error was resolved. Declared on the macOS header with no gate, but it is NOT
++// CALLED on the host: it tells the system something changed, which is the same rule as
++// addDomain: and removeDomain:. The answer is documented - nothing is listening, so resolving an
++// error has no observer - and there is no differential line, and the probe does not call it.
++- (void)signalErrorResolved:(NSError *)error
++           completionHandler:(void (^)(NSError *_Nullable error))completionHandler
++{
++    if (completionHandler) {
++        completionHandler([NSFileProviderManager charon_unavailable]);
++    }
++}
++
++// Remove a domain, with the mode saying how. NOT IN THE MACOS HEADER AT ALL - grep over the
++// macOS SDK's FileProvider headers finds no 'removeDomain:mode:' - so there is no host build of
++// it at all, and it is not called on the host in any case. Its differential is taken from a COPY
++// of this file, the way the mutant is, and the answer is the documented one: nothing is listening,
++// and the 16.0 mode has nothing to choose between.
+++ (void)removeDomain:(NSFileProviderDomain *)domain
++                mode:(NSFileProviderDomainRemovalMode)mode
++  completionHandler:(void (^)(NSURL *_Nullable preservedLocation, NSError *_Nullable error))completionHandler
++{
++    if (completionHandler) {
++        completionHandler(nil, [NSFileProviderManager charon_unavailable]);
++    }
++}
++
+ @end
+diff --git a/tests/backports/host/fileprovider/differential.m b/tests/backports/host/fileprovider/differential.m
+index 46ac480bf..cb02abbe9 100644
+--- a/tests/backports/host/fileprovider/differential.m
++++ b/tests/backports/host/fileprovider/differential.m
+@@ -24,6 +24,8 @@
+ @interface CharonFPManager : NSObject
+ + (void)getDomainsWithCompletionHandler:(void (^)(NSArray *domains, NSError *error))completionHandler;
+ + (instancetype)managerForDomain:(NSFileProviderDomain *)domain;
++- (void)getUserVisibleURLForItemIdentifier:(NSFileProviderItemIdentifier)itemIdentifier
++                         completionHandler:(void (^)(NSURL *url, NSError *error))completionHandler;
+ @end
+ extern NSString *const CharonFPErrorDomain;
+ #else
+@@ -57,6 +59,26 @@ int main(void) { @autoreleasepool {
+         initWithIdentifier:@"charon.probe.unregistered" displayName:@"charon probe"];
+     printf("managerForDomain.isNil\t%s\n", [MGR managerForDomain:unregistered] ? "false" : "true");
+ 
++    // The 16.0 member the macOS header declares with no availability gate, and which is READ-ONLY:
++    // a lookup that answers a URL for an item. getIdentifierForUserVisibleFileAtURL: is in the same
++    // header but is FILEPROVIDER_API_AVAILABILITY_V3_IOS - iOS-only - so it does not enter this.
++    // The 16.0 member the macOS header declares with no availability gate, and which are
++    // READ-ONLY: a lookup that answers a URL and a lookup that answers an identifier. Neither
++    // changes a machine's state, and both are in the differential.
++    {
++        // An INSTANCE method, so it needs a manager; managerForDomain: is read-only and is already
++        // measured above, and obtaining one changes nothing on either side.
++        MGR *m = [MGR managerForDomain:unregistered];
++        dispatch_semaphore_t itemDone = dispatch_semaphore_create(0);
++        __block BOOL hasURL = NO;
++        [m getUserVisibleURLForItemIdentifier:@"charon.probe"
++                           completionHandler:^(NSURL *url, NSError *error) {
++            hasURL = (url != nil); dispatch_semaphore_signal(itemDone);
++        }];
++        dispatch_semaphore_wait(itemDone, DISPATCH_TIME_FOREVER);
++        printf("userVisibleURLForItem.isNil\t%s\n", hasURL ? "false" : "true");
++    }
++
+     // The constants, by the domain's own spelling: the codes are Apple's, and a port that
+     // exports the wrong number is caught here.
+     NSError *noSuchItem = [NSError errorWithDomain:ERRDOMAIN
+-- 
+2.54.0 (Apple Git-157)
+

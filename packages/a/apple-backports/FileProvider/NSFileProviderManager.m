@@ -243,6 +243,8 @@ static NSInteger const CharonFileProviderUnavailable = -2001;
                                              errorReason:(void (^)(NSError *_Nullable))errorReason
                                        completionHandler:(void (^)(NSURL *_Nullable diagnosticReportURL, NSError *_Nullable error))completionHandler
 {
+    // nil IS the answer for errorReason: a nil reason is what "no reason, the request was refused
+    // for the unavailable error" means, and the failure itself arrives in the completion below.
     if (errorReason) {
         errorReason(nil);
     }

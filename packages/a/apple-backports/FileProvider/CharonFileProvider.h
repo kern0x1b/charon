@@ -27,11 +27,11 @@
 // declaration is made where it is missing and skipped where the SDK already has it: a second
 // @interface for a class the SDK declares is a duplicate definition, which is what the host build
 // answered before this guard.
-// The disconnect enums are in the SAME situation as the known folders, with one difference: the
-// macOS SDK declares the 16.0 method -disconnectWithReason:options:completionHandler: and the two
-// types it names, while the iOS 16.4 SDK declares the METHOD and neither type. So the guard below
-// is on the types themselves rather than on a file, and the port's method only compiles where the
-// SDK does not already have it.
+// The disconnect enums are NOT in the same situation as the known folders, and the previous text
+// here said they were. Both SDKs DECLARE the method -disconnectWithReason:options:completionHandler:
+// - and NEITHER declares the two types it names: the macOS SDK has neither the types nor the
+// method, and the iOS 16.4 SDK has the method and neither type. The types are therefore the port's
+// own, and they are unguarded because there is nothing to guard against.
 #if !__has_include(<FileProvider/NSFileProviderKnownFolders.h>)
 
 typedef NS_OPTIONS(NSUInteger, NSFileProviderKnownFolders) {

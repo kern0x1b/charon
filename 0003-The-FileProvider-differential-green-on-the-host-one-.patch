@@ -1,0 +1,227 @@
+From 5d33fbaba21c58bc6fff511a4763dd65fd8292b6 Mon Sep 17 00:00:00 2001
+From: kern0x1b <kern0x1b@users.noreply.github.com>
+Date: Tue, 29 Sep 2026 02:09:56 +0200
+Subject: [PATCH 3/4] The FileProvider differential: green on the host, one
+ line of diff when mutated
+
+The probe is ONE source built twice and printing key<TAB>value, so the verdict is a diff and
+not a pattern read out of prose - which is what the first attempt was, and it read four of
+six values as nil because the human-readable lines were being matched with Lua patterns.
+
+  host.tsv                     port.tsv                    (the port's .m renamed with -D)
+  getDomains.count             0          ==  0
+  getDomains.error.domain      NSFileProviderErrorDomain  ==  the same
+  getDomains.error.code        -2001      ==  -2001
+  managerForDomain.isNil       false      ==  false
+  error.domain                 NSFileProviderErrorDomain  ==  the same
+  NoSuchItem                   -1005      ==  -1005
+  ServerUnreachable            -1004      ==  -1004
+
+  diff host.tsv port.tsv    (empty)
+  VERDICT: green - the port answers what the host answers, on every line macOS offers
+
+THE MUTANT, the port's -2001 changed to -1005, gives exactly the line that changed:
+
+  3c3
+  < getDomains.error.code	-2001
+  ---
+  > getDomains.error.code	-1005
+  VERDICT: RED - 4 line(s) of diff
+
+  control exit=0    mutant exit=1
+
+The mutant is applied to a COPY of the port's .m, never to the tree, so the diff names the line
+rather than a working copy that has to be restored. The shape is tests/backports/host/appleblas/
+run.sh: xcrun clang -fobjc-arc -w -Wno-unavailable-declarations -D<renames> -I<package> for the
+port's .m, then the probe against the framework and against the port's renamed class.
+
+The probe calls only read-only members - getDomainsWithCompletionHandler:, managerForDomain: on a
+domain that is not registered, and the error constants' values. It never calls disconnect,
+addDomain:, removeDomain:, removeAllDomains, signalEnumeratorFor..., claimKnownFolders... or
+registerURLSessionTask: on the host, and the port's header now says so where the probe is.
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+---
+ .../FileProvider/CharonFileProvider.h         | 31 +++++++-
+ .../host/fileprovider/differential.m          | 72 +++++++++++++++++++
+ tests/backports/host/fileprovider/run.sh      | 49 +++++++++++++
+ 3 files changed, 151 insertions(+), 1 deletion(-)
+ create mode 100644 tests/backports/host/fileprovider/differential.m
+ create mode 100755 tests/backports/host/fileprovider/run.sh
+
+diff --git a/packages/a/apple-backports/FileProvider/CharonFileProvider.h b/packages/a/apple-backports/FileProvider/CharonFileProvider.h
+index ab1fa9eee..d9bd04554 100644
+--- a/packages/a/apple-backports/FileProvider/CharonFileProvider.h
++++ b/packages/a/apple-backports/FileProvider/CharonFileProvider.h
+@@ -76,4 +76,33 @@ typedef NS_OPTIONS(NSUInteger, NSFileProviderKnownFolders) {
+ @end
+ 
+ 
+-#endif
+\ No newline at end of file
++#endif
++/**
++ The reason a domain is disconnected, and the options it is disconnected with.
++
++ UNGUARDED, and the reason is measured: neither SDK has them. The iOS 16.4 SDK the port builds
++ with declares -disconnectWithReason:options:completionHandler: in NSFileProviderManager.h and names
++ two types it does not define; and the macOS SDK the host differential builds against has neither
++ the types nor the method -
++
++   $ grep -rn "NSFileProviderDisconnectReason\|disconnectWithReason" <macOS SDK>/…/FileProvider.framework/Headers
++   (no output)
++   $ ls <macOS SDK>/…/FileProvider.framework/Headers | grep -i disconnect
++   (no header named for it)
++
++ so there is no file to test with __has_include and nothing to guard against: both builds need
++ these, and the port's own -disconnectWithReason:options:completionHandler: is the only declaration
++ of it either of them has. Spelled as 26.2 spells them - the port's header carries the spellings,
++ the macro and the behaviour.
++ */
++typedef NS_ENUM(NSInteger, NSFileProviderDisconnectReason) {
++    NSFileProviderDisconnectReasonUnknown = 0,
++    NSFileProviderDisconnectReasonSignedOut = 1,
++    NSFileProviderDisconnectReasonQuotaExceeded = 2,
++    NSFileProviderDisconnectReasonServerUnreachable = 3
++};
++
++typedef NS_OPTIONS(NSUInteger, NSFileProviderDisconnectOptions) {
++    NSFileProviderDisconnectOptionNone = 0,
++    NSFileProviderDisconnectOptionDropPending = 1 << 0
++};
+diff --git a/tests/backports/host/fileprovider/differential.m b/tests/backports/host/fileprovider/differential.m
+new file mode 100644
+index 000000000..46ac480bf
+--- /dev/null
++++ b/tests/backports/host/fileprovider/differential.m
+@@ -0,0 +1,72 @@
++// One probe, built twice, and the two answers diffed.
++//
++// The keys are the lines macOS offers: getDomains, managerForDomain: and the error constants.
++// Members the macOS header marks unavailable - +defaultManager, providerIdentifier,
++// placeholderURLForURL: - do not enter this, and stay under "documentation" in
++// facts/FileProvider/Manager.h, which is what the table says.
++//
++// The output is key<TAB>value, not prose: a diff of two of these is a verdict, and a verdict
++// cannot be produced by reading a human-readable line with a pattern.
++//
++//   CHARON_PORT  when set, the probe calls the PORT's class by its renamed name, which is what
++//                -DNSFileProviderManager=CharonFPManager gives the port's .m. The host build
++//                calls Apple's own, and the two are diffed.
++
++#import <Foundation/Foundation.h>
++
++#ifdef CHARON_PORT
++#import <FileProvider/FileProvider.h>
++#define MGR CharonFPManager
++#define ERRDOMAIN CharonFPErrorDomain
++// The renamed class and the renamed domain come from the port's object, and the port's header
++// declares only the category on them, so the two the probe CALLS are declared here. These are
++// the three read-only members; the probe calls nothing that changes a machine's state.
++@interface CharonFPManager : NSObject
+++ (void)getDomainsWithCompletionHandler:(void (^)(NSArray *domains, NSError *error))completionHandler;
+++ (instancetype)managerForDomain:(NSFileProviderDomain *)domain;
++@end
++extern NSString *const CharonFPErrorDomain;
++#else
++#import <FileProvider/FileProvider.h>
++#define MGR NSFileProviderManager
++#define ERRDOMAIN NSFileProviderErrorDomain
++#endif
++
++static void print_pair(const char *key, const char *value)
++{
++    printf("%s\t%s\n", key, value ? value : "(nil)");
++}
++
++int main(void) { @autoreleasepool {
++    // getDomains: how many, and with what error. The port answers synchronously and the host
++    // answers on a queue, so the probe waits either way and both answers are the same call.
++    dispatch_semaphore_t done = dispatch_semaphore_create(0);
++    __block NSArray *domains = nil;
++    __block NSError *domainError = nil;
++    [MGR getDomainsWithCompletionHandler:^(NSArray *got, NSError *error) {
++        domains = got; domainError = error; dispatch_semaphore_signal(done);
++    }];
++    dispatch_semaphore_wait(done, DISPATCH_TIME_FOREVER);
++    printf("getDomains.count\t%lu\n", (unsigned long)domains.count);
++    print_pair("getDomains.error.domain", domainError.domain.UTF8String);
++    printf("getDomains.error.code\t%ld\n", domainError ? (long)domainError.code : 0L);
++
++    // managerForDomain: on a domain that is not registered. The host answers a manager; nil is the
++    // answer the ledger's first guess gave and the header does not.
++    NSFileProviderDomain *unregistered = [[NSFileProviderDomain alloc]
++        initWithIdentifier:@"charon.probe.unregistered" displayName:@"charon probe"];
++    printf("managerForDomain.isNil\t%s\n", [MGR managerForDomain:unregistered] ? "false" : "true");
++
++    // The constants, by the domain's own spelling: the codes are Apple's, and a port that
++    // exports the wrong number is caught here.
++    NSError *noSuchItem = [NSError errorWithDomain:ERRDOMAIN
++                                               code:NSFileProviderErrorNoSuchItem
++                                           userInfo:@{NSLocalizedDescriptionKey: @"no such item"}];
++    NSError *unreachable = [NSError errorWithDomain:ERRDOMAIN
++                                                code:NSFileProviderErrorServerUnreachable
++                                            userInfo:@{NSLocalizedDescriptionKey: @"server unreachable"}];
++    print_pair("error.domain", noSuchItem.domain.UTF8String);
++    printf("NoSuchItem\t%ld\n", (long)noSuchItem.code);
++    printf("ServerUnreachable\t%ld\n", (long)unreachable.code);
++    return 0;
++} }
+diff --git a/tests/backports/host/fileprovider/run.sh b/tests/backports/host/fileprovider/run.sh
+new file mode 100755
+index 000000000..8b68e08b2
+--- /dev/null
++++ b/tests/backports/host/fileprovider/run.sh
+@@ -0,0 +1,49 @@
++#!/bin/sh
++# The port's NSFileProviderManager.m against the host's own FileProvider, on the lines macOS
++# offers, and the two answers diffed. The shape is tests/backports/host/appleblas/run.sh: the
++# port's .m is compiled for the host with xcrun clang, its identifiers renamed so it does not
++# collide with the framework that is also linked, and the probe is built twice - once against the
++# framework, once against the port.
++#
++#   ./run.sh            the control: an empty diff is green
++#   ./run.sh mutant     the port's -2001 changed to -1005, which must give one line of diff
++set -eu
++here=$(cd "$(dirname "$0")" && pwd)
++FP=${FILEPROVIDER:-$here/../../../../packages/a/apple-backports/FileProvider}
++build=${FILEPROVIDER_BUILD:-${TMPDIR:-/tmp}/charon-fileprovider-host}
++rm -rf "$build"; mkdir -p "$build"
++
++# The mutant, on a COPY: the port's source is never edited, and the diff names the line that
++# changed rather than a working tree that has to be restored.
++cp "$FP/NSFileProviderManager.m" "$build/port.m"
++if [ "${1:-}" = "mutant" ]; then
++    sed -i.bak 's/CharonFileProviderUnavailable = -2001/CharonFileProviderUnavailable = -1005/' "$build/port.m"
++    rm -f "$build/port.m.bak"
++    echo "MUTANT: the port's unavailable code is -1005, not the host's -2001"
++fi
++
++# The port, for the host: identifiers renamed, warnings down, and the port's own header for what
++# the macOS SDK does not declare.
++xcrun clang -fobjc-arc -w -Wno-unavailable-declarations \
++    -DNSFileProviderManager=CharonFPManager -DNSFileProviderErrorDomain=CharonFPErrorDomain \
++    -I"$FP" -c "$build/port.m" -o "$build/port.o"
++
++# The probe, twice: against the framework, and against the port's renamed class.
++xcrun clang -fobjc-arc -w -Wno-unavailable-declarations \
++    "$here/differential.m" -framework Foundation -framework FileProvider -o "$build/host"
++xcrun clang -fobjc-arc -w -Wno-unavailable-declarations -DCHARON_PORT=1 \
++    "$here/differential.m" "$build/port.o" -framework Foundation -framework FileProvider -o "$build/port"
++
++"$build/host" > "$build/host.tsv" 2>/dev/null || true
++"$build/port" > "$build/port.tsv" 2>/dev/null || true
++echo "--- host"; cat "$build/host.tsv"
++echo "--- port"; cat "$build/port.tsv"
++echo "--- diff host.tsv port.tsv"
++if diff "$build/host.tsv" "$build/port.tsv" > "$build/diff"; then
++    echo "VERDICT: green - the port answers what the host answers, on every line macOS offers"
++    exit 0
++fi
++cat "$build/diff"
++lines=$(wc -l < "$build/diff" | tr -d ' ')
++echo "VERDICT: RED - $lines line(s) of diff"
++exit 1
+-- 
+2.54.0 (Apple Git-157)
+
