@@ -189,6 +189,28 @@
       "status": "inert"
     },
     {
+      "api": "sec_protocol_options_add_tls_ciphersuite()",
+      "effect": "the value is held AS GIVEN, in the caller's own numbering, and never translated. Measured: 0x0001 reads back 1 and 0x002F reads back 0x002F, with two rows of their own asserting the values are NOT 0x1301 and NOT 0xC02F - because a count, a status or a length would not notice a translation and only the value does. The list is grown with realloc and a failed allocation holds nothing rather than a half-written list, which is measured by appending past the first capacity (23 held, the 23rd read back). The effect: the handshake ignores the list, and 6.1.3 cannot offer a TLS 1.3 ciphersuite whatever the caller appends",
+      "facts": "facts/Security/SecProtocolWorklist.md",
+      "introduced": "13.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "6.1.3 HAS NO STACK THAT TAKES a sec_protocol_options_t, so nothing reads what the port holds. NEITHER VALUE IS TRANSLATED: SSLCipherSuite is a set of WIRE values (SSL_NULL_WITH_NULL_NULL = 0x0000, SSL_RSA_WITH_NULL_MD5 = 0x0001, CipherSuite.h:48) and tls_ciphersuite_t is a separate CF_ENUM(uint16_t) of the IANA names for the same suites, so translating between them would be the port inventing a correspondence NO HEADER MAKES. The GROUP enum is a THIRD numbering and is ORDINAL rather than a wire value - CF_ENUM(int, SSLCiphersuiteGroup) with kSSLCiphersuiteGroupDefault and kSSLCiphersuiteGroupCompatibility (CipherSuite.h:270-272) - so it is held as given for a different reason again: there is nothing it could be translated INTO",
+      "source": "SDK 16.4, Security",
+      "status": "inert"
+    },
+    {
+      "api": "sec_protocol_options_add_tls_ciphersuite_group()",
+      "effect": "the value is held AS GIVEN, in the caller's own numbering, and never translated. Measured: 0x0001 reads back 1 and 0x002F reads back 0x002F, with two rows of their own asserting the values are NOT 0x1301 and NOT 0xC02F - because a count, a status or a length would not notice a translation and only the value does. The list is grown with realloc and a failed allocation holds nothing rather than a half-written list, which is measured by appending past the first capacity (23 held, the 23rd read back). The effect: the handshake ignores the list, and 6.1.3 cannot offer a TLS 1.3 ciphersuite whatever the caller appends",
+      "facts": "facts/Security/SecProtocolWorklist.md",
+      "introduced": "13.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "6.1.3 HAS NO STACK THAT TAKES a sec_protocol_options_t, so nothing reads what the port holds. NEITHER VALUE IS TRANSLATED: SSLCipherSuite is a set of WIRE values (SSL_NULL_WITH_NULL_NULL = 0x0000, SSL_RSA_WITH_NULL_MD5 = 0x0001, CipherSuite.h:48) and tls_ciphersuite_t is a separate CF_ENUM(uint16_t) of the IANA names for the same suites, so translating between them would be the port inventing a correspondence NO HEADER MAKES. The GROUP enum is a THIRD numbering and is ORDINAL rather than a wire value - CF_ENUM(int, SSLCiphersuiteGroup) with kSSLCiphersuiteGroupDefault and kSSLCiphersuiteGroupCompatibility (CipherSuite.h:270-272) - so it is held as given for a different reason again: there is nothing it could be translated INTO",
+      "source": "SDK 16.4, Security",
+      "status": "inert"
+    },
+    {
       "api": "sec_protocol_options_append_tls_ciphersuite()",
       "effect": "the ciphersuite is APPENDED to a list the object holds, and a caller that appends twice gets both - the list is the port's own copy, grown with realloc, and a failed allocation holds nothing rather than a half-written list. The effect: the handshake ignores the list, and 6.1.3 cannot offer TLS 1.3 ciphersuites whatever the caller appends",
       "facts": "facts/Security/SecProtocolWorklist.md",
