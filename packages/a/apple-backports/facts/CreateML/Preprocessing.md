@@ -29,6 +29,10 @@ CreateMLComponents.framework/Modules/CreateMLComponents.swiftmodule/arm64e-apple
     NEGATIVE control - one of the two, in each order, with Transformer only as a parameter and a
        where clause: 0
        expected [] -> CONTROL PASSES
+    BOUNDARY control - a second protocol after an early where: 0
+       note: the emitter cannot produce this - conformances precede where - so this pins the
+             boundary of the parser rather than defending a reachable case
+       expected [] -> CONTROL PASSES
 
     real interface: arm64e-apple-ios-macabi.swiftinterface
        types whose conformance clause names BOTH Transformer and Estimator: 0
@@ -37,7 +41,7 @@ CreateMLComponents.framework/Modules/CreateMLComponents.swiftmodule/arm64e-apple
        PreprocessingEstimator's clause: [<Preprocessor, Estimator> : CreateMLComponents::Estimator]
           names Transformer: False  names Estimator: True  -> listed: False
 
-    controls: positive PASS, negatives PASS
+    controls: positive PASS, boundary PASS, negatives PASS
 
 **The count is 0: no type in the framework conforms to both `Transformer` and `Estimator`.** Two
 earlier attempts got this wrong and both are worth recording, because they are the shapes the check

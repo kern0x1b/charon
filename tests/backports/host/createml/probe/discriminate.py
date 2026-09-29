@@ -57,6 +57,17 @@ public struct BothOnAContinuation<Preprocessor>
 
 # The negatives: `Transformer` appears only as a generic parameter name and as a `where` constraint,
 # which is what the two-alternative grep and the both-words-on-one-line grep both miscount.
+# The shape the parser does NOT cover: a second protocol name *after* an early `where`. A Swift
+# declaration lists conformances before `where`, and the `where` clause carries constraints, so the
+# emitter cannot produce this - the control below is deliberately invalid Swift and is here to pin the
+# boundary, not to defend a reachable case. If the discriminator listed it, the clause boundary would be
+# too greedy; it does not, and the count for a real interface is unaffected either way.
+BOUNDARY = """
+public struct ConformanceAfterWhere<T> : CreateMLComponents::Transformer where T : Copyable,
+    CreateMLComponents::Estimator {
+}
+"""
+
 NEGATIVE = """
 public struct OnlyEstimatorIsReal<Preprocessor, Estimator> : CreateMLComponents::Estimator
     where Preprocessor : CreateMLComponents::Transformer, Estimator : CreateMLComponents::Estimator {
@@ -69,8 +80,10 @@ public struct OnlyTransformerIsReal<Preprocessor, Estimator> : CreateMLComponent
 """
 
 
-def report(found, label, expecting):
+def report(found, label, expecting, note=None):
     both = conforming_to_both(found)
+    if note:
+        print("   note: %s" % note)
     print("%s: %d" % (label, len(both)))
     for n in both:
         print("   %s" % n)
@@ -89,6 +102,8 @@ if __name__ == "__main__":
 
     controls_ok = report(clauses(POSITIVE), "POSITIVE control - two types conforming to both",
                          ["BothOnAContinuation", "BothOnOneLine"])
+    boundary_ok = report(clauses(BOUNDARY), "BOUNDARY control - a second protocol after an early where",
+                          [], note="the emitter cannot produce this: conformances precede where")
     negatives_ok = report(clauses(NEGATIVE), "NEGATIVE control - one of the two, in each order, "
                                               "with Transformer only as a parameter and a where clause", [])
     # The second call above re-runs the positive list; the negatives are asserted by the count being 2
@@ -107,5 +122,7 @@ if __name__ == "__main__":
                   % ("Transformer" in protocol_names(found[probe]),
                      "Estimator" in protocol_names(found[probe]), probe in real))
     print()
-    print("controls: positive %s, negatives %s"
-          % ("PASS" if controls_ok else "FAIL", "PASS" if negatives_ok else "FAIL"))
+    print("controls: positive %s, boundary %s, negatives %s"
+          % ("PASS" if controls_ok else "FAIL",
+             "PASS" if boundary_ok else "FAIL",
+             "PASS" if negatives_ok else "FAIL"))
