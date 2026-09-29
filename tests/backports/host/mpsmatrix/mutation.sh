@@ -85,6 +85,54 @@ gradient=$mps/MPSMatrixBatchNormalizationGradient12.m
 multiply=$mps/MPSMatrixMultiplication10.m
 header=$mps/CharonMPS.h
 
+# Every anchor resolved before a single harness run, in one python process, which prints one line per
+# site and exits non-zero naming the ones that do not resolve exactly once. A campaign costs three
+# full harness runs, so a stale anchor found this way is a second and found the expensive way is forty
+# minutes - and the tenth mutant of this campaign used to be found the expensive way. The check reads
+# the anchors and the files itself and prints what it compared, so a run that examined nothing cannot
+# come back green: it has one line per site and a count at the end, and they are the only way out.
+anchor_check() {
+    python3 - "$mps" "$MUTANTS_DIR" <<'PYEOF'
+import os
+import sys
+mps, mutants = sys.argv[1], sys.argv[2]
+sites = [("MPSMatrixMultiplication10.m", "multiply-accumulation"),
+         ("MPSMatrixBatchNormalization12.m", "forward-mean"),
+         ("MPSMatrixSum11.m", "sum-transposed-clip"),
+         ("MPSMatrixSum11.m", "sum-scale-index"),
+         ("MPSMatrixBatchNormalizationGradient12.m", "gradient-per-parameter"),
+         ("MPSMatrixSum11.m", "scale-guard-edge-one"),
+         ("MPSMatrixSum11.m", "scale-guard-clamp-two"),
+         ("MPSMatrixSum11.m", "neuron-application")]
+bad = []
+for name, site in sites:
+    path = os.path.join(mps, name)
+    try:
+        anchor = open(os.path.join(mutants, site + ".anchor")).read()
+    except OSError as e:
+        bad.append("%s: no anchor file (%s)" % (site, e))
+        print("anchor check: %-26s NO ANCHOR FILE" % site)
+        continue
+    if anchor.endswith("\n"):
+        anchor = anchor[:-1]
+    try:
+        text = open(path).read()
+    except OSError as e:
+        bad.append("%s: no source (%s)" % (site, e))
+        print("anchor check: %-26s NO SOURCE" % site)
+        continue
+    n = text.count(anchor)
+    print("anchor check: %-26s %d occurrence(s) in %s" % (site, n, name))
+    if n != 1:
+        bad.append("%s occurs %d times in %s, and a mutation needs exactly one" % (site, n, name))
+print("anchor check: %d sites compared, %d not resolving exactly once" % (len(sites), len(bad)))
+for line in bad:
+    sys.stderr.write(line + "\n")
+sys.exit(1 if bad else 0)
+PYEOF
+}
+anchor_check || { echo "the campaign is not startable: an anchor does not resolve exactly once" >&2; exit 1; }
+
 case "$campaign" in
     one)
         campaign_run "multiply accumulation" "$multiply" multiply-accumulation
@@ -131,12 +179,13 @@ if [ "$sp_before" = "$sp_during" ] || [ "$lg_before" = "$lg_during" ] || [ "$lg_
     exit 1
 fi
 
-# The mutants that prove the reader is reading: a site whose anchor is a regex metacharacter has to be
-# found as text, or the campaign is a substitution that happens to work on this run's text.
-case "$campaign" in
-    all) campaign_run "metacharacter anchor" "$sum" metacharacter ;;
-esac
-
 echo ""
+# There is no tenth mutant here, and there was one until 2026-09-29. `metacharacter.anchor` carries
+# "EOF / alpha (x) \"q\" $x / EOF alone", and it is the fixture tests/backports/host/mpsmatrix/
+# mutate-selftest.sh hands to mutate() to prove the transport survives a delimiter, a quote and a
+# dollar; it occurs **nowhere** in the library, so pointing a campaign at it could only fail, and
+# `CAMPAIGN=all` did. The property it was standing for is carried twice over without it: three of the
+# eight library anchors - forward-mean, neuron-application, sum-scale-index - already hold parentheses,
+# and mutate-selftest.sh still tests the transport itself.
 echo "the mutants that ran moved the graded counts and their reverts moved them back, in a copy of the"
 echo "library and with no tracked file written: the harness can fail, and the grader ranks what it measured"

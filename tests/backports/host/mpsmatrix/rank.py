@@ -69,9 +69,21 @@ def main(argv):
     n = min(len(system), len(port))
     counts = {"identical": 0, "ulp": 0, "non-ulp": 0}
     unexplained = []
+    # A case family is a case name without its trailing number, so `neuron 7` and `neuron 15` are one
+    # family. The table it prints is where a document's per-family case count comes from: a number
+    # written by hand in a registry string is a number no run checks.
+    per_family = {}
     print("%-42s %-9s %11s %11s  %s" % ("case", "class", "max ulp", "max rel", "verdict"))
+    graded = {}
+
+    def family_of(case_name):
+        head = case_name.rsplit(" ", 1)
+        return head[0] if len(head) == 2 and head[1].isdigit() else case_name
+
     for i in range(n):
         (sname, slen, shex), (pname, plen, phex) = system[i], port[i]
+        fam = per_family.setdefault(family_of(sname), dict(cases=0, same=0, ulp=0, rel=0.0, zero=0))
+        fam["cases"] += 1
         if sname != pname or slen != plen:
             print("%-42s %-9s %11s %11s  %s"
                   % (sname, "MISPAIRED", "-", "-", "the two runs reached different cases"))
@@ -80,9 +92,11 @@ def main(argv):
             continue
         if shex == phex:
             counts["identical"] += 1
+            fam["same"] += 1
             continue
         if slen % 4 or len(shex) != slen * 2:
             grade, ulp, rel = "non-ulp", None, None
+            fam["ulp"] = max(fam["ulp"], 1 << 30)
         else:
             worst_ulp = 0
             worst_rel = 0.0
@@ -97,11 +111,13 @@ def main(argv):
                 if fa == fb:
                     continue
                 if fa == 0.0 or fb == 0.0 or fa != fa or fb != fb:
-                    worst_rel = float("inf")
+                    fam["zero"] += 1
                 else:
                     worst_rel = max(worst_rel, abs(fa - fb) / max(abs(fa), abs(fb)))
             ulp = worst_ulp
             rel = worst_rel
+            fam["ulp"] = max(fam["ulp"], worst_ulp)
+            fam["rel"] = max(fam["rel"], worst_rel if worst_rel > 0 else 0.0)
             grade = "ulp" if worst_ulp <= bound else "non-ulp"
         counts[grade] += 1
         if grade == "non-ulp":
@@ -115,7 +131,19 @@ def main(argv):
         print("%-42s %-9s %11s %11s  %s"
               % (sname, grade, ulp if ulp is not None else "-",
                  ("%.3g" % rel) if rel is not None else "-", verdict))
+        if grade != "identical":
+            graded[name] = (grade, ulp, rel)
 
+    print("")
+    print("%-38s %6s %7s %11s %11s %8s"
+          % ("family", "cases", "differ", "max ulp", "max rel", "0-vs-nz"))
+    for name in sorted(per_family):
+        e = per_family[name]
+        # max rel is over the elements both sides wrote as finite numbers: an element one side wrote
+        # as zero has no relative distance, and letting it print as infinity would swamp the column
+        # for a family whose other elements are within an ulp. The count of those is its own column.
+        print("%-38s %6d %7d %11d %11.3g %8d"
+              % (name, e["cases"], e["cases"] - e["same"], e["ulp"], e["rel"], e["zero"]))
     print("")
     print("compared: %d cases over the first %d of each run" % (n, n))
     print("identical: %d   ulp (bound %d): %d   non-ulp: %d"
