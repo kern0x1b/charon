@@ -92,23 +92,3 @@ CFArrayRef sec_identity_copy_certificates_ref(sec_identity_t identity)
     CFArrayRef held = [(CharonSecIdentity *)identity charonCertificates];
     return held ? (CFArrayRef)CFRetain(held) : NULL;
 }
-
-//   256  bool sec_identity_access_certificates(sec_identity_t identity,
-//                                               void (^handler)(sec_certificate_t certificate))
-bool sec_identity_access_certificates(sec_identity_t identity, void (^handler)(sec_certificate_t))
-{
-    if (![identity isKindOfClass:CharonSecIdentity.class] || !handler)
-        return false;
-    CFArrayRef held = [(CharonSecIdentity *)identity charonCertificates];
-    if (!held)
-        return true;   // nothing to visit is not a failure; the handler simply runs zero times
-    CFIndex count = CFArrayGetCount(held);
-    for (CFIndex i = 0; i < count; i++) {
-        // the wrapper is a strong local, so ARC releases it when the iteration ends
-        sec_certificate_t wrapper = sec_certificate_create((SecCertificateRef)CFArrayGetValueAtIndex(held, i));
-        if (!wrapper)
-            return false;
-        handler(wrapper);
-    }
-    return true;
-}
