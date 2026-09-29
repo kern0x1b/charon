@@ -73,6 +73,7 @@ json.dump(written, open(os.path.join(out, "written.json"), "w"), indent=1)
 print("%d protocol sources over %d libraries" % (len(written), len({w['folder'] for w in written})))
 PY
 fail=0
+examined=0
 python3 - "$OUT" <<'PY' > "$OUT/plan.txt"
 import json, sys
 for w in json.load(open(sys.argv[1] + "/written.json")):
@@ -85,19 +86,27 @@ while IFS='	' read -r file folder minimum name; do
        -Wno-unguarded-availability-new -Wno-unguarded-availability \
        -I"$ROOT/packages/a/apple-backports/$folder" \
        -c "$file" -o "$OUT/obj/$base.o" 2> "$OUT/obj/$base.diag"; then
-    echo "COMPILE ok   $base.m  ($target, $folder)"
+    examined=$((examined+1))
   else
-    echo "COMPILE FAIL $base.m  ($target, $folder)"
-    grep -m3 'error:' "$OUT/obj/$base.diag" | sed 's/^/    /'
+    examined=$((examined+1))
+    echo "FAIL $base.m ($target, $folder): $(grep -m1 'error:' "$OUT/obj/$base.diag")"
     fail=$((fail+1))
   fi
 done < "$OUT/plan.txt"
-total=$(wc -l < "$OUT/plan.txt" | tr -d ' ')
-if [ "$total" = "0" ]; then
-    echo "protocol-sources: no protocol source was generated, so nothing was compiled and this run says"
-    echo "nothing about the tree; the registry it reads is $ROOT/packages/a/apple-backports/registry and the"
-    echo "libraries come from $ROOT/modules/apple/backports.lua"
+# One line of evidence and one line of verdict, so a caller that gates on the exit status and a reader with a
+# log can both use it. A run that examined nothing has examined nothing: it is a failure, and it says so.
+if [ "$examined" -eq 0 ] && [ "$fail" -eq 0 ]; then
+    echo "protocol-sources: FAIL - 0 protocol sources examined, so nothing was compiled; the registry is"
+    echo "  $ROOT/packages/a/apple-backports/registry and the libraries are read from"
+    echo "  $ROOT/modules/apple/backports.lua"
     exit 2
 fi
-echo "gate-shape: $total source(s), $fail failed"
+libraries=$(cut -f2 "$OUT/plan.txt" | sort -u | wc -l | tr -d ' ')
+noun=library; [ "$libraries" != "1" ] && noun=libraries
+echo "examined: $examined protocol sources over $libraries $noun, each at the triple of its rows' minimum"
+if [ "$fail" -eq 0 ]; then
+    echo "protocol-sources: OK - $examined of $examined protocol sources compile for armv7 against the 16.4 SDK"
+    exit 0
+fi
+echo "protocol-sources: FAIL - $fail of $examined protocol sources do not compile"
 exit $fail
