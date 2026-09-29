@@ -126,7 +126,11 @@
     count = count < left.matrices ? count : left.matrices;
     count = count < right.matrices ? count : right.matrices;
     BOOL whole = YES;
-    for (NSUInteger b = 0; b < count; b++) {
+    // From the batch's first index, which is what batchStart names - the header says it is "the index of
+    // the first matrix to process". Starting at zero processes a batch that was not asked for and skips
+    // the one that was, which is what multiply-batch caught: with batchStart 1 and batchSize 2 the port
+    // wrote matrices 0 and 1 and left 2 alone.
+    for (NSUInteger b = start; b < start + count; b++) {
         if (!CharonMPSMatrixHolds(&left, b, _leftMatrixOrigin.x, _leftMatrixOrigin.y, leftRows, leftColumns) ||
             !CharonMPSMatrixHolds(&right, b, _rightMatrixOrigin.x, _rightMatrixOrigin.y, rightRows, rightColumns) ||
             !CharonMPSMatrixHolds(&result, b, _resultMatrixOrigin.x, _resultMatrixOrigin.y, _resultRows, _resultColumns)) {
@@ -138,7 +142,7 @@
         CharonMPSRefuse(@"MPSMatrixMultiplication: a matrix of the batch [%lu, %lu) does not hold the %lux%lu, %lux%lu, %lux%lu region its origin names", (unsigned long)start, (unsigned long)(start + count), (unsigned long)leftRows, (unsigned long)leftColumns, (unsigned long)rightRows, (unsigned long)rightColumns, (unsigned long)_resultRows, (unsigned long)_resultColumns);
         return;
     }
-    for (NSUInteger b = 0; b < count; b++) {
+    for (NSUInteger b = start; b < start + count; b++) {
         for (NSUInteger row = 0; row < _resultRows; row++) {
             for (NSUInteger column = 0; column < _resultColumns; column++) {
                 double sum = 0.0;
