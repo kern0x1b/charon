@@ -487,6 +487,27 @@ for `armv7-apple-ios6.0`, with the answers as readings of the census. The comman
 an emulator run of `tests/backports/settings/hearing-check.m` against the built library, and the run prints
 `hearing: OWED` rather than passing quietly over it.
 
+### Where the four objects land, measured rather than read from the header
+
+`tools/release-split.lua` over the nine objects of this library, built with the library flags for
+`armv7-apple-ios6.0`, is **clean: every object file's symbols first appear in one release**, which is
+the rule one-object-one-release exists to hold. What it measures is not always what the header says:
+
+```
+CharonAXSettings17.o  _AXAnimatedImagesEnabled and three siblings   18.0
+CharonAXSettings18.o  _AXAssistiveAccessEnabled and five siblings   18.0
+CharonAXSettings26.o  _AXPrefersActionSliderAlternative and three  none
+CharonHearing15.o     the three hearing functions                   16.0
+```
+
+The 17.0 object measures at **18.0** and the hearing object at **16.0** because that is what the SDK
+those objects were compiled against can prove: its interface files name the 18.0 and 16.0 frameworks and
+export these symbols there. The registry rows keep 17.0 and 15.0, which are Apple's own releases and
+what a corpus row and a Swift module need. The four 26.1 symbols measure `none`, because no held
+release is new enough to export them, and are placed by the registry's `introduced` instead - the case
+`releases_in()` describes for a name nothing can place. None of the three is a problem and none is a
+mixed object; the numbers are here so the next band does not have to discover them again.
+
 ### What the check is, and what it caught
 
 `tests/backports/settings/check.m` is port-only, and the reason for each row is in its own header. It
