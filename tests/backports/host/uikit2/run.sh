@@ -337,7 +337,9 @@ group foundation14resourcekeys "../Foundation/NSURLResourceKeys14.m" foundation1
 group foundation14useractivity "../Foundation/NSUserActivity.m ../Foundation/NSUserActivity+TargetContent13.m" foundation14_useractivity_test.m
 
 group foundation14urlcache "../Foundation/NSURLCache+DirectoryURL13.m" foundation14_urlcache_test.m
-group traits17 "UITraitCollection.m UITraitCollection+UserInterfaceStyle.m UITraitCollection+Appearance13.m UITraitCollection+Appearance14.m UITraitCollection+Traits10.m UITraitCollection+ForceTouch.m UITrait17.m UITraitCollection+Traits17.m UITraitOverrides17.m" traits17_test.m
+group traits17 "UITraitCollection.m UITraitCollection+UserInterfaceStyle.m UITraitCollection+Appearance13.m UITraitCollection+Appearance14.m UITraitCollection+Traits10.m UITraitCollection+ForceTouch.m UITrait17.m UITraitList18.m UITrait26.m UITraitCollection+TraitStore.m UITraitCollection+Traits17.m UITraitOverrides17.m" traits17_test.m
+group textkit2 "NSTextRange15.m NSTextSelection15.m NSTextElement15.m NSTextElement16.m NSTextSelectionNavigation15.m" textkit2_test.m
+group content15 "NSTextContentManager15.m NSTextContentStorage15.m NSTextListElement16.m NSTextElement15.m NSTextElement16.m CharonTextLocation.m" content15_test.m
 
 
 # the spring curve: UIKit's own parameters, our solver, and a real CASpringAnimation
