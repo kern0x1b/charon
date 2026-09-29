@@ -168,9 +168,14 @@ static NSArray *menu_scenario(Class actionClass, Class menuClass, CharonControlW
         UISegmentedControl *own = [[UISegmentedControl alloc] initWithItems:@[ @"seed" ]];
         NSString *outcome = ur_raised(^id {
             charon_insert_action(own, one, 0);
-            return [NSString stringWithFormat:@"via=%@ segments=%ld title=%@ back=%@", charon_insert_action_name(own),
-                                              (long)own.numberOfSegments, [own titleForSegmentAtIndex:0] ?: @"nil",
-                                              [own actionForSegmentAtIndex:0].title ?: @"nil"];
+            UIAction *back = charon_action_at(own, 0);
+            // **Which** path each side took is printed to stderr, not put in the compared line: it differs by
+            // construction - the port's side runs the port's own insert, the recorder's the host's - and a field
+            // that is meant to differ cannot be inside a line that is compared for equality.
+            fprintf(stderr, "[controlmenus] %s took %s\n", [[pair[0] description] UTF8String],
+                    [[charon_insert_action_name(own) description] UTF8String]);
+            return [NSString stringWithFormat:@"segments=%ld title=%@ back=%@", (long)own.numberOfSegments,
+                                              [own titleForSegmentAtIndex:0] ?: @"nil", back.title ?: @"nil"];
         });
         [lines addObject:ur_line([@"an action from " stringByAppendingString:pair[0]], @[outcome])];
     }
