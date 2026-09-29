@@ -1680,6 +1680,34 @@ static void CharonHKSeriesQuery12(void)
     CharonHKCompare(@"the date delivered is the sample's start, not its end", mineDate, start);
 }
 
+// The default resolver, before this harness installs its own.
+//
+// The library's own class resolution cannot be run on this machine: linking the port's objects here
+// without the system HealthKit needs framework symbols a device exports, and linking the system
+// HealthKit would put a second class of each name in the binary, which is the very ambiguity the
+// renames exist for. So what this checks is the part that can be checked here - that the resolver the
+// table uses by default answers the same class the runtime's own lookup answers, for each of the five
+// names the table holds. A resolver that ignored its argument, or answered a different class, would fail
+// this; the harness's own resolver is installed after it and is what the rest of this file needs.
+static void CharonHKDefaultResolver(void)
+{
+    const char *names[] = { "HKCategorySample", "HKQuantitySample", "HKCorrelation", "HKWorkout", "HKClinicalRecord" };
+    for (NSInteger kind = 0; kind < 5; kind++) {
+        Class byKind = CharonHKClassForObjectKind(kind);
+        Class byName = NSClassFromString([NSString stringWithUTF8String:names[kind]]);
+        CharonHKCompare(@"the default resolver answers the runtime's own class for a kind",
+                        byKind, byName);
+    }
+    // And the table's own reading of the names, so a kind that answered the wrong name is caught even
+    // where both classes happen to exist.
+    CharonHKCompare(@"kind 0 is the category sample", CharonHKClassForObjectKind(0), NSClassFromString(@"HKCategorySample"));
+    CharonHKCompare(@"kind 1 is the quantity sample", CharonHKClassForObjectKind(1), NSClassFromString(@"HKQuantitySample"));
+    CharonHKCompare(@"kind 2 is the correlation", CharonHKClassForObjectKind(2), NSClassFromString(@"HKCorrelation"));
+    CharonHKCompare(@"kind 3 is the workout", CharonHKClassForObjectKind(3), NSClassFromString(@"HKWorkout"));
+    CharonHKCompare(@"kind 4 is the clinical record", CharonHKClassForObjectKind(4), NSClassFromString(@"HKClinicalRecord"));
+    CharonHKCompare(@"a kind the table does not hold answers nothing", CharonHKClassForObjectKind(9), Nil);
+}
+
 // The store's own round trip, and the outcome of the two builders' finishes.
 //
 // The host cannot be the oracle for any of this: its HealthKit keeps its data in a healthd behind an
@@ -1702,7 +1730,7 @@ static void CharonHKStoreRoundTrip(void)
     // writes, through the store's own request, and waits for the answer before saving anything.
     __block BOOL authorised = NO;
     [store requestAuthorizationToShareTypes:[NSSet setWithObjects:energy, workoutType, nil]
-                                  readTypes:[NSSet setWithObjects:energy, nil]
+                                  readTypes:[NSSet setWithObjects:energy, workoutType, nil]
                                  completion:^(BOOL success, NSError *error) { authorised = success; }];
     CharonHKWaitFor(&authorised);
     CharonHKCompareBool(@"the store is asked for what it writes", authorised, YES);
@@ -1809,6 +1837,9 @@ static void CharonHKStoreRoundTrip(void)
 
 int main(void)
 {
+    // Before the harness installs its own: this checks the resolver the library ships with, which is the
+    // one a reader of the library gets.
+    CharonHKDefaultResolver();
     CharonHKInstallClassResolver();
     CharonHKUnitCases();
     CharonHKPrefixedFactories();
