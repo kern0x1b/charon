@@ -251,4 +251,94 @@ static NSInteger const CharonFileProviderUnavailable = -2001;
     }
 }
 
+#pragma mark - The 16.0 members, and what the 6.1.3 cache says about them
+
+// Every selector in this section was searched for in the release's own cache, beside a control
+// that is known to be there:
+//
+//   $ LC_ALL=C grep -c -a -F -- 'setNaturalLanguageQuery:' $HOME/.charon/dyld/6.1.3/dyld_shared_cache_armv7
+//   2
+//   getUserVisibleURLForItemIdentifier:                       0
+//   temporaryDirectoryURLWithError:                           0
+//   signalErrorResolved:                                      0
+//   globalProgressForKind:                                    0
+//   getIdentifierForUserVisibleFileAtURL:                     0
+//   removeDomain:mode:completionHandler:                      0
+//   getDomainsWithCompletionHandler:   0   (the 11.0 members above, for the same answer)
+//   managerForDomain:                  0
+//
+// The control proves the search reaches the strings, so a zero is an absence and not a miss. And
+// the two members already implemented answer zero too: THE WHOLE FRAMEWORK IS ABSENT AT 6.1.3,
+// which is what the facts file says and what these answers rest on. There is no release-side
+// behaviour to reproduce, so each of the six answers as the host answers the same question on a
+// machine with no domains, and two of them - the two the macOS header gates to iOS - have no host
+// to be measured on and answer as the header documents.
+
+// The URL a user sees for an item. Read-only, and the macOS header declares it with no
+// availability gate, so the differential has a line for it: an item in no domain has no
+// user-visible URL, and the answer is nil with the unavailable error.
+- (void)getUserVisibleURLForItemIdentifier:(NSFileProviderItemIdentifier)itemIdentifier
+                         completionHandler:(void (^)(NSURL *_Nullable url, NSError *_Nullable error))completionHandler
+{
+    if (completionHandler) {
+        completionHandler(nil, [NSFileProviderManager charon_unavailable]);
+    }
+}
+
+// The identifier for a file a user sees, which is the same question the other way. Declared with
+// no gate on macOS, so it has a differential line too.
++ (void)getIdentifierForUserVisibleFileAtURL:(NSURL *)url
+                           completionHandler:(void (^)(NSFileProviderItemIdentifier _Nullable itemIdentifier, NSError *_Nullable error))completionHandler
+{
+    if (completionHandler) {
+        completionHandler(nil, [NSFileProviderManager charon_unavailable]);
+    }
+}
+
+// The manager's temporary directory. `FILEPROVIDER_API_AVAILABILITY_V3_IOS` on the macOS header:
+// iOS-only, so there is no host to measure it on and the answer is documented - a manager with no
+// domain has no temporary directory to hand out, and the header's own contract is the error in
+// the out-parameter.
+- (NSURL *)temporaryDirectoryURLWithError:(NSError **)error
+{
+    if (error) {
+        *error = [NSFileProviderManager charon_unavailable];
+    }
+    return nil;
+}
+
+// The progress of a kind of file operation. `FILEPROVIDER_API_AVAILABILITY_V3_1_IOS`: iOS-only, no
+// host line, and there are no operations to be in progress for. nil, as a manager with no domains
+// has none of the progress the type reports.
+- (NSProgress *)globalProgressForKind:(NSProgressFileOperationKind)kind
+{
+    return nil;
+}
+
+// Tell the system an error was resolved. Declared on the macOS header with no gate, but it is NOT
+// CALLED on the host: it tells the system something changed, which is the same rule as
+// addDomain: and removeDomain:. The answer is documented - nothing is listening, so resolving an
+// error has no observer - and there is no differential line, and the probe does not call it.
+- (void)signalErrorResolved:(NSError *)error
+           completionHandler:(void (^)(NSError *_Nullable error))completionHandler
+{
+    if (completionHandler) {
+        completionHandler([NSFileProviderManager charon_unavailable]);
+    }
+}
+
+// Remove a domain, with the mode saying how. NOT IN THE MACOS HEADER AT ALL - grep over the
+// macOS SDK's FileProvider headers finds no 'removeDomain:mode:' - so there is no host build of
+// it at all, and it is not called on the host in any case. Its differential is taken from a COPY
+// of this file, the way the mutant is, and the answer is the documented one: nothing is listening,
+// and the 16.0 mode has nothing to choose between.
++ (void)removeDomain:(NSFileProviderDomain *)domain
+                mode:(NSFileProviderDomainRemovalMode)mode
+  completionHandler:(void (^)(NSURL *_Nullable preservedLocation, NSError *_Nullable error))completionHandler
+{
+    if (completionHandler) {
+        completionHandler(nil, [NSFileProviderManager charon_unavailable]);
+    }
+}
+
 @end

@@ -24,6 +24,8 @@
 @interface CharonFPManager : NSObject
 + (void)getDomainsWithCompletionHandler:(void (^)(NSArray *domains, NSError *error))completionHandler;
 + (instancetype)managerForDomain:(NSFileProviderDomain *)domain;
+- (void)getUserVisibleURLForItemIdentifier:(NSFileProviderItemIdentifier)itemIdentifier
+                         completionHandler:(void (^)(NSURL *url, NSError *error))completionHandler;
 @end
 extern NSString *const CharonFPErrorDomain;
 #else
@@ -56,6 +58,26 @@ int main(void) { @autoreleasepool {
     NSFileProviderDomain *unregistered = [[NSFileProviderDomain alloc]
         initWithIdentifier:@"charon.probe.unregistered" displayName:@"charon probe"];
     printf("managerForDomain.isNil\t%s\n", [MGR managerForDomain:unregistered] ? "false" : "true");
+
+    // The 16.0 member the macOS header declares with no availability gate, and which is READ-ONLY:
+    // a lookup that answers a URL for an item. getIdentifierForUserVisibleFileAtURL: is in the same
+    // header but is FILEPROVIDER_API_AVAILABILITY_V3_IOS - iOS-only - so it does not enter this.
+    // The 16.0 member the macOS header declares with no availability gate, and which are
+    // READ-ONLY: a lookup that answers a URL and a lookup that answers an identifier. Neither
+    // changes a machine's state, and both are in the differential.
+    {
+        // An INSTANCE method, so it needs a manager; managerForDomain: is read-only and is already
+        // measured above, and obtaining one changes nothing on either side.
+        MGR *m = [MGR managerForDomain:unregistered];
+        dispatch_semaphore_t itemDone = dispatch_semaphore_create(0);
+        __block BOOL hasURL = NO;
+        [m getUserVisibleURLForItemIdentifier:@"charon.probe"
+                           completionHandler:^(NSURL *url, NSError *error) {
+            hasURL = (url != nil); dispatch_semaphore_signal(itemDone);
+        }];
+        dispatch_semaphore_wait(itemDone, DISPATCH_TIME_FOREVER);
+        printf("userVisibleURLForItem.isNil\t%s\n", hasURL ? "false" : "true");
+    }
 
     // The constants, by the domain's own spelling: the codes are Apple's, and a port that
     // exports the wrong number is caught here.
