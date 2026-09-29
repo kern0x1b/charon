@@ -495,6 +495,50 @@
    "effect": "the quantity of that sample with the date it is of, then a final call with done and nothing, or the error it could not read with",
    "facts": "facts/HealthKit/HealthKit.md",
    "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 12.0 for the values, which carries -initWithSample:quantityHandler: once and each of the three 13.0 members 0"
+  },
+  {
+   "api": "-[HKStatistics mostRecentQuantity]",
+   "kind": "method",
+   "introduced": "12.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "iOS 12.0 is the release of the four most-recent members of HKStatistics, and the arm64 shared cache of 12.0 carries all four",
+   "effect": "the quantity of the most recent sample, and nil where a statistics has none",
+   "facts": "facts/HealthKit/HealthKit.md",
+   "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 12.0 for the values, which carries all four"
+  },
+  {
+   "api": "-[HKStatistics mostRecentQuantityForSource:]",
+   "kind": "method",
+   "introduced": "12.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "iOS 12.0 is the release of the four most-recent members of HKStatistics, and the arm64 shared cache of 12.0 carries all four",
+   "effect": "the quantity of that source's most recent sample, and nil where it has none",
+   "facts": "facts/HealthKit/HealthKit.md",
+   "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 12.0 for the values, which carries all four"
+  },
+  {
+   "api": "-[HKStatistics mostRecentQuantityDateInterval]",
+   "kind": "method",
+   "introduced": "12.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "iOS 12.0 is the release of the four most-recent members of HKStatistics, and the arm64 shared cache of 12.0 carries all four",
+   "effect": "the interval the most recent sample covers, and nil where a statistics has none",
+   "facts": "facts/HealthKit/HealthKit.md",
+   "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 12.0 for the values, which carries all four"
+  },
+  {
+   "api": "-[HKStatistics mostRecentQuantityDateIntervalForSource:]",
+   "kind": "method",
+   "introduced": "12.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "iOS 12.0 is the release of the four most-recent members of HKStatistics, and the arm64 shared cache of 12.0 carries all four",
+   "effect": "the interval that source's most recent sample covers, and nil where it has none",
+   "facts": "facts/HealthKit/HealthKit.md",
+   "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 12.0 for the values, which carries all four"
   }
  ]
 }

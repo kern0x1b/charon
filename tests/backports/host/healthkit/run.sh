@@ -126,3 +126,9 @@ mutant HKSamples.m '@interface HKQuantitySample (CharonHKStorable) <CharonHKStor
 # saves a sample over a real period and compares the date the query delivers against the start date it
 # built the sample with, so a query answering the end date instead, or none at all, is a difference.
 mutant HKQuantitySeriesSampleQuery120.m 'charon_deliverQuantity:quantitySample.quantity date:quantitySample.startDate done:NO error:nil' 'charon_deliverQuantity:quantitySample.quantity date:quantitySample.endDate done:NO error:nil'
+# A mutant of the four most-recent members: the comparison that decides which sample is the most recent.
+# The differential asks for the most recent over samples whose dates are chosen so that the strict
+# comparison and a non-strict one answer differently, so a mutant that compares the wrong way is caught.
+mutant HKStatistics.m '== NSOrderedDescending) {
+            statistics->_mostRecentQuantity = quantity;' '== NSOrderedAscending) {
+            statistics->_mostRecentQuantity = quantity;'

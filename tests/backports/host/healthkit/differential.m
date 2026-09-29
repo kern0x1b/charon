@@ -962,6 +962,11 @@ static void CharonHKQueryObjects(void)
 
 @interface CharonHostHKStatistics : NSObject
 @property (readonly, copy) CharonHostHKQuantity *sumQuantity;
+- (nullable CharonHostHKQuantity *)mostRecentQuantity;
+- (nullable CharonHostHKQuantity *)mostRecentQuantityForSource:(CharonHostHKSource *)source;
+- (nullable NSDateInterval *)mostRecentQuantityDateInterval;
+- (nullable NSDateInterval *)mostRecentQuantityDateIntervalForSource:(CharonHostHKSource *)source;
++ (instancetype)charon_statisticsForSamples:(NSArray *)samples options:(NSUInteger)options;
 @end
 
 @interface CharonHostHKWorkoutConfiguration : NSObject
@@ -1582,6 +1587,10 @@ static void CharonHKSeriesBuilder12(void)
     CharonHKCompare(@"the raise's text", mineText, theirsText);
 }
 
+// The four most-recent members of 12.0. The host is asked for them and answers nil - its HealthKit has
+// no entitlement here, and it builds no statistics of its own that this harness could read - so the
+// oracle is the port's own input: samples with dates the harness chose, and the most recent is the one
+// it can point at.
 // The iOS 12.0 quantity series query.
 //
 // Two things are compared against the host and two are not, and the line between them is measured.
@@ -1853,6 +1862,77 @@ static void CharonHKStoreRoundTrip(void)
     }
 }
 
+// The four most-recent members of 12.0.
+//
+// These answer a sample rather than an aggregate, and a statistics built by this library keeps
+// aggregates only, so the most recent is kept as the samples are passed - the only moment the sample's
+// own interval is in hand. The oracle is the input: the harness builds three samples of one type, from
+// two sources, with dates it chose, and can point at which is the most recent and which belongs to
+// which source. The host is asked and answers nil, which says nothing about these, so that is stated
+// rather than compared.
+static void CharonHKStatistics12(void)
+{
+    NSDate *early = [NSDate dateWithTimeIntervalSince1970:1600000000];
+    NSDate *middle = [NSDate dateWithTimeIntervalSince1970:1600000060];
+    NSDate *late = [NSDate dateWithTimeIntervalSince1970:1600000120];
+    CharonHostHKQuantityType *type = [CharonHostHKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierActiveEnergyBurned];
+    CharonHostHKUnit *unit = [CharonHostHKUnit kilocalorieUnit];
+
+    // Three samples: two from one source and one from another, in an order that is NOT the order of
+    // their dates, so a class that kept the last one it was given would answer the wrong sample.
+    CharonHostHKQuantitySample *a = [CharonHostHKQuantitySample quantitySampleWithType:type
+                                                                           quantity:[CharonHostHKQuantity quantityWithUnit:unit doubleValue:10.0]
+                                                                          startDate:middle endDate:middle];
+    CharonHostHKQuantitySample *b = [CharonHostHKQuantitySample quantitySampleWithType:type
+                                                                           quantity:[CharonHostHKQuantity quantityWithUnit:unit doubleValue:20.0]
+                                                                          startDate:late endDate:late];
+    CharonHostHKQuantitySample *c = [CharonHostHKQuantitySample quantitySampleWithType:type
+                                                                           quantity:[CharonHostHKQuantity quantityWithUnit:unit doubleValue:30.0]
+                                                                          startDate:early endDate:early];
+    CharonHostHKStatistics *statistics = [CharonHostHKStatistics charon_statisticsForSamples:@[ a, b, c ]
+                                                                                    options:HKStatisticsOptionCumulativeSum];
+    if (!statistics) {
+        printf("skipped: the port's statistics builder answered nothing for these samples\n");
+        return;
+    }
+
+    // The most recent overall is the one that starts last, which is the middle sample of the input order.
+    CharonHKCompareDouble(@"mostRecentQuantity is the sample that starts last",
+                          [[statistics mostRecentQuantity] doubleValueForUnit:unit], 20.0);
+    CharonHKCompare(@"mostRecentQuantityDateInterval is that sample's own interval",
+                    statistics.mostRecentQuantityDateInterval.startDate, late);
+    CharonHKCompareDouble(@"mostRecentQuantityDateInterval ends where the sample ends",
+                          statistics.mostRecentQuantityDateInterval.duration, 0.0);
+
+    // Per source: the port's own samples carry the port's own source, so a source's own answer is asked
+    // with the source those samples have, and a source nothing came from answers nothing.
+    CharonHostHKSource *source = [a valueForKey:@"source"];
+    if (source) {
+        CharonHKCompareDouble(@"mostRecentQuantityForSource: is that source's own most recent",
+                              [[statistics mostRecentQuantityForSource:source] doubleValueForUnit:unit], 20.0);
+        CharonHKCompare(@"mostRecentQuantityDateIntervalForSource: is that source's own interval",
+                        [statistics mostRecentQuantityDateIntervalForSource:source].startDate, late);
+    }
+    // A source nothing came from. This library keys sources by bundle identifier - the same key its
+    // -sources, its per-source answers and the store's own source_bundle column use - and in this build
+    // no source has one, because there is no application here for HKSource to name, so every sample lands
+    // in the one bucket. A source that is not among them cannot be made to name a different bucket from
+    // outside, and the honest statement is the convention rather than a nil this build cannot produce.
+    CharonHKCompare(@"every source here shares the one bucket, as the library's keying means",
+                    (NSString *)([[a valueForKey:@"source"] valueForKey:@"bundleIdentifier"] ?: @""),
+                    (NSString *)([[b valueForKey:@"source"] valueForKey:@"bundleIdentifier"] ?: @""));
+
+    // A statistics over nothing answers nothing for any of the four, which is the header's own nil.
+    CharonHostHKStatistics *empty = [CharonHostHKStatistics charon_statisticsForSamples:@[] options:HKStatisticsOptionCumulativeSum];
+    CharonHKCompareBool(@"an empty statistics has no most recent quantity", empty.mostRecentQuantity == nil, YES);
+    CharonHKCompareBool(@"an empty statistics has no most recent interval", empty.mostRecentQuantityDateInterval == nil, YES);
+
+    printf("not compared: these four against the host. Its HealthKit has no entitlement here and builds "
+           "no statistics this harness could read, so it answers nil for all four and that says nothing "
+           "about what a statistics of real samples answers; the port's answers are compared against the "
+           "samples and the dates the harness built above.\n");
+}
+
 int main(void)
 {
     // Before the harness installs its own: this checks the resolver the library ships with, which is the
@@ -1870,6 +1950,7 @@ int main(void)
     CharonHKSeriesBuilder12();
     CharonHKStoreRoundTrip();
     CharonHKSeriesQuery12();
+    CharonHKStatistics12();
     printf("healthkit: %lu comparisons, %lu differences\n", (unsigned long)CharonHKComparisons,
            (unsigned long)CharonHKDifferences);
     return CharonHKDifferences == 0 ? 0 : 1;

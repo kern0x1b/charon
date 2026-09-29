@@ -26,6 +26,13 @@
     // bundle identifier -> the HKSource it came from, so that -sources and the per-source answers
     // agree on which sources there are
     NSMutableDictionary<NSString *, HKSource *> *_sourcesByIdentifier;
+    // The most recent sample's own quantity and the interval it covers, overall and per source. The four
+    // most-recent members of 12.0 ask for a sample rather than an aggregate, and a statistics built by
+    // this library keeps aggregates only - so the most recent one is kept as it is passed, which is the
+    // only moment the sample's own interval is in hand.
+    HKQuantity *_mostRecentQuantity;
+    NSDateInterval *_mostRecentInterval;
+    NSMutableDictionary<NSString *, NSArray *> *_mostRecentBySource;
 }
 
 + (BOOL)supportsSecureCoding
@@ -38,6 +45,7 @@
     HKStatistics *statistics = [[HKStatistics alloc] init];
     statistics->_bySource = [NSMutableDictionary dictionary];
     statistics->_sourcesByIdentifier = [NSMutableDictionary dictionary];
+    statistics->_mostRecentBySource = [NSMutableDictionary dictionary];
     statistics->_quantityType = [samples.firstObject isKindOfClass:[HKQuantitySample class]]
                                     ? [(HKQuantitySample *)samples.firstObject quantityType]
                                     : nil;
@@ -68,6 +76,19 @@
             perSource[key] = group = [NSMutableArray array];
         [group addObject:inUnit];
         statistics->_sourcesByIdentifier[key] = [(HKObject *)sample source];
+
+        // The most recent is the one whose interval starts last. A sample of zero length is still a
+        // sample, and two that start together keep the first, so the comparison is strict.
+        NSDateInterval *interval = [[NSDateInterval alloc] initWithStartDate:[(HKSample *)sample startDate]
+                                                                  endDate:[(HKSample *)sample endDate]];
+        if (!statistics->_mostRecentInterval ||
+            [interval.startDate compare:statistics->_mostRecentInterval.startDate] == NSOrderedDescending) {
+            statistics->_mostRecentQuantity = quantity;
+            statistics->_mostRecentInterval = interval;
+        }
+        NSArray *best = statistics->_mostRecentBySource[key];
+        if (!best || [interval.startDate compare:[(NSDateInterval *)best[1] startDate]] == NSOrderedDescending)
+            statistics->_mostRecentBySource[key] = @[ quantity, interval ];
     }
 
     statistics->_dataCount = all.count;
@@ -267,6 +288,30 @@
                                       (unsigned long)_dataCount];
 }
 
+// The four most-recent members of iOS 12.0. A statistics answers these whether or not it was asked for
+// them, because the header gives them no option - the option that goes with them, HKStatisticsOption-
+// MostRecent, is of 13.0 and is not carried, and the 12.0 image has neither it nor any 16.0 member of
+// this class.
+
+- (nullable HKQuantity *)mostRecentQuantity
+{
+    return _mostRecentQuantity;
+}
+
+- (nullable HKQuantity *)mostRecentQuantityForSource:(HKSource *)source
+{
+    return [[_mostRecentBySource objectForKey:source.bundleIdentifier ?: @""] objectAtIndex:0];
+}
+
+- (nullable NSDateInterval *)mostRecentQuantityDateInterval
+{
+    return _mostRecentInterval;
+}
+
+- (nullable NSDateInterval *)mostRecentQuantityDateIntervalForSource:(HKSource *)source
+{
+    return [[_mostRecentBySource objectForKey:source.bundleIdentifier ?: @""] objectAtIndex:1];
+}
 @end
 
 #pragma mark - HKStatisticsCollection
