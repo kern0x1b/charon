@@ -89,7 +89,13 @@ if python3 "$here/../common/compare.py" "$build/host.tsv" "$build/port.tsv" "$he
         exit 1
     fi
     echo "say-once: -presentImage: called once, $lines line in the port's log"
-    echo "identical on all $cases cases: the system and the port answer the same"
+    # The count is the two answers and the declared differences subtracted, and it is said with the
+    # number the comparison just printed, so the line cannot be read as "every case matched" when three
+    # of them are declared not to.
+    declared=$(( $(awk -F'\t' 'NR>1 && $0 !~ /^#/ && NF>1' "$here/expected-differences.tsv" | wc -l | tr -d ' ') ))
+    agreed=$((cases - declared))
+    echo "identical on $agreed of the $cases cases: the system and the port answer the same"
+    echo "declared differences: $declared, each with both answers and a reason in expected-differences.tsv"
 
     # The factory, which only the port has, checked on its own and not against the system.
     if ACCESSIBILITY_SRC="$sources" FACTORY_BUILD="$build/factory" sh "$here/factory-probe.sh" > "$build/factory.log" 2>&1; then
