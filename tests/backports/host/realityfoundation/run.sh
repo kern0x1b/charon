@@ -55,6 +55,19 @@ common="-target $target -sdk $sdk -swift-version 5 -parse-as-library -O -wmo"
 "$swiftc" -target "$target" -sdk "$sdk" -swift-version 5 -I "$build" \
     -o "$build/rf-check" "$build/RealityFoundation.o" "$build/RealityKit.o" "$here/main.swift"
 
+# The registry's sources are bound to what the differential actually measures, and the binding is
+# checked here rather than trusted: --check exits non-zero if a row's source is not what coverage.py
+# decides, and the control beside it is the same edit the reviewer made, run every time.
+python3 "$here/coverage.py" --check \
+    "$here/../../../../packages/s/swift-runtime/registry/RealityFoundation.json" \
+    "$here/../../../../packages/s/swift-runtime/registry/RealityKit.json" > "$build/coverage.txt" \
+    && coverage=0 || coverage=1
+[ "$coverage" -eq 0 ] || { echo "registry sources are not what coverage.py decides:"; \
+    grep -E "MISMATCH|CLAIMS A MEASUREMENT" "$build/coverage.txt" | head -6; }
+sh "$here/coverage-control.sh" > "$build/coverage-control.txt" 2>&1 && control=0 || control=1
+[ "$control" -eq 0 ] || { echo "the coverage control failed:"; head -8 "$build/coverage-control.txt"; }
+grep -E "^control: OK" "$build/coverage-control.txt" || true
+
 "$build/rf-check" > "$build/log" 2>&1 && result=0 || result=$?
 grep -v '^ok ' "$build/log" || true
 # The number, because a commit message quotes it and a run that prints only "ALL CHECKS PASSED"
@@ -103,4 +116,9 @@ if [ "${RF_MUTANTS:-1}" = "1" ]; then
     fi
     echo "mutations: all caught"
 fi
-exit $result
+if [ "$result" -ne 0 ] || [ "$coverage" -ne 0 ] || [ "$control" -ne 0 ]; then
+    # the differential, the registry's sources and the control that guards them are one verdict
+    echo "realfoundation-host: FAILED - checks=$result coverage=$coverage control=$control"
+    exit 1
+fi
+exit 0

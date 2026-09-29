@@ -55,16 +55,39 @@ def tokens(api):
     return [w for w in dict.fromkeys(words) if len(w) > 3]
 
 
+COVERED = ("measured by the host differential, tests/backports/host/realityfoundation, the check "
+           "at main.swift:%s: %s")
+DECLARATION = ("the declaration in packages/s/swift-runtime/files/, which "
+               "tests/backports/host/swiftregistry holds to a name, and the interface line it was "
+               "read from. No check in this series measures it")
+# a `source` that claims a measurement the loop did not find: the blanket the first review caught
+CLAIMS_A_MEASUREMENT = ("host differential", "the differential")
+
+
+def what_this_row_should_say(hit):
+    if hit[0] == "covered":
+        return COVERED % (hit[1], hit[2][:58])
+    return DECLARATION
+
+
 def main(argv):
     if not argv:
         sys.exit("usage: coverage.py <registry.json>...")
     if not os.path.isfile(DIFFERENTIAL):
         sys.exit("coverage.py: no differential at %s" % DIFFERENTIAL)
     checks = subjects(DIFFERENTIAL)
-    covered = declaration_only = 0
-    for registry in argv:
-        entries = [e for e in json.load(open(registry, encoding="utf-8"))["entries"]
-                   if e.get("status") == "implemented"]
+    check_only = "--check" in argv
+    write = "--write" in argv
+    registries = [a for a in argv if not a.startswith("--")]
+    if check_only and not registries:
+        sys.exit("usage: coverage.py --check <registry.json>...")
+    if not registries:
+        sys.exit("usage: coverage.py [--check|--write] <registry.json>...")
+    covered = declaration_only = wrong = 0
+    for registry in registries:
+        document = json.load(open(registry, encoding="utf-8"))
+        entries_by_api = {e["api"]: e for e in document["entries"]}
+        entries = [e for e in document["entries"] if e.get("status") == "implemented"]
         print("# %s: %d implemented rows, against %d check subjects in %s"
               % (os.path.basename(registry), len(entries), len(checks), os.path.basename(DIFFERENTIAL)))
         for entry in entries:
@@ -82,8 +105,30 @@ def main(argv):
             else:
                 declaration_only += 1
                 print("decl only %-64s -" % entry["api"][:64])
+            if check_only or write:
+                said = entry.get("source", "")
+                should = what_this_row_should_say(hit if hit else ("decl only", None, None))
+                if write and said != should:
+                    # the generator, so the guard's control - a hand-edited row - is regenerated
+                    # rather than only complained about
+                    entries_by_api[entry["api"]]["source"] = should
+                elif check_only and said != should:
+                    wrong += 1
+                    print("  MISMATCH %s\n    says: %s\n    should be: %s"
+                          % (entry["api"][:64], said[:110], should[:110]))
+                if check_only and said != should and any(
+                        claim in said for claim in CLAIMS_A_MEASUREMENT) and hit is None:
+                    print("  AND IT CLAIMS A MEASUREMENT for a row the differential does not name")
         print()
+        if write:
+            with open(registry, "w", encoding="utf-8") as handle:
+                json.dump(document, handle, indent=4)
+                handle.write("\n")
+            print("# wrote the sources %s" % os.path.basename(registry))
     print("# covered %d, declaration only %d" % (covered, declaration_only))
+    if check_only and wrong:
+        print("# %d row(s) whose source is not what this loop decides - see MISMATCH above" % wrong)
+        return 1
     return 0
 
 
