@@ -227,12 +227,13 @@ static BOOL charon_is_paragraph_ending(NSString *string, NSUInteger index)
         } else {
             if (start <= 0)
                 break;
-            // The paragraph that ends at `start`, which is the one before the paragraph holding the location and
-            // the next one further back after that. `start` moves to that paragraph's own start, so the walk ends
-            // at the document's first character and never revisits a paragraph.
+            // The paragraph that ends at `start`: the one before the paragraph holding the location, and the
+            // next one further back after that. The walk ends because `start` strictly decreases:
+            // charon_paragraph_start_before: is handed start - 1 and answers at most that, so the paragraph's own
+            // start is below the offset asked of, and the loop's own `start <= 0` test is what ends it. A guard
+            // saying `paragraphStart >= start` was here and could not be true for any start at all - it is
+            // removed rather than kept as a check nothing can reach.
             NSInteger paragraphStart = [self charon_paragraph_start_before:start - 1];
-            if (paragraphStart >= start)
-                break;
             NSTextParagraph *paragraph = [self charon_paragraph_from:paragraphStart to:start];
             if (paragraph && ![self charon_should_enumerate:paragraph options:enumeration])
                 paragraph = nil;
