@@ -200,7 +200,7 @@ static void CharonMLCActivationCallback(struct ggml_tensor *out, const struct gg
 // form and takes no parameters, and this framework's is the tanh form with two of them - at 1 the erf form
 // gives 0.841345 and the host gives 0.841192 (measured). An operator of the same name is not the same
 // function whenever the descriptor carries parameters the operator does not read.
-struct ggml_tensor *CharonMLCActivationOn(CharonMLCEngine *engine, struct ggml_tensor *input, MLCActivationDescriptor *descriptor)
+static struct ggml_tensor *CharonMLCActivationOn(CharonMLCEngine *engine, struct ggml_tensor *input, MLCActivationDescriptor *descriptor)
 {
     struct ggml_context *context = engine->context;
     switch (descriptor.activationType) {
@@ -237,7 +237,7 @@ struct ggml_tensor *CharonMLCActivationOn(CharonMLCEngine *engine, struct ggml_t
 
 // A tensor of the engine holding the elements of an MLCTensor, and the elements of the result back into
 // an MLCTensor. Both are the port's own and are what the rest of MLCompute reads.
-struct ggml_tensor *CharonMLCImport(struct ggml_context *context, MLCTensor *tensor)
+static struct ggml_tensor *CharonMLCImport(struct ggml_context *context, MLCTensor *tensor)
 {
     if (!tensor || !tensor.descriptor || !tensor.data) {
         return NULL;
