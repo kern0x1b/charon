@@ -1,6 +1,6 @@
 #import <AVFoundation/AVFoundation.h>
 
-// 6 constants, the 15.4 metadata object types the 16.0 release is the first to export, and nothing else: a name this file does not define is a name the
+// 2 constants, the two IsMontage names, which the 10.0.1 release already exports, and nothing else: a name this file does not define is a name the
 // corpus's gate asks for and the link cannot find, so the list below is the whole of this file's
 // claim and the registry names each one of them.
 //
@@ -18,9 +18,5 @@
 //
 // See facts/AVFoundation/MetadataKeySpaces.md.
 
-NSString *const AVMetadataObjectTypeCodabarCode = @"Codabar";
-NSString *const AVMetadataObjectTypeGS1DataBarCode = @"org.gs1.GS1DataBar";
-NSString *const AVMetadataObjectTypeGS1DataBarExpandedCode = @"org.gs1.GS1DataBarExpanded";
-NSString *const AVMetadataObjectTypeGS1DataBarLimitedCode = @"org.gs1.GS1DataBarLimited";
-NSString *const AVMetadataObjectTypeMicroPDF417Code = @"org.iso.MicroPDF417";
-NSString *const AVMetadataObjectTypeMicroQRCode = @"org.iso.MicroQR";
+NSString *const AVMetadataIdentifierQuickTimeMetadataIsMontage = @"mdta/com.apple.quicktime.is-montage";
+NSString *const AVMetadataQuickTimeMetadataKeyIsMontage = @"com.apple.quicktime.is-montage";

@@ -1,6 +1,6 @@
 #import <AVFoundation/AVFoundation.h>
 
-// 6 constants, the 15.4 metadata object types the 16.0 release is the first to export, and nothing else: a name this file does not define is a name the
+// 2 constants, the two 12.0 player rate-change names, which the 12.0 release already exports, and nothing else: a name this file does not define is a name the
 // corpus's gate asks for and the link cannot find, so the list below is the whole of this file's
 // claim and the registry names each one of them.
 //
@@ -14,13 +14,9 @@
 // (tools/corpus/dump-cache.lua) say which release first exports each name, and an object may not mix
 // a name a band already exports with one it does not - backports.lua's band() raises on that, and a
 // single-band 6.1.3 gate cannot see it because #present is 0 there. The table is in
-// facts/AVFoundation/MetadataKeySpaces.md and the dumps that produced it are the evidence this claim rests on.
+// facts/AVFoundation/CoordinatedPlaybackReasons.md and the dumps that produced it are the evidence this claim rests on.
 //
-// See facts/AVFoundation/MetadataKeySpaces.md.
+// See facts/AVFoundation/CoordinatedPlaybackReasons.md.
 
-NSString *const AVMetadataObjectTypeCodabarCode = @"Codabar";
-NSString *const AVMetadataObjectTypeGS1DataBarCode = @"org.gs1.GS1DataBar";
-NSString *const AVMetadataObjectTypeGS1DataBarExpandedCode = @"org.gs1.GS1DataBarExpanded";
-NSString *const AVMetadataObjectTypeGS1DataBarLimitedCode = @"org.gs1.GS1DataBarLimited";
-NSString *const AVMetadataObjectTypeMicroPDF417Code = @"org.iso.MicroPDF417";
-NSString *const AVMetadataObjectTypeMicroQRCode = @"org.iso.MicroQR";
+NSString *const AVPlayerRateDidChangeNotification = @"AVPlayerRateDidChangeNotification";
+NSString *const AVPlayerRateDidChangeReasonKey = @"AVPlayerRateDidChangeReasonKey";

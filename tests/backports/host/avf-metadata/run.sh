@@ -31,7 +31,7 @@ expected=${AVF_METADATA_ROWS:-47}
 rm -rf "$build"
 mkdir -p "$build"
 
-sources="MetadataKeyspaces13 MetadataKeyspaces14 MetadataKeyspaces154 CoordinatedPlaybackReasons15"
+sources="MetadataKeyspaces10 MetadataKeyspaces12 MetadataKeyspaces13 MetadataKeyspaces14 MetadataKeyspaces154 CoordinatedPlaybackReasons12 CoordinatedPlaybackReasons15"
 
 # The rename list is written out, not derived: the compiled subset is exactly these four files, and
 # a derived list would rename names this binary does not define and break the host side.
@@ -67,19 +67,21 @@ xcrun clang -fobjc-arc -w -I"$build" "$here/probe-constants.m" \
         echo "FAIL: the host probe did not build"; exit 1; }
 "$build/host" > "$build/host.log" 2>&1 || { echo "FAIL: the host probe did not run"; cat "$build/host.log"; exit 1; }
 
-# 2. the port's sources, and the same probe against them
+# 2. the port's sources, and the same probe against them.  The copies are made FIRST and the
+#    perturbations second: a perturb that ran before its file existed raised FileNotFoundError, and a
+#    harness that calls that "noticed" would be counting a crash as an observation.
 mkdir -p "$build/port-src"
 objects=""
 mutant=no
+for source in $sources; do cp "$avf/$source.m" "$build/port-src/$source.m"; done
 if [ "${AVFMUTANT:-0}" != 0 ]; then
     mutant=yes
-    cp "$avf/MetadataKeyspaces154.m" "$build/port-src/MetadataKeyspaces154.m"
     if [ "${AVFBREAK:-0}" != 0 ]; then
         # The control for the mutant: one value changed AND one line made not-C, so the file does
-        # not compile. A harness that counted this as "noticed" would be counting a build failure
-        # as an observation, which is the failure mode this exists to rule out. The perturbing is
-        # done in python, not in nested sed, so a quoting slip cannot leave the file untouched and
-        # let the run pass for the wrong reason.
+        # not compile. A harness that counted this as "noticed" would be counting a build failure as
+        # an observation, which is the failure mode this exists to rule out. The perturbing is done in
+        # python, not in nested sed, so a quoting slip cannot leave the file untouched and let the run
+        # pass for the wrong reason.
         python3 - "$build/port-src/MetadataKeyspaces154.m" <<'PERTURB'
 import sys
 path = sys.argv[1]
@@ -92,24 +94,28 @@ if 'this is not C at all' not in text:
     raise SystemExit('the control did not apply, so this run proves nothing')
 PERTURB
     else
-        # The mutant: one value, one letter. The object type Codabar is "Codabar"; the mutant spells
-        # it "codabar". A differential over strings cannot miss that, and a differential over
-        # addresses could not have seen it at all.
-        python3 - "$build/port-src/MetadataKeyspaces154.m" <<'PERTURB'
+        # The mutant: two changes, and both are single-byte. The object type Codabar is "Codabar" and
+        # the mutant spells it "codabar" - one letter. And the row the commit singles out,
+        # AVMetadataIdentifierQuickTimeUserDataAccessibilityDescription, whose value is the eleven
+        # ASCII characters "udta/%A9ade", loses the one byte of its percent sign: 0x25 becomes 0x3f.
+        # The report says which row catches which, rather than assuming.
+        python3 - "$build/port-src/MetadataKeyspaces154.m" "$build/port-src/MetadataKeyspaces14.m" <<'PERTURB'
 import sys
-path = sys.argv[1]
-text = open(path).read()
+codabar, keyspaces = sys.argv[1], sys.argv[2]
+text = open(codabar).read()
 text = text.replace('@"Codabar"', '@"codabar"')
-open(path, 'w').write(text)
+open(codabar, 'w').write(text)
 if '@"codabar"' not in text:
-    raise SystemExit('the mutant did not apply, so this run proves nothing')
+    raise SystemExit('the letter mutant did not apply, so this run proves nothing')
+text = open(keyspaces).read()
+before = '@"udta/%A9ade"'
+after = '@"udta/?A9ade"'
+if before not in text:
+    raise SystemExit('the one-byte mutant did not apply, so this run proves nothing')
+text = text.replace(before, after)
+open(keyspaces, 'w').write(text)
 PERTURB
     fi
-    for source in $sources; do
-        [ -f "$build/port-src/$source.m" ] || cp "$avf/$source.m" "$build/port-src/$source.m"
-    done
-else
-    for source in $sources; do cp "$avf/$source.m" "$build/port-src/$source.m"; done
 fi
 for source in $sources; do
     # shellcheck disable=SC2086
