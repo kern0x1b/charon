@@ -7,21 +7,12 @@
 //       -framework Foundation -framework Metal -framework MetalPerformanceShadersGraph -o mpsgraph-probe
 //   ./mpsgraph-probe
 //
-// On macOS 26.5 it builds the device, the placeholders, the addition and the three MPSGraphTensorData
-// objects, and then dies inside -[MPSGraph compileWithDevice:feeds:targetTensors:targetOperations:
-// compilationDescriptor:] with
-//
-//   -[MPSGraphTensorData copyWithZone:]: unrecognized selector
-//   ... -[NSDictionary initWithDictionary:copyItems:]
-//   ... -[MPSGraphExecutable initWithGraph:device:feeds:targetTensors:targetOperations:executableDescriptor:]
-//   ... -[MPSGraph compileWithDevice:feeds:targetTensors:targetOperations:compilationDescriptor:]
-//
-// The release copies its feeds dictionary, which sends -copyWithZone: to each MPSGraphTensorData, and
-// that class does not implement it. Every route to an executable goes through that copy: the
-// asynchronous compile is the same method, and +[MPSGraphExecutable initWithMPSGraphPackageAtURL:] needs
-// a package this probe has no way to build. So on this host MPSGraph cannot be executed at all, and
-// the 627 rows of its surface have no oracle to be checked against. This is the release's own defect,
-// in its own framework, and it is what stops the graph work rather than anything about this port.
+// It answers twice: once through -[MPSGraph runWithFeeds:targetTensors:targetOperations:], which takes
+// the tensor data directly and needs no compilation, and once through the compiling route, whose feeds
+// are MPSGraphShapedType objects - that class is NSCopying, which is the whole of what the first version
+// of this probe got wrong: it handed compileWithDevice:feeds: tensor data, the release copied the
+// dictionary, and MPSGraphTensorData has no -copyWithZone:, so that crash said nothing about MPSGraph
+// at all. The graph work was held up for a round on the strength of it.
 
 #import <Foundation/Foundation.h>
 #import <Metal/Metal.h>
@@ -46,13 +37,27 @@ int main(void){ @autoreleasepool {
     MPSGraphTensorData *rd = [[MPSGraphTensorData alloc] initWithMTLBuffer:rb shape:@[@2,@2] dataType:MPSDataTypeFloat32];
     MPSGraphTensorData *od = [[MPSGraphTensorData alloc] initWithMTLBuffer:ob shape:@[@2,@2] dataType:MPSDataTypeFloat32];
     P("tensor data %p %p %p\n", ld, rd, od);
-    MPSGraphExecutable *e = [g compileWithDevice:gd feeds:@{x: ld, y: rd}
+    float values[4] = {0,0,0,0};
+    // -[MPSGraph runWithFeeds:targetTensors:targetOperations:] takes the tensor data directly and needs
+    // no compilation step, so it is the shortest oracle there is. Its answers come back as
+    // MPSGraphTensorData, which the header gives no accessor for the bytes of, so this probe reads the
+    // result through a buffer it owns instead - which is the shape the differential will use.
+    NSDictionary *results = [g runWithFeeds:@{x: ld, y: rd} targetTensors:@[sum] targetOperations:@[]];
+    P("runWithFeeds results %p count %lu\n", results, (unsigned long)results.count);
+    P("result class %s\n", NSStringFromClass([results[sum] class]));
+
+    // The compiling route, whose feeds are shaped types and not tensor data: a shaped type is
+    // NSCopying, which is the whole of what the first version of this probe got wrong - it handed
+    // compileWithDevice:feeds: tensor data, the release copied the dictionary, and MPSGraphTensorData
+    // has no -copyWithZone:, so that crash said nothing about MPSGraph.
+    MPSGraphShapedType *st = [[MPSGraphShapedType alloc] initWithShape:@[@2, @2] dataType:MPSDataTypeFloat32];
+    P("shaped type %p class %s\n", st, NSStringFromClass([MPSGraphShapedType class]));
+    MPSGraphExecutable *e = [g compileWithDevice:gd feeds:@{x: st, y: st}
                                 targetTensors:@[sum] targetOperations:@[] compilationDescriptor:nil];
     P("executable %p targets %lu\n", e, (unsigned long)e.targetTensors.count);
     id<MTLCommandQueue> q = [d newCommandQueue];
-    NSArray *results = [e runWithMTLCommandQueue:q inputsArray:@[ld, rd] resultsArray:@[od] executionDescriptor:nil];
-    P("results %p count %lu\n", results, (unsigned long)results.count);
-    float values[4] = {0,0,0,0};
+    NSArray *ran = [e runWithMTLCommandQueue:q inputsArray:@[ld, rd] resultsArray:@[od] executionDescriptor:nil];
+    P("ran %p count %lu\n", ran, (unsigned long)ran.count);
     memcpy(values, ob.contents, sizeof(values));
-    P("sum = [%g %g %g %g]\n", values[0], values[1], values[2], values[3]);
+    P("sum through the executable = [%g %g %g %g]\n", values[0], values[1], values[2], values[3]);
 } return 0; }
