@@ -1,0 +1,483 @@
+// CharonMPS.h — the arithmetic the matrix and vector kernels of this framework share.
+//
+// Every function here is static, so no backport file depends on another one's symbols: a band that
+// leaves a file out does not leave the others with undefined ones.
+//
+// The device these kernels run on is charon's own, whose MTLBuffer is host memory the CPU reads and
+// writes directly (facts/Metal/RenderPath.md). An MPS matrix kernel is therefore a loop over that
+// memory, and its result is in the buffer when -encodeToCommandBuffer: returns, which is at least as
+// strong as the release's own contract (a result valid once the command buffer completes).
+
+#import <Foundation/Foundation.h>
+#import <Metal/Metal.h>
+#import <MetalPerformanceShaders/MetalPerformanceShaders.h>
+
+#include <math.h>
+#include <string.h>
+
+// The data types an MPSMatrix may hold, and nothing else. MPSDataTypeInvalid and the normalized and
+// boolean encodings are not matrix element types: the release's MPS does not accept them here, and
+// this port refuses them the same way rather than storing something of a different meaning.
+static inline BOOL CharonMPSDataTypeIsElement(MPSDataType type)
+{
+    switch (type) {
+    case MPSDataTypeFloat32:
+    case MPSDataTypeFloat16:
+    case MPSDataTypeInt8:
+    case MPSDataTypeInt16:
+    case MPSDataTypeInt32:
+    case MPSDataTypeUInt8:
+    case MPSDataTypeUInt16:
+    case MPSDataTypeUInt32:
+        return YES;
+    default:
+        return NO;
+    }
+}
+
+static inline BOOL CharonMPSDataTypeIsFloat(MPSDataType type)
+{
+    return type == MPSDataTypeFloat32 || type == MPSDataTypeFloat16;
+}
+
+// IEEE 754 binary16 as MPSDataTypeFloat16 stores it, converted in software rather than through the
+// compiler's __fp16: a half load and store is not available on every armv7 core this port targets,
+// and a conversion that the compiler may fold is a conversion nobody measured.
+static inline float CharonMPSHalfToFloat(uint16_t half)
+{
+    uint32_t sign = ((uint32_t)half & 0x8000u) << 16;
+    uint32_t exponent = ((uint32_t)half >> 10) & 0x1Fu;
+    uint32_t mantissa = (uint32_t)half & 0x3FFu;
+    uint32_t bits;
+    float value;
+    if (exponent == 0) {
+        if (mantissa == 0) {
+            bits = sign;
+        } else {
+            // A subnormal half is mantissa * 2^-24; the highest set bit gives the exponent.
+            uint32_t top = 0, rest = mantissa;
+            while (rest > 1) {
+                rest >>= 1;
+                top++;
+            }
+            bits = sign | ((uint32_t)(top - 24 + 127) << 23) | ((mantissa - (1u << top)) << (23 - top));
+        }
+    } else if (exponent == 0x1F) {
+        bits = sign | 0x7F800000u | (mantissa << 13);
+    } else {
+        bits = sign | ((exponent + 127 - 15) << 23) | (mantissa << 13);
+    }
+    memcpy(&value, &bits, sizeof(value));
+    return value;
+}
+
+static inline uint16_t CharonMPSFloatToHalf(float value)
+{
+    uint32_t bits, sign, mantissa, half, rest, halfway;
+    int32_t biased, exponent;
+    memcpy(&bits, &value, sizeof(bits));
+    sign = (bits >> 16) & 0x8000u;
+    biased = (int32_t)((bits >> 23) & 0xFFu);
+    mantissa = bits & 0x7FFFFFu;
+    if (biased == 0xFF) {
+        return (uint16_t)(sign | 0x7C00u | (mantissa ? 0x200u : 0u));
+    }
+    exponent = biased - 127 + 15;
+    if (exponent >= 0x1F) {
+        return (uint16_t)(sign | 0x7C00u);
+    }
+    if (exponent <= 0) {
+        // Below 2^-25 a value rounds to zero whatever its low bits are. From there up, the value is
+        // (2^23 + mantissa) * 2^(exponent - 38), so it is an integer multiple of 2^-24 and rounding is
+        // that integer's.
+        if (exponent < -10) {
+            return (uint16_t)sign;
+        }
+        mantissa |= 0x800000u;
+        half = mantissa >> (14 - exponent);
+        rest = mantissa & ((1u << (14 - exponent)) - 1u);
+        halfway = 1u << (13 - exponent);
+        if (rest > halfway || (rest == halfway && (half & 1)))
+            half++;
+        return (uint16_t)(sign | half);
+    }
+    half = ((uint32_t)exponent << 10) | (mantissa >> 13);
+    rest = mantissa & 0x1FFFu;
+    if (rest > 0x1000u || (rest == 0x1000u && (half & 1)))
+        half++;
+    return (uint16_t)(sign | half);
+}
+
+// One element of a matrix, vector or state, read and written through the data type it is stored as.
+// A double carries every value an 8, 16 or 32 bit element can hold exactly, so one representation
+// serves the floating and the integer types alike and the arithmetic below reads the way the header
+// writes it.
+static inline double CharonMPSLoad(const void *bytes, MPSDataType type, size_t index)
+{
+    switch (type) {
+    case MPSDataTypeFloat32: {
+        float value;
+        memcpy(&value, (const char *)bytes + index * 4, 4);
+        return (double)value;
+    }
+    case MPSDataTypeFloat16:
+        return (double)CharonMPSHalfToFloat(((const uint16_t *)bytes)[index]);
+    case MPSDataTypeInt8:
+        return (double)((const int8_t *)bytes)[index];
+    case MPSDataTypeInt16:
+        return (double)((const int16_t *)bytes)[index];
+    case MPSDataTypeInt32:
+        return (double)((const int32_t *)bytes)[index];
+    case MPSDataTypeUInt8:
+        return (double)((const uint8_t *)bytes)[index];
+    case MPSDataTypeUInt16:
+        return (double)((const uint16_t *)bytes)[index];
+    case MPSDataTypeUInt32:
+        return (double)((const uint32_t *)bytes)[index];
+    default:
+        return 0.0;
+    }
+}
+
+static inline void CharonMPSStore(void *bytes, MPSDataType type, size_t index, double value)
+{
+    switch (type) {
+    case MPSDataTypeFloat32: {
+        float narrowed = (float)value;
+        memcpy((char *)bytes + index * 4, &narrowed, 4);
+        break;
+    }
+    case MPSDataTypeFloat16:
+        ((uint16_t *)bytes)[index] = CharonMPSFloatToHalf((float)value);
+        break;
+    case MPSDataTypeInt8:
+        ((int8_t *)bytes)[index] = (int8_t)value;
+        break;
+    case MPSDataTypeInt16:
+        ((int16_t *)bytes)[index] = (int16_t)value;
+        break;
+    case MPSDataTypeInt32:
+        ((int32_t *)bytes)[index] = (int32_t)value;
+        break;
+    case MPSDataTypeUInt8:
+        ((uint8_t *)bytes)[index] = (uint8_t)value;
+        break;
+    case MPSDataTypeUInt16:
+        ((uint16_t *)bytes)[index] = (uint16_t)value;
+        break;
+    case MPSDataTypeUInt32:
+        ((uint32_t *)bytes)[index] = (uint32_t)value;
+        break;
+    default:
+        break;
+    }
+}
+
+// A matrix as the kernels walk it: the first byte of the data, and the three strides the header names.
+typedef struct {
+    void *bytes;
+    MPSDataType dataType;
+    size_t elementSize;
+    size_t rowBytes;
+    size_t matrixBytes;
+    NSUInteger rows;
+    NSUInteger columns;
+    NSUInteger matrices;
+} CharonMPSMatrixView;
+
+static inline CharonMPSMatrixView CharonMPSMatrixViewOf(MPSMatrix *matrix)
+{
+    CharonMPSMatrixView view;
+    view.bytes = (char *)[matrix.data contents] + matrix.offset;
+    view.dataType = matrix.dataType;
+    view.elementSize = MPSSizeofMPSDataType(matrix.dataType);
+    view.rowBytes = matrix.rowBytes;
+    view.matrixBytes = matrix.matrixBytes;
+    view.rows = matrix.rows;
+    view.columns = matrix.columns;
+    view.matrices = matrix.matrices;
+    return view;
+}
+
+static inline void *CharonMPSMatrixElement(const CharonMPSMatrixView *view, NSUInteger matrix, NSUInteger row, NSUInteger column)
+{
+    return (char *)view->bytes + matrix * view->matrixBytes + row * view->rowBytes + column * view->elementSize;
+}
+
+// Whether a matrix holds the region a kernel was asked to read or write. The release's own MPS
+// asserts on a matrix that does not; an API in this port never crashes its caller, so the kernel says
+// so in the log once and leaves the destination as it found it.
+static inline BOOL CharonMPSMatrixHolds(const CharonMPSMatrixView *view, NSUInteger matrix, NSUInteger originRow, NSUInteger originColumn, NSUInteger rows, NSUInteger columns)
+{
+    if (matrix >= view->matrices)
+        return NO;
+    if (originRow > view->rows || rows > view->rows - originRow)
+        return NO;
+    if (originColumn > view->columns || columns > view->columns - originColumn)
+        return NO;
+    return YES;
+}
+
+typedef struct {
+    void *bytes;
+    MPSDataType dataType;
+    size_t elementSize;
+    size_t vectorBytes;
+    NSUInteger length;
+    NSUInteger vectors;
+} CharonMPSVectorView;
+
+static inline CharonMPSVectorView CharonMPSVectorViewOf(MPSVector *vector)
+{
+    CharonMPSVectorView view;
+    view.bytes = (char *)[vector.data contents] + vector.offset;
+    view.dataType = vector.dataType;
+    view.elementSize = MPSSizeofMPSDataType(vector.dataType);
+    view.vectorBytes = vector.vectorBytes;
+    view.length = vector.length;
+    view.vectors = vector.vectors;
+    return view;
+}
+
+static inline void *CharonMPSVectorElement(const CharonMPSVectorView *view, NSUInteger index, NSUInteger component)
+{
+    return (char *)view->bytes + index * view->vectorBytes + component * view->elementSize;
+}
+
+static inline BOOL CharonMPSVectorHolds(const CharonMPSVectorView *view, NSUInteger index, NSUInteger length)
+{
+    return index < view->vectors && length <= view->length;
+}
+
+// The batch a kernel walks: [batchStart, batchStart + batchSize), the whole of it when the size is 0,
+// as the headers document for batchSize.
+static inline void CharonMPSBatch(NSUInteger batchStart, NSUInteger batchSize, NSUInteger available, NSUInteger *start, NSUInteger *count)
+{
+    NSUInteger first = batchStart < available ? batchStart : available;
+    NSUInteger last = available;
+    if (batchSize && first + batchSize < last)
+        last = first + batchSize;
+    *start = first;
+    *count = last - first;
+}
+
+// A kernel that cannot run says so once, in the log, naming the kernel and the reason, and leaves its
+// destination as it found it. The release asserts instead; an API in this port never crashes its
+// caller, and a silent wrong answer would be worse than either.
+#define CharonMPSRefuse(...) NSLog(__VA_ARGS__)
+
+// The private surface this framework's own files share. None of it is API an application calls, and
+// each of these selectors is a name no SDK header declares.
+@interface MPSPredicate (CharonMPS)
+- (BOOL)charon_mps_permitsExecution;
+@end
+
+@interface MPSStateResourceList (CharonMPS)
+- (NSArray<NSNumber *> *)charon_mps_bufferSizes;
+- (NSArray<MTLTextureDescriptor *> *)charon_mps_textureDescriptors;
+@end
+
+@interface MPSState (CharonMPS)
+- (void)charon_mps_appendBuffer:(size_t)size;
+- (void)charon_mps_appendTexture:(MTLTextureDescriptor *)descriptor;
+@end
+
+@interface MPSTemporaryMatrix (CharonMPS)
+- (instancetype)charon_mps_withReadCount:(NSUInteger)readCount;
+@end
+
+@interface MPSTemporaryVector (CharonMPS)
+- (instancetype)charon_mps_withReadCount:(NSUInteger)readCount;
+@end
+
+// Whether a kernel encoded into this command buffer runs. Only an MPSCommandBuffer carries a
+// predicate; a plain command buffer always runs what is encoded into it.
+static inline BOOL CharonMPSCommandBufferPermits(id<MTLCommandBuffer> commandBuffer)
+{
+    if ([commandBuffer isKindOfClass:[MPSCommandBuffer class]])
+        return [[(MPSCommandBuffer *)commandBuffer predicate] charon_mps_permitsExecution];
+    return YES;
+}
+
+// The neuron state the neural-network matrix kernels all carry: the type, the three parameters its
+// formula names, and the per-channel array a PReLU's parameter A lives in. MPSMatrixNeuron.h,
+// MPSMatrixFullyConnected.h, MPSMatrixBatchNormalization.h and MPSMatrixSum.h each declare the same
+// five members, so each of those classes holds one of these.
+typedef struct {
+    MPSCNNNeuronType type;
+    float a, b, c;
+    const float *prelu;   // one float per input feature channel, or NULL
+    NSUInteger channels;
+} CharonMPSNeuron;
+
+static inline double CharonMPSNeuronA(const CharonMPSNeuron *neuron, NSUInteger channel)
+{
+    return neuron->prelu ? (double)neuron->prelu[channel] : (double)neuron->a;
+}
+
+static inline double CharonMPSNeuronParameterA(const CharonMPSNeuron *neuron, NSUInteger channel)
+{
+    return neuron->prelu ? (double)neuron->prelu[channel] : (double)neuron->a;
+}
+
+@interface MPSMatrixNeuron (CharonMPS)
+- (CharonMPSNeuron)charon_mps_neuron;
+@end
+
+@interface MPSMatrixNeuronGradient (CharonMPS)
+- (CharonMPSNeuron)charon_mps_neuron;
+@end
+
+@interface MPSMatrixFullyConnected (CharonMPS)
+- (CharonMPSNeuron)charon_mps_neuron;
+@end
+
+@interface MPSMatrixBatchNormalization (CharonMPS)
+- (CharonMPSNeuron)charon_mps_neuron;
+@end
+
+@interface MPSMatrixBatchNormalizationGradient (CharonMPS)
+- (CharonMPSNeuron)charon_mps_neuron;
+@end
+
+@interface MPSMatrixSum (CharonMPS)
+- (CharonMPSNeuron)charon_mps_neuron;
+@end
+
+@interface MPSMatrixSoftMax (CharonMPS)
+- (void)charon_mps_setLogarithmic:(BOOL)logarithmic;
+- (BOOL)charon_mps_logarithmic;
+@end
+
+@interface MPSMatrixCopyDescriptor (CharonMPS)
+- (NSUInteger)charon_mps_count;
+- (MPSMatrix *)charon_mps_sourceAtIndex:(NSUInteger)index;
+- (MPSMatrix *)charon_mps_destinationAtIndex:(NSUInteger)index;
+- (MPSMatrixCopyOffsets)charon_mps_offsetsAtIndex:(NSUInteger)index;
+@end
+
+// A temporary resource's read count, decremented by a kernel that reads it, as MPSCommandBuffer.h and
+// MPSMatrix.h document: each -encode.. that reads a temporary decrements it, and a count of zero means
+// the storage may be reused. A non-temporary matrix or vector has no read count of its own and is
+// never recycled, so its count is left alone.
+static inline void CharonMPSConsumeReadCount(id object)
+{
+    if ([object isKindOfClass:[MPSTemporaryMatrix class]] || [object isKindOfClass:[MPSTemporaryVector class]]) {
+        NSUInteger count = [(MPSTemporaryVector *)object readCount];
+        if (count)
+            [(MPSTemporaryVector *)object setReadCount:count - 1];
+    }
+}
+
+// The neuron activation functions MPSCNNNeuronType names, in the formulas that header gives for them.
+// PReLU takes its parameter A per channel, in aPerChannel, because the header says a caller sets those
+// through setNeuronToPReLUWithParametersA: and the table has no other way to see them.
+static inline double CharonMPSApplyNeuron(MPSCNNNeuronType type, double x, double a, double b, double c, double aPerChannel)
+{
+    switch (type) {
+    case MPSCNNNeuronTypeNone:
+    case MPSCNNNeuronTypeCount:
+        return x;
+    case MPSCNNNeuronTypeReLU:
+        return x >= 0.0 ? x : a * x;
+    case MPSCNNNeuronTypeLinear:
+        return a * x + b;
+    case MPSCNNNeuronTypeSigmoid:
+        return 1.0 / (1.0 + exp(-x));
+    case MPSCNNNeuronTypeHardSigmoid: {
+        double v = x * a + b;
+        return v < 0.0 ? 0.0 : (v > 1.0 ? 1.0 : v);
+    }
+    case MPSCNNNeuronTypeTanH:
+        return a * tanh(b * x);
+    case MPSCNNNeuronTypeAbsolute:
+        return fabs(x);
+    case MPSCNNNeuronTypeSoftPlus:
+        return a * log1p(exp(b * x));
+    case MPSCNNNeuronTypeSoftSign: {
+        double m = fabs(x);
+        return m == INFINITY ? (x < 0.0 ? -1.0 : 1.0) : x / (1.0 + m);
+    }
+    case MPSCNNNeuronTypeELU:
+        return x >= 0.0 ? x : a * (exp(x) - 1.0);
+    case MPSCNNNeuronTypePReLU:
+        return x >= 0.0 ? x : aPerChannel * x;
+    case MPSCNNNeuronTypeReLUN: {
+        double v = x >= 0.0 ? x : a * x;
+        return v > b ? b : v;
+    }
+    case MPSCNNNeuronTypePower:
+        return pow(a * x + b, c);
+    case MPSCNNNeuronTypeExponential:
+        return pow(c, a * x + b);
+    case MPSCNNNeuronTypeLogarithm:
+        return log(a * x + b) / log(c);
+    case MPSCNNNeuronTypeGeLU:
+        return (1.0 + erf(x * sqrt(0.5))) * 0.5 * x;
+    default:
+        return x;
+    }
+}
+
+// The same table's derivative, which MPSMatrixNeuronGradient is built from. It is the value
+// MPSCNNNeuronType's own formulas differentiate to, computed in double so the ratio that decides a
+// softplus or a logarithm's parameter is not decided by a rounded one.
+static inline double CharonMPSApplyNeuronGradient(MPSCNNNeuronType type, double x, double y, double a, double b, double c, double aPerChannel)
+{
+    switch (type) {
+    case MPSCNNNeuronTypeNone:
+    case MPSCNNNeuronTypeCount:
+        return 1.0;
+    case MPSCNNNeuronTypeReLU:
+        return x >= 0.0 ? 1.0 : a;
+    case MPSCNNNeuronTypeLinear:
+        return a;
+    case MPSCNNNeuronTypeSigmoid: {
+        double e = exp(-fabs(x));
+        double s = 1.0 / (1.0 + e);
+        return s * (1.0 - s);
+    }
+    case MPSCNNNeuronTypeHardSigmoid:
+        return (x * a + b) >= 0.0 && (x * a + b) <= 1.0 ? a : 0.0;
+    case MPSCNNNeuronTypeTanH: {
+        double t = tanh(b * x);
+        return a * b * (1.0 - t * t);
+    }
+    case MPSCNNNeuronTypeAbsolute:
+        return x > 0.0 ? 1.0 : (x < 0.0 ? -1.0 : 0.0);
+    case MPSCNNNeuronTypeSoftPlus: {
+        double e = exp(fabs(b * x));
+        return a * b * (e / (1.0 + e));
+    }
+    case MPSCNNNeuronTypeSoftSign: {
+        double m = fabs(x);
+        if (m == INFINITY)
+            return 0.0;
+        return 1.0 / ((1.0 + m) * (1.0 + m));
+    }
+    case MPSCNNNeuronTypeELU:
+        return x >= 0.0 ? 1.0 : a * exp(x);
+    case MPSCNNNeuronTypePReLU:
+        return x >= 0.0 ? 1.0 : aPerChannel;
+    case MPSCNNNeuronTypeReLUN:
+        return (x >= 0.0 ? x : a * x) >= b ? 0.0 : (x >= 0.0 ? 1.0 : a);
+    case MPSCNNNeuronTypePower: {
+        double t = a * x + b;
+        return t == 0.0 ? 0.0 : c * pow(t, c - 1.0) * a;
+    }
+    case MPSCNNNeuronTypeExponential: {
+        double t = pow(c, a * x + b);
+        return t * a * log(c);
+    }
+    case MPSCNNNeuronTypeLogarithm: {
+        double t = a * x + b;
+        return t <= 0.0 ? 0.0 : a / (t * log(c));
+    }
+    case MPSCNNNeuronTypeGeLU: {
+        double u = x * 0.70710678118654752440;
+        return 0.5 * (1.0 + erf(u)) + x * exp(-0.5 * x * x) * 0.39894228040143267794;
+    }
+    default:
+        return 1.0;
+    }
+}

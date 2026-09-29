@@ -1,0 +1,444 @@
+// MPSKernel, MPSPredicate, MPSCommandBuffer and the two functions MPSCoreTypes.h declares.
+
+#import "CharonMPS.h"
+
+#pragma clang diagnostic ignored "-Wprotocol"
+#pragma clang diagnostic ignored "-Wincomplete-implementation"
+
+const MTLRegion MPSRectNoClip = {{0, 0, 0}, {-1, -1, -1}};
+
+// -commitAndContinue arrived in iOS 14 and the SDK this package compiles against names it on
+// MPSCommandBuffer but not on MTLCommandBuffer, so a wrapped command buffer is asked for it through
+// this. The release forwards the message when the wrapped buffer has one and commits otherwise.
+@protocol CharonMPSCommitAndContinuing <NSObject>
+- (void)commitAndContinue;
+@end
+
+// The debug group, buffer label and memory barrier surface of MTLCommandBuffer arrived after the
+// SDK this package compiles against declares it, so the wrapped buffer is asked for each of them
+// through this, and a buffer that has none of them is not asked at all.
+@protocol CharonMPSCommandBufferDebugging <NSObject>
+- (void)setDebugMarker:(NSString *)string;
+- (void)insertDebugMarker:(NSString *)string;
+- (NSArray<NSString *> *)bufferLabels;
+- (void)setBufferLabels:(NSArray<NSString *> *)labels;
+- (MTLRenderPassDescriptor *)currentRenderPassDescriptor;
+- (void)memoryBarrierWithResources:(NSArray<id<MTLResource>> *)resources;
+@end
+
+
+BOOL MPSSupportsMTLDevice(id<MTLDevice> device)
+{
+    // The release answers YES for a device whose hardware it can run its kernels on. Every MTLDevice
+    // this port has is its own OpenGL ES 2.0 bridge, and every kernel in this framework runs on it,
+    // so the answer is the same question the release asks - can this device run an MPS kernel - and
+    // the port's answer is yes. nil is not a device and is refused as the release refuses it.
+    return device != nil;
+}
+
+id<MTLDevice> MPSGetPreferredDevice(MPSDeviceOptions options)
+{
+    // The release walks its devices and returns the first that matches the options. This port has one
+    // device and no removable or low-power choice among several, so the options have nothing to
+    // choose between and the one device is the preferred one. MPSDeviceOptionsDefault is 0, and a
+    // caller may pass any combination; none of them names a device this port does not have.
+    (void)options;
+    return MTLCreateSystemDefaultDevice();
+}
+
+@implementation MPSKernel {
+    id<MTLDevice> _device;
+    MPSKernelOptions _options;
+    NSString *_label;
+}
+
+@synthesize label;
+
+- (instancetype)initWithDevice:(id<MTLDevice>)device
+{
+    if ((self = [super init])) {
+        _device = device;
+        _options = MPSKernelOptionsNone;
+    }
+    return self;
+}
+
+- (id<MTLDevice>)device
+{
+    return _device;
+}
+
+- (MPSKernelOptions)options
+{
+    return _options;
+}
+
+- (void)setOptions:(MPSKernelOptions)options
+{
+    _options = options;
+}
+
+- (NSString *)label
+{
+    return _label;
+}
+
+- (void)setLabel:(NSString *)name
+{
+    _label = [name copy];
+}
+
+- (instancetype)copyWithZone:(NSZone *)zone device:(id<MTLDevice>)device
+{
+    MPSKernel *copy = [[[self class] allocWithZone:zone] initWithDevice:device ? device : _device];
+    copy->_options = _options;
+    copy->_label = _label;
+    return copy;
+}
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    return [self copyWithZone:zone device:nil];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+    // A kernel of this port is a description of work, not a compiled pipeline: its device, its
+    // options and its label are everything the base class carries, and a subclass's own state is
+    // encoded by the subclass. The release decodes the same three keys here, so an archive written
+    // by an application and read by this port and the other way round both name the same fields.
+    return [self initWithCoder:aDecoder device:MTLCreateSystemDefaultDevice()];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder device:(id<MTLDevice>)device
+{
+    if ((self = [super init])) {
+        _device = device;
+        _options = MPSKernelOptionsNone;
+        NSString *name = [aDecoder decodeObjectOfClass:[NSString class] forKey:@"label"];
+        if (name)
+            _label = [name copy];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    if (_label)
+        [aCoder encodeObject:_label forKey:@"label"];
+}
+
++ (BOOL)supportsSecureCoding
+{
+    return YES;
+}
+
+@end
+
+@implementation MPSPredicate {
+    id<MTLBuffer> _buffer;
+    NSUInteger _offset;
+    id<MTLDevice> _device;
+}
+
++ (instancetype)predicateWithBuffer:(id<MTLBuffer>)buffer offset:(NSUInteger)offset
+{
+    return [[self alloc] initWithBuffer:buffer offset:offset];
+}
+
+- (instancetype)initWithBuffer:(id<MTLBuffer>)buffer offset:(NSUInteger)offset
+{
+    if ((self = [super init])) {
+        _buffer = buffer;
+        _offset = offset;
+    }
+    return self;
+}
+
+- (instancetype)initWithDevice:(id<MTLDevice>)device
+{
+    // The release takes a device and draws its predicate bytes from a heap MPS manages, so the
+    // caller never sees the buffer. This port has no MPS heap, so the predicate is backed by a
+    // buffer of its own, made here, that the caller can reach through -predicateBuffer and write
+    // through. A predicate of this kind is the same object the header describes: a uint32 that is
+    // not zero lets the kernel run.
+    if ((self = [super init])) {
+        _device = device;
+        _buffer = [device newBufferWithLength:4 options:MTLResourceStorageModeShared];
+    }
+    return self;
+}
+
+- (id<MTLBuffer>)predicateBuffer
+{
+    return _buffer;
+}
+
+- (NSUInteger)predicateOffset
+{
+    return _offset;
+}
+
+// Whether the kernel this predicate is attached to runs. The header's rule is the release's own: the
+// uint32 at the offset is not zero for true.
+- (BOOL)charon_mps_permitsExecution
+{
+    if (!_buffer)
+        return YES;
+    if (_offset + 4 > _buffer.length)
+        return NO;
+    uint32_t value = 0;
+    memcpy(&value, (const char *)[_buffer contents] + _offset, 4);
+    return value != 0;
+}
+
+@end
+
+// MPSCommandBuffer wraps a command buffer so the options MPS adds - the predicate, the heap provider -
+// travel with it. Everything the MTLCommandBuffer protocol asks for is the wrapped buffer's own answer
+// forwarded, so an MPSCommandBuffer is usable everywhere a command buffer is.
+@implementation MPSCommandBuffer {
+    id<MTLCommandBuffer> _buffer;
+    MPSPredicate *_predicate;
+    id<MPSHeapProvider> _heapProvider;
+}
+
+@synthesize label;
+
++ (instancetype)commandBufferWithCommandBuffer:(id<MTLCommandBuffer>)commandBuffer
+{
+    return [[self alloc] initWithCommandBuffer:commandBuffer];
+}
+
++ (instancetype)commandBufferFromCommandQueue:(id<MTLCommandQueue>)commandQueue
+{
+    return [[self alloc] initWithCommandBuffer:[commandQueue commandBuffer]];
+}
+
+- (instancetype)initWithCommandBuffer:(id<MTLCommandBuffer>)commandBuffer
+{
+    if ((self = [super init])) {
+        _buffer = commandBuffer;
+    }
+    return self;
+}
+
+- (instancetype)init
+{
+    // The header marks -init unavailable, so there is no command buffer to make without one to wrap.
+    // This port answers a caller that reaches it anyway the way it answers every other unusable
+    // request: nil, and a line in the log that says which initialiser is the one to use.
+    NSLog(@"MPSCommandBuffer: -init makes no command buffer; use +commandBufferWithCommandBuffer: or -initWithCommandBuffer:");
+    return nil;
+}
+
+- (id<MTLCommandBuffer>)commandBuffer
+{
+    return _buffer;
+}
+
+- (id<MTLCommandBuffer>)rootCommandBuffer
+{
+    // MPSCommandBuffers may wrap MPSCommandBuffers, so the root is the bottom of that stack.
+    id<MTLCommandBuffer> root = _buffer;
+    while ([root isKindOfClass:[MPSCommandBuffer class]])
+        root = [(MPSCommandBuffer *)root commandBuffer];
+    return root;
+}
+
+- (MPSPredicate *)predicate
+{
+    return _predicate;
+}
+
+- (void)setPredicate:(MPSPredicate *)predicate
+{
+    _predicate = predicate;
+}
+
+- (id<MPSHeapProvider>)heapProvider
+{
+    return _heapProvider;
+}
+
+- (void)setHeapProvider:(id<MPSHeapProvider>)heapProvider
+{
+    _heapProvider = heapProvider;
+}
+
+- (void)commitAndContinue
+{
+    if ([_buffer respondsToSelector:@selector(commitAndContinue)])
+        [(id<CharonMPSCommitAndContinuing>)_buffer commitAndContinue];
+    else
+        [_buffer commit];
+}
+
+- (void)prefetchHeapForWorkloadSize:(size_t)size
+{
+    // The release warms its heap cache with a heap of at least this size. Every temporary matrix,
+    // vector, image and state in this port is a device buffer made when its -data is asked for, and
+    // the device's own allocator is what a heap here would be, so there is nothing to pre-warm: the
+    // storage is the storage the device would have given the heap's sub-allocation.
+    (void)size;
+}
+
+- (id<MTLDevice>)device
+{
+    return [_buffer device];
+}
+
+- (id<MTLCommandQueue>)commandQueue
+{
+    return [_buffer commandQueue];
+}
+
+- (BOOL)retainedReferences
+{
+    return [_buffer retainedReferences];
+}
+
+- (MTLCommandBufferErrorOption)errorOptions
+{
+    return [_buffer errorOptions];
+}
+
+- (NSString *)label
+{
+    return [_buffer label];
+}
+
+- (void)setLabel:(NSString *)label
+{
+    [_buffer setLabel:label];
+}
+
+- (CFTimeInterval)kernelStartTime
+{
+    return [_buffer kernelStartTime];
+}
+
+- (CFTimeInterval)kernelEndTime
+{
+    return [_buffer kernelEndTime];
+}
+
+- (id<MTLLogContainer>)logs
+{
+    return [_buffer logs];
+}
+
+- (CFTimeInterval)GPUStartTime
+{
+    return [_buffer GPUStartTime];
+}
+
+- (CFTimeInterval)GPUEndTime
+{
+    return [_buffer GPUEndTime];
+}
+
+- (MTLCommandBufferStatus)status
+{
+    return [_buffer status];
+}
+
+- (NSError *)error
+{
+    return [_buffer error];
+}
+
+- (void)enqueue
+{
+    [_buffer enqueue];
+}
+
+- (void)commit
+{
+    [_buffer commit];
+}
+
+- (void)addScheduledHandler:(MTLCommandBufferHandler)block
+{
+    [_buffer addScheduledHandler:block];
+}
+
+- (void)addCompletedHandler:(MTLCommandBufferHandler)block
+{
+    [_buffer addCompletedHandler:block];
+}
+
+- (void)presentDrawable:(id<MTLDrawable>)drawable
+{
+    [_buffer presentDrawable:drawable];
+}
+
+- (void)presentDrawable:(id<MTLDrawable>)drawable atTime:(CFTimeInterval)presentationTime
+{
+    [_buffer presentDrawable:drawable atTime:presentationTime];
+}
+
+- (void)presentDrawable:(id<MTLDrawable>)drawable afterMinimumDuration:(CFTimeInterval)duration
+{
+    [_buffer presentDrawable:drawable afterMinimumDuration:duration];
+}
+
+- (void)waitUntilScheduled
+{
+    [_buffer waitUntilScheduled];
+}
+
+- (void)waitUntilCompleted
+{
+    [_buffer waitUntilCompleted];
+}
+
+- (void)pushDebugGroup:(NSString *)string
+{
+    [_buffer pushDebugGroup:string];
+}
+
+- (void)popDebugGroup
+{
+    [_buffer popDebugGroup];
+}
+
+- (void)setDebugMarker:(NSString *)string
+{
+    if ([_buffer respondsToSelector:@selector(setDebugMarker:)])
+        [(id<CharonMPSCommandBufferDebugging>)_buffer setDebugMarker:string];
+}
+
+- (void)insertDebugMarker:(NSString *)string
+{
+    if ([_buffer respondsToSelector:@selector(insertDebugMarker:)])
+        [(id<CharonMPSCommandBufferDebugging>)_buffer insertDebugMarker:string];
+}
+
+- (NSArray<NSString *> *)bufferLabels
+{
+    if ([_buffer respondsToSelector:@selector(bufferLabels)])
+        return [(id<CharonMPSCommandBufferDebugging>)_buffer bufferLabels];
+    return nil;
+}
+
+- (void)setBufferLabels:(NSArray<NSString *> *)labels
+{
+    if ([_buffer respondsToSelector:@selector(setBufferLabels:)])
+        [(id<CharonMPSCommandBufferDebugging>)_buffer setBufferLabels:labels];
+}
+
+- (MTLRenderPassDescriptor *)currentRenderPassDescriptor
+{
+    if ([_buffer respondsToSelector:@selector(currentRenderPassDescriptor)])
+        return [(id<CharonMPSCommandBufferDebugging>)_buffer currentRenderPassDescriptor];
+    return nil;
+}
+
+- (void)memoryBarrierWithResources:(NSArray<id<MTLResource>> *)resources
+{
+    if ([_buffer respondsToSelector:@selector(memoryBarrierWithResources:)])
+        [(id<CharonMPSCommandBufferDebugging>)_buffer memoryBarrierWithResources:resources];
+}
+
+@end

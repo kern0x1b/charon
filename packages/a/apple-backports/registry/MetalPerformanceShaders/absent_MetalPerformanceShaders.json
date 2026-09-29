@@ -242,26 +242,6 @@
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
-      "api": "MPSKernel",
-      "kind": "class",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSSupportsMTLDevice()",
-      "kind": "function",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 9, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
       "api": "MPSUnaryImageKernel",
       "kind": "class",
       "introduced": "9.0",
@@ -533,36 +513,6 @@
     },
     {
       "api": "MPSImagePyramid",
-      "kind": "class",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSMatrix",
-      "kind": "class",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSMatrixDescriptor",
-      "kind": "class",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSMatrixMultiplication",
       "kind": "class",
       "introduced": "10.0",
       "minimum": "6.0",
@@ -1192,36 +1142,6 @@
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
-      "api": "MPSMatrixBinaryKernel",
-      "kind": "class",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSMatrixCopy",
-      "kind": "class",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSMatrixCopyDescriptor",
-      "kind": "class",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
       "api": "MPSMatrixDecompositionCholesky",
       "kind": "class",
       "introduced": "11.0",
@@ -1233,46 +1153,6 @@
     },
     {
       "api": "MPSMatrixDecompositionLU",
-      "kind": "class",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSMatrixFullyConnected",
-      "kind": "class",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSMatrixLogSoftMax",
-      "kind": "class",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSMatrixNeuron",
-      "kind": "class",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSMatrixSoftMax",
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
@@ -1303,36 +1183,6 @@
     },
     {
       "api": "MPSMatrixSolveTriangular",
-      "kind": "class",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSMatrixSum",
-      "kind": "class",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSMatrixUnaryKernel",
-      "kind": "class",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSMatrixVectorMultiplication",
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
@@ -1533,66 +1383,6 @@
     },
     {
       "api": "MPSRNNSingleGateDescriptor",
-      "kind": "class",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSRectNoClip",
-      "kind": "constant",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 11, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSState",
-      "kind": "class",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSTemporaryMatrix",
-      "kind": "class",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSTemporaryVector",
-      "kind": "class",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSVector",
-      "kind": "class",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSVectorDescriptor",
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
@@ -2532,16 +2322,6 @@
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
-      "api": "MPSMatrixFindTopK",
-      "kind": "class",
-      "introduced": "11.3",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
       "api": "MPSNNAdditionGradientNode",
       "kind": "class",
       "introduced": "11.3",
@@ -2852,36 +2632,6 @@
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
-      "api": "MPSStateBatchIncrementReadCount()",
-      "kind": "function",
-      "introduced": "11.3",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 11, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSStateBatchSynchronize()",
-      "kind": "function",
-      "introduced": "11.3",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 11, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSStateResourceList",
-      "kind": "class",
-      "introduced": "11.3",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
       "api": "MPSCNNYOLOLossDescriptor",
       "kind": "class",
       "introduced": "12",
@@ -2962,67 +2712,7 @@
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
-      "api": "MPSMatrixBatchNormalization",
-      "kind": "class",
-      "introduced": "12.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSMatrixBatchNormalizationGradient",
-      "kind": "class",
-      "introduced": "12.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
       "api": "MPSMatrixCopyToImage",
-      "kind": "class",
-      "introduced": "12.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSMatrixFullyConnectedGradient",
-      "kind": "class",
-      "introduced": "12.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSMatrixLogSoftMaxGradient",
-      "kind": "class",
-      "introduced": "12.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSMatrixNeuronGradient",
-      "kind": "class",
-      "introduced": "12.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSMatrixSoftMaxGradient",
       "kind": "class",
       "introduced": "12.0",
       "minimum": "6.0",
@@ -3149,16 +2839,6 @@
       "status": "absent",
       "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSStateBatchResourceSize()",
-      "kind": "function",
-      "introduced": "12.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 12, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
@@ -3432,16 +3112,6 @@
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
-      "api": "MPSGetPreferredDevice()",
-      "kind": "function",
-      "introduced": "12.2",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 12, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
       "api": "MPSMatrixRandom",
       "kind": "class",
       "introduced": "13",
@@ -3683,16 +3353,6 @@
     },
     {
       "api": "MPSCNNNeuronGeLUNode",
-      "kind": "class",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSCommandBuffer",
       "kind": "class",
       "introduced": "13.0",
       "minimum": "6.0",
@@ -3963,16 +3623,6 @@
     },
     {
       "api": "MPSPolygonBuffer",
-      "kind": "class",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSPredicate",
       "kind": "class",
       "introduced": "13.0",
       "minimum": "6.0",
