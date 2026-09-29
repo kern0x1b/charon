@@ -29,9 +29,12 @@ failed=0
 # The mutation, kept beside this script so the pair is reproducible: the collection view's half of the
 # drop sequence with dropSessionDidEnter: moved past its first dropSessionDidUpdate:withDestination-
 # IndexPath:. The same seven calls, two of them the other way round.
+# The mutant is generated from the LIVE source into the build tree on every run, not read from a file
+# beside this script: a checked-in fixture drifts from the source it was made from and then asserts
+# nothing, and the text family had exactly that failure.
 seq=$root/packages/a/apple-backports/UIKit/CharonDropSequence11.m
-mutated=$here/CharonDropSequence11.m.mutated
-original=$here/CharonDropSequence11.m.original
+original=$build/CharonDropSequence11.m.original
+mutated=$build/CharonDropSequence11.m.mutated
 cp "$seq" "$original"
 python3 - "$original" "$mutated" <<'PYMUT'
 import sys
@@ -117,8 +120,11 @@ for release in $releases; do
     run_one "$release" clean "$(basename "$image")" && guest_lines "$release" "$(basename "$image")" clean || failed=1
 done
 cp "$mutated" "$seq"
+restore() { cp "$original" "$seq"; }
+trap restore EXIT INT TERM
 for release in $releases; do
     run_one "$release" mutated "$(basename "$image")" && guest_lines "$release" "$(basename "$image")" mutated || true
 done
 cp "$original" "$seq"
+trap - EXIT INT TERM
 exit $failed
