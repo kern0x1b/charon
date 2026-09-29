@@ -203,6 +203,16 @@
       "effect": "the provider a Sign in with Apple request comes from: -createRequest returning a fresh ASAuthorizationAppleIDRequest with the same nil scopes, state, nonce and operation the host's own provider hands out, which is what makes a request makeable where -init and +new are unavailable. -getCredentialStateForUserID:completion: answers ASAuthorizationAppleIDProviderCredentialNotFound with an ASAuthorizationErrorDomain error, because this port has never seen an Apple ID and that is the honest state for it: answering 'authorized' to a question about a revocation it cannot see would have an application keep sending tokens for an identifier the user had revoked",
       "facts": "facts/AuthenticationServices/ASAuthorizationRequest.md",
       "source": "macOS 27.0's own AuthenticationServices, asked with class_copyMethodList and with [[ASAuthorizationAppleIDProvider alloc] init] createRequest, which needs no daemon, no network and no UI; the 26.2 header's contract; and the class's members as the header declares them, read by clang's AST"
+    },
+    {
+      "api": "ASAuthorization",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the result of a finished request: -provider and -credential, both held strongly and both copied in and out, with -copyWithZone: carrying the same pair rather than copying either end -- copying an authorization must not mint a second credential claiming the same identity",
+      "facts": "facts/AuthenticationServices/ASAuthorizationRequest.md",
+      "source": "macOS 27.0's own AuthenticationServices, asked with class_copyMethodList for the class's method list by tests/backports/host/authservices; the 26.2 header's contract; and the class's members as the header declares them, read by clang's AST"
     }
   ]
 }

@@ -52,6 +52,14 @@ extern NSString *const ASCharonProviderCodingKey;
     __attribute__((objc_method_family(init)));
 @end
 
+// The result of a finished request: a provider and a credential held together. Neither can be made by
+// an application -- the header marks both constructors unavailable -- and the controller makes the pair.
+@interface ASAuthorization (CharonASConstruction)
+- (instancetype)charon_initWithProvider:(id<ASAuthorizationProvider>)provider
+                              credential:(id<ASAuthorizationCredential>)credential
+    __attribute__((objc_method_family(init)));
+@end
+
 @interface ASAuthorizationAppleIDProvider (CharonASConstruction)
 - (instancetype)charon_initWithCredentialState:(id)store
     __attribute__((objc_method_family(init)));
