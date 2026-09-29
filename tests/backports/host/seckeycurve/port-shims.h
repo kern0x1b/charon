@@ -21,15 +21,18 @@
 #import <Foundation/Foundation.h>
 #import <Security/Security.h>
 #import <CoreFoundation/CoreFoundation.h>
+#import <dlfcn.h>
+#import <string.h>
 
-OSStatus SecKeyRawSign(SecKeyRef key, SecPadding padding, const uint8_t *bytes, size_t length,
-                       uint8_t *signature, size_t *signatureLength);
-OSStatus SecKeyRawVerify(SecKeyRef key, SecPadding padding, const uint8_t *bytes, size_t length,
-                         const uint8_t *signature, size_t signatureLength);
-CFIndex SecKeyGetAlgorithmID(SecKeyRef key);
-CFDictionaryRef SecKeyCopyAttributeDictionary(SecKeyRef key);
-OSStatus SecKeyCopyPublicBytes(SecKeyRef key, CFDataRef *serialized);
-SecKeyRef SecKeyCreateFromPublicData(CFAllocatorRef allocator, CFIndex algorithmID, CFDataRef serialized);
+
+static OSStatus SecKeyRawSign(SecKeyRef key, SecPadding padding, const uint8_t *bytes, size_t length,
+                              uint8_t *signature, size_t *signatureLength);
+static OSStatus SecKeyRawVerify(SecKeyRef key, SecPadding padding, const uint8_t *bytes, size_t length,
+                                const uint8_t *signature, size_t signatureLength);
+static CFIndex SecKeyGetAlgorithmID(SecKeyRef key);
+static CFDictionaryRef SecKeyCopyAttributeDictionary(SecKeyRef key);
+static OSStatus SecKeyCopyPublicBytes(SecKeyRef key, CFDataRef *serialized);
+static SecKeyRef SecKeyCreateFromPublicData(CFAllocatorRef allocator, CFIndex algorithmID, CFDataRef serialized);
 
 // The SubjectPublicKeyInfo of an EC public key, which is what the release's SecKeyCopyPublicBytes gives:
 // a SEQUENCE of an AlgorithmIdentifier of the prime256v1 OIDs and a BIT STRING holding the point.
@@ -37,13 +40,32 @@ static const uint8_t CharonShimSubjectPublicKeyInfo[] = {
     0x30, 0x59, 0x30, 0x13, 0x06, 0x07, 0x2a, 0x86, 0x48, 0xce, 0x3d, 0x02, 0x01, 0x06, 0x08,
     0x2a, 0x86, 0x48, 0xce, 0x3d, 0x03, 0x01, 0x07, 0x03, 0x42, 0x00};
 
+// The host's own two functions are reached by name through dlsym, not by calling them: the
+// differential renames the port's SecKeyCreateSignature and SecKeyVerifySignature to
+// charonHost_SecKeyCreateSignature and charonHost_SecKeyVerifySignature with -D, and a -D renames
+// every mention of the name in this header too - so a direct call here becomes a call back into the
+// port, which calls the shim again, and the recursion ends on the stack guard page. The string in
+// dlsym is not a mention, so the host's function is the one that is found.
+static SecKeyAlgorithm CharonShimDigestAlgorithm(void)
+{
+    return kSecKeyAlgorithmECDSASignatureDigestX962SHA256;
+}
+
 static OSStatus CharonShimRawSign(SecKeyRef key, const uint8_t *bytes, size_t length,
                                   uint8_t *signature, size_t *signatureLength)
 {
+    typedef CFDataRef (*CharonShimCreateSignature)(SecKeyRef, SecKeyAlgorithm, CFDataRef, CFErrorRef *);
+    static CharonShimCreateSignature host = NULL;
+    if (!host) {
+        host = (CharonShimCreateSignature)dlsym(RTLD_DEFAULT, "SecKeyCreateSignature");
+    }
+    if (!host) {
+        return errSecUnimplemented;
+    }
     CFErrorRef error = NULL;
-    SecKeyAlgorithm algorithm = kSecKeyAlgorithmECDSASignatureDigestX962SHA256;
+    SecKeyAlgorithm algorithm = CharonShimDigestAlgorithm();
     CFDataRef digest = CFDataCreate(kCFAllocatorDefault, bytes, (CFIndex)length);
-    CFDataRef made = SecKeyCreateSignature(key, algorithm, digest, &error);
+    CFDataRef made = host(key, algorithm, digest, &error);
     CFRelease(digest);
     if (error) {
         CFRelease(error);
@@ -66,11 +88,53 @@ static OSStatus CharonShimRawSign(SecKeyRef key, const uint8_t *bytes, size_t le
 static OSStatus CharonShimRawVerify(SecKeyRef key, const uint8_t *bytes, size_t length,
                                     const uint8_t *signature, size_t signatureLength)
 {
-    SecKeyAlgorithm algorithm = kSecKeyAlgorithmECDSASignatureDigestX962SHA256;
+    typedef Boolean (*CharonShimVerifySignature)(SecKeyRef, SecKeyAlgorithm, CFDataRef, CFDataRef, CFErrorRef *);
+    static CharonShimVerifySignature host = NULL;
+    if (!host) {
+        host = (CharonShimVerifySignature)dlsym(RTLD_DEFAULT, "SecKeyVerifySignature");
+    }
+    if (!host) {
+        return errSecUnimplemented;
+    }
+    SecKeyAlgorithm algorithm = CharonShimDigestAlgorithm();
     CFDataRef digest = CFDataCreate(kCFAllocatorDefault, bytes, (CFIndex)length);
-    CFDataRef made = CFDataCreate(kCFAllocatorDefault, signature, (CFIndex)signatureLength);
+    // The release's SecKeyRawVerify takes the two halves of an elliptic signature where the host's
+    // SecKeyVerifySignature takes their DER, so 64 bytes are put back into the SEQUENCE of two
+    // INTEGERs here - the same shape the port's own signing reads and writes, which is what makes
+    // this shim the release and not a convenience.
+    uint8_t der[72];
+    const uint8_t *given = signature;
+    size_t givenLength = signatureLength;
+    if (signatureLength == 64) {
+        size_t offset = 0;
+        der[offset++] = 0x30;
+        der[offset++] = 0;
+        size_t content = offset;
+        for (int half = 0; half < 2; half++) {
+            const uint8_t *value = signature + half * 32;
+            int first = 0;
+            while (first < 31 && value[first] == 0) {
+                first++;
+            }
+            int size = 32 - first;
+            if (value[first] & 0x80) {
+                der[offset++] = 0x02;
+                der[offset++] = (uint8_t)(size + 1);
+                der[offset++] = 0x00;
+            } else {
+                der[offset++] = 0x02;
+                der[offset++] = (uint8_t)size;
+            }
+            memcpy(der + offset, value + first, (size_t)size);
+            offset += (size_t)size;
+        }
+        der[1] = (uint8_t)(offset - content);
+        given = der;
+        givenLength = offset;
+    }
+    CFDataRef made = CFDataCreate(kCFAllocatorDefault, given, (CFIndex)givenLength);
     CFErrorRef error = NULL;
-    BOOL valid = SecKeyVerifySignature(key, algorithm, digest, made, &error);
+    BOOL valid = host(key, algorithm, digest, made, &error);
     CFRelease(digest);
     CFRelease(made);
     if (error) {
@@ -106,34 +170,34 @@ static CFDataRef CharonShimPublicBytes(SecKeyRef key)
     return CFDataCreate(kCFAllocatorDefault, buffer, (CFIndex)sizeof buffer);
 }
 
-OSStatus SecKeyRawSign(SecKeyRef key, SecPadding padding, const uint8_t *bytes, size_t length,
-                       uint8_t *signature, size_t *signatureLength)
+static OSStatus SecKeyRawSign(SecKeyRef key, SecPadding padding, const uint8_t *bytes, size_t length,
+                              uint8_t *signature, size_t *signatureLength)
 {
     (void)padding;
     return CharonShimRawSign(key, bytes, length, signature, signatureLength);
 }
 
-OSStatus SecKeyRawVerify(SecKeyRef key, SecPadding padding, const uint8_t *bytes, size_t length,
-                         const uint8_t *signature, size_t signatureLength)
+static OSStatus SecKeyRawVerify(SecKeyRef key, SecPadding padding, const uint8_t *bytes, size_t length,
+                                const uint8_t *signature, size_t signatureLength)
 {
     (void)padding;
     return CharonShimRawVerify(key, bytes, length, signature, signatureLength);
 }
 
-CFIndex SecKeyGetAlgorithmID(SecKeyRef key)
+static CFIndex SecKeyGetAlgorithmID(SecKeyRef key)
 {
     (void)key;
     return 0;
 }
 
-CFDictionaryRef SecKeyCopyAttributeDictionary(SecKeyRef key)
+static CFDictionaryRef SecKeyCopyAttributeDictionary(SecKeyRef key)
 {
     // The host's own attributes, which for an EC key hold no kSecValueData: the port sees a key of a
     // keychain and takes the release's own signing path, which is what this differential is about.
     return SecKeyCopyAttributes(key);
 }
 
-OSStatus SecKeyCopyPublicBytes(SecKeyRef key, CFDataRef *serialized)
+static OSStatus SecKeyCopyPublicBytes(SecKeyRef key, CFDataRef *serialized)
 {
     CFDataRef bytes = CharonShimPublicBytes(key);
     if (!bytes) {
@@ -143,7 +207,7 @@ OSStatus SecKeyCopyPublicBytes(SecKeyRef key, CFDataRef *serialized)
     return errSecSuccess;
 }
 
-SecKeyRef SecKeyCreateFromPublicData(CFAllocatorRef allocator, CFIndex algorithmID, CFDataRef serialized)
+static SecKeyRef SecKeyCreateFromPublicData(CFAllocatorRef allocator, CFIndex algorithmID, CFDataRef serialized)
 {
     (void)algorithmID;
     (void)serialized;
