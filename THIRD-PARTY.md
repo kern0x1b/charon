@@ -21,6 +21,8 @@ carried into the program that ships to the device.
 | The Swift runtime and standard library, with the system-framework overlays | 6.4.0 | Apache-2.0 WITH Swift-exception | `packages/s/swift-runtime` |
 | Styx — a `Combine` module for platforms without Apple's framework | 2026.09.20 | MIT (the upstream MIT copyright is kept in its `LICENSE`) | `packages/s/styx`, from [`kern0x1b/styx`](https://github.com/kern0x1b/styx) |
 | Eidolon — a `SwiftUI` module on the UIKit of iOS 6 | 2026.09.23 | MIT | `packages/e/eidolon`, from [`kern0x1b/eidolon`](https://github.com/kern0x1b/eidolon) |
+| [OpenCombine](https://github.com/OpenCombine/OpenCombine) — a `Combine` module for platforms without Apple's framework | `1c6f02c7ed8140c0ba7a783aaddb6e0685a0037b` (its `0.14.0` is `8576f0d579b27020beccbccc3ea6844f3ddfc2c2`) | MIT, Copyright (c) 2019 Sergej Jaskiewicz; the licence is installed with the package under `licenses/LICENSE` | `packages/s/styx` |
+| Styx — our fork of OpenCombine: the same sources, with their three modules folded into one named `Combine`, the C++ helper, and the adaptations iOS 6 needs | 2026.09.20, `f5fe6511d963d1a21f23c0f3ec820135a69168ff` | MIT, under OpenCombine's copyright; no new licence is claimed over Sergej Jaskiewicz's work | `packages/s/styx`, from [`kern0x1b/styx`](https://github.com/kern0x1b/styx) |
 
 ## The compiler, linker, signer and SDK
 
