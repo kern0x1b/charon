@@ -59,6 +59,27 @@ MODELIO_GROUPS = [
 KEY = re.compile(r'^(.*?)(-?\d+(?:\.\d+)?(?:[eE][-+]?\d+)?)(\s|$)')
 
 
+def family_label(keys):
+    """The word a group's keys all start with, as the run spells it.
+
+    The one-sided figures are quoted in prose, and prose spells things its own way - a
+    sentence that says "the representation lines" is a true sentence this matcher cannot
+    read.  So the label is taken from the run rather than from the page: the longest whole
+    word every key of the group begins with.  It is a quotation matcher, and it says so: a
+    sentence spelled differently reads as MISSING rather than as agreeing, which is the
+    safe direction - a page that stops quoting a figure in the form the run spells it is
+    asked for it, and not silently passed over.
+    """
+    words = [k.split(" ")[0] for k in keys if k.split()]
+    if not words:
+        return None
+    label = words[0]
+    for w in words[1:]:
+        while label and not w.startswith(label):
+            label = label[:-1]
+    return label or None
+
+
 def read_differences(path):
     """Every `different:` line compare.py wrote, as (key, host line, port line), in order."""
     out, host, port = [], None, None
@@ -148,16 +169,42 @@ def table(differences, groups, label):
 
 
 def page_counts(path):
-    """Every `| `group` | n |` row of the page, so a stale one can be named."""
-    out = {}
+    """Every `| `group` | n |` row of one page, and whether the page has that table at all.
+
+    One path, not a list: `--page` is append-able, so the caller passes one page at a time.
+    The `has_table` flag is what keeps the group check off a page that carries no table -
+    a facts page about the accumulator is not wrong for not holding the whole run's groups.
+    """
+    out, has_table = {}, False
     for line in open(path, encoding="utf-8"):
+        if re.match(r'\|\s*group\s*\|\s*n\s*\|', line):
+            has_table = True
         m = re.match(r'\|\s*`([^`]+)`\s*\|\s*(\d+)\s*\|', line)
         if m:
             out[m.group(1)] = int(m.group(2))
-    return out
+    return out, has_table
 
 
 def main():
+    """Entry point.  A finding is exit 1, a page or a run the tool cannot read is exit 2 with a
+    `tool error:` line, and nothing else.
+
+    The distinction is not decoration.  Before this, a page the tool could not read died inside
+    argparse-adjacent code and Python exited 1 - the same status as a finding - so a caller that
+    checked only the status could not tell a green tool that had found something from a tool that
+    had fallen over, and the self-test could not assert either.  Every uncaught error inside the
+    tool is now reported as a tool error and exits 2, which is a status nothing else uses.
+    """
+    try:
+        return run()
+    except SystemExit:
+        raise
+    except Exception as error:                     # noqa: BLE001 - and it is re-raised as exit 2
+        sys.stderr.write("tool error: %s: %s\n" % (type(error).__name__, error))
+        return 2
+
+
+def run():
     parser = argparse.ArgumentParser()
     parser.add_argument("ci")
     parser.add_argument("modelio")
@@ -202,47 +249,70 @@ def main():
             # in the middle of it; read the text as one line before matching any pattern in it.
             text = re.sub(r"\s+", " ", open(page, encoding="utf-8").read())
             keys = read_one_sided(opts.ci)[1]
-            n_port = sum(1 for k in keys["port"] if k.startswith("repr"))
-            n_system = sum(1 for k in keys["system"] if k.startswith("repr"))
-            # The one-sided repr lines are the one number in these pages that no arithmetic
-            # checked, and it was wrong: it said 30, the run says 33, and the three it left out
-            # are the only ones in that family where the SYSTEM answers and the port is silent -
-            # so a sentence about the port's side alone was half the fact.  Every page that
-            # quotes either figure has to quote the right one, in the form this reads back.
-            # A page that says nothing about the one-sided repr lines is not checked for them; a
-            # page that says half of it is, because half of it is what was wrong.
-            if "further `repr` lines" not in text:
+            label = family_label([k for k in keys["port"] + keys["system"] if k.startswith("repr")] or ["repr"])
+            n_port = sum(1 for k in keys["port"] if k.startswith(label))
+            n_system = sum(1 for k in keys["system"] if k.startswith(label))
+            # The one-sided lines are the one number in these pages that no arithmetic checked, and
+            # it was wrong: it said 30, the run says 33, and the three it left out are the only ones
+            # in that family where the SYSTEM answers and the port is silent - so a sentence about
+            # the port's side alone was half the fact.
+            #
+            # EVERY statement is checked, not the first: Differences.md states the pair twice, once
+            # in the live table and once in the historical row corrected in place, and a matcher that
+            # read one of them would pass a page whose other statement was wrong.  So each
+            # statement of the family is found, each is read for both figures, and a statement that
+            # gives one without the other is a finding.  A page that says nothing about the family
+            # is not checked for it.
+            # The prose writes the pair as two clauses - "33 further `repr` lines one-sided on
+            # the port's side AND 3 further `repr` lines one-sided on the system's side" - so a
+            # figure clause is one of those, not a sentence.  EVERY clause is read, because
+            # Differences.md states the pair twice, once in the live table and once in the
+            # historical row corrected in place, and a matcher that read the first of a pair and
+            # the first of the page would pass a page whose second statement was wrong.
+            #
+            # And the two clauses of a pair have to be together: a clause with no partner within
+            # WINDOW characters of it is half the fact, which is exactly what the old sentence
+            # was.  WINDOW is generous enough for a wrapped sentence and short enough not to pair
+            # two independent statements of the page.
+            WINDOW = 240
+            clauses = {}
+            for m in re.finditer(r"(\d+) further `" + re.escape(label) + r"` lines (?:are )?(one-sided on the [a-z]+'s side)", text):
+                clauses[m.start()] = (int(m.group(1)), m.group(2))
+            if not clauses:
                 continue
-            for want, what in ((n_port, "one-sided on the port's side"),
-                               (n_system, "one-sided on the system's side")):
-                m = re.search(r"(\d+) further `repr` lines (?:are )?" + re.escape(what), text)
-                if not m:
-                    print("FAIL %s: the page quotes the one-sided `repr` lines but not how many are %s" % (page, what))
+            for at, (said, what) in sorted(clauses.items()):
+                if said != (n_port if "port" in what else n_system):
+                    print("FAIL %s: a clause says %d `%s` lines are %s and the run has %d"
+                          % (page, said, label, what, n_port if "port" in what else n_system))
                     failed = True
-                elif int(m.group(1)) != want:
-                    print("FAIL %s: the page says %d `repr` lines are %s and the run has %d"
-                          % (page, int(m.group(1)), what, want))
+            for at, (said, what) in sorted(clauses.items()):
+                partner = "one-sided on the system's side" if "port" in what else "one-sided on the port's side"
+                lo, hi = (at, at + WINDOW) if "port" in what else (max(0, at - WINDOW), at)
+                if not any(w == partner and lo <= p < hi for p, (_, w) in clauses.items()):
+                    print("FAIL %s: a clause states %d `%s` lines %s with no clause for the other side within %d characters of it: that is half the fact"
+                          % (page, said, label, what, WINDOW))
                     failed = True
-        for path, groups, label in ((opts.ci, CIIMAGE_GROUPS, "CoreImage"),
-                                    (opts.modelio, MODELIO_GROUPS, "ModelIO")):
-            differences = read_differences(path)
-            by_group = {}
-            for key, host, port in differences:
-                by_group.setdefault(group_of(key, groups) or "UNATTRIBUTED", []).append(key)
-            written = page_counts(opts.page)
-            for name, entries in sorted(by_group.items()):
-                if name == "UNATTRIBUTED":
-                    continue
-                if name not in written:
-                    print("FAIL %s: the page has no row for %r, which holds %d differences"
-                          % (label, name, len(entries)))
-                    failed = True
-                elif written[name] != len(entries):
-                    print("FAIL %s: the page says %r is %d and the run has %d"
-                          % (label, name, written[name], len(entries)))
-                    failed = True
-    sys.exit(1 if failed else 0)
+            # and the group table, on a page that has one
+            written, has_table = page_counts(page)
+            if has_table:
+                for path, groups, label2 in ((opts.ci, CIIMAGE_GROUPS, "CoreImage"),
+                                             (opts.modelio, MODELIO_GROUPS, "ModelIO")):
+                    by_group = {}
+                    for key, host, port in read_differences(path):
+                        by_group.setdefault(group_of(key, groups) or "UNATTRIBUTED", []).append(key)
+                    for name, entries in sorted(by_group.items()):
+                        if name == "UNATTRIBUTED":
+                            continue
+                        if name not in written:
+                            print("FAIL %s: the page has a group table and no row for %r, which holds %d differences"
+                                  % (page, name, len(entries)))
+                            failed = True
+                        elif written[name] != len(entries):
+                            print("FAIL %s: the page says %r is %d and the run has %d"
+                                  % (page, name, written[name], len(entries)))
+                            failed = True
+    return 1 if failed else 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
