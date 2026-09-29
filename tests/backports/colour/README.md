@@ -25,22 +25,79 @@ xcrun clang -target arm64-apple-macos26.0 -isysroot "$(xcrun --show-sdk-path)" -
     -o /tmp/colour-probe && /tmp/colour-probe
 ```
 
+## What is measured, and what it rules out
+
+`probe-dense.m` asks the host's own function over a dense sample and writes what it answers, and the two
+fit scripts read that file. The run, copied from `sh tests/backports/colour/run.sh` on the branch:
+
+```
+=== the probe
+probe	AXNameFromColor is in /System/Library/Frameworks/Accessibility.framework/Versions/A/Accessibility
+fit	grid 4913	boundary-neighbour points 11983	random 20000	edge 21
+vocabulary	267
+first	amber
+last	yellow orange
+sample	7936644 bytes, 331967 lines
+
+=== the known-answer check: the host's answers to the 21 edge cases
+known-answer	21 recorded, 0 mismatched
+known-answer	ok
+
+=== the four spaces, nearest prototype per hue word
+fit rows: 331966
+distinct names: 267
+distinct hue words: 28
+near-neutral gray   2365
+near-neutral black  63
+near-neutral white  3
+space srgb     hue-word agreement 47878 / 129466 = 0.3698
+space linear   hue-word agreement 44201 / 129466 = 0.3414
+space lab      hue-word agreement 52015 / 129466 = 0.4018
+space oklab    hue-word agreement 42788 / 129466 = 0.3305
+
+=== the hue angle as a partition
+distinct colours: 129466
+chromatic points: 128987   neutral: 479
+contiguous runs of the angle, in angle order: 31180
+```
+
+331,966 rows over **129,466 distinct colours, 267 distinct names, 28 distinct words**. The names are
+composed, not tabulated - a modifier from {very, light, dark, pastel, grayish, vibrant, bright} and a hue
+word from the other 21, and the hue words include the neighbouring pairs (blue green, spring green, pink
+magenta, magenta pink, red pink, red orange, yellow orange), so the vocabulary is a hue circle divided
+into named sectors. Three names are the near-neutrals: gray on 2,365 points, black on 63, white on 3.
+
+**Two models are measured and both are wrong, which is worth more than the one that might have been.**
+
+  * *Nearest prototype per hue word*, with the prototype the mean of that word's points: over the 129,466
+    distinct colours, sRGB 0.3698, linear sRGB 0.3414, CIE Lab 0.4018, OKLab 0.3305. The hue word is not
+    a nearest-prototype rule in any of the four spaces the plan named, and Lab - the best of them - is
+    two fifths.
+  * *A partition of the hue angle*, which is what a hue circle divided into sectors would be. The answer
+    is not a contiguous interval of the OKLab hue angle: sorted by it, the 128,987 chromatic points fall
+    into **31,180** runs rather than 28.
+
 ## Owed
 
-The full fit, in the order it has to be done, because each step's result decides the next:
+The dense probe is delivered: `probe-dense.m` wrote 331,966 rows over 129,466 distinct colours, and the
+two fits above read it. What is owed is **the model**, and three things belong with it.
 
-1. **Probe densely.** A regular 17x17x17 sRGB grid, 20,000 random colours, the named edge cases above,
-   and the neighbours of every grid point where the answer changes. Nothing is read out of the
-   framework's binary or its resources; the names are facts of the answers the function returned.
-2. **Identify the vocabulary and the rule.** The set of names the function ever answers, then the
-   decision rule: nearest prototype in which space? Fit sRGB, linear sRGB, Lab and OKLab, with per-name
-   prototype centroids and the boundaries between two names found by bisecting along the grid edges
-   where the answer changes.
-3. **Implement the port's own rule and the port's own prototype table** from those measurements. Not
-   Apple's numbers, and not a table copied out of a binary: a table we measured, with a name for where
-   it came from.
-4. **Report the agreement over a held-out sample** of at least 200,000 colours that were **not** in the
-   fit set, with the exact number of disagreements and where they cluster. A row is `implemented` only
-   for what agrees, and the rest is an owed line carrying the number.
-5. **A differential** over the held-out sample that declares each disagreement class with a reason, so
-   the port and the host are compared rather than assumed.
+1. **A model that explains the 28 words.** The names are a modifier and a hue word, and the hue words
+   include every adjacent pair, so the sector names are interpolations along a circle. Nearest prototype
+   is measured and wrong in four spaces, and a partition of the hue angle is measured and wrong too, so
+   the next model is neither of those. The hypothesis worth trying first: the boundaries are set by angle
+   *ranges* in a space where that angle is the one that matters, with each prototype placed by its
+   sector's midpoint rather than by the mean of the points answered with it - nearest prototype puts a
+   prototype where the points are, and a range wants it where the boundary is.
+2. **A held-out sample, once there is a rule to hold against it.** At least 200,000 colours the rule did
+   not see, the exact number of disagreements and where they cluster, and the row `implemented` only for
+   what agrees, with the rest an owed line carrying the number. There is no held-out probe in the tree
+   and that is why: the rule does not exist yet, and a probe that measures nothing is a file that asserts
+   nothing.
+3. **The known-answer set is held, and nothing about a rule is.** `run.sh` records the host's answers to
+   the 21 edge cases and fails if any of them moves, and `--wrong-expectation` is the control for that
+   check, so the check can be seen to fail. What is not held is anything about a rule, because there is
+   none to hold.
+
+The registry has no row for `AXNameFromColor()` and that is the honest state: the registry has no status
+for a rule that is not yet known, and the row this series owes is owed to the fit, not to a guess.

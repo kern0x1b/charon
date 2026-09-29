@@ -514,6 +514,19 @@ of the framework's binary or its resources; the names are facts of the answers t
 **The registry has no row for it and there is no `absent` row pretending otherwise**: it is owed, and it
 is owed to that series, `accessibility-color`.
 
+**What that series has measured, and the two models it has ruled out.** The host's function is
+`AXNameFromColor` in the system's Accessibility framework, and over a dense sample of 129,466 distinct
+colours it answers **267 distinct names built from 28 words** - a modifier and a hue word, with the hue
+words including the neighbouring pairs, so the vocabulary is a hue circle divided into named sectors.
+Nearest prototype per hue word, the prototype being that word's mean, agrees on 0.3698 of the colours in
+sRGB, 0.3414 in linear sRGB, 0.4018 in CIE Lab and 0.3305 in OKLab - so the hue word is not a
+nearest-prototype rule in any of the four spaces the plan named. And it is not a partition of the hue
+angle either: sorted by the OKLab hue angle, the 128,987 chromatic colours fall into 31,180 runs, not
+28. The sample is 7,936,644 bytes, `sh tests/backports/colour/run.sh` prints all of those figures, and
+that run also holds the host's answers to the 21 edge cases as a known-answer set with a control of its
+own. The rule is not identified, so the row stays owed rather than `implemented`: a rule that agrees with
+the host on two fifths of the colours is not this row's behaviour.
+
 **The three hearing rows are held by less than the other twenty, and the run says so.** They are not run
 here, and the reason is in two parts that are both about the machine and neither about the port:
 
