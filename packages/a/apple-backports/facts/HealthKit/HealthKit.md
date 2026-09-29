@@ -324,9 +324,10 @@ its `assign` property, this port's through the initialiser this library carries.
 **A header and image disagreement, recorded rather than resolved silently.** The 26.2 header gives the
 insert as `-insertQuantity:dateInterval:completion:` alongside `-insertQuantity:date:error:`, and
 `-insertQuantity:dateInterval:error:` carries `API_AVAILABLE(ios(13.0))` while the `date:error:` form
-carries none. The image settles it: 12.0's own insert spellings are `insertQuantity:date:error:` and
-`insertQuantity:dateInterval:error:`, and it has neither of the completion forms. So the 12.0 insert is
-the `BOOL`-and-`NSError` one, and that is what this library carries. The same disagreement is on the
+carries none. The image settles it: the image of 12.0 carries exactly one insert spelling,
+`insertQuantity:date:error:`, and by string count it is 1 there while
+`insertQuantity:dateInterval:error:` is 0 and `insertQuantity:dateInterval:completion:` is 0. So the
+12.0 insert is the `BOOL`-and-`NSError` one, and that is what this library carries. The same disagreement is on the
 finish: the header gives `-finishSeriesWithMetadata:completion:` and
 `-finishSeriesWithMetadata:endDate:completion:` both at the class's own level, and the image carries only
 the first. The form the 12.0 image does not carry is not carried here.

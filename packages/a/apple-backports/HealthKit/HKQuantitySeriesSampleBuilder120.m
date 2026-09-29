@@ -12,11 +12,13 @@
 // from a finished one and is why this port raises there and returns an error everywhere else.
 //
 // The release's own spelling of the insert is -insertQuantity:date:error:, which answers a BOOL and
-// writes an NSError. The two forms the 26.2 header puts beside it - insertQuantity:dateInterval:
-// completion: and the -initWithHealthStore:quantityType:startDate:device:error: initialiser - are of
-// 13.0, and the arm64 image of 12.0 carries neither: its insert spellings are
-// -insertQuantity:date:error: and -insertQuantity:dateInterval:error:, and of the two finishes the
-// image carries only -finishSeriesWithMetadata:completion: while the header gives that form and
+// writes an NSError, and the arm64 image of 12.0 carries exactly one insert spelling and it is that
+// one. The two forms the 26.2 header puts beside it - insertQuantity:dateInterval:completion: and the
+// -initWithHealthStore:quantityType:startDate:device:error: initialiser - are of 13.0, and the image
+// carries neither: by string count, insertQuantity:date:error: is 1 in the image of 12.0 and both
+// insertQuantity:dateInterval:error: and insertQuantity:dateInterval:completion: are 0, so that one
+// spelling is the image's whole insert surface. Of the two finishes the image carries only
+// -finishSeriesWithMetadata:completion: while the header gives that form and
 // -finishSeriesWithMetadata:endDate:completion: both at the class's own level. The disagreement is
 // recorded in facts/HealthKit/HealthKit.md, and the form the 12.0 image does not carry is not carried
 // here.
