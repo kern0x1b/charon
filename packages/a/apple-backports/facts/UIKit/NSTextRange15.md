@@ -271,7 +271,8 @@ differential's own log beside them.
 | `probe-navigation.m` / `.out` | the union rule over twenty-five pairs, the two flags' defaults, and every answer of the navigation object with no data source |
 | `differential.log` | the differential's own run: `checks=2011 failures=0` |
 
-`probe.out` beside this file is the first probe, from the session before. Its reading
-of `-typingAttributes` - `typing=(nil)` on line 27 - is the one the earlier commit
-message got backwards, and `facts/UIKit/NSTextRange15.md` supersedes it. The rest of
-it stands and is reproduced above.
+`probe.out` in `.agent-work/runs/textkit2/` is the first probe, from the session before, and
+it is a run transcript rather than a source file, so it lives with the run output and not in
+this directory. Its reading of `-typingAttributes` - `typing=(nil)` on line 27 - is the one the
+earlier commit message got backwards, and this file supersedes it. The rest of it stands and is
+reproduced above.
