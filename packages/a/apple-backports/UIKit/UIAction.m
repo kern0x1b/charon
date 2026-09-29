@@ -122,6 +122,15 @@
     _state = state;
 }
 
+// The header's own method, and the one UIControl sends an action: UIMenuLeaf.h declares
+// -performWithSender:target: publicly, so an action a control drives is asked for it by that name, and an action
+// that does not implement it leaves the host's own UIControl sending an unrecognized selector. The port's own
+// callers use the charon_ spelling so that a send is not renamed twice, and it lands here.
+- (void)performWithSender:(id)sender target:(id)target
+{
+    [self charon_performWithSender:sender];
+}
+
 - (void)charon_performWithSender:(id)sender
 {
     objc_setAssociatedObject(self, @selector(sender), sender, OBJC_ASSOCIATION_ASSIGN);
