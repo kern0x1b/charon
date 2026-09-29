@@ -152,7 +152,7 @@
 {
     CharonARPlane plane;
     [value getValue:&plane];
-    self = [super initWithIdentifier:[NSUUID UUID] transform:matrix_identity_float4x4];
+    self = [super initWithIdentifier:[NSUUID UUID] transform:CharonARKitIdentityFloat4x4];
     if (!self)
         return nil;
     // What the detector actually found, which is a level surface: the alignment is horizontal
@@ -347,7 +347,7 @@
 - (simd_float4x4)worldTransform
 {
     // a hit's transform is a pose, and a pose of a point is the point with no rotation
-    return matrix_identity_float4x4;
+    return CharonARKitIdentityFloat4x4;
 }
 - (simd_float3)localPosition { return _worldPosition; }
 - (simd_float3)localNormal { return _localNormal; }

@@ -336,7 +336,7 @@ static simd_float4x4 simd_matrix_inverse_local(simd_float4x4 m)
             if (fabsf(a[row][column]) > fabsf(a[pivot][column]))
                 pivot = row;
         if (fabsf(a[pivot][column]) < 1e-12f)
-            return matrix_identity_float4x4;
+            return CharonARKitIdentityFloat4x4;
         if (pivot != column)
             for (int k = 0; k < 8; k++) {
                 float swap = a[column][k];
@@ -356,7 +356,7 @@ static simd_float4x4 simd_matrix_inverse_local(simd_float4x4 m)
     // turned around - a rigid pose, whose diagonal is exactly (1,1,1,1) - and wrong by 0.276 in
     // m * inverse - identity for every other. The differential round-trips a fixed non-symmetric
     // matrix so that the general case is covered and not just the one shape that hid this.
-    simd_float4x4 inverse = matrix_identity_float4x4;
+    simd_float4x4 inverse = CharonARKitIdentityFloat4x4;
     for (int row = 0; row < 4; row++) {
         float scale = 1.0f / a[row][row];
         for (int column = 0; column < 4; column++)
@@ -539,7 +539,7 @@ static simd_float3x3 CharonRecordedIntrinsics = { 0 };
     AVCaptureDeviceFormat *format = camera.activeFormat ?: camera.formats.firstObject;
     CGFloat fieldOfView = format ? format.videoFieldOfView : 0;
     if (resolution.width <= 0 || resolution.height <= 0 || fieldOfView <= 0)
-        return matrix_identity_float3x3;
+        return CharonARKitIdentityFloat3x3;
 
     CGFloat focalLength = (resolution.width / 2) / tanf((float)(fieldOfView * M_PI / 360.0));
     // The principal point is the middle of the frame, which is where the optical axis lands.
@@ -635,8 +635,8 @@ static simd_float3x3 CharonRecordedIntrinsics = { 0 };
     _worldPoints = [NSMutableData data];
     _planes = [NSMutableArray array];
     _nextIdentifier = 1;
-    _cameraTransform = matrix_identity_float4x4;
-    _deviceTransform = matrix_identity_float4x4;
+    _cameraTransform = CharonARKitIdentityFloat4x4;
+    _deviceTransform = CharonARKitIdentityFloat4x4;
     _lastRotation = simd_quaternion(0.0f, 0.0f, 0.0f, 1.0f);
     _resolution = CGSizeZero;
     _lightEstimate = 1000;
@@ -850,7 +850,7 @@ static simd_float3x3 CharonRecordedIntrinsics = { 0 };
     // the patch search where to look and how far the camera turned.
     if (!_havePose) {
         _lastRotation = deviceRotation;
-        _cameraTransform = matrix_identity_float4x4;
+        _cameraTransform = CharonARKitIdentityFloat4x4;
         _havePose = YES;
     }
     // The attitude this frame is given, which is the gyroscope's last reading, and the one the

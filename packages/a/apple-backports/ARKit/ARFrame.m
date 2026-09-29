@@ -75,7 +75,7 @@ static simd_float4x4 CharonProjectionMatrix(simd_float3x3 intrinsics, CGSize ima
     if (zNear <= 0 || zFar <= zNear)
         zFar = zNear + 1.0;
     simd_float3x3 scaled = CharonScaledIntrinsics(intrinsics, image, viewport);
-    simd_float4x4 projection = matrix_identity_float4x4;
+    simd_float4x4 projection = CharonARKitIdentityFloat4x4;
     projection.columns[0] = (simd_float4){ scaled.columns[0][0], 0, 0, 0 };
     projection.columns[1] = (simd_float4){ scaled.columns[0][1], scaled.columns[1][1], 0, 0 };
     projection.columns[2] = (simd_float4){ scaled.columns[0][2], scaled.columns[1][2], 0, 0 };
@@ -196,7 +196,7 @@ static NSArray<ARHitTestResult *> *CharonHitTest(CharonARTracker *tracker, simd_
     if (!self)
         return nil;
     _transform = transform;
-    _projection = matrix_identity_float4x4;
+    _projection = CharonARKitIdentityFloat4x4;
     _transformTimestamp = timestamp;
     _imageResolution = resolution;
     _focalLength = focalLength;
@@ -386,7 +386,7 @@ static NSArray<ARHitTestResult *> *CharonHitTest(CharonARTracker *tracker, simd_
 - (simd_float3x3)intrinsics { return _camera.intrinsics; }
 - (simd_float4x4)cameraTransform { return _camera.transform; }
 - (simd_float4x4)projectionMatrix { return _camera.projectionMatrix; }
-- (simd_float4x4)displayTransform { return matrix_identity_float4x4; }
+- (simd_float4x4)displayTransform { return CharonARKitIdentityFloat4x4; }
 - (simd_float4x4)transform { return _deviceTransform; }
 - (CGSize)imageResolution { return _camera.imageResolution; }
 - (NSTimeInterval)timestamp { return _timestamp; }

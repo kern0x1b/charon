@@ -52,7 +52,7 @@
     _captureQueue.maxConcurrentOperationCount = 1;
     _captureQueue.name = @"space.kern0x1b.arkit.capture";
     _trackedRaycasts = [NSMutableArray array];
-    _worldOrigin = matrix_identity_float4x4;
+    _worldOrigin = CharonARKitIdentityFloat4x4;
     return self;
 }
 

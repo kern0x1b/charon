@@ -89,9 +89,9 @@ static inline BOOL CharonInvert4x4(simd_float4x4 m, simd_float4x4 *out)
 /// projects a frame to the middle of its picture and leaves a pose where it was.
 static inline simd_float4x4 CharonInverse(simd_float4x4 m)
 {
-    simd_float4x4 inverse = matrix_identity_float4x4;
+    simd_float4x4 inverse = CharonARKitIdentityFloat4x4;
     if (!CharonInvert4x4(m, &inverse))
-        return matrix_identity_float4x4;
+        return CharonARKitIdentityFloat4x4;
     return inverse;
 }
 

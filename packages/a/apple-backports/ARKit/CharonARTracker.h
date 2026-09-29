@@ -18,6 +18,20 @@
 #import <CoreGraphics/CoreGraphics.h>
 #import <CoreVideo/CoreVideo.h>
 #import <AVFoundation/AVFoundation.h>
+
+/// The identity matrices the library uses, its own.
+///
+/// simd declares matrix_identity_float3x3 and matrix_identity_float4x4 as `extern const` (the 16.4
+/// SDK's usr/include/simd/matrix.h:97-98), so the *definitions* live in libsimd - and the armv7
+/// release does not export them. A use of them in this library is therefore a weak import that is
+/// NULL on 6.1.3, and reading one is a crash, which is what the 6.1.3 gate named: "weakly imports 2
+/// symbols the armv7 release does not export".
+///
+/// The values are the identity - ones on the diagonal, zeros off it - and they were read out of the
+/// host's own libsimd rather than written from memory (the record is
+/// .agent-work/runs/identity/values.txt: "float4x4: 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1").
+static const simd_float3x3 CharonARKitIdentityFloat3x3 = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
+static const simd_float4x4 CharonARKitIdentityFloat4x4 = {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}};
 #import <simd/simd.h>
 
 NS_ASSUME_NONNULL_BEGIN
