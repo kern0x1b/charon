@@ -39,6 +39,7 @@ preview = """    if ([delegate respondsToSelector:preview])
         ((UITargetedDragPreview * (*)(id, SEL, id, id))objc_msgSend)(delegate, preview, self.control, (id)[UITargetedDragPreview class]);
 """
 assert s.count(perform) == 1 and s.count(preview) == 1, "the two calls to swap were not found"
+# the source has the drop first, as UITextDropping.h has it, so the mutant is the preview first
 s = s.replace(perform + preview, preview + perform)
 assert s != before
 open(dst, "w").write(s)

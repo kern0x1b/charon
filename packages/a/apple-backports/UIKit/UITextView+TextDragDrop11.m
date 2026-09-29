@@ -275,10 +275,10 @@ static const char CharonTextDropInteractionKey;
         UITextDropProposal *answer = ((UITextDropProposal * (*)(id, SEL, id, id))objc_msgSend)(delegate, proposal, self.control, request);
         request.proposal = answer;
     }
-    if ([delegate respondsToSelector:preview])
-        ((UITargetedDragPreview * (*)(id, SEL, id, id))objc_msgSend)(delegate, preview, self.control, (id)[UITargetedDragPreview class]);
     if ([delegate respondsToSelector:perform])
         ((void (*)(id, SEL, id, id))objc_msgSend)(delegate, perform, self.control, request);
+    if ([delegate respondsToSelector:preview])
+        ((UITargetedDragPreview * (*)(id, SEL, id, id))objc_msgSend)(delegate, preview, self.control, (id)[UITargetedDragPreview class]);
 }
 
 - (void)charon_sessionDidEnter:(id<UIDropSession>)session
