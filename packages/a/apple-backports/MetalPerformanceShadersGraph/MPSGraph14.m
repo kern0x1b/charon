@@ -22,16 +22,6 @@ typedef enum {
     CharonMPSGraphArityClamp
 } CharonMPSGraphArity;
 
-static double CharonMPSGraphElement(const MPSGraphTensorData *data, MPSDataType type, NSUInteger index)
-{
-    return CharonMPSLoad([data charon_mps_bytes], type, index);
-}
-
-static void CharonMPSGraphSetElement(MPSGraphTensorData *data, NSUInteger index, double value)
-{
-    CharonMPSStore([data charon_mps_bytes], data.dataType, index, value);
-}
-
 @implementation MPSGraph {
     MPSGraphDevice *_device;
     MPSGraphOptions _options;
