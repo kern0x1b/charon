@@ -1,0 +1,148 @@
+{
+  "framework": "AVFoundation",
+  "entries": [
+    {
+      "api": "AVMetadataIdentifierQuickTimeMetadataAutoLivePhoto",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 13.0 and no release this port targets exports a symbol of it; it is one of the 13.0 metadata key-space identifiers and object types, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"mdta/com.apple.quicktime.live-photo.auto\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/MetadataKeySpaces.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    },
+    {
+      "api": "AVMetadataIdentifierQuickTimeMetadataDetectedCatBody",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 13.0 and no release this port targets exports a symbol of it; it is one of the 13.0 metadata key-space identifiers and object types, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"mdta/com.apple.quicktime.detected-cat-body\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/MetadataKeySpaces.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    },
+    {
+      "api": "AVMetadataIdentifierQuickTimeMetadataDetectedDogBody",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 13.0 and no release this port targets exports a symbol of it; it is one of the 13.0 metadata key-space identifiers and object types, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"mdta/com.apple.quicktime.detected-dog-body\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/MetadataKeySpaces.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    },
+    {
+      "api": "AVMetadataIdentifierQuickTimeMetadataDetectedHumanBody",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 13.0 and no release this port targets exports a symbol of it; it is one of the 13.0 metadata key-space identifiers and object types, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"mdta/com.apple.quicktime.detected-human-body\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/MetadataKeySpaces.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    },
+    {
+      "api": "AVMetadataIdentifierQuickTimeMetadataDetectedSalientObject",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 13.0 and no release this port targets exports a symbol of it; it is one of the 13.0 metadata key-space identifiers and object types, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"mdta/com.apple.quicktime.detected-salient-object\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/MetadataKeySpaces.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    },
+    {
+      "api": "AVMetadataIdentifierQuickTimeMetadataLivePhotoVitalityScore",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 13.0 and no release this port targets exports a symbol of it; it is one of the 13.0 metadata key-space identifiers and object types, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"mdta/com.apple.quicktime.live-photo.vitality-score\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/MetadataKeySpaces.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    },
+    {
+      "api": "AVMetadataIdentifierQuickTimeMetadataLivePhotoVitalityScoringVersion",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 13.0 and no release this port targets exports a symbol of it; it is one of the 13.0 metadata key-space identifiers and object types, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"mdta/com.apple.quicktime.live-photo.vitality-scoring-version\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/MetadataKeySpaces.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    },
+    {
+      "api": "AVMetadataIdentifierQuickTimeMetadataSpatialOverCaptureQualityScore",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 13.0 and no release this port targets exports a symbol of it; it is one of the 13.0 metadata key-space identifiers and object types, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"mdta/com.apple.quicktime.spatial-overcapture.quality-score\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/MetadataKeySpaces.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    },
+    {
+      "api": "AVMetadataIdentifierQuickTimeMetadataSpatialOverCaptureQualityScoringVersion",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 13.0 and no release this port targets exports a symbol of it; it is one of the 13.0 metadata key-space identifiers and object types, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"mdta/com.apple.quicktime.spatial-overcapture.quality-scoring-version\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/MetadataKeySpaces.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    },
+    {
+      "api": "AVMetadataObjectTypeCatBody",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 13.0 and no release this port targets exports a symbol of it; it is one of the 13.0 metadata key-space identifiers and object types, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"catBody\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/MetadataKeySpaces.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    },
+    {
+      "api": "AVMetadataObjectTypeDogBody",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 13.0 and no release this port targets exports a symbol of it; it is one of the 13.0 metadata key-space identifiers and object types, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"dogBody\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/MetadataKeySpaces.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    },
+    {
+      "api": "AVMetadataObjectTypeHumanBody",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 13.0 and no release this port targets exports a symbol of it; it is one of the 13.0 metadata key-space identifiers and object types, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"humanBody\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/MetadataKeySpaces.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    },
+    {
+      "api": "AVMetadataObjectTypeSalientObject",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 13.0 and no release this port targets exports a symbol of it; it is one of the 13.0 metadata key-space identifiers and object types, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"salientObject\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/MetadataKeySpaces.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    }
+  ]
+}

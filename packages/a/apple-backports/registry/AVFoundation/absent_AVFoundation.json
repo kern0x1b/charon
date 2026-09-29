@@ -3352,136 +3352,6 @@
       "source": "SDK 16.4, AVFoundation"
     },
     {
-      "api": "AVMetadataIdentifierQuickTimeMetadataAutoLivePhoto",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataIdentifierQuickTimeMetadataDetectedCatBody",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataIdentifierQuickTimeMetadataDetectedDogBody",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataIdentifierQuickTimeMetadataDetectedHumanBody",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataIdentifierQuickTimeMetadataDetectedSalientObject",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataIdentifierQuickTimeMetadataLivePhotoVitalityScore",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataIdentifierQuickTimeMetadataLivePhotoVitalityScoringVersion",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataIdentifierQuickTimeMetadataSpatialOverCaptureQualityScore",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataIdentifierQuickTimeMetadataSpatialOverCaptureQualityScoringVersion",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataObjectTypeCatBody",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataObjectTypeDogBody",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataObjectTypeHumanBody",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataObjectTypeSalientObject",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
       "api": "AVMetadataSalientObject",
       "kind": "class",
       "introduced": "13.0",
@@ -3973,96 +3843,6 @@
     },
     {
       "api": "AVMediaCharacteristicContainsHDRVideo",
-      "kind": "constant",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataCommonIdentifierAccessibilityDescription",
-      "kind": "constant",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataCommonKeyAccessibilityDescription",
-      "kind": "constant",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataISOUserDataKeyAccessibilityDescription",
-      "kind": "constant",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataIdentifierISOUserDataAccessibilityDescription",
-      "kind": "constant",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataIdentifierQuickTimeMetadataAccessibilityDescription",
-      "kind": "constant",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataIdentifierQuickTimeMetadataLocationHorizontalAccuracyInMeters",
-      "kind": "constant",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataIdentifierQuickTimeUserDataAccessibilityDescription",
-      "kind": "constant",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataQuickTimeMetadataKeyAccessibilityDescription",
-      "kind": "constant",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataQuickTimeUserDataKeyAccessibilityDescription",
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
@@ -4792,66 +4572,6 @@
       "source": "SDK 16.4, AVFoundation"
     },
     {
-      "api": "AVCoordinatedPlaybackSuspensionReasonAudioSessionInterrupted",
-      "kind": "constant",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVCoordinatedPlaybackSuspensionReasonCoordinatedPlaybackNotPossible",
-      "kind": "constant",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVCoordinatedPlaybackSuspensionReasonPlayingInterstitial",
-      "kind": "constant",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVCoordinatedPlaybackSuspensionReasonStallRecovery",
-      "kind": "constant",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVCoordinatedPlaybackSuspensionReasonUserActionRequired",
-      "kind": "constant",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVCoordinatedPlaybackSuspensionReasonUserIsChangingCurrentTime",
-      "kind": "constant",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
       "api": "AVDelegatingPlaybackCoordinator",
       "kind": "class",
       "introduced": "15.0",
@@ -4912,26 +4632,6 @@
       "source": "SDK 16.4, AVFoundation"
     },
     {
-      "api": "AVMetadataIdentifierQuickTimeMetadataIsMontage",
-      "kind": "constant",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataQuickTimeMetadataKeyIsMontage",
-      "kind": "constant",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
       "api": "AVMutableVideoComposition.sourceSampleDataTrackIDs",
       "kind": "property",
       "introduced": "15.0",
@@ -4962,16 +4662,6 @@
       "source": "SDK 16.4, AVFoundation"
     },
     {
-      "api": "AVPlaybackCoordinatorOtherParticipantsDidChangeNotification",
-      "kind": "constant",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
       "api": "AVPlaybackCoordinatorPlaybackControlDelegate",
       "kind": "protocol",
       "introduced": "15.0",
@@ -4979,16 +4669,6 @@
       "status": "absent",
       "reason": "the protocol arrived in iOS 15, and nothing in iOS 6 sends or asks for what it declares",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVPlaybackCoordinatorSuspensionReasonsDidChangeNotification",
-      "kind": "constant",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, AVFoundation"
     },
     {
@@ -5142,96 +4822,6 @@
       "source": "SDK 16.4, AVFoundation"
     },
     {
-      "api": "AVPlayerRateDidChangeNotification",
-      "kind": "constant",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVPlayerRateDidChangeOriginatingParticipantKey",
-      "kind": "constant",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVPlayerRateDidChangeReasonAppBackgrounded",
-      "kind": "constant",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVPlayerRateDidChangeReasonAudioSessionInterrupted",
-      "kind": "constant",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVPlayerRateDidChangeReasonKey",
-      "kind": "constant",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVPlayerRateDidChangeReasonSetRateCalled",
-      "kind": "constant",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVPlayerRateDidChangeReasonSetRateFailed",
-      "kind": "constant",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVPlayerWaitingDuringInterstitialEventReason",
-      "kind": "constant",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVPlayerWaitingForCoordinatedPlaybackReason",
-      "kind": "constant",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
       "api": "AVSampleBufferAudioRendererOutputConfigurationDidChangeNotification",
       "kind": "constant",
       "introduced": "15.0",
@@ -5359,66 +4949,6 @@
       "status": "absent",
       "reason": "neither iOS 6 nor the backports give AVCaptureSession a property like it: it arrived in iOS 15",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataObjectTypeCodabarCode",
-      "kind": "constant",
-      "introduced": "15.4",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataObjectTypeGS1DataBarCode",
-      "kind": "constant",
-      "introduced": "15.4",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataObjectTypeGS1DataBarExpandedCode",
-      "kind": "constant",
-      "introduced": "15.4",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataObjectTypeGS1DataBarLimitedCode",
-      "kind": "constant",
-      "introduced": "15.4",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataObjectTypeMicroPDF417Code",
-      "kind": "constant",
-      "introduced": "15.4",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataObjectTypeMicroQRCode",
-      "kind": "constant",
-      "introduced": "15.4",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, AVFoundation"
     },
     {

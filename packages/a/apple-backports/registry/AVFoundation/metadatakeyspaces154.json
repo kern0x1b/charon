@@ -1,0 +1,71 @@
+{
+  "framework": "AVFoundation",
+  "entries": [
+    {
+      "api": "AVMetadataObjectTypeCodabarCode",
+      "kind": "constant",
+      "introduced": "15.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 15.4 and no release this port targets exports a symbol of it; it is one of the 15.4 machine-readable object types, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"Codabar\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/MetadataKeySpaces.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    },
+    {
+      "api": "AVMetadataObjectTypeGS1DataBarCode",
+      "kind": "constant",
+      "introduced": "15.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 15.4 and no release this port targets exports a symbol of it; it is one of the 15.4 machine-readable object types, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"org.gs1.GS1DataBar\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/MetadataKeySpaces.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    },
+    {
+      "api": "AVMetadataObjectTypeGS1DataBarExpandedCode",
+      "kind": "constant",
+      "introduced": "15.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 15.4 and no release this port targets exports a symbol of it; it is one of the 15.4 machine-readable object types, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"org.gs1.GS1DataBarExpanded\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/MetadataKeySpaces.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    },
+    {
+      "api": "AVMetadataObjectTypeGS1DataBarLimitedCode",
+      "kind": "constant",
+      "introduced": "15.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 15.4 and no release this port targets exports a symbol of it; it is one of the 15.4 machine-readable object types, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"org.gs1.GS1DataBarLimited\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/MetadataKeySpaces.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    },
+    {
+      "api": "AVMetadataObjectTypeMicroPDF417Code",
+      "kind": "constant",
+      "introduced": "15.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 15.4 and no release this port targets exports a symbol of it; it is one of the 15.4 machine-readable object types, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"org.iso.MicroPDF417\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/MetadataKeySpaces.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    },
+    {
+      "api": "AVMetadataObjectTypeMicroQRCode",
+      "kind": "constant",
+      "introduced": "15.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 15.4 and no release this port targets exports a symbol of it; it is one of the 15.4 machine-readable object types, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"org.iso.MicroQR\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/MetadataKeySpaces.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    }
+  ]
+}

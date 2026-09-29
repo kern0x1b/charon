@@ -1,0 +1,214 @@
+{
+  "framework": "AVFoundation",
+  "entries": [
+    {
+      "api": "AVCoordinatedPlaybackSuspensionReasonAudioSessionInterrupted",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 15.0 and no release this port targets exports a symbol of it; it is one of the 15.0 coordinated-playback suspension reasons, the playback-coordinator notifications and the player rate-change keys, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"AVCoordinatedPlaybackSuspensionReasonAudioSessionInterrupted\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/CoordinatedPlaybackReasons.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    },
+    {
+      "api": "AVCoordinatedPlaybackSuspensionReasonCoordinatedPlaybackNotPossible",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 15.0 and no release this port targets exports a symbol of it; it is one of the 15.0 coordinated-playback suspension reasons, the playback-coordinator notifications and the player rate-change keys, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"AVCoordinatedPlaybackSuspensionReasonCoordinatedPlaybackNotPossible\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/CoordinatedPlaybackReasons.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    },
+    {
+      "api": "AVCoordinatedPlaybackSuspensionReasonPlayingInterstitial",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 15.0 and no release this port targets exports a symbol of it; it is one of the 15.0 coordinated-playback suspension reasons, the playback-coordinator notifications and the player rate-change keys, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"AVCoordinatedPlaybackSuspensionReasonPlayingInterstitial\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/CoordinatedPlaybackReasons.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    },
+    {
+      "api": "AVCoordinatedPlaybackSuspensionReasonStallRecovery",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 15.0 and no release this port targets exports a symbol of it; it is one of the 15.0 coordinated-playback suspension reasons, the playback-coordinator notifications and the player rate-change keys, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"AVCoordinatedPlaybackSuspensionReasonStallRecovery\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/CoordinatedPlaybackReasons.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    },
+    {
+      "api": "AVCoordinatedPlaybackSuspensionReasonUserActionRequired",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 15.0 and no release this port targets exports a symbol of it; it is one of the 15.0 coordinated-playback suspension reasons, the playback-coordinator notifications and the player rate-change keys, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"AVCoordinatedPlaybackSuspensionReasonUserActionRequired\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/CoordinatedPlaybackReasons.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    },
+    {
+      "api": "AVCoordinatedPlaybackSuspensionReasonUserIsChangingCurrentTime",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 15.0 and no release this port targets exports a symbol of it; it is one of the 15.0 coordinated-playback suspension reasons, the playback-coordinator notifications and the player rate-change keys, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"AVCoordinatedPlaybackSuspensionReasonUserIsChangingCurrentTime\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/CoordinatedPlaybackReasons.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    },
+    {
+      "api": "AVMetadataIdentifierQuickTimeMetadataIsMontage",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 15.0 and no release this port targets exports a symbol of it; it is one of the 15.0 coordinated-playback suspension reasons, the playback-coordinator notifications and the player rate-change keys, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"mdta/com.apple.quicktime.is-montage\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/CoordinatedPlaybackReasons.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    },
+    {
+      "api": "AVMetadataQuickTimeMetadataKeyIsMontage",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 15.0 and no release this port targets exports a symbol of it; it is one of the 15.0 coordinated-playback suspension reasons, the playback-coordinator notifications and the player rate-change keys, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"com.apple.quicktime.is-montage\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/CoordinatedPlaybackReasons.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    },
+    {
+      "api": "AVPlaybackCoordinatorOtherParticipantsDidChangeNotification",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 15.0 and no release this port targets exports a symbol of it; it is one of the 15.0 coordinated-playback suspension reasons, the playback-coordinator notifications and the player rate-change keys, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"AVPlaybackCoordinatorOtherParticipantsDidChangeNotification\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/CoordinatedPlaybackReasons.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    },
+    {
+      "api": "AVPlaybackCoordinatorSuspensionReasonsDidChangeNotification",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 15.0 and no release this port targets exports a symbol of it; it is one of the 15.0 coordinated-playback suspension reasons, the playback-coordinator notifications and the player rate-change keys, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"AVPlaybackCoordinatorSuspensionReasonsDidChangeNotification\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/CoordinatedPlaybackReasons.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    },
+    {
+      "api": "AVPlayerRateDidChangeNotification",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 15.0 and no release this port targets exports a symbol of it; it is one of the 15.0 coordinated-playback suspension reasons, the playback-coordinator notifications and the player rate-change keys, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"AVPlayerRateDidChangeNotification\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/CoordinatedPlaybackReasons.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    },
+    {
+      "api": "AVPlayerRateDidChangeOriginatingParticipantKey",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 15.0 and no release this port targets exports a symbol of it; it is one of the 15.0 coordinated-playback suspension reasons, the playback-coordinator notifications and the player rate-change keys, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"AVPlayerRateDidChangeOriginatingParticipantKey\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/CoordinatedPlaybackReasons.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    },
+    {
+      "api": "AVPlayerRateDidChangeReasonAppBackgrounded",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 15.0 and no release this port targets exports a symbol of it; it is one of the 15.0 coordinated-playback suspension reasons, the playback-coordinator notifications and the player rate-change keys, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"AVPlayerRateDidChangeReasonAppBackgrounded\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/CoordinatedPlaybackReasons.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    },
+    {
+      "api": "AVPlayerRateDidChangeReasonAudioSessionInterrupted",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 15.0 and no release this port targets exports a symbol of it; it is one of the 15.0 coordinated-playback suspension reasons, the playback-coordinator notifications and the player rate-change keys, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"AVPlayerRateDidChangeReasonAudioSessionInterrupted\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/CoordinatedPlaybackReasons.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    },
+    {
+      "api": "AVPlayerRateDidChangeReasonKey",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 15.0 and no release this port targets exports a symbol of it; it is one of the 15.0 coordinated-playback suspension reasons, the playback-coordinator notifications and the player rate-change keys, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"AVPlayerRateDidChangeReasonKey\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/CoordinatedPlaybackReasons.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    },
+    {
+      "api": "AVPlayerRateDidChangeReasonSetRateCalled",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 15.0 and no release this port targets exports a symbol of it; it is one of the 15.0 coordinated-playback suspension reasons, the playback-coordinator notifications and the player rate-change keys, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"AVPlayerRateDidChangeReasonSetRateCalled\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/CoordinatedPlaybackReasons.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    },
+    {
+      "api": "AVPlayerRateDidChangeReasonSetRateFailed",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 15.0 and no release this port targets exports a symbol of it; it is one of the 15.0 coordinated-playback suspension reasons, the playback-coordinator notifications and the player rate-change keys, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"AVPlayerRateDidChangeReasonSetRateFailed\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/CoordinatedPlaybackReasons.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    },
+    {
+      "api": "AVPlayerWaitingDuringInterstitialEventReason",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 15.0 and no release this port targets exports a symbol of it; it is one of the 15.0 coordinated-playback suspension reasons, the playback-coordinator notifications and the player rate-change keys, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"AVPlayerWaitingDuringInterstitialEventReason\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/CoordinatedPlaybackReasons.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    },
+    {
+      "api": "AVPlayerWaitingForCoordinatedPlaybackReason",
+      "kind": "constant",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 15.0 and no release this port targets exports a symbol of it; it is one of the 15.0 coordinated-playback suspension reasons, the playback-coordinator notifications and the player rate-change keys, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"AVPlayerWaitingForCoordinatedPlaybackReason\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/CoordinatedPlaybackReasons.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    }
+  ]
+}

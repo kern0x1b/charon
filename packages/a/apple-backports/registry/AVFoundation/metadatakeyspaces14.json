@@ -1,0 +1,104 @@
+{
+  "framework": "AVFoundation",
+  "entries": [
+    {
+      "api": "AVMetadataCommonIdentifierAccessibilityDescription",
+      "kind": "constant",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 14.0 and no release this port targets exports a symbol of it; it is one of the 14.0 accessibility-description identifiers, in the four key spaces, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"common/accessibilityDescription\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/MetadataKeySpaces.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    },
+    {
+      "api": "AVMetadataCommonKeyAccessibilityDescription",
+      "kind": "constant",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 14.0 and no release this port targets exports a symbol of it; it is one of the 14.0 accessibility-description identifiers, in the four key spaces, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"accessibilityDescription\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/MetadataKeySpaces.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    },
+    {
+      "api": "AVMetadataISOUserDataKeyAccessibilityDescription",
+      "kind": "constant",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 14.0 and no release this port targets exports a symbol of it; it is one of the 14.0 accessibility-description identifiers, in the four key spaces, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"ades\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/MetadataKeySpaces.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    },
+    {
+      "api": "AVMetadataIdentifierISOUserDataAccessibilityDescription",
+      "kind": "constant",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 14.0 and no release this port targets exports a symbol of it; it is one of the 14.0 accessibility-description identifiers, in the four key spaces, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"uiso/ades\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/MetadataKeySpaces.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    },
+    {
+      "api": "AVMetadataIdentifierQuickTimeMetadataAccessibilityDescription",
+      "kind": "constant",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 14.0 and no release this port targets exports a symbol of it; it is one of the 14.0 accessibility-description identifiers, in the four key spaces, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"mdta/com.apple.quicktime.accessibility.description\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/MetadataKeySpaces.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    },
+    {
+      "api": "AVMetadataIdentifierQuickTimeMetadataLocationHorizontalAccuracyInMeters",
+      "kind": "constant",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 14.0 and no release this port targets exports a symbol of it; it is one of the 14.0 accessibility-description identifiers, in the four key spaces, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"mdta/com.apple.quicktime.location.accuracy.horizontal\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/MetadataKeySpaces.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    },
+    {
+      "api": "AVMetadataIdentifierQuickTimeUserDataAccessibilityDescription",
+      "kind": "constant",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 14.0 and no release this port targets exports a symbol of it; it is one of the 14.0 accessibility-description identifiers, in the four key spaces, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"udta/%A9ade\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/MetadataKeySpaces.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    },
+    {
+      "api": "AVMetadataQuickTimeMetadataKeyAccessibilityDescription",
+      "kind": "constant",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 14.0 and no release this port targets exports a symbol of it; it is one of the 14.0 accessibility-description identifiers, in the four key spaces, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"com.apple.quicktime.accessibility.description\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/MetadataKeySpaces.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    },
+    {
+      "api": "AVMetadataQuickTimeUserDataKeyAccessibilityDescription",
+      "kind": "constant",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the name arrived in iOS 14.0 and no release this port targets exports a symbol of it; it is one of the 14.0 accessibility-description identifiers, in the four key spaces, a fixed string Apple's own tables name, and an application that writes the name at compile time needs a symbol of that name to bind to",
+      "effect": "answers the string the framework itself answers for this name, \"@ade\" - a key or an object type an application writes into a metadata item and gets back as the identifier it was given",
+      "facts": "facts/AVFoundation/MetadataKeySpaces.md",
+      "source": "the host's own AVFoundation, read at runtime: one dlsym of the exported symbol per name, then the same table read out of two builds and diffed - Apple's framework alone and the port's four files beside it in one binary with the names renamed (tests/backports/host/avf-metadata)"
+    }
+  ]
+}
