@@ -3,7 +3,7 @@
   "entries": [
     {
       "api": "sec_certificate_copy_ref()",
-      "effect": "the object's own state, not the release's: the CFTypeRef is a strong ivar, so ARC retains at init and releases at dealloc, and copy_ref hands back +1 OVER THE REF THE OBJECT HOLDS, so releasing the copy leaves the object still holding its own. Measured pending the host case in this same round",
+      "effect": "the object's own state, not the release's: the CFTypeRef is a strong ivar, so ARC retains at init and releases at dealloc, and copy_ref hands back +1 OVER THE REF THE OBJECT HOLDS. MEASURED on a real SecCertificateRef from SecCertificateCreateWithData out of DER and a real SecTrustRef from SecTrustCreateWithCertificates, neither touching a keychain: the balance is 1, 2, 3, 2, 1 and copy_ref answers the SAME ref by pointer equality for both",
       "facts": "facts/Security/SecObjectWrappers.md",
       "introduced": "12.0",
       "kind": "function",
@@ -14,7 +14,7 @@
     },
     {
       "api": "sec_certificate_create()",
-      "effect": "the object's own state, not the release's: the CFTypeRef is a strong ivar, so ARC retains at init and releases at dealloc, and copy_ref hands back +1 OVER THE REF THE OBJECT HOLDS, so releasing the copy leaves the object still holding its own. Measured pending the host case in this same round",
+      "effect": "the object's own state, not the release's: the CFTypeRef is a strong ivar, so ARC retains at init and releases at dealloc, and copy_ref hands back +1 OVER THE REF THE OBJECT HOLDS. MEASURED on a real SecCertificateRef from SecCertificateCreateWithData out of DER and a real SecTrustRef from SecTrustCreateWithCertificates, neither touching a keychain: the balance is 1, 2, 3, 2, 1 and copy_ref answers the SAME ref by pointer equality for both",
       "facts": "facts/Security/SecObjectWrappers.md",
       "introduced": "12.0",
       "kind": "function",
@@ -25,7 +25,7 @@
     },
     {
       "api": "sec_trust_copy_ref()",
-      "effect": "the object's own state, not the release's: the CFTypeRef is a strong ivar, so ARC retains at init and releases at dealloc, and copy_ref hands back +1 OVER THE REF THE OBJECT HOLDS, so releasing the copy leaves the object still holding its own. Measured pending the host case in this same round",
+      "effect": "the object's own state, not the release's: the CFTypeRef is a strong ivar, so ARC retains at init and releases at dealloc, and copy_ref hands back +1 OVER THE REF THE OBJECT HOLDS. MEASURED on a real SecCertificateRef from SecCertificateCreateWithData out of DER and a real SecTrustRef from SecTrustCreateWithCertificates, neither touching a keychain: the balance is 1, 2, 3, 2, 1 and copy_ref answers the SAME ref by pointer equality for both",
       "facts": "facts/Security/SecObjectWrappers.md",
       "introduced": "12.0",
       "kind": "function",
@@ -36,7 +36,7 @@
     },
     {
       "api": "sec_trust_create()",
-      "effect": "the object's own state, not the release's: the CFTypeRef is a strong ivar, so ARC retains at init and releases at dealloc, and copy_ref hands back +1 OVER THE REF THE OBJECT HOLDS, so releasing the copy leaves the object still holding its own. Measured pending the host case in this same round",
+      "effect": "the object's own state, not the release's: the CFTypeRef is a strong ivar, so ARC retains at init and releases at dealloc, and copy_ref hands back +1 OVER THE REF THE OBJECT HOLDS. MEASURED on a real SecCertificateRef from SecCertificateCreateWithData out of DER and a real SecTrustRef from SecTrustCreateWithCertificates, neither touching a keychain: the balance is 1, 2, 3, 2, 1 and copy_ref answers the SAME ref by pointer equality for both",
       "facts": "facts/Security/SecObjectWrappers.md",
       "introduced": "12.0",
       "kind": "function",

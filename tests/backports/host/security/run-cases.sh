@@ -68,13 +68,17 @@ run_case() {
 # A mutation must make its comparison FAIL. A mutation that still passes is a useless mutation, and a run
 # that accepted one would be reporting coverage it does not have - so that is an error, not a pass.
 run_mutation() {
-    name=$1; compare=$2
+    name=$1; compare=$2; casefile=${3:-$name}
     if [ ! -f "$build/mutant-$name.m" ]; then
         echo "RED    $name mutation NOT BUILT - nothing proved the case can fail"
         failures=$((failures + 1))
         return
     fi
-    if ! xcrun clang $common "$H/$name.m" "$build/mutant-$name.m" \
+    if [ ! -f "$build/mutant-$name.m" ]; then
+        echo "RED    $name mutation NOT BUILT - nothing proved the case can fail"
+        failures=$((failures + 1)); return
+    fi
+    if ! xcrun clang $common "$H/$casefile.m" "$build/mutant-$name.m" \
          -framework Foundation -framework Security -framework CoreFoundation \
          -o "$build/mutant-$name" > "$build/mutant-$name.log" 2>&1; then
         echo "BUILD  $name mutation FAILED to build"
@@ -115,6 +119,7 @@ F=$S/SecurityFunctions10_0_1.m
 D=$S/SecCertificateNameDER10_3.m
 N=$S/SecTrustNetworkFetch7_0.m
 G=$S/SecTrustGetTrustResult7_0.m
+O=$S/SecObjectWrappers12_0.m
 
 echo "== the Security host cases, from $(git -C "$work" rev-parse --short HEAD 2>/dev/null || echo '?') =="
 # The two verdicts a driver must keep apart, checked first so a driver that has conflated them says so
@@ -208,6 +213,18 @@ mutate "$N" "$build/mutant-network-fetch.m" \
 '        answer = CFSetContainsValue(CharonSecurityNetworkFetchAllowed, trust) ? true : false;' \
 '        answer = false;   // MUTANT: the set is consulted and the flag dropped' \
 'the network-fetch flag is dropped after being looked up'
+mutate "$O" "$build/mutant-sec-object-otherref.m" \
+'    SecCertificateRef held = [(CharonSecCertificate *)certificate charonCertificate];' \
+'    SecCertificateRef held = [(CharonSecCertificate *)certificate charonCertificate];
+    // MUTANT: answer a NEW ref over the same DER. CFEqual says it is the same certificate and the
+    // pointer says it is not, so ONLY the identity check can tell it apart from the caller\x27s
+    return held ? (SecCertificateRef)SecCertificateCreateWithData(NULL, SecCertificateCopyData(held)) : NULL;' \
+'copy_ref answers a NEW ref over the same DER'
+mutate "$O" "$build/mutant-sec-object-noretain.m" \
+'        _certificate = certificate ? (SecCertificateRef)CFRetain(certificate) : NULL;' \
+'        _certificate = certificate;   // MUTANT: the retain is DROPPED, so the object holds a
+        // reference it does not own and gives someone else\x27s away' \
+'the creator does not retain, so the object holds a reference it does not own'
 mutate "$G" "$build/mutant-trust-result.m" \
 '    return SecTrustEvaluate(trust, result);   // the release'"'"'s own, iOS 2.0' \
 '    *result = kSecTrustResultProceed;   // MUTANT: a verdict invented here
@@ -221,6 +238,8 @@ run_mutation attributes        compare-attributes.py
 run_mutation certificate-name  compare-certificate-name.py
 run_mutation certificate-fields compare-certificate-fields.py
 run_mutation network-fetch     compare-network-fetch.py
+run_mutation sec-object-otherref compare-sec-object-wrappers.py sec-object-wrappers
+run_mutation sec-object-noretain compare-sec-object-wrappers.py sec-object-wrappers
 run_mutation trust-result      compare-trust-result.py
 
 # --- the fuzz: no comparison, it must simply not crash, and it is built with the sanitizers on ---
