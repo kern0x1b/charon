@@ -78,9 +78,15 @@
         return nil;
     }
     // The characteristics of a group are reached through -mediaCharacteristics, which the SDK does
-    // not declare as a property on the class, so it is sent behind a respondsToSelector: guard: the
-    // port does not carry AVMediaSelectionGroup yet (it is in the next slice), and a call the
-    // compiler cannot see is a call the differential can still exercise.
+    // not declare as a property on the class, so it is sent behind a respondsToSelector: guard.
+    //
+    // **A local @interface declaring that selector would be the better shape, and the declaration
+    // belongs in the slice that carries AVMediaSelectionGroup, not here.** That class is the
+    // RELEASE's (its own row is owed, and it is the NONE-of-the-fifteen group), so declaring
+    // -mediaCharacteristics on it from this file would put a port-owned declaration on a class the
+    // port does not own, and the next slice would have to take it back. Until then the guard is
+    // honest about the state: the member is reached because the compiler cannot see it, and the
+    // differential can still exercise the row.
     id group = (id)mediaSelectionGroup;
     if (![group respondsToSelector:@selector(mediaCharacteristics)]) {
         return nil;
@@ -133,10 +139,10 @@
     if (!mediaSelectionOption || !mediaSelectionGroup) {
         return;
     }
-    // The characteristics of a group are reached through -mediaCharacteristics, which the SDK does
-    // not declare as a property on the class, so it is sent behind a respondsToSelector: guard: the
-    // port does not carry AVMediaSelectionGroup yet - it is in the next slice - and a call the
-    // compiler cannot see is a call the differential can still exercise.
+    // -mediaCharacteristics is not a declared property on the class the port holds here, so it goes
+    // behind a respondsToSelector: guard; the declaration that would replace the cast belongs in the
+    // slice that carries AVMediaSelectionGroup, which is the release's class and is owed. See the
+    // same note on -selectedMediaOptionInMediaSelectionGroup: above.
     id group = (id)mediaSelectionGroup;
     NSArray *characteristics = [group respondsToSelector:@selector(mediaCharacteristics)]
         ? ((id (*)(id, SEL))objc_msgSend)(group, @selector(mediaCharacteristics)) : nil;

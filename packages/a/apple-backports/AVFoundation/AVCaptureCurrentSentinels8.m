@@ -27,8 +27,10 @@
 // which is a real gain pair and so is NOT a safe sentinel, and the header's own answer for it is what
 // is written here rather than something safer-looking.
 //
-// The 8.0 rung is the first held rung that exports these four names - measured over every held cache
-// with _NSFileSize planted as a control - so this is one object and no band finds a mix.
+// The 8.0 rung is the first held rung that exports these FIVE names - measured over every held
+// cache with _NSFileSize planted as a control, and with a nonsense symbol in none of them - so this is
+// one object and no band finds a mix. The five are the two CMTime/float sentinels above plus the
+// three FLT_MAX floats; the headline count is five because the file defines five.
 
 const float AVCaptureISOCurrent = 3.40282347e+38f;
 const float AVCaptureExposureTargetBiasCurrent = 3.40282347e+38f;

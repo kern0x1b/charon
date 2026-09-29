@@ -25,11 +25,20 @@ set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 root=$(cd "$here/../../../.." && pwd)
 avf=$root/packages/a/apple-backports/AVFoundation
-# Per side, and they DIFFER on purpose: the port answers the 12.0 initializer the host cannot, so the
-# port's table is two rows longer. Asserting one number for both would be asserting a falsehood in
-# whichever direction it was wrong.
-expected_host=${AVF_DESC_ROWS_HOST:-42}
-expected_port=${AVF_DESC_ROWS_PORT:-42}
+# What the code actually does, and what the comment above it used to claim instead: both sides emit
+# the SAME 49 rows, because the probe asks both builds the same questions. Two of those 49 have no
+# host oracle - the 12.0 initializer, which this host's criteria factory cannot build - and the join
+# holds them against the port's own unmutated baseline rather than against the host. So the two
+# numbers are equal, and the earlier comment here ("they DIFFER on purpose", "the port's table is
+# two rows longer", "asserting one number for both would be asserting a falsehood") described a
+# difference in LENGTH that this harness does not model: the port-only rows are the same rows, not
+# extra ones. The comment contradicted the two lines under it, and a reader who took it at its word
+# would have deleted one of the two variables.
+#
+# They are kept as two variables because they are the two SIDES of the same claim - a table that
+# silently lost rows on one side would otherwise not be noticed - and both are 49.
+expected_host=${AVF_DESC_ROWS_HOST:-49}
+expected_port=${AVF_DESC_ROWS_PORT:-49}
 sources="AVPlayerMediaSelectionCriteria7 AVPlayerMediaSelectionCriteria7Members AVCaptureBracket8 AVAssetResourceRenewalRequest8 AVMediaSelection9"
 control=${CONTROL:-0}
 break=${BREAK:-0}
@@ -69,11 +78,22 @@ PERTURB
 import sys
 path = sys.argv[1]
 text = open(path).read()
-before = 'ISO:iso];'
-after = 'ISO:iso * 2.0f];'
+# A unique anchor: the manual factory's own call, not the bare "ISO:iso];" which the apply-guard
+# correctly found twice.
+before = "exposureDuration:exposureDuration\n                                                        ISO:iso];"
+after = "exposureDuration:exposureDuration\n                                                        ISO:iso * 2.0f];"
 if before not in text:
     raise SystemExit("the mutant did not apply, so this run proves nothing")
-open(path, 'w').write(text.replace(before, after))
+# the apply-guard, both ways: the target was there, and after the change it is GONE. A replacement
+# that leaves the original behind would compile, run, and change nothing - which is what the first
+# two aims of this mutation did.
+if text.count(before) != 1:
+    raise SystemExit("the mutant target is not unique (%d matches), so this run proves nothing" % text.count(before))
+out = text.replace(before, after)
+if out.count(before) != 0 or out.count(after) != 1:
+    raise SystemExit("the mutant did not take, so this run proves nothing")
+open(path, "w").write(out)
+print("# the mutation applied: one target, gone afterwards, one replacement")
 PERTURB
     fi
 fi
@@ -99,7 +119,7 @@ env -u AVFDESCPROBE "$build/host" > "$build/host.table" 2> "$build/host.stderr" 
 
 # 2. the same probe against the port's own classes
 # shellcheck disable=SC2086
-xcrun clang -fobjc-arc -w -I"$avf" $renames "$here/probe.m" $objects \
+xcrun clang -fobjc-arc -w -DCHARON_PORT_BUILD=1 -I"$avf" $renames "$here/probe.m" $objects \
     -framework Foundation -framework AVFoundation -framework CoreMedia \
     -o "$build/port" > "$build/port.log" 2>&1 || {
         echo "FAIL: the port probe did not link - a name the port does not define is a link error"
@@ -146,56 +166,104 @@ done
 
 diff -u "$build/host.table" "$build/port.table" > "$build/diff.log" 2>&1 && verdict=differs0 || verdict=differs
 # the row count that actually differ, so the plants can be checked against a number and not a feeling
-changed=$(python3 - "$build/host.table" "$build/port.table" "$baseline_dir/port.baseline" <<'PY'
+# The two rows where the PORT answers a header-declared member and this host does not. Measured on
+# the host: its AVMediaSelection own-method list, read with class_copyMethodList, carries
+# -selectedMediaOptionInMediaSelectionGroup: and NOT these two, and asking an INSTANCE for them
+# answers no. The 26.2 header declares all three. So the port answers MORE than the host here - the
+# direction the policy asks for, and the same situation as the body-object members in the earlier
+# slices - and it is an ALLOWANCE with a measured reason, not a failure. Written to a file because the
+# python below cannot see a shell variable.
+cat > "$build/allowed.tsv" <<'ALLOWED'
+AVMediaSelection RESPONDS selectedMediaOptions	the header declares it; this host's own method list for AVMediaSelection carries -selectedMediaOptionInMediaSelectionGroup: and not this, and an instance answers no
+AVMediaSelection RESPONDS mediaSelectionGroups	the header declares it; same measurement - the host's own list has the one selector, and an instance answers no to this
+ALLOWED
+
+counts=$(python3 - "$build/host.table" "$build/port.table" "$baseline_dir/port.baseline" "$build/rows.log" "$build/allowed.tsv" <<'PYEOF'
+import os
 import sys
-def load(p):
-    d={}
-    for line in open(p):
+
+NO_ORACLE = "no-oracle-forwarding-object"
+
+def load(path):
+    rows = {}
+    if not path:
+        return rows
+    for line in open(path):
         if " = " in line:
-            k,_,v=line.rstrip("\n").partition(" = ")
-            d[k.strip()]=v.strip()
-    return d
-NO_ORACLE="no-oracle-forwarding-object"
-a,b=load(sys.argv[1]),load(sys.argv[2])
-base=load(sys.argv[3]) if len(sys.argv)>3 else {}
-# A row where either side answers "no oracle" is a PORT-ONLY row: the host has the class and the
-# framework is the oracle, but this instance is a forwarding object, so there is nothing to compare
-# against and the row is held against the port's own unmutated baseline instead. Comparing it
-# host-against-port would be comparing a value with a refusal.
-n=0
-for k in set(a)|set(b):
-    if a.get(k)==b.get(k) and NO_ORACLE not in (a.get(k) or ""):
+            key, _, value = line.rstrip("\n").partition(" = ")
+            rows[key.strip()] = value.strip()
+    return rows
+
+host = load(sys.argv[1])
+port = load(sys.argv[2])
+base = load(sys.argv[3]) if len(sys.argv) > 3 else {}
+# The differing rows go to a FILE and only the two counts come back on stdout: mixed output here made
+# `set --` bind a diagnostic line as the count, and `set -u` then failed on $2.
+allowed_more = {}
+if len(sys.argv) > 5 and os.path.exists(sys.argv[5]):
+    for line in open(sys.argv[5]):
+        key, _, reason = line.rstrip("\n").partition("\t")
+        if key:
+            allowed_more[key] = reason
+report = open(sys.argv[4], "w") if len(sys.argv) > 4 else sys.stdout
+say = report.write
+
+differs = 0
+portonly = 0
+allowed = 0        # rows where the port answers a header-declared member and this host does not
+for k in set(host) | set(port):
+    hv, pv, bv = host.get(k), port.get(k), base.get(k)
+    # A ~ row is PORT-ONLY: it is about a value the port stores, for which there is no host oracle,
+    # so it is held against the port's own unmutated baseline. So is any row either side answers
+    # NO_ORACLE for - the class exists and the framework is the oracle, but this instance is a
+    # forwarding object, so there is nothing here to read. A ~ row must NEVER read the host side.
+    if k.startswith("~") or NO_ORACLE in ((hv or "") + (pv or "")):
+        portonly += 1
+        if bv is not None and pv == bv:
+            continue            # port-only, and unchanged against the port's own baseline
+        say("PORT-ONLY  %-70s port=[%s] baseline=[%s] host=[%s]\n" % (k, pv, bv, hv))
+        differs += 1
         continue
-    if NO_ORACLE in (a.get(k) or "") and base.get(k) is not None and b.get(k)==base.get(k):
-        n+=1   # port-only: it matches the port's own baseline, so nothing differs
+    if k in allowed_more:
+        allowed += 1
+        say("ALLOWED    %-70s host=[%s] port=[%s] - %s\n" % (k, hv, pv, allowed_more[k]))
         continue
-    n+=1
-print(n)
-PY
+    if hv != pv:
+        say("DIFFERS    %-70s host=[%s] port=[%s] baseline=[%s]\n" % (k, hv, pv, bv))
+        differs += 1
+if report is not sys.stdout:
+    report.close()
+print("%d %d %d" % (differs, portonly, allowed))
+PYEOF
 )
-echo "rows that differ: $changed"
+set -- $counts
+differs_n=$1
+portonly_n=$2
+allowed_n=$3
+[ -s "$build/rows.log" ] && cat "$build/rows.log"
+echo "rows that differ: $differs_n   port-only rows (no host oracle, held against the baseline): $portonly_n   allowed (the port answers more): $allowed_n"
 
 if [ "$mutant" != 0 ] && [ "$control" = 0 ]; then
-    if [ "$verdict" = differs0 ]; then
+    if [ "$differs_n" = 0 ]; then
         echo "FAIL: the mutation left the tables equal, so this check cannot fail and proves nothing"
         exit 1
     fi
-    echo "ok  the mutation was noticed, on $changed row(s):"
+    echo "ok  the mutation was noticed, on $differs_n row(s):"
     sed -n '1,24p' "$build/diff.log"
     exit 0
 fi
 if [ "$mutant" != 0 ] && [ "$control" != 0 ]; then
-    if [ "$verdict" != differs0 ]; then
+    if [ "$differs_n" != 0 ]; then
         echo "FAIL: the control is not clean: the unmutated source through the identical path"
-        echo "      still differs on $changed row(s), so the red is the path and not the mutation"
+        echo "      still differs on $differs_n row(s), so the red is the path and not the mutation"
         exit 1
     fi
     echo "ok  the control is clean: the unmutated source through the identical build-and-run path"
     exit 0
 fi
 
-if [ "$verdict" != differs0 ]; then
-    echo "FAIL: the port's table differs from the host's on $changed row(s)"
+if [ "$differs_n" != 0 ]; then
+    echo "FAIL: the port's table differs from the host's on $differs_n row(s)"
     cat "$build/diff.log"
     exit 1
 fi
