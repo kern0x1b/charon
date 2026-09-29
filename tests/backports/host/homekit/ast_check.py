@@ -227,6 +227,8 @@ def _worktree_root(here):
     return here
 
 
+PORT_HEADER_DIR = None
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 # this worktree's own run directory: a control's scratch copy is band output and belongs under
 # .agent-work/runs/, never in a system temp path
@@ -240,7 +242,13 @@ def ast(root, name):
         # fail on the port's source rather than on anything the check is about.
         "xcrun", "clang", "-fsyntax-only", "-fobjc-arc", "-target", TARGET[0], "-isysroot", TARGET[1],
         "-I", HM_HEADERS, "-I", os.path.dirname(root), "-I", os.path.dirname(os.path.dirname(root)),
+        # BOTH of these, and they are not the same variable: PORT_INCLUDE is where an object's FILE is
+        # found, and a control redirects it at a scratch directory, while PORT_HEADER_DIR is the port's own
+        # header directory, which a scratch copy still needs because it imports CharonHomeKitInternal.h.
+        # Conflating them is what made every mutant's scratch file fail to compile and read as a check that
+        # could not fail.
         *([ "-I", PORT_INCLUDE ] if PORT_INCLUDE else []),
+        *([ "-I", PORT_HEADER_DIR ] if PORT_HEADER_DIR else []),
         "-Xclang", "-ast-dump=json", "-Xclang", "-ast-dump-filter=%s" % name, root,
     ]
     result = subprocess.run(command, capture_output=True, text=True)
@@ -366,6 +374,238 @@ def compare(name, expected, header_props, port_props):
     return failures
 
 
+# ---------------------------------------------------------------------------------------------
+# The setup family: METHODS, and one object per release.
+#
+# Everything above is property-shaped, and a class with no properties measures nothing -- which is
+# exactly HMAccessorySetupPayload, the release declaring no property on it at all. So the same file now
+# carries methods, and the comparison is per OBJECT rather than per class, because the band machinery
+# refuses an object with the API of two releases: the 11.3 initialiser and the 13.0 one are two objects,
+# and each must bind exactly its own release's members and nothing of the other's.
+#
+# The selector comes from the AST's mangledName rather than from `name`, and that is mechanical: for a
+# selector with arguments, `name` is only the first piece ("initWithURL"), so a check built on it would
+# compare the wrong string for every multi-argument method. The release and the NS_UNAVAILABLE mark come
+# from the HEADER'S OWN LINE, read out of the SDK the check is already pointed at -- this clang's JSON
+# dump carries availability as an api_avail number in the mangled name, and a check that decoded that
+# would be reading an encoding rather than the release's declaration.
+
+# "class" is the release the class itself arrived with, and it is STATED rather than inferred: a member
+# whose header line carries no API_AVAILABLE of its own is a member of the class's release, and deriving
+# that from the table (the first version took min() over the members' releases) made the expectation
+# depend on whatever the table happened to hold, which a scratch copy can change.
+SETUP_CLASSES = {
+    "HMAccessorySetupPayload": {
+        "class": "11.3",
+        "11.3": "HMAccessorySetupPayload11_3.m",
+        "13.0": "HMAccessorySetupPayload13_0.m",
+    },
+}
+
+HEADER_OF_CLASS = {"HMAccessorySetupPayload": "HMAccessorySetupPayload.h"}
+
+MANGLED_SELECTOR = re.compile(r"^[-+]\[[A-Za-z_][A-Za-z0-9_]*\s+")
+
+
+def selector_of(mangled):
+    """The selector out of a mangled method name: -[Cls initWithURL:ownershipToken:] -> the selector,
+    with its colons, and the leading sign kept so a class method is not read as an instance one."""
+    if not mangled:
+        return None
+    stripped = MANGLED_SELECTOR.sub("", mangled)
+    if stripped == mangled:
+        return None
+    return ("-" if mangled.startswith("-") else "+") + stripped
+
+
+def header_line(header, line):
+    """One line of one header, as written."""
+    try:
+        with open(os.path.join(HM_HEADERS, header), encoding="utf-8") as handle:
+            return handle.read().split("\n")[line - 1]
+    except (OSError, IndexError):
+        return ""
+
+
+def release_of(text):
+    """(release, unavailable) from a header declaration line: the ios version API_AVAILABLE names, and
+    whether the line also carries NS_UNAVAILABLE. A line with no API_AVAILABLE is the class's own
+    release -- every member the header declares without one arrived with the class."""
+    unavailable = "NS_UNAVAILABLE" in text
+    match = re.search(r"API_AVAILABLE\s*\(\s*ios\s*\(\s*([0-9]+(?:\.[0-9]+)?)\s*\)", text)
+    return (match.group(1) if match else None), unavailable
+
+
+def stage(scratch, class_name):
+    """Copy every object of one class into a scratch directory and point the lookup at it.
+
+    EVERY object, not the one being mutated: the lookup finds each object's file in PORT_INCLUDE, so a
+    scratch directory holding only the mutated copy makes the OTHER object's lookup fail on a missing
+    file -- and a missing file reads as a check that cannot fail rather than as a broken mutant.
+    """
+    global PORT_INCLUDE
+    source = PORT_HEADER_DIR or PORT_INCLUDE
+    for name in objects_of(class_name).values():
+        with open(os.path.join(source, name)) as handle:
+            with open(os.path.join(scratch, name), "w") as out:
+                out.write(handle.read())
+    PORT_INCLUDE = scratch
+    return scratch
+
+
+def method_text(text, signature_start):
+    """One method's own source, from the line its signature starts to the line that closes it.
+
+    A mutant has to move a method, and finding its end by the next '@end' is wrong: a class extension
+    above the @implementation has an @end of its own, so an insertion aimed there lands in an
+    @interface and the scratch file does not compile -- which is how a mutant that proves nothing ends
+    up looking like a check that cannot fail. A method's body ends at a closing brace in the first
+    column, and that is what this finds.
+    """
+    start = text.index(signature_start)
+    end = text.index("\n}\n", start) + len("\n}")
+    return text[start:end]
+
+
+def append_to_implementation(text, method):
+    """The same file with one method's source put at the end of its @implementation."""
+    return text[:text.rindex("@end")] + method + "\n\n" + text[text.rindex("@end"):]
+
+
+def from_sdk(loc):
+    """Whether a decl arrived through one of the SDK's own headers, which is what tells the header's
+    members from the port's -- the same join the property check documents, and the same one the protocol
+    check above uses. A method definition in the port's own file has no includedFrom at all."""
+    source = (loc.get("includedFrom") or {}) if isinstance(loc.get("includedFrom"), dict) else {}
+    name = source.get("file", "")
+    return bool(name) and os.path.realpath(name).startswith(os.path.realpath(HM_HEADERS) + os.sep)
+
+
+def objects_of(class_name):
+    """The object files of one class, and the oldest first: the header's own members are read through the
+    oldest object, so a class whose oldest object a scratch copy has replaced still reads the header from
+    a real file."""
+    objects = SETUP_CLASSES[class_name]
+    return {k: v for k, v in objects.items() if k != "class"}
+
+
+def header_methods(class_name, header):
+    """{selector: {"release", "unavailable", "line"}} for one class, from the header's own lines.
+
+    The header is compiled for the check's own target, so the members arrive through the port file's
+    import tagged with the SDK file by includedFrom -- the same join the property check above uses, and
+    the same reason: one dump carries both sides and the file each came from is what tells them apart.
+    """
+    found = {}
+
+    def walk(node):
+        if node.get("kind") in ("ObjCMethodDecl", "ObjCInstanceMethodDecl", "ObjCClassMethodDecl"):
+            selector = selector_of(node.get("mangledName", ""))
+            loc = node.get("loc") or {}
+            # Which SIDE a decl is on, by the same join the property check above uses: a decl that came
+            # through the SDK's headers carries an includedFrom under them, and a port implementation
+            # carries none. The header's own decls name the umbrella HomeKit.h rather than the class
+            # header their line was read from, so the test is "somewhere under the SDK's headers" and not
+            # the class header's name -- matching the class header's name found nothing, which is how a
+            # check comes to pass with no rows at all.
+            source = ((loc.get("includedFrom") or {}).get("file", "") if isinstance(
+                loc.get("includedFrom"), dict) else "")
+            if selector and loc.get("line") and source and os.path.realpath(source).startswith(
+                    os.path.realpath(HM_HEADERS) + os.sep):
+                line = loc["line"]
+                release, unavailable = release_of(header_line(header, line))
+                found.setdefault(selector, []).append(
+                    {"release": release, "unavailable": unavailable, "line": line})
+        for child in node.get("inner", []):
+            walk(child)
+
+    # The header's members arrive through the port file's own import, so the dump that carries both
+    # sides is the 11.3 object's -- the oldest of the two, so the class's own release is the one in it.
+    for document in ast(os.path.join(PORT_INCLUDE, objects_of(class_name)["11.3"]), class_name):
+        walk(document)
+    return {selector: entries[0] for selector, entries in found.items()}
+
+
+def port_methods(class_name, object_name):
+    """{selector: line} for the members ONE OBJECT binds, from that object's own file.
+
+    Only members whose own implementation is in that file count. A port file imports the internal header,
+    and that header declares categories and extensions for other classes; a method the object did not
+    write is not a member it binds, and counting one would make the per-object comparison pass for the
+    wrong reason.
+    """
+    found = {}
+
+    def walk(node):
+        if node.get("kind") in ("ObjCMethodDecl", "ObjCInstanceMethodDecl", "ObjCClassMethodDecl"):
+            selector = selector_of(node.get("mangledName", ""))
+            loc = node.get("loc") or {}
+            # The PORT's side is a decl that came through no SDK header at all. There is no body test:
+            # this clang's JSON dump emits no "body" key for a method definition, so filtering on one
+            # finds nothing and the whole section passes with no rows. And a charon_ member is the port's
+            # own storage, which CharonHomeKitInternal.h says is not part of the release's surface.
+            if selector and loc.get("line") and not from_sdk(loc) and not selector.lstrip(
+                    "-+").startswith("charon_"):
+                found[selector] = loc["line"]
+        for child in node.get("inner", []):
+            walk(child)
+
+    for document in ast(os.path.join(PORT_INCLUDE, object_name), class_name):
+        walk(document)
+    return found
+
+
+def compare_setup(verbose=True):
+    """Each object against the header members of its own release. Returns (failures, rows)."""
+    failures, rows = [], []
+    for class_name, objects in sorted(SETUP_CLASSES.items()):
+        header = HEADER_OF_CLASS[class_name]
+        members = header_methods(class_name, header)
+        class_release = objects["class"]
+        for release, object_name in sorted((r, o) for r, o in objects.items() if r != "class"):
+            bound = port_methods(class_name, object_name)
+            # A member the header line gives no API_AVAILABLE of its own arrived with the class, and an
+            # object owns the members of its own release and of no other.
+            expected = {s for s, m in members.items()
+                        if not m["unavailable"] and (m["release"] or class_release) == release}
+            forbidden = {s for s, m in members.items() if m["unavailable"]}
+            for selector in sorted(expected):
+                if selector in bound:
+                    rows.append((object_name, selector, release, members[selector]["line"]))
+                else:
+                    failures.append("%s (%s): the header declares %s at %s:%d, and the object binds no such method"
+                                    % (class_name, release, selector, header, members[selector]["line"]))
+            for selector in sorted(bound):
+                if selector in forbidden:
+                    failures.append("%s:%d binds %s, which the header marks NS_UNAVAILABLE at %s:%d"
+                                    % (object_name, bound[selector], selector, header,
+                                       members[selector]["line"]))
+                elif selector not in expected:
+                    failures.append("%s:%d binds %s, which is not a member of %s at %s"
+                                    % (object_name, bound[selector], selector, release, header))
+        # The unavailable members are NAMED, not merely absent. A check that prints nothing about -init
+        # and +new cannot be read as having looked at them, and they are the two members of this class the
+        # release refuses to let a caller use -- so each one is printed with whichever object binds it, and
+        # "no object" is the answer this port wants.
+        if verbose:
+            for selector, member in sorted(members.items()):
+                if member["unavailable"]:
+                    holders = [o for _, o in sorted(objects_of(class_name).items())
+                               if selector in port_methods(class_name, o)]
+                    print("  %-36s %-34s %-14s %s:%d" % (
+                        ",".join(holders) or "no object binds it", selector, "NS_UNAVAILABLE",
+                        header, member["line"]))
+    if verbose:
+        for object_name, selector, release, line in rows:
+            print("  %-36s %-34s %-6s %s:%d" % (object_name, selector, release, HEADER_OF_CLASS[
+                "HMAccessorySetupPayload"], line))
+        # The unavailable members are NAMED, not merely absent: a check that says nothing about -init and
+        # +new cannot be read as having looked at them, and they are the two members of this class the
+        # release refuses to let a caller use.
+
+    return failures, rows
+
+
 def main():
     # tests/backports/host/homekit -> the repository root, found by walking up to the one holding
     # packages/ rather than by counting levels, so a moved directory cannot silently point elsewhere.
@@ -376,8 +616,9 @@ def main():
             raise SystemExit("ast_check.py: no packages/a/apple-backports above %s" % here)
         root = os.path.dirname(root)
     port = os.path.join(root, "packages/a/apple-backports/HomeKit")
-    global PORT_INCLUDE
+    global PORT_INCLUDE, PORT_HEADER_DIR
     PORT_INCLUDE = port
+    PORT_HEADER_DIR = port
     source = os.path.join(port, "HMAccessoryProfile10_0.m")
 
     print("header contract, from clang's AST of the SDK and of the port, for %s" % TARGET[0])
@@ -390,6 +631,140 @@ def main():
         header_props = {k: v for k, v in both.items()}
         port_props = {k: [p for p in v if not p["file"].endswith(".h")] for k, v in both.items()}
         failures.extend(compare(name, expected, header_props, port_props))
+
+    # The setup family: methods, and one object per release. This is here because the check above is
+    # property-shaped and HMAccessorySetupPayload declares no property at all, so without this section
+    # two initialisers and two unavailable members would be measured by nothing.
+    print("\nthe setup family: methods, one object per release, from %s" % HEADER_OF_CLASS[
+        "HMAccessorySetupPayload"])
+    setup_failures, _ = compare_setup()
+    failures.extend(setup_failures)
+
+    # A SYNTHETIC class: one the header does not declare at all. The host has no HomeKit framework and so
+    # no instance to ask, and a control has to be real rather than a check that cannot fail -- so the
+    # control is a class that exists only in a scratch file, registered in the same table so the SAME
+    # comparison runs over it, and it has to come back red naming what it bound.
+    print("\ncontrol: a synthetic class in a scratch file that the header does not declare")
+    with tempfile.TemporaryDirectory(dir=RUNS) as scratch:
+        synthetic = "HMAccessorySetupPayloadSynthetic11_3.m"
+        with open(os.path.join(scratch, synthetic), "w") as handle:
+            handle.write(
+                "#import <Foundation/Foundation.h>\n"
+                "@interface HMAccessorySetupPayloadSynthetic : NSObject\n@end\n"
+                "@implementation HMAccessorySetupPayloadSynthetic\n"
+                "- (void)setupPayloadWithSomethingNoHeaderDeclares:(id)thing { (void)thing; }\n"
+                "@end\n")
+        saved = (SETUP_CLASSES.get("HMAccessorySetupPayloadSynthetic"),
+                 HEADER_OF_CLASS.get("HMAccessorySetupPayloadSynthetic"), PORT_INCLUDE)
+        try:
+            # and the table holds ONLY the synthetic class for the duration: the payload's own object is
+            # in the port's directory, and a lookup pointed at the scratch directory would not find it --
+            # which is a failure of the control's setup, not of the check.
+            saved_table = dict(SETUP_CLASSES)
+            SETUP_CLASSES.clear()
+            SETUP_CLASSES["HMAccessorySetupPayloadSynthetic"] = {"class": "11.3", "11.3": synthetic}
+            HEADER_OF_CLASS["HMAccessorySetupPayloadSynthetic"] = "HMAccessorySetupPayload.h"
+            # PORT_INCLUDE is where an object's file is found, so the control's object is only found if
+            # the lookup goes where the control wrote it: pointing it at the scratch directory, and
+            # putting it back afterwards, is the whole of the substitution.
+            PORT_INCLUDE = scratch
+            synthetic_failures, _ = compare_setup(verbose=False)
+        finally:
+            PORT_INCLUDE = saved[2]
+            SETUP_CLASSES.clear()
+            SETUP_CLASSES.update(saved_table)
+            if saved[0] is None and saved[1] is None:
+                HEADER_OF_CLASS.pop("HMAccessorySetupPayloadSynthetic", None)
+        if synthetic_failures:
+            print("  control caught: %s" % "; ".join(synthetic_failures))
+        else:
+            print("  control NOT caught: a class the header does not declare went through unchecked")
+            failures.append("the synthetic-class control was not caught")
+
+    # The mutant pair, and the two halves are the point. A change that moves BYTES and not the API split
+    # must stay green: a method relocated between the two objects without changing its release is still
+    # bound, still by the same release, and a check that went red on it would be reading the file rather
+    # than the contract. A 13.0 initialiser that lands in the 11.3 object must go red, by file and line.
+    print("\nmutant: bytes changed, nothing bound changed -- a comment added inside the 13.0 object")
+    with tempfile.TemporaryDirectory(dir=RUNS) as scratch:
+        thirteen = os.path.join(scratch, SETUP_CLASSES["HMAccessorySetupPayload"]["13.0"])
+        with open(os.path.join(port, SETUP_CLASSES["HMAccessorySetupPayload"]["13.0"])) as handle:
+            text = handle.read()
+        stage(scratch, "HMAccessorySetupPayload")
+        with open(thirteen, "w") as handle:
+            handle.write("// a mutant: bytes, and nothing else.\n" + text)
+        original = SETUP_CLASSES["HMAccessorySetupPayload"]["13.0"]
+        try:
+            SETUP_CLASSES["HMAccessorySetupPayload"]["13.0"] = os.path.basename(thirteen)
+            inert, _ = compare_setup(verbose=False)
+        finally:
+            SETUP_CLASSES["HMAccessorySetupPayload"]["13.0"] = original
+        if inert:
+            print("  RED, which is WRONG: the bytes moved and no member changed")
+            print("    %s" % "; ".join(inert))
+            failures.append("a change that bound nothing went red")
+        else:
+            print("  green, which is right: no member changed, so no row of the contract moved")
+
+    # A relocation BETWEEN the two objects, and what it turned out to be: the mutation does not compile.
+    # The 11.3 object's body writes `_charon_setupPayloadURL`, the ivar that object synthesises, and the
+    # 13.0 object declares the same property @dynamic -- so a file carrying both cannot be built at all.
+    # That is a fact about the port rather than about the check, and it is printed as one: a scratch
+    # copy that does not compile is not a check result, and reporting it as green or red would be a lie
+    # in either direction. It is also why the per-object rule is not violated by accident here.
+    print("\nmutant: the 11.3 initialiser's body moved into the 13.0 object, its release unchanged")
+    with tempfile.TemporaryDirectory(dir=RUNS) as scratch:
+        stage(scratch, "HMAccessorySetupPayload")
+        thirteen = os.path.join(scratch, SETUP_CLASSES["HMAccessorySetupPayload"]["13.0"])
+        with open(os.path.join(port, SETUP_CLASSES["HMAccessorySetupPayload"]["11.3"])) as handle:
+            body = handle.read()
+        moved = method_text(body, "- (instancetype)initWithURL:(NSURL *)setupPayloadURL")
+        with open(os.path.join(port, SETUP_CLASSES["HMAccessorySetupPayload"]["13.0"])) as handle:
+            thirteen_text = handle.read()
+        with open(thirteen, "w") as handle:
+            handle.write(append_to_implementation(thirteen_text, moved))
+        original = (SETUP_CLASSES["HMAccessorySetupPayload"]["13.0"], PORT_INCLUDE)
+        try:
+            SETUP_CLASSES["HMAccessorySetupPayload"]["13.0"] = os.path.basename(thirteen)
+            PORT_INCLUDE = scratch
+            relocation_failures, _ = compare_setup(verbose=False)
+        except SystemExit:
+            relocation_failures = None
+        finally:
+            SETUP_CLASSES["HMAccessorySetupPayload"]["13.0"], PORT_INCLUDE = original
+        if relocation_failures is None:
+            print("  the scratch copy does not compile, and that is a fact about the port, not a verdict")
+            print("  on the check: the 11.3 body writes the ivar only that object synthesises")
+        else:
+            print("  %s" % ("; ".join(relocation_failures) or "green"))
+
+    print("\nmutant: the 13.0 initialiser in the 11.3 object")
+    with tempfile.TemporaryDirectory(dir=RUNS) as scratch:
+        stage(scratch, "HMAccessorySetupPayload")
+        eleven_scratch = os.path.join(scratch, SETUP_CLASSES["HMAccessorySetupPayload"]["11.3"])
+        # The whole 13.0 object, standing where the 11.3 one stands. It compiles -- the class extension
+        # and the @dynamic come with it -- and it is the mistake a person actually makes: the newer
+        # object copied over the older one, so the 11.3 release loses its member and gains a 13.0 one.
+        with open(os.path.join(port, SETUP_CLASSES["HMAccessorySetupPayload"]["13.0"])) as handle:
+            with open(eleven_scratch, "w") as out:
+                out.write(handle.read())
+        original = (SETUP_CLASSES["HMAccessorySetupPayload"]["11.3"], PORT_INCLUDE)
+        try:
+            SETUP_CLASSES["HMAccessorySetupPayload"]["11.3"] = os.path.basename(eleven_scratch)
+            PORT_INCLUDE = scratch
+            misplaced, _ = compare_setup(verbose=False)
+        except SystemExit:
+            misplaced = None
+        finally:
+            SETUP_CLASSES["HMAccessorySetupPayload"]["11.3"], PORT_INCLUDE = original
+        if misplaced is None:
+            print("  the scratch copy does not compile, so this proves nothing either way")
+            failures.append("the 13.0-in-11.3 scratch copy did not compile, so the mutant proved nothing")
+        elif misplaced:
+            print("  caught: %s" % "; ".join(misplaced))
+        else:
+            print("  NOT caught: a 13.0 initialiser standing in for the 11.3 one went through unchecked")
+            failures.append("the 13.0-in-11.3 mutant was not caught")
 
     # The control: a scratch copy with one attribute flipped. This must be caught, or nothing above is.
     # A missing member, not a flipped attribute: this port writes its accessors out by hand, and a method
