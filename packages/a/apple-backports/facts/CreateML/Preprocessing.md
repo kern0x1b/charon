@@ -76,11 +76,18 @@ fitting a `Transformer` at all.
 | --- | --- | --- | --- |
 | `PreprocessingUpdatableSupervisedEstimator` | **does not fit** — `makeTransformer()` (line 168) hands the preprocessor to `ComposedTransformer.init` (line 33), which stores it as given | **does not fit** — `scale=1.0 offset=0.0` after `makeTransformer()`, after the first update and after the second | `tests/backports/host/createml/probe/preprocessing-updatable-host.swift` and its `.txt` |
 | `PreprocessingEstimator` | **fits** — `transformed(_:)` line 57 and `fitted(on:)` line 62, both `preprocessor.fitted(on: training)` | **does not fit** — `scale=1.0 offset=0.0` after `fitted(to:)`, and `preprocessed(from:)` returns the raw `[1, 2, 3, 4, 5, 6, 7, 8]` | `tests/backports/host/createml/probe/preprocessing-estimator-host.swift` and its `.txt` |
-| `PreprocessingUpdatableEstimator` | **fits** — `transformed(_:)` line 137 | **not yet measured** | a probe is owed; the mechanism above predicts it does not, and a prediction is not a measurement — the `-7` case was one |
+| `PreprocessingUpdatableEstimator` | **fits** — `transformed(_:)` line 137 | **does not fit** — `preprocessed(from:)` returns the raw `[1, 2, 3, 4, 5, 6, 7, 8]` | `tests/backports/host/createml/probe/preprocessing-updatable-estimator-host.swift` and its `.txt` |
 
 ## A divergence in the API surface, in the same family
 
-The host's `PreprocessingEstimator` has **no `transformed(to:)`**: its members are `preprocessed(from:)`,
-`fitted(to:)` and `fitted(toPreprocessed:)`. The port has `transformed(_:)` at `Preprocessing.swift:57`.
-A member the framework does not have is a public name this port invented, and it belongs in the
-invented-names table as its own entry.
+**Neither the host's `PreprocessingEstimator` nor its `PreprocessingUpdatableEstimator` has
+`transformed(to:)`.** Their members are `preprocessed(from:)`, `fitted(to:)` and
+`fitted(toPreprocessed:)`; the port has `transformed(_:)` at `Preprocessing.swift:57` and `:137`. Two
+public names the framework does not have, and they belong in the invented-names table as their own
+entries.
+
+**All three types, measured, and the port fits two of them where the host fits none.** The rule above
+predicts exactly this and the third probe confirms it rather than being predicted: the host's
+`PreprocessingUpdatableEstimator` returns the raw `[1, 2, 3, 4, 5, 6, 7, 8]` from `preprocessed(from:)`,
+where the port's line 137 fits and would transform. The port is wrong in three places and right in one,
+and the right one is the one I had written a red case to "fix" last week.
