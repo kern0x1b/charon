@@ -33,6 +33,7 @@ static void CharonMPSGraphSetElement(MPSGraphTensorData *data, NSUInteger index,
 }
 
 @implementation MPSGraph {
+    MPSGraphDevice *_device;
     MPSGraphOptions _options;
     NSMutableArray<MPSGraphTensor *> *_placeholders;
     NSMutableArray<MPSGraphOperation *> *_operations;
@@ -46,11 +47,19 @@ static void CharonMPSGraphSetElement(MPSGraphTensorData *data, NSUInteger index,
 - (instancetype)init
 {
     if ((self = [super init])) {
+        // A graph's device is the one it was made against, or the port's own Metal device when the
+        // caller named none: every device this port has is charon's, so there is nothing to choose.
+        _device = [MPSGraphDevice deviceWithMTLDevice:MTLCreateSystemDefaultDevice()];
         _options = MPSGraphOptionsDefault;
         _placeholders = [NSMutableArray array];
         _operations = [NSMutableArray array];
     }
     return self;
+}
+
+- (MPSGraphDevice *)charon_mps_device
+{
+    return _device;
 }
 
 - (MPSGraphOptions)options

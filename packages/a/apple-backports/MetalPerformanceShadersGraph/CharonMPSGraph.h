@@ -157,6 +157,7 @@ typedef NS_ENUM(NSInteger, CharonMPSGraphOperationKind) {
 // The operation that fills a tensor's value, called by the interpreter for each in turn.
 - (void)charon_mps_runOperation:(MPSGraphOperation *)operation
                           values:(NSMutableDictionary *)values;
+- (MPSGraphDevice *)charon_mps_device;
 - (MPSGraphOperation *)charon_mps_addOperationOfKind:(CharonMPSGraphOperationKind)kind
                                                 name:(NSString *)name
                                               inputs:(NSArray<MPSGraphTensor *> *)inputs

@@ -61,6 +61,15 @@
     return CharonMPSGraphElementCount(_shape);
 }
 
+// The device a tensor's values live on. MPSGraphTensor has no -device in the iPhoneOS 16.4 SDK this
+// package compiles against, so it is answered from the graph: a tensor made by an operation takes the
+// device of the graph that operation is in, and a placeholder - whose operation is the graph's own
+// placeholder operation - takes the graph's device too.
+- (MPSGraphDevice *)device
+{
+    return [_operation graph].charon_mps_device;
+}
+
 - (BOOL)isEqualToTensor:(MPSGraphTensor *)tensor
 {
     // A tensor is identified by the operation that produced it and which of that operation's outputs it
