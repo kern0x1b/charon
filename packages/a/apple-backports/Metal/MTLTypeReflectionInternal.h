@@ -60,13 +60,9 @@ extern MTLArgumentAccess CharonAccessFromWord(NSString *_Nullable word);
 
 @end
 
-// MTLStructMember's own storage, in the object that implements it, reached the same way.
-// MTLStructMember is 8.0 on the ladder, so its @implementation is in MTLTypeReflection8.m; its
-// STORAGE stays in MTLTypeReflection11.m with MTLType's, because a class extension's ivars belong to
-// the translation unit that declares them. So this is the write side: the 8.0 object builds a member
-// through it and reads it back through the accessors.
-// The write side and the read side of a member's storage, both implemented in the 11.0 object beside
-// the ivars, and both used by the 8.0 object which owns the @implementation.
+// MTLStructMember's storage and its accessors: implemented in MTLTypeReflection8.m, beside the ivars.
+// An extension's ivars are defined by the @implementation that sees them, so they cannot be declared in
+// one object and used from another: that is a link error (gate-613-3), not a compile one.
 @interface MTLStructMember (CharonTypeTreeStorage)
 - (void)charonSetName:(NSString *)name offset:(NSUInteger)offset node:(nullable NSDictionary *)node;
 @property (nonatomic, readonly, copy) NSString *charonMemberName;

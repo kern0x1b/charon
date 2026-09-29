@@ -13,9 +13,20 @@
 // object implements. That is the whole reason that header exists, and it is why the two objects can be
 // split at all without either of them reaching into the other's translation unit.
 
-// MTLStructMember is 8.0 on the ladder, so this is where its @implementation lives; its storage is
-// in the 11.0 object, and every line below goes through the accessors MTLTypeReflectionInternal.h
-// declares rather than touching ivars this translation unit cannot see.
+// MTLStructMember is 8.0 on the ladder, so this is where its @implementation lives, and its storage
+// (the extension above) with it.
+// The STORAGE of MTLStructMember, in the translation unit that holds its @implementation: an
+// extension's ivars are DEFINED by the @implementation that sees them, so declared anywhere else the
+// symbols _OBJC_IVAR_$_MTLStructMember._memberName etc. are defined by no object and the link fails
+// (the 6.1.3 gate, gate-613-3).
+@interface MTLStructMember () {
+@protected
+    NSString *_memberName;
+    NSUInteger _memberOffset;
+    NSDictionary *_memberNode;
+}
+@end
+
 @implementation MTLStructMember
 
 - (NSString *)name
@@ -53,6 +64,83 @@
     return self.charonPointerType;
 }
 
+@end
+
+@implementation MTLStructMember (CharonTypeTreeStorage)
+
+// The STORAGE of MTLStructMember, which is 8.0 on the ladder and whose @implementation is in the 8.0
+// object. These ivars are a class extension's and belong to THIS translation unit, so the 8.0 object
+// reaches them through charonSetName:offset:node: rather than touching them - which is the rule that
+// makes the two objects able to exist at all.
+- (void)charonSetName:(NSString *)name offset:(NSUInteger)offset node:(NSDictionary *)node
+{
+    _memberName = [name copy];
+    _memberOffset = offset;
+    _memberNode = node;
+}
+
+// The one way a member is made, so the three values it carries are set once and together. The
+// internal header names it because the 8.0 object's array code builds members through it.
+
+- (NSDictionary *)charonMemberNode
+{
+    return _memberNode;
+}
+
+- (NSString *)charonMemberName
+{
+    return _memberName ?: @"";
+}
+
+- (NSString *)name
+{
+    return _memberName ?: @"";
+}
+
+- (NSUInteger)offset
+{
+    return _memberOffset;
+}
+
+- (MTLDataType)dataType
+{
+    return CharonDataTypeFromScalar(_memberNode[@"scalar"]);
+}
+
+- (MTLDataType)charonDataType
+{
+    return CharonDataTypeFromScalar(_memberNode[@"scalar"]);
+}
+
+- (NSUInteger)charonMemberOffset
+{
+    return _memberOffset;
+}
+
+- (NSUInteger)argumentIndex
+{
+    return [_memberNode isKindOfClass:[NSDictionary class]] ? [_memberNode[@"index"] unsignedIntegerValue] : 0;
+}
+
+- (MTLStructType *)charonStructType
+{
+    return CharonTypedNode(_memberNode, MTLStructType.class);
+}
+
+- (MTLArrayType *)charonArrayType
+{
+    return CharonTypedNode(_memberNode, MTLArrayType.class);
+}
+
+- (MTLTextureReferenceType *)charonTextureReferenceType
+{
+    return CharonTypedNode(_memberNode, MTLTextureReferenceType.class);
+}
+
+- (MTLPointerType *)charonPointerType
+{
+    return CharonTypedNode(_memberNode, MTLPointerType.class);
+}
 @end
 
 @implementation MTLStructType
