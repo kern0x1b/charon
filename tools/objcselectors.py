@@ -19,50 +19,63 @@ import dyldcache
 
 
 def read_class(cache, image, class_name):
+    """(class, metaclass, class_ro, metaclass_ro) for an image's class, or a reason there is none.
+
+    A 32-bit objc2 class_t is FIVE words - isa, superclass, cache, vtable, data - so `data` is at +16.
+    Reading it at +12 gives the VTABLE, which in a cache points into a string pool: the sixteen words of
+    ASCII filler I first dumped were that, and I took it for the class_ro. `data` carries flags in its
+    low 2 bits, so it is masked with ~3 before it is dereferenced.
+    """
     want = '_OBJC_CLASS_$_' + class_name
     e = cache.exports(image)
     if want not in e:
         raise SystemExit('%s: %s is not exported by the image' % (image, class_name))
     cls = e[want]
-    isa = cache.u32_at(cls)
-    if isa != e.get('_OBJC_METACLASS', 0) and cls == 0:
-        raise SystemExit('%s: %s has no metaclass pointer' % (image, class_name))
-    meta = isa                      # for a class_t, isa is its METACLASS
-    ro = cache.u32_at(meta) & ~(1 << 31)   # the low bit is FAST_DATA on 6.1.3
-    return cls, meta, ro
+    meta = cache.u32_at(cls + 0)            # a class_t's isa IS its metaclass
+    ro = cache.u32_at(cls + 16) & ~3
+    metaro = cache.u32_at(meta + 16) & ~3
+    return cls, meta, ro, metaro
 
 
 def methods(cache, ro, base_off, limit):
-    ptr = cache.u32_at(ro + base_off) & ~(1 << 31)
+    """The selectors in the method list at class_ro + base_off.
+
+    A method_list_t is {entsize_and_flags, count} and the entries FOLLOW, so the COUNT IS THE SECOND WORD.
+    Reading count from the first word read entsize_and_flags - 0x0000000f, fifteen - and then walked
+    fifteen methods off the end of the list, which is why both lists came back empty while the raw dump
+    of the same address showed 110 and 23.
+    """
+    ptr = cache.u32_at(ro + base_off) & ~3
     if not ptr or ptr < limit:
         return []
-    count = cache.u32_at(ptr)
+    entsize = cache.u32_at(ptr)
+    count = cache.u32_at(ptr + 4)
     out = []
-    entsize = 12 if count < 0x8000 else 20      # method_t is 12 bytes on armv7
-    count &= 0x7fff if count >= 0x8000 else 0xffff
+    step = 12 if not (entsize & 0xFFFF0000) and (entsize & 0xFFFF) in (12, 24) else (entsize & 0xFFFF)
     for i in range(count):
-        m = ptr + 4 + i * entsize
-        nameptr = cache.u32_at(m)
-        out.append(cache.string_at(nameptr))
+        m = ptr + 8 + i * step
+        out.append(cache.string_at(cache.u32_at(m)))
     return out
 
 
 def main():
     cache = dyldcache.Cache(sys.argv[1])
     image, class_name = sys.argv[2], sys.argv[3]
-    cls, meta, ro = read_class(cache, image, class_name)
-    print('%s @ 0x%08x   metaclass 0x%08x   class_ro 0x%08x'
-          % (class_name, cls, meta, ro))
+    cls, meta, ro, metaro = read_class(cache, image, class_name)
+    print('%s @ 0x%08x   metaclass 0x%08x   class_ro 0x%08x   metaclass_ro 0x%08x'
+          % (class_name, cls, meta, ro, metaro))
+    rflags = cache.u32_at(ro) & 3
+    mrflags = cache.u32_at(metaro) & 3
+    print('  class_ro flags %d (bit0 RO_META=%d bit1 RO_ROOT=%d)   metaclass_ro flags %d (RO_META=%d)'
+          % (rflags, rflags & 1, rflags >> 1 & 1, mrflags, mrflags & 1))
     # class_ro_t (32-bit): flags, ivarBase, ivarSize, reserved, name, baseMethods...
     # 32-bit class_ro_t: flags, instanceStart, instanceSize, THEN the ivar layout pointer and the name
     # pointer, and baseMethods is the NEXT field - so 20, not 16. The known-present control
     # +defaultMediaLibrary read ABSENT at 16, which is what caught it.
     inst = methods(cache, ro, 20, 1 << 62)
-    metar = methods(cache, cache.u32_at(ro) & ~(1 << 31), 20, 1 << 62)
-    print('  instance methods (%d):' % len(inst))
-    for m in inst: print('    - %s' % m)
-    print('  CLASS methods (%d):' % len(metar))
-    for m in metar: print('    + %s' % m)
+    metar = methods(cache, metaro, 20, 1 << 62)
+    print('  instance methods (%d): %s' % (len(inst), ', '.join(inst[:5])))
+    print('  CLASS methods (%d): %s' % (len(metar), ', '.join(metar[:5])))
     for probe in ('authorizationStatus', 'requestAuthorization:', 'defaultMediaLibrary',
                   'noSuchSelectorForTheControl'):
         where = []
