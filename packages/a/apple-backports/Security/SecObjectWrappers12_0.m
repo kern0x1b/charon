@@ -69,14 +69,23 @@
 
 //    303  sec_certificate_t sec_certificate_create(SecCertificateRef certificate)
 //
-// THE COMPILER SAYS THE RESULT IS NON-NULL AND THE HEADER LINE SAYS NOTHING ABOUT NULLABILITY:
-//   "null returned from function that requires a non-null return value [-Wnonnull]" at this file's line
-//   86, which is the `return NULL` INSIDE sec_certificate_copy_ref - not in this creator. The creator
-//   is declared as sec_certificate_create(SecCertificateRef certificate) and the two -Wnonnull warnings
-//   in this file are both in the two copy_ref functions, at their own `return NULL` for an object that
-//   holds nothing. So the wrapper is ALWAYS created, holding the ref it was given, and a caller that
-//   passed NULL finds out at copy_ref, which answers NULL - the annotation is on the getter, and the
-//   getter has nothing to return for an object that was never given a ref.
+// -Wall REPORTS -Wnonnull TWICE IN THIS FILE, AND NOT IN EITHER CREATOR. Re-run and the lines are:
+//
+//   SecObjectWrappers12_0.m: 93:  null returned from function that requires a non-null return value
+//       inside SecCertificateRef sec_certificate_copy_ref(sec_certificate_t)
+//   SecObjectWrappers12_0.m:110:  the same warning
+//       inside SecTrustRef     sec_trust_copy_ref(sec_trust_t)
+//
+// The header DECLARES THE CREATORS WITHOUT A NULLABILITY ANNOTATION, and the getter pair with one:
+//   :188  sec_trust_create(SecTrustRef trust);
+//   :203  sec_trust_copy_ref(sec_trust_t trust);
+//   :303  sec_certificate_create(SecCertificateRef certificate);
+//   :318  sec_certificate_copy_ref(sec_certificate_t certificate);
+// so the annotation - and therefore the -Wnonnull - is on the GETTERS, and it fires on their own
+// `return NULL` for an object that holds nothing. THAT IS WHY THE CREATORS ARE _NULLABLE IN PRACTICE:
+// a caller may pass NULL, the wrapper records that it was given none, and the getter is where a caller
+// finds out. The warning is the header's annotation meeting exactly that case, and it is left in place:
+// there is no non-null value for a getter to return when the object was never given a ref.
 //
 // A claim here that the header "says these never return NULL" was wrong: -Wnonnull is the compiler's
 // inference from the nullability annotations on the copy_ref declarations, and reading it as a property
@@ -96,8 +105,8 @@ SecCertificateRef sec_certificate_copy_ref(sec_certificate_t certificate)
 }
 
 //    188  sec_trust_t sec_trust_create(SecTrustRef trust)
-//  Always returns a wrapper, for the reason given above: the -Wnonnull warnings in this file are in the
-//  two copy_ref functions, not in these creators.
+//  Always returns a wrapper, and is the _NULLABLE side of the pair: the -Wnonnull warnings are at
+//  :93 and :110, in the two copy_ref getters, not in either creator.
 sec_trust_t sec_trust_create(SecTrustRef trust)
 {
     return (sec_trust_t)[[CharonSecTrust alloc] initWithTrust:trust];
